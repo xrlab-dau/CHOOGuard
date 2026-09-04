@@ -2,7 +2,7 @@ name: PR Risk Triage
 
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, edited, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
@@ -72,7 +72,7 @@ jobs:
             await github.rest.issues.addLabels({owner, repo, issue_number, labels: requested});
 
             const requirements = [];
-            requirements.push('PR Policy and Repository Hygiene');
+            requirements.push('Required Quality Gate');
             if (areas.has('area: reconstruction')) requirements.push('Reconstruction CI');
             if (areas.has('area: unity')) requirements.push('Unity EditMode and PlayMode tests when enabled');
             if (risk >= 3) requirements.push('area-owner review and evidence');
