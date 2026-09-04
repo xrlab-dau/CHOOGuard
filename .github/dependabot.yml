@@ -2,13 +2,10 @@ version: 2
 updates:
   - package-ecosystem: github-actions
     directory: /
+    target-branch: develop
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
     labels: [dependencies, ci]
-  - package-ecosystem: pip
-    directory: /reconstruction
-    schedule:
-      interval: weekly
-    open-pull-requests-limit: 5
-    labels: [dependencies, reconstruction]
+
+# Add the pip ecosystem after reconstruction/pyproject.toml or a lockfile exists.
