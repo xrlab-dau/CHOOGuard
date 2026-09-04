@@ -1,0 +1,77 @@
+name: Required Quality Gate
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: required-quality-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  policy:
+    name: Policy, security and repository hygiene
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate PR metadata
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          status=0
+          python scripts/ci/pr_policy.py \
+            --event "$GITHUB_EVENT_PATH" \
+            --report pr-policy-report.md || status=$?
+          cat pr-policy-report.md >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+      - name: Validate repository and changed files
+        if: always()
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          status=0
+          if [[ "$EVENT_NAME" == 'pull_request' ]]; then
+            python scripts/ci/repository_policy.py \
+              --base "$BASE_SHA" --head "$HEAD_SHA" \
+              --report repository-policy-report.md || status=$?
+          else
+            python scripts/ci/repository_policy.py \
+              --report repository-policy-report.md || status=$?
+          fi
+          cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY"
+          exit "$status"
+
+      - name: Test policy code
+        if: always()
+        run: python -m unittest discover -s scripts/ci/tests -v
+
+      - name: Validate YAML syntax
+        if: always()
+        run: |
+          ruby -e 'require "yaml"; Dir.glob("**/*.{yml,yaml}", File::FNM_DOTMATCH).each { |f| YAML.safe_load(File.read(f), aliases: true); puts "ok #{f}" }'
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: required-quality-gate-reports
+          path: '*-policy-report.md'
+          if-no-files-found: warn
+          retention-days: 14

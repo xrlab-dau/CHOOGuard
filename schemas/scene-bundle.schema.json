@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xrlab-dau/choo-guard/schemas/scene-bundle.schema.json",
+  "title": "choo-guard SceneBundle manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "sceneId", "createdAt", "sourceHash", "model", "coordinates", "assets", "qa", "dataClassification"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "sceneId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,63}$"},
+    "createdAt": {"type": "string", "format": "date-time"},
+    "sourceHash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version", "checkpoint", "license"],
+      "properties": {
+        "name": {"type": "string"},
+        "version": {"type": "string"},
+        "checkpoint": {"type": "string"},
+        "license": {"type": "string"}
+      }
+    },
+    "coordinates": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "upAxis", "handedness", "metersPerUnit", "unityFromSource"],
+      "properties": {
+        "unit": {"const": "meter"},
+        "upAxis": {"const": "Y"},
+        "handedness": {"enum": ["left", "right"]},
+        "metersPerUnit": {"type": "number", "exclusiveMinimum": 0},
+        "unityFromSource": {
+          "type": "array",
+          "minItems": 16,
+          "maxItems": 16,
+          "items": {"type": "number"}
+        }
+      }
+    },
+    "assets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["collision"],
+      "properties": {
+        "visualGlb": {"type": "string"},
+        "gaussianPly": {"type": "string"},
+        "collision": {"type": "string"},
+        "anchors": {"type": "string"}
+      },
+      "anyOf": [{"required": ["visualGlb"]}, {"required": ["gaussianPly"]}]
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["controlPointCount", "meanRelativeError", "approved"],
+      "properties": {
+        "controlPointCount": {"type": "integer", "minimum": 10},
+        "meanRelativeError": {"type": "number", "minimum": 0, "maximum": 1},
+        "splatCount": {"type": "integer", "minimum": 0},
+        "triangleCount": {"type": "integer", "minimum": 0},
+        "approved": {"type": "boolean"}
+      }
+    },
+    "dataClassification": {"enum": ["mock", "deidentified", "restricted"]}
+  }
+}

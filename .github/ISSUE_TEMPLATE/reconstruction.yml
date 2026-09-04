@@ -1,0 +1,28 @@
+name: Reconstruction experiment
+about: Track a DA3, Open3D, SceneBundle, or renderer experiment
+labels: [reconstruction, experiment]
+body:
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Hypothesis
+    validations:
+      required: true
+  - type: textarea
+    id: dataset
+    attributes:
+      label: Approved dataset identifier
+      description: Use an opaque ID and hash, never a restricted location or raw link.
+    validations:
+      required: true
+  - type: textarea
+    id: metrics
+    attributes:
+      label: Metrics and acceptance threshold
+      placeholder: Mean control-point error, splat count, triangle count, p95 frame time.
+    validations:
+      required: true
+  - type: textarea
+    id: reproducibility
+    attributes:
+      label: Versioned model, configuration, seed, and hardware

@@ -1,0 +1,59 @@
+name: Unity Windows Build
+
+on:
+  push:
+    branches: [develop]
+    paths:
+      - 'Assets/**'
+      - 'Packages/**'
+      - 'ProjectSettings/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unity-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  disabled-notice:
+    if: ${{ vars.UNITY_CI_ENABLED != 'true' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo 'Unity build is staged but disabled. See docs/ci.md.'
+
+  build:
+    if: ${{ vars.UNITY_CI_ENABLED == 'true' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Unity project
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          lfs: true
+
+      - name: Cache Unity Library
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-StandaloneWindows64-${{ hashFiles('ProjectSettings/ProjectVersion.txt', 'Packages/manifest.json', 'Packages/packages-lock.json', 'Assets/**') }}
+          restore-keys: Library-${{ runner.os }}-StandaloneWindows64-
+
+      - name: Build Windows OpenXR player
+        uses: game-ci/unity-builder@4423ee75828dff56037d1d1cfdac6b68e3a6ba00 # v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          targetPlatform: StandaloneWindows64
+          buildsPath: build
+          allowDirtyBuild: false
+
+      - name: Upload development build
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: choo-guard-windows-${{ github.sha }}
+          path: build/StandaloneWindows64
+          retention-days: 14

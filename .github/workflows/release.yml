@@ -1,0 +1,61 @@
+name: Draft PC VR Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  guard:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Require enabled Unity CI
+        run: |
+          if [[ '${{ vars.UNITY_CI_ENABLED }}' != 'true' ]]; then
+            echo 'UNITY_CI_ENABLED must be true before tagging a release.' >&2
+            exit 1
+          fi
+
+  build:
+    needs: guard
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out tagged source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          lfs: true
+
+      - name: Build Windows OpenXR player
+        uses: game-ci/unity-builder@4423ee75828dff56037d1d1cfdac6b68e3a6ba00 # v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          targetPlatform: StandaloneWindows64
+          buildsPath: build
+          allowDirtyBuild: false
+
+      - name: Package and checksum
+        shell: bash
+        run: |
+          cd build
+          zip -r "choo-guard-${GITHUB_REF_NAME}-windows.zip" StandaloneWindows64
+          sha256sum "choo-guard-${GITHUB_REF_NAME}-windows.zip" > "choo-guard-${GITHUB_REF_NAME}-SHA256SUMS.txt"
+
+      - name: Create draft GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" \
+            "build/choo-guard-${GITHUB_REF_NAME}-windows.zip" \
+            "build/choo-guard-${GITHUB_REF_NAME}-SHA256SUMS.txt" \
+            --draft --generate-notes --verify-tag

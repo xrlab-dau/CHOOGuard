@@ -1,0 +1,46 @@
+name: Nightly GPU Quality Gate
+
+on:
+  schedule:
+    - cron: '0 18 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nightly-gpu
+  cancel-in-progress: true
+
+jobs:
+  quality-gate:
+    if: ${{ vars.GPU_CI_ENABLED == 'true' }}
+    runs-on: [self-hosted, Windows, X64, choo-guard-gpu]
+    timeout-minutes: 45
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          lfs: true
+          clean: true
+
+      - name: Run Unity GPU quality gate
+        shell: pwsh
+        run: |
+          if (-not $env:UNITY_EDITOR_PATH) { throw 'UNITY_EDITOR_PATH repository variable is not configured.' }
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          & $env:UNITY_EDITOR_PATH -batchmode -quit -projectPath . `
+            -executeMethod ChooGuard.Editor.Automation.PerformanceGate.RunBatch `
+            -logFile artifacts/Editor.log
+          if ($LASTEXITCODE -ne 0) { throw "Unity quality gate failed with $LASTEXITCODE" }
+        env:
+          UNITY_EDITOR_PATH: ${{ vars.UNITY_EDITOR_PATH }}
+
+      - name: Upload GPU evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: nightly-gpu-evidence-${{ github.run_id }}
+          path: artifacts
+          if-no-files-found: warn
+          retention-days: 30

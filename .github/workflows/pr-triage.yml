@@ -1,0 +1,95 @@
+name: PR Risk Triage
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: pr-triage-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  classify:
+    name: Classify risk without executing PR code
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Apply risk and area labels
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        with:
+          script: |
+            const marker = '<!-- choo-guard-pr-risk -->';
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issue_number = context.issue.number;
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner, repo, pull_number: issue_number, per_page: 100
+            });
+            const names = files.map(f => f.filename);
+            const areas = new Set();
+            let risk = context.payload.pull_request.base.ref === 'main' ? 4 : 1;
+
+            const match = pattern => names.some(name => pattern.test(name));
+            if (match(/^(\.github\/|SECURITY\.md$|AGENTS\.md$|Packages\/|ProjectSettings\/|schemas\/|Assets\/ChooGuard\/Runtime\/(Scoring|Safety)\/)/)) risk = Math.max(risk, 4);
+            if (match(/^(reconstruction\/|Assets\/ChooGuard\/Runtime\/XR\/|Assets\/ChooGuard\/Runtime\/Networking\/|\.gitattributes$)/)) risk = Math.max(risk, 3);
+            if (match(/\.(unity|prefab|asset|mat)$/) || match(/^Assets\/ChooGuard\/(Editor|Runtime|Scenes)\//)) risk = Math.max(risk, 2);
+
+            if (match(/^Assets\//)) areas.add('area: unity');
+            if (match(/^reconstruction\//)) areas.add('area: reconstruction');
+            if (match(/Scenario|Scoring|docs\/scenarios/)) areas.add('area: scenario');
+            if (match(/^\.github\//)) areas.add('area: ci');
+            if (match(/^(docs\/|.*\.md$)/)) areas.add('area: docs');
+            if (match(/^(Packages\/|ProjectSettings\/)/)) areas.add('area: dependencies');
+
+            const levels = {1: ['risk: low', '2da44e'], 2: ['risk: medium', 'd4c5f9'], 3: ['risk: high', 'fbca04'], 4: ['risk: critical', 'b60205']};
+            const [riskLabel, riskColor] = levels[risk];
+            const definitions = new Map([
+              [riskLabel, riskColor],
+              ['area: unity', '5319e7'], ['area: reconstruction', '1d76db'],
+              ['area: scenario', '0e8a16'], ['area: ci', '0052cc'],
+              ['area: docs', '0075ca'], ['area: dependencies', '0366d6']
+            ]);
+            for (const [name, color] of definitions) {
+              try {
+                await github.rest.issues.getLabel({owner, repo, name});
+              } catch (error) {
+                if (error.status !== 404) throw error;
+                await github.rest.issues.createLabel({owner, repo, name, color});
+              }
+            }
+
+            const current = await github.rest.issues.get({owner, repo, issue_number});
+            for (const label of current.data.labels.map(x => typeof x === 'string' ? x : x.name)) {
+              if (label?.startsWith('risk:') && label !== riskLabel) {
+                await github.rest.issues.removeLabel({owner, repo, issue_number, name: label});
+              }
+            }
+            const requested = [riskLabel, ...areas];
+            await github.rest.issues.addLabels({owner, repo, issue_number, labels: requested});
+
+            const requirements = [];
+            requirements.push('PR Policy and Repository Hygiene');
+            if (areas.has('area: reconstruction')) requirements.push('Reconstruction CI');
+            if (areas.has('area: unity')) requirements.push('Unity EditMode and PlayMode tests when enabled');
+            if (risk >= 3) requirements.push('area-owner review and evidence');
+            if (risk === 4) requirements.push('lead review');
+            if (context.payload.pull_request.base.ref === 'main') requirements.push('Windows build and physical-headset release gate');
+
+            const body = `${marker}\n## Automated PR risk report\n\n` +
+              `- Risk: **${riskLabel.replace('risk: ', '').toUpperCase()}**\n` +
+              `- Changed files: **${names.length}**\n` +
+              `- Areas: ${[...areas].join(', ') || 'general'}\n\n` +
+              `### Required gates\n${requirements.map(x => `- ${x}`).join('\n')}\n\n` +
+              `_This report classifies paths only. It does not execute pull-request code._`;
+
+            const comments = await github.paginate(github.rest.issues.listComments, {owner, repo, issue_number, per_page: 100});
+            const previous = comments.find(c => c.user?.type === 'Bot' && c.body?.includes(marker));
+            if (previous) {
+              await github.rest.issues.updateComment({owner, repo, comment_id: previous.id, body});
+            } else {
+              await github.rest.issues.createComment({owner, repo, issue_number, body});
+            }

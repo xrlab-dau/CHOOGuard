@@ -1,0 +1,48 @@
+name: Reconstruction CI
+
+on:
+  pull_request:
+    paths:
+      - 'reconstruction/**'
+      - 'schemas/**'
+      - 'scripts/ci/**'
+      - '.github/workflows/reconstruction-ci.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'reconstruction/**'
+      - 'schemas/**'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reconstruction-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Test policy and SceneBundle contract
+        run: python -m unittest discover -s scripts/ci/tests -v
+
+      - name: Test reconstruction package when present
+        shell: bash
+        run: |
+          if [[ -f reconstruction/pyproject.toml ]]; then
+            python -m pip install --upgrade pip
+            python -m pip install -e './reconstruction[dev]'
+            python -m ruff check reconstruction
+            python -m pytest reconstruction/tests -q
+          else
+            echo 'Reconstruction package has not been initialized yet.'
+          fi
