@@ -1,6 +1,7 @@
-# choo guard
+# CHOOguard
+(Comprehensive Hazard Operational Optimizer Guard)
 
-`choo guard` is XR Lab's camera-to-3D railway emergency-response training platform.
+`CHOOguard` is XR Lab's camera-to-3D railway emergency-response training platform.
 
 ## Target architecture
 
