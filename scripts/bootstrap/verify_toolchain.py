@@ -63,6 +63,17 @@ POLICY_GLOBS = [
 ]
 # POLICY_GLOBS 중 하나라도 파일이 없으면 정책 해시 범위가 무의미하다.
 # .pi/ 와 .specify/ 는 PM 승인 전까지 미추적이므로 필수에서 제외한다.
+# 금지 파일 검사는 ignored 트리도 걷는다. prune 이 우회 경로가 되면 안 된다.
+# .git 만 제외한다(내부 객체는 작업 입력이 아니다).
+WORKSPACE_PRUNED_DIRS = {".git"}
+# 의존성 관리 트리. 여기서는 아래 확장자의 의미가 달라진다.
+# certifi 의 cacert.pem 은 자격이 아니라 CA 번들이고, venv 의 *.pth 는
+# 모델 가중치가 아니라 Python 경로 설정 파일이다.
+DEPENDENCY_DIRS = {"site-packages", "node_modules"}
+AMBIGUOUS_IN_DEPENDENCIES = (
+    "*.pem", "*.ckpt", "*.pth", "*.pt", "*.safetensors", "*.onnx", "*.ply", "*.spz", "*.glb",
+)
+WORKSPACE_SCAN_MAX_FILES = 200_000
 REQUIRED_POLICY_GLOBS = [
     "AGENTS.md",
     ".github/CODEOWNERS",
@@ -116,6 +127,21 @@ def is_forbidden_tracked(path: str) -> bool:
     return any(fnmatch.fnmatchcase(name, pattern) for pattern in FORBIDDEN_TRACKED)
 
 
+def is_forbidden_workspace(path: str) -> bool:
+    """작업본 검사용 판정.
+
+    촬영 원본·환경 파일·명백한 자격/라이선스는 의존성 트리 안이라도 금지다.
+    확장자가 겹쳐 의미가 달라지는 항목만 의존성 트리에서 제외한다.
+    추적 파일 검사(`is_forbidden_tracked`)는 이 완화를 적용하지 않는다.
+    """
+    if not is_forbidden_tracked(path):
+        return False
+    if not any(part in DEPENDENCY_DIRS for part in PurePosixPath(path).parts):
+        return True
+    name = PurePosixPath(path).name.lower()
+    return not any(fnmatch.fnmatchcase(name, pat) for pat in AMBIGUOUS_IN_DEPENDENCIES)
+
+
 def forbidden_workspace_files(root: Path) -> list[str]:
     """추적 여부와 무관하게 작업본 전체에서 금지 파일을 찾는다.
 
@@ -123,19 +149,34 @@ def forbidden_workspace_files(root: Path) -> list[str]:
     커밋되지 않은 채 작업본에 있으면 모델 전송·도구 실행 경계 밖으로 샐 수 있다.
     """
     found: list[str] = []
+    seen = 0
+    truncated = False
     for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
         here = Path(dirpath)
         for name in filenames:
+            seen += 1
+            if seen > WORKSPACE_SCAN_MAX_FILES:
+                truncated = True
+                break
             rel = (here / name).relative_to(root).as_posix()
-            if is_forbidden_tracked(rel):
+            if is_forbidden_workspace(rel):
                 found.append(rel)
-        dirnames[:] = [d for d in dirnames if d not in PRUNED_DIRS]
-    return sorted(found)
+        if truncated:
+            break
+        dirnames[:] = [d for d in dirnames if d not in WORKSPACE_PRUNED_DIRS]
+    return sorted(found), truncated
 
 
 def missing_required_policy(root: Path) -> list[str]:
-    """필수 정책 glob 중 파일이 하나도 없는 패턴."""
-    return [p for p in REQUIRED_POLICY_GLOBS if not any(f.is_file() for f in root.glob(p))]
+    """필수 정책 glob 중 비어 있지 않은 파일이 하나도 없는 패턴.
+
+    빈 파일 하나로 범위 검사를 통과시킬 수 없다.
+    """
+    missing = []
+    for pattern in REQUIRED_POLICY_GLOBS:
+        if not any(f.is_file() and f.stat().st_size > 0 for f in root.glob(pattern)):
+            missing.append(pattern)
+    return missing
 
 
 def escaped_symlinks(root: Path) -> list[str]:
@@ -257,7 +298,7 @@ def main() -> int:
     pi_v = pi_lines[0] if pi_lines else None
     uv_v = run("uv", "--version")
     outside_links = escaped_symlinks(root)
-    workspace_forbidden = forbidden_workspace_files(root)
+    workspace_forbidden, workspace_truncated = forbidden_workspace_files(root)
     policy_missing = missing_required_policy(root)
 
     hashes = {}
@@ -280,7 +321,13 @@ def main() -> int:
             "pi_packages": {"rows": pkgs, "ok": pkgs_ok},
             "research_venv": {"ok": (root / "tools/research/.venv").is_dir()},
             "forbidden_tracked_files": forbidden_check,
-            "forbidden_workspace_files": {"items": workspace_forbidden, "ok": not workspace_forbidden},
+            "forbidden_workspace_files": {
+                # 경로를 영수증에 남기지 않는다. 촬영 파일명·위치명이 공개될 수 있다.
+                "count": len(workspace_forbidden),
+                "suffixes": sorted({PurePosixPath(p).suffix.lower() or "(none)" for p in workspace_forbidden}),
+                "scan_truncated": workspace_truncated,
+                "ok": not workspace_forbidden and not workspace_truncated,
+            },
             "policy_hash_scope": {"missing_globs": policy_missing, "ok": not policy_missing},
             "symlinks_outside_repo": {"items": outside_links, "ok": not outside_links},
             "settings_disallowed_keys": disallowed_check,
@@ -291,6 +338,13 @@ def main() -> int:
     }
     receipt["required_checks"] = REQUIRED_CHECKS
     receipt["required_ok"] = all(receipt["checks"][k]["ok"] for k in REQUIRED_CHECKS)
+
+    if workspace_forbidden:
+        print("금지 파일(콘솔 전용, 영수증 미기록):", file=sys.stderr)
+        for rel in workspace_forbidden:
+            print(f"  {rel}", file=sys.stderr)
+    if workspace_truncated:
+        print(f"순회 예산 {WORKSPACE_SCAN_MAX_FILES} 초과. 통과로 처리하지 않는다.", file=sys.stderr)
 
     text = json.dumps(receipt, ensure_ascii=False, indent=2)
     if out is not None:

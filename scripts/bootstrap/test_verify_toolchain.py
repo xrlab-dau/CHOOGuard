@@ -146,15 +146,99 @@ class ToolchainBoundaryTests(unittest.TestCase):
         self.tracked = None
         self.assertNotEqual(self.invoke("--strict"), 0)
 
+    def failed_checks(self, *args):
+        """검사 이름별 ok 를 돌려준다. 종료 코드만 보면 다른 검사 실패로 오통과한다."""
+        captured = io.StringIO()
+        with patch.object(verifier, "ROOT", self.root), patch.object(verifier, "run", self.fake_run):
+            with patch.object(sys, "argv", ["verify_toolchain.py", "--label", "local", *args]):
+                with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(io.StringIO()):
+                    try:
+                        verifier.main()
+                    except SystemExit:
+                        pass
+        return captured.getvalue()
+
+    def assert_check_failed(self, name, *args):
+        self.assertIn(f"[FAIL] {name}", self.failed_checks(*args))
+
     def test_untracked_capture_file_is_rejected(self):
         """미추적 촬영 원본도 위생 검사 대상이다. git ls-files 목록에만 의존하지 않는다."""
         (self.root / "capture.mp4").write_bytes(b"stub")
+        self.assert_check_failed("forbidden_workspace_files")
         self.assertNotEqual(self.invoke("--strict"), 0)
+
+    def test_capture_file_inside_pruned_directory_is_rejected(self):
+        """.venv·node_modules 안에 숨긴 금지 파일도 잡는다. prune 이 우회 경로가 되면 안 된다."""
+        for parent in (".venv", "node_modules", "__pycache__"):
+            with self.subTest(parent=parent):
+                hidden = self.root / parent / "capture.mp4"
+                hidden.parent.mkdir(parents=True, exist_ok=True)
+                hidden.write_bytes(b"stub")
+                try:
+                    self.assert_check_failed("forbidden_workspace_files")
+                finally:
+                    hidden.unlink()
+
+    def test_capture_original_inside_dependency_tree_is_rejected(self):
+        """의존성 트리 안이라도 촬영 원본·자격 파일은 잡는다. 이것이 원 지적의 대상이다."""
+        for rel in ("tools/research/.venv/lib/site-packages/capture.mp4",
+                    "node_modules/pkg/session.NEF",
+                    ".venv/lib/site-packages/license.ulf"):
+            with self.subTest(rel=rel):
+                target = self.root / rel
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"stub")
+                try:
+                    self.assert_check_failed("forbidden_workspace_files")
+                finally:
+                    target.unlink()
+
+    def test_dependency_tree_pem_and_pth_are_not_false_positives(self):
+        """site-packages·node_modules 의 CA 번들과 경로 파일은 오탐하지 않는다.
+
+        `*.pem`·`*.pth` 는 각각 자격·모델 가중치 패턴이지만 의존성 트리에서는
+        certifi 인증서와 Python path 설정 파일이라 의미가 다르다.
+        """
+        for rel in ("tools/research/.venv/lib/site-packages/certifi/cacert.pem",
+                    "tools/research/.venv/lib/site-packages/_virtualenv.pth",
+                    "node_modules/pkg/model.pt"):
+            target = self.root / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(b"stub")
+        self.assertNotIn("[FAIL] forbidden_workspace_files", self.failed_checks())
+
+    def test_ambiguous_extension_outside_dependency_tree_is_rejected(self):
+        """같은 확장자라도 의존성 트리 밖이면 잡는다."""
+        (self.root / "keys").mkdir()
+        (self.root / "keys/server.pem").write_bytes(b"stub")
+        self.assert_check_failed("forbidden_workspace_files")
+
+    def test_workspace_scan_budget_fails_closed(self):
+        """순회 예산을 넘기면 통과가 아니라 사유를 남기고 실패한다."""
+        with patch.object(verifier, "WORKSPACE_SCAN_MAX_FILES", 1):
+            self.assert_check_failed("forbidden_workspace_files")
 
     def test_missing_required_policy_file_fails(self):
         """필수 정책 파일이 없으면 해시 범위가 무의미하므로 필수 검사가 실패한다."""
         (self.root / ".github/CODEOWNERS").unlink()
+        self.assert_check_failed("policy_hash_scope")
         self.assertNotEqual(self.invoke("--strict"), 0)
+
+    def test_empty_required_policy_file_does_not_satisfy_scope(self):
+        """빈 파일 하나로 필수 정책 범위를 통과시킬 수 없다."""
+        (self.root / ".github/CODEOWNERS").write_text("", encoding="utf-8")
+        self.assert_check_failed("policy_hash_scope")
+
+    def test_receipt_does_not_publish_forbidden_paths(self):
+        """영수증에 금지 파일의 정확한 경로를 남기지 않는다. 촬영 파일명이 공개될 수 있다."""
+        (self.root / "korail-secret-location.mp4").write_bytes(b"stub")
+        receipt_dir = self.root / "docs/evidence/M0-00"
+        receipt_dir.mkdir(parents=True)
+        target = "docs/evidence/M0-00/r.json"
+        self.invoke("--write", target)
+        written = (self.root / target).read_text(encoding="utf-8")
+        self.assertNotIn("korail-secret-location", written)
+        self.assertIn("forbidden_workspace_files", written)
 
     def test_label_outside_allowed_values_is_rejected(self):
         """허용값 밖 라벨(호스트명 형태 포함)은 거부한다.
