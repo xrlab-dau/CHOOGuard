@@ -1,23 +1,37 @@
 # CHOOguard
-(Comprehensive Hazard Operational Optimizer Guard)
 
-`CHOOguard` is XR Lab's camera-to-3D railway emergency-response training platform.
+Comprehensive Hazard Operational Optimizer Guard. 철도 비상대응훈련을 위한 XR 플랫폼이다.
 
-## Target architecture
+**v3 폐기:** 저장소에서 v3 문서는 확인되지 않았다. v3는 현행 개발 기준이 아니며 아래 승인 기준선을 따른다.
 
-Approved camera capture → DA3-1.1 reconstruction → SceneBundle → Open3D collision proxy → Unity OpenXR PC VR training.
+- [요구사항 기준선 v1.1](docs/choo-guard-requirements-baseline-v1.md)
+- [플랫폼 아키텍처 v4.2](docs/choo-guard-platform-architecture-v4.md)
+- [AI-native 파이프라인 v1.2](docs/choo-guard-ai-native-pipeline-v1.md)
+- [실행 백로그 v1.3](docs/choo-guard-execution-backlog-v1.md)
 
-## Development model
+## 개발 준비 상태
 
-- Git Flow: `feature/*`, `bugfix/*`, and `chore/*` merge into `develop`.
-- Releases: `release/*` and `hotfix/*` merge into `main`.
-- No direct pushes to `main` or `develop`.
-- Runtime scoring is deterministic and checklist-based. LLMs assist development only.
+[요구사항 발견](_bmad-output/planning-artifacts/requirements-discovery-v1.md)과 [변경 단위 명세](specs/README.md)는 검토용 초안이다. [검토 상태](docs/reviews/2026-09-06-workflow-status.json)의 미결을 해결하기 전 Pi·MCP·조사 하네스 운영 실행을 승인하지 않는다.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md), and [docs/ci.md](docs/ci.md).
+Unity·HMD·unity-mcp 작업은 학교 PC에서만 한다. local에는 Unity를 설치하지 않는다. [학교 PC 절차](docs/choo-guard-school-pc-bootstrap-v1.md)는 전달·사람 검사·설치 및 실행 승인을 구분한다.
 
-## Data policy
+## 목표 아키텍처
 
-Raw railway captures, model weights, Unity license files, secrets, and unapproved reconstructed assets must never be committed. Store only approved, de-identified samples and manifests.
+서면 승인된 촬영물을 내부 DA3·Open3D 처리로 SceneBundle과 충돌 프록시로 변환하고 Unity OpenXR PC VR 및 Desktop 훈련에 사용한다. 촬영 승인 전에는 합성 맵만 사용한다.
 
-This repository is publicly visible but does not yet grant an open-source license. See [NOTICE.md](NOTICE.md).
+이번 MVP는 검수 전 점수·이수 판정 대신 규칙 기반 설명형 피드백을 제공한다. LLM은 개발 보조 수단이며 철도 절차·물리적 안전의 권위가 아니다.
+
+## Git Flow
+
+- feature, bugfix, chore 브랜치는 develop으로 PR을 보낸다. develop은 squash와 팀·CODEOWNER 승인·필수 검사를 요구한다.
+- release, hotfix 브랜치는 main의 릴리스 절차를 따른다.
+- main/develop 직접 푸시와 에이전트의 자동 이슈·PR 생성은 하지 않는다.
+- 작업 브랜치 푸시나 문서 clone은 실행·자료 접근·모델 전송·병합 승인을 대신하지 않는다.
+
+[기여 절차](CONTRIBUTING.md), [에이전트 규칙](AGENTS.md), [CI 안내](docs/ci.md)를 함께 읽는다.
+
+## 데이터와 라이선스
+
+철도 촬영 원본·모델 가중치·자격·Unity 라이선스·미승인 재구성 자산은 커밋하지 않는다. 외부 모델·MCP·검색에는 별도 승인된 PUBLIC_SYNTHETIC만 전송한다. gitignore와 저장소 밖 경로는 자료 취급 승인이나 격리 증거가 아니다.
+
+이 저장소는 공개되어 있지만 프로젝트 자체의 오픈소스 라이선스를 아직 부여하지 않는다. [고지](NOTICE.md)를 따른다. 제삼자 도구·vendored 파일은 별도 라이선스·재배포 고지 검토가 필요하다.

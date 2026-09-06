@@ -1,0 +1,29 @@
+{
+  "schema": "choo-guard.manual-research-claims.v1",
+  "record_type": "manual_claim_catalog_not_researcher_output",
+  "date": "2026-09-06",
+  "data_class": "PUBLIC_SYNTHETIC",
+  "source_log": "docs/research/2026-09-06-agentic-toolchain-research.json",
+  "researcher_executed": false,
+  "approval_status": "not_approved",
+  "claims": [
+    {"id":"C-01","claim":"Pi 프로젝트 packages는 trust 뒤 자동 설치되는 실행 경로다.","evidence_urls":["https://github.com/earendil-works/pi/blob/main/packages/coding-agent/docs/packages.md"],"excerpt":null,"basis":"이전 설치본 문서 관측 기록","limitations":["upstream main은 가변 참조다.","전이 lock·integrity·설치 승인이 미완료다."],"license":"MIT 메타데이터, 원문 검토 미완료"},
+    {"id":"C-02","claim":"Pi 프로젝트 prompts와 skills는 에이전트 입력 경로다.","evidence_urls":["https://github.com/earendil-works/pi/blob/main/packages/coding-agent/README.md"],"excerpt":null,"basis":"저장소 내 prompt·skill 파일 존재","limitations":["파일 존재는 런타임 로드·보안 경계의 증거가 아니다."],"license":"MIT 메타데이터, 원문 검토 미완료"},
+    {"id":"C-03","claim":"pi-agents는 YAML 그래프와 별도 RPC 세션을 제공하는 후보 도구다.","evidence_urls":["https://www.npmjs.com/package/pi-agents","https://pi.dev/packages/pi-agents"],"excerpt":null,"basis":"이전 설치본 0.21.0 README·파서 관측","limitations":["0.16.1 검색 결과와 설치본을 혼동하지 않는다.","파싱은 오류 차단·실제 모델·OS 격리 검증이 아니다."],"license":"Apache-2.0 메타데이터, 원문 검토 미완료"},
+    {"id":"C-04","claim":"pi-subagents 0.65.1은 단발 위임 후보이며 그래프 제어와 구분한다.","evidence_urls":["https://pi.dev/packages/pi-subagents"],"excerpt":null,"basis":"이전 package metadata 관측","limitations":["pi-agents 호출에 watchdog·modelScope가 적용되는지는 미검증이다."],"license":"MIT 메타데이터, 원문 검토 미완료"},
+    {"id":"C-05","claim":"pi-exa는 Exa 검색의 외부 전송 경로다.","evidence_urls":["https://pi.dev/packages/pi-exa"],"excerpt":null,"basis":"이전 0.6.1 package metadata·도구 목록 관측","limitations":["PUBLIC_SYNTHETIC 선언만으로 전송 경계가 강제되지 않는다.","학교 PC 기본 비허용이다."],"license":"MIT 메타데이터, 원문 검토 미완료"},
+    {"id":"C-06","claim":"로컬 Spec Kit script는 feature 디렉터리·spec·상태를 만들고 Git 브랜치는 생성하지 않는다.","evidence_urls":["https://github.com/github/spec-kit","https://github.github.com/spec-kit/reference/agentic-sdd.html"],"excerpt":"    _persist_feature_json \"$REPO_ROOT\" \"$FEATURE_DIR\"","basis":".specify/scripts/bash/create-new-feature.sh 전체 정적 읽기. excerpt는 웹이 아니라 로컬 소스 발췌다.","limitations":["BRANCH_NAME 출력은 branch 생성 증거가 아니다.","로컬 파일과 upstream v1.0.4의 동일성은 미검증이다."],"license":"MIT 메타데이터, 원문 검토 미완료"},
+    {"id":"C-07","claim":"BMAD 설정·스킬 후보가 저장소 작업 트리에 존재한다.","evidence_urls":["https://docs.bmad-method.org/reference/workflow-map/","https://github.com/bmad-code-org/bmad-method"],"excerpt":null,"basis":".agents/skills와 _bmad 파일 목록","limitations":["파일 존재는 headless 워크플로 실행 증거가 아니다.","원문 라이선스·vendored 고지 승인 전 미채택이다."],"license":"NOASSERTION, 미판정"},
+    {"id":"C-08","claim":"Pydantic AI Harness의 Researcher와 ExaSearch는 구조화 조사 후보 인터페이스다.","evidence_urls":["https://pydantic.dev/docs/ai/harness/researcher/","https://pydantic.dev/docs/ai/harness/exa-search/"],"excerpt":null,"basis":"이전 설치본 signature와 dry-run 관측","limitations":["실제 Researcher 조사는 실행되지 않았다.","현재 모델·주제·slug·미정제 출력 통제는 미완료다."],"license":"MIT 메타데이터, 원문 검토 미완료"},
+    {"id":"C-09","claim":"기존 Exa 로그에는 질의 항목 10개와 결과 URL 30개가 있다.","evidence_urls":["https://exa.ai/docs/reference/search","https://exa.ai/docs/reference/search-api-guide"],"excerpt":null,"basis":"원시 검색 JSON 구조","limitations":["30건은 API 호출 수가 아니다.","HTTP 상태·재시도·전송 승인 영수증과 본문 발췌는 없다.","직접 curl을 승인 우회 fallback으로 재사용하지 않는다."],"license":"상용 서비스 약관 검토 필요"},
+    {"id":"C-10","claim":"unity-mcp v10.2.0은 이전 릴리스 조회에서 관측한 고정 후보다.","evidence_urls":["https://github.com/CoplayDev/unity-mcp/releases","https://coplaydev.github.io/unity-mcp/releases"],"excerpt":null,"basis":"이전 릴리스 metadata 관측","limitations":["현재 최신 버전이라는 지속 주장은 하지 않는다.","local 미설치·미실행. M1-03 및 M2-01 이후 M1-04에서 검증한다."],"license":"MIT 메타데이터, 원문 검토 미완료"},
+    {"id":"C-11","claim":"OpenSpec은 변경 제안 중심 대안으로 조사했다.","evidence_urls":["https://openspec.dev/","https://openspec.dev/docs/opsx"],"excerpt":null,"basis":"검색 결과와 이전 주장 표","limitations":["기능·Pi 통합·라이선스 원문 직접 검증이 충분하지 않다.","이번 단위는 승인 기준선의 Spec Kit을 따른다."],"license":"MIT라는 이전 기록, 원문 미검증"},
+    {"id":"C-12","claim":"프로젝트의 GitHub ruleset은 승인·CODEOWNER·필수 검사·병합 방식을 규정한다.","evidence_urls":["https://docs.github.com/en/rest/repos/rules","https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets"],"excerpt":null,"basis":"2026-09-06 거버넌스 감사 관측","limitations":["이후 설정 변경은 반영되지 않을 수 있다.","CODEOWNERS는 로컬 파일 쓰기 sandbox가 아니다."],"license":"문서 이용 조건 검토 필요"},
+    {"id":"C-13","claim":"생성·비평 반복은 선언 그래프로 표현할 수 있는 설계 대안이다.","evidence_urls":["https://activewizards.com/blog/a-deep-dive-into-langgraph-for-self-correcting-ai-agents/","https://github.com/dhar174/langgraph_system_generator/blob/main/docs/patterns.md"],"excerpt":null,"basis":"낮은 권위의 블로그·개인 저장소 검색 결과","limitations":["SOTA 또는 실제 품질 향상의 입증이 아니다.","필수 관점·수정·재검토의 실패 차단과 비용 측정이 별도로 필요하다."],"license":"각 출처별 미판정"}
+  ],
+  "global_limitations": [
+    "웹 발췌가 없는 항목에 발췌를 만들어 넣지 않았다.",
+    "이 목록은 수동 정정 기록이며 하네스 실행·전송 승인·공급망·재배포 승인 영수증이 아니다.",
+    "외부 조사를 새로 실행하지 않았다. 최신성·원문 검증의 미완료는 그대로 남긴다."
+  ]
+}
