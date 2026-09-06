@@ -61,12 +61,38 @@ POLICY_GLOBS = [
     "tools/research/pyproject.toml",
     "tools/research/uv.lock",
 ]
+# POLICY_GLOBS 중 하나라도 파일이 없으면 정책 해시 범위가 무의미하다.
+# .pi/ 와 .specify/ 는 PM 승인 전까지 미추적이므로 필수에서 제외한다.
+# 금지 파일 검사는 ignored 트리도 걷는다. prune 이 우회 경로가 되면 안 된다.
+# .git 만 제외한다(내부 객체는 작업 입력이 아니다).
+WORKSPACE_PRUNED_DIRS = {".git"}
+# 의존성 관리 트리. 여기서는 아래 확장자의 의미가 달라진다.
+# certifi 의 cacert.pem 은 자격이 아니라 CA 번들이고, venv 의 *.pth 는
+# 모델 가중치가 아니라 Python 경로 설정 파일이다.
+# 면제는 **검증된 루트 아래**에만 적용한다. 경로 세그먼트 이름만 보면
+# 아무 데나 site-packages 디렉터리를 만들어 자격·가중치를 숨길 수 있다.
+DEPENDENCY_ROOTS = ("tools/research/.venv/", ".pi/npm/node_modules/")
+# 의존성 루트에서 실측으로 확인된 오탐만 면제한다(2026-09-06 기준 각 1건).
+# 확장자 전체를 면제하면 모델 가중치·재구성 자산을 venv 안에 숨길 수 있다.
+# 새 오탐이 생기면 파일 단위로 추가하고 근거를 남긴다.
+ALLOWED_IN_DEPENDENCIES = (
+    "cacert.pem",      # certifi CA 번들. 자격이 아니다.
+    "*.pth",           # site-packages 의 Python 경로 파일. 모델 가중치가 아니다.
+)
+WORKSPACE_SCAN_MAX_FILES = 200_000
+REQUIRED_POLICY_GLOBS = [
+    "AGENTS.md",
+    ".github/CODEOWNERS",
+    ".github/workflows/*.yml",
+    "scripts/ci/*.py",
+]
 ENV_NAMES = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "EXA_API_KEY", "RESEARCH_MODEL"]
 DISALLOWED_SETTINGS_KEYS = {"mcp", "mcpServers", "execute_code", "remotePackages"}
 PRUNED_DIRS = {".git", ".venv", "node_modules", "__pycache__"}
 REQUIRED_CHECKS = [
     "node", "pi", "uv", "pi_packages", "research_venv",
-    "forbidden_tracked_files", "symlinks_outside_repo", "settings_disallowed_keys",
+    "forbidden_tracked_files", "forbidden_workspace_files",
+    "symlinks_outside_repo", "settings_disallowed_keys", "policy_hash_scope",
 ]
 
 
@@ -105,6 +131,69 @@ def is_forbidden_tracked(path: str) -> bool:
     if name == ".env" or (name.startswith(".env.") and name not in ALLOWED_ENV_FILES):
         return True
     return any(fnmatch.fnmatchcase(name, pattern) for pattern in FORBIDDEN_TRACKED)
+
+
+def is_forbidden_workspace(path: str) -> bool:
+    """작업본 검사용 판정.
+
+    촬영 원본·환경 파일·명백한 자격/라이선스는 의존성 트리 안이라도 금지다.
+    `DEPENDENCY_ROOTS` 아래에서 실측으로 확인된 오탐만 파일 단위로 제외한다.
+    추적 파일 검사(`is_forbidden_tracked`)는 이 완화를 적용하지 않는다.
+    """
+    if not is_forbidden_tracked(path):
+        return False
+    if not any(path.startswith(root) for root in DEPENDENCY_ROOTS):
+        return True
+    name = PurePosixPath(path).name.lower()
+    return not any(fnmatch.fnmatchcase(name, pat) for pat in ALLOWED_IN_DEPENDENCIES)
+
+
+def forbidden_workspace_files(root: Path) -> list[str]:
+    """추적 여부와 무관하게 작업본 전체에서 금지 파일을 찾는다.
+
+    git ls-files 는 미추적·ignored 입력을 보지 못한다. 촬영 원본이나 자격 파일이
+    커밋되지 않은 채 작업본에 있으면 모델 전송·도구 실행 경계 밖으로 샐 수 있다.
+
+    반환: (금지 파일 목록, 예산 초과 여부, 순회 오류 목록).
+    예산 초과와 순회 오류는 모두 fail-closed 다.
+    """
+    found: list[str] = []
+    seen = 0
+    truncated = False
+    errors: list[str] = []
+
+    def on_error(error: OSError) -> None:
+        # os.walk 는 기본적으로 오류를 삼킨다. 접근 거부된 트리 안에 금지 파일이
+        # 있어도 보지 못하므로 통과로 처리하지 않는다.
+        name = getattr(error, "filename", None)
+        errors.append(str(name) if name else error.__class__.__name__)
+
+    for dirpath, dirnames, filenames in os.walk(root, followlinks=False, onerror=on_error):
+        here = Path(dirpath)
+        for name in filenames:
+            seen += 1
+            if seen > WORKSPACE_SCAN_MAX_FILES:
+                truncated = True
+                break
+            rel = (here / name).relative_to(root).as_posix()
+            if is_forbidden_workspace(rel):
+                found.append(rel)
+        if truncated:
+            break
+        dirnames[:] = [d for d in dirnames if d not in WORKSPACE_PRUNED_DIRS]
+    return sorted(found), truncated, errors
+
+
+def missing_required_policy(root: Path) -> list[str]:
+    """필수 정책 glob 중 비어 있지 않은 파일이 하나도 없는 패턴.
+
+    빈 파일 하나로 범위 검사를 통과시킬 수 없다.
+    """
+    missing = []
+    for pattern in REQUIRED_POLICY_GLOBS:
+        if not any(f.is_file() and f.stat().st_size > 0 for f in root.glob(pattern)):
+            missing.append(pattern)
+    return missing
 
 
 def escaped_symlinks(root: Path) -> list[str]:
@@ -226,6 +315,8 @@ def main() -> int:
     pi_v = pi_lines[0] if pi_lines else None
     uv_v = run("uv", "--version")
     outside_links = escaped_symlinks(root)
+    workspace_forbidden, workspace_truncated, workspace_errors = forbidden_workspace_files(root)
+    policy_missing = missing_required_policy(root)
 
     hashes = {}
     for pattern in POLICY_GLOBS:
@@ -247,6 +338,19 @@ def main() -> int:
             "pi_packages": {"rows": pkgs, "ok": pkgs_ok},
             "research_venv": {"ok": (root / "tools/research/.venv").is_dir()},
             "forbidden_tracked_files": forbidden_check,
+            "forbidden_workspace_files": {
+                # 경로를 영수증에 남기지 않는다. 촬영 파일명·위치명이 공개될 수 있다.
+                # 순회가 잘렸으면 개수를 안다고 주장하지 않는다. null 은 '미상'이다.
+                "count": None if workspace_truncated else len(workspace_forbidden),
+                "suffixes": None if workspace_truncated else sorted(
+                    {PurePosixPath(p).suffix.lower() or "(none)" for p in workspace_forbidden}
+                ),
+                "scan_truncated": workspace_truncated,
+                # 경로는 남기지 않는다. 접근 거부된 경로명도 민감할 수 있다.
+                "scan_errors": len(workspace_errors),
+                "ok": not workspace_forbidden and not workspace_truncated and not workspace_errors,
+            },
+            "policy_hash_scope": {"missing_globs": policy_missing, "ok": not policy_missing},
             "symlinks_outside_repo": {"items": outside_links, "ok": not outside_links},
             "settings_disallowed_keys": disallowed_check,
             "unity_project": {"ok": (root / "ProjectSettings/ProjectVersion.txt").exists(), "required": False},
@@ -256,6 +360,17 @@ def main() -> int:
     }
     receipt["required_checks"] = REQUIRED_CHECKS
     receipt["required_ok"] = all(receipt["checks"][k]["ok"] for k in REQUIRED_CHECKS)
+
+    if workspace_forbidden:
+        print("금지 파일(콘솔 전용, 영수증 미기록):", file=sys.stderr)
+        for rel in workspace_forbidden:
+            print(f"  {rel}", file=sys.stderr)
+    if workspace_errors:
+        print(f"순회 오류 {len(workspace_errors)}건(콘솔 전용). 접근 거부된 트리는 검사되지 않았다:", file=sys.stderr)
+        for name in workspace_errors:
+            print(f"  {name}", file=sys.stderr)
+    if workspace_truncated:
+        print(f"순회 예산 {WORKSPACE_SCAN_MAX_FILES} 초과. 통과로 처리하지 않는다.", file=sys.stderr)
 
     text = json.dumps(receipt, ensure_ascii=False, indent=2)
     if out is not None:
