@@ -38,8 +38,18 @@ class ToolchainBoundaryTests(unittest.TestCase):
         (self.root / ".pi").mkdir()
         (self.root / ".pi/settings.json").write_text('{"packages": []}\n', encoding="utf-8")
         (self.root / "tools/research/.venv").mkdir(parents=True)
+        self.write_required_policy_files()
         self.tracked = []
         self.uv = "uv 0.11.14"
+
+    def write_required_policy_files(self):
+        """필수 정책 파일이 모두 있는 정상 픽스처. 개별 테스트가 지워서 누락을 재현한다."""
+        (self.root / "AGENTS.md").write_text("# agents\n", encoding="utf-8")
+        (self.root / ".github/workflows").mkdir(parents=True, exist_ok=True)
+        (self.root / ".github/CODEOWNERS").write_text("* @team\n", encoding="utf-8")
+        (self.root / ".github/workflows/gate.yml").write_text("name: gate\n", encoding="utf-8")
+        (self.root / "scripts/ci").mkdir(parents=True, exist_ok=True)
+        (self.root / "scripts/ci/repository_policy.py").write_text("# policy\n", encoding="utf-8")
 
     def fake_run(self, *cmd):
         if cmd[:2] == ("git", "ls-files"):
@@ -136,6 +146,31 @@ class ToolchainBoundaryTests(unittest.TestCase):
         self.tracked = None
         self.assertNotEqual(self.invoke("--strict"), 0)
 
+    def test_untracked_capture_file_is_rejected(self):
+        """미추적 촬영 원본도 위생 검사 대상이다. git ls-files 목록에만 의존하지 않는다."""
+        (self.root / "capture.mp4").write_bytes(b"stub")
+        self.assertNotEqual(self.invoke("--strict"), 0)
+
+    def test_missing_required_policy_file_fails(self):
+        """필수 정책 파일이 없으면 해시 범위가 무의미하므로 필수 검사가 실패한다."""
+        (self.root / ".github/CODEOWNERS").unlink()
+        self.assertNotEqual(self.invoke("--strict"), 0)
+
+    def test_label_outside_allowed_values_is_rejected(self):
+        """허용값 밖 라벨(호스트명 형태 포함)은 거부한다.
+
+        커버리지 추가다. parser 의 허용값 강제는 이미 구현돼 있고 이 테스트는
+        그 동작에 회귀 방지를 건다. RED 를 거친 결함 수정이 아니다.
+        """
+        for label in ("lab-pc-03", "invalid", "LOCAL"):
+            with self.subTest(label=label):
+                with patch.object(verifier, "ROOT", self.root), patch.object(verifier, "run", self.fake_run):
+                    with patch.object(sys, "argv", ["verify_toolchain.py", "--label", label]):
+                        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                            with self.assertRaises(SystemExit) as caught:
+                                verifier.main()
+                self.assertNotEqual(caught.exception.code, 0)
+
     def test_required_hash_scope_covers_governance(self):
         required = {".github/CODEOWNERS", ".github/workflows/*.yml", "docs/adr/*.md"}
         self.assertTrue(required.issubset(set(verifier.POLICY_GLOBS)))
@@ -166,16 +201,42 @@ class BootstrapScriptTests(unittest.TestCase):
             encoding="utf-8",
         )
         fake_uv.chmod(0o755)
+        self.npm_log = Path(self.temporary.name) / "npm-calls.log"
+        fake_npm = self.fake_bin / "npm"
+        fake_npm.write_text(
+            '#!/usr/bin/env bash\n'
+            'printf "%s\\n" "$*" >> "$NPM_CALL_LOG"\n'
+            'exit 0\n',
+            encoding="utf-8",
+        )
+        fake_npm.chmod(0o755)
+        # pi 버전을 일부러 어긋나게 해 npm 설치 분기가 결정적으로 도달하게 한다.
+        fake_pi = self.fake_bin / "pi"
+        fake_pi.write_text('#!/usr/bin/env bash\necho "0.0.0-fixture"\n', encoding="utf-8")
+        fake_pi.chmod(0o755)
 
     def run_script(self, **extra_env):
         env = {k: v for k, v in os.environ.items() if k not in {"AUTO_INSTALL", "MACHINE_LABEL"}}
         env["PATH"] = f"{self.fake_bin}{os.pathsep}{env.get('PATH', '')}"
         env["UV_CALL_LOG"] = str(self.call_log)
+        env["NPM_CALL_LOG"] = str(self.npm_log)
         env.update(extra_env)
         return subprocess.run(["bash", str(self.SCRIPT)], env=env, capture_output=True, text=True, timeout=180)
 
     def uv_calls(self):
         return self.call_log.read_text(encoding="utf-8").splitlines() if self.call_log.exists() else []
+
+    def npm_calls(self):
+        return self.npm_log.read_text(encoding="utf-8").splitlines() if self.npm_log.exists() else []
+
+    def test_global_install_requires_explicit_approval(self):
+        """AUTO_INSTALL 없이는 npm 전역 설치도 실행하지 않는다.
+
+        커버리지 추가다. bootstrap.sh 의 승인 게이트는 이미 구현돼 있고 이 테스트는
+        uv sync 만 덮던 기존 시험의 공백(npm 경로)을 메운다. RED 를 거친 결함 수정이 아니다.
+        """
+        self.run_script(MACHINE_LABEL="local")
+        self.assertFalse(any(call.startswith("install") for call in self.npm_calls()))
 
     def test_missing_machine_label_stops_before_any_tool_call(self):
         result = self.run_script()

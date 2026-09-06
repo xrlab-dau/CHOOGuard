@@ -61,12 +61,21 @@ POLICY_GLOBS = [
     "tools/research/pyproject.toml",
     "tools/research/uv.lock",
 ]
+# POLICY_GLOBS 중 하나라도 파일이 없으면 정책 해시 범위가 무의미하다.
+# .pi/ 와 .specify/ 는 PM 승인 전까지 미추적이므로 필수에서 제외한다.
+REQUIRED_POLICY_GLOBS = [
+    "AGENTS.md",
+    ".github/CODEOWNERS",
+    ".github/workflows/*.yml",
+    "scripts/ci/*.py",
+]
 ENV_NAMES = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "EXA_API_KEY", "RESEARCH_MODEL"]
 DISALLOWED_SETTINGS_KEYS = {"mcp", "mcpServers", "execute_code", "remotePackages"}
 PRUNED_DIRS = {".git", ".venv", "node_modules", "__pycache__"}
 REQUIRED_CHECKS = [
     "node", "pi", "uv", "pi_packages", "research_venv",
-    "forbidden_tracked_files", "symlinks_outside_repo", "settings_disallowed_keys",
+    "forbidden_tracked_files", "forbidden_workspace_files",
+    "symlinks_outside_repo", "settings_disallowed_keys", "policy_hash_scope",
 ]
 
 
@@ -105,6 +114,28 @@ def is_forbidden_tracked(path: str) -> bool:
     if name == ".env" or (name.startswith(".env.") and name not in ALLOWED_ENV_FILES):
         return True
     return any(fnmatch.fnmatchcase(name, pattern) for pattern in FORBIDDEN_TRACKED)
+
+
+def forbidden_workspace_files(root: Path) -> list[str]:
+    """추적 여부와 무관하게 작업본 전체에서 금지 파일을 찾는다.
+
+    git ls-files 는 미추적·ignored 입력을 보지 못한다. 촬영 원본이나 자격 파일이
+    커밋되지 않은 채 작업본에 있으면 모델 전송·도구 실행 경계 밖으로 샐 수 있다.
+    """
+    found: list[str] = []
+    for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
+        here = Path(dirpath)
+        for name in filenames:
+            rel = (here / name).relative_to(root).as_posix()
+            if is_forbidden_tracked(rel):
+                found.append(rel)
+        dirnames[:] = [d for d in dirnames if d not in PRUNED_DIRS]
+    return sorted(found)
+
+
+def missing_required_policy(root: Path) -> list[str]:
+    """필수 정책 glob 중 파일이 하나도 없는 패턴."""
+    return [p for p in REQUIRED_POLICY_GLOBS if not any(f.is_file() for f in root.glob(p))]
 
 
 def escaped_symlinks(root: Path) -> list[str]:
@@ -226,6 +257,8 @@ def main() -> int:
     pi_v = pi_lines[0] if pi_lines else None
     uv_v = run("uv", "--version")
     outside_links = escaped_symlinks(root)
+    workspace_forbidden = forbidden_workspace_files(root)
+    policy_missing = missing_required_policy(root)
 
     hashes = {}
     for pattern in POLICY_GLOBS:
@@ -247,6 +280,8 @@ def main() -> int:
             "pi_packages": {"rows": pkgs, "ok": pkgs_ok},
             "research_venv": {"ok": (root / "tools/research/.venv").is_dir()},
             "forbidden_tracked_files": forbidden_check,
+            "forbidden_workspace_files": {"items": workspace_forbidden, "ok": not workspace_forbidden},
+            "policy_hash_scope": {"missing_globs": policy_missing, "ok": not policy_missing},
             "symlinks_outside_repo": {"items": outside_links, "ok": not outside_links},
             "settings_disallowed_keys": disallowed_check,
             "unity_project": {"ok": (root / "ProjectSettings/ProjectVersion.txt").exists(), "required": False},
