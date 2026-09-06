@@ -1,0 +1,259 @@
+{
+  "schema": "choo-guard.workflow-status.v1",
+  "record_type": "sanitized_retrospective_status_not_approval",
+  "date": "2026-09-06",
+  "workflow_id": "wf_97c85971-263",
+  "task_id": "wp8i3n0s7",
+  "orchestrator": "Claude Code Workflow",
+  "workflow_status": "completed",
+  "approval_status": "cannot_proceed",
+  "execution_authorized": false,
+  "counts": {
+    "agents_started": 20,
+    "reviewers_completed": 14,
+    "reviewers_failed": 1,
+    "findings_in_journal": 105,
+    "revision_agents_failed": 5,
+    "revision_agents_completed": 0,
+    "independent_rereviews_completed": 0
+  },
+  "target": {
+    "base_commit": "57612bf",
+    "initial_manifest": null,
+    "reviewed_head": null,
+    "uncommitted_inputs_included": true,
+    "hash_binding_verified": false,
+    "note": "초기 불변 대상 manifest가 없었다. 사후 해시는 최초 검토 대상을 소급 증명하지 않는다."
+  },
+  "isolation": {
+    "separate_sessions": true,
+    "read_only_tools_enforced": false,
+    "actual_provider_attested": false,
+    "note": "검토는 읽기 전용으로 지시했으나 모델 밖 파일·네트워크 경계는 검증되지 않았다. 라우팅 agent_type은 실행 제공자에 대한 독립 증명이 아니다. Pi YAML 실행과 동등하다고 판정하지 않는다."
+  },
+  "bundles": [
+    {
+      "bundle": "requirements",
+      "round": 1,
+      "content_outcome": "changes_required",
+      "reviewers": {
+        "spec": "a64e1f2733561060a",
+        "safety": "a95e49a3e64e3216e",
+        "adversarial": "af20311343c7854be"
+      },
+      "findings": 22,
+      "revision": "failed_api_rate_limit",
+      "rereview": "not_run"
+    },
+    {
+      "bundle": "specs-korail-allowlist",
+      "round": 1,
+      "content_outcome": "changes_required",
+      "reviewers": {
+        "spec": "a9270eaf9846babd7",
+        "safety": "abcce81f57556fbcc",
+        "adversarial": "ad37082f41910bdd6"
+      },
+      "findings": 24,
+      "revision": "failed_api_rate_limit",
+      "rereview": "not_run"
+    },
+    {
+      "bundle": "adr-research",
+      "round": 1,
+      "content_outcome": "changes_required",
+      "reviewers": {
+        "spec": "aae367ca5f7d7c11e",
+        "safety": "ac6afaf1112a8b9d4",
+        "adversarial": "a080d94c5e93f811c"
+      },
+      "findings": 21,
+      "revision": "failed_api_rate_limit",
+      "rereview": "not_run"
+    },
+    {
+      "bundle": "dev-spec-config",
+      "round": 1,
+      "content_outcome": "cannot_proceed",
+      "reviewers": {
+        "spec": "a089a339c84d196da",
+        "safety": "a54eccf2f9541b561",
+        "adversarial": "ac6b654d935fa0354"
+      },
+      "missing_lenses": [
+        "spec"
+      ],
+      "review_error": "Prompt is too long",
+      "findings": 14,
+      "revision": "failed_api_rate_limit",
+      "rereview": "not_run"
+    },
+    {
+      "bundle": "bootstrap-governance",
+      "round": 1,
+      "content_outcome": "changes_required",
+      "reviewers": {
+        "spec": "ad6f8c406dfd2e47e",
+        "safety": "a757e19917fe5dd02",
+        "adversarial": "acd8cdb6026705d8a"
+      },
+      "findings": 24,
+      "revision": "failed_api_rate_limit",
+      "rereview": "not_run"
+    }
+  ],
+  "controller_followup": {
+    "document_revision": "partial_manual_assistant_revision_not_independent_approval",
+    "production_code_revision": "completed_test_first_scripts_bootstrap_only",
+    "test_execution": {
+      "status": "executed",
+      "command": "python3 -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v",
+      "test_file": "scripts/bootstrap/test_verify_toolchain.py",
+      "red_runs": [
+        {
+          "tests": 12,
+          "failed": 11,
+          "note": "verify_toolchain.py 결함 11종 재현"
+        },
+        {
+          "tests": 14,
+          "failed": 13,
+          "note": "중첩 settings 키·ls-files 실패 테스트 추가"
+        },
+        {
+          "tests": 16,
+          "failed": 2,
+          "note": "bootstrap.sh 라벨 미검증·승인 없는 uv sync 재현"
+        }
+      ],
+      "green_runs": [
+        {
+          "tests": 14,
+          "passed": 14,
+          "note": "verify_toolchain.py 재작성 후"
+        },
+        {
+          "tests": 16,
+          "passed": 16,
+          "note": "bootstrap.sh 승인 게이트 추가 후"
+        }
+      ],
+      "smoke": {
+        "command": "python3 scripts/bootstrap/verify_toolchain.py --label local",
+        "exit_code": 0,
+        "required_ok": true,
+        "unity_project": "FAIL(non-required, local machine)"
+      },
+      "not_tested": [
+        "scripts/bootstrap/bootstrap.ps1 (pwsh unavailable on this machine; static review only)"
+      ]
+    },
+    "test_process_started": true,
+    "static_rereview_dispatch": {
+      "status": "not_run_after_code_revision",
+      "agent_created": false,
+      "worktree_created": false,
+      "review_result": null,
+      "included_in_original_workflow_counts": false,
+      "note": "이번 구간에서는 재시도하지 않았다. 코드·문서 수정본은 독립 재검토 미완료다."
+    },
+    "static_json_checks": {
+      "tool": "jq",
+      "status": "passed_parse_and_selected_invariants",
+      "checks": [
+        "bundle finding counts sum to recorded total",
+        "approval remains cannot_proceed",
+        "original independent rereviews remain zero",
+        "raw search contains ten query entries",
+        "manual catalog contains thirteen claims and no Researcher execution"
+      ],
+      "schema_validation": "not_run",
+      "source_id_comparison": "manual_bundle_lens_id_comparison_completed_105_ids",
+      "automated_source_id_comparison": "blocked_safety_classifier_timeout"
+    },
+    "protected_path_changes": "not_authorized",
+    "repository_policy_execution": {
+      "pre_commit_tracked": {
+        "command": "python3 scripts/ci/repository_policy.py",
+        "checked_files": 35,
+        "violations": 0
+      },
+      "post_commit": "recorded_in_next_commit_or_final_report",
+      "scope_note": "이 스크립트는 git 추적 파일 또는 base...head diff만 검사한다. 미추적 파일은 커밋 전에는 검사 대상이 아니다."
+    },
+    "git_delivery": {
+      "branch": "chore/pi-agentic-toolchain",
+      "base_head": "57612bf829553bdbb6474564d6ceea040d1821ac",
+      "remote_branch_before": "absent (git ls-remote --heads origin chore/pi-agentic-toolchain returned nothing)",
+      "stage": "explicit_paths_only",
+      "restricted_pattern_scan": {
+        "scope": "stage candidates",
+        "matched": [
+          "_bmad-output/planning-artifacts/.memlog.md"
+        ],
+        "action": "excluded from stage"
+      },
+      "delivery_scope": {
+        "included": [
+          ".gitignore",
+          "README.md",
+          "_bmad-output/planning-artifacts/{product-brief-agentic-pipeline-v1,requirements-discovery-v1}.md",
+          "docs/adr/0002-0005",
+          "docs/choo-guard-*-v1.md (4)",
+          "docs/research/2026-09-06-agentic-toolchain-* (3)",
+          "docs/reviews/2026-09-06-* (2)",
+          "docs/superpowers/plans/2026-09-06-pi-toolchain-bootstrap.md",
+          "specs/** (001-004, analysis, README)",
+          "scripts/bootstrap/* (4)",
+          "tools/research/{.env.example,pyproject.toml,research.py,uv.lock}"
+        ],
+        "excluded_pending_pm_approval": [
+          ".pi/ (protected)",
+          ".specify/ (memory protected; vendored Spec Kit)",
+          ".agents/, _bmad/ (vendored BMAD, license NOASSERTION)",
+          "docs/evidence/ (protected)",
+          "_bmad-output/planning-artifacts/.memlog.md (personal name)"
+        ]
+      },
+      "commit": "see git log on branch",
+      "push": "see final report; not asserted here",
+      "force_push": false,
+      "pull_request": "not_created_by_agent"
+    },
+    "verification_notes": "이번 구간에서 unittest·검증기 스모크·저장소 위생 검사·원격 브랜치 조회를 실제 실행했다. RED→GREEN 수치는 test_execution에 기록했다. 커밋 이후 위생 검사와 푸시 결과는 이 파일 작성 시점 이후에 관측되므로 다음 커밋 또는 최종 보고를 따른다. 보호 경로·vendored 도구·증거 파일은 stage하지 않았다.",
+    "disposition_index": "docs/reviews/2026-09-06-review-dispositions.md",
+    "production_code_files": [
+      "scripts/bootstrap/verify_toolchain.py",
+      "scripts/bootstrap/bootstrap.sh",
+      "scripts/bootstrap/bootstrap.ps1"
+    ]
+  },
+  "sanitization": {
+    "rule_version": "manual-status-v1",
+    "included": [
+      "workflow identifiers",
+      "reviewer identifiers",
+      "outcomes",
+      "counts",
+      "repository-relative document references"
+    ],
+    "excluded": [
+      "credentials",
+      "personal logins",
+      "hostnames",
+      "absolute local paths",
+      "raw prompts",
+      "raw tool transcripts"
+    ],
+    "raw_findings_republished": false,
+    "automated_sanitizer_verified": false
+  },
+  "limitations": [
+    "완료는 오케스트레이션 종료를 뜻하며 수정·검토 승인 또는 실행 허가가 아니다.",
+    "지적은 bundle/lens/id 조합으로 식별한다. 같은 SPC-1 또는 SAF-1을 서로 합치지 않는다.",
+    "부수 agent 메시지는 journal의 구조화 지적 수에 포함하지 않았다. 보충 사항은 disposition 문서에 별도로 기록한다.",
+    "모든 수정 대상은 새로운 불변 manifest와 다른 제공자의 독립 재검토가 필요하다.",
+    "bootstrap.ps1 은 이 머신에 pwsh 가 없어 실행 검증하지 않았다. 학교 PC 첫 실행 시 사람이 확인해야 한다.",
+    "수정된 코드·문서에 대한 다른 제공자의 독립 재검토는 아직 실행되지 않았다."
+  ]
+}
