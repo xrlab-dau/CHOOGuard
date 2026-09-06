@@ -183,7 +183,7 @@ R-01은 11건 중 9건이 종결 또는 부분 종결이고, 남은 것도 문�
 
 | unit/lens/id | 심각도 | 내용 | 처리 |
 |---|---|---|---|
-| R-01/safety/R3-SAF-1, R-01/adversarial/R3-ADV-1 | HIGH | 2라운드의 의존성 트리 면제가 **경로 세그먼트 이름만** 확인했다. 아무 데나 `site-packages` 디렉터리를 만들면 `*.pem`·`*.pt`·`*.ply`·`*.safetensors` 등이 통과했다. 두 관점이 각각 함수를 직접 호출해 확인했다 | 수용·반영. 면제를 `tools/research/.venv/`·`.pi/npm/node_modules/` 아래로 앵커링. 경계 8개 케이스 직접 확인 |
+| R-01/safety/R3-SAF-1, R-01/adversarial/R3-ADV-1 | HIGH | 2라운드의 의존성 트리 면제가 **경로 세그먼트 이름만** 확인했다. 아무 데나 `site-packages` 디렉터리를 만들면 `*.pem`·`*.pt`·`*.ply`·`*.safetensors` 등이 통과했다. 두 관점이 각각 함수를 직접 호출해 확인했다 | 수용·반영(2단계). ① 면제를 `tools/research/.venv/`·`.pi/npm/node_modules/` 아래로 앵커링. ② safety 최종본이 "루트 안에서도 모델·재구성 확장자는 기본 차단하고 오탐은 좁은 allowlist 로 풀라"고 요구해 확장자 단위 면제를 **파일 단위 allowlist**로 교체. 실측상 두 루트에 존재하는 면제 후보는 `cacert.pem` 1건과 `_virtualenv.pth` 1건뿐이고 `.pt`·`.ckpt`·`.onnx`·`.safetensors`·`.ply`·`.spz`·`.glb`는 0건이라 면제 근거가 없었다 |
 | R-01/adversarial/R3-ADV-3 | LOW | 예산 초과 영수증에 `count: 0`이 남아 "금지 파일 없음"으로 읽힘 | 수용·반영. 잘리면 `null` |
 | R-01/adversarial/R3-ADV-2 | MEDIUM | 테스트가 stdout 문자열에만 결속 | 수용·반영. `REQUIRED_CHECKS` 소속·종료 코드까지 확인 |
 | R-01/spec/R3-SPC-1 | MEDIUM | §1.2 합집합 개수 모호 | 수용·반영. 8건 + M2-04 백로그 유지 |
@@ -199,6 +199,8 @@ R-01은 11건 중 9건이 종결 또는 부분 종결이고, 남은 것도 문�
 | R2-SAF-2 | partially_closed | 파일 수 상한은 fail-closed. 디렉터리·시간 예산은 없다 |
 | R2-SAF-3 | **closed** | 영수증 경로 노출 해소 |
 | R3-SAF-2 | closed (반영) | 순회 오류 fail-closed. 단 이 수정 자체는 미검토 |
+| R3-SAF-3 | closed (반영) | 예산 초과 시 `count`·`suffixes`를 `null` 로 |
+| R3-SAF-1 | closed (반영) | 파일 단위 allowlist. 단 이 수정 자체는 미검토 |
 | SAF-1 (1라운드) | partially_closed | M4-01 조건이 백로그·이슈에서 강제되지 않는다 |
 | SAF-3 (1라운드) | partially_closed | 정책 범위 완전성 미해소 |
 | SAF-4 (1라운드) | partially_closed | symlink 루트는 로직으로 덮였고 OS junction/mount는 남았다 |
@@ -226,6 +228,7 @@ R-01은 11건 중 9건이 종결 또는 부분 종결이고, 남은 것도 문�
 | 버전 | 날짜 | 내용 |
 |---|---|---|
 | 1.0 | 2026-09-06 | 최초 작성. 6관점 37건 처리 |
+| 1.4 | 2026-09-06 | R3-SAF-1 2단계 조치(파일 단위 allowlist) 기록 |
 | 1.3 | 2026-09-06 | safety 최종 종결 판정 반영(R2-SAF-1 open), R3-SAF-2 순회 오류 fail-open 추가 |
 | 1.2 | 2026-09-06 | §7 3라운드 6건 추가. 스푸핑 우회 확인·조치, 라운드 상한 도달 기록 |
 | 1.1 | 2026-09-06 | 집계 오류 정정(30/4/3=37, 기각은 부분 수용 내 하위 주장). §6 2라운드 23건 추가 |
