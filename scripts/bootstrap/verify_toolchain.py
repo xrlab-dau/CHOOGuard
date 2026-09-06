@@ -149,11 +149,22 @@ def forbidden_workspace_files(root: Path) -> list[str]:
 
     git ls-files 는 미추적·ignored 입력을 보지 못한다. 촬영 원본이나 자격 파일이
     커밋되지 않은 채 작업본에 있으면 모델 전송·도구 실행 경계 밖으로 샐 수 있다.
+
+    반환: (금지 파일 목록, 예산 초과 여부, 순회 오류 목록).
+    예산 초과와 순회 오류는 모두 fail-closed 다.
     """
     found: list[str] = []
     seen = 0
     truncated = False
-    for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
+    errors: list[str] = []
+
+    def on_error(error: OSError) -> None:
+        # os.walk 는 기본적으로 오류를 삼킨다. 접근 거부된 트리 안에 금지 파일이
+        # 있어도 보지 못하므로 통과로 처리하지 않는다.
+        name = getattr(error, "filename", None)
+        errors.append(str(name) if name else error.__class__.__name__)
+
+    for dirpath, dirnames, filenames in os.walk(root, followlinks=False, onerror=on_error):
         here = Path(dirpath)
         for name in filenames:
             seen += 1
@@ -166,7 +177,7 @@ def forbidden_workspace_files(root: Path) -> list[str]:
         if truncated:
             break
         dirnames[:] = [d for d in dirnames if d not in WORKSPACE_PRUNED_DIRS]
-    return sorted(found), truncated
+    return sorted(found), truncated, errors
 
 
 def missing_required_policy(root: Path) -> list[str]:
@@ -300,7 +311,7 @@ def main() -> int:
     pi_v = pi_lines[0] if pi_lines else None
     uv_v = run("uv", "--version")
     outside_links = escaped_symlinks(root)
-    workspace_forbidden, workspace_truncated = forbidden_workspace_files(root)
+    workspace_forbidden, workspace_truncated, workspace_errors = forbidden_workspace_files(root)
     policy_missing = missing_required_policy(root)
 
     hashes = {}
@@ -331,7 +342,9 @@ def main() -> int:
                     {PurePosixPath(p).suffix.lower() or "(none)" for p in workspace_forbidden}
                 ),
                 "scan_truncated": workspace_truncated,
-                "ok": not workspace_forbidden and not workspace_truncated,
+                # 경로는 남기지 않는다. 접근 거부된 경로명도 민감할 수 있다.
+                "scan_errors": len(workspace_errors),
+                "ok": not workspace_forbidden and not workspace_truncated and not workspace_errors,
             },
             "policy_hash_scope": {"missing_globs": policy_missing, "ok": not policy_missing},
             "symlinks_outside_repo": {"items": outside_links, "ok": not outside_links},
@@ -348,6 +361,10 @@ def main() -> int:
         print("금지 파일(콘솔 전용, 영수증 미기록):", file=sys.stderr)
         for rel in workspace_forbidden:
             print(f"  {rel}", file=sys.stderr)
+    if workspace_errors:
+        print(f"순회 오류 {len(workspace_errors)}건(콘솔 전용). 접근 거부된 트리는 검사되지 않았다:", file=sys.stderr)
+        for name in workspace_errors:
+            print(f"  {name}", file=sys.stderr)
     if workspace_truncated:
         print(f"순회 예산 {WORKSPACE_SCAN_MAX_FILES} 초과. 통과로 처리하지 않는다.", file=sys.stderr)
 

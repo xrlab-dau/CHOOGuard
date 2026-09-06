@@ -231,6 +231,21 @@ class ToolchainBoundaryTests(unittest.TestCase):
                 finally:
                     target.unlink()
 
+    def test_unreadable_directory_fails_closed(self):
+        """접근 거부된 디렉터리를 조용히 건너뛰고 통과하면 안 된다.
+
+        os.walk 는 기본적으로 오류를 삼킨다. 읽을 수 없는 트리 안에
+        금지 파일이 있어도 검사가 보지 못하므로 사유를 남기고 실패해야 한다.
+        """
+        if os.geteuid() == 0:
+            self.skipTest("root 는 권한 거부를 재현할 수 없다")
+        blocked = self.root / "blocked"
+        blocked.mkdir()
+        (blocked / "capture.mp4").write_bytes(b"stub")
+        blocked.chmod(0o000)
+        self.addCleanup(blocked.chmod, 0o755)
+        self.assert_check_failed("forbidden_workspace_files")
+
     def test_truncated_scan_does_not_report_zero_findings(self):
         """예산 초과 영수증이 '금지 파일 없음'으로 읽히면 안 된다."""
         with patch.object(verifier, "WORKSPACE_SCAN_MAX_FILES", 1):
