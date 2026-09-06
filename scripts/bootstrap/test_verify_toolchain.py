@@ -159,7 +159,13 @@ class ToolchainBoundaryTests(unittest.TestCase):
         return captured.getvalue()
 
     def assert_check_failed(self, name, *args):
+        """해당 check 가 실패하고, 필수 검사에 속하며, 종료 코드가 0이 아님을 함께 본다.
+
+        stdout 문자열만 보면 '진단은 출력하되 필수 검사에서 뺀' 변형을 놓친다.
+        """
         self.assertIn(f"[FAIL] {name}", self.failed_checks(*args))
+        self.assertIn(name, verifier.REQUIRED_CHECKS)
+        self.assertNotEqual(self.invoke("--strict", *args), 0)
 
     def test_untracked_capture_file_is_rejected(self):
         """미추적 촬영 원본도 위생 검사 대상이다. git ls-files 목록에만 의존하지 않는다."""
@@ -182,8 +188,8 @@ class ToolchainBoundaryTests(unittest.TestCase):
     def test_capture_original_inside_dependency_tree_is_rejected(self):
         """의존성 트리 안이라도 촬영 원본·자격 파일은 잡는다. 이것이 원 지적의 대상이다."""
         for rel in ("tools/research/.venv/lib/site-packages/capture.mp4",
-                    "node_modules/pkg/session.NEF",
-                    ".venv/lib/site-packages/license.ulf"):
+                    ".pi/npm/node_modules/pkg/session.NEF",
+                    "tools/research/.venv/lib/site-packages/license.ulf"):
             with self.subTest(rel=rel):
                 target = self.root / rel
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -201,11 +207,42 @@ class ToolchainBoundaryTests(unittest.TestCase):
         """
         for rel in ("tools/research/.venv/lib/site-packages/certifi/cacert.pem",
                     "tools/research/.venv/lib/site-packages/_virtualenv.pth",
-                    "node_modules/pkg/model.pt"):
+                    ".pi/npm/node_modules/pkg/model.pt"):
             target = self.root / rel
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(b"stub")
         self.assertNotIn("[FAIL] forbidden_workspace_files", self.failed_checks())
+
+    def test_spoofed_dependency_directory_does_not_grant_exemption(self):
+        """아무 데나 만든 site-packages·node_modules 는 면제 근거가 아니다.
+
+        면제는 검증된 의존성 루트에만 적용한다. 경로 세그먼트 이름만 보면
+        자격·가중치·재구성 자산을 그 이름의 디렉터리에 숨길 수 있다.
+        """
+        for rel in ("fake/site-packages/client.pem",
+                    "docs/node_modules/model.pt",
+                    "site-packages/weights.safetensors"):
+            with self.subTest(rel=rel):
+                target = self.root / rel
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"stub")
+                try:
+                    self.assert_check_failed("forbidden_workspace_files")
+                finally:
+                    target.unlink()
+
+    def test_truncated_scan_does_not_report_zero_findings(self):
+        """예산 초과 영수증이 '금지 파일 없음'으로 읽히면 안 된다."""
+        with patch.object(verifier, "WORKSPACE_SCAN_MAX_FILES", 1):
+            receipt_dir = self.root / "docs/evidence/M0-00"
+            receipt_dir.mkdir(parents=True)
+            target = "docs/evidence/M0-00/trunc.json"
+            self.invoke("--write", target)
+            data = json.loads((self.root / target).read_text(encoding="utf-8"))
+        check = data["checks"]["forbidden_workspace_files"]
+        self.assertFalse(check["ok"])
+        self.assertTrue(check["scan_truncated"])
+        self.assertIsNone(check["count"], "순회가 잘렸으면 개수를 안다고 주장하지 않는다")
 
     def test_ambiguous_extension_outside_dependency_tree_is_rejected(self):
         """같은 확장자라도 의존성 트리 밖이면 잡는다."""

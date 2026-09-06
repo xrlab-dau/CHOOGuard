@@ -69,7 +69,9 @@ WORKSPACE_PRUNED_DIRS = {".git"}
 # 의존성 관리 트리. 여기서는 아래 확장자의 의미가 달라진다.
 # certifi 의 cacert.pem 은 자격이 아니라 CA 번들이고, venv 의 *.pth 는
 # 모델 가중치가 아니라 Python 경로 설정 파일이다.
-DEPENDENCY_DIRS = {"site-packages", "node_modules"}
+# 면제는 **검증된 루트 아래**에만 적용한다. 경로 세그먼트 이름만 보면
+# 아무 데나 site-packages 디렉터리를 만들어 자격·가중치를 숨길 수 있다.
+DEPENDENCY_ROOTS = ("tools/research/.venv/", ".pi/npm/node_modules/")
 AMBIGUOUS_IN_DEPENDENCIES = (
     "*.pem", "*.ckpt", "*.pth", "*.pt", "*.safetensors", "*.onnx", "*.ply", "*.spz", "*.glb",
 )
@@ -131,12 +133,12 @@ def is_forbidden_workspace(path: str) -> bool:
     """작업본 검사용 판정.
 
     촬영 원본·환경 파일·명백한 자격/라이선스는 의존성 트리 안이라도 금지다.
-    확장자가 겹쳐 의미가 달라지는 항목만 의존성 트리에서 제외한다.
+    확장자가 겹쳐 의미가 달라지는 항목만, 그것도 `DEPENDENCY_ROOTS` 아래에서만 제외한다.
     추적 파일 검사(`is_forbidden_tracked`)는 이 완화를 적용하지 않는다.
     """
     if not is_forbidden_tracked(path):
         return False
-    if not any(part in DEPENDENCY_DIRS for part in PurePosixPath(path).parts):
+    if not any(path.startswith(root) for root in DEPENDENCY_ROOTS):
         return True
     name = PurePosixPath(path).name.lower()
     return not any(fnmatch.fnmatchcase(name, pat) for pat in AMBIGUOUS_IN_DEPENDENCIES)
@@ -323,8 +325,11 @@ def main() -> int:
             "forbidden_tracked_files": forbidden_check,
             "forbidden_workspace_files": {
                 # 경로를 영수증에 남기지 않는다. 촬영 파일명·위치명이 공개될 수 있다.
-                "count": len(workspace_forbidden),
-                "suffixes": sorted({PurePosixPath(p).suffix.lower() or "(none)" for p in workspace_forbidden}),
+                # 순회가 잘렸으면 개수를 안다고 주장하지 않는다. null 은 '미상'이다.
+                "count": None if workspace_truncated else len(workspace_forbidden),
+                "suffixes": None if workspace_truncated else sorted(
+                    {PurePosixPath(p).suffix.lower() or "(none)" for p in workspace_forbidden}
+                ),
                 "scan_truncated": workspace_truncated,
                 "ok": not workspace_forbidden and not workspace_truncated,
             },
