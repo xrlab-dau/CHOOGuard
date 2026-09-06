@@ -199,6 +199,22 @@ class ToolchainBoundaryTests(unittest.TestCase):
                 finally:
                     target.unlink()
 
+    def test_model_weights_inside_dependency_root_are_still_rejected(self):
+        """검증된 의존성 루트 안이라도 모델·재구성 자산은 차단한다.
+
+        실측상 venv·npm 루트에 존재하는 것은 cacert.pem 과 _virtualenv.pth 뿐이다.
+        나머지 확장자를 면제할 근거가 없다.
+        """
+        for name in ("model.pt", "weights.safetensors", "recon.ply", "scene.glb", "net.onnx"):
+            with self.subTest(name=name):
+                target = self.root / "tools/research/.venv/lib/site-packages" / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(b"stub")
+                try:
+                    self.assert_check_failed("forbidden_workspace_files")
+                finally:
+                    target.unlink()
+
     def test_dependency_tree_pem_and_pth_are_not_false_positives(self):
         """site-packages·node_modules 의 CA 번들과 경로 파일은 오탐하지 않는다.
 
@@ -206,8 +222,7 @@ class ToolchainBoundaryTests(unittest.TestCase):
         certifi 인증서와 Python path 설정 파일이라 의미가 다르다.
         """
         for rel in ("tools/research/.venv/lib/site-packages/certifi/cacert.pem",
-                    "tools/research/.venv/lib/site-packages/_virtualenv.pth",
-                    ".pi/npm/node_modules/pkg/model.pt"):
+                    "tools/research/.venv/lib/site-packages/_virtualenv.pth"):
             target = self.root / rel
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(b"stub")

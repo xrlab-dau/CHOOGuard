@@ -72,8 +72,12 @@ WORKSPACE_PRUNED_DIRS = {".git"}
 # 면제는 **검증된 루트 아래**에만 적용한다. 경로 세그먼트 이름만 보면
 # 아무 데나 site-packages 디렉터리를 만들어 자격·가중치를 숨길 수 있다.
 DEPENDENCY_ROOTS = ("tools/research/.venv/", ".pi/npm/node_modules/")
-AMBIGUOUS_IN_DEPENDENCIES = (
-    "*.pem", "*.ckpt", "*.pth", "*.pt", "*.safetensors", "*.onnx", "*.ply", "*.spz", "*.glb",
+# 의존성 루트에서 실측으로 확인된 오탐만 면제한다(2026-09-06 기준 각 1건).
+# 확장자 전체를 면제하면 모델 가중치·재구성 자산을 venv 안에 숨길 수 있다.
+# 새 오탐이 생기면 파일 단위로 추가하고 근거를 남긴다.
+ALLOWED_IN_DEPENDENCIES = (
+    "cacert.pem",      # certifi CA 번들. 자격이 아니다.
+    "*.pth",           # site-packages 의 Python 경로 파일. 모델 가중치가 아니다.
 )
 WORKSPACE_SCAN_MAX_FILES = 200_000
 REQUIRED_POLICY_GLOBS = [
@@ -133,7 +137,7 @@ def is_forbidden_workspace(path: str) -> bool:
     """작업본 검사용 판정.
 
     촬영 원본·환경 파일·명백한 자격/라이선스는 의존성 트리 안이라도 금지다.
-    확장자가 겹쳐 의미가 달라지는 항목만, 그것도 `DEPENDENCY_ROOTS` 아래에서만 제외한다.
+    `DEPENDENCY_ROOTS` 아래에서 실측으로 확인된 오탐만 파일 단위로 제외한다.
     추적 파일 검사(`is_forbidden_tracked`)는 이 완화를 적용하지 않는다.
     """
     if not is_forbidden_tracked(path):
@@ -141,7 +145,7 @@ def is_forbidden_workspace(path: str) -> bool:
     if not any(path.startswith(root) for root in DEPENDENCY_ROOTS):
         return True
     name = PurePosixPath(path).name.lower()
-    return not any(fnmatch.fnmatchcase(name, pat) for pat in AMBIGUOUS_IN_DEPENDENCIES)
+    return not any(fnmatch.fnmatchcase(name, pat) for pat in ALLOWED_IN_DEPENDENCIES)
 
 
 def forbidden_workspace_files(root: Path) -> list[str]:
