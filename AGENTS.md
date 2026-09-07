@@ -40,6 +40,8 @@ Git-tracked C#, tests, declarative scenario data, Editor builders, and SceneBund
 - Compare native front/side detail views with those references before marking visual review complete. Bind that review to the current FBX hash; preserve limitations on measured layout and institutional procedures. Asymmetric import, normals, moving colliders and visual ground contact require direct geometric tests when changed.
 - Keep heavy modeling, offline rendering and light/texture baking on the school PC. Lightweight local mesh generation and real-time visual checks are allowed. Never upload railway imagery or reconstructed geometry to external generation services.
 - Desktop first, later VR uses the same spatial anchors and action meaning. Gameplay objectives use world navigation cues; identical faceless evacuees follow the player without emotions or role substitution.
+- The target connected world includes rolling stock, rails, platforms, terminal, ticket halls, station buildings and connected metro areas. Track evidence/coverage and operator boundaries per region. Public wayfinding diagrams and historical plans are not current dimensioned construction drawings.
+- Reconstruction must preserve input order/hashes, raw camera/depth outputs, masks and explicit coordinate/scale transforms through PLY/GLB, Blender and Unity. Uncalibrated review surfaces must not be labeled metric SceneBundles or receive training collisions. VR hardware remains undecided.
 
 ## Continuous field training direction
 

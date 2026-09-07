@@ -21,7 +21,7 @@
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "4b09a8df2d6ec95e19511a36259ccf68bacc69e43e0a6ecbe10b017d153a7b4a",
+          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
           "label": "지속되는 사용자 방향",
           "anchor": "2026-09-07 · 지속되는 시뮬레이션 방향"
         },
@@ -54,7 +54,7 @@
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "4b09a8df2d6ec95e19511a36259ccf68bacc69e43e0a6ecbe10b017d153a7b4a",
+          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
           "label": "최신 사용자 외형 지시",
           "anchor": "2026-09-07 · 현재 외형 방향"
         },
@@ -120,7 +120,7 @@
       "sources": [
         {
           "repoPath": "AGENTS.md",
-          "sha256": "1c92b8c65857fba01b7f8c0b1dfc336770032374f7dc30e653dfd679cff75c71",
+          "sha256": "2fb9e7eea97c146278f685ad2575820003f386d65bcd73e4bf37d91119846dbc",
           "label": "현재 프로젝트 AGENTS"
         }
       ],
@@ -316,13 +316,13 @@
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "4b09a8df2d6ec95e19511a36259ccf68bacc69e43e0a6ecbe10b017d153a7b4a",
+          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
           "label": "사용자 오브젝트별 재현 지시",
           "anchor": "2026-09-07 · 오브젝트별 재현 기준"
         },
         {
           "repoPath": "AGENTS.md",
-          "sha256": "1c92b8c65857fba01b7f8c0b1dfc336770032374f7dc30e653dfd679cff75c71",
+          "sha256": "2fb9e7eea97c146278f685ad2575820003f386d65bcd73e4bf37d91119846dbc",
           "label": "개별 이미지·부품 연결·정면/측면 검수 규칙",
           "anchor": "Accepted visual and simulation direction"
         }
@@ -779,6 +779,263 @@
         "같은 제공자의 정적/시각/기능 검수이며 기관·현업·생산 품질의 수용을 뜻하지 않는다.",
         "실측 평면·설비·현재 배치·실제 절차·Windows/VR/HMD·현장 전이는 미검증이다."
       ]
+    },
+    {
+      "id": "decision.world.connected",
+      "kind": "decision",
+      "title": "사진 복원과 전체 연결 세계",
+      "summary": "사용자 목표에는 열차·선로·승강장·터미널·매표소·역사·연결 지하철이 모두 포함된다. 실제 사진 복원과 공개 도면의 범위를 보존해 Blender와 Unity로 전달한다.",
+      "status": "active",
+      "authority": "user_accepted",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-07",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/accepted-decisions.md",
+          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+          "label": "accepted-decisions.md"
+        },
+        {
+          "repoPath": "AGENTS.md",
+          "sha256": "2fb9e7eea97c146278f685ad2575820003f386d65bcd73e4bf37d91119846dbc",
+          "label": "AGENTS.md"
+        }
+      ],
+      "limits": [
+        "기존 합성 맵 또는 맞이방 두 사진을 전체 시설 복원으로 재분류하지 않는다."
+      ],
+      "decisionKey": "world_coverage"
+    },
+    {
+      "id": "component.reconstruction",
+      "kind": "component",
+      "title": "실제 깊이에서 PLY·삼각형 GLB로",
+      "summary": "DA3의 optical-z와 world-to-camera pose를 역투영하고 보수적 마스크·confidence·깊이 경계로 시점별 표면을 만든다. 상대 단위와 해시·색공간을 보존한다.",
+      "status": "implemented",
+      "authority": "tracked_source",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-07",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "reconstruction/README.md",
+          "sha256": "1b674184cd14070ed3e3e568f5f02ff996845ef8fc018a2e4a75e086ab48643d",
+          "label": "README.md"
+        },
+        {
+          "repoPath": "reconstruction/src/chooguard_reconstruction/geometry.py",
+          "sha256": "c26223c6e37207318054c7d349e03211319aee913e26ff49fd3bb824a1ecaca8",
+          "label": "geometry.py"
+        },
+        {
+          "repoPath": "reconstruction/src/chooguard_reconstruction/export.py",
+          "sha256": "310065b930fc8ca9db6aa14379993d9c6fee376e93c0adc118625e8d59e136fd",
+          "label": "export.py"
+        },
+        {
+          "repoPath": "reconstruction/src/chooguard_reconstruction/quality.py",
+          "sha256": "31bc7bb3134c6a4855aad122be2e930e78c2ec87aa384d9f97d76b4af76b21db",
+          "label": "quality.py"
+        },
+        {
+          "repoPath": "reconstruction/recipes/busan-concourse-public-pilot.json",
+          "sha256": "16569285733955f1467c21ee1fa628553bffa661d3e5fffeaafebf5e8635c22e",
+          "label": "busan-concourse-public-pilot.json"
+        }
+      ],
+      "limits": [
+        "내부 깊이 일치도는 실측 정확도가 아니다. 열린 표면이며 융합/충돌/미터 등록이 승인되지 않았다."
+      ]
+    },
+    {
+      "id": "component.reconstruction_tools",
+      "kind": "component",
+      "title": "고정 DA3 환경과 Blender 편집 경로",
+      "summary": "정확한 상류 소스·가중치·의존성으로 Small/Base를 로컬 실행하고 native Blender 소스와 FBX를 만든다. 자동 빈 영역 메우기나 외부 이미지 전송을 수행하지 않는다.",
+      "status": "implemented",
+      "authority": "tracked_source",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-07",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "reconstruction/tools/setup_da3.py",
+          "sha256": "6db5c3ce079198e6c9bc090cf1751207a37457c65acdf0738ebec953bc780d38",
+          "label": "setup_da3.py"
+        },
+        {
+          "repoPath": "reconstruction/tools/run_da3.py",
+          "sha256": "41e898b2503554b63d0ba256c1731b7c6e6bcfc6a24af125b7d3716c375ad51f",
+          "label": "run_da3.py"
+        },
+        {
+          "repoPath": "reconstruction/tools/refine_in_blender.py",
+          "sha256": "2ba87a9b2cf0d376c54b77511f9478c8f332be1f92d57019bbbd621ede1eaf7b",
+          "label": "refine_in_blender.py"
+        },
+        {
+          "repoPath": "reconstruction/requirements-da3.lock",
+          "sha256": "670e0e1bed4ae7fef294ec3fc97c2db6e50a8872dc9f05a81c82455922244263",
+          "label": "requirements-da3.lock"
+        },
+        {
+          "repoPath": "reconstruction/THIRD_PARTY.md",
+          "sha256": "806f59afd640a71ad779e5a108ffc97293f5666a8543d3e349f78eec78d0fbb7",
+          "label": "THIRD_PARTY.md"
+        },
+        {
+          "repoPath": "docs/reconstruction/engine-selection.md",
+          "sha256": "28ff1b4c386a24b42b4c0c250f4ef3f20ca52072da0fd33e7a8d8c7e4672dff2",
+          "label": "engine-selection.md"
+        }
+      ],
+      "limits": [
+        "M1 두 사진의 실행 증거다. 대규모 복원과 베이크는 학교 PC에서 별도 검증한다.",
+        "Python 환경과 원본·가중치·복원 기하는 Git에 없다. recipe와 학교 플랫폼 호환성부터 확인한다."
+      ]
+    },
+    {
+      "id": "component.reconstruction_review",
+      "kind": "component",
+      "title": "Unity 실제 복원 검토 앱",
+      "summary": "FBX/manifest 해시·실제 bounds/삼각형·색상 샘플을 검사하고 B/A 시점별 열린 표면을 표시한다. 원점/프레이밍/측면 카메라와 Metal 네이티브 캡처를 제공한다.",
+      "status": "implemented",
+      "authority": "tracked_source",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-07",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Editor/ReconstructionReviewBuilder.cs",
+          "sha256": "28633707535e023faafa588451cad4f1b980f8b7beced0b0d6620f1fe7c88864",
+          "label": "ReconstructionReviewBuilder.cs"
+        },
+        {
+          "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+          "sha256": "046198e2c598ebb6c1ea277e74d1acc5c6622d6fac1e1815355fc831a3d374f4",
+          "label": "ReconstructionReviewController.cs"
+        },
+        {
+          "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionVertexColor.shader",
+          "sha256": "b51bf31735ca816210f2a1d9c2a29ad9526a08ce8d5336d8d3977a9ad44cb1eb",
+          "label": "ReconstructionVertexColor.shader"
+        },
+        {
+          "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+          "sha256": "6221986ca0a51c79a88b9aacdd168c912cdaf9fb77370128cf648eb2656277bf",
+          "label": "ReconstructionReviewTests.cs"
+        }
+      ],
+      "limits": [
+        "Desktop 검토 장면이다. 실측 축척과 훈련 충돌, XR Origin/HMD 입력은 미구현 또는 미검증이다."
+      ]
+    },
+    {
+      "id": "component.facility_coverage",
+      "kind": "component",
+      "title": "13구역의 공개 근거와 자료 공백",
+      "summary": "공개 자료 9건·13구역·제안 연결 12개를 추적한다. KORAIL 역사, 도시철도와 유라시아플랫폼을 구분하며 지하연결통로 99.6×8m는 그 구역의 제약으로만 쓴다.",
+      "status": "implemented",
+      "authority": "canonical_document",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-07",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "foundation/world/facility-coverage.json",
+          "sha256": "af01fad011a9ef087cb1e1f3a9f09020b070c2cda2485f8a68129c1352bb0d6a",
+          "label": "facility-coverage.json"
+        },
+        {
+          "repoPath": "docs/art/public-facility-plans.md",
+          "sha256": "e6f860349bdb0e02385bd2e750b83d08ecaff9d0748fa755e359d026a18f71d3",
+          "label": "public-facility-plans.md"
+        }
+      ],
+      "limits": [
+        "자료/연결 그래프 구현은 13개 구역 모델의 제작 완료가 아니다.",
+        "2014년 1층 임대도와 무치수 도시철도 안내도는 현행 2층 맞이방/승강장 시공 도면이 아니다."
+      ]
+    },
+    {
+      "id": "unknown.vr_device",
+      "kind": "unknown",
+      "title": "VR 기기는 미정",
+      "summary": "VR 확장은 확정된 방향이며 기기·runtime은 미정이다. 현재 프로젝트에는 OpenXR loader/XR rig/실제 HMD 입력이 연결되지 않았다.",
+      "status": "unknown",
+      "authority": "canonical_document",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-07",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/accepted-decisions.md",
+          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+          "label": "accepted-decisions.md"
+        },
+        {
+          "repoPath": "docs/reconstruction/engine-selection.md",
+          "sha256": "28ff1b4c386a24b42b4c0c250f4ef3f20ca52072da0fd33e7a8d8c7e4672dff2",
+          "label": "engine-selection.md"
+        }
+      ],
+      "limits": [
+        "Mac 성공이나 패키지 후보 조사를 HMD 검증으로 표시하지 않는다."
+      ]
+    },
+    {
+      "id": "evidence.reconstruction_20260907",
+      "kind": "evidence",
+      "title": "DA3·Blender·Unity 실제 실행 범위",
+      "summary": "두 사진의 실제 MPS 추론과 Base 선택, 94,423정점/176,541삼각형의 Blender·Unity 일치, 위치별 색상 6개와 네이티브 6각도를 확인했다. Python27, EditMode112/실패0/기존빌드보존1skip, PlayMode16.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-07",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-07-reconstruction.json",
+          "sha256": "99c509fe30bd63249f642a869d3b2f0ed7a6d0d197d642348782353b3c1f2d76",
+          "label": "2026-09-07-reconstruction.json"
+        }
+      ],
+      "limits": [
+        "측면에서 얇고 휘어진 깊이 표면과 큰 결손을 확인했다. 완성된 체적 모델·전체 디지털 트윈·현장 대응 효용으로 승인하지 않았다."
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/foundation/2026-09-07-reconstruction.json",
+        "field": "sourceSha256"
+      }
     }
   ],
   "edges": [
@@ -1011,6 +1268,66 @@
       "from": "unknown.facility_authority",
       "relation": "limits_claims",
       "to": "evidence.object_references_20260907"
+    },
+    {
+      "from": "decision.world.connected",
+      "relation": "governed_by",
+      "to": "policy.project_authority"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "implements",
+      "to": "decision.world.connected"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "depends_on",
+      "to": "component.reconstruction_tools"
+    },
+    {
+      "from": "component.reconstruction_review",
+      "relation": "depends_on",
+      "to": "component.reconstruction"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "depends_on",
+      "to": "component.facility_coverage"
+    },
+    {
+      "from": "component.facility_coverage",
+      "relation": "implements",
+      "to": "decision.world.connected"
+    },
+    {
+      "from": "unknown.facility_authority",
+      "relation": "limits_claims",
+      "to": "component.reconstruction"
+    },
+    {
+      "from": "unknown.vr_device",
+      "relation": "limits_claims",
+      "to": "component.reconstruction_review"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "verified_by",
+      "to": "evidence.reconstruction_20260907"
+    },
+    {
+      "from": "component.reconstruction_tools",
+      "relation": "verified_by",
+      "to": "evidence.reconstruction_20260907"
+    },
+    {
+      "from": "component.reconstruction_review",
+      "relation": "verified_by",
+      "to": "evidence.reconstruction_20260907"
+    },
+    {
+      "from": "goal.foundation",
+      "relation": "depends_on",
+      "to": "decision.world.connected"
     }
   ],
   "refreshLog": [
@@ -1066,6 +1383,34 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed per-object source registry, actual Blender/Unity output, corrected coordinates and current native comparison; historical receipts preserved"
+    },
+    {
+      "date": "2026-09-07",
+      "nodes": [
+        "goal.foundation"
+      ],
+      "reason": "Reviewed latest accepted connected-world/VR-unknown direction and actual DA3 review scope; prior facility acceptance remains unverified."
+    },
+    {
+      "date": "2026-09-07",
+      "nodes": [
+        "decision.visual.realistic"
+      ],
+      "reason": "Reviewed latest accepted connected-world/VR-unknown direction and actual DA3 review scope; prior facility acceptance remains unverified."
+    },
+    {
+      "date": "2026-09-07",
+      "nodes": [
+        "policy.project_authority"
+      ],
+      "reason": "Reviewed latest accepted connected-world/VR-unknown direction and actual DA3 review scope; prior facility acceptance remains unverified."
+    },
+    {
+      "date": "2026-09-07",
+      "nodes": [
+        "decision.visual.per_object"
+      ],
+      "reason": "Reviewed latest accepted connected-world/VR-unknown direction and actual DA3 review scope; prior facility acceptance remains unverified."
     }
   ]
 }

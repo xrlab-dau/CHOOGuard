@@ -202,8 +202,8 @@ RoleDefinition
 flowchart LR
   APPROVAL[촬영 서면 승인] --> CAP[승인 조건 내 역사 촬영]
   CAP --> INGEST[프레임·메타데이터 정리]
-  INGEST --> DA3[DA3 비상업 처리]
-  DA3 --> O3D[Open3D 정리·정합]
+  INGEST --> DA3[정확한 체크포인트별 라이선스 확인 후 DA3 처리]
+  DA3 --> O3D[PLY/GLB 정리·정합 및 Blender 저작]
   O3D --> BLOCK[동선·구역 Blockout]
   BLOCK --> FLAT[Reference-informed 3D 저작]
   FLAT --> UNITY[Unity Map Prefab]
@@ -219,7 +219,9 @@ flowchart LR
 5. 촬영물·맵·스크린샷·도구 출력은 별도 자료 전송 승인이 없으면 외부 모델·MCP·API로 보내지 않는다. 공개 전 정제는 모델 전송 승인을 대신하지 않는다.
 6. DA3 실행 전 체크포인트 ID·리비전·가중치 해시·라이선스 URL·필수 고지와 대회 이용 조건의 비상업 적합성을 기록한다.
 7. CC BY-NC 4.0 DA3 가중치는 확인된 비상업 시연에만 사용한다.
-8. 운영판 전환 시 권리자 서면 허가 또는 허용 가능한 대체 모델을 요구한다.
+8. 운영판 전환 시 선택한 정확한 모델의 이용 조건에 맞는 권리자 서면 허가 또는 허용 가능한 대체 모델을 요구한다. 비상업 가중치의 조건을 다른 라이선스의 모델 전체에 일반화하지 않는다.
+
+2026-09-07 구현 추가: 공개 사진을 로컬에서 처리하는 소규모 검토 경로는 `reconstruction/`에 있다. 고정 리비전의 DA3-SMALL/BASE는 공식 체크포인트별 Apache-2.0 표기를 확인했다. 정확한 버전·가중치 해시·원문 링크는 [복원 경로](../reconstruction/README.md)에 기록한다. PLY 점군, 시점별 삼각형 GLB, Blender 편집본과 FBX를 만들며, 실측 축척·제어점이 없는 결과는 `reconstruction-review-1`로 남긴다. 기존 미터 단위 SceneBundle의 제어점·승인 필드를 가짜 값으로 채우지 않는다. 공개 사진의 열람 가능성과 원본/파생 모델의 재배포 권리는 별개다.
 
 ### MVP 맵 기준
 
