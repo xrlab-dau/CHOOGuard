@@ -86,7 +86,10 @@ namespace ChooGuard.Foundation.Demo.Tests
             var foreignFile = generatedRoot + "/team-notes.txt";
             File.WriteAllText(foreignFile, "keep this team-owned note");
             AssetDatabase.ImportAsset(foreignFile);
+            var floorMaterial=AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/Floor_ConcourseFloor.mat");
+            floorMaterial.shader=Shader.Find("Unlit/Color");EditorUtility.SetDirty(floorMaterial);AssetDatabase.SaveAssetIfDirty(floorMaterial);
             var second = FoundationDemoSceneBuilder.Build(generatedRoot);
+            Assert.That(floorMaterial.shader,Is.EqualTo(AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/Floor.mat").shader));
             Assert.That(second.GetRootGameObjects().Single().GetComponentsInChildren<Transform>().Length,
                 Is.EqualTo(objectCount));
             Assert.That(AssetDatabase.FindAssets("", new[] { generatedRoot }).Length, Is.EqualTo(ownedCount + 1));
@@ -300,24 +303,94 @@ namespace ChooGuard.Foundation.Demo.Tests
         }
 
         [Test]
-        public void FlatStyleKeepsMatteMaterialsAndPerFaceNormals()
+        public void ReferenceArtUsesDistinctSurfaceResponseAndValidCurvedNormals()
         {
             FoundationDemoSceneBuilder.Build(generatedRoot);
-            foreach(var name in new[]{"Wall","Metal","Blue","White"})
+            var steel=AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/Stainless.mat");
+            var rubber=AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/Rubber.mat");
+            var floor=AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/Floor.mat");
+            Assert.That(steel,Is.Not.Null);Assert.That(rubber,Is.Not.Null);
+            Assert.That(steel.GetFloat("_Metallic"),Is.GreaterThan(.7f));
+            Assert.That(steel.GetFloat(steel.HasProperty("_Glossiness")?"_Glossiness":"_Smoothness"),Is.InRange(.35f,.8f));
+            Assert.That(rubber.GetFloat("_Metallic"),Is.Zero);
+            Assert.That(rubber.GetFloat(rubber.HasProperty("_Glossiness")?"_Glossiness":"_Smoothness"),Is.LessThan(.2f));
+            Assert.That(steel.IsKeywordEnabled("_SPECULARHIGHLIGHTS_OFF"),Is.False);
+            Assert.That(floor.mainTexture,Is.Not.Null);
+            Assert.That(floor.mainTexture.width,Is.LessThanOrEqualTo(512));
+            var curved=false;
+            foreach(var filter in AssetDatabase.LoadAssetAtPath<GameObject>(FoundationBlenderAssets.Path+"Pillar.fbx").GetComponentsInChildren<MeshFilter>())
             {
-                var material=AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/"+name+".mat");
-                Assert.That(material.GetFloat("_Glossiness"),Is.Zero);Assert.That(material.GetFloat("_Metallic"),Is.Zero);
-            }
-            var model=AssetDatabase.LoadAssetAtPath<GameObject>(FoundationBlenderAssets.Path+"Evacuee.fbx");
-            foreach(var filter in model.GetComponentsInChildren<MeshFilter>())
-            {
-                var normals=filter.sharedMesh.normals;var triangles=filter.sharedMesh.triangles;
+                var mesh=filter.sharedMesh;var normals=mesh.normals;var triangles=mesh.triangles;
+                Assert.That(normals.Length,Is.EqualTo(mesh.vertexCount));
+                Assert.That(normals.All(n=>!float.IsNaN(n.x)&&n.sqrMagnitude>.9f&&n.sqrMagnitude<1.1f),Is.True);
                 for(var i=0;i<triangles.Length;i+=3)
-                {
-                    Assert.That(Vector3.Dot(normals[triangles[i]],normals[triangles[i+1]]),Is.GreaterThan(.999f),filter.name);
-                    Assert.That(Vector3.Dot(normals[triangles[i]],normals[triangles[i+2]]),Is.GreaterThan(.999f),filter.name);
-                }
+                    curved|=Vector3.Dot(normals[triangles[i]],normals[triangles[i+1]])<.999f;
             }
+            Assert.That(curved,Is.True,"Cylindrical surfaces must retain interpolated normals.");
+        }
+
+        [Test]
+        public void ReferenceEnvelopeRetainsWalkableGroundAndClosesUpperWalls()
+        {
+            var scene=FoundationDemoSceneBuilder.Build(generatedRoot);
+            var root=scene.GetRootGameObjects().Single().transform;
+            var ceiling=root.Find("Environment/InteriorDetails/CeilingConcourse");
+            Assert.That(ceiling.position.y,Is.GreaterThan(6));
+            var details=root.Find("Environment/ReferenceArchitecture");
+            Assert.That(details,Is.Not.Null);
+            var probe=root.GetComponentInChildren<ReflectionProbe>();
+            Assert.That(probe.enabled,Is.False,"Probe starts disabled until the runtime has a real graphics device.");
+            Assert.That(probe.GetComponent<DemoRealtimeReflection>(),Is.Not.Null);
+            Assert.That(details.GetComponentsInChildren<MeshFilter>().All(x=>AssetDatabase.GetAssetPath(x.sharedMesh).EndsWith(".fbx")),Is.True);
+            Assert.That(details.GetComponentsInChildren<Collider>().All(c=>c.bounds.min.y>=3.19f),Is.True,"New architecture must not modify the ground navigation envelope.");
+            Physics.SyncTransforms();
+            Assert.That(Physics.Raycast(new Vector3(0,4,-4),Vector3.back,out var hit,5,1,QueryTriggerInteraction.Ignore),Is.True);
+            Assert.That(hit.collider.bounds.min.y,Is.GreaterThanOrEqualTo(3.19f));
+            Assert.That(Physics.Raycast(new Vector3(0,5.5f,6),Vector3.forward,out var header,3,1,QueryTriggerInteraction.Ignore),Is.True,"Hall-to-corridor roof transition must be closed.");
+            Assert.That(header.collider.name,Is.EqualTo("ConcourseToCorridorHeader"));
+            var floors=root.Find("Environment").GetComponentsInChildren<MeshFilter>().Where(x=>x.name.EndsWith("Floor"));
+            foreach(var floor in floors)
+            {
+                var scale=floor.GetComponent<Renderer>().sharedMaterial.mainTextureScale;
+                Assert.That(scale.x,Is.EqualTo(floor.transform.lossyScale.x).Within(.01f));
+                Assert.That(scale.y,Is.EqualTo(floor.transform.lossyScale.z).Within(.01f));
+            }
+        }
+
+        [Test]
+        public void FloorTileUvCoversTheTopFaceAtOneMetreScale()
+        {
+            var mesh=AssetDatabase.LoadAssetAtPath<GameObject>(FoundationBlenderAssets.Path+"FloorModule.fbx").GetComponentInChildren<MeshFilter>().sharedMesh;
+            var top=Enumerable.Range(0,mesh.vertexCount).Where(i=>mesh.vertices[i].y>.49f&&mesh.normals[i].y>.95f).ToArray();
+            Assert.That(top.Length,Is.GreaterThanOrEqualTo(4));
+            Assert.That(top.Min(i=>mesh.uv[i].x),Is.EqualTo(0).Within(.015f));
+            Assert.That(top.Max(i=>mesh.uv[i].x),Is.EqualTo(1).Within(.015f));
+            Assert.That(top.Min(i=>mesh.uv[i].y),Is.EqualTo(0).Within(.015f));
+            Assert.That(top.Max(i=>mesh.uv[i].y),Is.EqualTo(1).Within(.015f));
+        }
+
+        [Serializable] private sealed class OwnerReceipt { public string generator; public int version; public string[] ownedRelativePaths; }
+        [Test]
+        public void VersionFourMigrationPreservesLegacyPathsAndRejectsUnownedNewAssets()
+        {
+            var scene=FoundationDemoSceneBuilder.Build(generatedRoot);
+            EditorSceneManager.CloseScene(scene,true);
+            var marker=generatedRoot+"/generated-owner.json";
+            var owner=JsonUtility.FromJson<OwnerReceipt>(File.ReadAllText(marker));
+            var oldMaterials=new[]{"Floor","Wall","Metal","Blue","Red","Yellow","Green","Screen","White","Orange"};
+            var oldPaths=new[]{"FoundationDemo.unity","foundation-demo.json","link.xml"}
+                .Concat(oldMaterials.Select(x=>"Materials/"+x+".mat"))
+                .Concat(new[]{"evacuation-drills.json","station-twin-profile.json"})
+                .Concat(owner.ownedRelativePaths.Where(x=>x.StartsWith("Prefabs/"))).ToArray();
+            foreach(var path in owner.ownedRelativePaths.Except(oldPaths))AssetDatabase.DeleteAsset(generatedRoot+"/"+path);
+            owner.version=4;owner.ownedRelativePaths=oldPaths;File.WriteAllText(marker,JsonUtility.ToJson(owner));
+            var foreign=generatedRoot+"/Materials/Stainless.mat";
+            AssetDatabase.CreateAsset(new Material(Shader.Find("Standard")),foreign);
+            Assert.Throws<InvalidOperationException>(()=>FoundationDemoSceneBuilder.Build(generatedRoot));
+            Assert.That(AssetDatabase.LoadAssetAtPath<Material>(foreign),Is.Not.Null);
+            AssetDatabase.DeleteAsset(foreign);
+            FoundationDemoSceneBuilder.Build(generatedRoot);
+            Assert.That(JsonUtility.FromJson<OwnerReceipt>(File.ReadAllText(marker)).version,Is.EqualTo(5));
         }
 
         private static void AssertWalkableSegment(Scene scene, CharacterController player,

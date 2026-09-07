@@ -31,7 +31,9 @@ namespace ChooGuard.Foundation.Demo.Editor
                     if(found==null)throw new InvalidOperationException("Unmapped Blender material in "+id+": "+(material==null?"null":material.name));
                     return found;
                 }).ToArray();
-                renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
+                renderer.shadowCastingMode=id=="Glove"||id=="NavigationArrow"||id=="AssemblyRing"?
+                    UnityEngine.Rendering.ShadowCastingMode.Off:UnityEngine.Rendering.ShadowCastingMode.On;
+                renderer.receiveShadows=id!="Glove";
             }
             return instance;
         }

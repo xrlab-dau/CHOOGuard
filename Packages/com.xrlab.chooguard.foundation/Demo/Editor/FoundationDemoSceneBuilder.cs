@@ -13,7 +13,7 @@ using UnityEngine.SceneManagement;
 
 namespace ChooGuard.Foundation.Demo.Editor
 {
-    /// <summary>Source-controlled primitive map; generation is an explicit school-PC Editor action.</summary>
+    /// <summary>Repeatable reference-informed art on a provisional playable station footprint.</summary>
     public static class FoundationDemoSceneBuilder
     {
         public const string DefaultGeneratedRoot = "Assets/CHOOguardGenerated/FoundationDemo";
@@ -22,14 +22,18 @@ namespace ChooGuard.Foundation.Demo.Editor
         private const string OwnerId = "com.xrlab.chooguard.foundation.playable-demo";
         private const string MarkerName = "generated-owner.json";
         private static readonly string[] MaterialNames =
+            { "Floor", "Wall", "Metal", "Blue", "Red", "Yellow", "Green", "Screen", "White", "Orange",
+                "Stainless", "Stone", "Glass", "Diffuser", "Roof", "Rubber", "Ceiling" };
+        private static readonly string[] LegacyMaterialNames =
             { "Floor", "Wall", "Metal", "Blue", "Red", "Yellow", "Green", "Screen", "White", "Orange" };
         private static readonly string[] PrefabNames = { "SituationPanel", "AlarmSimulator", "RadioConsole", "DirectionSign", "AccessGate", "Bench", "Pillar", "InformationKiosk", "HazardIndicator", "AssemblySign", "Player", "Evacuee", "RouteConsole", "RallyPoint", "AssemblyRegister", "DoorFrame", "Luggage" };
         private static readonly Color[] MaterialColors =
         {
-            new Color(.22f, .24f, .25f), new Color(.56f, .60f, .61f), new Color(.10f, .13f, .15f),
+            new Color(.90f, .89f, .87f), new Color(.76f, .77f, .75f), new Color(.10f, .13f, .15f),
             new Color(.09f, .27f, .40f), new Color(.68f, .10f, .08f), new Color(.88f, .64f, .15f),
             new Color(.10f, .48f, .30f), new Color(.08f, .58f, .65f), new Color(.86f, .89f, .87f),
-            new Color(1f, .36f, .05f)
+            new Color(1f, .36f, .05f), new Color(.80f,.82f,.83f), new Color(.88f,.87f,.84f),
+            new Color(.62f,.74f,.79f), new Color(.93f,.95f,.90f), new Color(.88f,.90f,.88f), new Color(.075f,.08f,.085f), new Color(.50f,.53f,.54f)
         };
 
         [Serializable]
@@ -164,6 +168,7 @@ namespace ChooGuard.Foundation.Demo.Editor
                 EnsureFolder(generatedRoot);
                 EnsureFolder(generatedRoot + "/Materials");
                 WriteOwnership(generatedRoot);
+                FoundationSurfaceMaterials.CreateTextures(generatedRoot);
                 var materials = CreateMaterials(generatedRoot, shader);
                 var scenarioPath = generatedRoot + "/foundation-demo.json";
                 File.Copy(sourcePath, scenarioPath, true);
@@ -230,6 +235,7 @@ namespace ChooGuard.Foundation.Demo.Editor
                 File.Copy(Path.Combine(Path.GetDirectoryName(sourcePath),"..","world","station-twin-profile.json"),worldPath,true);
                 AssetDatabase.ImportAsset(worldPath,ImportAssetOptions.ForceSynchronousImport);
                 StationWorldBuilder.Build(root,materials,AssetDatabase.LoadAssetAtPath<TextAsset>(worldPath),scenario);
+                FoundationReferenceArchitecture.Build(root,materials,generatedRoot);
                 ExportPrefabs(root, generatedRoot);
                 Physics.SyncTransforms();
 
@@ -449,8 +455,8 @@ namespace ChooGuard.Foundation.Demo.Editor
         private static Shader FindCompatibleShader()
         {
             var names = GraphicsSettings.currentRenderPipeline == null
-                ? new[] { "Standard", "Unlit/Color" }
-                : new[] { "Universal Render Pipeline/Unlit", "Unlit/Color", "Standard" };
+                ? new[] { "Standard" }
+                : new[] { "Universal Render Pipeline/Lit" };
             var shader = names.Select(Shader.Find).FirstOrDefault(item => item != null);
             if (shader == null) throw new InvalidOperationException("No supported built-in or URP material shader is available.");
             return shader;
@@ -468,14 +474,10 @@ namespace ChooGuard.Foundation.Demo.Editor
                     material = new Material(shader) { name = name };
                     AssetDatabase.CreateAsset(material, path);
                 }
-                material.shader = name=="Screen" ? Shader.Find("Unlit/Color") : shader;
+                material.shader = name=="Screen" ? Shader.Find(GraphicsSettings.currentRenderPipeline==null?"Unlit/Color":"Universal Render Pipeline/Unlit") : shader;
                 if (material.HasProperty("_Color")) material.SetColor("_Color", MaterialColors[index]);
                 if (material.HasProperty("_BaseColor")) material.SetColor("_BaseColor", MaterialColors[index]);
-                if (material.HasProperty("_Glossiness")) material.SetFloat("_Glossiness", 0);
-                if(material.HasProperty("_Metallic"))material.SetFloat("_Metallic",0);
-                if(material.HasProperty("_SpecularHighlights"))material.SetFloat("_SpecularHighlights",0);
-                if(material.HasProperty("_GlossyReflections"))material.SetFloat("_GlossyReflections",0);
-                material.EnableKeyword("_SPECULARHIGHLIGHTS_OFF");material.EnableKeyword("_GLOSSYREFLECTIONS_OFF");
+                FoundationSurfaceMaterials.Configure(material,name,generatedRoot);
                 EditorUtility.SetDirty(material);
                 AssetDatabase.SaveAssetIfDirty(material);
                 return material;
@@ -484,13 +486,22 @@ namespace ChooGuard.Foundation.Demo.Editor
 
         private static string[] OwnedPaths()
         {
-            return LegacyOwnedPaths().Concat(new[]{"evacuation-drills.json","station-twin-profile.json"}).Concat(PrefabNames.Select(name => "Prefabs/" + name + ".prefab")).ToArray();
+            return VersionFourOwnedPaths()
+                .Concat(MaterialNames.Except(LegacyMaterialNames).Select(name=>"Materials/"+name+".mat"))
+                .Concat(FoundationSurfaceMaterials.FloorNames.Select(name=>"Materials/Floor_"+name+".mat"))
+                .Concat(FoundationSurfaceMaterials.TextureNames.Select(name=>"Textures/"+name+".png")).ToArray();
+        }
+
+        private static string[] VersionFourOwnedPaths()
+        {
+            return LegacyOwnedPaths().Concat(new[]{"evacuation-drills.json","station-twin-profile.json"})
+                .Concat(PrefabNames.Select(name=>"Prefabs/"+name+".prefab")).ToArray();
         }
 
         private static string[] LegacyOwnedPaths()
         {
             return new[] { "FoundationDemo.unity", "foundation-demo.json", "link.xml" }
-                .Concat(MaterialNames.Select(name => "Materials/" + name + ".mat")).ToArray();
+                .Concat(LegacyMaterialNames.Select(name => "Materials/" + name + ".mat")).ToArray();
         }
 
         private static void ValidateGeneratedRoot(string root)
@@ -529,23 +540,25 @@ namespace ChooGuard.Foundation.Demo.Editor
             var ownership = JsonUtility.FromJson<Ownership>(File.ReadAllText(marker));
             var legacy = ownership != null && ownership.version == 1 && ownership.ownedRelativePaths != null &&
                 ownership.ownedRelativePaths.SequenceEqual(LegacyOwnedPaths());
-            var current = ownership != null && ownership.version == 4 && ownership.ownedRelativePaths != null &&
+            var current = ownership != null && ownership.version == 5 && ownership.ownedRelativePaths != null &&
                 ownership.ownedRelativePaths.SequenceEqual(OwnedPaths());
+            var versionFour=ownership!=null&&ownership.version==4&&ownership.ownedRelativePaths!=null&&ownership.ownedRelativePaths.SequenceEqual(VersionFourOwnedPaths());
             var versionThreePaths=LegacyOwnedPaths().Concat(new[]{"evacuation-drills.json"}).Concat(PrefabNames.Select(name=>"Prefabs/"+name+".prefab")).ToArray();
             var versionThree=ownership!=null&&ownership.version==3&&ownership.ownedRelativePaths!=null&&ownership.ownedRelativePaths.SequenceEqual(versionThreePaths);
             var previousPaths=LegacyOwnedPaths().Concat(PrefabNames.Take(11).Select(name=>"Prefabs/"+name+".prefab")).ToArray();
             var previous=ownership!=null && ownership.version==2 && ownership.ownedRelativePaths!=null && ownership.ownedRelativePaths.SequenceEqual(previousPaths);
-            if (ownership == null || ownership.generator != OwnerId || (!legacy && !current && !previous && !versionThree))
+            if (ownership == null || ownership.generator != OwnerId || (!legacy && !current && !previous && !versionThree && !versionFour))
                 throw new InvalidOperationException("Output ownership marker does not match this generator: " + root);
-            if (legacy || previous || versionThree)
-                foreach (var path in OwnedPaths().Except(versionThree?versionThreePaths:previous?previousPaths:LegacyOwnedPaths()))
+            if (legacy || previous || versionThree || versionFour)
+                foreach (var path in OwnedPaths().Except(versionFour?VersionFourOwnedPaths():versionThree?versionThreePaths:previous?previousPaths:LegacyOwnedPaths()))
                     if (File.Exists(root + "/" + path))
-                        throw new InvalidOperationException("New prefab path already contains a file not owned by version 1: " + path);
+                        throw new InvalidOperationException("New generated path already contains an unowned file: " + path);
             foreach (var path in OwnedPaths().Concat(new[] { MarkerName }))
                 if (File.Exists(root + "/" + path) && (File.GetAttributes(root + "/" + path) & FileAttributes.ReparsePoint) != 0)
                     throw new InvalidOperationException("Generated files cannot be symbolic links: " + path);
             RejectLinkedParents(root + "/Materials");
             RejectLinkedParents(root + "/Prefabs");
+            RejectLinkedParents(root + "/Textures");
         }
 
         private static void RequireOwnedBuildDirectory()
@@ -575,7 +588,7 @@ namespace ChooGuard.Foundation.Demo.Editor
         {
             var marker = root + "/" + MarkerName;
             File.WriteAllText(marker, JsonUtility.ToJson(new Ownership
-                { generator = OwnerId, version = 4, ownedRelativePaths = OwnedPaths() }, true));
+                { generator = OwnerId, version = 5, ownedRelativePaths = OwnedPaths() }, true));
             AssetDatabase.ImportAsset(marker, ImportAssetOptions.ForceSynchronousImport);
         }
 
