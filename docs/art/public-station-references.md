@@ -1,3 +1,5 @@
+> 이 문서는 맞이방 전체 형태의 참고 묶음이다. 모든 오브젝트의 개별 제작 근거와 현재 검수 범위는 [오브젝트별 감사](object-reference-audit.md)와 [참조 레지스트리](../../foundation/art/object-references.json)를 따른다.
+
 # 부산역 공개 사진 기반 실내 제작 참고
 
 - 확인일: 2026-09-07

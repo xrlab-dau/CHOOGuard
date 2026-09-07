@@ -181,7 +181,7 @@ class ContextGraphTests(unittest.TestCase):
 
     def test_real_project_briefs_start_at_the_requested_work_surface(self):
         graph = cg.load_json(cg.ROOT / cg.GRAPH_PATH)
-        expected = {"art": "scripts/art/build_station_assets.py",
+        expected = {"art": "foundation/art/object-references.json",
                     "runtime": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/StationWorldSession.cs",
                     "handoff": "docs/choo-guard-foundation-handoff.md"}
         for topic, path in expected.items():
