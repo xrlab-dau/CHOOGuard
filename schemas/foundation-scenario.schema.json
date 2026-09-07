@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xrlab-dau/CHOOGuard/schemas/foundation-scenario.schema.json",
+  "title": "CHOOGuard provisional synthetic foundation scenario",
+  "description": "Public mock contract for development only. KORAIL 검증 전 예시. Cross-reference and uniqueness constraints are additionally checked by scripts/foundation/validate.py.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "scenarioId", "scenarioVersion", "mapId", "provisional", "disclaimer", "representativeRoleId", "roles"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "1.0"},
+    "scenarioId": {"type": "string", "const": "foundation-demo"},
+    "scenarioVersion": {"type": "string", "const": "foundation-2"},
+    "mapId": {"type": "string", "const": "synthetic-room"},
+    "provisional": {"type": "boolean", "const": true},
+    "disclaimer": {"type": "string", "const": "KORAIL 검증 전 예시"},
+    "representativeRoleId": {"type": "string", "enum": ["role-01", "role-02", "role-03", "role-04", "role-05"]},
+    "roles": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["roleId", "temporaryDisplayName", "briefing", "actionId", "targetAnchorId", "expectedQuestState", "expectedVirtualTeamEvents", "expectedFeedbackCode", "feedbackText"],
+        "properties": {
+          "roleId": {"type": "string", "enum": ["role-01", "role-02", "role-03", "role-04", "role-05"]},
+          "temporaryDisplayName": {"type": "string", "minLength": 1, "pattern": "\\S"},
+          "briefing": {"type": "string", "minLength": 1, "pattern": "\\S"},
+          "actionId": {"type": "string", "enum": ["action-01", "action-02", "action-03", "action-04", "action-05"]},
+          "targetAnchorId": {"type": "string", "enum": ["anchor-01", "anchor-02", "anchor-03", "anchor-04", "anchor-05"]},
+          "expectedQuestState": {"type": "string", "const": "completed"},
+          "expectedVirtualTeamEvents": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["roleId", "eventCode", "state"],
+              "properties": {
+                "roleId": {"type": "string", "enum": ["role-01", "role-02", "role-03", "role-04", "role-05"]},
+                "eventCode": {"type": "string", "const": "synthetic-action-observed"},
+                "state": {"type": "string", "const": "notified"}
+              }
+            }
+          },
+          "expectedFeedbackCode": {"type": "string", "minLength": 1, "pattern": "\\S"},
+          "feedbackText": {"type": "string", "minLength": 1, "pattern": "\\S"}
+        }
+      }
+    }
+  }
+}

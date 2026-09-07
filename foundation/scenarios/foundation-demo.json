@@ -1,0 +1,171 @@
+{
+  "schemaVersion": "1.0",
+  "scenarioId": "foundation-demo",
+  "scenarioVersion": "foundation-2",
+  "mapId": "synthetic-room",
+  "provisional": true,
+  "disclaimer": "KORAIL 검증 전 예시",
+  "representativeRoleId": "role-01",
+  "roles": [
+    {
+      "roleId": "role-01",
+      "temporaryDisplayName": "상황 확인 · 임시 역할",
+      "briefing": "가상 연기 표식이 발생했습니다. 상황 패널에 예시 상황을 표시한 뒤 집결 구역으로 이동하세요. 실제 철도 절차가 아닌 게임용 과제입니다.",
+      "actionId": "action-01",
+      "targetAnchorId": "anchor-01",
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "가상 상황 패널을 확인했습니다. 다른 역할에 예시 알림을 전달했습니다."
+    },
+    {
+      "roleId": "role-02",
+      "temporaryDisplayName": "경보 전달 · 임시 역할",
+      "briefing": "경보 체험 버튼을 눌러 예시 경보 표시를 켜고 집결 구역으로 이동하세요. 실제 경보 설비의 조작 절차가 아닙니다.",
+      "actionId": "action-02",
+      "targetAnchorId": "anchor-02",
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "예시 경보 표시를 켰습니다. 다른 역할에 예시 알림을 전달했습니다."
+    },
+    {
+      "roleId": "role-03",
+      "temporaryDisplayName": "상황 보고 · 임시 역할",
+      "briefing": "무전 콘솔에서 미리 정한 게임용 상황 메시지를 전송하고 집결 구역으로 이동하세요. 실제 보고 문구나 순서를 재현하지 않습니다.",
+      "actionId": "action-03",
+      "targetAnchorId": "anchor-03",
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "게임용 상황 메시지를 전송했습니다. 다른 역할에 예시 알림을 전달했습니다."
+    },
+    {
+      "roleId": "role-04",
+      "temporaryDisplayName": "방향 안내 · 임시 역할",
+      "briefing": "방향 안내 표지를 활성화하고 집결 구역으로 이동하세요. 경로는 임의로 만든 게임 맵이며 실제 대피 경로가 아닙니다.",
+      "actionId": "action-04",
+      "targetAnchorId": "anchor-04",
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "합성 맵의 안내 표지를 활성화했습니다. 다른 역할에 예시 알림을 전달했습니다."
+    },
+    {
+      "roleId": "role-05",
+      "temporaryDisplayName": "통로 확인 · 임시 역할",
+      "briefing": "체험 게이트의 예시 표시를 전환하고 집결 구역으로 이동하세요. 실제 통제·안전 설비에 적용하는 절차가 아닙니다.",
+      "actionId": "action-05",
+      "targetAnchorId": "anchor-05",
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "체험 게이트의 표시를 전환했습니다. 다른 역할에 예시 알림을 전달했습니다."
+    }
+  ]
+}

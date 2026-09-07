@@ -9,6 +9,8 @@
 - SceneBundle manifest contract checks
 - safe PR risk triage without checking out PR code under `pull_request_target`
 
+`python3 scripts/dev/check_foundation.py` runs the synthetic Foundation contract and negative-fixture tests without Unity or extra Python packages. The required quality workflow stores `foundation-data-report.json`. A passing report covers Python data checks only; its C# compilation, Unity and HMD fields remain `not_run`.
+
 ## Unity CI activation
 
 Set repository variable `UNITY_CI_ENABLED=true` only after committing a Unity project and configuring protected secrets:
