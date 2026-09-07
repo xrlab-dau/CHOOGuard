@@ -66,6 +66,12 @@ jobs:
         if: always()
         run: python scripts/dev/check_foundation.py > foundation-data-report.json
 
+      - name: Validate portable project context
+        if: always()
+        run: |
+          python -m unittest discover -s scripts/context -p 'test_*.py' -v
+          python scripts/context/context_graph.py validate
+
       - name: Validate YAML syntax
         if: always()
         run: |

@@ -42,7 +42,7 @@
 | PM | 엄윤상 | Pi Orchestrator / Core Agent | 요구사항, 공통 코어, 아키텍처, 통합, 최종 시연 |
 | XR | 박효원 | XR & Capture Agent | 촬영 승인·계획, OpenXR·XRI, HMD 실기 |
 | MAP | 박지민 | Map Pipeline Agent | DA3·Open3D, 공간 QA, 맵 변환 |
-| UX | 이지현 | Flat Art & UI Agent | 환경 아트, UI, Desktop 조작, 프리팹 |
+| UX | 이지현 | Station Art & UI Agent | 환경 아트, UI, Desktop 조작, 프리팹 |
 | QA | 고소현 | Scenario & Verification Agent | 역사 대피 흐름, 임시 역할, 피드백, 테스트 |
 
 ## 4. Milestone 0: 기준선과 승인 준비
@@ -359,18 +359,18 @@
   - 원본 처리는 승인된 오프라인 실행자가 수행하고 Map Pipeline Agent에 회수하는 결과는 별도 전송 허용 범위만 포함
   - 결과가 승인된 저장·전송 경계를 벗어나지 않음
 
-### M3-04 Flat Art 플레이 맵
+### M3-04 Station Art 플레이 맵
 
 - 최종 책임: MAP
 - 협력: UX
-- 에이전트: Map Pipeline Agent + Flat Art Agent는 승인된 파생 결과 또는 합성자료만 사용
+- 에이전트: Map Pipeline Agent + Station Art Agent는 승인된 파생 결과 또는 합성자료만 사용
 - 실제 원본 실행자: M3-03의 승인된 오프라인 실행자
 - 상태: Blocked
 - 선행: M3-03, M1-04의 Unity/Blender 해당 경로 시험 PASS
 - 추적: MAP-04~06, RUN-01
 - 작업:
   - 주요 구역·출입구·대피 동선 Blockout
-  - Flat Art 메시·재질·LOD
+  - Station Art 메시·재질·LOD
   - Unity Anchor·Collider
 - DoD:
   - VR·Desktop에서 동일 맵 로드
@@ -420,7 +420,7 @@
 ### M4-04 역할·팀·피드백 UI
 
 - 최종 책임: UX
-- 에이전트: Flat Art & UI Agent
+- 에이전트: Station Art & UI Agent
 - 상태: Blocked
 - 선행: M2-03, M2-04, M4-01
 - 추적: BR-04~05, FR-07~10

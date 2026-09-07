@@ -1,3 +1,5 @@
+> 이 문서는 flat 적용 당시의 이력이다. 2026-09-07 후속 지시로 flat 고정은 폐기되었다. 현재 방향은 [공개 역사 레퍼런스](art/public-station-references.md)와 [context graph](context/README.md)를 따른다. 아래 시험은 기록 당시 소스에만 적용된다.
+
 # Foundation — 상시 현장과 Flat Art
 
 2026-09-07. 목표는 실제 역사 배치·설비 위치·동선과 실제 비상대응 매뉴얼에 최대한 충실한 3D 게임이다. 외형은 **단색·무광·면 단위 음영의 flat 스타일**로 통일한다. Desktop으로 기반을 개발하고, 이후 VR에서 같은 공간 Anchor와 행동 의미를 공유한다.

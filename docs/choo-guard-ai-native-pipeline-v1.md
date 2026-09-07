@@ -51,7 +51,7 @@
 | 주 코딩·통합 | [Pi](https://github.com/earendil-works/pi) | C#, 도구 코드, 테스트, 문서, Git 작업, 모델 전환 | 채택 |
 | Pi-MCP 연결 | [pi-mcp-adapter](https://pi.dev/packages/pi-mcp-adapter?name=earendil-works) | Pi가 MCP 도구를 지연 탐색·호출하도록 연결 | 공급망 검토 후 채택 |
 | Unity 저작 | [CoplayDev/unity-mcp v10.2.0](https://github.com/CoplayDev/unity-mcp/releases/tag/v10.2.0) | 씬·오브젝트·스크립트·프리팹·테스트·프로파일링 | 고정 버전 채택 |
-| 3D 보조 저작 | [Blender MCP](https://projects.blender.org/lab/blender_mcp) + glTF/glTFast | Flat Art 메시·LOD·피벗·내보내기 | 격리 작업공간에서만 사용 |
+| 3D 보조 저작 | [Blender MCP](https://projects.blender.org/lab/blender_mcp) + glTF/glTFast | Station Art 메시·LOD·피벗·내보내기 | 격리 작업공간에서만 사용 |
 | 결정론적 검증 | Unity Test Framework + [GameCI test runner v4](https://game.ci/docs/github/test-runner) | EditMode·PlayMode·Standalone 테스트와 XML 결과 | Unity 프로젝트 생성 후 활성화 |
 | 독립 코드 검토 | Codex CLI 또는 Gemini CLI의 읽기 전용 세션, Pi와 다른 모델 제공자 | 요구사항 위반·테스트 공백·보안·회귀 검토 | 프로젝트 대표 과제로 비교 후 1개 선정 |
 | 에이전트 평가 | [Inspect AI](https://inspect.aisi.org.uk/agents.html) | 실행 한도, 궤적·모델·결과 기록, 회귀 평가 | 에이전트 평가셋 생성 후 도입 |
@@ -73,7 +73,7 @@ PM 중심 통합 원칙에 따라 핵심 제품 계약과 병합 책임은 엄�
 | 엄윤상 | Pi Orchestrator / Core Agent | 요구사항, 아키텍처, 공통 Quest Core, 통합, 최종 데모 | 계획 분해, C#·테스트 작성, 작업 계약 발행, 결과 통합 |
 | 박효원 | XR & Capture Agent | 승인 촬영 계획, VR 입력·상호작용, HMD 실기 검증 | 촬영 체크리스트, XRI 구성, PlayMode 테스트, 기기 로그 정리 |
 | 박지민 | Map Pipeline Agent | DA3·Open3D 처리, 맵 산출물, 공간 QA | 처리 스크립트, 메타데이터·해시, 메시 변환, 품질 리포트 |
-| 이지현 | Flat Art & UI Agent | Flat Art 환경, 역할·피드백 UI, Desktop 조작 | Unity MCP·Blender 작업, 프리팹·UI·스크린샷·시각 회귀 |
+| 이지현 | Station Art & UI Agent | Station Art 환경, 역할·피드백 UI, Desktop 조작 | Unity MCP·Blender 작업, 프리팹·UI·스크린샷·시각 회귀 |
 | 고소현 | Scenario & Verification Agent | 역사 대피 흐름, 임시 5직무 행동, 사용자 검증 | Scenario 데이터, 테스트 케이스, 피드백 문구, 요구사항 추적 |
 
 ### 통합 규칙

@@ -8,7 +8,7 @@
 
 v4는 KORAIL 운영환경을 미리 가정하지 않는다. 대회 MVP에서 검증할 것은 다음 한 문장이다.
 
-> **사전 승인된 역사 촬영 자료로 만든 Flat Art 맵에서, 사용자가 자유롭게 직무를 선택하고 VR 또는 Desktop으로 핵심 행동을 수행하며 가상 팀의 상태 변화와 설명형 피드백을 경험한다.**
+> **사전 승인된 역사 촬영 자료로 만든 Reference-informed 3D 맵에서, 사용자가 자유롭게 직무를 선택하고 VR 또는 Desktop으로 핵심 행동을 수행하며 가상 팀의 상태 변화와 설명형 피드백을 경험한다.**
 
 MVP는 실제 멀티플레이, 공식 점수, 전용 서버, SSO·LMS, 폐쇄망 배포를 구현하지 않는다. 해당 항목은 KORAIL 회신 후 운영판 아키텍처에서 결정한다.
 
@@ -16,7 +16,7 @@ MVP는 실제 멀티플레이, 공식 점수, 전용 서버, SSO·LMS, 폐쇄망
 
 | 구분 | 대회 MVP | 운영판 |
 |---|---|---|
-| 맵 | 승인된 역사 촬영 → DA3·Open3D → Flat Art 플레이 맵 | 실제 도면·촬영·설비·치수를 KORAIL 기준으로 검수 |
+| 맵 | 승인된 역사 촬영 → DA3·Open3D → Reference-informed 3D 플레이 맵 | 실제 도면·촬영·설비·치수를 KORAIL 기준으로 검수 |
 | 역할 | 5개 임시 역할, 자유 선택 | 실제 직무 체계와 권한을 KORAIL 답변으로 확정 |
 | 싱글 | 다른 직무 절차를 단순화 | 실제 매뉴얼에 따라 단순화 허용 범위 재검토 |
 | 멀티 | 가상 팀 상태로 협업 흐름 시연 | 실제 네트워크·세션 규모·권위 구조를 폐쇄망 조건에 맞게 설계 |
@@ -65,7 +65,7 @@ flowchart TB
 
   subgraph MVP[MVP 구현]
     VTEAM[Virtual Team Simulator]
-    FLAT[Flat Art Runtime Map]
+    FLAT[Reference-informed 3D Runtime Map]
     DATA[5 Temporary Role Definitions]
   end
 
@@ -89,7 +89,7 @@ ChooGuard.Simulation      입력 검증, 퀘스트 상태, 가상 팀 상태
 ChooGuard.Scenarios       역사 대피 ScenarioProfile, 임시 5직무 데이터
 ChooGuard.XR              OpenXR·XRI 입력 어댑터
 ChooGuard.Desktop         키보드·마우스 입력 어댑터
-ChooGuard.Presentation    Flat Art 환경, 역할 UI, 팀 상태, 피드백
+ChooGuard.Presentation    Reference-informed 3D 환경, 역할 UI, 팀 상태, 피드백
 ChooGuard.Maps            런타임 맵·Anchor·Zone 조회
 ChooGuard.Evidence        이벤트·성능·시연 증거 기록
 ChooGuard.Editor          맵·시나리오 import 및 검증 도구
@@ -205,7 +205,7 @@ flowchart LR
   INGEST --> DA3[DA3 비상업 처리]
   DA3 --> O3D[Open3D 정리·정합]
   O3D --> BLOCK[동선·구역 Blockout]
-  BLOCK --> FLAT[Flat Art 저작]
+  BLOCK --> FLAT[Reference-informed 3D 저작]
   FLAT --> UNITY[Unity Map Prefab]
   UNITY --> PLAY[VR·Desktop 플레이]
 ```
@@ -276,7 +276,7 @@ flowchart LR
   PI --> COREAG[Core Agent]
   PI --> XRAG[XR Agent]
   PI --> MAPAG[Map Agent]
-  PI --> UIAG[Flat Art/UI Agent]
+  PI --> UIAG[Reference-informed 3D/UI Agent]
   PI --> QAAG[Scenario/QA Agent]
   XRAG --> MCP[pi-mcp-adapter → Unity MCP]
   UIAG --> MCP

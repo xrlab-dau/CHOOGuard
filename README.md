@@ -46,4 +46,6 @@ Comprehensive Hazard Operational Optimizer Guard. 철도 비상대응훈련을 �
 
 이 저장소는 공개되어 있지만 프로젝트 자체의 오픈소스 라이선스를 아직 부여하지 않는다. [고지](NOTICE.md)를 따른다. 제삼자 도구·vendored 파일은 별도 라이선스·재배포 고지 검토가 필요하다.
 
-현재 Foundation 기본 플레이는 [상시 현장 운영·불시 사건·대응 복기](docs/choo-guard-open-world-training.md) 모드다. 훈련 종류를 고르는 대신 평상시 공간에 입장해 예상하지 못한 변화를 관측하고 대응한다. 현재는 실제 시설/매뉴얼 검증 전의 flat 합성 환경이다.
+현재 Foundation 기본 플레이는 [상시 현장 운영·불시 사건·대응 복기](docs/choo-guard-open-world-training.md) 모드다. 훈련 종류를 고르는 대신 평상시 공간에 입장해 예상하지 못한 변화를 관측하고 대응한다. 현재는 실제 시설/매뉴얼 검증 전의 공개 사진 참고 합성 환경이다.
+
+프로젝트 문맥은 [Context graph](docs/context/README.md)에서 결정·코드·근거·미확인 항목의 관계로 확인한다. PC나 작업자가 바뀌면 해당 시작 명령으로 필요한 문맥과 근거의 변경 여부를 먼저 확인한다.

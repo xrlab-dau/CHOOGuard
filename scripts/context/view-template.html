@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>CHOOGuard — Project context</title>
+<style>
+:root{color-scheme:light;--ink:#172932;--muted:#576b74;--line:#d9e3e8;--paper:#f5f8fa;--accent:#116a73}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.55 system-ui,-apple-system,"Malgun Gothic",sans-serif}
+header{background:#12313c;color:#f7fbfc;padding:24px 30px 20px}h1{font-size:26px;letter-spacing:-.5px;margin:0 0 4px}header p{margin:4px 0;color:#c6dce2}.stamp{font-size:12px}
+.tools{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:16px 24px;background:white;border-bottom:1px solid var(--line)}
+input[type=search]{min-width:210px;flex:1}input,select,button{font:inherit;border:1px solid #b7c9d2;border-radius:7px;padding:8px 10px;background:#fff;color:var(--ink)}label{display:flex;gap:7px;align-items:center}button{cursor:pointer}button:hover{border-color:var(--accent)}
+.layout{display:grid;grid-template-columns:minmax(500px,1fr) 360px;gap:18px;padding:20px;align-items:start}.map,.detail{background:#fff;border:1px solid var(--line);border-radius:12px}.map{overflow:hidden}.map-head{display:flex;justify-content:space-between;gap:10px;padding:12px 18px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+svg{width:100%;display:block;min-height:380px}.node{cursor:pointer}.node rect{stroke-width:1.3}.node:focus{outline:none}.node:focus rect,.node:hover rect{stroke:#0c7e8e;stroke-width:3}.node.selected rect{stroke:#0c7e8e;stroke-width:3}.node text{pointer-events:none}.edge{fill:none;stroke:#97afb8;stroke-width:1.1;opacity:.35}.edge.selected{stroke:#197c88;stroke-width:2;opacity:1}
+.detail{padding:22px;min-height:480px}.detail h2{font-size:20px;line-height:1.35;margin:8px 0 12px}.detail h3{font-size:13px;text-transform:uppercase;letter-spacing:.07em;margin:23px 0 6px;color:var(--muted)}.detail p{margin:8px 0}.tag{display:inline-block;border:1px solid #c7d8df;background:#edf5f6;color:#21535e;padding:3px 7px;border-radius:5px;font-size:12px;margin:0 5px 5px 0}.warning{color:#925316;background:#fff5e6;border-color:#ebce9b}.historical{background:#f0edf7;color:#655379}.detail ul{padding-left:19px;margin:7px 0}.detail li{margin:6px 0}a{color:#126c80;overflow-wrap:anywhere}.detail button{font-size:12px;padding:4px 7px}.path{font:12px/1.5 ui-monospace,monospace}.quiet{color:var(--muted);font-size:13px}.legend{display:flex;flex-wrap:wrap;gap:8px;padding:12px 18px;border-top:1px solid var(--line);font-size:12px}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:4px}.footer{padding:0 24px 24px;font-size:12px;color:var(--muted)}
+@media(max-width:980px){.layout{grid-template-columns:1fr}.detail{min-height:0}header{padding:20px}.tools{padding:14px}.layout{padding:14px}svg{min-height:0}}
+</style>
+</head>
+<body>
+<header><h1>CHOOGuard · Project context</h1><p>방향, 구현, 검증 기록과 미확인 사항을 구분해 읽는 프로젝트 지도</p><p class="stamp" id="stamp"></p></header>
+<div class="tools">
+<input id="search" type="search" placeholder="노드·파일·결정 검색" aria-label="컨텍스트 검색">
+<label>작업 <select id="topic"><option value="all">전체</option><option value="runtime">런타임</option><option value="art">모델·외형</option><option value="handoff">인계·시작</option></select></label>
+<label>기기 <select id="machine"><option value="local">local</option><option value="school-pc">school-pc</option></select></label>
+<label><input id="history" type="checkbox">폐기된 결정 보기</label><button id="reset">초기화</button>
+</div>
+<main class="layout"><section class="map"><div class="map-head"><span id="count"></span><span>노드를 선택해 근거와 관계 확인</span></div><svg id="graph" role="img" aria-label="프로젝트 컨텍스트 관계도"></svg><div class="legend"><span><i class="dot" style="background:#d7eeed"></i>규칙·결정</span><span><i class="dot" style="background:#dce9fa"></i>계약·구현</span><span><i class="dot" style="background:#ece2f5"></i>워크플로·과거 증거</span><span><i class="dot" style="background:#f8e7ca"></i>미확인·외부 상태</span></div></section><aside class="detail" id="detail"></aside></main>
+<p class="footer">이 파일은 생성 당시의 offline snapshot입니다. 현재 파일 해시 확인: <code>python3 scripts/context/context_graph.py validate</code> · 실행 수용·기관 승인·외부 작업 권한을 판정하지 않습니다.</p>
+<script id="context-data" type="application/json">__CONTEXT_PAYLOAD__</script>
+<script>
+(() => {
+  'use strict';
+  const payload=JSON.parse(document.getElementById('context-data').textContent);
+  const {graph,assessment}=payload;
+  const byId=new Map(graph.nodes.map(n=>[n.id,n]));
+  const svg=document.getElementById('graph'),detail=document.getElementById('detail');
+  const query=document.getElementById('search'),topic=document.getElementById('topic'),machine=document.getElementById('machine'),history=document.getElementById('history');
+  const ns='http://www.w3.org/2000/svg'; let selected='goal.foundation';
+  const group={policy:0,decision:0,contract:1,component:1,workflow:2,evidence:2,unknown:3,external_snapshot:3};
+  const colors=['#d7eeed','#dce9fa','#ece2f5','#f8e7ca'];
+  const stateNames={matched:'참조 해시 일치',stale:'참조 변경 · 다시 읽기',missing:'참조 없음',live_status_unknown:'외부 현재 상태 미확인'};
+  function el(tag,text,cls){const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;}
+  function se(tag,attrs){const e=document.createElementNS(ns,tag);Object.entries(attrs||{}).forEach(([k,v])=>e.setAttribute(k,v));return e;}
+  function textLine(x,y,text,size,color){const e=se('text',{x,y,'font-size':size,fill:color||'#172932'});e.textContent=text;return e;}
+  function visible(){const s=query.value.trim().toLowerCase();return graph.nodes.filter(n=>(history.checked||n.status!=='superseded')&&(topic.value==='all'||n.topics.includes(topic.value))&&(!s||[n.id,n.title,n.summary,...n.sources.map(x=>x.repoPath||x.url)].join(' ').toLowerCase().includes(s)));}
+  function pick(id){selected=id;draw();show();}
+  function draw(){
+    const nodes=visible(),ids=new Set(nodes.map(n=>n.id)),columns=[[],[],[],[]];
+    nodes.forEach(n=>columns[group[n.kind]].push(n));
+    columns.forEach(c=>c.sort((a,b)=>a.id.localeCompare(b.id)));
+    const height=Math.max(360,Math.max(...columns.map(c=>c.length))*112+95),positions=new Map();
+    svg.replaceChildren();svg.setAttribute('viewBox',`0 0 1070 ${height}`);
+    ['방향·규칙','계약·구현','시작·증거','확인할 것'].forEach((t,i)=>svg.append(textLine(i*265+24,30,t,13,'#576b74')));
+    columns.forEach((column,c)=>column.forEach((n,i)=>positions.set(n.id,{x:c*265+20,y:52+i*112})));
+    const defs=se('defs'),arrow=se('marker',{id:'arrow',viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:5,markerHeight:5,orient:'auto-start-reverse'});arrow.append(se('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:'#97afb8'}));defs.append(arrow);svg.append(defs);
+    graph.edges.filter(e=>ids.has(e.from)&&ids.has(e.to)).forEach(edge=>{
+      const a=positions.get(edge.from),b=positions.get(edge.to),forward=b.x>=a.x;
+      const x1=a.x+(forward?220:0),x2=b.x+(forward?0:220),y1=a.y+36,y2=b.y+36;
+      const curve=se('path',{d:`M${x1},${y1} C${(x1+x2)/2},${y1} ${(x1+x2)/2},${y2} ${x2},${y2}`,class:'edge'+(edge.from===selected||edge.to===selected?' selected':''),'marker-end':'url(#arrow)'});
+      const title=se('title');title.textContent=`${edge.from} — ${edge.relation} → ${edge.to}`;curve.append(title);svg.append(curve);
+    });
+    nodes.forEach(n=>{
+      const p=positions.get(n.id),g=se('g',{class:'node'+(n.id===selected?' selected':''),tabindex:0,role:'button','aria-label':n.title});
+      g.append(se('rect',{x:p.x,y:p.y,width:220,height:76,rx:9,fill:n.status==='superseded'?'#eff1f3':colors[group[n.kind]],stroke:'#b6cbd4'}));
+      g.append(textLine(p.x+12,p.y+24,n.title.length>23?n.title.slice(0,23)+'…':n.title,13));
+      g.append(textLine(p.x+12,p.y+46,n.id,10,'#4b606a'));
+      const fresh=assessment.nodes[n.id];const note=fresh.coverage?(fresh.coverage.state==='historical_source_match'?'과거 시험 · 대상 해시 일치':'과거 시험 · 대상 변경/미확인'):(fresh.sourceState==='matched'?'source matched':fresh.sourceState);g.append(textLine(p.x+12,p.y+64,fresh.coverage?note:n.status+' · '+note,10,fresh.coverage&&fresh.coverage.state!=='historical_source_match'?'#925316':'#596f79'));
+      g.addEventListener('click',()=>pick(n.id));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(n.id);}});svg.append(g);
+    });
+    document.getElementById('count').textContent=`${nodes.length} nodes · ${graph.edges.filter(e=>ids.has(e.from)&&ids.has(e.to)).length} relations`;
+    if(!nodes.length)svg.append(textLine(30,95,'검색 결과가 없습니다.',18));
+  }
+  function show(){
+    detail.replaceChildren();const n=byId.get(selected);
+    if(!n){detail.append(el('p','노드를 선택하세요.'));return;}
+    const a=assessment.nodes[n.id];detail.append(el('span',n.kind,'tag'),el('span',n.status,'tag'+(n.status==='historical'||n.status==='superseded'?' historical':'')),el('h2',n.title),el('p',n.summary));
+    detail.append(el('span',stateNames[a.sourceState]||a.sourceState,'tag'+(a.sourceState!=='matched'?' warning':'')));
+    detail.append(el('p',`Authority: ${n.authority} · observed ${n.observedAt}`,'quiet'));
+    if(n.machineNotes&&n.machineNotes[machine.value])detail.append(el('p',n.machineNotes[machine.value]));
+    if(a.coverage){detail.append(el('h3','Historical evidence scope'),el('p',a.coverage.state,'tag historical'),el('p',`${a.coverage.count}개 소스의 당시 해시와 비교. 일치해도 새 실행·수용 증거가 아닙니다.`,'quiet'));}
+    const drift=[...a.changed,...a.missing,...(a.coverage?[...a.coverage.changed,...a.coverage.missing]:[])];
+    if(drift.length){detail.append(el('h3','다시 확인할 참조'));const list=el('ul');[...new Set(drift)].slice(0,6).forEach(p=>list.append(el('li',p,'path')));if(drift.length>6)list.append(el('li',`외 ${drift.length-6}개 · CLI validate --json 확인`));detail.append(list);}
+    detail.append(el('h3','근거 읽기'));const sources=el('ul');n.sources.forEach(s=>{const item=el('li'),link=el('a',s.label);link.href=s.repoPath?'../../'+s.repoPath:s.url;if(!s.repoPath){link.target='_blank';link.rel='noopener noreferrer';}item.append(link);if(s.repoPath)item.append(el('div',s.repoPath,'path'));if(s.anchor)item.append(el('div',s.anchor,'quiet'));sources.append(item);});detail.append(sources);
+    detail.append(el('h3','해석의 범위'));const limits=el('ul');n.limits.forEach(t=>limits.append(el('li',t)));detail.append(limits);
+    detail.append(el('h3','연결'));const relations=el('ul');graph.edges.filter(e=>e.from===n.id||e.to===n.id).forEach(e=>{const item=el('li'),other=e.from===n.id?e.to:e.from;item.append(el('span',(e.from===n.id?'→ ':'← ')+e.relation+' '));const button=el('button',byId.get(other).title);button.addEventListener('click',()=>{if(byId.get(other).status==='superseded')history.checked=true;topic.value='all';query.value='';pick(other);});item.append(button);relations.append(item);});detail.append(relations);
+  }
+  document.getElementById('stamp').textContent=`offline snapshot · ${payload.generatedAt} · schema valid ≠ runtime acceptance`;
+  [query,topic,history].forEach(e=>e.addEventListener('input',()=>{draw();show();}));machine.addEventListener('change',show);
+  document.getElementById('reset').addEventListener('click',()=>{query.value='';topic.value='all';history.checked=false;pick('goal.foundation');});
+  if(!byId.has(selected))selected=graph.nodes[0].id;draw();show();
+})();
+</script>
+</body>
+</html>
