@@ -1,30 +1,41 @@
-# Reference-informed station kit
+# 오브젝트별 레퍼런스 기반 역사 자산
 
-2026-09-07 후속 사용자 결정으로 flat-only 요구를 폐기했다. 실제 시설과 승인 매뉴얼에 충실한 공간·설비·동선·대응 행동이 목표이며, Blender 형상과 Unity 표면·조명을 공개 사진의 관찰 가능한 형태에 가깝게 개선한다.
+2026-09-07 후속 사용자 요구에 따라, 모든 자산을 개별 원본 이미지와 관찰한 형상에 연결한다. 전체 맞이방 사진이나 FBX 개수만으로 재현 완료를 주장하지 않는다. [자산별 감사](../../docs/art/object-reference-audit.md), [참조 레지스트리](object-references.json), [전체 맞이방 참고](../../docs/art/public-station-references.md)를 함께 읽는다.
 
-[부산역 KORAIL 2층 공개 참고 묶음](../../docs/art/public-station-references.md)을 형태 근거로 삼는다. 현재 지상 동선과 구역 연결은 기존 합성 맵이며, 실제 부산역 전체 평면을 복제한 것이 아니다. 실제 치수·배치·직원 절차·기관 승인과 학습 효과는 미검증이다.
+## 구성과 범위
 
-- Blender 4.5.9 LTS, 미터 기준, Unity +Y 위/+Z 앞. 패널 앞면은 -Z. 기존 조작 중심·피벗·사람형 관절·상태 부품 이름을 보존한다.
-- 금속/석재/고무/유리 표현을 분리하고 곡면 법선을 유지한다. Unity는 Blender 재질 이름을 엄격히 매핑한다. 비금속 인물과 손에는 금속성을 부여하지 않는다.
-- 기존 장치·가구·사람형 22종을 개선하고 트러스·상부 창 모듈·전광판·안내 카운터 4종을 추가한다. 카운터는 자산 카탈로그 제공 범위이며 현재 맵에서 새로운 지상 장애물로 배치하지 않는다.
-- 대합실 상부를 7.4m로 확장하고 트러스·창 분할·기둥 연장·전광판을 더한다. 연결 공간 천장은 4.2m다. 이 수치는 [합성 설계값](synthetic-design.json)이며 실측값이 아니다. 지상 경로/좌표/사건 조건은 기존 프로필을 유지한다.
-- Unity Editor가 512px 석재 타일, 128px 금속 결·지붕 패널을 결정적으로 생성한다. 사진 텍스처를 사용하지 않는다. 바닥은 1m 반복 UV, 재질별 광택/금속성, 실제 fixture 위치의 제한된 조명과 64px 1회 실시간 반사 probe를 사용한다.
-- 상부 창은 외부 경관을 재현하지 않은 밝은 불투명 유리 표현이다. 실제 광학값·창밖 공간·접합 구조 성능을 검증하지 않았다.
-- 무거운 모델링·렌더·베이크는 학교 PC에서 수행한다. 현재 로컬 생성은 작은 메시/픽셀 연산과 실시간 게임 검수 범위다.
+- 33종: 장치 12종, 가구·장갑·동일 익명 NPC 6종, 건축·가상 유도 15종. 실제 장면의 사용 여부는 Editor inventory와 대조한다.
+- 부산역 사진에서 확인한 목재 무등받이 벤치·곡면 안내대·기둥·천장 형상과, 제조사 장치의 대체 외형을 구분한다. 등록된 `station_specific`은 사진의 위치 식별이며 모델의 실측 일치를 뜻하지 않는다.
+- 수동 발신기·방송 콘솔·터치 단말·기울어진 경로 단말·태블릿 거치대는 서로 다른 형상이다. 임시 설치대와 게임 동작은 실제 KORAIL 장치/절차로 검증되지 않았다.
+- WallModule/FloorModule은 물리·구조를 연결하는 unit adapter다. 패널·지붕재·보·격자 천장·점자블록은 별도 Blender 모델을 사용한다. UI·가상 유도·배경 폐쇄면의 범위는 레지스트리 `sceneFamilies`에 기록한다.
+- 실제 도면·시설 치수·현재 배치·직원 매뉴얼·현장 효과는 미검증이다. 합성 평면을 실제 부산역 전체 평면으로 표시하지 않는다. 장치 화면의 내용과 조작 의미는 현재 게임의 임시 인터페이스다.
 
-## 재생성
+## 제작과 임포트
 
-Blender에서 `scripts/art/build_station_assets.py`를 실행한다 (`--background --python`도 가능). `station-kit.blend`의 카탈로그와 개별 자산 장면은 편집용이며, 생성 Python은 반복 가능한 원본이다. FBX와 원본은 Git LFS를 사용한다. Unity 직접 `.blend` import에 의존하지 않는다.
+Blender 4.5.9 LTS에서 아래 실행기를 사용한다. [장치](../../scripts/art/station_equipment.py), [가구·인물](../../scripts/art/station_furniture.py), [건축](../../scripts/art/station_architecture.py) 모듈과 공통 드라이버가 재생성 원본이다.
 
-Unity 6000.3.23f1에서 `CHOOguard > Foundation > Build Playable Demo`를 실행한다. 생성기 v5는 v1~v4 소유권을 확인하고 새 재질·텍스처 경로에 기존 팀 파일이 있으면 덮어쓰지 않는다. `.meta`·장면·프리팹·재질 직렬화는 Unity API로만 생성한다.
+```sh
+blender --background --threads 2 --python-exit-code 1 --python scripts/art/build_station_assets.py
+python3 scripts/art/validate_reference_assets.py
+python3 scripts/art/validate_reference_assets.py --asset RadioConsole
+```
 
-## 실제 자료 연결 상태
+`station-kit.blend`는 카탈로그/자산별 편집 장면, FBX는 Unity 전달물이다. 33 FBX와 .blend 총 34개 파일은 Git LFS로 받는다. 사진은 형태 관찰에만 사용하며 게임 텍스처·원본 이미지·로고를 복제하지 않는다. 절차적 작은 표면 텍스처, 미터 형상, 피벗, 광택/금속성/투명도를 사용하며 무거운 로컬 모델링·렌더·베이크는 수행하지 않는다.
 
-| 항목 | 현재 근거 | 교체 시 확인 |
-|---|---|---|
-| 역사 구조·치수·설비 위치 | 임시 합성 배치 | 승인된 촬영·도면, 구역/출입구/설비별 치수와 Anchor |
-| 5직무 책임·행동 순서 | 기존 임시 역할 데이터 | 매뉴얼 이름·개정일·절/쪽·직무·전후 조건 |
-| 신고·안내·동행 구조 | 공개 국민행동요령 참고 | 기관 직원 절차에 적용 가능 여부 별도 검수 |
-| 집결 6명·완료 조건 | 게임 검사용 규칙 | 실제 집결 장소·인원 확인·보고 조건 |
+좌표는 Unity +Y 위, +Z 이동 전방이다. 장치 앞면은 -Z, NPC 앞면은 +Z다. 현재 고정 도구 체인의 FBX X축 반전을 보상해 `Unity(x,y,z) → Blender(-x,-z,y)`를 사용한다. 역변환·열린 면의 winding·바닥 UV 방향·게이트 열린/닫힌 Renderer와 Collider·좌우 신발/엄지 위치를 실제 임포트 시험으로 확인한다. 이 어댑터는 근거 없이 다른 importer 설정에 재사용하지 않는다.
 
-공개 참고 자료는 신고·안내를 따르는 질서 있는 대피와 동행이라는 구조만 뒷받침한다. 세 가지 훈련의 구체적 순서와 집결 수는 게임 설계다. [국민안전24 철도·지하철 사고](https://www.safekorea.go.kr/safekorea-kor/acts/nacts/action-guide.do?category=railwayandSubwayAccident&menuSn=4), [부산교통공사 긴급상황 대피요령](https://www2.humetro.busan.kr/homepage/cht/page/subLocation.do?menu_no=1001010602).
+Unity 6000.3.23f1에서 `CHOOguard > Foundation > Build Playable Demo`로 생성한다. 생성기 v6는 이전 v1~v5 소유권을 확인하고 새 슬롯의 팀 파일을 덮어쓰지 않는다. Collider는 작은 장치의 실제 주요 부품마다 생성하며, 같은 이름의 여러 부품을 합쳐 빈 공간을 막지 않는다. NPC 시각 모델만 바닥에 정렬하고 항법 Root·사건 규칙을 바꾸지 않는다.
+
+## 실제 출력 검수
+
+전용 개발 검수 플레이어는 각 자산의 전체 및 확대 정면/측면을 실시간으로 표시한다. 훈련 프로그램의 플레이 흐름에 들어가지 않는다.
+
+```text
+Unity batch method: ChooGuard.Foundation.Demo.Editor.FoundationArtAudit.BuildMacReviewBatch
+Output: Builds/ArtReview/ChooGuardArtReview.app
+Capture argument: --choo-art-captures <task-local-output-directory>
+Inventory method: ChooGuard.Foundation.Demo.Editor.FoundationArtAudit.ExportSceneInventoryBatch
+Inventory argument: --choo-art-inventory <output.json>
+```
+
+캡처와 원본을 비교한 뒤 해당 FBX 해시·두 시점의 캡처 해시·관찰 범위를 `visualReview`에 기록한다. 참고 자료가 있다는 것, 시각 검수를 했다는 것, 실제 시설과 일치한다는 것은 서로 다른 판단이다. 검증 도구는 실제 시설/절차 수용을 PASS로 만들지 않는다. 새 데이터·코드·자산 변경은 [context graph](../../docs/context/README.md)에도 함께 연결한다.
