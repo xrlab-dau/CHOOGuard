@@ -17,3 +17,5 @@
 문제정의서 원문은 사용자 확인에 따라 대외비 지류자료로 분류한다. 공개 검색/저장소용 자료가 아니며 원문을 직접 열람하거나 대조하지 않았다. 이 공개 질의서는 사용자 요청과 현 요구사항 기준선으로 작성했고 원문의 내용·이미지를 포함하지 않는다. 질문 작성·자체 검수가 코레일 회신이나 촬영/처리 승인을 뜻하지 않는다. #14의 PM/독립 검토와 #15의 실제 서면 승인 수신은 별도로 관리한다. 전달은 사용자 또는 지정 창구에서 수행한다.
 
 재생성: `python -m pip install -r scripts/docs/requirements.txt` 후 저장소 루트에서 `python scripts/docs/build_korail_questionnaire.py` 실행. 글꼴/줄 간격을 바꾸면 A4 한 페이지와 마지막 회신 안내까지 다시 렌더 검수한다. 이번 검수는 Microsoft Word 자체 실행이 아닌 macOS의 DOCX 미리보기 엔진과 WebKit을 사용했다.
+
+서식은 한글 바탕체·영문 Times New Roman, 검정 글자/흰 배경으로 통일한다. [PDF 전달본](CHOOGuard_KORAIL_개발질의서_A4_1p.pdf)은 로컬 macOS의 명조체(AppleMyungjo)로 한글을 렌더링해 글꼴을 포함하며 A4 1쪽을 유지한다.

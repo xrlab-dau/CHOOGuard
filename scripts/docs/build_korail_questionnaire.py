@@ -24,12 +24,12 @@ QUESTIONS = [
 ]
 REPLY = '회신 안내: 항목별 서면 답변과 자료의 형식·개정일·제공 시점·담당 부서를 부탁드립니다. 미정 또는 제공이 어려운 항목은 확인 가능 시점과 대체자료·열람 방법을 안내해 주시면 감사하겠습니다.'
 
-def font(run, size=12, bold=False, color='111111'):
-    run.font.name = 'Arial'
+def font(run, size=12, bold=False, color='000000'):
+    run.font.name = 'Times New Roman'
     run.font.size = Pt(size)
     run.bold = bold
     run.font.color.rgb = RGBColor.from_string(color)
-    run._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'), '맑은 고딕')
+    run._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'), '바탕')
     lang = OxmlElement('w:lang'); lang.set(qn('w:val'), 'ko-KR'); lang.set(qn('w:eastAsia'), 'ko-KR')
     run._element.get_or_add_rPr().append(lang)
 
@@ -40,8 +40,9 @@ def main():
     sec.top_margin = Mm(17); sec.bottom_margin = Mm(18)
     sec.left_margin = Mm(19); sec.right_margin = Mm(19)
     sec.header_distance = Mm(8); sec.footer_distance = Mm(8)
-    normal = doc.styles['Normal']; normal.font.name = 'Arial'; normal.font.size = Pt(12)
-    normal._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'), '맑은 고딕')
+    normal = doc.styles['Normal']; normal.font.name = 'Times New Roman'; normal.font.size = Pt(12)
+    normal._element.get_or_add_rPr().rFonts.set(qn('w:eastAsia'), '바탕')
+    normal.font.color.rgb = RGBColor(0, 0, 0)
     normal.paragraph_format.line_spacing_rule = WD_LINE_SPACING.EXACTLY
     normal.paragraph_format.line_spacing = Pt(16.5)
     normal.paragraph_format.space_after = Pt(4.5)
@@ -55,21 +56,21 @@ def main():
     doc.core_properties.comments = ''
     p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.line_spacing = Pt(25); p.paragraph_format.space_after = Pt(5); p.paragraph_format.keep_with_next = True
-    font(p.add_run(TITLE), 17, True, '17365D')
+    font(p.add_run(TITLE), 17, True, '000000')
     p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p.paragraph_format.space_after = Pt(11); p.paragraph_format.keep_with_next = True
-    font(p.add_run('수신: 한국철도공사 담당부서  |  작성: CHOOGuard 개발팀  |  2026. 9. 7.'), 9, False, '555555')
+    font(p.add_run('수신: 한국철도공사 담당부서  |  작성: CHOOGuard 개발팀  |  2026. 9. 7.'), 9, False, '000000')
     p = doc.add_paragraph(); p.paragraph_format.space_after = Pt(10); p.paragraph_format.keep_with_next = True
     font(p.add_run(INTRO), 11)
     for i, (heading, body) in enumerate(QUESTIONS, 1):
         p = doc.add_paragraph(); p.paragraph_format.keep_together = True
         p.paragraph_format.left_indent = Mm(6); p.paragraph_format.first_line_indent = Mm(-6)
         p.paragraph_format.space_after = Pt(7)
-        font(p.add_run(f'{i}. {heading}  '), 12, True, '17365D')
+        font(p.add_run(f'{i}. {heading}  '), 12, True, '000000')
         font(p.add_run(body), 12)
     p = doc.add_paragraph(); p.paragraph_format.space_before = Pt(5); p.paragraph_format.keep_together = True
     p.paragraph_format.line_spacing = Pt(13)
-    font(p.add_run(REPLY), 9.5, False, '444444')
+    font(p.add_run(REPLY), 9.5, False, '000000')
     OUTPUT.parent.mkdir(parents=True, exist_ok=True); doc.save(OUTPUT)
     source = f'# {TITLE}\n\n{INTRO}\n\n' + '\n\n'.join(f'{i}. **{h}** {b}' for i,(h,b) in enumerate(QUESTIONS,1)) + f'\n\n{REPLY}\n'
     (OUTPUT.parent/'development-questionnaire-v1.md').write_text(source, encoding='utf-8')
