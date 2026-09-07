@@ -23,7 +23,7 @@ namespace ChooGuard.Foundation.Demo.Editor
         private const string MarkerName = "generated-owner.json";
         private static readonly string[] MaterialNames =
             { "Floor", "Wall", "Metal", "Blue", "Red", "Yellow", "Green", "Screen", "White", "Orange",
-                "Stainless", "Stone", "Glass", "Diffuser", "Roof", "Rubber", "Ceiling" };
+                "Stainless", "Stone", "Glass", "Diffuser", "Roof", "Rubber", "Ceiling", "Wood", "Fabric", "ClearGlass" };
         private static readonly string[] LegacyMaterialNames =
             { "Floor", "Wall", "Metal", "Blue", "Red", "Yellow", "Green", "Screen", "White", "Orange" };
         private static readonly string[] PrefabNames = { "SituationPanel", "AlarmSimulator", "RadioConsole", "DirectionSign", "AccessGate", "Bench", "Pillar", "InformationKiosk", "HazardIndicator", "AssemblySign", "Player", "Evacuee", "RouteConsole", "RallyPoint", "AssemblyRegister", "DoorFrame", "Luggage" };
@@ -33,7 +33,7 @@ namespace ChooGuard.Foundation.Demo.Editor
             new Color(.09f, .27f, .40f), new Color(.68f, .10f, .08f), new Color(.88f, .64f, .15f),
             new Color(.10f, .48f, .30f), new Color(.08f, .58f, .65f), new Color(.86f, .89f, .87f),
             new Color(1f, .36f, .05f), new Color(.80f,.82f,.83f), new Color(.88f,.87f,.84f),
-            new Color(.62f,.74f,.79f), new Color(.93f,.95f,.90f), new Color(.88f,.90f,.88f), new Color(.075f,.08f,.085f), new Color(.50f,.53f,.54f)
+            new Color(.84f,.88f,.89f), new Color(.93f,.95f,.90f), new Color(.88f,.90f,.88f), new Color(.075f,.08f,.085f), new Color(.50f,.53f,.54f), new Color(.67f,.39f,.17f), new Color(.10f,.13f,.18f), new Color(.8f,.9f,.95f,.18f)
         };
 
         [Serializable]
@@ -492,6 +492,13 @@ namespace ChooGuard.Foundation.Demo.Editor
                 .Concat(FoundationSurfaceMaterials.TextureNames.Select(name=>"Textures/"+name+".png")).ToArray();
         }
 
+        private static string[] VersionFiveOwnedPaths()
+        {
+            return VersionFourOwnedPaths().Concat(new[]{"Stainless","Stone","Glass","Diffuser","Roof","Rubber","Ceiling"}.Select(name=>"Materials/"+name+".mat"))
+                .Concat(FoundationSurfaceMaterials.FloorNames.Select(name=>"Materials/Floor_"+name+".mat"))
+                .Concat(new[]{"StoneTile","BrushedSteel","RoofPanel"}.Select(name=>"Textures/"+name+".png")).ToArray();
+        }
+
         private static string[] VersionFourOwnedPaths()
         {
             return LegacyOwnedPaths().Concat(new[]{"evacuation-drills.json","station-twin-profile.json"})
@@ -540,17 +547,18 @@ namespace ChooGuard.Foundation.Demo.Editor
             var ownership = JsonUtility.FromJson<Ownership>(File.ReadAllText(marker));
             var legacy = ownership != null && ownership.version == 1 && ownership.ownedRelativePaths != null &&
                 ownership.ownedRelativePaths.SequenceEqual(LegacyOwnedPaths());
-            var current = ownership != null && ownership.version == 5 && ownership.ownedRelativePaths != null &&
+            var current = ownership != null && ownership.version == 6 && ownership.ownedRelativePaths != null &&
                 ownership.ownedRelativePaths.SequenceEqual(OwnedPaths());
+            var versionFive=ownership!=null&&ownership.version==5&&ownership.ownedRelativePaths!=null&&ownership.ownedRelativePaths.SequenceEqual(VersionFiveOwnedPaths());
             var versionFour=ownership!=null&&ownership.version==4&&ownership.ownedRelativePaths!=null&&ownership.ownedRelativePaths.SequenceEqual(VersionFourOwnedPaths());
             var versionThreePaths=LegacyOwnedPaths().Concat(new[]{"evacuation-drills.json"}).Concat(PrefabNames.Select(name=>"Prefabs/"+name+".prefab")).ToArray();
             var versionThree=ownership!=null&&ownership.version==3&&ownership.ownedRelativePaths!=null&&ownership.ownedRelativePaths.SequenceEqual(versionThreePaths);
             var previousPaths=LegacyOwnedPaths().Concat(PrefabNames.Take(11).Select(name=>"Prefabs/"+name+".prefab")).ToArray();
             var previous=ownership!=null && ownership.version==2 && ownership.ownedRelativePaths!=null && ownership.ownedRelativePaths.SequenceEqual(previousPaths);
-            if (ownership == null || ownership.generator != OwnerId || (!legacy && !current && !previous && !versionThree && !versionFour))
+            if (ownership == null || ownership.generator != OwnerId || (!legacy && !current && !previous && !versionThree && !versionFour && !versionFive))
                 throw new InvalidOperationException("Output ownership marker does not match this generator: " + root);
-            if (legacy || previous || versionThree || versionFour)
-                foreach (var path in OwnedPaths().Except(versionFour?VersionFourOwnedPaths():versionThree?versionThreePaths:previous?previousPaths:LegacyOwnedPaths()))
+            if (legacy || previous || versionThree || versionFour || versionFive)
+                foreach (var path in OwnedPaths().Except(versionFive?VersionFiveOwnedPaths():versionFour?VersionFourOwnedPaths():versionThree?versionThreePaths:previous?previousPaths:LegacyOwnedPaths()))
                     if (File.Exists(root + "/" + path))
                         throw new InvalidOperationException("New generated path already contains an unowned file: " + path);
             foreach (var path in OwnedPaths().Concat(new[] { MarkerName }))
@@ -588,7 +596,7 @@ namespace ChooGuard.Foundation.Demo.Editor
         {
             var marker = root + "/" + MarkerName;
             File.WriteAllText(marker, JsonUtility.ToJson(new Ownership
-                { generator = OwnerId, version = 5, ownedRelativePaths = OwnedPaths() }, true));
+                { generator = OwnerId, version = 6, ownedRelativePaths = OwnedPaths() }, true));
             AssetDatabase.ImportAsset(marker, ImportAssetOptions.ForceSynchronousImport);
         }
 

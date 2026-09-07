@@ -18,6 +18,7 @@ namespace ChooGuard.Foundation.Demo
         private AudioClip tone;
         public string SiteId {get{return siteId;}} public string Label {get{return label;}}
         public Vector3 Waypoint {get{return waypoint.position;}} public Transform Cue {get{return cue;}}
+        public Vector3 ObservationPoint {get{return lens!=null?lens.bounds.center:cue.position;}}
         public Bounds ExclusionBounds {get{return new Bounds(waypoint.position+Vector3.up*.9f,new Vector3(barrier.transform.localScale.x,1.8f,.32f));}}
         public bool Unavailable {get;private set;}
         public void Configure(string id,string display,Transform routePoint,GameObject solid,Transform indicator,Renderer signal,Renderer[] routeSigns,Light light)

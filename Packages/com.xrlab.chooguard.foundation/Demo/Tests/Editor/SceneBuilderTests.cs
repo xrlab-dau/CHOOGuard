@@ -367,11 +367,13 @@ namespace ChooGuard.Foundation.Demo.Tests
             Assert.That(top.Max(i=>mesh.uv[i].x),Is.EqualTo(1).Within(.015f));
             Assert.That(top.Min(i=>mesh.uv[i].y),Is.EqualTo(0).Within(.015f));
             Assert.That(top.Max(i=>mesh.uv[i].y),Is.EqualTo(1).Within(.015f));
+            foreach(var i in top){Assert.That(mesh.uv[i].x,Is.EqualTo(mesh.vertices[i].x+.5f).Within(.002f));Assert.That(mesh.uv[i].y,Is.EqualTo(mesh.vertices[i].z+.5f).Within(.002f));}
         }
 
         [Serializable] private sealed class OwnerReceipt { public string generator; public int version; public string[] ownedRelativePaths; }
-        [Test]
-        public void VersionFourMigrationPreservesLegacyPathsAndRejectsUnownedNewAssets()
+        [TestCase(4)]
+        [TestCase(5)]
+        public void PreviousMaterialOwnershipMigratesWithoutOverwritingNewTeamFiles(int version)
         {
             var scene=FoundationDemoSceneBuilder.Build(generatedRoot);
             EditorSceneManager.CloseScene(scene,true);
@@ -382,15 +384,91 @@ namespace ChooGuard.Foundation.Demo.Tests
                 .Concat(oldMaterials.Select(x=>"Materials/"+x+".mat"))
                 .Concat(new[]{"evacuation-drills.json","station-twin-profile.json"})
                 .Concat(owner.ownedRelativePaths.Where(x=>x.StartsWith("Prefabs/"))).ToArray();
+            if(version==5)oldPaths=oldPaths.Concat(new[]{"Stainless","Stone","Glass","Diffuser","Roof","Rubber","Ceiling"}.Select(x=>"Materials/"+x+".mat"))
+                .Concat(FoundationSurfaceMaterials.FloorNames.Select(x=>"Materials/Floor_"+x+".mat"))
+                .Concat(new[]{"StoneTile","BrushedSteel","RoofPanel"}.Select(x=>"Textures/"+x+".png")).ToArray();
             foreach(var path in owner.ownedRelativePaths.Except(oldPaths))AssetDatabase.DeleteAsset(generatedRoot+"/"+path);
-            owner.version=4;owner.ownedRelativePaths=oldPaths;File.WriteAllText(marker,JsonUtility.ToJson(owner));
-            var foreign=generatedRoot+"/Materials/Stainless.mat";
+            owner.version=version;owner.ownedRelativePaths=oldPaths;File.WriteAllText(marker,JsonUtility.ToJson(owner));
+            var foreign=generatedRoot+"/Materials/Wood.mat";
             AssetDatabase.CreateAsset(new Material(Shader.Find("Standard")),foreign);
             Assert.Throws<InvalidOperationException>(()=>FoundationDemoSceneBuilder.Build(generatedRoot));
             Assert.That(AssetDatabase.LoadAssetAtPath<Material>(foreign),Is.Not.Null);
             AssetDatabase.DeleteAsset(foreign);
             FoundationDemoSceneBuilder.Build(generatedRoot);
-            Assert.That(JsonUtility.FromJson<OwnerReceipt>(File.ReadAllText(marker)).version,Is.EqualTo(5));
+            Assert.That(JsonUtility.FromJson<OwnerReceipt>(File.ReadAllText(marker)).version,Is.EqualTo(6));
+        }
+
+        [Test]
+        public void DetailedReferencesHaveDistinctTerminalsAndAppropriateCollisionBodies()
+        {
+            var scene=FoundationDemoSceneBuilder.Build(generatedRoot);var root=scene.GetRootGameObjects().Single();
+            var targets=root.GetComponentInChildren<DemoGameController>().Targets;
+            var alarm=targets.Single(x=>x.AnchorId=="anchor-02");
+            Assert.That(alarm.transform.Find("AuthoredPhysics"),Is.Not.Null);
+            // The real-form callpoint is a small box, not an invisible .8m universal console.
+            Assert.That(alarm.transform.Find("Body").GetComponent<Collider>(),Is.Null);
+            var body=alarm.GetComponentsInChildren<BoxCollider>().Single(x=>x.name=="Collision_RedWeatherproofBackbox");
+            Assert.That(body.size.x,Is.InRange(.13f,.15f));
+            var panel=targets.Single(x=>x.AnchorId=="anchor-01");
+            var radio=targets.Single(x=>x.AnchorId=="anchor-03");
+            Assert.That(panel.GetComponentsInChildren<BoxCollider>().Any(x=>x.name=="Collision_ShallowRearHousing"),Is.True);
+            Assert.That(radio.GetComponentsInChildren<BoxCollider>().Any(x=>x.name=="Collision_WedgeHousing"),Is.True);
+            var leaf=targets.Single(x=>x.AnchorId=="anchor-05").transform.Find("MovingPart").GetComponentsInChildren<BoxCollider>().Single();
+            Assert.That(leaf.size.y,Is.GreaterThan(.65f));
+            Assert.That(root.transform.Find("Props/Bench_-1/Back").GetComponent<Collider>(),Is.Null,"No invisible old backrest after the timber bench correction.");
+            Assert.That(root.transform.Find("Environment/ReferenceFurniture/Blender_InformationIsland"),Is.Not.Null,"Counter must be used, not counted as a catalog-only result.");
+            Assert.That(AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/Wood.mat").mainTexture,Is.Not.Null);
+            Assert.That(AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/Fabric.mat").GetFloat("_Metallic"),Is.Zero);
+            var glazing=AssetDatabase.LoadAssetAtPath<Material>(generatedRoot+"/Materials/ClearGlass.mat");
+            Assert.That(glazing.renderQueue,Is.GreaterThanOrEqualTo(3000));Assert.That(glazing.color.a,Is.LessThan(.3f));
+        }
+
+        [Test]
+        public void MannequinFacingAndSolesMatchTravelAndFloorAtGaitExtremes()
+        {
+            var scene=FoundationDemoSceneBuilder.Build(generatedRoot);var root=scene.GetRootGameObjects().Single();
+            var actor=root.GetComponentsInChildren<DemoEvacuee>().First();var at=actor.transform.position;
+            var visual=actor.GetComponent<DemoEvacueeVisual>();Assert.That(visual,Is.Not.Null);
+            var shoes=actor.GetComponentsInChildren<MeshFilter>().Where(x=>x.name.Contains("Leg_")&&x.name.EndsWith("Rubber")).ToArray();
+            Assert.That(shoes.Length,Is.EqualTo(2));
+            foreach(var shoe in shoes)Assert.That(shoe.sharedMesh.bounds.center.z,Is.GreaterThan(0),"Toes and jacket face the actor +Z travel direction.");
+            foreach(var angle in new[]{-8f,0f,8f})
+            {
+                foreach(var joint in actor.GetComponentsInChildren<Transform>().Where(x=>x.name.EndsWith("Leg_Joint")))joint.localRotation=Quaternion.Euler(angle,0,0);
+                visual.AlignFeet();
+                Assert.That(shoes.Min(x=>x.GetComponent<Renderer>().bounds.min.y),Is.InRange(-.005f,.015f));
+                Assert.That(actor.transform.position,Is.EqualTo(at),"Ground alignment must not move the navigation root.");
+            }
+            var portal=root.GetComponentsInChildren<StationPortal>().First();Physics.SyncTransforms();
+            var origin=portal.ObservationPoint+Vector3.back*2;
+            Assert.That(Physics.Raycast(origin,Vector3.forward,out var hit,2.2f,1,QueryTriggerInteraction.Ignore),Is.True);
+            Assert.That(hit.collider.transform.IsChildOf(portal.Cue),Is.True,"Discovery ray must hit the actual beacon, not an old oversized cube.");
+        }
+
+        [Test]
+        public void ImportedAsymmetricGeometryMatchesAuthoredCollisionCoordinates()
+        {
+            var scene=FoundationDemoSceneBuilder.Build(generatedRoot);var root=scene.GetRootGameObjects().Single();
+            var gate=root.GetComponentInChildren<DemoGameController>().Targets.Single(t=>t.AnchorId=="anchor-05");
+            var pivot=gate.transform.Find("MovingPart");
+            var leaf=pivot.GetComponentsInChildren<Renderer>().Single(r=>r.name.StartsWith("MovingPart_ClearGlass"));
+            var collision=pivot.GetComponentsInChildren<BoxCollider>().Single();
+            foreach(var angle in new[]{0f,75f})
+            {
+                pivot.localRotation=Quaternion.Euler(0,angle,0);Physics.SyncTransforms();
+                Assert.That(Vector3.Distance(leaf.bounds.center,collision.bounds.center),Is.LessThan(.005f),"FBX import handedness must match authored collider and hinge coordinates.");
+                Assert.That(Vector3.Distance(leaf.bounds.size,collision.bounds.size),Is.LessThan(.005f));
+            }
+            var lid=gate.GetComponentsInChildren<BoxCollider>().Single(c=>c.name=="Collision_SlopedReaderLid");
+            Assert.That(lid.center.x,Is.EqualTo(-.069f).Within(.002f),"No direct Blender-axis offset bypasses the shared adapter.");
+            var glove=AssetDatabase.LoadAssetAtPath<GameObject>(FoundationBlenderAssets.Path+"Glove.fbx");
+            var knit=glove.GetComponentsInChildren<MeshFilter>().Single(m=>m.name.StartsWith("KnitPanel_"));
+            Assert.That(knit.sharedMesh.normals.All(n=>n.z<-.8f),Is.True,"Open back-of-hand sheet must face outward after handedness conversion.");
+            var palm=glove.GetComponentsInChildren<MeshFilter>().Single(m=>m.name.StartsWith("Static_Rubber"));
+            Assert.That(Mathf.Abs(palm.sharedMesh.bounds.min.x),Is.GreaterThan(palm.sharedMesh.bounds.max.x),"Thumb stays on authored negative X.");
+            var avatar=AssetDatabase.LoadAssetAtPath<GameObject>(FoundationBlenderAssets.Path+"Evacuee.fbx");
+            Assert.That(avatar.GetComponentsInChildren<MeshFilter>().Single(m=>m.name=="LeftLeg_Rubber").sharedMesh.bounds.center.x,Is.LessThan(0));
+            Assert.That(avatar.GetComponentsInChildren<MeshFilter>().Single(m=>m.name=="RightLeg_Rubber").sharedMesh.bounds.center.x,Is.GreaterThan(0));
         }
 
         private static void AssertWalkableSegment(Scene scene, CharacterController player,

@@ -50,7 +50,9 @@ namespace ChooGuard.Foundation.Demo.Editor
                 var truss=Instantiate("RoofTruss",architecture,materials);truss.localPosition=new Vector3(0,6.15f,z);
             }
             for(var x=-6;x<=6;x+=2)
-                Box("RoofPurlin_"+x,architecture,new Vector3(x,7.15f,.5f),new Vector3(.055f,.09f,15),M("White"),false);
+            {
+                var purlin=Instantiate("Purlin",architecture,materials);purlin.localPosition=new Vector3(x,7.15f,.5f);purlin.localScale=new Vector3(1,1,15);
+            }
             foreach(var side in new[]{-1,1})foreach(var z in new[]{-2,6})
             {
                 var extension=Instantiate("Pillar",architecture,materials);
@@ -70,8 +72,61 @@ namespace ChooGuard.Foundation.Demo.Editor
                 bay.localPosition=new Vector3(side*8.15f,5.25f,3);bay.localRotation=Quaternion.Euler(0,90,0);bay.localScale=new Vector3(3,4,.9f);
                 var closure=bay.gameObject.AddComponent<BoxCollider>();closure.size=new Vector3(1,1,.12f);
             }
+            AddReferencedSurfaces(environment,materials);
             FoundationSurfaceMaterials.ApplyFloorScale(environment,generatedRoot,M("Floor"));
             ConfigureLights(root,materials);
+        }
+
+        private static void AddReferencedSurfaces(Transform environment,Material[] materials)
+        {
+            var surface=Group("ReferenceSurfaces",environment,Vector3.zero);
+            var interior=environment.Find("InteriorDetails");
+            foreach(var old in interior.Cast<Transform>().Where(t=>t.name.Contains("_Skirting")||t.name.Contains("_Band")||t.name.Contains("_Joint_")).ToArray())Object.DestroyImmediate(old.gameObject);
+            foreach(var wall in environment.Cast<Transform>().ToArray())
+            {
+                if(wall.GetComponent<BoxCollider>()==null||wall.localScale.y<2.25f)continue;
+                var alongX=wall.localScale.x>wall.localScale.z;
+                var length=alongX?wall.localScale.x:wall.localScale.z;
+                var thickness=alongX?wall.localScale.z:wall.localScale.x;
+                var faces=wall.name.Contains("Partition")||Mathf.Abs(Mathf.Abs(wall.position.x)-8.15f)<.02f?2:1;
+                var direction=alongX?(wall.position.z<0?Vector3.forward:Vector3.back):(wall.position.x<0?Vector3.right:Vector3.left);
+                var count=Mathf.CeilToInt(length/4);var width=length/count;
+                for(var face=0;face<faces;face++)for(var i=0;i<count;i++)
+                {
+                    var normal=face==0?direction:-direction;
+                    var panel=Instantiate("WallPanel",surface,materials);
+                    panel.localPosition=wall.localPosition+(alongX?Vector3.right:Vector3.forward)*(-length/2+width*(i+.5f))+normal*(thickness/2-.022f);
+                    panel.localScale=new Vector3(width,wall.localScale.y-.06f,1);
+                    panel.localRotation=Quaternion.Euler(0,alongX?(normal.z>0?180:0):(normal.x>0?-90:90),0);
+                }
+            }
+            // Expose corrugated upper sheet faces toward the hall. The base ceiling remains the enclosure.
+            for(var x=0;x<16;x++)
+            {
+                var roof=Instantiate("RoofPanel",surface,materials);roof.localPosition=new Vector3(-7.5f+x,7.335f,.5f);
+                roof.localScale=new Vector3(1,1,15);roof.localRotation=Quaternion.Euler(0,0,180);
+            }
+            foreach(var ceiling in environment.GetComponentsInChildren<MeshFilter>().Where(m=>m.name.Contains("Ceiling")&&!m.name.Contains("Light")&&m.name!="CeilingConcourse").ToArray())
+            {
+                var panel=Instantiate("CeilingPanel",surface,materials);
+                panel.position=ceiling.transform.position+Vector3.down*.045f;
+                panel.localScale=new Vector3(ceiling.transform.lossyScale.x/3.6f,1,ceiling.transform.lossyScale.z/3.6f);
+                Object.DestroyImmediate(ceiling.GetComponent<Renderer>());Object.DestroyImmediate(ceiling);
+            }
+            var hall=interior.Find("HallSign");var oldBoard=hall.Find("Board");
+            if(oldBoard!=null)Object.DestroyImmediate(oldBoard.gameObject);
+            var hallBoard=Instantiate("AssemblySign",hall,materials);hallBoard.localScale=new Vector3(2.8f/1.7f,.42f/.45f,1);
+            var title=hall.GetComponentInChildren<TextMesh>();title.anchor=TextAnchor.MiddleCenter;title.alignment=TextAlignment.Center;
+            title.transform.localPosition=new Vector3(0,0,-.04f);title.characterSize=.009f;
+            // An authored tactile strip, not a claim of approved accessibility routing or an incident solution.
+            for(var i=0;i<44;i++)
+            {
+                var tile=Instantiate("TactileTile",surface,materials);tile.localPosition=new Vector3(-.75f,-.009f,-6.45f+i*.3f);
+                tile.localScale=new Vector3(.3f,1,.3f);
+            }
+            var furniture=Group("ReferenceFurniture",environment,Vector3.zero);
+            var counter=Instantiate("InformationIsland",furniture,materials);counter.localPosition=new Vector3(14.65f,0,-.6f);
+            FoundationAssetPhysics.Apply(counter,counter,"InformationIsland");
         }
 
         private static void ConfigureLights(Transform root,Material[] materials)
@@ -82,18 +137,21 @@ namespace ChooGuard.Foundation.Demo.Editor
             RenderSettings.ambientGroundColor=new Color(.30f,.31f,.32f);
             var sun=root.Find("Lighting/Sun").GetComponent<Light>();sun.intensity=.75f;sun.color=new Color(1,.98f,.93f);
             sun.shadows=LightShadows.Soft;sun.shadowStrength=.55f;sun.shadowBias=.04f;sun.shadowNormalBias=.2f;
-            foreach(var fixture in root.Find("Environment").GetComponentsInChildren<Transform>().Where(t=>t.name.StartsWith("CeilingLight_")||t.name=="Blender_CeilingLight").ToArray())
+            foreach(var fixture in root.Find("Environment").GetComponentsInChildren<Transform>().Where(t=>t.name.StartsWith("CeilingLight_")||t.name=="Blender_CeilingLight"||t.name=="Blender_RecessedLight").ToArray())
             {
                 // Nested FBX fixtures inherit their parent's position; create one actual light per assembly.
-                if(fixture.name=="Blender_CeilingLight"&&fixture.parent.name.StartsWith("CeilingLight_"))continue;
-                var position=fixture.position;position.y=position.z<8&&Mathf.Abs(position.x)<8?5.85f:3.98f;fixture.position=position;
+                if((fixture.name=="Blender_CeilingLight"||fixture.name=="Blender_RecessedLight")&&fixture.parent.name.StartsWith("CeilingLight_"))continue;
+                var position=fixture.position;
+                var rs=fixture.GetComponentsInChildren<Renderer>();var bound=rs[0].bounds;foreach(var r in rs)bound.Encapsulate(r.bounds);
+                var mountingHeight=position.z<8&&Mathf.Abs(position.x)<8?6.15f:4.14f;
+                position.y+=mountingHeight-bound.max.y;fixture.position=position;
                 var source=Group("RoomFill",fixture,Vector3.down*.16f).gameObject.AddComponent<Light>();
                 source.type=LightType.Point;source.range=11;source.intensity=1.25f;source.color=new Color(.97f,.98f,1);
                 source.shadows=LightShadows.None;source.renderMode=LightRenderMode.Auto;
             }
             // One small realtime probe, refreshed once per scene load. No editor/environment bake.
             var probe=Group("ConcourseReflection",root.Find("Lighting"),new Vector3(0,2,.5f)).gameObject.AddComponent<ReflectionProbe>();
-            probe.mode=ReflectionProbeMode.Realtime;probe.refreshMode=ReflectionProbeRefreshMode.OnAwake;
+            probe.mode=ReflectionProbeMode.Realtime;probe.refreshMode=ReflectionProbeRefreshMode.ViaScripting;
             probe.timeSlicingMode=ReflectionProbeTimeSlicingMode.IndividualFaces;probe.resolution=64;
             probe.size=new Vector3(18,10,17);probe.boxProjection=true;probe.hdr=false;probe.farClipPlane=40;
             probe.clearFlags=ReflectionProbeClearFlags.SolidColor;probe.backgroundColor=new Color(.57f,.64f,.70f);

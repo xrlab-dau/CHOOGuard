@@ -8,9 +8,11 @@ namespace ChooGuard.Foundation.Demo
     {
         // Serialized disabled by the builder, so Null graphics never schedules a cubemap render.
         // Unity 6000.3's built-in probe renderer can crash in -nographics even though normal cameras do not render.
-        private void OnEnable()
+        private void Start()
         {
-            GetComponent<ReflectionProbe>().enabled=SystemInfo.graphicsDeviceType!=GraphicsDeviceType.Null;
+            var probe=GetComponent<ReflectionProbe>();
+            probe.enabled=SystemInfo.graphicsDeviceType!=GraphicsDeviceType.Null;
+            if(probe.enabled)probe.RenderProbe();
         }
         private void OnDisable()
         {

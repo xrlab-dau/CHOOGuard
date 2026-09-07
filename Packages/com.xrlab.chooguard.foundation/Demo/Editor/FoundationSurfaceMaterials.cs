@@ -9,14 +9,14 @@ namespace ChooGuard.Foundation.Demo.Editor
     {
         public static readonly string[] FloorNames = { "ConcourseFloor", "CorridorFloor", "AssemblyFloor",
             "WestWaitingFloor", "WestBypassFloor", "WestLinkFloor", "EastWaitingFloor", "EastBypassFloor", "EastLinkFloor" };
-        public static readonly string[] TextureNames = { "StoneTile", "BrushedSteel", "RoofPanel" };
+        public static readonly string[] TextureNames = { "StoneTile", "BrushedSteel", "RoofPanel", "TimberGrain", "FabricWeave" };
 
         public static void CreateTextures(string root)
         {
             if (!AssetDatabase.IsValidFolder(root+"/Textures")) AssetDatabase.CreateFolder(root,"Textures");
             foreach(var name in TextureNames)
             {
-                var size=name=="StoneTile"?512:128;
+                var size=name=="StoneTile"?512:name=="TimberGrain"?256:128;
                 var texture=new Texture2D(size,size,TextureFormat.RGB24,false);
                 var pixels=new Color[size*size];
                 for(var y=0;y<size;y++) for(var x=0;x<size;x++)
@@ -31,6 +31,8 @@ namespace ChooGuard.Foundation.Demo.Editor
                         if(grain<.035f)value-=.16f;
                         if(x<2||y<2||x>=size-2||y>=size-2)value=.55f;
                     }
+                    else if(name=="TimberGrain") value=.85f+.06f*Mathf.Sin(y*.37f+Mathf.Sin(x*.04f)*1.8f)+(grain-.5f)*.035f;
+                    else if(name=="FabricWeave") value=.85f+((x/2+y/2)%2==0?.065f:-.065f)+(grain-.5f)*.015f;
                     else if(name=="BrushedSteel") value=.84f+Mathf.Sin(y*7.13f)*.035f+(grain-.5f)*.025f;
                     else value=(x%32<2?.55f:.82f)+(grain-.5f)*.025f;
                     pixels[y*size+x]=new Color(value,value,value,1);
@@ -50,12 +52,12 @@ namespace ChooGuard.Foundation.Demo.Editor
         public static void Configure(Material material,string name,string root)
         {
             var metallic=name=="Stainless"?.85f:0;
-            var smooth=name=="Stainless"?.62f:name=="Glass"?.78f:name=="Floor"||name=="Stone"?.42f:
-                name=="Rubber"?.08f:name=="Roof"?.18f:.28f;
+            var smooth=name=="Stainless"?.62f:name=="Glass"||name=="ClearGlass"?.78f:name=="Floor"||name=="Stone"?.42f:
+                name=="Rubber"||name=="Fabric"?.08f:name=="Wood"?.32f:name=="Roof"?.18f:.28f;
             Set(material,"_Metallic",metallic);Set(material,"_Glossiness",smooth);Set(material,"_Smoothness",smooth);
             Set(material,"_SpecularHighlights",1);Set(material,"_GlossyReflections",1);
             material.DisableKeyword("_SPECULARHIGHLIGHTS_OFF");material.DisableKeyword("_GLOSSYREFLECTIONS_OFF");
-            var textureName=name=="Floor"||name=="Stone"?"StoneTile":name=="Stainless"?"BrushedSteel":name=="Ceiling"?"RoofPanel":null;
+            var textureName=name=="Floor"||name=="Stone"?"StoneTile":name=="Stainless"?"BrushedSteel":name=="Ceiling"?"RoofPanel":name=="Wood"?"TimberGrain":name=="Fabric"?"FabricWeave":null;
             if(material.HasProperty("_MainTex")||material.HasProperty("_BaseMap"))
             {
                 material.mainTexture=textureName==null?null:AssetDatabase.LoadAssetAtPath<Texture2D>(root+"/Textures/"+textureName+".png");
@@ -67,6 +69,15 @@ namespace ChooGuard.Foundation.Demo.Editor
             if(material.HasProperty("_EmissionColor"))material.SetColor("_EmissionColor",emissive?
                 (name=="Diffuser"?new Color(.75f,.78f,.72f):new Color(.14f,.20f,.23f)):Color.black);
             if(emissive)material.EnableKeyword("_EMISSION");else material.DisableKeyword("_EMISSION");
+            if(name=="ClearGlass")
+            {
+                Set(material,"_Mode",3);Set(material,"_Surface",1);
+                material.SetOverrideTag("RenderType","Transparent");
+                Set(material,"_SrcBlend",(float)UnityEngine.Rendering.BlendMode.One);
+                Set(material,"_DstBlend",(float)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);Set(material,"_ZWrite",0);
+                material.DisableKeyword("_ALPHATEST_ON");material.DisableKeyword("_ALPHABLEND_ON");
+                material.EnableKeyword("_ALPHAPREMULTIPLY_ON");material.renderQueue=3000;
+            }
             material.globalIlluminationFlags=MaterialGlobalIlluminationFlags.None;
         }
 

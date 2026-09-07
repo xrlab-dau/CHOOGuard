@@ -186,7 +186,7 @@ namespace ChooGuard.Foundation.Demo
         private void DiscoverVisibleSignal()
         {
             if(Session.Phase!=StationPhase.Incident||Session.Active.Discovered)return;
-            var portal=portals.Single(x=>x.SiteId==Session.Active.SiteId);var point=portal.Cue.position+Vector3.up*.1f;
+            var portal=portals.Single(x=>x.SiteId==Session.Active.SiteId);var point=portal.ObservationPoint;
             var delta=point-player.ViewCamera.transform.position;
             if(delta.magnitude>10||Vector3.Dot(delta.normalized,player.ViewCamera.transform.forward)<.7f)return;
             RaycastHit hit;

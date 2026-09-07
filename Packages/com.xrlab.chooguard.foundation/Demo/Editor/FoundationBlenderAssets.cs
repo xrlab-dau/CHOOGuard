@@ -34,6 +34,7 @@ namespace ChooGuard.Foundation.Demo.Editor
                 renderer.shadowCastingMode=id=="Glove"||id=="NavigationArrow"||id=="AssemblyRing"?
                     UnityEngine.Rendering.ShadowCastingMode.Off:UnityEngine.Rendering.ShadowCastingMode.On;
                 renderer.receiveShadows=id!="Glove";
+                if(renderer.sharedMaterials.All(m=>m.name=="ClearGlass"))renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.Off;
             }
             return instance;
         }
@@ -58,6 +59,8 @@ namespace ChooGuard.Foundation.Demo.Editor
                     part.SetParent(moving,false);part.localPosition=-moving.localPosition;
                 }
                 target.ConfigureFeedback(model.GetComponentsInChildren<Renderer>().Where(x=>x.name.StartsWith("Status_")).ToArray());
+                foreach(var label in target.transform.Find("Details").GetComponentsInChildren<TextMesh>(true))UnityEngine.Object.DestroyImmediate(label.gameObject);
+                FoundationAssetPhysics.Apply(target.transform,model,id);
             }
             var props=root.Find("Props");
             foreach(Transform prop in props)
@@ -68,11 +71,14 @@ namespace ChooGuard.Foundation.Demo.Editor
                 var model=Instantiate(id,prop,materials);
                 model.localScale=new Vector3(1/prop.localScale.x,1/prop.localScale.y,1/prop.localScale.z);
                 if(id=="InformationKiosk")model.localRotation=Quaternion.Euler(0,180,0);
+                if(id=="Bench"||id=="InformationKiosk"||id=="HazardIndicator")FoundationAssetPhysics.Apply(prop,model,id);
+                if(id=="InformationKiosk")foreach(var label in prop.GetComponentsInChildren<TextMesh>(true))UnityEngine.Object.DestroyImmediate(label.gameObject);
                 if(id=="HazardIndicator")
                 {
                     var old=prop.GetComponentInChildren<DemoIncidentVisual>();if(old!=null)UnityEngine.Object.DestroyImmediate(old);
                     var lens=model.GetComponentsInChildren<Renderer>().First(x=>x.name.StartsWith("Beacon_"));
-                    lens.gameObject.AddComponent<DemoIncidentVisual>().Configure(prop.GetComponentInChildren<Light>(),lens);
+                    var ownLight=prop.GetComponentInChildren<Light>();ownLight.transform.position=lens.bounds.center;
+                    lens.gameObject.AddComponent<DemoIncidentVisual>().Configure(ownLight,lens);
                 }
             }
             var glove=root.GetComponentInChildren<DemoHands>().transform.Find("Visual");RemoveOldMeshes(glove);Instantiate("Glove",glove,materials);
@@ -84,8 +90,8 @@ namespace ChooGuard.Foundation.Demo.Editor
             }
             foreach(var fixture in root.Find("Environment/InteriorDetails").Cast<Transform>().Where(x=>x.name.StartsWith("CeilingLight_")).ToArray())
             {
-                foreach(Transform part in fixture)if(part.name!="Beam")RemoveOldMeshes(part);
-                Instantiate("CeilingLight",fixture,materials);
+                foreach(Transform part in fixture)RemoveOldMeshes(part);
+                Instantiate(fixture.localPosition.z<8?"CeilingLight":"RecessedLight",fixture,materials);
             }
             var guide=root.Find("Markers/AssemblyGuide");
             var ring=AssetDatabase.LoadAssetAtPath<GameObject>(Path+"AssemblyRing.fbx");

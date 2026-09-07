@@ -34,7 +34,7 @@ namespace ChooGuard.Foundation.Demo.Editor
                 Box(side+"WaitingCeiling",env,new Vector3(sign*12,3.30f,3),new Vector3(8,.12f,8),m[1],false);
                 Box(side+"BypassCeiling",env,new Vector3(sign*13,3.30f,12.5f),new Vector3(6,.12f,11),m[1],false);
                 Box(side+"LinkCeiling",env,new Vector3(sign*8,3.30f,16.5f),new Vector3(4,.12f,3),m[1],false);
-                for(var z=2;z<=17;z+=5){var light=Instantiate("CeilingLight",env,m);light.localPosition=new Vector3(sign*13,3.16f,z);}
+                for(var z=2;z<=17;z+=5){var light=Instantiate("RecessedLight",env,m);light.localPosition=new Vector3(sign*13,3.16f,z);}
                 var door=Instantiate("DoorFrame",env,m);door.localPosition=new Vector3(sign*8.1f,0,3);door.localRotation=Quaternion.Euler(0,90,0);
                 var inner=Instantiate("DoorFrame",env,m);inner.localPosition=new Vector3(sign*6.1f,0,16.5f);inner.localRotation=Quaternion.Euler(0,90,0);
                 // Partition makes a real corner; collision and graph tests cover both bypasses.
@@ -42,9 +42,9 @@ namespace ChooGuard.Foundation.Demo.Editor
                 for(var i=0;i<2;i++)
                 {
                     var bench=Instantiate("Bench",env,m);bench.localPosition=new Vector3(sign*13,0,.4f+i*3);
-                    Box(side+"BenchCollision_"+i,env,bench.localPosition+Vector3.up*.6f,new Vector3(2.4f,1.2f,.75f),m[0]).GetComponent<Renderer>().enabled=false;
+                    FoundationAssetPhysics.Apply(bench,bench,"Bench");
                     var luggage=Instantiate("Luggage",env,m);luggage.localPosition=new Vector3(sign*15,0,2+i*4);
-                    Box(side+"LuggageCollision_"+i,env,luggage.localPosition+Vector3.up*.4f,new Vector3(.55f,.8f,.35f),m[0]).GetComponent<Renderer>().enabled=false;
+                    FoundationAssetPhysics.Apply(luggage,luggage,"Luggage");
                 }
                 var signModel=Instantiate("AssemblySign",env,m);signModel.localPosition=new Vector3(sign*12,2.65f,7);Label(signModel,"BYPASS  "+side.ToUpper(),new Vector3(0,.01f,-.08f),.065f);
             }
@@ -72,6 +72,7 @@ namespace ChooGuard.Foundation.Demo.Editor
                     foreach(var part in body.Cast<Transform>().Where(x=>x.name.StartsWith(limb+"_")&&x!=joint).ToArray())
                     {part.SetParent(joint,false);part.localPosition=-pivot;}
                 }
+                actor.gameObject.AddComponent<DemoEvacueeVisual>().Configure(body);
                 var trigger=actor.gameObject.AddComponent<CapsuleCollider>();trigger.radius=.26f;trigger.height=1.75f;trigger.center=Vector3.up*.87f;trigger.isTrigger=true;
                 actors[i]=actor.gameObject.AddComponent<DemoEvacuee>();
                 actors[i].Configure(side<0?"west":"east",i,at,new Vector3(-1.25f+local*1.25f,.1f,16.5f+(i/3)*1.25f));
@@ -93,7 +94,7 @@ namespace ChooGuard.Foundation.Demo.Editor
         {
             var target=Group(id,parent,at);target.localRotation=rotation;
             var model=Instantiate(asset,target,m);if(floorPivot)model.localPosition=Vector3.down*1.1f;
-            var collider=target.gameObject.AddComponent<BoxCollider>();collider.size=new Vector3(.8f,.7f,.3f);
+            FoundationAssetPhysics.Apply(target,model,asset);
             var interaction=target.gameObject.AddComponent<DemoInteractable>();interaction.Configure(id,label,0);
             interaction.ConfigureFeedback(model.GetComponentsInChildren<Renderer>().Where(x=>x.name.StartsWith("Status_")).ToArray());
             return interaction;
