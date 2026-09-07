@@ -1,5 +1,8 @@
 # choo guard 작업 단위 그래프 v1.0
 
+> Foundation 결과물은 임시 맵·3D 오브젝트·싱글플레이 비상대응 시나리오가 연결된 실제 게임이다. 공통 소스/검사는 내부 기반이며 [첫 playable 완료 기준](choo-guard-foundation-v1.md)을 적용한다.
+> 현행 소스 착수 경로: [Foundation 개발 기준](choo-guard-foundation-v1.md). 2026-09-06 사용자 지시에 따라 KORAIL 비의존 합성 코드·데이터·mock 개발을 병렬로 진행한다. 아래 통합/도구 그래프를 그 소스 작성의 전역 차단 조건으로 해석하지 않는다. 실제 도구 실행·자료 취급·최종 검증 조건은 각 범위에 유지한다.
+
 - 목적: 백로그 v1.3의 작업 단위를 그래프 노드로, 선행 관계를 간선으로 고정하고, 각 노드에 실행 머신·워크플로·리뷰어·증거 경로를 붙인다.
 - 예정 실행 엔진은 pi-agents 워크플로(`.pi/workflows/`)다. 코드 단위의 현 `wu-develop`은 scout → implementer → adversarial-review → 수정·재검토 → verifier 순서다. 초기 검토와 최대 3회 수정 루프는 총 3라운드 목표와 다르며 미승인 verifier 진입도 차단·시험해야 한다.
 - 문서 단위의 목표 경로는 `plan-review`다. 현재 YAML은 실패 차단·라운드·판정 저장 결함으로 운영 보류다. 아래 그래프는 예정 의존성이지 실행·승인 완료 기록이 아니다.
@@ -68,3 +71,9 @@ graph LR
 | 버전 | 날짜 | 내용 |
 |---|---|---|
 | 1.0 | 2026-09-06 | 최초 작성. M1-04 배치는 analysis F-05 참조 |
+
+## 상시 현장 모드 추가 (2026-09-07)
+
+- [FND-05 #59](https://github.com/xrlab-dau/CHOOGuard/issues/59): 동일 NPC 순회·직접 인솔·도착/복구.
+- [FND-06 #60](https://github.com/xrlab-dau/CHOOGuard/issues/60): 평상시 운영 → 불시 사건 → 관측/조건부 대응 → 복기/복구 → 다음 사건. 기본 선택형 드릴 흐름을 대체한다.
+- 공간·매뉴얼·운영 데이터의 실제 대조와 현장 전이 검증은 [상시 현장 설계의 검증 범위](choo-guard-open-world-training.md)를 따른다. 합성 완료와 자동 시험만으로 디지털 트윈·현장 효용 또는 Done을 선언하지 않는다.

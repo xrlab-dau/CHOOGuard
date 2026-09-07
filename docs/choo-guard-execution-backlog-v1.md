@@ -1,9 +1,12 @@
 # choo guard 실행 백로그 v1.3
 
+> Foundation 결과물은 임시 맵·3D 오브젝트·싱글플레이 비상대응 시나리오가 연결된 실제 게임이다. 공통 소스/검사는 내부 기반이며 [첫 playable 완료 기준](choo-guard-foundation-v1.md)을 적용한다.
 - 작성일: 2026-09-05
 - 상태: 구현 전 백로그
 - 기준 문서: `choo-guard-requirements-baseline-v1.md`, `choo-guard-platform-architecture-v4.md`, `choo-guard-ai-native-pipeline-v1.md`
 - 원칙: PM 핵심 통합, 나머지 팀원은 독립 Work Package 책임
+
+> 2026-09-06 사용자 지시: [Foundation 개발 기준](choo-guard-foundation-v1.md)을 현행 합성 소스 착수 경로로 적용한다. KORAIL 데이터·회신 없이 제품 코어·합성 맵·입력·UI·검증을 개발한다. 아래 선행 조건은 해당 실제 통합·완료 검증에 적용하며, 순수 소스·mock 개발 전체를 차단하지 않는다. 실제 촬영·자료 처리·최종 MVP 수용 조건은 유지한다.
 
 ## 1. 완료 상태
 
@@ -572,3 +575,9 @@ M0-02b·M3 전체 역사 촬영·맵 작업은 서면 승인 전까지 Blocked �
 | DA3·맵 품질 | MAP | PM이 라이선스·자료 경계를 승인 |
 | 공개 파일·게시 | PM | 파일별 공개 manifest와 자료 권위자 승인 |
 | 병합·릴리스·최종 발표 | PM | 사용자 사전 확인과 독립 PASS 대상 해시 일치 |
+
+## 상시 현장 모드 추가 (2026-09-07)
+
+- [FND-05 #59](https://github.com/xrlab-dau/CHOOGuard/issues/59): 동일 NPC 순회·직접 인솔·도착/복구.
+- [FND-06 #60](https://github.com/xrlab-dau/CHOOGuard/issues/60): 평상시 운영 → 불시 사건 → 관측/조건부 대응 → 복기/복구 → 다음 사건. 기본 선택형 드릴 흐름을 대체한다.
+- 공간·매뉴얼·운영 데이터의 실제 대조와 현장 전이 검증은 [상시 현장 설계의 검증 범위](choo-guard-open-world-training.md)를 따른다. 합성 완료와 자동 시험만으로 디지털 트윈·현장 효용 또는 Done을 선언하지 않는다.

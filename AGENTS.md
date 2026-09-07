@@ -31,3 +31,15 @@ Git-tracked C#, tests, declarative scenario data, Editor builders, and SceneBund
 - Do not send railway imagery or reconstructed geometry to external LLM or asset-generation APIs.
 - Never change scoring rules, safety steps, coordinate conversion, or collision boundaries without tests and lead review.
 - LLM output is not an authority for railway procedures or physical safety.
+
+## Accepted visual and simulation direction
+
+- Match real facility layout, equipment placement, routes and authorized emergency procedures as closely as available evidence supports; simplify appearance only. Unreceived facility/manual references remain provisional, not invented as verified.
+- Model all visual objects in flat art: solid colors, matte surfaces and face-based shading. Do not pursue photorealistic textures, metallic gloss or baked realism.
+- Desktop first, later VR uses the same spatial anchors and action meaning. Gameplay objectives use world navigation cues; identical faceless evacuees follow the player without emotions or role substitution.
+
+## Continuous field training direction
+
+- The primary flow is ordinary station operation with unforeseen, constrained incident episodes, response and recovery in the same world. Do not expose a scenario picker, onset countdown or undiscovered solution markers as the default experience.
+- Randomize reviewed incident variations, never invent railway procedures randomly. Keep world state separate from what the player has observed. Equipment availability, routes and NPC behavior must reflect the same state.
+- Preserve seed, profile and observed actions for replay/debrief. Synthetic completion and automated tests do not establish validated digital-twin fidelity or transfer to field performance.
