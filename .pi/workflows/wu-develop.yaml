@@ -1,0 +1,116 @@
+name: wu-develop
+description: 작업 단위 하나를 정찰 → 구현 → 독립 적대적 리뷰 → 수정 반복(최대 3회) → 검증 실행으로 진행하는 개발 그래프
+trigger: when the user asks to develop one backlog work unit or spec end to end with independent review
+display: report
+doc: >-
+  파이프라인 v1 §5 의 구현·검증 단계를 한 작업 단위에 적용한다. 구현은 anthropic 계열 implementer,
+  리뷰는 openai-codex 계열 읽기 전용 리뷰어 3명, 검증은 편집 도구가 없는 verifier 가 맡는다.
+  병합·push·릴리스는 이 그래프가 하지 않으며 사람 승인 게이트(G3)로 넘긴다.
+params:
+  - name: unit
+    description: 작업 단위 ID 와 명세 경로 (예 "M0-03 specs/004-m0-03-ai-tool-allowlist/spec.md")
+    required: true
+  - name: tests
+    description: 검증 에이전트가 실행할 명령 (쉼표 구분)
+    default: python3 scripts/ci/repository_policy.py
+flow:
+  kind: sequence
+  steps:
+    - kind: agent
+      profile: scout
+      as: plan
+      task: |-
+        작업 단위: {params.unit}
+        관련 요구사항 ID, 허용 경로, 보호 경로 접촉 여부, 구현 순서, 필요한 테스트, 증거 위치를 정리한다.
+      json:
+        type: object
+        required: [requirement_ids, files, protected_paths_touched, steps, tests]
+        properties:
+          requirement_ids: { type: array, items: { type: string } }
+          files: { type: array, items: { type: string } }
+          protected_paths_touched: { type: boolean }
+          steps: { type: array, items: { type: string } }
+          tests: { type: array, items: { type: string } }
+        additionalProperties: false
+    - kind: switch
+      on: "{plan}"
+      cases:
+        - when: { eq: [protected_paths_touched, true] }
+          then:
+            kind: value
+            value:
+              outcome: cannot_proceed
+              reason: 보호 경로 변경이 필요하다. 사람 승인 후 별도 작업 단위로 진행한다.
+              plan: "{plan}"
+      else:
+        kind: sequence
+        steps:
+          - kind: agent
+            profile: implementer
+            as: impl
+            task: |-
+              작업 단위: {params.unit}
+              정찰 계획: {plan}
+
+              계획의 files 범위 안에서만 구현하고 tests 를 실제로 실행한다. 커밋은 만들지 않는다.
+            json:
+              type: object
+              required: [summary, changed_files, tests_run]
+              properties:
+                summary: { type: string, minLength: 1 }
+                changed_files: { type: array, items: { type: string } }
+                tests_run: { type: array, items: { type: string } }
+              additionalProperties: false
+          - kind: workflow
+            name: adversarial-review
+            as: first
+            params:
+              target: "작업 단위 {params.unit} 의 작업 트리 변경(git diff, 변경 파일 {impl.changed_files})"
+              context: "구현 요약: {impl.summary}"
+          - kind: while
+            as: review
+            on: "{first}"
+            condition: { eq: [outcome, changes_required] }
+            max: 3
+            body:
+              kind: sequence
+              steps:
+                - kind: agent
+                  profile: implementer
+                  as: fix
+                  task: |-
+                    라운드 {iteration}. 작업 단위 {params.unit} 의 리뷰 항목을 반영한다:
+                    {current.actionable}
+                    항목 범위 밖 변경은 하지 않고 tests 를 다시 실행한다. 커밋은 만들지 않는다.
+                  json:
+                    type: object
+                    required: [summary, changed_files]
+                    properties:
+                      summary: { type: string, minLength: 1 }
+                      changed_files: { type: array, items: { type: string } }
+                    additionalProperties: false
+                - kind: workflow
+                  name: adversarial-review
+                  params:
+                    target: "작업 단위 {params.unit} 의 작업 트리 변경(git diff)"
+                    context: "라운드 {iteration} 수정 요약: {fix.summary}"
+          - kind: agent
+            profile: verifier
+            as: verify
+            task: |-
+              작업 단위 {params.unit}. 다음 명령을 실제로 실행하고 결과를 기록한다: {params.tests}
+              변경 파일의 sha256 도 기록한다.
+            json:
+              type: object
+              required: [passed, commands, hashes, notes]
+              properties:
+                passed: { type: boolean }
+                commands: { type: array, items: { type: object, required: [command, exit_code], properties: { command: { type: string }, exit_code: { type: integer }, output_tail: { type: string } } } }
+                hashes: { type: array, items: { type: string } }
+                notes: { type: string }
+              additionalProperties: false
+          - kind: value
+            value:
+              review: "{review}"
+              verification: "{verify}"
+              implementation: "{impl}"

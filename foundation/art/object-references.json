@@ -1,0 +1,2744 @@
+{
+  "version": 1,
+  "date": "2026-09-07",
+  "scope": "All configured Blender asset families, including virtual guidance and structural adapters; source images remain outside Git.",
+  "auditFinding": "The prior global concourse reference list did not establish per-object reproduction. Backed perforated benches, rectangular counter and universal consoles were contradicted or unsupported and have been replaced.",
+  "assets": [
+    {
+      "id": "AccessGate",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.gunneboentrancecontrol.com/en_us/products/gates/metro-gates/swing-panel-gate/",
+          "imageUrls": [
+            "https://www.gunneboentrancecontrol.com/wp-content/uploads/2023/12/Swing-gate-4.png"
+          ],
+          "observedFeatures": [
+            "Narrow silver cabinets with rounded vertical ends and dark sloped reader lids",
+            "Green status indicators integrated at the cabinet front/top",
+            "Transparent upright swing leaves between cabinets",
+            "Horizontal upper rails and visible hinge/pivot mounts",
+            "Small vertical service lock slots and lower cabinet seams"
+          ],
+          "imageSha256": [
+            "58be15489f75083a08a40074347a28648e79b650cdd233e5ba9fe95be5aee969"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Gunnebo Entrance Control; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "RoundedGateCabinet",
+        "SlopedReaderLid",
+        "StatusReaderWindow",
+        "PivotHingeRail",
+        "TransparentSwingLeaf"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "reason": "No model-specific overall physical dimensions were confirmed from the selected manufacturer page."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.236,
+          -1.085,
+          -0.218
+        ],
+        "max": [
+          0.7,
+          0.265,
+          0.285
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "This is a manufacturer generic metro/train ticket-gate reference. It is not identified as installed at Busan KORAIL. Earlier SpeedStile FLs URL redirected to the product index and was superseded by this exact Swing Panel Gate page.",
+        "Create a one-cabinet training proxy, not a compressed model of the entire two-lane product. Use a tapered reader lid, metallic cabinet skin, service seam and a short transparent leaf. Preserve existing MovingPart pivot (0.1,0.05,0), 75-degree swing, leaf extent roughly local x=0.1..0.7. The leaf/housing bounds are a named AccessGateVisualEnvelope change for root to rebuild and test; do not reproduce hidden sensors or manufacturer safety logic. Do not introduce a second cabinet into the shared path."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "bd89b6d85c23799547a6d2cd36ac7db79863c39cea5ee640f5ab1141a36ff314",
+        "captureSha256": [
+          "fc9e21e55d4f5215f62fa46db49c7ba0a703fad812c8b49ca40f6a8625efdc62",
+          "1b4fb1a79684e0a7cbf7c24d40fed9fa1a4875822a8cb385a8357e9e6b327b08"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "AlarmSimulator",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://apollo-fire.co.uk/products/series-65/mcp/55200-003apo-conventional-manual-call-point-outdoor/",
+          "imageUrls": [
+            "https://apollo-fire.co.uk/wp-content/uploads/2025/07/E0002349_0001.jpg"
+          ],
+          "observedFeatures": [
+            "Deep red rectangular back box with rounded outer corners",
+            "Raised red face frame around a recessed white rectangular operating element",
+            "Two pale circular cable-entry caps on the top face",
+            "Visible corner/face fixing screws and a bottom key/reset recess"
+          ],
+          "imageSha256": [
+            "811de8be837fb0d5152251e93f56a28f24f072ee2ea0f9c8068c073f739c0885"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Apollo Fire Detectors; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "RedWeatherproofBackbox",
+        "RecessedPressureElement",
+        "RaisedFaceFrame",
+        "TopConduitCaps",
+        "ResetKeyRecess"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "reason": "No model-specific overall physical dimensions were confirmed from the selected manufacturer page."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.14,
+          -1.1,
+          -0.165
+        ],
+        "max": [
+          0.14,
+          0.1225,
+          0.116
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Generic product form reference; installation in a KORAIL station and railway procedure suitability are not established.",
+        "Model a small red call-point body and separate recessed pressure element, face-frame lips, conduit caps and fasteners on a slim synthetic mounting backplate. Device center remains local y=0 on the 1.1 m scene anchor; proposed 0.14 x 0.17 x 0.08 m body is synthetic, not published. Its face must be individually bounded by the rebuilt visible hit proxy. No giant mushroom button, speaker grille or same generic blue console. Preserve a separate Status_ indicator and do not imply the simulated E interaction is the real operating procedure."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "6a6cdb54e29517d8ed687c2ce8ac764bdb300191edc04ce56c92671c898089ae",
+        "captureSha256": [
+          "743b5ec16ded847aa0adeea8a4910960a2cebca1c2ea2afa106c55b992d64b1a",
+          "63737c0b3d0156d827014af0b9cc9daff85773a51c764ae543419f638bbcb7c8"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "AssemblyRegister",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://us.bouncepad.com/products/floorstanding",
+          "imageUrls": [
+            "https://us.bouncepad.com/cdn/shop/products/BouncepadFloorstanding-White-FrontThreeQuarter-1x1.jpg?v=1674223076"
+          ],
+          "observedFeatures": [
+            "Rounded white tablet enclosure with a thick smooth bezel",
+            "Tilted screen head sits on a narrow cylindrical post",
+            "Wide thin circular/oval base with a collar around the post foot",
+            "Tablet head has a visibly thinner edge than the large kiosk cabinet"
+          ],
+          "imageSha256": [
+            "882adc534e053c33b66a95f64aa9dd04ea5d50fd457a1e70ac702920066be555"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Bouncepad; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "RoundedTabletEnclosure",
+        "PortraitStatusScreen",
+        "TiltHeadJoint",
+        "SlenderPost",
+        "WeightedDiscBase"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "partial_official",
+        "overall_height_m": 1.14,
+        "source_url": "https://us.bouncepad.com/products/floorstanding",
+        "note": "Published overall stand height; not screen-center height. Synthetic mount adaptation must not be claimed dimensionally identical."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.2,
+          -1.1,
+          -0.189263
+        ],
+        "max": [
+          0.2,
+          0.16158,
+          0.25
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Generic product form reference; installation in a KORAIL station and railway procedure suitability are not established.",
+        "Use a portrait tablet enclosure (manufacturer explicitly supports portrait/landscape) on the slender tube and weighted disc base, distinct from the wide RouteConsole cabinet. Keep screen center at the existing 1.1 m action anchor; proposed portrait face 0.24 x 0.32 m and 0.40 m base diameter are synthetic. The selected photo shows landscape orientation, so portrait is a documented supported variation, not a photographed detail. Preserve a central visible screen hit surface and separate Status_ state marker."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "a708aa26d6357b21674cfa12c0946f4213cb6dc7d6d1a6887019c5178812ec59",
+        "captureSha256": [
+          "70348196c12d9e745f065de0436d37e48e9e0983e4500f4b0e71732e163361c5",
+          "72671ba34651696e8864d7cca38b8727175bcb01b061010def57f632e9c88251"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "AssemblyRing",
+      "kind": "virtual_guidance",
+      "usage": "virtual",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "참고 맞이방은 판석 격자와 황색 점자블록으로 구분된다.",
+            "중앙 대기 영역에는 좌석과 기둥이 배치되어 있다.",
+            "확인한 사진에서 게임의 녹색 토러스 집결 링은 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "참고 맞이방은 판석 격자와 황색 점자블록으로 구분된다.",
+            "중앙 대기 영역에는 좌석과 기둥이 배치되어 있다.",
+            "확인한 사진에서 게임의 녹색 토러스 집결 링은 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "NorthEastArc",
+        "NorthWestArc",
+        "SouthWestArc",
+        "SouthEastArc"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.499976,
+          -0.02,
+          -0.499976
+        ],
+        "max": [
+          0.499976,
+          0.02,
+          0.499976
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "네 사분면으로 일정한 두께의 원형 게임 표시를 만든다.",
+        "물리 집결 장소 지정 또는 실제 피난 공간 표시로 주장하지 않는다.",
+        "Scene assembly radius와 시각 크기 연결만 검증한다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "8c47467d893e1ca5627648876ba2f39f1912172630528769e9f73e6fad74aed1",
+        "captureSha256": [
+          "0ccdabe1565f773fe77a9baf1641be04022a0755835b491d441e910a78239a47",
+          "95843893f559221841bfd72cce5a8783114594bf16258a06989503904c2afc83"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "AssemblySign",
+      "kind": "virtual_guidance",
+      "usage": "virtual",
+      "references": [
+        {
+          "pageUrl": "https://www.safetybuyer.com/product/fire-assembly-point-sign-for-post-mounting",
+          "imageUrls": [
+            "https://m2.prod.safetybuyer.com.cfstack.com/media/catalog/product/cache/f722350c56bc0fc28a097ece2c162337/i/m/imag2057_f24yujblhrjshmws_bsgxykuo56zahd3g.jpg"
+          ],
+          "observedFeatures": [
+            "Thin portrait green plate with a white perimeter border",
+            "Three simple white people and four arrows converging toward them",
+            "Lower text band separated by a thin white rule",
+            "Plate supported by one round pole visible below the sign"
+          ],
+          "imageSha256": [
+            "64e9b4277c74a59d3c61a1ae6b18440e1b22e14584a3b2784559bf7d60b63a87"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "SafetyBuyer product photo; Caledonia Signs manufacturer text/dimensions; individual photographer unknown",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "GreenPlate",
+        "WhiteAssemblySymbol",
+        "FourInwardArrows",
+        "LowerLabelBand",
+        "RearChannelAndOverheadBrackets"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "official_manufacturer_options",
+        "source_url": "https://www.caledoniasigns.co.uk/Caledonia-Signs-Fire-Assembly-Point-with-Channelling-Safety-Sign",
+        "plate_options_mm": [
+          [
+            250,
+            300
+          ],
+          [
+            450,
+            600
+          ]
+        ],
+        "dimensions_order": "manufacturer lists two planar dimensions; mobile supplier identifies width x height",
+        "pole_length_m": null,
+        "note": "Manufacturer page was read through web; its image endpoint was unreachable locally. Inspected photos come from the supplier product pages, with matching category/product code; original photographer and independent manufacturer-image identity not confirmed."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.85,
+          -0.225,
+          -0.0215
+        ],
+        "max": [
+          0.85,
+          0.36,
+          0.0575
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Supplier page states all rights reserved; no image reuse license was confirmed. Manufacturer page is https://www.caledoniasigns.co.uk/Caledonia-Signs-Fire-Assembly-Point-with-Channelling-Safety-Sign. Neither source establishes a KORAIL installation or official railway assembly procedure.",
+        "Use the observed thin green plate, white symbol geometry and rear mounting channel as an overhead assembly-direction panel. Existing 1.7 x 0.45 m hanging housing is a synthetic adaptation, not the portrait product dimensions: place the assembly pictogram in one square bay and an independently modeled direction arrow in the remaining bay. White symbols/arrow and green state backing stay separate, with support brackets instead of RallyPoint pole/base. The training destination is virtual guidance, not a verified assembly point at Busan."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "312ca49672b9ee0f218bf6fd17d2358ff266adc3b198de1a5031e3b86ed9d8cb",
+        "captureSha256": [
+          "b97a88b6c1f3cb296b90f8bfc24c70086c18a22cd4cbaede72e74cc29ba606a5",
+          "0273f0648e8f49b487896a49365b64bf59b2e749f8ea3c6b5097da2f75928e72"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "Bench",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.fnnews.com/news/202209081912067122",
+          "imageUrls": [
+            "https://image.fnnews.com/resource/media/image/2022/09/08/202209081911596724_l.jpg",
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg",
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "다수 좌석은 등받이가 없는 긴 직사각 벤치다.",
+            "좌판은 황갈색 목재 슬랫과 가는 길이 방향 이음선으로 보인다.",
+            "하부는 은색 사각 받침·다리이며 전체 금속 타공 좌판이 아니다.",
+            "일부 좌석 구획에 가늘고 낮은 금속 분리대가 있다.",
+            "같은 형태를 반복해 넓은 맞이방의 좌석 열을 만든다."
+          ],
+          "imageSha256": [
+            "24efc9cab53e446a7c4b4c9d7a115e240e2741468bb3b7691efc6a92c630b863",
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0",
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "2022.9.8 / 뉴스1 백창훈 기자; supplementary KoreaToDo, photographer not named",
+          "reuseLicense": "뉴스1코리아 무단전재·재배포 금지. KoreaToDo 개별 재사용 허가 미확인.",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_furniture.py",
+      "requiredComponents": [
+        "TimberSeatSlat",
+        "StainlessPedestal",
+        "SeatDivider",
+        "FloorFootPad"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "manufacturer_dimensions": null,
+        "reason": "원본에서 제조사·실측 치수를 확인하지 못함. 원근 사진에서 수치를 추정해 measured로 쓰지 않음."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -1.19,
+          0.0,
+          -0.34
+        ],
+        "max": [
+          1.19,
+          0.730237,
+          0.34
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "타공 스테인리스 등받이/좌판을 제거하고 목재 슬랫 좌판·스테인리스 받침·가느다란 분리대로 재구성. 폭2.38m 등 구현값은 synthetic_design이며 사진 실측값이 아님.",
+        "The observed station photo does not establish present placement or measured geometry."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "c9a3373c7817f623364559f7c7d470cd9cb6394c380c6fe5d73e169882ce216b",
+        "captureSha256": [
+          "af3114646fd607c0138603bb9728574952a2b05ce2f08e9029232d16e2aaa31e",
+          "ea90d04b20da36d14db3409b14fd73c63e9c2265b831a214cc331082b571851b"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "CeilingLight",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "R02/R03 고천장 지붕 아래에는 작고 둥근 조명이 반복된다.",
+            "각 조명의 밝은 원형 하부와 둘레 윤곽이 구분된다.",
+            "조명은 지붕 면과 분리되어 부재 아래에 설치되어 있다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "R02/R03 고천장 지붕 아래에는 작고 둥근 조명이 반복된다.",
+            "각 조명의 밝은 원형 하부와 둘레 윤곽이 구분된다.",
+            "조명은 지붕 면과 분리되어 부재 아래에 설치되어 있다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "RoundHousing",
+        "LensRim",
+        "Diffuser",
+        "HangingStem",
+        "MountingCap"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.2,
+          -0.06,
+          -0.2
+        ],
+        "max": [
+          0.2,
+          0.215,
+          0.2
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "기존 긴 선형 루버를 제거하고 약.4m 지름의 원형 high-bay 형상으로 바꾼다; 치수는 합성이다.",
+        "하우징·렌즈 림·확산판·짧은 행거·상부 마운트를 나눈다.",
+        "실제 설치 높이·제조사·광학 성능은 확인되지 않았으며 root가 실제 장면 지지부에 맞춰 배치한다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "32bc9a0820cf8bac861d73e3cc8de71b1edb0da781dd8dfa685ac42dee1727ec",
+        "captureSha256": [
+          "d4f09a8452871ade72b0ee86595652164b3dfa12d3ed4a5f4d56236e28e4158e",
+          "e9af2ea1cee472e7cf399f7361df627da5ecc030c2bdb34948823eea8d51acdd"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "CeilingPanel",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+          "imageUrls": [
+            "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg"
+          ],
+          "observedFeatures": [
+            "낮은 천장은 반복되는 정사각 격자로 나뉜다.",
+            "밝은 패널 면 사이의 이음/테두리가 구분된다.",
+            "사각 조명과 원형 환기구가 일반 패널 격자와 별도로 배치된다."
+          ],
+          "imageSha256": [
+            "62a87abadf1d65437189d10843b4365db4987dcaef1a66bb106832c7aa03ca4e"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "The Migratory Birds; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual observation only; section and placement remain authored approximations"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "CeilingTile",
+        "GridFlange",
+        "GridWeb",
+        "PerimeterFinish"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; fitted to synthetic room footprint",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "authored_size_unity_metres_xyz": [
+          3.6,
+          0.05,
+          3.6
+        ],
+        "basis": "synthetic_design_not_surveyed; root records any scene scaling adaptation"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -1.8,
+          -0.025,
+          -1.8
+        ],
+        "max": [
+          1.8,
+          0.025,
+          1.8
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "3.6m 사각 모듈에6x6의 밝은 천장 패널과 T-bar 격자, 주변 마감을 만든다.",
+        "천장 패널은 발광하지 않으며 RecessedLight와 혼동하지 않는다.",
+        "실제 격자 피치·T-bar 단면·전체 천장 크기는 사진으로 측정하지 않는다.",
+        "The ceiling grid and support sections are not measured or engineering-approved."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "11a72049c62a128cc698f3d57336de4c0ada185854d1bd3e2a57d2c12de49e1e",
+        "captureSha256": [
+          "bf3ad83872abc42faa23075325fad05280e913a42974cf8c7a97ff5cc23ddf2b",
+          "e6249081670ba05061c0b5b3232983d1aed3b5bf489994bd5e8f43c14af8d254"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "ClerestoryBay",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "지붕 아래 수평 창 띠가 길게 이어진다.",
+            "창은 밝은 프레임의 직사각 격자로 분할된다.",
+            "세로 멀리언보다 가는 가로 분할도 보인다.",
+            "외부/상부 빛이 투과해 구조 실루엣과 밝기 차이를 만든다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "지붕 아래 수평 창 띠가 길게 이어진다.",
+            "창은 밝은 프레임의 직사각 격자로 분할된다.",
+            "세로 멀리언보다 가는 가로 분할도 보인다.",
+            "외부/상부 빛이 투과해 구조 실루엣과 밝기 차이를 만든다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "지붕 아래 수평 창 띠가 길게 이어진다.",
+            "창은 밝은 프레임의 직사각 격자로 분할된다.",
+            "세로 멀리언보다 가는 가로 분할도 보인다.",
+            "외부/상부 빛이 투과해 구조 실루엣과 밝기 차이를 만든다."
+          ],
+          "imageSha256": [
+            "8f9a8b98b2e7742058d3610f31d16286eb0d2de1189eeec92fd753b67693f350"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "HorizontalFrame",
+        "Mullion",
+        "Transom",
+        "HorizontalGlazingSeal",
+        "ClearGlassPane"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.5,
+          -0.5,
+          -0.06
+        ],
+        "max": [
+          0.5,
+          0.5,
+          0.03
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "프레임·멀리언·가로 분할·씰·투명 유리면을 분리한다.",
+        "ClearGlass를 사용하되 외부 실제 경관이나 단열 성능을 주장하지 않는다.",
+        "1x1x.12 envelope 안에서 조립하고 인접 opaque closure 중복은 root scene audit에서 확인한다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "0f8419490411c4a1eb13743fcdd2bfabe886583941fa873a20e0b2db525be594",
+        "captureSha256": [
+          "f2d6fe166678707b08c58297b52955060862a95f9738c354355d0b266dbf4404",
+          "9a618d6932f88ad168ea9469d2857a905367d4863d9ef6f53ada50557be8d34e"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "DepartureBoard",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "Wide black landscape display recessed behind a thick dark perimeter frame",
+            "Separate header row and aligned timetable columns with horizontal separators",
+            "Board sits on a wall surface of closely spaced vertical ribs",
+            "Low ceiling and hanging direction sign are below the board"
+          ],
+          "imageSha256": [
+            "8f9a8b98b2e7742058d3610f31d16286eb0d2de1189eeec92fd753b67693f350"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "OuterDisplayFrame",
+        "RecessedDisplayPlane",
+        "HeaderAndRowSeparators",
+        "RearStandoffRails"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "reason": "No model-specific overall physical dimensions were confirmed from the selected manufacturer page."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -1.6,
+          -0.5,
+          -0.07
+        ],
+        "max": [
+          1.6,
+          0.5,
+          0.075
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Source labels this as Busan Station Train Departure Information (2F), with KORAIL marking visible. Current installation, physical dimensions, equipment model and image capture date remain unknown.",
+        "Build the board as its own layered enclosure: chamfered metal outer frame, recessed dark display plane, header/cell grid and rear standoff rails. Keep the current 3.2 x 1.0 x 0.15 m upper-architecture envelope as synthetic values and all new geometry above 3.2 m. Author fictional station information; do not copy historical train times, advertisements or logo textures. The pictured wall ribs are architectural context, not part of the movable board mesh."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "664523c936f54c5cdb72017d453428cd5347423bef01a4c9ef3193bfabba3745",
+        "captureSha256": [
+          "092f212d5540629966dc05e6e52c04cab9478c4c16769cfd155edef3644bb2a3",
+          "dee627307f22285a5889288a12866ded8f9459edf00e490df6e7e2020569c444"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "DirectionSign",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.tensator.com/event-signage-more-than-one-direction/",
+          "imageUrls": [
+            "https://www.tensator.com/wp-content/uploads/sign-2-london-eye-1024x371.jpg"
+          ],
+          "observedFeatures": [
+            "Tall portrait black sign frame supported by a narrow round metal post",
+            "Frame is above a black retractable-belt cassette head",
+            "Thin dark flat disc base supports the post",
+            "Visible frame border and protected inset graphic panel"
+          ],
+          "imageSha256": [
+            "32d57dc75d59344554ad4420db44be68afa8d1962ab4ce8b2471635aa5389857"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Tensator; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "PortraitFrame",
+        "InsetArrowPlate",
+        "PostMountCollar",
+        "RoundPost",
+        "RoundPostFoot",
+        "RearFrameBracket"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "reason": "No model-specific overall physical dimensions were confirmed from the selected manufacturer page."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.18,
+          -1.1,
+          -0.158
+        ],
+        "max": [
+          0.18,
+          0.245,
+          0.202
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Generic product form reference; installation in a KORAIL station and railway procedure suitability are not established.",
+        "Build a free-standing portrait frame with a thin inset sign plate, cylindrical pole, small mounting collar and flat disc foot. Preserve a white raised arrow on an independent backing mesh; create a fresh training arrow instead of copying advertising. Proposed frame 0.30 x 0.42 m and base diameter 0.36 m are synthetic; center the frame near local y=0 at the existing 1.1 m anchor. Omit connected queue belts, which would create new route obstructions."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "49f6f68659aad34cce3e30e80a0bd1271286aa0696b661b513b09aa9913edde1",
+        "captureSha256": [
+          "8b5199101b0bda4a221f11a4c20b7dd9d8e57df39236f1d78d413e754d376570",
+          "124106ac43435177940daba60ed9b02ab7289a1f46627cdeb786897cfe1e2f1f"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "DoorFrame",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.dormakaba.com/sg-en/offering/products/entrance-systems/automatic-sliding-doors/st-flex--do_2887",
+          "imageUrls": [
+            "https://dormakaba-res.cloudinary.com/image/upload/v1745406407/dormakaba-prod/110000005285-im-esprolinestprogreen-797608-web.jpg"
+          ],
+          "observedFeatures": [
+            "M02 근접 사진에는 여러 깊이로 겹친 금속 프로파일이 보인다.",
+            "검은 연속 씰과 금속 가장자리 사이에 좁은 단차가 있다.",
+            "리세스된 금속 스트립에 작은 나사가 정렬되어 있다.",
+            "하부 가이드/문턱과 수직 프레임 접합이 분리되어 있다."
+          ],
+          "imageSha256": [
+            "b640b338d43cf869c598c7e284c339f2de49696e1963ea054e9ff2920f8b8846"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "dormakaba; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "M02 근접 사진에는 여러 깊이로 겹친 금속 프로파일이 보인다.",
+            "검은 연속 씰과 금속 가장자리 사이에 좁은 단차가 있다.",
+            "리세스된 금속 스트립에 작은 나사가 정렬되어 있다.",
+            "하부 가이드/문턱과 수직 프레임 접합이 분리되어 있다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "JambExtrusion",
+        "ProfileRebate",
+        "ContinuousSeal",
+        "Header",
+        "FlushFastener"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -1.5705,
+          0.0,
+          -0.1765
+        ],
+        "max": [
+          1.5705,
+          3.03,
+          0.1615
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "알루미늄 잼·리베이트·얇은 씰·고정부를 분리한다.",
+        "독립 문틀이라는 게임 배치를 자동문 설치 제품으로 주장하지 않는다.",
+        "헤더 형상·부착 위치·문짝 유무는 별도 전체 사진 없이는 합성 제안으로 남긴다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "84a975e07dbd22ca70aba4bdb3a41021897558825d6aaf7205dd83db3e078bf5",
+        "captureSha256": [
+          "08a005a021be0257619ca626946028e90c28e5bd960bbb335eba8f95285f9650",
+          "c28e5a09421e6cfc7a0cc61f46931ad40e45e00027c392e631284320359c4848"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "Evacuee",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.abstractmannequins.com/male.php",
+          "imageUrls": [
+            "https://www.abstractmannequins.com/images/background/img/product/mannequins/male/26.jpg"
+          ],
+          "observedFeatures": [
+            "얼굴 세부가 거의 없는 타원형 두상이 턱·목으로 좁아진다.",
+            "어깨에서 가슴·허리·골반으로 이어지는 몸통의 폭 변화가 연속적이다.",
+            "위팔·팔꿈치·아래팔은 구형 관절 돌출 없이 이어진다.",
+            "넓은 허벅지에서 무릎·종아리·발목으로 이어지는 윤곽 변화가 있다.",
+            "손목과 손은 좁고 손가락이 구분되며 팔 길이는 몸통 비례에 맞는다."
+          ],
+          "imageSha256": [
+            "b47a692a943796f87cf2a3ee7f3c84dbb7ab5b68d801172da66ce1f200e9ac7a"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Abstract Mannequins official product photography",
+          "reuseLicense": "사진 재배포·3D자산 라이선스 명시를 확인하지 못함.",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_furniture.py",
+      "requiredComponents": [
+        "TailoredJacket",
+        "BlankHeadAndNeck",
+        "ContinuousTrouserLeg",
+        "ContinuousSleeve",
+        "AnatomicalHand"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "manufacturer_dimensions": null,
+        "reason": "직접 확인한 해당 사진의 치수표는 없음. 다른 제조사/다른 모델의189cm 값을 이 모델 치수로 섞지 않음.",
+        "synthetic_design_constraint": "프로젝트는 기존1.77m 높이와 관절 피벗을 유지."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.3545,
+          0.0,
+          -0.145
+        ],
+        "max": [
+          0.3545,
+          1.77,
+          0.195
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "별도 흰 무릎 구체와 타원체 묶음을 없애고 옷 실루엣을 이루는 연속 단면 몸통·바지·소매로 교체. 같은 무표정 얼굴 없는 모델6개와 기존 어깨/고관절 그룹은 유지.",
+        "The observed station photo does not establish present placement or measured geometry.",
+        "Unity actor front is +Z, left/right X and soles are explicitly checked. Clothing is an authored uniform, not an identified KORAIL uniform."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "8b5b591817149b6151663cc915d3b669ffcebdc462e5ab8038e07861cc4267f6",
+        "captureSha256": [
+          "176d9f7a69fa9380022fcbfc858dac6945b01605943fe4521dd97adb330de5c7",
+          "aadcb22397b849360176d76c130e8e983e71a2ff9f9b211a62a7cb36f4d47523"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "FloorModule",
+      "kind": "structural_base",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "회색 반점 표면의 정사각 판석이 반복된다.",
+            "검은 줄눈이 규칙적 직교 격자를 만든다.",
+            "천장과 사람의 반사는 보이지만 완전 거울 표면은 아니다.",
+            "황색 점자블록 경로는 회색 일반 판석과 구분된다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "회색 반점 표면의 정사각 판석이 반복된다.",
+            "검은 줄눈이 규칙적 직교 격자를 만든다.",
+            "천장과 사람의 반사는 보이지만 완전 거울 표면은 아니다.",
+            "황색 점자블록 경로는 회색 일반 판석과 구분된다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+          "imageUrls": [
+            "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg"
+          ],
+          "observedFeatures": [
+            "회색 반점 표면의 정사각 판석이 반복된다.",
+            "검은 줄눈이 규칙적 직교 격자를 만든다.",
+            "천장과 사람의 반사는 보이지만 완전 거울 표면은 아니다.",
+            "황색 점자블록 경로는 회색 일반 판석과 구분된다."
+          ],
+          "imageSha256": [
+            "62a87abadf1d65437189d10843b4365db4987dcaef1a66bb106832c7aa03ca4e"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "The Migratory Birds; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "UnitTile"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "unit cube single mesh와 unit-face UV를 유지한다.",
+        "반점·줄눈·거칠기는 재질 레이어에서 표현한다.",
+        "점자블록은 TactileTile로 별도 분류하고 실제 경로를 추정하지 않는다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "8a19e0e43a5240af97be0a75d899453d1fb07bb5b362959db5ad817ae35d85d8",
+        "captureSha256": [
+          "66539ebcc479b4aa26c361ec43a31f8ab7d9d528d85f5bcb9454a4d759daa7fe",
+          "d8a46683462bf8b44b327f2e4e3fd862ecc255090023367ac1eca493625dcf8f"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "Glove",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.showaglove.co.jp/asia/product/detail/general_purpose/28",
+          "imageUrls": [
+            "https://www.showaglove.co.jp/asia/uploads/file/3_370.jpg",
+            "https://www.showaglove.co.jp/asia/uploads/file/file_1524029370.jpg"
+          ],
+          "observedFeatures": [
+            "가느다란 손가락은 끝으로 갈수록 좁아지고 길이가 서로 다르다.",
+            "엄지는 손바닥 옆에서 비스듬히 갈라져 나온다.",
+            "손바닥에서 손가락 밑마디로 표면이 연속된다.",
+            "손목은 조이는 긴 편직 커프와 얇은 말림 가장자리다.",
+            "손바닥/손끝 코팅과 손등 편직의 표면 차이가 있다."
+          ],
+          "imageSha256": [
+            "bca1252bb899972d3769a1769a2bff309c991d062609f0ac38cd94dd335dcfec",
+            "fda50506ab960538fcf09e9eca6c6b110cea10a6e76f160ccc881a47220d85fc"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "SHOWA GLOVE Co.",
+          "reuseLicense": "Copyright SHOWA GLOVE Co., all rights reserved.",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_furniture.py",
+      "requiredComponents": [
+        "ContinuousGloveHand",
+        "KnittedSleeve",
+        "DorsalKnitPanel",
+        "CuffBinding"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "manufacturer_published",
+        "manufacturer": "SHOWA",
+        "product": "No.370 size8/L",
+        "units": "cm",
+        "overall_length": 23,
+        "middle_finger_length": 7.9,
+        "raw_ambiguous_palm_field": {
+          "label": "LENGTH (palm)",
+          "value": 21.5,
+          "use": "라벨의 폭/둘레 의미가 불명확해 손바닥 폭으로 사용하지 않음"
+        },
+        "scope": "글러브 치수이며 팔 소매는 제외. 철도 지급품·보호 적합성 근거가 아님."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.083,
+          -0.205,
+          -0.0565
+        ],
+        "max": [
+          0.0565,
+          0.176,
+          0.0565
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "손가락 타원체와 별도 너클 덩어리를 연속 단면 sweep으로 교체하고 물갈퀴/손바닥 경계를 연결. 중지·약지·검지·새끼 길이를 다르게 하고 엄지 밑부분과 가는 커프를 재구성.",
+        "The observed station photo does not establish present placement or measured geometry.",
+        "Dark coating/knit appearance follows the dark variant in the manufacturer comparison image. Published No.370 measurements are reference values, not certification of the dark variant or KORAIL-issued PPE."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "3d5f99235447922b9b30077d041d626b1ed7cfca717da9b9975a1d70f7537a6b",
+        "captureSha256": [
+          "1c55943a37c60d1186e335997faa50228f7648ff5dc641c06f2f868eb66b0c8f",
+          "0e3150b022de5bc96e806ca58c4b2d2b99ac7305b2dccb200fdf2eff0c8415c6"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "HazardIndicator",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://shop.patlite.com/Blue-Rotating-Beacon-p/skh-m1j-b.htm",
+          "imageUrls": [
+            "https://cdn4.volusion.store/zfyub-tbqzg/v/vspfiles/photos/SKH-M1J-B-2T.png?v-cache=1779230406"
+          ],
+          "observedFeatures": [
+            "Rounded translucent cylindrical dome over a wider lower lens band",
+            "Internal reflector is visible through the lens",
+            "Dark circular lower mounting ring",
+            "Three small threaded mounting feet below the base"
+          ],
+          "imageSha256": [
+            "df7a0930c94724819227bbd19a4df68a7d0b84fb59a084971349b05c24b24dca"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "PATLITE official store; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "DomedBeaconLens",
+        "InternalReflector",
+        "LowerLensBand",
+        "MountGasketRing",
+        "ThreeFixingFeet"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "partial_official",
+        "nominal_diameter_mm": 100,
+        "source_url": "https://shop.patlite.com/Blue-Rotating-Beacon-p/skh-m1j-b.htm"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.13,
+          0.0,
+          -0.13
+        ],
+        "max": [
+          0.13,
+          0.827,
+          0.13
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Generic product form reference; installation in a KORAIL station and railway procedure suitability are not established.",
+        "Build the beacon as a separate small cylindrical optical assembly with a domed lens, inner reflector, lower gasket ring and three fixing feet. Preserve Beacon_ for the lens only. Manufacturer nominal diameter is 0.10 m; use that device scale and a separate synthetic mount to occupy the existing marker footprint. The source is blue; amber/orange is an explicitly synthetic scene-state adaptation. Avoid a large opaque capsule and do not assert real alarm timing.",
+        "The transparent physical housing remains present; Beacon_ is the separate pulsing optical core. Simulation signalling is not an approved railway signal code."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "2988be9499b6f4d1c2e8e5fd1b24ec005e140b08e9beb98f7b6315919e79af51",
+        "captureSha256": [
+          "219230d7056c00d912e54107e6ecde6a0cd8c227d179faffb25f93fef3d52460",
+          "64221a080c1a0c202c542edee488fa3ef2bdbb16ebdb0c33ff8d31d642c73efc"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "InformationIsland",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_48c36751955c4206a1604493fc8f47dc~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "큰 기둥을 감싸는 원형/호형 안내 카운터다.",
+            "전면은 매끈한 흰 곡면이고 한쪽에 짙은 회색 곡선 패널이 들어간다.",
+            "맨 아래 어두운 띠에 작은 가로 타공이 반복된다.",
+            "카운터 위에는 투명 가림판과 안내지/작은 화면이 놓인다.",
+            "위쪽에는 어두운 원형 띠와 매달린 모니터가 있다."
+          ],
+          "imageSha256": [
+            "311a6b3d5c1d6adc19b47c78a3437cc2e21a1402db56a4f6449a5d2ec638861a"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; 개별 촬영자 미표기",
+          "reuseLicense": "별도 재사용 라이선스 확인되지 않음.",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_furniture.py",
+      "requiredComponents": [
+        "CurvedCounterShell",
+        "CurvedCounterTop",
+        "PerforatedToeBand",
+        "CurvedAccentPanel",
+        "ToeTransitionCollar"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "manufacturer_dimensions": null,
+        "reason": "원본에서 제조사·실측 치수를 확인하지 못함. 원근 사진에서 수치를 추정해 measured로 쓰지 않음."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.848324,
+          0.018,
+          -0.35
+        ],
+        "max": [
+          0.848324,
+          1.1,
+          0.347943
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "직사각 박스 대신 흰 호형 전면·어두운 타공 걸레받이·얇은 카운터 상판·투명 가림판을 제작. 현재1.7×0.7m 공간에 넣는 호형 한 구간은 실제 전체 원형 카운터의 축소/분절 합성물임을 명시.",
+        "The observed station photo does not establish present placement or measured geometry."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "42b59ce2377e40339b625aea58f8a011151961f4f3eaef9aa0f4e9193282f6d9",
+        "captureSha256": [
+          "4c41087c49d7e7b6e2b5856bb1d62a20e14477ac5ab136282b33fef284b61b04",
+          "17a80188f0e2a9e6888c95873c0accf92affce2b4869e4ec70be3ee757b59ef0"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance.",
+        "correction": "Checker shading and rear toe/body overlap corrected; refreshed views show a continuous curved band with40openings."
+      }
+    },
+    {
+      "id": "InformationKiosk",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+          "imageUrls": [
+            "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg"
+          ],
+          "observedFeatures": [
+            "발권기는 높고 좁은 독립형 흰색 캐비닛으로 나란히 배치된다.",
+            "상부 화면은 파란색 전면 패널 안으로 들어간 검은 사각 영역이다.",
+            "화면 아래에는 작은 입출력 슬롯·조작 영역이 모여 있다.",
+            "하부 캐비닛은 단순한 밝은색 문짝/장비 몸체다.",
+            "큰 지붕이나 넓게 벌어진 캐노피는 해당 기기 사진에서 보이지 않는다."
+          ],
+          "imageSha256": [
+            "62a87abadf1d65437189d10843b4365db4987dcaef1a66bb106832c7aa03ca4e"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "The Migratory Birds; article author andymigratorybird, individual photographer not confirmed",
+          "reuseLicense": "별도 재사용 라이선스 확인되지 않음.",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_furniture.py",
+      "requiredComponents": [
+        "UprightCabinet",
+        "RecessedDisplay",
+        "CardReader",
+        "TicketSlot",
+        "ServiceDoor"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "manufacturer_dimensions": null,
+        "reason": "원본에서 제조사·실측 치수를 확인하지 못함. 원근 사진에서 수치를 추정해 measured로 쓰지 않음."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.37,
+          0.0,
+          -0.37
+        ],
+        "max": [
+          0.37,
+          2.1,
+          0.3
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "현재 넓은 지붕형 키오스크를 좁은 직립 캐비닛·화면 오목부·하부 장비문·리더/슬롯의 실루엣으로 교체. InformationKiosk는 이 사진과 기능이 다른 category_proxy임을 유지.",
+        "The observed station photo does not establish present placement or measured geometry."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "052db398cbc0e450c5990efb294b3d3104177a65d0948eb77f2a0c1be4bf5dc6",
+        "captureSha256": [
+          "2480c3e8279d8104c758ad1428777122ab15fe6c19e740e2c857fc2066e60a54",
+          "84755749b88d2ffe5dd5cd3706a715515193b4c7d446b142d39a1ae1c3347df8"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "Luggage",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.samsonite.co.uk/proxis-spinner-expandable-length-40cm-55cm-matt-graphite/158191-4804.html",
+          "imageUrls": [
+            "https://www.samsonite.co.uk/dw/image/v2/AATF_PRD/on/demandware.static/-/Sites-samsonite-product-catalog/default/dw88a0fce1/images/salsify/oz1lx3gdj6k2jjjhdz69_s--f3icfp1B--_fl_clip_pg_1_e_trim_c_fit_w_2000_h_3000_u_tcrttuyt8xafi2acibgb_fl_layer_apply_e_make_transparent.png?sw=600&sh=900",
+            "https://www.samsonite.co.uk/dw/image/v2/AATF_PRD/on/demandware.static/-/Sites-samsonite-product-catalog/default/dw21a0a631/images/salsify/s5zfev3p89drkcw8xulk_s--P8B_EIi4--_fl_clip_pg_1_e_trim_c_fit_w_2000_h_3000_u_tcrttuyt8xafi2acibgb_fl_layer_apply_e_make_transparent.png?sw=600&sh=900"
+          ],
+          "observedFeatures": [
+            "모서리가 둥근 앞·뒤 하드쉘이 지퍼 둘레에서 결합한다.",
+            "전면 보강 리브가 가로 방향으로 반복되고 중앙 윤곽을 감싼다.",
+            "바닥 네 모서리에 이중 바퀴와 바퀴 하우징이 있다.",
+            "상부 신축 손잡이는 두 개의 가는 평행 튜브다.",
+            "옆면에 손잡이·잠금부·지퍼 이음선이 분리된다."
+          ],
+          "imageSha256": [
+            "29bd9918644002df913423e27203401b8afa3b743ec549973be991efb2688189",
+            "4038bf3ba2afc47e2f0d94ad4d69e58d3404c968bae7125c2819299e53ae2647"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Samsonite product photography",
+          "reuseLicense": "별도 모델링/이미지 재배포 라이선스 미확인.",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_furniture.py",
+      "requiredComponents": [
+        "HardshellFront",
+        "HardshellBack",
+        "PerimeterZipper",
+        "DoubleCasterWheel",
+        "TelescopicHandle"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "manufacturer_published",
+        "manufacturer": "Samsonite",
+        "product": "Proxis Spinner expandable55cm",
+        "units": "cm",
+        "closed_height_width_depth": [
+          55,
+          40,
+          20
+        ],
+        "expanded_height_width_depth": [
+          55,
+          40,
+          23
+        ],
+        "extended_pull_handle_height": null,
+        "scope": "제품 전체 치수이며 프로젝트 소품의 실측값이 아님. 핸들 인출 높이는 미확인."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.1985,
+          0.0,
+          -0.101948
+        ],
+        "max": [
+          0.202,
+          0.9775,
+          0.099
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "기존 두 개의 굵은 롤러를 네 쌍의 캐스터로 바꾸고 하드쉘 분할·지퍼 밴드·가로 리브·측면 손잡이를 추가. 기존 Collider보다 작아지는 차체/높이와 인출 손잡이의 합성 치수를 분리 기록.",
+        "The observed station photo does not establish present placement or measured geometry."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "bd64c0cdc83693f60f2318187ed90e74578d84465dba1ee844ebb7d33006c838",
+        "captureSha256": [
+          "d44f2a23e781bb48807d8911a6b06df2e89e304bbae48d1929cb7b1c417b5a50",
+          "73a31fca3eccd7b039e6f6adf18b1c3dceb5ebcde9a0c25a0b53bca1f8081942"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "NavigationArrow",
+      "kind": "virtual_guidance",
+      "usage": "virtual",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "R04 실제 방향 화살표는 천장에 매단 사각 표지 위에 있다.",
+            "R02/R03 바닥에는 황색 점자블록 경로가 보인다.",
+            "확인한 바닥 사진에서 게임의 녹색 입체 화살표와 같은 물체는 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "R04 실제 방향 화살표는 천장에 매단 사각 표지 위에 있다.",
+            "R02/R03 바닥에는 황색 점자블록 경로가 보인다.",
+            "확인한 바닥 사진에서 게임의 녹색 입체 화살표와 같은 물체는 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "R04 실제 방향 화살표는 천장에 매단 사각 표지 위에 있다.",
+            "R02/R03 바닥에는 황색 점자블록 경로가 보인다.",
+            "확인한 바닥 사진에서 게임의 녹색 입체 화살표와 같은 물체는 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "8f9a8b98b2e7742058d3610f31d16286eb0d2de1189eeec92fd753b67693f350"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "ArrowShaft",
+        "LeftArrowHead",
+        "RightArrowHead"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.177583,
+          -0.024166,
+          -0.28
+        ],
+        "max": [
+          0.177583,
+          0.024166,
+          0.242859
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "얇은 샤프트·양쪽 헤드로 일관된 가상 화살표 실루엣을 만든다.",
+        "virtual UI로 분류하고 실제 안전표지 규격 적합성을 주장하지 않는다.",
+        "콜라이더 없이 게임 경로 안내에만 사용한다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "92522380f9aeeff677b7587c257430d559d4643520c05ae59b33aec853b15cee",
+        "captureSha256": [
+          "9f75eaf4296419a4d48803fd9e5234dbbd2210555a1cfc347ae9055c8e7aebb4",
+          "be82ab0674cd33accabed6f34d8fd8229bc7dae7ce30062e0552420cba745860"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "Pillar",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "사진 중앙 기둥은 밝은 원형 샤프트다.",
+            "기둥 상부에 튜브 부재들이 모이고 환형 접합 윤곽이 보인다.",
+            "샤프트에는 세로 분할선 또는 얕은 홈이 보인다.",
+            "가까운 원형 기둥에 임의의 검은 중간 띠는 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "사진 중앙 기둥은 밝은 원형 샤프트다.",
+            "기둥 상부에 튜브 부재들이 모이고 환형 접합 윤곽이 보인다.",
+            "샤프트에는 세로 분할선 또는 얕은 홈이 보인다.",
+            "가까운 원형 기둥에 임의의 검은 중간 띠는 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_48c36751955c4206a1604493fc8f47dc~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "사진 중앙 기둥은 밝은 원형 샤프트다.",
+            "기둥 상부에 튜브 부재들이 모이고 환형 접합 윤곽이 보인다.",
+            "샤프트에는 세로 분할선 또는 얕은 홈이 보인다.",
+            "가까운 원형 기둥에 임의의 검은 중간 띠는 관찰되지 않는다."
+          ],
+          "imageSha256": [
+            "311a6b3d5c1d6adc19b47c78a3437cc2e21a1402db56a4f6449a5d2ec638861a"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "WhiteShaft",
+        "CladdingSeam",
+        "BaseCladding",
+        "BaseGasket",
+        "UpperCollar"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.343,
+          -1.6,
+          -0.343
+        ],
+        "max": [
+          0.343,
+          1.6,
+          0.343
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "백색 원통과 연속된 곡면을 우선한다.",
+        "얇은 세로 이음과 하부 마감만 분리한다.",
+        "상부 튜브 접속과 환형 칼라를 별도 구조 맥락으로 다룬다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "d870534dfff8af4518b1cb3a4b1b2238ed8e55a76273c414cd97d20762c0071c",
+        "captureSha256": [
+          "09cd1078f7ad0e7f96f31545a1945d08355f0354efcb1a7fab2f106f01142f2f",
+          "b37d15ac9192fc1f105400d3ddce33e6c78ea481c0ba7991d917f4ad53278824"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "Purlin",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "주 트러스와 다른 방향으로 가는 지붕 지지재가 반복된다.",
+            "부재는 밝은 마감이고 지붕 패널 바로 아래로 길게 이어진다.",
+            "주현재·대각재보다 단면이 작아 서로 다른 계층으로 읽힌다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual observation only; section and placement remain authored approximations"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "주 트러스와 다른 방향으로 가는 지붕 지지재가 반복된다.",
+            "부재는 밝은 마감이고 지붕 패널 바로 아래로 길게 이어진다.",
+            "주현재·대각재보다 단면이 작아 서로 다른 계층으로 읽힌다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual observation only; section and placement remain authored approximations"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "TopFlange",
+        "BottomFlange",
+        "Web",
+        "EndSeam"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; fitted to synthetic room footprint",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "authored_size_unity_metres_xyz": [
+          0.055,
+          0.09,
+          1
+        ],
+        "basis": "synthetic_design_not_surveyed; root records any scene scaling adaptation"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.0275,
+          -0.045,
+          -0.5
+        ],
+        "max": [
+          0.0275,
+          0.045,
+          0.5
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Z방향1m 모듈로 상·하 플랜지, 웹, 끝 이음 스트립을 나눈다.",
+        "White/Stainless 두 재질로 구조 윤곽과 이음을 구분한다.",
+        "I형 단면과 이음 형상은 추정 제작 상세이며 구조 계산/실측 규격으로 쓰지 않는다.",
+        "The ceiling grid and support sections are not measured or engineering-approved."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "e7bd453ee7f6e3665492ddf6b28a9c74208fd1dd46e1b703c80ef7a7fbf2f066",
+        "captureSha256": [
+          "ffa4e43964417c3b2369bf0ae3c75db8d4b3009d4dc85744ba0b9ca1ae4d2d98",
+          "215883fdffee2d524008d5538b76e0432f7771bd8885f5ddd0af2edd47a541ff"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "RadioConsole",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.axis.com/en-us/products/axis-c6110",
+          "imageUrls": [
+            "https://www.axis.com/sites/axis/files/2024-05/c6110_angle_left_2404-Productimageswithcropping.png"
+          ],
+          "observedFeatures": [
+            "Low wedge-shaped rounded rectangular housing with a sloping top",
+            "Large inset screen flanked by six physical keys on each side",
+            "Each key has a small contrasting indicator on its upper corner",
+            "Wide left perforated grille with round upper microphone area and lower rotary control"
+          ],
+          "imageSha256": [
+            "14304566f1de0f5cd46a3ff42dc4bba91a537c93adbe6e551461ecb8eeda700d"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Axis Communications; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.axis.com/en-us/products/axis-tc6901-gooseneck-microphone",
+          "imageUrls": [
+            "https://www.axis.com/sites/axis/files/2024-05/tc6901_angle_left_2404-Productimageswithcropping.png"
+          ],
+          "observedFeatures": [
+            "Oval foam windscreen at the tip",
+            "Long thin straight upper stem",
+            "Bent flexible ribbed lower neck",
+            "Widening cylindrical/conical connector socket in a perforated plate"
+          ],
+          "imageSha256": [
+            "c813d8a775aff07620ed9db2e6570b2feb9e91838fe5a7958c1c05f7e8bae6e7"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Axis Communications; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "separately inspected optional accessory; not evidence of station installation"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "WedgeHousing",
+        "RecessedScreen",
+        "TwoSixKeyBanks",
+        "PerforatedSpeakerArea",
+        "RotaryControl",
+        "FlexibleGooseneck",
+        "MicrophoneWindscreen"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "reason": "No model-specific overall physical dimensions were confirmed from the selected manufacturer page."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.28,
+          -1.1,
+          -0.2
+        ],
+        "max": [
+          0.28,
+          0.3515,
+          0.26
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Publication date is the Axis launch announcement, not photograph capture: https://newsroom.axis.com/en-us/news/audio-paging-console . The product is a paging console, not a verified KORAIL radio installation.",
+        "Use a distinct shallow inclined desk console on a synthetic 1.1 m mount: approximate 0.56 m width x 0.27 m depth within the old target area, with a true wedge side profile, screen recess, 12 raised keys and a recessed perforated grille. Keep actionable surface near root y=0 and front -Z. Add the separately inspected AXIS TC6901 gooseneck accessory with a flexible ribbed lower neck and oval foam windscreen; its working dimensions are synthetic and it is absent from the primary image. This source is a paging console, not proof of a KORAIL radio type."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "4646094a4b2bd84462e308ed35697b4245f56ac27a9959203fa7f542bf6ea4a2",
+        "captureSha256": [
+          "93e39140b95da52ccf606a9ca5c97d85316217cb560cb0a6343b70ad0bab0c0c",
+          "6f2702975cd79d9630a5be75582f8025c574b2fb434459c5ee2d9839c5d41897"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "RallyPoint",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.safetybuyer.com/product/mobile-assembly-point-sign-with-2-4m-collapsible-pole",
+          "imageUrls": [
+            "https://m2.prod.safetybuyer.com.cfstack.com/media/catalog/product/cache/f722350c56bc0fc28a097ece2c162337/a/s/assembly-point_zc7e3aowrq1bk3y9_t3293pkox9redxgi.jpg"
+          ],
+          "observedFeatures": [
+            "Thin portrait green plate with a white perimeter border",
+            "Three simple white people and four arrows converging toward them",
+            "Lower text band separated by a thin white rule",
+            "Plate supported by one round pole visible below the sign"
+          ],
+          "imageSha256": [
+            "9c573279aed5f2e6587ae36984d331de28fb9af8e6acc398c2c9dfcda5a52ddf"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "SafetyBuyer product photo; Caledonia Signs manufacturer text/dimensions; individual photographer unknown",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "GreenPlate",
+        "WhiteAssemblySymbol",
+        "FourInwardArrows",
+        "LowerLabelBand",
+        "PortablePostAndFoot"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "official_manufacturer_options",
+        "source_url": "https://www.caledoniasigns.co.uk/Caledonia-Signs-Mobile-Assembly-Point-with-PoleSafety-Sign",
+        "plate_options_mm": [
+          [
+            450,
+            600
+          ]
+        ],
+        "dimensions_order": "manufacturer lists two planar dimensions; mobile supplier identifies width x height",
+        "pole_length_m": 2.4,
+        "note": "Manufacturer page was read through web; its image endpoint was unreachable locally. Inspected photos come from the supplier product pages, with matching category/product code; original photographer and independent manufacturer-image identity not confirmed."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.18,
+          0.005,
+          -0.14
+        ],
+        "max": [
+          0.18,
+          1.34,
+          0.18
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Supplier page states all rights reserved; no image reuse license was confirmed. Manufacturer page is https://www.caledoniasigns.co.uk/Caledonia-Signs-Mobile-Assembly-Point-with-PoleSafety-Sign. Neither source establishes a KORAIL installation or official railway assembly procedure.",
+        "Build a portable portrait plate on a slim pole and a separate small synthetic foot, with plate rim, white group/arrow relief and lower label band. Preserve the original ground-rooted asset convention (floor local y=0; sign/action center local y=1.1), since Unity applies floorPivot=-1.1 under its action anchor. Source mobile pole is 2.4 m; the shorter synthetic stand and proposed face 0.36 x 0.48 m must be labeled as adaptations, not published dimensions."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "7e84414d41183ecae72ce070525a6e1a84286b2084076dace1d96c2b506800c7",
+        "captureSha256": [
+          "df45a8b75d869ce077511e47b0795dfc451267eef3037c1553c4041fce5ea983",
+          "e5c3f4b6d27f57b7bd13d5620e74063a3aabb071c831a366160ca04f0d64fe96"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "RecessedLight",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "R04/R06 낮은 천장에는 사각 발광 패널이 반복된다.",
+            "사각 패널은 천장 모듈 격자 안에 들어가고 원형 환기구/다운라이트와 구분된다.",
+            "M01 근접 제품 사진에는 얇은 백색 테두리와 넓고 평평한 유백 발광면이 보인다.",
+            "발광면 바깥으로 얕은 하우징 가장자리와 작은 상부 탭 윤곽이 드러난다."
+          ],
+          "imageSha256": [
+            "8f9a8b98b2e7742058d3610f31d16286eb0d2de1189eeec92fd753b67693f350"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+          "imageUrls": [
+            "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg"
+          ],
+          "observedFeatures": [
+            "R04/R06 낮은 천장에는 사각 발광 패널이 반복된다.",
+            "사각 패널은 천장 모듈 격자 안에 들어가고 원형 환기구/다운라이트와 구분된다.",
+            "M01 근접 제품 사진에는 얇은 백색 테두리와 넓고 평평한 유백 발광면이 보인다.",
+            "발광면 바깥으로 얕은 하우징 가장자리와 작은 상부 탭 윤곽이 드러난다."
+          ],
+          "imageSha256": [
+            "62a87abadf1d65437189d10843b4365db4987dcaef1a66bb106832c7aa03ca4e"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "The Migratory Birds; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.signify.com/global/prof/indoor-luminaires/recessed/philips-coreline-panel-gen6/911401800887_EU/product",
+          "imageUrls": [
+            "https://www.assets.signify.com/is/image/Signify/CoreLine-panel-G6-W60L60-RTP"
+          ],
+          "observedFeatures": [
+            "R04/R06 낮은 천장에는 사각 발광 패널이 반복된다.",
+            "사각 패널은 천장 모듈 격자 안에 들어가고 원형 환기구/다운라이트와 구분된다.",
+            "M01 근접 제품 사진에는 얇은 백색 테두리와 넓고 평평한 유백 발광면이 보인다.",
+            "발광면 바깥으로 얕은 하우징 가장자리와 작은 상부 탭 윤곽이 드러난다."
+          ],
+          "imageSha256": [
+            "7178f1b8d2d1bb514ce1e745f2c41df18884ca81856a8d7490b544bf42078421"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Signify / Philips; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "PanelHousing",
+        "Diffuser",
+        "PerimeterTrim",
+        "RearPan",
+        "MountingTab"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic .6m panel envelope; manufacturer dimensions do not verify station installation"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.3,
+          -0.0265,
+          -0.3
+        ],
+        "max": [
+          0.3,
+          0.049,
+          0.3
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "약.6m 정사각형 매입 패널로 제작한다; 부산역 실측이나 설치제품 판별이 아니다.",
+        "하우징·확산판·주변 트림·후면 팬·고정 탭을 분리한다.",
+        "annex/corridor는 root가 이 유형으로 바꾸고 예전 선형 Beam 장식을 제거한다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "2ca027b4515ea02425a058d22319c27621cb00827cbfd6c2ab4ee8708954b3fe",
+        "captureSha256": [
+          "063baa5c852824f356b122867cdefe5c519b898361701f8b9b02372e0e4caec6",
+          "bfb814d096513063d8c779df6122d50aa7edc08590341740a5ddcdce4f6453ad"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "RoofPanel",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "지붕 면은 회색 직사각 구획으로 반복된다.",
+            "각 구획에는 서로 평행한 가는 리브/줄이 보인다.",
+            "패널 뒤의 보와 부재가 별도 방향으로 교차한다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "지붕 면은 회색 직사각 구획으로 반복된다.",
+            "각 구획에는 서로 평행한 가는 리브/줄이 보인다.",
+            "패널 뒤의 보와 부재가 별도 방향으로 교차한다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "RoofSheet",
+        "ParallelRib",
+        "EdgeSeam",
+        "UndersideSupport"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.5,
+          -0.03,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.03,
+          0.5
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "1x1x.06 sheet와 평행 raised ribs를 별도 자산으로 만든다.",
+        "시트·리브·이음 가장자리·하부 지지 윤곽을 나눈다.",
+        "실제 standing-seam 제품 형식·시공 피치·두께로 해석하지 않는다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "1fdb0bdf6cb332f9091f505325a3313b5a13e63725c9e8266fded07944d63ade",
+        "captureSha256": [
+          "b50dfcd5b6576e5c9a52d4dc7586a48db2efa09d0f079f0f5679fe45a6864eb0",
+          "49e09308b020fccfe194371389c42714a250610762338c818935a070dc3e8fe0"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "RoofTruss",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "밝은 원형 튜브 상·하현재가 반복된다.",
+            "현재 사이에 삼각 대각재가 이어진다.",
+            "서로 다른 방향의 보가 교차하며 공간 깊이를 가진다.",
+            "기둥 머리에는 복수 대각 튜브와 환형 접합 윤곽이 모인다.",
+            "상부에는 별도의 가는 지붕 지지재와 회색 패널이 반복된다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "밝은 원형 튜브 상·하현재가 반복된다.",
+            "현재 사이에 삼각 대각재가 이어진다.",
+            "서로 다른 방향의 보가 교차하며 공간 깊이를 가진다.",
+            "기둥 머리에는 복수 대각 튜브와 환형 접합 윤곽이 모인다.",
+            "상부에는 별도의 가는 지붕 지지재와 회색 패널이 반복된다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_48c36751955c4206a1604493fc8f47dc~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "밝은 원형 튜브 상·하현재가 반복된다.",
+            "현재 사이에 삼각 대각재가 이어진다.",
+            "서로 다른 방향의 보가 교차하며 공간 깊이를 가진다.",
+            "기둥 머리에는 복수 대각 튜브와 환형 접합 윤곽이 모인다.",
+            "상부에는 별도의 가는 지붕 지지재와 회색 패널이 반복된다."
+          ],
+          "imageSha256": [
+            "311a6b3d5c1d6adc19b47c78a3437cc2e21a1402db56a4f6449a5d2ec638861a"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "TubularChord",
+        "DiagonalWeb",
+        "DepthTie",
+        "EndBearingPlate",
+        "JointFastener"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -7.5,
+          -0.0,
+          -0.099
+        ],
+        "max": [
+          7.5,
+          1.1,
+          0.095
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "현재·대각/수직 웹·얕은 공간 연결재·단부 지지판을 분리한다.",
+        "사진에서 분해되지 않는 볼트/거셋은 제조 일반형 상세로 기록한다.",
+        "15x1.1x.2 envelope는 기존 합성 범위로 유지한다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "6ed0a24db389f64b3a06065944cc188a4393ce6f02d42cd8c635482d08e17163",
+        "captureSha256": [
+          "72eb35efa67b07d160aa288eaa3124f047e8064aed145f7a850a06600fcf839a",
+          "40539f6aebdf1f764271551f6d3c1959f072f5d1ead975318d37104a0598bf98"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "RouteConsole",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://eu.peerless-av.com/products/kip522",
+          "imageUrls": [
+            "https://peerless-av.com/_product-assets/en-gb/1082961290/Maximum.jpg"
+          ],
+          "observedFeatures": [
+            "Broad floor cabinet with an inclined upper front transitioning to a vertical lower face",
+            "Landscape and portrait screen mounting variants shown side by side",
+            "Display frame projects beyond the narrow cabinet edges",
+            "Thin rounded rectangular base plate extends beyond the cabinet",
+            "Visible horizontal cabinet seam at the change of slope"
+          ],
+          "imageSha256": [
+            "b3906cc644cb3972709dc7871a40be8ad47fd02a280bf8e273d0a3a31b3804e5"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Peerless-AV; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "FoldedCabinet",
+        "InclinedUpperNeck",
+        "OverhangingMapDisplay",
+        "ServiceSeam",
+        "RoundedBasePlate",
+        "DisplayMountArm"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "unknown",
+        "reason": "No model-specific overall physical dimensions were confirmed from the selected manufacturer page."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.297,
+          -1.1,
+          -0.206775
+        ],
+        "max": [
+          0.297,
+          0.184871,
+          0.26
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Generic product form reference; installation in a KORAIL station and railway procedure suitability are not established.",
+        "Build the landscape variant as a map lectern: one broad folded-sheet cabinet with a genuine angled neck and overhanging display, separate lower service seam, and rounded base. Proposed 0.62 m display width, 0.43 m cabinet width and 0.46 m base depth are synthetic; shorten the mounting cabinet to align the display center to local y=0 at the existing 1.1 m target. Screen content is a newly authored training map. It must not share RadioConsole or SituationPanel housing geometry."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "7918d6fc7946b8284301a2757b7bb15979839f2122b32dbfb778991c015f5309",
+        "captureSha256": [
+          "439324b09c44b52ad9b321baf8461ffe5275507cfde29a9a86ca0d2c11caacef",
+          "e9787a7d0946e76cd0d124ad48381709da0a88025b29d437951f8cd01958ae58"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "SituationPanel",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.advantech.com/en-us/products/utc-520-series/sub_64692d29-8576-4534-9b3c-81aad4db8330",
+          "imageUrls": [
+            "https://advdownload.advantech.com/productfile/PIS/64692d29-8576-4534-9b3c-81aad4db8330/Category_Photo/UTC-52020231102113254.png"
+          ],
+          "observedFeatures": [
+            "Wide landscape display with a broad flat black bezel",
+            "Thin silver extruded enclosure visible along the right edge",
+            "Screen inset has a separate reflective cover surface",
+            "Narrow side channel and a small stepped rear edge"
+          ],
+          "imageSha256": [
+            "946f9abe4ad4bb02b0c75dec983087582b92cd6c0f81a4d9e71dba2831ed553e"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Advantech; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "DisplayBezel",
+        "InsetStatusGlass",
+        "AluminiumSideRail",
+        "ShallowRearHousing",
+        "SyntheticVesaPedestal"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "partial_official",
+        "screen_diagonal_in": 21.5,
+        "overall_dimensions_mm": null,
+        "source_url": "https://www.advantech.com/en-us/products/utc-520-series/sub_64692d29-8576-4534-9b3c-81aad4db8330"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.259,
+          -1.1,
+          -0.18
+        ],
+        "max": [
+          0.259,
+          0.157,
+          0.2
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Generic product form reference; installation in a KORAIL station and railway procedure suitability are not established.",
+        "Build a slim landscape monitor with a separate bezel, glass, silver side rail and shallow rear housing; use a synthetic narrow pedestal to place the center at the existing 1.1 m anchor. Proposed screen assembly width 0.518 m, height 0.314 m, depth 0.044 m is a synthetic shape choice unless the matching variant datasheet is separately accepted. Keep the front near local z=-0.16 and a single Status_ mesh for the active display. Do not add the same bulky console base as the other terminals."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "b3b20c3bb10673101a5b8d6ee674890f009746d6c7c3a788e753c76ab2b1bc92",
+        "captureSha256": [
+          "d060fa08277b14a43b5a7501bfa01b99786a774cb5822eb52ac3af11f0757b0d",
+          "7f4f99dcc2911358bc7ada4924f17df011c8155d51420ef3708a6121e2b280e2"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "TactileTile",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "황색 띠가 회색 바닥과 뚜렷하게 구분된다.",
+            "띠는 작은 직사각 모듈의 이음으로 나뉜다.",
+            "모듈 위에는 이동 방향으로 길쭉한 평행 돌출선이 보인다."
+          ],
+          "imageSha256": [
+            "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "황색 띠가 회색 바닥과 뚜렷하게 구분된다.",
+            "띠는 작은 직사각 모듈의 이음으로 나뉜다.",
+            "모듈 위에는 이동 방향으로 길쭉한 평행 돌출선이 보인다."
+          ],
+          "imageSha256": [
+            "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+          "imageUrls": [
+            "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg"
+          ],
+          "observedFeatures": [
+            "황색 띠가 회색 바닥과 뚜렷하게 구분된다.",
+            "띠는 작은 직사각 모듈의 이음으로 나뉜다.",
+            "모듈 위에는 이동 방향으로 길쭉한 평행 돌출선이 보인다."
+          ],
+          "imageSha256": [
+            "62a87abadf1d65437189d10843b4365db4987dcaef1a66bb106832c7aa03ca4e"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "The Migratory Birds; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "TileBase",
+        "ParallelGuidanceBar",
+        "LongEdgeJoint",
+        "EndEdgeJoint"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.5,
+          0.0,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.014,
+          0.5
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "1x1x.014 바닥 overlay 안에 평행 돌출 바를 배치한다.",
+        "베이스·돌출 바·끝 여백·모듈 이음을 구분한다.",
+        "실제 접근성 규격 적합성이나 부산역 점자 경로 배치를 주장하지 않는다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "acaf675200c29d24287c83d1438565a393824ca557a8152ed207a2d34bea1983",
+        "captureSha256": [
+          "e04ae844a942e7f5fe7fd1962345555de7c552b1a41808af92dea0f4152a0e19",
+          "9b2a8e1d00fc753d616f69acc5eb23ac91ea41ae475bd164e1c7254611ed7c68"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "TemporaryBarrier",
+      "kind": "category_proxy",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.altradgeneration.com/en-gb/products/heavy-duty-hoarding-panel",
+          "imageUrls": [
+            "https://www.altradgeneration.com/img/containers/assets/products/fencing-barriers/temporary-hoarding/hd-hoarding-panels-product.png/9779669b0c80a53232c77554e33e0f97/hd-hoarding-panels-product.webp"
+          ],
+          "observedFeatures": [
+            "Opaque light-grey steel sheets with repeated vertical trapezoidal corrugations",
+            "Thin top/bottom horizontal rails and paired upright posts at panel joints",
+            "Upper and lower short coupling straps span the neighboring posts",
+            "Black low block feet have contrasting yellow end caps",
+            "Small yellow caps close the tops of the round posts"
+          ],
+          "imageSha256": [
+            "9da4a1fd49e3e5400ec109dcbf398ffb8344eaaf98ef224cecec5775303dfd18"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "Altrad Generation product imagery; individual photographer not identified",
+          "reuseLicense": "unknown_no_reuse_license_confirmed",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_equipment.py",
+      "requiredComponents": [
+        "CorrugatedOpaqueSheets",
+        "PerimeterRails",
+        "PanelJointCouplers",
+        "RubberFeet",
+        "YellowFootCaps"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "status": "partial_official",
+        "listed_panel_size_mm": [
+          2140,
+          1980
+        ],
+        "source_url": "https://www.altradgeneration.com/en-gb/products/heavy-duty-hoarding-panel",
+        "note": "Manufacturer page panel-size text; no surveyed KORAIL installation or specified foot envelope. Page weight figures differ, so no weight is recorded."
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -3.0,
+          -0.9,
+          -0.16
+        ],
+        "max": [
+          3.0,
+          0.9,
+          0.16
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "Generic temporary works screening form only. Neither KORAIL installation nor a railway incident procedure is evidenced; model is not a validated support/wind-load system. Heras UK reference navigation now redirects to Altrad Generation, which states acquisition of Heras Mobile UK.",
+        "Three independently corrugated 2 m-wide opaque panels within exactly the existing centered 6 x 1.8 x 0.32 m collision box. Model closed folded sheets, top/bottom rails, joint posts/couplers, small black feet and yellow caps. All feet remain within x=+-3, y=+-0.9, z=+-0.16. Root replaces visual mesh only and retains the existing collider transform, activation conditions and procedures. The size and compact supports are declared synthetic adaptations, not a mechanically validated hoarding system."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "dd71e74395e74acd5482b97dc7e31694a0cfaa7c2e40e59eece12cdded310c2b",
+        "captureSha256": [
+          "24c0b78b91b1a92b3760dbde49a786c7f1ff3d2ea74d284c7844506246a4fa52",
+          "f904961627d30ac739467aea89cf21929d5c151e3fb8bbcbe8e46cb2759d8800"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "WallModule",
+      "kind": "structural_base",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "R04 전광판 주위는 어두운 세로 리브 패널이다.",
+            "패널 상단에는 수평 마감 띠와 창 프레임이 나뉜다.",
+            "R06 낮은 구역은 금속 마감 기둥과 유리 매표 창구로 구성된다."
+          ],
+          "imageSha256": [
+            "8f9a8b98b2e7742058d3610f31d16286eb0d2de1189eeec92fd753b67693f350"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        },
+        {
+          "pageUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+          "imageUrls": [
+            "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg"
+          ],
+          "observedFeatures": [
+            "R04 전광판 주위는 어두운 세로 리브 패널이다.",
+            "패널 상단에는 수평 마감 띠와 창 프레임이 나뉜다.",
+            "R06 낮은 구역은 금속 마감 기둥과 유리 매표 창구로 구성된다."
+          ],
+          "imageSha256": [
+            "62a87abadf1d65437189d10843b4365db4987dcaef1a66bb106832c7aa03ca4e"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "The Migratory Birds; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "UnitPanel"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.5,
+          -0.5,
+          -0.5
+        ],
+        "max": [
+          0.5,
+          0.5,
+          0.5
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "unit cube single mesh를 유지한다.",
+        "물리 벽·천장·지지대의 의미는 Unity 인스턴스 이름과 별도 참조에 둔다.",
+        "사진 기반 상세는 WallPanel 등 별도 자산으로 덧붙인다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "9a406fcf392522f84bf2ab4611db3ee9ceb8650d891b8b9017ede3f01b3affdf",
+        "captureSha256": [
+          "8a8d8717233cf88179b529b6bf48631d345a35c7f734270e7e962e8ea25288a4",
+          "5a4a10adb45baf4b784b37f0a8c82e4959c3d8e135132b2c2af1ed79b2534770"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance."
+      }
+    },
+    {
+      "id": "WallPanel",
+      "kind": "station_specific",
+      "usage": "scene",
+      "references": [
+        {
+          "pageUrl": "https://www.koreatodo.com/busan-station",
+          "imageUrls": [
+            "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg"
+          ],
+          "observedFeatures": [
+            "전광판 주변은 좁은 세로 리브와 음영 틈이 반복된다.",
+            "세로 면 위아래의 수평 프레임이 구분된다.",
+            "패널 모서리와 전광판 프레임은 서로 다른 깊이로 보인다."
+          ],
+          "imageSha256": [
+            "8f9a8b98b2e7742058d3610f31d16286eb0d2de1189eeec92fd753b67693f350"
+          ],
+          "inspectedOn": "2026-09-07",
+          "credit": "KoreaToDo; unknown / individual image credit not established",
+          "reuseLicense": "unknown; no asset redistribution or texture-use permission inferred",
+          "use": "visual form observation; no source photograph or logo used as a game texture"
+        }
+      ],
+      "module": "scripts/art/station_architecture.py",
+      "requiredComponents": [
+        "BackingPanel",
+        "FrontFace",
+        "RevealChannel",
+        "RearClip"
+      ],
+      "dimensionsBasis": "synthetic_design_not_surveyed; published product values below are references, not an installation measurement",
+      "publishedDimensions": {
+        "actual_measured": "not established",
+        "model_dimensions": "synthetic envelope only; never infer surveyed station dimensions from photos"
+      },
+      "authoredBoundsUnity": {
+        "min": [
+          -0.5,
+          -0.5,
+          -0.022
+        ],
+        "max": [
+          0.5,
+          0.5,
+          0.025
+        ]
+      },
+      "stationInstallationVerified": false,
+      "limitations": [
+        "1x1x.05 중앙 평면의 독립 표면 overlay를 만든다.",
+        "앞면·좁은 리빌·등판·고정 클립을 분리한다.",
+        "뒷면 클립은 사진에서 확인되지 않은 합성 제조 상세로 명시한다.",
+        "Factory-like rear clips, repeated modules and unknown dimensions are authored approximations.",
+        "Dense vertical relief replaces the earlier four broad slabs; the pale synthetic-room colour and fitted spacing are not a verified R04 finish match."
+      ],
+      "visualReview": {
+        "status": "reviewed",
+        "reviewedOn": "2026-09-07",
+        "assetSha256": "3d08433de24e892acf64fbbf24fb74a20d3abffaa07d67eeb9a5a9adfee2086f",
+        "captureSha256": [
+          "6a112c60fc88275a075b749bd7f521e233900f9674eae3d30164d8eb9aaa6f06",
+          "27363ec975019911b4c2c008abf539365b209b120510c3db75bb146da5077946"
+        ],
+        "scope": "Actual native front/top and side/top detail views plus generated scene use; compare visible silhouette, manufacture features and material assignment with listed images. Same-provider author/root review, not production or surveyed facility acceptance.",
+        "correction": "Four broad slabs replaced by64narrow ribs; pale colour/fitted pitch remain authored adaptations."
+      }
+    }
+  ],
+  "sceneFamilies": [
+    {
+      "family": "IncidentRestrictionBarrier",
+      "previousIssue": "unmapped authored incident barrier; generic cube is not factory barrier reference",
+      "currentDisposition": "replaced",
+      "referenceAssetId": "TemporaryBarrier",
+      "implementationAndLimit": "Opaque three-panel hoarding replaces the abstract striped cube; the hidden original exclusion collider remains unchanged."
+    },
+    {
+      "family": "DoorHeadsLintels",
+      "previousIssue": "separate wall opening/header family; DoorFrame source does not automatically cover it",
+      "currentDisposition": "structural_adapter",
+      "referenceAssetId": "WallModule",
+      "implementationAndLimit": "Rectangular wall opening/header volumes belong to the synthetic architectural shell; wall/roof photos support form only. Not separately identified station construction."
+    },
+    {
+      "family": "WallSkirtingBandsJoints",
+      "previousIssue": "unmapped trim/panel-seam instances, not independent wall-panel reference",
+      "currentDisposition": "replaced",
+      "referenceAssetId": "WallPanel",
+      "implementationAndLimit": "Legacy decorative strips removed; manufactured panel faces/reveals/clips are provided by the Blender WallPanel."
+    },
+    {
+      "family": "RoofPurlinsAndLuminaireSupportBeams",
+      "previousIssue": "purlins are a separate support family; root plans to remove old linear fixture Beam decorations during light-type migration",
+      "currentDisposition": "replaced",
+      "referenceAssetId": "Purlin",
+      "implementationAndLimit": "Blender flange/web/end-seam members replace unit boxes; old luminaire beams are removed and actual stems meet supporting structure."
+    },
+    {
+      "family": "GlazingUpperClosureMullionsTransoms",
+      "previousIssue": "envelope/glazing surrogate distinct from ClerestoryBay; opacity/overlap requires root review",
+      "currentDisposition": "explicit_visual_proxy",
+      "referenceAssetId": "ClerestoryBay",
+      "implementationAndLimit": "Clear pane/profile/seal assets are combined with simple upper enclosure members and a pale daylight backdrop. The unmodeled exterior is not a reproduced station object."
+    },
+    {
+      "family": "CeilingSlabs",
+      "previousIssue": "separate ceiling finish system; RoofPanel overlay does not imply all backing slabs are photo referenced",
+      "currentDisposition": "replaced_visible_finish",
+      "referenceAssetId": "CeilingPanel",
+      "implementationAndLimit": "Lower ceiling shell renderers removed and replaced with referenced panel grids. Upper concourse uses RoofPanel; dimensions/grid scale fit provisional room sizes."
+    },
+    {
+      "family": "FloorJointStrips",
+      "previousIssue": "do not count as currently visible family",
+      "currentDisposition": "removed",
+      "referenceAssetId": "FloorModule",
+      "implementationAndLimit": "Old strips are absent. Floor surface uses explicit metric UV and procedural stone joints."
+    },
+    {
+      "family": "HallSignAndRuntimeLabels",
+      "previousIssue": "authored signage/UI; not covered simply by reference WallModule or manufacturer images",
+      "currentDisposition": "virtual_guidance",
+      "referenceAssetId": "AssemblySign",
+      "implementationAndLimit": "Hall board now uses the referenced sign model. Its wording, TextMesh navigation, crosshair and route line are authored UI, not captured physical signage."
+    },
+    {
+      "family": "BenchAndLuggageCollisionBoxes",
+      "previousIssue": "physics-only shapes excluded from visible reference audit",
+      "currentDisposition": "physics_only",
+      "referenceAssetId": "Bench",
+      "implementationAndLimit": "Old disabled visual cubes removed; major authored objects provide separate non-rendering collision proxies. They do not count as reference models."
+    }
+  ]
+}

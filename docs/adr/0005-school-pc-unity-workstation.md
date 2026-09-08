@@ -1,17 +1,17 @@
-# ADR 0005: Unity 작업은 학교 PC에서, 설정은 저장소로
+# ADR 0005: 가벼운 Unity 개발은 로컬과 학교에서, 무거운 작업은 학교에서
 
-Status: proposed (1차 changes_required, 학교 PC 확인·독립 재검토 미완료)
+Status: partially accepted (작업 장소는 사용자 확정, Pi/MCP·학교 실행 절차의 독립 재검토 미완료)
 Date: 2026-09-06
 
 ## 맥락
 
-local에는 Unity를 설치하지 않는다. Unity·HMD·unity-mcp 작업은 school-pc에서만 한다. OS·권한·네트워크·GPU·라이선스·HMD·에디터 버전은 D-01~D-09의 관련 답변 전 미확정이다.
+2026-09-06 사용자가 저장공간 정리 후 local Unity 설치를 지시했다. 작은 합성 맵·Blender 메시 제작·Desktop 게임 개발과 Editor 테스트는 local에서 진행할 수 있다. 무거운 모델링·렌더·베이크, Windows 실행본·HMD 검증은 school-pc에서 한다. 학교 PC의 Unity 개발 적합성은 사용자의 기존 Unity 프로젝트 경험으로 확정했다. 학교 OS·권한·네트워크·라이선스·HMD 및 정확한 에디터 버전의 실행 조건은 D-01~D-09와 해당 변경 단위에서 별도 기록한다.
 
 ## 결정
 
 1. 공개 설정과 절차의 전달 수단은 저장소다. OS 설정·개인 자격·비공개 승인 원본까지 Git에 넣지 않는다. 스크립트가 있어도 관리자 권한·정책·네트워크 문제를 자동 해결하지 않는다.
 2. 공개 영수증에는 local/school-pc와 역할만 쓴다. 호스트명·계정명·민감 저장 위치는 공개하지 않는다.
-3. M1-01은 Pi 버전·세션 계약·Writer Lease 기준선이다. Unity 프로젝트·에디터·패키지는 M2-01에서 `ProjectSettings/ProjectVersion.txt`와 의존성 manifest로 고정한다. Unity 6 LTS는 후보이며 정확한 버전 승인 전 설치하지 않는다.
+3. M1-01은 Pi 버전·세션 계약·Writer Lease 기준선이다. 사용자 지시 범위에서 local 설치 대상으로 Unity Hub 3.21.1 ARM64와 공식 배포의 Unity 6000.3.23f1 LTS Apple Silicon(revision `09d2ecc7fb28`, 배포일 2026-08-26)을 선정했다. Unity 프로젝트·에디터·패키지는 M2-01에서 프로젝트 생성 후 `ProjectSettings/ProjectVersion.txt`와 의존성 manifest로 고정한다. 설치 완료와 컴파일·플레이 성공은 각각 실제 결과로 확인한다.
 4. unity-mcp는 M1-03 공급망 검토와 M2-01 완료 후 M1-04에서 학교 PC에 연결한다. pi-mcp-adapter는 버전·라이선스·우회 경로 검토 전 미채택이다.
 5. D-07 및 KORAIL 자료 취급 조건 확정 전 school-pc에는 PUBLIC_SYNTHETIC만 허용한다. HMD 모델·실물 검증은 별도 XR 변경 단위에서 기록한다. M1-05는 실행 기록·정제·공개 manifest 단위다.
 6. 학교 PC 실행은 원격에 전달되고 검토·필수 검사·PM 승인이 확인된 불변 커밋에서만 한다. 브랜치 clone은 승인 우회가 아니다. main/develop 직접 푸시와 자동 PR 생성은 하지 않는다.
@@ -20,11 +20,12 @@ local에는 Unity를 설치하지 않는다. Unity·HMD·unity-mcp 작업은 sch
 
 | 대안 | 판단 |
 |---|---|
-| local Unity 설치 | 사용자 제약으로 배제 |
+| local Unity 설치 | 사용자 지시로 채택. 가벼운 합성 장면·Desktop 개발·Editor 테스트에 사용 |
+| school-pc 중심 개발 | 무거운 모델링·렌더·베이크, Windows 실행본·HMD 검증에 유지 |
 | 클라우드 Unity 빌드 | 이번 범위 미채택. 자료·라이선스·외부 전송 승인은 별도 필요 |
 | 팀 드라이브로 설정 복사 | Git 단일 전달 제약으로 배제 |
 
-## 위협과 검증
+## 학교 PC와 도구 운영의 위협 및 검증
 
 - 공유 PC 로그인은 D-08 검증 전 비허용이다. `/logout`만으로 디스크 토큰·로그·자격 잔류 제거를 증명하지 않는다.
 - 네트워크는 기본 거부다. 개발 패키지 목적지와 모델·Exa 목적지는 별도로 승인한다. 목적지·포트·프로토콜·방향·프록시·자료등급이 미기재이면 비허용이다.
@@ -37,3 +38,6 @@ local에는 Unity를 설치하지 않는다. Unity·HMD·unity-mcp 작업은 sch
 | 날짜 | 변경 |
 |---|---|
 | 2026-09-06 | 마일스톤·자격 잔류·기본 거부·승인된 커밋·영수증 한계 정정. 학교 PC 실측 미실행 |
+| 2026-09-06 | 사용자 지시로 local Unity 설치·가벼운 합성 게임 개발 허용. 무거운 작업·Windows·HMD는 학교 유지. 학교 Unity 적합성은 사용자 경험으로 확정 |
+
+2026-09-07 후속 사용자 지시: Blender를 사용한 소규모 자산 고도화와 동일 대피자 모델 제작 허용. Blender 4.5.9 LTS ARM64를 공식 SHA256 및 코드 서명 확인 후 설치했다. 고해상도 렌더·베이크를 수행하지 않는다.

@@ -27,6 +27,7 @@ __pycache__/
 .venv/
 venv/
 *.py[cod]
+*.egg-info/
 
 # Secrets and licenses
 .env
@@ -52,6 +53,10 @@ models/
 
 # Reconstruction outputs are stored outside Git unless explicitly approved
 reconstruction/output/
+.local/reconstruction/
+.local/references/
+Assets/CHOOguardGenerated/ReconstructionReview/
+Assets/CHOOguardGenerated/ReconstructionReview.meta
 SceneBundles/private/
 
 # OS
@@ -64,6 +69,22 @@ Thumbs.db
 # Superpowers subagent-driven-development scratch workspace
 .superpowers/
 
+# Machine-local work logs, captures, session exports and nested worktrees
+.planning/
+**/.planning/
+.claude/worktrees/
+pi-session-*.html
+.pi/subagents/
+.pi/sessions/
+
+# Personal installer answers and raw research imports are not team sources
+_bmad/config.user.toml
+_bmad-output/**/imports/
+
 # 조사 하네스 가상환경 (tools/research, uv sync 산출물)
 tools/research/.venv/
 # BMAD 스킬 렌더 캐시 (_bmad/render/.gitignore가 자체 관리)
+
+# Reproducible developer inspection scene (not the playable training scene)
+Assets/CHOOguardGenerated/ArtReview/
+Assets/CHOOguardGenerated/ArtReview.meta

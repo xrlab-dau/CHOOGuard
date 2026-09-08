@@ -1,0 +1,991 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-08",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "engine_stage_complete_delivery_pending",
+  "scope": "텍스트 전용 로컬 복원 단계. 전체 spec 수용 아님. Blender/Unity 전 단계에서 max writer에게 인계.",
+  "spec": {
+    "path": "_bmad-output/implementation-artifacts/spec-foundation-sequence-reconstruction.md",
+    "sha256": "4f7dc40bd2b630a7e638f678258632b2ac4176153666f346c8fe6fce15c58ec5"
+  },
+  "sourceSha256": {
+    "reconstruction/tools/run_sequence_pilot.py": "a2306f93575bd9b19cc10936531dab9dc44098f94acc3513aa187e1f2e91c428",
+    "reconstruction/tools/run_sfm_sequence.py": "ace32db20b5a546d51eb102e659bb1f09d1f9c78d76092c65028973cb0168a96",
+    "reconstruction/tools/run_mapanything.py": "d1ce78f5b7b7d2091f9fb08ff505a9443c7ad2a8acd7bd553deb892252231de1",
+    "reconstruction/tools/setup_mapanything.py": "b36504246f2217ffa226222481c89913c519de2dfce7b4d90b72ead2d0263aae",
+    "reconstruction/requirements-mapanything.in": "f5b2442870ec688fb639380f1471ad4ef62b4aefbf12350bb07aead32c1bb0ef",
+    "reconstruction/requirements-mapanything.lock": "458bd8944e873b65d83957d8e560be17b71c175f9e9ced68ad74a78ad8e40e84",
+    "reconstruction/tests/test_sequence.py": "50f15e888aa5f22f2f83f7b9f4f57c872ccc1c2013dd22461bae8bec8b7a6177",
+    "reconstruction/tests/test_sequence_regressions.py": "cb7016818b941039dc263a28ad213134f3e4992fff2a01d68c3a9e38882878f2",
+    "scripts/references/sample_video_frames.py": "469721307767b21e5aa057156c2736c658a4e94c283f544aff67ca9e84d2666b",
+    "scripts/references/prepare_sequence.py": "6dcee57c28b47f468a65345b2e562f129f32b23d20e49bfb5b629db44350b2d3",
+    "scripts/references/recover_source_inventory.py": "e7d500d1f0b5e053759b5f661d25603b458e90cb70ece93e52f515710e1d9a40",
+    "scripts/references/test_prepare_sequence.py": "6bde832304a12820c5d251ee92368e2a1bff9978a1a841444ade0c6e4c60f8b2",
+    "scripts/references/test_recover_source_inventory.py": "fb9646d85fd0e60a1800d86fcee2c9bf84236177bebf86c05d0dc62b32b4c05a"
+  },
+  "preservedHistoricalEvidence": [
+    {
+      "path": "docs/evidence/foundation/2026-09-08-sequence-pilot.json",
+      "sha256": "5338cfca8ce2c4280e175f948e50d9598b1d3572f1ca97e07fa9428744bbdc44"
+    },
+    {
+      "path": "docs/evidence/foundation/2026-09-08-sequence-parent-audit.json",
+      "sha256": "c5d7d23cc6f1dee1d6dd228bec3e83e91a113cc7ca6ebee981ee5fe784b20d72"
+    }
+  ],
+  "dataBoundary": {
+    "imagesBlockImages": true,
+    "imageAttachments": 0,
+    "externalImageGeometryTransfers": 0,
+    "networkInference": "Python sockets blocked for MapAnything; local verified models only",
+    "policyChange": "Parent updated repository policy during this run; no new external transfer performed. Prior audit preserved."
+  },
+  "setup": {
+    "receipt": {
+      "path": ".local/reconstruction/mapanything/setup-sequence-resume.json",
+      "sha256": "5d668ba118216cdd75e4c6f0a6049e7a6ffda2b91325e22642fe22941e703fdc"
+    },
+    "verifiedSetupReceipt": {
+      "path": ".local/reconstruction/mapanything/setup-sequence-resume-verified.json",
+      "sha256": "fe19b0e9f018ac4bf17b07a6bf0ba68ed3cedbad45e0760db6c4cb812e882bf8"
+    },
+    "status": "succeeded",
+    "elapsedSeconds": 711.5098949589883,
+    "initialFreeDiskBytes": 20934316032,
+    "finalFreeDiskBytes": 15928696832,
+    "weightBytes": 4914062480,
+    "weightSha256": "fa06c0fdccefc5048e072c85935d5789b1e36b307f3859033c17f9dcb9fd5201",
+    "sourceRevision": "3d10cf7a3016fc0f9bb13a071ee66c47b10be0d9",
+    "backboneRevision": "7764ea0f912e53c92e82eb78a2a1631e92725fc8",
+    "lockedPackageCount": 65,
+    "offlineImportSmoke": "passed",
+    "uvPipCheck": "All installed packages are compatible"
+  },
+  "sourceRecovery": {
+    "path": "docs/evidence/foundation/2026-09-08-sequence-source-recovery.json",
+    "sha256": "bccdbee64d877519a2e4b1bd9d01d0bc161ba34dae96d563fdff8a5ade711f42"
+  },
+  "runs": [
+    {
+      "comparison": {
+        "path": "reconstruction/output/sequence-resume-connector-final/sequence-pilot-comparison.json",
+        "sha256": "bd8ffceb278fa5f374631bf38df8c54c786a545be7b0aa201ec1ade5f2c98e0f"
+      },
+      "samples": {
+        "path": "private-data/facility-sources/frames/39PANJWghAk-resume-continuous-v2/samples.json",
+        "sha256": "445bcb9ed657fa73159a2e3da0a99b62e6a11513872975f4be4e1b3d62176aca"
+      },
+      "command": ".local/reconstruction/geometry-venv/bin/python reconstruction/tools/run_sequence_pilot.py --image private-data/facility-sources/frames/39PANJWghAk-resume-continuous-v2/t000024000.jpg --image private-data/facility-sources/frames/39PANJWghAk-resume-continuous-v2/t000024500.jpg --image private-data/facility-sources/frames/39PANJWghAk-resume-continuous-v2/t000025000.jpg --image private-data/facility-sources/frames/39PANJWghAk-resume-continuous-v2/t000025500.jpg --output reconstruction/output/sequence-resume-connector-final",
+      "sourceVideoSha256": "ba87d489cb847c7c2448ca69d9c3e01d3c2706636ecd82c8f24fce350bcdf0be",
+      "sequenceVerification": {
+        "method": "ffmpeg-scene-score",
+        "threshold": 0.3,
+        "cutCount": 0,
+        "cutPtsSeconds": [],
+        "startPtsSeconds": 24.007317,
+        "endPtsSeconds": 25.508817,
+        "sourceVideoSha256": "ba87d489cb847c7c2448ca69d9c3e01d3c2706636ecd82c8f24fce350bcdf0be",
+        "command": [
+          "ffmpeg",
+          "-hide_banner",
+          "-nostdin",
+          "-loglevel",
+          "info",
+          "-threads",
+          "2",
+          "-ss",
+          "24.0",
+          "-t",
+          "1.6015000000000001",
+          "-copyts",
+          "-i",
+          "<local-source>",
+          "-an",
+          "-vf",
+          "scale=320:-2,select='gt(scene,0.3)',showinfo",
+          "-f",
+          "null",
+          "-"
+        ],
+        "visualReview": "not_performed",
+        "limits": "Hard-cut heuristic only; fades, occlusion and low-parallax degeneracy need separate review."
+      },
+      "commonInputSha256": [
+        "1f4006aa58123aab17f75d0b8504a792afb33f3148d88bd719a91f9bff446958",
+        "2be4961ac13ed6a634e68273996b9871e24fac54ec3de7bfb51862e170a6e235",
+        "b5d1d19e7ef07aef8c3639afbf8245ce2d0f015aebada82b6b34c85fe59c51c9",
+        "1967d46636c08ee48b097486e68d240c48c8657387eb6a481a30c7580d12ad39"
+      ],
+      "sourcePtsSeconds": [
+        24.007317,
+        24.507817,
+        25.008317,
+        25.508817
+      ],
+      "engines": {
+        "da3_small": {
+          "status": "succeeded",
+          "included_in_ranking": true,
+          "device": "mps",
+          "elapsedSeconds": 1.1811642920365557,
+          "peakMemory": {
+            "processRssBytes": 661454848,
+            "mpsAllocatedBytes": 265970432,
+            "mpsDriverBytes": 1393459200
+          },
+          "registeredImages": null,
+          "unregisteredImages": null,
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": null,
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-connector-final/da3-small/inference-receipt.json",
+            "sha256": "8a4812f4b2d1dfa11612c7cdc41f9859b49860274e253e1a949a742a3a5f71a2"
+          },
+          "outputs": [
+            {
+              "file": "prediction.npz",
+              "sha256": "ad9796766afb048876798b03c495508c9138ad57989607f003f081695bd4371a",
+              "bytes": 2342329,
+              "arrays": {
+                "depth": {
+                  "shape": [
+                    4,
+                    196,
+                    336
+                  ],
+                  "dtype": "float32"
+                },
+                "conf": {
+                  "shape": [
+                    4,
+                    196,
+                    336
+                  ],
+                  "dtype": "float32"
+                },
+                "extrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    4
+                  ],
+                  "dtype": "float32"
+                },
+                "intrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    3
+                  ],
+                  "dtype": "float32"
+                },
+                "processed_images": {
+                  "shape": [
+                    4,
+                    196,
+                    336,
+                    3
+                  ],
+                  "dtype": "uint8"
+                }
+              }
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 3.8711984580149874,
+            "initialFreeDiskBytes": 14745686016,
+            "peakSampledProcessTreeRssBytes": 680607744
+          },
+          "processedArrays": {
+            "depth": {
+              "shape": [
+                4,
+                196,
+                336
+              ],
+              "dtype": "float32"
+            },
+            "conf": {
+              "shape": [
+                4,
+                196,
+                336
+              ],
+              "dtype": "float32"
+            },
+            "extrinsics": {
+              "shape": [
+                4,
+                3,
+                4
+              ],
+              "dtype": "float32"
+            },
+            "intrinsics": {
+              "shape": [
+                4,
+                3,
+                3
+              ],
+              "dtype": "float32"
+            },
+            "processed_images": {
+              "shape": [
+                4,
+                196,
+                336,
+                3
+              ],
+              "dtype": "uint8"
+            }
+          }
+        },
+        "da3_base": {
+          "status": "succeeded",
+          "included_in_ranking": true,
+          "device": "mps",
+          "elapsedSeconds": 2.092269791988656,
+          "peakMemory": {
+            "processRssBytes": 1429192704,
+            "mpsAllocatedBytes": 819058176,
+            "mpsDriverBytes": 2595176448
+          },
+          "registeredImages": null,
+          "unregisteredImages": null,
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": null,
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-connector-final/da3-base/inference-receipt.json",
+            "sha256": "0b01a7d52d63bc42a763adb842b9624e26b24e79bcb67b44f62430797067061e"
+          },
+          "outputs": [
+            {
+              "file": "prediction.npz",
+              "sha256": "10c7ea7ae28f4edb060cb6d558903a678f74ba268899632025e092ae48fc9eb3",
+              "bytes": 4890562,
+              "arrays": {
+                "depth": {
+                  "shape": [
+                    4,
+                    280,
+                    504
+                  ],
+                  "dtype": "float32"
+                },
+                "conf": {
+                  "shape": [
+                    4,
+                    280,
+                    504
+                  ],
+                  "dtype": "float32"
+                },
+                "extrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    4
+                  ],
+                  "dtype": "float32"
+                },
+                "intrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    3
+                  ],
+                  "dtype": "float32"
+                },
+                "processed_images": {
+                  "shape": [
+                    4,
+                    280,
+                    504,
+                    3
+                  ],
+                  "dtype": "uint8"
+                }
+              }
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 4.131763292010874,
+            "initialFreeDiskBytes": 14742384640,
+            "peakSampledProcessTreeRssBytes": 1045561344
+          },
+          "processedArrays": {
+            "depth": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "conf": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "extrinsics": {
+              "shape": [
+                4,
+                3,
+                4
+              ],
+              "dtype": "float32"
+            },
+            "intrinsics": {
+              "shape": [
+                4,
+                3,
+                3
+              ],
+              "dtype": "float32"
+            },
+            "processed_images": {
+              "shape": [
+                4,
+                280,
+                504,
+                3
+              ],
+              "dtype": "uint8"
+            }
+          }
+        },
+        "sfm": {
+          "status": "no_reconstruction_registered",
+          "included_in_ranking": false,
+          "device": "CPU",
+          "elapsedSeconds": 0.9979225830174983,
+          "peakMemory": 740704256,
+          "registeredImages": [],
+          "unregisteredImages": [
+            "t000024000.jpg",
+            "t000024500.jpg",
+            "t000025000.jpg",
+            "t000025500.jpg"
+          ],
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": "Not a complete successful reconstruction; partial/split/blocked runs excluded",
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-connector-final/sfm/sfm-receipt.json",
+            "sha256": "ad2187dd486355fda59b4e68508156358005c426d2959f760e071e427fb77c42"
+          },
+          "outputs": [
+            {
+              "file": "database.db",
+              "sha256": "53355d2ff51ad83d898b1e898bb9e78030f90806a921ef703ec638799a8819b3",
+              "bytes": 2560000
+            },
+            {
+              "file": "sparse-points.npz",
+              "sha256": "4cc7c528d15083f71dc3834c9b7dc08299437d0cc36fc626bb840ff975727b9e",
+              "bytes": 760,
+              "points": 0
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 1.3193939999910071,
+            "initialFreeDiskBytes": 14737416192,
+            "peakSampledProcessTreeRssBytes": 737607680
+          },
+          "processedArrays": null
+        },
+        "mapanything": {
+          "status": "succeeded",
+          "included_in_ranking": true,
+          "device": "CPU",
+          "elapsedSeconds": 52.24208162497962,
+          "peakMemory": 6940999680,
+          "registeredImages": null,
+          "unregisteredImages": null,
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": null,
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-connector-final/mapanything/mapanything-receipt.json",
+            "sha256": "5483e9857e4783aaff8015370c778cece220d50d004878429ffd51ee6b338e4e"
+          },
+          "outputs": [
+            {
+              "file": "raw-mapanything.npz",
+              "sha256": "1bf1718f616a9fd41b43956ef1f051f8608eb0318cb51eb3d8d03b984fb19cd3",
+              "bytes": 25890054
+            },
+            {
+              "file": "prediction.npz",
+              "sha256": "838cc73607dad6e32c256268eb27728094da00cdc026e59571b62a20f08e09b3",
+              "bytes": 3271119
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 52.893464374996256,
+            "initialFreeDiskBytes": 14734983168,
+            "peakSampledProcessTreeRssBytes": 6937772032
+          },
+          "processedArrays": {
+            "depth": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "conf": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "intrinsics": {
+              "shape": [
+                4,
+                3,
+                3
+              ],
+              "dtype": "float32"
+            },
+            "extrinsics": {
+              "shape": [
+                4,
+                4,
+                4
+              ],
+              "dtype": "float64"
+            },
+            "processed_images": {
+              "shape": [
+                4,
+                280,
+                504,
+                3
+              ],
+              "dtype": "uint8"
+            },
+            "mask": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "bool"
+            }
+          }
+        }
+      }
+    },
+    {
+      "comparison": {
+        "path": "reconstruction/output/sequence-resume-ry-final/sequence-pilot-comparison.json",
+        "sha256": "6394187106cf74a1fc2a46ad6ac257571c96e61c292200eea034f046ee4bee8c"
+      },
+      "samples": {
+        "path": "private-data/facility-sources/frames/RY2qvE0Tugk-resume-continuous/samples.json",
+        "sha256": "ddf7b76df72ce33d799288cc83b21bb877cc34973c55d8bb294ff1edab8649cc"
+      },
+      "command": ".local/reconstruction/geometry-venv/bin/python reconstruction/tools/run_sequence_pilot.py --image private-data/facility-sources/frames/RY2qvE0Tugk-resume-continuous/t000060000.jpg --image private-data/facility-sources/frames/RY2qvE0Tugk-resume-continuous/t000061000.jpg --image private-data/facility-sources/frames/RY2qvE0Tugk-resume-continuous/t000062000.jpg --image private-data/facility-sources/frames/RY2qvE0Tugk-resume-continuous/t000063000.jpg --output reconstruction/output/sequence-resume-ry-final",
+      "sourceVideoSha256": "a7f92a5f4c69233462d60e5e1601da124358e3a297ff5e0724d37eb4457d00ff",
+      "sequenceVerification": {
+        "method": "ffmpeg-scene-score",
+        "threshold": 0.3,
+        "cutCount": 0,
+        "cutPtsSeconds": [],
+        "startPtsSeconds": 60.026633,
+        "endPtsSeconds": 63.029633,
+        "sourceVideoSha256": "a7f92a5f4c69233462d60e5e1601da124358e3a297ff5e0724d37eb4457d00ff",
+        "command": [
+          "ffmpeg",
+          "-hide_banner",
+          "-nostdin",
+          "-loglevel",
+          "info",
+          "-threads",
+          "2",
+          "-ss",
+          "60.0",
+          "-t",
+          "3.103",
+          "-copyts",
+          "-i",
+          "<local-source>",
+          "-an",
+          "-vf",
+          "scale=320:-2,select='gt(scene,0.3)',showinfo",
+          "-f",
+          "null",
+          "-"
+        ],
+        "visualReview": "not_performed",
+        "limits": "Hard-cut heuristic only; fades, occlusion and low-parallax degeneracy need separate review."
+      },
+      "commonInputSha256": [
+        "9a2d78f8cff796aa0f4437a19c34cafa3d7cc352677a0f80a9dec72ee1ef55b6",
+        "f4c847a4a05d9a002c1b8b3c3e9c174291dd8cbc2c9fa0daac8fc20da75fc703",
+        "00b173ea95cea712e540db90ad172d1a495d232f433b64bc14d97692a53585ae",
+        "220c720f68a1f3eb117614bce1d2efad6aaad0a6c097cacb050f1032ce26eb41"
+      ],
+      "sourcePtsSeconds": [
+        60.026633,
+        61.027633,
+        62.028633,
+        63.029633
+      ],
+      "engines": {
+        "da3_small": {
+          "status": "succeeded",
+          "included_in_ranking": true,
+          "device": "mps",
+          "elapsedSeconds": 1.1442720830091275,
+          "peakMemory": {
+            "processRssBytes": 663617536,
+            "mpsAllocatedBytes": 207160576,
+            "mpsDriverBytes": 1393524736
+          },
+          "registeredImages": null,
+          "unregisteredImages": null,
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": null,
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-ry-final/da3-small/inference-receipt.json",
+            "sha256": "678df3a6a99d2a107cfab1e27c4719410e370499a3309ca33354b778ee783901"
+          },
+          "outputs": [
+            {
+              "file": "prediction.npz",
+              "sha256": "c513e664707db5554d05528eb156350feba990eaf3e5aa284d4b72f803bc1d96",
+              "bytes": 2419126,
+              "arrays": {
+                "depth": {
+                  "shape": [
+                    4,
+                    196,
+                    336
+                  ],
+                  "dtype": "float32"
+                },
+                "conf": {
+                  "shape": [
+                    4,
+                    196,
+                    336
+                  ],
+                  "dtype": "float32"
+                },
+                "extrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    4
+                  ],
+                  "dtype": "float32"
+                },
+                "intrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    3
+                  ],
+                  "dtype": "float32"
+                },
+                "processed_images": {
+                  "shape": [
+                    4,
+                    196,
+                    336,
+                    3
+                  ],
+                  "dtype": "uint8"
+                }
+              }
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 3.781235375034157,
+            "initialFreeDiskBytes": 14707367936,
+            "peakSampledProcessTreeRssBytes": 682737664
+          },
+          "processedArrays": {
+            "depth": {
+              "shape": [
+                4,
+                196,
+                336
+              ],
+              "dtype": "float32"
+            },
+            "conf": {
+              "shape": [
+                4,
+                196,
+                336
+              ],
+              "dtype": "float32"
+            },
+            "extrinsics": {
+              "shape": [
+                4,
+                3,
+                4
+              ],
+              "dtype": "float32"
+            },
+            "intrinsics": {
+              "shape": [
+                4,
+                3,
+                3
+              ],
+              "dtype": "float32"
+            },
+            "processed_images": {
+              "shape": [
+                4,
+                196,
+                336,
+                3
+              ],
+              "dtype": "uint8"
+            }
+          }
+        },
+        "da3_base": {
+          "status": "succeeded",
+          "included_in_ranking": true,
+          "device": "mps",
+          "elapsedSeconds": 2.103514082962647,
+          "peakMemory": {
+            "processRssBytes": 1429667840,
+            "mpsAllocatedBytes": 849990144,
+            "mpsDriverBytes": 2595176448
+          },
+          "registeredImages": null,
+          "unregisteredImages": null,
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": null,
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-ry-final/da3-base/inference-receipt.json",
+            "sha256": "6461bad69437cfa21bec2da5ba483988986d99eb1f97744455a254968ffcc355"
+          },
+          "outputs": [
+            {
+              "file": "prediction.npz",
+              "sha256": "c733a85d18d1a4338e262e566f90110a9ab5db9fd062be6d093dfdf5fee97439",
+              "bytes": 5108421,
+              "arrays": {
+                "depth": {
+                  "shape": [
+                    4,
+                    280,
+                    504
+                  ],
+                  "dtype": "float32"
+                },
+                "conf": {
+                  "shape": [
+                    4,
+                    280,
+                    504
+                  ],
+                  "dtype": "float32"
+                },
+                "extrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    4
+                  ],
+                  "dtype": "float32"
+                },
+                "intrinsics": {
+                  "shape": [
+                    4,
+                    3,
+                    3
+                  ],
+                  "dtype": "float32"
+                },
+                "processed_images": {
+                  "shape": [
+                    4,
+                    280,
+                    504,
+                    3
+                  ],
+                  "dtype": "uint8"
+                }
+              }
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 4.122606916993391,
+            "initialFreeDiskBytes": 14704668672,
+            "peakSampledProcessTreeRssBytes": 1041776640
+          },
+          "processedArrays": {
+            "depth": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "conf": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "extrinsics": {
+              "shape": [
+                4,
+                3,
+                4
+              ],
+              "dtype": "float32"
+            },
+            "intrinsics": {
+              "shape": [
+                4,
+                3,
+                3
+              ],
+              "dtype": "float32"
+            },
+            "processed_images": {
+              "shape": [
+                4,
+                280,
+                504,
+                3
+              ],
+              "dtype": "uint8"
+            }
+          }
+        },
+        "sfm": {
+          "status": "no_reconstruction_registered",
+          "included_in_ranking": false,
+          "device": "CPU",
+          "elapsedSeconds": 0.92406166595174,
+          "peakMemory": 757645312,
+          "registeredImages": [],
+          "unregisteredImages": [
+            "t000060000.jpg",
+            "t000061000.jpg",
+            "t000062000.jpg",
+            "t000063000.jpg"
+          ],
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": "Not a complete successful reconstruction; partial/split/blocked runs excluded",
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-ry-final/sfm/sfm-receipt.json",
+            "sha256": "5216b460d2808242f7ba84a185086e7c2399004d0486bede15946d4bd2ac8034"
+          },
+          "outputs": [
+            {
+              "file": "database.db",
+              "sha256": "f7526bed682da5c263bf6dba8a3fa70327fc70ff78a50550682fb8ddecc7ee4d",
+              "bytes": 3248128
+            },
+            {
+              "file": "sparse-points.npz",
+              "sha256": "4cc7c528d15083f71dc3834c9b7dc08299437d0cc36fc626bb840ff975727b9e",
+              "bytes": 760,
+              "points": 0
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 1.453924541012384,
+            "initialFreeDiskBytes": 14699491328,
+            "peakSampledProcessTreeRssBytes": 706510848
+          },
+          "processedArrays": null
+        },
+        "mapanything": {
+          "status": "succeeded",
+          "included_in_ranking": true,
+          "device": "CPU",
+          "elapsedSeconds": 57.89963808399625,
+          "peakMemory": 6122700800,
+          "registeredImages": null,
+          "unregisteredImages": null,
+          "trackLengthDistribution": null,
+          "observationReprojectionPixels": null,
+          "parallaxDegrees": null,
+          "reasonIfNotIncluded": null,
+          "receipt": {
+            "path": "reconstruction/output/sequence-resume-ry-final/mapanything/mapanything-receipt.json",
+            "sha256": "3c2705fd3a2195c81c65b29b86834de7836aa4046ca804c1e2c51450a536321d"
+          },
+          "outputs": [
+            {
+              "file": "raw-mapanything.npz",
+              "sha256": "5544500d5825ad2d41ab267c7419337b68cf46d520003d38c565eb07aaa8d289",
+              "bytes": 26881939
+            },
+            {
+              "file": "prediction.npz",
+              "sha256": "0ff00ff05f9bcf5418a7ecf23ee28e60865e9baa19b8713f101f1b6002b53d29",
+              "bytes": 4034881
+            }
+          ],
+          "stage": {
+            "status": "exited",
+            "returncode": 0,
+            "elapsedSeconds": 59.152037249994464,
+            "initialFreeDiskBytes": 14696189952,
+            "peakSampledProcessTreeRssBytes": 5684576256
+          },
+          "processedArrays": {
+            "depth": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "conf": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "float32"
+            },
+            "intrinsics": {
+              "shape": [
+                4,
+                3,
+                3
+              ],
+              "dtype": "float32"
+            },
+            "extrinsics": {
+              "shape": [
+                4,
+                4,
+                4
+              ],
+              "dtype": "float64"
+            },
+            "processed_images": {
+              "shape": [
+                4,
+                280,
+                504,
+                3
+              ],
+              "dtype": "uint8"
+            },
+            "mask": {
+              "shape": [
+                4,
+                280,
+                504
+              ],
+              "dtype": "bool"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "regressionCycle": {
+    "initialNewRegressionTests": "15 failed, 2 passed before fixes",
+    "maskAdapterRegression": "Actual raw-output failure reproduced synthetically, then fixed",
+    "subPollTimeoutRegression": "0.2s child with 0.1s timeout initially accepted, then fixed"
+  },
+  "tests": {
+    "reconstruction": {
+      "command": ".local/reconstruction/geometry-venv/bin/python -m pytest reconstruction/tests -q",
+      "passed": 92,
+      "failed": 0
+    },
+    "ruff": {
+      "command": ".local/reconstruction/geometry-venv/bin/ruff check reconstruction",
+      "result": "passed"
+    },
+    "references": {
+      "command": ".local/reconstruction/venv/bin/python -m unittest discover -s scripts/references -p \"test_*.py\"",
+      "passed": 19,
+      "failed": 0
+    }
+  },
+  "preservedFailedAttempt": {
+    "receipt": {
+      "path": "reconstruction/output/sequence-resume-connector/mapanything/mapanything-receipt.json",
+      "sha256": "6fbc2db9f99cd5f7e63974197a0ad534a773eaf3e9dd20e4d7f848c33eee387a"
+    },
+    "rawOutput": {
+      "path": "reconstruction/output/sequence-resume-connector/mapanything/raw-mapanything.npz",
+      "sha256": "1bf1718f616a9fd41b43956ef1f051f8608eb0318cb51eb3d8d03b984fb19cd3"
+    },
+    "reason": "First forward succeeded but adapter expected mask while apply_mask=False emits non_ambiguous_mask; original failure not rewritten"
+  },
+  "supersededLocalRuns": [
+    "reconstruction/output/sequence-resume-preflight",
+    "reconstruction/output/sequence-resume-preflight-ry",
+    "reconstruction/output/sequence-resume-connector",
+    "reconstruction/output/sequence-resume-connector-v2",
+    "reconstruction/output/sequence-resume-ry"
+  ],
+  "incomplete": [
+    "새 개인정보/반사/캡션 마스크 audit와 export",
+    "Blender 편집본/FBX 및 실제 Unity 임포트",
+    "Unity compile/console/EditMode/PlayMode/hierarchy/serialized 검사",
+    "네이티브 정면/측면 캡처와 현재 FBX 해시 결속",
+    "시각 연속성/개인정보/현장 정확도 검수",
+    "독립 reviewer 수용"
+  ],
+  "limits": [
+    "2구간 hard-cut 휴리스틱 미검출은 시각 검수 PASS가 아니다.",
+    "두 실제 SfM은0/4 미등록; native BA/모델의 재투영·track·시차는 unavailable(null). 해당 새 진단 코드의 실제 등록 모델 경로는 합성 시험만 검증했다.",
+    "MapAnything raw mask는 개인정보 마스크가 아니다. 모델 scale은 실측/Collider 수용 근거가 아니다.",
+    "실행시간은 동일기기라도 장치·전처리·해상도 차이가 있어 품질 순위가 아니다.",
+    "초기 설치는 예산 사전검사와 curl timeout을 사용했다. 이후 setup 재검증은 공통 프로세스 RSS/디스크/시간 감시를 사용하며 다운로드 이력을 소급 수정하지 않았다.",
+    "원본/모델/기하는 ignored 로컬 경로에만 보존하며 공개 재배포 권리는 미확인이다."
+  ],
+  "finalFreeDiskBytes": 13592182784,
+  "blenderCommandsRun": [],
+  "unityCommandsRun": [],
+  "noStagedFiles": true
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-08",
+  "scope": "Actual local DA3 SMALL/BASE + independent PyCOLMAP 4.2.0 SfM comparison on 4 consecutive frames from a held public video of the KTX-subway underground connector. MapAnything (Apache checkpoint) is pinned/audited but its ~4.9 GiB weight was not fetched in this bounded session, so it is excluded from ranking, not scored as a failure. Not a full corridor reconstruction, not metric, not Unity/Blender-validated for this sequence.",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "sourceVideo": {
+    "videoId": "39PANJWghAk",
+    "title": "KTX 부산역과 지하철 부산역을 지하로 연결하는 지하통로 개통 - 부산나비 BUSANNAVI",
+    "acquisitionReceipt": ".planning/2026-09-07-facility-source-collection/video-acquisition.json",
+    "frameExtractionReceipt": "private-data/facility-sources/frames/39PANJWghAk/samples.json",
+    "framesUsed": ["t000000000.jpg", "t000010000.jpg", "t000020000.jpg", "t000030000.jpg"],
+    "framesUsedSha256": [
+      "606dd4fe3fc2fd172678efb41874fb042e5f30336e900f523abf0b9bdb959cbc",
+      "fcd3e4e6885d30e6c618b9f133ba8aaec37ff44a5afc9316d60d1d86e3150580",
+      "69b17729f4d794cde69450b76a42b437fe038cd9e496a419c9237a403fd8fd96",
+      "4fd6d570e5d14523194bccf09d4dfb2badc0853e1534f583f237e68bb4db358f"
+    ],
+    "note": "t000000000.jpg is a separate exterior title-card cut; t000010000-t000030000 walk one continuous underground corridor. Both are used together on purpose to test honest cut handling, not to inflate apparent coverage."
+  },
+  "inputRecipe": "reconstruction/recipes/busan-underground-connector-sequence.json",
+  "pilotComparison": "reconstruction/output/busan-underground-connector-pilot/sequence-pilot-comparison.json",
+  "engines": {
+    "da3_small": {
+      "status": "succeeded", "device": "mps", "processRes": 336,
+      "elapsedSeconds": 0.9667503340169787,
+      "peakMemory": {"processRssBytes": 662945792, "mpsAllocatedBytes": 174757888, "mpsDriverBytes": 212631552},
+      "reviewExport": "reconstruction/output/busan-underground-connector-review-small/review-manifest.json",
+      "reviewArtifactsSha256": {
+        "review-surfaces.glb": "8ffd370594def5bd171952075596b111034e962d7c3a8a606420e4ac743ebfec",
+        "review-points.ply": "8a10ece4f4a92ff6036676cc2572c2876e7acca372f5bc369e7f716b835aaa46"
+      }
+    },
+    "da3_base": {
+      "status": "succeeded", "device": "mps", "processRes": 504,
+      "elapsedSeconds": 2.650733832968399,
+      "peakMemory": {"processRssBytes": 1429422080, "mpsAllocatedBytes": 834512896, "mpsDriverBytes": 2595176448},
+      "reviewExport": "reconstruction/output/busan-underground-connector-review-base/review-manifest.json",
+      "reviewArtifactsSha256": {
+        "review-surfaces.glb": "80fe6f98ba79dc90b74d4a709db207cc196bbb901a38814b70870f677af3ea6c",
+        "review-points.ply": "acca8dc272e7f264989be8d2ce72c53dbb150f4b92a54e94676c31ddc848b53e"
+      },
+      "trianglesPerView": {"connector-t000": 128263, "connector-t010": 128745,
+                           "connector-t020": 220189, "connector-t030": 171291},
+      "crossViewDepthAgreement": "Low: most cross-view agreement fractions are far below the concourse pilot's (e.g. t020 vs t030 within-tolerance fraction ~0.01), consistent with the large 10-second forward baseline and scale change; recorded, not hidden."
+    },
+    "sfm": {
+      "status": "no_reconstruction_registered", "device": "CPU", "engine": "pycolmap-incremental-mapping",
+      "independentGroup": true, "da3CalibrationUsed": false,
+      "elapsedSeconds": 0.8810313749709167,
+      "featuresPerImage": {"t000000000.jpg": 2578, "t000010000.jpg": 3814,
+                           "t000020000.jpg": 3202, "t000030000.jpg": 4012},
+      "reason": "Incremental mapping produced zero models; COLMAP could not find a good initial image pair even for a 3-frame continuous-corridor subset tested separately. Large forward baseline, repetitive ceiling/floor structure and burned-in caption overlays are the likely cause; this was not forced to succeed by relaxing audited thresholds.",
+      "sfmReceipt": "reconstruction/output/busan-underground-connector-sfm/sfm-receipt.json",
+      "sparseExport": "reconstruction/output/busan-underground-connector-sparse/sparse-manifest.json"
+    },
+    "mapanything": {
+      "status": "blocked_weights_not_locally_available", "included_in_ranking": false,
+      "modelId": "facebook/map-anything-apache", "modelRevision": "00f9c245bbcb60522d1ed7f9e9d88462c6e3f38a",
+      "setupReceipt": ".local/reconstruction/mapanything/setup-receipt.json",
+      "reason": "Pinned code (3d10cf7a3016fc0f9bb13a071ee66c47b10be0d9, Apache-2.0 license text verified) and re-audited config.json (uses_torch_hub=true confirmed) are real; the 4,914,062,480-byte weight was not downloaded in this bounded session. Fetching it and building the dedicated minimal venv is heavy execution routed to a resourced environment (school PC) per this spec's design notes."
+    }
+  },
+  "comparisonLimits": [
+    "This is one corridor's 4-frame, 10-second-interval sample, not a survey of the connector.",
+    "DA3 depth agreement here is diagnostic model self-consistency, not measured accuracy; it is markedly lower than the earlier concourse two-photo pilot because of the larger forward baseline.",
+    "SfM's non-registration is a real negative result for this specific sampling, not proof COLMAP cannot register any part of this corridor under denser/closer sampling.",
+    "MapAnything is unexecuted; excluded from ranking per the acceptance rule, not compared as inferior or equal."
+  ],
+  "blenderUnityStatus": "Not run in this session for this sequence. This worker session has no Unity Editor/Blender execution tool available; the existing ReconstructionReviewBuilder/refine_in_blender path used for the concourse pilot (docs/evidence/foundation/2026-09-07-reconstruction.json) is reusable for this sequence's review-surfaces.glb but has not yet been invoked for it. Do not treat this evidence file as a Unity-validated import.",
+  "limitations": [
+    "Only a masked, uncalibrated per-view DA3 surface exists for this corridor slice; no fused/watertight model, no metric scale, no gravity/floor origin, no collision approval.",
+    "The operator-published 99.6x8m connector dimension is not back-applied to any of these outputs.",
+    "Photos/frames, model weights and reconstructed geometry stay local; this JSON and the linked manifests are the redistributable-metadata-only evidence.",
+    "13-zone/12-connection facility coverage gaps outside this one corridor slice are unchanged by this pilot; see foundation/world/facility-coverage.json."
+  ],
+  "validation": {
+    "python": {"passed": 72, "failed": 0},
+    "ruff": "passed",
+    "commands": [
+      ".local/reconstruction/geometry-venv/bin/python -m pytest reconstruction/tests -q",
+      ".local/reconstruction/geometry-venv/bin/python -m ruff check reconstruction"
+    ],
+    "unityEditModePlayMode": "not_run_no_unity_tool_available_this_session"
+  },
+  "sourceSha256": {
+    "reconstruction/recipes/busan-underground-connector-sequence.json": "618780b01f37327170b1c25622644ea0d4a32463bb557dd03cdb62456fd37173",
+    "reconstruction/tools/run_sfm_sequence.py": "e80ed1ca97a182f763286f4261e602145605d6ae7aea0ddd5abdbd85ce167e81",
+    "reconstruction/tools/run_mapanything.py": "43af4ae06bdae19ae4b347de69103e5dd653a96b359e3911fa4389f4ee68ce2e",
+    "reconstruction/tools/setup_mapanything.py": "1e257378c1d2d405e5e72e18db7420924c45d01a0485680742280413c9be1a2e",
+    "reconstruction/tools/run_sequence_pilot.py": "afa8a705597d6ef693cb12d93bfd31884f0cc9cea26b581e85a01eebdf474586",
+    "reconstruction/src/chooguard_reconstruction/export.py": "bc100f9c35b68aa773f36b017c03bd9a4b38918b1af643421d9840d8f3ba736e",
+    "reconstruction/requirements-mapanything.in": "d0bd4afe3e18441d3626e5700faebff6e1cf2e73e64a84c8c1701de52217039b",
+    "reconstruction/pyproject.toml": "d111b1627a3f2162d0f3553ca26524b597644100f67af727ca76bc38349cf7a3"
+  }
+}

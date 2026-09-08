@@ -1,0 +1,76 @@
+name: plan-review
+description: 계획·명세·ADR 문서를 독립 적대적 리뷰 → 문서 수정 → 재검토로 최대 3라운드 반복해 최종 판정을 낸다
+trigger: when the user asks to iterate a planning document until adversarial review approves it
+display: report
+doc: >-
+  라운드마다 adversarial-review 저장 워크플로(리뷰어 3명, openai-codex)를 실행하고, changes_required 이면
+  doc-reviser(anthropic)가 actionable 항목만 반영한 뒤 같은 대상을 다시 검토한다. 리뷰어와 수정자는
+  서로 다른 제공자와 세션을 쓴다. 3라운드 후에도 남는 항목은 사람 판단으로 넘긴다.
+params:
+  - name: target
+    description: 검토할 문서 경로 목록 (쉼표 구분) 또는 명세 ID
+    required: true
+  - name: focus
+    description: 추가 검토 관점
+    default: 기본 관점을 적용한다.
+flow:
+  kind: sequence
+  steps:
+    - kind: workflow
+      name: adversarial-review
+      as: first
+      params:
+        target: "{params.target}"
+        focus: "{params.focus}"
+    - kind: while
+      as: final
+      on: "{first}"
+      condition: { eq: [outcome, changes_required] }
+      max: 3
+      body:
+        kind: sequence
+        steps:
+          - kind: agent
+            profile: doc-reviser
+            as: revision
+            task: |-
+              라운드 {iteration}. 대상 문서: {params.target}
+              반영할 리뷰 항목:
+              {current.actionable}
+
+              각 항목을 수정·반박·미결정 등재 중 하나로 처리하고, 문서의 버전·변경 이력을 갱신한다.
+              결과의 summary 에는 항목 id 별 처리(수정/반박/미결정)와 수정 파일을 적는다.
+            json:
+              type: object
+              required: [summary, changed_files]
+              properties:
+                summary: { type: string, minLength: 1 }
+                changed_files: { type: array, items: { type: string } }
+              additionalProperties: false
+          - kind: workflow
+            name: adversarial-review
+            params:
+              target: "{params.target}"
+              focus: "{params.focus}"
+              context: "라운드 {iteration} 수정 요약: {revision.summary}"
+    - kind: switch
+      on: "{final}"
+      cases:
+        - when: { eq: [outcome, approved] }
+          then:
+            kind: value
+            value:
+              outcome: approved
+              report: "{final.report}"
+        - when: { eq: [outcome, cannot_proceed] }
+          then:
+            kind: value
+            value:
+              outcome: cannot_proceed
+              report: "{final.report}"
+      else:
+        kind: value
+        value:
+          outcome: changes_required
+          actionable: "{final.actionable}"
+          report: "{final.report}"

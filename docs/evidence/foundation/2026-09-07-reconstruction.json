@@ -1,0 +1,360 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-07",
+  "scope": "Actual local image-to-depth-to-surface-to-Blender-to-Unity review pipeline; not full station, metric twin, training collision or HMD acceptance.",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "selectedRun": "busan-concourse-base-504-patched",
+  "inputRecipe": "reconstruction/recipes/busan-concourse-public-pilot.json",
+  "comparisons": [
+    {
+      "run": "busan-concourse-pilot",
+      "status": "succeeded",
+      "settings": {
+        "process_res": 336,
+        "process_res_method": "upper_bound_resize",
+        "infer_gs": false,
+        "use_ray_pose": false,
+        "ref_view_strategy": "first",
+        "export_dir": null
+      },
+      "model": {
+        "modelId": "depth-anything/DA3-SMALL",
+        "modelRevision": "e08cab65ca0ec38e7826075418411ab90cab4da3",
+        "modelLicense": "Apache-2.0",
+        "weightSha256": "364492e38a3a06d221ac75da7f6621ada3f2361cd24fde11ba79091e9f40efcf",
+        "sourceRevision": "3d835ec1a5802d64a8b8b15f817a1ab54809bfe4",
+        "requirementsLockSha256": "90b6c535a32257fafb8e2b04c952a43972f31e2e077625e6fb34f4eb3429b6e7"
+      },
+      "runtimePackages": {
+        "torch": "2.11.0",
+        "torchvision": "0.26.0",
+        "numpy": "1.26.4",
+        "Pillow": "11.3.0",
+        "opencv-python-headless": "4.10.0.84",
+        "einops": "0.8.1",
+        "omegaconf": "2.3.0",
+        "addict": "2.4.0",
+        "huggingface-hub": "0.36.0",
+        "safetensors": "0.6.2",
+        "imageio": "2.37.0",
+        "tqdm": "4.67.1"
+      },
+      "seconds": 4.796621082990896,
+      "peakMemory": {
+        "processRssBytes": 617611264,
+        "mpsAllocatedBytes": 256597760,
+        "mpsDriverBytes": 1353678848
+      },
+      "predictionSha256": "58801e1a601df79113d1b7e749c95c6d7b57465c6df5c6cc02af13faad13c245",
+      "inferenceReceiptSha256": "260de46136d859c1c9ebd234e550679d423f8b4d34e1f317fd999982e797acf4",
+      "depthAgreementDiagnostics": [
+        {
+          "source": "busan-concourse-b",
+          "target": "busan-concourse-a",
+          "overlapSamples": 6338,
+          "withinToleranceFraction": 0.5689491953297571,
+          "medianRelativeDepthDifference": 0.044936403012983385,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        },
+        {
+          "source": "busan-concourse-a",
+          "target": "busan-concourse-b",
+          "overlapSamples": 10639,
+          "withinToleranceFraction": 0.5336027822163737,
+          "medianRelativeDepthDifference": 0.04751049565137676,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        }
+      ]
+    },
+    {
+      "run": "busan-concourse-base-pilot",
+      "status": "succeeded",
+      "settings": {
+        "process_res": 336,
+        "process_res_method": "upper_bound_resize",
+        "infer_gs": false,
+        "use_ray_pose": false,
+        "ref_view_strategy": "first",
+        "export_dir": null
+      },
+      "model": {
+        "modelId": "depth-anything/DA3-BASE",
+        "modelRevision": "f4a6c9b3c95e41c82048423d3493a81ec3fa810e",
+        "modelLicense": "Apache-2.0",
+        "weightSha256": "e01067dc1659613083d9145a9a2547ccdbe6ccbbf83c4fe7b3e8a4e2bdae78b5",
+        "sourceRevision": "3d835ec1a5802d64a8b8b15f817a1ab54809bfe4",
+        "requirementsLockSha256": "90b6c535a32257fafb8e2b04c952a43972f31e2e077625e6fb34f4eb3429b6e7"
+      },
+      "runtimePackages": {
+        "torch": "2.11.0",
+        "torchvision": "0.26.0",
+        "numpy": "1.26.4",
+        "Pillow": "11.3.0",
+        "opencv-python-headless": "4.10.0.84",
+        "einops": "0.8.1",
+        "omegaconf": "2.3.0",
+        "addict": "2.4.0",
+        "huggingface-hub": "0.36.0",
+        "safetensors": "0.6.2",
+        "imageio": "2.37.0",
+        "tqdm": "4.67.1"
+      },
+      "seconds": 2.412883375014644,
+      "peakMemory": {
+        "processRssBytes": 1396686848,
+        "mpsAllocatedBytes": 679980288,
+        "mpsDriverBytes": 1580171264
+      },
+      "predictionSha256": "884239b048f83e359f8e94b86592b640d68b00bc861ea54cd53325a4407faf2d",
+      "inferenceReceiptSha256": "cd1ca5dea498187c66771f99a3ebfecd215fc2717413836cf133639e84a94d2a",
+      "depthAgreementDiagnostics": [
+        {
+          "source": "busan-concourse-b",
+          "target": "busan-concourse-a",
+          "overlapSamples": 6340,
+          "withinToleranceFraction": 0.9261829652996846,
+          "medianRelativeDepthDifference": 0.019732310209837206,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        },
+        {
+          "source": "busan-concourse-a",
+          "target": "busan-concourse-b",
+          "overlapSamples": 11158,
+          "withinToleranceFraction": 0.9079584154866464,
+          "medianRelativeDepthDifference": 0.01958415243850817,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        }
+      ]
+    },
+    {
+      "run": "busan-concourse-base-504",
+      "status": "succeeded",
+      "settings": {
+        "process_res": 504,
+        "process_res_method": "upper_bound_resize",
+        "infer_gs": false,
+        "use_ray_pose": false,
+        "ref_view_strategy": "first",
+        "export_dir": null
+      },
+      "model": {
+        "modelId": "depth-anything/DA3-BASE",
+        "modelRevision": "f4a6c9b3c95e41c82048423d3493a81ec3fa810e",
+        "modelLicense": "Apache-2.0",
+        "weightSha256": "e01067dc1659613083d9145a9a2547ccdbe6ccbbf83c4fe7b3e8a4e2bdae78b5",
+        "sourceRevision": "3d835ec1a5802d64a8b8b15f817a1ab54809bfe4",
+        "requirementsLockSha256": "90b6c535a32257fafb8e2b04c952a43972f31e2e077625e6fb34f4eb3429b6e7"
+      },
+      "runtimePackages": {
+        "torch": "2.11.0",
+        "torchvision": "0.26.0",
+        "numpy": "1.26.4",
+        "Pillow": "11.3.0",
+        "opencv-python-headless": "4.10.0.84",
+        "einops": "0.8.1",
+        "omegaconf": "2.3.0",
+        "addict": "2.4.0",
+        "huggingface-hub": "0.36.0",
+        "safetensors": "0.6.2",
+        "imageio": "2.37.0",
+        "tqdm": "4.67.1"
+      },
+      "seconds": 3.2480860829818994,
+      "peakMemory": {
+        "processRssBytes": 1409236992,
+        "mpsAllocatedBytes": 636151296,
+        "mpsDriverBytes": 1871118336
+      },
+      "predictionSha256": "bfa47920d708d1944af640560428f82a2eb328b1655f932ce93da7a490360349",
+      "inferenceReceiptSha256": "34ac54fe463e63774efc891aee7ed43cab28eb2388bf43a46395cb52bb026f83",
+      "depthAgreementDiagnostics": [
+        {
+          "source": "busan-concourse-b",
+          "target": "busan-concourse-a",
+          "overlapSamples": 14853,
+          "withinToleranceFraction": 0.8848717430822056,
+          "medianRelativeDepthDifference": 0.011950255311814314,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        },
+        {
+          "source": "busan-concourse-a",
+          "target": "busan-concourse-b",
+          "overlapSamples": 24541,
+          "withinToleranceFraction": 0.9049753473778575,
+          "medianRelativeDepthDifference": 0.010875159428600675,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        }
+      ]
+    },
+    {
+      "run": "busan-concourse-base-504-patched",
+      "status": "succeeded",
+      "settings": {
+        "process_res": 504,
+        "process_res_method": "upper_bound_resize",
+        "infer_gs": false,
+        "use_ray_pose": false,
+        "ref_view_strategy": "first",
+        "export_dir": null
+      },
+      "model": {
+        "modelId": "depth-anything/DA3-BASE",
+        "modelRevision": "f4a6c9b3c95e41c82048423d3493a81ec3fa810e",
+        "modelLicense": "Apache-2.0",
+        "weightSha256": "e01067dc1659613083d9145a9a2547ccdbe6ccbbf83c4fe7b3e8a4e2bdae78b5",
+        "sourceRevision": "3d835ec1a5802d64a8b8b15f817a1ab54809bfe4",
+        "requirementsLockSha256": "670e0e1bed4ae7fef294ec3fc97c2db6e50a8872dc9f05a81c82455922244263"
+      },
+      "runtimePackages": {
+        "torch": "2.13.0",
+        "torchvision": "0.28.0",
+        "numpy": "1.26.4",
+        "Pillow": "12.3.0",
+        "opencv-python-headless": "4.10.0.84",
+        "einops": "0.8.1",
+        "omegaconf": "2.3.0",
+        "addict": "2.4.0",
+        "huggingface-hub": "0.36.0",
+        "safetensors": "0.6.2",
+        "imageio": "2.37.0",
+        "tqdm": "4.67.1"
+      },
+      "seconds": 3.724518166971393,
+      "peakMemory": {
+        "processRssBytes": 1414529024,
+        "mpsAllocatedBytes": 642160128,
+        "mpsDriverBytes": 1531346944
+      },
+      "predictionSha256": "a2e7289536494b5cd1ad6b87d6a058da48a93ff284a08a7f4ad4087ac6532a8f",
+      "inferenceReceiptSha256": "837dbf0a33902547140494401eb0f7b8841ac256df54a77efa7f395dfaab6677",
+      "depthAgreementDiagnostics": [
+        {
+          "source": "busan-concourse-b",
+          "target": "busan-concourse-a",
+          "overlapSamples": 14854,
+          "withinToleranceFraction": 0.8848794937390602,
+          "medianRelativeDepthDifference": 0.011954696176674502,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        },
+        {
+          "source": "busan-concourse-a",
+          "target": "busan-concourse-b",
+          "overlapSamples": 24541,
+          "withinToleranceFraction": 0.9050160955136303,
+          "medianRelativeDepthDifference": 0.010875166803072347,
+          "tolerance": 0.05,
+          "interpretation": "predicted depth agreement; includes occlusions, not external accuracy"
+        }
+      ]
+    }
+  ],
+  "comparisonLimits": [
+    "Same336inputs supportSmall/Basecomparison;504usesdifferentlargerretainedsample.",
+    "Predictionagreementisnotexternalmetricaccuracy.",
+    "Coldstart/import/cachetimediffer;walltimesarenotspeedranking."
+  ],
+  "finalMesh": {
+    "vertices": 94423,
+    "triangles": 176541,
+    "artifacts": {
+      "concourse-refinement.blend": "086bd2330054ca58f5fde408f2cf540cee6da402a307b962b83e0dc047668ec7",
+      "refined-review.glb": "844a52345bc60cf2c42de71670e8ca219c19cf5f5481605c76e87725b260c2b0",
+      "refined-review.fbx": "33c7165e3df76b93a42a98fff919bb1b91cebf9566670de16d252d7c74a1a6dd"
+    },
+    "blenderRecipeSha256": "2ba87a9b2cf0d376c54b77511f9478c8f332be1f92d57019bbbd621ede1eaf7b",
+    "colorEncoding": "linear-rgb",
+    "unityImportedVertices": 94423,
+    "unityImportedTriangles": 176541,
+    "colorSamplesValidated": 6,
+    "maximumColorError": 0.0011407583951950073,
+    "unityImportReceiptSha256": "0f4f7a35bb79334feb1e4fef9cd185c566704406d12f8101d612b67c740864f2"
+  },
+  "validation": {
+    "python": {
+      "passed": 27,
+      "failed": 0
+    },
+    "ruff": "passed",
+    "policy": {
+      "passed": 5,
+      "failed": 0
+    },
+    "context": {
+      "passed": 15,
+      "failed": 0
+    },
+    "editMode": {
+      "passed": 112,
+      "failed": 0,
+      "skipped": 1,
+      "sha256": "fa612e276b635e54f4e746bdce09a641958535f2dbfa99445b81959ffd13782b"
+    },
+    "playMode": {
+      "passed": 16,
+      "failed": 0,
+      "skipped": 0,
+      "sha256": "c84a400345d1dd1a09145bbdc10e520f7e10f0d8df99afaa5fb3775bccdb2bd3"
+    },
+    "editModeSkip": "Existing Mac player retained; unrelated foreign-output overwrite test skipped. All7new reconstruction tests passed.",
+    "dependencyAudit": {
+      "knownVulnerabilities": 0,
+      "distributions": 30,
+      "receiptSha256": "84db8297ee7f06cbe449049dbdf51a0273e71870cfae4c7adedefa2ffe49cd8f"
+    },
+    "nativeCaptures": {
+      "view-0-2.png": "37dd5255cc45d59c0b668f4ff2746cfe2bf9d3eb850f5873de6b53b001844bc5",
+      "view-0-1.png": "59585ab25322fd41c660a0d9c1a9f64ec818e55ee489d75a0122d223d34c94cc",
+      "view-0-0.png": "c302739b568f49a66042377b08faa8e60cee91527ecb5cac11bf053054da26f2",
+      "view-1-1.png": "3c0fcd9601f4dc36a267d0c40df0f63bc006985b01ba8d33b3975f5e20143486",
+      "view-1-0.png": "f2294d6e1f633a341b360f92a6e4dbfaaa69cb1d1ee54a6eebc233e5372d022e",
+      "view-1-2.png": "b7d5248d105238806918a86adf14f85a4f43e1c86b186d15a9dc9cbaf2cc3093"
+    },
+    "nativeStatus": "Mac Metal player ran; six native angles captured and visually inspected; partial open surfaces only"
+  },
+  "limitations": [
+    "Only masked upper concourse surfaces are observed; all other facility regions remain separate work.",
+    "Native side views show thin warped depth surfaces, cut columns/trusses and missing backsides. This is a modeling reference, not finished volumetric architecture or a watertight station.",
+    "No measuredscale,gravity,north,fullcontrolpoints,current2Fconstructionplan,trainingcollisionorHMDverification.",
+    "Photos,weights,meshes,rawlogsandcapturesstaylocal;publicmetadataisnoredistributionlicense."
+  ],
+  "sourceSha256": {
+    "AGENTS.md": "2fb9e7eea97c146278f685ad2575820003f386d65bcd73e4bf37d91119846dbc",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Editor/ReconstructionReviewBuilder.cs": "28633707535e023faafa588451cad4f1b980f8b7beced0b0d6620f1fe7c88864",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Editor/ReconstructionReviewBuilder.cs.meta": "69d939117eb4958993abfbd48ccf080c297930faf950d0922d5af27b81a09666",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs": "046198e2c598ebb6c1ea277e74d1acc5c6622d6fac1e1815355fc831a3d374f4",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs.meta": "416c3ed95dad24b20ef39e7045c88ffbe39f7f3096e298db3fceb861b4b3095b",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionVertexColor.shader": "b51bf31735ca816210f2a1d9c2a29ad9526a08ce8d5336d8d3977a9ad44cb1eb",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionVertexColor.shader.meta": "bcd62d29a871885901479fab90aa837a4d35a9dd4ad9c8d328437c4603fc6a24",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs": "6221986ca0a51c79a88b9aacdd168c912cdaf9fb77370128cf648eb2656277bf",
+    "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs.meta": "e4beafef6ce257f62c23a471ca26fc32396ad4c2931846c16e4f54bccbf1c275",
+    "docs/art/public-facility-plans.md": "e6f860349bdb0e02385bd2e750b83d08ecaff9d0748fa755e359d026a18f71d3",
+    "docs/choo-guard-platform-architecture-v4.md": "a060ce4cdf6b67e8924c84c9c72a12216e8b393aa3bd7f185d6024677b99605c",
+    "docs/context/accepted-decisions.md": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+    "docs/reconstruction/engine-selection.md": "28ff1b4c386a24b42b4c0c250f4ef3f20ca52072da0fd33e7a8d8c7e4672dff2",
+    "foundation/world/facility-coverage.json": "af01fad011a9ef087cb1e1f3a9f09020b070c2cda2485f8a68129c1352bb0d6a",
+    "reconstruction/README.md": "1b674184cd14070ed3e3e568f5f02ff996845ef8fc018a2e4a75e086ab48643d",
+    "reconstruction/THIRD_PARTY.md": "806f59afd640a71ad779e5a108ffc97293f5666a8543d3e349f78eec78d0fbb7",
+    "reconstruction/pyproject.toml": "b86c5e35045b60896e414e0c8323c0d0a8f3de7186b11e817b50f4112464e4a3",
+    "reconstruction/recipes/busan-concourse-public-pilot.json": "16569285733955f1467c21ee1fa628553bffa661d3e5fffeaafebf5e8635c22e",
+    "reconstruction/requirements-da3.in": "a55418bc39df6a5cab524756c2390f5a6c3d46328ebf11f6eca8331b06df1cc0",
+    "reconstruction/requirements-da3.lock": "670e0e1bed4ae7fef294ec3fc97c2db6e50a8872dc9f05a81c82455922244263",
+    "reconstruction/src/chooguard_reconstruction/__init__.py": "a92d52620558dc997c25aaa0d42b54eb51ca10ade7645c2b7344511c6620e69e",
+    "reconstruction/src/chooguard_reconstruction/export.py": "310065b930fc8ca9db6aa14379993d9c6fee376e93c0adc118625e8d59e136fd",
+    "reconstruction/src/chooguard_reconstruction/geometry.py": "c26223c6e37207318054c7d349e03211319aee913e26ff49fd3bb824a1ecaca8",
+    "reconstruction/src/chooguard_reconstruction/quality.py": "31bc7bb3134c6a4855aad122be2e930e78c2ec87aa384d9f97d76b4af76b21db",
+    "reconstruction/tests/test_export.py": "6adfedcaed27600441d2507185507753686be42ab1768f7e053417081581ebc8",
+    "reconstruction/tests/test_geometry.py": "c7285a5bfdae8959e05cd708495af90adfba62ea1607e3ae55c02bb8e628844c",
+    "reconstruction/tests/test_quality.py": "28456a2101b430698577bc5c90aac89d654e9619109b22c1e932ca397d5103d1",
+    "reconstruction/tools/fetch_public_pilot.py": "7c2437b75c78abc82a3f00c49c7be313bacfbcc54d92e83e7224070e52baf74b",
+    "reconstruction/tools/refine_in_blender.py": "2ba87a9b2cf0d376c54b77511f9478c8f332be1f92d57019bbbd621ede1eaf7b",
+    "reconstruction/tools/run_da3.py": "41e898b2503554b63d0ba256c1731b7c6e6bcfc6a24af125b7d3716c375ad51f",
+    "reconstruction/tools/setup_da3.py": "6db5c3ce079198e6c9bc090cf1751207a37457c65acdf0738ebec953bc780d38"
+  }
+}

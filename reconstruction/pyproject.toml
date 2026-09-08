@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools==83.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chooguard-reconstruction"
+version = "0.1.0"
+description = "Auditable local depth to review mesh pipeline"
+requires-python = ">=3.11,<3.14"
+dependencies = ["numpy==1.26.4", "trimesh==4.8.3"]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2", "ruff==0.12.12", "Pillow==12.3.0"]
+
+[project.scripts]
+choo-reconstruct = "chooguard_reconstruction.export:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

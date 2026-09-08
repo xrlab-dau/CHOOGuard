@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-08",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "blocked_parent_acceptance",
+  "scope": "sequence 구현 자식 결과의 부모 사후 감사. 원 실행 영수증과 원본 출력은 보존하며 전체 구현 완료/PASS로 수용하지 않는다.",
+  "implementationRun": "338bec94-b68c-4fc8-838d-1cf909a4106f",
+  "workflowRun": "3db854ae-8a39-4850-a5bb-5b391c6576ae",
+  "originalEvidence": {
+    "path": "docs/evidence/foundation/2026-09-08-sequence-pilot.json",
+    "sha256": "5338cfca8ce2c4280e175f948e50d9598b1d3572f1ca97e07fa9428744bbdc44",
+    "preservedUnmodified": true
+  },
+  "dataBoundaryIncident": {
+    "observed": true,
+    "provider": "anthropic",
+    "model": "claude-sonnet-5",
+    "imageToolResultCount": 4,
+    "sourceVideoId": "39PANJWghAk",
+    "frameTimesSeconds": [0, 10, 20, 30],
+    "toolResultTimesUtc": [
+      "2026-09-07T21:50:09.895Z",
+      "2026-09-07T21:50:29.858Z",
+      "2026-09-07T21:50:29.859Z",
+      "2026-09-07T21:50:29.860Z"
+    ],
+    "basis": "자식의 Read 호출 뒤 image 형식 toolResult 4개와 후속 모델 응답을 로컬 세션 기록에서 확인했다. 당시 전역/프로젝트 images.blockImages는 설정되지 않아 기본 false였다. 외부 LLM 세션의 철도 이미지 첨부를 AGENTS/spec의 금지 위반으로 처리한다.",
+    "limits": "전송된 이미지의 제공자 측 보관/회수/삭제 여부는 확인하거나 보장할 수 없다. 이 감사 파일에는 이미지/얼굴/원시 첨부 바이트를 포함하지 않는다.",
+    "containment": {
+      "furtherChildCallsPaused": true,
+      "activeImplementationChildAtAudit": false,
+      "projectSetting": "images.blockImages=true",
+      "freshSettingsLoadVerified": true,
+      "shippedSdkUserAndToolImageFilterSyntheticTest": "passed",
+      "filterPreservesLocalEvidence": true,
+      "testUsedRealImages": false,
+      "testNetworkCalls": 0,
+      "currentParentRuntimeReloaded": false,
+      "requiresOwnerAcknowledgementBeforeContinuation": true
+    }
+  },
+  "acceptanceFindings": [
+    {
+      "id": "SEQ-01",
+      "severity": "blocker",
+      "source": "reconstruction/recipes/busan-underground-connector-sequence.json",
+      "finding": "승인된 연속4프레임 대신 기존0/10/20/30초 표본을 사용했다. recipe 자체가 첫 프레임의 별도 컷을 명시한다. 음성/스트레스 실험으로는 보존할 수 있으나 정상 연속 입력 수용 기준을 충족하지 않는다."
+    },
+    {
+      "id": "SEQ-02",
+      "severity": "blocker",
+      "source": "reconstruction/tools/run_mapanything.py:174",
+      "finding": "실제 추론 경로는 무조건 RuntimeError를 발생시키는 자리표시자다. 가중치가 있어도 실행 불가다. setup은 별도 환경/전이 의존성 lock을 만들지 않았으며 자원 사전검사 없이 설치를 학교 작업으로 재해석했다. 설치 승인은 이미 주어졌다."
+    },
+    {
+      "id": "SEQ-03",
+      "severity": "blocker",
+      "source": "reconstruction/tools/run_sequence_pilot.py:43",
+      "finding": "입력 provenance 검사가 SHA 존재만으로 역순 PTS, 중복 프레임, NaN PTS, 실제와 다른 width를 허용한다. 합성 PNG/receipt로 네 가지 허용을 재현했다. 원 영상 SHA·순서·시퀀스/컷 계약도 강제하지 않는다."
+    },
+    {
+      "id": "SEQ-04",
+      "severity": "blocker",
+      "source": "reconstruction/tools/run_mapanything.py:96",
+      "finding": "이름이 facebookresearch_dinov2_main인 디렉터리의 존재만으로 torch.hub.load 차단을 해제한다. 캐시의 버전/해시 확인도, local source 강제도 없어 실제 네트워크 차단 계약이 아니다."
+    },
+    {
+      "id": "SEQ-05",
+      "severity": "blocker",
+      "source": "reconstruction/tools/run_sequence_pilot.py:149",
+      "finding": "성공 receipt의 실제 입력SHA/산출물SHA/프로세스 종료 상태를 공통 입력과 대조하지 않고 ranking 포함을 결정한다. 현재 테스트72개 통과는 이 미검증 분기를 수용하는 근거가 아니다."
+    },
+    {
+      "id": "SEQ-06",
+      "severity": "incomplete",
+      "source": "_bmad-output/implementation-artifacts/spec-foundation-sequence-reconstruction.md",
+      "finding": "사진13개 누락 기록 복구, 새 결과의 Blender 전달·Unity compile/console/EditMode/PlayMode·native 정면/측면 검증이 완료되지 않았다. Blender/Unity 실행 파일과 bash 경로는 로컬에 실제 존재한다. 도구 부재를 실행 불가 사유로 확정한 자식 설명은 부정확하다."
+    },
+    {
+      "id": "SEQ-07",
+      "severity": "incomplete",
+      "source": "reconstruction/tools/run_sfm_sequence.py",
+      "finding": "실제 SfM의 미등록 결과는 보존하되 72개 단위시험으로 runner 전체 정확성이 증명됐다고 판단하지 않는다. 시차/개별 재투영 진단, 디스크 여유 한도 및 자원 중단 경로의 실제 계약 검증이 추가로 필요하다."
+    }
+  ],
+  "localChecks": {
+    "reconstructionPytestPassed": 72,
+    "reconstructionPytestFailed": 0,
+    "backwardsPtsAccepted": true,
+    "duplicateFrameAccepted": true,
+    "nanPtsAndFalseDimensionsAccepted": true,
+    "referenceExtractionCv2Available": "4.10.0 in existing DA3 venv",
+    "blenderExecutablePresent": true,
+    "unityExecutablePresent": true,
+    "fullParentAcceptanceReviewComplete": false
+  },
+  "nextGate": "추가 외부 모델 호출을 중지하고 사용자에게 경계 위반을 알렸다. 프로젝트 설정 reload와 이미지 차단 확인 및 사용자 재개 판단 후, 승인된 spec의 미완료 항목을 같은 안전 경계 안에서 보완한다."
+}

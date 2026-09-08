@@ -1,0 +1,152 @@
+name: adversarial-review
+description: 명세·계획·구현 대상을 세 개의 독립 읽기 전용 리뷰어(명세 품질, 적대적, 보안 감사)가 병렬 검토하고 하나의 판정으로 병합한다
+trigger: when the user asks for an independent adversarial review of a document, spec, ADR, plan, or change
+display: report
+doc: >-
+  작성 에이전트(anthropic 계열)와 다른 제공자(openai-codex)의 리뷰어 세 명이 각각 분리된 Pi 자식
+  세션에서 읽기 전용으로 검토한다. 병합 단계는 도구 없이 세 결과만 읽어 outcome·actionable·report를 만든다.
+  어떤 단계도 파일을 수정하지 않는다.
+params:
+  - name: target
+    description: 검토 대상 (파일 경로 목록, 명세 ID, 브랜치 diff 설명)
+    required: true
+  - name: context
+    description: 이전 라운드 판정과 수정 요약 (재검토 시)
+    default: 이전 라운드 없음. 첫 검토다.
+  - name: focus
+    description: 추가로 강조할 검토 관점
+    default: 기본 관점을 적용한다.
+flow:
+  kind: parallel
+  mode: all
+  onError: collect
+  concurrency: 3
+  branches:
+    spec:
+      kind: agent
+      profile: spec-reviewer
+      task: |-
+        검토 대상: {params.target}
+        추가 관점: {params.focus}
+        이전 라운드: {params.context}
+
+        명확성·완전성·일관성·추적 관점으로 검토한다. 이전 라운드가 있으면 수정 요약을 믿지 말고 현재 파일을 직접 다시 읽어 확인한다.
+        actionable 에는 P1~P3만 넣고, 각 항목에 id(SPC-n), severity, title, problem, fix, locations 를 채운다.
+      json:
+        type: object
+        required: [outcome, actionable, notes]
+        properties:
+          outcome: { enum: [approved, changes_required, cannot_proceed] }
+          actionable:
+            type: array
+            items:
+              type: object
+              required: [id, severity, title, problem, fix, locations]
+              properties:
+                id: { type: string, pattern: '^SPC-[1-9][0-9]*$' }
+                severity: { enum: [P1, P2, P3] }
+                title: { type: string, minLength: 1 }
+                problem: { type: string, minLength: 1 }
+                fix: { type: string, minLength: 1 }
+                locations: { type: array, minItems: 1, items: { type: string } }
+              additionalProperties: false
+          notes: { type: string }
+        additionalProperties: false
+    adversarial:
+      kind: agent
+      profile: adversarial-reviewer
+      task: |-
+        검토 대상: {params.target}
+        추가 관점: {params.focus}
+        이전 라운드: {params.context}
+
+        전제·실패 시나리오·범위·비용 관점으로 공격한다. 저장소 안의 실제 소스와 설정으로 전제를 검증하고, 검증한 명령이나 파일:행을 근거로 적는다.
+        actionable 에는 P1~P3만 넣고, 각 항목에 id(ADV-n), severity, title, problem, fix, locations 를 채운다.
+      json:
+        type: object
+        required: [outcome, actionable, notes]
+        properties:
+          outcome: { enum: [approved, changes_required, cannot_proceed] }
+          actionable:
+            type: array
+            items:
+              type: object
+              required: [id, severity, title, problem, fix, locations]
+              properties:
+                id: { type: string, pattern: '^ADV-[1-9][0-9]*$' }
+                severity: { enum: [P1, P2, P3] }
+                title: { type: string, minLength: 1 }
+                problem: { type: string, minLength: 1 }
+                fix: { type: string, minLength: 1 }
+                locations: { type: array, minItems: 1, items: { type: string } }
+              additionalProperties: false
+          notes: { type: string }
+        additionalProperties: false
+    safety:
+      kind: agent
+      profile: safety-auditor
+      task: |-
+        검토 대상: {params.target}
+        추가 관점: {params.focus}
+        이전 라운드: {params.context}
+
+        데이터 등급·외부 전송·권한 경계·공급망·라이선스·독립 검토 관점으로 감사한다.
+        actionable 에는 P1~P3만 넣고, 각 항목에 id(SEC-n), severity, title, problem, fix, locations 를 채운다.
+      json:
+        type: object
+        required: [outcome, actionable, notes]
+        properties:
+          outcome: { enum: [approved, changes_required, cannot_proceed] }
+          actionable:
+            type: array
+            items:
+              type: object
+              required: [id, severity, title, problem, fix, locations]
+              properties:
+                id: { type: string, pattern: '^SEC-[1-9][0-9]*$' }
+                severity: { enum: [P1, P2, P3] }
+                title: { type: string, minLength: 1 }
+                problem: { type: string, minLength: 1 }
+                fix: { type: string, minLength: 1 }
+                locations: { type: array, minItems: 1, items: { type: string } }
+              additionalProperties: false
+          notes: { type: string }
+        additionalProperties: false
+  reduce:
+    model: openai-codex/gpt-5.6-sol
+    thinking: medium
+    tools: []
+    skills: []
+    task: |-
+      세 리뷰어의 결과를 병합한다:
+      {branches}
+
+      규칙:
+      - 같은 근본 원인을 가리키는 항목은 하나로 묶고 원래 id 들을 problem 에 남긴다.
+      - 한 리뷰어가 cannot_proceed 면 outcome 은 cannot_proceed, reason 에 사유를 쓴다. 브랜치 결과가 {{error: ...}} 형태면 그 리뷰어는 실패한 것이며 reason 에 기록하고 나머지로 판정한다.
+      - P1~P3 항목이 하나라도 남으면 changes_required, 없으면 approved.
+      - report 는 한국어 Markdown 으로 `# Adversarial Review`, `## Overview`(심각도 순 한 줄 목록), `## Findings`, `## Verdict`(Blocked / Needs changes / Ship with fixes / Ship it 와 P1·P2·P3 개수 표) 를 포함한다.
+    json:
+      type: object
+      required: [outcome, reason, actionable, report]
+      properties:
+        outcome: { enum: [approved, changes_required, cannot_proceed] }
+        reason:
+          anyOf:
+            - { type: "null" }
+            - { type: string, minLength: 1 }
+        actionable:
+          type: array
+          items:
+            type: object
+            required: [id, severity, title, problem, fix, locations]
+            properties:
+              id: { type: string, pattern: '^(SPC|ADV|SEC|GRP)-[1-9][0-9]*$' }
+              severity: { enum: [P1, P2, P3] }
+              title: { type: string, minLength: 1 }
+              problem: { type: string, minLength: 1 }
+              fix: { type: string, minLength: 1 }
+              locations: { type: array, minItems: 1, items: { type: string } }
+            additionalProperties: false
+        report: { type: string, minLength: 1 }
+      additionalProperties: false

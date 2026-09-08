@@ -1,9 +1,12 @@
 # choo guard 실행 백로그 v1.3
 
+> Foundation 결과물은 임시 맵·3D 오브젝트·싱글플레이 비상대응 시나리오가 연결된 실제 게임이다. 공통 소스/검사는 내부 기반이며 [첫 playable 완료 기준](choo-guard-foundation-v1.md)을 적용한다.
 - 작성일: 2026-09-05
 - 상태: 구현 전 백로그
 - 기준 문서: `choo-guard-requirements-baseline-v1.md`, `choo-guard-platform-architecture-v4.md`, `choo-guard-ai-native-pipeline-v1.md`
 - 원칙: PM 핵심 통합, 나머지 팀원은 독립 Work Package 책임
+
+> 2026-09-06 사용자 지시: [Foundation 개발 기준](choo-guard-foundation-v1.md)을 현행 합성 소스 착수 경로로 적용한다. KORAIL 데이터·회신 없이 제품 코어·합성 맵·입력·UI·검증을 개발한다. 아래 선행 조건은 해당 실제 통합·완료 검증에 적용하며, 순수 소스·mock 개발 전체를 차단하지 않는다. 실제 촬영·자료 처리·최종 MVP 수용 조건은 유지한다.
 
 ## 1. 완료 상태
 
@@ -39,7 +42,7 @@
 | PM | 엄윤상 | Pi Orchestrator / Core Agent | 요구사항, 공통 코어, 아키텍처, 통합, 최종 시연 |
 | XR | 박효원 | XR & Capture Agent | 촬영 승인·계획, OpenXR·XRI, HMD 실기 |
 | MAP | 박지민 | Map Pipeline Agent | DA3·Open3D, 공간 QA, 맵 변환 |
-| UX | 이지현 | Flat Art & UI Agent | 환경 아트, UI, Desktop 조작, 프리팹 |
+| UX | 이지현 | Station Art & UI Agent | 환경 아트, UI, Desktop 조작, 프리팹 |
 | QA | 고소현 | Scenario & Verification Agent | 역사 대피 흐름, 임시 역할, 피드백, 테스트 |
 
 ## 4. Milestone 0: 기준선과 승인 준비
@@ -356,18 +359,18 @@
   - 원본 처리는 승인된 오프라인 실행자가 수행하고 Map Pipeline Agent에 회수하는 결과는 별도 전송 허용 범위만 포함
   - 결과가 승인된 저장·전송 경계를 벗어나지 않음
 
-### M3-04 Flat Art 플레이 맵
+### M3-04 Station Art 플레이 맵
 
 - 최종 책임: MAP
 - 협력: UX
-- 에이전트: Map Pipeline Agent + Flat Art Agent는 승인된 파생 결과 또는 합성자료만 사용
+- 에이전트: Map Pipeline Agent + Station Art Agent는 승인된 파생 결과 또는 합성자료만 사용
 - 실제 원본 실행자: M3-03의 승인된 오프라인 실행자
 - 상태: Blocked
 - 선행: M3-03, M1-04의 Unity/Blender 해당 경로 시험 PASS
 - 추적: MAP-04~06, RUN-01
 - 작업:
   - 주요 구역·출입구·대피 동선 Blockout
-  - Flat Art 메시·재질·LOD
+  - Station Art 메시·재질·LOD
   - Unity Anchor·Collider
 - DoD:
   - VR·Desktop에서 동일 맵 로드
@@ -417,7 +420,7 @@
 ### M4-04 역할·팀·피드백 UI
 
 - 최종 책임: UX
-- 에이전트: Flat Art & UI Agent
+- 에이전트: Station Art & UI Agent
 - 상태: Blocked
 - 선행: M2-03, M2-04, M4-01
 - 추적: BR-04~05, FR-07~10
@@ -572,3 +575,9 @@ M0-02b·M3 전체 역사 촬영·맵 작업은 서면 승인 전까지 Blocked �
 | DA3·맵 품질 | MAP | PM이 라이선스·자료 경계를 승인 |
 | 공개 파일·게시 | PM | 파일별 공개 manifest와 자료 권위자 승인 |
 | 병합·릴리스·최종 발표 | PM | 사용자 사전 확인과 독립 PASS 대상 해시 일치 |
+
+## 상시 현장 모드 추가 (2026-09-07)
+
+- [FND-05 #59](https://github.com/xrlab-dau/CHOOGuard/issues/59): 동일 NPC 순회·직접 인솔·도착/복구.
+- [FND-06 #60](https://github.com/xrlab-dau/CHOOGuard/issues/60): 평상시 운영 → 불시 사건 → 관측/조건부 대응 → 복기/복구 → 다음 사건. 기본 선택형 드릴 흐름을 대체한다.
+- 공간·매뉴얼·운영 데이터의 실제 대조와 현장 전이 검증은 [상시 현장 설계의 검증 범위](choo-guard-open-world-training.md)를 따른다. 합성 완료와 자동 시험만으로 디지털 트윈·현장 효용 또는 Done을 선언하지 않는다.

@@ -8,7 +8,7 @@
 
 v4는 KORAIL 운영환경을 미리 가정하지 않는다. 대회 MVP에서 검증할 것은 다음 한 문장이다.
 
-> **사전 승인된 역사 촬영 자료로 만든 Flat Art 맵에서, 사용자가 자유롭게 직무를 선택하고 VR 또는 Desktop으로 핵심 행동을 수행하며 가상 팀의 상태 변화와 설명형 피드백을 경험한다.**
+> **사전 승인된 역사 촬영 자료로 만든 Reference-informed 3D 맵에서, 사용자가 자유롭게 직무를 선택하고 VR 또는 Desktop으로 핵심 행동을 수행하며 가상 팀의 상태 변화와 설명형 피드백을 경험한다.**
 
 MVP는 실제 멀티플레이, 공식 점수, 전용 서버, SSO·LMS, 폐쇄망 배포를 구현하지 않는다. 해당 항목은 KORAIL 회신 후 운영판 아키텍처에서 결정한다.
 
@@ -16,7 +16,7 @@ MVP는 실제 멀티플레이, 공식 점수, 전용 서버, SSO·LMS, 폐쇄망
 
 | 구분 | 대회 MVP | 운영판 |
 |---|---|---|
-| 맵 | 승인된 역사 촬영 → DA3·Open3D → Flat Art 플레이 맵 | 실제 도면·촬영·설비·치수를 KORAIL 기준으로 검수 |
+| 맵 | 승인된 역사 촬영 → DA3·Open3D → Reference-informed 3D 플레이 맵 | 실제 도면·촬영·설비·치수를 KORAIL 기준으로 검수 |
 | 역할 | 5개 임시 역할, 자유 선택 | 실제 직무 체계와 권한을 KORAIL 답변으로 확정 |
 | 싱글 | 다른 직무 절차를 단순화 | 실제 매뉴얼에 따라 단순화 허용 범위 재검토 |
 | 멀티 | 가상 팀 상태로 협업 흐름 시연 | 실제 네트워크·세션 규모·권위 구조를 폐쇄망 조건에 맞게 설계 |
@@ -65,7 +65,7 @@ flowchart TB
 
   subgraph MVP[MVP 구현]
     VTEAM[Virtual Team Simulator]
-    FLAT[Flat Art Runtime Map]
+    FLAT[Reference-informed 3D Runtime Map]
     DATA[5 Temporary Role Definitions]
   end
 
@@ -89,7 +89,7 @@ ChooGuard.Simulation      입력 검증, 퀘스트 상태, 가상 팀 상태
 ChooGuard.Scenarios       역사 대피 ScenarioProfile, 임시 5직무 데이터
 ChooGuard.XR              OpenXR·XRI 입력 어댑터
 ChooGuard.Desktop         키보드·마우스 입력 어댑터
-ChooGuard.Presentation    Flat Art 환경, 역할 UI, 팀 상태, 피드백
+ChooGuard.Presentation    Reference-informed 3D 환경, 역할 UI, 팀 상태, 피드백
 ChooGuard.Maps            런타임 맵·Anchor·Zone 조회
 ChooGuard.Evidence        이벤트·성능·시연 증거 기록
 ChooGuard.Editor          맵·시나리오 import 및 검증 도구
@@ -202,10 +202,10 @@ RoleDefinition
 flowchart LR
   APPROVAL[촬영 서면 승인] --> CAP[승인 조건 내 역사 촬영]
   CAP --> INGEST[프레임·메타데이터 정리]
-  INGEST --> DA3[DA3 비상업 처리]
-  DA3 --> O3D[Open3D 정리·정합]
+  INGEST --> DA3[정확한 체크포인트별 라이선스 확인 후 DA3 처리]
+  DA3 --> O3D[PLY/GLB 정리·정합 및 Blender 저작]
   O3D --> BLOCK[동선·구역 Blockout]
-  BLOCK --> FLAT[Flat Art 저작]
+  BLOCK --> FLAT[Reference-informed 3D 저작]
   FLAT --> UNITY[Unity Map Prefab]
   UNITY --> PLAY[VR·Desktop 플레이]
 ```
@@ -219,7 +219,9 @@ flowchart LR
 5. 촬영물·맵·스크린샷·도구 출력은 별도 자료 전송 승인이 없으면 외부 모델·MCP·API로 보내지 않는다. 공개 전 정제는 모델 전송 승인을 대신하지 않는다.
 6. DA3 실행 전 체크포인트 ID·리비전·가중치 해시·라이선스 URL·필수 고지와 대회 이용 조건의 비상업 적합성을 기록한다.
 7. CC BY-NC 4.0 DA3 가중치는 확인된 비상업 시연에만 사용한다.
-8. 운영판 전환 시 권리자 서면 허가 또는 허용 가능한 대체 모델을 요구한다.
+8. 운영판 전환 시 선택한 정확한 모델의 이용 조건에 맞는 권리자 서면 허가 또는 허용 가능한 대체 모델을 요구한다. 비상업 가중치의 조건을 다른 라이선스의 모델 전체에 일반화하지 않는다.
+
+2026-09-07 구현 추가: 공개 사진을 로컬에서 처리하는 소규모 검토 경로는 `reconstruction/`에 있다. 고정 리비전의 DA3-SMALL/BASE는 공식 체크포인트별 Apache-2.0 표기를 확인했다. 정확한 버전·가중치 해시·원문 링크는 [복원 경로](../reconstruction/README.md)에 기록한다. PLY 점군, 시점별 삼각형 GLB, Blender 편집본과 FBX를 만들며, 실측 축척·제어점이 없는 결과는 `reconstruction-review-1`로 남긴다. 기존 미터 단위 SceneBundle의 제어점·승인 필드를 가짜 값으로 채우지 않는다. 공개 사진의 열람 가능성과 원본/파생 모델의 재배포 권리는 별개다.
 
 ### MVP 맵 기준
 
@@ -276,7 +278,7 @@ flowchart LR
   PI --> COREAG[Core Agent]
   PI --> XRAG[XR Agent]
   PI --> MAPAG[Map Agent]
-  PI --> UIAG[Flat Art/UI Agent]
+  PI --> UIAG[Reference-informed 3D/UI Agent]
   PI --> QAAG[Scenario/QA Agent]
   XRAG --> MCP[pi-mcp-adapter → Unity MCP]
   UIAG --> MCP
