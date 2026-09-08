@@ -280,7 +280,7 @@ flowchart LR
   PI --> MAPAG[Map Agent]
   PI --> UIAG[Reference-informed 3D/UI Agent]
   PI --> QAAG[Scenario/QA Agent]
-  XRAG --> MCP[pi-mcp-adapter → Unity MCP]
+  XRAG --> MCP[공식 Unity CLI Editor MCP → Pipeline]
   UIAG --> MCP
   MAPAG --> MAPTOOLS[DA3/Open3D/Blender]
   COREAG --> GIT[Worktrees]

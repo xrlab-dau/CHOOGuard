@@ -49,7 +49,7 @@ M0-00에서는 Pi·MCP 실행과 패키지 설치를 하지 않는다. 사람이
 | D-08 | 별도 사용자 프로파일, OAuth 토큰 저장·로그아웃 잔류·정리·철회 절차 확인 | 공유 PC 로그인, 키 복사, 기본 모델·Exa 호출 |
 | M1-01·M1-06·M1-07 | 세션 계약·Writer Lease·실제 제공자·검토 대상·실패 차단 확인 | 운영 개발 그래프 실행 |
 | M2-01 | local/school-pc의 정확 Unity 에디터 버전·UPM 의존성·프로젝트 기준선 고정 | 버전·의존성이 미기록된 상태에서 재현 완료 주장 |
-| M1-03 및 M2-01 완료 후 M1-04 | unity-mcp v10.2.0 공급망 검토와 승인된 Editor에 연결 시험 | MCP 및 미채택 pi-mcp-adapter 설치 |
+| M1-03 및 M2-01 완료 후 M1-04 | [공식 CLI Editor MCP](adr/0006-official-unity-editor-mcp.md)·Pipeline 검토와 정확 프로젝트 연결 시험 | 미검토 패키지 설치·미검증 연결의 완료 처리. Pi adapter는 선택 사항 |
 
 Node 22 이상은 호환 조건이다. 머신별 정확한 Node·uv 버전은 별도 결정한다. ignored npm lock만으로 재현성을 주장하지 않는다. 승인된 추적 manifest·전체 lock·integrity와 검토된 설치 절차가 필요하다.
 

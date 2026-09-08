@@ -52,6 +52,6 @@ Blender **4.5.9 LTS ARM64**를 공식 배포 SHA256·코드 서명 확인 후 �
 - Mac universal 빌드 성공: Renderer **408**, 삼각형 **181,804**, 빌드 보고 **113,485,244 bytes**.
 - 실제 Mac 화면에서 모델·바닥 내비게이션·대상 위 한글 표식·큰 퀘스트 패널 제거를 관측했다. 캡처 당시 1/8 진행 화면을 확인했지만 사용자 입력과 자동 클릭이 섞일 수 있어 독립적인 수동 완주로 계산하지 않는다.
 
-자동 장면 시험은 카메라 방향과 CharacterController 이동을 코드로 제어하며, 사람의 15조합 WASD 완주를 뜻하지 않는다. 최종 실제 시설/매뉴얼 대조, 팀 리드 승인, Windows/VR/HMD, 성능 합격선 검증은 남아 있다. 소스 전달 경로는 `feature/foundation-starter`의 `develop` 대상 PR이다. 현재 커밋·PR 상태는 #54/#60의 최신 기록을 확인한다. 검증 JSON의 미푸시 값은 과거 관측 시점의 상태다.
+자동 장면 시험은 카메라 방향과 CharacterController 이동을 코드로 제어하며, 사람의 15조합 WASD 완주를 뜻하지 않는다. 최종 실제 시설/매뉴얼 대조, 팀 리드 승인, Windows/VR/HMD, 성능 합격선 검증은 남아 있다. 당시 소스는 `feature/foundation-starter`의 PR61로 전달했고 2026-09-08 `develop`에 병합됐다. 새 작업은 [현재 인수인계](choo-guard-foundation-handoff.md)를 따른다. 검증 JSON의 미푸시 값은 과거 관측 시점의 상태다.
 
 [정제 검증 기록](evidence/foundation/2026-09-07-flat-evacuation.json) · [상위 작업 #54](https://github.com/xrlab-dau/CHOOGuard/issues/54) · [인솔 작업 #59](https://github.com/xrlab-dau/CHOOGuard/issues/59)

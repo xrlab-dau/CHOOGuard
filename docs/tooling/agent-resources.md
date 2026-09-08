@@ -36,3 +36,7 @@ node --test scripts/dev/test_agent_profiles.mjs
 현재 프로젝트 reasoning 상한은 `high`다. 과거 Astra `max` 실행은 이 상한으로 시작 전 실패했으며 해당 실패도 이력으로 남긴다. 모델/단계 배정은 최신 사용자 방향과 실제 실행 조건에 맞춰 판단하되, 도구·권한 제한을 우회하지 않는다.
 
 CodeScene MCP는 이 환경에서 제공되지 않아 점수를 산출하지 않았다. 프로젝트의 실제 Python/Unity 시험, 소스 검토와 정책 검사를 사용했으며 미실행 도구를 PASS로 표시하지 않는다.
+
+## 공식 Unity Editor MCP (2026-09-08)
+
+Unity 연결 기준은 [ADR 0006](../adr/0006-official-unity-editor-mcp.md)의 공식 Unity CLI `unity mcp` + `com.unity.pipeline`이다. Codex/Claude Code의 native MCP 설정은 기기별 private 설정으로 등록하며 Git에 복사하지 않는다. Pi adapter는 Pi에 필요한 경우만 별도 검토한다. 기존 native Pi 검토 워크플로와 Unity 클라이언트 선택은 서로 다른 범위다.

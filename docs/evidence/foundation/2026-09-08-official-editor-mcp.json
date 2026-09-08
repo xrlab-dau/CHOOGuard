@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-08T10:42:10.652296+00:00",
+  "scope": "Official Editor MCP connection smoke on the school Windows PC; not full M1-04 acceptance or Windows/HMD product validation.",
+  "baseCommit": "f2011ac2cd4510a09c78f0de111771fc5aa433e8",
+  "versions": {
+    "unityEditor": "6000.3.23f1",
+    "unityCli": "1.0.0-beta.8",
+    "pipeline": "0.6.0-exp.1",
+    "testFramework": "1.6.0",
+    "monoCecil": "1.11.6",
+    "newtonsoftJson": "3.2.2"
+  },
+  "pipelineDistribution": {
+    "registry": "https://packages.unity.com",
+    "sha256": "aa6cec6298a4e8711b326bd9deeaeb13632fc142c7d581c27c5d7476a0d61f10",
+    "sha1Verified": true,
+    "licenseFile": "Unity Package Distribution License; README uses different wording, so no broader license conclusion is asserted."
+  },
+  "transport": {
+    "command": "unity mcp --project-path <absolute-project-path>",
+    "protocol": "2024-11-05",
+    "serverName": "unity-mcp",
+    "advertisedTools": 149,
+    "projectTargetVerified": true
+  },
+  "clients": {
+    "codex": "entry registered; same executable and arguments exercised by an independent stdio protocol probe; current chat tool catalog needs client reload",
+    "claudeCode": "unity-editor-mcp: Connected; project path verified",
+    "arbitraryCSharpAndUnapprovedPackageTools": "disabled/denied in local Unity MCP client settings; not a full OS or nested-call security boundary test"
+  },
+  "results": {
+    "editorStatus": "ready",
+    "compiling": false,
+    "domainReloadInProgress": false,
+    "playModeAfterTests": "stopped",
+    "sceneRead": true,
+    "selectionRead": true,
+    "consoleErrorCount": 0,
+    "editMode": {
+      "filterType": "assembly",
+      "filter": "ChooGuard.Foundation.Tests",
+      "total": 52,
+      "passed": 52,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "playMode": {
+      "filterType": "testName",
+      "filter": "DemoInteractionTests",
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
+    "isolatedPlayMode": {
+      "passed": 6,
+      "failed": 0
+    },
+    "restartAndPostPlayModeReconnect": true
+  },
+  "earlierFailures": [
+    {
+      "event": "An earlier Editor session closed normally; subsequent tools/list returned zero until a live instance was available."
+    },
+    {
+      "event": "Pipeline dependency disappeared from the working manifest before test execution (local modification time 19:31:23 KST). A later domain reload could not load Microsoft.CodeAnalysis and the first PlayMode run failed 6/6. The responsible writer was not established. The original failure logs were retained locally."
+    },
+    {
+      "event": "After restoring the exact package, the isolated copy and the actual working project each passed the 6 PlayMode tests. A fresh actual-project EditMode run passed 52/52."
+    },
+    {
+      "event": "Global unity status sometimes returned STATUS_NO_INSTANCES while the explicitly targeted Editor answered ready. Use the project-qualified editor_status and actual MCP calls for connection verification."
+    }
+  ],
+  "limits": [
+    "No full 118 EditMode or 16 PlayMode suite claim.",
+    "No build, HMD, safety-procedure, field-transfer or visual acceptance claim.",
+    "No OS egress or nested-tool bypass enforcement claim.",
+    "No raw client config, bearer token, machine ID, license contents, private logs or captures are published.",
+    "Concurrent documentation/context edits in the original worktree are excluded from this change."
+  ],
+  "sourceSha256": {
+    "Packages/manifest.json": "b341ea5fae45641a708b79ce548304de3c7f9dc0ae4e2b11d9453d181bfaa84b",
+    "Packages/packages-lock.json": "a535ee3e259ae8c352e998178253568d4a9c5b15da83e808013ed9c1c6cf09b6",
+    "ProjectSettings/ProjectVersion.txt": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66"
+  }
+}

@@ -166,7 +166,7 @@
   - 프로파일·계정·정책 해시 변경 시 시험 결과 무효화
   - 경계를 검증하기 전 실제 역사 자료 연결 금지
 
-### M1-03 Pi MCP 어댑터 공급망·우회 경로 검토
+### M1-03 공식 Unity CLI·Pipeline 공급망·호출 경로 검토
 
 - 최종 책임: PM
 - 협력: XR
@@ -175,16 +175,16 @@
 - 선행: M0-03, M1-02
 - 추적: AI-native 통제, O-04~05
 - 작업:
-  - `pi-mcp-adapter` 소스·의존성·네트워크·자격증명·설정 탐색 범위 검토
-  - 버전 고정
+  - 공식 Unity CLI·`com.unity.pipeline` 배포·의존성·라이선스·네트워크·자격증명·설정 탐색 범위 검토
+  - CLI와 Pipeline 버전을 각각 고정. Pi에서 adapter가 필요한 경우에만 별도 검토
   - Unity MCP 도구 그룹 최소 노출
   - 이미지·스크린샷·도구 결과의 모델 전송 경로 확인
-  - 어댑터와 관련 Pi 확장의 실제 실행 위치·샌드박스 위임 여부 기록
+  - 공식 stdio/CLI/Pipeline과 실제 사용하는 Pi 확장의 실행 위치·경계 기록. native MCP 직접 연결에 Pi adapter를 필수화하지 않음
   - 직접 도구와 프록시 도구에 같은 승인 정책 적용
 - DoD: 검토 리포트, 고정 버전, 실행 프로파일·정책 해시, 허용 도구·승인 설정 목록, 호스트 확장·직접·프록시 우회 차단 테스트
 - 승인: 제한 라이선스·권한 확대가 발견되면 사전 승인
 
-### M1-04 Unity MCP v10.2.0 연결
+### M1-04 공식 Unity Editor MCP 연결
 
 - 최종 책임: XR
 - 에이전트: XR & Capture Agent
@@ -192,9 +192,10 @@
 - 선행: M1-03, M2-01
 - 추적: AI-native 통제, FR-04~05
 - 작업:
-  - CoplayDev/unity-mcp v10.2.0 고정
-  - 씬·스크립트·테스트·프로파일 도구 확인
-  - 임의 C# 실행과 외부 에셋 생성 도구 비활성화
+  - [ADR 0006](adr/0006-official-unity-editor-mcp.md)의 공식 `unity mcp` stdio와 `com.unity.pipeline` 사용
+  - 정확한 프로젝트 경로로 client configure dry-run·등록 후 initialize/tools/list와 Editor 연결 확인
+  - 실제 제공 도구로 씬 읽기·Console·제한 편집·테스트 호출 검증
+  - 임의 C# 실행(`eval`/`eval_file` 등)과 외부 에셋 생성 도구는 해당 명시 승인 범위 밖에서 비활성화
 - DoD:
   - M0-03의 실행 프로파일·버전·계정·정책 해시를 참조
   - 읽기, 제한된 편집, Console 읽기, 테스트 실행 영수증
@@ -541,7 +542,7 @@
 3. M0-02a 촬영 승인 질문 준비
 4. M0-03 AI 도구·검토·승인 허용목록
 5. M1-02 Permission Gate와 실행 경계
-6. M1-03 MCP 어댑터 공급망·우회 경로 검토
+6. M1-03 공식 Unity CLI·Pipeline 공급망·호출 경로 검토
 7. M1-05 실행 기록·정제·공개 manifest
 8. M1-01 Pi 세션 계약·Writer Lease 기준선
 9. M1-06 Agent Team 세션·Writer Lease 검증
