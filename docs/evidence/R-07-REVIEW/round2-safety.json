@@ -1,0 +1,69 @@
+{
+  "outcome": "approved",
+  "actionable": [],
+  "dispositions": [
+    {
+      "id": "SAF-R1-1",
+      "status": "resolved",
+      "evidence": "Independent same-scenario replay now fails without probes. A separate stream substitution at the third settings open proves the exact bytes read for parsing are hashed, rather than merely rehashing the pathname. Persistent probe-time changes fail the receipt while preserving executed=true. Artifacts: safety/round2/recheck.py and safety/round2/recheck.json."
+    }
+  ],
+  "notes": [
+    "Approval is the substantive SAFETY review of the exact round2 target only, not issue52 completion, policy approval, publication/merge permission, or the required different-provider review gate.",
+    "This is a fresh-turn re-review in the independent OpenAI safety session; exact model ID is not exposed. The different-provider gate remains cannot_proceed.",
+    "No new P0/P1/P2 defect established within the stated scope. FIFO policy omission and manifest blocking regressions pass; open_regular_file rejects nonregular inputs using lstat/open/fstat and available POSIX nonblocking/no-follow flags.",
+    "Checks are observations around scan/read/probes, not an atomic filesystem snapshot or execution sandbox. Arbitrary transient mutation/restoration, mutation after final observation, and blocked mount I/O are not claimed eliminated; README and run04 limits explicitly acknowledge this.",
+    "External approved-pin identity remains a trusted caller responsibility. The tool validates digest/content and records that it does not authenticate an approver. Actual PM policy approval and 105-key journal resolution remain outstanding.",
+    "Existing native Windows CI evidence remains historical, before this fix. Linux skipped tests do not establish current native Windows, school-PC, Unity or HMD results.",
+    "No repository files edited. All temporary fixtures and scripts were confined to safety/round2 using CLAUDE_JOB_DIR and bytecode disabled; no installs/network/credentials/other round2 reviewer output/subagents used."
+  ],
+  "targetManifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48",
+  "headCommit": "00dcd1625b3d45374d0a4232a012244831445343",
+  "targetUnchanged": true,
+  "checks": [
+    {
+      "check": "required context validate and handoff/local brief",
+      "result": "valid structure; matched canonical policy/verifier/PM nodes; historical drift remains explicit"
+    },
+    {
+      "check": "start frozen target audit",
+      "head": "00dcd1625b3d45374d0a4232a012244831445343",
+      "manifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48",
+      "all879HashesMatched": true,
+      "clean": true
+    },
+    {
+      "check": "bootstrap regression suite",
+      "tests": 73,
+      "passed": 63,
+      "skipped": 10,
+      "failed": 0,
+      "log": "safety/round2/bootstrap-tests.log"
+    },
+    {
+      "check": "independent four-case byte-binding and receipt recheck",
+      "cases": [
+        "unchanged positive control",
+        "permanent settings edit during scan",
+        "substitute actual parsed settings stream while on-disk policy stays approved",
+        "permanent policy edit during uv probe"
+      ],
+      "passed": 4,
+      "artifact": "safety/round2/recheck.json"
+    },
+    {
+      "check": "run04 exact sources, linked logs/candidate/audit, predecessor receipt",
+      "sourceMismatches": [],
+      "linkedMismatches": [],
+      "predecessorMatched": true
+    },
+    {
+      "check": "end frozen target audit",
+      "head": "00dcd1625b3d45374d0a4232a012244831445343",
+      "clean": true,
+      "all879HashesMatched": true,
+      "mismatches": [],
+      "manifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48"
+    }
+  ]
+}

@@ -63,3 +63,5 @@ M4-01의 실제 강제는 `scripts/foundation/validate.py`, `schemas/foundation-
 2026-09-08 사용자 요청으로 새 세션의 명세·적대·보안 리뷰어와 별도 그래프 리뷰어를 실행했다. [1차 원 판정](../R-07-REVIEW/round1-summary.json)은 P2 세 건으로 `changes_required`이며, 세션 분리와 시작·종료 대상 해시를 기록했다. FIFO 정책 누락, FIFO manifest 정지, 설정 바이트와 승인 해시의 불일치를 재현하고 회귀 검사 후 보강했다. 새 실행은 `run-20260908-04.json`에 결속한다. 기존 01~03 실행과 Windows 기록은 당시 대상의 역사적 증거다.
 
 이번 팀은 작성자와 같은 OpenAI 제공자이며 파일시스템 격리는 별도로 강제되지 않았다. 다른 제공자의 spec/adversarial/safety 판정은 아직 없다. 이번 팀 리뷰를 필수 다른 제공자 승인으로 세거나 R-01의 소진된 3라운드를 재개하지 않는다. 해당 게이트의 `cannot_proceed`와 이슈 미완료를 유지한다.
+
+수정 커밋 `00dcd1625b3d45374d0a4232a012244831445343`의 [2차 세 관점 재검토](../R-07-REVIEW/round2-summary.json)는 추가 지적 없이 종료됐다. [최종 팀 리뷰 기록](../../reviews/2026-09-08-agent-team-review.md)에 세션 수, 대상, 세 결함의 수정, 실제 CI와 남은 조건을 정리했다. 첫 판정과 run04의 재검토 대기 상태는 당시 기록으로 보존한다.

@@ -1,0 +1,65 @@
+{
+  "outcome": "approved",
+  "actionable": [],
+  "notes": [
+    "SPEC substantive code-review outcome only. No remaining concrete P0/P1/P2 defect established in the fixed PR97 implementation. The new observations close the three reported round1 defects within the documented observation-based verifier contract; they do not establish an atomic filesystem snapshot or an execution sandbox.",
+    "ADV-1: matching FIFO and other non-regular policy inputs now cause inventory errors instead of being silently omitted. Normal directories remain ignored by file globs to permit e.g. scripts/bootstrap/__pycache__; existing named expected files replaced by directories still fail missing-path comparison.",
+    "ADV-2: policy and manifest reads reject non-regular lstat/fstat results, with POSIX O_NONBLOCK and O_NOFOLLOW where available. Independently injected regular-file-to-FIFO replacement at os.open after successful lstat; the helper returned ValueError without blocking under a five-second child timeout.",
+    "SAF-R1-1: inventory is resampled after scan; settings are parsed from bytes whose hash is compared with that inventory; persistent policy changes during probes prevent successful receipts. Independently changed AGENTS.md after scan and observed policy_changed_during_scan/no probes, then changed .pi/workflows.json during the node probe and observed policy_changed_during_probes/required_ok=false with executed=true.",
+    "Stability observations do not terminate already-started probes or identify arbitrary change-and-restore races. README and run04 explicitly retain that limitation. The checked settings bytes belong to this verifier; the external tool process is not sandboxed or given an immutable snapshot.",
+    "Expected-manifest semantics and pending approval remain intact: candidate or absent trusted pin is not approval; exact policy member/hash comparison is necessary; approvalReference/sourceCommit syntax does not authenticate a signer or establish current checkout identity.",
+    "Inherited source identity limitation from round1 remains open: git.head may be null in an otherwise successful synthetic verification. This round did not change that requirement or claim to fix it.",
+    "Run04 source/log/candidate/scope hashes and previousReceiptSha256 match the tracked files. Its test counts are corroborated by this independent Linux run; no native Windows run, real school ACL/mount acceptance, Unity execution, or original 105-key journal recovery was performed.",
+    "Repository required different-provider gate remains unfulfilled/cannot_proceed. This is a same-provider OpenAI separate reviewer session, exact inherited model identifier unavailable. Do not count it as another provider, approve #52 completion or consume a different-provider review round based on it.",
+    "Actual policy-owner approval, 105-key unverifiability acceptance, graph unit review and remaining field/runtime/OS evidence gates remain separate. Read canonical AGENTS/context and updated implementation/evidence; no target edits, network, credentials, installs, subagents or other round2 reviewer outputs were used."
+  ],
+  "targetManifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48",
+  "headCommit": "00dcd1625b3d45374d0a4232a012244831445343",
+  "targetUnchanged": true,
+  "checks": [
+    {
+      "name": "initial_manifest",
+      "files": 879,
+      "mismatches": [],
+      "head": "00dcd1625b3d45374d0a4232a012244831445343",
+      "clean": true
+    },
+    {
+      "name": "context_validate_then_brief",
+      "result": "structure_valid; handoff/local; historical freshness limits retained"
+    },
+    {
+      "name": "bootstrap_regressions",
+      "tests": 73,
+      "passed": 63,
+      "skipped": 10,
+      "failed": 0,
+      "artifact": "spec/round2/bootstrap-tests.log"
+    },
+    {
+      "name": "independent_variations",
+      "artifact": "spec/round2/independent-probes.json",
+      "script": "spec/round2/independent_probes.py",
+      "cases": [
+        "lstat_to_open_fifo_substitution",
+        "stable",
+        "agents_changed_during_scan",
+        "workflow_changed_during_node"
+      ],
+      "result": "all expected outcomes observed"
+    },
+    {
+      "name": "run04_evidence_bindings",
+      "sourceHashesMatch": true,
+      "artifactHashesMatch": true,
+      "previousReceiptHashMatches": true
+    },
+    {
+      "name": "final_manifest",
+      "files": 879,
+      "mismatches": [],
+      "gitStatusPorcelain": "",
+      "head": "00dcd1625b3d45374d0a4232a012244831445343"
+    }
+  ]
+}

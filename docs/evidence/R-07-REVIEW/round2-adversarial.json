@@ -1,0 +1,53 @@
+{
+  "outcome": "approved",
+  "actionable": [],
+  "notes": [
+    "ADV-1 resolved: unsupported special policy glob entries now raise inventory errors; exact-source CLI with an added FIFO returns 1, does not execute additional tool probes, and writes required_ok=false. Ordinary directories remain intentionally excluded.",
+    "ADV-2 resolved: manifest access now rejects non-regular paths before opening and verifies the opened descriptor. Exact-source CLI with a FIFO manifest returns 1 promptly and writes invalid_or_unreadable_manifest and required_ok=false.",
+    "POSIX FIFO and symlink substitution after lstat and before os.open were independently exercised for both manifest reading and policy hashing. All four cases rejected promptly using actual filesystem objects and syscalls. A trace hook synchronized the substitution; no verifier function or OS return value was mocked.",
+    "Reviewed the new settings-byte and pre/post-scan policy comparisons and post-probe recheck in actual source. A harmless uv version fixture changed AGENTS.md during its invocation; actual CLI recorded probes executed but returned 1 with policy_changed_during_probes and required_ok=false.",
+    "This is an independent OpenAI review session, not the required different-provider gate. Exact inherited model identifier is not exposed. This code approval does not replace the project-level cannot_proceed condition for missing mandatory different-provider approvals.",
+    "Only local Linux behavior was executed; no Windows/reparse/mount acceptance is inferred. The documented lack of an atomic filesystem snapshot and inability to interrupt arbitrary blocked mount I/O remain limitations, not newly invented actionable findings.",
+    "Target repository was read-only throughout. No network, installs, credentials, other round2 reviewer outputs or subagents were used. Scratch and test temporary paths stayed under adversarial/round2; PYTHONDONTWRITEBYTECODE=1 used for verifier/test execution."
+  ],
+  "targetManifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48",
+  "headCommit": "00dcd1625b3d45374d0a4232a012244831445343",
+  "targetUnchanged": true,
+  "checks": [
+    {
+      "name": "start-frozen-target",
+      "result": "All 879 file SHA-256 values matched, clean working tree, HEAD 00dcd1625b3d45374d0a4232a012244831445343; target manifest digest matched expected dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48."
+    },
+    {
+      "name": "context",
+      "result": "context_graph.py validate and handoff brief exited 0. Re-read changed canonical R-07 README and actual verifier/test diff; historical/stale context does not renew acceptance."
+    },
+    {
+      "name": "bootstrap-regressions",
+      "result": "73 tests: 63 passed and 10 skipped, exit 0. See adversarial/round2/bootstrap-tests.log."
+    },
+    {
+      "name": "original-unmocked-cli-replay",
+      "result": "Fresh exact-source fixture with real Git and harmless executable version probes. Control exit 0. Added policy FIFO exit 1; probe log unchanged from control. FIFO manifest exit 1 without timeout and failure receipt. See adversarial/round2/reproduce.py and results.json."
+    },
+    {
+      "name": "stat-open-substitutions",
+      "result": "All 4 cases passed: FIFO/symlink substituted into manifest and policy-hash inputs after actual lstat and before actual os.open. Each rejected in under 0.04 seconds. See adversarial/round2/substitution.py and substitution-results.json."
+    },
+    {
+      "name": "real-probe-policy-change",
+      "result": "Actual CLI with harmless uv executable editing synthetic AGENTS.md exited 1 and preserved executed=true, required_ok=false, stable_across_probes=false. See adversarial/round2/probe-change-results.json."
+    },
+    {
+      "name": "end-frozen-target",
+      "result": {
+        "checkedFiles": 879,
+        "head": "00dcd1625b3d45374d0a4232a012244831445343",
+        "gitStatusPorcelain": "",
+        "hashMismatches": [],
+        "manifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48",
+        "unchanged": true
+      }
+    }
+  ]
+}

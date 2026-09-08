@@ -1531,7 +1531,7 @@
         },
         {
           "repoPath": "docs/evidence/R-07/README.md",
-          "sha256": "f703d745b19630ba9eb6330c4b9d8d7930c2123ccf5a86475694c556bf427414",
+          "sha256": "0277c13fbb14236d2f7074df7ca404dae87e36dac9b7318cfe97ea82ecb04db1",
           "label": "R-07 구현 및 승인 범위"
         },
         {
@@ -1585,6 +1585,41 @@
         "Unity 실제 시험과 HMD·현장 수용은 미완료다.",
         "독립 제공자 검토와 실제 정책 승인은 미완료다.",
         "Windows CI는 학교 PC 환경 확인을 대신하지 않는다."
+      ]
+    },
+    {
+      "id": "evidence.agent_team_review_20260908",
+      "kind": "evidence",
+      "title": "독립 세션 적대적 리뷰와 세 결함 수정",
+      "summary": "새 세션4개에서 명세·적대·보안·그래프 검토. P2 세 건을 재현·수정하고 수정본 세 관점을 재검토했다. 같은 OpenAI 제공자로 필수 다른 제공자 승인을 대신하지 않는다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/reviews/2026-09-08-agent-team-review.md",
+          "sha256": "b33341d8eedc2c7b5a382ab09c4a9834035cfa399cf3e4a23945dff21f08c57f",
+          "label": "세션·고정 대상·원 판정·수정과 남은 게이트"
+        },
+        {
+          "repoPath": "docs/evidence/R-07-REVIEW/round2-summary.json",
+          "sha256": "d7651ff3d4a4815b4cb4a34194ff0e82fc3ed468234cde73046d773eaf4eb895",
+          "label": "세션·고정 대상·원 판정·수정과 남은 게이트"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/R-07-REVIEW/round2-summary.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "같은 제공자의 분리 세션 리뷰이며 다른 제공자 승인 게이트는 cannot_proceed다.",
+        "읽기 전용은 지시와 전후 해시 감사이며 별도 파일시스템 sandbox 강제는 아니다.",
+        "원자적 파일시스템·기존 Git provenance 한계·실물/Unity/HMD 수용을 해결하지 않는다."
       ]
     }
   ],
@@ -1998,9 +2033,30 @@
       "from": "workflow.start_validate",
       "relation": "verified_by",
       "to": "evidence.pm_validation_20260908"
+    },
+    {
+      "from": "component.policy_baseline",
+      "relation": "verified_by",
+      "to": "evidence.agent_team_review_20260908"
     }
   ],
   "refreshLog": [
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "component.facility_coverage",
+        "component.reconstruction",
+        "component.reconstruction_review",
+        "component.reconstruction_tools",
+        "decision.visual.per_object",
+        "decision.visual.realistic",
+        "decision.world.connected",
+        "goal.foundation",
+        "policy.project_authority",
+        "unknown.vr_device"
+      ],
+      "reason": "최신 사용자 로컬 CV/학교 독립 작업 분리와 현재 소스·문서를 읽고 반영. 과거 evidence/폐기 결정의 hash와 수용 범위는 갱신하지 않음"
+    },
     {
       "date": "2026-09-08",
       "nodes": [
@@ -2160,13 +2216,6 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed merged handoff timing and both context regression sets; retained school profile gates, original MCP receipt bytes and all historical coverage."
-    },
-    {
-      "date": "2026-09-09",
-      "nodes": [
-        "component.policy_baseline"
-      ],
-      "reason": "Fresh-session adversarial review fixes: reject special policy files and manifest FIFOs; bind settings and check policy stability across scan/probes. Historical receipts remain unchanged."
     }
   ]
 }

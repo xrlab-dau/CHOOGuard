@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "unit": "R-07-REVIEW",
+  "recordType": "same_provider_separate_session_adversarial_review",
+  "teamRound": 2,
+  "teamRoundLimit": 3,
+  "reviewedHead": "00dcd1625b3d45374d0a4232a012244831445343",
+  "reviewedBase": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+  "reviewers": [
+    {
+      "lens": "spec",
+      "session": "/root/review_spec",
+      "provider": "OpenAI",
+      "modelId": null,
+      "report": "docs/evidence/R-07-REVIEW/round2-spec.json",
+      "reportSha256": "cc6b1ca3971b38bacb6c8c1020a53832c0ff17334ba3101b781d0c6c79c7a4ca",
+      "rawReportSha256": "cc6b1ca3971b38bacb6c8c1020a53832c0ff17334ba3101b781d0c6c79c7a4ca",
+      "redaction": "workspace root replaced; no verdict or finding changed",
+      "outcome": "approved",
+      "targetManifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48"
+    },
+    {
+      "lens": "adversarial",
+      "session": "/root/review_adversarial",
+      "provider": "OpenAI",
+      "modelId": null,
+      "report": "docs/evidence/R-07-REVIEW/round2-adversarial.json",
+      "reportSha256": "7d945bb4ed8924184c957660f9e0da9929b2740dc2fb1d8f21413536195c857c",
+      "rawReportSha256": "7d945bb4ed8924184c957660f9e0da9929b2740dc2fb1d8f21413536195c857c",
+      "redaction": "workspace root replaced; no verdict or finding changed",
+      "outcome": "approved",
+      "targetManifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48"
+    },
+    {
+      "lens": "safety",
+      "session": "/root/review_safety",
+      "provider": "OpenAI",
+      "modelId": null,
+      "report": "docs/evidence/R-07-REVIEW/round2-safety.json",
+      "reportSha256": "6962cd2f43bdd70cfb028c31a0de41d11a205175cb81e3fb45137529ca2234e6",
+      "rawReportSha256": "6962cd2f43bdd70cfb028c31a0de41d11a205175cb81e3fb45137529ca2234e6",
+      "redaction": "workspace root replaced; no verdict or finding changed",
+      "outcome": "approved",
+      "targetManifestSha256": "dbcad105b0b65d15a8380c2379d12b4b7162f44e90682fccc6907c95bd4cbb48"
+    }
+  ],
+  "sourceSha256": {
+    "scripts/bootstrap/verify_toolchain.py": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855",
+    "scripts/bootstrap/test_verify_toolchain.py": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504",
+    "scripts/bootstrap/test_policy_baseline.py": "6ac802acde980dd8dd1c3d38e46c390d1f48d1e111826cce72207399f5322371",
+    "school/windows-validation/audit_policy_scope.py": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97",
+    ".github/workflows/required-quality-gate.yml": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+    "scripts/foundation/validate.py": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+    "scripts/foundation/tests/test_validate.py": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+    "schemas/foundation-scenario.schema.json": "fcb33eeea9eef91e2cb373cb605b71b0e5b65abbd5bfe7102239560c44d8193e"
+  },
+  "substantiveOutcome": "approved",
+  "unresolvedActionable": [],
+  "resolvedFindings": [
+    "R-07-REVIEW/adversarial/ADV-1",
+    "R-07-REVIEW/adversarial/ADV-2",
+    "R-07-REVIEW/safety/SAF-R1-1"
+  ],
+  "previousRoundSummarySha256": "625a5cc63cf323a979ebdfac60af1ce46b4860be80fd8aa6573f25f0d4d49e91",
+  "differentProviderGate": {
+    "outcome": "cannot_proceed",
+    "otherProviderReviews": 0,
+    "reason": "Same OpenAI provider; exact inherited model identifiers not exposed."
+  },
+  "graphReview": {
+    "head": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+    "report": "docs/evidence/R-07-REVIEW/round1-graph.json",
+    "reportSha256": "aeb43b9b5a25f70a1067caed32d03a1deb68050dcb964bb5da75b0fb29d008ac",
+    "substantiveOutcome": "approved",
+    "rereviewNeeded": "graph source unchanged"
+  },
+  "executionCounts": {
+    "freshReviewerSessions": 4,
+    "pr97LensInvocations": 6,
+    "pr98ReviewerInvocations": 1,
+    "totalReviewerInvocations": 7
+  },
+  "localTests": {
+    "tests": 73,
+    "passed": 63,
+    "skipped": 10,
+    "failures": 0
+  },
+  "issueDone": false,
+  "merged": false,
+  "limits": [
+    "Separate prompt contexts and before/after file-hash audits, not separate read-only filesystem sandboxes.",
+    "Reviews bind the stated immutable heads. Subsequent review-report/context metadata commits do not alter the reviewed implementation; they are not falsely called a new full-PR reviewer approval.",
+    "Source hashes and review JSON are change-detection evidence, not authenticated model execution attestations.",
+    "Existing git.head=null success limitation, trusted caller approval-pin ownership, unavailable 105-key journal, school-PC/HMD acceptance and non-atomic filesystem observations remain separate.",
+    "Scratch-only one-off reviewer reproduction scripts are described in the raw reports; five committed regression tests provide the maintained reproductions."
+  ]
+}
