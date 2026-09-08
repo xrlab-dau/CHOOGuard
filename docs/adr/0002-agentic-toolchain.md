@@ -31,8 +31,8 @@ Supersedes: 없음. ADR 0001을 보완한다.
 | BMAD Method | 6.12.0 | NOASSERTION | local 발견·계획 방법 | 원문·고지 검토 전 미채택 |
 | pydantic-ai-harness | 0.29.0 | MIT | local 조사 후보 | 실제 Researcher 조사 미실행 |
 | pydantic-ai-slim[openai] | 2.40.0 | 미판정 | 조사 직접 의존성 | uv.lock 포함 검토 필요 |
-| 공식 Unity CLI Editor MCP | 1.0.0-beta.8 (2026-09-08 학교 관측) | 공식 배포 조건 별도 검토 | `unity mcp` stdio → Editor | PM 선택 확정. CLI 설치 확인, 실제 Editor 연결은 M1-04에서 검증 |
-| 공식 com.unity.pipeline | 정확 설치 버전은 M2-01에서 고정 | 패키지 원문 별도 검토 | Editor의 CLI 연결 | manifest/lock 미설치. [ADR 0006](0006-official-unity-editor-mcp.md) |
+| 공식 Unity CLI Editor MCP | 1.0.0-beta.8 (2026-09-08 학교 관측) | 공식 배포 조건 별도 검토 | `unity mcp` stdio → Editor | PM 선택 확정. 학교 연결 smoke 기록은 [ADR 0006](0006-official-unity-editor-mcp.md); M1-04 전체 수용은 별도 |
+| 공식 com.unity.pipeline | 0.6.0-exp.1 (manifest/lock 고정) | Unity Package Distribution License; 전체 검토 별도 | Editor의 CLI 연결 | 학교 연결 smoke 수행. 실패·복구와 마감 Console 오류는 [ADR 0006](0006-official-unity-editor-mcp.md); 전체 공급망·실행 경계 수용은 별도 |
 | pi-mcp-adapter | 미정 | 미판정 | Pi 전용 선택적 MCP 연결 후보 | 미설치·미채택. Codex/Claude Code 직접 연결의 선행조건 아님 |
 | Node | >=22 호환 조건 | 미판정 | Pi 런타임 | 머신별 정확한 허용 버전 미정 |
 | uv | 과거 local 관측 0.11.14 | 미판정 | 조사 의존성 관리 | 허용 버전·학교 PC 고정값 미정 |

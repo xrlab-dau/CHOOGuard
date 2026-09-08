@@ -50,7 +50,7 @@
 | 아키텍처 대안 검토 | [LangGraph](https://github.com/langchain-ai/langgraph) + [DeepAgents](https://github.com/langchain-ai/deepagents) 또는 Pi의 독립 에이전트 체인 | 제약 추출, 대안·위협·비용 검토, ADR 작성 | 복잡한 결정에만 사용 |
 | 주 코딩·통합 | [Pi](https://github.com/earendil-works/pi) | C#, 도구 코드, 테스트, 문서, Git 작업, 모델 전환 | 채택 |
 | MCP 클라이언트 연결 | Codex/Claude Code 등의 native MCP → 공식 Unity CLI | 프로젝트를 지정한 stdio 직접 연결. Pi는 필요한 경우만 [pi-mcp-adapter](https://pi.dev/packages/pi-mcp-adapter?name=earendil-works) 검토 | 직접 연결 채택, Pi adapter는 선택 사항 |
-| Unity 저작 | [공식 Unity CLI Editor MCP](adr/0006-official-unity-editor-mcp.md): `unity mcp` + `com.unity.pipeline` | 실제 도구 목록을 확인한 뒤 씬·오브젝트·Console·테스트에 사용 | 2026-09-08 PM 선택. CLI 1.0.0-beta.8 관측, Pipeline 고정·Editor 검증은 별도 |
+| Unity 저작 | [공식 Unity CLI Editor MCP](adr/0006-official-unity-editor-mcp.md): `unity mcp` + `com.unity.pipeline` | 실제 도구 목록을 확인한 뒤 씬·오브젝트·Console·테스트에 사용 | 2026-09-08 PM 선택. CLI 1.0.0-beta.8·Pipeline 0.6.0-exp.1 고정과 학교 연결 smoke는 ADR 0006 참조; 전체 실행 경계 수용은 별도 |
 | 3D 보조 저작 | [Blender MCP](https://projects.blender.org/lab/blender_mcp) + glTF/glTFast | Station Art 메시·LOD·피벗·내보내기 | 격리 작업공간에서만 사용 |
 | 결정론적 검증 | Unity Test Framework + [GameCI test runner v4](https://game.ci/docs/github/test-runner) | EditMode·PlayMode·Standalone 테스트와 XML 결과 | Unity 프로젝트 생성 후 활성화 |
 | 독립 코드 검토 | Codex CLI 또는 Gemini CLI의 읽기 전용 세션, Pi와 다른 모델 제공자 | 요구사항 위반·테스트 공백·보안·회귀 검토 | 프로젝트 대표 과제로 비교 후 1개 선정 |
