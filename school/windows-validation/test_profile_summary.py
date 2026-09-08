@@ -29,6 +29,32 @@ class ProfileSummaryTests(unittest.TestCase):
         self.result["cameraRenderCallbacks"] = 0
         with self.assertRaises(ValueError): summarize(self.result, self.rows, warmup=0)
 
+    def test_invalid_receipt_frame_counters_are_rejected(self):
+        for key in ("frames", "cameraRenderCallbacks"):
+            for value in (float("nan"), float("inf"), -1, 0, 1.5, True):
+                with self.subTest(key=key, value=value):
+                    result = dict(self.result, **{key: value})
+                    with self.assertRaises(ValueError):
+                        summarize(result, self.rows, warmup=0)
+
+    def test_no_frames_cannot_establish_rendered_measurements(self):
+        result = dict(self.result, frames=0, cameraRenderCallbacks=0)
+        rows = [dict(row, frames="0", fps="0") for row in self.rows]
+        with self.assertRaises(ValueError):
+            summarize(result, rows, warmup=0)
+
+    def test_initial_unmeasured_interval_is_rejected(self):
+        rows = self.rows[10:]
+        result = dict(self.result, frames=600, cameraRenderCallbacks=600)
+        with self.assertRaises(ValueError):
+            summarize(result, rows, warmup=0)
+
+    def test_unavailable_process_memory_is_rejected(self):
+        for key in ("working_set_bytes", "private_bytes", "unity_allocated_bytes"):
+            rows = [dict(row, **{key: "0"}) for row in self.rows]
+            with self.subTest(key=key), self.assertRaises(ValueError):
+                summarize(self.result, rows, warmup=0)
+
     def test_missing_samples_or_nonfinite_metrics_are_rejected(self):
         for rows in ([], self.rows[:5]):
             with self.subTest(rows=len(rows)), self.assertRaises(ValueError):

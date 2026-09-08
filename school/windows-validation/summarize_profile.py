@@ -15,14 +15,22 @@ def summarize(result: dict, rows: list[dict], warmup: float = 60) -> dict:
         raise ValueError("Invalid duration or warmup")
     if result["status"] != "completed" or result["errors"] or elapsed < requested:
         raise ValueError("Run did not complete cleanly for the requested interval")
+    if any(type(result[key]) is not int or result[key] <= 0
+           for key in ("frames", "cameraRenderCallbacks")):
+        raise ValueError("Receipt frame counters must be positive integers")
     if result["batchMode"] or result["cameraRenderCallbacks"] < result["frames"] * .9:
         raise ValueError("Update throughput is not rendered-frame evidence")
     metrics = ("seconds", "frames", "fps", "frame_p95_ms", "working_set_bytes", "private_bytes", "unity_allocated_bytes")
     data = [{k: float(row[k]) for k in metrics} for row in rows]
     if not data or any(not math.isfinite(v) or v < 0 for row in data for v in row.values()):
         raise ValueError("Missing, negative or nonfinite measurements")
+    if any(row[key] <= 0 for row in data
+           for key in ("working_set_bytes", "private_bytes", "unity_allocated_bytes")):
+        raise ValueError("Memory counters are unavailable or invalid")
     if sum(row["frames"] for row in data) != result["frames"] or abs(data[-1]["seconds"]-elapsed) > 1:
         raise ValueError("Sample totals or final time do not match the receipt")
+    if not 0 < data[0]["seconds"] <= 5:
+        raise ValueError("Missing initial measurement interval")
     if any(b["seconds"] <= a["seconds"] or b["seconds"]-a["seconds"] > 5 for a,b in zip(data,data[1:])):
         raise ValueError("Nonmonotonic samples or an unmeasured interval")
     measured = [row for row in data if row["seconds"] > warmup]

@@ -55,11 +55,22 @@
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
           "sha256": "68bd45ed5a82402a82f66cff1909bbab14a8de583743e42e1ef1da2234db11de",
           "label": "독립 학교 작업 계약"
+        },
+        {
+          "repoPath": "school/windows-validation/summarize_profile.py",
+          "sha256": "7080dde89843cdf69f172daa62a2fe48a036d2324845a8f1f27ffea5a0a00a46",
+          "label": "Draft Windows profile completeness gate"
+        },
+        {
+          "repoPath": "school/windows-validation/test_profile_summary.py",
+          "sha256": "7166901b540ee299501f153673a5860e8dd4b5d9594900abe3bb7dec289873b8",
+          "label": "Python adversarial profile receipt regressions"
         }
       ],
       "limits": [
         "동일 GPU/Unity를 무제한 병렬 점유하지 않는다. 실제 자원에 맞춰 제한 병렬/순차 실행한다.",
-        "CV core/현재 runner/관측 export는 로컬 소유이며 학교 작업의 수정 대상이 아니다."
+        "CV core/현재 runner/관측 export는 로컬 소유이며 학교 작업의 수정 대상이 아니다.",
+        "2026-09-08 independent review: profile summary rejects zero/unavailable memory, invalid render counters and missing initial samples. Nine Python tests passed on Linux; no new Windows/Unity or long-duration acceptance."
       ]
     },
     {
@@ -1995,9 +2006,10 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "workflow.start_validate"
+        "workflow.start_validate",
+        "component.school_independent_work"
       ],
-      "reason": "사용자 요청으로 작업 중단 후 커밋·PR 인계: 새 Unity/Windows 검증과 미수용 성능 파일럿 기록 연결"
+      "reason": "사용자 요청으로 작업 중단 후 커밋·PR 인계: 새 Unity/Windows 검증과 미수용 성능 파일럿 기록 연결 | Independently reproduced and fixed draft profile false acceptance with tests first; preserve all historical Windows receipts and failed pilot results."
     }
   ]
 }
