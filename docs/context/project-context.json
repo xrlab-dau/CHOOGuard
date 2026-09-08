@@ -1526,12 +1526,12 @@
       "sources": [
         {
           "repoPath": "scripts/bootstrap/verify_toolchain.py",
-          "sha256": "e977a61cfbd995eabe488b10ed1da5d7ac74d3f2aac1d9c2f3a8b814f2d0d621",
+          "sha256": "92b467e24050dc6eed83b472d7fe58d1b22831ba0eeafe4d9c8894456420e0ef",
           "label": "R-07 구현 및 승인 범위"
         },
         {
           "repoPath": "docs/evidence/R-07/README.md",
-          "sha256": "2aed96a12ec796b602f88bff972d1929f22d66f34fe6332bc9f2894c5f65f05f",
+          "sha256": "e1d373ea7151553b2dcda74c7fe3703332171bec3b93a5ba115b7b0240744d0f",
           "label": "R-07 구현 및 승인 범위"
         },
         {
@@ -1549,6 +1549,42 @@
         "실제 승인 manifest와 다른 제공자의 spec/adversarial/safety 검토는 미완료다.",
         "Linux 시험을 native Windows 또는 Unity 실행 통과로 취급하지 않는다.",
         "105키 원본 저널의 검증 불가에 대한 사람 수용은 아직 없다."
+      ]
+    },
+    {
+      "id": "evidence.pm_validation_20260908",
+      "kind": "evidence",
+      "title": "PM 일괄 검증과 실행 환경 설치",
+      "summary": "Unity·Blender·Windows 빌드 지원을 설치하고 기존 Blender 기하를 읽었다. Python 회귀와 Windows CI를 실행했으며 Unity 라이선스/IPC 실패와 RSS 감시 환경 실패는 통과로 바꾸지 않았다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "runtime",
+        "art",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/context/pm-validation-2026-09-08.md",
+          "sha256": "cca5766e7a170f19daf4e9f72b7815e604bec0d899539577f8985349eef45b23",
+          "label": "설치·검증·미완료 범위"
+        },
+        {
+          "repoPath": "docs/evidence/PM-VALIDATION/run-20260908-01.json",
+          "sha256": "aa315328f80bbd4c5e49932a972bc532e65ff821db5c46ed8135cef9b0440a75",
+          "label": "설치·검증·미완료 범위"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/PM-VALIDATION/run-20260908-01.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "Unity 실제 시험과 HMD·현장 수용은 미완료다.",
+        "독립 제공자 검토와 실제 정책 승인은 미완료다.",
+        "Windows CI는 학교 PC 환경 확인을 대신하지 않는다."
       ]
     }
   ],
@@ -1957,6 +1993,11 @@
       "from": "workflow.start_validate",
       "relation": "depends_on",
       "to": "component.policy_baseline"
+    },
+    {
+      "from": "workflow.start_validate",
+      "relation": "verified_by",
+      "to": "evidence.pm_validation_20260908"
     }
   ],
   "refreshLog": [

@@ -1,0 +1,70 @@
+{
+  "recordType": "github_actions_historical_observation",
+  "runId": 34235871757,
+  "runUrl": "https://github.com/xrlab-dau/CHOOGuard/actions/runs/34235871757",
+  "pullRequest": 97,
+  "pullRequestHead": "4b5f798659fe84a290261d0ea5852cfa167ad327",
+  "checkoutCommit": "bcaad097c23f6e80381c1805a5208ed2d2adacc2",
+  "jobs": [
+    {
+      "id": 102093301330,
+      "name": "Bootstrap boundaries (ubuntu-24.04)",
+      "conclusion": "success"
+    },
+    {
+      "id": 102093301744,
+      "name": "Policy, security and repository hygiene",
+      "conclusion": "success"
+    },
+    {
+      "id": 102093301835,
+      "name": "Bootstrap boundaries (windows-2022)",
+      "conclusion": "success"
+    }
+  ],
+  "results": {
+    "windowsBootstrap": {
+      "total": 67,
+      "passed": 66,
+      "skipped": 1,
+      "nativeJunctionPassed": true,
+      "nativePowerShellTestsPassed": 8
+    },
+    "ubuntuBootstrap": {
+      "total": 67,
+      "passed": 58,
+      "skipped": 9
+    },
+    "profileValidator": {
+      "windowsPassed": 9,
+      "ubuntuPassed": 9
+    }
+  },
+  "limitations": [
+    "Source coverage is the initial PR commit before the final tracked-inventory gate fix.",
+    "GitHub hosted Windows is distinct from the school PC, Unity player, HMD and measured runtime performance.",
+    "This is not independent provider review or policy approval."
+  ],
+  "excerpts": [
+    {
+      "jobId": 102093301835,
+      "lines": [
+        "2026-09-08T14:04:23.4989967Z test_native_windows_junction_is_not_traversed_or_reported_clean (test_policy_baseline.WorkspaceBudgetTests.test_native_windows_junction_is_not_traversed_or_reported_clean) ... ok",
+        "2026-09-08T14:04:23.5035509Z Ran 67 tests in 13.291s",
+        "2026-09-08T14:04:23.5035760Z OK (skipped=1)",
+        "2026-09-08T14:04:23.7248805Z Ran 9 tests in 0.001s",
+        "2026-09-08T14:04:23.7249052Z OK"
+      ]
+    },
+    {
+      "jobId": 102093301330,
+      "lines": [
+        "2026-09-08T14:04:03.1196423Z test_native_windows_junction_is_not_traversed_or_reported_clean (test_policy_baseline.WorkspaceBudgetTests.test_native_windows_junction_is_not_traversed_or_reported_clean) ... skipped 'Native Windows junction test'",
+        "2026-09-08T14:04:03.1244807Z Ran 67 tests in 1.957s",
+        "2026-09-08T14:04:03.1245074Z OK (skipped=9)",
+        "2026-09-08T14:04:03.2785092Z Ran 9 tests in 0.001s",
+        "2026-09-08T14:04:03.2785338Z OK"
+      ]
+    }
+  ]
+}

@@ -465,7 +465,7 @@ def main() -> int:
     workspace_forbidden, workspace_truncated, workspace_errors = scan["forbidden"], scan["truncated"], scan["errors"]
     incomplete = workspace_truncated or bool(workspace_errors)
     baseline = policy_baseline_check(root, args.policy_manifest, args.policy_manifest_sha256, inventory)
-    can_probe = baseline["ok"] and not incomplete and not outside_links and not workspace_forbidden
+    can_probe = baseline["ok"] and forbidden_check["ok"] and not incomplete and not outside_links and not workspace_forbidden
 
     settings: dict | None
     try:

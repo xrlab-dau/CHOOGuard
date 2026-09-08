@@ -52,6 +52,10 @@ M4-01의 실제 강제는 `scripts/foundation/validate.py`, `schemas/foundation-
 
 ## 검토 인계
 
-`run-20260908-01.json`은 첫 소스와 새 정제 로그를 결속한다. native Windows junction 회귀 추가 후의 기준은 `run-20260908-02.json`과 `policy-candidate-20260908-02.json`이며 이전 실행 파일은 보존한다. 최신 Linux 결과는 67개 중 57개 통과·10개 환경별 제외다. 로그를 새 파일로 생성하고 Git 커밋으로 고정한다. SHA-256은 변경 탐지 수단이며 신뢰된 타임스탬프나 외부 서명은 아니다. 이전 R-01 저널과 학교 PC 영수증은 덮어쓰거나 새 소스의 PASS로 갱신하지 않는다.
+`run-20260908-01.json`은 첫 소스와 새 정제 로그를 결속한다. native Windows junction 회귀는 `run-20260908-02.json`, 최종 diff에서 발견한 Git 추적 목록 실패 시 도구 실행 차단은 `run-20260908-03.json`에 순서대로 결속했다. 최신 기준은 `run-20260908-03.json`과 `policy-candidate-20260908-03.json`이다. 최신 Linux 결과는 68개 중 58개 통과·10개 환경별 제외다. `policy-scope-20260908-03.json`은 최종 검증기에서 19개 계열 누락을 차단한 합성 시험이다.
+
+첫 PR 커밋의 실제 Windows 결과는 `windows-ci-20260908-01.json`에 고정했다(66개 통과·POSIX 1개 제외, PowerShell 8개와 native junction 포함, profile 검사 9개 통과). 최종 Git 목록 게이트 보강 전의 커밋 범위이며, 이후 CI 결과는 PR의 실제 실행 기록을 확인한다. [일괄 검증 인계](../../context/pm-validation-2026-09-08.md)에 설치·추가 검사·잔여 항목을 정리했다.
+
+이전 실행 파일은 보존한다. 로그를 새 파일로 생성하고 Git 커밋으로 고정한다. SHA-256은 변경 탐지 수단이며 신뢰된 타임스탬프나 외부 서명은 아니다. 이전 R-01 저널과 학교 PC 영수증은 덮어쓰거나 새 소스의 PASS로 갱신하지 않는다.
 
 독립 제공자의 spec/adversarial/safety 판정은 아직 없다. R-07의 독립 검토 라운드는 사용하지 않았으며 R-01의 소진된 3라운드를 재개하지 않는다. 필수 관점 누락에 따른 `cannot_proceed`와 이슈 미완료를 유지한다.

@@ -94,6 +94,21 @@ class PolicyBaselineTests(unittest.TestCase):
         self.assertEqual(self.case.invoke(), 1)
         self.assertFalse(any(args[0] in {"pi", "node", "uv"} for args in calls), calls)
 
+    def test_failed_or_forbidden_tracked_inventory_prevents_tool_execution(self):
+        digest = self.write_manifest()
+        original = self.case.fake_run
+        for tracked in (None, ["private.key"]):
+            with self.subTest(tracked=tracked):
+                calls = []
+                def record(*args):
+                    calls.append(args)
+                    return original(*args)
+                self.case.tracked = tracked
+                self.case.fake_run = record
+                self.assertEqual(self.case.invoke("--policy-manifest", str(self.manifest),
+                    "--policy-manifest-sha256", digest), 1)
+                self.assertFalse(any(args[0] in {"pi", "node", "uv"} for args in calls), calls)
+
     def test_modified_policy_does_not_accept_fresh_self_observed_hash(self):
         digest = self.write_manifest()
         (self.root / "AGENTS.md").write_text("changed policy\n")
