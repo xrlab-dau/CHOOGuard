@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "observedOn": "2026-09-08",
+  "scope": "public_source_availability_snapshot_not_independent_model_benchmark",
+  "rawImportsPublished": false,
+  "entries": [
+    {
+      "name": "MapAnything Apache",
+      "metadataUrl": "https://huggingface.co/api/models/facebook/map-anything-apache?blobs=true",
+      "modelRevision": "00f9c245bbcb60522d1ed7f9e9d88462c6e3f38a",
+      "gated": false,
+      "license": "apache-2.0",
+      "weightFile": "model.safetensors",
+      "weightBytes": 4914062480,
+      "weightSha256": "fa06c0fdccefc5048e072c85935d5789b1e36b307f3859033c17f9dcb9fd5201",
+      "localEngineEvidence": "docs/evidence/foundation/2026-09-08-sequence-resume.json"
+    },
+    {
+      "name": "SAM 3.1 Object Multiplex",
+      "metadataUrl": "https://huggingface.co/api/models/facebook/sam3.1?blobs=true",
+      "modelRevision": "daa63191845a41281374e725f4c9e51c7a824460",
+      "gated": "manual",
+      "license": "SAM License, not Apache or MIT",
+      "weightFile": "sam3.1_multiplex.pt",
+      "weightBytes": 3502755717,
+      "weightSha256": "0567debeec80ba4ac6369540c6c248025283cb3ff2b92827509e57e2b3541cb6",
+      "codeRevision": "660a5e9e1b8b4c02c0ad97229b88a09a6e4ff5b7",
+      "codeCommitDate": "2026-08-26",
+      "executedHere": false
+    },
+    {
+      "name": "LIST3R",
+      "paperUrl": "https://www.alphaxiv.org/abs/2607.00375",
+      "paperStatus": "preprint",
+      "treeUrl": "https://api.github.com/repos/yixn965/LIST3R/git/trees/9dc19b4edc22f8bbca954cdd1d84aa9b5f1b386b?recursive=1",
+      "treeSha": "9dc19b4edc22f8bbca954cdd1d84aa9b5f1b386b",
+      "treeTruncated": false,
+      "blobCount": 913,
+      "inferenceSourceFilesFound": 0,
+      "licenseFilesFound": 0,
+      "executedHere": false
+    },
+    {
+      "name": "MapAnything multiview confidence source",
+      "sourceUrl": "https://github.com/facebookresearch/map-anything/blob/3d10cf7a3016fc0f9bb13a071ee66c47b10be0d9/mapanything/utils/multiview_confidence.py",
+      "inspectedSourceSha256": "27d6c08dcc31def8462164675affae8ef80ac791cf9a850ff3e2f85880ad5168",
+      "observations": [
+        "single view or no overlapping frustum returns ones",
+        "source mask applied; target sampling does not apply target mask directly"
+      ],
+      "localAdaptationStatus": "pending_CV_01_tests_and_implementation"
+    }
+  ],
+  "limits": [
+    "Metadata and source availability were checked; no independent reproduction of paper performance was performed.",
+    "Local CV implementation and school resource-heavy experiments are separate work units.",
+    "No raw papers, model weights, photographs, credentials or signed download URLs are included."
+  ]
+}
