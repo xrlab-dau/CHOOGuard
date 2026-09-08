@@ -52,8 +52,11 @@ def export_prediction(prediction_path, audit_path, output_dir):
     for index, item in enumerate(selected):
         h, w = depth[index].shape
         original_w, original_h = item['dimensions_px']
-        if abs(w/h - original_w/original_h) > 1e-6:
-            raise ValueError("Mask mapping requires explicit crop/resize transform for this frame")
+        if (original_h, original_w) != (receipt['inputs'][index]['height'], receipt['inputs'][index]['width']):
+            raise ValueError("Audit dimensions_px must match the receipt-bound original image size")
+        # 'upper_bound_resize' independently rescales each axis to the processed grid, so a
+        # normalized-coordinate mask stays valid per axis even though PATCH_SIZE=14 rounding can
+        # make the processed aspect ratio differ slightly from the original; no crop offset exists.
         mask = polygon_keep_mask(h, w, [x['polygon'] for x in audit['mask_proposals'][item['id']]])
         surface = depth_surface(depth[index], confidence[index], images[index], k[index], e[index],
                                 keep_mask=mask)
@@ -101,7 +104,7 @@ def export_prediction(prediction_path, audit_path, output_dir):
                         'gravityCalibrated': False, 'northCalibrated': False},
         'quality': {'metricApproved': False, 'collisionApproved': False,
                     'watertight': False, 'crossViewFusionApproved': False,
-                    'coverage': 'masked visible upper concourse only',
+                    'coverage': audit['coverage_description'],
                     'filter': '40th confidence percentile; max 8% relative triangle depth jump',
                     'masks': 'manual conservative polygons; hidden surfaces remain absent'},
         'artifacts': {name: sha256(output / name)
@@ -109,6 +112,55 @@ def export_prediction(prediction_path, audit_path, output_dir):
     }
     (output / 'review-manifest.json').write_text(json.dumps(result, indent=2) + '\n')
     return result
+
+
+def _stats(values):
+    values = np.asarray(list(values), dtype=np.float64)
+    values = values[np.isfinite(values)]
+    if not len(values):
+        return None
+    return {'count': int(len(values)), 'median': float(np.median(values)),
+            'p90': float(np.percentile(values, 90)), 'max': float(np.max(values))}
+
+
+def export_sparse_reconstruction(sparse_points_npz, output_dir):
+    """Deliver a sparse SfM point cloud as its own artifact.
+
+    This is never fused with the dense per-view DA3 surfaces from export_prediction:
+    different engine, different manifest schema, no shared vertices or transform.
+    """
+    output = Path(output_dir)
+    output.mkdir(parents=True, exist_ok=True)
+    with np.load(sparse_points_npz, allow_pickle=False) as data:
+        xyz, rgb = data['xyz'], data['rgb']
+        track_length, error = data['track_length'], data['error']
+    if xyz.ndim != 2 or xyz.shape[1] != 3 or rgb.shape != xyz.shape:
+        raise ValueError("Expected Nx3 sparse xyz/rgb arrays")
+    if rgb.dtype != np.uint8:
+        raise ValueError("Sparse point colors must be uint8 RGB, not unscaled floats")
+    if len(track_length) != len(xyz) or len(error) != len(xyz):
+        raise ValueError("Track length/error arrays must match the point count")
+    cloud = trimesh.PointCloud(xyz, colors=rgb)
+    cloud.export(str(output / 'sparse-points.ply'))
+    manifest = {
+        'schemaVersion': 'reconstruction-review-sparse-1',
+        'status': ('no_sparse_points_available' if not len(xyz)
+                   else 'uncalibrated_sparse_points_not_fused_with_dense_surfaces'),
+        'sourceNpzSha256': sha256(sparse_points_npz),
+        'engine': 'pycolmap-incremental-mapping', 'pointCount': int(len(xyz)),
+        'trackLengthDistribution': _stats(track_length),
+        'reprojectionErrorPixelsDistribution': _stats(error),
+        'coordinates': {'raw': 'COLMAP native sparse reconstruction (independent of DA3)',
+                        'units': 'model_relative', 'metersPerUnit': None,
+                        'gravityCalibrated': False, 'northCalibrated': False},
+        'quality': {'metricApproved': False, 'collisionApproved': False,
+                    'fusedWithDenseSurface': False,
+                    'note': 'Sparse SfM points and dense DA3 triangle surfaces are separate '
+                            'deliverables from independent, non-calibration-sharing engines.'},
+        'artifacts': {'sparse-points.ply': sha256(output / 'sparse-points.ply')},
+    }
+    (output / 'sparse-manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+    return manifest
 
 
 def main():

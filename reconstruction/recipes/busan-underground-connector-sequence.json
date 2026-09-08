@@ -1,0 +1,95 @@
+{
+  "checked_at": "2026-09-08",
+  "source_video": {
+    "videoId": "39PANJWghAk",
+    "title": "KTX 부산역과 지하철 부산역을 지하로 연결하는 지하통로 개통 - 부산나비 BUSANNAVI",
+    "uploader": "BUSANNAVI",
+    "watchUrl": "https://www.youtube.com/watch?v=39PANJWghAk",
+    "publicationDateNote": "Caption reads 2019-07-01 as the connector opening date; not this video's own upload/recording date verification.",
+    "acquisitionReceipt": ".planning/2026-09-07-facility-source-collection/video-acquisition.json",
+    "frameSamplesReceipt": "private-data/facility-sources/frames/39PANJWghAk/samples.json"
+  },
+  "fixed_image_set": [
+    {
+      "id": "connector-t000",
+      "path": "private-data/facility-sources/frames/39PANJWghAk/t000000000.jpg",
+      "sha256": "606dd4fe3fc2fd172678efb41874fb042e5f30336e900f523abf0b9bdb959cbc",
+      "dimensions_px": [960, 540],
+      "sourcePtsSeconds": 0.0,
+      "content_note": "Exterior stairway/plaza title-card shot; a different cut from the following three interior frames, kept for an honest incomplete-sequence test."
+    },
+    {
+      "id": "connector-t010",
+      "path": "private-data/facility-sources/frames/39PANJWghAk/t000010000.jpg",
+      "sha256": "fcd3e4e6885d30e6c618b9f133ba8aaec37ff44a5afc9316d60d1d86e3150580",
+      "dimensions_px": [960, 540],
+      "sourcePtsSeconds": 10.01,
+      "content_note": "Underground shopping corridor near the subway-KTX connector; large burned-in caption overlay."
+    },
+    {
+      "id": "connector-t020",
+      "path": "private-data/facility-sources/frames/39PANJWghAk/t000020000.jpg",
+      "sha256": "69b17729f4d794cde69450b76a42b437fe038cd9e496a419c9237a403fd8fd96",
+      "dimensions_px": [960, 540],
+      "sourcePtsSeconds": 20.003317,
+      "content_note": "Close view of the physical hanging connector directional banner (real signage, not a caption)."
+    },
+    {
+      "id": "connector-t030",
+      "path": "private-data/facility-sources/frames/39PANJWghAk/t000030000.jpg",
+      "sha256": "4fd6d570e5d14523194bccf09d4dfb2badc0853e1534f583f237e68bb4db358f",
+      "dimensions_px": [960, 540],
+      "sourcePtsSeconds": 30.003958,
+      "content_note": "Walking further down the same corridor toward a moving walkway; several pedestrians present."
+    }
+  ],
+  "recommended_order": ["connector-t000", "connector-t010", "connector-t020", "connector-t030"],
+  "observed_overlap": [
+    "t010/t020/t030 are a single continuous forward walk down one underground corridor toward the KTX-subway connector.",
+    "t000 is a separate exterior title-card cut with no shared physical structure to the other three frames.",
+    "The overhead blue/white banner reading 부산역 지하연결통로 (Busan Station underground connecting passage) is the same physical sign visible across t010-t030 at increasing proximity."
+  ],
+  "coverage_limits": [
+    "This is a public promotional walkthrough video, not a surveyed corridor. No dimensioned drawing of this connector was located as of 2026-09-07 (see docs/art/public-facility-plans.md P05/O-05).",
+    "10-second sampling intervals produce large forward baseline and scale change; this is a stress test of engine robustness under sparse, non-multiview-stereo-friendly sampling, not a dense capture.",
+    "Ceiling tiles and floor lines are repetitive; false correspondences are a known risk this recipe explicitly does not paper over.",
+    "No metric scale, gravity or floor origin is established; the operator-published 99.6x8m dimension for this connector is not applied as a calibration here."
+  ],
+  "mask_proposals": {
+    "connector-t000": [
+      {"class": "site_watermark_text", "polygon": [[0.60, 0.0], [1.0, 0.0], [1.0, 0.1], [0.60, 0.1]]},
+      {"class": "people_on_stairs", "polygon": [[0.62, 0.5], [1.0, 0.5], [1.0, 0.95], [0.62, 0.95]]}
+    ],
+    "connector-t010": [
+      {"class": "site_watermark_text", "polygon": [[0.60, 0.0], [1.0, 0.0], [1.0, 0.1], [0.60, 0.1]]},
+      {"class": "burned_in_caption_overlay", "polygon": [[0.0, 0.35], [1.0, 0.35], [1.0, 0.65], [0.0, 0.65]]},
+      {"class": "burned_in_caption_overlay_lower", "polygon": [[0.25, 0.78], [0.65, 0.78], [0.65, 0.95], [0.25, 0.95]]},
+      {"class": "people_and_vendor_stalls", "polygon": [[0.0, 0.55], [0.65, 0.55], [0.65, 0.95], [0.0, 0.95]]}
+    ],
+    "connector-t020": [
+      {"class": "site_watermark_text", "polygon": [[0.60, 0.0], [1.0, 0.0], [1.0, 0.1], [0.60, 0.1]]},
+      {"class": "burned_in_caption_overlay_lower", "polygon": [[0.0, 0.76], [0.9, 0.76], [0.9, 0.95], [0.0, 0.95]]}
+    ],
+    "connector-t030": [
+      {"class": "site_watermark_text", "polygon": [[0.60, 0.0], [1.0, 0.0], [1.0, 0.1], [0.60, 0.1]]},
+      {"class": "burned_in_caption_overlay_lower", "polygon": [[0.0, 0.76], [0.9, 0.76], [0.9, 0.95], [0.0, 0.95]]},
+      {"class": "walking_pedestrians", "polygon": [[0.50, 0.45], [1.0, 0.45], [1.0, 0.92], [0.50, 0.92]]}
+    ]
+  },
+  "calibration_constraints": {
+    "scale": "No measured length. The operator-published 99.6x8m connector dimension (docs) is not back-applied to this DA3/SfM output.",
+    "focal": "Unknown consumer/broadcast camera EXIF (video, not still-photo capture); no lens calibration.",
+    "gravity": "Not estimated in this pass; corridor verticals are visually near-plumb but no plane fit was computed.",
+    "origin": "No floor origin established.",
+    "heading": "No compass heading established.",
+    "transform_receipt": "Same reviewFromRawRowMajor/export receipt convention as export.py; DA3's world-to-camera first-frame convention is used unchanged."
+  },
+  "reject_bad_fusion": [
+    "If the physical overhead banner appears at two different depths across views, do not fuse; keep per-view diagnostics only.",
+    "If masked caption/watermark/pedestrian regions still appear as scene geometry, treat the run as failed masking, not a delivered surface.",
+    "A single engine's low agreement fraction is not evidence the other engine is correct; record both."
+  ],
+  "coverage_description": "masked visible section of one KTX-to-subway underground connector corridor only",
+  "status": "local_only_public_video_pilot_not_redistribution_license",
+  "mask_policy": "Conservative manual polygons covering burned-in captions/watermark and moving pedestrians, applied after aspect-preserving resize; discarded regions stay unknown."
+}

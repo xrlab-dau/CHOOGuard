@@ -1,5 +1,7 @@
 # 로컬 사진 복원 → Blender → Unity 검토
 
+> **2026-09-08 현재 방향:** 사용자가 VARCO를 비용으로 폐기하고 **CV/SOTA 파이프라인을 현재 로컬 세션에서 재개**하도록 지시했다. 기존 두구간 엔진 결과를 재사용해 sequence spec의 CV-01~06을 진행한다. 학교 PC는 [독립 고용량 작업](../docs/context/school-pc-handoff-2026-09-08.md)을 맡으며 로컬 개발을 기다리게 하지 않는다. VARCO 결과는 [폐기한 시제품 이력](../docs/art/varco-production.md)으로만 보존한다.
+
 DA3의 실제 깊이·카메라 출력을 PLY 점군과 **삼각형 GLB**로 전처리하고 Blender 편집본·FBX로 전달한다. 상류 DA3의 기본 `glb`는 점군이므로 본 경로는 optical-z 역투영과 깊이 경계 삼각분할을 별도로 수행한다. 원본 사진·가중치·복원 기하는 로컬 ignored 경로에만 남는다. CI에는 합성 배열만 사용한다.
 
 기존 훈련 게임의 33개 Blender 자산과 합성 배치는 사진으로 복원한 실제 부산역이 아니다. 이 구현은 실제 복원 경로를 추가한 것이며 전체 역사/승강장/열차/지하철 모델링의 완성을 뜻하지 않는다. 전체 구역의 자료와 연결 상태는 [시설 범위](../foundation/world/facility-coverage.json), 공개 도면은 [조사 기록](../docs/art/public-facility-plans.md)에서 확인한다.
@@ -62,6 +64,25 @@ JPEG/sRGB 색은 PLY에 그대로 두고 glTF `COLOR_0`에는 선형 RGB로 변�
 ```
 
 광학 깊이/회전 pose 역투영, 잘못된 intrinsics, 좌표계와 winding, 경계/마스크 제거, NPZ 해시·입력 순서 결속, 삼각형 GLB/PLY 왕복, 빈 overlap을 PASS로 처리하지 않는 검사를 포함한다. 실제 Unity 임포트와 시각 확인, VR 입력·HMD 검증은 각각 별도 증거다.
+
+## 영상 시퀀스 파일럿: 독립 SfM·MapAnything 비교
+
+단일 사진 두 장을 넘어 실제 보유 영상에서 뽑은 연속 프레임을 비교하려면 `run_sequence_pilot.py`를 쓴다. 같은 연속 4프레임 입력으로 DA3-SMALL/BASE, 독립 PyCOLMAP 4.2.0 SfM, MapAnything(Apache 체크포인트)을 각자의 고정 환경에서 실행하고 결과를 하나의 receipt로 모은다.
+
+```sh
+.local/reconstruction/geometry-venv/bin/python reconstruction/tools/run_sequence_pilot.py \
+  --image private-data/facility-sources/frames/<videoId>/<frame-a>.jpg \
+  --image private-data/facility-sources/frames/<videoId>/<frame-b>.jpg \
+  --image private-data/facility-sources/frames/<videoId>/<frame-c>.jpg \
+  --image private-data/facility-sources/frames/<videoId>/<frame-d>.jpg \
+  --output reconstruction/output/<새 실험 이름>
+```
+
+각 입력 프레임은 `scripts/references/prepare_sequence.py --video <보유영상> --output <새폴더> --times 24,24.5,25,25.5`로 만든 `samples.json`이 같은 디렉터리에 있어야 한다. 원 영상 SHA·순서·유한한 증가 PTS·실제 크기·중복·전체 구간의 hard-cut 검사를 추론 전에 검증한다. FFmpeg scene-score 0.3은 컷 휴리스틱이며 fade/시각/개인정보 검수를 대신하지 않는다. 일반 overview samples만으로 연속 입력 수용을 주장하지 않는다. 원본·이전 출력은 덮어쓰지 않는다. `reconstruction/tools/run_sfm_sequence.py`는 `probe_colmap.py`의 두 장짜리 pair-only 프로브와 달리 실제 incremental mapping+BA를 수행하며 DA3 보정값을 전혀 읽지 않는 독립군이다. 컷이 섞여 있거나 등록에 실패하면 `no_reconstruction_registered`/부분 등록으로 정직하게 남기며, 합쳐서 성공으로 바꾸지 않는다.
+
+MapAnything(Apache 4.9GB)은 승인된 로컬 설치 대상이다. `python3 reconstruction/tools/setup_mapanything.py --output .local/reconstruction/mapanything/setup-sequence-resume.json`은 별도 `requirements-mapanything.lock` 환경·고정 DINOv2 소스·전체 체크포인트를 준비한다. 설치는 측정한 디스크와 30분 한도를 기록한다. 추론은 CPU/float32, 최대30분/RSS8GiB/여유디스크8GiB로 제한하며 검증한 local Torch Hub source와 `pretrained=False`만 사용한다. 전체 Apache state dict를 strict load하며 socket 네트워크를 차단한다. 원시 tensor NPZ와 optical-z/K/camera-to-world→world-to-camera adapter 출력을 분리 보존한다. 없는 가중치를 임의로 학교 전용 결정으로 바꾸지 않는다. 차단/미등록/부분·분리 모델과 프로세스 실패는 순위에서 제외한다. 성공 receipt도 공통 입력SHA·실제 산출물SHA·프로세스 exit0을 모두 대조한다.
+
+SfM의 희소 점군은 `chooguard_reconstruction.export.export_sparse_reconstruction`으로, DA3의 조밀 삼각형 표면은 `export_prediction`으로 각각 별도 파일(`sparse-points.ply`/`sparse-manifest.json` vs `review-surfaces.glb`/`review-manifest.json`)에 전달되며 서로 융합하지 않는다. 기존 컷 혼합 실험은 [원 영수증](../docs/evidence/foundation/2026-09-08-sequence-pilot.json)과 [사후 감사](../docs/evidence/foundation/2026-09-08-sequence-parent-audit.json)를 함께 읽는다. 재개 실행은 [별도 단계 증거](../docs/evidence/foundation/2026-09-08-sequence-resume.json)에 결속한다. 새 시퀀스의 마스크 audit·CV 기법 적용·Blender/Unity 전달은 로컬의 미완료 CV-01~06 단계다. native 단일 작성자와 검증 가능한 프로필을 사용하고 모델/추론 배정은 현재 허용 범위에서 판단한다. 학교에는 독립 베이크/대용량 benchmark/Windows 검증을 배정한다. 과거 맞이방의 Unity PASS를 새 시퀀스에 재사용하지 않는다.
 
 ## Unity 검토 장면
 
