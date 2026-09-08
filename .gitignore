@@ -54,6 +54,7 @@ models/
 # Reconstruction outputs are stored outside Git unless explicitly approved
 reconstruction/output/
 .local/reconstruction/
+.local/references/
 Assets/CHOOguardGenerated/ReconstructionReview/
 Assets/CHOOguardGenerated/ReconstructionReview.meta
 SceneBundles/private/
@@ -67,6 +68,18 @@ Thumbs.db
 .pi/git/
 # Superpowers subagent-driven-development scratch workspace
 .superpowers/
+
+# Machine-local work logs, captures, session exports and nested worktrees
+.planning/
+**/.planning/
+.claude/worktrees/
+pi-session-*.html
+.pi/subagents/
+.pi/sessions/
+
+# Personal installer answers and raw research imports are not team sources
+_bmad/config.user.toml
+_bmad-output/**/imports/
 
 # 조사 하네스 가상환경 (tools/research, uv sync 산출물)
 tools/research/.venv/

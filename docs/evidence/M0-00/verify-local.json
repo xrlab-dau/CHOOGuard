@@ -1,0 +1,109 @@
+{
+  "unit": "M0-00",
+  "machine_label": "local",
+  "date": "2026-09-06",
+  "platform": {
+    "system": "Darwin",
+    "release": "25.5.0",
+    "python": "3.14.5"
+  },
+  "git": {
+    "branch": "chore/pi-agentic-toolchain",
+    "head": "57612bf829553bdbb6474564d6ceea040d1821ac"
+  },
+  "checks": {
+    "node": {
+      "version": "v26.7.0",
+      "ok": true
+    },
+    "pi": {
+      "version": "0.85.0",
+      "wanted": "0.85.0",
+      "ok": true
+    },
+    "uv": {
+      "version": "uv 0.11.14 (Homebrew 2026-05-12 aarch64-apple-darwin)",
+      "ok": true
+    },
+    "pi_packages": {
+      "rows": [
+        {
+          "package": "pi-subagents",
+          "wanted": "0.65.1",
+          "installed": "0.65.1",
+          "ok": true
+        },
+        {
+          "package": "pi-agents",
+          "wanted": "0.21.0",
+          "installed": "0.21.0",
+          "ok": true
+        },
+        {
+          "package": "pi-exa",
+          "wanted": "0.6.1",
+          "installed": "0.6.1",
+          "ok": true
+        }
+      ],
+      "ok": true
+    },
+    "research_venv": {
+      "ok": true
+    },
+    "forbidden_tracked_files": {
+      "items": [],
+      "ok": true
+    },
+    "symlinks_outside_repo": {
+      "items": [],
+      "ok": true
+    },
+    "settings_disallowed_keys": {
+      "items": [],
+      "ok": true
+    },
+    "unity_project": {
+      "ok": false,
+      "required": false
+    }
+  },
+  "env_present": {
+    "ANTHROPIC_API_KEY": false,
+    "OPENAI_API_KEY": false,
+    "EXA_API_KEY": true,
+    "RESEARCH_MODEL": false
+  },
+  "policy_sha256": {
+    "AGENTS.md": "2c6516d076197923c16f05d382346bcf5c87d9cfbfda3b19ed24186f64679db9",
+    ".pi/settings.json": "711f04975e11e966a1b8133ded6ac26cc592032f694d0a496ab3232524a505e1",
+    ".pi/agents/adversarial-reviewer.md": "7ce020390558ed372ecf7883be1aaa7d7f17f0755d9856403cc030e63765601a",
+    ".pi/agents/doc-reviser.md": "b5e83af89c64c2ed7b930f702405f1c78a794a4eb02aa86e910af87ef3705c5c",
+    ".pi/agents/implementer.md": "b1c8ab95e89aef7ab6881cf11a9bd9a4a7f19d3b7f64aba83e4c99d29804f18d",
+    ".pi/agents/safety-auditor.md": "dc9b9efe0d026da62dd696bfdaad0a09c4259ad77fc6a13ef18fb666437aa894",
+    ".pi/agents/scout.md": "e8e911a1561d2816362f8fbabc0c15a1ef3f5e0d08024028c690b4c70cf1a139",
+    ".pi/agents/spec-reviewer.md": "74b6efc77187f245e256d48748bf068b3db2f4f1db80e882051743394a079fba",
+    ".pi/agents/verifier.md": "a72170644b6ef99dcc86fdf8ada2028afa808868e2c20068c2cc73c1d0668432",
+    ".pi/workflows/adversarial-review.yaml": "765aa99b6d8e1d7fc4053a2c2f7961187415e81476844badef7479b6d9bf9e3a",
+    ".pi/workflows/plan-review.yaml": "69b3041560e1d509e026d9bebf2e7439fc8da1a618bd93947a55fc9617646522",
+    ".pi/workflows/wu-develop.yaml": "0718be1afc139da2594a44b5564afa3cb12e0a657017c1f8340840986bfcd026",
+    ".pi/prompts/research.md": "ad6ce1f3a618be12d923a53408629c0d8a292978042ccc129c201a5f829ae30f",
+    ".pi/prompts/speckit.analyze.md": "17726d14b58435cc4404c0354448fef67bb5c40e1ce1908d3c76532fff709562",
+    ".pi/prompts/speckit.checklist.md": "efca0a3d9dd3e34712a3f9b7bbad5832fca2584ae977b286f56e57d50f53803b",
+    ".pi/prompts/speckit.clarify.md": "ae3efd8a50a67f49ed867eee2c96775928bb4287cc0f195f01a1d53f8a6053b6",
+    ".pi/prompts/speckit.constitution.md": "d76a1ecf2ada88befb6f055650db92f5e3d2ac0ed25795de9e3072fc9cb6484f",
+    ".pi/prompts/speckit.converge.md": "170ed41245c6367b5c5a149765df2bd57a196190dca69a6b7f65c21c3227f5b5",
+    ".pi/prompts/speckit.implement.md": "f97b04c981e76e9d08518e85ecb775520fd51965c7cff8b43997bc3e59d4a37f",
+    ".pi/prompts/speckit.plan.md": "ff1809d5d72b399ec364414a150c1a20e782677972d11f0bdf8c65c73f898a71",
+    ".pi/prompts/speckit.specify.md": "4317296c28a8ccdbe41c7769147a6d85090815c91634250330f107485607b246",
+    ".pi/prompts/speckit.tasks.md": "aa4b299eb052a31e0ab22d3b2e85324c8247f65b873a2125b4f32dc316201fec",
+    ".pi/prompts/speckit.taskstoissues.md": "1e9a2e305c17195a65e855ef468043e320ef7d1c01181c80fde40925eb5b448c",
+    ".specify/memory/constitution.md": "6b24bb5b53eacda9b6819ee7214976bb338a356ea82f51ffb714bb60512d7bc4",
+    "scripts/ci/pr_policy.py": "3032272ae82a7e304f1ee66b06b45c0abeb59d183ffc25d429b32bc373ca94d3",
+    "scripts/ci/repository_policy.py": "ea6d9e0f0adc69344a846ba272b1b1ada38579e11b834d3a42347b049f38728d",
+    "scripts/bootstrap/bootstrap.ps1": "1c1a0411b086f078bec2126af8ded9cf770ef559afdb146095f5be79631938dd",
+    "scripts/bootstrap/bootstrap.sh": "0b45860b55847c234b203206d0eecded1e298f8d65e110d485e5b43b38a25960",
+    "scripts/bootstrap/verify_toolchain.py": "c3bda3ecd3b2540a8073db199e402c51172e7cb07aab0b79b474419e98b0ddec"
+  },
+  "required_ok": true
+}

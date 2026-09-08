@@ -1,0 +1,103 @@
+{
+  "images": {
+    "blockImages": true
+  },
+  "packages": [
+    "npm:pi-subagents@0.65.1",
+    "npm:pi-agents@0.21.0",
+    "npm:pi-exa@0.6.1"
+  ],
+  "subagents": {
+    "defaultThinking": "medium",
+    "maxThinking": "high",
+    "maxSubagentDepth": 2,
+    "modelScope": {
+      "enforce": true,
+      "strict": true,
+      "allow": [
+        "inherit",
+        "anthropic/claude-*",
+        "openai-codex/gpt-5.6-*",
+        "openai-codex/gpt-5.5*"
+      ],
+      "agents": {
+        "reviewer": {
+          "allow": [
+            "openai-codex/gpt-5.6-sol",
+            "openai-codex/gpt-5.6-luna",
+            "openai-codex/gpt-5.5"
+          ]
+        },
+        "oracle": {
+          "allow": [
+            "openai-codex/gpt-5.6-sol",
+            "anthropic/claude-opus-5"
+          ]
+        }
+      }
+    },
+    "agentOverrides": {
+      "worker": {
+        "thinking": "medium"
+      },
+      "scout": {
+        "thinking": "low"
+      },
+      "reviewer": {
+        "model": "openai-codex/gpt-5.6-sol",
+        "thinking": "high",
+        "fallbackModels": [
+          "openai-codex/gpt-5.6-luna:high"
+        ]
+      },
+      "oracle": {
+        "model": "openai-codex/gpt-5.6-sol",
+        "thinking": "high"
+      }
+    },
+    "watchdog": {
+      "enabled": true,
+      "main": {
+        "model": "openai-codex/gpt-5.6-sol",
+        "thinking": "high"
+      },
+      "scope": {
+        "enabled": true
+      },
+      "cadence": {
+        "everyNTools": 10
+      },
+      "stalemateRepeats": 3,
+      "children": {
+        "enabled": true,
+        "cadence": {
+          "everyNTools": 15
+        },
+        "overrides": {
+          "worker": {
+            "cadence": {
+              "everyNTools": 8
+            }
+          },
+          "reviewer": {
+            "enabled": false
+          },
+          "scout": {
+            "enabled": false
+          }
+        }
+      },
+      "rules": {
+        "action": "block",
+        "roleModels": {
+          "reviewer": {
+            "deny": [
+              "anthropic/*"
+            ],
+            "note": "독립 리뷰어는 작성자(anthropic)와 다른 제공자를 사용해야 한다 (pipeline v1.2 §8)."
+          }
+        }
+      }
+    }
+  }
+}
