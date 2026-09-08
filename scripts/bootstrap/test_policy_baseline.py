@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -122,6 +123,98 @@ class PolicyBaselineTests(unittest.TestCase):
         check = self.compare(digest)
         self.assertFalse(check["ok"])
         self.assertIn(".pi/agents/extra.md", check["unexpected_paths"])
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "POSIX FIFO boundary")
+    def test_added_policy_fifo_blocks_baseline_and_tool_probes(self):
+        digest = self.write_manifest()
+        os.mkfifo(self.root / ".pi/agents/unreviewed.md")
+        calls = []
+        original = self.case.fake_run
+        def record(*args):
+            calls.append(args)
+            return original(*args)
+        self.case.fake_run = record
+        target = "docs/evidence/R-07/policy-fifo.json"
+        self.assertEqual(self.case.invoke("--policy-manifest", str(self.manifest),
+            "--policy-manifest-sha256", digest, "--write", target), 1)
+        receipt = json.loads((self.root / target).read_text())
+        self.assertGreater(receipt["checks"]["policy_baseline"]["inventory_errors"], 0)
+        self.assertFalse(receipt["required_ok"])
+        self.assertFalse(any(args[0] in {"pi", "node", "uv"} for args in calls), calls)
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "POSIX FIFO boundary")
+    def test_fifo_manifest_returns_failure_receipt_without_blocking(self):
+        fifo = self.root.parent / "approval.fifo"
+        os.mkfifo(fifo)
+        # A child timeout bounds the regression even when opening the FIFO blocks.
+        program = """
+import sys
+from pathlib import Path
+sys.path.insert(0, sys.argv.pop(1))
+import verify_toolchain as verifier
+verifier.ROOT = Path(sys.argv.pop(1))
+raise SystemExit(verifier.main())
+"""
+        target = "docs/evidence/R-07/fifo-manifest.json"
+        result = subprocess.run([sys.executable, "-c", program,
+            str(baseline_tests.MODULE_PATH.parent), str(self.root), "--label", "local",
+            "--policy-manifest", str(fifo), "--policy-manifest-sha256", "0" * 64,
+            "--write", target], capture_output=True, timeout=5)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        receipt = json.loads((self.root / target).read_text())
+        self.assertEqual(receipt["checks"]["policy_baseline"]["status"], "invalid_or_unreadable_manifest")
+        self.assertFalse(receipt["required_ok"])
+        self.assertFalse(receipt["tool_probes"]["executed"])
+
+    def test_policy_change_during_scan_blocks_probes(self):
+        digest = self.write_manifest()
+        original_scan = verifier.scan_workspace
+        original_run = self.case.fake_run
+        calls = []
+        def change_and_scan(root):
+            (root / ".pi/settings.json").write_text('{"packages": [], "extensions": ["./unreviewed.ts"]}\n')
+            return original_scan(root)
+        def record(*args):
+            calls.append(args)
+            return original_run(*args)
+        self.case.fake_run = record
+        with patch.object(verifier, "scan_workspace", change_and_scan):
+            self.assertEqual(self.case.invoke("--policy-manifest", str(self.manifest),
+                "--policy-manifest-sha256", digest), 1)
+        self.assertFalse(any(args[0] in {"pi", "node", "uv"} for args in calls), calls)
+
+    def test_settings_used_after_baseline_check_must_match_verified_bytes(self):
+        digest = self.write_manifest()
+        original_check = verifier.policy_baseline_check
+        original_run = self.case.fake_run
+        calls = []
+        def change_after_check(*args, **kwargs):
+            result = original_check(*args, **kwargs)
+            (self.root / ".pi/settings.json").write_text('{"packages": [], "extensions": ["./unreviewed.ts"]}\n')
+            return result
+        def record(*args):
+            calls.append(args)
+            return original_run(*args)
+        self.case.fake_run = record
+        with patch.object(verifier, "policy_baseline_check", change_after_check):
+            self.assertEqual(self.case.invoke("--policy-manifest", str(self.manifest),
+                "--policy-manifest-sha256", digest), 1)
+        self.assertFalse(any(args[0] in {"pi", "node", "uv"} for args in calls), calls)
+
+    def test_policy_change_during_probes_cannot_issue_success_receipt(self):
+        digest = self.write_manifest()
+        original_run = self.case.fake_run
+        def change_during_probe(*args):
+            if args == ("uv", "--version"):
+                (self.root / "AGENTS.md").write_text("changed during probe\n")
+            return original_run(*args)
+        self.case.fake_run = change_during_probe
+        target = "docs/evidence/R-07/probe-change.json"
+        self.assertEqual(self.case.invoke("--policy-manifest", str(self.manifest),
+            "--policy-manifest-sha256", digest, "--write", target), 1)
+        receipt = json.loads((self.root / target).read_text())
+        self.assertTrue(receipt["tool_probes"]["executed"])
+        self.assertFalse(receipt["required_ok"])
 
     def test_deleted_member_fails_even_when_glob_still_has_a_file(self):
         extra = self.root / ".pi/agents/extra.md"

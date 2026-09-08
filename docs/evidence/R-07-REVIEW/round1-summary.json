@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "unit": "R-07-REVIEW",
+  "recordType": "same_provider_separate_session_adversarial_review",
+  "teamRound": 1,
+  "teamRoundLimit": 3,
+  "reviewers": [
+    {
+      "lens": "spec",
+      "unit": "pr97",
+      "session": "/root/review_spec",
+      "historyFork": "none",
+      "provider": "OpenAI",
+      "modelId": null,
+      "modelDisclosure": "inherited parent model; exact identifier unavailable",
+      "report": "docs/evidence/R-07-REVIEW/round1-spec.json",
+      "reportSha256": "e20299c3e8b4cbcc95f56a2988a48211d79518055cd26407e3d718239f5286f8",
+      "rawReportSha256": "e20299c3e8b4cbcc95f56a2988a48211d79518055cd26407e3d718239f5286f8",
+      "redaction": "workspace root replaced; no findings changed",
+      "outcome": "approved",
+      "targetManifestSha256": "ba0a26d944399936562a6bbabe588ba6cbb5f9c5ad751f9a3bb6d99b44065e07",
+      "findings": []
+    },
+    {
+      "lens": "adversarial",
+      "unit": "pr97",
+      "session": "/root/review_adversarial",
+      "historyFork": "none",
+      "provider": "OpenAI",
+      "modelId": null,
+      "modelDisclosure": "inherited parent model; exact identifier unavailable",
+      "report": "docs/evidence/R-07-REVIEW/round1-adversarial.json",
+      "reportSha256": "f157119deaa28977030c1e67bc2f600275be8bce8179ff0cef66597c27935318",
+      "rawReportSha256": "f157119deaa28977030c1e67bc2f600275be8bce8179ff0cef66597c27935318",
+      "redaction": "workspace root replaced; no findings changed",
+      "outcome": "changes_required",
+      "targetManifestSha256": "ba0a26d944399936562a6bbabe588ba6cbb5f9c5ad751f9a3bb6d99b44065e07",
+      "findings": [
+        "ADV-1",
+        "ADV-2"
+      ]
+    },
+    {
+      "lens": "safety",
+      "unit": "pr97",
+      "session": "/root/review_safety",
+      "historyFork": "none",
+      "provider": "OpenAI",
+      "modelId": null,
+      "modelDisclosure": "inherited parent model; exact identifier unavailable",
+      "report": "docs/evidence/R-07-REVIEW/round1-safety.json",
+      "reportSha256": "e3e9d789565bc23f853b013544447086a7a675548858b61fb3e42ee7e5de18f2",
+      "rawReportSha256": "c292b114b0193667407cb6bce7e23d2b68fc06439ca500c772ed6e3946e001e7",
+      "redaction": "workspace root replaced; no findings changed",
+      "outcome": "changes_required",
+      "targetManifestSha256": "ba0a26d944399936562a6bbabe588ba6cbb5f9c5ad751f9a3bb6d99b44065e07",
+      "findings": [
+        "SAF-R1-1"
+      ]
+    },
+    {
+      "lens": "graph",
+      "unit": "pr98",
+      "session": "/root/review_graph",
+      "historyFork": "none",
+      "provider": "OpenAI",
+      "modelId": null,
+      "modelDisclosure": "inherited parent model; exact identifier unavailable",
+      "report": "docs/evidence/R-07-REVIEW/round1-graph.json",
+      "reportSha256": "aeb43b9b5a25f70a1067caed32d03a1deb68050dcb964bb5da75b0fb29d008ac",
+      "rawReportSha256": "aeb43b9b5a25f70a1067caed32d03a1deb68050dcb964bb5da75b0fb29d008ac",
+      "redaction": "workspace root replaced; no findings changed",
+      "outcome": "approved",
+      "targetManifestSha256": "20c81e557a25602e32303edd478057662f2654c4c235965196b0a0b211806957",
+      "findings": []
+    }
+  ],
+  "substantiveOutcome": "changes_required",
+  "findingCount": 3,
+  "severityCounts": {
+    "P2": 3
+  },
+  "requiredDifferentProviderGate": {
+    "outcome": "cannot_proceed",
+    "otherProviderReviews": 0,
+    "reason": "OpenAI author and OpenAI reviewers; exact inherited model identifier is not exposed"
+  },
+  "isolation": {
+    "separateSessions": true,
+    "freshHistory": true,
+    "readOnly": "prompt restriction and full target hash/HEAD audits; not a separate filesystem sandbox",
+    "crossReviewerResults": "not shared before first verdicts"
+  },
+  "missingRequiredLenses": [],
+  "reportSchemaChecks": "required fields/outcomes/target hashes validated by deterministic Python assertions; no production review-gate implementation claimed",
+  "issueDone": false,
+  "merged": false
+}

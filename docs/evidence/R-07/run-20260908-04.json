@@ -1,0 +1,98 @@
+{
+  "unit": "R-07",
+  "recordType": "agent_execution_observation_not_approval",
+  "observedAt": "2026-09-08",
+  "baseCommit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+  "sourceSha256": {
+    "scripts/bootstrap/verify_toolchain.py": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855",
+    "scripts/bootstrap/test_verify_toolchain.py": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504",
+    "scripts/bootstrap/test_policy_baseline.py": "6ac802acde980dd8dd1c3d38e46c390d1f48d1e111826cce72207399f5322371",
+    "school/windows-validation/audit_policy_scope.py": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97",
+    ".github/workflows/required-quality-gate.yml": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+    "scripts/foundation/validate.py": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+    "scripts/foundation/tests/test_validate.py": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+    "schemas/foundation-scenario.schema.json": "fcb33eeea9eef91e2cb373cb605b71b0e5b65abbd5bfe7102239560c44d8193e"
+  },
+  "redBaseline": {
+    "commit": "a7877c7d83d199ed5b36779c69c1d6778dfdda86",
+    "path": "scripts/bootstrap/verify_toolchain.py",
+    "sha256": "92b467e24050dc6eed83b472d7fe58d1b22831ba0eeafe4d9c8894456420e0ef",
+    "method": "Five new regressions executed before the fix: four failures and one bounded FIFO timeout. Independent reviewer reproductions were replayed by the root session.",
+    "testNames": [
+      "PolicyBaselineTests.test_added_policy_fifo_blocks_baseline_and_tool_probes",
+      "PolicyBaselineTests.test_fifo_manifest_returns_failure_receipt_without_blocking",
+      "PolicyBaselineTests.test_policy_change_during_scan_blocks_probes",
+      "PolicyBaselineTests.test_settings_used_after_baseline_check_must_match_verified_bytes",
+      "PolicyBaselineTests.test_policy_change_during_probes_cannot_issue_success_receipt"
+    ]
+  },
+  "green": {
+    "command": "python3 -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v",
+    "tests": 73,
+    "passed": 63,
+    "skipped": 10,
+    "failed": 0,
+    "platform": "Linux",
+    "skipScope": "8 native Windows command tests, 1 native Windows junction test, 1 root POSIX permission test"
+  },
+  "logs": [
+    {
+      "phase": "RED",
+      "path": "docs/evidence/R-07/red-20260908-04.log",
+      "sha256": "a3b077019a4c8594c46cfb92fe95ccc9eb37397f855ab877ac390de38509ae46",
+      "unredactedLogSha256": "9c4f50d3543b99bd723e95c021cf2aa7e7d165b73821030f6b8853e4123dd7f8",
+      "exitCode": 1,
+      "redaction": "workspace root replaced; no other output changed"
+    },
+    {
+      "phase": "GREEN",
+      "path": "docs/evidence/R-07/green-20260908-04.log",
+      "sha256": "6ca6478b0e3af6826b9e2284d659a3007041d51c9f5731b94c2bbe282a7ca2cf",
+      "unredactedLogSha256": "6ca6478b0e3af6826b9e2284d659a3007041d51c9f5731b94c2bbe282a7ca2cf",
+      "exitCode": 0,
+      "redaction": "workspace root replaced; no other output changed"
+    }
+  ],
+  "policyScopeAudit": {
+    "path": "docs/evidence/R-07/policy-scope-20260908-04.json",
+    "sha256": "a1902b8edf98665a8da28bbea4903f8ddd3354600fb488e35f3cfd2180b19185",
+    "baseline": "synthetic approved fixture only"
+  },
+  "candidate": {
+    "path": "docs/evidence/R-07/policy-candidate-20260908-04.json",
+    "sha256": "92c74d0ade26b65e60ff7028fbe46ddb2aa91b922db1cff241b8d597df2361e2",
+    "approved": false
+  },
+  "previousReceiptSha256": "a7b45fd5d45c015b01ba475338c74c936eff7d5c53e0c2079db7ee224ccd673e",
+  "old105KeyJournal": "not_available_not_accepted_as_unverifiable_by_human",
+  "independentReview": {
+    "requiredLenses": [
+      "spec",
+      "adversarial",
+      "safety"
+    ],
+    "otherProviderReviews": 0,
+    "roundsUsed": 0,
+    "result": "cannot_proceed"
+  },
+  "issueDone": false,
+  "limits": [
+    "No authenticated signer or external timestamp is created by these hashes.",
+    "Native Windows results must come from their own CI run; no Linux-to-Windows PASS inference.",
+    "Historical R-01 and school-PC receipts remain unchanged.",
+    "Policy scan/probe stability checks are observations, not an atomic filesystem snapshot or execution sandbox; arbitrary transient changes and blocked mount I/O remain outside this guarantee."
+  ],
+  "revisionReason": "User-requested fresh-session adversarial team found ADV-1, ADV-2 and SAF-R1-1; three P2 findings reproduced and fixed after RED.",
+  "agentTeamReview": {
+    "round": 1,
+    "summary": "docs/evidence/R-07-REVIEW/round1-summary.json",
+    "substantiveOutcome": "changes_required",
+    "fixesApplied": [
+      "ADV-1",
+      "ADV-2",
+      "SAF-R1-1"
+    ],
+    "rereview": "pending",
+    "differentProviderApproval": false
+  }
+}

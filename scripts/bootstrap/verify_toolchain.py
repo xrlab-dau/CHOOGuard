@@ -21,6 +21,7 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import fnmatch
 import hashlib
 import json
@@ -118,9 +119,27 @@ def run(*cmd: str) -> str | None:
     return output
 
 
+@contextmanager
+def open_regular_file(path: Path):
+    """Reject special files and avoid blocking on a substituted POSIX FIFO.
+
+    This is not a filesystem snapshot or a deadline for blocked mount I/O.
+    """
+    info = path.lstat()
+    if not stat.S_ISREG(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+        raise ValueError("not a regular file")
+    flags = os.O_RDONLY | getattr(os, "O_BINARY", 0)
+    flags |= getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0)
+    with os.fdopen(os.open(path, flags), "rb") as stream:
+        info = os.fstat(stream.fileno())
+        if not stat.S_ISREG(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+            raise ValueError("not a regular file")
+        yield stream
+
+
 def sha256(path: Path) -> str:
     h = hashlib.sha256()
-    with path.open("rb") as f:
+    with open_regular_file(path) as f:
         for chunk in iter(lambda: f.read(1 << 16), b""):
             h.update(chunk)
     return h.hexdigest()
@@ -258,8 +277,10 @@ def policy_inventory(root: Path) -> tuple[dict[str, str], list[str], int]:
                         if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
                             raise ValueError("linked policy path")
                     info = path.stat()
-                    if not stat.S_ISREG(info.st_mode):
+                    if stat.S_ISDIR(info.st_mode):
                         continue
+                    if not stat.S_ISREG(info.st_mode):
+                        raise ValueError("non-regular policy input")
                     if info.st_size == 0:
                         errors += 1
                         continue
@@ -310,9 +331,7 @@ def policy_baseline_check(root: Path, manifest: Path | None, expected_digest: st
 
     try:
         manifest = Path(manifest)
-        if manifest.is_symlink():
-            raise ValueError("linked manifest")
-        with manifest.open("rb") as stream:
+        with open_regular_file(manifest) as stream:
             raw = stream.read(MAX_POLICY_MANIFEST_BYTES + 1)
         if len(raw) > MAX_POLICY_MANIFEST_BYTES:
             raise ValueError("oversized manifest")
@@ -464,17 +483,31 @@ def main() -> int:
     outside_links = scan["outside_links"]
     workspace_forbidden, workspace_truncated, workspace_errors = scan["forbidden"], scan["truncated"], scan["errors"]
     incomplete = workspace_truncated or bool(workspace_errors)
+    # The scan can take seconds. Do not authorize probes with a policy snapshot
+    # from before that scan when the actual inputs have since changed.
+    after_scan = policy_inventory(root)
+    scan_policy_stable = after_scan == inventory
+    inventory = after_scan
+    hashes, policy_missing, policy_errors = inventory
     baseline = policy_baseline_check(root, args.policy_manifest, args.policy_manifest_sha256, inventory)
+    baseline["stable_across_scan"] = scan_policy_stable
+    if not scan_policy_stable:
+        baseline.update(ok=False, status="policy_changed_during_scan")
     can_probe = baseline["ok"] and forbidden_check["ok"] and not incomplete and not outside_links and not workspace_forbidden
 
     settings: dict | None
     try:
         if policy_missing or policy_errors:
             raise ValueError("unverified policy paths")
-        settings = json.loads((root / ".pi/settings.json").read_text(encoding="utf-8"))
+        with open_regular_file(root / ".pi/settings.json") as stream:
+            settings_bytes = stream.read()
+        if hashlib.sha256(settings_bytes).hexdigest() != hashes.get(".pi/settings.json"):
+            baseline.update(ok=False, status="settings_changed_before_probes")
+            raise ValueError("settings differ from verified bytes")
+        settings = json.loads(settings_bytes.decode("utf-8"))
         if not isinstance(settings, dict):
             settings = None
-    except (OSError, ValueError):
+    except (OSError, ValueError, RecursionError):
         settings = None
     if settings is None:
         disallowed_check = {"items": [], "ok": False, "reason": ".pi/settings.json 을 읽을 수 없다"}
@@ -493,6 +526,13 @@ def main() -> int:
     pi_lines = ((run("pi", "--version") if can_probe else None) or "").splitlines()
     pi_v = pi_lines[0] if pi_lines else None
     uv_v = run("uv", "--version") if can_probe else None
+
+    # Version probes may themselves modify policy. Preserve that probes ran,
+    # but never issue a successful receipt for a changed policy snapshot.
+    if can_probe:
+        baseline["stable_across_probes"] = policy_inventory(root) == inventory
+        if not baseline["stable_across_probes"]:
+            baseline.update(ok=False, status="policy_changed_during_probes")
 
     receipt = {
         "unit": "M0-00",

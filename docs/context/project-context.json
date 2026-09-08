@@ -1521,17 +1521,17 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-08",
+      "observedAt": "2026-09-09",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "scripts/bootstrap/verify_toolchain.py",
-          "sha256": "92b467e24050dc6eed83b472d7fe58d1b22831ba0eeafe4d9c8894456420e0ef",
+          "sha256": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855",
           "label": "R-07 구현 및 승인 범위"
         },
         {
           "repoPath": "docs/evidence/R-07/README.md",
-          "sha256": "e1d373ea7151553b2dcda74c7fe3703332171bec3b93a5ba115b7b0240744d0f",
+          "sha256": "f703d745b19630ba9eb6330c4b9d8d7930c2123ccf5a86475694c556bf427414",
           "label": "R-07 구현 및 승인 범위"
         },
         {
@@ -2004,22 +2004,6 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "component.facility_coverage",
-        "component.reconstruction",
-        "component.reconstruction_review",
-        "component.reconstruction_tools",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "decision.world.connected",
-        "goal.foundation",
-        "policy.project_authority",
-        "unknown.vr_device"
-      ],
-      "reason": "최신 사용자 로컬 CV/학교 독립 작업 분리와 현재 소스·문서를 읽고 반영. 과거 evidence/폐기 결정의 hash와 수용 범위는 갱신하지 않음"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
         "workflow.start_validate"
       ],
       "reason": "새 로컬/학교 독립 작업과 현재 PR61 인계 문서를 읽고 시작 포인터만 갱신"
@@ -2176,6 +2160,13 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed merged handoff timing and both context regression sets; retained school profile gates, original MCP receipt bytes and all historical coverage."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.policy_baseline"
+      ],
+      "reason": "Fresh-session adversarial review fixes: reject special policy files and manifest FIFOs; bind settings and check policy stability across scan/probes. Historical receipts remain unchanged."
     }
   ]
 }

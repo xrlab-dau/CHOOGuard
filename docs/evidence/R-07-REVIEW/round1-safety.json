@@ -1,0 +1,72 @@
+{
+  "outcome": "changes_required",
+  "actionable": [
+    {
+      "id": "SAF-R1-1",
+      "severity": "P2",
+      "title": "Bind the settings used for probes to the approved policy bytes",
+      "problem": "main hashes the policy at line 425, performs Git inventory and workspace scanning, then validates the cached inventory at line 467 while reading settings again at line 474. A settings change during the scan is parsed and used without comparing its new bytes to the external pin. A deterministic harmless fixture edit produced required_ok=true and Node/Pi/uv probes while the receipt claimed the earlier settings hash. This is a stale-snapshot/source-binding failure; no arbitrary execution by Pi was demonstrated.",
+      "fix": "Parse settings from the same verified bytes used for the baseline comparison and detect policy changes across the scan/probe window before permitting probes or issuing a successful receipt. Add a regression that changes settings after the initial inventory and requires failure with no probes.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:425",
+        "scripts/bootstrap/verify_toolchain.py:467",
+        "scripts/bootstrap/verify_toolchain.py:474",
+        "scripts/bootstrap/verify_toolchain.py:488"
+      ],
+      "reproduction": "Run PYTHONDONTWRITEBYTECODE=1 python3 <workspace>/task-work/adversarial-review/safety/reproduce.py. It uses a synthetic approved manifest, changes only synthetic settings at entry to the real workspace scan, mocks version commands, and records exit 0, required_ok true, tool probes called, and different actual versus approved/receipt settings hashes in safety/reproduction.json."
+    }
+  ],
+  "notes": [
+    "Independent OpenAI session substantive safety/evidence review only. This is not different-provider approval; exact model ID was not exposed. The issue52 different-provider gate remains cannot_proceed.",
+    "Actual policy owner approval/pin and the original 105-key journal remain outstanding and are explicitly stated in the PR; self-created approval identity is outside the documented trusted-caller threat model, not an authentication claim.",
+    "CI is pull_request/push with contents:read and pinned actions, not pull_request_target execution. Historical native Windows receipt names the initial PR and merge checkout and explicitly excludes the final Git inventory fix and school-PC acceptance; no network re-verification or native Windows tests performed here.",
+    "R07 receipt predecessor/log/candidate/audit hashes match. Hash chains and exclusive-create writes support local change detection, not authenticated timestamps or a malicious Git author resistant immutable ledger; the README states these limits.",
+    "PM receipt retains Unity and reconstruction RSS failures, and no runtime/field/HMD approval is inferred.",
+    "Original bundled regression invocation made temporary automatically-cleaned fixtures in the test helper default ignored repository scratch directory. A second invocation explicitly set CLAUDE_JOB_DIR to safety so fixtures stayed under the review workspace; no tracked source or frozen target changed."
+  ],
+  "targetManifestSha256": "ba0a26d944399936562a6bbabe588ba6cbb5f9c5ad751f9a3bb6d99b44065e07",
+  "headCommit": "a7877c7d83d199ed5b36779c69c1d6778dfdda86",
+  "targetUnchanged": true,
+  "checks": [
+    {
+      "check": "start",
+      "head": "a7877c7d83d199ed5b36779c69c1d6778dfdda86",
+      "clean": true,
+      "all867FrozenHashesMatched": true
+    },
+    {
+      "check": "required context start",
+      "validate": "valid (historical stale evidence preserved)",
+      "brief": "handoff/local read; relevant canonical AGENTS, accepted decisions, official MCP ADR, verifier, R07 README, PM record, CI and source files read"
+    },
+    {
+      "check": "bootstrap regressions",
+      "result": "68 run, 58 passed, 10 environment skips; exit 0",
+      "log": "safety/bootstrap-tests.log"
+    },
+    {
+      "check": "independent settings change reproduction",
+      "result": "stale approved hash accepted; mocked probes called; required_ok=true",
+      "artifact": "safety/reproduction.json"
+    },
+    {
+      "check": "R07 receipt 01 log/candidate/audit and predecessor hashes",
+      "mismatches": []
+    },
+    {
+      "check": "R07 receipt 02 log/candidate/audit and predecessor hashes",
+      "mismatches": []
+    },
+    {
+      "check": "R07 receipt 03 log/candidate/audit and predecessor hashes",
+      "mismatches": []
+    },
+    {
+      "check": "final frozen target verification",
+      "head": "a7877c7d83d199ed5b36779c69c1d6778dfdda86",
+      "clean": true,
+      "manifestFileCount": 867,
+      "mismatches": []
+    }
+  ]
+}

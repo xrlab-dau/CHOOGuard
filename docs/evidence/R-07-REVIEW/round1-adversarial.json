@@ -1,0 +1,72 @@
+{
+  "outcome": "changes_required",
+  "actionable": [
+    {
+      "id": "ADV-1",
+      "severity": "P2",
+      "title": "Reject non-regular entries in policy globs instead of silently omitting them",
+      "problem": "policy_inventory skips every non-regular glob match without recording an error. Adding a POSIX FIFO .pi/agents/unreviewed.md alongside an approved regular agent leaves the observed policy map identical to the pinned manifest. scan_workspace also accepts this object. The real CLI then invokes tool probes and emits required_ok=true despite an additional unreviewed policy input capable of supplying bytes through a FIFO. This defeats the exact policy-path-set gate for filesystem object types the scanner currently accepts.",
+      "fix": "Fail the policy inventory on unsupported non-regular matches (at least FIFOs, sockets and device nodes), preserving any explicitly intended directory exclusions such as bootstrap __pycache__. Add a regression with an unchanged approved pin and an added FIFO asserting failed scope/baseline and no tool probes.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:260",
+        "scripts/bootstrap/verify_toolchain.py:261",
+        "scripts/bootstrap/verify_toolchain.py:262"
+      ],
+      "reproduction": "adversarial/reproduce.py uses an exact-byte copy of the reviewed verifier, a real synthetic Git repository, a fixed synthetic approved manifest and harmless shell executables for node/pi/uv; no verifier function is mocked. Control exits 0; after os.mkfifo(root / \".pi/agents/unreviewed.md\"), the CLI again exits 0. adversarial/results.json records required_ok=true, baseline_match_not_runtime_approval, inventory_errors=0, unexpected_paths=[], scan_errors=0 and actual probe calls."
+    },
+    {
+      "id": "ADV-2",
+      "severity": "P2",
+      "title": "Reject special files before opening the approval manifest",
+      "problem": "policy_baseline_check rejects a symlink but opens other filesystem objects with a blocking read. Supplying a FIFO as --policy-manifest hangs indefinitely waiting for a writer before the size limit or digest validation runs. The workspace scan time budget is already over and cannot stop this call; no failure receipt is produced. This allows a malformed or replaced approval-manifest path to stall the verifier rather than fail closed.",
+      "fix": "Validate the manifest is a regular file before reading, and use an open/fstat strategy that cannot block on a substituted FIFO (for example a nonblocking, no-follow open where available followed by a regular-file check). Add a POSIX FIFO regression that completes promptly with invalid_or_unreadable_manifest and writes the failure receipt.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:312",
+        "scripts/bootstrap/verify_toolchain.py:315",
+        "scripts/bootstrap/verify_toolchain.py:316"
+      ],
+      "reproduction": "The final case in adversarial/reproduce.py invokes the actual copied CLI with a FIFO manifest and a syntactically valid digest. subprocess.run(timeout=2) raises TimeoutExpired and terminates the harmless verifier process; adversarial/results.json records timeoutSeconds=2 and receiptExists=false. No network, credentials, installs or repository writes are involved."
+    }
+  ],
+  "notes": [
+    "This is a fresh independent OpenAI review session. It does not satisfy the required different-provider review gate. The exact inherited model identifier is not exposed; no model identifier is invented.",
+    "Code verdict changes_required is separate from the project-level cannot_proceed status for missing mandatory provider/lens approvals.",
+    "Only Linux behavior was executed. Windows junction tests and PowerShell tests skipped where unavailable; no Windows acceptance is inferred.",
+    "Policy approval authenticity, sourceCommit freshness and the documented inability to interrupt blocked filesystem calls during traversal remain explicitly scoped limitations, not invented findings.",
+    "Read AGENTS.md first, then ran context validate and handoff brief and read relevant canonical R-07 README, accepted decisions, official Unity MCP ADR and issue 52. Context structure is valid; historical/stale statuses do not renew acceptance."
+  ],
+  "targetManifestSha256": "ba0a26d944399936562a6bbabe588ba6cbb5f9c5ad751f9a3bb6d99b44065e07",
+  "headCommit": "a7877c7d83d199ed5b36779c69c1d6778dfdda86",
+  "targetUnchanged": true,
+  "checks": [
+    {
+      "name": "frozen-target-start",
+      "result": "All fileSha256 entries matched; expected HEAD; git status --porcelain empty."
+    },
+    {
+      "name": "context-graph",
+      "result": "validate exit 0; handoff brief exit 0; stale/historical caveats retained."
+    },
+    {
+      "name": "bootstrap-regressions",
+      "result": "68 tests; 58 passed, 10 skipped; exit 0. Output adversarial/bootstrap-tests.log. Test scratch redirected using CLAUDE_JOB_DIR and bytecode writes disabled."
+    },
+    {
+      "name": "scope-omission-audit",
+      "result": "Actual audit script exit 0; baselineExitCode=0; fixed synthetic baseline omission checks retained. Output adversarial/scope-audit.json. Its mocked tool fixture is not runtime evidence."
+    },
+    {
+      "name": "independent-unmocked-cli",
+      "result": "Synthetic control, added-policy-FIFO false success, FIFO-manifest hang reproduced. Exact verifier copy and real Git, only harmless fake version tools on isolated PATH. Outputs adversarial/results.json and fixture/docs/evidence/after-fifo.json."
+    },
+    {
+      "name": "frozen-target-end",
+      "result": {
+        "head": "a7877c7d83d199ed5b36779c69c1d6778dfdda86",
+        "gitStatusPorcelain": "",
+        "hashMismatches": [],
+        "unchanged": true
+      }
+    }
+  ]
+}
