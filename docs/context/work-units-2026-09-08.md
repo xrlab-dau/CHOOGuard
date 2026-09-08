@@ -17,7 +17,8 @@
 | WU-03 | DA3/SfM/MapAnything 실행·고정 의존성·provenance/export 회귀 | 두 연속4장 구간 engine-stage 완료, 독립 SfM0/4 미등록. 새 CV 후처리/전달은 미완료 | `f3efd029d277a1ef2f7e1a262baae9cc4c611f3f` |
 | WU-04 | 구조 관측 수학·한 접합부 authored study·Unity review shading/navigation/시험 | 합성 구조fixture 및 기존2사진 검토 경로 검증. 전체 시설/새 시퀀스/훈련 collision 수용 아님 | `4a2916e8adcbe097af5692fa40ddd36ff451a904` |
 | WU-05 | CV 연구·spec 재개·VARCO 폐기 이력·실행/검토 근거·사용자 결정 | 문헌/가용성 확인과 계획·실제 실행을 구분. raw 논문/계정/모델 없음 | `13aa552a1de1e404731f2fbace64f1dd256488d9` |
-| WU-06 | context graph·HTML·학교 독립 작업·본 ledger/시작 문서 | 로컬과 학교의 소유 분리 및 공유 가능한 진행 상태 | 이 문서의 Git 이력으로 식별 |
+| WU-06 | context graph·HTML·학교 독립 작업·본 ledger/시작 문서 | 로컬과 학교의 소유 분리 및 공유 가능한 진행 상태 | `b3183e61df95fee6d1afa0299ef97c7eacc1cec0` |
+| WU-07 | BMAD 설치 metadata의 timestamp 문자열 표기 | 원격 Ruby safe_load의 Time 역직렬화 거부를 재현해 날짜 값은 유지하고 따옴표만 추가. CI 설정/허용 클래스는 변경하지 않음 | 이 후속 수정의 Git 이력으로 식별 |
 
 ## 보존/제외
 
@@ -28,6 +29,8 @@ Unity 검증 중 기존16개 재질에 `_EMISSION` 키워드가 직렬화된 테
 기존 `docs/korail/CHOOGuard_KORAIL_개발질의서_A4_1p.pdf` 삭제는 이 작업 전에 존재했고 의도를 확인하지 못했다. 문서 링크가 남아 있으므로 **해당 삭제는 커밋하지 않고 작업트리 그대로 보존**한다. 원격/새 checkout에는 기존 PDF가 남는다.
 
 ## 검증과 제한
+
+WU-01~06은 기존 PR61에 `b3183e6`으로 전달되었다. 그 head에서 Reconstruction CI는 통과했고, Required Quality Gate의 YAML 단계는 `_bmad/_config/manifest.yaml`의 따옴표 없는 ISO timestamp가 Ruby `Time`으로 해석되어 실패했다(run `34192096752`). WU-07은 같은 실패를 로컬 `YAML.safe_load(..., aliases: true)`로 재현한 뒤 여섯 timestamp를 문자열로 명시한 수정이다. 이후 head/CI 결과는 GitHub에서 확인한다. Unity CI의 disabled-notice와 skipped test를 실제 Unity 시험 PASS로 부르지 않는다.
 
 [공개 검증 receipt](../evidence/foundation/2026-09-08-publication-validation.json)에 소스 hash, Python168·Node7, Ruff/LFS, Unity117통과/1skip·구조fixture12·PlayMode16, 초기 legacy receipt 실패 및 native 검증자 도구 설정 실패/수정/재시도를 기록했다. 재시도 검토는 중요 소스의 표본 검토이며 신규 P0/P1을 찾지 못했다. 전체 기능/현장/학교/HMD 승인을 뜻하지 않는다.
 
