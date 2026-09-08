@@ -27,7 +27,7 @@
         },
         {
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
-          "sha256": "cf2e397b39639eca18e71403f6ca6bb88cec94a95387d8fee689592a2c231b33",
+          "sha256": "f007dcf43be2e4d0770806d054708ce28add0e9272a383b7d06c8a0da0629e0e",
           "label": "로컬/학교 소유 범위와 독립 작업 계약"
         }
       ],
@@ -53,7 +53,7 @@
       "sources": [
         {
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
-          "sha256": "cf2e397b39639eca18e71403f6ca6bb88cec94a95387d8fee689592a2c231b33",
+          "sha256": "f007dcf43be2e4d0770806d054708ce28add0e9272a383b7d06c8a0da0629e0e",
           "label": "독립 학교 작업 계약"
         }
       ],
@@ -796,7 +796,7 @@
         },
         {
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
-          "sha256": "cf2e397b39639eca18e71403f6ca6bb88cec94a95387d8fee689592a2c231b33",
+          "sha256": "f007dcf43be2e4d0770806d054708ce28add0e9272a383b7d06c8a0da0629e0e",
           "label": "학교의 독립 고부하 작업 계약"
         },
         {
@@ -1401,7 +1401,7 @@
       "id": "decision.tooling.official_unity_mcp",
       "kind": "decision",
       "title": "공식 Unity CLI Editor MCP 사용",
-      "summary": "2026-09-08 PM 결정으로 CoplayDev 선택을 폐기하고 공식 unity mcp stdio와 com.unity.pipeline을 사용한다. native MCP 클라이언트는 직접 연결하며 Pi adapter는 선택 사항이다. 실제 패키지 고정·Editor 연결·테스트 완료는 별도 확인한다.",
+      "summary": "2026-09-08 PM ???? ?? unity mcp stdio? com.unity.pipeline? ????. Pipeline 0.6.0-exp.1 ????? ?? smoke? ????? native ?????? ?? ????. Pi adapter? ?? ???? ?? ?? ????? ??? ???.",
       "status": "active",
       "authority": "user_accepted",
       "topics": [
@@ -1414,7 +1414,7 @@
       "sources": [
         {
           "repoPath": "docs/adr/0006-official-unity-editor-mcp.md",
-          "sha256": "31772cffc06d05f49926c1e7a9075c5b934975bb58b0e7324b0ef853010c594a",
+          "sha256": "4d0cc9f8b43ac25c69e328f05a00d75e9cf0ee347beb8ac4b70bf2ca4d2805e4",
           "label": "공식 서버 선택·설치 관측·연결 검증 계약"
         },
         {
@@ -1426,6 +1426,35 @@
       "limits": [
         "문서 선택이나 CLI 설치를 실제 Editor·Windows/HMD 검증으로 해석하지 않는다.",
         "개인 MCP 설정·경로·토큰과 실행 권한은 공유 그래프에 저장하지 않는다."
+      ]
+    },
+    {
+      "id": "evidence.official_editor_mcp_20260908",
+      "kind": "evidence",
+      "title": "?? Windows ?? Editor MCP ?? ??",
+      "summary": "Pipeline 0.6.0-exp.1 ??? ?? stdio ???149? ???Editor/?/Console ??, ?? ???? EditMode52/52?PlayMode6/6???0? ????. ??? ?? ?? ? ??? ??? ????.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-official-editor-mcp.json",
+          "sha256": "89c726b9cf59c205f55cba261de48e78b616d437e8b084e98987d484d2e30f4c",
+          "label": "?? ?? ?????/?????? hash"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/foundation/2026-09-08-official-editor-mcp.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "?? ???Windows ???HMD ?? ?? M1-04 ?? DoD PASS? ???.",
+        "????? ??? ?? ?? ???????? ???? ???."
       ]
     }
   ],
@@ -1819,23 +1848,14 @@
       "from": "component.agent_resources",
       "relation": "governed_by",
       "to": "decision.tooling.official_unity_mcp"
+    },
+    {
+      "from": "decision.tooling.official_unity_mcp",
+      "relation": "verified_by",
+      "to": "evidence.official_editor_mcp_20260908"
     }
   ],
   "refreshLog": [
-    {
-      "date": "2026-09-07",
-      "nodes": [
-        "component.art_scene"
-      ],
-      "reason": "Reviewed public-reference Blender export, Unity surface integration, upper envelope tests and Null graphics probe correction"
-    },
-    {
-      "date": "2026-09-07",
-      "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "Reviewed updated team handoff, exact Unity version, current local validation and historical receipt distinction"
-    },
     {
       "date": "2026-09-07",
       "nodes": [
@@ -1999,6 +2019,34 @@
         "workflow.start_validate"
       ],
       "reason": "설치 완료 관측과 현재 개발 경로 정정, 기존 실험 SHA 보존 및 VR 미정 상태 재확인"
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "decision.production.local_cv_school_independent"
+      ],
+      "reason": "Reviewed official Pipeline pin, actual school MCP test receipts and preserved scope limits."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "component.school_independent_work"
+      ],
+      "reason": "Reviewed official Pipeline pin, actual school MCP test receipts and preserved scope limits."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "workflow.start_validate"
+      ],
+      "reason": "Reviewed official Pipeline pin, actual school MCP test receipts and preserved scope limits."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "decision.tooling.official_unity_mcp"
+      ],
+      "reason": "Reviewed official Pipeline pin, actual school MCP test receipts and preserved scope limits."
     }
   ]
 }

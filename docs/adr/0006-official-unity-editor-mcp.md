@@ -19,14 +19,18 @@ Codex와 Claude Code처럼 MCP를 직접 지원하는 클라이언트는 공식 
 | 항목 | 확인 결과 | 남은 확인 |
 |---|---|---|
 | 공식 Unity CLI | `unity --version`: `1.0.0-beta.8`; `unity mcp --help`가 Editor MCP stdio 서버와 client configure를 제공 | 해당 바이너리의 무결성·배포 조건은 M0-03/M1-03 기록에 결속 |
-| Unity 프로젝트 | `6000.3.23f1`, revision `09d2ecc7fb28`; 해당 Windows Editor와 Windows 모듈 설치 확인 | 해당 Editor로 import/compile·실제 실행 |
-| Pipeline | 저장소 manifest/lock에는 아직 없음. 공식 registry의 당시 latest는 `0.6.0-exp.1` | 채택할 정확 버전·라이선스·의존성 검토와 manifest/lock 고정, CLI/Editor 조합 검증 |
-| 클라이언트 | `unity mcp configure --list`에서 `codex`, `claude-code` 확인. 두 대상 dry-run 확인 | 실제 등록과 새 클라이언트 세션 연결 |
-| Editor 연결 | `unity status --format json`: `STATUS_NO_INSTANCES` | Pipeline 설치와 해당 프로젝트의 Editor 시작 후 다시 확인 |
+| Unity 프로젝트 | `6000.3.23f1`, revision `09d2ecc7fb28`; Windows Editor/모듈 설치와 import/compile 확인 | 전체 Windows 빌드·HMD 수용은 별도 |
+| Pipeline | 사용자 연결 검증 지시에 따라 `0.6.0-exp.1` 설치, manifest/lock 고정. Test Framework 1.6.0 유지, Mono.Cecil 1.11.6·Newtonsoft.Json 3.2.2 해석 | 전체 공급망·실행 경계 검토는 #19에서 추적 |
+| 클라이언트 | Codex·Claude Code에 실제 등록. Claude Code health `Connected`; Codex와 동일 실행 파일/인자를 사용하는 stdio 검증 성공 | 기존 대화의 도구 목록에는 클라이언트 재연결 필요 |
+| Editor 연결 | 명시한 프로젝트의 `editor_status=ready`, MCP 초기화·149개 도구 조회·씬/Console 읽기 성공. EditMode 52/52, PlayMode 6/6, 종료 후 오류 0 | 전체 테스트·제한 편집·우회 차단 DoD와 제품 수용을 대신하지 않음 |
 
 CLI beta와 Pipeline experimental 상태를 기록한다. `latest` 관측은 자동 업그레이드 지시나 승인된 패키지 고정값이 아니다. `Packages/manifest.json`과 `packages-lock.json`을 함께 검토하고, 기존 Test Framework 등 의존성 변경도 확인한다. Coplay의 MIT 표기를 공식 CLI/Pipeline의 라이선스로 복사하지 않는다.
 
 공식 근거: [Unity CLI 소개와 Pipeline 구조](https://unity.com/blog/meet-the-unity-cli), [CLI 사용 문서](https://docs.unity.com/en-us/unity-cli/use-unity-cli), [명령 참조](https://docs.unity.com/en-us/unity-cli/unity-cli-reference), [공식 Pipeline registry](https://packages.unity.com/com.unity.pipeline). 명령 문법은 설치된 `1.0.0-beta.8`의 도움말과 dry-run 결과로 대조했다.
+
+[연결 검증 기록](../evidence/foundation/2026-09-08-official-editor-mcp.json)은 실제 작업 프로젝트와 분리 사본의 결과 및 실패 이력을 구분한다. 첫 PlayMode 검증 전 작업 manifest에서 Pipeline 항목이 제거됐고, 후속 domain reload가 `Microsoft.CodeAnalysis`를 불러오지 못해 6개가 실패했다. 변경 주체는 확정하지 않았다. 정확 버전 복구 후 분리 사본과 실제 프로젝트에서 각각 6/6 통과했고 실제 프로젝트의 EditMode 52/52를 다시 확인했다. 다른 세션에서 변경한 패키지 등록을 임의로 원복하지 않는다.
+
+이번 패키지의 `LICENSE.md`에는 Unity Package Distribution License가 명시되어 있고 README의 라이선스 문구와 차이가 있다. 배포본 SHA-1을 대조하고 SHA-256을 기록했으며, 이 확인을 전체 라이선스·보안 검토 완료로 확대하지 않는다. 임의 C# 및 미승인 패키지 변경 도구는 Codex의 `disabled_tools`와 Claude Code의 MCP deny 항목에 기록했다. 중첩 호출·직접 셸·OS 경계까지 차단됐다는 증거는 아니다.
 
 ## 연결 절차
 
@@ -40,12 +44,13 @@ unity pipeline install --help
 unity mcp configure --list --format json
 unity mcp configure codex --project-path $projectPath --dry-run
 unity mcp configure claude-code --project-path $projectPath --dry-run
+unity command --project-path $projectPath editor_status --format json
 ```
 
 1. M1-03에서 공식 CLI/Pipeline의 배포·라이선스·의존성과 호출 경로를 확인한다. M2-01에서 `unity pipeline install --project-path <PROJECT> --package-version <EXACT_VERSION>`로 **검토한 정확 버전**을 설치하고 manifest/lock diff를 남긴다. 꺾쇠 값은 실제 경로·고정 버전으로 치환한다. 다른 에이전트가 프로젝트를 쓰고 있으면 작성자를 먼저 하나로 정한다.
 2. 위 dry-run의 등록 이름·실행 파일·인자를 확인하고 선택한 클라이언트에 `unity mcp configure <CLIENT> --project-path <PROJECT>`를 적용한다. `codex`와 `claude-code`는 서로 다른 값이다. 이번 CLI의 Claude Code 등록은 user scope이므로 실제 절대 프로젝트 경로를 사용하고 다른 프로젝트 등록과 충돌하지 않는지 확인한다.
 3. 개인 MCP 설정·설치 경로·토큰은 Git에 넣지 않는다. 클라이언트를 새로 시작한 뒤 정확한 프로젝트로 서버가 연결되는지 확인한다.
-4. Editor의 패키지 import와 compilation이 끝난 뒤 `unity status --format json`과 MCP의 `initialize`/`tools/list` 응답을 확인한다. 실제 제공된 도구 목록으로 읽기·Console·제한 편집·테스트 호출을 매핑한다. Coplay 또는 별도 broker의 도구 이름을 추측해 호출하지 않는다.
+4. Editor의 패키지 import와 compilation이 끝난 뒤 `unity command --project-path <PROJECT> editor_status --format json`과 MCP의 `initialize`/`tools/list` 응답을 확인한다. 전역 `unity status`가 인스턴스를 누락하는 동안에도 명시한 프로젝트는 응답한 사례가 있으므로 실제 대상 응답으로 판단한다. 시작 중 도구 목록이 비어 있으면 ready 여부를 다시 읽는다. 실제 제공된 도구 목록으로 읽기·Console·제한 편집·테스트 호출을 매핑한다. Coplay 또는 별도 broker의 도구 이름을 추측해 호출하지 않는다.
 5. 읽기 → 제한된 idempotent builder → compile/Console 오류 0 → 관련 EditMode/PlayMode 순서로 검증한다. CLI·Pipeline·Editor 버전, 기준 SHA, 테스트 결과와 정제 증거를 #20에 연결한다. stdio handshake 성공만으로 Editor 동작 또는 M1-04 Done을 선언하지 않는다.
 
 ## 실행 원칙과 작업 분담
