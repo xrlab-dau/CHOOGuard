@@ -13,6 +13,13 @@
 
 ## Unity CI activation
 
+`Foundation CSharp Review` runs the unchanged Foundation core NUnit tests and
+the capture filesystem regressions on hosted Ubuntu with .NET SDK 8.0.424 and
+NUnit/NUnitLite 3.14.0. It stores the source hashes, exact extracted capture
+writer, dependency manifest and NUnit XML. See the [harness scope](../scripts/dev/csharp-review/README.md).
+This license-free check does not compile the surrounding Unity controller or
+run Unity serialization, EditMode, PlayMode, rendering or HMD acceptance.
+
 Set repository variable `UNITY_CI_ENABLED=true` only after committing a Unity project and configuring protected secrets:
 
 - `UNITY_LICENSE`

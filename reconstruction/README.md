@@ -90,4 +90,8 @@ Unity 6000.3.23f1에서 `ChooGuard.Foundation.Demo.Editor.ReconstructionReviewBu
 
 앱은 B/A 시점을 하나씩 표시한다. 원점·프레이밍·궤도/자유 이동으로 열린 표면을 확인하며, 검토 카메라는 실측 보정된 카메라가 아니다. 실행 인수 `--choo-reconstruction-captures <새 로컬 폴더>`는 각 시점의 세 검토 각도와 FBX 해시에 묶인 캡처 기록을 만든다. `ReconstructionReviewTests`는 합성 fixture와 로컬 소스가 있을 때의 실제 임포트를 검사한다. 공개 CI에는 사진과 복원 기하가 없으므로 실제 소스 임포트 항목은 건너뛰며, 그 상태를 로컬 임포트 PASS로 대체하지 않는다.
 
+캡처는 실행마다 존재하지 않는 출력 폴더를 요구하며, 이전 viewer 소유 폴더도 재사용하지 않는다. 프레임 렌더가 끝난 뒤 PNG 인코딩·파일 저장·SHA-256 대조를 완료하고, 모든 `view-<시점>-<각도>.png`를 재검증한 경우에만 `capture-complete.json`을 게시한다. v2 기록은 기존 views/angles/FBX 필드와 함께 각 이미지의 파일명·시점·각도·바이트 수·SHA-256을 담는다. 실패한 실행의 폴더는 성공으로 재사용하지 말고 새 경로에서 다시 실행한다. 캡처 중 카메라 UI는 잠기고 종료·예외 시 이전 뷰를 복구한다.
+
+[별도 C# 검증](../scripts/dev/csharp-review/README.md)은 실제 writer 클래스의 파일 저장 로직과 공통 코어를 .NET 8에서 실행한다. 이 결과는 Unity 컴파일·JsonUtility·화면 캡처 검증을 대신하지 않는다. 새 캡처 구현의 최종 확인에는 Unity EditMode의 `ReconstructionReviewTests`와 그래픽 장치가 있는 실제 플레이어에서 시점별 세 각도 캡처·PNG 해시 대조가 필요하다.
+
 VR 기기는 미정이다. 현재 검토 앱은 Desktop용이고 OpenXR loader/XR rig/HMD 입력은 아직 구현·실행 검증되지 않았다. [엔진 선택과 XR 공백](../docs/reconstruction/engine-selection.md)에 고정 후보와 다음 통합 범위를 기록한다.

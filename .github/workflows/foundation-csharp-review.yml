@@ -1,0 +1,52 @@
+name: Foundation CSharp Review
+
+on:
+  pull_request:
+    paths:
+      - 'Packages/com.xrlab.chooguard.foundation/**'
+      - 'scripts/dev/csharp-review/**'
+      - '.github/workflows/foundation-csharp-review.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'Packages/com.xrlab.chooguard.foundation/**'
+      - 'scripts/dev/csharp-review/**'
+      - '.github/workflows/foundation-csharp-review.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: foundation-csharp-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  filesystem-and-core:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
+        with:
+          dotnet-version: '8.0.424'
+      - name: Prepare exact capture filesystem source
+        run: python3 scripts/dev/csharp-review/prepare_capture_source.py --output "$RUNNER_TEMP/csharp-review"
+      - name: Run core and capture filesystem NUnit tests
+        run: |
+          dotnet run --project scripts/dev/csharp-review \
+            -p:CaptureSourceFile="$RUNNER_TEMP/csharp-review/ReconstructionCaptureWriter.cs" \
+            -- --workers=1 --labels=All --result="$RUNNER_TEMP/csharp-review/results.xml"
+      - name: Upload CSharp evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: foundation-csharp-review
+          path: |
+            ${{ runner.temp }}/csharp-review
+            scripts/dev/csharp-review/obj/project.assets.json
+          if-no-files-found: error
+          retention-days: 14

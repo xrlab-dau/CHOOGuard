@@ -1204,7 +1204,7 @@
       "id": "component.reconstruction_review",
       "kind": "component",
       "title": "Unity 실제 복원 검토 앱",
-      "summary": "FBX/manifest hash·실제 bounds/삼각형/색상 샘플을 검사한다. per-view 관측 unlit와 단일 authored-lit 구조 실험을 구분하고 뷰 순환·원점/프레이밍·native capture를 제공한다. 이번 회귀는 기존2사진/구조fixture 경로이며 새 시퀀스 전달은 미완료다.",
+      "summary": "FBX/manifest hash·실제 bounds/삼각형/색상 샘플을 검사하며 관측 unlit/구조 authored-lit를 구분한다. 캡처는 새 폴더에 PNG를 동기 저장하고 이미지별 hash를 재검증한 뒤 v2 receipt를 게시한다. 예외·iterator 종료 시 뷰를 복구한다. 기존2사진/구조fixture 범위이며 새 시퀀스 전달은 별도다.",
       "status": "implemented",
       "authority": "tracked_source",
       "topics": [
@@ -1212,7 +1212,7 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-08",
+      "observedAt": "2026-09-09",
       "freshnessPolicy": "content",
       "sources": [
         {
@@ -1222,7 +1222,7 @@
         },
         {
           "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
-          "sha256": "f6eb149746a7bae3aa9b3dbd795b2bf4ec475df21382f6834d10c88441894b66",
+          "sha256": "5142389f6eaf8b40c2ff17f88f5d522c1d4f88a60cc5f5e91190d88fd97839d5",
           "label": "ReconstructionReviewController.cs"
         },
         {
@@ -1232,12 +1232,13 @@
         },
         {
           "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
-          "sha256": "7b2264970a1de0da9276e519a26ccd7e93cd01a10647c9b7371aff5a7a713e78",
+          "sha256": "7b802698bffb8b79af296bf943c2ce2dc53afc52ed8981f8e8c2a74be82e7e89",
           "label": "ReconstructionReviewTests.cs"
         }
       ],
       "limits": [
-        "Desktop 검토 장면이다. 실측 축척과 훈련 충돌, XR Origin/HMD 입력은 미구현 또는 미검증이다."
+        "Desktop 검토 장면이다. 실측 축척과 훈련 충돌, XR Origin/HMD 입력은 미구현 또는 미검증이다.",
+        "캡처 수정: .NET 파일 저장 검증은 Unity 컨트롤러 컴파일·JsonUtility·실제 렌더링·다른 제공자 독립 검토를 대신하지 않는다. 해당 실행·독립 검토는 미완료다. Unity 실제 lifecycle에서의 coroutine 중단·화면 캡처는 추가 검증 대상이다."
       ]
     },
     {
@@ -1917,29 +1918,6 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "component.facility_coverage",
-        "component.reconstruction",
-        "component.reconstruction_review",
-        "component.reconstruction_tools",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "decision.world.connected",
-        "goal.foundation",
-        "policy.project_authority",
-        "unknown.vr_device"
-      ],
-      "reason": "최신 사용자 로컬 CV/학교 독립 작업 분리와 현재 소스·문서를 읽고 반영. 과거 evidence/폐기 결정의 hash와 수용 범위는 갱신하지 않음"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "새 로컬/학교 독립 작업과 현재 PR61 인계 문서를 읽고 시작 포인터만 갱신"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
         "workflow.start_validate"
       ],
       "reason": "PR 전달 커밋과 원격 YAML 실패/문자열 수정 이력을 읽고 ledger 포인터 갱신"
@@ -2089,6 +2067,20 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed merged handoff timing and both context regression sets; retained school profile gates, original MCP receipt bytes and all historical coverage."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.reconstruction_review"
+      ],
+      "reason": "캡처 파일 저장·실패 처리 소스와 회귀시험 정적 검토; Unity 실행 및 다른 제공자 승인 미완료"
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.reconstruction_review"
+      ],
+      "reason": "iterator 종료 시험 범위 명시; 실제 Unity lifecycle과 다른 제공자 독립 검토는 미실행"
     }
   ]
 }

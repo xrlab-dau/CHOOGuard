@@ -1,6 +1,10 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace ChooGuard.Foundation.Demo
@@ -18,6 +22,7 @@ namespace ChooGuard.Foundation.Demo
         private float yaw, pitch, speed=.5f;
         private string inputError;
         private bool capturing;
+        public bool IsCapturing=>capturing;
         public int ViewCount=>surfaces==null?0:surfaces.Length;
         public int SelectedView=>selectedView;
         public int ActiveViewCount
@@ -27,6 +32,7 @@ namespace ChooGuard.Foundation.Demo
 
         public void Configure(Transform[] models,string[] names,Bounds[] bounds,Camera camera,string hash,string shading="observed-unlit")
         {
+            if(capturing)throw new InvalidOperationException("Cannot change reconstruction bindings during capture.");
             if(models==null||names==null||bounds==null||models.Length==0||models.Length!=names.Length||models.Length!=bounds.Length||camera==null)
                 throw new ArgumentException("Reconstruction view bindings are incomplete.");
             surfaces=models;identifiers=names;sourceBounds=bounds;view=camera;sourceHash=hash;shadingMode=shading;
@@ -125,41 +131,160 @@ namespace ChooGuard.Foundation.Demo
                 "Photo-guided authored structural study | model-relative units | illustrative lighting | no training collision":
                 "Uncalibrated model-relative units | partial per-view surfaces | two-sided vertex colors | no training collision");
             GUI.Label(new Rect(24,68,width-24,24),(ViewCount>1?"1 / 2 or arrows: view   ":"Single assembly   ")+"R: first camera +Z   F: frame   RMB + WASD/QE: fly   MMB: orbit   wheel: dolly / speed");
-            GUI.enabled=ViewCount>1;
+            var enabledBeforeControls=GUI.enabled;
+            GUI.enabled=enabledBeforeControls&&!capturing&&ViewCount>1;
             if(GUI.Button(new Rect(24,94,95,24),"Previous"))CycleView(-1);
             if(GUI.Button(new Rect(127,94,95,24),"Next"))CycleView(1);
-            GUI.enabled=true;
+            GUI.enabled=enabledBeforeControls&&!capturing;
             if(GUI.Button(new Rect(230,94,120,24),"First camera"))ResetCamera();
             if(GUI.Button(new Rect(358,94,95,24),"Frame"))FrameSelected();
+            GUI.enabled=enabledBeforeControls;
             if(inputError!=null)GUI.Label(new Rect(20,136,Screen.width-40,50),inputError);
         }
 
         private IEnumerator CaptureViews(string path)
         {
-            // Explicit command-line output only; refuse a foreign directory or links.
-            var directory=Path.GetFullPath(path);const string owner="chooguard.reconstruction-captures.v1";
+            if(SystemInfo.graphicsDeviceType==UnityEngine.Rendering.GraphicsDeviceType.Null)
+                throw new InvalidOperationException("Reconstruction capture requires a graphics device.");
+            return CaptureViews(path,CapturePng);
+        }
+
+        private static byte[] CapturePng()
+        {
+            if(SystemInfo.graphicsDeviceType==UnityEngine.Rendering.GraphicsDeviceType.Null)
+                throw new InvalidOperationException("Reconstruction capture requires a graphics device.");
+            // Called only after WaitForEndOfFrame. Encoding and persistence finish before receipt publication.
+            var texture=ScreenCapture.CaptureScreenshotAsTexture();
+            if(texture==null)throw new InvalidOperationException("Reconstruction screenshot capture failed.");
+            try {return texture.EncodeToPNG();}
+            finally {Destroy(texture);}
+        }
+
+        private IEnumerator CaptureViews(string path,Func<byte[]> capturePng)
+        {
+            if(capturing||ViewCount==0||view==null)throw new InvalidOperationException("Reconstruction viewer is not ready to capture.");
+            var previousView=selectedView;var previousPosition=view.transform.position;var previousRotation=view.transform.rotation;
+            var previousYaw=yaw;var previousPitch=pitch;var previousSpeed=speed;
+            capturing=true;
+            try
+            {
+                var writer=new ReconstructionCaptureWriter(path,identifiers,sourceHash,shadingMode,SystemInfo.graphicsDeviceType.ToString());
+                for(var i=0;i<ViewCount;i++)for(var angle=0;angle<ReconstructionCaptureWriter.AngleCount;angle++)
+                {
+                    SelectView(i);ResetCamera();
+                    if(angle>0)FrameSelected();
+                    if(angle==2){view.transform.RotateAround(sourceBounds[i].center,Vector3.up,35);view.transform.RotateAround(sourceBounds[i].center,view.transform.right,15);SyncAngles();}
+                    yield return new WaitForSecondsRealtime(.6f);yield return new WaitForEndOfFrame();
+                    writer.WriteImage(i,angle,capturePng());
+                }
+                writer.Complete(receipt=>JsonUtility.ToJson(receipt,true));
+            }
+            finally
+            {
+                capturing=false;
+                if(view!=null)
+                {
+                    SelectView(previousView);view.transform.SetPositionAndRotation(previousPosition,previousRotation);
+                    yaw=previousYaw;pitch=previousPitch;speed=previousSpeed;
+                }
+                ReleaseCursor();
+            }
+        }
+    }
+
+    // Filesystem transaction for one capture run; deliberately independent of the screenshot API.
+    public sealed class ReconstructionCaptureWriter
+    {
+        public const int AngleCount=3;
+        private static readonly string[] Angles={"source-origin-plus-z","framed-front","framed-oblique"};
+        private static readonly byte[] PngSignature={137,80,78,71,13,10,26,10};
+        private readonly string directory;
+        private readonly CaptureReceipt receipt;
+        private bool failed,completed;
+
+        public ReconstructionCaptureWriter(string path,string[] views,string sourceHash,string shadingMode,string graphicsDevice)
+        {
+            if(views==null||views.Length==0||sourceHash==null||!Regex.IsMatch(sourceHash,"\\A[0-9a-f]{64}\\z"))
+                throw new ArgumentException("Capture requires view identities and the current FBX SHA256.");
+            var unique=new HashSet<string>(StringComparer.Ordinal);
+            foreach(var item in views)if(string.IsNullOrWhiteSpace(item)||!unique.Add(item))throw new ArgumentException("Capture view identities must be nonempty and unique.");
+            directory=Path.GetFullPath(path);RejectDirectoryLinks();
+            // A previous run, even one owned by this viewer, must never acquire a new receipt.
+            if(Directory.Exists(directory)||File.Exists(directory))throw new InvalidOperationException("Capture output must be a new directory.");
+            Directory.CreateDirectory(directory);
+            WriteNew("owner.txt",Encoding.UTF8.GetBytes("chooguard.reconstruction-captures.v2"));
+            receipt=new CaptureReceipt{views=(string[])views.Clone(),angles=(string[])Angles.Clone(),fbxSha256=sourceHash,
+                shadingMode=shadingMode,graphicsDevice=graphicsDevice,images=new ImageReceipt[checked(views.Length*AngleCount)],
+                scope=(shadingMode=="authored-lit"?"Native real-time photo-guided authored structural study":"Native real-time uncalibrated observation review")+"; no metric, collision, facility or VR acceptance"};
+        }
+
+        public void WriteImage(int viewIndex,int angleIndex,byte[] png)
+        {
+            RequireOpen();
+            try
+            {
+                if(viewIndex<0||viewIndex>=receipt.views.Length||angleIndex<0||angleIndex>=AngleCount)throw new ArgumentOutOfRangeException("Capture view or angle is invalid.");
+                var index=viewIndex*AngleCount+angleIndex;
+                if(receipt.images[index]!=null)throw new InvalidOperationException("Capture view and angle were already written.");
+                if(png==null||png.Length<=PngSignature.Length)throw new InvalidOperationException("Screenshot encoding returned no PNG.");
+                for(var i=0;i<PngSignature.Length;i++)if(png[i]!=PngSignature[i])throw new InvalidOperationException("Screenshot encoding did not return a PNG.");
+                var file=$"view-{viewIndex}-{angleIndex}.png";var digest=Hash(png);
+                WriteNew(file,png);
+                var item=new ImageReceipt{file=file,view=receipt.views[viewIndex],angle=Angles[angleIndex],bytes=png.LongLength,sha256=digest};
+                VerifyImage(item);receipt.images[index]=item;
+            }
+            catch {failed=true;throw;}
+        }
+
+        public void Complete(Func<CaptureReceipt,string> serialize)
+        {
+            RequireOpen();failed=true;
+            foreach(var item in receipt.images)
+            {
+                if(item==null)throw new InvalidOperationException("Capture is incomplete; no success receipt will be published.");
+                VerifyImage(item);
+            }
+            var json=serialize(receipt);
+            if(string.IsNullOrWhiteSpace(json))throw new InvalidOperationException("Capture receipt serialization failed.");
+            WriteNew("capture-complete.json.pending",Encoding.UTF8.GetBytes(json));
+            RejectDirectoryLinks();
+            // The complete filename appears only after every image and the full JSON have been written.
+            File.Move(Path.Combine(directory,"capture-complete.json.pending"),Path.Combine(directory,"capture-complete.json"));
+            completed=true;
+        }
+
+        private void RequireOpen()
+        {if(failed||completed)throw new InvalidOperationException("Capture has failed or completed; start a new output directory.");}
+
+        private void WriteNew(string file,byte[] data)
+        {
+            RejectDirectoryLinks();
+            using(var stream=new FileStream(Path.Combine(directory,file),FileMode.CreateNew,FileAccess.Write,FileShare.None))
+            {stream.Write(data,0,data.Length);stream.Flush(true);}
+        }
+
+        private void VerifyImage(ImageReceipt item)
+        {
+            RejectDirectoryLinks();var file=Path.Combine(directory,item.file);
+            if((File.GetAttributes(file)&FileAttributes.ReparsePoint)!=0)throw new InvalidOperationException("Capture image cannot be a link.");
+            using(var stream=new FileStream(file,FileMode.Open,FileAccess.Read,FileShare.Read))using(var sha=SHA256.Create())
+                if(stream.Length!=item.bytes||Hex(sha.ComputeHash(stream))!=item.sha256)throw new InvalidOperationException("Persisted capture does not match the captured PNG: "+item.file);
+        }
+
+        private void RejectDirectoryLinks()
+        {
             for(var current=new DirectoryInfo(directory);current!=null;current=current.Parent)
                 if(current.Exists&&(current.Attributes&FileAttributes.ReparsePoint)!=0)throw new InvalidOperationException("Capture output cannot use links.");
-            if(Directory.Exists(directory))foreach(var entry in new DirectoryInfo(directory).EnumerateFileSystemInfos())
-                if((entry.Attributes&FileAttributes.ReparsePoint)!=0)throw new InvalidOperationException("Capture output contains a linked destination.");
-            if(Directory.Exists(directory)&&(!File.Exists(Path.Combine(directory,"owner.txt"))||File.ReadAllText(Path.Combine(directory,"owner.txt"))!=owner))
-                throw new InvalidOperationException("Capture output is not owned by this viewer.");
-            Directory.CreateDirectory(directory);File.WriteAllText(Path.Combine(directory,"owner.txt"),owner);capturing=true;
-            for(var i=0;i<ViewCount;i++)for(var angle=0;angle<3;angle++)
-            {
-                SelectView(i);ResetCamera();
-                if(angle>0)FrameSelected();
-                if(angle==2){view.transform.RotateAround(sourceBounds[i].center,Vector3.up,35);view.transform.RotateAround(sourceBounds[i].center,view.transform.right,15);SyncAngles();}
-                yield return new WaitForSecondsRealtime(.6f);yield return new WaitForEndOfFrame();
-                var destination=Path.Combine(directory,$"view-{i}-{angle}.png");
-                if(File.Exists(destination)&&(File.GetAttributes(destination)&FileAttributes.ReparsePoint)!=0)throw new InvalidOperationException("Capture destination is a link.");
-                ScreenCapture.CaptureScreenshot(destination);yield return new WaitForSecondsRealtime(.3f);
-            }
-            File.WriteAllText(Path.Combine(directory,"capture-complete.json"),JsonUtility.ToJson(new CaptureReceipt
-                {views=identifiers,fbxSha256=sourceHash,shadingMode=shadingMode,angles=new[]{"source-origin-plus-z","framed-front","framed-oblique"},graphicsDevice=SystemInfo.graphicsDeviceType.ToString(),
-                 scope=(shadingMode=="authored-lit"?"Native real-time photo-guided authored structural study":"Native real-time uncalibrated observation review")+"; no metric, collision, facility or VR acceptance"},true));
-            capturing=false;SelectView(0);ResetCamera();
         }
-        [Serializable] private sealed class CaptureReceipt {public string[] views;public string[] angles;public string fbxSha256;public string shadingMode;public string graphicsDevice;public string scope;}
+        private static string Hash(byte[] bytes){using(var sha=SHA256.Create())return Hex(sha.ComputeHash(bytes));}
+        private static string Hex(byte[] digest)=>BitConverter.ToString(digest).Replace("-","").ToLowerInvariant();
+
+        [Serializable] public sealed class CaptureReceipt
+        {
+            public string schemaVersion="unity-reconstruction-capture-2";
+            public string[] views;public string[] angles;public string fbxSha256;public string shadingMode;public string graphicsDevice;public string scope;public ImageReceipt[] images;
+        }
+        [Serializable] public sealed class ImageReceipt
+        {public string file;public string view;public string angle;public long bytes;public string sha256;}
     }
 }

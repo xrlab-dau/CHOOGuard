@@ -1,6 +1,9 @@
 using System;
+using System.Collections;
 using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Security.Cryptography;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.SceneManagement;
@@ -12,6 +15,187 @@ namespace ChooGuard.Foundation.Demo.Tests
 {
     public sealed class ReconstructionReviewTests
     {
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CaptureNeverReusesAnExistingDirectoryOrRebindsItsOldReceipt(bool owned)
+        {
+            WithCaptureDirectory(directory=>
+            {
+                Directory.CreateDirectory(directory);
+                if(owned)File.WriteAllText(Path.Combine(directory,"owner.txt"),"chooguard.reconstruction-captures.v1");
+                var oldImage=CapturePngFixture();var imagePath=Path.Combine(directory,"view-0-0.png");
+                File.WriteAllBytes(imagePath,oldImage);
+                var oldReceipt="{\"fbxSha256\":\""+new string('b',64)+"\"}";
+                File.WriteAllText(Path.Combine(directory,"capture-complete.json"),oldReceipt);
+                Assert.Throws<InvalidOperationException>(()=>NewCaptureWriter(directory));
+                Assert.That(File.ReadAllBytes(imagePath),Is.EqualTo(oldImage));
+                Assert.That(File.ReadAllText(Path.Combine(directory,"capture-complete.json")),Is.EqualTo(oldReceipt));
+            });
+        }
+
+        [Test]
+        public void CaptureRequiresNonemptyViewsAndAnActualSourceDigestBeforeCreatingOutput()
+        {
+            WithCaptureDirectory(directory=>
+            {
+                Assert.Throws<ArgumentException>(()=>new ReconstructionCaptureWriter(directory,Array.Empty<string>(),new string('a',64),"observed-unlit","fixture"));
+                Assert.Throws<ArgumentException>(()=>new ReconstructionCaptureWriter(directory,new[]{"view"},"missing","observed-unlit","fixture"));
+                Assert.Throws<ArgumentException>(()=>new ReconstructionCaptureWriter(directory,new[]{"view"},new string('a',64)+"\n","observed-unlit","fixture"));
+                Assert.That(Directory.Exists(directory),Is.False);
+            });
+        }
+
+        [Test]
+        public void EmptyExistingDirectoryIsNotReused()
+        {
+            WithCaptureDirectory(directory=>
+            {
+                Directory.CreateDirectory(directory);
+                Assert.Throws<InvalidOperationException>(()=>NewCaptureWriter(directory));
+                Assert.That(Directory.GetFileSystemEntries(directory),Is.Empty);
+            });
+        }
+
+        [TestCase(null)]
+        [TestCase(0)]
+        [TestCase(8)]
+        public void FailedOrEmptyImageCannotProduceACompleteReceipt(int? length)
+        {
+            WithCaptureDirectory(directory=>
+            {
+                var writer=NewCaptureWriter(directory);
+                Assert.Throws<InvalidOperationException>(()=>writer.WriteImage(0,0,length.HasValue?new byte[length.Value]:null));
+                Assert.Throws<InvalidOperationException>(()=>CompleteCapture(writer));
+                Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+            });
+        }
+
+        [Test]
+        public void CompleteCaptureBindsEveryPersistedImageToItsViewAngleAndDigest()
+        {
+            WithCaptureDirectory(directory=>
+            {
+                var views=new[]{"view-b","view-a"};var expectedViews=(string[])views.Clone();
+                var writer=new ReconstructionCaptureWriter(directory,views,new string('a',64),"observed-unlit","fixture");
+                views[0]="changed-after-start";
+                var png=CapturePngFixture();
+                for(var i=0;i<2;i++)for(var angle=0;angle<3;angle++)writer.WriteImage(i,angle,png);
+                Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+                CompleteCapture(writer);
+                var receipt=JsonUtility.FromJson<CaptureReceiptFixture>(File.ReadAllText(Path.Combine(directory,"capture-complete.json")));
+                Assert.That(receipt.schemaVersion,Is.EqualTo("unity-reconstruction-capture-2"));
+                Assert.That(receipt.fbxSha256,Is.EqualTo(new string('a',64)));
+                Assert.That(receipt.views,Is.EqualTo(expectedViews));
+                Assert.That(receipt.images.Length,Is.EqualTo(6));
+                Assert.That(receipt.scope,Does.Contain("no metric, collision, facility or VR acceptance"));
+                for(var i=0;i<2;i++)for(var angle=0;angle<3;angle++)
+                {
+                    var item=receipt.images[i*3+angle];var file=Path.Combine(directory,item.file);
+                    Assert.That(item.file,Is.EqualTo($"view-{i}-{angle}.png"));
+                    Assert.That(item.view,Is.EqualTo(expectedViews[i]));
+                    Assert.That(item.angle,Is.EqualTo(receipt.angles[angle]));
+                    Assert.That(File.ReadAllBytes(file),Is.EqualTo(png));
+                    Assert.That(item.bytes,Is.EqualTo(png.Length));
+                    using(var hash=SHA256.Create())using(var stream=File.OpenRead(file))
+                        Assert.That(item.sha256,Is.EqualTo(BitConverter.ToString(hash.ComputeHash(stream)).Replace("-","").ToLowerInvariant()));
+                }
+                Assert.Throws<InvalidOperationException>(()=>CompleteCapture(writer));
+            });
+        }
+
+        [Test]
+        public void MissingCaptureAndMidrunWriteFailureNeverPublishSuccess()
+        {
+            WithCaptureDirectory(directory=>
+            {
+                var writer=NewCaptureWriter(directory);writer.WriteImage(0,0,CapturePngFixture());
+                Directory.CreateDirectory(Path.Combine(directory,"view-0-1.png"));
+                var error=Assert.Catch(()=>writer.WriteImage(0,1,CapturePngFixture()));
+                Assert.That(error is IOException||error is UnauthorizedAccessException,Is.True);
+                Assert.Throws<InvalidOperationException>(()=>CompleteCapture(writer));
+                Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+            });
+            WithCaptureDirectory(directory=>
+            {
+                var writer=NewCaptureWriter(directory);writer.WriteImage(0,0,CapturePngFixture());
+                Assert.Throws<InvalidOperationException>(()=>CompleteCapture(writer));
+                Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+            });
+        }
+
+        [Test]
+        public void ChangedImageIsRejectedBeforePublishingReceipt()
+        {
+            WithCaptureDirectory(directory=>
+            {
+                var writer=NewCaptureWriter(directory);
+                for(var angle=0;angle<3;angle++)writer.WriteImage(0,angle,CapturePngFixture());
+                File.WriteAllText(Path.Combine(directory,"view-0-0.png"),"changed bytes");
+                Assert.Throws<InvalidOperationException>(()=>CompleteCapture(writer));
+                Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+            });
+        }
+
+        [Test]
+        public void ReceiptEncodingFailureDoesNotPublishOrPermitRetryInTheSameRun()
+        {
+            WithCaptureDirectory(directory=>
+            {
+                var writer=NewCaptureWriter(directory);
+                for(var angle=0;angle<3;angle++)writer.WriteImage(0,angle,CapturePngFixture());
+                Assert.Throws<InvalidOperationException>(()=>writer.Complete(_=>throw new InvalidOperationException("receipt encoding failed")));
+                Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+                Assert.Throws<InvalidOperationException>(()=>CompleteCapture(writer));
+            });
+        }
+
+        [TestCase(false)]
+        [TestCase(true)]
+        public void CaptureFailureOrIteratorDisposalRestoresViewerAndLeavesNoReceipt(bool cancel)
+        {
+            WithCaptureDirectory(directory=>
+            {
+                var root=new GameObject("capture-fixture");
+                try
+                {
+                    var camera=new GameObject("camera").AddComponent<Camera>();camera.transform.SetParent(root.transform,false);
+                    var models=Enumerable.Range(0,2).Select(i=>{var model=new GameObject("view-"+i).transform;model.SetParent(root.transform,false);return model;}).ToArray();
+                    var controller=root.AddComponent<ReconstructionReviewController>();
+                    controller.Configure(models,models.Select(x=>x.name).ToArray(),models.Select(x=>new Bounds(Vector3.forward,Vector3.one)).ToArray(),camera,new string('a',64));
+                    controller.SelectView(1);camera.transform.SetPositionAndRotation(new Vector3(4,5,6),Quaternion.Euler(7,8,9));
+                    var position=camera.transform.position;var rotation=camera.transform.rotation;
+                    var method=typeof(ReconstructionReviewController).GetMethod("CaptureViews",BindingFlags.Instance|BindingFlags.NonPublic,null,new[]{typeof(string),typeof(Func<byte[]>)},null);
+                    Assert.That(method,Is.Not.Null);
+                    var routine=(IEnumerator)method.Invoke(controller,new object[]{directory,new Func<byte[]>(()=>null)});
+                    Assert.That(routine.MoveNext(),Is.True);Assert.That(controller.IsCapturing,Is.True);
+                    if(cancel)((IDisposable)routine).Dispose();
+                    else {Assert.That(routine.MoveNext(),Is.True);Assert.Throws<InvalidOperationException>(()=>routine.MoveNext());}
+                    Assert.That(controller.IsCapturing,Is.False);Assert.That(controller.SelectedView,Is.EqualTo(1));
+                    Assert.That(controller.ActiveViewCount,Is.EqualTo(1));
+                    Assert.That(camera.transform.position,Is.EqualTo(position));
+                    Assert.That(Quaternion.Angle(camera.transform.rotation,rotation),Is.LessThan(.001f));
+                    Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+                }
+                finally {UnityEngine.Object.DestroyImmediate(root);}
+            });
+        }
+
+        private static void CompleteCapture(ReconstructionCaptureWriter writer)=>writer.Complete(receipt=>JsonUtility.ToJson(receipt,true));
+        private static ReconstructionCaptureWriter NewCaptureWriter(string directory)=>new ReconstructionCaptureWriter(directory,new[]{"view"},new string('a',64),"observed-unlit","fixture");
+        private static byte[] CapturePngFixture()=>Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9WQAAAAASUVORK5CYII=");
+        private static void WithCaptureDirectory(Action<string> action)
+        {
+            // macOS temporary paths commonly traverse /var links, which capture output intentionally rejects.
+            var parent=Path.GetFullPath(Path.Combine("reconstruction/output","capture-test-"+Guid.NewGuid().ToString("N")));
+            Directory.CreateDirectory(parent);
+            try {action(Path.Combine(parent,"run"));}
+            finally {Directory.Delete(parent,true);}
+        }
+        [Serializable] private sealed class CaptureReceiptFixture
+        {public string schemaVersion;public string fbxSha256;public string[] views;public string[] angles;public string scope;public CaptureImageFixture[] images;}
+        [Serializable] private sealed class CaptureImageFixture
+        {public string file;public string view;public string angle;public long bytes;public string sha256;}
+
         [Test]
         public void BatchStartupMayReplaceOnlyOneCleanUntitledScene()
         {
