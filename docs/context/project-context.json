@@ -1509,6 +1509,47 @@
         "19:50 KST 마감 보고의 Console 오류 1건 이후 clean 재검증은 없다.",
         "기존 영수증과 sourceSha256은 그대로 보존한다. 그래프의 잘못된 영수증 포인터만 정정하며 과거 시험을 갱신하지 않는다."
       ]
+    },
+    {
+      "id": "component.policy_baseline",
+      "kind": "component",
+      "title": "R-07 단계별 정책 기준선 검사",
+      "summary": "승인 핀이 없으면 policy_approval_pending으로 도구 검사를 보류하며, 승인 manifest의 정확한 경로 집합과 해시를 비교한다. 순회 예산·링크 경계를 검사하고 Windows/Linux 회귀 CI에서 새 변경을 검증한다.",
+      "status": "implemented",
+      "authority": "tracked_source",
+      "topics": [
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "scripts/bootstrap/verify_toolchain.py",
+          "sha256": "e977a61cfbd995eabe488b10ed1da5d7ac74d3f2aac1d9c2f3a8b814f2d0d621",
+          "label": "R-07 구현 및 승인 범위"
+        },
+        {
+          "repoPath": "docs/evidence/R-07/README.md",
+          "sha256": "2aed96a12ec796b602f88bff972d1929f22d66f34fe6332bc9f2894c5f65f05f",
+          "label": "R-07 구현 및 승인 범위"
+        },
+        {
+          "repoPath": "docs/ci.md",
+          "sha256": "9288eddbc4740d0045e08516976dc1f19118bfe60158c92efaf77cabe885f574",
+          "label": "R-07 구현 및 승인 범위"
+        },
+        {
+          "repoPath": ".github/workflows/required-quality-gate.yml",
+          "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+          "label": "R-07 구현 및 승인 범위"
+        }
+      ],
+      "limits": [
+        "실제 승인 manifest와 다른 제공자의 spec/adversarial/safety 검토는 미완료다.",
+        "Linux 시험을 native Windows 또는 Unity 실행 통과로 취급하지 않는다.",
+        "105키 원본 저널의 검증 불가에 대한 사람 수용은 아직 없다."
+      ]
     }
   ],
   "edges": [
@@ -1911,6 +1952,11 @@
       "from": "decision.tooling.official_unity_mcp",
       "relation": "verified_by",
       "to": "evidence.official_editor_mcp_20260908"
+    },
+    {
+      "from": "workflow.start_validate",
+      "relation": "depends_on",
+      "to": "component.policy_baseline"
     }
   ],
   "refreshLog": [

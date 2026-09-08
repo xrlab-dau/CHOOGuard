@@ -15,6 +15,59 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  bootstrap:
+    name: Bootstrap boundaries (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+
+      - name: Test bootstrap and native platform boundaries
+        shell: bash
+        run: |
+          status=0
+          python -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v > bootstrap-tests.log 2>&1 || status=$?
+          cat bootstrap-tests.log
+          exit "$status"
+
+      - name: Test Windows performance evidence validator
+        if: always()
+        shell: bash
+        run: |
+          status=0
+          python -m unittest discover -s school/windows-validation -p 'test_*.py' -v > profile-tests.log 2>&1 || status=$?
+          cat profile-tests.log
+          exit "$status"
+
+      - name: Record tested commit
+        if: always()
+        shell: bash
+        run: |
+          git rev-parse HEAD > tested-commit.txt
+          python --version >> tested-commit.txt
+
+      - name: Upload boundary test evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: bootstrap-${{ matrix.os }}-${{ github.run_id }}
+          path: |
+            bootstrap-tests.log
+            profile-tests.log
+            tested-commit.txt
+          if-no-files-found: error
+          retention-days: 14
+
   policy:
     name: Policy, security and repository hygiene
     runs-on: ubuntu-24.04

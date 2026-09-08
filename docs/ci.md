@@ -8,6 +8,9 @@
 - pinned GitHub Action and Unity Git dependency checks
 - SceneBundle manifest contract checks
 - safe PR risk triage without checking out PR code under `pull_request_target`
+- bootstrap boundary regression tests on Ubuntu 24.04 and native Windows Server 2022, including the Windows PowerShell entry point on Windows
+
+The bootstrap jobs install Python 3.12 and use synthetic command shims for installation failure tests. They do not install Pi or approve a real policy baseline. Each run uploads test logs and the tested checkout commit. Linux skips Windows-only tests; a Linux success must not be reported as native Windows verification. These jobs do not establish school PC ACL, Unity, HMD, or runtime performance acceptance. See [R-07 evidence](evidence/R-07/README.md) for the staged policy gate and its separate approval requirements.
 
 `python3 scripts/dev/check_foundation.py` runs the synthetic Foundation contract and negative-fixture tests without Unity or extra Python packages. The required quality workflow stores `foundation-data-report.json`. A passing report covers Python data checks only; its C# compilation, Unity and HMD fields remain `not_run`.
 

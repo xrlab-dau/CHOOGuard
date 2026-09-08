@@ -1,0 +1,47 @@
+test_exact_externally_pinned_baseline_matches (test_policy_baseline.PolicyBaselineTests.test_exact_externally_pinned_baseline_matches) ... ERROR
+test_pending_baseline_does_not_invoke_agent_or_package_tools (test_policy_baseline.PolicyBaselineTests.test_pending_baseline_does_not_invoke_agent_or_package_tools) ... FAIL
+test_empty_directory_budget_fails_closed (test_policy_baseline.WorkspaceBudgetTests.test_empty_directory_budget_fails_closed) ... ERROR
+test_receipt_root_symlink_cannot_write_outside_repo (test_policy_baseline.WorkspaceBudgetTests.test_receipt_root_symlink_cannot_write_outside_repo) ... FAIL
+
+======================================================================
+ERROR: test_exact_externally_pinned_baseline_matches (test_policy_baseline.PolicyBaselineTests.test_exact_externally_pinned_baseline_matches)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/bootstrap/test_policy_baseline.py", line 54, in test_exact_externally_pinned_baseline_matches
+    check = self.compare()
+            ^^^^^^^^^^^^^^
+  File "<repo>/scripts/bootstrap/test_policy_baseline.py", line 44, in compare
+    return verifier.policy_baseline_check(self.root, self.manifest, digest or self.write_manifest())
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'original_verifier' has no attribute 'policy_baseline_check'
+
+======================================================================
+ERROR: test_empty_directory_budget_fails_closed (test_policy_baseline.WorkspaceBudgetTests.test_empty_directory_budget_fails_closed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/bootstrap/test_policy_baseline.py", line 176, in test_empty_directory_budget_fails_closed
+    result = verifier.scan_workspace(self.root)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'original_verifier' has no attribute 'scan_workspace'
+
+======================================================================
+FAIL: test_pending_baseline_does_not_invoke_agent_or_package_tools (test_policy_baseline.PolicyBaselineTests.test_pending_baseline_does_not_invoke_agent_or_package_tools)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/bootstrap/test_policy_baseline.py", line 92, in test_pending_baseline_does_not_invoke_agent_or_package_tools
+    self.assertEqual(self.case.invoke(), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_receipt_root_symlink_cannot_write_outside_repo (test_policy_baseline.WorkspaceBudgetTests.test_receipt_root_symlink_cannot_write_outside_repo)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/bootstrap/test_policy_baseline.py", line 227, in test_receipt_root_symlink_cannot_write_outside_repo
+    with self.assertRaises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.019s
+
+FAILED (failures=2, errors=2)

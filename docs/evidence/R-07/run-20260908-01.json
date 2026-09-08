@@ -1,0 +1,83 @@
+{
+  "unit": "R-07",
+  "recordType": "agent_execution_observation_not_approval",
+  "observedAt": "2026-09-08",
+  "baseCommit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+  "sourceSha256": {
+    "scripts/bootstrap/verify_toolchain.py": "e977a61cfbd995eabe488b10ed1da5d7ac74d3f2aac1d9c2f3a8b814f2d0d621",
+    "scripts/bootstrap/test_verify_toolchain.py": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504",
+    "scripts/bootstrap/test_policy_baseline.py": "e3e665ab937c4b8ca6de8992fa074098905c64e9e2094964490f780b00ad519a",
+    "school/windows-validation/audit_policy_scope.py": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97",
+    ".github/workflows/required-quality-gate.yml": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+    "scripts/foundation/validate.py": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+    "scripts/foundation/tests/test_validate.py": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+    "schemas/foundation-scenario.schema.json": "fcb33eeea9eef91e2cb373cb605b71b0e5b65abbd5bfe7102239560c44d8193e"
+  },
+  "redBaseline": {
+    "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+    "path": "scripts/bootstrap/verify_toolchain.py",
+    "sha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+    "method": "Four named new regressions loaded against the original verifier; test harness files are bound in sourceSha256. RED replay after implementation is explicitly a replay, not a reconstructed earlier timestamp.",
+    "testNames": [
+      "PolicyBaselineTests.test_exact_externally_pinned_baseline_matches",
+      "PolicyBaselineTests.test_pending_baseline_does_not_invoke_agent_or_package_tools",
+      "WorkspaceBudgetTests.test_empty_directory_budget_fails_closed",
+      "WorkspaceBudgetTests.test_receipt_root_symlink_cannot_write_outside_repo"
+    ]
+  },
+  "green": {
+    "command": "python3 -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v",
+    "tests": 66,
+    "passed": 57,
+    "skipped": 9,
+    "failed": 0,
+    "platform": "Linux",
+    "skipScope": "8 native Windows tests and 1 root POSIX permission test"
+  },
+  "logs": [
+    {
+      "phase": "RED",
+      "path": "docs/evidence/R-07/red-20260908-01.log",
+      "exitCode": 1,
+      "sha256": "969479c656fc2062f62fe655debfa3aa6f7e0d463563c81c70578e5c24840827",
+      "unredactedLogSha256": "29575a0dad910a3167df8fa2177b15c03fcd165377551a6c4befba4a8be08c36",
+      "redaction": "workspace roots replaced; no other output changed"
+    },
+    {
+      "phase": "GREEN",
+      "path": "docs/evidence/R-07/green-20260908-01.log",
+      "exitCode": 0,
+      "sha256": "4d0446c4bcf97df1027d7f67e2dfd374a523c9c7ccbae1694c356976b5079c0e",
+      "unredactedLogSha256": "4d0446c4bcf97df1027d7f67e2dfd374a523c9c7ccbae1694c356976b5079c0e",
+      "redaction": "workspace roots replaced; no other output changed"
+    }
+  ],
+  "policyScopeAudit": {
+    "path": "docs/evidence/R-07/policy-scope-20260908-01.json",
+    "sha256": "394b2d7cb54dcd5a5b1e5ac8c6dc5139035bb670451b704aea69474269e904cd",
+    "baseline": "synthetic approved fixture only"
+  },
+  "candidate": {
+    "path": "docs/evidence/R-07/policy-candidate-20260908-01.json",
+    "sha256": "6948942c7917333a2ec0873554227d7d4f57473e4dd41f94779e521239030d3a",
+    "approved": false
+  },
+  "previousReceiptSha256": null,
+  "old105KeyJournal": "not_available_not_accepted_as_unverifiable_by_human",
+  "independentReview": {
+    "requiredLenses": [
+      "spec",
+      "adversarial",
+      "safety"
+    ],
+    "otherProviderReviews": 0,
+    "roundsUsed": 0,
+    "result": "cannot_proceed"
+  },
+  "issueDone": false,
+  "limits": [
+    "No authenticated signer or external timestamp is created by these hashes.",
+    "Native Windows results must come from their own CI run; no Linux-to-Windows PASS inference.",
+    "Historical R-01 and school-PC receipts remain unchanged."
+  ]
+}

@@ -25,7 +25,18 @@ def audit() -> dict:
                 target = case.root / pattern.replace("*", "scope-fixture")
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_text("{}" if target.suffix == ".json" else "# synthetic fixture\n", encoding="utf-8")
-        baseline = case.invoke()
+        # A synthetic approval/pin exercises comparison; it is never a real
+        # project policy approval. Keep the same pin through every omission.
+        files = {path.relative_to(case.root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                 for pattern in module.verifier.POLICY_GLOBS
+                 for path in case.root.glob(pattern) if path.is_file()}
+        manifest = case.root.parent / "synthetic-baseline.json"
+        manifest.write_text(json.dumps({"schemaVersion": 1, "status": "approved",
+                            "approvalReference": "SYNTHETIC-AUDIT-ONLY", "sourceCommit": "0" * 40,
+                            "policySha256": files}, sort_keys=True), encoding="utf-8")
+        arguments = ("--policy-manifest", str(manifest), "--policy-manifest-sha256",
+                     hashlib.sha256(manifest.read_bytes()).hexdigest())
+        baseline = case.invoke(*arguments)
         if baseline != 0:
             raise RuntimeError("Complete synthetic policy fixture was rejected")
         rows = []
@@ -38,13 +49,13 @@ def audit() -> dict:
                     raise RuntimeError("Fixture path escaped temporary root")
                 path.unlink()
             try:
-                code = case.invoke()
+                code = case.invoke(*arguments)
                 rows.append({"glob": pattern, "requiredByCurrentCode": pattern in module.verifier.REQUIRED_POLICY_GLOBS,
                              "exitCodeWhenAbsent": code})
             finally:
                 for path, content in members.items():
                     path.write_bytes(content)
-        return {"scope": "Synthetic omission audit; tool availability is mocked. Policy approval and expected manifest remain issue52.",
+        return {"scope": "Synthetic omission audit with a fixed synthetic manifest and mocked tools. No human/runtime approval.",
                 "sourceSha256": hashlib.sha256((root / "scripts/bootstrap/verify_toolchain.py").read_bytes()).hexdigest(),
                 "baselineExitCode": baseline, "rows": rows}
     finally:

@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import contextlib
+import hashlib
 import importlib.util
 import io
 import json
@@ -41,6 +42,26 @@ class ToolchainBoundaryTests(unittest.TestCase):
         self.write_required_policy_files()
         self.tracked = []
         self.uv = "uv 0.11.14"
+        self.use_synthetic_baseline = True
+        for pattern in verifier.POLICY_GLOBS:
+            if not list(self.root.glob(pattern)):
+                target = self.root / pattern.replace("*", "fixture")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text("{}\n" if target.suffix == ".json" else "# fixture\n")
+        files = {path.relative_to(self.root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                 for pattern in verifier.POLICY_GLOBS for path in self.root.glob(pattern) if path.is_file()}
+        self.baseline = self.root.parent / "synthetic-baseline.json"
+        self.baseline.write_text(json.dumps({"schemaVersion": 1, "status": "approved",
+            "approvalReference": "SYNTHETIC-TEST-ONLY", "sourceCommit": "0" * 40, "policySha256": files}))
+        self.baseline_digest = hashlib.sha256(self.baseline.read_bytes()).hexdigest()
+
+    def baseline_arguments(self, args):
+        if self.use_synthetic_baseline and "--policy-manifest" not in args and "--write-policy-candidate" not in args:
+            return (*args, "--policy-manifest", str(self.baseline), "--policy-manifest-sha256", self.baseline_digest)
+        return args
+
+    def test_complete_synthetic_baseline_allows_healthy_tools(self):
+        self.assertEqual(self.invoke(), 0)
 
     def test_real_git_unicode_paths_ignore_system_text_encoding(self):
         subprocess.run(["git", "init", "-q", str(self.root)], check=True)
@@ -79,6 +100,7 @@ class ToolchainBoundaryTests(unittest.TestCase):
         }.get(cmd)
 
     def invoke(self, *args):
+        args = self.baseline_arguments(args)
         with patch.object(verifier, "ROOT", self.root), patch.object(verifier, "run", self.fake_run):
             with patch.object(sys, "argv", ["verify_toolchain.py", "--label", "local", *args]):
                 with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
@@ -107,7 +129,8 @@ class ToolchainBoundaryTests(unittest.TestCase):
 
     def test_env_example_is_not_a_secret_file(self):
         self.tracked = ["tools/research/.env.example"]
-        self.assertEqual(self.invoke("--strict"), 0)
+        # The file-name exception is independent of the new policy approval gate.
+        self.assertIn("[ok] forbidden_tracked_files", self.failed_checks("--strict"))
 
     def test_capture_extensions_are_rejected(self):
         for suffix in ["mp4", "mov", "mxf", "arw", "cr2", "nef", "dng", "raw", "PLY"]:
@@ -162,6 +185,7 @@ class ToolchainBoundaryTests(unittest.TestCase):
     def failed_checks(self, *args):
         """검사 이름별 ok 를 돌려준다. 종료 코드만 보면 다른 검사 실패로 오통과한다."""
         captured = io.StringIO()
+        args = self.baseline_arguments(args)
         with patch.object(verifier, "ROOT", self.root), patch.object(verifier, "run", self.fake_run):
             with patch.object(sys, "argv", ["verify_toolchain.py", "--label", "local", *args]):
                 with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(io.StringIO()):

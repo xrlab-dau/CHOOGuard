@@ -26,11 +26,14 @@ import hashlib
 import json
 import os
 import platform
+import re
 import shutil
+import stat
 import subprocess
 import sys
 from datetime import date
 from pathlib import Path, PurePosixPath
+from time import monotonic
 
 ROOT = Path(__file__).resolve().parents[2]
 PI_VERSION = "0.85.0"
@@ -49,6 +52,7 @@ POLICY_GLOBS = [
     "AGENTS.md",
     ".github/CODEOWNERS",
     ".github/workflows/*.yml",
+    ".github/workflows/*.yaml",
     ".pi/settings.json",
     ".pi/workflows.json",
     ".pi/agents/*.md",
@@ -60,9 +64,13 @@ POLICY_GLOBS = [
     "scripts/bootstrap/*",
     "tools/research/pyproject.toml",
     "tools/research/uv.lock",
+    "tools/research/research.py",
+    "Packages/manifest.json",
+    "Packages/packages-lock.json",
+    "reconstruction/pyproject.toml",
 ]
-# POLICY_GLOBS 중 하나라도 파일이 없으면 정책 해시 범위가 무의미하다.
-# .pi/ 와 .specify/ 는 PM 승인 전까지 미추적이므로 필수에서 제외한다.
+# Observed inventory is not an approved baseline. The now-tracked .pi/.specify
+# policy families are included; only the alternative YAML extension is optional.
 # 금지 파일 검사는 ignored 트리도 걷는다. prune 이 우회 경로가 되면 안 된다.
 # .git 만 제외한다(내부 객체는 작업 입력이 아니다).
 WORKSPACE_PRUNED_DIRS = {".git"}
@@ -76,23 +84,20 @@ DEPENDENCY_ROOTS = ("tools/research/.venv/", ".pi/npm/node_modules/")
 # 확장자 전체를 면제하면 모델 가중치·재구성 자산을 venv 안에 숨길 수 있다.
 # 새 오탐이 생기면 파일 단위로 추가하고 근거를 남긴다.
 ALLOWED_IN_DEPENDENCIES = (
-    "cacert.pem",      # certifi CA 번들. 자격이 아니다.
-    "*.pth",           # site-packages 의 Python 경로 파일. 모델 가중치가 아니다.
+    "certifi/cacert.pem",  # Exact package member; arbitrary cacert.pem is not exempt.
+    "_virtualenv.pth",     # Exact virtualenv bootstrap file, not arbitrary model .pth.
 )
 WORKSPACE_SCAN_MAX_FILES = 200_000
-REQUIRED_POLICY_GLOBS = [
-    "AGENTS.md",
-    ".github/CODEOWNERS",
-    ".github/workflows/*.yml",
-    "scripts/ci/*.py",
-]
+WORKSPACE_SCAN_MAX_DIRS = 20_000
+WORKSPACE_SCAN_MAX_SECONDS = 15
+MAX_POLICY_MANIFEST_BYTES = 2_000_000
+REQUIRED_POLICY_GLOBS = [p for p in POLICY_GLOBS if p != ".github/workflows/*.yaml"]
 ENV_NAMES = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "EXA_API_KEY", "RESEARCH_MODEL"]
 DISALLOWED_SETTINGS_KEYS = {"mcp", "mcpServers", "execute_code", "remotePackages"}
-PRUNED_DIRS = {".git", ".venv", "node_modules", "__pycache__"}
 REQUIRED_CHECKS = [
     "node", "pi", "uv", "pi_packages", "research_venv",
     "forbidden_tracked_files", "forbidden_workspace_files",
-    "symlinks_outside_repo", "settings_disallowed_keys", "policy_hash_scope",
+    "symlinks_outside_repo", "settings_disallowed_keys", "policy_hash_scope", "policy_baseline",
 ]
 
 
@@ -145,75 +150,206 @@ def is_forbidden_workspace(path: str) -> bool:
     """
     if not is_forbidden_tracked(path):
         return False
-    if not any(path.startswith(root) for root in DEPENDENCY_ROOTS):
+    if not path.startswith(DEPENDENCY_ROOTS[0]):
         return True
-    name = PurePosixPath(path).name.lower()
-    return not any(fnmatch.fnmatchcase(name, pat) for pat in ALLOWED_IN_DEPENDENCIES)
+    relative = path.removeprefix(DEPENDENCY_ROOTS[0])
+    parts = PurePosixPath(relative).parts
+    # Windows Lib/site-packages and POSIX lib[/pythonX.Y]/site-packages only.
+    if len(parts) >= 3 and parts[0] in {"lib", "Lib"}:
+        offset = 2 if parts[1] == "site-packages" else 3
+        if offset == 3 and (len(parts) < 4 or not re.fullmatch(r"python3\.\d+", parts[1]) or parts[2] != "site-packages"):
+            return True
+        return "/".join(parts[offset:]) not in ALLOWED_IN_DEPENDENCIES
+    return True
 
 
-def forbidden_workspace_files(root: Path) -> list[str]:
-    """추적 여부와 무관하게 작업본 전체에서 금지 파일을 찾는다.
+def scan_workspace(root: Path) -> dict:
+    """Bounded filename/link scan. Never follow junctions or detected mounts.
 
-    git ls-files 는 미추적·ignored 입력을 보지 못한다. 촬영 원본이나 자격 파일이
-    커밋되지 않은 채 작업본에 있으면 모델 전송·도구 실행 경계 밖으로 샐 수 있다.
-
-    반환: (금지 파일 목록, 예산 초과 여부, 순회 오류 목록).
-    예산 초과와 순회 오류는 모두 fail-closed 다.
+    The elapsed budget is checked between filesystem calls. It cannot interrupt
+    a blocked OS call or prove the absence of every platform's mount type.
     """
-    found: list[str] = []
-    seen = 0
-    truncated = False
-    errors: list[str] = []
+    root = root.resolve()
+    started = monotonic()
+    result = {"forbidden": [], "outside_links": [], "errors": [], "truncated": False,
+              "limit": None, "files": 0, "directories": 0, "mounts": 0, "reparse_points": 0}
 
     def on_error(error: OSError) -> None:
-        # os.walk 는 기본적으로 오류를 삼킨다. 접근 거부된 트리 안에 금지 파일이
-        # 있어도 보지 못하므로 통과로 처리하지 않는다.
         name = getattr(error, "filename", None)
-        errors.append(str(name) if name else error.__class__.__name__)
+        result["errors"].append(str(name) if name else error.__class__.__name__)
+
+    def over_budget() -> bool:
+        limit = None
+        if monotonic() - started > WORKSPACE_SCAN_MAX_SECONDS:
+            limit = "elapsed_time"
+        elif result["directories"] > WORKSPACE_SCAN_MAX_DIRS:
+            limit = "directories"
+        elif result["files"] > WORKSPACE_SCAN_MAX_FILES:
+            limit = "files"
+        if limit:
+            result.update(truncated=True, limit=limit)
+        return bool(limit)
 
     for dirpath, dirnames, filenames in os.walk(root, followlinks=False, onerror=on_error):
         here = Path(dirpath)
-        for name in filenames:
-            seen += 1
-            if seen > WORKSPACE_SCAN_MAX_FILES:
-                truncated = True
-                break
-            rel = (here / name).relative_to(root).as_posix()
-            if is_forbidden_workspace(rel):
-                found.append(rel)
-        if truncated:
+        result["directories"] += 1
+        if over_budget():
             break
-        dirnames[:] = [d for d in dirnames if d not in WORKSPACE_PRUNED_DIRS]
-    return sorted(found), truncated, errors
+        if here == root:
+            dirnames[:] = [d for d in dirnames if d not in WORKSPACE_PRUNED_DIRS]
+        file_names = set(filenames)
+        for name in [*dirnames, *filenames]:
+            entry = here / name
+            rel = entry.relative_to(root).as_posix()
+            if name in file_names:
+                result["files"] += 1
+            if over_budget():
+                break
+            if is_forbidden_workspace(rel):
+                result["forbidden"].append(rel)
+            try:
+                info = entry.lstat()
+                if stat.S_ISLNK(info.st_mode):
+                    target = entry.resolve(strict=True)
+                    if target != root and root not in target.parents:
+                        result["outside_links"].append(rel)
+                    if name in dirnames:
+                        dirnames.remove(name)
+                elif getattr(info, "st_file_attributes", 0) & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400):
+                    result["reparse_points"] += 1
+                    result["errors"].append("unverified_reparse_point")
+                    if name in dirnames:
+                        dirnames.remove(name)
+                elif os.path.ismount(entry):
+                    result["mounts"] += 1
+                    result["errors"].append("unverified_mount")
+                    if name in dirnames:
+                        dirnames.remove(name)
+            except (OSError, RuntimeError) as error:
+                result["errors"].append(type(error).__name__)
+                if name in dirnames:
+                    dirnames.remove(name)
+        if result["truncated"]:
+            break
+    result["forbidden"].sort()
+    result["outside_links"].sort()
+    return result
+
+
+def forbidden_workspace_files(root: Path) -> tuple[list[str], bool, list[str]]:
+    """Compatibility wrapper; incomplete scans are never a clean result."""
+    result = scan_workspace(root)
+    return result["forbidden"], result["truncated"], result["errors"]
+
+
+def policy_inventory(root: Path) -> tuple[dict[str, str], list[str], int]:
+    """Inventory observed bytes without following policy links/reparse points."""
+    root = root.resolve()
+    hashes, missing, errors = {}, [], 0
+    for pattern in POLICY_GLOBS:
+        valid = 0
+        try:
+            for path in sorted(root.glob(pattern)):
+                try:
+                    for part in [path, *path.parents]:
+                        if part == root:
+                            break
+                        info = part.lstat()
+                        if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+                            raise ValueError("linked policy path")
+                    info = path.stat()
+                    if not stat.S_ISREG(info.st_mode):
+                        continue
+                    if info.st_size == 0:
+                        errors += 1
+                        continue
+                    hashes[path.relative_to(root).as_posix()] = sha256(path)
+                    valid += 1
+                except (OSError, ValueError, RuntimeError):
+                    errors += 1
+        except OSError:
+            errors += 1
+        if not valid and pattern in REQUIRED_POLICY_GLOBS:
+            missing.append(pattern)
+    return dict(sorted(hashes.items())), missing, errors
 
 
 def missing_required_policy(root: Path) -> list[str]:
-    """필수 정책 glob 중 비어 있지 않은 파일이 하나도 없는 패턴.
-
-    빈 파일 하나로 범위 검사를 통과시킬 수 없다.
-    """
-    missing = []
-    for pattern in REQUIRED_POLICY_GLOBS:
-        if not any(f.is_file() and f.stat().st_size > 0 for f in root.glob(pattern)):
-            missing.append(pattern)
-    return missing
+    return policy_inventory(root)[1]
 
 
 def escaped_symlinks(root: Path) -> list[str]:
-    """저장소 밖을 가리키는 링크. 제외 디렉터리 내부는 걷지 않지만 그 항목 자체는 검사한다."""
-    root = root.resolve()
-    found: list[str] = []
-    for dirpath, dirnames, filenames in os.walk(root, followlinks=False):
-        here = Path(dirpath)
-        for name in [*dirnames, *filenames]:
-            entry = here / name
-            if entry.is_symlink():
-                target = entry.resolve()
-                if target != root and root not in target.parents:
-                    found.append(entry.relative_to(root).as_posix())
-        rel = here.relative_to(root).as_posix()
-        dirnames[:] = [d for d in dirnames if d not in PRUNED_DIRS and not (rel == ".pi" and d == "npm")]
-    return sorted(found)
+    """Compatibility wrapper; main also checks scan completeness."""
+    return scan_workspace(root)["outside_links"]
+
+
+def policy_baseline_check(root: Path, manifest: Path | None, expected_digest: str | None,
+                          inventory=None) -> dict:
+    """Compare with a caller-pinned, separately reviewed manifest.
+
+    This comparison does not authenticate human signatures. A trusted caller
+    must supply the approved digest independently of the current workspace.
+    """
+    hashes, missing, errors = inventory if inventory is not None else policy_inventory(root)
+    check = {"ok": False, "status": "policy_approval_pending", "missing_globs": missing,
+             "inventory_errors": errors, "missing_paths": [], "unexpected_paths": [], "changed_paths": [],
+             "approval_authenticity": "not_verified_by_this_tool"}
+    if manifest is None or expected_digest is None:
+        return check
+    if not re.fullmatch(r"[0-9a-f]{64}", expected_digest):
+        check["status"] = "invalid_manifest_digest"
+        return check
+
+    def unique(pairs):
+        values = {}
+        for key, value in pairs:
+            if key in values:
+                raise ValueError("duplicate key")
+            values[key] = value
+        return values
+
+    try:
+        manifest = Path(manifest)
+        if manifest.is_symlink():
+            raise ValueError("linked manifest")
+        with manifest.open("rb") as stream:
+            raw = stream.read(MAX_POLICY_MANIFEST_BYTES + 1)
+        if len(raw) > MAX_POLICY_MANIFEST_BYTES:
+            raise ValueError("oversized manifest")
+        digest = hashlib.sha256(raw).hexdigest()
+        check["manifest_sha256"] = digest
+        if digest != expected_digest:
+            check["status"] = "manifest_digest_mismatch"
+            return check
+        data = json.loads(raw.decode("utf-8"), object_pairs_hook=unique)
+        if not isinstance(data, dict) or set(data) != {"schemaVersion", "status", "approvalReference", "sourceCommit", "policySha256"}:
+            raise ValueError("invalid manifest fields")
+        if type(data["schemaVersion"]) is not int or data["schemaVersion"] != 1:
+            raise ValueError("invalid schema version")
+        if not isinstance(data["sourceCommit"], str) or not re.fullmatch(r"[0-9a-f]{40}", data["sourceCommit"]):
+            raise ValueError("invalid source commit")
+        expected = data["policySha256"]
+        if not isinstance(expected, dict) or not expected:
+            raise ValueError("empty policy set")
+        for name, value in expected.items():
+            if not isinstance(name, str) or PurePosixPath(name).is_absolute() or any(p in {"", ".", ".."} for p in name.split("/")) or "\\" in name or ":" in name:
+                raise ValueError("invalid policy path")
+            if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+                raise ValueError("invalid policy hash")
+        if data["status"] == "candidate" and data["approvalReference"] is None:
+            return check
+        reference = data["approvalReference"]
+        if data["status"] != "approved" or not isinstance(reference, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,80}", reference):
+            raise ValueError("missing approval reference")
+        check.update(missing_paths=sorted(set(expected) - set(hashes)),
+                     unexpected_paths=sorted(set(hashes) - set(expected)),
+                     changed_paths=sorted(p for p in set(hashes) & set(expected) if hashes[p] != expected[p]),
+                     baseline_source_commit=data["sourceCommit"], approval_reference=reference)
+        check["ok"] = not (missing or errors or check["missing_paths"] or check["unexpected_paths"] or check["changed_paths"])
+        check["status"] = "baseline_match_not_runtime_approval" if check["ok"] else "policy_baseline_mismatch"
+    except (OSError, ValueError, UnicodeError, RecursionError):
+        check["status"] = "invalid_or_unreadable_manifest"
+    return check
 
 
 def nested_disallowed_keys(value, prefix: str = "") -> list[str]:
@@ -262,7 +398,7 @@ def receipt_target(root: Path, requested: str) -> Path:
         raise ValueError(f"영수증 경로는 저장소 상대 경로여야 한다: {requested}")
     out = (root / rel).resolve()
     evidence = (root / RECEIPT_ROOT).resolve()
-    if evidence not in out.parents:
+    if root not in out.parents or evidence not in out.parents:
         raise ValueError(f"영수증은 {RECEIPT_ROOT}/ 아래에만 쓴다: {requested}")
     if out.suffix != ".json":
         raise ValueError(f"영수증은 .json 파일이어야 한다: {requested}")
@@ -276,8 +412,38 @@ def main() -> int:
     ap.add_argument("--label", required=True, choices=MACHINE_LABELS, help="호스트명 대신 쓰는 공개 라벨")
     ap.add_argument("--write", help=f"새 영수증 JSON 경로 ({RECEIPT_ROOT}/ 아래, 기존 파일 불가)")
     ap.add_argument("--strict", action="store_true", help="호환용. 필수 항목 실패 시 종료 코드 1 은 기본 동작이다")
+    ap.add_argument("--policy-manifest", type=Path, help="별도 검토한 정확 정책 경로/해시 manifest")
+    ap.add_argument("--policy-manifest-sha256", help="신뢰된 호출자가 별도로 제공하는 승인 manifest SHA-256")
+    ap.add_argument("--write-policy-candidate", help="도구 실행 없이 미승인 정책 후보를 새 evidence JSON에 작성")
     args = ap.parse_args()
     root = ROOT.resolve()
+    if bool(args.policy_manifest) != bool(args.policy_manifest_sha256):
+        ap.error("--policy-manifest와 --policy-manifest-sha256을 함께 지정한다")
+    if args.write_policy_candidate and (args.write or args.policy_manifest):
+        ap.error("정책 후보 생성과 검증 영수증 생성을 분리한다")
+
+    inventory = policy_inventory(root)
+    hashes, policy_missing, policy_errors = inventory
+    if args.write_policy_candidate:
+        if policy_missing or policy_errors:
+            print("error: 정책 파일 누락/읽기 실패로 후보를 만들 수 없다", file=sys.stderr)
+            return 1
+        head = run("git", "rev-parse", "HEAD")
+        if not head or not re.fullmatch(r"[0-9a-f]{40}", head):
+            print("error: 기준 커밋을 확인할 수 없다", file=sys.stderr)
+            return 1
+        candidate = {"schemaVersion": 1, "status": "candidate", "approvalReference": None,
+                     "sourceCommit": head, "policySha256": hashes}
+        try:
+            target = receipt_target(root, args.write_policy_candidate)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            with target.open("x", encoding="utf-8") as stream:
+                stream.write(json.dumps(candidate, ensure_ascii=False, indent=2) + "\n")
+        except (OSError, ValueError):
+            print("error: 새 정책 후보를 저장할 수 없다", file=sys.stderr)
+            return 2
+        print("policy_approval_pending: candidate written; no tool/runtime approval")
+        return 0
 
     out: Path | None = None
     if args.write:
@@ -294,8 +460,17 @@ def main() -> int:
         forbidden = sorted(f for f in tracked if is_forbidden_tracked(f))
         forbidden_check = {"items": forbidden, "ok": not forbidden}
 
+    scan = scan_workspace(root)
+    outside_links = scan["outside_links"]
+    workspace_forbidden, workspace_truncated, workspace_errors = scan["forbidden"], scan["truncated"], scan["errors"]
+    incomplete = workspace_truncated or bool(workspace_errors)
+    baseline = policy_baseline_check(root, args.policy_manifest, args.policy_manifest_sha256, inventory)
+    can_probe = baseline["ok"] and not incomplete and not outside_links and not workspace_forbidden
+
     settings: dict | None
     try:
+        if policy_missing or policy_errors:
+            raise ValueError("unverified policy paths")
         settings = json.loads((root / ".pi/settings.json").read_text(encoding="utf-8"))
         if not isinstance(settings, dict):
             settings = None
@@ -307,25 +482,17 @@ def main() -> int:
     else:
         disallowed = sorted(nested_disallowed_keys(settings))
         disallowed_check = {"items": disallowed, "ok": not disallowed}
-        pkgs, pkgs_ok = check_packages(root, settings)
+        pkgs, pkgs_ok = check_packages(root, settings) if can_probe and not disallowed else ([], False)
 
-    node_v = run("node", "--version")
+    can_probe = can_probe and disallowed_check["ok"]
+    node_v = run("node", "--version") if can_probe else None
     try:
         node_ok = bool(node_v) and int(node_v.lstrip("v").split(".")[0]) >= NODE_MIN_MAJOR
     except ValueError:
         node_ok = False
-    pi_lines = (run("pi", "--version") or "").splitlines()
+    pi_lines = ((run("pi", "--version") if can_probe else None) or "").splitlines()
     pi_v = pi_lines[0] if pi_lines else None
-    uv_v = run("uv", "--version")
-    outside_links = escaped_symlinks(root)
-    workspace_forbidden, workspace_truncated, workspace_errors = forbidden_workspace_files(root)
-    policy_missing = missing_required_policy(root)
-
-    hashes = {}
-    for pattern in POLICY_GLOBS:
-        for f in sorted(root.glob(pattern)):
-            if f.is_file():
-                hashes[f.relative_to(root).as_posix()] = sha256(f)
+    uv_v = run("uv", "--version") if can_probe else None
 
     receipt = {
         "unit": "M0-00",
@@ -334,6 +501,8 @@ def main() -> int:
         "date": date.today().isoformat(),
         "platform": {"system": platform.system(), "release": platform.release(), "python": platform.python_version()},
         "git": {"branch": run("git", "branch", "--show-current"), "head": run("git", "rev-parse", "HEAD")},
+        "tool_probes": {"executed": bool(can_probe),
+                        "reason": "baseline_and_static_checks_matched" if can_probe else "policy_or_static_gate_not_satisfied"},
         "checks": {
             "node": {"version": node_v, "ok": node_ok},
             "pi": {"version": pi_v, "wanted": PI_VERSION, "ok": pi_v == PI_VERSION},
@@ -344,17 +513,25 @@ def main() -> int:
             "forbidden_workspace_files": {
                 # 경로를 영수증에 남기지 않는다. 촬영 파일명·위치명이 공개될 수 있다.
                 # 순회가 잘렸으면 개수를 안다고 주장하지 않는다. null 은 '미상'이다.
-                "count": None if workspace_truncated else len(workspace_forbidden),
-                "suffixes": None if workspace_truncated else sorted(
+                "count": None if incomplete else len(workspace_forbidden),
+                "suffixes": None if incomplete else sorted(
                     {PurePosixPath(p).suffix.lower() or "(none)" for p in workspace_forbidden}
                 ),
                 "scan_truncated": workspace_truncated,
                 # 경로는 남기지 않는다. 접근 거부된 경로명도 민감할 수 있다.
                 "scan_errors": len(workspace_errors),
+                "scan_limit": scan["limit"],
+                "files_observed": scan["files"],
+                "directories_observed": scan["directories"],
+                "unverified_mounts": scan["mounts"],
+                "unverified_reparse_points": scan["reparse_points"],
                 "ok": not workspace_forbidden and not workspace_truncated and not workspace_errors,
             },
-            "policy_hash_scope": {"missing_globs": policy_missing, "ok": not policy_missing},
-            "symlinks_outside_repo": {"items": outside_links, "ok": not outside_links},
+            "policy_hash_scope": {"missing_globs": policy_missing, "read_errors": policy_errors,
+                                  "ok": not policy_missing and not policy_errors},
+            "policy_baseline": baseline,
+            "symlinks_outside_repo": {"count": None if incomplete else len(outside_links),
+                                      "scan_incomplete": bool(incomplete), "ok": not outside_links and not incomplete},
             "settings_disallowed_keys": disallowed_check,
             "unity_project": {"ok": (root / "ProjectSettings/ProjectVersion.txt").exists(), "required": False},
         },
@@ -373,16 +550,16 @@ def main() -> int:
         for name in workspace_errors:
             print(f"  {name}", file=sys.stderr)
     if workspace_truncated:
-        print(f"순회 예산 {WORKSPACE_SCAN_MAX_FILES} 초과. 통과로 처리하지 않는다.", file=sys.stderr)
+        print(f"순회 예산 초과({scan['limit']}). 통과로 처리하지 않는다.", file=sys.stderr)
 
     text = json.dumps(receipt, ensure_ascii=False, indent=2)
     if out is not None:
-        out.parent.mkdir(parents=True, exist_ok=True)
         try:
+            out.parent.mkdir(parents=True, exist_ok=True)
             with out.open("x", encoding="utf-8") as f:
                 f.write(text + "\n")
-        except FileExistsError:
-            print(f"error: 기존 파일은 덮어쓰지 않는다: {args.write}", file=sys.stderr)
+        except OSError:
+            print("error: 새 검증 영수증을 저장할 수 없다. cannot_proceed", file=sys.stderr)
             return 2
         print(f"receipt written: {out.relative_to(root).as_posix()}")
     for k, v in receipt["checks"].items():
