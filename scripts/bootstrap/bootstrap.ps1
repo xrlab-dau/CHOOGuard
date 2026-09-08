@@ -1,4 +1,4 @@
-# CHOOGuard 개발 머신 부트스트랩 (Windows PowerShell 5.1 / 7)
+﻿# CHOOGuard 개발 머신 부트스트랩 (Windows PowerShell 5.1 / 7)
 # 사용: powershell -ExecutionPolicy Bypass -File scripts\bootstrap\bootstrap.ps1 -MachineLabel school-pc
 # 원칙: 비밀값을 출력하지 않는다. Unity·unity-mcp 는 안내만 한다.
 #       설치·동기화(npm install, uv sync)는 사람이 -AutoInstall 로 명시 승인했을 때만 실행한다.
@@ -28,8 +28,13 @@ Ok ("branch={0} head={1} label={2}" -f (git branch --show-current), (git rev-par
 
 Step "1. Node >= $NodeMinMajor"
 if (Has node) {
-  $major = [int](node -p 'process.versions.node.split(".")[0]')
-  if ($major -ge $NodeMinMajor) { Ok ("node {0}" -f (node --version)) } else { Warn "node 가 낮다. https://nodejs.org LTS 설치" }
+  $nodeVersion = node --version
+  if ($LASTEXITCODE -ne 0 -or $nodeVersion -notmatch '^v(\d+)\.') {
+    Write-Error "node --version 실패 또는 잘못된 버전 출력"
+    exit 1
+  }
+  $major = [int]$Matches[1]
+  if ($major -ge $NodeMinMajor) { Ok ("node {0}" -f $nodeVersion) } else { Warn "node 가 낮다. https://nodejs.org LTS 설치" }
 } else { Warn "node 없음. https://nodejs.org 에서 LTS(22 이상) 설치" }
 
 Step "2. Pi coding agent $PiVersion (고정)"

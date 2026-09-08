@@ -124,14 +124,21 @@ class ContextGraphTests(unittest.TestCase):
         manual = next(n for n in pack["nodes"] if n["id"] == "manual")
         self.assertEqual(manual["status"], "unknown")
 
-    def test_absolute_escape_and_symlink_paths_fail_without_reading_outside_root(self):
+    def test_absolute_escape_paths_fail_without_reading_outside_root(self):
         for path in ("/Users/example/private.md", "../private.md", "C:\\private\\note.md", ".env", ".git/config"):
             with self.subTest(path=path):
                 graph = copy.deepcopy(self.graph)
                 graph["nodes"][0]["sources"][0]["repoPath"] = path
                 self.assertTrue(self.errors(graph))
+
+    def test_symlink_paths_fail_without_reading_outside_root(self):
         with tempfile.TemporaryDirectory() as outside:
-            (self.root / "docs/outside").symlink_to(Path(outside), target_is_directory=True)
+            try:
+                (self.root / "docs/outside").symlink_to(Path(outside), target_is_directory=True)
+            except OSError as error:
+                if getattr(error, "winerror", None) == 1314:
+                    self.skipTest("Windows symlink creation privilege is unavailable")
+                raise
             graph = copy.deepcopy(self.graph)
             graph["nodes"][0]["sources"][0]["repoPath"] = "docs/outside/source.md"
             self.assertTrue(self.errors(graph))

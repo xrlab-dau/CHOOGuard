@@ -1,6 +1,8 @@
 # 학교 PC에서 이어 할 Foundation 작업
 
-기준일: 2026-09-08. 현재 선택은 **VARCO 폐기 → CV/SOTA 연구 기반 파이프라인 재개**다. 최신 사용자 추가 설명에 따라 **CV-01~06은 현재 로컬 세션의 작업이고, 학교 PC에는 독립적인 고용량·고부하 작업을 할당**한다. 전달 대상은 [열린 PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)의 `feature/foundation-starter`이며 새 PR이나 develop 직접 푸시를 사용하지 않는다. 이 링크와 날짜는 탐색 정보이고 이후 원격 상태나 게시 권한을 보장하지 않는다.
+기준일: 2026-09-08. 현재 선택은 **VARCO 폐기 → CV/SOTA 연구 기반 파이프라인 재개**다. 최신 사용자 추가 설명에 따라 **CV-01~06은 기존 로컬 세션의 작업이고, 학교 PC에는 독립적인 고용량·고부하 작업을 할당**한다. 학교 PC에서 다시 조회한 [PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)은 06:15:45 UTC에 `develop`으로 병합됐으며 커밋은 `f2011ac2cd4510a09c78f0de111771fc5aa433e8`이다. 아래의 과거 미실행·Mac 검증 기록은 당시 이력이다. 후속 학교 결과는 이 병합 기준에서 별도 작업 브랜치로 준비하고 PM이 검토한다. 이 링크와 날짜는 이후 원격 상태나 게시 권한을 보장하지 않는다.
+
+이번 학교 세션의 설치·Windows bootstrap/Unity 시험·실행본 결과와 남은 수용 범위는 [학교 PC 검증 기록](../../school/windows-validation/2026-09-08-pm-setup.md)에 있다. 아래 Mac 실행 수치와 원본 자료 한계는 덮어쓰지 않는다.
 
 ## 1. checkout과 시작 문맥
 
@@ -8,8 +10,9 @@
 
 ```sh
 git fetch origin
-git switch feature/foundation-starter
-git pull --ff-only origin feature/foundation-starter
+git switch develop
+git pull --ff-only origin develop
+git switch -c chore/school-pc-work
 git lfs install --local
 git lfs pull
 git lfs fsck
@@ -55,9 +58,9 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 
 원시 영상·카메라·깊이·mask·변환은 따로 보존한다. Blender/Unity로 넘기기 위해 재학습이나 기존 두 구간 추론 전체를 불필요하게 반복하지 않는다.
 
-## 4. 독립 학교 작업 큐 — 아직 실행하지 않음
+## 4. 독립 학교 작업 큐
 
-로컬은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61에 전달된 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 부모가 결과·diff를 검토해 기존 PR에 통합한다. 자동 merge/push나 새 PR 생성 권한은 부여하지 않는다.
+기존 로컬 세션은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61이 병합된 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 PM이 결과·diff와 후속 통합 경로를 검토한다. 이미 병합된 PR61에 후속 작업을 추가하지 않으며, 자동 merge/push나 새 PR 생성 권한은 부여하지 않는다.
 
 | 단위 | 독립 입력과 작업 | 출력/편집 경계 | 독립성 |
 |---|---|---|---|
@@ -65,7 +68,7 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 | S-BENCH-01 | 라이선스가 확인된 공개 실내 benchmark의 데이터/고정 모델 캐시 준비와 upstream DA3-Streaming 또는 MapAnything GPU 비교. 큰 저장소/VRAM 소모를 학교에 배치한다. | `school/benchmarks/`의 독립 실험 설정·명령·정제 결과만 공유. 원본/가중치/예측은 ignored `private-data/school-runs/bench/`. 입력 순서/hash, 모델 revision, 실제 메모리·시간·GT 존재/평가 범위 기록. | 로컬 adapter를 수정하거나 완성을 기다리지 않는다. 상류 native 출력과 별도 manifest를 반환한다. gated SAM3.1은 접근 조건이 충족된 경우에만 별도 후보로 평가. |
 | S-WIN-01 | 기존 Foundation 장면으로 Windows standalone 빌드·기본 회귀·장시간 프레임/메모리 측정. 빌드/Library/Profiler 저장 부하를 학교에 배치한다. | 기존 build entry 사용, `school/windows-validation/`의 실행 명세/정제 보고. 바이너리·raw profiler/captures는 ignored `Builds/`/`private-data/school-runs/windows/`. 게임 규칙·layout·CV core 변경 없음. | 로컬 CV 장면과 무관한 기존 플레이어 baseline 검증. VR 기기가 미정이면 Desktop만 측정하고 HMD PASS를 주장하지 않는다. |
 
-세 단위는 **논리적으로 독립**이지만 한 학교 PC의 GPU/디스크를 무조건 동시에 점유시키지 않는다. 실제 자원에 맞춰 순차/제한 병렬로 실행하며 Unity writer는1개다. 각 단위의 초기 자원 probe로 입력량·scratch/VRAM/시간 예산을 정하고, 원본이나 기존 결과를 자동 정리하지 않는다. 학교 실행 세션에 연결되지 않은 현재 상태에서는 계약 준비만 완료이며 실행 중으로 표시하지 않는다.
+세 단위는 **논리적으로 독립**이지만 한 학교 PC의 GPU/디스크를 무조건 동시에 점유시키지 않는다. 실제 자원에 맞춰 순차/제한 병렬로 실행하며 Unity writer는1개다. 각 단위의 초기 자원 probe로 입력량·scratch/VRAM/시간 예산을 정하고, 원본이나 기존 결과를 자동 정리하지 않는다. 초기 Mac 인계 시에는 계약 준비만 완료였다. 실제 학교 실행과 미실행 단위는 상단의 날짜별 검증 기록으로 구분한다.
 
 학교 결과는 선택 가능한 성능/자산 증거로 반환한다. 로컬 CV 개발은 그 결과 없이 기존 연속4장 자료로 계속한다. 학교 benchmark 결과를 받은 뒤 채택 여부를 결정하며 모델 교체·결과 융합을 자동 수행하지 않는다.
 

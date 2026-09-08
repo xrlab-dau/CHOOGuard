@@ -102,12 +102,15 @@ def run(*cmd: str) -> str | None:
     if not exe:
         return None
     try:
-        proc = subprocess.run([exe, *cmd[1:]], capture_output=True, text=True, timeout=30, cwd=ROOT)
-    except (subprocess.SubprocessError, OSError):
+        # Decode in this thread: Windows pipe readers otherwise fail in a worker
+        # thread when Git's UTF-8 paths meet a CP949 process locale.
+        proc = subprocess.run([exe, *cmd[1:]], capture_output=True, timeout=30, cwd=ROOT)
+        if proc.returncode != 0:
+            return None
+        output = proc.stdout.decode("utf-8").rstrip("\r\n")
+    except (subprocess.SubprocessError, OSError, UnicodeError):
         return None
-    if proc.returncode != 0:
-        return None
-    return proc.stdout.strip()
+    return output
 
 
 def sha256(path: Path) -> str:
