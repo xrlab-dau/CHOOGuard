@@ -22,7 +22,7 @@ Codex와 Claude Code처럼 MCP를 직접 지원하는 클라이언트는 공식 
 | Unity 프로젝트 | `6000.3.23f1`, revision `09d2ecc7fb28`; Windows Editor/모듈 설치와 import/compile 확인 | 전체 Windows 빌드·HMD 수용은 별도 |
 | Pipeline | 사용자 연결 검증 지시에 따라 `0.6.0-exp.1` 설치, manifest/lock 고정. Test Framework 1.6.0 유지, Mono.Cecil 1.11.6·Newtonsoft.Json 3.2.2 해석 | 전체 공급망·실행 경계 검토는 #19에서 추적 |
 | 클라이언트 | Codex·Claude Code에 실제 등록. Claude Code health `Connected`; Codex와 동일 실행 파일/인자를 사용하는 stdio 검증 성공 | 기존 대화의 도구 목록에는 클라이언트 재연결 필요 |
-| Editor 연결 | 명시한 프로젝트의 `editor_status=ready`, MCP 초기화·149개 도구 조회·씬/Console 읽기 성공. EditMode 52/52, PlayMode 6/6, 종료 후 오류 0 | 전체 테스트·제한 편집·우회 차단 DoD와 제품 수용을 대신하지 않음 |
+| Editor 연결 | 명시한 프로젝트의 `editor_status=ready`, MCP 초기화·149개 도구 조회·씬/Console 읽기 성공. EditMode 52/52, PlayMode 6/6, 19:41 KST 시험 직후 오류 0; 19:50 마감 관측은 아래 별도 기록 | 전체 테스트·제한 편집·우회 차단 DoD와 제품 수용을 대신하지 않음 |
 
 CLI beta와 Pipeline experimental 상태를 기록한다. `latest` 관측은 자동 업그레이드 지시나 승인된 패키지 고정값이 아니다. `Packages/manifest.json`과 `packages-lock.json`을 함께 검토하고, 기존 Test Framework 등 의존성 변경도 확인한다. Coplay의 MIT 표기를 공식 CLI/Pipeline의 라이선스로 복사하지 않는다.
 
@@ -31,6 +31,8 @@ CLI beta와 Pipeline experimental 상태를 기록한다. `latest` 관측은 자
 [연결 검증 기록](../evidence/foundation/2026-09-08-official-editor-mcp.json)은 실제 작업 프로젝트와 분리 사본의 결과 및 실패 이력을 구분한다. 첫 PlayMode 검증 전 작업 manifest에서 Pipeline 항목이 제거됐고, 후속 domain reload가 `Microsoft.CodeAnalysis`를 불러오지 못해 6개가 실패했다. 변경 주체는 확정하지 않았다. 정확 버전 복구 후 분리 사본과 실제 프로젝트에서 각각 6/6 통과했고 실제 프로젝트의 EditMode 52/52를 다시 확인했다. 다른 세션에서 변경한 패키지 등록을 임의로 원복하지 않는다.
 
 이번 패키지의 `LICENSE.md`에는 Unity Package Distribution License가 명시되어 있고 README의 라이선스 문구와 차이가 있다. 배포본 SHA-1을 대조하고 SHA-256을 기록했으며, 이 확인을 전체 라이선스·보안 검토 완료로 확대하지 않는다. 임의 C# 및 미승인 패키지 변경 도구는 Codex의 `disabled_tools`와 Claude Code의 MCP deny 항목에 기록했다. 중첩 호출·직접 셸·OS 경계까지 차단됐다는 증거는 아니다.
+
+마감 시점의 최신 보고는 [19:50 KST 추가 관측](../evidence/foundation/2026-09-08-official-editor-mcp-closing-observation.md)이다. 재시작 중 상태 조회 timeout 뒤 ready·씬/선택 읽기는 성공했지만 마지막 Console에 오류 1건이 남았고 추가 재검증 없이 종료했다. 앞선 오류 0은 시험 직후 시점에만 적용한다. 이 추가 기록은 PR 작성자의 보고이며 이번 문서 검토에서 Editor를 재실행한 결과가 아니다.
 
 ## 연결 절차
 

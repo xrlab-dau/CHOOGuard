@@ -27,7 +27,7 @@
         },
         {
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
-          "sha256": "f007dcf43be2e4d0770806d054708ce28add0e9272a383b7d06c8a0da0629e0e",
+          "sha256": "4f74a72789f94595c9914e5b8fc330df1c9c3c4c1cf583efeda306f5172f8ef3",
           "label": "로컬/학교 소유 범위와 독립 작업 계약"
         }
       ],
@@ -53,7 +53,7 @@
       "sources": [
         {
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
-          "sha256": "f007dcf43be2e4d0770806d054708ce28add0e9272a383b7d06c8a0da0629e0e",
+          "sha256": "4f74a72789f94595c9914e5b8fc330df1c9c3c4c1cf583efeda306f5172f8ef3",
           "label": "독립 학교 작업 계약"
         }
       ],
@@ -796,7 +796,7 @@
         },
         {
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
-          "sha256": "f007dcf43be2e4d0770806d054708ce28add0e9272a383b7d06c8a0da0629e0e",
+          "sha256": "4f74a72789f94595c9914e5b8fc330df1c9c3c4c1cf583efeda306f5172f8ef3",
           "label": "학교의 독립 고부하 작업 계약"
         },
         {
@@ -940,7 +940,7 @@
         "runtime",
         "art"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
@@ -955,7 +955,7 @@
         },
         {
           "repoPath": "scripts/context/test_context_graph.py",
-          "sha256": "64dcc0bdac972665df825de3db56ba03924cae71eac6d05f223dde81bc312eb1",
+          "sha256": "8eb8190cbc766ff15bc9fa276ce3c632ecf67d121be560b89edd644f7721647a",
           "label": "문맥·현재성·경로·증거 시험"
         },
         {
@@ -1401,7 +1401,7 @@
       "id": "decision.tooling.official_unity_mcp",
       "kind": "decision",
       "title": "공식 Unity CLI Editor MCP 사용",
-      "summary": "2026-09-08 PM ???? ?? unity mcp stdio? com.unity.pipeline? ????. Pipeline 0.6.0-exp.1 ????? ?? smoke? ????? native ?????? ?? ????. Pi adapter? ?? ???? ?? ?? ????? ??? ???.",
+      "summary": "2026-09-08 PM 결정으로 공식 unity mcp stdio와 com.unity.pipeline을 사용한다. Pipeline 0.6.0-exp.1을 고정하고 native 연결 smoke를 기록했다. Pi adapter는 Pi에 필요한 경우만 검토하며 전체 실행 경계 수용은 별도다.",
       "status": "active",
       "authority": "user_accepted",
       "topics": [
@@ -1414,7 +1414,7 @@
       "sources": [
         {
           "repoPath": "docs/adr/0006-official-unity-editor-mcp.md",
-          "sha256": "4d0cc9f8b43ac25c69e328f05a00d75e9cf0ee347beb8ac4b70bf2ca4d2805e4",
+          "sha256": "b7371e7a66765e0ea6eaa697aee9bb5309343a5e4e906e3aed51f290fba8bcb8",
           "label": "공식 서버 선택·설치 관측·연결 검증 계약"
         },
         {
@@ -1431,8 +1431,8 @@
     {
       "id": "evidence.official_editor_mcp_20260908",
       "kind": "evidence",
-      "title": "?? Windows ?? Editor MCP ?? ??",
-      "summary": "Pipeline 0.6.0-exp.1 ??? ?? stdio ???149? ???Editor/?/Console ??, ?? ???? EditMode52/52?PlayMode6/6???0? ????. ??? ?? ?? ? ??? ??? ????.",
+      "title": "학교 Windows 공식 Editor MCP 연결 smoke",
+      "summary": "Pipeline 0.6.0-exp.1에서 stdio 초기화·149개 도구 조회·Editor/씬/Console 읽기 및 EditMode 52/52·PlayMode 6/6을 기록했다. 오류 0은 19:41 KST 시험 직후이며, 별도 19:50 마감 보고에는 timeout 오류 1건이 남았다.",
       "status": "historical",
       "authority": "execution_receipt",
       "topics": [
@@ -1444,8 +1444,13 @@
       "sources": [
         {
           "repoPath": "docs/evidence/foundation/2026-09-08-official-editor-mcp.json",
-          "sha256": "89c726b9cf59c205f55cba261de48e78b616d437e8b084e98987d484d2e30f4c",
-          "label": "?? ?? ?????/?????? hash"
+          "sha256": "2df11f5582610c7766416ef6c06c3cf76192278eca1377d6bb2bab34c895b4a0",
+          "label": "기존 연결 smoke 영수증과 당시 패키지/Editor 해시"
+        },
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-official-editor-mcp-closing-observation.md",
+          "sha256": "147d5a66b0eef917784835a609445ba0a50856f98431c5e2785a3ad4e90d07b9",
+          "label": "PR96 작성자가 보고한 이후 마감 관측; 이번 검토의 Editor 재실행 아님"
         }
       ],
       "coverage": {
@@ -1453,8 +1458,9 @@
         "field": "sourceSha256"
       },
       "limits": [
-        "?? ???Windows ???HMD ?? ?? M1-04 ?? DoD PASS? ???.",
-        "????? ??? ?? ?? ???????? ???? ???."
+        "전체 시험·Windows 빌드·HMD 및 M1-04 전체 DoD 수용을 뜻하지 않는다.",
+        "19:50 KST 마감 보고의 Console 오류 1건 이후 clean 재검증은 없다.",
+        "기존 영수증과 sourceSha256은 그대로 보존한다. 그래프의 잘못된 영수증 포인터만 정정하며 과거 시험을 갱신하지 않는다."
       ]
     }
   ],
@@ -1859,52 +1865,6 @@
     {
       "date": "2026-09-07",
       "nodes": [
-        "component.art_architecture",
-        "component.art_equipment",
-        "component.art_furniture",
-        "component.art_reference_registry",
-        "component.art_reference_tools",
-        "component.art_references",
-        "component.art_scene",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "policy.project_authority",
-        "workflow.start_validate"
-      ],
-      "reason": "Reviewed per-object accepted rules, 33-asset module catalog, reference registry and asset query/physics tooling; current visual review remains pending and historical coverage is preserved."
-    },
-    {
-      "date": "2026-09-07",
-      "nodes": [
-        "component.art_architecture",
-        "component.art_equipment",
-        "component.art_furniture",
-        "component.art_reference_registry",
-        "component.art_reference_tools",
-        "component.art_references",
-        "component.art_scene",
-        "component.context_graph",
-        "component.station_world",
-        "contract.five_roles",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "goal.foundation",
-        "policy.project_authority",
-        "unknown.facility_authority",
-        "workflow.start_validate"
-      ],
-      "reason": "Reviewed per-object source registry, actual Blender/Unity output, corrected coordinates and current native comparison; historical receipts preserved"
-    },
-    {
-      "date": "2026-09-07",
-      "nodes": [
-        "goal.foundation"
-      ],
-      "reason": "Reviewed latest accepted connected-world/VR-unknown direction and actual DA3 review scope; prior facility acceptance remains unverified."
-    },
-    {
-      "date": "2026-09-07",
-      "nodes": [
         "decision.visual.realistic"
       ],
       "reason": "Reviewed latest accepted connected-world/VR-unknown direction and actual DA3 review scope; prior facility acceptance remains unverified."
@@ -2047,6 +2007,31 @@
         "decision.tooling.official_unity_mcp"
       ],
       "reason": "Reviewed official Pipeline pin, actual school MCP test receipts and preserved scope limits."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "evidence.official_editor_mcp_20260908",
+        "decision.tooling.official_unity_mcp"
+      ],
+      "reason": "Independent PR96 review: repair corrupted text and initial receipt index digest, preserve original receipt bytes/covered hashes and link later PR-author closing observation. No Unity rerun or renewed PASS."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "component.school_independent_work",
+        "decision.production.local_cv_school_independent",
+        "decision.tooling.official_unity_mcp",
+        "workflow.start_validate"
+      ],
+      "reason": "Reviewed school handoff and ADR timing limits against PR96 closing observation; no new Editor execution."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "component.context_graph"
+      ],
+      "reason": "Reviewed new repository regression that preserves the official MCP receipt bytes and validates its source binding without renewing acceptance."
     }
   ]
 }
