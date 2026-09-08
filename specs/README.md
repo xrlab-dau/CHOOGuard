@@ -21,13 +21,13 @@
 | 순서 | 단위 | 예정 디렉터리 | 예정 브랜치 | 선행 | 주 실행 위치 |
 |---|---|---|---|---|---|
 | 5 | M1-02 Permission Gate와 실행 경계 | `005-m1-02-permission-gate/` | `feature/m1-02-permission-gate` | M0-00, M0-03 | local, school-pc |
-| 6 | M1-03 Pi MCP 어댑터 공급망·우회 경로 검토 | `006-m1-03-mcp-adapter-review/` | `feature/m1-03-mcp-adapter-review` | M1-02 | local |
+| 6 | M1-03 공식 Unity CLI·Pipeline 공급망·호출 경로 검토 | `006-m1-03-mcp-adapter-review/` | `feature/m1-03-mcp-adapter-review` | M1-02 | local |
 | 7 | M1-05 실행 기록·정제·공개 manifest | `007-m1-05-run-manifest/` | `feature/m1-05-run-manifest` | M1-02 | local |
 | 8 | M1-01 Pi 버전·세션 계약·Writer Lease 기준선 | `008-m1-01-session-contract/` | `feature/m1-01-session-contract` | M0-00, M0-03 | school-pc |
 | 9 | M1-06 Agent Team 세션·Writer Lease 검증 | `009-m1-06-writer-lease-test/` | `feature/m1-06-writer-lease-test` | M1-01 | school-pc |
 | 10 | M1-07 외부 검증기·독립 리뷰 경로 | `010-m1-07-independent-review/` | `feature/m1-07-independent-review` | M1-02 | local |
 | 11 | M2-01 Unity 프로젝트·패키지 기준선 | `011-m2-01-unity-project/` | `feature/m2-01-unity-project` | M1-01 | school-pc |
-| 12 | M1-04 Unity MCP v10.2.0 연결 | `012-m1-04-unity-mcp/` | `feature/m1-04-unity-mcp` | M1-03, M2-01 | school-pc |
+| 12 | M1-04 공식 Unity Editor MCP 연결 | `012-m1-04-unity-mcp/` | `feature/m1-04-unity-mcp` | M1-03, M2-01 | school-pc |
 | 13 | M2-02 공통 TrainingAction 계약 | `013-m2-02-training-action/` | `feature/m2-02-training-action` | M2-01 | school-pc |
 | 14 | M4-01 임시 5직무·판정 fixture 정의 | `014-m4-01-role-fixtures/` | `feature/m4-01-role-fixtures` | M2-02 | local, school-pc |
 | 15 | M2-03 Quest·Feedback 역할 연동 | `015-m2-03-quest-feedback/` | `feature/m2-03-quest-feedback` | M2-02, M4-01 | school-pc |

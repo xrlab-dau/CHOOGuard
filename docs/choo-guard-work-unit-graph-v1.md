@@ -16,14 +16,14 @@ graph LR
   M001 --> M002a[M0-02a KORAIL 촬영 질문]
   M003 --> M102[M1-02 Permission Gate]
   M000 --> M102
-  M102 --> M103[M1-03 MCP 어댑터 검토]
+  M102 --> M103[M1-03 공식 CLI·Pipeline 검토]
   M102 --> M105[M1-05 실행 기록 manifest]
   M000 --> M101[M1-01 Pi 세션 계약]
   M003 --> M101
   M101 --> M106[M1-06 Writer Lease 검증]
   M102 --> M107[M1-07 독립 리뷰 경로]
   M101 --> M201[M2-01 Unity 프로젝트]
-  M103 --> M104[M1-04 Unity MCP 연결]
+  M103 --> M104[M1-04 공식 Editor MCP 연결]
   M201 --> M104
   M201 --> M202[M2-02 TrainingAction]
   M202 --> M401[M4-01 5직무 fixture]
@@ -51,7 +51,7 @@ graph LR
 | M1-01 | school-pc | wu-develop | implementer | 3 리뷰어 | Pi 버전·세션 계약·Writer Lease 기준선 | `docs/evidence/M1-01/` |
 | M1-06 | school-pc | wu-develop | implementer | 3 리뷰어 | Writer Lease 충돌 테스트 | `docs/evidence/M1-06/` |
 | M1-07 | local | wu-develop | implementer | 3 리뷰어 + Codex CLI 비교 | 제공자 우회 차단 테스트 | `docs/evidence/M1-07/` |
-| M1-04 | school-pc | wu-develop | implementer | safety-auditor 가중 | unity-mcp 연결 스모크 | `docs/evidence/M1-04/` |
+| M1-04 | school-pc | wu-develop | implementer | safety-auditor 가중 | 공식 unity mcp + Pipeline 연결 스모크 | `docs/evidence/M1-04/` |
 | M2-01 | school-pc | wu-develop | implementer | 3 리뷰어 | EditMode 테스트 | `docs/evidence/M2-01/` |
 | M2-02 | school-pc | wu-develop | implementer | 3 리뷰어 | 계약 테스트 | `docs/evidence/M2-02/` |
 | M4-01 | local + school-pc | wu-develop | implementer | 3 리뷰어 | fixture 스키마 검증 | `docs/evidence/M4-01/` |

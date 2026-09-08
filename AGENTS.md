@@ -18,12 +18,14 @@ Git-tracked C#, tests, declarative scenario data, Editor builders, and SceneBund
 
 ## Unity rules
 
+- Use the official Unity CLI Editor MCP (`unity mcp --project-path <absolute-project-path>`) with the official `com.unity.pipeline` package. The 2026-09-08 PM decision supersedes CoplayDev/unity-mcp. Native MCP clients connect directly; pi-mcp-adapter is optional for Pi only. See `docs/adr/0006-official-unity-editor-mcp.md`.
+
 - Do not hand-edit `.unity`, `.prefab`, `.asset`, or `.meta` YAML.
 - Prefer idempotent Editor builders and project-scoped MCP tools over repeated ad-hoc hierarchy mutations.
 - One write agent per Unity Editor. Other agents must be read-only.
 - Pin all Unity packages and Git dependencies. Never track `main` or `beta` package branches.
 - Do not retry a timed-out MCP mutation until current Editor state is re-read.
-- Keep `execute_code`, external asset generation, and remote package installation disabled unless a human explicitly approves them.
+- Keep arbitrary C# execution (`execute_code`, `eval`, `eval_file`, and equivalent tools), external asset generation, and remote package installation disabled unless a human explicitly approves them.
 
 ## Safety and data
 

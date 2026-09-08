@@ -49,8 +49,8 @@
 | 웹·기술 조사 | [Pydantic AI Harness](https://github.com/pydantic/pydantic-ai-harness) Researcher, 필요 시 [GPT-Researcher](https://github.com/assafelovic/gpt-researcher) 교차검증 | 구조화된 주장·근거·URL·한계 수집 | 조건부 채택 |
 | 아키텍처 대안 검토 | [LangGraph](https://github.com/langchain-ai/langgraph) + [DeepAgents](https://github.com/langchain-ai/deepagents) 또는 Pi의 독립 에이전트 체인 | 제약 추출, 대안·위협·비용 검토, ADR 작성 | 복잡한 결정에만 사용 |
 | 주 코딩·통합 | [Pi](https://github.com/earendil-works/pi) | C#, 도구 코드, 테스트, 문서, Git 작업, 모델 전환 | 채택 |
-| Pi-MCP 연결 | [pi-mcp-adapter](https://pi.dev/packages/pi-mcp-adapter?name=earendil-works) | Pi가 MCP 도구를 지연 탐색·호출하도록 연결 | 공급망 검토 후 채택 |
-| Unity 저작 | [CoplayDev/unity-mcp v10.2.0](https://github.com/CoplayDev/unity-mcp/releases/tag/v10.2.0) | 씬·오브젝트·스크립트·프리팹·테스트·프로파일링 | 고정 버전 채택 |
+| MCP 클라이언트 연결 | Codex/Claude Code 등의 native MCP → 공식 Unity CLI | 프로젝트를 지정한 stdio 직접 연결. Pi는 필요한 경우만 [pi-mcp-adapter](https://pi.dev/packages/pi-mcp-adapter?name=earendil-works) 검토 | 직접 연결 채택, Pi adapter는 선택 사항 |
+| Unity 저작 | [공식 Unity CLI Editor MCP](adr/0006-official-unity-editor-mcp.md): `unity mcp` + `com.unity.pipeline` | 실제 도구 목록을 확인한 뒤 씬·오브젝트·Console·테스트에 사용 | 2026-09-08 PM 선택. CLI 1.0.0-beta.8 관측·Pipeline 0.6.0-exp.1 고정과 학교 연결 smoke는 ADR 0006 참조; 전체 실행 경계 수용은 별도 |
 | 3D 보조 저작 | [Blender MCP](https://projects.blender.org/lab/blender_mcp) + glTF/glTFast | Station Art 메시·LOD·피벗·내보내기 | 격리 작업공간에서만 사용 |
 | 결정론적 검증 | Unity Test Framework + [GameCI test runner v4](https://game.ci/docs/github/test-runner) | EditMode·PlayMode·Standalone 테스트와 XML 결과 | Unity 프로젝트 생성 후 활성화 |
 | 독립 코드 검토 | Codex CLI 또는 Gemini CLI의 읽기 전용 세션, Pi와 다른 모델 제공자 | 요구사항 위반·테스트 공백·보안·회귀 검토 | 프로젝트 대표 과제로 비교 후 1개 선정 |
@@ -137,7 +137,7 @@ Unity MCP / CLI / DA3 / Blender 도구 실행
 | Pi 컨트롤러 | 프로젝트 정책·세션 메타데이터 읽기, 보호 정책 쓰기 금지 | 사용자가 선택한 모델 제공자만 | 정책 파일 읽기 전용·해시 검증 |
 | Pi 파일·셸·자식 에이전트 | 전용 worktree만 읽기·쓰기, 그 밖의 사용자 홈과 KORAIL 경로는 마운트하지 않음 | 기본 차단, 승인된 개발 도메인만 허용 | M0-03에서 고정한 Gondolin/OpenShell 등 실제 프로파일과 경로 allowlist |
 | Pi 호스트 확장 | 확장별 실제 실행 위치에서 허용 경로만 접근 | 허용 도메인·모델 전송만 | 호스트 직접 파일·네트워크 접근 시험. 샌드박스 위임 여부를 확장별로 manifest에 기록 |
-| pi-mcp-adapter·Unity MCP | 합성·공개 Unity 작업공간만 접근, 도구 그룹 allowlist | 화면·이미지·도구 결과의 외부 모델 전달은 데이터 반출로 분류 | 고정 버전, 직접·프록시 호출 공통 승인 게이트 |
+| 공식 Unity CLI·Pipeline·선택적 Pi adapter | 합성·공개 Unity 작업공간만 접근, 도구 그룹 allowlist | 화면·이미지·도구 결과의 외부 모델 전달은 데이터 반출로 분류 | 고정 버전, 직접·프록시 호출 공통 승인 게이트 |
 | Unity·Blender 호스트 실행자 | 지정 프로젝트·DCC staging만 쓰기, KORAIL 원본 경로 미연결 | 기본 외부 전송 금지 | 별도 실행 프로필·호스트 방화벽·MCP allowlist |
 | DA3·Open3D 민감자료 처리자 | 승인된 오프라인 작업영역에서만 원본·중간 결과 접근 | 외부 모델·API 전송 금지 | 별도 작업영역과 승인된 반입·반출 절차 |
 | Independent Verifier | 불변 통합 소스는 읽기 전용, Unity 실행 사본의 생성 폴더·빌드·임시 로그만 쓰기, 확정 증거는 append-only | 외부 업로드 금지 | 별도 실행 계정·컨테이너, 격리된 쓰기 가능 실행 사본, 보호된 증거 경로 |
@@ -160,10 +160,11 @@ Pi를 주 에이전트로 사용하기 전에 다음을 갖춰야 한다.
    - 정책 파일·Writer Lease registry·검증 결과: PM/검증기만 쓰고 에이전트는 읽기 전용으로 사용하며 시작 시 해시를 확인한다.
    - `ProjectSettings/`와 릴리스 설정: 명시된 작업 계약 범위 밖의 쓰기를 차단한다.
 
-3. **MCP Adapter**
-   - `pi-mcp-adapter`의 소스·의존성·권한을 검토하고 버전을 고정한다.
-   - Unity MCP 도구를 필요한 그룹만 노출한다.
-   - 임의 C# 실행, 외부 생성 서비스, 패키지 설치 도구는 기본 비활성화한다.
+3. **공식 Editor MCP**
+   - `unity mcp --project-path <PROJECT>`로 직접 연결한다. 공식 CLI와 Pipeline의 배포·의존성·권한·라이선스·정확 버전을 각각 기록한다.
+   - Pi에서 adapter가 실제 필요할 때만 추가 검토한다. adapter 미채택은 Codex/Claude Code 직접 연결을 막지 않는다.
+   - 실제 서버의 `tools/list`를 기준으로 필요한 도구만 허용한다.
+   - 임의 C# 실행(`eval`/`eval_file` 등), 외부 생성 서비스, 패키지 설치 도구는 해당 명시 승인 범위 밖에서 비활성화한다.
 
 4. **Agent Team Extension**
    - 각 에이전트는 별도 Pi 세션과 worktree를 사용한다.
@@ -276,8 +277,8 @@ known_limits:
 ## 10. 근거와 주의사항
 
 - Pi는 MIT 라이선스의 다중 모델·세션·확장형 harness지만, 기본적으로 실행 사용자 권한을 상속하며 MCP·서브에이전트·승인창을 기본 제공하지 않는다: [Pi README](https://github.com/earendil-works/pi), [Pi coding-agent README](https://github.com/earendil-works/pi/blob/main/packages/coding-agent/README.md)
-- Pi MCP 연결은 커뮤니티 확장을 사용할 수 있으나 Pi 패키지는 코드를 실행하므로 설치 전 소스 검토가 필요하다: [pi-mcp-adapter](https://pi.dev/packages/pi-mcp-adapter?name=earendil-works)
-- CoplayDev Unity MCP v10.2.0은 MIT이며 Unity 2021.3 LTS~6.x에서 씬·에셋·스크립트·테스트·프로파일링 도구를 제공한다: [release](https://github.com/CoplayDev/unity-mcp/releases/tag/v10.2.0), [tool catalog](https://coplaydev.github.io/unity-mcp/reference/tools)
+- Pi에서만 필요한 MCP adapter는 선택적으로 검토한다. native MCP 클라이언트는 공식 서버에 직접 연결한다. Pi 패키지의 설치 전 소스 검토 근거: [pi-mcp-adapter](https://pi.dev/packages/pi-mcp-adapter?name=earendil-works)
+- 2026-09-08 PM 결정으로 공식 Unity CLI Editor MCP를 사용한다. 설치된 CLI 1.0.0-beta.8의 `unity mcp --help`와 client configure dry-run을 확인했다. 공식 Pipeline 연결 구조·현재 검증 범위는 [ADR 0006](adr/0006-official-unity-editor-mcp.md)을 따른다. CoplayDev 조사 결과는 과거 연구 기록이며 현재 도입 지시가 아니다.
 - BMAD는 암묵적 가정을 명시적 결정으로 보존하는 AI-driven workflow를 제공한다: [BMAD Method](https://github.com/bmad-code-org/bmad-method)
 - Spec Kit은 요구사항의 완전성·명확성·일관성을 검사하는 체크리스트를 지원한다: [Spec Kit](https://github.com/github/spec-kit)
 - GameCI는 Unity EditMode·PlayMode·Standalone 테스트를 구분하며 Standalone은 명시적으로 실행해야 한다: [GameCI test runner](https://game.ci/docs/github/test-runner)

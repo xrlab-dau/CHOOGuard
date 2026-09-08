@@ -18,7 +18,7 @@ python3 scripts/dev/check_foundation.py
 
 Git LFS 실제 파일 34개(33 FBX와 Blender 원본)가 필요하다. `git lfs fsck`로 확인한다. 이 절차는 저장소 접근 권한이 있는 개발 환경용이며 제한된 기관망 반입 조건은 코레일 회신을 따른다.
 
-Unity Hub에서 저장소 루트를 **6000.3.23f1**로 열고 컴파일 후 `CHOOguard > Foundation > Build Playable Demo`를 실행한다. `FoundationDemo.unity`에서 Play → 임시 직무 → 현장 입장을 누른다. NPC의 평상시 이동 중 예고 없는 상태 변화가 발생하며, 현장 정보에 따라 대응·직접 인솔·복기를 진행한다.
+에이전트 연결은 [공식 CLI Editor MCP](adr/0006-official-unity-editor-mcp.md)를 따른다. Unity Hub에서 저장소 루트를 **6000.3.23f1**로 열고 컴파일 후 `CHOOguard > Foundation > Build Playable Demo`를 실행한다. `FoundationDemo.unity`에서 Play → 임시 직무 → 현장 입장을 누른다. NPC의 평상시 이동 중 예고 없는 상태 변화가 발생하며, 현장 정보에 따라 대응·직접 인솔·복기를 진행한다.
 
 Test Runner에서 Foundation EditMode와 PlayMode를 실행한다. PlayMode 시험 전 생성기를 실행해 최신 장면을 준비한다. `scripts/dev/check_foundation.py`는 Python 데이터 검사만 실행하며 Unity 성공을 주장하지 않는다. Mac 실행본은 `Build Mac Player`, Windows는 학교 PC의 설치된 Windows 모듈과 `Build Desktop Player`를 사용한다. Windows/VR/HMD 실기와 실제 시설/매뉴얼 대조는 별도 검증이다.
 
@@ -31,7 +31,7 @@ Test Runner에서 Foundation EditMode와 PlayMode를 실행한다. PlayMode 시�
 - 장면: Editor API로 생성한 장면·17종 prefab·재질·시나리오 사본.
 - 질의: [코레일 A4 1쪽 Word 질문지](korail/CHOOGuard_KORAIL_개발질의서_A4_1p.docx), 원문·검수 기록. 전송/회신은 작성과 별도다.
 
-과거 검증 JSON의 `sourcePushed: false`는 당시 상태로 보존한다. 최신 전달은 PR의 실제 head와 CI를 기준으로 확인하며, 자동 시험·같은 제공자 코드 검토를 현업 승인이나 현장 효과 검증으로 바꾸지 않는다.
+과거 검증 JSON의 `sourcePushed: false`는 당시 상태로 보존한다. 새 전달은 해당 작업 PR의 실제 head와 CI를 기준으로 확인하며, 자동 시험·같은 제공자 코드 검토를 현업 승인이나 현장 효과 검증으로 바꾸지 않는다.
 
 현재 기본 경험·구현: [상시 현장 훈련](choo-guard-open-world-training.md). 최신 자산 단위는 [오브젝트 참조·임포트 검증 기록](evidence/foundation/2026-09-07-object-references.json)과 [문맥 지도](context/README.md)에서 확인한다. Unity EditMode 106/106·PlayMode 16/16, 문맥 Python 15개 검사를 수행했다.
 

@@ -10,6 +10,8 @@ Sync Impact Report
 - 후속 TODO: 없음
 -->
 
+<!-- 2026-09-08 Sync Impact: 1.0.0 → 1.0.1. PM 지시에 따라 §VI Unity 공급자를 공식 CLI/Pipeline으로 변경. ADR 0006, AGENTS, 파이프라인, 백로그, SPEC 카탈로그·004를 함께 갱신. 템플릿의 특정 MCP 공급자 의존 없음. 설치/실행 수용은 별도. -->
+
 ## Core Principles
 
 ### I. 요구사항 기준선이 권위다 (NON-NEGOTIABLE)
@@ -48,7 +50,7 @@ Sync Impact Report
 
 - Pi 확장·npm·Python 패키지는 정확한 버전과 해시를 기록하고 설치 전에 소스를 검토한다(설치 스크립트, 네트워크 목적지, 환경 변수, 자식 프로세스).
 - 도구 교체는 파이프라인 v1 §2 SOTA 기준(의미 있는 우위, 라이선스·보안 검토, 이행 계획, 재현 가능한 비교)을 만족하고 ADR로 남긴다. 제한·유료 도구는 사전 승인이 필요하다.
-- 채택된 기준선: BMAD Method(요구 발견), GitHub Spec Kit(요구 품질), Pi + pi-subagents + pi-agents(코딩·그래프 오케스트레이션), Pydantic AI Harness Researcher + Exa(기술 조사), CoplayDev unity-mcp v10.2.0(Unity 저작).
+- 채택된 기준선: BMAD Method(요구 발견), GitHub Spec Kit(요구 품질), Pi + pi-subagents + pi-agents(코딩·그래프 오케스트레이션), Pydantic AI Harness Researcher + Exa(기술 조사), 공식 Unity CLI Editor MCP + com.unity.pipeline(Unity 저작; 2026-09-08 PM 결정, ADR 0006).
 
 ### VII. 사람 승인 게이트와 한 명의 책임자
 
@@ -75,4 +77,4 @@ Sync Impact Report
 - 개정은 PM(엄윤상) 승인과 ADR 또는 변경 이력 기록이 필요하다. MAJOR: 원칙 삭제·재정의, MINOR: 원칙·절 추가, PATCH: 문구 정정.
 - 모든 PR 리뷰는 §I~§VII 준수 여부를 확인한다. 복잡성 추가는 명세의 Complexity Tracking 절에 근거를 남겨야 한다.
 
-**Version**: 1.0.0 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-06
+**Version**: 1.0.1 | **Ratified**: 2026-09-06 | **Last Amended**: 2026-09-08

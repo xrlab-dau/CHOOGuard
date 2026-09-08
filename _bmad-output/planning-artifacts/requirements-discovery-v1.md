@@ -1,5 +1,7 @@
 # choo guard 요구사항 발견 v1 (BMAD Method)
 
+> 2026-09-08 도구·기기 후속 결정: 아래는 2026-09-06 발견 초안의 이력이다. local Unity 설치 금지는 [ADR 0005](../../docs/adr/0005-school-pc-unity-workstation.md)로 대체됐으며 현재 Editor는 6000.3.23f1이다. MCP 선택은 [ADR 0006](../../docs/adr/0006-official-unity-editor-mcp.md)의 공식 Unity CLI `unity mcp` + Pipeline을 따른다. 학교 시작점과 실제 설치/검증 범위는 [현재 인수인계](../../docs/context/school-pc-handoff-2026-09-08.md)에서 확인한다.
+
 - 작성일: 2026-09-06
 - 작성: PM 요청에 따른 Claude Code 보조 초안. 사람 검토·승인 완료 기록이 아니다.
 - 방법: BMAD Method 6.12.0의 발견·계획 구조를 수동 적용했다. 별도 headless 런타임 실행 영수증은 없다. 대화형 인터뷰 대신 요구사항 기준선 §1의 사용자 역질의 답변을 근거로 소크라테스식 재검증을 수행했다.

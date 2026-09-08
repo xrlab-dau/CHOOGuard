@@ -101,7 +101,7 @@ C# 코어는 `Packages/com.xrlab.chooguard.foundation/`의 로컬 UPM 패키지�
 - 맵: FND-02에서 공유 Anchor ID를 유지하는 작은 합성 장면 builder 작성. 무거운 작업은 학교에서 실행.
 - 코어/QA: #25~27·#36에서 상태 불변·중복 제출·버전 불일치·modality parity 시험 보강.
 
-작업 브랜치는 `feature/foundation-starter`이며 `develop` 대상 PR로 전달한다. 실제 원격 커밋·PR·검사 상태는 GitHub #54와 #60의 최신 기록으로 확인한다. 과거 검증 영수증의 미푸시 표시는 당시 관측 상태로 보존한다.
+이전 Foundation 작업은 `feature/foundation-starter`의 PR61로 전달했으며 2026-09-08 `develop`에 병합됐다. 새 작업은 [현재 소스 인수인계](choo-guard-foundation-handoff.md)에 따라 `develop`의 기준 SHA를 기록하고 별도 작업 브랜치에서 진행한다. 과거 검증 영수증의 미푸시 표시는 당시 관측 상태로 보존한다.
 
 ## 근거
 

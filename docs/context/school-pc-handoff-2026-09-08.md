@@ -12,6 +12,7 @@
 git fetch origin
 git switch develop
 git pull --ff-only origin develop
+git rev-parse HEAD
 git switch -c chore/school-pc-work
 git lfs install --local
 git lfs pull
@@ -60,7 +61,11 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 
 ## 4. 독립 학교 작업 큐
 
-기존 로컬 세션은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61이 병합된 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 PM이 결과·diff와 후속 통합 경로를 검토한다. 이미 병합된 PR61에 후속 작업을 추가하지 않으며, 자동 merge/push나 새 PR 생성 권한은 부여하지 않는다.
+이미 이슈/실험에 특정 불변 SHA를 지정했다면 해당 재현은 그 값을 유지한다. 새 작업 시작점을 develop으로 바꾸는 안내가 이전 실험의 기준 SHA를 소급 변경하지 않는다. 기준 변경은 영향 파일과 시험을 다시 확인한 뒤 기록한다.
+
+로컬은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61의 병합 결과를 포함하는, 착수 시 기록한 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 PM이 결과·diff를 검토하고 해당 작업 PR에서 통합한다. 완료된 PR61을 다시 전달 경로로 사용하지 않는다. 게시·병합은 해당 작업 지시와 저장소 Git Flow를 따른다.
+
+이 인계 문서 자체는 자동 merge/push나 새 PR 생성 권한을 부여하지 않는다.
 
 | 단위 | 독립 입력과 작업 | 출력/편집 경계 | 독립성 |
 |---|---|---|---|
@@ -85,3 +90,11 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 Native 검증자 프로필의 flow-list `tools: [read, …, ls]`가 `[read`/`ls]`로 파싱되어 첫 게시 검토가 실패했다. 선언 권한은 유지하고 지원 표기로 정리했다. 설치된 pi-subagents0.65.1 parser를 사용하는 `node --test scripts/dev/test_agent_profiles.mjs`는7실패→7통과했다. 실패한 agent 결과를 검토 PASS로 쓰지 않으며 재시도 결과는 별도 증거에 기록한다.
 
 Pi0.85.1 및 프로젝트의 고정 패키지, BMAD6.12.0/SpecKit1.0.4 소스는 [도구 전달 기록](../tooling/agent-resources.md)을 따른다. 개인 모델/인증 설정과 전역 설치물은 Git으로 옮기지 않는다. 현재 승인된 spec/Step3 범위를 유지하고 새 연구/계획 게이트부터 반복하지 않는다.
+
+## 2026-09-08 학교 실행 세션 확인
+
+이번에 직접 조회한 school-pc는 Windows 11 x64, i5-10500(6코어/12스레드), RAM 약 8GiB, Intel UHD 630 내장 그래픽이다. 최초 C: 여유 공간은 약 28GiB였으며 Editor 설치 후 약 24.5GiB로 변했다. 이는 특정 학교 PC 한 대의 시점별 관측이며 다른 학교 장비의 사양을 일반화하지 않는다. 호스트명·계정·개인 설치 경로는 공개하지 않는다.
+
+Unity CLI 1.0.0-beta.8, Unity 6000.3.23f1/Windows 모듈과 Pipeline 0.6.0-exp.1 설치·고정을 확인했다. 공식 Editor MCP의 초기화·149개 도구 조회·실제 Editor/씬/Console 읽기, EditMode 52/52와 PlayMode 6/6, 시험 직후(19:41 KST) 모드 전환 후 연결 및 Console 오류 0을 검증했다. [19:50 KST 마감 추가 관측](../evidence/foundation/2026-09-08-official-editor-mcp-closing-observation.md)에는 재시작 상태 조회 timeout으로 마지막 Console 오류 1건이 남았으며 추가 재검증은 하지 않았다고 기록했다. Codex·Claude Code 등록과 Claude Code `Connected`를 확인했으며 기존 대화는 도구 목록 재연결이 필요하다. [ADR 0006](../adr/0006-official-unity-editor-mcp.md)과 [실패·복구를 포함한 검증 기록](../evidence/foundation/2026-09-08-official-editor-mcp.json)을 따른다. 전체 Windows 빌드·HMD 수용 및 M1-04의 실행 경계 검토는 별도다.
+
+이 장비에서는 PM의 환경/패키지/연결 준비 후 S-WIN-01 #90의 작은 Windows 실행 검증을 먼저 수행할 수 있다. RAM·디스크·프레임을 측정한 뒤 장시간 검증 크기를 정한다. S-ART-01 #85의 고해상도 렌더/4K 베이크와 S-BENCH-01 #86의 CUDA GPU benchmark는 더 큰 자원을 가진 장비에 배치할 후보로 남기고, 현재 내장 그래픽 PC에서 완료 가능한 배치로 표시하지 않는다. 이는 작업 장소 재승인 게이트나 팀 전체 작업 중단이 아니라 기기별 실행량 선택이다.

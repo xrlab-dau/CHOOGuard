@@ -19,7 +19,7 @@ Supersedes: 없음. ADR 0001을 보완한다.
 
 ## 도구 후보 기준선
 
-아래 라이선스는 기존 메타데이터 관측값이다. LICENSE 원문·고지 의무의 완료 판정이 아니다. 모든 행은 실행 승인 전 후보이며 미판정 항목은 미채택이다.
+아래 라이선스는 기존 메타데이터 관측값이다. LICENSE 원문·고지 의무의 완료 판정이 아니다. 일반 후보의 미판정 항목은 미채택이다. Unity 서버 선택은 2026-09-08 PM 결정으로 공식 CLI/Pipeline으로 변경됐으며, 선택 확정과 설치·실행 검증 상태는 구분한다.
 
 | 도구 | 선언·관측 버전 | 메타데이터 라이선스 | 위치 후보와 역할 | 현재 상태 |
 |---|---|---|---|---|
@@ -31,8 +31,9 @@ Supersedes: 없음. ADR 0001을 보완한다.
 | BMAD Method | 6.12.0 | NOASSERTION | local 발견·계획 방법 | 원문·고지 검토 전 미채택 |
 | pydantic-ai-harness | 0.29.0 | MIT | local 조사 후보 | 실제 Researcher 조사 미실행 |
 | pydantic-ai-slim[openai] | 2.40.0 | 미판정 | 조사 직접 의존성 | uv.lock 포함 검토 필요 |
-| unity-mcp | v10.2.0 | MIT | school-pc Editor 연결 | 미설치. M1-03 및 M2-01 이후 M1-04 |
-| pi-mcp-adapter | 미정 | 미판정 | MCP 연결 후보 | 미설치·미채택 |
+| 공식 Unity CLI Editor MCP | 1.0.0-beta.8 (2026-09-08 학교 관측) | 공식 배포 조건 별도 검토 | `unity mcp` stdio → Editor | PM 선택 확정. 학교 연결 smoke 기록은 [ADR 0006](0006-official-unity-editor-mcp.md); M1-04 전체 수용은 별도 |
+| 공식 com.unity.pipeline | 0.6.0-exp.1 (manifest/lock 고정) | Unity Package Distribution License; 전체 검토 별도 | Editor의 CLI 연결 | 학교 연결 smoke 수행. 실패·복구와 마감 Console 오류는 [ADR 0006](0006-official-unity-editor-mcp.md); 전체 공급망·실행 경계 수용은 별도 |
+| pi-mcp-adapter | 미정 | 미판정 | Pi 전용 선택적 MCP 연결 후보 | 미설치·미채택. Codex/Claude Code 직접 연결의 선행조건 아님 |
 | Node | >=22 호환 조건 | 미판정 | Pi 런타임 | 머신별 정확한 허용 버전 미정 |
 | uv | 과거 local 관측 0.11.14 | 미판정 | 조사 의존성 관리 | 허용 버전·학교 PC 고정값 미정 |
 
