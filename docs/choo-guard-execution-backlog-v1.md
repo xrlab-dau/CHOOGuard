@@ -388,6 +388,7 @@
 - 상태: Ready
 - 추적: FR-01~06, FR-09~10
 - 주의: 명칭·책임은 KORAIL 검수 전 임시
+- 현재 합성 소스 강제: `schemas/foundation-scenario.schema.json`과 `scripts/foundation/validate.py`가 고정 역할·행동·Anchor ID 및 provisional 표시를 검사한다. 부정 시험은 `scripts/foundation/tests/test_validate.py`에 있다. 이 검사만으로 아래 전체 DoD를 완료 처리하지 않는다.
 - DoD:
   - 5개 역할이 데이터 파일에 존재
   - 각 행에 역할 ID·대표 여부·행동 ID·대상 Anchor·사전 상태·기대 Quest 상태·기대 가상 팀 이벤트·피드백 의미가 정의됨

@@ -105,6 +105,40 @@
       ]
     },
     {
+      "id": "component.work_unit_dependencies",
+      "kind": "component",
+      "title": "R-07-GRAPH 개별 작업 선행 관계",
+      "summary": "백로그의 명시된 선행 관계를 29개 노드로 전개한다. M5-01~05 누락·M4 집계 간선·점선 범례 오류를 정정하고 기존 합성 계약 검증 경로를 연결한다.",
+      "status": "implemented",
+      "authority": "tracked_source",
+      "topics": [
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/choo-guard-work-unit-graph-v1.md",
+          "sha256": "701ba48a2d25735b891698a9ce75a9e297c907c9f40fc86cebea6246a8b0fcf5",
+          "label": "별도 문서 정정 대상 및 manifest"
+        },
+        {
+          "repoPath": "docs/choo-guard-execution-backlog-v1.md",
+          "sha256": "5511fd3cfcbf8ddbcc690869c890008c7ee6bc002297e71a57a0972134eaadfd",
+          "label": "별도 문서 정정 대상 및 manifest"
+        },
+        {
+          "repoPath": "docs/evidence/R-07-GRAPH/target-20260908-01.json",
+          "sha256": "3e34cbb59dde0b980acea7e9fc0e2e40310720ec7da4323e7ea17115783668d6",
+          "label": "별도 문서 정정 대상 및 manifest"
+        }
+      ],
+      "limits": [
+        "문서 정정 후보이며 실행 승인·정책 기준선 승인·독립 제공자 판정을 대신하지 않는다.",
+        "전체 이슈 완료 상태는 GitHub에서 별도로 확인한다."
+      ]
+    },
+    {
       "id": "component.agent_resources",
       "kind": "component",
       "title": "고정 도구 소스와 native 프로필",
@@ -1611,6 +1645,11 @@
       "from": "component.station_world",
       "relation": "verified_by",
       "to": "evidence.open_world_20260907"
+    },
+    {
+      "from": "workflow.start_validate",
+      "relation": "depends_on",
+      "to": "component.work_unit_dependencies"
     },
     {
       "from": "workflow.start_validate",

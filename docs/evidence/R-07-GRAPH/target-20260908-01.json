@@ -1,0 +1,281 @@
+{
+  "unit": "R-07-GRAPH",
+  "issue": 52,
+  "item": 8,
+  "recordType": "document_correction_candidate_not_approval",
+  "baseCommit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+  "sourceSha256": {
+    "docs/choo-guard-work-unit-graph-v1.md": "701ba48a2d25735b891698a9ce75a9e297c907c9f40fc86cebea6246a8b0fcf5",
+    "docs/choo-guard-execution-backlog-v1.md": "5511fd3cfcbf8ddbcc690869c890008c7ee6bc002297e71a57a0972134eaadfd",
+    "scripts/foundation/validate.py": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+    "scripts/foundation/tests/test_validate.py": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+    "schemas/foundation-scenario.schema.json": "fcb33eeea9eef91e2cb373cb605b71b0e5b65abbd5bfe7102239560c44d8193e"
+  },
+  "nodes": [
+    {
+      "id": "M0-00",
+      "title": "사람 주도 안전 부트스트랩",
+      "dependencies": [],
+      "condition": "명시 없음; 작업 입력·권한·DoD 적용"
+    },
+    {
+      "id": "M0-01",
+      "title": "v3 폐기와 v4 기준선 등록",
+      "dependencies": [],
+      "condition": "명시 없음; 작업 입력·권한·DoD 적용"
+    },
+    {
+      "id": "M0-02a",
+      "title": "KORAIL 촬영 승인 질문 준비",
+      "dependencies": [],
+      "condition": "명시 없음; 작업 입력·권한·DoD 적용"
+    },
+    {
+      "id": "M0-02b",
+      "title": "KORAIL 촬영 서면 승인 수신",
+      "dependencies": [
+        "M0-02a"
+      ],
+      "condition": "M0-02a"
+    },
+    {
+      "id": "M0-03",
+      "title": "AI 도구·검토·승인 허용목록",
+      "dependencies": [],
+      "condition": "명시 없음; 작업 입력·권한·DoD 적용"
+    },
+    {
+      "id": "M1-01",
+      "title": "Pi 버전·세션 계약·Writer Lease 기준선",
+      "dependencies": [
+        "M0-00",
+        "M0-03"
+      ],
+      "condition": "M0-00, M0-03"
+    },
+    {
+      "id": "M1-02",
+      "title": "Permission Gate와 실행 경계",
+      "dependencies": [
+        "M0-00",
+        "M0-03"
+      ],
+      "condition": "M0-00, M0-03"
+    },
+    {
+      "id": "M1-03",
+      "title": "공식 Unity CLI·Pipeline 공급망·호출 경로 검토",
+      "dependencies": [
+        "M0-03",
+        "M1-02"
+      ],
+      "condition": "M0-03, M1-02"
+    },
+    {
+      "id": "M1-04",
+      "title": "공식 Unity Editor MCP 연결",
+      "dependencies": [
+        "M1-03",
+        "M2-01"
+      ],
+      "condition": "M1-03, M2-01"
+    },
+    {
+      "id": "M1-05",
+      "title": "실행 기록·정제·공개 manifest",
+      "dependencies": [
+        "M0-00",
+        "M0-03"
+      ],
+      "condition": "M0-00, M0-03"
+    },
+    {
+      "id": "M1-06",
+      "title": "Agent Team 세션·Writer Lease 검증",
+      "dependencies": [
+        "M1-01",
+        "M1-02"
+      ],
+      "condition": "M1-01, M1-02"
+    },
+    {
+      "id": "M1-07",
+      "title": "외부 검증기·독립 리뷰 경로",
+      "dependencies": [
+        "M0-00",
+        "M0-03",
+        "M1-02"
+      ],
+      "condition": "M0-00, M0-03, M1-02"
+    },
+    {
+      "id": "M2-01",
+      "title": "Unity 프로젝트·패키지 기준선",
+      "dependencies": [
+        "M1-02",
+        "M1-07"
+      ],
+      "condition": "M1-02, M1-07"
+    },
+    {
+      "id": "M2-02",
+      "title": "공통 TrainingAction 계약",
+      "dependencies": [
+        "M2-01"
+      ],
+      "condition": "M2-01"
+    },
+    {
+      "id": "M2-03",
+      "title": "Quest·Feedback 역할 연동",
+      "dependencies": [
+        "M2-02",
+        "M4-01"
+      ],
+      "condition": "M2-02, M4-01"
+    },
+    {
+      "id": "M2-04",
+      "title": "가상 팀 상태 Provider",
+      "dependencies": [
+        "M2-02",
+        "M4-01"
+      ],
+      "condition": "M2-02, M4-01"
+    },
+    {
+      "id": "M3-01",
+      "title": "촬영 계획·체크리스트",
+      "dependencies": [
+        "M0-02b"
+      ],
+      "condition": "M0-02b 서면 승인"
+    },
+    {
+      "id": "M3-02",
+      "title": "승인 역사 촬영",
+      "dependencies": [
+        "M3-01"
+      ],
+      "condition": "M3-01"
+    },
+    {
+      "id": "M3-03",
+      "title": "DA3·Open3D 처리",
+      "dependencies": [
+        "M3-02",
+        "M0-03",
+        "M1-02",
+        "M1-03"
+      ],
+      "condition": "M3-02, M0-03, M1-02~03의 해당 실행 프로파일 차단 시험 PASS, 자료 권위자의 접근·전송 범위 확인"
+    },
+    {
+      "id": "M3-04",
+      "title": "Station Art 플레이 맵",
+      "dependencies": [
+        "M3-03",
+        "M1-04"
+      ],
+      "condition": "M3-03, M1-04의 Unity/Blender 해당 경로 시험 PASS"
+    },
+    {
+      "id": "M4-01",
+      "title": "임시 5직무·판정 fixture 정의",
+      "dependencies": [],
+      "condition": "명시 없음; 작업 입력·권한·DoD 적용"
+    },
+    {
+      "id": "M4-02",
+      "title": "대표 직무 전체 흐름",
+      "dependencies": [
+        "M2-03",
+        "M2-04",
+        "M3-04",
+        "M4-01"
+      ],
+      "condition": "M2-03, M2-04, M3-04, M4-01"
+    },
+    {
+      "id": "M4-03",
+      "title": "나머지 네 직무 핵심 행동",
+      "dependencies": [
+        "M2-03",
+        "M3-04",
+        "M4-01"
+      ],
+      "condition": "M2-03, M3-04, M4-01"
+    },
+    {
+      "id": "M4-04",
+      "title": "역할·팀·피드백 UI",
+      "dependencies": [
+        "M2-03",
+        "M2-04",
+        "M4-01"
+      ],
+      "condition": "M2-03, M2-04, M4-01"
+    },
+    {
+      "id": "M5-01",
+      "title": "자동 테스트 세트 실행",
+      "dependencies": [
+        "M1-07",
+        "M4-02",
+        "M4-03",
+        "M4-04"
+      ],
+      "condition": "M1-07, M4-02~04"
+    },
+    {
+      "id": "M5-02",
+      "title": "실제 HMD·성능 검증",
+      "dependencies": [
+        "M4-02",
+        "M4-03",
+        "M4-04",
+        "M5-01"
+      ],
+      "condition": "M4-02~04, M5-01"
+    },
+    {
+      "id": "M5-03",
+      "title": "독립 에이전트 검토",
+      "dependencies": [
+        "M1-07",
+        "M5-04"
+      ],
+      "condition": "M1-07, M5-04의 불변 공개 후보 target manifest 고정, PM 통합 커밋 고정"
+    },
+    {
+      "id": "M5-04",
+      "title": "시연 증거·공개 후보 패키지",
+      "dependencies": [
+        "M3-03",
+        "M3-04",
+        "M5-01",
+        "M5-02"
+      ],
+      "condition": "M3-03~04, M5-01~02"
+    },
+    {
+      "id": "M5-05",
+      "title": "최종 빌드·발표 승인",
+      "dependencies": [
+        "M5-03",
+        "M5-04"
+      ],
+      "condition": "M5-03 PASS, M5-04 target manifest 고정"
+    }
+  ],
+  "checks": {
+    "nodeCount": 29,
+    "m5NodesPresent": 5,
+    "allDependenciesResolve": true,
+    "acyclic": true,
+    "m403DoesNotDependOnM204": true,
+    "explicitBacklogDependenciesMatch": true
+  },
+  "independentReview": "pending",
+  "issueDone": false
+}
