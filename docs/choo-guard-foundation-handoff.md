@@ -1,13 +1,13 @@
 # Foundation 소스 전달과 개발 시작
 
-`feature/foundation-starter`의 `develop` 대상 [PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)로 코어·Unity 호스트·Blender 자산·상시 현장 시뮬레이션·생성 장면·문서·코레일 질의서를 전달한다. 이 PR은 2026-09-08 실제 조회한 대상이며 이후의 head/CI는 다시 확인한다. 병합 전에는 해당 feature 브랜치를 사용한다.
+`feature/foundation-starter`의 [PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)은 2026-09-08 06:15:45 UTC에 `develop`으로 병합됐다. 학교 PC에서 GitHub를 다시 조회한 병합 커밋은 `f2011ac2cd4510a09c78f0de111771fc5aa433e8`이다. 코어·Unity 호스트·Blender 자산·상시 현장 시뮬레이션·생성 장면·문서·코레일 질의서를 새 `develop` checkout에서 받는다. 후속 작업은 이 기준에서 별도 작업 브랜치를 만들며, 병합은 #55의 팀 인계 검토나 Windows/HMD 수용 완료를 뜻하지 않는다.
 
 현재 방향은 **VARCO 비용 실험 종료 → CV/SOTA 파이프라인의 로컬 재개**다. 학교 PC에는 독립적인 베이크/렌더·대용량 benchmark·Windows 검증을 배정한다. [작업 분리와 학교 인계](context/school-pc-handoff-2026-09-08.md), [현재 결정](context/accepted-decisions.md), [작업 단위 전달 기록](context/work-units-2026-09-08.md)을 먼저 읽는다. 로컬 raw 자료·가중치·계정·실행 로그는 Git에 없으며 CV의 남은 전달 단계는 완료로 표시하지 않는다.
 
 ## 새 checkout
 
 ```sh
-git clone --branch feature/foundation-starter https://github.com/xrlab-dau/CHOOGuard.git
+git clone --branch develop https://github.com/xrlab-dau/CHOOGuard.git
 cd CHOOGuard
 git lfs install --local
 git lfs pull

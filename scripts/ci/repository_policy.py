@@ -26,7 +26,7 @@ PINNED_ACTION = re.compile(r"^[^@]+@[0-9a-fA-F]{40}$")
 
 
 def git(*args: str) -> str:
-    return subprocess.check_output(["git", "-C", str(ROOT), *args], text=True).strip()
+    return subprocess.check_output(["git", "-C", str(ROOT), *args], encoding="utf-8")
 
 
 def tracked_files() -> list[Path]:
@@ -35,8 +35,8 @@ def tracked_files() -> list[Path]:
 
 
 def changed_files(base: str, head: str) -> list[Path]:
-    output = git("diff", "--name-only", "--diff-filter=ACMR", f"{base}...{head}")
-    return [ROOT / item for item in output.splitlines() if item]
+    output = git("diff", "--name-only", "-z", "--diff-filter=ACMR", f"{base}...{head}")
+    return [ROOT / item for item in output.split("\0") if item]
 
 
 def relative(file: Path) -> str:

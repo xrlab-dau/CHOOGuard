@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-08T08:09:04.858231+00:00",
+  "machine": "school-pc",
+  "baseCommit": "f2011ac2cd4510a09c78f0de111771fc5aa433e8",
+  "branch": "chore/42-school-pc-setup",
+  "issues": [
+    42,
+    44,
+    55,
+    24,
+    36
+  ],
+  "sourceSha256": {
+    "scripts/ci/repository_policy.py": "7969284b06911f476582b5d3b59b4e31a104e9f6db02629b12f9645a84aa4f23",
+    "scripts/ci/tests/test_repository_policy.py": "ca4b743623885936f169c07c567ceae99ae74a2b547b1f935b7caa61765a028f",
+    "docs/context/work-units-2026-09-08.md": "113a67aec69994fed6cceb45c176b7c2327e1dcc50f4ef135a8b523b99a9e5c7",
+    "school/windows-validation/2026-09-08-pm-followup.md": "16bdb5a41ce7e5dae5b6bdba66a360d099161f4f2ee619a29d68d47485fa5522"
+  },
+  "scope": "Resume existing school setup; fix Git UTF-8/NUL path parsing; document PM environment decisions and integration boundaries.",
+  "red": {
+    "command": "python -m unittest discover -s scripts/ci/tests -p test_repository_policy.py",
+    "total": 4,
+    "failed": 1,
+    "errors": 1,
+    "cause": [
+      "CP949 cannot decode UTF-8 Git path",
+      "Git quoted diff paths do not match real files"
+    ]
+  },
+  "checks": {
+    "ciPython": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0
+    },
+    "repositoryPolicy": {
+      "trackedFiles": 834,
+      "violations": 0
+    },
+    "foundationPython": {
+      "total": 31,
+      "passed": 30,
+      "skipped": 1,
+      "failed": 0
+    },
+    "bootstrapPython": {
+      "total": 37,
+      "passed": 32,
+      "skipped": 5,
+      "failed": 0
+    },
+    "contextPython": {
+      "total": 16,
+      "passed": 15,
+      "skipped": 1,
+      "failed": 0
+    },
+    "lfsFsck": "passed"
+  },
+  "priorUnityEvidenceRechecked": {
+    "receipt": "school/windows-validation/2026-09-08-validation.json",
+    "sourceHashesMatched": 59,
+    "buildHashesMatched": 143,
+    "editModeXml": {
+      "total": 118,
+      "passed": 117,
+      "failed": 0,
+      "skipped": 1
+    },
+    "playModeXml": {
+      "total": 16,
+      "passed": 16,
+      "failed": 0
+    },
+    "newUnityRun": false
+  },
+  "githubSnapshot": {
+    "projects": {
+      "1": 82,
+      "2": 65
+    },
+    "openIssuesAssignedToPm": 35,
+    "pr61": {
+      "state": "MERGED",
+      "mergedAt": "2026-09-08T06:15:45Z",
+      "mergeCommit": "f2011ac2cd4510a09c78f0de111771fc5aa433e8"
+    },
+    "statusByIssueBothProjects": {
+      "42": "In progress",
+      "44": "Blocked",
+      "55": "Review",
+      "61": "Done"
+    },
+    "staleDescriptions": [
+      "PR61 Blocker still says merge pending",
+      "Project readmes and issue55 still reference pre-merge heads"
+    ]
+  },
+  "limits": {
+    "manualDesktopPlaythrough": "not_run",
+    "longDurationProfiling": "not_run",
+    "hmd": "undecided_not_run",
+    "sharedAccountPolicy": "unconfirmed",
+    "independentProviderReview": "pending",
+    "remotePublished": false,
+    "issuesClosed": false
+  }
+}

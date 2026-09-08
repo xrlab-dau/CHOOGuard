@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-08T08:43:02.025929+00:00",
+  "machine": "school-pc",
+  "baseCommit": "f2011ac2cd4510a09c78f0de111771fc5aa433e8",
+  "branch": "chore/42-school-pc-setup",
+  "status": "partial-work-draft-pr",
+  "sourceSha256": {
+    "scripts/bootstrap/bootstrap.ps1": "da68123caad66779249a7fc72fbe2db352d76a0681d6aa57a352053bcb187062",
+    "scripts/bootstrap/verify_toolchain.py": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+    "scripts/bootstrap/test_bootstrap_powershell.py": "ccb71511605704241716e8673562efb62d3822a3d66dcbde00adacc469f597bb",
+    "scripts/bootstrap/test_verify_toolchain.py": "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad",
+    "scripts/ci/repository_policy.py": "7969284b06911f476582b5d3b59b4e31a104e9f6db02629b12f9645a84aa4f23",
+    "scripts/ci/tests/test_repository_policy.py": "ca4b743623885936f169c07c567ceae99ae74a2b547b1f935b7caa61765a028f",
+    "scripts/context/test_context_graph.py": "53660ca8807cd4dfe187d4de82f0574294668b4c06cae3cfd2cd93f35cb977da",
+    "school/windows-validation/SchoolWindowsValidationDriver.cs": "922d7e652a07d4d8667e37d223bbdb869280919d6f022d8e4293881d957b56d3",
+    "school/windows-validation/audit_policy_scope.py": "d81cb6a104745bb690598d9f0fdc1470e9e6f2353809f8518d0da80d700114f6",
+    "school/windows-validation/summarize_profile.py": "a78803122cd8506561813c5442871ee38ea09c2d638b15dce78d3609dc7c01a1",
+    "school/windows-validation/test_profile_summary.py": "d709551b11eb8788051d4ee79e29638619904c4fce146b560dc61cd41976ac79",
+    "school/windows-validation/2026-09-08-policy-scope-audit.json": "c9a36a9d4e49cbb9063062489ed95e3dc3939cc685a37d9be5a01632c7c6447a",
+    "school/windows-validation/2026-09-08-delivery.md": "e082e217df6be96114600389e5b64c1e91d21bc1006c1d5171c813c89ab2faa7",
+    "docs/context/work-units-2026-09-08.md": "c66d0e11f3a8ecae5c0ab4c95d55145da60f1737dc3c896bc9914aada88325a2"
+  },
+  "checks": {
+    "bootstrap": {
+      "total": 42,
+      "passed": 37,
+      "skipped": 5
+    },
+    "ci": {
+      "passed": 7
+    },
+    "context": {
+      "total": 16,
+      "passed": 15,
+      "skipped": 1
+    },
+    "foundationFreshCheckout": {
+      "total": 31,
+      "passed": 30,
+      "skipped": 1
+    },
+    "profileSummary": {
+      "passed": 5
+    },
+    "unityFreshCheckoutEditMode": {
+      "total": 118,
+      "passed": 117,
+      "failed": 0,
+      "skipped": 1,
+      "exitCode": 0
+    },
+    "unityFreshCheckoutPlayMode": {
+      "total": 16,
+      "passed": 16,
+      "failed": 0,
+      "exitCode": 0,
+      "caseCount": 6,
+      "twoConsecutiveEpisodes": true
+    },
+    "instrumentedWindowsBuilds": {
+      "count": 2,
+      "exitCodes": [
+        0,
+        0
+      ],
+      "successMarkers": true
+    },
+    "actualVerifier": {
+      "exitCode": 1,
+      "traceback": false,
+      "missingChecks": [
+        "pi",
+        "pi_packages",
+        "research_venv"
+      ]
+    }
+  },
+  "review": {
+    "kind": "fixed-text-no-tools",
+    "provider": "Anthropic firstParty",
+    "model": "claude-sonnet-5",
+    "cliVersion": "2.1.263",
+    "exitCode": 0,
+    "blockingFindingsForWindowsChanges": 0,
+    "sourceSha256": {
+      "scripts/bootstrap/bootstrap.ps1": "da68123caad66779249a7fc72fbe2db352d76a0681d6aa57a352053bcb187062",
+      "scripts/bootstrap/verify_toolchain.py": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+      "scripts/bootstrap/test_bootstrap_powershell.py": "ccb71511605704241716e8673562efb62d3822a3d66dcbde00adacc469f597bb",
+      "scripts/bootstrap/test_verify_toolchain.py": "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad",
+      "scripts/ci/repository_policy.py": "7969284b06911f476582b5d3b59b4e31a104e9f6db02629b12f9645a84aa4f23",
+      "scripts/ci/tests/test_repository_policy.py": "ca4b743623885936f169c07c567ceae99ae74a2b547b1f935b7caa61765a028f"
+    },
+    "executedTestsByReviewer": false,
+    "fullIssueAcceptance": false
+  },
+  "policyScopeAudit": {
+    "globCount": 14,
+    "rejectedWhenAbsent": 5,
+    "notRejectedWhenAbsent": 9,
+    "remainingIssue": 52
+  },
+  "profiling": {
+    "accepted": false,
+    "pilotSeconds": 20,
+    "normalModeCameraRenderCallbacks": 0,
+    "processMemoryValuesUsable": false,
+    "summaryCorrectlyRejected": true,
+    "longDurationRun": "not_started",
+    "reason": "Rendering and OS memory measurement were not established before user stopped work."
+  },
+  "limits": {
+    "humanManualPlay": "not_run",
+    "hmd": "undecided_not_run",
+    "otherDeveloperReproduction": "pending",
+    "sameOperatorFreshClone": true,
+    "merge": "not_authorized_not_done",
+    "issuesClosed": false
+  }
+}
