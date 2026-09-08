@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # CHOOGuard 개발 머신 부트스트랩 (macOS / Linux / Git Bash)
 # 목적: 저장소만으로 학교 PC(Unity 워크스테이션)와 로컬(계획 머신)을 같은 상태로 만든다.
-# 원칙: 비밀값을 출력하거나 파일에 쓰지 않는다. Unity·unity-mcp는 안내만 하고 자동 설치하지 않는다.
+# 원칙: 비밀값을 출력하거나 파일에 쓰지 않는다. Unity·공식 CLI Editor MCP는 안내만 하고 자동 설치하지 않는다.
 #       설치·동기화(npm install, uv sync)는 사람이 AUTO_INSTALL=1 로 명시 승인했을 때만 실행한다.
 #       MACHINE_LABEL 은 local | school-pc 만 허용한다. 호스트명은 기록하지 않는다.
 set -euo pipefail
@@ -74,7 +74,7 @@ done
 
 step "7. Unity 워크스테이션 (school-pc 전용, 수동)"
 if [ -f ProjectSettings/ProjectVersion.txt ]; then ok "Unity 프로젝트 존재: $(head -1 ProjectSettings/ProjectVersion.txt)"; else warn "Unity 프로젝트 없음 (M2-01 에서 생성). Unity Hub 와 에디터(D-09 에서 고정) 설치는 docs/choo-guard-school-pc-bootstrap-v1.md §4 참조"; fi
-warn "unity-mcp v10.2.0 과 pi-mcp-adapter 는 ADR 0002 공급망 검토와 M1-03·M1-04 전까지 설치하지 않는다"
+warn "공식 Unity CLI의 unity mcp와 com.unity.pipeline을 사용한다. ADR 0006 및 M1-03/M1-04의 고정 버전·연결 검증을 따른다. pi-mcp-adapter는 Pi에 필요한 경우만 검토한다"
 
 step "8. 검증 영수증"
 python3 scripts/bootstrap/verify_toolchain.py --label "$MACHINE_LABEL" "$@"

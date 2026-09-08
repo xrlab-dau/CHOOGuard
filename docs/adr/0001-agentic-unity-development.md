@@ -1,10 +1,10 @@
 # ADR 0001: Agentic Unity development
 
-Status: accepted
+Status: accepted; MCP provider updated by the 2026-09-08 PM decision in [ADR 0006](0006-official-unity-editor-mcp.md). Earlier CoplayDev selection is superseded.
 
 ## Decision
 
-Use Git as the source of truth, CoplayDev unity-mcp as the Unity Editor control plane, idempotent project-scoped Editor builders for repeatable scene work, deterministic tests as merge gates, and physical-headset verification as the final release gate.
+Use Git as the source of truth, the official Unity CLI Editor MCP (`unity mcp`) with `com.unity.pipeline` as the Unity Editor control plane, idempotent project-scoped Editor builders for repeatable scene work, deterministic tests as merge gates, and physical-headset verification as the final release gate.
 
 ## Consequences
 

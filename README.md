@@ -23,7 +23,7 @@ Comprehensive Hazard Operational Optimizer Guard. 철도 비상대응훈련을 �
 
 [요구사항 발견](_bmad-output/planning-artifacts/requirements-discovery-v1.md)과 [변경 단위 명세](specs/README.md)는 검토용 초안이다. [검토 상태](docs/reviews/2026-09-06-workflow-status.json)의 미결을 해결하기 전 Pi·MCP·조사 하네스 운영 실행을 승인하지 않는다.
 
-2026-09-06 사용자 지시로 local의 Unity Hub·Apple Silicon용 안정 LTS Editor 설치와 작은 합성 맵·기본 도형·Desktop 게임 개발 및 테스트를 허용한다. 무거운 모델링·렌더·베이크, Windows 실행본·HMD 검증은 school-pc에서 수행한다. unity-mcp 연결은 기존 공급망·실행 조건을 유지한다. [학교 PC 절차](docs/choo-guard-school-pc-bootstrap-v1.md)는 학교 환경의 전달·사람 검사·설치 및 실행 승인을 구분한다.
+2026-09-06 사용자 지시로 local의 Unity Hub·Apple Silicon용 안정 LTS Editor 설치와 작은 합성 맵·기본 도형·Desktop 게임 개발 및 테스트를 허용한다. 무거운 모델링·렌더·베이크, Windows 실행본·HMD 검증은 school-pc에서 수행한다. Unity 연결은 [공식 CLI의 Editor MCP](docs/adr/0006-official-unity-editor-mcp.md)를 사용한다. `unity mcp`와 공식 Pipeline을 기준으로 버전·연결·테스트를 기록한다. [학교 PC 절차](docs/choo-guard-school-pc-bootstrap-v1.md)는 학교 환경의 전달·사람 검사·설치 및 실행 승인을 구분한다.
 
 ## 목표 아키텍처
 

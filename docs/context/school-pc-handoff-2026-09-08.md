@@ -1,6 +1,6 @@
 # 학교 PC에서 이어 할 Foundation 작업
 
-기준일: 2026-09-08. 현재 선택은 **VARCO 폐기 → CV/SOTA 연구 기반 파이프라인 재개**다. 최신 사용자 추가 설명에 따라 **CV-01~06은 현재 로컬 세션의 작업이고, 학교 PC에는 독립적인 고용량·고부하 작업을 할당**한다. 전달 대상은 [열린 PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)의 `feature/foundation-starter`이며 새 PR이나 develop 직접 푸시를 사용하지 않는다. 이 링크와 날짜는 탐색 정보이고 이후 원격 상태나 게시 권한을 보장하지 않는다.
+기준일: 2026-09-08. 현재 선택은 **VARCO 폐기 → CV/SOTA 연구 기반 파이프라인 재개**다. 최신 사용자 추가 설명에 따라 **CV-01~06은 현재 로컬 세션의 작업이고, 학교 PC에는 독립적인 고용량·고부하 작업을 할당**한다. [PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)은 2026-09-08 `develop`에 병합됐다(확인 SHA `f2011ac2cd4510a09c78f0de111771fc5aa433e8`). 새 학교 작업은 현재 `origin/develop`을 확인하고 작업별 브랜치/PR로 전달한다. 이 링크와 날짜는 탐색 정보이고 이후 원격 상태나 게시 권한을 보장하지 않는다.
 
 ## 1. checkout과 시작 문맥
 
@@ -8,8 +8,10 @@
 
 ```sh
 git fetch origin
-git switch feature/foundation-starter
-git pull --ff-only origin feature/foundation-starter
+git switch develop
+git pull --ff-only origin develop
+git rev-parse HEAD
+# 코드 변경은 이슈별 새 브랜치/worktree에서 수행한다.
 git lfs install --local
 git lfs pull
 git lfs fsck
@@ -57,7 +59,9 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 
 ## 4. 독립 학교 작업 큐 — 아직 실행하지 않음
 
-로컬은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61에 전달된 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 부모가 결과·diff를 검토해 기존 PR에 통합한다. 자동 merge/push나 새 PR 생성 권한은 부여하지 않는다.
+이미 이슈/실험에 특정 불변 SHA를 지정했다면 해당 재현은 그 값을 유지한다. 새 작업 시작점을 develop으로 바꾸는 안내가 이전 실험의 기준 SHA를 소급 변경하지 않는다. 기준 변경은 영향 파일과 시험을 다시 확인한 뒤 기록한다.
+
+로컬은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61의 병합 결과를 포함하는, 착수 시 기록한 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 PM이 결과·diff를 검토하고 해당 작업 PR에서 통합한다. 완료된 PR61을 다시 전달 경로로 사용하지 않는다. 게시·병합은 해당 작업 지시와 저장소 Git Flow를 따른다.
 
 | 단위 | 독립 입력과 작업 | 출력/편집 경계 | 독립성 |
 |---|---|---|---|
@@ -82,3 +86,11 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 Native 검증자 프로필의 flow-list `tools: [read, …, ls]`가 `[read`/`ls]`로 파싱되어 첫 게시 검토가 실패했다. 선언 권한은 유지하고 지원 표기로 정리했다. 설치된 pi-subagents0.65.1 parser를 사용하는 `node --test scripts/dev/test_agent_profiles.mjs`는7실패→7통과했다. 실패한 agent 결과를 검토 PASS로 쓰지 않으며 재시도 결과는 별도 증거에 기록한다.
 
 Pi0.85.1 및 프로젝트의 고정 패키지, BMAD6.12.0/SpecKit1.0.4 소스는 [도구 전달 기록](../tooling/agent-resources.md)을 따른다. 개인 모델/인증 설정과 전역 설치물은 Git으로 옮기지 않는다. 현재 승인된 spec/Step3 범위를 유지하고 새 연구/계획 게이트부터 반복하지 않는다.
+
+## 2026-09-08 학교 실행 세션 확인
+
+이번에 직접 조회한 school-pc는 Windows 11 x64, i5-10500(6코어/12스레드), RAM 약 8GiB, Intel UHD 630 내장 그래픽이다. 최초 C: 여유 공간은 약 28GiB였으며 Editor 설치 후 약 24.5GiB로 변했다. 이는 특정 학교 PC 한 대의 시점별 관측이며 다른 학교 장비의 사양을 일반화하지 않는다. 호스트명·계정·개인 설치 경로는 공개하지 않는다.
+
+Unity CLI 1.0.0-beta.8과 Unity 6000.3.23f1/Windows 모듈 설치를 확인했다. 공식 Editor MCP를 사용하며 연결 절차는 [ADR 0006](../adr/0006-official-unity-editor-mcp.md)을 따른다. Pipeline 연결·Windows 플레이·HMD 시험은 이 설치 확인으로 완료되지 않는다.
+
+이 장비에서는 PM의 환경/패키지/연결 준비 후 S-WIN-01 #90의 작은 Windows 실행 검증을 먼저 수행할 수 있다. RAM·디스크·프레임을 측정한 뒤 장시간 검증 크기를 정한다. S-ART-01 #85의 고해상도 렌더/4K 베이크와 S-BENCH-01 #86의 CUDA GPU benchmark는 더 큰 자원을 가진 장비에 배치할 후보로 남기고, 현재 내장 그래픽 PC에서 완료 가능한 배치로 표시하지 않는다. 이는 작업 장소 재승인 게이트나 팀 전체 작업 중단이 아니라 기기별 실행량 선택이다.
