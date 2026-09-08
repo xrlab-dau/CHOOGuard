@@ -5,6 +5,243 @@
   "description": "팀·기기·서브에이전트의 출처 기반 시작 지도. 현재성, 역사적 증거, 미확인 사항과 폐기 결정을 구분하며 실행 수용이나 외부 권한을 부여하지 않는다.",
   "nodes": [
     {
+      "id": "decision.production.local_cv_school_independent",
+      "kind": "decision",
+      "title": "현재: 로컬 CV 재개·학교 독립 고부하 작업",
+      "summary": "VARCO는 비용으로 폐기했다. CV-01~06은 현재 로컬 세션에서 계속하고, 학교에는 기존 자산 베이크/고해상도 렌더·대용량 데이터/모델 및 upstream GPU benchmark·Windows 검증을 독립 배정한다. 로컬이 학교 결과를 기다리지 않으며 기준 커밋/브랜치/출력을 분리한다.",
+      "status": "active",
+      "authority": "user_accepted",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "decisionKey": "reusable_cv_pipeline",
+      "sources": [
+        {
+          "repoPath": "docs/context/accepted-decisions.md",
+          "sha256": "7dbec02822b4466375fef7f1c2de60570d015eb1ae5a702c427f585bee5ddf46",
+          "label": "최신 사용자 작업 분리 지시"
+        },
+        {
+          "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
+          "sha256": "319fa517e6fcf3c576b18b16d33b5d9b76e1a0671d9a3216a00957e5c1e399c9",
+          "label": "로컬/학교 소유 범위와 독립 작업 계약"
+        }
+      ],
+      "limits": [
+        "학교 작업 장소는 이미 확정했지만 이번 세션에서 학교 실행을 수행한 것은 아니다.",
+        "작업 상태와 이력은 미래 게시·과금·자료 반출 권한이 아니다."
+      ]
+    },
+    {
+      "id": "component.school_independent_work",
+      "kind": "component",
+      "title": "학교 고용량 작업 큐",
+      "summary": "S-ART-01 베이크/검수 렌더, S-BENCH-01 고정 공개 upstream benchmark와 데이터/모델 캐시, S-WIN-01 Windows 빌드/성능 검증의 독립 입력·출력·편집 경계를 정리했다. 실제 학교 worker는 아직 실행하지 않았다.",
+      "status": "proposed",
+      "authority": "canonical_document",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
+          "sha256": "319fa517e6fcf3c576b18b16d33b5d9b76e1a0671d9a3216a00957e5c1e399c9",
+          "label": "독립 학교 작업 계약"
+        }
+      ],
+      "limits": [
+        "동일 GPU/Unity를 무제한 병렬 점유하지 않는다. 실제 자원에 맞춰 제한 병렬/순차 실행한다.",
+        "CV core/현재 runner/관측 export는 로컬 소유이며 학교 작업의 수정 대상이 아니다."
+      ]
+    },
+    {
+      "id": "component.cv_research_20260908",
+      "kind": "component",
+      "title": "CV 논문·실제 코드/가중치 가용성 조사",
+      "summary": "LIST3R·MonoEM-GS·SimRecon 원문과 MapAnything/DA3-Streaming/SAM3.1 구현 조건을 확인했다. LIST3R의 공개 tree에는 추론 코드가 없고 SAM3.1은 manual gated다. 기존 DA3/MapAnything 결과에서 CV-01~06을 적용하는 근거이며 전체 논문 재현은 아니다.",
+      "status": "proposed",
+      "authority": "tracked_source",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "_bmad-output/planning-artifacts/research/academic-lit-foundation-cv-pipeline-2026-09-08/research.md",
+          "sha256": "f87ed9e7066510a06a47702d6e4cf2266cfbe957f57f740d912f94a1e1d7f136",
+          "label": "원문 조사와 로컬 적용 범위"
+        },
+        {
+          "repoPath": "_bmad-output/planning-artifacts/research/academic-lit-foundation-cv-pipeline-2026-09-08/source-availability.json",
+          "sha256": "14602c92ed98f6be3dcd74b038a906d34d2b469e1b7680c354daf24b2fe3eeb7",
+          "label": "공개 가능한 metadata 요약"
+        }
+      ],
+      "limits": [
+        "새 CV 기법 적용·자동 instance tracking·장거리 정합은 미완료다.",
+        "논문 성능의 독립 재현·현장 정확도·학교/HMD 수용은 확인하지 않았다."
+      ]
+    },
+    {
+      "id": "component.agent_resources",
+      "kind": "component",
+      "title": "고정 도구 소스와 native 프로필",
+      "summary": "BMAD6.12.0/SpecKit1.0.4 소스·고지와 Pi 고정 설정을 공유하고 개인 설치물/계정은 제외한다. native 프로필 flow-list 파싱 실패를 실제 parser 시험으로 재현하고 의도 권한 그대로 표기를 수정했다.",
+      "status": "implemented",
+      "authority": "tracked_source",
+      "topics": [
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/tooling/agent-resources.md",
+          "sha256": "50c0ed949b38de3247d6ed1f6b52453c6cccf56f7a68a4ec20cd5228799a076c",
+          "label": "도구 버전·라이선스·복구 범위"
+        }
+      ],
+      "limits": [
+        "설정/파서 시험만으로 다른 PC의 모든 role/model 시작·인증을 보장하지 않는다."
+      ]
+    },
+    {
+      "id": "evidence.varco_trial_20260908",
+      "kind": "evidence",
+      "title": "VARCO 단일 시제품·220크레딧·채택 폐기",
+      "summary": "텍스트 이미지1장과 varco-3d-2.0 벤치1개를 생성하고 GLB/FBX 파일과 수치 구조를 확인했다. 이미지20+3D200크레딧 후 비용으로 방향을 폐기했다. Unity 교체·상업 이용 승인·Sound 생성은 없다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "art",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-varco-trial.json",
+          "sha256": "41f13e23b90392fecd04efcf8bf5818fb94b93fafef298e5c9ba9b5080b93e81",
+          "label": "개인정보/원본 없는 시제품 기록"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/foundation/2026-09-08-varco-trial.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "50만 삼각형의 원본이며 UI/export 정점 수 차이·시각 품질·게임용 최적화는 미수용이다.",
+        "원본 모델/계정/서명 URL은 공개하지 않는다."
+      ]
+    },
+    {
+      "id": "evidence.publication_validation_20260908",
+      "kind": "evidence",
+      "title": "현재 소스 검증과 native 검토 복구",
+      "summary": "Python168·프로필7 시험, Ruff/LFS, 유효 입력 Unity EditMode117/0실패/1skip, 구조fixture12, PlayMode16을 확인했다. 기본 legacy receipt의 실패를 보존했고 native 도구 목록 실패를 수정한 재시도 검토에서 신규 P0/P1을 찾지 못했다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-publication-validation.json",
+          "sha256": "0525cf2eac68ce77442b94f3b73a3f09b918a89c3b57b2208d02e37efd664c23",
+          "label": "실행 명령 범위·실패/복구·소스 hash"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/foundation/2026-09-08-publication-validation.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "새 시퀀스 Blender/Unity 전달·학교/HMD·현장 수용이 아니다.",
+        "검토는 표본 소스 범위이며 reviewer의 과거 recipe/현재 결과 혼동은 부모가 분리했다."
+      ]
+    },
+    {
+      "id": "decision.assets.varco",
+      "kind": "decision",
+      "title": "폐기된 제작 수단: VARCO 3D·Sound",
+      "summary": "VARCO로 전환한 당시 결정이다. 이후 사용자 비용 판단으로 폐기했고 CV 파이프라인의 로컬 재개 및 학교 독립 작업으로 대체했다. 단일 시제품과 실패/한계 이력은 보존한다.",
+      "status": "superseded",
+      "authority": "user_accepted",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/accepted-decisions.md",
+          "sha256": "9d39babb688de9060940d0ffc825e6b9689da721d9253d9305cd5d229ae2db91",
+          "label": "파이프라인 폐기와 VARCO 전환에 대한 사용자 지시",
+          "anchor": "2026-09-08 · 현재 제작 수단: VARCO"
+        },
+        {
+          "repoPath": "docs/art/varco-production.md",
+          "sha256": "e38606b5fd0f4a068b6131c0d288c8fdf22b8e1da6a52aeafceb5dc70564dc57",
+          "label": "VARCO 기능·형식·계정/생성 전 상태"
+        }
+      ],
+      "limits": [
+        "서비스 선택만 완료했다. 로그인·결제·생성·파일 수령·Unity 임포트는 아직 수행하지 않았다.",
+        "기존 실험과 실패 증거를 삭제하거나 VARCO 생성물을 실측·안전절차 증거로 재분류하지 않는다."
+      ],
+      "decisionKey": "reusable_cv_pipeline"
+    },
+    {
+      "id": "decision.reconstruction.reusable_cv",
+      "kind": "decision",
+      "title": "폐기된 작업: 최신 CV 기반 자체 파이프라인",
+      "summary": "사용자가 처음 요구한 최신 CV 기반 재사용 파이프라인 방향이다. 이후 VARCO 제작 전환과 자체 파이프라인 작업 폐기를 명시했으므로 현재 실행 지시가 아니다. 조사·기존 실험 이력만 보존한다.",
+      "status": "superseded",
+      "authority": "user_accepted",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/accepted-decisions.md",
+          "sha256": "9439e450d156ed1e7794779681b7dde0095d2a3950e83c51272d7eb7d6bae75f",
+          "label": "최신 CV 적용에 대한 사용자 방향",
+          "anchor": "2026-09-08 · 최신 CV 기반의 재사용 가능한 Foundation 파이프라인"
+        },
+        {
+          "repoPath": "_bmad-output/planning-artifacts/research/academic-lit-foundation-cv-pipeline-2026-09-08/research.md",
+          "sha256": "f47257a47cbc4a49aa9493536f605448816f110adebab8d6fd7e1bd9fb91ee74",
+          "label": "문헌·공식 코드·checkpoint 조사와 첫 적용 범위"
+        }
+      ],
+      "limits": [
+        "연구 결과는 구현 완료나 독립 벤치마크·실측·HMD 수용을 뜻하지 않는다.",
+        "자동 객체 추적·장거리 정합 및 아직 실행하지 않은 연구 모델은 완료로 표시하지 않는다."
+      ],
+      "decisionKey": "reusable_cv_pipeline"
+    },
+    {
       "id": "goal.foundation",
       "kind": "decision",
       "title": "상시 현장 시뮬레이션",
@@ -16,12 +253,12 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+          "sha256": "7dbec02822b4466375fef7f1c2de60570d015eb1ae5a702c427f585bee5ddf46",
           "label": "지속되는 사용자 방향",
           "anchor": "2026-09-07 · 지속되는 시뮬레이션 방향"
         },
@@ -49,12 +286,12 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+          "sha256": "7dbec02822b4466375fef7f1c2de60570d015eb1ae5a702c427f585bee5ddf46",
           "label": "최신 사용자 외형 지시",
           "anchor": "2026-09-07 · 현재 외형 방향"
         },
@@ -107,7 +344,7 @@
       "id": "policy.project_authority",
       "kind": "policy",
       "title": "프로젝트 규칙과 데이터 경계",
-      "summary": "추적 코드·데이터·Editor 생성기와 명시적 프로젝트 규칙을 읽는다. Unity Editor 쓰기 담당자는 한 명이며 serialized YAML을 수동 편집하지 않는다. 실제 절차·민감자료의 권한을 그래프에서 추론하지 않는다.",
+      "summary": "사용자가 철도 사진·복원 기하의 외부 3D 생성 서비스 전송 일괄 금지를 폐기했다. 코딩 LLM의 이미지 첨부와 공개 배포·권리·실제 절차 승인은 별도다. Astra max 활용은 품질 방향이며 모델/단계 배분은 오케스트레이터가 판단한다.",
       "status": "active",
       "authority": "canonical_document",
       "topics": [
@@ -115,18 +352,25 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "AGENTS.md",
-          "sha256": "2fb9e7eea97c146278f685ad2575820003f386d65bcd73e4bf37d91119846dbc",
+          "sha256": "f6d16a80bb52c9d1958a81eac343230cd25c1623a79dd45c9321282c9d051bb8",
           "label": "현재 프로젝트 AGENTS"
+        },
+        {
+          "repoPath": "docs/context/accepted-decisions.md",
+          "sha256": "7dbec02822b4466375fef7f1c2de60570d015eb1ae5a702c427f585bee5ddf46",
+          "label": "외부 3D 생성 자료 정책 폐기·변경 결정",
+          "anchor": "2026-09-08 · 외부 3D 생성 자료 정책 변경"
         }
       ],
       "limits": [
-        "최신 사용자 지시가 폐기한 옛 규칙을 되살리지 않는다.",
-        "이 그래프는 외부 게시·설치·계정·민감자료 접근을 승인하지 않는다."
+        "최신 사용자 지시가 폐기한 옛 저장소 규칙을 되살리지 않는다.",
+        "이 그래프는 외부 게시·설치·계정·민감자료 접근을 승인하지 않는다.",
+        "저장소 문서 변경은 현재 실행 환경의 상위 지침을 변경하지 않는다. 이전 정책하의 실행·감사 기록은 소급 수정하지 않는다."
       ]
     },
     {
@@ -311,18 +555,18 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+          "sha256": "7dbec02822b4466375fef7f1c2de60570d015eb1ae5a702c427f585bee5ddf46",
           "label": "사용자 오브젝트별 재현 지시",
           "anchor": "2026-09-07 · 오브젝트별 재현 기준"
         },
         {
           "repoPath": "AGENTS.md",
-          "sha256": "2fb9e7eea97c146278f685ad2575820003f386d65bcd73e4bf37d91119846dbc",
+          "sha256": "f6d16a80bb52c9d1958a81eac343230cd25c1623a79dd45c9321282c9d051bb8",
           "label": "개별 이미지·부품 연결·정면/측면 검수 규칙",
           "anchor": "Accepted visual and simulation direction"
         }
@@ -522,12 +766,12 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "docs/choo-guard-foundation-handoff.md",
-          "sha256": "342adec72f8db78d74e5bb2ed2d47c958ef421ff3e940108707142fe277d7642",
+          "sha256": "7b6be68d2739e743e03d27f2fa3bc112415d5acf3353e5b99f1323084a09531a",
           "label": "checkout·LFS·Unity 시작 순서"
         },
         {
@@ -549,6 +793,16 @@
           "repoPath": "docs/choo-guard-school-pc-bootstrap-v1.md",
           "sha256": "a4175b4446b9545e0f1b60d50e93d2123197bd07b9c2ee3f33c960f3d4fdb73b",
           "label": "학교 도구/실행 절차의 적용 범위"
+        },
+        {
+          "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
+          "sha256": "319fa517e6fcf3c576b18b16d33b5d9b76e1a0671d9a3216a00957e5c1e399c9",
+          "label": "학교의 독립 고부하 작업 계약"
+        },
+        {
+          "repoPath": "docs/context/work-units-2026-09-08.md",
+          "sha256": "0f3ede3c925042b856d1613f45778166d10a603d1422e3fdf22dd6382e83e5e9",
+          "label": "작업 단위별 커밋과 제외/보존 기록"
         }
       ],
       "limits": [
@@ -557,8 +811,8 @@
         "자산 수와 현재 시각 검수 상태는 asset-manifest와 object-references에서 확인하며 과거 인계 문서의 수량을 재사용하지 않는다."
       ],
       "machineNotes": {
-        "local": "작은 합성 장면·C#·가벼운 Blender 모델·Desktop 검증을 진행한다. 무거운 모델링·고해상도 렌더·베이크는 학교에서 수행한다.",
-        "school-pc": "무거운 자산 작업·Windows 실행본·VR/HMD 실기를 맡는다. 현재 Unity 버전·모듈·권한과 해당 검사 결과는 이 기기에서 확인한다."
+        "local": "현재 세션에서 CV-01~06의 기하 검증·adapter·관측 export·경량 Blender/Unity 연결을 계속한다. 학교 결과를 선행조건으로 삼지 않는다.",
+        "school-pc": "기존 자산 베이크/고해상도 검수 렌더·대용량 데이터/모델과 독립 upstream GPU benchmark·Windows 빌드/성능 검증을 별도 기준/브랜치/출력으로 맡는다. 실제 학교 실행은 아직 하지 않았다."
       }
     },
     {
@@ -792,17 +1046,17 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+          "sha256": "7dbec02822b4466375fef7f1c2de60570d015eb1ae5a702c427f585bee5ddf46",
           "label": "accepted-decisions.md"
         },
         {
           "repoPath": "AGENTS.md",
-          "sha256": "2fb9e7eea97c146278f685ad2575820003f386d65bcd73e4bf37d91119846dbc",
+          "sha256": "f6d16a80bb52c9d1958a81eac343230cd25c1623a79dd45c9321282c9d051bb8",
           "label": "AGENTS.md"
         }
       ],
@@ -815,7 +1069,7 @@
       "id": "component.reconstruction",
       "kind": "component",
       "title": "실제 깊이에서 PLY·삼각형 GLB로",
-      "summary": "DA3의 optical-z와 world-to-camera pose를 역투영하고 보수적 마스크·confidence·깊이 경계로 시점별 표면을 만든다. 상대 단위와 해시·색공간을 보존한다.",
+      "summary": "DA3 optical-z 표면 export와 독립 SfM 분리, 두 연속4장 구간의 DA3/MapAnything 실행 및 provenance 회귀가 있다. 새 다중 시점 지원/가림 필터·engine-neutral 관측 전달(CV-01~06)은 로컬의 미완료 작업이다. 상대 단위·raw/색공간·실패를 보존한다.",
       "status": "implemented",
       "authority": "tracked_source",
       "topics": [
@@ -823,12 +1077,12 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "reconstruction/README.md",
-          "sha256": "1b674184cd14070ed3e3e568f5f02ff996845ef8fc018a2e4a75e086ab48643d",
+          "sha256": "edae5d4e8652bbbdff71adee8a863c8ccadacd9052b00f82b759d43c79e7d4f9",
           "label": "README.md"
         },
         {
@@ -838,7 +1092,7 @@
         },
         {
           "repoPath": "reconstruction/src/chooguard_reconstruction/export.py",
-          "sha256": "310065b930fc8ca9db6aa14379993d9c6fee376e93c0adc118625e8d59e136fd",
+          "sha256": "bc100f9c35b68aa773f36b017c03bd9a4b38918b1af643421d9840d8f3ba736e",
           "label": "export.py"
         },
         {
@@ -848,19 +1102,35 @@
         },
         {
           "repoPath": "reconstruction/recipes/busan-concourse-public-pilot.json",
-          "sha256": "16569285733955f1467c21ee1fa628553bffa661d3e5fffeaafebf5e8635c22e",
+          "sha256": "e0a5852d7610ac7120506d38b6220f7ef4fbeacbfeabe6810487e69b18efe527",
           "label": "busan-concourse-public-pilot.json"
+        },
+        {
+          "repoPath": "reconstruction/recipes/busan-underground-connector-sequence.json",
+          "sha256": "618780b01f37327170b1c25622644ea0d4a32463bb557dd03cdb62456fd37173",
+          "label": "busan-underground-connector-sequence.json"
+        },
+        {
+          "repoPath": "reconstruction/tools/run_sfm_sequence.py",
+          "sha256": "ace32db20b5a546d51eb102e659bb1f09d1f9c78d76092c65028973cb0168a96",
+          "label": "run_sfm_sequence.py"
+        },
+        {
+          "repoPath": "reconstruction/tools/run_sequence_pilot.py",
+          "sha256": "a2306f93575bd9b19cc10936531dab9dc44098f94acc3513aa187e1f2e91c428",
+          "label": "run_sequence_pilot.py"
         }
       ],
       "limits": [
-        "내부 깊이 일치도는 실측 정확도가 아니다. 열린 표면이며 융합/충돌/미터 등록이 승인되지 않았다."
+        "내부 깊이 일치도는 실측 정확도가 아니다. 열린 표면이며 융합/충돌/미터 등록이 승인되지 않았다.",
+        "2026-09-08 지하연결통로 4프레임에서 독립 PyCOLMAP SfM은 등록에 실패했다; 희소 점군과 DA3 삼각형 표면은 별도 객체로만 전달되며 융합하지 않는다."
       ]
     },
     {
       "id": "component.reconstruction_tools",
       "kind": "component",
-      "title": "고정 DA3 환경과 Blender 편집 경로",
-      "summary": "정확한 상류 소스·가중치·의존성으로 Small/Base를 로컬 실행하고 native Blender 소스와 FBX를 만든다. 자동 빈 영역 메우기나 외부 이미지 전송을 수행하지 않는다.",
+      "title": "고정 DA3·MapAnything·SfM과 검토 도구",
+      "summary": "고정된 DA3 Small/Base와 MapAnything Apache를 로컬 동일4장으로 실행한다. MapAnything은 별도 hash-lock 환경·검증한 local DINOv2·socket 차단·원시/adapter NPZ를 사용한다. 기존 Blender 경로와 새 시퀀스의 미완료 전달을 구분한다.",
       "status": "implemented",
       "authority": "tracked_source",
       "topics": [
@@ -868,7 +1138,7 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
@@ -893,25 +1163,36 @@
         },
         {
           "repoPath": "reconstruction/THIRD_PARTY.md",
-          "sha256": "806f59afd640a71ad779e5a108ffc97293f5666a8543d3e349f78eec78d0fbb7",
+          "sha256": "d8631d117272667e39475a76f9b7d5eecb9fa1a4be13c85caa907db0f26975ed",
           "label": "THIRD_PARTY.md"
         },
         {
           "repoPath": "docs/reconstruction/engine-selection.md",
-          "sha256": "28ff1b4c386a24b42b4c0c250f4ef3f20ca52072da0fd33e7a8d8c7e4672dff2",
+          "sha256": "3405cec0d3fb1470da0b741d57f1244668ea4f490c4d766a401d8a5b657f5f56",
           "label": "engine-selection.md"
+        },
+        {
+          "repoPath": "reconstruction/tools/setup_mapanything.py",
+          "sha256": "b36504246f2217ffa226222481c89913c519de2dfce7b4d90b72ead2d0263aae",
+          "label": "setup_mapanything.py"
+        },
+        {
+          "repoPath": "reconstruction/tools/run_mapanything.py",
+          "sha256": "d1ce78f5b7b7d2091f9fb08ff505a9443c7ad2a8acd7bd553deb892252231de1",
+          "label": "run_mapanything.py"
         }
       ],
       "limits": [
-        "M1 두 사진의 실행 증거다. 대규모 복원과 베이크는 학교 PC에서 별도 검증한다.",
-        "Python 환경과 원본·가중치·복원 기하는 Git에 없다. recipe와 학교 플랫폼 호환성부터 확인한다."
+        "Mac의 기존2사진 및 후속4장×2구간 실행 범위다. 로컬 CV 개발과 학교의 독립 베이크/benchmark/Windows 작업을 구분한다.",
+        "Python 환경과 원본·가중치·복원 기하는 Git에 없다. recipe와 학교 플랫폼 호환성부터 확인한다.",
+        "MapAnything Apache 설치와 두 구간 CPU 추론을 실제 완료했다. 새 마스크/기하 검증·Blender/Unity 전달·시각 검수는 로컬 CV-01~06의 미완료 범위다."
       ]
     },
     {
       "id": "component.reconstruction_review",
       "kind": "component",
       "title": "Unity 실제 복원 검토 앱",
-      "summary": "FBX/manifest 해시·실제 bounds/삼각형·색상 샘플을 검사하고 B/A 시점별 열린 표면을 표시한다. 원점/프레이밍/측면 카메라와 Metal 네이티브 캡처를 제공한다.",
+      "summary": "FBX/manifest hash·실제 bounds/삼각형/색상 샘플을 검사한다. per-view 관측 unlit와 단일 authored-lit 구조 실험을 구분하고 뷰 순환·원점/프레이밍·native capture를 제공한다. 이번 회귀는 기존2사진/구조fixture 경로이며 새 시퀀스 전달은 미완료다.",
       "status": "implemented",
       "authority": "tracked_source",
       "topics": [
@@ -919,17 +1200,17 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Editor/ReconstructionReviewBuilder.cs",
-          "sha256": "28633707535e023faafa588451cad4f1b980f8b7beced0b0d6620f1fe7c88864",
+          "sha256": "d907453aea6ef10b06bc063831057fc53f9c10f870ef11e3e9ef2d2f9b2d354a",
           "label": "ReconstructionReviewBuilder.cs"
         },
         {
           "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
-          "sha256": "046198e2c598ebb6c1ea277e74d1acc5c6622d6fac1e1815355fc831a3d374f4",
+          "sha256": "f6eb149746a7bae3aa9b3dbd795b2bf4ec475df21382f6834d10c88441894b66",
           "label": "ReconstructionReviewController.cs"
         },
         {
@@ -939,7 +1220,7 @@
         },
         {
           "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
-          "sha256": "6221986ca0a51c79a88b9aacdd168c912cdaf9fb77370128cf648eb2656277bf",
+          "sha256": "7b2264970a1de0da9276e519a26ccd7e93cd01a10647c9b7371aff5a7a713e78",
           "label": "ReconstructionReviewTests.cs"
         }
       ],
@@ -951,7 +1232,7 @@
       "id": "component.facility_coverage",
       "kind": "component",
       "title": "13구역의 공개 근거와 자료 공백",
-      "summary": "공개 자료 9건·13구역·제안 연결 12개를 추적한다. KORAIL 역사, 도시철도와 유라시아플랫폼을 구분하며 지하연결통로 99.6×8m는 그 구역의 제약으로만 쓴다.",
+      "summary": "기존13구역·12연결의 실측 미확인은 유지한다. 보유 영상4개의 해시/부분 디코딩과 누락 사진13개의 캐시 원문 URL/해시 기록을 회복했다. 자료 목록 복구·로컬 엔진 실행·Blender/Unity 전달 수용을 구분한다.",
       "status": "implemented",
       "authority": "canonical_document",
       "topics": [
@@ -959,23 +1240,29 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "foundation/world/facility-coverage.json",
-          "sha256": "af01fad011a9ef087cb1e1f3a9f09020b070c2cda2485f8a68129c1352bb0d6a",
+          "sha256": "1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350",
           "label": "facility-coverage.json"
         },
         {
           "repoPath": "docs/art/public-facility-plans.md",
           "sha256": "e6f860349bdb0e02385bd2e750b83d08ecaff9d0748fa755e359d026a18f71d3",
           "label": "public-facility-plans.md"
+        },
+        {
+          "repoPath": "docs/art/facility-source-followup-2026-09-07.md",
+          "sha256": "8babcf51af12029aca0adb898abbfd46970ca5cd4c843db9ccf0a1b5dbd99044",
+          "label": "설계·안전설비·원본 영상 후속 등록부"
         }
       ],
       "limits": [
         "자료/연결 그래프 구현은 13개 구역 모델의 제작 완료가 아니다.",
-        "2014년 1층 임대도와 무치수 도시철도 안내도는 현행 2층 맞이방/승강장 시공 도면이 아니다."
+        "2014년 1층 임대도와 무치수 도시철도 안내도는 현행 2층 맞이방/승강장 시공 도면이 아니다.",
+        "2026년 매장 도면은 특정 신축 매장의 설계안이다. CSV 수량의 현장 가용성, 현재 위치·절차·전체 축척은 미검증이다."
       ]
     },
     {
@@ -990,17 +1277,17 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-08",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "docs/context/accepted-decisions.md",
-          "sha256": "75b1cce9dabe8cec2c0e64f4056cd53b5820de0a5366de516c4a035f62fd70a4",
+          "sha256": "7dbec02822b4466375fef7f1c2de60570d015eb1ae5a702c427f585bee5ddf46",
           "label": "accepted-decisions.md"
         },
         {
           "repoPath": "docs/reconstruction/engine-selection.md",
-          "sha256": "28ff1b4c386a24b42b4c0c250f4ef3f20ca52072da0fd33e7a8d8c7e4672dff2",
+          "sha256": "3405cec0d3fb1470da0b741d57f1244668ea4f490c4d766a401d8a5b657f5f56",
           "label": "engine-selection.md"
         }
       ],
@@ -1036,9 +1323,137 @@
         "receipt": "docs/evidence/foundation/2026-09-07-reconstruction.json",
         "field": "sourceSha256"
       }
+    },
+    {
+      "id": "evidence.sequence_pilot_20260908",
+      "kind": "evidence",
+      "title": "지하연결통로 4프레임: DA3 vs 독립 SfM vs MapAnything",
+      "summary": "부모 수용 차단: 컷이 섞인0/10/20/30초 입력의 DA3/SfM 실험 기록은 보존하지만 승인된 연속 입력 기준은 미충족이다. MapAnything 추론 자리표시자, provenance 검사 누락, Blender/Unity 미실행과 외부 모델 세션의 이미지4개 첨부 위반을 사후 감사에 기록했다. 추가 자식 호출은 사용자 재개 판단 전 중지한다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-sequence-pilot.json",
+          "sha256": "5338cfca8ce2c4280e175f948e50d9598b1d3572f1ca97e07fa9428744bbdc44",
+          "label": "2026-09-08-sequence-pilot.json"
+        },
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-sequence-parent-audit.json",
+          "sha256": "c5d7d23cc6f1dee1d6dd228bec3e83e91a113cc7ca6ebee981ee5fe784b20d72",
+          "label": "부모 사후 감사·수용 차단"
+        }
+      ],
+      "limits": [
+        "원 실행 영수증은 수정하지 않고 사후 감사와 함께 읽는다. 원문의 연속4프레임·파일의 로컬 유지·도구 부재 설명을 그대로 수용하지 않는다.",
+        "72개 시험 통과는 provenance·자원·실제 엔진 추론·Unity 및 데이터 경계의 전체 검증이 아니다.",
+        "프로젝트 이미지 차단은 새 설정 로드에서 검사했다. 이미 외부 모델 세션에 첨부된 자료의 회수/삭제는 보장할 수 없다."
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/foundation/2026-09-08-sequence-pilot.json",
+        "field": "sourceSha256"
+      }
+    },
+    {
+      "id": "evidence.sequence_resume_20260908",
+      "kind": "evidence",
+      "title": "텍스트 전용 재개: 실제 엔진 완료·Blender/Unity 인계 대기",
+      "summary": "두4프레임 구간에서 SMALL/BASE MPS와 MapAnything Apache CPU 추론·원시/adapter 출력 성공. 독립 SfM은 두구간0/4 미등록. Python92·references19 통과, 사진13건 기록 회복. Blender/Unity 전 단계에서 Astra max writer에게 인계하며 전체 spec 수용은 미완료다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "art",
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-08",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-sequence-resume.json",
+          "sha256": "f688b41401d56ab7547deb5e47bf51ceb5507ef37ef5b4182b99e681e15af72d",
+          "label": "새 엔진 실행·실패 이력·소스 해시"
+        },
+        {
+          "repoPath": "docs/evidence/foundation/2026-09-08-sequence-source-recovery.json",
+          "sha256": "bccdbee64d877519a2e4b1bd9d01d0bc161ba34dae96d563fdff8a5ade711f42",
+          "label": "보유 영상4개·누락 사진13개 메타데이터"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/foundation/2026-09-08-sequence-resume.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "hard-cut 휴리스틱은 시각/개인정보 검수가 아니다.",
+        "새 마스크 audit·표면 export·Blender 편집본/FBX·Unity 시험/캡처는 미완료다.",
+        "MapAnything 학습 scale과 자동 mask는 측량/개인정보/훈련 Collider 수용 근거가 아니다.",
+        "이전 사후 감사는 원문 그대로 보존하며 현재 정책을 소급 적용하지 않는다."
+      ]
     }
   ],
   "edges": [
+    {
+      "from": "decision.production.local_cv_school_independent",
+      "relation": "supersedes",
+      "to": "decision.assets.varco"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "governed_by",
+      "to": "decision.production.local_cv_school_independent"
+    },
+    {
+      "from": "component.reconstruction_tools",
+      "relation": "governed_by",
+      "to": "decision.production.local_cv_school_independent"
+    },
+    {
+      "from": "component.school_independent_work",
+      "relation": "governed_by",
+      "to": "decision.production.local_cv_school_independent"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "depends_on",
+      "to": "component.cv_research_20260908"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "verified_by",
+      "to": "evidence.publication_validation_20260908"
+    },
+    {
+      "from": "component.reconstruction_review",
+      "relation": "verified_by",
+      "to": "evidence.publication_validation_20260908"
+    },
+    {
+      "from": "component.agent_resources",
+      "relation": "verified_by",
+      "to": "evidence.publication_validation_20260908"
+    },
+    {
+      "from": "decision.assets.varco",
+      "relation": "verified_by",
+      "to": "evidence.varco_trial_20260908"
+    },
+    {
+      "from": "decision.assets.varco",
+      "relation": "supersedes",
+      "to": "decision.reconstruction.reusable_cv"
+    },
+    {
+      "from": "component.art_scene",
+      "relation": "governed_by",
+      "to": "decision.production.local_cv_school_independent"
+    },
     {
       "from": "decision.visual.realistic",
       "relation": "supersedes",
@@ -1325,9 +1740,39 @@
       "to": "evidence.reconstruction_20260907"
     },
     {
+      "from": "component.reconstruction",
+      "relation": "verified_by",
+      "to": "evidence.sequence_pilot_20260908"
+    },
+    {
+      "from": "component.reconstruction_tools",
+      "relation": "verified_by",
+      "to": "evidence.sequence_pilot_20260908"
+    },
+    {
+      "from": "component.facility_coverage",
+      "relation": "verified_by",
+      "to": "evidence.sequence_pilot_20260908"
+    },
+    {
       "from": "goal.foundation",
       "relation": "depends_on",
       "to": "decision.world.connected"
+    },
+    {
+      "from": "component.reconstruction",
+      "relation": "verified_by",
+      "to": "evidence.sequence_resume_20260908"
+    },
+    {
+      "from": "component.reconstruction_tools",
+      "relation": "verified_by",
+      "to": "evidence.sequence_resume_20260908"
+    },
+    {
+      "from": "component.facility_coverage",
+      "relation": "verified_by",
+      "to": "evidence.sequence_resume_20260908"
     }
   ],
   "refreshLog": [
@@ -1411,6 +1856,69 @@
         "decision.visual.per_object"
       ],
       "reason": "Reviewed latest accepted connected-world/VR-unknown direction and actual DA3 review scope; prior facility acceptance remains unverified."
+    },
+    {
+      "date": "2026-09-07",
+      "nodes": [
+        "component.facility_coverage"
+      ],
+      "reason": "2026 공개 매장 부분 설계·역별 안전설비 원문과 영상 취득 등록부를 읽고 연결; 실측/절차/재구성 수용은 유지하지 않고 별도 미검증으로 명시"
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "component.facility_coverage",
+        "component.reconstruction",
+        "component.reconstruction_tools"
+      ],
+      "reason": "2026-09-08 지하연결통로 시퀀스 파일럿: SfM/MapAnything 도구 추가, export.py 희소분리, 문서/coverage 갱신 검토함"
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "policy.project_authority"
+      ],
+      "reason": "사용자의 외부 3D 생성 자료 전송 일괄 금지 폐기와 Blender Astra max 지시를 저장소 문서에 반영; 실제 외부 전송 및 상위 실행 지침 변경은 수행하지 않음"
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "component.reconstruction",
+        "component.reconstruction_tools",
+        "component.facility_coverage",
+        "evidence.sequence_resume_20260908"
+      ],
+      "reason": "현재 작성/읽은 엔진·시험·자료 회복 소스만 갱신. 실제2구간 추론과 미등록 실패를 결속하고 Blender/Unity 미완료를 명시. 부모 정책 변경과 과거 evidence hashes는 보존."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "policy.project_authority"
+      ],
+      "reason": "사용자 모델 선호를 영구 하드게이트로 확대하지 않고 오케스트레이터의 품질·작업 배정 판단으로 정리"
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "component.facility_coverage",
+        "component.reconstruction",
+        "component.reconstruction_review",
+        "component.reconstruction_tools",
+        "decision.visual.per_object",
+        "decision.visual.realistic",
+        "decision.world.connected",
+        "goal.foundation",
+        "policy.project_authority",
+        "unknown.vr_device"
+      ],
+      "reason": "최신 사용자 로컬 CV/학교 독립 작업 분리와 현재 소스·문서를 읽고 반영. 과거 evidence/폐기 결정의 hash와 수용 범위는 갱신하지 않음"
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "workflow.start_validate"
+      ],
+      "reason": "새 로컬/학교 독립 작업과 현재 PR61 인계 문서를 읽고 시작 포인터만 갱신"
     }
   ]
 }
