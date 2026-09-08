@@ -24,7 +24,7 @@ namespace ChooGuard.Foundation.Demo.Editor
         {public string id;public string @object;public int inputTriangles;public int outputTriangles;public int vertices;public ReviewBounds expectedUnityBounds;public ColorSample[] colorSamples;}
         [Serializable] public sealed class ReviewManifest
         {
-            public string schemaVersion;public string unit;public bool collisionApproved;public string colorEncoding;
+            public string schemaVersion;public string unit;public bool collisionApproved;public string colorEncoding;public string shadingMode;
             public string fbxSha256;public string inputManifestSha256;public string sourceGlbSha256;
             public float[] unityFromReviewRowMajor;public ReviewView[] views;
         }
@@ -35,7 +35,7 @@ namespace ChooGuard.Foundation.Demo.Editor
         [Serializable] private sealed class ImportReceipt
         {
             public string schemaVersion="unity-reconstruction-review-1";public string sourceDirectory;public string fbxSha256;public string blenderManifestSha256;
-            public string unit="model_relative";public bool metricApproved;public bool collisionApproved;public string colorEncoding="linear-rgb";
+            public string unit="model_relative";public bool metricApproved;public bool collisionApproved;public string colorEncoding="linear-rgb";public string shadingMode;
             public float[] unityFromReviewRowMajor;public string importer;public string scope;public ViewReceipt[] views;
         }
         public static Vector3 ReviewToUnityPoint(Vector3 point)=>new Vector3(point.x,point.y,-point.z);
@@ -54,6 +54,10 @@ namespace ChooGuard.Foundation.Demo.Editor
             if(manifest==null||manifest.schemaVersion!="blender-reconstruction-review-1"||manifest.unit!="model_relative"||manifest.collisionApproved)
                 throw new InvalidOperationException("Only uncalibrated Blender review surfaces are accepted.");
             if(manifest.colorEncoding!="linear-rgb")throw new InvalidOperationException("Review vertex colors must explicitly use linear-rgb encoding.");
+            var shadingFields=Regex.Matches(json,"\"shadingMode\"\\s*:").Count;
+            if(shadingFields==0)manifest.shadingMode="observed-unlit";
+            else if(shadingFields!=1)throw new InvalidOperationException("Ambiguous shading mode.");
+            ShaderNameForMode(manifest.shadingMode);
             RequireLiteral(json,"metersPerUnit","null");RequireLiteral(json,"collisionApproved","false");
             foreach(var key in new[]{"schemaVersion","unit","colorEncoding","fbxSha256","inputManifestSha256","sourceGlbSha256","unityFromReviewRowMajor","views"})
                 if(Regex.Matches(json,"\""+key+"\"\\s*:").Count!=1)throw new InvalidOperationException("Ambiguous or missing manifest field: "+key);
@@ -150,13 +154,15 @@ namespace ChooGuard.Foundation.Demo.Editor
             var importer=AssetImporter.GetAtPath(fbxPath) as ModelImporter;
             if(importer==null)throw new InvalidOperationException("The reconstruction FBX has no ModelImporter.");
             importer.globalScale=1;importer.useFileScale=true;importer.bakeAxisConversion=false;
+            // Keep a named assembly root even when the FBX has only one root node.
+            importer.preserveHierarchy=true;
             importer.addCollider=false;importer.importCameras=false;importer.importLights=false;importer.importAnimation=false;
             importer.isReadable=true;importer.meshCompression=ModelImporterMeshCompression.Off;
             importer.materialImportMode=ModelImporterMaterialImportMode.None;importer.SaveAndReimport();
             RequireHash(fbxPath,source.manifest.fbxSha256);
             var model=AssetDatabase.LoadAssetAtPath<GameObject>(fbxPath);
             if(model==null)throw new InvalidOperationException("FBX failed to import.");
-            var shader=Shader.Find("CHOOGuard/ReconstructionVertexColor");
+            var shader=Shader.Find(ShaderNameForMode(source.manifest.shadingMode));
             if(shader==null)throw new InvalidOperationException("Reconstruction vertex color shader is unavailable.");
             var materialPath=generatedRoot+"/VertexColors.mat";var material=AssetDatabase.LoadAssetAtPath<Material>(materialPath);
             if(material==null){material=new Material(shader);AssetDatabase.CreateAsset(material,materialPath);}else {material.shader=shader;EditorUtility.SetDirty(material);}
@@ -168,7 +174,8 @@ namespace ChooGuard.Foundation.Demo.Editor
             try
             {
                 SceneManager.SetActiveScene(scene);var root=new GameObject("ReconstructionReview");
-                var imported=UnityEngine.Object.Instantiate(model,root.transform,false);imported.name="ObservationSurfaces";
+                var authored=source.manifest.shadingMode=="authored-lit";
+                var imported=UnityEngine.Object.Instantiate(model,root.transform,false);imported.name=authored?"AuthoredRelativeStudy":"ObservationSurfaces";
                 if(imported.GetComponentsInChildren<Collider>(true).Length!=0||imported.GetComponentsInChildren<Rigidbody>(true).Length!=0)
                     throw new InvalidOperationException("Imported reconstruction unexpectedly contains physics.");
                 var transforms=imported.GetComponentsInChildren<Transform>(true);var surfaces=new Transform[source.manifest.views.Length];
@@ -184,15 +191,22 @@ namespace ChooGuard.Foundation.Demo.Editor
                 if(covered.Count!=imported.GetComponentsInChildren<MeshFilter>(true).Length)throw new InvalidOperationException("Undeclared mesh in reconstruction FBX.");
                 foreach(var renderer in imported.GetComponentsInChildren<MeshRenderer>(true))
                     renderer.sharedMaterials=Enumerable.Repeat(material,renderer.GetComponent<MeshFilter>().sharedMesh.subMeshCount).ToArray();
+                ConfigureStudyLighting(root.transform,source.manifest.shadingMode);
+                if(authored)
+                {
+                    RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Flat;RenderSettings.ambientLight=new Color(.12f,.12f,.12f);
+                    RenderSettings.reflectionIntensity=0;RenderSettings.skybox=null;
+                }
                 var camera=new GameObject("FirstCameraReview").AddComponent<Camera>();camera.transform.SetParent(root.transform,false);
                 camera.fieldOfView=60;camera.nearClipPlane=.001f;camera.farClipPlane=Mathf.Max(100,bounds.Max(x=>x.max.magnitude)*4);
                 camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.065f,.075f,.09f);
-                root.AddComponent<ReconstructionReviewController>().Configure(surfaces,source.manifest.views.Select(x=>x.id).ToArray(),bounds,camera,source.manifest.fbxSha256);
+                root.AddComponent<ReconstructionReviewController>().Configure(surfaces,source.manifest.views.Select(x=>x.id).ToArray(),bounds,camera,source.manifest.fbxSha256,source.manifest.shadingMode);
                 var project=Directory.GetParent(Application.dataPath).FullName;
                 var receipt=new ImportReceipt{sourceDirectory=source.directory.Substring(project.Length+1).Replace('\\','/'),fbxSha256=source.manifest.fbxSha256,
-                    blenderManifestSha256=source.manifestSha256,unityFromReviewRowMajor=ReviewToUnity,views=receipts,
+                    blenderManifestSha256=source.manifestSha256,unityFromReviewRowMajor=ReviewToUnity,views=receipts,shadingMode=source.manifest.shadingMode,
                     importer="FBX globalScale=1, useFileScale=true, bakeAxisConversion=false. Blender stages rotation Z=180 degrees. Validated Unity world bounds; vertex splits are reported, not hidden.",
-                    scope="Partial, two-sided per-view observation surfaces in model-relative units; metersPerUnit=null. No fusion, gravity, north, metric or collision approval; not a training SceneBundle. Camera moves; geometry is not normalized."};
+                    scope=(authored?"Authored volumetric study with illustrative key/fill lighting; geometry and appearance are hypotheses from references. ":"Partial, two-sided per-view observation surfaces. ")+
+                        "Model-relative units; metersPerUnit=null. No fusion, gravity, north, metric or collision approval; not a training SceneBundle. Camera moves; geometry is not normalized."};
                 File.WriteAllText(generatedRoot+"/import-review.json",JsonUtility.ToJson(receipt,true));
                 AssetDatabase.ImportAsset(generatedRoot+"/review-manifest.blender.json");AssetDatabase.ImportAsset(generatedRoot+"/import-review.json");
                 AssetDatabase.SaveAssetIfDirty(material);
@@ -207,6 +221,26 @@ namespace ChooGuard.Foundation.Demo.Editor
         }
 
         public static void BuildBatch()=>Build(SourceDirectoryFromArguments());
+        public static string ShaderNameForMode(string shadingMode)
+        {
+            if(shadingMode=="observed-unlit")return "CHOOGuard/ReconstructionVertexColor";
+            if(shadingMode=="authored-lit")return "CHOOGuard/ReconstructionVertexColorLit";
+            throw new InvalidOperationException("Unknown reconstruction shading mode: "+shadingMode);
+        }
+
+        public static void ConfigureStudyLighting(Transform root,string shadingMode)
+        {
+            ShaderNameForMode(shadingMode);
+            if(shadingMode!="authored-lit")return;
+            var group=new GameObject("IllustrativeStudyLighting").transform;group.SetParent(root,false);
+            foreach(var key in new[]{true,false})
+            {
+                var light=new GameObject(key?"StudyKey":"StudyFill").AddComponent<Light>();light.transform.SetParent(group,false);
+                light.type=LightType.Directional;light.color=Color.white;light.intensity=key ? .9f : .3f;light.shadows=LightShadows.None;
+                light.transform.localRotation=Quaternion.Euler(key?new Vector3(50,-30,0):new Vector3(25,145,0));
+            }
+        }
+
         public static void BuildMacReviewBatch()
         {
             const string output="Builds/ReconstructionReview";RequireSavedScenes();EnsureOwned(output);

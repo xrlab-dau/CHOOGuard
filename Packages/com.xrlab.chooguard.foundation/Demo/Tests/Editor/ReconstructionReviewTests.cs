@@ -93,6 +93,52 @@ namespace ChooGuard.Foundation.Demo.Tests
         }
 
         [Test]
+        public void ShadingDefaultsToObservedAndRejectsUnknownOrAmbiguousModes()
+        {
+            var json=ValidManifest();
+            Assert.That(ReconstructionReviewBuilder.ParseManifest(json).shadingMode,Is.EqualTo("observed-unlit"));
+            Assert.That(ReconstructionReviewBuilder.ParseManifest(json.Insert(1,"\"shadingMode\":\"authored-lit\",")).shadingMode,Is.EqualTo("authored-lit"));
+            foreach(var field in new[]{"\"shadingMode\":\"photoreal\",","\"shadingMode\":null,","\"shadingMode\":\"\",",
+                "\"shadingMode\":\"observed-unlit\",\"shadingMode\":\"authored-lit\","})
+                Assert.Throws<InvalidOperationException>(()=>ReconstructionReviewBuilder.ParseManifest(json.Insert(1,field)));
+        }
+
+        [TestCase("observed-unlit",0,"CHOOGuard/ReconstructionVertexColor")]
+        [TestCase("authored-lit",2,"CHOOGuard/ReconstructionVertexColorLit")]
+        public void OnlyAuthoredStudyReceivesReviewLightsAndLitShader(string mode,int lightCount,string shaderName)
+        {
+            var root=new GameObject("shading-fixture");
+            try
+            {
+                ReconstructionReviewBuilder.ConfigureStudyLighting(root.transform,mode);
+                var lights=root.GetComponentsInChildren<Light>();Assert.That(lights.Length,Is.EqualTo(lightCount));
+                Assert.That(ReconstructionReviewBuilder.ShaderNameForMode(mode),Is.EqualTo(shaderName));
+                Assert.That(Shader.Find(shaderName),Is.Not.Null);
+                foreach(var light in lights){Assert.That(light.type,Is.EqualTo(LightType.Directional));Assert.That(light.intensity,Is.InRange(.1f,1f));}
+            }
+            finally {UnityEngine.Object.DestroyImmediate(root);}
+        }
+
+        [TestCase(1)]
+        [TestCase(2)]
+        public void ViewNavigationKeepsOneAssemblyActiveForOneOrTwoViews(int count)
+        {
+            var root=new GameObject("view-fixture");
+            try
+            {
+                var camera=new GameObject("camera").AddComponent<Camera>();camera.transform.SetParent(root.transform,false);
+                var models=Enumerable.Range(0,count).Select(i=>{var model=new GameObject("assembly-"+i).transform;model.SetParent(root.transform,false);return model;}).ToArray();
+                var controller=root.AddComponent<ReconstructionReviewController>();
+                controller.Configure(models,models.Select(x=>x.name).ToArray(),models.Select(x=>new Bounds(Vector3.forward,Vector3.one)).ToArray(),camera,"fixture");
+                Assert.That(controller.ActiveViewCount,Is.EqualTo(1));
+                controller.CycleView(1);Assert.That(controller.SelectedView,Is.EqualTo(1%count));Assert.That(controller.ActiveViewCount,Is.EqualTo(1));
+                controller.CycleView(-1);Assert.That(controller.SelectedView,Is.EqualTo(0));Assert.That(controller.ActiveViewCount,Is.EqualTo(1));
+                Assert.Throws<ArgumentOutOfRangeException>(()=>controller.SelectView(count));
+            }
+            finally {UnityEngine.Object.DestroyImmediate(root);}
+        }
+
+        [Test]
         public void SourceMustBeOwnedLocalOutputAndItsHashesMustMatch()
         {
             Assert.Throws<InvalidOperationException>(()=>ReconstructionReviewBuilder.ReadSource("Packages"));
@@ -113,6 +159,7 @@ namespace ChooGuard.Foundation.Demo.Tests
         {
             var source=ReconstructionReviewBuilder.SourceDirectoryFromArguments();
             if(!File.Exists(Path.Combine(source,"review-manifest.blender.json")))Assert.Ignore("Local reconstruction output is intentionally not Git-tracked.");
+            var manifest=ReconstructionReviewBuilder.ReadSource(source).manifest;
             var setup=EditorSceneManager.GetSceneManagerSetup();
             var folder=ReconstructionReviewBuilder.DefaultGeneratedRoot+"/Tests_"+Guid.NewGuid().ToString("N");
             Scene scene=default;
@@ -123,13 +170,16 @@ namespace ChooGuard.Foundation.Demo.Tests
                 {EditorSceneManager.CloseScene(scene,true);scene=EditorSceneManager.OpenScene(path,OpenSceneMode.Additive);}
                 else scene=EditorSceneManager.OpenScene(path,OpenSceneMode.Single);
                 var root=scene.GetRootGameObjects().Single();var controller=root.GetComponent<ReconstructionReviewController>();
-                Assert.That(controller,Is.Not.Null);Assert.That(controller.ViewCount,Is.EqualTo(2));
+                Assert.That(controller,Is.Not.Null);Assert.That(controller.ViewCount,Is.EqualTo(manifest.views.Length));
                 Assert.That(controller.SelectedView,Is.EqualTo(0));Assert.That(controller.ActiveViewCount,Is.EqualTo(1));
                 var camera=root.GetComponentInChildren<Camera>();Assert.That(camera.transform.position,Is.EqualTo(Vector3.zero));
                 Assert.That(Vector3.Dot(camera.transform.forward,Vector3.forward),Is.GreaterThan(.99999f));
                 Assert.That(root.GetComponentsInChildren<Collider>(true),Is.Empty);Assert.That(root.GetComponentsInChildren<Rigidbody>(true),Is.Empty);
-                controller.SelectView(1);Assert.That(controller.ActiveViewCount,Is.EqualTo(1));Assert.That(controller.SelectedView,Is.EqualTo(1));
-                Assert.Throws<ArgumentOutOfRangeException>(()=>controller.SelectView(2));
+                controller.CycleView(1);Assert.That(controller.ActiveViewCount,Is.EqualTo(1));Assert.That(controller.SelectedView,Is.EqualTo(1%manifest.views.Length));
+                Assert.Throws<ArgumentOutOfRangeException>(()=>controller.SelectView(manifest.views.Length));
+                Assert.That(root.GetComponentsInChildren<Light>(true).Length,Is.EqualTo(manifest.shadingMode=="authored-lit"?2:0));
+                foreach(var renderer in root.GetComponentsInChildren<MeshRenderer>(true))
+                    Assert.That(renderer.sharedMaterials.All(material=>material.shader.name==ReconstructionReviewBuilder.ShaderNameForMode(manifest.shadingMode)),Is.True);
                 var transforms=root.GetComponentsInChildren<MeshFilter>(true).Select(x=>x.transform.localToWorldMatrix).ToArray();
                 controller.FrameSelected();controller.ResetCamera();
                 Assert.That(root.GetComponentsInChildren<MeshFilter>(true).Select(x=>x.transform.localToWorldMatrix).ToArray(),Is.EqualTo(transforms),"Camera controls never normalize or move source meshes.");

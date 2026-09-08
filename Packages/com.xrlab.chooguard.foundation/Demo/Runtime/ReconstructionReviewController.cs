@@ -13,6 +13,7 @@ namespace ChooGuard.Foundation.Demo
         [SerializeField] private Bounds[] sourceBounds;
         [SerializeField] private Camera view;
         [SerializeField] private string sourceHash;
+        [SerializeField] private string shadingMode="observed-unlit";
         [SerializeField] private int selectedView;
         private float yaw, pitch, speed=.5f;
         private string inputError;
@@ -24,11 +25,11 @@ namespace ChooGuard.Foundation.Demo
             get {var count=0;if(surfaces!=null)foreach(var surface in surfaces)if(surface!=null&&surface.gameObject.activeSelf)count++;return count;}
         }
 
-        public void Configure(Transform[] models,string[] names,Bounds[] bounds,Camera camera,string hash)
+        public void Configure(Transform[] models,string[] names,Bounds[] bounds,Camera camera,string hash,string shading="observed-unlit")
         {
             if(models==null||names==null||bounds==null||models.Length==0||models.Length!=names.Length||models.Length!=bounds.Length||camera==null)
                 throw new ArgumentException("Reconstruction view bindings are incomplete.");
-            surfaces=models;identifiers=names;sourceBounds=bounds;view=camera;sourceHash=hash;
+            surfaces=models;identifiers=names;sourceBounds=bounds;view=camera;sourceHash=hash;shadingMode=shading;
             SelectView(0);ResetCamera();
         }
 
@@ -36,6 +37,12 @@ namespace ChooGuard.Foundation.Demo
         {
             if(index<0||index>=ViewCount)throw new ArgumentOutOfRangeException(nameof(index));
             selectedView=index;for(var i=0;i<surfaces.Length;i++)surfaces[i].gameObject.SetActive(i==index);
+        }
+
+        public void CycleView(int direction)
+        {
+            if(ViewCount==0)return;
+            SelectView(((selectedView+direction)%ViewCount+ViewCount)%ViewCount);
         }
 
         public void ResetCamera()
@@ -69,8 +76,8 @@ namespace ChooGuard.Foundation.Demo
                 if(Input.GetKeyDown(KeyCode.Escape)){ReleaseCursor();return;}
                 if(Input.GetKeyDown(KeyCode.Alpha1))SelectView(0);
                 if(Input.GetKeyDown(KeyCode.Alpha2)&&ViewCount>1)SelectView(1);
-                if(Input.GetKeyDown(KeyCode.RightArrow))SelectView((selectedView+1)%ViewCount);
-                if(Input.GetKeyDown(KeyCode.LeftArrow))SelectView((selectedView+ViewCount-1)%ViewCount);
+                if(Input.GetKeyDown(KeyCode.RightArrow))CycleView(1);
+                if(Input.GetKeyDown(KeyCode.LeftArrow))CycleView(-1);
                 if(Input.GetKeyDown(KeyCode.R))ResetCamera();
                 if(Input.GetKeyDown(KeyCode.F))FrameSelected();
                 if(Input.GetMouseButton(1))
@@ -114,10 +121,14 @@ namespace ChooGuard.Foundation.Demo
             if(ViewCount==0)return;
             var width=Mathf.Min(Screen.width-24,960);GUI.Box(new Rect(12,12,width,116),GUIContent.none);
             GUI.Label(new Rect(24,20,width-24,24),"CHOOGuard reconstruction review | "+identifiers[selectedView]);
-            GUI.Label(new Rect(24,44,width-24,24),"Uncalibrated model-relative units | partial per-view surfaces | two-sided vertex colors | no training collision");
-            GUI.Label(new Rect(24,68,width-24,24),"1 / 2 or arrows: view   R: first camera +Z   F: frame   RMB + WASD/QE: fly   MMB: orbit   wheel: dolly / speed");
-            if(GUI.Button(new Rect(24,94,95,24),"Previous"))SelectView((selectedView+ViewCount-1)%ViewCount);
-            if(GUI.Button(new Rect(127,94,95,24),"Next"))SelectView((selectedView+1)%ViewCount);
+            GUI.Label(new Rect(24,44,width-24,24),shadingMode=="authored-lit"?
+                "Photo-guided authored structural study | model-relative units | illustrative lighting | no training collision":
+                "Uncalibrated model-relative units | partial per-view surfaces | two-sided vertex colors | no training collision");
+            GUI.Label(new Rect(24,68,width-24,24),(ViewCount>1?"1 / 2 or arrows: view   ":"Single assembly   ")+"R: first camera +Z   F: frame   RMB + WASD/QE: fly   MMB: orbit   wheel: dolly / speed");
+            GUI.enabled=ViewCount>1;
+            if(GUI.Button(new Rect(24,94,95,24),"Previous"))CycleView(-1);
+            if(GUI.Button(new Rect(127,94,95,24),"Next"))CycleView(1);
+            GUI.enabled=true;
             if(GUI.Button(new Rect(230,94,120,24),"First camera"))ResetCamera();
             if(GUI.Button(new Rect(358,94,95,24),"Frame"))FrameSelected();
             if(inputError!=null)GUI.Label(new Rect(20,136,Screen.width-40,50),inputError);
@@ -145,10 +156,10 @@ namespace ChooGuard.Foundation.Demo
                 ScreenCapture.CaptureScreenshot(destination);yield return new WaitForSecondsRealtime(.3f);
             }
             File.WriteAllText(Path.Combine(directory,"capture-complete.json"),JsonUtility.ToJson(new CaptureReceipt
-                {views=identifiers,fbxSha256=sourceHash,angles=new[]{"source-origin-plus-z","framed-front","framed-oblique"},graphicsDevice=SystemInfo.graphicsDeviceType.ToString(),
-                 scope="Native real-time uncalibrated observation review; no metric, collision, facility or VR acceptance"},true));
+                {views=identifiers,fbxSha256=sourceHash,shadingMode=shadingMode,angles=new[]{"source-origin-plus-z","framed-front","framed-oblique"},graphicsDevice=SystemInfo.graphicsDeviceType.ToString(),
+                 scope=(shadingMode=="authored-lit"?"Native real-time photo-guided authored structural study":"Native real-time uncalibrated observation review")+"; no metric, collision, facility or VR acceptance"},true));
             capturing=false;SelectView(0);ResetCamera();
         }
-        [Serializable] private sealed class CaptureReceipt {public string[] views;public string[] angles;public string fbxSha256;public string graphicsDevice;public string scope;}
+        [Serializable] private sealed class CaptureReceipt {public string[] views;public string[] angles;public string fbxSha256;public string shadingMode;public string graphicsDevice;public string scope;}
     }
 }

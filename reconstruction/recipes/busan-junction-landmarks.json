@@ -1,0 +1,536 @@
+{
+  "schema_version": "structure-landmarks-1",
+  "checked_at": "2026-09-07",
+  "status": "root_corrected_B_structure_rows_requires_reprojection_and_visual_review",
+  "study_id": "busan_near_exit7_column_junction",
+  "scope": "보라 승강장/노란7번출구 표지가 붙은 가까운 원형 기둥의 상부 접합부와 짧은 튜브 두 구간",
+  "images": {
+    "B": {
+      "path": "private-data/public-concourse-pilot/busan-concourse-b.jpg",
+      "width": 1120,
+      "height": 840,
+      "sha256": "55413020a44dd551da255afa40a1914aeef3f74ec5d61a5d17cb361945b17114",
+      "source_page": "https://www.koreatodo.com/busan-station"
+    },
+    "A": {
+      "path": "private-data/public-concourse-pilot/busan-concourse-a.jpg",
+      "width": 1120,
+      "height": 840,
+      "sha256": "5edd90dd10feadb04c2a062118109d3f2a873be6389ffe421bb1578374aea5d0",
+      "source_page": "https://www.koreatodo.com/busan-station"
+    }
+  },
+  "view_order": [
+    "B",
+    "A"
+  ],
+  "pixel_convention": "original1120x840; origin top-left; u right/v down; unmodified images; no resize/crop coordinates",
+  "method": "원본 두 장 시각 대조. 읽기 전용 선분검출/강도경계/노란색영역 외곽으로 근사 픽셀 위치를 보조 확인. 자동 다중시점 대응이나3D재구성은 수행하지 않음.",
+  "landmarks": [
+    {
+      "id": "J0",
+      "label": "기둥 상부 방사형 접합부의 추정 축 중심",
+      "kind": "estimated_axis_junction",
+      "observations": {
+        "B": {
+          "pixel": [
+            750,
+            234
+          ],
+          "uncertainty_px": 12,
+          "superseded_pixel": [
+            750,
+            273
+          ],
+          "correction": "Root original-image inspection + independent OpenCV LSD actual tube-edge bracket. Prior B annotation selected lower/other members."
+        },
+        "A": {
+          "pixel": [
+            611,
+            280
+          ],
+          "uncertainty_px": 12
+        }
+      },
+      "same_physical_point_confidence": 0.6,
+      "same_feature_or_member_confidence": 0.9,
+      "direct_triangulation_candidate": false,
+      "note": "여러 튜브와 링이 만나는 보이는 영역의 중심 추정. 표면에 찍힌 동일점이 아니며 픽셀 깊이를 곧바로3D축심으로 쓰지 않음."
+    },
+    {
+      "id": "C1",
+      "label": "하부 링 아래 보이는 기둥 축 시작",
+      "kind": "estimated_axis_at_collar",
+      "observations": {
+        "B": {
+          "pixel": [
+            750,
+            251
+          ],
+          "uncertainty_px": 8,
+          "superseded_pixel": [
+            750,
+            289
+          ],
+          "correction": "Root original-image inspection + independent OpenCV LSD actual tube-edge bracket. Prior B annotation selected lower/other members."
+        },
+        "A": {
+          "pixel": [
+            606,
+            300
+          ],
+          "uncertainty_px": 8
+        }
+      },
+      "same_physical_point_confidence": 0.5,
+      "same_feature_or_member_confidence": 0.88,
+      "direct_triangulation_candidate": false,
+      "note": "둥근 링의 하단을 기준으로 투영 축을 추정. 앞면 깊이와 원통 축심은 구분."
+    },
+    {
+      "id": "C2",
+      "label": "표지에 가려지기 직전 기둥 축 절단점",
+      "kind": "per_view_occlusion_cut",
+      "observations": {
+        "B": {
+          "pixel": [
+            750,
+            318
+          ],
+          "uncertainty_px": 7
+        },
+        "A": {
+          "pixel": [
+            606,
+            371
+          ],
+          "uncertainty_px": 7
+        }
+      },
+      "same_physical_point_confidence": 0.1,
+      "same_feature_or_member_confidence": 0.92,
+      "direct_triangulation_candidate": false,
+      "note": "두 좌표는 각 시점의 가림 경계. 같은 실제 높이/물리 끝점으로 강제 대응하지 않음. 기둥은 표지 뒤로 계속됨."
+    },
+    {
+      "id": "W1",
+      "label": "왼쪽 위로 나가는 흰 튜브의 가까운 축 샘플",
+      "kind": "per_view_axis_sample",
+      "observations": {
+        "B": {
+          "pixel": [
+            720,
+            224
+          ],
+          "uncertainty_px": 9,
+          "superseded_pixel": [
+            720,
+            270
+          ],
+          "correction": "Root original-image inspection + independent OpenCV LSD actual tube-edge bracket. Prior B annotation selected lower/other members."
+        },
+        "A": {
+          "pixel": [
+            584,
+            266
+          ],
+          "uncertainty_px": 9
+        }
+      },
+      "same_physical_point_confidence": 0.2,
+      "same_feature_or_member_confidence": 0.78,
+      "direct_triangulation_candidate": false,
+      "note": "보이는 튜브 가장자리 사이의 축 샘플. 실제 볼트/절점이 아니며 서로 정확히 같은3D지점이라는 근거는 없음."
+    },
+    {
+      "id": "W2",
+      "label": "같은 왼쪽 튜브의 바깥쪽 연구 절단점",
+      "kind": "per_view_study_cut",
+      "observations": {
+        "B": {
+          "pixel": [
+            683,
+            215
+          ],
+          "uncertainty_px": 11,
+          "superseded_pixel": [
+            683,
+            260
+          ],
+          "correction": "Root original-image inspection + independent OpenCV LSD actual tube-edge bracket. Prior B annotation selected lower/other members."
+        },
+        "A": {
+          "pixel": [
+            535,
+            242
+          ],
+          "uncertainty_px": 11
+        }
+      },
+      "same_physical_point_confidence": 0.15,
+      "same_feature_or_member_confidence": 0.78,
+      "direct_triangulation_candidate": false,
+      "note": "편집 가능한 짧은 구간을 만들기 위한 각 시점의 샘플. 물리 부재는 이 점에서 끝나지 않음."
+    },
+    {
+      "id": "E1",
+      "label": "오른쪽으로 나가는 흰 튜브의 가까운 축 샘플",
+      "kind": "per_view_axis_sample",
+      "observations": {
+        "B": {
+          "pixel": [
+            789,
+            212
+          ],
+          "uncertainty_px": 9,
+          "superseded_pixel": [
+            789,
+            276
+          ],
+          "correction": "Root original-image inspection + independent OpenCV LSD actual tube-edge bracket. Prior B annotation selected lower/other members."
+        },
+        "A": {
+          "pixel": [
+            647,
+            267
+          ],
+          "uncertainty_px": 9
+        }
+      },
+      "same_physical_point_confidence": 0.2,
+      "same_feature_or_member_confidence": 0.8,
+      "direct_triangulation_candidate": false,
+      "note": "A에서는 오른쪽 위, B에서는 거의 수평/오른쪽 아래로 투영됨. 반복 트러스와 혼동하지 말고 보이는 연속 부재를 대조."
+    },
+    {
+      "id": "E2",
+      "label": "같은 오른쪽 튜브의 바깥쪽 연구 절단점",
+      "kind": "per_view_study_cut",
+      "observations": {
+        "B": {
+          "pixel": [
+            840,
+            184
+          ],
+          "uncertainty_px": 12,
+          "superseded_pixel": [
+            840,
+            285
+          ],
+          "correction": "Root original-image inspection + independent OpenCV LSD actual tube-edge bracket. Prior B annotation selected lower/other members."
+        },
+        "A": {
+          "pixel": [
+            709,
+            239
+          ],
+          "uncertainty_px": 12
+        }
+      },
+      "same_physical_point_confidence": 0.15,
+      "same_feature_or_member_confidence": 0.78,
+      "direct_triangulation_candidate": false,
+      "note": "먼 실제 접합부는 이 작은 연구의 범위 밖. 두 절단점을 동일3D끝점으로 고정하지 않음."
+    },
+    {
+      "id": "SL",
+      "label": "기둥 왼쪽 실루엣 샘플",
+      "kind": "view_dependent_silhouette",
+      "observations": {
+        "B": {
+          "pixel": [
+            737,
+            300
+          ],
+          "uncertainty_px": 3
+        },
+        "A": {
+          "pixel": [
+            595,
+            350
+          ],
+          "uncertainty_px": 3
+        }
+      },
+      "same_physical_point_confidence": 0,
+      "same_feature_or_member_confidence": 0.97,
+      "direct_triangulation_candidate": false,
+      "note": "실루엣은 시점마다 다른 원통 표면점. projected width 제약만 사용."
+    },
+    {
+      "id": "SR",
+      "label": "기둥 오른쪽 실루엣 샘플",
+      "kind": "view_dependent_silhouette",
+      "observations": {
+        "B": {
+          "pixel": [
+            762,
+            300
+          ],
+          "uncertainty_px": 3
+        },
+        "A": {
+          "pixel": [
+            618,
+            350
+          ],
+          "uncertainty_px": 3
+        }
+      },
+      "same_physical_point_confidence": 0,
+      "same_feature_or_member_confidence": 0.97,
+      "direct_triangulation_candidate": false,
+      "note": "SL과 같은 이미지 행에서 측정한 윤곽. 실제 지름·공통 단면 위치를 뜻하지 않음."
+    },
+    {
+      "id": "S_TL",
+      "label": "노란7번출구 표지색 영역 왼쪽 위",
+      "kind": "observed_rigid_sign_corner",
+      "observations": {
+        "B": {
+          "pixel": [
+            744,
+            320
+          ],
+          "uncertainty_px": 5
+        },
+        "A": {
+          "pixel": [
+            615,
+            372
+          ],
+          "uncertainty_px": 5
+        }
+      },
+      "same_physical_point_confidence": 0.94,
+      "same_feature_or_member_confidence": 0.98,
+      "direct_triangulation_candidate": true,
+      "note": "원본 노란 영역 외곽의 대응 모서리. 흰 테두리 전체 코너와 혼동하지 않음. 구조부재가 아닌 등록용 마커."
+    },
+    {
+      "id": "S_TR",
+      "label": "노란 표지색 영역 오른쪽 위",
+      "kind": "observed_rigid_sign_corner",
+      "observations": {
+        "B": {
+          "pixel": [
+            850,
+            328
+          ],
+          "uncertainty_px": 5
+        },
+        "A": {
+          "pixel": [
+            710,
+            392
+          ],
+          "uncertainty_px": 5
+        }
+      },
+      "same_physical_point_confidence": 0.94,
+      "same_feature_or_member_confidence": 0.98,
+      "direct_triangulation_candidate": true,
+      "note": "색 영역 모서리의 직접 관찰; 정규화된색 threshold 외곽으로 위치를 보조 확인."
+    },
+    {
+      "id": "S_BR",
+      "label": "노란 표지색 영역 오른쪽 아래",
+      "kind": "observed_rigid_sign_corner",
+      "observations": {
+        "B": {
+          "pixel": [
+            847,
+            376
+          ],
+          "uncertainty_px": 5
+        },
+        "A": {
+          "pixel": [
+            704,
+            443
+          ],
+          "uncertainty_px": 5
+        }
+      },
+      "same_physical_point_confidence": 0.92,
+      "same_feature_or_member_confidence": 0.98,
+      "direct_triangulation_candidate": true,
+      "note": "보라색 하단 띠와의 경계 모서리. 동일 평면의 등록용 점."
+    },
+    {
+      "id": "S_BL",
+      "label": "노란 표지색 영역 왼쪽 아래",
+      "kind": "observed_rigid_sign_corner",
+      "observations": {
+        "B": {
+          "pixel": [
+            743,
+            370
+          ],
+          "uncertainty_px": 5
+        },
+        "A": {
+          "pixel": [
+            609,
+            429
+          ],
+          "uncertainty_px": 5
+        }
+      },
+      "same_physical_point_confidence": 0.92,
+      "same_feature_or_member_confidence": 0.98,
+      "direct_triangulation_candidate": true,
+      "note": "보라색 하단 띠와의 경계 모서리. 아래쪽 전체 안내판 모서리가 아님."
+    }
+  ],
+  "seed_view": "B",
+  "members": [
+    {
+      "id": "column_visible_segment",
+      "kind": "round_column",
+      "graph_from": "C1",
+      "graph_to": "C2",
+      "junction_parent": "J0",
+      "axis_samples": [
+        "C1",
+        "C2"
+      ],
+      "connectivity_confidence": 0.88,
+      "cross_section": "흰색 원형/원통 윤곽. 실측지름 미확인.",
+      "observed_extent": "하부 링에서 표지 가림까지 보이는 부분만",
+      "endpoint_status": "C1은링하단기준추정; C2는사진상가림절단",
+      "model_policy": "이 보이는 구간만 원통으로 맞춤. 아래로 임의 연장하면 synthetic continuation으로 별도 표시; 바닥원점/기초부를 만들지 않음."
+    },
+    {
+      "id": "collar_joint",
+      "kind": "collar_and_junction_region",
+      "graph_from": "J0",
+      "graph_to": "C1",
+      "connectivity_confidence": 0.85,
+      "cross_section": "기둥보다 약간 넓은 여러 링/접합 커버가 보임",
+      "endpoint_status": "내부 접속과 볼트 구조는 가려져 있음",
+      "model_policy": "관측된 외곽 범위의 간단한 가상 링만. 실제 용접/하중전달 상세로 부르지 않음."
+    },
+    {
+      "id": "left_branch_interval",
+      "kind": "round_tube_unclassified_brace_or_chord",
+      "graph_from": "J0",
+      "graph_to": "W2",
+      "axis_samples": [
+        "W1",
+        "W2"
+      ],
+      "connectivity_confidence": 0.72,
+      "cross_section": "밝은 평행 윤곽과 둥근 하이라이트를 가진 흰 튜브. 단면 규격 미확인.",
+      "endpoint_status": "접합 영역 안쪽은 부분 가림; W2는연구절단이지 실제끝점 아님",
+      "model_policy": "B축 구간을 초기화하고 A의 튜브 실루엣으로 검증. W1/W2를 직접 paired triangulation하지 않음."
+    },
+    {
+      "id": "right_branch_interval",
+      "kind": "round_tube_unclassified_brace_or_chord",
+      "graph_from": "J0",
+      "graph_to": "E2",
+      "axis_samples": [
+        "E1",
+        "E2"
+      ],
+      "connectivity_confidence": 0.74,
+      "cross_section": "원형으로 보이는 굵은 흰 튜브. 뒤의 가는 지붕격자와 분리.",
+      "endpoint_status": "먼 접합부/계속되는 길이는 미확정",
+      "model_policy": "보이는 짧은 연속 구간만 편집 가능한 관으로 제작. 끝단 cap은 연구 절단의 임시 마감임을 명시."
+    }
+  ],
+  "projected_width_constraints": [
+    {
+      "member": "column_visible_segment",
+      "B": {
+        "sample_row": 300,
+        "left_u": 737,
+        "right_u": 762,
+        "width_px": 25,
+        "uncertainty_px": 6
+      },
+      "A": {
+        "sample_row": 350,
+        "left_u": 595,
+        "right_u": 618,
+        "width_px": 23,
+        "uncertainty_px": 6
+      },
+      "same_physical_cross_section_confirmed": false,
+      "units": "pixels_only"
+    },
+    {
+      "member": "left_branch_interval",
+      "B": {
+        "sample_near": [
+          720,
+          270
+        ],
+        "approx_width_px": 8,
+        "uncertainty_px": 5,
+        "correction": "Actual upper branch edges: about8px normal width; earlier13px sample belonged to an incorrect lower row."
+      },
+      "A": {
+        "sample_near": [
+          584,
+          266
+        ],
+        "approx_width_px": 6,
+        "uncertainty_px": 4
+      },
+      "same_physical_cross_section_confirmed": false,
+      "units": "pixels_only"
+    },
+    {
+      "member": "right_branch_interval",
+      "B": {
+        "sample_near": [
+          789,
+          276
+        ],
+        "approx_width_px": 9,
+        "uncertainty_px": 4
+      },
+      "A": {
+        "sample_near": [
+          647,
+          267
+        ],
+        "approx_width_px": 11,
+        "uncertainty_px": 4
+      },
+      "same_physical_cross_section_confirmed": false,
+      "units": "pixels_only"
+    }
+  ],
+  "registration_markers": [
+    "S_TL",
+    "S_TR",
+    "S_BR",
+    "S_BL"
+  ],
+  "registration_caution": "네 표지점은 한 평면에 몰려 있어 이것만으로3D규모/전체자세를 확정하지 못함. J0는영역중심, 축샘플과 실루엣은실제표면대응점과 다르다.",
+  "constraints": {
+    "meters_per_unit": null,
+    "floor_origin": null,
+    "gravity_calibrated": false,
+    "north_calibrated": false,
+    "cross_sections_measured": false,
+    "known_station_dimensions_used": false,
+    "camera_hint": "동일GalaxyS23Ultra,EXIF6.3mm/35mm환산23mm,8초간격. 보정된K가 아님.",
+    "fitting": "DA3전면깊이를관축으로곧바로쓰지말고 camera rays/두영상실루엣을통해축·반지름·표면offset을함께제약. 상대단위로저장."
+  },
+  "excluded_members": [
+    "유리장식물 내부·배면",
+    "가려진 기둥의 바닥/기초/표지 뒤 구간",
+    "최상부 프레임 밖이나 B캐노피 뒤로 사라지는 급경사 튜브의 먼 접합부",
+    "반복 지붕격자 전체와 인접기둥 bay의 자동복제"
+  ],
+  "acceptance_focus": [
+    "같은 collar/노란 표지 기준으로 두 영상에 투영되는지",
+    "관이 예상 실루엣 밖으로 크게 벗어나거나 서로 다른 roof bay를 연결하지 않는지",
+    "관·기둥의 닫힌 volume은 새 편집용 추정모델임을 표면추론과 구분하는지",
+    "보이는 연구 구간 밖을 실제 관측으로 확대하지 않는지"
+  ]
+}
