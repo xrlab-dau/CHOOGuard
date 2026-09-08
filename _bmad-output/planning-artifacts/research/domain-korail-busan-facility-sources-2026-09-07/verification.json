@@ -1,0 +1,198 @@
+{
+  "verifiedAtUtc": "2026-09-07T14:36:36.296729+00:00",
+  "head": "b25413a06ec1943e180219241aad8880c9003f5d",
+  "commands": [
+    {
+      "command": [
+        ".local/reconstruction/geometry-venv/bin/python",
+        "-m",
+        "pytest",
+        "reconstruction/tests",
+        "-q"
+      ],
+      "exitCode": 0,
+      "output": ".........................................                                [100%]\n41 passed in 0.22s\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/references",
+        "-p",
+        "test_acquire_video.py",
+        "-q"
+      ],
+      "exitCode": 0,
+      "output": "----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/context",
+        "-p",
+        "test_*.py",
+        "-q"
+      ],
+      "exitCode": 0,
+      "output": "----------------------------------------------------------------------\nRan 15 tests in 0.277s\n\nOK\n"
+    },
+    {
+      "command": [
+        "python3",
+        ".agents/skills/bmad-deep-recon/scripts/recon_kit.py",
+        "citations",
+        "_bmad-output/planning-artifacts/research/domain-korail-busan-facility-sources-2026-09-07/research.md"
+      ],
+      "exitCode": 0,
+      "output": "{\n  \"markers\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12\n  ],\n  \"appendix_rows\": [\n    1,\n    2,\n    3,\n    4,\n    5,\n    6,\n    7,\n    8,\n    9,\n    10,\n    11,\n    12\n  ],\n  \"dangling_markers\": [],\n  \"orphaned_rows\": [],\n  \"ok\": true\n}\n"
+    },
+    {
+      "command": [
+        "ffmpeg",
+        "-hide_banner",
+        "-v",
+        "error",
+        "-i",
+        "private-data/facility-sources/videos/Gv9hCGseu9o/video.mp4",
+        "-frames:v",
+        "90",
+        "-f",
+        "null",
+        "-"
+      ],
+      "exitCode": 0,
+      "output": ""
+    }
+  ],
+  "acquiredFilesHashChecked": [
+    {
+      "id": "korail-public-emergency",
+      "sha256": "db514866f01d9a0eecdcf854bef4f2517f825b4a5a6b237928a266d0abd293da"
+    },
+    {
+      "id": "humetro-safety-equipment",
+      "sha256": "1a49a224c16294d54f82c25495405829f9b4a7ed44fea74ec195d345c4c62eb0"
+    },
+    {
+      "id": "kr-technical-repository",
+      "sha256": "017fb81c9a4746923b0f6cbdcdff1b8425005b9017f0032017c734e1f21e117d"
+    },
+    {
+      "id": "busan-notice-73396",
+      "sha256": "261157d6d8cdd93280461f197ecc1e209478aaf0bcd6ed75c4c8245ac17bacbe"
+    },
+    {
+      "id": "jodal-escalator-lead",
+      "sha256": "ede439c42cb8d9f87f5abc6c62e00c2409f12ea800716912ddf954cbb823efcf"
+    },
+    {
+      "id": "korail-station-guide",
+      "sha256": "7aaa5fa064318b8c8a6ceb7e9295c8e5673846db841eebe62be9aaf1bd26ce03"
+    },
+    {
+      "id": "humetro-busan-113",
+      "sha256": "e3cddaa52a41763615bc57a9bc0041230713d05d989fb99f1799f25b492bdd8b"
+    },
+    {
+      "id": "creator-bang9163-busan-2021",
+      "sha256": "31ede13dbb4d26220414a57c04a931bfc7f40271ffe6c5be481d6e9ef3173301"
+    },
+    {
+      "id": "korail-escalator-20260703-notice",
+      "sha256": "f4fe22245fd30a6f536d266328a990bb1e249972dd770af35844161d0fcd0ac2"
+    },
+    {
+      "id": "korail-escalator-20260703-design",
+      "sha256": "cba3ceff7228f6bd63863b10b38b3ec6a76f9a7617c2309ee1c514d96c916313"
+    },
+    {
+      "id": "korail-escalator-20260703-quantities",
+      "sha256": "faa1c52cce74f7c26e0ee5c79ef6b90b3afd56dba090731d309ceb3164f94516"
+    },
+    {
+      "id": "busan-underground-20250724-task",
+      "sha256": "8a63cb89a232279f1efaf707e1ed18c099c58d4b334d5807181d0cd2cf72af98"
+    },
+    {
+      "id": "busan-underground-20250724-proposal",
+      "sha256": "db133432708b6b9696ebafe7e583814ed19eeb0b32f70e6055f9145bf7a5da26"
+    },
+    {
+      "id": "humetro-line1-emergency-door",
+      "sha256": "c376561f757fd3f77759ee920e6337adfd0159ec3bcdce4d881bc1203936dca2"
+    },
+    {
+      "id": "humetro-line1-extinguisher",
+      "sha256": "11c62eb200398b037792fd4b201f2be4e8ee57072c5401101789569f5f7ccc49"
+    },
+    {
+      "id": "humetro-line1-intercom",
+      "sha256": "28f0adb7f3f6326a6da9cac3dbedde00d6db4946c17852ab9a5199a96cec6c2d"
+    },
+    {
+      "id": "jodal-goods-shop-20260730",
+      "sha256": "bb3ad2f1c7ed9efc831648ea94428b689923a117f702749db8f1da906dd1b911"
+    },
+    {
+      "id": "humetro-mask-dataset-20251031",
+      "sha256": "426c119323d1c160d5e0131a4f8eeda9c55336ddab0e711c4ddbcd0dbef72e61"
+    },
+    {
+      "id": "humetro-facilities-dataset-20251231",
+      "sha256": "d6903800db1493c422b52528a386586e0ac88630f582c78cd23e48b1c2eedb6f"
+    },
+    {
+      "id": "humetro-psd-dataset-20260630",
+      "sha256": "2072622eb6139f848da7ed7a8897065dc1fd0cd6421693cef9a798c38d355f93"
+    },
+    {
+      "id": "humetro-guide-dataset",
+      "sha256": "12fa070665103db298edd6fd33eaef8551ead490a2cced6721e172dd7746d3dc"
+    },
+    {
+      "id": "humetro-aed-announcement",
+      "sha256": "f7d4556a81f2bcf8ee6c09371a606ada4908aef2e034ce6f578ffb18c7bbdf85"
+    },
+    {
+      "id": "korail-goods-shop-20260730-design",
+      "sha256": "f0bd4699ba85864c452d825c8765c26c9e1d2817d18b1f2662baa01e331c67fd"
+    },
+    {
+      "id": "korail-goods-shop-20260730-notice",
+      "sha256": "07077ecbf48236eb4f96221e44c387c3dbc2d79431f91239e8c47a81751ee6fa"
+    },
+    {
+      "id": "humetro-mask-dataset-20251031",
+      "sha256": "415098a08bb05a57032b42b446850690f81bcadf66617058de1f7e65af9ada3d"
+    },
+    {
+      "id": "humetro-facilities-dataset-20251231",
+      "sha256": "f09e8e039921ecef12deade7327e6a92fc6c8e9c420362691d28e491dcad9193"
+    },
+    {
+      "id": "humetro-psd-dataset-20260630",
+      "sha256": "e087354c39ef0ac521f8996bce3c9eaa62bffea438536e073253e1cbfccb9fee"
+    },
+    {
+      "id": "humetro-guide-dataset",
+      "sha256": "adef93de42498d91f2081fa40f42a47d2ddd93a03b24352aab0366ab6cf126e7"
+    }
+  ],
+  "acquiredFilesCount": 28,
+  "acquiredFilesIgnored": true,
+  "localDocumentLinksExist": true,
+  "csvExactRowsAndBlankPreserved": true,
+  "videoDecodeFrames": 90,
+  "videoVisualQualityReviewed": false,
+  "independentFieldValidation": false,
+  "newReconstructionRun": false,
+  "unityExecutedThisWorkUnit": false,
+  "limits": "자료 수집·기존 코드 기준선 검사. 새 복원·Blender·Unity 수용 아님."
+}

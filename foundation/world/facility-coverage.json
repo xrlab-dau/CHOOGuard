@@ -5,6 +5,15 @@
   "vr_decision": "undecided",
   "authority": "Evidence coverage and proposed connectivity only; not current surveyed placement or completed reconstruction.",
   "source_document": "docs/art/public-facility-plans.md",
+  "sequence_resumption": {
+    "checked_at": "2026-09-08",
+    "source_recovery_evidence": "docs/evidence/foundation/2026-09-08-sequence-source-recovery.json",
+    "execution_evidence": "docs/evidence/foundation/2026-09-08-sequence-resume.json",
+    "held_videos_checked": 4,
+    "missing_photo_records_recovered": 13,
+    "new_videos_acquired": 0,
+    "limits": "캐시 원문 URL/해시/디코더 검사이며 시각/권리/실측 수용 아님. 새 시퀀스의 Blender/Unity 전달은 max writer 인계 전 미완료. 13구역/12연결의 실제 축척 공백은 유지한다."
+  },
   "sources": [
     {
       "id": "P01",
@@ -367,19 +376,30 @@
       "label": "부산역 지하연결통로",
       "operator": "부산유라시아플랫폼 / 부산시설공단",
       "level": "지하, 수치B층/접속고 미확인",
-      "photo_evidence": [],
+      "photo_evidence": [
+        "connector-t000",
+        "connector-t010",
+        "connector-t020",
+        "connector-t030"
+      ],
       "public_plan_refs": [
         "P04",
         "P09"
       ],
-      "coverage_status": "operator_dimensions_and_topology",
-      "reconstruction_status": "missing_source_views",
+      "coverage_status": "video_source_views_available_2026_09_08",
+      "reconstruction_status": "resumed_raw_sequence_comparison_delivery_pending",
       "validated_reconstruction_artifact": null,
       "metric_alignment_verified": false,
       "limitations": [
         "공개99.6×8.0m는 이 통로에만 해당한다. 끝점 좌표·경사·층고는 미확인이다.",
-        "현재A/B재구성에 이 통로의 관측이 없으므로 스케일을 전이하지 않는다."
-      ]
+        "2026-09-08 4프레임(10초 간격) 파일럿에서 DA3-SMALL/BASE는 시점별 마스크된 비계량 표면을 만들었지만, 독립 PyCOLMAP SfM은 초기 쌍조차 등록하지 못했다(컷/큰 이동거리/반복 구조 추정).",
+        "최초 MapAnything 미실행/학교 전용 해석은 사후 감사에서 차단했다. 재개 환경/실행 또는 측정한 차단 결과는 sequence-resume 증거를 따른다.",
+        "새 24~25.5초4장의 hard-cut 휴리스틱 미검출은 정확한 시설 구역/개인정보/관측 표면 마스크의 시각 검수가 아니다.",
+        "이 파일럿의 Blender/Unity 임포트·충돌 검사는 아직 수행하지 않았다; 시점별 표면은 열려 있고 스케일·중력·바닥 원점이 없다.",
+        "현재A/B맞이방 재구성과 공동 스케일은 여전히 미검증이며 이 통로에 전이하지 않는다."
+      ],
+      "local_review_evidence": "docs/evidence/foundation/2026-09-08-sequence-resume.json",
+      "historical_blocked_evidence": "docs/evidence/foundation/2026-09-08-sequence-parent-audit.json"
     },
     {
       "id": "underground_shopping_passage",
