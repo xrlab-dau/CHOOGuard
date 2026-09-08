@@ -42,6 +42,16 @@
           "repoPath": "docs/context/school-pc-handoff-2026-09-08.md",
           "sha256": "dd8a27b6f40d2fad8801ffee1a5b01dab00d8f251b2446b3a10c9707790df580",
           "label": "독립 학교 작업 계약"
+        },
+        {
+          "repoPath": "school/windows-validation/summarize_profile.py",
+          "sha256": "7080dde89843cdf69f172daa62a2fe48a036d2324845a8f1f27ffea5a0a00a46",
+          "label": "Draft Windows profile completeness gate"
+        },
+        {
+          "repoPath": "school/windows-validation/test_profile_summary.py",
+          "sha256": "7166901b540ee299501f153673a5860e8dd4b5d9594900abe3bb7dec289873b8",
+          "label": "Python adversarial profile receipt regressions"
         }
       ],
       "authority": "canonical_document",
@@ -50,7 +60,8 @@
       "id": "component.school_independent_work",
       "limits": [
         "동일 GPU/Unity를 무제한 병렬 점유하지 않는다. 실제 자원에 맞춰 제한 병렬/순차 실행한다.",
-        "CV core/현재 runner/관측 export는 로컬 소유이며 학교 작업의 수정 대상이 아니다."
+        "CV core/현재 runner/관측 export는 로컬 소유이며 학교 작업의 수정 대상이 아니다.",
+        "2026-09-08 independent review: profile summary rejects zero/unavailable memory, invalid render counters and missing initial samples. Nine Python tests passed on Linux; no new Windows/Unity or long-duration acceptance."
       ],
       "freshnessPolicy": "content",
       "summary": "S-ART-01 베이크/검수 렌더, S-BENCH-01 고정 공개 upstream benchmark와 데이터/모델 캐시, S-WIN-01 Windows 검증의 독립 입력·출력·편집 경계를 정리했다. 개별 학교 실행과 미실행 범위는 날짜별 evidence로 추적한다. 기기별 실제 자원으로 작업량을 선택하며 환경 확인만으로 수용을 선언하지 않는다.",
@@ -1898,13 +1909,6 @@
   ],
   "refreshLog": [
     {
-      "date": "2026-09-07",
-      "nodes": [
-        "component.facility_coverage"
-      ],
-      "reason": "2026 공개 매장 부분 설계·역별 안전설비 원문과 영상 취득 등록부를 읽고 연결; 실측/절차/재구성 수용은 유지하지 않고 별도 미검증으로 명시"
-    },
-    {
       "date": "2026-09-08",
       "nodes": [
         "component.facility_coverage",
@@ -2069,6 +2073,14 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed merged school Windows history and official MCP handoff; retained both evidence nodes and unchanged historical coverage."
+    },
+    {
+      "date": "2026-09-08",
+      "nodes": [
+        "workflow.start_validate",
+        "component.school_independent_work"
+      ],
+      "reason": "사용자 요청으로 작업 중단 후 커밋·PR 인계: 새 Unity/Windows 검증과 미수용 성능 파일럿 기록 연결 | Independently reproduced and fixed draft profile false acceptance with tests first; preserve all historical Windows receipts and failed pilot results."
     }
   ]
 }
