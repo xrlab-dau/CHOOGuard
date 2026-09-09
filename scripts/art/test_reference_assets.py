@@ -1,9 +1,13 @@
 import copy
+from contextlib import redirect_stdout
 import hashlib
 import importlib.util
+import io
+import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
 
 spec=importlib.util.spec_from_file_location('reference_assets',Path(__file__).with_name('validate_reference_assets.py'))
 art=importlib.util.module_from_spec(spec);spec.loader.exec_module(art)
@@ -55,6 +59,83 @@ class ReferenceAssetTests(unittest.TestCase):
                 self.registry['assets']=rows
                 self.assertTrue(self.check()['errors'])
 
+    def test_cli_asset_lookup_preserves_malformed_row_diagnostics(self):
+        valid=copy.deepcopy(self.registry['assets'][0])
+        for malformed in ({},None,[],{'id':[]},{'id':' '}):
+            with self.subTest(row=malformed):
+                self.registry['assets']=[malformed,valid]
+                (self.root/'registry.json').write_text(json.dumps(self.registry))
+                (self.root/'manifest.json').write_text(json.dumps(self.manifest))
+                output=io.StringIO()
+                argv=['validate_reference_assets.py','--registry','registry.json',
+                      '--manifest','manifest.json','--asset','Bench']
+                with patch.object(art,'ROOT',self.root),patch('sys.argv',argv),redirect_stdout(output):
+                    status=art.main()
+                report=json.loads(output.getvalue())
+                self.assertEqual(status,1)
+                self.assertTrue(report['errors'])
+                self.assertEqual(report['assetCount'],1)
+                self.assertEqual(report['assetContext']['id'],'Bench')
+
+    def test_cli_explicit_null_inventory_cannot_skip_scene_validation(self):
+        (self.root/'registry.json').write_text(json.dumps(self.registry))
+        (self.root/'manifest.json').write_text(json.dumps(self.manifest))
+        inventory_path=self.root/'inventory.json';inventory_path.write_text('null')
+        output=io.StringIO()
+        argv=['validate_reference_assets.py','--registry','registry.json','--manifest','manifest.json',
+              '--inventory',str(inventory_path)]
+        with patch.object(art,'ROOT',self.root),patch('sys.argv',argv),redirect_stdout(output):
+            status=art.main()
+        self.assertEqual(status,1)
+        self.assertTrue(json.loads(output.getvalue())['errors'])
+
+    def test_malformed_input_documents_return_errors(self):
+        for name in ('registry','manifest','inventory'):
+            original=getattr(self,name)
+            for value in ([],42,'document',None):
+                if name=='inventory' and value is None:continue
+                with self.subTest(document=name,value=value):
+                    setattr(self,name,value)
+                    self.assertTrue(self.check()['errors'])
+            setattr(self,name,original)
+
+    def test_model_rows_require_nonempty_unique_string_ids(self):
+        original=copy.deepcopy(self.manifest['assets'][0])
+        for rows in (None,{},'model',[None],[[]],['model'],[{}]):
+            with self.subTest(rows=rows):
+                self.manifest['assets']=rows
+                self.assertTrue(self.check()['errors'])
+        for identifier in (None,{},[],42,'',' '):
+            with self.subTest(identifier=identifier):
+                self.manifest['assets']=[dict(original,id=identifier)]
+                self.assertTrue(self.check()['errors'])
+        self.manifest['assets']=[dict(original,sha256='0'*64),original]
+        self.assertTrue(any('Duplicate' in error for error in self.check()['errors']))
+
+    def test_malformed_inventory_rows_return_errors(self):
+        for rows in (None,{},'instance',[None],[[]],['instance'],[{}],
+                     [{'assetId':[]}],[{'assetId':42}],[{'assetId':' '}]):
+            with self.subTest(rows=rows):
+                self.inventory['instances']=rows
+                self.assertTrue(self.check()['errors'])
+
+    def test_inventory_cannot_hide_unsupported_geometry_from_failed_export(self):
+        self.inventory['unsupportedMeshes']=[]
+        self.assertEqual(self.check()['errors'],[])
+        path='FoundationDemo/Props/UnregisteredMesh'
+        self.inventory['unsupportedMeshes']=[path]
+        self.assertTrue(any(path in error for error in self.check()['errors']))
+        for unsupported in (None,{},path,[None],[[]]):
+            with self.subTest(unsupportedMeshes=unsupported):
+                self.inventory['unsupportedMeshes']=unsupported
+                self.assertTrue(self.check()['errors'])
+
+    def test_source_dependencies_require_a_mapping(self):
+        for dependencies in (None,[],'generator.py',42):
+            with self.subTest(dependencies=dependencies):
+                self.manifest['sourceModuleSha256']=dependencies
+                self.assertTrue(self.check()['errors'])
+
     def test_malformed_reference_entries_return_errors(self):
         original=copy.deepcopy(self.registry['assets'][0]['references'])
         for references in (None,{},'source',[None],['source'],[42],[[]]):
@@ -82,6 +163,35 @@ class ReferenceAssetTests(unittest.TestCase):
         self.registry['assets'][0]['requiredComponents'].append('InventedBackrest')
         self.assertTrue(any('InventedBackrest' in e for e in self.check()['errors']))
 
+    def test_authored_feature_bindings_require_named_component_records(self):
+        row=self.registry['assets'][0]
+        original=copy.deepcopy(row['requiredComponents'])
+        for components in (None,'TimberSlat',{'TimberSlat':False},[None],[[]],[42],[' ']):
+            with self.subTest(requiredComponents=components):
+                row['requiredComponents']=components
+                self.assertTrue(self.check()['errors'])
+        row['requiredComponents']=original
+        model=self.manifest['assets'][0]
+        original=copy.deepcopy(model['components'])
+        for components in (None,[]):
+            with self.subTest(components=components):
+                model['components']=components
+                self.assertTrue(self.check()['errors'])
+        for component in (None,1,{'count':'7'},{'count':True},{'count':1.5}):
+            with self.subTest(component=component):
+                model['components']=dict(original,TimberSlat=component)
+                self.assertTrue(self.check()['errors'])
+
+    def test_reference_classifications_reject_malformed_values(self):
+        row=self.registry['assets'][0]
+        for field in ('kind','usage'):
+            original=row[field]
+            for value in (None,{},[],42):
+                with self.subTest(field=field,value=value):
+                    row[field]=value
+                    self.assertTrue(self.check()['errors'])
+            row[field]=original
+
     def test_scene_asset_must_have_actual_usage_and_inventory_cannot_hide_unknown_family(self):
         self.inventory['instances']=[];self.assertTrue(self.check()['errors'])
         self.inventory['instances']=[{'assetId':'UnknownCube','path':'scene/object','active':True}]
@@ -104,6 +214,23 @@ class ReferenceAssetTests(unittest.TestCase):
         self.assertEqual(self.check(strict=True)['errors'],[])
         (self.root/'Assets/Bench.fbx').write_bytes(b'changed geometry')
         self.assertTrue(self.check(strict=True)['errors'])
+
+    def test_visual_review_requires_typed_capture_evidence(self):
+        row=self.registry['assets'][0]
+        original={'status':'reviewed','assetSha256':self.manifest['assets'][0]['sha256'],
+                  'captureSha256':['b'*64,'c'*64],'scope':'front and side'}
+        for review in (None,[],42,'reviewed'):
+            with self.subTest(review=review):
+                row['visualReview']=review
+                self.assertTrue(self.check(strict=True)['errors'])
+        for field,values in (('captureSha256',(None,'b'*64,[[]],{'b'*64:None,'c'*64:None})),
+                             ('scope',(None,{},['front','side'],42,' '))):
+            for value in values:
+                with self.subTest(field=field,value=value):
+                    row['visualReview']=dict(original,**{field:value})
+                    report=self.check(strict=True)
+                    self.assertTrue(report['errors'])
+                    self.assertEqual(report['visuallyReviewedAssets'],0)
 
     def test_path_escape_and_missing_authored_module_fail(self):
         for path in ['../outside.py','/private/source.py','missing.py']:

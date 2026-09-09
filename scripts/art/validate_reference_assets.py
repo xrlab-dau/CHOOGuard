@@ -27,25 +27,49 @@ def public_url(value):
         return u.scheme=='https' and bool(u.netloc) and not u.username and not u.password
     except (TypeError,ValueError):return False
 
-def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
-    errors=[]; entries=registry.get('assets',[]); generated=manifest.get('assets',[])
+def identified_rows(entries,label,id_key,errors):
     if not isinstance(entries,list):
-        errors.append('Asset references must be a list')
-        entries=[]
+        errors.append(label+' must be a list')
+        return []
     rows=[]
     for entry in entries:
-        if not isinstance(entry,dict) or not isinstance(entry.get('id'),str) or not entry['id'].strip():
-            errors.append('Asset reference requires an object with a nonempty string ID')
+        if not isinstance(entry,dict) or not isinstance(entry.get(id_key),str) or not entry[id_key].strip():
+            errors.append(label+': each row requires an object with a nonempty string '+id_key)
             continue
         rows.append(entry)
+    return rows
+
+def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
+    errors=[]
+    if not isinstance(registry,dict):
+        errors.append('Reference registry must be an object');registry={}
+    if not isinstance(manifest,dict):
+        errors.append('Model manifest must be an object');manifest={}
+    rows=identified_rows(registry.get('assets',[]),'Asset references','id',errors)
+    generated=identified_rows(manifest.get('assets',[]),'Generated models','id',errors)
     ids=[a.get('id') for a in rows]; models={a.get('id'):a for a in generated}
     if len(set(ids))!=len(ids):errors.append('Duplicate asset reference IDs')
+    if len(models)!=len(generated):errors.append('Duplicate generated model IDs')
     if set(ids)!=set(models):errors.append('Reference/model coverage differs: '+str(sorted(set(ids)^set(models))))
     if registry.get('version')!=1:errors.append('Unknown reference registry version')
-    used={a.get('assetId') for a in inventory.get('instances',[])} if inventory is not None else None
+    used=None
+    if inventory is not None:
+        if not isinstance(inventory,dict):
+            errors.append('Scene inventory must be an object');inventory={}
+        used={a['assetId'] for a in identified_rows(inventory.get('instances',[]),'Scene instances','assetId',errors)}
+        unsupported=inventory.get('unsupportedMeshes',[])
+        if not isinstance(unsupported,list):
+            errors.append('Unsupported scene meshes must be a list');unsupported=[]
+        for path in unsupported:
+            if not isinstance(path,str) or not path.strip():
+                errors.append('Unsupported scene mesh requires a nonempty hierarchy path')
+            else:errors.append('Unsupported scene geometry: '+path)
     if used is not None:
         for identifier in used-set(models):errors.append('Unregistered scene geometry family: '+str(identifier))
-    dependencies=dict(manifest.get('sourceModuleSha256',{}))
+    dependencies=manifest.get('sourceModuleSha256',{})
+    if not isinstance(dependencies,dict):
+        errors.append('Source module digests must be an object');dependencies={}
+    dependencies=dict(dependencies)
     if manifest.get('generatorSha256'):dependencies['scripts/art/build_station_assets.py']=manifest['generatorSha256']
     for path,expected in dependencies.items():
         try:
@@ -56,9 +80,9 @@ def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
         identifier=row.get('id','?'); model=models.get(identifier)
         if model is None:continue
         kind=row.get('kind');usage=row.get('usage')
-        if kind not in {'station_specific','category_proxy','virtual_guidance','structural_base'}:
+        if not isinstance(kind,str) or kind not in {'station_specific','category_proxy','virtual_guidance','structural_base'}:
             errors.append(identifier+': classify the reference scope')
-        if usage not in {'scene','virtual','catalog'}:errors.append(identifier+': classify actual usage')
+        if not isinstance(usage,str) or usage not in {'scene','virtual','catalog'}:errors.append(identifier+': classify actual usage')
         if kind=='virtual_guidance':virtual+=1
         elif usage=='scene':physical+=1
         if usage=='catalog':catalog+=1
@@ -93,14 +117,27 @@ def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
             if digest(model_path)!=model['sha256']:errors.append(identifier+': generated model digest changed')
         except (ValueError,KeyError) as error:errors.append(identifier+': '+str(error))
         components=row.get('requiredComponents',[])
+        if not isinstance(components,list):
+            errors.append(identifier+': required components must be a list');components=[]
         if not components:errors.append(identifier+': no authored feature binding')
+        model_components=model.get('components',{})
+        if not isinstance(model_components,dict):
+            errors.append(identifier+': generated components must be an object');model_components={}
         for component in components:
-            if model.get('components',{}).get(component,{}).get('count',0)<1:
+            if not isinstance(component,str) or not component.strip():
+                errors.append(identifier+': required component must be a nonempty string')
+                continue
+            detail=model_components.get(component,{})
+            count=detail.get('count',0) if isinstance(detail,dict) else 0
+            if type(count) is not int or count<1:
                 errors.append(identifier+': reference detail absent from authored geometry: '+component)
         review=row.get('visualReview',{})
+        if not isinstance(review,dict):
+            errors.append(identifier+': visual review must be an object');review={}
         captures=review.get('captureSha256',[])
-        complete=review.get('status')=='reviewed' and review.get('assetSha256')==model.get('sha256') and len(set(captures))>=2
-        complete=complete and all(isinstance(x,str) and re.fullmatch('[0-9a-f]{64}',x) for x in captures) and bool(review.get('scope'))
+        complete=review.get('status')=='reviewed' and review.get('assetSha256')==model.get('sha256') and isinstance(captures,list)
+        complete=complete and all(isinstance(x,str) and re.fullmatch('[0-9a-f]{64}',x) for x in captures) and len(set(captures))>=2
+        complete=complete and isinstance(review.get('scope'),str) and bool(review['scope'].strip())
         if complete:reviewed+=1
         if require_reviewed and not complete:errors.append(identifier+': current front/side visual review is missing')
     return {'scope':'per_object_reference_and_authored_geometry','errors':errors,'assetCount':len(models),
@@ -117,10 +154,13 @@ def main():
     a=p.parse_args()
     try:
         registry=json.loads((ROOT/a.registry).read_text())
-        report=validate(registry,json.loads((ROOT/a.manifest).read_text()),ROOT,
-                        json.loads(Path(a.inventory).read_text()) if a.inventory else None,a.require_reviewed)
+        inventory=json.loads(Path(a.inventory).read_text()) if a.inventory else None
+        if a.inventory and inventory is None:raise ValueError('Scene inventory must be an object')
+        report=validate(registry,json.loads((ROOT/a.manifest).read_text()),ROOT,inventory,a.require_reviewed)
         if a.asset:
-            record=next((row for row in registry['assets'] if row['id']==a.asset),None)
+            entries=registry.get('assets',[]) if isinstance(registry,dict) else []
+            if not isinstance(entries,list):entries=[]
+            record=next((row for row in entries if isinstance(row,dict) and row.get('id')==a.asset),None)
             if record is None:report['errors'].append('Unknown asset: '+a.asset)
             else:report['assetContext']=record
     except (ValueError,OSError,TypeError) as error:
