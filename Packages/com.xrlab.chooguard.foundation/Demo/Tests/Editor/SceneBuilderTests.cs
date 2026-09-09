@@ -234,13 +234,15 @@ namespace ChooGuard.Foundation.Demo.Tests
                 Assert.That(error.Message, Does.Contain("not owned"));
                 Assert.That(File.ReadAllText(sentinel), Is.EqualTo("keep"));
             }
-            finally { File.Delete(sentinel); Directory.Delete(output); }
+            // A regression that writes before refusing would leave extra files here, and a
+            // non-recursive delete would then throw over the real assertion failure.
+            finally { if (Directory.Exists(output)) Directory.Delete(output, true); }
         }
 
         [Test]
         public void WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting()
         {
-            const string output = "Builds/FoundationDesktop";
+            const string output = FoundationDemoSceneBuilder.DesktopOutputRoot;
             if (Directory.Exists(output)) Assert.Ignore("Existing Windows build must be retained.");
             Directory.CreateDirectory(output);
             var sentinel = output + "/team-file.txt";
@@ -251,7 +253,9 @@ namespace ChooGuard.Foundation.Demo.Tests
                 Assert.That(error.Message, Does.Contain("not owned"));
                 Assert.That(File.ReadAllText(sentinel), Is.EqualTo("keep"));
             }
-            finally { File.Delete(sentinel); Directory.Delete(output); }
+            // Same reason as the Mac case: teardown must not replace a real failure with an
+            // IOException about a directory the refusal was supposed to leave empty.
+            finally { if (Directory.Exists(output)) Directory.Delete(output, true); }
         }
 
         [Test]
