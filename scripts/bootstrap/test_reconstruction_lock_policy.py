@@ -1,4 +1,4 @@
-"""FR-006 dependency-lock scope; every policy pin and tool is synthetic."""
+"""FR-006 dependency manifests/locks; every policy pin and tool is synthetic."""
 from __future__ import annotations
 
 import json
@@ -17,15 +17,18 @@ EXTRA_LOCK = "reconstruction/requirements-next-engine.lock"
 
 
 class ReconstructionLockPolicyTests(unittest.TestCase):
+    known_paths = KNOWN_LOCKS
+    extra_path = EXTRA_LOCK
+
     def setUp(self):
         self.fixture = policy_tests.PolicyBaselineTests()
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.case = self.fixture.case
         self.root = self.fixture.root
-        for name in KNOWN_LOCKS:
+        for name in self.known_paths:
             (self.root / name).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
-        self.case.tracked = list(KNOWN_LOCKS)
+        self.case.tracked = list(self.known_paths)
 
     def pin(self):
         self.digest = self.fixture.write_manifest()
@@ -65,10 +68,10 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
         self.assertFalse(any(command[0] in {"node", "pi", "uv"} for command in calls))
         packages.assert_not_called()
 
-    def test_changed_reconstruction_locks_block_original_pin(self):
+    def test_changed_reconstruction_dependencies_block_original_pin(self):
         self.pin()
-        for index, name in enumerate(KNOWN_LOCKS):
-            with self.subTest(lock=name):
+        for index, name in enumerate(self.known_paths):
+            with self.subTest(dependency=name):
                 path = self.root / name
                 original = path.read_bytes()
                 try:
@@ -77,18 +80,18 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
                 finally:
                     path.write_bytes(original)
 
-    def test_added_reconstruction_lock_blocks_original_pin(self):
+    def test_added_reconstruction_dependency_blocks_original_pin(self):
         self.pin()
-        (self.root / EXTRA_LOCK).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
-        self.case.tracked.append(EXTRA_LOCK)
-        self.assert_mutation_blocked(EXTRA_LOCK, "unexpected_paths", "added")
+        (self.root / self.extra_path).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
+        self.case.tracked.append(self.extra_path)
+        self.assert_mutation_blocked(self.extra_path, "unexpected_paths", "added")
 
-    def test_deleted_reconstruction_locks_block_original_pin(self):
-        (self.root / EXTRA_LOCK).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
-        self.case.tracked.append(EXTRA_LOCK)
+    def test_deleted_reconstruction_dependencies_block_original_pin(self):
+        (self.root / self.extra_path).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
+        self.case.tracked.append(self.extra_path)
         self.pin()
-        for index, name in enumerate((*KNOWN_LOCKS, EXTRA_LOCK)):
-            with self.subTest(lock=name):
+        for index, name in enumerate((*self.known_paths, self.extra_path)):
+            with self.subTest(dependency=name):
                 path = self.root / name
                 original = path.read_bytes()
                 try:
@@ -97,9 +100,9 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
                 finally:
                     path.write_bytes(original)
 
-    def test_each_known_reconstruction_lock_is_required_before_candidate(self):
-        for index, name in enumerate(KNOWN_LOCKS):
-            with self.subTest(lock=name):
+    def test_each_known_reconstruction_dependency_is_required_before_candidate(self):
+        for index, name in enumerate(self.known_paths):
+            with self.subTest(dependency=name):
                 path = self.root / name
                 original = path.read_bytes()
                 target = f"docs/evidence/R-07/missing-lock-{index}.json"
@@ -112,17 +115,26 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
                 finally:
                     path.write_bytes(original)
 
-    def test_candidate_includes_known_and_new_reconstruction_locks(self):
-        (self.root / EXTRA_LOCK).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
-        self.case.tracked.append(EXTRA_LOCK)
+    def test_candidate_includes_known_and_new_reconstruction_dependencies(self):
+        (self.root / self.extra_path).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
+        self.case.tracked.append(self.extra_path)
         target = "docs/evidence/R-07/lock-candidate.json"
         self.assertEqual(self.case.invoke("--write-policy-candidate", target), 0)
         candidate = json.loads((self.root / target).read_text(encoding="utf-8"))
         self.assertEqual(candidate["status"], "candidate")
         self.assertIsNone(candidate["approvalReference"])
-        for name in (*KNOWN_LOCKS, EXTRA_LOCK):
-            with self.subTest(lock=name):
+        for name in (*self.known_paths, self.extra_path):
+            with self.subTest(dependency=name):
                 self.assertEqual(candidate["policySha256"].get(name), verifier.sha256(self.root / name))
+
+
+class ReconstructionInputPolicyTests(ReconstructionLockPolicyTests):
+    known_paths = (
+        "reconstruction/requirements-colmap.in",
+        "reconstruction/requirements-da3.in",
+        "reconstruction/requirements-mapanything.in",
+    )
+    extra_path = "reconstruction/requirements-next-engine.in"
 
 
 if __name__ == "__main__":
