@@ -43,6 +43,29 @@ class ReferenceAssetTests(unittest.TestCase):
             previous=reference[key];reference[key]=value
             self.assertTrue(self.check()['errors'],key);reference[key]=previous
 
+    def test_malformed_reference_entries_return_errors(self):
+        original=copy.deepcopy(self.registry['assets'][0]['references'])
+        for references in (None,{},'source',[None],['source'],[42],[[]]):
+            with self.subTest(references=references):
+                self.registry['assets'][0]['references']=references
+                self.assertTrue(self.check()['errors'])
+        self.registry['assets'][0]['references']=original
+
+    def test_reference_fields_require_typed_complete_image_evidence(self):
+        original=copy.deepcopy(self.registry['assets'][0]['references'][0])
+        cases=[('pageUrl',None),('pageUrl',42),('pageUrl',{}),
+               ('imageUrls',None),('imageUrls','https://example.org/bench.jpg'),
+               ('imageSha256',None),('imageSha256','a'*64),('imageSha256',[None]),
+               ('inspectedOn',None),('inspectedOn',20260907),
+               ('observedFeatures',None),('observedFeatures','not two observations'),
+               ('observedFeatures',['',None]),
+               ('imageUrls',['https://example.org/bench.jpg','https://example.org/side.jpg'])]
+        for key,value in cases:
+            with self.subTest(field=key,value=value):
+                reference=copy.deepcopy(original);reference[key]=value
+                self.registry['assets'][0]['references']=[reference]
+                self.assertTrue(self.check()['errors'])
+
     def test_named_detail_must_exist_in_generated_geometry_inventory(self):
         self.registry['assets'][0]['requiredComponents'].append('InventedBackrest')
         self.assertTrue(any('InventedBackrest' in e for e in self.check()['errors']))

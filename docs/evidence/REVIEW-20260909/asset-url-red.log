@@ -1,0 +1,49 @@
+test_catalog_objects_cannot_be_counted_as_used_scene_assets (test_reference_assets.ReferenceAssetTests.test_catalog_objects_cannot_be_counted_as_used_scene_assets) ... ok
+test_category_proxy_cannot_be_marked_confirmed_station_installation (test_reference_assets.ReferenceAssetTests.test_category_proxy_cannot_be_marked_confirmed_station_installation) ... ok
+test_changed_generator_dependency_requires_regeneration (test_reference_assets.ReferenceAssetTests.test_changed_generator_dependency_requires_regeneration) ... ok
+test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) ... ok
+test_missing_or_duplicate_asset_reference_fails (test_reference_assets.ReferenceAssetTests.test_missing_or_duplicate_asset_reference_fails) ... ok
+test_named_detail_must_exist_in_generated_geometry_inventory (test_reference_assets.ReferenceAssetTests.test_named_detail_must_exist_in_generated_geometry_inventory) ... ok
+test_path_escape_and_missing_authored_module_fail (test_reference_assets.ReferenceAssetTests.test_path_escape_and_missing_authored_module_fail) ... ok
+test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) ...
+  test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='pageUrl', value=42) ... ERROR
+test_references_do_not_imply_visual_or_facility_acceptance (test_reference_assets.ReferenceAssetTests.test_references_do_not_imply_visual_or_facility_acceptance) ... ok
+test_review_requires_matching_asset_and_two_local_capture_digests (test_reference_assets.ReferenceAssetTests.test_review_requires_matching_asset_and_two_local_capture_digests) ... ok
+test_scene_asset_must_have_actual_usage_and_inventory_cannot_hide_unknown_family (test_reference_assets.ReferenceAssetTests.test_scene_asset_must_have_actual_usage_and_inventory_cannot_hide_unknown_family) ... ok
+test_uninspected_or_image_free_reference_fails (test_reference_assets.ReferenceAssetTests.test_uninspected_or_image_free_reference_fails) ... ok
+test_virtual_guidance_is_never_counted_as_physical_station_object (test_reference_assets.ReferenceAssetTests.test_virtual_guidance_is_never_counted_as_physical_station_object) ... ok
+
+======================================================================
+ERROR: test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='pageUrl', value=42)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 67, in test_reference_fields_require_typed_complete_image_evidence
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 71, in validate
+    good=public_url(reference.get('pageUrl')) and isinstance(images,list) and bool(images) and all(isinstance(x,str) and public_url(x) for x in images)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 25, in public_url
+    u=urlsplit(value)
+      ^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/parse.py", line 491, in urlsplit
+    url, scheme, _coerce_result = _coerce_args(url, scheme)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/parse.py", line 133, in _coerce_args
+    return _decode_args(args) + (_encode_result,)
+           ^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/parse.py", line 117, in _decode_args
+    return tuple(x.decode(encoding, errors) if x else '' for x in args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/urllib/parse.py", line 117, in <genexpr>
+    return tuple(x.decode(encoding, errors) if x else '' for x in args)
+                 ^^^^^^^^
+AttributeError: 'int' object has no attribute 'decode'
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.014s
+
+FAILED (errors=1)

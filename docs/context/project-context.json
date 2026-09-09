@@ -735,17 +735,17 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-07",
+      "observedAt": "2026-09-09",
       "freshnessPolicy": "content",
       "sources": [
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "10784b91d270bb708882d8b46e936f8d7c4d256aad807bf72e21b53b2e320df5",
+          "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec",
           "label": "--asset 조회·--inventory·--require-reviewed 검사"
         },
         {
           "repoPath": "scripts/art/test_reference_assets.py",
-          "sha256": "50c4c03ed86c32410bb5c38803be4931f5ed654e91724e0b6dcacee1fbe53dde",
+          "sha256": "cdba0e26ee4b4edf0a9a3c94a106a42fca575c9d742fede26da470ea551bb560",
           "label": "출처·해시·장면 사용·시각 검수 실패 fixture"
         },
         {
@@ -777,7 +777,7 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-08",
+      "observedAt": "2026-09-09",
       "freshnessPolicy": "content",
       "sources": [
         {
@@ -787,7 +787,7 @@
         },
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "10784b91d270bb708882d8b46e936f8d7c4d256aad807bf72e21b53b2e320df5",
+          "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec",
           "label": "아트 담당자의 자산 ID별 근거 조회"
         },
         {
@@ -1917,29 +1917,6 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "component.facility_coverage",
-        "component.reconstruction",
-        "component.reconstruction_review",
-        "component.reconstruction_tools",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "decision.world.connected",
-        "goal.foundation",
-        "policy.project_authority",
-        "unknown.vr_device"
-      ],
-      "reason": "최신 사용자 로컬 CV/학교 독립 작업 분리와 현재 소스·문서를 읽고 반영. 과거 evidence/폐기 결정의 hash와 수용 범위는 갱신하지 않음"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "새 로컬/학교 독립 작업과 현재 PR61 인계 문서를 읽고 시작 포인터만 갱신"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
         "workflow.start_validate"
       ],
       "reason": "PR 전달 커밋과 원격 YAML 실패/문자열 수정 이력을 읽고 ledger 포인터 갱신"
@@ -2089,6 +2066,20 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed merged handoff timing and both context regression sets; retained school profile gates, original MCP receipt bytes and all historical coverage."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.art_reference_tools"
+      ],
+      "reason": "Reviewed malformed reference records, typed URL/hash/observation arrays and complete image-to-hash binding; 13 regression tests and all 33 current asset records pass. Historical visual receipts remain unchanged."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "workflow.start_validate"
+      ],
+      "reason": "Reviewed the startup reference validator invocation after malformed input guards; current 33-asset validation returns zero errors and no Unity or historical evidence was renewed."
     }
   ]
 }

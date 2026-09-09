@@ -21,6 +21,7 @@ def local_path(root,relative):
     return result
 
 def public_url(value):
+    if not isinstance(value,str):return False
     try:
         u=urlsplit(value)
         return u.scheme=='https' and bool(u.netloc) and not u.username and not u.password
@@ -56,13 +57,22 @@ def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
         if kind!='station_specific' and row.get('stationInstallationVerified'):
             errors.append(identifier+': a proxy or virtual marker cannot prove station installation')
         if not row.get('dimensionsBasis'):errors.append(identifier+': distinguish authored dimensions from published or surveyed values')
-        references=row.get('references',[]); valid_refs=bool(references)
+        references=row.get('references',[])
+        if not isinstance(references,list):
+            errors.append(identifier+': references must be a list of inspected image records')
+            references=[]
+        valid_refs=bool(references)
         for reference in references:
+            if not isinstance(reference,dict):
+                errors.append(identifier+': image reference must be an object')
+                valid_refs=False
+                continue
             images=reference.get('imageUrls',[]);sha=reference.get('imageSha256',[])
-            good=public_url(reference.get('pageUrl')) and bool(images) and all(public_url(x) for x in images)
-            good=good and bool(sha) and all(isinstance(x,str) and re.fullmatch('[0-9a-f]{64}',x) for x in sha)
-            good=good and bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}',reference.get('inspectedOn','')))
-            good=good and len(reference.get('observedFeatures',[]))>=2
+            inspected=reference.get('inspectedOn');features=reference.get('observedFeatures',[])
+            good=public_url(reference.get('pageUrl')) and isinstance(images,list) and bool(images) and all(isinstance(x,str) and public_url(x) for x in images)
+            good=good and isinstance(sha,list) and len(sha)==len(images) and all(isinstance(x,str) and re.fullmatch('[0-9a-f]{64}',x) for x in sha)
+            good=good and isinstance(inspected,str) and bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}',inspected))
+            good=good and isinstance(features,list) and len(features)>=2 and all(isinstance(x,str) and x.strip() for x in features)
             if not good:errors.append(identifier+': missing inspected image, source or concrete observations')
             valid_refs=valid_refs and good
         if not references:errors.append(identifier+': no per-object image reference')

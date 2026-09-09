@@ -1,0 +1,195 @@
+test_catalog_objects_cannot_be_counted_as_used_scene_assets (test_reference_assets.ReferenceAssetTests.test_catalog_objects_cannot_be_counted_as_used_scene_assets) ... ok
+test_category_proxy_cannot_be_marked_confirmed_station_installation (test_reference_assets.ReferenceAssetTests.test_category_proxy_cannot_be_marked_confirmed_station_installation) ... ok
+test_changed_generator_dependency_requires_regeneration (test_reference_assets.ReferenceAssetTests.test_changed_generator_dependency_requires_regeneration) ... ok
+test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) ...
+  test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=None) ... ERROR
+  test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references='source') ... ERROR
+  test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=[None]) ... ERROR
+  test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=['source']) ... ERROR
+  test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=[42]) ... ERROR
+  test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=[[]]) ... ERROR
+test_missing_or_duplicate_asset_reference_fails (test_reference_assets.ReferenceAssetTests.test_missing_or_duplicate_asset_reference_fails) ... ok
+test_named_detail_must_exist_in_generated_geometry_inventory (test_reference_assets.ReferenceAssetTests.test_named_detail_must_exist_in_generated_geometry_inventory) ... ok
+test_path_escape_and_missing_authored_module_fail (test_reference_assets.ReferenceAssetTests.test_path_escape_and_missing_authored_module_fail) ... ok
+test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) ...
+  test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='inspectedOn', value=None) ... ERROR
+  test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='inspectedOn', value=20260907) ... ERROR
+  test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='observedFeatures', value=None) ... ERROR
+  test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='observedFeatures', value='not two observations') ... FAIL
+  test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='observedFeatures', value=['', None]) ... FAIL
+  test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='imageUrls', value=['https://example.org/bench.jpg', 'https://example.org/side.jpg']) ... FAIL
+test_references_do_not_imply_visual_or_facility_acceptance (test_reference_assets.ReferenceAssetTests.test_references_do_not_imply_visual_or_facility_acceptance) ... ok
+test_review_requires_matching_asset_and_two_local_capture_digests (test_reference_assets.ReferenceAssetTests.test_review_requires_matching_asset_and_two_local_capture_digests) ... ok
+test_scene_asset_must_have_actual_usage_and_inventory_cannot_hide_unknown_family (test_reference_assets.ReferenceAssetTests.test_scene_asset_must_have_actual_usage_and_inventory_cannot_hide_unknown_family) ... ok
+test_uninspected_or_image_free_reference_fails (test_reference_assets.ReferenceAssetTests.test_uninspected_or_image_free_reference_fails) ... ok
+test_virtual_guidance_is_never_counted_as_physical_station_object (test_reference_assets.ReferenceAssetTests.test_virtual_guidance_is_never_counted_as_physical_station_object) ... ok
+
+======================================================================
+ERROR: test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 51, in test_malformed_reference_entries_return_errors
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 60, in validate
+    for reference in references:
+                     ^^^^^^^^^^
+TypeError: 'NoneType' object is not iterable
+
+======================================================================
+ERROR: test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 51, in test_malformed_reference_entries_return_errors
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 61, in validate
+    images=reference.get('imageUrls',[]);sha=reference.get('imageSha256',[])
+           ^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+======================================================================
+ERROR: test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=[None])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 51, in test_malformed_reference_entries_return_errors
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 61, in validate
+    images=reference.get('imageUrls',[]);sha=reference.get('imageSha256',[])
+           ^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+======================================================================
+ERROR: test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=['source'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 51, in test_malformed_reference_entries_return_errors
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 61, in validate
+    images=reference.get('imageUrls',[]);sha=reference.get('imageSha256',[])
+           ^^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+======================================================================
+ERROR: test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=[42])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 51, in test_malformed_reference_entries_return_errors
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 61, in validate
+    images=reference.get('imageUrls',[]);sha=reference.get('imageSha256',[])
+           ^^^^^^^^^^^^^
+AttributeError: 'int' object has no attribute 'get'
+
+======================================================================
+ERROR: test_malformed_reference_entries_return_errors (test_reference_assets.ReferenceAssetTests.test_malformed_reference_entries_return_errors) (references=[[]])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 51, in test_malformed_reference_entries_return_errors
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 61, in validate
+    images=reference.get('imageUrls',[]);sha=reference.get('imageSha256',[])
+           ^^^^^^^^^^^^^
+AttributeError: 'list' object has no attribute 'get'
+
+======================================================================
+ERROR: test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='inspectedOn', value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 66, in test_reference_fields_require_typed_complete_image_evidence
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 64, in validate
+    good=good and bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}',reference.get('inspectedOn','')))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/re/__init__.py", line 172, in fullmatch
+    return _compile(pattern, flags).fullmatch(string)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: expected string or bytes-like object, got 'NoneType'
+
+======================================================================
+ERROR: test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='inspectedOn', value=20260907)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 66, in test_reference_fields_require_typed_complete_image_evidence
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 64, in validate
+    good=good and bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}',reference.get('inspectedOn','')))
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/re/__init__.py", line 172, in fullmatch
+    return _compile(pattern, flags).fullmatch(string)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: expected string or bytes-like object, got 'int'
+
+======================================================================
+ERROR: test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='observedFeatures', value=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 66, in test_reference_fields_require_typed_complete_image_evidence
+    self.assertTrue(self.check()['errors'])
+                    ^^^^^^^^^^^^
+  File "<repo>/scripts/art/test_reference_assets.py", line 28, in check
+    def check(self,strict=False):return art.validate(self.registry,self.manifest,self.root,self.inventory,strict)
+                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<repo>/scripts/art/validate_reference_assets.py", line 65, in validate
+    good=good and len(reference.get('observedFeatures',[]))>=2
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: object of type 'NoneType' has no len()
+
+======================================================================
+FAIL: test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='observedFeatures', value='not two observations')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 66, in test_reference_fields_require_typed_complete_image_evidence
+    self.assertTrue(self.check()['errors'])
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='observedFeatures', value=['', None])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 66, in test_reference_fields_require_typed_complete_image_evidence
+    self.assertTrue(self.check()['errors'])
+AssertionError: [] is not true
+
+======================================================================
+FAIL: test_reference_fields_require_typed_complete_image_evidence (test_reference_assets.ReferenceAssetTests.test_reference_fields_require_typed_complete_image_evidence) (field='imageUrls', value=['https://example.org/bench.jpg', 'https://example.org/side.jpg'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<repo>/scripts/art/test_reference_assets.py", line 66, in test_reference_fields_require_typed_complete_image_evidence
+    self.assertTrue(self.check()['errors'])
+AssertionError: [] is not true
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.012s
+
+FAILED (failures=3, errors=9)
