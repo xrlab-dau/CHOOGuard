@@ -40,7 +40,7 @@
 
 새 checkout에서 7개 문서(`README.md`, `docs/choo-guard-foundation-handoff.md`, `CONTRIBUTING.md`, `AGENTS.md`, `docs/ci.md`, `docs/context/README.md`, Demo `README.md`)의 상대 링크 37개를 검사했고 깨진 링크는 없었다.
 
-문서와 실제의 차이 1건: `docs/ci.md`는 `foundation-data-report.json` 저장을 기술하나 로컬 실행은 이 파일을 생성하지 않고 표준출력으로만 보고한다. CI 아티팩트 전용으로 보인다.
+보고서 저장 방식: 로컬에서 [`scripts/dev/check_foundation.py`](../../scripts/dev/check_foundation.py)를 실행하면 JSON 보고서를 표준출력으로 내보낸다. [Required Quality Gate](../../.github/workflows/required-quality-gate.yml)는 이 출력을 `foundation-data-report.json`으로 리디렉션해 저장하고 아티팩트로 업로드한다. 이는 [`docs/ci.md`](../ci.md)의 required quality workflow 설명과 일치한다.
 
 ## 인계 경로 모의 재현
 
