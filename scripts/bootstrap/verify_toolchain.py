@@ -63,11 +63,16 @@ POLICY_GLOBS = [
     "docs/adr/*.md",
     "scripts/ci/*.py",
     "scripts/bootstrap/*",
+    "scripts/docs/requirements.txt",
+    "scripts/docs/requirements*.txt",
+    "scripts/dev/csharp-review/*.csproj",
     "tools/research/pyproject.toml",
     "tools/research/uv.lock",
     "tools/research/research.py",
     "Packages/manifest.json",
     "Packages/packages-lock.json",
+    "Packages/com.xrlab.chooguard.foundation/package.json",
+    "Packages/*/package.json",
     "reconstruction/pyproject.toml",
     # Existing direct manifests and resolved locks are required individually.
     # Family globs also bind newly introduced reconstruction dependencies.
@@ -81,7 +86,7 @@ POLICY_GLOBS = [
     "reconstruction/requirements-*.in",
 ]
 # Observed inventory is not an approved baseline. The now-tracked .pi/.specify
-# policy families are included; only the alternative YAML extension is optional.
+# policy families are included; optional dependency families are documented below.
 # 금지 파일 검사는 ignored 트리도 걷는다. prune 이 우회 경로가 되면 안 된다.
 # .git 만 제외한다(내부 객체는 작업 입력이 아니다).
 WORKSPACE_PRUNED_DIRS = {".git"}
@@ -103,7 +108,11 @@ WORKSPACE_SCAN_MAX_DIRS = 20_000
 WORKSPACE_SCAN_MAX_SECONDS = 15
 MAX_POLICY_MANIFEST_BYTES = 2_000_000
 MAX_PACKAGE_MANIFEST_BYTES = 1_000_000
-REQUIRED_POLICY_GLOBS = [p for p in POLICY_GLOBS if p != ".github/workflows/*.yaml"]
+# C# review projects are absent on the policy branch and arrive with the runtime
+# branch. If present, their bytes and exact path set still require the pinned
+# baseline; absence alone must not invent a dependency requirement here.
+OPTIONAL_POLICY_GLOBS = {".github/workflows/*.yaml", "scripts/dev/csharp-review/*.csproj"}
+REQUIRED_POLICY_GLOBS = [p for p in POLICY_GLOBS if p not in OPTIONAL_POLICY_GLOBS]
 ENV_NAMES = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "EXA_API_KEY", "RESEARCH_MODEL"]
 DISALLOWED_SETTINGS_KEYS = {"mcp", "mcpServers", "execute_code", "remotePackages"}
 REQUIRED_CHECKS = [

@@ -1,4 +1,4 @@
-"""FR-006 dependency manifests/locks; every policy pin and tool is synthetic."""
+"""FR-006 dependency inventory; every policy pin and tool is synthetic."""
 from __future__ import annotations
 
 import json
@@ -19,6 +19,8 @@ EXTRA_LOCK = "reconstruction/requirements-next-engine.lock"
 class ReconstructionLockPolicyTests(unittest.TestCase):
     known_paths = KNOWN_LOCKS
     extra_path = EXTRA_LOCK
+    original_content = "synthetic-dependency==1.0.0\n"
+    changed_content = "synthetic-dependency==2.0.0\n"
 
     def setUp(self):
         self.fixture = policy_tests.PolicyBaselineTests()
@@ -27,8 +29,13 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
         self.case = self.fixture.case
         self.root = self.fixture.root
         for name in self.known_paths:
-            (self.root / name).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
+            self.write_dependency(name)
         self.case.tracked = list(self.known_paths)
+
+    def write_dependency(self, name):
+        path = self.root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(self.original_content, encoding="utf-8")
 
     def pin(self):
         self.digest = self.fixture.write_manifest()
@@ -68,26 +75,26 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
         self.assertFalse(any(command[0] in {"node", "pi", "uv"} for command in calls))
         packages.assert_not_called()
 
-    def test_changed_reconstruction_dependencies_block_original_pin(self):
+    def test_changed_dependencies_block_original_pin(self):
         self.pin()
         for index, name in enumerate(self.known_paths):
             with self.subTest(dependency=name):
                 path = self.root / name
                 original = path.read_bytes()
                 try:
-                    path.write_text("synthetic-dependency==2.0.0\n", encoding="utf-8")
+                    path.write_text(self.changed_content, encoding="utf-8")
                     self.assert_mutation_blocked(name, "changed_paths", f"changed-{index}")
                 finally:
                     path.write_bytes(original)
 
-    def test_added_reconstruction_dependency_blocks_original_pin(self):
+    def test_added_dependency_blocks_original_pin(self):
         self.pin()
-        (self.root / self.extra_path).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
+        self.write_dependency(self.extra_path)
         self.case.tracked.append(self.extra_path)
         self.assert_mutation_blocked(self.extra_path, "unexpected_paths", "added")
 
-    def test_deleted_reconstruction_dependencies_block_original_pin(self):
-        (self.root / self.extra_path).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
+    def test_deleted_dependencies_block_original_pin(self):
+        self.write_dependency(self.extra_path)
         self.case.tracked.append(self.extra_path)
         self.pin()
         for index, name in enumerate((*self.known_paths, self.extra_path)):
@@ -100,7 +107,7 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
                 finally:
                     path.write_bytes(original)
 
-    def test_each_known_reconstruction_dependency_is_required_before_candidate(self):
+    def test_known_dependency_presence_matches_scope(self):
         for index, name in enumerate(self.known_paths):
             with self.subTest(dependency=name):
                 path = self.root / name
@@ -115,8 +122,8 @@ class ReconstructionLockPolicyTests(unittest.TestCase):
                 finally:
                     path.write_bytes(original)
 
-    def test_candidate_includes_known_and_new_reconstruction_dependencies(self):
-        (self.root / self.extra_path).write_text("synthetic-dependency==1.0.0\n", encoding="utf-8")
+    def test_candidate_includes_known_and_new_dependencies(self):
+        self.write_dependency(self.extra_path)
         self.case.tracked.append(self.extra_path)
         target = "docs/evidence/R-07/lock-candidate.json"
         self.assertEqual(self.case.invoke("--write-policy-candidate", target), 0)
@@ -135,6 +142,39 @@ class ReconstructionInputPolicyTests(ReconstructionLockPolicyTests):
         "reconstruction/requirements-mapanything.in",
     )
     extra_path = "reconstruction/requirements-next-engine.in"
+
+
+class EmbeddedUnityPackagePolicyTests(ReconstructionLockPolicyTests):
+    known_paths = ("Packages/com.xrlab.chooguard.foundation/package.json",)
+    extra_path = "Packages/com.example.synthetic/package.json"
+    original_content = '{"dependencies": {"com.example.synthetic-dependency": "1.0.0"}}\n'
+    changed_content = '{"dependencies": {"com.example.synthetic-dependency": "2.0.0"}}\n'
+
+
+class DocsRequirementsPolicyTests(ReconstructionLockPolicyTests):
+    known_paths = ("scripts/docs/requirements.txt",)
+    extra_path = "scripts/docs/requirements-extra.txt"
+
+
+class CSharpReviewProjectPolicyTests(ReconstructionLockPolicyTests):
+    known_paths = ("scripts/dev/csharp-review/FoundationReview.csproj",)
+    extra_path = "scripts/dev/csharp-review/ExtraReview.csproj"
+    original_content = '<Project><ItemGroup><PackageReference Include="Synthetic.Dependency" Version="1.0.0" /></ItemGroup></Project>\n'
+    changed_content = '<Project><ItemGroup><PackageReference Include="Synthetic.Dependency" Version="2.0.0" /></ItemGroup></Project>\n'
+
+    def test_known_dependency_presence_matches_scope(self):
+        # This branch has no C# review project. Future branch integration must
+        # enter the reviewed set without inventing a required absent file now.
+        for path in self.root.glob("scripts/dev/csharp-review/*.csproj"):
+            path.unlink()
+        self.case.tracked = []
+        self.pin()
+        code, output = self.fixture.invoke_preflight(*self.arguments)
+        self.assertEqual(code, 0)
+        self.assertTrue(json.loads(output)["policy_preflight_ok"])
+        self.assertEqual(self.case.invoke(*self.arguments), 0)
+        target = "docs/evidence/R-07/no-csharp-project-candidate.json"
+        self.assertEqual(self.case.invoke("--write-policy-candidate", target), 0)
 
 
 if __name__ == "__main__":
