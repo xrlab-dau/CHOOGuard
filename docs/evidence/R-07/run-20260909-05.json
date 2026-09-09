@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "unit": "R-07",
+  "recordType": "execution_observation_not_approval",
+  "date": "2026-09-09",
+  "baseCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+  "sourceSha256": {
+    "scripts/bootstrap/verify_toolchain.py": "41f063feaa7ca3352424edc421d151218ae84faa3f37d3cea645350d994eeab5",
+    "scripts/bootstrap/bootstrap.sh": "c0b59642e20e313cfff7999de7ca8e716284b88f08700a147db6c0032eb24a8f",
+    "scripts/bootstrap/bootstrap.ps1": "eb46e240c9d7f33a462b45b6a18d0fa378e65ace6697a68ec65c89fa960bdba3",
+    "scripts/bootstrap/test_verify_toolchain.py": "e7dc8bdbe1791094edf17b1438cebda0ac44bd66322db9e8abc1d557ea1e406e",
+    "scripts/bootstrap/test_policy_baseline.py": "badc96a8c3636e7c1ae8f812d6d6533d474d56389bc96a864bf6a2fbe6486b64",
+    "scripts/bootstrap/test_bootstrap_shell.py": "bc7cd3287a000f8b95c4202c012f752877b6354f8d83e29a0bda2f7096a27bfa",
+    "scripts/bootstrap/test_bootstrap_powershell.py": "2627f3af4d8b600c0238b1cf2d365ff1d3f846599db3573623425ce523a84d1c"
+  },
+  "previousReceiptSha256": "59aa00d37a70091abea71700e774ac433f8217adc6bb57ee549cbb202118426b",
+  "green": {
+    "command": "python3 -B -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v",
+    "tests": 106,
+    "passed": 90,
+    "skipped": 16,
+    "failed": 0,
+    "platform": "Linux",
+    "skipScope": "14 native PowerShell tests, 1 native Windows junction, 1 non-root POSIX permission case"
+  },
+  "profileTests": {
+    "tests": 9,
+    "passed": 9
+  },
+  "logs": [
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-links-incomplete.log",
+      "sha256": "b3f58e2ca1e21a21ab82c0b4e6a587461c59e98fd336df20df6804b35587de0f",
+      "originalSha256": "a6a94af004c350a9dbd1ac343a743bb35d502ff84a240c290a5be548731c25fa",
+      "normalization": "temporary workspace root replaced and trailing line whitespace removed; original log SHA256 retained"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-links-baseline-replay.log",
+      "sha256": "0ca40419731e846e54e0b23c40d3b14714688bb4745c0dea466875a0f304ddbe",
+      "originalSha256": "75b780c66e8fc97574f3e73718701fe1cca49ae71e56019cfc455298b291ff37",
+      "normalization": "temporary workspace root replaced and trailing line whitespace removed; original log SHA256 retained"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-packages.log",
+      "sha256": "ed784a84cd0a427ecbc71eada9fc0544b1e83703009f7be628d9b8c33fe68ccf",
+      "originalSha256": "f1a5ca088ebd7b951ac3eb694b978561ea250ad9e3b68c8992fcfda983c8a36b",
+      "normalization": "temporary workspace root replaced and trailing line whitespace removed; original log SHA256 retained"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-preflight.log",
+      "sha256": "17f6bc59cbc6f21fb8598d6896843e349a6c616cc983a49ca56fda827194b954",
+      "originalSha256": "44c67dc78a8ea91d3e4d83f1a46fe68b3e135346daeb262c32ebae6fffb6f710",
+      "normalization": "temporary workspace root replaced and trailing line whitespace removed; original log SHA256 retained"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-entrypoints.log",
+      "sha256": "101718e0b9e9b2d84cef891f5d1b84b53fe7104aacdf1d831212809752833fd5",
+      "originalSha256": "947f80cacdaba2971209ee594fffe3eb2c20e6f22eb13ddc0da5c057915aff32",
+      "normalization": "temporary workspace root replaced and trailing line whitespace removed; original log SHA256 retained"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/green-integrated.log",
+      "sha256": "485382ca9b911dd693c74e5c36aebf082c40fb2bec4f261a08396d9b3b97c6e8",
+      "originalSha256": "485382ca9b911dd693c74e5c36aebf082c40fb2bec4f261a08396d9b3b97c6e8",
+      "normalization": "temporary workspace root replaced and trailing line whitespace removed; original log SHA256 retained"
+    }
+  ],
+  "redLimits": [
+    "Initial red-links log has no unittest summary. The separate baseline replay is explicitly labeled, not substituted for the original log.",
+    "RED package and preflight logs test different subsets; failing subtest counts are not distinct test counts."
+  ],
+  "fixes": [
+    "ROOT-FRESH-1: lexical receipt boundary and write-time parent checks",
+    "ROOT-FRESH-2: internal aliases into unscanned trees fail closed",
+    "SEC-FRESH-1: wrappers use static policy preflight before tools or installation",
+    "SEC-FRESH-2: bounded typed installed metadata and sanitized version output"
+  ],
+  "independentReview": {
+    "otherProviderReviews": 0,
+    "outcome": "cannot_proceed",
+    "rereview": "pending for the updated source"
+  },
+  "nativeWindows": "pending on the changed source",
+  "candidate": "Prior run04 candidate is historical; new code requires a new separately reviewed baseline.",
+  "issueDone": false,
+  "limits": [
+    "No atomic filesystem snapshot or complete concurrent parent-swap prevention.",
+    "No school-PC, Unity, HMD or railway procedure acceptance.",
+    "Original 105-key journal remains unavailable and not accepted by the human."
+  ]
+}

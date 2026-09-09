@@ -14,11 +14,13 @@ import json
 import os
 from pathlib import Path
 import shutil
+import stat
 import subprocess
 import sys
 import tempfile
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace
 
 MODULE_PATH = Path(__file__).with_name("verify_toolchain.py")
 spec = importlib.util.spec_from_file_location("verify_toolchain_under_test", MODULE_PATH)
@@ -155,6 +157,139 @@ class ToolchainBoundaryTests(unittest.TestCase):
         target.write_text("original receipt", encoding="utf-8")
         self.assertNotEqual(self.invoke("--write", "docs/evidence/M0-00/verify-local.json", "--strict"), 0)
         self.assertEqual(target.read_text(encoding="utf-8"), "original receipt")
+
+    def make_symlink(self, link, target, *, directory=False):
+        try:
+            link.symlink_to(target, target_is_directory=directory)
+        except OSError:
+            self.skipTest("symlink creation is unavailable")
+
+    def test_receipt_root_alias_cannot_create_missing_policy_file(self):
+        target = self.root / ".pi/settings.json"
+        target.unlink()
+        self.make_symlink(self.root / "docs/evidence", self.root / ".pi", directory=True)
+        self.assertEqual(self.invoke("--write", "docs/evidence/settings.json"), 2)
+        self.assertFalse(target.exists(), "A failed verifier must not create a policy file")
+
+    def test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix(self):
+        self.make_symlink(self.root / "docs/evidence", self.root / ".pi", directory=True)
+        for option in ("--write", "--write-policy-candidate"):
+            for requested in ("docs/evidence/new.json", ".pi/new.json"):
+                with self.subTest(option=option, requested=requested):
+                    try:
+                        self.assertEqual(self.invoke(option, requested), 2)
+                        self.assertFalse((self.root / ".pi/new.json").exists())
+                    finally:
+                        (self.root / ".pi/new.json").unlink(missing_ok=True)
+
+    def test_receipt_rejects_internal_parent_links_and_dangling_leaf(self):
+        evidence = self.root / "docs/evidence"
+        evidence.mkdir()
+        ordinary = evidence / "ordinary"
+        ordinary.mkdir()
+        self.make_symlink(evidence / "alias", ordinary, directory=True)
+        self.make_symlink(evidence / "dangling-parent", evidence / "missing", directory=True)
+        self.make_symlink(evidence / "dangling.json", evidence / "missing.json")
+        for requested in ("docs/evidence/alias/new.json", "docs/evidence/dangling-parent/new.json",
+                          "docs/evidence/dangling.json"):
+            with self.subTest(requested=requested):
+                with self.assertRaises(ValueError):
+                    verifier.receipt_target(self.root, requested)
+        self.assertFalse((evidence / "missing.json").exists())
+
+    def test_receipt_rejects_detected_mount_and_reparse_parents(self):
+        evidence = self.root / "docs/evidence"
+        evidence.mkdir()
+        with patch.object(verifier.os.path, "ismount", side_effect=lambda path: Path(path) == evidence):
+            with self.assertRaises(ValueError):
+                verifier.receipt_target(self.root, "docs/evidence/new.json")
+        original_lstat = Path.lstat
+
+        def reparse_lstat(path, *args, **kwargs):
+            if path == evidence:
+                return SimpleNamespace(st_mode=stat.S_IFDIR | 0o755, st_file_attributes=0x400)
+            return original_lstat(path, *args, **kwargs)
+
+        with patch.object(Path, "lstat", reparse_lstat):
+            with self.assertRaises(ValueError):
+                verifier.receipt_target(self.root, "docs/evidence/new.json")
+
+    def test_receipt_rechecks_parent_after_tool_probes(self):
+        evidence = self.root / "docs/evidence"
+        evidence.mkdir()
+        original_run = self.fake_run
+
+        def substitute_parent(*cmd):
+            if cmd == ("node", "--version"):
+                evidence.rmdir()
+                self.make_symlink(evidence, self.root / ".pi", directory=True)
+            return original_run(*cmd)
+
+        self.fake_run = substitute_parent
+        self.assertEqual(self.invoke("--write", "docs/evidence/new.json"), 2)
+        self.assertFalse((self.root / ".pi/new.json").exists())
+
+    def test_both_receipt_modes_recheck_parent_after_directory_creation(self):
+        evidence = self.root / "docs/evidence"
+        evidence.mkdir()
+        original_mkdir = Path.mkdir
+        # Capability check before entering the injected filesystem transition.
+        probe = evidence / "probe"
+        self.make_symlink(probe, self.root / ".pi", directory=True)
+        probe.unlink()
+
+        def substitute_parent(path, *args, **kwargs):
+            original_mkdir(path, *args, **kwargs)
+            if path == evidence:
+                evidence.rmdir()
+                evidence.symlink_to(self.root / ".pi", target_is_directory=True)
+
+        for option in ("--write", "--write-policy-candidate"):
+            with self.subTest(option=option):
+                try:
+                    with patch.object(Path, "mkdir", substitute_parent):
+                        self.assertEqual(self.invoke(option, "docs/evidence/new.json"), 2)
+                    self.assertFalse((self.root / ".pi/new.json").exists())
+                finally:
+                    if evidence.is_symlink():
+                        evidence.unlink()
+                        evidence.mkdir()
+                    (self.root / ".pi/new.json").unlink(missing_ok=True)
+
+    def test_links_into_pruned_git_are_not_clean_workspace_input(self):
+        hidden = self.root / ".git/raw"
+        hidden.mkdir(parents=True)
+        (hidden / "capture.mp4").write_bytes(b"synthetic")
+        for target, directory in ((hidden.parent, True), (hidden, True), (hidden / "capture.mp4", False)):
+            with self.subTest(target=target.relative_to(self.root)):
+                link = self.root / "ordinary-alias"
+                self.make_symlink(link, target, directory=directory)
+                try:
+                    scan = verifier.scan_workspace(self.root)
+                    self.assertTrue(scan["errors"], "An alias to unscanned Git data must fail closed")
+                    self.assertEqual(scan["forbidden"], [], "The Git target must not be traversed")
+                    self.assert_check_failed("forbidden_workspace_files")
+                finally:
+                    link.unlink()
+
+    def test_root_alias_cannot_expose_pruned_git_subtree(self):
+        hidden = self.root / ".git/capture.mp4"
+        hidden.parent.mkdir()
+        hidden.write_bytes(b"synthetic")
+        self.make_symlink(self.root / "ordinary-alias", self.root, directory=True)
+        self.assertTrue(verifier.scan_workspace(self.root)["errors"])
+        self.assert_check_failed("forbidden_workspace_files")
+
+    def test_internal_venv_directory_alias_to_scanned_target_remains_allowed(self):
+        venv = self.root / "tools/research/.venv"
+        target = venv / "lib/site-packages"
+        target.mkdir(parents=True)
+        (target / "ordinary.py").write_text("# synthetic\n", encoding="utf-8")
+        self.make_symlink(venv / "lib64", venv / "lib", directory=True)
+        scan = verifier.scan_workspace(self.root)
+        self.assertEqual(scan["errors"], [])
+        self.assertEqual(scan["outside_links"], [])
+        self.assertEqual(self.invoke(), 0)
 
     def test_package_tree_link_cannot_escape(self):
         link = self.root / ".pi/npm"

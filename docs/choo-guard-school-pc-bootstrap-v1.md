@@ -55,6 +55,8 @@ Node 22 이상은 호환 조건이다. 머신별 정확한 Node·uv 버전은 �
 
 기존 bootstrap은 기본 의존성 동기화·자동 설치 안내·실패 종료 문제가 남아 있다. 수정·회귀 시험과 독립 검토가 끝날 때까지 실행하지 않는다. 문서의 경고가 실행 경계를 구현한 것은 아니다.
 
+2026-09-09 보강에서는 Bash·PowerShell 진입점에 `--policy-preflight`를 연결했다. 승인 manifest와 별도 핀 및 정적 입력 검사가 통과하기 전에는 Node/Pi/uv/npm을 호출하지 않는다. 이 정적 단계는 영수증을 쓰지 않으며 전체 도구 검증 성공이나 학교 운영 승인을 뜻하지 않는다. `AUTO_INSTALL=1`/`-AutoInstall`은 별도 설치 허용이며 정책 게이트를 대신하지 않는다. wrapper는 `--strict`, `--write`, `--policy-manifest`, `--policy-manifest-sha256`만 전달한다. 후보 생성과 preflight 단독 관측은 Python 검증기를 직접 호출한다. 실행별 검증과 남은 조건은 [R-07 증거](evidence/R-07/README.md)를 따른다.
+
 ## 4. Unity·조사·자료의 분리
 
 - Unity 버전과 프로젝트 파일은 M2-01에서 기록한다. M1-01은 Pi 세션 계약 단위다. HMD 실기 검증의 시점은 해당 XR 변경 단위에서 정하고 M1-05 실행 기록 단위와 혼동하지 않는다.

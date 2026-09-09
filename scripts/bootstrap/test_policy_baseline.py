@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import hashlib
+import contextlib
+import io
 import json
 import os
 from pathlib import Path
@@ -79,6 +81,135 @@ class PolicyBaselineTests(unittest.TestCase):
         self.assertEqual(data["status"], "candidate")
         self.assertIsNone(data["approvalReference"])
         self.assertEqual(self.case.invoke("--write-policy-candidate", target), 2)
+
+    def test_invalid_installed_metadata_returns_failure_receipt_without_copying_content(self):
+        (self.root / ".pi/settings.json").write_text('{"packages": ["npm:fixture"]}\n')
+        package = self.root / ".pi/npm/node_modules/fixture/package.json"
+        package.parent.mkdir(parents=True)
+        digest = self.write_manifest()
+        marker = "SYNTHETIC-PRIVATE-METADATA"
+        for index, payload in enumerate(([], None, 7, "unexpected", {"version": {"secret": marker}},
+                                         {"version": [marker]}, {"version": marker}, {"version": 1})):
+            with self.subTest(payload_type=type(payload).__name__, index=index):
+                package.write_text(json.dumps(payload), encoding="utf-8")
+                target = f"docs/evidence/packages-{index}.json"
+                self.assertEqual(self.case.invoke("--policy-manifest", str(self.manifest),
+                    "--policy-manifest-sha256", digest, "--write", target), 1)
+                written = (self.root / target).read_text(encoding="utf-8")
+                receipt = json.loads(written)
+                self.assertFalse(receipt["checks"]["pi_packages"]["ok"])
+                self.assertIsNone(receipt["checks"]["pi_packages"]["rows"][0]["installed"])
+                self.assertNotIn(marker, written)
+
+    def test_package_metadata_read_is_bounded(self):
+        package = self.root / ".pi/npm/node_modules/fixture/package.json"
+        package.parent.mkdir(parents=True)
+        package.write_text(json.dumps({"version": "1.0.0", "extra": "x" * 200}), encoding="utf-8")
+        with patch.object(verifier, "MAX_PACKAGE_MANIFEST_BYTES", 100, create=True):
+            rows, ok = verifier.check_packages(self.root, {"packages": ["npm:fixture@1.0.0"]})
+        self.assertFalse(ok)
+        self.assertIsNone(rows[0]["installed"])
+
+    def test_package_settings_wrong_shapes_fail_without_exceptions(self):
+        for packages in (None, {}, "fixture", [None], [7], [{"source": []}], [{"source": "../outside"}]):
+            with self.subTest(packages=packages):
+                rows, ok = verifier.check_packages(self.root, {"packages": packages})
+                self.assertFalse(ok)
+                self.assertEqual(rows, [])
+
+    def test_valid_scoped_package_metadata_and_version_match(self):
+        package = self.root / ".pi/npm/node_modules/@fixture/tool/package.json"
+        package.parent.mkdir(parents=True)
+        package.write_text('{"version": "1.2.3-beta.1+build.2"}', encoding="utf-8")
+        rows, ok = verifier.check_packages(self.root, {
+            "packages": [{"source": "npm:@fixture/tool@1.2.3-beta.1+build.2"}]})
+        self.assertTrue(ok)
+        self.assertEqual(rows[0]["installed"], "1.2.3-beta.1+build.2")
+
+    def test_linked_package_metadata_is_not_read(self):
+        package = self.root / ".pi/npm/node_modules/fixture/package.json"
+        package.parent.mkdir(parents=True)
+        target = self.root / "metadata.json"
+        target.write_text('{"version": "1.0.0"}', encoding="utf-8")
+        try:
+            package.symlink_to(target)
+        except OSError:
+            self.skipTest("symlink creation is unavailable")
+        rows, ok = verifier.check_packages(self.root, {"packages": ["npm:fixture@1.0.0"]})
+        self.assertFalse(ok)
+        self.assertIsNone(rows[0]["installed"])
+
+    def invoke_preflight(self, *args):
+        captured = io.StringIO()
+        with patch.object(verifier, "ROOT", self.root), patch.object(verifier, "run", self.case.fake_run):
+            with patch.object(sys, "argv", ["verify_toolchain.py", "--label", "local", "--policy-preflight", *args]):
+                with contextlib.redirect_stdout(captured), contextlib.redirect_stderr(io.StringIO()):
+                    try:
+                        code = verifier.main()
+                    except SystemExit as error:
+                        code = error.code
+        return code, captured.getvalue()
+
+    def test_policy_preflight_passes_static_gate_without_probes_or_receipt(self):
+        digest = self.write_manifest()
+        target = "docs/evidence/preflight/new.json"
+        calls = []
+        original_run = self.case.fake_run
+
+        def record(*cmd):
+            calls.append(cmd)
+            return original_run(*cmd)
+
+        self.case.fake_run = record
+        with patch.object(verifier, "check_packages", side_effect=AssertionError("package metadata read")):
+            code, output = self.invoke_preflight("--policy-manifest", str(self.manifest),
+                "--policy-manifest-sha256", digest, "--write", target)
+        self.assertEqual(code, 0)
+        observation = json.loads(output)
+        self.assertEqual(observation["record_type"], "policy_preflight_not_receipt")
+        self.assertTrue(observation["policy_preflight_ok"])
+        self.assertFalse(observation["tool_probes"]["executed"])
+        self.assertNotIn("required_ok", observation)
+        self.assertFalse((self.root / "docs/evidence").exists())
+        self.assertFalse(any(cmd[0] in {"node", "pi", "uv"} for cmd in calls), calls)
+
+    def test_policy_preflight_fails_pending_or_unsafe_static_inputs(self):
+        digest = self.write_manifest()
+        approved = ("--policy-manifest", str(self.manifest), "--policy-manifest-sha256", digest)
+        for label, args in (("pending", ()), ("capture", approved), ("modified-policy", approved)):
+            with self.subTest(label=label):
+                capture = self.root / "capture.mp4"
+                if label == "capture":
+                    capture.write_bytes(b"synthetic")
+                if label == "modified-policy":
+                    (self.root / "AGENTS.md").write_text("modified policy\n")
+                try:
+                    code, output = self.invoke_preflight(*args)
+                    self.assertEqual(code, 1)
+                    self.assertFalse(json.loads(output)["policy_preflight_ok"])
+                finally:
+                    capture.unlink(missing_ok=True)
+
+    def test_policy_preflight_rejects_invalid_settings_under_matching_baseline(self):
+        for settings in ({"packages": [None]}, {"packages": [], "extensions": [{"execute_code": True}]}):
+            with self.subTest(settings=settings):
+                (self.root / ".pi/settings.json").write_text(json.dumps(settings), encoding="utf-8")
+                digest = self.write_manifest()
+                code, output = self.invoke_preflight("--policy-manifest", str(self.manifest),
+                    "--policy-manifest-sha256", digest)
+                self.assertEqual(code, 1)
+                self.assertFalse(json.loads(output)["policy_preflight_ok"])
+
+    def test_policy_preflight_rejects_bad_write_path_and_candidate_combination(self):
+        digest = self.write_manifest()
+        for args in (("--write", ".pi/new.json"),
+                     ("--write-policy-candidate", "docs/evidence/candidate.json")):
+            with self.subTest(args=args):
+                code, _ = self.invoke_preflight("--policy-manifest", str(self.manifest),
+                    "--policy-manifest-sha256", digest, *args)
+                self.assertEqual(code, 2)
+        self.assertFalse((self.root / ".pi/new.json").exists())
+        self.assertFalse((self.root / "docs/evidence").exists())
 
     def test_candidate_is_not_approval_even_with_matching_pin(self):
         check = self.compare(self.write_manifest(status="candidate"))

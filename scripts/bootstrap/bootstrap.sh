@@ -23,8 +23,32 @@ case "$MACHINE_LABEL" in
   local|school-pc) ;;
   *) printf '   [error] MACHINE_LABEL 은 local 또는 school-pc 여야 한다. 예: MACHINE_LABEL=school-pc bash scripts/bootstrap/bootstrap.sh\n' >&2; exit 2 ;;
 esac
+# Only receipt-mode arguments may reach both verifier calls. Standalone modes,
+# help and argparse abbreviations could exit successfully without the gate.
+verify_args=("$@")
+for ((i=0; i<${#verify_args[@]}; i++)); do
+  case "${verify_args[i]}" in
+    --strict|--write=*|--policy-manifest=*|--policy-manifest-sha256=*) ;;
+    --write|--policy-manifest|--policy-manifest-sha256)
+      if (( i + 1 >= ${#verify_args[@]} )) || [[ "${verify_args[i+1]}" = -* ]]; then
+        printf '   [error] 검증 인수 값이 필요하다\n' >&2; exit 2
+      fi
+      i=$((i + 1))
+      ;;
+    *) printf '   [error] 지원하지 않는 검증 인수. --strict, --write, --policy-manifest, --policy-manifest-sha256만 허용한다. 독립 모드는 검증기를 직접 실행한다\n' >&2; exit 2 ;;
+  esac
+done
+if ! need python3; then
+  warn "python3 없음. 검토한 Python 3.11+ 실행기를 설치한 뒤 다시 실행"
+  exit 2
+fi
 git rev-parse --is-inside-work-tree >/dev/null
 ok "branch=$(git branch --show-current) head=$(git rev-parse --short HEAD) label=$MACHINE_LABEL"
+
+step "0.1 정책 사전 검사 (영수증 아님)"
+# set -e propagates failure before any Node/Pi/uv/npm command or package read.
+# --write is checked here but only the final verification may write a receipt.
+python3 scripts/bootstrap/verify_toolchain.py --policy-preflight --label "$MACHINE_LABEL" "$@"
 
 step "1. Node >= $NODE_MIN_MAJOR"
 if need node; then

@@ -777,7 +777,7 @@
         "runtime",
         "handoff"
       ],
-      "observedAt": "2026-09-08",
+      "observedAt": "2026-09-09",
       "freshnessPolicy": "content",
       "sources": [
         {
@@ -802,7 +802,7 @@
         },
         {
           "repoPath": "docs/choo-guard-school-pc-bootstrap-v1.md",
-          "sha256": "965c754020611d94e918f8ad5dfa9c638a5a76e36fd0766f9d4c80a5de140f0a",
+          "sha256": "3d8d03bd1a0afbeb22f5bb4ff30b96e35bc4710b343f0b9e6a3f612c2c2fcbc5",
           "label": "학교 도구/실행 절차의 적용 범위"
         },
         {
@@ -1514,7 +1514,7 @@
       "id": "component.policy_baseline",
       "kind": "component",
       "title": "R-07 단계별 정책 기준선 검사",
-      "summary": "승인 핀이 없으면 policy_approval_pending으로 도구 검사를 보류하며, 승인 manifest의 정확한 경로 집합과 해시를 비교한다. 순회 예산·링크 경계를 검사하고 Windows/Linux 회귀 CI에서 새 변경을 검증한다.",
+      "summary": "승인 manifest·핀과 정적 입력을 대조하고 bootstrap도 도구 호출 전에 preflight를 수행한다. 영수증의 lexical 경로·내부 링크·패키지 metadata 경계를 검사한다. preflight와 후보 생성은 런타임 승인이 아니다.",
       "status": "implemented",
       "authority": "tracked_source",
       "topics": [
@@ -1526,12 +1526,12 @@
       "sources": [
         {
           "repoPath": "scripts/bootstrap/verify_toolchain.py",
-          "sha256": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855",
+          "sha256": "41f063feaa7ca3352424edc421d151218ae84faa3f37d3cea645350d994eeab5",
           "label": "R-07 구현 및 승인 범위"
         },
         {
           "repoPath": "docs/evidence/R-07/README.md",
-          "sha256": "0277c13fbb14236d2f7074df7ca404dae87e36dac9b7318cfe97ea82ecb04db1",
+          "sha256": "cf75a31e732d86b106073086a4ce6d9c7bc1feba2bef5ce053d31d87ddfd7eed",
           "label": "R-07 구현 및 승인 범위"
         },
         {
@@ -1543,6 +1543,16 @@
           "repoPath": ".github/workflows/required-quality-gate.yml",
           "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
           "label": "R-07 구현 및 승인 범위"
+        },
+        {
+          "repoPath": "scripts/bootstrap/bootstrap.sh",
+          "sha256": "c0b59642e20e313cfff7999de7ca8e716284b88f08700a147db6c0032eb24a8f",
+          "label": "도구 호출 전 정책 사전 검사"
+        },
+        {
+          "repoPath": "scripts/bootstrap/bootstrap.ps1",
+          "sha256": "eb46e240c9d7f33a462b45b6a18d0fa378e65ace6697a68ec65c89fa960bdba3",
+          "label": "도구 호출 전 정책 사전 검사"
         }
       ],
       "limits": [

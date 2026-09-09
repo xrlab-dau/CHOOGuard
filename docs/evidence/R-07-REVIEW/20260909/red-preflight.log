@@ -1,0 +1,62 @@
+test_policy_preflight_fails_pending_or_unsafe_static_inputs (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_fails_pending_or_unsafe_static_inputs) ...
+  test_policy_preflight_fails_pending_or_unsafe_static_inputs (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_fails_pending_or_unsafe_static_inputs) (label='pending') ... FAIL
+  test_policy_preflight_fails_pending_or_unsafe_static_inputs (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_fails_pending_or_unsafe_static_inputs) (label='capture') ... FAIL
+  test_policy_preflight_fails_pending_or_unsafe_static_inputs (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_fails_pending_or_unsafe_static_inputs) (label='modified-policy') ... FAIL
+test_policy_preflight_passes_static_gate_without_probes_or_receipt (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_passes_static_gate_without_probes_or_receipt) ... FAIL
+test_policy_preflight_rejects_bad_write_path_and_candidate_combination (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_rejects_bad_write_path_and_candidate_combination) ... ok
+test_policy_preflight_rejects_invalid_settings_under_matching_baseline (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_rejects_invalid_settings_under_matching_baseline) ...
+  test_policy_preflight_rejects_invalid_settings_under_matching_baseline (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_rejects_invalid_settings_under_matching_baseline) (settings={'packages': [None]}) ... FAIL
+  test_policy_preflight_rejects_invalid_settings_under_matching_baseline (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_rejects_invalid_settings_under_matching_baseline) (settings={'packages': [], 'extensions': [{'execute_code': True}]}) ... FAIL
+
+======================================================================
+FAIL: test_policy_preflight_fails_pending_or_unsafe_static_inputs (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_fails_pending_or_unsafe_static_inputs) (label='pending')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_policy_baseline.py", line 188, in test_policy_preflight_fails_pending_or_unsafe_static_inputs
+    self.assertEqual(code, 1)
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_policy_preflight_fails_pending_or_unsafe_static_inputs (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_fails_pending_or_unsafe_static_inputs) (label='capture')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_policy_baseline.py", line 188, in test_policy_preflight_fails_pending_or_unsafe_static_inputs
+    self.assertEqual(code, 1)
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_policy_preflight_fails_pending_or_unsafe_static_inputs (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_fails_pending_or_unsafe_static_inputs) (label='modified-policy')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_policy_baseline.py", line 188, in test_policy_preflight_fails_pending_or_unsafe_static_inputs
+    self.assertEqual(code, 1)
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_policy_preflight_passes_static_gate_without_probes_or_receipt (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_passes_static_gate_without_probes_or_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_policy_baseline.py", line 167, in test_policy_preflight_passes_static_gate_without_probes_or_receipt
+    self.assertEqual(code, 0)
+AssertionError: 2 != 0
+
+======================================================================
+FAIL: test_policy_preflight_rejects_invalid_settings_under_matching_baseline (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_rejects_invalid_settings_under_matching_baseline) (settings={'packages': [None]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_policy_baseline.py", line 200, in test_policy_preflight_rejects_invalid_settings_under_matching_baseline
+    self.assertEqual(code, 1)
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_policy_preflight_rejects_invalid_settings_under_matching_baseline (test_policy_baseline.PolicyBaselineTests.test_policy_preflight_rejects_invalid_settings_under_matching_baseline) (settings={'packages': [], 'extensions': [{'execute_code': True}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_policy_baseline.py", line 200, in test_policy_preflight_rejects_invalid_settings_under_matching_baseline
+    self.assertEqual(code, 1)
+AssertionError: 2 != 1
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.030s
+
+FAILED (failures=6)

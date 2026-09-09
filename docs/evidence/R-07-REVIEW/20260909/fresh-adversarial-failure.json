@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "recordType": "orchestrator_observed_reviewer_failure",
+  "lens": "adversarial",
+  "provider": "OpenAI",
+  "session": "/root/fresh_adversarial_review",
+  "outcome": "cannot_proceed",
+  "actionable": [],
+  "notes": [
+    "The agent reported two preliminary static counterexamples, then failed before producing its final review JSON.",
+    "Tool final status: This content was flagged for possible cybersecurity risk. No reviewer approval was received.",
+    "Preliminary issues are being independently verified by the authorized implementation task; they are not fabricated final reviewer findings."
+  ],
+  "headCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+  "targetManifestSha256": "29a6a8d134058e34506b393ac6a7bc2c9d3ed384ad58201d3ec522290f6f04bf",
+  "preliminaryObservations": [
+    "receipt_target resolves a docs/evidence alias into an in-repository policy directory, allowing creation outside lexical evidence tree.",
+    "scan_workspace accepts aliases into the unscanned root .git directory."
+  ],
+  "reviewerEndHashVerification": false
+}

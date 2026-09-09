@@ -1,0 +1,159 @@
+Replay of final regression tests against unchanged 3b0dd51 verifier; original test-first runs are retained separately.
+test_receipt_root_alias_cannot_create_missing_policy_file (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_root_alias_cannot_create_missing_policy_file) ... FAIL
+test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) ...
+  test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write', requested='docs/evidence/new.json') ... FAIL
+  test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write', requested='.pi/new.json') ... FAIL
+  test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write-policy-candidate', requested='docs/evidence/new.json') ... FAIL
+  test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write-policy-candidate', requested='.pi/new.json') ... FAIL
+test_receipt_rejects_internal_parent_links_and_dangling_leaf (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_internal_parent_links_and_dangling_leaf) ...
+  test_receipt_rejects_internal_parent_links_and_dangling_leaf (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_internal_parent_links_and_dangling_leaf) (requested='docs/evidence/alias/new.json') ... FAIL
+  test_receipt_rejects_internal_parent_links_and_dangling_leaf (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_internal_parent_links_and_dangling_leaf) (requested='docs/evidence/dangling-parent/new.json') ... FAIL
+  test_receipt_rejects_internal_parent_links_and_dangling_leaf (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_internal_parent_links_and_dangling_leaf) (requested='docs/evidence/dangling.json') ... FAIL
+test_receipt_rejects_detected_mount_and_reparse_parents (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_detected_mount_and_reparse_parents) ... FAIL
+test_receipt_rechecks_parent_after_tool_probes (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rechecks_parent_after_tool_probes) ... FAIL
+test_both_receipt_modes_recheck_parent_after_directory_creation (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_recheck_parent_after_directory_creation) ...
+  test_both_receipt_modes_recheck_parent_after_directory_creation (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_recheck_parent_after_directory_creation) (option='--write') ... FAIL
+  test_both_receipt_modes_recheck_parent_after_directory_creation (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_recheck_parent_after_directory_creation) (option='--write-policy-candidate') ... FAIL
+test_links_into_pruned_git_are_not_clean_workspace_input (test_verify_toolchain.ToolchainBoundaryTests.test_links_into_pruned_git_are_not_clean_workspace_input) ...
+  test_links_into_pruned_git_are_not_clean_workspace_input (test_verify_toolchain.ToolchainBoundaryTests.test_links_into_pruned_git_are_not_clean_workspace_input) (target=PosixPath('.git')) ... FAIL
+  test_links_into_pruned_git_are_not_clean_workspace_input (test_verify_toolchain.ToolchainBoundaryTests.test_links_into_pruned_git_are_not_clean_workspace_input) (target=PosixPath('.git/raw')) ... FAIL
+  test_links_into_pruned_git_are_not_clean_workspace_input (test_verify_toolchain.ToolchainBoundaryTests.test_links_into_pruned_git_are_not_clean_workspace_input) (target=PosixPath('.git/raw/capture.mp4')) ... FAIL
+test_root_alias_cannot_expose_pruned_git_subtree (test_verify_toolchain.ToolchainBoundaryTests.test_root_alias_cannot_expose_pruned_git_subtree) ... FAIL
+test_internal_venv_directory_alias_to_scanned_target_remains_allowed (test_verify_toolchain.ToolchainBoundaryTests.test_internal_venv_directory_alias_to_scanned_target_remains_allowed) ... ok
+
+======================================================================
+FAIL: test_receipt_root_alias_cannot_create_missing_policy_file (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_root_alias_cannot_create_missing_policy_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 171, in test_receipt_root_alias_cannot_create_missing_policy_file
+    self.assertEqual(self.invoke("--write", "docs/evidence/settings.json"), 2)
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write', requested='docs/evidence/new.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 180, in test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix
+    self.assertEqual(self.invoke(option, requested), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write', requested='.pi/new.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 180, in test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix
+    self.assertEqual(self.invoke(option, requested), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write-policy-candidate', requested='docs/evidence/new.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 180, in test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix
+    self.assertEqual(self.invoke(option, requested), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix) (option='--write-policy-candidate', requested='.pi/new.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 180, in test_both_receipt_modes_reject_root_alias_and_non_evidence_prefix
+    self.assertEqual(self.invoke(option, requested), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_receipt_rejects_internal_parent_links_and_dangling_leaf (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_internal_parent_links_and_dangling_leaf) (requested='docs/evidence/alias/new.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 196, in test_receipt_rejects_internal_parent_links_and_dangling_leaf
+    with self.assertRaises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_receipt_rejects_internal_parent_links_and_dangling_leaf (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_internal_parent_links_and_dangling_leaf) (requested='docs/evidence/dangling-parent/new.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 196, in test_receipt_rejects_internal_parent_links_and_dangling_leaf
+    with self.assertRaises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_receipt_rejects_internal_parent_links_and_dangling_leaf (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_internal_parent_links_and_dangling_leaf) (requested='docs/evidence/dangling.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 196, in test_receipt_rejects_internal_parent_links_and_dangling_leaf
+    with self.assertRaises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_receipt_rejects_detected_mount_and_reparse_parents (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rejects_detected_mount_and_reparse_parents)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 204, in test_receipt_rejects_detected_mount_and_reparse_parents
+    with self.assertRaises(ValueError):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_receipt_rechecks_parent_after_tool_probes (test_verify_toolchain.ToolchainBoundaryTests.test_receipt_rechecks_parent_after_tool_probes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 229, in test_receipt_rechecks_parent_after_tool_probes
+    self.assertEqual(self.invoke("--write", "docs/evidence/new.json"), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_both_receipt_modes_recheck_parent_after_directory_creation (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_recheck_parent_after_directory_creation) (option='--write')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 251, in test_both_receipt_modes_recheck_parent_after_directory_creation
+    self.assertEqual(self.invoke(option, "docs/evidence/new.json"), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_both_receipt_modes_recheck_parent_after_directory_creation (test_verify_toolchain.ToolchainBoundaryTests.test_both_receipt_modes_recheck_parent_after_directory_creation) (option='--write-policy-candidate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 251, in test_both_receipt_modes_recheck_parent_after_directory_creation
+    self.assertEqual(self.invoke(option, "docs/evidence/new.json"), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_links_into_pruned_git_are_not_clean_workspace_input (test_verify_toolchain.ToolchainBoundaryTests.test_links_into_pruned_git_are_not_clean_workspace_input) (target=PosixPath('.git'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 269, in test_links_into_pruned_git_are_not_clean_workspace_input
+    self.assertTrue(scan["errors"], "An alias to unscanned Git data must fail closed")
+AssertionError: [] is not true : An alias to unscanned Git data must fail closed
+
+======================================================================
+FAIL: test_links_into_pruned_git_are_not_clean_workspace_input (test_verify_toolchain.ToolchainBoundaryTests.test_links_into_pruned_git_are_not_clean_workspace_input) (target=PosixPath('.git/raw'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 269, in test_links_into_pruned_git_are_not_clean_workspace_input
+    self.assertTrue(scan["errors"], "An alias to unscanned Git data must fail closed")
+AssertionError: [] is not true : An alias to unscanned Git data must fail closed
+
+======================================================================
+FAIL: test_links_into_pruned_git_are_not_clean_workspace_input (test_verify_toolchain.ToolchainBoundaryTests.test_links_into_pruned_git_are_not_clean_workspace_input) (target=PosixPath('.git/raw/capture.mp4'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 269, in test_links_into_pruned_git_are_not_clean_workspace_input
+    self.assertTrue(scan["errors"], "An alias to unscanned Git data must fail closed")
+AssertionError: [] is not true : An alias to unscanned Git data must fail closed
+
+======================================================================
+FAIL: test_root_alias_cannot_expose_pruned_git_subtree (test_verify_toolchain.ToolchainBoundaryTests.test_root_alias_cannot_expose_pruned_git_subtree)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_verify_toolchain.py", line 280, in test_root_alias_cannot_expose_pruned_git_subtree
+    self.assertTrue(verifier.scan_workspace(self.root)["errors"])
+AssertionError: [] is not true
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.130s
+
+FAILED (failures=16)

@@ -1,0 +1,52 @@
+{
+  "outcome": "approved",
+  "actionable": [],
+  "notes": [
+    "Scoped static SPEC approval of PR97 implementation at the supplied head, with Linux synthetic regression execution. This is not issue 52 completion, policy-owner approval, runtime approval, or authorization to merge.",
+    "Fresh separate OpenAI agent session /root/fresh_spec_review. This is the same provider as the author and does not satisfy the required different-provider review gate; the overall gate remains cannot_proceed. No Fal, external model service, network access, package installation, or repository writes were used.",
+    "Read AGENTS.md, ran context_graph.py validate and brief --topic handoff --machine local, and independently inspected the actual verifier, tests, bootstrap entry points, changed CI workflow, policy-scope audit, Foundation schema/validator, issue acceptance, and implementation/evidence handoff. Prior excluded verdicts were not used as authority and no other reviewer was consulted.",
+    "Acceptance items 1 and 2 have concrete enforcement: no manifest/pin and candidate manifests remain policy_approval_pending with required_ok=false; an approved-form externally pinned manifest must match the exact observed path set and SHA-256 values. Actual PM approval of policy paths and independently supplied pin remains outstanding. approvalReference syntax alone does not authenticate approval, as explicitly documented.",
+    "Acceptance items 3 and 4 distinguish reproducible evidence from unavailable history. Run04 source and log hashes match, and previousReceiptSha256 links for runs 02 through 04 match their preceding receipts. These hashes do not establish authenticated timestamps or recover the original 105-key journal. The missing original journal or explicit human acceptance of its unverifiable scope remains outstanding.",
+    "Acceptance items 5 and 6 have fail-closed directory/time budgets and link, detected mount/reparse, and access-error handling. Current Linux tests do not establish native Windows or school-PC ACL/mount behavior. The supplied Windows CI record covers an earlier commit and remains historical evidence. Blocked OS I/O and undetectable mount types remain documented limits.",
+    "Acceptance item 7 is concretely linked to the existing Foundation schema and validator: fixed role/action/anchor IDs, unique/reference-integrity checks, and required provisional metadata have negative coverage. These do not establish complete M4-01 DoD or real railway procedures. Item 8 is explicitly separated into PR98/R-07-GRAPH and is outside this approval.",
+    "Fresh execution: python3 -m unittest test_verify_toolchain.ToolchainBoundaryTests test_policy_baseline -v ran 62 tests, passed 60, skipped 2, failed 0. Skips are the native Windows junction test and the POSIX permission test while running as root. python3 -m unittest discover -s scripts/foundation/tests -p test_validate.py -v passed 31/31. All generated test files were confined to temporary directories outside the repository; Python bytecode writing was disabled.",
+    "The latest policy-candidate-20260908-04.json remains status=candidate with approvalReference=null, and its recorded policy hashes match the target tree. Candidate file creation success is correctly distinguished from approval.",
+    "The manifest and every one of its 39 scoped file hashes matched both before and after review; Git HEAD and clean repository status also matched. Context graph structural validation passed; stale and historical runtime evidence was not promoted to current acceptance."
+  ],
+  "headCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+  "baseCommit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+  "targetManifestSha256": "29a6a8d134058e34506b393ac6a7bc2c9d3ed384ad58201d3ec522290f6f04bf",
+  "lens": "spec",
+  "provider": "OpenAI",
+  "differentProviderApproval": false,
+  "verification": {
+    "start": {
+      "headCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "targetManifestSha256": "29a6a8d134058e34506b393ac6a7bc2c9d3ed384ad58201d3ec522290f6f04bf",
+      "scopedFileCount": 39,
+      "mismatches": [],
+      "gitStatus": "clean"
+    },
+    "end": {
+      "headCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "targetManifestSha256": "29a6a8d134058e34506b393ac6a7bc2c9d3ed384ad58201d3ec522290f6f04bf",
+      "scopedFileCount": 39,
+      "mismatches": [],
+      "gitStatus": "clean"
+    },
+    "bootstrapPolicyTests": {
+      "total": 62,
+      "passed": 60,
+      "skipped": 2,
+      "failed": 0,
+      "platform": "Linux"
+    },
+    "foundationValidationTests": {
+      "total": 31,
+      "passed": 31,
+      "skipped": 0,
+      "failed": 0,
+      "platform": "Linux"
+    }
+  }
+}

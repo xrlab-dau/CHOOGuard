@@ -1,0 +1,141 @@
+{
+  "outcome": "changes_required",
+  "actionable": [
+    {
+      "id": "SEC-FRESH-1",
+      "severity": "P2",
+      "title": "Apply the policy preflight before bootstrap launches Node, Pi or uv",
+      "problem": "The new approval gate is reached only at the end of both supported bootstrap entry points. With no approved manifest and AUTO_INSTALL=0, bootstrap.sh still runs node -p, node --version, pi --version and uv --version before verify_toolchain.py returns policy_approval_pending. Its written receipt then says tool_probes.executed=false even though the enclosing bootstrap operation has already launched those tools. The code correctly gates a direct verifier invocation, but the normal entry points do not provide the same execution boundary. This is an existing integration path left outside the new gate, not a claim that the wrapper calls were newly added by this PR.",
+      "fix": "Expose a static policy preflight and invoke it before any Node/Pi/uv/package inspection in both bootstrap scripts, or make the no-install bootstrap path delegate all such probes to the gated verifier. Preserve the separate explicit installation authorization. Define receipt scope clearly and add a shim-based regression asserting no Node/Pi/uv calls when approval is missing or mismatched, with a native PowerShell counterpart.",
+      "locations": [
+        {
+          "path": "scripts/bootstrap/bootstrap.sh",
+          "lineStart": 29,
+          "lineEnd": 50
+        },
+        {
+          "path": "scripts/bootstrap/bootstrap.ps1",
+          "lineStart": 29,
+          "lineEnd": 53
+        },
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "lineStart": 490,
+          "lineEnd": 496
+        },
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "lineStart": 544,
+          "lineEnd": 545
+        }
+      ],
+      "reproduction": {
+        "command": "python3 -B <review-workspace>/review-other-provider/safety-fixtures/reproduce_safety.py",
+        "case": "bootstrap_without_approval",
+        "setup": "Copy the exact shell entry point and verifier into a disposable synthetic repository. Use harmless PATH shims for git/node/pi/uv, set MACHINE_LABEL=local and AUTO_INSTALL=0, and supply --write without a policy manifest.",
+        "observed": {
+          "exitCode": 1,
+          "toolCallsBeforeVerifierGate": [
+            "node -p",
+            "node --version",
+            "pi --version",
+            "uv --version"
+          ],
+          "baselineStatus": "policy_approval_pending",
+          "receiptToolProbesExecuted": false
+        },
+        "limits": "Executed on Linux. The same ordering in bootstrap.ps1 was inspected statically; no native PowerShell execution is claimed."
+      }
+    },
+    {
+      "id": "SEC-FRESH-2",
+      "severity": "P2",
+      "title": "Validate and sanitize installed package metadata before recording it",
+      "problem": "Installed package.json files are workspace-controlled and are not covered by policySha256. check_packages reads them without a size bound, assumes their JSON root is an object, and copies the version value of any JSON type into public evidence. A valid JSON array causes an uncaught AttributeError and suppresses the requested failure receipt; a version object is copied verbatim, including arbitrary private metadata, into checks.pi_packages.rows[].installed. The CLI still exits nonzero for the malformed fixtures, so this is evidence loss and an unsanitized metadata channel, not a successful-policy bypass. The parser predates this PR but is explicitly in the supplied safety target and now forms part of the gated receipt path.",
+      "fix": "Read package metadata through a bounded regular-file reader, require an object root and a bounded version string matching the supported version syntax, and record only the validated version or a fixed error code. Treat malformed, oversized, deeply nested or unreadable metadata as a failed pi_packages check while still writing the requested failure receipt. Never copy an arbitrary object or invalid raw version string into evidence.",
+      "locations": [
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "lineStart": 399,
+          "lineEnd": 408
+        },
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "lineStart": 518,
+          "lineEnd": 518
+        },
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "lineStart": 550,
+          "lineEnd": 550
+        }
+      ],
+      "reproduction": {
+        "command": "python3 -B <review-workspace>/review-other-provider/safety-fixtures/reproduce_safety.py",
+        "cases": [
+          "metadata_object",
+          "malformed_metadata"
+        ],
+        "setup": "Use a synthetic approved settings file with packages=[\"npm:fixture@1.0.0\"]. Keep its pinned baseline unchanged while changing only .pi/npm/node_modules/fixture/package.json.",
+        "inputsAndObserved": [
+          {
+            "input": {
+              "version": {
+                "privateMetadata": "SYNTHETIC-PRIVATE-SENTINEL"
+              }
+            },
+            "exitCode": 1,
+            "installedValueCopiedVerbatim": true
+          },
+          {
+            "input": [],
+            "exception": "AttributeError: list object has no attribute get",
+            "requestedReceiptWritten": false
+          }
+        ],
+        "limits": "Only synthetic sentinel data was used. No credentials, external files, network calls or real package execution were involved."
+      }
+    }
+  ],
+  "notes": [
+    "This is a fresh separate-session OpenAI safety review. It does not satisfy the required different-provider gate, which remains cannot_proceed. No external model or Fal call was made.",
+    "Read AGENTS.md, executed the required context validate and handoff brief, inspected actual target source and the base-to-head implementation diff, and checked the supplied acceptance criteria. Prior verdict artifacts were not opened or adopted as approval; canonical context/evidence files contain historical summaries that were not used to determine this verdict.",
+    "Direct verifier behavior is materially fail-closed: absent/candidate/changed pins do not yield required_ok, exact policy sets and hashes are compared, policy FIFO/link inputs are rejected, incomplete scans are not reported clean, and permanent policy changes across scan/probe boundaries are detected. These checks do not authenticate a policy owner or sandbox tool execution, as the source explicitly states.",
+    "The _virtualenv.pth exception is anchored to the expected research-venv member path but does not authenticate its bytes or prove that the directory is an installed environment. A harmless executable import line passed with required_ok=true and was executed when a separate Python process explicitly processed that site directory. This is recorded as a limitation of the documented filename scan, not a new arbitrary-code-execution claim about verify_toolchain.py itself, which does not launch that venv Python.",
+    "The independent Linux run found 73 bootstrap tests: 63 passed and 10 skipped (8 native Windows command tests, 1 native junction test, 1 root-only POSIX permission limitation). No source changes were made. All fixture mutations were outside the repository.",
+    "All seven RED/GREEN log hashes referenced by R-07 run01 through run04 match their current recorded files. This verifies byte bindings only, not timestamps, signer identity or external execution. The supplied Windows receipt explicitly covers an earlier commit; no current-head Windows result, school-PC ACL/mount behavior or live GitHub status is inferred offline.",
+    "The two actionable items concern integration and evidence paths present in the target; they are not represented as proof that the PR newly introduced the original wrapper order or metadata parser. Their scope should be resolved explicitly before claiming the new gate covers the supported bootstrap flow and safe evidence generation."
+  ],
+  "headCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+  "baseCommit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+  "targetManifestSha256": "29a6a8d134058e34506b393ac6a7bc2c9d3ed384ad58201d3ec522290f6f04bf",
+  "lens": "safety",
+  "provider": "OpenAI",
+  "differentProviderGate": "cannot_proceed",
+  "targetVerification": {
+    "start": {
+      "headCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "targetManifestSha256": "29a6a8d134058e34506b393ac6a7bc2c9d3ed384ad58201d3ec522290f6f04bf",
+      "filesChecked": 39,
+      "hashMismatches": [],
+      "gitStatusPorcelain": ""
+    },
+    "end": {
+      "headCommit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "targetManifestSha256": "29a6a8d134058e34506b393ac6a7bc2c9d3ed384ad58201d3ec522290f6f04bf",
+      "filesChecked": 39,
+      "hashMismatches": [],
+      "gitStatusPorcelain": ""
+    },
+    "packetManifestMatches": true,
+    "packetContentHashesMatch": true
+  },
+  "reviewConstraints": {
+    "repositoryReadOnly": true,
+    "reproductions": "scratch synthetic fixtures only",
+    "networkUsed": false,
+    "installationsPerformed": false,
+    "externalModelsInvoked": false,
+    "nativeWindowsExecuted": false
+  }
+}

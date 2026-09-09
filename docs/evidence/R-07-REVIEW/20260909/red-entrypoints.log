@@ -1,0 +1,169 @@
+Command: python3 -B -m unittest discover -s scripts/bootstrap -p test_bootstrap_*.py -v
+test_approved_preflight_preserves_explicit_install_path (test_bootstrap_powershell.PowerShellBootstrapTests.test_approved_preflight_preserves_explicit_install_path) ... skipped 'Windows native command tests'
+test_default_never_installs_or_syncs (test_bootstrap_powershell.PowerShellBootstrapTests.test_default_never_installs_or_syncs) ... skipped 'Windows native command tests'
+test_equals_arguments_are_forwarded_without_splitting (test_bootstrap_powershell.PowerShellBootstrapTests.test_equals_arguments_are_forwarded_without_splitting) ... skipped 'Windows native command tests'
+test_failed_native_npm_stops_before_sync_and_verification (test_bootstrap_powershell.PowerShellBootstrapTests.test_failed_native_npm_stops_before_sync_and_verification) ... skipped 'Windows native command tests'
+test_failed_native_uv_stops_before_verification (test_bootstrap_powershell.PowerShellBootstrapTests.test_failed_native_uv_stops_before_verification) ... skipped 'Windows native command tests'
+test_failed_preflight_stops_all_tools_even_with_install_authorization (test_bootstrap_powershell.PowerShellBootstrapTests.test_failed_preflight_stops_all_tools_even_with_install_authorization) ... skipped 'Windows native command tests'
+test_installed_node_version_check_survives_powershell_quoting (test_bootstrap_powershell.PowerShellBootstrapTests.test_installed_node_version_check_survives_powershell_quoting) ... skipped 'Windows native command tests'
+test_invalid_label_stops_before_tool_calls (test_bootstrap_powershell.PowerShellBootstrapTests.test_invalid_label_stops_before_tool_calls) ... skipped 'Windows native command tests'
+test_malformed_node_version_stops_before_installs_and_verification (test_bootstrap_powershell.PowerShellBootstrapTests.test_malformed_node_version_stops_before_installs_and_verification) ... skipped 'Windows native command tests'
+test_manifest_and_receipt_arguments_are_forwarded_to_both_stages (test_bootstrap_powershell.PowerShellBootstrapTests.test_manifest_and_receipt_arguments_are_forwarded_to_both_stages) ... skipped 'Windows native command tests'
+test_node_failure_stops_before_installs_and_verification (test_bootstrap_powershell.PowerShellBootstrapTests.test_node_failure_stops_before_installs_and_verification) ... skipped 'Windows native command tests'
+test_preflight_exit_code_is_preserved (test_bootstrap_powershell.PowerShellBootstrapTests.test_preflight_exit_code_is_preserved) ... skipped 'Windows native command tests'
+test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_powershell.PowerShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) ... skipped 'Windows native command tests'
+test_verifier_exit_code_is_preserved (test_bootstrap_powershell.PowerShellBootstrapTests.test_verifier_exit_code_is_preserved) ... skipped 'Windows native command tests'
+test_approved_preflight_preserves_explicit_install_path (test_bootstrap_shell.ShellBootstrapTests.test_approved_preflight_preserves_explicit_install_path) ... FAIL
+test_default_preflights_before_tools_and_never_installs_or_syncs (test_bootstrap_shell.ShellBootstrapTests.test_default_preflights_before_tools_and_never_installs_or_syncs) ... FAIL
+test_equals_arguments_are_forwarded_without_splitting (test_bootstrap_shell.ShellBootstrapTests.test_equals_arguments_are_forwarded_without_splitting) ... FAIL
+test_failed_preflight_stops_all_tools_even_with_install_authorization (test_bootstrap_shell.ShellBootstrapTests.test_failed_preflight_stops_all_tools_even_with_install_authorization) ...
+  test_failed_preflight_stops_all_tools_even_with_install_authorization (test_bootstrap_shell.ShellBootstrapTests.test_failed_preflight_stops_all_tools_even_with_install_authorization) (auto_install=False) ... FAIL
+  test_failed_preflight_stops_all_tools_even_with_install_authorization (test_bootstrap_shell.ShellBootstrapTests.test_failed_preflight_stops_all_tools_even_with_install_authorization) (auto_install=True) ... FAIL
+test_final_verifier_exit_code_is_preserved (test_bootstrap_shell.ShellBootstrapTests.test_final_verifier_exit_code_is_preserved) ... FAIL
+test_invalid_label_stops_before_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_invalid_label_stops_before_tool_calls) ... ok
+test_manifest_and_receipt_arguments_are_forwarded_to_both_stages (test_bootstrap_shell.ShellBootstrapTests.test_manifest_and_receipt_arguments_are_forwarded_to_both_stages) ... FAIL
+test_preflight_exit_code_is_preserved (test_bootstrap_shell.ShellBootstrapTests.test_preflight_exit_code_is_preserved) ... FAIL
+test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) ...
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--policy-preflight']) ... FAIL
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--policy-pre']) ... FAIL
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--write-policy-candidate', 'docs/evidence/R-07/candidate.json']) ... FAIL
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--write-policy-candidate=docs/evidence/R-07/candidate.json']) ... FAIL
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--write-policy', 'docs/evidence/R-07/candidate.json']) ... FAIL
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--help']) ... FAIL
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--hel']) ... FAIL
+  test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['-h']) ... FAIL
+
+======================================================================
+FAIL: test_approved_preflight_preserves_explicit_install_path (test_bootstrap_shell.ShellBootstrapTests.test_approved_preflight_preserves_explicit_install_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 125, in test_approved_preflight_preserves_explicit_install_path
+    self.assertEqual(len(self.preflights), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_default_preflights_before_tools_and_never_installs_or_syncs (test_bootstrap_shell.ShellBootstrapTests.test_default_preflights_before_tools_and_never_installs_or_syncs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 113, in test_default_preflights_before_tools_and_never_installs_or_syncs
+    self.assertEqual(len(self.preflights), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_equals_arguments_are_forwarded_without_splitting (test_bootstrap_shell.ShellBootstrapTests.test_equals_arguments_are_forwarded_without_splitting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 106, in test_equals_arguments_are_forwarded_without_splitting
+    self.assertEqual(len(self.preflights), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_failed_preflight_stops_all_tools_even_with_install_authorization (test_bootstrap_shell.ShellBootstrapTests.test_failed_preflight_stops_all_tools_even_with_install_authorization) (auto_install=False)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 80, in test_failed_preflight_stops_all_tools_even_with_install_authorization
+    self.assertEqual(result.returncode, 1, result.stderr)
+AssertionError: 0 != 1 : b''
+
+======================================================================
+FAIL: test_failed_preflight_stops_all_tools_even_with_install_authorization (test_bootstrap_shell.ShellBootstrapTests.test_failed_preflight_stops_all_tools_even_with_install_authorization) (auto_install=True)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 80, in test_failed_preflight_stops_all_tools_even_with_install_authorization
+    self.assertEqual(result.returncode, 1, result.stderr)
+AssertionError: 0 != 1 : b''
+
+======================================================================
+FAIL: test_final_verifier_exit_code_is_preserved (test_bootstrap_shell.ShellBootstrapTests.test_final_verifier_exit_code_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 136, in test_final_verifier_exit_code_is_preserved
+    self.assertEqual(len(self.preflights), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_manifest_and_receipt_arguments_are_forwarded_to_both_stages (test_bootstrap_shell.ShellBootstrapTests.test_manifest_and_receipt_arguments_are_forwarded_to_both_stages)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 95, in test_manifest_and_receipt_arguments_are_forwarded_to_both_stages
+    self.assertEqual(len(self.preflights), 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_preflight_exit_code_is_preserved (test_bootstrap_shell.ShellBootstrapTests.test_preflight_exit_code_is_preserved)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 87, in test_preflight_exit_code_is_preserved
+    self.assertEqual(result.returncode, 19, result.stderr)
+AssertionError: 0 != 19 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--policy-preflight'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--policy-pre'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--write-policy-candidate', 'docs/evidence/R-07/candidate.json'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--write-policy-candidate=docs/evidence/R-07/candidate.json'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--write-policy', 'docs/evidence/R-07/candidate.json'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--help'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['--hel'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) (args=['-h'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-links/scripts/bootstrap/test_bootstrap_shell.py", line 147, in test_standalone_verifier_modes_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+----------------------------------------------------------------------
+Ran 23 tests in 3.017s
+
+FAILED (failures=16, skipped=14)
+
+Exit code: 1

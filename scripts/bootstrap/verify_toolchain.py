@@ -92,6 +92,7 @@ WORKSPACE_SCAN_MAX_FILES = 200_000
 WORKSPACE_SCAN_MAX_DIRS = 20_000
 WORKSPACE_SCAN_MAX_SECONDS = 15
 MAX_POLICY_MANIFEST_BYTES = 2_000_000
+MAX_PACKAGE_MANIFEST_BYTES = 1_000_000
 REQUIRED_POLICY_GLOBS = [p for p in POLICY_GLOBS if p != ".github/workflows/*.yaml"]
 ENV_NAMES = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "EXA_API_KEY", "RESEARCH_MODEL"]
 DISALLOWED_SETTINGS_KEYS = {"mcp", "mcpServers", "execute_code", "remotePackages"}
@@ -192,6 +193,7 @@ def scan_workspace(root: Path) -> dict:
     started = monotonic()
     result = {"forbidden": [], "outside_links": [], "errors": [], "truncated": False,
               "limit": None, "files": 0, "directories": 0, "mounts": 0, "reparse_points": 0}
+    scanned_dirs, internal_links, pruned_roots = set(), [], set()
 
     def on_error(error: OSError) -> None:
         name = getattr(error, "filename", None)
@@ -214,7 +216,9 @@ def scan_workspace(root: Path) -> dict:
         result["directories"] += 1
         if over_budget():
             break
+        scanned_dirs.add(here)
         if here == root:
+            pruned_roots.update(d for d in dirnames if d in WORKSPACE_PRUNED_DIRS)
             dirnames[:] = [d for d in dirnames if d not in WORKSPACE_PRUNED_DIRS]
         file_names = set(filenames)
         for name in [*dirnames, *filenames]:
@@ -232,6 +236,8 @@ def scan_workspace(root: Path) -> dict:
                     target = entry.resolve(strict=True)
                     if target != root and root not in target.parents:
                         result["outside_links"].append(rel)
+                    else:
+                        internal_links.append((target, name in dirnames))
                     if name in dirnames:
                         dirnames.remove(name)
                 elif getattr(info, "st_file_attributes", 0) & getattr(stat, "FILE_ATTRIBUTE_REPARSE_POINT", 0x400):
@@ -250,6 +256,12 @@ def scan_workspace(root: Path) -> dict:
                     dirnames.remove(name)
         if result["truncated"]:
             break
+    for target, is_directory in internal_links:
+        # Internal links are safe to skip only when their canonical target was
+        # reached by this scan. Root aliases also expose any pruned subtree.
+        covered = target if is_directory else target.parent
+        if covered not in scanned_dirs or (target == root and pruned_roots):
+            result["errors"].append("unscanned_link_target")
     result["forbidden"].sort()
     result["outside_links"].sort()
     return result
@@ -386,23 +398,50 @@ def nested_disallowed_keys(value, prefix: str = "") -> list[str]:
     return found
 
 
-def check_packages(root: Path, settings: dict) -> tuple[list[dict], bool]:
-    rows, all_ok = [], True
-    for entry in settings.get("packages", []):
-        spec = entry if isinstance(entry, str) else entry.get("source", "")
+def package_specs(settings: dict) -> list[tuple[str, str]] | None:
+    """Validate declarations before using them as paths or reading metadata."""
+    entries = settings.get("packages", [])
+    if not isinstance(entries, list):
+        return None
+    specs = []
+    for entry in entries:
+        spec = entry.get("source") if isinstance(entry, dict) else entry
+        if not isinstance(spec, str) or len(spec) > 512:
+            return None
         spec = spec.removeprefix("npm:")  # settings.json 은 "npm:<name>@<version>" 형식
         if spec.startswith("@"):
             scope_name, _, want = spec[1:].partition("@")
             name = "@" + scope_name
         else:
             name, _, want = spec.partition("@")
+        if len(name) > 214 or not re.fullmatch(r"(?:@[a-z0-9][a-z0-9._-]*/)?[a-z0-9][a-z0-9._-]*", name):
+            return None
+        specs.append((name, want))
+    return specs
+
+
+def check_packages(root: Path, settings: dict) -> tuple[list[dict], bool]:
+    specs = package_specs(settings)
+    if specs is None:
+        return [], False
+    rows, all_ok = [], True
+    for name, want in specs:
         pkg = root / ".pi/npm/node_modules" / name / "package.json"
         have = None
-        if pkg.is_file():
-            try:
-                have = json.loads(pkg.read_text(encoding="utf-8")).get("version")
-            except (OSError, ValueError):
-                have = None
+        try:
+            with open_regular_file(pkg) as stream:
+                raw = stream.read(MAX_PACKAGE_MANIFEST_BYTES + 1)
+            if len(raw) > MAX_PACKAGE_MANIFEST_BYTES:
+                raise ValueError("package metadata exceeds read budget")
+            metadata = json.loads(raw.decode("utf-8"))
+            value = metadata.get("version") if isinstance(metadata, dict) else None
+            if isinstance(value, str) and len(value) <= 128 and re.fullmatch(
+                r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)"
+                r"(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?", value
+            ):
+                have = value
+        except (OSError, ValueError, RecursionError):
+            pass
         ok = have is not None and (not want or have == want)
         all_ok &= ok
         rows.append({"package": name, "wanted": want or None, "installed": have, "ok": ok})
@@ -415,15 +454,45 @@ def receipt_target(root: Path, requested: str) -> Path:
     rel = PurePosixPath(requested.replace("\\", "/"))
     if rel.is_absolute() or ".." in rel.parts:
         raise ValueError(f"영수증 경로는 저장소 상대 경로여야 한다: {requested}")
-    out = (root / rel).resolve()
-    evidence = (root / RECEIPT_ROOT).resolve()
-    if root not in out.parents or evidence not in out.parents:
+    prefix = PurePosixPath(RECEIPT_ROOT).parts
+    if rel.parts[:len(prefix)] != prefix or len(rel.parts) <= len(prefix):
         raise ValueError(f"영수증은 {RECEIPT_ROOT}/ 아래에만 쓴다: {requested}")
+    out = root / rel
     if out.suffix != ".json":
         raise ValueError(f"영수증은 .json 파일이어야 한다: {requested}")
-    if out.exists() or out.is_symlink():
-        raise ValueError(f"기존 파일은 덮어쓰지 않는다. 실행별 새 이름을 쓴다: {requested}")
+    current = root
+    try:
+        for part in rel.parts:
+            current = current / part
+            try:
+                info = current.lstat()
+            except FileNotFoundError:
+                break
+            if stat.S_ISLNK(info.st_mode) or getattr(info, "st_file_attributes", 0) & 0x400:
+                raise ValueError("영수증 경로의 링크는 허용하지 않는다")
+            if os.path.ismount(current):
+                raise ValueError("영수증 경로의 mount는 검증되지 않았다")
+            if current == out:
+                raise ValueError("기존 파일은 덮어쓰지 않는다. 실행별 새 이름을 쓴다")
+            if not stat.S_ISDIR(info.st_mode):
+                raise ValueError("영수증 부모 경로는 일반 디렉터리여야 한다")
+    except OSError as error:
+        raise ValueError("영수증 경로를 확인할 수 없다") from error
     return out
+
+
+def write_receipt(root: Path, requested: str, text: str) -> Path:
+    """Recheck lexical parents at write time; exclusive creation stays append-only.
+
+    These checks do not provide an atomic filesystem snapshot or protect against
+    every concurrent parent substitution between the last check and the open.
+    """
+    target = receipt_target(root, requested)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target = receipt_target(root, requested)
+    with target.open("x", encoding="utf-8") as stream:
+        stream.write(text + "\n")
+    return target
 
 
 def main() -> int:
@@ -433,12 +502,13 @@ def main() -> int:
     ap.add_argument("--strict", action="store_true", help="호환용. 필수 항목 실패 시 종료 코드 1 은 기본 동작이다")
     ap.add_argument("--policy-manifest", type=Path, help="별도 검토한 정확 정책 경로/해시 manifest")
     ap.add_argument("--policy-manifest-sha256", help="신뢰된 호출자가 별도로 제공하는 승인 manifest SHA-256")
+    ap.add_argument("--policy-preflight", action="store_true", help="정적 정책 게이트만 검사하며 도구 실행·영수증 작성을 하지 않음")
     ap.add_argument("--write-policy-candidate", help="도구 실행 없이 미승인 정책 후보를 새 evidence JSON에 작성")
     args = ap.parse_args()
     root = ROOT.resolve()
     if bool(args.policy_manifest) != bool(args.policy_manifest_sha256):
         ap.error("--policy-manifest와 --policy-manifest-sha256을 함께 지정한다")
-    if args.write_policy_candidate and (args.write or args.policy_manifest):
+    if args.write_policy_candidate and (args.write or args.policy_manifest or args.policy_preflight):
         ap.error("정책 후보 생성과 검증 영수증 생성을 분리한다")
 
     inventory = policy_inventory(root)
@@ -454,10 +524,7 @@ def main() -> int:
         candidate = {"schemaVersion": 1, "status": "candidate", "approvalReference": None,
                      "sourceCommit": head, "policySha256": hashes}
         try:
-            target = receipt_target(root, args.write_policy_candidate)
-            target.parent.mkdir(parents=True, exist_ok=True)
-            with target.open("x", encoding="utf-8") as stream:
-                stream.write(json.dumps(candidate, ensure_ascii=False, indent=2) + "\n")
+            write_receipt(root, args.write_policy_candidate, json.dumps(candidate, ensure_ascii=False, indent=2))
         except (OSError, ValueError):
             print("error: 새 정책 후보를 저장할 수 없다", file=sys.stderr)
             return 2
@@ -511,13 +578,23 @@ def main() -> int:
         settings = None
     if settings is None:
         disallowed_check = {"items": [], "ok": False, "reason": ".pi/settings.json 을 읽을 수 없다"}
-        pkgs, pkgs_ok = [], False
     else:
         disallowed = sorted(nested_disallowed_keys(settings))
-        disallowed_check = {"items": disallowed, "ok": not disallowed}
-        pkgs, pkgs_ok = check_packages(root, settings) if can_probe and not disallowed else ([], False)
+        disallowed_check = {"items": disallowed, "ok": not disallowed and package_specs(settings) is not None}
 
     can_probe = can_probe and disallowed_check["ok"]
+    if args.policy_preflight:
+        observation = {"record_type": "policy_preflight_not_receipt", "machine_label": args.label,
+                       "policy_preflight_ok": bool(can_probe), "tool_probes": {"executed": False},
+                       "policy_baseline": baseline, "settings_disallowed_keys": disallowed_check,
+                       "workspace_scan_incomplete": bool(incomplete),
+                       "forbidden_tracked_files_ok": forbidden_check["ok"],
+                       "forbidden_workspace_files_ok": not incomplete and not workspace_forbidden,
+                       "symlinks_outside_repo_ok": not incomplete and not outside_links}
+        print(json.dumps(observation, ensure_ascii=False, indent=2))
+        return 0 if can_probe else 1
+
+    pkgs, pkgs_ok = check_packages(root, settings) if can_probe else ([], False)
     node_v = run("node", "--version") if can_probe else None
     try:
         node_ok = bool(node_v) and int(node_v.lstrip("v").split(".")[0]) >= NODE_MIN_MAJOR
@@ -595,10 +672,8 @@ def main() -> int:
     text = json.dumps(receipt, ensure_ascii=False, indent=2)
     if out is not None:
         try:
-            out.parent.mkdir(parents=True, exist_ok=True)
-            with out.open("x", encoding="utf-8") as f:
-                f.write(text + "\n")
-        except OSError:
+            out = write_receipt(root, args.write, text)
+        except (OSError, ValueError):
             print("error: 새 검증 영수증을 저장할 수 없다. cannot_proceed", file=sys.stderr)
             return 2
         print(f"receipt written: {out.relative_to(root).as_posix()}")

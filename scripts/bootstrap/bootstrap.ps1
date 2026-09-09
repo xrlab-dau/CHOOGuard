@@ -23,8 +23,35 @@ function Warn($m) { Write-Host "   [warn] $m" }
 function Has($c)  { return [bool](Get-Command $c -ErrorAction SilentlyContinue) }
 
 Step "0. 저장소"
+# Only receipt-mode arguments may reach both verifier calls. Standalone modes,
+# help and argparse abbreviations could exit successfully without the gate.
+for ($i = 0; $i -lt $VerifyArgs.Count; $i++) {
+  $argument = $VerifyArgs[$i]
+  if ($argument -ceq "--strict" -or $argument -cmatch '^--(write|policy-manifest|policy-manifest-sha256)=') {
+    continue
+  }
+  if (@("--write", "--policy-manifest", "--policy-manifest-sha256") -ccontains $argument) {
+    if ($i + 1 -ge $VerifyArgs.Count -or $VerifyArgs[$i + 1].StartsWith("-")) {
+      [Console]::Error.WriteLine("검증 인수 값이 필요하다")
+      exit 2
+    }
+    $i++
+    continue
+  }
+  [Console]::Error.WriteLine("지원하지 않는 검증 인수. --strict, --write, --policy-manifest, --policy-manifest-sha256만 허용한다. 독립 모드는 검증기를 직접 실행한다")
+  exit 2
+}
+$py = if (Has python) { "python" } elseif (Has py) { "py" } else { $null }
+if (-not $py) { Warn "python 없음. 검토한 Python 3.11+ 실행기를 설치한 뒤 다시 실행"; exit 2 }
 git rev-parse --is-inside-work-tree | Out-Null
 Ok ("branch={0} head={1} label={2}" -f (git branch --show-current), (git rev-parse --short HEAD), $MachineLabel)
+
+Step "0.1 정책 사전 검사 (영수증 아님)"
+# Fail before any Node/Pi/uv/npm command or package read. --write is checked
+# here, but only the final verification may write a receipt.
+& $py scripts\bootstrap\verify_toolchain.py --policy-preflight --label $MachineLabel @VerifyArgs
+$preflightExit = $LASTEXITCODE
+if ($preflightExit -ne 0) { exit $preflightExit }
 
 Step "1. Node >= $NodeMinMajor"
 if (Has node) {
@@ -80,7 +107,5 @@ else { Warn "Unity 프로젝트 없음 (M2-01 에서 생성). Unity Hub·에디�
 Warn "공식 Unity CLI의 unity mcp와 com.unity.pipeline을 사용한다. ADR 0006 및 M1-03/M1-04의 고정 버전·연결 검증을 따른다. pi-mcp-adapter는 Pi에 필요한 경우만 검토한다"
 
 Step "8. 검증 영수증"
-$py = if (Has python) { "python" } elseif (Has py) { "py" } else { $null }
-if (-not $py) { Warn "python 없음. https://www.python.org 3.11+ 설치 또는 'uv python install 3.12'"; exit 2 }
 & $py scripts\bootstrap\verify_toolchain.py --label $MachineLabel @VerifyArgs
 exit $LASTEXITCODE

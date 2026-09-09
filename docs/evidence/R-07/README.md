@@ -65,3 +65,17 @@ M4-01의 실제 강제는 `scripts/foundation/validate.py`, `schemas/foundation-
 이번 팀은 작성자와 같은 OpenAI 제공자이며 파일시스템 격리는 별도로 강제되지 않았다. 다른 제공자의 spec/adversarial/safety 판정은 아직 없다. 이번 팀 리뷰를 필수 다른 제공자 승인으로 세거나 R-01의 소진된 3라운드를 재개하지 않는다. 해당 게이트의 `cannot_proceed`와 이슈 미완료를 유지한다.
 
 수정 커밋 `00dcd1625b3d45374d0a4232a012244831445343`의 [2차 세 관점 재검토](../R-07-REVIEW/round2-summary.json)는 추가 지적 없이 종료됐다. [최종 팀 리뷰 기록](../../reviews/2026-09-08-agent-team-review.md)에 세션 수, 대상, 세 결함의 수정, 실제 CI와 남은 조건을 정리했다. 첫 판정과 run04의 재검토 대기 상태는 당시 기록으로 보존한다.
+
+## 2026-09-09 추가 독립 세션 검토와 경계 보강
+
+사용자의 새 독립 세션 검토 요청에서 영수증 경로와 내부 링크 검사, 패키지 메타데이터 처리, bootstrap 진입점의 선행 실행 경계를 다시 확인했다. 기존 원 판정과 run01~04는 당시 대상의 증거로 보존한다. 새 원 판정과 중단 기록은 `../R-07-REVIEW/20260909/`에 분리한다.
+
+- 영수증은 입력 경로 자체가 `docs/evidence/` 아래여야 한다. 부모와 최종 경로의 symlink·reparse point·탐지된 mount를 거부하고, 실제 쓰기 시점에 다시 확인한 뒤 새 파일만 만든다. 부모 경로를 검사 사이에 치환하는 모든 동시 변경을 막는 원자적 파일시스템 API는 아니다.
+- 내부 링크는 실제 순회한 정규 경로에 연결돼야 한다. 검사에서 제외한 루트 `.git`이나 방문하지 못한 트리를 작업 경로로 노출하는 링크는 미검증 오류로 처리한다. 이미 검사한 venv 내부 대상의 링크까지 일괄 금지하지 않는다.
+- 설치 패키지의 `package.json`은 일반 파일로 최대 1,000,000바이트만 읽는다. JSON 객체와 길이·형식을 확인한 버전 문자열만 영수증에 기록하고, 잘못된 루트·객체 버전·과대 입력은 실패로 처리한다. 이 검사는 패키지 내용이나 배포자의 진위를 인증하지 않는다.
+- `--policy-preflight`는 승인 manifest·핀 및 정적 입력 게이트만 검사한다. Node/Pi/uv와 설치 패키지 메타데이터를 읽거나 실행하지 않으며 영수증을 쓰지 않는다. `--write`를 함께 주면 경로만 검사한다. 출력의 `record_type=policy_preflight_not_receipt`와 `policy_preflight_ok`는 설치·런타임 승인이나 일반 영수증의 `required_ok`가 아니다.
+- Bash와 PowerShell bootstrap은 이 정적 검사를 먼저 수행한다. 실패하면 Node/Pi/uv/npm 호출과 설치 전에 종료한다. `AUTO_INSTALL=1`/`-AutoInstall`도 정책 검사를 건너뛰지 않는다. 설치에는 이 플래그의 별도 명시적 승인이 계속 필요하다.
+- 일반 영수증의 `tool_probes`는 마지막 Python 검증기 호출의 관측이다. 승인된 preflight 뒤 wrapper가 수행한 전체 명령 이력이나 설치 감사 로그를 대신하지 않는다. preflight와 후속 명령 사이의 임의 동시 변경을 원자적으로 잠그지는 않는다.
+- wrapper가 전달하는 검증기 옵션은 `--strict`, `--write`, `--policy-manifest`, `--policy-manifest-sha256`의 정확한 이름으로 제한한다. 후보 생성, preflight 단독 실행과 도움말은 Python 검증기를 직접 호출한다. 약어·알 수 없는 옵션으로 선행 검사만 성공 종료시키는 경로를 허용하지 않는다.
+
+이번 작업은 Fal을 사용하지 않았다. GitHub Actions 임시 토큰과 Copilot CLI 1.0.83으로 Anthropic 인증만 시험했지만 `Access denied by policy settings`로 종료됐다. [실제 실행](https://github.com/xrlab-dau/CHOOGuard/actions/runs/34294249798)은 소스를 제출하지 않았고 모델 판정을 받지 못했다. OpenAI의 분리 세션 검토를 다른 제공자 승인으로 바꾸지 않는다.
