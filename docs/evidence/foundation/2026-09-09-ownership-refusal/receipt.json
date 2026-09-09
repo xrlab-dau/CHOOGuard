@@ -1,0 +1,300 @@
+{
+    "schema":  "chooguard.verification-receipt/1",
+    "generatedAt":  "2026-09-09T23:32:08.2058549+09:00",
+    "utcOffset":  "+09:00",
+    "startedAt":  "2026-09-09T23:28:55.1437743+09:00",
+    "machineLabel":  "laptop-A",
+    "repository":  "\u003cHOME\u003e\\Choo",
+    "targetSha":  "5e339fc4b12876a2c094341dfbeba84b71fe5196",
+    "isolation":  "a dedicated clone of the target SHA; no working project, build output or Library was shared",
+    "editor":  {
+                   "version":  "6000.3.23f1",
+                   "revision":  "09d2ecc7fb28",
+                   "windowsStandaloneModule":  "installed",
+                   "licenceFilePresent":  true,
+                   "licenceExpires":  "2026-10-09"
+               },
+    "host":  {
+                 "os":  "Microsoft Windows 11 Education 10.0.26200.0",
+                 "git":  "git version 2.48.1.windows.1",
+                 "gitLfs":  "git-lfs/3.6.1 (GitHub; windows amd64; go 1.23.3; git ea47a34b)",
+                 "freeGiB":  30.3
+             },
+    "steps":  [
+                  {
+                      "id":  "compile",
+                      "title":  "Import and C# compile",
+                      "status":  "pass",
+                      "reason":  null,
+                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\compile.log",
+                      "exitCode":  0,
+                      "startedAt":  "2026-09-09T23:28:59.5605212+09:00",
+                      "durationSeconds":  30.7,
+                      "results":  {
+                                      "compilerErrors":  0
+                                  },
+                      "artifacts":  [
+                                        {
+                                            "name":  "compile.log",
+                                            "present":  true,
+                                            "sha256":  "341e372cce222eb8beca0368d38e41c55eaf59e1058075b32defbcda85241ccc",
+                                            "bytes":  157542,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        }
+                                    ],
+                      "notes":  [
+                                    "The console judgement is the count of \u0027error CS####\u0027 matches in the Editor log."
+                                ]
+                  },
+                  {
+                      "id":  "editmode",
+                      "title":  "EditMode test run",
+                      "status":  "pass",
+                      "reason":  null,
+                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform EditMode -testResults \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\editmode-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\editmode.log",
+                      "exitCode":  0,
+                      "startedAt":  "2026-09-09T23:29:30.7487562+09:00",
+                      "durationSeconds":  60.3,
+                      "results":  {
+                                      "result":  "Skipped:Ignored",
+                                      "total":  119,
+                                      "passed":  118,
+                                      "failed":  0,
+                                      "skipped":  1,
+                                      "inconclusive":  0,
+                                      "durationSeconds":  "53.5661394",
+                                      "excluded":  [
+                                                       {
+                                                           "name":  "SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
+                                                           "fullName":  "ChooGuard.Foundation.Demo.Tests.ReconstructionReviewTests.SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
+                                                           "reason":  "Local reconstruction output is intentionally not Git-tracked."
+                                                       }
+                                                   ]
+                                  },
+                      "artifacts":  [
+                                        {
+                                            "name":  "editmode.log",
+                                            "present":  true,
+                                            "sha256":  "368ce933c6e9c3a1336275089ef0a6de9bbb79d6a83a94e809dda8acf683aaca",
+                                            "bytes":  1203764,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        },
+                                        {
+                                            "name":  "editmode-results.xml",
+                                            "present":  true,
+                                            "sha256":  "440d4dbe91d55e62f56b7450c6cf66e6923d604a041b9ba55033102fe1268839",
+                                            "bytes":  113350,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        }
+                                    ],
+                      "notes":  [
+                                    "The verdict comes from the result XML, not from the exit code alone."
+                                ]
+                  },
+                  {
+                      "id":  "playmode",
+                      "title":  "PlayMode test run",
+                      "status":  "pass",
+                      "reason":  null,
+                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform PlayMode -testResults \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\playmode-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\playmode.log",
+                      "exitCode":  0,
+                      "startedAt":  "2026-09-09T23:30:33.3235171+09:00",
+                      "durationSeconds":  14.3,
+                      "results":  {
+                                      "result":  "Passed",
+                                      "total":  16,
+                                      "passed":  16,
+                                      "failed":  0,
+                                      "skipped":  0,
+                                      "inconclusive":  0,
+                                      "durationSeconds":  "6.2957753",
+                                      "excluded":  [
+
+                                                   ]
+                                  },
+                      "artifacts":  [
+                                        {
+                                            "name":  "playmode.log",
+                                            "present":  true,
+                                            "sha256":  "77a8d350c5769ba9b7ef9dd5e64f3083d25df08892b06818f4aaf76c1e564694",
+                                            "bytes":  57829,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        },
+                                        {
+                                            "name":  "playmode-results.xml",
+                                            "present":  true,
+                                            "sha256":  "31686dbd1bf237daead0a25e69096fe99574c2f2a0073958a0984a531eb36fea",
+                                            "bytes":  18815,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        }
+                                    ],
+                      "notes":  [
+                                    "The verdict comes from the result XML, not from the exit code alone."
+                                ]
+                  },
+                  {
+                      "id":  "ownership-module-installed",
+                      "title":  "WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting (Windows module installed)",
+                      "status":  "pass",
+                      "reason":  null,
+                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform EditMode -testFilter WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting -testResults \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\ownership-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\ownership.log",
+                      "exitCode":  0,
+                      "startedAt":  "2026-09-09T23:30:47.7902110+09:00",
+                      "durationSeconds":  6.5,
+                      "results":  {
+                                      "result":  "Passed",
+                                      "total":  1,
+                                      "passed":  1,
+                                      "failed":  0,
+                                      "skipped":  0,
+                                      "inconclusive":  0,
+                                      "durationSeconds":  "0.0644189",
+                                      "excluded":  [
+
+                                                   ]
+                                  },
+                      "artifacts":  [
+                                        {
+                                            "name":  "ownership.log",
+                                            "present":  true,
+                                            "sha256":  "d3c5f6d1c65283a6c0982f3591b59a37f4ae88d4a07ed5911837231b38a6dbb6",
+                                            "bytes":  23517,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        },
+                                        {
+                                            "name":  "ownership-results.xml",
+                                            "present":  true,
+                                            "sha256":  "c0cda4bdddd81333bf91a35a3da0acf5d5f89a5836aac5e6c4a4324ca3ff922c",
+                                            "bytes":  4198,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        }
+                                    ],
+                      "notes":  [
+                                    "Windows standalone module state on this machine: installed (probed on the Editor installation; nothing was modified)."
+                                ]
+                  },
+                  {
+                      "id":  "ownership-module-absent",
+                      "title":  "WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting (Windows module absent)",
+                      "status":  "not_run",
+                      "reason":  "this machine reports the Windows standalone module as \u0027installed\u0027; the opposite condition needs a second machine and is left unrun",
+                      "command":  null,
+                      "exitCode":  null,
+                      "startedAt":  null,
+                      "durationSeconds":  null,
+                      "results":  null,
+                      "artifacts":  [
+
+                                    ],
+                      "notes":  [
+
+                                ]
+                  },
+                  {
+                      "id":  "build-negative",
+                      "title":  "ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch against a foreign output directory",
+                      "status":  "pass",
+                      "reason":  null,
+                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -executeMethod ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\build-negative.log",
+                      "exitCode":  1,
+                      "startedAt":  "2026-09-09T23:30:54.3569211+09:00",
+                      "durationSeconds":  4.5,
+                      "results":  {
+                                      "sentinelSha256Before":  "6ca7ea2feefc88ecb5ed6356ed963f47dc9137f82526fdd25d618ea626d0803f",
+                                      "sentinelSha256After":  "6ca7ea2feefc88ecb5ed6356ed963f47dc9137f82526fdd25d618ea626d0803f",
+                                      "sentinelPreserved":  true,
+                                      "ownershipMarkerCreated":  false,
+                                      "playerCreated":  false,
+                                      "refusalMessageInLog":  true
+                                  },
+                      "artifacts":  [
+                                        {
+                                            "name":  "build-negative.log",
+                                            "present":  true,
+                                            "sha256":  "07f4aa2c4ed47d006943283b0cd803ab52f7060d6b47c6374744fde9de94d0b0",
+                                            "bytes":  19045,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        }
+                                    ],
+                      "notes":  [
+                                    "A pass requires all four: a non-zero exit, the sentinel hash unchanged, no ownership marker, and no player written."
+                                ]
+                  },
+                  {
+                      "id":  "build-positive",
+                      "title":  "ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch against a clean output directory",
+                      "status":  "pass",
+                      "reason":  null,
+                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -executeMethod ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\build-positive.log",
+                      "exitCode":  0,
+                      "startedAt":  "2026-09-09T23:30:58.8919150+09:00",
+                      "durationSeconds":  62.7,
+                      "results":  {
+                                      "playerSha256":  "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+                                      "playerBytes":  667136,
+                                      "dataFolder":  true,
+                                      "unityPlayerDll":  true,
+                                      "ownershipMarker":  true
+                                  },
+                      "artifacts":  [
+                                        {
+                                            "name":  "build-positive.log",
+                                            "present":  true,
+                                            "sha256":  "57269d768f8d5a740caafc3d865a5a82d1f7e42956a08cddc4a5f19ed68ea085",
+                                            "bytes":  208276,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        }
+                                    ],
+                      "notes":  [
+                                    "A successful build is not a playthrough. The player still needs a standalone run."
+                                ]
+                  },
+                  {
+                      "id":  "working-tree",
+                      "title":  "Regenerated assets in the isolated checkout",
+                      "status":  "pass",
+                      "reason":  null,
+                      "command":  null,
+                      "exitCode":  null,
+                      "startedAt":  null,
+                      "durationSeconds":  null,
+                      "results":  {
+                                      "changedEntries":  6,
+                                      "entries":  [
+                                                      " M Assets/CHOOguardGenerated/FoundationDemo/FoundationDemo.unity",
+                                                      " M Assets/CHOOguardGenerated/FoundationDemo/Prefabs/AccessGate.prefab",
+                                                      " M Assets/CHOOguardGenerated/FoundationDemo/Prefabs/AlarmSimulator.prefab",
+                                                      " M Assets/CHOOguardGenerated/FoundationDemo/Prefabs/DirectionSign.prefab",
+                                                      " M Assets/CHOOguardGenerated/FoundationDemo/Prefabs/RadioConsole.prefab",
+                                                      " M Assets/CHOOguardGenerated/FoundationDemo/Prefabs/SituationPanel.prefab"
+                                                  ]
+                                  },
+                      "artifacts":  [
+                                        {
+                                            "name":  "regenerated.diff",
+                                            "present":  true,
+                                            "sha256":  "861742d406c249fa95180de68100b32a75cd15247b9a7c1bb4fb9adec275c75b",
+                                            "bytes":  4152566,
+                                            "source":  "redacted copy of the raw Unity artifact"
+                                        }
+                                    ],
+                      "notes":  [
+                                    "The checkout is disposable, so nothing was restored. The primary working project was never opened."
+                                ]
+                  }
+              ],
+    "redaction":  {
+                      "policy":  "personal paths, account and host names, e-mail addresses, IP addresses and any licence or credential line are removed before an artifact is written here",
+                      "replacements":  {
+                                           "\u003cHOME\u003e":  5,
+                                           "[redacted: licence/credential line]":  153,
+                                           "\u003cIP\u003e":  33,
+                                           "\u003cCHECKOUT\u003e":  320,
+                                           "\u003cEMAIL\u003e":  13,
+                                           "\u003cUNITY_INSTALL\u003e":  75,
+                                           "\u003cMACHINE\u003e":  12,
+                                           "\u003cWORKSPACE\u003e":  24
+                                       }
+                  },
+    "claim":  "This receipt records what ran on one machine at one time. It is not an approval, and the author of the change is not an independent reviewer."
+}
