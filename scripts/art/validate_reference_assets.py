@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Check per-object visual provenance and actual generated details; never certify a facility twin."""
 import argparse
+from datetime import date
 import hashlib
 import json
 from pathlib import Path, PurePosixPath
@@ -16,16 +17,25 @@ def local_path(root,relative):
         raise ValueError('invalid relative source path')
     p=PurePosixPath(relative)
     if p.is_absolute() or '..' in p.parts:raise ValueError('source path escapes repository')
-    result=(root/relative).resolve();result.relative_to(root.resolve())
+    try:
+        result=(root/relative).resolve();result.relative_to(root.resolve())
+    except (OSError,RuntimeError) as error:
+        raise ValueError('source path cannot be resolved: '+relative) from error
     if not result.is_file():raise ValueError('source file is missing: '+relative)
     return result
 
 def public_url(value):
-    if not isinstance(value,str):return False
+    if not isinstance(value,str) or any(character.isspace() for character in value):return False
     try:
-        u=urlsplit(value)
-        return u.scheme=='https' and bool(u.netloc) and not u.username and not u.password
+        u=urlsplit(value);port=u.port
+        return u.scheme=='https' and bool(u.hostname) and not u.username and not u.password and (port is None or 0<=port<=65535)
     except (TypeError,ValueError):return False
+
+def valid_inspection_date(value):
+    if not isinstance(value,str) or not re.fullmatch(r'\d{4}-\d{2}-\d{2}',value):return False
+    try:date.fromisoformat(value)
+    except ValueError:return False
+    return True
 
 def identified_rows(entries,label,id_key,errors):
     if not isinstance(entries,list):
@@ -107,7 +117,7 @@ def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
             inspected=reference.get('inspectedOn');features=reference.get('observedFeatures',[])
             good=public_url(reference.get('pageUrl')) and isinstance(images,list) and bool(images) and all(isinstance(x,str) and public_url(x) for x in images)
             good=good and isinstance(sha,list) and len(sha)==len(images) and all(isinstance(x,str) and re.fullmatch('[0-9a-f]{64}',x) for x in sha)
-            good=good and isinstance(inspected,str) and bool(re.fullmatch(r'\d{4}-\d{2}-\d{2}',inspected))
+            good=good and valid_inspection_date(inspected)
             good=good and isinstance(features,list) and len(features)>=2 and all(isinstance(x,str) and x.strip() for x in features)
             if not good:errors.append(identifier+': missing inspected image, source or concrete observations')
             valid_refs=valid_refs and good

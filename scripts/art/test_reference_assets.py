@@ -5,6 +5,8 @@ import importlib.util
 import io
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -88,6 +90,28 @@ class ReferenceAssetTests(unittest.TestCase):
             status=art.main()
         self.assertEqual(status,1)
         self.assertTrue(json.loads(output.getvalue())['errors'])
+
+    def test_cli_cyclic_module_and_model_paths_return_asset_errors(self):
+        script=self.root/'scripts/art/validate_reference_assets.py'
+        script.parent.mkdir(parents=True);script.write_bytes(Path(art.__file__).read_bytes())
+        (self.root/'registry.json').write_text(json.dumps(self.registry))
+        (self.root/'manifest.json').write_text(json.dumps(self.manifest))
+        command=[sys.executable,str(script),'--registry','registry.json','--manifest','manifest.json']
+        valid=subprocess.run(command,capture_output=True,text=True,timeout=10)
+        self.assertEqual(valid.returncode,0,valid.stderr)
+        self.assertEqual(json.loads(valid.stdout)['errors'],[])
+        for relative in ('generator.py','Assets/Bench.fbx'):
+            with self.subTest(path=relative):
+                path=self.root/relative;original=path.read_bytes();path.unlink()
+                try:
+                    path.symlink_to(path.name)
+                    result=subprocess.run(command,capture_output=True,text=True,timeout=10)
+                    self.assertEqual(result.returncode,1)
+                    self.assertEqual(result.stderr,'')
+                    report=json.loads(result.stdout)
+                    self.assertTrue(any('Bench' in error and relative in error for error in report['errors']))
+                finally:
+                    path.unlink(missing_ok=True);path.write_bytes(original)
 
     def test_malformed_input_documents_return_errors(self):
         for name in ('registry','manifest','inventory'):
@@ -180,6 +204,43 @@ class ReferenceAssetTests(unittest.TestCase):
                 reference=copy.deepcopy(original);reference[key]=value
                 self.registry['assets'][0]['references']=[reference]
                 self.assertTrue(self.check()['errors'])
+
+    def test_reference_urls_require_hostname_valid_port_and_no_literal_whitespace(self):
+        original=copy.deepcopy(self.registry['assets'][0]['references'][0])
+        urls=('https://:443/station','https://example.org:99999/station',
+              'https://example.org:not-a-port/station','https://example.org:-1/station',
+              'https://exa mple.org/station','https://exa\tmple.org/station',
+              'https://exa\nmple.org/station',' https://example.org/station')
+        for field in ('pageUrl','imageUrls'):
+            for url in urls:
+                with self.subTest(field=field,url=url):
+                    reference=copy.deepcopy(original)
+                    reference[field]=[url] if field=='imageUrls' else url
+                    self.registry['assets'][0]['references']=[reference]
+                    self.assertTrue(self.check()['errors'])
+
+    def test_reference_urls_preserve_valid_unicode_ipv6_and_explicit_ports(self):
+        original=copy.deepcopy(self.registry['assets'][0]['references'][0])
+        urls=('https://example.org:443/station','https://예시.한국/역',
+              'https://[2001:db8::1]:8443/station','https://127.0.0.1:8443/station')
+        for field in ('pageUrl','imageUrls'):
+            for url in urls:
+                with self.subTest(field=field,url=url):
+                    reference=copy.deepcopy(original)
+                    reference[field]=[url] if field=='imageUrls' else url
+                    self.registry['assets'][0]['references']=[reference]
+                    self.assertEqual(self.check()['errors'],[])
+
+    def test_inspection_date_requires_a_calendar_date_without_a_freshness_rule(self):
+        reference=self.registry['assets'][0]['references'][0]
+        for inspected in ('2026-99-99','2026-02-29','2026-04-31','0000-01-01'):
+            with self.subTest(inspectedOn=inspected):
+                reference['inspectedOn']=inspected
+                self.assertTrue(self.check()['errors'])
+        for inspected in ('2024-02-29','2026-09-07','2099-12-31'):
+            with self.subTest(inspectedOn=inspected):
+                reference['inspectedOn']=inspected
+                self.assertEqual(self.check()['errors'],[])
 
     def test_named_detail_must_exist_in_generated_geometry_inventory(self):
         self.registry['assets'][0]['requiredComponents'].append('InventedBackrest')
