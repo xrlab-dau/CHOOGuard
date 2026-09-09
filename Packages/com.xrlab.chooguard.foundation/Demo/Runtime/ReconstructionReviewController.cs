@@ -40,6 +40,9 @@ namespace ChooGuard.Foundation.Demo
         }
 
         public void SelectView(int index)
+        {RequireCameraControl();ApplyView(index);}
+
+        private void ApplyView(int index)
         {
             if(index<0||index>=ViewCount)throw new ArgumentOutOfRangeException(nameof(index));
             selectedView=index;for(var i=0;i<surfaces.Length;i++)surfaces[i].gameObject.SetActive(i==index);
@@ -47,17 +50,24 @@ namespace ChooGuard.Foundation.Demo
 
         public void CycleView(int direction)
         {
+            RequireCameraControl();
             if(ViewCount==0)return;
-            SelectView(((selectedView+direction)%ViewCount+ViewCount)%ViewCount);
+            ApplyView(((selectedView+direction)%ViewCount+ViewCount)%ViewCount);
         }
 
         public void ResetCamera()
+        {RequireCameraControl();ResetCameraPose();}
+
+        private void ResetCameraPose()
         {
             view.transform.SetPositionAndRotation(Vector3.zero,Quaternion.identity);yaw=pitch=0;
             speed=Mathf.Max(.01f,sourceBounds[selectedView].size.magnitude*.25f);ReleaseCursor();
         }
 
         public void FrameSelected()
+        {RequireCameraControl();FrameSelectedPose();}
+
+        private void FrameSelectedPose()
         {
             var bounds=sourceBounds[selectedView];
             var vertical=view.fieldOfView*Mathf.Deg2Rad*.5f;
@@ -66,6 +76,9 @@ namespace ChooGuard.Foundation.Demo
             view.transform.SetPositionAndRotation(bounds.center-Vector3.forward*distance,Quaternion.identity);yaw=pitch=0;
             ReleaseCursor();
         }
+
+        private void RequireCameraControl()
+        {if(capturing)throw new InvalidOperationException("Cannot change reconstruction view or camera during capture.");}
 
         private void Start()
         {
@@ -171,8 +184,8 @@ namespace ChooGuard.Foundation.Demo
                 var writer=new ReconstructionCaptureWriter(path,identifiers,sourceHash,shadingMode,SystemInfo.graphicsDeviceType.ToString());
                 for(var i=0;i<ViewCount;i++)for(var angle=0;angle<ReconstructionCaptureWriter.AngleCount;angle++)
                 {
-                    SelectView(i);ResetCamera();
-                    if(angle>0)FrameSelected();
+                    ApplyView(i);ResetCameraPose();
+                    if(angle>0)FrameSelectedPose();
                     if(angle==2){view.transform.RotateAround(sourceBounds[i].center,Vector3.up,35);view.transform.RotateAround(sourceBounds[i].center,view.transform.right,15);SyncAngles();}
                     yield return new WaitForSecondsRealtime(.6f);yield return new WaitForEndOfFrame();
                     writer.WriteImage(i,angle,capturePng());
@@ -184,7 +197,7 @@ namespace ChooGuard.Foundation.Demo
                 capturing=false;
                 if(view!=null)
                 {
-                    SelectView(previousView);view.transform.SetPositionAndRotation(previousPosition,previousRotation);
+                    ApplyView(previousView);view.transform.SetPositionAndRotation(previousPosition,previousRotation);
                     yaw=previousYaw;pitch=previousPitch;speed=previousSpeed;
                 }
                 ReleaseCursor();

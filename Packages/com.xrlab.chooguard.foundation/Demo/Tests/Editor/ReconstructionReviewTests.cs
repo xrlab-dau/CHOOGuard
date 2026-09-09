@@ -180,6 +180,58 @@ namespace ChooGuard.Foundation.Demo.Tests
             });
         }
 
+        [TestCase("select")]
+        [TestCase("cycle")]
+        [TestCase("reset")]
+        [TestCase("frame")]
+        public void PublicControlsCannotChangeAPendingCaptureViewOrPose(string control)
+        {
+            WithCaptureDirectory(directory=>
+            {
+                var root=new GameObject("capture-controls-fixture");
+                try
+                {
+                    var camera=new GameObject("camera").AddComponent<Camera>();camera.transform.SetParent(root.transform,false);
+                    var models=Enumerable.Range(0,2).Select(i=>{var model=new GameObject("view-"+i).transform;model.SetParent(root.transform,false);return model;}).ToArray();
+                    var controller=root.AddComponent<ReconstructionReviewController>();
+                    controller.Configure(models,models.Select(x=>x.name).ToArray(),models.Select(x=>new Bounds(Vector3.forward,Vector3.one)).ToArray(),camera,new string('a',64));
+                    controller.SelectView(1);camera.transform.SetPositionAndRotation(new Vector3(4,5,6),Quaternion.Euler(7,8,9));
+                    var originalPosition=camera.transform.position;var originalRotation=camera.transform.rotation;
+                    var captured=0;var capturedView=-1;var capturedPosition=Vector3.zero;var capturedRotation=Quaternion.identity;
+                    var method=typeof(ReconstructionReviewController).GetMethod("CaptureViews",BindingFlags.Instance|BindingFlags.NonPublic,null,new[]{typeof(string),typeof(Func<byte[]>)},null);
+                    var routine=(IEnumerator)method.Invoke(controller,new object[]{directory,new Func<byte[]>(()=>
+                    {captured++;capturedView=controller.SelectedView;capturedPosition=camera.transform.position;capturedRotation=camera.transform.rotation;return CapturePngFixture();})});
+                    try
+                    {
+                        Assert.That(routine.MoveNext(),Is.True);
+                        var pendingPosition=camera.transform.position;var pendingRotation=camera.transform.rotation;
+                        Assert.Throws<InvalidOperationException>(()=>
+                        {
+                            switch(control)
+                            {
+                                case "select":controller.SelectView(1);break;
+                                case "cycle":controller.CycleView(1);break;
+                                case "reset":controller.ResetCamera();break;
+                                case "frame":controller.FrameSelected();break;
+                                default:Assert.Fail("Unknown test control.");break;
+                            }
+                        });
+                        Assert.That(routine.MoveNext(),Is.True);Assert.That(routine.MoveNext(),Is.True);
+                        Assert.That(captured,Is.EqualTo(1));Assert.That(capturedView,Is.EqualTo(0));
+                        Assert.That(capturedPosition,Is.EqualTo(pendingPosition));
+                        Assert.That(Quaternion.Angle(capturedRotation,pendingRotation),Is.LessThan(.001f));
+                    }
+                    finally {((IDisposable)routine).Dispose();}
+                    Assert.That(controller.IsCapturing,Is.False);Assert.That(controller.SelectedView,Is.EqualTo(1));
+                    Assert.That(controller.ActiveViewCount,Is.EqualTo(1));
+                    Assert.That(camera.transform.position,Is.EqualTo(originalPosition));
+                    Assert.That(Quaternion.Angle(camera.transform.rotation,originalRotation),Is.LessThan(.001f));
+                    Assert.That(File.Exists(Path.Combine(directory,"capture-complete.json")),Is.False);
+                }
+                finally {UnityEngine.Object.DestroyImmediate(root);}
+            });
+        }
+
         private static void CompleteCapture(ReconstructionCaptureWriter writer)=>writer.Complete(receipt=>JsonUtility.ToJson(receipt,true));
         private static ReconstructionCaptureWriter NewCaptureWriter(string directory)=>new ReconstructionCaptureWriter(directory,new[]{"view"},new string('a',64),"observed-unlit","fixture");
         private static byte[] CapturePngFixture()=>Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=");
