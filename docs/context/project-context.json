@@ -1222,7 +1222,7 @@
         },
         {
           "repoPath": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
-          "sha256": "6507c7dec4371cfb0efb0a7774512389cea10be207a3de234475dc26b2ad845a",
+          "sha256": "565c5166433421b88723c0d4e30a77fc4f519d5bb6b7fb40811b35190f60b60d",
           "label": "ReconstructionReviewController.cs"
         },
         {
@@ -1919,15 +1919,6 @@
       "date": "2026-09-08",
       "nodes": [
         "component.school_independent_work",
-        "decision.production.local_cv_school_independent",
-        "workflow.start_validate"
-      ],
-      "reason": "School PC verified PR61 merged; reread handoff and retain separate school work branches and historical acceptance limits."
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "component.school_independent_work",
         "decision.production.local_cv_school_independent"
       ],
       "reason": "Link actual school-PC setup and Windows results while retaining historical Mac and unexecuted school-task limits."
@@ -2081,6 +2072,13 @@
         "component.reconstruction_review"
       ],
       "reason": "AAA 재검수에서 PNG 구조·청크 CRC 검사와 캡처 중 공개 제어 함수 거부 경로 및 회귀 소스를 직접 대조했다. .NET 파일 writer와 Unity 수명주기/렌더 검증은 구분하며 새 Unity 시험 실행은 미완료다."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.reconstruction_review"
+      ],
+      "reason": "AAA 재검수에서 PNG IHDR의 깊이·색 유형·압축·필터·인터레이스·31비트 치수 거부를 직접 대조했다. 잘못된 헤더 8개는 실제 .NET RED로 확인했고, 최종 재실행과 실제 Unity 제어·렌더 시험을 구분한다."
     }
   ]
 }
