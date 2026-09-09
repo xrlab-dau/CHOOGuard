@@ -53,7 +53,9 @@ Windows는 PowerShell 회귀 17개와 native junction 2개를 포함한다. 제�
 
 ## 검토 후 수정의 실행 증거
 
-writer 수정은 로컬 135개 중 115개 통과·20개 제외다. 새 커밋과 실제 native CI는 후속 실행 기록에 별도로 연결하며, 위 f783255의 결과를 새 소스로 소급하지 않는다.
+writer 수정 커밋 `03c72b9b66e60e1a1abdeb26674479b288d5c4ec`의 [실제 CI 34298315612](https://github.com/xrlab-dau/CHOOGuard/actions/runs/34298315612)는 세 job 모두 성공했다. Windows 135개 중 119개 통과·16개 제외, Ubuntu 116개 통과·19개 제외이며 각 Profile 9개 통과다. 로컬은 115개 통과·20개 제외다. [소스 해시·정제 로그·merge tree 동일성](../evidence/R-07-REVIEW/20260909/post-review-ci.json)을 기록했다. 이는 테스트 결과이며 재검토 승인이 아니다.
+
+[후속 후보08](../evidence/R-07/policy-candidate-20260909-08.json)은 `03c72b9`에 결속된 미승인 후보다. 마지막 기록 커밋은 CI 증거·후보·보고서/context만 추가하며 이 코드·테스트 해시를 바꾸지 않는다.
 
 ## 별도 PR #98 그래프
 
