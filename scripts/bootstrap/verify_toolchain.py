@@ -161,6 +161,26 @@ def is_forbidden_tracked(path: str) -> bool:
     return any(fnmatch.fnmatchcase(name, pattern) for pattern in FORBIDDEN_TRACKED)
 
 
+def tracked_file_check() -> dict:
+    tracked = tracked_files()
+    if tracked is None:
+        return {"count": None, "suffixes": None, "ok": False, "reason": "git ls-files 실행 실패"}
+    forbidden = sorted(f for f in tracked if is_forbidden_tracked(f))
+    return {"count": len(forbidden), "suffixes": forbidden_kinds(forbidden), "ok": not forbidden}
+
+
+def forbidden_kinds(paths: list[str]) -> list[str]:
+    """Return fixed policy labels, never a user-controlled filename suffix."""
+    kinds = set()
+    for path in paths:
+        name = PurePosixPath(path).name.lower()
+        if name == ".env" or name.startswith(".env."):
+            kinds.add(".env")
+        else:
+            kinds.update(pattern[1:] for pattern in FORBIDDEN_TRACKED if fnmatch.fnmatchcase(name, pattern))
+    return sorted(kinds)
+
+
 def is_forbidden_workspace(path: str) -> bool:
     """작업본 검사용 판정.
 
@@ -264,6 +284,10 @@ def scan_workspace(root: Path) -> dict:
             result["errors"].append("unscanned_link_target")
     result["forbidden"].sort()
     result["outside_links"].sort()
+    # The final filesystem call and result processing may consume the budget.
+    # It is too late to interrupt those calls, but never label that scan clean.
+    if not result["truncated"]:
+        over_budget()
     return result
 
 
@@ -282,6 +306,8 @@ def policy_inventory(root: Path) -> tuple[dict[str, str], list[str], int]:
         try:
             for path in sorted(root.glob(pattern)):
                 try:
+                    if is_forbidden_tracked(path.relative_to(root).as_posix()):
+                        raise ValueError("prohibited policy input")
                     for part in [path, *path.parents]:
                         if part == root:
                             break
@@ -365,6 +391,8 @@ def policy_baseline_check(root: Path, manifest: Path | None, expected_digest: st
         for name, value in expected.items():
             if not isinstance(name, str) or PurePosixPath(name).is_absolute() or any(p in {"", ".", ".."} for p in name.split("/")) or "\\" in name or ":" in name:
                 raise ValueError("invalid policy path")
+            if is_forbidden_tracked(name):
+                raise ValueError("prohibited expected policy input")
             if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
                 raise ValueError("invalid policy hash")
         if data["status"] == "candidate" and data["approvalReference"] is None:
@@ -541,12 +569,7 @@ def main() -> int:
             print(f"error: {error}", file=sys.stderr)
             return 2
 
-    tracked = tracked_files()
-    if tracked is None:
-        forbidden_check = {"items": [], "ok": False, "reason": "git ls-files 실행 실패"}
-    else:
-        forbidden = sorted(f for f in tracked if is_forbidden_tracked(f))
-        forbidden_check = {"items": forbidden, "ok": not forbidden}
+    forbidden_check = tracked_file_check()
 
     scan = scan_workspace(root)
     outside_links = scan["outside_links"]
@@ -610,6 +633,7 @@ def main() -> int:
     # then base the final receipt on a fresh bounded scan. Check policy last so
     # changes during this second scan cannot bless a stale policy snapshot.
     if can_probe:
+        forbidden_check = tracked_file_check()
         scan = scan_workspace(root)
         outside_links = scan["outside_links"]
         workspace_forbidden, workspace_truncated, workspace_errors = scan["forbidden"], scan["truncated"], scan["errors"]
@@ -638,9 +662,7 @@ def main() -> int:
                 # 경로를 영수증에 남기지 않는다. 촬영 파일명·위치명이 공개될 수 있다.
                 # 순회가 잘렸으면 개수를 안다고 주장하지 않는다. null 은 '미상'이다.
                 "count": None if incomplete else len(workspace_forbidden),
-                "suffixes": None if incomplete else sorted(
-                    {PurePosixPath(p).suffix.lower() or "(none)" for p in workspace_forbidden}
-                ),
+                "suffixes": None if incomplete else forbidden_kinds(workspace_forbidden),
                 "scan_truncated": workspace_truncated,
                 # 경로는 남기지 않는다. 접근 거부된 경로명도 민감할 수 있다.
                 "scan_errors": len(workspace_errors),

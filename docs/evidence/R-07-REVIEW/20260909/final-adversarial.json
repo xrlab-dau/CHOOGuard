@@ -1,0 +1,57 @@
+{
+  "outcome": "changes_required",
+  "lens": "adversarial",
+  "provider": "OpenAI",
+  "modelIdentity": "not_exposed",
+  "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+  "targetManifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+  "startVerification": {
+    "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+    "manifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+    "targetFileCount": 45,
+    "hashMismatches": [],
+    "gitStatus": ""
+  },
+  "endVerification": {
+    "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+    "manifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+    "targetFileCount": 45,
+    "hashMismatches": [],
+    "gitStatus": ""
+  },
+  "actionable": [
+    {
+      "id": "ADV-FINAL-1",
+      "severity": "P2",
+      "title": "Refresh the tracked-file inventory after tool probes",
+      "problem": "The final rescan refreshes workspace files, links and policy hashes, but forbidden_check still comes from the single git ls-files call before probes. A probe that leaves a forbidden path in the Git index while that path is absent from the worktree is therefore not caught by the workspace rescan, and the final receipt reports forbidden_tracked_files.ok=true and required_ok=true. This is a persistent index-only state change, not a file that changed and was restored between checks. Using the existing ReviewBoundaryTests fixture, on_last_probe set case.tracked to [\"synthetic-private.key\"]; invoke_receipt returned exit code 0, required_ok=true, tool_probes.executed=true, forbidden_tracked_files={\"items\":[],\"ok\":true}, and workspace count 0. Only the synthetic mocked listing changed; no real index or dependency tool was used.",
+      "fix": "After probes, query git ls-files again and replace the final forbidden_tracked_files check with the refreshed result. Treat a failed second listing as unknown/failure. Preserve tool_probes.executed=true. Add harmless fixture regressions for a persistent forbidden index-only addition and a failed post-probe listing.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:544-549",
+        "scripts/bootstrap/verify_toolchain.py:609-619",
+        "scripts/bootstrap/verify_toolchain.py:636",
+        "scripts/bootstrap/test_review_boundaries.py:35-63"
+      ]
+    },
+    {
+      "id": "ADV-FINAL-2",
+      "severity": "P2",
+      "title": "Check the elapsed scan budget before returning a clean result",
+      "problem": "scan_workspace checks its elapsed budget before processing each entry, but does not check after the final filesystem call or before return. If that last call returns after the 15-second budget, the scan can still return truncated=false, limit=null and no errors, so both preflight and the post-probe receipt may report it as complete. The documented inability to interrupt a blocked OS call does not require this false clean result after the call has returned. A harmless use of the existing WorkspaceBudgetTests fixture, with one existing AGENTS.md entry and a mocked final ismount call that advanced the synthetic clock from 0 to 16, returned a clean scan at a configured limit of 15 seconds.",
+      "fix": "Perform a terminal over_budget() check after traversal and internal-link validation, before returning scan results. Add a fake-clock regression for the last filesystem call crossing the elapsed budget and verify the receipt keeps finding counts unknown and required_ok=false.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:202-212",
+        "scripts/bootstrap/verify_toolchain.py:224-267",
+        "scripts/bootstrap/test_policy_baseline.py:453-457"
+      ]
+    }
+  ],
+  "notes": [
+    "Fresh adversarial session independently read AGENTS.md, the canonical R-07 scope and bootstrap/CI documentation, the actual implementation and tests, the diff against base e7a6bb7a7fff0c301c04f93aeea8850dbde34779, and the changes since 39e5dc24892744feacec09eac0c2e71951cb31c8. Prior reviewer verdict files were not used as authority.",
+    "Required context validate and brief --topic handoff --machine local completed. Context structure was valid; stale/historical evidence and unassessed runtime/field acceptance remained explicitly separate.",
+    "Existing harmless test classes ToolchainBoundaryTests, PolicyBaselineTests, WorkspaceBudgetTests, ReviewBoundaryTests, ShellBootstrapTests and PowerShellBootstrapTests ran with python -B: 124 total, 104 passed, 20 skipped, 0 failures, 0 errors. Skips were 17 native Windows PowerShell tests, 2 native Windows junction tests and the real POSIX permission-denial test under root. Three legacy BootstrapScriptTests were intentionally excluded because they invoke the repository wrapper instead of a fully synthetic copied wrapper.",
+    "The tested existing regressions covered receipt prefix/link/mount/reparse restrictions, exclusive creation and path rechecks; empty output and wrapper mode rejection; static preflight before dependency tools; bounded package metadata; forbidden files and outside links created by probes; and post-probe directory-budget failure. Additional finding demonstrations reused existing fixture classes with harmless in-memory callbacks; no source files or real Git index were changed.",
+    "Only this frozen head is reviewed. No dependency bootstrap/install, external target testing, external model/service/Fal call or Unity change was performed. Platform-specific runtime acceptance remains outside this local synthetic review.",
+    "This is an OpenAI review and does not satisfy the required different-provider gate. Session separation is task discipline plus before/after target hashes; it is not a separate filesystem sandbox. No source edits were made and all 45 target hashes and the clean Git status matched at start and end."
+  ]
+}

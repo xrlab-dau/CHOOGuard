@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "recordType": "deterministic_review_aggregation",
+  "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+  "targetManifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+  "scope": "same-provider supplemental source review, target 3",
+  "outcome": "changes_required",
+  "reason": "Three required lenses completed with matching immutable target; four actionable P2 findings. Later writer corrections do not alter these original verdicts.",
+  "actionable": [
+    {
+      "lens": "adversarial",
+      "id": "ADV-FINAL-1",
+      "severity": "P2",
+      "title": "Refresh the tracked-file inventory after tool probes",
+      "problem": "The final rescan refreshes workspace files, links and policy hashes, but forbidden_check still comes from the single git ls-files call before probes. A probe that leaves a forbidden path in the Git index while that path is absent from the worktree is therefore not caught by the workspace rescan, and the final receipt reports forbidden_tracked_files.ok=true and required_ok=true. This is a persistent index-only state change, not a file that changed and was restored between checks. Using the existing ReviewBoundaryTests fixture, on_last_probe set case.tracked to [\"synthetic-private.key\"]; invoke_receipt returned exit code 0, required_ok=true, tool_probes.executed=true, forbidden_tracked_files={\"items\":[],\"ok\":true}, and workspace count 0. Only the synthetic mocked listing changed; no real index or dependency tool was used.",
+      "fix": "After probes, query git ls-files again and replace the final forbidden_tracked_files check with the refreshed result. Treat a failed second listing as unknown/failure. Preserve tool_probes.executed=true. Add harmless fixture regressions for a persistent forbidden index-only addition and a failed post-probe listing.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:544-549",
+        "scripts/bootstrap/verify_toolchain.py:609-619",
+        "scripts/bootstrap/verify_toolchain.py:636",
+        "scripts/bootstrap/test_review_boundaries.py:35-63"
+      ]
+    },
+    {
+      "lens": "adversarial",
+      "id": "ADV-FINAL-2",
+      "severity": "P2",
+      "title": "Check the elapsed scan budget before returning a clean result",
+      "problem": "scan_workspace checks its elapsed budget before processing each entry, but does not check after the final filesystem call or before return. If that last call returns after the 15-second budget, the scan can still return truncated=false, limit=null and no errors, so both preflight and the post-probe receipt may report it as complete. The documented inability to interrupt a blocked OS call does not require this false clean result after the call has returned. A harmless use of the existing WorkspaceBudgetTests fixture, with one existing AGENTS.md entry and a mocked final ismount call that advanced the synthetic clock from 0 to 16, returned a clean scan at a configured limit of 15 seconds.",
+      "fix": "Perform a terminal over_budget() check after traversal and internal-link validation, before returning scan results. Add a fake-clock regression for the last filesystem call crossing the elapsed budget and verify the receipt keeps finding counts unknown and required_ok=false.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:202-212",
+        "scripts/bootstrap/verify_toolchain.py:224-267",
+        "scripts/bootstrap/test_policy_baseline.py:453-457"
+      ]
+    },
+    {
+      "lens": "safety",
+      "id": "SEC-1",
+      "severity": "P2",
+      "title": "Prevent sensitive filenames from entering evidence metadata",
+      "problem": "The promise that evidence omits sensitive workspace filenames is not upheld by all output fields. For an untracked .env.SYNTHETIC_PRIVATE_SITE file, is_forbidden_tracked identifies the .env variant, but forbidden_workspace_files.suffixes serializes .synthetic_private_site. A staged forbidden file is copied verbatim into forbidden_tracked_files.items. A prohibited file under scripts/bootstrap/* also appears by its full path in policy_sha256; the newly added candidate mode serializes that inventory without a prohibited-name gate. Thus a failed verification or an unapproved candidate can publish the very filename the dedicated workspace check is supposed to minimize. This is a static data-flow finding using synthetic example names, not an observation of actual sensitive data. The suffix/tracked-name/ordinary inventory behavior predates the base; candidate serialization is added by this PR.",
+      "fix": "Use fixed classification labels for environment-file variants instead of arbitrary suffixes, and publish counts or fixed categories rather than forbidden tracked paths. Reject candidate generation when its inventory contains prohibited inputs, and ensure failed receipt/baseline diagnostic fields do not reintroduce those filenames through policy hashes or path-difference lists. Add harmless regressions for an untracked .env.<private-marker>, a staged prohibited filename, and a prohibited file matched by scripts/bootstrap/*; assert marker absence from every written artifact.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:154-159",
+        "scripts/bootstrap/verify_toolchain.py:526-529",
+        "scripts/bootstrap/verify_toolchain.py:548-549",
+        "scripts/bootstrap/verify_toolchain.py:640-642",
+        "scripts/bootstrap/verify_toolchain.py:660",
+        "scripts/bootstrap/test_verify_toolchain.py:497-507"
+      ]
+    },
+    {
+      "lens": "safety",
+      "id": "SEC-2",
+      "severity": "P2",
+      "title": "Propagate Bash uv sync failures before issuing final success",
+      "problem": "With a matching preflight and AUTO_INSTALL=1, the Bash synchronization command is the left operand of an && list: (cd tools/research && uv sync --frozen >/dev/null) && ok. Bash errexit does not terminate for that failed conditional operand. A nonzero uv sync therefore continues through the remaining wrapper steps and final verifier. If a previous tools/research/.venv directory already exists and the other checks pass, the verifier only tests that directory presence and can return 0, so the wrapper reports overall success despite the failed requested synchronization. The Windows entry point explicitly preserves this failure; the Bash synthetic dispatcher never generates a failing sync, leaving the counterpart uncovered. This control-flow issue is inherited unchanged from the base, but remains relevant to the reviewed bootstrap failure boundary.",
+      "fix": "Capture and immediately propagate the uv sync failure in the Bash wrapper, preserving the failing status and preventing a final success receipt for that wrapper run. Extend the existing harmless Bash dispatcher to model a nonzero sync exit and assert a nonzero wrapper result and no final verifier call, as the PowerShell tests already do.",
+      "locations": [
+        "scripts/bootstrap/bootstrap.sh:85-86",
+        "scripts/bootstrap/bootstrap.sh:105-106",
+        "scripts/bootstrap/verify_toolchain.py:634",
+        "scripts/bootstrap/test_bootstrap_shell.py:52-56",
+        "scripts/bootstrap/test_bootstrap_shell.py:130-138"
+      ]
+    }
+  ],
+  "report": [
+    {
+      "lens": "spec",
+      "session": "/root/final_spec_review",
+      "provider": "OpenAI",
+      "modelIdentity": "not_exposed",
+      "path": "docs/evidence/R-07-REVIEW/20260909/final-spec.json",
+      "sha256": "bfcb20a1c82857d851ba6983162c45a0fb2ca508ccbb3f37956d1d6da9e9d2d7",
+      "outcome": "approved"
+    },
+    {
+      "lens": "adversarial",
+      "session": "/root/final_adversarial_review",
+      "provider": "OpenAI",
+      "modelIdentity": "not_exposed",
+      "path": "docs/evidence/R-07-REVIEW/20260909/final-adversarial.json",
+      "sha256": "e41b792779029766fa2eb062a3fdcb22c60a10365ea1ae03d2116cfc7a76b383",
+      "outcome": "changes_required"
+    },
+    {
+      "lens": "safety",
+      "session": "/root/final_safety_review",
+      "provider": "OpenAI",
+      "modelIdentity": "not_exposed",
+      "path": "docs/evidence/R-07-REVIEW/20260909/final-safety.json",
+      "sha256": "4a43c9ec9254bf40fe3c3870b5cd181082e508831838403f0544d50cce0a8328",
+      "outcome": "changes_required"
+    }
+  ],
+  "validation": {
+    "method": "Non-model Python assertions over schema, required fields, lenses, head, manifest and exact start/end verification objects",
+    "allLensesPresent": true,
+    "schemaValid": true,
+    "targetStable": true
+  },
+  "differentProviderGate": {
+    "outcome": "cannot_proceed",
+    "otherProviderReviews": 0,
+    "reason": "All reviewers are OpenAI, same as author; Copilot Anthropic preflight denied by policy."
+  },
+  "postReviewCorrection": "run-20260909-08.json records writer fixes and regression tests; no new three-lens approval has been obtained for changed source.",
+  "issueDone": false
+}

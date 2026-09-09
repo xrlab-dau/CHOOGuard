@@ -1,0 +1,63 @@
+{
+  "outcome": "changes_required",
+  "lens": "safety",
+  "provider": "OpenAI",
+  "modelIdentity": "not_exposed",
+  "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+  "targetManifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+  "startVerification": {
+    "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+    "manifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+    "targetFileCount": 45,
+    "hashMismatches": [],
+    "gitStatus": ""
+  },
+  "endVerification": {
+    "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+    "manifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+    "targetFileCount": 45,
+    "hashMismatches": [],
+    "gitStatus": ""
+  },
+  "actionable": [
+    {
+      "id": "SEC-1",
+      "severity": "P2",
+      "title": "Prevent sensitive filenames from entering evidence metadata",
+      "problem": "The promise that evidence omits sensitive workspace filenames is not upheld by all output fields. For an untracked .env.SYNTHETIC_PRIVATE_SITE file, is_forbidden_tracked identifies the .env variant, but forbidden_workspace_files.suffixes serializes .synthetic_private_site. A staged forbidden file is copied verbatim into forbidden_tracked_files.items. A prohibited file under scripts/bootstrap/* also appears by its full path in policy_sha256; the newly added candidate mode serializes that inventory without a prohibited-name gate. Thus a failed verification or an unapproved candidate can publish the very filename the dedicated workspace check is supposed to minimize. This is a static data-flow finding using synthetic example names, not an observation of actual sensitive data. The suffix/tracked-name/ordinary inventory behavior predates the base; candidate serialization is added by this PR.",
+      "fix": "Use fixed classification labels for environment-file variants instead of arbitrary suffixes, and publish counts or fixed categories rather than forbidden tracked paths. Reject candidate generation when its inventory contains prohibited inputs, and ensure failed receipt/baseline diagnostic fields do not reintroduce those filenames through policy hashes or path-difference lists. Add harmless regressions for an untracked .env.<private-marker>, a staged prohibited filename, and a prohibited file matched by scripts/bootstrap/*; assert marker absence from every written artifact.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:154-159",
+        "scripts/bootstrap/verify_toolchain.py:526-529",
+        "scripts/bootstrap/verify_toolchain.py:548-549",
+        "scripts/bootstrap/verify_toolchain.py:640-642",
+        "scripts/bootstrap/verify_toolchain.py:660",
+        "scripts/bootstrap/test_verify_toolchain.py:497-507"
+      ]
+    },
+    {
+      "id": "SEC-2",
+      "severity": "P2",
+      "title": "Propagate Bash uv sync failures before issuing final success",
+      "problem": "With a matching preflight and AUTO_INSTALL=1, the Bash synchronization command is the left operand of an && list: (cd tools/research && uv sync --frozen >/dev/null) && ok. Bash errexit does not terminate for that failed conditional operand. A nonzero uv sync therefore continues through the remaining wrapper steps and final verifier. If a previous tools/research/.venv directory already exists and the other checks pass, the verifier only tests that directory presence and can return 0, so the wrapper reports overall success despite the failed requested synchronization. The Windows entry point explicitly preserves this failure; the Bash synthetic dispatcher never generates a failing sync, leaving the counterpart uncovered. This control-flow issue is inherited unchanged from the base, but remains relevant to the reviewed bootstrap failure boundary.",
+      "fix": "Capture and immediately propagate the uv sync failure in the Bash wrapper, preserving the failing status and preventing a final success receipt for that wrapper run. Extend the existing harmless Bash dispatcher to model a nonzero sync exit and assert a nonzero wrapper result and no final verifier call, as the PowerShell tests already do.",
+      "locations": [
+        "scripts/bootstrap/bootstrap.sh:85-86",
+        "scripts/bootstrap/bootstrap.sh:105-106",
+        "scripts/bootstrap/verify_toolchain.py:634",
+        "scripts/bootstrap/test_bootstrap_shell.py:52-56",
+        "scripts/bootstrap/test_bootstrap_shell.py:130-138"
+      ]
+    }
+  ],
+  "notes": [
+    "Fresh separate-session static defensive safety review of the actual implementation and tests at the frozen head. Reviewed code diffs against base e7a6bb7a7fff0c301c04f93aeea8850dbde34779 and previous head 39e5dc24892744feacec09eac0c2e71951cb31c8. Previous reviewer verdicts were not used as authority or inspected as approval inputs.",
+    "Read AGENTS.md and the relevant canonical handoff/accepted-decision, R-07, CI, bootstrap, ADR and Foundation contract scope. python3 -B scripts/context/context_graph.py validate returned Context structure: valid; the required handoff brief was read. Its historical freshness/drift states were not promoted to acceptance.",
+    "Executed only the existing harmless bootstrap regression suite: python3 -B -m unittest discover -s scripts/bootstrap -p 'test_*.py' -q. Result: 127 tests, 107 passed, 20 skipped, zero failures. Skips cover 17 native PowerShell tests, two native Windows junction tests and the non-root POSIX permission case. No native Windows result is claimed for this session.",
+    "The two findings above are established by static control/data flow; custom reproducer tests were not run because this review was limited to existing synthetic tests and prohibited source edits. Existing passing tests do not cover these cases.",
+    "The final integration does reject explicitly empty evidence paths before probes, strictly forwards only the wrapper receipt-mode options, removes wrapper package.json reads/output, uses bounded typed installed-package metadata, checks receipt ancestors and exclusive creation, and repeats workspace scanning after probes. Passing tests support those bounded properties; they do not erase the findings.",
+    "No external services, Fal, credentials, network, actual bootstrap installs/probes, Unity or HMD execution, source edits, or child agents were used. Start/end target hashes and Git status matched. Task discipline and hash audits are not separately enforced filesystem sandbox isolation.",
+    "This OpenAI same-provider review does not satisfy the required different-provider spec/adversarial/safety approval. No policy-owner approval, original 105-key journal acceptance, issue completion, railway-procedure correctness, school-PC, Unity or HMD acceptance is claimed.",
+    "Approved-manifest authenticity still depends on a trusted independently supplied digest; snapshots are not atomic, blocked OS calls are not forcibly interrupted, and complete mount detection is not claimed. These documented limits remain distinct from the concrete findings."
+  ]
+}

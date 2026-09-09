@@ -1,0 +1,32 @@
+test_index_only_forbidden_file_added_by_probe_fails_receipt (test_review_boundaries.ReviewBoundaryTests.test_index_only_forbidden_file_added_by_probe_fails_receipt) ... FAIL
+test_post_probe_git_listing_failure_fails_receipt (test_review_boundaries.ReviewBoundaryTests.test_post_probe_git_listing_failure_fails_receipt) ... FAIL
+test_last_filesystem_call_over_budget_is_incomplete (test_review_boundaries.ReviewBoundaryTests.test_last_filesystem_call_over_budget_is_incomplete) ... FAIL
+
+======================================================================
+FAIL: test_index_only_forbidden_file_added_by_probe_fails_receipt (test_review_boundaries.ReviewBoundaryTests.test_index_only_forbidden_file_added_by_probe_fails_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-team-evidence/scripts/bootstrap/test_review_boundaries.py", line 69, in test_index_only_forbidden_file_added_by_probe_fails_receipt
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_post_probe_git_listing_failure_fails_receipt (test_review_boundaries.ReviewBoundaryTests.test_post_probe_git_listing_failure_fails_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-team-evidence/scripts/bootstrap/test_review_boundaries.py", line 88, in test_post_probe_git_listing_failure_fails_receipt
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_last_filesystem_call_over_budget_is_incomplete (test_review_boundaries.ReviewBoundaryTests.test_last_filesystem_call_over_budget_is_incomplete)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-team-evidence/scripts/bootstrap/test_review_boundaries.py", line 106, in test_last_filesystem_call_over_budget_is_incomplete
+    self.assertTrue(scan["truncated"])
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.045s
+
+FAILED (failures=3)

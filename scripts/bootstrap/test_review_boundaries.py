@@ -62,6 +62,86 @@ class ReviewBoundaryTests(unittest.TestCase):
         self.assertEqual(check["suffixes"], [".key"])
         self.assertNotIn("private.key", json.dumps(receipt))
 
+    def test_index_only_forbidden_file_added_by_probe_fails_receipt(self):
+        args = self.pinned_args()
+        self.on_last_probe(lambda: setattr(self.case, "tracked", ["synthetic-private.key"]))
+        code, receipt = self.invoke_receipt(*args)
+        self.assertEqual(code, 1)
+        self.assertTrue(receipt["tool_probes"]["executed"])
+        self.assertFalse(receipt["checks"]["forbidden_tracked_files"]["ok"])
+        self.assertFalse(receipt["required_ok"])
+
+    def test_post_probe_git_listing_failure_fails_receipt(self):
+        args = self.pinned_args()
+        original = self.case.fake_run
+        state = {"probed": False}
+
+        def fail_late_listing(*command):
+            if command == ("uv", "--version"):
+                state["probed"] = True
+            if state["probed"] and command == ("git", "ls-files", "-z"):
+                return None
+            return original(*command)
+
+        self.case.fake_run = fail_late_listing
+        code, receipt = self.invoke_receipt(*args)
+        self.assertEqual(code, 1)
+        self.assertFalse(receipt["checks"]["forbidden_tracked_files"]["ok"])
+        self.assertFalse(receipt["required_ok"])
+
+    def test_last_filesystem_call_over_budget_is_incomplete(self):
+        target = self.root / "terminal-budget.txt"
+        target.write_text("synthetic fixture")
+        clock = [0.0]
+
+        def slow_final_call(_entry):
+            clock[0] = 16.0
+            return False
+
+        with patch.object(verifier.os, "walk", return_value=[(str(self.root), [], [target.name])]), \
+             patch.object(verifier.os.path, "ismount", side_effect=slow_final_call), \
+             patch.object(verifier, "monotonic", side_effect=lambda: clock[0]), \
+             patch.object(verifier, "WORKSPACE_SCAN_MAX_SECONDS", 15):
+            scan = verifier.scan_workspace(self.root)
+        self.assertTrue(scan["truncated"])
+        self.assertEqual(scan["limit"], "elapsed_time")
+
+    def test_environment_suffix_and_tracked_names_do_not_enter_receipt(self):
+        args = self.pinned_args()
+        marker = "SYNTHETIC_PRIVATE_SITE"
+        (self.root / (".env." + marker)).write_text("synthetic fixture")
+        self.case.tracked = [marker + ".key"]
+        code, receipt = self.invoke_receipt(*args)
+        self.assertEqual(code, 1)
+        self.assertNotIn(marker.lower(), json.dumps(receipt).lower())
+        self.assertFalse(receipt["checks"]["forbidden_tracked_files"]["ok"])
+
+    def test_forbidden_policy_input_never_enters_receipt_or_candidate(self):
+        args = self.pinned_args()
+        marker = "SYNTHETIC_POLICY_PRIVATE"
+        (self.root / "scripts/bootstrap" / (marker + ".key")).write_text("synthetic fixture")
+        code, receipt = self.invoke_receipt(*args)
+        self.assertEqual(code, 1)
+        self.assertNotIn(marker.lower(), json.dumps(receipt).lower())
+        candidate = "docs/evidence/R-07/private-candidate.json"
+        self.assertEqual(self.case.invoke("--write-policy-candidate", candidate), 1)
+        self.assertFalse((self.root / candidate).exists())
+
+    def test_candidate_rejects_forbidden_policy_input(self):
+        (self.root / "scripts/bootstrap/SYNTHETIC_PRIVATE.key").write_text("fixture")
+        target = "docs/evidence/R-07/prohibited-candidate.json"
+        self.assertEqual(self.case.invoke("--write-policy-candidate", target), 1)
+        self.assertFalse((self.root / target).exists())
+
+    def test_expected_prohibited_path_is_not_echoed_in_baseline_diagnostics(self):
+        marker = "SYNTHETIC_EXPECTED_PRIVATE"
+        digest = self.fixture.write_manifest(changes=lambda data: data["policySha256"].update(
+            {"scripts/bootstrap/" + marker + ".key": "a" * 64}))
+        code, receipt = self.invoke_receipt("--policy-manifest", str(self.fixture.manifest),
+                                            "--policy-manifest-sha256", digest)
+        self.assertEqual(code, 1)
+        self.assertNotIn(marker.lower(), json.dumps(receipt).lower())
+
     def test_outside_link_created_by_probe_fails_final_receipt(self):
         outside = self.root.parent / "outside"
         outside.mkdir()

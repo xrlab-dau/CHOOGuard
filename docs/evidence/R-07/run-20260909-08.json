@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "unit": "R-07",
+  "recordType": "execution_observation_not_approval",
+  "date": "2026-09-09",
+  "baseCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+  "sourceSha256": {
+    "scripts/bootstrap/verify_toolchain.py": "ac07cdfe597d3289da0d3215df29a4c560bf7291d4d7e570e6e0122febabdee1",
+    "scripts/bootstrap/bootstrap.sh": "095e9a378dbb5091e4ed26166debdce7868a6b9be6805779d73ed08b0ef2dce4",
+    "scripts/bootstrap/bootstrap.ps1": "932b4a8d8beb79feb1baa27d3da379da3e890dc0590b80e4a352c58bead0ea4c",
+    "scripts/bootstrap/test_verify_toolchain.py": "e7dc8bdbe1791094edf17b1438cebda0ac44bd66322db9e8abc1d557ea1e406e",
+    "scripts/bootstrap/test_policy_baseline.py": "18a20a8b0b783b6836aaa99734ea47903d61a0ac83a911874d54a63122a9ea5c",
+    "scripts/bootstrap/test_bootstrap_shell.py": "017e7c22db80d69e089765100a53708e597a756d36dfbbcda6db9dff4ec17557",
+    "scripts/bootstrap/test_bootstrap_powershell.py": "17e9c6a172de7da6b623d3714d35cd77a4ffb7014b56c546ac835cbddcba4287",
+    "scripts/bootstrap/test_review_boundaries.py": "f4ca7c64fafa100264de8fd615d6ffb9af2aa3e9d30778ea67f66133240d52a4"
+  },
+  "previousReceiptSha256": "3ed04217ea6ae4d1b4f4d71ada125d122d7251257b31994cec0552b38f18206f",
+  "fixes": [
+    "ADV-FINAL-1: repeat tracked-file inventory after probes; failed listing fails closed",
+    "ADV-FINAL-2: terminal elapsed scan budget check",
+    "SEC-1: fixed name categories, no forbidden tracked paths, reject prohibited current/expected policy inputs",
+    "SEC-2: Bash sync status propagated before final verifier"
+  ],
+  "green": {
+    "command": "python3 -B -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v",
+    "tests": 135,
+    "passed": 115,
+    "skipped": 20,
+    "failed": 0,
+    "platform": "Linux",
+    "skipScope": "17 native PowerShell tests, 2 native Windows junctions, 1 POSIX non-root permission case"
+  },
+  "logs": [
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-final-boundaries-run08.log",
+      "sha256": "d3de08a4303a204bf393201816a6510227ec88888632ca49488d4e5ac7c56dce",
+      "originalSha256": "a0229210b10bc599610e1d2d219e5ec37b6f47302c3c96c4606d61d465b483c6",
+      "normalization": "workspace roots and trailing whitespace normalized"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-final-safety-complete-run08.log",
+      "sha256": "4e32f0226525c6ab5cca106d600fc6b13a1dd34e9bf116c64a91f587aee0fcf5",
+      "originalSha256": "74549f2b816a9a3652651ed6cada466b840e24fea6737f6b3cb5001a86200dec",
+      "normalization": "workspace roots and trailing whitespace normalized"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/green-integrated-run08.log",
+      "sha256": "212998609a34f72f086847c33b36b3e52c73e97068ba40a97bf4e1474a2b26b8",
+      "originalSha256": "212998609a34f72f086847c33b36b3e52c73e97068ba40a97bf4e1474a2b26b8",
+      "normalization": "workspace roots and trailing whitespace normalized"
+    }
+  ],
+  "independentReview": {
+    "otherProviderReviews": 0,
+    "outcome": "cannot_proceed",
+    "reviewedTargetOutcome": "changes_required",
+    "rereview": "Not performed after these writer corrections; original third-target verdicts preserved."
+  },
+  "nativeWindows": "pending for post-review correction; final-ci.json only covers f783255",
+  "issueDone": false,
+  "limits": [
+    "No atomic filesystem snapshot or complete concurrent parent-swap prevention.",
+    "No school-PC, Unity, HMD or railway procedure acceptance.",
+    "Original 105-key journal remains unavailable and not accepted by the human."
+  ],
+  "integration": "Preserves all prior run records and concurrent 39e5dc2 changes. Supplemental review cycle stops with the original changes_required verdict; no automatic round reset."
+}

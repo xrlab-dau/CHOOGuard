@@ -83,7 +83,8 @@ step "4. 조사 하네스 (tools/research)"
 if ! need uv; then
   warn "uv 없음 → 건너뜀"
 elif [ "$AUTO_INSTALL" = "1" ]; then
-  (cd tools/research && uv sync --frozen >/dev/null) && ok "uv sync --frozen"
+  (cd tools/research && uv sync --frozen >/dev/null) || exit $?
+  ok "uv sync --frozen"
 else
   warn "동기화 미실행. 승인 후 직접 실행: (cd tools/research && uv sync --frozen)  (AUTO_INSTALL=1 로 자동 실행 가능)"
 fi

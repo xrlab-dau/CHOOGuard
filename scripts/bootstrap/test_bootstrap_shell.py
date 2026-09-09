@@ -51,6 +51,7 @@ class ShellBootstrapTests(unittest.TestCase):
             '    print("22" if args[:1] == ["-p"] else "v22.0.0")\n'
             'elif tool == "pi": print("0.0.0-fixture")\n'
             'elif tool == "uv" and "sync" not in args: print("uv fixture")\n'
+            'elif tool == "uv": sys.exit(int(os.environ.get("BOOTSTRAP_TEST_SYNC_EXIT", "0")))\n'
             'elif tool == "python3":\n'
             '    stage = "PREFLIGHT" if "--policy-preflight" in args else "VERIFY"\n'
             '    sys.exit(int(os.environ.get("BOOTSTRAP_TEST_" + stage + "_EXIT", "0")))\n',
@@ -143,6 +144,12 @@ class ShellBootstrapTests(unittest.TestCase):
         self.assertEqual(result.returncode, 17, result.stderr)
         self.assertEqual(len(self.preflights), 1)
         self.assertEqual(len(self.final_verifications), 1)
+
+    def test_failed_sync_stops_before_final_verification(self):
+        result = self.run_bootstrap(auto_install=True, SYNC_EXIT=23)
+        self.assertEqual(result.returncode, 23, result.stderr)
+        self.assertTrue(any(call[:2] == ["uv", "sync"] for call in self.calls))
+        self.assertEqual(self.final_verifications, [])
 
     def test_invalid_installed_metadata_is_not_read_or_output_by_wrapper(self):
         marker = "SYNTHETIC_NON_VERSION_MARKER"

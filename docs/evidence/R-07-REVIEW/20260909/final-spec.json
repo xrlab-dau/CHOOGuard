@@ -1,0 +1,35 @@
+{
+  "outcome": "approved",
+  "actionable": [],
+  "notes": [
+    "Scoped source/spec approval for the frozen PR97 target only. Independently read actual verifier, wrappers, regression tests, CI changes, canonical R-07 scope and M0-00 acceptance, and inspected differences against e7a6bb7a7fff0c301c04f93aeea8850dbde34779 and 39e5dc24892744feacec09eac0c2e71951cb31c8. Previous reviewer verdicts were not used as authority.",
+    "Required context validate and brief --topic handoff --machine local both exited 0. Context structure is valid; source-drift, stale historical evidence and unknown live status remain separate from runtime acceptance.",
+    "Explicitly empty receipt/candidate paths fail with code 2 before command probes. Both wrappers reject empty verifier values, standalone modes, abbreviations and unknown options before their tool calls; their static preflight precedes Node/Pi/uv/npm and explicit installation paths.",
+    "Preflight produces policy_preflight_not_receipt and never writes the requested receipt or reads installed package metadata. Candidates remain status=candidate with null approvalReference, and matching a candidate pin does not authorize probes. Approved baseline matching requires an independently supplied pin and exact policy paths and hashes; this does not authenticate human approval.",
+    "Installed package metadata is read only by the final verifier with a 1,000,000-byte limit and typed, bounded version validation. The wrappers no longer directly print package.json values. Post-probe scan failures prevent required_ok while preserving that probes occurred; incomplete scan counts remain null.",
+    "Ran existing harmless local tests with PYTHONDONTWRITEBYTECODE=1 python -B -m unittest discover -s scripts/bootstrap -p test_*.py -v: 127 tests, 107 passed, 20 skipped, 0 failures, exit 0. Skips were 17 native PowerShell tests, 2 native Windows junction tests, and the non-root POSIX permission case. Synthetic fixtures and command shims do not establish actual installation or school-PC acceptance.",
+    "Independently checked run-20260909-07.json source and log hashes: all matched, including its link to the preserved run06 receipt. The records retain pending other-provider review, pending native Windows for their covered revision, the unavailable original 105-key journal, and issueDone=false. No live GitHub or external CI status was queried.",
+    "This is a separate OpenAI session. It does not satisfy the required different-provider spec/adversarial/safety gate; no project approval, issue completion, merge, runtime, Unity, HMD or railway procedure acceptance is granted.",
+    "Read-only source access and filesystem/tool isolation were task discipline, not an independently enforced per-review sandbox. No source edits, Fal, secret access, external calls, real tool installation/probes, Unity changes or agent spawning were performed. Existing tests created and cleaned synthetic temporary fixtures.",
+    "Start and end HEAD, manifest digest, all 45 target file hashes and clean tracked/untracked Git status matched."
+  ],
+  "lens": "spec",
+  "provider": "OpenAI",
+  "modelIdentity": "not_exposed",
+  "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+  "targetManifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+  "startVerification": {
+    "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+    "manifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+    "targetFileCount": 45,
+    "hashMismatches": [],
+    "gitStatus": ""
+  },
+  "endVerification": {
+    "headCommit": "f783255908d9d3cf66a110e01f17c9deb6c6efd2",
+    "manifestSha256": "c5a715fc5ba8b43c45f1ea03449440c2021fb30a71cfb36feb39a5767a6c04df",
+    "targetFileCount": 45,
+    "hashMismatches": [],
+    "gitStatus": ""
+  }
+}

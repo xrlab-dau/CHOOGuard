@@ -1526,12 +1526,12 @@
       "sources": [
         {
           "repoPath": "scripts/bootstrap/verify_toolchain.py",
-          "sha256": "357b7a5f9f566941722c6ccd0f1f57fc0c68bd23f0ed963f694b02200445b377",
+          "sha256": "ac07cdfe597d3289da0d3215df29a4c560bf7291d4d7e570e6e0122febabdee1",
           "label": "R-07 구현 및 승인 범위"
         },
         {
           "repoPath": "docs/evidence/R-07/README.md",
-          "sha256": "cd642c199d2f2ccfbb3e1faa75cbf7969a17525474897a011111f0e9931b972e",
+          "sha256": "966a842ef816675b2f111b4c3ed72f4a6c71aa6b18fe6dacd4c29a6d62595000",
           "label": "R-07 구현 및 승인 범위"
         },
         {
@@ -1546,7 +1546,7 @@
         },
         {
           "repoPath": "scripts/bootstrap/bootstrap.sh",
-          "sha256": "d6b0b6ef128ecc2469bda6b559c8be90c8687cdc82f2e170c08b760a0b2beab8",
+          "sha256": "095e9a378dbb5091e4ed26166debdce7868a6b9be6805779d73ed08b0ef2dce4",
           "label": "도구 호출 전 정책 사전 검사"
         },
         {
@@ -1556,7 +1556,7 @@
         },
         {
           "repoPath": "scripts/bootstrap/test_review_boundaries.py",
-          "sha256": "2b37c7bf1bfaa6913cff5234871835e979ad1ce11a1d9b28e851dbd33db76c26",
+          "sha256": "f4ca7c64fafa100264de8fd615d6ffb9af2aa3e9d30778ea67f66133240d52a4",
           "label": "후속 도구 검사·영수증 경로·입력 링크 회귀"
         }
       ],
@@ -1664,6 +1664,40 @@
       "limits": [
         "같은 OpenAI 제공자의 별도 세션 검토이며 다른 제공자 승인 게이트는 cannot_proceed다.",
         "Linux 합성 시험은 native Windows·학교 PC·Unity·실제 정책 승인이나 현장 수용이 아니다."
+      ]
+    },
+    {
+      "id": "evidence.agent_team_review_20260909",
+      "kind": "evidence",
+      "title": "2026-09-09 별도 세션 보조 검토와 후속 수정",
+      "summary": "세 번째 고정 대상의 명세 승인·적대/안전성 P2 네 건을 원 판정으로 보존하고 writer 회귀 수정을 분리했다. 수정 후 재검토와 다른 제공자 게이트는 미완료다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-09",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/reviews/2026-09-09-agent-team-review.md",
+          "sha256": "62f876ed00847ef5e27b6a8c56e6a151309aa457a547515c8dedbb124a93ec39",
+          "label": "분리 세션·원 판정·수정과 수용 한계"
+        },
+        {
+          "repoPath": "docs/evidence/R-07-REVIEW/20260909/final-summary.json",
+          "sha256": "d2e594467a58974396b122b862d2e5f645b92203e5db42ebd8b5a59cc74e334a",
+          "label": "고정 대상 원 판정의 결정적 집계"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/R-07/run-20260909-08.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "같은 OpenAI 세션이므로 다른 제공자 게이트는 cannot_proceed다.",
+        "writer 수정 후 새 3관점 승인·실제 정책/학교 PC/Unity/HMD 수용은 미완료다."
       ]
     }
   ],
@@ -2087,6 +2121,11 @@
       "from": "component.policy_baseline",
       "relation": "verified_by",
       "to": "evidence.policy_probes_20260909"
+    },
+    {
+      "from": "component.policy_baseline",
+      "relation": "verified_by",
+      "to": "evidence.agent_team_review_20260909"
     }
   ],
   "refreshLog": [
