@@ -11,3 +11,11 @@ Three fresh conversations cover spec, adversarial and safety per scoped implemen
 Round 2 emitted all 12 response records and its completion record, then the hosted job was marked ERROR / Job timeout. `round2-complete.json` preserves all records with the actual job status; `round2.json` is an earlier 11-response snapshot. The previously stated approximately $0.84 figure was a 20-minute GPU-rate estimate, not a verified bill; startup/service teardown timing and final charges have not been audited.
 
 Fal was not used. No PR was merged or deployed, no Unity license was activated, and no KORAIL message was sent.
+
+## Concurrent source update and completion
+
+PR97 moved to `39e5dc24892744feacec09eac0c2e71951cb31c8` during the first public-only Round 3 job. The cancellation decision was based on this source movement before examining the emitted verdicts. Eight completed core/asset/capture lenses were preserved; no policy lens had run. The three core and asset lenses were not repeated.
+
+The one missing capture lens and the three policy lenses resumed in allowed public-only job [6aa0af1c900620b5c77e49ca](https://huggingface.co/jobs/umyunsang/6aa0af1c900620b5c77e49ca), using the current policy source and public shell/PowerShell wrappers plus regression tests. Its exact input is `round3-remaining-input.json`; it had a 12-minute in-process deadline and a 14-minute service timeout. This continuation recorded thinking-mode sampling and retained the actual raw responses and hashes. All four responses and completion were emitted and the service reported COMPLETED. See `round3-part2.json`.
+
+Across Round 3 there are exactly three completed lenses per unit, with the policy target updated before any policy lens executed. Core/asset/capture failed or disputed responses remain preserved. No approval was manufactured by dropping a failed lens, restarting a completed lens or resetting a round budget.

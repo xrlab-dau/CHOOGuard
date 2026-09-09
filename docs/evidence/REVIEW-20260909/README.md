@@ -1,5 +1,7 @@
 # Development Review follow-up
 
+Latest disposition: [개발보드 Review 재개 결과](result.md). All 45 actual model responses are indexed and hash-verified in `review-call-index.json`; final hosted validation is `ci-followup.json`. Not every unit received independent approval.
+
 Refs #10, #14, #25, #26, #27, #32, #52, #64, #65, #66, #68. Review scope follows the live development board, not a list of all open PRs.
 
 ## Independent execution
