@@ -69,6 +69,12 @@ POLICY_GLOBS = [
     "Packages/manifest.json",
     "Packages/packages-lock.json",
     "reconstruction/pyproject.toml",
+    # Existing setup inputs are required individually; the family glob also
+    # makes additional reconstruction locks part of the exact reviewed set.
+    "reconstruction/requirements-colmap.lock",
+    "reconstruction/requirements-da3.lock",
+    "reconstruction/requirements-mapanything.lock",
+    "reconstruction/requirements-*.lock",
 ]
 # Observed inventory is not an approved baseline. The now-tracked .pi/.specify
 # policy families are included; only the alternative YAML extension is optional.
