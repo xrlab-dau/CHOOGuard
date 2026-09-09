@@ -1,0 +1,49 @@
+name: Unity installation probe (not project tests)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/pr110-unity-install-probe.yml'
+      - 'scripts/ci/pr110_unity_install_probe.py'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr110-unity-install-probe
+  cancel-in-progress: true
+
+jobs:
+  install-and-probe:
+    name: Official Editor installation and empty-project startup only
+    if: >-
+      github.event.pull_request.number == 110 &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'bugfix/108-ownership-preflight-adversarial'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out only the bounded probe recipe
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          lfs: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /scripts/ci/pr110_unity_install_probe.py
+
+      - name: Verify official download and probe startup without credentials
+        env:
+          CANDIDATE_SHA: ${{ github.event.pull_request.head.sha }}
+        run: python3 scripts/ci/pr110_unity_install_probe.py
+
+      - name: Upload sanitized installation receipt only
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: pr110-unity-installation-receipt
+          path: unity-install-probe-evidence/receipt.json
+          if-no-files-found: error
+          retention-days: 14
