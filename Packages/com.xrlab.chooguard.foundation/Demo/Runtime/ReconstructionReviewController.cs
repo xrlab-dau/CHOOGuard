@@ -269,8 +269,8 @@ namespace ChooGuard.Foundation.Demo
         private void RequireOpen()
         {if(failed||completed)throw new InvalidOperationException("Capture has failed or completed; start a new output directory.");}
 
-        // Check the complete encoded envelope without decoding pixels or allocating from image dimensions.
-        // This proves structural integrity of the bytes, not Unity rendering or visual correctness.
+        // Check the encoded chunk envelope and header without decoding pixels or allocating from dimensions.
+        // Pixel decoding, Unity rendering and visual correctness still require separate verification.
         private static void ValidatePngEnvelope(byte[] png)
         {
             if(png==null||png.Length<=PngSignature.Length)throw new InvalidOperationException("Screenshot encoding returned no PNG.");
@@ -286,7 +286,7 @@ namespace ChooGuard.Foundation.Demo
                 if(!header&&type!=0x49484452u)throw new InvalidOperationException("Screenshot PNG must start with IHDR.");
                 if(type==0x49484452u) // IHDR
                 {
-                    if(header||size!=13||ReadPngUInt32(png,offset+8)==0||ReadPngUInt32(png,offset+12)==0)
+                    if(header||size!=13||!ValidPngHeader(png,offset))
                         throw new InvalidOperationException("Screenshot PNG has an invalid IHDR.");
                     header=true;
                 }
@@ -308,6 +308,17 @@ namespace ChooGuard.Foundation.Demo
                 }
             }
             throw new InvalidOperationException("Screenshot PNG is missing IEND.");
+        }
+
+        private static bool ValidPngHeader(byte[] png,int offset)
+        {
+            var width=ReadPngUInt32(png,offset+8);var height=ReadPngUInt32(png,offset+12);
+            if(width==0||width>int.MaxValue||height==0||height>int.MaxValue||
+               png[offset+18]!=0||png[offset+19]!=0||png[offset+20]>1)return false;
+            var depth=png[offset+16];var color=png[offset+17];
+            if(color==0)return depth==1||depth==2||depth==4||depth==8||depth==16;
+            if(color==3)return depth==1||depth==2||depth==4||depth==8;
+            return (color==2||color==4||color==6)&&(depth==8||depth==16);
         }
 
         private static uint ReadPngUInt32(byte[] bytes,int offset)=>
