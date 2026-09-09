@@ -740,12 +740,12 @@
       "sources": [
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "f796e72191cbfddcad611e5340547199afdf6216a6691d3d560df1574a87ff0c",
+          "sha256": "9728e37c7e4b3e4ac3f4a9f71645fceca81dade34199b7a110562e8cd7506268",
           "label": "--asset 조회·--inventory·--require-reviewed 검사"
         },
         {
           "repoPath": "scripts/art/test_reference_assets.py",
-          "sha256": "b10600e5c71fc42c09f154bed85bf1c6a5f970c7aeb434a083bd13f3c78d8e2f",
+          "sha256": "88034aa8ede293abeb2ec87d48255428c775cc4b37b1dece3a4ab9d1908b780b",
           "label": "출처·해시·장면 사용·시각 검수 실패 fixture"
         },
         {
@@ -787,7 +787,7 @@
         },
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "f796e72191cbfddcad611e5340547199afdf6216a6691d3d560df1574a87ff0c",
+          "sha256": "9728e37c7e4b3e4ac3f4a9f71645fceca81dade34199b7a110562e8cd7506268",
           "label": "아트 담당자의 자산 ID별 근거 조회"
         },
         {
@@ -1917,29 +1917,6 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "사용자 요청으로 작업 중단 후 커밋·PR 인계: 새 Unity/Windows 검증과 미수용 성능 파일럿 기록 연결"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "component.agent_resources",
-        "component.school_independent_work",
-        "decision.production.local_cv_school_independent",
-        "decision.tooling.official_unity_mcp",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "decision.world.connected",
-        "goal.foundation",
-        "policy.project_authority",
-        "workflow.start_validate"
-      ],
-      "reason": "PM 공식 Unity CLI Editor MCP 결정, 병합된 Foundation 시작점 및 기기별 실행 범위 문서 검토"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
         "component.school_independent_work",
         "decision.production.local_cv_school_independent",
         "decision.tooling.official_unity_mcp",
@@ -2077,6 +2054,20 @@
         "workflow.start_validate"
       ],
       "reason": "AAA 수정 루프의 최종 자산 검증기·테스트 소스를 직접 대조했다. 빈 자산 내보내기·비문자 치수 근거도 거부하며 Python 28개와 기존33종 검증은 소스 범위다. 역사적 이미지·Unity 수용은 갱신하지 않는다."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.art_reference_tools"
+      ],
+      "reason": "AAA 재검수에서 순환 경로의 구조화 오류, HTTPS 호스트/포트/공백 및 유효한 달력 날짜 검사를 직접 대조했다. Python32개와 기존33종 검증 범위이며 최신 시각 검수·기관 수용을 뜻하지 않는다."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "workflow.start_validate"
+      ],
+      "reason": "AAA 재검수에서 순환 경로의 구조화 오류, HTTPS 호스트/포트/공백 및 유효한 달력 날짜 검사를 직접 대조했다. Python32개와 기존33종 검증 범위이며 최신 시각 검수·기관 수용을 뜻하지 않는다."
     }
   ]
 }
