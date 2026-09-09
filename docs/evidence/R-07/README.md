@@ -79,3 +79,11 @@ M4-01의 실제 강제는 `scripts/foundation/validate.py`, `schemas/foundation-
 - wrapper가 전달하는 검증기 옵션은 `--strict`, `--write`, `--policy-manifest`, `--policy-manifest-sha256`의 정확한 이름으로 제한한다. 후보 생성, preflight 단독 실행과 도움말은 Python 검증기를 직접 호출한다. 약어·알 수 없는 옵션으로 선행 검사만 성공 종료시키는 경로를 허용하지 않는다.
 
 이번 작업은 Fal을 사용하지 않았다. GitHub Actions 임시 토큰과 Copilot CLI 1.0.83으로 Anthropic 인증만 시험했지만 `Access denied by policy settings`로 종료됐다. [실제 실행](https://github.com/xrlab-dau/CHOOGuard/actions/runs/34294249798)은 소스를 제출하지 않았고 모델 판정을 받지 못했다. OpenAI의 분리 세션 검토를 다른 제공자 승인으로 바꾸지 않는다.
+
+## 2026-09-09 도구 검사 후 작업본 재확인
+
+[후속 PR 리뷰](https://github.com/xrlab-dau/CHOOGuard/pull/97#issuecomment-5593768525)의 세 경계를 재검증했다. 작업 중 추가된 `f76b55f`의 preflight·패키지·링크 수정은 보존했다. 그 커밋에서도 도구 검사 중 생성한 금지 파일·외부 링크와 검사 예산 초과는 성공 영수증으로 남을 수 있어, 도구 검사 뒤 작업본을 다시 순회하고 그 결과를 최종 영수증에 반영한다. 마지막 순회 뒤 정책 해시도 비교하며 실패해도 `tool_probes.executed=true`는 보존한다.
+
+영수증 경로의 콜론 요소도 거부해 Windows 드라이브·대체 데이터 스트림 표기를 허용하지 않는다. 영수증 링크와 제외된 `.git`을 향하는 입력 링크의 기존 차단을 회귀 시험으로 유지하고 native Windows receipt junction 시험을 추가했다. [run06](run-20260909-06.json)은 `f76b55f`에서의 RED와 수정 후 GREEN을 소스·로그 해시에 결속한다. Linux 부트스트랩 119개 중 102개 통과·17개 환경별 제외이며 실제 Windows 결과는 새 커밋의 CI에서 확인한다.
+
+현재 구현과 새 실행 노드는 `project-context.json`에 반영한다. 기존 HTML은 생성 시점의 스냅샷으로 보존했다. 부분 checkout의 미수신 Unity/LFS 자산을 저장소 누락으로 잘못 기록하지 않도록 전체 HTML을 재생성하지 않았으며, 현재성은 context CLI와 원본 JSON으로 확인한다. 과거 영수증·커버리지·다른 제공자 승인 대기 상태는 유지한다.

@@ -452,7 +452,7 @@ def receipt_target(root: Path, requested: str) -> Path:
     """docs/evidence 아래의 새 .json 파일만 허용한다. 위반은 ValueError."""
     root = root.resolve()
     rel = PurePosixPath(requested.replace("\\", "/"))
-    if rel.is_absolute() or ".." in rel.parts:
+    if rel.is_absolute() or ".." in rel.parts or any(":" in part for part in rel.parts):
         raise ValueError(f"영수증 경로는 저장소 상대 경로여야 한다: {requested}")
     prefix = PurePosixPath(RECEIPT_ROOT).parts
     if rel.parts[:len(prefix)] != prefix or len(rel.parts) <= len(prefix):
@@ -604,9 +604,14 @@ def main() -> int:
     pi_v = pi_lines[0] if pi_lines else None
     uv_v = run("uv", "--version") if can_probe else None
 
-    # Version probes may themselves modify policy. Preserve that probes ran,
-    # but never issue a successful receipt for a changed policy snapshot.
+    # Probes may change non-policy files and links too. Keep the pre-probe gate,
+    # then base the final receipt on a fresh bounded scan. Check policy last so
+    # changes during this second scan cannot bless a stale policy snapshot.
     if can_probe:
+        scan = scan_workspace(root)
+        outside_links = scan["outside_links"]
+        workspace_forbidden, workspace_truncated, workspace_errors = scan["forbidden"], scan["truncated"], scan["errors"]
+        incomplete = workspace_truncated or bool(workspace_errors)
         baseline["stable_across_probes"] = policy_inventory(root) == inventory
         if not baseline["stable_across_probes"]:
             baseline.update(ok=False, status="policy_changed_during_probes")

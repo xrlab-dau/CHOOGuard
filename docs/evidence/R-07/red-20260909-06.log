@@ -1,0 +1,72 @@
+test_dependency_link_to_git_root_is_unverified_input (test_review_boundaries.ReviewBoundaryTests.test_dependency_link_to_git_root_is_unverified_input) ... ok
+test_dependency_link_to_git_subdirectory_is_unverified_input (test_review_boundaries.ReviewBoundaryTests.test_dependency_link_to_git_subdirectory_is_unverified_input) ... ok
+test_docs_ancestor_link_cannot_redirect_either_writer (test_review_boundaries.ReviewBoundaryTests.test_docs_ancestor_link_cannot_redirect_either_writer) ... ok
+test_evidence_root_junction_cannot_redirect_either_writer_into_policy (test_review_boundaries.ReviewBoundaryTests.test_evidence_root_junction_cannot_redirect_either_writer_into_policy) ... skipped 'Native Windows receipt junction test'
+test_evidence_root_link_cannot_redirect_either_writer_into_policy (test_review_boundaries.ReviewBoundaryTests.test_evidence_root_link_cannot_redirect_either_writer_into_policy) ... ok
+test_file_link_to_git_metadata_is_unverified_input (test_review_boundaries.ReviewBoundaryTests.test_file_link_to_git_metadata_is_unverified_input) ... ok
+test_forbidden_file_created_by_probe_fails_final_receipt (test_review_boundaries.ReviewBoundaryTests.test_forbidden_file_created_by_probe_fails_final_receipt) ... FAIL
+test_nested_evidence_link_is_rejected_even_inside_evidence (test_review_boundaries.ReviewBoundaryTests.test_nested_evidence_link_is_rejected_even_inside_evidence) ... ok
+test_outside_link_created_by_probe_fails_final_receipt (test_review_boundaries.ReviewBoundaryTests.test_outside_link_created_by_probe_fails_final_receipt) ... FAIL
+test_post_probe_scan_budget_exhaustion_is_unknown_not_clean (test_review_boundaries.ReviewBoundaryTests.test_post_probe_scan_budget_exhaustion_is_unknown_not_clean) ... FAIL
+test_receipt_path_link_created_during_probe_is_rejected_before_write (test_review_boundaries.ReviewBoundaryTests.test_receipt_path_link_created_during_probe_is_rejected_before_write) ... ok
+test_receipt_paths_reject_drive_and_alternate_stream_components (test_review_boundaries.ReviewBoundaryTests.test_receipt_paths_reject_drive_and_alternate_stream_components) ...
+  test_receipt_paths_reject_drive_and_alternate_stream_components (test_review_boundaries.ReviewBoundaryTests.test_receipt_paths_reject_drive_and_alternate_stream_components) (requested='docs/evidence/C:/receipt.json') ... FAIL
+  test_receipt_paths_reject_drive_and_alternate_stream_components (test_review_boundaries.ReviewBoundaryTests.test_receipt_paths_reject_drive_and_alternate_stream_components) (requested='docs/evidence/C:receipt.json') ... FAIL
+  test_receipt_paths_reject_drive_and_alternate_stream_components (test_review_boundaries.ReviewBoundaryTests.test_receipt_paths_reject_drive_and_alternate_stream_components) (requested='docs/evidence/report:stream.json') ... FAIL
+test_scanned_internal_dependency_link_still_allows_valid_receipt (test_review_boundaries.ReviewBoundaryTests.test_scanned_internal_dependency_link_still_allows_valid_receipt) ... ok
+
+======================================================================
+FAIL: test_forbidden_file_created_by_probe_fails_final_receipt (test_review_boundaries.ReviewBoundaryTests.test_forbidden_file_created_by_probe_fails_final_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[repository]/scripts/bootstrap/test_review_boundaries.py", line 56, in test_forbidden_file_created_by_probe_fails_final_receipt
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_outside_link_created_by_probe_fails_final_receipt (test_review_boundaries.ReviewBoundaryTests.test_outside_link_created_by_probe_fails_final_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[repository]/scripts/bootstrap/test_review_boundaries.py", line 75, in test_outside_link_created_by_probe_fails_final_receipt
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_post_probe_scan_budget_exhaustion_is_unknown_not_clean (test_review_boundaries.ReviewBoundaryTests.test_post_probe_scan_budget_exhaustion_is_unknown_not_clean)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[repository]/scripts/bootstrap/test_review_boundaries.py", line 86, in test_post_probe_scan_budget_exhaustion_is_unknown_not_clean
+    self.assertEqual(code, 1)
+AssertionError: 0 != 1
+
+======================================================================
+FAIL: test_receipt_paths_reject_drive_and_alternate_stream_components (test_review_boundaries.ReviewBoundaryTests.test_receipt_paths_reject_drive_and_alternate_stream_components) (requested='docs/evidence/C:/receipt.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[repository]/scripts/bootstrap/test_review_boundaries.py", line 124, in test_receipt_paths_reject_drive_and_alternate_stream_components
+    with self.subTest(requested=requested), self.assertRaises(ValueError):
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_receipt_paths_reject_drive_and_alternate_stream_components (test_review_boundaries.ReviewBoundaryTests.test_receipt_paths_reject_drive_and_alternate_stream_components) (requested='docs/evidence/C:receipt.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[repository]/scripts/bootstrap/test_review_boundaries.py", line 124, in test_receipt_paths_reject_drive_and_alternate_stream_components
+    with self.subTest(requested=requested), self.assertRaises(ValueError):
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_receipt_paths_reject_drive_and_alternate_stream_components (test_review_boundaries.ReviewBoundaryTests.test_receipt_paths_reject_drive_and_alternate_stream_components) (requested='docs/evidence/report:stream.json')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "[repository]/scripts/bootstrap/test_review_boundaries.py", line 124, in test_receipt_paths_reject_drive_and_alternate_stream_components
+    with self.subTest(requested=requested), self.assertRaises(ValueError):
+                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 13 tests in 0.143s
+
+FAILED (failures=6, skipped=1)

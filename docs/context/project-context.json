@@ -1514,7 +1514,7 @@
       "id": "component.policy_baseline",
       "kind": "component",
       "title": "R-07 단계별 정책 기준선 검사",
-      "summary": "승인 manifest·핀과 정적 입력을 대조하고 bootstrap도 도구 호출 전에 preflight를 수행한다. 영수증의 lexical 경로·내부 링크·패키지 metadata 경계를 검사한다. preflight와 후보 생성은 런타임 승인이 아니다.",
+      "summary": "승인 manifest·핀과 정적 입력을 대조하고 bootstrap도 도구 호출 전에 preflight를 수행한다. 도구 검사 후 작업본을 다시 순회하고 영수증 경로·내부 링크·패키지 metadata 경계를 검사한다. preflight와 후보 생성은 런타임 승인이 아니다.",
       "status": "implemented",
       "authority": "tracked_source",
       "topics": [
@@ -1526,12 +1526,12 @@
       "sources": [
         {
           "repoPath": "scripts/bootstrap/verify_toolchain.py",
-          "sha256": "41f063feaa7ca3352424edc421d151218ae84faa3f37d3cea645350d994eeab5",
+          "sha256": "d41e182db71db473cc723799833d5a55926c10d58adab19f30a8918f7cf03bd7",
           "label": "R-07 구현 및 승인 범위"
         },
         {
           "repoPath": "docs/evidence/R-07/README.md",
-          "sha256": "cf75a31e732d86b106073086a4ce6d9c7bc1feba2bef5ce053d31d87ddfd7eed",
+          "sha256": "3d4c246c8ebd1505cab7736ec2188ac9140ed13d2b6ceeeeec6cb9d5523da0fb",
           "label": "R-07 구현 및 승인 범위"
         },
         {
@@ -1553,6 +1553,11 @@
           "repoPath": "scripts/bootstrap/bootstrap.ps1",
           "sha256": "eb46e240c9d7f33a462b45b6a18d0fa378e65ace6697a68ec65c89fa960bdba3",
           "label": "도구 호출 전 정책 사전 검사"
+        },
+        {
+          "repoPath": "scripts/bootstrap/test_review_boundaries.py",
+          "sha256": "2b37c7bf1bfaa6913cff5234871835e979ad1ce11a1d9b28e851dbd33db76c26",
+          "label": "후속 도구 검사·영수증 경로·입력 링크 회귀"
         }
       ],
       "limits": [
@@ -1630,6 +1635,35 @@
         "같은 제공자의 분리 세션 리뷰이며 다른 제공자 승인 게이트는 cannot_proceed다.",
         "읽기 전용은 지시와 전후 해시 감사이며 별도 파일시스템 sandbox 강제는 아니다.",
         "원자적 파일시스템·기존 Git provenance 한계·실물/Unity/HMD 수용을 해결하지 않는다."
+      ]
+    },
+    {
+      "id": "evidence.policy_probes_20260909",
+      "kind": "evidence",
+      "title": "R-07 도구 검사 후 재순회와 경계 회귀",
+      "summary": "f76b55f의 동시 수정은 보존하고 남은 도구 검사 후 작업본 재순회와 영수증 콜론 경로 거부를 보강했다. Linux 부트스트랩 102통과/17제외를 새 RED/GREEN 로그 및 소스 해시에 결속한다.",
+      "status": "historical",
+      "authority": "execution_receipt",
+      "topics": [
+        "runtime",
+        "handoff"
+      ],
+      "observedAt": "2026-09-09",
+      "freshnessPolicy": "historical_evidence",
+      "sources": [
+        {
+          "repoPath": "docs/evidence/R-07/run-20260909-06.json",
+          "sha256": "a1d7c83495a1c1bda0f7be753653b2b3dcf096ac26f3e5898a97facf70779dd6",
+          "label": "최신 기준 커밋·RED/GREEN·소스 및 로그 해시"
+        }
+      ],
+      "coverage": {
+        "receipt": "docs/evidence/R-07/run-20260909-06.json",
+        "field": "sourceSha256"
+      },
+      "limits": [
+        "같은 OpenAI 제공자의 별도 세션 검토이며 다른 제공자 승인 게이트는 cannot_proceed다.",
+        "Linux 합성 시험은 native Windows·학교 PC·Unity·실제 정책 승인이나 현장 수용이 아니다."
       ]
     }
   ],
@@ -2048,6 +2082,11 @@
       "from": "component.policy_baseline",
       "relation": "verified_by",
       "to": "evidence.agent_team_review_20260908"
+    },
+    {
+      "from": "component.policy_baseline",
+      "relation": "verified_by",
+      "to": "evidence.policy_probes_20260909"
     }
   ],
   "refreshLog": [

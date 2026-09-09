@@ -1,0 +1,98 @@
+{
+  "unit": "R-07",
+  "recordType": "agent_execution_observation_not_approval",
+  "observedAt": "2026-09-09",
+  "baseCommit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+  "revisionReason": "User-requested follow-up fixes; preserved concurrently pushed preflight, package metadata and link boundary changes. Added post-probe workspace scan and colon-component rejection.",
+  "sourceSha256": {
+    "scripts/bootstrap/bootstrap.ps1": "eb46e240c9d7f33a462b45b6a18d0fa378e65ace6697a68ec65c89fa960bdba3",
+    "scripts/bootstrap/bootstrap.sh": "c0b59642e20e313cfff7999de7ca8e716284b88f08700a147db6c0032eb24a8f",
+    "scripts/bootstrap/test_bootstrap_powershell.py": "2627f3af4d8b600c0238b1cf2d365ff1d3f846599db3573623425ce523a84d1c",
+    "scripts/bootstrap/test_bootstrap_shell.py": "bc7cd3287a000f8b95c4202c012f752877b6354f8d83e29a0bda2f7096a27bfa",
+    "scripts/bootstrap/test_policy_baseline.py": "badc96a8c3636e7c1ae8f812d6d6533d474d56389bc96a864bf6a2fbe6486b64",
+    "scripts/bootstrap/test_review_boundaries.py": "2b37c7bf1bfaa6913cff5234871835e979ad1ce11a1d9b28e851dbd33db76c26",
+    "scripts/bootstrap/test_verify_toolchain.py": "e7dc8bdbe1791094edf17b1438cebda0ac44bd66322db9e8abc1d557ea1e406e",
+    "scripts/bootstrap/verify_toolchain.py": "d41e182db71db473cc723799833d5a55926c10d58adab19f30a8918f7cf03bd7",
+    "docs/evidence/R-07/README.md": "3d4c246c8ebd1505cab7736ec2188ac9140ed13d2b6ceeeeec6cb9d5523da0fb"
+  },
+  "redBaseline": {
+    "commit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+    "path": "scripts/bootstrap/verify_toolchain.py",
+    "sha256": "41f063feaa7ca3352424edc421d151218ae84faa3f37d3cea645350d994eeab5",
+    "command": "python -m unittest discover -s scripts/bootstrap -p 'test_review_boundaries.py' -v",
+    "tests": 13,
+    "passed": 8,
+    "failureRecordsIncludingSubtests": 6,
+    "failedTestMethods": 4,
+    "skipped": 1,
+    "method": "Ran final focused tests against exact latest PR HEAD verifier before applying the remaining post-probe scan and colon-path fix. Earlier unpushed work on 3b0dd51 was superseded by this integration."
+  },
+  "green": {
+    "command": "python -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v",
+    "tests": 119,
+    "passed": 102,
+    "skipped": 17,
+    "failed": 0,
+    "platform": "Linux",
+    "skipScope": "14 native Windows command tests, 2 native Windows junction tests, 1 root POSIX permission test"
+  },
+  "logs": [
+    {
+      "phase": "RED",
+      "path": "docs/evidence/R-07/red-20260909-06.log",
+      "sha256": "3a7d9bb7833bb2ec8d0adde09d24afc5e16db931069f5eba0d81c333828a95cd",
+      "unredactedLogSha256": "efe22942995e8a887c9f1b26808b35a3a3e2befaa0190475b18e390ee4d34d25",
+      "exitCode": 1,
+      "redaction": "Workspace root replaced with a portable label; trailing line whitespace removed. No findings or result lines omitted."
+    },
+    {
+      "phase": "GREEN",
+      "path": "docs/evidence/R-07/green-20260909-06.log",
+      "sha256": "4d45db8d386bd3611fb8b8a7635dc79520928aa70c73a8daa53771e4e8ad0738",
+      "unredactedLogSha256": "4d45db8d386bd3611fb8b8a7635dc79520928aa70c73a8daa53771e4e8ad0738",
+      "exitCode": 0,
+      "redaction": "Workspace root replaced with a portable label; trailing line whitespace removed. No findings or result lines omitted."
+    }
+  ],
+  "peerReview": {
+    "provider": "OpenAI",
+    "scope": "Separate read-only session reviewed the post-probe scan and path regression tests. Integrated source recheck recorded before commit.",
+    "differentProviderApproval": false,
+    "actionableFindings": 0,
+    "focusedTests": {
+      "tests": 13,
+      "passed": 12,
+      "skipped": 1,
+      "failed": 0
+    },
+    "finalReviewedSourceSha256": {
+      "scripts/bootstrap/verify_toolchain.py": "d41e182db71db473cc723799833d5a55926c10d58adab19f30a8918f7cf03bd7",
+      "scripts/bootstrap/test_review_boundaries.py": "2b37c7bf1bfaa6913cff5234871835e979ad1ce11a1d9b28e851dbd33db76c26"
+    }
+  },
+  "independentReview": {
+    "requiredLenses": [
+      "spec",
+      "adversarial",
+      "safety"
+    ],
+    "otherProviderReviews": 0,
+    "result": "cannot_proceed"
+  },
+  "issueDone": false,
+  "limits": [
+    "Synthetic policy approvals and tool responses only. No actual manifest approval or candidate promotion.",
+    "Native Windows results must come from CI for the pushed commit. School PC ACL, Unity, HMD and field acceptance remain separate.",
+    "The scan and write path checks are observations, not an atomic snapshot, execution sandbox or a deadline for blocked mount I/O.",
+    "Historical receipts, source coverage and 20 graph refresh entries remain unchanged. Existing HTML remains a dated snapshot."
+  ],
+  "contextRefresh": {
+    "date": "2026-09-09",
+    "nodes": [
+      "component.policy_baseline",
+      "evidence.policy_probes_20260909"
+    ],
+    "reason": "Reviewed latest integrated verifier and regression tests. Added a separately sourced RED/GREEN record without refreshing historical evidence.",
+    "storageReason": "The graph schema caps refreshLog at 20 entries; preserve those entries and record this refresh in the new receipt."
+  }
+}
