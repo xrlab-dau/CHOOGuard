@@ -64,32 +64,36 @@ namespace ChooGuard.Foundation.Demo.Editor
         [MenuItem("CHOOguard/Foundation/Build Desktop Player")]
         public static void BuildDesktopPlayerMenu()
         {
-            try
-            {
-                RequireSavedScenes();
-                if (!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64))
-                    throw new InvalidOperationException("Windows Standalone build support is not installed. " +
-                        "Use the configured school PC; this menu does not install modules.");
-                RequireOwnedBuildDirectory();
-                var scene = Build();
-                Directory.CreateDirectory(DesktopOutputRoot);
-                File.WriteAllText(DesktopOutputRoot + "/" + MarkerName,
-                    JsonUtility.ToJson(new Ownership { generator = OwnerId + ".windows", version = 1,
-                        ownedRelativePaths = new[] { "ChooGuardFoundation.exe" } }, true));
-                var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
-                {
-                    scenes = new[] { scene.path },
-                    locationPathName = DesktopOutputRoot + "/ChooGuardFoundation.exe",
-                    target = BuildTarget.StandaloneWindows64,
-                    options = BuildOptions.None
-                });
-                if (report.summary.result != BuildResult.Succeeded)
-                    throw new InvalidOperationException("Desktop build did not succeed: " + report.summary.result);
-                Debug.Log("CHOOguard Windows desktop player built: " +
-                    Path.GetFullPath(DesktopOutputRoot + "/ChooGuardFoundation.exe") +
-                    ". This result still needs a standalone playthrough.");
-            }
+            try { BuildDesktopPlayerBatch(); }
             catch (Exception exception) { Debug.LogException(exception); }
+        }
+
+        // Batch entry point deliberately propagates failures to Unity's command-line exit status.
+        public static void BuildDesktopPlayerBatch()
+        {
+            RequireSavedScenes();
+            // Refuse foreign output even on hosts without Windows build support, as the Mac path does.
+            RequireOwnedBuildDirectory();
+            if (!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64))
+                throw new InvalidOperationException("Windows Standalone build support is not installed. " +
+                    "Use the configured school PC; this entry point does not install modules.");
+            var scene = Build();
+            Directory.CreateDirectory(DesktopOutputRoot);
+            File.WriteAllText(DesktopOutputRoot + "/" + MarkerName,
+                JsonUtility.ToJson(new Ownership { generator = OwnerId + ".windows", version = 1,
+                    ownedRelativePaths = new[] { "ChooGuardFoundation.exe" } }, true));
+            var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions
+            {
+                scenes = new[] { scene.path },
+                locationPathName = DesktopOutputRoot + "/ChooGuardFoundation.exe",
+                target = BuildTarget.StandaloneWindows64,
+                options = BuildOptions.None
+            });
+            if (report.summary.result != BuildResult.Succeeded)
+                throw new InvalidOperationException("Desktop build did not succeed: " + report.summary.result);
+            Debug.Log("CHOOguard Windows desktop player built: " +
+                Path.GetFullPath(DesktopOutputRoot + "/ChooGuardFoundation.exe") +
+                ". This result still needs a standalone playthrough.");
         }
 
         [MenuItem("CHOOguard/Foundation/Build Mac Player")]

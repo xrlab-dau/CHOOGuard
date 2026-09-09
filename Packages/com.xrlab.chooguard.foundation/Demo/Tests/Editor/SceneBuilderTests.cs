@@ -238,6 +238,23 @@ namespace ChooGuard.Foundation.Demo.Tests
         }
 
         [Test]
+        public void WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting()
+        {
+            const string output = "Builds/FoundationDesktop";
+            if (Directory.Exists(output)) Assert.Ignore("Existing Windows build must be retained.");
+            Directory.CreateDirectory(output);
+            var sentinel = output + "/team-file.txt";
+            File.WriteAllText(sentinel, "keep");
+            try
+            {
+                var error = Assert.Throws<InvalidOperationException>(() => FoundationDemoSceneBuilder.BuildDesktopPlayerBatch());
+                Assert.That(error.Message, Does.Contain("not owned"));
+                Assert.That(File.ReadAllText(sentinel), Is.EqualTo("keep"));
+            }
+            finally { File.Delete(sentinel); Directory.Delete(output); }
+        }
+
+        [Test]
         public void EquipmentAndRoomLabelsStayAtPhysicalSignScale()
         {
             var scene = FoundationDemoSceneBuilder.Build(generatedRoot);
