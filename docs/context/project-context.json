@@ -1526,7 +1526,7 @@
       "sources": [
         {
           "repoPath": "scripts/bootstrap/verify_toolchain.py",
-          "sha256": "ac07cdfe597d3289da0d3215df29a4c560bf7291d4d7e570e6e0122febabdee1",
+          "sha256": "c71b890ccfbda1794ed9e7fe0d02a682844c6470a164eb32217a1091c0294f8c",
           "label": "R-07 구현 및 승인 범위"
         },
         {
@@ -1546,12 +1546,12 @@
         },
         {
           "repoPath": "scripts/bootstrap/bootstrap.sh",
-          "sha256": "095e9a378dbb5091e4ed26166debdce7868a6b9be6805779d73ed08b0ef2dce4",
+          "sha256": "77bbb8585e0d406345ebc40be6d2336b0ae48c0ccf6db744510aa70be5784e3a",
           "label": "도구 호출 전 정책 사전 검사"
         },
         {
           "repoPath": "scripts/bootstrap/bootstrap.ps1",
-          "sha256": "932b4a8d8beb79feb1baa27d3da379da3e890dc0590b80e4a352c58bead0ea4c",
+          "sha256": "6f8a59ee2d3f33933a3613dc19729f9677ae213ae2395c0fdb8a70c30f18a5cb",
           "label": "도구 호출 전 정책 사전 검사"
         },
         {
@@ -2132,22 +2132,6 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "component.facility_coverage",
-        "component.reconstruction",
-        "component.reconstruction_review",
-        "component.reconstruction_tools",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "decision.world.connected",
-        "goal.foundation",
-        "policy.project_authority",
-        "unknown.vr_device"
-      ],
-      "reason": "최신 사용자 로컬 CV/학교 독립 작업 분리와 현재 소스·문서를 읽고 반영. 과거 evidence/폐기 결정의 hash와 수용 범위는 갱신하지 않음"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
         "workflow.start_validate"
       ],
       "reason": "새 로컬/학교 독립 작업과 현재 PR61 인계 문서를 읽고 시작 포인터만 갱신"
@@ -2304,6 +2288,13 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed merged handoff timing and both context regression sets; retained school profile gates, original MCP receipt bytes and all historical coverage."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.policy_baseline"
+      ],
+      "reason": "AAA 재검수에서 uv 버전 실행 실패 전달과 reconstruction 의존성 lock 변경·추가·삭제 검사를 직접 대조했다. 기존 실제 승인 manifest·정책 핀은 갱신하지 않았고, 새로운 학교 PC나 사람 승인으로 주장하지 않는다."
     }
   ]
 }
