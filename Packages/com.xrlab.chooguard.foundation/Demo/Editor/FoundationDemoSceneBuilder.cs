@@ -72,10 +72,11 @@ namespace ChooGuard.Foundation.Demo.Editor
         public static void BuildDesktopPlayerBatch()
         {
             RequireSavedScenes();
+            // Refuse foreign output even on hosts without Windows build support, as the Mac path does.
+            RequireOwnedBuildDirectory();
             if (!BuildPipeline.IsBuildTargetSupported(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64))
                 throw new InvalidOperationException("Windows Standalone build support is not installed. " +
                     "Use the configured school PC; this entry point does not install modules.");
-            RequireOwnedBuildDirectory();
             var scene = Build();
             Directory.CreateDirectory(DesktopOutputRoot);
             File.WriteAllText(DesktopOutputRoot + "/" + MarkerName,
