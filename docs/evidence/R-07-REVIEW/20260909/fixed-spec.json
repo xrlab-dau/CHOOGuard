@@ -1,0 +1,46 @@
+{
+  "outcome": "changes_required",
+  "actionable": [
+    {
+      "id": "SPEC-FIXED-1",
+      "severity": "P2",
+      "title": "Reject an explicitly empty receipt path before preflight or tool probes",
+      "problem": "Both wrapper allowlists accept --write=. Argparse records its value as an empty string, but main checks if args.write rather than whether the option was supplied. The empty target therefore bypasses receipt_target and is silently treated as no write request. With an otherwise valid synthetic baseline, preflight returns 0 and final verification runs Node/Pi/uv probes and returns 0 without creating the requested receipt. This violates the documented invalid-write-path exit-2 contract and the promise that preflight checks a supplied --write path. The same truthiness pattern also controls candidate mode and its incompatible-option checks.",
+      "fix": "Treat supplied path options as present when they are not None and reject empty values before mode selection or any tool probes. Route every supplied --write through receipt_target, apply the same explicit-presence validation to --write-policy-candidate and its exclusivity checks, and add focused regressions for --write= and empty separate values through the verifier and both wrappers. An invalid target should exit 2 and prevent subsequent probes and installation.",
+      "locations": [
+        "scripts/bootstrap/verify_toolchain.py:511-516",
+        "scripts/bootstrap/verify_toolchain.py:534-540",
+        "scripts/bootstrap/bootstrap.sh:30-38",
+        "scripts/bootstrap/bootstrap.ps1:28-38"
+      ],
+      "reproduction": [
+        "Use the existing scripts/bootstrap/test_policy_baseline.py PolicyBaselineTests fixture; setUp(), then digest = write_manifest() to obtain its explicitly synthetic approval and pin.",
+        "Call invoke_preflight(\"--policy-manifest\", str(case.manifest), \"--policy-manifest-sha256\", digest, \"--write=\"). Observed exit 0, policy_preflight_ok true, and no docs/evidence output directory.",
+        "Wrap case.case.fake_run to record calls, then call case.case.invoke with the same arguments. Observed exit 0, mocked node --version / pi --version / uv --version calls, and no receipt. The reproduction used the existing synthetic harness and no real package or agent commands."
+      ]
+    }
+  ],
+  "notes": [
+    "Read AGENTS.md, ran context_graph.py validate and brief --topic handoff --machine local, read issue-52.md and the exact immutable target manifest, and reviewed actual verifier/wrapper code, tests, canonical R-07 acceptance and documentation. Compared f76b55f with previous 3b0dd51e1ef91594227dab5236342ba185d2e21c; also inspected relevant manifest-scope differences against e7a6bb7a7fff0c301c04f93aeea8850dbde34779. Prior raw reviewer verdict files were not used as approval inputs.",
+    "At both beginning and end, HEAD matched f76b55fe43cc173e2a442955e27f786c7006fd48, the target manifest matched the supplied SHA-256, all 42 target file hashes matched, and git status --porcelain was empty.",
+    "The lexical receipt prefix, link/reparse/detected-mount rejection, exclusive write-time recheck, internal-link canonical scan coverage, bounded typed package metadata, and normal wrapper preflight ordering have relevant regression coverage. No additional actionable SPEC defect was established in those paths within this review.",
+    "Executed PYTHONDONTWRITEBYTECODE=1 python3 -B -m unittest discover -s scripts/bootstrap -p test_*.py -v on Linux: 106 tests, 90 passed, 16 skipped, 0 failures, in 2.846 seconds. Skips were 14 native PowerShell cases, one native Windows junction case, and one non-root POSIX permission case. Added no source tests or edits; the single focused reproduction reused the existing fixture.",
+    "PowerShell behavior was reviewed statically here; native Windows execution of the changed source remains unverified by this session. Historical run01-run04 and earlier Windows evidence were not promoted to current-source PASS.",
+    "This is a separate OpenAI review session. The exact child model identity is not exposed. It does not satisfy the required different-provider gate; that gate remains cannot_proceed independently of this source-review changes_required verdict.",
+    "Preflight is a static observation, not a verification receipt, approval, installation authorization, runtime sandbox, or atomic filesystem snapshot. No Unity, school-PC, HMD, railway-procedure or field acceptance is established. The actual policy-owner approval, unavailable original 105-key journal and separate R-07-GRAPH acceptance remain outside completed source review.",
+    "No Fal, external services, model endpoints, credentials, package installs, source edits, or reviewer-to-reviewer sharing were used. Filesystem read-only behavior was task discipline rather than a separately enforced read-only sandbox."
+  ],
+  "headCommit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+  "targetManifestSha256": "605016cbfdec26dd47dd608203c3c90480396933249f055e69e6e6d90849a64e",
+  "lens": "spec",
+  "provider": "OpenAI",
+  "modelIdentity": "not_exposed",
+  "otherProviderGate": "cannot_proceed",
+  "endVerification": {
+    "headCommit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+    "manifestSha256": "605016cbfdec26dd47dd608203c3c90480396933249f055e69e6e6d90849a64e",
+    "targetFileCount": 42,
+    "hashMismatches": [],
+    "gitStatus": ""
+  }
+}

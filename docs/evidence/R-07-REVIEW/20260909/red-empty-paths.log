@@ -1,0 +1,97 @@
+test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) ...
+  test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=(), output=('--write', '')) ... FAIL
+  test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=(), output=('--write=',)) ... FAIL
+  test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=('--policy-preflight',), output=('--write', '')) ... FAIL
+  test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=('--policy-preflight',), output=('--write=',)) ... FAIL
+test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) ...
+  test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate', ''), other=()) ... FAIL
+  test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate', ''), other=('--policy-preflight',)) ... FAIL
+  test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate', ''), other=('--write', 'docs/evidence/unexpected.json')) ... FAIL
+  test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate=',), other=()) ... FAIL
+  test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate=',), other=('--policy-preflight',)) ... FAIL
+  test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate=',), other=('--write', 'docs/evidence/unexpected.json')) ... FAIL
+
+======================================================================
+FAIL: test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=(), output=('--write', ''))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 71, in test_empty_write_paths_fail_before_preflight_or_tool_calls
+    self.assertEqual(self.case.invoke(*baseline, *mode, *output), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=(), output=('--write=',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 71, in test_empty_write_paths_fail_before_preflight_or_tool_calls
+    self.assertEqual(self.case.invoke(*baseline, *mode, *output), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=('--policy-preflight',), output=('--write', ''))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 71, in test_empty_write_paths_fail_before_preflight_or_tool_calls
+    self.assertEqual(self.case.invoke(*baseline, *mode, *output), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_empty_write_paths_fail_before_preflight_or_tool_calls (test_policy_baseline.PolicyBaselineTests.test_empty_write_paths_fail_before_preflight_or_tool_calls) (mode=('--policy-preflight',), output=('--write=',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 71, in test_empty_write_paths_fail_before_preflight_or_tool_calls
+    self.assertEqual(self.case.invoke(*baseline, *mode, *output), 2)
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate', ''), other=())
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 86, in test_empty_candidate_path_never_becomes_verification_mode
+    self.assertEqual(self.case.invoke(*output, *other), 2)
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate', ''), other=('--policy-preflight',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 86, in test_empty_candidate_path_never_becomes_verification_mode
+    self.assertEqual(self.case.invoke(*output, *other), 2)
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate', ''), other=('--write', 'docs/evidence/unexpected.json'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 86, in test_empty_candidate_path_never_becomes_verification_mode
+    self.assertEqual(self.case.invoke(*output, *other), 2)
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate=',), other=())
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 86, in test_empty_candidate_path_never_becomes_verification_mode
+    self.assertEqual(self.case.invoke(*output, *other), 2)
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate=',), other=('--policy-preflight',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 86, in test_empty_candidate_path_never_becomes_verification_mode
+    self.assertEqual(self.case.invoke(*output, *other), 2)
+AssertionError: 1 != 2
+
+======================================================================
+FAIL: test_empty_candidate_path_never_becomes_verification_mode (test_policy_baseline.PolicyBaselineTests.test_empty_candidate_path_never_becomes_verification_mode) (output=('--write-policy-candidate=',), other=('--write', 'docs/evidence/unexpected.json'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_policy_baseline.py", line 88, in test_empty_candidate_path_never_becomes_verification_mode
+    self.assertFalse((self.root / "docs/evidence").exists())
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.078s
+
+FAILED (failures=10)

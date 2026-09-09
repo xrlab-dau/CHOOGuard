@@ -28,9 +28,9 @@ class PowerShellBootstrapTests(unittest.TestCase):
         self.script = script_dir / "bootstrap.ps1"
         shutil.copyfile(Path(__file__).with_name("bootstrap.ps1"), self.script)
         (self.root / "tools" / "research").mkdir(parents=True)
-        package = self.root / ".pi/npm/node_modules/pi-agents/package.json"
-        package.parent.mkdir(parents=True)
-        package.write_text('{"version": "0.0.0-fixture"}\n', encoding="utf-8")
+        self.package = self.root / ".pi/npm/node_modules/pi-agents/package.json"
+        self.package.parent.mkdir(parents=True)
+        self.package.write_text('{"version": "0.0.0-fixture"}\n', encoding="utf-8")
         self.bin = self.root / "bin"
         self.bin.mkdir()
         self.log = self.root / "calls.jsonl"
@@ -42,6 +42,12 @@ class PowerShellBootstrapTests(unittest.TestCase):
             '    log.write(json.dumps([tool, *args]) + "\\n")\n'
             'if tool == "git": print("0" * 40 if "HEAD" in args else "fixture")\n'
             'elif tool == "node":\n'
+            '    if any("package.json" in arg or "require(" in arg for arg in args):\n'
+            '        with open(os.environ["BOOTSTRAP_TEST_LOG"], "a", encoding="utf-8") as log:\n'
+            '            log.write(json.dumps(["raw-package-read"]) + "\\n")\n'
+            '        with open(os.environ["BOOTSTRAP_TEST_PACKAGE"], encoding="utf-8") as package:\n'
+            '            print(json.load(package)["version"])\n'
+            '        sys.exit(0)\n'
             '    print(os.environ.get("BOOTSTRAP_TEST_NODE_VERSION", "v22.0.0"))\n'
             '    sys.exit(int(os.environ.get("BOOTSTRAP_TEST_NODE_EXIT", "0")))\n'
             'elif tool == "pi": print("0.0.0-fixture")\n'
@@ -64,6 +70,7 @@ class PowerShellBootstrapTests(unittest.TestCase):
         env = dict(os.environ)
         env["PATH"] = str(self.bin) + os.pathsep + env.get("PATH", "")
         env["BOOTSTRAP_TEST_LOG"] = str(self.log)
+        env["BOOTSTRAP_TEST_PACKAGE"] = str(self.package)
         env.update({"BOOTSTRAP_TEST_" + name: str(value) for name, value in exit_codes.items()})
         command = [self.shell, "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass",
                    "-File", str(self.script), "-MachineLabel", label]
@@ -86,6 +93,7 @@ class PowerShellBootstrapTests(unittest.TestCase):
         self.calls = [json.loads(line) for line in self.log.read_text(encoding="utf-8").splitlines()] if self.log.exists() else []
         self.preflights = [call for call in self.calls if call[0] == "python" and "--policy-preflight" in call]
         self.final_verifications = [call for call in self.calls if call[0] == "python" and "--policy-preflight" not in call]
+        self.metadata_reads = [call for call in self.calls if call[0] == "raw-package-read"]
         return result
 
     def test_default_never_installs_or_syncs(self):
@@ -145,6 +153,38 @@ class PowerShellBootstrapTests(unittest.TestCase):
             self.assertEqual(len(indices), 1)
             self.assertGreater(indices[0], preflight_index)
         self.assertEqual(len(self.final_verifications), 1)
+
+    def test_invalid_installed_metadata_is_not_read_or_output_by_wrapper(self):
+        marker = "SYNTHETIC_NON_VERSION_MARKER"
+        self.package.write_text(json.dumps({"version": marker}), encoding="utf-8")
+        # The verifier shim returns failure; metadata validation belongs to the
+        # real verifier's separate tests. This isolates the wrapper's reads.
+        result = self.run_bootstrap(VERIFY_EXIT=1)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(len(self.preflights), 1)
+        self.assertEqual(len(self.final_verifications), 1)
+        self.assertNotIn(marker.encode(), result.stdout + result.stderr)
+        self.assertEqual(self.metadata_reads, [])
+
+    def test_oversized_installed_metadata_is_not_read_or_output_by_wrapper(self):
+        marker = "SYNTHETIC_OVERSIZED_PAYLOAD"
+        self.package.write_text(json.dumps({"version": "0.0.0-fixture", "padding": marker + "x" * 1_000_000}),
+                                encoding="utf-8")
+        self.assertGreater(self.package.stat().st_size, 1_000_000)
+        result = self.run_bootstrap(VERIFY_EXIT=1)
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(len(self.preflights), 1)
+        self.assertEqual(len(self.final_verifications), 1)
+        self.assertEqual(self.metadata_reads, [])
+        self.assertNotIn(marker.encode(), result.stdout + result.stderr)
+
+    def test_empty_option_values_are_rejected_before_any_tool_calls(self):
+        for option in ("--write", "--policy-manifest", "--policy-manifest-sha256"):
+            for args in ([option, ""], [option + "="]):
+                with self.subTest(args=args):
+                    result = self.run_bootstrap(auto_install=True, verify_args=args)
+                    self.assertEqual(result.returncode, 2, result.stderr)
+                    self.assertEqual(self.calls, [])
 
     def test_standalone_verifier_modes_are_rejected_before_any_tool_calls(self):
         for args in (["--policy-preflight"], ["--policy-pre"],

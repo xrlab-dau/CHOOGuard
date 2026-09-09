@@ -27,11 +27,16 @@ Step "0. 저장소"
 # help and argparse abbreviations could exit successfully without the gate.
 for ($i = 0; $i -lt $VerifyArgs.Count; $i++) {
   $argument = $VerifyArgs[$i]
-  if ($argument -ceq "--strict" -or $argument -cmatch '^--(write|policy-manifest|policy-manifest-sha256)=') {
+  if ($argument -ceq "--strict") { continue }
+  if ($argument -cmatch '^--(write|policy-manifest|policy-manifest-sha256)=') {
+    if ($argument.Substring($argument.IndexOf("=") + 1).Length -eq 0) {
+      [Console]::Error.WriteLine("검증 인수 값이 필요하다")
+      exit 2
+    }
     continue
   }
   if (@("--write", "--policy-manifest", "--policy-manifest-sha256") -ccontains $argument) {
-    if ($i + 1 -ge $VerifyArgs.Count -or $VerifyArgs[$i + 1].StartsWith("-")) {
+    if ($i + 1 -ge $VerifyArgs.Count -or [string]::IsNullOrEmpty($VerifyArgs[$i + 1]) -or $VerifyArgs[$i + 1].StartsWith("-")) {
       [Console]::Error.WriteLine("검증 인수 값이 필요하다")
       exit 2
     }
@@ -92,9 +97,8 @@ elseif ($AutoInstall) {
 if (Test-Path tools\research\.env) { Ok ".env 존재 (내용 비출력)" } else { Warn "tools\research\.env 없음. .env.example 복사 후 키 입력 (커밋 금지)" }
 
 Step "5. Pi 프로젝트 신뢰와 패키지 자동 설치"
-if (Test-Path .pi\npm\node_modules\pi-agents\package.json) {
-  Ok ("pi-agents {0} 설치됨" -f (node -p "require('./.pi/npm/node_modules/pi-agents/package.json').version"))
-} else { Warn "이 디렉터리에서 'pi' 실행 → 프로젝트 신뢰 승인 → .pi/settings.json 의 packages 자동 설치" }
+# Only the final verifier reads installed metadata, using bounded, typed checks.
+Warn "pi-agents 설치 상태·버전은 마지막 검증 영수증에서 확인한다. 설치가 필요하면 이 디렉터리에서 'pi' 를 실행해 프로젝트 신뢰(trust)를 직접 승인한다."
 
 Step "6. 모델 제공자 자격 (이름만 확인)"
 foreach ($v in @("ANTHROPIC_API_KEY","OPENAI_API_KEY","EXA_API_KEY")) {

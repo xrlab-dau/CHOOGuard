@@ -506,14 +506,16 @@ def main() -> int:
     ap.add_argument("--write-policy-candidate", help="도구 실행 없이 미승인 정책 후보를 새 evidence JSON에 작성")
     args = ap.parse_args()
     root = ROOT.resolve()
+    if args.write == "" or args.write_policy_candidate == "":
+        ap.error("영수증·정책 후보 경로는 빈 값일 수 없다")
     if bool(args.policy_manifest) != bool(args.policy_manifest_sha256):
         ap.error("--policy-manifest와 --policy-manifest-sha256을 함께 지정한다")
-    if args.write_policy_candidate and (args.write or args.policy_manifest or args.policy_preflight):
+    if args.write_policy_candidate is not None and (args.write is not None or args.policy_manifest is not None or args.policy_preflight):
         ap.error("정책 후보 생성과 검증 영수증 생성을 분리한다")
 
     inventory = policy_inventory(root)
     hashes, policy_missing, policy_errors = inventory
-    if args.write_policy_candidate:
+    if args.write_policy_candidate is not None:
         if policy_missing or policy_errors:
             print("error: 정책 파일 누락/읽기 실패로 후보를 만들 수 없다", file=sys.stderr)
             return 1
@@ -532,7 +534,7 @@ def main() -> int:
         return 0
 
     out: Path | None = None
-    if args.write:
+    if args.write is not None:
         try:
             out = receipt_target(root, args.write)
         except ValueError as error:

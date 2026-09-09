@@ -1,0 +1,94 @@
+test_approved_preflight_preserves_explicit_install_path (test_bootstrap_shell.ShellBootstrapTests.test_approved_preflight_preserves_explicit_install_path) ... ok
+test_default_preflights_before_tools_and_never_installs_or_syncs (test_bootstrap_shell.ShellBootstrapTests.test_default_preflights_before_tools_and_never_installs_or_syncs) ... ok
+test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) ...
+  test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--write', '']) ... FAIL
+  test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--write=']) ... FAIL
+  test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest', '']) ... FAIL
+  test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest=']) ... FAIL
+  test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest-sha256', '']) ... FAIL
+  test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest-sha256=']) ... FAIL
+test_equals_arguments_are_forwarded_without_splitting (test_bootstrap_shell.ShellBootstrapTests.test_equals_arguments_are_forwarded_without_splitting) ... ok
+test_failed_preflight_stops_all_tools_even_with_install_authorization (test_bootstrap_shell.ShellBootstrapTests.test_failed_preflight_stops_all_tools_even_with_install_authorization) ... ok
+test_final_verifier_exit_code_is_preserved (test_bootstrap_shell.ShellBootstrapTests.test_final_verifier_exit_code_is_preserved) ... ok
+test_invalid_installed_metadata_is_not_read_or_output_by_wrapper (test_bootstrap_shell.ShellBootstrapTests.test_invalid_installed_metadata_is_not_read_or_output_by_wrapper) ... FAIL
+test_invalid_label_stops_before_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_invalid_label_stops_before_tool_calls) ... ok
+test_manifest_and_receipt_arguments_are_forwarded_to_both_stages (test_bootstrap_shell.ShellBootstrapTests.test_manifest_and_receipt_arguments_are_forwarded_to_both_stages) ... ok
+test_oversized_installed_metadata_is_not_read_or_output_by_wrapper (test_bootstrap_shell.ShellBootstrapTests.test_oversized_installed_metadata_is_not_read_or_output_by_wrapper) ... FAIL
+test_preflight_exit_code_is_preserved (test_bootstrap_shell.ShellBootstrapTests.test_preflight_exit_code_is_preserved) ... ok
+test_standalone_verifier_modes_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_standalone_verifier_modes_are_rejected_before_any_tool_calls) ... ok
+
+======================================================================
+FAIL: test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--write', ''])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 176, in test_empty_option_values_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--write='])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 176, in test_empty_option_values_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest', ''])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 176, in test_empty_option_values_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest='])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 176, in test_empty_option_values_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest-sha256', ''])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 176, in test_empty_option_values_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_empty_option_values_are_rejected_before_any_tool_calls (test_bootstrap_shell.ShellBootstrapTests.test_empty_option_values_are_rejected_before_any_tool_calls) (args=['--policy-manifest-sha256='])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 176, in test_empty_option_values_are_rejected_before_any_tool_calls
+    self.assertEqual(result.returncode, 2, result.stderr)
+AssertionError: 0 != 2 : b''
+
+======================================================================
+FAIL: test_invalid_installed_metadata_is_not_read_or_output_by_wrapper (test_bootstrap_shell.ShellBootstrapTests.test_invalid_installed_metadata_is_not_read_or_output_by_wrapper)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 156, in test_invalid_installed_metadata_is_not_read_or_output_by_wrapper
+    self.assertNotIn(marker.encode(), result.stdout + result.stderr)
+AssertionError: b'SYNTHETIC_NON_VERSION_MARKER' unexpectedly found in b'\n== 0. \xec\xa0\x80\xec\x9e\xa5\xec\x86\x8c\n   [ok] branch=fixture head=0000000000000000000000000000000000000000 label=local\n\n== 0.1 \xec\xa0\x95\xec\xb1\x85 \xec\x82\xac\xec\xa0\x84 \xea\xb2\x80\xec\x82\xac (\xec\x98\x81\xec\x88\x98\xec\xa6\x9d \xec\x95\x84\xeb\x8b\x98)\n\n== 1. Node >= 22\n   [ok] node v22.0.0\n\n== 2. Pi coding agent 0.85.0 (\xea\xb3\xa0\xec\xa0\x95)\n   [warn] pi 0.85.0 \xec\x9d\xb4 \xec\x95\x84\xeb\x8b\x88\xeb\x8b\xa4. \xec\x84\xa4\xec\xb9\x98: npm install -g @earendil-works/pi-coding-agent@0.85.0  (AUTO_INSTALL=1 \xeb\xa1\x9c \xec\x9e\x90\xeb\x8f\x99 \xec\x8b\xa4\xed\x96\x89 \xea\xb0\x80\xeb\x8a\xa5)\n\n== 3. uv (Python \xeb\x8f\x84\xea\xb5\xac\xc2\xb7\xec\xa1\xb0\xec\x82\xac \xed\x95\x98\xeb\x84\xa4\xec\x8a\xa4)\n   [ok] uv fixture\n\n== 4. \xec\xa1\xb0\xec\x82\xac \xed\x95\x98\xeb\x84\xa4\xec\x8a\xa4 (tools/research)\n   [warn] \xeb\x8f\x99\xea\xb8\xb0\xed\x99\x94 \xeb\xaf\xb8\xec\x8b\xa4\xed\x96\x89. \xec\x8a\xb9\xec\x9d\xb8 \xed\x9b\x84 \xec\xa7\x81\xec\xa0\x91 \xec\x8b\xa4\xed\x96\x89: (cd tools/research && uv sync --frozen)  (AUTO_INSTALL=1 \xeb\xa1\x9c \xec\x9e\x90\xeb\x8f\x99 \xec\x8b\xa4\xed\x96\x89 \xea\xb0\x80\xeb\x8a\xa5)\n   [warn] tools/research/.env \xec\x97\x86\xec\x9d\x8c. .env.example \xec\x9d\x84 \xeb\xb3\xb5\xec\x82\xac\xed\x95\xb4 \xed\x82\xa4\xeb\xa5\xbc \xec\xb1\x84\xec\x9a\xb4\xeb\x8b\xa4 (\xec\xbb\xa4\xeb\xb0\x8b \xea\xb8\x88\xec\xa7\x80)\n\n== 5. Pi \xed\x94\x84\xeb\xa1\x9c\xec\xa0\x9d\xed\x8a\xb8 \xec\x8b\xa0\xeb\xa2\xb0\xec\x99\x80 \xed\x8c\xa8\xed\x82\xa4\xec\xa7\x80 \xec\x9e\x90\xeb\x8f\x99 \xec\x84\xa4\xec\xb9\x98\n   [ok] pi-agents SYNTHETIC_NON_VERSION_MARKER \xec\x84\xa4\xec\xb9\x98\xeb\x90\xa8\n\n== 6. \xeb\xaa\xa8\xeb\x8d\xb8 \xec\xa0\x9c\xea\xb3\xb5\xec\x9e\x90 \xec\x9e\x90\xea\xb2\xa9 (\xec\x9d\xb4\xeb\xa6\x84\xeb\xa7\x8c \xed\x99\x95\xec\x9d\xb8)\n   [warn] ANTHROPIC_API_KEY \xeb\xaf\xb8\xec\x84\xa4\xec\xa0\x95 (Pi \xeb\x8a\x94 /login \xec\x9c\xbc\xeb\xa1\x9c OAuth \xeb\x8f\x84 \xea\xb0\x80\xeb\x8a\xa5)\n   [warn] OPENAI_API_KEY \xeb\xaf\xb8\xec\x84\xa4\xec\xa0\x95 (Pi \xeb\x8a\x94 /login \xec\x9c\xbc\xeb\xa1\x9c OAuth \xeb\x8f\x84 \xea\xb0\x80\xeb\x8a\xa5)\n   [warn] EXA_API_KEY \xeb\xaf\xb8\xec\x84\xa4\xec\xa0\x95 (Pi \xeb\x8a\x94 /login \xec\x9c\xbc\xeb\xa1\x9c OAuth \xeb\x8f\x84 \xea\xb0\x80\xeb\x8a\xa5)\n\n== 7. Unity \xec\x9b\x8c\xed\x81\xac\xec\x8a\xa4\xed\x85\x8c\xec\x9d\xb4\xec\x85\x98 (school-pc \xec\xa0\x84\xec\x9a\xa9, \xec\x88\x98\xeb\x8f\x99)\n   [warn] Unity \xed\x94\x84\xeb\xa1\x9c\xec\xa0\x9d\xed\x8a\xb8 \xec\x97\x86\xec\x9d\x8c (M2-01 \xec\x97\x90\xec\x84\x9c \xec\x83\x9d\xec\x84\xb1). Unity Hub \xec\x99\x80 \xec\x97\x90\xeb\x94\x94\xed\x84\xb0(D-09 \xec\x97\x90\xec\x84\x9c \xea\xb3\xa0\xec\xa0\x95) \xec\x84\xa4\xec\xb9\x98\xeb\x8a\x94 docs/choo-guard-school-pc-bootstrap-v1.md \xc2\xa74 \xec\xb0\xb8\xec\xa1\xb0\n   [warn] \xea\xb3\xb5\xec\x8b\x9d Unity CLI\xec\x9d\x98 unity mcp\xec\x99\x80 com.unity.pipeline\xec\x9d\x84 \xec\x82\xac\xec\x9a\xa9\xed\x95\x9c\xeb\x8b\xa4. ADR 0006 \xeb\xb0\x8f M1-03/M1-04\xec\x9d\x98 \xea\xb3\xa0\xec\xa0\x95 \xeb\xb2\x84\xec\xa0\x84\xc2\xb7\xec\x97\xb0\xea\xb2\xb0 \xea\xb2\x80\xec\xa6\x9d\xec\x9d\x84 \xeb\x94\xb0\xeb\xa5\xb8\xeb\x8b\xa4. pi-mcp-adapter\xeb\x8a\x94 Pi\xec\x97\x90 \xed\x95\x84\xec\x9a\x94\xed\x95\x9c \xea\xb2\xbd\xec\x9a\xb0\xeb\xa7\x8c \xea\xb2\x80\xed\x86\xa0\xed\x95\x9c\xeb\x8b\xa4\n\n== 8. \xea\xb2\x80\xec\xa6\x9d \xec\x98\x81\xec\x88\x98\xec\xa6\x9d\n'
+
+======================================================================
+FAIL: test_oversized_installed_metadata_is_not_read_or_output_by_wrapper (test_bootstrap_shell.ShellBootstrapTests.test_oversized_installed_metadata_is_not_read_or_output_by_wrapper)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "<review-workspace>/CHOOGuard-review-final/scripts/bootstrap/test_bootstrap_shell.py", line 168, in test_oversized_installed_metadata_is_not_read_or_output_by_wrapper
+    self.assertEqual(self.metadata_reads, [])
+AssertionError: Lists differ: [['raw-package-read']] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+['raw-package-read']
+
+- [['raw-package-read']]
++ []
+
+----------------------------------------------------------------------
+Ran 12 tests in 3.086s
+
+FAILED (failures=8)

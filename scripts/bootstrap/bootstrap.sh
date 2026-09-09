@@ -28,9 +28,14 @@ esac
 verify_args=("$@")
 for ((i=0; i<${#verify_args[@]}; i++)); do
   case "${verify_args[i]}" in
-    --strict|--write=*|--policy-manifest=*|--policy-manifest-sha256=*) ;;
+    --strict) ;;
+    --write=*|--policy-manifest=*|--policy-manifest-sha256=*)
+      if [[ -z "${verify_args[i]#*=}" ]]; then
+        printf '   [error] 검증 인수 값이 필요하다\n' >&2; exit 2
+      fi
+      ;;
     --write|--policy-manifest|--policy-manifest-sha256)
-      if (( i + 1 >= ${#verify_args[@]} )) || [[ "${verify_args[i+1]}" = -* ]]; then
+      if (( i + 1 >= ${#verify_args[@]} )) || [[ -z "${verify_args[i+1]}" || "${verify_args[i+1]}" = -* ]]; then
         printf '   [error] 검증 인수 값이 필요하다\n' >&2; exit 2
       fi
       i=$((i + 1))
@@ -85,11 +90,8 @@ fi
 [ -f tools/research/.env ] && ok ".env 존재 (내용은 출력하지 않음)" || warn "tools/research/.env 없음. .env.example 을 복사해 키를 채운다 (커밋 금지)"
 
 step "5. Pi 프로젝트 신뢰와 패키지 자동 설치"
-if [ -d .pi/npm/node_modules/pi-agents ]; then
-  ok "pi-agents $(node -p "require('./.pi/npm/node_modules/pi-agents/package.json').version") 설치됨"
-else
-  warn "아직 설치 전. 이 디렉터리에서 'pi' 를 실행해 프로젝트 신뢰(trust)를 승인하면 .pi/settings.json 의 packages 가 자동 설치된다."
-fi
+# Only the final verifier reads installed metadata, using bounded, typed checks.
+warn "pi-agents 설치 상태·버전은 마지막 검증 영수증에서 확인한다. 설치가 필요하면 이 디렉터리에서 'pi' 를 실행해 프로젝트 신뢰(trust)를 직접 승인한다."
 
 step "6. 모델 제공자 자격 (이름만 확인)"
 for v in ANTHROPIC_API_KEY OPENAI_API_KEY EXA_API_KEY; do

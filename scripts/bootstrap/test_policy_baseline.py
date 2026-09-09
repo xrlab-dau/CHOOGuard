@@ -55,6 +55,38 @@ class PolicyBaselineTests(unittest.TestCase):
         self.assertFalse(receipt["required_ok"])
         self.assertEqual(receipt["checks"]["policy_baseline"]["status"], "policy_approval_pending")
 
+    def test_empty_write_paths_fail_before_preflight_or_tool_calls(self):
+        digest = self.write_manifest()
+        baseline = ("--policy-manifest", str(self.manifest), "--policy-manifest-sha256", digest)
+        calls = []
+        original = self.case.fake_run
+        def record(*args):
+            calls.append(args)
+            return original(*args)
+        self.case.fake_run = record
+        for mode in ((), ("--policy-preflight",)):
+            for output in (("--write", ""), ("--write=",)):
+                with self.subTest(mode=mode, output=output):
+                    calls.clear()
+                    self.assertEqual(self.case.invoke(*baseline, *mode, *output), 2)
+                    self.assertEqual(calls, [])
+                    self.assertFalse((self.root / "docs/evidence").exists())
+
+    def test_empty_candidate_path_never_becomes_verification_mode(self):
+        calls = []
+        original = self.case.fake_run
+        def record(*args):
+            calls.append(args)
+            return original(*args)
+        self.case.fake_run = record
+        for output in (("--write-policy-candidate", ""), ("--write-policy-candidate=",)):
+            for other in ((), ("--policy-preflight",), ("--write", "docs/evidence/unexpected.json")):
+                with self.subTest(output=output, other=other):
+                    calls.clear()
+                    self.assertEqual(self.case.invoke(*output, *other), 2)
+                    self.assertEqual(calls, [])
+                    self.assertFalse((self.root / "docs/evidence").exists())
+
     def test_exact_externally_pinned_baseline_matches(self):
         check = self.compare()
         self.assertTrue(check["ok"], check)

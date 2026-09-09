@@ -1,0 +1,71 @@
+{
+  "outcome": "changes_required",
+  "actionable": [
+    {
+      "id": "SEC-FIXED-1",
+      "severity": "P2",
+      "title": "Apply bounded metadata validation to the bootstrap wrapper read",
+      "problem": "Both bootstrap wrappers still execute node -p with require(.../pi-agents/package.json).version and print the result before the final Python verifier calls its new bounded, typed check_packages reader. Installed package metadata is outside the approved policy inventory, and the new static preflight intentionally skips this metadata. A matching approved policy therefore does not prevent a non-version string or object from reaching the wrapper console/log, or an oversized metadata file from being read without the 1,000,000-byte limit. The final verifier rejecting that metadata cannot undo the prior output or resource consumption. This path requires neither a failed preflight nor concurrent filesystem substitution.",
+      "fix": "Remove the duplicate raw Node metadata read and rely on the final verifier, or expose a shared safe metadata reader that enforces regular-file, bounded-read, object-root and version-string validation before any wrapper output. Add wrapper-level synthetic coverage for a non-version marker and oversized metadata, preserving the existing preflight ordering.",
+      "locations": [
+        "scripts/bootstrap/bootstrap.sh:87-90",
+        "scripts/bootstrap/bootstrap.ps1:94-96",
+        "scripts/bootstrap/verify_toolchain.py:594-601",
+        "scripts/bootstrap/test_bootstrap_shell.py:40-49",
+        "scripts/bootstrap/test_bootstrap_powershell.py:41-53"
+      ],
+      "reproduction": "Source-traced; no new dynamic probe was executed because this review was limited to existing harmless tests. In an otherwise valid synthetic fixture with a matching policy baseline, put {\"version\":\"SYNTHETIC_PRIVATE_MARKER\"} in the installed pi-agents/package.json. Wrapper step 5 forwards that value from Node to its output before the final verifier rejects the version and records installed=null. A JSON metadata file above MAX_PACKAGE_MANIFEST_BYTES reaches the same unbounded Node require call. Existing test_invalid_installed_metadata_returns_failure_receipt_without_copying_content and test_package_metadata_read_is_bounded exercise only the Python reader; wrapper tests replace Node with a shim that never reads package.json."
+    }
+  ],
+  "notes": [
+    "Independent source safety review against issue-52.md and the actual fixed code/diff from 3b0dd51e1ef91594227dab5236342ba185d2e21c. No prior reviewer verdict file was opened; historical references present in canonical context/README were not approval inputs.",
+    "Starting and ending HEAD match the requested commit. All 42 target file SHA-256 values match at both checks. Target manifest SHA-256 also matches. Ending tracked/untracked git status is clean.",
+    "Context validate and handoff brief completed. The context structure is valid; freshness flags remain separate from runtime acceptance.",
+    "Verified source and existing tests support lexical evidence-path restriction, refusal of existing/link/reparse/detected-mount receipt paths, write-time parent rechecks, internal aliases into unscanned/pruned trees failing closed, typed bounded Python package metadata, and static preflight before wrapper Node/Pi/uv/npm calls.",
+    "Wrapper option allowlists use exact receipt-mode names; both stages preserve the same argv including space-containing values. Existing Bash tests cover ordering, nonzero preflight propagation, explicit-install ordering, and rejection of standalone modes/help/abbreviations.",
+    "Existing harmless bootstrap suite: 106 tests, 90 passed, 16 skipped, zero failures. Skips are 14 native PowerShell tests, one native Windows junction test and one POSIX permission case under root. Native Windows behavior for this changed source was not established here.",
+    "Existing Foundation validator suite: 31 passed. Existing Windows-performance-evidence validator suite: 9 passed on Linux. These are synthetic/data checks and do not establish school-PC, Unity, HMD, railway procedure or field acceptance.",
+    "Receipt parent checks and policy rechecks are not an atomic filesystem snapshot, a tool sandbox, or complete protection from concurrent parent substitution/change-and-restore. Between-call scan time budgets cannot interrupt blocked OS I/O or prove all mount types absent.",
+    "Pinned baseline comparison does not authenticate human approval. Approved pins must come from the trusted caller; candidate generation, preflight success and machine observations remain distinct from policy/install/runtime approval. The unavailable original 105-key journal remains unresolved and is not treated as accepted.",
+    "This reviewer is OpenAI in a separate agent session sharing the workspace; read-only source behavior was followed. It does not satisfy the mandatory different-provider review gate. That aggregate gate remains cannot_proceed regardless of this lens result.",
+    "No source changes, Fal use, external model invocation, network requests, installs, secrets access or new attack execution occurred. Only existing harmless synthetic test suites were executed."
+  ],
+  "headCommit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+  "targetManifestSha256": "605016cbfdec26dd47dd608203c3c90480396933249f055e69e6e6d90849a64e",
+  "lens": "safety",
+  "provider": "OpenAI",
+  "verification": {
+    "startHeadCommit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+    "endHeadCommit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+    "startFileHashesChecked": 42,
+    "endFileHashesChecked": 42,
+    "hashMismatches": [],
+    "sourceChanged": false,
+    "tests": [
+      {
+        "command": "python3 -B -m unittest discover -s scripts/bootstrap -p 'test_*.py'",
+        "tests": 106,
+        "passed": 90,
+        "skipped": 16,
+        "failed": 0,
+        "exitCode": 0
+      },
+      {
+        "command": "python3 -B -m unittest discover -s scripts/foundation/tests -p 'test_validate.py'",
+        "tests": 31,
+        "passed": 31,
+        "skipped": 0,
+        "failed": 0,
+        "exitCode": 0
+      },
+      {
+        "command": "python3 -B -m unittest discover -s school/windows-validation -p 'test_*.py'",
+        "tests": 9,
+        "passed": 9,
+        "skipped": 0,
+        "failed": 0,
+        "exitCode": 0
+      }
+    ]
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "unit": "R-07",
+  "recordType": "execution_observation_not_approval",
+  "date": "2026-09-09",
+  "baseCommit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+  "sourceSha256": {
+    "scripts/bootstrap/verify_toolchain.py": "357b7a5f9f566941722c6ccd0f1f57fc0c68bd23f0ed963f694b02200445b377",
+    "scripts/bootstrap/bootstrap.sh": "d6b0b6ef128ecc2469bda6b559c8be90c8687cdc82f2e170c08b760a0b2beab8",
+    "scripts/bootstrap/bootstrap.ps1": "932b4a8d8beb79feb1baa27d3da379da3e890dc0590b80e4a352c58bead0ea4c",
+    "scripts/bootstrap/test_verify_toolchain.py": "e7dc8bdbe1791094edf17b1438cebda0ac44bd66322db9e8abc1d557ea1e406e",
+    "scripts/bootstrap/test_policy_baseline.py": "18a20a8b0b783b6836aaa99734ea47903d61a0ac83a911874d54a63122a9ea5c",
+    "scripts/bootstrap/test_bootstrap_shell.py": "3ae637455923244f04b2a8b83237b6b5729b0ee0cbb2145c96a8afdf7eac2aea",
+    "scripts/bootstrap/test_bootstrap_powershell.py": "17e9c6a172de7da6b623d3714d35cd77a4ffb7014b56c546ac835cbddcba4287",
+    "scripts/bootstrap/test_review_boundaries.py": "2b37c7bf1bfaa6913cff5234871835e979ad1ce11a1d9b28e851dbd33db76c26"
+  },
+  "previousReceiptSha256": "a1d7c83495a1c1bda0f7be753653b2b3dcf096ac26f3e5898a97facf70779dd6",
+  "fixes": [
+    "SPEC-FIXED-1: reject explicitly empty receipt/candidate arguments before preflight or tools",
+    "SEC-FIXED-1: wrappers defer all installed package metadata to bounded final verifier"
+  ],
+  "green": {
+    "command": "python3 -B -m unittest discover -s scripts/bootstrap -p 'test_*.py' -v",
+    "tests": 127,
+    "passed": 107,
+    "skipped": 20,
+    "failed": 0,
+    "platform": "Linux",
+    "skipScope": "17 native PowerShell tests, 2 native Windows junction tests, 1 non-root POSIX permission case"
+  },
+  "logs": [
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-empty-paths.log",
+      "sha256": "15ac9595e678ef127fa7acfba33c394e887c44327b1c2b2da7ee563a2f8944ed",
+      "originalSha256": "4c57ada5db3c8211c9415a869ee381556cd503a2904a55e04898e80714c0641c",
+      "normalization": "temporary workspace root replaced; trailing line whitespace removed"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/green-empty-paths.log",
+      "sha256": "4b0a216e42fb104c74faa9ea61d1209fdcdca81f007cf0423a56c6d28736286f",
+      "originalSha256": "4b0a216e42fb104c74faa9ea61d1209fdcdca81f007cf0423a56c6d28736286f",
+      "normalization": "temporary workspace root replaced; trailing line whitespace removed"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/red-wrapper-metadata.log",
+      "sha256": "82b51e21e1a5b140bb910b2497fd3173aaae8ad8e8bb4ae0e77bd654bef8f21f",
+      "originalSha256": "e310ddb7460d9ddf0d5a43337991df91413c387c1c38297bf6fa982b5fd3b671",
+      "normalization": "temporary workspace root replaced; trailing line whitespace removed"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/green-wrapper-metadata.log",
+      "sha256": "dc235f21635b816ccf558ea51ded9c95ea1ea35a0d6b90809ea2d8b454983123",
+      "originalSha256": "dc235f21635b816ccf558ea51ded9c95ea1ea35a0d6b90809ea2d8b454983123",
+      "normalization": "temporary workspace root replaced; trailing line whitespace removed"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/green-final-integrated.log",
+      "sha256": "8b90f7c38770b2a4e43180033df0a0bf275f78543a27044932f47922c882e736",
+      "originalSha256": "8b90f7c38770b2a4e43180033df0a0bf275f78543a27044932f47922c882e736",
+      "normalization": "temporary workspace root replaced; trailing line whitespace removed"
+    },
+    {
+      "path": "docs/evidence/R-07-REVIEW/20260909/green-integrated-run07.log",
+      "sha256": "756c8d7d73ee4524136332bd2d448b412d14338e590d52e8110722b28d5ed093",
+      "originalSha256": "756c8d7d73ee4524136332bd2d448b412d14338e590d52e8110722b28d5ed093",
+      "normalization": "workspace roots and trailing whitespace normalized"
+    }
+  ],
+  "independentReview": {
+    "otherProviderReviews": 0,
+    "outcome": "cannot_proceed",
+    "rereview": "pending for updated source"
+  },
+  "nativeWindows": "pending on updated source; fixed-ci.json only covers f76b55f",
+  "issueDone": false,
+  "limits": [
+    "No atomic filesystem snapshot or complete concurrent parent-swap prevention.",
+    "No school-PC, Unity, HMD or railway procedure acceptance.",
+    "Original 105-key journal remains unavailable and not accepted by the human."
+  ],
+  "integration": "Preserves concurrent 39e5dc2 post-probe rescan, colon path rejection, 13 review boundary tests and original run06 unchanged."
+}

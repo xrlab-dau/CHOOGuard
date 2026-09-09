@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "unit": "R-07",
+  "recordType": "native_ci_observation_not_approval",
+  "observedAt": "2026-09-09",
+  "pullRequest": 97,
+  "headCommit": "f76b55fe43cc173e2a442955e27f786c7006fd48",
+  "testedMergeCommit": "88b7d330b5477111ffb5f34208b5841bfc19fdce",
+  "baseCommit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+  "testedTreeSha": "d8a8757a2d475a9b34d084a064e1b676c9e68450",
+  "headTreeMatchesTestedMerge": true,
+  "runId": 34295687498,
+  "runUrl": "https://github.com/xrlab-dau/CHOOGuard/actions/runs/34295687498",
+  "jobs": [
+    {
+      "jobId": 102291701926,
+      "name": "Bootstrap boundaries (windows-2022)",
+      "conclusion": "success",
+      "bootstrap": {
+        "total": 106,
+        "passed": 94,
+        "skipped": 12
+      },
+      "profile": {
+        "total": 9,
+        "passed": 9
+      },
+      "nativeChecks": [
+        "14 PowerShell command-shim tests",
+        "native Windows junction",
+        "internal .git link regression"
+      ]
+    },
+    {
+      "jobId": 102291702212,
+      "name": "Bootstrap boundaries (ubuntu-24.04)",
+      "conclusion": "success",
+      "bootstrap": {
+        "total": 106,
+        "passed": 91,
+        "skipped": 15
+      },
+      "profile": {
+        "total": 9,
+        "passed": 9
+      }
+    },
+    {
+      "jobId": 102291702101,
+      "name": "Policy, security and repository hygiene",
+      "conclusion": "success"
+    }
+  ],
+  "limits": [
+    "Hosted Windows runner is not the school PC.",
+    "PR merge test tree exactly equals the source head tree; no production merge was performed.",
+    "No Unity, HMD, policy-owner, 105-key journal or other-provider acceptance is established."
+  ]
+}
