@@ -182,7 +182,7 @@ namespace ChooGuard.Foundation.Demo.Tests
 
         private static void CompleteCapture(ReconstructionCaptureWriter writer)=>writer.Complete(receipt=>JsonUtility.ToJson(receipt,true));
         private static ReconstructionCaptureWriter NewCaptureWriter(string directory)=>new ReconstructionCaptureWriter(directory,new[]{"view"},new string('a',64),"observed-unlit","fixture");
-        private static byte[] CapturePngFixture()=>Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9WQAAAAASUVORK5CYII=");
+        private static byte[] CapturePngFixture()=>Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=");
         private static void WithCaptureDirectory(Action<string> action)
         {
             // macOS temporary paths commonly traverse /var links, which capture output intentionally rejects.

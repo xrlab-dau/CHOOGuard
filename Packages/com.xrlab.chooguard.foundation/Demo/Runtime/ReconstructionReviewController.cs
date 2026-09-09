@@ -198,6 +198,7 @@ namespace ChooGuard.Foundation.Demo
         public const int AngleCount=3;
         private static readonly string[] Angles={"source-origin-plus-z","framed-front","framed-oblique"};
         private static readonly byte[] PngSignature={137,80,78,71,13,10,26,10};
+        private static readonly uint[] PngCrcTable=CreatePngCrcTable();
         private readonly string directory;
         private readonly CaptureReceipt receipt;
         private bool failed,completed;
@@ -226,8 +227,7 @@ namespace ChooGuard.Foundation.Demo
                 if(viewIndex<0||viewIndex>=receipt.views.Length||angleIndex<0||angleIndex>=AngleCount)throw new ArgumentOutOfRangeException("Capture view or angle is invalid.");
                 var index=viewIndex*AngleCount+angleIndex;
                 if(receipt.images[index]!=null)throw new InvalidOperationException("Capture view and angle were already written.");
-                if(png==null||png.Length<=PngSignature.Length)throw new InvalidOperationException("Screenshot encoding returned no PNG.");
-                for(var i=0;i<PngSignature.Length;i++)if(png[i]!=PngSignature[i])throw new InvalidOperationException("Screenshot encoding did not return a PNG.");
+                ValidatePngEnvelope(png);
                 var file=$"view-{viewIndex}-{angleIndex}.png";var digest=Hash(png);
                 WriteNew(file,png);
                 var item=new ImageReceipt{file=file,view=receipt.views[viewIndex],angle=Angles[angleIndex],bytes=png.LongLength,sha256=digest};
@@ -255,6 +255,62 @@ namespace ChooGuard.Foundation.Demo
 
         private void RequireOpen()
         {if(failed||completed)throw new InvalidOperationException("Capture has failed or completed; start a new output directory.");}
+
+        // Check the complete encoded envelope without decoding pixels or allocating from image dimensions.
+        // This proves structural integrity of the bytes, not Unity rendering or visual correctness.
+        private static void ValidatePngEnvelope(byte[] png)
+        {
+            if(png==null||png.Length<=PngSignature.Length)throw new InvalidOperationException("Screenshot encoding returned no PNG.");
+            for(var i=0;i<PngSignature.Length;i++)if(png[i]!=PngSignature[i])throw new InvalidOperationException("Screenshot encoding did not return a PNG.");
+            var offset=PngSignature.Length;var header=false;var image=false;var imageStarted=false;var imageEnded=false;
+            while(offset<png.Length)
+            {
+                if(png.Length-offset<12)throw new InvalidOperationException("Screenshot PNG has a truncated chunk.");
+                var length=ReadPngUInt32(png,offset);
+                // Bound the untrusted length before converting it to int or using it in offset arithmetic.
+                if(length>(uint)(png.Length-offset-12))throw new InvalidOperationException("Screenshot PNG has a truncated chunk.");
+                var size=(int)length;var type=ReadPngUInt32(png,offset+4);
+                if(!header&&type!=0x49484452u)throw new InvalidOperationException("Screenshot PNG must start with IHDR.");
+                if(type==0x49484452u) // IHDR
+                {
+                    if(header||size!=13||ReadPngUInt32(png,offset+8)==0||ReadPngUInt32(png,offset+12)==0)
+                        throw new InvalidOperationException("Screenshot PNG has an invalid IHDR.");
+                    header=true;
+                }
+                if(type==0x49444154u) // IDAT: split chunks must stay consecutive.
+                {
+                    if(imageEnded)throw new InvalidOperationException("Screenshot PNG has nonconsecutive image chunks.");
+                    imageStarted=true;image|=size>0;
+                }
+                else if(imageStarted)imageEnded=true;
+                var crc=uint.MaxValue;
+                for(var i=offset+4;i<offset+8+size;i++)crc=PngCrcTable[(int)((crc^png[i])&255)]^(crc>>8);
+                if((crc^uint.MaxValue)!=ReadPngUInt32(png,offset+8+size))
+                    throw new InvalidOperationException("Screenshot PNG chunk checksum failed.");
+                offset+=size+12;
+                if(type==0x49454E44u) // IEND must end the complete byte array.
+                {
+                    if(size!=0||!image||offset!=png.Length)throw new InvalidOperationException("Screenshot PNG has an invalid IEND.");
+                    return;
+                }
+            }
+            throw new InvalidOperationException("Screenshot PNG is missing IEND.");
+        }
+
+        private static uint ReadPngUInt32(byte[] bytes,int offset)=>
+            ((uint)bytes[offset]<<24)|((uint)bytes[offset+1]<<16)|((uint)bytes[offset+2]<<8)|bytes[offset+3];
+
+        private static uint[] CreatePngCrcTable()
+        {
+            var table=new uint[256];
+            for(var i=0;i<table.Length;i++)
+            {
+                var value=(uint)i;
+                for(var bit=0;bit<8;bit++)value=(value&1)!=0?0xEDB88320u^(value>>1):value>>1;
+                table[i]=value;
+            }
+            return table;
+        }
 
         private void WriteNew(string file,byte[] data)
         {

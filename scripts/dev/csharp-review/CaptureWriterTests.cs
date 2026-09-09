@@ -9,7 +9,8 @@ using NUnit.Framework;
 // Filesystem tests only: no screenshot, Unity serializer, or editor is substituted.
 public sealed class CaptureWriterTests
 {
-    private static readonly byte[] Png = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9WQAAAAASUVORK5CYII=");
+    private static readonly byte[] Png = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=");
+    private static readonly byte[] SplitPng = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAIAAAABCAYAAAD0In+KAAAAEHRFWHRTb3VyY2UAc3ludGhldGlj83pdwgAAAARJREFUeJxj+E0XbKoAAAAKSURBVM/A8B8EARD4A/3aUbJIAAAAAElFTkSuQmCC");
     private static readonly JsonSerializerOptions Json = new JsonSerializerOptions { IncludeFields = true };
     private static string Serialize(ReconstructionCaptureWriter.CaptureReceipt value) => JsonSerializer.Serialize(value, Json);
     private static ReconstructionCaptureWriter NewWriter(string path) => new ReconstructionCaptureWriter(path, new[] { "view" }, new string('a', 64), "observed-unlit", "filesystem-test-only");
@@ -58,6 +59,21 @@ public sealed class CaptureWriterTests
         });
     }
 
+    [Test]
+    public void PngWithAncillaryAndSplitImageChunksRetainsItsEncodedBytes()
+    {
+        // A standard-library zlib fixture: 2x1 RGBA, tEXt metadata and two consecutive IDAT chunks.
+        WithOutput(path =>
+        {
+            var writer = NewWriter(path);
+            for (var angle = 0; angle < 3; angle++) writer.WriteImage(0, angle, SplitPng);
+            writer.Complete(Serialize);
+            var receipt = JsonSerializer.Deserialize<ReconstructionCaptureWriter.CaptureReceipt>(File.ReadAllText(Path.Combine(path, "capture-complete.json")), Json);
+            foreach (var item in receipt.images)
+                Assert.That(File.ReadAllBytes(Path.Combine(path, item.file)), Is.EqualTo(SplitPng));
+        });
+    }
+
     [TestCase(false)]
     [TestCase(true)]
     public void ExistingDirectoryAndOldReceiptStayUnchanged(bool owned)
@@ -94,6 +110,10 @@ public sealed class CaptureWriterTests
     [TestCase("missing-end")]
     [TestCase("bad-image-crc")]
     [TestCase("chunk-length-overflow")]
+    [TestCase("missing-image")]
+    [TestCase("trailing-bytes")]
+    [TestCase("duplicate-header")]
+    [TestCase("nonconsecutive-image")]
     public void MalformedPngCannotProduceACompleteReceipt(string fault)
     {
         WithOutput(path =>
@@ -103,6 +123,11 @@ public sealed class CaptureWriterTests
             {
                 case "signature-prefix": malformed = Png.Take(9).ToArray(); break;
                 case "missing-end": malformed = Png.Take(Png.Length - 12).ToArray(); break;
+                case "missing-image": malformed = Png.Take(33).Concat(Png.Skip(Png.Length - 12)).ToArray(); break;
+                case "trailing-bytes": malformed = Png.Concat(new byte[] { 0 }).ToArray(); break;
+                case "duplicate-header": malformed = Png.Take(33).Concat(Png.Skip(8)).ToArray(); break;
+                // Move the intact tEXt chunk between IDAT chunks; all chunk checksums still match.
+                case "nonconsecutive-image": malformed = SplitPng.Take(33).Concat(SplitPng.Skip(61).Take(16)).Concat(SplitPng.Skip(33).Take(28)).Concat(SplitPng.Skip(77)).ToArray(); break;
                 // Original success fixture: the IDAT CRC is ef9af564; its data requires efa2a75b.
                 case "bad-image-crc": malformed = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9WQAAAAASUVORK5CYII="); break;
                 default:
