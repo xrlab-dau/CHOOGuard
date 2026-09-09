@@ -82,7 +82,15 @@ elseif (Has npm) {
 } else { Warn "npm 없음" }
 
 Step "3. uv"
-if (Has uv) { Ok (uv --version) } else { Warn "uv 없음. https://docs.astral.sh/uv/getting-started/installation/ 참고 (설치 스크립트를 확인 후 실행)" }
+if (Has uv) {
+  $uvVersion = uv --version
+  $uvExit = $LASTEXITCODE
+  if ($uvExit -ne 0) {
+    [Console]::Error.WriteLine("uv --version 실패 (exit $uvExit)")
+    exit $uvExit
+  }
+  Ok $uvVersion
+} else { Warn "uv 없음. https://docs.astral.sh/uv/getting-started/installation/ 참고 (설치 스크립트를 확인 후 실행)" }
 
 Step "4. 조사 하네스 (tools/research)"
 if (-not (Has uv)) { Warn "uv 없음 → 건너뜀" }

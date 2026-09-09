@@ -77,7 +77,12 @@ else
 fi
 
 step "3. uv (Python 도구·조사 하네스)"
-if need uv; then ok "$(uv --version)"; else warn "uv 없음. 설치 안내: https://docs.astral.sh/uv/getting-started/installation/ (스크립트를 직접 파이프 실행하지 말고 설치 파일을 확인 후 실행)"; fi
+if need uv; then
+  uv_version="$(uv --version)"
+  ok "$uv_version"
+else
+  warn "uv 없음. 설치 안내: https://docs.astral.sh/uv/getting-started/installation/ (스크립트를 직접 파이프 실행하지 말고 설치 파일을 확인 후 실행)"
+fi
 
 step "4. 조사 하네스 (tools/research)"
 if ! need uv; then

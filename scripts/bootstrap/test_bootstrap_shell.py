@@ -50,7 +50,9 @@ class ShellBootstrapTests(unittest.TestCase):
             '        sys.exit(0)\n'
             '    print("22" if args[:1] == ["-p"] else "v22.0.0")\n'
             'elif tool == "pi": print("0.0.0-fixture")\n'
-            'elif tool == "uv" and "sync" not in args: print("uv fixture")\n'
+            'elif tool == "uv" and "sync" not in args:\n'
+            '    print("uv fixture")\n'
+            '    sys.exit(int(os.environ.get("BOOTSTRAP_TEST_UV_VERSION_EXIT", "0")))\n'
             'elif tool == "uv": sys.exit(int(os.environ.get("BOOTSTRAP_TEST_SYNC_EXIT", "0")))\n'
             'elif tool == "python3":\n'
             '    stage = "PREFLIGHT" if "--policy-preflight" in args else "VERIFY"\n'
@@ -144,6 +146,15 @@ class ShellBootstrapTests(unittest.TestCase):
         self.assertEqual(result.returncode, 17, result.stderr)
         self.assertEqual(len(self.preflights), 1)
         self.assertEqual(len(self.final_verifications), 1)
+
+    def test_failed_uv_version_stops_before_sync_and_final_verification(self):
+        for auto_install in (False, True):
+            with self.subTest(auto_install=auto_install):
+                result = self.run_bootstrap(auto_install=auto_install, UV_VERSION_EXIT=31)
+                self.assertEqual(result.returncode, 31, result.stderr)
+                self.assertTrue(any(call == ["uv", "--version"] for call in self.calls))
+                self.assertFalse(any(call[:2] == ["uv", "sync"] for call in self.calls))
+                self.assertEqual(self.final_verifications, [])
 
     def test_failed_sync_stops_before_final_verification(self):
         result = self.run_bootstrap(auto_install=True, SYNC_EXIT=23)
