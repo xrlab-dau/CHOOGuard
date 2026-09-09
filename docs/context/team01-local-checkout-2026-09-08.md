@@ -2,10 +2,10 @@
 
 관련 이슈: [#69](https://github.com/xrlab-dau/CHOOGuard/issues/69) · 전체 계획 [#68](https://github.com/xrlab-dau/CHOOGuard/issues/68) · 인계 기준 [#55](https://github.com/xrlab-dau/CHOOGuard/issues/55)
 
-팀원이 PM의 작업 디렉터리를 복사하지 않고 원격 소스만으로 개발을 시작할 수 있는지 한 차례 재현한 기록이다. **DoD 완료 판정이 아니며** 독립 검토와 PM 확인 전이다. 관측 시점은 2026-09-08이다.
+팀원이 PM의 작업 디렉터리를 복사하지 않고 원격 소스만으로 개발을 시작할 수 있는지 한 차례 재현한 기록이다. **DoD 완료 판정이 아니다.** 관측 시점은 2026-09-08이고, 저장소에서 확인 가능한 범위의 독립 재검증은 2026-09-09에 수행했다(「검토 기록」 참조).
 
 - 기준 커밋: `e7a6bb7a7fff0c301c04f93aeea8850dbde34779` (`origin/develop`)
-- 기기 라벨: `laptop-A` (Local). 호스트명·계정·절대 경로는 기록하지 않는다.
+- 기기 라벨: `laptop-A` (Local). 호스트명·계정·개인 절대 경로는 기록하지 않는다. OS 표준 설치 경로는 판정 근거로만 기록한다.
 - 수행 범위: 이슈에 정의된 준비 범위. 설치·실제 자료·대용량 실행·Unity 실행은 수행하지 않았다.
 
 ## 새 checkout
@@ -20,11 +20,11 @@
 | `scripts/dev/check_foundation.py` (LFS 수신 후) | 0 | 31 tests, 30 ok / 1 skip |
 | `scripts/context/context_graph.py validate` | 0 | 미해결 항목은 아래 참조 |
 | `scripts/context/context_graph.py brief --topic handoff --machine local` | 0 | 정상 |
-| `scripts/ci/repository_policy.py` | 0 | 849 파일, 위반 0 |
+| `scripts/ci/repository_policy.py` | 0 | 849 파일, 위반 0 (본 문서 추가 전 기준) |
 | `scripts/ci/pr_policy.py` (규격 입력) | 0 | 위반 0 |
 | `scripts/ci/pr_policy.py` (음성 케이스) | 1 | 위반 7건 — 게이트 정상 작동 |
 
-두 경량 검사 실행의 출력 차이는 임시 디렉터리명과 경과 시간뿐이므로 이 검사는 LFS 콘텐츠에 의존하지 않는다. 작업 트리 부작용은 없었다.
+두 경량 검사 실행의 출력 차이는 임시 디렉터리명과 경과 시간뿐이었다. 따라서 현 시점 develop 기준으로 이 검사는 LFS 콘텐츠에 의존하지 않는다. 자산이나 시험이 추가되면 재확인이 필요하다. 작업 트리 부작용은 없었다.
 
 ### 실행기 미설치·검사 실패·환경 제약 구분
 
@@ -126,5 +126,13 @@
 - Windows 실행본 빌드와 HMD 검증은 수행하지 않았다. 학교 PC 대상이다.
 - `school/windows-validation/` 산출물의 실제 재현은 수행하지 않았다.
 - 심볼릭 링크 거부 경로는 환경 제약으로 미검증이다.
-- 작성자와 다른 제공자·모델의 독립 검토는 완료되지 않았다.
+- 작성자와 다른 제공자·모델의 독립 검토는 저장소에서 확인 가능한 항목에 한해 수행됐다. `laptop-A` 환경 관측과 Unity·학교 PC·HMD는 여전히 단일 출처이며 미검증이다.
 - 실행하지 않은 시험·실기를 PASS로 표시하지 않았다.
+
+## 검토 기록
+
+2026-09-09 PM 측에서 작성자와 다른 환경(macOS, Python 3.14.5)·다른 모델로 저장소에서 확인 가능한 항목을 독립 재검증했다.
+
+- 재현 확인: `b3183e6` 계보(포함 브랜치·비조상·공통 조상 `196981f`·전용 23/3 커밋), LFS 패턴 10종·추적 34개(FBX 33 + Blender 1)·3.3 MB, `context_graph.py validate` 종료 코드 0과 `evidence.school_pc_setup_20260908` stale, `source_drift` 5건·폐기 결정 `stale` 3건, `2026-09-08-validation.json` 선언 해시 불일치와 `2026-09-08-pm-setup.md` 일치, 문서 7개의 상대 링크 37개 전부 무결, `repository_policy.py` 위반 0, `pr_policy.py` 규격 입력 통과, Unity 요구 버전 `6000.3.23f1 (09d2ecc7fb28)`, `docs/ci.md`와 required quality workflow의 보고서 저장 방식 일치.
+- `check_foundation.py`는 macOS에서 31 tests 전부 ok였다. 심볼릭 링크 시험이 통과하므로 `laptop-A`의 skip 1건은 검사 결함이 아니라 Windows 권한 제약이라는 본문 판정이 뒷받침된다.
+- 재검증 범위 밖: `laptop-A`의 하드웨어·OS·Unity Hub 미탐지·clone 소요 시간은 해당 기기에서만 관측 가능하므로 단일 출처로 남는다. 학교 PC 실행, Unity 실행·컴파일, HMD는 여전히 미검증이다.
