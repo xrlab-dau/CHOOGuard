@@ -90,6 +90,35 @@ public sealed class CaptureWriterTests
         });
     }
 
+    [TestCase("signature-prefix")]
+    [TestCase("missing-end")]
+    [TestCase("bad-image-crc")]
+    [TestCase("chunk-length-overflow")]
+    public void MalformedPngCannotProduceACompleteReceipt(string fault)
+    {
+        WithOutput(path =>
+        {
+            byte[] malformed;
+            switch (fault)
+            {
+                case "signature-prefix": malformed = Png.Take(9).ToArray(); break;
+                case "missing-end": malformed = Png.Take(Png.Length - 12).ToArray(); break;
+                // Original success fixture: the IDAT CRC is ef9af564; its data requires efa2a75b.
+                case "bad-image-crc": malformed = Convert.FromBase64String("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a9WQAAAAASUVORK5CYII="); break;
+                default:
+                    malformed = (byte[])Png.Clone();
+                    for (var index = 8; index < 12; index++) malformed[index] = 255;
+                    break;
+            }
+            var writer = NewWriter(path);
+            Assert.Throws<InvalidOperationException>(() => writer.WriteImage(0, 0, malformed));
+            Assert.Throws<InvalidOperationException>(() => writer.WriteImage(0, 0, Png));
+            Assert.Throws<InvalidOperationException>(() => writer.Complete(Serialize));
+            Assert.That(File.Exists(Path.Combine(path, "view-0-0.png")), Is.False);
+            Assert.That(File.Exists(Path.Combine(path, "capture-complete.json")), Is.False);
+        });
+    }
+
     [Test]
     public void DigestWithTrailingNewlineIsRejectedBeforeCreatingOutput()
     {
