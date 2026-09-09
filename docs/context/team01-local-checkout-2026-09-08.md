@@ -92,15 +92,15 @@
 | git-lfs | 3.6.1 | 미관측 |
 | Python | 3.11.9 (`python`·`python3` 동일), py launcher 3.12.4 | 미관측 |
 | Unity Editor | 6000.3.23f1 (rev `09d2ecc7fb28`) — `ProjectSettings/ProjectVersion.txt` 요구 버전과 일치 | 기존 기록상 설치 확인, 본 작업에서 미관측 |
-| Unity Hub | 미설치 — 설치 오류 정황, 아래 참조 | 미관측 |
+| Unity Hub | 미탐지 — 설치 오류는 당시 추정, 원인 미확인 | 미관측 |
 | OpenXR 런타임 | 등록 없음 | 미관측 |
 | HMD | 미탐지 | 미관측 |
 | 심볼릭 링크 권한 | 없음 (`WinError 1314`) | 미관측 |
 | 로그인 유지 정책 | 미확정 | 미확정 |
 
-### Unity Hub 미설치 경위
+### Unity Hub 미탐지와 당시 추정
 
-관측 시점에 `laptop-A`의 Unity Hub는 설치돼 있지 않았다. 의도된 미설치가 아니라 설치 과정에서 오류가 발생한 것으로 보인다. 확인 근거는 다음과 같다.
+관측 시점에 `laptop-A`에서 Unity Hub 실행 파일·등록·설정을 찾지 못했다. [당시 관찰 기록](https://github.com/xrlab-dau/CHOOGuard/issues/69#issuecomment-5587412144)의 작성자는 설치 과정에서 「오류가 발생한 것으로 보인다」고 추정했다. 이 추정은 당시 기록으로 보존하며, 설치 시도 여부와 미탐지 원인은 아래 검사만으로 확정할 수 없다.
 
 - `C:\Program Files\Unity Hub\Unity Hub.exe` 및 사용자별 설치 경로 3곳에 없음
 - `Unity Hub.exe` 파일 검색 0건
@@ -108,9 +108,9 @@
 - `%APPDATA%\UnityHub`·`%LOCALAPPDATA%\UnityHub` 설정 폴더 둘 다 없음
 - 시작 메뉴에 `Unity.lnk`만 존재, `Unity Hub.lnk` 없음
 
-`C:\Program Files\Unity\Hub\` 경로는 존재하나 그 아래에는 `Editor\6000.3.23f1`만 있고 Hub 실행 파일은 없다. 이 경로는 Unity Hub가 에디터를 설치할 때 쓰는 기본 경로 규칙이며 에디터 단독 설치 관리자도 동일한 규칙을 사용하므로, 이 폴더의 존재는 Hub 설치의 근거가 되지 않는다. Editor는 정상 설치된 반면 Hub만 누락된 상태다.
+`C:\Program Files\Unity\Hub\` 경로는 존재하나 그 아래에는 `Editor\6000.3.23f1`만 있고 Hub 실행 파일은 없다. 이 경로는 Unity Hub가 에디터를 설치할 때 쓰는 기본 경로 규칙이며 에디터 단독 설치 관리자도 동일한 규칙을 사용하므로, 이 폴더의 존재는 Hub 설치의 근거가 되지 않는다. Editor 경로·등록·버전은 확인했으나 실제 실행·컴파일은 수행하지 않았다.
 
-`docs/choo-guard-foundation-handoff.md`는 「Unity Hub에서 저장소 루트를 6000.3.23f1로 열고」를 지시하므로, Hub 없이 Editor 단독으로 이 절차를 수행할 수 있는지는 현재 미검증이다. Hub 재설치 후 재확인이 필요하며, 확인되지 않은 대안 절차를 문서화하지 않는다.
+`docs/choo-guard-foundation-handoff.md`는 「Unity Hub에서 저장소 루트를 6000.3.23f1로 열고」를 지시하므로, Hub 없이 Editor 단독으로 이 절차를 수행할 수 있는지는 현재 미검증이다. 후속 실행 시 Hub의 사용 가능 여부와 안내 절차의 재현을 확인해야 하며, 확인되지 않은 대안 절차를 문서화하지 않는다.
 
 ### 미확정 항목
 
