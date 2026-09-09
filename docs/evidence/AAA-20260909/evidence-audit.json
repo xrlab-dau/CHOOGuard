@@ -1,0 +1,1566 @@
+{
+  "schemaVersion": 1,
+  "auditPhase": "initial_evidence_audit_locked_before_new_reviewer_reports",
+  "createdAt": "2026-09-09T02:07:36.933992+00:00",
+  "auditor": {
+    "role": "evidence_worker",
+    "provider": "OpenAI",
+    "independentProviderApproval": false,
+    "readNewBlindCriticOrSupervisorReports": false,
+    "readOnlyHistoricalAudit": true
+  },
+  "scope": {
+    "repo": "xrlab-dau/CHOOGuard",
+    "sourceCommit": "d169b560762ed7c3d4969e845a2750760941ee84",
+    "issues": [
+      10,
+      14,
+      25,
+      26,
+      32,
+      52,
+      64,
+      65
+    ],
+    "prs": [
+      97,
+      98,
+      104,
+      105
+    ],
+    "noFeatureWork": true,
+    "historicalRawRecordsModified": false,
+    "noRemoteWrites": true,
+    "noFalOrExternalModelExecution": true
+  },
+  "startup": {
+    "AGENTSRead": true,
+    "contextValidate": "structure_valid_freshness_separate",
+    "contextBrief": "handoff/local",
+    "historicalSourceDriftPreserved": true
+  },
+  "verification": {
+    "responses": 45,
+    "responsesPerFile": [
+      {
+        "file": "round1.json",
+        "sha256": "dacb638298957ead974aca0aaa65d3c391333b92f2cefd32ade018df4ed448b4",
+        "responses": 21,
+        "sourceEntries": 55,
+        "job": {
+          "id": "6aa09fb6900620b5c77e46fe",
+          "url": "https://huggingface.co/jobs/umyunsang/6aa09fb6900620b5c77e46fe",
+          "timeoutSeconds": 1200
+        }
+      },
+      {
+        "file": "round2-complete.json",
+        "sha256": "54fd0c3d3105388d7c6bef4362a9d97a499491b9bb3df59eca3012ec08ad32b6",
+        "responses": 12,
+        "sourceEntries": 41,
+        "job": {
+          "id": "6aa0a5d3900620b5c77e482d",
+          "url": "https://huggingface.co/jobs/umyunsang/6aa0a5d3900620b5c77e482d",
+          "createdAt": "2026-09-09T00:18:27.473Z",
+          "finishedAt": "2026-09-09T00:42:45.231Z",
+          "status": {
+            "message": "Job timeout",
+            "stage": "ERROR"
+          },
+          "timeoutSeconds": 1200
+        }
+      },
+      {
+        "file": "round3-part1.json",
+        "sha256": "619c83e5040d7b82b05e24e5564b383a402e51c5e3df62f6a938fe226ec7fdde",
+        "responses": 8,
+        "sourceEntries": 20,
+        "job": {
+          "id": "6aa0ad0032d5d0c22c5aeff1",
+          "url": "https://huggingface.co/jobs/umyunsang/6aa0ad0032d5d0c22c5aeff1",
+          "status": "CANCELED",
+          "reason": "PR97 moved from3b0dd51 to39e5dc2 while review ran. Preserve completed unaffected lenses; stop before reviewing obsolete policy target. Cancellation decision was made before examining these verdicts."
+        }
+      },
+      {
+        "file": "round3-part2.json",
+        "sha256": "d6341c3380d2e2fa0ec4c26eaa89851a0526a0347bde0f9204e04367cb92848d",
+        "responses": 4,
+        "sourceEntries": 15,
+        "job": {
+          "id": "6aa0af1c900620b5c77e49ca",
+          "url": "https://huggingface.co/jobs/umyunsang/6aa0af1c900620b5c77e49ca",
+          "createdAt": "2026-09-09T00:58:04.038Z",
+          "finishedAt": "2026-09-09T01:04:27.323Z",
+          "status": {
+            "message": null,
+            "stage": "COMPLETED"
+          },
+          "timeoutSeconds": 840
+        }
+      }
+    ],
+    "responseHashMatches": 45,
+    "uniqueSessionIds": 45,
+    "uniqueResponseHashes": 45,
+    "indexExactProjectionMatches": true,
+    "allApprovalsClaimedByHistoricalIndex": false,
+    "rawParserOutcomeCounts": {
+      "approved": 21,
+      "cannot_proceed": 3,
+      "changes_required": 21
+    },
+    "manifestHashMatches": 17,
+    "sourceEntryHashAndByteMatches": 131,
+    "uniqueCommitPathHashEntries": 70,
+    "round2PartialSnapshotReceipts": 11,
+    "round2PartialSnapshotAllDuplicatesOfComplete": true,
+    "round2PartialExcludedFrom45": true,
+    "round3CompletedLensesPerUnit": {
+      "core-contracts": 3,
+      "asset-traceability": 3,
+      "capture-pr104": 3,
+      "policy-pr97": 3
+    },
+    "round3PolicyReceiptsAtObsolete3b0dd51": 0,
+    "historicalPromptHashes": {
+      "recorded": 45,
+      "recomputed": 0,
+      "reason": "Exact historical prompts/message arrays and harness are unavailable."
+    },
+    "allUnitApprovalsInferred": false
+  },
+  "sourceManifests": [
+    {
+      "evidenceFile": "round1.json",
+      "unit": "core-contracts",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "f64dffe238d25a8fd9f1ce865bf7b1dc5dde2fe3b181cf180031ddbf4159d9a8",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1561,
+          "sha256": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioValidation.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 5283,
+          "sha256": "aac8aa2c29253764df2d7810e6cd5c122f4ce6aeb02397c5982b781b8311a58e",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2944,
+          "sha256": "f52ede22cef4f0146bdd1b6031da20ef11b8352e65fe9418a1d09c0339a9cc66",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 4522,
+          "sha256": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 6759,
+          "sha256": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1340,
+          "sha256": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 14975,
+          "sha256": "0670af37a515868fa7067c28a89febca9f81a4c67665c0b51ff8a0c6a06a0caa",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CanonicalScenarioTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 4178,
+          "sha256": "7f78095afa6b3afdf5dc7d874c952169dc4b007e4500f9d317d5c96950d00f8a",
+          "verified": true
+        },
+        {
+          "path": "foundation/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2574,
+          "sha256": "02fee6d9d7dc24c880bb05ca86368f4027ff9f750ca9cac0e3e0c085777d98d3",
+          "verified": true
+        },
+        {
+          "path": "foundation/scenarios/foundation-demo.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 6078,
+          "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+          "verified": true
+        },
+        {
+          "path": "foundation/anchors/synthetic-room.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 643,
+          "sha256": "e6051a3d9131e0e920c4976e197033d5c541f9452d4b4c1f3733d07ad593b5c5",
+          "verified": true
+        },
+        {
+          "path": "scripts/foundation/validate.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 9826,
+          "sha256": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+          "verified": true
+        },
+        {
+          "path": "scripts/foundation/tests/test_validate.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 13592,
+          "sha256": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round1.json",
+      "unit": "questionnaire",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "41834c7e37b94d9b1b1d305b1ccd815aa88ddacf1b6a492c3d0e4275fd0a0b76",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "docs/korail/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2627,
+          "sha256": "b7219e5136a5f95d1928c866f0509919a7e3014df901785095e1eb7c30a68f9f",
+          "verified": true
+        },
+        {
+          "path": "docs/korail/development-questionnaire-v1.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 3029,
+          "sha256": "4fc92d97950750a1d6f034c0a8b1292de174285657e2d59b9f19dcd492bf7a2e",
+          "verified": true
+        },
+        {
+          "path": "docs/korail/questionnaire-review-v1.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2027,
+          "sha256": "79d554a49ba99621e53c45e54779d0a942191d482faf90ec258d2efc685cb9fe",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round1.json",
+      "unit": "context-graph",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "7bde7bf8f652defc2f17a86878410e704d4e87b17a53cd39dacc9d9b54172048",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/context/context_graph.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 20840,
+          "sha256": "ae282089c4dc2dc8e50060742bfd78c3c00585a46870145a8e2a4287cfe80a7e",
+          "verified": true
+        },
+        {
+          "path": "scripts/context/test_context_graph.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 12633,
+          "sha256": "f708d9377fb8b17f20a790f22132dda767d8ddb841893f526206825014ce11a4",
+          "verified": true
+        },
+        {
+          "path": "scripts/context/context-graph.schema.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 4247,
+          "sha256": "dee266784d0879ee8250a84efe0877f8c7589988b9b6a76f7ce03194a816a962",
+          "verified": true
+        },
+        {
+          "path": "docs/context/project-context.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 88764,
+          "sha256": "5b1fab743ef2f9d0e25021a40e68c89a725a4e6647f1d17449173fd22b2fdd41",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round1.json",
+      "unit": "asset-traceability",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "efe1ead0fcc87b8b1c3c7bb63d8dab07d9a422d78a5e9356e92380a7c2f675e8",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/art/validate_reference_assets.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 7218,
+          "sha256": "10784b91d270bb708882d8b46e936f8d7c4d256aad807bf72e21b53b2e320df5",
+          "verified": true
+        },
+        {
+          "path": "scripts/art/test_reference_assets.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 5414,
+          "sha256": "50c4c03ed86c32410bb5c38803be4931f5ed654e91724e0b6dcacee1fbe53dde",
+          "verified": true
+        },
+        {
+          "path": "foundation/art/object-references.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 134048,
+          "sha256": "e2530ec00bbc16ba24e475269343651616f8fdae8ecf56fc5ccaeec250a90559",
+          "verified": true
+        },
+        {
+          "path": "foundation/art/asset-manifest.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 117116,
+          "sha256": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round1.json",
+      "unit": "capture-pr104",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "0f645c92c4ddcddc6ddd2f30659c1827a0d1f419ed20bbb4ce81d383e308dab8",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 16739,
+          "sha256": "5142389f6eaf8b40c2ff17f88f5d522c1d4f88a60cc5f5e91190d88fd97839d5",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 26708,
+          "sha256": "7b802698bffb8b79af296bf943c2ce2dc53afc52ed8981f8e8c2a74be82e7e89",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/CaptureWriterTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 7276,
+          "sha256": "e03b92cb21564ca480ea78a2cf78df36f98be17f38f977f2fc36b007863462f3",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/prepare_capture_source.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2564,
+          "sha256": "74e9669e9533349187707265387f2bd460613717f54a246d65059472cb5fb964",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/FoundationReview.csproj",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 987,
+          "sha256": "e611a1648a9157a67eced7de945e8ea47046f204bbe00c61fdaa593a0b25a798",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/Program.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 175,
+          "sha256": "6ff7e3dae192f9529c73717c060f3d9e240559fa901e5af5e5f937094e335d74",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2408,
+          "sha256": "9871c2f6d3660a5c8eac72c4f55ea2872ed3031efeaa376c320797d42d2da281",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/foundation-csharp-review.yml",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1818,
+          "sha256": "bd648f51adbfd6b192d86b29071edb1e1281f26b492aedaba3de098cfd7fbcc2",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 10114,
+          "sha256": "f6eb149746a7bae3aa9b3dbd795b2bf4ec475df21382f6834d10c88441894b66",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 15451,
+          "sha256": "7b2264970a1de0da9276e519a26ccd7e93cd01a10647c9b7371aff5a7a713e78",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round1.json",
+      "unit": "policy-pr97",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "manifestSha256": "70b61e22b21a8f85d20631eff92eac4c838e516f667934e5aa6ed5af25751224",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 29486,
+          "sha256": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_policy_baseline.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 16766,
+          "sha256": "6ac802acde980dd8dd1c3d38e46c390d1f48d1e111826cce72207399f5322371",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_verify_toolchain.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 23346,
+          "sha256": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504",
+          "verified": true
+        },
+        {
+          "path": "school/windows-validation/audit_policy_scope.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 3408,
+          "sha256": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/required-quality-gate.yml",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 4860,
+          "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/README.md",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 9349,
+          "sha256": "0277c13fbb14236d2f7074df7ca404dae87e36dac9b7318cfe97ea82ecb04db1",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/policy-candidate-20260908-04.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 5843,
+          "sha256": "92c74d0ade26b65e60ff7028fbe46ddb2aa91b922db1cff241b8d597df2361e2",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/policy-scope-20260908-04.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 2502,
+          "sha256": "a1902b8edf98665a8da28bbea4903f8ddd3354600fb488e35f3cfd2180b19185",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/run-20260908-04.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 4746,
+          "sha256": "59aa00d37a70091abea71700e774ac433f8217adc6bb57ee549cbb202118426b",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/windows-ci-20260908-01.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 2427,
+          "sha256": "17b0f7de8a13044a8b3a02b11b30d7faaa352ea16e7a7668e87c6220b35e5f5d",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 17753,
+          "sha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_verify_toolchain.py",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 21792,
+          "sha256": "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad",
+          "verified": true
+        },
+        {
+          "path": "school/windows-validation/audit_policy_scope.py",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 2517,
+          "sha256": "d81cb6a104745bb690598d9f0fdc1470e9e6f2353809f8518d0da80d700114f6",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/required-quality-gate.yml",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 3174,
+          "sha256": "d1a64a5abeb4a5b38606d5c30ac4f58e0226f0c2a3ebed3e32f90b7d68af56ff",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round1.json",
+      "unit": "graph-pr98",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+      "manifestSha256": "420fe8de15e756a65ad238d78b54a6b07c51f104ae6a316e03c5d6f0e179c825",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "docs/choo-guard-work-unit-graph-v1.md",
+          "commit": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+          "bytes": 8570,
+          "sha256": "701ba48a2d25735b891698a9ce75a9e297c907c9f40fc86cebea6246a8b0fcf5",
+          "verified": true
+        },
+        {
+          "path": "docs/choo-guard-execution-backlog-v1.md",
+          "commit": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+          "bytes": 27406,
+          "sha256": "5511fd3cfcbf8ddbcc690869c890008c7ee6bc002297e71a57a0972134eaadfd",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07-GRAPH/target-20260908-01.json",
+          "commit": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+          "bytes": 6846,
+          "sha256": "3e34cbb59dde0b980acea7e9fc0e2e40310720ec7da4323e7ea17115783668d6",
+          "verified": true
+        },
+        {
+          "path": "scripts/foundation/validate.py",
+          "commit": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+          "bytes": 9826,
+          "sha256": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+          "verified": true
+        },
+        {
+          "path": "scripts/foundation/tests/test_validate.py",
+          "commit": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+          "bytes": 13592,
+          "sha256": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+          "verified": true
+        },
+        {
+          "path": "docs/choo-guard-work-unit-graph-v1.md",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 6798,
+          "sha256": "1c7057bfc9a66deb580613bec1026fb3e455834b928417993ae2e3f0abb9a81a",
+          "verified": true
+        },
+        {
+          "path": "docs/choo-guard-execution-backlog-v1.md",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 27077,
+          "sha256": "68ff52686adc2b109d274288760e1962215a8dc472863d504423d4ea7826793d",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round2-complete.json",
+      "unit": "core-contracts",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "f64dffe238d25a8fd9f1ce865bf7b1dc5dde2fe3b181cf180031ddbf4159d9a8",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1561,
+          "sha256": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioValidation.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 5283,
+          "sha256": "aac8aa2c29253764df2d7810e6cd5c122f4ce6aeb02397c5982b781b8311a58e",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2944,
+          "sha256": "f52ede22cef4f0146bdd1b6031da20ef11b8352e65fe9418a1d09c0339a9cc66",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 4522,
+          "sha256": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 6759,
+          "sha256": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1340,
+          "sha256": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 14975,
+          "sha256": "0670af37a515868fa7067c28a89febca9f81a4c67665c0b51ff8a0c6a06a0caa",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CanonicalScenarioTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 4178,
+          "sha256": "7f78095afa6b3afdf5dc7d874c952169dc4b007e4500f9d317d5c96950d00f8a",
+          "verified": true
+        },
+        {
+          "path": "foundation/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2574,
+          "sha256": "02fee6d9d7dc24c880bb05ca86368f4027ff9f750ca9cac0e3e0c085777d98d3",
+          "verified": true
+        },
+        {
+          "path": "foundation/scenarios/foundation-demo.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 6078,
+          "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+          "verified": true
+        },
+        {
+          "path": "foundation/anchors/synthetic-room.json",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 643,
+          "sha256": "e6051a3d9131e0e920c4976e197033d5c541f9452d4b4c1f3733d07ad593b5c5",
+          "verified": true
+        },
+        {
+          "path": "scripts/foundation/validate.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 9826,
+          "sha256": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+          "verified": true
+        },
+        {
+          "path": "scripts/foundation/tests/test_validate.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 13592,
+          "sha256": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round2-complete.json",
+      "unit": "asset-traceability",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+      "manifestSha256": "7138b09c2639f920c897632096958c783ad292ccbe3d5ab18a4b24be2c53163d",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/art/validate_reference_assets.py",
+          "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+          "bytes": 7874,
+          "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec",
+          "verified": true
+        },
+        {
+          "path": "scripts/art/test_reference_assets.py",
+          "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+          "bytes": 6811,
+          "sha256": "cdba0e26ee4b4edf0a9a3c94a106a42fca575c9d742fede26da470ea551bb560",
+          "verified": true
+        },
+        {
+          "path": "foundation/art/object-references.json",
+          "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+          "bytes": 134048,
+          "sha256": "e2530ec00bbc16ba24e475269343651616f8fdae8ecf56fc5ccaeec250a90559",
+          "verified": true
+        },
+        {
+          "path": "foundation/art/asset-manifest.json",
+          "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+          "bytes": 117116,
+          "sha256": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round2-complete.json",
+      "unit": "capture-pr104",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "0f645c92c4ddcddc6ddd2f30659c1827a0d1f419ed20bbb4ce81d383e308dab8",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 16739,
+          "sha256": "5142389f6eaf8b40c2ff17f88f5d522c1d4f88a60cc5f5e91190d88fd97839d5",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 26708,
+          "sha256": "7b802698bffb8b79af296bf943c2ce2dc53afc52ed8981f8e8c2a74be82e7e89",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/CaptureWriterTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 7276,
+          "sha256": "e03b92cb21564ca480ea78a2cf78df36f98be17f38f977f2fc36b007863462f3",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/prepare_capture_source.py",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2564,
+          "sha256": "74e9669e9533349187707265387f2bd460613717f54a246d65059472cb5fb964",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/FoundationReview.csproj",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 987,
+          "sha256": "e611a1648a9157a67eced7de945e8ea47046f204bbe00c61fdaa593a0b25a798",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/Program.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 175,
+          "sha256": "6ff7e3dae192f9529c73717c060f3d9e240559fa901e5af5e5f937094e335d74",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2408,
+          "sha256": "9871c2f6d3660a5c8eac72c4f55ea2872ed3031efeaa376c320797d42d2da281",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/foundation-csharp-review.yml",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1818,
+          "sha256": "bd648f51adbfd6b192d86b29071edb1e1281f26b492aedaba3de098cfd7fbcc2",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 10114,
+          "sha256": "f6eb149746a7bae3aa9b3dbd795b2bf4ec475df21382f6834d10c88441894b66",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 15451,
+          "sha256": "7b2264970a1de0da9276e519a26ccd7e93cd01a10647c9b7371aff5a7a713e78",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round2-complete.json",
+      "unit": "policy-pr97",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "manifestSha256": "70b61e22b21a8f85d20631eff92eac4c838e516f667934e5aa6ed5af25751224",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 29486,
+          "sha256": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_policy_baseline.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 16766,
+          "sha256": "6ac802acde980dd8dd1c3d38e46c390d1f48d1e111826cce72207399f5322371",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_verify_toolchain.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 23346,
+          "sha256": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504",
+          "verified": true
+        },
+        {
+          "path": "school/windows-validation/audit_policy_scope.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 3408,
+          "sha256": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/required-quality-gate.yml",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 4860,
+          "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/README.md",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 9349,
+          "sha256": "0277c13fbb14236d2f7074df7ca404dae87e36dac9b7318cfe97ea82ecb04db1",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/policy-candidate-20260908-04.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 5843,
+          "sha256": "92c74d0ade26b65e60ff7028fbe46ddb2aa91b922db1cff241b8d597df2361e2",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/policy-scope-20260908-04.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 2502,
+          "sha256": "a1902b8edf98665a8da28bbea4903f8ddd3354600fb488e35f3cfd2180b19185",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/run-20260908-04.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 4746,
+          "sha256": "59aa00d37a70091abea71700e774ac433f8217adc6bb57ee549cbb202118426b",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/windows-ci-20260908-01.json",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 2427,
+          "sha256": "17b0f7de8a13044a8b3a02b11b30d7faaa352ea16e7a7668e87c6220b35e5f5d",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 17753,
+          "sha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_verify_toolchain.py",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 21792,
+          "sha256": "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad",
+          "verified": true
+        },
+        {
+          "path": "school/windows-validation/audit_policy_scope.py",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 2517,
+          "sha256": "d81cb6a104745bb690598d9f0fdc1470e9e6f2353809f8518d0da80d700114f6",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/required-quality-gate.yml",
+          "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "bytes": 3174,
+          "sha256": "d1a64a5abeb4a5b38606d5c30ac4f58e0226f0c2a3ebed3e32f90b7d68af56ff",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round3-part1.json",
+      "unit": "core-contracts",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "9190689c4b5033fe86c9c2c35799cf8482264f8154e45646aab90a8fa302cab8",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1561,
+          "sha256": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioValidation.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 5283,
+          "sha256": "aac8aa2c29253764df2d7810e6cd5c122f4ce6aeb02397c5982b781b8311a58e",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2944,
+          "sha256": "f52ede22cef4f0146bdd1b6031da20ef11b8352e65fe9418a1d09c0339a9cc66",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 4522,
+          "sha256": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 6759,
+          "sha256": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 1340,
+          "sha256": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 14975,
+          "sha256": "0670af37a515868fa7067c28a89febca9f81a4c67665c0b51ff8a0c6a06a0caa",
+          "verified": true
+        },
+        {
+          "path": "foundation/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2574,
+          "sha256": "02fee6d9d7dc24c880bb05ca86368f4027ff9f750ca9cac0e3e0c085777d98d3",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round3-part1.json",
+      "unit": "asset-traceability",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+      "manifestSha256": "1f38077fbc1961e6673eb411882a03143edb55e919f84f52c3418347e503b457",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/art/validate_reference_assets.py",
+          "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+          "bytes": 7874,
+          "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec",
+          "verified": true
+        },
+        {
+          "path": "scripts/art/test_reference_assets.py",
+          "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+          "bytes": 6811,
+          "sha256": "cdba0e26ee4b4edf0a9a3c94a106a42fca575c9d742fede26da470ea551bb560",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round3-part1.json",
+      "unit": "capture-pr104",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "3dbb61173f2d46ef51007cbeb34da9f3759f0815ed261b85fdfba2f4189ae911",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 16739,
+          "sha256": "5142389f6eaf8b40c2ff17f88f5d522c1d4f88a60cc5f5e91190d88fd97839d5",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 26708,
+          "sha256": "7b802698bffb8b79af296bf943c2ce2dc53afc52ed8981f8e8c2a74be82e7e89",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/CaptureWriterTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 7276,
+          "sha256": "e03b92cb21564ca480ea78a2cf78df36f98be17f38f977f2fc36b007863462f3",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2408,
+          "sha256": "9871c2f6d3660a5c8eac72c4f55ea2872ed3031efeaa376c320797d42d2da281",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round3-part1.json",
+      "unit": "policy-pr97",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "manifestSha256": "d6bdd0cd56cac98e3f8bbe1acb65040f45b7110ec763b89676df8bce9a291a8f",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 29486,
+          "sha256": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_policy_baseline.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 16766,
+          "sha256": "6ac802acde980dd8dd1c3d38e46c390d1f48d1e111826cce72207399f5322371",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_verify_toolchain.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 23346,
+          "sha256": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504",
+          "verified": true
+        },
+        {
+          "path": "school/windows-validation/audit_policy_scope.py",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 3408,
+          "sha256": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/required-quality-gate.yml",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 4860,
+          "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/README.md",
+          "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+          "bytes": 9349,
+          "sha256": "0277c13fbb14236d2f7074df7ca404dae87e36dac9b7318cfe97ea82ecb04db1",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round3-part2.json",
+      "unit": "capture-pr104",
+      "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "head": "483531b186a429f9b75746af39093e00eae0377b",
+      "manifestSha256": "3dbb61173f2d46ef51007cbeb34da9f3759f0815ed261b85fdfba2f4189ae911",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 16739,
+          "sha256": "5142389f6eaf8b40c2ff17f88f5d522c1d4f88a60cc5f5e91190d88fd97839d5",
+          "verified": true
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 26708,
+          "sha256": "7b802698bffb8b79af296bf943c2ce2dc53afc52ed8981f8e8c2a74be82e7e89",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/CaptureWriterTests.cs",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 7276,
+          "sha256": "e03b92cb21564ca480ea78a2cf78df36f98be17f38f977f2fc36b007863462f3",
+          "verified": true
+        },
+        {
+          "path": "scripts/dev/csharp-review/README.md",
+          "commit": "483531b186a429f9b75746af39093e00eae0377b",
+          "bytes": 2408,
+          "sha256": "9871c2f6d3660a5c8eac72c4f55ea2872ed3031efeaa376c320797d42d2da281",
+          "verified": true
+        }
+      ]
+    },
+    {
+      "evidenceFile": "round3-part2.json",
+      "unit": "policy-pr97",
+      "base": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+      "head": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+      "manifestSha256": "edbff1e1fa4b821bdb456f9a785330c2ccb97fbf3515381720703288e4d18b23",
+      "manifestHashVerified": true,
+      "sources": [
+        {
+          "path": "scripts/bootstrap/bootstrap.ps1",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 5911,
+          "sha256": "eb46e240c9d7f33a462b45b6a18d0fa378e65ace6697a68ec65c89fa960bdba3",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/bootstrap.sh",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 5542,
+          "sha256": "c0b59642e20e313cfff7999de7ca8e716284b88f08700a147db6c0032eb24a8f",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_bootstrap_powershell.py",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 11643,
+          "sha256": "2627f3af4d8b600c0238b1cf2d365ff1d3f846599db3573623425ce523a84d1c",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_bootstrap_shell.py",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 8268,
+          "sha256": "bc7cd3287a000f8b95c4202c012f752877b6354f8d83e29a0bda2f7096a27bfa",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_policy_baseline.py",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 24063,
+          "sha256": "badc96a8c3636e7c1ae8f812d6d6533d474d56389bc96a864bf6a2fbe6486b64",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_review_boundaries.py",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 9021,
+          "sha256": "2b37c7bf1bfaa6913cff5234871835e979ad1ce11a1d9b28e851dbd33db76c26",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/test_verify_toolchain.py",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 30091,
+          "sha256": "e7dc8bdbe1791094edf17b1438cebda0ac44bd66322db9e8abc1d557ea1e406e",
+          "verified": true
+        },
+        {
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 33811,
+          "sha256": "d41e182db71db473cc723799833d5a55926c10d58adab19f30a8918f7cf03bd7",
+          "verified": true
+        },
+        {
+          "path": "school/windows-validation/audit_policy_scope.py",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 3408,
+          "sha256": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97",
+          "verified": true
+        },
+        {
+          "path": ".github/workflows/required-quality-gate.yml",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 4860,
+          "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f",
+          "verified": true
+        },
+        {
+          "path": "docs/evidence/R-07/README.md",
+          "commit": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+          "bytes": 14195,
+          "sha256": "3d4c246c8ebd1505cab7736ec2188ac9140ed13d2b6ceeeeec6cb9d5523da0fb",
+          "verified": true
+        }
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "EVID-01",
+      "severity": "P2",
+      "category": "accepted_outcome_label",
+      "title": "Machine-readable historical outcome can be mistaken for adjudicated approval",
+      "locations": [
+        "docs/evidence/REVIEW-20260909/review-call-index.json: calls for core-contracts/safety/round1 and capture-pr104/spec/round1",
+        "docs/evidence/REVIEW-20260909/round1.json: orchestratorAcceptance"
+      ],
+      "evidence": "Both index entries have effectiveOutcome=approved. The same round explicitly rejects the core safety statement about canonical tests and the capture spec statement about all supplied tests. The final narrative correctly withholds affected unit approval.",
+      "impact": "A consumer that counts effectiveOutcome values can wrongly count the two rejected statements as accepted evidence, even though the human narrative is qualified.",
+      "exactCorrection": "Keep historical raw records and index unchanged. Use historical-adjudication-overlay.json to distinguish rawModelOutcome, historicalParserEffectiveOutcome, historicalAdjudication and countsTowardPublishedUnitApproval.",
+      "status": "corrected_in_append_only_overlay",
+      "changesHistoricalApproval": false
+    },
+    {
+      "id": "EVID-02",
+      "severity": "P2",
+      "category": "prompt_replay_limit",
+      "title": "Saved prompt hashes cannot be independently replayed from available artifacts",
+      "locations": [
+        "docs/evidence/REVIEW-20260909/round1.json: receipt.promptSha256",
+        "docs/evidence/REVIEW-20260909/README.md: lossless compaction and no truncation claims"
+      ],
+      "evidence": "All source manifests and response hashes can be recomputed. Exact rendered prompts/message arrays and the inference/prompt-builder harness are unavailable in committed evidence and were not found by the root scratch search. A prompt digest alone does not reveal complete transmitted bytes or session history.",
+      "impact": "This audit cannot independently verify the recorded prompt digests, lossless compaction, no truncation, or fresh conversation history. This is an auditability limit, not evidence that truncation or provider fabrication occurred.",
+      "exactCorrection": "State: 45 raw response hashes and 17 source-manifest hashes were recomputed; prompt hashes were retained but not recomputed because exact historical prompts/harness are unavailable. Preserve no-truncation/fresh-session wording only as the historical harness report.",
+      "status": "documented_limit_no_historical_rewrite"
+    },
+    {
+      "id": "EVID-03",
+      "severity": "P3",
+      "category": "current_ci_source_binding",
+      "title": "New current GitHub CI snapshot omits per-run source SHA",
+      "locations": [
+        "aaa-review/current-github-observation.json: ci"
+      ],
+      "evidence": "The saved current PR heads are explicit, but workflow_runs contain conclusion/id/name without head_sha or the original query filter. The root reports successful runs34299012185 and34298931594 for the latest heads.",
+      "impact": "The saved response alone cannot independently bind the latest run to its claimed head or transfer older test counts to newer PR97 code.",
+      "exactCorrection": "Before publication retain per-run head_sha or exact request parameters and run-level metadata; retain 107/103 policy counts only on historical39e5dc2 unless newer logs substantiate them.",
+      "status": "resolved_by_root_full_run_metadata",
+      "resolution": "Root supplied full per-run GitHub metadata with requestPath and head_sha. This audit re-read the source binding for run 34299012185 to 9af125b and run 34298931594 to d169. Old policy test counts are still not transferred to the newer source.",
+      "resolutionProof": [
+        {
+          "path": "aaa-review/policy-latest-github-ci.json",
+          "sha256": "6bb336fa99fdbd86a5d10e558d2b465064265a14725697b4ba3075668d497bb6",
+          "requestPath": "/repos/xrlab-dau/CHOOGuard/actions/runs/34299012185",
+          "runId": 34299012185,
+          "headSha": "9af125b22ac3989a18593238c3331031496c164f",
+          "conclusion": "success",
+          "event": "pull_request"
+        },
+        {
+          "path": "aaa-review/asset-latest-github-ci.json",
+          "sha256": "ab6eb0fb78bbce703d65b1a6d65730cec01139edc921c3080e71a5482d507633",
+          "requestPath": "/repos/xrlab-dau/CHOOGuard/actions/runs/34298931594",
+          "runId": 34298931594,
+          "headSha": "d169b560762ed7c3d4969e845a2750760941ee84",
+          "conclusion": "success",
+          "event": "pull_request"
+        }
+      ]
+    }
+  ],
+  "verifiedHistoricalClaims": [
+    {
+      "claim": "PR98 graph: 29 nodes / 57 dependencies",
+      "result": "verified",
+      "detail": "Parsed canonical individual-node table; all 29 node dependency lists match target-20260908-01.json."
+    },
+    {
+      "claim": "Questionnaire DOCX/PDF hashes",
+      "result": "verified",
+      "detail": "DOCX ca8b2a1b36083c9a83d07e9b5125e5e04f1427461c8b877b79f0552b70da0244; PDF b3120a806ad2ec77c9425bd491ebfee5ebf916da337b23728c4ac68d95b96ae4. Word A4 size 11906 × 16838 twips and macro-free ZIP checked. Original rendering remains historical."
+    },
+    {
+      "claim": "Asset RED/GREEN counts",
+      "result": "verified",
+      "detail": "13 tests: 3 failures / 9 errors before guard, numeric URL 1 error,13 pass after; ID guard 15 tests / 9 errors before and15 pass after. Both recorded current-validation JSON files have 33 assets and 0 errors."
+    },
+    {
+      "claim": "PR104: CSharp 49 and Python 92",
+      "result": "verified_historical_receipts",
+      "detail": "NUnit XML 49/49 passed; csharp_ci_verified.json partitions 37 core + 12 writer and identifies 483531b source,1940d280 merge checkout,run 34264295681; reconstruction-ci.log records 92 passed. No Unity execution inferred."
+    },
+    {
+      "claim": "Historical Foundation receipts unchanged",
+      "result": "verified",
+      "detail": "Git diff 483531b..d169 for docs/evidence/foundation is empty."
+    },
+    {
+      "claim": "Changes after final asset code are evidence only",
+      "result": "verified",
+      "detail": "Git diff f246a87..d169 changes 6 files, all under docs/evidence/REVIEW-20260909."
+    },
+    {
+      "claim": "Five issues blocked on independent review",
+      "result": "verified_historical_board_snapshot",
+      "detail": "#25,#26,#32,#52,#65; #14 is separately Blocked / External approval and #64 Review / Clear. No new live board query by this worker."
+    },
+    {
+      "claim": "PR97/98/104/105 review states COMMENTED",
+      "result": "verified_historical_publication_receipts",
+      "detail": "Four published response JSON files record COMMENTED, not APPROVED; PR105 review attaches f246a87 code while d169 head adds evidence only."
+    },
+    {
+      "claim": "Existing PR1–5 approvals",
+      "result": "verified_historical_publication_receipts_only",
+      "detail": "submitted_pr_reviews.json contains 5 GitHub APPROVED responses at explicit source SHAs. Current approval dismissal/merge status of PR1–5 was not re-fetched by this worker."
+    }
+  ],
+  "historicalBoardSnapshot": {
+    "sourceSha256": "b0c2018e7b27ebec85dc5900e5dc6d8fee7181e1df25f5d713d94f2f18366feb",
+    "liveStatusReverifiedByThisAudit": false,
+    "issues": [
+      {
+        "issue": 10,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/10#issuecomment-5593599178",
+        "recordedCardCount": 2,
+        "recordedStatus": "In progress",
+        "recordedGate": "Dependency"
+      },
+      {
+        "issue": 14,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/14#issuecomment-5593886828",
+        "recordedCardCount": 2,
+        "recordedStatus": "Blocked",
+        "recordedGate": "External approval"
+      },
+      {
+        "issue": 25,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/25#issuecomment-5594289943",
+        "recordedCardCount": 1,
+        "recordedStatus": "Blocked",
+        "recordedGate": "Independent review"
+      },
+      {
+        "issue": 26,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/26#issuecomment-5594291350",
+        "recordedCardCount": 1,
+        "recordedStatus": "Blocked",
+        "recordedGate": "Independent review"
+      },
+      {
+        "issue": 32,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/32#issuecomment-5594293374",
+        "recordedCardCount": 1,
+        "recordedStatus": "Blocked",
+        "recordedGate": "Independent review"
+      },
+      {
+        "issue": 52,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/52#issuecomment-5594296404",
+        "recordedCardCount": 2,
+        "recordedStatus": "Blocked",
+        "recordedGate": "Independent review"
+      },
+      {
+        "issue": 64,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/64#issuecomment-5593903350",
+        "recordedCardCount": 2,
+        "recordedStatus": "Review",
+        "recordedGate": "Clear"
+      },
+      {
+        "issue": 65,
+        "comment": "https://github.com/xrlab-dau/CHOOGuard/issues/65#issuecomment-5594294905",
+        "recordedCardCount": 2,
+        "recordedStatus": "Blocked",
+        "recordedGate": "Independent review"
+      }
+    ]
+  },
+  "currentGithubObservation": {
+    "path": "aaa-review/current-github-observation.json",
+    "sha256": "297a536e8b58ef92f96f68e3499fb831ff8a75ca8add221107d03c5815cf5629",
+    "observedAt": "2026-09-09T02:01:35.473Z",
+    "source": "Root read-only GitHub fetch",
+    "prs": [
+      {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "baseRef": "develop",
+        "draft": true,
+        "head": "9af125b22ac3989a18593238c3331031496c164f",
+        "headRef": "bugfix/52-pm-validation-batch",
+        "number": 97,
+        "state": "open",
+        "title": "fix(bootstrap): bind policy checks to reviewed manifests",
+        "url": "https://github.com/xrlab-dau/CHOOGuard/pull/97"
+      },
+      {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "baseRef": "develop",
+        "draft": true,
+        "head": "61309b3f83457d9b7e89de2ca409b18358bebe61",
+        "headRef": "docs/52-work-unit-graph",
+        "number": 98,
+        "state": "open",
+        "title": "docs(planning): reconcile individual work unit dependencies",
+        "url": "https://github.com/xrlab-dau/CHOOGuard/pull/98"
+      },
+      {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "baseRef": "develop",
+        "draft": true,
+        "head": "483531b186a429f9b75746af39093e00eae0377b",
+        "headRef": "bugfix/reconstruction-capture-receipt-review",
+        "number": 104,
+        "state": "open",
+        "title": "fix(reconstruction): bind completed captures to verified PNG bytes",
+        "url": "https://github.com/xrlab-dau/CHOOGuard/pull/104"
+      },
+      {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "baseRef": "develop",
+        "draft": true,
+        "head": "d169b560762ed7c3d4969e845a2750760941ee84",
+        "headRef": "bugfix/reference-review-inputs",
+        "number": 105,
+        "state": "open",
+        "title": "fix(art): reject malformed reference evidence during review",
+        "url": "https://github.com/xrlab-dau/CHOOGuard/pull/105"
+      }
+    ],
+    "oldPolicyReviewAndCiHead": "39e5dc24892744feacec09eac0c2e71951cb31c8",
+    "latestPolicyHead": "9af125b22ac3989a18593238c3331031496c164f",
+    "latestRunsReportedByRoot": {
+      "97": 34299012185,
+      "105": 34298931594
+    },
+    "oldTestCountsTransferredToNewPolicyHead": false,
+    "runSourceBinding": "verified_from_full_per_run_metadata",
+    "supplementalRunMetadata": [
+      {
+        "path": "aaa-review/policy-latest-github-ci.json",
+        "sha256": "6bb336fa99fdbd86a5d10e558d2b465064265a14725697b4ba3075668d497bb6",
+        "requestPath": "/repos/xrlab-dau/CHOOGuard/actions/runs/34299012185",
+        "runId": 34299012185,
+        "headSha": "9af125b22ac3989a18593238c3331031496c164f",
+        "conclusion": "success",
+        "event": "pull_request"
+      },
+      {
+        "path": "aaa-review/asset-latest-github-ci.json",
+        "sha256": "ab6eb0fb78bbce703d65b1a6d65730cec01139edc921c3080e71a5482d507633",
+        "requestPath": "/repos/xrlab-dau/CHOOGuard/actions/runs/34298931594",
+        "runId": 34298931594,
+        "headSha": "d169b560762ed7c3d4969e845a2750760941ee84",
+        "conclusion": "success",
+        "event": "pull_request"
+      }
+    ],
+    "latestTestCountScope": "This audit establishes run conclusion and head binding. It does not copy historical 107/103 policy counts to the latest run or claim a fresh Unity run."
+  },
+  "pendingConditions": [
+    {
+      "issue": 10,
+      "status": "unimplemented_fmp01",
+      "pending": [
+        "13-region,20-client,NPC100,2-incident versus100/500/3 scope alignment",
+        "WorldId/ShiftId/ParticipantId/TeamId/CommandId and WorldState/ObservedState contracts",
+        "requirement-to-implementation/test/limitation traceability"
+      ],
+      "evidence": "Issue10 snapshot and canonical requirements/architecture at d169 retain single-user/no-network scope; no new feature implementation was part of this audit."
+    },
+    {
+      "issue": 14,
+      "status": "bounded_text_review_accepted_external_delivery_pending",
+      "pending": [
+        "Designated recipient delivery and reply",
+        "Institutional approval under issue15",
+        "Actual source authority comparison"
+      ],
+      "evidence": "Three historical Qwen lenses cover 3 text files and recorded document hashes; DOCX/PDF bytes match the historical hashes. No new Word rendering or KORAIL transmission occurred."
+    },
+    {
+      "issues": [
+        25,
+        26,
+        32
+      ],
+      "status": "historical_independent_review_gate_unsatisfied",
+      "pending": [
+        "Reliable accepted required lenses for the applicable immutable scope",
+        "Actual Unity canonical tests and applicable HMD/runtime acceptance",
+        "Real role/SOP mapping and later multiplayer acceptance"
+      ],
+      "evidence": "37 core NUnit tests are part of 49 hosted .NET cases; Unity canonical 15 were not executed in the review."
+    },
+    {
+      "issue": 52,
+      "status": "policy_implementation_and_authority_gates_separate",
+      "pending": [
+        "Independent review of latest PR97 source",
+        "Actual approved policy-file set and external pin",
+        "Human disposition of unavailable original 105-key journal"
+      ],
+      "evidence": "PR98 bounded graph received 3 historical accepted lenses; PR97 round 3 policy target 39e5dc2 received 3 changes_required responses. No old source approval or policy approval is renewed."
+    },
+    {
+      "issue": 64,
+      "status": "bounded_historical_context_review_accepted_handoff_pending",
+      "pending": [
+        "Current changed metadata scope as appropriate",
+        "Real school-PC new checkout and team acceptance",
+        "Final closure"
+      ],
+      "evidence": "Historical approval covers 4 manifested source files at 483531b, not a new school-PC run, all future graph refreshes or a new inspection of generated HTML."
+    },
+    {
+      "issue": 65,
+      "status": "asset_fix_tests_recorded_independent_gate_pending",
+      "pending": [
+        "Review of latest fixed validator target",
+        "New asset image/native Unity visual inspection when required",
+        "Real facility geometry, institutional procedures and field transfer"
+      ],
+      "evidence": "Historical 15 tests / 33 records do not constitute new visual or facility acceptance. Code after 778f2446 changed at f246a87 without new external approval."
+    },
+    {
+      "pr": 104,
+      "status": "filesystem_tests_passed_unity_integration_unexecuted",
+      "pending": [
+        "Unity compile/JsonUtility/render lifecycle",
+        "13 new Unity cases and 15 canonical cases",
+        "GameObject/StopCoroutine lifecycle and actual capture validation",
+        "Required accepted independent views"
+      ],
+      "evidence": "49 hosted NUnit = 37 core + 12 capture writer; reconstruction 92 passed; nominal Unity workflow success is disabled/skipped execution and is not an Editor pass."
+    }
+  ],
+  "methodologyLimits": [
+    "Historical provider/runtime/jobs are supported by preserved receipts, not re-executed by this worker.",
+    "Historical claimed approval-review rejection and later allowance are documented; exact permission transcript is not present in durable evidence and grants no new authorization.",
+    "Internal isolated OpenAI sessions are independent passes but not independent-provider approval.",
+    "Root reported a methodology contamination incident in a different worker/supervisor exchange; this worker has not read those reports. Root owns the incident record and clean supervisor replacement.",
+    "No final comparative report is issued until root releases both new reviewer locks."
+  ],
+  "outputs": [
+    "docs/evidence/AAA-20260909/historical-adjudication-overlay.json",
+    "docs/evidence/AAA-20260909/evidence-audit.json",
+    "docs/evidence/AAA-20260909/evidence-corrections.md"
+  ]
+}

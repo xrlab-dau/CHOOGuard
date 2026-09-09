@@ -740,12 +740,12 @@
       "sources": [
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "2747b53bc8defd0398a60869290218f4f4688820626ce897bc631448e57d1e23",
+          "sha256": "f796e72191cbfddcad611e5340547199afdf6216a6691d3d560df1574a87ff0c",
           "label": "--asset 조회·--inventory·--require-reviewed 검사"
         },
         {
           "repoPath": "scripts/art/test_reference_assets.py",
-          "sha256": "0c88b1198e0e824f78e687b659bd377b05ba81202bd1ab803ae300b57e6685f7",
+          "sha256": "b10600e5c71fc42c09f154bed85bf1c6a5f970c7aeb434a083bd13f3c78d8e2f",
           "label": "출처·해시·장면 사용·시각 검수 실패 fixture"
         },
         {
@@ -787,7 +787,7 @@
         },
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "2747b53bc8defd0398a60869290218f4f4688820626ce897bc631448e57d1e23",
+          "sha256": "f796e72191cbfddcad611e5340547199afdf6216a6691d3d560df1574a87ff0c",
           "label": "아트 담당자의 자산 ID별 근거 조회"
         },
         {
@@ -1917,38 +1917,6 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "component.school_independent_work",
-        "decision.production.local_cv_school_independent",
-        "workflow.start_validate"
-      ],
-      "reason": "School PC verified PR61 merged; reread handoff and retain separate school work branches and historical acceptance limits."
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "component.school_independent_work",
-        "decision.production.local_cv_school_independent"
-      ],
-      "reason": "Link actual school-PC setup and Windows results while retaining historical Mac and unexecuted school-task limits."
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "component.context_graph",
-        "workflow.start_validate"
-      ],
-      "reason": "Reviewed Windows symlink test split and actual school-PC validation handoff; prior evidence coverage remains historical."
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "학교 PM 후속 기록에서 현재 병합 SHA, D-01~D-09 미결정, Git 한글 경로 수정과 검증 범위를 연결"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
         "workflow.start_validate"
       ],
       "reason": "사용자 요청으로 작업 중단 후 커밋·PR 인계: 새 Unity/Windows 검증과 미수용 성능 파일럿 기록 연결"
@@ -2081,6 +2049,34 @@
         "workflow.start_validate"
       ],
       "reason": "Review follow-up: reject malformed asset registry IDs and rows; preserve historical evidence coverage and independent-review limits."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.art_reference_tools"
+      ],
+      "reason": "AAA 재검수에서 자산 검증기·CLI의 중복 ID, 비정상 레코드, 검수 증거와 inventory 실패 처리 소스를 직접 대조했다. 25개 Python 회귀와 기존33종 검증은 소스 범위이며 새 Unity 시각 수용은 아니다."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "workflow.start_validate"
+      ],
+      "reason": "AAA 재검수에서 자산 검증기·CLI의 중복 ID, 비정상 레코드, 검수 증거와 inventory 실패 처리 소스를 직접 대조했다. 25개 Python 회귀와 기존33종 검증은 소스 범위이며 새 Unity 시각 수용은 아니다."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.art_reference_tools"
+      ],
+      "reason": "AAA 수정 루프의 최종 자산 검증기·테스트 소스를 직접 대조했다. 빈 자산 내보내기·비문자 치수 근거도 거부하며 Python 28개와 기존33종 검증은 소스 범위다. 역사적 이미지·Unity 수용은 갱신하지 않는다."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "workflow.start_validate"
+      ],
+      "reason": "AAA 수정 루프의 최종 자산 검증기·테스트 소스를 직접 대조했다. 빈 자산 내보내기·비문자 치수 근거도 거부하며 Python 28개와 기존33종 검증은 소스 범위다. 역사적 이미지·Unity 수용은 갱신하지 않는다."
     }
   ]
 }
