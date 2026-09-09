@@ -1,0 +1,46 @@
+name: R-07 Copilot provider preflight
+
+on:
+  push:
+    branches: [review/52-copilot-provider]
+    paths: [.github/workflows/r07-provider-preflight.yml]
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  preflight:
+    if: github.repository == 'xrlab-dau/CHOOGuard' && github.ref == 'refs/heads/review/52-copilot-provider'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      copilot-requests: write
+    steps:
+      - name: Install pinned official Copilot CLI
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/copilot-bin"
+          curl --fail --location --retry 2 --max-time 90 \
+            https://github.com/github/copilot-cli/releases/download/v1.0.83/copilot-linux-x64.tar.gz \
+            -o "$RUNNER_TEMP/copilot.tar.gz"
+          printf '%s  %s\n' \
+            ffbe1c429664b8a05efed67ecdb467123e40fcaa3c6c14ef9a98ba74da4687b7 \
+            "$RUNNER_TEMP/copilot.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/copilot.tar.gz" -C "$RUNNER_TEMP/copilot-bin"
+          "$RUNNER_TEMP/copilot-bin/copilot" --version
+      - name: Check Anthropic session authorization
+        shell: bash
+        env:
+          COPILOT_GITHUB_TOKEN: ${{ github.token }}
+          COPILOT_HOME: ${{ runner.temp }}/copilot-config
+        run: |
+          mkdir -p "$RUNNER_TEMP/empty-review"
+          cd "$RUNNER_TEMP/empty-review"
+          timeout 120 "$RUNNER_TEMP/copilot-bin/copilot" \
+            --model=claude-sonnet-4.6 \
+            --no-auto-update --no-custom-instructions --disable-builtin-mcps \
+            --available-tools=view --deny-tool=read --deny-tool=write \
+            --deny-tool=shell --deny-tool=url --no-ask-user \
+            --no-remote-export --no-color --log-level=none \
+            --max-ai-credits=35 --silent \
+            -p 'Authorization preflight only. Do not use tools or review code. Reply exactly: {"ready":true}.'
