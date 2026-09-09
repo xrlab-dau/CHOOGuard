@@ -1,0 +1,590 @@
+{
+  "repository": "xrlab-dau/CHOOGuard",
+  "targets": [
+    {
+      "criteria": [
+        {
+          "body": "<!-- publication-review-2026-09-07 -->\n## 현재 인계·검토 상태\n\nTrainingAction 7개 필드, 입력 방식, 역할/행동/Anchor/사전 상태 계약과 거부 시 불변·중복 입력 처리를 구현했다.\n\n- [x] 적용 코드와 자동 시험 구현: 코어 커밋 `d03056331f5e17906de482f5f5b34090e7286922`\n- [x] 7개 작업 단위 커밋을 원격 전달하고 develop 대상 PR #61 연결\n- [x] 필수 정책 CI 통과. GitHub에서 새로 받은 head `f1775def4ebf4704be7ba71e4e0d5fa988a97697`를 로컬 Unity 6000.3.23f1에서 EditMode 99/99, PlayMode 16/16 검사. Python 데이터 31개·정책 단위 5개 통과\n- [ ] 적용 가능한 독립 제공자·사람 검토 및 최종 수용\n\n**Review**로 이동한다. 입력 방식 비교는 계약 fixture이며 실제 HMD 검증은 별도다. 실제 직무/매뉴얼 매핑은 #62에서 추적한다. 과거 본문의 미작성/학교 전용 표기는 당시 이력이고 이 절이 현재 코드 상태다.\n\n[전달 절차](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/choo-guard-foundation-handoff.md) · [게시 준비 검수](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/evidence/foundation/2026-09-07-publication-review.json)\n\n---\n## 기존 범위·이력\n\n<!-- foundation-scope-2026-09-06 -->\n## 현행 Foundation 착수 범위 (2026-09-06)\n\n순수 C# TrainingAction/ActionResult/handler와 검증 시험을 작성한다. Unity 프로젝트 전체 완료를 소스 작성 선행으로 요구하지 않는다. 학교 EditMode 결과는 별도 필요.\n\n사용자 지시(2026-09-06): Foundation은 KORAIL 데이터·회신 없이 팀원이 개발 착수할 수 있도록 구축하는 모든 기반이다. 합성 데이터·소스 개발은 지금 진행한다. Unity·HMD와 무거운 모델링·렌더·베이크는 학교 PC에서 수행한다.\n\n제품 방향: 1명의 실제 조작자, VR/Desktop 공통 행동·Quest·가상 팀 상태·설명형 피드백, 교체 가능한 임시 5직무, KORAIL 검증 전 예시 표시. 공식 점수·이수·실제 네트워크·NPC·SSO/LMS는 MVP 범위 밖이다.\n\n합성 기반 완료는 승인 촬영 기반 MAP-01/P1 또는 최종 MVP 완료를 대신하지 않는다. Pi/MCP를 사용하는 실행에 적용되는 도구 조건은 유지하며, 전체 도구 제어면 구축을 순수 코드·합성 데이터 작성의 전역 선행조건으로 사용하지 않는다. 기존 담당자는 유지하고 미배정 작업은 팀원이 자율 선택한다.\n\n기존 본문 아래 선행·Blocked 표기는 원문 기록이다. 합성 소스 착수에는 위 범위를 적용하고 실제 Unity·최종 MVP 수용 기준에는 해당 실행·증거 조건을 적용한다.\n\n---\n\n## 목적과 추적\n\n**M2-02 · 공통 TrainingAction 계약**\n- 책임 역할: **PM**\n- 초기 상태: **Blocked**\n- 실행 환경: **School PC** (계획값, 실행 승인 아님)\n- 초기 차단/주의: 선행: M2-01; 실행/승인 증거 미확인.\n- 우선순위: P1 (팀 작업 정렬용 제안값)\n\n## 근거 문서\n- [docs/choo-guard-execution-backlog-v1.md](https://github.com/xrlab-dau/CHOOGuard/blob/6798032c839336f2c059a81db12a60602e731eae/docs/choo-guard-execution-backlog-v1.md)\n\n## 기준 백로그 원문\n\n- 최종 책임: PM\n- 에이전트: Core Agent\n- 원문 작성 시 상태: Blocked\n- 선행: M2-01\n- 추적: FR-03~05, RUN-01\n- 산출물: `TrainingAction`, `ActionResult`, `ITrainingActionHandler`, `RoleActionFixture`\n- DoD:\n  - [ ] `ScenarioVersion / RoleId / PreStateHash / ActionId / TargetAnchorId` 조건이 행동 계약에 포함됨\n  - [ ] VR·Desktop 입력이 같은 fixture 기대 Quest 상태·가상 팀 이벤트·피드백 의미와 비교됨\n  - [ ] 순수 C# EditMode 테스트 통과\n\n## 선행·연관 작업\n\n- [ ] M2-01 #24 완료/적용 가능한 선행 조건 확인\n\n## 완료 확인과 인계\n\n- [ ] 원문 작업별 DoD와 적용 요구사항·검증 ID를 충족했다.\n- [ ] 기준 커밋/대상 manifest, 구현 PR, 실제 테스트 및 정제 증거 참조를 연결했다.\n- [ ] 작성자와 다른 제공자·모델의 필수 독립 검토 및 재검토 PASS를 확인했다(해당 단위의 적용 조건 기준).\n- [ ] 자료 접근·모델 전송·공개·병합 승인을 구분해 필요한 사람 승인을 받았다.\n- [ ] PM이 최종 DoD를 확인한 뒤 이슈를 닫는다. PR 병합 또는 파일 존재만으로 Done 처리하지 않는다.\n\n**진행 기록:** 담당 계정 / 작업 브랜치·PR / 기준 커밋 / 테스트 결과 / 정제 증거 / 다음 행동을 댓글에 기록한다.\n\n**공개 범위:** 이 이슈는 공개다. 실제 회신·촬영물·개인 계정 매핑·호스트명·민감 경로·원문 영수증은 올리지 않고 승인된 비민감 참조만 남긴다.\n\n**운영:** 공유 작업의 Status는 개발 실행 Project가 기준이다. 준비·승인 Project의 표시도 함께 갱신한다. 사용자 지정 필드는 프로젝트 간 자동 동기화되지 않는다.",
+          "number": 25,
+          "title": "[M2-02] 공통 TrainingAction 계약"
+        },
+        {
+          "body": "<!-- publication-review-2026-09-07 -->\n## 현재 인계·검토 상태\n\nTrainingSession 상태 전이와 설명형 피드백을 구현했다. 공식 점수/이수 판정은 추가하지 않았다.\n\n- [x] 적용 코드와 자동 시험 구현: 코어 커밋 `d03056331f5e17906de482f5f5b34090e7286922`\n- [x] 7개 작업 단위 커밋을 원격 전달하고 develop 대상 PR #61 연결\n- [x] 필수 정책 CI 통과. GitHub에서 새로 받은 head `f1775def4ebf4704be7ba71e4e0d5fa988a97697`를 로컬 Unity 6000.3.23f1에서 EditMode 99/99, PlayMode 16/16 검사. Python 데이터 31개·정책 단위 5개 통과\n- [ ] 적용 가능한 독립 제공자·사람 검토 및 최종 수용\n\n**Review**로 이동한다. 입력 방식 비교는 계약 fixture이며 실제 HMD 검증은 별도다. 실제 직무/매뉴얼 매핑은 #62에서 추적한다. 과거 본문의 미작성/학교 전용 표기는 당시 이력이고 이 절이 현재 코드 상태다.\n\n[전달 절차](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/choo-guard-foundation-handoff.md) · [게시 준비 검수](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/evidence/foundation/2026-09-07-publication-review.json)\n\n---\n## 기존 범위·이력\n\n<!-- foundation-scope-2026-09-06 -->\n## 현행 Foundation 착수 범위 (2026-09-06)\n\n공유 계약·합성 fixture 초안으로 Quest·설명형 피드백 코어를 구현한다. #25/#32의 최종 Done을 초안 기반 소스 작성 선행으로 요구하지 않는다. 동일 버전 통합 시험은 완료 조건이다.\n\n사용자 지시(2026-09-06): Foundation은 KORAIL 데이터·회신 없이 팀원이 개발 착수할 수 있도록 구축하는 모든 기반이다. 합성 데이터·소스 개발은 지금 진행한다. Unity·HMD와 무거운 모델링·렌더·베이크는 학교 PC에서 수행한다.\n\n제품 방향: 1명의 실제 조작자, VR/Desktop 공통 행동·Quest·가상 팀 상태·설명형 피드백, 교체 가능한 임시 5직무, KORAIL 검증 전 예시 표시. 공식 점수·이수·실제 네트워크·NPC·SSO/LMS는 MVP 범위 밖이다.\n\n합성 기반 완료는 승인 촬영 기반 MAP-01/P1 또는 최종 MVP 완료를 대신하지 않는다. Pi/MCP를 사용하는 실행에 적용되는 도구 조건은 유지하며, 전체 도구 제어면 구축을 순수 코드·합성 데이터 작성의 전역 선행조건으로 사용하지 않는다. 기존 담당자는 유지하고 미배정 작업은 팀원이 자율 선택한다.\n\n기존 본문 아래 선행·Blocked 표기는 원문 기록이다. 합성 소스 착수에는 위 범위를 적용하고 실제 Unity·최종 MVP 수용 기준에는 해당 실행·증거 조건을 적용한다.\n\n---\n\n## 목적과 추적\n\n**M2-03 · Quest·Feedback 역할 연동**\n- 책임 역할: **PM**\n- 초기 상태: **Blocked**\n- 실행 환경: **School PC** (계획값, 실행 승인 아님)\n- 초기 차단/주의: 선행: M2-02, M4-01; 실행/승인 증거 미확인.\n- 우선순위: P1 (팀 작업 정렬용 제안값)\n\n## 근거 문서\n- [docs/choo-guard-execution-backlog-v1.md](https://github.com/xrlab-dau/CHOOGuard/blob/6798032c839336f2c059a81db12a60602e731eae/docs/choo-guard-execution-backlog-v1.md)\n\n## 기준 백로그 원문\n\n- 최종 책임: PM\n- 협력: QA\n- 에이전트: Core Agent + Scenario Agent\n- 원문 작성 시 상태: Blocked\n- 선행: M2-02, M4-01\n- 추적: FR-03~06, FR-09~10\n- 범위:\n  - 대표 역할 전체 흐름\n  - 네 역할 핵심 행동 한 개\n  - 공식 점수 없음\n  - provisional 표시\n- DoD:\n  - [ ] M4-01 fixture의 사전 상태·대상 Anchor·기대 상태·피드백과 일치\n  - [ ] 데이터 기반 상태 전이와 설명형 피드백 필수 테스트 통과\n\n## 선행·연관 작업\n\n- [ ] M2-02 #25 완료/적용 가능한 선행 조건 확인\n- [ ] M4-01 #32 완료/적용 가능한 선행 조건 확인\n\n## 완료 확인과 인계\n\n- [ ] 원문 작업별 DoD와 적용 요구사항·검증 ID를 충족했다.\n- [ ] 기준 커밋/대상 manifest, 구현 PR, 실제 테스트 및 정제 증거 참조를 연결했다.\n- [ ] 작성자와 다른 제공자·모델의 필수 독립 검토 및 재검토 PASS를 확인했다(해당 단위의 적용 조건 기준).\n- [ ] 자료 접근·모델 전송·공개·병합 승인을 구분해 필요한 사람 승인을 받았다.\n- [ ] PM이 최종 DoD를 확인한 뒤 이슈를 닫는다. PR 병합 또는 파일 존재만으로 Done 처리하지 않는다.\n\n**진행 기록:** 담당 계정 / 작업 브랜치·PR / 기준 커밋 / 테스트 결과 / 정제 증거 / 다음 행동을 댓글에 기록한다.\n\n**공개 범위:** 이 이슈는 공개다. 실제 회신·촬영물·개인 계정 매핑·호스트명·민감 경로·원문 영수증은 올리지 않고 승인된 비민감 참조만 남긴다.\n\n**운영:** 공유 작업의 Status는 개발 실행 Project가 기준이다. 준비·승인 Project의 표시도 함께 갱신한다. 사용자 지정 필드는 프로젝트 간 자동 동기화되지 않는다.",
+          "number": 26,
+          "title": "[M2-03] Quest·Feedback 역할 연동"
+        },
+        {
+          "body": "<!-- publication-review-2026-09-07 -->\n## 현재 인계·검토 상태\n\n읽기 전용 팀 상태와 다른 4개 역할의 알림 이벤트를 구현했다. 알림을 해당 직무의 수행 완료 또는 실제 멀티플레이로 간주하지 않는다.\n\n- [x] 적용 코드와 자동 시험 구현: 코어 커밋 `d03056331f5e17906de482f5f5b34090e7286922`\n- [x] 7개 작업 단위 커밋을 원격 전달하고 develop 대상 PR #61 연결\n- [x] 필수 정책 CI 통과. GitHub에서 새로 받은 head `f1775def4ebf4704be7ba71e4e0d5fa988a97697`를 로컬 Unity 6000.3.23f1에서 EditMode 99/99, PlayMode 16/16 검사. Python 데이터 31개·정책 단위 5개 통과\n- [ ] 적용 가능한 독립 제공자·사람 검토 및 최종 수용\n\n**Review**로 이동한다. 입력 방식 비교는 계약 fixture이며 실제 HMD 검증은 별도다. 실제 직무/매뉴얼 매핑은 #62에서 추적한다. 과거 본문의 미작성/학교 전용 표기는 당시 이력이고 이 절이 현재 코드 상태다.\n\n[전달 절차](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/choo-guard-foundation-handoff.md) · [게시 준비 검수](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/evidence/foundation/2026-09-07-publication-review.json)\n\n---\n## 기존 범위·이력\n\n<!-- foundation-scope-2026-09-06 -->\n## 현행 Foundation 착수 범위 (2026-09-06)\n\n공유 계약·합성 fixture 초안으로 결정론적 VirtualTeamSimulator를 구현한다. 네트워크·NPC 없이 정확한 팀 이벤트와 상태를 시험한다.\n\n사용자 지시(2026-09-06): Foundation은 KORAIL 데이터·회신 없이 팀원이 개발 착수할 수 있도록 구축하는 모든 기반이다. 합성 데이터·소스 개발은 지금 진행한다. Unity·HMD와 무거운 모델링·렌더·베이크는 학교 PC에서 수행한다.\n\n제품 방향: 1명의 실제 조작자, VR/Desktop 공통 행동·Quest·가상 팀 상태·설명형 피드백, 교체 가능한 임시 5직무, KORAIL 검증 전 예시 표시. 공식 점수·이수·실제 네트워크·NPC·SSO/LMS는 MVP 범위 밖이다.\n\n합성 기반 완료는 승인 촬영 기반 MAP-01/P1 또는 최종 MVP 완료를 대신하지 않는다. Pi/MCP를 사용하는 실행에 적용되는 도구 조건은 유지하며, 전체 도구 제어면 구축을 순수 코드·합성 데이터 작성의 전역 선행조건으로 사용하지 않는다. 기존 담당자는 유지하고 미배정 작업은 팀원이 자율 선택한다.\n\n기존 본문 아래 선행·Blocked 표기는 원문 기록이다. 합성 소스 착수에는 위 범위를 적용하고 실제 Unity·최종 MVP 수용 기준에는 해당 실행·증거 조건을 적용한다.\n\n---\n\n## 목적과 추적\n\n**M2-04 · 가상 팀 상태 Provider**\n- 책임 역할: **PM**\n- 초기 상태: **Blocked**\n- 실행 환경: **School PC** (계획값, 실행 승인 아님)\n- 초기 차단/주의: 선행: M2-02, M4-01; 실행/승인 증거 미확인.\n- 우선순위: P1 (팀 작업 정렬용 제안값)\n\n## 근거 문서\n- [docs/choo-guard-execution-backlog-v1.md](https://github.com/xrlab-dau/CHOOGuard/blob/6798032c839336f2c059a81db12a60602e731eae/docs/choo-guard-execution-backlog-v1.md)\n\n## 기준 백로그 원문\n\n- 최종 책임: PM\n- 협력: QA\n- 에이전트: Core Agent\n- 원문 작성 시 상태: Blocked\n- 선행: M2-02, M4-01\n- 추적: FR-06~08\n- DoD:\n  - [ ] 사용자 행동 후 fixture에 정의된 다른 역할의 상태·보고·인계 이벤트와 정확히 일치\n  - [ ] 네트워크·NPC 의존성 없음\n  - [ ] 후속 네트워크 구현을 위한 인터페이스 분리\n\n## 선행·연관 작업\n\n- [ ] M2-02 #25 완료/적용 가능한 선행 조건 확인\n- [ ] M4-01 #32 완료/적용 가능한 선행 조건 확인\n\n## 완료 확인과 인계\n\n- [ ] 원문 작업별 DoD와 적용 요구사항·검증 ID를 충족했다.\n- [ ] 기준 커밋/대상 manifest, 구현 PR, 실제 테스트 및 정제 증거 참조를 연결했다.\n- [ ] 작성자와 다른 제공자·모델의 필수 독립 검토 및 재검토 PASS를 확인했다(해당 단위의 적용 조건 기준).\n- [ ] 자료 접근·모델 전송·공개·병합 승인을 구분해 필요한 사람 승인을 받았다.\n- [ ] PM이 최종 DoD를 확인한 뒤 이슈를 닫는다. PR 병합 또는 파일 존재만으로 Done 처리하지 않는다.\n\n**진행 기록:** 담당 계정 / 작업 브랜치·PR / 기준 커밋 / 테스트 결과 / 정제 증거 / 다음 행동을 댓글에 기록한다.\n\n**공개 범위:** 이 이슈는 공개다. 실제 회신·촬영물·개인 계정 매핑·호스트명·민감 경로·원문 영수증은 올리지 않고 승인된 비민감 참조만 남긴다.\n\n**운영:** 공유 작업의 Status는 개발 실행 Project가 기준이다. 준비·승인 Project의 표시도 함께 갱신한다. 사용자 지정 필드는 프로젝트 간 자동 동기화되지 않는다.",
+          "number": 27,
+          "title": "[M2-04] 가상 팀 상태 Provider"
+        },
+        {
+          "body": "<!-- publication-review-2026-09-07 -->\n## 현재 인계·검토 상태\n\n5개 임시 직무·행동·Anchor·기대 상태/피드백/팀 이벤트와 schema를 정본 데이터 및 negative fixture로 고정했다.\n\n- [x] 적용 코드와 자동 시험 구현: 코어 커밋 `d03056331f5e17906de482f5f5b34090e7286922`\n- [x] 7개 작업 단위 커밋을 원격 전달하고 develop 대상 PR #61 연결\n- [x] 필수 정책 CI 통과. GitHub에서 새로 받은 head `f1775def4ebf4704be7ba71e4e0d5fa988a97697`를 로컬 Unity 6000.3.23f1에서 EditMode 99/99, PlayMode 16/16 검사. Python 데이터 31개·정책 단위 5개 통과\n- [ ] 적용 가능한 독립 제공자·사람 검토 및 최종 수용\n\n**Review**로 이동한다. 입력 방식 비교는 계약 fixture이며 실제 HMD 검증은 별도다. 실제 직무/매뉴얼 매핑은 #62에서 추적한다. 과거 본문의 미작성/학교 전용 표기는 당시 이력이고 이 절이 현재 코드 상태다.\n\n[전달 절차](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/choo-guard-foundation-handoff.md) · [게시 준비 검수](https://github.com/xrlab-dau/CHOOGuard/blob/f1775def4ebf4704be7ba71e4e0d5fa988a97697/docs/evidence/foundation/2026-09-07-publication-review.json)\n\n---\n## 기존 범위·이력\n\n<!-- foundation-scope-2026-09-06 -->\n## 현행 Foundation 착수 범위 (2026-09-06)\n\n합성 5직무·대표 지정·행동/Anchor/사전 상태/기대 Quest·팀 이벤트·피드백 fixture를 작성한다. #25와 계약을 함께 고정하며 순환 선행을 제거한다. 실제 직무·절차로 주장하지 않는다.\n\n사용자 지시(2026-09-06): Foundation은 KORAIL 데이터·회신 없이 팀원이 개발 착수할 수 있도록 구축하는 모든 기반이다. 합성 데이터·소스 개발은 지금 진행한다. Unity·HMD와 무거운 모델링·렌더·베이크는 학교 PC에서 수행한다.\n\n제품 방향: 1명의 실제 조작자, VR/Desktop 공통 행동·Quest·가상 팀 상태·설명형 피드백, 교체 가능한 임시 5직무, KORAIL 검증 전 예시 표시. 공식 점수·이수·실제 네트워크·NPC·SSO/LMS는 MVP 범위 밖이다.\n\n합성 기반 완료는 승인 촬영 기반 MAP-01/P1 또는 최종 MVP 완료를 대신하지 않는다. Pi/MCP를 사용하는 실행에 적용되는 도구 조건은 유지하며, 전체 도구 제어면 구축을 순수 코드·합성 데이터 작성의 전역 선행조건으로 사용하지 않는다. 기존 담당자는 유지하고 미배정 작업은 팀원이 자율 선택한다.\n\n기존 본문 아래 선행·Blocked 표기는 원문 기록이다. 합성 소스 착수에는 위 범위를 적용하고 실제 Unity·최종 MVP 수용 기준에는 해당 실행·증거 조건을 적용한다.\n\n---\n\n## 참여 방식: 자율 선택·자기 배정\n\n이 작업은 특정 팀원에게 미리 배정하지 않습니다. **Projects의 전체 작업에서 원하는 미배정 이슈를 선택하고, Assignees에서 자기 자신을 지정**한 뒤 진행합니다. 분야나 아래 원문의 역할 표기는 담당자를 제한하지 않습니다.\n\n- 이미 담당자가 있으면 협의 없이 변경하지 않습니다.\n- **배정과 착수는 별개입니다.** 선행 작업·Blocker·필요 승인을 확인하고, Ready 조건이 충족된 뒤 실제 작업을 시작하며 In progress로 변경합니다. Blocked 상태에서는 선행 조건 해소를 기다립니다.\n- 진행 상황·브랜치/PR·다음 행동은 이슈 댓글에 남기고, 내 작업 보기에서 추적합니다.\n\n---\n\n## 목적과 추적\n\n**M4-01 · 임시 5직무·판정 fixture 정의**\n- 책임 역할: **QA**\n- 초기 상태: **Blocked**\n- 실행 환경: **Both** (계획값, 실행 승인 아님)\n- 초기 차단/주의: 백로그 Ready와 작업 그래프 M2-02 선행이 충돌. R-01에서 PM 결정 전 보수적으로 Blocked.\n- 우선순위: P1 (팀 작업 정렬용 제안값)\n\n## 근거 문서\n- [docs/choo-guard-execution-backlog-v1.md](https://github.com/xrlab-dau/CHOOGuard/blob/6798032c839336f2c059a81db12a60602e731eae/docs/choo-guard-execution-backlog-v1.md)\n\n## 기준 백로그 원문\n\n- 최종 책임: QA\n- 협력: PM\n- 에이전트: Scenario Agent\n- 원문 작성 시 상태: Ready\n- 추적: FR-01~06, FR-09~10\n- 주의: 명칭·책임은 KORAIL 검수 전 임시\n- DoD:\n  - [ ] 5개 역할이 데이터 파일에 존재\n  - [ ] 각 행에 역할 ID·대표 여부·행동 ID·대상 Anchor·사전 상태·기대 Quest 상태·기대 가상 팀 이벤트·피드백 의미가 정의됨\n  - [ ] 대표 역할 전체 흐름과 네 핵심 행동 정의\n  - [ ] provisional 문구 포함\n\n## 선행·연관 작업\n\n- 고정 선행 작업 없음. 위 주의사항과 적용 승인 범위를 확인한다.\n\n## 완료 확인과 인계\n\n- [ ] 원문 작업별 DoD와 적용 요구사항·검증 ID를 충족했다.\n- [ ] 기준 커밋/대상 manifest, 구현 PR, 실제 테스트 및 정제 증거 참조를 연결했다.\n- [ ] 작성자와 다른 제공자·모델의 필수 독립 검토 및 재검토 PASS를 확인했다(해당 단위의 적용 조건 기준).\n- [ ] 자료 접근·모델 전송·공개·병합 승인을 구분해 필요한 사람 승인을 받았다.\n- [ ] PM이 최종 DoD를 확인한 뒤 이슈를 닫는다. PR 병합 또는 파일 존재만으로 Done 처리하지 않는다.\n\n**진행 기록:** 담당 계정 / 작업 브랜치·PR / 기준 커밋 / 테스트 결과 / 정제 증거 / 다음 행동을 댓글에 기록한다.\n\n**공개 범위:** 이 이슈는 공개다. 실제 회신·촬영물·개인 계정 매핑·호스트명·민감 경로·원문 영수증은 올리지 않고 승인된 비민감 참조만 남긴다.\n\n**운영:** 공유 작업의 Status는 개발 실행 Project가 기준이다. 준비·승인 Project의 표시도 함께 갱신한다. 사용자 지정 필드는 프로젝트 간 자동 동기화되지 않는다.\n\n<!-- flat-evacuation-current-2026-09-07 -->\n## 현재 구현: 실제 구조·절차 충실도 + Flat Art (2026-09-07)\n\n사용자가 목표를 확정했다: 실제 환경의 배치·설비 위치·동선과 실제 비상대응 매뉴얼을 최대한 충실하게 재현하며, 외형은 flat 스타일만 사용한다. Desktop 이후 VR에서 동일 공간·행동 의미를 공유한다. 실제 역사 자료·직원 매뉴얼은 기준선 O-01~O-03에서 미수신이므로 현재 배치·세부 순서는 교체 가능한 검증 전 초안이다.\n\n- Blender 4.5.9 LTS ARM64로 22종 합성 자산 제작. 단색·무광·면 단위 음영, FBX와 편집 가능한 .blend 및 Python 생성기 제공. 무거운 렌더/베이크 없음.\n- 대합실·양측 대기실·분기/우회 통로·집결 공간. 장치·가구·표지·문틀·천장등·바닥 유도·장갑·동일 인간형 포함.\n- 플레이 중 지시 텍스트박스를 제거하고 맵 위 바닥 경로·현재 목표/E 표식으로 안내.\n- 3개 다단계 훈련, 6명 인솔/집결. 표정·감정 없이 대기 구역 배회 → 인솔자 추종 → 집결 대기. 모든 인원이 도착한 뒤 인원 확인 단말 조작이 가능.\n- 기존 5직무 코어 계약은 한 번만 제출; 추가 조작/인솔은 별도 훈련 상태. 팀 알림을 다른 직무 수행 완료로 바꾸지 않음.\n- EditMode 88개, PlayMode 14개 통과. 생성 장면의 3훈련 × 5역할 자동 이동·조작·6명 인솔·집결/재시작, 인솔 중 일시정지, FBX 단위/앞면/flat 법선·재질, 경로/바닥/참조 검증 포함.\n- Mac universal 빌드 성공, 장면 Renderer 408개 / 삼각형 181,804개 / 빌드 보고 약 113.5MB. 실제 실행 화면에서 flat 모델·맵 위 경로·한글 표식 확인.\n- 자동 시험은 실제 사람의 15조합 수동 완주를 뜻하지 않는다. 실제 시설/직원 매뉴얼 대조, 팀 리드 승인, Windows/VR/HMD 검증은 미완료. 소규모 NPC 회피이며 엄격한 군중 비중첩 보장은 아님.\n- 소스는 feature/foundation-starter 로컬 브랜치, 미푸시. 보드 등록만으로 팀에 코드 전달 또는 Done을 선언하지 않는다.\n\n소스/검증: docs/choo-guard-fps-foundation-progress.md, foundation/art/README.md, docs/evidence/foundation/2026-09-07-flat-evacuation.json. 인솔 작업: #59.\n\n<!-- continuous-world-2026-09-07 -->\n## 최신 기본 모드: 상시 현장·불시 사건\n\n\n\n- 훈련 종류 선택/사건 시작 버튼을 기본 플레이에서 제거하고, 현장 입장 후 평상시 순회·설비 확인을 제공.\n- 독립 시드로 발생 시점·종류·장소를 정하되, 사람과 겹치는 차단이나 대응 대상 없는 사건은 발생시키지 않음.\n- 중앙/서측/동측의 통행 제한·안내/통신 이상. 실제 상태가 장치 표시, 물리/논리 경로, 영향받은 NPC에 함께 반영.\n- 관측 정보와 내부 사건 상태 분리. 보고/경로 판단은 독립 순서로 가능하며 사건 조건에 따라 보조 통신·안내 전파가 필요.\n- 가까운 실제 NPC 직접 인솔, 거리/가림/등록 객체 검증, 실제 통로 통과와 집결 확인. 미영향 NPC는 평상시 이동 유지.\n- 완료 후 같은 현장이 복구되어 다음 사건으로 이어짐. 플레이어/NPC 복구 순간이동 없음.\n- 시드·프로필 사본·근무 ID·발생 당시 위치·행동/관측/도착 기록, 완료 사건 복기. 이전 근무 기록 보존.\n\n## 검증과 남은 범위\n\n- EditMode 99/99 통과: 기존 계약, flat 자산, 상태 조건, 세 위치의 동적 통행 제한/우회, 공간 연결, 양쪽 면 통과, source binding 포함.\n- PlayMode 16/16 통과. 새 현장 통합 시험에서 순회·불시 발생·직접 인솔·연속 두 사건·복구와 두 유형 × 세 위치 전체 6조합 확인. 기존 15개 선택형 드릴/직무 회귀도 유지. 실제 Mac 화면에서 사건 선택이 없는 현장 입장 메뉴 확인.\n- Mac universal 빌드 생성: Renderer 465, triangles 199,984, 보고 113,563,880 bytes.\n- 현재 프로필은 synthetic-unverified. 실제 시설 자료, 직원 매뉴얼, 운영 데이터와 연결된 검증된 디지털 트윈 및 현장 전이 효과를 주장하지 않음.\n- 모델/사건/행동의 용도별 실제 자료 대조, 현업 담당자 검토, 미학습 사건 변형과 승인 현장 모의훈련의 수행 검증은 별도.\n- 코드 feature/foundation-starter 로컬 브랜치, 미푸시. 팀 전달·Windows/VR/HMD·최종 Done은 미완료.\n\n문서: docs/choo-guard-open-world-training.md. 기존 선택형 3드릴은 회귀 fixture로만 유지한다. 연결 #54 #56 #57 #59 #35 #33 #34 #32.\n\n상위 연결: #60. 기본 플레이가 선택형 드릴에서 연속 현장 모드로 변경되었다. 기존 선택형 드릴 결과는 회귀 증거로만 유지한다.",
+          "number": 32,
+          "title": "[M4-01] 임시 5직무·판정 fixture 정의"
+        }
+      ],
+      "diff_paths": [],
+      "issues": [
+        25,
+        26,
+        27,
+        32
+      ],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "483531b186a429f9b75746af39093e00eae0377b",
+        "sources": [
+          {
+            "bytes": 1561,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs",
+            "sha256": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513"
+          },
+          {
+            "bytes": 5283,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioValidation.cs",
+            "sha256": "aac8aa2c29253764df2d7810e6cd5c122f4ce6aeb02397c5982b781b8311a58e"
+          },
+          {
+            "bytes": 2944,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs",
+            "sha256": "f52ede22cef4f0146bdd1b6031da20ef11b8352e65fe9418a1d09c0339a9cc66"
+          },
+          {
+            "bytes": 4522,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+            "sha256": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945"
+          },
+          {
+            "bytes": 6759,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "sha256": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b"
+          },
+          {
+            "bytes": 1340,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs",
+            "sha256": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a"
+          },
+          {
+            "bytes": 14975,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+            "sha256": "0670af37a515868fa7067c28a89febca9f81a4c67665c0b51ff8a0c6a06a0caa"
+          },
+          {
+            "bytes": 4178,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CanonicalScenarioTests.cs",
+            "sha256": "7f78095afa6b3afdf5dc7d874c952169dc4b007e4500f9d317d5c96950d00f8a"
+          },
+          {
+            "bytes": 2574,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "foundation/README.md",
+            "sha256": "02fee6d9d7dc24c880bb05ca86368f4027ff9f750ca9cac0e3e0c085777d98d3"
+          },
+          {
+            "bytes": 6078,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "foundation/scenarios/foundation-demo.json",
+            "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969"
+          },
+          {
+            "bytes": 643,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "foundation/anchors/synthetic-room.json",
+            "sha256": "e6051a3d9131e0e920c4976e197033d5c541f9452d4b4c1f3733d07ad593b5c5"
+          },
+          {
+            "bytes": 9826,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/foundation/validate.py",
+            "sha256": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d"
+          },
+          {
+            "bytes": 13592,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/foundation/tests/test_validate.py",
+            "sha256": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721"
+          }
+        ],
+        "uncommitted": []
+      },
+      "manifest_sha256": "f64dffe238d25a8fd9f1ce865bf7b1dc5dde2fe3b181cf180031ddbf4159d9a8",
+      "reviewContext": {
+        "round": 3,
+        "authorRebuttal": "Independently adjudicate these current-source rebuttals to R2; the author may be wrong. C1/all A0: TrainingAction deliberately transports invalid enum values; ValidateAction returns InvalidModality before mutation for non-VR/Desktop, tested with (InputModality)99. Throwing from its constructor changes the rejection-result contract. C2/spec A1/adversarial A1: ONE OWNER THREAD is explicitly documented. StateHash.Session allocates a local list, not shared state; future concurrent callers are outside scope. C3/spec A2: constructor CopyValidated validates and deep-copies roles/events into a private profile; RoleBriefing exposes immutable string copies. CallerCannotMutateTheRunningScenarioThroughDtos exercises alias isolation. C4/spec A3: blank briefing/feedback is forbidden by the fixture contract and README; no required empty-text use case exists. C5/adversarial A2/safety A2: team states come from an ordinal SortedDictionary as a copied list, five roles are enforced, even an empty hash field list would be deterministic. C6/adversarial A3: CreateRoleActionFixture begins with if(phase != Ready) throw. C7/safety A1: ApplyValidated is INTERNAL, only production caller Submit passes non-null ToArray from validated private definitions. C8/spec note: README has no foundation-2 string; synthetic unit Profile/Action both use foundation-1; canonical test reads actual JSON version. Cite a concrete supported failing path to sustain any claim. 37 hosted core tests passed; canonical15 and Unity NOT rerun. No source changes made for these disputed findings.",
+        "previousRecords": [
+          {
+            "lens": "spec",
+            "responseSha256": "154527b06c2243cea4ef3e56c97bb05b0006fb1211a4b87e55cd189127f15665",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "A0",
+                "title": "Missing InputModality Validation in TrainingAction"
+              },
+              {
+                "id": "A1",
+                "title": "Potential Race Condition in StateHash.Session"
+              },
+              {
+                "id": "A2",
+                "title": "Unvalidated RoleDefinition Assignment in TrainingSession"
+              },
+              {
+                "id": "A3",
+                "title": "Inconsistent Handling of Empty Strings in Validation"
+              }
+            ]
+          },
+          {
+            "lens": "adversarial",
+            "responseSha256": "094633b6e15b262f33c2f1be09c75f9ae5e92b15cd65248dee07532fda2006de",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "A0",
+                "title": "Missing InputModality Validation in TrainingAction"
+              },
+              {
+                "id": "A1",
+                "title": "Potential Race Condition in TeamStateProvider"
+              },
+              {
+                "id": "A2",
+                "title": "Incorrect StateHash Calculation for Empty Lists"
+              },
+              {
+                "id": "A3",
+                "title": "Unvalidated RoleActionFixture Creation"
+              }
+            ]
+          },
+          {
+            "lens": "safety",
+            "responseSha256": "59446491b419c345d5d1b024ca0f69ec277d31df5b66ba5c8ca2ba6da3a8f408",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "A0",
+                "title": "Missing InputModality Validation in TrainingAction"
+              },
+              {
+                "id": "A1",
+                "title": "Potential NullReferenceException in VirtualTeamSimulator"
+              },
+              {
+                "id": "A2",
+                "title": "Inconsistent StateHash Calculation"
+              }
+            ]
+          }
+        ]
+      },
+      "round": 3,
+      "scope": "Review the EXISTING provisional single-user common core and five-role fixtures, not the new FMP multiplayer scope. Relevant fresh hosted core NUnit tests: 37 passed; Unity CanonicalScenarioTests 15 cases were NOT executed. No VR, field procedure, physical safety, score/certification or multiplayer acceptance. Focus on source correctness, rejection invariants, state isolation, golden/fixture compatibility and role notification contracts.",
+      "unit": "core-contracts"
+    },
+    {
+      "criteria": [
+        {
+          "body": "## 문제와 범위\n\n사용자가 시뮬레이션의 모든 오브젝트를 개별 웹/Pinterest 원본 이미지에 근거해 Blender에서 상세 제작하도록 요구했다. 이전의 전체 맞이방 참고 묶음과26FBX수량만으로는 이를 충족하지 않았다. 목재 무등받이 벤치가 타공 금속 등받이 모델로 만들어진 경우와 공통 콘솔 재사용을 확인했다.\n\n상위 #54, 맵·오브젝트 #56, 전달 PR #61과 연결하여33종의 개별 참조·제작·실제 출력·임포트/충돌 회귀를 정리한다. 실제 시설 도면·치수·직원 절차의 수용은 별도다.\n\n## 수용 기준\n\n- [x] 33종마다 원본/이미지 URL·직접 관찰·출처·치수 근거·제작 모듈·실제 부품을 연결한다.\n- [x] 장치12/가구·인물6/건축·유도15종을 Blender에서 제작하고 시뮬레이션 장면에 사용한다.\n- [x] 게이트 열린/닫힌 Renderer-Collider, 좌우/전방/열린 면 법선, 바닥 UV, NPC발 접지를 실제 Unity 임포트로 검증한다.\n- [x] 단순 큐브로 남은 구조·UI·물리 전용 계열을 분류하고 참조 모델/제거/명시적 어댑터로 처리한다.\n- [x] 각 객체의 실제 네이티브 확대 정면/측면을 원본과 비교하고 현재 FBX 해시에 검토를 묶는다.\n- [x] 코드·자산·문서·context graph와 정제 증거를 작업 단위로 푸시하고 팀 검토로 인계한다.\n\n사진은 관찰에만 사용하며 원본·인물·로고·제한시설 자료를 Git에 포함하거나 외부 생성 서비스에 보내지 않는다. 합성 설치대/배치와 제조사 대체 외형은 실제 KORAIL 설치물 또는 승인된 절차로 표시하지 않는다. 자동 시험·이미지 연결만으로 시설 일치나 생산 수준 완성을 선언하지 않는다.\n\n## 최종 검토 인계\n\n게시 head `43346c2fb8db2fa2e92099baea81043c6a620ece`, [develop 대상 PR #61](https://github.com/xrlab-dau/CHOOGuard/pull/61). 개별 네이티브 확대66장과 원본을 비교하고, 현재33FBX/캡처해시에 검수 범위를 묶었다. Unity106/106 EditMode·16/16 PlayMode, 참조Python11·context15 검사 통과. Mac장면891Renderer/415,894triangles.\n\n[모델별 원문·감사](https://github.com/xrlab-dau/CHOOGuard/blob/43346c2fb8db2fa2e92099baea81043c6a620ece/docs/art/object-reference-audit.md), [참조/검수 레지스트리](https://github.com/xrlab-dau/CHOOGuard/blob/43346c2fb8db2fa2e92099baea81043c6a620ece/foundation/art/object-references.json), [실행 기록](https://github.com/xrlab-dau/CHOOGuard/blob/43346c2fb8db2fa2e92099baea81043c6a620ece/docs/evidence/foundation/2026-09-07-object-references.json), [재생성/확대 검수](https://github.com/xrlab-dau/CHOOGuard/blob/43346c2fb8db2fa2e92099baea81043c6a620ece/foundation/art/README.md).\n\n같은 제공자 검수로 팀 검토에 인계한다. 실제 시설/치수·현재 설치 제품·기관 직원 절차·생산 품질·Windows/VR/HMD·현장 전이는 미검증이며 이 이슈는 Review, 전체 Foundation/맵은 계속 In progress다.\n",
+          "number": 65,
+          "title": "feat(art): audit per-object references and rebuild detailed station assets"
+        }
+      ],
+      "diff_paths": [],
+      "issues": [
+        65
+      ],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+        "sources": [
+          {
+            "bytes": 7874,
+            "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+            "path": "scripts/art/validate_reference_assets.py",
+            "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec"
+          },
+          {
+            "bytes": 6811,
+            "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+            "path": "scripts/art/test_reference_assets.py",
+            "sha256": "cdba0e26ee4b4edf0a9a3c94a106a42fca575c9d742fede26da470ea551bb560"
+          },
+          {
+            "bytes": 134048,
+            "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+            "path": "foundation/art/object-references.json",
+            "sha256": "e2530ec00bbc16ba24e475269343651616f8fdae8ecf56fc5ccaeec250a90559"
+          },
+          {
+            "bytes": 117116,
+            "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+            "path": "foundation/art/asset-manifest.json",
+            "sha256": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242"
+          }
+        ],
+        "uncommitted": []
+      },
+      "manifest_sha256": "7138b09c2639f920c897632096958c783ad292ccbe3d5ab18a4b24be2c53163d",
+      "reviewContext": {
+        "round": 3,
+        "authorRebuttal": "R2 adversarial repeats old P0-001/P1-002/P2-003. Inspect current PR105: references must be a list; each entry must be a dict or error/continue; empty list produces an error; URLs must be strings; image/hash arrays are typed, nonempty and equal-length with64hex digests; observedFeatures requires2+ nonempty strings. references=[null] is in the GREEN regression. Current 13 tests and33 asset records/error0 passed in hosted run34293972349. Historical RED3failures/9errors is BEFORE the fix, not simultaneous current failure. Each invalid hash is an asset-ID-prefixed error; inconsistent preferred wording isn't a functional defect. Digest caching has no demonstrated performance problem in this33-asset offline tool and could hide changes. Independently look for remaining concrete defects; do not assume fix is correct. This is textual validation; no images, geometry or new visual review are supplied.",
+        "previousRecords": [
+          {
+            "lens": "spec",
+            "responseSha256": "4bb76764e4d29f661bdb67d47eba051adfa5a0eed77fde18cf6bf15a45a2979d",
+            "outcome": "approved",
+            "claims": []
+          },
+          {
+            "lens": "adversarial",
+            "responseSha256": "f407d874b6b7c63ba3dd3e7a5edaa4e2a64ee40606d60fc4b1a64df497801773",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "P0-001",
+                "title": "Missing validation for empty or malformed asset references"
+              },
+              {
+                "id": "P1-002",
+                "title": "Inconsistent handling of missing or invalid SHA256 hashes"
+              },
+              {
+                "id": "P2-003",
+                "title": "Potential performance issue with repeated file system access"
+              }
+            ]
+          },
+          {
+            "lens": "safety",
+            "responseSha256": "dd2a7e2747bcd11a719ce2e0457e3083a87f1d39068bd16a43c8793a4952c7fa",
+            "outcome": "approved",
+            "claims": []
+          }
+        ]
+      },
+      "round": 3,
+      "scope": "Review TEXTUAL asset reference traceability, validators, current-hash vs historical visual receipt semantics. 13 reference tests passed locally; required hosted CI is successful. No images, FBX, blend or geometry are supplied and you must not claim actual current visual/native-render review. Flag limitations separately from concrete source defects.",
+      "unit": "asset-traceability"
+    },
+    {
+      "criteria": [],
+      "diff_paths": [
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs"
+      ],
+      "issues": [],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "483531b186a429f9b75746af39093e00eae0377b",
+        "sources": [
+          {
+            "bytes": 16739,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+            "sha256": "5142389f6eaf8b40c2ff17f88f5d522c1d4f88a60cc5f5e91190d88fd97839d5"
+          },
+          {
+            "bytes": 26708,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+            "sha256": "7b802698bffb8b79af296bf943c2ce2dc53afc52ed8981f8e8c2a74be82e7e89"
+          },
+          {
+            "bytes": 7276,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/dev/csharp-review/CaptureWriterTests.cs",
+            "sha256": "e03b92cb21564ca480ea78a2cf78df36f98be17f38f977f2fc36b007863462f3"
+          },
+          {
+            "bytes": 2564,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/dev/csharp-review/prepare_capture_source.py",
+            "sha256": "74e9669e9533349187707265387f2bd460613717f54a246d65059472cb5fb964"
+          },
+          {
+            "bytes": 987,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/dev/csharp-review/FoundationReview.csproj",
+            "sha256": "e611a1648a9157a67eced7de945e8ea47046f204bbe00c61fdaa593a0b25a798"
+          },
+          {
+            "bytes": 175,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/dev/csharp-review/Program.cs",
+            "sha256": "6ff7e3dae192f9529c73717c060f3d9e240559fa901e5af5e5f937094e335d74"
+          },
+          {
+            "bytes": 2408,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/dev/csharp-review/README.md",
+            "sha256": "9871c2f6d3660a5c8eac72c4f55ea2872ed3031efeaa376c320797d42d2da281"
+          },
+          {
+            "bytes": 1818,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": ".github/workflows/foundation-csharp-review.yml",
+            "sha256": "bd648f51adbfd6b192d86b29071edb1e1281f26b492aedaba3de098cfd7fbcc2"
+          },
+          {
+            "baseline": true,
+            "bytes": 10114,
+            "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+            "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+            "sha256": "f6eb149746a7bae3aa9b3dbd795b2bf4ec475df21382f6834d10c88441894b66"
+          },
+          {
+            "baseline": true,
+            "bytes": 15451,
+            "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+            "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+            "sha256": "7b2264970a1de0da9276e519a26ccd7e93cd01a10647c9b7371aff5a7a713e78"
+          }
+        ],
+        "uncommitted": []
+      },
+      "manifest_sha256": "0f645c92c4ddcddc6ddd2f30659c1827a0d1f419ed20bbb4ce81d383e308dab8",
+      "reviewContext": {
+        "round": 3,
+        "authorRebuttal": "Independently evaluate current-source rebuttals to R2: P0-async-stale-screenshot: after EndOfFrame a new Texture is synchronously encoded; CreateNew writes fresh supplied bytes to a new directory; Complete requires every image/hash. Partial directories have NO success receipt and cannot be reused. P1-missing-null-check: CapturePng has if(texture==null) throw before EncodeToPNG. P2-file-move and S004: WriteNew uses using(FileStream), writes, Flush(true), disposes before returning to Complete/File.Move. Complete marks failed=true before serializing; errors don't yield a success receipt. S001: ActiveViewCount checks surfaces!=null and each surface!=null. S002: capturing guard rejects concurrent capture, Configure rejects changes, Update/GUI disable manual input; this is single-main-thread Unity. Actual GameObject disable/StopCoroutine iterator disposal remains UNVERIFIED, so do not claim native acceptance. S003: writer validates PNG signature/length and byte identity, not full decoding; production caller supplies Unity EncodeToPNG bytes. Determine if a full decoder is required by this bounded stale-receipt fix, with a real violated invariant. Pure filesystem12+core37 tests passed; new13 Unity tests and canonical15 NOT executed. No new source changes for these disputed claims.",
+        "previousRecords": [
+          {
+            "lens": "spec",
+            "responseSha256": "7e7042fae97b11479b23c80bae9e56b02d7c1966024deb0aa3a23f75710313c4",
+            "outcome": "approved",
+            "claims": []
+          },
+          {
+            "lens": "adversarial",
+            "responseSha256": "cf9f6aad31089bc5c164856b23ae74ed196e3a329b6cafb74d1f4e0eb785822e",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "P0-async-stale-screenshot",
+                "title": "Async stale screenshot bytes could get a new FBX receipt"
+              },
+              {
+                "id": "P1-missing-null-check",
+                "title": "Missing null check for screen capture texture"
+              },
+              {
+                "id": "P2-incorrect-file-move",
+                "title": "Incorrect file move operation in Complete method"
+              }
+            ]
+          },
+          {
+            "lens": "safety",
+            "responseSha256": "1f1bd6c1258f4536feacbf0708236a33a8b7863c6d0bcb17b23fddc7bcb1cbc2",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "S001",
+                "title": "Missing null check for 'surfaces' in ActiveViewCount getter"
+              },
+              {
+                "id": "S002",
+                "title": "Potential race condition in CaptureViews coroutine"
+              },
+              {
+                "id": "S003",
+                "title": "Incomplete validation of PNG signature in WriteImage"
+              },
+              {
+                "id": "S004",
+                "title": "Lack of explicit disposal of resources in WriteNew"
+              }
+            ]
+          }
+        ]
+      },
+      "round": 3,
+      "scope": "Review PR104 bounded fix for issue66: async stale screenshot bytes could get a new FBX receipt. Review synchronous PNG capture, exclusive per-run directory, receipt integrity and restoration. Fresh CI: exact extracted pure filesystem writer 12 NUnit tests and common core37 passed; Python reconstruction92 passed. Actual Unity compilation, JsonUtility, renderer and native StopCoroutine/GameObject lifecycle tests NOT run. Separate filesystem correctness from unverified Unity integration. This is a draft follow-up to already closed issue66, not permission to reopen or merge it.",
+      "unit": "capture-pr104"
+    },
+    {
+      "criteria": [
+        {
+          "body": "## 목적과 추적\n\n**R-07 · 검증기 정책 기준선·증거 결속 보강**\n- 책임 역할: **PM**\n- 초기 상태: **Ready**\n- 실행 환경: **Local** (계획값, 실행 승인 아님)\n- 초기 차단/주의: R-01 3라운드에서 이관된 잔여 항목이다. 이 이슈 생성은 코드·정책 변경 승인이 아니다.\n- 우선순위: P0\n\n## 이관 근거\n\nR-01 (#41)의 독립 검토가 계약 상한인 3라운드에 도달했고 세 관점 모두 미승인이었다. PM 결정으로 **잔여 항목을 이 단위로 이관**한다(안 B). 라운드 상한 예외를 만들지 않고 새 단위에서 새 3라운드를 받는다.\n\n이관 대상은 R-01의 원래 범위인 **문서 선행관계·지적 정합성 확인**을 벗어난 검증기 강화·증거 결속 작업이다. R-01에 남겨두면 단위 범위와 검토 대상이 계속 어긋난다.\n\n- 처리 기록: [2026-09-06-r01-r03-review-dispositions.md](../blob/develop/docs/reviews/2026-09-06-r01-r03-review-dispositions.md)\n- R-01 기록 §7.3: 3라운드 판정과 상한 도달\n- 검증기 수정: PR #51\n\n## 이관 항목\n\n각 항목의 출처를 `unit/lens/id`로 보존한다.\n\n| # | 항목 | 출처 | 현재 상태 |\n|---|---|---|---|\n| 1 | `.pi/`·`.specify/`의 **단계별 정책 게이트**. 두 경로는 PM 승인 전까지 미추적이라 필수화하면 항상 실패하고, 빼두면 헌법·실행 정책이 없어도 통과한다. 승인 전에는 `policy_approval_pending`으로 명시해 완전 통과를 주장하지 못하게 하고, 승인 후에는 정확한 경로·해시 manifest 대조로 전환한다 | R-01/safety/R2-SAF-1 | **open** |\n| 2 | `policy_hash_scope`의 **기대 manifest 대조**. 현재는 \"비어 있지 않은 파일이 하나라도 있으면 통과\"다. 승인된 정확한 경로 집합과 SHA-256을 대조하지 않아 정책 변조 후 새 해시를 기록해도 성공한다 | R-01/adversarial/R2-ADV-2, R-01/safety/SAF-3 | partial |\n| 3 | **RED/GREEN 실행 이력의 append-only 결속**. 현재 횟수는 커밋 메시지의 자체 서술이며 실행 로그가 불변 증거로 결속되지 않았다 | R-01/adversarial/R2-ADV-6 | **open** |\n| 4 | **원본 105키 저널**. 원본 저널이 저장소에 없어 `bundle/lens/id` 보존을 독립 검증할 수 없다. 복구하거나 검증 불가를 공식 수용한다 | R-01/spec/SPC-3 | partial |\n| 5 | **venv·OS별 junction/reparse point/mount 범위**와 접근 거부 동작. Python 검사기만으로 닫히지 않는다 | R-01/safety/SAF-4 | partial |\n| 6 | 작업본 순회의 **디렉터리 수·경과시간 예산**. 현재 파일 수 상한만 있어 파일이 적은 거대 트리나 느린 mount에서 오래 순회할 수 있다 | R-01/safety/R2-SAF-2 | partial |\n| 7 | **M4-01 조건의 강제**. R-01 §1.2가 착수 범위를 계약 독립 부분으로 한정했으나 백로그·작업 그래프·데이터 스키마에 반영되지 않은 문서 지시다. 임의 ID 사용이나 전체 DoD 조기 완료를 실제로 막지 못한다 | R-01/safety/SAF-1, R-01/adversarial/ADV-4 | partial |\n| 8 | **작업 그래프 v1.0 자체의 결함**. M5-01~05에 노드가 없고, 집계 간선을 구성원에 적용하면 백로그와 충돌하며(M4-03에 M2-04가 생김), 점선 범례가 `M2-04 -.-> M4-02~04`(내부 의존)와 어긋난다 | R-01 §1 (2라운드 adversarial) | 미착수 |\n| 9 | **검토받지 못한 3라운드 수정 3건**의 독립 검토: 의존성 면제 루트 앵커링, 파일 단위 allowlist, `os.walk` fail-closed | R-01 §7.3 | 미검토 |\n\n## 수용 기준\n\n- [ ] 항목 1의 단계별 게이트를 설계하고 PM이 `.pi/`·`.specify/`의 어떤 파일을 승인된 정책 기준선으로 추적할지 확정한다. 승인 전 영수증이 완전 통과를 주장하지 못하게 한다.\n- [ ] 항목 2를 승인된 경로 집합·해시 manifest 대조로 바꾼다. 존재 검사만으로 통과시키지 않는다.\n- [ ] 항목 3·4는 결속 가능한 것과 불가능한 것을 구분해 기록한다. 불가능하면 검증 불가를 명시적으로 수용하고 그 범위를 문서에 고정한다.\n- [ ] 항목 5·6은 실행 증거로 확인한다. OS별 동작은 해당 환경에서 실제 실행한 결과만 인정하며 R-04 (#44)와 범위를 나눈다.\n- [ ] 항목 7은 백로그·작업 그래프·fixture 스키마 중 어디에 강제를 넣을지 정하고 적용한다. 문서 지시만으로 종결하지 않는다.\n- [ ] 항목 8은 기준 문서 정정이므로 별도 변경 단위와 새 manifest로 처리한다.\n- [ ] 항목 9를 포함한 전체 변경에 대해 **작성자와 다른 제공자의 필수 3관점 독립 검토**를 받는다. 이 단위는 새 3라운드 예산을 갖는다.\n- [ ] 필수 관점 실패·누락·판정 저장 실패는 `cannot_proceed`로 유지하며 PM의 사람 결정만으로 PASS를 대신하지 않는다.\n\n## 선행·연관 작업\n\n- 상위 이관 출처: R-01 #41\n- Windows 실행 검증은 R-04 #44와 범위를 나눈다.\n- 보호 경로 소유권·CODEOWNERS 결정은 R-03 #43에 남는다.\n\n## 완료 확인과 인계\n\n- [ ] 원문 작업별 DoD와 적용 요구사항·검증 ID를 충족했다.\n- [ ] 기준 커밋/대상 manifest, 구현 PR, 실제 테스트 및 정제 증거 참조를 연결했다.\n- [ ] 작성자와 다른 제공자·모델의 필수 독립 검토 및 재검토 PASS를 확인했다.\n- [ ] 자료 접근·모델 전송·공개·병합 승인을 구분해 필요한 사람 승인을 받았다.\n- [ ] PM이 최종 DoD를 확인한 뒤 이슈를 닫는다. PR 병합 또는 파일 존재만으로 Done 처리하지 않는다.\n\n**진행 기록:** 담당 계정 / 작업 브랜치·PR / 기준 커밋 / 테스트 결과 / 정제 증거 / 다음 행동을 댓글에 기록한다.\n\n**공개 범위:** 이 이슈는 공개다. 개인 계정 매핑·호스트명·민감 경로·원문 영수증은 올리지 않는다.\n\n상위 작업: R-01 #41\n",
+          "number": 52,
+          "title": "[R-07] 검증기 정책 기준선·증거 결속 보강"
+        }
+      ],
+      "diff_paths": [
+        "scripts/bootstrap/verify_toolchain.py",
+        "scripts/bootstrap/test_verify_toolchain.py",
+        "school/windows-validation/audit_policy_scope.py",
+        ".github/workflows/required-quality-gate.yml"
+      ],
+      "issues": [
+        52
+      ],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+        "sources": [
+          {
+            "bytes": 29486,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "scripts/bootstrap/verify_toolchain.py",
+            "sha256": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855"
+          },
+          {
+            "bytes": 16766,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "scripts/bootstrap/test_policy_baseline.py",
+            "sha256": "6ac802acde980dd8dd1c3d38e46c390d1f48d1e111826cce72207399f5322371"
+          },
+          {
+            "bytes": 23346,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "scripts/bootstrap/test_verify_toolchain.py",
+            "sha256": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504"
+          },
+          {
+            "bytes": 3408,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "school/windows-validation/audit_policy_scope.py",
+            "sha256": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97"
+          },
+          {
+            "bytes": 4860,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": ".github/workflows/required-quality-gate.yml",
+            "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f"
+          },
+          {
+            "bytes": 9349,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "docs/evidence/R-07/README.md",
+            "sha256": "0277c13fbb14236d2f7074df7ca404dae87e36dac9b7318cfe97ea82ecb04db1"
+          },
+          {
+            "bytes": 5843,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "docs/evidence/R-07/policy-candidate-20260908-04.json",
+            "sha256": "92c74d0ade26b65e60ff7028fbe46ddb2aa91b922db1cff241b8d597df2361e2"
+          },
+          {
+            "bytes": 2502,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "docs/evidence/R-07/policy-scope-20260908-04.json",
+            "sha256": "a1902b8edf98665a8da28bbea4903f8ddd3354600fb488e35f3cfd2180b19185"
+          },
+          {
+            "bytes": 4746,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "docs/evidence/R-07/run-20260908-04.json",
+            "sha256": "59aa00d37a70091abea71700e774ac433f8217adc6bb57ee549cbb202118426b"
+          },
+          {
+            "bytes": 2427,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "docs/evidence/R-07/windows-ci-20260908-01.json",
+            "sha256": "17b0f7de8a13044a8b3a02b11b30d7faaa352ea16e7a7668e87c6220b35e5f5d"
+          },
+          {
+            "baseline": true,
+            "bytes": 17753,
+            "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+            "path": "scripts/bootstrap/verify_toolchain.py",
+            "sha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1"
+          },
+          {
+            "baseline": true,
+            "bytes": 21792,
+            "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+            "path": "scripts/bootstrap/test_verify_toolchain.py",
+            "sha256": "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad"
+          },
+          {
+            "baseline": true,
+            "bytes": 2517,
+            "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+            "path": "school/windows-validation/audit_policy_scope.py",
+            "sha256": "d81cb6a104745bb690598d9f0fdc1470e9e6f2353809f8518d0da80d700114f6"
+          },
+          {
+            "baseline": true,
+            "bytes": 3174,
+            "commit": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+            "path": ".github/workflows/required-quality-gate.yml",
+            "sha256": "d1a64a5abeb4a5b38606d5c30ac4f58e0226f0c2a3ebed3e32f90b7d68af56ff"
+          }
+        ],
+        "uncommitted": []
+      },
+      "manifest_sha256": "70b61e22b21a8f85d20631eff92eac4c838e516f667934e5aa6ed5af25751224",
+      "reviewContext": {
+        "round": 3,
+        "authorRebuttal": "Source-backed challenge to round1 findings; independently accept or reject this rebuttal by reading CURRENT TARGET source. Full old baseline source is omitted from prompt to prevent confusion; diff lines marked '-' describe old code. 1) --policy-manifest is an explicit trusted local caller path, intentionally permitted outside the checkout so an independently approved hash pin need not be controlled by the repository. No remote caller or authority elevation exists. Manifest is read as a regular file under OS caller permissions, capped2MB, SHA256 compared to explicit pin before parsing. Requiring it inside repo would change this contract; demonstrate a real trust-boundary violation if you retain that finding. 2) CURRENT policy_inventory lstat-checks directories and entries; links/reparse and non-S_ISREG entries reject. sha256 uses open_regular_file with lstat, O_NOFOLLOW/O_NONBLOCK and fstat. Prior 'no regular-file checks' conflicts with these branches. 3) CURRENT policy_baseline_check checks exact5 keys, integer schemaVersion1 (bool rejected), 40hex sourceCommit, nonempty dict of canonical relative paths and64hex hashes, approvalReference, duplicate JSON keys, size and hash pin. Cite specific accepted malformed input if you retain a schema finding. 4) CURRENT main captures policy before/after workspace scan, compares settings bytes to scanned hash, and captures again after external probes; mutation regressions exist. This is explicitly NOT an atomic filesystem snapshot or a deadline for blocked kernel I/O. If a remaining race violates a promised guarantee, give a concrete execution path that passes incorrectly; generic atomicity demands are not proof of a defect. 5) CURRENT scan_workspace catches OSError/RuntimeError, reports reparse/mount/query failures fail-closed and enforces directory/time/file budgets. Cite a specific uncaught error with impact if retained. New focused execution on exact3b0dd51 head: 30 policy-baseline unittest cases,29 pass,1 native-Windows-junction skip on Linux. Existing source-bound hosted Windows70 pass3skip/Linux64 pass9skip are prior evidence, not your execution. No PM approval or missing original105-key journal acceptance has occurred. Source review may be approved while those explicit institutional gates remain pending; do not mark overall issue52 Done.",
+        "previousRecords": [
+          {
+            "lens": "spec",
+            "responseSha256": "b704a620445f8ae93e04d1734c3787426a955ddcb6dbb13b732a14ef2abe1363",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "P0-001",
+                "title": "Missing validation of policy manifest file path"
+              },
+              {
+                "id": "P1-001",
+                "title": "Insecure file handling in policy inventory"
+              },
+              {
+                "id": "P1-002",
+                "title": "Missing validation of policy manifest schema fields"
+              },
+              {
+                "id": "P2-001",
+                "title": "Potential race condition in policy baseline check"
+              }
+            ]
+          },
+          {
+            "lens": "adversarial",
+            "responseSha256": "8453bafe1f834d2da5a15c60079446176eb7dd0bc1337f7c73d3911d11ccdbaa",
+            "outcome": "changes_required",
+            "claims": [
+              {
+                "id": "A001",
+                "title": "Missing validation of policy manifest file path"
+              },
+              {
+                "id": "A002",
+                "title": "Insecure file handling in policy inventory"
+              },
+              {
+                "id": "A003",
+                "title": "Missing validation of policy manifest schema fields"
+              },
+              {
+                "id": "A004",
+                "title": "Potential race condition in policy baseline check"
+              },
+              {
+                "id": "A005",
+                "title": "Incomplete error handling in scan_workspace"
+              }
+            ]
+          }
+        ]
+      },
+      "round": 3,
+      "scope": "Review the PR97 validator implementation and evidence. Item8 graph is a separate immutable target. No actual PM policy baseline approval or acceptance of unavailable original105-key journal is claimed. New candidate is NOT approved. Preserve cannot_proceed for missing authority. Existing hosted tests: Windows70 pass3 skip and Linux64 pass9 skip, source-bound at00dcd16; subsequent3b0dd51 is evidence only. Assess all actual policy pin, path-set, mutation, filesystem and evidence-binding changes. Prior OpenAI agent verdicts are not supplied as authority. Do not repeat factual claims of executed tests as your own execution.",
+      "unit": "policy-pr97"
+    }
+  ],
+  "visibility_verified": "public"
+}

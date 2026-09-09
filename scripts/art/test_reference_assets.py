@@ -43,6 +43,18 @@ class ReferenceAssetTests(unittest.TestCase):
             previous=reference[key];reference[key]=value
             self.assertTrue(self.check()['errors'],key);reference[key]=previous
 
+    def test_asset_reference_ids_are_nonempty_strings(self):
+        for identifier in (None,{},[],42,'',' '):
+            with self.subTest(identifier=identifier):
+                self.registry['assets'][0]['id']=identifier
+                self.assertTrue(self.check()['errors'])
+
+    def test_malformed_asset_reference_rows_return_errors(self):
+        for rows in (None,{},'asset',[None],[[]],['asset']):
+            with self.subTest(rows=rows):
+                self.registry['assets']=rows
+                self.assertTrue(self.check()['errors'])
+
     def test_malformed_reference_entries_return_errors(self):
         original=copy.deepcopy(self.registry['assets'][0]['references'])
         for references in (None,{},'source',[None],['source'],[42],[[]]):

@@ -1,0 +1,190 @@
+{
+  "repository": "xrlab-dau/CHOOGuard",
+  "visibility_verified": "public",
+  "targets": [
+    {
+      "unit": "core-contracts",
+      "issues": [],
+      "scope": "Static review of the existing single-owner-thread provisional core, input rejection, private state copies and deterministic state hashing. No multiplayer or native Unity/HMD acceptance.",
+      "criteria": [],
+      "diff_paths": [],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "483531b186a429f9b75746af39093e00eae0377b",
+        "uncommitted": [],
+        "sources": [
+          {
+            "bytes": 1561,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs",
+            "sha256": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513"
+          },
+          {
+            "bytes": 5283,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioValidation.cs",
+            "sha256": "aac8aa2c29253764df2d7810e6cd5c122f4ce6aeb02397c5982b781b8311a58e"
+          },
+          {
+            "bytes": 2944,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs",
+            "sha256": "f52ede22cef4f0146bdd1b6031da20ef11b8352e65fe9418a1d09c0339a9cc66"
+          },
+          {
+            "bytes": 4522,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+            "sha256": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945"
+          },
+          {
+            "bytes": 6759,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "sha256": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b"
+          },
+          {
+            "bytes": 1340,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs",
+            "sha256": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a"
+          },
+          {
+            "bytes": 14975,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+            "sha256": "0670af37a515868fa7067c28a89febca9f81a4c67665c0b51ff8a0c6a06a0caa"
+          },
+          {
+            "bytes": 2574,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "foundation/README.md",
+            "sha256": "02fee6d9d7dc24c880bb05ca86368f4027ff9f750ca9cac0e3e0c085777d98d3"
+          }
+        ]
+      },
+      "manifest_sha256": "9190689c4b5033fe86c9c2c35799cf8482264f8154e45646aab90a8fa302cab8",
+      "round": 3
+    },
+    {
+      "unit": "asset-traceability",
+      "issues": [],
+      "scope": "Static review of malformed reference validation in PR105 and its regression tests. No image, geometry, actual registry data or native visual review is supplied.",
+      "criteria": [],
+      "diff_paths": [],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+        "uncommitted": [],
+        "sources": [
+          {
+            "bytes": 7874,
+            "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+            "path": "scripts/art/validate_reference_assets.py",
+            "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec"
+          },
+          {
+            "bytes": 6811,
+            "commit": "778f2446e4109c6e8c344b99d28edab7e22bc26d",
+            "path": "scripts/art/test_reference_assets.py",
+            "sha256": "cdba0e26ee4b4edf0a9a3c94a106a42fca575c9d742fede26da470ea551bb560"
+          }
+        ]
+      },
+      "manifest_sha256": "1f38077fbc1961e6673eb411882a03143edb55e919f84f52c3418347e503b457",
+      "round": 3
+    },
+    {
+      "unit": "capture-pr104",
+      "issues": [],
+      "scope": "Static review of PR104 screenshot capture and filesystem receipt transaction, including provided tests. Native Unity rendering and coroutine lifecycle have not been executed by this reviewer.",
+      "criteria": [],
+      "diff_paths": [],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "483531b186a429f9b75746af39093e00eae0377b",
+        "uncommitted": [],
+        "sources": [
+          {
+            "bytes": 16739,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs",
+            "sha256": "5142389f6eaf8b40c2ff17f88f5d522c1d4f88a60cc5f5e91190d88fd97839d5"
+          },
+          {
+            "bytes": 26708,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs",
+            "sha256": "7b802698bffb8b79af296bf943c2ce2dc53afc52ed8981f8e8c2a74be82e7e89"
+          },
+          {
+            "bytes": 7276,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/dev/csharp-review/CaptureWriterTests.cs",
+            "sha256": "e03b92cb21564ca480ea78a2cf78df36f98be17f38f977f2fc36b007863462f3"
+          },
+          {
+            "bytes": 2408,
+            "commit": "483531b186a429f9b75746af39093e00eae0377b",
+            "path": "scripts/dev/csharp-review/README.md",
+            "sha256": "9871c2f6d3660a5c8eac72c4f55ea2872ed3031efeaa376c320797d42d2da281"
+          }
+        ]
+      },
+      "manifest_sha256": "3dbb61173f2d46ef51007cbeb34da9f3759f0815ed261b85fdfba2f4189ae911",
+      "round": 3
+    },
+    {
+      "unit": "policy-pr97",
+      "issues": [],
+      "scope": "Static review of current policy manifest validation, inventory, filesystem boundaries and failure closure. No actual policy approval or original historical journal recovery is in scope.",
+      "criteria": [],
+      "diff_paths": [],
+      "manifest": {
+        "base": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "head": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+        "uncommitted": [],
+        "sources": [
+          {
+            "bytes": 29486,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "scripts/bootstrap/verify_toolchain.py",
+            "sha256": "ba6ee176ed8513eb73371dcd675f47f66e1c6c7a6310523bfe7cea1b8adf2855"
+          },
+          {
+            "bytes": 16766,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "scripts/bootstrap/test_policy_baseline.py",
+            "sha256": "6ac802acde980dd8dd1c3d38e46c390d1f48d1e111826cce72207399f5322371"
+          },
+          {
+            "bytes": 23346,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "scripts/bootstrap/test_verify_toolchain.py",
+            "sha256": "6981e73e7a95abd4a267644ccd3fda37b3da9e384d251d11b7c8db60eb7e4504"
+          },
+          {
+            "bytes": 3408,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "school/windows-validation/audit_policy_scope.py",
+            "sha256": "92ce9d3fd54e47f6f096bf99e3fa6f74bf028d43fa1b6f4d547ac365545daa97"
+          },
+          {
+            "bytes": 4860,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": ".github/workflows/required-quality-gate.yml",
+            "sha256": "e4d3f88669d72c6abb5e69ee74c7bd3953fc3e54f6d0b26e03487ec80786cb4f"
+          },
+          {
+            "bytes": 9349,
+            "commit": "3b0dd51e1ef91594227dab5236342ba185d2e21c",
+            "path": "docs/evidence/R-07/README.md",
+            "sha256": "0277c13fbb14236d2f7074df7ca404dae87e36dac9b7318cfe97ea82ecb04db1"
+          }
+        ]
+      },
+      "manifest_sha256": "d6bdd0cd56cac98e3f8bbe1acb65040f45b7110ec763b89676df8bce9a291a8f",
+      "round": 3
+    }
+  ]
+}

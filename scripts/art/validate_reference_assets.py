@@ -28,7 +28,16 @@ def public_url(value):
     except (TypeError,ValueError):return False
 
 def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
-    errors=[]; rows=registry.get('assets',[]); generated=manifest.get('assets',[])
+    errors=[]; entries=registry.get('assets',[]); generated=manifest.get('assets',[])
+    if not isinstance(entries,list):
+        errors.append('Asset references must be a list')
+        entries=[]
+    rows=[]
+    for entry in entries:
+        if not isinstance(entry,dict) or not isinstance(entry.get('id'),str) or not entry['id'].strip():
+            errors.append('Asset reference requires an object with a nonempty string ID')
+            continue
+        rows.append(entry)
     ids=[a.get('id') for a in rows]; models={a.get('id'):a for a in generated}
     if len(set(ids))!=len(ids):errors.append('Duplicate asset reference IDs')
     if set(ids)!=set(models):errors.append('Reference/model coverage differs: '+str(sorted(set(ids)^set(models))))

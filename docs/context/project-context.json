@@ -740,12 +740,12 @@
       "sources": [
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec",
+          "sha256": "2747b53bc8defd0398a60869290218f4f4688820626ce897bc631448e57d1e23",
           "label": "--asset 조회·--inventory·--require-reviewed 검사"
         },
         {
           "repoPath": "scripts/art/test_reference_assets.py",
-          "sha256": "cdba0e26ee4b4edf0a9a3c94a106a42fca575c9d742fede26da470ea551bb560",
+          "sha256": "0c88b1198e0e824f78e687b659bd377b05ba81202bd1ab803ae300b57e6685f7",
           "label": "출처·해시·장면 사용·시각 검수 실패 fixture"
         },
         {
@@ -787,7 +787,7 @@
         },
         {
           "repoPath": "scripts/art/validate_reference_assets.py",
-          "sha256": "3a0d1848ffcc58053f1ea56ae0d32174dfadb38d05480d031be95e78732748ec",
+          "sha256": "2747b53bc8defd0398a60869290218f4f4688820626ce897bc631448e57d1e23",
           "label": "아트 담당자의 자산 ID별 근거 조회"
         },
         {
@@ -1917,13 +1917,6 @@
     {
       "date": "2026-09-08",
       "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "PR 전달 커밋과 원격 YAML 실패/문자열 수정 이력을 읽고 ledger 포인터 갱신"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
         "component.school_independent_work",
         "decision.production.local_cv_school_independent",
         "workflow.start_validate"
@@ -2080,6 +2073,14 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed the startup reference validator invocation after malformed input guards; current 33-asset validation returns zero errors and no Unity or historical evidence was renewed."
+    },
+    {
+      "date": "2026-09-09",
+      "nodes": [
+        "component.art_reference_tools",
+        "workflow.start_validate"
+      ],
+      "reason": "Review follow-up: reject malformed asset registry IDs and rows; preserve historical evidence coverage and independent-review limits."
     }
   ]
 }

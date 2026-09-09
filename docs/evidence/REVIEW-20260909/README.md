@@ -35,3 +35,23 @@ The fix requires reference records, URLs, dates, observation arrays and SHA-256 
 Issue #10 has unimplemented FMP-01 criteria: current canonical documents exclude network multiplayer and omit the new 20/NPC100/2 scope and participant/world/observed-state contracts. [Review findings](https://github.com/xrlab-dau/CHOOGuard/issues/10#issuecomment-5593599178) were posted and both cards were verified as In progress / Dependency. #66 remains closed/Done and #27 remains In progress; no prior user state is reversed.
 
 Further independent re-review and CI results will be appended as new evidence. No PR has been merged, no Unity license has been activated, and no KORAIL message has been sent.
+
+## Subsequent review and validation
+
+PR105 implementation head `778f2446e4109c6e8c344b99d28edab7e22bc26d` passed [Required Quality Gate](https://github.com/xrlab-dau/CHOOGuard/actions/runs/34293972349): policy 7, Foundation Python 31, asset references 13 and context 17 tests. See `pr105-ci.json` for the exact merge checkout and log hash.
+
+`round2-complete.json` preserves all 12 responses and completion, plus the actual hosted timeout after those records were emitted. Several findings directly contradict current source; a valid JSON shape does not make a finding correct. Round 3 uses a second Qwen model and narrower public-code manifests. See `execution-boundaries.md` for the rejected broader request, allowed public-only request, actual inputs and execution limits.
+
+The first public Round 3 job was deliberately canceled when PR97 acquired commits `f76b55fe43cc173e2a442955e27f786c7006fd48` and `39e5dc24892744feacec09eac0c2e71951cb31c8`. Its eight completed, unaffected lens responses are preserved in `round3-part1.json`; no policy lens ran against the obsolete head. The remaining capture safety lens and all three policy lenses resume with `round3-remaining-input.json`. Completed lenses are not repeated. Core and asset did not receive three accepted approvals, so their gate is not waived.
+
+### Additional reproduced asset ID defect
+
+Round 3 adversarial C001 incorrectly says Python sets silently omit invalid IDs, but the malformed-ID investigation reproduced a real adjacent failure: non-string/unhashable IDs and malformed asset rows raise exceptions while constructing the ID set/coverage report. Registry asset rows now require an object with a nonempty string ID before deduplication or coverage comparison; invalid input returns ordinary validation errors.
+
+- `asset-id-red.log`: 15 tests, 9 input errors before this guard.
+- `asset-id-green.log`: 15/15 pass, including 12 added malformed row/ID subcases.
+- `asset-id-current-validation.json`: all existing 33 assets validate with zero errors. No new scene inventory or visual acceptance is inferred.
+
+This later code change is not covered by a new external approval. The three-round review budget is not silently reset; the PR remains draft and the asset independent-review gate remains pending. Existing geometry, historical receipt coverage and source hashes remain unchanged. Current navigation source pointers and generated HTML were refreshed separately.
+
+Issue #14 was updated and both cards verified as Blocked / External approval after content review passed; actual delivery and reply remain unperformed. Issue #64 was updated and both cards verified as Review / Clear for the bounded implementation review, with real school-PC/team acceptance still explicitly separate.
