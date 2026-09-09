@@ -144,6 +144,28 @@ public sealed class CaptureWriterTests
         });
     }
 
+    [TestCase("zero-depth", 24, 0, 0x856C47C3u)]
+    [TestCase("illegal-depth-type-pair", 24, 4, 0x70ECE103u)]
+    [TestCase("unknown-color-type", 25, 7, 0xA7A9A3ECu)]
+    [TestCase("compression-method", 26, 1, 0xB4DE6635u)]
+    [TestCase("filter-method", 27, 1, 0xAC073D43u)]
+    [TestCase("interlace-method", 28, 2, 0x5B126D2Eu)]
+    [TestCase("width-overflow", 16, 128, 0x15762915u)]
+    [TestCase("height-overflow", 20, 128, 0xD3490C4Du)]
+    public void InvalidPngHeaderCannotBeReceiptedEvenWithMatchingChecksum(string fault, int offset, int value, uint crc)
+    {
+        WithOutput(path =>
+        {
+            var png = (byte[])Png.Clone(); png[offset] = (byte)value;
+            // CRC constants are calculated independently with Python zlib.crc32 over the mutated IHDR.
+            for (var index = 0; index < 4; index++) png[29 + index] = (byte)(crc >> (24 - index * 8));
+            var writer = NewWriter(path);
+            Assert.Throws<InvalidOperationException>(() => writer.WriteImage(0, 0, png), fault);
+            Assert.Throws<InvalidOperationException>(() => writer.Complete(Serialize));
+            Assert.That(File.Exists(Path.Combine(path, "capture-complete.json")), Is.False);
+        });
+    }
+
     [Test]
     public void DigestWithTrailingNewlineIsRejectedBeforeCreatingOutput()
     {
