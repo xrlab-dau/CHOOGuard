@@ -65,6 +65,12 @@ writer 수정 커밋 `03c72b9b66e60e1a1abdeb26674479b288d5c4ec`의 [실제 CI 34
 
 GitHub Actions 임시 토큰과 고정 Copilot CLI 1.0.83로 Anthropic 모델 인증을 시도했으나 [실행 34294249798](https://github.com/xrlab-dau/CHOOGuard/actions/runs/34294249798)이 `Access denied by policy settings`로 종료됐다. 소스나 리뷰 프롬프트를 모델에 제출하지 못했고 모델 판정도 없다. [preflight 증거](../evidence/R-07-REVIEW/20260909/copilot-preflight-20260909.json)를 보존한다. 앞선 secret 목록·조직 billing 조회는 자동 승인 검토에서 거부되어 중단했으며 이후 해당 조회를 반복하거나 정책을 변경하지 않았다.
 
-다른 제공자의 실제 spec/adversarial/safety 판정 수는 **0**이다. ADR-0003의 제공자 불일치 규칙에 따라 정식 게이트는 `cannot_proceed`다. 이 보조 검토로 R-01의 소진된 라운드를 재개하거나 R-07의 독립 제공자 예산을 승인으로 바꾸지 않는다. 조직에서 허용된 다른 제공자 실행 경로가 필요하다.
+이 보조 팀 실행 자체에서 받은 다른 제공자 spec/adversarial/safety 판정 수는 **0**이다. 이는 아래에서 확인한 동시 세션의 Qwen 실행을 포함한 저장소 전체 집계가 아니다. ADR-0003의 제공자 불일치 규칙에 따라 정식 게이트는 `cannot_proceed`다. 이 보조 검토로 R-01의 소진된 라운드를 재개하거나 R-07의 독립 제공자 예산을 승인으로 바꾸지 않는다. 조직에서 허용된 다른 제공자 실행 경로가 필요하다.
 
-실제 정책 경로·핀 승인, 원본 105키 저널의 복구 또는 검증 불가에 대한 명시적 사람 수용, 학교 PC·Unity/HMD·현장 수용은 여전히 남는다. 로컬 도구 설치 이력과 현재 실행 상태를 혼동하지 않는다. 이번 Python/wrapper 검사는 새로운 Unity·Blender 실행을 필요로 하지 않았으며 실제 Windows runner에서 변경된 PowerShell을 검증했다. 두 PR은 draft, #52는 Review로 유지하고 이슈를 닫지 않는다.
+실제 정책 경로·핀 승인, 원본 105키 저널의 복구 또는 검증 불가에 대한 명시적 사람 수용, 학교 PC·Unity/HMD·현장 수용은 여전히 남는다. 로컬 도구 설치 이력과 현재 실행 상태를 혼동하지 않는다. 이번 Python/wrapper 검사는 새로운 Unity·Blender 실행을 필요로 하지 않았으며 실제 Windows runner에서 변경된 PowerShell을 검증했다. 두 PR은 draft이며 이슈를 닫지 않는다. 최초 확인 당시 #52는 Review였으나 아래 동시 세션의 Blocked 변경을 보존한다.
+
+## 마감 중 확인한 동시 세션 기록
+
+두 보드의 상태가 갱신된 뒤 [별도 세션의 Qwen 리뷰 보고서](https://github.com/xrlab-dau/CHOOGuard/blob/d169b560762ed7c3d4969e845a2750760941ee84/docs/evidence/REVIEW-20260909/result.md)를 직접 읽었다. 이 기록은 Hugging Face Jobs에서 다른 제공자 Qwen을 실행했고, PR97의 당시 대상 `39e5dc2`가 세 라운드 안에 필수 승인을 확보하지 못했다고 보고한다. PR98 item8의 세 관점 승인은 별도로 기록돼 있다. 이 보조 팀이 그 실행을 수행한 것으로 합산하지 않으며, 이전 대상의 판정을 이후 `f783255`나 writer 수정 `03c72b9`의 승인으로 사용하지 않는다.
+
+따라서 다른 제공자 검토가 저장소 전체에서 한 번도 실행되지 않았다는 의미가 아니다. 이 문서의 Copilot 경로 실패와 보조 실행의 0회 기록은 해당 경로·세션 범위에 한정된다. 동시 세션은 #52를 두 보드 모두 **Blocked / Independent review**로 변경했다. 그 상태·기존 근거를 보존하고 이번 추가 보완 및 새 CI 수치를 덧붙인다. 현재 남은 조건은 새 수정 소스의 재검토 판단, 독립 제공자 게이트, 실제 정책핀과 105키 저널의 사람 결정이다.
