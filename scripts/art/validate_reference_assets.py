@@ -47,6 +47,8 @@ def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
         errors.append('Model manifest must be an object');manifest={}
     rows=identified_rows(registry.get('assets',[]),'Asset references','id',errors)
     generated=identified_rows(manifest.get('assets',[]),'Generated models','id',errors)
+    if not rows:errors.append('Reference registry must contain at least one asset')
+    if not generated:errors.append('Model manifest must contain at least one asset')
     ids=[a.get('id') for a in rows]; models={a.get('id'):a for a in generated}
     if len(set(ids))!=len(ids):errors.append('Duplicate asset reference IDs')
     if len(models)!=len(generated):errors.append('Duplicate generated model IDs')
@@ -89,7 +91,8 @@ def validate(registry,manifest,root=ROOT,inventory=None,require_reviewed=False):
         if used is not None and usage!='catalog' and identifier not in used:errors.append(identifier+': absent from scene inventory')
         if kind!='station_specific' and row.get('stationInstallationVerified'):
             errors.append(identifier+': a proxy or virtual marker cannot prove station installation')
-        if not row.get('dimensionsBasis'):errors.append(identifier+': distinguish authored dimensions from published or surveyed values')
+        basis=row.get('dimensionsBasis')
+        if not isinstance(basis,str) or not basis.strip():errors.append(identifier+': distinguish authored dimensions from published or surveyed values')
         references=row.get('references',[])
         if not isinstance(references,list):
             errors.append(identifier+': references must be a list of inspected image records')

@@ -99,6 +99,28 @@ class ReferenceAssetTests(unittest.TestCase):
                     self.assertTrue(self.check()['errors'])
             setattr(self,name,original)
 
+    def test_empty_asset_documents_cannot_pass_validation(self):
+        for registry,manifest in (({'version':1},{}),
+                                  ({'version':1,'assets':[]},{'assets':[]})):
+            for strict in (False,True):
+                with self.subTest(registry=registry,manifest=manifest,strict=strict):
+                    report=art.validate(registry,manifest,self.root,{'instances':[]},strict)
+                    self.assertTrue(report['errors'])
+                    self.assertEqual(report['assetCount'],0)
+
+    def test_cli_empty_export_is_an_error(self):
+        (self.root/'registry.json').write_text(json.dumps({'version':1,'assets':[]}))
+        (self.root/'manifest.json').write_text(json.dumps({'assets':[]}))
+        inventory_path=self.root/'inventory.json'
+        inventory_path.write_text(json.dumps({'instances':[]}))
+        output=io.StringIO()
+        argv=['validate_reference_assets.py','--registry','registry.json','--manifest','manifest.json',
+              '--inventory',str(inventory_path),'--require-reviewed']
+        with patch.object(art,'ROOT',self.root),patch('sys.argv',argv),redirect_stdout(output):
+            status=art.main()
+        self.assertEqual(status,1)
+        self.assertTrue(json.loads(output.getvalue())['errors'])
+
     def test_model_rows_require_nonempty_unique_string_ids(self):
         original=copy.deepcopy(self.manifest['assets'][0])
         for rows in (None,{},'model',[None],[[]],['model'],[{}]):
@@ -191,6 +213,13 @@ class ReferenceAssetTests(unittest.TestCase):
                     row[field]=value
                     self.assertTrue(self.check()['errors'])
             row[field]=original
+
+    def test_dimensions_basis_requires_a_nonblank_written_statement(self):
+        row=self.registry['assets'][0]
+        for basis in (None,{},[],{'not':'a stated basis'},['synthetic'],42,True,'',' '):
+            with self.subTest(dimensionsBasis=basis):
+                row['dimensionsBasis']=basis
+                self.assertTrue(self.check()['errors'])
 
     def test_scene_asset_must_have_actual_usage_and_inventory_cannot_hide_unknown_family(self):
         self.inventory['instances']=[];self.assertTrue(self.check()['errors'])
