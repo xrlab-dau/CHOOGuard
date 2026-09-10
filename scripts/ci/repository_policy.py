@@ -256,9 +256,30 @@ def main() -> int:
         lines.extend(f"- {item}" for item in errors)
         lines.append("")
     report = "\n".join(lines) + "\n"
+    write_failed = False
     if args.report:
-        Path(args.report).write_text(report, encoding="utf-8")
+        try:
+            Path(args.report).write_text(report, encoding="utf-8")
+        except OSError as exc:
+            # A scan that completed successfully must never die on the final
+            # write step: the workflow's `cat repository-policy-report.md >>
+            # "$GITHUB_STEP_SUMMARY"` step assumes the file exists whenever
+            # this script's own exit status is checked, and a raw traceback
+            # here would both hide the (already-computed) scan result and
+            # leave that follow-on `cat` to fail on a missing file with a
+            # second, unrelated-looking error. Swallowing this silently would
+            # be its own honesty defect (the workflow would `cat` a file that
+            # was never written and nobody would know why), so instead: the
+            # full report is still printed to stdout (the step summary can
+            # still be recovered by hand / from the job log), a distinct
+            # ::error:: annotation names the path failure explicitly, and the
+            # process exits non-zero for an infra reason distinguishable from
+            # "policy violations found" via that annotation and the message.
+            write_failed = True
+            print(f"::error::failed to write repository policy report to {args.report!r}: {exc}")
     print(report, end="")
+    if write_failed:
+        return 2
     return 1 if errors else 0
 
 

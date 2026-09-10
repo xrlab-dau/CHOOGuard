@@ -216,6 +216,91 @@ class GitPathPolicyTest(unittest.TestCase):
         source = Path(MODULE.__file__).read_text(encoding="utf-8")
         self.assertIn("Fail-open policy decision", source)
         self.assertIn("strict-on-fallback", source)
+        # Tie the prose promise to the actual CLI surface so the two cannot
+        # silently drift apart: the comment promises that switching to
+        # fail-closed would be done via a new --strict-on-fallback flag, not
+        # that the flag already exists. If a `--strict-on-fallback` flag is
+        # ever added to argparse without updating/removing this note (or vice
+        # versa), this assertion is the tripwire.
+        help_text = self._parser_help()
+        self.assertNotIn("--strict-on-fallback", help_text)
+
+    def _parser_help(self) -> str:
+        with patch.object(sys, "argv", ["repository_policy.py", "--help"]), \
+                contextlib.redirect_stdout(io.StringIO()) as captured:
+            with self.assertRaises(SystemExit):
+                MODULE.main()
+        return captured.getvalue()
+
+    def test_missing_commits_probe_suppresses_stderr(self):
+        # Regression guard: the resolvability probe in missing_commits() must
+        # run with stderr=subprocess.DEVNULL, otherwise git's raw
+        # "fatal: ... unknown revision" (and, on a shallow/promisor clone,
+        # fetch-attempt chatter) leaks straight into the raw CI log instead of
+        # being cleanly summarised in the report. Wrap subprocess.run so every
+        # call made while resolving revisions is inspected directly, rather
+        # than only checking behaviour indirectly.
+        calls = []
+        real_run = subprocess.run
+
+        def spy(*args, **kwargs):
+            calls.append(kwargs)
+            return real_run(*args, **kwargs)
+
+        with patch.object(subprocess, "run", side_effect=spy):
+            MODULE.missing_commits(self.base, "0" * 40)
+
+        self.assertTrue(calls, "missing_commits() made no subprocess.run calls to inspect")
+        for kwargs in calls:
+            self.assertEqual(kwargs.get("stderr"), subprocess.DEVNULL)
+
+    def test_report_write_failure_does_not_crash_after_successful_scan(self):
+        # Work order (a): a scan that already completed must never die on the
+        # final write step. Both a missing parent directory and a --report
+        # path that is itself a directory must produce a clean, non-zero,
+        # non-crashing status -- not an uncaught OSError subclass -- and the
+        # already-computed report text must still reach stdout so the run is
+        # not a total loss even though the file on disk was never written.
+        missing_parent = self.root / "no_such_parent_dir_xyz" / "report.md"
+        with patch.object(sys, "argv", ["repository_policy.py", "--report", str(missing_parent)]), \
+                contextlib.redirect_stdout(io.StringIO()) as captured:
+            status = MODULE.main()
+        self.assertIsInstance(status, int)
+        self.assertNotEqual(status, 0)
+        self.assertFalse(missing_parent.exists())
+        out = captured.getvalue()
+        self.assertIn("# Repository policy report", out)
+        self.assertIn("::error::", out)
+
+        directory_target = self.root  # an existing directory, not a file
+        with patch.object(sys, "argv", ["repository_policy.py", "--report", str(directory_target)]), \
+                contextlib.redirect_stdout(io.StringIO()) as captured2:
+            status2 = MODULE.main()
+        self.assertIsInstance(status2, int)
+        self.assertNotEqual(status2, 0)
+        out2 = captured2.getvalue()
+        self.assertIn("# Repository policy report", out2)
+        self.assertIn("::error::", out2)
+
+    def test_report_write_failure_status_is_distinguishable_from_violations(self):
+        # A report-write failure must not masquerade as "policy violations
+        # found" (status 1 from the normal violations path): a human or a
+        # future workflow step reading only the numeric exit code needs to be
+        # able to tell an infra failure (couldn't write the report) apart
+        # from a real, successfully-recorded policy violation.
+        missing_parent = self.root / "another_missing_dir" / "report.md"
+        with patch.object(sys, "argv", ["repository_policy.py", "--report", str(missing_parent)]), \
+                contextlib.redirect_stdout(io.StringIO()):
+            write_failure_status = MODULE.main()
+
+        ok_report = self.root / "ok-report.md"
+        with patch.object(sys, "argv", ["repository_policy.py", "--base", self.base,
+                                       "--head", "HEAD", "--report", str(ok_report)]), \
+                contextlib.redirect_stdout(io.StringIO()):
+            violations_status = MODULE.main()
+
+        self.assertEqual(violations_status, 1)
+        self.assertNotEqual(write_failure_status, violations_status)
 
 
 if __name__ == "__main__":
