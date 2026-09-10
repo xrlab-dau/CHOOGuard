@@ -29,11 +29,17 @@
 | `editmode-results.xml` | EditMode NUnit3 결과 119건 |
 | `playmode-results.xml` | PlayMode NUnit3 결과 16건 |
 | `ownership-results.xml` | 소유권 거부 시험 단독 실행 결과 |
-| `SHA256SUMS.txt` | 정제된 산출물 **13개 전부**의 SHA256 |
+| `SHA256SUMS.txt` | 정제된 산출물 **12개**의 SHA256. manifest 자신과 이 README는 목록에 없다 |
+
+manifest 12개는 **여기 커밋된 5개**(`receipt.json`, `receipt.md`, XML 3개)와 **커밋하지 않은
+7개**(로그 6개 + diff 1개)로 나뉜다. 따라서 이 디렉터리에서 `sha256sum -c SHA256SUMS.txt`를
+실행하면 커밋된 5개가 `OK`로 나오고 나머지 7개는 `could not be read`로 보고된다. 전체 성공을
+주장하지 않는다.
 
 ## 이 디렉터리에 없는 것
 
-Editor 로그 4종과 재생성 diff는 크기 때문에 Git에 넣지 않았다(`editmode.log` 약 1.2 MB,
+Editor 로그 6종(`compile`, `editmode`, `playmode`, `ownership`, `build-negative`,
+`build-positive`)과 재생성 diff는 크기 때문에 Git에 넣지 않았다(`editmode.log` 약 1.2 MB,
 `regenerated.diff` 약 4.1 MB). 해시는 `SHA256SUMS.txt`에 그대로 있으므로, 같은 SHA에서
 [`scripts/dev/verify_unity_receipt.ps1`](../../../../scripts/dev/verify_unity_receipt.ps1)을
 다시 실행해 대조할 수 있다. 산출물은 모두 게시 전 정제를 거쳤다. 결과 XML은 텍스트 치환이 아니라 XML 트리를 통해 정제하고,
