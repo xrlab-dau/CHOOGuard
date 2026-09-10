@@ -12,7 +12,7 @@ Date: 2026-09-06
 1. 공개 설정과 절차의 전달 수단은 저장소다. OS 설정·개인 자격·비공개 승인 원본까지 Git에 넣지 않는다. 스크립트가 있어도 관리자 권한·정책·네트워크 문제를 자동 해결하지 않는다.
 2. 공개 영수증에는 local/school-pc와 역할만 쓴다. 호스트명·계정명·민감 저장 위치는 공개하지 않는다.
 3. M1-01은 Pi 버전·세션 계약·Writer Lease 기준선이다. 사용자 지시 범위에서 local 설치 대상으로 Unity Hub 3.21.1 ARM64와 공식 배포의 Unity 6000.3.23f1 LTS Apple Silicon(revision `09d2ecc7fb28`, 배포일 2026-08-26)을 선정했다. Unity 프로젝트·에디터·패키지는 M2-01에서 프로젝트 생성 후 `ProjectSettings/ProjectVersion.txt`와 의존성 manifest로 고정한다. 설치 완료와 컴파일·플레이 성공은 각각 실제 결과로 확인한다.
-4. unity-mcp는 M1-03 공급망 검토와 M2-01 완료 후 M1-04에서 학교 PC에 연결한다. pi-mcp-adapter는 버전·라이선스·우회 경로 검토 전 미채택이다.
+4. [ADR 0006](0006-official-unity-editor-mcp.md)에 따라 공식 Unity CLI의 `unity mcp`와 `com.unity.pipeline`을 사용한다. M1-03은 공식 경로 검토, M2-01은 정확한 패키지 고정, M1-04는 연결·실행 검증을 담당한다. pi-mcp-adapter는 Pi에 필요한 경우만 검토하며 native MCP 클라이언트의 선행조건이 아니다.
 5. D-07 및 KORAIL 자료 취급 조건 확정 전 school-pc에는 PUBLIC_SYNTHETIC만 허용한다. HMD 모델·실물 검증은 별도 XR 변경 단위에서 기록한다. M1-05는 실행 기록·정제·공개 manifest 단위다.
 6. 학교 PC 실행은 원격에 전달되고 검토·필수 검사·PM 승인이 확인된 불변 커밋에서만 한다. 브랜치 clone은 승인 우회가 아니다. main/develop 직접 푸시와 자동 PR 생성은 하지 않는다.
 

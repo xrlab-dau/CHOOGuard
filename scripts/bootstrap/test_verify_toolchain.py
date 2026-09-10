@@ -42,6 +42,19 @@ class ToolchainBoundaryTests(unittest.TestCase):
         self.tracked = []
         self.uv = "uv 0.11.14"
 
+    def test_real_git_unicode_paths_ignore_system_text_encoding(self):
+        subprocess.run(["git", "init", "-q", str(self.root)], check=True)
+        name = " 한글 경로.md"
+        (self.root / name).write_text("fixture", encoding="utf-8")
+        subprocess.run(["git", "-C", str(self.root), "add", "--", name], check=True)
+        with patch.object(verifier, "ROOT", self.root), patch.object(subprocess, "_text_encoding", return_value="cp949"):
+            self.assertIn(name, verifier.tracked_files())
+
+    def test_invalid_command_output_fails_closed_without_reader_thread_error(self):
+        with patch.object(verifier, "ROOT", self.root):
+            result = verifier.run(sys.executable, "-c", "import sys; sys.stdout.buffer.write(bytes([255]))")
+        self.assertIsNone(result)
+
     def write_required_policy_files(self):
         """필수 정책 파일이 모두 있는 정상 픽스처. 개별 테스트가 지워서 누락을 재현한다."""
         (self.root / "AGENTS.md").write_text("# agents\n", encoding="utf-8")
@@ -252,6 +265,28 @@ class ToolchainBoundaryTests(unittest.TestCase):
         os.walk 는 기본적으로 오류를 삼킨다. 읽을 수 없는 트리 안에
         금지 파일이 있어도 검사가 보지 못하므로 사유를 남기고 실패해야 한다.
         """
+        blocked = self.root / "blocked"
+        blocked.mkdir()
+        (blocked / "capture.mp4").write_bytes(b"stub")
+        # chmod does not deny directory reads on Windows. Exercise the real
+        # os.walk error callback on every platform without changing OS ACLs.
+        original_scandir = os.scandir
+
+        def denied_scandir(path):
+            if Path(path) == blocked:
+                raise PermissionError(13, "Access denied", str(blocked))
+            return original_scandir(path)
+
+        with patch.object(os, "scandir", side_effect=denied_scandir):
+            found, truncated, errors = verifier.forbidden_workspace_files(self.root)
+            self.assertEqual(found, [])
+            self.assertFalse(truncated)
+            self.assertEqual(errors, [str(blocked)])
+            self.assert_check_failed("forbidden_workspace_files")
+
+    @unittest.skipUnless(hasattr(os, "geteuid"), "POSIX permissions are unavailable")
+    def test_unreadable_directory_posix_permissions_fail_closed(self):
+        """Retain the real POSIX permissions check in addition to fault injection."""
         if os.geteuid() == 0:
             self.skipTest("root 는 권한 거부를 재현할 수 없다")
         blocked = self.root / "blocked"

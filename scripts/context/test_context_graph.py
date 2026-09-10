@@ -124,14 +124,21 @@ class ContextGraphTests(unittest.TestCase):
         manual = next(n for n in pack["nodes"] if n["id"] == "manual")
         self.assertEqual(manual["status"], "unknown")
 
-    def test_absolute_escape_and_symlink_paths_fail_without_reading_outside_root(self):
+    def test_absolute_escape_paths_fail_without_reading_outside_root(self):
         for path in ("/Users/example/private.md", "../private.md", "C:\\private\\note.md", ".env", ".git/config"):
             with self.subTest(path=path):
                 graph = copy.deepcopy(self.graph)
                 graph["nodes"][0]["sources"][0]["repoPath"] = path
                 self.assertTrue(self.errors(graph))
+
+    def test_symlink_paths_fail_without_reading_outside_root(self):
         with tempfile.TemporaryDirectory() as outside:
-            (self.root / "docs/outside").symlink_to(Path(outside), target_is_directory=True)
+            try:
+                (self.root / "docs/outside").symlink_to(Path(outside), target_is_directory=True)
+            except OSError as error:
+                if getattr(error, "winerror", None) == 1314:
+                    self.skipTest("Windows symlink creation privilege is unavailable")
+                raise
             graph = copy.deepcopy(self.graph)
             graph["nodes"][0]["sources"][0]["repoPath"] = "docs/outside/source.md"
             self.assertTrue(self.errors(graph))
@@ -169,6 +176,21 @@ class ContextGraphTests(unittest.TestCase):
         packet = cg.make_brief(graph, cg.ROOT, "art", "local")
         self.assertIn("decision.visual.realistic", [node["id"] for node in packet["nodes"]])
         self.assertNotIn("decision.visual.flat", [node["id"] for node in packet["nodes"]])
+
+    def test_official_mcp_receipt_binding_preserves_historical_coverage(self):
+        graph = cg.load_json(cg.ROOT / cg.GRAPH_PATH)
+        node = next(n for n in graph["nodes"]
+                    if n["id"] == "evidence.official_editor_mcp_20260908")
+        # The published receipt is immutable; correcting its index must not renew tests.
+        receipt = cg.ROOT / node["coverage"]["receipt"]
+        self.assertEqual(hashlib.sha256(receipt.read_bytes()).hexdigest(),
+                         "2df11f5582610c7766416ef6c06c3cf76192278eca1377d6bb2bab34c895b4a0")
+        self.assertEqual(cg.assess_node(node, cg.ROOT)["sourceState"], "matched")
+        self.assertEqual(cg.assess_node(node, cg.ROOT)["acceptance"], "not_assessed")
+        for identifier in ("evidence.official_editor_mcp_20260908",
+                           "decision.tooling.official_unity_mcp"):
+            entry = next(n for n in graph["nodes"] if n["id"] == identifier)
+            self.assertNotIn("??", json.dumps(entry, ensure_ascii=False))
 
     def test_offline_html_does_not_execute_graph_text_or_fetch_external_dependencies(self):
         self.graph["nodes"][0]["summary"] = '</script><img src=x onerror="alert(1)">'

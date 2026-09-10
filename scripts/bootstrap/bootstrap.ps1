@@ -1,6 +1,6 @@
-# CHOOGuard 개발 머신 부트스트랩 (Windows PowerShell 5.1 / 7)
+﻿# CHOOGuard 개발 머신 부트스트랩 (Windows PowerShell 5.1 / 7)
 # 사용: powershell -ExecutionPolicy Bypass -File scripts\bootstrap\bootstrap.ps1 -MachineLabel school-pc
-# 원칙: 비밀값을 출력하지 않는다. Unity·unity-mcp 는 안내만 한다.
+# 원칙: 비밀값을 출력하지 않는다. Unity·공식 CLI Editor MCP는 안내만 한다.
 #       설치·동기화(npm install, uv sync)는 사람이 -AutoInstall 로 명시 승인했을 때만 실행한다.
 #       -MachineLabel 은 local | school-pc 만 허용한다. 호스트명은 기록하지 않는다.
 #       검증기의 종료 코드를 그대로 전파한다 (필수 항목 실패 = 1).
@@ -28,8 +28,13 @@ Ok ("branch={0} head={1} label={2}" -f (git branch --show-current), (git rev-par
 
 Step "1. Node >= $NodeMinMajor"
 if (Has node) {
-  $major = [int](node -p 'process.versions.node.split(".")[0]')
-  if ($major -ge $NodeMinMajor) { Ok ("node {0}" -f (node --version)) } else { Warn "node 가 낮다. https://nodejs.org LTS 설치" }
+  $nodeVersion = node --version
+  if ($LASTEXITCODE -ne 0 -or $nodeVersion -notmatch '^v(\d+)\.') {
+    Write-Error "node --version 실패 또는 잘못된 버전 출력"
+    exit 1
+  }
+  $major = [int]$Matches[1]
+  if ($major -ge $NodeMinMajor) { Ok ("node {0}" -f $nodeVersion) } else { Warn "node 가 낮다. https://nodejs.org LTS 설치" }
 } else { Warn "node 없음. https://nodejs.org 에서 LTS(22 이상) 설치" }
 
 Step "2. Pi coding agent $PiVersion (고정)"
@@ -72,7 +77,7 @@ foreach ($v in @("ANTHROPIC_API_KEY","OPENAI_API_KEY","EXA_API_KEY")) {
 Step "7. Unity 워크스테이션 (school-pc 전용, 수동)"
 if (Test-Path ProjectSettings\ProjectVersion.txt) { Ok ("Unity 프로젝트 존재: {0}" -f (Get-Content ProjectSettings\ProjectVersion.txt -First 1)) }
 else { Warn "Unity 프로젝트 없음 (M2-01 에서 생성). Unity Hub·에디터 설치는 docs/choo-guard-school-pc-bootstrap-v1.md §4" }
-Warn "unity-mcp v10.2.0 과 pi-mcp-adapter 는 ADR 0002 공급망 검토와 M1-03·M1-04 전까지 설치하지 않는다"
+Warn "공식 Unity CLI의 unity mcp와 com.unity.pipeline을 사용한다. ADR 0006 및 M1-03/M1-04의 고정 버전·연결 검증을 따른다. pi-mcp-adapter는 Pi에 필요한 경우만 검토한다"
 
 Step "8. 검증 영수증"
 $py = if (Has python) { "python" } elseif (Has py) { "py" } else { $null }

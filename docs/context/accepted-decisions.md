@@ -65,3 +65,9 @@ VR 기기는 미정이다. 기기별 SDK·컨트롤러·PC/단독형 성능 목�
 사용자는 추가로 **CV/SOTA 파이프라인 재개는 현재 로컬 세션의 작업**이라고 명확히 했다. 학교에는 기존 자산의 고해상도 베이크/렌더, 대용량 데이터·모델 준비와 upstream GPU benchmark, Windows 빌드/성능 검증처럼 독립적인 고부하 작업을 배정한다. 공통 불변 기준과 별도 브랜치/출력을 사용하며 로컬 구현이 학교 결과를 기다리지 않게 한다. 학교 세션에 실제 연결되지 않았다면 준비된 작업 계약을 실행 중으로 표시하지 않는다.
 
 기존 DA3/MapAnything 연속4장 결과·SfM 미등록·실패와 자료 복구 기록을 재사용한다. CV 기법 조사와 CV-01~06의 실제 적용·Blender/Unity 전달 완료를 구분하며, VARCO 시제품은 채택 자산으로 바꾸지 않는다. 학교 시작점은 [학교 PC 인계](school-pc-handoff-2026-09-08.md)와 기존 sequence spec이다. 원본 영상·가중치·계정·원시 실행 로그는 공개 Git에 넣지 않는다.
+
+## 2026-09-08 · 공식 Unity Editor MCP 선택
+
+PM 사용자는 학교 PC 사양·SPEC/계획/작업 파이프라인·GitHub 보드를 확인하고, CoplayDev/unity-mcp 대신 공식 Unity CLI에 포함된 Editor MCP를 사용하도록 지시했다. `unity mcp`와 공식 `com.unity.pipeline`을 기준으로 전환하며 native MCP 클라이언트에 Pi adapter를 필수화하지 않는다. 자세한 범위는 [ADR 0006](../adr/0006-official-unity-editor-mcp.md)을 따른다.
+
+이 기록은 도구 선택에 관한 결정이다. 실제 연결·테스트·보드 Done·PR 검토 결과는 각각 확인하며, 과거 Coplay 연구/시험을 새 공식 서버의 증거로 바꾸지 않는다. 학교 PC의 실행 크기는 실제 자원에 맞춰 정하고 이전 기기의 무거운 작업 가능성을 그대로 가정하지 않는다.

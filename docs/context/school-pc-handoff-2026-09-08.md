@@ -1,6 +1,8 @@
 # 학교 PC에서 이어 할 Foundation 작업
 
-기준일: 2026-09-08. 현재 선택은 **VARCO 폐기 → CV/SOTA 연구 기반 파이프라인 재개**다. 최신 사용자 추가 설명에 따라 **CV-01~06은 현재 로컬 세션의 작업이고, 학교 PC에는 독립적인 고용량·고부하 작업을 할당**한다. 전달 대상은 [열린 PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)의 `feature/foundation-starter`이며 새 PR이나 develop 직접 푸시를 사용하지 않는다. 이 링크와 날짜는 탐색 정보이고 이후 원격 상태나 게시 권한을 보장하지 않는다.
+기준일: 2026-09-08. 현재 선택은 **VARCO 폐기 → CV/SOTA 연구 기반 파이프라인 재개**다. 최신 사용자 추가 설명에 따라 **CV-01~06은 기존 로컬 세션의 작업이고, 학교 PC에는 독립적인 고용량·고부하 작업을 할당**한다. 학교 PC에서 다시 조회한 [PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)은 06:15:45 UTC에 `develop`으로 병합됐으며 커밋은 `f2011ac2cd4510a09c78f0de111771fc5aa433e8`이다. 아래의 과거 미실행·Mac 검증 기록은 당시 이력이다. 후속 학교 결과는 이 병합 기준에서 별도 작업 브랜치로 준비하고 PM이 검토한다. 이 링크와 날짜는 이후 원격 상태나 게시 권한을 보장하지 않는다.
+
+이번 학교 세션의 설치·Windows bootstrap/Unity 시험·실행본 결과와 남은 수용 범위는 [학교 PC 검증 기록](../../school/windows-validation/2026-09-08-pm-setup.md)에 있다. 아래 Mac 실행 수치와 원본 자료 한계는 덮어쓰지 않는다.
 
 ## 1. checkout과 시작 문맥
 
@@ -8,8 +10,10 @@
 
 ```sh
 git fetch origin
-git switch feature/foundation-starter
-git pull --ff-only origin feature/foundation-starter
+git switch develop
+git pull --ff-only origin develop
+git rev-parse HEAD
+git switch -c chore/school-pc-work
 git lfs install --local
 git lfs pull
 git lfs fsck
@@ -55,9 +59,13 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 
 원시 영상·카메라·깊이·mask·변환은 따로 보존한다. Blender/Unity로 넘기기 위해 재학습이나 기존 두 구간 추론 전체를 불필요하게 반복하지 않는다.
 
-## 4. 독립 학교 작업 큐 — 아직 실행하지 않음
+## 4. 독립 학교 작업 큐
 
-로컬은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61에 전달된 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 부모가 결과·diff를 검토해 기존 PR에 통합한다. 자동 merge/push나 새 PR 생성 권한은 부여하지 않는다.
+이미 이슈/실험에 특정 불변 SHA를 지정했다면 해당 재현은 그 값을 유지한다. 새 작업 시작점을 develop으로 바꾸는 안내가 이전 실험의 기준 SHA를 소급 변경하지 않는다. 기준 변경은 영향 파일과 시험을 다시 확인한 뒤 기록한다.
+
+로컬은 `reconstruction/src`, 현재 runner/receipt/export, `ReconstructionReview*` 및 해당 회귀시험을 소유한다. 학교 작업은 아래 경계만 사용하고 로컬 핵심 파일을 동시에 수정하지 않는다. 공통 기준은 PR61의 병합 결과를 포함하는, 착수 시 기록한 **불변 커밋**이며, 작업별 별도 브랜치/worktree에서 수행한다. 완료 후 PM이 결과·diff를 검토하고 해당 작업 PR에서 통합한다. 완료된 PR61을 다시 전달 경로로 사용하지 않는다. 게시·병합은 해당 작업 지시와 저장소 Git Flow를 따른다.
+
+이 인계 문서 자체는 자동 merge/push나 새 PR 생성 권한을 부여하지 않는다.
 
 | 단위 | 독립 입력과 작업 | 출력/편집 경계 | 독립성 |
 |---|---|---|---|
@@ -65,7 +73,7 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 | S-BENCH-01 | 라이선스가 확인된 공개 실내 benchmark의 데이터/고정 모델 캐시 준비와 upstream DA3-Streaming 또는 MapAnything GPU 비교. 큰 저장소/VRAM 소모를 학교에 배치한다. | `school/benchmarks/`의 독립 실험 설정·명령·정제 결과만 공유. 원본/가중치/예측은 ignored `private-data/school-runs/bench/`. 입력 순서/hash, 모델 revision, 실제 메모리·시간·GT 존재/평가 범위 기록. | 로컬 adapter를 수정하거나 완성을 기다리지 않는다. 상류 native 출력과 별도 manifest를 반환한다. gated SAM3.1은 접근 조건이 충족된 경우에만 별도 후보로 평가. |
 | S-WIN-01 | 기존 Foundation 장면으로 Windows standalone 빌드·기본 회귀·장시간 프레임/메모리 측정. 빌드/Library/Profiler 저장 부하를 학교에 배치한다. | 기존 build entry 사용, `school/windows-validation/`의 실행 명세/정제 보고. 바이너리·raw profiler/captures는 ignored `Builds/`/`private-data/school-runs/windows/`. 게임 규칙·layout·CV core 변경 없음. | 로컬 CV 장면과 무관한 기존 플레이어 baseline 검증. VR 기기가 미정이면 Desktop만 측정하고 HMD PASS를 주장하지 않는다. |
 
-세 단위는 **논리적으로 독립**이지만 한 학교 PC의 GPU/디스크를 무조건 동시에 점유시키지 않는다. 실제 자원에 맞춰 순차/제한 병렬로 실행하며 Unity writer는1개다. 각 단위의 초기 자원 probe로 입력량·scratch/VRAM/시간 예산을 정하고, 원본이나 기존 결과를 자동 정리하지 않는다. 학교 실행 세션에 연결되지 않은 현재 상태에서는 계약 준비만 완료이며 실행 중으로 표시하지 않는다.
+세 단위는 **논리적으로 독립**이지만 한 학교 PC의 GPU/디스크를 무조건 동시에 점유시키지 않는다. 실제 자원에 맞춰 순차/제한 병렬로 실행하며 Unity writer는1개다. 각 단위의 초기 자원 probe로 입력량·scratch/VRAM/시간 예산을 정하고, 원본이나 기존 결과를 자동 정리하지 않는다. 초기 Mac 인계 시에는 계약 준비만 완료였다. 실제 학교 실행과 미실행 단위는 상단의 날짜별 검증 기록으로 구분한다.
 
 학교 결과는 선택 가능한 성능/자산 증거로 반환한다. 로컬 CV 개발은 그 결과 없이 기존 연속4장 자료로 계속한다. 학교 benchmark 결과를 받은 뒤 채택 여부를 결정하며 모델 교체·결과 융합을 자동 수행하지 않는다.
 
@@ -82,3 +90,11 @@ Windows에서는 설치된 Python에 맞춰 `python3`를 `python` 또는 `py -3`
 Native 검증자 프로필의 flow-list `tools: [read, …, ls]`가 `[read`/`ls]`로 파싱되어 첫 게시 검토가 실패했다. 선언 권한은 유지하고 지원 표기로 정리했다. 설치된 pi-subagents0.65.1 parser를 사용하는 `node --test scripts/dev/test_agent_profiles.mjs`는7실패→7통과했다. 실패한 agent 결과를 검토 PASS로 쓰지 않으며 재시도 결과는 별도 증거에 기록한다.
 
 Pi0.85.1 및 프로젝트의 고정 패키지, BMAD6.12.0/SpecKit1.0.4 소스는 [도구 전달 기록](../tooling/agent-resources.md)을 따른다. 개인 모델/인증 설정과 전역 설치물은 Git으로 옮기지 않는다. 현재 승인된 spec/Step3 범위를 유지하고 새 연구/계획 게이트부터 반복하지 않는다.
+
+## 2026-09-08 학교 실행 세션 확인
+
+이번에 직접 조회한 school-pc는 Windows 11 x64, i5-10500(6코어/12스레드), RAM 약 8GiB, Intel UHD 630 내장 그래픽이다. 최초 C: 여유 공간은 약 28GiB였으며 Editor 설치 후 약 24.5GiB로 변했다. 이는 특정 학교 PC 한 대의 시점별 관측이며 다른 학교 장비의 사양을 일반화하지 않는다. 호스트명·계정·개인 설치 경로는 공개하지 않는다.
+
+Unity CLI 1.0.0-beta.8, Unity 6000.3.23f1/Windows 모듈과 Pipeline 0.6.0-exp.1 설치·고정을 확인했다. 공식 Editor MCP의 초기화·149개 도구 조회·실제 Editor/씬/Console 읽기, EditMode 52/52와 PlayMode 6/6, 시험 직후(19:41 KST) 모드 전환 후 연결 및 Console 오류 0을 검증했다. [19:50 KST 마감 추가 관측](../evidence/foundation/2026-09-08-official-editor-mcp-closing-observation.md)에는 재시작 상태 조회 timeout으로 마지막 Console 오류 1건이 남았으며 추가 재검증은 하지 않았다고 기록했다. Codex·Claude Code 등록과 Claude Code `Connected`를 확인했으며 기존 대화는 도구 목록 재연결이 필요하다. [ADR 0006](../adr/0006-official-unity-editor-mcp.md)과 [실패·복구를 포함한 검증 기록](../evidence/foundation/2026-09-08-official-editor-mcp.json)을 따른다. 전체 Windows 빌드·HMD 수용 및 M1-04의 실행 경계 검토는 별도다.
+
+이 장비에서는 PM의 환경/패키지/연결 준비 후 S-WIN-01 #90의 작은 Windows 실행 검증을 먼저 수행할 수 있다. RAM·디스크·프레임을 측정한 뒤 장시간 검증 크기를 정한다. S-ART-01 #85의 고해상도 렌더/4K 베이크와 S-BENCH-01 #86의 CUDA GPU benchmark는 더 큰 자원을 가진 장비에 배치할 후보로 남기고, 현재 내장 그래픽 PC에서 완료 가능한 배치로 표시하지 않는다. 이는 작업 장소 재승인 게이트나 팀 전체 작업 중단이 아니라 기기별 실행량 선택이다.
