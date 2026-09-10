@@ -165,6 +165,32 @@ def inspect(files: list[Path]) -> list[str]:
 
 
 def main() -> int:
+    # Fail-open policy decision (required before this gate can be treated as a
+    # security control, not just CI hygiene): when the changed-file scope is
+    # unavailable, this script falls back to scanning *all* tracked files and
+    # still exits 1 if that full scan finds a violation, 0 otherwise. It does
+    # NOT fail closed (i.e. it never forces a non-zero/blocking exit purely
+    # because the scope degraded). This is a deliberate, scoped choice:
+    #   - The full-tree fallback is a strict superset of the normal
+    #     changed-files scope, so the fallback scan can only find the same
+    #     violations or more, never fewer, for files that are actually
+    #     present in the checked-out working tree.
+    #   - The residual risk this does NOT cover is D2-class: the checked-out
+    #     tree itself may not be the PR head (e.g. checkout resolved to
+    #     `develop`), so a clean fallback result proves the checked-out tree
+    #     is clean, not that the PR head is. That is why a degraded run always
+    #     records the actual tree SHA in `## Notes` and always emits an
+    #     `::warning::` annotation (below) instead of only writing prose into
+    #     a step summary nobody opens.
+    #   - Failing closed (blocking merges outright whenever scope degrades)
+    #     was rejected: this failure mode is expected to fire on innocuous
+    #     shallow-clone/race conditions, and a gate that blocks every PR
+    #     merged near this race would be treated as flaky noise and routed
+    #     around (e.g. admin-merged) rather than fixed, which is a worse
+    #     security outcome than a loud, correctly-scoped fallback scan.
+    # If this tradeoff changes, add a `--strict-on-fallback` flag that exits
+    # non-zero whenever `degraded` is True, with a dedicated test asserting
+    # that exit behaviour; do not silently change the default below.
     parser = argparse.ArgumentParser()
     parser.add_argument("--base")
     parser.add_argument("--head", default="HEAD")

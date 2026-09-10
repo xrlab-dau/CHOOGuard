@@ -71,6 +71,47 @@ class GitPathPolicyTest(unittest.TestCase):
         self.assertEqual(set(files), {self.root / name for name in self.names})
         self.assertIn("forbidden credential/model file: docs/비밀 키.pem", MODULE.inspect(files))
 
+    def test_normal_path_reports_changed_files_scope_honestly(self):
+        # Rubric item 2: the report must never claim it inspected one scope
+        # while having actually inspected another. On the ordinary, healthy
+        # path (both revisions resolve, the diff itself succeeds), the report
+        # must say "changed files in `BASE...HEAD`", never "all tracked
+        # files" -- claiming a full scan happened when only the diff subset
+        # was actually walked would be the silent-scope-lie this rubric item
+        # is about, just in the opposite (over-claiming) direction from the
+        # degraded-fallback case.
+        report = self.root / "report-normal.md"
+        with patch.object(sys, "argv", ["repository_policy.py", "--base", self.base,
+                                       "--head", "HEAD", "--report", str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()) as captured:
+            status = MODULE.main()
+        text = report.read_text(encoding="utf-8")
+        self.assertEqual(status, 1)
+        self.assertIn(f"Scope: changed files in `{self.base}...HEAD`", text)
+        self.assertNotIn("Scope: all tracked files", text)
+        # The scope was not degraded, so there must be no Notes section and
+        # no fallback warning annotation on the healthy path.
+        self.assertNotIn("## Notes", text)
+        self.assertNotIn("::warning::", captured.getvalue())
+
+    def test_no_base_argument_scans_all_tracked_files(self):
+        # When invoked without --base at all (e.g. a plain push trigger with
+        # no PR to diff against), main() must fall onto the `else:` branch
+        # and actually walk `tracked_files()` -- not silently return an empty
+        # file list, which would report a spuriously clean "Violations: 0"
+        # for a repository that was never actually scanned.
+        report = self.root / "report-no-base.md"
+        with patch.object(sys, "argv", ["repository_policy.py", "--report", str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()):
+            status = MODULE.main()
+        text = report.read_text(encoding="utf-8")
+        self.assertEqual(status, 1)
+        self.assertIn("Scope: all tracked files", text)
+        self.assertIn("Checked files:", text)
+        checked = int(text.splitlines()[3].split(": ", 1)[1])
+        self.assertGreater(checked, 0)
+        self.assertIn("forbidden credential/model file: docs/비밀 키.pem", text)
+
     def test_absent_head_commit_is_reported_as_missing(self):
         # A squash-merged pull request leaves its head commit unreachable.
         self.assertEqual(MODULE.missing_commits(self.base, "HEAD"), [])
@@ -164,6 +205,17 @@ class GitPathPolicyTest(unittest.TestCase):
         text = report.read_text(encoding="utf-8")
         self.assertIn("Scope: all tracked files", text)
         self.assertIn("diff failed", text)
+
+    def test_fail_open_policy_decision_is_documented(self):
+        # Rubric item 5 / work-order item 3: fail-open-vs-fail-closed for a
+        # security gate must be a recorded decision, not an implicit default
+        # someone can delete without noticing. This does not re-derive the
+        # behaviour from a mutant (the other tests already pin exit-code
+        # behaviour); it only guards against the documentation silently
+        # disappearing from the source.
+        source = Path(MODULE.__file__).read_text(encoding="utf-8")
+        self.assertIn("Fail-open policy decision", source)
+        self.assertIn("strict-on-fallback", source)
 
 
 if __name__ == "__main__":
