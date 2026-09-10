@@ -1,3 +1,4 @@
+import argparse
 import contextlib
 import importlib.util
 import io
@@ -358,6 +359,76 @@ class GitPathPolicyTest(unittest.TestCase):
         self.assertNotEqual(write_failure_status, violations_status)
 
 
+class CrashSafetyTest(unittest.TestCase):
+    """Round-4 BLOCKING item (b): an uncaught exception inside main()'s
+    logic must never produce an exit code indistinguishable from "policy
+    violations found" (1) or "clean" (0), and must never surface as a raw,
+    unannotated traceback with no stdout signal a CI consumer could act on.
+    """
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.root_patch = patch.object(MODULE, "ROOT", self.root)
+        self.root_patch.start()
+        self.addCleanup(self.root_patch.stop)
+
+    def test_uncaught_exception_from_tracked_files_does_not_crash_the_process(self):
+        # Reproduction of the exact scenario named in the work order:
+        # tracked_files()'s underlying `git ls-files` call raises an
+        # uncaught CalledProcessError. Before this fix this propagated all
+        # the way out of main(), which -- run as `sys.exit(main())` from the
+        # command line -- would print a raw Python traceback and exit with
+        # whatever bare-exception default Python uses (1), identical to the
+        # legitimate "violations found" exit code.
+        def boom():
+            raise subprocess.CalledProcessError(128, ["git", "ls-files", "-z"])
+
+        report = self.root / "crash-report.md"
+        with patch.object(MODULE, "tracked_files", side_effect=boom), \
+                patch.object(sys, "argv", ["repository_policy.py", "--report", str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()) as captured:
+            status = MODULE.main()  # must return, never raise
+        self.assertIsInstance(status, int)
+        self.assertIn("::error::", captured.getvalue())
+        self.assertIn("crashed unexpectedly", captured.getvalue())
+
+    def test_crash_exit_code_is_distinct_from_violations_and_write_failure_and_clean(self):
+        # The crash path must have its own reserved exit code (3), not
+        # collide with 0 (clean), 1 (violations found), or 2 (report write
+        # failed) -- otherwise a caller reading only the numeric exit code
+        # cannot tell an unanticipated crash apart from those three
+        # deliberately-computed outcomes.
+        def boom():
+            raise RuntimeError("simulated unanticipated failure")
+
+        report = self.root / "crash-report-2.md"
+        with patch.object(MODULE, "tracked_files", side_effect=boom), \
+                patch.object(sys, "argv", ["repository_policy.py", "--report", str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()):
+            crash_status = MODULE.main()
+        self.assertEqual(crash_status, 3)
+        self.assertNotIn(crash_status, (0, 1, 2))
+
+    def test_mutation_check_without_the_guard_the_crash_propagates_raw(self):
+        # Self-check that this test class actually discriminates guarded vs.
+        # unguarded behaviour: calling the pre-fix `_run()` directly (the
+        # helper main() now wraps in try/except) must still raise, proving
+        # the safety net lives specifically in main()'s wrapping, not
+        # incidentally somewhere else that would mask a future regression
+        # (e.g. someone reverting main() to call `_run()` directly without
+        # the try/except).
+        def boom():
+            raise subprocess.CalledProcessError(128, ["git", "ls-files", "-z"])
+
+        report = self.root / "crash-report-3.md"
+        with patch.object(MODULE, "tracked_files", side_effect=boom):
+            args = argparse.Namespace(base=None, head="HEAD", report=str(report))
+            with self.assertRaises(subprocess.CalledProcessError):
+                MODULE._run(args)
+
+
 class ShellWrapperContractTest(unittest.TestCase):
     """Proves the *deployed* shell semantics in
     .github/workflows/required-quality-gate.yml, not just this module's
@@ -386,42 +457,46 @@ class ShellWrapperContractTest(unittest.TestCase):
 
     WORKFLOW_PATH = Path(__file__).resolve().parents[3] / ".github/workflows/required-quality-gate.yml"
 
+    _YAML_EXTRACT_SCRIPT = (
+        "require 'yaml'\n"
+        "data = YAML.safe_load(File.read(ARGV[0]), aliases: true)\n"
+        "step = data['jobs']['policy']['steps'].find { |s| s['name'] == ARGV[1] }\n"
+        "abort(\"step not found: #{ARGV[1]}\") unless step\n"
+        "run = step['run']\n"
+        "abort(\"step has no run: block: #{ARGV[1]}\") unless run\n"
+        "STDOUT.write(run)\n"
+    )
+
     @classmethod
     def _extract_run_block(cls, step_name: str) -> str:
-        """Pull the literal `run: |` block body out of the named step.
+        """Pull the literal `run:` block body out of the named step using a
+        genuine YAML parser (Ruby's stdlib Psych, via `YAML.safe_load`),
+        not a hand-rolled indentation/string scanner.
 
-        Deliberately avoids depending on a YAML library (none is guaranteed
-        available in this environment -- see scripts/ci/tests and the repo's
-        own `python3` availability notes) and instead does line-oriented
-        extraction: find the step by its `name:` line, then the following
-        `run: |` line, then collect every subsequent line that is indented
-        at least as much as the first body line, stopping at the first line
-        that dedents back out (a sibling `- name:` step or the end of file).
+        This closes a tautology risk the round-4 critic flagged as a
+        possibility: a line-oriented extractor is itself untested code that
+        could silently diverge from what GitHub Actions' own YAML parser
+        sees (block-scalar edge cases, `- name:` vs `name:` indentation
+        levels, comments inside the block, anchors/aliases elsewhere in the
+        file), and a test built on a broken extractor could pass while
+        exercising the wrong text -- or fail to exist at all if extraction
+        silently returns an empty string it doesn't notice. Routing through
+        the same `ruby -e 'require "yaml"; ...'` machinery already used by
+        the workflow's own "Validate YAML syntax" step ties this test to a
+        parser that is independently known to load the file successfully.
         """
-        text = cls.WORKFLOW_PATH.read_text(encoding="utf-8")
-        lines = text.splitlines()
-        name_needle = f"name: {step_name}"
-        start = next(
-            i for i, line in enumerate(lines)
-            if line.strip() in (name_needle, f"- {name_needle}")
+        result = subprocess.run(
+            ["ruby", "-ryaml", "-e", cls._YAML_EXTRACT_SCRIPT, str(cls.WORKFLOW_PATH), step_name],
+            capture_output=True,
+            text=True,
+            timeout=15,
         )
-        run_index = next(
-            i for i in range(start, len(lines)) if lines[i].strip() == "run: |"
+        assert result.returncode == 0, (
+            f"ruby YAML extraction failed for step {step_name!r}: {result.stderr}"
         )
-        body: list[str] = []
-        body_indent: int | None = None
-        for line in lines[run_index + 1:]:
-            if not line.strip():
-                body.append("")
-                continue
-            indent = len(line) - len(line.lstrip(" "))
-            if body_indent is None:
-                body_indent = indent
-            if indent < body_indent:
-                break
-            body.append(line[body_indent:])
-        assert body, f"failed to extract a non-empty run: block for step {step_name!r}"
-        return "\n".join(body)
+        body = result.stdout
+        assert body.strip(), f"failed to extract a non-empty run: block for step {step_name!r}"
+        return body
 
     def setUp(self):
         self.assertTrue(self.WORKFLOW_PATH.is_file(), self.WORKFLOW_PATH)
@@ -466,6 +541,15 @@ class ShellWrapperContractTest(unittest.TestCase):
             "    echo '::error::failed to write repository policy report' >&2\n"
             "    exit 2\n"
             "    ;;\n"
+            "  crash)\n"
+            "    printf 'Scope: all tracked files\\nChecked files: 3\\nViolations: 0\\n' > \"$report\"\n"
+            "    exit 3\n"
+            "    ;;\n"
+            "  unreadable)\n"
+            "    printf 'Scope: all tracked files\\nChecked files: 3\\nViolations: 0\\n' > \"$report\"\n"
+            "    chmod 000 \"$report\"\n"
+            "    exit 0\n"
+            "    ;;\n"
             "  *)\n"
             "    echo \"unknown PYTHON_FAKE_MODE: $PYTHON_FAKE_MODE\" >&2\n"
             "    exit 99\n"
@@ -505,6 +589,44 @@ class ShellWrapperContractTest(unittest.TestCase):
         result = self._run_step("Validate repository and changed files", "violations")
         self.assertEqual(result.returncode, 1, result.stderr)
 
+    def test_repository_step_crash_exits_three(self):
+        # The script's own top-level crash handler (repository_policy.py's
+        # `_run`/`main` split) returns 3 for an unanticipated exception. The
+        # shell wrapper must pass that through untouched -- not collapse it
+        # to 1 ("violations") or 0 ("clean").
+        result = self._run_step("Validate repository and changed files", "crash")
+        self.assertEqual(result.returncode, 3, result.stderr)
+
+    def test_repository_step_unreadable_report_does_not_flip_clean_exit(self):
+        # Round-4 finding (both candidates hit variants of this): a `cat`
+        # failure on an *existing* report from a *successful* (exit 0) scan
+        # must never replace the real exit status, but it must not be
+        # silently swallowed either -- a stdout ::warning:: must appear so a
+        # human knows the Job Summary page is incomplete.
+        result = self._run_step("Validate repository and changed files", "unreadable")
+        self.assertEqual(
+            result.returncode, 0,
+            f"an unreadable report must not flip a genuine exit 0 to anything else; "
+            f"stdout={result.stdout!r} stderr={result.stderr!r}",
+        )
+        self.assertIn("::warning::", result.stdout, result.stdout)
+        self.assertIn("failed to append", result.stdout)
+
+    def test_repository_step_missing_report_error_reaches_real_stdout(self):
+        # Round-4 BLOCKING item (a): the workflow's own `::error::...` line
+        # for the "report was never written" branch must be sent to the
+        # step's actual stdout stream, not merely appended to the
+        # $GITHUB_STEP_SUMMARY *file*. GitHub Actions only recognises
+        # workflow commands (`::error::`, `::warning::`, ...) when they
+        # appear on a step's stdout; text redirected into a file the step
+        # happens to write to is inert on the Checks tab even though it
+        # looks identical as a string. This test proves the annotation is
+        # observable on the *captured subprocess stdout*, independent of
+        # whatever also landed in the summary file.
+        result = self._run_step("Validate repository and changed files", "writefail")
+        self.assertIn("::error::", result.stdout, f"stdout={result.stdout!r}")
+        self.assertIn("was not written", result.stdout)
+
     def test_repository_step_report_write_failure_exits_two_not_one(self):
         # THIS is the test that would have caught round-3's headline defect:
         # it proves the *shell*, not just the script, ultimately reports
@@ -531,6 +653,40 @@ class ShellWrapperContractTest(unittest.TestCase):
         self.assertEqual(result.returncode, 2, f"stdout={result.stdout!r} stderr={result.stderr!r}")
         summary_text = self.summary.read_text(encoding="utf-8")
         self.assertIn("::error::", summary_text)
+
+    def test_pr_metadata_step_missing_report_error_reaches_real_stdout(self):
+        # Round-4 BLOCKING item (a), sibling step. Same proof as the
+        # repository-policy step: the annotation must be observable on
+        # actual stdout, not only inside the summary file.
+        result = self._run_step("Validate PR metadata", "writefail")
+        self.assertIn("::error::", result.stdout, f"stdout={result.stdout!r}")
+        self.assertIn("was not written", result.stdout)
+
+    def test_pr_metadata_step_clean_scan_exits_zero(self):
+        # Round-4 BD-2: the PR-metadata step previously only had its
+        # fragment string-matched, never dynamically executed end-to-end
+        # the way the repository-policy step was. Give it the same full
+        # clean/violations/crash/unreadable coverage.
+        result = self._run_step("Validate PR metadata", "clean")
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_pr_metadata_step_violations_exit_one(self):
+        result = self._run_step("Validate PR metadata", "violations")
+        self.assertEqual(result.returncode, 1, result.stderr)
+
+    def test_pr_metadata_step_crash_exits_three(self):
+        result = self._run_step("Validate PR metadata", "crash")
+        self.assertEqual(result.returncode, 3, result.stderr)
+
+    def test_pr_metadata_step_unreadable_report_does_not_flip_clean_exit(self):
+        result = self._run_step("Validate PR metadata", "unreadable")
+        self.assertEqual(
+            result.returncode, 0,
+            f"an unreadable report must not flip a genuine exit 0 to anything else; "
+            f"stdout={result.stdout!r} stderr={result.stderr!r}",
+        )
+        self.assertIn("::warning::", result.stdout, result.stdout)
+        self.assertIn("failed to append", result.stdout)
 
     def test_reverting_the_if_guard_reproduces_the_round3_bug(self):
         # Mutation-style self-check: with the OLD (unguarded) `cat` line,
@@ -570,6 +726,54 @@ class ShellWrapperContractTest(unittest.TestCase):
             "was expected to reproduce the round-3 masking bug (exit 1, not "
             "2); if this now returns 2 the sanity fixture itself is wrong.",
         )
+
+    def test_mutation_check_bare_or_true_silently_swallows_cat_failure(self):
+        # Round-4 finding against the `|| true` shape specifically: it never
+        # flips the exit code (good), but it also emits zero signal that
+        # anything went wrong (bad). This self-check proves our test suite
+        # can actually tell the difference -- a regression back to bare
+        # `|| true` must make `test_repository_step_unreadable_report_does_
+        # not_flip_clean_exit`'s ::warning:: assertion fail, which this test
+        # confirms by directly reproducing the old shape here.
+        old_shape_script = (
+            'status=0\n'
+            './bin_python_stub || status=$?\n'
+            'if [ -f repository-policy-report.md ]; then\n'
+            '  cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY" || true\n'
+            'else\n'
+            '  echo "::error::missing" >> "$GITHUB_STEP_SUMMARY"\n'
+            'fi\n'
+            'exit "$status"\n'
+        )
+        self._install_fake_python("unreadable")
+        stub = self.workdir / "bin_python_stub"
+        stub.write_text(
+            "#!/bin/bash\nexec \"$PYTHON_FAKE_PY\" scripts/ci/repository_policy.py --report repository-policy-report.md\n",
+            encoding="utf-8",
+        )
+        stub.chmod(0o755)
+        env = {
+            "PATH": f"{self.bindir}:/usr/bin:/bin",
+            "PYTHON_FAKE_MODE": "unreadable",
+            "PYTHON_FAKE_PY": str(self.bindir / "python"),
+            "GITHUB_STEP_SUMMARY": str(self.summary),
+        }
+        result = subprocess.run(
+            ["bash", "--noprofile", "--norc", "-eo", "pipefail", "-c", old_shape_script],
+            cwd=self.workdir,
+            env=env,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        # The old `|| true` shape: exit code correctly stays 0 (it never
+        # regressed on THAT axis), but it produces no ::warning::/::error::
+        # anywhere -- proving this mutant is real and our fixed workflow
+        # text (asserted elsewhere to contain a stdout ::warning::) is doing
+        # actual, necessary work, not decorating an already-safe fragment.
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertNotIn("::warning::", result.stdout)
+        self.assertNotIn("::warning::", self.summary.read_text(encoding="utf-8"))
 
 
 if __name__ == "__main__":

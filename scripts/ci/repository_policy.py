@@ -8,6 +8,7 @@ import json
 import re
 import subprocess
 import sys
+import traceback
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -191,12 +192,47 @@ def main() -> int:
     # If this tradeoff changes, add a `--strict-on-fallback` flag that exits
     # non-zero whenever `degraded` is True, with a dedicated test asserting
     # that exit behaviour; do not silently change the default below.
+    #
+    # Exit code contract (documented so the workflow / a human reading the
+    # Checks tab can tell these apart without opening the log):
+    #   0 = clean scan, no violations.
+    #   1 = scan completed, violations found.
+    #   2 = scan completed but the report could not be written to --report.
+    #   3 = the scan itself crashed unexpectedly (e.g. an uncaught
+    #       subprocess.CalledProcessError from a `git` call this function
+    #       does not already handle, such as tracked_files()'s `git
+    #       ls-files`). This must never be confusable with 1 ("violations
+    #       found") -- an uncaught exception previously propagated out of
+    #       main() entirely, producing Python's default exit code 1 for an
+    #       unhandled exception, which a caller could not distinguish from a
+    #       real, successfully-computed "violations found" result. See
+    #       _run() below and
+    #       scripts/ci/tests/test_repository_policy.py::CrashSafetyTest for a
+    #       reproduction (mocking tracked_files() to raise) and the fix.
     parser = argparse.ArgumentParser()
     parser.add_argument("--base")
     parser.add_argument("--head", default="HEAD")
     parser.add_argument("--report")
     args = parser.parse_args()
 
+    try:
+        return _run(args)
+    except Exception as exc:  # noqa: BLE001 - deliberate top-level safety net
+        # Anything that reaches here is, by definition, a failure mode none
+        # of the specific except clauses inside _run() anticipated. Print a
+        # real stdout ::error:: annotation (so it renders on the Checks tab,
+        # not just buried prose) plus the traceback (so it is still
+        # debuggable from the job log), and return the reserved crash exit
+        # code 3 -- never 1 (which would silently look like "violations
+        # found") and never 0.
+        print(f"::error::repository policy gate crashed unexpectedly ({exc.__class__.__name__}: {exc}); "
+              "this is exit code 3, distinct from 1 (violations found) and 2 (report write failed); "
+              "see the job log below for the full traceback")
+        traceback.print_exc()
+        return 3
+
+
+def _run(args: argparse.Namespace) -> int:
     notes: list[str] = []
     scope = "all tracked files"
     degraded = False
