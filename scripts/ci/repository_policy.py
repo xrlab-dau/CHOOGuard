@@ -25,7 +25,16 @@ ACTION_USE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 PINNED_ACTION = re.compile(r"^[^@]+@[0-9a-fA-F]{40}$")
 
 
-def git(*args: str) -> str:
+def git(*args: str, quiet: bool = False) -> str:
+    if quiet:
+        completed = subprocess.run(
+            ["git", "-C", str(ROOT), *args],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            encoding="utf-8",
+            check=True,
+        )
+        return completed.stdout
     return subprocess.check_output(["git", "-C", str(ROOT), *args], encoding="utf-8")
 
 
@@ -42,14 +51,22 @@ def changed_files(base: str, head: str) -> list[Path]:
 def missing_commits(*revisions: str) -> list[str]:
     """Return the revisions this clone cannot resolve to a commit.
 
-    Merging a pull request deletes its head ref, so a gate run that starts just
-    before the merge can reach this script after the head commit has become
-    unreachable and therefore absent from the runner's clone.
+    Any of these can produce an unresolvable revision: a squash-merged pull
+    request whose head ref was deleted, a shallow/partial clone that never
+    fetched the object, a typo, or a GC'd/rewritten commit. This check does
+    not determine *why* a revision is unresolvable, only *that* it is; the
+    motivating case for adding it is a gate run that reaches this script
+    after a PR's head commit has become unreachable (e.g. following a
+    squash-merge that deleted the head ref).
+
+    Resolvability alone does not guarantee `changed_files()` will succeed:
+    two individually-resolvable revisions can still lack a common merge
+    base, which is handled separately in `main()`.
     """
     absent: list[str] = []
     for revision in revisions:
         try:
-            git("rev-parse", "--verify", "--quiet", f"{revision}^{{commit}}")
+            git("rev-parse", "--verify", "--quiet", f"{revision}^{{commit}}", quiet=True)
         except subprocess.CalledProcessError:
             absent.append(revision)
     return absent
@@ -156,29 +173,62 @@ def main() -> int:
 
     notes: list[str] = []
     scope = "all tracked files"
+    degraded = False
+
     if args.base:
         absent = missing_commits(args.base, args.head)
+        files: list[Path] | None = None
+        if not absent:
+            try:
+                files = changed_files(args.base, args.head)
+                scope = f"changed files in `{args.base}...{args.head}`"
+            except subprocess.CalledProcessError as exc:
+                # Both revisions resolved individually, but the diff itself
+                # still failed (e.g. no merge base between them). This is
+                # the same failure signature as an unresolvable revision, so
+                # it must fall back the same way instead of propagating.
+                absent = [f"{args.base}...{args.head} (diff failed: exit {exc.returncode})"]
         if absent:
+            degraded = True
             notes.append(
                 "changed-file scope unavailable: this clone cannot resolve "
                 + ", ".join(f"`{revision}`" for revision in absent)
                 + ". Fell back to all tracked files."
             )
             files = tracked_files()
-        else:
-            files = changed_files(args.base, args.head)
-            scope = f"changed files in `{args.base}...{args.head}`"
+            try:
+                actual_tree = git("rev-parse", "HEAD", quiet=True).strip()
+            except subprocess.CalledProcessError:
+                actual_tree = "unknown"
+            notes.append(
+                "full scan was performed against the working tree currently checked "
+                f"out (`{actual_tree}`), which may not be the PR head."
+            )
     else:
         files = tracked_files()
 
     errors = inspect(files)
+
+    if degraded:
+        # Printed to this step's stdout so the GitHub Actions runner surfaces
+        # it as an annotation even though the job still exits 0 on a clean
+        # repository; a silently-green degraded scan should not be invisible.
+        print(
+            "::warning::repository policy gate fell back to a full scan; "
+            "changed-file scope was unavailable (see report Notes)"
+        )
+
     lines = ["# Repository policy report", "", f"Scope: {scope}", f"Checked files: {len(files)}", f"Violations: {len(errors)}", ""]
     if notes:
         lines.append("## Notes")
         lines.append("")
         lines.extend(f"- {item}" for item in notes)
         lines.append("")
-    lines.extend(f"- {item}" for item in errors)
+    if errors:
+        lines.append("## Violations")
+        lines.append("")
+        lines.extend(f"- {item}" for item in errors)
+        lines.append("")
     report = "\n".join(lines) + "\n"
     if args.report:
         Path(args.report).write_text(report, encoding="utf-8")

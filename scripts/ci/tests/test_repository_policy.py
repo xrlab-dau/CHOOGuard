@@ -1,6 +1,7 @@
 import contextlib
 import importlib.util
 import io
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -81,7 +82,7 @@ class GitPathPolicyTest(unittest.TestCase):
         report = self.root / "report.md"
         with patch.object(sys, "argv", ["repository_policy.py", "--base", self.base,
                                        "--head", absent, "--report", str(report)]), \
-                contextlib.redirect_stdout(io.StringIO()):
+                contextlib.redirect_stdout(io.StringIO()) as captured:
             status = MODULE.main()
         text = report.read_text(encoding="utf-8")
         self.assertEqual(status, 1)
@@ -89,6 +90,80 @@ class GitPathPolicyTest(unittest.TestCase):
         self.assertIn("Scope: all tracked files", text)
         # The fallback still inspects the repository rather than reporting nothing.
         self.assertIn("forbidden credential/model file: docs/비밀 키.pem", text)
+        # D2: the report must say which working tree the full scan actually
+        # covered, since it may not be the PR head (e.g. checkout landed on
+        # the base branch instead).
+        actual_head = self.git("rev-parse", "HEAD").strip()
+        self.assertIn(f"working tree currently checked out (`{actual_head}`)", text)
+        # D3: real violations must render under their own heading, never as a
+        # visual continuation of the advisory ## Notes bullet list.
+        self.assertIn("## Violations", text)
+        notes_index = text.index("## Notes")
+        violations_index = text.index("## Violations")
+        pem_index = text.index("forbidden credential/model file: docs/비밀 키.pem")
+        self.assertLess(notes_index, violations_index)
+        self.assertLess(violations_index, pem_index)
+        # D4: a degraded/fallback scan must emit a visible GitHub Actions
+        # annotation, not just prose buried in a report nobody opens.
+        self.assertIn("::warning::", captured.getvalue())
+
+    def test_fallback_with_no_violations_reports_success(self):
+        # The PR's own success criterion: run 34438757897 crashed a *clean*
+        # repository. A clean tree plus an unreachable head must exit 0, not
+        # just "not crash". A mutant that hardcodes the fallback path to
+        # return 1 regardless of `errors` would pass every other test but
+        # must fail this one.
+        clean_root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, clean_root, ignore_errors=True)
+        run = lambda *args: subprocess.check_output(
+            ["git", "-C", str(clean_root), *args], encoding="utf-8", stderr=subprocess.PIPE
+        )
+        run("init", "-q")
+        (clean_root / "schemas").mkdir()
+        (clean_root / "schemas/scene-bundle.schema.json").write_text("{}", encoding="utf-8")
+        run("add", ".")
+        run("-c", "user.name=t", "-c", "user.email=t@example.invalid", "-c", "commit.gpgsign=false",
+            "commit", "-qm", "init")
+        base = run("rev-parse", "HEAD").strip()
+        absent = "0" * 40
+        report = clean_root / "report.md"
+        with patch.object(MODULE, "ROOT", clean_root), \
+                patch.object(sys, "argv", ["repository_policy.py", "--base", base,
+                                           "--head", absent, "--report", str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()):
+            status = MODULE.main()
+        text = report.read_text(encoding="utf-8")
+        self.assertEqual(status, 0)
+        self.assertIn("Violations: 0", text)
+        # No violations exist, so no ## Violations heading should appear.
+        self.assertNotIn("## Violations", text)
+
+    def test_resolvable_but_undiffable_revisions_fall_back_cleanly(self):
+        # D1/D8: two revisions can each individually resolve to a commit
+        # (missing_commits() passes both) while still lacking a common merge
+        # base, so `git diff base...head` itself raises. This is the same
+        # failure signature (uncaught CalledProcessError, exit 128, no report
+        # ever written) as the incident this PR exists to fix, just reached
+        # through a different trigger than a fully-unresolvable SHA.
+        original_branch = self.git("branch", "--show-current").strip()
+        self.git("checkout", "-q", "--orphan", "unrelated")
+        self.commit("unrelated root")
+        unrelated_head = self.git("rev-parse", "HEAD").strip()
+        self.git("checkout", "-q", original_branch)
+
+        # Both revisions must resolve individually (missing_commits() would
+        # otherwise trivially catch this the old way).
+        self.assertEqual(MODULE.missing_commits(self.base, unrelated_head), [])
+
+        report = self.root / "report-undiffable.md"
+        with patch.object(sys, "argv", ["repository_policy.py", "--base", self.base,
+                                       "--head", unrelated_head, "--report", str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()):
+            status = MODULE.main()  # must not raise CalledProcessError
+        self.assertIn(status, (0, 1))
+        text = report.read_text(encoding="utf-8")
+        self.assertIn("Scope: all tracked files", text)
+        self.assertIn("diff failed", text)
 
 
 if __name__ == "__main__":
