@@ -132,15 +132,61 @@ function Write-Utf8 {
     [System.IO.File]::WriteAllText($Path, $normalised, (New-Object System.Text.UTF8Encoding($false)))
 }
 
+function Protect-XmlNode {
+    param([System.Xml.XmlNode] $Node)
+    if ($null -eq $Node) { return }
+    if ($Node.Attributes) {
+        foreach ($attribute in $Node.Attributes) {
+            # Version attributes are dotted numbers that the address rule would rewrite,
+            # and they carry no personal data.
+            if ($attribute.Name -match 'version') { continue }
+            $attribute.Value = Protect-Text $attribute.Value
+        }
+    }
+    foreach ($child in $Node.ChildNodes) {
+        if ($child.NodeType -eq [System.Xml.XmlNodeType]::Text -or $child.NodeType -eq [System.Xml.XmlNodeType]::CDATA) {
+            $child.Value = Protect-Text $child.Value
+        }
+        else { Protect-XmlNode -Node $child }
+    }
+}
+
+function Protect-XmlDocument {
+    # Redacts attribute values and text nodes through the XML tree, then serialises.
+    # Substituting on the raw text instead would drop a placeholder's angle brackets
+    # inside an attribute value and leave the published evidence unparseable.
+    param([string] $SourcePath)
+    $document = New-Object System.Xml.XmlDocument
+    $document.PreserveWhitespace = $true
+    $document.Load($SourcePath)
+    Protect-XmlNode -Node $document.DocumentElement
+    $settings = New-Object System.Xml.XmlWriterSettings
+    $settings.OmitXmlDeclaration = $true
+    $settings.Indent = $false
+    $settings.NewLineChars = "`n"
+    $buffer = New-Object System.IO.StringWriter
+    $writer = [System.Xml.XmlWriter]::Create($buffer, $settings)
+    try { $document.Save($writer) } finally { $writer.Close() }
+    return '<?xml version="1.0" encoding="utf-8" standalone="no"?>' + "`n" + $buffer.ToString()
+}
+
 function Save-Artifact {
     # Redacts a workspace file into the receipt directory and returns its hash record.
     param([string] $SourcePath, [string] $Name)
     if (-not (Test-Path -LiteralPath $SourcePath)) {
         return [pscustomobject]@{ name = $Name; present = $false; sha256 = $null; bytes = 0; source = 'not produced' }
     }
-    $clean = Protect-Text (Read-TextFile $SourcePath)
+    $isXml = [System.IO.Path]::GetExtension($Name) -eq '.xml'
+    if ($isXml) { $clean = Protect-XmlDocument $SourcePath }
+    else { $clean = Protect-Text (Read-TextFile $SourcePath) }
     $target = Join-Path $script:ReceiptDir $Name
     Write-Utf8 -Path $target -Content $clean
+    if ($isXml) {
+        # Published evidence that cannot be reparsed is not evidence, so the written file
+        # is read back before its hash is recorded.
+        try { [xml] (Read-TextFile $target) | Out-Null }
+        catch { throw "Redacted XML $Name does not parse: $($_.Exception.Message)" }
+    }
     return [pscustomobject]@{
         name    = $Name
         present = $true
@@ -175,8 +221,8 @@ function Add-Note {
 function Invoke-Unity {
     # Starts one Unity batch process and returns its exit code, or $null if it did not run.
     param([pscustomobject] $Step, [string[]] $UnityArguments)
-    $display = @($script:UnityExe) + $UnityArguments
-    $Step.command = Protect-Text ($display -join ' ')
+    $argumentLine = ConvertTo-ProcessArgumentLine $UnityArguments
+    $Step.command = Protect-Text ((ConvertTo-ProcessArgumentLine @($script:UnityExe)) + ' ' + $argumentLine)
     $Step.startedAt = ([DateTimeOffset]::Now).ToString('o')
     if ($DryRun) {
         $Step.reason = 'dry run; no Unity process was started'
@@ -185,7 +231,7 @@ function Invoke-Unity {
     }
     Write-Host "  -> $($Step.command)"
     $watch = [System.Diagnostics.Stopwatch]::StartNew()
-    $process = Start-Process -FilePath $script:UnityExe -ArgumentList $UnityArguments -PassThru -WindowStyle Hidden
+    $process = Start-Process -FilePath $script:UnityExe -ArgumentList $argumentLine -PassThru -WindowStyle Hidden
     if (-not $process.WaitForExit($TimeoutMinutes * 60 * 1000)) {
         try { $process.Kill() } catch { }
         $watch.Stop()
@@ -238,11 +284,64 @@ function Get-CompileErrorCount {
     return ([regex]::Matches($text, 'error CS\d{3,5}')).Count
 }
 
-function Test-LogContains {
-    param([string] $LogPath, [string] $Needle)
+function Test-LogMatches {
+    param([string] $LogPath, [string] $Pattern)
     $text = Read-TextFile $LogPath
     if (-not $text) { return $false }
-    return ($text.IndexOf($Needle, [StringComparison]::OrdinalIgnoreCase) -ge 0)
+    return [regex]::IsMatch($text, $Pattern, 'IgnoreCase')
+}
+
+function Resolve-TestRunStatus {
+    # A run passes only when test cases actually executed and the process agreed with the
+    # XML. An empty, fully skipped or fully inconclusive run reports nothing about the code
+    # under test, so it is not_run rather than a pass.
+    param([pscustomobject] $Summary, $ExitCode)
+    if (-not $Summary) { return @{ status = 'fail'; reason = "no result XML was produced (exit $ExitCode)" } }
+    if ($Summary.total -le 0) { return @{ status = 'not_run'; reason = 'the run produced no test cases' } }
+    if ($Summary.failed -gt 0) { return @{ status = 'fail'; reason = "$($Summary.failed) failing tests" } }
+    if ($Summary.passed -le 0) {
+        return @{ status = 'not_run'
+                  reason = "no test case executed: $($Summary.skipped) skipped, $($Summary.inconclusive) inconclusive" }
+    }
+    if ($ExitCode -ne 0) {
+        return @{ status = 'fail'; reason = "the result XML reports no failure but the process exited $ExitCode" }
+    }
+    return @{ status = 'pass'; reason = $null }
+}
+
+function Resolve-RefusalStatus {
+    # An unrelated non-zero exit — a compile error, an unresolved executeMethod, a module
+    # probe that ran first — also leaves the foreign file untouched. Without the refusal
+    # itself in the log, such a run would be recorded as proof of a refusal that never ran.
+    param($ExitCode, [pscustomobject] $Results)
+    if ($ExitCode -eq 0) { return @{ status = 'fail'; reason = 'the builder exited 0 instead of refusing' } }
+    if (-not $Results.sentinelPreserved) { return @{ status = 'fail'; reason = 'the foreign file was modified' } }
+    if ($Results.ownershipMarkerCreated) { return @{ status = 'fail'; reason = 'an ownership marker was written before refusing' } }
+    if ($Results.playerCreated) { return @{ status = 'fail'; reason = 'a player was written before refusing' } }
+    if ($Results.foreignTreeEntries -gt 1) {
+        return @{ status = 'fail'; reason = "the refusal left $($Results.foreignTreeEntries) entries in the output directory" }
+    }
+    if (-not $Results.refusalMessageInLog) {
+        return @{ status = 'fail'
+                  reason = 'the log carries no ownership refusal, so the non-zero exit came from somewhere else' }
+    }
+    return @{ status = 'pass'; reason = $null }
+}
+
+function ConvertTo-ProcessArgumentLine {
+    # Windows PowerShell joins an -ArgumentList array with spaces and adds no quoting, so a
+    # workspace path containing a space would reach Unity as several arguments. Quote here,
+    # following the rules CommandLineToArgvW applies when the child parses its command line.
+    param([string[]] $Arguments)
+    $parts = foreach ($argument in $Arguments) {
+        if ($argument.Length -gt 0 -and $argument -notmatch '[\s"]') { $argument }
+        else {
+            $escaped = [regex]::Replace($argument, '(\\*)"', '$1$1\"')
+            $escaped = [regex]::Replace($escaped, '(\\+)$', '$1$1')
+            '"' + $escaped + '"'
+        }
+    }
+    return ($parts -join ' ')
 }
 
 # ---------------------------------------------------------------------------
@@ -437,10 +536,10 @@ foreach ($mode in @('EditMode', 'PlayMode')) {
     if ($null -ne $code) {
         $summary = Read-NUnitSummary $xml
         $step.results = $summary
-        if (-not $summary) { $step.status = 'fail'; $step.reason = "no result XML was produced (exit $code)" }
-        elseif ($summary.failed -eq 0) { $step.status = 'pass' }
-        else { $step.status = 'fail'; $step.reason = "$($summary.failed) failing tests" }
-        Add-Note $step 'The verdict comes from the result XML, not from the exit code alone.'
+        $verdict = Resolve-TestRunStatus -Summary $summary -ExitCode $code
+        $step.status = $verdict.status
+        $step.reason = $verdict.reason
+        Add-Note $step 'A pass requires executed test cases, no failures, and an exit code that agrees with the XML.'
     }
     $step.artifacts = @(
         (Save-Artifact -SourcePath $log -Name "$stepId.log"),
@@ -472,10 +571,12 @@ if ($Steps -contains 'ownership') {
     if ($null -ne $code) {
         $summary = Read-NUnitSummary $xml
         $ran.results = $summary
-        if (-not $summary -or $summary.total -eq 0) { $ran.status = 'fail'; $ran.reason = 'the filter matched no test case' }
-        elseif ($summary.skipped -gt 0 -or $summary.inconclusive -gt 0) { $ran.status = 'not_run'; $ran.reason = 'the test ignored itself; see the recorded reason' }
-        elseif ($summary.failed -eq 0 -and $summary.passed -gt 0) { $ran.status = 'pass' }
-        else { $ran.status = 'fail'; $ran.reason = "$($summary.failed) failing" }
+        $verdict = Resolve-TestRunStatus -Summary $summary -ExitCode $code
+        $ran.status = $verdict.status
+        $ran.reason = $verdict.reason
+        if ($summary -and $summary.total -gt 0 -and $summary.passed -le 0) {
+            $ran.reason = 'the test ignored itself; see the recorded reason'
+        }
     }
     $ran.artifacts = @(
         (Save-Artifact -SourcePath $log -Name 'ownership.log'),
@@ -509,12 +610,13 @@ if ($Steps -contains 'build-negative') {
             sentinelPreserved      = ($before -eq $after)
             ownershipMarkerCreated = (Test-Path -LiteralPath $marker)
             playerCreated          = (Test-Path -LiteralPath $player)
-            refusalMessageInLog    = (Test-LogContains -LogPath $log -Needle 'not owned')
+            foreignTreeEntries     = @(Get-ChildItem -LiteralPath $outputPath -Recurse -Force).Count
+            refusalMessageInLog    = (Test-LogMatches -LogPath $log -Pattern 'InvalidOperationException[^\r\n]*not owned')
         }
-        $ok = ($code -ne 0) -and $step.results.sentinelPreserved -and (-not $step.results.ownershipMarkerCreated) -and (-not $step.results.playerCreated)
-        if ($ok) { $step.status = 'pass' }
-        else { $step.status = 'fail'; $step.reason = "expected a non-zero exit with the foreign file untouched; got exit $code" }
-        Add-Note $step 'A pass requires all four: a non-zero exit, the sentinel hash unchanged, no ownership marker, and no player written.'
+        $verdict = Resolve-RefusalStatus -ExitCode $code -Results $step.results
+        $step.status = $verdict.status
+        $step.reason = $verdict.reason
+        Add-Note $step 'A pass requires the ownership refusal itself in the log, not merely a non-zero exit with the foreign file intact.'
     }
     $step.artifacts = @(Save-Artifact -SourcePath $log -Name 'build-negative.log')
     Remove-Item -LiteralPath $outputPath -Recurse -Force -ErrorAction SilentlyContinue
