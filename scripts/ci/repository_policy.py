@@ -8,6 +8,7 @@ import json
 import re
 import subprocess
 import sys
+import traceback
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -25,7 +26,16 @@ ACTION_USE = re.compile(r"^\s*-?\s*uses:\s*([^\s#]+)", re.MULTILINE)
 PINNED_ACTION = re.compile(r"^[^@]+@[0-9a-fA-F]{40}$")
 
 
-def git(*args: str) -> str:
+def git(*args: str, quiet: bool = False) -> str:
+    if quiet:
+        completed = subprocess.run(
+            ["git", "-C", str(ROOT), *args],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            encoding="utf-8",
+            check=True,
+        )
+        return completed.stdout
     return subprocess.check_output(["git", "-C", str(ROOT), *args], encoding="utf-8")
 
 
@@ -37,6 +47,30 @@ def tracked_files() -> list[Path]:
 def changed_files(base: str, head: str) -> list[Path]:
     output = git("diff", "--name-only", "-z", "--diff-filter=ACMR", f"{base}...{head}")
     return [ROOT / item for item in output.split("\0") if item]
+
+
+def missing_commits(*revisions: str) -> list[str]:
+    """Return the revisions this clone cannot resolve to a commit.
+
+    Any of these can produce an unresolvable revision: a squash-merged pull
+    request whose head ref was deleted, a shallow/partial clone that never
+    fetched the object, a typo, or a GC'd/rewritten commit. This check does
+    not determine *why* a revision is unresolvable, only *that* it is; the
+    motivating case for adding it is a gate run that reaches this script
+    after a PR's head commit has become unreachable (e.g. following a
+    squash-merge that deleted the head ref).
+
+    Resolvability alone does not guarantee `changed_files()` will succeed:
+    two individually-resolvable revisions can still lack a common merge
+    base, which is handled separately in `main()`.
+    """
+    absent: list[str] = []
+    for revision in revisions:
+        try:
+            git("rev-parse", "--verify", "--quiet", f"{revision}^{{commit}}", quiet=True)
+        except subprocess.CalledProcessError:
+            absent.append(revision)
+    return absent
 
 
 def relative(file: Path) -> str:
@@ -132,20 +166,173 @@ def inspect(files: list[Path]) -> list[str]:
 
 
 def main() -> int:
+    # Fail-open policy decision (required before this gate can be treated as a
+    # security control, not just CI hygiene): when the changed-file scope is
+    # unavailable, this script falls back to scanning *all* tracked files and
+    # still exits 1 if that full scan finds a violation, 0 otherwise. It does
+    # NOT fail closed (i.e. it never forces a non-zero/blocking exit purely
+    # because the scope degraded). This is a deliberate, scoped choice:
+    #   - The full-tree fallback is a strict superset of the normal
+    #     changed-files scope, so the fallback scan can only find the same
+    #     violations or more, never fewer, for files that are actually
+    #     present in the checked-out working tree.
+    #   - The residual risk this does NOT cover is D2-class: the checked-out
+    #     tree itself may not be the PR head (e.g. checkout resolved to
+    #     `develop`), so a clean fallback result proves the checked-out tree
+    #     is clean, not that the PR head is. That is why a degraded run always
+    #     records the actual tree SHA in `## Notes` and always emits an
+    #     `::warning::` annotation (below) instead of only writing prose into
+    #     a step summary nobody opens.
+    #   - Failing closed (blocking merges outright whenever scope degrades)
+    #     was rejected: this failure mode is expected to fire on innocuous
+    #     shallow-clone/race conditions, and a gate that blocks every PR
+    #     merged near this race would be treated as flaky noise and routed
+    #     around (e.g. admin-merged) rather than fixed, which is a worse
+    #     security outcome than a loud, correctly-scoped fallback scan.
+    # If this tradeoff changes, add a `--strict-on-fallback` flag that exits
+    # non-zero whenever `degraded` is True, with a dedicated test asserting
+    # that exit behaviour; do not silently change the default below.
+    #
+    # Exit code contract (documented so the workflow / a human reading the
+    # Checks tab can tell these apart without opening the log):
+    #   0 = clean scan, no violations.
+    #   1 = scan completed, violations found.
+    #   2 = scan completed but the report could not be written to --report.
+    #   3 = the scan itself crashed unexpectedly (e.g. an uncaught
+    #       subprocess.CalledProcessError from a `git` call this function
+    #       does not already handle, such as tracked_files()'s `git
+    #       ls-files`). This must never be confusable with 1 ("violations
+    #       found") -- an uncaught exception previously propagated out of
+    #       main() entirely, producing Python's default exit code 1 for an
+    #       unhandled exception, which a caller could not distinguish from a
+    #       real, successfully-computed "violations found" result. See
+    #       _run() below and
+    #       scripts/ci/tests/test_repository_policy.py::CrashSafetyTest for a
+    #       reproduction (mocking tracked_files() to raise) and the fix.
     parser = argparse.ArgumentParser()
     parser.add_argument("--base")
     parser.add_argument("--head", default="HEAD")
     parser.add_argument("--report")
     args = parser.parse_args()
 
-    files = changed_files(args.base, args.head) if args.base else tracked_files()
+    try:
+        return _run(args)
+    except Exception as exc:  # noqa: BLE001 - deliberate top-level safety net
+        # Anything that reaches here is, by definition, a failure mode none
+        # of the specific except clauses inside _run() anticipated. Print a
+        # real stdout ::error:: annotation (so it renders on the Checks tab,
+        # not just buried prose) plus the traceback (so it is still
+        # debuggable from the job log), and return the reserved crash exit
+        # code 3 -- never 1 (which would silently look like "violations
+        # found") and never 0.
+        print(f"::error::repository policy gate crashed unexpectedly ({exc.__class__.__name__}: {exc}); "
+              "this is exit code 3, distinct from 1 (violations found) and 2 (report write failed); "
+              "see the job log below for the full traceback")
+        traceback.print_exc()
+        return 3
+
+
+def _run(args: argparse.Namespace) -> int:
+    notes: list[str] = []
+    scope = "all tracked files"
+    degraded = False
+
+    if args.base is not None:
+        files: list[Path] | None = None
+        if args.base == "":
+            # `--base` was explicitly supplied but empty (e.g. an upstream
+            # CI context variable resolved to an empty string instead of
+            # being omitted, such as `${{ github.event.pull_request.base.sha }}`
+            # evaluating empty outside a pull_request event). This is NOT
+            # the same as no `--base` flag at all: silently matching the
+            # "no --base given" branch here would scan the whole tree with
+            # zero indication anything was unusual, unlike every other
+            # degraded case in this function. Treat it as an unresolvable
+            # revision explicitly, without even attempting a git probe.
+            absent = ["--base was empty (no revision to diff against)"]
+        else:
+            absent = missing_commits(args.base, args.head)
+            if not absent:
+                try:
+                    files = changed_files(args.base, args.head)
+                    scope = f"changed files in `{args.base}...{args.head}`"
+                except subprocess.CalledProcessError as exc:
+                    # Both revisions resolved individually, but the diff itself
+                    # still failed (e.g. no merge base between them). This is
+                    # the same failure signature as an unresolvable revision, so
+                    # it must fall back the same way instead of propagating.
+                    absent = [f"{args.base}...{args.head} (diff failed: exit {exc.returncode})"]
+        if absent:
+            degraded = True
+            notes.append(
+                "changed-file scope unavailable: this clone cannot resolve "
+                + ", ".join(f"`{revision}`" for revision in absent)
+                + ". Fell back to all tracked files."
+            )
+            files = tracked_files()
+            try:
+                actual_tree = git("rev-parse", "HEAD", quiet=True).strip()
+            except subprocess.CalledProcessError:
+                actual_tree = "unknown"
+            notes.append(
+                "full scan was performed against the working tree currently checked "
+                f"out (`{actual_tree}`), which may not be the PR head."
+            )
+    else:
+        files = tracked_files()
+
     errors = inspect(files)
-    lines = ["# Repository policy report", "", f"Checked files: {len(files)}", f"Violations: {len(errors)}", ""]
-    lines.extend(f"- {item}" for item in errors)
+
+    if degraded:
+        # Printed to this step's stdout so the GitHub Actions runner surfaces
+        # it as an annotation even though the job still exits 0 on a clean
+        # repository; a silently-green degraded scan should not be invisible.
+        print(
+            "::warning::repository policy gate fell back to a full scan; "
+            "changed-file scope was unavailable (see report Notes)"
+        )
+
+    lines = ["# Repository policy report", "", f"Scope: {scope}", f"Checked files: {len(files)}", f"Violations: {len(errors)}", ""]
+    if notes:
+        lines.append("## Notes")
+        lines.append("")
+        lines.extend(f"- {item}" for item in notes)
+        lines.append("")
+    if errors:
+        lines.append("## Violations")
+        lines.append("")
+        lines.extend(f"- {item}" for item in errors)
+        lines.append("")
     report = "\n".join(lines) + "\n"
+    write_failed = False
     if args.report:
-        Path(args.report).write_text(report, encoding="utf-8")
+        try:
+            Path(args.report).write_text(report, encoding="utf-8")
+        except OSError as exc:
+            # A scan that completed successfully must never die on the final
+            # write step. The workflow (`.github/workflows/required-quality-gate.yml`)
+            # only runs `cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY"`
+            # when the report file actually exists, and falls back to writing
+            # an explicit `::error::` line into the step summary otherwise
+            # (`if [ -f repository-policy-report.md ]; then cat ...; else
+            # echo "::error::..."; fi`), specifically so that a missing report
+            # can never mask this script's own exit status under the runner's
+            # default `bash -eo pipefail` (see
+            # scripts/ci/tests/test_repository_policy.py::ShellWrapperContractTest
+            # for a reproduction of that failure mode and its fix). A raw
+            # traceback here would still hide the (already-computed) scan
+            # result and leave the operator guessing, so this script does its
+            # own part too: the full report is still printed to stdout (the
+            # step summary can still be recovered by hand / from the job
+            # log), a distinct ::error:: annotation names the path failure
+            # explicitly, and the process exits non-zero for an infra reason
+            # distinguishable from "policy violations found" via that
+            # annotation and the message.
+            write_failed = True
+            print(f"::error::failed to write repository policy report to {args.report!r}: {exc}")
     print(report, end="")
+    if write_failed:
+        return 2
     return 1 if errors else 0
 
 

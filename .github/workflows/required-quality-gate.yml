@@ -37,7 +37,29 @@ jobs:
           python scripts/ci/pr_policy.py \
             --event "$GITHUB_EVENT_PATH" \
             --report pr-policy-report.md || status=$?
-          cat pr-policy-report.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f pr-policy-report.md ]; then
+            # Guard unconditionally: a cat failure here (unreadable report,
+            # unwritable/unset $GITHUB_STEP_SUMMARY) must NEVER change
+            # `status`, which already holds the script's real exit code.
+            # `if ! cmd; then ...; fi` never triggers `set -e`, unlike a bare
+            # `cmd || true` masking the failure with zero signal: report it
+            # as a stdout ::warning:: so a human still learns the summary is
+            # incomplete, without touching the step's real exit status.
+            if ! cat pr-policy-report.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null; then
+              echo "::warning::failed to append pr-policy-report.md to the step summary; the report artifact is still uploaded separately. This step's real exit code ($status) is unaffected."
+            fi
+          else
+            # Written to actual stdout (not redirected into the step-summary
+            # file) so GitHub Actions interprets it as a real Checks-tab
+            # annotation -- workflow commands are only recognised on a
+            # step's stdout stream, never inside a file the step happens to
+            # write to. A best-effort copy also goes into the step summary
+            # for a human reading the Job Summary page, guarded the same way
+            # as above so a summary-write failure here cannot mask `status`.
+            message="pr-policy-report.md was not written (script exit $status); this step's exit code reflects the script's own status, not a missing-file error."
+            echo "::error::$message"
+            echo "::error::$message" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo "::warning::additionally failed to append the above error to the step summary"
+          fi
           exit "$status"
 
       - name: Validate repository and changed files
@@ -56,7 +78,20 @@ jobs:
             python scripts/ci/repository_policy.py \
               --report repository-policy-report.md || status=$?
           fi
-          cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f repository-policy-report.md ]; then
+            # See the identical guard in "Validate PR metadata" above for the
+            # rationale: never let a cat failure change `status`, but still
+            # surface it as a stdout ::warning:: rather than swallowing it.
+            if ! cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null; then
+              echo "::warning::failed to append repository-policy-report.md to the step summary; the report artifact is still uploaded separately. This step's real exit code ($status) is unaffected."
+            fi
+          else
+            # Sent to real stdout so it becomes a genuine Checks annotation;
+            # see the matching comment in "Validate PR metadata" above.
+            message="repository-policy-report.md was not written (script exit $status); this step's exit code reflects the script's own status, not a missing-file error."
+            echo "::error::$message"
+            echo "::error::$message" >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || echo "::warning::additionally failed to append the above error to the step summary"
+          fi
           exit "$status"
 
       - name: Test policy code
