@@ -233,6 +233,9 @@ namespace ChooGuard.Foundation.Demo.Tests
                 var error = Assert.Throws<InvalidOperationException>(() => FoundationDemoSceneBuilder.BuildMacPlayerBatch());
                 Assert.That(error.Message, Does.Contain("not owned"));
                 Assert.That(File.ReadAllText(sentinel), Is.EqualTo("keep"));
+                Assert.That(Directory.GetFileSystemEntries(output).Select(Path.GetFileName),
+                    Is.EquivalentTo(new[] { Path.GetFileName(sentinel) }),
+                    "Refusing must not leave anything the builder wrote behind.");
             }
             // A regression that writes before refusing would leave extra files here, and a
             // non-recursive delete would then throw over the real assertion failure.
@@ -252,6 +255,11 @@ namespace ChooGuard.Foundation.Demo.Tests
                 var error = Assert.Throws<InvalidOperationException>(() => FoundationDemoSceneBuilder.BuildDesktopPlayerBatch());
                 Assert.That(error.Message, Does.Contain("not owned"));
                 Assert.That(File.ReadAllText(sentinel), Is.EqualTo("keep"));
+                // The recursive teardown below would erase a file written before the refusal,
+                // so the untouched tree has to be asserted while it still exists.
+                Assert.That(Directory.GetFileSystemEntries(output).Select(Path.GetFileName),
+                    Is.EquivalentTo(new[] { Path.GetFileName(sentinel) }),
+                    "Refusing must not leave anything the builder wrote behind.");
             }
             // Same reason as the Mac case: teardown must not replace a real failure with an
             // IOException about a directory the refusal was supposed to leave empty.
