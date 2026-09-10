@@ -39,6 +39,22 @@ def changed_files(base: str, head: str) -> list[Path]:
     return [ROOT / item for item in output.split("\0") if item]
 
 
+def missing_commits(*revisions: str) -> list[str]:
+    """Return the revisions this clone cannot resolve to a commit.
+
+    Merging a pull request deletes its head ref, so a gate run that starts just
+    before the merge can reach this script after the head commit has become
+    unreachable and therefore absent from the runner's clone.
+    """
+    absent: list[str] = []
+    for revision in revisions:
+        try:
+            git("rev-parse", "--verify", "--quiet", f"{revision}^{{commit}}")
+        except subprocess.CalledProcessError:
+            absent.append(revision)
+    return absent
+
+
 def relative(file: Path) -> str:
     return file.relative_to(ROOT).as_posix()
 
@@ -138,9 +154,30 @@ def main() -> int:
     parser.add_argument("--report")
     args = parser.parse_args()
 
-    files = changed_files(args.base, args.head) if args.base else tracked_files()
+    notes: list[str] = []
+    scope = "all tracked files"
+    if args.base:
+        absent = missing_commits(args.base, args.head)
+        if absent:
+            notes.append(
+                "changed-file scope unavailable: this clone cannot resolve "
+                + ", ".join(f"`{revision}`" for revision in absent)
+                + ". Fell back to all tracked files."
+            )
+            files = tracked_files()
+        else:
+            files = changed_files(args.base, args.head)
+            scope = f"changed files in `{args.base}...{args.head}`"
+    else:
+        files = tracked_files()
+
     errors = inspect(files)
-    lines = ["# Repository policy report", "", f"Checked files: {len(files)}", f"Violations: {len(errors)}", ""]
+    lines = ["# Repository policy report", "", f"Scope: {scope}", f"Checked files: {len(files)}", f"Violations: {len(errors)}", ""]
+    if notes:
+        lines.append("## Notes")
+        lines.append("")
+        lines.extend(f"- {item}" for item in notes)
+        lines.append("")
     lines.extend(f"- {item}" for item in errors)
     report = "\n".join(lines) + "\n"
     if args.report:

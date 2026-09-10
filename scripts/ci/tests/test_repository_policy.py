@@ -1,5 +1,8 @@
+import contextlib
 import importlib.util
+import io
 import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -66,6 +69,26 @@ class GitPathPolicyTest(unittest.TestCase):
             files = MODULE.changed_files(self.base, "HEAD")
         self.assertEqual(set(files), {self.root / name for name in self.names})
         self.assertIn("forbidden credential/model file: docs/비밀 키.pem", MODULE.inspect(files))
+
+    def test_absent_head_commit_is_reported_as_missing(self):
+        # A squash-merged pull request leaves its head commit unreachable.
+        self.assertEqual(MODULE.missing_commits(self.base, "HEAD"), [])
+        absent = "0" * 40
+        self.assertEqual(MODULE.missing_commits(self.base, absent), [absent])
+
+    def test_unreachable_head_falls_back_to_tracked_files_without_crashing(self):
+        absent = "0" * 40
+        report = self.root / "report.md"
+        with patch.object(sys, "argv", ["repository_policy.py", "--base", self.base,
+                                       "--head", absent, "--report", str(report)]), \
+                contextlib.redirect_stdout(io.StringIO()):
+            status = MODULE.main()
+        text = report.read_text(encoding="utf-8")
+        self.assertEqual(status, 1)
+        self.assertIn("changed-file scope unavailable", text)
+        self.assertIn("Scope: all tracked files", text)
+        # The fallback still inspects the repository rather than reporting nothing.
+        self.assertIn("forbidden credential/model file: docs/비밀 키.pem", text)
 
 
 if __name__ == "__main__":
