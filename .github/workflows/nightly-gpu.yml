@@ -1,8 +1,13 @@
-name: Nightly GPU Quality Gate
+name: GPU Quality Gate (manual)
 
+# This job targets a single shared school-PC Windows runner (label
+# choo-guard-gpu) that is only online while a human is physically present
+# to run it. There is no `schedule` trigger: GitHub queues a job for up to
+# 24 hours when no matching runner is online, then fails it. A weekday
+# cron would queue over the weekend and fail every Friday-to-Monday gap.
+# Trigger this manually only after confirming the runner shows "Idle" in
+# Settings -> Actions -> Runners (see docs/ci.md, "GPU CI activation").
 on:
-  schedule:
-    - cron: '0 18 * * 1-5'
   workflow_dispatch:
 
 permissions:
