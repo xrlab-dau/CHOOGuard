@@ -1,11 +1,11 @@
 {
     "schema":  "chooguard.verification-receipt/1",
-    "generatedAt":  "2026-09-09T23:32:08.2058549+09:00",
+    "generatedAt":  "2026-09-10T10:53:18.9339479+09:00",
     "utcOffset":  "+09:00",
-    "startedAt":  "2026-09-09T23:28:55.1437743+09:00",
+    "startedAt":  "2026-09-10T10:47:01.7245407+09:00",
     "machineLabel":  "laptop-A",
     "repository":  "\u003cHOME\u003e\\Choo",
-    "targetSha":  "5e339fc4b12876a2c094341dfbeba84b71fe5196",
+    "targetSha":  "8090f8a8732d76873e622e4c66347ee17e9dcc8c",
     "isolation":  "a dedicated clone of the target SHA; no working project, build output or Library was shared",
     "editor":  {
                    "version":  "6000.3.23f1",
@@ -18,7 +18,7 @@
                  "os":  "Microsoft Windows 11 Education 10.0.26200.0",
                  "git":  "git version 2.48.1.windows.1",
                  "gitLfs":  "git-lfs/3.6.1 (GitHub; windows amd64; go 1.23.3; git ea47a34b)",
-                 "freeGiB":  30.3
+                 "freeGiB":  28.7
              },
     "steps":  [
                   {
@@ -26,10 +26,10 @@
                       "title":  "Import and C# compile",
                       "status":  "pass",
                       "reason":  null,
-                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\compile.log",
+                      "command":  "\"\u003cUNITY_INSTALL\u003e\\Unity.exe\" -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -logFile \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\compile.log",
                       "exitCode":  0,
-                      "startedAt":  "2026-09-09T23:28:59.5605212+09:00",
-                      "durationSeconds":  30.7,
+                      "startedAt":  "2026-09-10T10:47:09.7971812+09:00",
+                      "durationSeconds":  118,
                       "results":  {
                                       "compilerErrors":  0
                                   },
@@ -37,8 +37,8 @@
                                         {
                                             "name":  "compile.log",
                                             "present":  true,
-                                            "sha256":  "341e372cce222eb8beca0368d38e41c55eaf59e1058075b32defbcda85241ccc",
-                                            "bytes":  157542,
+                                            "sha256":  "40460723476fef29f20cad63e360c166d8bd4d51d77ded4080a775c311a9b7ad",
+                                            "bytes":  158413,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         }
                                     ],
@@ -51,10 +51,10 @@
                       "title":  "EditMode test run",
                       "status":  "pass",
                       "reason":  null,
-                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform EditMode -testResults \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\editmode-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\editmode.log",
+                      "command":  "\"\u003cUNITY_INSTALL\u003e\\Unity.exe\" -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform EditMode -testResults \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\editmode-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\editmode.log",
                       "exitCode":  0,
-                      "startedAt":  "2026-09-09T23:29:30.7487562+09:00",
-                      "durationSeconds":  60.3,
+                      "startedAt":  "2026-09-10T10:49:08.8992235+09:00",
+                      "durationSeconds":  102.9,
                       "results":  {
                                       "result":  "Skipped:Ignored",
                                       "total":  119,
@@ -62,7 +62,7 @@
                                       "failed":  0,
                                       "skipped":  1,
                                       "inconclusive":  0,
-                                      "durationSeconds":  "53.5661394",
+                                      "durationSeconds":  "85.9136525",
                                       "excluded":  [
                                                        {
                                                            "name":  "SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
@@ -75,20 +75,20 @@
                                         {
                                             "name":  "editmode.log",
                                             "present":  true,
-                                            "sha256":  "368ce933c6e9c3a1336275089ef0a6de9bbb79d6a83a94e809dda8acf683aaca",
-                                            "bytes":  1203764,
+                                            "sha256":  "6208f057e0f29563b9adbea4a55eb2ddd3ce69dd601ec0bbf54819b516a302c1",
+                                            "bytes":  1203741,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         },
                                         {
                                             "name":  "editmode-results.xml",
                                             "present":  true,
-                                            "sha256":  "440d4dbe91d55e62f56b7450c6cf66e6923d604a041b9ba55033102fe1268839",
-                                            "bytes":  113350,
+                                            "sha256":  "1820f134de47c5c6dee697838e1d5337097bd1da771572735ac2e3bfb367cf0e",
+                                            "bytes":  113371,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         }
                                     ],
                       "notes":  [
-                                    "The verdict comes from the result XML, not from the exit code alone."
+                                    "A pass requires executed test cases, no failures, and an exit code that agrees with the XML."
                                 ]
                   },
                   {
@@ -96,10 +96,10 @@
                       "title":  "PlayMode test run",
                       "status":  "pass",
                       "reason":  null,
-                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform PlayMode -testResults \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\playmode-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\playmode.log",
+                      "command":  "\"\u003cUNITY_INSTALL\u003e\\Unity.exe\" -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform PlayMode -testResults \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\playmode-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\playmode.log",
                       "exitCode":  0,
-                      "startedAt":  "2026-09-09T23:30:33.3235171+09:00",
-                      "durationSeconds":  14.3,
+                      "startedAt":  "2026-09-10T10:50:57.6322661+09:00",
+                      "durationSeconds":  23.4,
                       "results":  {
                                       "result":  "Passed",
                                       "total":  16,
@@ -107,7 +107,7 @@
                                       "failed":  0,
                                       "skipped":  0,
                                       "inconclusive":  0,
-                                      "durationSeconds":  "6.2957753",
+                                      "durationSeconds":  "9.787327",
                                       "excluded":  [
 
                                                    ]
@@ -116,20 +116,20 @@
                                         {
                                             "name":  "playmode.log",
                                             "present":  true,
-                                            "sha256":  "77a8d350c5769ba9b7ef9dd5e64f3083d25df08892b06818f4aaf76c1e564694",
-                                            "bytes":  57829,
+                                            "sha256":  "cf80b9b542f4cadad594a1361b3b47390425d84dcbb387b680291d373d5dce86",
+                                            "bytes":  57856,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         },
                                         {
                                             "name":  "playmode-results.xml",
                                             "present":  true,
-                                            "sha256":  "31686dbd1bf237daead0a25e69096fe99574c2f2a0073958a0984a531eb36fea",
-                                            "bytes":  18815,
+                                            "sha256":  "f18ac4b4384617af36539a2a54c7384ebe3a55b19c6a65f0ac09b5ddd9bec847",
+                                            "bytes":  18836,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         }
                                     ],
                       "notes":  [
-                                    "The verdict comes from the result XML, not from the exit code alone."
+                                    "A pass requires executed test cases, no failures, and an exit code that agrees with the XML."
                                 ]
                   },
                   {
@@ -137,10 +137,10 @@
                       "title":  "WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting (Windows module installed)",
                       "status":  "pass",
                       "reason":  null,
-                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform EditMode -testFilter WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting -testResults \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\ownership-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\ownership.log",
+                      "command":  "\"\u003cUNITY_INSTALL\u003e\\Unity.exe\" -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -runTests -testPlatform EditMode -testFilter WindowsBuildRefusesForeignOutputBeforeGeneratingOrOverwriting -testResults \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\ownership-results.xml -logFile \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\ownership.log",
                       "exitCode":  0,
-                      "startedAt":  "2026-09-09T23:30:47.7902110+09:00",
-                      "durationSeconds":  6.5,
+                      "startedAt":  "2026-09-10T10:51:21.5926465+09:00",
+                      "durationSeconds":  9.9,
                       "results":  {
                                       "result":  "Passed",
                                       "total":  1,
@@ -148,7 +148,7 @@
                                       "failed":  0,
                                       "skipped":  0,
                                       "inconclusive":  0,
-                                      "durationSeconds":  "0.0644189",
+                                      "durationSeconds":  "0.1351674",
                                       "excluded":  [
 
                                                    ]
@@ -157,15 +157,15 @@
                                         {
                                             "name":  "ownership.log",
                                             "present":  true,
-                                            "sha256":  "d3c5f6d1c65283a6c0982f3591b59a37f4ae88d4a07ed5911837231b38a6dbb6",
-                                            "bytes":  23517,
+                                            "sha256":  "fd01ebf11847c3c9d50ab7b9363dbade5e4d84ea09ee2cbe7f793ec2dbb4b0bd",
+                                            "bytes":  23223,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         },
                                         {
                                             "name":  "ownership-results.xml",
                                             "present":  true,
-                                            "sha256":  "c0cda4bdddd81333bf91a35a3da0acf5d5f89a5836aac5e6c4a4324ca3ff922c",
-                                            "bytes":  4198,
+                                            "sha256":  "cba469ba7d64f3bf01e6e109a0df9a3b33a8494136c3597d9118b82b1bd94ab7",
+                                            "bytes":  4223,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         }
                                     ],
@@ -195,29 +195,30 @@
                       "title":  "ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch against a foreign output directory",
                       "status":  "pass",
                       "reason":  null,
-                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -executeMethod ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\build-negative.log",
+                      "command":  "\"\u003cUNITY_INSTALL\u003e\\Unity.exe\" -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -executeMethod ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch -logFile \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\build-negative.log",
                       "exitCode":  1,
-                      "startedAt":  "2026-09-09T23:30:54.3569211+09:00",
-                      "durationSeconds":  4.5,
+                      "startedAt":  "2026-09-10T10:51:31.7369546+09:00",
+                      "durationSeconds":  8.2,
                       "results":  {
                                       "sentinelSha256Before":  "6ca7ea2feefc88ecb5ed6356ed963f47dc9137f82526fdd25d618ea626d0803f",
                                       "sentinelSha256After":  "6ca7ea2feefc88ecb5ed6356ed963f47dc9137f82526fdd25d618ea626d0803f",
                                       "sentinelPreserved":  true,
                                       "ownershipMarkerCreated":  false,
                                       "playerCreated":  false,
+                                      "foreignTreeEntries":  1,
                                       "refusalMessageInLog":  true
                                   },
                       "artifacts":  [
                                         {
                                             "name":  "build-negative.log",
                                             "present":  true,
-                                            "sha256":  "07f4aa2c4ed47d006943283b0cd803ab52f7060d6b47c6374744fde9de94d0b0",
-                                            "bytes":  19045,
+                                            "sha256":  "05a1df5a2781f988ecf56ba9216fc49bf1e77b640163eb5c9884c51594efb6e9",
+                                            "bytes":  19058,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         }
                                     ],
                       "notes":  [
-                                    "A pass requires all four: a non-zero exit, the sentinel hash unchanged, no ownership marker, and no player written."
+                                    "A pass requires the ownership refusal itself in the log, not merely a non-zero exit with the foreign file intact."
                                 ]
                   },
                   {
@@ -225,10 +226,10 @@
                       "title":  "ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch against a clean output directory",
                       "status":  "pass",
                       "reason":  null,
-                      "command":  "\u003cUNITY_INSTALL\u003e\\Unity.exe -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -executeMethod ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch -logFile \u003cWORKSPACE\u003e\\logs\\20260909T142855Z-5e339fc\\build-positive.log",
+                      "command":  "\"\u003cUNITY_INSTALL\u003e\\Unity.exe\" -batchmode -projectPath \u003cCHECKOUT\u003e -accept-apiupdate -quit -executeMethod ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerBatch -logFile \u003cWORKSPACE\u003e\\logs\\20260910T014701Z-8090f8a\\build-positive.log",
                       "exitCode":  0,
-                      "startedAt":  "2026-09-09T23:30:58.8919150+09:00",
-                      "durationSeconds":  62.7,
+                      "startedAt":  "2026-09-10T10:51:40.1908941+09:00",
+                      "durationSeconds":  83.2,
                       "results":  {
                                       "playerSha256":  "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
                                       "playerBytes":  667136,
@@ -240,8 +241,8 @@
                                         {
                                             "name":  "build-positive.log",
                                             "present":  true,
-                                            "sha256":  "57269d768f8d5a740caafc3d865a5a82d1f7e42956a08cddc4a5f19ed68ea085",
-                                            "bytes":  208276,
+                                            "sha256":  "8a8e655a5206189c267f29361e484f2b090325ad52555347248c9c4b0f7bc7de",
+                                            "bytes":  208600,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         }
                                     ],
@@ -273,8 +274,8 @@
                                         {
                                             "name":  "regenerated.diff",
                                             "present":  true,
-                                            "sha256":  "861742d406c249fa95180de68100b32a75cd15247b9a7c1bb4fb9adec275c75b",
-                                            "bytes":  4152566,
+                                            "sha256":  "2528af2eacb10d9bb4b4a7fa7038adc0fccfa095468b773717df4eadbaac2e61",
+                                            "bytes":  4114826,
                                             "source":  "redacted copy of the raw Unity artifact"
                                         }
                                     ],
@@ -287,8 +288,8 @@
                       "policy":  "personal paths, account and host names, e-mail addresses, IP addresses and any licence or credential line are removed before an artifact is written here",
                       "replacements":  {
                                            "\u003cHOME\u003e":  5,
-                                           "[redacted: licence/credential line]":  153,
-                                           "\u003cIP\u003e":  33,
+                                           "[redacted: licence/credential line]":  162,
+                                           "\u003cIP\u003e":  30,
                                            "\u003cCHECKOUT\u003e":  320,
                                            "\u003cEMAIL\u003e":  13,
                                            "\u003cUNITY_INSTALL\u003e":  75,

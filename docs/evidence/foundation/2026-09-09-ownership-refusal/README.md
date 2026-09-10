@@ -1,7 +1,7 @@
 # 소유권 거부 경로 Unity 실검증 — 2026-09-09
 
-기준 SHA: `5e339fc4b12876a2c094341dfbeba84b71fe5196` (브랜치 `bugfix/110-ownership-test-teardown`)
-기기: `laptop-A` · Unity 6000.3.23f1 · 실행 2026-09-09 23:28:55~23:32:08 (UTC+09:00)
+기준 SHA: `8090f8a8732d76873e622e4c66347ee17e9dcc8c` (브랜치 `bugfix/110-ownership-test-teardown`)
+기기: `laptop-A` · Unity 6000.3.23f1 · 실행 2026-09-10 10:47:01~10:53:18 (UTC+09:00)
 
 [PR #108 적대적 리뷰](https://github.com/xrlab-dau/CHOOGuard/pull/108)와
 [PR #110 증거 요청](https://github.com/xrlab-dau/CHOOGuard/pull/110#issuecomment-5599068869)이
@@ -36,12 +36,13 @@
 Editor 로그 4종과 재생성 diff는 크기 때문에 Git에 넣지 않았다(`editmode.log` 약 1.2 MB,
 `regenerated.diff` 약 4.1 MB). 해시는 `SHA256SUMS.txt`에 그대로 있으므로, 같은 SHA에서
 [`scripts/dev/verify_unity_receipt.ps1`](../../../../scripts/dev/verify_unity_receipt.ps1)을
-다시 실행해 대조할 수 있다. 산출물은 모두 게시 전 정제를 거쳤다.
+다시 실행해 대조할 수 있다. 산출물은 모두 게시 전 정제를 거쳤다. 결과 XML은 텍스트 치환이 아니라 XML 트리를 통해 정제하고,
+기록 전에 다시 파싱해 집계·case 이름·제외 사유가 보존되는지 확인한다.
 
 ## 재현
 
 ```powershell
-powershell -File scripts/dev/verify_unity_receipt.ps1 -Sha 5e339fc4b12876a2c094341dfbeba84b71fe5196
+powershell -File scripts/dev/verify_unity_receipt.ps1 -Sha 8090f8a8732d76873e622e4c66347ee17e9dcc8c
 ```
 
 씬 생성기가 바이트 단위로 재현되지 않으므로 재생성 diff의 해시는 실행마다 달라진다
