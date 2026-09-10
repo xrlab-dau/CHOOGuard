@@ -201,19 +201,31 @@ def main() -> int:
     scope = "all tracked files"
     degraded = False
 
-    if args.base:
-        absent = missing_commits(args.base, args.head)
+    if args.base is not None:
         files: list[Path] | None = None
-        if not absent:
-            try:
-                files = changed_files(args.base, args.head)
-                scope = f"changed files in `{args.base}...{args.head}`"
-            except subprocess.CalledProcessError as exc:
-                # Both revisions resolved individually, but the diff itself
-                # still failed (e.g. no merge base between them). This is
-                # the same failure signature as an unresolvable revision, so
-                # it must fall back the same way instead of propagating.
-                absent = [f"{args.base}...{args.head} (diff failed: exit {exc.returncode})"]
+        if args.base == "":
+            # `--base` was explicitly supplied but empty (e.g. an upstream
+            # CI context variable resolved to an empty string instead of
+            # being omitted, such as `${{ github.event.pull_request.base.sha }}`
+            # evaluating empty outside a pull_request event). This is NOT
+            # the same as no `--base` flag at all: silently matching the
+            # "no --base given" branch here would scan the whole tree with
+            # zero indication anything was unusual, unlike every other
+            # degraded case in this function. Treat it as an unresolvable
+            # revision explicitly, without even attempting a git probe.
+            absent = ["--base was empty (no revision to diff against)"]
+        else:
+            absent = missing_commits(args.base, args.head)
+            if not absent:
+                try:
+                    files = changed_files(args.base, args.head)
+                    scope = f"changed files in `{args.base}...{args.head}`"
+                except subprocess.CalledProcessError as exc:
+                    # Both revisions resolved individually, but the diff itself
+                    # still failed (e.g. no merge base between them). This is
+                    # the same failure signature as an unresolvable revision, so
+                    # it must fall back the same way instead of propagating.
+                    absent = [f"{args.base}...{args.head} (diff failed: exit {exc.returncode})"]
         if absent:
             degraded = True
             notes.append(
@@ -262,19 +274,24 @@ def main() -> int:
             Path(args.report).write_text(report, encoding="utf-8")
         except OSError as exc:
             # A scan that completed successfully must never die on the final
-            # write step: the workflow's `cat repository-policy-report.md >>
-            # "$GITHUB_STEP_SUMMARY"` step assumes the file exists whenever
-            # this script's own exit status is checked, and a raw traceback
-            # here would both hide the (already-computed) scan result and
-            # leave that follow-on `cat` to fail on a missing file with a
-            # second, unrelated-looking error. Swallowing this silently would
-            # be its own honesty defect (the workflow would `cat` a file that
-            # was never written and nobody would know why), so instead: the
-            # full report is still printed to stdout (the step summary can
-            # still be recovered by hand / from the job log), a distinct
-            # ::error:: annotation names the path failure explicitly, and the
-            # process exits non-zero for an infra reason distinguishable from
-            # "policy violations found" via that annotation and the message.
+            # write step. The workflow (`.github/workflows/required-quality-gate.yml`)
+            # only runs `cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY"`
+            # when the report file actually exists, and falls back to writing
+            # an explicit `::error::` line into the step summary otherwise
+            # (`if [ -f repository-policy-report.md ]; then cat ...; else
+            # echo "::error::..."; fi`), specifically so that a missing report
+            # can never mask this script's own exit status under the runner's
+            # default `bash -eo pipefail` (see
+            # scripts/ci/tests/test_repository_policy.py::ShellWrapperContractTest
+            # for a reproduction of that failure mode and its fix). A raw
+            # traceback here would still hide the (already-computed) scan
+            # result and leave the operator guessing, so this script does its
+            # own part too: the full report is still printed to stdout (the
+            # step summary can still be recovered by hand / from the job
+            # log), a distinct ::error:: annotation names the path failure
+            # explicitly, and the process exits non-zero for an infra reason
+            # distinguishable from "policy violations found" via that
+            # annotation and the message.
             write_failed = True
             print(f"::error::failed to write repository policy report to {args.report!r}: {exc}")
     print(report, end="")

@@ -37,7 +37,11 @@ jobs:
           python scripts/ci/pr_policy.py \
             --event "$GITHUB_EVENT_PATH" \
             --report pr-policy-report.md || status=$?
-          cat pr-policy-report.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f pr-policy-report.md ]; then
+            cat pr-policy-report.md >> "$GITHUB_STEP_SUMMARY" || true
+          else
+            echo "::error::pr-policy-report.md was not written (script exit $status); this step's exit code reflects the script's own status, not a missing-file error." >> "$GITHUB_STEP_SUMMARY"
+          fi
           exit "$status"
 
       - name: Validate repository and changed files
@@ -56,7 +60,11 @@ jobs:
             python scripts/ci/repository_policy.py \
               --report repository-policy-report.md || status=$?
           fi
-          cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -f repository-policy-report.md ]; then
+            cat repository-policy-report.md >> "$GITHUB_STEP_SUMMARY" || true
+          else
+            echo "::error::repository-policy-report.md was not written (script exit $status); this step's exit code reflects the script's own status, not a missing-file error." >> "$GITHUB_STEP_SUMMARY"
+          fi
           exit "$status"
 
       - name: Test policy code
