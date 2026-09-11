@@ -1,0 +1,501 @@
+{
+  "schema_version": "1.0",
+  "checked_at": "2026-09-12",
+  "issue": "#70",
+  "status": "draft_for_pm_review",
+  "authority": "13구역 자료 범위·제작 경계·연결 portal 초안이다. 현재 실측 배치·안전 경계·완료된 재구성이 아니며, 좌표/충돌/연결 변경은 PM 검토를 거친다.",
+  "coverage_source": {
+    "path": "foundation/world/facility-coverage.json",
+    "sha256": "1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350"
+  },
+  "conventions": {
+    "units": "metres",
+    "unity_frame": "Unity +Y up, +Z forward (left-handed). foundation/world/station-twin-profile.json과 같은 축.",
+    "zone_origin": "초안: 구역 원점 y=0은 그 구역 주 보행 바닥면, x/z는 번들 anchor portal 평면의 중심. +Z는 anchor portal을 지나 구역 안쪽 방향.",
+    "height_reference": "구역 간 높이는 수치 없이 상대 층 가정(level_assumption)만 기록한다. 실제 층고·접속고는 출처가 생길 때까지 null로 둔다.",
+    "portal_plane": "portal은 두 구역이 공유하는 수직 평면이다. 각 번들은 portal 평면까지만 제작하고, 번들을 넘는 portal의 월드 변환은 PM 통합(#82)에서 확정한다.",
+    "portal_namespace": "portal.<from>--<to> 형식으로 coverage connections의 방향을 그대로 쓴다. station-twin-profile sites(central/west/east)의 StationPortal siteId와 별개다.",
+    "blender_handoff": "Blender 축 변환·pivot·export 설정은 #74에서 확정한다."
+  },
+  "sources": [
+    {
+      "id": "R04",
+      "title": "KoreaToDo 부산역 출발 전광판 사진",
+      "locator": "docs/art/public-station-references.md",
+      "url": "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg",
+      "classification": "public_photo_form_reference",
+      "rights": "재사용 라이선스 미확인. 외형 관찰만."
+    },
+    {
+      "id": "R05",
+      "title": "KoreaToDo 부산역 관광안내소 사진",
+      "locator": "docs/art/public-station-references.md",
+      "url": "https://static.wixstatic.com/media/0505b9_48c36751955c4206a1604493fc8f47dc~mv2.jpg",
+      "classification": "public_photo_form_reference",
+      "rights": "재사용 라이선스 미확인. 외형 관찰만."
+    },
+    {
+      "id": "R06",
+      "title": "The Migratory Birds 부산역 매표 구역 사진",
+      "locator": "docs/art/public-station-references.md",
+      "url": "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg",
+      "classification": "public_photo_single_view",
+      "rights": "재사용 라이선스 미확인. 외형 관찰만."
+    },
+    {
+      "id": "F01",
+      "title": "KORAIL 국민행동요령",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://info.korail.com/info/contents.do?key=970",
+      "classification": "passenger_general_emergency_guidance",
+      "rights": "공공누리 제4유형 표시."
+    },
+    {
+      "id": "F02",
+      "title": "Humetro 긴급상황 안내 도해(문개방·소화기·인터폰)",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.humetro.busan.kr/homepage/default/page/subLocation.do?menu_no=100101060202",
+      "classification": "operator_equipment_illustration",
+      "rights": "별도 재사용 허가 미확인. HTTP 수정일 2016-01-08은 현행 실차 적용 검증이 아님."
+    },
+    {
+      "id": "F03",
+      "title": "부산교통공사 긴급대피마스크 CSV (2025-10-31)",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.data.go.kr/data/15136814/fileData.do",
+      "classification": "operator_dated_quantity_table",
+      "rights": "공공데이터포털 '이용허락범위 제한 없음' 표시."
+    },
+    {
+      "id": "F04",
+      "title": "부산교통공사 편의시설 CSV (2025-12-31)",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.data.go.kr/data/15052664/fileData.do",
+      "classification": "operator_dated_quantity_table",
+      "rights": "공공데이터포털 '이용허락범위 제한 없음' 표시."
+    },
+    {
+      "id": "F05",
+      "title": "부산교통공사 승강장 안전문 CSV (2026-06-30)",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.data.go.kr/data/15061228/fileData.do",
+      "classification": "operator_dated_installation_record",
+      "rights": "공공데이터포털 '이용허락범위 제한 없음' 표시."
+    },
+    {
+      "id": "F06",
+      "title": "Humetro AED 설치 발표 (2024-07-09)",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.humetro.busan.kr/homepage/default/board/view.do?board_no=240719EDJF&conf_no=108&menu_no=1001060501",
+      "classification": "operator_announcement",
+      "rights": "공개 게시물. 별도 재사용 허가 미확인."
+    },
+    {
+      "id": "F07",
+      "title": "코레일유통 부산역 굿즈 매장 설계도서 ZIP",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01658098&bidPbancOrd=000&fileType=&fileSeq=1&prcmBsneSeCd=07",
+      "classification": "single_shop_design_documents",
+      "rights": "사용·변형·재배포 허가 미확인."
+    },
+    {
+      "id": "F08",
+      "title": "KORAIL 에스컬레이터 부품 개량 설계서",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01616421&bidPbancOrd=000&fileType=&fileSeq=3&prcmBsneSeCd=07",
+      "classification": "replacement_plan_not_inventory",
+      "rights": "사용·변형·재배포 허가 미확인."
+    },
+    {
+      "id": "F09",
+      "title": "부산시 2025-2459 철도지하화 타당성·기본계획 과업",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.busan.go.kr/nbgosi/view?curPage=1&gosiGbn=A&sno=73396",
+      "classification": "future_plan_not_current_layout",
+      "rights": "공개 고시. 별도 재사용 허가 미확인."
+    },
+    {
+      "id": "F10",
+      "title": "Humetro 역 시설안내도 ZIP (2025-10-31) 중 113 부산역 GIF",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.data.go.kr/data/15050407/fileData.do",
+      "classification": "duplicate_of_P03",
+      "rights": "공공데이터포털 '이용허락범위 제한 없음' 표시."
+    },
+    {
+      "id": "F11",
+      "title": "구포자전거오빠 블로그 (도시철도→KORAIL 에스컬레이터 캡션)",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://m.blog.naver.com/bang9163/222527449409",
+      "classification": "third_party_blog_mixed_locations",
+      "rights": "재사용 허가 미확인."
+    },
+    {
+      "id": "V01",
+      "title": "영상 39PANJWghAk (지하연결통로 재개 구간)",
+      "locator": "docs/evidence/foundation/2026-09-08-sequence-resume.json",
+      "classification": "held_video_hash_and_decode_checked",
+      "rights": "원본은 private-data에만 보관. 재배포 허가 미확인."
+    },
+    {
+      "id": "V02",
+      "title": "영상 RY2qvE0Tugk",
+      "locator": "docs/evidence/foundation/2026-09-08-sequence-resume.json",
+      "classification": "held_video_hash_and_decode_checked",
+      "rights": "원본은 private-data에만 보관. 재배포 허가 미확인."
+    },
+    {
+      "id": "V03",
+      "title": "영상 DuD0MezcVjQ",
+      "locator": "docs/evidence/foundation/2026-09-08-sequence-source-recovery.json",
+      "classification": "held_video_hash_and_decode_checked",
+      "rights": "원본은 private-data에만 보관. 재배포 허가 미확인."
+    },
+    {
+      "id": "V04",
+      "title": "Livesimple 부산→서울 KTX 여정 영상 Gv9hCGseu9o",
+      "locator": "docs/art/facility-source-followup-2026-09-07.md",
+      "url": "https://www.youtube.com/watch?v=Gv9hCGseu9o",
+      "classification": "edited_journey_video_unreviewed",
+      "rights": "재사용 허가 미확인. 촬영일 미확인."
+    },
+    {
+      "id": "S13",
+      "title": "KoreaToDo 원문에서 회복한 사진 기록 13건",
+      "locator": "docs/evidence/foundation/2026-09-08-sequence-source-recovery.json",
+      "classification": "recovered_page_images_unreviewed",
+      "rights": "공개 열람은 재배포·변형 허가가 아님."
+    }
+  ],
+  "bundles": [
+    {
+      "id": "rail_train",
+      "label": "열차·철도",
+      "owner": "team_unassigned",
+      "zones": ["rolling_stock_mainline", "rail_tracks_mainline", "rail_platforms_mainline"],
+      "module_issues": ["#78"],
+      "assembly_issue": "#80",
+      "anchor_portal": "portal.rail_platforms_mainline--station_concourse_2f"
+    },
+    {
+      "id": "station_forecourt",
+      "label": "역사·광장",
+      "owner": "team_unassigned",
+      "zones": ["rail_terminal_public", "station_concourse_2f", "station_hall_1f", "station_ticket_area", "forecourt_eurasia"],
+      "module_issues": ["#76", "#77"],
+      "assembly_issue": "#79",
+      "anchor_portal": "portal.rail_platforms_mainline--station_concourse_2f"
+    },
+    {
+      "id": "connector_metro",
+      "label": "연결부·지하철",
+      "owner": "team_unassigned",
+      "zones": ["underground_connector", "underground_shopping_passage", "metro_concourse", "metro_platforms", "rolling_stock_metro"],
+      "module_issues": ["#76", "#77", "#78"],
+      "assembly_issue": "#81",
+      "anchor_portal": "portal.rail_terminal_public--underground_connector"
+    }
+  ],
+  "zones": [
+    {
+      "id": "rolling_stock_mainline",
+      "bundle": "rail_train",
+      "level_assumption": "follows_platform",
+      "level_basis": "승강장 높이와 차량 형식이 미확인이다.",
+      "inputs": [
+        {"ref": "V04", "allowed_use": ["candidate_unreviewed"], "scope": "부산→서울 편집 영상. 부산역 구간과 차내 화면이 어느 역·차량인지 검수 전이다."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "차량 형식(KTX 등)을 선정하지 않았다.",
+        "차체·출입문·차내 치수 참고가 없다.",
+        "승강장 높이와 차량 바닥 높이의 관계가 미확인이다.",
+        "선로(rail_tracks_mainline)와의 연결이 coverage connections에 없다."
+      ],
+      "production_issues": ["#78", "#80"],
+      "adjacent_zones": ["rail_platforms_mainline"],
+      "provisional": true
+    },
+    {
+      "id": "rail_tracks_mainline",
+      "bundle": "rail_train",
+      "level_assumption": "unknown",
+      "level_basis": "현행 선로 배선도를 확보하지 않았다.",
+      "inputs": [],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "현행 선로 배선도가 없다.",
+        "궤간·궤도 높이·승강장 간격의 출처가 없다.",
+        "관측 사진이 없다."
+      ],
+      "production_issues": ["#78", "#80"],
+      "adjacent_zones": ["rail_platforms_mainline"],
+      "provisional": true
+    },
+    {
+      "id": "rail_platforms_mainline",
+      "bundle": "rail_train",
+      "level_assumption": "unknown",
+      "level_basis": "2층 맞이방과의 상하 관계가 미확인이다.",
+      "inputs": [
+        {"ref": "V04", "allowed_use": ["candidate_unreviewed"], "scope": "편집 여정 영상의 승강장 장면 후보. 부산역 승강장인지 검수 전이다."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "승강장 수·길이·폭·높이가 없다.",
+        "맞이방으로 이어지는 계단·에스컬레이터 위치가 미확인이다.",
+        "A/B 사진의 유리 너머를 승강장 관측으로 쓰지 않는다."
+      ],
+      "production_issues": ["#78", "#80"],
+      "adjacent_zones": ["rolling_stock_mainline", "rail_tracks_mainline", "station_concourse_2f"],
+      "provisional": true
+    },
+    {
+      "id": "rail_terminal_public",
+      "bundle": "station_forecourt",
+      "level_assumption": "ground_multi_level",
+      "level_basis": "P01 층별 시설 목록(지상1·2·3층)만 확인했다.",
+      "inputs": [
+        {"ref": "P01", "allowed_use": ["floor_membership"], "scope": "층별 시설 분류만. 평면·치수가 아니다."},
+        {"ref": "P02", "allowed_use": ["historical_layout_reference"], "scope": "2014년 1층 임대 배치. 공공누리 4유형(변경금지)이므로 참고만 하고 도면을 복제·변형하지 않는다."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "터미널 공용구역과 2층·1층 맞이방의 경계 정의가 없다.",
+        "현행 평면·치수가 없다.",
+        "관측 사진이 없다."
+      ],
+      "production_issues": ["#76", "#77", "#79"],
+      "adjacent_zones": ["station_concourse_2f", "station_ticket_area", "underground_connector"],
+      "provisional": true
+    },
+    {
+      "id": "station_concourse_2f",
+      "bundle": "station_forecourt",
+      "level_assumption": "above_ground_2f",
+      "level_basis": "P01의 2층 맞이방 표기.",
+      "inputs": [
+        {"ref": "busan-concourse-a", "allowed_use": ["form_reference", "non_metric_surface_review"], "scope": "상부 트러스·기둥 한 구간. 마스크된 비계량 표면 검토."},
+        {"ref": "busan-concourse-b", "allowed_use": ["form_reference", "non_metric_surface_review"], "scope": "같은 방향의 다른 사진. 바닥 줄눈·좌석·에스컬레이터 대조."},
+        {"ref": "R04", "allowed_use": ["form_reference"], "scope": "출발 전광판 외형만. 운행 정보는 쓰지 않는다."},
+        {"ref": "R05", "allowed_use": ["form_reference"], "scope": "관광안내소 카운터 외형만."},
+        {"ref": "P01", "allowed_use": ["floor_membership"], "scope": "2층 맞이방 소속 확인만."}
+      ],
+      "measurement_basis": "synthetic_estimate",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "준공 평면·치수·천장고·기둥 간격이 없다.",
+        "A/B 두 사진은 같은 방향의 상부 한 구간이다. 전체 맞이방으로 확대 해석하지 않는다.",
+        "승강장·1층·터미널과 이어지는 수직/수평 연결 위치가 미확인이다."
+      ],
+      "production_issues": ["#76", "#77", "#79"],
+      "adjacent_zones": ["rail_platforms_mainline", "rail_terminal_public", "station_hall_1f"],
+      "provisional": true
+    },
+    {
+      "id": "station_hall_1f",
+      "bundle": "station_forecourt",
+      "level_assumption": "ground_1f",
+      "level_basis": "P02(2014) 1층 맞이방 표기.",
+      "inputs": [
+        {"ref": "P02", "allowed_use": ["historical_layout_reference"], "scope": "당시 외곽·기둥열·계단 표현. 축척·치수선이 없고 복제·변형 금지."},
+        {"ref": "P01", "allowed_use": ["floor_membership"], "scope": "1층 시설 소속 확인만."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "현행 형상이 미확인이다(2014년 이후 연결통로·점포 변경 가능).",
+        "축척·치수가 없다.",
+        "관측 사진이 없다."
+      ],
+      "production_issues": ["#76", "#79"],
+      "adjacent_zones": ["station_concourse_2f"],
+      "provisional": true
+    },
+    {
+      "id": "station_ticket_area",
+      "bundle": "station_forecourt",
+      "level_assumption": "unknown",
+      "level_basis": "단일 사진만으로 층을 확정하지 않는다.",
+      "inputs": [
+        {"ref": "R06", "allowed_use": ["form_reference"], "scope": "매표 창구·발권기·대기열 벨트·낮은 모듈 천장 외형."},
+        {"ref": "P01", "allowed_use": ["floor_membership"], "scope": "역 시설 목록 소속만."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "정확한 층이 미확인이다.",
+        "맞이방·터미널과의 연결 위치와 폭이 미확인이다.",
+        "단일 시점 사진이라 재구성 입력이 아니다."
+      ],
+      "production_issues": ["#77", "#79"],
+      "adjacent_zones": ["rail_terminal_public"],
+      "provisional": true
+    },
+    {
+      "id": "forecourt_eurasia",
+      "bundle": "station_forecourt",
+      "level_assumption": "separate_facility_1f_2f",
+      "level_basis": "P05 층별 투시도(유라시아플랫폼 1·2층).",
+      "inputs": [
+        {"ref": "P05", "allowed_use": ["topology"], "scope": "관리/운영동과 광장의 상대 구성. 치수 없는 투시도."},
+        {"ref": "P06", "allowed_use": ["topology"], "scope": "1층 운영동 호실·계단/승강기 상대 배치."},
+        {"ref": "P07", "allowed_use": ["topology"], "scope": "2층 라운지 상대 위치. 202호 수치는 불일치로 제외."},
+        {"ref": "P09", "allowed_use": ["topology"], "scope": "지하연결통로 에스컬레이터 접근 안내."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "역사 건물과의 지상 연결이 coverage connections에 없다.",
+        "치수·축척이 없다.",
+        "관측 사진이 없다."
+      ],
+      "production_issues": ["#76", "#79"],
+      "adjacent_zones": ["underground_connector"],
+      "provisional": true
+    },
+    {
+      "id": "underground_connector",
+      "bundle": "connector_metro",
+      "level_assumption": "underground",
+      "level_basis": "P04 지하 표기. B층 번호·접속고는 미표기.",
+      "inputs": [
+        {"ref": "P04", "allowed_use": ["operator_published_dimension", "topology"], "scope": "길이 99.6m·폭 8.0m는 이 통로에만 적용한다. 경부선 부산역↔지하상가/지하철 연결 도식."},
+        {"ref": "P09", "allowed_use": ["topology"], "scope": "8·10번 출구 방향과 에스컬레이터 접근 안내."},
+        {"ref": "V01", "allowed_use": ["non_metric_surface_review"], "scope": "4프레임 두 구간의 시점별 비계량 표면. 독립 SfM은 미등록."}
+      ],
+      "measurement_basis": "operator_published",
+      "numeric_constraint_refs": ["connector_operator_dimensions"],
+      "gaps": [
+        "끝점 좌표·경사·층고·굴곡별 길이가 없다.",
+        "99.6×8.0m는 운영자 공표값이며 프로젝트 측량이 아니다.",
+        "Blender/Unity 전달을 아직 실행하지 않았다.",
+        "맞이방과의 공동 스케일이 없다."
+      ],
+      "production_issues": ["#76", "#81"],
+      "adjacent_zones": ["rail_terminal_public", "forecourt_eurasia", "underground_shopping_passage"],
+      "provisional": true
+    },
+    {
+      "id": "underground_shopping_passage",
+      "bundle": "connector_metro",
+      "level_assumption": "underground",
+      "level_basis": "P04 연결 도식의 지하상가 표기.",
+      "inputs": [
+        {"ref": "P04", "allowed_use": ["topology"], "scope": "지하연결통로↔지하상가 연결 표기만."},
+        {"ref": "P09", "allowed_use": ["topology"], "scope": "도시철도 방향 접근 안내만."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "점포·폭·분기 형태가 미확인이다.",
+        "운영 주체 경계가 미확인이다.",
+        "관측 자료가 없다."
+      ],
+      "production_issues": ["#76", "#81"],
+      "adjacent_zones": ["underground_connector", "metro_concourse"],
+      "provisional": true
+    },
+    {
+      "id": "metro_concourse",
+      "bundle": "connector_metro",
+      "level_assumption": "underground",
+      "level_basis": "P03 대합실. B층 번호 미확인.",
+      "inputs": [
+        {"ref": "P03", "allowed_use": ["topology"], "scope": "대합실·승강장·계단/승강기·출구의 상대 연결."},
+        {"ref": "P09", "allowed_use": ["topology"], "scope": "8·10번 출구 안내."},
+        {"ref": "F04", "allowed_use": ["quantity_context"], "scope": "역 전체 엘리베이터·에스컬레이터·비상인터폰 수량(2025-12-31). 구역 배분·위치 미확인."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "P03 출구 1~7번과 P04/P09의 8·10번 안내가 개정 상태 불일치다.",
+        "길이·폭·층고가 없다.",
+        "관측 자료가 없다.",
+        "KORAIL과 다른 운영자 시설이므로 한 공간으로 합치지 않는다."
+      ],
+      "production_issues": ["#76", "#77", "#81"],
+      "adjacent_zones": ["underground_shopping_passage", "metro_platforms"],
+      "provisional": true
+    },
+    {
+      "id": "metro_platforms",
+      "bundle": "connector_metro",
+      "level_assumption": "underground_below_concourse",
+      "level_basis": "P03 도식의 대합실 아래 상대식 승강장.",
+      "inputs": [
+        {"ref": "P03", "allowed_use": ["topology"], "scope": "상대식 승강장과 수직 연결만."},
+        {"ref": "F03", "allowed_use": ["quantity_context"], "scope": "대피마스크 합계 70개와 보관 위치 원문 '상선 4-2 / 하선 5-1'. 좌표·유효기간 미확인."},
+        {"ref": "F05", "allowed_use": ["quantity_context"], "scope": "승강장 안전문 설치일 2012-12-20. 개량일 공란은 유지보수 없음이 아니다."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "승강장 길이·폭·선로 간격이 없다.",
+        "보관함 좌표와 현장 상태가 미확인이다.",
+        "관측 자료가 없다."
+      ],
+      "production_issues": ["#76", "#77", "#81"],
+      "adjacent_zones": ["metro_concourse", "rolling_stock_metro"],
+      "provisional": true
+    },
+    {
+      "id": "rolling_stock_metro",
+      "bundle": "connector_metro",
+      "level_assumption": "follows_platform",
+      "level_basis": "도시철도 승강장 높이와 차량 형식이 미확인이다.",
+      "inputs": [
+        {"ref": "F02", "allowed_use": ["form_reference"], "scope": "1호선 문개방·소화기·인터폰 도해 3개. 현행 실차 적용 미검증."}
+      ],
+      "measurement_basis": "none",
+      "numeric_constraint_refs": [],
+      "gaps": [
+        "차량 형식을 선정하지 않았다.",
+        "차체·차내 치수가 없다.",
+        "#78(열차 모듈) 범위에 도시철도 차량이 포함되는지 미확정이다."
+      ],
+      "production_issues": ["#78", "#81"],
+      "adjacent_zones": ["metro_platforms"],
+      "provisional": true
+    }
+  ],
+  "portals": [
+    {"id": "portal.rolling_stock_mainline--rail_platforms_mainline", "from": "rolling_stock_mainline", "to": "rail_platforms_mainline", "crosses_bundles": false, "geometry_owner": "rail_train", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "차량 출입문과 승강장 연단. 차량 형식 선정 전 문 위치·단차 미정."},
+    {"id": "portal.rail_tracks_mainline--rail_platforms_mainline", "from": "rail_tracks_mainline", "to": "rail_platforms_mainline", "crosses_bundles": false, "geometry_owner": "rail_train", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "승강장 연단 경계. 선로 진입은 안전 경계이므로 이동 허용 여부는 PM 검토."},
+    {"id": "portal.rail_platforms_mainline--station_concourse_2f", "from": "rail_platforms_mainline", "to": "station_concourse_2f", "crosses_bundles": true, "geometry_owner": "pm_integration", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "rail_train·station_forecourt 두 번들의 anchor. 계단/에스컬레이터 위치 미확인."},
+    {"id": "portal.rail_terminal_public--station_concourse_2f", "from": "rail_terminal_public", "to": "station_concourse_2f", "crosses_bundles": false, "geometry_owner": "station_forecourt", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "P01 층 소속만 근거. 터미널 범위 정의 필요."},
+    {"id": "portal.station_hall_1f--station_concourse_2f", "from": "station_hall_1f", "to": "station_concourse_2f", "crosses_bundles": false, "geometry_owner": "station_forecourt", "level_change": "vertical_unverified", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "1층↔2층 수직 연결 제안. 계단·에스컬레이터 위치 미검증."},
+    {"id": "portal.station_ticket_area--rail_terminal_public", "from": "station_ticket_area", "to": "rail_terminal_public", "crosses_bundles": false, "geometry_owner": "station_forecourt", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "매표 구역의 층이 미확정."},
+    {"id": "portal.rail_terminal_public--underground_connector", "from": "rail_terminal_public", "to": "underground_connector", "crosses_bundles": true, "geometry_owner": "pm_integration", "level_change": "vertical_unverified", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "connector_metro 번들의 anchor. P04 도식의 역↔통로 연결만 근거, 정확한 출입구 미확인."},
+    {"id": "portal.forecourt_eurasia--underground_connector", "from": "forecourt_eurasia", "to": "underground_connector", "crosses_bundles": true, "geometry_owner": "pm_integration", "level_change": "vertical_unverified", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "P09 에스컬레이터 접근 안내. 위치·층고 미확인."},
+    {"id": "portal.underground_connector--underground_shopping_passage", "from": "underground_connector", "to": "underground_shopping_passage", "crosses_bundles": false, "geometry_owner": "connector_metro", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "통로 폭 8.0m는 통로 단면이며 출입구 폭이 아니다."},
+    {"id": "portal.underground_shopping_passage--metro_concourse", "from": "underground_shopping_passage", "to": "metro_concourse", "crosses_bundles": false, "geometry_owner": "connector_metro", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "운영자 경계(부산시설공단↔부산교통공사)가 지나는 지점으로 추정되나 미확인."},
+    {"id": "portal.metro_concourse--metro_platforms", "from": "metro_concourse", "to": "metro_platforms", "crosses_bundles": false, "geometry_owner": "connector_metro", "level_change": "vertical_unverified", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "P03 도식의 수직 연결. 계단·승강기 수와 위치 미확인."},
+    {"id": "portal.rolling_stock_metro--metro_platforms", "from": "rolling_stock_metro", "to": "metro_platforms", "crosses_bundles": false, "geometry_owner": "connector_metro", "level_change": "unknown", "opening_width_m": null, "clear_height_m": null, "provisional": true, "note": "승강장 안전문(F05)과 차량 문 정렬. 차량 형식 선정 전 미정."}
+  ],
+  "unassigned_sources": [
+    {"ref": "F01", "reason": "역·구역을 특정하지 않는 승객 일반 안내이며 직원 SOP가 아니다."},
+    {"ref": "F06", "reason": "전 역사 설치 발표일 뿐 부산역 내 위치·기종이 없다."},
+    {"ref": "F07", "reason": "특정 매장 하나의 설계다. 정확한 층·완공 상태가 미확인이라 구역에 배정하지 않는다."},
+    {"ref": "F08", "reason": "교체 계획이며 설치 위치·수량 대장이 아니다."},
+    {"ref": "F09", "reason": "장래 계획이므로 현재 배치에 쓰지 않는다."},
+    {"ref": "F10", "reason": "P03과 바이트가 동일하다. 별도 근거가 아니다."},
+    {"ref": "F11", "reason": "다른 역·거리 사진이 섞여 있고 개별 사진 검수 전이다."},
+    {"ref": "V02", "reason": "재개 실행 입력으로 쓰였지만 어느 구역인지 기록이 없다. 사람의 시각 검수로 구역을 확인해야 한다."},
+    {"ref": "V03", "reason": "해시·디코더 확인만 있고 내용·출처 기록이 없다."},
+    {"ref": "S13", "reason": "캡션이 호텔·관광 상품이며 시각 검수 전이다. 구역 근거로 쓰지 않는다."}
+  ],
+  "open_questions": [
+    "PM의 #82 로컬 구현(미푸시)이 쓰는 구역/portal ID와 이 초안의 portal.<from>--<to> 명명·방향을 대조해야 한다.",
+    "rolling_stock_mainline↔rail_tracks_mainline 연결을 coverage에 추가할지 PM이 결정해야 한다.",
+    "forecourt_eurasia와 역사 건물의 지상 연결을 추가할지 PM이 결정해야 한다.",
+    "도시철도 차량(rolling_stock_metro) 제작을 #78 범위에 포함할지 확정해야 한다.",
+    "번들을 넘는 portal 3개의 월드 변환과 anchor 방향을 #82에서 확정해야 한다.",
+    "rail_terminal_public의 범위(맞이방·1층과의 경계)를 정의해야 한다.",
+    "V02·V03 영상의 구역 귀속을 사람이 시각 검수해야 한다(코딩 LLM에는 이미지를 첨부하지 않는다)."
+  ]
+}
