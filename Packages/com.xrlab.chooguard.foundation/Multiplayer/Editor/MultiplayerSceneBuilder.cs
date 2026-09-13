@@ -108,8 +108,6 @@ namespace ChooGuard.Foundation.Multiplayer.Editor
             PlayerSettings.defaultScreenWidth = 1920; PlayerSettings.defaultScreenHeight = 1080;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;
             PlayerSettings.runInBackground = true;
-            // Runtime endpoint validation permits plaintext only on loopback for the local SFU control API.
-            PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             PlayerSettings.macOS.microphoneUsageDescription = "훈련 중 무전 버튼을 누르는 동안 팀원에게 음성을 전달합니다.";
             // SDK links WebCamTexture even for voice-only clients; this app never starts camera capture.
             PlayerSettings.macOS.cameraUsageDescription = "카메라 접근은 이 음성 훈련에 필요하지 않습니다.";
