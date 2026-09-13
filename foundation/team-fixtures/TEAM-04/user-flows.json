@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "TEAM-04-user-flows",
+  "issue": 72,
+  "workId": "TEAM-04",
+  "phase": "candidate",
+  "classification": "PUBLIC_SYNTHETIC",
+  "disclaimer": "KORAIL 검증 전 예시",
+  "generatedAt": "2026-09-13",
+  "purpose": "평상시 운영부터 관측·보고·인솔·집결·복기·복구까지의 정상 및 실패 기대값을 독립 fixture로 제공한다. canonical 사건·점수 의미를 바꾸지 않는다.",
+  "baseCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+  "targetScope": {
+    "id": "legacy-single-operator",
+    "description": "실제 조작자 1명, 동일 외형 NPC 6명, 사건 2유형 × 위치 3곳의 기존 상시 현장 범위",
+    "notMixedWith": "FMP 20클라이언트·NPC100·동시사건2 목표는 별도다. 이 fixture의 어떤 항목도 그 수용 근거가 아니다."
+  },
+  "boundInputs": [
+    {
+      "path": "docs/choo-guard-open-world-training.md",
+      "sha256": "190b73d47e5eba8add586c3a4590679e7b1d7d414ba446453cb0ed1979015f4e",
+      "selector": "§현재 실행 흐름; §디지털 트윈과 현장 효용의 검증 범위",
+      "availability": "published_on_develop"
+    },
+    {
+      "path": "foundation/scenarios/foundation-demo.json",
+      "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+      "selector": "/roles",
+      "availability": "published_on_develop",
+      "scenarioVersion": "foundation-2"
+    },
+    {
+      "path": "foundation/world/station-twin-profile.json",
+      "sha256": "d727285e50f9ab8c1e13b6a84f32a6934d1fee1e21ab4f7b0d621b5a71a0f9e2",
+      "selector": "/sites; /equipment; /routineStops",
+      "availability": "published_on_develop"
+    },
+    {
+      "path": "foundation/anchors/synthetic-room.json",
+      "sha256": "e6051a3d9131e0e920c4976e197033d5c541f9452d4b4c1f3733d07ad593b5c5",
+      "selector": "/anchors",
+      "availability": "published_on_develop"
+    }
+  ],
+  "missingInputs": [
+    {
+      "id": "artifact:32:M4-01-fixture:candidate",
+      "fromIssue": 32,
+      "effect": "5직무 action/Anchor 기대값의 확정 fixture가 없다. 현행 foundation-demo의 provisional 값을 사용했고, #32 확정 시 대조가 필요하다."
+    },
+    {
+      "id": "artifact:131:reviewed-incident-catalog:candidate",
+      "fromIssue": 131,
+      "effect": "검토된 사건 변형 catalog가 없다. 사건 2유형은 공개 설계 문서의 현행 기술만 사용했고 새 schema 적용은 보류한다."
+    },
+    {
+      "id": "docs/choo-guard-native-acceptance.md",
+      "effect": "candidate 단계 읽기 전용 참고가 develop에 없다. #120의 보류 32건에 해당한다. 상태별 관찰·기대 결과의 대조를 수행하지 못했다."
+    },
+    {
+      "id": "docs/choo-guard-native-team-contracts.md",
+      "effect": "동일. 관측 전 정보 분리·직접 인솔 접점의 대조를 수행하지 못했다."
+    },
+    {
+      "id": "docs/choo-guard-foundation-multiplayer.md",
+      "effect": "동일. FMP 목표 대조를 수행하지 못했으므로 이 fixture는 legacy 범위로만 한정했다."
+    }
+  ],
+  "worldFacts": {
+    "sites": ["central", "west", "east"],
+    "equipmentAnchors": {
+      "anchor-01": "observation-panel",
+      "anchor-02": "public-notice",
+      "anchor-03": "primary-radio",
+      "anchor-04": "direction-sign",
+      "anchor-05": "access-gate",
+      "route-console": "backup-radio",
+      "assembly-register": "assembly-register"
+    },
+    "roleTriples": {
+      "role-01": {"actionId": "action-01", "targetAnchorId": "anchor-01"},
+      "role-02": {"actionId": "action-02", "targetAnchorId": "anchor-02"},
+      "role-03": {"actionId": "action-03", "targetAnchorId": "anchor-03"},
+      "role-04": {"actionId": "action-04", "targetAnchorId": "anchor-04"},
+      "role-05": {"actionId": "action-05", "targetAnchorId": "anchor-05"}
+    },
+    "incidentKinds": ["passage-restriction", "guidance-communication-fault"],
+    "timingSeconds": {"minimumQuiet": 40, "maximumQuiet": 85, "recovery": 15, "escalation": 100},
+    "routineStopCount": 9,
+    "evacueeCount": 6
+  },
+  "outcomeCodes": {
+    "completed": "기대 상태에 도달했다.",
+    "resumed": "일시정지 후 같은 상태로 복귀했다.",
+    "rejected_input": "거리·가림·대상 조건을 만족하지 못해 행동이 성립하지 않았다.",
+    "rejected_precondition": "관측·보고·경로 선행 조건이 충족되지 않아 거부했다.",
+    "incomplete_assembly": "대상 인원이 집결 단말에 도착하지 않아 완료되지 않았다.",
+    "restarted": "재시작으로 위치·설비·진행 상태가 초기화됐다.",
+    "refused_by_design": "설계상 제공하지 않는 요청이라 거부했다."
+  },
+  "flows": [
+    {
+      "flowId": "TEAM-04-F01",
+      "title": "정상 완주",
+      "branch": "normal",
+      "roleId": "role-01",
+      "steps": [
+        {"stage": "routine", "initial": "현장 입장 직후, 사건 없음", "action": "순회 지점 9곳을 이동하며 설비 확인", "observation": "NPC 6명이 평상시 이동 중. 다음 목표 내비게이션 없음", "expected": "평상시 상태 유지"},
+        {"stage": "onset", "initial": "조용한 구간 40~85초 경과", "action": "없음(플레이어 행동 아님)", "observation": "central 위치에서 통행 제한 발생", "expected": "사건 상태 활성, 위치는 관측 전까지 UI에 표시하지 않음"},
+        {"stage": "observe", "initial": "사건 활성, 미관측", "action": "anchor-01(observation-panel)에 접근해 확인", "observation": "상황 패널이 사건 상태를 표시", "expected": "관측 완료로 전환, 이후 플레이어가 선택한 경로만 맵에 표시"},
+        {"stage": "report", "initial": "관측 완료", "action": "anchor-03(primary-radio)로 보고", "observation": "보고 접수", "expected": "보고 완료. 보고와 경로 선택은 순서를 바꿔도 된다"},
+        {"stage": "route", "initial": "보고 완료", "action": "route-console에서 사용 가능한 경로 선택", "observation": "고장 구역은 선택 불가", "expected": "경로 확정"},
+        {"stage": "escort", "initial": "경로 확정", "action": "대상 NPC에 접근·조준 후 E로 직접 인솔", "observation": "대상이 따라 이동", "expected": "인솔 성립. 원격 인솔 버튼은 없음"},
+        {"stage": "assemble", "initial": "인솔 중", "action": "선택 통로의 양쪽 면을 실제로 통과", "observation": "assembly-register에서 도착 인원 확인", "expected": "집결 완료"},
+        {"stage": "recover", "initial": "집결 완료", "action": "없음", "observation": "15초 후 복구, NPC가 현재 위치에서 일상 이동 재개", "expected": "같은 공간에서 다음 사건 대기. 플레이어를 이동시키거나 선택 화면으로 되돌리지 않음"}
+      ],
+      "outcome": "completed",
+      "sourceRefs": ["open-world-training§현재 실행 흐름", "station-twin-profile/equipment", "foundation-demo/roles/role-01"]
+    },
+    {
+      "flowId": "TEAM-04-F02",
+      "title": "일시정지 후 복귀",
+      "branch": "pause",
+      "roleId": "role-01",
+      "steps": [
+        {"stage": "observe", "initial": "사건 관측 완료, 인솔 전", "action": "Esc로 일시정지하고 대응 기록을 확인", "observation": "완료한 사건의 요약과 시간순 기록", "expected": "세계 상태가 진행되지 않음"},
+        {"stage": "resume", "initial": "일시정지", "action": "일시정지 해제", "observation": "관측·보고 상태가 그대로 남아 있음", "expected": "선행 진행 상태 보존. 사건이 재추첨되지 않음"}
+      ],
+      "outcome": "resumed",
+      "sourceRefs": ["open-world-training§현재 실행 흐름"]
+    },
+    {
+      "flowId": "TEAM-04-F03",
+      "title": "입력 오류: 거리 밖·가림·잘못된 대상",
+      "branch": "input_error",
+      "roleId": "role-04",
+      "steps": [
+        {"stage": "act", "initial": "사건 관측 완료", "action": "먼 거리에서 anchor-04(direction-sign) 조작 시도", "observation": "대상이 조작 범위 밖", "expected": "행동 미성립"},
+        {"stage": "act", "initial": "동일", "action": "다른 물체에 가려진 NPC를 인솔 시도", "observation": "가림 상태", "expected": "인솔 미성립"},
+        {"stage": "act", "initial": "동일", "action": "미등록 복제 객체를 대상으로 지정", "observation": "대상 목록에 없음", "expected": "행동 미성립"}
+      ],
+      "outcome": "rejected_input",
+      "sourceRefs": ["open-world-training§현재 실행 흐름", "foundation-demo/roles/role-04"]
+    },
+    {
+      "flowId": "TEAM-04-F04",
+      "title": "미관측 상태의 대응 시도",
+      "branch": "unobserved",
+      "roleId": "role-05",
+      "steps": [
+        {"stage": "act", "initial": "사건 활성, 관측 없음", "action": "anchor-05(access-gate) 조작과 인솔을 먼저 시도", "observation": "세계 상태와 플레이어 관측 상태가 분리돼 있음", "expected": "선행 조건 불충족으로 거부. 사건 위치·유형이 노출되지 않음"},
+        {"stage": "act", "initial": "통신 이상 사건, 주 무전 불가", "action": "anchor-03(primary-radio)로 보고 시도", "observation": "장치 불가 상태", "expected": "거부. route-console(backup-radio) 사용 경로만 성립"}
+      ],
+      "outcome": "rejected_precondition",
+      "sourceRefs": ["open-world-training§현재 실행 흐름", "station-twin-profile/equipment"]
+    },
+    {
+      "flowId": "TEAM-04-F05",
+      "title": "집결 실패",
+      "branch": "assembly_failure",
+      "roleId": "role-02",
+      "steps": [
+        {"stage": "escort", "initial": "경로 확정, 인솔 진행", "action": "통로 앞까지만 접근하고 통과하지 않음", "observation": "양쪽 면 통과가 확인되지 않음", "expected": "집결 미완료"},
+        {"stage": "assemble", "initial": "일부 대상만 도착", "action": "assembly-register에서 확인", "observation": "대상 인원 중 일부만 도착", "expected": "미완료로 기록. 도착하지 않은 인원을 완료로 세지 않음"}
+      ],
+      "outcome": "incomplete_assembly",
+      "sourceRefs": ["open-world-training§현재 실행 흐름", "station-twin-profile/equipment/assembly-register"]
+    },
+    {
+      "flowId": "TEAM-04-F06",
+      "title": "재시작",
+      "branch": "restart",
+      "roleId": "role-03",
+      "steps": [
+        {"stage": "restart", "initial": "진행 중 상태", "action": "재시작", "observation": "위치·오브젝트·진행 상태가 초기값으로", "expected": "초기화. 같은 시드를 다시 실행해도 새 근무 ID를 사용해 이전 기록을 덮어쓰지 않음"}
+      ],
+      "outcome": "restarted",
+      "sourceRefs": ["open-world-training§현재 실행 흐름", "open-world-training§구현과 재현"]
+    }
+  ],
+  "prohibitedCases": [
+    {
+      "caseId": "TEAM-04-N01",
+      "attempt": "사건 발생 전 또는 미관측 상태에서 사건 위치·유형·정답 행동 순서를 UI에 표시한다.",
+      "expected": "refused_by_design",
+      "reason": "기본 플레이에 훈련 선택·사건 시작 버튼·정답 순서 표시가 없다. 세계 상태와 관측 상태를 분리해 유지한다.",
+      "sourceRefs": ["open-world-training§현재 실행 흐름"]
+    },
+    {
+      "caseId": "TEAM-04-N02",
+      "attempt": "원격 인솔 버튼으로 떨어진 NPC를 이동시킨다.",
+      "expected": "refused_by_design",
+      "reason": "기본 모드에서 원격 인솔을 제공하지 않는다. 접근·조준·E의 직접 인솔만 성립한다.",
+      "sourceRefs": ["open-world-training§현재 실행 흐름"]
+    },
+    {
+      "caseId": "TEAM-04-N03",
+      "attempt": "NPC가 빈 직무의 조치를 대행하거나, 결과 화면에 공식 점수·이수 판정을 표시한다.",
+      "expected": "refused_by_design",
+      "reason": "동일 외형 NPC는 직무를 대행하지 않는다. 검수 전에는 설명형 피드백만 제공하고 점수·합격·이수 판정을 만들지 않는다.",
+      "sourceRefs": ["open-world-training§현재 실행 흐름", "foundation-demo/disclaimer"]
+    }
+  ],
+  "modalityParity": {
+    "rule": "Desktop과 VR은 같은 roleId·actionId·targetAnchorId와 같은 기대 Quest·피드백 의미를 사용한다. 입력 장치의 동일성이 아니라 기대 결과의 일치를 본다.",
+    "desktopInput": "WASD 이동, 마우스 시점, E 상호작용, Esc 일시정지·복기",
+    "vrInput": "미검증. 실제 HMD 시험은 이 이슈의 nonGoal이며 #37·#89에서 다룬다.",
+    "verifiedOnDevice": false
+  },
+  "notAccepted": [
+    "이 fixture는 실행 결과가 아니라 기대값 명세다. 자동 시험 통과나 실기 검증을 대신하지 않는다.",
+    "canonical 사건·점수·안전 판정 의미를 바꾸지 않는다. 변경이 필요하면 별도 구현·검토로 보낸다.",
+    "공식 직무·SOP를 확정하지 않는다. 5직무는 KORAIL 검증 전 예시다.",
+    "legacy 단일 조작자 범위의 항목을 FMP 20/100/2 수용 근거로 쓰지 않는다.",
+    "VR 기대값은 의미 대조까지이며 실제 기기에서 확인하지 않았다."
+  ],
+  "limits": [
+    "합성 세계 값이다. station-twin-profile의 evidenceStatus는 synthetic-unverified다.",
+    "사건 2유형·위치 3곳·NPC 6명은 기존 공개 설계 범위이며 실제 시설 배치가 아니다.",
+    "candidate 단계 읽기 전용 참고 3종이 미게시라 상태별 관찰·기대 결과의 원문 대조를 수행하지 못했다."
+  ]
+}
