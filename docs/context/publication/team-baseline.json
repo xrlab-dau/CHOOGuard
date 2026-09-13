@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "issue": 120,
+  "workId": "R-08",
+  "phase": "candidate",
+  "status": "proposal_for_pm_review",
+  "generatedAt": "2026-09-13T06:35:22Z",
+  "baseline": {
+    "ref": "feature/54-native-foundation",
+    "head": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+    "baseDevelop": "85e4a4c94ae491dd1a257528b13de8a87135304c",
+    "commitsAheadOfDevelop": 6,
+    "filesAtRef": 1106,
+    "deliveredPaths": 261,
+    "pullRequest": 153,
+    "pullRequestState": "open_draft",
+    "mergedIntoDevelop": false
+  },
+  "fetch": [
+    "git fetch origin feature/54-native-foundation",
+    "git switch --detach bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+    "git lfs install --local",
+    "git lfs pull"
+  ],
+  "verify": [
+    "git rev-parse HEAD   # bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+    "git cat-file -e <HEAD>:<path>   # manifest의 각 경로",
+    "python -c \"import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())\" <path>"
+  ],
+  "manifest": "docs/context/publication/foundation-source-manifest.json",
+  "exclusions": "docs/context/publication/exclusions.md",
+  "notVerified": [
+    "새 checkout의 Unity package resolve·compile·import",
+    "EditMode/PlayMode 시험과 실행본 빌드",
+    "LFS 바이너리 payload의 실제 수신",
+    "20/100/2 기능·성능·음성 수용"
+  ],
+  "limits": [
+    "이 기준선은 읽기 가능한 원격 ref를 가리킬 뿐 병합·게시 승인을 뜻하지 않는다.",
+    "draft PR이 닫히거나 강제 푸시되면 head가 사라질 수 있다. PM이 기준선 고정 방식을 결정해야 한다."
+  ],
+  "pmDecisionsRequired": [
+    "draft PR #153의 브랜치 ref를 팀 기준선으로 선언할지, 병합 이후로 미룰지",
+    "exclusions.md의 보류 32건을 의도된 제외로 확정할지 게시할지"
+  ]
+}
