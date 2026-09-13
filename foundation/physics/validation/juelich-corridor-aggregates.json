@@ -1,0 +1,587 @@
+{
+  "SchemaVersion": 1,
+  "AdapterVersion": "juelich-camera1-txt-si-method-b-1",
+  "ArchiveDoi": "10.34735/ped.2006.1",
+  "Attribution": "Forschungszentrum Juelich; Seyfried et al.; DFG KL 1873/1-1 and SE 1789/1-1",
+  "SourcePaper": "https://arxiv.org/pdf/0810.1945",
+  "Sources": [
+    {
+      "Url": "https://ped.fz-juelich.de/experiments/2006.11.27_Duesseldorf_Casern/data/fd/fd1_b070/linie/2006corridor2_metadata.json",
+      "Sha256": "1dd97cd3f423fa483c4d5c787c4d7573c5e491f9b4fbd031a5fab82efeef5291",
+      "Bytes": 61735
+    },
+    {
+      "Url": "https://ped.fz-juelich.de/experiments/2006.11.27_Duesseldorf_Casern/data/fd/fd1_b070/linie/2006corridor2_trajectories_cam1_txt.zip",
+      "Sha256": "0831deedd35b843600c67bf493e6e77515fa824816824951625de5510b347b0d",
+      "Bytes": 3308277
+    },
+    {
+      "Url": "https://ped.fz-juelich.de/experiments/2006.11.27_Duesseldorf_Casern/data/fd/fd1_b070/linie/2006corridor2_trajectories_cam1_h5.zip",
+      "Sha256": "defe7c05f6de725e9aa5950536c82d31e6b07ba2036a15cc4411d4ad3fe0d3b2",
+      "Bytes": 5769329
+    }
+  ],
+  "Units": "x/y metres after TXT centimetres /100; density person/metre; speed metre/second",
+  "Measurement": "25fps; x=0 negative crossing; preceding integer frame; [-2,2]m occupancy; frame +/-5 central 0.4s Euclidean speed; skip incomplete occupant windows",
+  "TimeWindowLimit": "Published paper restricts analysis to stationary states but exact per-run frame bounds are absent from this metadata/archive. This adapter uses all complete available crossing windows; no exact reproduction of published stationary selection is claimed.",
+  "ComparisonLimit": "Condition on measured mean local density in an equally spaced periodic synthetic corridor; camera FOV is not full initial state. No bottleneck capacity, transient trajectory, passenger, railway or field validation.",
+  "Calibration": "Whole runs n14,n25,n39,n62; all other9 holdouts with n17/n17_2 kept together. Fixed radius0.15m/person repulsion5/range0.1m. Select v0/T by run-weighted squared mean-speed residual of uniform equilibrium; freeze before actual C# holdout runs. No posthoc empirical PASS threshold.",
+  "Cases": [
+    {
+      "Id": "n14",
+      "Role": "calibration",
+      "OriginalParticipants": 14,
+      "TrajectorySha256": "810e579928f2aeec230f66ce8d058c9b8802b8f69dd29dfd93da950670bac8fe",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 2432,
+      "FirstMeasuredFrame": 50,
+      "LastMeasuredFrame": 2388,
+      "MeasuredEvents": 52,
+      "Rows": 4879,
+      "MeanDensityPM": 0.49038461538461536,
+      "MeanSpeedMS": 1.2253434489616928,
+      "SpeedStdDevMS": 0.06441360405522538,
+      "Bins": [
+        {
+          "DensityPM": 0.25,
+          "Events": 21,
+          "MeanSpeedMS": 1.2471934939749263
+        },
+        {
+          "DensityPM": 0.5,
+          "Events": 12,
+          "MeanSpeedMS": 1.2128489055947418
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 19,
+          "MeanSpeedMS": 1.2090846897577723
+        }
+      ]
+    },
+    {
+      "Id": "n17",
+      "Role": "holdout",
+      "OriginalParticipants": 17,
+      "TrajectorySha256": "035c327de635f4a470ea518778a3cc8c505dfe5e271040ce0e2dfa355f7d73f4",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 2588,
+      "FirstMeasuredFrame": 70,
+      "LastMeasuredFrame": 2521,
+      "MeasuredEvents": 46,
+      "Rows": 6798,
+      "MeanDensityPM": 0.6684782608695652,
+      "MeanSpeedMS": 0.8244946005182109,
+      "SpeedStdDevMS": 0.06291810091995982,
+      "Bins": [
+        {
+          "DensityPM": 0.25,
+          "Events": 1,
+          "MeanSpeedMS": 0.926831164757402
+        },
+        {
+          "DensityPM": 0.5,
+          "Events": 13,
+          "MeanSpeedMS": 0.8415251342051665
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 32,
+          "MeanSpeedMS": 0.8143779285754105
+        }
+      ]
+    },
+    {
+      "Id": "n17_2",
+      "Role": "holdout",
+      "OriginalParticipants": 17,
+      "TrajectorySha256": "30756ef4fddb06acf4e54c38bfde52cb513508b45b99dce65eaa33f4ceee2fbf",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 2396,
+      "FirstMeasuredFrame": 98,
+      "LastMeasuredFrame": 2346,
+      "MeasuredEvents": 55,
+      "Rows": 6230,
+      "MeanDensityPM": 0.6545454545454545,
+      "MeanSpeedMS": 1.0429170239945993,
+      "SpeedStdDevMS": 0.0949291075312412,
+      "Bins": [
+        {
+          "DensityPM": 0.25,
+          "Events": 2,
+          "MeanSpeedMS": 1.0961441270631078
+        },
+        {
+          "DensityPM": 0.5,
+          "Events": 17,
+          "MeanSpeedMS": 1.0582337800132102
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 36,
+          "MeanSpeedMS": 1.0327270501486714
+        }
+      ]
+    },
+    {
+      "Id": "n20",
+      "Role": "holdout",
+      "OriginalParticipants": 20,
+      "TrajectorySha256": "89136bae8bda80c5874908c33a7102852731a19dc63198925dfb7c27b93fc8bf",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 3488,
+      "FirstMeasuredFrame": 78,
+      "LastMeasuredFrame": 3439,
+      "MeasuredEvents": 86,
+      "Rows": 10243,
+      "MeanDensityPM": 0.7238372093023255,
+      "MeanSpeedMS": 0.9772292594784174,
+      "SpeedStdDevMS": 0.08417048684325903,
+      "Bins": [
+        {
+          "DensityPM": 0.5,
+          "Events": 9,
+          "MeanSpeedMS": 1.0147876352728886
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 77,
+          "MeanSpeedMS": 0.9728393194504922
+        }
+      ]
+    },
+    {
+      "Id": "n22",
+      "Role": "holdout",
+      "OriginalParticipants": 22,
+      "TrajectorySha256": "9290b88fc5f0001681232a12972c091752a10a2dfb156c3397f5f8ac9b5f4149",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 2959,
+      "FirstMeasuredFrame": 29,
+      "LastMeasuredFrame": 2886,
+      "MeasuredEvents": 68,
+      "Rows": 9934,
+      "MeanDensityPM": 0.7573529411764706,
+      "MeanSpeedMS": 0.7980922949764745,
+      "SpeedStdDevMS": 0.10126298284121613,
+      "Bins": [
+        {
+          "DensityPM": 0.5,
+          "Events": 7,
+          "MeanSpeedMS": 0.7851555260740195
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 52,
+          "MeanSpeedMS": 0.7947756654343201
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 9,
+          "MeanSpeedMS": 0.8273169748108318
+        }
+      ]
+    },
+    {
+      "Id": "n25",
+      "Role": "calibration",
+      "OriginalParticipants": 25,
+      "TrajectorySha256": "06dfeed30f6582aecf3902c3989f5cf0ee983f3646ad67517a84d9daefcfe8b6",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 2738,
+      "FirstMeasuredFrame": 92,
+      "LastMeasuredFrame": 2677,
+      "MeasuredEvents": 72,
+      "Rows": 10512,
+      "MeanDensityPM": 0.8958333333333334,
+      "MeanSpeedMS": 0.839863975969005,
+      "SpeedStdDevMS": 0.057770417618515084,
+      "Bins": [
+        {
+          "DensityPM": 0.5,
+          "Events": 1,
+          "MeanSpeedMS": 0.8889010644781781
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 37,
+          "MeanSpeedMS": 0.8524518130956477
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 25,
+          "MeanSpeedMS": 0.8386980953966803
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 9,
+          "MeanSpeedMS": 0.7859039706482458
+        }
+      ]
+    },
+    {
+      "Id": "n28",
+      "Role": "holdout",
+      "OriginalParticipants": 28,
+      "TrajectorySha256": "6d687bee44ad438650b1d3dc9bf9625e8b055bc5dc5000498c4cb2755421875c",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 3403,
+      "FirstMeasuredFrame": 52,
+      "LastMeasuredFrame": 3313,
+      "MeasuredEvents": 76,
+      "Rows": 14993,
+      "MeanDensityPM": 1.069078947368421,
+      "MeanSpeedMS": 0.5903945970513994,
+      "SpeedStdDevMS": 0.052250247406752784,
+      "Bins": [
+        {
+          "DensityPM": 0.5,
+          "Events": 2,
+          "MeanSpeedMS": 0.5667202565388936
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 12,
+          "MeanSpeedMS": 0.6115184808856633
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 26,
+          "MeanSpeedMS": 0.5976107608520352
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 35,
+          "MeanSpeedMS": 0.5831539500626611
+        },
+        {
+          "DensityPM": 1.5,
+          "Events": 1,
+          "MeanSpeedMS": 0.4500590578545485
+        }
+      ]
+    },
+    {
+      "Id": "n34",
+      "Role": "holdout",
+      "OriginalParticipants": 34,
+      "TrajectorySha256": "b3223e388becdb8c9fae8ddac1e3abe7a84ca3f025e43cc82a80dd38e584fa2d",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 4542,
+      "FirstMeasuredFrame": 165,
+      "LastMeasuredFrame": 4455,
+      "MeasuredEvents": 101,
+      "Rows": 23890,
+      "MeanDensityPM": 1.2648514851485149,
+      "MeanSpeedMS": 0.5316504386380931,
+      "SpeedStdDevMS": 0.0647653116158817,
+      "Bins": [
+        {
+          "DensityPM": 0.75,
+          "Events": 1,
+          "MeanSpeedMS": 0.5897623753607064
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 14,
+          "MeanSpeedMS": 0.546148870181332
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 67,
+          "MeanSpeedMS": 0.5393031750918579
+        },
+        {
+          "DensityPM": 1.5,
+          "Events": 16,
+          "MeanSpeedMS": 0.4870697289863868
+        },
+        {
+          "DensityPM": 1.75,
+          "Events": 3,
+          "MeanSpeedMS": 0.5114731165371297
+        }
+      ]
+    },
+    {
+      "Id": "n39",
+      "Role": "calibration",
+      "OriginalParticipants": 39,
+      "TrajectorySha256": "8daa0dd3780de9e7e24fd1996c7c6840950c37fdd59fc887ada4d617348aa1f2",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 4610,
+      "FirstMeasuredFrame": 182,
+      "LastMeasuredFrame": 4495,
+      "MeasuredEvents": 86,
+      "Rows": 27632,
+      "MeanDensityPM": 1.4651162790697674,
+      "MeanSpeedMS": 0.4353213397279197,
+      "SpeedStdDevMS": 0.054135500899595485,
+      "Bins": [
+        {
+          "DensityPM": 0.75,
+          "Events": 1,
+          "MeanSpeedMS": 0.5013515976967717
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 1,
+          "MeanSpeedMS": 0.5817821125228849
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 24,
+          "MeanSpeedMS": 0.4585575161935191
+        },
+        {
+          "DensityPM": 1.5,
+          "Events": 43,
+          "MeanSpeedMS": 0.4310553795235793
+        },
+        {
+          "DensityPM": 1.75,
+          "Events": 17,
+          "MeanSpeedMS": 0.4008082234248863
+        }
+      ]
+    },
+    {
+      "Id": "n45",
+      "Role": "holdout",
+      "OriginalParticipants": 45,
+      "TrajectorySha256": "b7ade186ea806704c214d5dcc2babf210ceea092619f6dcdfc2211aebb5c6860",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 4842,
+      "FirstMeasuredFrame": 86,
+      "LastMeasuredFrame": 4792,
+      "MeasuredEvents": 66,
+      "Rows": 33091,
+      "MeanDensityPM": 1.5416666666666667,
+      "MeanSpeedMS": 0.3487172508536013,
+      "SpeedStdDevMS": 0.18020756782859962,
+      "Bins": [
+        {
+          "DensityPM": 0.5,
+          "Events": 1,
+          "MeanSpeedMS": 1.0457696114529598
+        },
+        {
+          "DensityPM": 0.75,
+          "Events": 3,
+          "MeanSpeedMS": 0.9560282047410882
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 1,
+          "MeanSpeedMS": 0.7020129419359897
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 12,
+          "MeanSpeedMS": 0.35079499262963765
+        },
+        {
+          "DensityPM": 1.5,
+          "Events": 21,
+          "MeanSpeedMS": 0.29013407182644224
+        },
+        {
+          "DensityPM": 1.75,
+          "Events": 21,
+          "MeanSpeedMS": 0.3051194772636933
+        },
+        {
+          "DensityPM": 2.0,
+          "Events": 5,
+          "MeanSpeedMS": 0.2572189079464529
+        },
+        {
+          "DensityPM": 2.25,
+          "Events": 1,
+          "MeanSpeedMS": 0.20056450635033674
+        },
+        {
+          "DensityPM": 2.5,
+          "Events": 1,
+          "MeanSpeedMS": 0.2029479001943702
+        }
+      ]
+    },
+    {
+      "Id": "n56",
+      "Role": "holdout",
+      "OriginalParticipants": 56,
+      "TrajectorySha256": "9cc5796f65bb10d28621acc98a265dc620225ba9a91d1b3edfef0cfcdda9349d",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 5856,
+      "FirstMeasuredFrame": 113,
+      "LastMeasuredFrame": 5797,
+      "MeasuredEvents": 75,
+      "Rows": 48448,
+      "MeanDensityPM": 1.89,
+      "MeanSpeedMS": 0.32426117146447625,
+      "SpeedStdDevMS": 0.16258259052672447,
+      "Bins": [
+        {
+          "DensityPM": 0.75,
+          "Events": 1,
+          "MeanSpeedMS": 0.9063040334997988
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 3,
+          "MeanSpeedMS": 0.781479218016111
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 3,
+          "MeanSpeedMS": 0.7450716949273564
+        },
+        {
+          "DensityPM": 1.5,
+          "Events": 1,
+          "MeanSpeedMS": 0.47002090044979955
+        },
+        {
+          "DensityPM": 1.75,
+          "Events": 24,
+          "MeanSpeedMS": 0.3068977608271483
+        },
+        {
+          "DensityPM": 2.0,
+          "Events": 25,
+          "MeanSpeedMS": 0.26548803244231783
+        },
+        {
+          "DensityPM": 2.25,
+          "Events": 17,
+          "MeanSpeedMS": 0.25138946340256557
+        },
+        {
+          "DensityPM": 2.5,
+          "Events": 1,
+          "MeanSpeedMS": 0.08724223830259754
+        }
+      ]
+    },
+    {
+      "Id": "n62",
+      "Role": "calibration",
+      "OriginalParticipants": 62,
+      "TrajectorySha256": "98243020a5d40d1fd6ffdee6fa30e925d355d00fc54a9721383cdc95e2f07256",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 6250,
+      "FirstMeasuredFrame": 70,
+      "LastMeasuredFrame": 6184,
+      "MeasuredEvents": 59,
+      "Rows": 53970,
+      "MeanDensityPM": 1.9703389830508475,
+      "MeanSpeedMS": 0.31543436010758014,
+      "SpeedStdDevMS": 0.17605548112558123,
+      "Bins": [
+        {
+          "DensityPM": 0.75,
+          "Events": 1,
+          "MeanSpeedMS": 0.7754384886218205
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 1,
+          "MeanSpeedMS": 0.7772501597744369
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 5,
+          "MeanSpeedMS": 0.6728714938746234
+        },
+        {
+          "DensityPM": 1.5,
+          "Events": 6,
+          "MeanSpeedMS": 0.38882766048197764
+        },
+        {
+          "DensityPM": 1.75,
+          "Events": 7,
+          "MeanSpeedMS": 0.29785825143838346
+        },
+        {
+          "DensityPM": 2.0,
+          "Events": 15,
+          "MeanSpeedMS": 0.21547823801860472
+        },
+        {
+          "DensityPM": 2.25,
+          "Events": 13,
+          "MeanSpeedMS": 0.21984231301556978
+        },
+        {
+          "DensityPM": 2.5,
+          "Events": 10,
+          "MeanSpeedMS": 0.28596514969824666
+        },
+        {
+          "DensityPM": 2.75,
+          "Events": 1,
+          "MeanSpeedMS": 0.32583226915335933
+        }
+      ]
+    },
+    {
+      "Id": "n70",
+      "Role": "holdout",
+      "OriginalParticipants": 70,
+      "TrajectorySha256": "1032c9c8046ebe05f5974ed1a1df264b3984f4fb293ef4dae6cda3512aa9ca22",
+      "FirstAvailableFrame": 0,
+      "LastAvailableFrame": 7414,
+      "FirstMeasuredFrame": 215,
+      "LastMeasuredFrame": 7352,
+      "MeasuredEvents": 54,
+      "Rows": 71457,
+      "MeanDensityPM": 1.9259259259259258,
+      "MeanSpeedMS": 0.3763958193335269,
+      "SpeedStdDevMS": 0.3294753126081646,
+      "Bins": [
+        {
+          "DensityPM": 0.75,
+          "Events": 1,
+          "MeanSpeedMS": 0.9181118505277173
+        },
+        {
+          "DensityPM": 1.0,
+          "Events": 7,
+          "MeanSpeedMS": 0.8588265404285703
+        },
+        {
+          "DensityPM": 1.25,
+          "Events": 8,
+          "MeanSpeedMS": 0.8286714057771188
+        },
+        {
+          "DensityPM": 1.5,
+          "Events": 2,
+          "MeanSpeedMS": 0.6001222080229767
+        },
+        {
+          "DensityPM": 2.0,
+          "Events": 7,
+          "MeanSpeedMS": 0.22326336263061167
+        },
+        {
+          "DensityPM": 2.25,
+          "Events": 16,
+          "MeanSpeedMS": 0.10948864916542332
+        },
+        {
+          "DensityPM": 2.5,
+          "Events": 10,
+          "MeanSpeedMS": 0.16447228972179687
+        },
+        {
+          "DensityPM": 2.75,
+          "Events": 3,
+          "MeanSpeedMS": 0.2021587086469382
+        }
+      ]
+    }
+  ]
+}

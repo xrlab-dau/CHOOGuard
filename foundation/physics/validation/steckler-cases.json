@@ -1,0 +1,539 @@
+{
+  "SchemaVersion": 1,
+  "Classification": "public_experiment_numeric_adapter_not_validation_pass",
+  "Calibration": "Three effective coefficients fitted only to Steckler10 layer scalars in a prior reduced-model research prototype; frozen for14/20. Actual C# outputs must be compared independently.",
+  "Limits": [
+    "Four-row layer summaries are not time series or direct optical smoke measurements.",
+    "HasCenterVelocity=false preserves source NaN; numeric0 then is an unused serialization slot, never a measurement.",
+    "Centerline jet and nominal area-mean velocities are distinct comparison operators.",
+    "The simplified reference Fiberboard wall is not a measured multilayer apparatus reconstruction.",
+    "Effective plume/wall coefficients are calibration inputs, not exact CFAST parity or railway parameters."
+  ],
+  "Cases": [
+    {
+      "Id": "Steckler_010",
+      "Role": "calibration",
+      "Sources": [
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/cfast/b43e74e0f43c704582c5782f5446597ce729a07f/Validation/Steckler_Compartment/Steckler_010.in",
+          "Sha256": "99e73b8fa4fe3b1bfee325de1395839de284a5c255d94ad44c020e326c828138"
+        },
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/exp/896a9a86fe7aa0c4b785ffee6c4a9a594ef3ec9f/Steckler_Compartment/Steckler_Test_10_layer.csv",
+          "Sha256": "d18603d4cd427a25ac4203beef62bea8c9d322237348f93e05a44fd9d2912c5a"
+        },
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/exp/896a9a86fe7aa0c4b785ffee6c4a9a594ef3ec9f/Steckler_Compartment/Steckler_Test_10.csv",
+          "Sha256": "17c23875df8762dd4d7ac02b5e80c2510a32c331b0821b5c6060b09e17949bb7"
+        }
+      ],
+      "DurationSeconds": 1800.0,
+      "SteadyWindowStartSeconds": 1500,
+      "Definition": {
+        "SchemaVersion": 1,
+        "ModelVersion": "conservative-two-zone-1",
+        "PressureConvention": "uniform-thermodynamic-reference-with-ambient-hydrostatic-offset",
+        "AmbientTemperatureK": 299.15,
+        "AmbientPressurePa": 101325.0,
+        "SpecificHeatCp": 1012,
+        "Gamma": 1.4,
+        "GravityMPerS2": 9.81,
+        "Cells": [
+          {
+            "Id": "room",
+            "WidthM": 2.8,
+            "DepthM": 2.8,
+            "HeightM": 2.13,
+            "FloorElevationM": 0,
+            "InitialUpperVolumeFraction": 0.01,
+            "WallHeatCapacityJPerK": 102793.59999999998,
+            "InsideHeatTransferWPerM2K": 13.55255681695491,
+            "OutsideHeatTransferWPerM2K": 6.577414129868992,
+            "WallThicknessM": 0.013,
+            "WallConductivityWPerMK": 1.0
+          }
+        ],
+        "Doors": [
+          {
+            "Id": "door",
+            "FromCellId": "room",
+            "ToCellId": "",
+            "WidthM": 0.24,
+            "HeightM": 1.83,
+            "BottomElevationM": 0.0,
+            "DischargeCoefficient": 0.7,
+            "OpeningFraction": 1
+          }
+        ],
+        "Fans": []
+      },
+      "Forcing": {
+        "Sources": [
+          {
+            "CellId": "room",
+            "HeatReleaseW": 62900.0,
+            "FuelMassKgPerSecond": 0.001258,
+            "SmokeMassKgPerSecond": 0.0,
+            "RadiationFraction": 0.2,
+            "HeightM": 0.02,
+            "PlumeAreaM2": 0.09,
+            "PlumeMultiplier": 2.1062109674855467,
+            "EnablePlume": true
+          }
+        ],
+        "Doors": [],
+        "Fans": []
+      },
+      "ReferenceUpperC": 180.1,
+      "ReferenceLowerC": 65.5,
+      "ReferenceInterfaceM": 0.48,
+      "VelocitySamples": [
+        {
+          "ElevationM": 2.11,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 2.0,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 1.88,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 1.77,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 3.12
+        },
+        {
+          "ElevationM": 1.66,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 2.62
+        },
+        {
+          "ElevationM": 1.54,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 2.38
+        },
+        {
+          "ElevationM": 1.43,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 2.17
+        },
+        {
+          "ElevationM": 1.31,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.85
+        },
+        {
+          "ElevationM": 1.2,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.54
+        },
+        {
+          "ElevationM": 1.09,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.18
+        },
+        {
+          "ElevationM": 0.97,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 0.59
+        },
+        {
+          "ElevationM": 0.86,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.58
+        },
+        {
+          "ElevationM": 0.74,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.91
+        },
+        {
+          "ElevationM": 0.63,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -1.18
+        },
+        {
+          "ElevationM": 0.52,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -1.33
+        },
+        {
+          "ElevationM": 0.4,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -1.45
+        },
+        {
+          "ElevationM": 0.29,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -1.53
+        },
+        {
+          "ElevationM": 0.17,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -1.64
+        },
+        {
+          "ElevationM": 0.06,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -1.71
+        }
+      ]
+    },
+    {
+      "Id": "Steckler_014",
+      "Role": "holdout",
+      "Sources": [
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/cfast/b43e74e0f43c704582c5782f5446597ce729a07f/Validation/Steckler_Compartment/Steckler_014.in",
+          "Sha256": "2251e079d0dc0a951d77dd76d0921643786bd895d9ec5e5c04879891861bf0de"
+        },
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/exp/896a9a86fe7aa0c4b785ffee6c4a9a594ef3ec9f/Steckler_Compartment/Steckler_Test_14_layer.csv",
+          "Sha256": "39051138abe50f1dcd0710a38e26c81351d57e717a7618a1b2179d12d51a1f90"
+        },
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/exp/896a9a86fe7aa0c4b785ffee6c4a9a594ef3ec9f/Steckler_Compartment/Steckler_Test_14.csv",
+          "Sha256": "6d531ff464429ab08cf01b75e657b89059524550f8af1d0c8fd3474764f01363"
+        }
+      ],
+      "DurationSeconds": 1800.0,
+      "SteadyWindowStartSeconds": 1500,
+      "Definition": {
+        "SchemaVersion": 1,
+        "ModelVersion": "conservative-two-zone-1",
+        "PressureConvention": "uniform-thermodynamic-reference-with-ambient-hydrostatic-offset",
+        "AmbientTemperatureK": 302.15,
+        "AmbientPressurePa": 101325.0,
+        "SpecificHeatCp": 1012,
+        "Gamma": 1.4,
+        "GravityMPerS2": 9.81,
+        "Cells": [
+          {
+            "Id": "room",
+            "WidthM": 2.8,
+            "DepthM": 2.8,
+            "HeightM": 2.13,
+            "FloorElevationM": 0,
+            "InitialUpperVolumeFraction": 0.01,
+            "WallHeatCapacityJPerK": 102793.59999999998,
+            "InsideHeatTransferWPerM2K": 13.55255681695491,
+            "OutsideHeatTransferWPerM2K": 6.577414129868992,
+            "WallThicknessM": 0.013,
+            "WallConductivityWPerMK": 1.0
+          }
+        ],
+        "Doors": [
+          {
+            "Id": "door",
+            "FromCellId": "room",
+            "ToCellId": "",
+            "WidthM": 0.74,
+            "HeightM": 1.83,
+            "BottomElevationM": 0.0,
+            "DischargeCoefficient": 0.7,
+            "OpeningFraction": 1
+          }
+        ],
+        "Fans": []
+      },
+      "Forcing": {
+        "Sources": [
+          {
+            "CellId": "room",
+            "HeatReleaseW": 62900.0,
+            "FuelMassKgPerSecond": 0.001258,
+            "SmokeMassKgPerSecond": 0.0,
+            "RadiationFraction": 0.2,
+            "HeightM": 0.02,
+            "PlumeAreaM2": 0.09,
+            "PlumeMultiplier": 2.1062109674855467,
+            "EnablePlume": true
+          }
+        ],
+        "Doors": [],
+        "Fans": []
+      },
+      "ReferenceUpperC": 115.3,
+      "ReferenceLowerC": 44.2,
+      "ReferenceInterfaceM": 0.78,
+      "VelocitySamples": [
+        {
+          "ElevationM": 2.11,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 2.0,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 1.88,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 1.77,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 2.15
+        },
+        {
+          "ElevationM": 1.66,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.62
+        },
+        {
+          "ElevationM": 1.54,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.37
+        },
+        {
+          "ElevationM": 1.43,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.15
+        },
+        {
+          "ElevationM": 1.31,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 0.91
+        },
+        {
+          "ElevationM": 1.2,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 0.76
+        },
+        {
+          "ElevationM": 1.09,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 0.39
+        },
+        {
+          "ElevationM": 0.97,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.2
+        },
+        {
+          "ElevationM": 0.86,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.47
+        },
+        {
+          "ElevationM": 0.74,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.6
+        },
+        {
+          "ElevationM": 0.63,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.64
+        },
+        {
+          "ElevationM": 0.52,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.73
+        },
+        {
+          "ElevationM": 0.4,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.74
+        },
+        {
+          "ElevationM": 0.29,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.77
+        },
+        {
+          "ElevationM": 0.17,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.79
+        },
+        {
+          "ElevationM": 0.06,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.82
+        }
+      ]
+    },
+    {
+      "Id": "Steckler_020",
+      "Role": "holdout",
+      "Sources": [
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/cfast/b43e74e0f43c704582c5782f5446597ce729a07f/Validation/Steckler_Compartment/Steckler_020.in",
+          "Sha256": "faff2c60feab9f3661038a83d234d0714704291c984309be471a7a5a94d68f3a"
+        },
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/exp/896a9a86fe7aa0c4b785ffee6c4a9a594ef3ec9f/Steckler_Compartment/Steckler_Test_20_layer.csv",
+          "Sha256": "5ed342107236f10397116b405bd512f32c8d54f09733b45003ee4cb6ae15137a"
+        },
+        {
+          "Url": "https://raw.githubusercontent.com/firemodels/exp/896a9a86fe7aa0c4b785ffee6c4a9a594ef3ec9f/Steckler_Compartment/Steckler_Test_20.csv",
+          "Sha256": "81c9de95496802ed73fea63989f26a7d9f561a70df3d0de1cde3be4019c2d48e"
+        }
+      ],
+      "DurationSeconds": 1800.0,
+      "SteadyWindowStartSeconds": 1500,
+      "Definition": {
+        "SchemaVersion": 1,
+        "ModelVersion": "conservative-two-zone-1",
+        "PressureConvention": "uniform-thermodynamic-reference-with-ambient-hydrostatic-offset",
+        "AmbientTemperatureK": 308.15,
+        "AmbientPressurePa": 101325.0,
+        "SpecificHeatCp": 1012,
+        "Gamma": 1.4,
+        "GravityMPerS2": 9.81,
+        "Cells": [
+          {
+            "Id": "room",
+            "WidthM": 2.8,
+            "DepthM": 2.8,
+            "HeightM": 2.13,
+            "FloorElevationM": 0,
+            "InitialUpperVolumeFraction": 0.01,
+            "WallHeatCapacityJPerK": 102793.59999999998,
+            "InsideHeatTransferWPerM2K": 13.55255681695491,
+            "OutsideHeatTransferWPerM2K": 6.577414129868992,
+            "WallThicknessM": 0.013,
+            "WallConductivityWPerMK": 1.0
+          }
+        ],
+        "Doors": [
+          {
+            "Id": "door",
+            "FromCellId": "room",
+            "ToCellId": "",
+            "WidthM": 0.74,
+            "HeightM": 1.83,
+            "BottomElevationM": 0.0,
+            "DischargeCoefficient": 0.7,
+            "OpeningFraction": 1
+          }
+        ],
+        "Fans": []
+      },
+      "Forcing": {
+        "Sources": [
+          {
+            "CellId": "room",
+            "HeatReleaseW": 105300.0,
+            "FuelMassKgPerSecond": 0.002106,
+            "SmokeMassKgPerSecond": 0.0,
+            "RadiationFraction": 0.2,
+            "HeightM": 0.02,
+            "PlumeAreaM2": 0.09,
+            "PlumeMultiplier": 2.1062109674855467,
+            "EnablePlume": true
+          }
+        ],
+        "Doors": [],
+        "Fans": []
+      },
+      "ReferenceUpperC": 151.7,
+      "ReferenceLowerC": 57.5,
+      "ReferenceInterfaceM": 0.74,
+      "VelocitySamples": [
+        {
+          "ElevationM": 2.11,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 2.0,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 1.88,
+          "HasCenterVelocity": false,
+          "CenterVelocityMS": 0
+        },
+        {
+          "ElevationM": 1.77,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 2.67
+        },
+        {
+          "ElevationM": 1.66,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.96
+        },
+        {
+          "ElevationM": 1.54,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.66
+        },
+        {
+          "ElevationM": 1.43,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.42
+        },
+        {
+          "ElevationM": 1.31,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 1.12
+        },
+        {
+          "ElevationM": 1.2,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 0.94
+        },
+        {
+          "ElevationM": 1.09,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": 0.57
+        },
+        {
+          "ElevationM": 0.97,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.11
+        },
+        {
+          "ElevationM": 0.86,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.52
+        },
+        {
+          "ElevationM": 0.74,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.64
+        },
+        {
+          "ElevationM": 0.63,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.75
+        },
+        {
+          "ElevationM": 0.52,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.83
+        },
+        {
+          "ElevationM": 0.4,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.84
+        },
+        {
+          "ElevationM": 0.29,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.9
+        },
+        {
+          "ElevationM": 0.17,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.92
+        },
+        {
+          "ElevationM": 0.06,
+          "HasCenterVelocity": true,
+          "CenterVelocityMS": -0.93
+        }
+      ]
+    }
+  ]
+}

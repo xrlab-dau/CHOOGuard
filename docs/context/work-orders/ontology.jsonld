@@ -73,7 +73,31 @@
     "conflictsWith": {
       "@id": "cg:conflictsWith",
       "@type": "@id"
+    },
+    "Requirement": "cg:Requirement",
+    "Relationship": "cg:Relationship",
+    "implements": {
+      "@id": "cg:implements",
+      "@type": "@id"
+    },
+    "issueNumbers": {
+      "@id": "cg:issueNumbers",
+      "@type": "http://www.w3.org/2001/XMLSchema#integer"
+    },
+    "definition": "cg:definition",
+    "mappingStatus": "cg:mappingStatus",
+    "evidence": {
+      "@id": "cg:evidence",
+      "@type": "@json"
+    },
+    "legacySource": {
+      "@id": "cg:legacySource",
+      "@type": "@json"
+    },
+    "policy": {
+      "@id": "cg:policy",
+      "@type": "@json"
     }
   },
-  "meaning": "Project-specific LLM-readable ontology, not a claimed universal LLM standard. Dependencies bind producer/consumer phases and artifact identity; contains/partOf is not execution order."
+  "meaning": "Project-specific LLM-readable ontology, not a claimed universal LLM standard. Dependencies bind producer/consumer phases and artifact identity; contains/partOf is not execution order. implements is an evidence-backed planning association, never a prerequisite, implementation receipt, acceptance or authority to resume a held task."
 }

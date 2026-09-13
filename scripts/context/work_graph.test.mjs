@@ -38,6 +38,57 @@ const state=(p={})=>{const phase=p.phase??'candidate',ws=workspace(),dynamic=pha
 const acceptedState=()=>state({artifactReceipts:[receipt()],expectedArtifacts:[{producerIssue:2,outputId:'artifact.2',producerPhase:'accept',sourceRef:SHA,outputDigest:D,qualification:'scope-2',scope:'scope-2'}]});
 const invalid=(name,mutate)=>test(name,()=>{const g=graph();mutate(g);assert.equal(validateGraph(g).valid,false)});
 test('valid planning structure',()=>assert.equal(validateGraph(graph()).valid,true));
+const mappedGraph=()=>{
+ const g=graph(),source={path:'docs/requirements.md',selector:'L9',quote:'A bounded requirement.',availability:'local_snapshot',ref:null,digest:{algorithm:'sha256',value:D},access:'Embedded quotation only',qualification:'Definition evidence only',limits:'Not acceptance'};
+ g.requirements=[{id:'requirement.F-TEST',code:'F-TEST',kind:'requirement',title:'Bounded requirement',definition:'A bounded requirement.',issueNumbers:[1],mappingStatus:'mapped',evidence:[{issue:1,kind:'definition_trace_outcome',reason:'Definition and task outcome agree',sources:[source],limits:'Planning only'}],legacySource:{pointer:'reviews/foundation-map.json#/issues/*/requirements',availability:'unavailable',generatorRecovered:false},limits:'Not implementation or acceptance'}];
+ g.items[0].requirements=['requirement.F-TEST'];g.edges.push({from:'issue.1',to:'requirement.F-TEST',relation:'implements',reason:'Definition and task outcome agree',mappingStatus:'mapped',policy:null});return g;
+};
+test('requirement projection is pure, evidence-bound and supports local or pinned sources',()=>{
+ const g=mappedGraph(),before=JSON.stringify(g);assert.equal(validateGraph(g).valid,true);
+ assert.equal(typeof workGraph.requirementProjection,'function');
+ const p=workGraph.requirementProjection(g);assert.deepEqual(p.byRequirement['requirement.F-TEST'],[1]);assert.equal(p.byIssue[1][0].evidence[0].issue,1);assert.equal(JSON.stringify(g),before);
+ g.requirements[0].evidence[0].sources[0].availability='qualified_ref';g.requirements[0].evidence[0].sources[0].ref=SHA;assert.equal(validateGraph(g).valid,true);
+});
+for(const [name,mutate] of Object.entries({
+ null:g=>g.requirements[0].issueNumbers=[null],duplicate:g=>g.requirements[0].issueNumbers.push(1),
+ code:g=>g.requirements[0].code='F-OTHER',id:g=>g.requirements[0].id='issue.1',definition:g=>g.requirements[0].definition='',
+ target:g=>g.requirements[0].issueNumbers=[999],missingEvidence:g=>g.requirements[0].evidence=[],
+ foreignEvidence:g=>g.requirements[0].evidence[0].issue=2,duplicateEvidence:g=>g.requirements[0].evidence.push(structuredClone(g.requirements[0].evidence[0])),
+ missingIndex:g=>g.items[0].requirements=[],extraIndex:g=>g.items[1].requirements=['requirement.F-TEST'],duplicateIndex:g=>g.items[0].requirements.push('requirement.F-TEST'),
+ reversed:g=>{[g.edges[0].from,g.edges[0].to]=[g.edges[0].to,g.edges[0].from]},missingEdge:g=>g.edges=[],duplicateEdge:g=>g.edges.push({...g.edges[0]}),
+ edgeState:g=>g.edges[0].mappingStatus='accepted',stateDrift:g=>g.requirements[0].mappingStatus='historical_on_hold',
+ fakeLocalRef:g=>g.requirements[0].evidence[0].sources[0].ref=SHA,
+ mutableRef:g=>{const s=g.requirements[0].evidence[0].sources[0];s.availability='qualified_ref';s.ref='develop'},
+ badDigest:g=>g.requirements[0].evidence[0].sources[0].digest.value='bad',missingQuote:g=>delete g.requirements[0].evidence[0].sources[0].quote,
+ absolute:g=>g.requirements[0].evidence[0].sources[0].path='/Users/private/doc.md',traversal:g=>g.requirements[0].evidence[0].sources[0].path='../doc.md',
+ private:g=>g.requirements[0].evidence[0].sources[0].path='.claude/settings.json',
+ historicalEndpoint:g=>{g.edges[0].from='issue.3'},grantsPhase:g=>g.edges[0].consumerPhase='candidate',unknownField:g=>g.requirements[0].accepted=true
+}))test('requirement rejects '+name,()=>{const g=mappedGraph();mutate(g);assert.equal(validateGraph(g).valid,false);});
+test('requirement scalar fields never coerce arrays or noncanonical endpoint text',()=>{
+ const mutations=[g=>g.requirements[0].code=['F-TEST'],g=>{g.requirements[0].code='F-TEST\n';g.requirements[0].id='requirement.F-TEST\n';g.items[0].requirements=['requirement.F-TEST\n'];g.edges[0].to='requirement.F-TEST\n'},g=>g.edges[0].from='issue.1\n',g=>g.requirements[0].evidence[0].sources[0].digest.value=D+'\n',g=>{const s=g.requirements[0].evidence[0].sources[0];s.availability='qualified_ref';s.ref=SHA+'\n'}];
+ for(const mutate of mutations){const g=mappedGraph();mutate(g);assert.throws(()=>workGraph.requirementProjection(g));assert.equal(validateGraph(g).valid,false);}
+});
+test('explicit unresolved requirements remain empty; historical mappings require policy and never grant readiness',()=>{
+ const g=mappedGraph(),r=g.requirements[0];r.issueNumbers=[];r.evidence=[];r.mappingStatus='unresolved';g.items[0].requirements=[];g.edges=[];assert.equal(validateGraph(g).valid,true);
+ const held=mappedGraph();held.requirements[0].mappingStatus=held.edges[0].mappingStatus='historical_on_hold';
+ assert.equal(validateGraph(held).valid,false);held.edges[0].policy={path:'docs/context/work-orders/policy.json',selector:'/goalOverrides/1'};
+ assert.equal(validateGraph(held).valid,true);assert.equal(workGraph.requirementProjection(held).byIssue[1][0].mappingStatus,'historical_on_hold');
+});
+test('requirement schema declares typed registry, evidence pins and relation-only status',()=>{
+ const s=JSON.parse(readFileSync(new URL('./work-graph.schema.json',import.meta.url)));
+ assert.equal(s.properties.requirements.items.$ref,'#/$defs/requirement');
+ assert.equal(s.$defs.requirement.additionalProperties,false);assert.ok(s.$defs.requirement.required.includes('definition'));
+ assert.equal(s.$defs.requirement.properties.issueNumbers.uniqueItems,true);assert.equal(s.$defs.item.properties.requirements.uniqueItems,true);
+ const e=s.$defs.edge.oneOf.find(e=>e.properties.relation.const==='implements');assert.deepEqual(e.required,['from','to','relation','reason','mappingStatus','policy']);
+ assert.ok(s.$defs.requirementSource.allOf.length);assert.equal(s.$defs.requirementSource.properties.digest.$ref,'#/$defs/requirementDigest');
+});
+test('approved registry contains exactly fifteen requirements and sixteen explicit planning pairs',()=>{
+ const g=JSON.parse(readFileSync(new URL('../../docs/context/work-graph.json',import.meta.url))),expected={'F-AAA':[107],'F-ART-NATIVE':[106],'F-AUTH':[27],'F-CROWD':[59],'F-FIRE':[101],'F-FLOW':[60],'F-LOAD':[91],'F-MAP':[82],'F-NAV':[88],'F-RECOVERY':[99],'F-RUN':[92],'F-SOURCE':[10,60],'F-TEAM':[35],'F-TRAIN':[102],'F-VOICE':[100]};
+ assert.deepEqual(Object.fromEntries(g.requirements.map(r=>[r.code,r.issueNumbers])),expected);
+ assert.equal(validateGraph(g).valid,true);assert.equal(g.edges.filter(e=>e.relation==='implements').length,16);
+ assert.equal(g.edges.filter(e=>e.mappingStatus==='historical_on_hold').length,2);
+ for(const r of g.requirements){assert.equal(r.legacySource.generatorRecovered,false);for(const e of r.evidence){assert.ok(e.sources.some(s=>s.availability==='local_snapshot'&&s.ref===null&&s.digest.value==='29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b'));assert.ok(e.sources.some(s=>s.availability==='qualified_ref'&&s.ref==='83f6a8818b304ee7ebf480e5d481681e56a87a29'&&s.selector.endsWith('/outcome')));}}
+});
 test('fresh Ready/start requires an exact registered writer boundary before succeeding',()=>{const i=item(1);i.phaseWriteScopes.prepare=[{path:'{proposalRoot}/T-1/',mode:'isolated_proposal',physicalBinding:'output:{proposalRoot}/T-1/',canonicalWriteAllowed:false,requiresRegistration:true}];const g=graph([i,item(2)]),s=state({phase:'prepare',phaseEvidence:[],leases:[]}),root='proposals/1/workspace-1',resource=`output:${root}/T-1/`,registration={issueNumber:1,workspaceId:'workspace-1',proposalRoot:root,owner:'session-1',baseSourceRef:SHA,observedAt:'2026-09-12T11:59:00Z',evidence:'Registered bounded proposal root'};s.writerContext={issueNumber:1,phase:'prepare',workspaceId:'workspace-1',proposalRoot:root,observedAt:'2026-09-12T11:59:00Z',registration,bindings:[{phase:'prepare',scopePath:'{proposalRoot}/T-1/',physicalBinding:'output:{proposalRoot}/T-1/',resolvedPhysicalBinding:resource,owner:'session-1',baseSourceRef:SHA,evidence:'Exact registered output binding'}],leases:[{phase:'prepare',scopePath:'{proposalRoot}/T-1/',resource,owner:'session-1',baseSourceRef:SHA,acquiredAt:'2026-09-12T11:58:00Z',expiresAt:'2026-09-12T12:10:00Z',fence:'fence-prepare-1',evidence:'Exact fenced proposal lease'}]};const unsupported=structuredClone(s);delete unsupported.writerContext;const unsupportedResult=checkStart(g,1,unsupported,now);assert.equal(unsupportedResult.canStart,false);assert.match(unsupportedResult.reasons.join(' '),/unsupported writer operation/);const bad=[x=>x.writerContext.bindings=[],x=>x.writerContext.leases=[],x=>x.writerContext.registration=undefined,x=>x.writerContext.proposalRoot='proposals/1/wrong-root',x=>x.writerContext.workspaceId='wrong-workspace',x=>x.writerContext.bindings[0].resolvedPhysicalBinding='output:proposals/1/workspace-1/escape/',x=>x.writerContext.leases[0].resource='output:proposals/1/workspace-1/',x=>x.writerContext.leases[0].owner='other',x=>x.writerContext.leases[0].baseSourceRef='c'.repeat(40),x=>x.writerContext.leases[0].expiresAt='2026-09-12T11:59:00Z',x=>x.writerContext.leases[0].fence=' '];for(const mutate of bad){const x=structuredClone(s);mutate(x);assert.equal(checkStart(g,1,x,now).canStart,false);}const ready=checkStart(g,1,s,now);assert.equal(ready.canStart,true,JSON.stringify(ready));});
 test('bound receipt satisfies dependency',()=>assert.equal(checkStart(dependent(),1,acceptedState(),now).canStart,true));
 invalid('duplicate Work ID',g=>g.items[1].workId=g.items[0].workId);
