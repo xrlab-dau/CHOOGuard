@@ -13,19 +13,25 @@
     "filesAtRef": 1106,
     "deliveredPaths": 261,
     "pullRequest": 153,
-    "pullRequestState": "open_draft",
-    "mergedIntoDevelop": false
+    "pullRequestState": "merged",
+    "mergedIntoDevelop": true,
+    "mergeCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+    "mergedAt": "2026-09-13T08:34:24Z",
+    "mergeMethod": "squash",
+    "recommendedBaseline": "origin/develop"
   },
   "fetch": [
-    "git fetch origin feature/54-native-foundation",
-    "git switch --detach bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+    "git fetch origin develop",
+    "git switch --detach e480e693721ca7c60fd259c0fbbf25aa6d51d722   # 또는 이후 develop",
     "git lfs install --local",
-    "git lfs pull"
+    "git lfs pull",
+    "# 병합 전 원본 ref가 필요하면: git fetch origin feature/54-native-foundation && git switch --detach bdcb714849fcdaa2d7d9f7f431b661a26eb3090a"
   ],
   "verify": [
-    "git rev-parse HEAD   # bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
-    "git cat-file -e <HEAD>:<path>   # manifest의 각 경로",
-    "python -c \"import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())\" <path>"
+    "git rev-parse HEAD   # e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+    "git cat-file -e HEAD:<path>   # manifest의 각 경로",
+    "python -c \"import hashlib,sys;print(hashlib.sha256(open(sys.argv[1],'rb').read()).hexdigest())\" <path>",
+    "# 2026-09-13 대조 결과: 261개 경로 전부 일치, 불일치 0, 누락 0"
   ],
   "manifest": "docs/context/publication/foundation-source-manifest.json",
   "exclusions": "docs/context/publication/exclusions.md",
@@ -36,11 +42,19 @@
     "20/100/2 기능·성능·음성 수용"
   ],
   "limits": [
-    "이 기준선은 읽기 가능한 원격 ref를 가리킬 뿐 병합·게시 승인을 뜻하지 않는다.",
-    "draft PR이 닫히거나 강제 푸시되면 head가 사라질 수 있다. PM이 기준선 고정 방식을 결정해야 한다."
+    "이 기준선은 읽기 가능한 원격 소스를 가리킬 뿐 기능·성능·안전 수용을 뜻하지 않는다.",
+    "squash 병합이라 원본 브랜치의 커밋 6건은 develop 이력에 개별로 남지 않는다. 커밋 단위 근거가 필요하면 manifest의 teamRef.commits를 참조한다."
   ],
   "pmDecisionsRequired": [
-    "draft PR #153의 브랜치 ref를 팀 기준선으로 선언할지, 병합 이후로 미룰지",
-    "exclusions.md의 보류 32건을 의도된 제외로 확정할지 게시할지"
+    "exclusions.md의 보류 32건을 의도된 제외로 확정할지 게시할지",
+    "docs/context/source-availability.json 갱신 경로 — 보유자의 재캡처가 필요하다"
+  ],
+  "updatedAt": "2026-09-13T11:40:07Z",
+  "resolvedByEvents": [
+    {
+      "question": "draft PR #153의 브랜치 ref를 팀 기준선으로 선언할지, 병합 이후로 미룰지",
+      "resolution": "2026-09-13 #153이 develop에 병합되어(e480e69) 기준선을 develop으로 둔다.",
+      "verifiedAt": "2026-09-13T11:40:07Z"
+    }
   ]
 }

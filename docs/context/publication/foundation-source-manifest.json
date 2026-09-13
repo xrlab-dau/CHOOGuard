@@ -11,8 +11,8 @@
     "head": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
     "baseDevelop": "85e4a4c94ae491dd1a257528b13de8a87135304c",
     "pullRequest": 153,
-    "pullRequestState": "open_draft",
-    "mergedIntoDevelop": false,
+    "pullRequestState": "merged",
+    "mergedIntoDevelop": true,
     "commits": [
       {
         "sha": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
@@ -44,7 +44,10 @@
         "committedAt": "2026-09-13T11:13:17+09:00",
         "subject": "feat(foundation): publish shared multiplayer simulation contracts"
       }
-    ]
+    ],
+    "mergeCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+    "mergedAt": "2026-09-13T08:34:24Z",
+    "mergeMethod": "squash"
   },
   "selectionRule": "develop 대비 팀 ref가 추가·변경한 경로 전체. 원시 계획 로그·민감 자료는 exclusions.md 기준으로 제외한다.",
   "counts": {
@@ -71,8 +74,19 @@
     "resolved": 261,
     "missing": [],
     "sizeMismatches": [],
-    "localOnly": true,
-    "postPublishRecheckRequired": true
+    "localOnly": false,
+    "postPublishRecheckRequired": false,
+    "developRecheck": {
+      "checkedAt": "2026-09-13T11:40:07Z",
+      "ref": "origin/develop",
+      "mergeCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+      "method": "git cat-file --batch on origin/develop; sha256 per path compared with the value recorded from the team ref",
+      "pathsChecked": 261,
+      "matched": 261,
+      "mismatched": 0,
+      "missing": 0,
+      "note": "squash 병합 후에도 261개 경로의 내용 해시가 팀 ref와 동일하다. 팀은 develop만으로 전량 재현할 수 있다."
+    }
   },
   "sourceAvailabilityDrift": {
     "file": "docs/context/source-availability.json",
@@ -2704,9 +2718,10 @@
     }
   ],
   "limits": [
-    "게시 ref는 draft PR #153의 브랜치이며 develop에 병합되지 않았다.",
+    "게시 ref는 2026-09-13 develop에 squash 병합됐다(e480e69). 261개 경로를 develop에서 다시 대조해 전부 일치했다.",
     "clean checkout의 Unity package resolve·compile·import는 수행하지 않았다.",
     "LFS 포인터 파일의 실제 바이너리 payload는 확인하지 않았다.",
     "미게시 파일을 보유한 작업트리의 미커밋 소유권 확인은 해당 보유자가 수행해야 한다."
-  ]
+  ],
+  "updatedAt": "2026-09-13T11:40:07Z"
 }
