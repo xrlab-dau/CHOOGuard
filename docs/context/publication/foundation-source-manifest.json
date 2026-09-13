@@ -5,11 +5,11 @@
   "phase": "candidate",
   "status": "proposal_for_pm_review",
   "generatedAt": "2026-09-13T06:35:22Z",
-  "authority": "게시된 팀 ref에서 계산한 선별 목록이다. 게시 승인·수용 판정은 PM이 한다. 이 파일은 기능·성능·안전 수용이나 clean checkout 빌드 성공을 주장하지 않는다.",
+  "authority": "원격 팀 ref에서 계산한 선별 목록이다. 게시 승인·수용 판정은 PM이 한다. 이 산출물은 검토용 초안이며 스스로를 accepted/final/complete 로 표기하지 않는다. 이 파일은 기능·성능·안전 수용이나 clean checkout 빌드 성공을 주장하지 않는다.",
   "teamRef": {
     "name": "feature/54-native-foundation",
     "head": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
-    "baseDevelop": "85e4a4c94ae491dd1a257528b13de8a87135304c",
+    "baseDevelop": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
     "pullRequest": 153,
     "pullRequestState": "merged",
     "mergedIntoDevelop": true,
@@ -47,9 +47,11 @@
     ],
     "mergeCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
     "mergedAt": "2026-09-13T08:34:24Z",
-    "mergeMethod": "squash"
+    "mergeMethod": "squash",
+    "baseDevelopPreviousDeclared": "85e4a4c94ae491dd1a257528b13de8a87135304c",
+    "baseDevelopNote": "직전 선언값 85e4a4c94ae491dd1a257528b13de8a87135304c 는 bdcb714 의 조상이 아니다. 실제 develop 기준점은 merge-base(e7a6bb7)이며 명령으로 재확인했다."
   },
-  "selectionRule": "develop 대비 팀 ref가 추가·변경한 경로 전체. 원시 계획 로그·민감 자료는 exclusions.md 기준으로 제외한다.",
+  "selectionRule": "merge-base(develop, feature/54-native-foundation)=e7a6bb7a7fff0c301c04f93aeea8850dbde34779 기준으로 팀 ref head bdcb714849fcdaa2d7d9f7f431b661a26eb3090a 가 추가·변경한 경로 전체. `git diff --name-only e7a6bb7a7fff0c301c04f93aeea8850dbde34779 bdcb714849fcdaa2d7d9f7f431b661a26eb3090a` = 261 경로. 원시 계획 로그·민감 자료는 exclusions.md 기준으로 제외한다.",
   "counts": {
     "delivered": 261,
     "added": 257,
@@ -74,8 +76,8 @@
     "resolved": 261,
     "missing": [],
     "sizeMismatches": [],
-    "localOnly": false,
-    "postPublishRecheckRequired": false,
+    "localOnly": true,
+    "postPublishRecheckRequired": true,
     "developRecheck": {
       "checkedAt": "2026-09-13T11:40:07Z",
       "ref": "origin/develop",
@@ -86,6 +88,19 @@
       "mismatched": 0,
       "missing": 0,
       "note": "squash 병합 후에도 261개 경로의 내용 해시가 팀 ref와 동일하다. 팀은 develop만으로 전량 재현할 수 있다."
+    },
+    "postPublishRecheckDone": false,
+    "separationNote": "이 검증은 분리 복제본/원격 ref 에 대한 local-only 확인이다(로컬 파일시스템에서 실행). PM 승인 후 게시된 TEAM_REF 를 대상으로 하는 게시후 재검증은 아직 수행하지 않았다(postPublishRecheckDone=false). developRecheck 는 이미 병합된 원격 ref 를 읽은 것으로 게시후 승인 검증을 대체하지 않는다.",
+    "localOnlyDetail": {
+      "ref": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+      "refName": "origin/feature/54-native-foundation",
+      "method": "git cat-file --batch 로 blob sha1/size 확인 + blob 내용 sha256 재계산, manifest 레코드와 행별 대조",
+      "pathsChecked": 261,
+      "blobSha1Mismatches": 0,
+      "sha256Mismatches": 0,
+      "sizeMismatches": 0,
+      "lfsPointers": 0,
+      "note": "LFS 포인터 0건이라 payload materialization 대상이 없다."
     }
   },
   "sourceAvailabilityDrift": {
@@ -114,7 +129,11 @@
       "sha256": "966fb1836289fa91c8c4aedc287c3d36671a0018646a18be90fb8bf87a655a10",
       "sizeBytes": 1760,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer.meta",
@@ -124,7 +143,11 @@
       "sha256": "788c26087a40c5755b2ce7503bec9c33dacd01ef410327c5487e235743d4916a",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor.meta",
@@ -134,7 +157,11 @@
       "sha256": "7146fd37d15d346143650bc9d030ab0d459e0b834009871f76c646d43b7f88e9",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ChooGuard.Foundation.Multiplayer.Editor.asmdef",
@@ -144,7 +171,11 @@
       "sha256": "c962a287776afe6b4dee4136287a558246291e8c111b35d9eca0d1c3cb39c9b5",
       "sizeBytes": 259,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ChooGuard.Foundation.Multiplayer.Editor.asmdef.meta",
@@ -154,7 +185,11 @@
       "sha256": "d8d78b76c0e9d30d5baa52f4bdcfa85d16a63598667d53bfa9c9637e6feba81e",
       "sizeBytes": 166,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
@@ -164,7 +199,11 @@
       "sha256": "c27037bc56869e527b1bc66360d1b83d519e947d61d125e3426c3811eeb90d72",
       "sizeBytes": 22661,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@bdcb714 (fix(security): preserve HTTP restrictions in remaining builders)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs.meta",
@@ -174,7 +213,11 @@
       "sha256": "e869e48c3024b73936081ba9562f9f1a68db488f93a711bd93e913498951ea3d",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/FoundationReviewSceneBuilder.cs",
@@ -184,7 +227,11 @@
       "sha256": "74fc744a33868c528cfc3d47fa45a76972ec23bfc49349afc05919d035754e57",
       "sizeBytes": 2464,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/FoundationReviewSceneBuilder.cs.meta",
@@ -194,7 +241,11 @@
       "sha256": "f55e63f032d0ee90cbf9ec98a5f89ee095d39c6aaa2741283ebc7f361ea85d9e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/FoundationSimulationSceneBuilder.cs",
@@ -204,7 +255,11 @@
       "sha256": "65b8463b49407c1632b871dfa3f1b31af0fe6aa72f707c996c0979047faaa756",
       "sizeBytes": 2156,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@bdcb714 (fix(security): preserve HTTP restrictions in remaining builders)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/FoundationSimulationSceneBuilder.cs.meta",
@@ -214,7 +269,11 @@
       "sha256": "95ac3668d7cdfc235bac2121a7f34b7437a9d12032713dca0cec0697a5ee8195",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/MultiplayerSceneBuilder.cs",
@@ -224,7 +283,11 @@
       "sha256": "9614fbbd6a5a7e2490fa0bdd457e39777d104a689eec375b52b451d726a29689",
       "sizeBytes": 7331,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@a41319e (fix(security): preserve Unity HTTP restrictions during player builds)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/MultiplayerSceneBuilder.cs.meta",
@@ -234,7 +297,11 @@
       "sha256": "70c1e620aea45c777484996ee9c8da0783f8fd80fd2fa1db92805ed2d4a7cdce",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/NativeSdkImportPolicy.cs",
@@ -244,7 +311,11 @@
       "sha256": "dc36ab12c64491128351387dba8ac4c9af904d238d11a7a2f6326fd3da16e469",
       "sizeBytes": 6269,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/NativeSdkImportPolicy.cs.meta",
@@ -254,7 +325,11 @@
       "sha256": "5e051512a301ad8b295e6640cc724d9b9a6110166570bdc16e69b9696102fbe3",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime.meta",
@@ -264,7 +339,11 @@
       "sha256": "ec1e9c5c121fdfd4dfcf8fc8ae0eae347cf20fcf211f5d30c919f80e32b78236",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ChooGuard.Foundation.Multiplayer.asmdef",
@@ -274,7 +353,11 @@
       "sha256": "74a2e7819454034aaddb12ff7e352abf6fbca66e2b81c003d3799f955212884f",
       "sizeBytes": 287,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ChooGuard.Foundation.Multiplayer.asmdef.meta",
@@ -284,7 +367,11 @@
       "sha256": "57836663585b23188e96d5002dc45a1d26d0ea0a0aa7ab4fec55b15ffcb4f6e8",
       "sizeBytes": 166,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedPortalBarrier.cs",
@@ -294,7 +381,11 @@
       "sha256": "741bbd4ca0f3ac6ebdbca375c6a54b8ce2c91ed0f8a4adaf01d7025e469cae5d",
       "sizeBytes": 544,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedPortalBarrier.cs.meta",
@@ -304,7 +395,11 @@
       "sha256": "aaa59c769a0d823788dc3ccedd7c18c670edd183a95508dc040935d823701ba7",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedRegionView.cs",
@@ -314,7 +409,11 @@
       "sha256": "a942e329d4f48fa3fffa5862a8f4f89e0fb134f5e1123cda2e80f0633e455e30",
       "sizeBytes": 2016,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedRegionView.cs.meta",
@@ -324,7 +423,11 @@
       "sha256": "5e7024882c6f1ea652fd5ec0a78730a323f8fd7bc71cbf8486f431e13bd7d18f",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWalkableSurface.cs",
@@ -334,7 +437,11 @@
       "sha256": "252944cb73c667f2aeb54632fdb46ae1c0af875ba25cf6eab9c4b9a3a4c0e78b",
       "sizeBytes": 309,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWalkableSurface.cs.meta",
@@ -344,7 +451,11 @@
       "sha256": "a619c6690c778fc40324f203637ba69a9b58c391d3f84a68151d115b2f4fb72e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldGeometry.cs",
@@ -354,7 +465,11 @@
       "sha256": "7aafde9c32a905276c28b178b9b473cd023c90b948dfd05c8691a99e5f643fde",
       "sizeBytes": 26390,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldGeometry.cs.meta",
@@ -364,7 +479,11 @@
       "sha256": "45b75a780950ef60962e31f6451e8134aa3161b0baf14dc0b1a7a69854768a4b",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
@@ -374,7 +493,11 @@
       "sha256": "a3c3b1ebee4bfe7c6dc39d9a0f3f87e9bd8267d508d2c458471df37d64cb3717",
       "sizeBytes": 40313,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs.meta",
@@ -384,7 +507,11 @@
       "sha256": "bb8407ecd0fedc412f6eab6ee524f7436e765a38aa26884b92d07a8c0cc212e7",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs",
@@ -394,7 +521,11 @@
       "sha256": "478057b853d6b78d7e7c34fd2f29ad454b8fd795710d2c0b2be9bb8c3f9e22cb",
       "sizeBytes": 12744,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs.meta",
@@ -404,7 +535,11 @@
       "sha256": "ae17115bd28e62c6d05df4ade512d02629941bf59a7759e1f260fee89eda5c69",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConservativeSmoke.shader",
@@ -414,7 +549,11 @@
       "sha256": "597b7148a9d8222b212946cd760978e75a9b6288bf3c2b6d8db881c97a3ada74",
       "sizeBytes": 3918,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConservativeSmoke.shader.meta",
@@ -424,7 +563,11 @@
       "sha256": "52673b603282fc34ea5964418509eeea5a7940dfa7dbd1510c5ec7e6c9d5802d",
       "sizeBytes": 204,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
@@ -434,7 +577,11 @@
       "sha256": "a4dace9814f2a4d910209ffbf0a18557dd0b68cf20ce06eb33abc90a5a7740dc",
       "sizeBytes": 34214,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs.meta",
@@ -444,7 +591,11 @@
       "sha256": "a0977728b67a07f07d572fed8711ca579c0abb67d0e8ce85360bdd6148a78795",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/GroundedWorldMotor.cs",
@@ -454,7 +605,11 @@
       "sha256": "10d1c57541244c2a7dc647af383b2c9b7335b65311d87f7f518944841d63aa58",
       "sizeBytes": 6859,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/GroundedWorldMotor.cs.meta",
@@ -464,7 +619,11 @@
       "sha256": "799a8397b2ca32f28e1c3e3fb0a52311878d7b672f0d2b89e3f67d9cb9f4ca87",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkEntityAnchor.cs",
@@ -474,7 +633,11 @@
       "sha256": "01c6b71a503a3c66d230eb73c88012ec8c4e3d84d0bf0e92fd6f08dc0dca8488",
       "sizeBytes": 287,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkEntityAnchor.cs.meta",
@@ -484,7 +647,11 @@
       "sha256": "07209598398b644cb54623a9f6da7390c530fe421bea7ed44cee0f299e77cb38",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
@@ -494,7 +661,11 @@
       "sha256": "c14a6c4b4fb7f21ab05f9fc06eb544787c5cf1b4f18e6074fe011656c603ce8d",
       "sizeBytes": 55207,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs.meta",
@@ -504,7 +675,11 @@
       "sha256": "5e4571c0cdc23662ff1412fdf80a7c1d8c0eadc9c10b762c2deff39a28806797",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ProtocolAudioSource.cs",
@@ -514,7 +689,11 @@
       "sha256": "0dff78509c9fd04501f7dcb70315f9d9d2b2c7958b7ef3adca82a8c8cb485700",
       "sizeBytes": 730,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ProtocolAudioSource.cs.meta",
@@ -524,7 +703,11 @@
       "sha256": "1e8920674c2b9586753947e8454b5cff319c5163851be96cb6dcca3e35023432",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
@@ -534,7 +717,11 @@
       "sha256": "115e480b758a4d084c5b0ae3c283fd49e1297d11e354de457164627c3103f2bb",
       "sizeBytes": 9720,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs.meta",
@@ -544,7 +731,11 @@
       "sha256": "0a7a37b1e229ecdfa4079cfafd56935742427dce2ab8340eb0c03366ac5cf90a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
@@ -554,7 +745,11 @@
       "sha256": "16f909a02116600bcd53eca5da2d429a2e391394f1e179701fb4028d0fb215a8",
       "sizeBytes": 906,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs.meta",
@@ -564,7 +759,11 @@
       "sha256": "1542f4f0020938c7f70a22c728a6ceb6e788a9222ec966bc56dfe4d6d4ab4879",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ServerVoiceService.cs",
@@ -574,7 +773,11 @@
       "sha256": "b188f680a67a5fa29565a62d762323190a8b667499102ccdcbbb31aceeedcb40",
       "sizeBytes": 43045,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ServerVoiceService.cs.meta",
@@ -584,7 +787,11 @@
       "sha256": "518c53002322363d97895975d70a5a4cc551a2150ad4b2bbee459205798853e2",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SessionAdmission.cs",
@@ -594,7 +801,11 @@
       "sha256": "606251ab8cf55726566099079d5e61ab23884f5e10e325a71aeb131448b8d194",
       "sizeBytes": 2281,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SessionAdmission.cs.meta",
@@ -604,7 +815,11 @@
       "sha256": "26307d682154c69b2a666e445320b0936c9c8104120e0a06ee63b3d72453b29e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ShiftJournal.cs",
@@ -614,7 +829,11 @@
       "sha256": "5af1eb7217647328f565cf53aaf797cd3f91c976dc19fcf92e52aefed46af348",
       "sizeBytes": 10145,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ShiftJournal.cs.meta",
@@ -624,7 +843,11 @@
       "sha256": "ff3dbc5eaecc9086ba8cfe64b8f1500bc235231c935d9fe5de01c342f6d71b27",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SimulationJournal.cs",
@@ -634,7 +857,11 @@
       "sha256": "4864c778606c87aa9ef5ddd3b83fdf8994a772554d5a13b7a7a110c4aaa0f92d",
       "sizeBytes": 22036,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SimulationJournal.cs.meta",
@@ -644,7 +871,11 @@
       "sha256": "74572bdd8959b055a03b43d2ee825c2b3fedec3b75939a998bf700f5abfe8a6c",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFragments.cs",
@@ -654,7 +885,11 @@
       "sha256": "d5357c0802fdc4adcb28a15fb58f108411f590348a82443c730d68eb71d207eb",
       "sizeBytes": 6848,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFragments.cs.meta",
@@ -664,7 +899,11 @@
       "sha256": "ef3e34ef00680503e7cb5f690f1b74537301ad72c8c213e4bb5502627c5a9f2f",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFreshness.cs",
@@ -674,7 +913,11 @@
       "sha256": "1c612b8583191b1b71042638750e0b29097a3ef14490a1054390bc74f985842b",
       "sizeBytes": 800,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFreshness.cs.meta",
@@ -684,7 +927,11 @@
       "sha256": "544f9340df07b2e30af753a1bc615af7892bfcbeff81caee4d507226be3ab210",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotPayload.cs",
@@ -694,7 +941,11 @@
       "sha256": "2d93dcc9b5ce4a25750709cdf98c3113345c387358bbd5a5c2a3b39546ff4f11",
       "sizeBytes": 5743,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotPayload.cs.meta",
@@ -704,7 +955,11 @@
       "sha256": "993b1dc26ab8734c322f8fc5a58d6e76df44ae62055b11d8d7c615db370e0b57",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/VoiceRadio.cs",
@@ -714,7 +969,11 @@
       "sha256": "a3f936932d83bef276ad26712b9a3686bd058c486f4fccad71ba7a0408ce27c9",
       "sizeBytes": 9702,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/VoiceRadio.cs.meta",
@@ -724,7 +983,11 @@
       "sha256": "a0396408085d760f66a919a23afc4ef8cf1364890c017cddcf89a2244bf19a53",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldBodyPresentation.cs",
@@ -734,7 +997,11 @@
       "sha256": "07fdb09844daa2ebdb93263454ae2139a1db983f3d187bc9afc01b2f4d57be57",
       "sizeBytes": 752,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldBodyPresentation.cs.meta",
@@ -744,7 +1011,11 @@
       "sha256": "27550284bf892184ec246d9e0681f982dd504536d1da4bfe59cad2f2ffa78e9a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldBodyView.cs",
@@ -754,7 +1025,11 @@
       "sha256": "ab65b7368749568ae26ef4f6f626a3f6eb38b7db1900c078e004d8af0fed1cfc",
       "sizeBytes": 3000,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldBodyView.cs.meta",
@@ -764,7 +1039,11 @@
       "sha256": "0b8b2fa127a8a3386d9d086cadc2f3c58fd8cab708af99eb670fffa7cd70f5dc",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldMotionCheckpoint.cs",
@@ -774,7 +1053,11 @@
       "sha256": "99632eb2f34421516e48c76907a9c17e8ffb5e25d3474e0292f1c056a162fafc",
       "sizeBytes": 7509,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldMotionCheckpoint.cs.meta",
@@ -784,7 +1067,11 @@
       "sha256": "a7416ed1cc097294a57ea159ff34a73baa5d5775f8154fd3a2a6a1cd50356095",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldPhysicalView.cs",
@@ -794,7 +1081,11 @@
       "sha256": "fb0116127d35cd0350811462909ce0f4c4bc554302a9bf0237a0b75294722a2d",
       "sizeBytes": 1150,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldPhysicalView.cs.meta",
@@ -804,7 +1095,11 @@
       "sha256": "123f3a1ec14aca031b9afa5f6a2104be1dd59b2f28cc3980704c62e28362b849",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldReviewCapture.cs",
@@ -814,7 +1109,11 @@
       "sha256": "f9d221bd792fbe47ae413da230e7a2534b0f218a3cd2ffa12368310cfaeb2cda",
       "sizeBytes": 9749,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldReviewCapture.cs.meta",
@@ -824,7 +1123,11 @@
       "sha256": "4df9f937fea7ed14aefbc421899b03f4038d51ee3166bd484d6624591741fe3a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldSmokeView.cs",
@@ -834,7 +1137,11 @@
       "sha256": "8424dec86c14756e64b4183fea35c5619ec9bd00a38d9418d8b5b014306d9a70",
       "sizeBytes": 3094,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldSmokeView.cs.meta",
@@ -844,7 +1151,11 @@
       "sha256": "6e8965a3c476201949ce4ac4b69b949596bb90f1792dbb27f2fe470218d75728",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests.meta",
@@ -854,7 +1165,11 @@
       "sha256": "9a35ce99b9175d9978a6b4c01491884164ad3734eb33fa366295545fbb2797a1",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor.meta",
@@ -864,7 +1179,11 @@
       "sha256": "eb0d8e447639883519576115e4fe55c9aecdab51b33a876c4bdf1771c0000a97",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/AdmissionTests.cs",
@@ -874,7 +1193,11 @@
       "sha256": "d8be614a9460c2f018bb52783a6d2845f3e5acd4770a12a7b3cddf81d5cf98f2",
       "sizeBytes": 1408,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/AdmissionTests.cs.meta",
@@ -884,7 +1207,11 @@
       "sha256": "5aaa425cca3e0176f3de3b646b18e95c6d6a5bd13cabd451601ebfb8c14bfec6",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef",
@@ -894,7 +1221,11 @@
       "sha256": "64ac8be415fec32800e8b71ec16eb0921e5bb65fdbce642317f793d069f9acf8",
       "sizeBytes": 409,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef.meta",
@@ -904,7 +1235,11 @@
       "sha256": "357f3c282b551bf8f06e80da9f5375501cef9d6f7cfb29074a24e96e5127d365",
       "sizeBytes": 166,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ConnectedRegionEffectTests.cs",
@@ -914,7 +1249,11 @@
       "sha256": "b303c9cf77359f9d57252bdda9ffb8dde56054e2a407e30cbbc55e612a4faab8",
       "sizeBytes": 1085,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ConnectedRegionEffectTests.cs.meta",
@@ -924,7 +1263,11 @@
       "sha256": "2f3b79cfc9e3a84b08329e6f81652067b91aaca80921be508040177aba12d357",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ConnectedWorldTests.cs",
@@ -934,7 +1277,11 @@
       "sha256": "ca1ceec812872497f223995ebba0798c50541357334962d338293c7a293bf9f3",
       "sizeBytes": 26369,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ConnectedWorldTests.cs.meta",
@@ -944,7 +1291,11 @@
       "sha256": "aa972b344816f1a48b78612cc3bf5ba3982828a39c1e5f7e11680773be08fbbf",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FoundationSimulationTests.cs",
@@ -954,7 +1305,11 @@
       "sha256": "597700b7d822e68344d5f443781c286bd5594a491d7c36c315e66c0c087612d3",
       "sizeBytes": 20803,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FoundationSimulationTests.cs.meta",
@@ -964,7 +1319,11 @@
       "sha256": "68429e5cd01794b72a81d6379d5c52604039fc1514c8d97c432b606d21d3afa8",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/GroundedActorGeometryTests.cs",
@@ -974,7 +1333,11 @@
       "sha256": "2059a82cd2b5ad876ed83f922fe2043fdff46656280618da5dd6eaa8085772d6",
       "sizeBytes": 3122,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/GroundedActorGeometryTests.cs.meta",
@@ -984,7 +1347,11 @@
       "sha256": "76262bf920163c7963543b4e97d9c95d83b936f56fc01df30ac740a73a4a133b",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/IncidentDirectorTests.cs",
@@ -994,7 +1361,11 @@
       "sha256": "738989e09959d08226a887286f8c528965f035ade6b0e7c34cff18c527230db7",
       "sizeBytes": 4082,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/IncidentDirectorTests.cs.meta",
@@ -1004,7 +1375,11 @@
       "sha256": "1d88055781889e349fa0656f4c0b1d8547a8072a6eb7f1a8d851d855ef301245",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/MultiplayerSceneTests.cs",
@@ -1014,7 +1389,11 @@
       "sha256": "fffd5b14aead9c2856c5bece4df2bfb8a9f0422b56fcb38ecbc1262ed56d526e",
       "sizeBytes": 2741,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/MultiplayerSceneTests.cs.meta",
@@ -1024,7 +1403,11 @@
       "sha256": "ca44da97bb2f3660f97b9ea124a2832149218b56d16f21c3ebdb6c0e28021e9d",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/NativeSdkImportTests.cs",
@@ -1034,7 +1417,11 @@
       "sha256": "8a9e4eee49abf716a8c283e1ecb0c0986af41f416700af998d427bcc2b156f51",
       "sizeBytes": 800,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/NativeSdkImportTests.cs.meta",
@@ -1044,7 +1431,11 @@
       "sha256": "38a1928bc326ae3154680fd2354f78e9f36b585a0b3a70af2a207d8b83fe03a4",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
@@ -1054,7 +1445,11 @@
       "sha256": "c2810f8093a5a29116e2eee6666f094e507f04ce27851d73062c7148a6465e57",
       "sizeBytes": 15036,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs.meta",
@@ -1064,7 +1459,11 @@
       "sha256": "b9d3569fe02eaffa5ddf7a9661ea1612b3d2e7a691605656402a7090894289e2",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
@@ -1074,7 +1473,11 @@
       "sha256": "babb3b01a3c50eb801eda95c40a71702ee2c6a911ccdfa17f0a76eb831ab24f8",
       "sizeBytes": 1209,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs.meta",
@@ -1084,7 +1487,11 @@
       "sha256": "efe9d3ff67ee03d5941d828bd768f93085f54b2d860c3fe8144e0d807fd09fa3",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ShiftJournalTests.cs",
@@ -1094,7 +1501,11 @@
       "sha256": "d9bedac0bd598d8f6895151e54191fa443343900630dbf6c741dc451de19f2f5",
       "sizeBytes": 4601,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ShiftJournalTests.cs.meta",
@@ -1104,7 +1515,11 @@
       "sha256": "8712c4347e88d5813a6f56d00dd9e35c80c255e2b82772e4614d2ba4ba4f102a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SimulationJournalTests.cs",
@@ -1114,7 +1529,11 @@
       "sha256": "e61ac050ab03c8616ac10f4ddf6ce1f02f839c5d511d31a32ac7f7123488a735",
       "sizeBytes": 8968,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SimulationJournalTests.cs.meta",
@@ -1124,7 +1543,11 @@
       "sha256": "706a8772aaeb17fde99cb5cf942fe561c1eff5d7e7c22df5b89245d7740beda6",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotFragmentTests.cs",
@@ -1134,7 +1557,11 @@
       "sha256": "b30df4e7033a40907e1075842475750f245097e5618edfa2974481a311ef39f1",
       "sizeBytes": 3210,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotFragmentTests.cs.meta",
@@ -1144,7 +1571,11 @@
       "sha256": "2ae30be18221f2e6c33a874a9a3cbe54fe09fab42b80b3bb6a3d6f7bf5bf8b23",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotFreshnessTests.cs",
@@ -1154,7 +1585,11 @@
       "sha256": "fd42413b3e279227b8d8ea6db22991187040b70bc253933bead4608254f1d09c",
       "sizeBytes": 740,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotFreshnessTests.cs.meta",
@@ -1164,7 +1599,11 @@
       "sha256": "676dbb62a266c9e80e120efd3da4c5ef94cd1b372156b22ae79a94d4ac314c93",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotPayloadTests.cs",
@@ -1174,7 +1613,11 @@
       "sha256": "1fa68d00336d91b6d12224d0509d2a06a677d2f0745b0e3c946847551460476c",
       "sizeBytes": 2347,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotPayloadTests.cs.meta",
@@ -1184,7 +1627,11 @@
       "sha256": "76bba19de0d7a8682840c813a19cb99e75c545aefa3b4b6c836db544c22d91d5",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotTransportTests.cs",
@@ -1194,7 +1641,11 @@
       "sha256": "dce397a82fac4e01706006ddf9c2a107928f0415e2467055ba3cdbf8929e3be2",
       "sizeBytes": 1844,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotTransportTests.cs.meta",
@@ -1204,7 +1655,11 @@
       "sha256": "c121bb22e7e04d16bdb8296d42c055ee932462eafeb8cebb07650e25a9ede973",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/VoiceEpochCoordinatorTests.cs",
@@ -1214,7 +1669,11 @@
       "sha256": "2c4c9ca60cdb7bad929db8c87599438c3c049793464422a3deaf9406c16cc1de",
       "sizeBytes": 117257,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/VoiceEpochCoordinatorTests.cs.meta",
@@ -1224,7 +1683,11 @@
       "sha256": "dd934220430216122e71c124d9650990b234d2ee4d9d4ad50ded2af2eb0b390c",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionAdapterTests.cs",
@@ -1234,7 +1697,11 @@
       "sha256": "35b6148cae0dd1350f21c16a700abf5e2900dc54b2616210774cbc336dace71d",
       "sizeBytes": 32314,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionAdapterTests.cs.meta",
@@ -1244,7 +1711,11 @@
       "sha256": "9251b16fc0be35fb00d0749a48992f294c9c96fe1c3eaa2d736dbbadc4ec147d",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionPlaySceneSetup.cs",
@@ -1254,7 +1725,11 @@
       "sha256": "fc9e987ea96c08869e381dd7cd6fa82885d10210a1c47be6a54d2f87fbf91783",
       "sizeBytes": 1204,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionPlaySceneSetup.cs.meta",
@@ -1264,7 +1739,11 @@
       "sha256": "3f0ab6e6b6872c17db12087f21fa272105079071c558f28821cbf0a930c5e1fc",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionTestRecovery.cs",
@@ -1274,7 +1753,11 @@
       "sha256": "c3b443f0cd6ae69f6d042c1bd2cd9ce31409744fb153dc21094a8b21d1e92fb0",
       "sizeBytes": 645,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionTestRecovery.cs.meta",
@@ -1284,7 +1767,11 @@
       "sha256": "959205a0d74588adb6084fb303dad611d0d11422bf7e72de3c96d11cad05cd8e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldReviewContractTests.cs",
@@ -1294,7 +1781,11 @@
       "sha256": "7c356ab33a042eb13d95c25060422db205c17011a30172c1cd47a597585f7ca1",
       "sizeBytes": 3027,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldReviewContractTests.cs.meta",
@@ -1304,7 +1795,11 @@
       "sha256": "f84044ffb0db51fcc2aa3cfaa43078a3cda3ce7eaac8a2809ec636797358f19f",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldShutdownTests.cs",
@@ -1314,7 +1809,11 @@
       "sha256": "efe474696e7c9ad9b190edc77744f44982b5dcb80a24ed085148356b72b22df3",
       "sizeBytes": 2043,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldShutdownTests.cs.meta",
@@ -1324,7 +1823,11 @@
       "sha256": "249e172628050ac3fd754e3fbdceecf253e8a910f6f9f772476e99808efe2965",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldStackedGeometryTests.cs",
@@ -1334,7 +1837,11 @@
       "sha256": "7a04ecaa52c063fba770239851cc4bd70131101a635425afd04a1eb97f26827b",
       "sizeBytes": 3525,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldStackedGeometryTests.cs.meta",
@@ -1344,7 +1851,11 @@
       "sha256": "56b9440e3216d70fe0c6caac0cbae8d9dc823462d1eb967d764275176cb2fa93",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode.meta",
@@ -1354,7 +1865,11 @@
       "sha256": "83744be3cefc837195b8a01770310dd0e9aef9b2d3e0243fbd2a215e57f1172d",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/ChooGuard.Foundation.Multiplayer.PlayModeTests.asmdef",
@@ -1364,7 +1879,11 @@
       "sha256": "37158162cc9b32690e21e354abe4ab26c0d63f29fc410e4436ade6e404deea64",
       "sizeBytes": 276,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/ChooGuard.Foundation.Multiplayer.PlayModeTests.asmdef.meta",
@@ -1374,7 +1893,11 @@
       "sha256": "a518c4cdeeacf02785e6620d31f48810dd3308de04062ce6a8d68d9219234d94",
       "sizeBytes": 166,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/GroundedMovementTests.cs",
@@ -1384,7 +1907,11 @@
       "sha256": "4582e387d04c93ae2a8ab19a37fb0d012d0d125568d78e640b2fe4f00a38206c",
       "sizeBytes": 2682,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/GroundedMovementTests.cs.meta",
@@ -1394,7 +1921,11 @@
       "sha256": "e8080ca46621b62c4cece026f89377d303f7b5d32bea8e6cc6734a4de896c578",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/SmokeRenderingTests.cs",
@@ -1404,7 +1935,11 @@
       "sha256": "85fec577db6e20dc3804ae8a1e0522ea7cd0f56d0c95f4470c1dfce72833a308",
       "sizeBytes": 4358,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/SmokeRenderingTests.cs.meta",
@@ -1414,7 +1949,11 @@
       "sha256": "a4ac9ec3f5a1cd6098cfb78ffb5aa8c02b3da0f96b96add4ebd9f328999a2056",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/VoiceServiceIntegrationTests.cs",
@@ -1424,7 +1963,11 @@
       "sha256": "504ac2f833f86b2778b8bcddb7c0821d7759b3a0fbcf99d6e5b8180826f605c4",
       "sizeBytes": 14063,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/VoiceServiceIntegrationTests.cs.meta",
@@ -1434,7 +1977,11 @@
       "sha256": "633c2c44a0e38ca197475c07568e8ea86855e8470ba20aba38c35c6e61591b68",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/WorldMotionPlayTests.cs",
@@ -1444,7 +1991,11 @@
       "sha256": "72eaa6f1830c241f79ffc7bb206afda03112af96e7397079c7e90f33a2e45cbd",
       "sizeBytes": 7231,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/WorldMotionPlayTests.cs.meta",
@@ -1454,7 +2005,11 @@
       "sha256": "d4d555b56a972bc289e05fe2843d8ae701af48f30d4f86975be9c9d41b223fbd",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer.meta",
@@ -1464,7 +2019,11 @@
       "sha256": "0f951df6d6bbbbd6323a4fcd7396b1d21dc1c44cb649e8a0060d8d76100a0143",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
@@ -1474,7 +2033,11 @@
       "sha256": "f764bcb7f98236a801285abbe1a4175ed9a16fed712df16b0f49d39b6bf3e260",
       "sizeBytes": 31490,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs.meta",
@@ -1484,7 +2047,11 @@
       "sha256": "25d5f766a24a1e413fc70c41746c3271cd8c2d752f43c208d4065aff117219e5",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/ConnectedWorldDefinition.cs",
@@ -1494,7 +2061,11 @@
       "sha256": "46d4c45a5bea7990be4a18f740d3d92adaff63daa3443532deca52f7cf283160",
       "sizeBytes": 13034,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/ConnectedWorldDefinition.cs.meta",
@@ -1504,7 +2075,11 @@
       "sha256": "d134e1604f408efdb6588ea506594844d45e66ae8792381de07804a8ebfa45eb",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/PushToTalkGate.cs",
@@ -1514,7 +2089,11 @@
       "sha256": "4c7935007dbcfe7ebf8f14d600d9f0dd1a9aeed40b12fcad23ace93e1a234d10",
       "sizeBytes": 901,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/PushToTalkGate.cs.meta",
@@ -1524,7 +2103,11 @@
       "sha256": "6e3a9c6b00a36b65777f39583146dbe15e278472ab9f3b12313c0e094e290b39",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/SimulatedSpatialWorld.cs",
@@ -1534,7 +2117,11 @@
       "sha256": "a289a855c28f323f4b77865fe1b02067d6d874fb5bd29c332391e5f4518725b8",
       "sizeBytes": 8275,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/SimulatedSpatialWorld.cs.meta",
@@ -1544,7 +2131,11 @@
       "sha256": "87acc83ab49156edc214c195062308741bc49f008a2e38433c0c0b29a07219cf",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/VoiceEpochCoordinator.cs",
@@ -1554,7 +2145,11 @@
       "sha256": "4e5932424e7eae3558cd608cce30d3fac28d6240941eadbeff1974d4348f91f7",
       "sizeBytes": 13129,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/VoiceEpochCoordinator.cs.meta",
@@ -1564,7 +2159,11 @@
       "sha256": "bf69549b06afeef2b9e50a4a05bf41c2405477c00760da4dbcca19c28f92f9e9",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/VoiceTokenIssuer.cs",
@@ -1574,7 +2173,11 @@
       "sha256": "6bcb934a43bed12059ed25286e2fceca6fa0b2c481e6fcd0f1d676857bdce769",
       "sizeBytes": 4360,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/VoiceTokenIssuer.cs.meta",
@@ -1584,7 +2187,11 @@
       "sha256": "b59e0f23988a579d1a729d03c8b188d60842abad681d5aff6874c51c202d2b95",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs",
@@ -1594,7 +2201,11 @@
       "sha256": "4d8712a28c89f5d9cb6e22f8820357b076bdc0aa41e97cf9cbf837e349f73a1d",
       "sizeBytes": 7862,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs.meta",
@@ -1604,7 +2215,11 @@
       "sha256": "89ef793ec75349d26fbe72015c5dedd4c2362d45c098bfc318c095129d9eb558",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation.meta",
@@ -1614,7 +2229,11 @@
       "sha256": "f4c2757da6f71403776696edb88b0fef8c77fb6bbf28d4b115dd9c85c98d078b",
       "sizeBytes": 172,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/ConnectedThermalDomain.cs",
@@ -1624,7 +2243,11 @@
       "sha256": "66b96b7cc4f30aaaab78a4fb7cf8223b98a569c0cc8dc2557f0f2263417b8238",
       "sizeBytes": 19029,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/ConnectedThermalDomain.cs.meta",
@@ -1634,7 +2257,11 @@
       "sha256": "58a322e6157f67c2e52beb9ef0058587efdc7dc34af4184b0041c81f04c7d09a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdCheckpoint.cs",
@@ -1644,7 +2271,11 @@
       "sha256": "0b189848083587671ea9033688d3f6284269a1f1020719760dc3169b84fe97ae",
       "sizeBytes": 9012,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdCheckpoint.cs.meta",
@@ -1654,7 +2285,11 @@
       "sha256": "9cccec8ae484dfb3bd5f5fa45374ba987c167090a9a7162ccd289ce76e31ad7e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdCheckpointProof.cs",
@@ -1664,7 +2299,11 @@
       "sha256": "356b99e096912ceb90ddb6840efbea77d7f89b02146728213ce15cc8cad34e22",
       "sizeBytes": 420,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdCheckpointProof.cs.meta",
@@ -1674,7 +2313,11 @@
       "sha256": "219b77611733bda63f49d791bacba8a3633516aebddfb23a70ff49c94a14a6d1",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdContracts.cs",
@@ -1684,7 +2327,11 @@
       "sha256": "2be31ff6275aa068feb6873a6bf61d81031ace1921b25550b7068a473bfd804e",
       "sizeBytes": 7247,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdContracts.cs.meta",
@@ -1694,7 +2341,11 @@
       "sha256": "95a50115893d11de69ea2534d60ccc9a414ced1eeb8c26ea1f3b75855bc6cba1",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdMotionModel.cs",
@@ -1704,7 +2355,11 @@
       "sha256": "3b33aefbc5aa9e06997010aa62e970265a7c1735608518b56e36b3693fd70023",
       "sizeBytes": 63231,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdMotionModel.cs.meta",
@@ -1714,7 +2369,11 @@
       "sha256": "9060da9db60010849045bef8f91f1cd74c373b1db143f52db02641916cdcb9fe",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdPhaseReport.cs",
@@ -1724,7 +2383,11 @@
       "sha256": "f7d1fc66e2f48f6ae18fe7a7416d5d8d4969bb8eaf2cc177b868dce5ce58180d",
       "sizeBytes": 984,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdPhaseReport.cs.meta",
@@ -1734,7 +2397,11 @@
       "sha256": "e4d488590f8828ae4009b05fed2ee57cff6d60eb5793b434c9dd0b2d08a2a5be",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FireContracts.cs",
@@ -1744,7 +2411,11 @@
       "sha256": "19a8c7e89782d9838647000e07db753bd469c329d063b099dff2d1f8413b63c2",
       "sizeBytes": 11206,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FireContracts.cs.meta",
@@ -1754,7 +2425,11 @@
       "sha256": "f445360d99877f5fb94dd207e246e78db252a0141432e35dcb225695d96d0d75",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs",
@@ -1764,7 +2439,11 @@
       "sha256": "a4e5e78d4f760b9daa32e663aa910e58f036ddd21d7cb59852608aabbf28e498",
       "sizeBytes": 6652,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs.meta",
@@ -1774,7 +2453,11 @@
       "sha256": "ceb6dc6f4f37fb65de1b8ee7d70fcae5f4b15e39335115c61dd0ff870f8a066a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/IncidentDirector.cs",
@@ -1784,7 +2467,11 @@
       "sha256": "cce5d86db17ef01e91c728c66d247e8046c2bf85675414f189f45ea74c8c37cd",
       "sizeBytes": 11378,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/IncidentDirector.cs.meta",
@@ -1794,7 +2481,11 @@
       "sha256": "9d69963fcbab484dd64a19837761bb7091c941442a88ae9418ba072ba0e0c53d",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/PhysicalCheckpoint.cs",
@@ -1804,7 +2495,11 @@
       "sha256": "4697ef15a77dfe280cb684b3442b77e6de6e309c03b46670d4c528120f65c053",
       "sizeBytes": 14651,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/PhysicalCheckpoint.cs.meta",
@@ -1814,7 +2509,11 @@
       "sha256": "1ec647d4dcda9e0eb6b4aa5e28244e993e2214dbbb4d9818257066907e568a3a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/SmokeOptics.cs",
@@ -1824,7 +2523,11 @@
       "sha256": "9e8f11de8eec0049b7723536cf617a337f83672eec88f4e8539acc388e3bbf96",
       "sizeBytes": 13812,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/SmokeOptics.cs.meta",
@@ -1834,7 +2537,11 @@
       "sha256": "91dea5c6e088a4daa9b82809b5c4f5bc6bbd1070fe9b5db26e351a9b54e54efd",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/TrainDynamics.cs",
@@ -1844,7 +2551,11 @@
       "sha256": "2125d22465b65807bf7c9b95c87a851d76778af72f67fb0f33b58e7fe38a8215",
       "sizeBytes": 13367,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/TrainDynamics.cs.meta",
@@ -1854,7 +2565,11 @@
       "sha256": "9e68ae1b2f3efc4872a367867a9eeae5882bcf4d09ef809c80830552e081fe79",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/TrainOperation.cs",
@@ -1864,7 +2579,11 @@
       "sha256": "86cd185b07b08f33d5c27d531530ff18ac24208145ce9d431e2d944aaae70708",
       "sizeBytes": 16000,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/TrainOperation.cs.meta",
@@ -1874,7 +2593,11 @@
       "sha256": "cd37280740c010cb4542b9c01ac9c9fc7615ac13cf3a80ac0e3cb48a7497d688",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/ZoneFireModel.cs",
@@ -1884,7 +2607,11 @@
       "sha256": "206d6ae32281374fbecf289cf94988fea7d5e5fac4227832b5232ffd4973dd91",
       "sizeBytes": 51806,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/ZoneFireModel.cs.meta",
@@ -1894,7 +2621,11 @@
       "sha256": "4edae0bf1be1610b16c7682cea4a25509852630c900770d2b1a8d55d3aeff8e8",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs",
@@ -1904,7 +2635,11 @@
       "sha256": "c307c82cbf60411b2ed6fdf6ec6e221bff8f063f5da32b9a8ac3ccaac030b950",
       "sizeBytes": 16496,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs.meta",
@@ -1914,7 +2649,11 @@
       "sha256": "44df8e7f79bbf72578c1f1c61db58389073b3b2ae89e4c3de61ae7b445c6250d",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/ChooGuard.Foundation.Tests.asmdef",
@@ -1924,7 +2663,11 @@
       "sha256": "2ada20baae2377fd276e1a28a7237449e93dacdd903ecef758b222a9fd87c2c4",
       "sizeBytes": 542,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/ConnectedThermalTests.cs",
@@ -1934,7 +2677,11 @@
       "sha256": "a16d02d8491b95b0905f6983fdd30690f1b0c990fbe31733b68e18a06f9f907c",
       "sizeBytes": 18824,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/ConnectedThermalTests.cs.meta",
@@ -1944,7 +2691,11 @@
       "sha256": "0ca9f4a3e030aacc7670af2aa872838fba667c8d1ab8e6b85eccfd40154dc722",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CoupledIncidentLifecycleTests.cs",
@@ -1954,7 +2705,11 @@
       "sha256": "673b3ecf45af094e7c8109210da749814b5e546cd16f57e5a7746016820411cf",
       "sizeBytes": 46750,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CoupledIncidentLifecycleTests.cs.meta",
@@ -1964,7 +2719,11 @@
       "sha256": "38ef6c3091eddf362cd222ea7bd2fd5647869bc5ec815961074533ecdd98275f",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdBenchmarkTests.cs",
@@ -1974,7 +2733,11 @@
       "sha256": "b6d9304d61ed784597c6b2d81d57349b82e5c7657a140c829beb3c4711ec4c6f",
       "sizeBytes": 10704,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdBenchmarkTests.cs.meta",
@@ -1984,7 +2747,11 @@
       "sha256": "0ea8adfe4653b1adafd5eab76cd072583fe9c527a22088820556ef87603d72a8",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdForkTests.cs",
@@ -1994,7 +2761,11 @@
       "sha256": "cf5e1c3e1af73ce27d9bac5e1df8d37aa6c7630786636addc908e3a573a4e8c2",
       "sizeBytes": 2539,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdForkTests.cs.meta",
@@ -2004,7 +2775,11 @@
       "sha256": "4eb7c6f9545ababe84880121429971524b346f82847d90366cd09923462d9a93",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdLegacyFixture.cs",
@@ -2014,7 +2789,11 @@
       "sha256": "4493963a421b27da4f5701baa8d0fc7c6dc57c43d86b1a66926f76197e1526e3",
       "sizeBytes": 1657,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdLegacyFixture.cs.meta",
@@ -2024,7 +2803,11 @@
       "sha256": "b6b7624f3abfd8536e90ef5fb5f2131ef3d78dc8d23c2f7859a2b78a3f8e6f69",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionTests.cs",
@@ -2034,7 +2817,11 @@
       "sha256": "82f9d2628d514e2e62e2246dffbb36312ad68ed67cf570badaa5a6613500e3b2",
       "sizeBytes": 21875,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionTests.cs.meta",
@@ -2044,7 +2831,11 @@
       "sha256": "9e39df066fb10d976b1e766ffd7a1240e3b64a66e294d4bf2a94df0a6cc0bbd7",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionWindowTests.cs",
@@ -2054,7 +2845,11 @@
       "sha256": "27a99a8ac29a9d4220413f8649950c34da2678218b1f2dfb9ef12efb55a11c37",
       "sizeBytes": 3305,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionWindowTests.cs.meta",
@@ -2064,7 +2859,11 @@
       "sha256": "e01f52a2418a722c6d5a8126c59b88b8539e37fa36a382982f170e95231061c5",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdPhaseTests.cs",
@@ -2074,7 +2873,11 @@
       "sha256": "305c172aac69ae1be44c46f24eedb61cc38a6055cc32f7154ef5a8c758130fc9",
       "sizeBytes": 3100,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdPhaseTests.cs.meta",
@@ -2084,7 +2887,11 @@
       "sha256": "b6eba1ad2d0f6d9bd400ec2f0252f1c346e9d262c08299fc89b9c20a9537b92e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWallOptimizationTests.cs",
@@ -2094,7 +2901,11 @@
       "sha256": "756146d86c4b279bbc9245b100a7e648af5ca4ab7567784469470059411f352f",
       "sizeBytes": 3255,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWallOptimizationTests.cs.meta",
@@ -2104,7 +2915,11 @@
       "sha256": "e13c376ae4426529f88d4d789aca2db597c480bf3675f824f2264827759d4d37",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWorldContactTests.cs",
@@ -2114,7 +2929,11 @@
       "sha256": "ba244d3b502ef6e277226b2cc467be239ee1a970e8f2118508a70b89e85610da",
       "sizeBytes": 19456,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWorldContactTests.cs.meta",
@@ -2124,7 +2943,11 @@
       "sha256": "25f2b3cb5e61427d0612b802f626cfc0eae389b0aa0bbd1139a901c881f4207a",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FireBenchmarkTests.cs",
@@ -2134,7 +2957,11 @@
       "sha256": "25e82959b20280e5043a35fb6ff048ad330bfd52238537a5db39358afd19408e",
       "sizeBytes": 8642,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FireBenchmarkTests.cs.meta",
@@ -2144,7 +2971,11 @@
       "sha256": "daadca0d6db990c1b226c47de8916427fbae1605b81e5e354a0e3ecfd59be7c7",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FirePhysicsTests.cs",
@@ -2154,7 +2985,11 @@
       "sha256": "4ee35e65dac4b9bc5f50d43cbf64a8b2bc5aa0465e6ccdc363db2ac7b35011c6",
       "sizeBytes": 19618,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FirePhysicsTests.cs.meta",
@@ -2164,7 +2999,11 @@
       "sha256": "174ce7949e93fa7d0fbdb0471d1cdd85b845a71b83533b5ceeb56b3dd55529a9",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FoundationLoadVerificationTests.cs",
@@ -2174,7 +3013,11 @@
       "sha256": "0d2a8671e8b10c8d497006c2623269b857c095d9c2ff08b29783a6ae6dd3593d",
       "sizeBytes": 27645,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FoundationLoadVerificationTests.cs.meta",
@@ -2184,7 +3027,11 @@
       "sha256": "58fe68e2d3363b4aa15602bad939ce6e98cf3a1a696b5341511017988240d7bb",
       "sizeBytes": 60,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/PhysicalCheckpointTests.cs",
@@ -2194,7 +3041,11 @@
       "sha256": "1114ae6c62422a502afc4fc8e62586f3f85e572e9f6c980fdb30d3ac2a3041c2",
       "sizeBytes": 10179,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/PhysicalCheckpointTests.cs.meta",
@@ -2204,7 +3055,11 @@
       "sha256": "0f1eb56cb605aeeda87e7f88589405baa57faa67e4048db1feb6c60ad91db61e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedAuthorityTests.cs",
@@ -2214,7 +3069,11 @@
       "sha256": "8bf2e17d6bae3c62b27f670abe8561f7ec6577fd058d01e2ca684ea8bae81ed9",
       "sizeBytes": 12381,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedAuthorityTests.cs.meta",
@@ -2224,7 +3083,11 @@
       "sha256": "b33a22c000667b42ed29f28037937fa1f6631a53d442ac7cbbfd1b34126640b6",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedSpatialTests.cs",
@@ -2234,7 +3097,11 @@
       "sha256": "94c46b96c68a81c62e96b3e43c3c428d936fbb1e5972c0495e7e5f69fbb9b4c4",
       "sizeBytes": 4291,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedSpatialTests.cs.meta",
@@ -2244,7 +3111,11 @@
       "sha256": "5284ccbe55d6ec105329f366fac6b17503ea370513cc17c9cd85b78ac35f5175",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SlopedFireCellTests.cs",
@@ -2254,7 +3125,11 @@
       "sha256": "efb7a62a1a66e802472adea1dceb0b247b73bb36b7a5a679be054f15278a3b4e",
       "sizeBytes": 2295,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SlopedFireCellTests.cs.meta",
@@ -2264,7 +3139,11 @@
       "sha256": "76cfc0efbe9837e4cae21386cd2cc117d46ea65188659176ce20fb858fdaaffc",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SmokeOpticsTests.cs",
@@ -2274,7 +3153,11 @@
       "sha256": "38926131026046257a55f4138a96060f81554d99565b32bb03a5aa63d8998b35",
       "sizeBytes": 12032,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SmokeOpticsTests.cs.meta",
@@ -2284,7 +3167,11 @@
       "sha256": "2e5266bcf701ba37c412f939442a603bf6560e1ad680570601366dbf0a294680",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainDynamicsTests.cs",
@@ -2294,7 +3181,11 @@
       "sha256": "659a57f804806dc5c99bda29384e4881f9780d5d4acf6dcb390f5c95bc959478",
       "sizeBytes": 8413,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainDynamicsTests.cs.meta",
@@ -2304,7 +3195,11 @@
       "sha256": "f4f26252888dbeaf7e52e7c39982c190a1158fb462641d7a1cadd307247f4a85",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainOperationTests.cs",
@@ -2314,7 +3209,11 @@
       "sha256": "fb20cb27d3bc6c93f8a3f68bf6e4957a5b7ee27ac489742ea39a6cc184f6dc5a",
       "sizeBytes": 5995,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainOperationTests.cs.meta",
@@ -2324,7 +3223,11 @@
       "sha256": "897dafb93216e84ff8c9b45d24c3c3e88d067cbed5b15a47758ebf94180a250e",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/VoiceContractTests.cs",
@@ -2334,7 +3237,11 @@
       "sha256": "630cb629bc14acb1faf4d5db37079c48c004e07b0fa477952d84d26d6f018b5f",
       "sizeBytes": 4988,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/VoiceContractTests.cs.meta",
@@ -2344,7 +3251,11 @@
       "sha256": "3829e2944edec6e3b61d8fb5758fb8ef533951ca17c65961f9ceb021e89b2461",
       "sizeBytes": 59,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/manifest.json",
@@ -2354,7 +3265,11 @@
       "sha256": "30082c1a38a6dffadad97cee4d966a02b41e754b26b923c5ff326b0ec1a31144",
       "sizeBytes": 2228,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "Packages/packages-lock.json",
@@ -2364,7 +3279,11 @@
       "sha256": "01ef0fdb75879e375decafdf67b646fb577243ab74a544b611481a56995e9d32",
       "sizeBytes": 10935,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "docs/choo-guard-voice-delivery-2026-09-13.md",
@@ -2374,7 +3293,11 @@
       "sha256": "e2ed461becba523af295f51e7c61c89cd786c26b3964c4c53168f85c07b32f3c",
       "sizeBytes": 13175,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@bdcb714 (fix(security): preserve HTTP restrictions in remaining builders)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/network/connected-world-layout.json",
@@ -2384,7 +3307,11 @@
       "sha256": "fc6e7f2c0013c69da8a491362391fc9c56a84662d474a0ccc0ca497152c20c72",
       "sizeBytes": 8556,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/network/connected-world-scenes.json",
@@ -2394,7 +3321,11 @@
       "sha256": "403521e7d18ac7f9c7b28ea072f2e4d75ad2f2aa727567226b9a5ceb4409d0f6",
       "sizeBytes": 1891,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/network/dependency-contract.json",
@@ -2404,7 +3335,11 @@
       "sha256": "bb3cb83b86c1e036b12f9f0ad6c7b50caf8ee891a5844430bb36926f77a72adb",
       "sizeBytes": 2383,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@6d533f6 (fix(voice): persist dispatch state across service reconstruction)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/network/slice-layout.json",
@@ -2414,7 +3349,11 @@
       "sha256": "d7ebea2c3ff2bbcb13f898afa40b3a25052dd179d86911880e034290ce2f3d99",
       "sizeBytes": 4379,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/physics/validation/juelich-corridor-aggregates.json",
@@ -2424,7 +3363,11 @@
       "sha256": "aa031e8e710a090e8ecbe6e3e76544eca17ae592607781665266a53596175169",
       "sizeBytes": 16734,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/physics/validation/steckler-cases.json",
@@ -2434,7 +3377,11 @@
       "sha256": "ffdc69168e41d953186b581c01b3de63bc322634e095d1ef44200ddeb89a6bfa",
       "sizeBytes": 16124,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/procedures/source-registry.json",
@@ -2444,7 +3391,11 @@
       "sha256": "acd217eade028eb6b067233327afe6230e718465dec473c39fbf86d81d5c31f4",
       "sizeBytes": 6698,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/world/connected-world-profile.json",
@@ -2454,7 +3405,11 @@
       "sha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
       "sizeBytes": 20907,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "foundation/world/foundation-simulation-profile.json",
@@ -2464,7 +3419,11 @@
       "sha256": "c053ecdab98e8f6577a4fe644b2a3e78c1ba4310cf6350d471e4f7dfe7bcdee2",
       "sizeBytes": 8129,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@39e349d (feat(foundation): publish shared multiplayer simulation contracts)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/create_multiplayer_session.py",
@@ -2474,7 +3433,11 @@
       "sha256": "97e0795d371a16482f54488ae81ecd4aee189ef76241de1dbb39a6bacc89834e",
       "sizeBytes": 4017,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/fetch_crowd_benchmarks.py",
@@ -2484,7 +3447,11 @@
       "sha256": "ab2d8177697dacbb7d3b2facdbd3853176d99ec1769db9ed5f6c4ca76c5ec942",
       "sizeBytes": 7501,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/fetch_fire_benchmarks.py",
@@ -2494,7 +3461,11 @@
       "sha256": "23674cd4c780b94bb6486f6d0a81001e0cf85632e29038237f229fdbe792348c",
       "sizeBytes": 7598,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/foundation_load_metrics.py",
@@ -2504,7 +3475,11 @@
       "sha256": "eb3396943db2ada2e0ed4bba9f67342f01fa016b0a9bc94113f04a37a51e74d4",
       "sizeBytes": 22587,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/foundation_load_windows.py",
@@ -2514,7 +3489,11 @@
       "sha256": "8a996cd72db54ca7cf0304a05e2b2acbca245d5bba7d915112d9e19e4e945096",
       "sizeBytes": 4999,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/native_manifest.py",
@@ -2524,7 +3503,11 @@
       "sha256": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83",
       "sizeBytes": 5152,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/prepare_multiplayer_dependencies.py",
@@ -2534,7 +3517,11 @@
       "sha256": "08f00022ec468c9bc87c04f96577f7e46dc57ab5ad333d66bc18d4aca6ed8e0b",
       "sizeBytes": 6617,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/probe_journal.py",
@@ -2544,7 +3531,11 @@
       "sha256": "27304b509d0190edf02ef9fb22fe7ff650d5651adc2ad19ec5260ae5ce48d49f",
       "sizeBytes": 8658,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/run_connected_world_probe.py",
@@ -2554,7 +3545,11 @@
       "sha256": "28fe6059e2016f4457240dee573b9b6c4f0e7f059491dba8a862e0356a589264",
       "sizeBytes": 12930,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/run_foundation_load.py",
@@ -2564,7 +3559,11 @@
       "sha256": "753815024f028dc17baaa2a08121a5c61a9cc4bbe5a0d959d37694b58f94c92f",
       "sizeBytes": 35061,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/run_multiplayer_probe.py",
@@ -2574,7 +3573,11 @@
       "sha256": "b1625536cd019f8aebfcb994de4e0441a98adbc081d4caa8b90604fb14688bd2",
       "sizeBytes": 8150,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/run_multiplayer_recovery.py",
@@ -2584,7 +3587,11 @@
       "sha256": "6876f94b6e2ea9d642e7a7385ed2735617b56b81739eaba1e3a3d1b9c01fa834",
       "sizeBytes": 7148,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/run_simulation_probe.py",
@@ -2594,7 +3601,11 @@
       "sha256": "937fba7d7068a43c3e4c308fd1a12d9df70760bf44748977af5893d853c4288d",
       "sizeBytes": 32287,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/run_world_review_capture.py",
@@ -2604,7 +3615,11 @@
       "sha256": "86dd7e213486de4fbda1ec254668f70000a0b26afe9a08bdcf113fe8f8ca01d4",
       "sizeBytes": 4260,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/test_crowd_benchmarks.py",
@@ -2614,7 +3629,11 @@
       "sha256": "a9f8e56de0dd08799892300b011eaa858b0e4312a1852879e9c5969c4efa30ab",
       "sizeBytes": 1155,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/test_foundation_load.py",
@@ -2624,7 +3643,11 @@
       "sha256": "035126d478f30b2e31b202888ded6e6bdeb6d4bdf6a3875254b70877e3cbce60",
       "sizeBytes": 49088,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/test_multiplayer_dependencies.py",
@@ -2634,7 +3657,11 @@
       "sha256": "f5747b21efd1c062cff524168cb1f09ce5d8e55a4a82f72664d4cbcf21c9afb1",
       "sizeBytes": 1793,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/test_native_manifest.py",
@@ -2644,7 +3671,11 @@
       "sha256": "a6197c32a821af428e821333c02bd666d6f689e966f67451b41bd4d47eed7011",
       "sizeBytes": 1738,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/test_simulation_probe.py",
@@ -2654,7 +3685,11 @@
       "sha256": "f6f65dd73f4abcfbe320edc1335a0efca5450f5a79f94970c8d94117d46ba85d",
       "sizeBytes": 17948,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/test_udp_impairment.py",
@@ -2664,7 +3699,11 @@
       "sha256": "50dbf50e014ee75feaa5d04a7afb9330fa9664cf6f6a57f120905d7b2fcda49c",
       "sizeBytes": 25265,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "scripts/dev/udp_impairment.py",
@@ -2674,7 +3713,11 @@
       "sha256": "af2ebb3db132b3255b6d4f51cae7b8f43f27f57a540659ac5b8d52923008df48",
       "sizeBytes": 20970,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "services/livekit/README.md",
@@ -2684,7 +3727,11 @@
       "sha256": "1e845cb0df7113b21fc027074f1f797f6a28fc253a358329ed80e2e3d6f1fa3c",
       "sizeBytes": 3222,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "services/livekit/compose.yaml",
@@ -2694,7 +3741,11 @@
       "sha256": "a0aa30810ccba023fb72e766bf336529a6564ad86a3315ee39234cd3dcb07810",
       "sizeBytes": 708,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "services/livekit/configure_local.py",
@@ -2704,7 +3755,11 @@
       "sha256": "1922ec3508f6794addae0b0834d4770e338d13c43dac44a4a630a872bdcfdf3f",
       "sizeBytes": 16630,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     },
     {
       "path": "services/livekit/test_configure_local.py",
@@ -2714,7 +3769,11 @@
       "sha256": "4021b62b85f66599a6dcaaf0cf7d33742efe27d0c7a618d438ad8e332ffda8fb",
       "sizeBytes": 24540,
       "lfsPointer": false,
-      "status": "published_on_team_ref"
+      "status": "proposed",
+      "origin": "feature/54-native-foundation@dfc6409 (test(foundation): publish validation and local voice service tools)",
+      "exclusionReason": null,
+      "presentOnTeamRef": true,
+      "publicationApproval": "not_obtained"
     }
   ],
   "limits": [
@@ -2723,5 +3782,84 @@
     "LFS 포인터 파일의 실제 바이너리 payload는 확인하지 않았다.",
     "미게시 파일을 보유한 작업트리의 미커밋 소유권 확인은 해당 보유자가 수행해야 한다."
   ],
-  "updatedAt": "2026-09-13T11:40:07Z"
+  "updatedAt": "2026-09-13T12:51:31Z",
+  "mode": "isolated_proposal",
+  "canonicalWriteAllowed": false,
+  "selectionRuleEvidence": {
+    "measuredAt": "2026-09-13T12:51:31Z",
+    "commands": [
+      {
+        "cmd": "git merge-base --is-ancestor 85e4a4c94ae491dd1a257528b13de8a87135304c bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+        "exit": 1,
+        "note": "선언된 base 는 조상이 아니다"
+      },
+      {
+        "cmd": "git merge-base 85e4a4c94ae491dd1a257528b13de8a87135304c bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+        "stdout": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779"
+      },
+      {
+        "cmd": "git diff --name-only 85e4a4c94ae491dd1a257528b13de8a87135304c bdcb714849fcdaa2d7d9f7f431b661a26eb3090a | wc -l",
+        "stdout": "450"
+      },
+      {
+        "cmd": "git diff --name-only e7a6bb7a7fff0c301c04f93aeea8850dbde34779 bdcb714849fcdaa2d7d9f7f431b661a26eb3090a | wc -l",
+        "stdout": "261"
+      },
+      {
+        "cmd": "git rev-list --count e7a6bb7a7fff0c301c04f93aeea8850dbde34779..bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+        "stdout": "6"
+      },
+      {
+        "cmd": "git ls-tree -r --name-only bdcb714849fcdaa2d7d9f7f431b661a26eb3090a | wc -l",
+        "stdout": "1106"
+      }
+    ],
+    "reproducedDeliveredPaths": 261,
+    "note": "선언 base 를 실제 조상(e7a6bb7)으로 바로잡은 뒤 selectionRule 이 261 경로를 재현한다. 85e4a4c 로는 450 경로가 나와 develop 전용 경로가 섞인다."
+  },
+  "sourceRef": {
+    "value": "",
+    "empty": true,
+    "declaredIn": "이슈 #120 브리프 §10 및 동결 기준 §3 H1 의 `sourceRef ` 슬롯",
+    "whyEmpty": "전달된 계약에서 sourceRef 값이 문자 그대로 공백이다. H1 은 값을 지어내지 말라고 요구하므로 임의의 ref 로 메우지 않는다.",
+    "substituteRef": "origin/feature/54-native-foundation",
+    "substituteHead": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+    "drift": [
+      {
+        "from": "sourceRef(공백)",
+        "to": "origin/feature/54-native-foundation@bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+        "note": "sourceRef 가 비어 있어 직접 비교 대상이 없다. 대신 기준으로 삼은 원격 ref 를 기록한다."
+      },
+      {
+        "from": "candidate worktree HEAD",
+        "to": "6178c5cc5febfcf2882d8a73df053dd429561655",
+        "note": "후보 워크트리는 origin/docs/120-native-source-baseline 계열이며 팀 ref head 와 20/6 으로 갈라진다(merge-base e7a6bb7a7fff0c301c04f93aeea8850dbde34779)."
+      },
+      {
+        "from": "local branch feature/54-native-foundation",
+        "to": "185e6a70bdd5243a72aca91d6ea8a299bd2780a1",
+        "note": "로컬 브랜치는 원격 팀 ref 보다 앞서 있고(20 vs 6) 조상 관계가 아니다. 이 드리프트는 숨기지 않는다."
+      },
+      {
+        "from": "origin/develop",
+        "to": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+        "note": "PR #153 이 squash 로 병합된 develop head. 팀 ref 261 경로가 여기에도 동일 해시로 존재한다."
+      },
+      {
+        "from": "docs/context/work-orders/120.json",
+        "to": "absent@bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+        "note": "브리프 §5 가 예상한 대로 워크오더 파일은 기준 ref 에 없다. 이 워크트리 디스크에는 존재한다(이후 커밋에서 추가)."
+      },
+      {
+        "from": "docs/choo-guard-native-team-contracts.md",
+        "to": "absent@bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+        "note": "브리프 §5 문맥 문서. 기준 ref 에 없어 exclusions.md 보류 32건에 등록돼 있다."
+      },
+      {
+        "from": "CODEX_HANDOFF.md",
+        "to": "absent@bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+        "note": "브리프 §5 문맥 문서. 기준 ref 에 없어 exclusions.md 보류 32건에 등록돼 있다."
+      }
+    ]
+  }
 }
