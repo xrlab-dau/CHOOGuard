@@ -25,13 +25,16 @@
       "mode": "read_only"
     },
     {
-      "id": "artifact:70:zone-boundaries:candidate",
+      "id": "artifact:70:zone-boundaries:accept",
       "path": "foundation/world/zone-boundaries.json",
-      "ref": "docs/70-zone-coverage-boundaries",
-      "commit": "c1a7b78",
-      "sha256": "e035ecd9e5a7ad97ae279c371d72572021f9e3b2d879b5fec718d31b13a715ca",
-      "availability": "candidate_not_merged",
-      "use": "제작 구역·번들 경계. 아직 확정되지 않은 항목은 제안으로 표기한다."
+      "ref": "ac7f84edb56477b2d7039e20fec91e7e51b0d3e6",
+      "refNote": "브랜치 이름 대신 불변 커밋으로 고정한다. 브랜치는 움직이고 로컬 사본이 낡을 수 있다.",
+      "commit": "ac7f84e",
+      "sha256": "e7d35f150058a72498afb336069ab1f1e7a0a123f440d348a4edd7d14f61ebc8",
+      "availability": "merged_on_develop",
+      "mergedBy": "PR #155, 2026-09-13",
+      "use": "제작 구역·번들 경계. 아직 확정되지 않은 항목은 제안으로 표기한다.",
+      "rebindNote": "최초 결속은 후보 `docs/70-zone-coverage-boundaries` c1a7b78(sha256 e035ecd9…)이었다. PR #155 병합으로 정본이 develop ac7f84e로 바뀌었고, 병합 전 PM이 검사기·데이터를 보강해 내용 해시도 달라졌다. 낡은 값을 유지하지 않고 병합본으로 재결속했다."
     }
   ],
   "missingInputs": [
@@ -184,7 +187,7 @@
   ],
   "limits": [
     "재질 사용처는 생성기 모듈과 참조 횟수 수준이다. 자산 단위 대응은 저장소에 근거가 없다.",
-    "#70 구역 경계는 후보이며 PM 수용 전이다. 병합 시 해시가 바뀌면 구역 대조를 다시 해야 한다.",
+    "#70 구역 경계는 PR #155로 develop에 병합됐다(ac7f84e). 이 카탈로그는 병합본 해시에 재결속했으며, 구역 경계 자체의 미확정 항목은 그 문서의 open_questions를 따른다.",
     "#15 사용 조건이 없어 모든 외부 소재 권리 판정을 보류로 뒀다."
   ],
   "handoff": "#75에는 수신 가능 품목이 아직 없다는 사실, 파생본 3단계 규격, 보류 4건과 그 사유를 전달한다."
