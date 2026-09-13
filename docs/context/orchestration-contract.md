@@ -21,6 +21,10 @@
 3. 검증 전에 `--section checks --phase candidate` 또는 `accept`
 4. 필요할 때만 `sources`, `outputs`, `relations`, `history`를 추가 조회
 
+기본 `brief`는 해당 packet만 읽습니다. 상세 조회 때만 canonical 항목의 해당 절을 선택합니다. `--max-bytes N`/`--max-items N`은 필수 입력·guard·수정 경계를 일부 잘라 실행 가능한 것처럼 만들지 않습니다. 예산 초과는 `complete:false`, 조회 명령과 종료 코드 3으로 반환하며 그 후속 조회가 끝나기 전 실행하지 않습니다. `complete:true`도 조회 범위의 완전성이지 실행 허가는 아닙니다.
+
+`source-availability.json`의 `files[path].qualifiedRefs`는 develop 밖의 정확한 ref/digest/URL/access/qualification/limits를 결속할 수 있습니다. 이 원격 출처 자격은 로컬 수정본의 게시, 팀원의 실제 접근, 현재 수용이나 제품 PASS를 뜻하지 않습니다. 여러 자격 있는 ref가 모호하면 임의 선택하지 않습니다.
+
 문맥 문서 PR이 아직 develop에 병합되지 않았다면 링크의 커밋을 별도의 읽기용 checkout/worktree에서 조회하세요. 실행 중인 구현 작업 트리를 문서 조회 때문에 전환하거나 덮어쓰지 않습니다.
 
 한 번에 전체 그래프나 모든 과거 보고서를 읽지 않습니다. packet의 최소 출처 2~4개 중 지정된 절/함수만 읽습니다. 최소 자료가 더 적으면 임의로 늘리지 않습니다. `local_unpublished`는 팀 기준선이 아닙니다. 해당 소비 단계에서 정확한 provider/path/ref/digest/access가 결속된 #120 입력을 받아야 하며, 없는 파일을 있는 것으로 가정하지 않습니다. 컨텍스트 문서 커밋과 실제 구현 소스의 기준선도 구분합니다.
@@ -40,6 +44,8 @@
 
 단계를 표현하지 못하는 기존 GitHub `blocked-by`는 이 작업 체계의 기준으로 쓰지 않습니다. 실제 관계는 보드의 Dependencies/Successors/Parallel/Conflicts와 [JSON-LD 온톨로지 등록부](work-orders/index.jsonld)에 연결됩니다. 이는 프로젝트 전용 온톨로지이며 보편적인 단일 LLM 표준을 주장하지 않습니다.
 
+Graphify는 출처·심볼·관계 탐색 도구입니다. 탐색 결과나 유사도 간선을 PM의 단계별 dependency authority, 착수 허가 또는 수용으로 승격하지 않습니다. 관계 생성은 canonical `requires`와 선언 입력, 선택 OR/guard를 보존하며, 미선택 조건 경로가 순서를 만들 수 있으면 병렬 허가 대신 조건부 미확정으로 남깁니다.
+
 ## 5. PM 보드 운영
 
 - Backlog: 아직 착수하지 않은 PM 대기열. 선행이 남아 있는 작업도 여기에서 관리합니다. 실패 판정이 아닙니다.
@@ -50,10 +56,12 @@
 
 과거 학교/기관 회신/옛 리뷰 상태를 현재 작업의 전역 blocker로 복사하지 않습니다. 미착수 대기 작업의 예전 Blocked 기록은 이력으로 남기고 대기열로 옮깁니다. 이는 결함 해결·시험 통과를 뜻하지 않습니다. 실제 외부 자료 승인이나 보호 경로 변경이 필요한 부분의 조건은 해당 입력/단계에 남깁니다.
 
+GitHub 본문 투영은 `github_projection.mjs`의 순수 dry-run 계획에서 시작합니다. 계획의 각 title/body 변경은 before/after/reason과 입력 snapshot digest를 갖고, 기존 본문(중첩 details 포함)·댓글·assignee·사람의 비관리 텍스트를 보존합니다. 관리 구역/제목의 사람 수정 또는 최신 snapshot drift가 있으면 강제 덮어쓰기 대신 재조회·조정합니다. 계획·precondition 검사·apply receipt 검사는 원격 쓰기 권한이나 원자적 잠금이 아닙니다. 실제 GitHub 쓰기는 별도 승인된 호출자가 최신 상태를 재확인한 뒤 수행하고 결과를 검증합니다. 같은 입력으로 재실행하면 변경은 0이며 이 도구가 새 스케줄러나 분산 lock을 만들지 않습니다.
+
 ## 6. 실행과 인계
 
 실제 착수 시 `Work ID / phase / member·LLM session / branch·base SHA / exact paths / shared resource / next artifact`를 기록합니다. 다른 활성 claim이 있으면 그 부분만 중지하고 PM에게 경계 조정을 요청합니다. 잠금·승인·산출물 자격은 문서에 적었다고 획득되는 것이 아닙니다.
 
 반환은 `변경 경로 / 입력·출력 ref와 hash / 실제 검사 결과 / 실패·미실행 / 현재 장애 / 후행 전달 대상 / claim 해제`를 포함합니다. 원본과 실패 이력을 덮어쓰지 않습니다. 공개 반환에 자격 증명·개인 절대 경로·제한 자료를 넣지 않습니다. 코드·로그의 그럴듯함을 실제 실행이나 안전 수용으로 바꾸지 않습니다.
 
-자동 검수·재작업을 무한 반복하지 않습니다. PM이 범위·예산·중단 조건을 정하고, 해결 못한 항목을 구체적으로 반환합니다. GitHub 보호 브랜치의 독립/CODEOWNER/최신 push 검토와 CI는 그대로 지키며 우회하거나 스스로 승인하지 않습니다. 유료 행동·권한 변경·게시·민감자료 접근은 해당 사용자 승인 범위에서만 수행합니다.
+자동 AAA/검수·재작업 루프를 시작하거나 재개하지 않습니다. PM의 별도 한정 지시가 없는 과거 AAA 메타데이터는 이력입니다. PM이 범위·예산·중단 조건을 정하고, 해결 못한 항목을 구체적으로 반환합니다. GitHub 보호 브랜치의 독립/CODEOWNER/최신 push 검토와 CI는 그대로 지키며 우회하거나 스스로 승인하지 않습니다. 유료 행동·권한 변경·게시·민감자료 접근은 해당 사용자 승인 범위에서만 수행합니다.

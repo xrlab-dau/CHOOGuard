@@ -31,53 +31,61 @@
     "predecessors": [
       {
         "issue": 100,
+        "artifact": "artifact:100:voice-run-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:100:voice-run-contract:candidate"
+        "reason": "Consume only 비밀값 없는 자체호스팅설정 및 stop/reconnect/권한 동작"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 140,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "#142 actual-run candidate consumes the success-qualified runnable payload selected for the #140 rehearsal; an attempt/failure index is not executable availability."
       },
       {
         "issue": 99,
+        "artifact": "artifact:99:recovery-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-receipt:accept"
+        "reason": "Consume only 각 fault point 전후 정체성/관측/인솔/사건/열차/승인원장 비교"
       },
       {
         "issue": 100,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       },
       {
         "issue": 140,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       }
     ],
     "successors": [
       {
         "issue": 91,
+        "artifact": "artifact:142:fmp12c-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:142:fmp12c-receipt:accept"
+        "reason": "Consume only actual impairment/action/voice/traffic receipt or capability-blocked record."
       }
     ],
     "oneOfGroups": [],
@@ -165,6 +173,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

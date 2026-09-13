@@ -32,99 +32,121 @@
     "successors": [
       {
         "issue": 57,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 79,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 79,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 80,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 80,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 81,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 81,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 89,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 89,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 144,
+        "artifact": "artifact:55:team-entry:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-entry:candidate"
+        "reason": "Consume only 새 ref에서 읽을 최소 경로·명령·미지원 조건이 있음"
       }
     ],
     "oneOfGroups": [
       {
         "artifact": "or:55:baseline-candidate",
         "consumerPhase": "candidate",
-        "resolution": "At least one selected path/ref/digest-compatible baseline. Legacy selection only unchanged tracked API. Native selection requires Native contract candidate. The #69 branch is limited to its completed remote-checkout/source/LFS/lightweight Python/document/policy record at the separately recorded tested-code ref. It does not qualify Unity, C#, Windows, HMD, runnable build, performance, Native multiplayer or product acceptance.",
         "alternatives": [
           {
             "issue": 120,
             "artifact": "artifact:120:foundation-published-source:accept",
-            "producerPhase": "accept"
+            "producerPhase": "accept",
+            "additionalInputs": [
+              {
+                "artifact": "artifact:10:foundation-contract-v2:candidate",
+                "consumerPhase": "candidate"
+              }
+            ]
           },
           {
             "issue": 69,
             "artifact": "artifact:69:historical-unchanged-checkout:accept",
             "producerPhase": "accept"
           }
-        ]
+        ],
+        "resolution": "At least one selected path/ref/digest-compatible baseline. Legacy selection only unchanged tracked API. Native selection requires Native contract candidate. The #69 branch is limited to its completed remote-checkout/source/LFS/lightweight Python/document/policy record at the separately recorded tested-code ref. It does not qualify Unity, C#, Windows, HMD, runnable build, performance, Native multiplayer or product acceptance."
       },
       {
         "artifact": "or:55:baseline-accept",
         "consumerPhase": "accept",
-        "resolution": "Final documented scope must match selected baseline; Native extension requires accepted Native contract, legacy extension has no #25/#10-final prerequisite. The #69 branch is limited to its completed remote-checkout/source/LFS/lightweight Python/document/policy record at the separately recorded tested-code ref. It does not qualify Unity, C#, Windows, HMD, runnable build, performance, Native multiplayer or product acceptance.",
         "alternatives": [
           {
             "issue": 120,
             "artifact": "artifact:120:foundation-published-source:accept",
-            "producerPhase": "accept"
+            "producerPhase": "accept",
+            "additionalInputs": [
+              {
+                "artifact": "artifact:10:foundation-contract-v2:accept",
+                "consumerPhase": "accept"
+              }
+            ]
           },
           {
             "issue": 69,
             "artifact": "artifact:69:historical-unchanged-checkout:accept",
             "producerPhase": "accept"
           }
-        ]
+        ],
+        "resolution": "Final documented scope must match selected baseline; Native extension requires accepted Native contract, legacy extension has no #25/#10-final prerequisite. The #69 branch is limited to its completed remote-checkout/source/LFS/lightweight Python/document/policy record at the separately recorded tested-code ref. It does not qualify Unity, C#, Windows, HMD, runnable build, performance, Native multiplayer or product acceptance."
       }
     ],
     "parallelCandidates": [
@@ -171,24 +193,16 @@
       41,
       70,
       36,
-      74,
-      76,
       33,
-      77,
       32,
-      78,
       82,
       27,
       26,
       25,
       24,
       99,
-      10,
       100,
-      106,
-      107,
       119,
-      120,
       122,
       123,
       125,
@@ -210,8 +224,24 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      10,
+      74,
+      76,
+      77,
+      78,
+      106,
+      107,
+      120
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -222,6 +252,7 @@
       "readWhen": "prepare",
       "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
       "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -230,7 +261,11 @@
         "value": "b399e2cce0f4b1d3504dfbb39b4a3d36bb193232"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/dev/check_foundation.py",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/context/README.md",
@@ -238,6 +273,7 @@
       "readWhen": "prepare",
       "why": "공개 기준·계획 projection과 local source 접근을 구분",
       "limits": "선택되지 않은 Native/legacy branch의 source를 읽거나 모든 #120/#10/#69를 동시에 요구하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -246,7 +282,11 @@
         "value": "4ea59cec84a6bb44c527dd2ab82811196498720a"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/context/README.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

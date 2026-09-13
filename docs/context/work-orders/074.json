@@ -32,72 +32,81 @@
     "predecessors": [
       {
         "issue": 70,
+        "artifact": "artifact:70:zone-boundaries:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:70:zone-boundaries:accept"
+        "reason": "Final module/portal scope must bind authoritative boundary, not wait for all scene work."
       }
     ],
     "successors": [
       {
         "issue": 58,
+        "artifact": "artifact:74:pilot-manifest:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:74:pilot-manifest:candidate"
+        "reason": "Roundtrip manifest candidate consumed for final recipe compatibility only."
       },
       {
         "issue": 67,
+        "artifact": "artifact:74:pilot-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:74:pilot-manifest:accept"
+        "reason": "Consume only 2회export/hash·축/pivot·LOD/재질비교"
       },
       {
         "issue": 76,
+        "artifact": "artifact:74:pilot-manifest:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:74:pilot-manifest:candidate"
+        "reason": "Roundtrip candidate contract permits geometry work before final material."
       },
       {
         "issue": 76,
+        "artifact": "artifact:74:pilot-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:74:pilot-manifest:accept"
+        "reason": "Consume only 2회export/hash·축/pivot·LOD/재질비교"
       },
       {
         "issue": 77,
+        "artifact": "artifact:74:pilot-manifest:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:74:pilot-manifest:candidate"
+        "reason": "Roundtrip candidate contract permits geometry work before final material."
       },
       {
         "issue": 77,
+        "artifact": "artifact:74:pilot-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:74:pilot-manifest:accept"
+        "reason": "Consume only 2회export/hash·축/pivot·LOD/재질비교"
       },
       {
         "issue": 78,
+        "artifact": "artifact:74:pilot-manifest:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:74:pilot-manifest:candidate"
+        "reason": "Roundtrip candidate contract permits geometry work before final material."
       },
       {
         "issue": 78,
+        "artifact": "artifact:74:pilot-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:74:pilot-manifest:accept"
+        "reason": "Consume only 2회export/hash·축/pivot·LOD/재질비교"
       },
       {
         "issue": 106,
+        "artifact": "artifact:74:pilot-manifest:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:74:pilot-manifest:candidate"
+        "reason": "Consume only 2회export/hash·축/pivot·LOD/재질비교"
       }
     ],
     "oneOfGroups": [
       {
         "artifact": "or:74:roundtrip-baseline",
         "consumerPhase": "candidate",
-        "resolution": "Existing native baseline pilot can start without new #55 final. New Native adapter pilot requires qualified #55 candidate and #120.",
         "alternatives": [
           {
             "issue": 65,
@@ -107,14 +116,49 @@
           {
             "issue": 55,
             "artifact": "artifact:55:team-contract:candidate",
-            "producerPhase": "candidate"
+            "producerPhase": "candidate",
+            "additionalInputs": [
+              {
+                "artifact": "artifact:120:foundation-published-source:accept",
+                "consumerPhase": "candidate",
+                "reason": "Only the selected Native team-contract branch reads these exact local_unpublished paths; the unchanged existing-asset branch does not inherit #120.",
+                "accessGuard": {
+                  "id": "source-access:74:candidate:or:74:roundtrip-baseline",
+                  "kind": "selected_path_source_access",
+                  "activation": {
+                    "type": "selected_or_alternative",
+                    "group": "or:74:roundtrip-baseline",
+                    "selectedArtifact": "artifact:55:team-contract:candidate"
+                  },
+                  "consumerPhase": "candidate",
+                  "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+                  "operations": [
+                    {
+                      "path": "docs/choo-guard-native-team-contracts.md",
+                      "operation": "read",
+                      "declaredAvailability": "local_unpublished",
+                      "observedAt": "2026-09-12T09:39:41Z",
+                      "localAtCapture": null,
+                      "developAtCapture": null
+                    }
+                  ],
+                  "predicate": {
+                    "allSelectedPathsCoveredByManifest": true,
+                    "accessibleSourceRefRequired": true,
+                    "pathDigestMatchRequired": true,
+                    "localPresenceAloneQualifies": false,
+                    "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+                  }
+                }
+              }
+            ]
           }
-        ]
+        ],
+        "resolution": "Existing native baseline pilot can start without new #55 final. New Native adapter pilot requires qualified #55 candidate and #120."
       }
     ],
     "parallelCandidates": [
       70,
-      65,
       119,
       73,
       75,
@@ -130,7 +174,6 @@
       90,
       57,
       56,
-      55,
       93,
       94,
       52,
@@ -142,7 +185,6 @@
       43,
       42,
       41,
-      107,
       40,
       39,
       38,
@@ -154,7 +196,6 @@
       31,
       29,
       28,
-      120,
       27,
       121,
       26,
@@ -185,7 +226,6 @@
       135,
       136,
       137,
-      10,
       138,
       139,
       140,
@@ -193,8 +233,21 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      10,
+      55,
+      65,
+      107,
+      120
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -205,6 +258,7 @@
       "readWhen": "prepare",
       "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
       "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -213,7 +267,11 @@
         "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

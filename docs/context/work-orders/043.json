@@ -32,45 +32,52 @@
     "successors": [
       {
         "issue": 13,
+        "artifact": "artifact:43:R-03-governance-diff:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:43:R-03-governance-diff:accept"
+        "reason": "Only the qualified governance comparison, six-root owner results and explicit approval owner are consumed; it is not source-write permission."
       },
       {
         "issue": 44,
+        "artifact": "artifact:43:R-03-governance-diff:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:43:R-03-governance-diff:candidate"
+        "reason": "Candidate governance diff is review input, not permission to alter live settings."
       },
       {
         "issue": 44,
+        "artifact": "artifact:43:R-03-governance-diff:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:43:R-03-governance-diff:accept"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       },
       {
         "issue": 45,
+        "artifact": "artifact:43:R-03-governance-diff:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:43:R-03-governance-diff:candidate"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       },
       {
         "issue": 45,
+        "artifact": "artifact:43:R-03-governance-diff:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:43:R-03-governance-diff:accept"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       },
       {
         "issue": 52,
+        "artifact": "artifact:43:R-03-governance-diff:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:43:R-03-governance-diff:candidate"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       },
       {
         "issue": 52,
+        "artifact": "artifact:43:R-03-governance-diff:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:43:R-03-governance-diff:accept"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       }
     ],
     "oneOfGroups": [],
@@ -159,8 +166,15 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -171,6 +185,7 @@
       "readWhen": "prepare",
       "why": "protected paths/CI distinction을 증명한다.",
       "limits": "live settings를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -179,7 +194,11 @@
         "value": "cf7e6839a039d882d252f74700d335e5dd187249"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-github-governance-audit-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-github-governance-audit-v1.md",
@@ -187,6 +206,7 @@
       "readWhen": "prepare",
       "why": "captured governance/path audit and CODEOWNERS scope claims를 증명한다.",
       "limits": "captured `.github/CODEOWNERS` file/live GitHub settings가 없으므로 현재 규칙을 확정하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -195,7 +215,11 @@
         "value": "cf7e6839a039d882d252f74700d335e5dd187249"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-github-governance-audit-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": ".github/workflows/pr-triage.yml",
@@ -203,6 +227,7 @@
       "readWhen": "prepare",
       "why": "captured workflow behavior를 증명한다.",
       "limits": "successful CI run을 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -211,7 +236,11 @@
         "value": "b2622c66417965abb9a48e0ae50e7688c2b6477d"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/.github/workflows/pr-triage.yml",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

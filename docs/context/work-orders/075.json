@@ -31,53 +31,88 @@
     "predecessors": [
       {
         "issue": 71,
+        "artifact": "artifact:71:material-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:71:material-catalog:candidate"
+        "reason": "Consume only 소재→사용자산/구역·권리·해상도/용량구분"
       },
       {
         "issue": 73,
+        "artifact": "artifact:73:job-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:73:job-contract:candidate"
+        "reason": "Consume only jobID·원본/캐시/임시/후보·재개계약"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #75 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:75:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-native-team-contracts.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 71,
+        "artifact": "artifact:71:material-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:71:material-catalog:accept"
+        "reason": "Consume only 소재→사용자산/구역·권리·해상도/용량구분"
       },
       {
         "issue": 73,
+        "artifact": "artifact:73:job-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:73:job-contract:accept"
+        "reason": "Consume only jobID·원본/캐시/임시/후보·재개계약"
       }
     ],
     "successors": [
       {
         "issue": 76,
+        "artifact": "artifact:75:material-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:75:material-manifest:accept"
+        "reason": "Material cache/derived PBR input required at final material acceptance only."
       },
       {
         "issue": 77,
+        "artifact": "artifact:75:material-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:75:material-manifest:accept"
+        "reason": "Material cache/derived PBR input required at final material acceptance only."
       },
       {
         "issue": 78,
+        "artifact": "artifact:75:material-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:75:material-manifest:accept"
+        "reason": "Material cache/derived PBR input required at final material acceptance only."
       }
     ],
     "oneOfGroups": [],
@@ -165,8 +200,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -177,6 +219,7 @@
       "readWhen": "prepare",
       "why": "기존재질이름/사용자산",
       "limits": "후보texture가현재채택됐다는뜻아님",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -185,7 +228,11 @@
         "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

@@ -34,81 +34,131 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #92 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:92:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/evidence/foundation/2026-09-09-connected-world.json",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "scripts/dev/native_manifest.py",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "Freeze an exact success-qualified runnable payload/source/build/data/service manifest. Attempt or failure evidence cannot produce the frozen release candidate."
       },
       {
         "issue": 91,
+        "artifact": "artifact:91:fmp12-acceptance-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:91:fmp12-acceptance-evidence:accept"
+        "reason": "Consume only two 60-minute receipts, impairment/recovery evidence, actual threshold comparison, failures and limits."
       },
       {
         "issue": 100,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       },
       {
         "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:accept"
+        "reason": "Final delivery join requires success-qualified runnable payload, not a build-attempt/failure report."
       },
       {
         "issue": 144,
+        "artifact": "artifact:144:fmp13b-independent-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:144:fmp13b-independent-receipt:accept"
+        "reason": "Consume only distinct-developer actual checkout/build/run/validation result or blocker."
       }
     ],
     "successors": [
       {
         "issue": 39,
+        "artifact": "artifact:92:fmp13-delivery-evidence:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:fmp13-delivery-evidence:candidate"
+        "reason": "Delivery candidate/qualified scope for disclosure; no old CV prerequisite."
       },
       {
         "issue": 54,
+        "artifact": "artifact:92:fmp13-delivery-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:92:fmp13-delivery-evidence:accept"
+        "reason": "Consume only candidate platform build outputs plus distinct-developer reproduction receipt; each platform/result/limit is explicit."
       },
       {
         "issue": 91,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "#91 actual measurement binds the exact frozen #92 candidate digest before execution and remains independent of #144."
       },
       {
         "issue": 91,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "#91 independently verifies its own acceptance evidence against the exact frozen #92 candidate digest; it does not wait for #144."
       },
       {
         "issue": 144,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "#144 binds the same frozen candidate digest as #91 before independent execution; #92 final acceptance is not required."
       },
       {
         "issue": 144,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "The independent receipt remains digest-bound to the exact frozen #92 candidate at final review."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

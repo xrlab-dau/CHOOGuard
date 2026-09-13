@@ -35,27 +35,33 @@
     "predecessors": [
       {
         "issue": 43,
+        "artifact": "artifact:43:R-03-governance-diff:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:43:R-03-governance-diff:accept"
+        "reason": "Only the qualified governance comparison, six-root owner results and explicit approval owner are consumed; it is not source-write permission."
       },
       {
         "issue": 44,
+        "artifact": "artifact:44:R-04-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:44:R-04-evidence:accept"
+        "reason": "Only the qualified five-file source/scratch/result/synthetic-disclosure/reviewer receipt is consumed; it is not runtime permission."
       }
     ],
     "successors": [
       {
         "issue": 16,
+        "artifact": "artifact:13:M0-00-policy-baseline:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:13:M0-00-policy-baseline:accept"
+        "reason": "Consumes the exact accepted baseline digest and stated limits only; no install or execution permission."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -66,6 +72,7 @@
       "readWhen": "prepare",
       "why": "작업별 evidence/hash/review obligations와 M0-00의 PUBLIC_SYNTHETIC·보호경로·PM 확인 경계를 증명한다.",
       "limits": "목표/DoD뿐이며 실행, clean checkout, PM 승인 또는 runtime permission을 증명하지 않는다. Exact captured bytes: frozen support S13-01.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -74,7 +81,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "specs/001-m0-00-safe-bootstrap/spec.md",
@@ -82,6 +93,7 @@
       "readWhen": "prepare",
       "why": "Draft 상태, 현재 검사기의 한계, protected-path last-match owner, complete hash coverage, 사람 signoff, append-only/public-sanitized evidence 조건을 증명한다.",
       "limits": "실행/수용 증거가 아니며 location routing 문구는 prospective policy로 사용하지 않는다. Exact captured bytes: frozen support S13-02.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -90,7 +102,11 @@
         "value": "16b31bf475789061cad1dcbdefd27529cc6647be"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/specs/001-m0-00-safe-bootstrap/spec.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-ai-native-pipeline-v1.md",
@@ -98,6 +114,7 @@
       "readWhen": "prepare",
       "why": "완료 주장이 시험/독립검토를 대체하지 않고 exact writer ownership과 handoff가 필요함을 증명한다.",
       "limits": "실제 lease·충돌 부재·generated closure를 증명하지 않는다. Exact captured bytes: frozen support S13-03.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -106,7 +123,11 @@
         "value": "9a575eff21b96161cb7d562b260db3128831be87"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

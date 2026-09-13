@@ -31,27 +31,31 @@
     "predecessors": [
       {
         "issue": 25,
+        "artifact": "artifact:25:training-action-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:25:training-action-contract:candidate"
+        "reason": "Consume only 각 필드 의미, rejection state invariants, 새 세계 연결 비목표"
       },
       {
         "issue": 32,
+        "artifact": "artifact:32:M4-01-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:32:M4-01-fixture:candidate"
+        "reason": "Consume only 5 provisional role rows with all required fields and disclaimer"
       },
       {
         "issue": 25,
+        "artifact": "artifact:25:training-action-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:25:training-action-contract:accept"
+        "reason": "Consume only 각 필드 의미, rejection state invariants, 새 세계 연결 비목표"
       },
       {
         "issue": 32,
+        "artifact": "artifact:32:M4-01-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:32:M4-01-fixture:accept"
+        "reason": "Consume only 5 provisional role rows with all required fields and disclaimer"
       }
     ],
     "successors": [],
@@ -141,8 +145,15 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -154,44 +165,39 @@
           "lock:test:training-session",
           "path:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs|Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
           "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+            "lock:runtime:training-session",
+            "lock:test:training-session"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+            "lock:runtime:training-session",
+            "lock:test:training-session",
+            "path:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs|Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs"
+          ]
+        }
+      },
+      {
+        "issue": 152,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/**"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/**"
+          ]
+        }
       }
     ]
   },
-  "minimumContext": [
-    {
-      "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
-      "selector": "SelectRole, AcknowledgeBriefing, Submit",
-      "readWhen": "candidate",
-      "why": "Quest 전이와 피드백 생성 위치",
-      "limits": "서버 공동세계 상태 아님.",
-      "availability": "published",
-      "provider": "git-at-captured-ref",
-      "ref": "6490956d203549b56cbd86846120759889abb016",
-      "digest": {
-        "algorithm": "git-blob-sha1",
-        "value": "4c772a5a1f5359a083c3c151bfa0da3c769d7292"
-      },
-      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
-      "access": "repository read access"
-    },
-    {
-      "path": "foundation/scenarios/foundation-demo.json",
-      "selector": "roles[].actionFixture, feedback",
-      "readWhen": "candidate",
-      "why": "5직무 합성 fixture/설명형 결과",
-      "limits": "기관 SOP/공식 점수 아님.",
-      "availability": "published",
-      "provider": "git-at-captured-ref",
-      "ref": "6490956d203549b56cbd86846120759889abb016",
-      "digest": {
-        "algorithm": "git-blob-sha1",
-        "value": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b"
-      },
-      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/scenarios/foundation-demo.json",
-      "access": "repository read access"
-    }
-  ],
+  "minimumContext": [],
   "readMore": {
     "sources": "node scripts/context/task_context.mjs brief --issue 26 --section sources --phase prepare",
     "inputs": "node scripts/context/task_context.mjs brief --issue 26 --section inputs --phase candidate",

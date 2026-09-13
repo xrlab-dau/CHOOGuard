@@ -41,68 +41,124 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #67 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:67:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-connected-world.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "foundation/world/facility-coverage.json",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": true
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 70,
+        "artifact": "artifact:70:zone-boundaries:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:70:zone-boundaries:accept"
+        "reason": "Consume only 구역/번들/portal·coveragehash·provisional명시"
       },
       {
         "issue": 74,
+        "artifact": "artifact:74:pilot-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:74:pilot-manifest:accept"
+        "reason": "Consume only 2회export/hash·축/pivot·LOD/재질비교"
       },
       {
         "issue": 76,
+        "artifact": "artifact:76:native-module:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:76:native-module:accept"
+        "reason": "Consume only 해당고정목록만별도출력으로생성"
       },
       {
         "issue": 77,
+        "artifact": "artifact:77:native-module:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:77:native-module:accept"
+        "reason": "Consume only 해당고정목록만별도출력으로생성"
       },
       {
         "issue": 78,
+        "artifact": "artifact:78:native-module:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:78:native-module:accept"
+        "reason": "Consume only 해당고정목록만별도출력으로생성"
       },
       {
         "issue": 79,
+        "artifact": "artifact:79:zone-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:79:zone-profile:accept"
+        "reason": "Consume only 구역/portalstub·출처·가정·사용자산"
       },
       {
         "issue": 80,
+        "artifact": "artifact:80:zone-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:80:zone-profile:accept"
+        "reason": "Consume only 구역/portalstub·출처·가정·사용자산"
       },
       {
         "issue": 81,
+        "artifact": "artifact:81:zone-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:81:zone-profile:accept"
+        "reason": "Consume only 구역/portalstub·출처·가정·사용자산"
       },
       {
         "issue": 82,
+        "artifact": "artifact:82:connected-world-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:82:connected-world-profile:accept"
+        "reason": "Consume only 13구역/12연결 기존 ID를 유지한 승인된 통합"
       }
     ],
     "successors": [],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -113,6 +169,7 @@
       "readWhen": "prepare",
       "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
       "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -121,7 +178,11 @@
         "value": "52d258834636cbc2d0f06efc594c7f74842ed619"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/world/station-twin-profile.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

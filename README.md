@@ -2,7 +2,9 @@
 
 [현재 오케스트레이션 계약](docs/context/orchestration-contract.md) → 해당 이슈의 `work-orders/NNN.json` → 필요한 inputs/writes/checks만 읽습니다.
 
-`node scripts/context/task_context.mjs brief --issue <number>`
+`node scripts/context/task_context.mjs brief --issue <number> --phase prepare`
+
+코드 탐색이 필요하면 [Graphify 연결 그래프](docs/context/graphify/README.md)에서 해당 issue/phase/symbol만 조회합니다. 고정 소스의 AST와 작업 계약을 연결하며 실행·수용 권한은 부여하지 않습니다.
 
 PM이 우선순위·선행 산출물·인계를 조율합니다. 개인은 실제 착수 시에만 claim하며 학교 PC·장소·고사양 보유로 배정하지 않습니다. 아래 기존 기술 문서는 필요한 상세와 역사적 근거를 찾는 경로입니다.
 

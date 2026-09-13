@@ -30,29 +30,33 @@
     "predecessors": [
       {
         "issue": 70,
+        "artifact": "artifact:70:zone-boundaries:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:70:zone-boundaries:candidate"
+        "reason": "Consume only 구역/번들/portal·coveragehash·provisional명시"
       },
       {
         "issue": 15,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       }
     ],
     "successors": [
       {
         "issue": 75,
+        "artifact": "artifact:71:material-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:71:material-catalog:candidate"
+        "reason": "Consume only 소재→사용자산/구역·권리·해상도/용량구분"
       },
       {
         "issue": 75,
+        "artifact": "artifact:71:material-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:71:material-catalog:accept"
+        "reason": "Consume only 소재→사용자산/구역·권리·해상도/용량구분"
       }
     ],
     "oneOfGroups": [],
@@ -142,8 +146,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -154,6 +165,7 @@
       "readWhen": "prepare",
       "why": "현재 객체별 source와 필수 컴포넌트·검수 연결",
       "limits": "새 FBX 또는 새 시설의 검수 통과를 증명하지 않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -162,7 +174,11 @@
         "value": "8a902daa76e100d336b56148fff59baa01d13c80"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/object-references.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "foundation/art/asset-manifest.json",
@@ -170,6 +186,7 @@
       "readWhen": "prepare",
       "why": "현재사용재질·자산연결",
       "limits": "기존noImageTexture정책값은새요청의전역제한으로취급하지않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -178,7 +195,11 @@
         "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

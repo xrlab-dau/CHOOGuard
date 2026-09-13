@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "classification": "PUBLIC_PROJECT_CONTEXT",
   "project": "CHOOGuard",
-  "generatedAt": "2026-09-13T00:31:40.215Z",
+  "generatedAt": "2026-09-13T03:52:28.423Z",
   "snapshot": {
     "sourceRef": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
     "capturedAt": "2026-09-12T09:39:41Z"
@@ -109,7 +109,11 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ]
   },
   "requirements": [
@@ -30909,6 +30913,13 @@
           "qualification": "Consume only actual impairment/action/voice/traffic receipt or capability-blocked record.",
           "consumerPhase": "accept",
           "producerPhase": "accept"
+        },
+        {
+          "id": "artifact:152:fixture-discovery-proof:accept",
+          "fromIssue": 152,
+          "qualification": "통합 수용은 70 skipped 진단·필수 회귀 실행 증명을 소비하며 과거 전체/분리·Voice89 결과로 대체하지 않는다.",
+          "consumerPhase": "accept",
+          "producerPhase": "accept"
         }
       ],
       "outputs": [
@@ -31191,6 +31202,13 @@
           "consumerPhase": "accept",
           "producerPhase": "accept",
           "reason": "Consume only actual impairment/action/voice/traffic receipt or capability-blocked record."
+        },
+        {
+          "issue": 152,
+          "artifact": "artifact:152:fixture-discovery-proof:accept",
+          "consumerPhase": "accept",
+          "producerPhase": "accept",
+          "reason": "통합 수용은 70 skipped 진단·필수 회귀 실행 증명을 소비하며 과거 전체/분리·Voice89 결과로 대체하지 않는다."
         }
       ],
       "hardSuccessors": [
@@ -33180,6 +33198,13 @@
           "qualification": "인증participant/team/instructor identity",
           "consumerPhase": "accept",
           "producerPhase": "accept"
+        },
+        {
+          "id": "artifact:151:staging-ownership-proof:accept",
+          "fromIssue": 151,
+          "qualification": "실제 LiveKit 마이크/PTT 준비에 P0 소유권 미입증 credential/publication 차단 증명이 선행한다. Python24/Voice89로 대체하지 않는다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept"
         }
       ],
       "outputs": [
@@ -33542,6 +33567,13 @@
           "consumerPhase": "accept",
           "producerPhase": "accept",
           "reason": "Consume only 신원/직무/거리/가림/동시조작/관측·개인pause·TLS 결과"
+        },
+        {
+          "issue": 151,
+          "artifact": "artifact:151:staging-ownership-proof:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "실제 LiveKit 마이크/PTT 준비에 P0 소유권 미입증 credential/publication 차단 증명이 선행한다. Python24/Voice89로 대체하지 않는다."
         }
       ],
       "hardSuccessors": [
@@ -34260,7 +34292,7 @@
       "title": "[FMP-14] 핵심 자산 제작 경로 권위 정합 및 정제",
       "kind": "work_item",
       "parent": 54,
-      "outcome": "상충하는제작경로결정을#10에서해결한뒤기존생성자산이력을보존하며핵심차량·문·설비·맵의정제/통합후보를제공한다.",
+      "outcome": "외부 생성 제작 지시는 현재 보류다. 기존 생성 자산·권위 충돌·실패 이력을 보존하고, 공개 층별 도면·안내지도 기반 Native 작업과 구분된 재개 범위를 PM이 명시하기 전 외부 제작을 실행하지 않는다.",
       "nonGoals": [
         "권위충돌해결전외부생성재개/크레딧사용",
         "Native전용결정을임의확정",
@@ -34662,7 +34694,7 @@
       },
       "checks": [
         {
-          "inspection": "#10명시결정과기존artifact를대조하고그범위밖방법/호출을실행하지않는다.",
+          "inspection": "[보류된 실행 계약: 새 PM 범위 승인 전 실행 금지] #10명시결정과기존artifact를대조하고그범위밖방법/호출을실행하지않는다.",
           "expected": "충돌해결/미결상태가권위표와일치",
           "negativeCase": "한쪽문서를조용히채택하거나이전mesh를폐기주장",
           "evidence": "권위처리표",
@@ -34672,7 +34704,7 @@
           ]
         },
         {
-          "inspection": "결정후허용후보를Blender에서축/pivot/UV/LOD/분리문정리하고독립Unity샘플에서문·가림·접지·승하차·movingcollider를검사한다.",
+          "inspection": "[보류된 실행 계약: 새 PM 범위 승인 전 실행 금지] 결정후허용후보를Blender에서축/pivot/UV/LOD/분리문정리하고독립Unity샘플에서문·가림·접지·승하차·movingcollider를검사한다.",
           "expected": "정제전후hash와기능/시각미수용구분",
           "negativeCase": "외형배치만으로맵/군중/성능수용",
           "evidence": "manifest·compile/test·검수packet",
@@ -34683,7 +34715,7 @@
         }
       ],
       "acceptance": [
-        "SC-01 양쪽 근거를 보존하고 #10의 명시적 현재 방법 결정을 받은 범위에서만 제작을 실행한다. 미결 기록은 정직한 blocker이지만 이 수용 기준을 충족하지 않는다.",
+        "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다. SC-01 양쪽 근거를 보존하고 #10의 명시적 현재 방법 결정을 받은 범위에서만 제작을 실행한다. 미결 기록은 정직한 blocker이지만 이 수용 기준을 충족하지 않는다.",
         "과거생성원본/hash/차감이력을삭제하거나새수용으로바꾸지않는다.",
         "방법결정후정제후보의축/UV/LOD/문과권리를검사한다.",
         "기존world/entity/frame/portal를유지하고기능검증을별도기록한다.",
@@ -34691,6 +34723,7 @@
         "권위 결정 후 실제 정제 모델과 Unity 기능/시각 검증 결과가 있어야 수용한다. 충돌 보고서·원본 생성 이력·미실행 보고만으로 완료하지 않는다."
       ],
       "stopConditions": [
+        "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다.",
         "#10의권위결정이없거나모호하면외부생성·새제작방법선택을멈추고이력정리만수행한다.",
         "기존artifact의권리/hash가없으면정제/배포후보수용을멈춘다.",
         "sharedart/editorlock이겹치면새출력을보존하고통합인계후영향검사를다시한다.",
@@ -34700,7 +34733,9 @@
       "reviewNotes": [
         "SC-01은이슈방법만국소차단하며다른공개/합성개발의전역선행이아니다.",
         "#78과차량assetID범위가겹치면PM이고정목록을나누기전동일모듈을작성하지않는다.",
-        "준비·qualified candidate·최종 수용은 별도 단계다. 입력 producer의 종료가 아니라 해당 phase의 artifact 자격을 확인한다. 미실행/실패 보고는 사실 보존이지 필수 실행 AC의 대체물이 아니다."
+        "준비·qualified candidate·최종 수용은 별도 단계다. 입력 producer의 종료가 아니라 해당 phase의 artifact 자격을 확인한다. 미실행/실패 보고는 사실 보존이지 필수 실행 AC의 대체물이 아니다.",
+        "보존된 이전 outcome (현재 실행 지시 아님): 상충하는제작경로결정을#10에서해결한뒤기존생성자산이력을보존하며핵심차량·문·설비·맵의정제/통합후보를제공한다.",
+        "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다."
       ],
       "hardPredecessors": [
         {
@@ -34741,7 +34776,24 @@
       ],
       "hardSuccessors": [],
       "oneOfInputs": [],
-      "guardPredicates": [],
+      "guardPredicates": [
+        {
+          "id": "issue-106-candidate-pm-resumption",
+          "kind": "pm_execution_resumption",
+          "consumerPhase": "candidate",
+          "state": "unverified",
+          "required": "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다.",
+          "nativeIssueEdge": false
+        },
+        {
+          "id": "issue-106-accept-pm-resumption",
+          "kind": "pm_execution_resumption",
+          "consumerPhase": "accept",
+          "state": "unverified",
+          "required": "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다.",
+          "nativeIssueEdge": false
+        }
+      ],
       "requiredLocks": [],
       "resourceBindings": [
         {
@@ -34794,7 +34846,7 @@
       "title": "[FMP-15] 자산·런타임 독립 AAA 비평·재작업",
       "kind": "work_item",
       "parent": 54,
-      "outcome": "기존ART검수에서동일조건익명A/B판정과결함환류·재작업·재검증을패킷hash로추적한다.",
+      "outcome": "자동 AAA/REWORK 실행 지시는 현재 중단·보류다. 과거 검수·실패·재작업 이력을 보존하고 명시적으로 승인된 한정 수정과 필요한 시험만 수행하며 자동 루프를 재개하거나 가짜 수용하지 않는다.",
       "nonGoals": [
         "이번보드/문서AAA검수로대체",
         "산업인증또는제품전체AAA선언",
@@ -35070,7 +35122,7 @@
       },
       "checks": [
         {
-          "inspection": "후보보기전rubric와기준자료를고정하고익명A/B각각을독립채점한뒤판정을잠근다.",
+          "inspection": "[보류된 실행 계약: 새 PM 범위 승인 전 실행 금지] 후보보기전rubric와기준자료를고정하고익명A/B각각을독립채점한뒤판정을잠근다.",
           "expected": "상대우위가아닌항목별PASS/REWORK/근거부족",
           "negativeCase": "카메라/축척차이·작성자노출·이전평가유도",
           "evidence": "익명packet·봉인정답표는별도비공개·잠근판정",
@@ -35080,7 +35132,7 @@
           ]
         },
         {
-          "inspection": "결함1건의수정→시험→새packet→재비평을리허설하고판정저장/필수뷰누락의부정경로를확인한다.",
+          "inspection": "[보류된 실행 계약: 새 PM 범위 승인 전 실행 금지] 결함1건의수정→시험→새packet→재비평을리허설하고판정저장/필수뷰누락의부정경로를확인한다.",
           "expected": "누락/오류는PASS아닌중단·실패보존",
           "negativeCase": "자가수정후자가AAA또는budget만료자동PASS",
           "evidence": "라운드ledger·실패기록",
@@ -35092,7 +35144,7 @@
         {
           "command": "python3 -m unittest discover -s scripts/art/team/FMP-15 -p 'test_*.py'",
           "proposed": true,
-          "expected": "실제 loop 코드와 adapter 경계 fixture를 구현한 뒤 정상 REWORK→재검증 및 모든 fail-closed 사례가 기대 결과와 일치",
+          "expected": "[보류된 실행 계약: 새 PM 범위 승인 전 실행 금지] 실제 loop 코드와 adapter 경계 fixture를 구현한 뒤 정상 REWORK→재검증 및 모든 fail-closed 사례가 기대 결과와 일치",
           "negativeCase": "ledger 파일만 저장하고 재작업 지시 미발행; target 변경 뒤 옛 PASS 재사용; 저장 실패 후 다음 후보 진행",
           "evidence": "loop 테스트 로그와 실제 qualified 후보 1건의 왕복 라운드 기록",
           "phases": [
@@ -35102,7 +35154,7 @@
         }
       ],
       "acceptance": [
-        "후보전rubric/참고기준/동일조건이동결된다.",
+        "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다. 후보전rubric/참고기준/동일조건이동결된다.",
         "writer와분리된critic의익명판정이packet hash에잠긴다.",
         "REWORK의구체결함과재검증기준이worker로돌아간다.",
         "필수자료/기능/성능근거부족은독립미수용으로남는다.",
@@ -35110,13 +35162,16 @@
         "qualified ART 후보 1건에서 실제 판정·결함 지시·수정 후보 수신·재검증을 왕복한 기록이 있어야 한다. 설계 문서나 가상 PASS만으로 자동 재작업 루프 완료를 주장하지 않는다."
       ],
       "stopConditions": [
+        "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다.",
         "익명화깨짐·조건불일치·필수뷰누락이면평가중단후새packet을요청한다.",
         "검수 대상이 #106의 권위 미결 방법/외부 생성 후보인 경우 그 경로만 멈춘다. 이미 검토 가능한 Native 후보의 비평은 #65/#85 전체 종료나 외부 생성 결정을 기다리지 않는다."
       ],
       "handoff": "#106/#82에잠긴결함목록·대상hash·재검증범위를전달하고,#92에수용된정확자산/기능범위만넘긴다.",
       "reviewNotes": [
         "기존ART AAA워크플로의실행이슈이며현재문서개편의검수결과를여기완료로등록하지않는다.",
-        "준비·qualified candidate·최종 수용은 별도 단계다. 입력 producer의 종료가 아니라 해당 phase의 artifact 자격을 확인한다. 미실행/실패 보고는 사실 보존이지 필수 실행 AC의 대체물이 아니다."
+        "준비·qualified candidate·최종 수용은 별도 단계다. 입력 producer의 종료가 아니라 해당 phase의 artifact 자격을 확인한다. 미실행/실패 보고는 사실 보존이지 필수 실행 AC의 대체물이 아니다.",
+        "보존된 이전 outcome (현재 실행 지시 아님): 기존ART검수에서동일조건익명A/B판정과결함환류·재작업·재검증을패킷hash로추적한다.",
+        "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다."
       ],
       "hardPredecessors": [
         {
@@ -35222,7 +35277,24 @@
           "resolution": "At least one qualified same-condition art packet; native branches independent of SC01. External branch also requires explicit SC01 method resolution."
         }
       ],
-      "guardPredicates": [],
+      "guardPredicates": [
+        {
+          "id": "issue-107-candidate-pm-resumption",
+          "kind": "pm_execution_resumption",
+          "consumerPhase": "candidate",
+          "state": "unverified",
+          "required": "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다.",
+          "nativeIssueEdge": false
+        },
+        {
+          "id": "issue-107-accept-pm-resumption",
+          "kind": "pm_execution_resumption",
+          "consumerPhase": "accept",
+          "state": "unverified",
+          "required": "현재 외부 Higgsfield/VARCO/CV 생성 및 자동 AAA/REWORK 루프는 중단·보류다. 과거 승인/실패/REWORK 이력은 보존하되 재개 허가 또는 수용으로 쓰지 않는다. 새로운 명시적 PM 범위 승인 없이 재개하지 않는다.",
+          "nativeIssueEdge": false
+        }
+      ],
       "requiredLocks": [],
       "resourceBindings": [
         {
@@ -35766,6 +35838,11 @@
           "level": "unknown",
           "text": "현재 live dirty/behind/소유권은 실행 직전 재측정해야 한다. 과거601/12 수치는 현재값이 아니다.",
           "source": "https://github.com/xrlab-dau/CHOOGuard/issues/120"
+        },
+        {
+          "level": "unknown",
+          "text": "PR153 bdcb714849fcdaa2d7d9f7f431b661a26eb3090a selected bytes are remotely accessible with exact path/digest. This source-only publication is not accepted new-checkout compile or team-baseline qualification.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/pull/153"
         }
       ],
       "context": [
@@ -35893,6 +35970,21 @@
           "acceptance": "미포함generated/raw/secret/cache/진행중변경의 이유 및 보존 위치 유형, 개인경로 제외",
           "proposed": true,
           "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:120:source-only-access-manifest:candidate",
+          "producerIssue": 120,
+          "producerPhase": "candidate",
+          "path": "docs/context/source-availability.json",
+          "qualification": "PR153 exact remote ref/path/SHA256 mapping for selected source reads and bounded implementation only; published access is source-only, not accepted clean-checkout/package resolve/compile, runnable payload or service safety. Inspect each selected qualifiedRefs entry and exclusions.",
+          "scope": "R-08 / source-only-access-manifest / candidate; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "PR153 exact remote ref/path/SHA256 mapping for selected source reads and bounded implementation only; published access is source-only, not accepted clean-checkout/package resolve/compile, runnable payload or service safety. Inspect each selected qualifiedRefs entry and exclusions.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
         }
       ],
       "writeScope": [
@@ -35913,6 +36005,14 @@
             "accept"
           ],
           "lock": "publication:selected-source-integration"
+        },
+        {
+          "path": "docs/context/source-availability.json",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
         }
       ],
       "phaseWriteScopes": {
@@ -35932,6 +36032,13 @@
             "physicalBinding": "workspace-file:{workspaceId}:docs/context/publication/",
             "canonicalWriteAllowed": false,
             "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/context/source-availability.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/context/source-availability.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
           }
         ],
         "accept": [
@@ -35940,6 +36047,13 @@
             "mode": "exclusive",
             "physicalBinding": "workspace-file:{workspaceId}:docs/context/publication/",
             "canonicalWriteAllowed": true
+          },
+          {
+            "path": "docs/context/source-availability.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/context/source-availability.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
           }
         ]
       },
@@ -35975,6 +36089,17 @@
             "scopePath": "docs/context/publication/",
             "scopeMode": "isolated_proposal",
             "lockId": "workspace-file:{workspaceId}:docs/context/publication/",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": null
+          },
+          {
+            "artifact": "artifact:120:source-only-access-manifest:candidate",
+            "path": "docs/context/source-availability.json",
+            "pathKind": "file",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/context/source-availability.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/context/source-availability.json",
             "canonicalWriteAllowed": false,
             "rawReceiptPolicy": null
           }
@@ -36418,6 +36543,34 @@
           "consumerPhase": "candidate",
           "producerPhase": "accept",
           "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
+        },
+        {
+          "issue": 149,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+        },
+        {
+          "issue": 150,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+        },
+        {
+          "issue": 151,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+        },
+        {
+          "issue": 152,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
         }
       ],
       "oneOfInputs": [],
@@ -45595,6 +45748,27 @@
           "qualification": "selected success-qualified build/service/data payload with sourceRef, output digest, scope and runnable command; build-attempt/failure index is not eligible",
           "consumerPhase": "candidate",
           "producerPhase": "candidate"
+        },
+        {
+          "id": "artifact:149:load-causal-corpus:accept",
+          "fromIssue": 149,
+          "qualification": "2~4-client 실제 리허설 전에 다섯 R6B 항목의 executed causal corpus가 통과해야 한다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept"
+        },
+        {
+          "id": "artifact:150:engine-metrics-run:accept",
+          "fromIssue": 150,
+          "qualification": "F(n)/U(n) 실제 callback/protocol 결속 증명 뒤 #140 계측 리허설을 진행한다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept"
+        },
+        {
+          "id": "artifact:152:fixture-discovery-proof:accept",
+          "fromIssue": 152,
+          "qualification": "70 skipped 원인과 필수 회귀 실행 확인을 현재 source에 결속한 뒤 실제 리허설로 진행한다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept"
         }
       ],
       "outputs": [
@@ -45885,6 +46059,27 @@
           "consumerPhase": "candidate",
           "producerPhase": "candidate",
           "reason": "The actual 2-4 client rehearsal candidate requires a success-qualified obtainable runnable payload. Build-attempt, failure, blocked-target, source-only, and script-only records are ineligible."
+        },
+        {
+          "issue": 149,
+          "artifact": "artifact:149:load-causal-corpus:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "2~4-client 실제 리허설 전에 다섯 R6B 항목의 executed causal corpus가 통과해야 한다."
+        },
+        {
+          "issue": 150,
+          "artifact": "artifact:150:engine-metrics-run:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "F(n)/U(n) 실제 callback/protocol 결속 증명 뒤 #140 계측 리허설을 진행한다."
+        },
+        {
+          "issue": 152,
+          "artifact": "artifact:152:fixture-discovery-proof:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "70 skipped 원인과 필수 회귀 실행 확인을 현재 source에 결속한 뒤 실제 리허설로 진행한다."
         }
       ],
       "hardSuccessors": [
@@ -47139,6 +47334,20 @@
           "qualification": "Consume only 6000.3.23f1 프로젝트와 NGO2.13.2/UTP2.7.4/LiveKitSDK2.0.0 및 server1.13.6 계약 정합",
           "consumerPhase": "accept",
           "producerPhase": "candidate"
+        },
+        {
+          "id": "artifact:150:engine-metrics-binding:candidate",
+          "fromIssue": 150,
+          "qualification": "새 coupled Player 빌드는 #150 callback/scheduler 결속 후보를 selected source digest에 포함한다. #150 실제 run acceptance를 빌드 선행으로 요구하지 않는다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate"
+        },
+        {
+          "id": "artifact:151:staging-ownership-proof:accept",
+          "fromIssue": 151,
+          "qualification": "LiveKit 서비스가 포함된 후보 전달 전에 P0 staging 소유권 proof가 필요하다. 실패/미검증 backend는 fail-closed를 유지한다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept"
         }
       ],
       "outputs": [
@@ -47376,12 +47585,17 @@
             "artifact": "artifact:143:fmp13a-evidence:candidate",
             "path": "docs/evidence/foundation/FMP-13a-build-attempt-index.json",
             "pathKind": "immutable_receipt_index",
-            "bindingKind": "phase_output",
+            "bindingKind": "diagnostic_context_output_not_runnable",
             "scopePath": "docs/evidence/foundation/FMP-13a-build-attempt-index.json",
             "scopeMode": "isolated_proposal",
             "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-13a-build-attempt-index.json",
             "canonicalWriteAllowed": false,
-            "rawReceiptPolicy": "Append/revise index selection only; never overwrite a raw receipt."
+            "rawReceiptPolicy": "Append/revise index selection only; never overwrite a raw receipt.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
           },
           {
             "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
@@ -47392,7 +47606,12 @@
             "scopeMode": "isolated_proposal",
             "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-13a-runnable-build-payload-index.json",
             "canonicalWriteAllowed": false,
-            "rawReceiptPolicy": "Index selection is versioned; it never overwrites a raw payload or turns a failed attempt into a payload."
+            "rawReceiptPolicy": "Index selection is versioned; it never overwrites a raw payload or turns a failed attempt into a payload.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
           }
         ],
         "accept": [
@@ -47411,12 +47630,17 @@
             "artifact": "artifact:143:fmp13a-evidence:accept",
             "path": "docs/evidence/foundation/FMP-13a-build-attempt-index.json",
             "pathKind": "immutable_receipt_index",
-            "bindingKind": "phase_output",
+            "bindingKind": "diagnostic_context_output_not_runnable",
             "scopePath": "docs/evidence/foundation/FMP-13a-build-attempt-index.json",
             "scopeMode": "isolated_proposal",
             "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-13a-build-attempt-index.json",
             "canonicalWriteAllowed": false,
-            "rawReceiptPolicy": "Append/revise index selection only; never overwrite a raw receipt."
+            "rawReceiptPolicy": "Append/revise index selection only; never overwrite a raw receipt.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
           },
           {
             "artifact": "artifact:143:fmp13a-runnable-build-payload:accept",
@@ -47427,7 +47651,12 @@
             "scopeMode": "isolated_proposal",
             "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-13a-runnable-build-payload-index.json",
             "canonicalWriteAllowed": false,
-            "rawReceiptPolicy": "Index selection is versioned; it never overwrites a raw payload or turns a failed attempt into a payload."
+            "rawReceiptPolicy": "Index selection is versioned; it never overwrites a raw payload or turns a failed attempt into a payload.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
           }
         ],
         "readOnlySnapshots": []
@@ -47465,7 +47694,8 @@
       ],
       "stopConditions": [
         "#120 publishable baseline or named exclusive lock is absent: do not edit/run against an implicit local-only team baseline; keep issue Blocked.",
-        "If the exact required platform/voice/independent-developer capability is unavailable, preserve a blocked record; do not substitute a plan, static inspection, or PREPARED_NOT_RUN for acceptance."
+        "If the exact required platform/voice/independent-developer capability is unavailable, preserve a blocked record; do not substitute a plan, static inspection, or PREPARED_NOT_RUN for acceptance.",
+        "build-attempt index는 진단 출력일 뿐 runnable payload가 아니다. 선택된 source/build/data/service digest·target·launch command·positive launch와 접근 가능한 payload를 별도 runnable index에 결속한다."
       ],
       "handoff": "후속 소비자에게 실제 source/build hash, 정확한 write set, 실행 명령과 종료 코드, test XML/receipt hash, 측정 capability facts, 실패·skip·retry·한계를 전달한다. 미실행 또는 blocked는 acceptance PASS가 아니다.",
       "reviewNotes": [
@@ -47500,6 +47730,20 @@
           "consumerPhase": "accept",
           "producerPhase": "candidate",
           "reason": "Consume only 6000.3.23f1 프로젝트와 NGO2.13.2/UTP2.7.4/LiveKitSDK2.0.0 및 server1.13.6 계약 정합"
+        },
+        {
+          "issue": 150,
+          "artifact": "artifact:150:engine-metrics-binding:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "새 coupled Player 빌드는 #150 callback/scheduler 결속 후보를 selected source digest에 포함한다. #150 실제 run acceptance를 빌드 선행으로 요구하지 않는다."
+        },
+        {
+          "issue": 151,
+          "artifact": "artifact:151:staging-ownership-proof:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "LiveKit 서비스가 포함된 후보 전달 전에 P0 staging 소유권 proof가 필요하다. 실패/미검증 backend는 fail-closed를 유지한다."
         }
       ],
       "hardSuccessors": [
@@ -47551,6 +47795,13 @@
           "consumerPhase": "candidate",
           "producerPhase": "candidate",
           "reason": "Independent reproduction executes only a success-qualified obtainable selected payload. Attempt/failure records and the unsupported #27 diagnostic label are not runnable."
+        },
+        {
+          "issue": 150,
+          "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+          "consumerPhase": "accept",
+          "producerPhase": "candidate",
+          "reason": "실제 2~4 protocol run에 새 coupled Player의 source/build/data/service digest와 positive launch가 있는 runnable payload가 필요하다. build-attempt index는 부적격이다."
         }
       ],
       "oneOfInputs": [],
@@ -48541,6 +48792,1988 @@
         120
       ],
       "requirements": []
+    },
+    {
+      "number": 149,
+      "workId": "FMP-12a-R1",
+      "title": "[FMP-12a-R1] Load causal contract R6B 5건 보완과 실행 corpus",
+      "kind": "work_item",
+      "parent": 140,
+      "outcome": "R6B normative REWORK의 다섯 causal 계약 결함을 portable 계약과 정상/실패 corpus로 분리하고 실제 runner에 실행해 #150/#140에 인계한다.",
+      "nonGoals": [
+        "20 clients including instructors/NPC100/2 concurrent incidents/분산·집결 각60분 목표를 낮추거나 단위 시험으로 수용하지 않는다.",
+        "개인·장소·학교 PC·장비 보유 사전 배정 없음. 실제 착수 시 scope/base/lease를 확인한다.",
+        "외부 생성 및 자동 AAA/REWORK 루프를 재개하지 않는다."
+      ],
+      "truth": [
+        {
+          "level": "target",
+          "text": "실제 GitHub OPEN 잔여 카드의 한정 작업 계약; 원래 2026-09-12 snapshot의 Project 상태나 현재 완료를 추론하지 않는다.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/149"
+        },
+        {
+          "level": "blocked",
+          "text": "R6B는 normative REWORK이며 production runtime bug 5개 실증이 아니다. 실행 corpus 없음, CC00 미수용, CC01–05 미채택.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/149"
+        }
+      ],
+      "context": [
+        {
+          "path": "scripts/dev/run_foundation_load.py",
+          "selector": "LoadError; main",
+          "proves": "causal runner와 실행 경계의 게시 소스",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "scripts/dev/foundation_load_metrics.py",
+          "selector": "MetricsReader",
+          "proves": "role/expected kind/metrics dispatch 검토 대상",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "scripts/dev/probe_journal.py",
+          "selector": "whole module",
+          "proves": "private journal 독립 관측과 판정 입력 경계 검토 대상",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "docs/choo-guard-voice-delivery-2026-09-13.md",
+          "selector": "Load causal contract; 팀 인계",
+          "proves": "R6B 미수용 및 실행 corpus 부재 설명",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        }
+      ],
+      "codePointers": [
+        "scripts/dev/run_foundation_load.py",
+        "scripts/dev/foundation_load_metrics.py",
+        "scripts/dev/foundation_load_windows.py",
+        "scripts/dev/probe_journal.py",
+        "scripts/dev/test_foundation_load.py"
+      ],
+      "inputs": [
+        {
+          "id": "issue-149-residual-contract",
+          "fromIssue": null,
+          "qualification": "https://github.com/xrlab-dau/CHOOGuard/issues/149 작업 조건과 PR153 게시 한계를 읽고 현행 claim/lease 및 source ref를 재확인한다.",
+          "consumerPhase": "prepare"
+        },
+        {
+          "id": "artifact:120:source-only-access-manifest:candidate",
+          "fromIssue": 120,
+          "qualification": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance.",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "artifact:149:load-causal-contract:candidate",
+          "producerIssue": 149,
+          "producerPhase": "candidate",
+          "path": "docs/context/contracts/load-causal-contract.json",
+          "qualification": "다섯 R6B 항목의 portable 관측/schema·exact variant·role·CLEANUP_BEGIN·deadline 정상 sibling 계약 및 corpus 매핑; 실행/CC 수용 주장 없음.",
+          "scope": "FMP-12a-R1 / load-causal-contract / candidate; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "다섯 R6B 항목의 portable 관측/schema·exact variant·role·CLEANUP_BEGIN·deadline 정상 sibling 계약 및 corpus 매핑; 실행/CC 수용 주장 없음.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:149:load-causal-corpus:candidate",
+          "producerIssue": 149,
+          "producerPhase": "candidate",
+          "path": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+          "qualification": "실행 가능한 정상/실패 경계 corpus의 case ID·입력·기대값·runner 명령·source/corpus digest가 고정된 후보. 미실행은 NOT_RUN이며 수용이 아니다.",
+          "scope": "FMP-12a-R1 / load-causal-corpus / candidate; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "실행 가능한 정상/실패 경계 corpus의 case ID·입력·기대값·runner 명령·source/corpus digest가 고정된 후보. 미실행은 NOT_RUN이며 수용이 아니다.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:149:load-causal-contract:accept",
+          "producerIssue": 149,
+          "producerPhase": "accept",
+          "path": "docs/context/contracts/load-causal-contract.json",
+          "qualification": "다섯 R6B 항목을 실제 corpus 결과에 대조한 계약; 대상 digest에 대한 검증만 수용하며 static REWORK 이력은 보존한다.",
+          "scope": "FMP-12a-R1 / load-causal-contract / accept; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "다섯 R6B 항목을 실제 corpus 결과에 대조한 계약; 대상 digest에 대한 검증만 수용하며 static REWORK 이력은 보존한다.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:149:load-causal-corpus:accept",
+          "producerIssue": 149,
+          "producerPhase": "accept",
+          "path": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+          "qualification": "실제 runner로 모든 필수 정상/실패 causal 경계를 실행한 source/corpus digest·종료 코드·기대/실제 관측·판정. 누락/불가능한 sibling/NOT_RUN/실패는 수용하지 않는다.",
+          "scope": "FMP-12a-R1 / load-causal-corpus / accept; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "실제 runner로 모든 필수 정상/실패 causal 경계를 실행한 source/corpus digest·종료 코드·기대/실제 관측·판정. 누락/불가능한 sibling/NOT_RUN/실패는 수용하지 않는다.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        }
+      ],
+      "writeScope": [
+        {
+          "path": "scripts/dev/run_foundation_load.py",
+          "mode": "exclusive",
+          "lock": "repo-path:scripts/dev/run_foundation_load.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "scripts/dev/foundation_load_metrics.py",
+          "mode": "exclusive",
+          "lock": "repo-path:scripts/dev/foundation_load_metrics.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "scripts/dev/foundation_load_windows.py",
+          "mode": "exclusive",
+          "lock": "repo-path:scripts/dev/foundation_load_windows.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "scripts/dev/probe_journal.py",
+          "mode": "exclusive",
+          "lock": "repo-path:scripts/dev/probe_journal.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "scripts/dev/test_foundation_load.py",
+          "mode": "exclusive",
+          "lock": "repo-path:scripts/dev/test_foundation_load.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/context/contracts/load-causal-contract.json",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        }
+      ],
+      "phaseWriteScopes": {
+        "prepare": [
+          {
+            "path": "{proposalRoot}/FMP-12a-R1/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "output:{proposalRoot}/FMP-12a-R1/",
+            "canonicalWriteAllowed": false,
+            "requiresRegistration": true
+          }
+        ],
+        "candidate": [
+          {
+            "path": "scripts/dev/run_foundation_load.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:scripts/dev/run_foundation_load.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/foundation_load_metrics.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:scripts/dev/foundation_load_metrics.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/foundation_load_windows.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:scripts/dev/foundation_load_windows.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/probe_journal.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:scripts/dev/probe_journal.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/test_foundation_load.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:scripts/dev/test_foundation_load.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/context/contracts/load-causal-contract.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/context/contracts/load-causal-contract.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          }
+        ],
+        "accept": [
+          {
+            "path": "scripts/dev/run_foundation_load.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:scripts/dev/run_foundation_load.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/foundation_load_metrics.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:scripts/dev/foundation_load_metrics.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/foundation_load_windows.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:scripts/dev/foundation_load_windows.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/probe_journal.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:scripts/dev/probe_journal.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/test_foundation_load.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:scripts/dev/test_foundation_load.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/context/contracts/load-causal-contract.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/context/contracts/load-causal-contract.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          }
+        ]
+      },
+      "artifactOutputBindings": {
+        "candidate": [
+          {
+            "artifact": "artifact:149:load-causal-contract:candidate",
+            "path": "docs/context/contracts/load-causal-contract.json",
+            "pathKind": "file",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/context/contracts/load-causal-contract.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/context/contracts/load-causal-contract.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": null
+          },
+          {
+            "artifact": "artifact:149:load-causal-corpus:candidate",
+            "path": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence. Existing raw artifacts remain at immutable references.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
+          }
+        ],
+        "accept": [
+          {
+            "artifact": "artifact:149:load-causal-contract:accept",
+            "path": "docs/context/contracts/load-causal-contract.json",
+            "pathKind": "file",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/context/contracts/load-causal-contract.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/context/contracts/load-causal-contract.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": null
+          },
+          {
+            "artifact": "artifact:149:load-causal-corpus:accept",
+            "path": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence. Existing raw artifacts remain at immutable references.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
+          }
+        ],
+        "readOnlySnapshots": []
+      },
+      "checks": [
+        {
+          "inspection": "다섯 계약 항목과 각 정상 sibling/부정 사례를 portable schema 및 corpus에 일대일 매핑한다.",
+          "expected": "private 관측과 판정 입력 분리, exact variant/role/deadline 의미가 일치한다.",
+          "negativeCase": "grouped key 오배정·잘못된 role·누락 cleanup_begin·불가능한 정상 sibling을 PASS로 처리하지 않는다.",
+          "evidence": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "command": "python3 -m unittest discover -s scripts/dev -p 'test_foundation_load.py'",
+          "expected": "새 causal corpus를 실제 runner에 실행한 종료 코드와 관측값이 계약과 일치한다; 단위 테스트 통과만으로 corpus 실행을 대체하지 않는다.",
+          "negativeCase": "미실행 corpus·private raw journal 공개·과거 R6B를 accepted로 재표시하면 실패.",
+          "evidence": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+          "phases": [
+            "accept"
+          ]
+        }
+      ],
+      "acceptance": [
+        "private journal readback 독립 관측의 이름/schema와 판정 입력을 분리한다.",
+        "expected_kind exact variant와 grouped command_marker_P_fault dispatch가 동일 사례를 선택한다.",
+        "legacy MetricsReader의 server/client role 및 잘못된 role 부정시험을 명시한다.",
+        "cleanup_begin local deadline 누락을 CLEANUP_BEGIN 참조로 표현한다.",
+        "positive terminal reserve와 overall deadline before/equal/after의 정상 sibling 실현 가능성을 입증하고 모순을 제거한다.",
+        "정상/실패 경계 corpus를 실제 runner에서 실행하여 source/corpus digest·종료 코드·기대/실제 관측·실패/NOT_RUN을 새 append-only index로 보존한다."
+      ],
+      "stopConditions": [
+        "선택 파일의 접근 가능 ref/path/digest가 일치하지 않으면 해당 candidate를 멈춘다.",
+        "동일 물리 checkout의 쓰기 경로·실제 실행 자원 충돌 시 중지하고 기존 출력과 실패 기록을 보존한다.",
+        "승인되지 않은 외부 전송·설치·서비스 기동·자동 AAA/REWORK 재개를 하지 않는다.",
+        "#140 candidate rehearsal 영수증은 이 계약의 선행 입력이 아니다. 계약/corpus 없이 그 영수증으로 순환 정당화하지 않는다.",
+        "raw private journal·개인 경로를 공개하지 않는다. 로컬 전용 review packet을 팀 입력으로 가정하지 않는다."
+      ],
+      "handoff": [
+        "#149 candidate portable contract와 실행 가능한 corpus 명세를 #150 candidate 구현에 전달한다.",
+        "#149 accept 실제 runner corpus 검증을 #150 accept 실제 protocol run 및 #140 candidate 리허설의 선행으로 전달한다."
+      ],
+      "reviewNotes": [
+        "prepare는 portable 계약·출처 검토만 한다. candidate/accept artifact는 정확한 sourceRef와 outputDigest에 결속하며 실패·미실행은 수용하지 않는다."
+      ],
+      "hardPredecessors": [
+        {
+          "issue": 120,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+        }
+      ],
+      "hardSuccessors": [
+        {
+          "issue": 150,
+          "artifact": "artifact:149:load-causal-contract:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "F(n)/U(n) engine binding 구현은 portable 관측/schema/role/deadline 계약 후보를 소비한다. #140 rehearsal 영수증을 계약으로 사용하지 않는다."
+        },
+        {
+          "issue": 150,
+          "artifact": "artifact:149:load-causal-corpus:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "engine binding 후보는 고정된 정상/실패 causal corpus 기대값과 매핑한다. candidate corpus는 실제 실행 수용이 아니다."
+        },
+        {
+          "issue": 150,
+          "artifact": "artifact:149:load-causal-corpus:accept",
+          "consumerPhase": "accept",
+          "producerPhase": "accept",
+          "reason": "실제 engine/protocol run은 #149의 성공한 executed causal corpus가 선행한다."
+        },
+        {
+          "issue": 140,
+          "artifact": "artifact:149:load-causal-corpus:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "2~4-client 실제 리허설 전에 다섯 R6B 항목의 executed causal corpus가 통과해야 한다."
+        }
+      ],
+      "oneOfInputs": [],
+      "guardPredicates": [],
+      "requiredLocks": [
+        "repo-path:scripts/dev/run_foundation_load.py",
+        "repo-path:scripts/dev/foundation_load_metrics.py",
+        "repo-path:scripts/dev/foundation_load_windows.py",
+        "repo-path:scripts/dev/probe_journal.py",
+        "repo-path:scripts/dev/test_foundation_load.py"
+      ],
+      "resourceBindings": [
+        {
+          "template": "workspace-files-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "workspaceId",
+            "realCheckoutPath",
+            "volumeIdentity",
+            "branchRef",
+            "baseRef",
+            "selectedWritePaths",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "pathsFrom": "phaseWriteScopes",
+          "keyExpansion": "workspaceId + canonicalized real paths, including generated closure",
+          "failure": "reject overlap in same physical workspace; independent branches may prepare proposals, canonical integration still needs requiredLocks"
+        },
+        {
+          "template": "measurement-run-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "runId",
+            "outputRoot",
+            "hostResourceNamespace",
+            "processGroup",
+            "ports",
+            "devices",
+            "serviceRooms",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "identityKeys": [
+            "run-output:{realOutputRoot}",
+            "process:{hostResourceNamespace}:{pid}:{start}",
+            "port:{networkNamespace}:{protocol}:{bindAddress}:{port}",
+            "device:{physicalDeviceId}",
+            "room:{serviceEndpoint}:{roomId}"
+          ],
+          "liveValues": null,
+          "rule": "runId or source SHA alone never defines exclusivity; empty resource list means none used, not unknown; record actual shared ports/devices/processes."
+        }
+      ],
+      "board": {
+        "status": "Backlog",
+        "phase": "prepare",
+        "reason": "GitHub #149 OPEN을 직접 조회하여 추가한 한정 계획 카드. Backlog/prepare는 보수적 로컬 계획 상태이며 live Project 상태·claim·착수 허가를 주장하지 않는다."
+      },
+      "assigneePolicy": "unassigned_until_claim",
+      "related": [
+        120,
+        150,
+        140
+      ],
+      "requirements": []
+    },
+    {
+      "number": 150,
+      "workId": "FMP-12a-R2",
+      "title": "[FMP-12a-R2] F(n)·U(n) Unity scheduler와 실제 metrics 결속",
+      "kind": "work_item",
+      "parent": 140,
+      "outcome": "F(n)/U(n)을 실제 Unity callback/scheduler와 metrics 파이프라인에 결속하고 새로운 coupled Player로 2~4명(3명 포함) 실제 protocol run 하나 이상을 증명한다.",
+      "nonGoals": [
+        "20 clients including instructors/NPC100/2 concurrent incidents/분산·집결 각60분 목표를 낮추거나 단위 시험으로 수용하지 않는다.",
+        "개인·장소·학교 PC·장비 보유 사전 배정 없음. 실제 착수 시 scope/base/lease를 확인한다.",
+        "외부 생성 및 자동 AAA/REWORK 루프를 재개하지 않는다."
+      ],
+      "truth": [
+        {
+          "level": "target",
+          "text": "실제 GitHub OPEN 잔여 카드의 한정 작업 계약; 원래 2026-09-12 snapshot의 Project 상태나 현재 완료를 추론하지 않는다.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/150"
+        },
+        {
+          "level": "unknown",
+          "text": "engine binding은 UNESTABLISHED. RuntimeMetricAccumulator source-only 시험은 실제 callback/프로토콜 수용이 아니다.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/150"
+        }
+      ],
+      "context": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+          "selector": "RuntimeMetricAccumulator",
+          "proves": "source-only 누적기와 관측 창 구현",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+          "selector": "whole module",
+          "proves": "scheduler/프레임 출처의 engine binding 검토",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "selector": "whole module",
+          "proves": "실제 Unity runtime callback 결속 대상",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "docs/choo-guard-voice-delivery-2026-09-13.md",
+          "selector": "F(n); U(n); 팀 인계",
+          "proves": "engine binding UNESTABLISHED 및 실행 한계",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        }
+      ],
+      "codePointers": [
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+        "scripts/dev/foundation_load_metrics.py"
+      ],
+      "inputs": [
+        {
+          "id": "issue-150-residual-contract",
+          "fromIssue": null,
+          "qualification": "https://github.com/xrlab-dau/CHOOGuard/issues/150 작업 조건과 PR153 게시 한계를 읽고 현행 claim/lease 및 source ref를 재확인한다.",
+          "consumerPhase": "prepare"
+        },
+        {
+          "id": "artifact:120:source-only-access-manifest:candidate",
+          "fromIssue": 120,
+          "qualification": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance.",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate"
+        },
+        {
+          "id": "artifact:149:load-causal-contract:candidate",
+          "fromIssue": 149,
+          "qualification": "F(n)/U(n) engine binding 구현은 portable 관측/schema/role/deadline 계약 후보를 소비한다. #140 rehearsal 영수증을 계약으로 사용하지 않는다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate"
+        },
+        {
+          "id": "artifact:149:load-causal-corpus:candidate",
+          "fromIssue": 149,
+          "qualification": "engine binding 후보는 고정된 정상/실패 causal corpus 기대값과 매핑한다. candidate corpus는 실제 실행 수용이 아니다.",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate"
+        },
+        {
+          "id": "artifact:149:load-causal-corpus:accept",
+          "fromIssue": 149,
+          "qualification": "실제 engine/protocol run은 #149의 성공한 executed causal corpus가 선행한다.",
+          "consumerPhase": "accept",
+          "producerPhase": "accept"
+        },
+        {
+          "id": "artifact:143:fmp13a-runnable-build-payload:candidate",
+          "fromIssue": 143,
+          "qualification": "실제 2~4 protocol run에 새 coupled Player의 source/build/data/service digest와 positive launch가 있는 runnable payload가 필요하다. build-attempt index는 부적격이다.",
+          "consumerPhase": "accept",
+          "producerPhase": "candidate"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "artifact:150:engine-metrics-binding:candidate",
+          "producerIssue": 150,
+          "producerPhase": "candidate",
+          "path": "docs/context/contracts/engine-metrics-binding.json",
+          "qualification": "실제 callback/scheduler 구현 및 F(n)/U(n) 단위·clock·관측창·role·count schema와 누락/중복 단위/Editor 시험 후보. 실제 protocol run 수용은 별도이다.",
+          "scope": "FMP-12a-R2 / engine-metrics-binding / candidate; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "실제 callback/scheduler 구현 및 F(n)/U(n) 단위·clock·관측창·role·count schema와 누락/중복 단위/Editor 시험 후보. 실제 protocol run 수용은 별도이다.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:150:engine-metrics-run:accept",
+          "producerIssue": 150,
+          "producerPhase": "accept",
+          "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+          "qualification": "#149 accepted executed corpus 및 #143 success-qualified new coupled Player로 2/3/4명 중 한 실제 protocol run 이상. source/build/payload digests, 역할/수, clock/window, actual callback values, 누락/중복/중단 판정이 결속되며 모의 값·NOT_RUN은 불충족.",
+          "scope": "FMP-12a-R2 / engine-metrics-run / accept; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "#149 accepted executed corpus 및 #143 success-qualified new coupled Player로 2/3/4명 중 한 실제 protocol run 이상. source/build/payload digests, 역할/수, clock/window, actual callback values, 누락/중복/중단 판정이 결속되며 모의 값·NOT_RUN은 불충족.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:150:engine-metrics-run:candidate",
+          "producerIssue": 150,
+          "producerPhase": "candidate",
+          "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+          "qualification": "Unit/Editor candidate callback/scheduler evidence only. Bind source/test digest, role/count/window/clock schema, exit code and failure/NOT_RUN. This does not qualify as the required actual protocol run acceptance.",
+          "scope": "FMP-12a-R2 / engine-metrics-run / candidate only; not actual protocol acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "Unit/Editor candidate callback/scheduler evidence only. Bind source/test digest, role/count/window/clock schema, exit code and failure/NOT_RUN. This does not qualify as the required actual protocol run acceptance.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        }
+      ],
+      "writeScope": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+          "mode": "exclusive",
+          "lock": "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+          "mode": "exclusive",
+          "lock": "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "mode": "exclusive",
+          "lock": "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+          "mode": "exclusive",
+          "lock": "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+          "mode": "exclusive",
+          "lock": "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "scripts/dev/foundation_load_metrics.py",
+          "mode": "exclusive",
+          "lock": "repo-path:scripts/dev/foundation_load_metrics.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/context/contracts/engine-metrics-binding.json",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/**",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        }
+      ],
+      "phaseWriteScopes": {
+        "prepare": [
+          {
+            "path": "{proposalRoot}/FMP-12a-R2/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "output:{proposalRoot}/FMP-12a-R2/",
+            "canonicalWriteAllowed": false,
+            "requiresRegistration": true
+          }
+        ],
+        "candidate": [
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/foundation_load_metrics.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:scripts/dev/foundation_load_metrics.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/context/contracts/engine-metrics-binding.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/context/contracts/engine-metrics-binding.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal",
+            "childPolicy": "Fresh run-specific child directory only; never overwrite prior XML/log/receipt. Resolve actual output paths in the workspace/measurement lease before Editor execution."
+          }
+        ],
+        "accept": [
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "scripts/dev/foundation_load_metrics.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:scripts/dev/foundation_load_metrics.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/context/contracts/engine-metrics-binding.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/context/contracts/engine-metrics-binding.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal",
+            "childPolicy": "Fresh run-specific child directory only; never overwrite prior XML/log/receipt. Resolve actual output paths in the workspace/measurement lease before Editor execution."
+          }
+        ]
+      },
+      "artifactOutputBindings": {
+        "candidate": [
+          {
+            "artifact": "artifact:150:engine-metrics-binding:candidate",
+            "path": "docs/context/contracts/engine-metrics-binding.json",
+            "pathKind": "file",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/context/contracts/engine-metrics-binding.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/context/contracts/engine-metrics-binding.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": null
+          },
+          {
+            "artifact": "artifact:150:engine-metrics-run:candidate",
+            "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Select append-only run records from fresh run-specific child directories; never overwrite raw XML/log/receipt, including failure and NOT_RUN. Public index carries sanitized provenance only, not private paths or credentials.",
+            "receiptStorage": {
+              "mode": "separate_immutable_raw_records",
+              "appendOnly": true,
+              "completeRunRecordRequired": true,
+              "stableIndexPath": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+              "rawScopePath": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/**",
+              "rawLockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/"
+            }
+          }
+        ],
+        "accept": [
+          {
+            "artifact": "artifact:150:engine-metrics-run:accept",
+            "path": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Select append-only run records from fresh run-specific child directories; never overwrite raw XML/log/receipt, including failure and NOT_RUN. Public index carries sanitized provenance only, not private paths or credentials.",
+            "receiptStorage": {
+              "mode": "separate_immutable_raw_records",
+              "appendOnly": true,
+              "completeRunRecordRequired": true,
+              "stableIndexPath": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+              "rawScopePath": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/**",
+              "rawLockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/"
+            }
+          }
+        ],
+        "readOnlySnapshots": []
+      },
+      "checks": [
+        {
+          "inspection": "candidate에서 F(n)/U(n) 단위·관측창·clock·callback schema를 #149 contract/corpus candidate와 대조한다.",
+          "expected": "모의 값과 engine binding 계약이 분리되고 누락/중복/잘못된 role 사례가 있다.",
+          "negativeCase": "source-only accumulator PASS를 실제 engine 관측으로 취급하면 실패.",
+          "evidence": "docs/context/contracts/engine-metrics-binding.json",
+          "phases": [
+            "candidate"
+          ]
+        },
+        {
+          "inspection": "accept에서 #149 executed corpus 및 #143 selected runnable coupled Player를 사용해 2~4명 실제 protocol run을 계측한다.",
+          "expected": "role/client count/source/build/payload/관측창과 실제 callback 값이 결속된 새 run receipt.",
+          "negativeCase": "build-attempt index·source-only·script-only·NOT_RUN은 runnable payload나 실제 관측의 대체물이 아니다.",
+          "evidence": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+          "phases": [
+            "accept"
+          ]
+        }
+      ],
+      "acceptance": [
+        "F(n)/U(n)의 단위·관측 창·프레임/업데이트 출처·clock을 명시한다.",
+        "실제 callback 관측과 client/server 역할·참가자 수·source/build/payload digest를 결속한다.",
+        "모의 누적기와 실제 엔진 값의 차이·누락·중복을 시험한다.",
+        "검증된 causal corpus와 새 coupled Player로 2/3/4명 중 적어도 한 실제 protocol run을 수행한다.",
+        "미실행·중단·누락은 실패/미검증으로 보존하며 20/100/2 목표와 #141/#142 수용을 대체하지 않는다."
+      ],
+      "stopConditions": [
+        "선택 파일의 접근 가능 ref/path/digest가 일치하지 않으면 해당 candidate를 멈춘다.",
+        "동일 물리 checkout의 쓰기 경로·실제 실행 자원 충돌 시 중지하고 기존 출력과 실패 기록을 보존한다.",
+        "승인되지 않은 외부 전송·설치·서비스 기동·자동 AAA/REWORK 재개를 하지 않는다.",
+        "candidate 구현에 #143 빌드 완료를 요구하지 않지만, 실제 protocol run은 #149 accept corpus 및 #143 candidate runnable payload 없이는 시작하지 않는다.",
+        "실제 Unity 생성 XML/log/run 기록은 등록된 새 run 하위 경로만 쓴다. raw 개인 경로·자격 증명은 공개하지 않으며 공개 index에는 정제된 provenance만 연결한다."
+      ],
+      "handoff": [
+        "#150 candidate metrics-binding을 #143 candidate 빌드에 전달해 새 coupled Player의 source digest에 결속한다.",
+        "#150 accept 실제 engine/protocol 관측을 #140 candidate에 전달하며 #141/#142 전체 수용과 구분한다."
+      ],
+      "reviewNotes": [
+        "prepare는 portable 계약·출처 검토만 한다. candidate/accept artifact는 정확한 sourceRef와 outputDigest에 결속하며 실패·미실행은 수용하지 않는다."
+      ],
+      "hardPredecessors": [
+        {
+          "issue": 120,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+        },
+        {
+          "issue": 149,
+          "artifact": "artifact:149:load-causal-contract:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "F(n)/U(n) engine binding 구현은 portable 관측/schema/role/deadline 계약 후보를 소비한다. #140 rehearsal 영수증을 계약으로 사용하지 않는다."
+        },
+        {
+          "issue": 149,
+          "artifact": "artifact:149:load-causal-corpus:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "engine binding 후보는 고정된 정상/실패 causal corpus 기대값과 매핑한다. candidate corpus는 실제 실행 수용이 아니다."
+        },
+        {
+          "issue": 149,
+          "artifact": "artifact:149:load-causal-corpus:accept",
+          "consumerPhase": "accept",
+          "producerPhase": "accept",
+          "reason": "실제 engine/protocol run은 #149의 성공한 executed causal corpus가 선행한다."
+        },
+        {
+          "issue": 143,
+          "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+          "consumerPhase": "accept",
+          "producerPhase": "candidate",
+          "reason": "실제 2~4 protocol run에 새 coupled Player의 source/build/data/service digest와 positive launch가 있는 runnable payload가 필요하다. build-attempt index는 부적격이다."
+        }
+      ],
+      "hardSuccessors": [
+        {
+          "issue": 143,
+          "artifact": "artifact:150:engine-metrics-binding:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "새 coupled Player 빌드는 #150 callback/scheduler 결속 후보를 selected source digest에 포함한다. #150 실제 run acceptance를 빌드 선행으로 요구하지 않는다."
+        },
+        {
+          "issue": 140,
+          "artifact": "artifact:150:engine-metrics-run:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "F(n)/U(n) 실제 callback/protocol 결속 증명 뒤 #140 계측 리허설을 진행한다."
+        }
+      ],
+      "oneOfInputs": [],
+      "guardPredicates": [],
+      "requiredLocks": [
+        "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+        "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+        "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+        "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+        "repo-path:scripts/dev/foundation_load_metrics.py"
+      ],
+      "resourceBindings": [
+        {
+          "template": "workspace-files-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "workspaceId",
+            "realCheckoutPath",
+            "volumeIdentity",
+            "branchRef",
+            "baseRef",
+            "selectedWritePaths",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "pathsFrom": "phaseWriteScopes",
+          "keyExpansion": "workspaceId + canonicalized real paths, including generated closure",
+          "failure": "reject overlap in same physical workspace; independent branches may prepare proposals, canonical integration still needs requiredLocks"
+        },
+        {
+          "template": "unity-editor-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "workspaceId",
+            "editorInstanceId",
+            "editorPid",
+            "editorProcessStart",
+            "generatedOutputRoots",
+            "projectSettingsPaths"
+          ],
+          "generatedOutputRoots": [
+            "docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/"
+          ],
+          "identityKeys": [
+            "unity-workspace:{workspaceId}",
+            "editor-process:{hostProcessNamespace}:{editorPid}:{editorProcessStart}",
+            "fs-output:{realOutputPath}"
+          ],
+          "liveValues": null,
+          "rule": "Same checkout conflicts even if Editor PID differs. Different checkouts/Editors/outputs can run concurrently when static integration locks also disjoint."
+        },
+        {
+          "template": "measurement-run-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "runId",
+            "outputRoot",
+            "hostResourceNamespace",
+            "processGroup",
+            "ports",
+            "devices",
+            "serviceRooms",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "identityKeys": [
+            "run-output:{realOutputRoot}",
+            "process:{hostResourceNamespace}:{pid}:{start}",
+            "port:{networkNamespace}:{protocol}:{bindAddress}:{port}",
+            "device:{physicalDeviceId}",
+            "room:{serviceEndpoint}:{roomId}"
+          ],
+          "liveValues": null,
+          "rule": "runId or source SHA alone never defines exclusivity; empty resource list means none used, not unknown; record actual shared ports/devices/processes."
+        }
+      ],
+      "board": {
+        "status": "Backlog",
+        "phase": "prepare",
+        "reason": "GitHub #150 OPEN을 직접 조회하여 추가한 한정 계획 카드. Backlog/prepare는 보수적 로컬 계획 상태이며 live Project 상태·claim·착수 허가를 주장하지 않는다."
+      },
+      "assigneePolicy": "unassigned_until_claim",
+      "related": [
+        120,
+        149,
+        143,
+        140
+      ],
+      "requirements": [],
+      "generatedOutputClosure": [
+        "docs/evidence/foundation/FMP-12a-R2-engine-metrics-runs/"
+      ]
+    },
+    {
+      "number": 151,
+      "workId": "FMP-04-R1",
+      "title": "[FMP-04-R1] Voice config B-F1 staging 소유권 확인 전 쓰기·게시 차단",
+      "kind": "work_item",
+      "parent": 100,
+      "outcome": "P0: staging 생성→pin 사이 pathname 교체에도 생성 소유권 증명 전 credential 쓰기·publication을 차단하고 exact-owned rollback과 성공 게시 경계를 증명한다.",
+      "nonGoals": [
+        "20 clients including instructors/NPC100/2 concurrent incidents/분산·집결 각60분 목표를 낮추거나 단위 시험으로 수용하지 않는다.",
+        "개인·장소·학교 PC·장비 보유 사전 배정 없음. 실제 착수 시 scope/base/lease를 확인한다.",
+        "외부 생성 및 자동 AAA/REWORK 루프를 재개하지 않는다."
+      ],
+      "truth": [
+        {
+          "level": "target",
+          "text": "실제 GitHub OPEN 잔여 카드의 한정 작업 계약; 원래 2026-09-12 snapshot의 Project 상태나 현재 완료를 추론하지 않는다.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/151"
+        },
+        {
+          "level": "blocked",
+          "text": "staging_ownership_proven=false는 rmdir만 억제하며 credential 쓰기/publication 차단 계약 미확립. 기존 Python 24/24 및 voice 89/89는 신규 B-F1 해결 증거가 아니다.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/151"
+        }
+      ],
+      "context": [
+        {
+          "path": "services/livekit/configure_local.py",
+          "selector": "staging_ownership_proven",
+          "proves": "생성 소유권 미입증 상태와 credential/publication 경계",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "services/livekit/test_configure_local.py",
+          "selector": "whole module",
+          "proves": "가짜 값/소유한 temp fixture 기반 부정시험 대상",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "services/livekit/README.md",
+          "selector": "whole document",
+          "proves": "trusted parent 및 플랫폼 범위 제한",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "docs/choo-guard-voice-delivery-2026-09-13.md",
+          "selector": "B-F1; 24/24; 89/89",
+          "proves": "기존 시험 수치가 신규 소유권 결함의 해결 증거가 아님",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        }
+      ],
+      "codePointers": [
+        "services/livekit/configure_local.py",
+        "services/livekit/test_configure_local.py",
+        "services/livekit/README.md"
+      ],
+      "inputs": [
+        {
+          "id": "issue-151-residual-contract",
+          "fromIssue": null,
+          "qualification": "https://github.com/xrlab-dau/CHOOGuard/issues/151 작업 조건과 PR153 게시 한계를 읽고 현행 claim/lease 및 source ref를 재확인한다.",
+          "consumerPhase": "prepare"
+        },
+        {
+          "id": "artifact:120:source-only-access-manifest:candidate",
+          "fromIssue": 120,
+          "qualification": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance.",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "artifact:151:staging-ownership-proof:candidate",
+          "producerIssue": 151,
+          "producerPhase": "candidate",
+          "path": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+          "qualification": "생성 소유권 입증 전 credential/publication 차단 수정 후보 및 synthetic replacement/adoption/rollback 시험 기록; 운영 안전 수용 아님.",
+          "scope": "FMP-04-R1 / staging-ownership-proof / candidate; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "생성 소유권 입증 전 credential/publication 차단 수정 후보 및 synthetic replacement/adoption/rollback 시험 기록; 운영 안전 수용 아님.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:151:staging-ownership-proof:accept",
+          "producerIssue": 151,
+          "producerPhase": "accept",
+          "path": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+          "qualification": "새 staging ownership 부정/성공/rollback fixture 실제 실행과 exact source/test digest, foreign write/delete/publish 없음, README 플랫폼 범위 일치. 기존 Python24/Voice89만으로 수용 불가.",
+          "scope": "FMP-04-R1 / staging-ownership-proof / accept; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "새 staging ownership 부정/성공/rollback fixture 실제 실행과 exact source/test digest, foreign write/delete/publish 없음, README 플랫폼 범위 일치. 기존 Python24/Voice89만으로 수용 불가.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        }
+      ],
+      "writeScope": [
+        {
+          "path": "services/livekit/configure_local.py",
+          "mode": "exclusive",
+          "lock": "repo-path:services/livekit/configure_local.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "services/livekit/test_configure_local.py",
+          "mode": "exclusive",
+          "lock": "repo-path:services/livekit/test_configure_local.py",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "services/livekit/README.md",
+          "mode": "exclusive",
+          "lock": "repo-path:services/livekit/README.md",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        }
+      ],
+      "phaseWriteScopes": {
+        "prepare": [
+          {
+            "path": "{proposalRoot}/FMP-04-R1/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "output:{proposalRoot}/FMP-04-R1/",
+            "canonicalWriteAllowed": false,
+            "requiresRegistration": true
+          }
+        ],
+        "candidate": [
+          {
+            "path": "services/livekit/configure_local.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:services/livekit/configure_local.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "services/livekit/test_configure_local.py",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:services/livekit/test_configure_local.py",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "services/livekit/README.md",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:services/livekit/README.md",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          }
+        ],
+        "accept": [
+          {
+            "path": "services/livekit/configure_local.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:services/livekit/configure_local.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "services/livekit/test_configure_local.py",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:services/livekit/test_configure_local.py",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "services/livekit/README.md",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:services/livekit/README.md",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          }
+        ]
+      },
+      "artifactOutputBindings": {
+        "candidate": [
+          {
+            "artifact": "artifact:151:staging-ownership-proof:candidate",
+            "path": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence. Existing raw artifacts remain at immutable references.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
+          }
+        ],
+        "accept": [
+          {
+            "artifact": "artifact:151:staging-ownership-proof:accept",
+            "path": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence. Existing raw artifacts remain at immutable references.",
+            "receiptStorage": {
+              "mode": "embedded_append_only_index",
+              "appendOnly": true,
+              "completeRunRecordRequired": true
+            }
+          }
+        ],
+        "readOnlySnapshots": []
+      },
+      "checks": [
+        {
+          "command": "python3 -m unittest discover -s services/livekit -p 'test_configure_local.py'",
+          "expected": "새 replacement/adoption/rename/rollback 경계 fixture가 모두 실행되고 소유권 미입증 credential 쓰기·게시·foreign 삭제가 0이다.",
+          "negativeCase": "기존 24 PASS만 재사용하거나 rmdir 억제만으로 안전 수용하면 실패.",
+          "evidence": "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        }
+      ],
+      "acceptance": [
+        "생성한 inode의 소유권을 증명하기 전 credential 파일 쓰기와 최종 publication을 차단한다.",
+        "생성→pin 교체·symlink·foreign-directory adoption·응답/rename 실패를 가짜 값과 소유한 임시 디렉터리에서 재현한다.",
+        "소유하지 않은 파일/디렉터리 쓰기·삭제·게시가 없음을 부정시험으로 확인한다.",
+        "exact-owned rollback·성공 publication·trusted parent 및 OS backend 한계를 README에 명시한다.",
+        "새 경계 시험 결과를 source/test digest에 묶고 기존 Python24/voice89 총계와 분리한다."
+      ],
+      "stopConditions": [
+        "선택 파일의 접근 가능 ref/path/digest가 일치하지 않으면 해당 candidate를 멈춘다.",
+        "동일 물리 checkout의 쓰기 경로·실제 실행 자원 충돌 시 중지하고 기존 출력과 실패 기록을 보존한다.",
+        "승인되지 않은 외부 전송·설치·서비스 기동·자동 AAA/REWORK 재개를 하지 않는다.",
+        "실제 .env/API key/secret·개인 설정·로그를 읽거나 게시하지 않는다. 외부 패키지 설치·서비스 기동 없이 소유한 fixture에서만 검증한다.",
+        "Windows/다른 OS backend는 별도 검증 전 fail-closed를 유지한다."
+      ],
+      "handoff": [
+        "#151 accept staging-ownership proof를 #100 candidate 실제 마이크/PTT 및 #143 candidate LiveKit 서비스 전달 전에 확인한다.",
+        "Python 24개·Voice 89개 기존 통과는 이 경계 수정 수용으로 전환하지 않는다."
+      ],
+      "reviewNotes": [
+        "prepare는 portable 계약·출처 검토만 한다. candidate/accept artifact는 정확한 sourceRef와 outputDigest에 결속하며 실패·미실행은 수용하지 않는다."
+      ],
+      "hardPredecessors": [
+        {
+          "issue": 120,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+        }
+      ],
+      "hardSuccessors": [
+        {
+          "issue": 100,
+          "artifact": "artifact:151:staging-ownership-proof:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "실제 LiveKit 마이크/PTT 준비에 P0 소유권 미입증 credential/publication 차단 증명이 선행한다. Python24/Voice89로 대체하지 않는다."
+        },
+        {
+          "issue": 143,
+          "artifact": "artifact:151:staging-ownership-proof:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "LiveKit 서비스가 포함된 후보 전달 전에 P0 staging 소유권 proof가 필요하다. 실패/미검증 backend는 fail-closed를 유지한다."
+        }
+      ],
+      "oneOfInputs": [],
+      "guardPredicates": [],
+      "requiredLocks": [
+        "repo-path:services/livekit/configure_local.py",
+        "repo-path:services/livekit/test_configure_local.py",
+        "repo-path:services/livekit/README.md"
+      ],
+      "resourceBindings": [
+        {
+          "template": "workspace-files-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "workspaceId",
+            "realCheckoutPath",
+            "volumeIdentity",
+            "branchRef",
+            "baseRef",
+            "selectedWritePaths",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "pathsFrom": "phaseWriteScopes",
+          "keyExpansion": "workspaceId + canonicalized real paths, including generated closure",
+          "failure": "reject overlap in same physical workspace; independent branches may prepare proposals, canonical integration still needs requiredLocks"
+        },
+        {
+          "template": "measurement-run-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "runId",
+            "outputRoot",
+            "hostResourceNamespace",
+            "processGroup",
+            "ports",
+            "devices",
+            "serviceRooms",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "identityKeys": [
+            "run-output:{realOutputRoot}",
+            "process:{hostResourceNamespace}:{pid}:{start}",
+            "port:{networkNamespace}:{protocol}:{bindAddress}:{port}",
+            "device:{physicalDeviceId}",
+            "room:{serviceEndpoint}:{roomId}"
+          ],
+          "liveValues": null,
+          "rule": "runId or source SHA alone never defines exclusivity; empty resource list means none used, not unknown; record actual shared ports/devices/processes."
+        }
+      ],
+      "board": {
+        "status": "Backlog",
+        "phase": "prepare",
+        "reason": "GitHub #151 OPEN을 직접 조회하여 추가한 한정 계획 카드. Backlog/prepare는 보수적 로컬 계획 상태이며 live Project 상태·claim·착수 허가를 주장하지 않는다."
+      },
+      "assigneePolicy": "unassigned_until_claim",
+      "related": [
+        120,
+        100,
+        143
+      ],
+      "requirements": []
+    },
+    {
+      "number": 152,
+      "workId": "FMP-QA-R1",
+      "title": "[FMP-QA-R1] 기존 70 skipped fixture의 discovery·환경 원인 규명",
+      "kind": "work_item",
+      "parent": 91,
+      "outcome": "기존 70 skipped의 정확한 사례·discovery/filter/환경 원인을 규명하고 보존 guard를 유지한 채 필수 회귀의 실제 실행을 검증한다.",
+      "nonGoals": [
+        "20 clients including instructors/NPC100/2 concurrent incidents/분산·집결 각60분 목표를 낮추거나 단위 시험으로 수용하지 않는다.",
+        "개인·장소·학교 PC·장비 보유 사전 배정 없음. 실제 착수 시 scope/base/lease를 확인한다.",
+        "외부 생성 및 자동 AAA/REWORK 루프를 재개하지 않는다."
+      ],
+      "truth": [
+        {
+          "level": "target",
+          "text": "실제 GitHub OPEN 잔여 카드의 한정 작업 계약; 원래 2026-09-12 snapshot의 Project 상태나 현재 완료를 추론하지 않는다.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/152"
+        },
+        {
+          "level": "unknown",
+          "text": "70 skipped 원인 미확정. VoiceEpochCoordinatorTests 89/89 skip0은 다른 fixture의 skip 해결이나 현재 전체 PASS가 아니다.",
+          "source": "https://github.com/xrlab-dau/CHOOGuard/issues/152"
+        }
+      ],
+      "context": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdLegacyFixture.cs",
+          "selector": "whole fixture",
+          "proves": "의도적 보존 guard를 먼저 검토해야 하는 대상",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef",
+          "selector": "whole assembly definition",
+          "proves": "EditMode discovery/assembly 경계",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/VoiceEpochCoordinatorTests.cs",
+          "selector": "whole fixture",
+          "proves": "Voice 89/89가 다른 fixture skip 원인을 해결하지 않는 독립 범위",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        },
+        {
+          "path": "docs/choo-guard-voice-delivery-2026-09-13.md",
+          "selector": "70 skipped; 검증 한계",
+          "proves": "기존 전체/분리 결과를 현재 전체 PASS로 재사용 금지",
+          "limits": "접근 가능한 source-only ref이며 새 checkout compile·실행·수용을 증명하지 않는다.",
+          "availability": "published",
+          "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "readWhen": "candidate"
+        }
+      ],
+      "codePointers": [
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdLegacyFixture.cs",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef"
+      ],
+      "inputs": [
+        {
+          "id": "issue-152-residual-contract",
+          "fromIssue": null,
+          "qualification": "https://github.com/xrlab-dau/CHOOGuard/issues/152 작업 조건과 PR153 게시 한계를 읽고 현행 claim/lease 및 source ref를 재확인한다.",
+          "consumerPhase": "prepare"
+        },
+        {
+          "id": "artifact:120:source-only-access-manifest:candidate",
+          "fromIssue": 120,
+          "qualification": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance.",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "artifact:152:fixture-discovery-proof:candidate",
+          "producerIssue": 152,
+          "producerPhase": "candidate",
+          "path": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+          "qualification": "현재 source/filter/Editor/XML/exit와 전체·분리 discovery 비교의 사례별 진단 후보. 과거 XML/Voice89로 현재 전체 PASS를 주장하지 않는다.",
+          "scope": "FMP-QA-R1 / fixture-discovery-proof / candidate; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "현재 source/filter/Editor/XML/exit와 전체·분리 discovery 비교의 사례별 진단 후보. 과거 XML/Voice89로 현재 전체 PASS를 주장하지 않는다.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        },
+        {
+          "id": "artifact:152:fixture-discovery-proof:accept",
+          "producerIssue": 152,
+          "producerPhase": "accept",
+          "path": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+          "qualification": "정확한 70 skipped 원인과 보존 guard 분류, 수정 source/test digest 및 필수 사례 실제 재실행 결과. 삭제/Ignore/skip 허용치 확대/NOT_RUN은 해결이 아니며 실패는 남긴다.",
+          "scope": "FMP-QA-R1 / fixture-discovery-proof / accept; selected source/input/output digests only; no whole-issue or downstream acceptance",
+          "digestRequirements": {
+            "sourceRef": "required",
+            "outputDigest": "sha256"
+          },
+          "acceptance": "정확한 70 skipped 원인과 보존 guard 분류, 수정 source/test digest 및 필수 사례 실제 재실행 결과. 삭제/Ignore/skip 허용치 확대/NOT_RUN은 해결이 아니며 실패는 남긴다.",
+          "proposed": true,
+          "wholeIssueAcceptance": false
+        }
+      ],
+      "writeScope": [
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/**",
+          "mode": "exclusive",
+          "lock": "repo-path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+          "mode": "exclusive",
+          "lock": "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "path": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/**",
+          "mode": "isolated_proposal",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        }
+      ],
+      "phaseWriteScopes": {
+        "prepare": [
+          {
+            "path": "{proposalRoot}/FMP-QA-R1/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "output:{proposalRoot}/FMP-QA-R1/",
+            "canonicalWriteAllowed": false,
+            "requiresRegistration": true
+          }
+        ],
+        "candidate": [
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/**",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+            "canonicalWriteAllowed": false,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-runs/",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal",
+            "childPolicy": "Fresh run-specific child directory only; never overwrite prior XML/log/receipt. Resolve actual output paths in the workspace/measurement lease before Editor execution."
+          }
+        ],
+        "accept": [
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/**",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+            "mode": "exclusive",
+            "physicalBinding": "repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+            "canonicalWriteAllowed": true,
+            "originalMode": "exclusive"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/",
+            "mode": "isolated_proposal",
+            "physicalBinding": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-runs/",
+            "canonicalWriteAllowed": false,
+            "originalMode": "isolated_proposal",
+            "childPolicy": "Fresh run-specific child directory only; never overwrite prior XML/log/receipt. Resolve actual output paths in the workspace/measurement lease before Editor execution."
+          }
+        ]
+      },
+      "artifactOutputBindings": {
+        "candidate": [
+          {
+            "artifact": "artifact:152:fixture-discovery-proof:candidate",
+            "path": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Select append-only run records from fresh run-specific child directories; never overwrite raw XML/log/receipt, including failure and NOT_RUN. Public index carries sanitized provenance only, not private paths or credentials.",
+            "receiptStorage": {
+              "mode": "separate_immutable_raw_records",
+              "appendOnly": true,
+              "completeRunRecordRequired": true,
+              "stableIndexPath": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+              "rawScopePath": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/**",
+              "rawLockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-runs/"
+            }
+          }
+        ],
+        "accept": [
+          {
+            "artifact": "artifact:152:fixture-discovery-proof:accept",
+            "path": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "pathKind": "immutable_receipt_index",
+            "bindingKind": "phase_output",
+            "scopePath": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "scopeMode": "isolated_proposal",
+            "lockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+            "canonicalWriteAllowed": false,
+            "rawReceiptPolicy": "Select append-only run records from fresh run-specific child directories; never overwrite raw XML/log/receipt, including failure and NOT_RUN. Public index carries sanitized provenance only, not private paths or credentials.",
+            "receiptStorage": {
+              "mode": "separate_immutable_raw_records",
+              "appendOnly": true,
+              "completeRunRecordRequired": true,
+              "stableIndexPath": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+              "rawScopePath": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/**",
+              "rawLockId": "workspace-file:{workspaceId}:docs/evidence/foundation/FMP-QA-R1-discovery-runs/"
+            }
+          }
+        ],
+        "readOnlySnapshots": []
+      },
+      "checks": [
+        {
+          "inspection": "승인된 환경에서 전체/분리 EditMode discovery와 XML skip reason을 source/filter/Editor digest에 결속해 70개 사례별 비교한다.",
+          "expected": "원인/보존 guard/필수 실행 사례가 구분되고 수정 전후 결과와 종료 코드가 새 append-only index에 있다.",
+          "negativeCase": "시험 삭제·Ignore 추가·skip 총계 축소·기존 XML 재사용·Voice89/89만으로 해결 주장하면 실패.",
+          "evidence": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        }
+      ],
+      "acceptance": [
+        "새 빈 evidence 위치에 현재 source digest·실제 filter·Unity6000.3.23f1·XML·종료 코드를 기록한다.",
+        "전체/분리 discovery 및 skip reason으로 정확한 70개 사례와 원인을 대조한다.",
+        "의도적 보존 guard와 실행할 필수 회귀를 구분하며 시험삭제·Ignore 추가·skip 허용치 확대를 하지 않는다.",
+        "원인 수정 후 해당 필수 사례의 실제 실행을 확인하고 남은 실패·미실행을 그대로 보고한다.",
+        "동일 실제 UnityEditor/checkout만 단일 writer로 묶고 독립 checkout/Editor/output은 실제 자원 충돌이 없는 경우 병행 가능하다."
+      ],
+      "stopConditions": [
+        "선택 파일의 접근 가능 ref/path/digest가 일치하지 않으면 해당 candidate를 멈춘다.",
+        "동일 물리 checkout의 쓰기 경로·실제 실행 자원 충돌 시 중지하고 기존 출력과 실패 기록을 보존한다.",
+        "승인되지 않은 외부 전송·설치·서비스 기동·자동 AAA/REWORK 재개를 하지 않는다.",
+        "guard/시험 삭제·Ignore 추가·skip 허용치 확대나 skip 총계만 축소하는 변경은 금지한다.",
+        "동일 실제 UnityEditor에 writer를 둘 이상 붙이거나 같은 checkout에 중복 Editor를 실행하지 않는다. 전역 Unity 독점은 요구하지 않는다.",
+        "timeout mutation 재시도 전 현재 Editor 상태를 확인한다. 기존 XML/log를 덮어쓰지 않는다. 이전에 거절된 bisect/명령을 우회 재실행하지 않는다.",
+        "실험 범위·선택 filter·정확한 수정 파일과 generated closure를 실제 착수 시 한정한다. 디렉터리 scope는 모든 fixture 변경 허가가 아니다.",
+        "실제 Unity 생성 XML/log/run 기록은 등록된 새 run 하위 경로만 쓴다. raw 개인 경로·자격 증명은 공개하지 않으며 공개 index에는 정제된 provenance만 연결한다."
+      ],
+      "handoff": [
+        "#152 accept 정확한 70 skipped 진단 및 필수 회귀 실행 증명을 #140 candidate 및 #91 accept에 넘긴다.",
+        "source-only/짧은 실행을 20명·각60분·마이크·Windows 수용으로 표시하지 않는다."
+      ],
+      "reviewNotes": [
+        "prepare는 portable 계약·출처 검토만 한다. candidate/accept artifact는 정확한 sourceRef와 outputDigest에 결속하며 실패·미실행은 수용하지 않는다."
+      ],
+      "hardPredecessors": [
+        {
+          "issue": 120,
+          "artifact": "artifact:120:source-only-access-manifest:candidate",
+          "consumerPhase": "candidate",
+          "producerPhase": "candidate",
+          "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+        }
+      ],
+      "hardSuccessors": [
+        {
+          "issue": 140,
+          "artifact": "artifact:152:fixture-discovery-proof:accept",
+          "consumerPhase": "candidate",
+          "producerPhase": "accept",
+          "reason": "70 skipped 원인과 필수 회귀 실행 확인을 현재 source에 결속한 뒤 실제 리허설로 진행한다."
+        },
+        {
+          "issue": 91,
+          "artifact": "artifact:152:fixture-discovery-proof:accept",
+          "consumerPhase": "accept",
+          "producerPhase": "accept",
+          "reason": "통합 수용은 70 skipped 진단·필수 회귀 실행 증명을 소비하며 과거 전체/분리·Voice89 결과로 대체하지 않는다."
+        }
+      ],
+      "oneOfInputs": [],
+      "guardPredicates": [],
+      "requiredLocks": [
+        "repo-path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**",
+        "repo-path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**"
+      ],
+      "resourceBindings": [
+        {
+          "template": "workspace-files-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "workspaceId",
+            "realCheckoutPath",
+            "volumeIdentity",
+            "branchRef",
+            "baseRef",
+            "selectedWritePaths",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "pathsFrom": "phaseWriteScopes",
+          "keyExpansion": "workspaceId + canonicalized real paths, including generated closure",
+          "failure": "reject overlap in same physical workspace; independent branches may prepare proposals, canonical integration still needs requiredLocks"
+        },
+        {
+          "template": "unity-editor-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "workspaceId",
+            "editorInstanceId",
+            "editorPid",
+            "editorProcessStart",
+            "generatedOutputRoots",
+            "projectSettingsPaths"
+          ],
+          "generatedOutputRoots": [
+            "docs/evidence/foundation/FMP-QA-R1-discovery-runs/"
+          ],
+          "identityKeys": [
+            "unity-workspace:{workspaceId}",
+            "editor-process:{hostProcessNamespace}:{editorPid}:{editorProcessStart}",
+            "fs-output:{realOutputPath}"
+          ],
+          "liveValues": null,
+          "rule": "Same checkout conflicts even if Editor PID differs. Different checkouts/Editors/outputs can run concurrently when static integration locks also disjoint."
+        },
+        {
+          "template": "measurement-run-v1",
+          "phases": [
+            "candidate",
+            "accept"
+          ],
+          "requiredFields": [
+            "runId",
+            "outputRoot",
+            "hostResourceNamespace",
+            "processGroup",
+            "ports",
+            "devices",
+            "serviceRooms",
+            "leaseOwner",
+            "fencingToken"
+          ],
+          "identityKeys": [
+            "run-output:{realOutputRoot}",
+            "process:{hostResourceNamespace}:{pid}:{start}",
+            "port:{networkNamespace}:{protocol}:{bindAddress}:{port}",
+            "device:{physicalDeviceId}",
+            "room:{serviceEndpoint}:{roomId}"
+          ],
+          "liveValues": null,
+          "rule": "runId or source SHA alone never defines exclusivity; empty resource list means none used, not unknown; record actual shared ports/devices/processes."
+        }
+      ],
+      "board": {
+        "status": "Backlog",
+        "phase": "prepare",
+        "reason": "GitHub #152 OPEN을 직접 조회하여 추가한 한정 계획 카드. Backlog/prepare는 보수적 로컬 계획 상태이며 live Project 상태·claim·착수 허가를 주장하지 않는다."
+      },
+      "assigneePolicy": "unassigned_until_claim",
+      "related": [
+        120,
+        140,
+        91
+      ],
+      "requirements": [],
+      "generatedOutputClosure": [
+        "docs/evidence/foundation/FMP-QA-R1-discovery-runs/"
+      ]
     }
   ],
   "references": [
@@ -53577,6 +55810,289 @@
       "to": "issue.137",
       "relation": "conflicts_with",
       "reason": "exact write/lock overlap: lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs, lock:runtime:network-field, path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+    },
+    {
+      "from": "issue.140",
+      "to": "issue.149",
+      "relation": "contains",
+      "purpose": "decomposition",
+      "reason": "기존 이슈의 미분리 잔여 결함을 한정 작업으로 분해; 상위 전체 완료를 요구하지 않는다."
+    },
+    {
+      "from": "issue.140",
+      "to": "issue.150",
+      "relation": "contains",
+      "purpose": "decomposition",
+      "reason": "기존 이슈의 미분리 잔여 결함을 한정 작업으로 분해; 상위 전체 완료를 요구하지 않는다."
+    },
+    {
+      "from": "issue.100",
+      "to": "issue.151",
+      "relation": "contains",
+      "purpose": "decomposition",
+      "reason": "기존 이슈의 미분리 잔여 결함을 한정 작업으로 분해; 상위 전체 완료를 요구하지 않는다."
+    },
+    {
+      "from": "issue.91",
+      "to": "issue.152",
+      "relation": "contains",
+      "purpose": "decomposition",
+      "reason": "기존 이슈의 미분리 잔여 결함을 한정 작업으로 분해; 상위 전체 완료를 요구하지 않는다."
+    },
+    {
+      "from": "issue.149",
+      "to": "issue.120",
+      "relation": "requires",
+      "artifact": "artifact:120:source-only-access-manifest:candidate",
+      "consumerPhase": "candidate",
+      "producerPhase": "candidate",
+      "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.120",
+      "relation": "requires",
+      "artifact": "artifact:120:source-only-access-manifest:candidate",
+      "consumerPhase": "candidate",
+      "producerPhase": "candidate",
+      "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+    },
+    {
+      "from": "issue.151",
+      "to": "issue.120",
+      "relation": "requires",
+      "artifact": "artifact:120:source-only-access-manifest:candidate",
+      "consumerPhase": "candidate",
+      "producerPhase": "candidate",
+      "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+    },
+    {
+      "from": "issue.152",
+      "to": "issue.120",
+      "relation": "requires",
+      "artifact": "artifact:120:source-only-access-manifest:candidate",
+      "consumerPhase": "candidate",
+      "producerPhase": "candidate",
+      "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.149",
+      "relation": "requires",
+      "artifact": "artifact:149:load-causal-contract:candidate",
+      "consumerPhase": "candidate",
+      "producerPhase": "candidate",
+      "reason": "F(n)/U(n) engine binding 구현은 portable 관측/schema/role/deadline 계약 후보를 소비한다. #140 rehearsal 영수증을 계약으로 사용하지 않는다."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.149",
+      "relation": "requires",
+      "artifact": "artifact:149:load-causal-corpus:candidate",
+      "consumerPhase": "candidate",
+      "producerPhase": "candidate",
+      "reason": "engine binding 후보는 고정된 정상/실패 causal corpus 기대값과 매핑한다. candidate corpus는 실제 실행 수용이 아니다."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.149",
+      "relation": "requires",
+      "artifact": "artifact:149:load-causal-corpus:accept",
+      "consumerPhase": "accept",
+      "producerPhase": "accept",
+      "reason": "실제 engine/protocol run은 #149의 성공한 executed causal corpus가 선행한다."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.143",
+      "relation": "requires",
+      "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+      "consumerPhase": "accept",
+      "producerPhase": "candidate",
+      "reason": "실제 2~4 protocol run에 새 coupled Player의 source/build/data/service digest와 positive launch가 있는 runnable payload가 필요하다. build-attempt index는 부적격이다."
+    },
+    {
+      "from": "issue.143",
+      "to": "issue.150",
+      "relation": "requires",
+      "artifact": "artifact:150:engine-metrics-binding:candidate",
+      "consumerPhase": "candidate",
+      "producerPhase": "candidate",
+      "reason": "새 coupled Player 빌드는 #150 callback/scheduler 결속 후보를 selected source digest에 포함한다. #150 실제 run acceptance를 빌드 선행으로 요구하지 않는다."
+    },
+    {
+      "from": "issue.140",
+      "to": "issue.149",
+      "relation": "requires",
+      "artifact": "artifact:149:load-causal-corpus:accept",
+      "consumerPhase": "candidate",
+      "producerPhase": "accept",
+      "reason": "2~4-client 실제 리허설 전에 다섯 R6B 항목의 executed causal corpus가 통과해야 한다."
+    },
+    {
+      "from": "issue.140",
+      "to": "issue.150",
+      "relation": "requires",
+      "artifact": "artifact:150:engine-metrics-run:accept",
+      "consumerPhase": "candidate",
+      "producerPhase": "accept",
+      "reason": "F(n)/U(n) 실제 callback/protocol 결속 증명 뒤 #140 계측 리허설을 진행한다."
+    },
+    {
+      "from": "issue.100",
+      "to": "issue.151",
+      "relation": "requires",
+      "artifact": "artifact:151:staging-ownership-proof:accept",
+      "consumerPhase": "candidate",
+      "producerPhase": "accept",
+      "reason": "실제 LiveKit 마이크/PTT 준비에 P0 소유권 미입증 credential/publication 차단 증명이 선행한다. Python24/Voice89로 대체하지 않는다."
+    },
+    {
+      "from": "issue.143",
+      "to": "issue.151",
+      "relation": "requires",
+      "artifact": "artifact:151:staging-ownership-proof:accept",
+      "consumerPhase": "candidate",
+      "producerPhase": "accept",
+      "reason": "LiveKit 서비스가 포함된 후보 전달 전에 P0 staging 소유권 proof가 필요하다. 실패/미검증 backend는 fail-closed를 유지한다."
+    },
+    {
+      "from": "issue.140",
+      "to": "issue.152",
+      "relation": "requires",
+      "artifact": "artifact:152:fixture-discovery-proof:accept",
+      "consumerPhase": "candidate",
+      "producerPhase": "accept",
+      "reason": "70 skipped 원인과 필수 회귀 실행 확인을 현재 source에 결속한 뒤 실제 리허설로 진행한다."
+    },
+    {
+      "from": "issue.91",
+      "to": "issue.152",
+      "relation": "requires",
+      "artifact": "artifact:152:fixture-discovery-proof:accept",
+      "consumerPhase": "accept",
+      "producerPhase": "accept",
+      "reason": "통합 수용은 70 skipped 진단·필수 회귀 실행 증명을 소비하며 과거 전체/분리·Voice89 결과로 대체하지 않는다."
+    },
+    {
+      "from": "issue.149",
+      "to": "issue.140",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:scripts/dev/run_foundation_load.py|scripts/dev/run_foundation_load.py; path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py; path:scripts/dev/test_foundation_load.py|scripts/dev/test_foundation_load.py. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.149",
+      "to": "issue.150",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: lock:repo-path:scripts/dev/foundation_load_metrics.py; path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.27",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.133",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.134",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.136",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.137",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.138",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.140",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.150",
+      "to": "issue.152",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**; path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.151",
+      "to": "issue.100",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:services/livekit/configure_local.py|services/livekit/; path:services/livekit/test_configure_local.py|services/livekit/; path:services/livekit/README.md|services/livekit/. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.152",
+      "to": "issue.25",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**|Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.152",
+      "to": "issue.26",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**|Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.152",
+      "to": "issue.27",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**|Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
+    },
+    {
+      "from": "issue.152",
+      "to": "issue.135",
+      "relation": "conflicts_with",
+      "fromPhase": "accept",
+      "toPhase": "accept",
+      "reason": "Canonical integration overlaps exact file scopes: path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/**|Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs. Serialize only the bound paths/resources; independent proposals remain isolated."
     }
   ],
   "ontology": {
@@ -53598,7 +56114,8 @@
   },
   "limitations": [
     "Planning/governance projection only; verify live source, artifact receipts, claims and leases before any action.",
-    "Lifecycle verdict/status is intentionally not encoded here; resolve it from each exact body hash and the review ledger."
+    "Lifecycle verdict/status is intentionally not encoded here; resolve it from each exact body hash and the review ledger.",
+    "Residual #149–#152 were read from their real GitHub OPEN issues and appended after the frozen 2026-09-12 corpus. Original snapshot/claims/references/failed-review history remain unchanged; local Backlog planning does not assert current Project status. PR153 qualifiedRefs are published source-only access, not accepted compile, runnable payload, service safety or review acceptance."
   ],
   "review": {
     "status": "lifecycle_external_body_hash_and_ledger",

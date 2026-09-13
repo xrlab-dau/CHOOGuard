@@ -31,21 +31,59 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #85 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:85:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/art/aaa-review-workflow.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "docs/choo-guard-native-team-contracts.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 73,
+        "artifact": "artifact:73:job-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:73:job-contract:candidate"
+        "reason": "Consume only jobID·원본/캐시/임시/후보·재개계약"
       },
       {
         "issue": 107,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual independent ART review verdict for this selected candidate digest before producer visual acceptance; producer candidate remains reviewable while issue open."
       }
     ],
     "successors": [],
@@ -53,7 +91,6 @@
       {
         "artifact": "or:85:render-source",
         "consumerPhase": "candidate",
-        "resolution": "Current33 fixed source hashes or scoped audit delta; do not wait for new full-world assets.",
         "alternatives": [
           {
             "issue": 65,
@@ -65,7 +102,8 @@
             "artifact": "artifact:65:reference-delta:candidate",
             "producerPhase": "candidate"
           }
-        ]
+        ],
+        "resolution": "Current33 fixed source hashes or scoped audit delta; do not wait for new full-world assets."
       }
     ],
     "parallelCandidates": [
@@ -114,9 +152,7 @@
       99,
       70,
       100,
-      65,
       106,
-      107,
       57,
       56,
       119,
@@ -155,8 +191,18 @@
       144,
       25,
       24,
+      149,
+      150,
+      151,
+      152,
       10
     ],
+    "conditionalCandidates": [
+      65,
+      107
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -167,6 +213,7 @@
       "readWhen": "prepare",
       "why": "기존33종입력과hash",
       "limits": "현재render/4K후보수용을증명하지않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -175,7 +222,11 @@
         "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

@@ -31,59 +31,68 @@
     "predecessors": [
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-execution-profile:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-execution-profile:candidate"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-execution-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-execution-profile:accept"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       }
     ],
     "successors": [
       {
         "issue": 19,
+        "artifact": "artifact:18:M1-02-policy-record:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:18:M1-02-policy-record:candidate"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 19,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 22,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 23,
+        "artifact": "artifact:18:M1-02-policy-record:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:18:M1-02-policy-record:candidate"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 23,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 45,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 46,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       }
     ],
     "oneOfGroups": [],
@@ -168,8 +177,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -180,6 +196,7 @@
       "readWhen": "prepare",
       "why": "deny surface and profile/hash invalidation requirements를 증명한다.",
       "limits": "실행되었다는 뜻은 아니다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -188,7 +205,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-ai-native-pipeline-v1.md",
@@ -196,6 +217,7 @@
       "readWhen": "prepare",
       "why": "single writer, non-completion and permission composition 원칙을 증명한다.",
       "limits": "구체 OS enforcement 구현은 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -204,7 +226,11 @@
         "value": "9a575eff21b96161cb7d562b260db3128831be87"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

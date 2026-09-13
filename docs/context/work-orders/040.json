@@ -32,15 +32,17 @@
     "predecessors": [
       {
         "issue": 38,
+        "artifact": "artifact:38:M5-03-review-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:38:M5-03-review-receipt:accept"
+        "reason": "Consume only reviewer/provider/model, target hash, findings, dispositions, re-review hash chain"
       },
       {
         "issue": 39,
+        "artifact": "artifact:39:M5-04-target-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:39:M5-04-target-manifest:accept"
+        "reason": "Consume only immutable candidate file list, hashes, rights, scope, limitations"
       }
     ],
     "successors": [],
@@ -133,8 +135,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -145,6 +154,7 @@
       "readWhen": "prepare",
       "why": "PM approval gate and user confirmation boundaries를 증명한다.",
       "limits": "approval receipt existence를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -153,7 +163,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

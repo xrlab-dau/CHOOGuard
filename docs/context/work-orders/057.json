@@ -31,42 +31,46 @@
     "predecessors": [
       {
         "issue": 32,
+        "artifact": "artifact:32:M4-01-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:32:M4-01-fixture:candidate"
+        "reason": "Consume only 5 provisional role rows with all required fields and disclaimer"
       },
       {
         "issue": 32,
+        "artifact": "artifact:32:M4-01-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:32:M4-01-fixture:accept"
+        "reason": "Consume only 5 provisional role rows with all required fields and disclaimer"
       },
       {
         "issue": 55,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       }
     ],
     "successors": [
       {
         "issue": 89,
+        "artifact": "artifact:57:input-candidate:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:57:input-candidate:candidate"
+        "reason": "Consume only 기존 Submit 경로로만 행동 전달"
       },
       {
         "issue": 89,
+        "artifact": "artifact:57:input-candidate:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:57:input-candidate:accept"
+        "reason": "Consume only 기존 Submit 경로로만 행동 전달"
       }
     ],
     "oneOfGroups": [
       {
         "artifact": "or:57:input-baseline",
         "consumerPhase": "candidate",
-        "resolution": "Desktop adapter only the selected source contract; no XR final gate. The #69 branch supplies only an obtainable historical source-checkout baseline at its tested-code ref; #57 must produce and test its own desktop adapter and may not inherit Unity/C# execution claims.",
         "alternatives": [
           {
             "issue": 69,
@@ -78,7 +82,8 @@
             "artifact": "artifact:120:foundation-published-source:accept",
             "producerPhase": "accept"
           }
-        ]
+        ],
+        "resolution": "Desktop adapter only the selected source contract; no XR final gate. The #69 branch supplies only an obtainable historical source-checkout baseline at its tested-code ref; #57 must produce and test its own desktop adapter and may not inherit Unity/C# execution claims."
       }
     ],
     "parallelCandidates": [
@@ -95,7 +100,6 @@
       10,
       106,
       107,
-      120,
       58,
       55,
       52,
@@ -167,8 +171,17 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      120
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -179,6 +192,7 @@
       "readWhen": "prepare",
       "why": "실제 공개된 입력 의미·Modality·Submit 계약으로 후보를 준비한다.",
       "limits": "미게시 Native WorldCommand 계약 또는 실제 XR 입력 구현을 대체하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -187,7 +201,11 @@
         "value": "c7819b147078e414727e31ae4c48b0a84e69de1f"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

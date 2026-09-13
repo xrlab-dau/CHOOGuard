@@ -4,6 +4,7 @@
 - The user is PM; members and their own LLMs execute bounded tasks. No personal preassignment, location routing, school-PC requirement, or high-spec ownership gate. Preserve #70’s evidenced existing claim.
 - The ontology is `docs/context/work-orders/index.jsonld`; phase artifact dependencies are not whole-issue close-order. The technical graph is a detailed contract, not a request to load all context.
 - Follow `docs/context/orchestration-contract.md`. No automatic reviewer/rework loop; keep existing protected review and data/permission boundaries.
+- 코드 관계가 필요할 때만 `docs/context/graphify/README.md`의 issue/phase/symbol 조회를 사용한다. Graphify는 고정 소스의 탐색 그래프이며 실행 선행·소스 수용·실제 claim 권위를 대신하지 않는다.
 
 # Agent rules for choo-guard
 

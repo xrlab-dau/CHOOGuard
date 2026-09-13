@@ -35,77 +35,89 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       }
     ],
     "successors": [
       {
         "issue": 20,
+        "artifact": "artifact:24:pinned-materialization-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+        "reason": "Pinned import/target candidate suffices to prepare connection recipe."
       },
       {
         "issue": 20,
+        "artifact": "artifact:24:dependency-materialization-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+        "reason": "Consume only source·정확binary·import 결과·미지원 capability 명시"
       },
       {
         "issue": 25,
+        "artifact": "artifact:24:dependency-materialization-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+        "reason": "Consume only source·정확binary·import 결과·미지원 capability 명시"
       },
       {
         "issue": 27,
+        "artifact": "artifact:24:pinned-materialization-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+        "reason": "Consume only Version/hash/interface pins and prepare_multiplayer_dependencies dry-run; no real voice/network acceptance required to build diagnostic candidate."
       },
       {
         "issue": 27,
+        "artifact": "artifact:24:dependency-materialization-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+        "reason": "Consume only source·정확binary·import 결과·미지원 capability 명시"
       },
       {
         "issue": 100,
+        "artifact": "artifact:24:pinned-materialization-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+        "reason": "Consume only Version/hash/interface pins and prepare_multiplayer_dependencies dry-run; no real voice/network acceptance required to build diagnostic candidate."
       },
       {
         "issue": 100,
+        "artifact": "artifact:24:dependency-materialization-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+        "reason": "Consume only source·정확binary·import 결과·미지원 capability 명시"
       },
       {
         "issue": 143,
+        "artifact": "artifact:24:pinned-materialization-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+        "reason": "Pinned dependency/materialization contract, not #100 voice acceptance."
       },
       {
         "issue": 143,
+        "artifact": "artifact:24:unity-package-baseline:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:unity-package-baseline:candidate"
+        "reason": "Consume only 6000.3.23f1 프로젝트와 NGO2.13.2/UTP2.7.4/LiveKitSDK2.0.0 및 server1.13.6 계약 정합"
       }
     ],
     "oneOfGroups": [],
@@ -180,8 +192,15 @@
       131,
       137,
       138,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

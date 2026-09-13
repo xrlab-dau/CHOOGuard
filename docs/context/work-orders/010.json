@@ -36,137 +36,242 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #10 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:10:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-connected-world.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false,
+              "captureEvidence": {
+                "snapshotBaseRef": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+                "publishedRef": null,
+                "localSha256": "82b1f915ac9b908c042ea266d284b8d27c6bdfbfd02df9ea25a8152960cd81d5",
+                "localGitBlobSha": "1c82e586fc6151c27fc124f249153c8b10f1c8df",
+                "developGitBlobSha": null,
+                "sourceFilesPointer": "baseline/source-files.json[546]"
+              }
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "operation": "read_write",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false,
+              "captureEvidence": {
+                "snapshotBaseRef": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+                "publishedRef": null,
+                "localSha256": "c4a17b0098c02f23114695ffe56d409259e424dcaa26d6c51e15a77223d52383",
+                "localGitBlobSha": "659e7c455fd079262c906fe5161f82a5dafbf5cd",
+                "developGitBlobSha": null,
+                "sourceFilesPointer": "baseline/source-files.json[549]"
+              }
+            },
+            {
+              "path": "docs/context/accepted-decisions.md",
+              "operation": "read_write",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": true,
+              "captureEvidence": {
+                "snapshotBaseRef": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+                "publishedRef": null,
+                "localSha256": "32a79df7135d48d6c80088f76ef478994d060a304f02a3b891b36157e1ae5693",
+                "localGitBlobSha": "163c035ebdb1e411c949c357d9f59c76df080d2d",
+                "developGitBlobSha": "3c460eb37c10a458f2cdc1e366679296d3017f5c",
+                "sourceFilesPointer": "baseline/source-files.json[565]"
+              }
+            },
+            {
+              "path": "docs/evidence/foundation/2026-09-09-simulation-components.json",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false,
+              "captureEvidence": {
+                "snapshotBaseRef": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+                "publishedRef": null,
+                "localSha256": "feec92bd5a009c0130e4a481235ed7048aa24f00d35af1a3e7310606b97fbb15",
+                "localGitBlobSha": "c06cbf94627984f0587eaead9b5987aab3c84680",
+                "developGitBlobSha": null,
+                "sourceFilesPointer": "baseline/source-files.json[598]"
+              }
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 41,
+        "artifact": "artifact:41:R-01-review-map:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:41:R-01-review-map:accept"
+        "reason": "Native contract final disposition consumes independent candidate review."
       }
     ],
     "successors": [
       {
         "issue": 24,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 24,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 25,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 25,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 27,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Native WorldCommand/ObservedState, NOT legacy TrainingAction acceptance."
       },
       {
         "issue": 27,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 41,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Independent review execution consumes #10 Native contract candidate before emitting #41 final disposition."
       },
       {
         "issue": 54,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 64,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 64,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 68,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 99,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 106,
+        "artifact": "artifact:10:sc01-explicit-method-decision:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:10:sc01-explicit-method-decision:accept"
+        "reason": "External method execution only; inventory/preservation preparation remains allowed."
       },
       {
         "issue": 123,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 125,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 128,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 131,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Native incident/source/WorldCommand contract only, no method decision."
       },
       {
         "issue": 131,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 138,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 138,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       }
     ],
     "oneOfGroups": [],
@@ -177,7 +282,6 @@
       56,
       57,
       82,
-      107,
       14,
       15,
       16,
@@ -191,7 +295,6 @@
       29,
       31,
       34,
-      37,
       38,
       39,
       40,
@@ -201,23 +304,14 @@
       45,
       46,
       52,
-      55,
       58,
       62,
       65,
       70,
       71,
       73,
-      74,
       75,
-      76,
-      77,
-      78,
-      79,
-      80,
-      81,
       85,
-      89,
       90,
       93,
       119,
@@ -228,29 +322,31 @@
       126,
       127,
       137,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      37,
+      55,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      89,
+      107
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
-  "minimumContext": [
-    {
-      "path": "Packages/com.xrlab.chooguard.foundation/README.md",
-      "selector": "lines5-9",
-      "readWhen": "candidate",
-      "why": "SC-04 legacy package claim: single-player/no-network.",
-      "limits": "Preserve as a versioned claim; do not overwrite it from local Native code. Raw byte read occurs in implement/candidate only.",
-      "availability": "published",
-      "provider": "git-at-captured-ref",
-      "ref": "6490956d203549b56cbd86846120759889abb016",
-      "digest": {
-        "algorithm": "git-blob-sha1",
-        "value": "6c5d59d3e979eb5fd844f59d2e5d46dc152b3eb0"
-      },
-      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/README.md",
-      "access": "repository read access"
-    }
-  ],
+  "minimumContext": [],
   "readMore": {
     "sources": "node scripts/context/task_context.mjs brief --issue 10 --section sources --phase prepare",
     "inputs": "node scripts/context/task_context.mjs brief --issue 10 --section inputs --phase candidate",
