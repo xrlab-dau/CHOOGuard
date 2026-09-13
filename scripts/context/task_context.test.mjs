@@ -7,6 +7,21 @@ test('default load reads only one packet, not the canonical graph',()=>{
  const root=fs.mkdtempSync(fileURLToPath(new URL('./.packet-test-',import.meta.url)));
  try{fs.mkdirSync(path.join(root,'docs/context/work-orders'),{recursive:true});fs.writeFileSync(path.join(root,'docs/context/work-orders/001.json'),JSON.stringify(order));assert.deepEqual(load(root,1),{order});}finally{fs.rmSync(root,{recursive:true,force:true});}
 });
+test('requirements section and brief need only the selected packet and never other issue evidence',async()=>{
+ const {buildWorkOrders}=await import('./build_work_orders.mjs'),repo=fileURLToPath(new URL('../../',import.meta.url)),read=p=>JSON.parse(fs.readFileSync(path.join(repo,p)));
+ const {orders}=buildWorkOrders(read('docs/context/work-graph.json'),read('docs/context/source-availability.json'),read('docs/context/work-orders/policy.json'));
+ const root=fs.mkdtempSync(fileURLToPath(new URL('./.packet-test-',import.meta.url)));
+ try{fs.mkdirSync(path.join(root,'docs/context/work-orders'),{recursive:true});
+ for(const [n,codes] of [[10,['F-SOURCE']],[60,['F-FLOW','F-SOURCE']],[100,['F-VOICE']],[102,['F-TRAIN']],[106,['F-ART-NATIVE']],[107,['F-AAA']]]){
+  const o=orders.find(o=>o.issue===n);fs.writeFileSync(path.join(root,`docs/context/work-orders/${String(n).padStart(3,'0')}.json`),JSON.stringify(o));
+  const loaded=load(root,n,{section:'requirements'});assert.deepEqual(loaded,{order:o});
+  const view=section(loaded.order,undefined,'requirements','accept');assert.equal(view.authorization,false);assert.deepEqual(view.requirements.map(r=>r.code),codes);
+  for(const r of view.requirements){assert.ok(r.evidence.every(e=>e.issue===n));if(n>=106)assert.equal(r.mappingStatus,'historical_on_hold');}
+  const b=brief(loaded.order);assert.deepEqual(b.requirements.map(r=>r.code),codes);assert.ok(b.requirements.every(r=>!r.evidence&&!r.definition));assert.match(b.requiredNextReads.requirements,/--section requirements/);
+  const budget=context.budgetResponse(view,{maxBytes:1,continuation:o.readMore.requirements});assert.equal(budget.complete,false);assert.equal(budget.data,undefined);assert.match(budget.continuation,/--section requirements/);
+ }
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
 test('budget output marks completeness and retains all required guards or an explicit continuation',()=>{
  assert.equal(typeof context.budgetResponse,'function');
  const data={guards:Array.from({length:50},(_,n)=>({id:'guard-'+n,predicate:'must verify'}))};

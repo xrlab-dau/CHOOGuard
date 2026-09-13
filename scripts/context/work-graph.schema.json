@@ -67,7 +67,7 @@
     "requirements": {
       "type": "array",
       "items": {
-        "type": "object"
+        "$ref": "#/$defs/requirement"
       },
       "minItems": 0
     },
@@ -806,18 +806,18 @@
             "from",
             "to",
             "relation",
-            "reason"
+            "reason",
+            "mappingStatus",
+            "policy"
           ],
           "properties": {
             "from": {
               "type": "string",
-              "minLength": 1,
-              "pattern": "\\S"
+              "pattern": "^issue\\.[1-9][0-9]*$"
             },
             "to": {
               "type": "string",
-              "minLength": 1,
-              "pattern": "\\S"
+              "pattern": "^requirement\\.F-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
             },
             "relation": {
               "const": "implements"
@@ -826,8 +826,59 @@
               "type": "string",
               "minLength": 1,
               "pattern": "\\S"
+            },
+            "mappingStatus": {
+              "enum": [
+                "mapped",
+                "historical_on_hold"
+              ]
+            },
+            "policy": {
+              "type": [
+                "object",
+                "null"
+              ]
             }
-          }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "mappingStatus": {
+                    "const": "historical_on_hold"
+                  }
+                }
+              },
+              "then": {
+                "properties": {
+                  "policy": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "path",
+                      "selector"
+                    ],
+                    "properties": {
+                      "path": {
+                        "const": "docs/context/work-orders/policy.json"
+                      },
+                      "selector": {
+                        "type": "string",
+                        "pattern": "^/goalOverrides/[1-9][0-9]*$"
+                      }
+                    }
+                  }
+                }
+              },
+              "else": {
+                "properties": {
+                  "policy": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          ]
         },
         {
           "type": "object",
@@ -1687,9 +1738,9 @@
           "type": "array",
           "items": {
             "type": "string",
-            "minLength": 1,
-            "pattern": "\\S"
-          }
+            "pattern": "^requirement\\.F-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+          },
+          "uniqueItems": true
         },
         "resourceBindings": {
           "type": "array",
@@ -5780,6 +5831,251 @@
           }
         }
       }
+    },
+    "requirementDigest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "value"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "value": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "requirementSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "selector",
+        "quote",
+        "availability",
+        "ref",
+        "digest",
+        "access",
+        "qualification",
+        "limits"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "selector": {
+          "$ref": "#/$defs/text"
+        },
+        "quote": {
+          "$ref": "#/$defs/text"
+        },
+        "availability": {
+          "enum": [
+            "local_snapshot",
+            "qualified_ref"
+          ]
+        },
+        "ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "digest": {
+          "$ref": "#/$defs/requirementDigest"
+        },
+        "access": {
+          "$ref": "#/$defs/text"
+        },
+        "qualification": {
+          "$ref": "#/$defs/text"
+        },
+        "limits": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "availability": {
+                "const": "local_snapshot"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "ref": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "ref": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{40}$"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "requirementEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue",
+        "kind",
+        "reason",
+        "sources",
+        "limits"
+      ],
+      "properties": {
+        "issue": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 9007199254740991
+        },
+        "kind": {
+          "enum": [
+            "explicit_selector",
+            "definition_trace_outcome",
+            "historical_link"
+          ]
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/requirementSource"
+          }
+        },
+        "limits": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "legacyRequirementSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pointer",
+        "availability",
+        "generatorRecovered"
+      ],
+      "properties": {
+        "pointer": {
+          "$ref": "#/$defs/text"
+        },
+        "availability": {
+          "const": "unavailable"
+        },
+        "generatorRecovered": {
+          "const": false
+        }
+      }
+    },
+    "requirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "code",
+        "kind",
+        "title",
+        "definition",
+        "issueNumbers",
+        "mappingStatus",
+        "evidence",
+        "legacySource",
+        "limits"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^requirement\\.F-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+        },
+        "code": {
+          "type": "string",
+          "pattern": "^F-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+        },
+        "kind": {
+          "const": "requirement"
+        },
+        "title": {
+          "$ref": "#/$defs/text"
+        },
+        "definition": {
+          "$ref": "#/$defs/text"
+        },
+        "issueNumbers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 9007199254740991
+          }
+        },
+        "mappingStatus": {
+          "enum": [
+            "mapped",
+            "historical_on_hold",
+            "unresolved"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/requirementEvidence"
+          }
+        },
+        "legacySource": {
+          "$ref": "#/$defs/legacyRequirementSource"
+        },
+        "limits": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mappingStatus": {
+                "const": "unresolved"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "issueNumbers": {
+                "maxItems": 0
+              },
+              "evidence": {
+                "maxItems": 0
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "issueNumbers": {
+                "minItems": 1
+              },
+              "evidence": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ],
+      "description": "Evidence-backed planning only. Runtime checks require identity/code equality and registry/item/implements pair equality, one evidence record per pair, portable non-private paths, exact source pins and held-policy preservation."
     }
   }
 }
