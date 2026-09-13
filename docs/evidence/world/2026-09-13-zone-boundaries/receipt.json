@@ -1,0 +1,116 @@
+{
+  "issue": 70,
+  "candidate": "B",
+  "base_commit": "c1a7b78d895bd87216b64a6e5ca5d26eb6d85b3e",
+  "generated_by": "run.sh",
+  "mode": "isolated_proposal",
+  "canonicalWriteAllowed": false,
+  "policy_pass_claimed": false,
+  "note": "Exit codes and outputs below are evidence, not a policy PASS or an acceptance decision.",
+  "commands": [
+    {
+      "name": "validate_default",
+      "command": "python3 scripts/art/validate_zone_boundaries.py",
+      "exit": 0,
+      "stdout": "validate_default.stdout",
+      "stderr": "validate_default.stderr",
+      "exit_file": "validate_default.exit",
+      "result_line": "\"result\": \"pass\","
+    },
+    {
+      "name": "validate_array",
+      "command": "python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/array.json",
+      "exit": 2,
+      "stdout": "validate_array.stdout",
+      "stderr": "validate_array.stderr",
+      "exit_file": "validate_array.exit",
+      "result_line": "\"result\": \"not_run\","
+    },
+    {
+      "name": "validate_missing",
+      "command": "python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/absent.json",
+      "exit": 2,
+      "stdout": "validate_missing.stdout",
+      "stderr": "validate_missing.stderr",
+      "exit_file": "validate_missing.exit",
+      "result_line": "\"result\": \"not_run\","
+    },
+    {
+      "name": "validate_truncated",
+      "command": "python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/truncated.json",
+      "exit": 2,
+      "stdout": "validate_truncated.stdout",
+      "stderr": "validate_truncated.stderr",
+      "exit_file": "validate_truncated.exit",
+      "result_line": "\"result\": \"not_run\","
+    },
+    {
+      "name": "validate_non_utf8",
+      "command": "python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/non-utf8.json",
+      "exit": 2,
+      "stdout": "validate_non_utf8.stdout",
+      "stderr": "validate_non_utf8.stderr",
+      "exit_file": "validate_non_utf8.exit",
+      "result_line": "\"result\": \"not_run\","
+    },
+    {
+      "name": "tests",
+      "command": "python3 -m unittest scripts.art.test_zone_boundaries -v",
+      "exit": 0,
+      "stdout": "tests.stdout",
+      "stderr": "tests.stderr",
+      "exit_file": "tests.exit",
+      "result_line": "Ran 25 tests in 0.330s | OK"
+    },
+    {
+      "name": "discover",
+      "command": "python3 -m unittest discover -s scripts/art -p 'test_*.py'",
+      "exit": 0,
+      "stdout": "discover.stdout",
+      "stderr": "discover.stderr",
+      "exit_file": "discover.exit",
+      "result_line": "Ran 36 tests in 0.257s | OK"
+    },
+    {
+      "name": "counts",
+      "command": "python3 -c \"import json;c=json.load(open(\\\"foundation/world/facility-coverage.json\\\",encoding=\\\"utf-8\\\"));b=json.load(open(\\\"foundation/world/zone-boundaries.json\\\",encoding=\\\"utf-8\\\"));print(\\\"coverage: zones=%d connections=%d constraints=%d\\\"%(len(c[\\\"zones\\\"]),len(c[\\\"connections\\\"]),len(c[\\\"numeric_constraints\\\"])));print(\\\"boundaries: bundles=%d zones=%d portals=%d cross_bundle=%d questions=%d\\\"%(len(b[\\\"bundles\\\"]),len(b[\\\"zones\\\"]),len(b[\\\"portals\\\"]),sum(1 for p in b[\\\"portals\\\"] if p[\\\"crosses_bundles\\\"]),len(b[\\\"open_questions\\\"])));print(\\\"portals_with_dimensions=%d\\\"%sum(1 for p in b[\\\"portals\\\"] if p[\\\"opening_width_m\\\"] is not None or p[\\\"clear_height_m\\\"] is not None))\"",
+      "exit": 0,
+      "stdout": "counts.stdout",
+      "stderr": "counts.stderr",
+      "exit_file": "counts.exit",
+      "result_line": "coverage: zones=13 connections=12 constraints=1 | boundaries: bundles=3 zones=13 portals=12 cross_bundle=3 questions=7 | portals_with_dimensions=0"
+    },
+    {
+      "name": "binding",
+      "command": "python3 -c \"import hashlib,json;r=json.load(open(\\\"foundation/world/zone-boundaries.json\\\",encoding=\\\"utf-8\\\"))[\\\"coverage_source\\\"][\\\"sha256\\\"];a=hashlib.sha256(open(\\\"foundation/world/facility-coverage.json\\\",\\\"rb\\\").read()).hexdigest();print(\\\"recorded=\\\"+r);print(\\\"actual  =\\\"+a);print(\\\"match   =%s\\\"%(r==a))\"",
+      "exit": 0,
+      "stdout": "binding.stdout",
+      "stderr": "binding.stderr",
+      "exit_file": "binding.exit",
+      "result_line": "recorded=1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350 | actual  =1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350 | match   =True"
+    },
+    {
+      "name": "upstream_unchanged",
+      "command": "shasum -a 256 foundation/world/facility-coverage.json",
+      "exit": 0,
+      "stdout": "upstream_unchanged.stdout",
+      "stderr": "upstream_unchanged.stderr",
+      "exit_file": "upstream_unchanged.exit",
+      "result_line": "1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350  foundation/world/facility-coverage.json"
+    }
+  ],
+  "targets_unchanged_by_run": true,
+  "artifact_sha256": {
+    "foundation/world/zone-boundaries.json": "e7d35f150058a72498afb336069ab1f1e7a0a123f440d348a4edd7d14f61ebc8",
+    "scripts/art/validate_zone_boundaries.py": "f7e47ec775b1401663bb34b29741d143b472e86d3b84d5fc346f6357c11918de",
+    "scripts/art/test_zone_boundaries.py": "f6c0482d217838399638a364e7702b4f14ab95f90f199da4940553ef4e9dcef3",
+    "docs/art/zone-boundaries.md": "596a787a02453d8bbf759bf745163d24d1b655629a6a16fd48efef4e892604d5"
+  },
+  "not_run": [
+    "claim holder remote branch docs/70-zone-coverage-boundaries — deliberately not consulted (blind comparison)",
+    "#82 local unpushed implementation ID reconciliation — not reachable from this worktree",
+    "V02/V03 video zone attribution — requires human visual review",
+    "surveyed placement / facility fidelity / safety acceptance — outside this candidate scope, no evidence",
+    "GitHub issue/project state re-read — this candidate only touches repository files"
+  ]
+}
