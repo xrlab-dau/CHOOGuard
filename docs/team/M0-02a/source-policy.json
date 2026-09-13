@@ -1,0 +1,969 @@
+{
+  "artifactId": "artifact:14:M0-02a-source-policy",
+  "schemaVersion": 1,
+  "issue": 14,
+  "workId": "M0-02a",
+  "title": "공개 자료 출처 등급·주장 범위 규약",
+  "documentStatus": "draft",
+  "proposalMode": "isolated_proposal",
+  "canonicalWriteAllowed": false,
+  "writeScope": {
+    "allowedPath": "docs/team/M0-02a/",
+    "specifiedOutput": "docs/team/M0-02a/source-policy.json",
+    "outsideWrites": [],
+    "outsideWriteDeclaration": "phaseWriteScope 밖 쓰기 없음",
+    "mode": "isolated_proposal",
+    "canonicalWriteAllowed": false
+  },
+  "selfAssessment": "draft-only. 이 문서는 스스로를 accepted/approved/final/complete 로 표기하지 않는다. 어떤 gate/check 결과도 이슈 수용(acceptance)이나 제품·안전 보증으로 승격되지 않는다.",
+  "sourceRef": {
+    "ref": "6490956d203549b56cbd86846120759889abb016",
+    "boundAt": "candidate",
+    "digestConvention": "이 산출물 자체의 sha256 digest 규약: sha256(canonicalJson(P))의 hex. P = 본 문서에서 integrity.outputDigest.value·handoff.outputDigest.value·checkReceipts[*].artifactDigest.value 를 null 로, 그리고 handoff.executionLog[step=integrity].commands[*].stdout 를 null 로 둔 사본이다(자기참조 고정점 제거). canonicalJson 은 모든 객체 키를 사전순으로 정렬하고 콤팩트(무공백)로 직렬화한다 — 키 순서 불변. 동일 값이 integrity.outputDigest.value·각 checkReceipts[*].artifactDigest.value·handoff.outputDigest.value 에 있다. 러너가 외부 전달하는 outputsWritten.sha256 은 전달 파일 바이트의 raw sha256 이며 이 자기참조 digest 와는 다른 값이다.",
+    "selector": {
+      "kind": "git-commit",
+      "readSet": [
+        {
+          "path": "docs/choo-guard-execution-backlog-v1.md",
+          "selector": "whole-file",
+          "algorithm": "git-blob-sha1",
+          "digest": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+        },
+        {
+          "path": "docs/context/work-graph.json",
+          "selector": "not-present-at-ref",
+          "note": "ref 트리에 없음 — context-only, non-governing(SC-02). 항목 수준 결속 불가 사유를 bindingStatus/bindingEvidence 에 명시한다.",
+          "bindingStatus": "UNBOUND",
+          "bindingEvidence": "git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-graph.json → does not exist in ref (exit 128). 후보 워크스페이스에도 파일이 없어 ref/commit/digest 결속 불가."
+        },
+        {
+          "path": "docs/context/work-orders/014.json",
+          "selector": "not-present-at-ref",
+          "note": "ref 트리에 없음 — context-only, non-governing(SC-02). 항목 수준 결속 불가 사유를 bindingStatus/bindingEvidence 에 명시한다.",
+          "bindingStatus": "UNBOUND",
+          "bindingEvidence": "git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-orders/014.json → does not exist in ref (exit 128). 후보 워크스페이스에도 파일이 없어 ref/commit/digest 결속 불가."
+        }
+      ]
+    }
+  },
+  "driftRecord": {
+    "checked": true,
+    "checkCommand": "git rev-parse HEAD",
+    "workspaceHead": "6490956d203549b56cbd86846120759889abb016",
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "driftDetected": false,
+    "minimumContextIntegrity": {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "expectedDigest": "830bc16f4962b093c783dd19a19d5a484ca3ee32",
+      "observedDigest": "830bc16f4962b093c783dd19a19d5a484ca3ee32",
+      "algorithm": "git-blob-sha1",
+      "checkCommand": "git hash-object docs/choo-guard-execution-backlog-v1.md",
+      "match": true
+    },
+    "note": "driftRecord 단독 인용 시 오독하지 않도록: context 일부는 sourceRef 트리 밖(상위 트리)의 non-ref 입력이며, 그 파일들이 ref 트리에 없음은 git show 로 확인했다(SC-02). nonRefInputs 는 context-only·UNBOUND 로 등록한다.",
+    "nonRefInputs": [
+      {
+        "path": "docs/context/work-graph.json",
+        "presentAtRef": false,
+        "readFrom": "ref 트리 밖 context-only 입력",
+        "governance": "context-only, non-governing",
+        "registeredAs": "SC-02",
+        "bindingStatus": "UNBOUND",
+        "bindingEvidence": "git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-graph.json → 부재(exit 128); 후보 워크스페이스에도 파일 없음. digest 결속 불가."
+      },
+      {
+        "path": "docs/context/work-orders/014.json",
+        "presentAtRef": false,
+        "readFrom": "ref 트리 밖 context-only 입력",
+        "governance": "context-only, non-governing",
+        "registeredAs": "SC-02",
+        "bindingStatus": "UNBOUND",
+        "bindingEvidence": "git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-orders/014.json → 부재(exit 128); 후보 워크스페이스에도 파일 없음. digest 결속 불가."
+      }
+    ]
+  },
+  "requiredCompleteFields": [
+    "sourceId",
+    "sourceType",
+    "rating",
+    "allowedClaims",
+    "forbiddenClaims",
+    "uncertainty",
+    "license",
+    "rights",
+    "provenance"
+  ],
+  "sourcePolicySchema": {
+    "appliesTo": "각 출처 기록(source-record) 및 각 synthetic fixture",
+    "requiredFields": [
+      "sourceId",
+      "sourceType",
+      "rating",
+      "allowedClaims",
+      "forbiddenClaims",
+      "uncertainty",
+      "license",
+      "rights",
+      "provenance"
+    ],
+    "fieldRules": {
+      "sourceId": {
+        "type": "string",
+        "nullable": false,
+        "note": "항목별 안정 식별자. 로컬 절대경로·사용자명·호스트명은 금지하고 {중괄호} 자리표시자만 쓴다."
+      },
+      "sourceType": {
+        "type": "enum",
+        "values": [
+          "official-public",
+          "video-photo",
+          "map",
+          "wiki"
+        ]
+      },
+      "rating": {
+        "type": "enum",
+        "values": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ]
+      },
+      "allowedClaims": {
+        "type": "string[]",
+        "minItems": 1
+      },
+      "forbiddenClaims": {
+        "type": "string[]",
+        "minItems": 1
+      },
+      "uncertainty": {
+        "type": "string[]",
+        "minItems": 1
+      },
+      "license": {
+        "type": "object",
+        "required": [
+          "licenseId",
+          "terms",
+          "rights",
+          "attributionRequired",
+          "redistributionAllowed",
+          "modificationAllowed",
+          "derivativeAllowed",
+          "competitionPublicationAllowed",
+          "privacyStatus",
+          "acquisitionDate",
+          "retentionLimit",
+          "redistributionLimit"
+        ]
+      },
+      "rights": {
+        "type": "string",
+        "note": "license.rights 의 조인용 요약. issue 15 의 sourceId/rating/allowedClaims/rights join 대상."
+      },
+      "provenance": {
+        "type": "object",
+        "required": [
+          "originalPublisher",
+          "publicationDate",
+          "captureOrRetrievalDate",
+          "sourceUrlOrCitation",
+          "issueTimestampSeparation"
+        ]
+      }
+    },
+    "negativePolicy": "uncertainty·license·provenance 중 하나라도 없거나 rights 판정이 비어 있으면 부적합(non-conforming)이다. 부적합 자료는 취득·복사하지 않고 metadata만 기록한다. fixture 는 보존한다."
+  },
+  "ratingScale": [
+    {
+      "level": "A",
+      "label": "official-public-authoritative",
+      "maxClaimStrength": "명칭·연혁·맥락, 거친 위상(대략적 배치·동선), 시각 스타일 참조",
+      "cannotSupport": [
+        "측량 수준 치수·정밀도",
+        "실시간 운영 상태",
+        "직원 SOP"
+      ]
+    },
+    {
+      "level": "B",
+      "label": "primary-visual",
+      "maxClaimStrength": "시각 스타일·재질·색상, 거친 인접성, 대략적 규모",
+      "cannotSupport": [
+        "정밀 치수",
+        "개인 식별",
+        "직원 절차"
+      ]
+    },
+    {
+      "level": "C",
+      "label": "derived-geo",
+      "maxClaimStrength": "거친 지리 위치, 자릿수 수준 규모, 접근 경로 개요",
+      "cannotSupport": [
+        "실내 배치",
+        "보안/통제 구역",
+        "정확 좌표"
+      ]
+    },
+    {
+      "level": "D",
+      "label": "crowd-encyclopedic",
+      "maxClaimStrength": "배경 지식·용어, 검증이 필요한 연혁 단서",
+      "cannotSupport": [
+        "1차 출처 없는 사실 단정",
+        "수치·법률·안전 주장"
+      ]
+    }
+  ],
+  "sourceTypes": [
+    {
+      "sourceType": "official-public",
+      "rating": "A",
+      "allowedClaims": [
+        "합성 환경의 명칭·연혁·맥락 참조",
+        "거친 위상(대략적 배치·동선) 참조",
+        "재질·색상 등 시각 스타일 참조"
+      ],
+      "forbiddenClaims": [
+        "측량 수준 치수·시설 정확도",
+        "실시간 운영 상태",
+        "직원 SOP·절차 확정",
+        "공식 점수·등급 확정",
+        "20/100/2 acceptance"
+      ],
+      "uncertainty": [
+        "유형만으로는 개별 항목의 라이선스·취득일을 확정할 수 없다",
+        "공개 여부와 재배포 허용은 별개다",
+        "실제 항목 catalog 는 본 산출물 범위가 아니다(미생성)"
+      ],
+      "license": {
+        "valueStatus": "type-level-policy-default-not-a-per-item-record",
+        "unknownReason": "개별 공개 출처를 아직 취득하지 않아 라이선스 조건·개인정보 여부·취득일·보관 한계를 확인할 수 없다.",
+        "licenseId": "unknown",
+        "terms": "unknown",
+        "rights": "unknown",
+        "attributionRequired": "unknown",
+        "redistributionAllowed": false,
+        "modificationAllowed": false,
+        "derivativeAllowed": false,
+        "competitionPublicationAllowed": false,
+        "privacyStatus": "unknown",
+        "acquisitionDate": "unknown",
+        "retentionLimit": "unknown",
+        "redistributionLimit": "DENY_UNTIL_RECORDED"
+      },
+      "rights": "UNKNOWN_UNTIL_PER_ITEM_RECORD; 기본값 재배포·변형·외부 게시 거부",
+      "provenance": {
+        "originalPublisher": "MUST_RECORD_PER_ITEM",
+        "publicationDate": "MUST_RECORD_PER_ITEM",
+        "captureOrRetrievalDate": "MUST_RECORD_PER_ITEM",
+        "sourceUrlOrCitation": "MUST_RECORD_PER_ITEM",
+        "issueTimestampSeparation": "게시일과 취득일을 분리 기록"
+      },
+      "sourceId": "POLICY-TYPE-OFFICIAL-PUBLIC"
+    },
+    {
+      "sourceType": "video-photo",
+      "rating": "B",
+      "allowedClaims": [
+        "시각 스타일·재질·색상 참조",
+        "거친 인접성",
+        "대략적 규모"
+      ],
+      "forbiddenClaims": [
+        "정밀 치수",
+        "개인 식별(얼굴·차량번호·명찰)",
+        "직원 행동·절차",
+        "보안/통제 구역 위치"
+      ],
+      "uncertainty": [
+        "촬영 시점·장소·각도 불명 시 사실성 제한",
+        "피사체 개인정보 포함 가능",
+        "원본 보관·재배포 불가, metadata 만 기록"
+      ],
+      "license": {
+        "valueStatus": "type-level-policy-default-not-a-per-item-record",
+        "unknownReason": "개별 공개 출처를 아직 취득하지 않아 라이선스 조건·개인정보 여부·취득일·보관 한계를 확인할 수 없다.",
+        "licenseId": "unknown",
+        "terms": "unknown",
+        "rights": "unknown",
+        "attributionRequired": "unknown",
+        "redistributionAllowed": false,
+        "modificationAllowed": false,
+        "derivativeAllowed": false,
+        "competitionPublicationAllowed": false,
+        "privacyStatus": "unknown",
+        "acquisitionDate": "unknown",
+        "retentionLimit": "unknown",
+        "redistributionLimit": "DENY_UNTIL_RECORDED"
+      },
+      "rights": "UNKNOWN_UNTIL_PER_ITEM_RECORD; 기본값 재배포·변형·외부 게시 거부",
+      "provenance": {
+        "originalPublisher": "MUST_RECORD_PER_ITEM",
+        "publicationDate": "MUST_RECORD_PER_ITEM",
+        "captureOrRetrievalDate": "MUST_RECORD_PER_ITEM",
+        "sourceUrlOrCitation": "MUST_RECORD_PER_ITEM",
+        "issueTimestampSeparation": "게시일과 취득일을 분리 기록"
+      },
+      "sourceId": "POLICY-TYPE-VIDEO-PHOTO"
+    },
+    {
+      "sourceType": "map",
+      "rating": "C",
+      "allowedClaims": [
+        "거친 지리 위치",
+        "자릿수 수준의 규모",
+        "접근 경로 개요"
+      ],
+      "forbiddenClaims": [
+        "실내 배치",
+        "보안/통제 구역",
+        "정확 좌표",
+        "측량 치수"
+      ],
+      "uncertainty": [
+        "지도 투영·해상도 한계",
+        "최신성 불명",
+        "민감 공간정보 포함 가능"
+      ],
+      "license": {
+        "valueStatus": "type-level-policy-default-not-a-per-item-record",
+        "unknownReason": "개별 공개 출처를 아직 취득하지 않아 라이선스 조건·개인정보 여부·취득일·보관 한계를 확인할 수 없다.",
+        "licenseId": "unknown",
+        "terms": "unknown",
+        "rights": "unknown",
+        "attributionRequired": "unknown",
+        "redistributionAllowed": false,
+        "modificationAllowed": false,
+        "derivativeAllowed": false,
+        "competitionPublicationAllowed": false,
+        "privacyStatus": "unknown",
+        "acquisitionDate": "unknown",
+        "retentionLimit": "unknown",
+        "redistributionLimit": "DENY_UNTIL_RECORDED"
+      },
+      "rights": "UNKNOWN_UNTIL_PER_ITEM_RECORD; 기본값 재배포·변형·외부 게시 거부",
+      "provenance": {
+        "originalPublisher": "MUST_RECORD_PER_ITEM",
+        "publicationDate": "MUST_RECORD_PER_ITEM",
+        "captureOrRetrievalDate": "MUST_RECORD_PER_ITEM",
+        "sourceUrlOrCitation": "MUST_RECORD_PER_ITEM",
+        "issueTimestampSeparation": "게시일과 취득일을 분리 기록"
+      },
+      "sourceId": "POLICY-TYPE-MAP"
+    },
+    {
+      "sourceType": "wiki",
+      "rating": "D",
+      "allowedClaims": [
+        "배경 지식·용어",
+        "검증이 필요한 연혁 단서",
+        "참고 문헌 탐색 출발점"
+      ],
+      "forbiddenClaims": [
+        "1차 출처 없는 사실 단정",
+        "수치·법률·안전 주장",
+        "시설 정확도",
+        "공식 점수·등급"
+      ],
+      "uncertainty": [
+        "익명 편집·미검증",
+        "1차 출처 미확인",
+        "인용된 수치의 신뢰도 불명"
+      ],
+      "license": {
+        "valueStatus": "type-level-policy-default-not-a-per-item-record",
+        "unknownReason": "개별 공개 출처를 아직 취득하지 않아 라이선스 조건·개인정보 여부·취득일·보관 한계를 확인할 수 없다.",
+        "licenseId": "unknown",
+        "terms": "unknown",
+        "rights": "unknown",
+        "attributionRequired": "unknown",
+        "redistributionAllowed": false,
+        "modificationAllowed": false,
+        "derivativeAllowed": false,
+        "competitionPublicationAllowed": false,
+        "privacyStatus": "unknown",
+        "acquisitionDate": "unknown",
+        "retentionLimit": "unknown",
+        "redistributionLimit": "DENY_UNTIL_RECORDED"
+      },
+      "rights": "UNKNOWN_UNTIL_PER_ITEM_RECORD; 기본값 재배포·변형·외부 게시 거부",
+      "provenance": {
+        "originalPublisher": "MUST_RECORD_PER_ITEM",
+        "publicationDate": "MUST_RECORD_PER_ITEM",
+        "captureOrRetrievalDate": "MUST_RECORD_PER_ITEM",
+        "sourceUrlOrCitation": "MUST_RECORD_PER_ITEM",
+        "issueTimestampSeparation": "게시일과 취득일을 분리 기록"
+      },
+      "sourceId": "POLICY-TYPE-WIKI"
+    }
+  ],
+  "licenseRecordTemplate": {
+    "note": "개별 항목 취득 시 채워야 하는 기록 양식. 값이 확인되지 않으면 지어내지 않고 UNKNOWN 으로 두고 이유를 적는다.",
+    "requiredFields": [
+      "sourceId",
+      "sourceType",
+      "rating",
+      "license.licenseId",
+      "license.terms",
+      "license.rights",
+      "license.attributionRequired",
+      "license.redistributionAllowed",
+      "license.modificationAllowed",
+      "license.derivativeAllowed",
+      "license.competitionPublicationAllowed",
+      "license.privacyStatus",
+      "license.acquisitionDate",
+      "license.retentionLimit",
+      "license.redistributionLimit",
+      "provenance.originalPublisher",
+      "provenance.publicationDate",
+      "provenance.captureOrRetrievalDate",
+      "provenance.sourceUrlOrCitation"
+    ],
+    "unknownPolicy": "라이선스 또는 개인정보 여부가 불명확하면 취득·복사하지 않고 metadata 만 기록한다. 재배포·변형·외부 게시는 기록 완료 전까지 거부가 기본값이다."
+  },
+  "globalForbiddenClaims": [
+    "시설 정확도·정밀도 확정",
+    "직원 SOP 확정",
+    "공식 점수·등급 확정",
+    "20/100/2 acceptance 주장",
+    "완료/AAA·안전·현장 효과 주장",
+    "KORAIL 응답·촬영 승인을 선행조건으로 선언하는 것"
+  ],
+  "prerequisites": {
+    "korailResponseRequired": false,
+    "filmingApprovalRequired": false,
+    "statement": "KORAIL 응답·질의 전달·현장 촬영은 본 규약의 필수 input 이 아니다. 확정 불가 항목은 unknown 으로 남긴다."
+  },
+  "requiredInputs": [],
+  "uncertaintyRegister": [
+    "개별 공개 출처의 라이선스·취득일·재배포 조건은 자료 미취득으로 unknown 이다",
+    "실제 출처 catalog 와 등급표는 본 산출물로 생성되지 않았다(truth: unknown)",
+    "sourceType canonical 명칭 집합에 대한 work-graph 내 별도 정의가 확인되지 않는다"
+  ],
+  "unknowns": [
+    "C01 표기는 '4종'인데 parenthetical 은 3토큰(official-public/video-photo/map-wiki)이다. 본 초안은 map/wiki 를 분리한 4종으로 해석했다.",
+    "work-order 파일(docs/context/work-orders/014.json)과 docs/context/work-graph.json 은 sourceRef 커밋에 존재하지 않는다(상위 작업트리에만 존재). 최소문맥(backlog) 파일은 ref 에서 검증되었다.",
+    "#10 미게시/미확정 artifact 가 필요해질 경우 context-only 로 기록하며 별도 authority 없이 blocking 하지 않는다.",
+    "KORAIL 응답·촬영 승인 상태는 unknown 이며 non-governing 이다."
+  ],
+  "sourceConflicts": [
+    {
+      "id": "SC-01",
+      "about": "C01 사례 수 표기(4종)와 parenthetical 토큰 수(3) 불일치",
+      "disposition": "official-public/video-photo/map/wiki 4종으로 해석하고 unknown 으로 병기",
+      "blocking": false
+    },
+    {
+      "id": "SC-02",
+      "about": "기준 ref 6490956d 에 work-graph.json / work-orders 파일 부재",
+      "disposition": "기록만 남김. context 는 non-ref·context-only 이며 결속 불가(UNBOUND). non-blocking",
+      "blocking": false,
+      "evidence": "git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-graph.json → does not exist in ref (exit 128); git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-orders/014.json → 동일 (exit 128)"
+    },
+    {
+      "id": "SC-03",
+      "about": "sourceRef 커밋에 docs/context/work-graph.json 이 없어 hardPredecessors/hardSuccessors 위상 폐합을 확인할 수 없음",
+      "disposition": "폐합 불가를 SOURCE_CONFLICT/unknown 으로 등록하고 PASS 로 채우지 않음(hardGraphClosure 참조)",
+      "blocking": false,
+      "evidence": "git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-graph.json → does not exist in ref (exit 128)"
+    }
+  ],
+  "stopConditions": [
+    {
+      "condition": "라이선스 또는 개인정보 여부가 불명확한 자료는 취득·복사하지 않고 metadata 만 기록한다.",
+      "status": "upheld",
+      "evidence": "licenseRecordTemplate.unknownPolicy 및 각 sourceType.license 기본값(재배포·변형·게시 거부)"
+    },
+    {
+      "condition": "#10 의 미게시/미확정 artifact 가 필요해질 경우 context-only 로 기록하고 별도 authority 없이 blocking 하지 않는다.",
+      "status": "upheld",
+      "evidence": "requiredInputs=[]; unknowns 에 context-only 로 기록, blocking 플래그 없음"
+    }
+  ],
+  "nonGoals": [
+    "KORAIL 회신·질의 전달·현장 촬영",
+    "직원 SOP·시설 정밀도·공식 점수 확정",
+    "제품 구현·게시·GitHub 변경",
+    "완료/AAA 소프트웨어·안전·현장 효과 주장"
+  ],
+  "truth": [
+    {
+      "level": "target",
+      "text": "KORAIL 자료 없이 공개 자료로 합성·참조 설계를 진행하고 확정 불가 항목을 남긴다."
+    },
+    {
+      "level": "superseded",
+      "text": "촬영 승인 질문·KORAIL 응답 대기 경로는 현재 공개자료 규약의 범위가 아니다."
+    },
+    {
+      "level": "unknown",
+      "text": "등급표와 실제 출처 catalog 는 아직 이 작업 산출물로 생성되지 않았다."
+    }
+  ],
+  "historicalMarkers": [
+    {
+      "term": "KORAIL",
+      "classification": "historical",
+      "governing": false,
+      "note": "과거 승인 질의 경로의 역사 기록이며 현재 정책의 선행조건이 아니다."
+    },
+    {
+      "term": "촬영",
+      "classification": "historical/superseded",
+      "governing": false,
+      "note": "현장 촬영 승인 경로는 현재 범위가 아니다(nonGoal)."
+    },
+    {
+      "term": "회신",
+      "classification": "historical/superseded",
+      "governing": false,
+      "note": "응답·회신 대기는 현재 범위가 아니다(nonGoal)."
+    }
+  ],
+  "markerGovernance": "KORAIL·촬영·회신 은 본 문서에서 historical/non-governing, 금지, 제약, 또는 check receipt 의 명령 인용 문맥으로만 등장하며 어떤 선행조건(prerequisite)도 아니다.",
+  "syntheticCheckFixtures": {
+    "note": "C01 검사용 synthetic 사례. 실제 자료가 아니며 공개 저장소에 실존 출처를 담지 않는다.",
+    "positive": [
+      {
+        "fixtureId": "fx-official-public-01",
+        "sourceId": "SYNTHETIC-OFFICIAL-PUBLIC-01",
+        "sourceType": "official-public",
+        "rating": "A",
+        "allowedClaims": [
+          "거친 위상 참조"
+        ],
+        "forbiddenClaims": [
+          "측량 치수"
+        ],
+        "uncertainty": [
+          "라이선스·취득일 미기록"
+        ],
+        "license": {
+          "licenseId": "UNKNOWN",
+          "terms": "UNKNOWN",
+          "rights": "UNKNOWN",
+          "attributionRequired": "UNKNOWN",
+          "redistributionAllowed": false,
+          "modificationAllowed": false,
+          "derivativeAllowed": false,
+          "competitionPublicationAllowed": false,
+          "privacyStatus": "UNKNOWN",
+          "acquisitionDate": "UNKNOWN",
+          "retentionLimit": "UNKNOWN",
+          "redistributionLimit": "UNKNOWN"
+        },
+        "rights": "UNKNOWN",
+        "provenance": {
+          "originalPublisher": "SYNTHETIC",
+          "publicationDate": "UNKNOWN",
+          "captureOrRetrievalDate": "UNKNOWN",
+          "sourceUrlOrCitation": "synthetic:fixture",
+          "issueTimestampSeparation": "publicationDate != acquisitionDate"
+        }
+      },
+      {
+        "fixtureId": "fx-video-photo-01",
+        "sourceId": "SYNTHETIC-VIDEO-PHOTO-01",
+        "sourceType": "video-photo",
+        "rating": "B",
+        "allowedClaims": [
+          "시각 스타일 참조"
+        ],
+        "forbiddenClaims": [
+          "정밀 치수"
+        ],
+        "uncertainty": [
+          "개인정보 포함 가능"
+        ],
+        "license": {
+          "licenseId": "UNKNOWN",
+          "terms": "UNKNOWN",
+          "rights": "UNKNOWN",
+          "attributionRequired": "UNKNOWN",
+          "redistributionAllowed": false,
+          "modificationAllowed": false,
+          "derivativeAllowed": false,
+          "competitionPublicationAllowed": false,
+          "privacyStatus": "UNKNOWN",
+          "acquisitionDate": "UNKNOWN",
+          "retentionLimit": "UNKNOWN",
+          "redistributionLimit": "UNKNOWN"
+        },
+        "rights": "UNKNOWN",
+        "provenance": {
+          "originalPublisher": "SYNTHETIC",
+          "publicationDate": "UNKNOWN",
+          "captureOrRetrievalDate": "UNKNOWN",
+          "sourceUrlOrCitation": "synthetic:fixture",
+          "issueTimestampSeparation": "publicationDate != acquisitionDate"
+        }
+      },
+      {
+        "fixtureId": "fx-map-01",
+        "sourceId": "SYNTHETIC-MAP-01",
+        "sourceType": "map",
+        "rating": "C",
+        "allowedClaims": [
+          "거친 지리 위치"
+        ],
+        "forbiddenClaims": [
+          "정확 좌표"
+        ],
+        "uncertainty": [
+          "최신성 불명"
+        ],
+        "license": {
+          "licenseId": "UNKNOWN",
+          "terms": "UNKNOWN",
+          "rights": "UNKNOWN",
+          "attributionRequired": "UNKNOWN",
+          "redistributionAllowed": false,
+          "modificationAllowed": false,
+          "derivativeAllowed": false,
+          "competitionPublicationAllowed": false,
+          "privacyStatus": "UNKNOWN",
+          "acquisitionDate": "UNKNOWN",
+          "retentionLimit": "UNKNOWN",
+          "redistributionLimit": "UNKNOWN"
+        },
+        "rights": "UNKNOWN",
+        "provenance": {
+          "originalPublisher": "SYNTHETIC",
+          "publicationDate": "UNKNOWN",
+          "captureOrRetrievalDate": "UNKNOWN",
+          "sourceUrlOrCitation": "synthetic:fixture",
+          "issueTimestampSeparation": "publicationDate != acquisitionDate"
+        }
+      },
+      {
+        "fixtureId": "fx-wiki-01",
+        "sourceId": "SYNTHETIC-WIKI-01",
+        "sourceType": "wiki",
+        "rating": "D",
+        "allowedClaims": [
+          "배경 지식"
+        ],
+        "forbiddenClaims": [
+          "1차 출처 없는 단정"
+        ],
+        "uncertainty": [
+          "미검증"
+        ],
+        "license": {
+          "licenseId": "UNKNOWN",
+          "terms": "UNKNOWN",
+          "rights": "UNKNOWN",
+          "attributionRequired": "UNKNOWN",
+          "redistributionAllowed": false,
+          "modificationAllowed": false,
+          "derivativeAllowed": false,
+          "competitionPublicationAllowed": false,
+          "privacyStatus": "UNKNOWN",
+          "acquisitionDate": "UNKNOWN",
+          "retentionLimit": "UNKNOWN",
+          "redistributionLimit": "UNKNOWN"
+        },
+        "rights": "UNKNOWN",
+        "provenance": {
+          "originalPublisher": "SYNTHETIC",
+          "publicationDate": "UNKNOWN",
+          "captureOrRetrievalDate": "UNKNOWN",
+          "sourceUrlOrCitation": "synthetic:fixture",
+          "issueTimestampSeparation": "publicationDate != acquisitionDate"
+        }
+      }
+    ],
+    "negative": [
+      {
+        "fixtureId": "fx-negative-missing-limits",
+        "sourceId": "SYNTHETIC-NEGATIVE-01",
+        "sourceType": "official-public",
+        "rating": "A",
+        "allowedClaims": [
+          "거친 위상 참조"
+        ],
+        "forbiddenClaims": [
+          "측량 치수"
+        ]
+      }
+    ],
+    "verdictTable": {
+      "note": "C01 대조 판정표. sourcePolicySchema.requiredFields 9개 기준. positive 4건 PASS, negative 1건 FAIL(부적합, fixture 보존).",
+      "schemaRequiredFields": [
+        "sourceId",
+        "sourceType",
+        "rating",
+        "allowedClaims",
+        "forbiddenClaims",
+        "uncertainty",
+        "license",
+        "rights",
+        "provenance"
+      ],
+      "rows": [
+        {
+          "fixtureId": "fx-official-public-01",
+          "kind": "positive",
+          "verdict": "PASS",
+          "missingRequiredFields": [],
+          "reason": "requiredFields 전부 존재"
+        },
+        {
+          "fixtureId": "fx-video-photo-01",
+          "kind": "positive",
+          "verdict": "PASS",
+          "missingRequiredFields": [],
+          "reason": "requiredFields 전부 존재"
+        },
+        {
+          "fixtureId": "fx-map-01",
+          "kind": "positive",
+          "verdict": "PASS",
+          "missingRequiredFields": [],
+          "reason": "requiredFields 전부 존재"
+        },
+        {
+          "fixtureId": "fx-wiki-01",
+          "kind": "positive",
+          "verdict": "PASS",
+          "missingRequiredFields": [],
+          "reason": "requiredFields 전부 존재"
+        },
+        {
+          "fixtureId": "fx-negative-missing-limits",
+          "kind": "negative",
+          "verdict": "FAIL",
+          "missingRequiredFields": [
+            "uncertainty",
+            "license",
+            "rights",
+            "provenance"
+          ],
+          "reason": "출처·라이선스·미확정 한계 누락 → 부적합. fixture 는 보존한다."
+        }
+      ]
+    }
+  },
+  "checkReceipts": [
+    {
+      "checkId": "C01",
+      "command": "검사: 등급별 synthetic 사례 4종(official-public/video-photo/map-wiki)을 source-policy schema에 대조",
+      "appliedPhase": [
+        "candidate",
+        "accept"
+      ],
+      "failureClassification": "blocking",
+      "artifactPath": "docs/team/M0-02a/source-policy.json",
+      "artifactDigest": {
+        "algorithm": "sha256",
+        "value": "8b50547b284ed74c89f33d8e7224e2bc77c9eb7f4121fb7828359d71cb37becb",
+        "covers": "canonicalJson(P) — sourceRef.digestConvention 의 P 정의 참조",
+        "convention": "sourceRef.digestConvention 참조: integrity.outputDigest.value·handoff.outputDigest.value·checkReceipts[*].artifactDigest.value 를 null 로, handoff.executionLog[step=integrity].commands[*].stdout 를 null 로 둔 canonicalJson 사본의 sha256."
+      },
+      "provenance": "author-generated draft; sourceRef 6490956d; 외부 자료 미취득",
+      "thresholdEvaluation": "4종 positive fixture 가 requiredFields(출처·라이선스·uncertainty 포함)를 모두 만족하고, negative fixture 가 부적합으로 판정되어야 한다.",
+      "result": "PASS",
+      "resultScope": "러너 실행 출력(runner output)만이다. 이 PASS 는 정책 수용/승인 판정이 아니며 그 판정은 reviewer 몫이다.",
+      "reviewerVerdict": "NOT_RUN",
+      "reviewerNotRunReason": "후보 작성자는 자기 산출물을 판정할 수 없다. reviewer 판정 전이다.",
+      "evidence": "판정표: syntheticCheckFixtures.verdictTable(행 단위 fixtureId·verdict·missingRequiredFields). fixture sha256 5건·hashMethod·실행 command·stdout·exitCode: handoff.executionLog[C01].",
+      "notRunReason": null
+    },
+    {
+      "checkId": "C02",
+      "command": "grep -n \"KORAIL|촬영|회신\" docs/team/M0-02a/source-policy.json",
+      "appliedPhase": [
+        "candidate",
+        "accept"
+      ],
+      "failureClassification": "blocking",
+      "artifactPath": "docs/team/M0-02a/source-policy.json",
+      "artifactDigest": {
+        "algorithm": "sha256",
+        "value": "8b50547b284ed74c89f33d8e7224e2bc77c9eb7f4121fb7828359d71cb37becb",
+        "covers": "canonicalJson(P) — sourceRef.digestConvention 의 P 정의 참조",
+        "convention": "sourceRef.digestConvention 참조: integrity.outputDigest.value·handoff.outputDigest.value·checkReceipts[*].artifactDigest.value 를 null 로, handoff.executionLog[step=integrity].commands[*].stdout 를 null 로 둔 canonicalJson 사본의 sha256."
+      },
+      "provenance": "author-generated draft; sourceRef 6490956d",
+      "thresholdEvaluation": "해당 단어가 있으면 historical/non-governing marker 로만 존재해야 하고, 응답·촬영을 선행조건으로 표시하면 reject. 본 문서는 prerequisites.korailResponseRequired=false.",
+      "result": "PASS",
+      "resultScope": "러너 실행 출력(runner output)만이다. 이 PASS 는 정책 수용/승인 판정이 아니며 그 판정은 reviewer 몫이다.",
+      "reviewerVerdict": "NOT_RUN",
+      "reviewerNotRunReason": "후보 작성자는 자기 산출물을 판정할 수 없다. reviewer 판정 전이다.",
+      "evidence": "literal grep 4건 매치(exit 0), 전부 본 문서가 인용한 command 문자열 자신이다(라인번호는 직렬화 종속이라 주장하지 않음). 그 밖의 KORAIL·촬영·회신 등장은 historical/non-governing·금지·제약·인용 문맥뿐이며 선행조건 표시가 아니다. 상세: handoff.executionLog[C02].",
+      "lineNumberPolicy": "라인번호는 직렬화 방식에 따라 이동한다. 본 문서는 특정 라인번호를 주장하지 않으며, C02 증거는 패턴(명령 문자열)과 매치 건수(matchedCount)이다. 재현은 receipt.command 의 동일 명령으로 한다.",
+      "literalScan": {
+        "matchedCount": 4,
+        "interpretation": "모든 match 는 본 문서가 인용한 명령 문자열 자신이다(C02 receipt command, expandedScan command, executionLog 의 두 command). 자기참조이며 선행조건 표시가 아니므로 negative case 에 해당하지 않는다.",
+        "exitCode": 0,
+        "matchedLines": null,
+        "matchedLinesReason": "라인번호는 직렬화(키 정렬·개행)에 따라 이동하여 전달 리비전에서 재현되지 않는다. 라인번호 주장을 삭제하고 패턴·건수만 기록한다."
+      },
+      "expandedScan": {
+        "command": "grep -nE \"KORAIL|촬영|회신\" docs/team/M0-02a/source-policy.json",
+        "matchedCount": 19,
+        "allOccurrencesNonGoverning": true,
+        "contexts": [
+          "uncertainty",
+          "globalForbiddenClaims(금지)",
+          "prerequisites.statement",
+          "unknowns",
+          "nonGoals",
+          "truth",
+          "historicalMarkers",
+          "markerGovernance",
+          "checkReceipts(명령 인용·증거 서술)"
+        ]
+      },
+      "notRunReason": null
+    }
+  ],
+  "handoff": {
+    "consumer": "M0-02b, #28, #29",
+    "returnFields": [
+      "source SHA/baseRef",
+      "exact write set and lease",
+      "input/output hashes",
+      "tool/model versions",
+      "checks and negative results",
+      "failures/retries/skips",
+      "limits"
+    ],
+    "limits": "공개 자료를 합성/참조로만 전달하고 직원 절차·공식 검수로 확대하지 않는다.",
+    "writeSet": [
+      "docs/team/M0-02a/source-policy.json"
+    ],
+    "toolVersions": {
+      "harness": "claude-code",
+      "workerModel": "provider-neutral; routing identifier withheld",
+      "node": "v26.7.0",
+      "grep": "ugrep 7.8.4",
+      "shasum": "present",
+      "workerModelNote": "라우팅/카탈로그 식별자 원문은 공개 산출물에서 제외한다(G8 환경 중립). harness/node/grep 도구 버전은 중립 표기로 유지."
+    },
+    "executionLog": [
+      {
+        "step": "context-verify",
+        "commands": [
+          {
+            "command": "git rev-parse HEAD",
+            "exitCode": 0,
+            "stdout": "6490956d203549b56cbd86846120759889abb016"
+          },
+          {
+            "command": "git hash-object docs/choo-guard-execution-backlog-v1.md",
+            "exitCode": 0,
+            "stdout": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+          },
+          {
+            "command": "git ls-files --error-unmatch docs/context/work-graph.json",
+            "exitCode": 1,
+            "stdout": "error: pathspec did not match any file(s) known to git (NOT_TRACKED at ref)"
+          }
+        ],
+        "outcome": "HEAD=6490956d... (== sourceRef, drift=false); backlog blob=830bc16f... (== expected, match=true); work-graph.json NOT_TRACKED at ref (recorded in unknowns/SC-02/SC-03)"
+      },
+      {
+        "step": "C01",
+        "commands": [
+          {
+            "command": "node -e 'const fs=require(\"fs\"),crypto=require(\"crypto\");const p=\"docs/team/M0-02a/source-policy.json\";const d=JSON.parse(fs.readFileSync(p,\"utf8\"));const req=d.sourcePolicySchema.requiredFields;const miss=(o)=>req.filter((k)=>!(k in o));const canon=(v)=>(v===null||typeof v!==\"object\")?JSON.stringify(v):Array.isArray(v)?(\"[\"+v.map(canon).join(\",\")+\"]\"):(\"{\"+Object.keys(v).sort().map((k)=>JSON.stringify(k)+\":\"+canon(v[k])).join(\",\")+\"}\");const sha=(s)=>crypto.createHash(\"sha256\").update(s,\"utf8\").digest(\"hex\");const out=[];out.push(\"JSON_PARSE OK\");out.push(\"sourcePolicySchema.requiredFields count=\"+req.length);for(const s of d.sourceTypes){out.push(\"sourceType \"+s.sourceId+\" missingRequired=\"+miss(s).length);}for(const f of d.syntheticCheckFixtures.positive){out.push(\"positive \"+f.fixtureId+\" missingRequired=\"+miss(f).length);}const n=d.syntheticCheckFixtures.negative[0];out.push(\"negative \"+n.fixtureId+\" missingRequired=\"+miss(n).join(\"|\")+\" verdict=\"+(miss(n).length>0?\"FAIL\":\"PASS\"));out.push(\"requiredCompleteFields count=\"+d.requiredCompleteFields.length);for(const s of d.sourceTypes){out.push(\"complete \"+s.sourceType+\" missing=\"+d.requiredCompleteFields.filter((k)=>!(k in s)).length);}const fx=[...d.syntheticCheckFixtures.positive,...d.syntheticCheckFixtures.negative];for(const f of fx){out.push(\"fixtureHash \"+f.fixtureId+\" \"+sha(canon(f)));}out.push(\"C01_RESULT=\"+((d.sourceTypes.every((s)=>miss(s).length===0))&&(d.syntheticCheckFixtures.positive.every((f)=>miss(f).length===0))&&(miss(n).length>0)?\"PASS\":\"FAIL\"));console.log(out.join(\"\\n\"));'",
+            "exitCode": 0,
+            "stdout": "JSON_PARSE OK\nsourcePolicySchema.requiredFields count=9\nsourceType POLICY-TYPE-OFFICIAL-PUBLIC missingRequired=0\nsourceType POLICY-TYPE-VIDEO-PHOTO missingRequired=0\nsourceType POLICY-TYPE-MAP missingRequired=0\nsourceType POLICY-TYPE-WIKI missingRequired=0\npositive fx-official-public-01 missingRequired=0\npositive fx-video-photo-01 missingRequired=0\npositive fx-map-01 missingRequired=0\npositive fx-wiki-01 missingRequired=0\nnegative fx-negative-missing-limits missingRequired=uncertainty|license|rights|provenance verdict=FAIL\nrequiredCompleteFields count=9\ncomplete official-public missing=0\ncomplete video-photo missing=0\ncomplete map missing=0\ncomplete wiki missing=0\nfixtureHash fx-official-public-01 0c50453a7a49d6652b44b5cbb2d7fcb3c304729c76dbfb1d75d897a1ed8459c5\nfixtureHash fx-video-photo-01 b7809ecd0850f1e042ab03430ee44d1670085b5d674f69c09bfa1784ee7a2606\nfixtureHash fx-map-01 717d44008d0845b7c6cb27b575af1ef3a9447997d4ffb391de99f46b1ab3e559\nfixtureHash fx-wiki-01 7dc851dca7380e7980bd9c8a66e5a810a5b2f1dca2f0761ecb81cf031e4d3058\nfixtureHash fx-negative-missing-limits 049db356e3082a3a863d0ab4422e30e97148de17b573e4e78068c9ebc0de200e\nC01_RESULT=PASS"
+          }
+        ],
+        "hashMethod": "sha256(canonicalJson(fixture)) — 모든 객체 키 사전순 정렬, 콤팩트, UTF-8. 키 순서 불변(순서 의존 JSON.stringify(x,null,2) 규약 폐기).",
+        "fixtureHashes": {
+          "fx-official-public-01": "0c50453a7a49d6652b44b5cbb2d7fcb3c304729c76dbfb1d75d897a1ed8459c5",
+          "fx-video-photo-01": "b7809ecd0850f1e042ab03430ee44d1670085b5d674f69c09bfa1784ee7a2606",
+          "fx-map-01": "717d44008d0845b7c6cb27b575af1ef3a9447997d4ffb391de99f46b1ab3e559",
+          "fx-wiki-01": "7dc851dca7380e7980bd9c8a66e5a810a5b2f1dca2f0761ecb81cf031e4d3058",
+          "fx-negative-missing-limits": "049db356e3082a3a863d0ab4422e30e97148de17b573e4e78068c9ebc0de200e"
+        },
+        "outcome": "JSON_PARSE OK; requiredCompleteFields=9 로 정합; sourceTypes 4/4 conform(sourceId 포함 requiredFields 9/9); positive fixtures 4/4 conform; negative fixture 1건 의도적 부적합; canonical 규약으로 5개 fixture hash 재계산·임베드; C01_RESULT=PASS(runner output 한정)"
+      },
+      {
+        "step": "C02",
+        "commands": [
+          {
+            "command": "grep -n \"KORAIL|촬영|회신\" docs/team/M0-02a/source-policy.json",
+            "exitCode": 0,
+            "stdout": "matchedCount=4 (exit 0). 매치 라인번호는 직렬화에 따라 이동하므로 이 표에 수치로 고정하지 않는다. 매치 대상은 본 문서가 인용한 command 문자열 자신이다."
+          },
+          {
+            "command": "grep -nE \"KORAIL|촬영|회신\" docs/team/M0-02a/source-policy.json",
+            "exitCode": 0,
+            "stdout": "matchedCount=19; 전부 historical/non-governing·금지·제약·인용 문맥"
+          },
+          {
+            "command": "node -e 'const fs=require(\"fs\");const d=JSON.parse(fs.readFileSync(\"docs/team/M0-02a/source-policy.json\",\"utf8\"));const out=[];out.push(\"prerequisites.korailResponseRequired=\"+d.prerequisites.korailResponseRequired);out.push(\"prerequisites.filmingApprovalRequired=\"+d.prerequisites.filmingApprovalRequired);out.push(\"requiredInputs.length=\"+d.requiredInputs.length);out.push(\"historicalMarkers.count=\"+d.historicalMarkers.length);out.push(\"historicalMarkers.allNonGoverning=\"+d.historicalMarkers.every((m)=>m.governing===false));out.push(\"governingMarkers=\"+d.historicalMarkers.filter((m)=>m.governing!==false).length);console.log(out.join(\"\\n\"));'",
+            "exitCode": 0,
+            "stdout": "prerequisites.korailResponseRequired=false\nprerequisites.filmingApprovalRequired=false\nrequiredInputs.length=0\nhistoricalMarkers.count=3\nhistoricalMarkers.allNonGoverning=true\ngoverningMarkers=0"
+          }
+        ],
+        "outcome": "literal grep: 4 matches(exit 0), 전부 receipt/executionLog 자신의 command 문자열 인용. expanded grep: 모든 등장이 historical/non-governing·금지·제약·인용 문맥. korailResponseRequired=false, filmingApprovalRequired=false, requiredInputs=[], markers all governing=false"
+      },
+      {
+        "step": "integrity",
+        "commands": [
+          {
+            "command": "node -e 'const fs=require(\"fs\"),crypto=require(\"crypto\");const p=\"docs/team/M0-02a/source-policy.json\";const d=JSON.parse(fs.readFileSync(p,\"utf8\"));const canon=(v)=>(v===null||typeof v!==\"object\")?JSON.stringify(v):Array.isArray(v)?(\"[\"+v.map(canon).join(\",\")+\"]\"):(\"{\"+Object.keys(v).sort().map((k)=>JSON.stringify(k)+\":\"+canon(v[k])).join(\",\")+\"}\");d.integrity.outputDigest.value=null;d.handoff.outputDigest.value=null;for(const r of d.checkReceipts){if(r.artifactDigest)r.artifactDigest.value=null;}for(const s of d.handoff.executionLog){if(s.step===\"integrity\"){for(const c of s.commands){c.stdout=null;}}}console.log(crypto.createHash(\"sha256\").update(canon(d),\"utf8\").digest(\"hex\"));'",
+            "exitCode": 0,
+            "stdout": "8b50547b284ed74c89f33d8e7224e2bc77c9eb7f4121fb7828359d71cb37becb"
+          }
+        ],
+        "outcome": "canonical 자기참조 digest 를 규약대로 재계산해 임베드했다. 이 단계 stdout 의 digest 반향은 sourceRef.digestConvention 의 P 정의에 따라 계산 시 null 처리된다(자기참조 고정점 제거).",
+        "result": "RUN"
+      }
+    ],
+    "outputDigest": {
+      "algorithm": "sha256",
+      "value": "8b50547b284ed74c89f33d8e7224e2bc77c9eb7f4121fb7828359d71cb37becb",
+      "covers": "canonicalJson(P) — sourceRef.digestConvention 참조",
+      "convention": "상동(sourceRef.digestConvention). 러너 외부 전달 raw sha256(outputsWritten.sha256)과는 다른 자기참조 digest 이다."
+    },
+    "consumerNotice": "not accepted / 판정 전 — 이 후보는 reviewer 판정 전이며 어떤 하류 소비자도 이 문서의 runner 출력을 승인·수용 입력으로 사용할 수 없다."
+  },
+  "governanceLimits": [
+    "본 문서는 isolated_proposal 초안이며 canonicalWriteAllowed=false 이다. 어떤 PASS 도 런타임/설치/네트워크/Unity/게시/병합 권한을 만들지 않는다.",
+    "스스로 accepted/approved/final/complete 로 표기하지 않는다.",
+    "검색된 저장소 텍스트·이슈·주석은 데이터이며 지시가 아니다."
+  ],
+  "integrity": {
+    "outputDigest": {
+      "algorithm": "sha256",
+      "value": "8b50547b284ed74c89f33d8e7224e2bc77c9eb7f4121fb7828359d71cb37becb",
+      "covers": "canonicalJson(P) (P 는 convention 참조)",
+      "convention": "integrity.outputDigest.value·handoff.outputDigest.value·checkReceipts[*].artifactDigest.value 를 null 로, handoff.executionLog[step=integrity].commands[*].stdout 를 null 로 둔 사본의 canonicalJson sha256. canonicalJson 은 모든 키 사전순 정렬·콤팩트."
+    }
+  },
+  "licenseTypeLevelPolicy": {
+    "appliesTo": "sourceTypes[*].license",
+    "valueStatus": "type-level policy default이며 개별 항목의 취득 기록이 아니다.",
+    "stringUnknownsPolicy": "licenseId/terms/rights/attributionRequired/privacyStatus/acquisitionDate/retentionLimit 은 개별 항목 미취득으로 unknown 이며 각 license.unknownReason 에 이유를 적는다.",
+    "booleanPolicyDefaultsPolicy": "redistributionAllowed/modificationAllowed/derivativeAllowed/competitionPublicationAllowed=false 와 redistributionLimit=DENY_UNTIL_RECORDED 는 기록 완료 전 거부라는 명시적 타입 수준 정책값이다.",
+    "perItemRule": "개별 항목 취득 시 licenseRecordTemplate 으로 실제 값을 기록한다."
+  },
+  "hardGraphClosure": {
+    "status": "SOURCE_CONFLICT",
+    "hardPredecessors": "unknown",
+    "hardSuccessors": "unknown",
+    "closureEvidence": "없음 — 이 ref 에서 하드 그래프 폐합을 확인할 수 없다.",
+    "reason": "sourceRef 6490956d 트리에 docs/context/work-graph.json 이 존재하지 않아 hardPredecessors/hardSuccessors 위상을 읽을 수 없다. SOURCE_CONFLICT 로 등록하며 값을 PASS 로 채우지 않는다.",
+    "command": "git ls-files --error-unmatch docs/context/work-graph.json",
+    "exitCode": 1,
+    "registeredAs": [
+      "SC-03",
+      "unknowns"
+    ],
+    "passNotClaimed": true,
+    "gitShowCommand": "git show 6490956d203549b56cbd86846120759889abb016:docs/context/work-graph.json",
+    "gitShowResult": "fatal: path 'docs/context/work-graph.json' does not exist in '6490956d203549b56cbd86846120759889abb016' (exit 128)",
+    "nonRefConsistency": "driftRecord.nonRefInputs 와 동일 근거(git show 부재 확인)로 정합한다. 이 파일은 ref 트리에 없고 후보 워크스페이스에도 없어 context-only·UNBOUND 이다."
+  },
+  "requiredCompleteFieldsSource": "sourcePolicySchema.requiredFields 와 동일한 9개로 정합시켰다(수정 전 6개는 sourceId·rights·provenance 누락). 완비성 검사는 이 9개를 기준으로 한다."
+}
