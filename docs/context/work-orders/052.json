@@ -33,41 +33,47 @@
     "predecessors": [
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-allowlist:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-allowlist:candidate"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 43,
+        "artifact": "artifact:43:R-03-governance-diff:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:43:R-03-governance-diff:candidate"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       },
       {
         "issue": 44,
+        "artifact": "artifact:44:R-04-test-plan:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:44:R-04-test-plan:candidate"
+        "reason": "Scoped test-plan candidate, not all Windows evidence or #44 closure."
       },
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 43,
+        "artifact": "artifact:43:R-03-governance-diff:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:43:R-03-governance-diff:accept"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       }
     ],
     "successors": [
       {
         "issue": 23,
+        "artifact": "artifact:52:R-07-test-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:52:R-07-test-receipt:accept"
+        "reason": "Consume only policy/required-path/hash/target negative results"
       }
     ],
     "oneOfGroups": [],
@@ -156,8 +162,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -168,6 +181,7 @@
       "readWhen": "prepare",
       "why": "policy/path/hash checks to inspect를 증명한다.",
       "limits": "current execution result를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -176,7 +190,11 @@
         "value": "f96a145c2395010fec20b1d4db07e2cb7cd6135f"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/bootstrap/verify_toolchain.py",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "scripts/bootstrap/test_verify_toolchain.py",
@@ -184,6 +202,7 @@
       "readWhen": "prepare",
       "why": "failure cases and expected exits를 증명한다.",
       "limits": "all current tests pass claim은 하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -192,7 +211,11 @@
         "value": "a5e41bc40a103d27f1e5dfc05779e9ff56260d44"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/bootstrap/test_verify_toolchain.py",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

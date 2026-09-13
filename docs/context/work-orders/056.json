@@ -31,30 +31,32 @@
     "predecessors": [
       {
         "issue": 65,
+        "artifact": "artifact:65:reference-audit:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:65:reference-audit:candidate"
+        "reason": "Reference audit candidate only for assets changed in this prototype."
       }
     ],
     "successors": [
       {
         "issue": 33,
+        "artifact": "artifact:56:prototype-acceptance:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:56:prototype-acceptance:candidate"
+        "reason": "Consume only 자산별 scene사용·플레이·한계·실패 참조"
       },
       {
         "issue": 34,
+        "artifact": "artifact:56:prototype-acceptance:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:56:prototype-acceptance:candidate"
+        "reason": "Consume only 자산별 scene사용·플레이·한계·실패 참조"
       }
     ],
     "oneOfGroups": [
       {
         "artifact": "or:56:prototype-baseline",
         "consumerPhase": "candidate",
-        "resolution": "Existing unchanged prototype may be tested from matching legacy ref; new Native modifications require #120.",
         "alternatives": [
           {
             "issue": 65,
@@ -66,7 +68,8 @@
             "artifact": "artifact:120:foundation-published-source:accept",
             "producerPhase": "accept"
           }
-        ]
+        ],
+        "resolution": "Existing unchanged prototype may be tested from matching legacy ref; new Native modifications require #120."
       }
     ],
     "parallelCandidates": [
@@ -84,14 +87,12 @@
       10,
       106,
       107,
-      120,
       55,
       58,
       52,
       62,
       63,
       64,
-      65,
       46,
       45,
       44,
@@ -158,8 +159,18 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      65,
+      120
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -170,6 +181,7 @@
       "readWhen": "prepare",
       "why": "현재 자산 ID·export·삼각형/출처 계약",
       "limits": "manifest 값만으로 Unity 사용·실시설 일치가 입증되지 않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -178,7 +190,11 @@
         "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "foundation/art/object-references.json",
@@ -186,6 +202,7 @@
       "readWhen": "prepare",
       "why": "객체별 참조와 scene family의 품질 한계",
       "limits": "옛 visualReview를 바뀐 FBX에 재사용할 수 없음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -194,7 +211,11 @@
         "value": "8a902daa76e100d336b56148fff59baa01d13c80"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/object-references.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

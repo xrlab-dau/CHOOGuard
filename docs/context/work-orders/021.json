@@ -34,35 +34,40 @@
     "predecessors": [
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 46,
+        "artifact": "artifact:46:executed-egress-output-verification:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:46:executed-egress-output-verification:accept"
+        "reason": "Final #21 consumes actual #46 execution receipt based on schema candidate, not control-spec presence."
       }
     ],
     "successors": [
       {
         "issue": 22,
+        "artifact": "artifact:21:M1-05-record-schema:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:21:M1-05-record-schema:candidate"
+        "reason": "Required failure/cancel/lease record schema candidate."
       },
       {
         "issue": 22,
+        "artifact": "artifact:21:M1-05-record-schema:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:21:M1-05-record-schema:candidate"
+        "reason": "Consume only schema distinguishes raw/redacted/public-manifest/approval and unknown"
       },
       {
         "issue": 46,
+        "artifact": "artifact:21:M1-05-record-schema:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:21:M1-05-record-schema:candidate"
+        "reason": "Common record schema candidate is available before #21 final."
       }
     ],
     "oneOfGroups": [],
@@ -152,8 +157,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -164,6 +176,7 @@
       "readWhen": "prepare",
       "why": "record fields and redaction/public-approval separation을 증명한다.",
       "limits": "실제 manifest가 생성됐다는 뜻은 아니다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -172,7 +185,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-ai-native-pipeline-v1.md",
@@ -180,6 +197,7 @@
       "readWhen": "prepare",
       "why": "traceability and independent review principles를 증명한다.",
       "limits": "record tooling implementation은 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -188,7 +206,11 @@
         "value": "9a575eff21b96161cb7d562b260db3128831be87"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

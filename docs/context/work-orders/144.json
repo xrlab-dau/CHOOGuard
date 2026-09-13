@@ -31,35 +31,68 @@
     "predecessors": [
       {
         "issue": 92,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "#144 binds the same frozen candidate digest as #91 before independent execution; #92 final acceptance is not required."
       },
       {
         "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "Independent reproduction executes only a success-qualified obtainable selected payload. Attempt/failure records and the unsupported #27 diagnostic label are not runnable.",
+        "accessGuard": {
+          "id": "source-access:144:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "artifact_payload_manifest",
+            "selectedArtifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+          "operations": [
+            {
+              "path": "scripts/dev/native_manifest.py",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true,
+            "payloadManifestMaySatisfyWithoutDirectIssue120Edge": true
+          }
+        }
       },
       {
         "issue": 55,
+        "artifact": "artifact:55:team-entry:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-entry:candidate"
+        "reason": "Consume only 새 ref에서 읽을 최소 경로·명령·미지원 조건이 있음"
       },
       {
         "issue": 92,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "The independent receipt remains digest-bound to the exact frozen #92 candidate at final review."
       }
     ],
     "successors": [
       {
         "issue": 92,
+        "artifact": "artifact:144:fmp13b-independent-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:144:fmp13b-independent-receipt:accept"
+        "reason": "Consume only distinct-developer actual checkout/build/run/validation result or blocker."
       }
     ],
     "oneOfGroups": [],
@@ -72,6 +105,7 @@
       138,
       137,
       136,
+      152,
       135,
       134,
       133,
@@ -149,6 +183,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -159,6 +196,7 @@
       "readWhen": "prepare",
       "why": "existing local validation path",
       "limits": "independent developer result를 증명하지 않는다",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -167,7 +205,11 @@
         "value": "b399e2cce0f4b1d3504dfbb39b4a3d36bb193232"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/dev/check_foundation.py",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

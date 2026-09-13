@@ -33,71 +33,82 @@
     "predecessors": [
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-allowlist:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-allowlist:candidate"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 18,
+        "artifact": "artifact:18:M1-02-policy-record:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:18:M1-02-policy-record:candidate"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 18,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 45,
+        "artifact": "artifact:45:executed-review-loop-verification:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:45:executed-review-loop-verification:accept"
+        "reason": "Final #23 consumes actual review-loop execution receipt produced against candidate contract."
       },
       {
         "issue": 52,
+        "artifact": "artifact:52:R-07-test-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:52:R-07-test-receipt:accept"
+        "reason": "Consume only policy/required-path/hash/target negative results"
       }
     ],
     "successors": [
       {
         "issue": 36,
+        "artifact": "artifact:23:M1-07-review-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:23:M1-07-review-contract:candidate"
+        "reason": "Consume only input hash, isolated write root, reviewer independence, append-only and invalidation fields"
       },
       {
         "issue": 36,
+        "artifact": "artifact:23:M1-07-review-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:23:M1-07-review-contract:accept"
+        "reason": "Consume only input hash, isolated write root, reviewer independence, append-only and invalidation fields"
       },
       {
         "issue": 38,
+        "artifact": "artifact:23:M1-07-review-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:23:M1-07-review-contract:candidate"
+        "reason": "Consume only input hash, isolated write root, reviewer independence, append-only and invalidation fields"
       },
       {
         "issue": 38,
+        "artifact": "artifact:23:M1-07-review-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:23:M1-07-review-contract:accept"
+        "reason": "Consume only input hash, isolated write root, reviewer independence, append-only and invalidation fields"
       },
       {
         "issue": 45,
+        "artifact": "artifact:23:M1-07-review-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:23:M1-07-review-contract:candidate"
+        "reason": "Review-control worker consumes parent candidate contract before returning final validation."
       }
     ],
     "oneOfGroups": [],
@@ -184,8 +195,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -196,6 +214,7 @@
       "readWhen": "prepare",
       "why": "isolated copy, append-only evidence and no product-build prerequisite를 증명한다.",
       "limits": "실제 reviewer/result는 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -204,7 +223,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/adr/0003-independent-review-and-adversarial-graph.md",
@@ -212,6 +235,7 @@
       "readWhen": "prepare",
       "why": "round/hash/invalidation policy를 증명한다.",
       "limits": "현재 review run을 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -220,7 +244,11 @@
         "value": "87957d262e6b15bf92f5caaf8c6fffbdc2aef018"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/adr/0003-independent-review-and-adversarial-graph.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

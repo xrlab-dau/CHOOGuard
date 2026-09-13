@@ -31,65 +31,75 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 128,
+        "artifact": "artifact:128:dynamic-frame-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:128:dynamic-frame-contract:candidate"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       },
       {
         "issue": 131,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 123,
+        "artifact": "artifact:123:thermal-boundary-regression:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:123:thermal-boundary-regression:accept"
+        "reason": "Consume only 개폐상태×개구부종류 coverage·보존/비음수/소유권·경사/시간/공간 수렴 결과"
       },
       {
         "issue": 128,
+        "artifact": "artifact:128:dynamic-frame-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:128:dynamic-frame-contract:accept"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       },
       {
         "issue": 129,
+        "artifact": "artifact:129:train-analytic-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:129:train-analytic-receipt:accept"
+        "reason": "Consume only 해석/실행거리·시간·오차·진입/완전점유/후미해제·정차/승강장관계·leadreview"
       },
       {
         "issue": 131,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       }
     ],
     "successors": [
       {
         "issue": 102,
+        "artifact": "artifact:130:train-fire-integration:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:130:train-fire-integration:accept"
+        "reason": "Consume only 화재/고장/비상정차→운행입력→동일frame열/군중→복구의tick/state 결과"
       },
       {
         "issue": 132,
+        "artifact": "artifact:130:train-fire-integration:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:130:train-fire-integration:candidate"
+        "reason": "Consume only 화재/고장/비상정차→운행입력→동일frame열/군중→복구의tick/state 결과"
       },
       {
         "issue": 132,
+        "artifact": "artifact:130:train-fire-integration:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:130:train-fire-integration:accept"
+        "reason": "Consume only 화재/고장/비상정차→운행입력→동일frame열/군중→복구의tick/state 결과"
       }
     ],
     "oneOfGroups": [],
@@ -114,6 +124,10 @@
       143,
       144,
       146,
+      149,
+      150,
+      151,
+      152,
       107,
       106,
       100,
@@ -177,6 +191,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -185,7 +202,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/foundation-simulation-profile.json",
           "lock:data:simulation-profile",
           "path:foundation/world/foundation-simulation-profile.json|foundation/world/foundation-simulation-profile.json"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/foundation-simulation-profile.json",
+            "lock:data:simulation-profile"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/foundation-simulation-profile.json",
+            "lock:data:simulation-profile",
+            "path:foundation/world/foundation-simulation-profile.json|foundation/world/foundation-simulation-profile.json"
+          ]
+        }
       },
       {
         "issue": 132,
@@ -193,7 +221,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
           "lock:runtime:world-simulation",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+          ]
+        }
       },
       {
         "issue": 138,
@@ -202,7 +241,20 @@
           "lock:runtime:world-simulation",
           "lock:data:simulation-profile",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation",
+            "lock:data:simulation-profile"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation",
+            "lock:data:simulation-profile",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+          ]
+        }
       }
     ]
   },

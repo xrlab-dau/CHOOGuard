@@ -32,65 +32,75 @@
     "predecessors": [
       {
         "issue": 82,
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+        "reason": "Bounded current synthetic geometry artifact; final art/whole #82 acceptance not required."
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       }
     ],
     "successors": [
       {
         "issue": 59,
+        "artifact": "artifact:125:world-crowd-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:125:world-crowd-fixture:accept"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 126,
+        "artifact": "artifact:125:world-crowd-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:125:world-crowd-fixture:candidate"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 126,
+        "artifact": "artifact:125:world-crowd-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:125:world-crowd-fixture:accept"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 127,
+        "artifact": "artifact:125:world-crowd-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:125:world-crowd-fixture:candidate"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 127,
+        "artifact": "artifact:125:world-crowd-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:125:world-crowd-fixture:accept"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 132,
+        "artifact": "artifact:125:world-crowd-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:125:world-crowd-fixture:candidate"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 132,
+        "artifact": "artifact:125:world-crowd-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:125:world-crowd-fixture:accept"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       }
     ],
     "oneOfGroups": [],
@@ -117,8 +127,12 @@
       106,
       144,
       146,
+      149,
       100,
+      150,
       99,
+      151,
+      152,
       94,
       93,
       90,
@@ -179,6 +193,9 @@
       14,
       10
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -187,7 +204,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
           "lock:runtime:motion-adapter",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
+            "lock:runtime:motion-adapter"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
+            "lock:runtime:motion-adapter",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs"
+          ]
+        }
       }
     ]
   },

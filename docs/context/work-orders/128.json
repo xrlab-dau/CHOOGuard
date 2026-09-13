@@ -31,53 +31,61 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 82,
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+        "reason": "Bounded current synthetic geometry artifact; final art/whole #82 acceptance not required."
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       }
     ],
     "successors": [
       {
         "issue": 102,
+        "artifact": "artifact:128:dynamic-frame-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:128:dynamic-frame-contract:accept"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       },
       {
         "issue": 129,
+        "artifact": "artifact:128:dynamic-frame-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:128:dynamic-frame-contract:candidate"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       },
       {
         "issue": 129,
+        "artifact": "artifact:128:dynamic-frame-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:128:dynamic-frame-contract:accept"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       },
       {
         "issue": 130,
+        "artifact": "artifact:128:dynamic-frame-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:128:dynamic-frame-contract:candidate"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       },
       {
         "issue": 130,
+        "artifact": "artifact:128:dynamic-frame-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:128:dynamic-frame-contract:accept"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       }
     ],
     "oneOfGroups": [],
@@ -103,7 +111,11 @@
       144,
       146,
       107,
+      149,
       106,
+      150,
+      151,
+      152,
       100,
       99,
       94,
@@ -165,6 +177,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -180,7 +195,30 @@
           "path:foundation/world/connected-world-profile.json|foundation/world/connected-world-profile.json",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
           "path:Assets/CHOOguardGenerated/ConnectedWorld/|Assets/CHOOguardGenerated/ConnectedWorld/"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/connected-world-profile.json",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Assets/CHOOguardGenerated/ConnectedWorld/",
+            "lock:repo-path:xrlab-dau/CHOOGuard:ProjectSettings/EditorBuildSettings.asset",
+            "lock:world:connected-profile",
+            "lock:world:scene-builder",
+            "lock:editor:connected-world-root"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/connected-world-profile.json",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Assets/CHOOguardGenerated/ConnectedWorld/",
+            "lock:repo-path:xrlab-dau/CHOOGuard:ProjectSettings/EditorBuildSettings.asset",
+            "lock:world:connected-profile",
+            "lock:world:scene-builder",
+            "lock:editor:connected-world-root",
+            "path:foundation/world/connected-world-profile.json|foundation/world/connected-world-profile.json",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+            "path:Assets/CHOOguardGenerated/ConnectedWorld/|Assets/CHOOguardGenerated/ConnectedWorld/"
+          ]
+        }
       },
       {
         "issue": 125,
@@ -188,7 +226,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
           "lock:runtime:motion-adapter",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
+            "lock:runtime:motion-adapter"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
+            "lock:runtime:motion-adapter",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs"
+          ]
+        }
       }
     ]
   },

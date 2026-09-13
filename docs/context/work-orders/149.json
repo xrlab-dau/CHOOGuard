@@ -1,0 +1,223 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:149",
+  "@type": "WorkItem",
+  "issue": 149,
+  "workId": "FMP-12a-R1",
+  "domainCode": "QA",
+  "title": "[FMP-12a-R1] Load causal contract R6B 5건 보완과 실행 corpus",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "R6B normative REWORK의 다섯 causal 계약 결함을 portable 계약과 정상/실패 corpus로 분리하고 실제 runner에 실행해 #150/#140에 인계한다.",
+  "parent": 140,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/context/contracts/load-causal-contract.json",
+    "docs/evidence/foundation/FMP-12a-R1-corpus-index.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 120,
+        "artifact": "artifact:120:source-only-access-manifest:candidate",
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
+      }
+    ],
+    "successors": [
+      {
+        "issue": 150,
+        "artifact": "artifact:149:load-causal-contract:candidate",
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "reason": "F(n)/U(n) engine binding 구현은 portable 관측/schema/role/deadline 계약 후보를 소비한다. #140 rehearsal 영수증을 계약으로 사용하지 않는다."
+      },
+      {
+        "issue": 150,
+        "artifact": "artifact:149:load-causal-corpus:candidate",
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "reason": "engine binding 후보는 고정된 정상/실패 causal corpus 기대값과 매핑한다. candidate corpus는 실제 실행 수용이 아니다."
+      },
+      {
+        "issue": 150,
+        "artifact": "artifact:149:load-causal-corpus:accept",
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "reason": "실제 engine/protocol run은 #149의 성공한 executed causal corpus가 선행한다."
+      },
+      {
+        "issue": 140,
+        "artifact": "artifact:149:load-causal-corpus:accept",
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "reason": "2~4-client 실제 리허설 전에 다섯 R6B 항목의 executed causal corpus가 통과해야 한다."
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      151,
+      146,
+      152,
+      139,
+      138,
+      137,
+      136,
+      135,
+      134,
+      133,
+      132,
+      131,
+      130,
+      129,
+      128,
+      127,
+      126,
+      125,
+      123,
+      122,
+      121,
+      119,
+      107,
+      106,
+      100,
+      99,
+      94,
+      93,
+      90,
+      89,
+      85,
+      82,
+      81,
+      80,
+      79,
+      78,
+      77,
+      76,
+      75,
+      74,
+      73,
+      72,
+      71,
+      70,
+      68,
+      65,
+      64,
+      63,
+      62,
+      58,
+      57,
+      56,
+      55,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      36,
+      34,
+      33,
+      32,
+      31,
+      29,
+      28,
+      27,
+      26,
+      25,
+      24,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14,
+      10
+    ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": [
+      {
+        "issue": 140,
+        "reasons": [
+          "path:scripts/dev/run_foundation_load.py|scripts/dev/run_foundation_load.py",
+          "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py",
+          "path:scripts/dev/test_foundation_load.py|scripts/dev/test_foundation_load.py"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:scripts/dev/run_foundation_load.py|scripts/dev/run_foundation_load.py",
+            "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py",
+            "path:scripts/dev/test_foundation_load.py|scripts/dev/test_foundation_load.py"
+          ]
+        }
+      },
+      {
+        "issue": 150,
+        "reasons": [
+          "lock:repo-path:scripts/dev/foundation_load_metrics.py",
+          "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:scripts/dev/foundation_load_metrics.py"
+          ],
+          "accept": [
+            "lock:repo-path:scripts/dev/foundation_load_metrics.py",
+            "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+          ]
+        }
+      }
+    ]
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 149 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 149 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 149 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 149 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 149 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=149]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

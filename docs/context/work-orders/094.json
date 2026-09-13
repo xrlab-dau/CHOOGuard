@@ -31,47 +31,89 @@
     "predecessors": [
       {
         "issue": 72,
+        "artifact": "artifact:72:flow-fixtures:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:72:flow-fixtures:candidate"
+        "reason": "Consume only 행동/관측/실패·복구의전후상태"
       },
       {
         "issue": 93,
+        "artifact": "artifact:93:mapping-template:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:93:mapping-template:candidate"
+        "reason": "Consume only 필수필드·작성법·근거상태"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #94 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:94:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "docs/choo-guard-native-acceptance.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 72,
+        "artifact": "artifact:72:flow-fixtures:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:72:flow-fixtures:candidate"
+        "reason": "Consume only 행동/관측/실패·복구의전후상태"
       },
       {
         "issue": 93,
+        "artifact": "artifact:93:mapping-template:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:93:mapping-template:candidate"
+        "reason": "Consume only 필수필드·작성법·근거상태"
       }
     ],
     "successors": [
       {
         "issue": 63,
+        "artifact": "artifact:94:evaluation-template:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:94:evaluation-template:candidate"
+        "reason": "Consume only 질문/과업/관측/교란/누락규칙"
       },
       {
         "issue": 63,
+        "artifact": "artifact:94:evaluation-template:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:94:evaluation-template:accept"
+        "reason": "Consume only 질문/과업/관측/교란/누락규칙"
       }
     ],
     "oneOfGroups": [],
@@ -151,13 +193,20 @@
       43,
       42,
       41,
+      149,
+      150,
+      151,
       36,
+      152,
       33,
       27,
       26,
       25,
       24
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -168,6 +217,7 @@
       "readWhen": "prepare",
       "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
       "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -176,7 +226,11 @@
         "value": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/scenarios/foundation-demo.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

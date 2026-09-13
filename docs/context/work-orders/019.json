@@ -30,41 +30,47 @@
     "predecessors": [
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-allowlist:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-allowlist:candidate"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 18,
+        "artifact": "artifact:18:M1-02-policy-record:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:18:M1-02-policy-record:candidate"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 18,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       }
     ],
     "successors": [
       {
         "issue": 20,
+        "artifact": "artifact:19:M1-03-supply-review:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:19:M1-03-supply-review:candidate"
+        "reason": "Consume only version/hash/license/dependency/call-path matrix with limits"
       },
       {
         "issue": 20,
+        "artifact": "artifact:19:M1-03-supply-review:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:19:M1-03-supply-review:accept"
+        "reason": "Consume only version/hash/license/dependency/call-path matrix with limits"
       }
     ],
     "oneOfGroups": [],
@@ -153,8 +159,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -165,6 +178,7 @@
       "readWhen": "prepare",
       "why": "version/license/dependency and direct/proxy scope를 증명한다.",
       "limits": "전체 실행 경계 PASS를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -173,7 +187,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/adr/0006-official-unity-editor-mcp.md",
@@ -181,6 +199,7 @@
       "readWhen": "prepare",
       "why": "공식 path 선택을 증명한다.",
       "limits": "현재 연결/실행 결과는 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -189,7 +208,11 @@
         "value": "0dd9c889d91ebae34a0acf55d234e709c71511cb"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/adr/0006-official-unity-editor-mcp.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

@@ -34,45 +34,54 @@
     "predecessors": [
       {
         "issue": 131,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 132,
+        "artifact": "artifact:132:concurrent-incident-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:132:concurrent-incident-receipt:accept"
+        "reason": "Consume only 최소3허용조합의tick별설비/통로/NPC영향·독립복구·연속훈련·금지조합거부"
       },
       {
         "issue": 133,
+        "artifact": "artifact:133:incident-nondisclosure:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:133:incident-nondisclosure:accept"
+        "reason": "Consume only seed/allowlist결정성 및 server-to-client response/clientobject/UI 세면의발견전후증거"
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 91,
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 141,
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:60:FMP-09-acceptance-rollup:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

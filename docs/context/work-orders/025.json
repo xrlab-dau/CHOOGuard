@@ -31,35 +31,40 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 24,
+        "artifact": "artifact:24:dependency-materialization-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+        "reason": "Consume only source·정확binary·import 결과·미지원 capability 명시"
       }
     ],
     "successors": [
       {
         "issue": 26,
+        "artifact": "artifact:25:training-action-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:25:training-action-contract:candidate"
+        "reason": "Consume only 각 필드 의미, rejection state invariants, 새 세계 연결 비목표"
       },
       {
         "issue": 26,
+        "artifact": "artifact:25:training-action-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:25:training-action-contract:accept"
+        "reason": "Consume only 각 필드 의미, rejection state invariants, 새 세계 연결 비목표"
       }
     ],
     "oneOfGroups": [],
@@ -149,8 +154,15 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -162,44 +174,39 @@
           "lock:test:training-session",
           "path:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs|Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
           "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+            "lock:runtime:training-session",
+            "lock:test:training-session"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+            "lock:runtime:training-session",
+            "lock:test:training-session",
+            "path:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs|Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+            "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs"
+          ]
+        }
+      },
+      {
+        "issue": 152,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/**"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/**"
+          ]
+        }
       }
     ]
   },
-  "minimumContext": [
-    {
-      "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
-      "selector": "TrainingAction, ActionResult, ITrainingActionHandler",
-      "readWhen": "candidate",
-      "why": "현 legacy 입력/결과 필드",
-      "limits": "WorldCommand 인증·server authority를 제공하지 않는다.",
-      "availability": "published",
-      "provider": "git-at-captured-ref",
-      "ref": "6490956d203549b56cbd86846120759889abb016",
-      "digest": {
-        "algorithm": "git-blob-sha1",
-        "value": "c7819b147078e414727e31ae4c48b0a84e69de1f"
-      },
-      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
-      "access": "repository read access"
-    },
-    {
-      "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
-      "selector": "Submit, CreateRoleActionFixture",
-      "readWhen": "candidate",
-      "why": "중복·stale·역할 거부와 fixture 경로",
-      "limits": "실제 Unity/HMD 입력 수용 아님.",
-      "availability": "published",
-      "provider": "git-at-captured-ref",
-      "ref": "6490956d203549b56cbd86846120759889abb016",
-      "digest": {
-        "algorithm": "git-blob-sha1",
-        "value": "4c772a5a1f5359a083c3c151bfa0da3c769d7292"
-      },
-      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
-      "access": "repository read access"
-    }
-  ],
+  "minimumContext": [],
   "readMore": {
     "sources": "node scripts/context/task_context.mjs brief --issue 25 --section sources --phase prepare",
     "inputs": "node scripts/context/task_context.mjs brief --issue 25 --section inputs --phase candidate",

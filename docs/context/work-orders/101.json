@@ -33,39 +33,47 @@
     "predecessors": [
       {
         "issue": 122,
+        "artifact": "artifact:122:thermal-timing-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:122:thermal-timing-receipt:accept"
+        "reason": "Consume only cells/openings/sourceHash/steps/duration/mean/p95/max·solver조건·오차비교·thermal_only 판정"
       },
       {
         "issue": 123,
+        "artifact": "artifact:123:thermal-boundary-regression:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:123:thermal-boundary-regression:accept"
+        "reason": "Consume only 개폐상태×개구부종류 coverage·보존/비음수/소유권·경사/시간/공간 수렴 결과"
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 91,
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 141,
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:101:FMP-06-acceptance-rollup:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

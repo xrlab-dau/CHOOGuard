@@ -15,7 +15,7 @@
     "existingClaim": null
   },
   "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
-  "directive": "동일 조건의 자산 후보를 비교하고 결함·수정·재검증 근거를 남기세요. 검토 범위와 반복 예산은 PM이 정하며 무제한 재검토하지 않습니다.",
+  "directive": "자동 AAA/REWORK 실행 지시는 현재 중단·보류다. 과거 검수·실패·재작업 이력을 보존하고 명시적으로 승인된 한정 수정과 필요한 시험만 수행하며 자동 루프를 재개하거나 가짜 수용하지 않는다.",
   "parent": 54,
   "children": [],
   "requiredOutputPaths": [
@@ -31,42 +31,81 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #107 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:107:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/art/aaa-review-rubric.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "docs/art/aaa-review-workflow.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual asset review instance, not this planning audit."
       },
       {
         "issue": 65,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual independent ART review verdict for this selected candidate digest before producer visual acceptance; producer candidate remains reviewable while issue open."
       },
       {
         "issue": 85,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual independent ART review verdict for this selected candidate digest before producer visual acceptance; producer candidate remains reviewable while issue open."
       },
       {
         "issue": 106,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual independent ART review verdict for this selected candidate digest before producer visual acceptance; producer candidate remains reviewable while issue open."
       }
     ],
     "oneOfGroups": [
       {
         "artifact": "or:107:art-candidate",
         "consumerPhase": "candidate",
-        "resolution": "At least one qualified same-condition art packet; native branches independent of SC01. External branch also requires explicit SC01 method resolution.",
         "alternatives": [
           {
             "issue": 65,
@@ -81,16 +120,21 @@
           {
             "issue": 106,
             "artifact": "artifact:106:asset-candidate:candidate",
-            "producerPhase": "candidate"
+            "producerPhase": "candidate",
+            "additionalInputs": [
+              {
+                "artifact": "artifact:10:sc01-explicit-method-decision:accept",
+                "consumerPhase": "candidate"
+              }
+            ]
           }
-        ]
+        ],
+        "resolution": "At least one qualified same-condition art packet; native branches independent of SC01. External branch also requires explicit SC01 method resolution."
       }
     ],
     "parallelCandidates": [
-      106,
       100,
       99,
-      82,
       57,
       56,
       36,
@@ -100,7 +144,6 @@
       26,
       25,
       24,
-      10,
       119,
       94,
       93,
@@ -113,7 +156,6 @@
       126,
       127,
       128,
-      85,
       129,
       130,
       131,
@@ -132,7 +174,6 @@
       138,
       75,
       139,
-      74,
       140,
       73,
       141,
@@ -144,19 +185,20 @@
       144,
       68,
       146,
-      65,
+      149,
       64,
+      150,
       63,
+      151,
       62,
+      152,
       58,
-      55,
       52,
       46,
       45,
       44,
       43,
       42,
-      41,
       40,
       39,
       38,
@@ -176,6 +218,18 @@
       15,
       14
     ],
+    "conditionalCandidates": [
+      10,
+      41,
+      55,
+      65,
+      74,
+      82,
+      85,
+      106
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -186,6 +240,7 @@
       "readWhen": "prepare",
       "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
       "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -194,7 +249,11 @@
         "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

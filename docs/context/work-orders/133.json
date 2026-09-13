@@ -31,53 +31,61 @@
     "predecessors": [
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-protocol:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:27:authority-protocol:candidate"
+        "reason": "Consume only 두 실제 프로세스 및 교관의 공유 승인 경로"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 131,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:27:authority-receipt:accept"
+        "reason": "Consume only 신원/직무/거리/가림/동시조작/관측·개인pause·TLS 결과"
       },
       {
         "issue": 131,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       }
     ],
     "successors": [
       {
         "issue": 60,
+        "artifact": "artifact:133:incident-nondisclosure:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:133:incident-nondisclosure:accept"
+        "reason": "Consume only seed/allowlist결정성 및 server-to-client response/clientobject/UI 세면의발견전후증거"
       },
       {
         "issue": 139,
+        "artifact": "artifact:133:incident-nondisclosure:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:133:incident-nondisclosure:candidate"
+        "reason": "Consume only seed/allowlist결정성 및 server-to-client response/clientobject/UI 세면의발견전후증거"
       },
       {
         "issue": 139,
+        "artifact": "artifact:133:incident-nondisclosure:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:133:incident-nondisclosure:accept"
+        "reason": "Consume only seed/allowlist결정성 및 server-to-client response/clientobject/UI 세면의발견전후증거"
       }
     ],
     "oneOfGroups": [],
@@ -100,6 +108,10 @@
       121,
       146,
       119,
+      149,
+      150,
+      151,
+      152,
       107,
       106,
       100,
@@ -162,6 +174,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -173,7 +188,23 @@
           "lock:runtime:network-field",
           "path:Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs|Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:authority",
+            "lock:runtime:network-field"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:authority",
+            "lock:runtime:network-field",
+            "path:Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs|Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
       },
       {
         "issue": 134,
@@ -181,7 +212,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
           "lock:runtime:network-field",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
       },
       {
         "issue": 136,
@@ -189,7 +231,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
           "lock:runtime:network-field",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
       },
       {
         "issue": 137,
@@ -197,7 +250,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
           "lock:runtime:network-field",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
       },
       {
         "issue": 138,
@@ -205,7 +269,30 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
           "lock:runtime:network-field",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "lock:runtime:network-field",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
+      },
+      {
+        "issue": 150,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
       }
     ]
   },

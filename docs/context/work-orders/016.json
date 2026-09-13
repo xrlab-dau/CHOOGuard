@@ -31,89 +31,103 @@
     "predecessors": [
       {
         "issue": 13,
+        "artifact": "artifact:13:M0-00-policy-baseline:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:13:M0-00-policy-baseline:accept"
+        "reason": "Consumes the exact accepted baseline digest and stated limits only; no install or execution permission."
       }
     ],
     "successors": [
       {
         "issue": 17,
+        "artifact": "artifact:16:M0-03-execution-profile:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-execution-profile:candidate"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 17,
+        "artifact": "artifact:16:M0-03-execution-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-execution-profile:accept"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 18,
+        "artifact": "artifact:16:M0-03-execution-profile:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-execution-profile:candidate"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 18,
+        "artifact": "artifact:16:M0-03-execution-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-execution-profile:accept"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 19,
+        "artifact": "artifact:16:M0-03-allowlist:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-allowlist:candidate"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 19,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 21,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 23,
+        "artifact": "artifact:16:M0-03-allowlist:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-allowlist:candidate"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 23,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 45,
+        "artifact": "artifact:16:M0-03-execution-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-execution-profile:accept"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 46,
+        "artifact": "artifact:16:M0-03-execution-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-execution-profile:accept"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 52,
+        "artifact": "artifact:16:M0-03-allowlist:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:16:M0-03-allowlist:candidate"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       },
       {
         "issue": 52,
+        "artifact": "artifact:16:M0-03-allowlist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-allowlist:accept"
+        "reason": "Consume only tool/model/version/hash/license/approval/scope/status fields complete"
       }
     ],
     "oneOfGroups": [],
@@ -195,8 +209,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -207,6 +228,7 @@
       "readWhen": "prepare",
       "why": "허용목록 산출물과 정책 PASS 분리를 증명한다.",
       "limits": "실제 차단 시험 결과를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -215,7 +237,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-ai-native-pipeline-v1.md",
@@ -223,6 +249,7 @@
       "readWhen": "prepare",
       "why": "official Unity CLI 선택과 Pi adapter 선택사항을 증명한다.",
       "limits": "현행 설치/실행 결과는 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -231,7 +258,11 @@
         "value": "9a575eff21b96161cb7d562b260db3128831be87"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/adr/0006-official-unity-editor-mcp.md",
@@ -239,6 +270,7 @@
       "readWhen": "prepare",
       "why": "공식 MCP 경로의 선택 근거를 증명한다.",
       "limits": "전체 permission/egress 경계는 별도 검증이다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -247,7 +279,11 @@
         "value": "0dd9c889d91ebae34a0acf55d234e709c71511cb"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/adr/0006-official-unity-editor-mcp.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

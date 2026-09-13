@@ -32,35 +32,40 @@
     "predecessors": [
       {
         "issue": 14,
+        "artifact": "artifact:14:M0-02a-source-policy:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:14:M0-02a-source-policy:accept"
+        "reason": "Consume only sourceType/rating/allowedClaims/forbiddenClaims/uncertainty/license fields complete"
       },
       {
         "issue": 15,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 70,
+        "artifact": "artifact:70:zone-boundaries:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:70:zone-boundaries:accept"
+        "reason": "Final floor/region/portal mapping uses authoritative boundary artifact, not #70 closure."
       }
     ],
     "successors": [
       {
         "issue": 31,
+        "artifact": "artifact:119:plan-mapping:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:119:plan-mapping:candidate"
+        "reason": "Pilot mapping candidate informs draft fidelity work."
       },
       {
         "issue": 31,
+        "artifact": "artifact:119:plan-mapping:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:119:plan-mapping:accept"
+        "reason": "Only qualified floorplan/region/public-use pilot, not draft, qualifies map integration."
       }
     ],
     "oneOfGroups": [],
@@ -107,6 +112,10 @@
       146,
       90,
       89,
+      149,
+      150,
+      151,
+      152,
       85,
       82,
       75,
@@ -153,6 +162,9 @@
       14,
       10
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -163,6 +175,7 @@
       "readWhen": "prepare",
       "why": "공개계획/안내자료의종류와한계",
       "limits": "현재시공정밀도·층간공통축척을증명하지않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -171,7 +184,11 @@
         "value": "8849846668a9781358dc4624bc2c9bfd7d011cdc"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/art/public-facility-plans.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

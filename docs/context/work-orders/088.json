@@ -34,51 +34,104 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #88 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:88:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-connected-world.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 137,
+        "artifact": "artifact:137:fmp11a-route-test:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:137:fmp11a-route-test:accept"
+        "reason": "Consume only 13 region/12 portal route projection and blocked-state scenarios."
       },
       {
         "issue": 138,
+        "artifact": "artifact:138:fmp11b-mode-contract-test:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:138:fmp11b-mode-contract-test:accept"
+        "reason": "Consume only 동일 world ID에서 Practice hint presence/Evaluation absence를 assert."
       },
       {
         "issue": 139,
+        "artifact": "artifact:139:fmp11c-consistency-test:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:139:fmp11c-consistency-test:accept"
+        "reason": "Consume only four-surface equality/leak/failure scenarios."
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:88:fmp11-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:88:fmp11-integration-evidence:accept"
+        "reason": "Consume only route/mode/observation 실제 test result, render evidence, source/build hash 및 limits."
       },
       {
         "issue": 91,
+        "artifact": "artifact:88:fmp11-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:88:fmp11-integration-evidence:accept"
+        "reason": "Consume only route/mode/observation 실제 test result, render evidence, source/build hash 및 limits."
       },
       {
         "issue": 141,
+        "artifact": "artifact:88:fmp11-integration-evidence:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:88:fmp11-integration-evidence:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

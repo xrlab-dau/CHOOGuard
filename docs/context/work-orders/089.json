@@ -33,53 +33,88 @@
     "predecessors": [
       {
         "issue": 55,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 57,
+        "artifact": "artifact:57:input-candidate:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:57:input-candidate:candidate"
+        "reason": "Consume only 기존 Submit 경로로만 행동 전달"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #89 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:89:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-native-team-contracts.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 42,
+        "artifact": "artifact:42:R-02-capability-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:42:R-02-capability-contract:accept"
+        "reason": "Selected XR runtime/device capability only; no school/location gate."
       },
       {
         "issue": 55,
+        "artifact": "artifact:55:team-contract:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:55:team-contract:candidate"
+        "reason": "Consume only 현재 코드의 실제 API와 팀 후보/공유 통합 경계 일치"
       },
       {
         "issue": 57,
+        "artifact": "artifact:57:input-candidate:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:57:input-candidate:accept"
+        "reason": "Consume only 기존 Submit 경로로만 행동 전달"
       }
     ],
     "successors": [
       {
         "issue": 37,
+        "artifact": "artifact:89:xr-adapter:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:89:xr-adapter:candidate"
+        "reason": "Consume only 기존Submit으로연결"
       },
       {
         "issue": 37,
+        "artifact": "artifact:89:xr-smoke:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:89:xr-smoke:accept"
+        "reason": "Actual chosen HMD adapter/smoke required only for this XR acceptance."
       }
     ],
     "oneOfGroups": [],
@@ -162,12 +197,20 @@
       143,
       144,
       33,
+      149,
+      150,
       27,
+      151,
       26,
+      152,
       25,
-      24,
+      24
+    ],
+    "conditionalCandidates": [
       10
     ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -178,6 +221,7 @@
       "readWhen": "prepare",
       "why": "실제 공개된 입력 의미·Modality·Submit 계약으로 후보를 준비한다.",
       "limits": "미게시 Native WorldCommand 계약 또는 실제 XR 입력 구현을 대체하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -186,7 +230,11 @@
         "value": "c7819b147078e414727e31ae4c48b0a84e69de1f"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

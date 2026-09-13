@@ -32,29 +32,33 @@
     "predecessors": [
       {
         "issue": 21,
+        "artifact": "artifact:21:M1-05-record-schema:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:21:M1-05-record-schema:candidate"
+        "reason": "Common record schema candidate is available before #21 final."
       },
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-execution-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-execution-profile:accept"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 18,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       }
     ],
     "successors": [
       {
         "issue": 21,
+        "artifact": "artifact:46:executed-egress-output-verification:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:46:executed-egress-output-verification:accept"
+        "reason": "Final #21 consumes actual #46 execution receipt based on schema candidate, not control-spec presence."
       }
     ],
     "oneOfGroups": [],
@@ -145,8 +149,15 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -157,6 +168,7 @@
       "readWhen": "prepare",
       "why": "policy requirements를 증명한다.",
       "limits": "actual egress enforcement를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -165,7 +177,11 @@
         "value": "c197b4588d9aa7e32751726dd7fde00f8dd4406d"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/adr/0004-research-harness-and-egress-policy.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-ai-native-pipeline-v1.md",
@@ -173,6 +189,7 @@
       "readWhen": "prepare",
       "why": "conditional research tools and structured evidence limits를 증명한다.",
       "limits": "research run completion을 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -181,7 +198,11 @@
         "value": "9a575eff21b96161cb7d562b260db3128831be87"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-execution-backlog-v1.md",
@@ -189,6 +210,7 @@
       "readWhen": "prepare",
       "why": "shared record/redaction/public approval boundaries를 증명한다.",
       "limits": "#21 implementation ownership is not inferred.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -197,7 +219,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

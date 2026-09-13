@@ -31,27 +31,31 @@
     "predecessors": [
       {
         "issue": 19,
+        "artifact": "artifact:19:M1-03-supply-review:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:19:M1-03-supply-review:candidate"
+        "reason": "Consume only version/hash/license/dependency/call-path matrix with limits"
       },
       {
         "issue": 24,
+        "artifact": "artifact:24:pinned-materialization-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+        "reason": "Pinned import/target candidate suffices to prepare connection recipe."
       },
       {
         "issue": 19,
+        "artifact": "artifact:19:M1-03-supply-review:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:19:M1-03-supply-review:accept"
+        "reason": "Consume only version/hash/license/dependency/call-path matrix with limits"
       },
       {
         "issue": 24,
+        "artifact": "artifact:24:dependency-materialization-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+        "reason": "Consume only source·정확binary·import 결과·미지원 capability 명시"
       }
     ],
     "successors": [],
@@ -138,8 +142,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -150,6 +161,7 @@
       "readWhen": "prepare",
       "why": "connection actions and exclusions를 증명한다.",
       "limits": "실제 current session/test result를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -158,7 +170,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

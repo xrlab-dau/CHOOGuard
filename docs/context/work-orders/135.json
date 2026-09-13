@@ -31,29 +31,33 @@
     "predecessors": [
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-protocol:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:27:authority-protocol:candidate"
+        "reason": "Consume only 두 실제 프로세스 및 교관의 공유 승인 경로"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:27:authority-receipt:accept"
+        "reason": "Consume only 신원/직무/거리/가림/동시조작/관측·개인pause·TLS 결과"
       }
     ],
     "successors": [
       {
         "issue": 35,
+        "artifact": "artifact:135:fmp10b-authority-tests:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:135:fmp10b-authority-tests:accept"
+        "reason": "Consume only 3+ claim race, explicit handoff, duplicate command tests with actual EditMode XML result."
       }
     ],
     "oneOfGroups": [],
@@ -81,7 +85,11 @@
       123,
       122,
       121,
+      149,
+      150,
       119,
+      151,
+      152,
       107,
       106,
       100,
@@ -144,6 +152,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -151,7 +162,28 @@
         "reasons": [
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs",
           "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs",
+            "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs"
+          ]
+        }
+      },
+      {
+        "issue": 152,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/**"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/**"
+          ]
+        }
       }
     ]
   },

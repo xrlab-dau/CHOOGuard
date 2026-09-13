@@ -31,29 +31,33 @@
     "predecessors": [
       {
         "issue": 28,
+        "artifact": "artifact:28:M3-01-checklist:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:28:M3-01-checklist:candidate"
+        "reason": "Consume only 13 region rows with required view, source, coverage, can/cannot prove, rights, hash"
       },
       {
         "issue": 15,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 28,
+        "artifact": "artifact:28:M3-01-checklist:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:28:M3-01-checklist:accept"
+        "reason": "Consume only 13 region rows with required view, source, coverage, can/cannot prove, rights, hash"
       }
     ],
     "successors": [
       {
         "issue": 31,
+        "artifact": "artifact:29:M3-02-public-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:29:M3-02-public-catalog:accept"
+        "reason": "Consume only source URL/observed date/license/hash/region/evidence/limit rows"
       }
     ],
     "oneOfGroups": [],
@@ -142,8 +146,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -154,6 +165,7 @@
       "readWhen": "prepare",
       "why": "legacy capture DoD and corrected public scope를 증명한다.",
       "limits": "실제 files/license 결과를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -162,7 +174,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

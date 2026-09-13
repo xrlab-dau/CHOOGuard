@@ -34,45 +34,54 @@
     "predecessors": [
       {
         "issue": 128,
+        "artifact": "artifact:128:dynamic-frame-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:128:dynamic-frame-contract:accept"
+        "reason": "Consume only 정렬전후/근거/transform·경계통과·탑승/고정보딩브리지·과거보고pose 결과"
       },
       {
         "issue": 129,
+        "artifact": "artifact:129:train-analytic-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:129:train-analytic-receipt:accept"
+        "reason": "Consume only 해석/실행거리·시간·오차·진입/완전점유/후미해제·정차/승강장관계·leadreview"
       },
       {
         "issue": 130,
+        "artifact": "artifact:130:train-fire-integration:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:130:train-fire-integration:accept"
+        "reason": "Consume only 화재/고장/비상정차→운행입력→동일frame열/군중→복구의tick/state 결과"
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 91,
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 141,
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:102:FMP-08-acceptance-rollup:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

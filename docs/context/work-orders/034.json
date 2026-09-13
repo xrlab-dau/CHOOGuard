@@ -32,35 +32,40 @@
     "predecessors": [
       {
         "issue": 32,
+        "artifact": "artifact:32:M4-01-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:32:M4-01-fixture:candidate"
+        "reason": "Consume only 5 provisional role rows with all required fields and disclaimer"
       },
       {
         "issue": 32,
+        "artifact": "artifact:32:M4-01-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:32:M4-01-fixture:accept"
+        "reason": "Consume only 5 provisional role rows with all required fields and disclaimer"
       },
       {
         "issue": 56,
+        "artifact": "artifact:56:prototype-acceptance:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:56:prototype-acceptance:candidate"
+        "reason": "Consume only 자산별 scene사용·플레이·한계·실패 참조"
       }
     ],
     "successors": [
       {
         "issue": 36,
+        "artifact": "artifact:34:M4-03-desktop-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:34:M4-03-desktop-receipt:accept"
+        "reason": "Consume only 4 Desktop behaviors, event/result parity, target SHA and failures"
       },
       {
         "issue": 37,
+        "artifact": "artifact:34:M4-03-desktop-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:34:M4-03-desktop-receipt:accept"
+        "reason": "Consume only 4 Desktop behaviors, event/result parity, target SHA and failures"
       }
     ],
     "oneOfGroups": [],
@@ -151,8 +156,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -163,6 +175,7 @@
       "readWhen": "prepare",
       "why": "8 behavior paths and fixture parity target를 증명한다.",
       "limits": "실제 behavior/VR result를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -171,7 +184,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

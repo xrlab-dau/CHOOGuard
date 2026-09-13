@@ -31,27 +31,31 @@
     "predecessors": [
       {
         "issue": 89,
+        "artifact": "artifact:89:xr-adapter:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:89:xr-adapter:candidate"
+        "reason": "Consume only 기존Submit으로연결"
       },
       {
         "issue": 34,
+        "artifact": "artifact:34:M4-03-desktop-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:34:M4-03-desktop-receipt:accept"
+        "reason": "Consume only 4 Desktop behaviors, event/result parity, target SHA and failures"
       },
       {
         "issue": 36,
+        "artifact": "artifact:36:M5-01-run-manifest:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:36:M5-01-run-manifest:accept"
+        "reason": "Consume only actual command, exit/XML, count, failures/retries/skips and hashes"
       },
       {
         "issue": 89,
+        "artifact": "artifact:89:xr-smoke:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:89:xr-smoke:accept"
+        "reason": "Actual chosen HMD adapter/smoke required only for this XR acceptance."
       }
     ],
     "successors": [],
@@ -102,7 +106,6 @@
       25,
       24,
       56,
-      10,
       65,
       70,
       74,
@@ -139,8 +142,17 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      10
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -151,6 +163,7 @@
       "readWhen": "prepare",
       "why": "HMD inputs, measurement fields, no arbitrary pass-line rule를 증명한다.",
       "limits": "실측 결과를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -159,7 +172,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {
