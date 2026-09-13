@@ -1,0 +1,834 @@
+{
+  "SchemaVersion": 1,
+  "ProfileId": "native-connected-v1",
+  "StartRegionId": "station_concourse_2f",
+  "Classification": "synthetic_design_not_facility_acceptance",
+  "Frames": [
+    {
+      "FrameId": "world",
+      "Origin": {
+        "X": 0,
+        "Y": 0,
+        "Z": 0
+      },
+      "YawDegrees": 0
+    },
+    {
+      "FrameId": "train-mainline",
+      "Origin": {
+        "X": -50,
+        "Y": 2,
+        "Z": 15
+      },
+      "YawDegrees": 0
+    },
+    {
+      "FrameId": "train-metro",
+      "Origin": {
+        "X": 300,
+        "Y": -8,
+        "Z": 15
+      },
+      "YawDegrees": 180
+    }
+  ],
+  "Regions": [
+    {
+      "Id": "rolling_stock_mainline",
+      "Label": "기차/일반철도 차량",
+      "FrameId": "train-mainline",
+      "SceneName": "cg_region_rolling_stock_mainline",
+      "Center": {
+        "X": -50,
+        "Y": 2,
+        "Z": 15
+      },
+      "SizeX": 40,
+      "SizeZ": 5,
+      "Height": 3.2,
+      "Hub": {
+        "X": -50,
+        "Y": 2,
+        "Z": 15
+      },
+      "Template": "vehicle",
+      "EquipmentAsset": "SituationPanel",
+      "EquipmentLabel": "차량 출입문",
+      "EquipmentPosition": {
+        "X": -50.9,
+        "Y": 2,
+        "Z": 14.1
+      },
+      "ControlledPortalId": "rolling_stock_mainline--rail_platforms_mainline",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 3.2
+    },
+    {
+      "Id": "rail_tracks_mainline",
+      "Label": "선로",
+      "FrameId": "world",
+      "SceneName": "cg_region_rail_tracks_mainline",
+      "Center": {
+        "X": -50,
+        "Y": 0,
+        "Z": -17
+      },
+      "SizeX": 52,
+      "SizeZ": 10,
+      "Height": 5.5,
+      "Hub": {
+        "X": -50,
+        "Y": 0,
+        "Z": -13.3
+      },
+      "Template": "track",
+      "EquipmentAsset": "SituationPanel",
+      "EquipmentLabel": "점검 보행로 출입",
+      "EquipmentPosition": {
+        "X": -49.1,
+        "Y": 0,
+        "Z": -13.6
+      },
+      "ControlledPortalId": "rail_tracks_mainline--rail_platforms_mainline",
+      "Exclusions": [
+        {
+          "Center": {
+            "X": -50,
+            "Y": 0,
+            "Z": -19.5
+          },
+          "SizeX": 52,
+          "SizeZ": 5
+        }
+      ],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": false,
+      "WallHeight": 1.15
+    },
+    {
+      "Id": "rail_platforms_mainline",
+      "Label": "철도 승강장",
+      "FrameId": "world",
+      "SceneName": "cg_region_rail_platforms_mainline",
+      "Center": {
+        "X": -50,
+        "Y": 2,
+        "Z": 0
+      },
+      "SizeX": 52,
+      "SizeZ": 10,
+      "Height": 5.5,
+      "Hub": {
+        "X": -50,
+        "Y": 2,
+        "Z": 0
+      },
+      "Template": "platform",
+      "EquipmentAsset": "SituationPanel",
+      "EquipmentLabel": "승강장 연결 출입",
+      "EquipmentPosition": {
+        "X": -25.6,
+        "Y": 2,
+        "Z": -0.9
+      },
+      "ControlledPortalId": "rail_platforms_mainline--station_concourse_2f",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 1.15
+    },
+    {
+      "Id": "rail_terminal_public",
+      "Label": "철도 터미널 공용구역",
+      "FrameId": "world",
+      "SceneName": "cg_region_rail_terminal_public",
+      "Center": {
+        "X": 42,
+        "Y": 6,
+        "Z": 0
+      },
+      "SizeX": 28,
+      "SizeZ": 20,
+      "Height": 5.5,
+      "Hub": {
+        "X": 42,
+        "Y": 6,
+        "Z": 0
+      },
+      "Template": "terminal",
+      "EquipmentAsset": "RouteConsole",
+      "EquipmentLabel": "공용 통로 출입",
+      "EquipmentPosition": {
+        "X": 29.6,
+        "Y": 6,
+        "Z": 0.9
+      },
+      "ControlledPortalId": "rail_terminal_public--station_concourse_2f",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 5.5
+    },
+    {
+      "Id": "station_concourse_2f",
+      "Label": "역사2층 맞이방",
+      "FrameId": "world",
+      "SceneName": "cg_region_station_concourse_2f",
+      "Center": {
+        "X": 0,
+        "Y": 6,
+        "Z": 0
+      },
+      "SizeX": 24,
+      "SizeZ": 20,
+      "Height": 5.5,
+      "Hub": {
+        "X": 0,
+        "Y": 6,
+        "Z": 0
+      },
+      "Template": "concourse",
+      "EquipmentAsset": "SituationPanel",
+      "EquipmentLabel": "맞이방 조명",
+      "EquipmentPosition": {
+        "X": 3,
+        "Y": 6,
+        "Z": 3
+      },
+      "ControlledPortalId": "",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 5.5
+    },
+    {
+      "Id": "station_hall_1f",
+      "Label": "역사1층 맞이방",
+      "FrameId": "world",
+      "SceneName": "cg_region_station_hall_1f",
+      "Center": {
+        "X": 0,
+        "Y": 0,
+        "Z": -38
+      },
+      "SizeX": 24,
+      "SizeZ": 20,
+      "Height": 5.5,
+      "Hub": {
+        "X": 0,
+        "Y": 0,
+        "Z": -38
+      },
+      "Template": "hall",
+      "EquipmentAsset": "InformationKiosk",
+      "EquipmentLabel": "층간 연결 출입",
+      "EquipmentPosition": {
+        "X": 0.9,
+        "Y": 0,
+        "Z": -29.6
+      },
+      "ControlledPortalId": "station_hall_1f--station_concourse_2f",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 5.5
+    },
+    {
+      "Id": "station_ticket_area",
+      "Label": "매표/발권 구역",
+      "FrameId": "world",
+      "SceneName": "cg_region_station_ticket_area",
+      "Center": {
+        "X": 42,
+        "Y": 6,
+        "Z": 34
+      },
+      "SizeX": 24,
+      "SizeZ": 16,
+      "Height": 5.5,
+      "Hub": {
+        "X": 42,
+        "Y": 6,
+        "Z": 34
+      },
+      "Template": "ticket",
+      "EquipmentAsset": "AssemblyRegister",
+      "EquipmentLabel": "매표 구역 출입",
+      "EquipmentPosition": {
+        "X": 41.1,
+        "Y": 6,
+        "Z": 27.6
+      },
+      "ControlledPortalId": "station_ticket_area--rail_terminal_public",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 5.5
+    },
+    {
+      "Id": "forecourt_eurasia",
+      "Label": "역 앞 광장·유라시아플랫폼",
+      "FrameId": "world",
+      "SceneName": "cg_region_forecourt_eurasia",
+      "Center": {
+        "X": 129.8,
+        "Y": 0,
+        "Z": 36
+      },
+      "SizeX": 44,
+      "SizeZ": 24,
+      "Height": 5.5,
+      "Hub": {
+        "X": 129.8,
+        "Y": 0,
+        "Z": 36
+      },
+      "Template": "forecourt",
+      "EquipmentAsset": "SituationPanel",
+      "EquipmentLabel": "광장 조명",
+      "EquipmentPosition": {
+        "X": 132.8,
+        "Y": 0,
+        "Z": 39
+      },
+      "ControlledPortalId": "",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": false,
+      "WallHeight": 1.15
+    },
+    {
+      "Id": "underground_connector",
+      "Label": "부산역 지하연결통로",
+      "FrameId": "world",
+      "SceneName": "cg_region_underground_connector",
+      "Center": {
+        "X": 129.8,
+        "Y": -4,
+        "Z": 0
+      },
+      "SizeX": 99.6,
+      "SizeZ": 8,
+      "Height": 3.2,
+      "Hub": {
+        "X": 129.8,
+        "Y": -4,
+        "Z": 0
+      },
+      "Template": "connector",
+      "EquipmentAsset": "RouteConsole",
+      "EquipmentLabel": "연결통로 출입",
+      "EquipmentPosition": {
+        "X": 178.00000000000003,
+        "Y": -4,
+        "Z": -0.9
+      },
+      "ControlledPortalId": "underground_connector--underground_shopping_passage",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 3.2
+    },
+    {
+      "Id": "underground_shopping_passage",
+      "Label": "지하상가 접근 구역",
+      "FrameId": "world",
+      "SceneName": "cg_region_underground_shopping_passage",
+      "Center": {
+        "X": 210,
+        "Y": -4,
+        "Z": 0
+      },
+      "SizeX": 28,
+      "SizeZ": 12,
+      "Height": 3.2,
+      "Hub": {
+        "X": 210,
+        "Y": -4,
+        "Z": 0
+      },
+      "Template": "shopping",
+      "EquipmentAsset": "DirectionSign",
+      "EquipmentLabel": "통로 안내등",
+      "EquipmentPosition": {
+        "X": 213,
+        "Y": -4,
+        "Z": 3
+      },
+      "ControlledPortalId": "",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 3.2
+    },
+    {
+      "Id": "metro_concourse",
+      "Label": "도시철도 부산역 대합실",
+      "FrameId": "world",
+      "SceneName": "cg_region_metro_concourse",
+      "Center": {
+        "X": 254,
+        "Y": -4,
+        "Z": 0
+      },
+      "SizeX": 28,
+      "SizeZ": 20,
+      "Height": 5.5,
+      "Hub": {
+        "X": 254,
+        "Y": -4,
+        "Z": 0
+      },
+      "Template": "metro-hall",
+      "EquipmentAsset": "AccessGate",
+      "EquipmentLabel": "도시철도 승강장 출입",
+      "EquipmentPosition": {
+        "X": 266.4,
+        "Y": -4,
+        "Z": -0.9
+      },
+      "ControlledPortalId": "metro_concourse--metro_platforms",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 5.5
+    },
+    {
+      "Id": "metro_platforms",
+      "Label": "도시철도 승강장",
+      "FrameId": "world",
+      "SceneName": "cg_region_metro_platforms",
+      "Center": {
+        "X": 300,
+        "Y": -8,
+        "Z": 0
+      },
+      "SizeX": 44,
+      "SizeZ": 10,
+      "Height": 5.5,
+      "Hub": {
+        "X": 300,
+        "Y": -8,
+        "Z": 0
+      },
+      "Template": "metro-platform",
+      "EquipmentAsset": "SituationPanel",
+      "EquipmentLabel": "탑승 경계 개폐",
+      "EquipmentPosition": {
+        "X": 300.9,
+        "Y": -8,
+        "Z": 3.4
+      },
+      "ControlledPortalId": "rolling_stock_metro--metro_platforms",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 1.15
+    },
+    {
+      "Id": "rolling_stock_metro",
+      "Label": "도시철도 차량",
+      "FrameId": "train-metro",
+      "SceneName": "cg_region_rolling_stock_metro",
+      "Center": {
+        "X": 300,
+        "Y": -8,
+        "Z": 15
+      },
+      "SizeX": 42,
+      "SizeZ": 5,
+      "Height": 3.2,
+      "Hub": {
+        "X": 300,
+        "Y": -8,
+        "Z": 15
+      },
+      "Template": "vehicle",
+      "EquipmentAsset": "SituationPanel",
+      "EquipmentLabel": "도시철도 차량문",
+      "EquipmentPosition": {
+        "X": 299.1,
+        "Y": -8,
+        "Z": 14.1
+      },
+      "ControlledPortalId": "rolling_stock_metro--metro_platforms",
+      "Exclusions": [],
+      "GeometryStatus": "synthetic_design_visual_review_pending",
+      "Ceiling": true,
+      "WallHeight": 3.2
+    }
+  ],
+  "Portals": [
+    {
+      "Id": "rolling_stock_mainline--rail_platforms_mainline",
+      "From": "rolling_stock_mainline",
+      "To": "rail_platforms_mainline",
+      "FromPoint": {
+        "X": -50,
+        "Y": 2,
+        "Z": 12.5
+      },
+      "ToPoint": {
+        "X": -50,
+        "Y": 2,
+        "Z": 5.0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.rolling_stock_mainline"
+      ],
+      "SourceRefs": [],
+      "TopologyStatus": "required_game_connectivity_not_surveyed",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": true,
+      "Ceiling": false,
+      "WallHeight": 1.5,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "rail_tracks_mainline--rail_platforms_mainline",
+      "From": "rail_tracks_mainline",
+      "To": "rail_platforms_mainline",
+      "FromPoint": {
+        "X": -50,
+        "Y": 0,
+        "Z": -12.0
+      },
+      "ToPoint": {
+        "X": -50,
+        "Y": 2,
+        "Z": -5.0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.rail_tracks_mainline"
+      ],
+      "SourceRefs": [],
+      "TopologyStatus": "required_game_connectivity_not_surveyed",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "rail_platforms_mainline--station_concourse_2f",
+      "From": "rail_platforms_mainline",
+      "To": "station_concourse_2f",
+      "FromPoint": {
+        "X": -24.0,
+        "Y": 2,
+        "Z": 0
+      },
+      "ToPoint": {
+        "X": -12.0,
+        "Y": 6,
+        "Z": 0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.rail_platforms_mainline"
+      ],
+      "SourceRefs": [],
+      "TopologyStatus": "proposed_connection_geometry_unverified",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "rail_terminal_public--station_concourse_2f",
+      "From": "rail_terminal_public",
+      "To": "station_concourse_2f",
+      "FromPoint": {
+        "X": 28.0,
+        "Y": 6,
+        "Z": 0
+      },
+      "ToPoint": {
+        "X": 12.0,
+        "Y": 6,
+        "Z": 0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.rail_terminal_public"
+      ],
+      "SourceRefs": [
+        "P01"
+      ],
+      "TopologyStatus": "operator_floor_membership_only",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "station_hall_1f--station_concourse_2f",
+      "From": "station_hall_1f",
+      "To": "station_concourse_2f",
+      "FromPoint": {
+        "X": 0,
+        "Y": 0,
+        "Z": -28.0
+      },
+      "ToPoint": {
+        "X": 0,
+        "Y": 6,
+        "Z": -10.0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.station_hall_1f"
+      ],
+      "SourceRefs": [
+        "P01",
+        "P02"
+      ],
+      "TopologyStatus": "proposed_vertical_connection_unverified",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "station_ticket_area--rail_terminal_public",
+      "From": "station_ticket_area",
+      "To": "rail_terminal_public",
+      "FromPoint": {
+        "X": 42,
+        "Y": 6,
+        "Z": 26.0
+      },
+      "ToPoint": {
+        "X": 42,
+        "Y": 6,
+        "Z": 10.0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.station_ticket_area"
+      ],
+      "SourceRefs": [
+        "P01"
+      ],
+      "TopologyStatus": "observed_facility_membership_exact_floor_unverified",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "rail_terminal_public--underground_connector",
+      "From": "rail_terminal_public",
+      "To": "underground_connector",
+      "FromPoint": {
+        "X": 56.0,
+        "Y": 6,
+        "Z": 0
+      },
+      "ToPoint": {
+        "X": 80.00000000000001,
+        "Y": -4,
+        "Z": 0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [],
+      "SourceRefs": [
+        "P04"
+      ],
+      "TopologyStatus": "supported_public_topology_exact_portal_unverified",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "forecourt_eurasia--underground_connector",
+      "From": "forecourt_eurasia",
+      "To": "underground_connector",
+      "FromPoint": {
+        "X": 129.8,
+        "Y": 0,
+        "Z": 24.0
+      },
+      "ToPoint": {
+        "X": 129.8,
+        "Y": -4,
+        "Z": 4.0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [],
+      "SourceRefs": [
+        "P04",
+        "P09"
+      ],
+      "TopologyStatus": "supported_public_access_topology",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": false,
+      "WallHeight": 1.5,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "underground_connector--underground_shopping_passage",
+      "From": "underground_connector",
+      "To": "underground_shopping_passage",
+      "FromPoint": {
+        "X": 179.60000000000002,
+        "Y": -4,
+        "Z": 0
+      },
+      "ToPoint": {
+        "X": 196.0,
+        "Y": -4,
+        "Z": 0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.underground_connector"
+      ],
+      "SourceRefs": [
+        "P04"
+      ],
+      "TopologyStatus": "supported_public_topology",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "underground_shopping_passage--metro_concourse",
+      "From": "underground_shopping_passage",
+      "To": "metro_concourse",
+      "FromPoint": {
+        "X": 224.0,
+        "Y": -4,
+        "Z": 0
+      },
+      "ToPoint": {
+        "X": 240.0,
+        "Y": -4,
+        "Z": 0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [],
+      "SourceRefs": [
+        "P04",
+        "P09"
+      ],
+      "TopologyStatus": "supported_public_topology",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "metro_concourse--metro_platforms",
+      "From": "metro_concourse",
+      "To": "metro_platforms",
+      "FromPoint": {
+        "X": 268.0,
+        "Y": -4,
+        "Z": 0
+      },
+      "ToPoint": {
+        "X": 278.0,
+        "Y": -8,
+        "Z": 0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.metro_concourse"
+      ],
+      "SourceRefs": [
+        "P03"
+      ],
+      "TopologyStatus": "supported_schematic_vertical_topology",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": false,
+      "Ceiling": true,
+      "WallHeight": 2.7,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    },
+    {
+      "Id": "rolling_stock_metro--metro_platforms",
+      "From": "rolling_stock_metro",
+      "To": "metro_platforms",
+      "FromPoint": {
+        "X": 300,
+        "Y": -8,
+        "Z": 12.5
+      },
+      "ToPoint": {
+        "X": 300,
+        "Y": -8,
+        "Z": 5.0
+      },
+      "ClearWidth": 3.2,
+      "ClearHeight": 2.7,
+      "LinkedDoorEntityIds": [
+        "equipment.metro_platforms",
+        "equipment.rolling_stock_metro"
+      ],
+      "SourceRefs": [],
+      "TopologyStatus": "required_game_connectivity_not_surveyed",
+      "GeometryStatus": "synthetic_design_not_surveyed",
+      "StaticBoarding": true,
+      "Ceiling": false,
+      "WallHeight": 1.5,
+      "ClosureAlong": 0.5,
+      "ClosureBottom": 0,
+      "ClosureHeight": 2.3
+    }
+  ],
+  "Limits": [
+    "Only connector length 99.6 m and width 8.0 m use operator-published context; all placements, heights, portals, vehicle shapes and collision boundaries are synthetic design.",
+    "Vehicle, rail, boarding screen and vertical access structures are provisional adapters using authored unit modules. No new per-object reproduction or visual PASS.",
+    "Vehicle frames are static. Train physics, crowd, thermal simulation and field procedures remain separate.",
+    "Enclosure/closure fields define the synthetic simulation geometry, not surveyed enclosure or leakage properties. Closed indoor walls/roof and open platform/boarding/forecourt boundaries are authored explicitly."
+  ],
+  "GeometrySchemaVersion": 1
+}
