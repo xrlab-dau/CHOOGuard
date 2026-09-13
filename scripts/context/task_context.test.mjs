@@ -55,6 +55,22 @@ test('CLI returns complete scoped JSON, incomplete budgets, and read-only bodies
  assert.equal(small.status,3);assert.equal(JSON.parse(small.stdout).complete,false);assert.match(JSON.parse(small.stdout).continuation,/--section inputs --phase candidate/);
  const body=spawnSync(process.execPath,[cli,'body','--issue','70','--ref','a'.repeat(40)],{encoding:'utf8'});assert.equal(body.status,0);assert.match(body.stdout,/PM 작업 지시/);
 });
+test('code-only source qualifications are loaded and phase-filtered without accepting local bytes',()=>{
+ const root=fs.mkdtempSync(fileURLToPath(new URL('./.packet-test-',import.meta.url)));
+ try{
+  const file='src/code.py',ref='a'.repeat(40),q={ref,digest:{algorithm:'sha256',value:'b'.repeat(64)},url:`https://github.com/xrlab-dau/CHOOGuard/blob/${ref}/${file}`,access:'published',qualification:'source-only',limits:'not acceptance'};
+  fs.mkdirSync(path.join(root,'docs/context/work-orders'),{recursive:true});fs.writeFileSync(path.join(root,'docs/context/work-orders/001.json'),JSON.stringify(order));
+  const canonical={...item,codePointers:[{path:file,symbol:'main',availability:'local_unpublished'},'src/unqualified.py']};
+  fs.writeFileSync(path.join(root,'docs/context/work-graph.json'),JSON.stringify({items:[canonical]}));
+  fs.writeFileSync(path.join(root,'docs/context/source-availability.json'),JSON.stringify({files:{[file]:{qualifiedRefs:[q]},'other.py':{irrelevant:true}}}));
+  const loaded=load(root,1,{section:'sources'});assert.deepEqual(Object.keys(loaded.availability.files),[file]);
+  const view=section(loaded.order,loaded.item,'sources','candidate',loaded.availability),s=view.qualification.find(x=>x.path===file);
+  assert.equal(s.ref,ref);assert.deepEqual(s.digest,q.digest);assert.equal(s.accepted,false);assert.equal(s.qualificationLimits,q.limits);assert.equal(s.selector,'main');
+  assert.equal(view.codePointers[0].ref,ref);assert.equal(view.codePointers[1].ref,null);assert.equal(view.codePointers[1].accepted,false);
+  assert.equal(section(loaded.order,loaded.item,'sources','prepare',loaded.availability).codePointers.length,0);
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
+
 test('input sections never drop a guard lacking a phase shortcut',()=>assert.equal(section(order,item,'inputs','candidate').guards.length,1));
 test('write sections return exact scopes and physical binding rather than counts',()=>assert.equal(section(order,item,'writes','candidate').phaseWriteScopes[0].physicalBinding,item.phaseWriteScopes.candidate[0].physicalBinding));
 test('body is an executable PM work order with scoped reads and no historical status promoted to current',()=>{const b=renderBody(order,item,'a'.repeat(40));assert.match(b,/PM 작업 지시/);assert.match(b,/--section checks --phase candidate/);assert.match(b,/선배정 없음/);assert.match(b,/#2/);assert.doesNotMatch(b,/old capture/);assert.throws(()=>brief(order,'invalid'));});

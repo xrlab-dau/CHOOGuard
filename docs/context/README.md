@@ -2,7 +2,9 @@
 
 [현재 오케스트레이션 계약](orchestration-contract.md) → 해당 이슈의 `work-orders/NNN.json` → 필요한 inputs/writes/checks만 읽습니다.
 
-`node scripts/context/task_context.mjs brief --issue <number>`
+`node scripts/context/task_context.mjs brief --issue <number> --phase prepare`
+
+코드 구조가 필요할 때만 [Graphify 연결 문맥](graphify/README.md)을 issue/phase/symbol로 조회합니다. 작업 필수조건은 PM packet과 inputs/writes/checks가 기준이며 Graphify 탐색 결과는 실행·수용 승인으로 쓰지 않습니다.
 
 PM이 우선순위·선행 산출물·인계를 조율합니다. 개인은 실제 착수 시에만 claim하며 학교 PC·장소·고사양 보유로 배정하지 않습니다. 아래 기존 기술 문서는 필요한 상세와 역사적 근거를 찾는 경로입니다.
 
@@ -20,7 +22,7 @@ PM이 우선순위·선행 산출물·인계를 조율합니다. 개인은 실�
 
 # 팀과 기기 사이에서 이어 읽는 프로젝트 컨텍스트
 
-[프로젝트 그래프](project-context.json)는 결정을 다시 찾고 필요한 파일로 이동하는 지도다. [로컬 인터랙티브 뷰](index.html)는 검색·작업별 필터·기기 선택·관계 탐색을 제공한다. HTML 파일을 브라우저에서 직접 열 수 있으며 서버·외부 스크립트·네트워크 조회가 필요 없다. 생성 당시의 스냅샷이므로 현재 해시는 CLI로 확인한다.
+[프로젝트 그래프](project-context.json)는 결정을 다시 찾고 필요한 파일로 이동하는 지도다. [로컬 PM 작업 뷰](index.html)는 검색·작업 선택·관계 탐색을 제공한다. 기기 선택으로 작업을 배정하지 않는다. HTML 파일을 브라우저에서 직접 열 수 있으며 서버·외부 스크립트·네트워크 조회가 필요 없다. 생성 당시의 스냅샷이므로 현재 해시는 CLI로 확인한다.
 
 ## 시작
 

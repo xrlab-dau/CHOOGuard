@@ -86,6 +86,17 @@ test('ontology source nodes retain exact qualification limits, not only a digest
  assert.equal(source.qualification,q.qualification);assert.equal(source.qualificationLimits,q.limits);assert.equal(source.accepted,false);assert.deepEqual(source.qualifiedRefs,[q]);
 });
 
+test('code pointers participate in source ontology and declared prepare context',()=>{
+ const g=read('docs/context/work-graph.json'),a=read('docs/context/source-availability.json'),p=read('docs/context/work-orders/policy.json');
+ const x=g.items.find(x=>x.number===91),file='scripts/dev/foundation_load_metrics.py';
+ const c=x.codePointers.find(c=>c.path===file);c.readWhen='prepare';
+ const result=builder.buildWorkOrders(g,a,p),order=result.orders.find(x=>x.issue===91),s=order.minimumContext.find(x=>x.path===file);
+ assert.ok(s);assert.equal(s.accepted,false);assert.equal(s.availability,'qualified_ref');assert.equal(s.selector,c.symbol);
+ const work=result.index['@graph'].find(x=>x['@id']==='work:91');
+ const selected=work.contextSelections.find(x=>x.selector===c.symbol);assert.ok(selected);
+ assert.ok(result.index['@graph'].some(x=>x['@id']===selected.usesSource&&x.path===file&&x.ref===s.ref&&x.accepted===false));
+});
+
 test('relationship projection preserves all edge phase and guard metadata',()=>{
  assert.equal(typeof builder.relationshipNode,'function');
  const edge={relation:'context',from:'issue.1',to:'issue.2',consumerPhase:'candidate',producerPhase:'accept',guard:{predicate:'selected'},artifact:'artifact:2:exact:accept',reason:'scoped'};

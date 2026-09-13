@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {enrichSource} from './build_work_orders.mjs';
+import {enrichSource,normalizeSource,sourceSelections,sourceInPhase} from './build_work_orders.mjs';
 export const SECTION_FIELDS={relations:[],inputs:['number','hardPredecessors','inputs','oneOfInputs','guardPredicates','inputQualifiers'],writes:['number','phaseWriteScopes','artifactOutputBindings','resourceBindings','requiredLocks'],checks:['checks','acceptance','checkEvidenceMappings','stopConditions'],outputs:['outputs'],sources:['context','codePointers'],history:['truth','board','reviewNotes']};
 export const PHASE_NAMES={prepare:'준비',candidate:'구현·검증',accept:'완료 판정'};
 const uniq=a=>[...new Set(a)];
@@ -17,7 +17,11 @@ export function section(order,item,name,phase,availability={files:{}}){
  if(name==='writes')return {issue:item.number,phase:phase??'all',phaseWriteScopes:phase?item.phaseWriteScopes[phase]:item.phaseWriteScopes,artifactOutputBindings:phase?item.artifactOutputBindings[phase]:item.artifactOutputBindings,resources:phase?item.resourceBindings.filter(x=>x.phases.includes(phase)):item.resourceBindings,requiredLocks:item.requiredLocks,rule:'These are boundaries, not acquired locks. Record the actual branch, paths and shared mutable-resource claim before editing. Do not touch another current claim.'};
  if(name==='checks')return {checks:chosen(item.checks),acceptance:item.acceptance,checkEvidenceMappings:item.checkEvidenceMappings,stopConditions:item.stopConditions,rule:'Read and execute all required checks for the selected phase. Report failed/unrun cases honestly. No unlimited review loop or automatic closure.'};
  if(name==='outputs')return chosen(item.outputs);
- if(name==='sources')return {sources:item.context.filter(x=>!phase||x.readWhen===phase||Array.isArray(x.readWhen)&&x.readWhen.includes(phase)),codePointers:item.codePointers,qualification:item.context.filter(x=>!phase||x.readWhen===phase||Array.isArray(x.readWhen)&&x.readWhen.includes(phase)).map(x=>enrichSource(x,availability)),rule:'Published references remain tied to their captured ref. For local_unpublished sources use the exact qualified provider/path/ref/digest/access, never path presence alone.'};
+ if(name==='sources'){
+  const selected=xs=>(xs??[]).map(normalizeSource).filter(x=>sourceInPhase(x,phase));
+  const sources=selected(item.context),codePointers=selected(item.codePointers).map(x=>enrichSource(x,availability));
+  return {sources,codePointers,qualification:[...sources.map(x=>enrichSource(x,availability)),...codePointers],rule:'Published references remain tied to their captured ref. For local_unpublished sources use the exact qualified provider/path/ref/digest/access, never path presence alone. Code pointers without a declared phase are candidate-only; qualification is never acceptance.'};
+ }
  if(name==='history')return {historicalOnly:true,truth:item.truth,capturedBoard:item.board,reviewNotes:item.reviewNotes,existingClaim:order.assignment.existingClaim,rule:'History is evidence, not a current assignment, environment restriction, completed test, or automatic instruction.'};
  throw Error('Unknown section: '+name);
 }
@@ -45,7 +49,7 @@ export function load(root,number,{section:name=null,body=false}={}){
  const selected=Object.fromEntries(fields.filter(k=>Object.hasOwn(item,k)).map(k=>[k,item[k]]));
  if(name==='sources'){
   const source=read('docs/context/source-availability.json');
-  return {order,item:selected,availability:{snapshot:source.snapshot,files:Object.fromEntries(item.context.filter(c=>Object.hasOwn(source.files,c.path)).map(c=>[c.path,source.files[c.path]]))}};
+  return {order,item:selected,availability:{snapshot:source.snapshot,files:Object.fromEntries(sourceSelections(item).filter(c=>Object.hasOwn(source.files,c.path)).map(c=>[c.path,source.files[c.path]]))}};
  }
  return {order,item:selected};
 }
