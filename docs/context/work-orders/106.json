@@ -15,7 +15,7 @@
     "existingClaim": null
   },
   "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
-  "directive": "#10의 제작 경로 결정을 받은 뒤 기존 생성 자산 이력을 보존하면서 핵심 차량·문·설비·맵의 정제·통합 후보를 제작하세요.",
+  "directive": "외부 생성 제작 지시는 현재 보류다. 기존 생성 자산·권위 충돌·실패 이력을 보존하고, 공개 층별 도면·안내지도 기반 Native 작업과 구분된 재개 범위를 PM이 명시하기 전 외부 제작을 실행하지 않는다.",
   "parent": 54,
   "children": [],
   "requiredOutputPaths": [
@@ -32,39 +32,43 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:sc01-explicit-method-decision:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:10:sc01-explicit-method-decision:accept"
+        "reason": "External method execution only; inventory/preservation preparation remains allowed."
       },
       {
         "issue": 74,
+        "artifact": "artifact:74:pilot-manifest:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:74:pilot-manifest:candidate"
+        "reason": "Consume only 2회export/hash·축/pivot·LOD/재질비교"
       },
       {
         "issue": 82,
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+        "reason": "Consume only Bounded synthetic 13-region/12-portal geometry/profile+builder+collider inputs with digest scope. Does not require future #79-81 art bundles or final #82 acceptance."
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Consume only Selected Native publishable source paths, exact digest manifest and independently accessible remote ref; never all-untracked cleanup; authorization and clean checkout verification only for selected scope."
       },
       {
         "issue": 107,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual independent ART review verdict for this selected candidate digest before producer visual acceptance; producer candidate remains reviewable while issue open."
       }
     ],
     "successors": [],
     "oneOfGroups": [],
     "parallelCandidates": [
-      107,
       100,
       99,
       57,
@@ -118,12 +122,14 @@
       68,
       144,
       146,
-      65,
       64,
       63,
+      149,
       62,
+      150,
+      151,
+      152,
       58,
-      55,
       52,
       46,
       45,
@@ -149,6 +155,13 @@
       15,
       14
     ],
+    "conditionalCandidates": [
+      55,
+      65,
+      107
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -159,6 +172,7 @@
       "readWhen": "prepare",
       "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
       "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -167,7 +181,11 @@
         "value": "8a902daa76e100d336b56148fff59baa01d13c80"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/object-references.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

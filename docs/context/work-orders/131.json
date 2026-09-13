@@ -33,89 +33,103 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Native incident/source/WorldCommand contract only, no method decision."
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 14,
+        "artifact": "artifact:14:M0-02a-source-policy:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:14:M0-02a-source-policy:accept"
+        "reason": "Consume only sourceType/rating/allowedClaims/forbiddenClaims/uncertainty/license fields complete"
       },
       {
         "issue": 15,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       }
     ],
     "successors": [
       {
         "issue": 60,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 72,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 72,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 130,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 130,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 132,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 132,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 133,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 133,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       }
     ],
     "oneOfGroups": [],
@@ -139,6 +153,10 @@
       143,
       144,
       146,
+      149,
+      150,
+      151,
+      152,
       107,
       106,
       100,
@@ -200,6 +218,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -208,7 +229,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/foundation-simulation-profile.json",
           "lock:data:simulation-profile",
           "path:foundation/world/foundation-simulation-profile.json|foundation/world/foundation-simulation-profile.json"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/foundation-simulation-profile.json",
+            "lock:data:simulation-profile"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/foundation-simulation-profile.json",
+            "lock:data:simulation-profile",
+            "path:foundation/world/foundation-simulation-profile.json|foundation/world/foundation-simulation-profile.json"
+          ]
+        }
       },
       {
         "issue": 138,
@@ -216,7 +248,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs",
           "lock:data:simulation-profile",
           "path:Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs|Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs",
+            "lock:data:simulation-profile"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs",
+            "lock:data:simulation-profile",
+            "path:Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs|Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs"
+          ]
+        }
       }
     ]
   },

@@ -32,33 +32,38 @@
     "predecessors": [
       {
         "issue": 17,
+        "artifact": "artifact:17:M1-01-session-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:17:M1-01-session-contract:candidate"
+        "reason": "Consume only required session fields and lifecycle transitions are machine-readable"
       },
       {
         "issue": 21,
+        "artifact": "artifact:21:M1-05-record-schema:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:21:M1-05-record-schema:candidate"
+        "reason": "Required failure/cancel/lease record schema candidate."
       },
       {
         "issue": 17,
+        "artifact": "artifact:17:M1-01-session-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:17:M1-01-session-contract:accept"
+        "reason": "Consume only required session fields and lifecycle transitions are machine-readable"
       },
       {
         "issue": 18,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 21,
+        "artifact": "artifact:21:M1-05-record-schema:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:21:M1-05-record-schema:candidate"
+        "reason": "Consume only schema distinguishes raw/redacted/public-manifest/approval and unknown"
       }
     ],
     "successors": [],
@@ -148,8 +153,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -160,6 +172,7 @@
       "readWhen": "prepare",
       "why": "session handoff/lease/recovery and M1-05 record consumption을 증명한다.",
       "limits": "실제 agent session 결과는 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -168,7 +181,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

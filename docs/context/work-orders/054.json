@@ -55,92 +55,109 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:10:foundation-contract-v2:accept"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:27:authority-receipt:accept"
+        "reason": "Consume only 신원/직무/거리/가림/동시조작/관측·개인pause·TLS 결과"
       },
       {
         "issue": 35,
+        "artifact": "artifact:35:fmp10-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+        "reason": "Consume only #134~#136을 통합한 실제 PlayMode 결과, report/ack/handoff/instructor command evidence와 failed/blocked limits."
       },
       {
         "issue": 59,
+        "artifact": "artifact:59:FMP-07-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:59:FMP-07-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 60,
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 82,
+        "artifact": "artifact:82:connected-world-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:82:connected-world-profile:accept"
+        "reason": "Consume only 13구역/12연결 기존 ID를 유지한 승인된 통합"
       },
       {
         "issue": 88,
+        "artifact": "artifact:88:fmp11-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:88:fmp11-integration-evidence:accept"
+        "reason": "Consume only route/mode/observation 실제 test result, render evidence, source/build hash 및 limits."
       },
       {
         "issue": 91,
+        "artifact": "artifact:91:fmp12-acceptance-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:91:fmp12-acceptance-evidence:accept"
+        "reason": "Consume only two 60-minute receipts, impairment/recovery evidence, actual threshold comparison, failures and limits."
       },
       {
         "issue": 92,
+        "artifact": "artifact:92:fmp13-delivery-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:92:fmp13-delivery-evidence:accept"
+        "reason": "Consume only candidate platform build outputs plus distinct-developer reproduction receipt; each platform/result/limit is explicit."
       },
       {
         "issue": 99,
+        "artifact": "artifact:99:recovery-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-contract:accept"
+        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
       },
       {
         "issue": 100,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       },
       {
         "issue": 101,
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 102,
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 107,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual asset review instance, not this planning audit."
       }
     ],
     "successors": [],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

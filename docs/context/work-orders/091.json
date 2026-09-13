@@ -20,7 +20,8 @@
   "children": [
     140,
     141,
-    142
+    142,
+    152
   ],
   "requiredOutputPaths": [
     "docs/evidence/foundation/FMP-12-acceptance.json"
@@ -34,105 +35,174 @@
     "predecessors": [
       {
         "issue": 92,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "#91 actual measurement binds the exact frozen #92 candidate digest before execution and remains independent of #144."
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #91 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:91:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/evidence/foundation/2026-09-09-simulation-components.json",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "scripts/dev/foundation_load_metrics.py",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "scripts/dev/run_foundation_load.py",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 35,
+        "artifact": "artifact:35:fmp10-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+        "reason": "Consume only #134~#136을 통합한 실제 PlayMode 결과, report/ack/handoff/instructor command evidence와 failed/blocked limits."
       },
       {
         "issue": 59,
+        "artifact": "artifact:59:FMP-07-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:59:FMP-07-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 60,
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 88,
+        "artifact": "artifact:88:fmp11-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:88:fmp11-integration-evidence:accept"
+        "reason": "Consume only route/mode/observation 실제 test result, render evidence, source/build hash 및 limits."
       },
       {
         "issue": 92,
+        "artifact": "artifact:92:frozen-release-candidate:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:92:frozen-release-candidate:candidate"
+        "reason": "#91 independently verifies its own acceptance evidence against the exact frozen #92 candidate digest; it does not wait for #144."
       },
       {
         "issue": 100,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       },
       {
         "issue": 101,
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 102,
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+        "reason": "Consume only 요구별 child output/evidence/미충족 항목의 집계만 저장. runtime 수정 없음"
       },
       {
         "issue": 140,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 141,
+        "artifact": "artifact:141:fmp12b-distributed-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:141:fmp12b-distributed-receipt:accept"
+        "reason": "Consume only actual dispersed 3600-second run result or capability-blocked record."
       },
       {
         "issue": 141,
+        "artifact": "artifact:141:fmp12b-gathered-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:141:fmp12b-gathered-receipt:accept"
+        "reason": "Consume only actual gathered 3600-second run result or capability-blocked record."
       },
       {
         "issue": 142,
+        "artifact": "artifact:142:fmp12c-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:142:fmp12c-receipt:accept"
+        "reason": "Consume only actual impairment/action/voice/traffic receipt or capability-blocked record."
+      },
+      {
+        "issue": 152,
+        "artifact": "artifact:152:fixture-discovery-proof:accept",
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "reason": "통합 수용은 70 skipped 진단·필수 회귀 실행 증명을 소비하며 과거 전체/분리·Voice89 결과로 대체하지 않는다."
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:91:fmp12-acceptance-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:91:fmp12-acceptance-evidence:accept"
+        "reason": "Consume only two 60-minute receipts, impairment/recovery evidence, actual threshold comparison, failures and limits."
       },
       {
         "issue": 92,
+        "artifact": "artifact:91:fmp12-acceptance-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:91:fmp12-acceptance-evidence:accept"
+        "reason": "Consume only two 60-minute receipts, impairment/recovery evidence, actual threshold comparison, failures and limits."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

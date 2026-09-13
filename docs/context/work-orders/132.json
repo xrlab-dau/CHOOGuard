@@ -31,65 +31,75 @@
     "predecessors": [
       {
         "issue": 99,
+        "artifact": "artifact:99:recovery-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:99:recovery-contract:candidate"
+        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 125,
+        "artifact": "artifact:125:world-crowd-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:125:world-crowd-fixture:candidate"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 130,
+        "artifact": "artifact:130:train-fire-integration:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:130:train-fire-integration:candidate"
+        "reason": "Consume only 화재/고장/비상정차→운행입력→동일frame열/군중→복구의tick/state 결과"
       },
       {
         "issue": 131,
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       },
       {
         "issue": 99,
+        "artifact": "artifact:99:recovery-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-contract:accept"
+        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
       },
       {
         "issue": 125,
+        "artifact": "artifact:125:world-crowd-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:125:world-crowd-fixture:accept"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 130,
+        "artifact": "artifact:130:train-fire-integration:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:130:train-fire-integration:accept"
+        "reason": "Consume only 화재/고장/비상정차→운행입력→동일frame열/군중→복구의tick/state 결과"
       },
       {
         "issue": 131,
+        "artifact": "artifact:131:reviewed-incident-catalog:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+        "reason": "Consume only 6종/7기존변형대응·검토/미검토·source/applicability·synthetic구분"
       }
     ],
     "successors": [
       {
         "issue": 60,
+        "artifact": "artifact:132:concurrent-incident-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:132:concurrent-incident-receipt:accept"
+        "reason": "Consume only 최소3허용조합의tick별설비/통로/NPC영향·독립복구·연속훈련·금지조합거부"
       }
     ],
     "oneOfGroups": [],
@@ -113,6 +123,10 @@
       144,
       119,
       146,
+      149,
+      150,
+      151,
+      152,
       107,
       106,
       100,
@@ -173,6 +187,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": [
       {
@@ -181,7 +198,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
           "lock:runtime:world-simulation",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+          ]
+        }
       },
       {
         "issue": 138,
@@ -189,7 +217,18 @@
           "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
           "lock:runtime:world-simulation",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
-        ]
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation"
+          ],
+          "accept": [
+            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+            "lock:runtime:world-simulation",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+          ]
+        }
       }
     ]
   },

@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "@context": "./ontology.jsonld",
-  "@id": "work:136",
+  "@id": "work:150",
   "@type": "WorkItem",
-  "issue": 136,
-  "workId": "FMP-10c",
-  "domainCode": "UX",
-  "title": "[FMP-10c] 교관 제어 화면과 권한 초과 시험",
+  "issue": 150,
+  "workId": "FMP-12a-R2",
+  "domainCode": "QA",
+  "title": "[FMP-12a-R2] F(n)·U(n) Unity scheduler와 실제 metrics 결속",
   "orchestrator": "role:pm",
   "executionMode": "A member and their LLM execute this bounded task.",
   "assignment": {
@@ -15,12 +15,12 @@
     "existingClaim": null
   },
   "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
-  "directive": "NetworkFieldRuntime에 교관 입장·일시정지·재개·복구 승인 화면을 연결하고 권한 초과 거부와 교관 이탈 동작을 검증하세요.",
-  "parent": 35,
+  "directive": "F(n)/U(n)을 실제 Unity callback/scheduler와 metrics 파이프라인에 결속하고 새로운 coupled Player로 2~4명(3명 포함) 실제 protocol run 하나 이상을 증명한다.",
+  "parent": 140,
   "children": [],
   "requiredOutputPaths": [
-    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10cInstructorUiTests.cs",
-    "docs/context/projections/FMP-10c-recovery-decision.json"
+    "docs/context/contracts/engine-metrics-binding.json",
+    "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json"
   ],
   "flow": {
     "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
@@ -30,79 +30,85 @@
   "relations": {
     "predecessors": [
       {
-        "issue": 99,
-        "artifact": "artifact:99:recovery-contract:candidate",
-        "consumerPhase": "candidate",
-        "producerPhase": "candidate",
-        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
-      },
-      {
         "issue": 120,
-        "artifact": "artifact:120:foundation-published-source:accept",
-        "consumerPhase": "candidate",
-        "producerPhase": "accept",
-        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
-      },
-      {
-        "issue": 134,
-        "artifact": "artifact:134:fmp10a-playmode-test:candidate",
+        "artifact": "artifact:120:source-only-access-manifest:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "reason": "Consume only 보고·ack·인계 UI가 authorized response만 표시한 test result."
+        "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
       },
       {
-        "issue": 99,
-        "artifact": "artifact:99:recovery-receipt:accept",
-        "consumerPhase": "accept",
-        "producerPhase": "accept",
-        "reason": "Consume only 각 fault point 전후 정체성/관측/인솔/사건/열차/승인원장 비교"
+        "issue": 149,
+        "artifact": "artifact:149:load-causal-contract:candidate",
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "reason": "F(n)/U(n) engine binding 구현은 portable 관측/schema/role/deadline 계약 후보를 소비한다. #140 rehearsal 영수증을 계약으로 사용하지 않는다."
       },
       {
-        "issue": 134,
-        "artifact": "artifact:134:fmp10a-render-evidence:accept",
+        "issue": 149,
+        "artifact": "artifact:149:load-causal-corpus:candidate",
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "reason": "engine binding 후보는 고정된 정상/실패 causal corpus 기대값과 매핑한다. candidate corpus는 실제 실행 수용이 아니다."
+      },
+      {
+        "issue": 149,
+        "artifact": "artifact:149:load-causal-corpus:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "reason": "Consume only source hash와 화면/렌더 관측 한계를 기록."
+        "reason": "실제 engine/protocol run은 #149의 성공한 executed causal corpus가 선행한다."
+      },
+      {
+        "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "reason": "실제 2~4 protocol run에 새 coupled Player의 source/build/data/service digest와 positive launch가 있는 runnable payload가 필요하다. build-attempt index는 부적격이다."
       }
     ],
     "successors": [
       {
-        "issue": 35,
-        "artifact": "artifact:136:fmp10c-playmode-test:accept",
-        "consumerPhase": "accept",
+        "issue": 143,
+        "artifact": "artifact:150:engine-metrics-binding:candidate",
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "reason": "새 coupled Player 빌드는 #150 callback/scheduler 결속 후보를 selected source digest에 포함한다. #150 실제 run acceptance를 빌드 선행으로 요구하지 않는다."
+      },
+      {
+        "issue": 140,
+        "artifact": "artifact:150:engine-metrics-run:accept",
+        "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "reason": "Consume only instructor-only UI action/negative command scenarios."
+        "reason": "F(n)/U(n) 실제 callback/protocol 결속 증명 뒤 #140 계측 리허설을 진행한다."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [
-      135,
-      139,
-      132,
-      140,
-      131,
-      141,
-      130,
-      142,
-      129,
-      143,
-      128,
-      144,
-      127,
-      126,
-      146,
-      125,
-      123,
-      149,
-      122,
-      150,
-      121,
       151,
       152,
+      146,
+      139,
+      138,
+      137,
+      136,
+      135,
+      134,
+      133,
+      132,
+      131,
+      130,
+      129,
+      128,
+      127,
+      126,
+      125,
+      123,
+      122,
+      121,
       119,
       107,
       106,
       100,
+      99,
       94,
       93,
       90,
@@ -148,8 +154,10 @@
       31,
       29,
       28,
+      27,
       26,
       25,
+      24,
       23,
       22,
       21,
@@ -159,7 +167,8 @@
       17,
       16,
       15,
-      14
+      14,
+      10
     ],
     "conditionalCandidates": [],
     "parallelPhase": "candidate",
@@ -169,100 +178,17 @@
       {
         "issue": 27,
         "reasons": [
-          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-          "lock:runtime:network-field",
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
         ],
         "phases": {
-          "candidate": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field"
-          ],
+          "candidate": [],
           "accept": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field",
             "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
           ]
         }
       },
       {
         "issue": 133,
-        "reasons": [
-          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-          "lock:runtime:network-field",
-          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ],
-        "phases": {
-          "candidate": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field"
-          ],
-          "accept": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field",
-            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-          ]
-        }
-      },
-      {
-        "issue": 134,
-        "reasons": [
-          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-          "lock:runtime:network-field",
-          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ],
-        "phases": {
-          "candidate": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field"
-          ],
-          "accept": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field",
-            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-          ]
-        }
-      },
-      {
-        "issue": 137,
-        "reasons": [
-          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-          "lock:runtime:network-field",
-          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ],
-        "phases": {
-          "candidate": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field"
-          ],
-          "accept": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field",
-            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-          ]
-        }
-      },
-      {
-        "issue": 138,
-        "reasons": [
-          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-          "lock:runtime:network-field",
-          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-        ],
-        "phases": {
-          "candidate": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field"
-          ],
-          "accept": [
-            "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-            "lock:runtime:network-field",
-            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
-          ]
-        }
-      },
-      {
-        "issue": 150,
         "reasons": [
           "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
         ],
@@ -272,16 +198,106 @@
             "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
           ]
         }
+      },
+      {
+        "issue": 134,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
+      },
+      {
+        "issue": 136,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
+      },
+      {
+        "issue": 137,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
+      },
+      {
+        "issue": 138,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs"
+          ]
+        }
+      },
+      {
+        "issue": 140,
+        "reasons": [
+          "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+          ]
+        }
+      },
+      {
+        "issue": 149,
+        "reasons": [
+          "lock:repo-path:scripts/dev/foundation_load_metrics.py",
+          "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+        ],
+        "phases": {
+          "candidate": [
+            "lock:repo-path:scripts/dev/foundation_load_metrics.py"
+          ],
+          "accept": [
+            "lock:repo-path:scripts/dev/foundation_load_metrics.py",
+            "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+          ]
+        }
+      },
+      {
+        "issue": 152,
+        "reasons": [
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**",
+            "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/**"
+          ]
+        }
       }
     ]
   },
   "minimumContext": [],
   "readMore": {
-    "sources": "node scripts/context/task_context.mjs brief --issue 136 --section sources --phase prepare",
-    "inputs": "node scripts/context/task_context.mjs brief --issue 136 --section inputs --phase candidate",
-    "writes": "node scripts/context/task_context.mjs brief --issue 136 --section writes --phase candidate",
-    "checks": "node scripts/context/task_context.mjs brief --issue 136 --section checks --phase candidate",
-    "history": "node scripts/context/task_context.mjs brief --issue 136 --section history"
+    "sources": "node scripts/context/task_context.mjs brief --issue 150 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 150 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 150 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 150 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 150 --section history"
   },
   "handoff": [
     "workId and phase",
@@ -293,7 +309,7 @@
   ],
   "technicalContract": {
     "path": "docs/context/work-graph.json",
-    "selector": "items[number=136]",
+    "selector": "items[number=150]",
     "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
   },
   "sourceSnapshot": {

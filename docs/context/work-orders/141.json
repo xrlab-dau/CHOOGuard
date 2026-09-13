@@ -31,89 +31,103 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 140,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "#141 actual-run candidate consumes the success-qualified runnable payload selected for the #140 rehearsal; an attempt/failure index is not executable availability."
       },
       {
         "issue": 35,
+        "artifact": "artifact:35:fmp10-integration-evidence:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:35:fmp10-integration-evidence:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 59,
+        "artifact": "artifact:59:FMP-07-acceptance-rollup:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:59:FMP-07-acceptance-rollup:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 60,
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:60:FMP-09-acceptance-rollup:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 88,
+        "artifact": "artifact:88:fmp11-integration-evidence:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:88:fmp11-integration-evidence:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 100,
+        "artifact": "artifact:100:voice-receipt:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:100:voice-receipt:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 101,
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:101:FMP-06-acceptance-rollup:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 102,
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:102:FMP-08-acceptance-rollup:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 140,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "#141 acceptance remains bound to the runnable payload used by the executed 60-minute runs, never the attempt/failure index."
       }
     ],
     "successors": [
       {
         "issue": 91,
+        "artifact": "artifact:141:fmp12b-distributed-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:141:fmp12b-distributed-receipt:accept"
+        "reason": "Consume only actual dispersed 3600-second run result or capability-blocked record."
       },
       {
         "issue": 91,
+        "artifact": "artifact:141:fmp12b-gathered-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:141:fmp12b-gathered-receipt:accept"
+        "reason": "Consume only actual gathered 3600-second run result or capability-blocked record."
       }
     ],
     "oneOfGroups": [],
@@ -202,6 +216,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

@@ -31,65 +31,75 @@
     "predecessors": [
       {
         "issue": 14,
+        "artifact": "artifact:14:M0-02a-source-policy:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:14:M0-02a-source-policy:candidate"
+        "reason": "Consume only sourceType/rating/allowedClaims/forbiddenClaims/uncertainty/license fields complete"
       },
       {
         "issue": 14,
+        "artifact": "artifact:14:M0-02a-source-policy:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:14:M0-02a-source-policy:accept"
+        "reason": "Consume only sourceType/rating/allowedClaims/forbiddenClaims/uncertainty/license fields complete"
       }
     ],
     "successors": [
       {
         "issue": 28,
+        "artifact": "artifact:15:M0-02b-use-boundary:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:15:M0-02b-use-boundary:candidate"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 28,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 29,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 62,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 71,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 93,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 119,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       },
       {
         "issue": 131,
+        "artifact": "artifact:15:M0-02b-use-boundary:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+        "reason": "Consume only 자료별 use/transform/redistribute/privacy/restricted-metadata 판정과 reviewer state"
       }
     ],
     "oneOfGroups": [],
@@ -178,8 +188,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -190,6 +207,7 @@
       "readWhen": "prepare",
       "why": "구 legacy 승인 DoD와 현재 대체 범위를 증명한다.",
       "limits": "실제 법률/기관 승인을 대신하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -198,7 +216,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

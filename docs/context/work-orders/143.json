@@ -32,71 +32,103 @@
     "predecessors": [
       {
         "issue": 24,
+        "artifact": "artifact:24:pinned-materialization-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+        "reason": "Pinned dependency/materialization contract, not #100 voice acceptance."
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-protocol:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:27:authority-protocol:candidate"
+        "reason": "Consume only 두 실제 프로세스 및 교관의 공유 승인 경로"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 24,
+        "artifact": "artifact:24:unity-package-baseline:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:unity-package-baseline:candidate"
+        "reason": "Consume only 6000.3.23f1 프로젝트와 NGO2.13.2/UTP2.7.4/LiveKitSDK2.0.0 및 server1.13.6 계약 정합"
+      },
+      {
+        "issue": 150,
+        "artifact": "artifact:150:engine-metrics-binding:candidate",
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "reason": "새 coupled Player 빌드는 #150 callback/scheduler 결속 후보를 selected source digest에 포함한다. #150 실제 run acceptance를 빌드 선행으로 요구하지 않는다."
+      },
+      {
+        "issue": 151,
+        "artifact": "artifact:151:staging-ownership-proof:accept",
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "reason": "LiveKit 서비스가 포함된 후보 전달 전에 P0 staging 소유권 proof가 필요하다. 실패/미검증 backend는 fail-closed를 유지한다."
       }
     ],
     "successors": [
       {
         "issue": 92,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "Freeze an exact success-qualified runnable payload/source/build/data/service manifest. Attempt or failure evidence cannot produce the frozen release candidate."
       },
       {
         "issue": 92,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:accept"
+        "reason": "Final delivery join requires success-qualified runnable payload, not a build-attempt/failure report."
       },
       {
         "issue": 140,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "The actual 2-4 client rehearsal candidate requires a success-qualified obtainable runnable payload. Build-attempt, failure, blocked-target, source-only, and script-only records are ineligible."
       },
       {
         "issue": 141,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "#141 actual-run candidate consumes the success-qualified runnable payload selected for the #140 rehearsal; an attempt/failure index is not executable availability."
       },
       {
         "issue": 141,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "#141 acceptance remains bound to the runnable payload used by the executed 60-minute runs, never the attempt/failure index."
       },
       {
         "issue": 142,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "#142 actual-run candidate consumes the success-qualified runnable payload selected for the #140 rehearsal; an attempt/failure index is not executable availability."
       },
       {
         "issue": 144,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "Independent reproduction executes only a success-qualified obtainable selected payload. Attempt/failure records and the unsupported #27 diagnostic label are not runnable."
+      },
+      {
+        "issue": 150,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "reason": "실제 2~4 protocol run에 새 coupled Player의 source/build/data/service digest와 positive launch가 있는 runnable payload가 필요하다. build-attempt index는 부적격이다."
       }
     ],
     "oneOfGroups": [],
@@ -108,6 +140,7 @@
       136,
       135,
       134,
+      152,
       133,
       132,
       131,
@@ -183,6 +216,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

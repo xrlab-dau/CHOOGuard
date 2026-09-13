@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
   "@context": "./ontology.jsonld",
-  "@id": "work:142",
+  "@id": "work:151",
   "@type": "WorkItem",
-  "issue": 142,
-  "workId": "FMP-12c",
+  "issue": 151,
+  "workId": "FMP-04-R1",
   "domainCode": "QA",
-  "title": "[FMP-12c] RTT 100ms·손실 1% 열화 시험",
+  "title": "[FMP-04-R1] Voice config B-F1 staging 소유권 확인 전 쓰기·게시 차단",
   "orchestrator": "role:pm",
   "executionMode": "A member and their LLM execute this bounded task.",
   "assignment": {
@@ -15,12 +15,11 @@
     "existingClaim": null
   },
   "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
-  "directive": "실제 protocol·음성 경로에 RTT 100ms·손실 1%를 적용하고 행동·음성 p95, 트래픽, 재전송, jitter와 복구 결과를 측정하세요.",
-  "parent": 91,
+  "directive": "P0: staging 생성→pin 사이 pathname 교체에도 생성 소유권 증명 전 credential 쓰기·publication을 차단하고 exact-owned rollback과 성공 게시 경계를 증명한다.",
+  "parent": 100,
   "children": [],
   "requiredOutputPaths": [
-    "scripts/dev/run_fmp12c_impairment.py",
-    "docs/evidence/foundation/FMP-12c-rtt100-loss1.json"
+    "docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json"
   ],
   "flow": {
     "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
@@ -30,71 +29,37 @@
   "relations": {
     "predecessors": [
       {
-        "issue": 100,
-        "artifact": "artifact:100:voice-run-contract:candidate",
-        "consumerPhase": "candidate",
-        "producerPhase": "candidate",
-        "reason": "Consume only 비밀값 없는 자체호스팅설정 및 stop/reconnect/권한 동작"
-      },
-      {
         "issue": 120,
-        "artifact": "artifact:120:foundation-published-source:accept",
-        "consumerPhase": "candidate",
-        "producerPhase": "accept",
-        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
-      },
-      {
-        "issue": 140,
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
+        "artifact": "artifact:120:source-only-access-manifest:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
-      },
-      {
-        "issue": 143,
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
-        "consumerPhase": "candidate",
-        "producerPhase": "candidate",
-        "reason": "#142 actual-run candidate consumes the success-qualified runnable payload selected for the #140 rehearsal; an attempt/failure index is not executable availability."
-      },
-      {
-        "issue": 99,
-        "artifact": "artifact:99:recovery-receipt:accept",
-        "consumerPhase": "accept",
-        "producerPhase": "accept",
-        "reason": "Consume only 각 fault point 전후 정체성/관측/인솔/사건/열차/승인원장 비교"
-      },
-      {
-        "issue": 100,
-        "artifact": "artifact:100:voice-receipt:accept",
-        "consumerPhase": "accept",
-        "producerPhase": "accept",
-        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
-      },
-      {
-        "issue": 140,
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept",
-        "consumerPhase": "accept",
-        "producerPhase": "accept",
-        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
+        "reason": "PR153 selected source-only access manifest: every selected ref/path/SHA256 must be reachable and match. Published source access is not #120 accepted checkout compile or runtime acceptance."
       }
     ],
     "successors": [
       {
-        "issue": 91,
-        "artifact": "artifact:142:fmp12c-receipt:accept",
-        "consumerPhase": "accept",
+        "issue": 100,
+        "artifact": "artifact:151:staging-ownership-proof:accept",
+        "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "reason": "Consume only actual impairment/action/voice/traffic receipt or capability-blocked record."
+        "reason": "실제 LiveKit 마이크/PTT 준비에 P0 소유권 미입증 credential/publication 차단 증명이 선행한다. Python24/Voice89로 대체하지 않는다."
+      },
+      {
+        "issue": 143,
+        "artifact": "artifact:151:staging-ownership-proof:accept",
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "reason": "LiveKit 서비스가 포함된 후보 전달 전에 P0 staging 소유권 proof가 필요하다. 실패/미검증 backend는 fail-closed를 유지한다."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [
-      141,
-      144,
+      150,
+      152,
+      149,
+      146,
       139,
       138,
-      146,
       137,
       136,
       135,
@@ -160,8 +125,10 @@
       31,
       29,
       28,
+      27,
       26,
       25,
+      24,
       23,
       22,
       21,
@@ -171,21 +138,39 @@
       17,
       16,
       15,
-      14
+      14,
+      10
     ],
     "conditionalCandidates": [],
     "parallelPhase": "candidate",
     "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
-    "conflicts": []
+    "conflicts": [
+      {
+        "issue": 100,
+        "reasons": [
+          "path:services/livekit/configure_local.py|services/livekit/",
+          "path:services/livekit/test_configure_local.py|services/livekit/",
+          "path:services/livekit/README.md|services/livekit/"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:services/livekit/configure_local.py|services/livekit/",
+            "path:services/livekit/test_configure_local.py|services/livekit/",
+            "path:services/livekit/README.md|services/livekit/"
+          ]
+        }
+      }
+    ]
   },
   "minimumContext": [],
   "readMore": {
-    "sources": "node scripts/context/task_context.mjs brief --issue 142 --section sources --phase prepare",
-    "inputs": "node scripts/context/task_context.mjs brief --issue 142 --section inputs --phase candidate",
-    "writes": "node scripts/context/task_context.mjs brief --issue 142 --section writes --phase candidate",
-    "checks": "node scripts/context/task_context.mjs brief --issue 142 --section checks --phase candidate",
-    "history": "node scripts/context/task_context.mjs brief --issue 142 --section history"
+    "sources": "node scripts/context/task_context.mjs brief --issue 151 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 151 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 151 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 151 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 151 --section history"
   },
   "handoff": [
     "workId and phase",
@@ -197,7 +182,7 @@
   ],
   "technicalContract": {
     "path": "docs/context/work-graph.json",
-    "selector": "items[number=142]",
+    "selector": "items[number=151]",
     "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
   },
   "sourceSnapshot": {

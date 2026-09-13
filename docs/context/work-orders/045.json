@@ -32,41 +32,47 @@
     "predecessors": [
       {
         "issue": 23,
+        "artifact": "artifact:23:M1-07-review-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:23:M1-07-review-contract:candidate"
+        "reason": "Review-control worker consumes parent candidate contract before returning final validation."
       },
       {
         "issue": 43,
+        "artifact": "artifact:43:R-03-governance-diff:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:43:R-03-governance-diff:candidate"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       },
       {
         "issue": 16,
+        "artifact": "artifact:16:M0-03-execution-profile:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:16:M0-03-execution-profile:accept"
+        "reason": "Consume only role-specific paths, data class, egress, expected deny cases, policy hash"
       },
       {
         "issue": 18,
+        "artifact": "artifact:18:M1-02-policy-record:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:18:M1-02-policy-record:accept"
+        "reason": "Consume only policy hash, account/capability facts, failed attempts, limits"
       },
       {
         "issue": 43,
+        "artifact": "artifact:43:R-03-governance-diff:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:43:R-03-governance-diff:accept"
+        "reason": "Consume only old/current/proposed rules and explicit approval owner"
       }
     ],
     "successors": [
       {
         "issue": 23,
+        "artifact": "artifact:45:executed-review-loop-verification:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:45:executed-review-loop-verification:accept"
+        "reason": "Final #23 consumes actual review-loop execution receipt produced against candidate contract."
       }
     ],
     "oneOfGroups": [],
@@ -154,8 +160,15 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -166,6 +179,7 @@
       "readWhen": "prepare",
       "why": "captured workflow policy를 증명한다.",
       "limits": "live workflow execution을 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -174,7 +188,11 @@
         "value": "e58fe20de5659eb453522bac1c4fc2ed88e87715"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/.pi/workflows/plan-review.yaml",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": ".pi/workflows/adversarial-review.yaml",
@@ -182,6 +200,7 @@
       "readWhen": "prepare",
       "why": "independent review path를 증명한다.",
       "limits": "current review receipt를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -190,7 +209,11 @@
         "value": "1b085e7d3a843a6756749c89ac8c707c93cbe2f0"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/.pi/workflows/adversarial-review.yaml",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/adr/0003-independent-review-and-adversarial-graph.md",
@@ -198,6 +221,7 @@
       "readWhen": "prepare",
       "why": "review semantics를 증명한다.",
       "limits": "new enforcement implementation은 제안이다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -206,7 +230,11 @@
         "value": "87957d262e6b15bf92f5caaf8c6fffbdc2aef018"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/adr/0003-independent-review-and-adversarial-graph.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

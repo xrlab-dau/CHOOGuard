@@ -31,17 +31,19 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Independent review execution consumes #10 Native contract candidate before emitting #41 final disposition."
       }
     ],
     "successors": [
       {
         "issue": 10,
+        "artifact": "artifact:41:R-01-review-map:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:41:R-01-review-map:accept"
+        "reason": "Native contract final disposition consumes independent candidate review."
       }
     ],
     "oneOfGroups": [],
@@ -106,7 +108,6 @@
       94,
       99,
       100,
-      107,
       119,
       121,
       122,
@@ -131,8 +132,17 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      107
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -143,6 +153,7 @@
       "readWhen": "prepare",
       "why": "historical finding IDs and scope를 증명한다.",
       "limits": "현재 source acceptance를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -151,7 +162,11 @@
         "value": "6c9b10a58d936460628f6944845d44266ea3e00d"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/specs/analysis-2026-09-06.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/choo-guard-work-unit-graph-v1.md",
@@ -159,6 +174,7 @@
       "readWhen": "prepare",
       "why": "legacy graph semantics를 증명한다.",
       "limits": "typed execution DAG closure를 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -167,7 +183,11 @@
         "value": "0f0971fb7b4fc563e5610ae357df7549b24d5e73"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-work-unit-graph-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "scripts/context/context-graph.schema.json",
@@ -175,6 +195,7 @@
       "readWhen": "prepare",
       "why": "graph schema distinctions를 증명한다.",
       "limits": "per-issue coverage가 있음을 증명하지 않는다.",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -183,7 +204,11 @@
         "value": "1870db4105e09ad41e1962446a86609280f9d629"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/context/context-graph.schema.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

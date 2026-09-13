@@ -32,9 +32,37 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #121 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:121:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       }
     ],
     "successors": [],
@@ -101,6 +129,10 @@
       99,
       143,
       144,
+      149,
+      150,
+      151,
+      152,
       82,
       81,
       80,
@@ -128,6 +160,9 @@
       24,
       10
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -138,6 +173,7 @@
       "readWhen": "prepare",
       "why": "촬영/기관회신기반인역사계획의잔여위치",
       "limits": "현재공개자료범위를규정하는권위아님",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -146,7 +182,11 @@
         "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "docs/context/README.md",
@@ -154,6 +194,7 @@
       "readWhen": "prepare",
       "why": "datedsnapshot·현재성·역사증거분리",
       "limits": "capture시각이최신이어도이슈미해결을증명하지않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -162,7 +203,11 @@
         "value": "4ea59cec84a6bb44c527dd2ab82811196498720a"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/context/README.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

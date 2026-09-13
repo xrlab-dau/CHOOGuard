@@ -34,51 +34,96 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #35 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:35:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            },
+            {
+              "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 134,
+        "artifact": "artifact:134:fmp10a-render-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:134:fmp10a-render-evidence:accept"
+        "reason": "Consume only source hash와 화면/렌더 관측 한계를 기록."
       },
       {
         "issue": 135,
+        "artifact": "artifact:135:fmp10b-authority-tests:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:135:fmp10b-authority-tests:accept"
+        "reason": "Consume only 3+ claim race, explicit handoff, duplicate command tests with actual EditMode XML result."
       },
       {
         "issue": 136,
+        "artifact": "artifact:136:fmp10c-playmode-test:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:136:fmp10c-playmode-test:accept"
+        "reason": "Consume only instructor-only UI action/negative command scenarios."
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:35:fmp10-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+        "reason": "Consume only #134~#136을 통합한 실제 PlayMode 결과, report/ack/handoff/instructor command evidence와 failed/blocked limits."
       },
       {
         "issue": 91,
+        "artifact": "artifact:35:fmp10-integration-evidence:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+        "reason": "Consume only #134~#136을 통합한 실제 PlayMode 결과, report/ack/handoff/instructor command evidence와 failed/blocked limits."
       },
       {
         "issue": 141,
+        "artifact": "artifact:35:fmp10-integration-evidence:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:35:fmp10-integration-evidence:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

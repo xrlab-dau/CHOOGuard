@@ -17,7 +17,10 @@
   "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
   "directive": "runner·metrics·session creator·fixture가 2/3/4명 리허설과 20명 수용 조건을 함께 지원하도록 수정하고, 2~4명 실제 protocol 리허설의 계측 결과를 남기세요.",
   "parent": 91,
-  "children": [],
+  "children": [
+    149,
+    150
+  ],
   "requiredOutputPaths": [
     "docs/evidence/foundation/FMP-12a-rehearsal.json"
   ],
@@ -30,53 +33,133 @@
     "predecessors": [
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-protocol:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:27:authority-protocol:candidate"
+        "reason": "Consume only 두 실제 프로세스 및 교관의 공유 승인 경로"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #140 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:140:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "scripts/dev/create_multiplayer_session.py",
+              "operation": "read_write",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false
+            },
+            {
+              "path": "scripts/dev/foundation_load_metrics.py",
+              "operation": "read_write",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false
+            },
+            {
+              "path": "scripts/dev/run_foundation_load.py",
+              "operation": "read_write",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": true,
+              "developAtCapture": false
+            },
+            {
+              "path": "scripts/dev/test_foundation_load.py",
+              "operation": "read_write",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+        "reason": "The actual 2-4 client rehearsal candidate requires a success-qualified obtainable runnable payload. Build-attempt, failure, blocked-target, source-only, and script-only records are ineligible."
+      },
+      {
+        "issue": 149,
+        "artifact": "artifact:149:load-causal-corpus:accept",
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "reason": "2~4-client 실제 리허설 전에 다섯 R6B 항목의 executed causal corpus가 통과해야 한다."
+      },
+      {
+        "issue": 150,
+        "artifact": "artifact:150:engine-metrics-run:accept",
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "reason": "F(n)/U(n) 실제 callback/protocol 결속 증명 뒤 #140 계측 리허설을 진행한다."
+      },
+      {
+        "issue": 152,
+        "artifact": "artifact:152:fixture-discovery-proof:accept",
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "reason": "70 skipped 원인과 필수 회귀 실행 확인을 현재 source에 결속한 뒤 실제 리허설로 진행한다."
       }
     ],
     "successors": [
       {
         "issue": 91,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 141,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 141,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 142,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       },
       {
         "issue": 142,
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept"
+        "reason": "Consume only actual 2~4 client run status, source/build hash, metrics, exit codes, and explicit non-acceptance label."
       }
     ],
     "oneOfGroups": [],
@@ -164,8 +247,40 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
-    "conflicts": []
+    "conflicts": [
+      {
+        "issue": 149,
+        "reasons": [
+          "path:scripts/dev/run_foundation_load.py|scripts/dev/run_foundation_load.py",
+          "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py",
+          "path:scripts/dev/test_foundation_load.py|scripts/dev/test_foundation_load.py"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:scripts/dev/run_foundation_load.py|scripts/dev/run_foundation_load.py",
+            "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py",
+            "path:scripts/dev/test_foundation_load.py|scripts/dev/test_foundation_load.py"
+          ]
+        }
+      },
+      {
+        "issue": 150,
+        "reasons": [
+          "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:scripts/dev/foundation_load_metrics.py|scripts/dev/foundation_load_metrics.py"
+          ]
+        }
+      }
+    ]
   },
   "minimumContext": [],
   "readMore": {

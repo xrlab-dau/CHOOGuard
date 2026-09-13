@@ -33,35 +33,58 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Before #65 candidate reads or modifies local_unpublished bytes, the qualified #120 manifest must cover the exact guarded paths/ref/digests. Preparation using published metadata remains independent.",
+        "accessGuard": {
+          "id": "source-access:65:candidate",
+          "kind": "selected_path_source_access",
+          "activation": {
+            "type": "phase",
+            "phase": "candidate"
+          },
+          "consumerPhase": "candidate",
+          "manifestProviderArtifact": "artifact:120:foundation-published-source:accept",
+          "operations": [
+            {
+              "path": "docs/choo-guard-native-team-contracts.md",
+              "operation": "read",
+              "declaredAvailability": "local_unpublished",
+              "observedAt": "2026-09-12T09:39:41Z",
+              "localAtCapture": null,
+              "developAtCapture": null
+            }
+          ],
+          "predicate": {
+            "allSelectedPathsCoveredByManifest": true,
+            "accessibleSourceRefRequired": true,
+            "pathDigestMatchRequired": true,
+            "localPresenceAloneQualifies": false,
+            "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": true
+          }
+        }
       },
       {
         "issue": 107,
+        "artifact": "artifact:107:review-ledger:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:107:review-ledger:accept"
+        "reason": "Actual independent ART review verdict for this selected candidate digest before producer visual acceptance; producer candidate remains reviewable while issue open."
       }
     ],
     "successors": [
       {
         "issue": 56,
+        "artifact": "artifact:65:reference-audit:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:65:reference-audit:candidate"
+        "reason": "Reference audit candidate only for assets changed in this prototype."
       }
     ],
     "oneOfGroups": [],
     "parallelCandidates": [
       70,
-      74,
-      76,
-      77,
-      78,
-      79,
-      80,
-      81,
       119,
       64,
       63,
@@ -71,14 +94,12 @@
       72,
       57,
       73,
-      56,
       55,
       75,
       52,
       82,
       46,
       45,
-      85,
       44,
       43,
       42,
@@ -104,9 +125,7 @@
       26,
       25,
       24,
-      106,
       23,
-      107,
       22,
       21,
       20,
@@ -140,8 +159,27 @@
       142,
       143,
       144,
-      146
+      146,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [
+      56,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      85,
+      106,
+      107
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -152,6 +190,7 @@
       "readWhen": "prepare",
       "why": "현재 객체별 source와 필수 컴포넌트·검수 연결",
       "limits": "새 FBX 또는 새 시설의 검수 통과를 증명하지 않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -160,7 +199,11 @@
         "value": "8a902daa76e100d336b56148fff59baa01d13c80"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/object-references.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     },
     {
       "path": "foundation/art/asset-manifest.json",
@@ -168,6 +211,7 @@
       "readWhen": "prepare",
       "why": "자산파일/생성모듈 hash",
       "limits": "scene 사용이나 새시각검수결과는 별도 필요",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -176,7 +220,11 @@
         "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

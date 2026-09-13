@@ -110,3 +110,7 @@
 | [#143](https://github.com/xrlab-dau/CHOOGuard/issues/143) | [FMP-13a] Windows/Linux 전용서버·클라이언트 후보 build 스크립트 | [packet](143.json) |
 | [#144](https://github.com/xrlab-dau/CHOOGuard/issues/144) | [FMP-13b] 독립 개발자 재현 전달 | [packet](144.json) |
 | [#146](https://github.com/xrlab-dau/CHOOGuard/issues/146) | [BRAND-01] 제공 로고의 README·조직 프로필 적용 | [packet](146.json) |
+| [#149](https://github.com/xrlab-dau/CHOOGuard/issues/149) | [FMP-12a-R1] Load causal contract R6B 5건 보완과 실행 corpus | [packet](149.json) |
+| [#150](https://github.com/xrlab-dau/CHOOGuard/issues/150) | [FMP-12a-R2] F(n)·U(n) Unity scheduler와 실제 metrics 결속 | [packet](150.json) |
+| [#151](https://github.com/xrlab-dau/CHOOGuard/issues/151) | [FMP-04-R1] Voice config B-F1 staging 소유권 확인 전 쓰기·게시 차단 | [packet](151.json) |
+| [#152](https://github.com/xrlab-dau/CHOOGuard/issues/152) | [FMP-QA-R1] 기존 70 skipped fixture의 discovery·환경 원인 규명 | [packet](152.json) |

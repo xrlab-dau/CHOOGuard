@@ -33,29 +33,33 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       }
     ],
     "successors": [
       {
         "issue": 68,
+        "artifact": "artifact:64:work-graph:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:64:work-graph:candidate"
+        "reason": "Plan snapshot uses candidate execution graph, not graph acceptance or all delivery."
       },
       {
         "issue": 68,
+        "artifact": "artifact:64:work-graph:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:64:work-graph:candidate"
+        "reason": "Consume only 이슈/문맥/산출/검증·상태·가용성과 typed 관계"
       }
     ],
     "oneOfGroups": [],
@@ -145,8 +149,15 @@
       141,
       142,
       143,
-      144
+      144,
+      149,
+      150,
+      151,
+      152
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },
@@ -157,6 +168,7 @@
       "readWhen": "prepare",
       "why": "형식 유효·stale·역사 증거·실제 수용의 분리",
       "limits": "graph가 실제 코드/기관 승인보다 우선하지 않음",
+      "declaredAvailability": "published",
       "availability": "published",
       "provider": "git-at-captured-ref",
       "ref": "6490956d203549b56cbd86846120759889abb016",
@@ -165,7 +177,11 @@
         "value": "4ea59cec84a6bb44c527dd2ab82811196498720a"
       },
       "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/context/README.md",
-      "access": "repository read access"
+      "access": "repository read access",
+      "qualification": null,
+      "qualificationLimits": null,
+      "qualifiedRefs": [],
+      "accepted": false
     }
   ],
   "readMore": {

@@ -31,71 +31,82 @@
     "predecessors": [
       {
         "issue": 10,
+        "artifact": "artifact:10:foundation-contract-v2:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:10:foundation-contract-v2:candidate"
+        "reason": "Consume only Versioned Native WorldId/ShiftId/ParticipantId/TeamId/CommandId, WorldCommand and WorldState→ObservedState whitelist, source/data applicability and legacy adapter boundary only. SC-01 external-generation decision is excluded from this artifact and its acceptance predicate."
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-protocol:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:27:authority-protocol:candidate"
+        "reason": "Consume only 두 실제 프로세스 및 교관의 공유 승인 경로"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:27:authority-receipt:accept"
+        "reason": "Consume only 신원/직무/거리/가림/동시조작/관측·개인pause·TLS 결과"
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:99:recovery-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-contract:accept"
+        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
       },
       {
         "issue": 82,
+        "artifact": "artifact:99:recovery-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-receipt:accept"
+        "reason": "Consume only 각 fault point 전후 정체성/관측/인솔/사건/열차/승인원장 비교"
       },
       {
         "issue": 132,
+        "artifact": "artifact:99:recovery-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:99:recovery-contract:candidate"
+        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
       },
       {
         "issue": 132,
+        "artifact": "artifact:99:recovery-contract:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-contract:accept"
+        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
       },
       {
         "issue": 136,
+        "artifact": "artifact:99:recovery-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:99:recovery-contract:candidate"
+        "reason": "Consume only checkpoint+journal version, atomicity, legacy migration/refusal"
       },
       {
         "issue": 136,
+        "artifact": "artifact:99:recovery-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-receipt:accept"
+        "reason": "Consume only 각 fault point 전후 정체성/관측/인솔/사건/열차/승인원장 비교"
       },
       {
         "issue": 142,
+        "artifact": "artifact:99:recovery-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:99:recovery-receipt:accept"
+        "reason": "Consume only 각 fault point 전후 정체성/관측/인솔/사건/열차/승인원장 비교"
       }
     ],
     "oneOfGroups": [],
@@ -159,7 +170,11 @@
       144,
       52,
       146,
+      149,
+      150,
+      151,
       46,
+      152,
       45,
       44,
       43,
@@ -184,6 +199,9 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

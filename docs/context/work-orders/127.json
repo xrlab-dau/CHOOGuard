@@ -32,36 +32,39 @@
     "predecessors": [
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 125,
+        "artifact": "artifact:125:world-crowd-fixture:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:125:world-crowd-fixture:candidate"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       },
       {
         "issue": 125,
+        "artifact": "artifact:125:world-crowd-fixture:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:125:world-crowd-fixture:accept"
+        "reason": "Consume only fixtureKind/regions/bodies/radius-height/sceneHash·geometry-load·회귀 결과"
       }
     ],
     "successors": [
       {
         "issue": 59,
+        "artifact": "artifact:127:crowd-contact-regression:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:127:crowd-contact-regression:accept"
+        "reason": "Consume only 접촉/밀집/벽정지·pin/support복원·분산/집결·dt민감도·재현 결과"
       }
     ],
     "oneOfGroups": [
       {
         "artifact": "or:127:bottleneck-recipe",
         "consumerPhase": "candidate",
-        "resolution": "Use declared actual geometry recipe; measurement final acceptance is not required to reproduce contact.",
         "alternatives": [
           {
             "issue": 125,
@@ -73,11 +76,11 @@
             "artifact": "artifact:126:crowd-comparison:candidate",
             "producerPhase": "candidate"
           }
-        ]
+        ],
+        "resolution": "Use declared actual geometry recipe; measurement final acceptance is not required to reproduce contact."
       }
     ],
     "parallelCandidates": [
-      126,
       128,
       129,
       130,
@@ -102,6 +105,10 @@
       146,
       107,
       106,
+      149,
+      150,
+      151,
+      152,
       100,
       99,
       94,
@@ -164,6 +171,11 @@
       14,
       10
     ],
+    "conditionalCandidates": [
+      126
+    ],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
     "conflicts": []
   },

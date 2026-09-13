@@ -17,7 +17,9 @@
   "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
   "directive": "실제 두 참가자의 마이크/수신 경로에서 제한된 팀/지휘 PTT와 중단·재연결·권한철회 동작을 검증한다.",
   "parent": 54,
-  "children": [],
+  "children": [
+    151
+  ],
   "requiredOutputPaths": [
     "docs/evidence/work-items/FMP-04/voice.json",
     "docs/context/contracts/voice-run.md"
@@ -31,71 +33,89 @@
     "predecessors": [
       {
         "issue": 24,
+        "artifact": "artifact:24:pinned-materialization-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+        "reason": "Consume only Version/hash/interface pins and prepare_multiplayer_dependencies dry-run; no real voice/network acceptance required to build diagnostic candidate."
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-protocol:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:27:authority-protocol:candidate"
+        "reason": "Consume only 두 실제 프로세스 및 교관의 공유 승인 경로"
       },
       {
         "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
         "consumerPhase": "candidate",
         "producerPhase": "accept",
-        "artifact": "artifact:120:foundation-published-source:accept"
+        "reason": "Actual local_unpublished editing/execution requires the selected remote-accessible Native source manifest; documentation/mock preparation remains independent."
       },
       {
         "issue": 24,
+        "artifact": "artifact:24:dependency-materialization-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+        "reason": "Consume only source·정확binary·import 결과·미지원 capability 명시"
       },
       {
         "issue": 27,
+        "artifact": "artifact:27:authority-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:27:authority-receipt:accept"
+        "reason": "Consume only 신원/직무/거리/가림/동시조작/관측·개인pause·TLS 결과"
+      },
+      {
+        "issue": 151,
+        "artifact": "artifact:151:staging-ownership-proof:accept",
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "reason": "실제 LiveKit 마이크/PTT 준비에 P0 소유권 미입증 credential/publication 차단 증명이 선행한다. Python24/Voice89로 대체하지 않는다."
       }
     ],
     "successors": [
       {
         "issue": 54,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       },
       {
         "issue": 91,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       },
       {
         "issue": 92,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       },
       {
         "issue": 141,
+        "artifact": "artifact:100:voice-receipt:candidate",
         "consumerPhase": "accept",
         "producerPhase": "candidate",
-        "artifact": "artifact:100:voice-receipt:candidate"
+        "reason": "Integrated candidate feature scope for load run; no full product acceptance required before measuring failures."
       },
       {
         "issue": 142,
+        "artifact": "artifact:100:voice-run-contract:candidate",
         "consumerPhase": "candidate",
         "producerPhase": "candidate",
-        "artifact": "artifact:100:voice-run-contract:candidate"
+        "reason": "Consume only 비밀값 없는 자체호스팅설정 및 stop/reconnect/권한 동작"
       },
       {
         "issue": 142,
+        "artifact": "artifact:100:voice-receipt:accept",
         "consumerPhase": "accept",
         "producerPhase": "accept",
-        "artifact": "artifact:100:voice-receipt:accept"
+        "reason": "Consume only 실마이크/스피커·PTT·권한·철회·지터/대역폭/지연 결과"
       }
     ],
     "oneOfGroups": [],
@@ -160,6 +180,9 @@
       55,
       146,
       52,
+      149,
+      150,
+      152,
       46,
       45,
       44,
@@ -185,8 +208,28 @@
       15,
       14
     ],
+    "conditionalCandidates": [],
+    "parallelPhase": "candidate",
+    "authorization": false,
     "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
-    "conflicts": []
+    "conflicts": [
+      {
+        "issue": 151,
+        "reasons": [
+          "path:services/livekit/|services/livekit/configure_local.py",
+          "path:services/livekit/|services/livekit/test_configure_local.py",
+          "path:services/livekit/|services/livekit/README.md"
+        ],
+        "phases": {
+          "candidate": [],
+          "accept": [
+            "path:services/livekit/|services/livekit/configure_local.py",
+            "path:services/livekit/|services/livekit/test_configure_local.py",
+            "path:services/livekit/|services/livekit/README.md"
+          ]
+        }
+      }
+    ]
   },
   "minimumContext": [],
   "readMore": {
