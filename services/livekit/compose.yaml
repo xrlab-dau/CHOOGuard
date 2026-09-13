@@ -1,0 +1,18 @@
+services:
+  livekit:
+    image: livekit/livekit-server:v1.13.6@sha256:e37d68f172556d02aa77968b9fc55ef481468c0315fa38e4fa6c56ce72e3a815
+    command: ["--config", "/run/chooguard/livekit.yaml"]
+    ports:
+      - "127.0.0.1:17880:17880/tcp"
+      - "127.0.0.1:17881:17881/tcp"
+      - "127.0.0.1:17882:17882/udp"
+    volumes:
+      - type: bind
+        source: ${CHOOGUARD_VOICE_DIR:?Set the private voice configuration directory}/livekit.yaml
+        target: /run/chooguard/livekit.yaml
+        read_only: true
+      - type: bind
+        source: ${CHOOGUARD_VOICE_DIR:?Set the private voice configuration directory}/keys.yaml
+        target: /run/chooguard/keys.yaml
+        read_only: true
+    restart: "no"
