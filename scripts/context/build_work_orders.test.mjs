@@ -21,6 +21,21 @@ test('builder exposes an import-safe pure build without changing inputs',()=>{
  assert.deepEqual(result.orders.find(x=>x.issue===original.number).relations.oneOfGroups,original.oneOfInputs);
 });
 
+test('requirement packets and ontology retain exactly sixteen evidence-scoped mappings',()=>{
+ const g=read('docs/context/work-graph.json'),a=read('docs/context/source-availability.json'),p=read('docs/context/work-orders/policy.json'),before=JSON.stringify([g,a,p]);
+ const result=builder.buildWorkOrders(g,a,p),nodes=result.index['@graph'],ids=new Set(nodes.map(n=>n['@id']));
+ const pairs=g.edges.filter(e=>e.relation==='implements').map(e=>[e.from,e.to]).sort();assert.equal(pairs.length,16);
+ assert.equal(nodes.filter(n=>n['@type']==='Requirement').length,15);
+ assert.deepEqual(nodes.filter(n=>n.relation==='implements').map(n=>[n.from.replace('work:','issue.'),n.to.replace('requirement:','')]).sort(),pairs);
+ assert.deepEqual(result.orders.flatMap(o=>o.requirements.map(r=>['issue.'+o.issue,r.id])).sort(),pairs);
+ for(const n of nodes.filter(n=>n.relation==='implements')){assert.ok(ids.has(n.from)&&ids.has(n.to));assert.equal(n['@type'],'Relationship');}
+ for(const o of result.orders){assert.match(o.readMore.requirements,/--section requirements/);for(const r of o.requirements){assert.ok(r.definition);assert.ok(r.evidence.length);assert.ok(r.evidence.every(e=>e.issue===o.issue));}}
+ assert.equal(result.orders.filter(o=>o.requirements.length).length,15);
+ assert.equal(result.orders.flatMap(o=>o.requirements).filter(r=>r.mappingStatus==='historical_on_hold').length,2);
+ assert.equal(result.ontology['@context'].implements['@type'],'@id');assert.equal(result.ontology['@context'].issueNumbers['@type'],'http://www.w3.org/2001/XMLSchema#integer');
+ assert.equal(JSON.stringify([g,a,p]),before);assert.deepEqual(result,builder.buildWorkOrders(g,a,p));
+});
+
 test('candidate relations include OR alternatives and transitive extra-input guards',()=>{
  assert.equal(typeof builder.candidateRelations,'function');
  const [a,b,c,d,e]=[1,2,3,4,5].map(item);

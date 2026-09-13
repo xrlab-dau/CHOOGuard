@@ -26,10 +26,16 @@ python3 scripts/context/graphify_context.py query --issue 150 --phase candidate 
 - `DocumentReference`는 작업 pointer와 Decision/Evidence의 문서 경로를 연결합니다. 문서 bytes를 읽거나 검증한 `Source`가 아니며, 같은 경로여도 ref/digest/selector가 다르면 같은 근거나 현행 승인으로 취급하지 않습니다. attribution edge에 기존 digest/anchor를 보존합니다.
 - `Decision/Constraint/Evidence`는 출처 레코드의 포인터입니다. 해당 phase의 문서에 직접 귀속된 기록만 조회에 포함하고 superseded 기록과 freshness 미확인은 현행 승인으로 재활용하지 않습니다.
 - 선택된 코드 심벌의 직접 `ExternalSymbol/UnresolvedReference` 이웃을 조회에 남깁니다. 일반 호출 그래프와 선행 이슈 문맥까지 재귀 확장하지 않으며 `scopeLimits`에 범위를 표시합니다.
-- Requirement 연결은 정본의 명시적 관계만 사용합니다. 현재 15개 Requirement는 `issueNumbers:[null]`, 빈 작업별 requirements, 요구사항 edge 없음으로 연결 근거가 없습니다. 참조한 `reviews/foundation-map.json`도 전달 clone에 없습니다. 임의 매핑 대신 `coverage.json/unboundRequirements`와 노드 `mappingStatus`에 누락을 표시합니다. 요구사항-작업 매핑 완료가 아닙니다.
+- Requirement 15개는 정본의 명시적 `implements` 16개로 기존 작업 15개에 연결합니다. 양쪽 역색인은 동일한 관계 집합이어야 하며 배열에서 별도 `addresses_requirement`를 합성하지 않습니다. `F-SOURCE`는 #10의 근거 적용 범위 계약과 #60의 사건 근거에 각각 연결하며 #120 소스코드 게시와 혼동하지 않습니다. 자식 작업으로 자동 상속하지 않습니다.
+- 정의·추적표는 미게시 `docs/choo-guard-foundation-multiplayer.md` snapshot에서 직접 대조했습니다. SHA-256 `29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b`, `availability:local_snapshot`, `ref:null`이며 필요한 인용만 정본에 내장합니다. 과거 manifest hash를 덮어쓰거나 로컬 원문을 읽을 새 자격을 부여하지 않습니다. 고정 G `83f6a8818b304ee7ebf480e5d481681e56a87a29`의 작업 목표·명시 selector도 정확한 path/digest와 함께 내장합니다.
+- 원래 `reviews/foundation-map.json`과 원생성기는 미복구이며 `legacySource`의 `unavailable`로 보존합니다. 이번 작업은 정의·추적표·현재 작업 목표에 근거한 의미 대응 재구성이지 원생성기의 복구가 아닙니다.
+- `coverage.json`은 3,975노드·10,403관계, 요구 매핑 16개·미연결 0개를 기록합니다. `context`/출처 간선은 bound 판정에서 제외합니다. `heldRequirementMappings:2`와 `heldRequirements`는 F-ART-NATIVE/#106, F-AAA/#107의 `historical_on_hold`를 별도로 나타냅니다. **unbound=0은 실행 가능·요구 구현 완료·Foundation 수용 완료가 아닙니다.** 현재 정책 포인터와 #106/#107 중단·보류를 유지합니다.
+- `node scripts/context/task_context.mjs brief --issue 60 --section requirements`는 해당 packet만으로 정의·근거·한계를 반환합니다. 기본 brief는 코드·상태·후속 조회만 보여줍니다. Graphify `query --issue 60 --phase accept`도 선택한 이슈의 요구 근거만 포함하며, 공유 F-SOURCE의 #10 근거·하위 작업·선행 전체는 확장하지 않습니다.
 - 같은 노드 쌍의 여러 관계를 보존합니다. Graphify 자체의 양방향 BFS/DFS 또는 centrality를 PM의 선행순서·우선순위·병렬 허가로 해석하지 않습니다.
 
 ## 재현
+
+이번 요구 매핑 갱신은 기존 AST가 이전 graph 전체를 재현하고, manifest/coverage provenance와 corpus 65개 digest가 모두 일치함을 확인한 뒤 **adapter build만** 실행했습니다. 재추출·추가 설치·LLM API 호출은 없었습니다. 아래 전체 초기 구축 절차는 기존 재현 참고이며 새 설치·추출 승인으로 해석하지 않습니다.
 
 [도구 manifest](../../../scripts/context/graphify/tool.json)와 버전 고정 requirements를 사용합니다. 관측 환경은 Python 3.12.11이며 Python ≥3.10에서 호환성을 별도로 확인합니다. 설치는 별도 가상환경에 한정하고 사용자 전역 설정·provider·hook은 수정하지 않습니다.
 

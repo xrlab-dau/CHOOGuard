@@ -1,0 +1,16 @@
+# Local voice service
+
+**Integration is in progress.** Service configuration alone does not establish microphone, PTT or internet acceptance.
+
+The Foundation uses self-hosted LiveKit **1.13.6** and Unity SDK **2.0.0**. This recipe binds only loopback ports and has no monthly hosting charge. It provides no recording or egress service.
+
+1. On supported macOS hosts, run `python3 services/livekit/configure_local.py --output <private-directory>`. Keep this directory outside Git; it contains service credentials. The creator requires a current-user-owned, non-symlink, `0700` parent, verifies parent/directory/file ACLs through Darwin descriptor APIs, creates files in a private staging directory, and publishes the completed `0700` directory with an exclusive no-replace rename. It verifies the requested parent binding before success, rolls back only acquired file identities, and gives manual cleanup guidance if a collision or replacement prevents safe cleanup. **Creation-ownership limitation:** Darwin/Python expose directory creation by pathname followed by a separate open/stat; that sequence cannot prove that the opened staging inode is the inode created by this call if the pathname is replaced before pinning. The current flow therefore does not claim exact-owned rollback/publication against that explicit same-account replacement; use a trusted caller-owned directory or a separately verified creation primitive/contract before treating that boundary as accepted. It fails closed on Windows and other platforms until separately verified ACL and exclusive-publication backends exist.
+2. Set `CHOOGUARD_VOICE_DIR` to that absolute directory and run `docker compose -f services/livekit/compose.yaml up -d`. LiveKit listens on `0.0.0.0` **inside the Compose bridge** so published ports can reach it; Compose keeps every host-published port pinned to `127.0.0.1`.
+3. Start the authenticated game server with `--cg-voice-config <private-directory>/server-voice.json`. Game clients receive room-scoped grants over their game connection; service API secrets never enter client builds.
+4. Stop with the same Compose file and directory: `docker compose -f services/livekit/compose.yaml down`.
+
+Room auto-creation is disabled. Only the game server creates epoch-specific team and command rooms. Participant grants allow microphone publication according to channel permission, disable data publishing and contain no room administration/create permission. A server restart retires old room names before issuing new grants. Self-hosted participant removal alone does not revoke old JWTs; test room retirement and reconnect races explicitly.
+
+Internet deployment needs trusted WSS/TLS, reachable ICE/TURN and separately verified game transport certificates. A loopback run does not establish WAN or end-to-end voice latency acceptance. Never expose these unencrypted loopback settings by changing only the published address.
+
+Sources: [LiveKit 1.13.6 configuration](https://github.com/livekit/livekit/blob/v1.13.6/config-sample.yaml), [self-hosting ports](https://docs.livekit.io/transport/self-hosting/ports-firewall/), [token permissions and revocation limits](https://docs.livekit.io/frontends/reference/tokens-grants/).

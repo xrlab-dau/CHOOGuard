@@ -211,7 +211,8 @@
     "inputs": "node scripts/context/task_context.mjs brief --issue 99 --section inputs --phase candidate",
     "writes": "node scripts/context/task_context.mjs brief --issue 99 --section writes --phase candidate",
     "checks": "node scripts/context/task_context.mjs brief --issue 99 --section checks --phase candidate",
-    "history": "node scripts/context/task_context.mjs brief --issue 99 --section history"
+    "history": "node scripts/context/task_context.mjs brief --issue 99 --section history",
+    "requirements": "node scripts/context/task_context.mjs brief --issue 99 --section requirements"
   },
   "handoff": [
     "workId and phase",
@@ -229,5 +230,88 @@
   "sourceSnapshot": {
     "capturedAt": "2026-09-12T09:39:41Z",
     "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
-  }
+  },
+  "requirements": [
+    {
+      "id": "requirement.F-RECOVERY",
+      "code": "F-RECOVERY",
+      "title": "재접속·버전 있는 체크포인트와 순서 기록·중복 승인 방지 및 재시작 후 교관 확인.",
+      "definition": "재접속·버전 있는 체크포인트와 순서 기록·중복 승인 방지 및 재시작 후 교관 확인.",
+      "mappingStatus": "mapped",
+      "policy": null,
+      "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다.",
+      "evidence": [
+        {
+          "issue": 99,
+          "kind": "definition_trace_outcome",
+          "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다.",
+          "sources": [
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L19",
+              "quote": "| F-RECOVERY | 참가자 재접속, 버전 있는 체크포인트+순서 기록, 승인행동 중복 실행 방지, 서버 재시작 후 교관 확인까지 정지 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L54",
+              "quote": "| 2 | [#99](https://github.com/xrlab-dau/CHOOGuard/issues/99) | 재접속·서버 체크포인트·순서 기록 복구 | 구현/검증 전 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L36",
+              "quote": "- 내구성 실패 시 승인/세계 변경을 확정하지 않는다. 체크포인트와 순서 기록은 완전성·버전·hash를 검사하며 부분 저장/중복/누락을 검출한다. 복구 후 재입장과 교관 확인을 요구한다. legacy schema2 복기 내보내기를 서버 복구 파일로 오인하지 않는다.",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/context/work-graph.json",
+              "selector": "/items/69/outcome",
+              "quote": "승인 행동과 자율 시뮬레이션 상태를 함께 복구하여 crash/retry가 중복 행동이나 부분 세계를 만들지 않게 한다.",
+              "availability": "qualified_ref",
+              "ref": "83f6a8818b304ee7ebf480e5d481681e56a87a29",
+              "digest": {
+                "algorithm": "sha256",
+                "value": "80c1250d0df40ebbf9ce545722d2af3e78bd7ea76c031147ac66a985002cc97b"
+              },
+              "access": "고정 Git commit의 저장소 읽기 권한; 내장된 selector 인용 사용.",
+              "qualification": "고정 공유 작업 정본의 목표/명시 selector 대조; 현행 GitHub 상태 실조회 아님.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            }
+          ],
+          "limits": "requirement coverage is a planning projection, not implementation or acceptance; 정의·추적표와 작업 목표의 의미 대응 재구성이다. 현재 구현·실측·제품 수용 완료를 주장하지 않는다."
+        }
+      ],
+      "legacySource": {
+        "pointer": "reviews/foundation-map.json#/issues/*/requirements",
+        "availability": "unavailable",
+        "generatorRecovered": false
+      },
+      "limits": "requirement coverage is a planning projection, not implementation or acceptance; 정의·추적표와 작업 목표의 의미 대응 재구성이다. 현재 구현·실측·제품 수용 완료를 주장하지 않는다."
+    }
+  ]
 }

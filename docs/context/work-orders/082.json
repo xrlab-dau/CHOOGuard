@@ -272,7 +272,8 @@
     "inputs": "node scripts/context/task_context.mjs brief --issue 82 --section inputs --phase candidate",
     "writes": "node scripts/context/task_context.mjs brief --issue 82 --section writes --phase candidate",
     "checks": "node scripts/context/task_context.mjs brief --issue 82 --section checks --phase candidate",
-    "history": "node scripts/context/task_context.mjs brief --issue 82 --section history"
+    "history": "node scripts/context/task_context.mjs brief --issue 82 --section history",
+    "requirements": "node scripts/context/task_context.mjs brief --issue 82 --section requirements"
   },
   "handoff": [
     "workId and phase",
@@ -290,5 +291,74 @@
   "sourceSnapshot": {
     "capturedAt": "2026-09-12T09:39:41Z",
     "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
-  }
+  },
+  "requirements": [
+    {
+      "id": "requirement.F-MAP",
+      "code": "F-MAP",
+      "title": "13구역 실제 이동·상호작용·다층 경로·승하차·늦은 참가·로딩 중 공유 상태 유지.",
+      "definition": "13구역 실제 이동·상호작용·다층 경로·승하차·늦은 참가·로딩 중 공유 상태 유지.",
+      "mappingStatus": "mapped",
+      "policy": null,
+      "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다.",
+      "evidence": [
+        {
+          "issue": 82,
+          "kind": "definition_trace_outcome",
+          "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다.",
+          "sources": [
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L9",
+              "quote": "| F-MAP | 기존13구역 전체의 실제 이동·상호작용. 철도/도시철도 차량·선로·승강장·역사·매표·광장·유라시아플랫폼·지하 연결통로. 구역별 scene, 다층 경로·승하차·늦은 참가·로딩 중 상태 유지 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L56",
+              "quote": "| 3 | [#82](https://github.com/xrlab-dau/CHOOGuard/issues/82) | 13구역 장면 전환·다층 이동·공유 상태 통합 | 구현/검증 전 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/context/work-graph.json",
+              "selector": "/items/60/outcome",
+              "quote": "obtainable Native source 후 bounded synthetic 13-region/12-portal geometry candidate를 먼저 제공하고, final visual+functional integration은 qualified #79–81 bundles와 authority/recovery evidence를 별도로 소비한다.",
+              "availability": "qualified_ref",
+              "ref": "83f6a8818b304ee7ebf480e5d481681e56a87a29",
+              "digest": {
+                "algorithm": "sha256",
+                "value": "80c1250d0df40ebbf9ce545722d2af3e78bd7ea76c031147ac66a985002cc97b"
+              },
+              "access": "고정 Git commit의 저장소 읽기 권한; 내장된 selector 인용 사용.",
+              "qualification": "고정 공유 작업 정본의 목표/명시 selector 대조; 현행 GitHub 상태 실조회 아님.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            }
+          ],
+          "limits": "requirement coverage is a planning projection, not implementation or acceptance; 합성 13구역/12포털 geometry 후보를 실제 시설 실측·시각/기능 수용으로 승격하지 않는다."
+        }
+      ],
+      "legacySource": {
+        "pointer": "reviews/foundation-map.json#/issues/*/requirements",
+        "availability": "unavailable",
+        "generatorRecovered": false
+      },
+      "limits": "requirement coverage is a planning projection, not implementation or acceptance; 합성 13구역/12포털 geometry 후보를 실제 시설 실측·시각/기능 수용으로 승격하지 않는다."
+    }
+  ]
 }

@@ -1,0 +1,323 @@
+{
+  "SchemaVersion": 1,
+  "ProfileId": "foundation-simulation-v1",
+  "Classification": "provisional-synthetic",
+  "NpcCount": 100,
+  "Seed": 41921,
+  "TrainingMode": 0,
+  "NpcSpawnRegions": [
+    "rolling_stock_mainline",
+    "rail_tracks_mainline",
+    "rail_platforms_mainline",
+    "rail_terminal_public",
+    "station_concourse_2f",
+    "station_hall_1f",
+    "station_ticket_area",
+    "forecourt_eurasia",
+    "underground_connector",
+    "underground_shopping_passage",
+    "metro_concourse",
+    "metro_platforms",
+    "rolling_stock_metro"
+  ],
+  "Thermal": {
+    "MaximumCellLengthM": 10,
+    "MaximumRampRisePerCellM": 0.5,
+    "MaximumSolverStepSeconds": 0.01,
+    "WallArealHeatCapacityJPerM2K": 20000,
+    "InsideHeatTransferWPerM2K": 5,
+    "OutsideHeatTransferWPerM2K": 3,
+    "VentilationMassKgPerSecondPerM3": 0.002,
+    "ClosedEnvelopeLeakWidthM": 0.005
+  },
+  "Schedule": {
+    "ProfileId": "continuous-reviewed-synthetic-v1",
+    "MaximumActive": 2,
+    "FirstOnsetTick": 1200,
+    "MinimumQuietTicks": 400,
+    "MaximumQuietTicks": 1200,
+    "Choices": [
+      {
+        "Id": "fire-concourse",
+        "Kind": 0,
+        "ResourceKey": "station_concourse_2f"
+      },
+      {
+        "Id": "fire-mainline",
+        "Kind": 0,
+        "ResourceKey": "rolling_stock_mainline"
+      },
+      {
+        "Id": "power-ticket",
+        "Kind": 1,
+        "ResourceKey": "station_ticket_area"
+      },
+      {
+        "Id": "pa-metro",
+        "Kind": 2,
+        "ResourceKey": "metro_concourse"
+      },
+      {
+        "Id": "blocked-connector",
+        "Kind": 3,
+        "ResourceKey": "underground_connector"
+      },
+      {
+        "Id": "train-mainline-fault",
+        "Kind": 4,
+        "ResourceKey": "rolling_stock_mainline"
+      },
+      {
+        "Id": "train-metro-stop",
+        "Kind": 5,
+        "ResourceKey": "rolling_stock_metro"
+      }
+    ]
+  },
+  "Incidents": [
+    {
+      "ChoiceId": "fire-concourse",
+      "RegionId": "station_concourse_2f",
+      "LocalPosition": {
+        "X": 0.0,
+        "Y": 6,
+        "Z": 0.0
+      },
+      "PortalId": "",
+      "TrainId": "",
+      "SourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "HeatReleaseW": 60000,
+      "FuelMassKgPerSecond": 0.003,
+      "SmokeMassKgPerSecond": 0.0003,
+      "RadiationFraction": 0.3
+    },
+    {
+      "ChoiceId": "fire-mainline",
+      "RegionId": "rolling_stock_mainline",
+      "LocalPosition": {
+        "X": 0.0,
+        "Y": 0,
+        "Z": 0.0
+      },
+      "PortalId": "",
+      "TrainId": "",
+      "SourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "HeatReleaseW": 60000,
+      "FuelMassKgPerSecond": 0.003,
+      "SmokeMassKgPerSecond": 0.0003,
+      "RadiationFraction": 0.3
+    },
+    {
+      "ChoiceId": "power-ticket",
+      "RegionId": "station_ticket_area",
+      "LocalPosition": {
+        "X": 42.0,
+        "Y": 6,
+        "Z": 34.0
+      },
+      "PortalId": "",
+      "TrainId": "",
+      "SourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "HeatReleaseW": 60000,
+      "FuelMassKgPerSecond": 0.003,
+      "SmokeMassKgPerSecond": 0.0003,
+      "RadiationFraction": 0.3
+    },
+    {
+      "ChoiceId": "pa-metro",
+      "RegionId": "metro_concourse",
+      "LocalPosition": {
+        "X": 254.0,
+        "Y": -4,
+        "Z": 0.0
+      },
+      "PortalId": "",
+      "TrainId": "",
+      "SourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "HeatReleaseW": 60000,
+      "FuelMassKgPerSecond": 0.003,
+      "SmokeMassKgPerSecond": 0.0003,
+      "RadiationFraction": 0.3
+    },
+    {
+      "ChoiceId": "blocked-connector",
+      "RegionId": "underground_connector",
+      "LocalPosition": {
+        "X": 129.8,
+        "Y": -4,
+        "Z": 0.0
+      },
+      "PortalId": "underground_connector--underground_shopping_passage",
+      "TrainId": "",
+      "SourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "HeatReleaseW": 60000,
+      "FuelMassKgPerSecond": 0.003,
+      "SmokeMassKgPerSecond": 0.0003,
+      "RadiationFraction": 0.3
+    },
+    {
+      "ChoiceId": "train-mainline-fault",
+      "RegionId": "rolling_stock_mainline",
+      "LocalPosition": {
+        "X": 0.0,
+        "Y": 0,
+        "Z": 0.0
+      },
+      "PortalId": "",
+      "TrainId": "train.mainline",
+      "SourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "HeatReleaseW": 60000,
+      "FuelMassKgPerSecond": 0.003,
+      "SmokeMassKgPerSecond": 0.0003,
+      "RadiationFraction": 0.3
+    },
+    {
+      "ChoiceId": "train-metro-stop",
+      "RegionId": "rolling_stock_metro",
+      "LocalPosition": {
+        "X": -0.0,
+        "Y": 0,
+        "Z": 0.0
+      },
+      "PortalId": "",
+      "TrainId": "train.metro",
+      "SourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "HeatReleaseW": 60000,
+      "FuelMassKgPerSecond": 0.003,
+      "SmokeMassKgPerSecond": 0.0003,
+      "RadiationFraction": 0.3
+    }
+  ],
+  "Trains": [
+    {
+      "FrameId": "train-mainline",
+      "RegionId": "rolling_stock_mainline",
+      "PortalId": "rolling_stock_mainline--rail_platforms_mainline",
+      "DirectionWorld": {
+        "X": 1,
+        "Y": 0,
+        "Z": 0
+      },
+      "StationReferenceM": 220,
+      "Operation": {
+        "TrainId": "train.mainline",
+        "ConsistLengthM": 40,
+        "RouteStartM": 0,
+        "RouteEndM": 440,
+        "MaximumSpeedMS": 6,
+        "TractionAccelerationMS2": 0.7,
+        "ClearanceMarginM": 1,
+        "DockToleranceM": 0.05,
+        "DoorClosingSeconds": 2,
+        "ServiceBrake": {
+          "DelaySeconds": 0.4,
+          "BuildUpSeconds": 0.5,
+          "DecelerationMS2": 0.8
+        },
+        "EmergencyBrake": {
+          "DelaySeconds": 0.2,
+          "BuildUpSeconds": 0.3,
+          "DecelerationMS2": 1.2
+        },
+        "Stops": [
+          {
+            "ReferenceM": 220,
+            "DwellSeconds": 30,
+            "Boarding": true
+          },
+          {
+            "ReferenceM": 400,
+            "DwellSeconds": 4,
+            "Boarding": false
+          },
+          {
+            "ReferenceM": 220,
+            "DwellSeconds": 30,
+            "Boarding": true
+          },
+          {
+            "ReferenceM": 60,
+            "DwellSeconds": 4,
+            "Boarding": false
+          }
+        ]
+      },
+      "Segments": [
+        {
+          "Id": "route.mainline",
+          "PhysicalTrackId": "track.mainline",
+          "RouteStartM": 0,
+          "LengthM": 440,
+          "PhysicalStartM": 0,
+          "Reversed": false
+        }
+      ]
+    },
+    {
+      "FrameId": "train-metro",
+      "RegionId": "rolling_stock_metro",
+      "PortalId": "rolling_stock_metro--metro_platforms",
+      "DirectionWorld": {
+        "X": -1,
+        "Y": 0,
+        "Z": 0
+      },
+      "StationReferenceM": 220,
+      "Operation": {
+        "TrainId": "train.metro",
+        "ConsistLengthM": 42,
+        "RouteStartM": 0,
+        "RouteEndM": 440,
+        "MaximumSpeedMS": 6,
+        "TractionAccelerationMS2": 0.7,
+        "ClearanceMarginM": 1,
+        "DockToleranceM": 0.05,
+        "DoorClosingSeconds": 2,
+        "ServiceBrake": {
+          "DelaySeconds": 0.4,
+          "BuildUpSeconds": 0.5,
+          "DecelerationMS2": 0.8
+        },
+        "EmergencyBrake": {
+          "DelaySeconds": 0.2,
+          "BuildUpSeconds": 0.3,
+          "DecelerationMS2": 1.2
+        },
+        "Stops": [
+          {
+            "ReferenceM": 220,
+            "DwellSeconds": 30,
+            "Boarding": true
+          },
+          {
+            "ReferenceM": 400,
+            "DwellSeconds": 4,
+            "Boarding": false
+          },
+          {
+            "ReferenceM": 220,
+            "DwellSeconds": 30,
+            "Boarding": true
+          },
+          {
+            "ReferenceM": 60,
+            "DwellSeconds": 4,
+            "Boarding": false
+          }
+        ]
+      },
+      "Segments": [
+        {
+          "Id": "route.metro",
+          "PhysicalTrackId": "track.metro",
+          "RouteStartM": 0,
+          "LengthM": 440,
+          "PhysicalStartM": 0,
+          "Reversed": false
+        }
+      ]
+    }
+  ],
+  "SmokeMassExtinctionM2PerKg": 8700,
+  "ObservationOpticalDepthLimit": 3
+}
