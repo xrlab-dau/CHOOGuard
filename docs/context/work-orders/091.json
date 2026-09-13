@@ -212,7 +212,8 @@
     "inputs": "node scripts/context/task_context.mjs brief --issue 91 --section inputs --phase candidate",
     "writes": "node scripts/context/task_context.mjs brief --issue 91 --section writes --phase candidate",
     "checks": "node scripts/context/task_context.mjs brief --issue 91 --section checks --phase candidate",
-    "history": "node scripts/context/task_context.mjs brief --issue 91 --section history"
+    "history": "node scripts/context/task_context.mjs brief --issue 91 --section history",
+    "requirements": "node scripts/context/task_context.mjs brief --issue 91 --section requirements"
   },
   "handoff": [
     "workId and phase",
@@ -230,5 +231,172 @@
   "sourceSnapshot": {
     "capturedAt": "2026-09-12T09:39:41Z",
     "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
-  }
+  },
+  "requirements": [
+    {
+      "id": "requirement.F-LOAD",
+      "code": "F-LOAD",
+      "title": "교관 포함 20클라이언트·NPC100·동시2사건 및 물리·음성·네트워크 실부하 검증.",
+      "definition": "교관 포함 20클라이언트·NPC100·동시2사건 및 물리·음성·네트워크 실부하 검증.",
+      "mappingStatus": "mapped",
+      "policy": null,
+      "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다.",
+      "evidence": [
+        {
+          "issue": 91,
+          "kind": "definition_trace_outcome",
+          "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다.",
+          "sources": [
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L10",
+              "quote": "| F-LOAD | 교관 포함20클라이언트·NPC100·동시사건2건. 후속100/500/3은 현재 완료 조건이 아님 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L63",
+              "quote": "| 6 | [#91](https://github.com/xrlab-dau/CHOOGuard/issues/91) | 20/100/2 통합·60분 부하·인터넷·음성 실측 | 구현/검증 전 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L89",
+              "quote": "| 부하 | 교관 포함20개 실제 프로토콜 클라이언트+NPC100+동시사건2, 물리/음성 켜기. 분산순회와 한 집결지 각각60분 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L90",
+              "quote": "| 서버 |20Hz 틱 처리시간과 stall/메모리 측정 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L91",
+              "quote": "| Windows |실제 사양·1080p frame interval p95≤33.3ms 초기 목표 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L92",
+              "quote": "| 네트워크 |RTT100ms·손실1%,원격행동 반영 p95≤250ms 초기 목표 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L93",
+              "quote": "| 음성 |음성 종단지연 p95≤300ms 초기 목표, 실제 마이크/PTT/수신 검증 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L94",
+              "quote": "| 계측 |게임/음성 송수신량·재전송·지터 별도. 로컬FPS는 네트워크 수용 근거가 아님 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L95",
+              "quote": "| 인터넷 |서로 다른 네트워크 실접속.20프로토콜 부하와 여러PC 사람 조작/PTT를 따로 기록 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/context/work-graph.json",
+              "selector": "/items/65/outcome",
+              "quote": "20 protocol clients·NPC 100·동시 사건 2건을 물리·음성 조건에서 분산·집결 각각 60분 실행하고 tick/frame/action/voice/traffic/recovery 측정을 실제 receipt로 판정한다.",
+              "availability": "qualified_ref",
+              "ref": "83f6a8818b304ee7ebf480e5d481681e56a87a29",
+              "digest": {
+                "algorithm": "sha256",
+                "value": "80c1250d0df40ebbf9ce545722d2af3e78bd7ea76c031147ac66a985002cc97b"
+              },
+              "access": "고정 Git commit의 저장소 읽기 권한; 내장된 selector 인용 사용.",
+              "qualification": "고정 공유 작업 정본의 목표/명시 selector 대조; 현행 GitHub 상태 실조회 아님.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            }
+          ],
+          "limits": "requirement coverage is a planning projection, not implementation or acceptance; 정의·추적표와 작업 목표의 의미 대응 재구성이다. 현재 구현·실측·제품 수용 완료를 주장하지 않는다."
+        }
+      ],
+      "legacySource": {
+        "pointer": "reviews/foundation-map.json#/issues/*/requirements",
+        "availability": "unavailable",
+        "generatorRecovered": false
+      },
+      "limits": "requirement coverage is a planning projection, not implementation or acceptance; 정의·추적표와 작업 목표의 의미 대응 재구성이다. 현재 구현·실측·제품 수용 완료를 주장하지 않는다."
+    }
+  ]
 }

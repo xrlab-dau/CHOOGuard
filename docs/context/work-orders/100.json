@@ -237,7 +237,8 @@
     "inputs": "node scripts/context/task_context.mjs brief --issue 100 --section inputs --phase candidate",
     "writes": "node scripts/context/task_context.mjs brief --issue 100 --section writes --phase candidate",
     "checks": "node scripts/context/task_context.mjs brief --issue 100 --section checks --phase candidate",
-    "history": "node scripts/context/task_context.mjs brief --issue 100 --section history"
+    "history": "node scripts/context/task_context.mjs brief --issue 100 --section history",
+    "requirements": "node scripts/context/task_context.mjs brief --issue 100 --section requirements"
   },
   "handoff": [
     "workId and phase",
@@ -255,5 +256,102 @@
   "sourceSnapshot": {
     "capturedAt": "2026-09-12T09:39:41Z",
     "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
-  }
+  },
+  "requirements": [
+    {
+      "id": "requirement.F-VOICE",
+      "code": "F-VOICE",
+      "title": "자체호스팅 팀/지휘 PTT와 발언·구독 권한, 중단·재연결·토큰 철회 제약; 녹음 미제공.",
+      "definition": "자체호스팅 팀/지휘 PTT와 발언·구독 권한, 중단·재연결·토큰 철회 제약; 녹음 미제공.",
+      "mappingStatus": "mapped",
+      "policy": null,
+      "reason": "정의·추적표와 공유 정본의 명시 Requirement selector 및 해당 작업 목표를 대조했다.",
+      "evidence": [
+        {
+          "issue": 100,
+          "kind": "explicit_selector",
+          "reason": "정의·추적표와 공유 정본의 명시 Requirement selector 및 해당 작업 목표를 대조했다.",
+          "sources": [
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L18",
+              "quote": "| F-VOICE | 자체호스팅 팀/지휘 PTT, 발언/구독 권한. 해제·포커스 상실·입력 비활성·연결 해제 시 송신 중단. 음성 녹음 미제공 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L55",
+              "quote": "| 2 | [#100](https://github.com/xrlab-dau/CHOOGuard/issues/100) | LiveKit 자체 호스팅 음성 무전·PTT | 구현/검증 전 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L46",
+              "quote": "버전 존재는 실제 조합 PASS가 아니다. [UnityTransport API](https://docs.unity3d.com/Packages/com.unity.netcode.gameobjects@2.13/api/Unity.Netcode.Transports.UTP.UnityTransport.html), [LiveKit SDK2.0.0](https://github.com/livekit/client-sdk-unity/tree/v2.0.0), [서버1.13.6](https://github.com/livekit/livekit/releases/tag/v1.13.6)을 대조한다. 자체호스팅 LiveKit은 참여자 제거만으로 이미 발급한 토큰이 즉시 무효화되지 않는다. 팀 변경 시 channel epoch/room 교체와 만료·발급 차단을 검증하며 클라이언트 unsubscribe를 접근 통제로 취급하지 않는다. [공식 토큰 제약](https://docs.livekit.io/frontends/reference/tokens-grants/).",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/context/work-graph.json",
+              "selector": "/items/70/outcome",
+              "quote": "실제 두 참가자의 마이크/수신 경로에서 제한된 팀/지휘 PTT와 중단·재연결·권한철회 동작을 검증한다.",
+              "availability": "qualified_ref",
+              "ref": "83f6a8818b304ee7ebf480e5d481681e56a87a29",
+              "digest": {
+                "algorithm": "sha256",
+                "value": "80c1250d0df40ebbf9ce545722d2af3e78bd7ea76c031147ac66a985002cc97b"
+              },
+              "access": "고정 Git commit의 저장소 읽기 권한; 내장된 selector 인용 사용.",
+              "qualification": "고정 공유 작업 정본의 목표/명시 selector 대조; 현행 GitHub 상태 실조회 아님.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/context/work-graph.json",
+              "selector": "/items/70/context/2/selector",
+              "quote": "F-VOICE 및 토큰 철회 제약",
+              "availability": "qualified_ref",
+              "ref": "83f6a8818b304ee7ebf480e5d481681e56a87a29",
+              "digest": {
+                "algorithm": "sha256",
+                "value": "80c1250d0df40ebbf9ce545722d2af3e78bd7ea76c031147ac66a985002cc97b"
+              },
+              "access": "고정 Git commit의 저장소 읽기 권한; 내장된 selector 인용 사용.",
+              "qualification": "고정 공유 작업 정본의 목표/명시 selector 대조; 현행 GitHub 상태 실조회 아님.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            }
+          ],
+          "limits": "requirement coverage is a planning projection, not implementation or acceptance; 정의·추적표와 작업 목표의 의미 대응 재구성이다. 현재 구현·실측·제품 수용 완료를 주장하지 않는다."
+        }
+      ],
+      "legacySource": {
+        "pointer": "reviews/foundation-map.json#/issues/*/requirements",
+        "availability": "unavailable",
+        "generatorRecovered": false
+      },
+      "limits": "requirement coverage is a planning projection, not implementation or acceptance; 정의·추적표와 작업 목표의 의미 대응 재구성이다. 현재 구현·실측·제품 수용 완료를 주장하지 않는다."
+    }
+  ]
 }

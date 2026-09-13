@@ -11,6 +11,7 @@ from pathlib import Path, PurePosixPath
 import re
 import shlex
 import subprocess
+import unicodedata
 
 from context_graph import PRIVATE_TEXT, digest, load_json, repo_path
 
@@ -72,7 +73,102 @@ def manifest_entries(manifest, root=ROOT):
     return result
 
 
+def requirement_projection(tasks, root=ROOT):
+    """Match the Node requirement contract; never infer links from indices or context."""
+    def require(ok, message):
+        if not ok:
+            raise ValueError('requirements: ' + message)
+
+    def exact(value, fields):
+        return isinstance(value, dict) and set(value) == set(fields.split())
+
+    def text(value):
+        return isinstance(value, str) and bool(value.strip())
+
+    def integer(value):
+        return type(value) is int and 0 < value <= 9007199254740991
+
+    def evidence_path(path):
+        require(text(path) and path == unicodedata.normalize('NFC', path)
+                and not re.search(r'[\\\x00-\x20\x7f:%?#\[\]{}*]', path)
+                and all(part not in ('', '.', '..') for part in path.split('/')), 'ambiguous evidence path')
+        return safe_relative(root, path)
+
+    def source(value):
+        if not exact(value, 'path selector quote availability ref digest access qualification limits'):
+            return False
+        evidence_path(value['path'])
+        pin = value['digest']
+        return (all(text(value[k]) for k in ('selector', 'quote', 'access', 'qualification', 'limits'))
+                and exact(pin, 'algorithm value') and pin['algorithm'] == 'sha256'
+                and isinstance(pin['value'], str) and bool(re.fullmatch('[a-f0-9]{64}', pin['value']))
+                and ((value['availability'] == 'local_snapshot' and value['ref'] is None)
+                     or (value['availability'] == 'qualified_ref' and isinstance(value['ref'], str)
+                         and bool(re.fullmatch('[a-f0-9]{40}', value['ref'])))))
+
+    require(all(isinstance(tasks.get(k), list) for k in ('items', 'requirements', 'edges')), 'arrays required')
+    items = {i['number']: i for i in tasks['items']}
+    registry, by_issue, by_requirement = {}, {n: [] for n in items}, {}
+    declared, indexed, mapped = set(), set(), set()
+    for r in tasks['requirements']:
+        require(exact(r, 'id code kind title definition issueNumbers mappingStatus evidence legacySource limits')
+                and isinstance(r['code'], str) and bool(re.fullmatch('F-[A-Z0-9]+(?:-[A-Z0-9]+)*', r['code']))
+                and r['id'] == 'requirement.' + r['code'] and r['kind'] == 'requirement'
+                and all(text(r[k]) for k in ('title', 'definition', 'limits')), 'identity/definition/fields')
+        require(r['id'] not in registry, 'duplicate identity')
+        registry[r['id']] = r; by_requirement[r['id']] = []
+        numbers = r['issueNumbers']
+        require(isinstance(numbers, list) and all(integer(n) and n in items for n in numbers)
+                and len(set(numbers)) == len(numbers), 'invalid issueNumbers')
+        require(r['mappingStatus'] in ('mapped', 'historical_on_hold', 'unresolved')
+                and (r['mappingStatus'] == 'unresolved') == (not numbers), 'mapping status')
+        legacy = r['legacySource']
+        require(exact(legacy, 'pointer availability generatorRecovered') and text(legacy['pointer'])
+                and legacy['availability'] == 'unavailable' and legacy['generatorRecovered'] is False,
+                'legacy source must remain unavailable')
+        evidence_path(legacy['pointer'].split('#')[0])
+        require(isinstance(r['evidence'], list) and len(r['evidence']) == len(numbers), 'one evidence record per pair')
+        evidence_issues = []
+        for e in r['evidence']:
+            require(exact(e, 'issue kind reason sources limits') and integer(e['issue']) and e['issue'] in numbers
+                    and e['kind'] in ('explicit_selector', 'definition_trace_outcome', 'historical_link')
+                    and text(e['reason']) and text(e['limits']) and isinstance(e['sources'], list)
+                    and bool(e['sources']) and all(source(s) for s in e['sources']), 'invalid pair evidence/source')
+            evidence_issues.append(e['issue'])
+        require(len(set(evidence_issues)) == len(evidence_issues), 'duplicate evidence')
+        declared.update((n, r['id']) for n in numbers)
+    for n, item in items.items():
+        ids = item.get('requirements', [])
+        require(isinstance(ids, list) and all(isinstance(i, str) and i in registry for i in ids)
+                and len(set(ids)) == len(ids), 'invalid item reverse index')
+        indexed.update((n, identity) for identity in ids)
+    for e in tasks['edges']:
+        if e.get('relation') != 'implements':
+            continue
+        require(exact(e, 'from to relation reason mappingStatus policy') and isinstance(e['from'], str)
+                and bool(re.fullmatch(r'issue\.[1-9][0-9]*', e['from'])) and e['to'] in registry
+                and text(e['reason']), 'implements active work -> requirement only')
+        n, r = int(e['from'][6:]), registry[e['to']]
+        require(n in items and e['mappingStatus'] in ('mapped', 'historical_on_hold')
+                and e['mappingStatus'] == r['mappingStatus'], 'edge endpoint/status mismatch')
+        if e['mappingStatus'] == 'historical_on_hold':
+            require(exact(e['policy'], 'path selector') and e['policy']['path'] == 'docs/context/work-orders/policy.json'
+                    and e['policy']['selector'] == '/goalOverrides/' + str(n), 'held policy pointer required')
+            safe_relative(root, e['policy']['path'])
+        else:
+            require(e['policy'] is None, 'no execution authority')
+        pair = (n, r['id']); require(pair not in mapped, 'duplicate implements pair'); mapped.add(pair)
+        evidence = [x for x in r['evidence'] if x['issue'] == n]
+        require(len(evidence) == 1, 'missing pair evidence')
+        by_requirement[r['id']].append(n)
+        by_issue[n].append(dict(id=r['id'], code=r['code'], definition=r['definition'],
+                               mappingStatus=e['mappingStatus'], evidence=evidence))
+    require(declared == indexed == mapped, 'registry/item/implements pair mismatch')
+    return dict(byIssue=by_issue, byRequirement=by_requirement)
+
+
 def assemble(raw, manifest, tasks, context, root=ROOT):
+    requirements = requirement_projection(tasks, root)
     entries = manifest_entries(manifest, root)
     nodes, edges, by_id, source_ids, symbols = [], [], {}, {}, {}
     task_path = 'docs/context/work-graph.json'
@@ -148,18 +244,8 @@ def assemble(raw, manifest, tasks, context, root=ROOT):
              issue=item['number'], workId=item.get('workId'), workKind=item.get('kind'))
     requirement_ids = {r['id'] for r in tasks.get('requirements', [])}
     for item in tasks.get('requirements', []):
-        node(item['id'], item['title'], 'Requirement', qualification=item.get('limits'),
-             contract=item, mappingStatus='unbound; no declared work association')
-        for number in item.get('issueNumbers', []):
-            if type(number) is int and 'issue.' + str(number) in by_id:
-                edge('issue.' + str(number), item['id'], 'addresses_requirement',
-                     qualification='declared planning coverage; not implementation or acceptance')
-    for item in items:
-        for requirement in item.get('requirements', []):
-            if requirement not in requirement_ids:
-                raise ValueError('Unknown declared requirement: ' + str(requirement))
-            edge('issue.' + str(item['number']), requirement, 'addresses_requirement',
-                 qualification='declared planning coverage; not implementation or acceptance')
+        node(item['id'], item['title'], 'Requirement', qualification=item['limits'],
+             contract=item, mappingStatus=item['mappingStatus'])
 
     def document(path):
         safe_relative(root, path)
@@ -250,10 +336,9 @@ def assemble(raw, manifest, tasks, context, root=ROOT):
             for sid in source_by_path.get(path, []):
                 edge('context:' + item['id'], sid, 'source_candidate', context_path,
                      contract=ref, qualification='historical attribution; compare stored digest before reuse')
-    bound_requirements = {e['source'] for e in edges if e['source'] in requirement_ids}
-    bound_requirements.update(e['target'] for e in edges if e['target'] in requirement_ids)
-    for identity in bound_requirements:
-        by_id[identity]['mappingStatus'] = 'declared association; acceptance not assessed'
+    mappings = [e for e in tasks['edges'] if e['relation'] == 'implements']
+    bound_requirements = {identity for identity, numbers in requirements['byRequirement'].items() if numbers}
+    held = [e for e in mappings if e['mappingStatus'] == 'historical_on_hold']
 
     # 같은 노드 쌍의 다중 의미와 계약 차이를 유지한다.
     edges = [json.loads(text) for text in sorted({encoded(e) for e in edges})]
@@ -267,6 +352,9 @@ def assemble(raw, manifest, tasks, context, root=ROOT):
                            'filesWithoutSymbols': sorted(e['path'] for p, e in entries.items() if source_ids[p] not in symbols),
                            'workItems': len(items), 'astNodes': len(original_ids), 'rawDanglingEdges': raw_dangling,
                            'unboundRequirements': sorted(requirement_ids - bound_requirements),
+                           'requirementMappings': len(mappings), 'heldRequirementMappings': len(held),
+                           'heldRequirements': sorted({e['to'] for e in held}),
+                           'requirementCoverageLimits': 'Evidence-backed planning only; held mappings are not executable. Unbound zero is not implementation or acceptance.',
                            'nodeKinds': dict(sorted(Counter(n['domainKind'] for n in nodes).items()))})
     check_graph(graph)
     return graph
@@ -306,10 +394,8 @@ def scoped_context(graph, issue, phase, max_chars=16000, symbol=None):
     for e in graph['edges']:
         if e['source'] in pointers and e['relation'] in {'source_candidate', 'points_to_document'}:
             selected.add(e['target'])
-        if e['source'] == wid and by_id[e['target']]['domainKind'] == 'Requirement':
+        if e['source'] == wid and e['relation'] == 'implements':
             selected.add(e['target'])
-        if e['target'] == wid and by_id[e['source']]['domainKind'] == 'Requirement':
-            selected.add(e['source'])
     documents = {i for i in selected if by_id[i]['domainKind'] == 'DocumentReference'}
     for e in graph['edges']:
         if e['target'] in documents and e['relation'] == 'attributed_to_document':
@@ -332,15 +418,22 @@ def scoped_context(graph, issue, phase, max_chars=16000, symbol=None):
             if at in selected_symbols and by_id[neighbor]['domainKind'] in {'ExternalSymbol', 'UnresolvedReference'}:
                 unresolved.add(neighbor)
     selected.update(unresolved)
-    result = dict(issue=issue, phase=phase, authority=AUTHORITY, complete=True,
+    def scoped_node(n):
+        if n['domainKind'] != 'Requirement':
+            return n
+        contract = dict(n['contract'], issueNumbers=[issue],
+                        evidence=[e for e in n['contract']['evidence'] if e['issue'] == issue])
+        return dict(n, contract=contract)
+
+    result = dict(issue=issue, phase=phase, authority=AUTHORITY, authorization=False, complete=True,
                   symbolFilter=symbol, scope='explicit symbol selection' if symbol else 'phase source symbols',
                   unresolvedNeighbors=len(unresolved),
                   scopeLimits='Direct document attributions and unresolved AST neighbors only; no recursive call graph or predecessor context. Path attribution is not source qualification.',
-                  nodes=[n for n in graph['nodes'] if n['id'] in selected],
+                  nodes=[scoped_node(n) for n in graph['nodes'] if n['id'] in selected],
                   edges=[e for e in graph['edges'] if e['source'] in selected and e['target'] in selected])
     required = len(encoded(result))
     if required > max_chars:
-        return dict(issue=issue, phase=phase, authority=AUTHORITY, complete=False,
+        return dict(issue=issue, phase=phase, authority=AUTHORITY, authorization=False, complete=False,
                     requiredChars=required, nodes=[], edges=[],
                     next=f'query --issue {issue} --phase {phase} --max-chars {required + 256}' +
                          (f' --symbol {shlex.quote(symbol)}' if symbol else ''),

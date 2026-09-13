@@ -352,7 +352,8 @@
     "inputs": "node scripts/context/task_context.mjs brief --issue 10 --section inputs --phase candidate",
     "writes": "node scripts/context/task_context.mjs brief --issue 10 --section writes --phase candidate",
     "checks": "node scripts/context/task_context.mjs brief --issue 10 --section checks --phase candidate",
-    "history": "node scripts/context/task_context.mjs brief --issue 10 --section history"
+    "history": "node scripts/context/task_context.mjs brief --issue 10 --section history",
+    "requirements": "node scripts/context/task_context.mjs brief --issue 10 --section requirements"
   },
   "handoff": [
     "workId and phase",
@@ -370,5 +371,116 @@
   "sourceSnapshot": {
     "capturedAt": "2026-09-12T09:39:41Z",
     "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
-  }
+  },
+  "requirements": [
+    {
+      "id": "requirement.F-SOURCE",
+      "code": "F-SOURCE",
+      "title": "기관·문서·개정·구역/차량/직무 적용범위·검증상태·라이선스/재배포·자료 등급을 분리 추적.",
+      "definition": "기관·문서·개정·구역/차량/직무 적용범위·검증상태·라이선스/재배포·자료 등급을 분리 추적.",
+      "mappingStatus": "mapped",
+      "policy": null,
+      "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다. #10은 문서·기관 자료의 근거 적용 범위 계약만 연결하며 다른 Requirement를 포괄 상속하지 않는다.",
+      "evidence": [
+        {
+          "issue": 10,
+          "kind": "definition_trace_outcome",
+          "reason": "로컬 정의·기존 작업 추적표와 고정 공유 정본의 해당 작업 목표를 대조한 의미 대응 재구성이다. #10은 문서·기관 자료의 근거 적용 범위 계약만 연결하며 다른 Requirement를 포괄 상속하지 않는다.",
+          "sources": [
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L21",
+              "quote": "| F-SOURCE | 운영기관·근거문서·개정판·적용구역/차량/직무·검증상태를 데이터로 분리. 라이선스·재배포 조건과 출처 등급을 확인한 공개 자료를 코어 재작성 없이 반영하며, 확정되지 않는 치수·배치·직원 SOP는 `공개 자료로 확정 불가`로 유지 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L52",
+              "quote": "| 1 | [#10](https://github.com/xrlab-dau/CHOOGuard/issues/10) | 요구사항·공통 계약·수용 근거 정합화 | 구현/검증 전 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L26",
+              "quote": "2026-09-12 최신 결정상 코레일은 개발 요구·도면·평면·매뉴얼·자료를 제공하지 않으며 실제 역사 촬영과 현장 모의훈련도 수행하지 않는다. 자료 제공이나 촬영 승인을 기다리지 않고 공개 자료의 근거 범위에서 개발한다. 실제 부산역 정밀 디지털 트윈·기관 직원SOP·현장 훈련효과는 미검증 경계를 유지하며 일반 기능 구현으로 수용하지 않는다. VR·기관 상시운영 역시 별도 후속 범위다. 공개 자료의 근거 공백은 일반 기능 개발의 전역 장애가 아니다. LLM이 실제 안전절차나 공식 점수를 결정하지 않는다.",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L44",
+              "quote": "| 자료 | 합성/기관/이용객/제조사 자료 구분, 출처·개정·적용범위·검수 상태를 data contract에 결속 |",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/choo-guard-foundation-multiplayer.md",
+              "selector": "L98",
+              "quote": "이 수치는 목표이며 현재 통과 결과가 아니다. 실패는 수정하거나 근거와 함께 목표 변경을 논의한다. 실제 자료는 Exa로 발견한 원문을 조건/행동/보고/인계에 연결하며 코레일 공개자료·부산교통공사 이용객 안내·[SR 직원 매뉴얼](https://www.srail.or.kr/cms/attach/download.do?pageId=KR0701300007&atchNo=47)의 적용 대상을 구분한다. SR 자료를 코레일 직원 SOP로 전용하지 않는다.",
+              "availability": "local_snapshot",
+              "ref": null,
+              "digest": {
+                "algorithm": "sha256",
+                "value": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+              },
+              "access": "이 레지스트리에 내장된 인용만 이식 가능. 미게시 원문 로컬 bytes의 추가 읽기 자격은 부여하지 않음.",
+              "qualification": "직접 읽은 명세 snapshot의 정의/추적 근거; 과거 manifest와 별도 hash.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            },
+            {
+              "path": "docs/context/work-graph.json",
+              "selector": "/items/0/outcome",
+              "quote": "현재 Foundation 요구·세계 계약·근거 적용 범위를 한 버전의 승인 가능한 계약 묶음으로 정합화한다.",
+              "availability": "qualified_ref",
+              "ref": "83f6a8818b304ee7ebf480e5d481681e56a87a29",
+              "digest": {
+                "algorithm": "sha256",
+                "value": "80c1250d0df40ebbf9ce545722d2af3e78bd7ea76c031147ac66a985002cc97b"
+              },
+              "access": "고정 Git commit의 저장소 읽기 권한; 내장된 selector 인용 사용.",
+              "qualification": "고정 공유 작업 정본의 목표/명시 selector 대조; 현행 GitHub 상태 실조회 아님.",
+              "limits": "출처 내용의 동일성만 한정하며 실행·공개·수용 또는 정책 재개 승인이 아님."
+            }
+          ],
+          "limits": "requirement coverage is a planning projection, not implementation or acceptance; 자료 근거와 적용 범위 관리다. 소스코드 게시 #120이 아니며 SR 자료를 코레일 직원 SOP로 전용하지 않는다. 공개 자료로 확정 불가인 치수·배치·SOP는 미검증으로 유지한다."
+        }
+      ],
+      "legacySource": {
+        "pointer": "reviews/foundation-map.json#/issues/*/requirements",
+        "availability": "unavailable",
+        "generatorRecovered": false
+      },
+      "limits": "requirement coverage is a planning projection, not implementation or acceptance; 자료 근거와 적용 범위 관리다. 소스코드 게시 #120이 아니며 SR 자료를 코레일 직원 SOP로 전용하지 않는다. 공개 자료로 확정 불가인 치수·배치·SOP는 미검증으로 유지한다."
+    }
+  ]
 }

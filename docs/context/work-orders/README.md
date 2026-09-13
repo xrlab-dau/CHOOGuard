@@ -4,8 +4,12 @@
 
 - `NNN.json`: 해당 이슈의 실행 지시와 최소 문맥
 - `ontology.jsonld`: 프로젝트 온톨로지와 관계 방향
-- `index.jsonld`: Goal/WorkItem/Phase/Artifact/Source/Resource/Role 등록
+- `index.jsonld`: Goal/WorkItem/Phase/Artifact/Source/Resource/Role/Requirement 등록
+- `requirements`: 해당 작업의 정의·근거·한계만 보존하며 `--section requirements`는 packet만 읽습니다. 공유 요구의 다른 이슈 근거는 반환하지 않습니다.
+- `implements`: 계획상 근거 매핑이며 선행·수용·실행 권한이 아닙니다. `historical_on_hold`는 #106/#107 정책 보류를 유지합니다.
+- 미게시 명세는 `local_snapshot`, `ref:null`과 정확한 hash·내장 인용으로 구분합니다. `legacySource` 원생성기와 foundation-map은 미복구입니다.
 - 상세 입력·쓰기·검증은 `task_context.mjs --section`으로 해당 이슈/단계만 읽습니다.
+- GitHub 이슈 관리 본문의 `요구 매핑` 행은 이 packet 요약이며, 원격 본문도 같은 렌더러로 생성됩니다. 매핑 없는 작업에도 행을 표시해 자동 상속으로 오해하지 않게 합니다.
 
 | 이슈 | PM 작업 지시 | 문맥 |
 |---|---|---|
