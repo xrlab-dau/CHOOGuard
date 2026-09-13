@@ -1,5 +1,12 @@
 # Agent rules for choo-guard
 
+## Current execution contract (2026-09-12)
+
+- Use `docs/context/pm-execution-contract.md` and the per-issue `docs/context/work-graph.json` as the current planning/ownership/dependency contract. The current target is 13 regions, 20 clients including instructors, 100 NPCs and 2 concurrent incidents; it is not a completed acceptance claim.
+- No school/location/high-spec routing and no advance named assignees. Preserve an existing evidenced start. Claim precise scopes and leases only at actual start; independent checkouts may run independent work.
+- Local-unpublished Native files are not a team checkout baseline. Consume #120's qualified reachable ref only where needed. Existing legacy prototype and receipt scope remain historical facts.
+- Higgsfield/external-generation authority conflicts are SC-01: do not infer a resolution from timestamps or resume new requests until the scoped PM decision. Other Native work is not globally blocked. CV/SOTA reconstruction is rejected current work; retain old files/receipts as history, not instructions to restart.
+
 ## Source of truth
 
 Git-tracked C#, tests, declarative scenario data, Editor builders, and SceneBundle manifests are the source of truth. Do not rely on an unrecorded Unity Editor state.
@@ -41,10 +48,10 @@ Git-tracked C#, tests, declarative scenario data, Editor builders, and SceneBund
 - As accepted on 2026-09-07, the flat-only requirement is superseded. Use traceable public station references to model realistic structure, manufactured detail, material response and lighting in Blender/Unity. Keep observed features separate from estimated dimensions and unverified current layout; see `docs/art/public-station-references.md`.
 - Every visible asset family must have an individually inspected image reference in `foundation/art/object-references.json`, concrete observed features, an authored source module/component binding and actual scene usage. A broad station photo list or an FBX count is not per-object reproduction evidence. Distinguish station-observed forms, manufacturer proxies, virtual guidance and structural adapters.
 - Compare native front/side detail views with those references before marking visual review complete. Bind that review to the current FBX hash; preserve limitations on measured layout and institutional procedures. Asymmetric import, normals, moving colliders and visual ground contact require direct geometric tests when changed.
-- Keep heavy local modeling, offline rendering and light/texture baking on the school PC. Lightweight local mesh generation and real-time visual checks are allowed. 외부 3D 생성 서비스 사용에는 위의 갱신된 자료 정책을 적용하며, 종전의 일괄 전송 금지를 되살리지 않는다.
+- Modeling, rendering, baking and development may run in any capable environment. Record measured capability and test scope; never require a school PC, named host, location or high-spec ownership for task assignment. External-generation policy remains subject to SC-01 and the independent data/rights/cost boundaries.
 - Desktop first, later VR uses the same spatial anchors and action meaning. Gameplay objectives use world navigation cues; identical faceless evacuees follow the player without emotions or role substitution.
 - The target connected world includes rolling stock, rails, platforms, terminal, ticket halls, station buildings and connected metro areas. Track evidence/coverage and operator boundaries per region. Public wayfinding diagrams and historical plans are not current dimensioned construction drawings.
-- Reconstruction must preserve input order/hashes, raw camera/depth outputs, masks and explicit coordinate/scale transforms through PLY/GLB, Blender and Unity. Uncalibrated review surfaces must not be labeled metric SceneBundles or receive training collisions. VR hardware remains undecided.
+- Historical reconstruction outputs retain input order/hashes, raw outputs and transform provenance. This preservation rule does not restart rejected CV/SOTA work. Public/native modeled geometry must distinguish observed structure from estimated dimensions; uncalibrated surfaces are not validated metric SceneBundles. XR target acceptance remains separately scoped.
 
 ## Continuous field training direction
 
@@ -54,7 +61,7 @@ Git-tracked C#, tests, declarative scenario data, Editor builders, and SceneBund
 
 ## Portable project context graph
 
-- Start each teammate/subagent work session with `python3 scripts/context/context_graph.py validate`, then `python3 scripts/context/context_graph.py brief --topic handoff --machine local` (use `art` or `runtime`, and `school-pc` when relevant). Read the returned canonical source files before changing their surface.
+- Start with `node scripts/context/work_graph.mjs validate` and `node scripts/context/work_graph.mjs brief --issue <number>`. Read only the returned scoped sources at their declared stage. The legacy topic/machine brief is an optional historical-source explorer, not the current issue schedule or a location policy.
 - `docs/context/project-context.json` is the Git-shared context index. It connects accepted and superseded decisions, code/assets, constraints, evidence, open questions and dated delivery snapshots. The graph never overrides its canonical sources or a newer explicit user decision.
 - Record context changes in the same work unit as the affected implementation. Review source changes before refreshing hashes; preserve historical evidence and its covered hashes. A changed hash means reread, not an automatically renewed PASS. An external snapshot never proves current GitHub status offline.
 - Keep paths relative and context portable. Never put machine-private state, credentials, confidential source documents or reusable publication permissions in the graph. Agent handoffs must include scope, touched nodes, evidence limits and next files to read.

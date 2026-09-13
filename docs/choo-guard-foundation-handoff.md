@@ -1,3 +1,7 @@
+> **역사 범위 안내 · 2026-09-12**
+> 아래 checkout·시험 결과는 문서에 기록된 당시 소스 범위다. 새 Native/Multiplayer 팀 입력은 #120의 접근 가능한 ref와 manifest로 확인한다. 과거 인계를 새 멀티 수용으로 대체하지 않는다.
+> [현재 PM 실행 계약](context/pm-execution-contract.md)을 먼저 읽는다. 아래 원문과 과거 검증 범위는 삭제하거나 새 PASS로 바꾸지 않았다.
+
 # Foundation 소스 전달과 개발 시작
 
 `feature/foundation-starter`의 [PR61](https://github.com/xrlab-dau/CHOOGuard/pull/61)은 2026-09-08 06:15:45 UTC에 `develop`으로 병합됐다. 학교 PC에서 GitHub를 다시 조회한 병합 커밋은 `f2011ac2cd4510a09c78f0de111771fc5aa433e8`이다. 코어·Unity 호스트·Blender 자산·상시 현장 시뮬레이션·생성 장면·문서·코레일 질의서를 새 `develop` checkout에서 받는다. 후속 작업은 이 기준에서 별도 작업 브랜치를 만들며, 병합은 #55의 팀 인계 검토나 Windows/HMD 수용 완료를 뜻하지 않는다.

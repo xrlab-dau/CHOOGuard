@@ -4,30 +4,30 @@
 
 Comprehensive Hazard Operational Optimizer Guard. 철도 비상대응훈련을 위한 XR 플랫폼이다.
 
-**v3 폐기:** 저장소에서 v3 문서는 확인되지 않았다. v3는 현행 개발 기준이 아니며 아래 승인 기준선을 따른다.
+**현재 실행 기준:** [PM 실행 계약](docs/context/pm-execution-contract.md)과 [이슈별 실행 그래프](docs/context/work-graph.json)를 먼저 읽는다. 아래 v1/v4 문서는 기존 프로토타입의 요구·아키텍처·운영 이력이며, 현재 멀티 목표나 작업 배정을 제한하지 않는다. v3는 현행 기준이 아니다.
 
 - [요구사항 기준선 v1.1](docs/choo-guard-requirements-baseline-v1.md)
 - [플랫폼 아키텍처 v4.2](docs/choo-guard-platform-architecture-v4.md)
 - [AI-native 파이프라인 v1.2](docs/choo-guard-ai-native-pipeline-v1.md)
 - [실행 백로그 v1.3](docs/choo-guard-execution-backlog-v1.md)
 
-[팀원 소스 전달·시작 절차](docs/choo-guard-foundation-handoff.md)와 [코레일 A4 Word 질의서](docs/korail/CHOOGuard_KORAIL_개발질의서_A4_1p.docx)를 제공한다.
+[팀원 소스 전달·시작 절차](docs/choo-guard-foundation-handoff.md)를 제공한다. [당시 코레일 질의서](docs/korail/CHOOGuard_KORAIL_개발질의서_A4_1p.docx)는 역사 자료이며 기관 회신을 공개·합성 기능 개발의 전역 선행조건으로 삼지 않는다.
 
 현재 FPS 시뮬레이션 시제품은 [실행·모델·검증 안내](docs/choo-guard-fps-foundation-progress.md)를 따른다. 저장소 루트를 Unity 6000.3.23f1에서 바로 열 수 있다.
 
 ## 개발 준비 상태
 
-현재 우선순위는 [Foundation: MVP의 MVP](docs/choo-guard-foundation-v1.md)다. 임시 역사형 맵·3D 소품·이동·상호작용·임시 비상대응 시나리오를 연결한 싱글플레이 3D 게임을 만든다. KORAIL 자료 없이 플레이 경로를 구축하며 공통 코드·검사만으로 완료하지 않는다. 로컬 또는 학교 Unity의 `CHOOguard → Foundation → Build Playable Demo` 실행 경로를 [Demo 안내](Packages/com.xrlab.chooguard.foundation/Demo/README.md)에 기록한다.
+현재 Foundation 목표는 **13구역·교관 포함20클라이언트·NPC100·동시사건2**의 공동 훈련이다. 기존 [싱글플레이 시제품](docs/choo-guard-foundation-v1.md)은 회귀 기준으로 보존한다. 2026-09-12 캡처에서 새 Native/Multiplayer 소스 일부는 로컬 미게시 상태였다. 팀은 #120의 실제 접근 가능한 ref와 [소스 가용성 기록](docs/context/source-availability.json)을 확인하며, 파일 존재를 전체 구현·수용으로 해석하지 않는다. 기존 시제품의 Editor 실행 경로는 [Demo 안내](Packages/com.xrlab.chooguard.foundation/Demo/README.md)에 있다.
 
-로컬 시작 명령은 `python3 scripts/dev/check_foundation.py`다. 이 명령은 합성 데이터를 검사한다. C# 컴파일·Unity 장면·플레이 검증은 Editor에서 별도로 실행하고, Windows 실행본·HMD 검증은 학교 PC에서 수행한다.
+작업 시작은 `node scripts/context/work_graph.mjs brief --issue <number>`로 이슈별 입력·쓰기 범위·검증을 확인한다. 기존 `python3 scripts/dev/check_foundation.py`는 합성 데이터 검사이며 C# 컴파일·장면·플레이·Windows·HMD 수용이 아니다. 실제 시험 조건을 충족하는 어떤 환경에서도 해당 검증을 수행할 수 있다.
 
-[요구사항 발견](_bmad-output/planning-artifacts/requirements-discovery-v1.md)과 [변경 단위 명세](specs/README.md)는 검토용 초안이다. [검토 상태](docs/reviews/2026-09-06-workflow-status.json)의 미결을 해결하기 전 Pi·MCP·조사 하네스 운영 실행을 승인하지 않는다.
+[요구사항 발견](_bmad-output/planning-artifacts/requirements-discovery-v1.md)과 [변경 단위 명세](specs/README.md), [이전 검토 상태](docs/reviews/2026-09-06-workflow-status.json)는 당시 범위의 근거다. 현재 도구 실행·자료·검증 조건은 해당 이슈의 단계별 입력과 현재 승인 범위로 확인하며 과거 미결을 일반 개발의 전역 차단으로 확대하지 않는다.
 
-2026-09-06 사용자 지시로 local의 Unity Hub·Apple Silicon용 안정 LTS Editor 설치와 작은 합성 맵·기본 도형·Desktop 게임 개발 및 테스트를 허용한다. 무거운 모델링·렌더·베이크, Windows 실행본·HMD 검증은 school-pc에서 수행한다. Unity 연결은 [공식 CLI의 Editor MCP](docs/adr/0006-official-unity-editor-mcp.md)를 사용한다. `unity mcp`와 공식 Pipeline을 기준으로 버전·연결·테스트를 기록한다. [학교 PC 절차](docs/choo-guard-school-pc-bootstrap-v1.md)는 학교 환경의 전달·사람 검사·설치 및 실행 승인을 구분한다.
+작업 장소·특정 호스트·고사양 장비 소유로 팀을 배정하거나 차단하지 않는다. 실제 착수 시 자신의 브랜치·scope·lease를 기록하고, 같은 Editor/출력/공유 파일만 배타적으로 보호한다. Unity 연결은 [공식 CLI의 Editor MCP](docs/adr/0006-official-unity-editor-mcp.md)를 사용하며 버전·연결·시험 증거를 남긴다. [이전 학교 환경 절차](docs/choo-guard-school-pc-bootstrap-v1.md)는 OS별 참고 이력이지 현재 장소 제한이 아니다.
 
 ## 목표 아키텍처
 
-서면 승인된 촬영물을 내부 DA3·Open3D 처리로 SceneBundle과 충돌 프록시로 변환하고 Unity OpenXR PC VR 및 Desktop 훈련에 사용한다. 촬영 승인 전에는 합성 맵만 사용한다.
+공개자료와 합성·Native Blender/Unity 모델을 근거 수준에 맞춰 사용하며, 현재 목표는 실제 서버 권위·공유 상태·다층 이동·물리·음성·복구가 연결된 Desktop 공동 훈련이다. CV/SOTA 복원 재개는 현재 작업이 아니다. Higgsfield 활성/폐기 기록의 상충은 SC-01로 분리해 PM의 명시적 결정 전 신규 외부 생성만 보류한다. 실제 시설 정확성·기관 SOP·현장 효과·VR/HMD는 별도 후속 검증 범위다.
 
 이번 MVP는 검수 전 점수·이수 판정 대신 규칙 기반 설명형 피드백을 제공한다. LLM은 개발 보조 수단이며 철도 절차·물리적 안전의 권위가 아니다.
 
@@ -35,14 +35,14 @@ Comprehensive Hazard Operational Optimizer Guard. 철도 비상대응훈련을 �
 
 - feature, bugfix, chore 브랜치는 develop으로 PR을 보낸다. develop은 squash와 팀·CODEOWNER 승인·필수 검사를 요구한다.
 - release, hotfix 브랜치는 main의 릴리스 절차를 따른다.
-- main/develop 직접 푸시와 에이전트의 자동 이슈·PR 생성은 하지 않는다.
+- main/develop 직접 푸시는 하지 않는다. 이슈·PR·공개 변경은 해당 작업의 명시적 승인 범위에서 수행하며, 생성 자체를 실행·자료·병합 승인으로 해석하지 않는다.
 - 작업 브랜치 푸시나 문서 clone은 실행·자료 접근·모델 전송·병합 승인을 대신하지 않는다.
 
 [기여 절차](CONTRIBUTING.md), [에이전트 규칙](AGENTS.md), [CI 안내](docs/ci.md)를 함께 읽는다.
 
 ## 데이터와 라이선스
 
-철도 촬영 원본·모델 가중치·자격·Unity 라이선스·미승인 재구성 자산은 커밋하지 않는다. 외부 모델·MCP·검색에는 별도 승인된 PUBLIC_SYNTHETIC만 전송한다. gitignore와 저장소 밖 경로는 자료 취급 승인이나 격리 증거가 아니다.
+철도 촬영 원본·모델 가중치·자격·Unity 라이선스·미승인 자산은 커밋하지 않는다. 외부 코딩 LLM·MCP·검색은 현행 자료 등급과 승인된 PUBLIC_SYNTHETIC 범위를 준수한다. 코딩 LLM의 이미지 입력과 외부 3D 생성 서비스의 자료 입력은 별도 정책이며, 이 문서는 자료 전송 권한을 확대하거나 SC-01을 임의로 해결하지 않는다. 외부 서비스별 권리·개인정보·기관 조건·약관·승인은 따로 확인한다. gitignore나 저장소 밖 경로는 자료 취급 승인·격리 증거가 아니다.
 
 이 저장소는 공개되어 있지만 프로젝트 자체의 오픈소스 라이선스를 아직 부여하지 않는다. [고지](NOTICE.md)를 따른다. 제삼자 도구·vendored 파일은 별도 라이선스·재배포 고지 검토가 필요하다.
 

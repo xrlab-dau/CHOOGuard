@@ -7,9 +7,9 @@
     {
       "id": "decision.production.local_cv_school_independent",
       "kind": "decision",
-      "title": "현재: 로컬 CV 재개·학교 독립 고부하 작업",
-      "summary": "VARCO는 비용으로 폐기했다. CV-01~06은 현재 로컬 세션에서 계속하고, 학교에는 기존 자산 베이크/고해상도 렌더·대용량 데이터/모델 및 upstream GPU benchmark·Windows 검증을 독립 배정한다. 로컬이 학교 결과를 기다리지 않으며 기준 커밋/브랜치/출력을 분리한다.",
-      "status": "active",
+      "title": "이전: 로컬 CV·학교 작업 분리",
+      "summary": "2026-09-08 당시 작업 분리 결정이다. 현행 장소 중립 실행 계약과 CV/SOTA 폐기를 대신하지 않는다. 기록된 당시 근거는 역사로 보존한다.",
+      "status": "superseded",
       "authority": "user_accepted",
       "topics": [
         "art",
@@ -39,9 +39,9 @@
     {
       "id": "component.school_independent_work",
       "kind": "component",
-      "title": "학교 고용량 작업 큐",
-      "summary": "S-ART-01 베이크/검수 렌더, S-BENCH-01 고정 공개 upstream benchmark와 데이터/모델 캐시, S-WIN-01 Windows 검증의 독립 입력·출력·편집 경계를 정리했다. 개별 학교 실행과 미실행 범위는 날짜별 evidence로 추적한다. 기기별 실제 자원으로 작업량을 선택하며 환경 확인만으로 수용을 선언하지 않는다.",
-      "status": "proposed",
+      "title": "이전 학교 고용량 작업 제안",
+      "summary": "이전 학교 작업 큐와 당시 도구/검증 조건의 기록이다. 현재 장소·고사양 배정 또는 CV 실행 지시가 아니다.",
+      "status": "historical",
       "authority": "canonical_document",
       "topics": [
         "art",
@@ -76,9 +76,9 @@
     {
       "id": "component.cv_research_20260908",
       "kind": "component",
-      "title": "CV 논문·실제 코드/가중치 가용성 조사",
-      "summary": "LIST3R·MonoEM-GS·SimRecon 원문과 MapAnything/DA3-Streaming/SAM3.1 구현 조건을 확인했다. LIST3R의 공개 tree에는 추론 코드가 없고 SAM3.1은 manual gated다. 기존 DA3/MapAnything 결과에서 CV-01~06을 적용하는 근거이며 전체 논문 재현은 아니다.",
-      "status": "proposed",
+      "title": "이전 CV 논문·코드 가용성 조사",
+      "summary": "당시 공개 코드/가중치 가용성 조사 기록이다. 거절된 CV/SOTA 개발을 재개하거나 새 재현 PASS를 주장하지 않는다.",
+      "status": "historical",
       "authority": "tracked_source",
       "topics": [
         "art",
@@ -768,9 +768,9 @@
     {
       "id": "workflow.start_validate",
       "kind": "workflow",
-      "title": "새 기기·팀원의 개발 시작",
-      "summary": "현재 develop과 불변 기준 SHA·LFS·manifest를 확인하고 고정 Unity로 시작한다. 공식 CLI Editor MCP를 사용하며 개인 설정은 Git 밖에 둔다. 자산별 근거·재생성·장면 검수·관련 Unity 시험을 수행하고 과거 영수증과 현재 실행을 구분한다.",
-      "status": "active",
+      "title": "이전 topic/machine 기반 시작 경로",
+      "summary": "기존 시작 절차의 역사다. 현재 팀원은 이슈별 PM 실행 계약과 접근 가능한 source ref를 확인한다.",
+      "status": "superseded",
       "authority": "canonical_document",
       "topics": [
         "art",
@@ -1080,9 +1080,9 @@
     {
       "id": "component.reconstruction",
       "kind": "component",
-      "title": "실제 깊이에서 PLY·삼각형 GLB로",
-      "summary": "DA3 optical-z 표면 export와 독립 SfM 분리, 두 연속4장 구간의 DA3/MapAnything 실행 및 provenance 회귀가 있다. 새 다중 시점 지원/가림 필터·engine-neutral 관측 전달(CV-01~06)은 로컬의 미완료 작업이다. 상대 단위·raw/색공간·실패를 보존한다.",
-      "status": "implemented",
+      "title": "이전 복원 경로",
+      "summary": "과거 복원 구성과 증거를 찾는 기록이다. 현행 public/native 모델링이나 전체 Foundation 수용으로 해석하지 않는다.",
+      "status": "historical",
       "authority": "tracked_source",
       "topics": [
         "art",
@@ -1141,9 +1141,9 @@
     {
       "id": "component.reconstruction_tools",
       "kind": "component",
-      "title": "고정 DA3·MapAnything·SfM과 검토 도구",
-      "summary": "고정된 DA3 Small/Base와 MapAnything Apache를 로컬 동일4장으로 실행한다. MapAnything은 별도 hash-lock 환경·검증한 local DINOv2·socket 차단·원시/adapter NPZ를 사용한다. 기존 Blender 경로와 새 시퀀스의 미완료 전달을 구분한다.",
-      "status": "implemented",
+      "title": "이전 DA3·MapAnything·SfM 도구",
+      "summary": "공유 이력에 남아 있는 이전 복원 도구다. 현재 Native 실행 작업으로 예약하지 않으며 과거 결과의 적용 SHA와 한계를 보존한다.",
+      "status": "historical",
       "authority": "tracked_source",
       "topics": [
         "art",
@@ -1508,6 +1508,88 @@
         "전체 시험·Windows 빌드·HMD 및 M1-04 전체 DoD 수용을 뜻하지 않는다.",
         "19:50 KST 마감 보고의 Console 오류 1건 이후 clean 재검증은 없다.",
         "기존 영수증과 sourceSha256은 그대로 보존한다. 그래프의 잘못된 영수증 포인터만 정정하며 과거 시험을 갱신하지 않는다."
+      ]
+    },
+    {
+      "id": "workflow.pm_issue_execution",
+      "kind": "workflow",
+      "title": "현재 이슈별 PM 실행과 최소 문맥",
+      "summary": "101개 열린 이슈를 typed work graph로 찾아 입력·후행·조건부 병렬·쓰기 lease·검증·인계를 확인한다. 그래프는 현재 GitHub 상태나 실행 수용을 대신하지 않는다.",
+      "status": "active",
+      "authority": "canonical_document",
+      "topics": [
+        "runtime",
+        "art",
+        "handoff"
+      ],
+      "observedAt": "2026-09-13",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/pm-execution-contract.md",
+          "sha256": "5aa86038de1cc8f822daa24011000f81f0485b63ab23e831c02efcfc3f467d20",
+          "label": "현재 실행/책임/장소 중립 계약"
+        },
+        {
+          "repoPath": "docs/context/work-graph.json",
+          "sha256": "5d1faba80eb7c35af807cd594c846fe4d73c6bdc94b1240f55972bb3f07b3f7c",
+          "label": "이슈별 실행 그래프"
+        }
+      ],
+      "limits": [
+        "최신 이슈·산출물·lease는 착수 직전에 다시 확인한다.",
+        "계획 AAA는 소프트웨어·자산·안전 수용이 아니다."
+      ]
+    },
+    {
+      "id": "decision.execution.environment_neutral",
+      "kind": "decision",
+      "decisionKey": "work-environment-routing",
+      "title": "작업 장소 중립·실제 착수 시 claim",
+      "summary": "학교·개인 노트북·고사양·특정 호스트로 작업을 제한하거나 개인을 미리 배정하지 않는다. 실제 capability 시험 조건과 기존 자발적 착수는 별도 사실로 보존한다.",
+      "status": "active",
+      "authority": "user_accepted",
+      "topics": [
+        "runtime",
+        "art",
+        "handoff"
+      ],
+      "observedAt": "2026-09-12",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/pm-execution-contract.md",
+          "sha256": "302c11f9057b063ff3e3e9b761d338bc70620c49058dac94eda32ec2a1e33690",
+          "label": "2026-09-12 사용자 지시의 적용 범위"
+        }
+      ],
+      "limits": [
+        "보안·자료 권리·실제 시험 조건은 사라지지 않는다."
+      ]
+    },
+    {
+      "id": "unknown.asset_generation.sc01",
+      "kind": "unknown",
+      "title": "Higgsfield 활성/폐기 기록 충돌",
+      "summary": "활성 외부생성 지시와 Native-only/폐기 기록이 상충한다. #10 PM 명시 결정 전 #106의 신규 외부 요청만 보류하며 과거 자산 이력을 삭제하지 않는다.",
+      "status": "unknown",
+      "authority": "unverified",
+      "topics": [
+        "runtime",
+        "art",
+        "handoff"
+      ],
+      "observedAt": "2026-09-12",
+      "freshnessPolicy": "content",
+      "sources": [
+        {
+          "repoPath": "docs/context/pm-execution-contract.md",
+          "sha256": "302c11f9057b063ff3e3e9b761d338bc70620c49058dac94eda32ec2a1e33690",
+          "label": "SC-01 범위와 해제 조건"
+        }
+      ],
+      "limits": [
+        "Native 제작·공개자료·일반 회귀를 전역 차단하지 않는다."
       ]
     }
   ],
@@ -1911,48 +1993,24 @@
       "from": "decision.tooling.official_unity_mcp",
       "relation": "verified_by",
       "to": "evidence.official_editor_mcp_20260908"
+    },
+    {
+      "from": "workflow.pm_issue_execution",
+      "relation": "supersedes",
+      "to": "workflow.start_validate"
+    },
+    {
+      "from": "workflow.pm_issue_execution",
+      "relation": "governed_by",
+      "to": "decision.execution.environment_neutral"
+    },
+    {
+      "from": "unknown.asset_generation.sc01",
+      "relation": "limits_claims",
+      "to": "workflow.pm_issue_execution"
     }
   ],
   "refreshLog": [
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "component.facility_coverage",
-        "component.reconstruction",
-        "component.reconstruction_review",
-        "component.reconstruction_tools",
-        "decision.visual.per_object",
-        "decision.visual.realistic",
-        "decision.world.connected",
-        "goal.foundation",
-        "policy.project_authority",
-        "unknown.vr_device"
-      ],
-      "reason": "최신 사용자 로컬 CV/학교 독립 작업 분리와 현재 소스·문서를 읽고 반영. 과거 evidence/폐기 결정의 hash와 수용 범위는 갱신하지 않음"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "새 로컬/학교 독립 작업과 현재 PR61 인계 문서를 읽고 시작 포인터만 갱신"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "workflow.start_validate"
-      ],
-      "reason": "PR 전달 커밋과 원격 YAML 실패/문자열 수정 이력을 읽고 ledger 포인터 갱신"
-    },
-    {
-      "date": "2026-09-08",
-      "nodes": [
-        "component.school_independent_work",
-        "decision.production.local_cv_school_independent",
-        "workflow.start_validate"
-      ],
-      "reason": "School PC verified PR61 merged; reread handoff and retain separate school work branches and historical acceptance limits."
-    },
     {
       "date": "2026-09-08",
       "nodes": [
@@ -2089,6 +2147,42 @@
         "workflow.start_validate"
       ],
       "reason": "Reviewed merged handoff timing and both context regression sets; retained school profile gates, original MCP receipt bytes and all historical coverage."
+    },
+    {
+      "date": "2026-09-12",
+      "nodes": [
+        "workflow.pm_issue_execution",
+        "decision.execution.environment_neutral",
+        "unknown.asset_generation.sc01",
+        "decision.production.local_cv_school_independent",
+        "component.school_independent_work",
+        "component.cv_research_20260908",
+        "component.reconstruction_tools",
+        "component.reconstruction",
+        "workflow.start_validate"
+      ],
+      "reason": "이슈별 실행 그래프를 등록하고 이전 CV/장소/시작 지시를 역사로 구분했다. 과거 증거와 그 해시는 변경하지 않았다."
+    },
+    {
+      "date": "2026-09-13",
+      "nodes": [
+        "workflow.pm_issue_execution"
+      ],
+      "reason": "Bind the independently inspected current planning graph after R10 compiler conformance; historical evidence, issue grades, and execution permission remain unchanged."
+    },
+    {
+      "date": "2026-09-13",
+      "nodes": [
+        "workflow.pm_issue_execution"
+      ],
+      "reason": "Bind the current planning graph after independent R12 compiler conformance and the selector-only correction; historical evidence and execution permissions remain unchanged."
+    },
+    {
+      "date": "2026-09-13",
+      "nodes": [
+        "workflow.pm_issue_execution"
+      ],
+      "reason": "Current PM and graph references checked for the prepared proposal; automated review loop stopped, no independent acceptance claimed."
     }
   ]
 }
