@@ -323,7 +323,6 @@ namespace ChooGuard.Foundation.Multiplayer.Editor
             PlayerSettings.companyName = "XRLab"; PlayerSettings.productName = "CHOOguard 연결 월드";
             PlayerSettings.defaultScreenWidth = 1600; PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed; PlayerSettings.runInBackground = true;
-            PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             PlayerSettings.macOS.microphoneUsageDescription = "훈련 중 무전 버튼을 누르는 동안 팀원에게 음성을 전달합니다.";
             PlayerSettings.macOS.cameraUsageDescription = "카메라 접근은 이 음성 훈련에 필요하지 않습니다.";
             AssetDatabase.SaveAssets();

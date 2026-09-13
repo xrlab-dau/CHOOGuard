@@ -26,7 +26,6 @@ namespace ChooGuard.Foundation.Multiplayer.Editor
             PlayerSettings.companyName="XRLab"; PlayerSettings.productName="CHOOguard Foundation";
             PlayerSettings.defaultScreenWidth=1920; PlayerSettings.defaultScreenHeight=1080;
             PlayerSettings.fullScreenMode=FullScreenMode.Windowed; PlayerSettings.runInBackground=true;
-            PlayerSettings.insecureHttpOption=InsecureHttpOption.AlwaysAllowed;
             PlayerSettings.macOS.microphoneUsageDescription="훈련 중 무전 버튼을 누르는 동안 팀원에게 음성을 전달합니다.";
             PlayerSettings.macOS.cameraUsageDescription="이 훈련은 카메라를 사용하지 않습니다.";
             AssetDatabase.SaveAssets();

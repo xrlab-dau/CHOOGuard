@@ -50,7 +50,7 @@ macOS의 `UNITY_EDITOR_APP`은 `.app` bundle이다. 실행 전 기존 Editor/wri
 
 이 PR은 누적 Native 소스의 검토용 기준선이다. 생성된 `ConnectedWorld`, `FoundationSimulation`, `FoundationReview`, `MultiplayerSlice` 장면·재질·텍스처·prefab, 시험용 생성 장면, 로컬 raw evidence, 캐시, 실행본, 자격 증명, `.claude/`는 포함하지 않는다. 직렬화 YAML/meta를 손으로 수정하지 않는다. 기존 meta는 소스와 짝을 맞춰 전달한다.
 
-`ProjectSettings/ProjectSettings.asset`의 로컬 변경도 제외한다. 게시 준비 중 `MultiplayerSceneBuilder`의 `insecureHttpOption = AlwaysAllowed` 자동 설정을 제거했다. builder는 Unity의 기존 평문 HTTP 제한을 변경하지 않으며 runtime endpoint 검증도 loopback 밖에서 TLS를 요구한다. 이미 바뀐 로컬 ProjectSettings를 복구하거나 원격 서비스의 TLS를 구성한 것은 아니다. 기본 보안 설정에서는 loopback HTTP recipe가 차단될 수 있으므로 #100/#143에서 TLS 구성과 실제 플랫폼 endpoint 경계를 검증한다. 해결을 위해 전역 보안 제한을 자동 해제하지 않는다.
+`ProjectSettings/ProjectSettings.asset`의 로컬 변경도 제외한다. 게시 준비 중 `MultiplayerSceneBuilder`, `ConnectedWorldSceneBuilder`, `FoundationSimulationSceneBuilder`의 `insecureHttpOption = AlwaysAllowed` 자동 설정을 제거했다. 세 builder는 Unity의 기존 평문 HTTP 제한을 변경하지 않으며 runtime endpoint 검증도 loopback 밖에서 TLS를 요구한다. 이미 바뀐 로컬 ProjectSettings를 복구하거나 원격 서비스의 TLS를 구성한 것은 아니다. 기본 보안 설정에서는 loopback HTTP recipe가 차단될 수 있으므로 #100/#143에서 TLS 구성과 실제 플랫폼 endpoint 경계를 검증한다. 해결을 위해 전역 보안 제한을 자동 해제하지 않는다.
 
 기존 Demo 변경, CV 제거 변경, 과거 보고서/컨텍스트 정리는 음성 수정과 분리해 원래 작업트리에 보존한다. source-only 게시를 완성된 장면/실행본 전달로 해석하지 않는다. #120의 독립 재현·나머지 게시 정합화는 여전히 열려 있다.
 
@@ -62,7 +62,7 @@ macOS의 `UNITY_EDITOR_APP`은 `.app` bundle이다. 실행 전 기존 Editor/wri
 | `6d533f6` | 음성 수정과 필요한 네트워크 런타임·시험·패키지 | 185 |
 | `dfc6409` | 검증 도구·로컬 LiveKit recipe | 25 |
 
-기준 `e7a6bb7`에서 `dfc6409b049ea187a49d2bf475aa8489f2c0937f`까지 정확히 260개 경로가 선별 목록과 일치하고 해당 커밋 bytes와 로컬 선택 파일도 일치했다. 경로 목록은 `git diff --name-only e7a6bb7 dfc6409b049ea187a49d2bf475aa8489f2c0937f`로 얻는다. 이 일치는 실행·안전·전체 코드감사 증거가 아니다. 이후 게시 보안 수정에서는 builder의 HTTP 제한 자동 해제 2줄만 제거했다. 음성 runtime/회귀시험의 bytes는 변경하지 않았다.
+기준 `e7a6bb7`에서 `dfc6409b049ea187a49d2bf475aa8489f2c0937f`까지 정확히 260개 경로가 선별 목록과 일치하고 해당 커밋 bytes와 로컬 선택 파일도 일치했다. 경로 목록은 `git diff --name-only e7a6bb7 dfc6409b049ea187a49d2bf475aa8489f2c0937f`로 얻는다. 이 일치는 실행·안전·전체 코드감사 증거가 아니다. 이후 게시 보안 수정에서는 세 builder의 HTTP 제한 자동 해제 3줄과 관련 주석 1줄만 제거했다. 음성 runtime/회귀시험의 bytes는 변경하지 않았다.
 
 기본 `git diff --check`에는 Unity 생성 meta의 trailing whitespace와 `SnapshotFragments.cs` / `SnapshotFragmentTests.cs`의 EOF 빈 줄 경고가 남아 있다. 원래 bytes를 보존했으며 meta 제외·`blank-at-eof` 제외 검사만 통과했다. 기본 검사가 완전히 통과했다고 표현하지 않는다.
 
