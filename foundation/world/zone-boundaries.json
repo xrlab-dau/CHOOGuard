@@ -1,9 +1,35 @@
 {
   "schema_version": "1.0",
-  "checked_at": "2026-09-12",
+  "checked_at": "2026-09-13",
   "issue": "#70",
   "status": "draft_for_pm_review",
-  "authority": "13구역 자료 범위·제작 경계·연결 portal 초안이다. 현재 실측 배치·안전 경계·완료된 재구성이 아니며, 좌표/충돌/연결 변경은 PM 검토를 거친다.",
+  "mode": "isolated_proposal",
+  "canonical_write_allowed": false,
+  "authority": "13구역 자료 범위·제작 경계·연결 portal 초안이다. 현재 실측 배치·안전 경계·완료된 재구성이 아니며, 좌표/충돌/연결 변경은 PM 검토를 거친다. 이 문서 스스로를 accepted/final/complete 로 표기하지 않는다.",
+  "provenance": {
+    "base_commit": "c1a7b78d895bd87216b64a6e5ca5d26eb6d85b3e",
+    "draft_commit": "8bb807714cf3bff8a3528ed3f70e2dc2094f74ba",
+    "work_order_path": "docs/context/work-orders/070.json",
+    "work_order_present_in_worktree": true,
+    "drift": [
+      {
+        "item": "sourceRef",
+        "note": "동결 기준 파일(frozen-criteria-70.md)의 `기준 ref`는 빈 값이라 대조할 source ref 가 없다. 후보는 워크트리 HEAD c1a7b78 에서 작성했고, 이 드리프트를 숨기지 않는다."
+      },
+      {
+        "item": "starter-draft-vs-worktree-head",
+        "note": "4개 경로의 마지막 변경 커밋은 8bb8077 이며 후보 base c1a7b78 사이에 내용 변경이 없다(git log -- <4 paths> = 1건, 작업트리 clean). 초안 = 8bb8077 내용."
+      },
+      {
+        "item": "claim-holder-branch-unobserved",
+        "note": "claim holder Adrianaline 의 docs/70-zone-coverage-boundaries 원격 현재 내용은 익명 비교를 위해 의도적으로 조회하지 않았다. SOURCE_CONFLICT 로 단정하지 않고 미관측으로 남긴다."
+      },
+      {
+        "item": "facility-coverage-read-only",
+        "note": "상류 계약 foundation/world/facility-coverage.json 은 읽기만 했고 후보 작성 중 수정하지 않았다(sha256 1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350)."
+      }
+    ]
+  },
   "coverage_source": {
     "path": "foundation/world/facility-coverage.json",
     "sha256": "1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350"
@@ -285,10 +311,11 @@
         {"ref": "R05", "allowed_use": ["form_reference"], "scope": "관광안내소 카운터 외형만."},
         {"ref": "P01", "allowed_use": ["floor_membership"], "scope": "2층 맞이방 소속 확인만."}
       ],
-      "measurement_basis": "synthetic_estimate",
+      "measurement_basis": "none",
       "numeric_constraint_refs": [],
       "gaps": [
         "준공 평면·치수·천장고·기둥 간격이 없다.",
+        "합성 추정치(synthetic_estimate)를 만들 수치 입력이 없어 측정 근거는 none 이다. A/B 사진은 비계량 표면 검토 전용이다.",
         "A/B 두 사진은 같은 방향의 상부 한 구간이다. 전체 맞이방으로 확대 해석하지 않는다.",
         "승강장·1층·터미널과 이어지는 수직/수평 연결 위치가 미확인이다."
       ],
@@ -490,12 +517,57 @@
     {"ref": "S13", "reason": "캡션이 호텔·관광 상품이며 시각 검수 전이다. 구역 근거로 쓰지 않는다."}
   ],
   "open_questions": [
-    "PM의 #82 로컬 구현(미푸시)이 쓰는 구역/portal ID와 이 초안의 portal.<from>--<to> 명명·방향을 대조해야 한다.",
-    "rolling_stock_mainline↔rail_tracks_mainline 연결을 coverage에 추가할지 PM이 결정해야 한다.",
-    "forecourt_eurasia와 역사 건물의 지상 연결을 추가할지 PM이 결정해야 한다.",
-    "도시철도 차량(rolling_stock_metro) 제작을 #78 범위에 포함할지 확정해야 한다.",
-    "번들을 넘는 portal 3개의 월드 변환과 anchor 방향을 #82에서 확정해야 한다.",
-    "rail_terminal_public의 범위(맞이방·1층과의 경계)를 정의해야 한다.",
-    "V02·V03 영상의 구역 귀속을 사람이 시각 검수해야 한다(코딩 LLM에는 이미지를 첨부하지 않는다)."
+    {
+      "id": "Q1",
+      "question": "#82 로컬 구현(미푸시)이 쓰는 구역/portal ID와 이 초안의 portal.<from>--<to> 명명·방향을 대조해야 한다.",
+      "classification": "followup_issue",
+      "followup_issue": "#82",
+      "handoff": "#82 담당이 로컬 구현의 구역/portal ID 목록을 공개하면 이 초안의 portal 방향과 1:1로 대조한다. 대조 전에는 이 명명을 확정으로 쓰지 않는다.",
+      "evidence": "미푸시 로컬 구현은 이 워크트리에서 볼 수 없다."
+    },
+    {
+      "id": "Q2",
+      "question": "rolling_stock_mainline↔rail_tracks_mainline 연결을 coverage에 추가할지 PM이 결정해야 한다.",
+      "classification": "open",
+      "open_blocker": "coverage connections 변경은 shared coverage 직접 수정이며 이 후보의 쓰기 범위 밖이다. PM 결정과 coverage 소유자 반영이 필요하다.",
+      "handoff": "결정 시 선로-차량 연결을 rail_train 번들 소비자가 쓸 수 있다."
+    },
+    {
+      "id": "Q3",
+      "question": "forecourt_eurasia와 역사 건물의 지상 연결을 coverage에 추가할지 PM이 결정해야 한다.",
+      "classification": "open",
+      "open_blocker": "Q2와 같이 coverage 직접 수정이 필요하다. 공개 근거(P05~P09)는 상대 구성만 주고 지상 출입구 위치를 주지 않는다.",
+      "handoff": "결정 시 station_forecourt 번들 경계가 바뀌므로 #76·#79 재확인이 필요하다."
+    },
+    {
+      "id": "Q4",
+      "question": "도시철도 차량(rolling_stock_metro) 제작을 #78 범위에 포함할지 확정해야 한다.",
+      "classification": "followup_issue",
+      "followup_issue": "#78",
+      "handoff": "#78 모듈 범위에서 도시철도 차량 포함 여부를 확정한다. 포함되면 차량 형식 근거를 추가로 확보해야 한다.",
+      "evidence": "현재 rolling_stock_metro 는 차량 형식 미선정·치수 없음·provisional 이다."
+    },
+    {
+      "id": "Q5",
+      "question": "번들을 넘는 portal 3개의 월드 변환과 anchor 방향을 #82에서 확정해야 한다.",
+      "classification": "followup_issue",
+      "followup_issue": "#82",
+      "handoff": "cross-bundle portal 3개의 world_transform 은 coverage 에서 모두 null 이고 world_transform_verified=false 다. #82 통합에서 확정한다.",
+      "evidence": "coverage connections 12건 전부 world_transform null."
+    },
+    {
+      "id": "Q6",
+      "question": "rail_terminal_public의 범위(맞이방·1층과의 경계)를 정의해야 한다.",
+      "classification": "open",
+      "open_blocker": "터미널 공용구역의 공개 근거는 층 소속(P01)과 2014년 배치(P02)뿐이라 경계를 그을 평면·치수가 없다.",
+      "handoff": "정의되면 rail_terminal_public 과 station_concourse_2f·station_hall_1f 사이 portal 소유가 바뀔 수 있다."
+    },
+    {
+      "id": "Q7",
+      "question": "V02·V03 영상의 구역 귀속을 사람이 시각 검수해야 한다(코딩 LLM에는 이미지를 첨부하지 않는다).",
+      "classification": "open",
+      "open_blocker": "영상·이미지 검수는 사람 검수자의 육안 판정이 필요하며 코딩 에이전트가 대신할 수 없다.",
+      "handoff": "검수 결과가 오면 V02·V03 을 unassigned_sources 에서 해당 구역 inputs 로 옮긴다."
+    }
   ]
 }
