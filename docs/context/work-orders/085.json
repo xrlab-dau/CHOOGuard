@@ -1,0 +1,205 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:85",
+  "@type": "WorkItem",
+  "issue": 85,
+  "workId": "TEAM-17",
+  "domainCode": "MAP",
+  "title": "[TEAM-17] 기존 33종 4K 후보·동일 조건 검수 렌더",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "기존 33종 원본을 보존하고 동일 조건의 정면·측면 렌더 및 4K 파생 후보를 별도 출력으로 제작하세요.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "scripts/art/team/TEAM-17/render_recipe.py",
+    "foundation/art/team/TEAM-17/render-manifest.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 73,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:73:job-contract:candidate"
+      },
+      {
+        "issue": 107,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:107:review-ledger:accept"
+      }
+    ],
+    "successors": [],
+    "oneOfGroups": [
+      {
+        "artifact": "or:85:render-source",
+        "consumerPhase": "candidate",
+        "resolution": "Current33 fixed source hashes or scoped audit delta; do not wait for new full-world assets.",
+        "alternatives": [
+          {
+            "issue": 65,
+            "artifact": "artifact:65:existing-native-33-baseline:candidate",
+            "producerPhase": "candidate"
+          },
+          {
+            "issue": 65,
+            "artifact": "artifact:65:reference-delta:candidate",
+            "producerPhase": "candidate"
+          }
+        ]
+      }
+    ],
+    "parallelCandidates": [
+      89,
+      90,
+      93,
+      94,
+      75,
+      73,
+      72,
+      71,
+      64,
+      63,
+      62,
+      58,
+      55,
+      52,
+      121,
+      40,
+      39,
+      38,
+      37,
+      34,
+      31,
+      29,
+      28,
+      146,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14,
+      82,
+      81,
+      80,
+      79,
+      78,
+      77,
+      76,
+      74,
+      99,
+      70,
+      100,
+      65,
+      106,
+      107,
+      57,
+      56,
+      119,
+      122,
+      123,
+      46,
+      45,
+      125,
+      44,
+      126,
+      43,
+      127,
+      42,
+      128,
+      41,
+      129,
+      130,
+      131,
+      132,
+      133,
+      36,
+      134,
+      135,
+      136,
+      33,
+      137,
+      32,
+      138,
+      139,
+      140,
+      141,
+      142,
+      27,
+      143,
+      26,
+      144,
+      25,
+      24,
+      10
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "foundation/art/asset-manifest.json",
+      "selector": "/assets; /sourceModuleSha256",
+      "readWhen": "prepare",
+      "why": "기존33종입력과hash",
+      "limits": "현재render/4K후보수용을증명하지않음",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 85 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 85 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 85 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 85 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 85 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=85]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

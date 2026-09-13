@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:100",
+  "@type": "WorkItem",
+  "issue": 100,
+  "workId": "FMP-04",
+  "domainCode": "QA",
+  "title": "[FMP-04] 자체호스팅 PTT·팀/지휘 채널 권한 검증",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "실제 두 참가자의 마이크/수신 경로에서 제한된 팀/지휘 PTT와 중단·재연결·권한철회 동작을 검증한다.",
+  "parent": 54,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/evidence/work-items/FMP-04/voice.json",
+    "docs/context/contracts/voice-run.md"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 24,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+      },
+      {
+        "issue": 27,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:27:authority-protocol:candidate"
+      },
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 24,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+      },
+      {
+        "issue": 27,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:27:authority-receipt:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 54,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:100:voice-receipt:accept"
+      },
+      {
+        "issue": 91,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:100:voice-receipt:accept"
+      },
+      {
+        "issue": 92,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:100:voice-receipt:accept"
+      },
+      {
+        "issue": 141,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:100:voice-receipt:candidate"
+      },
+      {
+        "issue": 142,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:100:voice-run-contract:candidate"
+      },
+      {
+        "issue": 142,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:100:voice-receipt:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      99,
+      106,
+      107,
+      82,
+      57,
+      56,
+      36,
+      33,
+      32,
+      26,
+      25,
+      94,
+      93,
+      90,
+      89,
+      85,
+      81,
+      119,
+      80,
+      79,
+      121,
+      78,
+      122,
+      77,
+      123,
+      76,
+      75,
+      125,
+      74,
+      126,
+      73,
+      127,
+      72,
+      128,
+      71,
+      129,
+      70,
+      130,
+      131,
+      68,
+      132,
+      133,
+      134,
+      65,
+      135,
+      64,
+      136,
+      63,
+      137,
+      62,
+      138,
+      139,
+      140,
+      141,
+      58,
+      143,
+      144,
+      55,
+      146,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      34,
+      31,
+      29,
+      28,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 100 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 100 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 100 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 100 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 100 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=100]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

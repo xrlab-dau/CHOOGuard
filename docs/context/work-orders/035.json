@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:35",
+  "@type": "Goal",
+  "issue": 35,
+  "workId": "FMP-10",
+  "domainCode": "UX",
+  "title": "[FMP-10] 다직무 협업·보고·수신확인·인계·교관 운영",
+  "orchestrator": "role:pm",
+  "executionMode": "PM aggregates child deliverables; members and their LLMs execute child work.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "여러 직무 팀이 같은 사건·설비·NPC를 공유하며 구조화 보고·수신확인·명시적 인계와 교관 제어를 실제 서버 응답과 UI에서 수행한다.",
+  "parent": 54,
+  "children": [
+    134,
+    135,
+    136
+  ],
+  "requiredOutputPaths": [
+    "docs/evidence/foundation/FMP-10-integration.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 134,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:134:fmp10a-render-evidence:accept"
+      },
+      {
+        "issue": 135,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:135:fmp10b-authority-tests:accept"
+      },
+      {
+        "issue": 136,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:136:fmp10c-playmode-test:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 54,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+      },
+      {
+        "issue": 91,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+      },
+      {
+        "issue": 141,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:35:fmp10-integration-evidence:candidate"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 35 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 35 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 35 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 35 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 35 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=35]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

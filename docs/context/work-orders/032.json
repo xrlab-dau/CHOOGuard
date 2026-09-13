@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:32",
+  "@type": "WorkItem",
+  "issue": 32,
+  "workId": "M4-01",
+  "domainCode": "UX",
+  "title": "[M4-01] 임시 5직무·판정 fixture 정의",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "임시 5직무의 role/action/anchor/prestate/expected Quest/team event/feedback 의미를 provisional fixture로 고정한다.",
+  "parent": 54,
+  "children": [],
+  "requiredOutputPaths": [
+    "foundation/team-fixtures/M4-01/role-action-fixture.json",
+    "docs/team/M4-01/fixture-review.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [],
+    "successors": [
+      {
+        "issue": 26,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 26,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:32:M4-01-fixture:accept"
+      },
+      {
+        "issue": 33,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 33,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:32:M4-01-fixture:accept"
+      },
+      {
+        "issue": 34,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 34,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:32:M4-01-fixture:accept"
+      },
+      {
+        "issue": 57,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 57,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:32:M4-01-fixture:accept"
+      },
+      {
+        "issue": 72,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 72,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 93,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 93,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      36,
+      27,
+      25,
+      24,
+      10,
+      56,
+      82,
+      99,
+      100,
+      106,
+      107,
+      120,
+      31,
+      29,
+      28,
+      38,
+      39,
+      40,
+      23,
+      41,
+      22,
+      42,
+      21,
+      43,
+      20,
+      44,
+      19,
+      45,
+      18,
+      46,
+      17,
+      16,
+      15,
+      14,
+      52,
+      55,
+      58,
+      64,
+      65,
+      68,
+      70,
+      71,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      85,
+      90,
+      119,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "§8 M4-01 lines 381-395",
+      "readWhen": "prepare",
+      "why": "fixture fields and provisional boundary를 증명한다.",
+      "limits": "현재 fixture execution을 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    },
+    {
+      "path": "schemas/foundation-scenario.schema.json",
+      "selector": "schema root and role/action definitions",
+      "readWhen": "prepare",
+      "why": "machine-readable fixture shape를 증명한다.",
+      "limits": "schema pass is not product acceptance.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "03806f0d937f368ead210503373a15f523f03482"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/schemas/foundation-scenario.schema.json",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 32 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 32 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 32 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 32 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 32 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=32]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

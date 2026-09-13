@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:39",
+  "@type": "WorkItem",
+  "issue": 39,
+  "workId": "M5-04",
+  "domainCode": "PM",
+  "title": "[M5-04] 시연 증거·공개 후보 manifest",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "현재 릴리스 범위의 빌드·테스트·공개 후보 목록과 hash를 불변 target manifest로 묶고 제한 자료를 배제한다.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/evidence/M5-04/target-manifest-candidate-index.json",
+    "docs/evidence/M5-04/target-manifest-accept-index.json",
+    "docs/evidence/M5-04/redaction-report-candidate-index.json",
+    "docs/evidence/M5-04/redaction-report-accept-index.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 36,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:36:M5-01-run-manifest:accept"
+      },
+      {
+        "issue": 92,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:92:fmp13-delivery-evidence:candidate"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 38,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:39:M5-04-target-manifest:candidate"
+      },
+      {
+        "issue": 40,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:39:M5-04-target-manifest:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      38,
+      40,
+      37,
+      34,
+      31,
+      29,
+      28,
+      52,
+      23,
+      55,
+      22,
+      21,
+      20,
+      58,
+      19,
+      18,
+      17,
+      16,
+      62,
+      15,
+      63,
+      14,
+      64,
+      71,
+      72,
+      73,
+      75,
+      85,
+      89,
+      90,
+      93,
+      94,
+      121,
+      146,
+      41,
+      36,
+      42,
+      43,
+      44,
+      33,
+      45,
+      32,
+      46,
+      27,
+      26,
+      25,
+      24,
+      56,
+      57,
+      65,
+      10,
+      70,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      99,
+      100,
+      106,
+      107,
+      119,
+      120,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "§9 M5-04 lines 486-508",
+      "readWhen": "prepare",
+      "why": "candidate contents, redaction and separate review/approval receipt rules를 증명한다.",
+      "limits": "actual candidate package is not proven.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 39 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 39 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 39 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 39 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 39 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=39]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:107",
+  "@type": "WorkItem",
+  "issue": 107,
+  "workId": "FMP-15",
+  "domainCode": "MAP",
+  "title": "[FMP-15] 자산 품질 비교·결함 환류·재작업",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "동일 조건의 자산 후보를 비교하고 결함·수정·재검증 근거를 남기세요. 검토 범위와 반복 예산은 PM이 정하며 무제한 재검토하지 않습니다.",
+  "parent": 54,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/art/reviews/FMP-15/review-ledger.json",
+    "docs/art/reviews/FMP-15/rework-contract.md"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 54,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:107:review-ledger:accept"
+      },
+      {
+        "issue": 65,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:107:review-ledger:accept"
+      },
+      {
+        "issue": 85,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:107:review-ledger:accept"
+      },
+      {
+        "issue": 106,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:107:review-ledger:accept"
+      }
+    ],
+    "oneOfGroups": [
+      {
+        "artifact": "or:107:art-candidate",
+        "consumerPhase": "candidate",
+        "resolution": "At least one qualified same-condition art packet; native branches independent of SC01. External branch also requires explicit SC01 method resolution.",
+        "alternatives": [
+          {
+            "issue": 65,
+            "artifact": "artifact:65:native-art-review-packet:candidate",
+            "producerPhase": "candidate"
+          },
+          {
+            "issue": 85,
+            "artifact": "artifact:85:render-manifest:candidate",
+            "producerPhase": "candidate"
+          },
+          {
+            "issue": 106,
+            "artifact": "artifact:106:asset-candidate:candidate",
+            "producerPhase": "candidate"
+          }
+        ]
+      }
+    ],
+    "parallelCandidates": [
+      106,
+      100,
+      99,
+      82,
+      57,
+      56,
+      36,
+      33,
+      32,
+      27,
+      26,
+      25,
+      24,
+      10,
+      119,
+      94,
+      93,
+      121,
+      122,
+      123,
+      90,
+      89,
+      125,
+      126,
+      127,
+      128,
+      85,
+      129,
+      130,
+      131,
+      132,
+      81,
+      133,
+      80,
+      134,
+      79,
+      135,
+      78,
+      136,
+      77,
+      137,
+      76,
+      138,
+      75,
+      139,
+      74,
+      140,
+      73,
+      141,
+      72,
+      142,
+      71,
+      143,
+      70,
+      144,
+      68,
+      146,
+      65,
+      64,
+      63,
+      62,
+      58,
+      55,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      34,
+      31,
+      29,
+      28,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "foundation/art/asset-manifest.json",
+      "selector": "/assets; /coordinateAdapter",
+      "readWhen": "prepare",
+      "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
+      "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "44d841d208829673e4ccb3cf3b5f98655c39c740"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/asset-manifest.json",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 107 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 107 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 107 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 107 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 107 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=107]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

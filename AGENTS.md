@@ -1,3 +1,10 @@
+## PM orchestration entrypoint
+
+- Current work instructions are GitHub issues and `docs/context/work-orders/NNN.json`. Start with `node scripts/context/task_context.mjs brief --issue <number>`, then read only the selected phase inputs/writes/checks before acting.
+- The user is PM; members and their own LLMs execute bounded tasks. No personal preassignment, location routing, school-PC requirement, or high-spec ownership gate. Preserve #70’s evidenced existing claim.
+- The ontology is `docs/context/work-orders/index.jsonld`; phase artifact dependencies are not whole-issue close-order. The technical graph is a detailed contract, not a request to load all context.
+- Follow `docs/context/orchestration-contract.md`. No automatic reviewer/rework loop; keep existing protected review and data/permission boundaries.
+
 # Agent rules for choo-guard
 
 ## Current execution contract (2026-09-12)

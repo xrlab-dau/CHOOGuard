@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:45",
+  "@type": "WorkItem",
+  "issue": 45,
+  "workId": "R-05",
+  "domainCode": "PM",
+  "title": "[R-05] 리뷰 실패 중단·라운드·명령 통제",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "review schema/provider/target mismatch, 저장 실패와 허용되지 않은 명령을 fail-closed로 처리하는 정책 proposal과 부정 fixture를 만든다. 후보 control spec과 별도로 실제 synthetic verification evidence를 남긴다.",
+  "parent": 23,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/team/R-05/control-spec.json",
+    "scripts/team/R-05",
+    "docs/evidence/R-05/executed-review-loop-verification-index.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 23,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:23:M1-07-review-contract:candidate"
+      },
+      {
+        "issue": 43,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:43:R-03-governance-diff:candidate"
+      },
+      {
+        "issue": 16,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:16:M0-03-execution-profile:accept"
+      },
+      {
+        "issue": 18,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:18:M1-02-policy-record:accept"
+      },
+      {
+        "issue": 43,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:43:R-03-governance-diff:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 23,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:45:executed-review-loop-verification:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      44,
+      46,
+      42,
+      41,
+      40,
+      39,
+      38,
+      52,
+      37,
+      36,
+      55,
+      34,
+      56,
+      33,
+      57,
+      32,
+      58,
+      31,
+      29,
+      28,
+      62,
+      27,
+      63,
+      26,
+      64,
+      25,
+      65,
+      24,
+      22,
+      21,
+      20,
+      70,
+      19,
+      71,
+      72,
+      17,
+      73,
+      74,
+      15,
+      75,
+      14,
+      76,
+      77,
+      78,
+      79,
+      10,
+      80,
+      81,
+      82,
+      85,
+      89,
+      90,
+      93,
+      94,
+      99,
+      100,
+      106,
+      107,
+      119,
+      120,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": ".pi/workflows/plan-review.yaml",
+      "selector": "allowed review steps and gates",
+      "readWhen": "prepare",
+      "why": "captured workflow policy를 증명한다.",
+      "limits": "live workflow execution을 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "e58fe20de5659eb453522bac1c4fc2ed88e87715"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/.pi/workflows/plan-review.yaml",
+      "access": "repository read access"
+    },
+    {
+      "path": ".pi/workflows/adversarial-review.yaml",
+      "selector": "adversarial review gates",
+      "readWhen": "prepare",
+      "why": "independent review path를 증명한다.",
+      "limits": "current review receipt를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "1b085e7d3a843a6756749c89ac8c707c93cbe2f0"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/.pi/workflows/adversarial-review.yaml",
+      "access": "repository read access"
+    },
+    {
+      "path": "docs/adr/0003-independent-review-and-adversarial-graph.md",
+      "selector": "round/stop policy",
+      "readWhen": "prepare",
+      "why": "review semantics를 증명한다.",
+      "limits": "new enforcement implementation은 제안이다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "87957d262e6b15bf92f5caaf8c6fffbdc2aef018"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/adr/0003-independent-review-and-adversarial-graph.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 45 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 45 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 45 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 45 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 45 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=45]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

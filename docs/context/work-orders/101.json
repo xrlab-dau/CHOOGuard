@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:101",
+  "@type": "Goal",
+  "issue": 101,
+  "workId": "FMP-06",
+  "domainCode": "UX",
+  "title": "[FMP-06] 구획·복도·차량 열·연기 모델 수용 집계",
+  "orchestrator": "role:pm",
+  "executionMode": "PM aggregates child deliverables; members and their LLMs execute child work.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "계산에 기반한 구획/복도/차량 열·연기와 수치·공개비교·비용의 전체 수용 근거를 집계한다.",
+  "parent": 54,
+  "children": [
+    122,
+    123
+  ],
+  "requiredOutputPaths": [
+    "docs/context/goals/FMP-06.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 122,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:122:thermal-timing-receipt:accept"
+      },
+      {
+        "issue": 123,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:123:thermal-boundary-regression:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 54,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+      },
+      {
+        "issue": 91,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+      },
+      {
+        "issue": 141,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:candidate"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 101 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 101 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 101 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 101 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 101 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=101]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

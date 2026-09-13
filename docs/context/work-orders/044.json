@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:44",
+  "@type": "WorkItem",
+  "issue": 44,
+  "workId": "R-04",
+  "domainCode": "QA",
+  "title": "[R-04] 부트스트랩 정상·실패·경로 보호 회귀 검증",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "bootstrap의 정상 실행·실패·무설치 기본값·경로 탈출 거부·정책 hash를 실제 지원 환경에서 검증하고 결과를 분리해 제출하세요.",
+  "parent": 13,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/team/R-04/test-plan.json",
+    "docs/evidence/R-04/evidence-candidate-index.json",
+    "docs/evidence/R-04/evidence-accept-index.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 43,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:43:R-03-governance-diff:candidate"
+      },
+      {
+        "issue": 43,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:43:R-03-governance-diff:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 13,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:44:R-04-evidence:accept"
+      },
+      {
+        "issue": 52,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:44:R-04-test-plan:candidate"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      45,
+      42,
+      46,
+      41,
+      40,
+      39,
+      38,
+      37,
+      36,
+      34,
+      33,
+      55,
+      32,
+      56,
+      31,
+      57,
+      58,
+      29,
+      28,
+      27,
+      26,
+      62,
+      25,
+      63,
+      24,
+      64,
+      23,
+      65,
+      22,
+      21,
+      20,
+      19,
+      18,
+      70,
+      17,
+      71,
+      16,
+      72,
+      15,
+      73,
+      14,
+      74,
+      75,
+      76,
+      77,
+      10,
+      78,
+      79,
+      80,
+      81,
+      82,
+      85,
+      89,
+      90,
+      93,
+      94,
+      99,
+      100,
+      106,
+      107,
+      119,
+      120,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "scripts/bootstrap/test_verify_toolchain.py",
+      "selector": "test classes around path/failure/hash checks",
+      "readWhen": "prepare",
+      "why": "available negative checks and symbols를 증명한다.",
+      "limits": "current execution result를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "a5e41bc40a103d27f1e5dfc05779e9ff56260d44"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/bootstrap/test_verify_toolchain.py",
+      "access": "repository read access"
+    },
+    {
+      "path": "scripts/bootstrap/verify_toolchain.py",
+      "selector": "validation entry points and exit semantics",
+      "readWhen": "prepare",
+      "why": "verifier behavior in worktree를 증명한다.",
+      "limits": "Windows/native environment availability를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "f96a145c2395010fec20b1d4db07e2cb7cd6135f"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/bootstrap/verify_toolchain.py",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 44 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 44 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 44 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 44 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 44 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=44]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

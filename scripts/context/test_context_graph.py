@@ -220,7 +220,7 @@ class ContextGraphTests(unittest.TestCase):
                 "description": "bounded navigation fixture", "nodes": nodes, "edges": [], "refreshLog": []}, surfaces
 
     def add_current_pm_workflow(self, graph, matched=True, present=True):
-        contract = "docs/context/pm-execution-contract.md"
+        contract = "docs/context/orchestration-contract.md"
         work_graph = "docs/context/work-graph.json"
         (self.root / "docs/context").mkdir(parents=True, exist_ok=True)
         if present:
@@ -241,7 +241,7 @@ class ContextGraphTests(unittest.TestCase):
 
     def test_real_project_briefs_prefer_current_pm_entrypoint_when_available(self):
         graph = cg.load_json(cg.ROOT / cg.GRAPH_PATH)
-        expected = "docs/context/pm-execution-contract.md" if cg.current_pm_entrypoint(
+        expected = "docs/context/orchestration-contract.md" if cg.current_pm_entrypoint(
             graph, cg.inspect_graph(graph, cg.ROOT)) else None
         legacy = {"art": "foundation/art/object-references.json",
                   "runtime": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/StationWorldSession.cs",

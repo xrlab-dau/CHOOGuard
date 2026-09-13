@@ -269,7 +269,7 @@ def current_pm_entrypoint(graph, report):
     if freshness.get("sourceState") != "matched":
         return None
     contract_sources = [source["repoPath"] for source in workflow["sources"]
-                        if source.get("repoPath") == "docs/context/pm-execution-contract.md"]
+                        if source.get("repoPath") == "docs/context/orchestration-contract.md"]
     return contract_sources[0] if len(contract_sources) == 1 else None
 
 
@@ -405,7 +405,7 @@ def main(argv=None):
     refresh.add_argument("--reviewed", action="store_true")
     refresh.add_argument("--reason", required=True)
     render = commands.add_parser("render", help="Regenerate the offline HTML snapshot.")
-    render.add_argument("--output", default="docs/context/index.html")
+    render.add_argument("--output", default="docs/context/history-index.html")
     args = parser.parse_args(argv)
     try:
         path = repo_path(ROOT, args.graph)

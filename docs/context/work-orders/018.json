@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:18",
+  "@type": "WorkItem",
+  "issue": 18,
+  "workId": "M1-02",
+  "domainCode": "PM",
+  "title": "[M1-02] 파일·네트워크·도구 권한 경계 검증",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "파일·네트워크·도구 권한을 실행 프로파일과 대조하고, 허용 작업과 권한 우회 거부를 합성 시험으로 검증하세요.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "scripts/team/M1-02",
+    "docs/team/M1-02/permission-boundary.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 16,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:16:M0-03-execution-profile:candidate"
+      },
+      {
+        "issue": 16,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:16:M0-03-execution-profile:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 19,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:18:M1-02-policy-record:candidate"
+      },
+      {
+        "issue": 19,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:18:M1-02-policy-record:accept"
+      },
+      {
+        "issue": 22,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:18:M1-02-policy-record:accept"
+      },
+      {
+        "issue": 23,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:18:M1-02-policy-record:candidate"
+      },
+      {
+        "issue": 23,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:18:M1-02-policy-record:accept"
+      },
+      {
+        "issue": 45,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:18:M1-02-policy-record:accept"
+      },
+      {
+        "issue": 46,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:18:M1-02-policy-record:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      17,
+      15,
+      21,
+      14,
+      22,
+      28,
+      29,
+      31,
+      34,
+      37,
+      39,
+      40,
+      52,
+      55,
+      58,
+      62,
+      63,
+      64,
+      71,
+      72,
+      73,
+      75,
+      85,
+      89,
+      90,
+      93,
+      94,
+      121,
+      146,
+      24,
+      25,
+      10,
+      26,
+      27,
+      32,
+      33,
+      41,
+      42,
+      43,
+      44,
+      46,
+      56,
+      57,
+      65,
+      70,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      99,
+      100,
+      106,
+      107,
+      119,
+      120,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "§5 M1-02 lines 148-167",
+      "readWhen": "prepare",
+      "why": "deny surface and profile/hash invalidation requirements를 증명한다.",
+      "limits": "실행되었다는 뜻은 아니다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    },
+    {
+      "path": "docs/choo-guard-ai-native-pipeline-v1.md",
+      "selector": "§1 lines 12-21; §3 lines 60-65",
+      "readWhen": "prepare",
+      "why": "single writer, non-completion and permission composition 원칙을 증명한다.",
+      "limits": "구체 OS enforcement 구현은 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "9a575eff21b96161cb7d562b260db3128831be87"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 18 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 18 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 18 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 18 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 18 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=18]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

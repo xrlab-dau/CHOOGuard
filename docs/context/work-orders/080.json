@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:80",
+  "@type": "WorkItem",
+  "issue": 80,
+  "workId": "TEAM-12",
+  "domainCode": "MAP",
+  "title": "[TEAM-12] 열차·철도 승강장 번들 플레이 조립",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "열차 내외부·철도 승강장·역사 연결부를 독립 번들로 조립하고 양방향 승하차·차폐·차단·NPC 통과를 검증하세요.",
+  "parent": 67,
+  "children": [],
+  "requiredOutputPaths": [
+    "foundation/world/team/TEAM-12/zone-profile.json",
+    "Assets/CHOOguardTeam/Art/TEAM-12/ZoneBuilder.cs",
+    "Assets/CHOOguardTeam/Tests/TEAM-12/ZonePlayTests.cs"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 55,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 70,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:70:zone-boundaries:candidate"
+      },
+      {
+        "issue": 78,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:78:asset-manifest:candidate"
+      },
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 55,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 70,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:70:zone-boundaries:accept"
+      },
+      {
+        "issue": 78,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:78:asset-manifest:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 67,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:80:zone-profile:accept"
+      },
+      {
+        "issue": 82,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:80:zone-profile:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      79,
+      81,
+      77,
+      76,
+      65,
+      119,
+      82,
+      75,
+      85,
+      73,
+      72,
+      71,
+      89,
+      90,
+      93,
+      94,
+      64,
+      63,
+      62,
+      99,
+      100,
+      58,
+      57,
+      56,
+      106,
+      107,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      121,
+      38,
+      122,
+      37,
+      123,
+      36,
+      125,
+      34,
+      126,
+      33,
+      127,
+      32,
+      128,
+      31,
+      129,
+      130,
+      29,
+      131,
+      28,
+      132,
+      27,
+      133,
+      26,
+      134,
+      25,
+      135,
+      24,
+      136,
+      23,
+      137,
+      22,
+      138,
+      21,
+      139,
+      20,
+      140,
+      19,
+      141,
+      18,
+      142,
+      17,
+      143,
+      16,
+      144,
+      15,
+      14,
+      146,
+      10
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "foundation/world/station-twin-profile.json",
+      "selector": "/units; /coordinateFrame; /sites",
+      "readWhen": "prepare",
+      "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
+      "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "52d258834636cbc2d0f06efc594c7f74842ed619"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/world/station-twin-profile.json",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 80 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 80 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 80 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 80 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 80 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=80]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}
