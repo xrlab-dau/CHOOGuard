@@ -1,3 +1,7 @@
+> **역사 범위 안내 · 2026-09-12**
+> 학교 PC라는 작업 장소 제한은 폐기되었다. 아래 OS별 절차는 재현 참고자료이며, 특정 장소·장비 소유를 착수나 팀 배정 조건으로 쓰지 않는다.
+> [현재 PM 실행 계약](context/pm-execution-contract.md)을 먼저 읽는다. 아래 원문과 과거 검증 범위는 삭제하거나 새 PASS로 바꾸지 않았다.
+
 # choo guard 학교 PC 부트스트랩 v1.2
 
 - 2026-09-06 사용자 지시로 local Unity Hub·Apple Silicon용 안정 LTS Editor 설치와 가벼운 합성 장면·Desktop 개발·Editor 테스트를 허용한다. 설치 대상은 Hub 3.21.1 ARM64와 Editor 6000.3.23f1 LTS다. 선정과 실제 설치 성공은 별도로 기록한다. 무거운 모델링·렌더·베이크, Windows 실행본·HMD 검증은 school-pc에서 수행한다.

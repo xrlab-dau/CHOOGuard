@@ -1,3 +1,7 @@
+> **역사 범위 안내 · 2026-09-12**
+> 이 문서의 M0~M5 일정·기기 배치·가상 팀 순서는 역사적 v1 실행안이다. 현재 실행 DAG와 이슈별 입력·후행·병렬·충돌은 새 work-graph를 따른다.
+> [현재 PM 실행 계약](context/pm-execution-contract.md)을 먼저 읽는다. 아래 원문과 과거 검증 범위는 삭제하거나 새 PASS로 바꾸지 않았다.
+
 # choo guard 작업 단위 그래프 v1.0
 
 > Foundation 결과물은 임시 맵·3D 오브젝트·싱글플레이 비상대응 시나리오가 연결된 실제 게임이다. 공통 소스/검사는 내부 기반이며 [첫 playable 완료 기준](choo-guard-foundation-v1.md)을 적용한다.

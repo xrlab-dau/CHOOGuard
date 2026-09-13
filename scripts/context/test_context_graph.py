@@ -201,13 +201,106 @@ class ContextGraphTests(unittest.TestCase):
         self.assertIn("offline snapshot", document)
         self.assertIn("textContent", document)
 
-    def test_real_project_briefs_start_at_the_requested_work_surface(self):
+    def work_surface_graph(self):
+        surfaces = {"art": "docs/fixture-art.md", "runtime": "docs/fixture-runtime.md",
+                    "handoff": "docs/fixture-handoff.md"}
+        for path in surfaces.values():
+            (self.root / path).write_text(path + "\n", encoding="utf-8")
+        nodes = []
+        for topic, identifier in (("art", "component.art_scene"),
+                                  ("runtime", "component.station_world"),
+                                  ("handoff", "workflow.start_validate")):
+            node = self.node(identifier, "workflow" if topic == "handoff" else "component",
+                             "active" if topic == "handoff" else "implemented",
+                             "canonical_document" if topic == "handoff" else "tracked_source",
+                             path=surfaces[topic])
+            node["topics"] = [topic]
+            nodes.append(node)
+        return {"schemaVersion": 1, "project": "CHOOGuard", "classification": "PUBLIC_PROJECT_CONTEXT",
+                "description": "bounded navigation fixture", "nodes": nodes, "edges": [], "refreshLog": []}, surfaces
+
+    def add_current_pm_workflow(self, graph, matched=True, present=True):
+        contract = "docs/context/orchestration-contract.md"
+        work_graph = "docs/context/work-graph.json"
+        (self.root / "docs/context").mkdir(parents=True, exist_ok=True)
+        if present:
+            (self.root / contract).write_text("current per-issue contract\n", encoding="utf-8")
+        (self.root / work_graph).write_text("{}\n", encoding="utf-8")
+        contract_hash = self.digest(contract) if present else "0" * 64
+        if not matched:
+            contract_hash = "0" * 64
+        graph["nodes"].append({
+            "id": "workflow.pm_issue_execution", "kind": "workflow", "title": "current PM",
+            "summary": "current per-issue workflow", "status": "active", "authority": "canonical_document",
+            "topics": ["art", "runtime", "handoff"], "observedAt": "2026-09-12",
+            "freshnessPolicy": "content", "sources": [
+                {"repoPath": contract, "sha256": contract_hash, "label": "Current PM contract"},
+                {"repoPath": work_graph, "sha256": self.digest(work_graph), "label": "Current work graph"}],
+            "limits": ["Navigation only."]})
+        return contract
+
+    def test_real_project_briefs_prefer_current_pm_entrypoint_when_available(self):
         graph = cg.load_json(cg.ROOT / cg.GRAPH_PATH)
-        expected = {"art": "foundation/art/object-references.json",
-                    "runtime": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/StationWorldSession.cs",
-                    "handoff": "docs/choo-guard-foundation-handoff.md"}
-        for topic, path in expected.items():
-            self.assertEqual(cg.make_brief(graph, cg.ROOT, topic, "local")["readNext"][0], path)
+        expected = "docs/context/orchestration-contract.md" if cg.current_pm_entrypoint(
+            graph, cg.inspect_graph(graph, cg.ROOT)) else None
+        legacy = {"art": "foundation/art/object-references.json",
+                  "runtime": "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/StationWorldSession.cs",
+                  "handoff": "docs/choo-guard-foundation-handoff.md"}
+        for topic, path in legacy.items():
+            with self.subTest(topic=topic):
+                brief = cg.make_brief(graph, cg.ROOT, topic, "local")
+                self.assertEqual(brief["readNext"][0], expected or path)
+                self.assertLessEqual(len(brief["readNext"]), 3)
+
+    def test_real_handoff_fallback_wins_when_current_pm_binding_drifts(self):
+        graph = cg.load_json(cg.ROOT / cg.GRAPH_PATH)
+        drifted = copy.deepcopy(graph)
+        workflow = next(node for node in drifted["nodes"]
+                        if node["id"] == "workflow.pm_issue_execution")
+        work_graph = next(source for source in workflow["sources"]
+                          if source.get("repoPath") == "docs/context/work-graph.json")
+        work_graph["sha256"] = "0" * 64
+        report = cg.inspect_graph(drifted, cg.ROOT)
+        self.assertEqual(report["nodes"][workflow["id"]]["sourceState"], "stale")
+        self.assertIsNone(cg.current_pm_entrypoint(drifted, report))
+        brief = cg.make_brief(drifted, cg.ROOT, "handoff", "local")
+        self.assertEqual(brief["readNext"][0], "docs/choo-guard-foundation-handoff.md")
+        self.assertNotEqual(brief["readNext"][0], "docs/tooling/agent-resources.md")
+        self.assertIsNone(brief["currentPmEntrypoint"])
+        fallback = brief["legacyFallback"]
+        self.assertEqual(fallback["nodeId"], "workflow.start_validate")
+        self.assertEqual(fallback["status"], "superseded")
+        self.assertEqual(fallback["path"], "docs/choo-guard-foundation-handoff.md")
+        self.assertEqual(fallback["mode"], "read_only_navigation_context_only")
+        self.assertFalse(fallback["reactivates"])
+        self.assertIn("sourceState", fallback["freshness"])
+        self.assertNotIn("workflow.start_validate", [node["id"] for node in brief["nodes"]])
+
+    def test_current_pm_entrypoint_precedes_legacy_topic_surface_without_location_routing(self):
+        graph, surfaces = self.work_surface_graph()
+        contract = self.add_current_pm_workflow(graph)
+        self.assertEqual(cg.validate_graph(graph, self.root), [])
+        for topic, legacy_path in surfaces.items():
+            for machine in ("local", "school-pc"):
+                with self.subTest(topic=topic, machine=machine):
+                    brief = cg.make_brief(graph, self.root, topic, machine)
+                    self.assertEqual(brief["readNext"][0], contract)
+                    self.assertIn(legacy_path, brief["readNext"])
+                    self.assertEqual(brief["currentPmEntrypoint"], contract)
+                    self.assertIsNone(brief["legacyFallback"])
+                    self.assertLessEqual(len(brief["readNext"]), 3)
+
+    def test_stale_or_missing_current_pm_contract_falls_back_to_legacy_surface(self):
+        for matched, present in ((False, True), (True, False)):
+            graph, surfaces = self.work_surface_graph()
+            self.add_current_pm_workflow(graph, matched=matched, present=present)
+            for topic, legacy_path in surfaces.items():
+                with self.subTest(matched=matched, present=present, topic=topic):
+                    brief = cg.make_brief(graph, self.root, topic, "local")
+                    self.assertEqual(brief["readNext"][0], legacy_path)
+                    self.assertIsNone(brief["currentPmEntrypoint"])
+                    self.assertEqual(brief["legacyFallback"]["path"], legacy_path)
+                    self.assertFalse(brief["legacyFallback"]["reactivates"])
 
     def test_all_briefs_are_bounded_and_portable(self):
         for topic in ("art", "runtime", "handoff"):

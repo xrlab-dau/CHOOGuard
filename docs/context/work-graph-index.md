@@ -1,0 +1,110 @@
+# Work graph index
+
+Assembler projection: assembled
+Graph items: 101
+Typed edges: 582
+Requirements: 15
+
+이 인덱스는 phase-neutral planning/governance projection이다. Lifecycle verdict/status는 여기에 고정하지 않으며 각 정확한 body hash와 review ledger로만 판정한다. live readiness, implementation, product, safety, performance, certification, external action, publication, AAA 또는 GitHub/source write 권한을 주장하지 않는다. [전체 typed graph]({{GOVERNANCE_REF}}/package/docs/context/work-graph.json).
+
+- [#10](https://github.com/xrlab-dau/CHOOGuard/issues/10) FMP-01 · captured In progress / planned prepare · inputs 2, successors 20, OR 0
+- [#13](https://github.com/xrlab-dau/CHOOGuard/issues/13) M0-00 · captured Ready / planned prepare · inputs 2, successors 1, OR 0
+- [#14](https://github.com/xrlab-dau/CHOOGuard/issues/14) M0-02a · captured Blocked / planned prepare · inputs 0, successors 4, OR 0
+- [#15](https://github.com/xrlab-dau/CHOOGuard/issues/15) M0-02b · captured Blocked / planned prepare · inputs 2, successors 8, OR 0
+- [#16](https://github.com/xrlab-dau/CHOOGuard/issues/16) M0-03 · captured Blocked / planned prepare · inputs 1, successors 13, OR 0
+- [#17](https://github.com/xrlab-dau/CHOOGuard/issues/17) M1-01 · captured Blocked / planned prepare · inputs 2, successors 2, OR 0
+- [#18](https://github.com/xrlab-dau/CHOOGuard/issues/18) M1-02 · captured Blocked / planned prepare · inputs 2, successors 7, OR 0
+- [#19](https://github.com/xrlab-dau/CHOOGuard/issues/19) M1-03 · captured Blocked / planned prepare · inputs 4, successors 2, OR 0
+- [#20](https://github.com/xrlab-dau/CHOOGuard/issues/20) M1-04 · captured Blocked / planned prepare · inputs 4, successors 0, OR 0
+- [#21](https://github.com/xrlab-dau/CHOOGuard/issues/21) M1-05 · captured Blocked / planned prepare · inputs 2, successors 3, OR 0
+- [#22](https://github.com/xrlab-dau/CHOOGuard/issues/22) M1-06 · captured Blocked / planned prepare · inputs 5, successors 0, OR 0
+- [#23](https://github.com/xrlab-dau/CHOOGuard/issues/23) M1-07 · captured Blocked / planned prepare · inputs 6, successors 5, OR 0
+- [#24](https://github.com/xrlab-dau/CHOOGuard/issues/24) M2-01 · captured In progress / planned prepare · inputs 3, successors 9, OR 0
+- [#25](https://github.com/xrlab-dau/CHOOGuard/issues/25) M2-02 · captured Blocked / planned prepare · inputs 3, successors 2, OR 0
+- [#26](https://github.com/xrlab-dau/CHOOGuard/issues/26) M2-03 · captured Blocked / planned prepare · inputs 4, successors 0, OR 0
+- [#27](https://github.com/xrlab-dau/CHOOGuard/issues/27) FMP-02 · captured In progress / planned prepare · inputs 5, successors 14, OR 0
+- [#28](https://github.com/xrlab-dau/CHOOGuard/issues/28) M3-01 · captured Blocked / planned prepare · inputs 2, successors 2, OR 0
+- [#29](https://github.com/xrlab-dau/CHOOGuard/issues/29) M3-02 · captured Blocked / planned prepare · inputs 3, successors 1, OR 0
+- [#31](https://github.com/xrlab-dau/CHOOGuard/issues/31) M3-04 · captured Blocked / planned prepare · inputs 4, successors 0, OR 0
+- [#32](https://github.com/xrlab-dau/CHOOGuard/issues/32) M4-01 · captured Blocked / planned prepare · inputs 0, successors 12, OR 0
+- [#33](https://github.com/xrlab-dau/CHOOGuard/issues/33) M4-02 · captured In progress / planned prepare · inputs 3, successors 1, OR 0
+- [#34](https://github.com/xrlab-dau/CHOOGuard/issues/34) M4-03 · captured Blocked / planned prepare · inputs 3, successors 2, OR 0
+- [#35](https://github.com/xrlab-dau/CHOOGuard/issues/35) FMP-10 · captured Backlog / planned prepare · inputs 4, successors 3, OR 0
+- [#36](https://github.com/xrlab-dau/CHOOGuard/issues/36) M5-01 · captured In progress / planned prepare · inputs 4, successors 2, OR 0
+- [#37](https://github.com/xrlab-dau/CHOOGuard/issues/37) M5-02 · captured Blocked / planned prepare · inputs 4, successors 0, OR 0
+- [#38](https://github.com/xrlab-dau/CHOOGuard/issues/38) M5-03 · captured Blocked / planned prepare · inputs 3, successors 1, OR 0
+- [#39](https://github.com/xrlab-dau/CHOOGuard/issues/39) M5-04 · captured Blocked / planned prepare · inputs 2, successors 2, OR 0
+- [#40](https://github.com/xrlab-dau/CHOOGuard/issues/40) M5-05 · captured Blocked / planned prepare · inputs 2, successors 0, OR 0
+- [#41](https://github.com/xrlab-dau/CHOOGuard/issues/41) R-01 · captured Blocked / planned prepare · inputs 1, successors 1, OR 0
+- [#42](https://github.com/xrlab-dau/CHOOGuard/issues/42) R-02 · captured In progress / planned prepare · inputs 0, successors 1, OR 0
+- [#43](https://github.com/xrlab-dau/CHOOGuard/issues/43) R-03 · captured Blocked / planned prepare · inputs 0, successors 7, OR 0
+- [#44](https://github.com/xrlab-dau/CHOOGuard/issues/44) R-04 · captured Blocked / planned prepare · inputs 2, successors 2, OR 0
+- [#45](https://github.com/xrlab-dau/CHOOGuard/issues/45) R-05 · captured Blocked / planned prepare · inputs 5, successors 1, OR 0
+- [#46](https://github.com/xrlab-dau/CHOOGuard/issues/46) R-06 · captured Blocked / planned prepare · inputs 3, successors 1, OR 0
+- [#52](https://github.com/xrlab-dau/CHOOGuard/issues/52) R-07 · captured Blocked / planned prepare · inputs 5, successors 1, OR 0
+- [#54](https://github.com/xrlab-dau/CHOOGuard/issues/54) FMP-00 · captured In progress / planned prepare · inputs 14, successors 0, OR 0
+- [#55](https://github.com/xrlab-dau/CHOOGuard/issues/55) FND-01 · captured In progress / planned prepare · inputs 0, successors 10, OR 2
+- [#56](https://github.com/xrlab-dau/CHOOGuard/issues/56) FND-02 · captured In progress / planned prepare · inputs 1, successors 2, OR 1
+- [#57](https://github.com/xrlab-dau/CHOOGuard/issues/57) FND-03 · captured In progress / planned prepare · inputs 3, successors 2, OR 1
+- [#58](https://github.com/xrlab-dau/CHOOGuard/issues/58) FND-04 · captured Ready / planned prepare · inputs 3, successors 0, OR 0
+- [#59](https://github.com/xrlab-dau/CHOOGuard/issues/59) FMP-07 · captured In progress / planned prepare · inputs 3, successors 3, OR 0
+- [#60](https://github.com/xrlab-dau/CHOOGuard/issues/60) FMP-09 · captured Backlog / planned prepare · inputs 3, successors 3, OR 0
+- [#62](https://github.com/xrlab-dau/CHOOGuard/issues/62) VAL-01 · captured Blocked / planned prepare · inputs 4, successors 2, OR 0
+- [#63](https://github.com/xrlab-dau/CHOOGuard/issues/63) VAL-02 · captured Blocked / planned prepare · inputs 5, successors 0, OR 0
+- [#64](https://github.com/xrlab-dau/CHOOGuard/issues/64) FOUND-CTX · captured Review / planned prepare · inputs 2, successors 2, OR 0
+- [#65](https://github.com/xrlab-dau/CHOOGuard/issues/65) FND-ART-REF · captured Blocked / planned prepare · inputs 2, successors 1, OR 0
+- [#67](https://github.com/xrlab-dau/CHOOGuard/issues/67) FND-WORLD · captured In progress / planned prepare · inputs 10, successors 0, OR 0
+- [#68](https://github.com/xrlab-dau/CHOOGuard/issues/68) PLAN-TEAM · captured In progress / planned prepare · inputs 3, successors 0, OR 0
+- [#70](https://github.com/xrlab-dau/CHOOGuard/issues/70) TEAM-02 · captured In progress / planned candidate · inputs 0, successors 18, OR 0
+- [#71](https://github.com/xrlab-dau/CHOOGuard/issues/71) TEAM-03 · captured Ready / planned prepare · inputs 2, successors 2, OR 0
+- [#72](https://github.com/xrlab-dau/CHOOGuard/issues/72) TEAM-04 · captured Ready / planned prepare · inputs 5, successors 2, OR 0
+- [#73](https://github.com/xrlab-dau/CHOOGuard/issues/73) TEAM-05 · captured Ready / planned prepare · inputs 1, successors 4, OR 0
+- [#74](https://github.com/xrlab-dau/CHOOGuard/issues/74) TEAM-06 · captured Blocked / planned prepare · inputs 1, successors 9, OR 1
+- [#75](https://github.com/xrlab-dau/CHOOGuard/issues/75) TEAM-07 · captured Blocked / planned prepare · inputs 5, successors 3, OR 0
+- [#76](https://github.com/xrlab-dau/CHOOGuard/issues/76) TEAM-08 · captured Blocked / planned prepare · inputs 6, successors 5, OR 0
+- [#77](https://github.com/xrlab-dau/CHOOGuard/issues/77) TEAM-09 · captured Blocked / planned prepare · inputs 6, successors 5, OR 0
+- [#78](https://github.com/xrlab-dau/CHOOGuard/issues/78) TEAM-10 · captured Blocked / planned prepare · inputs 6, successors 3, OR 0
+- [#79](https://github.com/xrlab-dau/CHOOGuard/issues/79) TEAM-11 · captured Blocked / planned prepare · inputs 9, successors 2, OR 0
+- [#80](https://github.com/xrlab-dau/CHOOGuard/issues/80) TEAM-12 · captured Blocked / planned prepare · inputs 7, successors 2, OR 0
+- [#81](https://github.com/xrlab-dau/CHOOGuard/issues/81) TEAM-13 · captured Blocked / planned prepare · inputs 9, successors 2, OR 0
+- [#82](https://github.com/xrlab-dau/CHOOGuard/issues/82) FMP-05 · captured In progress / planned prepare · inputs 7, successors 8, OR 0
+- [#85](https://github.com/xrlab-dau/CHOOGuard/issues/85) TEAM-17 · captured Ready / planned prepare · inputs 3, successors 0, OR 1
+- [#88](https://github.com/xrlab-dau/CHOOGuard/issues/88) FMP-11 · captured Backlog / planned prepare · inputs 4, successors 3, OR 0
+- [#89](https://github.com/xrlab-dau/CHOOGuard/issues/89) TEAM-21 · captured Blocked / planned prepare · inputs 6, successors 2, OR 0
+- [#90](https://github.com/xrlab-dau/CHOOGuard/issues/90) TEAM-22 · captured In progress / planned prepare · inputs 0, successors 0, OR 1
+- [#91](https://github.com/xrlab-dau/CHOOGuard/issues/91) FMP-12 · captured Backlog / planned prepare · inputs 14, successors 2, OR 0
+- [#92](https://github.com/xrlab-dau/CHOOGuard/issues/92) FMP-13 · captured Backlog / planned prepare · inputs 6, successors 6, OR 0
+- [#93](https://github.com/xrlab-dau/CHOOGuard/issues/93) TEAM-25 · captured Ready / planned prepare · inputs 4, successors 4, OR 0
+- [#94](https://github.com/xrlab-dau/CHOOGuard/issues/94) TEAM-26 · captured Ready / planned prepare · inputs 5, successors 2, OR 0
+- [#99](https://github.com/xrlab-dau/CHOOGuard/issues/99) FMP-03 · captured In progress / planned prepare · inputs 4, successors 7, OR 0
+- [#100](https://github.com/xrlab-dau/CHOOGuard/issues/100) FMP-04 · captured In progress / planned prepare · inputs 5, successors 6, OR 0
+- [#101](https://github.com/xrlab-dau/CHOOGuard/issues/101) FMP-06 · captured In progress / planned prepare · inputs 2, successors 3, OR 0
+- [#102](https://github.com/xrlab-dau/CHOOGuard/issues/102) FMP-08 · captured In progress / planned prepare · inputs 3, successors 3, OR 0
+- [#106](https://github.com/xrlab-dau/CHOOGuard/issues/106) FMP-14 · captured In progress / planned prepare · inputs 5, successors 0, OR 0
+- [#107](https://github.com/xrlab-dau/CHOOGuard/issues/107) FMP-15 · captured In progress / planned prepare · inputs 1, successors 4, OR 1
+- [#119](https://github.com/xrlab-dau/CHOOGuard/issues/119) FND-05 · captured Ready / planned prepare · inputs 3, successors 2, OR 0
+- [#120](https://github.com/xrlab-dau/CHOOGuard/issues/120) R-08 · captured Ready / planned prepare · inputs 0, successors 52, OR 0
+- [#121](https://github.com/xrlab-dau/CHOOGuard/issues/121) R-09 · captured Ready / planned prepare · inputs 1, successors 0, OR 0
+- [#122](https://github.com/xrlab-dau/CHOOGuard/issues/122) FMP-06a · captured Ready / planned prepare · inputs 3, successors 2, OR 0
+- [#123](https://github.com/xrlab-dau/CHOOGuard/issues/123) FMP-06b · captured Ready / planned prepare · inputs 4, successors 3, OR 0
+- [#125](https://github.com/xrlab-dau/CHOOGuard/issues/125) FMP-07a · captured Ready / planned prepare · inputs 3, successors 7, OR 0
+- [#126](https://github.com/xrlab-dau/CHOOGuard/issues/126) FMP-07b · captured Backlog / planned prepare · inputs 3, successors 1, OR 0
+- [#127](https://github.com/xrlab-dau/CHOOGuard/issues/127) FMP-07c · captured Ready / planned prepare · inputs 3, successors 1, OR 1
+- [#128](https://github.com/xrlab-dau/CHOOGuard/issues/128) FMP-08a · captured Ready / planned prepare · inputs 3, successors 5, OR 0
+- [#129](https://github.com/xrlab-dau/CHOOGuard/issues/129) FMP-08b · captured Ready / planned prepare · inputs 3, successors 2, OR 0
+- [#130](https://github.com/xrlab-dau/CHOOGuard/issues/130) FMP-08c · captured Backlog / planned prepare · inputs 7, successors 3, OR 0
+- [#131](https://github.com/xrlab-dau/CHOOGuard/issues/131) FMP-09a · captured Ready / planned prepare · inputs 5, successors 9, OR 0
+- [#132](https://github.com/xrlab-dau/CHOOGuard/issues/132) FMP-09b · captured Backlog / planned prepare · inputs 9, successors 1, OR 0
+- [#133](https://github.com/xrlab-dau/CHOOGuard/issues/133) FMP-09c · captured Backlog / planned prepare · inputs 5, successors 3, OR 0
+- [#134](https://github.com/xrlab-dau/CHOOGuard/issues/134) FMP-10a · captured Ready / planned prepare · inputs 3, successors 3, OR 0
+- [#135](https://github.com/xrlab-dau/CHOOGuard/issues/135) FMP-10b · captured Ready / planned prepare · inputs 3, successors 1, OR 0
+- [#136](https://github.com/xrlab-dau/CHOOGuard/issues/136) FMP-10c · captured Backlog / planned prepare · inputs 5, successors 1, OR 0
+- [#137](https://github.com/xrlab-dau/CHOOGuard/issues/137) FMP-11a · captured Ready / planned prepare · inputs 2, successors 3, OR 0
+- [#138](https://github.com/xrlab-dau/CHOOGuard/issues/138) FMP-11b · captured Ready / planned prepare · inputs 3, successors 3, OR 0
+- [#139](https://github.com/xrlab-dau/CHOOGuard/issues/139) FMP-11c · captured Backlog / planned prepare · inputs 7, successors 1, OR 0
+- [#140](https://github.com/xrlab-dau/CHOOGuard/issues/140) FMP-12a · captured Ready / planned prepare · inputs 3, successors 5, OR 0
+- [#141](https://github.com/xrlab-dau/CHOOGuard/issues/141) FMP-12b · captured Backlog / planned prepare · inputs 12, successors 2, OR 0
+- [#142](https://github.com/xrlab-dau/CHOOGuard/issues/142) FMP-12c · captured Backlog / planned prepare · inputs 7, successors 1, OR 0
+- [#143](https://github.com/xrlab-dau/CHOOGuard/issues/143) FMP-13a · captured Ready / planned prepare · inputs 4, successors 7, OR 0
+- [#144](https://github.com/xrlab-dau/CHOOGuard/issues/144) FMP-13b · captured Backlog / planned prepare · inputs 4, successors 1, OR 0
+- [#146](https://github.com/xrlab-dau/CHOOGuard/issues/146) BRAND-01 · captured null / planned null · inputs 0, successors 0, OR 0

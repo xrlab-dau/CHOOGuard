@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:13",
+  "@type": "Goal",
+  "issue": 13,
+  "workId": "M0-00",
+  "domainCode": "PM",
+  "title": "[M0-00] AI 작업 권한·안전 기준선 정리",
+  "orchestrator": "role:pm",
+  "executionMode": "PM aggregates child deliverables; members and their LLMs execute child work.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "비민감·합성 입력, 보호 경로, 권한 경계, 검토·승인 역할을 PM이 확인할 수 있는 기준선과 해시 기록을 만든다.",
+  "parent": 68,
+  "children": [
+    43,
+    44
+  ],
+  "requiredOutputPaths": [
+    "docs/team/M0-00/policy-baseline.json",
+    "docs/evidence/M0-00/review-record-candidate-index.json",
+    "docs/evidence/M0-00/review-record-accept-index.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 43,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:43:R-03-governance-diff:accept"
+      },
+      {
+        "issue": 44,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:44:R-04-evidence:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 16,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:13:M0-00-policy-baseline:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "lines21-36,lines50-64",
+      "readWhen": "prepare",
+      "why": "작업별 evidence/hash/review obligations와 M0-00의 PUBLIC_SYNTHETIC·보호경로·PM 확인 경계를 증명한다.",
+      "limits": "목표/DoD뿐이며 실행, clean checkout, PM 승인 또는 runtime permission을 증명하지 않는다. Exact captured bytes: frozen support S13-01.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    },
+    {
+      "path": "specs/001-m0-00-safe-bootstrap/spec.md",
+      "selector": "lines7-13,lines23-29,lines33-60,lines62-81,lines93-100",
+      "readWhen": "prepare",
+      "why": "Draft 상태, 현재 검사기의 한계, protected-path last-match owner, complete hash coverage, 사람 signoff, append-only/public-sanitized evidence 조건을 증명한다.",
+      "limits": "실행/수용 증거가 아니며 location routing 문구는 prospective policy로 사용하지 않는다. Exact captured bytes: frozen support S13-02.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "16b31bf475789061cad1dcbdefd27529cc6647be"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/specs/001-m0-00-safe-bootstrap/spec.md",
+      "access": "repository read access"
+    },
+    {
+      "path": "docs/choo-guard-ai-native-pipeline-v1.md",
+      "selector": "lines8-21,lines79-85",
+      "readWhen": "prepare",
+      "why": "완료 주장이 시험/독립검토를 대체하지 않고 exact writer ownership과 handoff가 필요함을 증명한다.",
+      "limits": "실제 lease·충돌 부재·generated closure를 증명하지 않는다. Exact captured bytes: frozen support S13-03.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "9a575eff21b96161cb7d562b260db3128831be87"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 13 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 13 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 13 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 13 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 13 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=13]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

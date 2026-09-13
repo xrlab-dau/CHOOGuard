@@ -1,3 +1,7 @@
+> **역사 범위 안내 · 2026-09-12**
+> 아래는 기존 Foundation prototype의 설계/검증 이력이다. 현행 멀티 목표와 로컬 미게시 소스의 경계는 새 실행 계약·source-availability에서 확인한다.
+> [현재 PM 실행 계약](context/pm-execution-contract.md)을 먼저 읽는다. 아래 원문과 과거 검증 범위는 삭제하거나 새 PASS로 바꾸지 않았다.
+
 # CHOOguard Foundation 개발 기준 v1.1 — 플레이 가능한 3D 시제품
 
 

@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:102",
+  "@type": "Goal",
+  "issue": 102,
+  "workId": "FMP-08",
+  "domainCode": "XR",
+  "title": "[FMP-08] 열차운행·제동·점유·이동 좌표계 수용 집계",
+  "orchestrator": "role:pm",
+  "executionMode": "PM aggregates child deliverables; members and their LLMs execute child work.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "역·접근선로·터널 자동운행 및 고장/정차/차내화재와 차량좌표 일관성의 전체 근거를 집계한다.",
+  "parent": 54,
+  "children": [
+    128,
+    129,
+    130
+  ],
+  "requiredOutputPaths": [
+    "docs/context/goals/FMP-08.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 128,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:128:dynamic-frame-contract:accept"
+      },
+      {
+        "issue": 129,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:129:train-analytic-receipt:accept"
+      },
+      {
+        "issue": 130,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:130:train-fire-integration:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 54,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+      },
+      {
+        "issue": 91,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+      },
+      {
+        "issue": 141,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:candidate"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 102 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 102 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 102 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 102 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 102 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=102]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

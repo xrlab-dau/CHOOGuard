@@ -1,0 +1,276 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:55",
+  "@type": "WorkItem",
+  "issue": 55,
+  "workId": "FND-01",
+  "domainCode": "PM",
+  "title": "[FND-01] 팀이 재현할 Foundation 기준 SHA·계약·시작 경로",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "팀이 받을 실제 원격 SHA와 적용 계약·확장 경계·검증 명령을 하나의 시작 문서에서 찾도록 한다. 기준선은 OR에서 선택한 한 branch의 artifact/ref/digest/scope로만 소비하며 Native·legacy·history를 동시에 필수화하지 않는다.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/choo-guard-foundation-handoff.md",
+    "docs/choo-guard-native-team-contracts.md"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [],
+    "successors": [
+      {
+        "issue": 57,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 79,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 79,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 80,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 80,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 81,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 81,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 89,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 89,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      },
+      {
+        "issue": 144,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-entry:candidate"
+      }
+    ],
+    "oneOfGroups": [
+      {
+        "artifact": "or:55:baseline-candidate",
+        "consumerPhase": "candidate",
+        "resolution": "At least one selected path/ref/digest-compatible baseline. Legacy selection only unchanged tracked API. Native selection requires Native contract candidate. The #69 branch is limited to its completed remote-checkout/source/LFS/lightweight Python/document/policy record at the separately recorded tested-code ref. It does not qualify Unity, C#, Windows, HMD, runnable build, performance, Native multiplayer or product acceptance.",
+        "alternatives": [
+          {
+            "issue": 120,
+            "artifact": "artifact:120:foundation-published-source:accept",
+            "producerPhase": "accept"
+          },
+          {
+            "issue": 69,
+            "artifact": "artifact:69:historical-unchanged-checkout:accept",
+            "producerPhase": "accept"
+          }
+        ]
+      },
+      {
+        "artifact": "or:55:baseline-accept",
+        "consumerPhase": "accept",
+        "resolution": "Final documented scope must match selected baseline; Native extension requires accepted Native contract, legacy extension has no #25/#10-final prerequisite. The #69 branch is limited to its completed remote-checkout/source/LFS/lightweight Python/document/policy record at the separately recorded tested-code ref. It does not qualify Unity, C#, Windows, HMD, runnable build, performance, Native multiplayer or product acceptance.",
+        "alternatives": [
+          {
+            "issue": 120,
+            "artifact": "artifact:120:foundation-published-source:accept",
+            "producerPhase": "accept"
+          },
+          {
+            "issue": 69,
+            "artifact": "artifact:69:historical-unchanged-checkout:accept",
+            "producerPhase": "accept"
+          }
+        ]
+      }
+    ],
+    "parallelCandidates": [
+      52,
+      58,
+      62,
+      63,
+      64,
+      40,
+      39,
+      71,
+      38,
+      72,
+      73,
+      75,
+      34,
+      31,
+      29,
+      28,
+      85,
+      23,
+      22,
+      21,
+      20,
+      90,
+      19,
+      18,
+      17,
+      93,
+      16,
+      94,
+      15,
+      14,
+      121,
+      146,
+      56,
+      57,
+      46,
+      45,
+      65,
+      44,
+      43,
+      42,
+      41,
+      70,
+      36,
+      74,
+      76,
+      33,
+      77,
+      32,
+      78,
+      82,
+      27,
+      26,
+      25,
+      24,
+      99,
+      10,
+      100,
+      106,
+      107,
+      119,
+      120,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "scripts/dev/check_foundation.py",
+      "selector": "main",
+      "readWhen": "prepare",
+      "why": "기존 공개 baseline의 입력 식별과 검사 진입점을 준비에 사용한다.",
+      "limits": "신규 멀티플레이/미게시 계약을 포함한다는 뜻이 아니다. 수정 범위는 이슈의 목표와 독립 후보 경로를 따른다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "b399e2cce0f4b1d3504dfbb39b4a3d36bb193232"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/dev/check_foundation.py",
+      "access": "repository read access"
+    },
+    {
+      "path": "docs/context/README.md",
+      "selector": "공유 context 탐색 경계",
+      "readWhen": "prepare",
+      "why": "공개 기준·계획 projection과 local source 접근을 구분",
+      "limits": "선택되지 않은 Native/legacy branch의 source를 읽거나 모든 #120/#10/#69를 동시에 요구하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "4ea59cec84a6bb44c527dd2ab82811196498720a"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/context/README.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 55 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 55 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 55 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 55 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 55 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=55]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

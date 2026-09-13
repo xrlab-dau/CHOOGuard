@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:20",
+  "@type": "WorkItem",
+  "issue": 20,
+  "workId": "M1-04",
+  "domainCode": "QA",
+  "title": "[M1-04] 공식 Unity Editor MCP 연결·허용 작업 검증",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "공식 Unity Editor MCP의 초기 연결, 도구 목록, 읽기, 제한 편집, 테스트와 차단 경로를 실제 프로젝트 대상으로 검증하세요.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/evidence/M1-04/connection-receipt-candidate-index.json",
+    "docs/evidence/M1-04/connection-receipt-accept-index.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 19,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:19:M1-03-supply-review:candidate"
+      },
+      {
+        "issue": 24,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+      },
+      {
+        "issue": 19,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:19:M1-03-supply-review:accept"
+      },
+      {
+        "issue": 24,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+      }
+    ],
+    "successors": [],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      21,
+      22,
+      17,
+      23,
+      15,
+      14,
+      28,
+      29,
+      31,
+      34,
+      37,
+      38,
+      39,
+      40,
+      52,
+      55,
+      58,
+      62,
+      63,
+      64,
+      71,
+      72,
+      73,
+      75,
+      85,
+      89,
+      90,
+      93,
+      94,
+      121,
+      146,
+      25,
+      26,
+      27,
+      32,
+      33,
+      36,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      56,
+      57,
+      65,
+      70,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      99,
+      100,
+      106,
+      107,
+      119,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "§5 M1-04 lines 187-203",
+      "readWhen": "prepare",
+      "why": "connection actions and exclusions를 증명한다.",
+      "limits": "실제 current session/test result를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 20 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 20 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 20 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 20 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 20 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=20]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:57",
+  "@type": "WorkItem",
+  "issue": 57,
+  "workId": "FND-03",
+  "domainCode": "UX",
+  "title": "[FND-03] Desktop 입력·가림·복귀와 XR 의미 계약",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "Desktop 입력 실패·거리/가림·일시정지 복귀를 검증하고 같은 행동 의미를 유지하는 입력 확장 후보를 제공한다.",
+  "parent": 54,
+  "children": [],
+  "requiredOutputPaths": [
+    "Assets/CHOOguardTeam/XR/FND-03/DesktopInputAdapter.cs",
+    "Assets/CHOOguardTeam/Tests/FND-03/DesktopInputContractTests.cs"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 32,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 32,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:32:M4-01-fixture:accept"
+      },
+      {
+        "issue": 55,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-contract:candidate"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 89,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:57:input-candidate:candidate"
+      },
+      {
+        "issue": 89,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:57:input-candidate:accept"
+      }
+    ],
+    "oneOfGroups": [
+      {
+        "artifact": "or:57:input-baseline",
+        "consumerPhase": "candidate",
+        "resolution": "Desktop adapter only the selected source contract; no XR final gate. The #69 branch supplies only an obtainable historical source-checkout baseline at its tested-code ref; #57 must produce and test its own desktop adapter and may not inherit Unity/C# execution claims.",
+        "alternatives": [
+          {
+            "issue": 69,
+            "artifact": "artifact:69:historical-unchanged-checkout:accept",
+            "producerPhase": "accept"
+          },
+          {
+            "issue": 120,
+            "artifact": "artifact:120:foundation-published-source:accept",
+            "producerPhase": "accept"
+          }
+        ]
+      }
+    ],
+    "parallelCandidates": [
+      56,
+      36,
+      33,
+      82,
+      27,
+      26,
+      25,
+      24,
+      99,
+      100,
+      10,
+      106,
+      107,
+      120,
+      58,
+      55,
+      52,
+      62,
+      63,
+      64,
+      65,
+      46,
+      68,
+      45,
+      44,
+      70,
+      43,
+      71,
+      42,
+      72,
+      41,
+      73,
+      40,
+      74,
+      39,
+      75,
+      38,
+      76,
+      77,
+      78,
+      79,
+      34,
+      80,
+      81,
+      31,
+      29,
+      85,
+      28,
+      90,
+      23,
+      22,
+      21,
+      93,
+      20,
+      94,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14,
+      119,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+      "selector": "TrainingAction; InputModality; ITrainingActionHandler",
+      "readWhen": "prepare",
+      "why": "실제 공개된 입력 의미·Modality·Submit 계약으로 후보를 준비한다.",
+      "limits": "미게시 Native WorldCommand 계약 또는 실제 XR 입력 구현을 대체하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "c7819b147078e414727e31ae4c48b0a84e69de1f"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 57 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 57 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 57 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 57 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 57 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=57]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

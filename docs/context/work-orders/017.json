@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:17",
+  "@type": "WorkItem",
+  "issue": 17,
+  "workId": "M1-01",
+  "domainCode": "PM",
+  "title": "[M1-01] LLM 세션 입력·Writer Lease·인계 규칙 구현",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "LLM 작업 세션의 입력과 쓰기 소유권을 정의하고, 중복 쓰기 거부·정상 인계·비정상 종료 회수 사례를 재현하세요.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/team/M1-01/session-contract.json",
+    "scripts/team/M1-01"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 16,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:16:M0-03-execution-profile:candidate"
+      },
+      {
+        "issue": 16,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:16:M0-03-execution-profile:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 22,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:17:M1-01-session-contract:candidate"
+      },
+      {
+        "issue": 22,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:17:M1-01-session-contract:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      18,
+      15,
+      19,
+      14,
+      20,
+      21,
+      23,
+      28,
+      29,
+      31,
+      34,
+      37,
+      38,
+      39,
+      40,
+      52,
+      55,
+      58,
+      62,
+      63,
+      64,
+      71,
+      72,
+      73,
+      75,
+      85,
+      89,
+      90,
+      93,
+      94,
+      121,
+      146,
+      10,
+      24,
+      25,
+      26,
+      27,
+      32,
+      33,
+      36,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      56,
+      57,
+      65,
+      70,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      99,
+      100,
+      106,
+      107,
+      119,
+      120,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "§5 M1-01 lines 129-146",
+      "readWhen": "prepare",
+      "why": "lease 상태 요구와 실패/취소 회수 범위를 증명한다.",
+      "limits": "실제 lease service나 API 존재를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    },
+    {
+      "path": "docs/choo-guard-ai-native-pipeline-v1.md",
+      "selector": "§4 lines 79-85",
+      "readWhen": "prepare",
+      "why": "독립 모듈 병렬과 자산별 lease 원칙을 증명한다.",
+      "limits": "사람 사전배정 근거가 아니다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "9a575eff21b96161cb7d562b260db3128831be87"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-ai-native-pipeline-v1.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 17 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 17 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 17 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 17 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 17 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=17]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

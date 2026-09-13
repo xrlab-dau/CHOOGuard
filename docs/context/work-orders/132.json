@@ -1,0 +1,221 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:132",
+  "@type": "WorkItem",
+  "issue": 132,
+  "workId": "FMP-09b",
+  "domainCode": "UX",
+  "title": "[FMP-09b] 동시2사건의 공유자원·독립 복구 통합 시험",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "동시 두 사건의 설비·통로·NPC 영향이 서로 덮이지 않고, 한 사건의 복구가 다른 사건을 보존하는지 시험하세요.",
+  "parent": 60,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/evidence/work-items/FMP-09b/result.json",
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp09bConcurrentIncidentTests.cs"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 99,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:99:recovery-contract:candidate"
+      },
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 125,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:125:world-crowd-fixture:candidate"
+      },
+      {
+        "issue": 130,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:130:train-fire-integration:candidate"
+      },
+      {
+        "issue": 131,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+      },
+      {
+        "issue": 99,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:99:recovery-contract:accept"
+      },
+      {
+        "issue": 125,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:125:world-crowd-fixture:accept"
+      },
+      {
+        "issue": 130,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:130:train-fire-integration:accept"
+      },
+      {
+        "issue": 131,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 60,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:132:concurrent-incident-receipt:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      133,
+      134,
+      129,
+      135,
+      136,
+      127,
+      137,
+      126,
+      139,
+      140,
+      123,
+      141,
+      122,
+      142,
+      121,
+      143,
+      144,
+      119,
+      146,
+      107,
+      106,
+      100,
+      94,
+      93,
+      90,
+      89,
+      85,
+      81,
+      80,
+      79,
+      78,
+      77,
+      76,
+      75,
+      74,
+      73,
+      72,
+      71,
+      70,
+      68,
+      65,
+      64,
+      63,
+      62,
+      58,
+      57,
+      56,
+      55,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      36,
+      34,
+      33,
+      32,
+      31,
+      29,
+      28,
+      26,
+      25,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": [
+      {
+        "issue": 130,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+          "lock:runtime:world-simulation",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+        ]
+      },
+      {
+        "issue": 138,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+          "lock:runtime:world-simulation",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+        ]
+      }
+    ]
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 132 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 132 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 132 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 132 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 132 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=132]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

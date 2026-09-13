@@ -1,0 +1,5785 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xrlab-dau/CHOOGuard/work-graph.schema.json",
+  "title": "CHOOGuard phase-qualified artifact, source-access, predicate, historical and evidence-projection contract",
+  "description": "Fail-closed prepare -> candidate -> accept DAG with exact artifact identities, branch-scoped source-access guards, non-artifact predicates, bounded historical snapshots, captured-status provenance, deterministic compiler indexes, and read-only eligibility projection.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "classification",
+    "project",
+    "generatedAt",
+    "snapshot",
+    "reviewScope",
+    "requirements",
+    "items",
+    "references",
+    "edges",
+    "ontology",
+    "limitations",
+    "review"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "classification": {
+      "const": "PUBLIC_PROJECT_CONTEXT"
+    },
+    "project": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "object",
+          "minProperties": 1
+        }
+      ]
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "snapshot": {
+      "type": "object"
+    },
+    "reviewScope": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "openIssueNumbers"
+      ],
+      "properties": {
+        "openIssueNumbers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "minItems": 0
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/item"
+      },
+      "minItems": 1,
+      "maxItems": 500
+    },
+    "references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reference"
+      },
+      "minItems": 0,
+      "maxItems": 500
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/edge"
+      },
+      "minItems": 0,
+      "maxItems": 20000
+    },
+    "ontology": {
+      "type": "object"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      }
+    },
+    "review": {
+      "type": "object"
+    }
+  },
+  "$defs": {
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "sourceRef": {
+      "type": "string",
+      "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "repoPath": {
+      "type": "string",
+      "minLength": 1,
+      "description": "NFC repo-relative exact path. Semantic validator rejects traversal, empty/dot segments, case aliases, backslashes, encoded paths, controls and globs."
+    },
+    "richText": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/text"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/richText"
+          }
+        },
+        {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "$ref": "#/$defs/richText"
+          }
+        }
+      ]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "path",
+        "selector",
+        "proves",
+        "limits",
+        "availability",
+        "readWhen"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "NFC repo-relative exact path. Semantic validator rejects traversal, empty/dot segments, case aliases, backslashes, encoded paths, controls and globs."
+        },
+        "selector": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "proves": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "limits": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "availability": {
+          "enum": [
+            "published",
+            "local_unpublished",
+            "proposed"
+          ]
+        },
+        "readWhen": {
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept"
+          ]
+        },
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+        }
+      }
+    },
+    "input": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fromIssue",
+        "qualification",
+        "consumerPhase"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "fromIssue": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "consumerPhase": {
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept"
+          ]
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "expectedSourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "expectedDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "expectedScope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "fromIssue": {
+                "type": "integer"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "producerPhase"
+            ],
+            "properties": {
+              "consumerPhase": {
+                "enum": [
+                  "candidate",
+                  "accept"
+                ]
+              }
+            }
+          },
+          "else": {
+            "not": {
+              "required": [
+                "producerPhase"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "producerIssue",
+        "producerPhase",
+        "path",
+        "qualification",
+        "scope",
+        "digestRequirements",
+        "acceptance"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "producerIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "digestRequirements": {
+          "$ref": "#/$defs/digestRequirements"
+        },
+        "acceptance": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "proposed": {
+          "type": "boolean"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "outputDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "wholeIssueAcceptance": {
+          "type": "boolean",
+          "description": "Optional semantic annotation for an accept output only. Current missing-producer projection does not depend on this flag and never means the producer issue must close."
+        },
+        "historicalSnapshot": {
+          "$ref": "#/$defs/historicalSnapshot"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "wholeIssueAcceptance"
+            ],
+            "properties": {
+              "wholeIssueAcceptance": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "producerPhase": {
+                "const": "accept"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "write": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "mode",
+        "phases"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Exact path or terminal /** subtree. Case/traversal aliases rejected semantically."
+        },
+        "mode": {
+          "enum": [
+            "exclusive",
+            "isolated_proposal",
+            "read_only"
+          ]
+        },
+        "lock": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "phases": {
+          "$ref": "#/$defs/phases"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "exclusive"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "lock"
+            ],
+            "properties": {
+              "phases": {
+                "not": {
+                  "contains": {
+                    "const": "prepare"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "check": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "expected",
+        "negativeCase",
+        "evidence"
+      ],
+      "properties": {
+        "command": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "inspection": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "expected": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "negativeCase": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "phases": {
+          "$ref": "#/$defs/phases"
+        },
+        "evidenceByPhase": {
+          "$ref": "#/$defs/checkEvidenceByPhase"
+        },
+        "resultProtocol": {
+          "$ref": "#/$defs/checkResultProtocol"
+        },
+        "proposed": {
+          "type": "boolean"
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "command"
+          ]
+        },
+        {
+          "required": [
+            "inspection"
+          ]
+        }
+      ],
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "evidenceByPhase"
+            ]
+          },
+          "then": {
+            "required": [
+              "resultProtocol"
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "resultProtocol"
+            ]
+          },
+          "then": {
+            "required": [
+              "evidenceByPhase"
+            ]
+          }
+        }
+      ]
+    },
+    "oneOf": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "consumerPhase",
+        "alternatives",
+        "resolution"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "consumerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/oneOfAlternative"
+          },
+          "minItems": 1
+        },
+        "resolution": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "edge": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason",
+            "artifact",
+            "consumerPhase",
+            "producerPhase"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "requires"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "artifact": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "consumerPhase": {
+              "enum": [
+                "candidate",
+                "accept"
+              ]
+            },
+            "producerPhase": {
+              "enum": [
+                "candidate",
+                "accept"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason",
+            "purpose"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "contains"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "purpose": {
+              "enum": [
+                "organization",
+                "decomposition",
+                "review"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "conflicts_with"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "fromPhase": {
+              "enum": [
+                "prepare",
+                "candidate",
+                "accept"
+              ]
+            },
+            "toPhase": {
+              "enum": [
+                "prepare",
+                "candidate",
+                "accept"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "parallel_with"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "fromPhase": {
+              "enum": [
+                "prepare",
+                "candidate",
+                "accept"
+              ]
+            },
+            "toPhase": {
+              "enum": [
+                "prepare",
+                "candidate",
+                "accept"
+              ]
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "context"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "verifies"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "implements"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "from",
+            "to",
+            "relation",
+            "reason"
+          ],
+          "properties": {
+            "from": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "to": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "relation": {
+              "const": "supersedes"
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        }
+      ],
+      "description": "Exact relation-specific record. No irrelevant artifact, phase or purpose fields are accepted."
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "number",
+        "state",
+        "stateReason"
+      ],
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "kind": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "state": {
+          "const": "CLOSED"
+        },
+        "stateReason": {
+          "enum": [
+            "COMPLETED",
+            "NOT_PLANNED"
+          ]
+        },
+        "closedAt": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "url": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/output"
+          },
+          "minItems": 0
+        },
+        "limits": {},
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+        },
+        "observedAt": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "absorbedHistoricalContext": {
+          "$ref": "#/$defs/absorbedHistoricalContext"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "number": {
+                "const": 124
+              }
+            },
+            "required": [
+              "number"
+            ]
+          },
+          "then": {
+            "required": [
+              "kind",
+              "closedAt",
+              "url",
+              "outputs",
+              "observedAt",
+              "absorbedHistoricalContext"
+            ],
+            "properties": {
+              "kind": {
+                "const": "absorbed_superseded_context"
+              },
+              "stateReason": {
+                "const": "NOT_PLANNED"
+              },
+              "outputs": {
+                "maxItems": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "artifactReceipt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producerIssue",
+        "outputId",
+        "producerPhase",
+        "sourceRef",
+        "outputDigest",
+        "qualification",
+        "scope",
+        "available",
+        "accepted",
+        "evidence",
+        "reviewRef"
+      ],
+      "properties": {
+        "producerIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "outputId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "outputDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "available": {
+          "const": true
+        },
+        "accepted": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reviewRef": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "producerPhase": {
+                "const": "candidate"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "accepted": {
+                "const": false
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "accepted": {
+                "const": true
+              }
+            }
+          }
+        }
+      ]
+    },
+    "expectedArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producerIssue",
+        "outputId",
+        "producerPhase",
+        "sourceRef",
+        "outputDigest",
+        "qualification",
+        "scope"
+      ],
+      "properties": {
+        "producerIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "outputId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "outputDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "verifiedInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "fromIssue",
+        "qualification",
+        "sourceRef",
+        "digest",
+        "verified",
+        "evidence"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "fromIssue": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sourceRef": {
+          "type": "string",
+          "pattern": "^(?:[a-f0-9]{40}|[a-f0-9]{64})$"
+        },
+        "digest": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "verified": {
+          "const": true
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "lease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "key",
+        "issue",
+        "holder",
+        "baseRef",
+        "record",
+        "expiresAt",
+        "scopePaths"
+      ],
+      "properties": {
+        "key": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "holder": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "baseRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "record": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scopePaths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/repoPath"
+          },
+          "minItems": 0
+        },
+        "scope": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/workspaceResourceBinding"
+            },
+            {
+              "$ref": "#/$defs/unityResourceBinding"
+            },
+            {
+              "$ref": "#/$defs/measurementResourceBinding"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "key": {
+                "const": "workspace-files-v1"
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "then": {
+            "required": [
+              "scope"
+            ],
+            "properties": {
+              "scope": {
+                "$ref": "#/$defs/workspaceResourceBinding"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "key": {
+                "const": "unity-editor-v1"
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "then": {
+            "required": [
+              "scope"
+            ],
+            "properties": {
+              "scope": {
+                "$ref": "#/$defs/unityResourceBinding"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "key": {
+                "const": "measurement-run-v1"
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "then": {
+            "required": [
+              "scope"
+            ],
+            "properties": {
+              "scope": {
+                "$ref": "#/$defs/measurementResourceBinding"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "key": {
+                "not": {
+                  "enum": [
+                    "workspace-files-v1",
+                    "unity-editor-v1",
+                    "measurement-run-v1"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "then": {
+            "not": {
+              "required": [
+                "scope"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "number",
+        "workId",
+        "title",
+        "kind",
+        "parent",
+        "outcome",
+        "nonGoals",
+        "truth",
+        "context",
+        "codePointers",
+        "inputs",
+        "outputs",
+        "writeScope",
+        "phaseWriteScopes",
+        "artifactOutputBindings",
+        "checks",
+        "acceptance",
+        "stopConditions",
+        "handoff",
+        "reviewNotes",
+        "hardPredecessors",
+        "hardSuccessors",
+        "oneOfInputs",
+        "requiredLocks",
+        "board",
+        "assigneePolicy",
+        "related",
+        "requirements",
+        "resourceBindings",
+        "guardPredicates"
+      ],
+      "properties": {
+        "number": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "kind": {
+          "enum": [
+            "goal",
+            "work_item"
+          ]
+        },
+        "parent": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "outcome": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "nonGoals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        },
+        "truth": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "required": [
+              "level",
+              "text",
+              "source"
+            ],
+            "properties": {
+              "level": {
+                "enum": [
+                  "target",
+                  "present_in_worktree",
+                  "tracked_at_head",
+                  "historically_verified",
+                  "currently_verified",
+                  "unknown",
+                  "blocked",
+                  "superseded",
+                  "rejected"
+                ]
+              },
+              "text": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "minItems": 1
+        },
+        "context": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/context"
+          },
+          "minItems": 2,
+          "maxItems": 4
+        },
+        "codePointers": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1,
+                "description": "NFC repo-relative exact path. Semantic validator rejects traversal, empty/dot segments, case aliases, backslashes, encoded paths, controls and globs."
+              },
+              {
+                "type": "object",
+                "additionalProperties": true,
+                "required": [
+                  "path"
+                ],
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "NFC repo-relative exact path. Semantic validator rejects traversal, empty/dot segments, case aliases, backslashes, encoded paths, controls and globs."
+                  }
+                }
+              }
+            ]
+          },
+          "minItems": 0
+        },
+        "inputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/input"
+          },
+          "minItems": 1
+        },
+        "outputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/output"
+          },
+          "minItems": 1
+        },
+        "writeScope": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/write"
+          },
+          "minItems": 1
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/check"
+          },
+          "minItems": 1
+        },
+        "acceptance": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 4,
+          "maxItems": 7
+        },
+        "stopConditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        },
+        "handoff": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/richText"
+            },
+            {
+              "$ref": "#/$defs/issue13Handoff"
+            }
+          ]
+        },
+        "reviewNotes": {
+          "$ref": "#/$defs/richText"
+        },
+        "hardPredecessors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/predecessorDependency"
+          },
+          "minItems": 0
+        },
+        "hardSuccessors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/dependency"
+          },
+          "minItems": 0
+        },
+        "oneOfInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/oneOf"
+          },
+          "minItems": 0
+        },
+        "requiredLocks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "uniqueItems": true
+        },
+        "board": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "reason",
+            "phase"
+          ],
+          "properties": {
+            "status": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "Backlog",
+                "Ready",
+                "In progress",
+                "Review",
+                "Blocked",
+                null
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "phase": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "prepare",
+                "candidate",
+                "accept",
+                null
+              ]
+            },
+            "capturedProjectStatus": {
+              "$ref": "#/$defs/capturedProjectStatus"
+            }
+          },
+          "allOf": [
+            {
+              "if": {
+                "properties": {
+                  "status": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              },
+              "then": {
+                "required": [
+                  "capturedProjectStatus"
+                ],
+                "properties": {
+                  "phase": {
+                    "type": "null"
+                  },
+                  "capturedProjectStatus": {
+                    "allOf": [
+                      {
+                        "$ref": "#/$defs/capturedProjectStatus"
+                      },
+                      {
+                        "properties": {
+                          "value": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            {
+              "if": {
+                "properties": {
+                  "phase": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "phase"
+                ]
+              },
+              "then": {
+                "properties": {
+                  "status": {
+                    "type": "null"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "assigneePolicy": {
+          "enum": [
+            "unassigned_until_claim",
+            "preserve_evidenced_claim"
+          ]
+        },
+        "claimEvidence": {
+          "$ref": "#/$defs/richText"
+        },
+        "authorityBlock": {
+          "$ref": "#/$defs/authorityBlock"
+        },
+        "related": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        },
+        "resourceBindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/resourceDeclaration"
+          },
+          "minItems": 1
+        },
+        "guardPredicates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/guardPredicate"
+          },
+          "minItems": 0
+        },
+        "phaseWriteScopes": {
+          "$ref": "#/$defs/phaseWriteScopes"
+        },
+        "artifactOutputBindings": {
+          "$ref": "#/$defs/artifactOutputBindings"
+        },
+        "inputQualifiers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/inputQualifier"
+          }
+        },
+        "relationshipDeclarations": {
+          "$ref": "#/$defs/relationshipDeclarations"
+        },
+        "checkEvidenceMappings": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/checkEvidenceMapping"
+          }
+        },
+        "generatedOutputClosure": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "liveState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observedAt",
+        "issueNumber",
+        "issueUrl",
+        "sourceRef",
+        "reviewedContext",
+        "status",
+        "operation",
+        "phase",
+        "claim",
+        "phaseEvidence",
+        "artifactReceipts",
+        "expectedArtifacts",
+        "verifiedInputs",
+        "verifiedSources",
+        "resourceBindings",
+        "leases",
+        "sourceAccessEvidence",
+        "predicateEvidence",
+        "writerContext"
+      ],
+      "properties": {
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "issueNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issueUrl": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "reviewedContext": {
+          "const": true
+        },
+        "status": {
+          "enum": [
+            "Ready",
+            "In progress"
+          ]
+        },
+        "operation": {
+          "enum": [
+            "start",
+            "resume"
+          ]
+        },
+        "phase": {
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept"
+          ]
+        },
+        "stage": {
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept"
+          ]
+        },
+        "claim": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "issueNumber",
+            "holder",
+            "sourceRef",
+            "evidence"
+          ],
+          "properties": {
+            "issueNumber": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "holder": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "sourceRef": {
+              "$ref": "#/$defs/sourceRef"
+            },
+            "evidence": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "phase": {
+              "enum": [
+                "prepare",
+                "candidate",
+                "accept"
+              ]
+            }
+          }
+        },
+        "phaseEvidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phaseEvidence"
+          },
+          "minItems": 0
+        },
+        "artifactReceipts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifactReceipt"
+          },
+          "minItems": 0
+        },
+        "expectedArtifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/expectedArtifact"
+          },
+          "minItems": 0
+        },
+        "selectedInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selectedInput"
+          },
+          "minItems": 0
+        },
+        "verifiedInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/verifiedInput"
+          },
+          "minItems": 0
+        },
+        "verifiedSources": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "sourceRef",
+              "digest",
+              "available",
+              "evidence"
+            ],
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/repoPath"
+              },
+              "sourceRef": {
+                "$ref": "#/$defs/sourceRef"
+              },
+              "digest": {
+                "$ref": "#/$defs/digest"
+              },
+              "available": {
+                "const": true
+              },
+              "evidence": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "minItems": 0
+        },
+        "resourceBindings": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "workspace-files-v1": {
+              "$ref": "#/$defs/workspaceResourceBinding"
+            },
+            "unity-editor-v1": {
+              "$ref": "#/$defs/unityResourceBinding"
+            },
+            "measurement-run-v1": {
+              "$ref": "#/$defs/measurementResourceBinding"
+            }
+          }
+        },
+        "leases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/lease"
+          },
+          "minItems": 0
+        },
+        "resolvedAuthorities": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 0
+        },
+        "sourceAccessEvidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceAccessEvidence"
+          },
+          "minItems": 0
+        },
+        "predicateEvidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/predicateEvidence"
+          },
+          "minItems": 0
+        },
+        "writerContext": {
+          "$ref": "#/$defs/writerContext"
+        }
+      }
+    },
+    "phase": {
+      "enum": [
+        "prepare",
+        "candidate",
+        "accept"
+      ]
+    },
+    "artifactPhase": {
+      "enum": [
+        "candidate",
+        "accept"
+      ]
+    },
+    "phases": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "prepare",
+          "candidate",
+          "accept"
+        ]
+      }
+    },
+    "digestRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceRef",
+        "outputDigest"
+      ],
+      "properties": {
+        "sourceRef": {
+          "const": "required"
+        },
+        "outputDigest": {
+          "const": "sha256"
+        }
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue",
+        "artifact",
+        "consumerPhase",
+        "producerPhase",
+        "reason"
+      ],
+      "properties": {
+        "issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "consumerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "resourceDeclaration": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/workspaceResourceContract"
+        },
+        {
+          "$ref": "#/$defs/unityResourceContract"
+        },
+        {
+          "$ref": "#/$defs/measurementResourceContract"
+        }
+      ]
+    },
+    "authorityBlock": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "phases"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "phases": {
+              "$ref": "#/$defs/phases"
+            }
+          }
+        }
+      ],
+      "description": "Explicit phase object preferred. String is supported compatibility shorthand for candidate and accept only, never prepare."
+    },
+    "selectedInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "producerIssue",
+        "outputId",
+        "producerPhase",
+        "sourceRef",
+        "outputDigest",
+        "qualification",
+        "scope",
+        "group",
+        "consumerPhase",
+        "compatible",
+        "compatibilityEvidence"
+      ],
+      "properties": {
+        "producerIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "outputId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "outputDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "scope": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "group": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "consumerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "compatible": {
+          "const": true
+        },
+        "compatibilityEvidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "available": {
+          "type": "boolean"
+        },
+        "accepted": {
+          "type": "boolean"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "reviewRef": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "guardBindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/expectedArtifact"
+          },
+          "description": "Exact expected-artifact identities for every guard on this selected alternative. Required semantically when the branch declares guards; empty or omitted only for an unguarded branch."
+        }
+      }
+    },
+    "phaseEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase",
+        "sourceRef",
+        "verified",
+        "evidence",
+        "inputBindings",
+        "selectedInputs"
+      ],
+      "properties": {
+        "phase": {
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "verified": {
+          "const": true
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "inputBindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/expectedArtifact"
+          },
+          "minItems": 0
+        },
+        "selectedInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selectedInput"
+          },
+          "description": "Selections retained for this completed phase. Guarded selections must also occur in inputBindings with every guard binding."
+        },
+        "sourceAccessBindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceAccessEvidence"
+          },
+          "minItems": 0
+        },
+        "predicateBindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/predicateEvidence"
+          },
+          "minItems": 0
+        }
+      }
+    },
+    "guard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue",
+        "artifact",
+        "producerPhase"
+      ],
+      "properties": {
+        "issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifact": {
+          "$ref": "#/$defs/text"
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "expectedSourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "expectedDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "expectedScope": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "oneOfAlternative": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue",
+        "artifact",
+        "producerPhase"
+      ],
+      "properties": {
+        "issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifact": {
+          "$ref": "#/$defs/text"
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "guards": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/guard"
+          }
+        },
+        "additionalInputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/additionalInput"
+          }
+        }
+      }
+    },
+    "capturedStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "observedAt",
+        "sourceSnapshotCapturedAt",
+        "sourceIssueUpdatedAt",
+        "scope"
+      ],
+      "properties": {
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "Backlog",
+            "Ready",
+            "In progress",
+            "Review",
+            "Blocked",
+            null
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceSnapshotCapturedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceIssueUpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "properties": {
+              "observedAt": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "observedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "phaseFrontier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issueNumber",
+        "issueUrl",
+        "plannedPhase",
+        "capturedStatus",
+        "phaseEvidence",
+        "selectedInputs",
+        "verifiedInputs",
+        "verifiedSources",
+        "sourceAccessEvidence",
+        "predicateEvidence"
+      ],
+      "properties": {
+        "issueNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issueUrl": {
+          "type": "string",
+          "pattern": "^https://github\\.com/xrlab-dau/CHOOGuard/issues/[1-9][0-9]*$"
+        },
+        "plannedPhase": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept",
+            null
+          ]
+        },
+        "capturedStatus": {
+          "$ref": "#/$defs/capturedStatus"
+        },
+        "phaseEvidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phaseEvidence"
+          }
+        },
+        "selectedInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/selectedInput"
+          }
+        },
+        "verifiedInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/verifiedInput"
+          }
+        },
+        "verifiedSources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/verifiedSource"
+          }
+        },
+        "sourceAccessEvidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceAccessEvidence"
+          },
+          "minItems": 0
+        },
+        "predicateEvidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/predicateEvidence"
+          },
+          "minItems": 0
+        }
+      },
+      "description": "Captured status metadata and evidence-supported planned phase are separate. This record never resets or rewrites captured status."
+    },
+    "projectionState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotKind",
+        "observedAt",
+        "sourceRef",
+        "reviewedContext",
+        "frontiers",
+        "artifactReceipts",
+        "expectedArtifacts",
+        "resolvedAuthorities"
+      ],
+      "properties": {
+        "snapshotKind": {
+          "enum": [
+            "live",
+            "historical"
+          ]
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "reviewedContext": {
+          "const": true
+        },
+        "frontiers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/phaseFrontier"
+          }
+        },
+        "artifactReceipts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifactReceipt"
+          }
+        },
+        "expectedArtifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/expectedArtifact"
+          }
+        },
+        "resolvedAuthorities": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        }
+      },
+      "description": "Strict read-only status-ledger snapshot. Live projection requires fresh observedAt and complete active-issue frontiers. This object has no claim, transition, lease, assignment or write-authority fields."
+    },
+    "verifiedSource": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sourceRef",
+        "digest",
+        "available",
+        "evidence"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "available": {
+          "const": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "accessCaptureEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotBaseRef",
+        "publishedRef",
+        "localSha256",
+        "localGitBlobSha",
+        "developGitBlobSha",
+        "sourceFilesPointer"
+      ],
+      "properties": {
+        "snapshotBaseRef": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "publishedRef": {
+          "type": "null"
+        },
+        "localSha256": {
+          "$ref": "#/$defs/digest"
+        },
+        "localGitBlobSha": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "developGitBlobSha": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[a-f0-9]{40}$"
+        },
+        "sourceFilesPointer": {
+          "type": "string",
+          "pattern": "^baseline/source-files\\.json\\[[0-9]+\\]$"
+        }
+      }
+    },
+    "accessOperation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "operation",
+        "declaredAvailability",
+        "observedAt",
+        "localAtCapture",
+        "developAtCapture"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "operation": {
+          "enum": [
+            "read",
+            "read_write"
+          ]
+        },
+        "declaredAvailability": {
+          "const": "local_unpublished"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "localAtCapture": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "developAtCapture": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "captureEvidence": {
+          "$ref": "#/$defs/accessCaptureEvidence"
+        }
+      }
+    },
+    "accessPredicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allSelectedPathsCoveredByManifest",
+        "accessibleSourceRefRequired",
+        "pathDigestMatchRequired",
+        "localPresenceAloneQualifies",
+        "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase"
+      ],
+      "properties": {
+        "allSelectedPathsCoveredByManifest": {
+          "const": true
+        },
+        "accessibleSourceRefRequired": {
+          "const": true
+        },
+        "pathDigestMatchRequired": {
+          "const": true
+        },
+        "localPresenceAloneQualifies": {
+          "const": false
+        },
+        "unavailableOrUnlistedPathBlocksOnlyThisConsumingPhase": {
+          "const": true
+        },
+        "payloadManifestMaySatisfyWithoutDirectIssue120Edge": {
+          "const": true
+        }
+      }
+    },
+    "accessActivation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "phase"
+          ],
+          "properties": {
+            "type": {
+              "const": "phase"
+            },
+            "phase": {
+              "$ref": "#/$defs/artifactPhase"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "group",
+            "selectedArtifact"
+          ],
+          "properties": {
+            "type": {
+              "const": "selected_or_alternative"
+            },
+            "group": {
+              "$ref": "#/$defs/text"
+            },
+            "selectedArtifact": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "selectedArtifact"
+          ],
+          "properties": {
+            "type": {
+              "const": "artifact_payload_manifest"
+            },
+            "selectedArtifact": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        }
+      ]
+    },
+    "sourceAccessGuard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "activation",
+        "consumerPhase",
+        "manifestProviderArtifact",
+        "operations",
+        "predicate"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "kind": {
+          "const": "selected_path_source_access"
+        },
+        "activation": {
+          "$ref": "#/$defs/accessActivation"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "manifestProviderArtifact": {
+          "$ref": "#/$defs/text"
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/accessOperation"
+          }
+        },
+        "predicate": {
+          "$ref": "#/$defs/accessPredicate"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "activation": {
+                "properties": {
+                  "type": {
+                    "const": "artifact_payload_manifest"
+                  }
+                },
+                "required": [
+                  "type"
+                ]
+              }
+            },
+            "required": [
+              "activation"
+            ]
+          },
+          "then": {
+            "properties": {
+              "predicate": {
+                "required": [
+                  "payloadManifestMaySatisfyWithoutDirectIssue120Edge"
+                ],
+                "properties": {
+                  "payloadManifestMaySatisfyWithoutDirectIssue120Edge": {
+                    "const": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "not": {
+              "properties": {
+                "activation": {
+                  "properties": {
+                    "type": {
+                      "const": "artifact_payload_manifest"
+                    }
+                  },
+                  "required": [
+                    "type"
+                  ]
+                }
+              },
+              "required": [
+                "activation"
+              ]
+            }
+          },
+          "then": {
+            "properties": {
+              "predicate": {
+                "not": {
+                  "required": [
+                    "payloadManifestMaySatisfyWithoutDirectIssue120Edge"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "guardPredicate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "consumerPhase",
+        "state",
+        "required",
+        "nativeIssueEdge"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "kind": {
+          "$ref": "#/$defs/text"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "state": {
+          "const": "unverified"
+        },
+        "required": {
+          "$ref": "#/$defs/text"
+        },
+        "nativeIssueEdge": {
+          "const": false
+        }
+      }
+    },
+    "additionalInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "consumerPhase"
+      ],
+      "properties": {
+        "artifact": {
+          "$ref": "#/$defs/text"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "reason": {
+          "$ref": "#/$defs/text"
+        },
+        "accessGuard": {
+          "$ref": "#/$defs/sourceAccessGuard"
+        }
+      }
+    },
+    "historicalSnapshot": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readOnly",
+        "executable",
+        "currentOutput",
+        "nativeIssueEdge",
+        "sourceIssue",
+        "testedInputCodeRef",
+        "reportPublicationRef",
+        "reportByteSha256"
+      ],
+      "properties": {
+        "readOnly": {
+          "const": true
+        },
+        "executable": {
+          "const": false
+        },
+        "currentOutput": {
+          "const": false
+        },
+        "nativeIssueEdge": {
+          "const": false
+        },
+        "sourceIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "testedInputCodeRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "reportPublicationRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "reportByteSha256": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "capturedProjectStatus": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "observedAt",
+        "sourceSnapshotCapturedAt",
+        "sourceIssueUpdatedAt",
+        "source"
+      ],
+      "properties": {
+        "value": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "Backlog",
+            "Ready",
+            "In progress",
+            "Review",
+            "Blocked",
+            null
+          ]
+        },
+        "observedAt": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sourceSnapshotCapturedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceIssueUpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "source": {
+          "$ref": "#/$defs/text"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "value": {
+                "type": "null"
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "then": {
+            "properties": {
+              "observedAt": {
+                "type": "null"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "observedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "manifestEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sourceRef",
+        "digest"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    },
+    "observedAccess": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "operation",
+        "sourceRef",
+        "digest",
+        "accessible",
+        "evidence"
+      ],
+      "properties": {
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "operation": {
+          "enum": [
+            "read",
+            "read_write"
+          ]
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "accessible": {
+          "const": true
+        },
+        "evidence": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "sourceAccessEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "guardId",
+        "consumerPhase",
+        "provider",
+        "manifestEntries",
+        "observedOperations",
+        "observedAt",
+        "evidenceDigest",
+        "evidence",
+        "reviewRef"
+      ],
+      "properties": {
+        "guardId": {
+          "$ref": "#/$defs/text"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "provider": {
+          "$ref": "#/$defs/expectedArtifact"
+        },
+        "manifestEntries": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/manifestEntry"
+          }
+        },
+        "observedOperations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/observedAccess"
+          }
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidenceDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "evidence": {
+          "$ref": "#/$defs/text"
+        },
+        "reviewRef": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "predicateEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "kind",
+        "consumerPhase",
+        "verified",
+        "sourceRef",
+        "digest",
+        "observedAt",
+        "evidence",
+        "verifier"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "kind": {
+          "$ref": "#/$defs/text"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "verified": {
+          "const": true
+        },
+        "sourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "digest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidence": {
+          "$ref": "#/$defs/text"
+        },
+        "verifier": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "artifactOutputBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "path",
+        "pathKind",
+        "bindingKind",
+        "scopePath",
+        "scopeMode",
+        "lockId",
+        "canonicalWriteAllowed",
+        "rawReceiptPolicy"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "pathKind": {
+          "enum": [
+            "file",
+            "bundle_glob",
+            "immutable_receipt_index"
+          ]
+        },
+        "bindingKind": {
+          "enum": [
+            "phase_output",
+            "requalifiable_phase_output",
+            "diagnostic_context_output_not_runnable",
+            "existing_read_only_snapshot"
+          ]
+        },
+        "scopePath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "scopeMode": {
+          "enum": [
+            "isolated_proposal",
+            "exclusive",
+            "read_only"
+          ]
+        },
+        "lockId": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "canonicalWriteAllowed": {
+          "type": "boolean"
+        },
+        "rawReceiptPolicy": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "receiptStorage": {
+          "$ref": "#/$defs/receiptStorage"
+        }
+      }
+    },
+    "derivationContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "canonicalAuthorities",
+        "derivedOnly",
+        "rule"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "canonicalAuthorities": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "derivedOnly": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "rule": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "predecessorDependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue",
+        "artifact",
+        "consumerPhase",
+        "producerPhase",
+        "reason"
+      ],
+      "properties": {
+        "issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "consumerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "producerPhase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "accessGuard": {
+          "$ref": "#/$defs/sourceAccessGuard"
+        }
+      }
+    },
+    "projectionMissingInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "producerIssue",
+        "artifact",
+        "producerPhase",
+        "consumerPhase"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "direct",
+            "selected-alternative",
+            "selected-guard"
+          ]
+        },
+        "producerIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifact": {
+          "$ref": "#/$defs/text"
+        },
+        "producerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "group": {
+          "$ref": "#/$defs/text"
+        },
+        "selectedAlternative": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "issue",
+            "artifact",
+            "producerPhase"
+          ],
+          "properties": {
+            "issue": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "artifact": {
+              "$ref": "#/$defs/text"
+            },
+            "producerPhase": {
+              "$ref": "#/$defs/artifactPhase"
+            }
+          }
+        }
+      }
+    },
+    "sourceAccessGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "consumerPhase",
+        "manifestProviderArtifact",
+        "operations",
+        "nativeIssueEdge"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "group": {
+          "$ref": "#/$defs/text"
+        },
+        "selectedAlternative": {
+          "$ref": "#/$defs/text"
+        },
+        "manifestProviderArtifact": {
+          "$ref": "#/$defs/text"
+        },
+        "operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "operation"
+            ],
+            "properties": {
+              "path": {
+                "$ref": "#/$defs/repoPath"
+              },
+              "operation": {
+                "enum": [
+                  "read",
+                  "read_write"
+                ]
+              }
+            }
+          }
+        },
+        "nativeIssueEdge": {
+          "const": false
+        }
+      }
+    },
+    "projectedPredicateGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "phase",
+        "kind",
+        "state",
+        "required",
+        "nativeIssueEdge"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/text"
+        },
+        "phase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "kind": {
+          "$ref": "#/$defs/text"
+        },
+        "state": {
+          "const": "unverified"
+        },
+        "required": {
+          "$ref": "#/$defs/text"
+        },
+        "nativeIssueEdge": {
+          "const": false
+        }
+      }
+    },
+    "nonNativeArtifactGate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "producerIssue",
+        "artifact",
+        "producerPhase",
+        "consumerPhase",
+        "nativeIssueEdge"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "direct",
+            "selected-alternative",
+            "selected-guard"
+          ]
+        },
+        "producerIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "artifact": {
+          "$ref": "#/$defs/text"
+        },
+        "producerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "consumerPhase": {
+          "$ref": "#/$defs/artifactPhase"
+        },
+        "group": {
+          "$ref": "#/$defs/text"
+        },
+        "selectedAlternative": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "issue",
+            "artifact",
+            "producerPhase"
+          ],
+          "properties": {
+            "issue": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "artifact": {
+              "$ref": "#/$defs/text"
+            },
+            "producerPhase": {
+              "$ref": "#/$defs/artifactPhase"
+            }
+          }
+        },
+        "nativeIssueEdge": {
+          "const": false
+        }
+      }
+    },
+    "projectionFreshness": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "snapshotKind",
+        "ageMs",
+        "fresh",
+        "current"
+      ],
+      "properties": {
+        "snapshotKind": {
+          "anyOf": [
+            {
+              "enum": [
+                "live",
+                "historical"
+              ]
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "ageMs": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "fresh": {
+          "type": "boolean"
+        },
+        "current": {
+          "type": "boolean"
+        }
+      }
+    },
+    "eligibilityProjection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "valid",
+        "reasons",
+        "snapshotAsOf",
+        "plannedPhase",
+        "capturedStatus",
+        "freshness",
+        "nativeBlockedBy",
+        "artifactEligible",
+        "preparationAvailable",
+        "nextPhaseEligible",
+        "unresolvedSelections",
+        "missingInputs",
+        "sourceAccessGates",
+        "predicateGates",
+        "nonNativeArtifactGates",
+        "startPermission",
+        "scope"
+      ],
+      "properties": {
+        "valid": {
+          "type": "boolean"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "snapshotAsOf": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "plannedPhase": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept",
+            null
+          ]
+        },
+        "capturedStatus": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/capturedStatus"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "freshness": {
+          "$ref": "#/$defs/projectionFreshness"
+        },
+        "nativeBlockedBy": {
+          "anyOf": [
+            {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "integer",
+                "minimum": 1
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "artifactEligible": {
+          "type": "boolean"
+        },
+        "preparationAvailable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "nextPhaseEligible": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "unresolvedSelections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "missingInputs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/projectionMissingInput"
+          }
+        },
+        "sourceAccessGates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sourceAccessGate"
+          }
+        },
+        "predicateGates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/projectedPredicateGate"
+          }
+        },
+        "nonNativeArtifactGates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/nonNativeArtifactGate"
+          }
+        },
+        "startPermission": {
+          "const": false
+        },
+        "scope": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "phaseWriteScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "mode",
+        "physicalBinding",
+        "canonicalWriteAllowed"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "mode": {
+          "enum": [
+            "isolated_proposal",
+            "exclusive"
+          ]
+        },
+        "physicalBinding": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "canonicalWriteAllowed": {
+          "type": "boolean"
+        },
+        "requiresRegistration": {
+          "const": true
+        },
+        "originalMode": {
+          "enum": [
+            "isolated_proposal",
+            "exclusive"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "childPolicy": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "phaseWriteScopes": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "prepare",
+        "candidate",
+        "accept"
+      ],
+      "properties": {
+        "prepare": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phaseWriteScope"
+          },
+          "minItems": 0
+        },
+        "candidate": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phaseWriteScope"
+          },
+          "minItems": 0
+        },
+        "accept": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/phaseWriteScope"
+          },
+          "minItems": 0
+        }
+      },
+      "description": "Lossless phase-specific writer declarations. Runtime validation binds placeholders and enforces phase/mode/canonical invariants."
+    },
+    "artifactOutputBindings": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate",
+        "accept",
+        "readOnlySnapshots"
+      ],
+      "properties": {
+        "candidate": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifactOutputBinding"
+          },
+          "minItems": 0
+        },
+        "accept": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifactOutputBinding"
+          },
+          "minItems": 0
+        },
+        "readOnlySnapshots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/artifactOutputBinding"
+          },
+          "minItems": 0
+        }
+      }
+    },
+    "existingLaboratoryScope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "calibrationHoldoutFormatAlreadyExisted",
+        "stecklerCases",
+        "juelichCases",
+        "totalCases",
+        "region13Accepted",
+        "duplicateMeasurementRequired"
+      ],
+      "properties": {
+        "calibrationHoldoutFormatAlreadyExisted": {
+          "const": true
+        },
+        "stecklerCases": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "juelichCases": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "totalCases": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "region13Accepted": {
+          "const": false
+        },
+        "duplicateMeasurementRequired": {
+          "const": false
+        }
+      }
+    },
+    "transferredRemainingScope": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      },
+      "additionalProperties": {
+        "type": "integer",
+        "minimum": 1
+      }
+    },
+    "absorbedContextAvailability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "state",
+        "access",
+        "teamAccessible",
+        "sourceRef",
+        "capturedLocalDigest",
+        "observedAt",
+        "requiresAvailabilityArtifact",
+        "sourceEvidence"
+      ],
+      "properties": {
+        "state": {
+          "const": "local_unpublished_context_only"
+        },
+        "access": {
+          "const": "local_unpublished"
+        },
+        "teamAccessible": {
+          "const": false
+        },
+        "sourceRef": {
+          "type": "null"
+        },
+        "capturedLocalDigest": {
+          "$ref": "#/$defs/digest"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "requiresAvailabilityArtifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sourceEvidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "absorbedHistoricalAttribution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceIssue",
+        "issueState",
+        "issueStateReason",
+        "closedAt",
+        "closureDisposition",
+        "closureCommentUrl",
+        "dataRejected",
+        "completedProducerClaim",
+        "currentOutput",
+        "legacyProducerPhaseLabel",
+        "legacyPhaseIsExecutionClaim",
+        "executable",
+        "existingLaboratoryScope",
+        "transferredRemainingScope"
+      ],
+      "properties": {
+        "sourceIssue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "issueState": {
+          "const": "CLOSED"
+        },
+        "issueStateReason": {
+          "const": "NOT_PLANNED"
+        },
+        "closedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "closureDisposition": {
+          "const": "absorption_transfer"
+        },
+        "closureCommentUrl": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "dataRejected": {
+          "const": false
+        },
+        "completedProducerClaim": {
+          "const": false
+        },
+        "currentOutput": {
+          "const": false
+        },
+        "legacyProducerPhaseLabel": {
+          "const": "candidate"
+        },
+        "legacyPhaseIsExecutionClaim": {
+          "const": false
+        },
+        "executable": {
+          "const": false
+        },
+        "existingLaboratoryScope": {
+          "$ref": "#/$defs/existingLaboratoryScope"
+        },
+        "transferredRemainingScope": {
+          "$ref": "#/$defs/transferredRemainingScope"
+        }
+      }
+    },
+    "absorbedContextConsumer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue",
+        "readWhen",
+        "kind",
+        "executable",
+        "acceptanceInput",
+        "nativeIssueEdge"
+      ],
+      "properties": {
+        "issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "readWhen": {
+          "const": "prepare"
+        },
+        "kind": {
+          "const": "absorbed_historical_snapshot_context"
+        },
+        "executable": {
+          "const": false
+        },
+        "acceptanceInput": {
+          "const": false
+        },
+        "nativeIssueEdge": {
+          "const": false
+        }
+      }
+    },
+    "absorbedContextArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "producerIssue",
+        "path",
+        "pathKind",
+        "proposed",
+        "state",
+        "satisfied",
+        "role",
+        "producerKind",
+        "wholeIssueAcceptance",
+        "availability",
+        "attribution",
+        "contextConsumers"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "producerIssue": {
+          "type": "null"
+        },
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "pathKind": {
+          "const": "file"
+        },
+        "proposed": {
+          "const": false
+        },
+        "state": {
+          "const": "local_unpublished_absorbed_context_unqualified"
+        },
+        "satisfied": {
+          "const": false
+        },
+        "role": {
+          "const": "absorbed_historical_context_not_produced"
+        },
+        "producerKind": {
+          "const": "historical_attribution_only_not_current_output"
+        },
+        "wholeIssueAcceptance": {
+          "const": false
+        },
+        "availability": {
+          "$ref": "#/$defs/absorbedContextAvailability"
+        },
+        "attribution": {
+          "$ref": "#/$defs/absorbedHistoricalAttribution"
+        },
+        "contextConsumers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/absorbedContextConsumer"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "absorbedHistoricalContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scheduled",
+        "readOnly",
+        "executable",
+        "currentOutput",
+        "nativeIssueEdge",
+        "closureDisposition",
+        "closureCommentUrl",
+        "dataRejected",
+        "acceptedAsCompleted",
+        "sourceIssueUpdatedAt",
+        "existingLaboratoryScope",
+        "transferredRemainingScope",
+        "contextArtifacts"
+      ],
+      "properties": {
+        "scheduled": {
+          "const": false
+        },
+        "readOnly": {
+          "const": true
+        },
+        "executable": {
+          "const": false
+        },
+        "currentOutput": {
+          "const": false
+        },
+        "nativeIssueEdge": {
+          "const": false
+        },
+        "closureDisposition": {
+          "const": "absorption_transfer"
+        },
+        "closureCommentUrl": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "dataRejected": {
+          "const": false
+        },
+        "acceptedAsCompleted": {
+          "const": false
+        },
+        "sourceIssueUpdatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "existingLaboratoryScope": {
+          "$ref": "#/$defs/existingLaboratoryScope"
+        },
+        "transferredRemainingScope": {
+          "$ref": "#/$defs/transferredRemainingScope"
+        },
+        "contextArtifacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/absorbedContextArtifact"
+          },
+          "minItems": 1
+        }
+      }
+    },
+    "writerRegistration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issueNumber",
+        "workspaceId",
+        "proposalRoot",
+        "owner",
+        "baseSourceRef",
+        "observedAt",
+        "evidence"
+      ],
+      "properties": {
+        "issueNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "proposalRoot": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "baseSourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "writerBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase",
+        "scopePath",
+        "physicalBinding",
+        "resolvedPhysicalBinding",
+        "owner",
+        "baseSourceRef",
+        "evidence"
+      ],
+      "properties": {
+        "phase": {
+          "$ref": "#/$defs/phase"
+        },
+        "scopePath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "physicalBinding": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "resolvedPhysicalBinding": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "baseSourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "writerLease": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase",
+        "scopePath",
+        "resource",
+        "owner",
+        "baseSourceRef",
+        "acquiredAt",
+        "expiresAt",
+        "fence",
+        "evidence"
+      ],
+      "properties": {
+        "phase": {
+          "$ref": "#/$defs/phase"
+        },
+        "scopePath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "resource": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "baseSourceRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "acquiredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "fence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidence": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "writerContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issueNumber",
+        "phase",
+        "workspaceId",
+        "proposalRoot",
+        "observedAt",
+        "bindings",
+        "leases"
+      ],
+      "properties": {
+        "issueNumber": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "phase": {
+          "$ref": "#/$defs/phase"
+        },
+        "workspaceId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*$"
+        },
+        "proposalRoot": {
+          "$ref": "#/$defs/repoPath"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "registration": {
+          "$ref": "#/$defs/writerRegistration"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/writerBinding"
+          },
+          "minItems": 0
+        },
+        "leases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/writerLease"
+          },
+          "minItems": 0
+        }
+      },
+      "description": "Caller-supplied evidence only. It does not acquire a lease or establish authorization."
+    },
+    "workspaceResourceContract": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "template",
+            "phases",
+            "requiredFields",
+            "pathsFrom",
+            "keyExpansion",
+            "failure"
+          ],
+          "properties": {
+            "template": {
+              "const": "workspace-files-v1"
+            },
+            "phases": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "const": "candidate"
+                },
+                {
+                  "const": "accept"
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "requiredFields": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "const": "workspaceId"
+                },
+                {
+                  "const": "realCheckoutPath"
+                },
+                {
+                  "const": "volumeIdentity"
+                },
+                {
+                  "const": "branchRef"
+                },
+                {
+                  "const": "baseRef"
+                },
+                {
+                  "const": "selectedWritePaths"
+                },
+                {
+                  "const": "leaseOwner"
+                },
+                {
+                  "const": "fencingToken"
+                }
+              ],
+              "items": false,
+              "minItems": 8,
+              "maxItems": 8
+            },
+            "pathsFrom": {
+              "const": "phaseWriteScopes"
+            },
+            "keyExpansion": {
+              "const": "workspaceId + canonicalized real paths, including generated closure"
+            },
+            "failure": {
+              "const": "reject overlap in same physical workspace; independent branches may prepare proposals, canonical integration still needs requiredLocks"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "template",
+            "phases",
+            "requiredFields",
+            "pathsFrom",
+            "keyExpansion",
+            "failure"
+          ],
+          "properties": {
+            "template": {
+              "const": "workspace-files-v1"
+            },
+            "phases": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "const": "candidate"
+                },
+                {
+                  "const": "accept"
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "requiredFields": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "const": "workspaceId"
+                },
+                {
+                  "const": "realCheckoutPath"
+                },
+                {
+                  "const": "volumeIdentity"
+                },
+                {
+                  "const": "branchRef"
+                },
+                {
+                  "const": "baseRef"
+                },
+                {
+                  "const": "selectedWritePaths"
+                },
+                {
+                  "const": "generatedClosure"
+                },
+                {
+                  "const": "leaseOwner"
+                },
+                {
+                  "const": "fencingToken"
+                }
+              ],
+              "items": false,
+              "minItems": 9,
+              "maxItems": 9
+            },
+            "pathsFrom": {
+              "const": "phaseWriteScopes"
+            },
+            "keyExpansion": {
+              "const": "workspaceId + canonicalized real paths; generatedClosure must equal [] for #13"
+            },
+            "failure": {
+              "const": "Reject missing/extra path, alias overlap, different base, stale holder, duplicate fence, or any generated/scratch write. Preserve current work before wait/rebase/relocate/serialize."
+            }
+          }
+        }
+      ]
+    },
+    "unityResourceContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "template",
+        "phases",
+        "requiredFields",
+        "generatedOutputRoots",
+        "identityKeys",
+        "liveValues",
+        "rule"
+      ],
+      "properties": {
+        "template": {
+          "const": "unity-editor-v1"
+        },
+        "phases": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "candidate"
+            },
+            {
+              "const": "accept"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "requiredFields": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "workspaceId"
+            },
+            {
+              "const": "editorInstanceId"
+            },
+            {
+              "const": "editorPid"
+            },
+            {
+              "const": "editorProcessStart"
+            },
+            {
+              "const": "generatedOutputRoots"
+            },
+            {
+              "const": "projectSettingsPaths"
+            }
+          ],
+          "items": false,
+          "minItems": 6,
+          "maxItems": 6
+        },
+        "generatedOutputRoots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "identityKeys": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "unity-workspace:{workspaceId}"
+            },
+            {
+              "const": "editor-process:{hostProcessNamespace}:{editorPid}:{editorProcessStart}"
+            },
+            {
+              "const": "fs-output:{realOutputPath}"
+            }
+          ],
+          "items": false,
+          "minItems": 3,
+          "maxItems": 3
+        },
+        "liveValues": {
+          "type": "null"
+        },
+        "rule": {
+          "const": "Same checkout conflicts even if Editor PID differs. Different checkouts/Editors/outputs can run concurrently when static integration locks also disjoint."
+        }
+      }
+    },
+    "measurementResourceContract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "template",
+        "phases",
+        "requiredFields",
+        "identityKeys",
+        "liveValues",
+        "rule"
+      ],
+      "properties": {
+        "template": {
+          "const": "measurement-run-v1"
+        },
+        "phases": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "candidate"
+            },
+            {
+              "const": "accept"
+            }
+          ],
+          "items": false,
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "requiredFields": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "runId"
+            },
+            {
+              "const": "outputRoot"
+            },
+            {
+              "const": "hostResourceNamespace"
+            },
+            {
+              "const": "processGroup"
+            },
+            {
+              "const": "ports"
+            },
+            {
+              "const": "devices"
+            },
+            {
+              "const": "serviceRooms"
+            },
+            {
+              "const": "leaseOwner"
+            },
+            {
+              "const": "fencingToken"
+            }
+          ],
+          "items": false,
+          "minItems": 9,
+          "maxItems": 9
+        },
+        "identityKeys": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "const": "run-output:{realOutputRoot}"
+            },
+            {
+              "const": "process:{hostResourceNamespace}:{pid}:{start}"
+            },
+            {
+              "const": "port:{networkNamespace}:{protocol}:{bindAddress}:{port}"
+            },
+            {
+              "const": "device:{physicalDeviceId}"
+            },
+            {
+              "const": "room:{serviceEndpoint}:{roomId}"
+            }
+          ],
+          "items": false,
+          "minItems": 5,
+          "maxItems": 5
+        },
+        "liveValues": {
+          "type": "null"
+        },
+        "rule": {
+          "const": "runId or source SHA alone never defines exclusivity; empty resource list means none used, not unknown; record actual shared ports/devices/processes."
+        }
+      }
+    },
+    "workspaceResourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspaceId",
+        "realCheckoutPath",
+        "volumeIdentity",
+        "branchRef",
+        "baseRef",
+        "selectedWritePaths",
+        "generatedClosure",
+        "leaseOwner",
+        "fencingToken"
+      ],
+      "properties": {
+        "workspaceId": {
+          "$ref": "#/$defs/text"
+        },
+        "realCheckoutPath": {
+          "$ref": "#/$defs/text",
+          "description": "Caller-supplied canonical absolute real checkout path; semantic validation does not query the filesystem."
+        },
+        "volumeIdentity": {
+          "$ref": "#/$defs/text"
+        },
+        "branchRef": {
+          "$ref": "#/$defs/text"
+        },
+        "baseRef": {
+          "$ref": "#/$defs/sourceRef"
+        },
+        "selectedWritePaths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "generatedClosure": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "leaseOwner": {
+          "$ref": "#/$defs/text"
+        },
+        "fencingToken": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "unityProcess": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pid",
+        "start"
+      ],
+      "properties": {
+        "pid": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "start": {
+          "$ref": "#/$defs/processStart"
+        }
+      }
+    },
+    "physicalPort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "networkNamespace",
+        "protocol",
+        "bindAddress",
+        "port"
+      ],
+      "properties": {
+        "networkNamespace": {
+          "$ref": "#/$defs/text"
+        },
+        "protocol": {
+          "enum": [
+            "tcp",
+            "udp"
+          ]
+        },
+        "bindAddress": {
+          "$ref": "#/$defs/text"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        }
+      }
+    },
+    "physicalDevice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "physicalDeviceId"
+      ],
+      "properties": {
+        "physicalDeviceId": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "serviceRoom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serviceEndpoint",
+        "roomId"
+      ],
+      "properties": {
+        "serviceEndpoint": {
+          "$ref": "#/$defs/text"
+        },
+        "roomId": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "unityResourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workspaceId",
+        "editorInstanceId",
+        "editorPid",
+        "editorProcessStart",
+        "generatedOutputRoots",
+        "projectSettingsPaths",
+        "hostProcessNamespace"
+      ],
+      "properties": {
+        "workspaceId": {
+          "$ref": "#/$defs/text"
+        },
+        "editorInstanceId": {
+          "$ref": "#/$defs/text"
+        },
+        "editorPid": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "editorProcessStart": {
+          "$ref": "#/$defs/processStart"
+        },
+        "generatedOutputRoots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "projectSettingsPaths": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/text"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "hostProcessNamespace": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "measurementResourceBinding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runId",
+        "outputRoot",
+        "hostResourceNamespace",
+        "processGroup",
+        "ports",
+        "devices",
+        "serviceRooms",
+        "leaseOwner",
+        "fencingToken"
+      ],
+      "properties": {
+        "runId": {
+          "$ref": "#/$defs/text"
+        },
+        "outputRoot": {
+          "$ref": "#/$defs/text",
+          "description": "Caller-supplied canonical absolute real output root."
+        },
+        "hostResourceNamespace": {
+          "$ref": "#/$defs/text"
+        },
+        "processGroup": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/unityProcess"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "ports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/physicalPort"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "devices": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/physicalDevice"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "serviceRooms": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/serviceRoom"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "leaseOwner": {
+          "$ref": "#/$defs/text"
+        },
+        "fencingToken": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "processStart": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/text"
+        },
+        {
+          "type": "integer",
+          "minimum": 0
+        }
+      ],
+      "description": "Caller-supplied process incarnation/start token; no OS observation is performed."
+    },
+    "relationshipItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "issue",
+        "fromPhase",
+        "toPhase",
+        "reason"
+      ],
+      "properties": {
+        "issue": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fromPhase": {
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept"
+          ]
+        },
+        "toPhase": {
+          "enum": [
+            "prepare",
+            "candidate",
+            "accept"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "relationshipBlock": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evaluatedPairs",
+        "items",
+        "reasonedNone"
+      ],
+      "properties": {
+        "evaluatedPairs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relationshipItem"
+          }
+        },
+        "items": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/relationshipItem"
+          }
+        },
+        "reasonedNone": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "items": {
+                "maxItems": 0
+              }
+            },
+            "required": [
+              "items"
+            ]
+          },
+          "then": {
+            "properties": {
+              "reasonedNone": {
+                "type": "string",
+                "minLength": 1,
+                "pattern": "\\S"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "reasonedNone": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "relationshipDeclarations": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "parallel_with",
+        "conflicts_with"
+      ],
+      "properties": {
+        "parallel_with": {
+          "$ref": "#/$defs/relationshipBlock"
+        },
+        "conflicts_with": {
+          "$ref": "#/$defs/relationshipBlock"
+        }
+      }
+    },
+    "inputQualifier": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputId",
+        "qualification",
+        "targets",
+        "notRequiredFor"
+      ],
+      "properties": {
+        "inputId": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "qualification": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "targets": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/inputQualifierTarget"
+          }
+        },
+        "notRequiredFor": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      }
+    },
+    "checkEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "path"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "path": {
+          "$ref": "#/$defs/repoPath"
+        }
+      }
+    },
+    "checkEvidenceByPhase": {
+      "type": "object",
+      "additionalProperties": false,
+      "minProperties": 1,
+      "properties": {
+        "candidate": {
+          "$ref": "#/$defs/checkEvidence"
+        },
+        "accept": {
+          "$ref": "#/$defs/checkEvidence"
+        }
+      }
+    },
+    "receiptStorage": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "appendOnly",
+            "completeRunRecordRequired"
+          ],
+          "properties": {
+            "mode": {
+              "const": "embedded_append_only_index"
+            },
+            "appendOnly": {
+              "const": true
+            },
+            "completeRunRecordRequired": {
+              "const": true
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "mode",
+            "appendOnly",
+            "completeRunRecordRequired",
+            "stableIndexPath",
+            "rawScopePath",
+            "rawLockId"
+          ],
+          "properties": {
+            "mode": {
+              "const": "separate_immutable_raw_records"
+            },
+            "appendOnly": {
+              "const": true
+            },
+            "completeRunRecordRequired": {
+              "const": true
+            },
+            "rawScopePath": {
+              "type": "string",
+              "minLength": 1
+            },
+            "rawLockId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "stableIndexPath": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "checkResultProtocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "states",
+        "receiptFields",
+        "notRunReasonRequiredWhen"
+      ],
+      "properties": {
+        "states": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "prefixItems": [
+            {
+              "const": "PASS"
+            },
+            {
+              "const": "FAIL"
+            },
+            {
+              "const": "NOT_RUN"
+            }
+          ],
+          "items": false
+        },
+        "receiptFields": {
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "prefixItems": [
+            {
+              "const": "artifactPath"
+            },
+            {
+              "const": "artifactDigest"
+            },
+            {
+              "const": "provenance"
+            },
+            {
+              "const": "thresholdEvaluation"
+            },
+            {
+              "const": "result"
+            },
+            {
+              "const": "notRunReason"
+            }
+          ],
+          "items": false
+        },
+        "notRunReasonRequiredWhen": {
+          "const": "NOT_RUN"
+        }
+      }
+    },
+    "inputQualifierTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "phase",
+        "use"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "phase": {
+          "enum": [
+            "candidate",
+            "accept"
+          ]
+        },
+        "use": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "checkEvidenceMappingPhase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "indexPath",
+        "rawReceiptDirectory"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "indexPath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "rawReceiptDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "checkEvidenceMapping": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "rawCheckEvidence",
+            "candidate",
+            "accept"
+          ],
+          "properties": {
+            "rawCheckEvidence": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "candidate": {
+              "$ref": "#/$defs/checkEvidenceMappingPhase"
+            },
+            "accept": {
+              "$ref": "#/$defs/checkEvidenceMappingPhase"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "checkId",
+            "candidate",
+            "accept"
+          ],
+          "properties": {
+            "checkId": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "candidate": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/issue13ReceiptCheckTarget"
+                },
+                {
+                  "$ref": "#/$defs/issue13DelegatedReceiptCheckTarget"
+                },
+                {
+                  "$ref": "#/$defs/issue13OracleCheckTarget"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "accept": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/issue13ReceiptCheckTarget"
+                },
+                {
+                  "$ref": "#/$defs/issue13DelegatedReceiptCheckTarget"
+                },
+                {
+                  "$ref": "#/$defs/issue13AcceptOracleCheckTarget"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "issue13Handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "consumer",
+        "exactReadSet",
+        "doNotAssume",
+        "authorityRule",
+        "ownership",
+        "phaseAcceptance",
+        "protectedPathAndHashCoverage",
+        "delegatedValidation",
+        "sensitiveReturn",
+        "returnFields",
+        "limits"
+      ],
+      "properties": {
+        "consumer": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "exactReadSet": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "doNotAssume": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "authorityRule": {
+          "$ref": "#/$defs/text"
+        },
+        "ownership": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "issue13Candidate",
+            "issue13Accept",
+            "issue43",
+            "issue44",
+            "collision"
+          ],
+          "properties": {
+            "issue13Candidate": {
+              "$ref": "#/$defs/text"
+            },
+            "issue13Accept": {
+              "$ref": "#/$defs/text"
+            },
+            "issue43": {
+              "$ref": "#/$defs/text"
+            },
+            "issue44": {
+              "$ref": "#/$defs/text"
+            },
+            "collision": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "phaseAcceptance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "candidate",
+            "accept"
+          ],
+          "properties": {
+            "candidate": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "reportableUnknowns",
+                "blocking",
+                "passRule"
+              ],
+              "properties": {
+                "reportableUnknowns": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                },
+                "blocking": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                },
+                "passRule": {
+                  "$ref": "#/$defs/text"
+                }
+              }
+            },
+            "accept": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "nonblockingUnknowns",
+                "blocking",
+                "passRule"
+              ],
+              "properties": {
+                "nonblockingUnknowns": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                },
+                "blocking": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "$ref": "#/$defs/text"
+                  }
+                },
+                "passRule": {
+                  "$ref": "#/$defs/text"
+                }
+              }
+            }
+          }
+        },
+        "protectedPathAndHashCoverage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "protectedRoots",
+            "ownerPredicate",
+            "requiredPatterns",
+            "bootstrapExactDigests",
+            "manifestPredicate"
+          ],
+          "properties": {
+            "protectedRoots": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "ownerPredicate": {
+              "$ref": "#/$defs/text"
+            },
+            "requiredPatterns": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "bootstrapExactDigests": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "scripts/bootstrap/test_verify_toolchain.py",
+                "scripts/bootstrap/test_bootstrap_powershell.py",
+                "scripts/bootstrap/verify_toolchain.py",
+                "scripts/bootstrap/bootstrap.sh",
+                "scripts/bootstrap/bootstrap.ps1"
+              ],
+              "properties": {
+                "scripts/bootstrap/test_verify_toolchain.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "scripts/bootstrap/test_bootstrap_powershell.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "scripts/bootstrap/verify_toolchain.py": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "scripts/bootstrap/bootstrap.sh": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "scripts/bootstrap/bootstrap.ps1": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            },
+            "manifestPredicate": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "delegatedValidation": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "executionOwner",
+            "issue13ExecutionAuthority",
+            "selectedSourceRef",
+            "prospectiveCommand",
+            "concreteWriteClosure",
+            "requiredRunnerFacts",
+            "resultSemantics",
+            "knownLimitsRef"
+          ],
+          "properties": {
+            "executionOwner": {
+              "$ref": "#/$defs/text"
+            },
+            "issue13ExecutionAuthority": {
+              "const": false
+            },
+            "selectedSourceRef": {
+              "$ref": "#/$defs/text"
+            },
+            "prospectiveCommand": {
+              "$ref": "#/$defs/text"
+            },
+            "concreteWriteClosure": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "requiredRunnerFacts": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "resultSemantics": {
+              "$ref": "#/$defs/text"
+            },
+            "knownLimitsRef": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "sensitiveReturn": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "publicAllowed",
+            "publicForbidden",
+            "privateStop",
+            "unsafeSanitization"
+          ],
+          "properties": {
+            "publicAllowed": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "publicForbidden": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "$ref": "#/$defs/text"
+              }
+            },
+            "privateStop": {
+              "$ref": "#/$defs/text"
+            },
+            "unsafeSanitization": {
+              "$ref": "#/$defs/text"
+            }
+          }
+        },
+        "returnFields": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/text"
+          }
+        },
+        "limits": {
+          "$ref": "#/$defs/text"
+        }
+      }
+    },
+    "issue13ReceiptCheckTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "indexPath",
+        "runDirectory"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "indexPath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "runDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "issue13DelegatedReceiptCheckTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "indexPath",
+        "runDirectory",
+        "delegatedInput"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "indexPath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "runDirectory": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "delegatedInput": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "issue13OracleCheckTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "policyPath",
+        "evidenceArtifact"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "policyPath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidenceArtifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "issue13AcceptOracleCheckTarget": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "artifact",
+        "policyPath",
+        "evidenceArtifact",
+        "requiredInputs"
+      ],
+      "properties": {
+        "artifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "policyPath": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "evidenceArtifact": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "requiredInputs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          }
+        }
+      }
+    }
+  }
+}
