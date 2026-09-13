@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:91",
+  "@type": "Goal",
+  "issue": 91,
+  "workId": "FMP-12",
+  "domainCode": "QA",
+  "title": "[FMP-12] 20/100/2 통합·60분 부하·인터넷·음성 실측",
+  "orchestrator": "role:pm",
+  "executionMode": "PM aggregates child deliverables; members and their LLMs execute child work.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "20 protocol clients·NPC 100·동시 사건 2건을 물리·음성 조건에서 분산·집결 각각 60분 실행하고 tick/frame/action/voice/traffic/recovery 측정을 실제 receipt로 판정한다.",
+  "parent": 54,
+  "children": [
+    140,
+    141,
+    142
+  ],
+  "requiredOutputPaths": [
+    "docs/evidence/foundation/FMP-12-acceptance.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 92,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:92:frozen-release-candidate:candidate"
+      },
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 35,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+      },
+      {
+        "issue": 59,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:59:FMP-07-acceptance-rollup:accept"
+      },
+      {
+        "issue": 60,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept"
+      },
+      {
+        "issue": 88,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:88:fmp11-integration-evidence:accept"
+      },
+      {
+        "issue": 92,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:92:frozen-release-candidate:candidate"
+      },
+      {
+        "issue": 100,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:100:voice-receipt:accept"
+      },
+      {
+        "issue": 101,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+      },
+      {
+        "issue": 102,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+      },
+      {
+        "issue": 140,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:140:fmp12a-rehearsal-receipt:accept"
+      },
+      {
+        "issue": 141,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:141:fmp12b-distributed-receipt:accept"
+      },
+      {
+        "issue": 141,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:141:fmp12b-gathered-receipt:accept"
+      },
+      {
+        "issue": 142,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:142:fmp12c-receipt:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 54,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:91:fmp12-acceptance-evidence:accept"
+      },
+      {
+        "issue": 92,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:91:fmp12-acceptance-evidence:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 91 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 91 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 91 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 91 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 91 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=91]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

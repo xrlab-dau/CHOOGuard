@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:26",
+  "@type": "WorkItem",
+  "issue": 26,
+  "workId": "M2-03",
+  "domainCode": "XR",
+  "title": "[M2-03] Quest 상태·설명형 피드백 역할 연동 회귀",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "다섯 임시 직무 fixture의 Quest 전이와 설명형 피드백이 승인된 행동 계약에 일관되게 연결됨을 검증한다.",
+  "parent": 54,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/context/contracts/quest-feedback-matrix.json",
+    "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 25,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:25:training-action-contract:candidate"
+      },
+      {
+        "issue": 32,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:32:M4-01-fixture:candidate"
+      },
+      {
+        "issue": 25,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:25:training-action-contract:accept"
+      },
+      {
+        "issue": 32,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:32:M4-01-fixture:accept"
+      }
+    ],
+    "successors": [],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      27,
+      24,
+      33,
+      36,
+      56,
+      57,
+      82,
+      99,
+      100,
+      106,
+      107,
+      28,
+      23,
+      29,
+      22,
+      21,
+      31,
+      20,
+      19,
+      18,
+      34,
+      17,
+      16,
+      15,
+      37,
+      14,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      52,
+      55,
+      58,
+      62,
+      63,
+      64,
+      65,
+      68,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      85,
+      89,
+      90,
+      93,
+      94,
+      119,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": [
+      {
+        "issue": 25,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs",
+          "lock:runtime:training-session",
+          "lock:test:training-session",
+          "path:Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs|Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+          "path:Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs|Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs"
+        ]
+      }
+    ]
+  },
+  "minimumContext": [
+    {
+      "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+      "selector": "SelectRole, AcknowledgeBriefing, Submit",
+      "readWhen": "candidate",
+      "why": "Quest 전이와 피드백 생성 위치",
+      "limits": "서버 공동세계 상태 아님.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "4c772a5a1f5359a083c3c151bfa0da3c769d7292"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+      "access": "repository read access"
+    },
+    {
+      "path": "foundation/scenarios/foundation-demo.json",
+      "selector": "roles[].actionFixture, feedback",
+      "readWhen": "candidate",
+      "why": "5직무 합성 fixture/설명형 결과",
+      "limits": "기관 SOP/공식 점수 아님.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/scenarios/foundation-demo.json",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 26 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 26 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 26 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 26 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 26 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=26]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

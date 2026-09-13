@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:28",
+  "@type": "WorkItem",
+  "issue": 28,
+  "workId": "M3-01",
+  "domainCode": "MAP",
+  "title": "[M3-01] 공개 자료 취득·검증 체크리스트",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "13구역에 필요한 공개 view·해상도·시점·coverage와 확정 가능/불가능 판정을 기록하는 체크리스트를 만든다.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/team/M3-01/public-acquisition-checklist.json",
+    "docs/team/M3-01/gaps.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 15,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:15:M0-02b-use-boundary:candidate"
+      },
+      {
+        "issue": 15,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:15:M0-02b-use-boundary:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 29,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:28:M3-01-checklist:candidate"
+      },
+      {
+        "issue": 29,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:28:M3-01-checklist:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      31,
+      23,
+      22,
+      34,
+      21,
+      20,
+      19,
+      37,
+      18,
+      38,
+      17,
+      39,
+      16,
+      40,
+      52,
+      55,
+      58,
+      62,
+      63,
+      64,
+      71,
+      72,
+      73,
+      75,
+      85,
+      89,
+      90,
+      93,
+      94,
+      121,
+      146,
+      27,
+      26,
+      25,
+      24,
+      32,
+      33,
+      36,
+      41,
+      42,
+      43,
+      44,
+      45,
+      10,
+      46,
+      56,
+      57,
+      65,
+      70,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      99,
+      100,
+      106,
+      107,
+      119,
+      120,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "§7 M3-01 lines 314-328",
+      "readWhen": "prepare",
+      "why": "legacy capture checklist and its bounded rewrite target를 증명한다.",
+      "limits": "현재 public catalog 결과를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 28 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 28 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 28 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 28 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 28 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=28]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

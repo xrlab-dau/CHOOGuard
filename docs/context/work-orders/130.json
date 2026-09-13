@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:130",
+  "@type": "WorkItem",
+  "issue": 130,
+  "workId": "FMP-08c",
+  "domainCode": "XR",
+  "title": "[FMP-08c] 차내 화재·고장·비상정차와 동일 프레임 물리 연동",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "차내 화재·고장·비상 정차를 서버 운행 입력 및 열·군중 frame에 연결하고 결정적인 통합 동작을 검증하세요.",
+  "parent": 102,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/evidence/work-items/FMP-08c/result.json",
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08cTrainFireTests.cs"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 128,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:128:dynamic-frame-contract:candidate"
+      },
+      {
+        "issue": 131,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:131:reviewed-incident-catalog:candidate"
+      },
+      {
+        "issue": 123,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:123:thermal-boundary-regression:accept"
+      },
+      {
+        "issue": 128,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:128:dynamic-frame-contract:accept"
+      },
+      {
+        "issue": 129,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:129:train-analytic-receipt:accept"
+      },
+      {
+        "issue": 131,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:131:reviewed-incident-catalog:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 102,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:130:train-fire-integration:accept"
+      },
+      {
+        "issue": 132,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:130:train-fire-integration:candidate"
+      },
+      {
+        "issue": 132,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:130:train-fire-integration:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      129,
+      127,
+      133,
+      126,
+      134,
+      125,
+      135,
+      136,
+      123,
+      137,
+      122,
+      121,
+      139,
+      140,
+      119,
+      141,
+      142,
+      143,
+      144,
+      146,
+      107,
+      106,
+      100,
+      99,
+      94,
+      93,
+      90,
+      89,
+      85,
+      81,
+      80,
+      79,
+      78,
+      77,
+      76,
+      75,
+      74,
+      73,
+      72,
+      71,
+      70,
+      68,
+      65,
+      64,
+      63,
+      62,
+      58,
+      57,
+      56,
+      55,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      36,
+      34,
+      33,
+      32,
+      31,
+      29,
+      28,
+      27,
+      26,
+      25,
+      24,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": [
+      {
+        "issue": 131,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/foundation-simulation-profile.json",
+          "lock:data:simulation-profile",
+          "path:foundation/world/foundation-simulation-profile.json|foundation/world/foundation-simulation-profile.json"
+        ]
+      },
+      {
+        "issue": 132,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+          "lock:runtime:world-simulation",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+        ]
+      },
+      {
+        "issue": 138,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs",
+          "lock:runtime:world-simulation",
+          "lock:data:simulation-profile",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs"
+        ]
+      }
+    ]
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 130 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 130 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 130 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 130 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 130 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=130]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

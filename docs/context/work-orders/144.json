@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:144",
+  "@type": "WorkItem",
+  "issue": 144,
+  "workId": "FMP-13b",
+  "domainCode": "QA",
+  "title": "[FMP-13b] 독립 개발자 재현 전달",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "다른 개발자가 같은 #92 후보와 선택된 #143 실행본을 새 checkout에서 재현하도록 절차를 작성하고, 실제 재현 결과 또는 장애를 기록하세요.",
+  "parent": 92,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/choo-guard-foundation-reproduction.md",
+    "docs/evidence/foundation/FMP-13b-independent-reproduction.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 92,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:92:frozen-release-candidate:candidate"
+      },
+      {
+        "issue": 143,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate"
+      },
+      {
+        "issue": 55,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:55:team-entry:candidate"
+      },
+      {
+        "issue": 92,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:92:frozen-release-candidate:candidate"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 92,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:144:fmp13b-independent-receipt:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      142,
+      146,
+      141,
+      140,
+      139,
+      138,
+      137,
+      136,
+      135,
+      134,
+      133,
+      132,
+      131,
+      130,
+      129,
+      128,
+      127,
+      126,
+      125,
+      123,
+      122,
+      121,
+      119,
+      107,
+      106,
+      100,
+      99,
+      94,
+      93,
+      90,
+      89,
+      85,
+      82,
+      81,
+      80,
+      79,
+      78,
+      77,
+      76,
+      75,
+      74,
+      73,
+      72,
+      71,
+      70,
+      68,
+      65,
+      64,
+      63,
+      62,
+      58,
+      57,
+      56,
+      55,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      36,
+      34,
+      33,
+      32,
+      31,
+      29,
+      28,
+      26,
+      25,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "scripts/dev/check_foundation.py",
+      "selector": "validation entry path",
+      "readWhen": "prepare",
+      "why": "existing local validation path",
+      "limits": "independent developer result를 증명하지 않는다",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "b399e2cce0f4b1d3504dfbb39b4a3d36bb193232"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/dev/check_foundation.py",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 144 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 144 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 144 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 144 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 144 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=144]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

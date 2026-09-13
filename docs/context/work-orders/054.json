@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:54",
+  "@type": "Goal",
+  "issue": 54,
+  "workId": "FMP-00",
+  "domainCode": "PM",
+  "title": "[FMP-00] Foundation 13구역·20클라이언트·NPC100·동시사건2 수용 집계",
+  "orchestrator": "role:pm",
+  "executionMode": "PM aggregates child deliverables; members and their LLMs execute child work.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "13구역 공동 훈련 Foundation의 기능·물리·복구·음성·성능·전달 수용을 하위 산출물로 전부 입증한다.",
+  "parent": null,
+  "children": [
+    10,
+    24,
+    25,
+    26,
+    27,
+    32,
+    33,
+    35,
+    36,
+    56,
+    57,
+    59,
+    60,
+    82,
+    88,
+    91,
+    92,
+    99,
+    100,
+    101,
+    102,
+    106,
+    107,
+    120
+  ],
+  "requiredOutputPaths": [
+    "docs/context/goals/FMP-00.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 10,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:10:foundation-contract-v2:accept"
+      },
+      {
+        "issue": 27,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:27:authority-receipt:accept"
+      },
+      {
+        "issue": 35,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:35:fmp10-integration-evidence:accept"
+      },
+      {
+        "issue": 59,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:59:FMP-07-acceptance-rollup:accept"
+      },
+      {
+        "issue": 60,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:60:FMP-09-acceptance-rollup:accept"
+      },
+      {
+        "issue": 82,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:82:connected-world-profile:accept"
+      },
+      {
+        "issue": 88,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:88:fmp11-integration-evidence:accept"
+      },
+      {
+        "issue": 91,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:91:fmp12-acceptance-evidence:accept"
+      },
+      {
+        "issue": 92,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:92:fmp13-delivery-evidence:accept"
+      },
+      {
+        "issue": 99,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:99:recovery-contract:accept"
+      },
+      {
+        "issue": 100,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:100:voice-receipt:accept"
+      },
+      {
+        "issue": 101,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:101:FMP-06-acceptance-rollup:accept"
+      },
+      {
+        "issue": 102,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:102:FMP-08-acceptance-rollup:accept"
+      },
+      {
+        "issue": 107,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:107:review-ledger:accept"
+      }
+    ],
+    "successors": [],
+    "oneOfGroups": [],
+    "parallelCandidates": [],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 54 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 54 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 54 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 54 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 54 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=54]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

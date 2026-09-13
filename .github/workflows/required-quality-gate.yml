@@ -30,6 +30,12 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0, GitHub tag ref verified 2026-09-12
+        with:
+          node-version: "22"
+          check-latest: false
+
       - name: Validate PR metadata
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -113,6 +119,12 @@ jobs:
         run: |
           python -m unittest discover -s scripts/context -p 'test_*.py' -v
           python scripts/context/context_graph.py validate
+
+      - name: Validate phase-qualified work graph
+        if: always()
+        run: |
+          node scripts/context/work_graph.mjs validate
+          node --test scripts/context/work_graph.test.mjs
 
       - name: Validate YAML syntax
         if: always()

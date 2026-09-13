@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:31",
+  "@type": "WorkItem",
+  "issue": 31,
+  "workId": "M3-04",
+  "domainCode": "MAP",
+  "title": "[M3-04] 공개 자료 기반 시설 플레이 맵 경계",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "공개 근거와 명시적 추정으로 13구역 맵 후보를 구성하고, 원본/런타임 분리·구역 경계·이동·collider를 검증하세요.",
+  "parent": 68,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/team/M3-04/map-contract.json",
+    "foundation/world/team/M3-04"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 119,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:119:plan-mapping:candidate"
+      },
+      {
+        "issue": 29,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:29:M3-02-public-catalog:accept"
+      },
+      {
+        "issue": 70,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:70:zone-boundaries:accept"
+      },
+      {
+        "issue": 119,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:119:plan-mapping:accept"
+      }
+    ],
+    "successors": [],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      29,
+      28,
+      34,
+      37,
+      38,
+      23,
+      39,
+      22,
+      40,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14,
+      52,
+      55,
+      58,
+      62,
+      63,
+      64,
+      71,
+      72,
+      73,
+      75,
+      85,
+      89,
+      90,
+      93,
+      94,
+      121,
+      146,
+      32,
+      33,
+      27,
+      26,
+      36,
+      25,
+      24,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      10,
+      56,
+      57,
+      65,
+      70,
+      74,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      99,
+      100,
+      106,
+      107,
+      120,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "§7 M3-03/M3-04 lines 345-379",
+      "readWhen": "prepare",
+      "why": "old CV/approval path and map acceptance boundaries를 증명한다.",
+      "limits": "현재 accepted map을 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "830bc16f4962b093c783dd19a19d5a484ca3ee32"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-execution-backlog-v1.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 31 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 31 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 31 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 31 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 31 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=31]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

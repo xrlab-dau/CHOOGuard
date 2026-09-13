@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:77",
+  "@type": "WorkItem",
+  "issue": 77,
+  "workId": "TEAM-09",
+  "domainCode": "MAP",
+  "title": "[TEAM-09] 설비·익명 NPC 외형 모듈 제작",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "설비·익명 NPC 외형의 정해진 목록을 Native 모듈로 제작하고, UV·LOD·출처·hash와 Unity 샘플을 함께 인계하세요.",
+  "parent": 67,
+  "children": [],
+  "requiredOutputPaths": [
+    "scripts/art/team/TEAM-09/build_module.py",
+    "foundation/art/team/TEAM-09/asset-manifest.json",
+    "Assets/CHOOguardTeam/Art/TEAM-09/SampleBuilder.cs"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 70,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:70:zone-boundaries:candidate"
+      },
+      {
+        "issue": 74,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:74:pilot-manifest:candidate"
+      },
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 70,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:70:zone-boundaries:accept"
+      },
+      {
+        "issue": 74,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:74:pilot-manifest:accept"
+      },
+      {
+        "issue": 75,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:75:material-manifest:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 67,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:77:native-module:accept"
+      },
+      {
+        "issue": 79,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:77:asset-manifest:candidate"
+      },
+      {
+        "issue": 79,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:77:asset-manifest:accept"
+      },
+      {
+        "issue": 81,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:77:asset-manifest:candidate"
+      },
+      {
+        "issue": 81,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:77:asset-manifest:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      76,
+      78,
+      80,
+      65,
+      119,
+      75,
+      73,
+      72,
+      82,
+      71,
+      85,
+      89,
+      64,
+      90,
+      63,
+      62,
+      93,
+      94,
+      58,
+      57,
+      56,
+      55,
+      99,
+      100,
+      52,
+      106,
+      107,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      36,
+      34,
+      33,
+      121,
+      32,
+      122,
+      31,
+      123,
+      29,
+      125,
+      28,
+      126,
+      27,
+      127,
+      26,
+      128,
+      25,
+      129,
+      24,
+      130,
+      23,
+      131,
+      22,
+      132,
+      21,
+      133,
+      20,
+      134,
+      19,
+      135,
+      18,
+      136,
+      17,
+      137,
+      16,
+      138,
+      15,
+      139,
+      14,
+      140,
+      141,
+      142,
+      143,
+      10,
+      144,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "foundation/art/object-references.json",
+      "selector": "/assets; /sceneFamilies",
+      "readWhen": "prepare",
+      "why": "현재 객체별 source와 필수 컴포넌트·검수 연결",
+      "limits": "새 FBX 또는 새 시설의 검수 통과를 증명하지 않음",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "8a902daa76e100d336b56148fff59baa01d13c80"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/foundation/art/object-references.json",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 77 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 77 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 77 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 77 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 77 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=77]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

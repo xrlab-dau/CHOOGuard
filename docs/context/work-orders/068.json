@@ -1,0 +1,175 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:68",
+  "@type": "WorkItem",
+  "issue": 68,
+  "workId": "PLAN-TEAM",
+  "domainCode": "PM",
+  "title": "[PLAN-TEAM] PM 실행·병렬·통합 계획 허브",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "현재 issue/산출물/가용성/충돌을 대조한 실행 계획·graph snapshot을 만들어 PM이 바로 착수 후보와 통합 순서를 선택할 수 있게 한다. 하위 delivery 완료와 별개로 검토 가능한 coordination snapshot을 만든다.",
+  "parent": null,
+  "children": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    28,
+    29,
+    31,
+    34,
+    37,
+    38,
+    39,
+    40,
+    52,
+    55,
+    58,
+    62,
+    63,
+    64,
+    67,
+    71,
+    72,
+    73,
+    75,
+    85,
+    89,
+    90,
+    93,
+    94,
+    121,
+    146
+  ],
+  "requiredOutputPaths": [
+    "docs/context/aggregates/PLAN-TEAM.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 64,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:64:work-graph:candidate"
+      },
+      {
+        "issue": 10,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:10:foundation-contract-v2:candidate"
+      },
+      {
+        "issue": 64,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:64:work-graph:candidate"
+      }
+    ],
+    "successors": [],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      57,
+      56,
+      82,
+      42,
+      41,
+      99,
+      36,
+      100,
+      33,
+      32,
+      106,
+      107,
+      27,
+      26,
+      25,
+      24,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "docs/context/README.md",
+      "selector": "lines16-18; §출처와 현재성; §검토 후 현재 참조 갱신",
+      "readWhen": "prepare",
+      "why": "graph/board는dated관측이며실제상태재조회필요",
+      "limits": "저장된보드상태는live가아님",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "4ea59cec84a6bb44c527dd2ab82811196498720a"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/context/README.md",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 68 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 68 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 68 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 68 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 68 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=68]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

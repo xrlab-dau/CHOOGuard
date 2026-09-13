@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:82",
+  "@type": "WorkItem",
+  "issue": 82,
+  "workId": "FMP-05",
+  "domainCode": "MAP",
+  "title": "[FMP-05] 13구역 이동·로딩·공유 상태와 제작 결과 통합",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "접근 가능한 Native 소스를 받은 뒤 13구역·12포털의 합성 기하 후보를 구성하세요. 최종 통합에는 검증된 #79~#81 번들과 서버 권위·복구 근거를 별도로 연결하세요.",
+  "parent": 54,
+  "children": [],
+  "requiredOutputPaths": [
+    "foundation/world/connected-world-profile.json",
+    "docs/evidence/work-items/FMP-05/world.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 27,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:27:authority-receipt:accept"
+      },
+      {
+        "issue": 70,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:70:zone-boundaries:accept"
+      },
+      {
+        "issue": 79,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:79:zone-profile:accept"
+      },
+      {
+        "issue": 80,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:80:zone-profile:accept"
+      },
+      {
+        "issue": 81,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:81:zone-profile:accept"
+      },
+      {
+        "issue": 99,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:99:recovery-receipt:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 54,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:82:connected-world-profile:accept"
+      },
+      {
+        "issue": 67,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:82:connected-world-profile:accept"
+      },
+      {
+        "issue": 106,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+      },
+      {
+        "issue": 122,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+      },
+      {
+        "issue": 123,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+      },
+      {
+        "issue": 125,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+      },
+      {
+        "issue": 128,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+      },
+      {
+        "issue": 137,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      99,
+      100,
+      57,
+      107,
+      56,
+      36,
+      33,
+      32,
+      27,
+      26,
+      25,
+      24,
+      10,
+      81,
+      80,
+      79,
+      85,
+      78,
+      77,
+      76,
+      75,
+      89,
+      74,
+      90,
+      73,
+      72,
+      71,
+      93,
+      70,
+      94,
+      68,
+      65,
+      64,
+      63,
+      62,
+      58,
+      55,
+      52,
+      46,
+      45,
+      119,
+      44,
+      43,
+      121,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      34,
+      131,
+      31,
+      133,
+      134,
+      29,
+      135,
+      28,
+      136,
+      138,
+      140,
+      23,
+      141,
+      22,
+      142,
+      21,
+      143,
+      20,
+      144,
+      19,
+      18,
+      146,
+      17,
+      16,
+      15,
+      14
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": [
+      {
+        "issue": 128,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/connected-world-profile.json",
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+          "lock:repo-path:xrlab-dau/CHOOGuard:Assets/CHOOguardGenerated/ConnectedWorld/",
+          "lock:repo-path:xrlab-dau/CHOOGuard:ProjectSettings/EditorBuildSettings.asset",
+          "lock:world:connected-profile",
+          "lock:world:scene-builder",
+          "lock:editor:connected-world-root",
+          "path:foundation/world/connected-world-profile.json|foundation/world/connected-world-profile.json",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+          "path:Assets/CHOOguardGenerated/ConnectedWorld/|Assets/CHOOguardGenerated/ConnectedWorld/"
+        ]
+      }
+    ]
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 82 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 82 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 82 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 82 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 82 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=82]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

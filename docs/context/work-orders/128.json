@@ -1,0 +1,220 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:128",
+  "@type": "WorkItem",
+  "issue": 128,
+  "workId": "FMP-08a",
+  "domainCode": "XR",
+  "title": "[FMP-08a] 선로 정렬·이동 차량 프레임·승하차 연속성",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "선로와 차량 frame을 정렬하고 이동·승하차·보고 pose가 동일 좌표 변환으로 연속적으로 이어지도록 구현하세요.",
+  "parent": 102,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/evidence/work-items/FMP-08a/result.json",
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 10,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:10:foundation-contract-v2:candidate"
+      },
+      {
+        "issue": 82,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:82:bounded-synthetic-geometry:candidate"
+      },
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 102,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:128:dynamic-frame-contract:accept"
+      },
+      {
+        "issue": 129,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:128:dynamic-frame-contract:candidate"
+      },
+      {
+        "issue": 129,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:128:dynamic-frame-contract:accept"
+      },
+      {
+        "issue": 130,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:128:dynamic-frame-contract:candidate"
+      },
+      {
+        "issue": 130,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:128:dynamic-frame-contract:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      127,
+      126,
+      131,
+      123,
+      133,
+      122,
+      134,
+      121,
+      135,
+      136,
+      119,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      146,
+      107,
+      106,
+      100,
+      99,
+      94,
+      93,
+      90,
+      89,
+      85,
+      81,
+      80,
+      79,
+      78,
+      77,
+      76,
+      75,
+      74,
+      73,
+      72,
+      71,
+      70,
+      68,
+      65,
+      64,
+      63,
+      62,
+      58,
+      57,
+      56,
+      55,
+      52,
+      46,
+      45,
+      44,
+      43,
+      42,
+      41,
+      40,
+      39,
+      38,
+      37,
+      36,
+      34,
+      33,
+      32,
+      31,
+      29,
+      28,
+      27,
+      26,
+      25,
+      24,
+      23,
+      22,
+      21,
+      20,
+      19,
+      18,
+      17,
+      16,
+      15,
+      14
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": [
+      {
+        "issue": 82,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:foundation/world/connected-world-profile.json",
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+          "lock:repo-path:xrlab-dau/CHOOGuard:Assets/CHOOguardGenerated/ConnectedWorld/",
+          "lock:repo-path:xrlab-dau/CHOOGuard:ProjectSettings/EditorBuildSettings.asset",
+          "lock:world:connected-profile",
+          "lock:world:scene-builder",
+          "lock:editor:connected-world-root",
+          "path:foundation/world/connected-world-profile.json|foundation/world/connected-world-profile.json",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+          "path:Assets/CHOOguardGenerated/ConnectedWorld/|Assets/CHOOguardGenerated/ConnectedWorld/"
+        ]
+      },
+      {
+        "issue": 125,
+        "reasons": [
+          "lock:repo-path:xrlab-dau/CHOOGuard:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
+          "lock:runtime:motion-adapter",
+          "path:Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs|Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs"
+        ]
+      }
+    ]
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 128 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 128 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 128 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 128 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 128 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=128]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

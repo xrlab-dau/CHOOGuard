@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:24",
+  "@type": "WorkItem",
+  "issue": 24,
+  "workId": "M2-01",
+  "domainCode": "XR",
+  "title": "[M2-01] Unity·네이티브 의존성 재현 기준선",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "동일 source에서 고정 Unity/NGO/UTP/LiveKit 의존성을 materialize·import·compile할 수 있는 기준선을 제공한다.",
+  "parent": 54,
+  "children": [
+    42
+  ],
+  "requiredOutputPaths": [
+    "Packages/manifest.json",
+    "Packages/packages-lock.json",
+    "docs/evidence/work-items/M2-01/dependencies.json",
+    "foundation/network/dependency-contract.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 10,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:10:foundation-contract-v2:candidate"
+      },
+      {
+        "issue": 120,
+        "consumerPhase": "candidate",
+        "producerPhase": "accept",
+        "artifact": "artifact:120:foundation-published-source:accept"
+      },
+      {
+        "issue": 10,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:10:foundation-contract-v2:accept"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 20,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+      },
+      {
+        "issue": 20,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+      },
+      {
+        "issue": 25,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+      },
+      {
+        "issue": 27,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+      },
+      {
+        "issue": 27,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+      },
+      {
+        "issue": 100,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+      },
+      {
+        "issue": 100,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:24:dependency-materialization-receipt:accept"
+      },
+      {
+        "issue": 143,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:24:pinned-materialization-contract:candidate"
+      },
+      {
+        "issue": 143,
+        "consumerPhase": "accept",
+        "producerPhase": "candidate",
+        "artifact": "artifact:24:unity-package-baseline:candidate"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      25,
+      26,
+      32,
+      33,
+      36,
+      56,
+      57,
+      82,
+      106,
+      107,
+      23,
+      22,
+      21,
+      28,
+      19,
+      29,
+      18,
+      17,
+      31,
+      16,
+      15,
+      14,
+      34,
+      37,
+      38,
+      39,
+      40,
+      41,
+      43,
+      44,
+      45,
+      46,
+      52,
+      55,
+      58,
+      62,
+      63,
+      64,
+      65,
+      68,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      85,
+      89,
+      90,
+      93,
+      94,
+      119,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      137,
+      138,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 24 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 24 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 24 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 24 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 24 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=24]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

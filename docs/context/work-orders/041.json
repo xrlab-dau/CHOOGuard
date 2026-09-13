@@ -1,0 +1,213 @@
+{
+  "schemaVersion": 1,
+  "@context": "./ontology.jsonld",
+  "@id": "work:41",
+  "@type": "WorkItem",
+  "issue": 41,
+  "workId": "R-01",
+  "domainCode": "PM",
+  "title": "[R-01] 문서 선행관계·검토 지적 정합성 재검토",
+  "orchestrator": "role:pm",
+  "executionMode": "A member and their LLM execute this bounded task.",
+  "assignment": {
+    "policy": "실제 착수 시 claim. 사전 개인 배정 금지.",
+    "preassigned": false,
+    "existingClaim": null
+  },
+  "environment": "장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다. 특정 OS/HMD는 해당 시험의 검증 조건일 뿐 배정 조건이 아니다.",
+  "directive": "기존 review findings를 현재 문서·graph·issue scope에 매핑해 resolved/remaining/superseded/unknown으로 분리한다.",
+  "parent": 10,
+  "children": [],
+  "requiredOutputPaths": [
+    "docs/reviews/R-01/review-map-candidate-index.json",
+    "docs/reviews/R-01/review-map-accept-index.json"
+  ],
+  "flow": {
+    "prepare": "Read this packet and only its current-phase sources. Identify missing inputs, plan exact changes and tests. Do not claim another member’s work.",
+    "candidate": "After candidate-phase inputs are qualified, claim exact paths/branch and perform the implementation or verification requested here.",
+    "accept": "Run every required check, preserve failed/unrun cases, return evidence. PM evaluates handoff; a document or checkbox alone is not completion."
+  },
+  "relations": {
+    "predecessors": [
+      {
+        "issue": 10,
+        "consumerPhase": "candidate",
+        "producerPhase": "candidate",
+        "artifact": "artifact:10:foundation-contract-v2:candidate"
+      }
+    ],
+    "successors": [
+      {
+        "issue": 10,
+        "consumerPhase": "accept",
+        "producerPhase": "accept",
+        "artifact": "artifact:41:R-01-review-map:accept"
+      }
+    ],
+    "oneOfGroups": [],
+    "parallelCandidates": [
+      40,
+      42,
+      39,
+      43,
+      38,
+      44,
+      37,
+      45,
+      36,
+      46,
+      34,
+      33,
+      32,
+      31,
+      52,
+      29,
+      28,
+      27,
+      55,
+      26,
+      56,
+      25,
+      57,
+      24,
+      58,
+      23,
+      22,
+      21,
+      20,
+      62,
+      19,
+      63,
+      18,
+      64,
+      17,
+      65,
+      16,
+      15,
+      14,
+      68,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      85,
+      89,
+      90,
+      93,
+      94,
+      99,
+      100,
+      107,
+      119,
+      121,
+      122,
+      123,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      146
+    ],
+    "parallelCondition": "Candidate-phase plan only. Required inputs must be available, actual branches/checkouts and mutable resources must be separate, and exact write claims must not overlap. This is not a live lease or an assignment.",
+    "conflicts": []
+  },
+  "minimumContext": [
+    {
+      "path": "specs/analysis-2026-09-06.md",
+      "selector": "review findings and limitations",
+      "readWhen": "prepare",
+      "why": "historical finding IDs and scope를 증명한다.",
+      "limits": "현재 source acceptance를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "6c9b10a58d936460628f6944845d44266ea3e00d"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/specs/analysis-2026-09-06.md",
+      "access": "repository read access"
+    },
+    {
+      "path": "docs/choo-guard-work-unit-graph-v1.md",
+      "selector": "relationship/status sections",
+      "readWhen": "prepare",
+      "why": "legacy graph semantics를 증명한다.",
+      "limits": "typed execution DAG closure를 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "0f0971fb7b4fc563e5610ae357df7549b24d5e73"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/docs/choo-guard-work-unit-graph-v1.md",
+      "access": "repository read access"
+    },
+    {
+      "path": "scripts/context/context-graph.schema.json",
+      "selector": "node/status/source/edge definitions",
+      "readWhen": "prepare",
+      "why": "graph schema distinctions를 증명한다.",
+      "limits": "per-issue coverage가 있음을 증명하지 않는다.",
+      "availability": "published",
+      "provider": "git-at-captured-ref",
+      "ref": "6490956d203549b56cbd86846120759889abb016",
+      "digest": {
+        "algorithm": "git-blob-sha1",
+        "value": "1870db4105e09ad41e1962446a86609280f9d629"
+      },
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/6490956d203549b56cbd86846120759889abb016/scripts/context/context-graph.schema.json",
+      "access": "repository read access"
+    }
+  ],
+  "readMore": {
+    "sources": "node scripts/context/task_context.mjs brief --issue 41 --section sources --phase prepare",
+    "inputs": "node scripts/context/task_context.mjs brief --issue 41 --section inputs --phase candidate",
+    "writes": "node scripts/context/task_context.mjs brief --issue 41 --section writes --phase candidate",
+    "checks": "node scripts/context/task_context.mjs brief --issue 41 --section checks --phase candidate",
+    "history": "node scripts/context/task_context.mjs brief --issue 41 --section history"
+  },
+  "handoff": [
+    "workId and phase",
+    "branch/commit and changed paths",
+    "input and output refs/digests",
+    "checks actually run and their result",
+    "failed/unrun items and current blockers",
+    "successor handoff and claim release"
+  ],
+  "technicalContract": {
+    "path": "docs/context/work-graph.json",
+    "selector": "items[number=41]",
+    "scope": "Exact phase inputs, artifact qualifications, write/resource contracts, checks and evidence. Historical capture/review fields are not current assignments or a mandatory review loop."
+  },
+  "sourceSnapshot": {
+    "capturedAt": "2026-09-12T09:39:41Z",
+    "liveState": "Read GitHub Project at actual start; this packet grants no live lease or blanket external-action permission."
+  }
+}

@@ -23,6 +23,9 @@ PRIVATE_PARTS = {".git", ".planning", "Library", "Temp", "Logs", "UserSettings",
 PRIVATE_TEXT = re.compile(r"(?:/Users/|/home/|(?<![A-Za-z0-9])[A-Za-z]:[\\/]|\\\\[^\\\s]+\\|(?:ghp|github_pat)_[A-Za-z0-9_]{20,})")
 ORDER = {"policy": 0, "decision": 1, "contract": 2, "component": 3, "workflow": 4,
          "evidence": 5, "unknown": 6, "external_snapshot": 7}
+LEGACY_TOPIC_ENTRYPOINTS = {"art": "component.art_scene",
+                          "runtime": "component.station_world",
+                          "handoff": "workflow.start_validate"}
 
 
 def load_json(path):
@@ -246,6 +249,51 @@ def inspect_graph(graph, root=ROOT):
             "nodes": {} if errors else {node["id"]: assess_node(node, root) for node in graph["nodes"]}}
 
 
+def current_pm_entrypoint(graph, report):
+    """Return the active, matched PM contract entrypoint or None.
+
+    This is a compatibility bridge for older topic/machine explorers.  It does
+    not route by host/location and it never turns a stale/missing wrapper into
+    a current instruction.  The active workflow must explicitly name the
+    current PM contract source and every workflow source must still match.
+    """
+    workflows = [node for node in graph["nodes"]
+                 if node["id"] == "workflow.pm_issue_execution" and
+                 node["kind"] == "workflow" and
+                 node["status"] == "active" and
+                 node["authority"] == "canonical_document"]
+    if len(workflows) != 1:
+        return None
+    workflow = workflows[0]
+    freshness = report["nodes"].get(workflow["id"], {})
+    if freshness.get("sourceState") != "matched":
+        return None
+    contract_sources = [source["repoPath"] for source in workflow["sources"]
+                        if source.get("repoPath") == "docs/context/orchestration-contract.md"]
+    return contract_sources[0] if len(contract_sources) == 1 else None
+
+
+def legacy_topic_entrypoint(graph, report, topic):
+    """Return bounded fallback metadata without promoting a legacy instruction.
+
+    This is used only when the active, source-matched PM entrypoint is absent.
+    A superseded source remains out of active instruction rows; the returned
+    metadata makes its status, freshness and context-only limit explicit.
+    """
+    identifier = LEGACY_TOPIC_ENTRYPOINTS[topic]
+    matches = [node for node in graph["nodes"] if node["id"] == identifier]
+    if len(matches) != 1:
+        return None
+    node = matches[0]
+    for source in node["sources"]:
+        if "repoPath" in source:
+            return {"nodeId": identifier, "status": node["status"],
+                    "freshness": copy.deepcopy(report["nodes"].get(identifier, {})),
+                    "path": source["repoPath"], "mode": "read_only_navigation_context_only",
+                    "reactivates": False}
+    return None
+
+
 def make_brief(graph, root, topic, machine, history=False):
     if topic not in TOPICS or machine not in MACHINES:
         raise ValueError("Choose a known topic and machine label.")
@@ -264,9 +312,19 @@ def make_brief(graph, root, topic, machine, history=False):
         rows.append(item)
     identifiers = {node["id"] for node in selected}
     read_next = []
-    # Prefer topic components and workflow sources; rules remain explicitly linked in each node.
-    preferred = {"art": "component.art_scene", "runtime": "component.station_world",
-                 "handoff": "workflow.start_validate"}[topic]
+    # An active, source-matched PM contract is the current per-issue entrypoint.
+    # Old topic/machine navigation stays a bounded source explorer after it.
+    entrypoint = current_pm_entrypoint(graph, report)
+    if entrypoint:
+        read_next.append(entrypoint)
+    legacy_fallback = None
+    if entrypoint:
+        read_next.append(entrypoint)
+    else:
+        legacy_fallback = legacy_topic_entrypoint(graph, report, topic)
+        if legacy_fallback:
+            read_next.append(legacy_fallback["path"])
+    preferred = LEGACY_TOPIC_ENTRYPOINTS[topic]
     candidates = sorted(selected, key=lambda n: (n["id"] != preferred,
                         n["kind"] not in {"component", "workflow"}, ORDER[n["kind"]]))
     for node in candidates:
@@ -282,9 +340,9 @@ def make_brief(graph, root, topic, machine, history=False):
     return {"topic": topic, "machine": machine, "historyIncluded": history,
             "acceptance": "not_assessed", "syntheticWorkBlocked": False,
             "notice": "Navigation only. Reread stale sources. Historical tests, unknown references and board snapshots do not grant current acceptance or external-action permission.",
+            "currentPmEntrypoint": entrypoint, "legacyFallback": legacy_fallback,
             "nodes": rows, "edges": [edge for edge in graph["edges"] if edge["from"] in identifiers and edge["to"] in identifiers],
             "readNext": read_next}
-
 
 def refresh_sources(graph, root, identifiers, reviewed=False, reason=""):
     if not reviewed or len(reason.strip()) < 8 or not identifiers:
@@ -347,7 +405,7 @@ def main(argv=None):
     refresh.add_argument("--reviewed", action="store_true")
     refresh.add_argument("--reason", required=True)
     render = commands.add_parser("render", help="Regenerate the offline HTML snapshot.")
-    render.add_argument("--output", default="docs/context/index.html")
+    render.add_argument("--output", default="docs/context/history-index.html")
     args = parser.parse_args(argv)
     try:
         path = repo_path(ROOT, args.graph)
