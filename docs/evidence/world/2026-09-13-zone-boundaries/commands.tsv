@@ -1,0 +1,10 @@
+validate_default	python3 scripts/art/validate_zone_boundaries.py	0
+validate_array	python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/array.json	2
+validate_missing	python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/absent.json	2
+validate_truncated	python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/truncated.json	2
+validate_non_utf8	python3 scripts/art/validate_zone_boundaries.py --data docs/evidence/world/2026-09-13-zone-boundaries/fixtures/non-utf8.json	2
+tests	python3 -m unittest scripts.art.test_zone_boundaries -v	0
+discover	python3 -m unittest discover -s scripts/art -p 'test_*.py'	0
+counts	python3 -c "import json;c=json.load(open(\"foundation/world/facility-coverage.json\",encoding=\"utf-8\"));b=json.load(open(\"foundation/world/zone-boundaries.json\",encoding=\"utf-8\"));print(\"coverage: zones=%d connections=%d constraints=%d\"%(len(c[\"zones\"]),len(c[\"connections\"]),len(c[\"numeric_constraints\"])));print(\"boundaries: bundles=%d zones=%d portals=%d cross_bundle=%d questions=%d\"%(len(b[\"bundles\"]),len(b[\"zones\"]),len(b[\"portals\"]),sum(1 for p in b[\"portals\"] if p[\"crosses_bundles\"]),len(b[\"open_questions\"])));print(\"portals_with_dimensions=%d\"%sum(1 for p in b[\"portals\"] if p[\"opening_width_m\"] is not None or p[\"clear_height_m\"] is not None))"	0
+binding	python3 -c "import hashlib,json;r=json.load(open(\"foundation/world/zone-boundaries.json\",encoding=\"utf-8\"))[\"coverage_source\"][\"sha256\"];a=hashlib.sha256(open(\"foundation/world/facility-coverage.json\",\"rb\").read()).hexdigest();print(\"recorded=\"+r);print(\"actual  =\"+a);print(\"match   =%s\"%(r==a))"	0
+upstream_unchanged	shasum -a 256 foundation/world/facility-coverage.json	0
