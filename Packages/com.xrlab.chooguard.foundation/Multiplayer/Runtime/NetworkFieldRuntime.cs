@@ -33,6 +33,23 @@ namespace ChooGuard.Foundation.Multiplayer
         public WorldPhysicalView Physical;
     }
     [Serializable] public sealed class ObservedPortalState { public string PortalId; public bool Open; }
+
+    /// <summary>Route/current-location display contract for the connected-world navigation UI.
+    /// Every value is derived from the authored synthetic profile; nothing here is surveyed or
+    /// facility-accepted. <see cref="Synthetic"/> is always true by construction.</summary>
+    [Serializable] public sealed class RouteDisplayState
+    {
+        public string RegionId = "", RegionLabel = "", FrameId = "", GeometryStatus = "", Classification = "";
+        public bool Synthetic = true;
+        public string SyntheticLabel = "";
+        public string TargetRegionId = "", TargetRegionLabel = "";
+        public string[] RouteRegionIds = Array.Empty<string>(), RouteLabels = Array.Empty<string>();
+        public string[] RoutePortalIds = Array.Empty<string>(), RouteGeometryStatuses = Array.Empty<string>();
+        public bool Available;
+        public string UnavailableReason = "";
+        public bool CrossesFrame, CrossesLevel;
+        public string RouteSyntheticLabel = "";
+    }
     [Serializable] public sealed class ProbeStep
     {
         public float AtSeconds;
@@ -735,6 +752,82 @@ namespace ChooGuard.Foundation.Multiplayer
             Application.Quit();
         }
 
+        /// <summary>Authored-synthetic banner text; never a facility acceptance claim.</summary>
+        public const string SyntheticBanner = "합성 배치 · 실측/시설 인증 아님";
+
+        private static string SyntheticLabel(ConnectedWorldDefinition definition, string geometryStatus) =>
+            SyntheticBanner + " (" + (definition.Classification ?? "") + ", " + geometryStatus + ")";
+
+        /// <summary>Pure projection of the observed current location onto one displayed state.
+        /// Thirteen profile region IDs map one-to-one onto thirteen distinct states.</summary>
+        public static RouteDisplayState ProjectCurrentLocation(ConnectedWorldDefinition definition, FieldView view)
+        {
+            if (definition == null) throw new ArgumentNullException(nameof(definition));
+            if (view == null) throw new ArgumentNullException(nameof(view));
+            var state = new RouteDisplayState { Classification = definition.Classification ?? "",
+                Synthetic = true, RouteSyntheticLabel = SyntheticLabel(definition, "route-not-requested") };
+            var region = definition.Regions == null ? null : definition.Regions.SingleOrDefault(r => r != null && r.Id == view.RegionId);
+            if (region == null)
+            {
+                state.RegionId = view.RegionId ?? "";
+                state.SyntheticLabel = SyntheticLabel(definition, "unavailable");
+                state.UnavailableReason = "알 수 없는 현재 구역 · 사용 불가";
+                return state;
+            }
+            state.RegionId = region.Id; state.RegionLabel = region.Label; state.FrameId = region.FrameId;
+            state.GeometryStatus = region.GeometryStatus;
+            state.SyntheticLabel = SyntheticLabel(definition, region.GeometryStatus);
+            state.UnavailableReason = "목적지 미선택 · 사용 불가";
+            return state;
+        }
+
+        /// <summary>Pure projection of the observed location plus the route to <paramref name="targetRegionId"/>.
+        /// Observed closed portals from the client view are the only closure input; an unreachable target
+        /// yields an explicit unavailable state instead of an empty route line. Never invents a bypass.</summary>
+        public static RouteDisplayState ProjectRoute(ConnectedWorldDefinition definition, FieldView view, string targetRegionId)
+        {
+            var state = ProjectCurrentLocation(definition, view);
+            state.TargetRegionId = targetRegionId ?? "";
+            if (string.IsNullOrEmpty(state.RegionId) || !definition.Regions.Any(r => r != null && r.Id == state.RegionId)) return state;
+            var target = definition.Regions.SingleOrDefault(r => r != null && r.Id == targetRegionId);
+            if (target == null)
+            {
+                state.UnavailableReason = "알 수 없는 목적지 · 사용 불가";
+                return state;
+            }
+            state.TargetRegionLabel = target.Label;
+            var observed = view.Portals ?? Array.Empty<ObservedPortalState>();
+            var knownClosed = new HashSet<string>(observed.Where(p => p != null && !p.Open).Select(p => p.PortalId));
+            var route = definition.Route(state.RegionId, target.Id, knownClosed);
+            if (route.Length == 0)
+            {
+                state.RouteSyntheticLabel = SyntheticLabel(definition, "route-unreachable");
+                state.UnavailableReason = "경로 없음 · 사용 불가 (차단된 포털 " +
+                    knownClosed.Count + "개)";
+                return state;
+            }
+            state.Available = true;
+            state.UnavailableReason = "";
+            state.RouteRegionIds = route;
+            state.RouteLabels = route.Select(id => definition.Region(id).Label).ToArray();
+            var portals = new List<ConnectedPortalDefinition>();
+            for (var index = 0; index + 1 < route.Length; index++)
+            {
+                var from = route[index]; var to = route[index + 1];
+                var portal = definition.Portals.SingleOrDefault(p => p != null &&
+                    ((p.From == from && p.To == to) || (p.From == to && p.To == from)));
+                if (portal == null) continue;
+                portals.Add(portal);
+                if (portal.FromPoint.Y != portal.ToPoint.Y) state.CrossesLevel = true;
+                if (definition.Region(portal.From).FrameId != definition.Region(portal.To).FrameId) state.CrossesFrame = true;
+            }
+            state.RoutePortalIds = portals.Select(p => p.Id).ToArray();
+            state.RouteGeometryStatuses = portals.Select(p => p.GeometryStatus).ToArray();
+            state.RouteSyntheticLabel = SyntheticLabel(definition,
+                state.GeometryStatus + " / " + string.Join(", ", state.RouteGeometryStatuses.Distinct()));
+            return state;
+        }
+
         private void OnGUI()
         {
             if (Application.isBatchMode) return;
@@ -747,13 +840,16 @@ namespace ChooGuard.Foundation.Multiplayer
                 GUILayout.Label("WASD 이동 · 마우스 시점 · E 상호작용 · Esc 개인 메뉴");
                 if (connectedWorld != null)
                 {
-                    GUILayout.Label("현재: " + connectedWorld.Definition.Region(view.RegionId).Label + " · N 구역 길찾기");
+                    var routeDisplay = ProjectRoute(connectedWorld.Definition, view, navigationTarget);
+                    GUILayout.Label("현재: " + routeDisplay.RegionLabel + " · " + routeDisplay.FrameId + " · N 구역 길찾기");
+                    GUILayout.Label(routeDisplay.SyntheticLabel);
                     if (!string.IsNullOrEmpty(view.MovementStatus)) GUILayout.Label(view.MovementStatus);
                     if (!string.IsNullOrEmpty(navigationTarget))
                     {
-                        var route = connectedWorld.Definition.Route(view.RegionId, navigationTarget,
-                            new HashSet<string>(view.Portals.Where(p => !p.Open).Select(p => p.PortalId)));
-                        GUILayout.Label("공개 연결: " + string.Join(" → ", route.Select(id => connectedWorld.Definition.Region(id).Label)));
+                        GUILayout.Label(routeDisplay.Available
+                            ? "공개 연결: " + string.Join(" → ", routeDisplay.RouteLabels)
+                            : "공개 연결: " + routeDisplay.UnavailableReason);
+                        GUILayout.Label(routeDisplay.RouteSyntheticLabel);
                     }
                     if (navigationMenu)
                     {
