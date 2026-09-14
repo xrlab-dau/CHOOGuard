@@ -1,0 +1,1113 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "indexId": "R-07-test-receipt-candidate-index",
+  "issue": 52,
+  "workId": "R-07",
+  "phase": "candidate",
+  "artifact": "artifact:52:R-07-test-receipt:candidate",
+  "recordType": "machine_observation_not_approval",
+  "overwritePolicy": "Append or replace this versioned index only with a new manifest entry; never overwrite or fabricate a prior raw execution receipt.",
+  "rawStorage": "Raw logs, receipts, baselines and diffs stay outside Git under <RUN_ROOT>; this index keeps sha256 digests and sanitized JSON outputs only.",
+  "entries": [
+    {
+      "runId": "r07-20260914T180413Z",
+      "capturedAt": "2026-09-14T18:04:13Z",
+      "baseline": {
+        "ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+        "checkout": "fresh git worktree outside the working checkout, detached at the ref, candidate files copied in; tracked changes after all steps: 0"
+      },
+      "capability": {
+        "machineLabel": "local",
+        "route": "anonymous developer Windows laptop; no school PC, location, high-spec or named-owner condition",
+        "os": "Microsoft Windows 11 Education 10.0.26200 64-bit",
+        "activeCodePage": 949,
+        "userProfilePathAscii": false,
+        "python": "CPython 3.11.9 (interpreter path under the non-ASCII user profile)",
+        "powershell": "Windows PowerShell 5.1",
+        "pi": "absent",
+        "uv": "absent",
+        "researchVenv": "absent"
+      },
+      "sources": {
+        "candidate": {
+          "scripts/team/R-07/policy_baseline.py": "ddbe04930d93da44eb4a8f016d9722c8689f8e3d5ddcdcc776dc3aaca29bdb63",
+          "scripts/team/R-07/test_policy_baseline.py": "ad878406a225a9be9ebccc60f90fabe82d0fb8065dd512e5257f4ddbb7847c33",
+          "docs/team/R-07/proposals/P1-verify_toolchain-policy-baseline.diff": "15eb982a5e6b71f97b59fe32ee21cb9d3d022fb42b59d3ed5e8d52dba73a0f41",
+          "docs/team/R-07/proposals/P2-test_bootstrap_powershell-oem-shim.diff": "64522838f2f0822653d50274ba81cf72720615637512d72535b396578ad3b097"
+        },
+        "canonicalAtBase": {
+          "scripts/bootstrap/verify_toolchain.py": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+          "scripts/bootstrap/test_verify_toolchain.py": "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad",
+          "scripts/bootstrap/test_bootstrap_powershell.py": "ccb71511605704241716e8673562efb62d3822a3d66dcbde00adacc469f597bb",
+          "scripts/bootstrap/bootstrap.ps1": "9ab6347d22ff10d785dbe8bc2c181eedb2af7eab3d16b4e50b172b5e0bb74427"
+        },
+        "inputsAtBase": {
+          "docs/team/M0-03/allowlist.json": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a",
+          "docs/team/M0-03/execution-profile.json": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+          "docs/team/R-03/governance-diff.md": "b5a0d94072191fc6874df4648ad8e8b3498944e08c5e3edd50d0ed4b4640a966",
+          "docs/team/R-03/verification.json": "b7cf4a3d4d9e6914846300c9ad001aa1564ef343eced2245d88e76b9789b09cf",
+          "docs/team/R-04/test-plan.json": "e77c1ae9791ea767483cfe722e0e5684aa74ad6e6baec0f29b82516121ef172d",
+          "docs/evidence/R-04/evidence-candidate-index.json": "2bd190c683ae828829c54f8f7ab9f35692a0343ce1106895cc20ec249fb169d4",
+          "docs/context/work-orders/052.json": "ddd1fadc10424e95ac4c879a9a4a99296b1ffa2d4be6b029af92c80a6a1ae1bf"
+        }
+      },
+      "steps": [
+        {
+          "id": "E1",
+          "label": "python",
+          "check": "python3 -m unittest discover -s scripts/bootstrap -p 'test_*.py'",
+          "note": "check 1 as written, canonical tests at the base ref",
+          "result": {
+            "exitCode": 1,
+            "ran": 42,
+            "passed": 35,
+            "failed": 5,
+            "errors": 0,
+            "skipped": 2,
+            "failedTests": [
+              "test_default_never_installs_or_syncs",
+              "test_failed_native_npm_stops_before_sync_and_verification",
+              "test_failed_native_uv_stops_before_verification",
+              "test_installed_node_version_check_survives_powershell_quoting",
+              "test_verifier_exit_code_is_preserved"
+            ],
+            "stderrSha256": "e56701cc984f32da81c4b34472d715af8135767b31b0a97cbc3583389bf6cf9e",
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "outcome": "failed",
+          "failureCause": "R-04 F1: the 5 PowerShell entry-point tests fail because UTF-8 .cmd shims embed a non-ASCII interpreter path that cmd.exe reads in code page 949. See E6 for the proposed fix."
+        },
+        {
+          "id": "E2",
+          "label": "python",
+          "check": "proposed negative test: missing path/empty file/hash drift/target missing",
+          "argv": "python -m unittest discover -s scripts/team/R-07 -p test_*.py -v",
+          "result": {
+            "exitCode": 0,
+            "ran": 15,
+            "passed": 15,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "failedTests": [],
+            "stderrSha256": "ab8e0431c6a2982c563f8cec7fcc262a753163315b4cc1fffcec2a614c6040a3",
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "outcome": "passed"
+        },
+        {
+          "id": "E3",
+          "label": "python-mutation-control",
+          "purpose": "each mutation disables one rejection in a worktree copy of the gate; the tests must fail",
+          "mutations": [
+            {
+              "id": "E3a",
+              "mutation": "hash comparison removed (elif verifier.sha256(path) != expected -> elif False)",
+              "result": {
+                "exitCode": 1,
+                "ran": 15,
+                "passed": 12,
+                "failed": 3,
+                "errors": 0,
+                "skipped": 0,
+                "failedTests": [
+                  "test_cli_exit_codes_and_target_absence",
+                  "test_every_finding_is_reported_not_only_the_first",
+                  "test_hash_drift_is_rejected_even_when_size_is_unchanged"
+                ],
+                "stderrSha256": "efdb5c535a0065be19f96f80a39ae6f8a35e9a7f9053d4755435f53b6256ea37",
+                "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            },
+            {
+              "id": "E3b",
+              "mutation": "empty-file check removed (elif size == 0 -> elif False)",
+              "result": {
+                "exitCode": 1,
+                "ran": 15,
+                "passed": 14,
+                "failed": 1,
+                "errors": 0,
+                "skipped": 0,
+                "failedTests": [
+                  "test_empty_file_is_rejected"
+                ],
+                "stderrSha256": "ac524bbb870a82897aa5792b096be5fb25ffce2ef74d6b0cf3d2eba3bc161493",
+                "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            },
+            {
+              "id": "E3c",
+              "mutation": "target root check removed (if not root.is_dir() -> if False)",
+              "result": {
+                "exitCode": 1,
+                "ran": 15,
+                "passed": 13,
+                "failed": 2,
+                "errors": 0,
+                "skipped": 0,
+                "failedTests": [
+                  "test_baseline_is_not_built_from_a_broken_scope",
+                  "test_cli_exit_codes_and_target_absence"
+                ],
+                "stderrSha256": "5d4d419196b69dcdcd0759c6370664a0af57e005e93f1a26ad8c87385ec85533",
+                "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            }
+          ],
+          "outcome": "all mutations detected",
+          "restoredGateSha256": "ddbe04930d93da44eb4a8f016d9722c8689f8e3d5ddcdcc776dc3aaca29bdb63"
+        },
+        {
+          "id": "E4",
+          "label": "native-worktree",
+          "purpose": "gate and canonical verifier on the real worktree; each tamper is restored with git checkout before the next",
+          "cases": [
+            {
+              "id": "E4a-build",
+              "argv": "python scripts/team/R-07/policy_baseline.py build --root <worktree> --output <RUN_ROOT>/E4/baseline.json --source-ref 4ac58dfbc8969d5ba94a38637577878b990c83ad",
+              "exitCode": 0,
+              "output": {
+                "state": "baseline_written",
+                "files": 48,
+                "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d"
+              },
+              "stdoutSha256": "342b39e6d341aee74b9b6fbc8c229c8b5ffab0b9d68999d36d39b2332533cdcd",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "id": "E4b-check-clean",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/baseline.json",
+              "exitCode": 0,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result-set",
+                "state": "ok",
+                "results": [
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "worktree",
+                    "state": "ok",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 0,
+                      "hash_drift": 0,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  }
+                ]
+              },
+              "stdoutSha256": "dd691ff94025ffbd111bc56be29a064f27d73679dab231647913a790a05ff98b",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "id": "E4c-verifier-clean",
+              "argv": "python scripts/bootstrap/verify_toolchain.py --label local --write docs/evidence/r07-probe/receipt-clean.json",
+              "exitCode": 1,
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/receipt-clean.json",
+                "sha256": "3600f8ccc58280650909c453515d833eb3be0ff839b47f50d64f0a09940309f3",
+                "requiredOk": false,
+                "requiredChecks": [
+                  "node",
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "forbidden_tracked_files",
+                  "forbidden_workspace_files",
+                  "symlinks_outside_repo",
+                  "settings_disallowed_keys",
+                  "policy_hash_scope"
+                ],
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv"
+                ],
+                "policyBaseline": null,
+                "agentsMdSha256": "07dd278bcbbd76a605892ee2c0a671cc0d2631789b77749155c9aeb4077c7fa4",
+                "policyFilesHashed": 48,
+                "machineLabel": "local",
+                "platform": {
+                  "system": "Windows",
+                  "release": "10",
+                  "python": "3.11.9"
+                }
+              }
+            },
+            {
+              "id": "E4d-check-receipt-clean",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/baseline.json --receipt docs/evidence/r07-probe/receipt-clean.json",
+              "exitCode": 0,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result-set",
+                "state": "ok",
+                "results": [
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "worktree",
+                    "state": "ok",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 0,
+                      "hash_drift": 0,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  },
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "verifier_receipt",
+                    "state": "ok",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 0,
+                      "hash_drift": 0,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  }
+                ]
+              },
+              "stdoutSha256": "a4db18d151c0f5619892575115397d1df238833c5bd9238005a6615ddb781bae",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "id": "E4e-verifier-after-drift",
+              "tamper": "one line appended to AGENTS.md",
+              "argv": "python scripts/bootstrap/verify_toolchain.py --label local --write docs/evidence/r07-probe/receipt-drift.json",
+              "exitCode": 1,
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/receipt-drift.json",
+                "sha256": "cf7aaf721b875ee1cc252bb983310668a51f6256708819d63915cd58f82a667d",
+                "requiredOk": false,
+                "requiredChecks": [
+                  "node",
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "forbidden_tracked_files",
+                  "forbidden_workspace_files",
+                  "symlinks_outside_repo",
+                  "settings_disallowed_keys",
+                  "policy_hash_scope"
+                ],
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv"
+                ],
+                "policyBaseline": null,
+                "agentsMdSha256": "1b4599a470119d146cdfef3f5fd94a834b44e6a1842a5c8cbdd0ba431e1e5551",
+                "policyFilesHashed": 48,
+                "machineLabel": "local",
+                "platform": {
+                  "system": "Windows",
+                  "release": "10",
+                  "python": "3.11.9"
+                }
+              },
+              "observation": "canonical verifier exit and required_ok are unchanged by the policy byte change (1 before, 1 after)"
+            },
+            {
+              "id": "E4f-check-drift",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/baseline.json --receipt docs/evidence/r07-probe/receipt-drift.json",
+              "exitCode": 1,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result-set",
+                "state": "cannot_proceed",
+                "results": [
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "worktree",
+                    "state": "cannot_proceed",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [
+                      {
+                        "code": "hash_drift",
+                        "path": "AGENTS.md"
+                      }
+                    ],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 0,
+                      "hash_drift": 1,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  },
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "verifier_receipt",
+                    "state": "cannot_proceed",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [
+                      {
+                        "code": "hash_drift",
+                        "path": "AGENTS.md"
+                      }
+                    ],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 0,
+                      "hash_drift": 1,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  }
+                ]
+              },
+              "stdoutSha256": "b70365bfb76eb7e843696454f234b3472aa828e6870cd4cda430272adf7c5157",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tamper": "AGENTS.md drift (same as E4e)"
+            },
+            {
+              "id": "E4g-check-empty",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/baseline.json",
+              "exitCode": 1,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result-set",
+                "state": "cannot_proceed",
+                "results": [
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "worktree",
+                    "state": "cannot_proceed",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [
+                      {
+                        "code": "empty_file",
+                        "path": ".github/CODEOWNERS"
+                      },
+                      {
+                        "code": "required_glob_unmatched",
+                        "path": ".github/CODEOWNERS"
+                      }
+                    ],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 1,
+                      "hash_drift": 0,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 1,
+                      "scope_changed": 0
+                    }
+                  }
+                ]
+              },
+              "stdoutSha256": "967758719e4fff05c901a71374bfcdc01bbf5da52d40bdd82c8ac012af4dd920",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tamper": ".github/CODEOWNERS truncated to 0 bytes"
+            },
+            {
+              "id": "E4h-check-missing",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/baseline.json",
+              "exitCode": 1,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result-set",
+                "state": "cannot_proceed",
+                "results": [
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "worktree",
+                    "state": "cannot_proceed",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [
+                      {
+                        "code": "missing_path",
+                        "path": ".github/workflows/pr-triage.yml"
+                      }
+                    ],
+                    "counts": {
+                      "missing_path": 1,
+                      "empty_file": 0,
+                      "hash_drift": 0,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  }
+                ]
+              },
+              "stdoutSha256": "9131c29edbe4b73a5a4bfc3d1e0a1b6033bd5a3b0feaba73c209a7d83f567bd3",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tamper": ".github/workflows/pr-triage.yml deleted"
+            },
+            {
+              "id": "E4i-check-unexpected",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/baseline.json",
+              "exitCode": 1,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result-set",
+                "state": "cannot_proceed",
+                "results": [
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "worktree",
+                    "state": "cannot_proceed",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [
+                      {
+                        "code": "unexpected_file",
+                        "path": "scripts/ci/r07_probe.py"
+                      }
+                    ],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 0,
+                      "hash_drift": 0,
+                      "unexpected_file": 1,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  }
+                ]
+              },
+              "stdoutSha256": "ab5e21f92e52fad44a6c6bfca323a9c998cbd725e91cf17b6af8ea1f4bb422df",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "tamper": "scripts/ci/r07_probe.py created"
+            },
+            {
+              "id": "E4j-root-absent",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <RUN_ROOT>/absent-root --baseline <RUN_ROOT>/E4/baseline.json",
+              "exitCode": 2,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result",
+                "state": "cannot_proceed",
+                "error": "target_root_missing"
+              },
+              "stdoutSha256": "9f0718acccba7fbecb8fd87fccfe6a080836e46c66a259a42cad8e1b97afea21",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "id": "E4k-baseline-absent",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/absent.json",
+              "exitCode": 2,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result",
+                "state": "cannot_proceed",
+                "error": "baseline_missing"
+              },
+              "stdoutSha256": "6d1332488103d6a89821894197e45e464298d906ed172196a7a2b4510613ce01",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "id": "E4l-baseline-invalid",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/invalid-baseline.json (files: {})",
+              "exitCode": 2,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result",
+                "state": "cannot_proceed",
+                "error": "baseline_invalid"
+              },
+              "stdoutSha256": "03901ffbc8d16db7d93c2104e31173f65bb408df7f17273df7dce0b2fcbac12a",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "id": "E4m-check-clean-again",
+              "argv": "python scripts/team/R-07/policy_baseline.py check --root <worktree> --baseline <RUN_ROOT>/E4/baseline.json",
+              "exitCode": 0,
+              "output": {
+                "schemaVersion": 1,
+                "kind": "r07-policy-baseline-result-set",
+                "state": "ok",
+                "results": [
+                  {
+                    "schemaVersion": 1,
+                    "kind": "r07-policy-baseline-result",
+                    "subject": "worktree",
+                    "state": "ok",
+                    "baselineSha256": "580a09b25cd6b6faf8a82e889d2bfcdc9fff6ff4c6feac34dcad3e3b63bb954d",
+                    "baselineFiles": 48,
+                    "findings": [],
+                    "counts": {
+                      "missing_path": 0,
+                      "empty_file": 0,
+                      "hash_drift": 0,
+                      "unexpected_file": 0,
+                      "required_glob_unmatched": 0,
+                      "scope_changed": 0
+                    }
+                  }
+                ]
+              },
+              "stdoutSha256": "dd691ff94025ffbd111bc56be29a064f27d73679dab231647913a790a05ff98b",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            }
+          ],
+          "baseline": {
+            "file": "<RUN_ROOT>/E4/baseline.json",
+            "fileSha256": "a81a91bcae8c4ea9e0c47edb11f72f6a3e90db9c26fd5218fa2657901d50ad07",
+            "files": 48,
+            "sourceRef": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+            "globs": [
+              "AGENTS.md",
+              ".github/CODEOWNERS",
+              ".github/workflows/*.yml",
+              ".pi/settings.json",
+              ".pi/workflows.json",
+              ".pi/agents/*.md",
+              ".pi/workflows/*.yaml",
+              ".pi/prompts/*.md",
+              ".specify/memory/constitution.md",
+              "docs/adr/*.md",
+              "scripts/ci/*.py",
+              "scripts/bootstrap/*",
+              "tools/research/pyproject.toml",
+              "tools/research/uv.lock"
+            ],
+            "requiredGlobs": [
+              "AGENTS.md",
+              ".github/CODEOWNERS",
+              ".github/workflows/*.yml",
+              "scripts/ci/*.py"
+            ]
+          },
+          "outcome": "passed"
+        },
+        {
+          "id": "E4n",
+          "label": "inspection-authority",
+          "argv": "python scripts/team/R-07/policy_baseline.py authority --root <worktree> --profile docs/team/M0-03/execution-profile.json",
+          "exitCode": 1,
+          "output": {
+            "schemaVersion": 1,
+            "kind": "r07-policy-authority-comparison",
+            "state": "authority_unresolved",
+            "verifierScopeFiles": 48,
+            "profilePolicySources": 10,
+            "inBoth": [
+              ".github/CODEOWNERS",
+              ".pi/settings.json",
+              ".pi/workflows.json",
+              "docs/adr/0006-official-unity-editor-mcp.md"
+            ],
+            "onlyVerifierScope": [
+              ".github/workflows/nightly-gpu.yml",
+              ".github/workflows/pr-triage.yml",
+              ".github/workflows/reconstruction-ci.yml",
+              ".github/workflows/release.yml",
+              ".github/workflows/required-quality-gate.yml",
+              ".github/workflows/unity-build.yml",
+              ".github/workflows/unity-tests.yml",
+              ".pi/agents/adversarial-reviewer.md",
+              ".pi/agents/doc-reviser.md",
+              ".pi/agents/implementer.md",
+              ".pi/agents/safety-auditor.md",
+              ".pi/agents/scout.md",
+              ".pi/agents/spec-reviewer.md",
+              ".pi/agents/verifier.md",
+              ".pi/prompts/research.md",
+              ".pi/prompts/speckit.analyze.md",
+              ".pi/prompts/speckit.checklist.md",
+              ".pi/prompts/speckit.clarify.md",
+              ".pi/prompts/speckit.constitution.md",
+              ".pi/prompts/speckit.converge.md",
+              ".pi/prompts/speckit.implement.md",
+              ".pi/prompts/speckit.plan.md",
+              ".pi/prompts/speckit.specify.md",
+              ".pi/prompts/speckit.tasks.md",
+              ".pi/prompts/speckit.taskstoissues.md",
+              ".pi/workflows/adversarial-review.yaml",
+              ".pi/workflows/plan-review.yaml",
+              ".pi/workflows/wu-develop.yaml",
+              ".specify/memory/constitution.md",
+              "AGENTS.md",
+              "docs/adr/0001-agentic-unity-development.md",
+              "docs/adr/0002-agentic-toolchain.md",
+              "docs/adr/0003-independent-review-and-adversarial-graph.md",
+              "docs/adr/0004-research-harness-and-egress-policy.md",
+              "docs/adr/0005-school-pc-unity-workstation.md",
+              "scripts/bootstrap/bootstrap.ps1",
+              "scripts/bootstrap/bootstrap.sh",
+              "scripts/bootstrap/test_bootstrap_powershell.py",
+              "scripts/bootstrap/test_verify_toolchain.py",
+              "scripts/bootstrap/verify_toolchain.py",
+              "scripts/ci/pr_policy.py",
+              "scripts/ci/repository_policy.py",
+              "tools/research/pyproject.toml",
+              "tools/research/uv.lock"
+            ],
+            "onlyProfilePolicySources": [
+              "NOTICE.md",
+              "Packages/manifest.json",
+              "Packages/packages-lock.json",
+              "ProjectSettings/ProjectVersion.txt",
+              "docs/choo-guard-ai-native-pipeline-v1.md",
+              "docs/choo-guard-execution-backlog-v1.md"
+            ],
+            "profileSha256AtRefDiffersFromWorktree": [
+              "Packages/manifest.json",
+              "Packages/packages-lock.json",
+              "docs/choo-guard-ai-native-pipeline-v1.md",
+              "docs/choo-guard-execution-backlog-v1.md"
+            ],
+            "profileSourcesAbsentFromWorktree": [],
+            "rule": "Differences are preserved for a PM authority decision; this comparison does not choose a policy source."
+          },
+          "outcome": "authority_unresolved (preserved, not chosen)"
+        },
+        {
+          "id": "E5",
+          "label": "proposal-P1-worktree-copy",
+          "proposal": "docs/team/R-07/proposals/P1-verify_toolchain-policy-baseline.diff",
+          "cases": [
+            {
+              "id": "E5a-verifier-baseline-pre-P1",
+              "argv": "python scripts/bootstrap/verify_toolchain.py --label local --policy-baseline <RUN_ROOT>/E4/baseline.json --write docs/evidence/r07-probe/p1-clean.json",
+              "exitCode": 1,
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/p1-clean.json",
+                "sha256": "b84980a104521da6bfbf606e7b42455c6af4094edad16e95c9148b3f659eb963",
+                "requiredOk": false,
+                "requiredChecks": [
+                  "node",
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "forbidden_tracked_files",
+                  "forbidden_workspace_files",
+                  "symlinks_outside_repo",
+                  "settings_disallowed_keys",
+                  "policy_hash_scope",
+                  "policy_baseline"
+                ],
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "policy_baseline"
+                ],
+                "policyBaseline": {
+                  "source_ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+                  "files": 48,
+                  "findings": [
+                    {
+                      "code": "hash_drift",
+                      "path": "scripts/bootstrap/verify_toolchain.py"
+                    }
+                  ],
+                  "ok": false
+                },
+                "agentsMdSha256": "07dd278bcbbd76a605892ee2c0a671cc0d2631789b77749155c9aeb4077c7fa4",
+                "policyFilesHashed": 48,
+                "machineLabel": "local",
+                "platform": {
+                  "system": "Windows",
+                  "release": "10",
+                  "python": "3.11.9"
+                }
+              },
+              "observation": "a baseline taken before P1 reports the verifier's own change as hash_drift"
+            },
+            {
+              "id": "E5b-verifier-baseline-pre-P1-drift",
+              "tamper": "AGENTS.md drift",
+              "exitCode": 1,
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/p1-drift.json",
+                "sha256": "76096b87d746e4858011ee096e69fae761af286a2ef026d9472112bbd5b8e5b4",
+                "requiredOk": false,
+                "requiredChecks": [
+                  "node",
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "forbidden_tracked_files",
+                  "forbidden_workspace_files",
+                  "symlinks_outside_repo",
+                  "settings_disallowed_keys",
+                  "policy_hash_scope",
+                  "policy_baseline"
+                ],
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "policy_baseline"
+                ],
+                "policyBaseline": {
+                  "source_ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+                  "files": 48,
+                  "findings": [
+                    {
+                      "code": "hash_drift",
+                      "path": "AGENTS.md"
+                    },
+                    {
+                      "code": "hash_drift",
+                      "path": "scripts/bootstrap/verify_toolchain.py"
+                    }
+                  ],
+                  "ok": false
+                },
+                "agentsMdSha256": "1b4599a470119d146cdfef3f5fd94a834b44e6a1842a5c8cbdd0ba431e1e5551",
+                "policyFilesHashed": 48,
+                "machineLabel": "local",
+                "platform": {
+                  "system": "Windows",
+                  "release": "10",
+                  "python": "3.11.9"
+                }
+              }
+            },
+            {
+              "id": "E5c-verifier-baseline-absent",
+              "argv": "python scripts/bootstrap/verify_toolchain.py --label local --policy-baseline <RUN_ROOT>/E4/absent.json",
+              "exitCode": 2,
+              "stderrSha256": "6ae0ccaaca4fe8bd55204256b09bbb5c2d4a532c90027b26124b063a3af4d508"
+            },
+            {
+              "id": "E5d-verifier-baseline-invalid",
+              "argv": "python scripts/bootstrap/verify_toolchain.py --label local --policy-baseline <RUN_ROOT>/E4/invalid-baseline.json",
+              "exitCode": 2,
+              "stderrSha256": "1855fda152204017373a8a52d28b2b58927143c45dce1d304685e3e16dfba894"
+            },
+            {
+              "id": "E5e-bootstrap-unittest-with-P1",
+              "result": {
+                "exitCode": 1,
+                "ran": 42,
+                "passed": 35,
+                "failed": 5,
+                "errors": 0,
+                "skipped": 2,
+                "failedTests": [
+                  "test_default_never_installs_or_syncs",
+                  "test_failed_native_npm_stops_before_sync_and_verification",
+                  "test_failed_native_uv_stops_before_verification",
+                  "test_installed_node_version_check_survives_powershell_quoting",
+                  "test_verifier_exit_code_is_preserved"
+                ],
+                "stderrSha256": "be3d4539410919c0dbbfa099681b26f34d7c96e81d61e0c6e00a569afd31c19e",
+                "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "observation": "identical to E1: no regression from P1"
+            },
+            {
+              "id": "E5f-build-baseline-with-P1",
+              "argv": "python scripts/team/R-07/policy_baseline.py build --root <worktree with P1> --output <RUN_ROOT>/E4/baseline-with-P1.json --source-ref 4ac58dfbc8969d5ba94a38637577878b990c83ad+P1",
+              "exitCode": 0,
+              "output": {
+                "state": "baseline_written",
+                "files": 48,
+                "baselineSha256": "f77b7a7ae8f3da4736ae3b99f04ece1f1745b36e798ec208790f14456ddeb10d"
+              },
+              "stdoutSha256": "65c99cfa78b6d0d1de8786ded2355cfd6ec7c3024eab0010b4c2dd84c1caef6f",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            {
+              "id": "E5g-verifier-P1-baseline-clean",
+              "exitCode": 1,
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/p1b-clean.json",
+                "sha256": "f5d27c4bbe039962862f7d44e8ff838c78859763cb68ac81aeeff8fc9da5097c",
+                "requiredOk": false,
+                "requiredChecks": [
+                  "node",
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "forbidden_tracked_files",
+                  "forbidden_workspace_files",
+                  "symlinks_outside_repo",
+                  "settings_disallowed_keys",
+                  "policy_hash_scope",
+                  "policy_baseline"
+                ],
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv"
+                ],
+                "policyBaseline": {
+                  "source_ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad+P1",
+                  "files": 48,
+                  "findings": [],
+                  "ok": true
+                },
+                "agentsMdSha256": "07dd278bcbbd76a605892ee2c0a671cc0d2631789b77749155c9aeb4077c7fa4",
+                "policyFilesHashed": 48,
+                "machineLabel": "local",
+                "platform": {
+                  "system": "Windows",
+                  "release": "10",
+                  "python": "3.11.9"
+                }
+              }
+            },
+            {
+              "id": "E5h-verifier-P1-baseline-drift",
+              "tamper": "AGENTS.md drift",
+              "exitCode": 1,
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/p1b-drift.json",
+                "sha256": "679565888ecea1ac32a1ccbb123ecafea0af88d7bd6f75dc40a70b341a3ca30a",
+                "requiredOk": false,
+                "requiredChecks": [
+                  "node",
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "forbidden_tracked_files",
+                  "forbidden_workspace_files",
+                  "symlinks_outside_repo",
+                  "settings_disallowed_keys",
+                  "policy_hash_scope",
+                  "policy_baseline"
+                ],
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "policy_baseline"
+                ],
+                "policyBaseline": {
+                  "source_ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad+P1",
+                  "files": 48,
+                  "findings": [
+                    {
+                      "code": "hash_drift",
+                      "path": "AGENTS.md"
+                    }
+                  ],
+                  "ok": false
+                },
+                "agentsMdSha256": "1b4599a470119d146cdfef3f5fd94a834b44e6a1842a5c8cbdd0ba431e1e5551",
+                "policyFilesHashed": 48,
+                "machineLabel": "local",
+                "platform": {
+                  "system": "Windows",
+                  "release": "10",
+                  "python": "3.11.9"
+                }
+              }
+            }
+          ],
+          "outcome": "policy_baseline becomes a failing required check on drift; exit stays 1 on this host because pi/uv/pi_packages/research_venv already fail"
+        },
+        {
+          "id": "E6",
+          "label": "proposal-P2-worktree-copy",
+          "proposal": "docs/team/R-07/proposals/P2-test_bootstrap_powershell-oem-shim.diff",
+          "check": "python3 -m unittest discover -s scripts/bootstrap -p 'test_*.py' with P1+P2 applied",
+          "result": {
+            "exitCode": 0,
+            "ran": 42,
+            "passed": 40,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 2,
+            "failedTests": [],
+            "stderrSha256": "58f40656961f250c56fb971123eefaaf56b36b44364c5546bbd95268f9a4994b",
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "outcome": "passed on the same non-ASCII interpreter path where E1 failed"
+        },
+        {
+          "id": "INSPECT-1",
+          "label": "inspection",
+          "check": "inspection: R-04/R-07 write sets and lock owner",
+          "r04CandidateWrites": [
+            "docs/team/R-04/",
+            "docs/evidence/R-04/"
+          ],
+          "r07CandidateWrites": [
+            "docs/team/R-07/",
+            "docs/evidence/R-07/",
+            "scripts/team/R-07/**"
+          ],
+          "overlap": [],
+          "canonicalFilesTouched": [],
+          "r04State": "#44 CLOSED (PR #189 merged); scripts/bootstrap not modified",
+          "openWritersOnScriptsBootstrap": "none at claim time",
+          "integrationLock": "P1/P2 need serialized writes to scripts/bootstrap/verify_toolchain.py and test_bootstrap_powershell.py; lock owner PM",
+          "outcome": "passed"
+        }
+      ],
+      "separation": "E1/E2/E3/E5e/E6 are Python unittest results; E4/E5 are native executions of the gate and verifier on the worktree; E4n and INSPECT-1 are inspections. R-04 OS evidence is referenced as input only.",
+      "findings": [
+        {
+          "id": "R07-F1",
+          "summary": "Canonical verifier rejects missing required globs and --write target violations, but not partial deletion, empty non-required policy files, hash drift or new policy files (E4c/E4e).",
+          "addressedBy": [
+            "scripts/team/R-07/policy_baseline.py (runnable now)",
+            "P1 proposal (verifier integration)"
+          ]
+        },
+        {
+          "id": "R07-F2",
+          "summary": "Any change to a policy-scoped file, including the verifier itself, invalidates a baseline (E5a); integration needs a same-PR baseline regeneration rule and a protected baseline location.",
+          "decisionOwner": "PM"
+        },
+        {
+          "id": "R07-F3",
+          "summary": "Policy authority is unresolved between verifier POLICY_GLOBS and the M0-03 execution profile policySources (E4n); both sources preserved.",
+          "decisionOwner": "PM"
+        },
+        {
+          "id": "R04-F1",
+          "summary": "PowerShell shim encoding defect reproduced (E1) and fixed by P2 in a worktree copy (E6).",
+          "addressedBy": [
+            "P2 proposal"
+          ]
+        }
+      ],
+      "notRun": [
+        "bootstrap.sh / POSIX host",
+        "PowerShell 7 (pwsh)",
+        "a host where pi/uv/research venv are present (P1 exit-code transition 0 -> 1 not observed)",
+        "independent review",
+        "canonical integration of P1/P2 (outside write scope)"
+      ],
+      "rawReceipts": {
+        "E1-bootstrap-unittest.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E1-bootstrap-unittest.stderr.log": "e56701cc984f32da81c4b34472d715af8135767b31b0a97cbc3583389bf6cf9e",
+        "E1-bootstrap-unittest.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E2-r07-unittest.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "E2-r07-unittest.stderr.log": "ab8e0431c6a2982c563f8cec7fcc262a753163315b4cc1fffcec2a614c6040a3",
+        "E2-r07-unittest.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E3a-mutation-no-hash-compare.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E3a-mutation-no-hash-compare.stderr.log": "efdb5c535a0065be19f96f80a39ae6f8a35e9a7f9053d4755435f53b6256ea37",
+        "E3a-mutation-no-hash-compare.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E3b-mutation-no-empty-check.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E3b-mutation-no-empty-check.stderr.log": "ac524bbb870a82897aa5792b096be5fb25ffce2ef74d6b0cf3d2eba3bc161493",
+        "E3b-mutation-no-empty-check.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E3c-mutation-no-target-root-check.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E3c-mutation-no-target-root-check.stderr.log": "5d4d419196b69dcdcd0759c6370664a0af57e005e93f1a26ad8c87385ec85533",
+        "E3c-mutation-no-target-root-check.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4/baseline-with-P1.json": "72c968fc8a4843546dc97becc49768b2104358886def7200c48a0d7d8da3039b",
+        "E4/baseline.json": "a81a91bcae8c4ea9e0c47edb11f72f6a3e90db9c26fd5218fa2657901d50ad07",
+        "E4/invalid-baseline.json": "c51951bc23428428cabbb991440671c0d60788da3d2dfab09bb49b9a8d405b16",
+        "E4/p1-clean.json": "b84980a104521da6bfbf606e7b42455c6af4094edad16e95c9148b3f659eb963",
+        "E4/p1-drift.json": "76096b87d746e4858011ee096e69fae761af286a2ef026d9472112bbd5b8e5b4",
+        "E4/p1b-clean.json": "f5d27c4bbe039962862f7d44e8ff838c78859763cb68ac81aeeff8fc9da5097c",
+        "E4/p1b-drift.json": "679565888ecea1ac32a1ccbb123ecafea0af88d7bd6f75dc40a70b341a3ca30a",
+        "E4/receipt-clean.json": "3600f8ccc58280650909c453515d833eb3be0ff839b47f50d64f0a09940309f3",
+        "E4/receipt-drift.json": "cf7aaf721b875ee1cc252bb983310668a51f6256708819d63915cd58f82a667d",
+        "E4a-build.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "E4a-build.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4a-build.stdout.log": "342b39e6d341aee74b9b6fbc8c229c8b5ffab0b9d68999d36d39b2332533cdcd",
+        "E4b-check-clean.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "E4b-check-clean.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4b-check-clean.stdout.log": "dd691ff94025ffbd111bc56be29a064f27d73679dab231647913a790a05ff98b",
+        "E4c-verifier-clean.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E4c-verifier-clean.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4c-verifier-clean.stdout.log": "0fc0a949813ed033d7e6b4892d5e8229276862b9d14c14922cd13a6fa739d02d",
+        "E4d-check-receipt-clean.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "E4d-check-receipt-clean.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4d-check-receipt-clean.stdout.log": "a4db18d151c0f5619892575115397d1df238833c5bd9238005a6615ddb781bae",
+        "E4e-verifier-after-drift.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E4e-verifier-after-drift.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4e-verifier-after-drift.stdout.log": "180a75c28a923b19c5669dc5bce34e5ed8303530f28bfc85bce38a4743ecb697",
+        "E4f-check-drift.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E4f-check-drift.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4f-check-drift.stdout.log": "b70365bfb76eb7e843696454f234b3472aa828e6870cd4cda430272adf7c5157",
+        "E4g-check-empty.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E4g-check-empty.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4g-check-empty.stdout.log": "967758719e4fff05c901a71374bfcdc01bbf5da52d40bdd82c8ac012af4dd920",
+        "E4h-check-missing.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E4h-check-missing.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4h-check-missing.stdout.log": "9131c29edbe4b73a5a4bfc3d1e0a1b6033bd5a3b0feaba73c209a7d83f567bd3",
+        "E4i-check-unexpected.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E4i-check-unexpected.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4i-check-unexpected.stdout.log": "ab5e21f92e52fad44a6c6bfca323a9c998cbd725e91cf17b6af8ea1f4bb422df",
+        "E4j-root-absent.exit": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "E4j-root-absent.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4j-root-absent.stdout.log": "9f0718acccba7fbecb8fd87fccfe6a080836e46c66a259a42cad8e1b97afea21",
+        "E4k-baseline-absent.exit": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "E4k-baseline-absent.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4k-baseline-absent.stdout.log": "6d1332488103d6a89821894197e45e464298d906ed172196a7a2b4510613ce01",
+        "E4l-baseline-invalid.exit": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "E4l-baseline-invalid.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4l-baseline-invalid.stdout.log": "03901ffbc8d16db7d93c2104e31173f65bb408df7f17273df7dce0b2fcbac12a",
+        "E4m-check-clean-again.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "E4m-check-clean-again.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4m-check-clean-again.stdout.log": "dd691ff94025ffbd111bc56be29a064f27d73679dab231647913a790a05ff98b",
+        "E4n-authority.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E4n-authority.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E4n-authority.stdout.log": "4d157404d272c336c40c655d0049814adb7842975b70ea283801182c7b0fc545",
+        "E5a-verifier-baseline-clean.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E5a-verifier-baseline-clean.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5a-verifier-baseline-clean.stdout.log": "ca1da42ff3eea3e0935fbd7c347af6208f12c39319c3de0e8bff547b20970c9d",
+        "E5b-verifier-baseline-drift.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E5b-verifier-baseline-drift.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5b-verifier-baseline-drift.stdout.log": "0ac910d96ed502f2a6910955ec6265adf2fafccd6d376ced85e68ea2218b32f9",
+        "E5c-verifier-baseline-absent.exit": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "E5c-verifier-baseline-absent.stderr.log": "6ae0ccaaca4fe8bd55204256b09bbb5c2d4a532c90027b26124b063a3af4d508",
+        "E5c-verifier-baseline-absent.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5d-verifier-baseline-invalid.exit": "53c234e5e8472b6ac51c1ae1cab3fe06fad053beb8ebfd8977b010655bfdd3c3",
+        "E5d-verifier-baseline-invalid.stderr.log": "1855fda152204017373a8a52d28b2b58927143c45dce1d304685e3e16dfba894",
+        "E5d-verifier-baseline-invalid.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5e-bootstrap-unittest-with-P1.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E5e-bootstrap-unittest-with-P1.stderr.log": "be3d4539410919c0dbbfa099681b26f34d7c96e81d61e0c6e00a569afd31c19e",
+        "E5e-bootstrap-unittest-with-P1.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5f-build-baseline-with-P1.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "E5f-build-baseline-with-P1.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5f-build-baseline-with-P1.stdout.log": "65c99cfa78b6d0d1de8786ded2355cfd6ec7c3024eab0010b4c2dd84c1caef6f",
+        "E5g-verifier-P1-baseline-clean.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E5g-verifier-P1-baseline-clean.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5g-verifier-P1-baseline-clean.stdout.log": "16cac01481b84a921d24f3b460bc2d8110ec8ff8181537df89019f3e069cf987",
+        "E5h-verifier-P1-baseline-drift.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "E5h-verifier-P1-baseline-drift.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "E5h-verifier-P1-baseline-drift.stdout.log": "99b820c0b4cf7287970898bcd184cb766a6706924b60a5abd22669df8e05be43",
+        "E6-bootstrap-unittest-with-P1-P2.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "E6-bootstrap-unittest-with-P1-P2.stderr.log": "58f40656961f250c56fb971123eefaaf56b36b44364c5546bbd95268f9a4994b",
+        "E6-bootstrap-unittest-with-P1-P2.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "P1-verify_toolchain.diff": "15eb982a5e6b71f97b59fe32ee21cb9d3d022fb42b59d3ed5e8d52dba73a0f41",
+        "P2-test_bootstrap_powershell.diff": "64522838f2f0822653d50274ba81cf72720615637512d72535b396578ad3b097",
+        "policy_baseline.orig.py": "ddbe04930d93da44eb4a8f016d9722c8689f8e3d5ddcdcc776dc3aaca29bdb63",
+        "transcript.txt": "957971e8af1a116f77260b735daadf187265ec2409e3eac2246165fb5e429739"
+      }
+    }
+  ]
+}

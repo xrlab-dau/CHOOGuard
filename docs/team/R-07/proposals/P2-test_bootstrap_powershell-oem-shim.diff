@@ -1,0 +1,23 @@
+diff --git a/scripts/bootstrap/test_bootstrap_powershell.py b/scripts/bootstrap/test_bootstrap_powershell.py
+index b637996..3fc6a88 100644
+--- a/scripts/bootstrap/test_bootstrap_powershell.py
++++ b/scripts/bootstrap/test_bootstrap_powershell.py
+@@ -48,11 +48,14 @@ class PowerShellBootstrapTests(unittest.TestCase):
+             'elif tool == "python": sys.exit(int(os.environ.get("BOOTSTRAP_TEST_VERIFY_EXIT", "0")))\n',
+             encoding="utf-8",
+         )
++        # cmd.exe reads .cmd files in the OEM code page, so non-ASCII interpreter or scratch paths
++        # written as UTF-8 become "path not found" and every shim fails.
+         for tool in ("git", "node", "pi", "npm", "uv", "python"):
+-            (self.bin / (tool + ".cmd")).write_text(
+-                f'@echo off\n"{sys.executable}" "{dispatcher}" {tool} %*\nexit /b %errorlevel%\n',
+-                encoding="utf-8",
+-            )
++            shim = f'@echo off\n"{sys.executable}" "{dispatcher}" {tool} %*\nexit /b %errorlevel%\n'
++            try:
++                (self.bin / (tool + ".cmd")).write_text(shim, encoding="oem")
++            except UnicodeEncodeError:
++                self.skipTest("interpreter or scratch path is not representable in the OEM code page")
+ 
+     def run_bootstrap(self, label="school-pc", auto_install=False, **exit_codes):
+         env = dict(os.environ)
