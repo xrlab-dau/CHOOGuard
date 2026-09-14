@@ -3,6 +3,7 @@
 import argparse
 import ctypes
 import errno
+import hashlib
 import ipaddress
 import json
 import os
@@ -17,6 +18,10 @@ _GENERATED_NAMES = ("keys.yaml", "livekit.yaml", "server-voice.json")
 _ACL_TYPE_EXTENDED = 0x00000100
 _ACL_FIRST_ENTRY = 0
 _RENAME_EXCL = 0x00000004
+# Every file this run writes is a small text configuration.  A staged entry
+# longer than this is not one of them, so it is reported as a mismatch rather
+# than read into memory while the boundary is being re-derived.
+_STAGED_BYTES_LIMIT = 1 << 16
 
 
 class _OutputPathChanged(OSError):
@@ -36,6 +41,18 @@ class _StagingOwnershipUnproven(_OutputPathChanged):
     """
 
 
+class _StagingEntryVanished(_OutputPathChanged):
+    """An entry this run acquired no longer exists in the pinned directory.
+
+    Publication renames the whole directory, so a name this run acquired and
+    then lost would be handed out as this run's private configuration while
+    silently lacking a file it was supposed to hold.  It is a refusal, and it
+    is reported apart from an injected or replaced entry: the directory is
+    missing something this run created rather than holding something it did
+    not.
+    """
+
+
 class _StagingEntrySetUnproven(_OutputPathChanged):
     """The pinned staging directory could not be enumerated.
 
@@ -43,6 +60,57 @@ class _StagingEntrySetUnproven(_OutputPathChanged):
     the run must account for.  A directory that cannot be listed at all leaves
     that set unknown: the run refuses and preserves the directory for manual
     cleanup instead of removing it on the strength of the inode alone.
+    """
+
+
+class _PublishedEntrySetUnproven(_OutputPathChanged):
+    """The published directory could not be re-enumerated after the rename.
+
+    The re-derivation that follows publication needs the entry set of the
+    directory the rename moved, and a directory that cannot be listed leaves it
+    unknown.  It is reported apart from a demonstrated mismatch: this is an
+    absence of evidence about what was published, not evidence of an entry this
+    run did not write.
+    """
+
+
+class _PublishedEntryVanished(_OutputPathChanged):
+    """A name this run acquired is missing from the published directory.
+
+    The rename has already moved the directory, so a name lost in the window
+    the rename cannot cover is reported as what the output is missing rather
+    than folded into the finding about entries the output did not create.
+    """
+
+
+class _PublishedEntryNotOwned(_OutputPathChanged):
+    """The published directory holds bytes this run did not write.
+
+    Re-derived after the rename: an entry that was never acquired, or an
+    acquired name whose identity changed, means the directory now carrying this
+    run's output name is not the configuration this run staged.  It is a
+    refusal - the run does not return its success result and does not hand the
+    directory out - and it is detection after the fact, because the rename that
+    published it has already happened.  The rollback that follows is the same
+    exact-owned one as everywhere else: the names this run acquired are
+    unlinked, and the directory itself is removed only while the cleanup name
+    still resolves to the inode this run proved and now holds nothing else.
+    A substituted or injected name is not this run's to remove, so it survives
+    and the directory stays for manual cleanup.
+    """
+
+
+class _CleanupTargetMismatch(_CleanupIncomplete):
+    """The directory removed during rollback was not proven to be this run's.
+
+    ``_owned_cleanup_target`` proves that the cleanup name resolves to the
+    staging inode, and ``os.rmdir`` then removes whatever that name addresses
+    at a later instant.  Darwin keeps an open descriptor's ``st_nlink`` at 2
+    after ``rmdir``, so the removal cannot be confirmed from the descriptor;
+    it is re-derived by re-enumerating the parent after the fact, and this is
+    that finding.  Detection, not prevention: the removal has already happened
+    when it is raised, so the report is evidence about which directory was
+    removed rather than a refusal to remove one.
     """
 
 
@@ -57,6 +125,54 @@ class _GeneratedOutputNotPrivate(ValueError):
     """
 
 
+class _AcquiredEntry:
+    """One name this run acquired: the identity it had and the bytes it held.
+
+    ``identity`` is the ``(st_dev, st_ino)`` pair observed on the descriptor at
+    open time; ``digest`` is the SHA-256 of the bytes this run writes into it.
+    Identity alone does not show that a name still holds what this run put
+    there: a file rewritten through the descriptor it already has keeps its
+    inode, and on a filesystem that reuses inode numbers so does a name
+    unlinked and recreated.  Binding the digest is what makes "this is still
+    the file this run staged" answerable from the directory when the run
+    re-derives it, before publication and again after it.
+    """
+
+    __slots__ = ("identity", "digest")
+
+    def __init__(self, identity, digest):
+        self.identity = identity
+        self.digest = digest
+
+
+def _digest_of_fd(fd):
+    """SHA-256 of a descriptor's bytes, or ``None`` past the bound above."""
+    payload = b""
+    while True:
+        chunk = os.read(fd, 4096)
+        if not chunk:
+            return hashlib.sha256(payload).hexdigest()
+        payload += chunk
+        if len(payload) > _STAGED_BYTES_LIMIT:
+            return None
+
+
+def _entry_digest(name, dir_fd):
+    """Digest of one staged entry's bytes, or ``None`` when it cannot be read."""
+    try:
+        entry_fd = os.open(
+            name, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0), dir_fd=dir_fd
+        )
+    except OSError:
+        return None
+    try:
+        return _digest_of_fd(entry_fd)
+    except OSError:
+        return None
+    finally:
+        os.close(entry_fd)
+
+
 def _open_flags():
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
     if hasattr(os, "O_NOFOLLOW"):
@@ -69,15 +185,19 @@ def write_private(path, text, *, dir_fd=None, on_acquired=None):
     path = Path(path)
     name = path.name if dir_fd is not None else path
     kwargs = {"dir_fd": dir_fd} if dir_fd is not None else {}
+    payload = hashlib.sha256(text.encode("utf-8")).hexdigest()
     fd = os.open(name, _open_flags(), 0o600, **kwargs)
     try:
         # Raw ownership starts at os.open, not after identity inspection.  This
         # closes the descriptor when fstat, fchmod, or fdopen itself fails.
-        acquired_identity = _file_identity(os.fstat(fd))
+        # What is recorded is what this run is about to write, not what a later
+        # re-derivation reads back, so that "the bytes changed" is a finding
+        # about the directory rather than a tautology.
+        acquired = _AcquiredEntry(_file_identity(os.fstat(fd)), payload)
         if on_acquired is not None:
-            on_acquired(path.name, acquired_identity)
+            on_acquired(path.name, acquired)
         os.fchmod(fd, 0o600)
-        stream = os.fdopen(fd, "w")
+        stream = os.fdopen(fd, "w", encoding="utf-8")
         fd = None
         try:
             stream.write(text)
@@ -86,7 +206,7 @@ def write_private(path, text, *, dir_fd=None, on_acquired=None):
     finally:
         if fd is not None:
             os.close(fd)
-    _verify_private_file(path, dir_fd=dir_fd, expected_identity=acquired_identity)
+    _verify_private_file(path, dir_fd=dir_fd, expected=acquired)
 
 
 def _reject_symlink_components(path):
@@ -216,7 +336,7 @@ def _verify_private_directory(*, dir_fd):
     _verify_darwin_no_additional_acl(dir_fd)
 
 
-def _verify_private_file(path, *, dir_fd=None, expected_identity=None):
+def _verify_private_file(path, *, dir_fd=None, expected=None):
     file_fd = None
     try:
         if dir_fd is not None:
@@ -226,7 +346,7 @@ def _verify_private_file(path, *, dir_fd=None, expected_identity=None):
         else:
             file_fd = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
             stat_result = os.fstat(file_fd)
-        if expected_identity is not None and _file_identity(stat_result) != expected_identity:
+        if expected is not None and _file_identity(stat_result) != expected.identity:
             raise _OutputPathChanged("Configuration file path changed during creation")
         if not stat.S_ISREG(stat_result.st_mode):
             raise _GeneratedOutputNotPrivate("Configuration file is not a regular file")
@@ -242,6 +362,12 @@ def _verify_private_file(path, *, dir_fd=None, expected_identity=None):
             _verify_darwin_no_additional_acl(file_fd)
         except ValueError as exc:
             raise _GeneratedOutputNotPrivate(str(exc)) from exc
+        if expected is not None and _digest_of_fd(file_fd) != expected.digest:
+            # The identity above says this is the inode this run created; the
+            # digest says whether it still holds the bytes this run wrote into
+            # it.  A file rewritten through that inode keeps the identity, so
+            # this is the only check that sees it.
+            raise _OutputPathChanged("Configuration file bytes changed during creation")
     finally:
         if file_fd is not None:
             os.close(file_fd)
@@ -344,54 +470,125 @@ def _owned_cleanup_target(ownership, parent_fd, cleanup_name, directory_fd):
     return current is not None and current.identity == ownership.identity
 
 
-def _private_boundary_was_touched(error, parent_fd, output_name, published):
-    """Report whether this failure shows the private boundary was touched.
+def _proven_inode_still_present(parent_fd, ownership):
+    """Report whether the proven staging inode is still reachable by any name.
+
+    Called after the cleanup ``rmdir``.  Darwin keeps ``st_nlink`` at 2 on a
+    descriptor whose name was removed, so nothing about the descriptor says
+    what the removed name addressed; re-enumerating the parent afterwards is
+    the only evidence available.  Finding the proven identity under some name
+    means that ``rmdir`` removed something else and the staging directory this
+    run created was left behind.
+
+    Returns ``True`` when the proven identity is still reachable, ``False``
+    when the parent was listed and it is gone, and ``None`` when the scan
+    could not run at all.  ``None`` is deliberately not ``False``: no evidence
+    is not the evidence that the removal was exact, and the caller reports the
+    unconfirmed removal instead of passing it off as a clean one.
+    """
+    if ownership is None or parent_fd is None:
+        return None
+    try:
+        names = os.listdir(parent_fd)
+    except OSError:
+        return None
+    for name in names:
+        try:
+            current = os.stat(name, dir_fd=parent_fd, follow_symlinks=False)
+        except OSError:
+            continue
+        if (
+            stat.S_ISDIR(current.st_mode)
+            and _directory_identity(current) == ownership.identity
+        ):
+            return True
+    return False
+
+
+def _preserved_directory_report(error, parent_fd, output_name, published):
+    """Why the private directory must be preserved, or ``None`` to remove it.
 
     Directory removal is exact-owned: it is decided by inode evidence alone.
-    Two failures are the exception, because in both the private output this run
-    staged is demonstrably no longer only its own:
+    Three failures are the exception, because in each the private output this
+    run staged is demonstrably no longer only its own:
 
     * ``_GeneratedOutputNotPrivate`` - a file this run created ``0600`` and
       current-user-owned no longer holds that privacy.
     * ``_StagingEntrySetUnproven`` - the pinned directory could not be listed,
       so the entry set publication would rename is unknown.
+    * A name that occupies the publication target although this run never
+      published: ``_validate_output`` proved the output name absent before
+      staging began, so that name was created while this run held staged
+      credentials.
 
-    A name that occupies the publication target although this run never
-    published is the same kind of evidence: ``_validate_output`` proved the
-    output name absent before staging began, so that name was created while
-    this run held staged credentials.  In all three cases the run stops,
-    unlinks only the file identities it acquired, and preserves the directory
-    for manual reconciliation instead of deleting the last artifact it can
-    still account for.
+    In all three cases the run stops, unlinks only the file identities it
+    acquired, and preserves the directory for manual reconciliation instead of
+    deleting the last artifact it can still account for.
+
+    The finding is returned as the operator-facing sentence, because the three
+    cases are different facts: reporting the third one's wording for all of
+    them would tell the operator the boundary was touched outside this run when
+    what actually happened is that a created file lost its privacy or that the
+    staged directory could not be enumerated.
     """
-    if isinstance(error, (_GeneratedOutputNotPrivate, _StagingEntrySetUnproven)):
-        return True
+    if isinstance(error, _GeneratedOutputNotPrivate):
+        return (
+            "A file this run created no longer holds its private permissions; "
+            "manual cleanup required"
+        )
+    if isinstance(error, _StagingEntrySetUnproven):
+        return (
+            "The staged directory could not be enumerated, so the entry set "
+            "publication would have moved is unknown; manual cleanup required"
+        )
     if published or not output_name or parent_fd is None:
-        return False
+        return None
     try:
         os.stat(output_name, dir_fd=parent_fd, follow_symlinks=False)
     except OSError:
-        return False
-    return True
+        return None
+    return (
+        "The private output boundary was touched outside this run; "
+        "manual cleanup required"
+    )
 
 
-def _unowned_staging_entries(directory_fd, owned_files):
-    """Names in the pinned directory that this run cannot publish as its own.
+def _unaccounted_staging_entries(directory_fd, owned_files):
+    """What the pinned directory holds that this run cannot publish as its own.
 
-    Publication renames the whole directory, so a name that is not one this run
-    acquired - or an acquired name whose file identity changed - would be
-    handed out as this run's private configuration.  Returns ``None`` when the
-    directory cannot be listed at all, which is treated as unproven.
+    Publication renames the whole directory, so the entry set is part of what
+    the run must account for.  Two findings are returned apart, because they
+    are different facts about the same gate:
+
+    * ``vanished`` - a name this run acquired no longer exists at all, so the
+      renamed directory would be handed out as this run's private
+      configuration while silently lacking a file it was supposed to hold.
+    * ``unowned`` - a name that was never acquired, or an acquired name that no
+      longer resolves to the identity it was acquired under or to the bytes
+      written then, so the renamed directory would hand out bytes this run did
+      not write.
+
+    An acquired name is compared on both counts: the identity recorded at
+    acquisition and the digest of the bytes this run wrote.  Identity alone
+    leaves a window open, because a file rewritten through the inode it already
+    has - and, where inode numbers are reused, a name unlinked and recreated -
+    keeps the ``(st_dev, st_ino)`` pair and its place in the entry set while
+    holding entirely different contents.
+
+    ``vanished`` is derived first, so a lost entry reports as a loss instead of
+    being folded into the broader finding.  Returns ``None`` when the directory
+    cannot be listed at all, which is treated as unproven.
     """
     owned = dict(owned_files)
     try:
         present = os.listdir(directory_fd)
     except OSError:
         return None
+    vanished = [name for name in owned if name not in present]
     unowned = []
     for name in present:
-        identity = owned.get(name)
-        if identity is None:
+        evidence = owned.get(name)
+        if evidence is None:
             unowned.append(name)
             continue
         try:
@@ -399,9 +596,52 @@ def _unowned_staging_entries(directory_fd, owned_files):
         except OSError:
             unowned.append(name)
             continue
-        if not stat.S_ISREG(current.st_mode) or _file_identity(current) != identity:
+        if not stat.S_ISREG(current.st_mode) or _file_identity(current) != evidence.identity:
             unowned.append(name)
-    return unowned
+            continue
+        if _entry_digest(name, directory_fd) != evidence.digest:
+            unowned.append(name)
+    return vanished, unowned
+
+
+def _require_published_entry_set(directory_fd, owned_files):
+    """Re-derive the published directory's contents after the rename.
+
+    Publication renames the directory and the checks that follow it - the
+    parent path and the output inode - name the directory rather than what it
+    holds, so a swap that leaves the directory identity in place and changes
+    its contents is invisible to them.  The entry set and every file identity
+    are therefore re-derived from the pinned descriptor after the rename and
+    before this run reports success.
+
+    Detection after the fact, not prevention: the rename has already happened
+    when this runs, so a mismatch is refused rather than blocked, and the
+    published directory is preserved for manual cleanup instead of being
+    repaired.  The three findings are kept apart exactly as the pre-rename gate
+    keeps them: an entry set that cannot be established, a name this run
+    acquired that is gone, and bytes this run did not write.
+    """
+    entry_set = _unaccounted_staging_entries(directory_fd, owned_files)
+    if entry_set is None:
+        raise _PublishedEntrySetUnproven(
+            "The published directory could not be re-enumerated; whether it "
+            "still holds only this run's configuration is unproven, and the "
+            "rename had already published it, so this is detection after the "
+            "fact, not prevention"
+        )
+    vanished, unowned = entry_set
+    if vanished:
+        raise _PublishedEntryVanished(
+            "The published directory no longer holds every entry this run "
+            "acquired; the rename had already published it, so this is "
+            "detection after the fact, not prevention"
+        )
+    if unowned:
+        raise _PublishedEntryNotOwned(
+            "The published directory holds entries this run did not create, or "
+            "an acquired name whose bytes changed; the rename had already "
+            "published it, so this is detection after the fact, not prevention"
+        )
 
 
 def _rename_exclusive(parent_fd, staging_name, output_name):
@@ -437,11 +677,14 @@ def _rename_exclusive(parent_fd, staging_name, output_name):
 def _cleanup_owned_files(directory_fd, owned_files):
     """Unlink only names still bound to file identities acquired by this call."""
     cleanup_error = None
-    for name, identity in reversed(owned_files):
+    for name, evidence in reversed(owned_files):
         try:
             current = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
-            if _file_identity(current) != identity:
-                cleanup_error = cleanup_error or OSError("generated file identity changed")
+            if _file_identity(current) != evidence.identity:
+                cleanup_error = cleanup_error or _CleanupIncomplete(
+                    "A file this run created was replaced before cleanup and "
+                    "was preserved; manual cleanup required"
+                )
                 continue
             os.unlink(name, dir_fd=directory_fd)
         except FileNotFoundError:
@@ -451,20 +694,65 @@ def _cleanup_owned_files(directory_fd, owned_files):
     return cleanup_error
 
 
+def _cleanup_detail(cleanup_error):
+    """The cleanup consequence to report alongside whatever stopped the run.
+
+    A finding this run established is reported verbatim, so the operator reads
+    what actually happened to the directory - preserved, replaced, or removed
+    without confirmation - instead of an assumption.  A cleanup that failed
+    for its own reasons is reported too: the directory is left in place either
+    way, and saying so is not a substitution for the sentence the run already
+    established, which is never replaced by this one.
+    """
+    if isinstance(cleanup_error, _CleanupIncomplete):
+        return str(cleanup_error)
+    return (
+        f"cleanup could not complete ({cleanup_error}); the private directory "
+        "was left in place for manual cleanup"
+    )
+
+
+# A run-established reason for stopping keeps its own operator-facing sentence
+# even when the cleanup that followed it also failed.  Each of these is a
+# different fact - a directory not proven to be this run's, a name lost, an
+# entry set unknown, a substitution found too late - so replacing one with a
+# cleanup failure tells the operator something that did not happen.
+_PRESERVED_REFUSALS = (
+    _StagingOwnershipUnproven,
+    _StagingEntryVanished,
+    _StagingEntrySetUnproven,
+    _PublishedEntrySetUnproven,
+    _PublishedEntryVanished,
+    _PublishedEntryNotOwned,
+)
+
+
 def _safe_creation_error(original_error, cleanup_error):
-    if cleanup_error is not None:
-        if isinstance(original_error, _StagingOwnershipUnproven):
-            # Refusing to touch an unproven directory is the actionable result;
-            # the incomplete cleanup is a consequence of that refusal, so the
-            # refusal is reported and the caveat appended rather than replaced.
-            raise _StagingOwnershipUnproven(
-                f"{original_error} The unproven directory was left in place for manual cleanup."
-            ) from cleanup_error
-        raise _CleanupIncomplete(
-            "Configuration creation failed; private cleanup is incomplete. "
-            "Remove the incomplete private output manually before retrying."
+    if cleanup_error is None:
+        raise original_error
+    if isinstance(original_error, _PRESERVED_REFUSALS):
+        # The refusal is the actionable report and the cleanup failure is a
+        # consequence of it, so the consequence is appended rather than
+        # substituted for the reason the run stopped.
+        raise type(original_error)(
+            f"{original_error}. {_cleanup_detail(cleanup_error)}"
+        ) from cleanup_error
+    if isinstance(cleanup_error, _CleanupIncomplete):
+        # This run established why it stopped and what it preserved - the
+        # post-removal scan, a replaced acquired file, a boundary touched
+        # outside the run - so its own wording is the operator-facing report.
+        # The original failure is kept alongside it rather than dropped.
+        raise type(cleanup_error)(
+            f"{original_error}; {_cleanup_detail(cleanup_error)}"
         ) from original_error
-    raise original_error
+    # Anything else - a path or entry-set refusal without a cleanup finding of
+    # its own, or an unexpected OS failure the cleanup also could not finish -
+    # is reported with the run's own sentence kept and the cleanup consequence
+    # appended, under the reason that is now the operator's next problem: the
+    # cleanup did not complete.
+    raise _CleanupIncomplete(
+        f"{original_error}; {_cleanup_detail(cleanup_error)}"
+    ) from original_error
 
 
 def configure(output, node_ip="127.0.0.1"):
@@ -524,7 +812,7 @@ def configure(output, node_ip="127.0.0.1"):
                 "refusing to write credentials"
             )
 
-        acquire = lambda name, identity: owned_files.append((name, identity))
+        acquire = lambda name, entry: owned_files.append((name, entry))
         key = "cg" + secrets.token_hex(8)
         secret = secrets.token_urlsafe(40)
         write_private(
@@ -584,18 +872,27 @@ key_file: /run/chooguard/keys.yaml
             raise _OutputPathChanged("Configuration staging path changed during creation")
         # The rename below moves the whole directory, so publication also
         # requires it to hold exactly the entries this run acquired.  An entry
-        # injected after the last write, or an acquired name swapped for other
-        # bytes, must not be published as this run's private configuration.
-        unowned = _unowned_staging_entries(directory_fd, owned_files)
-        if unowned is None:
+        # injected after the last write, an acquired name swapped for other
+        # bytes, and an acquired name that has since disappeared all contradict
+        # that; the last of them would publish a private directory silently
+        # missing one of its files, so it is refused as a loss of its own.
+        entry_set = _unaccounted_staging_entries(directory_fd, owned_files)
+        if entry_set is None:
             raise _StagingEntrySetUnproven(
                 "Configuration staging directory could not be enumerated; "
                 "refusing to publish it"
             )
+        vanished, unowned = entry_set
+        if vanished:
+            raise _StagingEntryVanished(
+                "Configuration staging directory no longer holds every entry "
+                "this run acquired; refusing to publish it"
+            )
         if unowned:
             raise _OutputPathChanged(
-                "Configuration staging directory holds entries this run did not create; "
-                "refusing to publish them"
+                "Configuration staging directory holds entries this run did not "
+                "create, or an acquired name whose bytes changed; refusing to "
+                "publish them"
             )
 
         _rename_exclusive(parent_fd, staging_name, output.name)
@@ -604,18 +901,22 @@ key_file: /run/chooguard/keys.yaml
             raise _OutputPathChanged("Configuration parent path changed during publication")
         if not _same_output_directory(parent_fd, output.name, directory_stat):
             raise _OutputPathChanged("Configuration output path changed during publication")
+        # The checks above name the directory; this one re-derives what it
+        # holds.  A swap between the entry-set gate and the rename leaves the
+        # directory identity in place and changes its contents, so only this
+        # re-derivation sees it - after the rename, before success is reported.
+        _require_published_entry_set(directory_fd, owned_files)
     except BaseException as exc:
         cleanup_error = None
         if directory_fd is not None:
             cleanup_error = _cleanup_owned_files(directory_fd, owned_files)
             cleanup_name = output.name if published else staging_name
-            if cleanup_error is None and _private_boundary_was_touched(
-                exc, parent_fd, output.name, published
-            ):
-                cleanup_error = OSError(
-                    "the private output boundary was touched outside this run; "
-                    "manual cleanup required"
+            if cleanup_error is None:
+                preserved_report = _preserved_directory_report(
+                    exc, parent_fd, output.name, published
                 )
+                if preserved_report is not None:
+                    cleanup_error = _CleanupIncomplete(preserved_report)
             # Exact-owned rollback: the directory is removed only while it is
             # still the inode this call proved it created and this run can still
             # account for everything it staged.  A replaced, unproven or
@@ -629,9 +930,33 @@ key_file: /run/chooguard/keys.yaml
                     os.rmdir(cleanup_name, dir_fd=parent_fd)
                 except OSError as cleanup_exc:
                     cleanup_error = cleanup_exc
+                else:
+                    # The exact-owned proof above and this ``rmdir`` are
+                    # separate steps, so a same-account actor can still swap
+                    # the name between them.  Nothing about the descriptor says
+                    # what was removed, so the removal is re-examined
+                    # afterwards: if the proven inode is still reachable under
+                    # some name, this run removed a directory it did not create
+                    # and left its own behind.  That is detection after the
+                    # fact - the swap has already happened by the time it is
+                    # reported - never prevention of it.
+                    removal_evidence = _proven_inode_still_present(parent_fd, ownership)
+                    if removal_evidence is True:
+                        cleanup_error = _CleanupTargetMismatch(
+                            "A directory this run did not create may have been removed "
+                            "and this run's staging directory was left behind; "
+                            "manual cleanup required"
+                        )
+                    elif removal_evidence is None:
+                        cleanup_error = _CleanupIncomplete(
+                            "Which directory the cleanup removed could not be "
+                            "confirmed because the parent could not be listed; "
+                            "manual cleanup required"
+                        )
             elif cleanup_error is None and cleanup_name:
-                cleanup_error = OSError(
-                    "staging directory ownership could not be proven; manual cleanup required"
+                cleanup_error = _CleanupIncomplete(
+                    "staging directory ownership could not be proven; "
+                    "manual cleanup required"
                 )
         elif staging_name is not None:
             cleanup_error = OSError("staging directory could not be pinned for safe cleanup")
@@ -660,9 +985,13 @@ def main():
         result = configure(args.output, args.node_ip)
     except ValueError as exc:
         parser.error(str(exc))
-    except _StagingOwnershipUnproven as exc:
-        parser.error(str(exc))
-    except _CleanupIncomplete as exc:
+    except _OutputPathChanged as exc:
+        # Every deliberate refusal and every established cleanup finding
+        # carries its own operator-facing wording.  The hint below is for an
+        # unexpected OS failure: reporting a refusal - a gate that closed, an
+        # entry set that changed, a directory preserved for manual cleanup -
+        # with a permissions hint sends the operator after a cause that is not
+        # there.
         parser.error(str(exc))
     except OSError:
         parser.error("Configuration could not be created; check the private parent and permissions")
