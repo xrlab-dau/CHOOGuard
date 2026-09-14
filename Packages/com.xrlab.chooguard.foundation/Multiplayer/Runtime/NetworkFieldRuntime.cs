@@ -416,6 +416,7 @@ namespace ChooGuard.Foundation.Multiplayer
             if (network == null || !network.IsListening) return;
             if (server)
             {
+                var frameDeltaMs = Time.unscaledDeltaTime * 1000.0;
                 accumulator += Time.unscaledDeltaTime;
                 var ticks = 0;
                 var drainStarted = System.Diagnostics.Stopwatch.GetTimestamp();
@@ -426,11 +427,12 @@ namespace ChooGuard.Foundation.Multiplayer
                     accumulator -= TickSeconds;
                     var tickStarted = System.Diagnostics.Stopwatch.GetTimestamp();
                     TickServer();
-                    RecordMetrics((System.Diagnostics.Stopwatch.GetTimestamp()-tickStarted)*1000.0/System.Diagnostics.Stopwatch.Frequency);
+                    RecordSimulationTickMetrics((System.Diagnostics.Stopwatch.GetTimestamp()-tickStarted)*1000.0/System.Diagnostics.Stopwatch.Frequency);
                 }
+                RecordFrameMetrics(frameDeltaMs);
                 return;
             }
-            RecordMetrics(Time.unscaledDeltaTime*1000);
+            RecordFrameMetrics(Time.unscaledDeltaTime*1000);
             if (!Connected) return;
             var stale=!snapshotFreshness.IsCurrent(Time.realtimeSinceStartupAsDouble);
             if (stale && !snapshotStale) { voiceRadio?.StopTransmission(); status="현장 상태 수신 대기 · 이동을 멈췄습니다"; }
@@ -814,6 +816,28 @@ namespace ChooGuard.Foundation.Multiplayer
                 Debug.LogError("Spatial checkpoint unavailable; the shift is frozen until server recovery.");
                 return false;
             }
+        }
+        private void RecordSimulationTickMetrics(double elapsedMilliseconds)
+        {
+            if (metrics == null) return;
+            var now = Time.realtimeSinceStartupAsDouble;
+            metrics.RecordSimulationTick(now,elapsedMilliseconds,sentBytes,receivedBytes,server ? network.ConnectedClients.Count : Connected ? 1 : 0,
+                server ? simulation?.NpcCount ?? 0 : view?.Observed.Entities.Count(e=>e.Kind==EntityKind.Evacuee) ?? 0,
+                server ? simulation?.ActiveIncidentCount ?? 0 : view?.Observed.Entities.Count(e=>e.Kind==EntityKind.Incident) ?? 0,
+                server ? simulation?.Tick ?? 0 : view?.Observed.SimulationTick ?? 0, server ? shift.Paused : view?.Observed.Paused ?? false,
+                server ? Math.Max(0,accumulator) : 0);
+            if (now-metricsClosedAt >= 5) FlushMetrics();
+        }
+        private void RecordFrameMetrics(double elapsedMilliseconds)
+        {
+            if (metrics == null) return;
+            var now = Time.realtimeSinceStartupAsDouble;
+            metrics.RecordFrame(now,elapsedMilliseconds,sentBytes,receivedBytes,server ? network.ConnectedClients.Count : Connected ? 1 : 0,
+                server ? simulation?.NpcCount ?? 0 : view?.Observed.Entities.Count(e=>e.Kind==EntityKind.Evacuee) ?? 0,
+                server ? simulation?.ActiveIncidentCount ?? 0 : view?.Observed.Entities.Count(e=>e.Kind==EntityKind.Incident) ?? 0,
+                server ? simulation?.Tick ?? 0 : view?.Observed.SimulationTick ?? 0, server ? shift.Paused : view?.Observed.Paused ?? false,
+                server ? Math.Max(0,accumulator) : 0);
+            if (now-metricsClosedAt >= 5) FlushMetrics();
         }
         private void RecordMetrics(double elapsedMilliseconds)
         {

@@ -608,6 +608,52 @@ class ProcessOwnership(unittest.TestCase):
             self.assertTrue(all(handle.closed for handle in manager.handles))
             manager.close()
 
+    def test_interval_parses_fn_simulation_and_un_frame_histograms(self):
+        row = metric('server')
+        bounds = list(metrics.Histogram.parse(row['TickMilliseconds'], row['TickCount']).bounds)
+        sim_counts = [0] * (len(bounds) + 1)
+        sim_counts[0] = 2  # 2 ticks in <= 10ms bucket
+        frame_counts = [0] * (len(bounds) + 1)
+        frame_counts[0] = 10  # 10 frames in <= 10ms bucket
+        row['SimulationTickCount'] = 2
+        row['SimulationTickMilliseconds'] = {'Bounds': bounds, 'Counts': sim_counts}
+        row['FrameCount'] = 10
+        row['FrameMilliseconds'] = {'Bounds': bounds, 'Counts': frame_counts}
+        row['TickCount'] = 2
+        row['TickMilliseconds'] = {'Bounds': bounds, 'Counts': sim_counts}
+        interval = metrics.Interval.parse(row, 'server')
+        self.assertEqual(interval.simulation_tick_count, 2)
+        self.assertEqual(interval.frame_count, 10)
+        self.assertEqual(sum(interval.simulation_tick_histogram.counts), 2)
+        self.assertEqual(sum(interval.frame_histogram.counts), 10)
+
+    def test_interval_rejects_mismatched_fn_histogram_tick_count(self):
+        row = metric('server')
+        bounds = list(metrics.Histogram.parse(row['TickMilliseconds'], row['TickCount']).bounds)
+        sim_counts = [0] * (len(bounds) + 1)
+        sim_counts[0] = 5  # count is 5, but declare 2
+        row['SimulationTickCount'] = 2
+        row['SimulationTickMilliseconds'] = {'Bounds': bounds, 'Counts': sim_counts}
+        with self.assertRaisesRegex(metrics.MetricsError, 'HISTOGRAM_TICK_COUNT'):
+            metrics.Interval.parse(row, 'server')
+
+    def test_zero_tick_frame_interval_parses_safely(self):
+        row = metric('server')
+        bounds = list(metrics.Histogram.parse(row['TickMilliseconds'], row['TickCount']).bounds)
+        zero_counts = [0] * (len(bounds) + 1)
+        frame_counts = [0] * (len(bounds) + 1)
+        frame_counts[0] = 5
+        row['TickCount'] = 0
+        row['TickMilliseconds'] = {'Bounds': bounds, 'Counts': zero_counts}
+        row['SimulationTickCount'] = 0
+        row['SimulationTickMilliseconds'] = {'Bounds': bounds, 'Counts': zero_counts}
+        row['FrameCount'] = 5
+        row['FrameMilliseconds'] = {'Bounds': bounds, 'Counts': frame_counts}
+        interval = metrics.Interval.parse(row, 'server')
+        self.assertEqual(interval.ticks, 0)
+        self.assertEqual(interval.simulation_tick_count, 0)
+        self.assertEqual(interval.frame_count, 5)
+
     def test_windows_assignment_failure_terminates_suspended_process(self):
         events=[]
         process=FakeProcess(7900)

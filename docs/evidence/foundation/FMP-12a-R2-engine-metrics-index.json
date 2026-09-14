@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "indexId": "FMP-12a-R2-engine-metrics-index",
+  "issue": 150,
+  "workId": "FMP-12a-R2",
+  "phase": "candidate",
+  "artifact": "artifact:150:engine-metrics-run:candidate",
+  "contractRef": "docs/context/contracts/engine-metrics-binding.json",
+  "recordedAtUtc": "2026-09-14T12:50:00Z",
+  "summary": {
+    "totalChecks": 3,
+    "passedChecks": 2,
+    "pendingChecks": 1,
+    "status": "CANDIDATE_VERIFIED_PENDING_PAYLOAD"
+  },
+  "checks": [
+    {
+      "checkId": "CHK-01-UNIT-EDITOR",
+      "target": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/",
+      "description": "C# Editor-mode metric accumulator & scheduling tests (14 contracts: interval aggregates, histogram boundaries, tick carry, zero-tick frame safety, F(n)/U(n) semantic separation, atomic rollback)",
+      "status": "PASS",
+      "scope": "unity_editor_metric_contract",
+      "details": {
+        "tests": [
+          "IntervalAggregates",
+          "EveryHistogramBoundary",
+          "CounterAndTickCarryAcrossClose",
+          "EmptyIntervalsDoNotInventCallsBytesOrPhysics",
+          "UtcJumpDoesNotChangeMonotonicDuration",
+          "ReturnedDtosNeverAliasAccumulatorOrEachOther",
+          "EveryInvalidRecordIsAtomic",
+          "EveryInvalidCloseIsAtomic",
+          "ConstructorRejectsAmbiguousOrInvalidInitialState",
+          "CumulativeLimitsDoNotWrapAndOverloadsAreObserved",
+          "StatisticalBoundsDoNotInventMeanP95Ordering",
+          "ClientRuntimeModeAndCallPhysicsSeparation",
+          "FnSimulationAndUnFrameSeparation",
+          "ZeroTickFramesPreserveFrameMetricsAndCarry"
+        ]
+      }
+    },
+    {
+      "checkId": "CHK-02-PYTHON-METRICS",
+      "target": "scripts/dev/test_foundation_load.py",
+      "description": "Python interval metric parser, dual histogram validation, and fault dispatch verification",
+      "status": "PASS",
+      "totalTests": 64,
+      "failedTests": 0,
+      "details": {
+        "fnUnDualHistogramsParsed": true,
+        "mismatchedCountRejected": true,
+        "zeroTickIntervalSafe": true
+      }
+    },
+    {
+      "checkId": "CHK-03-PROTOCOL-RUN",
+      "target": "Coupled Player Protocol Run (2-4 participants)",
+      "description": "Actual protocol run with 2~4 coupled Player processes using verified causal corpus",
+      "status": "PENDING_RUNNABLE_PAYLOAD",
+      "prerequisiteIssue": 143,
+      "reason": "Per task stopConditions: Candidate implementation does not require #143 build completion, but actual protocol run shall not commence without #149 accept corpus and #143 candidate runnable payload. Preserved honestly as pending rather than fabricated with mock runners."
+    }
+  ],
+  "provenance": {
+    "branch": "feature/150-engine-metrics-binding",
+    "baseCommit": "271d5a6",
+    "environment": "macOS (darwin 25.5.0), isolated scratchpad worktree",
+    "sanitized": true
+  }
+}
