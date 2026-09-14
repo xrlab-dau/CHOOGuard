@@ -12,6 +12,8 @@ PM이 우선순위·선행 산출물·인계를 조율합니다. 개인은 실�
 
 # CHOOguard
 
+<p><img src="docs/assets/chooguard-logo.png" alt="CHOOGuard project logo" width="240"></p>
+
 
 
 Comprehensive Hazard Operational Optimizer Guard. 철도 비상대응훈련을 위한 XR 플랫폼이다.
