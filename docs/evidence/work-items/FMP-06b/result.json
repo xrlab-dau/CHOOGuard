@@ -1,0 +1,638 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-14",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "recorded_with_two_unsupported_boundary_axes",
+  "targetIssue": 123,
+  "issue": 123,
+  "workId": "FMP-06b",
+  "title": "[FMP-06b] 문·환기·경사 구획의 열·연기 경계 회귀",
+  "scope": "boundary_matrix",
+  "wholeServerBudget": "NOT_ASSESSED",
+  "scopeStatement": "이 결과는 저감 2존(conservative two-zone) 화재 네트워크의 경계 응답·잔차 회귀다. CFD도, 인증된 피난안전 계산도, 실측 누설면적도 아니다. 20 Hz 전체 서버 프레임 예산은 이 작업에서 측정하지 않았으며 NOT_ASSESSED로 남긴다. 경계 행렬의 10행 중 8행만 SUPPORTED이며 2행은 UNSUPPORTED로 실행되지 않았다 — UNSUPPORTED를 PASS로 세지 않았다.",
+  "fixture": {
+    "derivation": "ConnectedThermalDomain.Create(JsonUtility.FromJson<ConnectedWorldDefinition>(foundation/world/connected-world-profile.json), new ConnectedThermalProfile())",
+    "cells": 147,
+    "doors": 275,
+    "openings": 275,
+    "fans": 150,
+    "regions": 13,
+    "portals": 12,
+    "tickCount": 100,
+    "tickSeconds": 0.05,
+    "simulatedSeconds": 5.0,
+    "sourceCount": 2,
+    "sourceHeatReleaseW": 60000,
+    "sourceTotalHeatReleaseW": 120000,
+    "sourceRegions": [
+      "rolling_stock_mainline",
+      "underground_connector"
+    ],
+    "sourceFuelMassKgPerSecond": 0.004,
+    "sourceSmokeMassKgPerSecond": 0.0004,
+    "sourceHeightM": 0.5,
+    "solverMaxStepSeconds": 0.01,
+    "reproduced": true,
+    "reproducedNote": "FMP-06a와 동일한 147셀/275개구부/150팬/두 60kW/100틱/0.05s 조건을 그대로 사용했다. 이산화 변경 없음."
+  },
+  "measurementConditions": {
+    "unit": "SI (kg, J, Pa, K)",
+    "editor": "Unity 6000.3.23f1",
+    "invocation": "-batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter ChooGuard.Foundation.Tests.Fmp06bBoundaryMatrixTests",
+    "host": "Apple M1, 8 cores, 16 GB, macOS 26.5 (darwin 25.5.0) arm64",
+    "hostNote": "FMP-06a와 동일 호스트. 다른 장비의 수치와 직접 비교하지 않는다."
+  },
+  "boundaryMatrix": {
+    "rows": 10,
+    "supportedRows": 8,
+    "unsupportedRows": 2,
+    "passCountedRows": 8,
+    "executedRuns": 3,
+    "probePortal": "underground_connector--underground_shopping_passage",
+    "probeSourceRegion": "underground_connector",
+    "probeSinkRegion": "underground_shopping_passage",
+    "ventilationProbeRegion": "underground_connector",
+    "probeEvidence": "36 adapter forcings probed; leaf fraction range [0,1]; lintel transom fraction range [1,1]; portal has 4 authored apertures of which 1 controlled, 3 unconditional (at fraction 1 in every forcing), minimum simultaneously open 3; supply reachable on=True off=True; exhaust reachable on=True off=True; supply and exhaust independently separable=no",
+    "cells": [
+      {
+        "type": "door.leaf",
+        "state": "open",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": true,
+        "passCounted": true,
+        "runSignature": "boundary-all-open",
+        "ticksAdvanced": 100,
+        "reachability": "leaf fraction range [0,1] over 36 adapter forcings",
+        "coupling": "",
+        "unsupportedReason": ""
+      },
+      {
+        "type": "door.leaf",
+        "state": "closed",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": true,
+        "passCounted": true,
+        "runSignature": "leaf-closed:underground_connector--underground_shopping_passage",
+        "ticksAdvanced": 100,
+        "reachability": "leaf fraction range [0,1] over 36 adapter forcings",
+        "coupling": "",
+        "unsupportedReason": ""
+      },
+      {
+        "type": "transom.above",
+        "state": "open",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": true,
+        "passCounted": true,
+        "runSignature": "boundary-all-open",
+        "ticksAdvanced": 100,
+        "reachability": "lintel transom fraction range [1,1] over 36 adapter forcings",
+        "coupling": "",
+        "unsupportedReason": ""
+      },
+      {
+        "type": "transom.above",
+        "state": "closed",
+        "classification": "UNSUPPORTED",
+        "supported": false,
+        "independent": true,
+        "passCounted": false,
+        "runSignature": "",
+        "ticksAdvanced": 0,
+        "reachability": "lintel transom fraction range [1,1] over 36 adapter forcings",
+        "coupling": "",
+        "unsupportedReason": "the authored lintel transom of underground_connector--underground_shopping_passage is not in the adapter's controllable set (Controlled=false, no per-door channel); its fraction is 1 under every adapter forcing, so commanding it closed is unreachable."
+      },
+      {
+        "type": "boundary.sealed",
+        "state": "open",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": false,
+        "passCounted": true,
+        "runSignature": "boundary-all-open",
+        "ticksAdvanced": 100,
+        "reachability": "portal carries 4 authored apertures (1 controlled, 3 unconditional); minimum simultaneously open = 3 over 36 adapter forcings",
+        "coupling": "",
+        "unsupportedReason": ""
+      },
+      {
+        "type": "boundary.sealed",
+        "state": "closed",
+        "classification": "UNSUPPORTED",
+        "supported": false,
+        "independent": false,
+        "passCounted": false,
+        "runSignature": "",
+        "ticksAdvanced": 0,
+        "reachability": "portal carries 4 authored apertures (1 controlled, 3 unconditional); minimum simultaneously open = 3 over 36 adapter forcings",
+        "coupling": "",
+        "unsupportedReason": "the portal carries 4 authored apertures and the adapter commands only the 1 closure leaf; the remaining 3 uncontrolled apertures stay at fraction 1 under every adapter forcing, so at least 3 apertures are open in every reachable state and a sealed boundary is unreachable. Sealing would need a per-aperture command channel."
+      },
+      {
+        "type": "ventilation.supply",
+        "state": "open",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": false,
+        "passCounted": true,
+        "runSignature": "boundary-all-open",
+        "ticksAdvanced": 100,
+        "reachability": "supply reachable on=True off=True; exhaust reachable on=True off=True; separable=no",
+        "coupling": "supply and exhaust of underground_connector share the single region-keyed fan predicate of the adapter, so neither can be commanded apart from the other; both rows resolve to the same commanded state \"boundary-all-open\"",
+        "unsupportedReason": ""
+      },
+      {
+        "type": "ventilation.supply",
+        "state": "closed",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": false,
+        "passCounted": true,
+        "runSignature": "ventilation-off:underground_connector",
+        "ticksAdvanced": 100,
+        "reachability": "supply reachable on=True off=True; exhaust reachable on=True off=True; separable=no",
+        "coupling": "supply and exhaust of underground_connector share the single region-keyed fan predicate of the adapter, so neither can be commanded apart from the other; both rows resolve to the same commanded state \"ventilation-off:underground_connector\"",
+        "unsupportedReason": ""
+      },
+      {
+        "type": "ventilation.exhaust",
+        "state": "open",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": false,
+        "passCounted": true,
+        "runSignature": "boundary-all-open",
+        "ticksAdvanced": 100,
+        "reachability": "supply reachable on=True off=True; exhaust reachable on=True off=True; separable=no",
+        "coupling": "supply and exhaust of underground_connector share the single region-keyed fan predicate of the adapter, so neither can be commanded apart from the other; both rows resolve to the same commanded state \"boundary-all-open\"",
+        "unsupportedReason": ""
+      },
+      {
+        "type": "ventilation.exhaust",
+        "state": "closed",
+        "classification": "SUPPORTED",
+        "supported": true,
+        "independent": false,
+        "passCounted": true,
+        "runSignature": "ventilation-off:underground_connector",
+        "ticksAdvanced": 100,
+        "reachability": "supply reachable on=True off=True; exhaust reachable on=True off=True; separable=no",
+        "coupling": "supply and exhaust of underground_connector share the single region-keyed fan predicate of the adapter, so neither can be commanded apart from the other; both rows resolve to the same commanded state \"ventilation-off:underground_connector\"",
+        "unsupportedReason": ""
+      }
+    ],
+    "unsupportedAxes": [
+      "transom.above/closed: the authored lintel transom of underground_connector--underground_shopping_passage is not in the adapter's controllable set (Controlled=false, no per-door channel); its fraction is 1 under every adapter forcing, so commanding it closed is unreachable.",
+      "boundary.sealed/closed: the portal carries 4 authored apertures and the adapter commands only the 1 closure leaf; the remaining 3 uncontrolled apertures stay at fraction 1 under every adapter forcing, so at least 3 apertures are open in every reachable state and a sealed boundary is unreachable. Sealing would need a per-aperture command channel."
+    ],
+    "equivalenceNote": "boundary-all-open 시그니처에 5개 SUPPORTED 행이 접힌다(door.leaf/open, transom.above/open, boundary.sealed/open, ventilation.supply/open, ventilation.exhaust/open). 계획된 상태가 같으므로 한 번만 실행하고 각 행에 그 실행 결과를 기록했다. ventilation.supply/closed 와 ventilation.exhaust/closed 도 하나의 시그니처로 접히며, 이것이 두 축이 분리 불가능하다는 증거다."
+  },
+  "boundaryResponses": {
+    "runCount": 3,
+    "note": "세 개의 서로 다른 지령 경계 상태를 각각 100틱(5.0s) 적분했다. 값은 Temp/ChooGuardBoundaryMatrix/... 대신 실행 로그의 FMP06B-RESIDUALS 줄에서 읽었다.",
+    "runs": [
+      {
+        "Signature": "boundary-all-open",
+        "TicksAdvanced": 100,
+        "AcceptedSubsteps": 613,
+        "RejectedSubsteps": 262,
+        "SimulatedSeconds": 4.99999999999999,
+        "SinkRegionSmokeKg": 4.694982089791038e-49,
+        "SourceRegionSmokeKg": 0.0019815828215142424,
+        "SinkRegionUpperTemperatureK": 293.15000047585454,
+        "SourceRegionUpperTemperatureK": 295.1670986309261,
+        "VentilationRegionSmokeKg": 0.0019815828215142424,
+        "VentilationRegionLowerTemperatureK": 293.150177652187,
+        "VentilationRegionUpperTemperatureK": 295.1670986309261,
+        "LeafBoundaryFluxKgPerSecond": 0.03748667574008345,
+        "TransomBoundaryFluxKgPerSecond": 0.006518688867427802,
+        "BoundaryNetFluxKgPerSecond": 0.13201610430295074,
+        "MassBalanceErrorKg": 6.659561790911539e-11,
+        "EnergyBalanceErrorJ": 4.3207674025325105e-06,
+        "MaximumCommittedPressureResidualPa": 3.865190867590677e-05,
+        "NonNegative": true,
+        "AdvanceSucceeded": true
+      },
+      {
+        "Signature": "leaf-closed:underground_connector--underground_shopping_passage",
+        "TicksAdvanced": 100,
+        "AcceptedSubsteps": 608,
+        "RejectedSubsteps": 269,
+        "SimulatedSeconds": 4.99999999999999,
+        "SinkRegionSmokeKg": 2.914364079807053e-50,
+        "SourceRegionSmokeKg": 0.0019815708850666894,
+        "SinkRegionUpperTemperatureK": 293.1500003060257,
+        "SourceRegionUpperTemperatureK": 295.16709902099615,
+        "VentilationRegionSmokeKg": 0.0019815708850666894,
+        "VentilationRegionLowerTemperatureK": 293.1501774730196,
+        "VentilationRegionUpperTemperatureK": 295.16709902099615,
+        "LeafBoundaryFluxKgPerSecond": 0.0,
+        "TransomBoundaryFluxKgPerSecond": 0.02844727399033778,
+        "BoundaryNetFluxKgPerSecond": 0.0853418238873554,
+        "MassBalanceErrorKg": 3.0879299117714254e-11,
+        "EnergyBalanceErrorJ": 5.793988748337142e-06,
+        "MaximumCommittedPressureResidualPa": 3.8538489079146285e-05,
+        "NonNegative": true,
+        "AdvanceSucceeded": true
+      },
+      {
+        "Signature": "ventilation-off:underground_connector",
+        "TicksAdvanced": 100,
+        "AcceptedSubsteps": 615,
+        "RejectedSubsteps": 267,
+        "SimulatedSeconds": 4.99999999999999,
+        "SinkRegionSmokeKg": 4.923484839337993e-49,
+        "SourceRegionSmokeKg": 0.0019858255954275507,
+        "SinkRegionUpperTemperatureK": 293.1500004791082,
+        "SourceRegionUpperTemperatureK": 295.16297874015106,
+        "VentilationRegionSmokeKg": 0.0019858255954275507,
+        "VentilationRegionLowerTemperatureK": 293.1501809076325,
+        "VentilationRegionUpperTemperatureK": 295.16297874015106,
+        "LeafBoundaryFluxKgPerSecond": 0.03773862115028063,
+        "TransomBoundaryFluxKgPerSecond": 0.0065625005603987185,
+        "BoundaryNetFluxKgPerSecond": 0.1329034655706431,
+        "MassBalanceErrorKg": 1.0432676944560626e-10,
+        "EnergyBalanceErrorJ": 4.49052577096154e-05,
+        "MaximumCommittedPressureResidualPa": 3.862295914635644e-05,
+        "NonNegative": true,
+        "AdvanceSucceeded": true
+      }
+    ],
+    "measuredResponse": {
+      "leafClosedCarriesExactlyZeroMass": {
+        "leafFluxKgPerSecond": 0.0,
+        "toleranceKgPerSecond": 1e-12,
+        "passed": true
+      },
+      "uncontrolledTransomKeepsPassingGas": {
+        "openLeafTransomFluxKgPerSecond": 0.006518688867427802,
+        "closedLeafTransomFluxKgPerSecond": 0.02844727399033778,
+        "passed": true,
+        "note": "리프를 닫으면 면적이 2.7m에서 0.4m 린텔로 줄어 트랜솜 자체의 유량은 오히려 커진다. 경계가 봉인되지 않았다는 증거다."
+      },
+      "portalTransportReduced": {
+        "allOpenKgPerSecond": 0.13201610430295074,
+        "leafClosedKgPerSecond": 0.0853418238873554,
+        "reductionPercent": 35.355,
+        "passed": true
+      },
+      "sinkSmokeReduced": {
+        "allOpenKg": 4.694982089791038e-49,
+        "leafClosedKg": 2.914364079807053e-50,
+        "ratio": 16.10979946644783,
+        "passed": true,
+        "caveat": "두 값 모두 1e-49 kg 규모로 사실상 0이다. 방향과 비율만 주장하며 물리적 크기로 읽으면 안 된다."
+      },
+      "ventilationRetainsSmoke": {
+        "fansOnKg": 0.0019815828215142424,
+        "fansOffKg": 0.0019858255954275507,
+        "increaseKg": 4.242773913308226e-06,
+        "injectedKg": 0.002,
+        "retainedFractionFansOn": 0.990791,
+        "retainedFractionFansOff": 0.992913,
+        "passed": true
+      },
+      "ventilationCoolsLowerLayer": {
+        "fansOnK": 293.150177652187,
+        "fansOffK": 293.1501809076325,
+        "deltaK": 3.255445506056276e-06,
+        "passed": true,
+        "note": "급기팬이 하층에 실내공기를 직접 주입하므로 팬을 끄면 하층이 더 뜨거워진다. 직접 질량 주입이라 부호가 견고하다."
+      },
+      "upperLayerTemperatureDirectionNotClaimed": {
+        "fansOnK": 295.1670986309261,
+        "fansOffK": 295.16297874015106,
+        "note": "상층 온도는 팬을 끄면 오히려 0.004K 낮아졌다(295.16710 -> 295.16298). 초기 가정과 반대이므로 부호를 주장하지 않고 '지령 상태가 상층 온도를 변화시킨다'는 약한 주장만 세운다. 수치는 그대로 기록한다."
+      }
+    }
+  },
+  "residualErrors": {
+    "perRun": {
+      "boundary-all-open": {
+        "massBalanceErrorKg": 6.659561790911539e-11,
+        "energyBalanceErrorJ": 4.3207674025325105e-06,
+        "maximumCommittedPressureResidualPa": 3.865190867590677e-05,
+        "nonNegative": true
+      },
+      "leaf-closed:underground_connector--underground_shopping_passage": {
+        "massBalanceErrorKg": 3.0879299117714254e-11,
+        "energyBalanceErrorJ": 5.793988748337142e-06,
+        "maximumCommittedPressureResidualPa": 3.8538489079146285e-05,
+        "nonNegative": true
+      },
+      "ventilation-off:underground_connector": {
+        "massBalanceErrorKg": 1.0432676944560626e-10,
+        "energyBalanceErrorJ": 4.49052577096154e-05,
+        "maximumCommittedPressureResidualPa": 3.862295914635644e-05,
+        "nonNegative": true
+      }
+    },
+    "worst": {
+      "massBalanceErrorKg": 1.0432676944560626e-10,
+      "energyBalanceErrorJ": 4.49052577096154e-05,
+      "maximumCommittedPressureResidualPa": 3.865190867590677e-05
+    },
+    "massBalanceMetric": "abs( (Σ cell gas mass 변화) - FireState.ExternalMassKg ) — 저장소 ledger는 반대 부호 규약이라 더하지 않고 폐합(closure)으로 비교한다.",
+    "nonNegativeCoverage": "셀별 상/하층 질량·스모크·에너지 >= 0, 상층 스모크 <= 상층 질량, 압력/상층/하층/벽 온도 > 0, 상/하층 부피 > 0, 계면고 >= 0, 밀도 > 0",
+    "budgets": {
+      "massResidualBudgetKg": 0.001,
+      "energyResidualBudgetJ": 0.005,
+      "pressureResidualBudgetPa": 0.001,
+      "massPassed": true,
+      "energyPassed": true,
+      "pressurePassed": true
+    }
+  },
+  "slopedRegression": {
+    "rampCells": 60,
+    "checkedIdentities": [
+      "VolumeM3 == WidthM*DepthM*(HeightM-FloorRiseM)",
+      "FilledHeight(HeightForLowerVolume(l,U), HeightM-FloorRiseM) * (WidthM*DepthM) == l  (램프 셀마다 21개 분할점)",
+      "WallAreaBetween(0,h) + WallAreaBetween(h,HeightM) == WallAreaBetween(0,HeightM)  (벽면적 완전 배분)",
+      "LayerSurfaceArea(h,true) + LayerSurfaceArea(h,false) == SurfaceAreaM2  (층 표면적 완전 배분)",
+      "층별 표면적의 합이 표면적과 일치, HeightForLowerVolume(VolumeM3,0) == HeightM"
+    ],
+    "rampBudgets": [
+      {
+        "portal": "rail_tracks_mainline--rail_platforms_mainline",
+        "cells": 4,
+        "authoredRiseM": 2.0,
+        "dropM": 2.0,
+        "maxRisePerCellM": 0.5
+      },
+      {
+        "portal": "rail_platforms_mainline--station_concourse_2f",
+        "cells": 8,
+        "authoredRiseM": 4.0,
+        "dropM": 4.0,
+        "maxRisePerCellM": 0.5
+      },
+      {
+        "portal": "station_hall_1f--station_concourse_2f",
+        "cells": 12,
+        "authoredRiseM": 6.0,
+        "dropM": 6.0,
+        "maxRisePerCellM": 0.5
+      },
+      {
+        "portal": "rail_terminal_public--underground_connector",
+        "cells": 20,
+        "authoredRiseM": 10.0,
+        "dropM": 10.0,
+        "maxRisePerCellM": 0.5
+      },
+      {
+        "portal": "forecourt_eurasia--underground_connector",
+        "cells": 8,
+        "authoredRiseM": 4.0,
+        "dropM": 4.0,
+        "maxRisePerCellM": 0.5
+      },
+      {
+        "portal": "metro_concourse--metro_platforms",
+        "cells": 8,
+        "authoredRiseM": 4.0,
+        "dropM": 4.0,
+        "maxRisePerCellM": 0.5
+      }
+    ],
+    "portalFloorAreaIdentity": "Σ FloorWallAreaM2 == sqrt(horizontal^2+dy^2) * ClearWidth 이며 Σ FloorRiseM == |dy|, Σ WidthM == horizontal 이다. 즉 경사 바닥면적은 3D 포털 길이를 그대로 보존한다.",
+    "finding": "FilledHeight는 바닥면적당 부피를 돌려준다(WallAreaBetween이 벽 길이를 곱하는 규약). SlopedFireCellTests의 1x1 손수제작 셀은 면적이 1이라 이 인자가 가려진다. 실제 저작 램프 셀(면적 17.92 m2)에서 이 인자를 넣지 않으면 역변환이 성립하지 않는다 — 테스트는 면적을 곱한 형태로 고정한다.",
+    "boundaryCaseFinding": "VolumeM3는 계산 프로퍼티라 V*20/20 != V 이다. 분할 상단을 V - V*i/20 으로 만들면 1 ulp 음수가 되어 솔버의 자체 구획 가드('Layer volume is outside its sloped compartment')를 때린다. 스윕 양 끝은 정확값으로 취한다.",
+    "rampCellsNote": "경사 포털 6개의 통로 셀 합(4+8+12+20+8+8). dy!=0 인 포털은 균등 컷마다 rise=|dy|/count > 0 이므로 모든 통로 셀이 램프 셀이다."
+  },
+  "limits": {
+    "longCorridor": {
+      "region": "underground_connector",
+      "authoredLengthM": 99.6,
+      "widthM": 8,
+      "heightM": 3.2,
+      "derivedCells": 11,
+      "maxCellM": 9.63999984264376,
+      "derivedVolumeM3": 2549.75999893188,
+      "identity": "셀 폭 합 == 99.6, 셀 부피 합 == SizeX*SizeZ*Height",
+      "note": "99.6 m는 운영기관 공개 맥락 값이다. 나머지 형상은 합성 설계이며 실측이 아니다."
+    },
+    "vehicleBoundaries": [
+      {
+        "region": "rolling_stock_mainline",
+        "cells": 5,
+        "axialCoverageM": 40,
+        "volumeM3": 640.000009536743,
+        "portal": "rolling_stock_mainline--rail_platforms_mainline",
+        "apertures": 4,
+        "controlledApertures": 1,
+        "boardingGatedApertures": 1,
+        "minApertureM2": 1.27999956130981,
+        "maxApertureM2": 8.64000028133393,
+        "staticBoarding": true
+      },
+      {
+        "region": "rolling_stock_metro",
+        "cells": 5,
+        "axialCoverageM": 42,
+        "volumeM3": 672.00001001358,
+        "portal": "rolling_stock_metro--metro_platforms",
+        "apertures": 4,
+        "controlledApertures": 1,
+        "boardingGatedApertures": 1,
+        "minApertureM2": 1.27999956130981,
+        "maxApertureM2": 8.64000028133393,
+        "staticBoarding": true
+      }
+    ],
+    "vehicleBoundaryNote": "저작 차량 경계는 각각 4개 개구부를 가지며 그중 제어되는 것은 클로저 리프 1개뿐이다. 차량측 컷의 개구부는 BoardingCoupling=true 로 탑승정렬 술어에 묶여 있고, 차량 프레임 측 컷에 붙는다(From 프레임이 world가 아니므로 i==0). 나머지 컷의 개구부는 무제어 상시개방이다.",
+    "discretization": {
+      "profileMaximumCellLengthM": 10,
+      "profileMaximumRampRisePerCellM": 0.5,
+      "profileMaximumSolverStepSeconds": 0.01,
+      "authoredCells": 147,
+      "solverCompartmentLimit": 256,
+      "profileSource": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/ConnectedThermalDomain.cs:10-11 (ConnectedThermalProfile 기본값)"
+    },
+    "substepBudgetAtomicity": {
+      "maxSubsteps": 1,
+      "advanceSeconds": 0.5,
+      "result": "refused",
+      "failure": "Fire substep budget exhausted; no state committed.",
+      "verified": "실패한 틱은 시간·질량·벽에너지·스모크를 전혀 전진시키지 않았고, 소진된 모델은 다음 틱에서도 재개되지 않는다."
+    },
+    "probePortalApertures": {
+      "portal": "underground_connector--underground_shopping_passage",
+      "authoredApertures": 4,
+      "controlled": 1,
+      "unconditional": 3,
+      "minimumSimultaneouslyOpen": 3
+    },
+    "generatedLimits": [
+      "connector axial cells=11; lengthM=99.6; maxCellM=9.63999984264376",
+      "ramp portal rail_tracks_mainline--rail_platforms_mainline: cells=4; authoredRiseM=2; dropM=2; maxRisePerCellM=0.5",
+      "ramp portal rail_platforms_mainline--station_concourse_2f: cells=8; authoredRiseM=4; dropM=4; maxRisePerCellM=0.5",
+      "ramp portal station_hall_1f--station_concourse_2f: cells=12; authoredRiseM=6; dropM=6; maxRisePerCellM=0.5",
+      "ramp portal rail_terminal_public--underground_connector: cells=20; authoredRiseM=10; dropM=10; maxRisePerCellM=0.5",
+      "ramp portal forecourt_eurasia--underground_connector: cells=8; authoredRiseM=4; dropM=4; maxRisePerCellM=0.5",
+      "ramp portal metro_concourse--metro_platforms: cells=8; authoredRiseM=4; dropM=4; maxRisePerCellM=0.5",
+      "probe portal underground_connector--underground_shopping_passage: 4 authored apertures, 1 controlled, 3 unconditional; minimum simultaneously open = 3.",
+      "long corridor underground_connector: cells=11; lengthM=99.6; volumeM3=2549.75999893188; widthM=8; heightM=3.2; maxCellM=9.63999984264376",
+      "vehicle boundary rolling_stock_mainline: cells=5; axialCoverageM=40; volumeM3=640.000009536743; portal=rolling_stock_mainline--rail_platforms_mainline; apertures=4 (controlled=1, boardingGated=1); minApertureM2=1.27999956130981; maxApertureM2=8.64000028133393; staticBoarding=True",
+      "vehicle boundary rolling_stock_metro: cells=5; axialCoverageM=42; volumeM3=672.00001001358; portal=rolling_stock_metro--metro_platforms; apertures=4 (controlled=1, boardingGated=1); minApertureM2=1.27999956130981; maxApertureM2=8.64000028133393; staticBoarding=True",
+      "authored cell count=147 of the 256-compartment solver limit."
+    ]
+  },
+  "stepCapConvergence": {
+    "ticks": 20,
+    "simulatedSeconds": 1.0,
+    "capsSeconds": [
+      0.01,
+      0.005,
+      0.0025
+    ],
+    "acceptedSubsteps": [
+      163.0,
+      253.0,
+      425.0
+    ],
+    "sinkSmokeKg": [
+      4.193715221897144e-61,
+      5.682694774012547e-61,
+      7.042203840304069e-61
+    ],
+    "sourceUpperK": [
+      293.55131764385646,
+      293.55131653165404,
+      293.55131380640125
+    ],
+    "ventilationLowerK": [
+      293.1500007294921,
+      293.1500007300489,
+      293.1500007305004
+    ],
+    "transomFluxKgPerSecond": [
+      0.004761518846153807,
+      0.0047669650650766044,
+      0.004771510294698095
+    ],
+    "massResidualKg": [
+      9.1817498049096e-11,
+      7.891870490439601e-11,
+      8.105449644801865e-11
+    ],
+    "claims": [
+      {
+        "claim": "세분화가 실제로 걸린다",
+        "evidence": "acceptedSubsteps 163 -> 253 -> 425, 최정밀 캡이 월드틱당 20 서브스텝 이상을 강제한다",
+        "passed": true
+      },
+      {
+        "claim": "상·하층 온도는 캡 안정적",
+        "evidence": "최정밀 두 캡 차이 2.71e-06 K, 허용 1e-3 K",
+        "passed": true
+      },
+      {
+        "claim": "트랜솜 경계 유량은 상대적으로 캡 안정적",
+        "evidence": "최정밀 두 캡 차이 4.55e-06 kg/s = 유량의 0.095%, 허용 1%",
+        "passed": true
+      },
+      {
+        "claim": "질량 폐합은 캡 독립적",
+        "evidence": "세 캡 모두 7.9e-11 ~ 9.2e-11 kg",
+        "passed": true
+      },
+      {
+        "claim": "문 경계는 스모크에 준임계",
+        "evidence": "모든 캡에서 카트리지 도달 스모크 <= 1e-30 x 근원 구획 스모크",
+        "passed": true
+      }
+    ],
+    "notClaimed": "세분화가 스모크 수송량을 단조 수렴시킨다고 주장하지 않는다. 1.0s 지평에서 도달 스모크는 1e-61 kg 규모이고 세분화에 따라 4.19e-61 -> 7.04e-61 로 증가한다 — 수렴 정보를 담지 않는다. 절대 크기로 읽으면 안 된다.",
+    "sourceSmokeKg": [
+      0.000399540930046933,
+      0.0003995393731684258,
+      0.0003995382195182947
+    ]
+  },
+  "determinism": {
+    "repeatRuns": 3,
+    "repeatEvidence": "final 실행과 직전 실행(run5/run6)이 비트 단위로 동일한 FMP06B-CONVERGENCE 스윕을 산출했다. 궤적은 결정적이다.",
+    "note": "따라서 아래 failedOrUnrun의 미판정 항목은 재현 잡음이 아니라 계획된 미측정이다."
+  },
+  "checksRun": [
+    {
+      "name": "Fmp06bBoundaryMatrixTests.FixedBoundaryFixtureStillReproducesTheRecordedCellOpeningAndFanBudget",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.EveryMatrixRowIsClassifiedAndNoUnsupportedRowIsCountedAsPass",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.DoorTransomAndVentilationResponseFollowTheCommandedBoundaryState",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.MassEnergyAndNonNegativePreservationHoldOnEveryCommandedBoundaryState",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.PassageCellOwnershipTransfersToTheStationFrameForStaticBoardingPortals",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.DuplicateAndInvalidOpeningsAreRejectedOrDroppedAndNeverSilentlyCounted",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.SlopedVolumeAndLayerBoundariesStayExactOnAuthoredRamps",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.LongCorridorsAndVehicleBoundariesStayInsideTheAuthoredDiscretizationLimits",
+      "result": "passed"
+    },
+    {
+      "name": "Fmp06bBoundaryMatrixTests.StepCapRefinementConvergesOnTheBoundaryProbe",
+      "result": "passed"
+    }
+  ],
+  "failedOrUnrun": [
+    "transom.above/closed 는 UNSUPPORTED 로 실행하지 않았다. PASS 로 세지 않았다.",
+    "boundary.sealed/closed 는 UNSUPPORTED 로 실행하지 않았다. PASS 로 세지 않았다.",
+    "ventilation.supply 와 ventilation.exhaust 는 어댑터가 지역 키 팬 술어 하나만 노출하므로 분리 지령할 수 없다. 두 행은 같은 지령 상태로 접히며, 분리 가능성은 주장하지 않는다.",
+    "전체 서버 20 Hz 예산: NOT_ASSESSED (미실행).",
+    "FMP-06a 의 50 ms 열 예산 미달은 이 작업에서 해소되지 않았다(범위 밖). 이 회귀는 경계 응답만 기록한다.",
+    "기존 ConnectedThermalTests / FirePhysicsTests / SlopedFireCellTests 회귀: 이번 testFilter에 묶여 있지 않아 미실행.",
+    "실측 누설면적·인증 피난 계산과의 비교: 미실행 (저작 형상이 합성 설계라 비교 대상이 없다)."
+  ],
+  "blockers": [
+    "어댑터는 개구부별 지령 채널을 노출하지 않는다. 포털당 제어되는 것은 클로저 리프 하나뿐이고 나머지 개구부는 상시개방이므로, 어떤 포털도 sealed 상태에 도달할 수 없다. sealed 경계를 요구하는 시나리오가 있다면 ConnectedThermalDomain.Forcing 의 제어 공간을 확장해야 한다.",
+    "급기/배기 팬은 지역 키 술어 하나로 묶여 있어 독립 지령할 수 없다. 공급만 끄거나 배기만 끄는 시나리오가 있다면 같은 확장이 필요하다."
+  ],
+  "signalMagnitudeLimit": "이 픽스처에서 문 경계를 통과하는 스모크는 1e-49 kg 규모이고 하류 구획 상층 온도는 293.150000 K 로 실내온도 그대로다. 즉 5.0s 지평에서 문 경계는 스모크·열 수송에 준임계이며, 문 열림/닫힘의 강한 관측량은 (a) 리프 유량의 정확한 0, (b) 무제어 린텔의 잔존 유량, (c) 포털 총 수송량 감소, (d) 하류 스모크의 방향과 비율이다. 크기로 읽으면 안 된다.",
+  "evidenceFiles": {
+    "unityTestResultsXml": "scratchpad/par/i123/unity/final.xml",
+    "unityLog": "scratchpad/par/i123/unity/final.log",
+    "unityLogCarriesReceipts": true,
+    "receiptMarkers": [
+      "FMP06B-MATRIX",
+      "FMP06B-RESIDUALS",
+      "FMP06B-LIMITS",
+      "FMP06B-CONVERGENCE"
+    ],
+    "tempReceipts": [
+      "Temp/ChooGuardBoundaryMatrix/fmp06b-boundary-matrix.json",
+      "Temp/ChooGuardBoundaryMatrix/fmp06b-boundary-response.json",
+      "Temp/ChooGuardBoundaryMatrix/fmp06b-boundary-limits.json",
+      "Temp/ChooGuardBoundaryMatrix/fmp06b-step-cap-convergence.txt"
+    ],
+    "tempReceiptsNote": "Temp/는 Unity 종료 시 삭제되므로 수치는 실행 로그의 FMP06B-* 줄에서 읽는다."
+  },
+  "testArtifact": {
+    "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06bBoundaryMatrixTests.cs",
+    "absolutePath": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/par/i123/Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06bBoundaryMatrixTests.cs",
+    "sha256": "ecfbfd9210ab528f3123970e5d0101a5fdf2ed8b1c68a3d156703e85463b3065"
+  }
+}
