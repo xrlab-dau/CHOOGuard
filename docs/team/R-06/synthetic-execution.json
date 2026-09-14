@@ -1,0 +1,1718 @@
+{
+  "schemaVersion": 1,
+  "artifactId": "artifact:46:R-06-synthetic-execution:candidate",
+  "issueNumber": 46,
+  "workId": "R-06",
+  "phase": "candidate",
+  "kind": "r06-synthetic-egress-output-verification",
+  "recordType": "machine_observation_not_approval",
+  "draftStatus": "candidate_draft",
+  "canonicalWriteAllowed": false,
+  "noAcceptanceClaim": "Synthetic execution record. It shows how the candidate control code decided on synthetic inputs; it grants no egress, approves no publication and is not the accept-phase evidence index.",
+  "noSensitiveExecution": "No real research ran. Every topic, approval, response, credential, e-mail address and path is a labelled synthetic fixture defined in scripts/team/R-06/egress_controls.py; the transport is an in-process fake and no network destination was contacted.",
+  "baseRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+  "schemaBinding": {
+    "schemaPath": "docs/team/M1-05/record-schema.json",
+    "schemaVersion": 1,
+    "schemaSha256": "451fcc0bb395e7c75d196bec43c91bac7228dff62dff9864196d1bdedd474427",
+    "pipelinePath": "scripts/team/M1-05/record_pipeline.py",
+    "pipelineSha256": "8b0f94c0aef552d9787524abe558816435293d5cd487eb5592d2e397faba554b",
+    "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+    "profilePolicyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050"
+  },
+  "controlSpec": {
+    "path": "docs/team/R-06/research-control.json",
+    "sha256": "d6288903ed0dafe87916148e310fc0788d00c971cae31b14d8369bf665ba1427"
+  },
+  "outputs": {
+    "artifact:46:R-06-negative-tests:candidate": {
+      "scripts/team/R-06/egress_controls.py": "80bbd39a15246ecf5303626a1f5cb061afed6a752d1d9d8bb9d63e6c1abac3de",
+      "scripts/team/R-06/test_egress_controls.py": "513c03b847d22cf389e21152ec86823bfbdfddc070b0b714ca1658a2bda039c5"
+    }
+  },
+  "run": {
+    "command": "python scripts/team/R-06/egress_controls.py run",
+    "exitCode": 0,
+    "state": "passed",
+    "deterministicRerun": true,
+    "counts": {
+      "cases": 36,
+      "matched": 36,
+      "positive": 3,
+      "refused": 34,
+      "refusedBeforeSend": 16,
+      "sendsOnRefusedBeforeSend": 0,
+      "published": 1
+    },
+    "syntheticMarkersInReport": [],
+    "stdoutSha256": "bc66455abe16fa0b1c9ca7f19da29a7e69eb5f03f23afeff8be72c112bfbf7c2",
+    "rawAndPrivateRecords": "written by record_pipeline.build into a temporary directory outside the repository and removed with it after the run; only the public candidate digests below are kept",
+    "publishedSyntheticFiles": {
+      "result": "published",
+      "files": [
+        "2026-09-15-synthetic-validator.json",
+        "2026-09-15-synthetic-validator.md"
+      ],
+      "sha256": {
+        "2026-09-15-synthetic-validator.json": "305f582f253514961b8a4a33515f84fe82a07c893aa0f6467c954460ff8ad0cd",
+        "2026-09-15-synthetic-validator.md": "2abac66345e38e10e435ab7cda660a07a7ce5a03ab1f59c43652d929cdeb8856"
+      }
+    },
+    "cases": [
+      {
+        "id": "R06-P01",
+        "category": "positive",
+        "capability": "registered public topic, approved egress, clean output and publication approval bound to this manifest",
+        "expectedFailure": null,
+        "dcRef": null,
+        "expected": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "approved",
+          "publication": "published",
+          "transportSends": 1
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "approved",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "published",
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "refusal": null,
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": {
+          "result": "published",
+          "files": [
+            "2026-09-15-synthetic-validator.json",
+            "2026-09-15-synthetic-validator.md"
+          ],
+          "sha256": {
+            "2026-09-15-synthetic-validator.json": "305f582f253514961b8a4a33515f84fe82a07c893aa0f6467c954460ff8ad0cd",
+            "2026-09-15-synthetic-validator.md": "2abac66345e38e10e435ab7cda660a07a7ce5a03ab1f59c43652d929cdeb8856"
+          }
+        },
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-P02",
+        "category": "positive",
+        "capability": "clean output stays unpublished while the publication decision is pending",
+        "expectedFailure": null,
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "clean",
+          "publicApproval": "pending",
+          "publication": "refused:publication_not_approved:pending",
+          "transportSends": 1
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "pending",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "refused:publication_not_approved:pending",
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "refusal": {
+          "stage": "publicApproval",
+          "code": "publication_not_approved:pending"
+        },
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": {
+          "result": "refused:publication_not_approved:pending"
+        },
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-P03",
+        "category": "positive",
+        "capability": "a redirect to the same granted host is followed once",
+        "expectedFailure": null,
+        "dcRef": null,
+        "expected": {
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "transportSends": 2,
+          "redirectsFollowed": 1
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "not_evaluated",
+          "transportSends": 2,
+          "redirectsFollowed": 1,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "refusal": null,
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N01",
+        "category": "input",
+        "capability": "free topic text instead of a registered id",
+        "expectedFailure": "request refused before any send",
+        "dcRef": null,
+        "expected": {
+          "inputClassification": "refused:field_not_allowed:topic",
+          "egressDecision": "not_evaluated",
+          "transportSends": 0,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "refused:field_not_allowed:topic",
+          "egressDecision": "not_evaluated",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "inputClassification",
+          "code": "field_not_allowed:topic"
+        },
+        "record": {
+          "filesDigest": "a0d1af1025f41d6fa4b124fd4f88b6527406aff120614e54eddeab79535cc0d9",
+          "manifestSha256": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+          "approval": "pending",
+          "events": 2,
+          "publicTextOmitted": 1,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N02",
+        "category": "input",
+        "capability": "file path supplied as input",
+        "expectedFailure": "request refused before any send",
+        "dcRef": null,
+        "expected": {
+          "inputClassification": "refused:field_not_allowed:file",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "refused:field_not_allowed:file",
+          "egressDecision": "not_evaluated",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "inputClassification",
+          "code": "field_not_allowed:file"
+        },
+        "record": {
+          "filesDigest": "a0d1af1025f41d6fa4b124fd4f88b6527406aff120614e54eddeab79535cc0d9",
+          "manifestSha256": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+          "approval": "pending",
+          "events": 2,
+          "publicTextOmitted": 1,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N03",
+        "category": "input",
+        "capability": "model override in the request",
+        "expectedFailure": "request refused before any send",
+        "dcRef": "DC-06",
+        "expected": {
+          "inputClassification": "refused:field_not_allowed:model",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "refused:field_not_allowed:model",
+          "egressDecision": "not_evaluated",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "inputClassification",
+          "code": "field_not_allowed:model"
+        },
+        "record": {
+          "filesDigest": "a0d1af1025f41d6fa4b124fd4f88b6527406aff120614e54eddeab79535cc0d9",
+          "manifestSha256": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+          "approval": "pending",
+          "events": 2,
+          "publicTextOmitted": 1,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N04",
+        "category": "input",
+        "capability": "topic id missing from the manifest",
+        "expectedFailure": "request refused before any send",
+        "dcRef": null,
+        "expected": {
+          "inputClassification": "refused:topic_not_registered",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "refused:topic_not_registered",
+          "egressDecision": "not_evaluated",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "inputClassification",
+          "code": "topic_not_registered"
+        },
+        "record": {
+          "filesDigest": "a0d1af1025f41d6fa4b124fd4f88b6527406aff120614e54eddeab79535cc0d9",
+          "manifestSha256": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+          "approval": "pending",
+          "events": 2,
+          "publicTextOmitted": 1,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N05",
+        "category": "input",
+        "capability": "manifest entry bound to a different policy hash",
+        "expectedFailure": "request refused before any send",
+        "dcRef": null,
+        "expected": {
+          "inputClassification": "refused:policy_hash_mismatch",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "refused:policy_hash_mismatch",
+          "egressDecision": "not_evaluated",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "inputClassification",
+          "code": "policy_hash_mismatch"
+        },
+        "record": {
+          "filesDigest": "a0d1af1025f41d6fa4b124fd4f88b6527406aff120614e54eddeab79535cc0d9",
+          "manifestSha256": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+          "approval": "pending",
+          "events": 2,
+          "publicTextOmitted": 1,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N06",
+        "category": "input",
+        "capability": "manifest entry with a class outside the profile",
+        "expectedFailure": "request refused before any send",
+        "dcRef": null,
+        "expected": {
+          "inputClassification": "refused:unknown_data_class",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "refused:unknown_data_class",
+          "egressDecision": "not_evaluated",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "inputClassification",
+          "code": "unknown_data_class"
+        },
+        "record": {
+          "filesDigest": "a0d1af1025f41d6fa4b124fd4f88b6527406aff120614e54eddeab79535cc0d9",
+          "manifestSha256": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+          "approval": "pending",
+          "events": 2,
+          "publicTextOmitted": 1,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N07",
+        "category": "egress",
+        "capability": "team-internal topic sent to a model provider",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": "DC-03",
+        "expected": {
+          "inputClassification": "admitted:TEAM_INTERNAL",
+          "egressDecision": "refused:data_class_above_destination_ceiling",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:TEAM_INTERNAL",
+          "egressDecision": "refused:data_class_above_destination_ceiling",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "data_class_above_destination_ceiling"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N08",
+        "category": "egress",
+        "capability": "restricted-class topic sent to a model provider",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": "DC-03",
+        "expected": {
+          "egressDecision": "refused:data_class_above_destination_ceiling",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:KORAIL_RESTRICTED",
+          "egressDecision": "refused:data_class_above_destination_ceiling",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "data_class_above_destination_ceiling"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N09",
+        "category": "egress",
+        "capability": "search destination that is not on the profile list",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": "DC-10",
+        "expected": {
+          "egressDecision": "refused:destination_not_in_profile",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:destination_not_in_profile",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "destination_not_in_profile"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N10",
+        "category": "egress",
+        "capability": "public topic without any recorded egress approval",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": "DC-03",
+        "expected": {
+          "egressDecision": "refused:egress_approval_not_recorded",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:egress_approval_not_recorded",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "egress_approval_not_recorded"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N11",
+        "category": "egress",
+        "capability": "egress approval recorded as pending only",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": null,
+        "expected": {
+          "egressDecision": "refused:egress_approval_not_recorded",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:egress_approval_not_recorded",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "egress_approval_not_recorded"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N12",
+        "category": "egress",
+        "capability": "reviewer role using the authoring destination",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": null,
+        "expected": {
+          "egressDecision": "refused:role_not_permitted_for_destination",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:role_not_permitted_for_destination",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "role_not_permitted_for_destination"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N13",
+        "category": "egress",
+        "capability": "manifest model outside the authoring role scope",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": "DC-06",
+        "expected": {
+          "egressDecision": "refused:model_outside_role_scope",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:model_outside_role_scope",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "model_outside_role_scope"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N14",
+        "category": "egress",
+        "capability": "model-generated query carrying a credential",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": null,
+        "expected": {
+          "egressDecision": "refused:query_contains_secret",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:query_contains_secret",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "query_contains_secret"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N15",
+        "category": "egress",
+        "capability": "query carrying an e-mail address",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": null,
+        "expected": {
+          "egressDecision": "refused:query_contains_personal",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:query_contains_personal",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "query_contains_personal"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N16",
+        "category": "egress",
+        "capability": "query carrying a local absolute path",
+        "expectedFailure": "egress refused, no send",
+        "dcRef": null,
+        "expected": {
+          "egressDecision": "refused:query_contains_absolute_path",
+          "transportSends": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:query_contains_absolute_path",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 0,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "query_contains_absolute_path"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N17",
+        "category": "egress",
+        "capability": "redirect to a different host (destination bypass)",
+        "expectedFailure": "hop refused and not followed",
+        "dcRef": "DC-10",
+        "expected": {
+          "egressDecision": "refused:redirect_to_other_host",
+          "outputSanitization": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:redirect_to_other_host",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "redirect_to_other_host"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N18",
+        "category": "output",
+        "capability": "output text with a credential",
+        "expectedFailure": "output refused; publication refused even with approval",
+        "dcRef": null,
+        "expected": {
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_contains_secret",
+          "publication": "refused:sanitization_not_passed",
+          "removals": {
+            "secret": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_contains_secret",
+          "publicApproval": "unknown",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "refused:sanitization_not_passed",
+          "removals": {
+            "secret": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "output_contains_secret"
+        },
+        "record": {
+          "filesDigest": "48698c4a2771bd662b9fe884c4c7ac496b19fba49aa959193e35c9284f21804e",
+          "manifestSha256": "47976afb8ebf0297fea4a373038545c0ece0d7ad7c0a537dc43249bf294a2ada",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "secret": 1
+          }
+        },
+        "publication": {
+          "result": "refused:sanitization_not_passed"
+        },
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N19",
+        "category": "output",
+        "capability": "output excerpt with an e-mail address",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:output_contains_personal",
+          "removals": {
+            "personal": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_contains_personal",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "personal": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "output_contains_personal"
+        },
+        "record": {
+          "filesDigest": "88f15cbd0ca3ce6cb0c1977092b5fed351034e04acdbd73daf3cf6eb1160bbd2",
+          "manifestSha256": "bb9e90e3f70d7f6dd9f70a000e710c75ee1aff36aef5bb1bd688608bc3e69ea8",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "personal": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N20",
+        "category": "output",
+        "capability": "output title with a Windows absolute path",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:output_contains_absolute_path",
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_contains_absolute_path",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "output_contains_absolute_path"
+        },
+        "record": {
+          "filesDigest": "135bc681554d0e5b0901a444ee06e72863a57a19fe86827d64c625b27e644036",
+          "manifestSha256": "1488ae99166f180fee9f39cabfda2bd08f669fee80273f4c9ace61b122fd6833",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N21",
+        "category": "output",
+        "capability": "output excerpt with a POSIX absolute path",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:output_contains_absolute_path"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_contains_absolute_path",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "output_contains_absolute_path"
+        },
+        "record": {
+          "filesDigest": "135bc681554d0e5b0901a444ee06e72863a57a19fe86827d64c625b27e644036",
+          "manifestSha256": "1488ae99166f180fee9f39cabfda2bd08f669fee80273f4c9ace61b122fd6833",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N22",
+        "category": "output",
+        "capability": "evidence URL over plain http",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:url_not_https"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:url_not_https",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "url_not_https"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N23",
+        "category": "output",
+        "capability": "evidence URL on a look-alike domain outside the topic allow list",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:url_domain_not_allowed"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:url_domain_not_allowed",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "url_domain_not_allowed"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N24",
+        "category": "output",
+        "capability": "evidence URL with a credential query key",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:url_credential_query"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:url_credential_query",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "url_credential_query"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N25",
+        "category": "output",
+        "capability": "evidence URL with userinfo",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:url_userinfo"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:url_userinfo",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "url_userinfo"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N26",
+        "category": "output",
+        "capability": "excerpt longer than 500 characters",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:excerpt_too_long"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:excerpt_too_long",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "excerpt_too_long"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N27",
+        "category": "output",
+        "capability": "search result text instructing the harness to call a tool",
+        "expectedFailure": "output refused as data, nothing dispatched",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:embedded_instruction",
+          "dispatchedToolCalls": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:embedded_instruction",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "embedded_instruction"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N28",
+        "category": "output",
+        "capability": "output with an unexpected tool-call field",
+        "expectedFailure": "output refused as undecidable, nothing dispatched",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:output_schema_invalid",
+          "dispatchedToolCalls": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_schema_invalid",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "output_schema_invalid"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N29",
+        "category": "publication",
+        "capability": "publication approval bound to another manifest digest",
+        "expectedFailure": "publication refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "clean",
+          "publicApproval": "approved",
+          "publication": "refused:approval_bound_to_other_manifest"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "approved",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "refused:approval_bound_to_other_manifest",
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "refusal": {
+          "stage": "publicApproval",
+          "code": "approval_bound_to_other_manifest"
+        },
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": {
+          "result": "refused:approval_bound_to_other_manifest"
+        },
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N30",
+        "category": "publication",
+        "capability": "egress approval owner presented as publication approval",
+        "expectedFailure": "publication refused",
+        "dcRef": null,
+        "expected": {
+          "publicApproval": "unknown",
+          "publication": "refused:approval_owner_not_publication"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "unknown",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "refused:approval_owner_not_publication",
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "refusal": {
+          "stage": "publicApproval",
+          "code": "approval_owner_not_publication"
+        },
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": {
+          "result": "refused:approval_owner_not_publication"
+        },
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N31",
+        "category": "publication",
+        "capability": "approved decision without a decision reference",
+        "expectedFailure": "publication refused",
+        "dcRef": null,
+        "expected": {
+          "publication": "refused:approval_record_invalid"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "unknown",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "refused:approval_record_invalid",
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "refusal": {
+          "stage": "publicApproval",
+          "code": "approval_record_invalid"
+        },
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": {
+          "result": "refused:approval_record_invalid"
+        },
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N32",
+        "category": "publication",
+        "capability": "publication over an existing research file",
+        "expectedFailure": "publication refused; existing bytes unchanged",
+        "dcRef": null,
+        "expected": {
+          "publicApproval": "approved",
+          "publication": "refused:target_exists_no_overwrite",
+          "existingUnchanged": true
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "approved",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "refused:target_exists_no_overwrite",
+          "removals": {
+            "suspected_sensitive": 1
+          },
+          "existingUnchanged": true
+        },
+        "refusal": {
+          "stage": "publicApproval",
+          "code": "target_exists_no_overwrite"
+        },
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": {
+          "result": "refused:target_exists_no_overwrite"
+        },
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N33",
+        "category": "publication",
+        "capability": "slug escaping the research directory",
+        "expectedFailure": "publication refused",
+        "dcRef": null,
+        "expected": {
+          "publication": "refused:invalid_slug"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "clean",
+          "publicApproval": "approved",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": "refused:invalid_slug",
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "refusal": {
+          "stage": "publicApproval",
+          "code": "invalid_slug"
+        },
+        "record": {
+          "filesDigest": "3d40468589f3aac7ce50b7753aef4acccc659cf3e3c1a9ff753c5cce33d62c71",
+          "manifestSha256": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+          "approval": "pending",
+          "events": 4,
+          "publicTextOmitted": 3,
+          "removals": {
+            "suspected_sensitive": 1
+          }
+        },
+        "publication": {
+          "result": "refused:invalid_slug"
+        },
+        "matched": true,
+        "mismatches": []
+      }
+    ]
+  },
+  "checksRun": [
+    {
+      "check": "proposed test: scripts/team/R-06/test_egress_controls.py",
+      "command": "python -m unittest discover -s scripts/team/R-06 -p 'test_*.py' -v",
+      "exitCode": 0,
+      "ran": 12,
+      "result": "OK",
+      "stderrSha256": "0efa3d4725503f3a1c92aa9bad857aae19d682f494195bb736ea5bdf74905ddb"
+    },
+    {
+      "check": "inspection: R-06 output fields vs M1-05 central schema",
+      "result": "every case produced an M1-05 public_candidate and public_manifest verified by record_pipeline.verify with approval pending; publication approval records are validated against $defs.approval read from the schema file; schema, pipeline and profile digests are checked before any case",
+      "schemaSha256": "451fcc0bb395e7c75d196bec43c91bac7228dff62dff9864196d1bdedd474427",
+      "pipelineSha256": "8b0f94c0aef552d9787524abe558816435293d5cd487eb5592d2e397faba554b",
+      "manifestDigests": {
+        "R06-P01": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-P02": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-P03": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-N01": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+        "R06-N02": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+        "R06-N03": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+        "R06-N04": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+        "R06-N05": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+        "R06-N06": "9b712c82141d70f2aa437d12f6addbca3f26e647a099316c3bc0a7d3a578e189",
+        "R06-N07": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N08": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N09": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N10": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N11": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N12": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N13": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N14": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N15": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N16": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N17": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+        "R06-N18": "47976afb8ebf0297fea4a373038545c0ece0d7ad7c0a537dc43249bf294a2ada",
+        "R06-N19": "bb9e90e3f70d7f6dd9f70a000e710c75ee1aff36aef5bb1bd688608bc3e69ea8",
+        "R06-N20": "1488ae99166f180fee9f39cabfda2bd08f669fee80273f4c9ace61b122fd6833",
+        "R06-N21": "1488ae99166f180fee9f39cabfda2bd08f669fee80273f4c9ace61b122fd6833",
+        "R06-N22": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N23": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N24": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N25": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N26": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N27": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N28": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N29": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-N30": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-N31": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-N32": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-N33": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a"
+      }
+    },
+    {
+      "check": "mutation controls (in-memory source replacement; file on disk unchanged)",
+      "mutations": [
+        {
+          "mutation": "unlisted destination falls back to the first profile destination",
+          "testsRun": 12,
+          "failures": 3,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N09"
+          ]
+        },
+        {
+          "mutation": "source domain check weakened to substring match",
+          "testsRun": 12,
+          "failures": 1,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N23"
+          ]
+        },
+        {
+          "mutation": "publication approval not compared with this manifest digest",
+          "testsRun": 12,
+          "failures": 2,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N29"
+          ]
+        },
+        {
+          "mutation": "e-mail address rule removed",
+          "testsRun": 12,
+          "failures": 2,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N15",
+            "R06-N19"
+          ]
+        },
+        {
+          "mutation": "redirect host comparison removed",
+          "testsRun": 12,
+          "failures": 3,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N17"
+          ]
+        }
+      ]
+    }
+  ],
+  "observations": [
+    {
+      "id": "OBS-01",
+      "subject": "M1-05 suspected-sensitive pattern",
+      "observed": "a clean output event containing an https URL is removed as suspected_sensitive by record_pipeline (the drive-letter branch of its pattern matches the 's:/' in 'https://')",
+      "cases": [
+        "R06-P01",
+        "R06-P02",
+        "R06-P03",
+        "R06-N29",
+        "R06-N30",
+        "R06-N31",
+        "R06-N32",
+        "R06-N33"
+      ],
+      "effect": "over-redaction only; the public candidate already omits free text, so no leak. Reported to the #21 owner; #21 files are not modified here."
+    }
+  ],
+  "failedAttempts": [
+    {
+      "attempt": "first mutation-control run",
+      "observed": "the destination-fallback mutation made an unscripted send and FakeTransport raised IndexError, stopping the whole run",
+      "handling": "FakeTransport now counts an unscripted send and returns an empty body that the sanitiser refuses, so the mutation shows as a case mismatch; tests and cases rerun after the change"
+    }
+  ],
+  "blockers": [
+    {
+      "id": "BLK-01",
+      "subject": "search destination",
+      "detail": "ADR 0004 names a search capability, but the profile egress.destinations has no search destination or approval owner, so every search request is refused (R06-N09). A PM decision to add the destination, its data-class ceiling and approval owner is needed before a search egress can be allowed."
+    },
+    {
+      "id": "BLK-02",
+      "subject": "harness actor role",
+      "detail": "the profile has no research-harness role; the cases use role:authoring-agent with DEST-MODEL-AUTHOR. Whether the research harness is its own actor (ADR 0004 decision 1) is a PM decision."
+    },
+    {
+      "id": "BLK-03",
+      "subject": "harness wiring",
+      "detail": "tools/research/research.py is not wired to these controls; wiring is outside this work order's write scope."
+    },
+    {
+      "id": "BLK-04",
+      "subject": "accept evidence index",
+      "detail": "docs/evidence/R-06/executed-egress-output-verification-index.json is an accept-phase output and is not written by this candidate."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "acceptance[0] input classification, egress destination and output/public approval are distinct fields",
+      "evidence": "research-control.json /stages; every case carries inputClassification, egressDecision, outputSanitization and publicApproval; test_the_four_stage_fields_are_independent (R06-P02, N09, N18, N29)"
+    },
+    {
+      "criterion": "acceptance[1] synthetic negative cases cover secret/PII/path leakage and destination bypass",
+      "evidence": "secret R06-N14/N18/N24, personal N15/N19, path N16/N20/N21, destination bypass N09/N17/N23, plus input N01-N06, egress N07-N13, output N22/N25-N28, publication N29-N33"
+    },
+    {
+      "criterion": "acceptance[2] no actual sensitive research executes",
+      "evidence": "/noSensitiveExecution; fake transport; syntheticMarkersInReport empty"
+    },
+    {
+      "criterion": "acceptance[3] #21 schema consumed via version/reference, not rewritten",
+      "evidence": "/schemaBinding (path, schemaVersion, sha256); record_pipeline imported; digest drift stops the run (test_digest_drift_or_missing_control_stops_before_any_case); #21 files unchanged"
+    },
+    {
+      "criterion": "acceptance[4] synthetic positive/negative egress results bound to the #21 candidate schema digest, not control-spec presence",
+      "evidence": "/run/cases[*].record manifest digests under /schemaBinding; /checksRun"
+    }
+  ],
+  "limits": [
+    "Decisions come from candidate code with an in-process fake transport; proxy, raw-socket or subprocess network bypass is not tested (OS or firewall enforcement belongs to M1-03).",
+    "Sanitiser patterns are a candidate ruleset, not a complete sensitive-data detector.",
+    "Approval records are synthetic and unauthenticated.",
+    "The accept-phase profile and M1-02 policy record are not bound yet.",
+    "No independent review has been performed."
+  ]
+}
