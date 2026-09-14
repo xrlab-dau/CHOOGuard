@@ -1,0 +1,975 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "indexId": "R-04-evidence-candidate-index",
+  "issue": 44,
+  "workId": "R-04",
+  "phase": "candidate",
+  "artifact": "artifact:44:R-04-evidence:candidate",
+  "recordType": "machine_observation_not_approval",
+  "overwritePolicy": "Append or replace this versioned index only with a new manifest entry; never overwrite or fabricate a prior raw execution receipt.",
+  "rawStorage": "Raw stdout/stderr logs, receipts and case records stay outside Git under <RUN_ROOT>; this index keeps sha256 digests only.",
+  "entries": [
+    {
+      "runId": "r04-20260914T162337Z",
+      "capturedAt": "2026-09-14T16:27:41Z",
+      "baseline": {
+        "ref": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+        "input": "artifact:43:R-03-governance-diff:candidate (#43 CLOSED; review input only, not permission to alter settings)",
+        "checkout": "fresh git worktree outside the working checkout, detached at the ref; tracked changes after all cases: 0"
+      },
+      "capability": {
+        "machineLabel": "local",
+        "route": "anonymous developer Windows laptop; no school PC, location, high-spec or named-owner condition",
+        "os": "Microsoft Windows 11 Education 10.0.26200 64-bit",
+        "activeCodePage": 949,
+        "userProfilePathAscii": false,
+        "powershell": "Windows PowerShell 5.1.26100.9444",
+        "python": "CPython 3.11.9 (Microsoft Store build; interpreter path under the non-ASCII user profile)",
+        "node": "v24.19.0",
+        "npm": "present; no global prefix directory before or after the run",
+        "pi": "absent",
+        "uv": "absent",
+        "pwsh7": "absent",
+        "symlinkPrivilege": "absent (junctions available)"
+      },
+      "sources": {
+        "ref": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+        "sha256": {
+          "scripts/bootstrap/bootstrap.ps1": "9ab6347d22ff10d785dbe8bc2c181eedb2af7eab3d16b4e50b172b5e0bb74427",
+          "scripts/bootstrap/bootstrap.sh": "4627494029dc7820ddf3d352317375f759a3efa34bc8697f62e29f1e1eff419f",
+          "scripts/bootstrap/verify_toolchain.py": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+          "scripts/bootstrap/test_verify_toolchain.py": "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad",
+          "scripts/bootstrap/test_bootstrap_powershell.py": "ccb71511605704241716e8673562efb62d3822a3d66dcbde00adacc469f597bb",
+          "docs/team/R-03/governance-diff.md": "b5a0d94072191fc6874df4648ad8e8b3498944e08c5e3edd50d0ed4b4640a966",
+          "docs/team/R-03/verification.json": "b7cf4a3d4d9e6914846300c9ad001aa1564ef343eced2245d88e76b9789b09cf",
+          "docs/context/work-orders/044.json": "6b0f6bddd6e64d9b9f2b564debe58427f846d881ba5c5748331f587678a62bdd",
+          "docs/context/work-orders/052.json": "ddd1fadc10424e95ac4c879a9a4a99296b1ffa2d4be6b029af92c80a6a1ae1bf"
+        }
+      },
+      "unreadSources": [
+        {
+          "path": "docs/choo-guard-native-validation.md",
+          "reason": "local_unpublished without qualified ref/digest; not read"
+        }
+      ],
+      "steps": [
+        {
+          "id": "PY-1",
+          "label": "python",
+          "check": "python3 -m unittest discover -s scripts/bootstrap -p 'test_*.py'",
+          "argv": "python -m unittest discover -s scripts/bootstrap -p test_*.py -v  (cwd <CHECKOUT>, PYTHONUTF8=1)",
+          "interpreter": "CPython 3.11.9, path under non-ASCII user profile",
+          "result": {
+            "exitCode": 1,
+            "ran": 42,
+            "passed": 35,
+            "failed": 5,
+            "errors": 0,
+            "skipped": 2,
+            "failedTests": [
+              "test_default_never_installs_or_syncs",
+              "test_failed_native_npm_stops_before_sync_and_verification",
+              "test_failed_native_uv_stops_before_verification",
+              "test_installed_node_version_check_survives_powershell_quoting",
+              "test_verifier_exit_code_is_preserved"
+            ],
+            "skippedTests": [
+              {
+                "test": "Retain the real POSIX permissions check in addition to fault injection.",
+                "reason": "POSIX permissions are unavailable"
+              },
+              {
+                "test": "test_package_tree_link_cannot_escape",
+                "reason": "이 환경에서는 심볼릭 링크 생성 권한이 없다"
+              }
+            ],
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "6ba54717c69ff83bf3b5e33b7d67e5c1fff826e80a3f1a641b8fe8fac92123c7"
+          },
+          "outcome": "failed",
+          "failureCause": "All 5 failures are test_bootstrap_powershell.PowerShellBootstrapTests cases. The test writes UTF-8 .cmd shims that embed sys.executable and the dispatcher path; cmd.exe reads .cmd files in the active OEM code page (949), so a non-ASCII interpreter path is mangled and every shim reports 'The system cannot find the path specified'. bootstrap.ps1 then stops at the Node step (fail-closed), which contradicts the test expectations. This is a test-harness portability defect, not a bootstrap.ps1 behavior failure; the native cases below exercise the same behaviors with real tools."
+        },
+        {
+          "id": "PY-1-control-A",
+          "label": "python-diagnostic-control",
+          "argv": "<ASCII junction to CPython 3.12.4>/python.exe -m unittest discover -s scripts/bootstrap -p test_*.py -v  (cwd = worktree at ASCII path, same ref)",
+          "result": {
+            "exitCode": 0,
+            "ran": 42,
+            "passed": 40,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 2,
+            "failedTests": [],
+            "skippedTests": [
+              {
+                "test": "Retain the real POSIX permissions check in addition to fault injection.",
+                "reason": "POSIX permissions are unavailable"
+              },
+              {
+                "test": "test_package_tree_link_cannot_escape",
+                "reason": "이 환경에서는 심볼릭 링크 생성 권한이 없다"
+              }
+            ],
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "7a2ef710686641be52eafa025049c91e5ff4febe0221acbb8aead4830a5376d6"
+          },
+          "outcome": "passed",
+          "purpose": "Same ref with both the checkout and the interpreter at ASCII paths."
+        },
+        {
+          "id": "PY-1-control-B",
+          "label": "python-diagnostic-control",
+          "argv": "<CPython 3.12.4 via its non-ASCII install path>/python.exe -m unittest discover -s scripts/bootstrap -p test_*.py -v  (cwd = the same ASCII worktree)",
+          "result": {
+            "exitCode": 1,
+            "ran": 42,
+            "passed": 35,
+            "failed": 5,
+            "errors": 0,
+            "skipped": 2,
+            "failedTests": [
+              "test_default_never_installs_or_syncs",
+              "test_failed_native_npm_stops_before_sync_and_verification",
+              "test_failed_native_uv_stops_before_verification",
+              "test_installed_node_version_check_survives_powershell_quoting",
+              "test_verifier_exit_code_is_preserved"
+            ],
+            "skippedTests": [
+              {
+                "test": "Retain the real POSIX permissions check in addition to fault injection.",
+                "reason": "POSIX permissions are unavailable"
+              },
+              {
+                "test": "test_package_tree_link_cannot_escape",
+                "reason": "이 환경에서는 심볼릭 링크 생성 권한이 없다"
+              }
+            ],
+            "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "stderrSha256": "d0e7001b3b80a7d32875048b6d0bbce15ba10f4722cf52f57b9a7b936bc8a5a8"
+          },
+          "outcome": "failed",
+          "purpose": "Changes only the interpreter path relative to control A; the same 5 tests fail, isolating the non-ASCII interpreter path as the cause."
+        },
+        {
+          "id": "NATIVE",
+          "label": "native-windows",
+          "check": "Windows capability command: bootstrap.ps1 with declared OS/target",
+          "entry": "powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts/bootstrap/bootstrap.ps1 -MachineLabel local (no -AutoInstall), plus direct verify_toolchain.py calls for receipt path and policy-hash cases",
+          "cases": [
+            {
+              "id": "N1-default-local",
+              "startedAt": "2026-09-14T16:27:41Z",
+              "argv": [
+                "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "scripts\\bootstrap\\bootstrap.ps1",
+                "-MachineLabel",
+                "local"
+              ],
+              "exitCode": 1,
+              "stdoutSha256": "4dc8cdd473a676d8ed3859550b17f0e31145f27b704b7c79104d6c398ce66ecd",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "installStateBefore": {
+                "npmGlobalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "pi": false,
+                "uv": false,
+                "researchVenv": false,
+                "piNpm": false
+              },
+              "installStateAfter": {
+                "npmGlobalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                "pi": false,
+                "uv": false,
+                "researchVenv": false,
+                "piNpm": false
+              },
+              "assertions": [
+                {
+                  "name": "no global npm/pi/uv install or research sync",
+                  "expected": {
+                    "npmGlobalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                    "pi": false,
+                    "uv": false,
+                    "researchVenv": false,
+                    "piNpm": false
+                  },
+                  "observed": {
+                    "npmGlobalSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                    "pi": false,
+                    "uv": false,
+                    "researchVenv": false,
+                    "piNpm": false
+                  },
+                  "ok": true
+                },
+                {
+                  "name": "bootstrap exit equals direct verifier exit",
+                  "expected": 1,
+                  "observed": 1,
+                  "ok": true
+                },
+                {
+                  "name": "default prints no-install guidance instead of installing",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "verifier reached",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                }
+              ],
+              "verifierDirect": {
+                "id": "N1b-verifier-direct",
+                "startedAt": "2026-09-14T16:27:44Z",
+                "argv": [
+                  "<PYTHON>",
+                  "scripts/bootstrap/verify_toolchain.py",
+                  "--label",
+                  "local"
+                ],
+                "exitCode": 1,
+                "stdoutSha256": "3ff8add6067912c5a7e17febb3e892f89446a9c3f890f90bb68365921efad68e",
+                "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "failedChecks": [
+                "pi",
+                "pi_packages",
+                "research_venv",
+                "uv"
+              ]
+            },
+            {
+              "id": "N2-invalid-label",
+              "startedAt": "2026-09-14T16:27:44Z",
+              "argv": [
+                "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "scripts\\bootstrap\\bootstrap.ps1",
+                "-MachineLabel",
+                "invalid-label"
+              ],
+              "exitCode": 1,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "7f2829a6762909bf8210cd44161445ab53b2fc6c105f4ec3b750610468caeb4a",
+              "assertions": [
+                {
+                  "name": "nonzero",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no step output",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N3-missing-label",
+              "startedAt": "2026-09-14T16:27:44Z",
+              "argv": [
+                "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "scripts\\bootstrap\\bootstrap.ps1"
+              ],
+              "exitCode": 1,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "dc1f38f0c3afbb47ed681b207ef0f5b99912bc25e428d79de628ff7efe76079c",
+              "assertions": [
+                {
+                  "name": "nonzero",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no step output",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N4-missing-python",
+              "startedAt": "2026-09-14T16:27:44Z",
+              "argv": [
+                "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "scripts\\bootstrap\\bootstrap.ps1",
+                "-MachineLabel",
+                "local"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "96c075b49ffcfadacf5d31abdca951448b618e8f6fd6feb3ae7b8d3b8cd83a27",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "path": "SystemRoot\\System32; SystemRoot; WindowsPowerShell\\v1.0; Git\\cmd; nodejs (no python/py/uv/pi)",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "verifier not reached",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N5-missing-node",
+              "startedAt": "2026-09-14T16:27:45Z",
+              "argv": [
+                "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.EXE",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "scripts\\bootstrap\\bootstrap.ps1",
+                "-MachineLabel",
+                "local"
+              ],
+              "exitCode": 1,
+              "stdoutSha256": "8416c3920797f615d6fb0ab2bb219536df30ff78f41278594167956778aad465",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "assertions": [
+                {
+                  "name": "nonzero",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "node check fails in receipt output",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6a-parent-escape",
+              "startedAt": "2026-09-14T16:27:46Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "../r04-outside.json"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "7d24f0cfa55ee5733ab626a11d9af59357a7412ed3947e4246c7f6ca17f271d5",
+              "target": "../r04-outside.json",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6b-absolute",
+              "startedAt": "2026-09-14T16:27:47Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "<RUN_ROOT>/absolute.json"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "9b9d02e20f1c2422702fc245fabdf3d6cc634aaf720c31bdf2fd920b40257079",
+              "target": "<RUN_ROOT>/absolute.json",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6c-dotdot-inside-evidence",
+              "startedAt": "2026-09-14T16:27:47Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "docs/evidence/../../AGENTS.md"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "7a06013166e24e2bc23fb464e0f555e60adb28e44bc9a864a61da2493b8eb7c5",
+              "target": "docs/evidence/../../AGENTS.md",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6d-outside-evidence-root",
+              "startedAt": "2026-09-14T16:27:47Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "docs/context/r04-probe.json"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "3895d3d1247184b60639329456a9426600575e0585c4b0495bb2a7775d0f21bc",
+              "target": "docs/context/r04-probe.json",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6e-not-json",
+              "startedAt": "2026-09-14T16:27:47Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "docs/evidence/r04-probe/receipt.txt"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "4035ff5c5c1c95dc9e4a26b2baee37d2bf014df77ff876c06df0083968e4dcca",
+              "target": "docs/evidence/r04-probe/receipt.txt",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6f-existing-receipt",
+              "startedAt": "2026-09-14T16:27:47Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "docs/evidence/foundation/2026-09-07-flat-evacuation.json"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "de42509877543892df053d8114a040dbae7cc37fd6ced4e2b95405d44726dafb",
+              "target": "docs/evidence/foundation/2026-09-07-flat-evacuation.json",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6g-junction-escape",
+              "startedAt": "2026-09-14T16:27:47Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "docs/evidence/r04-junction-probe/receipt.json"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "3498d9e02763e8e1c3371ed4d43c0194ce61e36f4ff99a83cad0e3698c0c3995",
+              "target": "docs/evidence/r04-junction-probe/receipt.json",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N6h-backslash-parent",
+              "startedAt": "2026-09-14T16:27:47Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local",
+                "--write",
+                "..\\r04-outside.json"
+              ],
+              "exitCode": 2,
+              "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "stderrSha256": "9e1da8ccceb17e333c534dcae2f20742abad134962c886a975cd60ad9ea502f3",
+              "target": "..\\r04-outside.json",
+              "assertions": [
+                {
+                  "name": "exit code",
+                  "expected": 2,
+                  "observed": 2,
+                  "ok": true
+                },
+                {
+                  "name": "no scan started",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                },
+                {
+                  "name": "outside dir untouched",
+                  "expected": [],
+                  "observed": [],
+                  "ok": true
+                },
+                {
+                  "name": "existing receipt unchanged",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "no file outside checkout",
+                  "expected": false,
+                  "observed": false,
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N7-policy-hash-drift",
+              "before": {
+                "id": "N7a-receipt-before",
+                "startedAt": "2026-09-14T16:27:47Z",
+                "argv": [
+                  "<PYTHON>",
+                  "scripts/bootstrap/verify_toolchain.py",
+                  "--label",
+                  "local",
+                  "--write",
+                  "docs/evidence/r04-probe/receipt-before.json"
+                ],
+                "exitCode": 1,
+                "stdoutSha256": "d300a2a42631c190e2c84d8330099b6babb4a1c84b3b58191779ee2eab8918d3",
+                "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "after": {
+                "id": "N7b-receipt-after-tamper",
+                "startedAt": "2026-09-14T16:27:48Z",
+                "argv": [
+                  "<PYTHON>",
+                  "scripts/bootstrap/verify_toolchain.py",
+                  "--label",
+                  "local",
+                  "--write",
+                  "docs/evidence/r04-probe/receipt-after.json"
+                ],
+                "exitCode": 1,
+                "stdoutSha256": "e004629238ca66fb077e85ed728500e3227371dd20f099ba278ef84e89b65eee",
+                "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              "changedPolicyHashes": [
+                "AGENTS.md"
+              ],
+              "receiptBeforeSha256": "676a9c5a15f8ff9a29dc4d224e49d0a64bce7b293eb524943ed44c0f7438f5a4",
+              "receiptAfterSha256": "6d94dae3b2ffdbcf43b3d158518d31ad1bcba26e00ee1a98326e8a031c3ecb54",
+              "requiredOkBefore": false,
+              "requiredOkAfter": false,
+              "exitBefore": 1,
+              "exitAfter": 1,
+              "assertions": [
+                {
+                  "name": "only AGENTS.md hash changed",
+                  "expected": [
+                    "AGENTS.md"
+                  ],
+                  "observed": [
+                    "AGENTS.md"
+                  ],
+                  "ok": true
+                },
+                {
+                  "name": "verifier exit unchanged by policy tamper (no expected-hash baseline)",
+                  "expected": 1,
+                  "observed": 1,
+                  "ok": true
+                },
+                {
+                  "name": "AGENTS.md restored",
+                  "expected": "07dd278bcbbd76a605892ee2c0a671cc0d2631789b77749155c9aeb4077c7fa4",
+                  "observed": "07dd278bcbbd76a605892ee2c0a671cc0d2631789b77749155c9aeb4077c7fa4",
+                  "ok": true
+                }
+              ]
+            },
+            {
+              "id": "N8-missing-codeowners",
+              "startedAt": "2026-09-14T16:27:48Z",
+              "argv": [
+                "<PYTHON>",
+                "scripts/bootstrap/verify_toolchain.py",
+                "--label",
+                "local"
+              ],
+              "exitCode": 1,
+              "stdoutSha256": "4d55ba695ecf61d7cc09939d2ab86518f2a23fa534a01bf74d0c333638816660",
+              "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "assertions": [
+                {
+                  "name": "policy_hash_scope fails",
+                  "expected": true,
+                  "observed": true,
+                  "ok": true
+                },
+                {
+                  "name": "nonzero",
+                  "expected": 1,
+                  "observed": 1,
+                  "ok": true
+                }
+              ]
+            }
+          ],
+          "gitStatusAfter": [],
+          "outcome": "passed"
+        },
+        {
+          "id": "INSPECT-1",
+          "label": "inspection",
+          "check": "inspection: compare R-04 proposed tests with R-07 write set",
+          "r04CandidateWrites": [
+            "docs/team/R-04/",
+            "docs/evidence/R-04/",
+            "docs/evidence/R-04/evidence-candidate-index.json"
+          ],
+          "r07CandidateWrites": [
+            "docs/team/R-07/",
+            "docs/evidence/R-07/",
+            "scripts/team/R-07/**",
+            "docs/evidence/R-07/test-receipt-candidate-index.json"
+          ],
+          "overlap": [],
+          "sharedImplementationEdits": [],
+          "note": "R-04 reads and executes scripts/bootstrap/** without editing it; R-07 (#52) is OPEN with no assignee, branch or open PR touching scripts/bootstrap at capture time.",
+          "sources": {
+            "docs/context/work-orders/044.json": "6b0f6bddd6e64d9b9f2b564debe58427f846d881ba5c5748331f587678a62bdd",
+            "docs/context/work-orders/052.json": "ddd1fadc10424e95ac4c879a9a4a99296b1ffa2d4be6b029af92c80a6a1ae1bf"
+          },
+          "outcome": "passed"
+        }
+      ],
+      "separation": "PY-* are Python unittest results; NATIVE cases are real Windows PowerShell/tool executions; INSPECT-1 is a static write-set comparison. None is promoted into another.",
+      "findings": [
+        {
+          "id": "F1",
+          "severity": "test-harness defect",
+          "path": "scripts/bootstrap/test_bootstrap_powershell.py",
+          "summary": "PowerShell bootstrap tests fail on Windows when the Python interpreter path is non-ASCII and the console code page is not UTF-8 (5 of 8 tests).",
+          "evidence": [
+            "PY-1",
+            "PY-1-control-A",
+            "PY-1-control-B"
+          ],
+          "suggestedOwner": "scripts/bootstrap test owner or R-07 (#52) serialized integration; R-04 does not edit the file.",
+          "suggestedFix": "write the .cmd shims in the OEM code page, use short (8.3) paths, or invoke the dispatcher through a PowerShell/.exe shim instead of cmd."
+        },
+        {
+          "id": "F2",
+          "severity": "coverage gap",
+          "path": "scripts/bootstrap/verify_toolchain.py",
+          "summary": "The verifier records policy_sha256 but has no expected-hash baseline, so a policy byte change does not change required_ok or the exit code; mismatch is visible only by comparing receipts.",
+          "evidence": [
+            "NATIVE/N7-policy-hash-drift"
+          ],
+          "suggestedOwner": "R-07 (#52, verifier policy baseline and evidence binding)."
+        },
+        {
+          "id": "F3",
+          "severity": "environment",
+          "path": "scripts/bootstrap/test_verify_toolchain.py",
+          "summary": "test_package_tree_link_cannot_escape is skipped without symlink privilege; the native junction case N6g covers receipt-path escape through a junction, not the package-tree symlink scan.",
+          "evidence": [
+            "PY-1",
+            "NATIVE/N6g-junction-escape"
+          ]
+        }
+      ],
+      "notRun": [
+        "bootstrap.sh (POSIX entry point) — no Linux/macOS host in this run.",
+        "PowerShell 7 (pwsh) — not installed.",
+        "-AutoInstall paths with real npm/uv — would perform global installs; covered only by shim unit tests (which fail here per F1).",
+        "machineLabel school-pc — label value only; no school PC was used or required."
+      ],
+      "rawReceipts": {
+        "control-ascii-unittest.exit.txt": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+        "control-ascii-unittest.stderr.log": "7a2ef710686641be52eafa025049c91e5ff4febe0221acbb8aead4830a5376d6",
+        "control-ascii-unittest.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "control-nonascii-python312.exit.txt": "cf205dbb8cea84897b488abcc281bf96698d5e94b1096b16657b4caba9082a22",
+        "control-nonascii-python312.stderr.log": "d0e7001b3b80a7d32875048b6d0bbce15ba10f4722cf52f57b9a7b936bc8a5a8",
+        "control-nonascii-python312.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N1-default-local.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N1-default-local.stdout.log": "4dc8cdd473a676d8ed3859550b17f0e31145f27b704b7c79104d6c398ce66ecd",
+        "native/N1b-verifier-direct.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N1b-verifier-direct.stdout.log": "3ff8add6067912c5a7e17febb3e892f89446a9c3f890f90bb68365921efad68e",
+        "native/N2-invalid-label.stderr.log": "7f2829a6762909bf8210cd44161445ab53b2fc6c105f4ec3b750610468caeb4a",
+        "native/N2-invalid-label.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N3-missing-label.stderr.log": "dc1f38f0c3afbb47ed681b207ef0f5b99912bc25e428d79de628ff7efe76079c",
+        "native/N3-missing-label.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N4-missing-python.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N4-missing-python.stdout.log": "96c075b49ffcfadacf5d31abdca951448b618e8f6fd6feb3ae7b8d3b8cd83a27",
+        "native/N5-missing-node.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N5-missing-node.stdout.log": "8416c3920797f615d6fb0ab2bb219536df30ff78f41278594167956778aad465",
+        "native/N6a-parent-escape.stderr.log": "7d24f0cfa55ee5733ab626a11d9af59357a7412ed3947e4246c7f6ca17f271d5",
+        "native/N6a-parent-escape.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N6b-absolute.stderr.log": "9b9d02e20f1c2422702fc245fabdf3d6cc634aaf720c31bdf2fd920b40257079",
+        "native/N6b-absolute.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N6c-dotdot-inside-evidence.stderr.log": "7a06013166e24e2bc23fb464e0f555e60adb28e44bc9a864a61da2493b8eb7c5",
+        "native/N6c-dotdot-inside-evidence.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N6d-outside-evidence-root.stderr.log": "3895d3d1247184b60639329456a9426600575e0585c4b0495bb2a7775d0f21bc",
+        "native/N6d-outside-evidence-root.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N6e-not-json.stderr.log": "4035ff5c5c1c95dc9e4a26b2baee37d2bf014df77ff876c06df0083968e4dcca",
+        "native/N6e-not-json.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N6f-existing-receipt.stderr.log": "de42509877543892df053d8114a040dbae7cc37fd6ced4e2b95405d44726dafb",
+        "native/N6f-existing-receipt.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N6g-junction-escape.stderr.log": "3498d9e02763e8e1c3371ed4d43c0194ce61e36f4ff99a83cad0e3698c0c3995",
+        "native/N6g-junction-escape.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N6h-backslash-parent.stderr.log": "9e1da8ccceb17e333c534dcae2f20742abad134962c886a975cd60ad9ea502f3",
+        "native/N6h-backslash-parent.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N7a-receipt-before.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N7a-receipt-before.stdout.log": "d300a2a42631c190e2c84d8330099b6babb4a1c84b3b58191779ee2eab8918d3",
+        "native/N7b-receipt-after-tamper.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N7b-receipt-after-tamper.stdout.log": "e004629238ca66fb077e85ed728500e3227371dd20f099ba278ef84e89b65eee",
+        "native/N8-missing-codeowners.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "native/N8-missing-codeowners.stdout.log": "4d55ba695ecf61d7cc09939d2ab86518f2a23fa534a01bf74d0c333638816660",
+        "native/native-cases.json": "5cc11fd283f994a2e98631dab14deb7eca8b554e379cb6e4eac0aa7766129101",
+        "native/receipt-after.json": "6d94dae3b2ffdbcf43b3d158518d31ad1bcba26e00ee1a98326e8a031c3ecb54",
+        "native/receipt-before.json": "676a9c5a15f8ff9a29dc4d224e49d0a64bce7b293eb524943ed44c0f7438f5a4",
+        "py-unittest.exit.txt": "95baa97de608a87ff89fdaf8623103da9408a7eef888d96e859982778c94daa9",
+        "py-unittest.stderr.log": "6ba54717c69ff83bf3b5e33b7d67e5c1fff826e80a3f1a641b8fe8fac92123c7",
+        "py-unittest.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ]
+}
