@@ -1,0 +1,594 @@
+{
+  "schemaVersion": 1,
+  "kind": "r-03-governance-verification-plan",
+  "artifactId": "artifact:43:R-03-verification-plan:candidate",
+  "workId": "R-03",
+  "issueNumber": 43,
+  "phase": "candidate",
+  "artifactClass": "isolated_proposal",
+  "mode": "isolated_proposal",
+  "canonicalWriteAllowed": false,
+  "draftStatus": "candidate_draft",
+  "draftNotice": "이 파일은 이슈 #43(R-03) 후보(candidate) 위상의 초안이다. accepted / final / approved / complete 로 표기하지 않는다. 저자는 이 산출물의 후보 자격을 스스로 판정하지 않는다. 검사 결과를 정책 PASS 로 승격하지 않는다. 이 파일의 모든 경로·해시·개수·수치는 저자가 저장소 실물에 대해 직접 실행한 읽기 전용 명령의 관측값이며, 미판정 초안(.claude/worktrees/r-03-a, .claude/worktrees/r-03-b)에서 옮겨 적은 값은 하나도 없다. 이 파일은 .github/, CODEOWNERS, GitHub 설정을 변경하지 않았고 어떤 설정 변경도 승인하지 않는다.",
+  "approvalOwnerNote": "제안의 채택 여부를 판정하는 것은 이 파일이 아니라 PM 과 저장소 관리자(역할)다. 이 파일은 적용 후 검사 계획만 등록한다.",
+  "purpose": "제안된 보호 경로·GitHub 거버넌스 변경을 적용한 뒤 수행할 검사, 기대 실패, 롤백 안전 증거를 미리 고정한다. 이 계획은 어떤 변경도 적용하지 않은 상태에서 작성됐다.",
+
+  "scope": {
+    "workId": "R-03",
+    "issueNumber": 43,
+    "artifact": "artifact:43:R-03-verification-plan:candidate",
+    "declaredSourceScope": [
+      "docs/choo-guard-github-governance-audit-v1.md",
+      ".github/CODEOWNERS",
+      ".github/workflows/pr-triage.yml",
+      ".github/workflows/required-quality-gate.yml",
+      ".github/workflows/{nightly-gpu,reconstruction-ci,release,unity-build,unity-tests}.yml",
+      "scripts/bootstrap/verify_toolchain.py",
+      "scripts/ci/repository_policy.py",
+      "scripts/ci/pr_policy.py",
+      "scripts/ci/tests/test_repository_policy.py",
+      "docs/reviews/2026-09-06-r03-governance-review.md",
+      "docs/context/work-graph.json (비-ref 입력 — sourceRef 트리에 없음)",
+      "docs/context/work-orders/043.json (비-ref 입력 — sourceRef 트리에 없음)",
+      ".superpowers/sdd/m0-00-policy-baseline/frozen-criteria-43.md (untracked 패킷 입력)"
+    ],
+    "declaredRecipeScope": [
+      "읽기 전용 git/python3/grep/ls 명령",
+      "python3 scripts/ci/tests/test_repository_policy.py (C02 명령, 실행함)"
+    ],
+    "declaredTargetScope": [
+      "docs/team/R-03/verification.json",
+      "docs/team/R-03/governance-diff.md"
+    ],
+    "boundary": "R-03 / R-03-verification-plan 한정. source/recipe/target 범위를 여기서 선언하고 digest 로 결속한다. 검토 가능한 유계 후보이며 최종 제품 수용이 아니다.",
+    "writeScopeBoundary": "docs/team/R-03/ 만 (mode=isolated_proposal, canonicalWriteAllowed=false). .github/** 와 CODEOWNERS 는 work-graph writeScope 에서 read_only(lock: governance:protected-paths / governance:codeowners). 이 후보는 그 두 경로를 읽기만 했다.",
+    "excluded": [
+      "제품·런타임·설치·게시·병합 권한",
+      "GitHub settings / CODEOWNERS 실제 변경",
+      "live GitHub 설정 조회 및 비공개 부록 생성",
+      "M0-00·R-04·#45·#52 작업의 대체"
+    ]
+  },
+
+  "provenance": {
+    "author": "R-03 후보 워커 (이 세션)",
+    "note": "이 파일의 모든 사실은 저장소 실물에 대해 직접 실행한 명령으로 확인했다. 미판정 초안에서 옮겨 적은 값은 없다. 확인하지 못한 값은 unknown 으로 적었다.",
+    "draftsConsulted": [
+      ".claude/worktrees/r-03-a/docs/team/R-03/{governance-diff.md,verification.json} — 미판정 후보, 채택 아님, 값을 베끼지 않았다. 그 워크트리 HEAD 는 6490956d203549b56cbd86846120759889abb016 이다.",
+      ".claude/worktrees/r-03-b/docs/team/R-03/{governance-diff.md,verification.json} — 미판정 후보, 채택 아님, 값을 베끼지 않았다. 그 워크트리 HEAD 도 6490956d203549b56cbd86846120759889abb016 이다."
+    ],
+    "draftWorktreeVsWriteTarget": "초안이 쓰인 두 워크트리의 HEAD 는 sourceRef 와 같고(6490956d…), 이 후보가 쓰이는 작업트리의 HEAD 는 12c77b8c8abed8f97ff16bc3aaf7a4dca2bb5ce5 로 다르다. 두 트리는 동일하지 않다.",
+    "environment": {
+      "python3": "3.14.5",
+      "git": "2.51.0",
+      "platform": "darwin"
+    },
+    "verifiedFacts": [
+      {
+        "claim": "쓰기 대상 작업트리 HEAD 는 12c77b8c8abed8f97ff16bc3aaf7a4dca2bb5ce5 이고 브랜치는 bugfix/151-staging-ownership-boundary 다.",
+        "howVerified": "git rev-parse HEAD / git rev-parse --abbrev-ref HEAD",
+        "result": "12c77b8c8abed8f97ff16bc3aaf7a4dca2bb5ce5 / bugfix/151-staging-ownership-boundary"
+      },
+      {
+        "claim": "sourceRef 6490956d… 는 실제 커밋이며 HEAD 의 조상이다. sourceRef 와 HEAD 사이 드리프트가 24커밋, 504 경로 변경으로 존재한다.",
+        "howVerified": "git cat-file -t / git merge-base --is-ancestor / git rev-list --count 6490956d…..HEAD / git diff --name-status 6490956d…..HEAD | wc -l",
+        "result": "commit / ANCESTOR / 24 / 504 — 드리프트 존재(H1 기록 대상)"
+      },
+      {
+        "claim": ".github/CODEOWNERS 와 docs/reviews/2026-09-06-r03-governance-review.md 는 sourceRef 와 HEAD 에서 blob 이 동일하다(거버넌스 표면 드리프트 0).",
+        "howVerified": "git rev-parse <ref>:.github/CODEOWNERS 및 HEAD:... 를 각각 실행; 6798032… 에서도 동일 확인",
+        "result": "CODEOWNERS d4a50b7b01ded8bcf8b86b73e4bb28f242eacae6 (세 ref 동일), 검토문서 5c3b763b77a43a7b0bde77c3e3712c3780a38f55 (두 ref 동일)"
+      },
+      {
+        "claim": "sourceRef..HEAD 사이 .github/ 에서 수정된 파일은 .github/workflows/required-quality-gate.yml 1건뿐이다(+12줄, 커밋 3861eab).",
+        "howVerified": "git diff --name-status 6490956d…..HEAD -- .github CODEOWNERS / git log --oneline 6490956d…..HEAD -- .github CODEOWNERS / git show --stat 3861eab -- .github",
+        "result": "M .github/workflows/required-quality-gate.yml 1건; 커밋 3861eab 한 건이 변경"
+      },
+      {
+        "claim": "docs/context/work-graph.json 과 docs/context/work-orders/043.json 은 HEAD 트리에는 있고 sourceRef 트리에는 없다.",
+        "howVerified": "git cat-file -t 6490956d…:docs/context/work-graph.json / git ls-tree 6490956d… docs/context/ / git ls-tree HEAD docs/context/",
+        "result": "sourceRef: fatal ... exists on disk but not in ref; ref 의 docs/context 에 work-graph.json·work-orders/ 없음(9항목). HEAD 에는 둘 다 존재"
+      },
+      {
+        "claim": "work-order minimumContext 는 항목 3건(고유 경로 2건)이며, 기대 git-blob-sha1 값이 관측값과 모두 일치한다.",
+        "howVerified": "python3 json.load 로 043.json 의 minimumContext 를 읽고, 각 경로에 git hash-object 실행",
+        "result": "audit 문서 cf7e6839a039d882d252f74700d335e5dd187249 (2회 기재) 일치, pr-triage.yml b2622c66417965abb9a48e0ae50e7688c2b6477d 일치"
+      },
+      {
+        "claim": "minimumContext 3항목은 모두 qualification:null, qualifiedRefs:[], accepted:false 로 선언돼 있다(미자격 입력).",
+        "howVerified": "python3 json.load 로 각 항목의 필드 직접 읽기",
+        "result": "3항목 모두 미자격"
+      },
+      {
+        "claim": "저장소에 코드오너 파일은 .github/CODEOWNERS 1건뿐이고 루트/문서 CODEOWNERS 는 없다.",
+        "howVerified": "git ls-tree -r HEAD --name-only | grep -i codeowners / git ls-tree 6490956d… CODEOWNERS docs/CODEOWNERS",
+        "result": ".github/CODEOWNERS 1건; 루트·docs 출력 없음"
+      },
+      {
+        "claim": ".github/CODEOWNERS 는 412 바이트, 규칙 9줄 = 전역 '*' 1 + 리드 규칙 8개다.",
+        "howVerified": "python3 로 파일을 파싱해 규칙 줄을 세고, ls -la 로 바이트 확인",
+        "result": "9 규칙(전역 1 + 리드 8): /.github/, /SECURITY.md, /AGENTS.md, /Packages/, /ProjectSettings/, /schemas/, /Assets/ChooGuard/Runtime/Scoring/, /Assets/ChooGuard/Runtime/Safety/"
+      },
+      {
+        "claim": "리드 규칙 8개 중 /Assets/ChooGuard/Runtime/Scoring/ 와 /Assets/ChooGuard/Runtime/Safety/ 는 HEAD 추적 파일이 0건이다.",
+        "howVerified": "python3 로 git ls-tree -r HEAD --name-only 결과(1340 파일)에 대해 각 리드 접두어 매치 수를 셈",
+        "result": "/.github/ 14, /SECURITY.md 1, /AGENTS.md 1, /Packages/ 357, /ProjectSettings/ 22, /schemas/ 2, Scoring/ 0, Safety/ 0"
+      },
+      {
+        "claim": "POLICY_GLOBS 는 14개이고 6798032 시점과 HEAD 시점이 동일하다.",
+        "howVerified": "python3 정규식으로 scripts/bootstrap/verify_toolchain.py 의 POLICY_GLOBS 를 파싱; git show 6798032…:scripts/bootstrap/verify_toolchain.py 로 옛 판본 파싱",
+        "result": "양쪽 모두 14개, 동일 목록"
+      },
+      {
+        "claim": "POLICY_GLOBS 14개 중 리드 규칙이 있는 것은 3개이고 11개는 없다. 리드 규칙 8개 중 POLICY_GLOBS 안에 있는 것은 2개이고 6개는 밖이다.",
+        "howVerified": "파싱한 두 목록을 python3 로 교차 계산",
+        "result": "11 / 6 — 두 방향 불일치 확인"
+      },
+      {
+        "claim": "RECEIPT_ROOT = 'docs/evidence' 이며 그 경로는 POLICY_GLOBS 에도 CODEOWNERS 에도 없다.",
+        "howVerified": "grep -n RECEIPT_ROOT scripts/bootstrap/verify_toolchain.py / 파싱한 두 목록과 대조",
+        "result": "verify_toolchain.py:39 RECEIPT_ROOT = \"docs/evidence\"; 두 목록 어디에도 없음"
+      },
+      {
+        "claim": ".github/workflows/ 에 워크플로가 7개 있고 감사 문서 §1 의 CI 열거와 개수가 일치한다.",
+        "howVerified": "git ls-tree -r HEAD --name-only | grep -c '^\\.github/workflows/.*\\.yml$' / ls .github/workflows",
+        "result": "7 (nightly-gpu, pr-triage, reconstruction-ci, release, required-quality-gate, unity-build, unity-tests)"
+      },
+      {
+        "claim": "감사 문서가 관측한 필수 검사 이름 'Policy, security and repository hygiene' 은 required-quality-gate.yml 의 job name(19행)과 문자열 일치한다. 그 job 이 서버에서 required 로 지정돼 있는지는 live 설정이라 미확인이다.",
+        "howVerified": "grep -n 'name:' .github/workflows/required-quality-gate.yml / work-graph truth 의 [unknown] 항목 대조",
+        "result": "19행 name: Policy, security and repository hygiene — 문자열 일치, 서버 강제 여부는 unknown"
+      },
+      {
+        "claim": "pr-triage.yml 은 pull_request_target 트리거와 쓰기 권한(contents:read, pull-requests:write, issues:write)을 갖지만 PR 코드를 체크아웃하지 않는다.",
+        "howVerified": "grep -n 'checkout|pull_request_target|permissions' .github/workflows/pr-triage.yml",
+        "result": "checkout 문자열 0건; pull_request_target 4행; permissions 블록 3항목"
+      },
+      {
+        "claim": "제안 원문 manifest 의 scripts/bootstrap/verify_toolchain.py sha256 4bb8b4bb… 는 6798032 시점에 정확하고 현재 값 cc4f77df… 와 다르다(드리프트).",
+        "howVerified": "git show <ref>:scripts/bootstrap/verify_toolchain.py 를 python3 hashlib.sha256 로 계산 — 6798032, 6490956d, HEAD 세 ref 에 대해",
+        "result": "6798032 = 4bb8b4bb…(11656 B, 원문 값과 일치) / 6490956d = cc4f77df…(17753 B) / HEAD = cc4f77df…(17753 B)"
+      },
+      {
+        "claim": ".pi/, .specify/, docs/evidence/ 는 6798032 시점에 미추적(0건)이고 sourceRef/HEAD 시점에는 추적된다.",
+        "howVerified": "git ls-tree -r <ref> --name-only | grep -c (세 ref 각각)",
+        "result": ".pi 0→23→23, .specify 0→21→21, docs/evidence 0→24→66"
+      },
+      {
+        "claim": "docs/adr/*.md 추적 6건, scripts/bootstrap/* 추적 5건, scripts/ci/*.py 추적 4건, docs/reviews/ 추적 8건 (HEAD).",
+        "howVerified": "git ls-tree -r HEAD --name-only | grep -c 각 패턴",
+        "result": "6 / 5 / 4 / 8"
+      },
+      {
+        "claim": "C02 명령 python3 scripts/ci/tests/test_repository_policy.py 를 실행했고 종료 코드 0, unittest 요약은 'Ran 33 tests in 9.479s' / 'OK' 이다.",
+        "howVerified": "python3 scripts/ci/tests/test_repository_policy.py >out 2>err; echo $?  (stdout 0 B, stderr 2600 B)",
+        "result": "EXIT=0; stderr 끝에 'Ran 33 tests in 9.479s' + 'OK'. stderr 에 의도된 시뮬레이션 traceback 2건과 'fatal: … no merge base' 1건이 섞였으나 실패로 계상되지 않음"
+      },
+      {
+        "claim": "동결 기준서 frozen-criteria-43.md 의 sha256 재계산값이 동봉 .sha256 사이드카 값과 일치한다(패킷 무결성).",
+        "howVerified": "python3 hashlib.sha256 vs cat .superpowers/sdd/m0-00-policy-baseline/frozen-criteria-43.md.sha256",
+        "result": "양쪽 a643f4b2e8a9e34cba791ded2fd8d0c80280ca7f7dd6d73a70d0eff23f9cb791 — 일치"
+      },
+      {
+        "claim": "정답표 파일들이 존재하나 이 후보는 내용을 열지 않았다(G0).",
+        "howVerified": "ls (파일명만) — .superpowers/sdd/m0-00-policy-baseline/packet/*.answer-key.json 30건, verdicts/*.map.json 12건. 그중 issue43-round1..4.answer-key.json 4건 존재",
+        "result": "존재 확인만 했고 어떤 내용도 읽지 않았다. 내용 기반 서술은 이 파일에 0건"
+      },
+      {
+        "claim": "이 후보의 두 산출물이 실제로 생성됐고 verification.json 이 유효한 JSON 이다. governance-diff.md 의 최종 sha256 은 b5a0d94072191fc6874df4648ad8e8b3498944e08c5e3edd50d0ed4b4640a966 (50755 B) 이다(1차 수선을 재검증한 독립 검증자의 결함 3건을 2차 수선한 뒤 재계산).",
+        "howVerified": "ls -la docs/team/R-03/ / (저작 시) python3 -c \"import json; json.load(open('docs/team/R-03/verification.json'))\" / (1차 수선 후 재확인) jq -e . docs/team/R-03/verification.json / (2차 수선 후) jq -e . docs/team/R-03/verification.json + shasum -a 256 과 wc -c 로 두 파일 계산 (2차 수선 후 governance-diff.md 를 다시 계산)",
+        "result": "두 파일 존재. JSON 이 저작 시 json.load 로, 1·2차 수선 후 jq -e 로 예외 없이 파싱됨. 최상위 키 29개, postApplicationChecks 8 / expectedFailures 6 / rollbackSafeEvidence.entries 5 (2차 수선 후 jq 로 재확인). governance-diff.md sha256 b5a0d940… 50755 B (이전 값 3908a735… / 47758 B 는 1차 수선 후 값, 6bcc2c7b… / 43844 B 는 1차 수선 전 값 — 둘 다 폐기). 이 파일 자신의 해시는 자기참조 회피로 여기 적지 않으며, 값은 governance-diff.md §12.3 의 재계산 명령으로 소비자가 구한다."
+      },
+      {
+        "claim": "V01·V02 검사 명령이 실행 가능한 리터럴이며, 적용 전 기준선을 실제로 관측했다.",
+        "howVerified": "postApplicationChecks[0]·[1] 의 command 문자열을 그대로 복사해 실행",
+        "result": "V01: 제안 A 대상 8개 샘플 경로가 전부 리드 규칙 매치 빈 리스트(전역 '*' 만). V02: rules 9 ownerless 0 dupPatterns 0"
+      },
+      {
+        "claim": "docs/team/R-03/ 디렉터리는 이 후보 작성 전에 없었고, 같은 시점에 다른 워커들이 다른 경로를 동시에 만들고 있었다.",
+        "howVerified": "ls -d docs/team/R-03 (No such file or directory) / git status --porcelain / git ls-tree HEAD docs/team/",
+        "result": "HEAD 의 docs/team/ 에는 TEAM-04/05/22/25/26 트리만 추적; 작성 전 R-03 미존재. git status 에 docs/team/M0-00·M0-02a·M0-03·M1-05·R-02, docs/evidence/M5-04·M5-05, scripts/team/M1-05 가 untracked 로 동시 존재"
+      }
+    ]
+  },
+
+  "subjectOfVerification": {
+    "note": "이 계획이 검증하는 대상은 '적용된 변경'이 아니라 '제안된 변경'이다. 이 후보 시점에 적용된 변경은 없다.",
+    "proposalSource": "docs/reviews/2026-09-06-r03-governance-review.md (blob 5c3b763b77a43a7b0bde77c3e3712c3780a38f55, sha256 d1ad343e12a05599370d2027255db76f3bf8a7dbd344c08df92b39e79acb6e7c, 21219 B)",
+    "proposalChangeSet": [
+      {"id": "A", "target": ".github/CODEOWNERS", "kind": "리드 규칙 8그룹 추가", "paths": [".pi/", ".specify/memory/", "docs/adr/", "docs/evidence/", "docs/reviews/", "scripts/ci/", "scripts/bootstrap/", "tools/research/ lock"]},
+      {"id": "B", "target": ".github/CODEOWNERS", "kind": "개인 로그인 소유자를 전용 리드 팀으로 교체"},
+      {"id": "C", "target": "(없음)", "kind": "보류 — 증거 무결성 보상 통제가 검증되기 전에는 승인하지 않음"}
+    ],
+    "changedPathCount": 1,
+    "changedPathNote": "제안이 바꾸는 추적 파일은 .github/CODEOWNERS 1개다. 제안 원문 §§3.2–3.3, 4.x, 5.x 텍스트 범위 안에서 다른 파일 변경은 제안되지 않았다.",
+    "proposalNotApproved": "제안 원문 §7 은 3관점 독립 검토가 모두 changes_required 이며 'R-03은 cannot_proceed를 유지한다'고 적었다. 이 후보는 그 결정을 바꾸지 않는다."
+  },
+
+  "applicationState": {
+    "governanceChangeApplied": false,
+    "statement": "이 후보는 .github/CODEOWNERS, .github/**, GitHub 설정을 변경하지 않았다. 따라서 아래 postApplicationChecks 는 전부 미실행 상태이며, 실행 전제(preconditions)도 아직 성립하지 않는다.",
+    "evidenceOfNoWrite": "git status --porcelain 에 .github/, CODEOWNERS 변경 0건. 쓰인 신규 파일은 docs/team/R-03/ 아래 2건뿐이다."
+  },
+
+  "preconditions": [
+    {
+      "id": "P1",
+      "requirement": "PM 과 저장소 관리자(역할)의 명시적 변경 승인이 문서화돼 있다.",
+      "status": "NOT_MET",
+      "why": "감사 문서 §2 가 변경 결정 역할을 PM·저장소 관리자로 지정하고, 제안 원문 §6 이 PM 결정 요청 목록을 열거했으나, 이 후보 시점에 그 승인 영수증은 확인되지 않았다.",
+      "howToCheck": "PM 승인 기록(이슈/PR/결정 기록) 확인 — 이 후보는 생성하지 않는다"
+    },
+    {
+      "id": "P2",
+      "requirement": "적용 직전 live GitHub 상태를 재조회해 캡처 감사(2026-09-06)와의 충돌 여부를 판정한다.",
+      "status": "NOT_MET",
+      "why": "이 봉인 기준선에서 live 설정을 재조회하지 않았다(work-graph truth [unknown]과 동일한 한계).",
+      "howToCheck": "감사 문서 §3 의 읽기 전용 명령(gh repo view / gh api rulesets / gh pr list / gh issue list). 원문 출력은 공개 파일에 복사하지 않는다."
+    },
+    {
+      "id": "P3",
+      "requirement": "제안을 적용할 정확한 CODEOWNERS 패턴 리터럴 라인이 확정돼 있다.",
+      "status": "NOT_MET",
+      "why": "제안 원문 변경안 A 는 대상 디렉터리만 열거하고 리터럴 라인을 주지 않았다(unknowns U-4).",
+      "howToCheck": "확정된 패턴 목록을 변경 PR diff 로 제시"
+    },
+    {
+      "id": "P4",
+      "requirement": "다른 작성자가 .github/CODEOWNERS 를 동시에 소유·편집하지 않는다.",
+      "status": "UNVERIFIED",
+      "why": "워크트리 수준에서는 충돌 작성자가 관측되지 않았으나, 원격·타 브랜치 수준은 확인하지 않았다(unknowns U-6, stopCondition 2).",
+      "howToCheck": "적용 PR 생성 전 열린 PR 목록과 대상 경로 변경 이력 확인"
+    },
+    {
+      "id": "P5",
+      "requirement": "이 검증 계획의 기준 트리가 적용 트리와 같다.",
+      "status": "NOT_MET",
+      "why": "이 후보는 HEAD 12c77b8c8abed8f97ff16bc3aaf7a4dca2bb5ce5 에서 작성됐고 sourceRef 는 6490956d… 이다(드리프트 24커밋). 적용은 그보다 뒤의 트리에서 일어난다.",
+      "howToCheck": "적용 직전 HEAD 를 기록하고 이 파일의 sourceRef/writeTargetHead 와 대조"
+    }
+  ],
+
+  "postApplicationChecks": [
+    {
+      "id": "V01",
+      "name": "CODEOWNERS 규칙 실효성 — 신규 보호 경로 8그룹이 실제로 리드 소유가 되는가",
+      "appliesAfterProposalIds": ["A", "B"],
+      "command": "python3 -c \"rules=[l.split() for l in open('.github/CODEOWNERS') if l.strip() and not l.lstrip().startswith('#')]; samples=['.pi/settings.json','.specify/memory/constitution.md','docs/adr/0001-agentic-unity-development.md','docs/evidence/M0-00/review-record-candidate-index.json','docs/reviews/2026-09-06-r03-governance-review.md','scripts/ci/repository_policy.py','scripts/bootstrap/verify_toolchain.py','tools/research/uv.lock']; print(*[(s,[r[0] for r in rules if r[0]!='*' and s.startswith(r[0].lstrip('/'))][-1:]) for s in samples], sep=chr(10))\"",
+      "expected": "8그룹 각각의 샘플 경로가 리드 규칙(전역 '*' 이 아닌 마지막 규칙)에 매치된다",
+      "negativeCase": "샘플 경로가 전역 '*' 에만 매치되면 FAIL 이다. 선언한 보호가 실제로 걸리지 않은 것이다.",
+      "rollbackSafe": "읽기 전용. 저장소·설정 변경 0건",
+      "status": "NOT_RUN",
+      "notRunReason": "제안이 적용되지 않았다(applicationState.governanceChangeApplied=false).",
+      "baselineObservation": "명령 자체는 적용 전 현재 파일에 대해 실행해 유효함을 확인했다. 관측: 8개 샘플 경로 전부 리드 규칙 매치가 빈 리스트다(전역 '*' 만 매치). 즉 제안 A 의 전제('이 8그룹에 리드 규칙이 없다')가 현재 트리에서 성립한다."
+    },
+    {
+      "id": "V02",
+      "name": "CODEOWNERS 파일 문법 유효성",
+      "appliesAfterProposalIds": ["A", "B"],
+      "command": "python3 -c \"rows=[l.split() for l in open('.github/CODEOWNERS') if l.strip() and not l.lstrip().startswith('#')]; bad=[r for r in rows if len(r)<2]; print('rules',len(rows),'ownerless',len(bad),'dupPatterns',len(rows)-len({r[0] for r in rows}))\"",
+      "expected": "모든 비주석·비공백 줄이 '패턴 소유자…' 형태이고 소유자 토큰이 최소 1개다",
+      "negativeCase": "소유자 없는 줄, 중복 패턴 충돌이 있으면 FAIL",
+      "rollbackSafe": "읽기 전용",
+      "status": "NOT_RUN",
+      "notRunReason": "적용 전이다. 참고로 현재 파일(412 B, 규칙 9)은 같은 방식으로 파싱해 확인했다.",
+      "baselineObservation": "명령을 현재 파일에 대해 실행한 관측: rules 9, ownerless 0, dupPatterns 0."
+    },
+    {
+      "id": "V03",
+      "name": "권한 확대 없음 — 적용 diff 에 bypass/merge/push/admin 부여가 없는가",
+      "appliesAfterProposalIds": ["A", "B"],
+      "command": "git diff <base>..<apply-head> -- .github/CODEOWNERS (및 승인된 범위의 다른 경로) 를 읽고, 권한 부여 토큰(bypass, admin, merge, push, ruleset bypass actor) 부재를 확인",
+      "expected": "권한 부여 문구 0건. 변경은 보호 규칙 추가와 소유자 표기 교체뿐이다",
+      "negativeCase": "우회 주체 추가·권한 위임이 한 건이라도 있으면 FAIL 이며 이 계획의 롤백 절차를 발동한다",
+      "rollbackSafe": "읽기 전용",
+      "status": "NOT_RUN",
+      "notRunReason": "적용 전이다(검토할 diff 가 없다)."
+    },
+    {
+      "id": "V04",
+      "name": "C02 재실행 — 캡처된 정책 테스트",
+      "appliesAfterProposalIds": ["A", "B"],
+      "command": "python3 scripts/ci/tests/test_repository_policy.py",
+      "expected": "종료 코드 0. 적용 후 트리에서도 캡처된 정책 테스트가 통과한다",
+      "negativeCase": "종료 코드 != 0 이면 FAIL. 또한 이 명령은 GitHub 브랜치 설정·live 병합 권한을 증명하지 않는다(그 한계는 적용 성공의 근거가 될 수 없다).",
+      "rollbackSafe": "읽기 전용. 테스트가 임시 디렉터리를 만들 뿐 저장소를 수정하지 않는다",
+      "status": "NOT_RUN",
+      "notRunReason": "적용 전 트리에서는 실행했다(checks.C02, EXIT=0, 33 tests OK). '적용 후 재실행'은 아직 미실행이다."
+    },
+    {
+      "id": "V05",
+      "name": "required-quality-gate 가 CODEOWNERS 변경 PR 에서 통과하는가",
+      "appliesAfterProposalIds": ["A", "B"],
+      "command": "적용 PR 의 CI 실행 이력 조회(GitHub Actions)",
+      "expected": "'Policy, security and repository hygiene' job 이 변경 PR 에서 성공",
+      "negativeCase": "job 이 실패하거나 required 로 걸리지 않아 대기 없이 병합 가능하면 FAIL",
+      "rollbackSafe": "조회는 읽기 전용. 병합은 이 검사의 대상이 아니다",
+      "status": "NOT_RUN",
+      "notRunReason": "적용 PR 이 아직 없다. 또한 이 후보는 원격 Actions 이력을 조회하지 않았다(U-3)."
+    },
+    {
+      "id": "V06",
+      "name": "선행 등록 순서 회귀 점검",
+      "appliesAfterProposalIds": ["A"],
+      "command": "제안 원문 §3.3 의 순서(CODEOWNERS 선행 병합 → 보호 경로 커밋)가 지켜졌는지 커밋 시각·부모 관계로 확인",
+      "expected": "CODEOWNERS 를 바꾸는 커밋이 신규 보호 대상 경로 변경보다 앞선다",
+      "negativeCase": "순서가 뒤집혔고 그 사이에 보호 대상 경로가 변경됐다면 그 변경은 리드 검토 없이 들어간 것이므로 FAIL",
+      "rollbackSafe": "읽기 전용",
+      "status": "NOT_RUN",
+      "notRunReason": "적용 전이다. 추가로, .pi/(23)·.specify/(21)·docs/evidence/(66) 는 이미 커밋돼 있어 원문의 순서 논지는 그대로 적용되지 않는다(governance-diff.md §1.4·§6, SC-3)."
+    },
+    {
+      "id": "V07",
+      "name": "live 설정 재조회와 캡처 감사의 대조",
+      "appliesAfterProposalIds": ["A", "B"],
+      "command": "감사 문서 §3 의 읽기 전용 명령(gh repo view / gh api rulesets / gh pr list / gh issue list). 원문 출력은 공개 파일에 복사하지 않는다",
+      "expected": "적용 전후 ruleset·필수 검사·승인 수·우회 주체 목록이 의도한 상태와 일치. 비공개 부록에 정규화 snapshot 을 둔다",
+      "negativeCase": "live 가 캡처와 충돌하면 SOURCE_CONFLICT 로 등록하고 권위 판단을 PM 에게 유보한다(stopCondition 1). 판정 없이 진행하면 FAIL",
+      "rollbackSafe": "조회는 읽기 전용. 출력 취급은 비공개 경계를 따른다",
+      "status": "NOT_RUN",
+      "notRunReason": "live 조회를 수행하지 않았다(U-2). 인증 세션·비공개 부록은 이 후보의 범위 밖이다."
+    },
+    {
+      "id": "V08",
+      "name": "산출물 무결성 — 두 지정 출력의 존재·파싱·해시",
+      "appliesAfterProposalIds": ["A", "B", "C"],
+      "command": "ls -la docs/team/R-03/{governance-diff.md,verification.json}; python3 -c 'json.load(...)'; python3 -c hashlib.sha256",
+      "expected": "두 파일 존재, verification.json 이 json.load 로 파싱됨, sha256 재계산이 기록값과 일치",
+      "negativeCase": "파싱 실패 또는 해시 불일치면 FAIL",
+      "rollbackSafe": "읽기 전용",
+      "status": "RUN_AT_AUTHORING",
+      "result": "두 파일 존재 확인, verification.json json.load 성공, sha256 값은 selfDigest 참조"
+    }
+  ],
+
+  "expectedFailures": [
+    {
+      "id": "F1",
+      "failure": "CODEOWNERS 에 규칙을 추가했는데도 실제 보호가 걸리지 않는다",
+      "whyExpected": "CODEOWNERS 는 서버 ruleset 이 'Require review from Code Owners' 를 켠 경우에만 강제된다. 파일에 줄이 있다는 사실만으로는 강제가 성립하지 않는다.",
+      "detection": "V01 + V07. V01 은 파일 해석 수준, V07 은 서버 강제 수준이다.",
+      "correctHandling": "파일 수준 통과를 정책 PASS 로 승격하지 않는다. 서버 강제가 확인되지 않으면 unknown 으로 남긴다."
+    },
+    {
+      "id": "F2",
+      "failure": "기본 브랜치 참조로 잡힌 보호가 기본 브랜치 변경 시 develop 에서 빠진다",
+      "whyExpected": "제안 원문 §5.4 가 ruleset 이 기본 브랜치 참조를 쓴다고 관측했다(live). 기본 브랜치를 바꾸면 보호가 함께 이동한다.",
+      "detection": "V07 에서 ruleset 대상 지정 방식을 확인",
+      "correctHandling": "develop 명시 지정 또는 기본 브랜치 변경에 HIGH 승인·ruleset 재검증을 요구한다."
+    },
+    {
+      "id": "F3",
+      "failure": "scripts/ci/** 를 보호해도 검사기와 테스트를 함께 완화하는 PR 이 스스로를 통과시킨다",
+      "whyExpected": "유일한 필수 검사가 PR head 의 scripts/ci/ 검사기를 그대로 실행한다(제안 원문 §5.5). 보호 규칙이 선행되지 않으면 리드 승인 없이 통제를 해제할 수 있다.",
+      "detection": "V03 + V07 에서 scripts/ci/** 리드 보호와 self-modification 탐지 여부를 확인",
+      "correctHandling": "리드 CODEOWNER 보호를 선행 적용하고, 가능하면 기준 브랜치의 신뢰된 검사기를 함께 실행한다. 이 후보는 어떤 통제도 적용하지 않는다."
+    },
+    {
+      "id": "F4",
+      "failure": "필수로 표기된 게이트(리드 검토, Windows·실기 게이트)가 실제로는 아무것도 막지 않는다",
+      "whyExpected": "pr-triage.yml 이 댓글 본문 문자열로만 '필수' 목록을 만들고 status check 를 만들지 않는다(캡처 파일 문면).",
+      "detection": "V05 + V07",
+      "correctHandling": "필수와 권고를 표기부터 분리하고, 실제 강제가 필요한 항목은 status check 와 ruleset 으로 구현한다. 경로 필터 워크플로를 필수로 지정하면 skip job 패턴을 함께 설계한다."
+    },
+    {
+      "id": "F5",
+      "failure": "docs/evidence/ 를 CODEOWNERS 로만 통제하면 증거 무결성이 깨진다",
+      "whyExpected": "CODEOWNERS 는 append-only·삭제 금지·과거 영수증 불변성을 강제하지 못한다(제안 원문 §3.2 변경안 C 보류 사유).",
+      "detection": "적용 후 docs/evidence/ 변경 PR 에서 삭제·수정이 리드 검토만으로 통과하는지 확인",
+      "correctHandling": "증거는 별도 manifest 또는 해시 체인과 삭제·수정 탐지로 다룬다. 보상 통제가 검증되기 전에는 어느 쪽도 승인하지 않는다."
+    },
+    {
+      "id": "F6",
+      "failure": "C02 통과를 거버넌스 변경의 안전 증거로 오독한다",
+      "whyExpected": "C02 는 캡처된 정책 테스트만 실행하며 GitHub 브랜치 설정·live 병합 권한을 다루지 않는다(work-graph checks[1].negativeCase).",
+      "detection": "C02 영수증의 doesNotProve 필드",
+      "correctHandling": "테스트 통과를 정책 PASS 로 승격하지 않는다."
+    }
+  ],
+
+  "rollbackSafeEvidence": {
+    "definition": "적용을 되돌려야 할 때 근거로 쓸 수 있고, 그 자체가 저장소·설정을 변경하지 않는 증거.",
+    "applied": false,
+    "appliedStatement": "이 후보 시점에 적용된 변경이 없으므로 롤백할 대상도 없다. 아래는 '적용이 있었다면' 어떻게 되돌리고 무엇으로 증명할지의 계획이다.",
+    "entries": [
+      {
+        "id": "R1",
+        "target": ".github/CODEOWNERS",
+        "rollbackAction": "적용 커밋을 되돌리는 revert 커밋으로 파일을 이전 blob 으로 복원한다",
+        "safety": "파일 1개 revert 이므로 설정·권한 상태를 건드리지 않는다. ruleset 변경을 동반하지 않는 한 서버 상태는 무변화다",
+        "evidence": "복원 후 git rev-parse HEAD:.github/CODEOWNERS 가 적용 전 blob 과 일치하는지 대조",
+        "preApplyBlob": "d4a50b7b01ded8bcf8b86b73e4bb28f242eacae6",
+        "preApplyBlobSha256": "a6d085e0296e538ed8b34ea34cb73e87efd6c5e385303f8700e8ccddabaa3ec2",
+        "preApplySizeBytes": 412,
+        "evidenceVerifiedBy": "git rev-parse <ref>:.github/CODEOWNERS (6798032, 6490956d, HEAD 세 ref 모두 동일) + python3 hashlib.sha256"
+      },
+      {
+        "id": "R2",
+        "target": "GitHub ruleset / 브랜치 보호 설정",
+        "rollbackAction": "설정 변경 전 비공개 부록에 정규화 snapshot 을 만들고, 롤백 시 그 snapshot 을 기준으로 복원한다",
+        "safety": "범위 최소화: 스냅샷은 비공개로 유지하고 공개 문서에는 비민감 결정 결과만 남긴다",
+        "evidence": "변경 전후 ruleset 필드 비교표(비공개 부록)",
+        "stateAsOf": "NOT_CAPTURED — 이 후보는 ruleset snapshot 을 만들지 않았다. 제안 원문 §0 도 '비공개 부록은 아직 존재하지 않는다'고 적었다(SOURCE_CONFLICT SC-5)",
+        "caution": "snapshot 없이 설정을 바꾸면 롤백 근거가 없다. 이 항목이 채워지기 전에는 설정 변경을 제안하지 않는다"
+      },
+      {
+        "id": "R3",
+        "target": "CI 필수 검사 목록",
+        "rollbackAction": "필수 검사 목록 변경 전후를 비공개 부록에 기록하고, 롤백 시 원 목록으로 복원한다",
+        "safety": "필수 검사를 임시로 늘렸다 되돌리는 과정에서 경로 필터 워크플로가 PR 을 영구 대기시킬 수 있으므로 skip job 패턴을 먼저 검증한다",
+        "evidence": "변경 전후 필수 검사 이름 목록과 각 검사의 트리거 조건",
+        "stateAsOf": "NOT_CAPTURED",
+        "caution": "이 후보는 서버의 필수 검사 목록을 읽지 않았다(U-2)"
+      },
+      {
+        "id": "R4",
+        "target": "이 후보 자신의 산출물",
+        "rollbackAction": "docs/team/R-03/ 아래 두 파일을 삭제하면 된다. (이전 값 → 새 값: 이전 판은 '경로 문자열을 담은 추적 파일이 2건'이라고 적었으나 그 수치가 틀렸다. 실측은 **5건·총 38행**이다. 삭제 대상은 이전 판과 동일하게 두 파일이다.)",
+        "safety": "docs/team/R-03/ 는 작업트리에서 untracked 다(`git status --porcelain docs/team/R-03/` → `?? docs/team/R-03/`). 경로 문자열 `docs/team/R-03` 을 담은 추적 파일은 **5건**이며 `git grep -n \"docs/team/R-03\" HEAD | wc -l` 은 **38행**이다. 파일별 `git grep -c \"docs/team/R-03\" HEAD` 관측(관측 시각 2026-09-14 20:35:31 +0900, 관측 HEAD 12c77b8c8abed8f97ff16bc3aaf7a4dca2bb5ce5 — HEAD 는 **이동 가능한 ref** 이므로 이 값은 그 시각의 스냅샷이고 이후 커밋으로 달라질 수 있다): `docs/context/work-graph.json` 25행 · `docs/context/work-orders/index.jsonld` 6행 · `docs/context/graphify/graph.json` 4행 · `docs/context/work-orders/043.json` 2행 · `docs/context/index.html` 1행. 역할로 나누면 — **(a) 이 두 경로를 계약 산출물로 선언하는 문서 3건**: `docs/context/work-graph.json`(`outputs[].path` 4행 15151·15166·15181·15196, `artifactOutputBindings.candidate/accept` 12행 15268·15271·15273·15279·15282·15284·15292·15295·15297·15303·15306·15308, `phaseWriteScopes` 4행 15248·15250·15257·15259, `writeScope` 1행 15210, lease `reason`/`reasonedNone` 산문 4행 3496·3502·3508·3512), `docs/context/work-orders/043.json`(`requiredOutputPaths` 배열 원소 22–23행), `docs/context/work-orders/index.jsonld`(`Artifact.path` 4행 + `Resource.path` 2행). 정확한 키 이름은 문서마다 다르다 — **`requiredOutputPaths` 키는 이 5건 중 043.json 에만 있고(1건) work-graph.json 과 index.jsonld 에는 0건**이다(실측, 재검증자의 '세 문서가 requiredOutputPaths 를 담는다'는 서술은 이 점에서 부정확하다). 생성 사슬도 단일하지 않다: `docs/context/work-orders/{043.json,index.jsonld}` 는 `docs/context/work-graph.json` 을 입력으로 `scripts/context/build_work_orders.mjs`(117행 `put('index.jsonld', result.index)`)가 생성한다. **(b) 계약 선언에서 파생된 목록·투영 2건**: `docs/context/graphify/graph.json`(`source_file` 이 `docs/context/work-graph.json` 인 `produces` 엣지의 `contract.path` 4행; 생성기 `scripts/context/graphify_context.py` 514행), `docs/context/index.html`(1행; 생성기 `scripts/context/render_pm_map.mjs` 6행). **확인된 것(5건 전부)**: 이 5건은 삭제될 파일의 **경로 문자열만** 담고 그 파일의 내용을 읽거나 링크하지 않는다. 저장소 전체에서 `docs/team/R-03` 문자열을 담은 추적 파일은 이 5건이 전부이며(`git grep -l \"docs/team/R-03\" HEAD` → 5건, 모두 `docs/context/` 아래), `scripts/`·`.github/` 에 이 두 출력 파일을 읽는 코드는 없다(`grep -rn \"docs/team\" scripts .github` → 3건: `scripts/context/work_graph.mjs` 339행의 artifact id 문자열과 `scripts/team/M1-05/redaction.py` 20·57행 주석뿐이고, `grep -rn \"R-03\" scripts .github` → 1건인 그 artifact id 문자열 `artifact:43:R-03-governance-diff:accept` 이며 파일 읽기가 아니다). CI 스텝 `Validate phase-qualified work graph` 가 쓰는 `validateGraph`(`scripts/context/work_graph.mjs` 392행)도 그래프 JSON 구조만 검사하며 파일 시스템 존재를 stat 하지 않는다(파일 읽기는 같은 파일 30행 `pinnedBytes` 가 amendment source 경로에만 수행하고, `safePath` 는 정규화·문자 검사만 한다). **unknown 으로 낮추는 부분**: 그 밖의 검사기(`python scripts/context/context_graph.py validate`, `scripts/art/validate_reference_assets.py`, `python scripts/dev/check_foundation.py`, `python scripts/ci/repository_policy.py`)가 '선언된 outputPath 의 실재'를 요구하는지 이 후보는 **전수 확인하지 않았다**. 따라서 '삭제해도 빌드·런타임 파급이 없다'는 결론은 **계약 선언 문서 3건을 포함한 5건 전체에 대해서는 성립을 확인하지 못했고, 그 부분은 unknown 이다**(검증 불가). 확인된 범위는 '이 5건이 삭제 대상의 내용을 읽지 않고, 삭제가 이 5건의 바이트를 바꾸지 않는다'까지다.",
+        "evidence": "`git grep -l \"docs/team/R-03\" HEAD` → 5건; `git grep -n \"docs/team/R-03\" HEAD | wc -l` → 38행; `git grep -c \"docs/team/R-03\" HEAD` → work-graph.json 25 / index.jsonld 6 / graphify/graph.json 4 / 043.json 2 / index.html 1; `git status --porcelain docs/team/R-03/` → `?? docs/team/R-03/`; `grep -rn \"docs/team\" scripts .github` → 3건(코드 판독용 참조 0건); `git grep -c requiredOutputPaths HEAD` → 043.json 1 / work-graph.json 0(exit 1) / index.jsonld 0(exit 1); `grep -n existsSync scripts/context/work_graph.mjs` → 2행 일치(3행 import·30행 `pinnedBytes`), 실제 파일 존재 검사는 30행 1곳뿐이다. 관측 시각 2026-09-14 20:35:31 +0900 · HEAD 12c77b8c8abed8f97ff16bc3aaf7a4dca2bb5ce5(이동 가능한 ref). 수치를 낳은 명령과 출력 건수를 위에 그대로 적었다.",
+        "stateAsOf": "이 후보 시점(HEAD 12c77b8c…, 관측 2026-09-14 20:35:31 +0900)에 docs/team/R-03/ 는 untracked 다"
+      },
+      {
+        "id": "R5",
+        "target": "롤백 판단 자체",
+        "rollbackAction": "롤백 여부는 PM 과 저장소 관리자가 판단한다. 에이전트는 롤백을 실행하지 않는다",
+        "safety": "이 계획은 어떤 롤백도 실행하지 않았다",
+        "evidence": "applicationState.governanceChangeApplied=false, writeScopeBoundary",
+        "stateAsOf": "해당 없음"
+      }
+    ],
+    "stopConditionTie": "stopCondition 1(live 와 snapshot 충돌)이 성립하는 경우, 이 계획은 SOURCE_CONFLICT 를 등록하고 권위 판단을 PM 에게 유보한다. 어떤 롤백도 이 후보가 실행하지 않는다."
+  },
+
+  "checks": [
+    {
+      "id": "C01",
+      "command": "inspection: compare CODEOWNERS/workflows to proposed diff and baseline policy files",
+      "phases": ["candidate", "accept"],
+      "expected": "every changed path has owner/review/test and no unapproved permission expansion",
+      "negativeCase": "live-state gap => unknown, not pass",
+      "evidence": "diff and coverage table",
+      "artifactPath": "docs/team/R-03/governance-diff.md",
+      "artifactDigest": {
+        "algorithm": "sha256",
+        "value": "b5a0d94072191fc6874df4648ad8e8b3498944e08c5e3edd50d0ed4b4640a966",
+        "bytes": 50755,
+        "computedAfter": "governance-diff.md 를 2차 수선(1차 수선을 재검증한 독립 검증자의 결함 3건 — §4 표 digest 알고리즘 라벨, §12.3 결함 목록, 이 파일 R4 참조 건수 — 을 이행)한 뒤 다시 계산했다. 이전 값 3908a735… / 47758 B 는 1차 수선 후 값이며 폐기됐다. 이 파일(verification.json)은 그 뒤에 저작·수정됐으므로 두 파일은 같은 저작 시점 계열이며, 이 값은 candidate 위상 2차 수선 후 시점의 governance-diff.md 다이제스트다.",
+        "howVerified": "shasum -a 256 과 wc -c 로 계산"
+      },
+      "artifactDigestNote": "governance-diff.md 는 자기 해시를 자기 안에 담을 수 없어(담으면 값이 즉시 낡는다) 그 값을 이 형제 산출물에 기록했다. governance-diff.md §7.1 과 §12.3 이 이 방침을 적는다. 소비자는 governance-diff.md §12.3 의 명령으로 재계산할 수 있다.",
+      "provenance": "governance-diff.md §0.1 의 sourceScope 실물 + 제안 원문 blob 5c3b763b77a43a7b0bde77c3e3712c3780a38f55",
+      "thresholdEvaluation": "로컬 캡처 트리 대조는 완료했다: 변경 경로 1건(.github/CODEOWNERS), 신규 보호 8그룹 각각에 owner/review/test 행 존재, 권한 확대 문구 0건. 서버 강제 부분은 live 미조회로 판정 불가.",
+      "result": "NOT_RUN",
+      "notRunReason": "C01 의 기대는 '현재 강제되고 있는 규칙'과의 대조를 포함한다. live GitHub settings 를 이 봉인 기준선에서 재조회하지 않았으므로(work-graph truth [unknown]) 강제 여부 절반은 미실행이다. C01 의 부정 사례가 'live-state gap => unknown, not pass' 로 명시돼 있어 PASS 로 기록하지 않는다.",
+      "executedPortion": "governance-diff.md §3(현재 규칙 실물), §4(3단 대조), §5(커버리지 표), §5.3(권한 확대 없음 대조). 관측 위반 0건.",
+      "executedPortionIsNotAPass": true,
+      "acceptPhase": "NOT_RUN",
+      "acceptPhaseNotRunReason": "이 후보는 candidate 위상만 수행했다."
+    },
+    {
+      "id": "C02",
+      "command": "python3 scripts/ci/tests/test_repository_policy.py",
+      "phases": ["candidate", "accept"],
+      "expected": "records captured policy tests only",
+      "negativeCase": "does not prove GitHub branch settings or live merge permission",
+      "evidence": "test receipt",
+      "artifactPath": "docs/team/R-03/verification.json",
+      "artifactDigest": "SEE_SELF_REFERENCE_AVOIDANCE",
+      "provenance": "scripts/ci/tests/test_repository_policy.py sha256 d3715ecdabe973de4deea56e27fb0287438ee8e6f890c271ff0eb54646a16497 (40864 B); scripts/ci/repository_policy.py sha256 3e80b3306a28c9fad8a69e2b05a887d619efca9dc5f06b582955b53b2b3d59dc (16365 B); Python 3.14.5; git 2.51.0",
+      "thresholdEvaluation": "실행했다. 종료 코드 0. unittest 요약 'Ran 33 tests in 9.479s' / 'OK'. stderr 에 의도된 시뮬레이션 traceback 2건(테스트가 트레이스백 경로를 검증하는 케이스)과 'fatal: … no merge base' 1건이 섞였으나 실패로 계상되지 않았고 종료 코드는 0이었다. stdout 0 B, stderr 2600 B — unittest 가 stderr 로 요약을 쓴다.",
+      "result": "PASS",
+      "resultKind": "execution_outcome_of_named_command_only",
+      "resultScope": "captured policy tests only",
+      "doesNotProve": "GitHub 브랜치 설정, live 병합 권한, ruleset enforcement, 실제 CI 러너에서의 통과를 증명하지 않는다",
+      "policyPassClaimed": false,
+      "acceptPhase": "NOT_RUN",
+      "acceptPhaseNotRunReason": "이 후보는 candidate 위상만 수행했고 적용도 되지 않아 '적용 후 재실행'이 없다."
+    }
+  ],
+
+  "unknowns": [
+    {"id": "U-1", "item": "work-order minimumContext 3항목의 자격 부여 여부(모두 qualification:null, accepted:false)", "whyUnknown": "자격 부여는 후보 저자의 권한이 아니며 기대값 출처가 비-ref 입력이다"},
+    {"id": "U-2", "item": "서버 ruleset 의 보호 브랜치·필수 검사·승인 수·CODEOWNER review 강제 여부와 상시 우회 주체의 실재", "whyUnknown": "live 재조회 미실행. 이 봉인 기준선의 한계"},
+    {"id": "U-3", "item": "워크플로의 실제 CI 실행 이력(성공/실패)", "whyUnknown": "원격 Actions 이력 미조회"},
+    {"id": "U-4", "item": "변경안 A 의 정확한 CODEOWNERS 패턴 리터럴 라인", "whyUnknown": "제안 원문이 대상만 열거하고 리터럴을 주지 않았다"},
+    {"id": "U-5", "item": "변경안 B 의 리드 팀명·구성원 매핑", "whyUnknown": "공개 문서에 없음(의도적 비공개)"},
+    {"id": "U-6", "item": "다른 작성자가 .github/CODEOWNERS 를 원격·타 브랜치에서 소유하는지", "whyUnknown": "원격 미조회"},
+    {"id": "U-7", "item": "드리프트 24커밋·504 경로 변경 중 .github/CODEOWNERS 외 항목의 거버넌스 영향", "whyUnknown": "이 후보 범위(R-03 / R-03-governance-diff only) 밖"},
+    {"id": "U-8", "item": "reconstruction-ci.yml 등 5개 워크플로의 permissions 블록", "whyUnknown": "대조 범위에 필수적이지 않아 미측정"},
+    {"id": "U-9", "item": "work-graph truth[0].source 인 `docs/choo-guard-execution-backlog-v1.md:21-36` 과 target 문장(governance changes require explicit proposal, approval and post-change verification.)의 대응 정확도", "whyUnknown": "부분 대조했다. 그 파일 전 588행 중 21–36행은 §1 완료 상태 표 꼬리 3행 + `## 2. 공통 Definition of Done` 제목·도입 + DoD 항목 1–8 이고, 문장을 그대로 옮긴 행은 없다(truth 문장은 요약이다). 근접 항목은 4(승인 기록 해시)와 7(독립 검토)이며 병합·배포·삭제에 '사전 승인'을 직접 요구하는 항목 11 은 39행으로 선언 범위 밖이다. 범위가 절 경계가 아니라 행 경계라 저자 의도를 파일만으로 확정할 수 없다"},
+    {"id": "U-10", "item": "비공개 부록(TEAM_INTERNAL)의 존재·내용", "whyUnknown": "저장소 밖이며 제안 원문 스스로 '아직 존재하지 않는다'고 적었다"}
+  ],
+
+  "sourceConflicts": [
+    {"id": "SC-1", "severity": "P1", "conflict": "live GitHub 설정과 캡처 감사(2026-09-06)의 충돌 여부를 이 봉인 기준선에서 판정할 수 없다", "handling": "SOURCE_CONFLICT_POSSIBLE_UNVERIFIED 로 등록하고 권위 판단을 PM 에게 유보한다. 충돌을 지어내지 않는다. 적용 직전 재조회(stopCondition 1)"},
+    {"id": "SC-2", "severity": "P2", "conflict": "제안 원문 manifest 의 verify_toolchain.py sha256 4bb8b4bb…(11656 B)와 현재 값 cc4f77df…(17753 B)가 다르다. 6798032 시점에는 원문 값이 정확했다", "handling": "드리프트로 기록. 원문 manifest 갱신 필요"},
+    {"id": "SC-3", "severity": "P1", "conflict": "제안 원문 §3.3 의 전제('.pi/·.specify/·docs/evidence/ 는 미추적')가 현재 트리에서 거짓(23/21/66 추적). 원문 기준 커밋에서는 참", "handling": "governance-diff.md §1.4·§6 과 V06 에 재평가 항목으로 등록"},
+    {"id": "SC-4", "severity": "P2", "conflict": ".github/CODEOWNERS 의 다른 작성자 소유 여부를 원격 수준에서 확인하지 않았다", "handling": "U-6 등록 + P4 전제. 덮어쓰지 않는다(stopCondition 2)"},
+    {"id": "SC-5", "severity": "P1", "conflict": "심각도 Medium 이상 발견의 상세가 있어야 할 비공개 부록이 제안 원문 스스로 '아직 존재하지 않는다'고 적었다 — 권위 있는 사본이 없다", "handling": "SOURCE_CONFLICT(권위 결손)로 등록. 이 후보는 부록을 생성하지 않는다(쓰기 범위 밖)"}
+  ],
+
+  "handoffReturnFields": {
+    "note": "work-graph handoff.returnFields 7항목에 대응한다(작업지시서 handoff 6항목과 함께).",
+    "sourceRefAndBaseRef": {
+      "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+      "writeTargetBranch": "bugfix/151-staging-ownership-boundary",
+      "writeTargetHead": "12c77b8c8abed8f97ff16bc3aaf7a4dca2bb5ce5",
+      "driftCommits": 24,
+      "driftPaths": 504
+    },
+    "exactWriteSetAndLease": {
+      "writeSet": ["docs/team/R-03/governance-diff.md", "docs/team/R-03/verification.json"],
+      "mode": "isolated_proposal",
+      "canonicalWriteAllowed": false,
+      "lease": "이 후보는 live lease 를 주장하지 않는다. work-graph resourceBindings(workspace-files-v1)가 요구하는 workspaceId/volumeIdentity/fencingToken 등은 이 후보가 발급받지 않았고 값도 만들지 않았다",
+      "readOnlyRespected": [".github/**", "CODEOWNERS"]
+    },
+    "inputOutputHashes": {
+      "inputs": "scope.declaredSourceScope 의 각 경로 digest — governance-diff.md §0.1 표 참조. 요약: CODEOWNERS git-blob-sha1 d4a50b7b… / sha256 a6d085e0… (412 B); pr-triage.yml git-blob-sha1 b2622c66… (5017 B); 감사문서 git-blob-sha1 cf7e6839… (5634 B); 검토문서 git-blob-sha1 5c3b763b… (21219 B)",
+      "outputs": {
+        "docs/team/R-03/governance-diff.md": {
+          "algorithm": "sha256",
+          "value": "b5a0d94072191fc6874df4648ad8e8b3498944e08c5e3edd50d0ed4b4640a966",
+          "bytes": 50755,
+          "note": "2차 수선(1차 수선을 재검증한 독립 검증자의 결함 3건 이행) 후 재계산한 값이다. 이전 값 3908a735… / 47758 B 는 1차 수선 후 값, 6bcc2c7b… / 43844 B 는 1차 수선 전 값이며 둘 다 폐기됐다."
+        },
+        "docs/team/R-03/verification.json": {
+          "algorithm": "sha256",
+          "value": "SEE_SELF_REFERENCE_AVOIDANCE",
+          "note": "이 파일 자신의 해시는 이 파일 안에 담지 않는다(담으면 값을 쓰는 순간 낡는다). 소비자·비평자가 governance-diff.md §12.3 의 명령으로 직접 계산한다."
+        }
+      }
+    },
+    "toolModelVersions": {
+      "python3": "3.14.5",
+      "git": "2.51.0",
+      "platform": "darwin",
+      "note": "이 후보를 저작한 모델 식별자는 이 파일에 기록하지 않는다"
+    },
+    "checksAndNegativeResults": {
+      "C01": "NOT_RUN(live-state gap) — 로컬 대조 부분은 실행, 위반 0건",
+      "C02": "PASS(captured policy tests only, EXIT=0, 33 tests OK) — 정책 PASS 아님",
+      "negativeResults": ["live 설정 미조회", "원격 CI 이력 미조회", "비공개 부록 미존재", "적용 전이므로 적용 후 검사 전부 미실행"]
+    },
+    "failuresRetriesSkips": {
+      "failures": "없음",
+      "retries": "없음",
+      "skips": "postApplicationChecks V01–V07 전부 NOT_RUN(적용 전), checks C01/C02 의 accept 위상 NOT_RUN"
+    },
+    "limits": "캡처 트리만 봄. live GitHub 상태·원격 이력·비공개 부록 없음. 제안은 미승인이며 이 후보는 그 결정을 바꾸지 않는다. 어떤 PASS 도 런타임·설치·네트워크·게시·병합 권한을 만들지 않는다."
+  },
+
+  "acceptanceMapping": [
+    {"criterion": "Proposal is isolated from live .github/GitHub writes.", "satisfiedBy": "applicationState, scope.writeScopeBoundary, rollbackSafeEvidence.applied=false, provenance.verifiedFacts 의 git status 관측"},
+    {"criterion": "Protected paths, required reviews, CI and rollback checks are explicit.", "satisfiedBy": "subjectOfVerification.proposalChangeSet, checks.*, postApplicationChecks V01–V08, rollbackSafeEvidence.entries R1–R5"},
+    {"criterion": "No direct push/merge/publication permission is inferred.", "satisfiedBy": "postApplicationChecks V03, checks.C02.doesNotProve, handoffReturnFields.exactWriteSetAndLease, rollbackSafeEvidence R5"},
+    {"criterion": "No named teammate or location route appears.", "satisfiedBy": "이 파일 전체가 역할명(PM, 저장소 관리자, 리드 역할, 비작성자 팀 검토자)만 쓰고 개인 로그인·조직 팀 실명·호스트명·절대 로컬 경로·워크스페이스 식별자를 쓰지 않는다"}
+  ],
+
+  "notClaims": [
+    "이 파일은 accepted / final / complete / approved 가 아니다",
+    "이 파일의 C02 PASS 는 명명된 명령의 실행 결과이며 정책 PASS 가 아니다",
+    "이 파일의 어떤 문장도 런타임·설치·네트워크·Unity·게시·병합·권한 부여를 만들지 않는다",
+    "이 파일은 제안을 적용 완료로 표시하지 않는다",
+    "이 파일은 사람을 assignee 로 지정하지 않는다",
+    "이 파일은 live GitHub 설정을 검증했다고 주장하지 않는다"
+  ],
+
+  "nonGoals": [
+    "GitHub settings/CODEOWNERS 직접 변경",
+    "권한 확대·삭제·merge",
+    "사람을 사전 assignee로 지정",
+    "변경안을 적용 완료로 표시",
+    "제품 구현·게시·GitHub 변경",
+    "완료/AAA 소프트웨어·안전·현장 효과 주장"
+  ],
+
+  "unobservedScope": [
+    "live GitHub ruleset·브랜치 보호·팀 구성·초대 상태",
+    "원격 CI 실행 이력",
+    "비공개 부록",
+    "정답표 파일 내용(.superpowers/sdd/m0-00-policy-baseline/packet/*.answer-key.json 30건, verdicts/*.map.json 12건 — 존재만 확인하고 열지 않았다)"
+  ]
+}

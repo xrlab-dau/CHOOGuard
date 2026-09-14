@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "artifact": "artifact:39:M5-04-redaction-report:candidate",
+  "workId": "M5-04",
+  "issue": 39,
+  "domainCode": "PM",
+  "phase": "candidate",
+  "pathKind": "immutable_receipt_index",
+  "status": "candidate_draft",
+  "draftDeclaration": "후보(candidate) 위상 초안이다. 스스로를 accepted/final/complete/approved/PASS 로 표기하지 않는다. 검사 결과를 정책 PASS 로 승격하지 않는다. 게시 승인은 M5-05의 별도 영수증이며 이 파일은 승인이 아니다.",
+  "overwritePolicy": "work-graph items[number=39].artifactOutputBindings.candidate.rawReceiptPolicy: Append or replace this versioned index only with a new manifest entry; never overwrite or fabricate a prior raw execution receipt.",
+  "capturedAt": "2026-09-14T08:35:14Z",
+  "capturedAtMeaning": "저작 시작 시각(최초 저작 패스의 시작). 이 값은 문서 내용의 시점이 아니다 — 아래 repairedAt·measuredAt 을 함께 읽어라. 직전 판본은 이 필드 하나만 두어 문서가 밝힌 시각과 실제 내용 시점이 약 22분 어긋났다(독립 검증 P2).",
+  "repairedAt": "2026-09-14T11:37:24Z",
+  "repairedAtMeaning": "2차 수선 패스가 이 파일의 수선 기록 시점으로 남긴 UTC 값(2026-09-14 20:37:24 KST). 이 파일은 자기 mtime 을 담을 수 없으므로 실제 mtime 은 이 값보다 뒤다(이 패스가 그 뒤에도 몇 차례 더 편집했기 때문). mtime 을 이 값과 같다고 주장하지 않는다.",
+  "measuredAt": "2026-09-14T11:33:04Z",
+  "measuredAtMeaning": "이 판본이 인용하는 경계 파일 실측값(record-schema.json·manifest-contract.md·redaction.py)을 명령으로 관측한 UTC 시각(2026-09-14 20:33:04 KST). 경계 파일이 병행 수정 중이라 이 값도 이동할 수 있다 — boundaryBasis.canonicalBoundary.observed 와 unknowns 참조.",
+  "timeAxisNote": "이 문서는 네 시점의 관측을 담는다: 저작 시작(capturedAt 2026-09-14T08:35:14Z) · 직전 수선 패스(2026-09-14T08:57:00Z) · 이번 실측(measuredAt 2026-09-14T11:33:04Z) · 이번 수선 기록(repairedAt 2026-09-14T11:37:24Z). 값을 인용한 자리마다 어느 시점 값인지 함께 적는다.",
+  "provenance": {
+    "canonicalSources": [
+      "docs/context/work-graph.json items[number=39].checks[1] (inspection: candidate manifest vs M1-05 redaction and rights boundary)",
+      "docs/choo-guard-execution-backlog-v1.md §9 M5-04 DoD 3항(승인되지 않은 원본·공간정보·메타데이터가 없음)",
+      "SECURITY.md 'Restricted content'",
+      "scripts/team/M1-05/redaction.py (미판정 후보 경계 도구)"
+    ],
+    "draftInputsNote": "저작 시작 시점에 이 경로에 미판정 선행 초안(10665 bytes sha256 c590c988aa3923863685006ba0f10b85c2d6dac4e9170b3ce0fe848638d5d211)이 존재했다. 수치를 그대로 옮기지 않고 전부 재계산했다."
+  },
+  "referencedTargetManifest": {
+    "artifact": "artifact:39:M5-04-target-manifest:candidate",
+    "path": "docs/evidence/M5-04/target-manifest-candidate-index.json",
+    "sha256": "cf496d55b445af3b7473f6b2790014422643d821cf47d518dd645d651f70f097",
+    "bytes": 240161,
+    "role": "이 정제 보고가 해시로 참조하는 target manifest 후보. 참조이며 수용이 아니다.",
+    "computedAt": "2026-09-14T11:43:10Z",
+    "recomputedBy": "python3 hashlib.sha256 over the exact file bytes (240161 bytes), cross-checked with `shasum -a 256` — 두 도구가 같은 값을 냈다. 이 값은 이 보고와 같은 2차 수선 패스에서 target manifest 의 편집을 모두 마친 뒤 계산한 최종값이다. previous: 같은 패스의 중간 판본 값은 2166c5c46956032db6d0588fc505c95968a8a84685d89e0c68df319a5d989e8f·240091 bytes(그 판본에 repairedAtMeaning 문구를 더 넣기 전), 직전 수선 패스 판본의 값은 c155c2bf2f4d47cead08cc5b19126b3f2038e918e8f7f5bf43b1cfa8c98cffcf·230507 bytes 였고, 그 이전 값 4a232ab8…·226380 bytes 는 그 전 판본의 값이다. 이 값은 target manifest 의 바이트에만 의존하며, 이 보고 자신을 다시 수선해도 바뀌지 않는다."
+  },
+  "boundaryBasis": {
+    "canonicalBoundary": {
+      "id": "M1-05 redaction/rights boundary (issue #21, artifact:21:M1-05-record-schema:candidate)",
+      "available": true,
+      "observed": "docs/team/M1-05/record-schema.json(18582 bytes·76967932…), manifest-contract.md(31653 bytes·3439b4d8…), scripts/team/M1-05/redaction.py(19959 bytes·7e689c8c…)가 미추적 파일로 존재한다. 이 값은 수선 시점 실측이며 측정 시각은 2026-09-14T08:57:00Z 다. 경계 파일들은 그 뒤로도 계속 수정되고 있었다 — manifest-contract.md mtime 2026-09-14 17:55:44 KST 는 이 보고의 저작 시각(17:35:14 KST)보다 뒤다. 따라서 이전 판본이 적은 'record-schema.json 17923 / manifest-contract.md 18635 / redaction.py 19099 bytes' 는 모두 다른 시점의 스냅샷이며 지금은 재현되지 않는다. 저작 시작 시점에는 이 디렉터리가 비어 있었다는 선행 초안의 기록과 다르다 — 그 사이 생성됐다. 이 수선 시점(2026-09-14T11:33:04Z) 재실측: redaction.py 19959 bytes·7e689c8c70c5d907c7b6dfd0abdf28f132e0fc88208d6384b23a6fe775a9a3f7(mtime 2026-09-14 17:50:06 KST, 위 값과 동일), manifest-contract.md 31653 bytes·3439b4d8f6ef25be7ae3e80c1df9df937165fcbd0197d03efdbbfd8895a2421a(mtime 17:55:44 KST, 위 값과 동일), record-schema.json 18925 bytes·a6a5e6b6ea6a2f036ca6bc737bdbfb2e4966d7971ed07983852732f3634057b5(mtime 20:33:04 KST — 위 18582·76967932… 와 다름). 드리프트를 실측으로 확인했다 — record-schema.json 은 2026-09-14T11:32:06Z 관측에서 18582 bytes·76967932… 이었고 58초 뒤 11:33:04Z 관측에서 18925 bytes·a6a5e6b6… 로 바뀌어 있었다. 따라서 위 08:57:00Z 값들도 그 시점 스냅샷이며 어느 것도 '현재값'이 아니다. 이 수선 패스 안에서도 3건이 모두 이동했다 — 11:40:12Z 재관측: record-schema.json 18925 bytes·a6a5e6b6ea6a2f036ca6bc737bdbfb2e4966d7971ed07983852732f3634057b5, manifest-contract.md 34749 bytes·0f290855699180612ca20a4ea0d6a0eed0d3588f831d076b0a6df4d1f9e4dc4e, redaction.py 19974 bytes·ab4ba422319ddd6acb6df1240e9861d5c26a05b79afbe229564b1b5da094d01b. 11:40:24Z 재관측: manifest-contract.md 가 12초 만에 35201 bytes·cb24ce6a80b97c158a24dd4b6aa1bba136dfabac00374efebf857fee034278a9(mtime 2026-09-14 20:40:14 KST)로 다시 바뀌었다. 이 보고는 경계의 '현재 해시'를 어떤 값으로도 확정해 주장하지 않는다 — target-manifest-candidate-index.json inputs.boundaryCurrentObservation.series 에 같은 series 를 적었다.",
+      "state": "unadjudicated_candidate",
+      "effect": "정본 대조가 아니라 후보 대 후보 대조다. 이 보고는 그 경계를 잣대로만 쓰고 경계 자체를 수용하지 않는다."
+    },
+    "substituteBasis": [
+      "docs/context/publication/exclusions.md §1~§3 (게시 제외 범주와 사유, 이슈 #120 미판정 후보)",
+      ".gitignore (제외 패턴)",
+      "SECURITY.md 'Restricted content'"
+    ]
+  },
+  "exclusions": [
+    {
+      "category": "raw",
+      "what": "철도 원본 영상·사진과 비식별 미완료 캡처",
+      "reason": "SECURITY.md 'Restricted content'; work-graph truth(superseded) — 새 권한 없이는 필수 입력이 아니다.",
+      "retainedWhere": "holder-local / repository-external",
+      "verification": "경로 문자열 검사: 원본 촬영 미디어 확장자(.mp4/.mov/.webm/.wav 등) 0건, 'da3'/'higgsfield' 0건",
+      "verificationNote": "파일 존재를 확인하거나 읽지 않았다. 이 후보는 그 자료를 열거하지 않는다."
+    },
+    {
+      "category": "secret",
+      "what": "자격증명·접근 토큰·Unity 라이선스 파일·.env·개인키",
+      "reason": "SECURITY.md; .gitignore(*.ulf, *.pem, *.key, *.p12, *.pfx, .env).",
+      "retainedWhere": "repository-external (승인된 비공개 저장소)",
+      "verification": "git ls-files 로 추적 여부만 확인",
+      "verificationNote": "값을 읽지도 출력하지도 않았다. 분류명만 기록한다."
+    },
+    {
+      "category": "restricted",
+      "what": "모델 체크포인트·가중치(DA3 등)·재구성 민감 형상·private-data/",
+      "reason": ".gitignore(checkpoints/, models/, *.ckpt/*.pth/*.pt/*.safetensors/*.onnx, private-data/); SECURITY.md.",
+      "retainedWhere": "repository-external",
+      "verification": "git ls-files private-data → 0건; git check-ignore -v private-data → .gitignore:45",
+      "verificationNote": "private-data/ 내용은 열거하지 않았다. 저장소 루트에 디렉터리가 존재한다는 사실만 기록한다."
+    },
+    {
+      "category": "restricted",
+      "what": "KORAIL 파일명·본문·공간정보·메타데이터",
+      "reason": "backlog M5-04 DoD 3항; SECURITY.md; docs/context/pm-execution-contract.md:121 ('민감 원문·credentials·제한 자료는 공개 이슈·Git에 넣지 않는다.'). 119행은 '## 7. 검증·인계·AAA 재작업' 절 제목이다.",
+      "retainedWhere": "repository-external",
+      "verification": "경로 문자열 검사 0건 및 탐지기 'korail-canary' 스캔 0건",
+      "verificationNote": "탐지기는 합성 marker 만 본다. 실제 KORAIL 자료로 검증하지 않았다."
+    },
+    {
+      "category": "generated",
+      "what": "Assets/CHOOguardGenerated/** 및 Assets/CHOOguardTeam/Art/**/Generated/** (Unity·툴 생성 산출물 — 씬·프리팹·머티리얼·텍스처·왕복 FBX)",
+      "reason": "docs/context/publication/exclusions.md §1 'generated' — 게시 대상이 아니다. 두 경로 패턴을 함께 덮는다(직전 판본은 'Assets/CHOOguardGenerated/**' 만 적어 아래 4건을 덮지 못했다 — 정정).",
+      "retainedWhere": "tracked-in-repo (Assets/CHOOguardGenerated 추적 118건 + Assets/CHOOguardTeam/Art/TEAM-06/Generated 추적 4건) / regenerable-ignored",
+      "verification": "git ls-files Assets/CHOOguardGenerated → 118건; 파일시스템 143건; git ls-files '*.fbx' '*.blend' | grep -c 'CHOOguardTeam/Art/TEAM-06/Generated' → 4건 (2026-09-14T11:33:04Z 실측)",
+      "verificationNote": "추적분과 미추적분이 섞여 있다. 이 후보는 어느 쪽도 결속하지 않았다. Assets/CHOOguardTeam/Art/TEAM-06/Generated/run1·run2/InformationKiosk{,_RoundTrip}.fbx 4건은 저장소가 추적하는 git-LFS 자산 38건(git ls-files '*.fbx' '*.blend') 중 target manifest 의 art-delivery 집합(34건)에 들지 않은 나머지이며, 이 범주에 명시적으로 넣어 범위 밖임을 밝힌다(독립 검증 P2). previous: 이전 판본의 reason 은 'Assets/CHOOguardGenerated/**' 로 범위가 한정되어 이 4건을 덮지 않았다."
+    },
+    {
+      "category": "cache",
+      "what": "Library/, Logs/, .pi/npm/, __pycache__/, .pytest_cache/, .ruff_cache/",
+      "reason": ".gitignore; exclusions.md §1 'cache'.",
+      "retainedWhere": "regenerable-ignored",
+      "verification": "`.gitignore` 항목 확인",
+      "verificationNote": "재생성 가능하므로 보존 대상이 아니다."
+    },
+    {
+      "category": "in-progress",
+      "what": "미커밋 작업트리 변경과 미추적 동시 작업 산출물",
+      "reason": "exclusions.md §1 'in-progress'; 작업 트리 무결성.",
+      "retainedWhere": "worktree",
+      "verification": "git status --porcelain — 추적 파일 변경 0건, 미추적 디렉터리만 존재",
+      "verificationNote": "미추적 항목: docs/context/goals/, docs/evidence/M0-00/, docs/evidence/M5-04/, docs/evidence/M5-05/, docs/team/M0-00/, docs/team/M0-02a/, docs/team/M0-03/, docs/team/M1-05/, scripts/team/M1-05/"
+    },
+    {
+      "category": "other",
+      "what": ".planning/** 원시 계획 로그·세션 캡처",
+      "reason": "exclusions.md §2; .gitignore(.planning/).",
+      "retainedWhere": "holder-local",
+      "verification": "git check-ignore 및 디렉터리 존재 확인",
+      "verificationNote": "이 후보는 내용을 열거하지 않았다."
+    }
+  ],
+  "forbiddenItemScan": {
+    "performedOn": "docs/evidence/M5-04/target-manifest-candidate-index.json (직렬화 후 바이트에서 디코드한 텍스트)",
+    "pathLevelScanRef": "docs/evidence/M5-04/target-manifest-candidate-index.json#candidatePathScan (경로 문자열 수준 검사)",
+    "tool": "scripts/team/M1-05/redaction.py DETECTORS (미판정 후보 경계 도구)",
+    "toolSha256": "27feab61fa9cb09b711608dbbf62871673860b352c452fb65475734dfa19b48f",
+    "toolSha256Note": "이 값은 스캔 실행 시점의 scripts/team/M1-05/redaction.py 바이트 해시(저작 시점 스냅샷)다. 스캔의 wall-clock 시각은 저작 패스가 기록하지 않아 unknown 이다. 같은 파일을 이 보고의 boundaryBasis 는 2026-09-14T08:57:00Z 실측으로 19959 bytes·7e689c8c70c5d907c7b6dfd0abdf28f132e0fc88208d6384b23a6fe775a9a3f7 로 적는다. 두 값은 서로 다른 시점의 같은 파일이며 충돌이 아니다 — 값이 다르다는 것만 확인되고, 어느 쪽이 먼저인지는 확인하지 못했다(27feab61… 판본의 실재 여부도 unknown). 이 수선 시점(2026-09-14T11:33:04Z) 실측값은 19959 bytes·7e689c8c…(mtime 2026-09-14 17:50:06 KST = 08:50:06Z)로 boundaryBasis 값과 일치했다 — 즉 11:33:04Z 관측 시점까지 이 파일의 마지막 수정은 08:50:06Z 이고 그 뒤로는 바뀌지 않은 상태였다. 따라서 27feab61… 는 08:50:06Z 이전 판본의 값이라는 서술까지만 실측으로 뒷받침된다. 다만 그 뒤 이 수선 패스 안에서 다시 바뀌었다 — 11:40:12Z 재관측에서 19974 bytes·ab4ba422319ddd6acb6df1240e9861d5c26a05b79afbe229564b1b5da094d01b(mtime 2026-09-14 20:35:44 KST)였다. 즉 어떤 관측값도 고정된 현재값이 아니다.",
+    "rules": [
+      "secret(canary-secret-token, canary-api-token, aws-access-key-shape)",
+      "pii(email-shape, rrn-shape, mobile-phone-shape)",
+      "absolute_path(posix-absolute, windows-absolute)",
+      "restricted(korail-canary)"
+    ],
+    "entryPointUsed": "residual_findings",
+    "toolNote": "M1-05 도구 파일은 저작 중 병행 수정되고 있었다(scripts/team/M1-05 디렉터리 mtime 17:29~17:33 KST). 스캔은 이 실행 시점의 파일로 수행했고 toolSha256 이 그 시점 값이다. 스캔의 wall-clock 시각은 기록되지 않아 unknown 이다 — toolSha256Note 에 이 값과 boundaryBasis.canonicalBoundary.observed 의 redaction.py 해시(7e689c8c…·19959, 2026-09-14T08:57:00Z 실측)의 관계를 적었다. 두 값은 서로 다른 시점 스냅샷이며 어느 쪽도 이 보고의 수용 판정이 아니다. 경계가 움직이는 대상임을 명시한다.",
+    "violations": 0,
+    "violationsByCategory": {},
+    "positiveControl": {
+      "input": "합성 canary 문자열(실제 비밀 아님) 1건 + POSIX 절대경로 1건",
+      "detectedCategories": [
+        "absolute_path",
+        "secret"
+      ],
+      "detectedCount": 2,
+      "note": "탐지기가 작동함을 확인하는 양성대조. 값은 합성이다."
+    },
+    "nameMatchesAdjudicatedNotForbidden": [],
+    "resultCode": "no_forbidden_shapes_detected_by_M1-05_detectors",
+    "limits": "탐지기는 합성 canary 중심이며 재현율(recall)은 측정되지 않았다. 미검출은 '없음'의 증명이 아니다. 탐지된 값이 있었다면 값 자체는 기록하지 않는다(분류명만 기록)."
+  },
+  "rightsBoundaryComparison": [
+    {
+      "item": "제거 사유를 정책 문장 인용으로 남기는가",
+      "m1_05_rule": "manifest-contract.md §6(113행) '사건마다 reasonRef(정책 문장 인용)와 retainedPolicyRef 가 붙는다'",
+      "thisArtifact": "exclusions[].reason 이 SECURITY.md / .gitignore / exclusions.md / backlog 를 인용한다.",
+      "result": "consistent"
+    },
+    {
+      "item": "제거한 원문을 남기지 않는가",
+      "m1_05_rule": "redact_text 는 tombstone 에 삭제 표시·사유·매치 수만 남긴다",
+      "thisArtifact": "exclusions 는 범주·대상·사유만 적고 파일 내용·값을 담지 않는다.",
+      "result": "consistent"
+    },
+    {
+      "item": "게시 승인 상태를 도구가 스스로 approved 로 쓰지 않는가",
+      "m1_05_rule": "scripts/team/M1-05/redaction.py:264 publication_state(*, redaction, approval) 는 'candidate'/'withheld'/'unknown' 만 내고 'approved' 를 만들지 않는다. 자기승인은 같은 파일 :275 refuse_self_approval 이 PublicationBlocked(:113) 로 거부한다. docs/team/M1-05/record-schema.json:171 publication.state enum 은 [\"not_requested\",\"candidate\",\"withheld\",\"unknown\"] 이며 eligible·blocked 값이 없다. 줄번호는 이 수선 시점(2026-09-14T11:33:04Z) 실측값이고 경계 파일이 병행 수정 중이라 이동할 수 있다(그 시점 redaction.py 19959 bytes·7e689c8c…).",
+      "m1_05_ruleCorrection": "직전 판본 문구 'publication_gate 는 eligible/blocked 만 내고 승인 축은 pending 그대로' 를 철회한다 → 위 문구로 정정. 사유: 실측 grep 에서 'publication_gate' 는 저장소 전체에 services/livekit/test_configure_local.py:31·:626(테스트 메서드명)과 docs/evidence/foundation/FMP-04-R1-staging-ownership-index.json:538(같은 메서드명)에만 있고 M1-05 경계에는 0건이며, 'eligible' 은 docs/team/M1-05·scripts/team/M1-05 전체 0건이었다. 즉 인용한 심볼이 실재하지 않았다(독립 검증 V3·P1).",
+      "thisArtifact": "이 파일에 승인 상태 필드가 없다. approvalReceipt 는 별도 파일이며 수용으로 읽지 않는다.",
+      "result": "consistent"
+    },
+    {
+      "item": "target manifest 가 자기 자신을 해시하지 않는가",
+      "m1_05_rule": "manifest-contract.md §3 no-self-hash 규칙(56행) 및 §2 첫 bullet '자기 해시 금지'(52행) — 이 문서에 'INV' 식별자와 §2.3 절은 없다",
+      "thisArtifact": "digests.selfDigestNote 로 자기 해시를 넣지 않는다. redaction report 가 그 해시를 외부에서 참조한다.",
+      "result": "consistent"
+    },
+    {
+      "item": "정제 상태와 승인 상태를 합치지 않는가",
+      "m1_05_rule": "redaction.state 와 publication.approval.state 는 다른 축이다 (docs/team/M1-05/record-schema.json:106 '통과(passed)는 공개 승인이 아니며 publication.approval.state 를 바꾸지 않는다', :84 '승인(approval)은 여기가 아니라 publication.approval.state 에 있다', :69)",
+      "m1_05_ruleCorrection": "직전 판본 문구 'redactionState 와 approvalState 는 다른 축' 을 철회한다 → 위 문구로 정정. 사유: 실측 grep 에서 'redactionState'·'approvalState' 라는 표기는 docs/team/M1-05·scripts/team/M1-05 전체 0건이었다. 실제 필드 경로는 redaction.state 와 publication.approval.state 다(독립 검증 V3).",
+      "thisArtifact": "rights.state 는 'unverified_pending_authority'/'pending' 등이며 'approved' 값이 없다.",
+      "result": "consistent"
+    }
+  ],
+  "checks": [
+    {
+      "id": "check-1-native-payload",
+      "command": "python3 scripts/dev/native_manifest.py payload --root <build> --output <unique-run>/payload-manifest.json",
+      "expected": "payload hash and output list are recorded outside payload",
+      "negativeCase": "existing output/manifest is never overwritten",
+      "ran": true,
+      "observed": {
+        "exitCode": 0,
+        "files": 174,
+        "filesDigest": "a51d11679d65c209c8216c670a6410175ba18770f0ca4c251a4a4c04d16e0259",
+        "negative": "재실행 exit 1(File exists), 페이로드 내부 출력 exit 1(self hash)"
+      },
+      "detail": "target-manifest-candidate-index.json#checks[0] 에 전량 기록"
+    },
+    {
+      "id": "check-2-inspection-vs-m1-05",
+      "command": "inspection: candidate manifest vs M1-05 redaction and rights boundary",
+      "expected": "no raw/credential/restricted metadata, review/approval separate",
+      "negativeCase": "any forbidden item => reject and preserve candidate",
+      "ran": true,
+      "observed": "forbiddenItemScan 및 rightsBoundaryComparison 참조",
+      "detail": "이 파일의 forbiddenItemScan 이 그 검사 자체다."
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "acceptance": "Every candidate file has version/hash/scope/rights and limitation.",
+      "field": "referencedTargetManifest + 이 보고의 exclusions[].category/verification",
+      "note": "파일별 필드는 target manifest 가 담는다."
+    },
+    {
+      "acceptance": "Review and approval receipts reference target hash but are not inserted into it.",
+      "field": "referencedTargetManifest.sha256 (외부 참조) — 이 보고는 target manifest 안에 들어가지 않는다."
+    },
+    {
+      "acceptance": "CV/Higgsfield/capture inputs absent or explicitly blocked/historical.",
+      "field": "exclusions[category=raw] + exclusions[category=restricted]"
+    },
+    {
+      "acceptance": "Target scope states whether HMD is included and does not claim 20/100/2 by packaging alone.",
+      "field": "범위 밖(권리·정제 범위만 다룬다). 그 항목은 target manifest 의 scope 가 담당한다."
+    }
+  ],
+  "skippedAcceptance": [
+    "acceptance 4 는 이 보고의 범위가 아니다 — target-manifest-candidate-index.json scope.hmdDecision / scaleNumbersDecision 이 담당한다."
+  ],
+  "unrun": [
+    "실제 민감자료에 대한 정제 검증 — 값 자체를 읽지 않았다.",
+    "탐지기 재현율(recall) 측정 — 수행하지 않았다.",
+    "M1-05 경계 도구의 시험 스위트 실행 — 이 후보의 검사 항목이 아니므로 돌리지 않았다.",
+    "KORAIL 원본 자료 실물 대조 — 원본에 접근하지 않았다."
+  ],
+  "unknowns": [
+    "M1-05 경계는 미판정 후보이며 저작·수선 중 계속 수정되고 있었다(manifest-contract.md mtime 2026-09-14 17:55:44 KST). 이 수선 시점(2026-09-14T08:57:00Z) 대조에서는 manifest-contract.md §7(117행 '실제로 돌린 검사 (관측값)') 의 해시 표 202행이 record-schema.json 을 76967932…·18582 bytes 로 적고, 같은 시점 파일 재계산값도 18582 bytes·76967932… 로 일치해 관측되는 드리프트가 없었다. 다만 이 일치는 그 시점 스냅샷이며 경계의 안정성은 확인할 수 없다. 이전 판본이 'manifest-contract.md §5 가 스스로 적은 해시가 다르다'고 한 문장은 사실이 아니었다 — §5 는 비덮어쓰기 규칙이고 해시 표는 §7 이다. 이 수선 시점(2026-09-14T11:33:04Z) 재실측에서는 드리프트가 관측된다: record-schema.json 이 18925 bytes·a6a5e6b6…(mtime 2026-09-14 20:33:04 KST)로, manifest-contract.md §7 표 202행이 적은 76967932…·18582 와 다르다(같은 표는 manifest-contract.md 자신을 '(자기 해시 금지 규칙에 따라 본문에 적지 않음)' 으로 둔다). 즉 08:57:00Z 시점의 '드리프트 없음'은 그 시점의 스냅샷에 한정되며, 경계는 지금도 움직인다 — 11:32:06Z 관측(18582·76967932…)과 11:33:04Z 관측(18925·a6a5e6b6…)이 58초 간격으로 다르고, 11:40:12Z→11:40:24Z 12초 사이에 manifest-contract.md 가 34749·0f290855…→35201·cb24ce6a… 로 다시 바뀌었다.",
+    "탐지기가 잡지 못하는 형태의 제한자료 존재 여부는 unknown 이다(recall 미측정).",
+    "docs/assets/chooguard-logo.png 의 출처·사용권을 확인하지 못했다."
+  ],
+  "limits": [
+    "이 보고는 게시 승인이 아니다. 제외를 실행(삭제·이동)하지도 않았다.",
+    "제외 목록은 저장소에서 관측한 범주이며 완전하지 않다.",
+    "탐지기 기반 검사는 합성 canary 중심이므로 실제 자료에 대한 보증이 아니다."
+  ],
+  "digests": {
+    "algorithm": "sha256",
+    "referencedTargetManifestSha256": "cf496d55b445af3b7473f6b2790014422643d821cf47d518dd645d651f70f097",
+    "referencedTargetManifestSha256Note": "위 referencedTargetManifest.sha256 와 같은 값이다. previous: 2166c5c46956032db6d0588fc505c95968a8a84685d89e0c68df319a5d989e8f (같은 패스의 중간 판본, 240091 bytes), c155c2bf2f4d47cead08cc5b19126b3f2038e918e8f7f5bf43b1cfa8c98cffcf (직전 수선 패스 판본, 230507 bytes).",
+    "selfDigestNote": "이 파일 전체의 sha256 은 자기 자신을 포함할 수 없어 안에 적지 않는다. 작성 후 별도로 계산해 반환한다."
+  }
+}
