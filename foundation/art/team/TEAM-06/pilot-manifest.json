@@ -1,0 +1,1875 @@
+{
+  "workId": "TEAM-06",
+  "issue": 74,
+  "phase": "candidate",
+  "module": "InformationKiosk",
+  "contract": {
+    "coordinateAdapter": "Unity(x,y,z) to Blender(-x,-z,y); FBX import X reversal verified by asymmetric geometry test",
+    "units": "metres",
+    "lodNaming": "<mesh>_LOD<n> under InformationKiosk_Pilot",
+    "lod1": "Blender Decimate collapse ratio 0.50",
+    "colliderNaming": "Collider_<part>, no material, authored from driver collisionBoxes",
+    "outputs": "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run<n>/ only; shared blend/FBX/manifest read-only"
+  },
+  "inputs": {
+    "branch": "or:74:roundtrip-baseline -> artifact:65:existing-native-33-baseline:candidate",
+    "baselineManifest": {
+      "path": "foundation/art/asset-manifest.json",
+      "sha256": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242"
+    },
+    "sourceBlend": {
+      "path": "foundation/art/station-kit.blend",
+      "sha256": "b337e13aef58f7284972e905b7e674b105f732f5b4e0e818c0acc7e01bdccb0f",
+      "use": "read-only, not opened"
+    },
+    "qualified": {
+      "generatorSha256": {
+        "path": "scripts/art/build_station_assets.py",
+        "sha256": "31928ccb4aa6b481cefa5112a75af24e7c0152bb01d8dd54b2fe007bc512f470"
+      },
+      "sourceModuleSha256": {
+        "path": "scripts/art/station_furniture.py",
+        "sha256": "a3b99c8ff6d168bdc3dc6803de07ab31d120c278ff64bad1a10cfc8828b05dc3"
+      },
+      "assetSha256": {
+        "path": "Assets/CHOOguardArt/Blender/InformationKiosk.fbx",
+        "sha256": "052db398cbc0e450c5990efb294b3d3104177a65d0948eb77f2a0c1be4bf5dc6"
+      }
+    },
+    "baseRef": "a8320bb9008f8a3158549d9fb943eae9018e0f71"
+  },
+  "blender": {
+    "runs": {
+      "1": {
+        "capturedAt": "2026-09-13T17:32:51Z",
+        "blender": "4.5.9 LTS",
+        "invocation": "blender -b --factory-startup --python scripts/art/team/TEAM-06/pilot_module.py -- --run 1",
+        "pilotSourceSha256": "f90932a77c862afd7c513f0a66cf9766abbc152dd68389a38ae2c96acabd8dad",
+        "outputs": {
+          "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run1/InformationKiosk.fbx": {
+            "sha256": "8253bd74648defebfabedff94ead9c20d5acd8214cbf0abbe630e4d7cbfcef09",
+            "bytes": 88716
+          },
+          "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run1/InformationKiosk_RoundTrip.fbx": {
+            "sha256": "1abea4ecc9f45630280168b3c0c0ba3a81431d1f185482ad82ca21bb73033cbe",
+            "bytes": 149964
+          }
+        },
+        "lod0DriverRecord": {
+          "triangles": 2424,
+          "meshParts": 8,
+          "boundsUnity": {
+            "min": [
+              -0.37,
+              0.0,
+              -0.37
+            ],
+            "max": [
+              0.37,
+              2.1,
+              0.3
+            ]
+          },
+          "components": {
+            "BezelRail": {
+              "count": 4,
+              "boundsUnity": {
+                "min": [
+                  -0.2875,
+                  1.2375,
+                  -0.323
+                ],
+                "max": [
+                  0.2875,
+                  1.7425,
+                  -0.283
+                ]
+              }
+            },
+            "BlueFacePanel": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.305,
+                  0.97,
+                  -0.295
+                ],
+                "max": [
+                  0.305,
+                  1.85,
+                  -0.273
+                ]
+              }
+            },
+            "CardReader": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  0.075,
+                  1.005,
+                  -0.336
+                ],
+                "max": [
+                  0.245,
+                  1.095,
+                  -0.296
+                ]
+              }
+            },
+            "CardSlot": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  0.1,
+                  1.05,
+                  -0.3425
+                ],
+                "max": [
+                  0.22,
+                  1.058,
+                  -0.3355
+                ]
+              }
+            },
+            "DisplayBezel": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.275,
+                  1.245,
+                  -0.3195
+                ],
+                "max": [
+                  0.275,
+                  1.735,
+                  -0.2905
+                ]
+              }
+            },
+            "DisplayGlazing": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.2355,
+                  1.3145,
+                  -0.332
+                ],
+                "max": [
+                  0.2355,
+                  1.6955,
+                  -0.33
+                ]
+              }
+            },
+            "DisplayRow": {
+              "count": 3,
+              "boundsUnity": {
+                "min": [
+                  -0.195,
+                  1.4025,
+                  -0.335
+                ],
+                "max": [
+                  0.135,
+                  1.6175,
+                  -0.333
+                ]
+              }
+            },
+            "DoorLock": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  0.211,
+                  0.409,
+                  -0.2985
+                ],
+                "max": [
+                  0.229,
+                  0.451,
+                  -0.2895
+                ]
+              }
+            },
+            "FootPad": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.355,
+                  0.0,
+                  -0.29
+                ],
+                "max": [
+                  0.355,
+                  0.03,
+                  0.29
+                ]
+              }
+            },
+            "HeaderPanel": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  1.9,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  2.1,
+                  0.275
+                ]
+              }
+            },
+            "Plinth": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.37,
+                  0.03,
+                  -0.3
+                ],
+                "max": [
+                  0.37,
+                  0.12,
+                  0.3
+                ]
+              }
+            },
+            "RecessedDisplay": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.2375,
+                  1.3125,
+                  -0.3285
+                ],
+                "max": [
+                  0.2375,
+                  1.6975,
+                  -0.3175
+                ]
+              }
+            },
+            "ServiceDoor": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.285,
+                  0.16,
+                  -0.2895
+                ],
+                "max": [
+                  0.285,
+                  0.62,
+                  -0.2765
+                ]
+              }
+            },
+            "SideVent": {
+              "count": 5,
+              "boundsUnity": {
+                "min": [
+                  0.349,
+                  0.444,
+                  -0.095
+                ],
+                "max": [
+                  0.357,
+                  0.736,
+                  0.135
+                ]
+              }
+            },
+            "TicketSlot": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.24,
+                  0.7095,
+                  -0.307
+                ],
+                "max": [
+                  0.1,
+                  0.7305,
+                  -0.277
+                ]
+              }
+            },
+            "TicketTray": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.245,
+                  0.6805,
+                  -0.37
+                ],
+                "max": [
+                  0.105,
+                  0.7055,
+                  -0.27
+                ]
+              }
+            },
+            "UprightCabinet": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  0.12,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  1.91,
+                  0.275
+                ]
+              }
+            }
+          },
+          "collisionBoxes": [
+            {
+              "part": "UprightCabinet",
+              "component": "UprightCabinet",
+              "parent": "model",
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  0.12,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  1.91,
+                  0.275
+                ]
+              }
+            },
+            {
+              "part": "Plinth",
+              "component": "Plinth",
+              "parent": "model",
+              "boundsUnity": {
+                "min": [
+                  -0.37,
+                  0.03,
+                  -0.3
+                ],
+                "max": [
+                  0.37,
+                  0.12,
+                  0.3
+                ]
+              }
+            },
+            {
+              "part": "HeaderPanel",
+              "component": "HeaderPanel",
+              "parent": "model",
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  1.9,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  2.1,
+                  0.275
+                ]
+              }
+            }
+          ]
+        },
+        "baselineMatch": {
+          "triangles": true,
+          "meshParts": true,
+          "boundsUnity": true,
+          "components": true,
+          "collisionBoxes": true
+        },
+        "objectNames": [
+          "Collider_HeaderPanel",
+          "Collider_Plinth",
+          "Collider_UprightCabinet",
+          "Static_Blue_LOD0",
+          "Static_Blue_LOD1",
+          "Static_ClearGlass_LOD0",
+          "Static_ClearGlass_LOD1",
+          "Static_Metal_LOD0",
+          "Static_Metal_LOD1",
+          "Static_Roof_LOD0",
+          "Static_Roof_LOD1",
+          "Static_Rubber_LOD0",
+          "Static_Rubber_LOD1",
+          "Static_Screen_LOD0",
+          "Static_Screen_LOD1",
+          "Static_Stainless_LOD0",
+          "Static_Stainless_LOD1",
+          "Static_White_LOD0",
+          "Static_White_LOD1"
+        ],
+        "pivot": {
+          "root": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "meshOrigins": "world origin (driver ORIGIN_CURSOR)"
+        },
+        "unitScaleLength": 1.0,
+        "lods": [
+          {
+            "lod": 0,
+            "triangles": 2424,
+            "meshes": [
+              {
+                "name": "Static_Blue_LOD0",
+                "material": "Blue",
+                "triangles": 216
+              },
+              {
+                "name": "Static_ClearGlass_LOD0",
+                "material": "ClearGlass",
+                "triangles": 12
+              },
+              {
+                "name": "Static_Metal_LOD0",
+                "material": "Metal",
+                "triangles": 108
+              },
+              {
+                "name": "Static_Roof_LOD0",
+                "material": "Roof",
+                "triangles": 108
+              },
+              {
+                "name": "Static_Rubber_LOD0",
+                "material": "Rubber",
+                "triangles": 972
+              },
+              {
+                "name": "Static_Screen_LOD0",
+                "material": "Screen",
+                "triangles": 108
+              },
+              {
+                "name": "Static_Stainless_LOD0",
+                "material": "Stainless",
+                "triangles": 864
+              },
+              {
+                "name": "Static_White_LOD0",
+                "material": "White",
+                "triangles": 36
+              }
+            ],
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": []
+          },
+          {
+            "lod": 1,
+            "triangles": 1212,
+            "meshes": [
+              {
+                "name": "Static_Blue_LOD1",
+                "material": "Blue",
+                "triangles": 108
+              },
+              {
+                "name": "Static_ClearGlass_LOD1",
+                "material": "ClearGlass",
+                "triangles": 6
+              },
+              {
+                "name": "Static_Metal_LOD1",
+                "material": "Metal",
+                "triangles": 54
+              },
+              {
+                "name": "Static_Roof_LOD1",
+                "material": "Roof",
+                "triangles": 54
+              },
+              {
+                "name": "Static_Rubber_LOD1",
+                "material": "Rubber",
+                "triangles": 486
+              },
+              {
+                "name": "Static_Screen_LOD1",
+                "material": "Screen",
+                "triangles": 54
+              },
+              {
+                "name": "Static_Stainless_LOD1",
+                "material": "Stainless",
+                "triangles": 432
+              },
+              {
+                "name": "Static_White_LOD1",
+                "material": "White",
+                "triangles": 18
+              }
+            ],
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": []
+          }
+        ],
+        "colliders": [
+          {
+            "name": "Collider_UprightCabinet",
+            "part": "UprightCabinet",
+            "component": "UprightCabinet",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                0.12,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                1.91,
+                0.275
+              ]
+            }
+          },
+          {
+            "name": "Collider_Plinth",
+            "part": "Plinth",
+            "component": "Plinth",
+            "boundsUnity": {
+              "min": [
+                -0.37,
+                0.03,
+                -0.3
+              ],
+              "max": [
+                0.37,
+                0.12,
+                0.3
+              ]
+            }
+          },
+          {
+            "name": "Collider_HeaderPanel",
+            "part": "HeaderPanel",
+            "component": "HeaderPanel",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                1.9,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                2.1,
+                0.275
+              ]
+            }
+          }
+        ]
+      },
+      "2": {
+        "capturedAt": "2026-09-13T17:33:04Z",
+        "blender": "4.5.9 LTS",
+        "invocation": "blender -b --factory-startup --python scripts/art/team/TEAM-06/pilot_module.py -- --run 2",
+        "pilotSourceSha256": "f90932a77c862afd7c513f0a66cf9766abbc152dd68389a38ae2c96acabd8dad",
+        "outputs": {
+          "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run2/InformationKiosk.fbx": {
+            "sha256": "d8bd2e34af17bb57f4285884b911c3546cbc2d1a5063ff1e7d51f123f213e1c1",
+            "bytes": 88668
+          },
+          "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run2/InformationKiosk_RoundTrip.fbx": {
+            "sha256": "707d1cac743972c36fafe469778f9095e50b899799b02cf1a2a3f75f613724cb",
+            "bytes": 149900
+          }
+        },
+        "lod0DriverRecord": {
+          "triangles": 2424,
+          "meshParts": 8,
+          "boundsUnity": {
+            "min": [
+              -0.37,
+              0.0,
+              -0.37
+            ],
+            "max": [
+              0.37,
+              2.1,
+              0.3
+            ]
+          },
+          "components": {
+            "BezelRail": {
+              "count": 4,
+              "boundsUnity": {
+                "min": [
+                  -0.2875,
+                  1.2375,
+                  -0.323
+                ],
+                "max": [
+                  0.2875,
+                  1.7425,
+                  -0.283
+                ]
+              }
+            },
+            "BlueFacePanel": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.305,
+                  0.97,
+                  -0.295
+                ],
+                "max": [
+                  0.305,
+                  1.85,
+                  -0.273
+                ]
+              }
+            },
+            "CardReader": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  0.075,
+                  1.005,
+                  -0.336
+                ],
+                "max": [
+                  0.245,
+                  1.095,
+                  -0.296
+                ]
+              }
+            },
+            "CardSlot": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  0.1,
+                  1.05,
+                  -0.3425
+                ],
+                "max": [
+                  0.22,
+                  1.058,
+                  -0.3355
+                ]
+              }
+            },
+            "DisplayBezel": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.275,
+                  1.245,
+                  -0.3195
+                ],
+                "max": [
+                  0.275,
+                  1.735,
+                  -0.2905
+                ]
+              }
+            },
+            "DisplayGlazing": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.2355,
+                  1.3145,
+                  -0.332
+                ],
+                "max": [
+                  0.2355,
+                  1.6955,
+                  -0.33
+                ]
+              }
+            },
+            "DisplayRow": {
+              "count": 3,
+              "boundsUnity": {
+                "min": [
+                  -0.195,
+                  1.4025,
+                  -0.335
+                ],
+                "max": [
+                  0.135,
+                  1.6175,
+                  -0.333
+                ]
+              }
+            },
+            "DoorLock": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  0.211,
+                  0.409,
+                  -0.2985
+                ],
+                "max": [
+                  0.229,
+                  0.451,
+                  -0.2895
+                ]
+              }
+            },
+            "FootPad": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.355,
+                  0.0,
+                  -0.29
+                ],
+                "max": [
+                  0.355,
+                  0.03,
+                  0.29
+                ]
+              }
+            },
+            "HeaderPanel": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  1.9,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  2.1,
+                  0.275
+                ]
+              }
+            },
+            "Plinth": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.37,
+                  0.03,
+                  -0.3
+                ],
+                "max": [
+                  0.37,
+                  0.12,
+                  0.3
+                ]
+              }
+            },
+            "RecessedDisplay": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.2375,
+                  1.3125,
+                  -0.3285
+                ],
+                "max": [
+                  0.2375,
+                  1.6975,
+                  -0.3175
+                ]
+              }
+            },
+            "ServiceDoor": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.285,
+                  0.16,
+                  -0.2895
+                ],
+                "max": [
+                  0.285,
+                  0.62,
+                  -0.2765
+                ]
+              }
+            },
+            "SideVent": {
+              "count": 5,
+              "boundsUnity": {
+                "min": [
+                  0.349,
+                  0.444,
+                  -0.095
+                ],
+                "max": [
+                  0.357,
+                  0.736,
+                  0.135
+                ]
+              }
+            },
+            "TicketSlot": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.24,
+                  0.7095,
+                  -0.307
+                ],
+                "max": [
+                  0.1,
+                  0.7305,
+                  -0.277
+                ]
+              }
+            },
+            "TicketTray": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.245,
+                  0.6805,
+                  -0.37
+                ],
+                "max": [
+                  0.105,
+                  0.7055,
+                  -0.27
+                ]
+              }
+            },
+            "UprightCabinet": {
+              "count": 1,
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  0.12,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  1.91,
+                  0.275
+                ]
+              }
+            }
+          },
+          "collisionBoxes": [
+            {
+              "part": "UprightCabinet",
+              "component": "UprightCabinet",
+              "parent": "model",
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  0.12,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  1.91,
+                  0.275
+                ]
+              }
+            },
+            {
+              "part": "Plinth",
+              "component": "Plinth",
+              "parent": "model",
+              "boundsUnity": {
+                "min": [
+                  -0.37,
+                  0.03,
+                  -0.3
+                ],
+                "max": [
+                  0.37,
+                  0.12,
+                  0.3
+                ]
+              }
+            },
+            {
+              "part": "HeaderPanel",
+              "component": "HeaderPanel",
+              "parent": "model",
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  1.9,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  2.1,
+                  0.275
+                ]
+              }
+            }
+          ]
+        },
+        "baselineMatch": {
+          "triangles": true,
+          "meshParts": true,
+          "boundsUnity": true,
+          "components": true,
+          "collisionBoxes": true
+        },
+        "objectNames": [
+          "Collider_HeaderPanel",
+          "Collider_Plinth",
+          "Collider_UprightCabinet",
+          "Static_Blue_LOD0",
+          "Static_Blue_LOD1",
+          "Static_ClearGlass_LOD0",
+          "Static_ClearGlass_LOD1",
+          "Static_Metal_LOD0",
+          "Static_Metal_LOD1",
+          "Static_Roof_LOD0",
+          "Static_Roof_LOD1",
+          "Static_Rubber_LOD0",
+          "Static_Rubber_LOD1",
+          "Static_Screen_LOD0",
+          "Static_Screen_LOD1",
+          "Static_Stainless_LOD0",
+          "Static_Stainless_LOD1",
+          "Static_White_LOD0",
+          "Static_White_LOD1"
+        ],
+        "pivot": {
+          "root": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "meshOrigins": "world origin (driver ORIGIN_CURSOR)"
+        },
+        "unitScaleLength": 1.0,
+        "lods": [
+          {
+            "lod": 0,
+            "triangles": 2424,
+            "meshes": [
+              {
+                "name": "Static_Blue_LOD0",
+                "material": "Blue",
+                "triangles": 216
+              },
+              {
+                "name": "Static_ClearGlass_LOD0",
+                "material": "ClearGlass",
+                "triangles": 12
+              },
+              {
+                "name": "Static_Metal_LOD0",
+                "material": "Metal",
+                "triangles": 108
+              },
+              {
+                "name": "Static_Roof_LOD0",
+                "material": "Roof",
+                "triangles": 108
+              },
+              {
+                "name": "Static_Rubber_LOD0",
+                "material": "Rubber",
+                "triangles": 972
+              },
+              {
+                "name": "Static_Screen_LOD0",
+                "material": "Screen",
+                "triangles": 108
+              },
+              {
+                "name": "Static_Stainless_LOD0",
+                "material": "Stainless",
+                "triangles": 864
+              },
+              {
+                "name": "Static_White_LOD0",
+                "material": "White",
+                "triangles": 36
+              }
+            ],
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": []
+          },
+          {
+            "lod": 1,
+            "triangles": 1212,
+            "meshes": [
+              {
+                "name": "Static_Blue_LOD1",
+                "material": "Blue",
+                "triangles": 108
+              },
+              {
+                "name": "Static_ClearGlass_LOD1",
+                "material": "ClearGlass",
+                "triangles": 6
+              },
+              {
+                "name": "Static_Metal_LOD1",
+                "material": "Metal",
+                "triangles": 54
+              },
+              {
+                "name": "Static_Roof_LOD1",
+                "material": "Roof",
+                "triangles": 54
+              },
+              {
+                "name": "Static_Rubber_LOD1",
+                "material": "Rubber",
+                "triangles": 486
+              },
+              {
+                "name": "Static_Screen_LOD1",
+                "material": "Screen",
+                "triangles": 54
+              },
+              {
+                "name": "Static_Stainless_LOD1",
+                "material": "Stainless",
+                "triangles": 432
+              },
+              {
+                "name": "Static_White_LOD1",
+                "material": "White",
+                "triangles": 18
+              }
+            ],
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": []
+          }
+        ],
+        "colliders": [
+          {
+            "name": "Collider_UprightCabinet",
+            "part": "UprightCabinet",
+            "component": "UprightCabinet",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                0.12,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                1.91,
+                0.275
+              ]
+            }
+          },
+          {
+            "name": "Collider_Plinth",
+            "part": "Plinth",
+            "component": "Plinth",
+            "boundsUnity": {
+              "min": [
+                -0.37,
+                0.03,
+                -0.3
+              ],
+              "max": [
+                0.37,
+                0.12,
+                0.3
+              ]
+            }
+          },
+          {
+            "name": "Collider_HeaderPanel",
+            "part": "HeaderPanel",
+            "component": "HeaderPanel",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                1.9,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                2.1,
+                0.275
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "comparison": {
+      "semanticFieldsEqual": {
+        "lod0DriverRecord": true,
+        "objectNames": true,
+        "pivot": true,
+        "unitScaleLength": true,
+        "lods": true,
+        "colliders": true
+      },
+      "outputBytesEqual": {
+        "InformationKiosk.fbx": false,
+        "InformationKiosk_RoundTrip.fbx": false
+      }
+    }
+  },
+  "unity": {
+    "unityVersion": "6000.3.23f1",
+    "capturedAt": "2026-09-13T18:16:09Z",
+    "importSettings": {
+      "reference": "Assets/CHOOguardArt/Blender/InformationKiosk.fbx",
+      "referenceSettings": {
+        "globalScale": 1.0,
+        "useFileScale": true,
+        "importAnimation": false,
+        "importCameras": false,
+        "importLights": false,
+        "addCollider": false,
+        "isReadable": true,
+        "importNormals": "Import",
+        "materialImportMode": "LegacyImport"
+      },
+      "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run1/InformationKiosk.fbx": true,
+      "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run1/InformationKiosk_RoundTrip.fbx": true,
+      "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run2/InformationKiosk.fbx": true,
+      "Assets/CHOOguardTeam/Art/TEAM-06/Generated/run2/InformationKiosk_RoundTrip.fbx": true
+    },
+    "runs": {
+      "1": {
+        "referenceMeshesEqual": {
+          "Static_Blue": true,
+          "Static_ClearGlass": true,
+          "Static_Metal": true,
+          "Static_Roof": true,
+          "Static_Rubber": true,
+          "Static_Screen": true,
+          "Static_Stainless": true,
+          "Static_White": true
+        },
+        "referenceRawNames": [
+          "Static_Blue",
+          "Static_ClearGlass.001",
+          "Static_Metal.011",
+          "Static_Roof",
+          "Static_Rubber.007",
+          "Static_Screen.001",
+          "Static_Stainless.012",
+          "Static_White.008"
+        ],
+        "pilotRawNames": [
+          "Static_Blue",
+          "Static_ClearGlass",
+          "Static_Metal",
+          "Static_Roof",
+          "Static_Rubber",
+          "Static_Screen",
+          "Static_Stainless",
+          "Static_White"
+        ],
+        "hierarchyRoot": "InformationKiosk_RoundTrip",
+        "rootTransform": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "lods": [
+          {
+            "lod": 0,
+            "renderers": [
+              "Static_Blue_LOD0",
+              "Static_ClearGlass_LOD0",
+              "Static_Metal_LOD0",
+              "Static_Roof_LOD0",
+              "Static_Rubber_LOD0",
+              "Static_Screen_LOD0",
+              "Static_Stainless_LOD0",
+              "Static_White_LOD0"
+            ],
+            "triangles": 2424,
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": 0,
+            "screenRelativeHeight": 0.25
+          },
+          {
+            "lod": 1,
+            "renderers": [
+              "Static_Blue_LOD1",
+              "Static_ClearGlass_LOD1",
+              "Static_Metal_LOD1",
+              "Static_Roof_LOD1",
+              "Static_Rubber_LOD1",
+              "Static_Screen_LOD1",
+              "Static_Stainless_LOD1",
+              "Static_White_LOD1"
+            ],
+            "triangles": 1212,
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": 0,
+            "screenRelativeHeight": 0.01
+          }
+        ],
+        "lod0BoundsUnity": {
+          "min": [
+            -0.37,
+            0.0,
+            -0.37
+          ],
+          "max": [
+            0.37,
+            2.1,
+            0.3
+          ]
+        },
+        "axisCheck": {
+          "pass": true,
+          "meshes": {
+            "Static_Blue": {
+              "centroid": [
+                0.053726,
+                1.705,
+                -0.13619
+              ],
+              "match": true
+            },
+            "Static_ClearGlass": {
+              "centroid": [
+                0.0,
+                1.505,
+                -0.331
+              ],
+              "match": true
+            },
+            "Static_Metal": {
+              "centroid": [
+                0.221329,
+                0.43,
+                -0.293842
+              ],
+              "match": true
+            },
+            "Static_Roof": {
+              "centroid": [
+                0.056087,
+                1.015,
+                0.011071
+              ],
+              "match": true
+            },
+            "Static_Rubber": {
+              "centroid": [
+                0.222575,
+                0.691668,
+                -0.08615
+              ],
+              "match": true
+            },
+            "Static_Screen": {
+              "centroid": [
+                0.039374,
+                1.505,
+                -0.322807
+              ],
+              "match": true
+            },
+            "Static_Stainless": {
+              "centroid": [
+                0.041142,
+                1.021499,
+                -0.267066
+              ],
+              "match": true
+            },
+            "Static_White": {
+              "centroid": [
+                -0.03,
+                1.51,
+                -0.334
+              ],
+              "match": true
+            }
+          }
+        },
+        "materialRemap": {
+          "pass": true,
+          "mapped": [
+            "Blue",
+            "ClearGlass",
+            "Metal",
+            "Roof",
+            "Rubber",
+            "Screen",
+            "Stainless",
+            "White"
+          ]
+        },
+        "colliders": [
+          {
+            "name": "Collider_UprightCabinet",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                0.12,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                1.91,
+                0.275
+              ]
+            },
+            "matchesAuthoredBox": true,
+            "insideLod0Visual": true
+          },
+          {
+            "name": "Collider_Plinth",
+            "boundsUnity": {
+              "min": [
+                -0.37,
+                0.03,
+                -0.3
+              ],
+              "max": [
+                0.37,
+                0.12,
+                0.3
+              ]
+            },
+            "matchesAuthoredBox": true,
+            "insideLod0Visual": true
+          },
+          {
+            "name": "Collider_HeaderPanel",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                1.9,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                2.1,
+                0.275
+              ]
+            },
+            "matchesAuthoredBox": true,
+            "insideLod0Visual": true
+          }
+        ],
+        "visualColliderSeparation": {
+          "importedMeshColliders": 0,
+          "gameplayBoxColliders": 3,
+          "visualRenderersWithCollider": 0,
+          "collidersWithRenderer": 0
+        }
+      },
+      "2": {
+        "referenceMeshesEqual": {
+          "Static_Blue": true,
+          "Static_ClearGlass": true,
+          "Static_Metal": true,
+          "Static_Roof": true,
+          "Static_Rubber": true,
+          "Static_Screen": true,
+          "Static_Stainless": true,
+          "Static_White": true
+        },
+        "referenceRawNames": [
+          "Static_Blue",
+          "Static_ClearGlass.001",
+          "Static_Metal.011",
+          "Static_Roof",
+          "Static_Rubber.007",
+          "Static_Screen.001",
+          "Static_Stainless.012",
+          "Static_White.008"
+        ],
+        "pilotRawNames": [
+          "Static_Blue",
+          "Static_ClearGlass",
+          "Static_Metal",
+          "Static_Roof",
+          "Static_Rubber",
+          "Static_Screen",
+          "Static_Stainless",
+          "Static_White"
+        ],
+        "hierarchyRoot": "InformationKiosk_RoundTrip",
+        "rootTransform": {
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "rotation": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "scale": [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "lods": [
+          {
+            "lod": 0,
+            "renderers": [
+              "Static_Blue_LOD0",
+              "Static_ClearGlass_LOD0",
+              "Static_Metal_LOD0",
+              "Static_Roof_LOD0",
+              "Static_Rubber_LOD0",
+              "Static_Screen_LOD0",
+              "Static_Stainless_LOD0",
+              "Static_White_LOD0"
+            ],
+            "triangles": 2424,
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": 0,
+            "screenRelativeHeight": 0.25
+          },
+          {
+            "lod": 1,
+            "renderers": [
+              "Static_Blue_LOD1",
+              "Static_ClearGlass_LOD1",
+              "Static_Metal_LOD1",
+              "Static_Roof_LOD1",
+              "Static_Rubber_LOD1",
+              "Static_Screen_LOD1",
+              "Static_Stainless_LOD1",
+              "Static_White_LOD1"
+            ],
+            "triangles": 1212,
+            "materials": [
+              "Blue",
+              "ClearGlass",
+              "Metal",
+              "Roof",
+              "Rubber",
+              "Screen",
+              "Stainless",
+              "White"
+            ],
+            "textures": 0,
+            "screenRelativeHeight": 0.01
+          }
+        ],
+        "lod0BoundsUnity": {
+          "min": [
+            -0.37,
+            0.0,
+            -0.37
+          ],
+          "max": [
+            0.37,
+            2.1,
+            0.3
+          ]
+        },
+        "axisCheck": {
+          "pass": true,
+          "meshes": {
+            "Static_Blue": {
+              "centroid": [
+                0.053726,
+                1.705,
+                -0.13619
+              ],
+              "match": true
+            },
+            "Static_ClearGlass": {
+              "centroid": [
+                0.0,
+                1.505,
+                -0.331
+              ],
+              "match": true
+            },
+            "Static_Metal": {
+              "centroid": [
+                0.221329,
+                0.43,
+                -0.293842
+              ],
+              "match": true
+            },
+            "Static_Roof": {
+              "centroid": [
+                0.056087,
+                1.015,
+                0.011071
+              ],
+              "match": true
+            },
+            "Static_Rubber": {
+              "centroid": [
+                0.222575,
+                0.691668,
+                -0.08615
+              ],
+              "match": true
+            },
+            "Static_Screen": {
+              "centroid": [
+                0.039374,
+                1.505,
+                -0.322807
+              ],
+              "match": true
+            },
+            "Static_Stainless": {
+              "centroid": [
+                0.041142,
+                1.021499,
+                -0.267066
+              ],
+              "match": true
+            },
+            "Static_White": {
+              "centroid": [
+                -0.03,
+                1.51,
+                -0.334
+              ],
+              "match": true
+            }
+          }
+        },
+        "materialRemap": {
+          "pass": true,
+          "mapped": [
+            "Blue",
+            "ClearGlass",
+            "Metal",
+            "Roof",
+            "Rubber",
+            "Screen",
+            "Stainless",
+            "White"
+          ]
+        },
+        "colliders": [
+          {
+            "name": "Collider_UprightCabinet",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                0.12,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                1.91,
+                0.275
+              ]
+            },
+            "matchesAuthoredBox": true,
+            "insideLod0Visual": true
+          },
+          {
+            "name": "Collider_Plinth",
+            "boundsUnity": {
+              "min": [
+                -0.37,
+                0.03,
+                -0.3
+              ],
+              "max": [
+                0.37,
+                0.12,
+                0.3
+              ]
+            },
+            "matchesAuthoredBox": true,
+            "insideLod0Visual": true
+          },
+          {
+            "name": "Collider_HeaderPanel",
+            "boundsUnity": {
+              "min": [
+                -0.35,
+                1.9,
+                -0.275
+              ],
+              "max": [
+                0.35,
+                2.1,
+                0.275
+              ]
+            },
+            "matchesAuthoredBox": true,
+            "insideLod0Visual": true
+          }
+        ],
+        "visualColliderSeparation": {
+          "importedMeshColliders": 0,
+          "gameplayBoxColliders": 3,
+          "visualRenderersWithCollider": 0,
+          "collidersWithRenderer": 0
+        }
+      }
+    },
+    "comparison": {
+      "referenceMeshesEqual": true,
+      "referenceRawNames": true,
+      "pilotRawNames": true,
+      "hierarchyRoot": true,
+      "rootTransform": true,
+      "lods": true,
+      "lod0BoundsUnity": true,
+      "axisCheck": true,
+      "materialRemap": true,
+      "colliders": true,
+      "visualColliderSeparation": true
+    },
+    "negativeCases": [
+      {
+        "id": "mirroredX",
+        "mutation": "localScale.x=-1 on InformationKiosk_RoundTrip",
+        "expected": "fail",
+        "detected": true,
+        "evidence": {
+          "pass": false,
+          "meshes": {
+            "Static_Blue": {
+              "centroid": [
+                -0.053726,
+                1.705,
+                -0.13619
+              ],
+              "match": false
+            },
+            "Static_ClearGlass": {
+              "centroid": [
+                0.0,
+                1.505,
+                -0.331
+              ],
+              "match": true
+            },
+            "Static_Metal": {
+              "centroid": [
+                -0.221329,
+                0.43,
+                -0.293842
+              ],
+              "match": false
+            },
+            "Static_Roof": {
+              "centroid": [
+                -0.056087,
+                1.015,
+                0.011071
+              ],
+              "match": false
+            },
+            "Static_Rubber": {
+              "centroid": [
+                -0.222575,
+                0.691668,
+                -0.08615
+              ],
+              "match": false
+            },
+            "Static_Screen": {
+              "centroid": [
+                -0.039374,
+                1.505,
+                -0.322807
+              ],
+              "match": false
+            },
+            "Static_Stainless": {
+              "centroid": [
+                -0.041142,
+                1.021499,
+                -0.267066
+              ],
+              "match": false
+            },
+            "Static_White": {
+              "centroid": [
+                0.03,
+                1.51,
+                -0.334
+              ],
+              "match": false
+            }
+          }
+        }
+      },
+      {
+        "id": "materialRemapMissing",
+        "mutation": "palette without ClearGlass",
+        "expected": "fail",
+        "detected": true,
+        "evidence": {
+          "pass": false,
+          "error": "Unmapped Blender material in Static_ClearGlass_LOD0: ClearGlass"
+        }
+      },
+      {
+        "id": "colliderMeshMismatch",
+        "mutation": "Collider_HeaderPanel moved +0.25 m on Z",
+        "expected": "fail",
+        "detected": true,
+        "evidence": {
+          "colliders": [
+            {
+              "name": "Collider_UprightCabinet",
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  0.12,
+                  -0.275
+                ],
+                "max": [
+                  0.35,
+                  1.91,
+                  0.275
+                ]
+              },
+              "matchesAuthoredBox": true,
+              "insideLod0Visual": true
+            },
+            {
+              "name": "Collider_Plinth",
+              "boundsUnity": {
+                "min": [
+                  -0.37,
+                  0.03,
+                  -0.3
+                ],
+                "max": [
+                  0.37,
+                  0.12,
+                  0.3
+                ]
+              },
+              "matchesAuthoredBox": true,
+              "insideLod0Visual": true
+            },
+            {
+              "name": "Collider_HeaderPanel",
+              "boundsUnity": {
+                "min": [
+                  -0.35,
+                  1.9,
+                  -0.025
+                ],
+                "max": [
+                  0.35,
+                  2.1,
+                  0.525
+                ]
+              },
+              "matchesAuthoredBox": false,
+              "insideLod0Visual": false
+            }
+          ],
+          "failures": [
+            "collider/mesh mismatch: Collider_HeaderPanel differs from authored collisionBox",
+            "collider/mesh mismatch: Collider_HeaderPanel leaves LOD0 visual bounds"
+          ]
+        }
+      }
+    ],
+    "failures": [],
+    "verdict": "pass",
+    "builderSha256": "91d5fafcbbdd298d745ae7758521fdf6baa6dc94bbbaed81985b7548e17af550",
+    "environment": {
+      "pipelineIlInterpreterAsmdefSha256": "bf384c549ac21afcf7a3a0ed7c6fabe7c27e7e599091192e1865c46780bda2e1",
+      "pipelinePatchSource": "scripts/dev/prepare_multiplayer_dependencies.py --apply (foundation/network/dependency-contract.json afterSha256)"
+    }
+  },
+  "unityAttempts": [
+    {
+      "capturedAt": "2026-09-13T18:14:35Z",
+      "verdict": "fail",
+      "failures": [
+        "negative case not detected: mirroredX"
+      ],
+      "builderSha256": null
+    }
+  ]
+}
