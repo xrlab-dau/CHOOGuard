@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "contractId": "EMB00",
+  "contract": "engine-metrics-binding",
+  "issue": 150,
+  "workId": "FMP-12a-R2",
+  "domainCode": "XR",
+  "phase": "candidate",
+  "artifact": "artifact:150:engine-metrics-binding:candidate",
+  "status": "proposed_not_adopted",
+  "scope": "FMP-12a-R2 / engine-metrics-binding / candidate; F(n) simulation tick execution time vs U(n) frame interval binding, Unity scheduler callbacks, dual histogram recording, 0-tick frame safety, and protocol run requirements. It does not claim issue 150 acceptance or issue 140/141/142 whole acceptance.",
+  "targetFiles": [
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs",
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs",
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs",
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs",
+    "scripts/dev/foundation_load_metrics.py"
+  ],
+  "claims": [
+    {
+      "claimId": "EMB01",
+      "title": "F(n) Simulation Tick vs U(n) Frame Interval Semantic Separation",
+      "definition": {
+        "Fn": {
+          "symbol": "F(n)",
+          "name": "SimulationTickMilliseconds",
+          "role": "server",
+          "frequencyTargetHz": 20,
+          "tickBudgetSeconds": 0.05,
+          "wallBudgetMilliseconds": 50.0,
+          "unit": "milliseconds",
+          "meaning": "Pure CPU execution duration of TickServer() fixed simulation tick under population n",
+          "clock": "Time.realtimeSinceStartupAsDouble (monotonic)",
+          "histogramField": "SimulationTickMilliseconds",
+          "counterField": "SimulationTickCount"
+        },
+        "Un": {
+          "symbol": "U(n)",
+          "name": "FrameMilliseconds",
+          "role": "client_and_server",
+          "frequencyTargetHz": 30,
+          "p95TargetMilliseconds": 33.3,
+          "unit": "milliseconds",
+          "meaning": "Elapsed interval between successive engine Update() cycles (Time.unscaledDeltaTime * 1000.0) under population n",
+          "clock": "Time.realtimeSinceStartupAsDouble (monotonic)",
+          "histogramField": "FrameMilliseconds",
+          "counterField": "FrameCount"
+        }
+      },
+      "compatibility": "Schema 1 envelope preserves TickCount and TickMilliseconds for legacy parsers while populating distinct SimulationTickMilliseconds and FrameMilliseconds histograms."
+    },
+    {
+      "claimId": "EMB02",
+      "title": "Unity Scheduler and Callback Binding",
+      "scheduler": {
+        "class": "ServerCatchupBudget",
+        "constants": {
+          "TickSeconds": 0.05,
+          "TicksPerSecond": 20,
+          "MaxTicksPerFrame": 4,
+          "WallBudgetMilliseconds": 50.0
+        },
+        "predicate": "accumulatedSeconds >= 0.05f && ticks < 4 && (ticks == 0 || elapsedMilliseconds < 50.0)"
+      },
+      "callbacks": {
+        "serverTickDispatch": "NetworkFieldRuntime.Update() -> while (ServerCatchupBudget.CanContinue) -> TickServer() -> RecordSimulationTickMetrics(tickDurationMs)",
+        "serverFrameDispatch": "NetworkFieldRuntime.Update() -> RecordFrameMetrics(frameDeltaMs)",
+        "clientFrameDispatch": "NetworkFieldRuntime.Update() -> RecordFrameMetrics(frameDeltaMs)"
+      }
+    },
+    {
+      "claimId": "EMB03",
+      "title": "Zero-Tick Frame Integrity and Boundary Carry",
+      "guarantees": [
+        "Frames with zero simulation ticks (accumulator < 0.05f) still invoke RecordFrameMetrics, preserving periodic 5-second interval metric flushes.",
+        "SimulationTickStart and SimulationTickEnd remain equal during 0-tick intervals without advancing tick counters.",
+        "Population counters (ConnectedClients, NpcCount, ActiveIncidents) hold prior values across 0-tick intervals without inventing zeroes.",
+        "Exact boundary carry guarantees SimulationTickEnd of interval k equals SimulationTickStart of interval k+1."
+      ]
+    },
+    {
+      "claimId": "EMB04",
+      "title": "Mock Accumulator vs Engine Runtime Differentiation",
+      "negativeCase": "Source-only RuntimeMetricAccumulator test success shall never be equated with or promoted to actual multiplayer protocol run acceptance.",
+      "divergenceGuards": [
+        "Histogram boundary bin overflow (> 2000ms) is tracked rather than clamped.",
+        "Non-monotonic time, negative population, and backwards clock jumps without explicit flag are rejected atomically.",
+        "Returned DTO snapshots are detached deep clones and do not alias accumulator state."
+      ]
+    },
+    {
+      "claimId": "EMB05",
+      "title": "Protocol Run Verification with Coupled Players",
+      "targetPopulation": {
+        "candidateRoster": [2, 3, 4],
+        "fullAcceptanceTarget": 20
+      },
+      "dependencyPrerequisite": "Execution of coupled Player protocol runs strictly requires verified causal corpus (#149) and runnable Player payloads (#143). In the absence of built standalone payloads, protocol runs remain honestly recorded as PENDING_RUNNABLE_PAYLOAD."
+    }
+  ]
+}

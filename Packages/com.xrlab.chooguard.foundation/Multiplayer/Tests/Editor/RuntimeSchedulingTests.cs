@@ -24,5 +24,9 @@ public sealed class RuntimeSchedulingTests
         Assert.That(ServerCatchupBudget.CanContinue(.2f, 4, 2), Is.False);
         Assert.That(ServerCatchupBudget.CanContinue(.049f, 0, 0), Is.False);
         Assert.That(ServerCatchupBudget.CanContinue(.05f, 1, 49), Is.True);
+        Assert.That(ServerCatchupBudget.CanContinue(ServerCatchupBudget.TickSeconds, 0, 0), Is.True);
+        Assert.That(ServerCatchupBudget.CanContinue(ServerCatchupBudget.TickSeconds, 1, ServerCatchupBudget.WallBudgetMilliseconds), Is.False);
+        Assert.That(ServerCatchupBudget.MaxTicksPerFrame, Is.EqualTo(4));
+        Assert.That(ServerCatchupBudget.TicksPerSecond, Is.EqualTo(20));
     }
 }
