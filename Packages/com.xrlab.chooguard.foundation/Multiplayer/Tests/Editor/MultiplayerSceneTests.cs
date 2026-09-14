@@ -43,6 +43,11 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                         EditorSceneManager.CloseScene(SceneManager.GetSceneAt(i), true);
                 AssetDatabase.DeleteAsset(path);
                 if (previous.IsValid() && previous.isLoaded) SceneManager.SetActiveScene(previous);
+                // The build replaced the untitled startup scene, so the generated scene is the only
+                // loaded scene: CloseScene cannot drop the last scene, and DeleteAsset then leaves it
+                // dirty. Hand the next dirty-scene guard a clean scene instead of that leaked dirt.
+                if (Enumerable.Range(0, SceneManager.sceneCount).Any(i => SceneManager.GetSceneAt(i).isDirty))
+                    EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             }
         }
     }
