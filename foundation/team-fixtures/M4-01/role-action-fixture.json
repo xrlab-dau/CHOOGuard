@@ -1,0 +1,1661 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "M4-01/role-action-fixture",
+  "issue": 32,
+  "workId": "M4-01",
+  "title": "임시 5직무 role/action/anchor/prestate/expected 출력 fixture (provisional, synthetic)",
+  "mode": "isolated_proposal",
+  "canonicalWriteAllowed": false,
+  "phase": "candidate",
+  "status": "proposed",
+  "selfAssessment": {
+    "label": "isolated_proposal",
+    "note": "이 산출물은 검토 가능한 유계 후보이며 accepted/approved/final/complete 로 표기하지 않는다. 어떤 PASS 도 런타임·설치·네트워크·Unity·게시·병합 권한을 만들지 않는다."
+  },
+  "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+  "headCommitId": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+  "headCommitIdStatus": "observed_in_worktree",
+  "disclaimer": "KORAIL 검증 전 예시 수준의 합성 훈련 fixture 다. 실제 철도 절차·공식 직무·공식 점수·현장 성능·기관 수용이 아니며 실제 HMD/네트워크 시험 결과가 아니다.",
+  "provisionalNotice": "다섯 행의 role·action·anchor·prestate·expected 출력·feedback 의미는 전부 synthetic/provisional 이다. 공식 KORAIL 직무·SOP 가 아니고 공식 점수(20/100/2 등)와 HMD·네트워크 완료를 주장하지 않는다.",
+  "scopeDeclaration": {
+    "artifactScope": "M4-01 / M4-01-fixture only",
+    "declaredScope": "임시 5직무의 role/action/anchor/prestate/expected Quest/team event/feedback 의미를 provisional fixture 로 고정하고 canonical 역할 계약(RoleDefinition/RoleActionFixture)에 결속한다.",
+    "excluded": [
+      "canonical 시나리오 계약(foundation/scenarios/foundation-demo.json) 수정",
+      "canonical schema(schemas/foundation-scenario.schema.json) 수정",
+      "KORAIL 공식 직무·SOP·공식 점수 확정",
+      "실제 HMD/네트워크/NPC acceptance",
+      "과거 test count 를 현재 완료로 재사용",
+      "제품 구현·게시·GitHub 변경",
+      "완료/AAA 소프트웨어·안전·현장 효과 주장"
+    ],
+    "digestRequirements": {
+      "sourceRef": "required",
+      "outputDigest": "sha256"
+    },
+    "companionOutput": "docs/team/M4-01/fixture-review.json (모순·미해결 의미 검토)"
+  },
+  "rowCount": 5,
+  "artifactRevision": {
+    "revisionId": "m4-01-fixture-0e15bbd8fcd45003",
+    "derivation": "sha256(json.dumps(roleRows, sort_keys=True, ensure_ascii=False))[:16], 접두어 'm4-01-fixture-'.",
+    "reproducible": true,
+    "recomputedAt": "2026-09-15T01:32:26+09:00",
+    "coverage": {
+      "covers": [
+        "roleRows"
+      ],
+      "doesNotCover": [
+        "disclaimer",
+        "provisionalNotice",
+        "scopeDeclaration",
+        "verification",
+        "drift",
+        "stopConditions",
+        "writeScopeIntegrity",
+        "unknowns",
+        "canonicalFieldBinding",
+        "canonicalScenarioSnapshot",
+        "negativeCases"
+      ],
+      "consequence": "위 섹션이 바뀌어도 revisionId 는 변하지 않는다(측정: roleRows 만 해싱). revisionId 는 '어느 개정을 들고 있는가' 의 보조 식별자이며 개정 무효화 판정 기준이 아니다. 무효화 판정은 아래 documentDigest 의 파일 수준 sha256 으로 한다."
+    },
+    "documentDigest": {
+      "scheme": "sha256",
+      "scope": "whole_file_bytes",
+      "value": null,
+      "notEmbeddableReason": "파일은 자기 자신의 sha256 을 담을 수 없다.",
+      "authoritativeBinding": {
+        "path": "docs/team/M4-01/fixture-review.json",
+        "fields": [
+          "reviewedArtifacts[0].sha256",
+          "handoff.outputHashes['role-action-fixture.json'].value"
+        ],
+        "note": "이 값이 권위 있는 결속이다. 어떤 섹션의 어떤 바이트든(공백·키 순서 포함) 바뀌면 이 sha256 이 바뀌므로 개정이 무효화된다. 픽스처 파일만 손에 든 검증자는 이 파일에서 값을 확인할 수 없으므로 위 경로의 짝 산출물에서 확인한다."
+      }
+    },
+    "purpose": "같은 선언 경로에 다른 생산자의 개정이 덮어쓴 경우, 검토자가 어느 개정을 들고 있는지 식별할 수 있게 한다.",
+    "selfDigestEmbedding": "파일은 자기 자신의 sha256 을 담을 수 없다. 실제 출력 다이제스트는 docs/team/M4-01/fixture-review.json 의 reviewedArtifacts 에 있다.",
+    "revisionNote": "이 개정은 직전 개정을 대체한다. 수정한 것: (1) 자기참조 스테일 수치 '현재 64837 B' 문면 제거(권위 값 참조로 대체), (2) candidateHandling 이 주장한 foreign_snapshot2/ 보존본을 evidence 에 등록. roleRows 는 변경하지 않았다 — revisionId 는 그대로다."
+  },
+  "writeScopeIntegrity": {
+    "status": "contended_write_scope_observed",
+    "severity": "P0",
+    "observedAt": "2026-09-15T00:25:00+09:00",
+    "declaredWriteScope": [
+      "foundation/team-fixtures/M4-01/",
+      "docs/team/M4-01/"
+    ],
+    "whatHappened": "이 후보가 선언 경로 두 곳에 자기 개정을 쓴 직후, 동일 물리 작업공간의 다른 생산자가 같은 두 경로를 덮어썼다. 이 후보의 개정(60252 bytes, mtime 00:25)이 다른 형태의 문서(22501 bytes, mtime 00:25:04)로 대체되었다.",
+    "evidence": {
+      "myRevision": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 60252,
+        "observedMtime": "2026-09-15T00:25",
+        "status": "destroyed_by_concurrent_writer"
+      },
+      "foreignRevisionObservedAtSamePath": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 22501,
+        "sha256": "b3f75cb8b600d8e30ea827894b0d4f210a70bca75f7f662db022f21fdae05ad5",
+        "observedMtime": "2026-09-15T00:25:04"
+      },
+      "foreignRevisionObservedAtCompanionPath": {
+        "path": "docs/team/M4-01/fixture-review.json",
+        "bytes": 37613,
+        "sha256": "5b116905803ab1c2d78ec7e307126759d189c09932d127d4dd340bcc64acba8f",
+        "observedMtime": "2026-09-15T00:24"
+      },
+      "foreignTopLevelKeySetAtDetection": {
+        "keys": [
+          "canonicalFieldMapping",
+          "canonicalShapeConformanceProbe",
+          "canonicalShapeConformanceProbeNote",
+          "canonicalWriteAllowed",
+          "classification",
+          "disclaimer",
+          "draftStatus",
+          "drift",
+          "fixtureId",
+          "issue",
+          "limits",
+          "mode",
+          "noAcceptanceClaim",
+          "noPermissionStatement",
+          "notOfficialScoring",
+          "phase",
+          "preStateVocabulary",
+          "provisional",
+          "purpose",
+          "recordType",
+          "requiredRoleSemanticFields",
+          "roles",
+          "schemaVersion",
+          "sourceRef",
+          "sources",
+          "synthetic",
+          "workId"
+        ],
+        "extractionMethod": "json.load() 로 파싱해 최상위 키 이름만 추출했다(정규식 아님). 키 순서는 보존 스냅샷과 일치한다.",
+        "valuesRead": false,
+        "claim": "동시 생산자 문서의 최상위 키 '이름'만 추출했고 '값'(문자열·수치·중첩 구조의 내용)은 읽지 않았다. 키 이름 목록은 그 자체로 판단·품질·수용에 대해 아무것도 주장하지 않는다.",
+        "measuredAt": "2026-09-15T00:47:00+09:00",
+        "verification": "보존 스냅샷 sha256 b3f75cb8b600d8e30ea827894b0d4f210a70bca75f7f662db022f21fdae05ad5 (22501 B) 를 가진 소비자가 같은 파싱을 재실행하면 같은 키 목록이 나온다."
+      },
+      "siblingSessionScratchpadObserved": {
+        "identity": "opaque:concurrent-writer-5b116905803a",
+        "note": "동시 생산자의 세션 디렉터리 절대경로와 세션 UUID 는 G13 비식별 규칙에 따라 이 산출물에 게시하지 않는다. 식별은 그 개정의 sha256 으로만 한다.",
+        "preservedCopyAtSiblingSession": false,
+        "preservedCopyNote": "실측: 동시 생산자의 세션 디렉터리에는 foreign_snapshot 보존본이 없다. 보존본은 후보 자신의 세션 스크래치패드에만 있다(아래 preservedForeignRevisions). 이전 라운드가 게시한 동시 생산자 세션 절대경로는 그 위치에 보존본이 있다는 뜻이 아니었다."
+      },
+      "otherConcurrentWritesObserved": {
+        "paths": [
+          "docs/team/R-02/capability-contract.json",
+          "docs/team/R-02/decision.json"
+        ],
+        "gitStatus": "M (modified) — 이 후보가 쓴 파일이 아니다",
+        "note": "같은 작업공간의 다른 세션이 선언 범위 밖 파일도 동시에 고치고 있음을 보여주는 정황 증거다."
+      },
+      "preservedForeignRevisions": {
+        "location": "<candidate-session-scratchpad>/foreign_snapshot/",
+        "locationAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬).",
+        "deidentificationDisposition": "D01 은 보존 개정에 해석 가능한 '절대경로'를 요구하고 D06/G13 은 세션 UUID·사용자 홈 경로 게시를 금지한다. 두 요구는 같은 문자열에서 충돌하므로, 절대경로 대신 위 앵커 토큰(정의 포함)과 sha256·bytes 를 게시한다. 원 절대경로는 후보 세션에 그대로 있고 PM 이 요청하면 제공한다. 개정 식별은 sha256 으로 완결된다.",
+        "files": [
+          {
+            "name": "role-action-fixture.foreign.json",
+            "bytes": 22501,
+            "sha256": "b3f75cb8b600d8e30ea827894b0d4f210a70bca75f7f662db022f21fdae05ad5",
+            "observedMtime": "2026-09-15T00:25:04+09:00",
+            "isVerifiedOnDisk": true
+          },
+          {
+            "name": "fixture-review.foreign.json",
+            "bytes": 37613,
+            "sha256": "5b116905803ab1c2d78ec7e307126759d189c09932d127d4dd340bcc64acba8f",
+            "observedMtime": "2026-09-15T00:24:00+09:00",
+            "isVerifiedOnDisk": true
+          }
+        ],
+        "laterRevisions": {
+          "location": "<candidate-session-scratchpad>/foreign_snapshot_r3/",
+          "locationAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬). G13 비식별 규칙에 따라 절대경로·세션 UUID 는 게시하지 않는다.",
+          "deidentificationDisposition": "D01 은 해석 가능한 위치를 요구하고 D06/G13 은 세션 UUID·사용자 홈 경로 게시를 금지한다. 두 요구가 같은 문자열에서 충돌하므로 절대경로 대신 앵커 토큰(정의 포함)과 저장소 밖 상대 하위경로·파일명·sha256·bytes 를 게시한다. 개정 식별은 sha256 으로 완결된다.",
+          "files": [
+            {
+              "name": "role-action-fixture.foreign3.json",
+              "bytes": 83191,
+              "sha256": "7da14ca6547a1b3acd52c721127ea9f27ed67d8ef0931631abd4aa09f1d1f90d",
+              "lines": 1502,
+              "preserved": true,
+              "verifiedOnDiskAt": "2026-09-15T00:57:24+09:00",
+              "note": "스냅샷 시점(약 00:53)에 그 경로에 있던 바이트. 이후 재충돌로 스테일해졌다."
+            },
+            {
+              "name": "fixture-review.foreign3.json",
+              "bytes": 113936,
+              "sha256": "11e35f6eb651c98ee62e2ecf964171cdb2d0e002af3e5c32e56dcddc9bbcdee0",
+              "lines": 1459,
+              "preserved": true,
+              "verifiedOnDiskAt": "2026-09-15T00:57:24+09:00"
+            }
+          ],
+          "verifyCommand": "shasum -a 256 <candidate-session-scratchpad>/foreign_snapshot_r3/*.json",
+          "authorship": "UNVERIFIED — 보존은 '그 경로에 있던 바이트'를 대상으로 하며 생산자 신원을 주장하지 않는다.",
+          "observedButNotPreserved": {
+            "reason": "스냅샷 이후 이 후보의 쓰기 직전까지 다시 덮어쓰기가 있었고, 그 개정의 바이트는 이 후보의 쓰기로 대체되어 남아 있지 않다. 다이제스트는 대체 전에 계산해 두었으므로 여기 기록한다.",
+            "files": [
+              {
+                "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+                "bytes": 83201,
+                "sha256": "f761b9c10e13a5ad59d3f321b5b9e90e3bb2e59c69e2fee56086af72ccbfe761",
+                "lines": 1502,
+                "observedMtime": "2026-09-15T00:56:30+09:00",
+                "preserved": false
+              },
+              {
+                "path": "docs/team/M4-01/fixture-review.json",
+                "bytes": 118164,
+                "sha256": "118a4e353904d7e35d89c0a850e2f7a47fa967aa2cceceb8b80c60c5cf9ad63d",
+                "lines": 1507,
+                "observedMtime": "2026-09-15T00:57:01+09:00",
+                "preserved": false
+              }
+            ],
+            "claim": "이 두 다이제스트는 '그 시각 그 경로에 그 바이트가 있었다'는 관측 기록이다. 바이트를 갖고 있지 않으므로 재검증은 불가하며, 그 한계를 숨기지 않기 위해 preserved=false 로 적는다."
+          },
+          "preservedCount": 2,
+          "observedNotPreservedCount": 2
+        },
+        "duplicatePreservedRevisions": {
+          "location": "<candidate-session-scratchpad>/foreign_snapshot2/",
+          "locationAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬). G13 비식별 규칙에 따라 절대경로·세션 UUID 는 게시하지 않는다.",
+          "deidentificationDisposition": "D01 은 보존 개정에 해석 가능한 '절대경로'를 요구하고 D06/G13 은 세션 UUID·사용자 홈 경로 게시를 금지한다. 두 요구가 같은 문자열에서 충돌하므로 절대경로 대신 앵커 토큰(정의 포함)과 저장소 밖 상대 하위경로·파일명·sha256·bytes 를 게시한다. 개정 식별은 sha256 으로 완결된다.",
+          "files": [
+            {
+              "name": "role-action-fixture.foreign2.json",
+              "bytes": 83191,
+              "sha256": "7da14ca6547a1b3acd52c721127ea9f27ed67d8ef0931631abd4aa09f1d1f90d",
+              "observedMtime": "2026-09-15T00:49:12+09:00",
+              "isVerifiedOnDisk": true,
+              "note": "foreign_snapshot_r3/role-action-fixture.foreign3.json 과 바이트 동일(같은 sha256) — 같은 개정의 중복 보존본이다."
+            },
+            {
+              "name": "fixture-review.foreign2.json",
+              "bytes": 110677,
+              "sha256": "aaf1c8dd503f6299c639cb05ab69e06b5b881e21f6b310345b475ccbed1f64e7",
+              "observedMtime": "2026-09-15T00:49:12+09:00",
+              "isVerifiedOnDisk": true
+            }
+          ],
+          "note": "candidateHandling 이 보존 위치로 든 세 디렉터리 중 foreign_snapshot2/ 를 여기에 등록한다. 이전 라운드의 evidence 는 foreign_snapshot/ 와 foreign_snapshot_r3/ 만 열거해 등록되지 않은 보존본이 있었다.",
+          "authorship": "UNVERIFIED — 보존은 '그 경로에 있던 바이트'를 대상으로 하며 생산자 신원을 주장하지 않는다.",
+          "verifyCommand": "shasum -a 256 <candidate-session-scratchpad>/foreign_snapshot2/*.json"
+        }
+      },
+      "foreignRevisionObservedAtLatestDetection": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 83201,
+        "sha256": "f761b9c10e13a5ad59d3f321b5b9e90e3bb2e59c69e2fee56086af72ccbfe761",
+        "lines": 1502,
+        "observedMtime": "2026-09-15T00:56:30+09:00",
+        "observedAt": "2026-09-15T00:57:02+09:00",
+        "authorship": "UNVERIFIED — 이 개정의 생산자를 이 후보는 확정할 수 없다. 같은 선언 경로에 둘 이상의 생산자가 쓰고 있다는 사실은 X05 로 이미 관측됐고, 개정 자체는 생산자 신원을 담지 않는다.",
+        "status": "present_at_this_write; superseded_by_this_candidate_revision",
+        "note": "이 후보가 이 개정을 쓰기 직전에 그 경로에서 관측한 상태다."
+      },
+      "foreignRevisionObservedAtLatestDetectionCompanionPath": {
+        "path": "docs/team/M4-01/fixture-review.json",
+        "bytes": 118164,
+        "sha256": "118a4e353904d7e35d89c0a850e2f7a47fa967aa2cceceb8b80c60c5cf9ad63d",
+        "lines": 1507,
+        "observedMtime": "2026-09-15T00:57:01+09:00",
+        "observedAt": "2026-09-15T00:57:02+09:00",
+        "authorship": "UNVERIFIED — 위와 같은 이유.",
+        "status": "present_at_this_write; superseded_by_this_candidate_revision"
+      }
+    },
+    "reading": "두 생산자가 같은 선언 경로를 공유한다. resourceBindings 의 workspace-files-v1 이 경고한 'same physical workspace overlap' 이 실제로 발생했고, 후보 단계에서는 requiredLocks 가 비어 있어 직렬화 장치가 없었다.",
+    "candidateHandling": [
+      "동시 생산자의 바이트를 삭제로 잃지 않도록 그대로 스크래치패드에 보존했다(foreign_snapshot/, foreign_snapshot2/, foreign_snapshot_r3/). 보존 시 값은 읽지 않고 최상위 키 이름만 추출했다.",
+      "이 후보는 충돌 후 자기 개정을 다시 썼다(post-collision self-rewrite). 두 생산자가 같은 물리 경로를 쓰는 한 어느 시점에도 한 개정만 남는다.",
+      "충돌이 재탐지되면 이 경로에 다시 덮어쓰지 않는다 — reDetectionPolicy 대로 기록·보존 후 중단하고 PM 에 에스컬레이션한다."
+    ],
+    "whatIsNotClaimed": "동시 생산자의 산출물 내용·품질·판정에 대해 아무것도 주장하지 않는다. 값(문자열·수치·중첩 구조)은 읽지 않았고 이 후보의 어떤 판단·판정에도 쓰지 않았다. 보존·식별을 위해 최상위 키 '이름'만 추출했다(위 evidence.foreignTopLevelKeySetAtDetection.extractionMethod).",
+    "requiredAction": "PM 이 두 후보를 서로 다른 물리 경로(또는 분리된 worktree/branch)로 직렬화한 뒤 각 개정을 그 경로에서 평가해야 한다. 동시 쓰기가 계속되는 한 어떤 후보의 출력 다이제스트 결속도 안정적일 수 없다. 후보는 재충돌 시 덮어쓰지 않고 '기록 후 중단·에스컬레이션' 하며, 그때 개정 식별은 위 preservedForeignRevisions 의 sha256 으로 한다.",
+    "myRevisionLineage": {
+      "destroyedByConcurrentWriter": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 60252,
+        "observedMtime": "2026-09-15T00:25:00+09:00",
+        "sha256": null,
+        "sha256UnavailableReason": "파괴된 개정의 바이트가 남아 있지 않다 — 스크래치패드·백업 경로를 실측 검색했으나 정확히 60252 B 인 파일이 없다. 따라서 해시를 소급 산출할 수 없다. 60252 B 와 현재 개정 B 는 같은 파일의 두 버전이 아니라 '후보 개정 A -> 동시 생산자 개정 -> 후보 재작성본 B' 의 서로 다른 두 개정이다."
+      },
+      "currentRevision": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "role": "collision 이후 후보가 다시 쓴 자기 개정(개정 B). 60252 B 개정 A 와 내용이 같지 않다.",
+        "selfReferenceDisposition": "이 항목은 담긴 파일 자신을 가리키므로 bytes·sha256 을 여기에 적지 않는다. 적으면 그 값이 자기 내용을 바꾸어 즉시 스테일이 된다. 권위 있는 값은 짝 산출물 docs/team/M4-01/fixture-review.json 의 reviewedArtifacts[0].sha256 과 handoff.outputHashes['role-action-fixture.json'].value 다.",
+        "staleValuesRemoved": {
+          "bytes": 83128,
+          "sha256": "d909be8208476f181328fbf99ad608d621bea0322d12fa13a10bcfded7987947",
+          "reason": "이 값들은 이전 자기 재작성 시점의 것이며 그 뒤 개정과 일치하지 않는다. 자기참조 스테일을 남기지 않기 위해 제거하고 권위 위치로 대체했다. 삭제 사실 자체는 여기 남긴다."
+        }
+      },
+      "timeline": [
+        "2026-09-15T00:25:00+09:00 — 후보가 선언 경로에 개정 A(60252 B)를 기록.",
+        "2026-09-15T00:25:04+09:00 — 동시 생산자가 같은 경로를 22501 B(b3f75cb8b600)로 덮어씀. 개정 A 는 파괴됨.",
+        "이후 — 후보가 개정 B(현재 파일)를 다시 작성. 이것이 현재 트리의 개정이다."
+      ],
+      "staleInlineMeasurementsRemoved": {
+        "removedValue": "이전 개정의 자기 바이트 수 리터럴(64837)",
+        "removedFrom": "myRevisionLineage.destroyedByConcurrentWriter.sha256UnavailableReason",
+        "reason": "이 파일은 개정마다 다시 쓰이므로 자기 바이트 수를 문면에 박아 두면 즉시 스테일이 된다. 그 리터럴은 그 시점의 개정 값이었고 현재 개정과 일치하지 않는다 — 현재 값은 짝 산출물 docs/team/M4-01/fixture-review.json 의 reviewedArtifacts[0].bytes 가 권위 있다(이 파일은 자기 자신의 값을 담을 수 없다). 문면에서 제거한 사실 자체를 여기 남긴다.",
+        "selfCheckResult": "STALE_SELF_MEASUREMENT_REMOVED"
+      }
+    },
+    "reDetectionPolicy": {
+      "policy": "RECORD_AND_ESCALATE_NO_OVERWRITE",
+      "appliesFrom": "2026-09-15T00:57:02+09:00",
+      "statement": "동시 쓰기가 재탐지되면 이 후보는 선언 경로에 다시 덮어쓰지 않는다. 관측한 개정의 sha256·bytes·mtime 을 기록하고 바이트를 스크래치패드에 보존한 뒤 PM 에 에스컬레이션하고 중단한다.",
+      "revisionIdentity": "재충돌 시 개정 식별은 evidence.preservedForeignRevisions(laterRevisions 포함)의 sha256 으로 한다.",
+      "escalation": "PM 이 두 후보를 서로 다른 물리 경로(또는 분리 worktree/branch)로 직렬화한 뒤 각 개정을 그 경로에서 독립 평가한다.",
+      "whyNotOverwriteAgain": "한 물리 경로에 한 개정만 남는 한 다시 쓰는 것은 상대 개정을 또 파괴할 뿐 통합을 만들지 않는다. 통합은 PM 의 직렬화로만 가능하다.",
+      "observedRecurrence": "X05 충돌은 1회가 아니라 재발했다. 이 개정을 쓰기 직전에도 같은 경로에 후보 자신이 아닌 생산자의 개정이 있었다(evidence.foreignRevisionObservedAtLatestDetection).",
+      "selfApplication": "이번 쓰기 자체는 발주가 요구한 '수정된 산출물' 제출이므로 수행한다. 정책은 이 쓰기 이후의 재충돌부터 적용한다."
+    }
+  },
+  "canonicalFieldBinding": [
+    {
+      "fixtureField": "roleId, representative, scenarioVersion, actionId, targetAnchorId, preStateHash, expectedQuestState, expectedVirtualTeamEvents, expectedFeedbackCode",
+      "canonicalType": "RoleActionFixture",
+      "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:42-53",
+      "note": "canonical row shape 과 1:1 로 맞춘 필드 집합이다. preStateHash 는 위 행에서 unknown 으로 남긴다."
+    },
+    {
+      "fixtureField": "temporaryDisplayName, briefing, feedbackText",
+      "canonicalType": "RoleDefinition",
+      "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:20-31",
+      "note": "RoleActionFixture 에는 없지만 역할 의미 서술을 위해 canonical RoleDefinition 에서 그대로 가져왔다."
+    },
+    {
+      "fixtureField": "expectedVirtualTeamEvents[].{roleId,eventCode,state}",
+      "canonicalType": "VirtualTeamEventDefinition / VirtualTeamEvent",
+      "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:34-39, Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs:45-57",
+      "note": "eventCode=synthetic-action-observed, state=notified 이며 다른 역할의 퀘스트를 완료시키지 않는다."
+    },
+    {
+      "fixtureField": "expectedFeedbackCode",
+      "canonicalType": "DescriptiveFeedback.Code",
+      "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs:72-84",
+      "note": "canonical 에 점수 필드가 없다. DescriptiveFeedback 은 Code/Text/Disclaimer 뿐이다."
+    },
+    {
+      "fixtureField": "actionMeaning, anchorMeaning, feedbackMeaning, preState.preStateMeaning",
+      "canonicalType": "none",
+      "canonicalSource": null,
+      "note": "canonical 에 의미 서술 정본이 없다. 후보가 canonical briefing/문면을 요약한 provisional 서술이며 actionMeaningStatus 로 표시했다."
+    }
+  ],
+  "canonicalScenarioSnapshot": {
+    "role": "semantically_equivalent_copy_for_schema_conformance_only",
+    "authority": "none",
+    "sourceOfTruth": "foundation/scenarios/foundation-demo.json",
+    "sourceOfTruthMode": "read_only",
+    "sourcePath": "foundation/scenarios/foundation-demo.json",
+    "sourceSha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+    "sourceGitBlobSha1": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b",
+    "refEqualityVerified": "git_blob_sha1_of_worktree_copy_equals_blob_at_sourceRef",
+    "driftRisk": "이 스냅샷은 canonical 계약을 수정하지 않는다. durable 정본은 위 sourceOfTruth 경로이며, 이 블록은 schema 적합성 검사용 사본일 뿐 두 번째 정본이 아니다.",
+    "profile": {
+      "schemaVersion": "1.0",
+      "scenarioId": "foundation-demo",
+      "scenarioVersion": "foundation-2",
+      "mapId": "synthetic-room",
+      "provisional": true,
+      "disclaimer": "KORAIL 검증 전 예시",
+      "representativeRoleId": "role-01",
+      "roles": [
+        {
+          "roleId": "role-01",
+          "temporaryDisplayName": "상황 확인 · 임시 역할",
+          "briefing": "가상 연기 표식이 발생했습니다. 상황 패널에 예시 상황을 표시한 뒤 집결 구역으로 이동하세요. 실제 철도 절차가 아닌 게임용 과제입니다.",
+          "actionId": "action-01",
+          "targetAnchorId": "anchor-01",
+          "expectedQuestState": "completed",
+          "expectedVirtualTeamEvents": [
+            {
+              "roleId": "role-02",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-03",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-04",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-05",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            }
+          ],
+          "expectedFeedbackCode": "synthetic-action-recorded",
+          "feedbackText": "가상 상황 패널을 확인했습니다. 다른 역할에 예시 알림을 전달했습니다."
+        },
+        {
+          "roleId": "role-02",
+          "temporaryDisplayName": "경보 전달 · 임시 역할",
+          "briefing": "경보 체험 버튼을 눌러 예시 경보 표시를 켜고 집결 구역으로 이동하세요. 실제 경보 설비의 조작 절차가 아닙니다.",
+          "actionId": "action-02",
+          "targetAnchorId": "anchor-02",
+          "expectedQuestState": "completed",
+          "expectedVirtualTeamEvents": [
+            {
+              "roleId": "role-01",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-03",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-04",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-05",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            }
+          ],
+          "expectedFeedbackCode": "synthetic-action-recorded",
+          "feedbackText": "예시 경보 표시를 켰습니다. 다른 역할에 예시 알림을 전달했습니다."
+        },
+        {
+          "roleId": "role-03",
+          "temporaryDisplayName": "상황 보고 · 임시 역할",
+          "briefing": "무전 콘솔에서 미리 정한 게임용 상황 메시지를 전송하고 집결 구역으로 이동하세요. 실제 보고 문구나 순서를 재현하지 않습니다.",
+          "actionId": "action-03",
+          "targetAnchorId": "anchor-03",
+          "expectedQuestState": "completed",
+          "expectedVirtualTeamEvents": [
+            {
+              "roleId": "role-01",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-02",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-04",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-05",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            }
+          ],
+          "expectedFeedbackCode": "synthetic-action-recorded",
+          "feedbackText": "게임용 상황 메시지를 전송했습니다. 다른 역할에 예시 알림을 전달했습니다."
+        },
+        {
+          "roleId": "role-04",
+          "temporaryDisplayName": "방향 안내 · 임시 역할",
+          "briefing": "방향 안내 표지를 활성화하고 집결 구역으로 이동하세요. 경로는 임의로 만든 게임 맵이며 실제 대피 경로가 아닙니다.",
+          "actionId": "action-04",
+          "targetAnchorId": "anchor-04",
+          "expectedQuestState": "completed",
+          "expectedVirtualTeamEvents": [
+            {
+              "roleId": "role-01",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-02",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-03",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-05",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            }
+          ],
+          "expectedFeedbackCode": "synthetic-action-recorded",
+          "feedbackText": "합성 맵의 안내 표지를 활성화했습니다. 다른 역할에 예시 알림을 전달했습니다."
+        },
+        {
+          "roleId": "role-05",
+          "temporaryDisplayName": "통로 확인 · 임시 역할",
+          "briefing": "체험 게이트의 예시 표시를 전환하고 집결 구역으로 이동하세요. 실제 통제·안전 설비에 적용하는 절차가 아닙니다.",
+          "actionId": "action-05",
+          "targetAnchorId": "anchor-05",
+          "expectedQuestState": "completed",
+          "expectedVirtualTeamEvents": [
+            {
+              "roleId": "role-01",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-02",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-03",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            },
+            {
+              "roleId": "role-04",
+              "eventCode": "synthetic-action-observed",
+              "state": "notified"
+            }
+          ],
+          "expectedFeedbackCode": "synthetic-action-recorded",
+          "feedbackText": "체험 게이트의 표시를 전환했습니다. 다른 역할에 예시 알림을 전달했습니다."
+        }
+      ]
+    },
+    "copyRelationship": "의미 동등 사본(dict 비교 True)이며 바이트 동일이 아니다 — 재직렬화 형태에 따라 sha256 이 달라진다. 정본은 foundation/scenarios/foundation-demo.json 이고 이 블록의 authority 는 none 이다."
+  },
+  "roleRows": [
+    {
+      "rowId": "m4-01-row-01",
+      "roleId": "role-01",
+      "representative": true,
+      "representativeDerivation": "representative := (roleId == canonicalScenarioSnapshot.profile.representativeRoleId); canonical source Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:97",
+      "temporaryDisplayName": "상황 확인 · 임시 역할",
+      "briefing": "가상 연기 표식이 발생했습니다. 상황 패널에 예시 상황을 표시한 뒤 집결 구역으로 이동하세요. 실제 철도 절차가 아닌 게임용 과제입니다.",
+      "actionId": "action-01",
+      "actionMeaning": "합성 상황 패널에 예시 상황을 표시하는 게임 입력. 관측된 사실을 기록할 뿐 다른 역할의 퀘스트를 완료시키지 않는다.",
+      "actionMeaningStatus": "provisional_candidate_authored_paraphrase. canonical source 는 actionId 를 불투명 식별자로만 취급하며(ScenarioValidation.cs:36 distinct actionId 요구) 행동 의미의 정본 정의가 없다. 아래 문면은 canonical briefing 을 후보가 요약한 것이며 공식 절차가 아니다.",
+      "targetAnchorId": "anchor-01",
+      "anchorMeaning": "상황 패널 — synthetic-room 의 임시 표시명이며 좌표·충돌·실제 역 정보를 정의하지 않는다 (foundation/anchors/synthetic-room.json).",
+      "scenarioVersion": "foundation-2",
+      "preState": {
+        "phase": "Ready",
+        "questState": "pending",
+        "briefingAcknowledged": true,
+        "virtualTeamStates": [
+          {
+            "roleId": "role-01",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-02",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-03",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-04",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-05",
+            "state": "idle"
+          }
+        ],
+        "preStateMeaning": "브리핑을 확인한 직후, 아직 입력을 제출하지 않은 예시 사전 상태. 가상 팀의 다섯 역할은 모두 idle 이고 다른 역할의 퀘스트는 완료되지 않았다.",
+        "basis": [
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs:8 (TrainingPhase.RoleSelection|Briefing|Ready|Feedback)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:19 (questState 초기값 pending)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:67 (AcknowledgeBriefing 후 phase=Ready)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:93-94 (CreateRoleActionFixture 는 Ready + 미완료 퀘스트를 요구)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs:15-16 (SortedDictionary ordinal + 다섯 역할 초기 state=idle)"
+        ]
+      },
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "가상 상황 패널을 확인했습니다. 다른 역할에 예시 알림을 전달했습니다.",
+      "feedbackMeaning": "해당 역할의 합성 입력이 접수되어 questState 가 completed 로 기록되고, 나머지 네 역할에 synthetic-action-observed / notified 이벤트가 발생했다는 설명형 피드백. DescriptiveFeedback(Code, Text, Disclaimer) 이며 점수·합격·이수·절차 준수 판정이 아니다.",
+      "provisionalMarks": {
+        "role": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "역할 행 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "action": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "행동 정의 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "feedback": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "피드백 의미 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        }
+      },
+      "officialScoringClaimed": false,
+      "canonicalRowMatch": {
+        "roleId": true,
+        "actionId": true,
+        "targetAnchorId": true,
+        "expectedQuestState": true,
+        "expectedVirtualTeamEvents": true,
+        "expectedFeedbackCode": true,
+        "preStateHash": "NOT_CHECKED"
+      },
+      "preStateHash": null,
+      "preStateHashProvenance": {
+        "value": null,
+        "status": "unknown",
+        "reasonKind": "검증 불가",
+        "notRunReason": "canonical preStateHash 는 C# 런타임이 Ready 에서 계산하는 값이다 (TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 Unity/dotnet 런타임을 실행하지 않았으므로 실제 값을 관측할 수 없다. 파이썬으로 StateHash 를 재구현해 대체값을 넣으면 canonical 과 불일치할 경우 거짓 정본 값이 되므로 넣지 않았다.",
+        "derivation": "StateHash.Session(profileHash, phase, roleId, questState, teamStates) = sha256( length-prefixed UTF-8 fields: 'chooguard.foundation.state.v1', profileHash, phase, roleId, questState, 각 TeamRoleState 의 (RoleId, State) ) (Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs:40-53)",
+        "canonicalType": "string|null",
+        "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:49 (public string preStateHash;)",
+        "typeDeviation": {
+          "deviationId": "U06",
+          "kind": "canonical 은 string 을 요구하나 후보 값은 null 이다",
+          "why": "canonical 값은 Ready 시점에 C# 런타임이 계산한다(TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 런타임을 실행하지 않았으므로 값을 알 수 없다.",
+          "impact": "canonical 대로 문자열 매핑하는 소비자(26/33/34/57/72/93)는 이 필드에서 null 을 만난다. null 을 '미산출' 로 처리해야 한다.",
+          "registeredIn": "unknowns"
+        }
+      }
+    },
+    {
+      "rowId": "m4-01-row-02",
+      "roleId": "role-02",
+      "representative": false,
+      "representativeDerivation": "representative := (roleId == canonicalScenarioSnapshot.profile.representativeRoleId); canonical source Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:97",
+      "temporaryDisplayName": "경보 전달 · 임시 역할",
+      "briefing": "경보 체험 버튼을 눌러 예시 경보 표시를 켜고 집결 구역으로 이동하세요. 실제 경보 설비의 조작 절차가 아닙니다.",
+      "actionId": "action-02",
+      "actionMeaning": "합성 경보 체험 버튼으로 예시 경보 표시를 켜는 게임 입력. 실제 경보 설비 조작 절차가 아니다.",
+      "actionMeaningStatus": "provisional_candidate_authored_paraphrase. canonical source 는 actionId 를 불투명 식별자로만 취급하며(ScenarioValidation.cs:36 distinct actionId 요구) 행동 의미의 정본 정의가 없다. 아래 문면은 canonical briefing 을 후보가 요약한 것이며 공식 절차가 아니다.",
+      "targetAnchorId": "anchor-02",
+      "anchorMeaning": "경보 체험 버튼 — synthetic-room 의 임시 표시명이며 좌표·충돌·실제 역 정보를 정의하지 않는다 (foundation/anchors/synthetic-room.json).",
+      "scenarioVersion": "foundation-2",
+      "preState": {
+        "phase": "Ready",
+        "questState": "pending",
+        "briefingAcknowledged": true,
+        "virtualTeamStates": [
+          {
+            "roleId": "role-01",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-02",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-03",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-04",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-05",
+            "state": "idle"
+          }
+        ],
+        "preStateMeaning": "브리핑을 확인한 직후, 아직 입력을 제출하지 않은 예시 사전 상태. 가상 팀의 다섯 역할은 모두 idle 이고 다른 역할의 퀘스트는 완료되지 않았다.",
+        "basis": [
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs:8 (TrainingPhase.RoleSelection|Briefing|Ready|Feedback)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:19 (questState 초기값 pending)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:67 (AcknowledgeBriefing 후 phase=Ready)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:93-94 (CreateRoleActionFixture 는 Ready + 미완료 퀘스트를 요구)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs:15-16 (SortedDictionary ordinal + 다섯 역할 초기 state=idle)"
+        ]
+      },
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "예시 경보 표시를 켰습니다. 다른 역할에 예시 알림을 전달했습니다.",
+      "feedbackMeaning": "해당 역할의 합성 입력이 접수되어 questState 가 completed 로 기록되고, 나머지 네 역할에 synthetic-action-observed / notified 이벤트가 발생했다는 설명형 피드백. DescriptiveFeedback(Code, Text, Disclaimer) 이며 점수·합격·이수·절차 준수 판정이 아니다.",
+      "provisionalMarks": {
+        "role": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "역할 행 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "action": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "행동 정의 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "feedback": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "피드백 의미 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        }
+      },
+      "officialScoringClaimed": false,
+      "canonicalRowMatch": {
+        "roleId": true,
+        "actionId": true,
+        "targetAnchorId": true,
+        "expectedQuestState": true,
+        "expectedVirtualTeamEvents": true,
+        "expectedFeedbackCode": true,
+        "preStateHash": "NOT_CHECKED"
+      },
+      "preStateHash": null,
+      "preStateHashProvenance": {
+        "value": null,
+        "status": "unknown",
+        "reasonKind": "검증 불가",
+        "notRunReason": "canonical preStateHash 는 C# 런타임이 Ready 에서 계산하는 값이다 (TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 Unity/dotnet 런타임을 실행하지 않았으므로 실제 값을 관측할 수 없다. 파이썬으로 StateHash 를 재구현해 대체값을 넣으면 canonical 과 불일치할 경우 거짓 정본 값이 되므로 넣지 않았다.",
+        "derivation": "StateHash.Session(profileHash, phase, roleId, questState, teamStates) = sha256( length-prefixed UTF-8 fields: 'chooguard.foundation.state.v1', profileHash, phase, roleId, questState, 각 TeamRoleState 의 (RoleId, State) ) (Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs:40-53)",
+        "canonicalType": "string|null",
+        "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:49 (public string preStateHash;)",
+        "typeDeviation": {
+          "deviationId": "U06",
+          "kind": "canonical 은 string 을 요구하나 후보 값은 null 이다",
+          "why": "canonical 값은 Ready 시점에 C# 런타임이 계산한다(TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 런타임을 실행하지 않았으므로 값을 알 수 없다.",
+          "impact": "canonical 대로 문자열 매핑하는 소비자(26/33/34/57/72/93)는 이 필드에서 null 을 만난다. null 을 '미산출' 로 처리해야 한다.",
+          "registeredIn": "unknowns"
+        }
+      }
+    },
+    {
+      "rowId": "m4-01-row-03",
+      "roleId": "role-03",
+      "representative": false,
+      "representativeDerivation": "representative := (roleId == canonicalScenarioSnapshot.profile.representativeRoleId); canonical source Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:97",
+      "temporaryDisplayName": "상황 보고 · 임시 역할",
+      "briefing": "무전 콘솔에서 미리 정한 게임용 상황 메시지를 전송하고 집결 구역으로 이동하세요. 실제 보고 문구나 순서를 재현하지 않습니다.",
+      "actionId": "action-03",
+      "actionMeaning": "합성 무전 콘솔에서 미리 정한 게임용 메시지를 전송하는 입력. 실제 보고 문구·순서를 재현하지 않는다.",
+      "actionMeaningStatus": "provisional_candidate_authored_paraphrase. canonical source 는 actionId 를 불투명 식별자로만 취급하며(ScenarioValidation.cs:36 distinct actionId 요구) 행동 의미의 정본 정의가 없다. 아래 문면은 canonical briefing 을 후보가 요약한 것이며 공식 절차가 아니다.",
+      "targetAnchorId": "anchor-03",
+      "anchorMeaning": "무전 콘솔 — synthetic-room 의 임시 표시명이며 좌표·충돌·실제 역 정보를 정의하지 않는다 (foundation/anchors/synthetic-room.json).",
+      "scenarioVersion": "foundation-2",
+      "preState": {
+        "phase": "Ready",
+        "questState": "pending",
+        "briefingAcknowledged": true,
+        "virtualTeamStates": [
+          {
+            "roleId": "role-01",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-02",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-03",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-04",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-05",
+            "state": "idle"
+          }
+        ],
+        "preStateMeaning": "브리핑을 확인한 직후, 아직 입력을 제출하지 않은 예시 사전 상태. 가상 팀의 다섯 역할은 모두 idle 이고 다른 역할의 퀘스트는 완료되지 않았다.",
+        "basis": [
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs:8 (TrainingPhase.RoleSelection|Briefing|Ready|Feedback)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:19 (questState 초기값 pending)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:67 (AcknowledgeBriefing 후 phase=Ready)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:93-94 (CreateRoleActionFixture 는 Ready + 미완료 퀘스트를 요구)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs:15-16 (SortedDictionary ordinal + 다섯 역할 초기 state=idle)"
+        ]
+      },
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "게임용 상황 메시지를 전송했습니다. 다른 역할에 예시 알림을 전달했습니다.",
+      "feedbackMeaning": "해당 역할의 합성 입력이 접수되어 questState 가 completed 로 기록되고, 나머지 네 역할에 synthetic-action-observed / notified 이벤트가 발생했다는 설명형 피드백. DescriptiveFeedback(Code, Text, Disclaimer) 이며 점수·합격·이수·절차 준수 판정이 아니다.",
+      "provisionalMarks": {
+        "role": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "역할 행 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "action": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "행동 정의 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "feedback": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "피드백 의미 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        }
+      },
+      "officialScoringClaimed": false,
+      "canonicalRowMatch": {
+        "roleId": true,
+        "actionId": true,
+        "targetAnchorId": true,
+        "expectedQuestState": true,
+        "expectedVirtualTeamEvents": true,
+        "expectedFeedbackCode": true,
+        "preStateHash": "NOT_CHECKED"
+      },
+      "preStateHash": null,
+      "preStateHashProvenance": {
+        "value": null,
+        "status": "unknown",
+        "reasonKind": "검증 불가",
+        "notRunReason": "canonical preStateHash 는 C# 런타임이 Ready 에서 계산하는 값이다 (TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 Unity/dotnet 런타임을 실행하지 않았으므로 실제 값을 관측할 수 없다. 파이썬으로 StateHash 를 재구현해 대체값을 넣으면 canonical 과 불일치할 경우 거짓 정본 값이 되므로 넣지 않았다.",
+        "derivation": "StateHash.Session(profileHash, phase, roleId, questState, teamStates) = sha256( length-prefixed UTF-8 fields: 'chooguard.foundation.state.v1', profileHash, phase, roleId, questState, 각 TeamRoleState 의 (RoleId, State) ) (Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs:40-53)",
+        "canonicalType": "string|null",
+        "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:49 (public string preStateHash;)",
+        "typeDeviation": {
+          "deviationId": "U06",
+          "kind": "canonical 은 string 을 요구하나 후보 값은 null 이다",
+          "why": "canonical 값은 Ready 시점에 C# 런타임이 계산한다(TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 런타임을 실행하지 않았으므로 값을 알 수 없다.",
+          "impact": "canonical 대로 문자열 매핑하는 소비자(26/33/34/57/72/93)는 이 필드에서 null 을 만난다. null 을 '미산출' 로 처리해야 한다.",
+          "registeredIn": "unknowns"
+        }
+      }
+    },
+    {
+      "rowId": "m4-01-row-04",
+      "roleId": "role-04",
+      "representative": false,
+      "representativeDerivation": "representative := (roleId == canonicalScenarioSnapshot.profile.representativeRoleId); canonical source Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:97",
+      "temporaryDisplayName": "방향 안내 · 임시 역할",
+      "briefing": "방향 안내 표지를 활성화하고 집결 구역으로 이동하세요. 경로는 임의로 만든 게임 맵이며 실제 대피 경로가 아닙니다.",
+      "actionId": "action-04",
+      "actionMeaning": "합성 방향 안내 표지를 활성화하는 게임 입력. 게임 맵의 임의 경로이며 실제 대피 경로가 아니다.",
+      "actionMeaningStatus": "provisional_candidate_authored_paraphrase. canonical source 는 actionId 를 불투명 식별자로만 취급하며(ScenarioValidation.cs:36 distinct actionId 요구) 행동 의미의 정본 정의가 없다. 아래 문면은 canonical briefing 을 후보가 요약한 것이며 공식 절차가 아니다.",
+      "targetAnchorId": "anchor-04",
+      "anchorMeaning": "방향 안내 표지 — synthetic-room 의 임시 표시명이며 좌표·충돌·실제 역 정보를 정의하지 않는다 (foundation/anchors/synthetic-room.json).",
+      "scenarioVersion": "foundation-2",
+      "preState": {
+        "phase": "Ready",
+        "questState": "pending",
+        "briefingAcknowledged": true,
+        "virtualTeamStates": [
+          {
+            "roleId": "role-01",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-02",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-03",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-04",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-05",
+            "state": "idle"
+          }
+        ],
+        "preStateMeaning": "브리핑을 확인한 직후, 아직 입력을 제출하지 않은 예시 사전 상태. 가상 팀의 다섯 역할은 모두 idle 이고 다른 역할의 퀘스트는 완료되지 않았다.",
+        "basis": [
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs:8 (TrainingPhase.RoleSelection|Briefing|Ready|Feedback)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:19 (questState 초기값 pending)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:67 (AcknowledgeBriefing 후 phase=Ready)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:93-94 (CreateRoleActionFixture 는 Ready + 미완료 퀘스트를 요구)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs:15-16 (SortedDictionary ordinal + 다섯 역할 초기 state=idle)"
+        ]
+      },
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-05",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "합성 맵의 안내 표지를 활성화했습니다. 다른 역할에 예시 알림을 전달했습니다.",
+      "feedbackMeaning": "해당 역할의 합성 입력이 접수되어 questState 가 completed 로 기록되고, 나머지 네 역할에 synthetic-action-observed / notified 이벤트가 발생했다는 설명형 피드백. DescriptiveFeedback(Code, Text, Disclaimer) 이며 점수·합격·이수·절차 준수 판정이 아니다.",
+      "provisionalMarks": {
+        "role": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "역할 행 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "action": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "행동 정의 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "feedback": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "피드백 의미 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        }
+      },
+      "officialScoringClaimed": false,
+      "canonicalRowMatch": {
+        "roleId": true,
+        "actionId": true,
+        "targetAnchorId": true,
+        "expectedQuestState": true,
+        "expectedVirtualTeamEvents": true,
+        "expectedFeedbackCode": true,
+        "preStateHash": "NOT_CHECKED"
+      },
+      "preStateHash": null,
+      "preStateHashProvenance": {
+        "value": null,
+        "status": "unknown",
+        "reasonKind": "검증 불가",
+        "notRunReason": "canonical preStateHash 는 C# 런타임이 Ready 에서 계산하는 값이다 (TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 Unity/dotnet 런타임을 실행하지 않았으므로 실제 값을 관측할 수 없다. 파이썬으로 StateHash 를 재구현해 대체값을 넣으면 canonical 과 불일치할 경우 거짓 정본 값이 되므로 넣지 않았다.",
+        "derivation": "StateHash.Session(profileHash, phase, roleId, questState, teamStates) = sha256( length-prefixed UTF-8 fields: 'chooguard.foundation.state.v1', profileHash, phase, roleId, questState, 각 TeamRoleState 의 (RoleId, State) ) (Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs:40-53)",
+        "canonicalType": "string|null",
+        "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:49 (public string preStateHash;)",
+        "typeDeviation": {
+          "deviationId": "U06",
+          "kind": "canonical 은 string 을 요구하나 후보 값은 null 이다",
+          "why": "canonical 값은 Ready 시점에 C# 런타임이 계산한다(TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 런타임을 실행하지 않았으므로 값을 알 수 없다.",
+          "impact": "canonical 대로 문자열 매핑하는 소비자(26/33/34/57/72/93)는 이 필드에서 null 을 만난다. null 을 '미산출' 로 처리해야 한다.",
+          "registeredIn": "unknowns"
+        }
+      }
+    },
+    {
+      "rowId": "m4-01-row-05",
+      "roleId": "role-05",
+      "representative": false,
+      "representativeDerivation": "representative := (roleId == canonicalScenarioSnapshot.profile.representativeRoleId); canonical source Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:97",
+      "temporaryDisplayName": "통로 확인 · 임시 역할",
+      "briefing": "체험 게이트의 예시 표시를 전환하고 집결 구역으로 이동하세요. 실제 통제·안전 설비에 적용하는 절차가 아닙니다.",
+      "actionId": "action-05",
+      "actionMeaning": "합성 체험 게이트의 표시를 전환하는 게임 입력. 실제 통제·안전 설비 절차가 아니다.",
+      "actionMeaningStatus": "provisional_candidate_authored_paraphrase. canonical source 는 actionId 를 불투명 식별자로만 취급하며(ScenarioValidation.cs:36 distinct actionId 요구) 행동 의미의 정본 정의가 없다. 아래 문면은 canonical briefing 을 후보가 요약한 것이며 공식 절차가 아니다.",
+      "targetAnchorId": "anchor-05",
+      "anchorMeaning": "체험 게이트 — synthetic-room 의 임시 표시명이며 좌표·충돌·실제 역 정보를 정의하지 않는다 (foundation/anchors/synthetic-room.json).",
+      "scenarioVersion": "foundation-2",
+      "preState": {
+        "phase": "Ready",
+        "questState": "pending",
+        "briefingAcknowledged": true,
+        "virtualTeamStates": [
+          {
+            "roleId": "role-01",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-02",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-03",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-04",
+            "state": "idle"
+          },
+          {
+            "roleId": "role-05",
+            "state": "idle"
+          }
+        ],
+        "preStateMeaning": "브리핑을 확인한 직후, 아직 입력을 제출하지 않은 예시 사전 상태. 가상 팀의 다섯 역할은 모두 idle 이고 다른 역할의 퀘스트는 완료되지 않았다.",
+        "basis": [
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs:8 (TrainingPhase.RoleSelection|Briefing|Ready|Feedback)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:19 (questState 초기값 pending)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:67 (AcknowledgeBriefing 후 phase=Ready)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs:93-94 (CreateRoleActionFixture 는 Ready + 미완료 퀘스트를 요구)",
+          "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs:15-16 (SortedDictionary ordinal + 다섯 역할 초기 state=idle)"
+        ]
+      },
+      "expectedQuestState": "completed",
+      "expectedVirtualTeamEvents": [
+        {
+          "roleId": "role-01",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-02",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-03",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        },
+        {
+          "roleId": "role-04",
+          "eventCode": "synthetic-action-observed",
+          "state": "notified"
+        }
+      ],
+      "expectedFeedbackCode": "synthetic-action-recorded",
+      "feedbackText": "체험 게이트의 표시를 전환했습니다. 다른 역할에 예시 알림을 전달했습니다.",
+      "feedbackMeaning": "해당 역할의 합성 입력이 접수되어 questState 가 completed 로 기록되고, 나머지 네 역할에 synthetic-action-observed / notified 이벤트가 발생했다는 설명형 피드백. DescriptiveFeedback(Code, Text, Disclaimer) 이며 점수·합격·이수·절차 준수 판정이 아니다.",
+      "provisionalMarks": {
+        "role": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "역할 행 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "action": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "행동 정의 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        },
+        "feedback": {
+          "synthetic": true,
+          "provisional": true,
+          "official": false,
+          "officialKorailProcedure": false,
+          "officialScoring": false,
+          "notice": "피드백 의미 은 synthetic/provisional 이다. 공식 KORAIL 직무·절차가 아니고 공식 점수·합격·이수 판정이 아니며 제품·현장·안전 성능을 주장하지 않는다."
+        }
+      },
+      "officialScoringClaimed": false,
+      "canonicalRowMatch": {
+        "roleId": true,
+        "actionId": true,
+        "targetAnchorId": true,
+        "expectedQuestState": true,
+        "expectedVirtualTeamEvents": true,
+        "expectedFeedbackCode": true,
+        "preStateHash": "NOT_CHECKED"
+      },
+      "preStateHash": null,
+      "preStateHashProvenance": {
+        "value": null,
+        "status": "unknown",
+        "reasonKind": "검증 불가",
+        "notRunReason": "canonical preStateHash 는 C# 런타임이 Ready 에서 계산하는 값이다 (TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 Unity/dotnet 런타임을 실행하지 않았으므로 실제 값을 관측할 수 없다. 파이썬으로 StateHash 를 재구현해 대체값을 넣으면 canonical 과 불일치할 경우 거짓 정본 값이 되므로 넣지 않았다.",
+        "derivation": "StateHash.Session(profileHash, phase, roleId, questState, teamStates) = sha256( length-prefixed UTF-8 fields: 'chooguard.foundation.state.v1', profileHash, phase, roleId, questState, 각 TeamRoleState 의 (RoleId, State) ) (Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs:40-53)",
+        "canonicalType": "string|null",
+        "canonicalSource": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs:49 (public string preStateHash;)",
+        "typeDeviation": {
+          "deviationId": "U06",
+          "kind": "canonical 은 string 을 요구하나 후보 값은 null 이다",
+          "why": "canonical 값은 Ready 시점에 C# 런타임이 계산한다(TrainingSession.cs:99 + StateHash.cs:40-53). 이 phase 에서 런타임을 실행하지 않았으므로 값을 알 수 없다.",
+          "impact": "canonical 대로 문자열 매핑하는 소비자(26/33/34/57/72/93)는 이 필드에서 null 을 만난다. null 을 '미산출' 로 처리해야 한다.",
+          "registeredIn": "unknowns"
+        }
+      }
+    }
+  ],
+  "negativeCases": [
+    {
+      "caseId": "N01",
+      "mutation": "roleId 제거",
+      "requiredField": "role",
+      "mustFail": true,
+      "rule": "R2",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N02",
+      "mutation": "actionId 제거",
+      "requiredField": "action",
+      "mustFail": true,
+      "rule": "R2",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N03",
+      "mutation": "targetAnchorId 제거",
+      "requiredField": "anchor",
+      "mustFail": true,
+      "rule": "R2",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N04",
+      "mutation": "preState 제거",
+      "requiredField": "prestate",
+      "mustFail": true,
+      "rule": "R2/R4",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N05",
+      "mutation": "expectedQuestState 제거",
+      "requiredField": "expected output",
+      "mustFail": true,
+      "rule": "R2",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N06",
+      "mutation": "expectedVirtualTeamEvents 제거",
+      "requiredField": "expected output",
+      "mustFail": true,
+      "rule": "R2/R3",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N07",
+      "mutation": "expectedFeedbackCode 제거",
+      "requiredField": "expected output (feedback)",
+      "mustFail": true,
+      "rule": "R2",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N08",
+      "mutation": "행 수 4 또는 6",
+      "requiredField": "exactly five rows",
+      "mustFail": true,
+      "rule": "R1",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N09",
+      "mutation": "provisionalMarks.officialScoring=true",
+      "requiredField": "synthetic/provisional disclaimer",
+      "mustFail": true,
+      "rule": "R5",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    },
+    {
+      "caseId": "N10",
+      "mutation": "canonicalScenarioSnapshot.profile 이 schema 위반(role 4개)",
+      "requiredField": "canonical schema conformance",
+      "mustFail": true,
+      "rule": "R7",
+      "detection": "selfCheckRuleset 의 해당 규칙 위반으로 거부되어야 한다(mustFail=true)."
+    }
+  ],
+  "drift": {
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "headCommitId": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "sourceRefIsAncestorOfHead": {
+      "value": true,
+      "method": "git merge-base --is-ancestor 6490956d203549b56cbd86846120759889abb016 HEAD -> exit 0",
+      "commitsFromSourceRefToHead": 36,
+      "methodForCount": "git rev-list --count 6490956d203549b56cbd86846120759889abb016..HEAD",
+      "headCommitId": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+      "measuredAt": "2026-09-15T00:47:00+09:00",
+      "note": "같은 후보가 아래 observedDivergences 에서 ref/HEAD blob sha1 을 대조하는 데 바로 이 로컬 git 을 썼으므로, 조상 관계도 같은 도구로 결정 가능하다. 이전 라운드의 UNVERIFIED_IN_THIS_CANDIDATE 는 검증 깊이 불일치였다."
+    },
+    "observedDivergences": [
+      {
+        "path": "docs/choo-guard-execution-backlog-v1.md",
+        "sourceRefGitBlobSha1": "830bc16f4962b093c783dd19a19d5a484ca3ee32",
+        "headGitBlobSha1": "e8919c7ec5bf1c55f5183ad0519379d96ce34877",
+        "sha256": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0",
+        "status": "DRIFT",
+        "note": "§8 M4-01 항목은 HEAD 사본에서 읽었다. ref 시점 문면과의 차이는 이 후보에서 대조하지 않았다."
+      },
+      {
+        "path": "docs/choo-guard-native-team-contracts.md",
+        "sourceRef": "ABSENT",
+        "head": "ABSENT",
+        "status": "ABSENT_AT_BOTH",
+        "note": "work-graph items[19].truth[1] 은 present_in_worktree 라고 선언하며 이 경로 :18-29 를 근거로 든다. 그러나 이 경로는 sourceRef 트리에도 HEAD 작업트리에도 없다. 대신 canonical action/result 필드는 Runtime/TrainingContracts.cs 와 Runtime/ScenarioProfile.cs 로 확인했다(둘 다 ref·HEAD 에 존재)."
+      },
+      {
+        "path": "docs/context/work-graph.json",
+        "sourceRef": "ABSENT",
+        "head": "PRESENT",
+        "headSha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6",
+        "status": "NON_REF_INPUT",
+        "note": "G6 하드 위상과 checks/acceptance/stopConditions 값의 출처다. ref 트리에 없으므로 context-only non-ref 입력이다. 이 파일은 후보 자신의 출력(foundation/team-fixtures/M4-01/role-action-fixture.json)을 해시 대상에 포함하므로 순수 입력 closure 가 아니다 — 자기참조 사실은 아래 unknowns 에 등록했다."
+      },
+      {
+        "path": "docs/context/work-orders/032.json",
+        "sourceRef": "ABSENT",
+        "head": "PRESENT",
+        "headSha256": "b8905fa5116cd20294ef1cc32e8a2dc387777f8d377d19da4840d958d9d1ae5e",
+        "status": "NON_REF_INPUT",
+        "note": "작업 브리프가 지정한 워크오더. ref 트리에 없어 HEAD 사본에서 읽었으며 비-ref 입력임을 명시한다."
+      },
+      {
+        "path": "foundation/scenarios/foundation-demo.json",
+        "sourceRefGitBlobSha1": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b",
+        "headGitBlobSha1": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b",
+        "status": "NO_DRIFT"
+      },
+      {
+        "path": "schemas/foundation-scenario.schema.json",
+        "sourceRefGitBlobSha1": "03806f0d937f368ead210503373a15f523f03482",
+        "headGitBlobSha1": "03806f0d937f368ead210503373a15f523f03482",
+        "status": "NO_DRIFT"
+      },
+      {
+        "path": "scripts/foundation/validate.py",
+        "sourceRefGitBlobSha1": "dc990c00e95bd48cc6438f77caf9fce4d392071c",
+        "headGitBlobSha1": "dc990c00e95bd48cc6438f77caf9fce4d392071c",
+        "status": "NO_DRIFT",
+        "note": "ref 와 HEAD 가 동일하다. C01 의 명령 형태 불일치는 드리프트가 아니라 현행 도구의 형태다."
+      }
+    ]
+  },
+  "stopConditions": {
+    "fromWorkGraph": [
+      "Role name or action is presented as official KORAIL procedure; revert to provisional/blocked.",
+      "Canonical scenario contract would be modified; request central contract lease."
+    ],
+    "compliance": [
+      {
+        "condition": "#1 공식 직무/절차 표기",
+        "status": "NOT_VIOLATED",
+        "detail": "모든 행의 provisionalMarks.role/action/feedback 이 official=false, officialKorailProcedure=false, officialScoring=false 이고 notice 문면을 가진다. actionMeaning 은 후보 서술이며 actionMeaningStatus 로 canonical 정의 부재를 표시했다."
+      },
+      {
+        "condition": "#2 canonical 시나리오 계약 수정",
+        "status": "NOT_VIOLATED",
+        "detail": "foundation/scenarios/foundation-demo.json 과 schemas/foundation-scenario.schema.json 은 read_only 로만 읽었고 sha256/blob sha1 로 결속했다. 어떤 canonical 파일도 쓰지 않았다. canonicalScenarioSnapshot 은 authority=none 인 검사용 사본이다."
+      }
+    ]
+  },
+  "unknowns": [
+    "canonical preStateHash 의 실제 런타임 값(C# 런타임 미실행).",
+    "canonical 에 행동 의미의 정본 정의가 존재하는지 여부(actionId 는 불투명 식별자로만 검증된다).",
+    "consumers(26/33/34/57/72/93)가 feedbackText 를 RoleActionFixture 밖에서 읽는지 여부.",
+    "canonical RoleActionFixture.preStateHash 는 string 타입(ScenarioProfile.cs:49)인데 후보 행의 값은 null 이다. 값이 unknown 이라는 사실(U02)과 별개로 타입·형상 편차가 존재하며, 이 편차는 canonicalRowMatch 에 NOT_CHECKED 로 계상했다(U06).",
+    "C02 입력 다이제스트 지도(짝 산출물 fixture-review.json 의 verification.checkFoundationFullClosure.inputSha256)는 이 후보 자신의 출력을 포함하므로 순수 입력 closure 가 아니며, 후보가 자기 개정을 다시 쓸 때마다 지도가 변한다(자기참조)."
+  ],
+  "verification": {
+    "receiptSchemaVersion": 1,
+    "pythonVersion": "3.14.5",
+    "note": "이 영수증은 유계 자기점검이며 정책 수용(acceptance)이 아니다. 검사 스크립트는 저장소 밖 스크래치패드에서만 실행했고 저장소에는 검사기를 추가하지 않았다. 명령은 선언 형태로 적고 로컬 인터프리터 절대경로는 게시하지 않는다(G13). 실행에 쓴 인터프리터는 pythonVersion 에 적는다.",
+    "C01": {
+      "checkId": "C01",
+      "declaredCommand": "python3 scripts/foundation/validate.py <fixture>",
+      "expectation": "schema/required fields pass with target fixture path",
+      "negativeCase": "missing role/action/anchor/prestate/expected output => fail",
+      "appliesToPhases": [
+        "candidate",
+        "accept"
+      ],
+      "result": "NOT_RUN",
+      "notRunReason": "이 phase 에서 그 조건이 원리상 만들어지지 않는다(조건 미성립). scripts/foundation/validate.py 는 위치 인자를 받지 않는다 — argparse 에 positional 이 없고, 실행하면 'validate.py: error: unrecognized arguments: <fixture>' 로 종료코드 2 다. 또한 이 검증기는 저장소의 고정 파일 3개만 읽으며(foundation-demo.json, synthetic-room.json, foundation-scenario.schema.json) 지정 target fixture 는 읽기 집합에 없다. 즉 'target fixture path 로 schema/required fields pass' 라는 기대는 현행 도구로 산출할 수 없다. 후보의 쓰기 범위 밖(scripts/)이라 검증기를 확장하지 않았고, 그 한계를 남긴다.",
+      "artifactPath": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "artifactDigest": {
+        "scheme": "sha256",
+        "scope": "self",
+        "value": null,
+        "notEmbeddableReason": "파일은 자기 자신의 다이제스트를 담을 수 없다. 실제 값은 docs/team/M4-01/fixture-review.json 의 reviewedArtifacts 에 있다.",
+        "authoritativeBinding": {
+          "path": "docs/team/M4-01/fixture-review.json",
+          "field": "reviewedArtifacts[0].sha256",
+          "note": "이 파일 수준 sha256 이 권위 있는 개정 결속이다. 픽스처만 가진 검증자는 그 짝 산출물에서 확인한다."
+        }
+      },
+      "provenance": "roleRows 는 foundation/scenarios/foundation-demo.json /roles 에서 결정적으로 생성했고, canonicalScenarioSnapshot.profile 은 그 파일의 '의미 동등 사본' 이다(dict 비교 True). 바이트 동일은 아니다 — 재직렬화 형태에 따라 sha256 이 달라진다. 정본은 foundation/scenarios/foundation-demo.json 이며 이 사본의 authority 는 none 이다. schema 적합성은 저장소 자체 validate_bundle() 에 스냅샷을 넘겨 확인했다(아래 evidenceBlocks). actionMeaning/anchorMeaning/feedbackMeaning 서술만 후보 작성이며 actionMeaningStatus 로 정본 부재를 표시했다. 검사 스크립트는 이 파일의 verification.verifyScriptBinding 에 sha256 4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006 · 17794 B 로 결속했고, 재현 규칙 R1-R9 와 부정 사례 매핑은 verification.selfCheckRuleset 에 내장했다. 도구가 저장소에 게시되지 않았으므로 부정 사례 재현은 도구 바이트 확보에 조건부다(라벨: NOT_REPRODUCIBLE_FROM_ARTIFACT_ALONE).",
+      "thresholdEvaluation": "실행한 것: (a) C01 명령 원문 그대로 — exit 2, unrecognized arguments. (b) 인자 없는 validate.py — PASS, 고정 파일 3종에 한함. (c) 구조 검사 — 5행·필수필드·부정표기 통과. (d) 저장소 validate_bundle() 로 스냅샷 schema 검사 — 오류 0. (e) 행↔canonical 교차검사 — 불일치 0. (f) canonical 소스 다이제스트 결속 일치. (g) 부정 사례 10건 전부 거부. 실행하지 않은 것: target fixture path 를 받는 검증기 실행(도구에 그 형태가 없다), C# 런타임/Unity 실행, preStateHash 계산.",
+      "evidenceBlocks": [
+        {
+          "step": "C01 명령 원문 실행",
+          "observed": {
+            "command": "python3 scripts/foundation/validate.py foundation/team-fixtures/M4-01/role-action-fixture.json",
+            "exitCode": 2,
+            "stdout": "",
+            "stderr": "usage: validate.py [-h]\nvalidate.py: error: unrecognized arguments: foundation/team-fixtures/M4-01/role-action-fixture.json"
+          }
+        },
+        {
+          "step": "인자 없는 validate.py 실행(고정 읽기 집합)",
+          "observed": {
+            "command": "python3 scripts/foundation/validate.py",
+            "exitCode": 0,
+            "stdout": "PASS: synthetic foundation fixture - 5 roles, 5 anchor references, 20 virtual team notifications; provisional example only",
+            "stderr": ""
+          }
+        },
+        {
+          "step": "validate.py 부정 인자 실행",
+          "observed": {
+            "command": "python3 scripts/foundation/validate.py --not-a-flag",
+            "exitCode": 2,
+            "stdout": "",
+            "stderr": "usage: validate.py [-h]\nvalidate.py: error: unrecognized arguments: --not-a-flag"
+          }
+        },
+        {
+          "step": "저장소 validate_bundle() 로 canonicalScenarioSnapshot schema 검사",
+          "errors": [],
+          "verdict": "pass"
+        },
+        {
+          "step": "roleRows 구조·필수필드·provisional 표기 검사",
+          "errors": [],
+          "verdict": "pass"
+        },
+        {
+          "step": "roleRows ↔ canonical /roles 교차검사",
+          "mismatches": [],
+          "verdict": "pass"
+        },
+        {
+          "step": "canonical 소스 sha256 결속",
+          "verdict": "pass"
+        },
+        {
+          "step": "부정 사례 N01-N10",
+          "cases": [
+            {
+              "caseId": "N01",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].roleId: required field missing",
+                "roleRows[1].expectedVirtualTeamEvents: must cover the other four roles once",
+                "roleRows[2].expectedVirtualTeamEvents: must cover the other four roles once"
+              ]
+            },
+            {
+              "caseId": "N02",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].actionId: required field missing"
+              ]
+            },
+            {
+              "caseId": "N03",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].targetAnchorId: required field missing"
+              ]
+            },
+            {
+              "caseId": "N04",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].preState: required field missing",
+                "roleRows[0].preState: must define phase and questState"
+              ]
+            },
+            {
+              "caseId": "N05",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].expectedQuestState: required field missing"
+              ]
+            },
+            {
+              "caseId": "N06",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].expectedVirtualTeamEvents: required field missing",
+                "roleRows[0].expectedVirtualTeamEvents: expected 4 events"
+              ]
+            },
+            {
+              "caseId": "N07",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].expectedFeedbackCode: required field missing"
+              ]
+            },
+            {
+              "caseId": "N08",
+              "rejected": true,
+              "observed": [
+                "roleRows: expected exactly 5 rows, found 4",
+                "roleRows[0].expectedVirtualTeamEvents: must cover the other four roles once",
+                "roleRows[1].expectedVirtualTeamEvents: must cover the other four roles once"
+              ]
+            },
+            {
+              "caseId": "N09",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].provisionalMarks.role.officialScoring: must be false"
+              ]
+            },
+            {
+              "caseId": "N10",
+              "rejected": true,
+              "observed": [
+                "scenario.roles: minItems=5 violated"
+              ]
+            }
+          ],
+          "verdict": "pass"
+        }
+      ],
+      "selfCheckRuleset": {
+        "R1": "roleRows 길이가 정확히 5 여야 한다.",
+        "R2": "각 행은 roleId, actionId, targetAnchorId, preState, expectedQuestState, expectedVirtualTeamEvents, expectedFeedbackCode 를 모두 가져야 한다.",
+        "R3": "각 행의 expectedVirtualTeamEvents 는 나머지 네 역할을 정확히 한 번씩 덮어야 한다.",
+        "R4": "preState 는 phase 와 questState 를 정의해야 한다.",
+        "R5": "각 행의 provisionalMarks.role/.action/.feedback 은 synthetic=true, provisional=true, official=false, officialKorailProcedure=false, officialScoring=false 여야 하고 notice 가 비어 있지 않아야 한다.",
+        "R6": "각 행의 officialScoringClaimed 는 false 여야 한다.",
+        "R7": "canonicalScenarioSnapshot.profile 은 schemas/foundation-scenario.schema.json 의 minItems=5 등 canonical schema 를 만족해야 한다.",
+        "R8": "각 행의 roleId/actionId/targetAnchorId/expectedQuestState/expectedVirtualTeamEvents/expectedFeedbackCode 는 canonicalScenarioSnapshot.profile.roles 의 같은 역할 항목과 일치해야 한다. preStateHash 는 canonicalRowMatch 에서 NOT_CHECKED 다(형상 편차, U06)."
+      },
+      "verifyScriptBinding": {
+        "scriptAnchor": "<candidate-session-scratchpad>/verify_m401_fixture.py",
+        "scriptAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬).",
+        "sha256": "4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006",
+        "bytes": 17794,
+        "publishedInRepo": false,
+        "publishedInRepoReason": "이 후보의 쓰기 범위(foundation/team-fixtures/M4-01/, docs/team/M4-01/) 밖이므로 저장소에 검사기를 추가하지 않았다.",
+        "deidentificationDisposition": "경로는 앵커 토큰으로만 표기한다(세션 UUID·사용자 홈 경로 비게시, G13). 식별은 sha256·bytes 로 완결된다.",
+        "ifUnavailable": "스크립트를 얻을 수 없는 소비자는 아래 selfCheckRuleset 으로 같은 검사를 재구현해 재현할 수 있다. selfCheckRuleset 은 실행 코드가 아니라 규칙 서술이며, 부정 사례는 negativeCases 에 정의가 내장돼 있다."
+      }
+    },
+    "C02": {
+      "checkId": "C02",
+      "declaredCommand": "python3 scripts/dev/check_foundation.py",
+      "expectation": "records existing code/data check only; not official/SOP/HMD pass",
+      "negativeCase": "failure or local-only path => preserve limitation",
+      "appliesToPhases": [
+        "candidate",
+        "accept"
+      ],
+      "result": "PASS",
+      "notRunReason": "",
+      "artifactPath": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "artifactDigest": {
+        "scheme": "sha256",
+        "scope": "self",
+        "value": null,
+        "notEmbeddableReason": "파일은 자기 자신의 다이제스트를 담을 수 없다. 실제 값은 docs/team/M4-01/fixture-review.json 의 reviewedArtifacts 에 있다.",
+        "authoritativeBinding": {
+          "path": "docs/team/M4-01/fixture-review.json",
+          "field": "reviewedArtifacts[0].sha256",
+          "note": "이 파일 수준 sha256 이 권위 있는 개정 결속이다. 픽스처만 가진 검증자는 그 짝 산출물에서 확인한다."
+        }
+      },
+      "provenance": "명령을 저장소 루트에서 실행했고 종료코드와 stdout JSON 을 그대로 기록했다. 스크립트는 scripts/foundation/validate.py 와 scripts/foundation/tests 의 unittest 를 돌리고 foundation/·scripts/·Packages/ 하위 입력의 sha256 을 출력한다. 이 후보는 그 출력을 '공식/SOP/HMD 통과'로 승격하지 않는다. 검사 스크립트는 이 파일의 verification.verifyScriptBinding 에 sha256 4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006 · 17794 B 로 결속했고, 재현 규칙 R1-R9 와 부정 사례 매핑은 verification.selfCheckRuleset 에 내장했다. 도구가 저장소에 게시되지 않았으므로 부정 사례 재현은 도구 바이트 확보에 조건부다(라벨: NOT_REPRODUCIBLE_FROM_ARTIFACT_ALONE).",
+      "thresholdEvaluation": "실행 결과 exit=0, status=passed, checks 2건(synthetic_contract, synthetic_negative_tests) 모두 passed. 동시에 스크립트 자신이 csharpCompilation/unityEditMode/unityPlayMode/unitySceneGeneration/desktopPlaythrough/hmd/independentProviderReview = not_run, playableDemoVerified=false, issueDone=false 를 보고한다. 이 후보는 그 not_run 을 그대로 유지하며 어떤 완료 주장도 하지 않는다. 출력의 숫자 20 은 validator PASS 문면의 합성 계약 항목 수(5역할 x 4이벤트)이며 완료·성능 수치가 아니다.",
+      "evidenceBlocks": [
+        {
+          "step": "check_foundation.py 실행 (도구 원출력 요약. 전체 inputSha256 지도와 파생 카운트는 docs/team/M4-01/fixture-review.json 에 있다)",
+          "observed": {
+            "command": "python3 scripts/dev/check_foundation.py",
+            "exitCode": 0,
+            "scope": "foundation_python_data_checks",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "synthetic_contract",
+                "exitCode": 0,
+                "status": "passed"
+              },
+              {
+                "name": "synthetic_negative_tests",
+                "exitCode": 0,
+                "status": "passed"
+              }
+            ],
+            "csharpCompilation": "not_run",
+            "unityEditMode": "not_run",
+            "unityPlayMode": "not_run",
+            "unitySceneGeneration": "not_run",
+            "desktopPlaythrough": "not_run",
+            "playableDemoVerified": false,
+            "hmd": "not_run",
+            "independentProviderReview": "not_run",
+            "issueDone": false
+          }
+        }
+      ],
+      "selfCheckRuleset": null,
+      "verifyScriptBinding": {
+        "scriptAnchor": "<candidate-session-scratchpad>/verify_m401_fixture.py",
+        "scriptAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬).",
+        "sha256": "4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006",
+        "bytes": 17794,
+        "publishedInRepo": false,
+        "publishedInRepoReason": "이 후보의 쓰기 범위(foundation/team-fixtures/M4-01/, docs/team/M4-01/) 밖이므로 저장소에 검사기를 추가하지 않았다.",
+        "deidentificationDisposition": "경로는 앵커 토큰으로만 표기한다(세션 UUID·사용자 홈 경로 비게시, G13). 식별은 sha256·bytes 로 완결된다.",
+        "ifUnavailable": "스크립트를 얻을 수 없는 소비자는 아래 selfCheckRuleset 으로 같은 검사를 재구현해 재현할 수 있다. selfCheckRuleset 은 실행 코드가 아니라 규칙 서술이며, 부정 사례는 negativeCases 에 정의가 내장돼 있다."
+      },
+      "derived": {
+        "inputSha256Count": {
+          "value": 231,
+          "isToolOutput": false,
+          "derivation": "len(docs/team/M4-01/fixture-review.json verification.checkFoundationFullClosure.inputSha256)",
+          "note": "scripts/dev/check_foundation.py:51-65 의 출력 키가 아니다. 검사 스크립트가 계산해 넣은 파생값이므로 도구 원출력 블록(observed) 밖에 둔다."
+        }
+      }
+    },
+    "verifyScriptBinding": {
+      "toolName": "verify_m401_fixture.py",
+      "pathTemplate": "<candidate-session-scratchpad>/verify_m401_fixture.py",
+      "pathAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬). G13 비식별 규칙에 따라 절대경로·세션 UUID 는 게시하지 않는다.",
+      "sha256": "4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006",
+      "bytes": 17794,
+      "publishedInRepo": false,
+      "notPublishedReason": "후보의 쓰기 범위(scripts/ 아님) 밖이라 저장소에 검사기를 추가하지 않았다.",
+      "reproducibility": "NOT_REPRODUCIBLE_FROM_ARTIFACT_ALONE",
+      "reproducibilityLabel": "검사 스크립트는 저장소에 게시되지 않았다. 소비자가 위 sha256 을 가진 바이트를 갖지 못하면 부정 사례 N01-N10 의 관측은 재현 불가이며, '미실행 PASS 조작'과 구분되지 않는 형태로 남는다. 이 라벨은 그 한계를 은폐하지 않기 위해 붙인다.",
+      "alternativeReproduction": "스크립트 없이 재현하려면 verification.selfCheckRuleset 의 R1-R9 를 그대로 구현한다. 부정 사례 매핑은 같은 블록의 negativeCaseMapping 에 있다.",
+      "note": "docs/team/M4-01/fixture-review.json 의 acceptanceCriteriaReview[*].verificationCommand 가 이 블록을 '픽스처 verification.verifyScriptBinding' 으로 인용한다. 이 블록이 그 인용의 실체다."
+    },
+    "selfCheckRuleset": {
+      "note": "verify_m401_fixture.py 가 구현한 술어의 규칙 요약. 스크립트 미게시 시 소비자가 같은 검사를 재구현할 수 있도록 적는다. 규칙 번호는 이 산출물의 표기이며 도구 소스의 구조 검사와 canonical 교차검사에 대응한다.",
+      "R1": "roleRows 는 리스트이고 길이가 정확히 5다.",
+      "R2": "각 행이 roleId, representative, actionId, targetAnchorId, preState, expectedQuestState, expectedVirtualTeamEvents, expectedFeedbackCode, provisionalMarks 를 모두 가진다.",
+      "R3": "roleId·actionId·targetAnchorId 는 행 간 중복이 없다.",
+      "R4": "각 행의 expectedVirtualTeamEvents 는 정확히 4건이고 다른 네 역할을 한 번씩 덮으며 eventCode=synthetic-action-observed, state=notified 다.",
+      "R5": "각 행의 provisionalMarks.{role,action,feedback} 이 synthetic=true, provisional=true, official=false, officialKorailProcedure=false, officialScoring=false 이고 notice 가 비어 있지 않다.",
+      "R6": "각 행의 officialScoringClaimed=false 다.",
+      "R7": "각 행의 preState 가 phase 와 questState 를 정의한다(작성 값: phase=Ready, questState=pending).",
+      "R8": "행 <-> canonical /roles 교차검사: roleId·actionId·targetAnchorId·expectedQuestState·expectedVirtualTeamEvents·expectedFeedbackCode·representative·scenarioVersion 이 일치한다. preStateHash 는 canonical string 대 후보 null 의 형상 편차로 NOT_CHECKED.",
+      "R9": "canonicalScenarioSnapshot.profile 을 저장소 validate_bundle() 에 넘겨 schema 오류 0.",
+      "negativeCaseMapping": {
+        "N01": "R2 (roleId 제거)",
+        "N02": "R2 (actionId 제거)",
+        "N03": "R2 (targetAnchorId 제거)",
+        "N04": "R2/R7 (preState 제거)",
+        "N05": "R2 (expectedQuestState 제거)",
+        "N06": "R2/R4 (expectedVirtualTeamEvents 제거)",
+        "N07": "R2 (expectedFeedbackCode 제거)",
+        "N08": "R1/R4 (행 수 4 또는 6)",
+        "N09": "R5/R6 (provisionalMarks.officialScoring=true)",
+        "N10": "R9 (canonical schema minItems 위반)"
+      },
+      "reproductionLabel": "N01-N10 은 위 규칙을 구현하면 재현된다. 도구 바이트가 없으면 '도구 관측'이 아니라 '규칙 재구현 관측'이 된다."
+    }
+  },
+  "generatedAt": {
+    "local": "2026-09-15T01:32:26+09:00",
+    "utc": "2026-09-14T16:32:26+00:00",
+    "note": "이 시각은 이 개정의 생성 시각이며 수용·승인 시각이 아니다."
+  },
+  "canonicalRowMatchLegend": {
+    "true": "후보 행 값이 canonical /roles 의 같은 필드와 동일하다.",
+    "false": "불일치다.",
+    "NOT_CHECKED": "검사 불가. canonical 타입과 후보 값의 형상 편차로 값 비교가 성립하지 않는다(편차는 unknowns U06 로 등록)."
+  }
+}
