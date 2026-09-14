@@ -545,6 +545,82 @@ class LocalVoiceConfigurationTests(unittest.TestCase):
             self.assertEqual(foreign_file.read_text(), "keep")
             self.assertEqual(sorted(item.name for item in root.iterdir()), ["foreign-file"])
 
+    def test_entry_injected_after_the_last_write_blocks_publication(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            real_write_private = configure_local.write_private
+            written = []
+
+            def write_then_inject(path, text, *, dir_fd=None, on_acquired=None):
+                result = real_write_private(
+                    path, text, dir_fd=dir_fd, on_acquired=on_acquired
+                )
+                written.append(path)
+                if len(written) == len(configure_local._GENERATED_NAMES):
+                    injected_fd = os.open(
+                        "injected.env",
+                        os.O_WRONLY | os.O_CREAT | os.O_EXCL,
+                        0o600,
+                        dir_fd=dir_fd,
+                    )
+                    os.close(injected_fd)
+                return result
+
+            with mock.patch(
+                "configure_local.write_private", side_effect=write_then_inject
+            ):
+                with self.assertRaises(_CleanupIncomplete):
+                    configure(target)
+
+            # The rename would have moved the whole directory, so an entry this
+            # run did not create must never reach the output name as private
+            # configuration: publication is refused and the entry survives for
+            # manual cleanup while the run's own credentials are rolled back.
+            self.assertFalse(target.exists())
+            residues = list(root.glob(".voice.*.tmp"))
+            self.assertEqual(len(residues), 1)
+            self.assertEqual(
+                sorted(item.name for item in residues[0].iterdir()), ["injected.env"]
+            )
+
+    def test_owned_name_swapped_for_other_bytes_blocks_publication(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            real_write_private = configure_local.write_private
+            written = []
+
+            def write_then_swap(path, text, *, dir_fd=None, on_acquired=None):
+                result = real_write_private(
+                    path, text, dir_fd=dir_fd, on_acquired=on_acquired
+                )
+                written.append(path)
+                if len(written) == len(configure_local._GENERATED_NAMES):
+                    # Same name, same file count, different inode: no name-set
+                    # check can see this, only a per-entry identity comparison.
+                    os.unlink("keys.yaml", dir_fd=dir_fd)
+                    replacement = os.open(
+                        "keys.yaml", os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600,
+                        dir_fd=dir_fd,
+                    )
+                    os.write(replacement, b"attacker: substituted\n")
+                    os.close(replacement)
+                return result
+
+            with mock.patch(
+                "configure_local.write_private", side_effect=write_then_swap
+            ):
+                with self.assertRaises(_CleanupIncomplete):
+                    configure(target)
+
+            self.assertFalse(target.exists())
+            residues = list(root.glob(".voice.*.tmp"))
+            self.assertEqual(len(residues), 1)
+            self.assertEqual(
+                (residues[0] / "keys.yaml").read_bytes(), b"attacker: substituted\n"
+            )
+
     def test_ownership_evidence_is_rechecked_on_both_sides_of_the_binding(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

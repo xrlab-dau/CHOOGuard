@@ -316,6 +316,35 @@ def _owned_cleanup_target(ownership, parent_fd, cleanup_name, directory_fd):
     return current is not None and current.identity == ownership.identity
 
 
+def _unowned_staging_entries(directory_fd, owned_files):
+    """Names in the pinned directory that this run cannot publish as its own.
+
+    Publication renames the whole directory, so a name that is not one this run
+    acquired - or an acquired name whose file identity changed - would be
+    handed out as this run's private configuration.  Returns ``None`` when the
+    directory cannot be listed at all, which is treated as unproven.
+    """
+    owned = dict(owned_files)
+    try:
+        present = os.listdir(directory_fd)
+    except OSError:
+        return None
+    unowned = []
+    for name in present:
+        identity = owned.get(name)
+        if identity is None:
+            unowned.append(name)
+            continue
+        try:
+            current = os.stat(name, dir_fd=directory_fd, follow_symlinks=False)
+        except OSError:
+            unowned.append(name)
+            continue
+        if not stat.S_ISREG(current.st_mode) or _file_identity(current) != identity:
+            unowned.append(name)
+    return unowned
+
+
 def _rename_exclusive(parent_fd, staging_name, output_name):
     """Publish a completed private directory without replacing an existing name."""
     libc = ctypes.CDLL(None, use_errno=True)
@@ -494,6 +523,16 @@ key_file: /run/chooguard/keys.yaml
         )
         if not _same_output_directory(parent_fd, staging_name, directory_stat):
             raise _OutputPathChanged("Configuration staging path changed during creation")
+        # The rename below moves the whole directory, so publication also
+        # requires it to hold exactly the entries this run acquired.  An entry
+        # injected after the last write, or an acquired name swapped for other
+        # bytes, must not be published as this run's private configuration.
+        unowned = _unowned_staging_entries(directory_fd, owned_files)
+        if unowned is None or unowned:
+            raise _OutputPathChanged(
+                "Configuration staging directory holds entries this run did not create; "
+                "refusing to publish them"
+            )
 
         _rename_exclusive(parent_fd, staging_name, output.name)
         published = True
