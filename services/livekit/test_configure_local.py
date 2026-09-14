@@ -17,6 +17,24 @@ from configure_local import (
 )
 
 
+# The staging-ownership and publication-boundary fixtures live on their own
+# class so that "the boundary suite" is a runnable selector -
+# `python3 -m unittest test_configure_local.StagingPublicationBoundaryTests` -
+# instead of a claim in a document.  The fixtures that predate that work stay
+# on LocalVoiceConfigurationTests, unchanged and equally selectable.
+_BOUNDARY_FIXTURES = (
+    "test_unproven_staging_ownership_blocks_every_credential_write",
+    "test_staging_swap_after_credentials_is_refused_at_the_publication_gate",
+    "test_symlinked_staging_entry_is_rejected_without_writing_outside_target",
+    "test_foreign_output_directory_is_never_published_into_or_deleted",
+    "test_publication_failure_rolls_back_exactly_the_owned_directory",
+    "test_ownership_evidence_is_rechecked_on_both_sides_of_the_binding",
+    "test_entry_injected_after_the_last_write_blocks_publication",
+    "test_owned_name_swapped_for_other_bytes_blocks_publication",
+)
+_LEGACY_FIXTURE_TOTAL = 24
+
+
 class LocalVoiceConfigurationTests(unittest.TestCase):
     def test_local_service_has_no_auto_rooms_and_keeps_credentials_private(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -341,14 +359,16 @@ class LocalVoiceConfigurationTests(unittest.TestCase):
             with mock.patch(
                 "configure_local._rename_exclusive", side_effect=inject_replacement
             ):
-                with self.assertRaises(ValueError):
+                with self.assertRaises(_CleanupIncomplete):
                     configure(target)
             self.assertEqual((target / "keys.yaml").read_text(), "synthetic foreign sentinel")
-            # The foreign output is preserved untouched, while the staging
-            # directory is removed only because it is still the exact inode this
-            # invocation proved it created.  Cleanup is therefore complete, not
-            # deferred to manual removal.
-            self.assertEqual(len(list(root.glob(".voice.*.tmp"))), 0)
+            # The output name was created outside this run while this run was
+            # staging credentials: `_validate_output` proved the name absent
+            # before staging began.  Rollback removes the credentials this run
+            # acquired but preserves the staged directory for manual
+            # reconciliation and reports incomplete cleanup, so the residue
+            # stays until an operator removes it.
+            self.assertEqual(len(list(root.glob(".voice.*.tmp"))), 1)
 
     def test_directory_swap_does_not_delete_replacement_directory(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -397,6 +417,152 @@ class LocalVoiceConfigurationTests(unittest.TestCase):
             self.assertFalse((parent / "voice").exists())
             self.assertFalse((parked / "voice" / "keys.yaml").exists())
 
+    @unittest.skipUnless(sys.platform == "darwin", "requires Darwin ACL API")
+    def test_real_inherited_acl_is_rejected_but_no_acl_control_succeeds(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            acl_parent = root / "acl-parent"
+            acl_parent.mkdir(mode=0o700)
+            completed = subprocess.run(
+                [
+                    "/bin/chmod",
+                    "+a",
+                    "everyone allow read,search,file_inherit,directory_inherit",
+                    str(acl_parent),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=20,
+            )
+            if completed.returncode:
+                self.fail("synthetic ACL fixture setup failed: " + completed.stderr)
+
+            try:
+                with mock.patch("configure_local.secrets.token_hex") as token_hex:
+                    with self.assertRaisesRegex(ValueError, "ACL"):
+                        configure(acl_parent / "voice")
+                token_hex.assert_not_called()
+
+                no_acl_parent = root / "no-acl-parent"
+                no_acl_parent.mkdir(mode=0o700)
+                result = configure(no_acl_parent / "voice")
+                self.assertEqual(result["status"], "private_local_config_created")
+            finally:
+                subprocess.run(
+                    ["/bin/chmod", "-RN", str(acl_parent)],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    timeout=20,
+                )
+
+    @unittest.skipUnless(sys.platform == "darwin", "requires Darwin ACL API")
+    def test_real_file_acl_is_rejected_but_no_acl_file_control_succeeds(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            acl_file = root / "acl-file"
+            acl_file.write_text("synthetic")
+            acl_file.chmod(0o600)
+            completed = subprocess.run(
+                ["/bin/chmod", "+a", "everyone allow read", str(acl_file)],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=20,
+            )
+            if completed.returncode:
+                self.fail("synthetic file ACL fixture setup failed: " + completed.stderr)
+
+            no_acl_file = root / "no-acl-file"
+            no_acl_file.write_text("synthetic")
+            no_acl_file.chmod(0o600)
+            acl_fd = os.open(acl_file, os.O_RDONLY)
+            no_acl_fd = os.open(no_acl_file, os.O_RDONLY)
+            try:
+                with self.assertRaisesRegex(ValueError, "ACL"):
+                    configure_local._verify_darwin_no_additional_acl(acl_fd)
+                configure_local._verify_darwin_no_additional_acl(no_acl_fd)
+            finally:
+                os.close(no_acl_fd)
+                os.close(acl_fd)
+                subprocess.run(
+                    ["/bin/chmod", "-N", str(acl_file)],
+                    capture_output=True,
+                    text=True,
+                    check=False,
+                    timeout=20,
+                )
+
+    def test_created_file_acl_is_verified_before_success(self):
+        with tempfile.TemporaryDirectory() as temp:
+            target = Path(temp) / "voice"
+            original_verify = configure_local._verify_darwin_no_additional_acl
+            regular_file_checks = 0
+
+            def reject_first_regular_file(fd):
+                nonlocal regular_file_checks
+                if os.path.isfile(f"/dev/fd/{fd}"):
+                    regular_file_checks += 1
+                    raise ValueError("synthetic file ACL")
+                return original_verify(fd)
+
+            with mock.patch(
+                "configure_local._verify_darwin_no_additional_acl",
+                side_effect=reject_first_regular_file,
+            ):
+                with self.assertRaisesRegex(_CleanupIncomplete, "manual"):
+                    configure(target)
+            self.assertGreaterEqual(regular_file_checks, 1)
+            self.assertFalse(target.exists())
+
+    def test_cli_symlink_output_is_rejected_without_writing_outside_target(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            outside = root / "outside"
+            outside.mkdir()
+            redirected = root / "redirected"
+            redirected.symlink_to(outside, target_is_directory=True)
+
+            completed = self._run_cli("--output", str(redirected / "voice"))
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertFalse((outside / "voice").exists())
+            self.assertNotIn("ApiSecret", completed.stdout + completed.stderr)
+
+    def test_cli_errors_are_sanitized_and_actionable(self):
+        with tempfile.TemporaryDirectory() as temp:
+            private_marker = "SYNTHETIC_PRIVATE_PATH_" + "x" * 240
+            completed = self._run_cli("--output", str(Path(temp) / private_marker))
+            output = completed.stdout + completed.stderr
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertNotIn(private_marker, output)
+            self.assertNotIn("Traceback", output)
+            self.assertTrue(
+                "check the private parent and permissions" in output
+                or "private cleanup is incomplete" in output
+                or "Configuration output name is too long" in output
+            )
+
+    def test_cli_failure_does_not_print_generated_credentials(self):
+        with tempfile.TemporaryDirectory() as temp:
+            completed = self._run_cli(
+                "--output", str(Path(temp) / "voice"), "--node-ip", "192.0.2.44"
+            )
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertNotIn("ApiSecret", completed.stdout + completed.stderr)
+            self.assertNotIn("cg", completed.stdout + completed.stderr)
+
+    @staticmethod
+    def _run_cli(*args):
+        return subprocess.run(
+            [sys.executable, str(Path(__file__).with_name("configure_local.py")), *args],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+
+class StagingPublicationBoundaryTests(unittest.TestCase):
     def test_unproven_staging_ownership_blocks_every_credential_write(self):
         """The P0 boundary: no credential byte and no publication without proof."""
         with tempfile.TemporaryDirectory() as temp:
@@ -651,151 +817,329 @@ class LocalVoiceConfigurationTests(unittest.TestCase):
             self.assertTrue((target / "keys.yaml").is_file())
 
     @unittest.skipUnless(sys.platform == "darwin", "requires Darwin ACL API")
-    def test_real_inherited_acl_is_rejected_but_no_acl_control_succeeds(self):
+    def test_adopted_empty_directory_in_the_create_to_pin_window_is_published(self):
+        """Pin the one window this backend cannot authenticate (D1, branch a).
+
+        README 13 documents the create->open window as unauthenticated.  Darwin
+        and Python create a directory by pathname and open it separately, and no
+        mkdir variant returns the descriptor of the directory it just created,
+        so re-reading the name - however many times - stays inside the same
+        window: a re-check cannot see a swap that already happened before the
+        first read.  Narrowing this in code would need an atomic create-and-pin
+        primitive, which this platform does not expose, so the behaviour below
+        is pinned instead of closed, and this fixture fails the day a backend
+        that can pin at creation changes it.
+
+        The window also needs a same-account actor: the adopted directory must
+        be 0700 and current-user-owned to pass `_verify_private_directory`, and a
+        different principal can neither own a directory as this user nor write
+        into the 0700 parent.  That is the same-account scope README 13 excludes.
+
+        Pinned behaviour: an EMPTY adopted directory satisfies every identity
+        and entry-set gate and is published as this run's private output.
+        """
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            acl_parent = root / "acl-parent"
-            acl_parent.mkdir(mode=0o700)
-            completed = subprocess.run(
-                [
-                    "/bin/chmod",
-                    "+a",
-                    "everyone allow read,search,file_inherit,directory_inherit",
-                    str(acl_parent),
-                ],
-                capture_output=True,
-                text=True,
-                check=False,
-                timeout=20,
-            )
-            if completed.returncode:
-                self.fail("synthetic ACL fixture setup failed: " + completed.stderr)
+            target = root / "voice"
+            parked = root / "parked-staging"
+            adopted_inodes = []
+            swapped = []
+            original_open = configure_local.os.open
 
-            try:
-                with mock.patch("configure_local.secrets.token_hex") as token_hex:
-                    with self.assertRaisesRegex(ValueError, "ACL"):
-                        configure(acl_parent / "voice")
-                token_hex.assert_not_called()
+            def adopt_empty_directory(path, flags, mode=0o777, *, dir_fd=None):
+                if (
+                    dir_fd is not None
+                    and isinstance(path, str)
+                    and path.startswith(f".{target.name}.")
+                    and path.endswith(".tmp")
+                    and not swapped
+                ):
+                    ours = list(root.glob(".voice.*.tmp"))[0]
+                    ours.rename(parked)
+                    replacement = root / ours.name
+                    replacement.mkdir(mode=0o700)
+                    adopted_inodes.append(replacement.stat().st_ino)
+                    swapped.append(True)
+                return original_open(path, flags, mode, dir_fd=dir_fd)
 
-                no_acl_parent = root / "no-acl-parent"
-                no_acl_parent.mkdir(mode=0o700)
-                result = configure(no_acl_parent / "voice")
-                self.assertEqual(result["status"], "private_local_config_created")
-            finally:
-                subprocess.run(
-                    ["/bin/chmod", "-RN", str(acl_parent)],
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                    timeout=20,
-                )
+            with mock.patch("configure_local.os.open", side_effect=adopt_empty_directory):
+                result = configure(target)
 
-    @unittest.skipUnless(sys.platform == "darwin", "requires Darwin ACL API")
-    def test_real_file_acl_is_rejected_but_no_acl_file_control_succeeds(self):
+            self.assertEqual(len(swapped), 1)
+            self.assertEqual(result["status"], "private_local_config_created")
+            # The published directory is the adopted inode, not the one this run
+            # created, and it now carries this run's credentials.
+            self.assertEqual(target.stat().st_ino, adopted_inodes[0])
+            self.assertTrue((target / "keys.yaml").is_file())
+            self.assertTrue((target / "livekit.yaml").is_file())
+            self.assertTrue((target / "server-voice.json").is_file())
+            # The directory this run did create is left behind, empty.
+            self.assertTrue(parked.is_dir())
+            self.assertEqual(list(parked.iterdir()), [])
+
+    def test_adopted_directory_with_a_foreign_entry_is_refused(self):
+        """The same create->pin window, with a payload the entry-set gate sees.
+
+        The adopted directory still satisfies the identity proof, but it now
+        holds an entry this run never acquired, so publication is refused and
+        the foreign entry is preserved for manual cleanup.  Together with the
+        empty-directory fixture above this pins both branches of the window.
+        """
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            acl_file = root / "acl-file"
-            acl_file.write_text("synthetic")
-            acl_file.chmod(0o600)
-            completed = subprocess.run(
-                ["/bin/chmod", "+a", "everyone allow read", str(acl_file)],
-                capture_output=True,
-                text=True,
-                check=False,
-                timeout=20,
-            )
-            if completed.returncode:
-                self.fail("synthetic file ACL fixture setup failed: " + completed.stderr)
+            target = root / "voice"
+            parked = root / "parked-staging"
+            adopted_inodes = []
+            swapped = []
+            original_open = configure_local.os.open
 
-            no_acl_file = root / "no-acl-file"
-            no_acl_file.write_text("synthetic")
-            no_acl_file.chmod(0o600)
-            acl_fd = os.open(acl_file, os.O_RDONLY)
-            no_acl_fd = os.open(no_acl_file, os.O_RDONLY)
-            try:
-                with self.assertRaisesRegex(ValueError, "ACL"):
-                    configure_local._verify_darwin_no_additional_acl(acl_fd)
-                configure_local._verify_darwin_no_additional_acl(no_acl_fd)
-            finally:
-                os.close(no_acl_fd)
-                os.close(acl_fd)
-                subprocess.run(
-                    ["/bin/chmod", "-N", str(acl_file)],
-                    capture_output=True,
-                    text=True,
-                    check=False,
-                    timeout=20,
-                )
-
-    def test_created_file_acl_is_verified_before_success(self):
-        with tempfile.TemporaryDirectory() as temp:
-            target = Path(temp) / "voice"
-            original_verify = configure_local._verify_darwin_no_additional_acl
-            regular_file_checks = 0
-
-            def reject_first_regular_file(fd):
-                nonlocal regular_file_checks
-                if os.path.isfile(f"/dev/fd/{fd}"):
-                    regular_file_checks += 1
-                    raise ValueError("synthetic file ACL")
-                return original_verify(fd)
+            def adopt_directory_with_foreign_entry(path, flags, mode=0o777, *, dir_fd=None):
+                if (
+                    dir_fd is not None
+                    and isinstance(path, str)
+                    and path.startswith(f".{target.name}.")
+                    and path.endswith(".tmp")
+                    and not swapped
+                ):
+                    ours = list(root.glob(".voice.*.tmp"))[0]
+                    ours.rename(parked)
+                    replacement = root / ours.name
+                    replacement.mkdir(mode=0o700)
+                    (replacement / "foreign-marker").write_text("keep")
+                    adopted_inodes.append(replacement.stat().st_ino)
+                    swapped.append(True)
+                return original_open(path, flags, mode, dir_fd=dir_fd)
 
             with mock.patch(
-                "configure_local._verify_darwin_no_additional_acl",
-                side_effect=reject_first_regular_file,
+                "configure_local.os.open",
+                side_effect=adopt_directory_with_foreign_entry,
             ):
-                with self.assertRaisesRegex(ValueError, "synthetic file ACL"):
+                with self.assertRaises(_CleanupIncomplete):
                     configure(target)
-            self.assertGreaterEqual(regular_file_checks, 1)
-            self.assertFalse(target.exists())
-            # Exact-owned rollback removes every generated file and the staging
-            # directory it proved it created; no residue is left behind.
-            self.assertEqual(len(list(Path(temp).glob(".voice.*.tmp"))), 0)
 
-    def test_cli_symlink_output_is_rejected_without_writing_outside_target(self):
+            self.assertEqual(len(swapped), 1)
+            self.assertFalse(target.exists())
+            residues = list(root.glob(".voice.*.tmp"))
+            self.assertEqual(len(residues), 1)
+            self.assertEqual(residues[0].stat().st_ino, adopted_inodes[0])
+            # The foreign payload survives; only this run's own credentials were
+            # rolled back, and the foreign inode was never rmdir'd.
+            self.assertEqual(sorted(item.name for item in residues[0].iterdir()), ["foreign-marker"])
+            self.assertEqual((residues[0] / "foreign-marker").read_text(), "keep")
+
+    def test_parent_privacy_regression_before_publication_is_refused(self):
+        """The trusted-parent precondition is re-verified at publication (D2).
+
+        README 9 claims the trusted-parent precondition (0700, current-user
+        owned, no additional ACL) is re-derived immediately before the exclusive
+        publication rename.  This fixture makes the parent 0755 after the last
+        credential write and before publication, so only that re-verification
+        can stop the run.
+        """
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
+            parent = root / "parent"
+            parent.mkdir(mode=0o700)
+            target = parent / "voice"
+            real_write_private = configure_local.write_private
+            written = []
+
+            def loosen_parent_after_last_write(
+                path, text, *, dir_fd=None, on_acquired=None
+            ):
+                result = real_write_private(
+                    path, text, dir_fd=dir_fd, on_acquired=on_acquired
+                )
+                written.append(Path(path).name)
+                if len(written) == len(configure_local._GENERATED_NAMES):
+                    parent.chmod(0o755)
+                return result
+
+            with mock.patch(
+                "configure_local.write_private",
+                side_effect=loosen_parent_after_last_write,
+            ):
+                with self.assertRaisesRegex(
+                    ValueError,
+                    "Configuration directory privacy could not be verified",
+                ):
+                    configure(target)
+
+            self.assertEqual(written, list(configure_local._GENERATED_NAMES))
+            self.assertFalse(target.exists())
+            # Nothing was published and the exact-owned rollback completed.
+            self.assertEqual(list(parent.glob(".voice.*.tmp")), [])
+
+    def test_binding_recheck_after_the_ownership_gate_blocks_publication(self):
+        """The pre-rename binding check is load-bearing on its own (D3).
+
+        The staging name is replaced with a different directory in the window
+        between the ownership gate and the pre-rename binding check, so only
+        that check can refuse: the ownership gate has already returned, the
+        descriptor and the identity recorded at open are unchanged, and the
+        entry set is still exactly what this run acquired.  Publication must
+        never be attempted.
+        """
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            parked = root / "parked-staging"
+            original_require = configure_local._require_owned_staging
+            original_rename = configure_local._rename_exclusive
+            renames = []
+            replaced = []
+
+            def require_then_replace(*args, **kwargs):
+                result = original_require(*args, **kwargs)
+                ours = list(root.glob(".voice.*.tmp"))[0]
+                ours.rename(parked)
+                replacement = root / ours.name
+                replacement.mkdir(mode=0o700)
+                (replacement / "foreign-marker").write_text("keep")
+                replaced.append(replacement)
+                return result
+
+            def record_rename(parent_fd, staging_name, output_name):
+                renames.append((staging_name, output_name))
+                return original_rename(parent_fd, staging_name, output_name)
+
+            with mock.patch(
+                "configure_local._require_owned_staging",
+                side_effect=require_then_replace,
+            ):
+                with mock.patch(
+                    "configure_local._rename_exclusive", side_effect=record_rename
+                ):
+                    with self.assertRaises(_CleanupIncomplete):
+                        configure(target)
+
+            self.assertEqual(len(replaced), 1)
+            # The rename never ran, so nothing was published even though the
+            # swap happened after the ownership evidence was re-derived.
+            self.assertEqual(renames, [])
+            self.assertFalse(target.exists())
+            self.assertEqual(
+                sorted(item.name for item in replaced[0].iterdir()), ["foreign-marker"]
+            )
+            # The replaced inode is no longer reachable by name, so it is
+            # preserved rather than rmdir'd on an assumption; the credentials
+            # this run acquired were removed from it.
+            self.assertTrue(parked.is_dir())
+            self.assertEqual(list(parked.iterdir()), [])
+
+    def test_unlistable_staging_directory_is_refused_and_preserved(self):
+        """The fail-closed arm of the entry-set gate (D4).
+
+        `_unowned_staging_entries` returns None when the pinned directory cannot
+        be listed, and None means the entry set publication would rename is
+        unknown.  That decision must be the refusal branch and must not be
+        confused with the empty branch that publishes, and the staged directory
+        must survive it: an entry set that cannot be established is not an entry
+        set this run may delete.
+        """
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            original_listdir = configure_local.os.listdir
+            original_rename = configure_local._rename_exclusive
+            renames = []
+
+            def deny_staging_listing(path):
+                if isinstance(path, int):
+                    raise OSError("synthetic listing failure")
+                return original_listdir(path)
+
+            def record_rename(parent_fd, staging_name, output_name):
+                renames.append((staging_name, output_name))
+                return original_rename(parent_fd, staging_name, output_name)
+
+            with mock.patch(
+                "configure_local.os.listdir", side_effect=deny_staging_listing
+            ):
+                with mock.patch(
+                    "configure_local._rename_exclusive", side_effect=record_rename
+                ):
+                    with self.assertRaises(_CleanupIncomplete):
+                        configure(target)
+
+            self.assertEqual(renames, [])
+            self.assertFalse(target.exists())
+            residues = list(root.glob(".voice.*.tmp"))
+            self.assertEqual(len(residues), 1)
+            # Nothing was published and the staged directory was not removed:
+            # its credentials are rolled back, the directory stays for manual
+            # cleanup.
+            self.assertEqual(list(residues[0].iterdir()), [])
+
+    def test_acquired_name_swapped_for_an_outside_symlink_blocks_publication(self):
+        """An acquired name may not resolve through a symlink (D5).
+
+        keys.yaml is moved out of the staging directory and replaced by a
+        symlink to the file it became.  The inode is still the one this run
+        acquired, so an identity check that follows the symlink would accept it
+        and publish a private directory whose keys.yaml is a link into a
+        location this run does not control.  The entry check must read the entry
+        itself, not its target.
+        """
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
             outside = root / "outside"
-            outside.mkdir()
-            redirected = root / "redirected"
-            redirected.symlink_to(outside, target_is_directory=True)
+            outside.mkdir(mode=0o700)
+            real_write_private = configure_local.write_private
+            written = []
+            linked = []
 
-            completed = self._run_cli("--output", str(redirected / "voice"))
-            self.assertNotEqual(completed.returncode, 0)
-            self.assertFalse((outside / "voice").exists())
-            self.assertNotIn("ApiSecret", completed.stdout + completed.stderr)
+            def write_then_link(path, text, *, dir_fd=None, on_acquired=None):
+                result = real_write_private(
+                    path, text, dir_fd=dir_fd, on_acquired=on_acquired
+                )
+                written.append(Path(path).name)
+                if len(written) == len(configure_local._GENERATED_NAMES):
+                    staging = list(root.glob(".voice.*.tmp"))[0]
+                    os.rename(staging / "keys.yaml", outside / "keys.yaml")
+                    os.symlink(str(outside / "keys.yaml"), staging / "keys.yaml")
+                    linked.append(outside / "keys.yaml")
+                return result
 
-    def test_cli_errors_are_sanitized_and_actionable(self):
-        with tempfile.TemporaryDirectory() as temp:
-            private_marker = "SYNTHETIC_PRIVATE_PATH_" + "x" * 240
-            completed = self._run_cli("--output", str(Path(temp) / private_marker))
-            output = completed.stdout + completed.stderr
-            self.assertNotEqual(completed.returncode, 0)
-            self.assertNotIn(private_marker, output)
-            self.assertNotIn("Traceback", output)
-            self.assertTrue(
-                "check the private parent and permissions" in output
-                or "private cleanup is incomplete" in output
-                or "Configuration output name is too long" in output
-            )
+            with mock.patch(
+                "configure_local.write_private", side_effect=write_then_link
+            ):
+                with self.assertRaises(_CleanupIncomplete):
+                    configure(target)
 
-    def test_cli_failure_does_not_print_generated_credentials(self):
-        with tempfile.TemporaryDirectory() as temp:
-            completed = self._run_cli(
-                "--output", str(Path(temp) / "voice"), "--node-ip", "192.0.2.44"
-            )
-            self.assertNotEqual(completed.returncode, 0)
-            self.assertNotIn("ApiSecret", completed.stdout + completed.stderr)
-            self.assertNotIn("cg", completed.stdout + completed.stderr)
+            self.assertEqual(len(linked), 1)
+            self.assertFalse(target.exists())
+            residues = list(root.glob(".voice.*.tmp"))
+            self.assertEqual(len(residues), 1)
+            # The substituted link is the only thing left in the staging
+            # directory: an entry whose identity no longer holds is never
+            # unlinked and never published.
+            self.assertEqual(sorted(item.name for item in residues[0].iterdir()), ["keys.yaml"])
+            self.assertTrue((residues[0] / "keys.yaml").is_symlink())
+            self.assertTrue(linked[0].is_file())
+            self.assertFalse(linked[0].is_symlink())
 
-    @staticmethod
-    def _run_cli(*args):
-        return subprocess.run(
-            [sys.executable, str(Path(__file__).with_name("configure_local.py")), *args],
-            capture_output=True,
-            text=True,
-            check=False,
+    def test_legacy_and_boundary_suites_are_separately_selectable(self):
+        """Enforce the split into runnable selectors (D6).
+
+        The two classes are the selector: legacy fixtures stay on
+        LocalVoiceConfigurationTests and the staging-ownership boundary
+        fixtures on StagingPublicationBoundaryTests, so each set can be run
+        alone with `python3 -m unittest test_configure_local.<class>` and the
+        boundary count cannot drift into the legacy total unnoticed.
+        """
+        legacy = unittest.defaultTestLoader.loadTestsFromTestCase(
+            LocalVoiceConfigurationTests
         )
+        boundary = unittest.defaultTestLoader.loadTestsFromTestCase(
+            StagingPublicationBoundaryTests
+        )
+        self.assertEqual(legacy.countTestCases(), _LEGACY_FIXTURE_TOTAL)
+        boundary_names = {case._testMethodName for case in boundary}
+        for name in _BOUNDARY_FIXTURES:
+            self.assertIn(name, boundary_names)
+        self.assertGreaterEqual(boundary.countTestCases(), len(_BOUNDARY_FIXTURES))
 
 
 if __name__ == "__main__":

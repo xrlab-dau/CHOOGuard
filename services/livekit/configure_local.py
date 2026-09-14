@@ -36,6 +36,27 @@ class _StagingOwnershipUnproven(_OutputPathChanged):
     """
 
 
+class _StagingEntrySetUnproven(_OutputPathChanged):
+    """The pinned staging directory could not be enumerated.
+
+    Publication renames the whole directory, so the entry set is part of what
+    the run must account for.  A directory that cannot be listed at all leaves
+    that set unknown: the run refuses and preserves the directory for manual
+    cleanup instead of removing it on the strength of the inode alone.
+    """
+
+
+class _GeneratedOutputNotPrivate(ValueError):
+    """A file this run created failed its private-permission verification.
+
+    ``write_private`` creates the file ``0600`` and current-user-owned, then
+    re-verifies those properties through the descriptor it still holds.  A
+    failure here means something outside this run changed the file after
+    creation, or the privacy backend cannot vouch for it.  The run refuses and
+    does not delete the staging directory it can no longer vouch for.
+    """
+
+
 def _open_flags():
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
     if hasattr(os, "O_NOFOLLOW"):
@@ -208,12 +229,19 @@ def _verify_private_file(path, *, dir_fd=None, expected_identity=None):
         if expected_identity is not None and _file_identity(stat_result) != expected_identity:
             raise _OutputPathChanged("Configuration file path changed during creation")
         if not stat.S_ISREG(stat_result.st_mode):
-            raise ValueError("Configuration file is not a regular file")
+            raise _GeneratedOutputNotPrivate("Configuration file is not a regular file")
         if stat_result.st_mode & 0o777 != 0o600:
-            raise ValueError("Configuration file privacy could not be verified")
+            raise _GeneratedOutputNotPrivate(
+                "Configuration file privacy could not be verified"
+            )
         if stat_result.st_uid != os.getuid():
-            raise ValueError("Configuration file owner could not be verified")
-        _verify_darwin_no_additional_acl(file_fd)
+            raise _GeneratedOutputNotPrivate(
+                "Configuration file owner could not be verified"
+            )
+        try:
+            _verify_darwin_no_additional_acl(file_fd)
+        except ValueError as exc:
+            raise _GeneratedOutputNotPrivate(str(exc)) from exc
     finally:
         if file_fd is not None:
             os.close(file_fd)
@@ -314,6 +342,37 @@ def _owned_cleanup_target(ownership, parent_fd, cleanup_name, directory_fd):
         return False
     current = _prove_staging_ownership(parent_fd, cleanup_name, directory_fd)
     return current is not None and current.identity == ownership.identity
+
+
+def _private_boundary_was_touched(error, parent_fd, output_name, published):
+    """Report whether this failure shows the private boundary was touched.
+
+    Directory removal is exact-owned: it is decided by inode evidence alone.
+    Two failures are the exception, because in both the private output this run
+    staged is demonstrably no longer only its own:
+
+    * ``_GeneratedOutputNotPrivate`` - a file this run created ``0600`` and
+      current-user-owned no longer holds that privacy.
+    * ``_StagingEntrySetUnproven`` - the pinned directory could not be listed,
+      so the entry set publication would rename is unknown.
+
+    A name that occupies the publication target although this run never
+    published is the same kind of evidence: ``_validate_output`` proved the
+    output name absent before staging began, so that name was created while
+    this run held staged credentials.  In all three cases the run stops,
+    unlinks only the file identities it acquired, and preserves the directory
+    for manual reconciliation instead of deleting the last artifact it can
+    still account for.
+    """
+    if isinstance(error, (_GeneratedOutputNotPrivate, _StagingEntrySetUnproven)):
+        return True
+    if published or not output_name or parent_fd is None:
+        return False
+    try:
+        os.stat(output_name, dir_fd=parent_fd, follow_symlinks=False)
+    except OSError:
+        return False
+    return True
 
 
 def _unowned_staging_entries(directory_fd, owned_files):
@@ -528,7 +587,12 @@ key_file: /run/chooguard/keys.yaml
         # injected after the last write, or an acquired name swapped for other
         # bytes, must not be published as this run's private configuration.
         unowned = _unowned_staging_entries(directory_fd, owned_files)
-        if unowned is None or unowned:
+        if unowned is None:
+            raise _StagingEntrySetUnproven(
+                "Configuration staging directory could not be enumerated; "
+                "refusing to publish it"
+            )
+        if unowned:
             raise _OutputPathChanged(
                 "Configuration staging directory holds entries this run did not create; "
                 "refusing to publish them"
@@ -545,9 +609,18 @@ key_file: /run/chooguard/keys.yaml
         if directory_fd is not None:
             cleanup_error = _cleanup_owned_files(directory_fd, owned_files)
             cleanup_name = output.name if published else staging_name
+            if cleanup_error is None and _private_boundary_was_touched(
+                exc, parent_fd, output.name, published
+            ):
+                cleanup_error = OSError(
+                    "the private output boundary was touched outside this run; "
+                    "manual cleanup required"
+                )
             # Exact-owned rollback: the directory is removed only while it is
-            # still the inode this call proved it created.  A replaced or
-            # unproven inode is preserved for manual cleanup instead.
+            # still the inode this call proved it created and this run can still
+            # account for everything it staged.  A replaced, unproven or
+            # externally touched directory is preserved for manual cleanup
+            # instead.
             can_remove_directory = _owned_cleanup_target(
                 ownership, parent_fd, cleanup_name, directory_fd
             )
