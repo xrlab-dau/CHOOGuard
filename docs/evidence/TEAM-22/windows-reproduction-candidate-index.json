@@ -1,0 +1,992 @@
+{
+  "schemaVersion": 1,
+  "artifact": "artifact:90:windows-reproduction:candidate",
+  "workId": "TEAM-22",
+  "issue": 90,
+  "phase": "candidate",
+  "overwritePolicy": "Append or replace this versioned index only with a new manifest entry; never overwrite or fabricate a prior raw execution receipt.",
+  "entries": [
+    {
+      "runId": "team22-20260913T193658Z",
+      "capturedAt": "2026-09-13T19:36:58Z",
+      "machineLabel": "laptop-A",
+      "baseline": {
+        "selectedInput": "or:90:windows-baseline -> artifact:69:historical-unchanged-checkout:accept",
+        "ref": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "checkout": "fresh git worktree outside the working checkout, detached at the ref",
+        "lfs": {
+          "files": 34,
+          "pointersLeft": 0,
+          "fsck": "OK"
+        },
+        "trackedDirtyBeforeUnity": 0
+      },
+      "capability": {
+        "capturedAt": "2026-09-14",
+        "machineLabel": "laptop-A",
+        "os": "Microsoft Windows 11 Education 10.0.26200 (build 26200) 64-bit",
+        "cpu": "Intel(R) Core(TM) Ultra 5 125H, 14 cores / 18 threads",
+        "ramGiB": 15.6,
+        "gpu": "Intel(R) Arc(TM) Graphics (integrated), driver 32.0.101.8424",
+        "display": "2880x1800 @120Hz",
+        "power": "AC connected (Win32_Battery.BatteryStatus=2)",
+        "git": "2.48.1.windows.1",
+        "gitLfs": "3.6.1",
+        "unity": {
+          "version": "6000.3.23f1_09d2ecc7fb28",
+          "path": "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe",
+          "authenticode": "Valid, CN=Unity Technologies SF",
+          "licenseStopDate": "2026-10-13T19:16:04"
+        },
+        "checkout": {
+          "ref": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "kind": "git worktree, detached, outside the working checkout",
+          "lfsFiles": 34,
+          "lfsPointersLeft": 0,
+          "lfsFsck": "OK",
+          "trackedDirtyBeforeUnity": 0
+        }
+      },
+      "sources": {
+        "ref": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+        "sha256": {
+          "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationDemoSceneBuilder.cs": "93ad51dc1c820604b7061a59b5fdf451267dffcec817ee595fdbd1811eef0a05",
+          "school/windows-validation/SchoolWindowsValidationDriver.cs": "922d7e652a07d4d8667e37d223bbdb869280919d6f022d8e4293881d957b56d3",
+          "school/windows-validation/summarize_profile.py": "7080dde89843cdf69f172daa62a2fe48a036d2324845a8f1f27ffea5a0a00a46",
+          "school/windows-validation/test_profile_summary.py": "7166901b540ee299501f153673a5860e8dd4b5d9594900abe3bb7dec289873b8",
+          "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/StationWorldPlayTests.cs": "cbc243df81c5f4ec5bb7c3f20377ba4106f2312d4cedb597bc42379dbda145b2",
+          "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/DemoGeneratedDrillTests.cs": "6c84d4ebac04235cd0c960dcd9a681c46689e4c3092a56addd77948934ae7888",
+          "Packages/manifest.json": "b341ea5fae45641a708b79ce548304de3c7f9dc0ae4e2b11d9453d181bfaa84b",
+          "Packages/packages-lock.json": "a535ee3e259ae8c352e998178253568d4a9c5b15da83e808013ed9c1c6cf09b6",
+          "ProjectSettings/ProjectVersion.txt": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66"
+        }
+      },
+      "steps": [
+        {
+          "id": "editmode",
+          "check": "brief command (candidate/accept)",
+          "argv": "argv: \"C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe\" -batchmode -projectPath \"<CHECKOUT>\" -runTests -testPlatform EditMode -testResults \"<NEW_RUN>/EditMode.xml\" -logFile \"<NEW_RUN>/EditMode.log\"",
+          "startedAt": "2026-09-13T19:36:58Z",
+          "exitCode": 0,
+          "wallSeconds": 69,
+          "junit": {
+            "result": "Skipped:Ignored",
+            "total": 118,
+            "passed": 117,
+            "failed": 0,
+            "skipped": 1,
+            "inconclusive": 0,
+            "durationSeconds": 45.732,
+            "notPassed": [
+              {
+                "name": "ChooGuard.Foundation.Demo.Tests.ReconstructionReviewTests.SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
+                "result": "Skipped",
+                "reason": "Local reconstruction output is intentionally not Git-tracked."
+              }
+            ],
+            "cases": null
+          }
+        },
+        {
+          "id": "playmode",
+          "check": "inspection: PlayMode on the same baseline",
+          "argv": "argv: \"C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe\" -batchmode -projectPath \"<CHECKOUT>\" -runTests -testPlatform PlayMode -testResults \"<NEW_RUN>/PlayMode.xml\" -logFile \"<NEW_RUN>/PlayMode.log\"",
+          "startedAt": "2026-09-13T19:38:46Z",
+          "exitCode": 0,
+          "wallSeconds": 13,
+          "junit": {
+            "result": "Passed",
+            "total": 16,
+            "passed": 16,
+            "failed": 0,
+            "skipped": 0,
+            "inconclusive": 0,
+            "durationSeconds": 6.1,
+            "notPassed": [],
+            "cases": [
+              "ChooGuard.Foundation.Demo.Tests.DemoEvacuationTests.FloorGapIsUnreachableAndDuplicateCrowdCannotMasqueradeAsSixPeople",
+              "ChooGuard.Foundation.Demo.Tests.DemoEvacuationTests.FollowerRoutesAroundWallAndWaitsOnlyAfterRecruitmentAndArrival",
+              "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.AssemblyBeforeActionOrOnDifferentFloorCannotProduceResults",
+              "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.AssemblyGuidanceFollowsAcceptedActionAndResets",
+              "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.EveryRoleCanPlayAndRestartWithOnlyItsOwnPropCompleted",
+              "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.PauseUnlocksCursorAndBlocksInteractionAndAssembly",
+              "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.WrongDistantOccludedAndUnregisteredPropsNeverCompleteQuest",
+              "ChooGuard.Foundation.Demo.Tests.DemoGeneratedDrillTests.ThreeDrillsAcrossFiveRolesRequireOrderedObjectsAndSixWalkingFollowers",
+              "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.CompletedPropRestoresMaterialAndMovingPartOnReset",
+              "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.CursorCaptureIgnoresStaleLookThenAllowsNormalLook",
+              "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.DetailedHousingKeepsItsMaterialWhenStatusLightChanges",
+              "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.InstantiatedHandsKeepTheirSerializedViewPose",
+              "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.RaycastFindsOnlyFirstVisibleTargetInsideReach",
+              "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.TeleportClearsPitchAndRestoresSpawnWithControllerEnabled",
+              "ChooGuard.Foundation.Demo.Tests.StationWorldPlayTests.OrdinaryPopulationMovesAndUnseenIncidentHasNoSolutionGuide",
+              "ChooGuard.Foundation.Demo.Tests.StationWorldPlayTests.RandomIncidentVariationsAndTwoConsecutiveEpisodesRecoverWithoutTeleporting"
+            ]
+          },
+          "checkoutSideEffect": {
+            "files": 16,
+            "what": "Generated FoundationDemo materials re-serialized with _EMISSION keyword",
+            "patchSha256": "bd788135c4fe11b96b9156dc7e622570418ef16ea55ce790d20e01e0995b4a29",
+            "handling": "patch retained; isolated checkout restored before the build"
+          }
+        },
+        {
+          "id": "desktop-build",
+          "check": "inspection: desktop player build",
+          "note": "brief names BuildDesktopPlayerBatch, which does not exist at the baseline; BuildDesktopPlayerMenu is the baseline entry point. It catches exceptions, so success = log marker + executable, not exit code alone.",
+          "argv": "argv: \"C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe\" -batchmode -quit -projectPath \"<CHECKOUT>\" -executeMethod ChooGuard.Foundation.Demo.Editor.FoundationDemoSceneBuilder.BuildDesktopPlayerMenu -logFile \"<NEW_RUN>/Build.log\"",
+          "startedAt": "2026-09-13T19:40:03Z",
+          "exitCode": 0,
+          "wallSeconds": 50,
+          "successMarker": true,
+          "buildFiles": 156,
+          "buildFileManifestSha256": "a037c4afb97263ad4531fed321923b906c8fa627f0626fbd7e52acc64b1ae37c",
+          "executableSha256": "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+          "checkoutSideEffect": {
+            "files": 6,
+            "what": "Builder regenerated FoundationDemo.unity and 5 prefabs (equal insert/delete counts)",
+            "patchSha256": "46b7a0b602e2d602935ec9245e935e694fdcbf9124ed71f096e7e345913a30d5"
+          }
+        },
+        {
+          "id": "player-start",
+          "check": "standalone start, window mode",
+          "argv": "argv: ChooGuardFoundation.exe -screen-fullscreen 0 -screen-width 1280 -screen-height 720 -logFile <NEW_RUN>/Player.log (window mode, not batchmode; stopped after 20s)",
+          "process": {
+            "Responding": true,
+            "WS_MiB": 743,
+            "MainWindowTitle": "CHOOguard Foundation"
+          },
+          "observedSeconds": 20,
+          "logErrors": [],
+          "logNotes": [
+            "d3d12: failed to query info queue interface (0x80004002) - debug info queue unavailable in a release player"
+          ]
+        },
+        {
+          "id": "profile-summarizer-tests",
+          "exit": "OK",
+          "output": [
+            "Ran 9 tests in 0.001s",
+            "",
+            "OK"
+          ]
+        },
+        {
+          "id": "instrumented-build-v1",
+          "argv": "argv: \"C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe\" -batchmode -quit -projectPath \"<CHECKOUT>\" -executeMethod SchoolWindowsValidationBuilder.Build --school-build-output \"<BUILD_OUT>\" -logFile \"<NEW_RUN>/InstrumentedBuild.log\"",
+          "exitCode": 0,
+          "driverSha256": "922d7e652a07d4d8667e37d223bbdb869280919d6f022d8e4293881d957b56d3",
+          "buildFileManifestSha256": "3e14a913c3dace20360b21a31e17da26f6697a41f842fbb31366526f68e05742"
+        },
+        {
+          "id": "profile-pilot-180s-v1",
+          "verdict": "rejected",
+          "argv": "argv: SchoolValidation.exe -screen-fullscreen 0 -screen-width 1280 -screen-height 720 --school-duration-seconds 180 --school-output <NEW_RUN>/profile -logFile <NEW_RUN>/Player.log (window mode, not batchmode)",
+          "exitCode": 0,
+          "profile": {
+            "result": {
+              "status": "completed",
+              "graphics": "Direct3D12",
+              "requestedSeconds": 180.0,
+              "elapsedSeconds": 180.0071144,
+              "width": 1280,
+              "height": 720,
+              "vSyncCount": 1,
+              "targetFrameRate": -1,
+              "frames": 21582,
+              "cameraRenderCallbacks": 21582,
+              "batchMode": false,
+              "shifts": 2,
+              "incidentOnsets": 2,
+              "observedCases": [
+                "central/GuidanceOutage",
+                "central/PassageObstruction"
+              ],
+              "errors": [],
+              "manualInputVerified": false,
+              "hmdVerified": false
+            },
+            "samples": 180,
+            "zeroMemorySamples": {
+              "working_set_bytes": 180,
+              "private_bytes": 180,
+              "unity_allocated_bytes": 0
+            },
+            "windows": [
+              {
+                "fromSeconds": 60,
+                "toSeconds": 180,
+                "samples": 121,
+                "fpsMedian": 120.0,
+                "fpsMin": 116.37,
+                "p95FrameMsMax": 8.9,
+                "workingSetMiB": [
+                  0.0,
+                  0.0
+                ],
+                "privateMiB": [
+                  0.0,
+                  0.0
+                ],
+                "unityAllocatedMiB": [
+                  84.8,
+                  86.7
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              }
+            ],
+            "frameMaxOver33ms": 0
+          },
+          "summarizer": {
+            "accepted": false,
+            "error": "ValueError: Memory counters are unavailable or invalid"
+          },
+          "cause": "Process.WorkingSet64 and PrivateMemorySize64 return 0 in the Unity 6000.3.23f1 Mono Windows player; rendered-frame conditions were already met."
+        },
+        {
+          "id": "instrumented-build-v2",
+          "driverPatch": "validation copy only: read WorkingSetSize/PrivateUsage with kernel32 K32GetProcessMemoryInfo; repository driver unchanged",
+          "driverPatchSha256": "368bf313ed9467fe8534eaff63ed2017abbcff6777c9a3cdc8b86539d232eac2",
+          "patchedDriverSha256": "7bb010e207b9a8d9373260d97252eb109cccaf4d8e461e82fdd3df5b12c2f64a",
+          "buildFileManifestSha256": "e85c03deb83f68e2347f51404cfb0e9f07336ba048aac3d0e6f7d375f739675d",
+          "executableSha256": "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+          "checkoutSideEffect": "SchoolWindowsValidationBuilder sets PlayerSettings.productName (ProjectSettings.asset) in the isolated checkout"
+        },
+        {
+          "id": "profile-pilot-180s-v2",
+          "verdict": "accepted",
+          "argv": "argv: SchoolValidation.exe -screen-fullscreen 0 -screen-width 1280 -screen-height 720 --school-duration-seconds 180 --school-output <NEW_RUN>/profile -logFile <NEW_RUN>/Player.log ; os-sampler.ps1 -Name SchoolValidation (1s)",
+          "startedAt": "2026-09-13T19:49:04Z",
+          "exitCode": 0,
+          "profile": {
+            "result": {
+              "status": "completed",
+              "graphics": "Direct3D12",
+              "requestedSeconds": 180.0,
+              "elapsedSeconds": 180.00673999999998,
+              "width": 1280,
+              "height": 720,
+              "vSyncCount": 1,
+              "targetFrameRate": -1,
+              "frames": 21588,
+              "cameraRenderCallbacks": 21588,
+              "batchMode": false,
+              "shifts": 2,
+              "incidentOnsets": 2,
+              "observedCases": [
+                "central/GuidanceOutage",
+                "central/PassageObstruction"
+              ],
+              "errors": [],
+              "manualInputVerified": false,
+              "hmdVerified": false
+            },
+            "samples": 180,
+            "zeroMemorySamples": {
+              "working_set_bytes": 0,
+              "private_bytes": 0,
+              "unity_allocated_bytes": 0
+            },
+            "windows": [
+              {
+                "fromSeconds": 60,
+                "toSeconds": 180,
+                "samples": 121,
+                "fpsMedian": 120.0,
+                "fpsMin": 117.99,
+                "p95FrameMsMax": 8.97,
+                "workingSetMiB": [
+                  701.8,
+                  718.5
+                ],
+                "privateMiB": [
+                  771.6,
+                  787.2
+                ],
+                "unityAllocatedMiB": [
+                  81.6,
+                  84.6
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              }
+            ],
+            "frameMaxOver33ms": 0,
+            "externalOsCrossCheck": {
+              "sampler": "PowerShell Get-Process every ~1 s (os-sampler.ps1)",
+              "rows": 176,
+              "notResponding": 0,
+              "workingSetMedianMiB": {
+                "driver": 711.9,
+                "external": 712.0,
+                "ratio": 1.0
+              },
+              "privateMedianMiB": {
+                "driver": 781.1,
+                "external": 781.2,
+                "ratio": 0.9999
+              }
+            }
+          },
+          "summarizer": {
+            "accepted": true,
+            "summary": {
+              "elapsed_seconds": 180.00673999999998,
+              "warmup_seconds": 60.0,
+              "samples_after_warmup": 121,
+              "mean_camera_callbacks_per_second": 119.92884266444692,
+              "median_one_second_update_fps": 119.997,
+              "lowest_one_second_update_fps": 117.986,
+              "highest_one_second_p95_frame_ms": 8.966,
+              "peak_working_set_mib": 718.48828125,
+              "peak_private_mib": 787.16796875,
+              "peak_unity_allocated_mib": 84.57451248168945,
+              "working_set_change_after_warmup_mib": -2.33203125,
+              "limits": "Camera render callbacks and CPU frame intervals, not hardware presentation or GPU-only timing. Instrumented unattended workload; no manual/HMD acceptance or leak-free claim."
+            }
+          }
+        },
+        {
+          "id": "profile-long-1800s",
+          "verdict": "accepted",
+          "argv": "argv: SchoolValidation.exe -screen-fullscreen 0 -screen-width 1280 -screen-height 720 --school-duration-seconds 1800 --school-output <NEW_RUN>/profile -logFile <NEW_RUN>/Player.log ; os-sampler.ps1 -Name SchoolValidation (1s). Condition: user present, 'start now' (may do light work)",
+          "startedAt": "2026-09-13T20:07:37Z",
+          "exitCode": 0,
+          "condition": "user present at the laptop and allowed light concurrent use; window not minimized",
+          "profile": {
+            "result": {
+              "status": "completed",
+              "graphics": "Direct3D12",
+              "requestedSeconds": 1800.0,
+              "elapsedSeconds": 1800.008787,
+              "width": 1280,
+              "height": 720,
+              "vSyncCount": 1,
+              "targetFrameRate": -1,
+              "frames": 213141,
+              "cameraRenderCallbacks": 213141,
+              "batchMode": false,
+              "shifts": 15,
+              "incidentOnsets": 15,
+              "observedCases": [
+                "central/GuidanceOutage",
+                "central/PassageObstruction",
+                "east/GuidanceOutage",
+                "east/PassageObstruction",
+                "west/GuidanceOutage",
+                "west/PassageObstruction"
+              ],
+              "errors": [],
+              "manualInputVerified": false,
+              "hmdVerified": false
+            },
+            "samples": 1791,
+            "zeroMemorySamples": {
+              "working_set_bytes": 0,
+              "private_bytes": 0,
+              "unity_allocated_bytes": 0
+            },
+            "windows": [
+              {
+                "fromSeconds": 60,
+                "toSeconds": 360,
+                "samples": 299,
+                "fpsMedian": 120.0,
+                "fpsMin": 117.03,
+                "p95FrameMsMax": 9.07,
+                "workingSetMiB": [
+                  682.7,
+                  727.6
+                ],
+                "privateMiB": [
+                  774.5,
+                  796.5
+                ],
+                "unityAllocatedMiB": [
+                  84.0,
+                  85.9
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              },
+              {
+                "fromSeconds": 360,
+                "toSeconds": 660,
+                "samples": 298,
+                "fpsMedian": 120.0,
+                "fpsMin": 78.34,
+                "p95FrameMsMax": 16.96,
+                "workingSetMiB": [
+                  682.6,
+                  701.7
+                ],
+                "privateMiB": [
+                  774.9,
+                  793.4
+                ],
+                "unityAllocatedMiB": [
+                  84.3,
+                  86.2
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              },
+              {
+                "fromSeconds": 660,
+                "toSeconds": 960,
+                "samples": 298,
+                "fpsMedian": 119.99,
+                "fpsMin": 79.0,
+                "p95FrameMsMax": 17.1,
+                "workingSetMiB": [
+                  675.9,
+                  703.0
+                ],
+                "privateMiB": [
+                  767.2,
+                  794.5
+                ],
+                "unityAllocatedMiB": [
+                  84.3,
+                  86.2
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              },
+              {
+                "fromSeconds": 960,
+                "toSeconds": 1260,
+                "samples": 299,
+                "fpsMedian": 120.0,
+                "fpsMin": 71.45,
+                "p95FrameMsMax": 17.08,
+                "workingSetMiB": [
+                  683.2,
+                  707.6
+                ],
+                "privateMiB": [
+                  773.6,
+                  798.0
+                ],
+                "unityAllocatedMiB": [
+                  84.4,
+                  86.3
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              },
+              {
+                "fromSeconds": 1260,
+                "toSeconds": 1560,
+                "samples": 298,
+                "fpsMedian": 119.99,
+                "fpsMin": 67.87,
+                "p95FrameMsMax": 17.09,
+                "workingSetMiB": [
+                  681.5,
+                  709.2
+                ],
+                "privateMiB": [
+                  771.0,
+                  798.9
+                ],
+                "unityAllocatedMiB": [
+                  84.4,
+                  86.3
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              },
+              {
+                "fromSeconds": 1560,
+                "toSeconds": 1800,
+                "samples": 240,
+                "fpsMedian": 120.0,
+                "fpsMin": 85.3,
+                "p95FrameMsMax": 16.97,
+                "workingSetMiB": [
+                  692.9,
+                  710.1
+                ],
+                "privateMiB": [
+                  782.5,
+                  799.7
+                ],
+                "unityAllocatedMiB": [
+                  84.4,
+                  86.1
+                ],
+                "phases": [
+                  "Incident",
+                  "Ordinary"
+                ]
+              }
+            ],
+            "frameMaxOver33ms": 1,
+            "externalOsCrossCheck": {
+              "sampler": "PowerShell Get-Process every ~1 s (os-sampler.ps1)",
+              "rows": 1725,
+              "notResponding": 0,
+              "workingSetMedianMiB": {
+                "driver": 698.0,
+                "external": 697.9,
+                "ratio": 1.0001
+              },
+              "privateMedianMiB": {
+                "driver": 787.7,
+                "external": 787.6,
+                "ratio": 1.0001
+              }
+            }
+          },
+          "summarizer": {
+            "accepted": true,
+            "summary": {
+              "elapsed_seconds": 1800.008787,
+              "warmup_seconds": 60.0,
+              "samples_after_warmup": 1732,
+              "mean_camera_callbacks_per_second": 118.41108862320237,
+              "median_one_second_update_fps": 119.996,
+              "lowest_one_second_update_fps": 67.874,
+              "highest_one_second_p95_frame_ms": 17.1,
+              "peak_working_set_mib": 727.578125,
+              "peak_private_mib": 799.66015625,
+              "peak_unity_allocated_mib": 86.34995651245117,
+              "working_set_change_after_warmup_mib": -23.29296875,
+              "limits": "Camera render callbacks and CPU frame intervals, not hardware presentation or GPU-only timing. Instrumented unattended workload; no manual/HMD acceptance or leak-free claim."
+            }
+          }
+        },
+        {
+          "id": "manual-check",
+          "check": "additional operation check outside the work order",
+          "operator": "human (user) with keyboard and mouse",
+          "argv": "argv: ChooGuardFoundation.exe -screen-fullscreen 0 -screen-width 1600 -screen-height 900 -logFile <NEW_RUN>/Player.log ; os-sampler.ps1 -Name ChooGuardFoundation (1s). Operator: human (user) with keyboard/mouse; agent provided written procedure only.",
+          "startedAt": "2026-09-14T03:32:59Z",
+          "endedAt": "2026-09-14T03:38:03Z",
+          "exitCode": 0,
+          "executableSha256": "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+          "result": "Short manual operation check of the ordinary desktop player: movement, look, interaction, incident onset and observation, route selection and route crossing worked; no exceptions.",
+          "sessionRecord": {
+            "file": "<RUN_ROOT>/manual-playthrough/shift-3d4cf1ff83fe48b390fd9738b8c44faf.json",
+            "sha256": "d979c89c086d4f3c2f2a759832b0b960885c83f307712e6e86f596f907f2aff5"
+          },
+          "logErrors": []
+        }
+      ],
+      "observations": {
+        "sixIncidentCombinations": {
+          "result": "observed",
+          "how": "instrumented unattended player, seeds 10/1/2/104/2107/6123 cycled per shift",
+          "cases": [
+            "central/GuidanceOutage",
+            "central/PassageObstruction",
+            "east/GuidanceOutage",
+            "east/PassageObstruction",
+            "west/GuidanceOutage",
+            "west/PassageObstruction"
+          ],
+          "scope": "incident onset only; no response completion"
+        },
+        "twoConsecutiveIncidents": {
+          "result": "passed in PlayMode",
+          "test": "StationWorldPlayTests.RandomIncidentVariationsAndTwoConsecutiveEpisodesRecoverWithoutTeleporting",
+          "standalone": "15 consecutive shifts each with one incident onset, no recovery action"
+        },
+        "leadAndAssembly": {
+          "result": "passed in PlayMode only",
+          "tests": [
+            "DemoGeneratedDrillTests.ThreeDrillsAcrossFiveRolesRequireOrderedObjectsAndSixWalkingFollowers",
+            "DemoEvacuationTests.FollowerRoutesAroundWallAndWaitsOnlyAfterRecruitmentAndArrival",
+            "DemoGameControllerTests.AssemblyGuidanceFollowsAcceptedActionAndResets"
+          ],
+          "standalone": "not exercised: the instrumented player disables player control"
+        },
+        "newShiftAndEnd": {
+          "result": "observed",
+          "shifts": 15,
+          "end": "driver completed at 1800 s and quit with exit 0",
+          "playModeTest": "DemoGameControllerTests.EveryRoleCanPlayAndRestartWithOnlyItsOwnPropCompleted"
+        },
+        "memoryWindows": "see steps profile-long-1800s.profile.windows (5-minute windows after a 60 s warmup)"
+      },
+      "rawReceipts": [
+        {
+          "path": "<RUN_ROOT>/build/Build.log",
+          "sha256": "8d94fb3b6c31164d9d4fe6e055e63065e92ca6c0194f38d48cbd30446cf61e83",
+          "bytes": 280626
+        },
+        {
+          "path": "<RUN_ROOT>/build/argv.txt",
+          "sha256": "e6fb0c44b3abf50f4b54a6fd7b05b8afd5b2443bc02da68767086833e3cabd0b",
+          "bytes": 243
+        },
+        {
+          "path": "<RUN_ROOT>/build/build-files.sha256",
+          "sha256": "a037c4afb97263ad4531fed321923b906c8fa627f0626fbd7e52acc64b1ae37c",
+          "bytes": 19889
+        },
+        {
+          "path": "<RUN_ROOT>/build/checkout-diff-after-build.patch",
+          "sha256": "46b7a0b602e2d602935ec9245e935e694fdcbf9124ed71f096e7e345913a30d5",
+          "bytes": 4137532
+        },
+        {
+          "path": "<RUN_ROOT>/build/exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/build/seconds.txt",
+          "sha256": "7ea9844ae84eccbf55e8330640865e36c43521e45a1baec24233327aab7e6595",
+          "bytes": 3
+        },
+        {
+          "path": "<RUN_ROOT>/build/started.txt",
+          "sha256": "768cc603e020b1942d16f94f721c82f1bf34be4f52cb2e9c0d74be04302eb2e6",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/capability.json",
+          "sha256": "c1e2267a6680aba0907f0bbcb8705f6b58098b326f1c709ff72c95183e1d57a6",
+          "bytes": 871
+        },
+        {
+          "path": "<RUN_ROOT>/editmode/EditMode.log",
+          "sha256": "6b2461ceb586bb14f3c51f7e3766de00dc2e0b96267f853e60ae0662de58b5c0",
+          "bytes": 1373302
+        },
+        {
+          "path": "<RUN_ROOT>/editmode/EditMode.xml",
+          "sha256": "3ca4af74f6f4ed0374612ec3e7e906dd655d98606e6ddb93ff7adf66bb13aef7",
+          "bytes": 113589
+        },
+        {
+          "path": "<RUN_ROOT>/editmode/argv.txt",
+          "sha256": "9da0699ecd23e72342c58f8c898374685f033d4f8c4861fe3bfcf939d6949067",
+          "bytes": 213
+        },
+        {
+          "path": "<RUN_ROOT>/editmode/exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/editmode/seconds.txt",
+          "sha256": "b35e87b5838011a3637be660e4238af9a55e4edc74404c990f7a558e7f416658",
+          "bytes": 3
+        },
+        {
+          "path": "<RUN_ROOT>/editmode/started.txt",
+          "sha256": "1000a8bffe2a763800631af8eeb974f5d06f3bb60bb66e5b158ac937e9db0c3c",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented-v2/InstrumentedBuild.log",
+          "sha256": "f8fdcaaacddfae89e6fdb460ed0d5e4850ba245c49e65a1d301b59ebede10537",
+          "bytes": 228964
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented-v2/build-files.sha256",
+          "sha256": "e85c03deb83f68e2347f51404cfb0e9f07336ba048aac3d0e6f7d375f739675d",
+          "bytes": 19522
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented-v2/driver-os-memory.patch",
+          "sha256": "368bf313ed9467fe8534eaff63ed2017abbcff6777c9a3cdc8b86539d232eac2",
+          "bytes": 2932
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented/InstrumentedBuild.log",
+          "sha256": "c35663e6fd20b31aa993efa8b050d36783b153c6a9c3d240fffd3de38f3dee17",
+          "bytes": 237548
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented/argv.txt",
+          "sha256": "9188bd81b364bc0871899ce71251451f56d5b72a14c7313729ccc0696e101294",
+          "bytes": 245
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented/build-exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented/build-files.sha256",
+          "sha256": "3e14a913c3dace20360b21a31e17da26f6697a41f842fbb31366526f68e05742",
+          "bytes": 19522
+        },
+        {
+          "path": "<RUN_ROOT>/instrumented/summarizer-tests.txt",
+          "sha256": "61721de32d01a9371f1a567a1df95bf69b048f3b398c1eff2952ba62220112b0",
+          "bytes": 101
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/Player.log",
+          "sha256": "0ea6722b80170354d21ab6558738917a7c1a0f10c0a8278fcc9a97277ff1553f",
+          "bytes": 2243
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/argv.txt",
+          "sha256": "a174906e6c22cd32512c4c9a27d07b53b13d7464610a35154c8e5d21e52e8ff4",
+          "bytes": 284
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/os-memory.csv",
+          "sha256": "efdafe46d3270b513f9e805fa5412cc91e990d827c2e3107db2b62fddb212c8e",
+          "bytes": 137122
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/profile/result.json",
+          "sha256": "d546376a71e89454b118e9b50013260023ac27a09037da41bfd583c70e364066",
+          "bytes": 872
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/profile/samples.csv",
+          "sha256": "66edada1be4934f5c0a22e201e59e037edd2836cd399871fe0f58b0f7626707c",
+          "bytes": 172246
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/started.txt",
+          "sha256": "77222e9571e22c9cfb5aed8740b829c770f3fb6ae7d531453c9c6a90b6627c42",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/long-1800s/summary.json",
+          "sha256": "562785d4fd2fdf5f297291af04daf15c358a045091d360bfa96999174556c699",
+          "bytes": 662
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/Player.log",
+          "sha256": "f07fb0f62056e27588499e6231b0b69d7eac12f11ae08965ee119ec53a5b7219",
+          "bytes": 2250
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/argv.txt",
+          "sha256": "cb261edf3a7ec5648cc6e29826bfbaea2174fcddf8412e59ff4a8908c03bbba5",
+          "bytes": 251
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/ended.txt",
+          "sha256": "0f59f5bbef46b597781ae871d24d977c59d903f49aae3064fe4cf1e3ce5bdfe4",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/exe-sha256.txt",
+          "sha256": "2c6fcb9a666ce9c2d8fd3ea82a188fa37f0f18098d39374bbcfcd621c085b619",
+          "bytes": 65
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/os-memory.csv",
+          "sha256": "9d8d2eab15b42ea11e16d2acf0fa0ce1932c134cab5f3bbacb3afd3c593d02a0",
+          "bytes": 22538
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/shift-3d4cf1ff83fe48b390fd9738b8c44faf.json",
+          "sha256": "d979c89c086d4f3c2f2a759832b0b960885c83f307712e6e86f596f907f2aff5",
+          "bytes": 19219
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/started.txt",
+          "sha256": "227f1a5ebb26518598d03a31cb2d1faba326abeee7d7a024eacb293889535d41",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/station-sessions-after.txt",
+          "sha256": "855b2143eb2cfdc79b846941d4e3a9f3cb0fa505cbbf5af17167a7f3bedec58b",
+          "bytes": 6228
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/station-sessions-before.txt",
+          "sha256": "ca0e181e420e1bed4e9cc0ee2291b8bb726ad898c51088eb37a0de9a7db5e84d",
+          "bytes": 6128
+        },
+        {
+          "path": "<RUN_ROOT>/os-sampler.ps1",
+          "sha256": "a3e086802353ff98119f39cfc1f5af41ee7878185474e56b907506858286e062",
+          "bytes": 762
+        },
+        {
+          "path": "<RUN_ROOT>/pilot-Player.log",
+          "sha256": "97376a5baaf442c57829873dd263f3caaa80f467b05d6ff88976ab5f26258084",
+          "bytes": 2234
+        },
+        {
+          "path": "<RUN_ROOT>/pilot-argv.txt",
+          "sha256": "d769829914eb047516707624add13c0efba3ee92b8350753e52c7d630261ee80",
+          "bytes": 209
+        },
+        {
+          "path": "<RUN_ROOT>/pilot-exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/pilot-started.txt",
+          "sha256": "a7f4b0e9463179d3f09abc1154631396993602036bb6e11ce35bc06d5f62e3da",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/pilot-summary.txt",
+          "sha256": "5f38354c4e44595a8fdcb67c8e52626b4ac7f39f956f32a887e6d274c53022e7",
+          "bytes": 549
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/Player.log",
+          "sha256": "ff11a14de1318b8b9506bcabb5ec7dc98f9905daf8ad9c1f6619150635d34143",
+          "bytes": 2243
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/argv.txt",
+          "sha256": "23bc8f79721662666084fcbeb554308e8b12efe6b3d79b862fd5856561cb3dfe",
+          "bytes": 225
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/os-memory.csv",
+          "sha256": "5195bae59cea2e40bdb57d5fdab6fcc4cc2df32ab9198171682d79603dc58baa",
+          "bytes": 13884
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/profile/result.json",
+          "sha256": "bc618c7e55fcbecb9bb89ff0591da8e4ed94801ef6b06220ce3c553f7565db9d",
+          "bytes": 742
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/profile/samples.csv",
+          "sha256": "99440e0baff85f3db42c3073dd667b41ce360604a87aebfa4790c100ea0706be",
+          "bytes": 17171
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/started.txt",
+          "sha256": "356fd9c3d4aaaa8392c4fa3bc0da36f6aa0636fe44aeeeae3939859a1f67f85c",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/pilot2-180s/summary.json",
+          "sha256": "689e8c72686f4a47894252ffdf54e59b2246b67d90b69fc16e121cc2003ef04e",
+          "bytes": 671
+        },
+        {
+          "path": "<RUN_ROOT>/player-start/Player.log",
+          "sha256": "f34b5620cd9ef6311304c74ecd382aca8673c969345a444985426190e1894950",
+          "bytes": 2027
+        },
+        {
+          "path": "<RUN_ROOT>/player-start/argv.txt",
+          "sha256": "3ef603e019947579b42fbe6b278e734c5d4af2c4d689f2d011808c9bbe2c2fbd",
+          "bytes": 167
+        },
+        {
+          "path": "<RUN_ROOT>/player-start/process.json",
+          "sha256": "6d3bdf3a17ba24ec5c31c527ac28edba46daa6b11b1b269f6b2df7dc1f3528f7",
+          "bytes": 99
+        },
+        {
+          "path": "<RUN_ROOT>/playmode/PlayMode.log",
+          "sha256": "8156b58ec0e7f7f28a118ec9d0fe2937d8f017c2b3b4b5b95cbd5663e7a6f03c",
+          "bytes": 66114
+        },
+        {
+          "path": "<RUN_ROOT>/playmode/PlayMode.xml",
+          "sha256": "56367ce81be175eefd70f2983f6e9b550b6c365f9296d4f4ab51bd769f6735db",
+          "bytes": 19039
+        },
+        {
+          "path": "<RUN_ROOT>/playmode/argv.txt",
+          "sha256": "bf6867b61f0cb7313858879c01c3aa61671f544b599f7d0cc1fbb2a1b190f203",
+          "bytes": 213
+        },
+        {
+          "path": "<RUN_ROOT>/playmode/checkout-diff-after-playmode.patch",
+          "sha256": "bd788135c4fe11b96b9156dc7e622570418ef16ea55ce790d20e01e0995b4a29",
+          "bytes": 9603
+        },
+        {
+          "path": "<RUN_ROOT>/playmode/exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/playmode/seconds.txt",
+          "sha256": "1a252402972f6057fa53cc172b52b9ffca698e18311facd0f3b06ecaaef79e17",
+          "bytes": 3
+        },
+        {
+          "path": "<RUN_ROOT>/playmode/started.txt",
+          "sha256": "92900b968504c82ab4d5cb592c29916b89727adfa989067e59838a3fc5dac94f",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/profile-pilot-180s/result.json",
+          "sha256": "2bea0d187e43d17191c14608cdc5515bd5b173ed3699bc7da2c69c212db343e1",
+          "bytes": 735
+        },
+        {
+          "path": "<RUN_ROOT>/profile-pilot-180s/samples.csv",
+          "sha256": "60d09e65944becbeec6c98dd63f4c5a27eb4ba2f138ac2b9d09aa2a60980c16c",
+          "bytes": 14292
+        }
+      ],
+      "rawRetention": "Raw XML, logs, CSV and patches stay on laptop-A outside Git; only their digests are published here.",
+      "unrunOrFailed": [
+        {
+          "item": "lead/assembly and response completion in the standalone player",
+          "status": "not run",
+          "reason": "covered by PlayMode tests; the manual check was a short operation check only"
+        },
+        {
+          "item": "ReconstructionReviewTests.SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
+          "status": "skipped",
+          "reason": "Local reconstruction output is intentionally not Git-tracked."
+        },
+        {
+          "item": "profile pilot v1",
+          "status": "rejected by summarize_profile.py",
+          "reason": "OS memory counters were 0 (instrument defect)"
+        },
+        {
+          "item": "HMD, new multiplayer, school PC or institutional acceptance",
+          "status": "out of scope",
+          "reason": "acceptance forbids extending results"
+        }
+      ],
+      "limits": [
+        "Camera render callbacks and CPU frame intervals, not hardware presentation or GPU-only timing.",
+        "One integrated-GPU laptop at 1280x720 window, vSync 1 on a 120 Hz panel; not representative of other hardware.",
+        "Instrumented build differs from the ordinary desktop player by the added driver and product name.",
+        "No leak-free claim; 30 minutes only.",
+        "2026-09-08 school PC numbers were not reused."
+      ]
+    }
+  ]
+}
