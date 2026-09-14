@@ -9,7 +9,7 @@
   "runRecord": {
     "recordKind": "complete_run_record",
     "branch": "bugfix/151-staging-ownership-boundary",
-    "commit": "cbacfdecc2f561ea97ec3d4725c967e304cf2367",
+    "commit": "1ed1166c68f1a81796f0ea6f532af2472ddc6d79",
     "baseRef": "origin/develop",
     "baseCommit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
     "platform": {
@@ -19,21 +19,21 @@
     "inputs": {
       "services/livekit/configure_local.py": {
         "baseBlobSha1": "1f7b37a2da355b7bed5848489b85ef2919dd0612",
-        "candidateBlobSha1": "fa97db51202bad071dc76b40a58843fc89f2c5c3",
-        "candidateSha256": "0169e4c489953a7021783a5ba0320e95d3dd57d0583a2547e3886c039882fb8c",
-        "candidateSizeBytes": 26828
+        "candidateBlobSha1": "ef35bf3fcfad5d17b657616bb1c345c54634e075",
+        "candidateSha256": "3c0b87707fe6aaef3fced49fad1620016da45890c042a5cc2569ce626b953b9f",
+        "candidateSizeBytes": 42736
       },
       "services/livekit/test_configure_local.py": {
         "baseBlobSha1": "a8553dce1698a97407599492edebdafef07ac49e",
-        "candidateBlobSha1": "f67c807a633e117690c36f1368a13a46c2ab81dd",
-        "candidateSha256": "9ff9799f79b3cc5d44a6b4355960d930aed5a11763d87998bdf9c1364423313f",
-        "candidateSizeBytes": 53345
+        "candidateBlobSha1": "b5bf200d203fce5a2ae1c9214f168f2bce23a59d",
+        "candidateSha256": "ea988b5c0dbdf423b3bf66f8e800bc94dc76083c5f675bd9217363c2db86cc41",
+        "candidateSizeBytes": 96142
       },
       "services/livekit/README.md": {
         "baseBlobSha1": "89a0b2bc660f2a3c8d127648b6e3f03a9bab47a4",
-        "candidateBlobSha1": "7112009394391347d53bbe4417a9e19e71cb0327",
-        "candidateSha256": "4a9fb786fb7bb5eeee10d46798ba3e6386ee10c1b9aa858a7f64c4669d9185f8",
-        "candidateSizeBytes": 5391
+        "candidateBlobSha1": "6d2c4eef6c161367e04222994e37d5bf7ef20cf7",
+        "candidateSha256": "5b34c785a1be538a0cba49307d34811fb781101765a53542d90cbbb92cb84d73",
+        "candidateSizeBytes": 5302
       }
     },
     "inputProvenance": {
@@ -67,112 +67,155 @@
     },
     "boundary": {
       "writeGate": "configure() raises _StagingOwnershipUnproven before the first credential write when the descriptor-to-entry binding cannot be established.",
-      "publicationGate": "The trusted-parent precondition is re-verified, the ownership evidence is re-derived, the pre-rename binding is re-checked, and the pinned directory is required to hold exactly the entries this run acquired with each of them still resolving to the file identity it was acquired under - immediately before the exclusive no-replace rename. A directory that cannot be enumerated is refused rather than published on the strength of its inode alone.",
-      "rollback": "Exact-owned: only acquired file identities are unlinked, and the directory is rmdir'd only while it is still the proven inode.",
-      "unauthenticatedWindow": "The create-to-open window is not authenticated by pathname; the trusted parent (0700, current-user-owned, no additional ACL) is the precondition that excludes other principals. A same-account actor racing that window is not detectable and is not claimed.",
-      "wasPreviousState": "staging_ownership_proven was hardcoded False and gated only rollback rmdir; credential writes and publication were not gated on ownership."
+      "publicationGate": "The trusted-parent precondition is re-verified, the ownership evidence is re-derived, the pre-rename binding is re-checked, and the pinned directory is required to hold exactly the entries this run acquired, each still resolving to the identity it was acquired under AND to the SHA-256 of the bytes this run wrote into it. A name this run acquired that has disappeared is reported as a loss of its own, apart from an injected or replaced entry. A directory that cannot be enumerated is refused rather than published on the strength of its inode alone. That evidence is re-derived once more AFTER the rename, because the rename is a later step: a mismatch there raises _PublishedEntryNotOwned as detection after the fact, with this run's own files removed and a foreign entry preserved for manual cleanup.",
+      "rollback": "Exact-owned: only acquired file identities are unlinked, and the directory is rmdir'd only while the cleanup name still resolves to the proven inode. The check and the rmdir are separate steps; what was removed is re-enumerated from the parent afterwards and reported as _CleanupTargetMismatch.",
+      "unauthenticatedWindow": "The create-to-open window is not authenticated by pathname; the trusted parent (0700, current-user-owned, no additional ACL) is the precondition that excludes other principals. A same-account actor racing that window is not detected, and the README now says so.",
+      "wasPreviousState": "staging_ownership_proven was hardcoded False and gated only rollback rmdir; credential writes and publication were not gated on ownership.",
+      "acknowledgedNotClosedWindows": [
+        "create-to-open: not authenticated by pathname; not detected; both branches pinned by fixtures.",
+        "last re-derivation to renameatx_np: an entry changed or injected there is refused only after the rename published it (detection after the fact), with manual cleanup guidance and no automatic removal of the foreign entry.",
+        "rollback stat-to-rmdir: a same-account actor parking an empty directory under this run's unpredictable staging name makes this run remove that empty directory and leave its own behind. Darwin keeps an open descriptor's st_nlink at 2 after rmdir, so this is detectable after the fact by re-enumerating the parent, never preventable, and unconfirmed when the parent cannot be listed."
+      ]
     },
     "checks": [
       {
-        "command": "python3 -m unittest discover -s services/livekit -p 'test_configure_local.py'",
+        "command": "python3 -m unittest test_configure_local (Darwin, Python 3.14.5)",
         "result": "PASS",
-        "testsRun": 39,
+        "testsRun": 58,
         "testsFailed": 0,
-        "platform": "Darwin, Python 3.14.5",
-        "note": "24 pre-existing tests (LocalVoiceConfigurationTests) plus 15 boundary tests (StagingPublicationBoundaryTests), each separately selectable: the legacy selector runs 24 OK and the boundary selector runs 15 OK. NOT reproducible on the Python version CI uses - on 3.12.11 and 3.13.12 the suite reports Ran 39, FAILED (failures=1), because test_cli_errors_are_sanitized_and_actionable expects the 3.14 message for a 260-character output name while 3.12/3.13 report 'Configuration path could not be inspected safely'. That fixture fails identically at baseCommit ce97e46 (Ran 24, FAILED failures=1), so it is pre-existing; no boundary fixture is affected.",
-        "negativeCaseAddressed": "The prior 24 passing tests did not prove the new boundary. Two of them encoded the old rollback contract and had been loosened to ValueError without disclosure; this run restores both to their exact base assertions (assertRaises(_CleanupIncomplete) and assertRaisesRegex(_CleanupIncomplete, 'manual')) by giving the generated-file privacy failures a specific type again, so the code satisfies the stricter contract instead of the assertion being relaxed to match the code. The other 22 legacy fixtures are byte-identical to baseCommit; one carries a corrected explanatory comment only, disclosed here because its old comment described the pre-fix mechanism."
+        "selectors": {
+          "LocalVoiceConfigurationTests": {
+            "ran": 24,
+            "result": "OK"
+          },
+          "StagingPublicationBoundaryTests": {
+            "ran": 34,
+            "result": "OK"
+          }
+        },
+        "note": "58 = 24 pre-existing + 34 boundary. The legacy block is byte-identical to baseCommit: sha256 of the region between the two class declarations is 5cb54a4004ebce87 on both, so no pre-existing assertion was loosened. On Python 3.12.11 and 3.13.12 the suite reports Ran 58, FAILED (failures=1) in test_cli_errors_are_sanitized_and_actionable; the same fixture fails at origin/develop (Ran 24, FAILED failures=1) on 3.12.11 and passes on 3.14.5, re-measured here, so it is pre-existing and version-dependent, not caused by this branch. No workflow under .github/workflows/ references services/livekit, so this PASS is a local run."
       },
       {
-        "command": "mutation matrix over ten checks, each removing exactly one gate (Python 3.14.5, Darwin)",
+        "command": "mutation matrix over six gates, each removing exactly one gate, with an independent adversarial re-derivation of every claim (Python 3.14.5, Darwin)",
         "result": "PASS",
-        "killsCountedBy": "only a behavioural fixture observing the path counts as a kill; a source-digest assertion dying is not counted, because it dies under every mutation",
+        "killsCountedBy": "only a behavioural fixture observing the path counts as a kill; a source-digest, blob-hash or literal-source assertion dying is not counted. No mutation produced a digest-only death.",
         "mutations": [
           {
-            "mutation": "credential-write ownership gate reduced to a no-op",
-            "killedTests": 1,
+            "mutation": "M1-vanished: ",
+            "killedTests": 4,
             "killed": [
-              "test_unproven_staging_ownership_blocks_every_credential_write"
-            ]
+              "test_configure_local.StagingPublicationBoundaryTests.test_acquired_name_removed_before_publication_blocks_publication",
+              "test_configure_local.StagingPublicationBoundaryTests.test_refusal_reaches_the_cli_though_cleanup_failed_too",
+              "test_configure_local.StagingPublicationBoundaryTests.test_refusals_reach_the_cli_with_their_own_wording",
+              "test_configure_local.StagingPublicationBoundaryTests.test_vanished_entry_after_the_gate_is_refused_after_publication"
+            ],
+            "suite": "Ran 58 tests in 0.576s / FAILED (failures=4)",
+            "adversarialReverification": {
+              "claimConfirmed": true,
+              "rederivedBehaviouralKillCount": 4,
+              "discrepancy": "none material. I made an independent pristine copy at /private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/mutmatrix/verify-M1-vanished, confirmed the baseline is \"Ran 58 tests ... OK\", then applied the described single-line edit in _unaccounted_staging_entries (line 587): BEFORE `    vanished = [name for name in owned if name not in present]` AFTER `    vanished = []`. diff vs the original tree shows only line 587 differs, and `git status services/livekit` stayed clean (original untouched). My mutated run: \"Ran 58 tests / FAILED (failures=4)\" with the same 4 tests in StagingPublicationBoundaryTests: test_acquired_name_removed_before_publication_blocks_publication (assertRaises _StagingEntryVanished not raised), test_refusal_reaches_the_cli_though_cleanup_failed_too (CLI emitted the did-not-create wording instead), test_refusals_reach_the_cli_with_their_own_wording (CLI printed private_local_config_created instead of nothing), test_vanished_entry_after_the_gate_is_refused_after_publication (assertRaises OSError/_PublishedEntryVanished not raised). Every failing assertion is runtime behaviour (raised/not-raised exception, empty CLI stdout, which refusal branch surfaced) — none asserts a source digest, blob hash, or literal source text, so killedDigestOnly is empty, as claimed. Two trivial non-substantive nits only: the note's wrapper line ranges were approximate (the consumers are at 885-886 and 632-633, not 885-890/632-638) and runtimes vary (0.27-0.68s) with load, while the test/failure counts and failure identities match exactly."
+            },
+            "note": "UNMUTATED baseline in the copy: \"Ran 58 tests in 0.491s / OK\". Mutation applied to /private/tmp/.../scratchpad/mutmatrix/M1-vanished/configure_local.py in _unaccounted_staging_entries (line 587). BEFORE: `    vanished = [name for name in owned if name not in present]` AFTER: `    vanished = []`. Single-line change (verified with diff against the original: only line 587 differs). The injection dire"
           },
           {
-            "mutation": "publication ownership gate reduced to a no-op",
-            "killedTests": 3,
-            "killed": [
-              "test_binding_recheck_after_the_ownership_gate_blocks_publication",
-              "test_ownership_evidence_is_rechecked_on_both_sides_of_the_binding",
-              "test_staging_swap_after_credentials_is_refused_at_the_publication_gate"
-            ]
-          },
-          {
-            "mutation": "trusted-parent re-verification at the publication boundary removed",
-            "killedTests": 1,
-            "killed": [
-              "test_parent_privacy_regression_before_publication_is_refused"
-            ]
-          },
-          {
-            "mutation": "pre-rename binding re-check removed",
-            "killedTests": 1,
-            "killed": [
-              "test_binding_recheck_after_the_ownership_gate_blocks_publication"
-            ]
-          },
-          {
-            "mutation": "entry-set gate fail-closed arm changed to publish (listdir OSError returns [] instead of None)",
-            "killedTests": 1,
-            "killed": [
-              "test_unlistable_staging_directory_is_refused_and_preserved"
-            ]
-          },
-          {
-            "mutation": "per-entry read changed to follow symlinks",
-            "killedTests": 1,
-            "killed": [
-              "test_acquired_name_swapped_for_an_outside_symlink_blocks_publication"
-            ]
-          },
-          {
-            "mutation": "entry-set gate reduced to a no-op",
+            "mutation": "M2-postpub: ",
             "killedTests": 5,
             "killed": [
-              "test_acquired_name_swapped_for_an_outside_symlink_blocks_publication",
-              "test_adopted_directory_with_a_foreign_entry_is_refused",
-              "test_entry_injected_after_the_last_write_blocks_publication",
-              "test_owned_name_swapped_for_other_bytes_blocks_publication",
-              "test_unlistable_staging_directory_is_refused_and_preserved"
-            ]
+              "test_configure_local.StagingPublicationBoundaryTests.test_acquired_entry_rewritten_in_place_is_refused_after_publication",
+              "test_configure_local.StagingPublicationBoundaryTests.test_bytes_injected_into_an_acquired_entry_are_refused_after_publication",
+              "test_configure_local.StagingPublicationBoundaryTests.test_entry_injected_after_the_gate_is_refused_after_publication",
+              "test_configure_local.StagingPublicationBoundaryTests.test_entry_replaced_after_the_gate_is_refused_after_publication",
+              "test_configure_local.StagingPublicationBoundaryTests.test_refusals_reach_the_cli_with_their_own_wording"
+            ],
+            "suite": "Ran 58 tests in 0.309s / FAILED (failures=5)",
+            "adversarialReverification": {
+              "claimConfirmed": true,
+              "rederivedBehaviouralKillCount": 5,
+              "discrepancy": "none (only the suite wall-clock differed: claimed 0.309s vs observed 0.285s; the failure set, count, and baseline are identical). Edit re-applied independently at line 632/633 of configure_local.py inside _require_published_entry_set; single-hunk diff, pre-rename site at line 885 untouched. My mutated copy md5 2ce43c9848bdc97ca32eb602aa98841f, byte-identical to the other agent's. No sha256/hashlib/digest literals exist in test_configure_local.py, so killedDigestOnly is correctly empty; all 5 failures are assertRaises(OSError) or assertEqual(stdout, \\\"\\\") behavioural kills."
+            },
+            "note": "Copy at /private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/mutmatrix/M2-postpub/. Unmutated baseline: \"Ran 58 tests in 0.374s / OK\". Mutation applied inside _require_published_entry_set only (configure_local.py, currently line 632-635).\n\nBEFORE:\n    vanished, unowned = entry_set\n    if vanished:\n        raise _PublishedEntryVanished(\n\nAFTER:\n    van"
           },
           {
-            "mutation": "rollback call-site no longer bound to the proven inode",
+            "mutation": "M3-digest: ",
+            "killedTests": 2,
+            "killed": [
+              "test_configure_local.StagingPublicationBoundaryTests.test_acquired_entry_rewritten_in_place_is_refused_after_publication",
+              "test_configure_local.StagingPublicationBoundaryTests.test_bytes_injected_into_an_acquired_entry_are_refused_after_publication"
+            ],
+            "suite": "Ran 58 tests in 1.017s\nFAILED (failures=2)",
+            "adversarialReverification": {
+              "claimConfirmed": true,
+              "rederivedBehaviouralKillCount": 2,
+              "discrepancy": "None substantive. I made a fresh copy from the committed pristine tree at /Users/um-yunsang/CHOOGuard/services/livekit (read-only) into scratchpad/mutmatrix/verify-M3-digest, applied the described edit (delete original lines 602-603 of _unaccounted_staging_entries), and got diff \"602,603d601\" against pristine; my mutated configure_local.py is byte-identical (cmp) to the claimed M3-digest copy. Baseline: \"Ran 58 tests ... OK\". Mutated: \"Ran 58 tests ... FAILED (failures=2)\" with the exact two claimed tests failing with \"AssertionError: OSError not raised\". Classification verified independently: the test file's only \"digest\" mentions are docstrings (lines 1680, 1873); neither failing test asserts a digest, blob hash, or literal source text, so killedDigestOnly is correctly empty. I also confirmed line 602 is the ONLY call site of _entry_digest in pristine, and it lives in _unaccounted_staging_entries, which runs both pre-publication (line 879) and post-rename (via line 624). An independent non-test probe (probe.py, pristine vs mutated loaded by path) confirmed the behavioural difference directly: PRISTINE raised _PublishedEntryNotOwned with nothing published, while MUTATED returned success and the published server-voice.json contained b'{\"ApiKey\": \"ATTACKERKEY\"}' with the inode preserved. Only non-substantive difference: reported wall-clock times (claim 1.017s/0.585s vs mine 0.313s/0.295s); test and failure counts match exactly."
+            },
+            "note": "Suite passes unmutated in the copy: \"Ran 58 tests in 0.585s / OK\".\n\nEdit applied to /private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/mutmatrix/M3-digest/configure_local.py, inside _unaccounted_staging_entries (the ownership-evidence re-derivation that runs before publication and again after the rename), removing only the digest term so the acquire"
+          },
+          {
+            "mutation": "M4-rollback-target: ",
             "killedTests": 1,
             "killed": [
-              "test_unproven_staging_ownership_blocks_every_credential_write"
-            ]
+              "test_configure_local.StagingPublicationBoundaryTests.test_inexact_removal_in_the_cleanup_window_is_detected_and_reported"
+            ],
+            "suite": "Ran 58 tests in 0.267s / FAILED (errors=1)",
+            "adversarialReverification": {
+              "claimConfirmed": true,
+              "rederivedBehaviouralKillCount": 1,
+              "discrepancy": "none substantive. Independently reproduced: fresh copy from pristine services/livekit/configure_local.py (42736 bytes) at /private/tmp/.../mutmatrix/verify-M4-rollback-target, baseline \"Ran 58 tests / OK\"; applied exactly the described edit at line 504 (only \"return True\" in the file, inside _proven_inode_still_present) -> \"return False\", diff shows only that one line changed; mutated run \"Ran 58 tests / FAILED (errors=1)\" with the single error being test_configure_local.StagingPublicationBoundaryTests.test_inexact_removal_in_the_cleanup_window_is_detected_and_reported, matching the claim's killedBehavioural list exactly, killedDigestOnly empty. Causal check confirmed: with the branch returning False, the \"removal_evidence is True\" arm at configure_local.py:944 is dead, so no _CleanupTargetMismatch is constructed and _safe_creation_error re-raises the synthetic OSError; the test's assertions are exception type, on-disk residue (parked-staging dir empty, no .voice.*.tmp), and message substrings (not digest/hash/literal source), so it is a genuine behavioural kill. The only observed difference versus the claim is wall-clock timing (baseline 0.295s vs claimed 0.599s; mutated 0.808s vs claimed 0.267s), which is harness noise and not substantive."
+            },
+            "note": "Baseline (unmutated copy): \"Ran 58 tests in 0.599s / OK\".\n\nEdit in /private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/mutmatrix/M4-rollback-target/configure_local.py, inside _proven_inode_still_present (line 504), the only \"return True\" in the file:\nBEFORE:\n        if (\n            stat.S_ISDIR(current.st_mode)\n            and _directory_identity(cu"
           },
           {
-            "mutation": "post-open _same_output_directory check removed (the call immediately after the staging directory is opened, not the pre-rename one)",
-            "killedTests": 0,
-            "note": "UNOBSERVED. No fixture distinguishes this call site from the pre-rename one, which the matrix does kill."
+            "mutation": "M5-unlistable: ",
+            "killedTests": 2,
+            "killed": [
+              "test_configure_local.StagingPublicationBoundaryTests.test_unlistable_published_directory_is_refused_after_publication",
+              "test_configure_local.StagingPublicationBoundaryTests.test_unlistable_staging_directory_is_refused_and_preserved"
+            ],
+            "suite": "Ran 58 tests in 0.787s\nFAILED (failures=2)",
+            "adversarialReverification": {
+              "claimConfirmed": true,
+              "rederivedBehaviouralKillCount": 2,
+              "discrepancy": "none"
+            },
+            "note": "Baseline (unmutated copy): \"Ran 58 tests in 0.286s / OK\". Mutation applied only in /private/tmp/.../mutmatrix/M5-unlistable/configure_local.py (the real tree was never touched).\n\nFile: configure_local.py, inside _unaccounted_staging_entries() (the function both the pre-rename entry-set gate and _require_published_entry_set delegate to).\n\nBEFORE:\n    owned = dict(owned_files)\n    try:\n        prese"
           },
           {
-            "mutation": "identity comparison inside _owned_cleanup_target removed alone",
-            "killedTests": 0,
-            "note": "UNOBSERVED. The comparison is dead weight on its own; the load is carried by the call-site binding, which the matrix kills. Recorded so 'each gate is load-bearing' is not read onto this comparison."
+            "mutation": "M6-operator-wording: ",
+            "killedTests": 2,
+            "killed": [
+              "test_configure_local.StagingPublicationBoundaryTests.test_refusal_reaches_the_cli_though_cleanup_failed_too",
+              "test_configure_local.StagingPublicationBoundaryTests.test_refusals_reach_the_cli_with_their_own_wording"
+            ],
+            "suite": "Ran 58 tests in 0.357s / FAILED (failures=2)  [unmutated baseline: Ran 58 tests in 0.420s / OK]",
+            "adversarialReverification": {
+              "claimConfirmed": true,
+              "rederivedBehaviouralKillCount": 2,
+              "discrepancy": "none (substantively identical). Fresh copy taken from the pristine source tree, not the other agent's copy. Baseline: Ran 58 tests / OK. Mutation edit reproduced exactly (diff vs pristine shows only the 8 claimed lines deleted: the `except _OutputPathChanged as exc:` branch, its 6-line comment block, and its `parser.error(str(exc))`, collapsing into the generic `except OSError:`). Mutated run: Ran 58 tests / FAILED (failures=2). The two failures are exactly the two claimed tests, both failing on `assertIn(\"no longer holds every entry\", output)` against CLI stderr, which now reads the generic permissions hint; both also assert the absence of that hint, i.e. exception-routing/operator-wording behaviour, not a digest, blob hash, or source-literal assertion. killedDigestOnly is empty because no digest/hash assertion failed. Only wall-clock timings differed (claimed 0.357s/0.420s vs my 0.416s/0.799s), which is expected run-to-run jitter, not a substantive discrepancy."
+            },
+            "note": "Copy at /private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/mutmatrix/M6-operator-wording/ (configure_local.py, test_configure_local.py, README.md). Unmutated suite ran OK (58 tests) before mutating. Edit in main() removed the dedicated branch and its comment block, so _OutputPathChanged (an OSError subclass) now falls through to the generic OSError "
           }
         ],
-        "note": "Eight of the ten checks die under a behavioural fixture; the two that do not are listed with killedTests 0."
+        "zeroKillGates": [],
+        "unconfirmedAfterReverification": [],
+        "note": "All six gates die under a behavioural fixture, and every claim was re-derived by a second agent working from a fresh copy and its own suite run. M3 (removing the digest binding, leaving identity alone) kills exactly the two in-place-rewrite fixtures, which is the arm no prior round detected. No gate is recorded with killedTests 0 in this run."
       },
       {
-        "command": "independent supervisor probe: inject a foreign entry after the last credential write and before publication; separately swap the staging directory for a different directory inside the create-to-pin window",
+        "command": "independent supervisor probe: patch _rename_exclusive so the tamper lands inside the gate-to-rename window, then call configure()",
         "result": "PASS",
-        "note": "Against 4a3f727 the first probe published the injected entry and returned success; at 58f7445 it raised and preserved the foreign inode. The second probe, re-run against 58f7445, found the directory-payload swap publishes when the adopted directory is empty and is refused when it holds an entry this run did not create. Both branches are now pinned by fixtures; the window itself remains unauthenticated, as README states."
+        "arms": {
+          "E unlink an acquired name and recreate it with attacker bytes": "at the branch tip before this run: RETURNED private_local_config_created, server-voice.json published holding {\"ApiKey\": \"ATTACKERKEY\"} beside this run's real keys.yaml. After: raises _PublishedEntryNotOwned.",
+          "E2 rewrite that file in place through its existing inode (O_TRUNC, identity preserved, asserted)": "before: RETURNED with attacker bytes published. After: raises _PublishedEntryNotOwned.",
+          "F inject a name this run never acquired": "before: RETURNED, injected-backdoor.yaml published. After: raises _PublishedEntryNotOwned."
+        },
+        "alsoRunAgainst": "the round-4 departure tree (identical gate logic to the branch tip for this arm): E, E2 and F all RETURNED with attacker bytes published, confirming the departure measurement rather than assuming it.",
+        "note": "After a refusal the run's own files are removed and the foreign entry survives at the output path for manual cleanup; the run does not return its success result."
       }
     ],
     "separateFrom": {
       "pythonUnitTotal": 24,
-      "boundaryTotal": 15,
+      "boundaryTotal": 34,
       "voiceRegressionTotal": 89,
-      "note": "The 39 tests comprise the pre-existing Python 24 and the boundary 15 and are a separate total from the Voice 89 regression suite. The 24 and the 15 are separately selectable totals (LocalVoiceConfigurationTests / StagingPublicationBoundaryTests) and a fixture enforces the split. The Voice 89 suite was not run here."
+      "note": "The 58 tests comprise the pre-existing Python 24 and the boundary 34, and are a separate total from the Voice 89 regression suite. The two are separately selectable (LocalVoiceConfigurationTests / StagingPublicationBoundaryTests) and a fixture enforces the split. The Voice 89 suite was not run here."
     },
     "failedOrUnrun": [
       {
@@ -198,12 +241,12 @@
       {
         "item": "Python 3.12 and 3.13 execution",
         "state": "FAILED_EXISTING",
-        "reason": "On 3.12.11 and 3.13.12 the suite reports Ran 39, FAILED (failures=1) in test_cli_errors_are_sanitized_and_actionable. The same fixture fails at baseCommit ce97e46, so the failure is pre-existing; the boundary fixtures pass on 3.12.11. These are the versions CI configures."
+        "reason": "On 3.12.11 and 3.13.12 the suite reports Ran 58, FAILED (failures=1) in test_cli_errors_are_sanitized_and_actionable. The same fixture fails at baseCommit ce97e46 (Ran 24, failures=1 on 3.12.11) and passes on 3.14.5, re-measured here, so the failure is pre-existing and version-dependent; all 34 boundary fixtures pass on 3.12.11. These are the versions CI configures."
       },
       {
         "item": "automated execution of this suite in CI",
         "state": "NOT_RUN",
-        "reason": "No workflow under .github/workflows/ references services/livekit, so neither the 39 tests nor the selectors run in the repository's automation. The PASS above is a local Darwin run."
+        "reason": "No workflow under .github/workflows/ references services/livekit, so neither the 58 tests nor the two selectors run in the repository's automation. The PASS is a local Darwin run."
       }
     ],
     "blockers": [],
@@ -387,6 +430,238 @@
       },
       "appendOnly": true,
       "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence."
+    },
+    {
+      "schemaVersion": 1,
+      "classification": "PUBLIC_PROJECT_CONTEXT",
+      "workId": "FMP-04-R1",
+      "issue": 151,
+      "domainCode": "QA",
+      "phase": "candidate",
+      "artifact": "artifact:151:staging-ownership-proof:candidate",
+      "appendOnly": true,
+      "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence.",
+      "runRecord": {
+        "recordKind": "complete_run_record",
+        "branch": "bugfix/151-staging-ownership-boundary",
+        "commit": "cbacfdecc2f561ea97ec3d4725c967e304cf2367",
+        "baseRef": "origin/develop",
+        "baseCommit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
+        "platform": {
+          "sysPlatform": "darwin",
+          "note": "Darwin-only privacy and exclusive-publication backends; other platforms fail closed."
+        },
+        "inputs": {
+          "services/livekit/configure_local.py": {
+            "baseBlobSha1": "1f7b37a2da355b7bed5848489b85ef2919dd0612",
+            "candidateBlobSha1": "fa97db51202bad071dc76b40a58843fc89f2c5c3",
+            "candidateSha256": "0169e4c489953a7021783a5ba0320e95d3dd57d0583a2547e3886c039882fb8c",
+            "candidateSizeBytes": 26828
+          },
+          "services/livekit/test_configure_local.py": {
+            "baseBlobSha1": "a8553dce1698a97407599492edebdafef07ac49e",
+            "candidateBlobSha1": "f67c807a633e117690c36f1368a13a46c2ab81dd",
+            "candidateSha256": "9ff9799f79b3cc5d44a6b4355960d930aed5a11763d87998bdf9c1364423313f",
+            "candidateSizeBytes": 53345
+          },
+          "services/livekit/README.md": {
+            "baseBlobSha1": "89a0b2bc660f2a3c8d127648b6e3f03a9bab47a4",
+            "candidateBlobSha1": "7112009394391347d53bbe4417a9e19e71cb0327",
+            "candidateSha256": "4a9fb786fb7bb5eeee10d46798ba3e6386ee10c1b9aa858a7f64c4669d9185f8",
+            "candidateSizeBytes": 5391
+          }
+        },
+        "inputProvenance": {
+          "predecessor": "artifact:120:source-only-access-manifest:candidate",
+          "manifestPath": "docs/context/publication/foundation-source-manifest.json",
+          "manifestIssue": 120,
+          "manifestStatus": "proposal_for_pm_review",
+          "manifestTeamRef": "feature/54-native-foundation@bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "manifestDevelopRecheck": {
+            "checkedAt": "2026-09-13T11:40:07Z",
+            "ref": "origin/develop",
+            "mergeCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+            "method": "git cat-file --batch on origin/develop; sha256 per path compared with the value recorded from the team ref",
+            "pathsChecked": 261,
+            "matched": 261,
+            "mismatched": 0,
+            "missing": 0,
+            "note": "squash 병합 후에도 261개 경로의 내용 해시가 팀 ref와 동일하다. 팀은 develop만으로 전량 재현할 수 있다."
+          },
+          "digestComparison": "per-path blobSha1 and sha256 compared against the published manifest; 3/3 matched",
+          "candidateGradeOnly": true,
+          "notAcceptSubstitute": "manifest is proposal_for_pm_review with publicationApproval=not_obtained and postPublishRecheckDone=false; it does not substitute for issue 120 acceptance."
+        },
+        "sourceAvailabilityDrift": {
+          "file": "docs/context/source-availability.json",
+          "capturedAt": "2026-09-12T09:39:41Z",
+          "capturedLocalHead": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "stale": true,
+          "observed": "snapshot records the three target paths as local_unpublished (develop=false); the published manifest records them as presentOnTeamRef=true with matching digests",
+          "resolution": "The snapshot was not used as current availability; availability was decided by blob digest comparison against the published manifest."
+        },
+        "boundary": {
+          "writeGate": "configure() raises _StagingOwnershipUnproven before the first credential write when the descriptor-to-entry binding cannot be established.",
+          "publicationGate": "The trusted-parent precondition is re-verified, the ownership evidence is re-derived, the pre-rename binding is re-checked, and the pinned directory is required to hold exactly the entries this run acquired with each of them still resolving to the file identity it was acquired under - immediately before the exclusive no-replace rename. A directory that cannot be enumerated is refused rather than published on the strength of its inode alone.",
+          "rollback": "Exact-owned: only acquired file identities are unlinked, and the directory is rmdir'd only while it is still the proven inode.",
+          "unauthenticatedWindow": "The create-to-open window is not authenticated by pathname; the trusted parent (0700, current-user-owned, no additional ACL) is the precondition that excludes other principals. A same-account actor racing that window is not detectable and is not claimed.",
+          "wasPreviousState": "staging_ownership_proven was hardcoded False and gated only rollback rmdir; credential writes and publication were not gated on ownership."
+        },
+        "checks": [
+          {
+            "command": "python3 -m unittest discover -s services/livekit -p 'test_configure_local.py'",
+            "result": "PASS",
+            "testsRun": 39,
+            "testsFailed": 0,
+            "platform": "Darwin, Python 3.14.5",
+            "note": "24 pre-existing tests (LocalVoiceConfigurationTests) plus 15 boundary tests (StagingPublicationBoundaryTests), each separately selectable: the legacy selector runs 24 OK and the boundary selector runs 15 OK. NOT reproducible on the Python version CI uses - on 3.12.11 and 3.13.12 the suite reports Ran 39, FAILED (failures=1), because test_cli_errors_are_sanitized_and_actionable expects the 3.14 message for a 260-character output name while 3.12/3.13 report 'Configuration path could not be inspected safely'. That fixture fails identically at baseCommit ce97e46 (Ran 24, FAILED failures=1), so it is pre-existing; no boundary fixture is affected.",
+            "negativeCaseAddressed": "The prior 24 passing tests did not prove the new boundary. Two of them encoded the old rollback contract and had been loosened to ValueError without disclosure; this run restores both to their exact base assertions (assertRaises(_CleanupIncomplete) and assertRaisesRegex(_CleanupIncomplete, 'manual')) by giving the generated-file privacy failures a specific type again, so the code satisfies the stricter contract instead of the assertion being relaxed to match the code. The other 22 legacy fixtures are byte-identical to baseCommit; one carries a corrected explanatory comment only, disclosed here because its old comment described the pre-fix mechanism."
+          },
+          {
+            "command": "mutation matrix over ten checks, each removing exactly one gate (Python 3.14.5, Darwin)",
+            "result": "PASS",
+            "killsCountedBy": "only a behavioural fixture observing the path counts as a kill; a source-digest assertion dying is not counted, because it dies under every mutation",
+            "mutations": [
+              {
+                "mutation": "credential-write ownership gate reduced to a no-op",
+                "killedTests": 1,
+                "killed": [
+                  "test_unproven_staging_ownership_blocks_every_credential_write"
+                ]
+              },
+              {
+                "mutation": "publication ownership gate reduced to a no-op",
+                "killedTests": 3,
+                "killed": [
+                  "test_binding_recheck_after_the_ownership_gate_blocks_publication",
+                  "test_ownership_evidence_is_rechecked_on_both_sides_of_the_binding",
+                  "test_staging_swap_after_credentials_is_refused_at_the_publication_gate"
+                ]
+              },
+              {
+                "mutation": "trusted-parent re-verification at the publication boundary removed",
+                "killedTests": 1,
+                "killed": [
+                  "test_parent_privacy_regression_before_publication_is_refused"
+                ]
+              },
+              {
+                "mutation": "pre-rename binding re-check removed",
+                "killedTests": 1,
+                "killed": [
+                  "test_binding_recheck_after_the_ownership_gate_blocks_publication"
+                ]
+              },
+              {
+                "mutation": "entry-set gate fail-closed arm changed to publish (listdir OSError returns [] instead of None)",
+                "killedTests": 1,
+                "killed": [
+                  "test_unlistable_staging_directory_is_refused_and_preserved"
+                ]
+              },
+              {
+                "mutation": "per-entry read changed to follow symlinks",
+                "killedTests": 1,
+                "killed": [
+                  "test_acquired_name_swapped_for_an_outside_symlink_blocks_publication"
+                ]
+              },
+              {
+                "mutation": "entry-set gate reduced to a no-op",
+                "killedTests": 5,
+                "killed": [
+                  "test_acquired_name_swapped_for_an_outside_symlink_blocks_publication",
+                  "test_adopted_directory_with_a_foreign_entry_is_refused",
+                  "test_entry_injected_after_the_last_write_blocks_publication",
+                  "test_owned_name_swapped_for_other_bytes_blocks_publication",
+                  "test_unlistable_staging_directory_is_refused_and_preserved"
+                ]
+              },
+              {
+                "mutation": "rollback call-site no longer bound to the proven inode",
+                "killedTests": 1,
+                "killed": [
+                  "test_unproven_staging_ownership_blocks_every_credential_write"
+                ]
+              },
+              {
+                "mutation": "post-open _same_output_directory check removed (the call immediately after the staging directory is opened, not the pre-rename one)",
+                "killedTests": 0,
+                "note": "UNOBSERVED. No fixture distinguishes this call site from the pre-rename one, which the matrix does kill."
+              },
+              {
+                "mutation": "identity comparison inside _owned_cleanup_target removed alone",
+                "killedTests": 0,
+                "note": "UNOBSERVED. The comparison is dead weight on its own; the load is carried by the call-site binding, which the matrix kills. Recorded so 'each gate is load-bearing' is not read onto this comparison."
+              }
+            ],
+            "note": "Eight of the ten checks die under a behavioural fixture; the two that do not are listed with killedTests 0."
+          },
+          {
+            "command": "independent supervisor probe: inject a foreign entry after the last credential write and before publication; separately swap the staging directory for a different directory inside the create-to-pin window",
+            "result": "PASS",
+            "note": "Against 4a3f727 the first probe published the injected entry and returned success; at 58f7445 it raised and preserved the foreign inode. The second probe, re-run against 58f7445, found the directory-payload swap publishes when the adopted directory is empty and is refused when it holds an entry this run did not create. Both branches are now pinned by fixtures; the window itself remains unauthenticated, as README states."
+          }
+        ],
+        "separateFrom": {
+          "pythonUnitTotal": 24,
+          "boundaryTotal": 15,
+          "voiceRegressionTotal": 89,
+          "note": "The 39 tests comprise the pre-existing Python 24 and the boundary 15 and are a separate total from the Voice 89 regression suite. The 24 and the 15 are separately selectable totals (LocalVoiceConfigurationTests / StagingPublicationBoundaryTests) and a fixture enforces the split. The Voice 89 suite was not run here."
+        },
+        "failedOrUnrun": [
+          {
+            "item": "issue 120 acceptance",
+            "state": "NOT_RUN",
+            "reason": "Predecessor candidate handoff was consumed; acceptance of issue 120 is a separate PM decision and was not performed here."
+          },
+          {
+            "item": "Linux and Windows backends",
+            "state": "NOT_RUN",
+            "reason": "Exclusive no-replace publication and descriptor ACL checks are Darwin-only; other platforms stay fail-closed."
+          },
+          {
+            "item": "accept-phase canonical write",
+            "state": "NOT_RUN",
+            "reason": "Candidate phase writes are isolated proposals (canonicalWriteAllowed=false). Canonical application is a PM decision."
+          },
+          {
+            "item": "live LiveKit service exercise",
+            "state": "NOT_RUN",
+            "reason": "No service was started and no external package was installed; verification is local-fixture only."
+          },
+          {
+            "item": "Python 3.12 and 3.13 execution",
+            "state": "FAILED_EXISTING",
+            "reason": "On 3.12.11 and 3.13.12 the suite reports Ran 39, FAILED (failures=1) in test_cli_errors_are_sanitized_and_actionable. The same fixture fails at baseCommit ce97e46, so the failure is pre-existing; the boundary fixtures pass on 3.12.11. These are the versions CI configures."
+          },
+          {
+            "item": "automated execution of this suite in CI",
+            "state": "NOT_RUN",
+            "reason": "No workflow under .github/workflows/ references services/livekit, so neither the 39 tests nor the selectors run in the repository's automation. The PASS above is a local Darwin run."
+          }
+        ],
+        "blockers": [],
+        "successorHandoff": [
+          {
+            "issue": 100,
+            "artifact": "artifact:151:staging-ownership-proof:accept",
+            "note": "Consumes the accept-phase proof before real microphone/PTT work; Python24/Voice89 totals do not substitute."
+          },
+          {
+            "issue": 143,
+            "artifact": "artifact:151:staging-ownership-proof:accept",
+            "note": "Consumes the accept-phase proof before delivering the service; failed or unverified backends stay fail-closed."
+          }
+        ],
+        "claimRelease": "Held until the candidate artifact is returned to PM, or released on abort with notice.",
+        "digestScope": {
+          "baseBlobSha1": "blob of the file at baseCommit (origin/develop)",
+          "candidateBlobSha1": "git blob SHA-1 of the candidate file as committed at runRecord.commit",
+          "candidateSha256": "sha256 of the committed blob bytes at runRecord.commit",
+          "note": "The candidate changes are committed on the claim branch at runRecord.commit; candidateBlobSha1 is the blob of the committed file and also equals git hash-object of the clean working tree, so a consumer can check the record out."
+        }
+      }
     }
   ],
   "supersedes": {
@@ -395,8 +670,10 @@
       "checks",
       "separateFrom",
       "failedOrUnrun",
-      "boundary.publicationGate"
+      "boundary.publicationGate",
+      "boundary.rollback",
+      "boundary.acknowledgedNotClosedWindows"
     ],
-    "note": "The 58f7445 record overwrote the 4a3f727 run record in place instead of appending it, dropping that run's negativeCaseAddressed disclosure and one mutation row. The prior record is preserved verbatim in runHistory and no later run overwrites it."
+    "note": "This record supersedes the cbacfde record appended by 0da4137, which is preserved verbatim in runHistory. That record's publicationGate and README-level claims were falsified by a supervisor probe: three tamper arms (unlink-and-recreate, in-place rewrite through the same inode, and injection) all returned success at that commit, publishing attacker bytes as this run's configuration. The gate it described did not hold in the window between its last re-derivation and the renameatx_np call. This run binds the bytes as well as the identity and re-derives the entry set after the rename."
   }
 }
