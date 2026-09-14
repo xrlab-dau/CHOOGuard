@@ -1,0 +1,1253 @@
+{
+  "schemaVersion": 1,
+  "artifactId": "artifact:18:M1-02-policy-record:candidate",
+  "issueNumber": 18,
+  "workId": "M1-02",
+  "phase": "candidate",
+  "kind": "permission-boundary-record",
+  "recordType": "machine_observation_not_approval",
+  "draftStatus": "candidate_draft",
+  "canonicalWriteAllowed": false,
+  "noAcceptanceClaim": "Candidate test record. It grants no permission, approves no egress and does not claim OS-level enforcement.",
+  "baseRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+  "inputs": {
+    "artifact:16:M0-03-execution-profile:candidate": {
+      "path": "docs/team/M0-03/execution-profile.json",
+      "fileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+      "policyHashPublished": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+      "policyHashRecomputed": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+      "consumed": [
+        "roles[*].roleId/paths/egress/modelScope",
+        "policy.dataClasses",
+        "egress.destinations",
+        "expectedDenyCases",
+        "protectedPaths.observedInThisRepo (directory names only)",
+        "policy.policyHash"
+      ]
+    },
+    "settings": {
+      "path": ".pi/settings.json",
+      "fileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b",
+      "consumed": [
+        "subagents.modelScope",
+        "subagents.watchdog.rules.roleModels.reviewer.deny"
+      ]
+    },
+    "canonicalPolicyGlobs": {
+      "path": "scripts/bootstrap/verify_toolchain.py",
+      "fileSha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+      "consumed": [
+        "POLICY_GLOBS (read-only import)"
+      ]
+    },
+    "notRead": [
+      "AGENTS.md security sections (declared local_unpublished without qualification; not used as a basis)",
+      "private-data/ contents (never listed or opened)"
+    ]
+  },
+  "outputs": {
+    "artifact:18:M1-02-deny-fixtures:candidate": {
+      "scripts/team/M1-02/permission_boundary.py": "3da988ced1371ae102b03339ebce07c70cc3da56d0fafffec2999168eaaf9703",
+      "scripts/team/M1-02/test_permission_boundary.py": "8eb0385123f35390e83622e7fd667a9d0bd3fe79a656e6ca898672c66360f317"
+    }
+  },
+  "decisionModel": {
+    "layer": "policy decision with synthetic file effects in a temporary workspace",
+    "evaluationOrder": [
+      "role known",
+      "data class known",
+      "path lexical containment",
+      "link or junction resolution",
+      "restricted source prefix or restricted class",
+      "credential and environment files",
+      "generated Unity outputs and logs",
+      "policy files (non-PM)",
+      "existing verification results (non-PM)",
+      "declared work scope (non-PM)",
+      "destructive command",
+      "network command without a role destination",
+      "egress destination, grant, class ceiling, approval",
+      "reviewer provider independence and model allow lists"
+    ],
+    "reasonCodes": {
+      "allowed": [],
+      "approval_not_recorded": [
+        "DC-03"
+      ],
+      "data_class_above_ceiling": [
+        "DC-03"
+      ],
+      "destination_not_granted": [
+        "DC-10"
+      ],
+      "destructive_command": [],
+      "generated_output": [
+        "DC-01"
+      ],
+      "link_escape": [
+        "DC-09"
+      ],
+      "log_modification": [
+        "DC-12"
+      ],
+      "model_outside_scope": [
+        "DC-06"
+      ],
+      "network_command_without_destination": [
+        "DC-11"
+      ],
+      "out_of_root": [
+        "DC-09"
+      ],
+      "outside_work_scope": [
+        "DC-09"
+      ],
+      "policy_file": [
+        "DC-08"
+      ],
+      "restricted_egress": [
+        "DC-03"
+      ],
+      "restricted_input": [
+        "DC-02"
+      ],
+      "reviewer_same_provider": [
+        "DC-05"
+      ],
+      "secret_material": [
+        "DC-02"
+      ],
+      "unknown_destination": [
+        "DC-10"
+      ],
+      "verification_result_overwrite": [
+        "DC-08"
+      ]
+    },
+    "policyFileSet": "verify_toolchain POLICY_GLOBS union the profile policySources paths union docs/team/M0-03/*; the authority between these two sources is not resolved here (see R-07 #52)",
+    "profileDenyCasesOwnedByM1-02": [
+      "DC-03",
+      "DC-05",
+      "DC-06",
+      "DC-08",
+      "DC-09",
+      "DC-10"
+    ],
+    "profileDenyCasesAlsoExercisedAtDecisionLevel": {
+      "DC-01": "M1-03 owns filesystem enforcement",
+      "DC-02": "M1-03 owns filesystem enforcement",
+      "DC-11": "M1-03 owns network enforcement",
+      "DC-12": "M1-03 owns filesystem enforcement"
+    },
+    "profileDenyCasesNotExercised": {
+      "DC-04": "M1-04 Unity MCP adapter optionality",
+      "DC-07": "M1-04 Unity MCP tool scope",
+      "DC-13": "M1-04 Unity MCP project binding"
+    }
+  },
+  "boundaries": {
+    "privacy": "No personal data is read, written or recorded. Restricted-source locations are refused for every role and never listed; only a synthetic placeholder inside a temporary directory is used as the target.",
+    "credential": "Environment, key and credential files are refused for read and write, including for the PM role; fixtures contain labelled synthetic placeholders only.",
+    "license": "This record neither grants nor evaluates third-party license use; source rights stay with M0-02b (#15) and tool licenses with M0-03 (#16).",
+    "publicApproval": "Egress decisions require the destination's recorded approval owner (APR-EGRESS; publication uses APR-PUBLISH). Sanitised public content without a recorded approval is still refused (M02-13). Nothing was sent anywhere."
+  },
+  "capability": {
+    "osFamily": "Windows",
+    "python": "3.11",
+    "linkCapability": "junction",
+    "networkEgressExercised": false,
+    "osSandboxOrAclTested": false,
+    "mcpEnforcementTested": false,
+    "note": "anonymous capability facts only; no hostname, account, path or interpreter build string"
+  },
+  "run": {
+    "command": "python scripts/team/M1-02/permission_boundary.py run",
+    "exitCode": 0,
+    "state": "passed",
+    "counts": {
+      "total": 41,
+      "matched": 41,
+      "mismatched": 0,
+      "blocked": 0,
+      "deny": 32,
+      "allow": 9
+    },
+    "chainIntact": true,
+    "startingProfileState": {
+      "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+      "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+      "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+    },
+    "cases": [
+      {
+        "id": "M02-01",
+        "category": "out_of_root",
+        "dcRef": "DC-09",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "../outside.txt",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "parent-escaping write is refused and the workspace digest is unchanged",
+        "expect": {
+          "decision": "deny",
+          "code": "out_of_root"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "out_of_root",
+          "dcRef": "DC-09",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-02",
+        "category": "out_of_root",
+        "dcRef": "DC-09",
+        "actor": "role:authoring-agent",
+        "action": "read",
+        "target": "/etc/passwd",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "absolute POSIX path is refused without reading",
+        "expect": {
+          "decision": "deny",
+          "code": "out_of_root"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "out_of_root",
+          "dcRef": "DC-09",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-03",
+        "category": "out_of_root",
+        "dcRef": "DC-09",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "C:/escape.txt",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "absolute drive path is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "out_of_root"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "out_of_root",
+          "dcRef": "DC-09",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-04",
+        "category": "out_of_root",
+        "dcRef": "DC-09",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "scripts/team/M1-02/../../../../escape.txt",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "a path that starts inside the scope but climbs out is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "out_of_root"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "out_of_root",
+          "dcRef": "DC-09",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-05",
+        "category": "symlink",
+        "dcRef": "DC-09",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "scripts/team/M1-02/link-out/planted.txt",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace; needs symlink privilege or a directory junction",
+        "expectedFailure": "write through a link that resolves outside the workspace is refused; the outside directory stays empty",
+        "expect": {
+          "decision": "deny",
+          "code": "link_escape"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "link_escape",
+          "dcRef": "DC-09",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-06",
+        "category": "secret",
+        "dcRef": "DC-02",
+        "actor": "role:authoring-agent",
+        "action": "read",
+        "target": ".env",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "environment file is refused for reading",
+        "expect": {
+          "decision": "deny",
+          "code": "secret_material"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "secret_material",
+          "dcRef": "DC-02",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-07",
+        "category": "secret",
+        "dcRef": "DC-02",
+        "actor": "role:authoring-agent",
+        "action": "read",
+        "target": "keys/service.pem",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "key file is refused for reading",
+        "expect": {
+          "decision": "deny",
+          "code": "secret_material"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "secret_material",
+          "dcRef": "DC-02",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-08",
+        "category": "secret",
+        "dcRef": "DC-02",
+        "actor": "role:pm",
+        "action": "write",
+        "target": ".env.local",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "even the PM role cannot write an environment file",
+        "expect": {
+          "decision": "deny",
+          "code": "secret_material"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "secret_material",
+          "dcRef": "DC-02",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-09",
+        "category": "secret",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "read",
+        "target": ".env.example",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "the committed example file is not a secret and stays readable",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "read_bytes:24",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-10",
+        "category": "restricted_input",
+        "dcRef": "DC-02",
+        "actor": "role:pm",
+        "action": "read",
+        "target": "private-data/facility-sources/placeholder.txt",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "restricted source location is refused for every role",
+        "expect": {
+          "decision": "deny",
+          "code": "restricted_input"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "restricted_input",
+          "dcRef": "DC-02",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-11",
+        "category": "restricted_input",
+        "dcRef": "DC-03",
+        "actor": "role:authoring-agent",
+        "action": "egress",
+        "target": "DEST-MODEL-AUTHOR",
+        "dataClass": "KORAIL_RESTRICTED",
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "restricted class is refused even with a recorded approval",
+        "expect": {
+          "decision": "deny",
+          "code": "restricted_egress"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "restricted_egress",
+          "dcRef": "DC-03",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-12",
+        "category": "egress",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "egress",
+        "target": "DEST-MODEL-AUTHOR",
+        "dataClass": "PUBLIC_SYNTHETIC",
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "public synthetic content to the granted model destination with approval is allowed",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "decision_only",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-13",
+        "category": "egress",
+        "dcRef": "DC-03",
+        "actor": "role:authoring-agent",
+        "action": "egress",
+        "target": "DEST-MODEL-AUTHOR",
+        "dataClass": "PUBLIC_SYNTHETIC",
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "sanitised public content still needs the recorded egress approval",
+        "expect": {
+          "decision": "deny",
+          "code": "approval_not_recorded"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "approval_not_recorded",
+          "dcRef": "DC-03",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-14",
+        "category": "egress",
+        "dcRef": "DC-03",
+        "actor": "role:authoring-agent",
+        "action": "egress",
+        "target": "DEST-MODEL-AUTHOR",
+        "dataClass": "TEAM_INTERNAL",
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "team-internal content above the model destination ceiling is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "data_class_above_ceiling"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "data_class_above_ceiling",
+          "dcRef": "DC-03",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-15",
+        "category": "egress",
+        "dcRef": "DC-10",
+        "actor": "role:authoring-agent",
+        "action": "egress",
+        "target": "DEST-UNLISTED-PASTE",
+        "dataClass": "PUBLIC_SYNTHETIC",
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "destination absent from the profile is refused by default",
+        "expect": {
+          "decision": "deny",
+          "code": "unknown_destination"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "unknown_destination",
+          "dcRef": "DC-10",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-16",
+        "category": "egress",
+        "dcRef": "DC-10",
+        "actor": "role:bootstrap-tooling",
+        "action": "egress",
+        "target": "DEST-MODEL-AUTHOR",
+        "dataClass": "PUBLIC_SYNTHETIC",
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "a listed destination not granted to the bootstrap role is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "destination_not_granted"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "destination_not_granted",
+          "dcRef": "DC-10",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-17",
+        "category": "egress",
+        "dcRef": null,
+        "actor": "role:unity-mcp-client",
+        "action": "egress",
+        "target": "DEST-UNITY-MCP",
+        "dataClass": "TEAM_INTERNAL",
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "local MCP transport accepts team-internal content with approval",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "decision_only",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-18",
+        "category": "egress",
+        "dcRef": "DC-11",
+        "actor": "role:bootstrap-tooling",
+        "action": "execute",
+        "target": "curl https://example.invalid/tool.sh",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "network command by a role with no destination is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "network_command_without_destination"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "network_command_without_destination",
+          "dcRef": "DC-11",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-19",
+        "category": "generated_output",
+        "dcRef": "DC-01",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "Library/ScriptAssemblies/planted.dll",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "Library/ write is refused even with a wildcard work scope",
+        "expect": {
+          "decision": "deny",
+          "code": "generated_output"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "generated_output",
+          "dcRef": "DC-01",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-20",
+        "category": "generated_output",
+        "dcRef": "DC-01",
+        "actor": "role:authoring-agent",
+        "action": "delete",
+        "target": "Library/.keep",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "Library/ delete is refused and the file remains",
+        "expect": {
+          "decision": "deny",
+          "code": "generated_output"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "generated_output",
+          "dcRef": "DC-01",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-21",
+        "category": "generated_output",
+        "dcRef": "DC-12",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "Logs/Editor.log",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "overwriting an existing log is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "log_modification"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "log_modification",
+          "dcRef": "DC-12",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-22",
+        "category": "generated_output",
+        "dcRef": "DC-12",
+        "actor": "role:authoring-agent",
+        "action": "delete",
+        "target": "Logs/Editor.log",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "deleting an existing log is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "log_modification"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "log_modification",
+          "dcRef": "DC-12",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-23",
+        "category": "generated_output",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "read",
+        "target": "Logs/Editor.log",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "reading logs stays allowed",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "read_bytes:20",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-24",
+        "category": "destructive_command",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "execute",
+        "target": "git reset --hard origin/develop",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "hard reset is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "destructive_command"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "destructive_command",
+          "dcRef": null,
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-25",
+        "category": "destructive_command",
+        "dcRef": null,
+        "actor": "role:pm",
+        "action": "execute",
+        "target": "git push --force origin develop",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "force push is refused even for the PM role",
+        "expect": {
+          "decision": "deny",
+          "code": "destructive_command"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "destructive_command",
+          "dcRef": null,
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-26",
+        "category": "destructive_command",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "execute",
+        "target": "rm -rf ./Assets",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "recursive forced delete is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "destructive_command"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "destructive_command",
+          "dcRef": null,
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-27",
+        "category": "destructive_command",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "execute",
+        "target": "Remove-Item -Recurse -Force Packages",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "PowerShell recursive delete is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "destructive_command"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "destructive_command",
+          "dcRef": null,
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-28",
+        "category": "destructive_command",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "execute",
+        "target": "git clean -fdx",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "forced clean is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "destructive_command"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "destructive_command",
+          "dcRef": null,
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-29",
+        "category": "destructive_command",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "execute",
+        "target": "git status --porcelain",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "a read-only command is allowed",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "decision_only",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-30",
+        "category": "policy_file",
+        "dcRef": "DC-08",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "AGENTS.md",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "agent write to a policy file is refused even with a wildcard scope",
+        "expect": {
+          "decision": "deny",
+          "code": "policy_file"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "policy_file",
+          "dcRef": "DC-08",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-31",
+        "category": "policy_file",
+        "dcRef": "DC-08",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": ".github/workflows/ci.yml",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "workflow edit is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "policy_file"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "policy_file",
+          "dcRef": "DC-08",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-32",
+        "category": "policy_file",
+        "dcRef": "DC-08",
+        "actor": "role:independent-reviewer",
+        "action": "write",
+        "target": "docs/team/M0-03/execution-profile.json",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "reviewer cannot edit the execution profile",
+        "expect": {
+          "decision": "deny",
+          "code": "policy_file"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "policy_file",
+          "dcRef": "DC-08",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-33",
+        "category": "policy_file",
+        "dcRef": null,
+        "actor": "role:pm",
+        "action": "write",
+        "target": "AGENTS.md",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "the PM role writes policy files",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "wrote",
+          "stateChanged": true
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-34",
+        "category": "policy_file",
+        "dcRef": "DC-08",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "docs/evidence/SYNTH/receipt.json",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "overwriting an existing verification result is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "verification_result_overwrite"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "verification_result_overwrite",
+          "dcRef": "DC-08",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-35",
+        "category": "work_scope",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "scripts/team/M1-02/new_fixture.py",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "write inside the declared work scope is applied",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "wrote",
+          "stateChanged": true
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-36",
+        "category": "work_scope",
+        "dcRef": "DC-09",
+        "actor": "role:authoring-agent",
+        "action": "write",
+        "target": "docs/team/OTHER/notes.md",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "write outside the declared scope is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "outside_work_scope"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "outside_work_scope",
+          "dcRef": "DC-09",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-37",
+        "category": "work_scope",
+        "dcRef": "DC-09",
+        "actor": "role:independent-reviewer",
+        "action": "write",
+        "target": "scripts/team/M1-02/README.txt",
+        "dataClass": null,
+        "capability": "policy decision plus a synthetic file action in a temporary workspace",
+        "expectedFailure": "reviewer cannot edit the artifact under review",
+        "expect": {
+          "decision": "deny",
+          "code": "outside_work_scope"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "outside_work_scope",
+          "dcRef": "DC-09",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-38",
+        "category": "model_scope",
+        "dcRef": "DC-05",
+        "actor": "role:independent-reviewer",
+        "action": "select_model",
+        "target": "anthropic/claude-opus-5",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "reviewer from the authoring provider is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "reviewer_same_provider"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "reviewer_same_provider",
+          "dcRef": "DC-05",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-39",
+        "category": "model_scope",
+        "dcRef": null,
+        "actor": "role:independent-reviewer",
+        "action": "select_model",
+        "target": "openai-codex/gpt-5.6-sol",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "provider-independent reviewer inside scope is allowed",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "decision_only",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-40",
+        "category": "model_scope",
+        "dcRef": "DC-06",
+        "actor": "role:authoring-agent",
+        "action": "select_model",
+        "target": "unlisted-provider/model-x",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "authoring model outside both allow lists is refused",
+        "expect": {
+          "decision": "deny",
+          "code": "model_outside_scope"
+        },
+        "observed": {
+          "decision": "deny",
+          "code": "model_outside_scope",
+          "dcRef": "DC-06",
+          "effect": "none",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      },
+      {
+        "id": "M02-41",
+        "category": "model_scope",
+        "dcRef": null,
+        "actor": "role:authoring-agent",
+        "action": "select_model",
+        "target": "anthropic/claude-opus-5",
+        "dataClass": null,
+        "capability": "policy decision only; no process, network or model call is made",
+        "expectedFailure": "authoring model inside the allow lists is allowed",
+        "expect": {
+          "decision": "allow",
+          "code": "allowed"
+        },
+        "observed": {
+          "decision": "allow",
+          "code": "allowed",
+          "dcRef": null,
+          "effect": "decision_only",
+          "stateChanged": false
+        },
+        "blocked": null,
+        "ok": true
+      }
+    ]
+  },
+  "hashChain": {
+    "rule": "profile policy hash, profile file sha256 and settings file sha256 are recomputed before and after every case; any difference from the starting state invalidates the whole run",
+    "links": 41,
+    "allIntact": true,
+    "invalidationTest": "test_profile_or_settings_change_mid_run_invalidates_every_result changes a settings copy after M02-10 and gets state invalidated_rerun_required with every later link broken"
+  },
+  "checksRun": [
+    {
+      "check": "proposed test: scripts/team/M1-02/test_permission_boundary.py",
+      "command": "python -m unittest discover -s scripts/team/M1-02 -p 'test_*.py' -v",
+      "exitCode": 0,
+      "ran": 8,
+      "result": "OK",
+      "stderrSha256": "2c8aefa6e5ee0be549d64adcfb93d8bed83b5a8c3cc206b52ac883bce5677006"
+    },
+    {
+      "check": "inspection: compare profile hash before/after each fixture",
+      "result": "intact",
+      "links": 41,
+      "startingPolicyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050"
+    },
+    {
+      "check": "mutation controls (candidate copy, restored afterwards)",
+      "mutations": [
+        {
+          "mutation": "the .env branch of the credential check",
+          "unittest": "FAILED (failures=2)",
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "M02-06"
+          ]
+        },
+        {
+          "mutation": "the Library/Temp/Obj write check",
+          "unittest": "FAILED (failures=2)",
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "M02-19",
+            "M02-20"
+          ]
+        },
+        {
+          "mutation": "the recorded-approval check for egress",
+          "unittest": "FAILED (failures=1)",
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "M02-13"
+          ]
+        }
+      ]
+    }
+  ],
+  "failedAttempts": [
+    {
+      "attempt": "first unittest discovery before the test file existed",
+      "observed": "Ran 0 tests, exit 0",
+      "handling": "not counted as a pass; rerun after the file was written"
+    }
+  ],
+  "m1Separation": "M1-02 covers policy decisions for model scope, reviewer independence, egress approval, policy-file, work-scope and destination cases, and exercises the other required surfaces at decision level with synthetic file effects. OS sandbox, ACL, firewall and credential-mount enforcement (M1-03) and Unity MCP enforcement (M1-04) are not claimed.",
+  "acceptanceMapping": [
+    {
+      "criterion": "acceptance[0] deny coverage: out-of-root, secrets, restricted input, egress, symlink, generated files, destructive commands",
+      "evidence": "categories out_of_root M02-01..04, secret M02-06..08, restricted_input M02-10..11, egress M02-13..16/18, symlink M02-05 (real junction), generated_output M02-19..22, destructive_command M02-24..28"
+    },
+    {
+      "criterion": "acceptance[1] each check states capability and expected failure, not location ownership",
+      "evidence": "/run/cases[*]/capability and expectedFailure; test_catalog_covers_required_surfaces_and_states_capability"
+    },
+    {
+      "criterion": "acceptance[2] privacy, credential, license and public approval boundaries explicit",
+      "evidence": "/boundaries"
+    },
+    {
+      "criterion": "acceptance[3] no actual sensitive input",
+      "evidence": "synthetic placeholders in a temporary directory only; test_report_carries_no_workspace_path_or_synthetic_file_content"
+    }
+  ],
+  "limits": [
+    "Decisions are evaluated by this candidate code, not by an operating-system sandbox, filesystem ACL, network firewall or model gateway.",
+    "Egress and model-selection cases are decisions only; no request left the machine and no model was selected.",
+    "The link-escape case used a directory junction because the account has no symlink privilege; a host with neither records the case as blocked instead of passed.",
+    "The policy-file set combines two authorities whose precedence is unresolved (R-07 #52).",
+    "No independent review has been performed."
+  ]
+}
