@@ -571,6 +571,22 @@
               "limits": "Camera render callbacks and CPU frame intervals, not hardware presentation or GPU-only timing. Instrumented unattended workload; no manual/HMD acceptance or leak-free claim."
             }
           }
+        },
+        {
+          "id": "manual-check",
+          "check": "additional operation check outside the work order",
+          "operator": "human (user) with keyboard and mouse",
+          "argv": "argv: ChooGuardFoundation.exe -screen-fullscreen 0 -screen-width 1600 -screen-height 900 -logFile <NEW_RUN>/Player.log ; os-sampler.ps1 -Name ChooGuardFoundation (1s). Operator: human (user) with keyboard/mouse; agent provided written procedure only.",
+          "startedAt": "2026-09-14T03:32:59Z",
+          "endedAt": "2026-09-14T03:38:03Z",
+          "exitCode": 0,
+          "executableSha256": "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+          "result": "Short manual operation check of the ordinary desktop player: movement, look, interaction, incident onset and observation, route selection and route crossing worked; no exceptions.",
+          "sessionRecord": {
+            "file": "<RUN_ROOT>/manual-playthrough/shift-3d4cf1ff83fe48b390fd9738b8c44faf.json",
+            "sha256": "d979c89c086d4f3c2f2a759832b0b960885c83f307712e6e86f596f907f2aff5"
+          },
+          "logErrors": []
         }
       ],
       "observations": {
@@ -761,6 +777,56 @@
           "bytes": 662
         },
         {
+          "path": "<RUN_ROOT>/manual-playthrough/Player.log",
+          "sha256": "f07fb0f62056e27588499e6231b0b69d7eac12f11ae08965ee119ec53a5b7219",
+          "bytes": 2250
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/argv.txt",
+          "sha256": "cb261edf3a7ec5648cc6e29826bfbaea2174fcddf8412e59ff4a8908c03bbba5",
+          "bytes": 251
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/ended.txt",
+          "sha256": "0f59f5bbef46b597781ae871d24d977c59d903f49aae3064fe4cf1e3ce5bdfe4",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/exe-sha256.txt",
+          "sha256": "2c6fcb9a666ce9c2d8fd3ea82a188fa37f0f18098d39374bbcfcd621c085b619",
+          "bytes": 65
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/exitcode.txt",
+          "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+          "bytes": 2
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/os-memory.csv",
+          "sha256": "9d8d2eab15b42ea11e16d2acf0fa0ce1932c134cab5f3bbacb3afd3c593d02a0",
+          "bytes": 22538
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/shift-3d4cf1ff83fe48b390fd9738b8c44faf.json",
+          "sha256": "d979c89c086d4f3c2f2a759832b0b960885c83f307712e6e86f596f907f2aff5",
+          "bytes": 19219
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/started.txt",
+          "sha256": "227f1a5ebb26518598d03a31cb2d1faba326abeee7d7a024eacb293889535d41",
+          "bytes": 21
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/station-sessions-after.txt",
+          "sha256": "855b2143eb2cfdc79b846941d4e3a9f3cb0fa505cbbf5af17167a7f3bedec58b",
+          "bytes": 6228
+        },
+        {
+          "path": "<RUN_ROOT>/manual-playthrough/station-sessions-before.txt",
+          "sha256": "ca0e181e420e1bed4e9cc0ee2291b8bb726ad898c51088eb37a0de9a7db5e84d",
+          "bytes": 6128
+        },
+        {
           "path": "<RUN_ROOT>/os-sampler.ps1",
           "sha256": "a3e086802353ff98119f39cfc1f5af41ee7878185474e56b907506858286e062",
           "bytes": 762
@@ -894,14 +960,9 @@
       "rawRetention": "Raw XML, logs, CSV and patches stay on laptop-A outside Git; only their digests are published here.",
       "unrunOrFailed": [
         {
-          "item": "manual keyboard/mouse playthrough in the standalone player",
-          "status": "not run",
-          "reason": "requires a human operator; agent cannot provide input"
-        },
-        {
           "item": "lead/assembly and response completion in the standalone player",
           "status": "not run",
-          "reason": "covered only by PlayMode tests"
+          "reason": "covered by PlayMode tests; the manual check was a short operation check only"
         },
         {
           "item": "ReconstructionReviewTests.SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
