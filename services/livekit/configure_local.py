@@ -27,6 +27,15 @@ class _CleanupIncomplete(_OutputPathChanged):
     """Private output could not be completely removed after a failed run."""
 
 
+class _StagingOwnershipUnproven(_OutputPathChanged):
+    """The staging directory was not proven to belong to this invocation.
+
+    Raised before the first credential byte is written and again before
+    publication.  It is a refusal, not a failure: the caller stops instead of
+    writing credentials into, or publishing, a directory it cannot vouch for.
+    """
+
+
 def _open_flags():
     flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
     if hasattr(os, "O_NOFOLLOW"):
@@ -238,6 +247,75 @@ def _same_parent_path(output_parent, parent_stat):
     )
 
 
+class _StagingOwnership:
+    """Evidence tying an opened staging descriptor to a parent directory entry.
+
+    ``identity`` is the ``(st_dev, st_ino)`` pair observed on the descriptor and
+    re-observed on the parent entry at the same instant.  Every later use must
+    re-observe the same pair on both sides before a credential is written or the
+    directory is published, so a swap that happens *after* the proof is caught.
+
+    Scope: the create->open window itself is not authenticated by this evidence.
+    What keeps another principal out of that window is the precondition below,
+    not this object.
+    """
+
+    __slots__ = ("identity",)
+
+    def __init__(self, identity):
+        self.identity = identity
+
+
+def _prove_staging_ownership(parent_fd, staging_name, directory_fd):
+    """Bind ``directory_fd`` to the entry ``staging_name`` under ``parent_fd``.
+
+    Returns ``_StagingOwnership`` evidence, or ``None`` when the binding does
+    not hold.  The caller must treat ``None`` as a refusal and stop before
+    writing credentials.
+
+    Precondition, enforced by the caller before the staging directory is
+    created: the parent is private (mode 0700, owned by the current user, no
+    additional ACL).  That precondition is what excludes other principals from
+    the create->open window; this function detects a swap after it, which is the
+    only window a same-uid actor could otherwise exploit undetected.
+    """
+    if parent_fd is None or directory_fd is None or not staging_name:
+        return None
+    try:
+        descriptor_stat = os.fstat(directory_fd)
+        entry_stat = os.stat(staging_name, dir_fd=parent_fd, follow_symlinks=False)
+    except OSError:
+        return None
+    if not stat.S_ISDIR(descriptor_stat.st_mode) or not stat.S_ISDIR(entry_stat.st_mode):
+        return None
+    identity = _directory_identity(descriptor_stat)
+    if identity != _directory_identity(entry_stat):
+        return None
+    return _StagingOwnership(identity)
+
+
+def _require_owned_staging(ownership, parent_fd, staging_name, directory_fd, *, action):
+    """Stop unless the staging directory is still the inode proven earlier."""
+    current = _prove_staging_ownership(parent_fd, staging_name, directory_fd)
+    if ownership is None or current is None or current.identity != ownership.identity:
+        raise _StagingOwnershipUnproven(
+            "Configuration staging ownership could not be proven; refusing to " + action
+        )
+    return ownership
+
+
+def _owned_cleanup_target(ownership, parent_fd, cleanup_name, directory_fd):
+    """Report whether ``cleanup_name`` still names the proven staging inode.
+
+    Only an exact-owned target may be removed, so this is deliberately narrower
+    than "the name resolves to some directory".
+    """
+    if ownership is None or directory_fd is None or not cleanup_name:
+        return False
+    current = _prove_staging_ownership(parent_fd, cleanup_name, directory_fd)
+    return current is not None and current.identity == ownership.identity
+
+
 def _rename_exclusive(parent_fd, staging_name, output_name):
     """Publish a completed private directory without replacing an existing name."""
     libc = ctypes.CDLL(None, use_errno=True)
@@ -287,6 +365,13 @@ def _cleanup_owned_files(directory_fd, owned_files):
 
 def _safe_creation_error(original_error, cleanup_error):
     if cleanup_error is not None:
+        if isinstance(original_error, _StagingOwnershipUnproven):
+            # Refusing to touch an unproven directory is the actionable result;
+            # the incomplete cleanup is a consequence of that refusal, so the
+            # refusal is reported and the caveat appended rather than replaced.
+            raise _StagingOwnershipUnproven(
+                f"{original_error} The unproven directory was left in place for manual cleanup."
+            ) from cleanup_error
         raise _CleanupIncomplete(
             "Configuration creation failed; private cleanup is incomplete. "
             "Remove the incomplete private output manually before retrying."
@@ -308,10 +393,14 @@ def configure(output, node_ip="127.0.0.1"):
     staging_name = None
     owned_files = []
     published = False
-    # Darwin's pathname mkdir/open sequence cannot prove creation ownership.
-    # Keep this false unless the API contract supplies an atomic create+fd
-    # primitive; rollback must never rmdir an inode that was not proven ours.
-    staging_ownership_proven = False
+    # Darwin offers no mkdir variant that returns a descriptor, so creation
+    # ownership is established after the fact: the descriptor and the parent
+    # entry must name the same inode, before any credential byte is written and
+    # again before publication.  Rollback removes a directory only while that
+    # same evidence still holds, so an unproven or replaced inode is never
+    # rmdir'd.  See _prove_staging_ownership for what this does and does not
+    # authenticate.
+    ownership = None
     try:
         staging_prefix = f".{output.name}."
         if len(os.fsencode(staging_prefix)) + 24 + len(b".tmp") > 255:
@@ -337,6 +426,15 @@ def configure(output, node_ip="127.0.0.1"):
         if not _same_output_directory(parent_fd, staging_name, directory_stat):
             raise _OutputPathChanged("Configuration staging path changed during creation")
         _verify_private_directory(dir_fd=directory_fd)
+
+        # P0 boundary: credentials are not written until the staging directory
+        # is proven to be the one this call created under the private parent.
+        ownership = _prove_staging_ownership(parent_fd, staging_name, directory_fd)
+        if ownership is None:
+            raise _StagingOwnershipUnproven(
+                "Configuration staging ownership could not be proven; "
+                "refusing to write credentials"
+            )
 
         acquire = lambda name, identity: owned_files.append((name, identity))
         key = "cg" + secrets.token_hex(8)
@@ -382,6 +480,18 @@ key_file: /run/chooguard/keys.yaml
         )
         if not _same_parent_path(output.parent, parent_stat):
             raise _OutputPathChanged("Configuration parent path changed during creation")
+        # The trusted-parent precondition must still hold at the publication
+        # boundary, and the staging inode must still be the one proven above.
+        # Ownership is checked before the looser path check so a swap surfaces
+        # as a specific refusal rather than a generic path change.
+        _verify_private_directory(dir_fd=parent_fd)
+        _require_owned_staging(
+            ownership,
+            parent_fd,
+            staging_name,
+            directory_fd,
+            action="publish the configuration",
+        )
         if not _same_output_directory(parent_fd, staging_name, directory_stat):
             raise _OutputPathChanged("Configuration staging path changed during creation")
 
@@ -396,10 +506,13 @@ key_file: /run/chooguard/keys.yaml
         if directory_fd is not None:
             cleanup_error = _cleanup_owned_files(directory_fd, owned_files)
             cleanup_name = output.name if published else staging_name
-            can_remove_directory = staging_ownership_proven
-            if cleanup_error is None and can_remove_directory and cleanup_name and _same_output_directory(
-                parent_fd, cleanup_name, directory_stat
-            ):
+            # Exact-owned rollback: the directory is removed only while it is
+            # still the inode this call proved it created.  A replaced or
+            # unproven inode is preserved for manual cleanup instead.
+            can_remove_directory = _owned_cleanup_target(
+                ownership, parent_fd, cleanup_name, directory_fd
+            )
+            if cleanup_error is None and can_remove_directory:
                 try:
                     os.rmdir(cleanup_name, dir_fd=parent_fd)
                 except OSError as cleanup_exc:
@@ -434,6 +547,8 @@ def main():
     try:
         result = configure(args.output, args.node_ip)
     except ValueError as exc:
+        parser.error(str(exc))
+    except _StagingOwnershipUnproven as exc:
         parser.error(str(exc))
     except _CleanupIncomplete as exc:
         parser.error(str(exc))

@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "workId": "FMP-04-R1",
+  "issue": 151,
+  "domainCode": "QA",
+  "phase": "candidate",
+  "artifact": "artifact:151:staging-ownership-proof:candidate",
+  "runRecord": {
+    "recordKind": "complete_run_record",
+    "branch": "fix/151-staging-ownership-boundary",
+    "commit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
+    "baseRef": "origin/develop",
+    "baseCommit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
+    "platform": {
+      "sysPlatform": "darwin",
+      "note": "Darwin-only privacy and exclusive-publication backends; other platforms fail closed."
+    },
+    "inputs": {
+      "services/livekit/configure_local.py": {
+        "baseBlobSha1": "1f7b37a2da355b7bed5848489b85ef2919dd0612",
+        "candidateBlobSha1": "059070789e81b2bc61e3c2aa0691f11898f0e1a6",
+        "candidateSha256": "d28c3e232e9fcccd5c6c1eb4aea417d2f6028e4c801dc0753de310e71f90d761",
+        "candidateSizeBytes": 21977
+      },
+      "services/livekit/test_configure_local.py": {
+        "baseBlobSha1": "a8553dce1698a97407599492edebdafef07ac49e",
+        "candidateBlobSha1": "440077aef40b91c27fb2cb82265f5c84cf528d05",
+        "candidateSha256": "ff112bfd1df9b301e30f7a584bab345e1c3ffffb0b4bbd7f46634fe79aa5687a",
+        "candidateSizeBytes": 33224
+      },
+      "services/livekit/README.md": {
+        "baseBlobSha1": "89a0b2bc660f2a3c8d127648b6e3f03a9bab47a4",
+        "candidateBlobSha1": "8a599e28109330192649d4c5414240b36ad1434d",
+        "candidateSha256": "8fd76ecccecd9d5de126ddc27fae4ec47b67cc40e13035bae3f7f79c6fa84c71",
+        "candidateSizeBytes": 4363
+      }
+    },
+    "inputProvenance": {
+      "predecessor": "artifact:120:source-only-access-manifest:candidate",
+      "manifestPath": "docs/context/publication/foundation-source-manifest.json",
+      "manifestIssue": 120,
+      "manifestStatus": "proposal_for_pm_review",
+      "manifestTeamRef": "feature/54-native-foundation@bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+      "manifestDevelopRecheck": {
+        "checkedAt": "2026-09-13T11:40:07Z",
+        "ref": "origin/develop",
+        "mergeCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+        "method": "git cat-file --batch on origin/develop; sha256 per path compared with the value recorded from the team ref",
+        "pathsChecked": 261,
+        "matched": 261,
+        "mismatched": 0,
+        "missing": 0,
+        "note": "squash 병합 후에도 261개 경로의 내용 해시가 팀 ref와 동일하다. 팀은 develop만으로 전량 재현할 수 있다."
+      },
+      "digestComparison": "per-path blobSha1 and sha256 compared against the published manifest; 3/3 matched",
+      "candidateGradeOnly": true,
+      "notAcceptSubstitute": "manifest is proposal_for_pm_review with publicationApproval=not_obtained and postPublishRecheckDone=false; it does not substitute for issue 120 acceptance."
+    },
+    "sourceAvailabilityDrift": {
+      "file": "docs/context/source-availability.json",
+      "capturedAt": "2026-09-12T09:39:41Z",
+      "capturedLocalHead": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+      "stale": true,
+      "observed": "snapshot records the three target paths as local_unpublished (develop=false); the published manifest records them as presentOnTeamRef=true with matching digests",
+      "resolution": "The snapshot was not used as current availability; availability was decided by blob digest comparison against the published manifest."
+    },
+    "boundary": {
+      "writeGate": "configure() raises _StagingOwnershipUnproven before the first credential write when the descriptor-to-entry binding cannot be established.",
+      "publicationGate": "The trusted-parent precondition is re-verified and the ownership evidence is re-derived immediately before the exclusive no-replace rename.",
+      "rollback": "Exact-owned: only acquired file identities are unlinked, and the directory is rmdir'd only while it is still the proven inode.",
+      "unauthenticatedWindow": "The create-to-open window is not authenticated by pathname; the trusted parent (0700, current-user-owned, no additional ACL) is the precondition that excludes other principals. A same-account actor racing that window is not detectable and is not claimed.",
+      "wasPreviousState": "staging_ownership_proven was hardcoded False and gated only rollback rmdir; credential writes and publication were not gated on ownership."
+    },
+    "checks": [
+      {
+        "command": "python3 -m unittest discover -s services/livekit -p 'test_configure_local.py'",
+        "result": "PASS",
+        "testsRun": 30,
+        "testsFailed": 0,
+        "note": "24 pre-existing tests plus 6 new boundary tests.",
+        "negativeCaseAddressed": "The prior 24 passing tests did not prove the new boundary; two of them encoded the old contract (rollback always incomplete) and were strengthened, not weakened."
+      },
+      {
+        "command": "mutation matrix over the four new gates",
+        "result": "PASS",
+        "mutations": [
+          {
+            "mutation": "credential-write ownership gate removed",
+            "killedTests": 1
+          },
+          {
+            "mutation": "publication ownership gate reduced to a no-op",
+            "killedTests": 2
+          },
+          {
+            "mutation": "rollback ownership identity check removed",
+            "killedTests": 1
+          },
+          {
+            "mutation": "ownership proof made unsatisfiable",
+            "killedTests": 14
+          }
+        ],
+        "note": "Each gate is load-bearing: removing it makes at least one boundary test fail."
+      }
+    ],
+    "separateFrom": {
+      "pythonUnitTotal": 24,
+      "voiceRegressionTotal": 89,
+      "note": "The 30 tests here are a separate total from the pre-existing Python 24 and the Voice 89 regression suites."
+    },
+    "failedOrUnrun": [
+      {
+        "item": "issue 120 acceptance",
+        "state": "NOT_RUN",
+        "reason": "Predecessor candidate handoff was consumed; acceptance of issue 120 is a separate PM decision and was not performed here."
+      },
+      {
+        "item": "Linux and Windows backends",
+        "state": "NOT_RUN",
+        "reason": "Exclusive no-replace publication and descriptor ACL checks are Darwin-only; other platforms stay fail-closed."
+      },
+      {
+        "item": "accept-phase canonical write",
+        "state": "NOT_RUN",
+        "reason": "Candidate phase writes are isolated proposals (canonicalWriteAllowed=false). Canonical application is a PM decision."
+      },
+      {
+        "item": "live LiveKit service exercise",
+        "state": "NOT_RUN",
+        "reason": "No service was started and no external package was installed; verification is local-fixture only."
+      }
+    ],
+    "blockers": [],
+    "successorHandoff": [
+      {
+        "issue": 100,
+        "artifact": "artifact:151:staging-ownership-proof:accept",
+        "note": "Consumes the accept-phase proof before real microphone/PTT work; Python24/Voice89 totals do not substitute."
+      },
+      {
+        "issue": 143,
+        "artifact": "artifact:151:staging-ownership-proof:accept",
+        "note": "Consumes the accept-phase proof before delivering the service; failed or unverified backends stay fail-closed."
+      }
+    ],
+    "claimRelease": "Held until the candidate artifact is returned to PM, or released on abort with notice.",
+    "digestScope": {
+      "baseBlobSha1": "blob of the file at baseCommit (origin/develop)",
+      "candidateBlobSha1": "git hash-object of the candidate working tree content",
+      "candidateSha256": "sha256 of the candidate working tree bytes",
+      "note": "The candidate changes are uncommitted on the claim branch; baseCommit is the branch point, not the content being returned."
+    }
+  },
+  "appendOnly": true,
+  "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence."
+}

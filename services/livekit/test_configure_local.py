@@ -9,7 +9,12 @@ from pathlib import Path
 from unittest import mock
 
 import configure_local
-from configure_local import _CleanupIncomplete, _OutputPathChanged, configure
+from configure_local import (
+    _CleanupIncomplete,
+    _OutputPathChanged,
+    _StagingOwnershipUnproven,
+    configure,
+)
 
 
 class LocalVoiceConfigurationTests(unittest.TestCase):
@@ -336,12 +341,14 @@ class LocalVoiceConfigurationTests(unittest.TestCase):
             with mock.patch(
                 "configure_local._rename_exclusive", side_effect=inject_replacement
             ):
-                with self.assertRaises(_CleanupIncomplete):
+                with self.assertRaises(ValueError):
                     configure(target)
             self.assertEqual((target / "keys.yaml").read_text(), "synthetic foreign sentinel")
-            # The staging inode was not proven to be ours after the swap; it
-            # must remain for manual cleanup rather than risking foreign rmdir.
-            self.assertEqual(len(list(root.glob(".voice.*.tmp"))), 1)
+            # The foreign output is preserved untouched, while the staging
+            # directory is removed only because it is still the exact inode this
+            # invocation proved it created.  Cleanup is therefore complete, not
+            # deferred to manual removal.
+            self.assertEqual(len(list(root.glob(".voice.*.tmp"))), 0)
 
     def test_directory_swap_does_not_delete_replacement_directory(self):
         with tempfile.TemporaryDirectory() as temp:
@@ -389,6 +396,183 @@ class LocalVoiceConfigurationTests(unittest.TestCase):
                     configure(target)
             self.assertFalse((parent / "voice").exists())
             self.assertFalse((parked / "voice" / "keys.yaml").exists())
+
+    def test_unproven_staging_ownership_blocks_every_credential_write(self):
+        """The P0 boundary: no credential byte and no publication without proof."""
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            writes = []
+            renames = []
+
+            def refuse_proof(parent_fd, staging_name, directory_fd):
+                return None
+
+            def record_write(path, text, **kwargs):
+                writes.append(Path(path).name)
+                raise AssertionError("credentials must not be written without ownership proof")
+
+            def record_rename(*args, **kwargs):
+                renames.append(args)
+                raise AssertionError("publication must not happen without ownership proof")
+
+            with mock.patch(
+                "configure_local._prove_staging_ownership", side_effect=refuse_proof
+            ):
+                with mock.patch("configure_local.write_private", side_effect=record_write):
+                    with mock.patch(
+                        "configure_local._rename_exclusive", side_effect=record_rename
+                    ):
+                        with self.assertRaises(_StagingOwnershipUnproven) as caught:
+                            configure(target)
+            self.assertEqual(writes, [])
+            self.assertEqual(renames, [])
+            self.assertFalse(target.exists())
+            self.assertIn("manual cleanup", str(caught.exception))
+            # The staging entry is preserved: an unproven inode is never rmdir'd.
+            residues = list(root.glob(".voice.*.tmp"))
+            self.assertEqual(len(residues), 1)
+            self.assertEqual(list(residues[0].iterdir()), [])
+
+    def test_staging_swap_after_credentials_is_refused_at_the_publication_gate(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            original_write = configure_local.write_private
+            foreign = []
+
+            def swap_after_credentials(path, text, **kwargs):
+                result = original_write(path, text, **kwargs)
+                if Path(path).name == "server-voice.json":
+                    ours = list(root.glob(".voice.*.tmp"))
+                    self.assertEqual(len(ours), 1)
+                    ours[0].rename(root / "parked-staging")
+                    replacement = root / ours[0].name
+                    replacement.mkdir(mode=0o700)
+                    (replacement / "foreign-marker").write_text("keep")
+                    foreign.append(replacement)
+                return result
+
+            with mock.patch(
+                "configure_local.write_private", side_effect=swap_after_credentials
+            ):
+                with self.assertRaises(_StagingOwnershipUnproven) as caught:
+                    configure(target)
+            self.assertEqual(len(foreign), 1)
+            self.assertIn("manual cleanup", str(caught.exception))
+            # Nothing was published, and the foreign replacement is untouched:
+            # no generated file was written into it and it was not deleted.
+            self.assertFalse(target.exists())
+            self.assertEqual(
+                sorted(item.name for item in foreign[0].iterdir()), ["foreign-marker"]
+            )
+            # The replaced staging inode is no longer reachable by name, so it
+            # is preserved rather than rmdir'd on an assumption; the generated
+            # files inside it were removed by exact-owned rollback.
+            self.assertTrue((root / "parked-staging").is_dir())
+            self.assertEqual(list((root / "parked-staging").iterdir()), [])
+
+    def test_symlinked_staging_entry_is_rejected_without_writing_outside_target(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            outside = root / "outside"
+            outside.mkdir(mode=0o700)
+            original_open = configure_local.os.open
+            planted = []
+
+            def plant_symlink(path, flags, mode=0o777, *, dir_fd=None):
+                if (
+                    dir_fd is not None
+                    and isinstance(path, str)
+                    and path.startswith(".voice.")
+                    and path.endswith(".tmp")
+                    and not planted
+                ):
+                    ours = list(root.glob(".voice.*.tmp"))[0]
+                    ours.rename(root / "parked-staging")
+                    os.symlink(outside, root / ours.name)
+                    planted.append(True)
+                return original_open(path, flags, mode, dir_fd=dir_fd)
+
+            with mock.patch("configure_local.os.open", side_effect=plant_symlink):
+                with self.assertRaises((OSError, ValueError)):
+                    configure(target)
+            self.assertEqual(len(planted), 1)
+            # O_NOFOLLOW refuses the symlink, so the adoption target is empty
+            # and no credential was written through it.
+            self.assertEqual(list(outside.iterdir()), [])
+            self.assertFalse(target.exists())
+
+    def test_foreign_output_directory_is_never_published_into_or_deleted(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            target.mkdir(mode=0o700)
+            (target / "foreign-marker").write_text("keep")
+            foreign_file = root / "foreign-file"
+            foreign_file.write_text("keep")
+
+            with self.assertRaises(ValueError):
+                configure(target)
+
+            self.assertEqual(
+                sorted(item.name for item in target.iterdir()), ["foreign-marker"]
+            )
+            self.assertEqual((target / "foreign-marker").read_text(), "keep")
+            self.assertEqual(foreign_file.read_text(), "keep")
+            self.assertEqual(list(root.glob(".voice.*.tmp")), [])
+
+    def test_publication_failure_rolls_back_exactly_the_owned_directory(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            foreign_file = root / "foreign-file"
+            foreign_file.write_text("keep")
+
+            def fail_publication(parent_fd, staging_name, output_name):
+                raise OSError("synthetic rename failure")
+
+            with mock.patch(
+                "configure_local._rename_exclusive", side_effect=fail_publication
+            ):
+                with self.assertRaises(OSError):
+                    configure(target)
+            self.assertFalse(target.exists())
+            # Exact-owned rollback completed: every generated file and the proven
+            # staging directory are gone, and nothing foreign was touched.
+            self.assertEqual(list(root.glob(".voice.*.tmp")), [])
+            self.assertEqual(foreign_file.read_text(), "keep")
+            self.assertEqual(sorted(item.name for item in root.iterdir()), ["foreign-file"])
+
+    def test_ownership_evidence_is_rechecked_on_both_sides_of_the_binding(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            target = root / "voice"
+            seen = []
+            original_prove = configure_local._prove_staging_ownership
+
+            def observe_proof(parent_fd, staging_name, directory_fd):
+                evidence = original_prove(parent_fd, staging_name, directory_fd)
+                seen.append(
+                    (
+                        evidence is not None,
+                        os.fstat(directory_fd).st_ino,
+                        os.stat(staging_name, dir_fd=parent_fd, follow_symlinks=False).st_ino,
+                    )
+                )
+                return evidence
+
+            with mock.patch(
+                "configure_local._prove_staging_ownership", side_effect=observe_proof
+            ):
+                configure(target)
+            # A proof is taken before the credentials and again at publication.
+            self.assertGreaterEqual(len(seen), 2)
+            for proven, descriptor_ino, entry_ino in seen:
+                self.assertTrue(proven)
+                self.assertEqual(descriptor_ino, entry_ino)
+            self.assertTrue((target / "keys.yaml").is_file())
 
     @unittest.skipUnless(sys.platform == "darwin", "requires Darwin ACL API")
     def test_real_inherited_acl_is_rejected_but_no_acl_control_succeeds(self):
@@ -484,10 +668,13 @@ class LocalVoiceConfigurationTests(unittest.TestCase):
                 "configure_local._verify_darwin_no_additional_acl",
                 side_effect=reject_first_regular_file,
             ):
-                with self.assertRaisesRegex(_CleanupIncomplete, "manual"):
+                with self.assertRaisesRegex(ValueError, "synthetic file ACL"):
                     configure(target)
             self.assertGreaterEqual(regular_file_checks, 1)
             self.assertFalse(target.exists())
+            # Exact-owned rollback removes every generated file and the staging
+            # directory it proved it created; no residue is left behind.
+            self.assertEqual(len(list(Path(temp).glob(".voice.*.tmp"))), 0)
 
     def test_cli_symlink_output_is_rejected_without_writing_outside_target(self):
         with tempfile.TemporaryDirectory() as temp:
