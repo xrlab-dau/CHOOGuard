@@ -1,0 +1,791 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "workId": "FMP-12a",
+  "issue": 140,
+  "domainCode": "QA",
+  "phase": "candidate",
+  "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
+  "parentIssue": 91,
+  "childIssues": [
+    149,
+    150
+  ],
+  "title": "[FMP-12a] 2~4 클라이언트 축소 리허설",
+  "requiredOutputPath": "docs/evidence/foundation/FMP-12a-rehearsal.json",
+  "recordedAtUtc": "2026-09-14T13:07:12Z",
+  "status": "PENDING_RUNNABLE_PAYLOAD",
+  "nonAcceptanceLabel": "CANDIDATE / REHEARSAL REQUIREMENT AGGREGATION ONLY. No 2-client, 3-client or 4-client protocol rehearsal was executed. This receipt does not claim issue 140 acceptance, does not claim the 20-client / NPC 100 / 2-incident target, and reports no voice or WAN result. Per work-graph items[number=140].outputs[artifact:140:fmp12a-rehearsal-receipt:candidate].acceptance, PREPARED_NOT_RUN, script/recipe presence, source-only state, build attempt and failure-only payload cannot qualify this receipt; the receipt therefore stays a candidate proposal returned to PM.",
+  "scope": "FMP-12a / fmp12a-rehearsal-receipt / candidate. Aggregates the 2/3/4-participant rehearsal requirement set across runner, metrics, session creator and fixtures, binds the F(n)/U(n) engine-metric and causal-corpus inputs consumed from #149 and #150, and records the honest non-run state and its blocking prerequisites. It does not assert CC00 acceptance, CC01-CC05 adoption, EMB00 adoption, issue 120 source-manifest acceptance, or any #141/#142 load result.",
+
+  "sourceSnapshot": {
+    "capturedAtUtc": "2026-09-14T13:07:12Z",
+    "branch": "feature/150-engine-metrics-binding",
+    "headCommit": "4334007806d52fb557491c230566c97689bb6921",
+    "headCommitSubject": "feat(multiplayer): bind F(n) and U(n) metrics to Unity scheduler",
+    "headCommitSubjectNote": "Exact git subject of 4334007 in this worktree. The merge commit carrying the same change into develop is 9b04337 with the '(#175)' suffix.",
+    "baseRef": "origin/develop",
+    "baseCommit": "271d5a6cec8fed19124f824b4c7e4dc795d9084b",
+    "worktreeClean": true,
+    "platform": {
+      "sysPlatform": "darwin",
+      "osVersion": "Darwin 25.5.0",
+      "python": "3.14.5"
+    },
+    "writeMode": "isolated_proposal",
+    "canonicalWriteAllowed": false,
+    "note": "This receipt is written inside an isolated scratchpad worktree at the commit above. The digests in sourceBindings are the sha256 of the working-tree bytes at that commit, which is clean and equals HEAD."
+  },
+
+  "requirementAggregation": {
+    "source": "directive from docs/context/work-orders/140.json .directive; acceptance and stopConditions from docs/context/work-graph.json items[number=140].acceptance and .stopConditions. All read at the sourceSnapshot above.",
+    "directive": "runner·metrics·session creator·fixture가 2/3/4명 리허설과 20명 수용 조건을 함께 지원하도록 수정하고, 2~4명 실제 protocol 리허설의 계측 결과를 남기세요.",
+    "acceptance": [
+      {
+        "acceptanceId": "A1",
+        "text": "run_foundation_load Config guard, CLI, plan/event/result ClientCount literals use validated runtime client count rather than fixed 20.",
+        "observedState": "NOT_IMPLEMENTED",
+        "evidence": "See configurationTargets.runner.observedSites: the count is still fixed at 20 in the guard, the CLI choices, and every ClientCount literal."
+      },
+      {
+        "acceptanceId": "A2",
+        "text": "foundation_load_metrics validation, client labels, and targets distinguish rehearsal count from immutable 20/100/2 acceptance target.",
+        "observedState": "NOT_IMPLEMENTED",
+        "evidence": "See configurationTargets.metrics.observedSites: the 20/100/2 target tuple and the exact-20 roster check are unconditional; ready_for_measurement() already accepts a clients parameter but the caller path does not carry a rehearsal count."
+      },
+      {
+        "acceptanceId": "A3",
+        "text": "test_foundation_load fixtures and create_multiplayer_session minimum/default support each intended 2/3/4 rehearsal case and reject invalid counts.",
+        "observedState": "NOT_IMPLEMENTED",
+        "evidence": "See configurationTargets.fixtures and configurationTargets.sessionCreator.observedSites: the only invalid-count fixture asserts clients=19 is rejected because the domain is {20}, and the session creator refuses anything below 3."
+      },
+      {
+        "acceptanceId": "A4",
+        "text": "at least one 2, 3, or 4 client protocol rehearsal executes to result receipt with actual metrics; PREPARED_NOT_RUN is unmet.",
+        "observedState": "UNMET",
+        "evidence": "See rehearsalMatrix: every population is NOT_RUN. No result receipt exists for any population."
+      },
+      {
+        "acceptanceId": "A5",
+        "text": "rehearsal receipt is labelled non-acceptance and does not claim 20-client/voice/WAN result.",
+        "observedState": "SATISFIED_BY_THIS_RECEIPT",
+        "evidence": "nonAcceptanceLabel and notAsserted carry the label; no 20-client, voice or WAN result is reported anywhere in this document."
+      },
+      {
+        "acceptanceId": "A6",
+        "text": "actual rehearsal uses a selected success-qualified runnable payload; build-attempt JSON, static inspection, or PREPARED_NOT_RUN is unmet.",
+        "observedState": "BLOCKED",
+        "evidence": "See runnablePayloadStatus: the three #143 output paths are absent from this checkout, so no success-qualified payload can be selected."
+      }
+    ],
+    "stopConditions": [
+      "#120 publishable baseline or named exclusive lock is absent: do not edit/run against an implicit local-only team baseline; keep issue Blocked.",
+      "If the exact required platform/voice/independent-developer capability is unavailable, preserve a blocked record; do not substitute a plan, static inspection, or PREPARED_NOT_RUN for acceptance."
+    ]
+  },
+
+  "configurationTargets": {
+    "commonRule": "Every count-handling site must derive its client count from one validated runtime value. The rehearsal populations 2, 3 and 4 and the immutable acceptance target 20 must coexist from the same code path; the 20/100/2 acceptance tuple stays immutable and is not a rehearsal input.",
+    "citationNote": "Each observedSites entry was checked against the working tree at sourceSnapshot.headCommit: the `text` value occurs on the cited 1-indexed line of the cited component. Where `text` is shorter than that line it is the load-bearing fragment of it, not the whole line. All 16 citations were verified by substring test; no citation is from memory.",
+    "runner": {
+      "component": "scripts/dev/run_foundation_load.py",
+      "rehearsalRequirement": "LoadConfig.validate() accepts 2, 3 and 4; --clients accepts 2|3|4 alongside 20; the PREPARED plan, the MEASUREMENT_STARTED event and the final result event emit the validated count in ClientCount; the acceptance 20/100/2 target is not weakened or re-derived from the rehearsal count.",
+      "acceptanceTarget": 20,
+      "observedState": "count_fixed_at_20",
+      "observedSites": [
+        {
+          "line": 47,
+          "text": "clients: int = 20",
+          "role": "LoadConfig default"
+        },
+        {
+          "line": 56,
+          "text": "if self.clients != 20:",
+          "role": "validate() guard; raises LoadError(\"EXACT20CLIENTS_REQUIRED\") for any other count"
+        },
+        {
+          "line": 232,
+          "text": "\"ClientCount\": 20",
+          "role": "PREPARED plan literal"
+        },
+        {
+          "line": 523,
+          "text": "\"ClientCount\": 20",
+          "role": "MEASUREMENT_STARTED event literal"
+        },
+        {
+          "line": 675,
+          "text": "\"ClientCount\": 20",
+          "role": "final result event literal"
+        },
+        {
+          "line": 694,
+          "text": "parser.add_argument(\"--clients\", type=int, choices=(20,), default=20)",
+          "role": "CLI domain; 2/3/4 are not accepted arguments"
+        },
+        {
+          "line": 706,
+          "text": "\"ClientCount\": 20",
+          "role": "early-exit PREPARED_NOT_RUN literal"
+        }
+      ],
+      "verifiedBlobSha1": "247eef0b0be108c0df5d809d74e9f36e888b3252",
+      "blobSha1Note": "Identical to the candidate blob recorded for this path in docs/evidence/foundation/FMP-12a-R1-corpus-index.json, i.e. unchanged by #150."
+    },
+    "metrics": {
+      "component": "scripts/dev/foundation_load_metrics.py",
+      "rehearsalRequirement": "Validation, client labels and the client roster check take the rehearsal count as a parameter, while the 20/100/2 target tuple remains the immutable acceptance target and is distinguished from the rehearsal count in the emitted evidence.",
+      "acceptanceTarget": {
+        "ConnectedClients": 20,
+        "NpcCount": 100,
+        "ActiveIncidents": 2
+      },
+      "observedState": "acceptance_target_hardcoded",
+      "observedSites": [
+        {
+          "line": 221,
+          "text": "targets = {\"ConnectedClients\": 20, \"NpcCount\": 100, \"ActiveIncidents\": 2}",
+          "role": "unconditional acceptance target tuple"
+        },
+        {
+          "line": 411,
+          "text": "def ready_for_measurement(readers, clients=20):",
+          "role": "signature already takes clients, but the roster length check below does not use it"
+        },
+        {
+          "line": 503,
+          "text": "if set(readers) != {\"server\"} | {f\"client-{i:02d}\" for i in range(20)}:",
+          "role": "roster check hardcodes range(20) rather than the clients parameter"
+        },
+        {
+          "line": 504,
+          "text": "\"Code\": \"EXACT20CLIENT_ROSTER_NOT_OBSERVED\"",
+          "role": "issue code for the hardcoded roster"
+        },
+        {
+          "line": 549,
+          "text": "fields = ((\"ConnectedClients\", \"connected\", 20), (\"NpcCount\", \"npcs\", 100), (\"ActiveIncidents\", \"incidents\", 2))",
+          "role": "per-row target comparison hardcodes the acceptance tuple"
+        },
+        {
+          "line": 589,
+          "text": "\"Scope\": \"20 headless local protocol clients plus dedicated server; reported interval evidence only\"",
+          "role": "scope string fixed at 20"
+        }
+      ],
+      "verifiedSha256": "3184c252293d1551dba16adc33a67ab557e2767776f3e3b2b3d44e3acecd444a",
+      "changedSinceR1": true,
+      "changedSinceR1Note": "This digest differs from the candidateSha256 recorded for the same path in FMP-12a-R1-corpus-index.json (162c130a25757c88015d56867b5935647963295a70ef729b7f3156889ccd9f66). The change is the F(n)/U(n) dual-histogram parsing added under #150 (SimulationTickMilliseconds / FrameMilliseconds at lines 275-280), not a rehearsal-count change."
+    },
+    "sessionCreator": {
+      "component": "scripts/dev/create_multiplayer_session.py",
+      "rehearsalRequirement": "The generator accepts a 2-participant session in addition to 3 and 4, and its default matches the intended rehearsal case; the 20-client upper bound is preserved. The creator's own wording states the participant count includes one instructor.",
+      "acceptanceTarget": 20,
+      "observedState": "lower_bound_3",
+      "observedSites": [
+        {
+          "line": 21,
+          "text": "if not 3 <= clients <= 20:",
+          "role": "lower bound 3; a 2-participant rehearsal session is refused with ValueError(\"Use 3 through 20 clients, including one instructor\")"
+        },
+        {
+          "line": 69,
+          "text": "parser.add_argument(\"--clients\", type=int, default=3)",
+          "role": "CLI default 3; no rehearsal-specific default"
+        }
+      ],
+      "verifiedSha256": "97e0795d371a16482f54488ae81ecd4aee189ef76241de1dbb39a6bacc89834e",
+      "instructorInclusion": "The rejection message at line 22 states the count includes one instructor. That is the creator's own declaration; no 2-participant run was executed to observe it."
+    },
+    "fixtures": {
+      "component": "scripts/dev/test_foundation_load.py",
+      "rehearsalRequirement": "Fixtures cover each intended 2/3/4 rehearsal case and still reject invalid counts, so the rehearsal path is executable without weakening the acceptance fixture set.",
+      "acceptanceTarget": 20,
+      "observedState": "no_rehearsal_fixture",
+      "observedSites": [
+        {
+          "line": 177,
+          "text": "for changes in ({'clients':19}, {'duration':float('nan')}, {'duration':0}, {'port':0}, {'layout':'unknown'}):",
+          "role": "the only invalid-count fixture; it treats 19 as invalid because the accepted domain is exactly {20}. No 2/3/4 fixture exists."
+        }
+      ],
+      "verifiedSha256": "7de3105b962d5b4a19d639e8d3c910a0f808db724f90224fc0810d47f2399b21",
+      "changedSinceR1": true,
+      "changedSinceR1Note": "Differs from the R1 candidateSha256 db7c45cba6c57a803a8de609504db1b54d97b758a96709b1b8b1b0b6f5e08ab2; the change came with #150 and the suite now runs 64 tests rather than the 61 recorded at R1. The invalid-count site moved from line 169 (R1 work-order selector) to line 177."
+    }
+  },
+
+  "rehearsalMatrix": {
+    "populations": [
+      {
+        "clients": 2,
+        "role": "candidate_rehearsal",
+        "status": "NOT_RUN",
+        "reasonCode": "PENDING_RUNNABLE_PAYLOAD",
+        "blockingPrerequisites": [
+          "artifact:143:fmp13a-runnable-build-payload:candidate",
+          "artifact:149:load-causal-corpus:accept",
+          "artifact:150:engine-metrics-run:accept",
+          "artifact:152:fixture-discovery-proof:accept",
+          "runner/metrics/session-creator 2-client parameterization (acceptance A1-A3)"
+        ]
+      },
+      {
+        "clients": 3,
+        "role": "candidate_rehearsal",
+        "status": "NOT_RUN",
+        "reasonCode": "PENDING_RUNNABLE_PAYLOAD",
+        "blockingPrerequisites": [
+          "artifact:143:fmp13a-runnable-build-payload:candidate",
+          "artifact:149:load-causal-corpus:accept",
+          "artifact:150:engine-metrics-run:accept",
+          "artifact:152:fixture-discovery-proof:accept",
+          "runner/metrics 3-client parameterization (acceptance A1-A2); the session creator already accepts 3"
+        ]
+      },
+      {
+        "clients": 4,
+        "role": "candidate_rehearsal",
+        "status": "NOT_RUN",
+        "reasonCode": "PENDING_RUNNABLE_PAYLOAD",
+        "blockingPrerequisites": [
+          "artifact:143:fmp13a-runnable-build-payload:candidate",
+          "artifact:149:load-causal-corpus:accept",
+          "artifact:150:engine-metrics-run:accept",
+          "artifact:152:fixture-discovery-proof:accept",
+          "runner/metrics 4-client parameterization (acceptance A1-A2); the session creator already accepts 4"
+        ]
+      },
+      {
+        "clients": 20,
+        "role": "immutable_acceptance_target",
+        "status": "OUT_OF_SCOPE_FOR_THIS_ISSUE",
+        "reasonCode": "NOT_A_REHEARSAL_POPULATION",
+        "note": "The 20-client / NPC 100 / 2-incident condition is the acceptance target consumed by #141/#142. It is listed here only because A1-A3 require the rehearsal counts and this target to coexist from one code path. No 20-client run is claimed by this receipt."
+      }
+    ],
+    "executedRuns": [],
+    "emptyBecause": "No player payload exists in this checkout and no process was launched. Per the #140 stopConditions and the orchestrator instruction, no mock runner, fake participant or synthetic protocol run is recorded here as if it were a rehearsal."
+  },
+
+  "engineMetricsBinding": {
+    "contractRef": "docs/context/contracts/engine-metrics-binding.json",
+    "contractId": "EMB00",
+    "contractStatus": "proposed_not_adopted",
+    "producerIndex": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+    "dualHistogram": {
+      "claimId": "EMB01",
+      "Fn": {
+        "symbol": "F(n)",
+        "histogramField": "SimulationTickMilliseconds",
+        "counterField": "SimulationTickCount",
+        "unit": "milliseconds",
+        "role": "server",
+        "frequencyTargetHz": 20,
+        "wallBudgetMilliseconds": 50.0,
+        "meaning": "Pure CPU execution duration of TickServer() fixed simulation tick under population n",
+        "clock": "Time.realtimeSinceStartupAsDouble (monotonic)"
+      },
+      "Un": {
+        "symbol": "U(n)",
+        "histogramField": "FrameMilliseconds",
+        "counterField": "FrameCount",
+        "unit": "milliseconds",
+        "role": "client_and_server",
+        "frequencyTargetHz": 30,
+        "p95TargetMilliseconds": 33.3,
+        "meaning": "Elapsed interval between successive engine Update() cycles under population n",
+        "clock": "Time.realtimeSinceStartupAsDouble (monotonic)"
+      },
+      "compatibility": "Schema 1 envelope preserves TickCount and TickMilliseconds for legacy parsers while populating distinct SimulationTickMilliseconds and FrameMilliseconds histograms.",
+      "bindingToPopulation": "F(n) and U(n) are per-population records: the rehearsal populations 2/3/4 each require their own dual-histogram record, sampled under that population. No such per-population record exists because no rehearsal ran.",
+      "observedParserSupport": {
+        "file": "scripts/dev/foundation_load_metrics.py",
+        "lines": "275-280",
+        "detail": "Interval.parse reads SimulationTickCount/SimulationTickMilliseconds into simulation_tick_histogram and FrameCount/FrameMilliseconds into frame_histogram, alongside the legacy TickMilliseconds histogram at line 216."
+      }
+    },
+    "schedulerBinding": {
+      "claimId": "EMB02",
+      "class": "ServerCatchupBudget",
+      "constants": {
+        "TickSeconds": 0.05,
+        "TicksPerSecond": 20,
+        "MaxTicksPerFrame": 4,
+        "WallBudgetMilliseconds": 50.0
+      },
+      "predicate": "accumulatedSeconds >= 0.05f && ticks < 4 && (ticks == 0 || elapsedMilliseconds < 50.0)"
+    },
+    "zeroTickFrameIntegrity": {
+      "claimId": "EMB03",
+      "guarantees": [
+        "Frames with zero simulation ticks (accumulator < 0.05f) still invoke RecordFrameMetrics, preserving periodic 5-second interval metric flushes.",
+        "SimulationTickStart and SimulationTickEnd remain equal during 0-tick intervals without advancing tick counters.",
+        "Population counters (ConnectedClients, NpcCount, ActiveIncidents) hold prior values across 0-tick intervals without inventing zeroes.",
+        "Exact boundary carry guarantees SimulationTickEnd of interval k equals SimulationTickStart of interval k+1."
+      ],
+      "requiredFor": "Every rehearsal population, because a 2~4-participant rehearsal is expected to contain 0-tick intervals and a whole-run frame metric must still flush across them."
+    },
+    "mockVersusRuntimeGuard": {
+      "claimId": "EMB04",
+      "negativeCase": "Source-only RuntimeMetricAccumulator test success shall never be equated with or promoted to actual multiplayer protocol run acceptance.",
+      "appliedHere": "This receipt records the editor and Python-level metric results as contract-level verification only. It does not promote them to a protocol run, and the protocol run check stays PENDING_RUNNABLE_PAYLOAD."
+    },
+    "protocolRunRequirement": {
+      "claimId": "EMB05",
+      "targetPopulation": {
+        "candidateRoster": [
+          2,
+          3,
+          4
+        ],
+        "fullAcceptanceTarget": 20
+      },
+      "dependencyPrerequisite": "Execution of coupled Player protocol runs strictly requires verified causal corpus (#149) and runnable Player payloads (#143). In the absence of built standalone payloads, protocol runs remain honestly recorded as PENDING_RUNNABLE_PAYLOAD."
+    },
+    "verificationObserved": {
+      "editorContracts": {
+        "checkId": "CHK-01-UNIT-EDITOR",
+        "status": "PASS",
+        "source": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json",
+        "contractCount": 14,
+        "contracts": [
+          "IntervalAggregates",
+          "EveryHistogramBoundary",
+          "CounterAndTickCarryAcrossClose",
+          "EmptyIntervalsDoNotInventCallsBytesOrPhysics",
+          "UtcJumpDoesNotChangeMonotonicDuration",
+          "ReturnedDtosNeverAliasAccumulatorOrEachOther",
+          "EveryInvalidRecordIsAtomic",
+          "EveryInvalidCloseIsAtomic",
+          "ConstructorRejectsAmbiguousOrInvalidInitialState",
+          "CumulativeLimitsDoNotWrapAndOverloadsAreObserved",
+          "StatisticalBoundsDoNotInventMeanP95Ordering",
+          "ClientRuntimeModeAndCallPhysicsSeparation",
+          "FnSimulationAndUnFrameSeparation",
+          "ZeroTickFramesPreserveFrameMetricsAndCarry"
+        ],
+        "evidenceGrade": "C# Editor-mode contract tests. Not a protocol run."
+      },
+      "pythonMetrics": {
+        "checkId": "CHK-02-PYTHON-METRICS",
+        "status": "PASS",
+        "source": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json (totalTests 64, failedTests 0)",
+        "flags": {
+          "fnUnDualHistogramsParsed": true,
+          "mismatchedCountRejected": true,
+          "zeroTickIntervalSafe": true
+        },
+        "independentlyObservedInThisTask": "python3 -m unittest discover -s scripts/dev -p 'test_foundation_load.py' produced Ran 64 tests / OK, exit 0, on the sourceSnapshot commit and platform above. This corroborates the count recorded in the R2 index.",
+        "evidenceGrade": "Python unit and corpus tests. Not a protocol run."
+      },
+      "protocolRun": {
+        "checkId": "CHK-03-PROTOCOL-RUN",
+        "status": "PENDING_RUNNABLE_PAYLOAD",
+        "prerequisiteIssue": 143,
+        "source": "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json"
+      }
+    }
+  },
+
+  "causalCorpusVerification": {
+    "contractRef": "docs/context/contracts/load-causal-contract.json",
+    "contractId": "CC00",
+    "contractStatus": "proposed_not_adopted",
+    "corpusIndexRef": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+    "corpusPhase": "candidate",
+    "requiredPhaseForRehearsal": "accept",
+    "corpusPhaseMismatch": "The rehearsal predecessor declared in the work graph is artifact:149:load-causal-corpus:accept. Only the candidate corpus exists, so the executed accept-phase corpus that must precede a real 2~4-client rehearsal is not available.",
+    "claims": [
+      {
+        "claimId": "CC01",
+        "r6bItem": "private journal readback 독립 관측의 이름/schema와 판정 입력을 분리한다.",
+        "target": "scripts/dev/probe_journal.py",
+        "observationName": "private-journal-readback",
+        "observationSchema": "chooguard.private-journal-observation/1",
+        "judgmentInputSchema": "chooguard.load-causal-judgment-input/1",
+        "negativeCodes": [
+          "OBSERVATION_SCHEMA_MISMATCH",
+          "OBSERVATION_FIELD_SET",
+          "JUDGMENT_INPUT_CARRIES_PRIVATE_OBSERVATION"
+        ]
+      },
+      {
+        "claimId": "CC02",
+        "r6bItem": "expected_kind exact variant와 grouped command_marker_P_fault dispatch가 동일 사례를 선택한다.",
+        "targets": [
+          "scripts/dev/foundation_load_metrics.py",
+          "scripts/dev/run_foundation_load.py"
+        ],
+        "canonicalCases": [
+          "command_marker_P_fault",
+          "runtime_exception_fault",
+          "startup_fault"
+        ],
+        "negativeCodes": [
+          "FAULT_DISPATCH_DIVERGENCE",
+          "PLAYER_FAULT_LOG_DISPATCH_AMBIGUOUS",
+          "FAULT_KIND_UNKNOWN"
+        ]
+      },
+      {
+        "claimId": "CC03",
+        "r6bItem": "legacy MetricsReader의 server/client role 및 잘못된 role 부정시험을 명시한다.",
+        "target": "scripts/dev/foundation_load_metrics.py",
+        "roleDomain": [
+          "server",
+          "client"
+        ],
+        "negativeCodes": [
+          "ROLE_MISMATCH",
+          "INVALID_READER_ROLE",
+          "INVALID_EXPECTED_ROLE"
+        ],
+        "relevanceToRehearsal": "A 2~4-participant rehearsal reads one server row plus one client row per participant; the role domain and mismatch codes are what make the per-role reads explicit rather than silent."
+      },
+      {
+        "claimId": "CC04",
+        "r6bItem": "cleanup_begin local deadline 누락을 CLEANUP_BEGIN 참조로 표현한다.",
+        "targets": [
+          "scripts/dev/run_foundation_load.py",
+          "scripts/dev/foundation_load_metrics.py"
+        ],
+        "marker": "CLEANUP_BEGIN",
+        "negativeCode": "CLEANUP_BEGIN_REFERENCE_MISSING"
+      },
+      {
+        "claimId": "CC05",
+        "r6bItem": "positive terminal reserve와 overall deadline before/equal/after의 정상 sibling 실현 가능성을 입증하고 모순을 제거한다.",
+        "targets": [
+          "scripts/dev/foundation_load_metrics.py",
+          "scripts/dev/run_foundation_load.py"
+        ],
+        "siblings": [
+          {
+            "outcome": "before",
+            "requiredReserveSign": "positive"
+          },
+          {
+            "outcome": "equal",
+            "requiredReserveSign": "zero"
+          },
+          {
+            "outcome": "after",
+            "requiredReserveSign": "negative"
+          }
+        ],
+        "negativeCode": "DEADLINE_OUTCOME_CONTRADICTION"
+      }
+    ],
+    "executedObservation": {
+      "caseCount": 24,
+      "tally": {
+        "normal_sibling": 12,
+        "negative": 12
+      },
+      "emitterCommand": "python3 scripts/dev/test_foundation_load.py --emit-corpus docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+      "emitterResult": "CORPUS_EMITTED / Cases 24",
+      "behaviourGateCommand": "python3 -m unittest discover -s scripts/dev -p 'test_foundation_load.py'",
+      "behaviourGateResultAtR1": "Ran 61 tests / OK",
+      "mutationMatrix": {
+        "mutations": 10,
+        "totalKills": 26,
+        "zeroKillGates": [],
+        "killRule": "Only a behavioural fixture that executes the mutated path counts as a kill; a source-digest, blob-hash or literal-source assertion dying is not counted."
+      },
+      "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+      "runRecordCommit": "4ca8e5f35e84b0559f687687f7b851e85d0bef55"
+    },
+    "rehearsalConsumption": {
+      "extends": "The #140 rehearsal is expected to select its fault case through the same shared selector table and to read metrics through the same role-explicit reader, so a rehearsal receipt would be comparable to these corpus cases.",
+      "notSubstituted": "The R1 corpus index itself records the real 2~4-client rehearsal as NOT_RUN and states that the #140 rehearsal receipt does not substitute for the corpus. This receipt does not invert that relation."
+    }
+  },
+
+  "runnablePayloadStatus": {
+    "status": "PENDING_RUNNABLE_PAYLOAD",
+    "prerequisiteIssue": 143,
+    "requiredArtifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+    "qualification": "selected success-qualified build/service/data payload with sourceRef, output digest, scope and runnable command; build-attempt/failure index is not eligible",
+    "expectedOutputPaths": [
+      {
+        "path": "scripts/dev/build_foundation_candidates.py",
+        "present": false
+      },
+      {
+        "path": "docs/evidence/foundation/FMP-13a-build-attempt-index.json",
+        "present": false
+      },
+      {
+        "path": "docs/evidence/foundation/FMP-13a-runnable-build-payload-index.json",
+        "present": false
+      }
+    ],
+    "verifiedAbsence": "All three #143 output paths were checked with a filesystem test on the sourceSnapshot worktree and are absent. No build output directory exists in the checkout.",
+    "consequence": "Without a selected success-qualified payload there is no player executable and no server executable to pass to --player and --server-player, so the #140 check command cannot be issued at all. The rehearsal therefore cannot run, and no run is recorded.",
+    "honestyRule": "No mock runner, stub participant, synthetic session or fabricated metric row was created to stand in for this payload. The gap is recorded, not closed."
+  },
+
+  "rehearsalPredecessorStatus": {
+    "source": "docs/context/work-graph.json items[number=140].inputs and .hardPredecessors",
+    "requiredInputs": [
+      {
+        "issue": 27,
+        "artifact": "artifact:27:authority-protocol:candidate",
+        "qualification": "Consume only 두 실제 프로세스 및 교관의 공유 승인 경로",
+        "status": "NOT_CONSUMED_IN_THIS_TASK"
+      },
+      {
+        "issue": 120,
+        "artifact": "artifact:120:foundation-published-source:accept",
+        "qualification": "#120이 접근 가능한 source ref와 선택 파일 manifest를 제공한 경우에만 local_unpublished 입력을 구현/수용에 사용한다. 제공 전에는 해당 작업 상태는 Blocked이며 수용 기준은 충족되지 않는다.",
+        "status": "NOT_CONSUMED_IN_THIS_TASK",
+        "note": "The two guarded paths that are still local_unpublished at capture — scripts/dev/create_multiplayer_session.py and scripts/dev/foundation_load_metrics.py — are only read, never written, by this task."
+      },
+      {
+        "issue": 143,
+        "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+        "status": "ABSENT"
+      },
+      {
+        "issue": 149,
+        "artifact": "artifact:149:load-causal-corpus:accept",
+        "status": "CANDIDATE_ONLY",
+        "observed": "artifact:149:load-causal-corpus:candidate (phase=candidate)"
+      },
+      {
+        "issue": 150,
+        "artifact": "artifact:150:engine-metrics-run:accept",
+        "status": "CANDIDATE_ONLY",
+        "observed": "artifact:150:engine-metrics-run:candidate with summary status CANDIDATE_VERIFIED_PENDING_PAYLOAD"
+      },
+      {
+        "issue": 152,
+        "artifact": "artifact:152:fixture-discovery-proof:accept",
+        "status": "CANDIDATE_ONLY",
+        "observed": "docs/evidence/foundation/FMP-QA-R1-discovery-index.json carries artifact:152:fixture-discovery-proof:candidate (phase=candidate)"
+      }
+    ]
+  },
+
+  "checksRun": [
+    {
+      "checkId": "CHK-A-JSON-INTEGRITY",
+      "command": "python3 -c \"import json; json.load(open('docs/evidence/foundation/FMP-12a-rehearsal.json'))\"",
+      "appliesTo": "this receipt",
+      "result": "PASS",
+      "observed": "The file parses as a single JSON object with schemaVersion 1 and classification PUBLIC_PROJECT_EVIDENCE; every referenced caseId, claimId and code was cross-checked against the four input documents.",
+      "note": "No JSON Schema file for evidence receipts exists under schemas/ (only foundation-scenario.schema.json and scene-bundle.schema.json), so the shape check is against the sibling receipts FMP-12a-R1-corpus-index.json and FMP-12a-R2-engine-metrics-index.json."
+    },
+    {
+      "checkId": "CHK-B-UNIT-SUITE",
+      "command": "python3 -m unittest discover -s scripts/dev -p 'test_foundation_load.py'",
+      "appliesTo": "corroborating the R2 CHK-02 count on the sourceSnapshot tree",
+      "result": "PASS",
+      "exitCode": 0,
+      "observed": "Ran 64 tests in 0.325s / OK",
+      "notASubstituteFor": "This is a Python-level metric parser and corpus suite. It is not a protocol run and does not satisfy A4."
+    },
+    {
+      "checkId": "CHK-C-REHEARSAL-COMMAND",
+      "command": "python3 scripts/dev/run_foundation_load.py --project . --session <new-session-dir> --player <player-executable> --server-player <server-executable> --clients <2|3|4> --duration 60 --layout dispersed",
+      "appliesTo": "the #140 required check",
+      "result": "NOT_RUN",
+      "reason": "No qualified #120 baseline, no #143 runnable payload, no accept-phase corpus, and the CLI does not accept 2/3/4. The command was not issued and no output is claimed.",
+      "perWorkOrderNegativeCase": "PREPARED_NOT_RUN, missing capability, skipped test, or nonzero failure is recorded and does not meet acceptance."
+    }
+  ],
+
+  "failedOrUnrun": [
+    {
+      "item": "2-client protocol rehearsal",
+      "state": "NOT_RUN",
+      "reason": "PENDING_RUNNABLE_PAYLOAD: no #143 runnable payload; runner CLI rejects 2; session creator lower bound is 3."
+    },
+    {
+      "item": "3-client protocol rehearsal",
+      "state": "NOT_RUN",
+      "reason": "PENDING_RUNNABLE_PAYLOAD: no #143 runnable payload; runner CLI rejects 3."
+    },
+    {
+      "item": "4-client protocol rehearsal",
+      "state": "NOT_RUN",
+      "reason": "PENDING_RUNNABLE_PAYLOAD: no #143 runnable payload; runner CLI rejects 4."
+    },
+    {
+      "item": "runner/metrics/session-creator/fixture 2-3-4 parameterization",
+      "state": "NOT_IMPLEMENTED",
+      "reason": "The count sites in configurationTargets are still fixed at 20 (runner), unconditional (metrics), lower-bounded at 3 (session creator) and {20}-only (fixtures). This receipt aggregates the requirement; it does not perform the code change, and the paths are outside this task's write claim."
+    },
+    {
+      "item": "F(n)/U(n) per-population dual-histogram records for 2/3/4",
+      "state": "NOT_RUN",
+      "reason": "No rehearsal ran, so no per-population record exists. Parser-level support is observed; population-level records are not."
+    },
+    {
+      "item": "executed accept-phase causal corpus (artifact:149:load-causal-corpus:accept)",
+      "state": "NOT_AVAILABLE",
+      "reason": "Only the candidate corpus exists in this checkout. CC00 is status proposed_not_adopted."
+    },
+    {
+      "item": "engine-metrics-run accept artifact (artifact:150:engine-metrics-run:accept)",
+      "state": "NOT_AVAILABLE",
+      "reason": "Only the candidate index exists; its own summary is CANDIDATE_VERIFIED_PENDING_PAYLOAD with CHK-03 pending."
+    },
+    {
+      "item": "fixture-discovery-proof accept artifact (artifact:152:fixture-discovery-proof:accept)",
+      "state": "NOT_AVAILABLE",
+      "reason": "Only artifact:152:fixture-discovery-proof:candidate is present."
+    },
+    {
+      "item": "#120 qualified source manifest for the guarded paths",
+      "state": "NOT_CONSUMED",
+      "reason": "artifact:120:foundation-published-source:accept was not provided in this task. Only read-only inspection was performed on the guarded paths; nothing was written."
+    },
+    {
+      "item": "real coupled Player processes / live service",
+      "state": "NOT_RUN",
+      "reason": "No process was launched. The #140 measurement-run-v1 resource bindings (processGroup, ports, devices, serviceRooms) have no live values."
+    },
+    {
+      "item": "20-client / NPC 100 / 2-incident acceptance result",
+      "state": "NOT_RUN",
+      "reason": "Out of scope for #140, which explicitly non-goals the 20-client 60-minute final acceptance."
+    },
+    {
+      "item": "voice and WAN results",
+      "state": "NOT_RUN",
+      "reason": "No voice or WAN measurement was performed or attempted."
+    }
+  ],
+
+  "blockers": [
+    {
+      "blockerId": "BLK-143-PAYLOAD",
+      "severity": "blocking",
+      "summary": "No selected success-qualified runnable payload for #143; all three declared output paths are absent.",
+      "unblocks": "Provides the --player and --server-player executables the #140 check command requires."
+    },
+    {
+      "blockerId": "BLK-COUNT-PARAMETERIZATION",
+      "severity": "blocking",
+      "summary": "The 2/3/4 client counts are not accepted by the runner CLI and are not validated downstream; the session creator refuses 2.",
+      "unblocks": "Acceptance A1-A3."
+    },
+    {
+      "blockerId": "BLK-CORPUS-ACCEPT",
+      "severity": "blocking",
+      "summary": "The accept-phase executed causal corpus (artifact:149:load-causal-corpus:accept) is not available; only the candidate corpus exists.",
+      "unblocks": "The rehearsal predecessor gate declared in the work graph."
+    },
+    {
+      "blockerId": "BLK-ENGINE-ACCEPT",
+      "severity": "blocking",
+      "summary": "The engine-metrics protocol run (#150 CHK-03) is pending, so the F(n)/U(n) callback binding is not yet proven at protocol level.",
+      "unblocks": "The engine-metrics-run accept predecessor."
+    },
+    {
+      "blockerId": "BLK-SOURCE-ACCESS",
+      "severity": "blocking",
+      "summary": "The #120 qualified manifest covering scripts/dev/create_multiplayer_session.py and scripts/dev/foundation_load_metrics.py has not been provided; both are local_unpublished at capture.",
+      "unblocks": "Any write to the guarded paths under the #140 candidate access guard."
+    }
+  ],
+
+  "successorHandoff": [
+    {
+      "issue": 91,
+      "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
+      "note": "Parent may consume this as a requirement-and-blocker index only. It carries no run status, no build hash and no exit code, because none exists. The accept-phase receipt remains unwritten."
+    },
+    {
+      "issue": 141,
+      "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
+      "note": "Consumer must not read the rehearsal matrix as a completed run set. The 2/3/4 rows are NOT_RUN with reason PENDING_RUNNABLE_PAYLOAD."
+    },
+    {
+      "issue": 142,
+      "artifact": "artifact:140:fmp12a-rehearsal-receipt:candidate",
+      "note": "Same caveat as #141. The immutable 20/100/2 target is recorded here only as a coexistence requirement, not as a measurement."
+    },
+    {
+      "issue": 143,
+      "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+      "note": "Publishing a success-qualified payload is the single largest unblock for A4/A6. Until then this receipt cannot advance to accept."
+    }
+  ],
+
+  "digests": {
+    "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+    "sourceRefOrigin": "docs/context/contracts/load-causal-contract.json sourceRef for the #149-qualified source, carried forward as the source binding for the rehearsal inputs.",
+    "outputDigest": {
+      "algorithm": "sha256",
+      "value": null,
+      "reason": "The digestRequirements for artifact:140:fmp12a-rehearsal-receipt bind the selected #143 runnable payload, whose outputDigest does not exist because the payload does not exist. A digest of this receipt cannot be embedded in itself. Both are recorded as null rather than filled with a placeholder."
+    }
+  },
+
+  "sourceBindings": {
+    "scripts/dev/run_foundation_load.py": {
+      "blobSha1": "247eef0b0be108c0df5d809d74e9f36e888b3252",
+      "sha256": "d1ae38c33bc0793f2273721b5018ab1b9c21ae6e9c6d3a5e11f2490144768949",
+      "sizeBytes": 37471,
+      "note": "Byte-identical to the candidate blob recorded in FMP-12a-R1-corpus-index.json."
+    },
+    "scripts/dev/foundation_load_metrics.py": {
+      "blobSha1": "4b68bf57bbfc0a5c9fb63e4fd015bfb3460825f7",
+      "sha256": "3184c252293d1551dba16adc33a67ab557e2767776f3e3b2b3d44e3acecd444a",
+      "note": "Changed after R1 by the #150 dual-histogram work."
+    },
+    "scripts/dev/test_foundation_load.py": {
+      "blobSha1": "e7f84e1a7f923cad45d44d5db2f5dcc91acab9ef",
+      "sha256": "7de3105b962d5b4a19d639e8d3c910a0f808db724f90224fc0810d47f2399b21",
+      "note": "Changed after R1 by the #150 work; 64 tests now run."
+    },
+    "scripts/dev/create_multiplayer_session.py": {
+      "sha256": "97e0795d371a16482f54488ae81ecd4aee189ef76241de1dbb39a6bacc89834e",
+      "note": "Read-only inspection; no write was performed."
+    },
+    "scripts/dev/probe_journal.py": {
+      "sha256": "7807ae8a093460d7cd9c97b2bf695a433a421de70078535e03023c934019928e",
+      "note": "Matches the R1 candidateSha256."
+    },
+    "docs/evidence/foundation/FMP-12a-R1-corpus-index.json": {
+      "sha256": "5150618e460078d40dd96dac9ebed2eb084ecd58cafffa5d20bbca15fe8d92af"
+    },
+    "docs/evidence/foundation/FMP-12a-R2-engine-metrics-index.json": {
+      "sha256": "b201e47cb0b720f21b39352defde5ba307f94ab69281c89690f733ff698cd8ae"
+    },
+    "docs/context/contracts/engine-metrics-binding.json": {
+      "sha256": "880040bae148e21490f2d0ecb87d7acf23c41c7a6e60caa70bc6e9401ce57edc"
+    },
+    "docs/context/contracts/load-causal-contract.json": {
+      "sha256": "86ebcd1ded2cc03029ce2a561a2a15fb8c7f06e9d6e798848630ed20e164ff20"
+    },
+    "digestScope": "sha256 of the working-tree bytes at sourceSnapshot.headCommit, which is a clean checkout equal to HEAD."
+  },
+
+  "boundaries": {
+    "noProtocolRun": "No player, server or service process was launched. No rehearsal result receipt exists.",
+    "noMockProtocolRun": "No mock, stub or synthetic protocol run is recorded anywhere in this document, and none was performed. Where a run is absent it is recorded as NOT_RUN or ABSENT.",
+    "nonAcceptance": "This is a candidate proposal written in an isolated proposal worktree (canonicalWriteAllowed=false). It is returned to PM and is not issue acceptance.",
+    "requirementAggregationOnly": "The configurationTargets section states what each component must support and what it currently does; it is not a claim that the implementation was changed by this task.",
+    "readOnlyOnGuardedPaths": "scripts/dev/create_multiplayer_session.py and scripts/dev/foundation_load_metrics.py were read only. No guarded path was modified."
+  },
+
+  "notAsserted": [
+    "issue 140 acceptance, or any phase transition",
+    "2-client, 3-client or 4-client protocol rehearsal execution",
+    "the 20-client / NPC 100 / 2-incident acceptance result",
+    "voice, WAN, or 60-minute load results (#141/#142)",
+    "runtime F(n)/U(n) dual-histogram records under any population",
+    "CC00 acceptance or CC01-CC05 adoption",
+    "EMB00 adoption or issue 150 acceptance",
+    "issue 120 source-manifest acceptance",
+    "the runner/metrics/session-creator/fixture 2-3-4 parameterization being implemented"
+  ],
+
+  "claimRelease": "Held until this candidate receipt is returned to PM, or released on abort with notice.",
+
+  "supersedes": null
+}
