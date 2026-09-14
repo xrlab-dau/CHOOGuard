@@ -9,7 +9,7 @@
   "runRecord": {
     "recordKind": "complete_run_record",
     "branch": "fix/151-staging-ownership-boundary",
-    "commit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
+    "commit": "796654ae39ff03e73697764812a57d71bcfe7391",
     "baseRef": "origin/develop",
     "baseCommit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
     "platform": {
@@ -19,21 +19,21 @@
     "inputs": {
       "services/livekit/configure_local.py": {
         "baseBlobSha1": "1f7b37a2da355b7bed5848489b85ef2919dd0612",
-        "candidateBlobSha1": "059070789e81b2bc61e3c2aa0691f11898f0e1a6",
-        "candidateSha256": "d28c3e232e9fcccd5c6c1eb4aea417d2f6028e4c801dc0753de310e71f90d761",
-        "candidateSizeBytes": 21977
+        "candidateBlobSha1": "c638c3698d772647b1510ba390a26f429c14816a",
+        "candidateSha256": "a2a75e230ccee84cdd6c21e31923d5485a34c5fcd327acec1229521f349ea92f",
+        "candidateSizeBytes": 23617
       },
       "services/livekit/test_configure_local.py": {
         "baseBlobSha1": "a8553dce1698a97407599492edebdafef07ac49e",
-        "candidateBlobSha1": "440077aef40b91c27fb2cb82265f5c84cf528d05",
-        "candidateSha256": "ff112bfd1df9b301e30f7a584bab345e1c3ffffb0b4bbd7f46634fe79aa5687a",
-        "candidateSizeBytes": 33224
+        "candidateBlobSha1": "3effd9b2b97ac1aad7eeba42e3322f912e24a818",
+        "candidateSha256": "5a714037a1ee950374f63d7e408f4eced93f99b9b4185948c7f55cf0cfe22465",
+        "candidateSizeBytes": 36606
       },
       "services/livekit/README.md": {
         "baseBlobSha1": "89a0b2bc660f2a3c8d127648b6e3f03a9bab47a4",
-        "candidateBlobSha1": "8a599e28109330192649d4c5414240b36ad1434d",
-        "candidateSha256": "8fd76ecccecd9d5de126ddc27fae4ec47b67cc40e13035bae3f7f79c6fa84c71",
-        "candidateSizeBytes": 4363
+        "candidateBlobSha1": "b4580683c7e984cec15d7874e0bc88c0089f8a47",
+        "candidateSha256": "807b85b3f7f28a123ac1c82995eaf08d227988f235929a3ca396b6b78ab31f58",
+        "candidateSizeBytes": 4763
       }
     },
     "inputProvenance": {
@@ -67,7 +67,7 @@
     },
     "boundary": {
       "writeGate": "configure() raises _StagingOwnershipUnproven before the first credential write when the descriptor-to-entry binding cannot be established.",
-      "publicationGate": "The trusted-parent precondition is re-verified and the ownership evidence is re-derived immediately before the exclusive no-replace rename.",
+      "publicationGate": "The trusted-parent precondition is re-verified, the ownership evidence is re-derived, and the pinned directory must hold exactly the entries this run acquired - each still resolving to the file identity it was acquired under - before the exclusive rename. An entry injected after the last write, or an acquired name unlinked and recreated with other bytes, stops publication; the run's own credentials are rolled back and the foreign entry is preserved for manual cleanup.",
       "rollback": "Exact-owned: only acquired file identities are unlinked, and the directory is rmdir'd only while it is still the proven inode.",
       "unauthenticatedWindow": "The create-to-open window is not authenticated by pathname; the trusted parent (0700, current-user-owned, no additional ACL) is the precondition that excludes other principals. A same-account actor racing that window is not detectable and is not claimed.",
       "wasPreviousState": "staging_ownership_proven was hardcoded False and gated only rollback rmdir; credential writes and publication were not gated on ownership."
@@ -76,13 +76,12 @@
       {
         "command": "python3 -m unittest discover -s services/livekit -p 'test_configure_local.py'",
         "result": "PASS",
-        "testsRun": 30,
+        "testsRun": 32,
         "testsFailed": 0,
-        "note": "24 pre-existing tests plus 6 new boundary tests.",
-        "negativeCaseAddressed": "The prior 24 passing tests did not prove the new boundary; two of them encoded the old contract (rollback always incomplete) and were strengthened, not weakened."
+        "note": "24 pre-existing tests plus 8 new boundary tests."
       },
       {
-        "command": "mutation matrix over the four new gates",
+        "command": "mutation matrix over the five gates",
         "result": "PASS",
         "mutations": [
           {
@@ -91,24 +90,33 @@
           },
           {
             "mutation": "publication ownership gate reduced to a no-op",
-            "killedTests": 2
+            "killedTests": 1
           },
           {
             "mutation": "rollback ownership identity check removed",
             "killedTests": 1
           },
           {
-            "mutation": "ownership proof made unsatisfiable",
-            "killedTests": 14
+            "mutation": "publication entry-set gate reduced to a no-op",
+            "killedTests": 2
+          },
+          {
+            "mutation": "per-entry file identity comparison inside the entry-set gate removed",
+            "killedTests": 1
           }
         ],
-        "note": "Each gate is load-bearing: removing it makes at least one boundary test fail."
+        "note": "Each gate is load-bearing: removing it makes at least one boundary test fail. Every kill counted here is a behavioural test that observes directories, files or exceptions; a source-digest assertion is not counted as a kill."
+      },
+      {
+        "command": "independent supervisor probe: inject a foreign entry after the last credential write, before the publication gate",
+        "result": "PASS",
+        "note": "Against the previous commit (4a3f727) this probe published the injected entry as private configuration and returned success. The same probe against this commit refuses with _CleanupIncomplete, publishes nothing, rolls back the run's own credentials and leaves the injected entry for manual cleanup. This is the regression the entry-set gate closes."
       }
     ],
     "separateFrom": {
       "pythonUnitTotal": 24,
       "voiceRegressionTotal": 89,
-      "note": "The 30 tests here are a separate total from the pre-existing Python 24 and the Voice 89 regression suites."
+      "note": "The 32 tests here are a separate total from the pre-existing Python 24 and the Voice 89 totals named in issue 151."
     },
     "failedOrUnrun": [
       {
