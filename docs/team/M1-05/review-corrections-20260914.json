@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "workId": "M1-05",
+  "issue": 21,
+  "phase": "candidate",
+  "reviewedPullRequest": 164,
+  "sourceRef": "06c7e928546bb2e666faf7581498b03c8f63f2a4",
+  "branch": "feature/21-kkosso-evidence-contracts",
+  "reviewComments": [
+    4002383670,
+    4002383673,
+    4002383677
+  ],
+  "outputSha256": {
+    "docs/team/M1-05/manifest-contract.md": "2d0355fd6d66bb0a834f9a48c725ead12bad78bcb731671daad3effa942e151c",
+    "docs/team/M1-05/record-schema.json": "451fcc0bb395e7c75d196bec43c91bac7228dff62dff9864196d1bdedd474427",
+    "scripts/team/M1-05/record_pipeline.py": "8b0f94c0aef552d9787524abe558816435293d5cd487eb5592d2e397faba554b",
+    "scripts/team/M1-05/test_redaction.py": "297a609b2f4ff90c19dac477e23bfa4441cacecd8b895714d7c84e3c574717f6",
+    "scripts/team/M1-05/test_record_schema.py": "a4d0c3d854058e0d426dc001ad41bd95342c02e30408fd107277ff7765441a25"
+  },
+  "checks": [
+    {
+      "environment": "Windows / Python 3.12.0",
+      "command": "python scripts/team/M1-05/test_redaction.py",
+      "testsRun": 23,
+      "passed": 22,
+      "skipped": 1,
+      "exitCode": 0,
+      "limitation": "POSIX permission test requires POSIX filesystem"
+    },
+    {
+      "environment": "Windows / Python 3.12.0 / jsonschema",
+      "command": "python scripts/team/M1-05/test_record_schema.py",
+      "testsRun": 2,
+      "passed": 2,
+      "exitCode": 0
+    },
+    {
+      "environment": "Windows / Python 3.12.0",
+      "command": "python scripts/dev/test_native_manifest.py",
+      "testsRun": 3,
+      "passed": 2,
+      "errors": 1,
+      "exitCode": 1,
+      "limitation": "WinError 1314 symlink capability; repeated outside sandbox with same failure"
+    },
+    {
+      "environment": "Ubuntu WSL / Python 3.12.3 / Linux temporary output filesystem",
+      "command": "python3 scripts/team/M1-05/test_redaction.py",
+      "testsRun": 23,
+      "passed": 23,
+      "skipped": 0,
+      "exitCode": 0
+    },
+    {
+      "environment": "Ubuntu WSL / Python 3.12.3",
+      "command": "python3 scripts/dev/test_native_manifest.py",
+      "testsRun": 3,
+      "passed": 3,
+      "exitCode": 0
+    },
+    {
+      "command": "python scripts/team/M1-05/record_pipeline.py verify --public-output docs/team/M1-05/synthetic-candidate",
+      "exitCode": 0,
+      "approval": "pending"
+    }
+  ],
+  "regressionEvidence": "Integer-limit and approval-reference regressions failed against the pre-fix source before implementation.",
+  "history": "validation.json remains the unchanged historical receipt for the original PR; this receipt covers review corrections only.",
+  "limits": [
+    "POSIX test does not establish Windows ACL privacy; use an access-controlled parent on Windows.",
+    "Schema checks do not authenticate external decision authority.",
+    "Unity runtime, Editor, scenes, and railway safety procedures are unchanged.",
+    "Candidate handoff only; downstream acceptance remains separately scoped."
+  ]
+}

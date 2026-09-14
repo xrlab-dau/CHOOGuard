@@ -168,7 +168,9 @@ def decode(data):
     try:
         return json.loads(data.decode("utf-8"), object_pairs_hook=_object,
                           parse_constant=lambda _: _reject_constant())
-    except (UnicodeError, json.JSONDecodeError, RecursionError):
+    except RecordError:
+        raise
+    except (ValueError, RecursionError):
         raise RecordError("invalid UTF-8 JSON record") from None
 
 
@@ -197,7 +199,8 @@ def _manifest(payload):
 
 
 def _write_new(path, data):
-    with path.open("xb") as stream:
+    # Set owner-only permissions at creation, before any private bytes are written.
+    with open(path, "xb", opener=lambda name, flags: os.open(name, flags, 0o600)) as stream:
         stream.write(data)
 
 
@@ -221,7 +224,7 @@ def build(raw_path, private_output, public_output):
     manifest = _manifest(payload)
     # Trusted, exclusively owned local parents are required. On I/O failure, keep
     # partial output for diagnosis; never remove, reuse, or overwrite it on retry.
-    private_output.mkdir()
+    private_output.mkdir(mode=0o700)
     public_output.mkdir()
     _write_new(private_output / "redacted.json", private_bytes)
     _write_new(public_output / "events.json", payload)
