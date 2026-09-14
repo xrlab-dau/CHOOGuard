@@ -11,6 +11,67 @@ from typing import Any
 MAX_LINE_BYTES = 64 * 1024
 MAX_FILE_BYTES = 256 * 1024 * 1024
 
+# Runtime roles are exactly two. A reader that is constructed with any other role,
+# or that is handed a row produced for the other role, is a dispatch error rather
+# than a row to be summed.
+ROLE_VALUES = ('server', 'client')
+
+# R6B item 2: one canonical fault-case table, two selectors. The metrics producer
+# names an exact variant (``expected_kind``); the player log carries a grouped
+# marker (``command_marker_*_fault``). Both selectors must resolve to the same
+# canonical case id, or a single causal event would be judged differently
+# depending on which channel happened to observe it.
+EXACT_FAULT_VARIANTS = {
+    'command_fault': 'command_marker_P_fault',
+    'exception_fault': 'runtime_exception_fault',
+    'startup_fault': 'startup_fault',
+}
+GROUPED_FAULT_MARKERS = (
+    ('fatal error', 'command_marker_P_fault'),
+    ('command processing stopped', 'command_marker_P_fault'),
+    ('exception:', 'runtime_exception_fault'),
+    ('startup failed', 'startup_fault'),
+)
+FAULT_CASES = tuple(sorted(set(EXACT_FAULT_VARIANTS.values())))
+
+
+def dispatch_fault_case(*, expected_kind=None, grouped_marker=None):
+    """Resolve either selector to one canonical case id; exactly one selector is allowed."""
+    if (expected_kind is None) == (grouped_marker is None):
+        raise MetricsError('FAULT_DISPATCH_SELECTOR_COUNT')
+    if expected_kind is not None:
+        if expected_kind not in EXACT_FAULT_VARIANTS:
+            raise MetricsError('FAULT_KIND_UNKNOWN')
+        return EXACT_FAULT_VARIANTS[expected_kind]
+    lowered = grouped_marker.lower()
+    selected = {case for marker, case in GROUPED_FAULT_MARKERS if marker in lowered}
+    if len(selected) != 1:
+        raise MetricsError('FAULT_DISPATCH_AMBIGUOUS')
+    case = selected.pop()
+    if case not in FAULT_CASES:
+        raise MetricsError('FAULT_DISPATCH_DIVERGENCE')
+    return case
+
+
+def assert_fault_dispatch_agreement():
+    """Every canonical case must be reachable from both selectors, one-to-one."""
+    cases = set(FAULT_CASES)
+    if set(EXACT_FAULT_VARIANTS.values()) != cases:
+        raise MetricsError('FAULT_DISPATCH_DIVERGENCE')
+    if {case for _, case in GROUPED_FAULT_MARKERS} != cases:
+        raise MetricsError('FAULT_DISPATCH_DIVERGENCE')
+    if len({kind for kind, _ in EXACT_FAULT_VARIANTS.items()}) != len(EXACT_FAULT_VARIANTS):
+        raise MetricsError('FAULT_DISPATCH_DIVERGENCE')
+    if len({marker for marker, _ in GROUPED_FAULT_MARKERS}) != len(GROUPED_FAULT_MARKERS):
+        raise MetricsError('FAULT_DISPATCH_AMBIGUOUS')
+    for kind, case in EXACT_FAULT_VARIANTS.items():
+        if dispatch_fault_case(expected_kind=kind) != case:
+            raise MetricsError('FAULT_DISPATCH_DIVERGENCE')
+    for marker, case in GROUPED_FAULT_MARKERS:
+        if dispatch_fault_case(grouped_marker=marker) != case:
+            raise MetricsError('FAULT_DISPATCH_DIVERGENCE')
+    return {case: True for case in FAULT_CASES}
+
 
 class MetricsError(ValueError):
     """Safe code only: never includes raw metrics or private values."""
@@ -129,9 +190,17 @@ class Interval:
     def parse(cls, row, expected_role):
         if not isinstance(row, dict) or row.get("Schema") != 1 or isinstance(row.get("Schema"), bool):
             raise MetricsError("UNSUPPORTED_SCHEMA")
-        if row.get("Role") != expected_role or expected_role not in ("server", "client"):
+        if expected_role not in ROLE_VALUES:
+            raise MetricsError("INVALID_EXPECTED_ROLE")
+        if row.get("Role") != expected_role:
             raise MetricsError("ROLE_MISMATCH")
         if row.get("Kind") == "fault":
+            # A fault row that declares its exact variant must resolve to the same
+            # canonical case the grouped log-marker selector resolves to.
+            if "FaultKind" in row:
+                case = dispatch_fault_case(expected_kind=row["FaultKind"])
+                if case not in FAULT_CASES:
+                    raise MetricsError("FAULT_DISPATCH_DIVERGENCE")
             raise MetricsError("RUNTIME_METRIC_FAULT")
         if row.get("Kind") != "interval":
             raise MetricsError("UNSUPPORTED_METRIC_KIND")
@@ -220,6 +289,10 @@ class MetricsReader:
     errors: list[str] = field(default_factory=list)
     identity: tuple[int, int] | None = None
     seen_intervals: set[tuple[str, str]] = field(default_factory=set)
+
+    def __post_init__(self):
+        if self.role not in ROLE_VALUES:
+            raise MetricsError("INVALID_READER_ROLE")
 
     def capture_watermark(self):
         """Freeze an observed byte boundary without claiming producer-time attribution."""
@@ -343,7 +416,51 @@ def ready_for_measurement(readers, clients=20):
                for reader in readers.values())
 
 
-def assess(readers, starts, required_duration, observed_wall_seconds, *, process_failure=None, stops=None):
+# R6B item 5: the overall deadline has three normal siblings. The reserve sign is
+# declared per sibling instead of being required positive for all of them, so
+# "before" does not contradict "equal"/"after" and every sibling stays realizable.
+DEADLINE_OUTCOMES = ('before', 'equal', 'after')
+RESERVE_SIGN_BY_OUTCOME = {'before': 'positive', 'equal': 'zero', 'after': 'negative'}
+DEADLINE_OUTCOME_EPSILON = 1e-6
+
+
+def reserve_sign(terminal_reserve_seconds, epsilon=DEADLINE_OUTCOME_EPSILON):
+    if terminal_reserve_seconds > epsilon:
+        return 'positive'
+    if terminal_reserve_seconds < -epsilon:
+        return 'negative'
+    return 'zero'
+
+
+def classify_deadline_outcome(terminal_reserve_seconds, epsilon=DEADLINE_OUTCOME_EPSILON):
+    if not isinstance(terminal_reserve_seconds, (int, float)) or isinstance(terminal_reserve_seconds, bool):
+        raise MetricsError('INVALID_TERMINAL_RESERVE')
+    if not math.isfinite(terminal_reserve_seconds):
+        raise MetricsError('INVALID_TERMINAL_RESERVE')
+    if terminal_reserve_seconds > epsilon:
+        return 'before'
+    if terminal_reserve_seconds < -epsilon:
+        return 'after'
+    return 'equal'
+
+
+def terminal_deadline(cleanup_begin_seconds, overall_deadline_seconds, *, declared_outcome=None):
+    """Classify cleanup_begin against the overall deadline without deciding a verdict."""
+    if cleanup_begin_seconds is None or overall_deadline_seconds is None:
+        raise MetricsError('CLEANUP_BEGIN_REFERENCE_MISSING')
+    reserve = overall_deadline_seconds - cleanup_begin_seconds
+    outcome = classify_deadline_outcome(reserve)
+    if declared_outcome is not None and declared_outcome not in DEADLINE_OUTCOMES:
+        raise MetricsError('DEADLINE_OUTCOME_UNKNOWN')
+    return {"CleanupBeginSeconds": cleanup_begin_seconds, "OverallDeadlineSeconds": overall_deadline_seconds,
+            "TerminalReserveSeconds": reserve, "TerminalReserveSign": reserve_sign(reserve),
+            "DeadlineOutcome": outcome, "DeclaredOutcome": declared_outcome,
+            "DeclaredOutcomeMatchesObservation": declared_outcome is None or declared_outcome == outcome,
+            "RequiredReserveSign": RESERVE_SIGN_BY_OUTCOME[outcome]}
+
+
+def assess(readers, starts, required_duration, observed_wall_seconds, *, process_failure=None, stops=None,
+           cleanup_begin_seconds=None, overall_deadline_seconds=None, declared_deadline_outcome=None):
     issues = []
     diagnostics = []
     summaries = {}
@@ -392,6 +509,30 @@ def assess(readers, starts, required_duration, observed_wall_seconds, *, process
                 elif current_start > previous_end:
                     diagnostics.append({"Process": label, "Code": "UTC_INTERVAL_GAP"})
             previous = row
+    # R6B items 4 and 5. The cleanup-begin reference is where the local deadline used
+    # to be omitted: a measured window that cannot produce it is reported as a missing
+    # reference rather than silently carrying no deadline at all. The overall deadline
+    # is then classified into its three neutral siblings; a declared sibling that the
+    # observed reserve contradicts is the only deadline failure raised here.
+    deadline = None
+    if cleanup_begin_seconds is None and overall_deadline_seconds is None:
+        pass
+    elif cleanup_begin_seconds is None or overall_deadline_seconds is None:
+        issues.append({"Code": "CLEANUP_BEGIN_REFERENCE_MISSING"})
+        deadline = {"CleanupBeginSeconds": cleanup_begin_seconds, "OverallDeadlineSeconds": overall_deadline_seconds,
+                    "TerminalReserveSeconds": None, "TerminalReserveSign": None, "DeadlineOutcome": None,
+                    "DeclaredOutcome": declared_deadline_outcome, "DeclaredOutcomeMatchesObservation": False,
+                    "RequiredReserveSign": None}
+    else:
+        try:
+            deadline = terminal_deadline(cleanup_begin_seconds, overall_deadline_seconds,
+                                         declared_outcome=declared_deadline_outcome)
+        except MetricsError as exc:
+            issues.append({"Code": str(exc)})
+            deadline = None
+        else:
+            if not deadline["DeclaredOutcomeMatchesObservation"]:
+                issues.append({"Code": "DEADLINE_OUTCOME_CONTRADICTION"})
     server_rows = rows_by_label.get("server", [])
     fields = (("ConnectedClients", "connected", 20), ("NpcCount", "npcs", 100), ("ActiveIncidents", "incidents", 2))
     for field, attribute, target in fields:
@@ -425,6 +566,7 @@ def assess(readers, starts, required_duration, observed_wall_seconds, *, process
         status = "LOCAL_PROTOCOL_RUN_RECORDED"
     return {"Schema": 1, "Status": status, "Acceptance": "NOT_ASSESSED",
             "RequiredDurationSeconds": required_duration, "ObservedWallSeconds": observed_wall_seconds,
+            "TerminalDeadline": deadline,
             "ProcessFailure": process_failure, "Issues": issues, "Diagnostics": diagnostics, "Processes": summaries,
             "ServerSimulationRate": {"RequiredHz": 20, "AllowedAggregateBoundaryTick": 1,
                                      "BelowRequired": rate_short if server and not progress_missing else None,

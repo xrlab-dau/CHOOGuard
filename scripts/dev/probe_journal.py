@@ -1,4 +1,12 @@
-"""Bounded read-only decoding of the current SimulationJournal v3 format."""
+"""Bounded read-only decoding of the current SimulationJournal v3 format.
+
+R6B item 1: the journal readback is an INDEPENDENT observation. Its name and
+schema are declared and versioned here, separately from the judgment input a
+causal assessment consumes. The two documents have disjoint key namespaces: the
+observation carries the readback under ``Readback`` and never carries judgment
+fields, while the judgment input references the observation and never embeds the
+private readback.
+"""
 import base64
 import copy
 import hashlib
@@ -82,7 +90,20 @@ def merge(items, changes, key):
     return list(output.values())
 
 
+OBSERVATION_NAME = 'private-journal-readback'
+OBSERVATION_SCHEMA = 'chooguard.private-journal-observation/1'
+JUDGMENT_INPUT_NAME = 'load-causal-judgment-input'
+JUDGMENT_INPUT_SCHEMA = 'chooguard.load-causal-judgment-input/1'
+OBSERVATION_KEYS = ('ObservationName', 'ObservationSchema', 'Readback')
+JUDGMENT_INPUT_KEYS = ('JudgmentInputName', 'JudgmentInputSchema', 'ObservationRef', 'Ordinal', 'Sequence',
+                       'SimulationTick', 'TruncatedTailBytes', 'SourceHashes')
+# Keys that belong to the private readback only. They are the exact names a
+# judgment input must never embed; the contract is disjointness, not redaction.
+OBSERVATION_ONLY_KEYS = frozenset(('State', 'KnowledgeBySequence', 'Readback'))
+
+
 def read_journal(directory):
+    """Raw independent readback. Not a judgment input; use judgment_input() for that."""
     directory = Path(directory)
     checkpoint_path, log_path = directory/'checkpoint-v3.json', directory/'actions-v3.jsonl'
     if not checkpoint_path.is_file() or not log_path.is_file():
@@ -155,3 +176,49 @@ def read_journal(directory):
         raise ProbeError('APPROVAL_LEDGER_DIFFERS_FROM_LOG')
     return {'State': state, 'KnowledgeBySequence': knowledge, 'Ordinal': ordinal, 'TruncatedTailBytes': truncated,
             'SourceHashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in (checkpoint_path, log_path)}}
+
+
+def observe_journal(directory):
+    """Name and version the independent observation before anyone judges it."""
+    raw = read_journal(directory)
+    return {'ObservationName': OBSERVATION_NAME, 'ObservationSchema': OBSERVATION_SCHEMA, 'Readback': raw}
+
+
+def judgment_input(observation):
+    """Derive the judgment input from a declared observation; never embed its payload.
+
+    The observation must name itself exactly and carry exactly the declared field
+    set, so a consumer cannot pass an undeclared or substituted document into a
+    judgement and call it the same observation.
+    """
+    if (not isinstance(observation, dict) or observation.get('ObservationName') != OBSERVATION_NAME
+            or observation.get('ObservationSchema') != OBSERVATION_SCHEMA
+            or isinstance(observation.get('ObservationSchema'), bool)):
+        raise ProbeError('OBSERVATION_SCHEMA_MISMATCH')
+    if tuple(sorted(observation)) != tuple(sorted(OBSERVATION_KEYS)):
+        raise ProbeError('OBSERVATION_FIELD_SET')
+    raw = observation['Readback']
+    if not isinstance(raw, dict) or not set(('State', 'SourceHashes', 'Ordinal', 'TruncatedTailBytes')) <= set(raw):
+        raise ProbeError('OBSERVATION_PAYLOAD_INCOMPLETE')
+    derived = {'JudgmentInputName': JUDGMENT_INPUT_NAME, 'JudgmentInputSchema': JUDGMENT_INPUT_SCHEMA,
+               'ObservationRef': {'ObservationName': OBSERVATION_NAME, 'ObservationSchema': OBSERVATION_SCHEMA,
+                                  'SourceHashes': copy.deepcopy(raw['SourceHashes'])},
+               'Ordinal': raw['Ordinal'], 'Sequence': raw['State'].get('Sequence'),
+               'SimulationTick': raw['State'].get('SimulationTick'),
+               'TruncatedTailBytes': raw['TruncatedTailBytes'],
+               'SourceHashes': copy.deepcopy(raw['SourceHashes'])}
+    return validate_judgment_input(derived)
+
+
+def validate_judgment_input(document):
+    """Refuse a judgment input that embeds the private readback or renames its own schema."""
+    if isinstance(document, dict) and OBSERVATION_ONLY_KEYS & set(document):
+        # The specific defect is checked first: embedding the private readback is a
+        # different refusal from renaming the schema, and a consumer must not be able
+        # to report a leak as a schema typo.
+        raise ProbeError('JUDGMENT_INPUT_CARRIES_PRIVATE_OBSERVATION')
+    if (not isinstance(document, dict) or tuple(sorted(document)) != tuple(sorted(JUDGMENT_INPUT_KEYS))
+            or document.get('JudgmentInputName') != JUDGMENT_INPUT_NAME
+            or document.get('JudgmentInputSchema') != JUDGMENT_INPUT_SCHEMA):
+        raise ProbeError('JUDGMENT_INPUT_SCHEMA')
+    return document
