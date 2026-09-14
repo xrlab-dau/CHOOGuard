@@ -238,7 +238,7 @@ NEGATION_PATTERNS = (
 
 #: 줄 수준 이력 표지.
 HISTORICAL_MARKERS = re.compile(
-    r"과거\s*계획|과거\s*지시|과거\s*결정|과거\s*전략|과거\s*싱글플레이"
+    r"과거\s*계획|과거\s*지시|과거\s*결정|과거\s*전략|과거\s*싱글플레이|과거\s*실행\s*경로"
     r"|dated\s+historical\s+snapshot|historical\s+snapshot|역사적\s*스냅샷"
     r"|이력이다|이력이며|이력으로\s*남|당시\s*작업|이전\s*판|이전\s*스냅샷"
     r"|superseded|deprecated"
@@ -315,6 +315,10 @@ DEFAULT_DISPOSITIONS = {
 #: 문서별 판정. ``disposition``은 분류 기본값을 덮어쓰고 ``note``는 발견에 실린다.
 #: 여기 없는 경로는 기본값으로 떨어지며, 긍정 전제에는 기본 처분을 주지 않는다.
 DOCUMENT_RULINGS = {
+    "docs/team/M0-02a/source-policy.json": {
+        "disposition": DISPOSITION_ALIGNED,
+        "note": "M0-02a 소스 정책 규약. 공개 2차 자료 및 KORAIL 비전제 원칙을 정립한다.",
+    },
     "docs/choo-guard-requirements-baseline-v1.md": {
         "disposition": DISPOSITION_SUPERSEDED,
         "note": (
