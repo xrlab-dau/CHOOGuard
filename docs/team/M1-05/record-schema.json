@@ -476,7 +476,19 @@
             "string",
             "null"
           ],
+          "pattern": "\\S",
           "description": "Private external approval reference; not copied to a candidate or authenticated by this tool."
+        }
+      },
+      "if": {
+        "properties": {
+          "decision": { "enum": ["approved", "rejected"] }
+        },
+        "required": ["decision"]
+      },
+      "then": {
+        "properties": {
+          "decisionRef": { "type": "string", "minLength": 1 }
         }
       }
     }

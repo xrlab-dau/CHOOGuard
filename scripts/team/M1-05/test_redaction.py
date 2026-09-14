@@ -1,7 +1,9 @@
 """Synthetic records only: no user logs, credentials, captures, or network."""
 import copy
 import json
+import os
 from pathlib import Path
+import stat
 import subprocess
 import sys
 import tempfile
@@ -114,6 +116,16 @@ class BundleTests(unittest.TestCase):
             self.build()
         self.assertEqual(before, {p: p.read_bytes() for p in self.root.rglob("*.json")})
 
+    @unittest.skipUnless(os.name == "posix", "requires POSIX permission bits")
+    def test_private_output_is_owner_only_even_with_permissive_umask(self):
+        previous = os.umask(0)
+        try:
+            self.build()
+        finally:
+            os.umask(previous)
+        self.assertEqual(stat.S_IMODE(self.private.stat().st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE((self.private / "redacted.json").stat().st_mode), 0o600)
+
     def test_existing_public_destination_does_not_create_private_output(self):
         self.public.mkdir()
         (self.public / "keep.txt").write_text("preserve")
@@ -210,6 +222,27 @@ class BundleTests(unittest.TestCase):
         self.assertNotEqual(run.returncode, 0)
         self.assertNotIn("PRIVATE-CANARY", run.stdout + run.stderr)
         self.assertNotIn(str(self.root), run.stdout + run.stderr)
+
+    def test_integer_limit_decode_failure_is_a_record_error(self):
+        previous = sys.get_int_max_str_digits()
+        try:
+            sys.set_int_max_str_digits(640)
+            with self.assertRaisesRegex(pipeline.RecordError, "invalid UTF-8 JSON record"):
+                pipeline.decode(b'{"schemaVersion":' + b'9' * 641 + b'}')
+        finally:
+            sys.set_int_max_str_digits(previous)
+
+    def test_integer_limit_cli_failure_is_sanitized_and_emits_no_artifacts(self):
+        self.source.write_bytes(b'{"schemaVersion":' + b'9' * 641 + b'}')
+        run = subprocess.run([sys.executable, "-X", "int_max_str_digits=640", str(Path(pipeline.__file__)),
+                              "build", "--raw", str(self.source), "--private-output", str(self.private),
+                              "--public-output", str(self.public)], capture_output=True, text=True)
+        self.assertNotEqual(run.returncode, 0)
+        self.assertIn("invalid UTF-8 JSON record", run.stdout + run.stderr)
+        for text in ("Traceback", str(self.root), str(Path(pipeline.__file__).parent), "9" * 641):
+            self.assertNotIn(text, run.stdout + run.stderr)
+        self.assertFalse(self.private.exists())
+        self.assertFalse(self.public.exists())
 
 
 if __name__ == "__main__":
