@@ -1,0 +1,484 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "M1-05 record contract v1",
+  "description": "Shape validation only. The pipeline also enforces classification, evidence preservation, ordering, digests, disjoint paths and immutable output. Approval records are external decisions; the pipeline only emits pending candidates.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/raw"
+    },
+    {
+      "$ref": "#/$defs/redactedPrivate"
+    },
+    {
+      "$ref": "#/$defs/publicCandidate"
+    },
+    {
+      "$ref": "#/$defs/publicManifest"
+    },
+    {
+      "$ref": "#/$defs/approval"
+    }
+  ],
+  "$defs": {
+    "raw": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "state",
+        "events"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "state": {
+          "const": "raw"
+        },
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "outcome",
+              "classification",
+              "content",
+              "requiredForEvidence"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "input",
+                  "output",
+                  "tool",
+                  "edit",
+                  "test",
+                  "failure",
+                  "retry",
+                  "cancel",
+                  "review",
+                  "approval",
+                  "redaction"
+                ]
+              },
+              "outcome": {
+                "enum": [
+                  "recorded",
+                  "passed",
+                  "failed",
+                  "cancelled",
+                  "skipped",
+                  "unknown"
+                ]
+              },
+              "classification": {
+                "enum": [
+                  "public",
+                  "secret",
+                  "personal",
+                  "absolute_path",
+                  "restricted",
+                  "unknown"
+                ]
+              },
+              "content": {
+                "type": "string"
+              },
+              "requiredForEvidence": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "redactedPrivate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "state",
+        "rawSha256",
+        "retentionPolicy",
+        "approval",
+        "events"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "state": {
+          "const": "redacted_private"
+        },
+        "rawSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "retentionPolicy": {
+          "const": "M1-05/raw-retention-v1"
+        },
+        "approval": {
+          "const": "pending"
+        },
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "ordinal",
+                  "kind",
+                  "outcome",
+                  "content"
+                ],
+                "properties": {
+                  "ordinal": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "kind": {
+                    "enum": [
+                      "input",
+                      "output",
+                      "tool",
+                      "edit",
+                      "test",
+                      "failure",
+                      "retry",
+                      "cancel",
+                      "review",
+                      "approval",
+                      "redaction"
+                    ]
+                  },
+                  "outcome": {
+                    "enum": [
+                      "recorded",
+                      "passed",
+                      "failed",
+                      "cancelled",
+                      "skipped",
+                      "unknown"
+                    ]
+                  },
+                  "content": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "ordinal",
+                  "kind",
+                  "outcome",
+                  "removal"
+                ],
+                "properties": {
+                  "ordinal": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "kind": {
+                    "enum": [
+                      "input",
+                      "output",
+                      "tool",
+                      "edit",
+                      "test",
+                      "failure",
+                      "retry",
+                      "cancel",
+                      "review",
+                      "approval",
+                      "redaction"
+                    ]
+                  },
+                  "outcome": {
+                    "enum": [
+                      "recorded",
+                      "passed",
+                      "failed",
+                      "cancelled",
+                      "skipped",
+                      "unknown"
+                    ]
+                  },
+                  "removal": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "reason",
+                      "retentionPolicy"
+                    ],
+                    "properties": {
+                      "reason": {
+                        "enum": [
+                          "secret",
+                          "personal",
+                          "absolute_path",
+                          "restricted",
+                          "suspected_sensitive"
+                        ]
+                      },
+                      "retentionPolicy": {
+                        "const": "M1-05/raw-retention-v1"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "publicCandidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "state",
+        "approval",
+        "publicTextOmitted",
+        "events"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "state": {
+          "const": "public_candidate"
+        },
+        "approval": {
+          "const": "pending"
+        },
+        "publicTextOmitted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "ordinal",
+                  "kind",
+                  "outcome",
+                  "disposition"
+                ],
+                "properties": {
+                  "ordinal": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "kind": {
+                    "enum": [
+                      "input",
+                      "output",
+                      "tool",
+                      "edit",
+                      "test",
+                      "failure",
+                      "retry",
+                      "cancel",
+                      "review",
+                      "approval",
+                      "redaction"
+                    ]
+                  },
+                  "outcome": {
+                    "enum": [
+                      "recorded",
+                      "passed",
+                      "failed",
+                      "cancelled",
+                      "skipped",
+                      "unknown"
+                    ]
+                  },
+                  "disposition": {
+                    "const": "public_text_omitted"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "ordinal",
+                  "kind",
+                  "outcome",
+                  "disposition",
+                  "removal"
+                ],
+                "properties": {
+                  "ordinal": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "kind": {
+                    "enum": [
+                      "input",
+                      "output",
+                      "tool",
+                      "edit",
+                      "test",
+                      "failure",
+                      "retry",
+                      "cancel",
+                      "review",
+                      "approval",
+                      "redaction"
+                    ]
+                  },
+                  "outcome": {
+                    "enum": [
+                      "recorded",
+                      "passed",
+                      "failed",
+                      "cancelled",
+                      "skipped",
+                      "unknown"
+                    ]
+                  },
+                  "disposition": {
+                    "const": "removed"
+                  },
+                  "removal": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "reason",
+                      "retentionPolicy"
+                    ],
+                    "properties": {
+                      "reason": {
+                        "enum": [
+                          "secret",
+                          "personal",
+                          "absolute_path",
+                          "restricted",
+                          "suspected_sensitive"
+                        ]
+                      },
+                      "retentionPolicy": {
+                        "const": "M1-05/raw-retention-v1"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "publicManifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "state",
+        "approval",
+        "files",
+        "filesDigest"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "state": {
+          "const": "public_manifest"
+        },
+        "approval": {
+          "const": "pending"
+        },
+        "files": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "events.json"
+          ],
+          "properties": {
+            "events.json": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "version",
+                "sha256",
+                "bytes"
+              ],
+              "properties": {
+                "version": {
+                  "const": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            }
+          }
+        },
+        "filesDigest": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      }
+    },
+    "approval": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "state",
+        "manifestSha256",
+        "decision",
+        "decisionRef"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "state": {
+          "const": "approval_record"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        "decision": {
+          "enum": [
+            "unknown",
+            "pending",
+            "approved",
+            "rejected"
+          ]
+        },
+        "decisionRef": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Private external approval reference; not copied to a candidate or authenticated by this tool."
+        }
+      }
+    }
+  }
+}

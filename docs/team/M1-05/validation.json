@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 1,
+  "workId": "M1-05",
+  "issue": 21,
+  "phase": "candidate",
+  "sourceRef": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
+  "branch": "feature/21-kkosso-evidence-contracts",
+  "environment": {
+    "os": "Windows",
+    "python": "3.12.0"
+  },
+  "inputSha256": {
+    "docs/context/work-orders/021.json": "b24b68e255f5f085fbe5d9b13776e512a72f9fb1a397cbb257870a959981de96",
+    "docs/context/orchestration-contract.md": "c8a9f0fe6902eedef01d1d692395064a05e1157de7310ac6ef03715a1e0a0ae5",
+    "docs/choo-guard-execution-backlog-v1.md": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0",
+    "docs/choo-guard-ai-native-pipeline-v1.md": "491954594418e5686c88dcc30c97ad9115612e3c0c071f41b544ef3843186e17",
+    "scripts/dev/native_manifest.py": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83",
+    "scripts/dev/test_native_manifest.py": "a6197c32a821af428e821333c02bd666d6f689e966f67451b41bd4d47eed7011"
+  },
+  "outputSha256": {
+    "docs/team/M1-05/manifest-contract.md": "865f59146d97914fe87303f6d2bd377799de22cdb8f82a3f12911227f5f077c3",
+    "docs/team/M1-05/record-schema.json": "5d2e705cfd4fc81804543582407055fb82d0f225d66fc878dc23cb285f3571fe",
+    "docs/team/M1-05/synthetic-candidate/events.json": "bd47c77477e67ccc50384fc27a2e38077a632829017023718882616ad7394ae7",
+    "docs/team/M1-05/synthetic-candidate/manifest.json": "a3f66cf2cb4024b6d6739b425fdfa994a69ec7753fe998855b086bd24d967acc",
+    "scripts/team/M1-05/record_pipeline.py": "87c25f1b25efb68773d56ca815302213f4d6060c6a9e2a489e64cd33d3aeed37",
+    "scripts/team/M1-05/test_redaction.py": "fef6543f0daa820e79ac4a93b0b678cf9af08c76e76126dd1f94008bd8478d7b"
+  },
+  "checks": [
+    {
+      "command": "python scripts/team/M1-05/test_redaction.py",
+      "exitCode": 0,
+      "testsRun": 20,
+      "logSha256": "636b394b7a4c9060502054a8111be0930401bf6d63bedeb72932f75bd226abf6",
+      "rawLogLocation": "private external run directory; not published",
+      "result": "passed"
+    },
+    {
+      "command": "python scripts/dev/test_native_manifest.py",
+      "exitCode": 1,
+      "testsRun": 3,
+      "logSha256": "b971213f91f5b4ec5ae373a8a7c42addfa6a7c8a5eb7a2d327df141bf4263e75",
+      "rawLogLocation": "private external run directory; not published",
+      "result": "environment_error",
+      "passed": 2,
+      "errors": 1,
+      "limitation": "Windows symlink creation privilege unavailable; same result outside the sandbox. Test was not skipped or changed."
+    },
+    {
+      "command": "record pipeline build/verify synthetic candidate",
+      "result": "passed",
+      "approval": "pending",
+      "schemaValidation": "Draft 2020-12 schema validated"
+    }
+  ],
+  "acceptance": "Candidate implementation for review; not whole-issue acceptance or publication approval",
+  "unrun": [
+    "Unity Editor/EditMode/PlayMode: no Unity runtime, scene, asset, or package changes",
+    "#16 policy acceptance and #46 harness integration are outside this candidate"
+  ],
+  "handoff": {
+    "successorIssues": [
+      22,
+      46
+    ],
+    "claimRelease": "Local implementation finished; PR review handoff releases active editing claim. Assignee remains kkosso."
+  },
+  "integrity": "This index does not hash itself. Git commit binds this index; outputSha256 binds its payload files.",
+  "hashEncoding": "SHA-256 of exact canonical Git blob bytes (LF). Observed input worktree hashes are retained separately.",
+  "observedWorktreeInputSha256": {
+    "docs/context/work-orders/021.json": "b24b68e255f5f085fbe5d9b13776e512a72f9fb1a397cbb257870a959981de96",
+    "docs/context/orchestration-contract.md": "c8a9f0fe6902eedef01d1d692395064a05e1157de7310ac6ef03715a1e0a0ae5",
+    "docs/choo-guard-execution-backlog-v1.md": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0",
+    "docs/choo-guard-ai-native-pipeline-v1.md": "491954594418e5686c88dcc30c97ad9115612e3c0c071f41b544ef3843186e17",
+    "scripts/dev/native_manifest.py": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83",
+    "scripts/dev/test_native_manifest.py": "a6197c32a821af428e821333c02bd666d6f689e966f67451b41bd4d47eed7011"
+  }
+}
