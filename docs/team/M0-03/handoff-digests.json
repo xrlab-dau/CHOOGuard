@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1.0.0",
+  "artifactId": "artifact:16:M0-03-handoff-digests:candidate",
+  "workId": "M0-03",
+  "issueNumber": 16,
+  "phase": "candidate",
+  "kind": "m0-03-handoff-digest-annex",
+  "recordType": "isolated_proposal_draft_for_human_verification",
+  "identification": {
+    "issueNumber": 16,
+    "workId": "M0-03",
+    "phase": "candidate",
+    "isolatedProposal": true,
+    "canonicalWriteAllowed": false,
+    "draftStatus": "draft",
+    "notADesignatedOutput": true,
+    "parentArtifacts": [
+      "docs/team/M0-03/allowlist.json",
+      "docs/team/M0-03/execution-profile.json"
+    ],
+    "note": "This is a bounded digest annex declared at docs/team/M0-03/allowlist.json#/writeClosure and docs/team/M0-03/execution-profile.json#/writeClosure. It is NOT a third designated output, it carries no policy content, no allowlist row, no gate verdict and no acceptance claim: its only values are the two artifacts' SHA-256 file-byte digests and the commands that reproduce them. It exists because a file cannot embed the digest of its own bytes, so without a durable location inside the declared write scope the digest-binding requirement could only be met from the authoring report's return payload. Not accepted, not final, not complete; a human PM verifies it.",
+    "deviationEscalation": {
+      "detectedBy": "defect D-08 (independent reviewer, G1/G7 round)",
+      "statement": "This annex is a third file beyond the two designated outputs that frozen criteria section 6 names. It declares that at /identification/notADesignatedOutput true and repeats it at docs/team/M0-03/allowlist.json#/writeClosure/designatedOutputDeviation and docs/team/M0-03/execution-profile.json#/writeClosure/designatedOutputDeviation.",
+      "selfExemption": "none: under G0 a candidate may not judge its own compliance, so the deviation is escalated, not exempted.",
+      "disposition": "PM must confirm the third file, reject it and have the candidate reworked to two outputs, or amend the frozen designated-output sentence.",
+      "owner": "PM",
+      "state": "unresolved"
+    }
+  },
+  "purpose": "Durable, recomputable binding between the two designated M0-03 candidate artifacts and their exact bytes, inside the declared write scope docs/team/M0-03/ (frozen criteria section 6).",
+  "digestRule": {
+    "rule": "sha256 over the UTF-8 bytes of the file text",
+    "serialization": "UTF-8 JSON, object keys in each file's declared order, two-space indent, one trailing newline",
+    "why": "so that a consumer receiving the files can recompute each digest from the bytes it holds rather than trusting a number printed here"
+  },
+  "fileDigests": {
+    "allowlistFileDigest": {
+      "algorithm": "sha256",
+      "value": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a",
+      "preimagePath": "docs/team/M0-03/allowlist.json",
+      "preimageKind": "file bytes (not a canonical-JSON projection)",
+      "digestRule": "sha256 over the UTF-8 bytes of the file text",
+      "declaredWritePath": "docs/team/M0-03/allowlist.json",
+      "writeOrder": 1,
+      "referencedFrom": [
+        "docs/team/M0-03/execution-profile.json#/policy/allowlistSha256",
+        "docs/team/M0-03/execution-profile.json#/handoff/allowlistSha256",
+        "docs/team/M0-03/execution-profile.json#/outputDigests/entries/allowlistFileDigest",
+        "docs/team/M0-03/allowlist.json#/outputDigests/entries/allowlistFileDigest"
+      ],
+      "recomputedAfterCorrection": "REPUBLISHED in the D-02/D-04/D-05/D-07 remediation round: f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a. The values are recomputed from the final bytes of the files as written, not carried over."
+    },
+    "profileFileDigest": {
+      "algorithm": "sha256",
+      "value": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+      "preimagePath": "docs/team/M0-03/execution-profile.json",
+      "preimageKind": "file bytes (not a canonical-JSON projection)",
+      "digestRule": "sha256 over the UTF-8 bytes of the file text",
+      "declaredWritePath": "docs/team/M0-03/execution-profile.json",
+      "writeOrder": 2,
+      "referencedFrom": [
+        "docs/team/M0-03/allowlist.json#/outputDigests/entries/profileFileDigest",
+        "docs/team/M0-03/execution-profile.json#/outputDigests/entries/profileFileDigest"
+      ],
+      "recomputedAfterCorrection": "REPUBLISHED in the D-02/D-04/D-05/D-07 remediation round: 787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc. The values are recomputed from the final bytes of the files as written, not carried over."
+    }
+  },
+  "recomputeCommands": [
+    "shasum -a 256 docs/team/M0-03/allowlist.json",
+    "shasum -a 256 docs/team/M0-03/execution-profile.json",
+    "python3 -c \"import hashlib;print(hashlib.sha256(open('docs/team/M0-03/allowlist.json','rb').read()).hexdigest())\""
+  ],
+  "digestKindSeparation": {
+    "fileByteDigests": "published here only; /fileDigests/allowlistFileDigest and /fileDigests/profileFileDigest",
+    "canonicalProjectionDigests": "published inside the artifacts and NOT substitutable for the file-byte digests: docs/team/M0-03/allowlist.json#/sourceHashes/entriesDigest, #/verification/C01/artifactDigest, #/verification/C02/artifactDigest and docs/team/M0-03/execution-profile.json#/policy/policyHash, #/verification/C01/artifactDigest, #/verification/C02/artifactDigest",
+    "gitBlobDigests": "per-path sha256/sha1 at the ref inside docs/team/M0-03/allowlist.json#/sourceHashes/entries"
+  },
+  "writeClosure": {
+    "mode": "isolated_proposal",
+    "canonicalWriteAllowed": false,
+    "phase": "candidate",
+    "declaredWritePaths": [
+      "docs/team/M0-03/allowlist.json",
+      "docs/team/M0-03/execution-profile.json",
+      "docs/team/M0-03/handoff-digests.json"
+    ],
+    "writeOrder": 3,
+    "pathsOutsideDeclaredScope": [],
+    "generatedClosure": [],
+    "lease": {
+      "state": "none",
+      "reason": "no live lease; the write scope is a phase-declared proposal scope"
+    }
+  },
+  "sourceBinding": {
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "workingTreeHeadAtAuthoring": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "driftRef": "docs/team/M0-03/allowlist.json#/sourceBinding/drift",
+    "note": "This annex adds no source read: every value in it is derived from the two artifacts' own bytes."
+  },
+  "limits": "Issue-scoped digest annex only. It proves nothing about policy enforcement, tool behaviour, version acceptability or license status; it does not make any artifact accepted, final or complete, and a matching digest is not an approval.",
+  "noAcceptanceClaim": true,
+  "noPermissionStatement": "Even if the digests match, this annex grants no install, Pi/MCP/model/network/Unity, restricted-source, publication, merge, product or safety permission, and no policy PASS.",
+  "returnFields": {
+    "outputHashes": {
+      "state": "known",
+      "valueKind": "object<digest>",
+      "source": "/fileDigests",
+      "note": "the two designated outputs' byte digests"
+    },
+    "reproduce": {
+      "state": "known",
+      "source": "/recomputeCommands"
+    },
+    "scope": {
+      "state": "known",
+      "source": "/limits"
+    }
+  },
+  "correctionRound": {
+    "round": "D-01..D-08 independent-reviewer defect remediation",
+    "note": "the two designated outputs were rewritten before this annex was recomputed; both digests above are sha256 over the post-correction bytes and are the values a consumer verifying the received files should obtain",
+    "digestsBearingCorrections": {
+      "allowlist.json#/verification/C01/artifactDigest": "recomputed and republished (value unchanged; preimage unchanged)",
+      "allowlist.json#/verification/C02/artifactDigest": "recomputed and republished (value changed; durationSeconds rewritten)",
+      "execution-profile.json#/verification/C01/artifactDigest": "recomputed and republished (value changed; ADR 0006 inspection record corrected)",
+      "execution-profile.json#/verification/C02/artifactDigest": "recomputed and republished (value changed; durationSeconds rewritten)",
+      "execution-profile.json#/policy/policyHash": "recomputed and republished (allowlistSha256 moved)"
+    }
+  }
+}

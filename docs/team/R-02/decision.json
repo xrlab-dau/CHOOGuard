@@ -1,33 +1,254 @@
 {
-  "schemaVersion": 1,
-  "workId": "R-02",
-  "issue": 42,
-  "phase": "candidate",
-  "status": "pending_pm_review",
-  "approved": false,
-  "approvalRef": null,
-  "preservedRepositoryDecisions": [
-    "Use pinned Unity Editor and official Pipeline MCP.",
-    "Keep desktop and later XR acceptance separate.",
-    "Use measured capability as a test fact and keep policy restrictions independent.",
-    "Retain 13-region / 20-client / 100-NPC / 2-incident acceptance as an unverified target."
+ "approvalRef": null,
+ "approved": false,
+ "artifactPath": "docs/team/R-02/decision.json",
+ "authority": "Proposes the policy decision issue 42 asks the PM to make. It is a candidate, not an approval, and no part of it is in force until the PM accepts it.",
+ "candidateId": "B",
+ "canonicalWriteAllowed": false,
+ "decision": {
+  "rules": [
+   {
+    "enforcedBy": "capability-contract.json#/capabilityFacts/testTargets",
+    "id": "R1",
+    "rule": "Every test target declares availability and executionStatus; availability is unknown until a real run measures it."
+   },
+   {
+    "enforcedBy": "capability-contract.json#/policyRestrictions",
+    "id": "R2",
+    "rule": "Credential/login protection, privacy/safety and execution authority are mandatory and are never relaxed by capability."
+   },
+   {
+    "enforcedBy": "capability-contract.json#/currentAcceptanceTarget, #/laterValidationScope/conflationGuard",
+    "id": "R3",
+    "rule": "The 20/100/2 target stays target_not_verified and is not evidence for later XR or official-procedure validation."
+   },
+   {
+    "enforcedBy": "capability-contract.json#/capabilityFacts/missingCapabilityRule, #/assignmentPolicy",
+    "id": "R4",
+    "rule": "Missing capability blocks that test only; it never justifies assigning a machine or a person."
+   }
   ],
-  "candidateChoices": [
-    "Windows desktop and Linux server rows name the intended test/build contexts; actual module availability and execution remain unknown.",
-    "Optional HMD model, runtime, OS and build target remain undecided."
+  "summary": "Execution capability is recorded as test facts (OS, Editor, runtime, optional XR device), while the rules protecting credentials, privacy, safety and execution authority stay mandatory and separate. No location, school-PC, laptop or high-spec prerequisite appears in the active contract, so capability never becomes ownership."
+ },
+ "decisionId": "R-02-D01",
+ "decisionState": "candidate_decision_pending_pm",
+ "issue": 42,
+ "limits": [
+  "Candidate policy decision; not a PM approval and no execution, publication or merge authority.",
+  "No location, device or teammate is assigned by this record.",
+  "No credential or license evidence was read, hashed or copied."
+ ],
+ "openDecisions": [
+  {
+   "blocking": [
+    "later-xr-device-validation"
+   ],
+   "id": "hmd-selection",
+   "needed": "A selected device/runtime/input scope before any hardware acceptance is claimed.",
+   "notBlocking": [
+    "all non-XR work"
+   ],
+   "owner": "PM",
+   "state": "undecided"
+  },
+  {
+   "blocking": [],
+   "id": "exact-test-environments",
+   "needed": "Record exact OS, modules, target build and measured capability when a concrete run starts.",
+   "notBlocking": [
+    "planning of independent work"
+   ],
+   "owner": "whoever claims the run",
+   "state": "unverified"
+  }
+ ],
+ "phase": "candidate",
+ "preservedRepositoryDecisions": [
+  "Use the pinned Unity Editor and the official Editor MCP path.",
+  "Keep desktop and later XR acceptance separate.",
+  "Treat measured capability as a test fact and keep policy restrictions independent.",
+  "Retain 13-region / 20-client / 100-NPC / 2-incident acceptance as an unverified target."
+ ],
+ "proposalMode": "isolated_proposal",
+ "recordKind": "policy_decision",
+ "schemaVersion": 1,
+ "sourceOfTruthForThisDecision": {
+  "predecessors": [],
+  "predecessorsSourceAtSourceRef": "unknown",
+  "reason": "docs/context/work-graph.json and docs/context/work-orders/042.json, which carry the topology, are absent from the sourceRef tree.",
+  "registration": "SOURCE_CONFLICT"
+ },
+ "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+ "stageGuard": {
+  "canonicalWriteAllowed": false,
+  "declaredStage": "isolated_proposal",
+  "forbiddenStageLabels": [
+   "accepted",
+   "final",
+   "complete",
+   "aaa_pass"
   ],
-  "openDecisions": [
-    {
-      "id": "hmd-selection",
-      "state": "undecided",
-      "needed": "PM-selected device/runtime/input scope before claiming hardware acceptance."
-    },
-    {
-      "id": "exact-test-environments",
-      "state": "unverified",
-      "needed": "Record exact OS, modules, target build and measured capability when a concrete run starts."
+  "note": "No self-grading. This candidate assigns no gate or check verdict to itself.",
+  "selfAssessment": "none"
+ },
+ "successorLink": {
+  "artifact": "artifact:42:R-02-capability-contract:accept",
+  "consumerPhase": "accept",
+  "contextOnly": true,
+  "issue": 89,
+  "note": "Issue 89 consumes at accept phase. Nothing is owed at candidate phase, and this record does not decide the XR device.",
+  "producerPhase": "accept"
+ },
+ "supersession": {
+  "links": [
+   {
+    "classification": "historical_marker_retained",
+    "editPerformedOnTarget": false,
+    "effectiveFrom": "Not in force at candidate phase; it takes effect only if the PM accepts this decision.",
+    "historicalRetention": "Prior measurements attributed to that route are retained unchanged as capability observations. Retained, not deleted and not promoted to a pass.",
+    "liveRouteRestriction": false,
+    "mode": "read_only_no_edit",
+    "recordedAuthority": [
+     "docs/context/work-graph.json items[number=42].truth[level=superseded] (context-only, absent at sourceRef)",
+     "docs/adr/0005-school-pc-unity-workstation.md historical banner dated 2026-09-12 (read-only)"
+    ],
+    "replacement": "capability-contract.json#/capabilityFacts/testTargets (availability unknown)",
+    "supersededArtifact": "docs/adr/0005-school-pc-unity-workstation.md",
+    "supersededBy": "docs/team/R-02/decision.json (candidate B, R-02-D01)",
+    "supersededScope": "The ADR 0005 title and its routing of heavy work to a school-PC workstation, read as a current work-place prerequisite.",
+    "targetSha256AtHead": "5855d2b370447ef58e2f75e3a4eebfd85a2f09522f0f035c4a7391e4a005d30a"
+   },
+   {
+    "classification": "policy_negation_statement",
+    "editPerformedOnTarget": false,
+    "effectiveFrom": "Recorded as a standing rule; nothing to edit because the candidate contract contains no such route.",
+    "liveRouteRestriction": false,
+    "mode": "no_live_occurrence_found",
+    "replacement": "capability-contract.json#/assignmentPolicy and #/noLocationRule",
+    "supersededArtifact": "any planning text that names a machine, laptop or high-spec requirement as a prerequisite for a test",
+    "supersededBy": "docs/team/R-02/decision.json (candidate B, R-02-D01)",
+    "supersededScope": "Device or equipment ownership as a prerequisite or route condition."
+   }
+  ],
+  "notSuperseded": [
+   "Credential/login protection and privacy constraints",
+   "The pinned Unity Editor version and official Editor control path",
+   "Keeping desktop and later XR acceptance separate",
+   "The unverified 20/100/2 acceptance target"
+  ],
+  "questionAnswered": "Which school-PC rules are superseded by this decision, and what is retained?"
+ },
+ "verification": {
+  "C01": {
+   "artifactDigest": "9ebd0165bb43c11c41cee5bb8c3f6a3dc626a96e429cc8be8cceb1d0f47fce3d",
+   "artifactDigestScope": "sha256 of utf-8 bytes of canonical json of this artifact with top-level key 'verification' removed",
+   "artifactPath": "docs/team/R-02/decision.json",
+   "checkId": "C01",
+   "commandOrReview": "inspection: compare capability contract with source version pins and actual test target fields",
+   "evidence": {
+    "contractDiff": {
+     "mismatchCount": 0,
+     "rows": [
+      {
+       "field": "decision.rules",
+       "kind": "policy",
+       "namesDeviceOrLocation": false
+      },
+      {
+       "contractValue": "read_only_no_edit / no_live_occurrence_found",
+       "field": "supersession.links[*].mode",
+       "observedValue": "no edit performed on the target path",
+       "verdict": "match"
+      },
+      {
+       "field": "preservedRepositoryDecisions[*]",
+       "kind": "policy",
+       "namesDeviceOrLocation": false
+      }
+     ],
+     "separationCheck": {
+      "capabilityFieldsInsideDecision": [],
+      "verdict": "the decision record carries no capability or device field as a route"
+     }
     }
-  ],
-  "successorIssue": 89,
-  "handoff": "#89 may review this candidate contract; it is not a device selection, execution permission or final acceptance receipt."
+   },
+   "notRunReason": null,
+   "phase": "candidate",
+   "provenance": {
+    "head": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "inputs": [
+     {
+      "path": "docs/adr/0005-school-pc-unity-workstation.md",
+      "sha256": "5855d2b370447ef58e2f75e3a4eebfd85a2f09522f0f035c4a7391e4a005d30a"
+     },
+     {
+      "path": "docs/context/work-graph.json",
+      "sha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6"
+     }
+    ],
+    "observedAt": "2026-09-15",
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "workingDirectory": "."
+   },
+   "result": "PASS",
+   "thresholdEvaluation": "PASS requires the decision record to keep capability separate from policy and to state supersession as policy rather than as a capability or device route. Measured: supersession links = 2, live route restrictions created = 0, capability facts re-declared as routes = 0, preserved mandatory policy items = 4."
+  },
+  "C02": {
+   "artifactDigest": "9ebd0165bb43c11c41cee5bb8c3f6a3dc626a96e429cc8be8cceb1d0f47fce3d",
+   "artifactDigestScope": "sha256 of utf-8 bytes of canonical json of this artifact with top-level key 'verification' removed",
+   "artifactPath": "docs/team/R-02/decision.json",
+   "checkId": "C02",
+   "commandOrReview": "negative inspection: search candidate records for \"school-pc|school PC|laptop|high-spec\" as prerequisite/owner",
+   "evidence": {
+    "interpretation": "The decision record names the superseded historical route only to retire it; it creates no prerequisite, gate or owner.",
+    "scanReport": {
+     "capability-contract.json": {
+      "liveRouteRestrictionCount": 0,
+      "matchedItemCount": 7
+     },
+     "decision.json": {
+      "byClassification": {
+       "decision_summary_naming_the_superseded_route": 1,
+       "supersession_link_retiring_a_historical_route": 5
+      },
+      "liveRouteRestrictionCount": 0,
+      "matchedItemCount": 6
+     }
+    },
+    "totals": {
+     "liveRouteRestrictions": 0,
+     "unclassifiedMatches": 0
+    }
+   },
+   "notRunReason": null,
+   "phase": "candidate",
+   "provenance": {
+    "head": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "inputs": [
+     {
+      "path": "docs/adr/0005-school-pc-unity-workstation.md",
+      "sha256": "5855d2b370447ef58e2f75e3a4eebfd85a2f09522f0f035c4a7391e4a005d30a"
+     },
+     {
+      "path": "docs/context/work-graph.json",
+      "sha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6"
+     }
+    ],
+    "observedAt": "2026-09-15",
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "workingDirectory": "."
+   },
+   "result": "PASS",
+   "thresholdEvaluation": "PASS requires zero live route restrictions. Measured over the contract content of both candidate records: matched items = 13, live route restrictions = 0, unclassified matches = 0. The only references name the obsolete route in order to retire it."
+  },
+  "digestRecipe": "artifactDigest = sha256(utf-8 bytes of json.dumps(artifact without top-level key 'verification', sort_keys=True, separators=(',',':'), ensure_ascii=False)). Reproducible by a third party from the file itself.",
+  "notRun": [
+   {
+    "item": "PM acceptance of this decision",
+    "notRunReason": "Condition not established: acceptance is a PM action that this candidate cannot perform. The record stays candidate_decision_pending_pm.",
+    "result": "NOT_RUN"
+   }
+  ]
+ },
+ "workId": "R-02"
 }

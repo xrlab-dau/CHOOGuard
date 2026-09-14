@@ -1,106 +1,1002 @@
 {
-  "schemaVersion": 1,
-  "workId": "R-02",
-  "issue": 42,
-  "phase": "candidate",
-  "status": "proposed_for_pm_review",
-  "sourceRef": "e5e56dba7a5d8dfd2805bd111dffec6fcca74d60",
-  "authority": "Candidate test contract derived from current repository decisions; no new device selection, approval or execution evidence.",
-  "unity": {
-    "version": "6000.3.23f1",
-    "revision": "09d2ecc7fb28",
-    "pipelinePackage": "0.6.0-exp.1",
-    "editorControl": "official Unity CLI Editor MCP",
-    "packagePinSource": "Packages/manifest.json"
+ "acceptanceMapping": [
+  {
+   "criterion": "No location, school-PC, laptop or high-spec prerequisite exists in active contract.",
+   "evidence": [
+    "noLocationRule.requiredLocations/namedAssignees/deviceOrEquipmentOwnershipPrerequisites all empty",
+    "C02 liveRouteRestrictionCount = 0"
+   ],
+   "state": "satisfied_in_this_candidate"
   },
-  "testTargets": [
-    {
-      "id": "desktop-windows",
-      "role": "desktop client and applicable Editor validation",
-      "os": "Windows",
-      "architecture": "x86_64",
-      "buildTarget": "StandaloneWindows64",
-      "requiredCapabilities": [
-        "matching Editor and Windows build module",
-        "project import and compilation",
-        "declared desktop input and display",
-        "relevant EditMode/PlayMode and client checks"
-      ],
-      "availability": "unknown",
-      "executionStatus": "not_run",
-      "evidenceRef": null,
-      "missingCapabilityEffect": "Record the reason for this test only; independent work remains eligible."
-    },
-    {
-      "id": "dedicated-linux",
-      "role": "dedicated server validation candidate",
-      "os": "Linux",
-      "architecture": "x86_64",
-      "buildTarget": "StandaloneLinux64",
-      "requiredCapabilities": [
-        "matching build module and runnable server artifact",
-        "declared process, network and measurement capability"
-      ],
-      "availability": "unknown",
-      "executionStatus": "not_run",
-      "evidenceRef": null,
-      "missingCapabilityEffect": "Record the reason for this test only; independent work remains eligible."
-    },
-    {
-      "id": "optional-hmd",
-      "role": "separately scoped later XR validation",
-      "os": null,
-      "architecture": null,
-      "buildTarget": null,
-      "deviceModel": null,
-      "runtime": null,
-      "selection": "undecided",
-      "requiredCapabilities": [
-        "PM-selected device/runtime/input contract",
-        "same spatial anchor and action meaning as desktop",
-        "actual device and relevant XR test evidence"
-      ],
-      "availability": "unknown",
-      "executionStatus": "not_run",
-      "evidenceRef": null,
-      "missingCapabilityEffect": "Record the reason for this test only; independent work remains eligible."
-    }
-  ],
-  "currentAcceptanceTarget": {
-    "regions": 13,
-    "clientsIncludingInstructors": 20,
-    "npcs": 100,
-    "concurrentIncidents": 2,
-    "durationMinutes": 60,
-    "status": "target_not_verified",
-    "limit": "A local or smaller synthetic run does not establish this target, device acceptance, or official railway procedure validation."
+  {
+   "criterion": "OS/Unity/HMD are capability/test facts with unknown availability states.",
+   "evidence": [
+    "testTargets[*].availability = unknown and executionStatus = not_run for all six rows",
+    "editor.availability = unknown"
+   ],
+   "state": "satisfied_in_this_candidate"
   },
-  "policyRestrictions": {
-    "credentialLogin": "The account owner completes authentication. Never publish credentials, token values, license files or account secrets.",
-    "publicEvidence": "Use approved sanitized references and aggregate facts; exclude private absolute paths and restricted source metadata.",
-    "executionAuthority": "Capability availability does not authorize arbitrary C# execution, remote package installation, external generation, paid calls or publication.",
-    "failureHandling": "Preserve failed/not_run reasons; never replace missing evidence with a pass."
+  {
+   "criterion": "Credential/login protection and privacy/safety remain mandatory.",
+   "evidence": [
+    "policyRestrictions.credentialAndLogin.mandatory = true",
+    "policyRestrictions.privacyAndSafety.mandatory = true"
+   ],
+   "state": "satisfied_in_this_candidate"
   },
-  "requiredMeasurementFields": [
-    "runId",
-    "sourceCommit",
-    "buildArtifactReference",
-    "toolVersions",
-    "osAndArchitecture",
-    "selectedTargetId",
-    "observedCapabilities",
-    "clientCount",
-    "npcCount",
-    "incidentCount",
-    "duration",
-    "result",
-    "failureOrNotRunReason",
-    "sanitizedEvidenceReference"
-  ],
-  "assignmentPolicy": {
-    "namedAssignees": [],
-    "requiredLocations": [],
-    "requiredEquipmentOwners": [],
-    "rule": "Claim only the actual bounded task and mutable resources at execution time."
+  {
+   "criterion": "20/100/2 current target is not conflated with later HMD/official procedure validation.",
+   "evidence": [
+    "currentAcceptanceTarget.status = target_not_verified",
+    "laterValidationScope.conflationGuard present"
+   ],
+   "state": "satisfied_in_this_candidate"
   }
+ ],
+ "artifactPath": "docs/team/R-02/capability-contract.json",
+ "assignmentPolicy": {
+  "namedAssignees": [],
+  "policy": "unassigned_until_claim",
+  "requiredEquipmentOwners": [],
+  "requiredLocations": [],
+  "rule": "Claim only the actual bounded task and mutable resources at execution time. No location, device or equipment ownership is a prerequisite."
+ },
+ "authority": {
+  "doesNotGrant": [
+   "runtime or Editor execution",
+   "build, Windows or HMD runs",
+   "package installation",
+   "publication or merge",
+   "assignment of a machine or a person"
+  ],
+  "statement": "Candidate capability contract recording capability/test facts and mandatory policy restrictions. It is not a device selection, an execution permission, a PM approval or a product/safety claim."
+ },
+ "candidateId": "B",
+ "canonicalWriteAllowed": false,
+ "capabilityFacts": {
+  "declaredBuildTargets": {
+   "ids": [
+    "windows-desktop",
+    "mac-development",
+    "windows-server",
+    "linux-server",
+    "livekit"
+   ],
+   "line": 21,
+   "meaning": "Test-target names already declared by a repository build script. Capability/test facts, not a location, owner or assignment.",
+   "path": "scripts/dev/build_foundation_candidates.py",
+   "sha256": "3d45d1586bd2fa9cc3cfc3b499db5fe609c15e44c273b39973dd67c9070152be"
+  },
+  "definition": "Declared or observed ability to run a given test in whatever environment is actually available. A capability fact is never a location, an owner, an assignee or a route.",
+  "editor": {
+   "availability": "unknown",
+   "executionStatus": "not_run",
+   "pinSource": "ProjectSettings/ProjectVersion.txt",
+   "pinSourceSha256": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66",
+   "product": "Unity Editor",
+   "revisionPin": "09d2ecc7fb28",
+   "versionPin": "6000.3.23f1"
+  },
+  "editorControl": {
+   "authorityRef": "docs/adr/0006-official-unity-editor-mcp.md",
+   "availability": "unknown",
+   "package": "com.unity.pipeline",
+   "pinSource": "Packages/manifest.json",
+   "pinSourceSha256": "30082c1a38a6dffadad97cee4d966a02b41e754b26b923c5ff326b0ec1a31144",
+   "versionPin": "0.6.0-exp.1"
+  },
+  "missingCapabilityRule": "Missing capability does not justify assigning a machine or a person. It is recorded against that test only and independent work stays eligible.",
+  "pinAlignment": {
+   "method": "Each declared value string-compared with the value parsed from its pinned file; target ids compared with the TARGETS tuple parsed from the build script.",
+   "mismatches": [],
+   "rows": [
+    {
+     "declared": "6000.3.23f1",
+     "field": "editor.versionPin",
+     "match": true,
+     "observed": "6000.3.23f1"
+    },
+    {
+     "declared": "09d2ecc7fb28",
+     "field": "editor.revisionPin",
+     "match": true,
+     "observed": "09d2ecc7fb28"
+    },
+    {
+     "declared": "0.6.0-exp.1",
+     "field": "editorControl.versionPin",
+     "match": true,
+     "observed": "0.6.0-exp.1"
+    },
+    {
+     "declared": [
+      "windows-desktop",
+      "mac-development",
+      "windows-server",
+      "linux-server",
+      "livekit"
+     ],
+     "field": "declaredBuildTargets.ids",
+     "match": true,
+     "observed": [
+      "windows-desktop",
+      "mac-development",
+      "windows-server",
+      "linux-server",
+      "livekit"
+     ]
+    }
+   ]
+  },
+  "runtime": {
+   "availability": "unknown",
+   "engine": "Unity 6000.3.23f1 (09d2ecc7fb28)",
+   "note": "XR modules present in the manifest is a package fact only. It is not an HMD selection and not an HMD readiness claim.",
+   "serverPackages": [
+    {
+     "name": "com.unity.netcode.gameobjects",
+     "pin": "2.13.2"
+    },
+    {
+     "name": "com.unity.transport",
+     "pin": "2.7.4"
+    },
+    {
+     "name": "io.livekit.livekit-sdk",
+     "pin": "https://github.com/livekit/client-sdk-unity.git#v2.0.0"
+    },
+    {
+     "name": "com.unity.test-framework",
+     "pin": "1.6.0"
+    },
+    {
+     "name": "com.unity.test-framework.performance",
+     "pin": "3.5.0"
+    },
+    {
+     "name": "com.xrlab.chooguard.foundation",
+     "pin": "0.1.0"
+    }
+   ],
+   "xrModulesPresentButUnselected": [
+    {
+     "name": "com.unity.modules.xr",
+     "pin": "1.0.0"
+    },
+    {
+     "name": "com.unity.modules.vr",
+     "pin": "1.0.0"
+    }
+   ]
+  },
+  "separationRule": "capabilityFacts and policyRestrictions are separate top-level fields. No capability key names a location, owner or equipment prerequisite, and no policy key names a device, target or environment.",
+  "testTargets": [
+   {
+    "architecture": "x86_64",
+    "availability": "unknown",
+    "buildTarget": "StandaloneWindows64",
+    "executionStatus": "not_run",
+    "id": "windows-desktop",
+    "missingCapabilityEffect": "blocked_for_this_test_only",
+    "os": "Windows",
+    "role": "desktop client build and launch validation"
+   },
+   {
+    "architecture": "unknown",
+    "availability": "unknown",
+    "buildTarget": "StandaloneOSX",
+    "executionStatus": "not_run",
+    "id": "mac-development",
+    "missingCapabilityEffect": "blocked_for_this_test_only",
+    "os": "macOS",
+    "role": "development-host client build and launch validation"
+   },
+   {
+    "architecture": "x86_64",
+    "availability": "unknown",
+    "buildTarget": "StandaloneWindows64",
+    "executionStatus": "not_run",
+    "id": "windows-server",
+    "missingCapabilityEffect": "blocked_for_this_test_only",
+    "os": "Windows",
+    "role": "dedicated server build and launch validation on Windows"
+   },
+   {
+    "architecture": "x86_64",
+    "availability": "unknown",
+    "buildTarget": "StandaloneLinux64",
+    "executionStatus": "not_run",
+    "id": "linux-server",
+    "missingCapabilityEffect": "blocked_for_this_test_only",
+    "os": "Linux",
+    "role": "dedicated server build and launch validation on Linux"
+   },
+   {
+    "architecture": null,
+    "availability": "unknown",
+    "buildTarget": null,
+    "executionStatus": "not_run",
+    "id": "livekit",
+    "missingCapabilityEffect": "blocked_for_this_test_only",
+    "os": null,
+    "role": "self-hosted voice relay validation"
+   },
+   {
+    "architecture": null,
+    "availability": "unknown",
+    "buildTarget": null,
+    "deviceModel": null,
+    "executionStatus": "not_run",
+    "id": "later-xr-device-validation",
+    "missingCapabilityEffect": "blocked_for_this_test_only",
+    "missingCapabilityRule": "Blocked for this test only; this row never gates work that does not require XR.",
+    "os": null,
+    "role": "separately scoped later XR validation; not part of the current acceptance target",
+    "runtime": null,
+    "selection": "undecided"
+   }
+  ]
+ },
+ "currentAcceptanceTarget": {
+  "clientsIncludingInstructors": 20,
+  "concurrentIncidents": 2,
+  "durationMinutes": 60,
+  "limit": "A local or smaller synthetic run does not establish this target, device acceptance or official railway procedure validation.",
+  "npcs": 100,
+  "regions": 13,
+  "source": {
+   "atSourceRef": "absent",
+   "contextOnly": true,
+   "path": "docs/choo-guard-foundation-multiplayer.md",
+   "selector": "lines 3-26 (completion scope)",
+   "sha256AtHead": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+  },
+  "status": "target_not_verified"
+ },
+ "drift": {
+  "declaration": "Drift is declared, not hidden. Any value read from a path absent at sourceRef is marked contextOnly and is never the sole basis for a claim.",
+  "divergedFiles": [
+   {
+    "atHead": "present",
+    "atSourceRef": "absent",
+    "path": "docs/choo-guard-foundation-multiplayer.md",
+    "sha256AtHead": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b",
+    "status": "absent_at_source_ref_present_at_head"
+   },
+   {
+    "atHead": "present_changed",
+    "atSourceRef": "present_changed",
+    "path": "docs/adr/0005-school-pc-unity-workstation.md",
+    "sha256AtHead": "5855d2b370447ef58e2f75e3a4eebfd85a2f09522f0f035c4a7391e4a005d30a",
+    "sha256AtSourceRef": "d5acc52173e51d21d0e07ed3ab79a49df4f9758c47547fb1cc4cc68dc3683a2e",
+    "status": "content_changed_between_source_ref_and_head"
+   },
+   {
+    "atHead": "present_changed",
+    "atSourceRef": "present_changed",
+    "detail": "9 dependency entries added between sourceRef and HEAD (burst, collections, mathematics, netcode.gameobjects, nuget.mono-cecil, nuget.newtonsoft-json, test-framework.performance, transport, livekit-sdk); 0 removed; 0 existing values changed.",
+    "path": "Packages/manifest.json",
+    "sha256AtHead": "30082c1a38a6dffadad97cee4d966a02b41e754b26b923c5ff326b0ec1a31144",
+    "sha256AtSourceRef": "b341ea5fae45641a708b79ce548304de3c7f9dc0ae4e2b11d9453d181bfaa84b",
+    "status": "content_changed_between_source_ref_and_head"
+   }
+  ],
+  "evidence": "git ls-tree -r --name-only <sourceRef> returns 0 paths matching work-graph.json or work-orders/",
+  "nonRefInputs": [
+   {
+    "atSourceRef": "absent",
+    "contextOnly": true,
+    "path": "docs/context/work-graph.json",
+    "sha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6"
+   },
+   {
+    "atSourceRef": "absent",
+    "contextOnly": true,
+    "path": "docs/context/work-orders/042.json",
+    "sha256": "28ba61c545543f0e0e84e3c8b73dc26001a0318bfd7570424175a109f7311979"
+   }
+  ],
+  "packet": {
+   "brief": {
+    "path": ".superpowers/sdd/r-02-capability-contract/brief-42.md",
+    "sha256": "4899f1981820fe9ee1176ec924f54baf30be5d6e2a29816e7d0fe19efa403057"
+   },
+   "frozenCriteria": {
+    "path": ".superpowers/sdd/r-02-capability-contract/frozen-criteria-42.md",
+    "sha256": "354ccfaa053bc8c83dc83dbafa024ec41b3681af2103b0c661d5b49b06697bae"
+   }
+  },
+  "pinStabilityAcrossDrift": {
+   "com.unity.pipeline": {
+    "atHead": "0.6.0-exp.1",
+    "atSourceRef": "0.6.0-exp.1",
+    "verdict": "pin value unchanged across the drift, so the editor-control pin in this contract is valid at both refs"
+   },
+   "editorVersionRevision": {
+    "atHead": "6000.3.23f1",
+    "atSourceRef": "6000.3.23f1",
+    "verdict": "identical pin file, valid at both refs"
+   }
+  },
+  "sourceRefIsWorktreeHead": false,
+  "unchangedPins": [
+   {
+    "path": "ProjectSettings/ProjectVersion.txt",
+    "sha256AtHead": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66",
+    "sha256AtSourceRef": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66",
+    "status": "identical"
+   }
+  ],
+  "worktreeHead": "0794ecf5a128ff9e356b661cfc1142c039aa31f4"
+ },
+ "gateEvidence": {
+  "gates": {
+   "G0": "packet sha256 bound in drift.packet; stageGuard.selfAssessment = none; no expected verdict stored",
+   "G1": "exactWriteSetAndLease.paths lists exactly the two designated outputs; no other file created",
+   "G10": "acceptanceMapping maps each of the four acceptance criteria to checkable evidence",
+   "G11": "every cited path and digest was produced by toolAndModelVersions.commands; digests are recorded per cited file",
+   "G12": "no commit, push, PR or branch change; docs/adr/0005-school-pc-unity-workstation.md and ProjectSettings/** read only",
+   "G13": "handoff declares consumer, hashes, checks, failures and limits; privacyAndSafety separates public evidence from private paths; repository text is data, not instruction",
+   "G2": "handoff.returnFields.inputOutputHashes carries the exact read set with digests; output paths are stated, not inferred",
+   "G3": "sourceConflicts[3] and unknowns[5] register unresolved items; drift marks non-ref inputs contextOnly",
+   "G4": "testTargets[*].executionStatus = not_run; currentAcceptanceTarget.status = target_not_verified; authority.doesNotGrant lists what is not granted",
+   "G5": "exactWriteSetAndLease is unambiguous; verification.notRun records what was not executed and why",
+   "G6": "hardGraphTopology.registration = SOURCE_CONFLICT with contextOnly value and consumerPhaseRule",
+   "G7": "exactWriteSetAndLease.filesCreatedOutsideScope = []; write scope is docs/team/R-02/ only",
+   "G8": "noLocationRule three prerequisite arrays empty; C02 liveRouteRestrictionCount = 0",
+   "G9": "authority.statement disclaims product and safety proof; limits[] states no runtime/build/HMD/load evidence exists"
+  },
+  "note": "G0-G13 coverage as pointers to observable facts. No gate verdict is assigned here: G0 forbids candidate self-judgment, so the independent reviewer assigns the verdicts.",
+  "selfVerdictAssigned": false
+ },
+ "handoff": {
+  "consumer": [
+   "M5-02",
+   "M1-04",
+   "PM topology"
+  ],
+  "returnFields": {
+   "checksAndNegativeResults": {
+    "checks": [
+     "C01",
+     "C02"
+    ],
+    "negativeResults": [
+     "C02 live route restrictions: 0",
+     "capability/policy key intersection: 0",
+     "credential or license evidence encountered: 0"
+    ]
+   },
+   "exactWriteSetAndLease": {
+    "canonicalWriteAllowed": false,
+    "filesCreatedOutsideScope": [],
+    "leaseState": "no live lease claimed; unassigned_until_claim",
+    "mode": "isolated_proposal",
+    "paths": [
+     "docs/team/R-02/capability-contract.json",
+     "docs/team/R-02/decision.json"
+    ],
+    "writeScope": "docs/team/R-02/"
+   },
+   "failuresRetriesSkips": {
+    "failures": [],
+    "retries": [],
+    "skips": [
+     {
+      "item": "Editor launch / build / Windows run / HMD run / load test",
+      "reason": "Condition not established at this phase: this candidate holds no execution authority and the item nonGoals exclude actual HMD/Windows runs and product execution. Nothing was executed and no command output was promoted to a policy pass.",
+      "state": "NOT_RUN"
+     },
+     {
+      "item": "Reading docs/choo-guard-native-validation.md and docs/choo-guard-native-team-contracts.md",
+      "reason": "Declared paths absent at sourceRef and HEAD. Untracked git-ignored copies under .planning/ were deliberately not used.",
+      "state": "NOT_RUN"
+     }
+    ]
+   },
+   "inputOutputHashes": {
+    "inputs": [
+     {
+      "contextOnly": false,
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "readOnly": false,
+      "sha256": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66"
+     },
+     {
+      "contextOnly": false,
+      "path": "Packages/manifest.json",
+      "readOnly": false,
+      "sha256": "30082c1a38a6dffadad97cee4d966a02b41e754b26b923c5ff326b0ec1a31144"
+     },
+     {
+      "contextOnly": true,
+      "path": "docs/choo-guard-foundation-multiplayer.md",
+      "readOnly": false,
+      "sha256": "29bdf9230d328bdb6611434ee9e885fc8ea012f8cfb64463b3b8a97286a1b85b"
+     },
+     {
+      "contextOnly": false,
+      "path": "docs/adr/0005-school-pc-unity-workstation.md",
+      "readOnly": true,
+      "sha256": "5855d2b370447ef58e2f75e3a4eebfd85a2f09522f0f035c4a7391e4a005d30a"
+     },
+     {
+      "contextOnly": false,
+      "path": "docs/adr/0006-official-unity-editor-mcp.md",
+      "readOnly": false,
+      "sha256": "b7371e7a66765e0ea6eaa697aee9bb5309343a5e4e906e3aed51f290fba8bcb8"
+     },
+     {
+      "contextOnly": true,
+      "path": "docs/context/pm-execution-contract.md",
+      "readOnly": false,
+      "sha256": "ed02b004e7702320a9a0e904dabff238aaaa372cf7bf2f5b60e42dde00d63de7"
+     },
+     {
+      "contextOnly": true,
+      "path": "docs/context/work-graph.json",
+      "readOnly": false,
+      "sha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6"
+     },
+     {
+      "contextOnly": true,
+      "path": "docs/context/work-orders/042.json",
+      "readOnly": false,
+      "sha256": "28ba61c545543f0e0e84e3c8b73dc26001a0318bfd7570424175a109f7311979"
+     },
+     {
+      "contextOnly": true,
+      "path": ".superpowers/sdd/r-02-capability-contract/brief-42.md",
+      "readOnly": false,
+      "sha256": "4899f1981820fe9ee1176ec924f54baf30be5d6e2a29816e7d0fe19efa403057"
+     },
+     {
+      "contextOnly": true,
+      "path": ".superpowers/sdd/r-02-capability-contract/frozen-criteria-42.md",
+      "readOnly": false,
+      "sha256": "354ccfaa053bc8c83dc83dbafa024ec41b3681af2103b0c661d5b49b06697bae"
+     },
+     {
+      "contextOnly": false,
+      "path": ".github/CODEOWNERS",
+      "readOnly": true,
+      "sha256": "a6d085e0296e538ed8b34ea34cb73e87efd6c5e385303f8700e8ccddabaa3ec2"
+     },
+     {
+      "contextOnly": true,
+      "path": "scripts/dev/build_foundation_candidates.py",
+      "readOnly": true,
+      "sha256": "3d45d1586bd2fa9cc3cfc3b499db5fe609c15e44c273b39973dd67c9070152be"
+     }
+    ],
+    "outputs": [
+     {
+      "digestAlgorithm": "sha256",
+      "digestScope": "artifact payload excluding top-level key verification",
+      "path": "docs/team/R-02/capability-contract.json"
+     },
+     {
+      "digestAlgorithm": "sha256",
+      "digestScope": "artifact payload excluding top-level key verification",
+      "path": "docs/team/R-02/decision.json"
+     }
+    ]
+   },
+   "limits": "Consumers request capability, not a named location or a teammate.",
+   "sourceShaAndBaseRef": {
+    "driftDeclared": true,
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "worktreeHead": "0794ecf5a128ff9e356b661cfc1142c039aa31f4"
+   },
+   "toolAndModelVersions": {
+    "commands": [
+     "git rev-parse HEAD",
+     "git cat-file -t <ref>",
+     "git ls-tree -r --name-only <ref>",
+     "git show <ref>:<path> | shasum -a 256",
+     "shasum -a 256 <path>",
+     "grep -rniE '<pattern>' <candidate records>",
+     "python3 json walk/hash"
+    ],
+    "git": "git version 2.51.0",
+    "model": "claude-ocx-opencode-go2--deepseek-v4.1-flash",
+    "python": "Python 3.14.5"
+   }
+  }
+ },
+ "hardGraphTopology": {
+  "atSourceRefVerdict": "unknown",
+  "consumerPhaseRule": "At candidate phase this gate is bound only by predecessors whose consumerPhase is candidate. hardPredecessors is empty, so nothing must be closed here; the single successor consumes at accept.",
+  "contextOnly": true,
+  "contextOnlyValue": {
+   "hardPredecessors": [],
+   "hardSuccessors": [
+    {
+     "artifact": "artifact:42:R-02-capability-contract:accept",
+     "consumerPhase": "accept",
+     "issue": 89,
+     "producerPhase": "accept",
+     "reason": "Selected XR runtime/device capability only; no school/location gate."
+    }
+   ],
+   "oneOfGroups": [],
+   "requiredLocks": []
+  },
+  "reason": "The topology of issue 42 is carried by docs/context/work-graph.json and docs/context/work-orders/042.json, and both are absent from the sourceRef tree (verified by git ls-tree). It therefore cannot be confirmed at the frozen ref and is registered as unknown there rather than asserted. This registration is a limit, not a failure.",
+  "registration": "SOURCE_CONFLICT",
+  "sourceOfContextOnlyValue": [
+   "docs/context/work-orders/042.json",
+   "docs/context/work-graph.json items[number=42]"
+  ]
+ },
+ "issue": 42,
+ "laterValidationScope": {
+  "conflationGuard": {
+   "checked": true,
+   "rule": "The current 20/100/2 target is never evidence for later HMD or official-procedure validation, and that later scope never blocks the current target."
+  },
+  "items": [
+   {
+    "id": "xr-device",
+    "note": "HMD device/runtime/input scope is undecided and separately scoped.",
+    "state": "not_validated"
+   },
+   {
+    "id": "official-railway-procedure",
+    "note": "No official facility accuracy, staff SOP, official score, field transfer or always-on institutional operation is established.",
+    "state": "not_validated"
+   },
+   {
+    "id": "larger-targets",
+    "note": "100/500/3 is not a current completion condition.",
+    "state": "not_in_current_completion_scope"
+   }
+  ]
+ },
+ "limits": [
+  "Contract inspection only. No Editor, build, HMD, Windows, network or load test was executed for this candidate.",
+  "This candidate does not prove product, safety, field effect or acceptance; it records planning completeness only.",
+  "No credential, license or account secret was read, hashed or copied.",
+  "A file cannot embed the digest of its own final bytes, so the reproducible payload recipe is stated instead of an unverifiable self-hash."
+ ],
+ "noLocationRule": {
+  "assignmentBasis": "unassigned_until_claim",
+  "deviceOrEquipmentOwnershipPrerequisites": [],
+  "historicalMarkers": [
+   {
+    "liveRouteRestriction": false,
+    "marker": "ADR 0005 title/route: heavy work routed to a school-PC workstation",
+    "markerPath": "docs/adr/0005-school-pc-unity-workstation.md",
+    "markerSha256AtHead": "5855d2b370447ef58e2f75e3a4eebfd85a2f09522f0f035c4a7391e4a005d30a",
+    "readMode": "read_only",
+    "replacedBy": "capabilityFacts.testTargets with availability unknown",
+    "retainedFor": "historical capability observations only; retained, not deleted and not promoted to a pass",
+    "status": "superseded"
+   }
+  ],
+  "namedAssignees": [],
+  "requiredLocations": [],
+  "rule": "No location, school-PC, laptop or high-spec prerequisite exists in this contract. OS, editor, runtime and HMD entries are capability/test facts only."
+ },
+ "phase": "candidate",
+ "policyRestrictions": {
+  "credentialAndLogin": {
+   "mandatory": true,
+   "onExposure": "Redact and stop; read, hash and copy nothing.",
+   "rule": "The account owner completes authentication. Credentials, token values, license files and account secrets are never published, shared, copied or recorded."
+  },
+  "definition": "Mandatory on every execution regardless of capability. Policy is never relaxed by having the capability.",
+  "executionAuthority": {
+   "mandatory": true,
+   "rule": "Capability availability does not authorize arbitrary C# execution, remote package installation, external generation services, paid calls or publication."
+  },
+  "failureHandling": {
+   "mandatory": true,
+   "rule": "Failed and not-run reasons are preserved. Missing evidence is never replaced by a pass."
+  },
+  "privacyAndSafety": {
+   "mandatory": true,
+   "onExposure": "Redact and stop.",
+   "rule": "Public receipts use approved sanitized references and aggregate facts only; private absolute paths and restricted source metadata are excluded."
+  }
+ },
+ "proposalMode": "isolated_proposal",
+ "recordKind": "capability_contract",
+ "requiredMeasurementFields": [
+  "runId",
+  "sourceCommit",
+  "buildArtifactReference",
+  "toolVersions",
+  "osAndArchitecture",
+  "selectedTargetId",
+  "observedCapabilities",
+  "clientCount",
+  "npcCount",
+  "incidentCount",
+  "duration",
+  "result",
+  "failureOrNotRunReason",
+  "sanitizedEvidenceReference"
+ ],
+ "schemaVersion": 1,
+ "sourceConflicts": [
+  {
+   "graphClaim": "Context entry lists availability local_unpublished with the limit that the path is not in develop.",
+   "id": "SC-R02-01",
+   "observedFact": "Present at HEAD and absent from the sourceRef tree.",
+   "resolution": "Both recorded as they are; treated as contextOnly and never the sole basis for a claim.",
+   "state": "open",
+   "subject": "docs/choo-guard-foundation-multiplayer.md availability"
+  },
+  {
+   "graphClaim": "One hard successor (issue 89, consumerPhase accept) and no hard predecessors.",
+   "id": "SC-R02-02",
+   "observedFact": "The file carrying that claim does not exist at the sourceRef tree.",
+   "resolution": "Registered as unknown at the sourceRef with a context-only working-tree value.",
+   "state": "open",
+   "subject": "hard graph topology of issue 42"
+  },
+  {
+   "graphClaim": "Both are named with selectors and availability local_unpublished.",
+   "id": "SC-R02-03",
+   "observedFact": "Neither exists at the sourceRef tree nor under docs/ at HEAD; git-ignored copies exist only under .planning/, which is not the declared path and not a tracked input.",
+   "resolution": "Recorded as unobserved. No content from the ignored copies is used as evidence.",
+   "state": "open",
+   "subject": "two named candidate context paths"
+  }
+ ],
+ "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+ "sourceRefCheck": {
+  "objectType": "commit",
+  "resolves": true
+ },
+ "stageGuard": {
+  "canonicalWriteAllowed": false,
+  "declaredStage": "isolated_proposal",
+  "forbiddenStageLabels": [
+   "accepted",
+   "final",
+   "complete",
+   "aaa_pass"
+  ],
+  "note": "No self-grading. This candidate assigns no gate or check verdict to itself.",
+  "selfAssessment": "none"
+ },
+ "stopConditions": {
+  "honored": true,
+  "items": [
+   {
+    "condition": "Missing capability does not justify assigning a machine or a person; mark blocked for that test only.",
+    "handling": "Every test target records missingCapabilityEffect = blocked_for_this_test_only. No assignee, location or equipment-owner field exists anywhere in this contract."
+   },
+   {
+    "condition": "Credential or license evidence would be exposed; redact and stop.",
+    "handling": "No credential or license evidence was read, hashed or copied; no occurrence was encountered. The rule stays mandatory."
+   }
+  ]
+ },
+ "unknowns": [
+  {
+   "effect": "The sibling file docs/team/R-02/validation.json (sha256 21abb20a86511201f4b7fe498065414d465e7d1c481f9378f52880fe76be90ec) still records the output digests of an earlier draft bound to a different sourceRef. It is outside this candidate's designated outputs, so this candidate did not modify it; its recorded digests do not match the artifacts delivered here and must not be read as binding them.",
+   "id": "stale-sibling-validation-json",
+   "state": "unresolved_inconsistency"
+  },
+  {
+   "effect": "blocks that test only",
+   "id": "editor-availability",
+   "state": "unknown"
+  },
+  {
+   "effect": "blocks XR validation only",
+   "id": "hmd-selection",
+   "state": "undecided"
+  },
+  {
+   "effect": "cannot be claimed until a run records it",
+   "id": "exact-test-environment",
+   "state": "unverified"
+  },
+  {
+   "effect": "docs/choo-guard-native-validation.md is absent at sourceRef and HEAD, so it was not read and is not counted as a pass",
+   "id": "native-validation-context",
+   "state": "unobserved"
+  },
+  {
+   "effect": "docs/choo-guard-native-team-contracts.md is absent at sourceRef and HEAD; not read, not counted as a pass",
+   "id": "native-team-contracts-context",
+   "state": "unobserved"
+  }
+ ],
+ "verification": {
+  "C01": {
+   "artifactDigest": "f900f3e23c968b4b75affc9c6bef3c767128a9cfb1d20460082ddcc31f726c31",
+   "artifactDigestScope": "sha256 of utf-8 bytes of canonical json of this artifact with top-level key 'verification' removed",
+   "artifactPath": "docs/team/R-02/capability-contract.json",
+   "checkId": "C01",
+   "commandOrReview": "inspection: compare capability contract with source version pins and actual test target fields",
+   "evidence": {
+    "contractDiff": {
+     "baseline": "Repository pins at HEAD (ProjectSettings/ProjectVersion.txt, Packages/manifest.json, build script TARGETS)",
+     "mismatchCount": 0,
+     "routePositionCheck": {
+      "forbiddenTermsFoundAsRoute": [],
+      "searchedPositions": [
+       "testTargets[*]",
+       "assignmentPolicy",
+       "noLocationRule"
+      ],
+      "verdict": "no school/location/high-spec field is used as a hard route"
+     },
+     "rows": [
+      {
+       "contractValue": "6000.3.23f1",
+       "field": "capabilityFacts.editor.versionPin",
+       "observedValue": "6000.3.23f1",
+       "verdict": "match"
+      },
+      {
+       "contractValue": "09d2ecc7fb28",
+       "field": "capabilityFacts.editor.revisionPin",
+       "observedValue": "09d2ecc7fb28",
+       "verdict": "match"
+      },
+      {
+       "contractValue": "0.6.0-exp.1",
+       "field": "capabilityFacts.editorControl.versionPin",
+       "observedValue": "0.6.0-exp.1",
+       "verdict": "match"
+      },
+      {
+       "contractValue": [
+        "windows-desktop",
+        "mac-development",
+        "windows-server",
+        "linux-server",
+        "livekit"
+       ],
+       "field": "capabilityFacts.declaredBuildTargets.ids",
+       "observedValue": [
+        "windows-desktop",
+        "mac-development",
+        "windows-server",
+        "linux-server",
+        "livekit"
+       ],
+       "verdict": "match"
+      }
+     ],
+     "separationCheck": {
+      "capabilityKeys": [
+       "definition",
+       "separationRule",
+       "editor",
+       "editorControl",
+       "runtime",
+       "declaredBuildTargets",
+       "testTargets",
+       "missingCapabilityRule",
+       "pinAlignment"
+      ],
+      "intersection": [],
+      "policyKeys": [
+       "definition",
+       "credentialAndLogin",
+       "privacyAndSafety",
+       "executionAuthority",
+       "failureHandling"
+      ],
+      "verdict": "disjoint"
+     }
+    }
+   },
+   "notRunReason": null,
+   "phase": "candidate",
+   "provenance": {
+    "head": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "inputs": [
+     {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "sha256": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66"
+     },
+     {
+      "path": "Packages/manifest.json",
+      "sha256": "30082c1a38a6dffadad97cee4d966a02b41e754b26b923c5ff326b0ec1a31144"
+     }
+    ],
+    "observedAt": "2026-09-15",
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "workingDirectory": "."
+   },
+   "result": "PASS",
+   "thresholdEvaluation": "PASS requires capability and policy to be separate fields, every declared pin to equal the value parsed from its pinned file, and zero location/school-PC/laptop/high-spec field in any route position. Measured: capability/policy key intersection = 0 (disjoint); pin rows compared = 4, mismatches = 0; forbidden terms in a route position = 0."
+  },
+  "C02": {
+   "artifactDigest": "f900f3e23c968b4b75affc9c6bef3c767128a9cfb1d20460082ddcc31f726c31",
+   "artifactDigestScope": "sha256 of utf-8 bytes of canonical json of this artifact with top-level key 'verification' removed",
+   "artifactPath": "docs/team/R-02/capability-contract.json",
+   "checkId": "C02",
+   "commandOrReview": "negative inspection: search candidate records for \"school-pc|school PC|laptop|high-spec\" as prerequisite/owner",
+   "evidence": {
+    "interpretation": "Every match either states the prohibition, restates the acceptance criterion, declares the field name forbidden, or is a flagged historical marker or a supersession link whose purpose is to retire the obsolete route. No match is a route, gate, assignee, owner or equipment prerequisite. Nothing is reported as safe by assumption: the measured unclassified count is recorded above.",
+    "scanReport": {
+     "capability-contract.json": {
+      "byClassification": {
+       "acceptance_criterion_negation": 1,
+       "gate_evidence_naming_the_read_only_historical_path": 1,
+       "historical_artifact_path_reference": 2,
+       "historical_marker_retained": 2,
+       "policy_negation_statement": 1
+      },
+      "classificationLegend": {
+       "UNCLASSIFIED": "No classifier matched. Reported, never assumed safe.",
+       "acceptance_criterion_negation": "An acceptance criterion stating that no such prerequisite exists.",
+       "decision_summary_naming_the_superseded_route": "The decision summary stating the obsolete route is not in force.",
+       "forbidden_field_name_declared": "A field name declared forbidden; no such field exists in the contract.",
+       "gate_evidence_naming_the_read_only_historical_path": "Gate evidence naming the read-only historical path to show it was not modified.",
+       "historical_artifact_path_reference": "A read-only artifact path in drift/handoff. A path string is data, not an assignment.",
+       "historical_marker_retained": "A flagged historical marker with liveRouteRestriction=false. Retaining it is what the check expects.",
+       "policy_negation_statement": "The rule that forbids such a prerequisite, quoted from the acceptance criterion. It asserts absence, not a route.",
+       "supersession_link_retiring_a_historical_route": "A supersession link that names the obsolete route in order to retire it."
+      },
+      "liveRouteRestrictionCount": 0,
+      "liveRouteRestrictions": [],
+      "matchedItemCount": 7,
+      "matches": [
+       {
+        "classification": "historical_artifact_path_reference",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/drift/divergedFiles/1/path"
+       },
+       {
+        "classification": "policy_negation_statement",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/noLocationRule/rule"
+       },
+       {
+        "classification": "historical_marker_retained",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/noLocationRule/historicalMarkers/0/marker"
+       },
+       {
+        "classification": "historical_marker_retained",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/noLocationRule/historicalMarkers/0/markerPath"
+       },
+       {
+        "classification": "acceptance_criterion_negation",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/acceptanceMapping/0/criterion"
+       },
+       {
+        "classification": "gate_evidence_naming_the_read_only_historical_path",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/gateEvidence/gates/G12"
+       },
+       {
+        "classification": "historical_artifact_path_reference",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/handoff/returnFields/inputOutputHashes/inputs/3/path"
+       }
+      ],
+      "unclassifiedCount": 0
+     },
+     "decision.json": {
+      "byClassification": {
+       "decision_summary_naming_the_superseded_route": 1,
+       "supersession_link_retiring_a_historical_route": 5
+      },
+      "classificationLegend": {
+       "UNCLASSIFIED": "No classifier matched. Reported, never assumed safe.",
+       "acceptance_criterion_negation": "An acceptance criterion stating that no such prerequisite exists.",
+       "decision_summary_naming_the_superseded_route": "The decision summary stating the obsolete route is not in force.",
+       "forbidden_field_name_declared": "A field name declared forbidden; no such field exists in the contract.",
+       "gate_evidence_naming_the_read_only_historical_path": "Gate evidence naming the read-only historical path to show it was not modified.",
+       "historical_artifact_path_reference": "A read-only artifact path in drift/handoff. A path string is data, not an assignment.",
+       "historical_marker_retained": "A flagged historical marker with liveRouteRestriction=false. Retaining it is what the check expects.",
+       "policy_negation_statement": "The rule that forbids such a prerequisite, quoted from the acceptance criterion. It asserts absence, not a route.",
+       "supersession_link_retiring_a_historical_route": "A supersession link that names the obsolete route in order to retire it."
+      },
+      "liveRouteRestrictionCount": 0,
+      "liveRouteRestrictions": [],
+      "matchedItemCount": 6,
+      "matches": [
+       {
+        "classification": "decision_summary_naming_the_superseded_route",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/decision/summary"
+       },
+       {
+        "classification": "supersession_link_retiring_a_historical_route",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/supersession/questionAnswered"
+       },
+       {
+        "classification": "supersession_link_retiring_a_historical_route",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/supersession/links/0/supersededArtifact"
+       },
+       {
+        "classification": "supersession_link_retiring_a_historical_route",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/supersession/links/0/supersededScope"
+       },
+       {
+        "classification": "supersession_link_retiring_a_historical_route",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/supersession/links/0/recordedAuthority/1"
+       },
+       {
+        "classification": "supersession_link_retiring_a_historical_route",
+        "isRouteRestriction": false,
+        "matchKind": "value",
+        "pointer": "/supersession/links/1/supersededArtifact"
+       }
+      ],
+      "unclassifiedCount": 0
+     }
+    },
+    "totals": {
+     "contractContentMatchedItems": 13,
+     "liveRouteRestrictions": 0,
+     "routeGateOrAssigneeFromTheseTerms": 0,
+     "unclassifiedMatches": 0,
+     "wholeFileGrepMatchedLines": {
+      "capability-contract.json": 10,
+      "decision.json": 9
+     }
+    }
+   },
+   "notRunReason": null,
+   "phase": "candidate",
+   "provenance": {
+    "head": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "inputs": [
+     {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "sha256": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66"
+     },
+     {
+      "path": "Packages/manifest.json",
+      "sha256": "30082c1a38a6dffadad97cee4d966a02b41e754b26b923c5ff326b0ec1a31144"
+     }
+    ],
+    "observedAt": "2026-09-15",
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "workingDirectory": "."
+   },
+   "result": "PASS",
+   "thresholdEvaluation": "PASS requires zero live route restrictions. Measured over the contract content of both candidate records: matched items = 13, live route restrictions = 0, route/gate/assignee matches = 0, unclassified matches = 0. Historical markers are allowed and are flagged liveRouteRestriction=false."
+  },
+  "digestRecipe": "artifactDigest = sha256(utf-8 bytes of json.dumps(artifact without top-level key 'verification', sort_keys=True, separators=(',',':'), ensure_ascii=False)). Reproducible by a third party from the file itself.",
+  "notRun": [
+   {
+    "item": "Editor launch, project import, compilation, EditMode/PlayMode suites",
+    "notRunReason": "Condition not established at this phase: no execution authority and the item nonGoals exclude actual Windows/HMD runs. Not a failed check and not a pass.",
+    "result": "NOT_RUN"
+   },
+   {
+    "item": "Standalone Windows/Linux/macOS build",
+    "notRunReason": "Same condition-not-established reason; recorded as not-run for that test only.",
+    "result": "NOT_RUN"
+   },
+   {
+    "item": "HMD/XR device run and the 20/100/2 load test",
+    "notRunReason": "Condition not established: no selected device and no execution authority. The current target stays target_not_verified.",
+    "result": "NOT_RUN"
+   }
+  ]
+ },
+ "workId": "R-02"
 }

@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "id": "R-04-test-plan",
+  "issue": 44,
+  "workId": "R-04",
+  "phase": "candidate",
+  "artifact": "artifact:44:R-04-test-plan:candidate",
+  "status": "candidate_draft",
+  "notice": "Candidate test plan. It is not acceptance, not PM approval and not runtime permission. Results live in docs/evidence/R-04/evidence-candidate-index.json.",
+  "target": {
+    "ref": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "files": [
+      "scripts/bootstrap/bootstrap.ps1",
+      "scripts/bootstrap/verify_toolchain.py",
+      "scripts/bootstrap/test_verify_toolchain.py",
+      "scripts/bootstrap/test_bootstrap_powershell.py"
+    ]
+  },
+  "routing": {
+    "requires": "any Windows 10/11 machine with Windows PowerShell 5.1 and Python 3.11+; POSIX host optional for bootstrap.sh",
+    "forbidden": [
+      "school PC",
+      "specific location",
+      "high-spec requirement",
+      "named owner"
+    ]
+  },
+  "safety": [
+    "run in a fresh worktree outside the working checkout; tamper cases edit policy files and restore them",
+    "never pass -AutoInstall; no global npm install or uv sync",
+    "receipts and logs stay outside Git; publish digests only",
+    "do not edit scripts/bootstrap/** (R-07 #52 owns verifier changes)"
+  ],
+  "cases": [
+    {
+      "id": "PY-1",
+      "kind": "python",
+      "command": "python3 -m unittest discover -s scripts/bootstrap -p 'test_*.py'",
+      "expected": "exact ran/passed/failed/skipped counts and exit code recorded",
+      "negativeCase": "failure or missing python is recorded as failed/blocked, never as pass",
+      "evidenceLabel": "python-unittest receipt (stdout/stderr sha256, exit)"
+    },
+    {
+      "id": "PY-1-control",
+      "kind": "python-diagnostic",
+      "command": "same discover command with ASCII checkout+interpreter, then only the interpreter path changed",
+      "expected": "isolates environment-dependent failures",
+      "negativeCase": "a control pass does not replace the PY-1 result",
+      "evidenceLabel": "diagnostic control receipt"
+    },
+    {
+      "id": "N1",
+      "kind": "native",
+      "command": "bootstrap.ps1 -MachineLabel local",
+      "expected": "no global install/sync; verifier exit propagated unchanged",
+      "negativeCase": "nonzero verifier result (missing pi/uv) is preserved",
+      "evidenceLabel": "native receipt"
+    },
+    {
+      "id": "N2",
+      "kind": "native",
+      "command": "bootstrap.ps1 -MachineLabel invalid-label",
+      "expected": "nonzero before any step output",
+      "negativeCase": "invalid label",
+      "evidenceLabel": "native receipt"
+    },
+    {
+      "id": "N3",
+      "kind": "native",
+      "command": "bootstrap.ps1 (no -MachineLabel, -NonInteractive)",
+      "expected": "nonzero before any step output",
+      "negativeCase": "missing mandatory label",
+      "evidenceLabel": "native receipt"
+    },
+    {
+      "id": "N4",
+      "kind": "native",
+      "command": "bootstrap.ps1 -MachineLabel local with PATH lacking python/py",
+      "expected": "exit 2, verifier not reached",
+      "negativeCase": "missing tool (python)",
+      "evidenceLabel": "native receipt"
+    },
+    {
+      "id": "N5",
+      "kind": "native",
+      "command": "bootstrap.ps1 -MachineLabel local with PATH lacking node/npm",
+      "expected": "nonzero with node check FAIL",
+      "negativeCase": "missing tool (node)",
+      "evidenceLabel": "native receipt"
+    },
+    {
+      "id": "N6a-h",
+      "kind": "native",
+      "command": "verify_toolchain.py --label local --write <target>",
+      "expected": "exit 2 before scanning, nothing written outside docs/evidence, existing receipt unchanged",
+      "negativeCase": "path escape: parent, absolute, '..' inside evidence, outside evidence root, non-json, existing receipt, junction escape, backslash parent",
+      "evidenceLabel": "native receipt"
+    },
+    {
+      "id": "N7",
+      "kind": "native",
+      "command": "two verify_toolchain.py --write receipts around a one-byte AGENTS.md change (restored)",
+      "expected": "only the AGENTS.md policy hash differs",
+      "negativeCase": "policy hash mismatch; records whether the verifier itself fails on it",
+      "evidenceLabel": "native receipt pair"
+    },
+    {
+      "id": "N8",
+      "kind": "native",
+      "command": "verify_toolchain.py --label local with .github/CODEOWNERS temporarily absent",
+      "expected": "policy_hash_scope FAIL and exit 1",
+      "negativeCase": "required policy scope missing",
+      "evidenceLabel": "native receipt"
+    },
+    {
+      "id": "INSPECT-1",
+      "kind": "inspection",
+      "command": "compare R-04 and R-07 candidate write scopes from their work orders",
+      "expected": "no overlapping implementation edits",
+      "negativeCase": "overlap => serialize/relocate",
+      "evidenceLabel": "write-set diff"
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "Python and native OS checks are separate and evidence-labeled.",
+      "cases": [
+        "PY-1",
+        "N1-N8"
+      ]
+    },
+    {
+      "criterion": "Negative cases include nonzero, missing tool, path escape, policy hash mismatch.",
+      "cases": [
+        "N1",
+        "N4",
+        "N5",
+        "N6a-h",
+        "N7",
+        "N8"
+      ]
+    },
+    {
+      "criterion": "No school PC/location/high-spec route or named owner exists.",
+      "cases": [
+        "routing"
+      ]
+    },
+    {
+      "criterion": "R-07 verifier implementation is not silently overwritten.",
+      "cases": [
+        "INSPECT-1"
+      ]
+    }
+  ],
+  "evidenceIndex": "docs/evidence/R-04/evidence-candidate-index.json"
+}
