@@ -1,0 +1,265 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "indexId": "FMP-13a-runnable-build-payload-index",
+  "issue": 143,
+  "workId": "FMP-13a",
+  "phase": "candidate",
+  "artifact": "artifact:143:fmp13a-runnable-build-payload:candidate",
+  "overwritePolicy": "Versioned selection only: add entries for new success-qualified payloads; never overwrite a raw payload or promote a failed or blocked attempt.",
+  "selectionRule": "status built_and_launched AND payload manifest verified AND positive launch passed on this host",
+  "attemptIndex": "docs/evidence/foundation/FMP-13a-build-attempt-index.json",
+  "limits": "Candidate payloads on laptop-A only; not accepted, not published binaries, not HMD/Quest/Mac/LiveKit evidence.",
+  "entries": [
+    {
+      "target": "windows-desktop",
+      "sourceRunId": "run-20260914T134755Z",
+      "status": "built_and_launched",
+      "sourceSnapshot": {
+        "baseCommit": "1dd577034697a0fab806da9b2c907e77e7043832",
+        "filesDigest": "f437991f5b58db4352675b47adf79c72ca8a381ccaae549c4134dd21f3bdd11e",
+        "files": 1386
+      },
+      "launchReceipts": {
+        "directory": "<RUN_ROOT>/windows-server",
+        "files": {
+          "launch-client.events.jsonl": {
+            "sha256": "227f28f90f66acae223747b887f68de123af4b4c6f65be444c3688e6ed841a14",
+            "bytes": 913507
+          },
+          "launch-client.player.log": {
+            "sha256": "0d618d2a96e64ed921d3ecd26166cd816ccdbba9816db8ae37539eba16994d1c",
+            "bytes": 1713
+          },
+          "launch-client.stdio.log": {
+            "sha256": "bd7e430a373c48a692d3df565a61d1b5c1be6a95a85fead56f224cf9b7c64fea",
+            "bytes": 1832
+          }
+        }
+      },
+      "payload": {
+        "binary": "ChooGuardMultiplayer.exe",
+        "binarySha256": "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+        "manifestSha256": "99cfa7f0dcce0bcc84614302a868b40ff318ad7e334003bb338dccfcaf761d9f",
+        "filesDigest": "efc8c0e8fd1034bb6a53b2338d576904d22b2ae0d3d21fd64ec64e9eb0a32d88",
+        "files": 172
+      },
+      "manifestCheck": {
+        "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+        "exitCode": 0,
+        "output": {
+          "status": "verified",
+          "kind": "native-build-payload",
+          "files": 172,
+          "filesDigest": "efc8c0e8fd1034bb6a53b2338d576904d22b2ae0d3d21fd64ec64e9eb0a32d88"
+        },
+        "root": "<RUN_ROOT>/windows-desktop/payload",
+        "manifest": "<RUN_ROOT>/windows-desktop/payload-manifest.json"
+      },
+      "launchCommand": [
+        "<RUN_ROOT>/windows-desktop/payload/ChooGuardMultiplayer.exe",
+        "-batchmode",
+        "-nographics",
+        "-logFile",
+        "<RUN_ROOT>/windows-server/launch-client.player.log",
+        "--cg-mode",
+        "client",
+        "--cg-address",
+        "127.0.0.1",
+        "--cg-port",
+        "17977",
+        "--cg-credential",
+        "<RUN_ROOT>/session/instructor.invitation.json",
+        "--cg-probe",
+        "<RUN_ROOT>/session/instructor.probe.json",
+        "--cg-evidence",
+        "<RUN_ROOT>/windows-server/launch-client.events.jsonl"
+      ],
+      "positiveLaunch": {
+        "kind": "instructor client connected to windows-server and exited 0 with view events",
+        "exitCode": 0,
+        "viewEvents": 236
+      }
+    },
+    {
+      "target": "windows-server",
+      "sourceRunId": "run-20260914T134755Z",
+      "status": "built_and_launched",
+      "sourceSnapshot": {
+        "baseCommit": "1dd577034697a0fab806da9b2c907e77e7043832",
+        "filesDigest": "f437991f5b58db4352675b47adf79c72ca8a381ccaae549c4134dd21f3bdd11e",
+        "files": 1386
+      },
+      "launchReceipts": {
+        "directory": "<RUN_ROOT>/windows-server",
+        "files": {
+          "launch-client.events.jsonl": {
+            "sha256": "227f28f90f66acae223747b887f68de123af4b4c6f65be444c3688e6ed841a14",
+            "bytes": 913507
+          },
+          "launch-client.player.log": {
+            "sha256": "0d618d2a96e64ed921d3ecd26166cd816ccdbba9816db8ae37539eba16994d1c",
+            "bytes": 1713
+          },
+          "launch-client.stdio.log": {
+            "sha256": "bd7e430a373c48a692d3df565a61d1b5c1be6a95a85fead56f224cf9b7c64fea",
+            "bytes": 1832
+          },
+          "launch-server.events.jsonl": {
+            "sha256": "fc4c2d6be8161642779654f1a495b031297bc0aee8103f634b99da3745625000",
+            "bytes": 370
+          },
+          "launch-server.player.log": {
+            "sha256": "5306abe4c269f13ce560123372e9eb065c6ff73ae7d1dc70828c17ca37883cda",
+            "bytes": 1570
+          },
+          "launch-server.stdio.log": {
+            "sha256": "bd7e430a373c48a692d3df565a61d1b5c1be6a95a85fead56f224cf9b7c64fea",
+            "bytes": 1832
+          }
+        }
+      },
+      "payload": {
+        "binary": "ChooGuardServer.exe",
+        "binarySha256": "726d0419fedf82bc5b3867c6aa18e7597525e9bf3ad34c6e84cc750024977745",
+        "manifestSha256": "53fba8be963c70a66c0f3512fce011bddfd8337ca1d700fce1c669dacfe38170",
+        "filesDigest": "6497db43e9b70b78ffa26ff54979b554c563d2316916ba7bc2718ca3b4ea4d36",
+        "files": 169
+      },
+      "manifestCheck": {
+        "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+        "exitCode": 0,
+        "output": {
+          "status": "verified",
+          "kind": "native-build-payload",
+          "files": 169,
+          "filesDigest": "6497db43e9b70b78ffa26ff54979b554c563d2316916ba7bc2718ca3b4ea4d36"
+        },
+        "root": "<RUN_ROOT>/windows-server/payload",
+        "manifest": "<RUN_ROOT>/windows-server/payload-manifest.json"
+      },
+      "launchCommand": [
+        "<RUN_ROOT>/windows-server/payload/ChooGuardServer.exe",
+        "-batchmode",
+        "-nographics",
+        "-logFile",
+        "<RUN_ROOT>/windows-server/launch-server.player.log",
+        "--cg-mode",
+        "server",
+        "--cg-listen",
+        "127.0.0.1",
+        "--cg-port",
+        "17977",
+        "--cg-session",
+        "<RUN_ROOT>/session/server-session.json",
+        "--cg-records",
+        "<RUN_ROOT>/windows-server/launch-records",
+        "--cg-evidence",
+        "<RUN_ROOT>/windows-server/launch-server.events.jsonl"
+      ],
+      "positiveLaunch": {
+        "kind": "server_started event",
+        "serverStarted": true,
+        "windowsClient": {
+          "exitCode": 0,
+          "viewEvents": 236
+        }
+      }
+    },
+    {
+      "target": "linux-server",
+      "sourceRunId": "run-20260914T134755Z",
+      "status": "built_and_launched",
+      "sourceSnapshot": {
+        "baseCommit": "1dd577034697a0fab806da9b2c907e77e7043832",
+        "filesDigest": "f437991f5b58db4352675b47adf79c72ca8a381ccaae549c4134dd21f3bdd11e",
+        "files": 1386
+      },
+      "launchReceipts": {
+        "directory": "<RUN_ROOT>/linux-server",
+        "files": {
+          "launch-client.player.log": {
+            "sha256": "5e4cc61c6eafe47e12b194e31cee6c3f2b4fae5276db3090c5318f011fa42bac",
+            "bytes": 1520
+          },
+          "launch-client.stdio.log": {
+            "sha256": "88db3cd56be413abd4c9b1144dbf7e04140815cac9d77a688777d4e2b6712251",
+            "bytes": 1851
+          },
+          "launch-server.events.jsonl": {
+            "sha256": "42e788ebf59dd1dffa2ccf40ac201a8a932a8b80ab27e5434c40e30d6eb7f136",
+            "bytes": 96
+          },
+          "launch-server.player.log": {
+            "sha256": "66de33a9a7cd28dcedc3b64be4603c06df2a8d73ffc767c307d92e9b06363289",
+            "bytes": 1571
+          },
+          "launch-server.stdio.log": {
+            "sha256": "97b6c0df0de05c8fd2f79f54dc647af5786b2d7508a4758607108b8a12eef15e",
+            "bytes": 1801
+          }
+        }
+      },
+      "payload": {
+        "binary": "ChooGuardServer",
+        "binarySha256": "61c388a1cd661a6230c857fd66de0cec86a1ec497d5f6df1b7f1d585263be19f",
+        "manifestSha256": "1aad95f75818bfcf28d778af827ec008b6e141461560d868dda53385233972d9",
+        "filesDigest": "46d780559e840d784b4a46cda885f6a726f4e52580f60d56ead2e8f0428c0971",
+        "files": 165
+      },
+      "manifestCheck": {
+        "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+        "exitCode": 0,
+        "output": {
+          "status": "verified",
+          "kind": "native-build-payload",
+          "files": 165,
+          "filesDigest": "46d780559e840d784b4a46cda885f6a726f4e52580f60d56ead2e8f0428c0971"
+        },
+        "root": "<RUN_ROOT>/linux-server/payload",
+        "manifest": "<RUN_ROOT>/linux-server/payload-manifest.json"
+      },
+      "launchCommand": [
+        "wsl.exe",
+        "-d",
+        "Ubuntu",
+        "--",
+        "<RUN_ROOT>_WSL/linux-server/payload/ChooGuardServer",
+        "-batchmode",
+        "-nographics",
+        "-logFile",
+        "<RUN_ROOT>_WSL/linux-server/launch-server.player.log",
+        "--cg-mode",
+        "server",
+        "--cg-listen",
+        "127.0.0.1",
+        "--cg-port",
+        "17978",
+        "--cg-session",
+        "<RUN_ROOT>_WSL/session/server-session.json",
+        "--cg-records",
+        "<RUN_ROOT>_WSL/linux-server/launch-records",
+        "--cg-evidence",
+        "<RUN_ROOT>_WSL/linux-server/launch-server.events.jsonl"
+      ],
+      "positiveLaunch": {
+        "kind": "server_started event",
+        "serverStarted": true,
+        "windowsClient": {
+          "exitCode": "timeout",
+          "viewEvents": 0
+        }
+      }
+    }
+  ],
+  "notSelected": [
+    {
+      "target": "mac-development",
+      "status": "blocked"
+    },
+    {
+      "target": "livekit",
+      "status": "blocked"
+    }
+  ]
+}

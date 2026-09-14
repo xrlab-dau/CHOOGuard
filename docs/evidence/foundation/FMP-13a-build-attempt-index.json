@@ -1,0 +1,884 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "indexId": "FMP-13a-build-attempt-index",
+  "issue": 143,
+  "workId": "FMP-13a",
+  "phase": "candidate",
+  "artifact": "artifact:143:fmp13a-evidence:candidate",
+  "bindingKind": "diagnostic_context_output_not_runnable",
+  "runnable": false,
+  "overwritePolicy": "Embedded append-only index: add a new complete run record for each attempt; never rewrite or delete an earlier record, and never read an entry here as a runnable payload.",
+  "rawStorage": "Raw logs, payloads, session credentials and run records stay outside Git under the run root; entries keep sha256 digests only.",
+  "host": {
+    "machineLabel": "laptop-A",
+    "os": "Microsoft Windows 11 Education 10.0.26200 64-bit",
+    "unity": "6000.3.23f1 (Hub install; modules windows-server, linux-mono, linux-server added 2026-09-14; no Mac build support)",
+    "wsl": "WSL 2.7.14.0, kernel 6.18.33.2-microsoft-standard-WSL2 x86_64, distro Ubuntu (NAT networking, no .wslconfig)",
+    "containerRuntime": "none (docker not installed)",
+    "checkout": "fresh git worktree outside the working checkout at the base ref; first import CS0103 x630 then scripts/dev/prepare_multiplayer_dependencies.py --apply (pipeline patch sha256 bf384c549ac21afcf7a3a0ed7c6fabe7c27e7e599091192e1865c46780bda2e1), compile exit 0 with 0 CS errors"
+  },
+  "entries": [
+    {
+      "sequence": 1,
+      "runId": "run-20260914T134023Z",
+      "selected": false,
+      "note": "Linux server was launched with --cg-listen 0.0.0.0 by the runner; the player refused it (\"A non-loopback connection requires a validated encrypted transport\"). Runner changed to loopback and the full run repeated as sequence 2. Runner sha256 differs from the committed script.",
+      "record": {
+        "schemaVersion": 1,
+        "runId": "run-20260914T134023Z",
+        "startedAt": "2026-09-14T13:40:23Z",
+        "host": "win32",
+        "project": {
+          "head": "1dd577034697a0fab806da9b2c907e77e7043832",
+          "dirty": [
+            "?? Assets/CHOOguardTeam.meta",
+            "?? Assets/CHOOguardTeam/Art.meta",
+            "?? Assets/DefaultNetworkPrefabs.asset",
+            "?? Assets/DefaultNetworkPrefabs.asset.meta",
+            "?? Assets/Resources.meta",
+            "?? Assets/Resources/"
+          ]
+        },
+        "runner": {
+          "script": "scripts/dev/build_foundation_candidates.py",
+          "sha256": "ba83f6a84efdbd7815b5de07dcb86ce6bfe2c11a9661ea4c1f476b49e49ec562"
+        },
+        "unity": {
+          "path": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+          "sha256": "266c02f9467d6550b16f696e2f53be3ba246f73e443216170b05dae332c1c12b"
+        },
+        "requestedTargets": [
+          "windows-desktop",
+          "mac-development",
+          "windows-server",
+          "linux-server",
+          "livekit"
+        ],
+        "sourceSnapshot": {
+          "path": "<RUN_ROOT>/source-snapshot",
+          "manifest": "<RUN_ROOT>/source-snapshot/native-source-manifest.json",
+          "filesDigest": "f437991f5b58db4352675b47adf79c72ca8a381ccaae549c4134dd21f3bdd11e",
+          "files": 1386,
+          "baseCommit": "1dd577034697a0fab806da9b2c907e77e7043832",
+          "verified": true
+        },
+        "targets": [
+          {
+            "target": "windows-desktop",
+            "capability": {
+              "playbackEngine": "windowsstandalonesupport",
+              "installed": true,
+              "requiredVariation": "win64_player_nondevelopment_mono",
+              "available": true,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildWindows",
+                "-logFile",
+                "<RUN_ROOT>/windows-desktop/build.log"
+              ],
+              "exitCode": 0,
+              "seconds": 97.2,
+              "log": "<RUN_ROOT>/windows-desktop/build.stdout.log",
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "buildLogSha256": "c0fa252d77b5e9fcb38a1859579a6e04c8207a28062d165e2a1faa55d382ae5f",
+              "successMarker": true,
+              "errors": [
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NetworkConfigurationException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/VisibilityChangeException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NotListeningException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/InvalidParentException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/SpawnStateException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NotServerException.cs"
+              ]
+            },
+            "payload": {
+              "path": "<RUN_ROOT>/windows-desktop/payload",
+              "binary": "ChooGuardMultiplayer.exe",
+              "binarySha256": "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+              "manifest": "<RUN_ROOT>/windows-desktop/payload-manifest.json",
+              "manifestSha256": "8719a80a95f1f0c04d1967e6a9b140d2a05742e794b9dca4947be8ed7a02d0d7",
+              "files": 172,
+              "filesDigest": "f00f29dfb4971156f98719b6f095873abf9edb54ab7eb119fb6e0aba55ccd378",
+              "verified": true
+            },
+            "launch": {
+              "status": "passed",
+              "via": "windows-server",
+              "client": {
+                "argv": [
+                  "<RUN_ROOT>/windows-desktop/payload/ChooGuardMultiplayer.exe",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>/windows-server/launch-client.player.log",
+                  "--cg-mode",
+                  "client",
+                  "--cg-address",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17977",
+                  "--cg-credential",
+                  "<RUN_ROOT>/session/instructor.invitation.json",
+                  "--cg-probe",
+                  "<RUN_ROOT>/session/instructor.probe.json",
+                  "--cg-evidence",
+                  "<RUN_ROOT>/windows-server/launch-client.events.jsonl"
+                ],
+                "exitCode": 0,
+                "seconds": 15.3,
+                "log": "<RUN_ROOT>/windows-server/launch-client.stdio.log",
+                "logSha256": "bd7e430a373c48a692d3df565a61d1b5c1be6a95a85fead56f224cf9b7c64fea",
+                "viewEvents": 237,
+                "passed": true
+              }
+            },
+            "status": "built_and_launched"
+          },
+          {
+            "target": "mac-development",
+            "capability": {
+              "playbackEngine": "MacStandaloneSupport",
+              "installed": false,
+              "requiredVariation": null,
+              "available": false,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildMac",
+                "-logFile",
+                "<RUN_ROOT>/mac-development/build.log"
+              ],
+              "exitCode": 1,
+              "seconds": 8.6,
+              "log": "<RUN_ROOT>/mac-development/build.stdout.log",
+              "logSha256": "4fbafcb0be495e3f49e65b2e4a6d558d53a22e372874ec85acf2a187dd2f2e41",
+              "buildLogSha256": "d16033f5c3df5f9ef379ea7693a80ff3a54b5c0434f60c07c7052071d9a037fb",
+              "successMarker": false,
+              "errors": [
+                "InvalidOperationException: Required target support is not installed: StandaloneOSX"
+              ]
+            },
+            "status": "blocked",
+            "blockedReason": "MacStandaloneSupport build support (any) is not installed on this host; Unity refused the attempt"
+          },
+          {
+            "target": "windows-server",
+            "capability": {
+              "playbackEngine": "windowsstandalonesupport",
+              "installed": true,
+              "requiredVariation": "win64_server_nondevelopment_mono",
+              "available": true,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildWindowsServer",
+                "-logFile",
+                "<RUN_ROOT>/windows-server/build.log"
+              ],
+              "exitCode": 0,
+              "seconds": 49.8,
+              "log": "<RUN_ROOT>/windows-server/build.stdout.log",
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "buildLogSha256": "ccfffe4559b7736a31b7a3631c1c5ae97d43cfdca565170702465244104fd14f",
+              "successMarker": true,
+              "errors": [
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NetworkConfigurationException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/VisibilityChangeException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NotListeningException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/InvalidParentException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/SpawnStateException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NotServerException.cs"
+              ]
+            },
+            "payload": {
+              "path": "<RUN_ROOT>/windows-server/payload",
+              "binary": "ChooGuardServer.exe",
+              "binarySha256": "726d0419fedf82bc5b3867c6aa18e7597525e9bf3ad34c6e84cc750024977745",
+              "manifest": "<RUN_ROOT>/windows-server/payload-manifest.json",
+              "manifestSha256": "3a722c43b30cc609499f21cf645c6d6d046a3fafc68f0f1fcc8eab4325012e7f",
+              "files": 169,
+              "filesDigest": "38a0296310c230b3e485200aa461199af20a808df23d7dc62fff11117d663f0d",
+              "verified": true
+            },
+            "launch": {
+              "status": "passed",
+              "server": {
+                "argv": [
+                  "<RUN_ROOT>/windows-server/payload/ChooGuardServer.exe",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>/windows-server/launch-server.player.log",
+                  "--cg-mode",
+                  "server",
+                  "--cg-listen",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17977",
+                  "--cg-session",
+                  "<RUN_ROOT>/session/server-session.json",
+                  "--cg-records",
+                  "<RUN_ROOT>/windows-server/launch-records",
+                  "--cg-evidence",
+                  "<RUN_ROOT>/windows-server/launch-server.events.jsonl"
+                ],
+                "serverStarted": true,
+                "evidence": "<RUN_ROOT>/windows-server/launch-server.events.jsonl",
+                "exitCode": 1
+              },
+              "client": {
+                "argv": [
+                  "<RUN_ROOT>/windows-desktop/payload/ChooGuardMultiplayer.exe",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>/windows-server/launch-client.player.log",
+                  "--cg-mode",
+                  "client",
+                  "--cg-address",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17977",
+                  "--cg-credential",
+                  "<RUN_ROOT>/session/instructor.invitation.json",
+                  "--cg-probe",
+                  "<RUN_ROOT>/session/instructor.probe.json",
+                  "--cg-evidence",
+                  "<RUN_ROOT>/windows-server/launch-client.events.jsonl"
+                ],
+                "exitCode": 0,
+                "seconds": 15.3,
+                "log": "<RUN_ROOT>/windows-server/launch-client.stdio.log",
+                "logSha256": "bd7e430a373c48a692d3df565a61d1b5c1be6a95a85fead56f224cf9b7c64fea",
+                "viewEvents": 237,
+                "passed": true
+              },
+              "clientFromWindows": true
+            },
+            "status": "built_and_launched"
+          },
+          {
+            "target": "linux-server",
+            "capability": {
+              "playbackEngine": "LinuxStandaloneSupport",
+              "installed": true,
+              "requiredVariation": "linux64_server_nondevelopment_mono",
+              "available": true,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildLinuxServer",
+                "-logFile",
+                "<RUN_ROOT>/linux-server/build.log"
+              ],
+              "exitCode": 0,
+              "seconds": 96.4,
+              "log": "<RUN_ROOT>/linux-server/build.stdout.log",
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "buildLogSha256": "95f6d0904cbc2d01a36ec5c4026b6cce60b579f2f4ec96d5082b9a455ea5e333",
+              "successMarker": true,
+              "errors": [
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NetworkConfigurationException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/VisibilityChangeException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NotListeningException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/InvalidParentException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/SpawnStateException.cs",
+                "0.1 kb\t 0.0% Packages/com.unity.netcode.gameobjects/Runtime/Exceptions/NotServerException.cs"
+              ]
+            },
+            "payload": {
+              "path": "<RUN_ROOT>/linux-server/payload",
+              "binary": "ChooGuardServer",
+              "binarySha256": "61c388a1cd661a6230c857fd66de0cec86a1ec497d5f6df1b7f1d585263be19f",
+              "manifest": "<RUN_ROOT>/linux-server/payload-manifest.json",
+              "manifestSha256": "bf7c82f1ba614c1036a47e6c9bb3e1c76794f1f6b65e0073f4d099f3b4eab912",
+              "files": 166,
+              "filesDigest": "4daf91c8717d827c39e403182f818499d5dab400d7589024c19b4812166e4f31",
+              "verified": true
+            },
+            "launch": {
+              "status": "failed",
+              "server": {
+                "argv": [
+                  "wsl.exe",
+                  "-d",
+                  "Ubuntu",
+                  "--",
+                  "<RUN_ROOT>_WSL/linux-server/payload/ChooGuardServer",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>_WSL/linux-server/launch-server.player.log",
+                  "--cg-mode",
+                  "server",
+                  "--cg-listen",
+                  "0.0.0.0",
+                  "--cg-port",
+                  "17978",
+                  "--cg-session",
+                  "<RUN_ROOT>_WSL/session/server-session.json",
+                  "--cg-records",
+                  "<RUN_ROOT>_WSL/linux-server/launch-records",
+                  "--cg-evidence",
+                  "<RUN_ROOT>_WSL/linux-server/launch-server.events.jsonl"
+                ],
+                "serverStarted": false,
+                "evidence": "<RUN_ROOT>/linux-server/launch-server.events.jsonl",
+                "host": "WSL2 Ubuntu (Linux x86_64 kernel under Windows)",
+                "exitCode": 2
+              },
+              "client": null,
+              "clientFromWindows": null
+            },
+            "status": "built_launch_failed"
+          },
+          {
+            "target": "livekit",
+            "attempt": {
+              "argv": [
+                "docker",
+                "compose",
+                "version"
+              ],
+              "exitCode": null,
+              "seconds": 0.0,
+              "log": "<RUN_ROOT>/livekit/docker-compose-version.log",
+              "logSha256": "eb8d0d58bb2cc3ca403a925582bc524b2f7d9da9088723d068ca6696db73e64b"
+            },
+            "capability": {
+              "compose": "services/livekit/compose.yaml",
+              "composeSha256": "a0aa30810ccba023fb72e766bf336529a6564ad86a3315ee39234cd3dcb07810",
+              "dockerComposeAvailable": false,
+              "host": "win32"
+            },
+            "status": "blocked",
+            "blockedReason": "container runtime unavailable: `docker compose version` did not run on this host; services/livekit/configure_local.py creates credentials only on supported macOS hosts; this host is win32"
+          }
+        ],
+        "runnable": [
+          "windows-desktop",
+          "windows-server"
+        ],
+        "finishedAt": "2026-09-14T13:46:26Z",
+        "rawRecordSha256": "e4f79d331e46b5d51bc4ee16f7dfdce3098296fd87e91a57763ca798440f2051",
+        "manifestChecks": {
+          "source-snapshot": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-current-worktree",
+              "files": 1386,
+              "filesDigest": "f437991f5b58db4352675b47adf79c72ca8a381ccaae549c4134dd21f3bdd11e"
+            },
+            "root": "<RUN_ROOT>/source-snapshot",
+            "manifest": "<RUN_ROOT>/source-snapshot/native-source-manifest.json"
+          },
+          "windows-desktop/payload": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-build-payload",
+              "files": 172,
+              "filesDigest": "f00f29dfb4971156f98719b6f095873abf9edb54ab7eb119fb6e0aba55ccd378"
+            },
+            "root": "<RUN_ROOT>/windows-desktop/payload",
+            "manifest": "<RUN_ROOT>/windows-desktop/payload-manifest.json"
+          },
+          "windows-server/payload": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-build-payload",
+              "files": 169,
+              "filesDigest": "38a0296310c230b3e485200aa461199af20a808df23d7dc62fff11117d663f0d"
+            },
+            "root": "<RUN_ROOT>/windows-server/payload",
+            "manifest": "<RUN_ROOT>/windows-server/payload-manifest.json"
+          },
+          "linux-server/payload": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-build-payload",
+              "files": 166,
+              "filesDigest": "4daf91c8717d827c39e403182f818499d5dab400d7589024c19b4812166e4f31"
+            },
+            "root": "<RUN_ROOT>/linux-server/payload",
+            "manifest": "<RUN_ROOT>/linux-server/payload-manifest.json"
+          }
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "runId": "run-20260914T134755Z",
+      "selected": true,
+      "record": {
+        "schemaVersion": 1,
+        "runId": "run-20260914T134755Z",
+        "startedAt": "2026-09-14T13:47:55Z",
+        "host": "win32",
+        "project": {
+          "head": "1dd577034697a0fab806da9b2c907e77e7043832",
+          "dirty": [
+            "?? Assets/CHOOguardTeam.meta",
+            "?? Assets/CHOOguardTeam/Art.meta",
+            "?? Assets/DefaultNetworkPrefabs.asset",
+            "?? Assets/DefaultNetworkPrefabs.asset.meta",
+            "?? Assets/Resources.meta",
+            "?? Assets/Resources/"
+          ]
+        },
+        "runner": {
+          "script": "scripts/dev/build_foundation_candidates.py",
+          "sha256": "3d45d1586bd2fa9cc3cfc3b499db5fe609c15e44c273b39973dd67c9070152be"
+        },
+        "unity": {
+          "path": "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+          "sha256": "266c02f9467d6550b16f696e2f53be3ba246f73e443216170b05dae332c1c12b"
+        },
+        "requestedTargets": [
+          "windows-desktop",
+          "mac-development",
+          "windows-server",
+          "linux-server",
+          "livekit"
+        ],
+        "sourceSnapshot": {
+          "path": "<RUN_ROOT>/source-snapshot",
+          "manifest": "<RUN_ROOT>/source-snapshot/native-source-manifest.json",
+          "filesDigest": "f437991f5b58db4352675b47adf79c72ca8a381ccaae549c4134dd21f3bdd11e",
+          "files": 1386,
+          "baseCommit": "1dd577034697a0fab806da9b2c907e77e7043832",
+          "verified": true
+        },
+        "targets": [
+          {
+            "target": "windows-desktop",
+            "capability": {
+              "playbackEngine": "windowsstandalonesupport",
+              "installed": true,
+              "requiredVariation": "win64_player_nondevelopment_mono",
+              "available": true,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildWindows",
+                "-logFile",
+                "<RUN_ROOT>/windows-desktop/build.log"
+              ],
+              "exitCode": 0,
+              "seconds": 97.2,
+              "log": "<RUN_ROOT>/windows-desktop/build.stdout.log",
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "buildLogSha256": "f0cd707af841bd40901e548c1958d4c25d2d47863fa9ff56ffde73fd48b80a53",
+              "successMarker": true,
+              "errors": []
+            },
+            "payload": {
+              "path": "<RUN_ROOT>/windows-desktop/payload",
+              "binary": "ChooGuardMultiplayer.exe",
+              "binarySha256": "82efd5a8c297a5046f6bb72c240dab8972e64003851935eba0a46ad121ce0305",
+              "manifest": "<RUN_ROOT>/windows-desktop/payload-manifest.json",
+              "manifestSha256": "99cfa7f0dcce0bcc84614302a868b40ff318ad7e334003bb338dccfcaf761d9f",
+              "files": 172,
+              "filesDigest": "efc8c0e8fd1034bb6a53b2338d576904d22b2ae0d3d21fd64ec64e9eb0a32d88",
+              "verified": true
+            },
+            "launch": {
+              "status": "passed",
+              "via": "windows-server",
+              "client": {
+                "argv": [
+                  "<RUN_ROOT>/windows-desktop/payload/ChooGuardMultiplayer.exe",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>/windows-server/launch-client.player.log",
+                  "--cg-mode",
+                  "client",
+                  "--cg-address",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17977",
+                  "--cg-credential",
+                  "<RUN_ROOT>/session/instructor.invitation.json",
+                  "--cg-probe",
+                  "<RUN_ROOT>/session/instructor.probe.json",
+                  "--cg-evidence",
+                  "<RUN_ROOT>/windows-server/launch-client.events.jsonl"
+                ],
+                "exitCode": 0,
+                "seconds": 15.4,
+                "log": "<RUN_ROOT>/windows-server/launch-client.stdio.log",
+                "logSha256": "bd7e430a373c48a692d3df565a61d1b5c1be6a95a85fead56f224cf9b7c64fea",
+                "viewEvents": 236,
+                "passed": true
+              }
+            },
+            "status": "built_and_launched"
+          },
+          {
+            "target": "mac-development",
+            "capability": {
+              "playbackEngine": "MacStandaloneSupport",
+              "installed": false,
+              "requiredVariation": null,
+              "available": false,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildMac",
+                "-logFile",
+                "<RUN_ROOT>/mac-development/build.log"
+              ],
+              "exitCode": 1,
+              "seconds": 27.3,
+              "log": "<RUN_ROOT>/mac-development/build.stdout.log",
+              "logSha256": "4fbafcb0be495e3f49e65b2e4a6d558d53a22e372874ec85acf2a187dd2f2e41",
+              "buildLogSha256": "bc56e1c44e05bc0d3b79ce45d79b6561846ab6d0150e721ad041fb0b15f221cd",
+              "successMarker": false,
+              "errors": [
+                "InvalidOperationException: Required target support is not installed: StandaloneOSX"
+              ]
+            },
+            "status": "blocked",
+            "blockedReason": "MacStandaloneSupport build support (any) is not installed on this host; Unity refused the attempt"
+          },
+          {
+            "target": "windows-server",
+            "capability": {
+              "playbackEngine": "windowsstandalonesupport",
+              "installed": true,
+              "requiredVariation": "win64_server_nondevelopment_mono",
+              "available": true,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildWindowsServer",
+                "-logFile",
+                "<RUN_ROOT>/windows-server/build.log"
+              ],
+              "exitCode": 0,
+              "seconds": 45.1,
+              "log": "<RUN_ROOT>/windows-server/build.stdout.log",
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "buildLogSha256": "155db580a990b84f1a0a793a91066cd3d2cf3213ca346fb1cbf0874bf6eaa87d",
+              "successMarker": true,
+              "errors": []
+            },
+            "payload": {
+              "path": "<RUN_ROOT>/windows-server/payload",
+              "binary": "ChooGuardServer.exe",
+              "binarySha256": "726d0419fedf82bc5b3867c6aa18e7597525e9bf3ad34c6e84cc750024977745",
+              "manifest": "<RUN_ROOT>/windows-server/payload-manifest.json",
+              "manifestSha256": "53fba8be963c70a66c0f3512fce011bddfd8337ca1d700fce1c669dacfe38170",
+              "files": 169,
+              "filesDigest": "6497db43e9b70b78ffa26ff54979b554c563d2316916ba7bc2718ca3b4ea4d36",
+              "verified": true
+            },
+            "launch": {
+              "status": "passed",
+              "server": {
+                "argv": [
+                  "<RUN_ROOT>/windows-server/payload/ChooGuardServer.exe",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>/windows-server/launch-server.player.log",
+                  "--cg-mode",
+                  "server",
+                  "--cg-listen",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17977",
+                  "--cg-session",
+                  "<RUN_ROOT>/session/server-session.json",
+                  "--cg-records",
+                  "<RUN_ROOT>/windows-server/launch-records",
+                  "--cg-evidence",
+                  "<RUN_ROOT>/windows-server/launch-server.events.jsonl"
+                ],
+                "serverStarted": true,
+                "evidence": "<RUN_ROOT>/windows-server/launch-server.events.jsonl",
+                "exitCode": 1
+              },
+              "client": {
+                "argv": [
+                  "<RUN_ROOT>/windows-desktop/payload/ChooGuardMultiplayer.exe",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>/windows-server/launch-client.player.log",
+                  "--cg-mode",
+                  "client",
+                  "--cg-address",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17977",
+                  "--cg-credential",
+                  "<RUN_ROOT>/session/instructor.invitation.json",
+                  "--cg-probe",
+                  "<RUN_ROOT>/session/instructor.probe.json",
+                  "--cg-evidence",
+                  "<RUN_ROOT>/windows-server/launch-client.events.jsonl"
+                ],
+                "exitCode": 0,
+                "seconds": 15.4,
+                "log": "<RUN_ROOT>/windows-server/launch-client.stdio.log",
+                "logSha256": "bd7e430a373c48a692d3df565a61d1b5c1be6a95a85fead56f224cf9b7c64fea",
+                "viewEvents": 236,
+                "passed": true
+              },
+              "clientFromWindows": true
+            },
+            "status": "built_and_launched"
+          },
+          {
+            "target": "linux-server",
+            "capability": {
+              "playbackEngine": "LinuxStandaloneSupport",
+              "installed": true,
+              "requiredVariation": "linux64_server_nondevelopment_mono",
+              "available": true,
+              "host": "win32"
+            },
+            "attempt": {
+              "argv": [
+                "C:\\Program Files\\Unity\\Hub\\Editor\\6000.3.23f1\\Editor\\Unity.exe",
+                "-batchmode",
+                "-quit",
+                "-nographics",
+                "-projectPath",
+                "<CHECKOUT>",
+                "-executeMethod",
+                "ChooGuard.Foundation.Multiplayer.Editor.MultiplayerSceneBuilder.BuildLinuxServer",
+                "-logFile",
+                "<RUN_ROOT>/linux-server/build.log"
+              ],
+              "exitCode": 0,
+              "seconds": 41.7,
+              "log": "<RUN_ROOT>/linux-server/build.stdout.log",
+              "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+              "buildLogSha256": "a3da86ffae79a889be5fd715a316e13487ecc6645af239a1407ec7e530466fdc",
+              "successMarker": true,
+              "errors": []
+            },
+            "payload": {
+              "path": "<RUN_ROOT>/linux-server/payload",
+              "binary": "ChooGuardServer",
+              "binarySha256": "61c388a1cd661a6230c857fd66de0cec86a1ec497d5f6df1b7f1d585263be19f",
+              "manifest": "<RUN_ROOT>/linux-server/payload-manifest.json",
+              "manifestSha256": "1aad95f75818bfcf28d778af827ec008b6e141461560d868dda53385233972d9",
+              "files": 165,
+              "filesDigest": "46d780559e840d784b4a46cda885f6a726f4e52580f60d56ead2e8f0428c0971",
+              "verified": true
+            },
+            "launch": {
+              "status": "passed",
+              "server": {
+                "argv": [
+                  "wsl.exe",
+                  "-d",
+                  "Ubuntu",
+                  "--",
+                  "<RUN_ROOT>_WSL/linux-server/payload/ChooGuardServer",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>_WSL/linux-server/launch-server.player.log",
+                  "--cg-mode",
+                  "server",
+                  "--cg-listen",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17978",
+                  "--cg-session",
+                  "<RUN_ROOT>_WSL/session/server-session.json",
+                  "--cg-records",
+                  "<RUN_ROOT>_WSL/linux-server/launch-records",
+                  "--cg-evidence",
+                  "<RUN_ROOT>_WSL/linux-server/launch-server.events.jsonl"
+                ],
+                "serverStarted": true,
+                "evidence": "<RUN_ROOT>/linux-server/launch-server.events.jsonl",
+                "host": "WSL2 Ubuntu (Linux x86_64 kernel under Windows)",
+                "exitCode": 1
+              },
+              "client": {
+                "argv": [
+                  "<RUN_ROOT>/windows-desktop/payload/ChooGuardMultiplayer.exe",
+                  "-batchmode",
+                  "-nographics",
+                  "-logFile",
+                  "<RUN_ROOT>/linux-server/launch-client.player.log",
+                  "--cg-mode",
+                  "client",
+                  "--cg-address",
+                  "127.0.0.1",
+                  "--cg-port",
+                  "17978",
+                  "--cg-credential",
+                  "<RUN_ROOT>/session/instructor.invitation.json",
+                  "--cg-probe",
+                  "<RUN_ROOT>/session/instructor.probe.json",
+                  "--cg-evidence",
+                  "<RUN_ROOT>/linux-server/launch-client.events.jsonl"
+                ],
+                "exitCode": "timeout",
+                "seconds": 90.1,
+                "log": "<RUN_ROOT>/linux-server/launch-client.stdio.log",
+                "logSha256": "88db3cd56be413abd4c9b1144dbf7e04140815cac9d77a688777d4e2b6712251",
+                "viewEvents": 0,
+                "passed": false
+              },
+              "clientFromWindows": false
+            },
+            "status": "built_and_launched"
+          },
+          {
+            "target": "livekit",
+            "attempt": {
+              "argv": [
+                "docker",
+                "compose",
+                "version"
+              ],
+              "exitCode": null,
+              "seconds": 0.0,
+              "log": "<RUN_ROOT>/livekit/docker-compose-version.log",
+              "logSha256": "eb8d0d58bb2cc3ca403a925582bc524b2f7d9da9088723d068ca6696db73e64b"
+            },
+            "capability": {
+              "compose": "services/livekit/compose.yaml",
+              "composeSha256": "a0aa30810ccba023fb72e766bf336529a6564ad86a3315ee39234cd3dcb07810",
+              "dockerComposeAvailable": false,
+              "host": "win32"
+            },
+            "status": "blocked",
+            "blockedReason": "container runtime unavailable: `docker compose version` did not run on this host; services/livekit/configure_local.py creates credentials only on supported macOS hosts; this host is win32"
+          }
+        ],
+        "runnable": [
+          "windows-desktop",
+          "windows-server",
+          "linux-server"
+        ],
+        "finishedAt": "2026-09-14T13:54:42Z",
+        "rawRecordSha256": "ca272f4575db8c1260e9be48ded2a6f383b66653cf1bcbcef19c02c35d4d2acc",
+        "manifestChecks": {
+          "source-snapshot": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-current-worktree",
+              "files": 1386,
+              "filesDigest": "f437991f5b58db4352675b47adf79c72ca8a381ccaae549c4134dd21f3bdd11e"
+            },
+            "root": "<RUN_ROOT>/source-snapshot",
+            "manifest": "<RUN_ROOT>/source-snapshot/native-source-manifest.json"
+          },
+          "windows-desktop/payload": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-build-payload",
+              "files": 172,
+              "filesDigest": "efc8c0e8fd1034bb6a53b2338d576904d22b2ae0d3d21fd64ec64e9eb0a32d88"
+            },
+            "root": "<RUN_ROOT>/windows-desktop/payload",
+            "manifest": "<RUN_ROOT>/windows-desktop/payload-manifest.json"
+          },
+          "windows-server/payload": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-build-payload",
+              "files": 169,
+              "filesDigest": "6497db43e9b70b78ffa26ff54979b554c563d2316916ba7bc2718ca3b4ea4d36"
+            },
+            "root": "<RUN_ROOT>/windows-server/payload",
+            "manifest": "<RUN_ROOT>/windows-server/payload-manifest.json"
+          },
+          "linux-server/payload": {
+            "command": "python3 scripts/dev/native_manifest.py verify --root <root> --manifest <manifest>",
+            "exitCode": 0,
+            "output": {
+              "status": "verified",
+              "kind": "native-build-payload",
+              "files": 165,
+              "filesDigest": "46d780559e840d784b4a46cda885f6a726f4e52580f60d56ead2e8f0428c0971"
+            },
+            "root": "<RUN_ROOT>/linux-server/payload",
+            "manifest": "<RUN_ROOT>/linux-server/payload-manifest.json"
+          }
+        }
+      }
+    }
+  ]
+}
