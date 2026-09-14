@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 1,
+  "catalogId": "TEAM-03-material-catalog",
+  "issue": 71,
+  "workId": "TEAM-03",
+  "phase": "candidate",
+  "classification": "PUBLIC_SYNTHETIC",
+  "disclaimer": "KORAIL 검증 전 예시",
+  "generatedAt": "2026-09-13",
+  "purpose": "사용처가 확인된 소재만 목록화하고, 원본·preview·runtime 파생본과 권리·용량 조건을 구분해 기록한다. 이 카탈로그는 재배포 허가를 만들지 않는다.",
+  "baseCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+  "boundInputs": [
+    {
+      "path": "foundation/art/asset-manifest.json",
+      "sha256": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242",
+      "selector": "/materialNames; /textureInputs; /assets",
+      "availability": "published_on_develop",
+      "mode": "read_only"
+    },
+    {
+      "path": "foundation/art/object-references.json",
+      "sha256": "e2530ec00bbc16ba24e475269343651616f8fdae8ecf56fc5ccaeec250a90559",
+      "selector": "/assets; /sceneFamilies",
+      "availability": "published_on_develop",
+      "mode": "read_only"
+    },
+    {
+      "id": "artifact:70:zone-boundaries:accept",
+      "path": "foundation/world/zone-boundaries.json",
+      "ref": "ac7f84edb56477b2d7039e20fec91e7e51b0d3e6",
+      "refNote": "브랜치 이름 대신 불변 커밋으로 고정한다. 브랜치는 움직이고 로컬 사본이 낡을 수 있다.",
+      "commit": "ac7f84e",
+      "sha256": "e7d35f150058a72498afb336069ab1f1e7a0a123f440d348a4edd7d14f61ebc8",
+      "availability": "merged_on_develop",
+      "mergedBy": "PR #155, 2026-09-13",
+      "use": "제작 구역·번들 경계. 아직 확정되지 않은 항목은 제안으로 표기한다.",
+      "rebindNote": "최초 결속은 후보 `docs/70-zone-coverage-boundaries` c1a7b78(sha256 e035ecd9…)이었다. PR #155 병합으로 정본이 develop ac7f84e로 바뀌었고, 병합 전 PM이 검사기·데이터를 보강해 내용 해시도 달라졌다. 낡은 값을 유지하지 않고 병합본으로 재결속했다."
+    }
+  ],
+  "missingInputs": [
+    {
+      "id": "artifact:15:M0-02b-use-boundary:accept",
+      "fromIssue": 15,
+      "issueState": "open_unassigned",
+      "effect": "자료별 사용·변형·재배포 조건의 확정 판정이 없다. accept 단계 입력이므로 candidate 후보는 진행하되 모든 외부 소재의 권리 판정을 보류로 둔다."
+    }
+  ],
+  "currentStateFindings": [
+    {
+      "finding": "현재 자산은 이미지 텍스처를 사용하지 않는다.",
+      "evidence": "asset-manifest.json: textureInputs=0, noImageTextureInputs, noDownloadedMeshInputs, noBakeOrRender",
+      "consequence": "외부에서 받아야 할 텍스처 소재가 현재 파이프라인에 하나도 없다. 33종 자산은 이름 있는 재질 20종으로만 구성된다."
+    },
+    {
+      "finding": "참고 이미지의 재사용 권리가 전부 미확정이거나 금지다.",
+      "evidence": "object-references.json의 reuseLicense 54건: 미확정 50건, 명시적 금지 4건(무단전재·재배포 금지, all rights reserved 등)",
+      "consequence": "재배포 가능으로 표시할 수 있는 외부 소재가 없다. 참고 가능과 재배포 가능을 다른 칸으로 분리해 기록한다."
+    },
+    {
+      "finding": "저장소에 자산↔재질 대응표가 없다.",
+      "evidence": "asset-manifest.json의 자산 항목은 components·triangles·sha256만 담고 재질 목록이 없다. object-references.json에도 재질 필드가 없다.",
+      "consequence": "재질의 사용처는 생성기 모듈과 부품군 수준으로만 결속한다. 자산별 재질 대응은 추정하지 않는다."
+    }
+  ],
+  "derivativeTiers": {
+    "source": "Blender 절차적 생성 원본과 생성 스크립트. 저장소에 추적된다.",
+    "preview": "검수용 저해상도 파생본. 현재 생성하지 않는다. #85에서 다룬다.",
+    "runtime": "Unity가 사용하는 FBX와 재질. 이미지 텍스처를 포함하지 않는다."
+  },
+  "rightsColumns": {
+    "referenceUse": "형태 관찰에 참고할 수 있는가",
+    "redistribute": "파일을 저장소나 배포물에 포함할 수 있는가",
+    "note": "두 값은 별개다. referenceUse=true가 redistribute=true를 뜻하지 않는다."
+  },
+  "materials": [
+    {"name": "Metal", "generatorRefs": {"station_equipment.py": 43, "station_furniture.py": 5, "station_architecture.py": 4, "build_station_assets.py": 8}, "usedBy": ["equipment", "furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Stainless", "generatorRefs": {"station_equipment.py": 17, "station_furniture.py": 12, "station_architecture.py": 24, "build_station_assets.py": 4}, "usedBy": ["equipment", "furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "White", "generatorRefs": {"station_equipment.py": 22, "station_furniture.py": 2, "station_architecture.py": 18, "build_station_assets.py": 1}, "usedBy": ["equipment", "furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Rubber", "generatorRefs": {"station_equipment.py": 11, "station_furniture.py": 18, "station_architecture.py": 5, "build_station_assets.py": 2}, "usedBy": ["equipment", "furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Screen", "generatorRefs": {"station_equipment.py": 7, "station_furniture.py": 1, "build_station_assets.py": 2}, "usedBy": ["equipment", "furniture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 표시 내용은 합성이며 실제 운행정보를 복제하지 않는다.", "status": "in_use"},
+    {"name": "Green", "generatorRefs": {"station_equipment.py": 4, "station_architecture.py": 4, "build_station_assets.py": 1}, "usedBy": ["equipment", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Yellow", "generatorRefs": {"station_equipment.py": 3, "station_architecture.py": 2, "build_station_assets.py": 1}, "usedBy": ["equipment", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Blue", "generatorRefs": {"station_furniture.py": 6, "build_station_assets.py": 1}, "usedBy": ["furniture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Red", "generatorRefs": {"station_equipment.py": 2, "build_station_assets.py": 1}, "usedBy": ["equipment"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Orange", "generatorRefs": {"station_equipment.py": 2, "build_station_assets.py": 1}, "usedBy": ["equipment"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Fabric", "generatorRefs": {"station_equipment.py": 1, "station_furniture.py": 5, "build_station_assets.py": 2}, "usedBy": ["equipment", "furniture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Wood", "generatorRefs": {"station_furniture.py": 2, "build_station_assets.py": 2}, "usedBy": ["furniture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Stone", "generatorRefs": {"station_furniture.py": 1, "station_architecture.py": 3, "build_station_assets.py": 2}, "usedBy": ["furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Roof", "generatorRefs": {"station_furniture.py": 2, "build_station_assets.py": 2}, "usedBy": ["furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Ceiling", "generatorRefs": {"station_architecture.py": 3, "build_station_assets.py": 1}, "usedBy": ["architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Wall", "generatorRefs": {"station_furniture.py": 2, "station_architecture.py": 3, "build_station_assets.py": 1}, "usedBy": ["furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Floor", "generatorRefs": {"build_station_assets.py": 1}, "usedBy": ["architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Glass", "generatorRefs": {"build_station_assets.py": 3}, "usedBy": ["architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "ClearGlass", "generatorRefs": {"station_equipment.py": 2, "station_furniture.py": 1, "station_architecture.py": 1, "build_station_assets.py": 3}, "usedBy": ["equipment", "furniture", "architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"},
+    {"name": "Diffuser", "generatorRefs": {"station_architecture.py": 6, "build_station_assets.py": 2}, "usedBy": ["architecture"], "origin": "procedural", "externalSource": null, "referenceUse": true, "redistribute": true, "rightsBasis": "절차적 생성값. 외부 저작물이 아니다.", "status": "in_use"}
+  ],
+  "externalCandidates": [
+    {
+      "candidateId": "EXT-01",
+      "need": "금속 표면의 사실적 거칠기·반사 텍스처",
+      "wouldServe": ["Metal", "Stainless"],
+      "referenceUse": true,
+      "redistribute": false,
+      "status": "hold",
+      "holdReason": "현재 파이프라인이 이미지 텍스처를 쓰지 않는다(textureInputs=0). 도입하려면 생성기·검수 경로 변경이 선행이며 이 이슈의 범위가 아니다.",
+      "rightsState": "미확인",
+      "sizeBytes": null,
+      "sizeBasis": "미측정"
+    },
+    {
+      "candidateId": "EXT-02",
+      "need": "석재·바닥 패턴 텍스처",
+      "wouldServe": ["Stone", "Floor"],
+      "referenceUse": true,
+      "redistribute": false,
+      "status": "hold",
+      "holdReason": "위와 같음. 더해 실제 역사 바닥 패턴의 참고 이미지는 재사용 권리가 미확정이다.",
+      "rightsState": "미확인",
+      "sizeBytes": null,
+      "sizeBasis": "미측정"
+    },
+    {
+      "candidateId": "EXT-03",
+      "need": "유리·투과 재질의 환경 반사",
+      "wouldServe": ["Glass", "ClearGlass", "Diffuser"],
+      "referenceUse": true,
+      "redistribute": false,
+      "status": "hold",
+      "holdReason": "HDRI 등 환경맵은 용량이 크고 라이선스 조건이 제각각이다. #15 사용 조건 확정 전에는 수신하지 않는다.",
+      "rightsState": "미확인",
+      "sizeBytes": null,
+      "sizeBasis": "미측정"
+    },
+    {
+      "candidateId": "EXT-04",
+      "need": "직물·좌석 표면 텍스처",
+      "wouldServe": ["Fabric", "Rubber"],
+      "referenceUse": true,
+      "redistribute": false,
+      "status": "hold",
+      "holdReason": "위와 같음.",
+      "rightsState": "미확인",
+      "sizeBytes": null,
+      "sizeBasis": "미측정"
+    }
+  ],
+  "referenceRightsSummary": {
+    "totalReferences": 54,
+    "byState": {
+      "unknown; no asset redistribution or texture-use permission inferred": 35,
+      "unknown_no_reuse_license_confirmed": 13,
+      "별도 재사용 라이선스 확인되지 않음.": 2,
+      "뉴스1코리아 무단전재·재배포 금지. KoreaToDo 개별 재사용 허가 미확인.": 1,
+      "사진 재배포·3D자산 라이선스 명시를 확인하지 못함.": 1,
+      "Copyright SHOWA GLOVE Co., all rights reserved.": 1,
+      "별도 모델링/이미지 재배포 라이선스 미확인.": 1
+    },
+    "redistributableCount": 0,
+    "conclusion": "재배포 가능으로 표시할 수 있는 외부 참고 자료가 없다. 모든 참고는 형태 관찰용이다."
+  },
+  "refusedEntries": [
+    {
+      "caseId": "TEAM-03-N01",
+      "attempt": "참고 이미지의 reuseLicense가 '미확인'인 항목을 카탈로그에서 redistribute=true로 표시했다.",
+      "expected": "refused",
+      "reason": "참고 가능과 재배포 가능은 다른 칸이다. 미확인을 허용으로 바꾸지 않는다.",
+      "guard": "rightsColumns 분리와 referenceRightsSummary.redistributableCount=0"
+    },
+    {
+      "caseId": "TEAM-03-N02",
+      "attempt": "사용처가 확인되지 않은 8K 텍스처 묶음을 목록에 넣고 수신 대상으로 표시했다.",
+      "expected": "refused",
+      "reason": "사용처가 명확한 소재만 선정한다. 현재 파이프라인은 이미지 텍스처를 쓰지 않으므로 사용처가 없다.",
+      "guard": "externalCandidates의 status=hold와 holdReason"
+    }
+  ],
+  "sizeAccounting": {
+    "measured": {"repositoryMaterials": "이미지 파일 없음. 재질은 생성기 코드의 값이다."},
+    "estimated": {"note": "외부 소재 용량은 수신 대상이 확정된 뒤에만 추정한다. 현재 전부 null이다."},
+    "unitRule": "관측값과 예상값을 같은 칸에 쓰지 않는다. 단위를 함께 적는다."
+  },
+  "notAccepted": [
+    "이 카탈로그가 재배포 허가를 만들지 않는다. 권리 판정은 #15 확정 후에 한다.",
+    "소재를 내려받거나 구매하지 않았다.",
+    "공유 manifest를 수정하지 않았다. 사용처는 읽기 전용 대조로만 확인했다.",
+    "자산별 재질 대응을 추정하지 않았다. 저장소에 그 대응표가 없다."
+  ],
+  "limits": [
+    "재질 사용처는 생성기 모듈과 참조 횟수 수준이다. 자산 단위 대응은 저장소에 근거가 없다.",
+    "#70 구역 경계는 PR #155로 develop에 병합됐다(ac7f84e). 이 카탈로그는 병합본 해시에 재결속했으며, 구역 경계 자체의 미확정 항목은 그 문서의 open_questions를 따른다.",
+    "#15 사용 조건이 없어 모든 외부 소재 권리 판정을 보류로 뒀다."
+  ],
+  "handoff": "#75에는 수신 가능 품목이 아직 없다는 사실, 파생본 3단계 규격, 보류 4건과 그 사유를 전달한다."
+}
