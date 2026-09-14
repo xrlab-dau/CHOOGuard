@@ -1,0 +1,250 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "TEAM-26-anonymous-record",
+  "issue": 94,
+  "workId": "TEAM-26",
+  "phase": "candidate",
+  "classification": "PUBLIC_SYNTHETIC",
+  "disclaimer": "KORAIL 검증 전 예시",
+  "generatedAt": "2026-09-13",
+  "purpose": "비공식 게임 평가의 질문·과업·관측·교란·누락과 익명 기록 보관을 정의하는 합성 예시. 실제 참가자 실험이 아니며 효과를 주장하지 않는다.",
+  "baseCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+  "boundInputs": [
+    {
+      "id": "artifact:72:flow-fixtures:candidate",
+      "path": "foundation/team-fixtures/TEAM-04/user-flows.json",
+      "ref": "feature/72-team04-user-flows",
+      "commit": "7dbcb85",
+      "sha256": "39ea28beac9e6dbb14425613f590588325a89c63bcb5461f343d4ca4bc8c9121",
+      "availability": "candidate_not_merged",
+      "use": "관측 가능한 행동·실패·누락 사례의 출처"
+    },
+    {
+      "id": "artifact:93:mapping-template:candidate",
+      "path": "docs/team/TEAM-25/mapping-template.md",
+      "ref": "feature/93-team25-mapping-template",
+      "commit": "4b91ecc",
+      "sha256": "07d7b7dc1378dace8580154ea4b21347f6cfc581e7d97d7ccc5eeb6240216ba0",
+      "availability": "candidate_not_merged",
+      "use": "출처·적용 한계 필드의 작성 방식"
+    },
+    {
+      "path": "foundation/scenarios/foundation-demo.json",
+      "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+      "availability": "published_on_develop",
+      "use": "임시 직무 식별자"
+    },
+    {
+      "path": "docs/choo-guard-open-world-training.md",
+      "sha256": "190b73d47e5eba8add586c3a4590679e7b1d7d414ba446453cb0ed1979015f4e",
+      "availability": "published_on_develop",
+      "use": "상시 현장 흐름과 기록 보관의 현행 설계"
+    }
+  ],
+  "missingInputs": [
+    {
+      "path": "docs/choo-guard-foundation-multiplayer.md",
+      "effect": "develop 미게시. FMP 목표 범위 대조를 수행하지 못했다. 이 양식은 legacy 단일 조작자 범위로만 한정한다."
+    },
+    {
+      "path": "docs/choo-guard-native-acceptance.md",
+      "effect": "develop 미게시. 상태별 관찰·미검증 범위의 원문 대조를 수행하지 못했다."
+    }
+  ],
+  "anonymity": {
+    "idScheme": "P-NN (두 자리 일련번호). 세션별로 새로 발급하며 이전 세션과 연결하지 않는다.",
+    "idPattern": "^P-[0-9]{2}$",
+    "neverCollected": [
+      "실명", "연락처", "이메일", "직원번호", "소속·부서", "계정 ID",
+      "얼굴·음성 녹화", "기기 식별자", "IP 주소", "정확한 생년월일"
+    ],
+    "collected": [
+      "익명 참가자 ID", "세션 ID", "시드", "프로필 버전",
+      "관측 항목별 값", "시작·종료 시각(분 단위)", "누락 사유 코드"
+    ],
+    "linkageTable": "익명 ID와 실제 사람을 잇는 대장은 만들지 않는다. 필요하면 저장소 밖의 승인된 위치에서 별도 관리하고 공개 기록과 분리한다.",
+    "retention": {
+      "location": "저장소 밖 승인된 보관 위치",
+      "periodDays": null,
+      "periodDecision": "승인 후 결정. 임의로 정하지 않는다.",
+      "deletionRequest": "참가자가 익명 ID로 삭제를 요청할 수 있는 경로를 실행 전에 정한다.",
+      "publicRepositoryContents": "합성 예시만 저장소에 둔다. 실제 기록은 넣지 않는다."
+    },
+    "reidentificationGuards": [
+      "자유 서술 칸을 두지 않는다. 서술이 필요하면 사전 정의한 코드로 받는다.",
+      "시각은 분 단위로 절삭한다.",
+      "소규모 집단에서 개별 식별이 가능한 조합(시각+위치+직무)을 공개 결과에 함께 싣지 않는다."
+    ]
+  },
+  "missingDataCodes": {
+    "observed_absent": "관측했고 해당 행동이 일어나지 않았다. 0이 아니라 '없음'이다.",
+    "not_collected": "관측 자체를 하지 못했다. 값을 추정하지 않는다.",
+    "record_lost": "기록이 손실됐다. 다른 값으로 대체하지 않는다.",
+    "out_of_scope": "이 세션의 범위 밖이라 측정 대상이 아니다."
+  },
+  "questions": [
+    {
+      "questionId": "Q1",
+      "text": "사건 발생 후 플레이어가 상황을 관측하기까지 얼마나 걸리는가?",
+      "task": "평상시 순회 중 불시 사건이 발생한 세션을 끝까지 진행한다.",
+      "observation": {
+        "source": "artifact:72:flow-fixtures:candidate",
+        "flowId": "TEAM-04-F01",
+        "stages": ["onset", "observe"],
+        "measure": "onset 시각과 observe 시각의 차이(초)"
+      },
+      "confounders": [
+        "발생 시점의 플레이어 순회 위치와 사건 위치의 거리",
+        "시드에 따른 조용한 구간 길이(40~85초)",
+        "직무별 첫 설비가 달라 접근 경로가 다름"
+      ],
+      "missingDataRule": "관측 없이 세션이 끝나면 `observed_absent`. 기록이 끊기면 `record_lost`. 추정값을 넣지 않는다.",
+      "deferred": ["참가자 수", "반복 횟수", "비교 기준값"]
+    },
+    {
+      "questionId": "Q2",
+      "text": "관측 전에 대응을 시도했을 때 선행 조건 거부가 실제로 작동하는가?",
+      "task": "관측 전 설비 조작과 인솔을 시도한다.",
+      "observation": {
+        "source": "artifact:72:flow-fixtures:candidate",
+        "flowId": "TEAM-04-F04",
+        "stages": ["act"],
+        "measure": "`rejected_precondition` 발생 횟수와 그때 사건 위치·유형이 노출됐는지 여부"
+      },
+      "confounders": [
+        "플레이어가 이전 세션에서 사건 위치를 기억할 수 있음",
+        "직무마다 첫 설비가 달라 시도 대상이 다름"
+      ],
+      "missingDataRule": "시도 자체가 없었으면 `observed_absent`. 노출 여부를 확인하지 못했으면 `not_collected`.",
+      "deferred": ["반복 세션 간 학습 효과의 통제 방법"]
+    },
+    {
+      "questionId": "Q3",
+      "text": "인솔한 대상이 실제로 집결까지 도달하는가?",
+      "task": "경로를 선택하고 대상을 직접 인솔해 집결 단말에서 확인한다.",
+      "observation": {
+        "source": "artifact:72:flow-fixtures:candidate",
+        "flowId": "TEAM-04-F05",
+        "stages": ["escort", "assemble"],
+        "measure": "집결 단말 확인 인원 ÷ 대상 인원"
+      },
+      "confounders": [
+        "대상 인원이 2~6명으로 변동",
+        "선택 통로가 고장 구역이면 경로가 달라짐",
+        "통로 양면 통과 판정이 접근만으로는 성립하지 않음"
+      ],
+      "missingDataRule": "집결 단계 전 세션이 끝나면 `not_collected`. 도착하지 않은 인원을 0으로 적되 미도착 사유는 별도 코드로 남긴다.",
+      "deferred": ["성공으로 볼 최소 비율", "효과 크기"]
+    },
+    {
+      "questionId": "Q4",
+      "text": "플레이어가 복기 기록을 실제로 사용하는가?",
+      "task": "세션 중 또는 종료 후 대응 기록을 연다.",
+      "observation": {
+        "source": "artifact:72:flow-fixtures:candidate",
+        "flowId": "TEAM-04-F02",
+        "stages": ["observe", "resume"],
+        "measure": "대응 기록 열람 횟수와 열람 시점"
+      },
+      "confounders": [
+        "일시정지가 복기 외 목적(휴식)으로도 쓰임",
+        "관찰자가 옆에 있으면 행동이 달라질 수 있음"
+      ],
+      "missingDataRule": "열람 여부를 관측하지 못하면 `not_collected`. 0회와 미관측을 구분한다.",
+      "deferred": ["열람과 수행 변화의 연관을 볼 수 있는 설계"]
+    }
+  ],
+  "records": [
+    {
+      "recordId": "R-01",
+      "participantId": "P-01",
+      "sessionId": "S-2026-09-13-01",
+      "kind": "success",
+      "seed": "synthetic-seed-01",
+      "profileVersion": "foundation-2",
+      "startedAt": "2026-09-13T10:00Z",
+      "endedAt": "2026-09-13T10:18Z",
+      "values": {
+        "Q1": {"value": 22, "unit": "seconds"},
+        "Q2": {"value": 1, "unit": "count", "note": "거부 1회, 위치·유형 노출 없음"},
+        "Q3": {"value": "4/4", "unit": "ratio"},
+        "Q4": {"value": 2, "unit": "count"}
+      },
+      "outcome": "completed",
+      "notAccepted": ["한 세션의 성공을 현장 대응 역량 향상으로 읽지 않는다."]
+    },
+    {
+      "recordId": "R-02",
+      "participantId": "P-02",
+      "sessionId": "S-2026-09-13-02",
+      "kind": "failure",
+      "seed": "synthetic-seed-02",
+      "profileVersion": "foundation-2",
+      "startedAt": "2026-09-13T11:00Z",
+      "endedAt": "2026-09-13T11:12Z",
+      "values": {
+        "Q1": {"value": 41, "unit": "seconds"},
+        "Q2": {"value": 0, "unit": "count", "missing": "observed_absent", "note": "관측 전 시도 자체가 없었다"},
+        "Q3": {"value": "2/5", "unit": "ratio", "note": "통로 앞 접근만 하고 양면을 통과하지 않아 미완료"},
+        "Q4": {"value": 0, "unit": "count"}
+      },
+      "outcome": "incomplete_assembly",
+      "notAccepted": ["실패를 참가자 개인의 역량 판정으로 쓰지 않는다."]
+    },
+    {
+      "recordId": "R-03",
+      "participantId": "P-03",
+      "sessionId": "S-2026-09-13-03",
+      "kind": "observation_missing",
+      "seed": "synthetic-seed-03",
+      "profileVersion": "foundation-2",
+      "startedAt": "2026-09-13T13:00Z",
+      "endedAt": "2026-09-13T13:09Z",
+      "values": {
+        "Q1": {"value": null, "missing": "record_lost", "note": "세션 기록 파일이 중간에 끊겼다"},
+        "Q2": {"value": null, "missing": "not_collected", "note": "노출 여부를 확인할 관측자가 없었다"},
+        "Q3": {"value": null, "missing": "not_collected"},
+        "Q4": {"value": null, "missing": "out_of_scope", "note": "복기 화면을 제공하지 않는 축약 세션이었다"}
+      },
+      "outcome": "not_evaluable",
+      "notAccepted": [
+        "누락된 값을 0이나 평균으로 채우지 않는다.",
+        "이 세션을 성공·실패 어느 쪽으로도 집계하지 않는다."
+      ]
+    }
+  ],
+  "refusedRecords": [
+    {
+      "caseId": "TEAM-26-N01",
+      "attempt": "`participantId`에 실명 '홍길동'과 연락처를 적고 익명 ID로 취급했다.",
+      "expected": "refused",
+      "reason": "실명·연락처는 수집 대상이 아니다. 익명 ID는 `P-NN` 형식이며 사람을 식별하는 값을 담지 않는다.",
+      "guard": "idPattern과 neverCollected 목록으로 거부한다."
+    },
+    {
+      "caseId": "TEAM-26-N02",
+      "attempt": "미수집(`not_collected`) 항목을 0으로 바꾸고 '관측 지연이 절반으로 줄어 효과가 있었다'고 기재했다.",
+      "expected": "refused",
+      "reason": "미수집을 값으로 대체하지 않는다. 효과 크기·비교 결론은 이 양식에서 만들지 않는다.",
+      "guard": "missingDataCodes와 deferredDecisions로 거부한다."
+    }
+  ],
+  "deferredDecisions": [
+    {"item": "참가자 수", "value": null, "decidedBy": "승인 후"},
+    {"item": "효과 크기", "value": null, "decidedBy": "승인 후"},
+    {"item": "세션 반복 횟수", "value": null, "decidedBy": "승인 후"},
+    {"item": "보관 기간", "value": null, "decidedBy": "승인 후"},
+    {"item": "기관 협조·현장 일정", "value": null, "decidedBy": "이 이슈 범위 밖"}
+  ],
+  "notAccepted": [
+    "실제 참가자 실험을 수행하지 않았다. 위 기록은 전부 합성이다.",
+    "공식 점수·이수 판정·효과 크기를 만들지 않는다.",
+    "게임 내 완주를 현장 대응 역량 향상의 증거로 쓰지 않는다.",
+    "기관 직원 대상 평가나 현장 훈련 일정을 가정하지 않는다."
+  ],
+  "limits": [
+    "관측 가능 행동의 출처인 #72 fixture는 아직 후보이며 PM 수용 전이다. 병합 시 해시가 바뀌면 대조를 다시 해야 한다.",
+    "candidate 단계 읽기 전용 참고 2종이 미게시라 상태별 관찰·미검증 범위의 원문 대조를 수행하지 못했다.",
+    "범위는 legacy 단일 조작자다. FMP 20/100/2 목표의 평가 설계가 아니다."
+  ]
+}
