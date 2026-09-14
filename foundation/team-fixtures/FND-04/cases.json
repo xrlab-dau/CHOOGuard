@@ -1,0 +1,518 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "FND-04-recipe-cases",
+  "issue": 58,
+  "workId": "FND-04",
+  "phase": "candidate",
+  "classification": "PUBLIC_SYNTHETIC",
+  "generatedAt": "2026-09-14",
+  "baseCommit": "6329e71fe908f84122812bd570f041681071eb8f",
+  "purpose": "합성 metadata만으로 자산 교체·출처 recipe를 검증하는 계약의 정상·누락·불일치 예시. 통과는 scene/collision/runtime 수용이 아니다.",
+  "schemaRef": "foundation/team-fixtures/FND-04/recipe.schema.json",
+  "validatorRef": "scripts/team/FND-04/validate_recipe.py",
+  "refusalCodes": {
+    "RECIPE_SCHEMA_INVALID": "스키마가 선언하지 않은 필드이거나 타입·형식이 어긋난다.",
+    "RECIPE_SCHEMA_UNSUPPORTED_VERSION": "지원하지 않는 schemaVersion이다. 조용히 이관하지 않는다.",
+    "RECIPE_SOURCE_MISSING": "출처 참조나 입력 digest, 생성기가 비어 있다.",
+    "RECIPE_SOURCE_MISMATCH": "provenance의 출처와 scope가 가리키는 출처가 다르다.",
+    "RECIPE_TARGET_MISSING": "교체 대상 자산 ID가 없다.",
+    "RECIPE_TARGET_MISMATCH": "교체 대상과 scope 대상 자산이 다르다.",
+    "RECIPE_OUTPUT_DIGEST_MISSING": "출력 digest가 없다. 교체는 digest 없이 수용될 수 없다.",
+    "RECIPE_DIGEST_MISMATCH": "hash 형식이 sha256이 아니거나 결속된 digest와 어긋난다.",
+    "RECIPE_DUPLICATE_INPUT": "같은 입력 경로가 두 번 선언됐다.",
+    "RECIPE_UNITS_MISSING": "단위·축 계약이 없다.",
+    "RECIPE_UNITS_MISMATCH": "단위·축·scale이 동결된 장면 계약과 다르다.",
+    "RECIPE_LICENSE_MISSING": "license·attribution이 없다.",
+    "RECIPE_LICENSE_MISMATCH": "재사용 미확인 license로 재사용 권한을 주장했다.",
+    "RECIPE_VERSION_MISSING": "자산 버전·revision이 없다.",
+    "RECIPE_CONTRACT_MUTATION": "좌표·anchor·collision 동결 계약을 바꾸거나 교체 경계에 넣으려 했다.",
+    "RECIPE_CONTRACT_SET_INCOMPLETE": "동결 계약 3종이 read-only로 모두 선언되지 않았다.",
+    "RECIPE_CV_EXECUTION_DECLARED": "recipe가 CV·사진측량 실행을 켠다.",
+    "RECIPE_EXTERNAL_SERVICE_DECLARED": "외부·생성형 서비스가 교체 바이트를 만들거나 승인한다.",
+    "RECIPE_ACCEPTANCE_OVERCLAIM": "recipe 통과를 scene/collision/runtime 수용으로 서술했다.",
+    "RECIPE_NON_CLAIMS_MISSING": "무엇을 확립하지 않는지에 대한 비주장이 없다.",
+    "RECIPE_PATH_INVALID": "결속 경로가 상대 경로 규칙을 벗어난다.",
+    "RECIPE_FILE_MISSING": "결속된 파일이 검증 root에 없다.",
+    "RECIPE_CASE_INVALID": "사례가 계약대로 동작하지 않았다.",
+    "RECIPE_SUITE_INVALID": "사례 묶음 자체가 형식을 어겼다."
+  },
+  "digestPolicy": "scope·digests·inputs의 sha256은 baseCommit의 실제 파일 바이트에서 계산한 값이다(Assets/CHOOguardArt/Blender/*.fbx 포함). --verify-files 로 대조하며, 이후 개정이 생기면 FILE_MISSING이나 DIGEST_MISMATCH로 드러나는 것이 계약의 정상 동작이다.",
+  "caseExpansion": {
+    "basedOn": "다른 사례 ID를 원본으로 deep copy 한다.",
+    "set": "점 표기 경로에 값을 설정한다. 리스트는 숫자 세그먼트를 쓴다.",
+    "remove": "점 표기 경로의 키 또는 리스트 항목을 제거한다.",
+    "note": "확장은 원본 사례를 변경하지 않으며, 확장 실패는 사례 실패로 처리된다."
+  },
+  "validCases": [
+    {
+      "caseId": "FND-04-V-01",
+      "note": "SituationPanel 자산 교체 recipe. 출처·버전·hash·단위·교체 경계가 모두 결속됐다.",
+      "recipe": {
+        "schemaVersion": 1,
+        "recipeId": "FND-04-V-01",
+        "classification": "PUBLIC_SYNTHETIC",
+        "scope": {
+          "source": {
+            "ref": "foundation/art/object-references.json",
+            "availability": "published",
+            "sha256": "e2530ec00bbc16ba24e475269343651616f8fdae8ecf56fc5ccaeec250a90559"
+          },
+          "recipe": {
+            "path": "foundation/team-fixtures/FND-04/recipe.schema.json",
+            "sha256": "02a2256ec75eb743380eea8c67aace83af9a8bdec85b5686c5912ef6c72ec803"
+          },
+          "target": {
+            "assetId": "SituationPanel",
+            "manifestPath": "foundation/art/asset-manifest.json",
+            "manifestSha256": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242"
+          }
+        },
+        "provenance": {
+          "sourceRef": "foundation/art/object-references.json",
+          "sourceKind": "synthetic_metadata",
+          "generator": "chooguard-synthetic-blender-kit",
+          "generatedAt": "2026-09-14",
+          "license": {
+            "id": "repository-authoring-policy-no-reuse-license-claimed",
+            "reusePermitted": false,
+            "attribution": "CHOOGuard synthetic kit; reference photographs observed for form only, never copied"
+          }
+        },
+        "version": {
+          "assetVersion": 3,
+          "revision": "r1",
+          "supersedes": null,
+          "supersededBy": null
+        },
+        "digests": {
+          "algorithm": "sha256",
+          "source": "e2530ec00bbc16ba24e475269343651616f8fdae8ecf56fc5ccaeec250a90559",
+          "output": "b3b20c3bb10673101a5b8d6ee674890f009746d6c7c3a788e753c76ab2b1bc92",
+          "inputs": [
+            {
+              "path": "scripts/art/station_equipment.py",
+              "sha256": "e5a6685d8ae96a2a74a9bcd1aba6890a04efa335803bdb0fc0b094bac658fb8d"
+            }
+          ]
+        },
+        "units": {
+          "system": "metres",
+          "lengthUnit": "m",
+          "upAxis": "+Y",
+          "forwardAxis": "+Z",
+          "coordinateAdapter": "Unity(x,y,z) to Blender(-x,-z,y)",
+          "scaleToMetres": 1
+        },
+        "replacement": {
+          "targetAssetId": "SituationPanel",
+          "boundary": {
+            "included": [
+              "mesh",
+              "components",
+              "pivot",
+              "boundsUnity",
+              "materialNames",
+              "triangles"
+            ],
+            "excluded": [
+              "collisionBoxes",
+              "anchors",
+              "coordinateAdapter"
+            ]
+          },
+          "inputs": [
+            {
+              "path": "scripts/art/station_equipment.py",
+              "sha256": "e5a6685d8ae96a2a74a9bcd1aba6890a04efa335803bdb0fc0b094bac658fb8d"
+            },
+            {
+              "path": "foundation/art/asset-manifest.json",
+              "sha256": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242"
+            }
+          ],
+          "outputs": [
+            {
+              "path": "Assets/CHOOguardArt/Blender/SituationPanel.fbx",
+              "sha256": "b3b20c3bb10673101a5b8d6ee674890f009746d6c7c3a788e753c76ab2b1bc92"
+            },
+            {
+              "path": "foundation/art/station-kit.blend",
+              "sha256": "b337e13aef58f7284972e905b7e674b105f732f5b4e0e818c0acc7e01bdccb0f"
+            }
+          ],
+          "runtimeAcceptance": false,
+          "sceneCollisionAcceptance": false
+        },
+        "contracts": {
+          "readOnly": [
+            "coordinateAdapter",
+            "anchors",
+            "collisionBoxes"
+          ],
+          "changed": [],
+          "writeAllowed": false
+        },
+        "execution": {
+          "cvExecution": false,
+          "externalServiceCalls": false,
+          "generativeService": null
+        },
+        "notAccepted": [
+          "이 recipe의 통과는 자산 메타데이터 일관성 판정일 뿐 scene·collision·runtime 수용이 아니다.",
+          "collision box·anchor·좌표 어댑터 계약은 기존 소유자가 동결하며 이 recipe가 바꾸지 않는다.",
+          "합성 형상은 실측·사진측량 결과가 아니며 부산역 실제 배치와 일치를 주장하지 않는다."
+        ]
+      }
+    },
+    {
+      "caseId": "FND-04-V-02",
+      "note": "FloorModule unit adapter 교체. 경계가 mesh·file로 좁고 revision이 최초 발행이다.",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "recipeId": "FND-04-V-02",
+        "scope.target.assetId": "FloorModule",
+        "provenance.sourceKind": "published_metadata",
+        "version": {
+          "assetVersion": 1,
+          "revision": "r0",
+          "supersedes": null,
+          "supersededBy": null
+        },
+        "digests.output": "8a19e0e43a5240af97be0a75d899453d1fb07bb5b362959db5ad817ae35d85d8",
+        "replacement.targetAssetId": "FloorModule",
+        "replacement.boundary.included": [
+          "mesh",
+          "file"
+        ],
+        "replacement.outputs": [
+          {
+            "path": "Assets/CHOOguardArt/Blender/FloorModule.fbx",
+            "sha256": "8a19e0e43a5240af97be0a75d899453d1fb07bb5b362959db5ad817ae35d85d8"
+          }
+        ],
+        "notAccepted": [
+          "unit adapter 교체는 물리·구조 연결을 확정하지 않는다.",
+          "collision·anchor·좌표 계약은 이 recipe가 소유하지 않는다."
+        ]
+      }
+    },
+    {
+      "caseId": "FND-04-V-03",
+      "note": "SituationPanel r2 개정. supersedes로 이전 revision을 밝히고 출력 digest는 그대로 유지한다.",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "recipeId": "FND-04-V-03",
+        "provenance.generatedAt": "2026-09-15",
+        "version": {
+          "assetVersion": 4,
+          "revision": "r2",
+          "supersedes": "SituationPanel@r1",
+          "supersededBy": null
+        },
+        "replacement.boundary.included": [
+          "boundsUnity",
+          "file"
+        ]
+      }
+    }
+  ],
+  "negativeCases": [
+    {
+      "caseId": "FND-04-N-01",
+      "defect": "scope.source.ref 누락",
+      "basedOn": "FND-04-V-01",
+      "remove": [
+        "scope.source.ref"
+      ],
+      "expectedCode": "RECIPE_SOURCE_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-02",
+      "defect": "provenance.sourceRef 누락",
+      "basedOn": "FND-04-V-01",
+      "remove": [
+        "provenance.sourceRef"
+      ],
+      "expectedCode": "RECIPE_SOURCE_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-03",
+      "defect": "digests.output 누락",
+      "basedOn": "FND-04-V-01",
+      "remove": [
+        "digests.output"
+      ],
+      "expectedCode": "RECIPE_OUTPUT_DIGEST_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-04",
+      "defect": "units 계약 누락",
+      "basedOn": "FND-04-V-01",
+      "remove": [
+        "units"
+      ],
+      "expectedCode": "RECIPE_UNITS_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-05",
+      "defect": "provenance.license 누락",
+      "basedOn": "FND-04-V-01",
+      "remove": [
+        "provenance.license"
+      ],
+      "expectedCode": "RECIPE_LICENSE_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-06",
+      "defect": "version 블록 누락",
+      "basedOn": "FND-04-V-01",
+      "remove": [
+        "version"
+      ],
+      "expectedCode": "RECIPE_VERSION_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-07",
+      "defect": "출력 digest 형식 불일치",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "digests.output": "sha256:b3b20c3bb10673101a5b8d6ee674890f009746d6c7c3a788e753c76ab2b1bc92"
+      },
+      "expectedCode": "RECIPE_DIGEST_MISMATCH"
+    },
+    {
+      "caseId": "FND-04-N-08",
+      "defect": "digests.source가 scope.source.sha256와 불일치",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "digests.source": "1111111111111111111111111111111111111111111111111111111111111111"
+      },
+      "expectedCode": "RECIPE_DIGEST_MISMATCH"
+    },
+    {
+      "caseId": "FND-04-N-09",
+      "defect": "단위계 불일치(feet)",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "units.system": "feet",
+        "units.lengthUnit": "ft"
+      },
+      "expectedCode": "RECIPE_UNITS_MISMATCH"
+    },
+    {
+      "caseId": "FND-04-N-10",
+      "defect": "up axis 불일치(-Y)",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "units.upAxis": "-Y"
+      },
+      "expectedCode": "RECIPE_UNITS_MISMATCH"
+    },
+    {
+      "caseId": "FND-04-N-11",
+      "defect": "대상 자산 ID 누락",
+      "basedOn": "FND-04-V-01",
+      "remove": [
+        "scope.target.assetId"
+      ],
+      "expectedCode": "RECIPE_TARGET_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-12",
+      "defect": "교체 대상과 scope 대상 불일치",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "replacement.targetAssetId": "Bench"
+      },
+      "expectedCode": "RECIPE_TARGET_MISMATCH"
+    },
+    {
+      "caseId": "FND-04-N-13",
+      "defect": "출처 참조 불일치",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "provenance.sourceRef": "foundation/art/other-metadata.json"
+      },
+      "expectedCode": "RECIPE_SOURCE_MISMATCH"
+    },
+    {
+      "caseId": "FND-04-N-14",
+      "defect": "재사용 미확인 license로 재사용 권한 주장",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "provenance.license.id": "unknown_no_reuse_license_confirmed",
+        "provenance.license.reusePermitted": true
+      },
+      "expectedCode": "RECIPE_LICENSE_MISMATCH"
+    },
+    {
+      "caseId": "FND-04-N-15",
+      "defect": "입력 digest 중복 선언",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "digests.inputs": [
+          {
+            "path": "scripts/art/station_equipment.py",
+            "sha256": "e5a6685d8ae96a2a74a9bcd1aba6890a04efa335803bdb0fc0b094bac658fb8d"
+          },
+          {
+            "path": "scripts/art/station_equipment.py",
+            "sha256": "e5a6685d8ae96a2a74a9bcd1aba6890a04efa335803bdb0fc0b094bac658fb8d"
+          }
+        ]
+      },
+      "expectedCode": "RECIPE_DUPLICATE_INPUT"
+    },
+    {
+      "caseId": "FND-04-N-16",
+      "defect": "collisionBoxes를 교체 경계 안으로 넣음",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "replacement.boundary.included": [
+          "mesh",
+          "collisionBoxes"
+        ]
+      },
+      "expectedCode": "RECIPE_CONTRACT_MUTATION"
+    },
+    {
+      "caseId": "FND-04-N-17",
+      "defect": "동결 계약을 제외 목록에서 뺌",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "replacement.boundary.excluded": [
+          "anchors",
+          "coordinateAdapter",
+          "worldIds"
+        ]
+      },
+      "expectedCode": "RECIPE_CONTRACT_MUTATION"
+    },
+    {
+      "caseId": "FND-04-N-18",
+      "defect": "collision 계약 변경 선언",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "contracts.changed": [
+          "collisionBoxes"
+        ]
+      },
+      "expectedCode": "RECIPE_CONTRACT_MUTATION"
+    },
+    {
+      "caseId": "FND-04-N-19",
+      "defect": "동결 계약 쓰기 허용",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "contracts.writeAllowed": true
+      },
+      "expectedCode": "RECIPE_CONTRACT_MUTATION"
+    },
+    {
+      "caseId": "FND-04-N-20",
+      "defect": "read-only 계약 집합 불완전",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "contracts.readOnly": [
+          "coordinateAdapter",
+          "anchors"
+        ]
+      },
+      "expectedCode": "RECIPE_CONTRACT_SET_INCOMPLETE"
+    },
+    {
+      "caseId": "FND-04-N-21",
+      "defect": "지원하지 않는 schemaVersion",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "schemaVersion": 2
+      },
+      "expectedCode": "RECIPE_SCHEMA_UNSUPPORTED_VERSION"
+    },
+    {
+      "caseId": "FND-04-N-22",
+      "defect": "CV 실행 선언",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "execution.cvExecution": true
+      },
+      "expectedCode": "RECIPE_CV_EXECUTION_DECLARED"
+    },
+    {
+      "caseId": "FND-04-N-23",
+      "defect": "외부 서비스 호출 선언",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "execution.externalServiceCalls": true
+      },
+      "expectedCode": "RECIPE_EXTERNAL_SERVICE_DECLARED"
+    },
+    {
+      "caseId": "FND-04-N-24",
+      "defect": "생성형 서비스 지정",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "execution.generativeService": "external-text-to-3d"
+      },
+      "expectedCode": "RECIPE_EXTERNAL_SERVICE_DECLARED"
+    },
+    {
+      "caseId": "FND-04-N-25",
+      "defect": "runtime 수용 주장",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "replacement.runtimeAcceptance": true
+      },
+      "expectedCode": "RECIPE_ACCEPTANCE_OVERCLAIM"
+    },
+    {
+      "caseId": "FND-04-N-26",
+      "defect": "scene·collision 수용 주장",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "replacement.sceneCollisionAcceptance": true
+      },
+      "expectedCode": "RECIPE_ACCEPTANCE_OVERCLAIM"
+    },
+    {
+      "caseId": "FND-04-N-27",
+      "defect": "비주장 문구에 수용 주장을 씀",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "notAccepted": [
+          "Verified and accepted for runtime use."
+        ]
+      },
+      "expectedCode": "RECIPE_ACCEPTANCE_OVERCLAIM"
+    },
+    {
+      "caseId": "FND-04-N-28",
+      "defect": "비주장 목록 비움",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "notAccepted": []
+      },
+      "expectedCode": "RECIPE_NON_CLAIMS_MISSING"
+    },
+    {
+      "caseId": "FND-04-N-29",
+      "defect": "계약에 없는 최상위 승인 필드 추가",
+      "basedOn": "FND-04-V-01",
+      "set": {
+        "approval": "granted"
+      },
+      "expectedCode": "RECIPE_SCHEMA_INVALID"
+    }
+  ],
+  "notAccepted": [
+    "이 fixture의 정상 사례 통과는 자산·scene·절차 수용이 아니다. 통과는 metadata 일관성 판정일 뿐이다.",
+    "negative 사례는 검증기가 결함을 nonzero로 거부하는지 확인하는 시험이며, 실제 자산 결함 목록이 아니다.",
+    "collision box·anchor·좌표 어댑터 계약은 이 fixture가 정의하지 않으며 동결된 기존 계약을 인용만 한다.",
+    "여기의 sha256은 baseCommit 6329e71의 파일 바이트 결속값이며, 개정 후에는 불일치로 드러나는 것이 정상이다."
+  ],
+  "limits": [
+    "합성 metadata 예시이며 실제 사진·geometry 원본이나 CV 실행을 포함하지 않는다.",
+    "외부 생성형 서비스 호출은 계약상 금지되어 있고, 이 fixture는 그 금지를 선언만 한다.",
+    "recipe 통과 여부는 Unity 임포트·시각 검수·현업 수용을 대신하지 않는다."
+  ]
+}

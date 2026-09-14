@@ -1,0 +1,464 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xrlab-dau/CHOOGuard/blob/develop/foundation/team-fixtures/FND-04/recipe.schema.json",
+  "title": "FND-04 synthetic asset replacement and provenance recipe",
+  "description": "Portable, versioned contract for replacing a synthetic Blender asset and proving its provenance from metadata alone. A recipe declares the exact source/recipe/target scope it is digest-bound to, the unit and axis system it produces, the replacement input/output boundary, the frozen coordinate/anchor/collision contracts it may not touch, and the non-claims it does not make. Passing this contract is not scene, collision, runtime or facility acceptance.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "recipeId",
+    "classification",
+    "scope",
+    "provenance",
+    "version",
+    "digests",
+    "units",
+    "replacement",
+    "contracts",
+    "execution",
+    "notAccepted"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1,
+      "description": "Versioned schema identifier. An unsupported value must be refused, never migrated silently."
+    },
+    "recipeId": {
+      "type": "string",
+      "pattern": "^FND-04-[A-Z0-9-]+$"
+    },
+    "classification": {
+      "enum": [
+        "PUBLIC_SYNTHETIC",
+        "INTERNAL_SYNTHETIC"
+      ]
+    },
+    "scope": {
+      "$ref": "#/$defs/scope"
+    },
+    "provenance": {
+      "$ref": "#/$defs/provenance"
+    },
+    "version": {
+      "$ref": "#/$defs/version"
+    },
+    "digests": {
+      "$ref": "#/$defs/digests"
+    },
+    "units": {
+      "$ref": "#/$defs/units"
+    },
+    "replacement": {
+      "$ref": "#/$defs/replacement"
+    },
+    "contracts": {
+      "$ref": "#/$defs/contracts"
+    },
+    "execution": {
+      "$ref": "#/$defs/execution"
+    },
+    "notAccepted": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "description": "Explicit non-claims. A recipe may never assert scene, collision, runtime or facility acceptance."
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "fileEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "scopeEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "recipe",
+        "target"
+      ],
+      "properties": {
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "ref",
+            "availability",
+            "sha256"
+          ],
+          "properties": {
+            "ref": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Required provenance reference: the exact metadata document this replacement derives from."
+            },
+            "availability": {
+              "enum": [
+                "published",
+                "local_unpublished",
+                "external"
+              ]
+            },
+            "sha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        },
+        "recipe": {
+          "$ref": "#/$defs/scopeEntry",
+          "description": "The schema revision these cases were authored against."
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "assetId",
+            "manifestPath",
+            "manifestSha256"
+          ],
+          "properties": {
+            "assetId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "manifestPath": {
+              "type": "string",
+              "minLength": 1
+            },
+            "manifestSha256": {
+              "$ref": "#/$defs/sha256"
+            }
+          }
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sourceRef",
+        "sourceKind",
+        "generator",
+        "generatedAt",
+        "license"
+      ],
+      "properties": {
+        "sourceRef": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Must equal scope.source.ref."
+        },
+        "sourceKind": {
+          "enum": [
+            "synthetic_metadata",
+            "published_metadata",
+            "local_unpublished_metadata"
+          ]
+        },
+        "generator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "generatedAt": {
+          "type": "string",
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+        },
+        "license": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "reusePermitted",
+            "attribution"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "minLength": 1
+            },
+            "reusePermitted": {
+              "type": "boolean"
+            },
+            "attribution": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "version": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "assetVersion",
+        "revision",
+        "supersedes",
+        "supersededBy"
+      ],
+      "properties": {
+        "assetVersion": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supersedes": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "supersededBy": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "source",
+        "output",
+        "inputs"
+      ],
+      "properties": {
+        "algorithm": {
+          "const": "sha256"
+        },
+        "source": {
+          "$ref": "#/$defs/sha256"
+        },
+        "output": {
+          "$ref": "#/$defs/sha256",
+          "description": "Required output digest. A recipe without an output digest cannot be accepted."
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/fileEntry"
+          }
+        }
+      }
+    },
+    "units": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "system",
+        "lengthUnit",
+        "upAxis",
+        "forwardAxis",
+        "coordinateAdapter",
+        "scaleToMetres"
+      ],
+      "properties": {
+        "system": {
+          "const": "metres"
+        },
+        "lengthUnit": {
+          "const": "m"
+        },
+        "upAxis": {
+          "const": "+Y"
+        },
+        "forwardAxis": {
+          "const": "+Z"
+        },
+        "coordinateAdapter": {
+          "const": "Unity(x,y,z) to Blender(-x,-z,y)"
+        },
+        "scaleToMetres": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 1
+        }
+      },
+      "description": "Mirrors the frozen unit/axis contract of foundation/art/asset-manifest.json."
+    },
+    "replacement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "targetAssetId",
+        "boundary",
+        "inputs",
+        "outputs",
+        "runtimeAcceptance",
+        "sceneCollisionAcceptance"
+      ],
+      "properties": {
+        "targetAssetId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "boundary": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "included",
+            "excluded"
+          ],
+          "properties": {
+            "included": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "mesh",
+                  "components",
+                  "pivot",
+                  "boundsUnity",
+                  "materialNames",
+                  "triangles",
+                  "file"
+                ]
+              }
+            },
+            "excluded": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "enum": [
+                  "collisionBoxes",
+                  "anchors",
+                  "coordinateAdapter",
+                  "worldIds",
+                  "questState",
+                  "sceneInventory"
+                ]
+              }
+            }
+          }
+        },
+        "inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/fileEntry"
+          }
+        },
+        "outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/fileEntry"
+          }
+        },
+        "runtimeAcceptance": {
+          "const": false,
+          "description": "A recipe can never grant runtime acceptance."
+        },
+        "sceneCollisionAcceptance": {
+          "const": false,
+          "description": "A recipe can never grant scene or collision acceptance."
+        }
+      }
+    },
+    "contracts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "readOnly",
+        "changed",
+        "writeAllowed"
+      ],
+      "properties": {
+        "readOnly": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "coordinateAdapter",
+              "anchors",
+              "collisionBoxes"
+            ]
+          },
+          "description": "Frozen contract set. All three must be present and none may be dropped."
+        },
+        "changed": {
+          "type": "array",
+          "maxItems": 0,
+          "items": {
+            "type": "string"
+          },
+          "description": "Any declared change to a frozen contract refuses the recipe."
+        },
+        "writeAllowed": {
+          "const": false
+        }
+      }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cvExecution",
+        "externalServiceCalls",
+        "generativeService"
+      ],
+      "properties": {
+        "cvExecution": {
+          "const": false,
+          "description": "No photogrammetry/CV runner is re-enabled by a recipe."
+        },
+        "externalServiceCalls": {
+          "const": false
+        },
+        "generativeService": {
+          "type": "null",
+          "description": "No external generative service may produce or approve replacement bytes."
+        }
+      }
+    }
+  }
+}
