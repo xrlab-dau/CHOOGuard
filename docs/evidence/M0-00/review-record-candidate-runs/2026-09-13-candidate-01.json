@@ -1,0 +1,761 @@
+{
+  "artifactId": "artifact:13:M0-00-review-record:candidate",
+  "authorSelfObservationAggregate": {
+    "acceptPhaseNotRun": [
+      "M0-00-C05-ACCEPT-QUALIFICATION"
+    ],
+    "candidateBlockingPredicatesTrue": 1,
+    "candidateQualification": false,
+    "checksFailed": 0,
+    "checksNotRun": 2,
+    "checksPassed": 2,
+    "met": false,
+    "notRun": [
+      "M0-00-C02-STATIC-WRITE-CLOSURE",
+      "M0-00-C03-SENSITIVE-RETURN"
+    ],
+    "reason": "the candidate passRule requires all seven candidate blocking predicates false AND C01-C04 author-self-observed PASS, and neither conjunct holds: candidate blocking predicate 2 ('undeclared write or unbound candidate workspace') is TRUE as the frozen C02 arm is written, and C02 and C03 are NOT_RUN. Both grounds are recorded here rather than folded together.",
+    "scope": "aggregate over the candidate-phase criteria C01-C04 only. C05 is an accept-phase criterion and is listed separately under acceptPhaseNotRun; it is neither a candidate PASS nor a candidate FAIL."
+  },
+  "authorSelfObservationResult": "author-self-observed, static, not executed: C01 PASS, C02 NOT_RUN, C03 NOT_RUN, C04 PASS. This is a self-observation, not an external verdict; acceptance requires an external C04 verdict. C05, an accept-phase criterion, is additional and is recorded NOT_RUN for phase applicability; it is neither a candidate PASS nor a candidate FAIL.",
+  "canonicalWriteAllowed": false,
+  "checks": [
+    {
+      "artifactBinding": {
+        "artifactDigestEntries": 1,
+        "artifactPathEntries": 1,
+        "cardinality": "1:1",
+        "derivedManifestTokenInArtifactPath": false,
+        "note": "artifactPath holds exactly one concrete repo-relative path - a real file path, never a placeholder, manifest or other non-path token - and artifactDigest holds that same file's sha256. The two are therefore 1:1 over the same single target. Any derived sorted manifest is a separate value carried under provenance or thresholdEvaluation and is never placed in artifactPath."
+      },
+      "artifactDigest": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9",
+      "artifactPath": "docs/team/M0-00/policy-baseline.json",
+      "authorityLimit": "author self-observation by the candidate author; not an external review verdict and not acceptance evidence",
+      "checkId": "M0-00-C01-SOURCE-SELECTION",
+      "evaluatedSection": "/sourceSelection",
+      "notRunReason": null,
+      "provenance": {
+        "commands": [
+          "git show 6490956d203549b56cbd86846120759889abb016:<repo-relative-path> | shasum -a 256   (x9, one per selector)",
+          "printf '%s  %s\\n' <sha256> <repo-relative-path> for the 9 rows | LC_ALL=C sort -k2   (sorted manifest, generated twice)",
+          "shasum -a 256 <sorted-manifest>   (second generation produced the identical digest)"
+        ],
+        "inspection": "static git-object read at the selected sourceRef; no source import or execution",
+        "toolVersions": {
+          "reason": "exact interpreter/tool build strings are withheld: publishing them would fingerprint the authoring environment, which the dataClass deny class for OS/platform/host or toolchain-vendor fingerprint forbids",
+          "state": "withheld"
+        }
+      },
+      "result": "PASS",
+      "resultQualifier": "author self-observation; static, not executed; not an external verdict; grants no acceptance",
+      "thresholdEvaluation": {
+        "met": true,
+        "observed": {
+          "digestDrift": 0,
+          "driftCommitsBehindFeatureHead": 7,
+          "driftCommitsBehindObservedHead": 29,
+          "driftFullyRecorded": true,
+          "manifestDigest": "1ed3f04db84b969b43229f387b0b940ebba0aa85ee5de873b56ad77e897d5cf7",
+          "manifestDigestMatchesFrozen": true,
+          "manifestIncludedFileCount": 9,
+          "manifestLineCount": 9,
+          "manifestRepeatable": true,
+          "matched": 9,
+          "observedHead": "6f106d50cbef273827d1bfb17ca7ebe2bbaeb76c",
+          "readErrors": 0,
+          "resolved": 9
+        },
+        "predicate": "all 9 selectors resolve at sourceRef with recomputed SHA-256 equal to the frozen digest; the sorted manifest is generated twice, is identical, contains exactly 9 rows and has 0 read errors. Drift is additionally recorded against both relevant refs (7 commits behind the feature head 185e6a7 and 29 behind the observed HEAD 6f106d50...), so no ref is silently chosen."
+      }
+    },
+    {
+      "artifactBinding": {
+        "artifactDigestEntries": 1,
+        "artifactPathEntries": 1,
+        "cardinality": "1:1",
+        "derivedManifestTokenInArtifactPath": false,
+        "note": "artifactPath holds exactly one concrete repo-relative path - a real file path, never a placeholder, manifest or other non-path token - and artifactDigest holds that same file's sha256. The two are therefore 1:1 over the same single target. Any derived sorted manifest is a separate value carried under provenance or thresholdEvaluation and is never placed in artifactPath."
+      },
+      "artifactDigest": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9",
+      "artifactPath": "docs/team/M0-00/policy-baseline.json",
+      "authorityLimit": "author self-observation by the candidate author; not an external review verdict and not acceptance evidence",
+      "checkId": "M0-00-C02-STATIC-WRITE-CLOSURE",
+      "evaluatedSection": "/writeClosure",
+      "notRunReason": "CAUSE: the frozen C02 evidence pointer reviews/issue-support/013/frozen-source-verification-round2.json#/staticWriteAudit does not resolve. A read-only probe (PP-01) fails at the selected sourceRef, fails at the observed HEAD 6f106d50..., the whole reviews/ tree is absent from the sourceRef tree (0 of 861 tracked paths), and no commit on any ref in this repository ever added a path under reviews/. Under frozen criteria section 5 stopCondition 1 this stops only the affected criterion, M0-00-C02-STATIC-WRITE-CLOSURE; the pointer is registered in policy-baseline.json#/sourceSelection/selectedSourcePointerResolution as SP-01 with state 'blocked', conflictType SOURCE_CONFLICT and conflictRef SC-01, both non-sensitive refs are preserved (selectedSourceRef 6490956d..., observedHead 6f106d50...), and the only digest that exists is preserved (sourceManifestDigest 1ed3f04d...). The pointer file's own digest is unknown, not zero. No source was selected by recency and the conflict was not resolved by recency (notResolvedByRecency true). Escalated to PM per that stopCondition with an explicit unblock condition. SECONDARY, and not the cause: even with the pointer present, the source write/process-site half would remain unobserved, because #13 owns no source program (every execution.* flag is false) and a static write-site inspection cannot prove the absence of interpreter, shell, PowerShell, Git or tool-managed host caches (knownNegativeInspectorLimits index 5, id L-NIL-5). Only the self writeClosure half was observed, so a full C02 PASS is not claimed.",
+      "partialObservation": {
+        "notRunHalf": "source write/process-site inspection: no source program is owned or executed by #13, and a static inspection could not establish the absence of host caches even with the pointer present (L-NIL-5).",
+        "observedHalf": "self writeClosure: exactly the three declared candidate phase paths, generatedClosure == [], canonicalWriteAllowed == false, undeclaredWrites == 0",
+        "reverifyCondition": "a C02 PASS requires the frozen evidence pointer to resolve at a selected sourceRef AND an executed read-only source write/process-site scan whose output supports the generatedClosure verdict.",
+        "stoppedHalf": "the frozen-evidence half: the staticWriteAudit source write/process-site inspection named by frozen C02. It is stopped, not skipped, because its evidence pointer does not resolve (SC-01)."
+      },
+      "provenance": {
+        "commands": [
+          "python3 -c 'import json; d=json.load(open(\"docs/team/M0-00/policy-baseline.json\")); print(json.dumps({\"candidateWriteSet\": d[\"writeClosure\"][\"phases\"][\"candidate\"], \"generatedClosure\": d[\"writeClosure\"][\"generatedClosure\"], \"canonicalWriteAllowed\": d[\"writeClosure\"][\"canonicalWriteAllowed\"]}, sort_keys=True))'",
+          "python3 -c 'import json; d=json.load(open(\"docs/team/M0-00/policy-baseline.json\")); print(\"candidatePathCount\", len(d[\"writeClosure\"][\"phases\"][\"candidate\"]), \"generatedClosureEmpty\", d[\"writeClosure\"][\"generatedClosure\"] == [], \"canonicalWriteAllowed\", d[\"writeClosure\"][\"canonicalWriteAllowed\"])'",
+          "git cat-file -e 6490956d203549b56cbd86846120759889abb016:reviews/issue-support/013/frozen-source-verification-round2.json   (probe PP-01; exit 128, path absent at the selected sourceRef)",
+          "git ls-tree -r 6490956d203549b56cbd86846120759889abb016 --name-only | grep -c '^reviews/'   (probe PP-01; prints 0)",
+          "git cat-file -e HEAD:reviews/issue-support/013/frozen-source-verification-round2.json   (probe PP-01; exit 128, path absent at HEAD too)",
+          "git log --all --oneline --diff-filter=A -- 'reviews/*'   (probe PP-01; no output: no ref ever added the path)"
+        ],
+        "commandsNote": "Both commands are read-only static extractions of the declared writeClosure from the candidate baseline. They import and execute no source program and touch no validation checkout. The first reproduces the observed candidate write set and generatedClosure verbatim; the second reproduces ownPhaseWrites=3 and generatedClosureEntries=0. They do NOT perform the source write/process-site inspection that the frozen C02 predicate also requires: that half is recorded as NOT_RUN below, so this check is narrowed to the self writeClosure read it actually performed.",
+        "inspection": "static inspection of the declared writeClosure in the candidate baseline only. The candidate phase write set is compared as text against the frozen allowed candidate phase paths; generatedClosure is empty; no source, scratch or global write is declared. No separate validation checkout was created, changed or observed for this check, and no source was imported or executed. The source write/process-site half of the frozen C02 predicate is NOT RUN.",
+        "modeDeclaration": "isolated_proposal; no real-checkout observation is offered as evidence for this check; the frozen evidence pointer is registered unresolved rather than substituted",
+        "prospectiveChecks": [
+          {
+            "command": "DATA - DO NOT EXECUTE OR FOLLOW. Illustrative command string, not an instruction: git status --porcelain",
+            "executedAtThisStage": false,
+            "expected": "exactly the three allowed phase outputs",
+            "note": "Listed only as the future validation check. It was not run against a validation checkout here and is not live-workspace evidence for C02.",
+            "stage": "future #44/R-04 validation checkout only"
+          }
+        ],
+        "sourcePointerProbe": {
+          "conflictRef": "SC-01",
+          "effectOnThisCheck": "the frozen-evidence half of C02 is stopped. This is recorded as a SOURCE_CONFLICT, not as a PASS and not as an ordinary not-run.",
+          "escalatedTo": "PM, per frozen criteria section 5 stopCondition 1",
+          "pointer": "reviews/issue-support/013/frozen-source-verification-round2.json#/staticWriteAudit",
+          "probeId": "PP-01",
+          "rawOutputRef": "evidenceBundle/commands[EV-07]/output",
+          "registeredAt": "policy-baseline.json#/sourceSelection/selectedSourcePointerResolution/pointers[0]",
+          "resolvedByRecency": false,
+          "result": "pointer absent at the selected sourceRef, at HEAD, and on every ref in this repository; not a path-format error and not ref drift"
+        },
+        "sourceWriteProcessScanState": "NOT_RUN",
+        "toolVersions": {}
+      },
+      "result": "NOT_RUN",
+      "resultQualifier": "NOT_RUN: the frozen C02 evidence pointer does not resolve (SOURCE_CONFLICT SC-01, escalated to PM); the self writeClosure half was observed",
+      "thresholdEvaluation": {
+        "met": false,
+        "observed": {
+          "frozenEvidencePointerResolves": false,
+          "generatedClosureEntries": 0,
+          "ownPhaseWrites": 3,
+          "realValidationCheckoutObserved": false,
+          "selfWriteClosureHalfEvaluated": true,
+          "sourcePointerConflictRef": "SC-01",
+          "sourcePointerEscalatedTo": "PM",
+          "sourcePointerResolutionState": "blocked",
+          "sourcePointerResolvedByRecency": false,
+          "sourceWriteProcessHalfState": "NOT_RUN",
+          "sourceWriteProcessScanRun": false,
+          "testScratchOwner": "#44",
+          "undeclaredWrites": 0
+        },
+        "predicate": "#13 own writes are exactly the three phase outputs, generatedClosure == [], and no source/scratch/global write is declared. Narrowed AND stopped: the frozen C02 evidence pointer does not resolve, so the frozen-evidence half of the predicate is stopped under section 5 stopCondition 1 and registered as SOURCE_CONFLICT SC-01. The observed half is the self writeClosure read only."
+      }
+    },
+    {
+      "artifactBinding": {
+        "artifactDigestEntries": 1,
+        "artifactPathEntries": 1,
+        "cardinality": "1:1",
+        "derivedManifestTokenInArtifactPath": false,
+        "note": "artifactPath holds exactly one concrete repo-relative path - a real file path, never a placeholder, manifest or other non-path token - and artifactDigest holds that same file's sha256. The two are therefore 1:1 over the same single target. Any derived sorted manifest is a separate value carried under provenance or thresholdEvaluation and is never placed in artifactPath."
+      },
+      "artifactDigest": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9",
+      "artifactPath": "docs/team/M0-00/policy-baseline.json",
+      "authorityLimit": "author self-observation by the candidate author; not an external review verdict and not acceptance evidence",
+      "checkId": "M0-00-C03-SENSITIVE-RETURN",
+      "evaluatedSection": "/sensitiveReturn",
+      "negativeFixtureChannelCoverage": {
+        "fixtures": [
+          {
+            "fixtureId": "NF-01-SYNTHETIC-ONLY",
+            "ground": "#13 generates no negative fixture and reads no real secret; fixture generation is design_and_future_issue44_evidence, so there is no candidate public-channel output to assert this fixture against.",
+            "publicChannelApplication": "not_applicable"
+          },
+          {
+            "fixtureId": "NF-02-PUBLIC-FIELD-DENY",
+            "ground": "the C03 predicate: the declared static scans over the listed public JSON fields return zero deny-class matches (rawPathOrBasename=0 and the other observed counts).",
+            "publicChannelApplication": "applied"
+          },
+          {
+            "fixtureId": "NF-03-AGGREGATE-ONLY",
+            "ground": "the candidate public findings carry only predicate IDs, aggregate counts, unknown and sanitized reason codes (for example REQUIRED_PATTERN_ZERO_MATCH and the CODEOWNERS_* reason codes); no raw identity or path is published.",
+            "publicChannelApplication": "applied"
+          },
+          {
+            "fixtureId": "NF-04-ALL-CHANNELS",
+            "ground": "design_and_future_issue44_evidence, now with the two statically bound channels separated out. EV-05 bounds the symlinks_outside_repo.items channel (0 of 861 tracked paths at the selected sourceRef are symlink entries) and EV-06 bounds the forbidden_tracked_files.items channel (1 conventional template path-name hit, not opened). The residual uncovered channels are captured stdout/stderr, escaped-link/reparse/mount, traversal-error and interrupted-run, each tied to L-EXEC-AUTHORITY or L-NIL-1; see channelCoverageLimitation and knownNegativeInspectorLimits.",
+            "notRunReason": "the covered channels do not include every public channel; the residual uncovered channels are captured stdout/stderr; escaped-link/reparse/mount; traversal-error channel; interrupted-run channel, each tied to an explicit limit id",
+            "publicChannelApplication": "NOT_RUN",
+            "reverifyCondition": "NF-04 is applied, not NOT_RUN, only when an actual public-channel observation exists for each listed channel"
+          },
+          {
+            "fixtureId": "NF-05-PRIVATE-STOP",
+            "ground": "real_encounter_only: no real sensitive or credential encounter occurred and none was sought, so there is no public-channel behaviour to report; on a real encounter the private stop applies and no public record is written.",
+            "publicChannelApplication": "not_applicable"
+          },
+          {
+            "fixtureId": "NF-06-FAIL-CLOSED",
+            "ground": "candidate_and_accept: no failure or interruption occurred, and the required zero-match pattern COVERAGE-01 and the authority-skip EXEC-01 are recorded in skips with reason codes rather than resolved silently; retries use new run IDs.",
+            "publicChannelApplication": "applied"
+          }
+        ],
+        "note": "Frozen criteria section 2 C03 requires NF-01..NF-06 applied to every public channel. Each fixture's public-channel application for this candidate is enumerated here with its ground. Only NF-02 is a live predicate over the listed public JSON fields; NF-03 and NF-06 are applied as record-level properties; NF-01 and NF-05 are not_applicable because no fixture was generated and no real encounter occurred; NF-04 is NOT_RUN because the covered channels do not include every public channel. Because NF-04 is uncovered, the C03 result is NOT_RUN, not PASS."
+      },
+      "notRunReason": "NF-04-ALL-CHANNELS public-channel coverage is not established. Only NF-02 (over the listed public JSON fields), NF-03 and NF-06 are candidate-live; NF-01 and NF-05 are not_applicable. NF-04 is uncovered for exactly the authority- and limit-limited remainder: captured stdout/stderr, escaped-link/reparse/mount, traversal-error and interrupted-run, each tied to L-EXEC-AUTHORITY or L-NIL-1. Every static scan that does not require execution authority has been run: the symlink channel (EV-05, 0 of 861 tracked paths) and the forbidden tracked-path-name channel (EV-06, 1 conventional template, not opened) are now statically bounded. Four of the nine deny classes have no mechanical discriminator and are recorded not_observed under L-NO-MECHANICAL-SCAN. A C03 PASS is therefore not claimed. The denominator 9 is enumerated with per-class provenance in policy-baseline.json#/dataClass/denyClassScan/classProvenanceSummary: it is this candidate's own sub-class enumeration, not the frozen NF-02 clause count (7) or the sensitiveReturn.publicForbidden count (7), and each not-run class carries an explicit reason and limit id.",
+      "provenance": {
+        "commands": [
+          "grep -nE '(/[U]sers/|/[h]ome/|[~]/|[A-Za-z]:\\\\)' <the three public JSON artifacts listed in targets>",
+          "grep -nE '(:[/][/]|/[V]olumes/|/[m]nt/|/[m]edia/)' <the three public JSON artifacts listed in targets>",
+          "grep -nE '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}' <the three public JSON artifacts listed in targets>",
+          "grep -nEi '([g]hp_|[g]ho_|[g]ithub_pat_|[A]KIA[0-9A-Z]{16}|-----[B]EGIN [A-Z ]*PRIVATE KEY|[x]ox[baprs]-|[s]k-[A-Za-z0-9]{20,})' <the three public JSON artifacts listed in targets>",
+          "grep -nEi '([c]oreutils|[h]omebrew|[b]usybox|[g]nu|[a]pple|[d]arwin|[u]buntu|[d]ebian|/usr/[b]in|/opt/[h]omebrew|/usr/[l]ocal)' <the three public JSON artifacts listed in targets>",
+          "python3 -c 'import json; [json.load(open(p)) for p in <the three listed public JSON artifacts>]; print(\"all three parse as JSON\")'",
+          "git ls-tree -r 6490956d203549b56cbd86846120759889abb016 | awk '$1==\"120000\"{print}' | wc -l  ;  git ls-tree -r 6490956d203549b56cbd86846120759889abb016 | wc -l",
+          "git ls-tree -r 6490956d203549b56cbd86846120759889abb016 --name-only | grep -inE '(^|/)(\\.env($|\\.)|\\.envrc|id_rsa|id_ed25519|\\.pem$|\\.pfx$|\\.p12$|credentials|secrets?\\.(json|ya?ml|toml)|\\.npmrc|\\.netrc|\\.pypirc|\\.git-credentials|.*_rsa$)'"
+        ],
+        "commandsNote": "Concrete static scans over the listed public JSON fields: exactly one scan per class named in thresholdEvaluation.observed, plus a JSON parse check. Each is read-only, imports no source and touches no network or checkout. Every pattern is written with character classes so the pattern literal does not appear contiguously inside this command string; otherwise the scan, which includes this run record among its targets, would match its own provenance command line and could not reproduce the zero counts. The four classes with no mechanical scan are not asserted as 0: see thresholdEvaluation.notObservedClassReasons. EV-05 and EV-06 are ref-bound static scans added so that every scan not requiring execution authority is run; they narrow the uncovered set to the authority/limit-limited part. They are recorded as statically bounded channels, not as covered channels.",
+        "inspection": "one read-only static text scan per OBSERVED NF-02 deny class over the listed public JSON artifacts; no real secret was sought, read, hashed or copied. Four deny classes have no mechanical scan and are recorded not_observed with a reason rather than asserted 0.",
+        "toolVersions": {
+          "reason": "exact interpreter/tool build strings are withheld: publishing them would fingerprint the authoring environment, which the dataClass deny class for OS/platform/host or toolchain-vendor fingerprint forbids",
+          "state": "withheld"
+        }
+      },
+      "result": "NOT_RUN",
+      "resultQualifier": "NOT_RUN: NF-04 all-channel coverage not established; the residual uncovered set is now exactly the execution-authority and inspector-limit part",
+      "thresholdEvaluation": {
+        "channelCoverageLimitation": {
+          "channelsScanned": [
+            "policy-baseline JSON public fields",
+            "this run record JSON public fields",
+            "the phase index JSON public fields",
+            "public return summary",
+            "tracked path names at the selected sourceRef (symlink entries: EV-05)",
+            "tracked path names at the selected sourceRef (credential/secret-shaped names: EV-06)"
+          ],
+          "coverageState": "NOT_RUN",
+          "method": "static text scan of these public JSON fields only",
+          "notCoveredChannels": [
+            {
+              "channel": "captured stdout/stderr",
+              "limitReason": "a process must run to produce captured stdout/stderr; #13 holds no execution authority and section 5 forbids running such a command under #13",
+              "limitRef": "L-EXEC-AUTHORITY"
+            },
+            {
+              "channel": "escaped-link/reparse/mount",
+              "limitReason": "verify_toolchain required_ok does not establish mount/junction coverage; no static discriminator exists for reparse points outside the tracked tree",
+              "limitRef": "L-NIL-1"
+            },
+            {
+              "channel": "traversal-error channel",
+              "limitReason": "a traversal error is an outcome of walking the filesystem; producing one requires running the walker, which is outside #13 execution authority",
+              "limitRef": "L-EXEC-AUTHORITY"
+            },
+            {
+              "channel": "interrupted-run channel",
+              "limitReason": "interruption is an outcome of a run; #13 ran no such process, so the channel cannot be observed here",
+              "limitRef": "L-EXEC-AUTHORITY"
+            }
+          ],
+          "notProofOf": "NF-04-ALL-CHANNELS",
+          "notRunReason": "NF-04-ALL-CHANNELS coverage is not established: the scan covers only the listed public JSON fields and does not cover the channels listed in notCoveredChannels.",
+          "note": "Every static scan that does not require execution authority has been run, so the residual uncovered set is exactly the authority-limited and limit-limited part: 4 channels, each tied to an explicit limit id. The 2 statically bounded channels are bounded, not covered. A zero count means no deny class matched under a static text scan; it is NOT proof that every channel was covered and NOT proof of real-encounter private handling. NF-05 remains design-only, so this C03 result is NOT_RUN rather than PASS.",
+          "staticallyBoundedChannels": [
+            {
+              "bound": "0 symlink (mode 120000) entries among the 861 tracked paths at the selected sourceRef",
+              "channel": "symlinks_outside_repo.items",
+              "evidenceCommandRef": "evidenceBundle/commands[EV-05]",
+              "notAProof": "this bounds the tracked-tree population, not the runtime symlink channel; it does not make NF-04 covered"
+            },
+            {
+              "bound": "exactly 1 path-name hit among the 861 tracked paths at the selected sourceRef: tools/research/.env.example, a conventional committed template, not opened or hashed",
+              "channel": "forbidden_tracked_files.items",
+              "evidenceCommandRef": "evidenceBundle/commands[EV-06]",
+              "notAProof": "the field verify_toolchain would emit does not exist in this candidate's public output; this bounds the path-name class only, and NF-04 remains uncovered"
+            }
+          ]
+        },
+        "denyClassEnumeration": {
+          "classCount": 9,
+          "classIdList": [
+            "rawPathOrBasename",
+            "linkMountTargetIdentity",
+            "usernameOrHostnameOrAccountMapping",
+            "credentialValue",
+            "rawRestrictedContent",
+            "privateQuarantineLocation",
+            "realSensitiveDerivedDigest",
+            "toolchainVendorFingerprint",
+            "recoverableMaterial"
+          ],
+          "denominatorIs": "this candidate's own sub-class enumeration, NOT the frozen NF-02 clause list and NOT the sensitiveReturn.publicForbidden list",
+          "denyEntryCount": 9,
+          "frozenNf02ClauseCount": 7,
+          "publicForbiddenEntryCount": 7,
+          "ref": "docs/team/M0-00/policy-baseline.json#/dataClass/denyClassScan/classProvenanceSummary"
+        },
+        "limitAttributionComplete": true,
+        "met": false,
+        "notObservedClassCount": 4,
+        "notObservedClassLimitRefs": {
+          "privateQuarantineLocation": "L-NO-MECHANICAL-SCAN",
+          "rawRestrictedContent": "L-NO-MECHANICAL-SCAN",
+          "realSensitiveDerivedDigest": "L-NO-MECHANICAL-SCAN",
+          "recoverableMaterial": "L-NO-MECHANICAL-SCAN"
+        },
+        "notObservedClassReasons": {
+          "privateQuarantineLocation": "no real sensitive encounter occurred and none was sought, so no private quarantine location exists to scan for. A zero here would be an assertion about an absent object, not an observation. No mechanical discriminator exists. Recorded not_observed; limitRef L-NO-MECHANICAL-SCAN.",
+          "rawRestrictedContent": "no mechanical scan can distinguish restricted institutionally captured content from ordinary policy prose. Established only structurally: dataClass.declared=PUBLIC_SYNTHETIC and every execution.* flag is false, so no restricted source was read. Recorded not_observed rather than asserted 0; limitRef L-NO-MECHANICAL-SCAN.",
+          "realSensitiveDerivedDigest": "no real sensitive item was read or hashed in this candidate (every execution.* flag is false), so no digest is derived from one. The absence is structural, not mechanically scannable. Recorded not_observed; limitRef L-NO-MECHANICAL-SCAN.",
+          "recoverableMaterial": "whether the above classes are recoverable from surrounding public text is not mechanically decidable; it can only be stated relative to the observed classes. No mechanical discriminator exists. Recorded not_observed; limitRef L-NO-MECHANICAL-SCAN."
+        },
+        "notRunClassJustificationRef": "docs/team/M0-00/policy-baseline.json#/dataClass/denyClassScan/classProvenanceSummary/notCoveredClassJustifications",
+        "observed": {
+          "coveredClassCount": 5,
+          "credentialValue": 0,
+          "denyClassEnumerationClassCount": 9,
+          "denyClassEnumerationRef": "docs/team/M0-00/policy-baseline.json#/dataClass/denyClassScan/classProvenanceSummary",
+          "linkMountTargetIdentity": 0,
+          "notRunClassJustifiedCount": 4,
+          "privateQuarantineLocation": null,
+          "rawPathOrBasename": 0,
+          "rawRestrictedContent": null,
+          "realSensitiveDerivedDigest": null,
+          "recoverableMaterial": null,
+          "toolchainVendorFingerprint": 0,
+          "totalClassCount": 9,
+          "usernameOrHostnameOrAccountMapping": 0
+        },
+        "observedClassCount": 5,
+        "observedTotalHits": 0,
+        "predicate": "public output contains only predicate IDs, aggregate categories/counts or unknown, sanitized reason codes and non-sensitive digests. Every class in the shared deny-class enumeration is either observed by an executed scan, or recorded not_observed with a reason; no class is asserted 0 without a scan. The class key set here is the same key set the index counts report, so the two receipts for this predicate map 1:1.",
+        "scope": "NF-05 real-encounter behaviour is design-only here; no real encounter occurred and none was sought."
+      }
+    },
+    {
+      "artifactBinding": {
+        "artifactDigestEntries": 1,
+        "artifactPathEntries": 1,
+        "cardinality": "1:1",
+        "derivedManifestTokenInArtifactPath": false,
+        "note": "artifactPath holds exactly one concrete repo-relative path - a real file path, never a placeholder, manifest or other non-path token - and artifactDigest holds that same file's sha256. The two are therefore 1:1 over the same single target. Any derived sorted manifest is a separate value carried under provenance or thresholdEvaluation and is never placed in artifactPath."
+      },
+      "artifactDigest": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9",
+      "artifactPath": "docs/team/M0-00/policy-baseline.json",
+      "authorityLimit": "author self-observation by the candidate author; not an external review verdict and not acceptance evidence",
+      "checkId": "M0-00-C04-CANDIDATE-ORACLE",
+      "evaluatedSection": "/phaseAcceptance/candidate",
+      "externalVerdictRequired": "This C04 result is the author's own oracle pass (author self-observation), NOT the external C04 verdict. Acceptance requires a separate external reviewer's own C04 evaluation; do not promote this PASS to acceptance evidence.",
+      "notRunReason": null,
+      "provenance": {
+        "commands": [
+          "python3 -m json.tool docs/team/M0-00/policy-baseline.json",
+          "import json\n\nB = \"docs/team/M0-00/policy-baseline.json\"\nR = \"docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json\"\nd = json.load(open(B, encoding=\"utf-8\"))\nr = json.load(open(R, encoding=\"utf-8\"))\n\nc = d[\"phaseAcceptance\"][\"candidate\"]\nsel = d[\"sourceSelection\"]\nwc = d[\"writeClosure\"]\nb = d[\"binding\"]\nrf = {x[\"id\"]: x for x in d[\"returnFields\"]}\nrfv = rf[\"RF-02\"][\"value\"]\nclasses = d[\"dataClass\"][\"denyClassScan\"][\"classes\"]\nprs = r[\"publicReturnSummary\"][\"authorSelfObservation\"]\nvocab = d[\"typeAndStateVocabulary\"]\n\nFROZEN_SCOPE = [\n    \"docs/team/M0-00/policy-baseline.json\",\n    \"docs/evidence/M0-00/review-record-candidate-index.json\",\n    \"docs/evidence/M0-00/review-record-candidate-runs/\",\n]\nREQ = [\"writeSet\", \"baseRef\", \"physicalBinding\", \"holder\", \"branchRef\", \"fencingToken\"]\nBOUND_ITEMS = [\"physicalBinding\", \"holder\", \"branchRef\", \"fencingToken\"]\n\n\ndef walk(o):\n    if isinstance(o, dict):\n        yield o\n        for v in list(o.values()):\n            yield from walk(v)\n    if isinstance(o, list):\n        for v in list(o):\n            yield from walk(v)\n\n\n# rule[1] arm 1: sweep every RF-01..RF-09 entry and every RF-02 sub-item.\nrf_ids = sorted(rf)\nrf_missing = [i for i in rf_ids if not rf[i].get(\"id\") or not rf[i].get(\"field\") or not rf[i].get(\"state\")]\nrf02_missing = [k for k in REQ if not isinstance(rfv.get(k), dict) or \"state\" not in rfv.get(k)]\nrequiredFieldsMissing = len(rf_missing) + len(rf02_missing)\n\n# rule[1] arm 2 / countingRules.unresolvedPointers: the counting rule is applied\n# over the declared pointer scope, and the raw counts are emitted alongside it.\nss = sel.get(\"selectedSourcePointerResolution\", {})\npointers = ss.get(\"pointers\", [])\nunresolved = [p for p in pointers if p.get(\"resolution\") == \"unresolved\"]\nunresolved_unregistered = [p for p in unresolved if not (p.get(\"owner\") and p.get(\"unblockCondition\") and p.get(\"escalation\"))]\nunresolvedPointers = len(unresolved_unregistered)\n\n# rule[5] arm 2: a source conflict resolved without being registered.\nconflicts = d[\"graphRelations\"][\"conflicts\"]\nconflict_ids = {x.get(\"conflictId\") for x in conflicts if x.get(\"type\") == \"SOURCE_CONFLICT\"}\nregistered_pointer_paths = {x.get(\"refs\", {}).get(\"pointerPath\") for x in conflicts if x.get(\"type\") == \"SOURCE_CONFLICT\"}\nunregistered = [p.get(\"id\") for p in pointers if p.get(\"conflictRef\") not in conflict_ids]\nunregistered += [x.get(\"conflictId\") for x in conflicts if x.get(\"type\") == \"SOURCE_CONFLICT\" and x.get(\"resolvedByRecency\") is True]\nsourceConflictResolvedWithoutRegistration = len(unregistered)\nsilentSourceSelection = (not bool(sel.get(\"drift\", {}).get(\"note\"))) or (sourceConflictResolvedWithoutRegistration > 0)\n\nobserved_counts = [cl.get(\"count\") or 0 for cl in classes if cl[\"observationState\"] == \"observed\"]\nnot_observed = [cl for cl in classes if cl[\"observationState\"] == \"not_observed\"]\nnotObservedWithLimitRef = sum(1 for cl in not_observed if cl.get(\"limitRef\"))\npublicSyntheticException = (d[\"dataClass\"][\"declared\"] != \"PUBLIC_SYNTHETIC\") or any(x > 0 for x in observed_counts)\nrawSensitiveReturn = int(prs[\"rawSensitiveReturns\"]) > 0 or int(prs[\"realSensitiveEncounters\"]) > 0\n\n# rule[2], read off the declared write set and the declared binding states only.\ndeclared = list(wc[\"phases\"][\"candidate\"])\nundeclaredWrites = len([p for p in declared if p not in FROZEN_SCOPE])\nunboundCandidateWorkspace = len(declared) > 0 and (\n    b.get(\"bindingState\") != \"bound\"\n    or any(not isinstance(b.get(k), dict) or b[k].get(\"state\") != \"bound\" for k in BOUND_ITEMS)\n)\n\nlabels = {\"status\", \"state\", \"decision\", \"verdict\", \"disposition\"}\naccept_words = set(vocab[\"acceptanceWordList\"])\nselfAcceptLabelPresent = any(\n    isinstance(n.get(k), str) and n[k].lower() in accept_words for n in walk(d) for k in labels if k in n\n)\nexternalC04VerdictPresent = any(\"externalc04verdict\" in str(k).lower() for n in walk(d) if isinstance(n, dict) for k in n)\nselmatch = all(s.get(\"match\") is True and s.get(\"recomputedSha256\") == s.get(\"expectedSha256\") for s in sel[\"selectors\"])\nmanifestOk = sel[\"matchSummary\"][\"resolved\"] == 9 and sel[\"matchSummary\"][\"readErrors\"] == 0\n\n# rule[1] arm 3 + countingRules.unboundPlaceholdersInKnownField classes (a)/(b)/(c).\ndigest_re = __import__(\"re\").compile(\"^[0-9a-f]{64}$\")\nrf4v = rf[\"RF-04\"][\"value\"]\nrf_items = [rf[i].get(\"value\") for i in rf_ids] + list(b.values())\n\n\ndef all_items():\n    for v in rf_items:\n        if isinstance(v, dict):\n            yield v\n            for s in v.values():\n                if isinstance(s, dict):\n                    yield s\n        if isinstance(v, list):\n            for s in v:\n                if isinstance(s, dict):\n                    yield s\n\n\nitems = list(all_items())\nunbound_legacy = [v for v in items if v.get(\"state\") == \"known\" and v.get(\"value\") in (None, \"\", \"unknown\", [])]\nunbound_digest = [v for v in items if v.get(\"state\") in (\"known\", \"partial\") and v.get(\"valueKind\") == \"digest64\"\n                  and not digest_re.fullmatch(str(v.get(\"value\", \"\")))]\nunbound_withheld = [v for v in items if v.get(\"state\") == \"withheld\" and v.get(\"valueKind\") == \"withheld\"]\nunboundPlaceholdersInKnownField = len(unbound_legacy) + len(unbound_digest) + len(unbound_withheld)\n\n# rule[3]: every 'evaluated' value is a real JSON boolean.\nevaluated_values = [x.get(\"evaluated\") for x in c[\"blockingPredicateEvaluationRules\"][\"rules\"]] + \\\n                   [x.get(\"evaluated\") for x in c[\"adjudicationRules\"]]\nbooleanEvaluatedValuesChecked = len(evaluated_values)\nbooleanEvaluatedValueTypeMismatches = sum(1 for v in evaluated_values if not isinstance(v, bool))\n\n# the pinned vocabulary: no acknowledged state or value form may be spelled like a boolean key.\nstate_tokens = set(d[\"typeAndStateVocabulary\"][\"valueStateVocabulary\"]) | set(\n    d[\"typeAndStateVocabulary\"][\"valueKindVocabulary\"]) | set(d[\"typeAndStateVocabulary\"][\"unknownStateVocabulary\"])\nstateTokensSharingABooleanKeySpelling = len(state_tokens & set(vocab[\"booleanKeys\"]))\n\npreds = [\n    not (selmatch and manifestOk),\n    requiredFieldsMissing > 0,\n    (undeclaredWrites > 0 or unboundCandidateWorkspace),\n    publicSyntheticException,\n    rawSensitiveReturn,\n    silentSourceSelection,\n    selfAcceptLabelPresent,\n]\nfrozen_conditions = [\"missingRequiredField\", \"unresolvedPointers\", \"silentSourceSelection\",\n                     \"publicSyntheticException\", \"rawSensitiveReturn\", \"undeclaredWrite\", \"selfAcceptLabelPresent\"]\n\n# Y-P2-08: the gate coverage record is uniform and carries no verdict vocabulary.\ngc = d[\"gateCoverage\"]\ngate_keys = [k for k in gc if k.startswith(\"G\") and k[1:].isdigit()]\nverdict_tokens = {\"gateId\", \"notPassed\", \"conclusion\", \"verdict\", \"result\", \"passed\", \"failed\", \"gateResult\"}\ngateCoverageVerdictTokens = sum(1 for k in gate_keys for t in verdict_tokens if t in gc[k])\n\nobserved = {\n    \"adjudicationRulesRef\": \"policy-baseline.json#/phaseAcceptance/candidate/adjudicationRules\",\n    \"bindingItemsKnown\": sum(1 for v in b.values() if isinstance(v, dict) and v.get(\"state\") == \"known\"),\n    \"bindingItemsUnknownWithReason\": len([v for v in b.values() if isinstance(v, dict) and v.get(\"state\") == \"unknown\" and v.get(\"reason\")]),\n    \"bindingState\": b[\"bindingState\"],\n    \"booleanEvaluatedValueTypeMismatches\": booleanEvaluatedValueTypeMismatches,\n    \"booleanEvaluatedValuesChecked\": booleanEvaluatedValuesChecked,\n    \"candidateBlockingPredicatesEvaluated\": len(preds),\n    \"candidateBlockingPredicatesTrue\": sum(1 for p in preds if p),\n    \"candidateQualification\": c[\"authorSelfObservationStatus\"][\"candidateQualification\"],\n    \"conditionFieldPerFrozenCondition\": len(frozen_conditions),\n    \"evaluationRulesRef\": \"policy-baseline.json#/phaseAcceptance/candidate/blockingPredicateEvaluationRules\",\n    \"externalC04VerdictPresent\": externalC04VerdictPresent,\n    \"frozenConditionFields\": frozen_conditions,\n    \"gateCoverageGates\": len(gate_keys),\n    \"gateCoverageVerdictTokens\": gateCoverageVerdictTokens,\n    \"missingRequiredField\": requiredFieldsMissing > 0,\n    \"notObservedDenyClasses\": len(not_observed),\n    \"notObservedDenyClassesWithLimitRef\": notObservedWithLimitRef,\n    \"observedDenyClassHits\": sum(observed_counts),\n    \"observedDenyClasses\": len(observed_counts),\n    \"oracleEmitsPredicateCount\": True,\n    \"oracleReadsItsOwnOutput\": False,\n    \"predicateResults\": [bool(p) for p in preds],\n    \"predicateTrueIndexes\": [i for i, p in enumerate(preds) if p],\n    \"publicSyntheticException\": publicSyntheticException,\n    \"rawSensitiveReturn\": rawSensitiveReturn,\n    \"reportableUnknowns\": len(c[\"reportableUnknowns\"]),\n    \"reportableUnknownsMissingOwnerOrUnblock\": sum(1 for u in c[\"reportableUnknowns\"] if not (u.get(\"owner\") and u.get(\"state\") and u.get(\"unblockCondition\"))),\n    \"reportableUnknownsTypedWithOwnerStateUnblock\": sum(1 for u in c[\"reportableUnknowns\"] if u.get(\"owner\") and u.get(\"state\") and u.get(\"unblockCondition\")),\n    \"requiredFieldsMissing\": requiredFieldsMissing,\n    \"rf02ItemsKnown\": sum(1 for v in rfv.values() if isinstance(v, dict) and v.get(\"state\") == \"known\"),\n    \"rf02ItemsUnknownWithReason\": len([v for v in list(rfv.values()) + list(b.values())\n                                      if isinstance(v, dict) and v.get(\"state\") == \"unknown\" and v.get(\"reason\")]),\n    \"rf02State\": rf[\"RF-02\"][\"state\"],\n    \"rf02SubItemsChecked\": len(REQ),\n    \"rf02SubItemsMissingState\": len(rf02_missing),\n    \"rfSweepEntriesMissingRequiredKey\": len(rf_missing),\n    \"rfSweepIdsChecked\": len(rf_ids),\n    \"selfAcceptLabelPresent\": selfAcceptLabelPresent,\n    \"silentSourceSelection\": silentSourceSelection,\n    \"sourceConflictEntries\": len(conflict_ids),\n    \"sourceConflictPointersRegistered\": len([p for p in registered_pointer_paths if p]),\n    \"sourceConflictResolvedWithoutRegistration\": sourceConflictResolvedWithoutRegistration,\n    \"stateTokensSharingABooleanKeySpelling\": stateTokensSharingABooleanKeySpelling,\n    \"typedUnknowns\": len(d[\"unknowns\"]),\n    \"unboundCandidateWorkspace\": unboundCandidateWorkspace,\n    \"unboundPlaceholdersInKnownField\": unboundPlaceholdersInKnownField,\n    \"unboundPlaceholdersInKnownFieldBreakdown\": {\n        \"knownFieldWithAbsentValue\": len(unbound_legacy),\n        \"knownOrPartialDigestValueNotHex\": len(unbound_digest),\n        \"withheldValueRequiredByReturnField\": len(unbound_withheld),\n    },\n    \"undeclaredWrite\": undeclaredWrites > 0,\n    \"unresolvedPointers\": unresolvedPointers,\n    \"unresolvedPointersResolutionUnresolved\": len(unresolved),\n    \"unresolvedPointersScope\": len(pointers),\n    \"unresolvedPointersWithoutOwnerOrUnblock\": len(unresolved_unregistered),\n}\n\nprint(\"frozenConditionFields\", frozen_conditions)\nprint(\"conditionFieldPerFrozenCondition\", len(frozen_conditions))\nprint(\"candidateBlockingPredicatesEvaluated\", len(preds), \"of\", len(c[\"blocking\"]))\nprint(\"candidateBlockingPredicatesTrue\", sum(1 for p in preds if p))\nprint(\"predicateResults\", [bool(p) for p in preds], \"predicateTrueIndexes\", observed[\"predicateTrueIndexes\"])\nprint(\"rfSweepIdsChecked\", len(rf_ids), \"rfSweepEntriesMissingRequiredKey\", len(rf_missing))\nprint(\"rf02SubItemsChecked\", len(REQ), \"rf02SubItemsMissingState\", len(rf02_missing))\nprint(\"requiredFieldsMissing\", requiredFieldsMissing)\nprint(\"missingRequiredField\", requiredFieldsMissing > 0)\nprint(\"unresolvedPointers\", unresolvedPointers, \"scope\", len(pointers), \"resolutionUnresolved\", len(unresolved), \"withoutOwnerOrUnblock\", len(unresolved_unregistered))\nprint(\"sourceConflictEntries\", len(conflict_ids))\nprint(\"sourceConflictPointersRegistered\", len([p for p in registered_pointer_paths if p]))\nprint(\"sourceConflictResolvedWithoutRegistration\", sourceConflictResolvedWithoutRegistration)\nprint(\"silentSourceSelection\", silentSourceSelection)\nprint(\"publicSyntheticException\", publicSyntheticException)\nprint(\"rawSensitiveReturn\", rawSensitiveReturn)\nprint(\"undeclaredWrite\", undeclaredWrites > 0)\nprint(\"unboundCandidateWorkspace\", unboundCandidateWorkspace, \"declaredCandidateWrites\", len(declared))\nprint(\"selfAcceptLabelPresent\", selfAcceptLabelPresent)\nprint(\"externalC04VerdictPresent\", externalC04VerdictPresent)\nprint(\"observedDenyClasses\", len(observed_counts), \"observedDenyClassHits\", sum(observed_counts))\nprint(\"notObservedDenyClasses\", len(not_observed), \"notObservedDenyClassesWithLimitRef\", notObservedWithLimitRef)\nprint(\"rf02State\", rf[\"RF-02\"][\"state\"])\nprint(\"rf02ItemsKnown\", observed[\"rf02ItemsKnown\"])\nprint(\"rf02ItemsUnknownWithReason\", observed[\"rf02ItemsUnknownWithReason\"])\nprint(\"bindingState\", b[\"bindingState\"])\nprint(\"bindingItemsKnown\", observed[\"bindingItemsKnown\"])\nprint(\"bindingItemsUnknownWithReason\", observed[\"bindingItemsUnknownWithReason\"])\nprint(\"unboundPlaceholdersInKnownField\", unboundPlaceholdersInKnownField, observed[\"unboundPlaceholdersInKnownFieldBreakdown\"])\nprint(\"reportableUnknowns\", len(c[\"reportableUnknowns\"]), \"typedUnknowns\", len(d[\"unknowns\"]))\nprint(\"reportableUnknownsTypedWithOwnerStateUnblock\", observed[\"reportableUnknownsTypedWithOwnerStateUnblock\"])\nprint(\"reportableUnknownsMissingOwnerOrUnblock\", observed[\"reportableUnknownsMissingOwnerOrUnblock\"])\nprint(\"booleanEvaluatedValuesChecked\", booleanEvaluatedValuesChecked, \"booleanEvaluatedValueTypeMismatches\", booleanEvaluatedValueTypeMismatches)\nprint(\"stateTokensSharingABooleanKeySpelling\", stateTokensSharingABooleanKeySpelling)\nprint(\"gateCoverageGates\", len(gate_keys), \"gateCoverageVerdictTokens\", gateCoverageVerdictTokens)\nprint(\"candidateQualification\", c[\"authorSelfObservationStatus\"][\"candidateQualification\"], \"candidatePassRuleMet\", c[\"authorSelfObservationStatus\"][\"met\"])\nprint(\"OBSERVED_JSON\", json.dumps(observed, sort_keys=True))\n"
+        ],
+        "commandsNote": "The SECOND command is the combined C04 oracle. It reads the candidate baseline and this run record as data and EMITS every count in observed below, including candidateBlockingPredicatesTrue, one boolean per frozen C04 failure condition, and the gate-coverage and boolean-type checks; its literal stdout is embedded unedited as evidenceBundle EV-04 and the machine-readable mirror is the final OBSERVED_JSON line. candidateBlockingPredicatesTrue is therefore directly emitted by an executed command, not asserted by the author. The unbound-workspace arm of predicate 2 is read off the declared write set and the declared binding states alone, and is adjudicated by the explicit rule recorded in policy-baseline.json#/phaseAcceptance/candidate/adjudicationRules, not inside the oracle and not from any value the oracle emits. unresolvedPointers applies the documented counting rule and reports the raw scope counts beside it. unboundPlaceholdersInKnownField counts withheld sub-items as well as null/empty ones. The command is read-only and imports or executes no source program.",
+        "inspection": "Re-derive the candidate predicate matrix without reading any value this oracle emits, then evaluate every candidate blocking predicate and every typed unknown in the candidate output and the sanitized run record, and read the RF-02 and /binding item states one by one to confirm no item declared state='known' carries an unbound placeholder. The RF-02 sweep covers all six declared sub-items and the matrix sweeps every RF-01..RF-09 entry. Every arm declared in policy-baseline.json#/phaseAcceptance/candidate/blockingPredicateEvaluationRules is implemented, including both arms of the silent-source-conflict rule. This is an author self-observation executed as a static read; it is not the external C04 verdict and grants no acceptance.",
+        "toolVersions": {
+          "reason": "exact interpreter/tool build strings are withheld: publishing them would fingerprint the authoring environment, which the dataClass deny class for OS/platform/host or toolchain-vendor fingerprint forbids",
+          "state": "withheld"
+        }
+      },
+      "result": "PASS",
+      "resultQualifier": "author self-observation; static, not executed; not an external verdict; grants no acceptance. The C04 threshold is met on C04's own frozen condition set; candidate qualification is separately false because candidate blocking predicate 2 is TRUE as the frozen C02 arm is written.",
+      "thresholdEvaluation": {
+        "met": true,
+        "observed": {
+          "adjudicationRulesRef": "policy-baseline.json#/phaseAcceptance/candidate/adjudicationRules",
+          "bindingItemsKnown": 1,
+          "bindingItemsUnknownWithReason": 4,
+          "bindingState": "partial",
+          "booleanEvaluatedValueTypeMismatches": 0,
+          "booleanEvaluatedValuesChecked": 8,
+          "candidateBlockingPredicatesEvaluated": 7,
+          "candidateBlockingPredicatesTrue": 1,
+          "candidateQualification": false,
+          "conditionFieldPerFrozenCondition": 7,
+          "countingRulesRef": "policy-baseline.json#/phaseAcceptance/candidate/countingRules",
+          "evaluationRulesRef": "policy-baseline.json#/phaseAcceptance/candidate/blockingPredicateEvaluationRules",
+          "externalC04VerdictPresent": false,
+          "frozenConditionFields": [
+            "missingRequiredField",
+            "unresolvedPointers",
+            "silentSourceSelection",
+            "publicSyntheticException",
+            "rawSensitiveReturn",
+            "undeclaredWrite",
+            "selfAcceptLabelPresent"
+          ],
+          "frozenTextTension": "frozen C02's 'missing physical binding ... blocks qualification before write' and frozen criteria section 4 bullet 1 with the frozen C04 expectation pull in opposite directions for an isolated proposal. The tension is recorded at policy-baseline.json#/phaseAcceptance/candidate/adjudicationRules[ADJ-01]/tensionWithFrozenAcceptanceText and escalated to PM through U-04; the arm was read as written and was NOT narrowed, substituted or resolved by recency.",
+          "frozenTextTensionRegistered": true,
+          "gateCoverageGates": 14,
+          "gateCoverageRef": "policy-baseline.json#/gateCoverage",
+          "gateCoverageVerdictTokens": 0,
+          "missingRequiredField": false,
+          "notObservedDenyClasses": 4,
+          "notObservedDenyClassesWithLimitRef": 4,
+          "observedDenyClassHits": 0,
+          "observedDenyClasses": 5,
+          "oracleEmitsPredicateCount": true,
+          "oracleReadsItsOwnOutput": false,
+          "predicateResults": [
+            false,
+            false,
+            true,
+            false,
+            false,
+            false,
+            false
+          ],
+          "predicateTrueIndexes": [
+            2
+          ],
+          "publicSyntheticException": false,
+          "rawSensitiveReturn": false,
+          "reportableUnknowns": 7,
+          "reportableUnknownsMissingOwnerOrUnblock": 0,
+          "reportableUnknownsTypedWithOwnerStateUnblock": 7,
+          "requiredFieldsMissing": 0,
+          "rf02ItemsKnown": 2,
+          "rf02ItemsUnknownWithReason": 8,
+          "rf02ItemsUnknownWithReasonDefinition": "RF-02 value items and /binding items with state 'unknown' that DO carry a reason; a joint count over both objects. The four RF-02 items without a reason are the separately registered typed unknowns of the U-09/U-10 family.",
+          "rf02State": "partial",
+          "rf02SubItemsChecked": 6,
+          "rf02SubItemsMissingState": 0,
+          "rfSweepEntriesMissingRequiredKey": 0,
+          "rfSweepIdsChecked": 9,
+          "selfAcceptLabelPresent": false,
+          "silentSourceSelection": false,
+          "silentSourceSelectionArmsSeed": "both arms computed: (1) the drift note is present, (2) sourceConflictResolvedWithoutRegistration == 0; the value is the OR of the two failure arms and is not read from any emitted output",
+          "sourceConflictEntries": 2,
+          "sourceConflictPointerScope": "all five registered pointers SP-01..SP-05 carry a conflictRef, so sourceConflictPointersRegistered counts the registered pointers whose conflictRef resolves to SC-01 or SC-02",
+          "sourceConflictPointersRegistered": 1,
+          "sourceConflictRegistrationRule": "a conflict counts as resolved-without-registration if a registered pointer carries a conflictRef that is not present in the registered SOURCE_CONFLICT set, or if a registered conflict carries resolvedByRecency == true",
+          "sourceConflictResolvedWithoutRegistration": 0,
+          "stateTokensSharingABooleanKeySpelling": 0,
+          "typedUnknowns": 11,
+          "unboundCandidateWorkspace": true,
+          "unboundPlaceholdersInKnownField": 1,
+          "unboundPlaceholdersInKnownFieldBreakdown": {
+            "knownFieldWithAbsentValue": 0,
+            "knownOrPartialDigestValueNotHex": 0,
+            "withheldValueRequiredByReturnField": 1
+          },
+          "unboundPlaceholdersInKnownFieldDefinition": "counts over every RF-01..RF-09 value and its sub-items: (a) items declared state='known' whose value is null/empty/'unknown'/[]; (b) items declared state='known' or 'partial' with valueKind='digest64' whose value is not a 64-hex digest; (c) sub-items declared state='withheld' with valueKind='withheld' - a value the return field requires but the public baseline deliberately does not publish. Class (c) is counted rather than ignored, so a 'withheld' token cannot hide inside a self-check that only tests for null or empty. The one hit is RF-05 toolVersions under dataClass.deny entry 8.",
+          "undeclaredWrite": false,
+          "unresolvedPointers": 0,
+          "unresolvedPointersDefinition": "applies the documented rule at policy-baseline.json#/phaseAcceptance/candidate/countingRules/unresolvedPointers over the declared pointer scope: a pointer is counted only if it is unresolved AND carries no owner, no unblockCondition and no escalation. The raw counts are reported beside it (unresolvedPointersScope=5, unresolvedPointersResolutionUnresolved=5, unresolvedPointersWithoutOwnerOrUnblock=0), so neither the rule's count nor the raw count has to be inferred. The scope explicitly includes the graph and coverage citations SP-03..SP-05 that resolve nowhere at the selected sourceRef.",
+          "unresolvedPointersResolutionUnresolved": 5,
+          "unresolvedPointersScope": 5,
+          "unresolvedPointersWithoutOwnerOrUnblock": 0
+        },
+        "predicate": "C04 threshold, stated in C04's own frozen scope: each of the seven frozen C04 failure conditions is false (missingRequiredField, unresolvedPointers, silentSourceSelection, publicSyntheticException, rawSensitiveReturn, undeclaredWrite, selfAcceptLabelPresent), every candidate-required field, source pointer/digest, data-class deny rule, exact write closure, unknown/blocked classification, trust rule and return schema is present, and no acceptance claim is made. That is exactly the frozen C04 negative-case list, and 'undeclared write' among those seven conditions is false. The candidate blocking predicate matrix is reported separately and is NOT folded into this threshold: candidateBlockingPredicatesTrue is 1, because predicate 2 ('undeclared write or unbound candidate workspace') is TRUE as the frozen C02 arm is written. That is a C02 blocking condition, registered as U-04 with owner, state and unblock condition and escalated to PM under frozen criteria section 5 stopCondition 3 - it is not one of C04's seven frozen failure conditions. C04's own criterion is therefore met, while candidate qualification under the candidate's own passRule is false. No arm was decided by a value this oracle emits, and no frozen arm was re-specified: the arm was read as written and its consequence was registered."
+      }
+    },
+    {
+      "artifactBinding": {
+        "artifactDigestEntries": 1,
+        "artifactPathEntries": 1,
+        "cardinality": "1:1",
+        "derivedManifestTokenInArtifactPath": false,
+        "note": "Accept-phase criterion. artifactPath points at the file that carries its definition and result slot; artifactDigest is that file's sha256 at this revision."
+      },
+      "artifactDigest": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9",
+      "artifactPath": "docs/team/M0-00/policy-baseline.json",
+      "authorityLimit": "author self-observation by the candidate author; not an external review verdict and not acceptance evidence",
+      "candidatePhaseNotApplicable": true,
+      "checkId": "M0-00-C05-ACCEPT-QUALIFICATION",
+      "evaluatedSection": "/phaseAcceptance/accept",
+      "notRunReason": "C05 is an accept-phase criterion. Its subject does not exist at the candidate phase: there is no accepted candidate digest, no accepted #43/#44 artifact receipt, no PM signoff target digest and no accept-phase independent review target digest. It is recorded NOT_RUN here so the accept-phase criterion set C01-C05 has a representation in this record and cannot be omitted and pass unjudged at acceptance.",
+      "phase": "accept",
+      "provenance": {
+        "commands": [],
+        "inspection": "no accept-phase inspection was performed: no accepted-baseline record exists. This entry records the criterion's existence, phase and evidence source only.",
+        "toolVersions": {}
+      },
+      "result": "NOT_RUN",
+      "resultQualifier": "NOT_RUN: accept-phase criterion; not applicable at the candidate phase and grants no acceptance",
+      "thresholdEvaluation": {
+        "met": false,
+        "observed": {
+          "acceptPhaseCriteriaCovered": 0,
+          "acceptPhaseCriteriaTotal": 5,
+          "candidateDigestSelected": false,
+          "evidenceSource": "docs/evidence/M0-00/review-record-accept-index.json plus exact accepted run record and artifact:43/artifact:44 input receipts",
+          "signoffTargetDigestPresent": false,
+          "zeroAcceptBlockingUnknowns": false
+        },
+        "predicate": "C05 is satisfied only when the exact accepted candidate digest is selected, both #43/#44 accepted artifact receipts match source/input/scope/output digests, protected-path/hash rows are complete, the PM signoff target digest and the phase-matching independent review target digest are present, there are zero accept-blocking unknowns, and old failures/skips remain preserved. None of those objects exists at the candidate phase."
+      }
+    }
+  ],
+  "checksAuthorityNote": "Every C01-C04 result in this record is an author self-observation produced by read-only static inspection. C02 and C03 are NOT_RUN with a notRunReason; C01 and C04 are author-self-observed PASS, each carrying an inline resultQualifier. The C04-CANDIDATE-ORACLE result is the author's own oracle pass, not an external C04 verdict. Acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria; no self-reported PASS here may be promoted to acceptance evidence. The record carries five check entries so the whole accept-phase criterion set C01-C05 has a representation here: C01-C04 are the candidate-phase criteria and C05 (M0-00-C05-ACCEPT-QUALIFICATION) is an accept-phase criterion recorded NOT_RUN for phase applicability only. C05 is not a failed candidate check and not a candidate PASS.",
+  "draftStatus": "draft",
+  "evidenceBundle": {
+    "commands": [
+      {
+        "command": "for p in <nine selector repo-relative paths>; do printf '%s  %s\\n' \"$(git show <sourceRef>:$p | shasum -a 256 | cut -d' ' -f1)\" \"$p\"; done",
+        "id": "EV-01",
+        "note": "executed twice; both runs printed these identical nine lines (hashesBeforeAfter.before / .after)",
+        "output": [
+          "68ff52686adc2b109d274288760e1962215a8dc472863d504423d4ea7826793d  docs/choo-guard-execution-backlog-v1.md",
+          "e804d30afb686738b4ed631e885b663b17a5f4cf9f5062c302c1fec47758e09b  specs/001-m0-00-safe-bootstrap/spec.md",
+          "93c55fe1eb9966dcb77ba6ea902a47a487a7716358dd4166765cb527b02a8b4d  docs/choo-guard-ai-native-pipeline-v1.md",
+          "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad  scripts/bootstrap/test_verify_toolchain.py",
+          "ccb71511605704241716e8673562efb62d3822a3d66dcbde00adacc469f597bb  scripts/bootstrap/test_bootstrap_powershell.py",
+          "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1  scripts/bootstrap/verify_toolchain.py",
+          "4627494029dc7820ddf3d352317375f759a3efa34bc8697f62e29f1e1eff419f  scripts/bootstrap/bootstrap.sh",
+          "9ab6347d22ff10d785dbe8bc2c181eedb2af7eab3d16b4e50b172b5e0bb74427  scripts/bootstrap/bootstrap.ps1",
+          "598556e970aad8c8cf18f2dd11a90ba4b27b128adce6a9dafe6c50e0477088b2  specs/001-m0-00-safe-bootstrap/checklists/requirements.md"
+        ]
+      },
+      {
+        "command": "EV-01 | LC_ALL=C sort -k2 > m1 ; EV-01 | LC_ALL=C sort -k2 > m2 ; shasum -a 256 m1 m2 ; wc -l < m1 ; sort m1 | cmp -s m1 m2",
+        "id": "EV-02",
+        "output": [
+          "1ed3f04db84b969b43229f387b0b940ebba0aa85ee5de873b56ad77e897d5cf7  m1",
+          "1ed3f04db84b969b43229f387b0b940ebba0aa85ee5de873b56ad77e897d5cf7  m2",
+          "9",
+          "identical: yes"
+        ]
+      },
+      {
+        "command": "grep -nE '(/[U]sers/|/[h]ome/|[~]/|[A-Za-z]:\\\\)' <the three public JSON artifacts listed in targets> ; grep -nE '(:[/][/]|/[V]olumes/|/[m]nt/|/[m]edia/)' <the three public JSON artifacts listed in targets> ; grep -nE '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}' <the three public JSON artifacts listed in targets> ; grep -nEi '([g]hp_|[g]ho_|[g]ithub_pat_|[A]KIA[0-9A-Z]{16}|-----[B]EGIN [A-Z ]*PRIVATE KEY|[x]ox[baprs]-|[s]k-[A-Za-z0-9]{20,})' <the three public JSON artifacts listed in targets> ; grep -nEi '([c]oreutils|[h]omebrew|[b]usybox|[g]nu|[a]pple|[d]arwin|[u]buntu|[d]ebian|/usr/[b]in|/opt/[h]omebrew|/usr/[l]ocal)' <the three public JSON artifacts listed in targets>",
+        "id": "EV-03",
+        "note": "one read-only scan per OBSERVED deny class over the three public JSON artifacts; the four not_observed classes have no scan (see the C03 check). Each pattern is written with a character class so the pattern literal does not appear contiguously in its own command string and cannot match itself.",
+        "output": [
+          "no match in any of the three targets (grep exit status 1 for every one of the five scans)"
+        ]
+      },
+      {
+        "command": "import json\n\nB = \"docs/team/M0-00/policy-baseline.json\"\nR = \"docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json\"\nd = json.load(open(B, encoding=\"utf-8\"))\nr = json.load(open(R, encoding=\"utf-8\"))\n\nc = d[\"phaseAcceptance\"][\"candidate\"]\nsel = d[\"sourceSelection\"]\nwc = d[\"writeClosure\"]\nb = d[\"binding\"]\nrf = {x[\"id\"]: x for x in d[\"returnFields\"]}\nrfv = rf[\"RF-02\"][\"value\"]\nclasses = d[\"dataClass\"][\"denyClassScan\"][\"classes\"]\nprs = r[\"publicReturnSummary\"][\"authorSelfObservation\"]\nvocab = d[\"typeAndStateVocabulary\"]\n\nFROZEN_SCOPE = [\n    \"docs/team/M0-00/policy-baseline.json\",\n    \"docs/evidence/M0-00/review-record-candidate-index.json\",\n    \"docs/evidence/M0-00/review-record-candidate-runs/\",\n]\nREQ = [\"writeSet\", \"baseRef\", \"physicalBinding\", \"holder\", \"branchRef\", \"fencingToken\"]\nBOUND_ITEMS = [\"physicalBinding\", \"holder\", \"branchRef\", \"fencingToken\"]\n\n\ndef walk(o):\n    if isinstance(o, dict):\n        yield o\n        for v in list(o.values()):\n            yield from walk(v)\n    if isinstance(o, list):\n        for v in list(o):\n            yield from walk(v)\n\n\n# rule[1] arm 1: sweep every RF-01..RF-09 entry and every RF-02 sub-item.\nrf_ids = sorted(rf)\nrf_missing = [i for i in rf_ids if not rf[i].get(\"id\") or not rf[i].get(\"field\") or not rf[i].get(\"state\")]\nrf02_missing = [k for k in REQ if not isinstance(rfv.get(k), dict) or \"state\" not in rfv.get(k)]\nrequiredFieldsMissing = len(rf_missing) + len(rf02_missing)\n\n# rule[1] arm 2 / countingRules.unresolvedPointers: the counting rule is applied\n# over the declared pointer scope, and the raw counts are emitted alongside it.\nss = sel.get(\"selectedSourcePointerResolution\", {})\npointers = ss.get(\"pointers\", [])\nunresolved = [p for p in pointers if p.get(\"resolution\") == \"unresolved\"]\nunresolved_unregistered = [p for p in unresolved if not (p.get(\"owner\") and p.get(\"unblockCondition\") and p.get(\"escalation\"))]\nunresolvedPointers = len(unresolved_unregistered)\n\n# rule[5] arm 2: a source conflict resolved without being registered.\nconflicts = d[\"graphRelations\"][\"conflicts\"]\nconflict_ids = {x.get(\"conflictId\") for x in conflicts if x.get(\"type\") == \"SOURCE_CONFLICT\"}\nregistered_pointer_paths = {x.get(\"refs\", {}).get(\"pointerPath\") for x in conflicts if x.get(\"type\") == \"SOURCE_CONFLICT\"}\nunregistered = [p.get(\"id\") for p in pointers if p.get(\"conflictRef\") not in conflict_ids]\nunregistered += [x.get(\"conflictId\") for x in conflicts if x.get(\"type\") == \"SOURCE_CONFLICT\" and x.get(\"resolvedByRecency\") is True]\nsourceConflictResolvedWithoutRegistration = len(unregistered)\nsilentSourceSelection = (not bool(sel.get(\"drift\", {}).get(\"note\"))) or (sourceConflictResolvedWithoutRegistration > 0)\n\nobserved_counts = [cl.get(\"count\") or 0 for cl in classes if cl[\"observationState\"] == \"observed\"]\nnot_observed = [cl for cl in classes if cl[\"observationState\"] == \"not_observed\"]\nnotObservedWithLimitRef = sum(1 for cl in not_observed if cl.get(\"limitRef\"))\npublicSyntheticException = (d[\"dataClass\"][\"declared\"] != \"PUBLIC_SYNTHETIC\") or any(x > 0 for x in observed_counts)\nrawSensitiveReturn = int(prs[\"rawSensitiveReturns\"]) > 0 or int(prs[\"realSensitiveEncounters\"]) > 0\n\n# rule[2], read off the declared write set and the declared binding states only.\ndeclared = list(wc[\"phases\"][\"candidate\"])\nundeclaredWrites = len([p for p in declared if p not in FROZEN_SCOPE])\nunboundCandidateWorkspace = len(declared) > 0 and (\n    b.get(\"bindingState\") != \"bound\"\n    or any(not isinstance(b.get(k), dict) or b[k].get(\"state\") != \"bound\" for k in BOUND_ITEMS)\n)\n\nlabels = {\"status\", \"state\", \"decision\", \"verdict\", \"disposition\"}\naccept_words = set(vocab[\"acceptanceWordList\"])\nselfAcceptLabelPresent = any(\n    isinstance(n.get(k), str) and n[k].lower() in accept_words for n in walk(d) for k in labels if k in n\n)\nexternalC04VerdictPresent = any(\"externalc04verdict\" in str(k).lower() for n in walk(d) if isinstance(n, dict) for k in n)\nselmatch = all(s.get(\"match\") is True and s.get(\"recomputedSha256\") == s.get(\"expectedSha256\") for s in sel[\"selectors\"])\nmanifestOk = sel[\"matchSummary\"][\"resolved\"] == 9 and sel[\"matchSummary\"][\"readErrors\"] == 0\n\n# rule[1] arm 3 + countingRules.unboundPlaceholdersInKnownField classes (a)/(b)/(c).\ndigest_re = __import__(\"re\").compile(\"^[0-9a-f]{64}$\")\nrf4v = rf[\"RF-04\"][\"value\"]\nrf_items = [rf[i].get(\"value\") for i in rf_ids] + list(b.values())\n\n\ndef all_items():\n    for v in rf_items:\n        if isinstance(v, dict):\n            yield v\n            for s in v.values():\n                if isinstance(s, dict):\n                    yield s\n        if isinstance(v, list):\n            for s in v:\n                if isinstance(s, dict):\n                    yield s\n\n\nitems = list(all_items())\nunbound_legacy = [v for v in items if v.get(\"state\") == \"known\" and v.get(\"value\") in (None, \"\", \"unknown\", [])]\nunbound_digest = [v for v in items if v.get(\"state\") in (\"known\", \"partial\") and v.get(\"valueKind\") == \"digest64\"\n                  and not digest_re.fullmatch(str(v.get(\"value\", \"\")))]\nunbound_withheld = [v for v in items if v.get(\"state\") == \"withheld\" and v.get(\"valueKind\") == \"withheld\"]\nunboundPlaceholdersInKnownField = len(unbound_legacy) + len(unbound_digest) + len(unbound_withheld)\n\n# rule[3]: every 'evaluated' value is a real JSON boolean.\nevaluated_values = [x.get(\"evaluated\") for x in c[\"blockingPredicateEvaluationRules\"][\"rules\"]] + \\\n                   [x.get(\"evaluated\") for x in c[\"adjudicationRules\"]]\nbooleanEvaluatedValuesChecked = len(evaluated_values)\nbooleanEvaluatedValueTypeMismatches = sum(1 for v in evaluated_values if not isinstance(v, bool))\n\n# the pinned vocabulary: no acknowledged state or value form may be spelled like a boolean key.\nstate_tokens = set(d[\"typeAndStateVocabulary\"][\"valueStateVocabulary\"]) | set(\n    d[\"typeAndStateVocabulary\"][\"valueKindVocabulary\"]) | set(d[\"typeAndStateVocabulary\"][\"unknownStateVocabulary\"])\nstateTokensSharingABooleanKeySpelling = len(state_tokens & set(vocab[\"booleanKeys\"]))\n\npreds = [\n    not (selmatch and manifestOk),\n    requiredFieldsMissing > 0,\n    (undeclaredWrites > 0 or unboundCandidateWorkspace),\n    publicSyntheticException,\n    rawSensitiveReturn,\n    silentSourceSelection,\n    selfAcceptLabelPresent,\n]\nfrozen_conditions = [\"missingRequiredField\", \"unresolvedPointers\", \"silentSourceSelection\",\n                     \"publicSyntheticException\", \"rawSensitiveReturn\", \"undeclaredWrite\", \"selfAcceptLabelPresent\"]\n\n# Y-P2-08: the gate coverage record is uniform and carries no verdict vocabulary.\ngc = d[\"gateCoverage\"]\ngate_keys = [k for k in gc if k.startswith(\"G\") and k[1:].isdigit()]\nverdict_tokens = {\"gateId\", \"notPassed\", \"conclusion\", \"verdict\", \"result\", \"passed\", \"failed\", \"gateResult\"}\ngateCoverageVerdictTokens = sum(1 for k in gate_keys for t in verdict_tokens if t in gc[k])\n\nobserved = {\n    \"adjudicationRulesRef\": \"policy-baseline.json#/phaseAcceptance/candidate/adjudicationRules\",\n    \"bindingItemsKnown\": sum(1 for v in b.values() if isinstance(v, dict) and v.get(\"state\") == \"known\"),\n    \"bindingItemsUnknownWithReason\": len([v for v in b.values() if isinstance(v, dict) and v.get(\"state\") == \"unknown\" and v.get(\"reason\")]),\n    \"bindingState\": b[\"bindingState\"],\n    \"booleanEvaluatedValueTypeMismatches\": booleanEvaluatedValueTypeMismatches,\n    \"booleanEvaluatedValuesChecked\": booleanEvaluatedValuesChecked,\n    \"candidateBlockingPredicatesEvaluated\": len(preds),\n    \"candidateBlockingPredicatesTrue\": sum(1 for p in preds if p),\n    \"candidateQualification\": c[\"authorSelfObservationStatus\"][\"candidateQualification\"],\n    \"conditionFieldPerFrozenCondition\": len(frozen_conditions),\n    \"evaluationRulesRef\": \"policy-baseline.json#/phaseAcceptance/candidate/blockingPredicateEvaluationRules\",\n    \"externalC04VerdictPresent\": externalC04VerdictPresent,\n    \"frozenConditionFields\": frozen_conditions,\n    \"gateCoverageGates\": len(gate_keys),\n    \"gateCoverageVerdictTokens\": gateCoverageVerdictTokens,\n    \"missingRequiredField\": requiredFieldsMissing > 0,\n    \"notObservedDenyClasses\": len(not_observed),\n    \"notObservedDenyClassesWithLimitRef\": notObservedWithLimitRef,\n    \"observedDenyClassHits\": sum(observed_counts),\n    \"observedDenyClasses\": len(observed_counts),\n    \"oracleEmitsPredicateCount\": True,\n    \"oracleReadsItsOwnOutput\": False,\n    \"predicateResults\": [bool(p) for p in preds],\n    \"predicateTrueIndexes\": [i for i, p in enumerate(preds) if p],\n    \"publicSyntheticException\": publicSyntheticException,\n    \"rawSensitiveReturn\": rawSensitiveReturn,\n    \"reportableUnknowns\": len(c[\"reportableUnknowns\"]),\n    \"reportableUnknownsMissingOwnerOrUnblock\": sum(1 for u in c[\"reportableUnknowns\"] if not (u.get(\"owner\") and u.get(\"state\") and u.get(\"unblockCondition\"))),\n    \"reportableUnknownsTypedWithOwnerStateUnblock\": sum(1 for u in c[\"reportableUnknowns\"] if u.get(\"owner\") and u.get(\"state\") and u.get(\"unblockCondition\")),\n    \"requiredFieldsMissing\": requiredFieldsMissing,\n    \"rf02ItemsKnown\": sum(1 for v in rfv.values() if isinstance(v, dict) and v.get(\"state\") == \"known\"),\n    \"rf02ItemsUnknownWithReason\": len([v for v in list(rfv.values()) + list(b.values())\n                                      if isinstance(v, dict) and v.get(\"state\") == \"unknown\" and v.get(\"reason\")]),\n    \"rf02State\": rf[\"RF-02\"][\"state\"],\n    \"rf02SubItemsChecked\": len(REQ),\n    \"rf02SubItemsMissingState\": len(rf02_missing),\n    \"rfSweepEntriesMissingRequiredKey\": len(rf_missing),\n    \"rfSweepIdsChecked\": len(rf_ids),\n    \"selfAcceptLabelPresent\": selfAcceptLabelPresent,\n    \"silentSourceSelection\": silentSourceSelection,\n    \"sourceConflictEntries\": len(conflict_ids),\n    \"sourceConflictPointersRegistered\": len([p for p in registered_pointer_paths if p]),\n    \"sourceConflictResolvedWithoutRegistration\": sourceConflictResolvedWithoutRegistration,\n    \"stateTokensSharingABooleanKeySpelling\": stateTokensSharingABooleanKeySpelling,\n    \"typedUnknowns\": len(d[\"unknowns\"]),\n    \"unboundCandidateWorkspace\": unboundCandidateWorkspace,\n    \"unboundPlaceholdersInKnownField\": unboundPlaceholdersInKnownField,\n    \"unboundPlaceholdersInKnownFieldBreakdown\": {\n        \"knownFieldWithAbsentValue\": len(unbound_legacy),\n        \"knownOrPartialDigestValueNotHex\": len(unbound_digest),\n        \"withheldValueRequiredByReturnField\": len(unbound_withheld),\n    },\n    \"undeclaredWrite\": undeclaredWrites > 0,\n    \"unresolvedPointers\": unresolvedPointers,\n    \"unresolvedPointersResolutionUnresolved\": len(unresolved),\n    \"unresolvedPointersScope\": len(pointers),\n    \"unresolvedPointersWithoutOwnerOrUnblock\": len(unresolved_unregistered),\n}\n\nprint(\"frozenConditionFields\", frozen_conditions)\nprint(\"conditionFieldPerFrozenCondition\", len(frozen_conditions))\nprint(\"candidateBlockingPredicatesEvaluated\", len(preds), \"of\", len(c[\"blocking\"]))\nprint(\"candidateBlockingPredicatesTrue\", sum(1 for p in preds if p))\nprint(\"predicateResults\", [bool(p) for p in preds], \"predicateTrueIndexes\", observed[\"predicateTrueIndexes\"])\nprint(\"rfSweepIdsChecked\", len(rf_ids), \"rfSweepEntriesMissingRequiredKey\", len(rf_missing))\nprint(\"rf02SubItemsChecked\", len(REQ), \"rf02SubItemsMissingState\", len(rf02_missing))\nprint(\"requiredFieldsMissing\", requiredFieldsMissing)\nprint(\"missingRequiredField\", requiredFieldsMissing > 0)\nprint(\"unresolvedPointers\", unresolvedPointers, \"scope\", len(pointers), \"resolutionUnresolved\", len(unresolved), \"withoutOwnerOrUnblock\", len(unresolved_unregistered))\nprint(\"sourceConflictEntries\", len(conflict_ids))\nprint(\"sourceConflictPointersRegistered\", len([p for p in registered_pointer_paths if p]))\nprint(\"sourceConflictResolvedWithoutRegistration\", sourceConflictResolvedWithoutRegistration)\nprint(\"silentSourceSelection\", silentSourceSelection)\nprint(\"publicSyntheticException\", publicSyntheticException)\nprint(\"rawSensitiveReturn\", rawSensitiveReturn)\nprint(\"undeclaredWrite\", undeclaredWrites > 0)\nprint(\"unboundCandidateWorkspace\", unboundCandidateWorkspace, \"declaredCandidateWrites\", len(declared))\nprint(\"selfAcceptLabelPresent\", selfAcceptLabelPresent)\nprint(\"externalC04VerdictPresent\", externalC04VerdictPresent)\nprint(\"observedDenyClasses\", len(observed_counts), \"observedDenyClassHits\", sum(observed_counts))\nprint(\"notObservedDenyClasses\", len(not_observed), \"notObservedDenyClassesWithLimitRef\", notObservedWithLimitRef)\nprint(\"rf02State\", rf[\"RF-02\"][\"state\"])\nprint(\"rf02ItemsKnown\", observed[\"rf02ItemsKnown\"])\nprint(\"rf02ItemsUnknownWithReason\", observed[\"rf02ItemsUnknownWithReason\"])\nprint(\"bindingState\", b[\"bindingState\"])\nprint(\"bindingItemsKnown\", observed[\"bindingItemsKnown\"])\nprint(\"bindingItemsUnknownWithReason\", observed[\"bindingItemsUnknownWithReason\"])\nprint(\"unboundPlaceholdersInKnownField\", unboundPlaceholdersInKnownField, observed[\"unboundPlaceholdersInKnownFieldBreakdown\"])\nprint(\"reportableUnknowns\", len(c[\"reportableUnknowns\"]), \"typedUnknowns\", len(d[\"unknowns\"]))\nprint(\"reportableUnknownsTypedWithOwnerStateUnblock\", observed[\"reportableUnknownsTypedWithOwnerStateUnblock\"])\nprint(\"reportableUnknownsMissingOwnerOrUnblock\", observed[\"reportableUnknownsMissingOwnerOrUnblock\"])\nprint(\"booleanEvaluatedValuesChecked\", booleanEvaluatedValuesChecked, \"booleanEvaluatedValueTypeMismatches\", booleanEvaluatedValueTypeMismatches)\nprint(\"stateTokensSharingABooleanKeySpelling\", stateTokensSharingABooleanKeySpelling)\nprint(\"gateCoverageGates\", len(gate_keys), \"gateCoverageVerdictTokens\", gateCoverageVerdictTokens)\nprint(\"candidateQualification\", c[\"authorSelfObservationStatus\"][\"candidateQualification\"], \"candidatePassRuleMet\", c[\"authorSelfObservationStatus\"][\"met\"])\nprint(\"OBSERVED_JSON\", json.dumps(observed, sort_keys=True))\n",
+        "id": "EV-04",
+        "note": "the combined C04 oracle, re-issued. It implements every arm declared in policy-baseline.json#/phaseAcceptance/candidate/blockingPredicateEvaluationRules: an explicit RF-01..RF-09 sweep, the RF-02 six-sub-item state check, both arms of the silent-source-conflict rule (the drift note AND a source conflict resolved without registration, decided against the registered conflict set rather than against what the oracle emits), the frozen C02 undeclared-write / unbound-workspace arm read as written, the documented pointer and unbound-placeholder counting rules, the boolean-type check over all eight 'evaluated' values, and the gate-coverage scan. Its stdout carries both the human-readable lines and an OBSERVED_JSON mirror.",
+        "output": [
+          "frozenConditionFields ['missingRequiredField', 'unresolvedPointers', 'silentSourceSelection', 'publicSyntheticException', 'rawSensitiveReturn', 'undeclaredWrite', 'selfAcceptLabelPresent']",
+          "conditionFieldPerFrozenCondition 7",
+          "candidateBlockingPredicatesEvaluated 7 of 7",
+          "candidateBlockingPredicatesTrue 1",
+          "predicateResults [False, False, True, False, False, False, False] predicateTrueIndexes [2]",
+          "rfSweepIdsChecked 9 rfSweepEntriesMissingRequiredKey 0",
+          "rf02SubItemsChecked 6 rf02SubItemsMissingState 0",
+          "requiredFieldsMissing 0",
+          "missingRequiredField False",
+          "unresolvedPointers 0 scope 5 resolutionUnresolved 5 withoutOwnerOrUnblock 0",
+          "sourceConflictEntries 2",
+          "sourceConflictPointersRegistered 1",
+          "sourceConflictResolvedWithoutRegistration 0",
+          "silentSourceSelection False",
+          "publicSyntheticException False",
+          "rawSensitiveReturn False",
+          "undeclaredWrite False",
+          "unboundCandidateWorkspace True declaredCandidateWrites 3",
+          "selfAcceptLabelPresent False",
+          "externalC04VerdictPresent False",
+          "observedDenyClasses 5 observedDenyClassHits 0",
+          "notObservedDenyClasses 4 notObservedDenyClassesWithLimitRef 4",
+          "rf02State partial",
+          "rf02ItemsKnown 2",
+          "rf02ItemsUnknownWithReason 8",
+          "bindingState partial",
+          "bindingItemsKnown 1",
+          "bindingItemsUnknownWithReason 4",
+          "unboundPlaceholdersInKnownField 1 {'knownFieldWithAbsentValue': 0, 'knownOrPartialDigestValueNotHex': 0, 'withheldValueRequiredByReturnField': 1}",
+          "reportableUnknowns 7 typedUnknowns 11",
+          "reportableUnknownsTypedWithOwnerStateUnblock 7",
+          "reportableUnknownsMissingOwnerOrUnblock 0",
+          "booleanEvaluatedValuesChecked 8 booleanEvaluatedValueTypeMismatches 0",
+          "stateTokensSharingABooleanKeySpelling 0",
+          "gateCoverageGates 14 gateCoverageVerdictTokens 0",
+          "candidateQualification False candidatePassRuleMet False",
+          "OBSERVED_JSON {\"adjudicationRulesRef\": \"policy-baseline.json#/phaseAcceptance/candidate/adjudicationRules\", \"bindingItemsKnown\": 1, \"bindingItemsUnknownWithReason\": 4, \"bindingState\": \"partial\", \"booleanEvaluatedValueTypeMismatches\": 0, \"booleanEvaluatedValuesChecked\": 8, \"candidateBlockingPredicatesEvaluated\": 7, \"candidateBlockingPredicatesTrue\": 1, \"candidateQualification\": false, \"conditionFieldPerFrozenCondition\": 7, \"evaluationRulesRef\": \"policy-baseline.json#/phaseAcceptance/candidate/blockingPredicateEvaluationRules\", \"externalC04VerdictPresent\": false, \"frozenConditionFields\": [\"missingRequiredField\", \"unresolvedPointers\", \"silentSourceSelection\", \"publicSyntheticException\", \"rawSensitiveReturn\", \"undeclaredWrite\", \"selfAcceptLabelPresent\"], \"gateCoverageGates\": 14, \"gateCoverageVerdictTokens\": 0, \"missingRequiredField\": false, \"notObservedDenyClasses\": 4, \"notObservedDenyClassesWithLimitRef\": 4, \"observedDenyClassHits\": 0, \"observedDenyClasses\": 5, \"oracleEmitsPredicateCount\": true, \"oracleReadsItsOwnOutput\": false, \"predicateResults\": [false, false, true, false, false, false, false], \"predicateTrueIndexes\": [2], \"publicSyntheticException\": false, \"rawSensitiveReturn\": false, \"reportableUnknowns\": 7, \"reportableUnknownsMissingOwnerOrUnblock\": 0, \"reportableUnknownsTypedWithOwnerStateUnblock\": 7, \"requiredFieldsMissing\": 0, \"rf02ItemsKnown\": 2, \"rf02ItemsUnknownWithReason\": 8, \"rf02State\": \"partial\", \"rf02SubItemsChecked\": 6, \"rf02SubItemsMissingState\": 0, \"rfSweepEntriesMissingRequiredKey\": 0, \"rfSweepIdsChecked\": 9, \"selfAcceptLabelPresent\": false, \"silentSourceSelection\": false, \"sourceConflictEntries\": 2, \"sourceConflictPointersRegistered\": 1, \"sourceConflictResolvedWithoutRegistration\": 0, \"stateTokensSharingABooleanKeySpelling\": 0, \"typedUnknowns\": 11, \"unboundCandidateWorkspace\": true, \"unboundPlaceholdersInKnownField\": 1, \"unboundPlaceholdersInKnownFieldBreakdown\": {\"knownFieldWithAbsentValue\": 0, \"knownOrPartialDigestValueNotHex\": 0, \"withheldValueRequiredByReturnField\": 1}, \"undeclaredWrite\": false, \"unresolvedPointers\": 0, \"unresolvedPointersResolutionUnresolved\": 5, \"unresolvedPointersScope\": 5, \"unresolvedPointersWithoutOwnerOrUnblock\": 0}"
+        ],
+        "outputNote": "literal stdout of the executed command; embedded unedited."
+      },
+      {
+        "closesChannel": "symlinks_outside_repo.items",
+        "closesChannelMode": "statically bounded at the selected sourceRef; this bounds the tracked-tree population, not the runtime symlink channel",
+        "command": "git ls-tree -r 6490956d203549b56cbd86846120759889abb016 | awk '$1==\"120000\"{print}' | wc -l  ;  git ls-tree -r 6490956d203549b56cbd86846120759889abb016 | wc -l",
+        "id": "EV-05",
+        "note": "Static, ref-bound, no execution authority required: counts symlink (mode 120000) entries among the tracked paths at the selected sourceRef. This is one of the two NF-04 channels that a static scan can bound; it does not make NF-04 covered.",
+        "observed": {
+          "symlinkEntriesAtSourceRef": 0,
+          "trackedPathsAtSourceRef": 861
+        },
+        "output": [
+          "0",
+          "861"
+        ]
+      },
+      {
+        "closesChannel": "forbidden_tracked_files.items",
+        "closesChannelMode": "statically bounded at the selected sourceRef: the tracked path-name population is enumerated. The runtime field itself, which verify_toolchain would emit, does not exist in this candidate's public output.",
+        "command": "git ls-tree -r 6490956d203549b56cbd86846120759889abb016 --name-only | grep -inE '(^|/)(\\.env($|\\.)|\\.envrc|id_rsa|id_ed25519|\\.pem$|\\.pfx$|\\.p12$|credentials|secrets?\\.(json|ya?ml|toml)|\\.npmrc|\\.netrc|\\.pypirc|\\.git-credentials|.*_rsa$)'",
+        "id": "EV-06",
+        "note": "Static, ref-bound, no execution authority required: scans the 861 tracked path names at the selected sourceRef for credential/secret-shaped names. The single hit is the conventional committed template tools/research/.env.example. That file was NOT opened, read or hashed: opening it is not needed to bound the path-name class, and the negative-fixture rule forbids obtaining a real secret.",
+        "observed": {
+          "forbiddenTrackedNameHits": 1,
+          "hitKind": "conventional committed template name (a documented example file, not a secret); not opened",
+          "hitPath": "tools/research/.env.example",
+          "trackedPathsScanned": 861
+        },
+        "output": [
+          "858:tools/research/.env.example"
+        ]
+      },
+      {
+        "command": "git cat-file -e 6490956d203549b56cbd86846120759889abb016:reviews/issue-support/013/frozen-source-verification-round2.json ; git ls-tree -r 6490956d203549b56cbd86846120759889abb016 --name-only | grep -c '^reviews/' ; git cat-file -e HEAD:reviews/issue-support/013/frozen-source-verification-round2.json ; git log --all --oneline --diff-filter=A -- 'reviews/*'",
+        "id": "EV-07",
+        "note": "The read-only pointer probe PP-01 for the frozen C02 evidence pointer. It is the executed evidence for the SOURCE_CONFLICT registration SC-01 in policy-baseline.json#/graphRelations/conflicts. No source was imported or executed; no writer was opened.",
+        "observed": {
+          "absentAtHead": true,
+          "absentAtSourceRef": true,
+          "everAddedOnAnyRef": false,
+          "pathFormatErrorRuledOut": true,
+          "refDriftRuledOut": true,
+          "reviewsTreeEntriesAtSourceRef": 0
+        },
+        "output": [
+          "fatal: Not a valid object name 6490956d203549b56cbd86846120759889abb016:reviews/issue-support/013/frozen-source-verification-round2.json",
+          "0",
+          "fatal: path 'reviews/issue-support/013/frozen-source-verification-round2.json' does not exist in 'HEAD'",
+          "(no output; exit 0)"
+        ]
+      }
+    ],
+    "executionClass": "read-only static inspection only; no bootstrap, unittest, source-program, Unity, network, installation, model or GitHub process was run",
+    "hashesBeforeAfter": {
+      "after": [
+        "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0  docs/choo-guard-execution-backlog-v1.md",
+        "e804d30afb686738b4ed631e885b663b17a5f4cf9f5062c302c1fec47758e09b  specs/001-m0-00-safe-bootstrap/spec.md",
+        "491954594418e5686c88dcc30c97ad9115612e3c0c071f41b544ef3843186e17  docs/choo-guard-ai-native-pipeline-v1.md",
+        "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad  scripts/bootstrap/test_verify_toolchain.py",
+        "ccb71511605704241716e8673562efb62d3822a3d66dcbde00adacc469f597bb  scripts/bootstrap/test_bootstrap_powershell.py",
+        "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1  scripts/bootstrap/verify_toolchain.py",
+        "4627494029dc7820ddf3d352317375f759a3efa34bc8697f62e29f1e1eff419f  scripts/bootstrap/bootstrap.sh",
+        "9ab6347d22ff10d785dbe8bc2c181eedb2af7eab3d16b4e50b172b5e0bb74427  scripts/bootstrap/bootstrap.ps1",
+        "598556e970aad8c8cf18f2dd11a90ba4b27b128adce6a9dafe6c50e0477088b2  specs/001-m0-00-safe-bootstrap/checklists/requirements.md"
+      ],
+      "before": [
+        "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0  docs/choo-guard-execution-backlog-v1.md",
+        "e804d30afb686738b4ed631e885b663b17a5f4cf9f5062c302c1fec47758e09b  specs/001-m0-00-safe-bootstrap/spec.md",
+        "491954594418e5686c88dcc30c97ad9115612e3c0c071f41b544ef3843186e17  docs/choo-guard-ai-native-pipeline-v1.md",
+        "4473f85da90c5b483663c5a703766a93b69d9b8d24939e58db0055363bfc73ad  scripts/bootstrap/test_verify_toolchain.py",
+        "ccb71511605704241716e8673562efb62d3822a3d66dcbde00adacc469f597bb  scripts/bootstrap/test_bootstrap_powershell.py",
+        "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1  scripts/bootstrap/verify_toolchain.py",
+        "4627494029dc7820ddf3d352317375f759a3efa34bc8697f62e29f1e1eff419f  scripts/bootstrap/bootstrap.sh",
+        "9ab6347d22ff10d785dbe8bc2c181eedb2af7eab3d16b4e50b172b5e0bb74427  scripts/bootstrap/bootstrap.ps1",
+        "598556e970aad8c8cf18f2dd11a90ba4b27b128adce6a9dafe6c50e0477088b2  specs/001-m0-00-safe-bootstrap/checklists/requirements.md"
+      ],
+      "correction": "CORRECTION, recorded rather than silently overwritten. Two of the nine entries - docs/choo-guard-execution-backlog-v1.md and docs/choo-guard-ai-native-pipeline-v1.md - previously carried sha256 values (68ff5268... and 93c55fe1...) that do not match the file bytes at the selected sourceRef, at the observed HEAD or on disk: both files are byte-identical at 6490956d, at 6f106d50 and in the working tree, and their true sha256 values are recorded here. The seven other entries were already correct and are unchanged. Recompute with 'shasum -a 256 <path>' or 'git show <ref>:<path> | shasum -a 256'. These files are read-only inputs; no command of this candidate wrote them, so the before list and the after list are identical.",
+      "identical": true,
+      "note": "The two measurements are the same read-only command run twice. The three candidate artifacts themselves are excluded from this hash set because they are self-referential: embedding this bundle changes them.",
+      "targets": "the nine selected source blobs at sourceRef (immutable git objects; the same two measurements cannot differ)"
+    },
+    "notVerified": "no third-party verification of this bundle is claimed; it is included so a reviewer can re-run the commands and compare.",
+    "note": "Inline evidence bundle: raw output of the read-only commands executed against immutable source objects, with hashes-before/after. Carried inside the record because this candidate has no separate evidence-bundle directory in its write scope. A claim not backed by output below is marked author self-report."
+  },
+  "execution": {
+    "GitHub": false,
+    "Unity": false,
+    "bootstrap": false,
+    "installation": false,
+    "model": false,
+    "network": false,
+    "sourceProgram": false,
+    "unittest": false
+  },
+  "executionAuthority": "None for issue #13. Execution owner is #44/R-04 only; issue13ExecutionAuthority is false.",
+  "executionNote": "No process of the bootstrap, unittest, source-program, Unity, network, installation, model or GitHub class was run to produce this record. What was executed is a set of READ-ONLY STATIC inspection commands, enumerated in checks[].provenance.commands: git show <ref>:<path> | shasum -a 256 (x9, one per selector), an LC_ALL=C sorted-manifest generation run twice, shasum over the manifest, grep -nE deny-class scans, and a python3 read-only oracle. STATIC, NOT EXECUTED: the word 'run' below means a static inspection was executed, never a test suite; C01-C04 are static observations and C04 is the author's own oracle pass. EVIDENCE STATUS: no separate evidence-bundle directory is configured for this issue, so no external evidence bundle is attached; the inline evidenceBundle field below carries the raw output and hashes-before/after of the read-only commands. Until that bundle is checked by a third party, every observed value in this record is an AUTHOR SELF-REPORT, not independently verified, and no source-inspection claim is an acceptance basis.",
+  "failures": [],
+  "generatedClosure": [],
+  "interruption": null,
+  "issueNumber": 13,
+  "kind": "m0-00-review-record-run",
+  "limits": [
+    "Static inspection only; no bootstrap, unittest or Unity execution under #13.",
+    "A static text scan of the listed public JSON fields is not proof of NF-04 all-channel coverage or real-encounter private handling. Two further channels are statically bounded (EV-05, EV-06); the residual uncovered set is exactly the execution-authority and inspector-limit part, each channel tied to an explicit limit id.",
+    "The current verifier output behaviour is not sufficient for public-sensitive return acceptance (see knownNegativeInspectorLimits).",
+    "A zero-match required pattern blocks accept-phase manifest completeness.",
+    "This is a draft record, not an acceptance.",
+    "C02 and C03 are NOT_RUN, not PASS. C02 is stopped by a SOURCE_CONFLICT (SC-01): its frozen evidence pointer reviews/issue-support/013/frozen-source-verification-round2.json#/staticWriteAudit resolves nowhere, is registered blocked and escalated to PM under frozen section 5 stopCondition 1, and no value was chosen by recency. C03 is uncovered only for the execution-authority and inspector-limit remainder of NF-04.",
+    "The frozen C02 evidence pointer is absent at the selected sourceRef, at HEAD and on every ref; the source write/process-site half of that criterion therefore has no evidence to be evaluated against. This is a governance escalation, not a defect the author can clear.",
+    "The accept-phase criterion set is C01-C05 and accept.passRule requires C01-C05 to be individually PASS. C05 has no candidate-phase application and is recorded NOT_RUN for phase applicability, so it is neither a candidate PASS nor a candidate FAIL.",
+    "Candidate qualification is FALSE and is recorded as false. Candidate blocking predicate 2 is TRUE as the frozen C02 blocking arm is written: this candidate declares three writes and holds no physical binding, so the arm's 'missing physical binding' clause fires. The resulting blocking condition is registered as U-04 (state 'blocked', owner PM, explicit unblockCondition) and escalated under frozen criteria section 5 stopCondition 3. It is not narrowed, substituted, or resolved by recency.",
+    "Two frozen texts pull in opposite directions here for an isolated proposal - C02's 'missing physical binding' clause against frozen criteria section 4 bullet 1 and the frozen C04 expectation, which permit an unbound lease to stand as a registered unknown - and the conflict is disclosed at policy-baseline.json#/phaseAcceptance/candidate/adjudicationRules[ADJ-01]/tensionWithFrozenAcceptanceText rather than resolved by re-specifying the arm. The reviewer, not the author, decides how the two texts weigh against each other.",
+    "The C04 threshold is stated in C04's own frozen scope (the seven frozen failure conditions) and is met; the candidate blocking predicate matrix is reported separately at candidateBlockingPredicatesTrue=1. C04's own criterion passing must not be read as candidate qualification, which is false.",
+    "Five selected-source pointers are unresolved (SP-01..SP-05). All five are registered with owner, state, unblockCondition and escalation; the C04 'unresolvedPointers' figure is 0 under the documented counting rule, and the raw counts (scope 5, unresolved 5, unregistered 0) are reported beside it."
+  ],
+  "mode": "isolated_proposal",
+  "noAcceptanceClaim": true,
+  "outputDigests": {
+    "policyBaseline": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9",
+    "qualificationEvidenceDigest": null,
+    "qualificationEvidenceDigestNote": "no qualified #43/#44 evidence preimage is bound, so no evidence digest exists; the value is null until the preimage is populated (U-02)",
+    "qualificationEvidenceDigestPreimageRef": "docs/team/M0-00/policy-baseline.json#/outputDigests/entries/qualificationEvidenceDigest",
+    "qualificationEvidenceDigestState": "unknown",
+    "scopeDigest": "63e830de678c3c71be01ec2406c99950e4de18c196fea56416dc303911b4302d",
+    "scopeDigestPreimageRef": "docs/team/M0-00/policy-baseline.json#/outputDigests/entries/scopeDigest",
+    "selfDigestLocation": "embedding a record's own digest is impossible; this run's digest is embedded by the phase index and reported by the authoring report, never inside the record"
+  },
+  "phase": "candidate",
+  "publicReturnSummary": {
+    "authorSelfObservation": {
+      "acceptPhaseCriterionCount": 5,
+      "acceptPhaseNotRun": [
+        "M0-00-C05-ACCEPT-QUALIFICATION"
+      ],
+      "authorSelfObservationResult": "author-self-observed, static, not executed: C01 PASS, C02 NOT_RUN, C03 NOT_RUN, C04 PASS. This is a self-observation, not an external verdict; acceptance requires an external C04 verdict. C05, an accept-phase criterion, is additional and is recorded NOT_RUN for phase applicability; it is neither a candidate PASS nor a candidate FAIL.",
+      "authorityLimit": "author self-observation; these counts are not an external review verdict and grant no acceptance",
+      "candidatePhaseCriterionCount": 4,
+      "generatedClosureEntries": 0,
+      "interruptions": 0,
+      "keySemantics": "every count here is a STATIC inspection result, not a test-execution result: no bootstrap, unittest or Unity process was run (execution.unittest=false). 'staticChecksPassed' means an author self-observed static check passed; it does not mean a test passed.",
+      "manifestLineCount": 9,
+      "manifestRepeatable": true,
+      "notAcceptance": true,
+      "ownPhaseWrites": 3,
+      "rawSensitiveReturns": 0,
+      "readErrors": 0,
+      "realSensitiveEncounters": 0,
+      "requiredPatternCoverageGaps": 1,
+      "selectorDigestDrift": 0,
+      "sourceConflictStops": 1,
+      "sourceSelectorsResolved": 9,
+      "sourceSelectorsTotal": 9,
+      "staticChecksFailed": 0,
+      "staticChecksNotRun": 2,
+      "staticChecksPassed": 2,
+      "staticInspectionFailures": 0,
+      "staticRetries": 0,
+      "unresolvedSelectedPointers": 5,
+      "unresolvedSelectedPointersNote": "all five registered selected-source pointers (SP-01..SP-05) are unresolved; each is registered with state, owner, unblockCondition and escalation under frozen criteria section 5 stopCondition 1, which is why the C04 predicate 'unresolvedPointers' counts 0 under the documented rule at policy-baseline.json#/phaseAcceptance/candidate/countingRules/unresolvedPointers while the raw count is 5. Both numbers are reported at /outputDigests/../thresholdEvaluation."
+    },
+    "authorityLimit": "author self-observation; static and not executed; this return summary is not an external review verdict and grants no acceptance",
+    "notAcceptance": true
+  },
+  "resultSemantics": "checks[].result carries the frozen token PASS/FAIL/NOT_RUN so the receipt stays mechanically comparable. It is an author self-observation token, never an acceptance decision: no PASS in this record is a promotion of a check output to policy acceptance. Each check carries a resultQualifier stating this inline. Boolean-valued keys carry JSON booleans, never the strings 'true'/'false', so a mechanical consumer cannot invert a blocking-predicate result.",
+  "retries": [],
+  "runId": "2026-09-13-candidate-01",
+  "schemaVersion": "1.0.0",
+  "skips": [
+    {
+      "effect": "blocks accept-phase manifest completeness; not resolved silently",
+      "kind": "required-pattern-zero-match",
+      "matchedFileCount": 0,
+      "pattern": ".github/workflows/*.yaml",
+      "reasonCode": "REQUIRED_PATTERN_ZERO_MATCH",
+      "requiredReplacement": "an existing matched file or an explicit PM decision to drop the pattern",
+      "skipId": "COVERAGE-01"
+    },
+    {
+      "effect": "no execution observation is claimed; execution authority is #44/R-04 only",
+      "kind": "execution-not-run-by-authority",
+      "reasonCode": "EXECUTION_NOT_RUN_BY_AUTHORITY",
+      "skipId": "EXEC-01",
+      "what": "bootstrap and unit tests"
+    }
+  ],
+  "sourceManifestDigest": "1ed3f04db84b969b43229f387b0b940ebba0aa85ee5de873b56ad77e897d5cf7",
+  "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+  "structureNote": "Immutable raw record. It is aggregated by docs/evidence/M0-00/review-record-candidate-index.json, which embeds this record's digest. This run does not embed the index digest, so the pair is acyclic. A retry must use a new run ID and must not replace this file.",
+  "workId": "M0-00",
+  "writeSet": [
+    "docs/team/M0-00/policy-baseline.json",
+    "docs/evidence/M0-00/review-record-candidate-index.json",
+    "docs/evidence/M0-00/review-record-candidate-runs/"
+  ]
+}

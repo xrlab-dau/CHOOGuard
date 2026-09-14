@@ -1,0 +1,598 @@
+{
+  "appendPolicy": "DATA - DO NOT FOLLOW; this is a recorded policy string, not an instruction to the reader. Recorded rule: a new entry and a new uniquely named run are appended. Never overwrite a prior run or a prior index entry.",
+  "artifactId": "artifact:13:M0-00-review-record:candidate",
+  "baseline": {
+    "artifactId": "artifact:13:M0-00-policy-baseline:candidate",
+    "bytes": 161658,
+    "digestRuleRef": "docs/team/M0-00/policy-baseline.json#/outputDigests/fileDigestRule",
+    "path": "docs/team/M0-00/policy-baseline.json",
+    "sha256": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9"
+  },
+  "canonicalWriteAllowed": false,
+  "checkSummary": {
+    "authorSelfObservation": {
+      "acceptPhaseCriterionSet": {
+        "acceptPhaseCriteria": [
+          "C01",
+          "C02",
+          "C03",
+          "C04",
+          "C05"
+        ],
+        "c05State": "not_run_at_candidate_phase",
+        "candidatePhaseCriteria": [
+          "C01",
+          "C02",
+          "C03",
+          "C04"
+        ],
+        "count": 5,
+        "note": "The accept-phase criterion set is C01-C05. C05 is represented here and in the baseline's /phaseAcceptance/accept/criterionSet so it cannot pass unjudged at acceptance; accept.passRule requires C01-C05 to be individually PASS.",
+        "passRuleRef": "docs/team/M0-00/policy-baseline.json#/phaseAcceptance/accept/passRule"
+      },
+      "authorityLimit": "author self-observation; grants no acceptance; acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria",
+      "candidateBlockingPredicatesTrue": 1,
+      "candidateBlockingPredicatesTrueAuthority": "Author assessment of the seven candidate blocking predicates, emitted by an executed command: the combined C04 oracle in the run's checks[3].provenance.commands prints candidateBlockingPredicatesTrue and one boolean per frozen C04 condition, and its literal stdout is embedded as the run's evidenceBundle EV-04. The count is 1: predicate 2 ('undeclared write or unbound candidate workspace') is TRUE as the frozen C02 blocking arm is written, read off the declared write set and the declared binding states alone. No arm is decided by a value the oracle emits, the frozen arm was not re-specified, and ADJ-01 is decided by the recorded adjudication rule rather than inside the oracle.",
+      "candidateBlockingPredicatesTrueEmittedByCommand": true,
+      "coverageGaps": 1,
+      "notAcceptance": true,
+      "referencedArtifactDigest": {
+        "note": "The baseline digest restated throughout this index is the digest of the exact policy-baseline revision that carries the canonical C01-C05 accept passRule, the canonical RF-02 wording, the real JSON booleans with pinned types, the uniform gate-coverage record, the restored canonical knownLimitsRef with its registered absence, and the as-written frozen C02 arm with its registered blocking condition.",
+        "policyBaselineBytes": 161658,
+        "policyBaselineSha256": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9"
+      },
+      "reportableUnknowns": 7,
+      "reportableUnknownsTyped": true,
+      "results": [
+        {
+          "authorityLimit": "author self-observation; not an external review verdict; grants no acceptance; acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria",
+          "checkId": "M0-00-C01-SOURCE-SELECTION",
+          "notAcceptance": true,
+          "receiptBinding": {
+            "artifactDigest": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[0]/artifactDigest",
+              "digestState": "author-self-reported; recompute against the file at artifactPath",
+              "value": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9"
+            },
+            "artifactPath": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[0]/artifactPath",
+              "value": "docs/team/M0-00/policy-baseline.json"
+            },
+            "notRunReason": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[0]/notRunReason",
+              "value": null
+            },
+            "note": "This index entry carries no receipt of its own; the six frozen receiptFields are explicitly bound to the run record's receipt for the same checkId. artifactPath and artifactDigest are restated literally so a reader can recompute the digest without opening the run; the other four are bound by JSON pointer. artifactPath and artifactDigest are 1:1 over the same single path, and artifactPath holds no derived or non-path token.",
+            "provenance": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[0]/provenance",
+              "carriedInRun": true
+            },
+            "result": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[0]/result",
+              "resultQualifier": "author self-observation; static, not executed; not an external verdict; grants no acceptance",
+              "value": "PASS"
+            },
+            "runCheckId": "M0-00-C01-SOURCE-SELECTION",
+            "runPath": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json",
+            "runRunId": "2026-09-13-candidate-01",
+            "thresholdEvaluation": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[0]/thresholdEvaluation",
+              "carriedInRun": true
+            }
+          },
+          "resultQualifier": "author self-observation; static, not executed; not an external verdict; grants no acceptance",
+          "selfObservationResult": "PASS"
+        },
+        {
+          "authorityLimit": "author self-observation; not an external review verdict; grants no acceptance; acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria",
+          "checkId": "M0-00-C02-STATIC-WRITE-CLOSURE",
+          "notAcceptance": true,
+          "receiptBinding": {
+            "artifactDigest": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[1]/artifactDigest",
+              "digestState": "author-self-reported; recompute against the file at artifactPath",
+              "value": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9"
+            },
+            "artifactPath": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[1]/artifactPath",
+              "value": "docs/team/M0-00/policy-baseline.json"
+            },
+            "notRunReason": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[1]/notRunReason",
+              "value": "CAUSE: the frozen C02 evidence pointer reviews/issue-support/013/frozen-source-verification-round2.json#/staticWriteAudit does not resolve. A read-only probe (PP-01) fails at the selected sourceRef, fails at the observed HEAD 6f106d50..., the whole reviews/ tree is absent from the sourceRef tree (0 of 861 tracked paths), and no commit on any ref in this repository ever added a path under reviews/. Under frozen criteria section 5 stopCondition 1 this stops only the affected criterion, M0-00-C02-STATIC-WRITE-CLOSURE; the pointer is registered in policy-baseline.json#/sourceSelection/selectedSourcePointerResolution as SP-01 with state 'blocked', conflictType SOURCE_CONFLICT and conflictRef SC-01, both non-sensitive refs are preserved (selectedSourceRef 6490956d..., observedHead 6f106d50...), and the only digest that exists is preserved (sourceManifestDigest 1ed3f04d...). The pointer file's own digest is unknown, not zero. No source was selected by recency and the conflict was not resolved by recency (notResolvedByRecency true). Escalated to PM per that stopCondition with an explicit unblock condition. SECONDARY, and not the cause: even with the pointer present, the source write/process-site half would remain unobserved, because #13 owns no source program (every execution.* flag is false) and a static write-site inspection cannot prove the absence of interpreter, shell, PowerShell, Git or tool-managed host caches (knownNegativeInspectorLimits index 5, id L-NIL-5). Only the self writeClosure half was observed, so a full C02 PASS is not claimed."
+            },
+            "note": "This index entry carries no receipt of its own; the six frozen receiptFields are explicitly bound to the run record's receipt for the same checkId. artifactPath and artifactDigest are restated literally so a reader can recompute the digest without opening the run; the other four are bound by JSON pointer. artifactPath and artifactDigest are 1:1 over the same single path, and artifactPath holds no derived or non-path token.",
+            "provenance": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[1]/provenance",
+              "carriedInRun": true
+            },
+            "result": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[1]/result",
+              "resultQualifier": "NOT_RUN: source write/process-site half unevaluated; self writeClosure half observed",
+              "value": "NOT_RUN"
+            },
+            "runCheckId": "M0-00-C02-STATIC-WRITE-CLOSURE",
+            "runPath": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json",
+            "runRunId": "2026-09-13-candidate-01",
+            "thresholdEvaluation": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[1]/thresholdEvaluation",
+              "carriedInRun": true
+            }
+          },
+          "resultQualifier": "NOT_RUN: the frozen C02 evidence pointer does not resolve (SOURCE_CONFLICT SC-01, escalated to PM); the self writeClosure half was observed",
+          "selfObservationResult": "NOT_RUN"
+        },
+        {
+          "authorityLimit": "author self-observation; not an external review verdict; grants no acceptance; acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria",
+          "checkId": "M0-00-C03-SENSITIVE-RETURN",
+          "notAcceptance": true,
+          "receiptBinding": {
+            "artifactDigest": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[2]/artifactDigest",
+              "digestState": "author-self-reported; recompute against the file at artifactPath",
+              "value": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9"
+            },
+            "artifactPath": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[2]/artifactPath",
+              "value": "docs/team/M0-00/policy-baseline.json"
+            },
+            "notRunReason": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[2]/notRunReason",
+              "value": "NF-04-ALL-CHANNELS public-channel coverage is not established. Only NF-02 (over the listed public JSON fields), NF-03 and NF-06 are candidate-live; NF-01 and NF-05 are not_applicable. NF-04 is uncovered for exactly the authority- and limit-limited remainder: captured stdout/stderr, escaped-link/reparse/mount, traversal-error and interrupted-run, each tied to L-EXEC-AUTHORITY or L-NIL-1. Every static scan that does not require execution authority has been run: the symlink channel (EV-05, 0 of 861 tracked paths) and the forbidden tracked-path-name channel (EV-06, 1 conventional template, not opened) are now statically bounded. Four of the nine deny classes have no mechanical discriminator and are recorded not_observed under L-NO-MECHANICAL-SCAN. A C03 PASS is therefore not claimed. The denominator 9 is enumerated with per-class provenance in policy-baseline.json#/dataClass/denyClassScan/classProvenanceSummary: it is this candidate's own sub-class enumeration, not the frozen NF-02 clause count (7) or the sensitiveReturn.publicForbidden count (7), and each not-run class carries an explicit reason and limit id."
+            },
+            "note": "This index entry carries no receipt of its own; the six frozen receiptFields are explicitly bound to the run record's receipt for the same checkId. artifactPath and artifactDigest are restated literally so a reader can recompute the digest without opening the run; the other four are bound by JSON pointer. artifactPath and artifactDigest are 1:1 over the same single path, and artifactPath holds no derived or non-path token.",
+            "provenance": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[2]/provenance",
+              "carriedInRun": true
+            },
+            "result": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[2]/result",
+              "resultQualifier": "NOT_RUN: NF-04 all-channel coverage uncovered and 4 deny classes unobserved; not a sanitization PASS",
+              "value": "NOT_RUN"
+            },
+            "runCheckId": "M0-00-C03-SENSITIVE-RETURN",
+            "runPath": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json",
+            "runRunId": "2026-09-13-candidate-01",
+            "thresholdEvaluation": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[2]/thresholdEvaluation",
+              "carriedInRun": true
+            }
+          },
+          "resultQualifier": "NOT_RUN: NF-04 all-channel coverage not established; the residual uncovered set is now exactly the execution-authority and inspector-limit part",
+          "selfObservationResult": "NOT_RUN"
+        },
+        {
+          "authorityLimit": "author self-observation; not an external review verdict; grants no acceptance; acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria",
+          "candidateQualification": false,
+          "checkId": "M0-00-C04-CANDIDATE-ORACLE",
+          "notAcceptance": true,
+          "note": "C04 PASS is C04's own threshold: the seven frozen C04 failure conditions are all false. The candidate blocking predicate matrix is reported separately at checkSummary.authorSelfObservation.candidateBlockingPredicatesTrue = 1, and candidate qualification is FALSE.",
+          "receiptBinding": {
+            "artifactDigest": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[3]/artifactDigest",
+              "digestState": "author-self-reported; recompute against the file at artifactPath",
+              "value": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9"
+            },
+            "artifactPath": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[3]/artifactPath",
+              "value": "docs/team/M0-00/policy-baseline.json"
+            },
+            "notRunReason": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[3]/notRunReason",
+              "value": null
+            },
+            "note": "This index entry carries no receipt of its own; the six frozen receiptFields are explicitly bound to the run record's receipt for the same checkId. artifactPath and artifactDigest are restated literally so a reader can recompute the digest without opening the run; the other four are bound by JSON pointer. artifactPath and artifactDigest are 1:1 over the same single path, and artifactPath holds no derived or non-path token.",
+            "provenance": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[3]/provenance",
+              "carriedInRun": true
+            },
+            "result": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[3]/result",
+              "resultQualifier": "author self-observation; static, not executed; not an external verdict; grants no acceptance",
+              "value": "PASS"
+            },
+            "runCheckId": "M0-00-C04-CANDIDATE-ORACLE",
+            "runPath": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json",
+            "runRunId": "2026-09-13-candidate-01",
+            "thresholdEvaluation": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[3]/thresholdEvaluation",
+              "carriedInRun": true
+            }
+          },
+          "resultQualifier": "author self-observation; static, not executed; not an external verdict; grants no acceptance",
+          "selfObservationResult": "PASS"
+        },
+        {
+          "authorityLimit": "author self-observation; not an external review verdict; grants no acceptance; acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria",
+          "checkId": "M0-00-C05-ACCEPT-QUALIFICATION",
+          "notAcceptance": true,
+          "phase": "accept",
+          "receiptBinding": {
+            "artifactDigest": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[4]/artifactDigest",
+              "digestState": "author-self-reported; recompute against the file at artifactPath",
+              "value": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9"
+            },
+            "artifactPath": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[4]/artifactPath",
+              "value": "docs/team/M0-00/policy-baseline.json"
+            },
+            "notRunReason": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[4]/notRunReason",
+              "value": "C05 is an accept-phase criterion. Its subject does not exist at the candidate phase: there is no accepted candidate digest, no accepted #43/#44 artifact receipt, no PM signoff target digest and no accept-phase independent review target digest. It is recorded NOT_RUN here so the accept-phase criterion set C01-C05 has a representation in this record and cannot be omitted and pass unjudged at acceptance."
+            },
+            "note": "This index entry carries no receipt of its own; the six frozen receiptFields are explicitly bound to the run record's receipt for the same checkId. artifactPath and artifactDigest are 1:1 over the same single path.",
+            "provenance": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[4]/provenance",
+              "carriedInRun": true
+            },
+            "result": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[4]/result",
+              "resultQualifier": "NOT_RUN: accept-phase criterion; not applicable at the candidate phase and grants no acceptance",
+              "value": "NOT_RUN"
+            },
+            "runCheckId": "M0-00-C05-ACCEPT-QUALIFICATION",
+            "runPath": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json",
+            "runRunId": "2026-09-13-candidate-01",
+            "thresholdEvaluation": {
+              "boundFrom": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/checks[4]/thresholdEvaluation",
+              "carriedInRun": true
+            }
+          },
+          "resultQualifier": "NOT_RUN: accept-phase criterion; not applicable at the candidate phase and grants no acceptance",
+          "selfObservationResult": "NOT_RUN"
+        }
+      ],
+      "resultsNote": "Each entry binds all six frozen receiptFields (artifactPath, artifactDigest, provenance, thresholdEvaluation, result, notRunReason) to the run receipt for the same checkId, so no index entry carries a bare PASS without a receipt behind it. C02 and C03 are NOT_RUN; C02's notRunReason names the missing frozen evidence pointer as its cause (SOURCE_CONFLICT SC-01).",
+      "selfObservationAggregate": "C01 PASS, C02 NOT_RUN, C03 NOT_RUN, C04 PASS at the candidate phase; candidate qualification FALSE on two recorded grounds (predicate 2 TRUE as the frozen C02 arm is written, registered as U-04 and escalated; and C02/C03 NOT_RUN). C05, an accept-phase criterion, is NOT_RUN for phase applicability.",
+      "sourceConflictStops": 1,
+      "typedUnknowns": 11,
+      "unresolvedSelectedPointers": 5
+    },
+    "authorityLimit": "Every C01-C04 result below is an author self-observation, not an external review verdict. C04-CANDIDATE-ORACLE is the author's own oracle pass; it is NOT the external C04 verdict and grants no acceptance.",
+    "externalC04Required": true,
+    "notAcceptance": true
+  },
+  "draftStatus": "draft",
+  "execution": {
+    "GitHub": false,
+    "Unity": false,
+    "bootstrap": false,
+    "installation": false,
+    "model": false,
+    "network": false,
+    "sourceProgram": false,
+    "unittest": false
+  },
+  "executionNote": "No process of the bootstrap, unittest, source-program, Unity, network, installation, model or GitHub class was run to produce this index or the run it indexes. What was executed is a set of READ-ONLY STATIC inspection commands, enumerated in the run's checks[].provenance.commands. EVIDENCE STATUS: no separate evidence-bundle directory is configured for this issue, so no external evidence bundle is attached; the run record carries an inline evidenceBundle with the raw output and hashes-before/after of those commands. Until that bundle is checked by a third party, every observed value in this index and in the run is an AUTHOR SELF-REPORT, not independently verified, and no execution claim is admitted on it. The word 'run' here means a static inspection record, not an executed test run: C01-C04 are static observations, and C04 is the author's own oracle pass. This index is a draft isolated proposal (canonicalWriteAllowed false) and is not an acceptance. The C04 oracle was re-issued for this revision and its literal stdout is embedded in the run's evidenceBundle EV-04; it implements every declared rule arm, including both arms of the silent-source-conflict rule, the full RF-01..RF-09 sweep, the as-written frozen C02 undeclared-write / unbound-workspace arm, the documented pointer and unbound-placeholder counting rules, a boolean-type check over all eight 'evaluated' values and a scan of the uniform gate-coverage record.",
+  "generatedClosure": [],
+  "graphRelations": {
+    "closureSummary": {
+      "closed": 0,
+      "predecessorsOpen": 2,
+      "successorsOpen": 1
+    },
+    "conflictSummary": {
+      "count": 2,
+      "escalatedToPm": 2,
+      "note": "Both entries are SOURCE_CONFLICT, both are unresolved and blocked, neither was resolved by recency, and both are escalated to PM. SC-01 stops criterion M0-00-C02-STATIC-WRITE-CLOSURE; SC-02 concerns gate G6. They are registered rather than hidden, which is the handling frozen criteria section 5 stopCondition 1 and section 1 G6 prescribe.",
+      "resolvedByRecency": 0,
+      "sourceConflicts": [
+        "SC-01",
+        "SC-02"
+      ]
+    },
+    "conflicts": [
+      {
+        "affectedCriteria": [
+          "M0-00-C02-STATIC-WRITE-CLOSURE"
+        ],
+        "conflictId": "SC-01",
+        "digests": {
+          "pointerFileDigest": null,
+          "pointerFileDigestReason": "the file has no bytes on any ref, so no digest exists to record",
+          "sourceManifestDigest": "1ed3f04db84b969b43229f387b0b940ebba0aa85ee5de873b56ad77e897d5cf7"
+        },
+        "escalation": "PM, per frozen criteria section 5 stopCondition 1",
+        "owner": "PM",
+        "pointer": "reviews/issue-support/013/frozen-source-verification-round2.json#/staticWriteAudit",
+        "probeEvidenceId": "PP-01",
+        "probeEvidenceRef": "/sourceSelection/selectedSourcePointerResolution/pointers[0]/probeEvidence",
+        "reason": "The frozen support file that frozen C02 names as its evidence does not resolve on any ref. A read-only probe (PP-01) shows the containing directory absent from the default checkout and the file absent from the selected sourceRef tree, from HEAD, and from every commit on every ref in this repository. This is not a path-format or ref-drift problem; the criterion has no evidence to be evaluated against.",
+        "refs": {
+          "observedHead": "6f106d50cbef273827d1bfb17ca7ebe2bbaeb76c",
+          "pointerPath": "reviews/issue-support/013/frozen-source-verification-round2.json",
+          "selectedSourceRef": "6490956d203549b56cbd86846120759889abb016"
+        },
+        "resolution": "unresolved",
+        "resolvedByRecency": false,
+        "state": "blocked",
+        "type": "SOURCE_CONFLICT",
+        "unblockCondition": "PM re-publishes the frozen support file so the pointer resolves, or rules the pointer inapplicable and re-freezes C02's evidence binding to a resolvable artifact."
+      },
+      {
+        "affectedCriteria": [
+          "G6"
+        ],
+        "conflictId": "SC-02",
+        "digests": {
+          "headRead": {
+            "digestRefStatus": "non-ref; computed from the default checkout at HEAD, not at the selected sourceRef",
+            "docs/context/work-graph.json": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6",
+            "docs/context/work-orders/013.json": "7778cbf47a8e175702f30fa40989c97b7c8d3f9e2dcf61db096576068d3a0436"
+          },
+          "sourceRefDigest": null,
+          "sourceRefDigestReason": "neither file exists in the tree at the selected sourceRef, so neither has a digest there"
+        },
+        "escalation": "PM",
+        "owner": "PM",
+        "pointer": "docs/context/work-graph.json#/items[number=13] (hardPredecessors / hardSuccessors)",
+        "reason": "The file the frozen criteria section 1 G6 names as the origin of the hard-graph value is itself absent from the selected sourceRef tree; the frozen criteria states this and it is re-verified here. The topology cannot therefore be asserted from a ref-bound authority, and the values that are shown come from a non-ref read at HEAD.",
+        "refs": {
+          "observedHead": "6f106d50cbef273827d1bfb17ca7ebe2bbaeb76c",
+          "paths": [
+            "docs/context/work-graph.json",
+            "docs/context/work-orders/013.json"
+          ],
+          "selectedSourceRef": "6490956d203549b56cbd86846120759889abb016"
+        },
+        "resolution": "unresolved",
+        "resolvedByRecency": false,
+        "state": "blocked",
+        "type": "SOURCE_CONFLICT",
+        "unblockCondition": "PM confirms the frozen G6 value as the citation authority (the handling used here), or re-freezes the criteria against a ref whose tree contains docs/context/work-graph.json so that the file itself resolves at the selected sourceRef."
+      }
+    ],
+    "consistencyWithUnknowns": "Closure state and conflicts are consistent with the typed unknowns. closureState 'open' for the three hard edges is consistent with U-02 ('#43 or #44 accepted receipt absent, drifted or ineligible'); no edge is marked closed without a receipt. The two registered SOURCE_CONFLICT entries are mirrored by typed unknowns: SC-01 by U-09 (blocksAffectedCriterion M0-00-C02-STATIC-WRITE-CLOSURE) and SC-02 by U-10 (blocksAffectedCriterion G6). Neither conflict blocks a candidate-phase predicate; both block accept-phase qualification through the affected criterion or gate, and both are owned by PM with an explicit unblock condition.",
+    "edges": [
+      {
+        "artifact": "artifact:43:R-03-governance-diff:accept",
+        "blockedPhase": "accept",
+        "citation": "frozen criteria section 1 G6 frozen hard-graph value: predecessor 43 (consumerPhase accept, producerPhase accept)",
+        "citationRefStatus": "frozen-criteria; not a repository path, so it does not resolve to a tree at any ref and cannot drift with the tree",
+        "closureState": "open",
+        "consumerPhase": "accept",
+        "direction": "incoming",
+        "fromIssue": 43,
+        "kind": "predecessor",
+        "producerPhase": "accept",
+        "relation": "requires",
+        "toIssue": 13,
+        "unmetReason": "#43 accepted governance-diff receipt absent/drifted/ineligible (consistent with U-02); no qualified governance-diff is supplied to this candidate"
+      },
+      {
+        "artifact": "artifact:44:R-04-evidence:accept",
+        "blockedPhase": "accept",
+        "citation": "frozen criteria section 1 G6 frozen hard-graph value: predecessor 44 (consumerPhase accept, producerPhase accept)",
+        "citationRefStatus": "frozen-criteria; not a repository path, so it does not resolve to a tree at any ref and cannot drift with the tree",
+        "closureState": "open",
+        "consumerPhase": "accept",
+        "direction": "incoming",
+        "fromIssue": 44,
+        "kind": "predecessor",
+        "producerPhase": "accept",
+        "relation": "requires",
+        "toIssue": 13,
+        "unmetReason": "#44 accepted execution receipt absent/drifted/ineligible (consistent with U-02 and U-03); no qualified R-04 receipt is supplied to this candidate"
+      },
+      {
+        "artifact": "artifact:13:M0-00-policy-baseline:accept",
+        "blockedPhase": "accept",
+        "citation": "frozen criteria section 1 G6 frozen hard-graph value: successor 16 (consumerPhase accept, producerPhase accept)",
+        "citationRefStatus": "frozen-criteria; not a repository path, so it does not resolve to a tree at any ref and cannot drift with the tree",
+        "closureState": "open",
+        "consumerPhase": "accept",
+        "direction": "outgoing",
+        "fromIssue": 13,
+        "kind": "successor",
+        "producerPhase": "accept",
+        "relation": "requires",
+        "toIssue": 16,
+        "unmetReason": "the accepted baseline that #16 consumes does not exist yet; this artifact is an isolated candidate draft with canonicalWriteAllowed=false, so the successor edge is not closed"
+      }
+    ],
+    "note": "Typed relations for this candidate. The citation authority for each hard edge is the frozen criteria section 1 G6 frozen hard-graph value. The same topology is mirrored as a non-ref context read from the default checkout at HEAD 6f106d50cbef273827d1bfb17ca7ebe2bbaeb76c, because the files that carry it (docs/context/work-graph.json, docs/context/work-orders/013.json) are absent from the selected sourceRef tree. That absent file is registered as SOURCE_CONFLICT SC-02, not used as an authority. This section does not claim to mirror those files: to mirror a file that the frozen criteria names as absent from the sourceRef tree, while also declaring the working tree not to be an input, would be a self-contradiction. Every hard edge carries an explicit closureState; no edge is marked closed without a receipt.",
+    "oneOfGroups": [],
+    "organizationalContainsNote": "contains edges (68->13 organization; 13->43 and 13->44 decomposition) are topology containment only, not execution dependencies, and carry no closure state. They come from the same non-ref HEAD read as the other topology values (see /graphRelations/topologyReadProvenance).",
+    "relationKindSet": [
+      "predecessor",
+      "successor",
+      "oneOfGroup",
+      "conflict"
+    ],
+    "relationKindSetSource": "non-ref context read at HEAD 6f106d50cbef273827d1bfb17ca7ebe2bbaeb76c: docs/context/work-orders/013.json#/relations (absent at the selected sourceRef; see /sourceSelection/drift/workingTreeReadsDisclosed/WTR-01). Context-only; not a gate input.",
+    "topologyReadProvenance": {
+      "authority": "frozen criteria section 1 G6 frozen hard-graph value",
+      "nonRefContextRead": {
+        "disclosedPer": "frozen criteria section 1 G6 requires a working-tree read to be marked as a non-ref input",
+        "notAtSourceRef": true,
+        "paths": [
+          "docs/context/work-graph.json",
+          "docs/context/work-orders/013.json"
+        ],
+        "readAt": "HEAD 6f106d50cbef273827d1bfb17ca7ebe2bbaeb76c",
+        "refStatus": "non-ref",
+        "role": "context-only; it is not the citation for any hard edge and it is not a gate input",
+        "seeAlso": "/sourceSelection/drift/workingTreeReadsDisclosed/WTR-01",
+        "why": "both paths are absent from the tree at the selected sourceRef (a git cat-file -e probe at the ref fails for each; work-graph.json was added after the ref by commit 3861eab) and are present in the default checkout at HEAD"
+      }
+    }
+  },
+  "isolatedProposal": true,
+  "issueNumber": 13,
+  "kind": "m0-00-review-record-candidate-index",
+  "limits": [
+    "Index only; it is not an acceptance and does not replace the selected run record or PM signoff.",
+    "A zero-match required pattern and absent #43/#44 receipts block accept-phase qualification.",
+    "The sanitization claim's coverageState is NOT_RUN: the residual uncovered channels are exactly the execution-authority / inspector-limit part, each tied to an explicit limit id (L-EXEC-AUTHORITY, L-NIL-1, L-NO-MECHANICAL-SCAN). It is not proof of real-encounter private handling.",
+    "C02 and C03 are NOT_RUN, not PASS. C02 is stopped by SOURCE_CONFLICT SC-01: its frozen evidence pointer resolves nowhere, is registered blocked and escalated to PM under frozen section 5 stopCondition 1, with no value chosen by recency. C03 is uncovered only for the authority- and limit-limited remainder of NF-04.",
+    "Two SOURCE_CONFLICT entries (SC-01, SC-02) are registered unresolved, blocked, PM-owned, and not resolved by recency; they are mirrored as typed unknowns U-09 and U-10.",
+    "Candidate qualification is FALSE and is recorded as false, not as a PASS. Candidate blocking predicate 2 is TRUE as the frozen C02 blocking arm is written; the resulting blocking condition is registered as U-04 (state 'blocked', owner PM, unblockCondition) and escalated under frozen criteria section 5 stopCondition 3. C04's own criterion passing is a separate fact and must not be read as candidate qualification.",
+    "The C02 conflict and the frozen-acceptance tension are governed, not cleared: frozen C02's 'missing physical binding' clause and frozen criteria section 4 bullet 1 with the frozen C04 expectation pull in opposite directions for an isolated proposal, and the conflict is disclosed at the baseline's adjudicationRules[ADJ-01]/tensionWithFrozenAcceptanceText rather than resolved by re-specifying the arm. The reviewer decides how the two texts weigh.",
+    "Five selected-source pointers are unresolved (SP-01..SP-05) and all five are registered with owner, state, unblockCondition and escalation; the C04 'unresolvedPointers' figure is 0 under the documented counting rule and the raw counts (scope 5, unresolved 5, unregistered 0) are reported beside it."
+  ],
+  "mode": "isolated_proposal",
+  "noAcceptanceClaim": true,
+  "outputDigests": {
+    "policyBaseline": "293ade79120e51db6af3f7de75320d86829a1578243d553be298145bf84490e9",
+    "qualificationEvidenceDigest": null,
+    "qualificationEvidenceDigestNote": "no qualified #43/#44 evidence preimage is bound, so no evidence digest exists; the value is null until the preimage is populated (U-02)",
+    "qualificationEvidenceDigestPreimageRef": "docs/team/M0-00/policy-baseline.json#/outputDigests/entries/qualificationEvidenceDigest",
+    "qualificationEvidenceDigestState": "unknown",
+    "reviewRun": "cbc8dcb45ad8c32814264b1ec74c1fda06930014052e55b8aadf733dc2147bb8",
+    "scopeDigest": "63e830de678c3c71be01ec2406c99950e4de18c196fea56416dc303911b4302d",
+    "scopeDigestPreimageRef": "docs/team/M0-00/policy-baseline.json#/outputDigests/entries/scopeDigest",
+    "selfDigestLocation": "a file cannot embed its own byte digest, and no artifact inside issue #13's declared write scope can carry this index's digest: the baseline cannot embed it, because the index is written after the baseline and the index embeds the baseline digest. It is registered as the typed unknown U-11 with owner and unblockCondition and is published by the authoring report or by PM signoff, never inside the index."
+  },
+  "phase": "candidate",
+  "recordType": "isolated_proposal_draft_for_human_verification",
+  "roundId": "M0-00-candidate-round-1",
+  "runs": [
+    {
+      "bytes": 99317,
+      "checkResults": {
+        "authorityLimit": "author self-observation; not an external review verdict; grants no acceptance; acceptance requires a separate external reviewer's own C04 evaluation against the frozen criteria",
+        "candidateQualification": false,
+        "candidateQualificationNote": "candidate qualification is FALSE. Under the candidate's own passRule the conjunct 'all seven candidate blocking predicates false' does not hold: predicate 2 is TRUE as the frozen C02 arm is written, and the resulting blocking condition is registered as U-04 with owner, state and unblock condition and escalated to PM. Separately, C01-C04 is not a clean author-self-observed PASS, because C02 and C03 are NOT_RUN; under frozen criteria section 0.1 a NOT_RUN whose recorded reason is a condition that cannot be produced in this phase does not block PASS, and neither is claimed as a PASS here.",
+        "keySemantics": "PASS/NOT_RUN here are the run's frozen result tokens, an author self-observation, never an acceptance decision; see the run receipt's per-check resultQualifier.",
+        "notAcceptance": true,
+        "selfObservationResult": {
+          "C01": "PASS",
+          "C02": "NOT_RUN",
+          "C03": "NOT_RUN",
+          "C04": "PASS",
+          "C05": "NOT_RUN (accept-phase; not applicable at candidate phase)"
+        },
+        "selfObservationResultNote": "C01-C04 are the candidate-phase criteria. C04 PASS is the threshold in C04's own frozen scope; the candidate blocking predicate matrix is reported separately and candidate qualification is FALSE. C05 is an accept-phase criterion and is listed here so the C01-C05 set is fully represented; it is not a candidate PASS and not a candidate FAIL."
+      },
+      "digestRuleRef": "docs/team/M0-00/policy-baseline.json#/outputDigests/fileDigestRule",
+      "path": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json",
+      "result": "author self-observation, static and not executed: C01 PASS, C02 NOT_RUN, C03 NOT_RUN, C04 PASS; candidate qualification FALSE. Declared by the run, not by this index. The C04 threshold is met in C04's own frozen scope (all seven frozen C04 failure conditions false), while candidate blocking predicate 2 ('undeclared write or unbound candidate workspace') is TRUE as the frozen C02 blocking arm is written: the run declares three writes and holds no physical binding. That blocking condition is registered as U-04 (state 'blocked', owner PM, explicit unblockCondition) and escalated under frozen criteria section 5 stopCondition 3; it is not narrowed, substituted or resolved by recency, and the tension between the frozen C02 clause and frozen criteria section 4 bullet 1 is disclosed at the baseline's adjudicationRules[ADJ-01]. C02's NOT_RUN is a criterion STOPPED under frozen criteria section 5 stopCondition 1: the frozen C02 evidence pointer reviews/issue-support/013/frozen-source-verification-round2.json#/staticWriteAudit resolves nowhere, is registered as SOURCE_CONFLICT SC-01 (blocked, PM-owned, not resolved by recency) and escalated to PM. C03's NOT_RUN is the authority- and limit-limited remainder of NF-04. Both carry a notRunReason in the run receipt. C05 is additionally recorded NOT_RUN for accept-phase applicability, so the C01-C05 set is fully represented in the run.",
+      "resultAuthority": "These are author self-observations recorded in the run record, not an external review verdict. C04 is the author's own CANDIDATE-ORACLE pass; acceptance requires a separate external reviewer's own C04 evaluation. The C02 stop is a recorded governance conflict, not a claim that the criterion was met, and the C02 blocking condition (U-04) is a recorded escalation, not a cleared item.",
+      "resultQualifier": "author self-observation; static, not executed; not an external verdict; grants no acceptance. C04's own criterion passing is not candidate qualification; candidate qualification is false.",
+      "runId": "2026-09-13-candidate-01",
+      "sha256": "cbc8dcb45ad8c32814264b1ec74c1fda06930014052e55b8aadf733dc2147bb8",
+      "sourceConflictRefs": [
+        "SC-01"
+      ],
+      "unresolvedSelectedPointers": 5
+    }
+  ],
+  "sanitizationClaim": {
+    "channelCoverageLimit": {
+      "channelsCoveredByThisScan": [
+        "policy-baseline public JSON fields",
+        "this index public JSON fields",
+        "the selected run record public JSON fields",
+        "public return summary"
+      ],
+      "channelsNotCoveredByThisScan": [
+        {
+          "channel": "captured stdout",
+          "limitReason": "a process must run to produce captured stdout; #13 holds no execution authority and frozen section 5 forbids running such a command under #13",
+          "limitRef": "L-EXEC-AUTHORITY"
+        },
+        {
+          "channel": "captured stderr",
+          "limitReason": "same as captured stdout: the channel exists only as process output",
+          "limitRef": "L-EXEC-AUTHORITY"
+        },
+        {
+          "channel": "escaped-link/reparse/mount channels",
+          "limitReason": "verify_toolchain required_ok does not establish mount/junction coverage, and no static discriminator exists for reparse points outside the tracked tree",
+          "limitRef": "L-NIL-1"
+        },
+        {
+          "channel": "traversal-error channels",
+          "limitReason": "a traversal error is an outcome of walking the filesystem; producing one requires running the walker, which is outside #13 execution authority",
+          "limitRef": "L-EXEC-AUTHORITY"
+        },
+        {
+          "channel": "interrupted-run channels",
+          "limitReason": "interruption is an outcome of a run; #13 ran no such process",
+          "limitRef": "L-EXEC-AUTHORITY"
+        },
+        {
+          "channel": "real-encounter private handling (NF-05)",
+          "limitReason": "no real sensitive encounter occurred and none was sought; the fixture is design_and_future_issue44_evidence",
+          "limitRef": "L-NO-MECHANICAL-SCAN"
+        }
+      ],
+      "coverageState": "NOT_RUN",
+      "notProofOf": "NF-04-ALL-CHANNELS",
+      "notRunReason": "NF-04-ALL-CHANNELS public-channel coverage is not established. Every static scan that does not require execution authority has been run: the two channels that a static scan can bound are now statically bounded (EV-05, EV-06), and the residual uncovered set is exactly the authority- and limit-limited part, each channel tied to an explicit limit id.",
+      "note": "The zero counts above mean no deny class matched in the listed public JSON fields under a static text scan. Because NF-04 is uncovered, the claim's coverageState is NOT_RUN rather than PASS; it is not proof of real-encounter private handling either. NF-04 remains a design fixture pending #44 evidence; see knownNegativeInspectorLimits and inspectorLimitRegistry in the baseline.",
+      "residualUncoveredIsExactlyTheLimitedPart": true,
+      "staticallyBoundedChannels": [
+        {
+          "bound": "0 symlink (mode 120000) entries among the 861 tracked paths at the selected sourceRef",
+          "channel": "symlinks_outside_repo.items",
+          "evidenceCommandRef": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/evidenceBundle/commands[EV-05]",
+          "notAProof": "bounds the tracked-tree population, not the runtime symlink channel; it does not make NF-04 covered"
+        },
+        {
+          "bound": "exactly 1 path-name hit among the 861 tracked paths at the selected sourceRef: tools/research/.env.example, a conventional committed template, not opened or hashed",
+          "channel": "forbidden_tracked_files.items",
+          "evidenceCommandRef": "docs/evidence/M0-00/review-record-candidate-runs/2026-09-13-candidate-01.json#/evidenceBundle/commands[EV-06]",
+          "notAProof": "the field verify_toolchain would emit does not exist in this candidate's public output; this bounds the path-name class only, and NF-04 remains uncovered"
+        }
+      ]
+    },
+    "classEnumerationNote": "The counts key set is exactly the nine classIds of the baseline's canonical denyClassScan enumeration, with the same values the run record's C03 thresholdEvaluation.observed reports, so the two receipts for this predicate map 1:1. A null value means the class is not_observed (see notObservedClassReasons) and is NOT an asserted 0.",
+    "classEnumerationRef": "docs/team/M0-00/policy-baseline.json#/dataClass/denyClassScan/classes",
+    "counts": {
+      "credentialValue": 0,
+      "linkMountTargetIdentity": 0,
+      "privateQuarantineLocation": null,
+      "rawPathOrBasename": 0,
+      "rawRestrictedContent": null,
+      "realSensitiveDerivedDigest": null,
+      "recoverableMaterial": null,
+      "toolchainVendorFingerprint": 0,
+      "usernameOrHostnameOrAccountMapping": 0
+    },
+    "coverageState": "NOT_RUN",
+    "coverageStateReason": "NF-04-ALL-CHANNELS is not covered, so this claim is NOT_RUN, not PASS: the scan covers the listed public JSON fields plus the two statically bounded channels, and the residual uncovered set is exactly the execution-authority / inspector-limit part.",
+    "limitAttributionComplete": true,
+    "method": "one read-only static text scan (grep -nE) per OBSERVED deny class over the listed public JSON fields only, plus two ref-bound static scans that need no execution authority (EV-05 symlink entries, EV-06 forbidden tracked path names). Each pattern uses a character class so it cannot match its own command string. Classes with no mechanical discriminator are recorded not_observed with a reason and an explicit limit id rather than asserted 0.",
+    "notObservedClassCount": 4,
+    "notObservedClassLimitRefs": {
+      "privateQuarantineLocation": "L-NO-MECHANICAL-SCAN",
+      "rawRestrictedContent": "L-NO-MECHANICAL-SCAN",
+      "realSensitiveDerivedDigest": "L-NO-MECHANICAL-SCAN",
+      "recoverableMaterial": "L-NO-MECHANICAL-SCAN"
+    },
+    "notObservedClassReasons": {
+      "privateQuarantineLocation": "no real sensitive encounter occurred and none was sought, so no private quarantine location exists to scan for. A zero here would be an assertion about an absent object, not an observation. No mechanical discriminator exists. Recorded not_observed; limitRef L-NO-MECHANICAL-SCAN.",
+      "rawRestrictedContent": "no mechanical scan can distinguish restricted institutionally captured content from ordinary policy prose. Established only structurally: dataClass.declared=PUBLIC_SYNTHETIC and every execution.* flag is false, so no restricted source was read. Recorded not_observed rather than asserted 0; limitRef L-NO-MECHANICAL-SCAN.",
+      "realSensitiveDerivedDigest": "no real sensitive item was read or hashed in this candidate (every execution.* flag is false), so no digest is derived from one. The absence is structural, not mechanically scannable. Recorded not_observed; limitRef L-NO-MECHANICAL-SCAN.",
+      "recoverableMaterial": "whether the above classes are recoverable from surrounding public text is not mechanically decidable; it can only be stated relative to the observed classes. No mechanical discriminator exists. Recorded not_observed; limitRef L-NO-MECHANICAL-SCAN."
+    },
+    "observedClassCount": 5,
+    "observedTotalHits": 0,
+    "predicate": "NF-02-PUBLIC-FIELD-DENY",
+    "scope": [
+      "policy-baseline public JSON fields",
+      "this index public JSON fields",
+      "the selected run record public JSON fields",
+      "public return summary"
+    ]
+  },
+  "schemaVersion": "1.0.0",
+  "selectedRunId": "2026-09-13-candidate-01",
+  "unknownsRef": [
+    "U-01",
+    "U-02",
+    "U-03",
+    "U-04",
+    "U-05",
+    "U-06",
+    "U-07",
+    "U-08",
+    "U-09",
+    "U-10",
+    "U-11"
+  ],
+  "unknownsRefNote": "Mirrors the baseline's eleven typed unknowns U-01..U-11. U-04 is an established candidate-phase blocking condition - the frozen C02 'missing physical binding' arm, evaluated TRUE as written, state 'blocked', PM-owned, recorded before any writer is opened and escalated under frozen criteria section 5 stopCondition 3 - and it is the one unknown that sets blocksCandidatePhaseAcceptance. U-09 registers SOURCE_CONFLICT SC-01 (frozen C02 evidence pointer unresolved; blocks M0-00-C02-STATIC-WRITE-CLOSURE) and U-10 registers SC-02 (work-graph absent at the selected sourceRef; blocks G6). U-11 is this index's own output digest, which no artifact inside #13's declared write scope can carry: it is registered with owner and unblockCondition instead of being pointed at a document that does not exist. Each unknown carries owner, state, unblockCondition, blocksCandidatePhaseAcceptance, blocksAcceptPhaseQualification and an acceptBlockingPredicate binding.",
+  "workId": "M0-00"
+}
