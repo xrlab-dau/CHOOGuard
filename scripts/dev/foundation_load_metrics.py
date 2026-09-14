@@ -185,6 +185,10 @@ class Interval:
     maximum_backlog_seconds: float | None = None
     batch: bool | None = None
     null_graphics: bool | None = None
+    simulation_tick_count: int | None = None
+    simulation_tick_histogram: Histogram | None = None
+    frame_count: int | None = None
+    frame_histogram: Histogram | None = None
 
     @classmethod
     def parse(cls, row, expected_role):
@@ -267,8 +271,16 @@ class Interval:
             backlog = float(number(row["MaximumBacklogSeconds"]))
             if sim_end < sim_start or not isinstance(paused, bool):
                 raise MetricsError("INVALID_SIMULATION_PROGRESS")
+        sim_tick_count = sim_tick_histogram = frame_count = frame_histogram = None
+        if "SimulationTickCount" in row and "SimulationTickMilliseconds" in row:
+            sim_tick_count = number(row["SimulationTickCount"], integer=True)
+            sim_tick_histogram = Histogram.parse(row["SimulationTickMilliseconds"], sim_tick_count)
+        if "FrameCount" in row and "FrameMilliseconds" in row:
+            frame_count = number(row["FrameCount"], integer=True)
+            frame_histogram = Histogram.parse(row["FrameMilliseconds"], frame_count)
         return cls(expected_role, seconds, ticks, histogram, *counters, population_ranges, start, end, jump, backwards,
-                   sim_start, sim_end, paused, backlog, batch, null_graphics)
+                   sim_start, sim_end, paused, backlog, batch, null_graphics,
+                   sim_tick_count, sim_tick_histogram, frame_count, frame_histogram)
 
 
 @dataclass(frozen=True)
