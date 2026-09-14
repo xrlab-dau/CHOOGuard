@@ -8,8 +8,8 @@
   "artifact": "artifact:151:staging-ownership-proof:candidate",
   "runRecord": {
     "recordKind": "complete_run_record",
-    "branch": "fix/151-staging-ownership-boundary",
-    "commit": "796654ae39ff03e73697764812a57d71bcfe7391",
+    "branch": "bugfix/151-staging-ownership-boundary",
+    "commit": "cbacfdecc2f561ea97ec3d4725c967e304cf2367",
     "baseRef": "origin/develop",
     "baseCommit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
     "platform": {
@@ -19,21 +19,21 @@
     "inputs": {
       "services/livekit/configure_local.py": {
         "baseBlobSha1": "1f7b37a2da355b7bed5848489b85ef2919dd0612",
-        "candidateBlobSha1": "c638c3698d772647b1510ba390a26f429c14816a",
-        "candidateSha256": "a2a75e230ccee84cdd6c21e31923d5485a34c5fcd327acec1229521f349ea92f",
-        "candidateSizeBytes": 23617
+        "candidateBlobSha1": "fa97db51202bad071dc76b40a58843fc89f2c5c3",
+        "candidateSha256": "0169e4c489953a7021783a5ba0320e95d3dd57d0583a2547e3886c039882fb8c",
+        "candidateSizeBytes": 26828
       },
       "services/livekit/test_configure_local.py": {
         "baseBlobSha1": "a8553dce1698a97407599492edebdafef07ac49e",
-        "candidateBlobSha1": "3effd9b2b97ac1aad7eeba42e3322f912e24a818",
-        "candidateSha256": "5a714037a1ee950374f63d7e408f4eced93f99b9b4185948c7f55cf0cfe22465",
-        "candidateSizeBytes": 36606
+        "candidateBlobSha1": "f67c807a633e117690c36f1368a13a46c2ab81dd",
+        "candidateSha256": "9ff9799f79b3cc5d44a6b4355960d930aed5a11763d87998bdf9c1364423313f",
+        "candidateSizeBytes": 53345
       },
       "services/livekit/README.md": {
         "baseBlobSha1": "89a0b2bc660f2a3c8d127648b6e3f03a9bab47a4",
-        "candidateBlobSha1": "b4580683c7e984cec15d7874e0bc88c0089f8a47",
-        "candidateSha256": "807b85b3f7f28a123ac1c82995eaf08d227988f235929a3ca396b6b78ab31f58",
-        "candidateSizeBytes": 4763
+        "candidateBlobSha1": "7112009394391347d53bbe4417a9e19e71cb0327",
+        "candidateSha256": "4a9fb786fb7bb5eeee10d46798ba3e6386ee10c1b9aa858a7f64c4669d9185f8",
+        "candidateSizeBytes": 5391
       }
     },
     "inputProvenance": {
@@ -67,7 +67,7 @@
     },
     "boundary": {
       "writeGate": "configure() raises _StagingOwnershipUnproven before the first credential write when the descriptor-to-entry binding cannot be established.",
-      "publicationGate": "The trusted-parent precondition is re-verified, the ownership evidence is re-derived, and the pinned directory must hold exactly the entries this run acquired - each still resolving to the file identity it was acquired under - before the exclusive rename. An entry injected after the last write, or an acquired name unlinked and recreated with other bytes, stops publication; the run's own credentials are rolled back and the foreign entry is preserved for manual cleanup.",
+      "publicationGate": "The trusted-parent precondition is re-verified, the ownership evidence is re-derived, the pre-rename binding is re-checked, and the pinned directory is required to hold exactly the entries this run acquired with each of them still resolving to the file identity it was acquired under - immediately before the exclusive no-replace rename. A directory that cannot be enumerated is refused rather than published on the strength of its inode alone.",
       "rollback": "Exact-owned: only acquired file identities are unlinked, and the directory is rmdir'd only while it is still the proven inode.",
       "unauthenticatedWindow": "The create-to-open window is not authenticated by pathname; the trusted parent (0700, current-user-owned, no additional ACL) is the precondition that excludes other principals. A same-account actor racing that window is not detectable and is not claimed.",
       "wasPreviousState": "staging_ownership_proven was hardcoded False and gated only rollback rmdir; credential writes and publication were not gated on ownership."
@@ -76,47 +76,103 @@
       {
         "command": "python3 -m unittest discover -s services/livekit -p 'test_configure_local.py'",
         "result": "PASS",
-        "testsRun": 32,
+        "testsRun": 39,
         "testsFailed": 0,
-        "note": "24 pre-existing tests plus 8 new boundary tests."
+        "platform": "Darwin, Python 3.14.5",
+        "note": "24 pre-existing tests (LocalVoiceConfigurationTests) plus 15 boundary tests (StagingPublicationBoundaryTests), each separately selectable: the legacy selector runs 24 OK and the boundary selector runs 15 OK. NOT reproducible on the Python version CI uses - on 3.12.11 and 3.13.12 the suite reports Ran 39, FAILED (failures=1), because test_cli_errors_are_sanitized_and_actionable expects the 3.14 message for a 260-character output name while 3.12/3.13 report 'Configuration path could not be inspected safely'. That fixture fails identically at baseCommit ce97e46 (Ran 24, FAILED failures=1), so it is pre-existing; no boundary fixture is affected.",
+        "negativeCaseAddressed": "The prior 24 passing tests did not prove the new boundary. Two of them encoded the old rollback contract and had been loosened to ValueError without disclosure; this run restores both to their exact base assertions (assertRaises(_CleanupIncomplete) and assertRaisesRegex(_CleanupIncomplete, 'manual')) by giving the generated-file privacy failures a specific type again, so the code satisfies the stricter contract instead of the assertion being relaxed to match the code. The other 22 legacy fixtures are byte-identical to baseCommit; one carries a corrected explanatory comment only, disclosed here because its old comment described the pre-fix mechanism."
       },
       {
-        "command": "mutation matrix over the five gates",
+        "command": "mutation matrix over ten checks, each removing exactly one gate (Python 3.14.5, Darwin)",
         "result": "PASS",
+        "killsCountedBy": "only a behavioural fixture observing the path counts as a kill; a source-digest assertion dying is not counted, because it dies under every mutation",
         "mutations": [
           {
-            "mutation": "credential-write ownership gate removed",
-            "killedTests": 1
+            "mutation": "credential-write ownership gate reduced to a no-op",
+            "killedTests": 1,
+            "killed": [
+              "test_unproven_staging_ownership_blocks_every_credential_write"
+            ]
           },
           {
             "mutation": "publication ownership gate reduced to a no-op",
-            "killedTests": 1
+            "killedTests": 3,
+            "killed": [
+              "test_binding_recheck_after_the_ownership_gate_blocks_publication",
+              "test_ownership_evidence_is_rechecked_on_both_sides_of_the_binding",
+              "test_staging_swap_after_credentials_is_refused_at_the_publication_gate"
+            ]
           },
           {
-            "mutation": "rollback ownership identity check removed",
-            "killedTests": 1
+            "mutation": "trusted-parent re-verification at the publication boundary removed",
+            "killedTests": 1,
+            "killed": [
+              "test_parent_privacy_regression_before_publication_is_refused"
+            ]
           },
           {
-            "mutation": "publication entry-set gate reduced to a no-op",
-            "killedTests": 2
+            "mutation": "pre-rename binding re-check removed",
+            "killedTests": 1,
+            "killed": [
+              "test_binding_recheck_after_the_ownership_gate_blocks_publication"
+            ]
           },
           {
-            "mutation": "per-entry file identity comparison inside the entry-set gate removed",
-            "killedTests": 1
+            "mutation": "entry-set gate fail-closed arm changed to publish (listdir OSError returns [] instead of None)",
+            "killedTests": 1,
+            "killed": [
+              "test_unlistable_staging_directory_is_refused_and_preserved"
+            ]
+          },
+          {
+            "mutation": "per-entry read changed to follow symlinks",
+            "killedTests": 1,
+            "killed": [
+              "test_acquired_name_swapped_for_an_outside_symlink_blocks_publication"
+            ]
+          },
+          {
+            "mutation": "entry-set gate reduced to a no-op",
+            "killedTests": 5,
+            "killed": [
+              "test_acquired_name_swapped_for_an_outside_symlink_blocks_publication",
+              "test_adopted_directory_with_a_foreign_entry_is_refused",
+              "test_entry_injected_after_the_last_write_blocks_publication",
+              "test_owned_name_swapped_for_other_bytes_blocks_publication",
+              "test_unlistable_staging_directory_is_refused_and_preserved"
+            ]
+          },
+          {
+            "mutation": "rollback call-site no longer bound to the proven inode",
+            "killedTests": 1,
+            "killed": [
+              "test_unproven_staging_ownership_blocks_every_credential_write"
+            ]
+          },
+          {
+            "mutation": "post-open _same_output_directory check removed (the call immediately after the staging directory is opened, not the pre-rename one)",
+            "killedTests": 0,
+            "note": "UNOBSERVED. No fixture distinguishes this call site from the pre-rename one, which the matrix does kill."
+          },
+          {
+            "mutation": "identity comparison inside _owned_cleanup_target removed alone",
+            "killedTests": 0,
+            "note": "UNOBSERVED. The comparison is dead weight on its own; the load is carried by the call-site binding, which the matrix kills. Recorded so 'each gate is load-bearing' is not read onto this comparison."
           }
         ],
-        "note": "Each gate is load-bearing: removing it makes at least one boundary test fail. Every kill counted here is a behavioural test that observes directories, files or exceptions; a source-digest assertion is not counted as a kill."
+        "note": "Eight of the ten checks die under a behavioural fixture; the two that do not are listed with killedTests 0."
       },
       {
-        "command": "independent supervisor probe: inject a foreign entry after the last credential write, before the publication gate",
+        "command": "independent supervisor probe: inject a foreign entry after the last credential write and before publication; separately swap the staging directory for a different directory inside the create-to-pin window",
         "result": "PASS",
-        "note": "Against the previous commit (4a3f727) this probe published the injected entry as private configuration and returned success. The same probe against this commit refuses with _CleanupIncomplete, publishes nothing, rolls back the run's own credentials and leaves the injected entry for manual cleanup. This is the regression the entry-set gate closes."
+        "note": "Against 4a3f727 the first probe published the injected entry and returned success; at 58f7445 it raised and preserved the foreign inode. The second probe, re-run against 58f7445, found the directory-payload swap publishes when the adopted directory is empty and is refused when it holds an entry this run did not create. Both branches are now pinned by fixtures; the window itself remains unauthenticated, as README states."
       }
     ],
     "separateFrom": {
       "pythonUnitTotal": 24,
+      "boundaryTotal": 15,
       "voiceRegressionTotal": 89,
-      "note": "The 32 tests here are a separate total from the pre-existing Python 24 and the Voice 89 totals named in issue 151."
+      "note": "The 39 tests comprise the pre-existing Python 24 and the boundary 15 and are a separate total from the Voice 89 regression suite. The 24 and the 15 are separately selectable totals (LocalVoiceConfigurationTests / StagingPublicationBoundaryTests) and a fixture enforces the split. The Voice 89 suite was not run here."
     },
     "failedOrUnrun": [
       {
@@ -138,6 +194,16 @@
         "item": "live LiveKit service exercise",
         "state": "NOT_RUN",
         "reason": "No service was started and no external package was installed; verification is local-fixture only."
+      },
+      {
+        "item": "Python 3.12 and 3.13 execution",
+        "state": "FAILED_EXISTING",
+        "reason": "On 3.12.11 and 3.13.12 the suite reports Ran 39, FAILED (failures=1) in test_cli_errors_are_sanitized_and_actionable. The same fixture fails at baseCommit ce97e46, so the failure is pre-existing; the boundary fixtures pass on 3.12.11. These are the versions CI configures."
+      },
+      {
+        "item": "automated execution of this suite in CI",
+        "state": "NOT_RUN",
+        "reason": "No workflow under .github/workflows/ references services/livekit, so neither the 39 tests nor the selectors run in the repository's automation. The PASS above is a local Darwin run."
       }
     ],
     "blockers": [],
@@ -156,11 +222,181 @@
     "claimRelease": "Held until the candidate artifact is returned to PM, or released on abort with notice.",
     "digestScope": {
       "baseBlobSha1": "blob of the file at baseCommit (origin/develop)",
-      "candidateBlobSha1": "git hash-object of the candidate working tree content",
-      "candidateSha256": "sha256 of the candidate working tree bytes",
-      "note": "The candidate changes are uncommitted on the claim branch; baseCommit is the branch point, not the content being returned."
+      "candidateBlobSha1": "git blob SHA-1 of the candidate file as committed at runRecord.commit",
+      "candidateSha256": "sha256 of the committed blob bytes at runRecord.commit",
+      "note": "The candidate changes are committed on the claim branch at runRecord.commit; candidateBlobSha1 is the blob of the committed file and also equals git hash-object of the clean working tree, so a consumer can check the record out."
     }
   },
   "appendOnly": true,
-  "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence."
+  "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence.",
+  "runHistory": [
+    {
+      "schemaVersion": 1,
+      "classification": "PUBLIC_PROJECT_CONTEXT",
+      "workId": "FMP-04-R1",
+      "issue": 151,
+      "domainCode": "QA",
+      "phase": "candidate",
+      "artifact": "artifact:151:staging-ownership-proof:candidate",
+      "runRecord": {
+        "recordKind": "complete_run_record",
+        "branch": "fix/151-staging-ownership-boundary",
+        "commit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
+        "baseRef": "origin/develop",
+        "baseCommit": "ce97e46a9adfcc7ac8053f6be2a352a391bf147a",
+        "platform": {
+          "sysPlatform": "darwin",
+          "note": "Darwin-only privacy and exclusive-publication backends; other platforms fail closed."
+        },
+        "inputs": {
+          "services/livekit/configure_local.py": {
+            "baseBlobSha1": "1f7b37a2da355b7bed5848489b85ef2919dd0612",
+            "candidateBlobSha1": "059070789e81b2bc61e3c2aa0691f11898f0e1a6",
+            "candidateSha256": "d28c3e232e9fcccd5c6c1eb4aea417d2f6028e4c801dc0753de310e71f90d761",
+            "candidateSizeBytes": 21977
+          },
+          "services/livekit/test_configure_local.py": {
+            "baseBlobSha1": "a8553dce1698a97407599492edebdafef07ac49e",
+            "candidateBlobSha1": "440077aef40b91c27fb2cb82265f5c84cf528d05",
+            "candidateSha256": "ff112bfd1df9b301e30f7a584bab345e1c3ffffb0b4bbd7f46634fe79aa5687a",
+            "candidateSizeBytes": 33224
+          },
+          "services/livekit/README.md": {
+            "baseBlobSha1": "89a0b2bc660f2a3c8d127648b6e3f03a9bab47a4",
+            "candidateBlobSha1": "8a599e28109330192649d4c5414240b36ad1434d",
+            "candidateSha256": "8fd76ecccecd9d5de126ddc27fae4ec47b67cc40e13035bae3f7f79c6fa84c71",
+            "candidateSizeBytes": 4363
+          }
+        },
+        "inputProvenance": {
+          "predecessor": "artifact:120:source-only-access-manifest:candidate",
+          "manifestPath": "docs/context/publication/foundation-source-manifest.json",
+          "manifestIssue": 120,
+          "manifestStatus": "proposal_for_pm_review",
+          "manifestTeamRef": "feature/54-native-foundation@bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+          "manifestDevelopRecheck": {
+            "checkedAt": "2026-09-13T11:40:07Z",
+            "ref": "origin/develop",
+            "mergeCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+            "method": "git cat-file --batch on origin/develop; sha256 per path compared with the value recorded from the team ref",
+            "pathsChecked": 261,
+            "matched": 261,
+            "mismatched": 0,
+            "missing": 0,
+            "note": "squash 병합 후에도 261개 경로의 내용 해시가 팀 ref와 동일하다. 팀은 develop만으로 전량 재현할 수 있다."
+          },
+          "digestComparison": "per-path blobSha1 and sha256 compared against the published manifest; 3/3 matched",
+          "candidateGradeOnly": true,
+          "notAcceptSubstitute": "manifest is proposal_for_pm_review with publicationApproval=not_obtained and postPublishRecheckDone=false; it does not substitute for issue 120 acceptance."
+        },
+        "sourceAvailabilityDrift": {
+          "file": "docs/context/source-availability.json",
+          "capturedAt": "2026-09-12T09:39:41Z",
+          "capturedLocalHead": "e7a6bb7a7fff0c301c04f93aeea8850dbde34779",
+          "stale": true,
+          "observed": "snapshot records the three target paths as local_unpublished (develop=false); the published manifest records them as presentOnTeamRef=true with matching digests",
+          "resolution": "The snapshot was not used as current availability; availability was decided by blob digest comparison against the published manifest."
+        },
+        "boundary": {
+          "writeGate": "configure() raises _StagingOwnershipUnproven before the first credential write when the descriptor-to-entry binding cannot be established.",
+          "publicationGate": "The trusted-parent precondition is re-verified and the ownership evidence is re-derived immediately before the exclusive no-replace rename.",
+          "rollback": "Exact-owned: only acquired file identities are unlinked, and the directory is rmdir'd only while it is still the proven inode.",
+          "unauthenticatedWindow": "The create-to-open window is not authenticated by pathname; the trusted parent (0700, current-user-owned, no additional ACL) is the precondition that excludes other principals. A same-account actor racing that window is not detectable and is not claimed.",
+          "wasPreviousState": "staging_ownership_proven was hardcoded False and gated only rollback rmdir; credential writes and publication were not gated on ownership."
+        },
+        "checks": [
+          {
+            "command": "python3 -m unittest discover -s services/livekit -p 'test_configure_local.py'",
+            "result": "PASS",
+            "testsRun": 30,
+            "testsFailed": 0,
+            "note": "24 pre-existing tests plus 6 new boundary tests.",
+            "negativeCaseAddressed": "The prior 24 passing tests did not prove the new boundary; two of them encoded the old contract (rollback always incomplete) and were strengthened, not weakened."
+          },
+          {
+            "command": "mutation matrix over the four new gates",
+            "result": "PASS",
+            "mutations": [
+              {
+                "mutation": "credential-write ownership gate removed",
+                "killedTests": 1
+              },
+              {
+                "mutation": "publication ownership gate reduced to a no-op",
+                "killedTests": 2
+              },
+              {
+                "mutation": "rollback ownership identity check removed",
+                "killedTests": 1
+              },
+              {
+                "mutation": "ownership proof made unsatisfiable",
+                "killedTests": 14
+              }
+            ],
+            "note": "Each gate is load-bearing: removing it makes at least one boundary test fail."
+          }
+        ],
+        "separateFrom": {
+          "pythonUnitTotal": 24,
+          "voiceRegressionTotal": 89,
+          "note": "The 30 tests here are a separate total from the pre-existing Python 24 and the Voice 89 regression suites."
+        },
+        "failedOrUnrun": [
+          {
+            "item": "issue 120 acceptance",
+            "state": "NOT_RUN",
+            "reason": "Predecessor candidate handoff was consumed; acceptance of issue 120 is a separate PM decision and was not performed here."
+          },
+          {
+            "item": "Linux and Windows backends",
+            "state": "NOT_RUN",
+            "reason": "Exclusive no-replace publication and descriptor ACL checks are Darwin-only; other platforms stay fail-closed."
+          },
+          {
+            "item": "accept-phase canonical write",
+            "state": "NOT_RUN",
+            "reason": "Candidate phase writes are isolated proposals (canonicalWriteAllowed=false). Canonical application is a PM decision."
+          },
+          {
+            "item": "live LiveKit service exercise",
+            "state": "NOT_RUN",
+            "reason": "No service was started and no external package was installed; verification is local-fixture only."
+          }
+        ],
+        "blockers": [],
+        "successorHandoff": [
+          {
+            "issue": 100,
+            "artifact": "artifact:151:staging-ownership-proof:accept",
+            "note": "Consumes the accept-phase proof before real microphone/PTT work; Python24/Voice89 totals do not substitute."
+          },
+          {
+            "issue": 143,
+            "artifact": "artifact:151:staging-ownership-proof:accept",
+            "note": "Consumes the accept-phase proof before delivering the service; failed or unverified backends stay fail-closed."
+          }
+        ],
+        "claimRelease": "Held until the candidate artifact is returned to PM, or released on abort with notice.",
+        "digestScope": {
+          "baseBlobSha1": "blob of the file at baseCommit (origin/develop)",
+          "candidateBlobSha1": "git hash-object of the candidate working tree content",
+          "candidateSha256": "sha256 of the candidate working tree bytes",
+          "note": "The candidate changes are uncommitted on the claim branch; baseCommit is the branch point, not the content being returned."
+        }
+      },
+      "appendOnly": true,
+      "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence."
+    }
+  ],
+  "supersedes": {
+    "fields": [
+      "runRecord",
+      "checks",
+      "separateFrom",
+      "failedOrUnrun",
+      "boundary.publicationGate"
+    ],
+    "note": "The 58f7445 record overwrote the 4a3f727 run record in place instead of appending it, dropping that run's negativeCaseAddressed disclosure and one mutation row. The prior record is preserved verbatim in runHistory and no later run overwrites it."
+  }
 }
