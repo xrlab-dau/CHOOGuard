@@ -1,0 +1,1122 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-15",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "recorded_all_40_checks_passed_on_the_hash_pinned_run_with_one_shipped_boundary_handoff_and_one_measured_publication_limit",
+  "targetIssue": 129,
+  "issue": 129,
+  "workId": "FMP-08b",
+  "title": "[FMP-08b] 해석 정지거리·제동 지연·편성 점유 검증",
+  "scope": "train_analytic_receipt",
+  "wholeServerBudget": "NOT_ASSESSED",
+  "scopeStatement": "이 결과는 저작 합성 열차 모델(TrainDynamics, TrainOperation)의 해석 정지거리·정지시간·제동 지연/빌드업·편성 점유(진입/완전점유/후미해제)·정차 위치 오차를 수치로 기록한 영수증이다. 실제 차량 제동곡선도, 실측 주행시험이도, 신호·폐색 인터록도, 운영기관 규정도 아니다. 노선·편성·승강장 치수는 저작 게임 치수이며 측량값이 아니다. 20 Hz 전체 서버 프레임 예산은 이 작업에서 측정하지 않았고 NOT_ASSESSED 로 남긴다. 필터에 함께 건 기존 해석 시험(TrainDynamicsTests 13, TrainOperationTests 6)을 같은 실행에서 재사용했고, Runtime/Simulation 아래 어떤 파일도 수정하지 않았다. 이 파일의 수치는 실행 로그의 FMP08B-ANALYTIC 영수증과 results.xml 에서 기계적으로 옮긴 것이며, 옮긴 뒤 파이썬 재계산기로 다시 확인했다(generatorIndependentRecomputation).",
+  "fixture": {
+    "derivation": "foundation/world/foundation-simulation-profile.json 의 Trains 에서 Operation.TrainId == \"train.mainline\" 인 항목을 Single 로 고른다(첫 항목을 가정하지 않는다). 같은 파일의 Segments 를 함께 읽는다. 하네스가 읽은 값을 영수증에 그대로 싣고, 시험이 다시 단정한다.",
+    "sourceRef": "foundation/world/foundation-simulation-profile.json",
+    "worldRef": "foundation/world/connected-world-profile.json",
+    "trainId": "train.mainline",
+    "frameId": "train-mainline",
+    "segmentId": "route.mainline",
+    "physicalTrackId": "track.mainline",
+    "consistLengthM": 40.0,
+    "routeStartM": 0.0,
+    "routeEndM": 440.0,
+    "maximumSpeedMS": 6.0,
+    "tractionAccelerationMS2": 0.7,
+    "clearanceMarginM": 1.0,
+    "dockToleranceM": 0.05,
+    "doorClosingSeconds": 2.0,
+    "stationReferenceM": 220.0,
+    "authoredStops": [
+      {
+        "referenceM": 220,
+        "dwellSeconds": 30,
+        "boarding": true
+      },
+      {
+        "referenceM": 400,
+        "dwellSeconds": 4,
+        "boarding": false
+      },
+      {
+        "referenceM": 220,
+        "dwellSeconds": 30,
+        "boarding": true
+      },
+      {
+        "referenceM": 60,
+        "dwellSeconds": 4,
+        "boarding": false
+      }
+    ],
+    "routeSegments": 1,
+    "segmentReversed": false,
+    "segmentLengthM": 440.0,
+    "segmentPhysicalStartM": 0,
+    "platformBlockM": [
+      180.0,
+      260.0
+    ],
+    "platformBlockDerivation": "StationReferenceM ± ConsistLengthM (220.0 ± 40.0); 저작 프로필에서 유도했고 이 파일에서 임의로 정하지 않았다.",
+    "syntheticAddition": "cross-segment 후미해제 케이스에만 60 m 합성 스텁(route.mainline.fmp08b-synthetic-stub)을 덧붙였으며, 저작 노선이 아님을 영수증 Limits 와 이 파일의 limits.syntheticAddition 에 명시했다.",
+    "reproducedInSameRun": true,
+    "serviceBrake": {
+      "delaySeconds": 0.4,
+      "buildUpSeconds": 0.5,
+      "decelerationMS2": 0.8
+    },
+    "emergencyBrake": {
+      "delaySeconds": 0.2,
+      "buildUpSeconds": 0.3,
+      "decelerationMS2": 1.2
+    },
+    "serviceStopDistanceAtMaxSpeedM": 26.391666666666666,
+    "serviceStopTimeAtMaxSpeedS": 8.149999999999999,
+    "emergencyStopDistanceAtMaxSpeedM": 17.095500000000005,
+    "emergencyStopTimeAtMaxSpeedS": 5.3500000000000005
+  },
+  "measurementConditions": {
+    "unit": "SI (m, s, m/s, m/s^2)",
+    "editor": "Unity 6000.3.23f1",
+    "invocation": "-batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter ChooGuard.Foundation.Tests.TrainDynamicsTests;ChooGuard.Foundation.Tests.TrainOperationTests;ChooGuard.Foundation.Tests.Fmp08bOccupancyTests",
+    "host": "Apple M1, 8 cores, 16 GB, macOS 26.5 (darwin 25.5.0) arm64",
+    "hostNote": "다른 장비의 수치와 직접 비교하지 않는다.",
+    "launchUtc": "2026-09-14T16:03:33Z",
+    "gitHeadAtRun": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "gitHeadAfterRun": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "gitHeadNote": "이 값은 실행을 발진한 그 호출이 실행 직전과 직후에 git rev-parse 로 관측한 HEAD 이며 develop 에서 도달 가능하다. 직전 기록의 42dea4d474a72212875215789fadfc5ceeb1c910 는 어떤 브랜치·태그에서도 도달 불가이고 HEAD 의 조상도 아니다(git for-each-ref --contains 와 merge-base --is-ancestor 가 모두 실패). 같은 제목의 커밋 객체는 남아 있으므로, 현재 HEAD 로 재작성되기 전의 같은 커밋이었다고 판단한다. 하네스 결함이 아니라 이 파일의 서술 결함이었으므로 관측값으로 대체한다.",
+    "testArtifactSha256AtLaunch": "c0f2fddce6784d5731e0f1779d8ca9d203bd0265af18ac6270325f17691ecc04",
+    "testArtifactSha256AfterRun": "c0f2fddce6784d5731e0f1779d8ca9d203bd0265af18ac6270325f17691ecc04",
+    "artifactUnchangedDuringRun": true,
+    "hashPinningNote": "실행 전후 해시가 동일함을 확인한 실행만 채택했다. 이 영수증의 수치는 확정 바이트 c0f2fddce6784d5731e0f1779d8ca9d203bd0265af18ac6270325f17691ecc04 로 측정했다. Fmp08bOccupancyTests.cs 는 저장소에 커밋되어 있지 않다(untracked). 따라서 '커밋된 리비전'으로는 재현할 수 없고, 이 해시가 유일한 재현 좌표다.",
+    "invocationNote": "FMP-06b 와 같은 형태로 저장소 루트 상대 경로(-projectPath .)를 쓴다.",
+    "resultsXmlMtime": "2026-09-15T01:03:42+0900",
+    "unityLogMtime": "2026-09-15T01:03:43+0900",
+    "unityLogBytes": 58853,
+    "resultsXmlBytes": 50791,
+    "unityLogSha256": "343138a52db09a7f5040634c8f9ef40d004080054da139c6d83d510877a5a7da",
+    "resultsXmlSha256": "37443597c32bd95ddbbd049ef9a068cc3f557d65451007a92dd86b3886c77bc7",
+    "freshness": "results.xml start-time 2026-09-14 16:03:41Z 은 발진 시각 2026-09-14T16:03:33Z 보다 8 초 뒤이고, 두 로그의 mtime 도 발진 뒤다. 이전 실행이 남긴 낡은 결과 파일이 아니다.",
+    "crossRunDeterminism": {
+      "comparedRuns": 2,
+      "comparedRunIds": [
+        "run3 superseded by one doc-comment line",
+        "run4 adopted"
+      ],
+      "comparedReceiptBytes": [
+        16879,
+        16879
+      ],
+      "comparedReceiptSha256": [
+        "ed23ff14410941576c9a79c3b6548fe05cc319cf192876d2082b4c6f6151e315",
+        "ed23ff14410941576c9a79c3b6548fe05cc319cf192876d2082b4c6f6151e315"
+      ],
+      "fieldsInCommon": 92,
+      "fieldsDiffering": 0,
+      "note": "두 실행의 영수증이 바이트 단위로 동일했다(같은 16,879 B, 같은 sha256). 즉 92 개 필드가 모두 동일하고, 서로 다른 필드가 하나도 없다. 게재 문서 주석 한 줄만 다른 두 바이트 집합이 같은 영수증을 냈다.",
+      "scope": "이 비교는 같은 생성기를 두 번 돌려 필드를 맞춘 것뿐이다. 생성기가 일관되게 틀리면 두 실행이 같이 틀리므로 이 비교로는 잡히지 않는다 - 실제로 이 작업에서 그런 일이 있었다(아래 harnessRevisionHistory). 이 비교는 자기일관성 증거이며 정확성 증거가 아니다.",
+      "independentConfirmation": "정확성 축은 generatorIndependentRecomputation 이 담당한다: 닫힌 해, 점유 기하, IEEE-754 비트패턴을 C# 하네스와 코드를 공유하지 않는 파이썬으로 다시 유도해 게재값과 대조한다."
+    },
+    "harnessRevisionHistory": {
+      "adoptedRun": 4,
+      "runs": [
+        {
+          "attempt": 1,
+          "artifactSha256": "b090de2581ae7ca1b127176de4a3f6c855fb3cb20e5f7a79901b9b329116c375",
+          "artifactBytes": 91859,
+          "outcome": "failed",
+          "failedAssertion": "TheReceiptCannotPublishABitPatternItsOwnReferencePositionRefutes",
+          "observed": "the serialised bit pattern must decode back to the serialised reference position. Expected: 362.34571428573003d But was: 362.34571428572997d",
+          "diagnosis": "하네스 결함이며 물리 결함이 아니다. 시험이 영수증의 소수 텍스트를 C# JSON 리더로 다시 읽은 값과 측정값을 비교했는데, 그 리더가 측정값에서 1 ulp 위의 이웃 double 을 복원했다. 파이썬 float() 는 같은 텍스트를 측정값으로 되돌린다. 즉 텍스트 표기는 비트정확 담체가 아니다."
+        },
+        {
+          "attempt": 2,
+          "artifactSha256": "6b2b12d313120a84e1fc1a807680b2fc370d0147884bb1a37d540627b74142b8",
+          "artifactBytes": 95173,
+          "outcome": "failed",
+          "failedAssertion": "TheReceiptCannotPublishABitPatternItsOwnReferencePositionRefutes",
+          "observed": "the published round-trip gap must be the gap this read measured. Expected: 5.6843418860808015E-14d But was: 5.6843418860808027E-14d",
+          "diagnosis": "역시 하네스 결함이다. 산출한 간극과 소스에 적은 double 리터럴이 같은 수를 서로 다른 double 로 표현했다. 간극을 ulp 정수 개수로 나르도록 바꿔 표현 모호성을 없앴다."
+        },
+        {
+          "attempt": 3,
+          "artifactSha256": "74e8adf7cd270b2742108a7fb1aaefbb4c27767cf176673f085195efa3cfc452",
+          "artifactBytes": 96212,
+          "outcome": "passed",
+          "failedAssertion": null,
+          "observed": "40/40 passed, 0 failed, 0 skipped",
+          "supersededBy": "이 실행의 시험 파일은 그 뒤 문서 주석 한 줄(DeterminismDecimalRoundTripGapM -> DeterminismDecimalRoundTripUlps)만 바뀌었다. 낡은 이름을 가리키는 주석을 남긴 채 영수증을 내지 않기 위해 같은 바이트로 다시 돌렸고, 그것이 채택 회차다."
+        },
+        {
+          "attempt": 4,
+          "artifactSha256": "c0f2fddce6784d5731e0f1779d8ca9d203bd0265af18ac6270325f17691ecc04",
+          "artifactBytes": 96212,
+          "outcome": "passed",
+          "failedAssertion": null,
+          "observed": "40/40 passed, 0 failed, 0 skipped",
+          "adopted": true,
+          "note": "이 회차의 시험 파일 바이트가 제출 시점 디스크 바이트와 정확히 같다(위 testArtifact.sha256). 3 회차와의 차이는 문서 주석 한 줄뿐이고 영수증은 바이트 단위로 동일하다."
+        }
+      ],
+      "whatWasNotChanged": "실패를 본 뒤 판정 임계값은 하나도 움직이지 않았다: 점차 허용오차 0.05 m, 해석 거리 허용오차 1e-9 m, 시간 허용오차 1e-9 s, 분할 독립 허용오차 1e-7 m, 그리고 6 m/s 정지거리·시간 리터럴은 네 회차 모두에서 같은 값으로 단정된다. 바뀐 것은 소수 텍스트 왕복이라는, 애초에 반증 불가능했던 단정을 측정된 정수 ulp 개수로 바꾼 것과 그에 맞춰 필드를 하나 추가한 것뿐이다.",
+      "physicsUnchangedAcrossRuns": "네 회차 모두 DeterminismFinalReferenceM = 362.34571428572997, DeterminismFinalBits = 4645082069409722246, OccupancyReleaseReferenceM = 300.0, OccupancyReleaseCounterexamples = 79, EmergencyBoundaryHazardResidueSeconds = 1.3877787807814457e-17 을 냈다. 채택 회차와 폐기 회차의 물리 수치가 완전히 같다는 뜻이다."
+    },
+    "runAttempts": {
+      "finalPinnedRunAttempt": 1,
+      "finalPinnedRunExitCode": 0,
+      "note": "확정 실행(채택 회차 4)은 첫 시도에서 성공했고 결과 파일이 발진 시각 이후에 생성되었음을 확인했다. 이 회차의 시험 파일 바이트가 제출 시점 디스크 바이트와 같다."
+    }
+  },
+  "analyticStopping": {
+    "oracle": "이 파일에 직접 쓴 닫힌 해(지연 + 일정 저크 빌드업 + 일정 감속). TrainDynamics 를 호출하지 않는다.",
+    "threeWayAgreement": [
+      "closed-form oracle",
+      "TrainDynamics.StoppingDistance (shipped query)",
+      "TrainDynamics.AdvanceBrake (fixed-step integrator)"
+    ],
+    "speedSamplesMS": [
+      0.05,
+      0.2,
+      1.0,
+      3.0,
+      6.0
+    ],
+    "stepsS": [
+      0.005,
+      0.07
+    ],
+    "distanceToleranceM": 1e-09,
+    "timeToleranceS": 1e-09,
+    "partitionIndependenceToleranceM": 1e-07,
+    "partitionIndependenceSource": "TrainDynamicsTests.TickPartitionAndReverseTravelKeepTheSameBrakingSolution 가 1e-7 을 세운다. 이 파일은 그 값을 그대로 쓰고 결과를 보고 고르지 않았다.",
+    "samples": [
+      {
+        "profile": "service",
+        "speedMS": 0.05,
+        "oracleDistanceM": 0.028333333333333335,
+        "oracleTimeS": 0.65,
+        "shippedDistanceM": 0.02833333333333334,
+        "integratedDistanceM": 0.028333333333333342,
+        "integratedTimeS": 0.6500000000000002,
+        "coarseDistanceM": 0.028333333333333332,
+        "coarseTimeS": 0.65
+      },
+      {
+        "profile": "service",
+        "speedMS": 0.2,
+        "oracleDistanceM": 0.1466666666666667,
+        "oracleTimeS": 0.9,
+        "shippedDistanceM": 0.1466666666666667,
+        "integratedDistanceM": 0.1466666666666668,
+        "integratedTimeS": 0.9000000000000007,
+        "coarseDistanceM": 0.14666666666666667,
+        "coarseTimeS": 0.9000000000000002
+      },
+      {
+        "profile": "service",
+        "speedMS": 1.0,
+        "oracleDistanceM": 1.2666666666666668,
+        "oracleTimeS": 1.9,
+        "shippedDistanceM": 1.2666666666666666,
+        "integratedDistanceM": 1.2666666666666633,
+        "integratedTimeS": 1.899999999999978,
+        "coarseDistanceM": 1.2666666666666668,
+        "coarseTimeS": 1.9000000000000008
+      },
+      {
+        "profile": "service",
+        "speedMS": 3.0,
+        "oracleDistanceM": 7.566666666666666,
+        "oracleTimeS": 4.3999999999999995,
+        "shippedDistanceM": 7.566666666666666,
+        "integratedDistanceM": 7.566666666666614,
+        "integratedTimeS": 4.399999999999909,
+        "coarseDistanceM": 7.566666666666663,
+        "coarseTimeS": 4.399999999999996
+      },
+      {
+        "profile": "service",
+        "speedMS": 6.0,
+        "oracleDistanceM": 26.391666666666666,
+        "oracleTimeS": 8.149999999999999,
+        "shippedDistanceM": 26.391666666666666,
+        "integratedDistanceM": 26.391666666667756,
+        "integratedTimeS": 8.150000000000102,
+        "coarseDistanceM": 26.39166666666666,
+        "coarseTimeS": 8.15000000000001
+      },
+      {
+        "profile": "emergency",
+        "speedMS": 0.05,
+        "oracleDistanceM": 0.015270462766947303,
+        "oracleTimeS": 0.35811388300841895,
+        "shippedDistanceM": 0.015270462766947303,
+        "integratedDistanceM": 0.0152704627669473,
+        "integratedTimeS": 0.358113883008419,
+        "coarseDistanceM": 0.015270462766947301,
+        "coarseTimeS": 0.35811388300841895
+      },
+      {
+        "profile": "emergency",
+        "speedMS": 0.2,
+        "oracleDistanceM": 0.08216666666666667,
+        "oracleTimeS": 0.5166666666666667,
+        "shippedDistanceM": 0.08216666666666667,
+        "integratedDistanceM": 0.0821666666666667,
+        "integratedTimeS": 0.5166666666666672,
+        "coarseDistanceM": 0.08216666666666667,
+        "coarseTimeS": 0.5166666666666667
+      },
+      {
+        "profile": "emergency",
+        "speedMS": 1.0,
+        "oracleDistanceM": 0.7621666666666667,
+        "oracleTimeS": 1.1833333333333336,
+        "shippedDistanceM": 0.7621666666666667,
+        "integratedDistanceM": 0.7621666666666664,
+        "integratedTimeS": 1.1833333333333296,
+        "coarseDistanceM": 0.762166666666667,
+        "coarseTimeS": 1.1833333333333338
+      },
+      {
+        "profile": "emergency",
+        "speedMS": 3.0,
+        "oracleDistanceM": 4.7955,
+        "oracleTimeS": 2.85,
+        "shippedDistanceM": 4.7955000000000005,
+        "integratedDistanceM": 4.795500000000075,
+        "integratedTimeS": 2.84999999999999,
+        "coarseDistanceM": 4.7955,
+        "coarseTimeS": 2.8499999999999988
+      },
+      {
+        "profile": "emergency",
+        "speedMS": 6.0,
+        "oracleDistanceM": 17.095500000000005,
+        "oracleTimeS": 5.3500000000000005,
+        "shippedDistanceM": 17.095500000000005,
+        "integratedDistanceM": 17.095499999999934,
+        "integratedTimeS": 5.349999999999915,
+        "coarseDistanceM": 17.09550000000002,
+        "coarseTimeS": 5.350000000000005
+      }
+    ],
+    "maximumObservedDeviation": {
+      "oracleVsShippedDistanceM": 8.881784197001252e-16,
+      "oracleVsShippedTimeS": 0.0,
+      "oracleVsIntegratorDistanceM": 1.0906830993917538e-12,
+      "oracleVsIntegratorTimeS": 1.0302869668521453e-13,
+      "note": "관측된 최대 편차이며 임계값이 아니다. 판정에 쓴 임계값은 위의 1e-09 / 1e-09 / 1e-07 고정 상수다. 네 값 모두 저장소 밖 파이썬 재계산기가 게재 표본에서 다시 산출하고, 재계산기는 이 필드가 자기 산출값과 정확히 같은지를 단정한다(다르면 실패)."
+    },
+    "envelopeOrdering": "17.095500000000005 m (emergency) < 26.391666666666666 m (service): 비상 봉투가 서비스 봉투보다 길지 않다."
+  },
+  "brakingDelayAndBuildUp": {
+    "measuredAt": "v = 6.0 m/s, service profile",
+    "delayPhase": {
+      "delaySeconds": 0.4,
+      "speedAfterMS": 6.0,
+      "distanceAfterM": 2.4000000000000004,
+      "decelerationAfterMS2": 0.0,
+      "assertion": "지연 구간은 속도를 바꾸지 않고 감속도를 0 으로 유지한다"
+    },
+    "buildUpPhase": {
+      "buildUpSeconds": 0.5,
+      "speedAtRampEndMS": 5.8,
+      "distanceAtRampEndM": 5.366666666666667,
+      "decelerationAtRampEndMS2": 0.8,
+      "phaseAtRampEnd": "Full",
+      "residualToStopM": 21.025,
+      "residualClosedFormM": 21.025,
+      "assertion": "램프 종료 후 남은 거리는 램프 종료 속도의 일정감속 잔여거리와 정확히 같다",
+      "residualDeltaM": 0.0
+    },
+    "partitionSweep": {
+      "emergencyStepS": [
+        0.005,
+        0.01,
+        0.02,
+        0.025,
+        0.04,
+        0.06,
+        0.075,
+        0.1
+      ],
+      "excludedStepS": 0.05,
+      "assertion": "비상 정지거리·정지시간이 8 개 고정 스텝에서 모두 닫힌 해와 1e-9 이내로 일치한다. 그 8 개 밖에 있는 0.05 s 는 하네스가 선적 AdvanceBrake 를 실제로 구동해 Assert.Throws 로 거부됨을 단정한다(산문이 아니다). EmergencyTrajectoryDoesNotDependOnTheFixedStep 안의 Assert.That(steps, Has.No.Member(...)) 와 Assert.Throws 두 줄이 그 주장의 전부다."
+    }
+  },
+  "occupancy": {
+    "rule": "TrainDynamics.Occupancy/SweptOccupancy 의 점유 구간은 [reference - consistLength - margin, reference + margin] 이며 reference 는 노선 양의 축 끝(앞머리)이다. 해제는 뒤끝(= reference - consistLength)이 블록 끝에 닿을 때 일어난다.",
+    "platformBlock": {
+      "startM": 180.0,
+      "endM": 260.0,
+      "consistLengthM": 40.0
+    },
+    "entryReferenceM": 180.0,
+    "releaseReferenceM": 300.0,
+    "headOnlyReleaseReferenceM": 260.0,
+    "headOnlyReleaseCounterexamples": 79,
+    "counterexampleWindow": [
+      260.5,
+      299.5
+    ],
+    "counterexampleWindowNote": "180.0~340.0 m 를 0.5 m 간격으로 훑어 head-only 규칙(reference > block.EndM)이 '해제'라고 말하는데 선적 규칙은 '점유'라고 말하는 표본의 첫·마지막 참조값. 하네스는 이 카운터를 두 끝점과 스윕 스텝으로 교차검증하고 닫힌 형태 ((last-first)/step)+1 과도 맞춘다. 저장소 밖 재계산기도 같은 창을 다시 세어 두 끝점과 개수를 맞춘다.",
+    "releaseReferenceDerivation": "releaseReferenceM 은 상수 대입이 아니라 선적 Occupancy 질의를 이분탐색해 찾은 값이다(찾은 값 300.0 m, 블록 끝 260.0 m + 편성 40.0 m). 찾은 값은 질의가 '자유'라고 답한 쪽 경계이므로 규칙이 바뀌면 함께 움직인다. 저장소 밖 재계산기도 같은 질의를 다시 구현해 같은 경계를 찾는다.",
+    "samples": [
+      {
+        "case": "platform",
+        "referenceM": 140.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          100.0,
+          140.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": false,
+        "headPastBlockEnd": false
+      },
+      {
+        "case": "platform",
+        "referenceM": 180.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          140.0,
+          180.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": false,
+        "headPastBlockEnd": false
+      },
+      {
+        "case": "platform",
+        "referenceM": 180.000001,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          140.000001,
+          180.000001
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": true,
+        "headPastBlockEnd": false
+      },
+      {
+        "case": "platform",
+        "referenceM": 220.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          180.0,
+          220.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": true,
+        "headPastBlockEnd": false
+      },
+      {
+        "case": "platform",
+        "referenceM": 225.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          185.0,
+          225.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": true,
+        "headPastBlockEnd": false
+      },
+      {
+        "case": "platform",
+        "referenceM": 260.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          220.0,
+          260.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": true,
+        "headPastBlockEnd": false
+      },
+      {
+        "case": "platform",
+        "referenceM": 280.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          240.0,
+          280.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": true,
+        "headPastBlockEnd": true
+      },
+      {
+        "case": "platform",
+        "referenceM": 299.999999,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          259.999999,
+          299.999999
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": true,
+        "headPastBlockEnd": true
+      },
+      {
+        "case": "platform",
+        "referenceM": 300.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          260.0,
+          300.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": false,
+        "headPastBlockEnd": true
+      },
+      {
+        "case": "platform",
+        "referenceM": 305.0,
+        "consistLengthM": 40.0,
+        "blockM": [
+          180.0,
+          260.0
+        ],
+        "intervalM": [
+          265.0,
+          305.0
+        ],
+        "intervalCount": 1,
+        "overlapsBlock": false,
+        "headPastBlockEnd": true
+      }
+    ],
+    "consistLengthSweepM": [
+      20,
+      40,
+      60
+    ],
+    "consistLengthSweepResult": "진입은 세 편성 길이 모두 reference 180 m(앞머리)로 동일하고, 해제는 280 / 300 / 320 m 로 편성 길이를 따라 이동한다. 해제가 앞머리 위치로 결정되지 않음을 보인다. 세 값은 각 편성 길이에 대해 선적 질의를 이분탐색해 찾은 값이며, 탐색값과 블록끝+편성길이의 차가 0 임을 시험이 단정한다.",
+    "reversedSegmentProbe": {
+      "trackLengthM": 500,
+      "physicalBlockM": [
+        300,
+        340
+      ],
+      "mappingProbeReferenceM": 160.0,
+      "releaseReferenceM": 240.0,
+      "result": "Reversed=true 단일 구간에서 reference=160.0 은 사상/진입 확인용 프로브이며 해제 경계가 아니다: reference=160.0 에서 매핑 구간 [340, 380] 이 물리 블록 [300, 340] 을 덮지 않고, 160.0+1e-6 에서 [339.999999, 379.999999] 로 덮는다. 실제 통과-해제 경계는 reference=240.0 이며 그 지점에서 매핑 구간 [260, 300] 이 블록과 겹치지 않고, 240.0-1e-6 에서는 [260.000001, 300.000001] 로 겹친다. 두 참조값이 서로 다름이 시험에서 단정된다. 이전 판은 진입/사상 경계를 해제 경계로 게재했고 그것이 결함이었다."
+    },
+    "crossSegment": {
+      "mainlineHeldAtM": 479.9,
+      "mainlineReleasedAtM": 480.0,
+      "intervalsWhileHeadOverrun": 2,
+      "intervalsAfterRearClear": 1,
+      "assertion": "앞머리가 주선로 끝을 넘었어도 뒤끝이 남아 있는 동안 주선로 물리 구간이 계속 점유된다"
+    },
+    "routeBounds": "노선 밖 점유는 조용히 버려지지 않고 ArgumentException 으로 거부된다 (Occupancy(440.5, 40) 및 Occupancy(40-0.1, 40) 거부, Occupancy(440, 40) 는 [400, 440] 으로 수용, SweptOccupancy(400, 441, 40) 도 거부).",
+    "routeBoundsMeasured": {
+      "rejectedAboveEndM": 440.5,
+      "rejectedBelowRearM": 39.9,
+      "acceptedAtEndM": 440.0,
+      "acceptedIntervalM": [
+        400.0,
+        440.0
+      ]
+    }
+  },
+  "docking": {
+    "stepSeconds": 0.01,
+    "runSeconds": 300,
+    "completedStops": 5,
+    "minimumRequiredStops": 4,
+    "toleranceM": 0.05,
+    "toleranceViolations": 0,
+    "positionSnapViolations": 0,
+    "overshootViolations": 0,
+    "dockingErrorStageEvents": 0,
+    "maximumDockingErrorM": 5.115907697472721e-13,
+    "minimumCruiseEnvelopeMarginM": 0.010476190437415767,
+    "brakingEnvelopeViolations": 0,
+    "stops": [
+      {
+        "stopIndex": 1,
+        "referenceM": 400.0,
+        "stoppedAtM": 400.0000000000005,
+        "errorM": 5.115907697472721e-13,
+        "speedMS": 0.0
+      },
+      {
+        "stopIndex": 2,
+        "referenceM": 220.0,
+        "stoppedAtM": 219.9999999999997,
+        "errorM": 3.126388037344441e-13,
+        "speedMS": 0.0
+      },
+      {
+        "stopIndex": 3,
+        "referenceM": 60.0,
+        "stoppedAtM": 59.99999999999977,
+        "errorM": 2.2737367544323206e-13,
+        "speedMS": 0.0
+      },
+      {
+        "stopIndex": 0,
+        "referenceM": 220.0,
+        "stoppedAtM": 220.0000000000001,
+        "errorM": 1.1368683772161603e-13,
+        "speedMS": 0.0
+      },
+      {
+        "stopIndex": 1,
+        "referenceM": 400.0,
+        "stoppedAtM": 400.0000000000001,
+        "errorM": 1.1368683772161603e-13,
+        "speedMS": 0.0
+      }
+    ],
+    "interpretation": "정차 위치는 스냅되지 않는다. 오차는 1e-13 m 수준의 부동소수 잔차이며 고정 허용오차 0.05 m 보다 11 자리 이상 작다. 자동 접근은 정지 봉투에 들어가기 전에만 제동하므로 cruise envelope margin 최솟값이 양수다."
+  },
+  "emergencyStop": {
+    "stepSeconds": 0.02,
+    "stepChoiceNote": "0.02 s 는 고정 상수이며 결과를 보고 고른 값이 아니다. 0.05 s 에서 선적 적분기가 자기 상태를 거부하는 경계 잔차가 측정되어(아래 shippedBoundaryHandoff) 그 스텝을 채택 궤적에 쓰지 않았고, 그 배제는 EmergencyTrajectoryDoesNotDependOnTheFixedStep 안에서 Assert.Throws 로 단정된다.",
+    "stepChoiceIsAsserted": true,
+    "commandReferenceM": 300,
+    "headAtCommandM": 300.00571428571294,
+    "speedAtCommandMS": 6.0,
+    "phaseAtCommand": "Idle (순항 중, 서비스 제동이 아직 존재하지 않음)",
+    "stageAfterStop": "FaultStopped",
+    "stageAfterStopEncoded": 4,
+    "stoppedAtM": 317.10121428571296,
+    "doorOpenAfterStop": false,
+    "measuredTravelM": 17.095500000000015,
+    "analyticEmergencyTravelM": 17.095500000000005,
+    "travelToleranceM": 1e-09,
+    "nearestAuthoredStopDistanceM": 82.89878571428704,
+    "alignmentCounterexampleMarginM": 1.0,
+    "driftWhileLatchedM": 0.0,
+    "latchedHoldSeconds": 20,
+    "recovery": {
+      "offPlatformStage": "ClosingDoors",
+      "offPlatformStageEncoded": 1,
+      "offPlatformContinueToTarget": true,
+      "offPlatformResumedStopIndex": 1,
+      "offPlatformDockErrorM": 1.1368683772161603e-13,
+      "offPlatformDistanceM": 400.0000000000001,
+      "alignedStageAfterEmergencyStop": "FaultStopped",
+      "alignedRecoveryStage": "Dwell",
+      "alignedRecoveryStageEncoded": 0,
+      "alignedStopDistanceM": "이 영수증에 게재하지 않는다. 하네스는 정렬 분기의 정차 위치 오차를 DockingToleranceM 이내로만 단정하고 절대값을 싣지 않는다(수치를 지어내지 않는다).",
+      "assertion": "비상 정차는 승강장 정렬이 아니다. 중간선 정차 뒤 Recover 는 Dwell 이 아니라 ClosingDoors+ContinueToTarget 으로 간다. 정렬된 경우의 분기가 별도로 기록되어 두 경우를 같은 것으로 단정할 수 없다. 단계 코드는 TrainOperatingStage { Dwell=0, ClosingDoors=1, Cruising=2, Braking=3, FaultStopped=4, DockingError=5 } 이다."
+    }
+  },
+  "determinism": {
+    "repeatRuns": 2,
+    "runSeconds": 60,
+    "stepSeconds": 0.01,
+    "finalReferenceM": 362.34571428572997,
+    "repeatFinalReferenceM": 362.34571428572997,
+    "finalBits": 4645082069409722246,
+    "repeatFinalBits": 4645082069409722246,
+    "statesIdentical": true,
+    "finalBitsDerivation": "finalBits 는 하네스가 MeasureDeterminism 안에서 BitConverter.DoubleToInt64Bits(finalReferenceM) 로 만들어 영수증에 싣는다. 사람이 계산해 적지 않는다. 시험은 bits(finalReferenceM) == finalBits 자기일관성 단정과 영수증 직렬화 왕복 단정을 함께 건다: 4645082069409722246 = bits(362.34571428572997). 이전 판의 게재값 4646051498886027000 은 어떤 실행의 출력도 아니었고, 그 값은 417.45140006333486 을 부호화한다.",
+    "decimalRoundTripUlps": 1,
+    "decimalRoundTripNote": "영수증의 소수 표기는 비트정확 담체가 아니다. 게재 텍스트는 362.34571428572999 이고 측정 double 은 362.34571428572997 이며, 이 텍스트를 C# JSON 리더로 다시 읽으면 측정값에서 1 ulp 위의 이웃 double 이 나온다(시험이 이 사실 자체를 Is.Not.EqualTo 로 단정하고, 그 차이를 정수 ulp 로 측정해 이 필드에 싣는다). 같은 텍스트를 파이썬 float() 로 읽으면 측정값으로 정확히 되돌아온다 - 이는 저장소 밖 재계산기가 확인했다. 즉 드리프트는 텍스트 자체가 아니라 특정 리더의 파싱 결과에 있다. 비트정확 담체는 finalBits 이며 소수 필드가 아니다.",
+    "renderedReferenceText": "362.34571428572999",
+    "pythonReparseOfRenderedTextEqualsMeasured": true,
+    "note": "동일 조건 두 실행이 비트 단위로 같은 위치·속도·완료정차·단계·제동경과시간을 냈다. 300 s 주행도 같은 이유로 재현 가능하다. 이 주장은 같은 생성기를 두 번 돌린 비교이므로 생성기가 일관되게 틀리는 오류에는 눈이 멀다 - 그 몫은 generatorIndependentRecomputation 이 담당한다."
+  },
+  "negativeCaseGuards": {
+    "headOnlyOccupancyRelease": {
+      "rejectedRule": "referenceM > block.EndM (앞머리만 보고 해제)",
+      "shippedRule": "reference - consistLength >= block.EndM (뒤끝이 블록 끝에 닿아야 해제)",
+      "measuredDisagreements": 79,
+      "counterexampleFirstM": 260.5,
+      "counterexampleLastM": 299.5,
+      "foundReleaseReferenceM": 300.0,
+      "discriminatingAssertion": "OccupancyReleaseIsDecidedByTheRearNotTheHead 는 해제 참조값을 상수로 대입하지 않고 선적 Occupancy 질의를 이분탐색해 찾은 뒤(300.0 m) 블록 끝 + 편성 길이와 일치함을 단정하고, 카운터(79 > 0)를 첫·마지막 표본과 스윕 스텝으로 교차검증하며 이분탐색 값과 게재 값이 같음을 단정한다. 규칙이 앞머리 기준으로 바뀌면 탐색이 블록 끝(260.0 m)을 반환해 모든 단정이 깨진다.",
+      "witnessAssertionLines": "Fmp08bOccupancyTests.cs 의 OccupancyReleaseIsDecidedByTheRearNotTheHead 안: occupancyReleaseCounterexamples > 0, occupancyReleaseCounterexampleFirstM == block.EndM + ReleaseSweepStepM, occupancyReleaseCounterexampleLastM == block.EndM + consist - ReleaseSweepStepM, occupancyReleaseReferenceM == releaseFound. 네 단정 모두 규칙이 바뀌면 깨진다."
+    },
+    "emergencyStopAssumedPlatformAligned": {
+      "measuredNearestStopDistanceM": 82.89878571428704,
+      "toleranceM": 0.05,
+      "discriminatingAssertion": "EmergencyStopBetweenStationsIsNotAssumedToBePlatformAligned 가 중간선 정차의 최근접 저작 정차점 거리 82.89878571428704 m 가 허용오차 0.05 m 는 물론 별도 여유 1 m 보다도 크다고 단정하고, 단계가 FaultStopped 이며 Recover 가 Dwell 이 아님을 단정한다. DockedAndMidLineEmergencyStopsTakeDifferentRecoveryBranches 가 정렬 분기(Dwell)와 비정렬 분기(ClosingDoors+ContinueToTarget)가 서로 다름을 단정한다."
+    },
+    "thresholdRelaxedAfterSeeingTheResult": {
+      "discriminatingAssertion": "RecordedBudgetsCannotBeRelaxedByTheHarness 가 사용된 모든 임계값을 고정 상수로 단정하고(0.05, 1e-9, 1e-7, 26.391666666666666, 17.095500000000005), 선적 검증기가 넓힌 허용오차와 약화된 비상 감속을 실제로 거부하는지 Assert.Throws 로 확인한다. 허용오차가 프로필에서 유도되었음을 AuthoredProfileIsTheFrozenTrainThisReceiptWasMeasuredOn 이 다시 단정한다.",
+      "measuredAgainstHistory": "이 작업의 1·2 회차가 실패한 뒤에도 위 상수는 하나도 바뀌지 않았다. 바뀐 것은 소수 텍스트 왕복이라는 반증 불가능한 단정뿐이다(measurementConditions.harnessRevisionHistory.whatWasNotChanged)."
+    },
+    "reversedProbeLabelledByItsRealBoundary": {
+      "rejectedConflation": "사상/진입 경계(reference=160.0)를 통과-해제 경계로 게재",
+      "shippedRule": "해제 경계는 reference=240.0 (노선축 후미가 물리 300 에 도달)",
+      "discriminatingAssertion": "RearReleaseOnAReversedSegmentIsStillDecidedByTheRouteAxisRear 가 240.0 자유 / 240.0-1e-6 점유를 단정하고, 160.0 는 진입/사상 프로브로 재라벨하며 두 참조값이 서로 다름을 단정한다. 이전 판은 160.0 를 해제 경계로 게재했고 그것이 결함이었다."
+    },
+    "fixedStepChosenAfterSeeingTheResult": {
+      "refusedStepS": 0.05,
+      "acceptedStepsS": [
+        0.005,
+        0.01,
+        0.02,
+        0.025,
+        0.04,
+        0.06,
+        0.075,
+        0.1
+      ],
+      "discriminatingAssertion": "EmergencyTrajectoryDoesNotDependOnTheFixedStep 안에서 0.05 s 의 배제가 산문이 아니라 단정이다: Assert.That(steps, Has.No.Member(EmergencyBoundaryHazardStepSeconds)) 로 채택 목록에 없음을 단정하고, 같은 시험이 선적 AdvanceBrake 를 그 스텝으로 실제 구동해 Assert.Throws<ArgumentException> 와 메시지 'Inconsistent train brake phase' 를 단정한다. 이전 판은 이 배제를 산문으로만 주장했다."
+    }
+  },
+  "shippedBoundaryHandoff": {
+    "kind": "shipped_runtime_defect_not_patched",
+    "location": "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/TrainDynamics.cs:119 (build-up 경계의 정확한 등가 비교) 와 :191 (ValidateState 의 BuildUp/Full 일관성 검사)",
+    "symptom": "TrainDynamics.AdvanceBrake 가 자기 자신이 쓴 상태를 자기 ValidateState 가 ArgumentException(\"Inconsistent train brake phase.\") 으로 거부한다.",
+    "reproduction": "고정 비상 프로필(지연 0.2 s, 빌드업 0.3 s, 감속 1.2 m/s^2)로 6.0 m/s 에서 RequestBrake 를 수락한 뒤 0.05 s 스텝으로 AdvanceBrake 를 반복한다.",
+    "measured": {
+      "stepSeconds": 0.05,
+      "rejected": true,
+      "rejectedAtStep": 9,
+      "lastValidPhase": "BuildUp",
+      "lastValidPhaseEncoded": 2,
+      "buildUpRemainingBeforeS": 0.05000000000000002,
+      "residueSeconds": 1.3877787807814457e-17,
+      "roundedDecelerationMS2": 1.2,
+      "targetDecelerationMS2": 1.2,
+      "explanation": "빌드업 잔여가 0 이 아닌 반올림 잔차(1.3877787807814457e-17)로 남은 채 DecelerationMS2 가 목표값으로 반올림되어, BuildUp 단계인데 감속도가 이미 목표라는 모순 상태가 된다."
+    },
+    "arbiter": "이 하네스가 아니라 선적 TrainDynamics.ValidateState 가 그 상태를 거부함을 Assert.Throws 로 확인했다. 재구성은 적분기와 같은 식으로 계산했다.",
+    "disposition": "Runtime/Simulation 아래 어떤 파일도 수정하지 않았다. 선적 제동 로직 변경은 시험과 리드 리뷰가 필요한 사안이므로 이 작업 범위 밖으로 두고 인계한다.",
+    "harnessResponse": "채택한 비상 궤적은 0.02 s 를 쓰고, EmergencyTrajectoryDoesNotDependOnTheFixedStep 이 8 개 채택 스텝이 모두 닫힌 해와 일치함을 단정한 뒤 같은 시험에서 0.05 s 를 실제로 구동해 Assert.Throws<ArgumentException> 과 메시지 'Inconsistent train brake phase' 를 단정한다.",
+    "sameEnvelopeOtherSteps": "0.005 / 0.01 / 0.02 / 0.025 / 0.04 / 0.06 / 0.075 / 0.1 s 는 같은 봉투를 오류 없이 적분하고 모두 닫힌 해와 1e-9 이내로 일치한다. 즉 물리 결과가 스텝에 의존하는 것이 아니라 특정 스텝에서만 경계 반올림이 걸린다."
+  },
+  "generatorIndependentRecomputation": {
+    "script": "docs/evidence/work-items/FMP-08b/recompute.py",
+    "sha256": "e6ae70a532ffb0a3bc422f1a98e8df871c30c00eda99a3fbb5d3275fc3ac3fbb",
+    "bytes": 18033,
+    "command": "python3 docs/evidence/work-items/FMP-08b/recompute.py docs/evidence/work-items/FMP-08b/result.json",
+    "exitCode": 0,
+    "checksOk": 41,
+    "checksFailed": 0,
+    "whatItRecomputes": [
+      "해석 정지거리·시간: 지연 + 일정저크 램프 + 일정감속의 닫힌 해를 파이썬으로 다시 유도해 게재 표본 10 개(5 속도 x 2 프로필)의 shipped/integrated 값과 대조한다.",
+      "최대 편차 필드: 게재 표본에서 다시 산출한 네 편차가 게재값과 정확히 같은지를 단정한다 - 어떤 편차가 게재 표본의 어떤 짝도 만들지 않는 값이면 실패한다.",
+      "제동 지연·빌드업: 게재 봉투 상수(0.4 / 0.5 / 0.8)와 게재 최고속도에서 지연 거리, 램프 종료 속도, 램프 거리, 잔여거리, 램프거리+잔여거리==총정지거리를 다시 계산한다.",
+      "점유 경계: SweptOccupancy 의 매핑식과 Overlaps 의 엄격 부등호를 다시 구현해 진입/해제 참조값, 79 표본 창의 개수와 두 끝점, 역방향 프로브의 사상·해제 경계를 기하에서 재계산한다.",
+      "비트패턴: struct.pack('<d') 와 '<q' 로 finalBits 를 다시 만들어 게재값과 일치하는지, 게재 double 로 되돌아오는지 본다.",
+      "선적 경계 인계 산술: 빌드업 잔여, 그 잔여와 스텝의 뺄셈 잔차, 램프가 그 스텝에서 목표 감속도로 반올림되는지를 게재 비상 봉투에서 다시 계산한다."
+    ],
+    "whyValidForCorrectness": [
+      "닫힌 해는 생성기와 무관한 식이다: d(v) = v*delay + v*ramp - a*ramp^2/6 + (v - a*ramp/2)^2/(2a), t(v) = delay + ramp + (v - a*ramp/2)/a (램프가 정지에 충분한 저속 구간은 T = sqrt(2*ramp*v/a) 로 절단). 이 식이 게재 표본과 맞는다는 것은 게재값이 적분기 출력을 되받아 쓴 것이 아니라 닫힌 해 그 자체임을 뜻한다.",
+      "선적 질의 StoppingDistance 와 고정스텝 적분기 AdvanceBrake 가 같은 값에 도달한다는 것은 서로 다른 두 구현이 같은 물리를 낸다는 뜻이며, 셋이 일치할 때만 수치가 증거가 된다.",
+      "점유는 순수 기하이므로 다른 언어로 다시 구현해도 같은 경계가 나와야 한다. 160/240 두 경계를 각각 어느 쪽이 결정하는지가 파이썬 쪽에서도 재현된다.",
+      "비트패턴은 IEEE-754 정의 그 자체이며, 이 영수증의 유일했던 게재 오류가 정확히 이 필드였다. 재계산기는 그 필드가 아예 없으면 통과시키지 않고 실패로 기록한다 - 이전 판에 대해 실제로 4 건을 실패로 잡았다."
+    ],
+    "limitation": "이 재계산은 게재된 수치의 산술적 정확성을 독립적으로 확인한다. 선적 구현이 그 식을 실제로 그렇게 구현했는지(즉 게재 수치가 선적 코드의 출력인지)는 하네스가 선적 API 를 직접 호출한 영수증이 담당한다. 두 축은 서로를 대체하지 않는다.",
+    "observedOutput": [
+      "ok   analytic sample count: recomputed 10 samples (5 speeds x 2 profiles)",
+      "ok   closed form vs published oracleVsIntegratorDistanceM: max deviation 1.0906830993917538e-12 (tolerance 1.0000000000000001e-09)",
+      "ok   closed form vs published oracleVsIntegratorTimeS: max deviation 1.0302869668521453e-13 (tolerance 1.0000000000000001e-09)",
+      "ok   closed form vs published oracleVsShippedDistanceM: max deviation 8.8817841970012523e-16 (tolerance 1.0000000000000001e-09)",
+      "ok   closed form vs published oracleVsShippedTimeS: max deviation 0 (tolerance 1.0000000000000001e-09)",
+      "ok   pinned emergency distance: recomputed 17.095500000000005 vs recorded 17.095500000000005",
+      "ok   pinned service distance: recomputed 26.391666666666666 vs recorded 26.391666666666666",
+      "ok   emergency envelope not longer than service: 17.095500000000005 < 26.391666666666666",
+      "ok   published max deviation oracleVsIntegratorDistanceM: record 1.0906830993917538e-12 vs recomputed 1.0906830993917538e-12",
+      "ok   published max deviation oracleVsIntegratorTimeS: record 1.0302869668521453e-13 vs recomputed 1.0302869668521453e-13",
+      "ok   published max deviation oracleVsShippedDistanceM: record 8.8817841970012523e-16 vs recomputed 8.8817841970012523e-16",
+      "ok   published max deviation oracleVsShippedTimeS: record 0 vs recomputed 0",
+      "ok   delay phase distance: 2.4000000000000004 vs 2.4000000000000004",
+      "ok   delay phase keeps speed and holds deceleration at zero: v 6, a 0",
+      "ok   ramp end speed: 5.7999999999999998 vs 5.7999999999999998",
+      "ok   ramp end distance: 5.3666666666666671 vs 5.3666666666666671",
+      "ok   ramp end residual is v_end^2/(2a): 21.024999999999999 vs 21.024999999999999",
+      "ok   ramp distance + residual is the whole stop: 5.3666666666666671 + 21.024999999999999 = 26.391666666666666 vs 26.391666666666666",
+      "ok   partition sweep excludes the hazard step: 0.05 not in [0.005, 0.01, 0.02, 0.025, 0.04, 0.06, 0.075, 0.1]",
+      "ok   partition sweep is not one step: 8 steps",
+      "ok   block is the published platform block: [180, 260]",
+      "ok   entry reference is the block start: 180",
+      "ok   release reference found in the reimplemented query: search found 300 vs recorded 300",
+      "ok   release is one consist past the block end: 300 - 260 = 40 vs consist 40",
+      "ok   head-only release point is the block end: 260",
+      "ok   disagreement window count: recount 79 vs recorded 79",
+      "ok   disagreement window endpoints: recount [260.5, 299.5] vs recorded [260.5, 299.5]",
+      "ok   reversed mapping probe is an entry probe, not the release boundary: 160.0 vs 240.0",
+      "ok   reversed mapping probe does not cover the block: mapped (340.0, 380.0)",
+      "ok   one micron past the mapping probe covers the block: mapped (339.999999, 379.999999)",
+      "ok   reversed pass-release boundary is free: mapped (260.0, 300.0)",
+      "ok   reversed pass-release boundary holds one micron earlier: mapped (260.000001, 300.000001)",
+      "ok   bit pattern is published at all: finalBits=4645082069409722246 repeatFinalBits=4645082069409722246",
+      "ok   final bits are the bits of the published reference position: bits(362.34571428572997) = 4645082069409722246 vs recorded 4645082069409722246",
+      "ok   repeat bits are the bits of the published repeat position: bits = 4645082069409722246 vs recorded 4645082069409722246",
+      "ok   published bits decode back to the published double: 362.34571428572997",
+      "ok   both runs published the same position: 362.34571428572997 / 362.34571428572997",
+      "ok   hazard step is the published step: 0.050000000000000003",
+      "ok   hazard step is divisible into the ramp with a rounding remainder: remainder before the refused step 0.050000000000000017, step 0.050000000000000003",
+      "ok   residue is the subtraction the integrator performs: 0.050000000000000017 - 0.050000000000000003 = 1.3877787807814457e-17 vs recorded 1.3877787807814457e-17",
+      "ok   rounded deceleration reaches the target before the ramp is over: 1.2 vs 1.2"
+    ],
+    "observedFailures": [],
+    "previousRevisionWasCaught": "이 재계산기를 이전 판 result.json 에 돌리면 비트패턴 관련 단정들이 실패한다: 이전 판은 finalBits 를 게재했지만 그 값이 finalReferenceM 의 비트가 아니었고, 재계산기는 그 불일치를 실패로 기록한다."
+  },
+  "checksRun": [
+    {
+      "name": "Fmp08bOccupancyTests.AnalyticReceiptCarriesTheRecordedNumbers",
+      "result": "passed",
+      "durationSeconds": 0.010148
+    },
+    {
+      "name": "Fmp08bOccupancyTests.AuthoredProfileIsTheFrozenTrainThisReceiptWasMeasuredOn",
+      "result": "passed",
+      "durationSeconds": 0.04474
+    },
+    {
+      "name": "Fmp08bOccupancyTests.AutomaticDockingStaysInsideTheFrozenToleranceAndNeverSnapsOrOvershoots",
+      "result": "passed",
+      "durationSeconds": 0.000788
+    },
+    {
+      "name": "Fmp08bOccupancyTests.BrakeDelayAndBuildUpPrecedeFullDecelerationExactlyAsProfiled",
+      "result": "passed",
+      "durationSeconds": 0.001993
+    },
+    {
+      "name": "Fmp08bOccupancyTests.CrossSegmentRearReleaseKeepsThePhysicalTrackUntilTheRearClearsIt",
+      "result": "passed",
+      "durationSeconds": 0.000249
+    },
+    {
+      "name": "Fmp08bOccupancyTests.DockedAndMidLineEmergencyStopsTakeDifferentRecoveryBranches",
+      "result": "passed",
+      "durationSeconds": 0.000171
+    },
+    {
+      "name": "Fmp08bOccupancyTests.EmergencyStopBetweenStationsIsNotAssumedToBePlatformAligned",
+      "result": "passed",
+      "durationSeconds": 0.001384
+    },
+    {
+      "name": "Fmp08bOccupancyTests.EmergencyTrajectoryDoesNotDependOnTheFixedStep",
+      "result": "passed",
+      "durationSeconds": 0.004021
+    },
+    {
+      "name": "Fmp08bOccupancyTests.OccupancyIsHeldFromHeadEntryUntilTheRearClearsTheBlock",
+      "result": "passed",
+      "durationSeconds": 0.001325
+    },
+    {
+      "name": "Fmp08bOccupancyTests.OccupancyOutsideTheRepresentedRouteIsRejectedAndNeverSilentlyDropped",
+      "result": "passed",
+      "durationSeconds": 0.000387
+    },
+    {
+      "name": "Fmp08bOccupancyTests.OccupancyReleaseIsDecidedByTheRearNotTheHead",
+      "result": "passed",
+      "durationSeconds": 0.000532
+    },
+    {
+      "name": "Fmp08bOccupancyTests.RearReleaseMovesWithTheConsistLengthNotWithTheHeadPosition",
+      "result": "passed",
+      "durationSeconds": 0.001444
+    },
+    {
+      "name": "Fmp08bOccupancyTests.RearReleaseOnAReversedSegmentIsStillDecidedByTheRouteAxisRear",
+      "result": "passed",
+      "durationSeconds": 0.000569
+    },
+    {
+      "name": "Fmp08bOccupancyTests.RecordedBudgetsCannotBeRelaxedByTheHarness",
+      "result": "passed",
+      "durationSeconds": 0.001584
+    },
+    {
+      "name": "Fmp08bOccupancyTests.RepeatedFrozenRunsAreBitIdentical",
+      "result": "passed",
+      "durationSeconds": 0.000533
+    },
+    {
+      "name": "Fmp08bOccupancyTests.ShippedStoppingDistanceEqualsTheOracleAndTheIntegratorAtEveryFrozenSpeed",
+      "result": "passed",
+      "durationSeconds": 0.000622
+    },
+    {
+      "name": "Fmp08bOccupancyTests.StoppingDistanceAndTimeAtTheFrozenMaximumSpeedMatchTheHandComputedLiterals",
+      "result": "passed",
+      "durationSeconds": 0.00304
+    },
+    {
+      "name": "Fmp08bOccupancyTests.SweptOccupancyCoversEveryIntermediateConsistUnderCoarseSampling",
+      "result": "passed",
+      "durationSeconds": 0.00069
+    },
+    {
+      "name": "Fmp08bOccupancyTests.TheAutomaticApproachNeverEntersTheStoppingEnvelopeWhileCruising",
+      "result": "passed",
+      "durationSeconds": 0.000153
+    },
+    {
+      "name": "Fmp08bOccupancyTests.TheReceiptCannotPublishABitPatternItsOwnReferencePositionRefutes",
+      "result": "passed",
+      "durationSeconds": 0.000938
+    },
+    {
+      "name": "Fmp08bOccupancyTests.TheShippedIntegratorRejectsItsOwnBuildUpBoundaryAndTheMeasuredStepAvoidsIt",
+      "result": "passed",
+      "durationSeconds": 0.000475
+    },
+    {
+      "name": "TrainDynamicsTests.BrakingStopsAtTheAnalyticDistanceAndTime(0.03d,0,0,0.00045d,0.03d)",
+      "result": "passed",
+      "durationSeconds": 3.9e-05
+    },
+    {
+      "name": "TrainDynamicsTests.BrakingStopsAtTheAnalyticDistanceAndTime(0.5d,2,4,1.66666666666667d,4)",
+      "result": "passed",
+      "durationSeconds": 4.1e-05
+    },
+    {
+      "name": "TrainDynamicsTests.BrakingStopsAtTheAnalyticDistanceAndTime(20,0,0,200,20)",
+      "result": "passed",
+      "durationSeconds": 0.00038
+    },
+    {
+      "name": "TrainDynamicsTests.BrakingStopsAtTheAnalyticDistanceAndTime(20,2,0,240,22)",
+      "result": "passed",
+      "durationSeconds": 5.1e-05
+    },
+    {
+      "name": "TrainDynamicsTests.BrakingStopsAtTheAnalyticDistanceAndTime(20,2,4,279.333333333333d,24)",
+      "result": "passed",
+      "durationSeconds": 4.3e-05
+    },
+    {
+      "name": "TrainDynamicsTests.ConsistSpanningSegmentsKeepsBothMappedPhysicalIntervals",
+      "result": "passed",
+      "durationSeconds": 0.000222
+    },
+    {
+      "name": "TrainDynamicsTests.HigherTargetWithSlowBuildUpCannotWeakenTheExistingBrakeEnvelope",
+      "result": "passed",
+      "durationSeconds": 0.041571
+    },
+    {
+      "name": "TrainDynamicsTests.InvalidTrainAndTrackInputsCannotEnterTheIntegrator",
+      "result": "passed",
+      "durationSeconds": 0.000577
+    },
+    {
+      "name": "TrainDynamicsTests.OppositeRouteDirectionsReferToTheSamePhysicalTrack",
+      "result": "passed",
+      "durationSeconds": 0.000209
+    },
+    {
+      "name": "TrainDynamicsTests.RepeatedAndWeakerCommandsDoNotRestartDelayAndEscalationKeepsDeceleration",
+      "result": "passed",
+      "durationSeconds": 0.000217
+    },
+    {
+      "name": "TrainDynamicsTests.RestoredPhaseInvariantsAndLongStoppingQueriesAreConsistent",
+      "result": "passed",
+      "durationSeconds": 0.010512
+    },
+    {
+      "name": "TrainDynamicsTests.TickPartitionAndReverseTravelKeepTheSameBrakingSolution",
+      "result": "passed",
+      "durationSeconds": 0.000863
+    },
+    {
+      "name": "TrainDynamicsTests.WholeConsistAndSweptOccupancyRemainUntilTheRearClears",
+      "result": "passed",
+      "durationSeconds": 0.000466
+    },
+    {
+      "name": "TrainOperationTests.AutomaticTrainRepeatsStopsWithoutPositionSnapsOrOvershooting(0.05d)",
+      "result": "passed",
+      "durationSeconds": 0.194618
+    },
+    {
+      "name": "TrainOperationTests.AutomaticTrainRepeatsStopsWithoutPositionSnapsOrOvershooting(0.137d)",
+      "result": "passed",
+      "durationSeconds": 0.049617
+    },
+    {
+      "name": "TrainOperationTests.EmergencyStopsBetweenStationsAndRequiresExplicitRecovery",
+      "result": "passed",
+      "durationSeconds": 0.000471
+    },
+    {
+      "name": "TrainOperationTests.EqualTargetEmergencyCanCancelServiceDelayAndContradictoryRestoresAreRejected",
+      "result": "passed",
+      "durationSeconds": 0.002432
+    },
+    {
+      "name": "TrainOperationTests.InvalidOperatingDefinitionCannotStartAnUnrepresentedConsist",
+      "result": "passed",
+      "durationSeconds": 0.000205
+    },
+    {
+      "name": "TrainOperationTests.OccupiedBoardingAreaPreventsClosingAndDeparture",
+      "result": "passed",
+      "durationSeconds": 0.000361
+    }
+  ],
+  "checksRunSummary": {
+    "total": 40,
+    "passed": 40,
+    "failed": 0,
+    "skipped": 0,
+    "result": "Passed",
+    "durationSeconds": 0.8473107,
+    "byFixture": {
+      "ChooGuard.Foundation.Tests.Fmp08bOccupancyTests": {
+        "total": 21,
+        "passed": 21
+      },
+      "ChooGuard.Foundation.Tests.TrainDynamicsTests": {
+        "total": 13,
+        "passed": 13
+      },
+      "ChooGuard.Foundation.Tests.TrainOperationTests": {
+        "total": 6,
+        "passed": 6
+      }
+    },
+    "xmlStartTimeUtc": "2026-09-14 16:03:41Z",
+    "xmlEndTimeUtc": "2026-09-14 16:03:42Z",
+    "source": "scratchpad/p08b/results.xml (37443597c32bd95ddbbd049ef9a068cc3f557d65451007a92dd86b3886c77bc7)"
+  },
+  "failedOrUnrun": [
+    "실패 0 건, 미실행 0 건. 세 필터 40 개 케이스를 모두 실행했고 모두 통과했다. UNSUPPORTED 를 PASS 로 세지 않았다.",
+    "실제 차량 제동시험·실측 정지거리는 실행하지 않았다(시설·차량 없음). 이 영수증의 수치는 저작 합성 모델의 해석·수치 결과다.",
+    "20 Hz 전체 서버 프레임 예산은 실행하지 않았다.",
+    "선적 경계 결함은 고치지 않았다. 인계로 남긴다(shippedBoundaryHandoff 참조).",
+    "FMP-07a 의 Multiplayer 시험 어셈블리는 이 작업 시점에 Packages/com.xrlab.chooguard.foundation/Multiplayer/ 디렉터리가 작업 트리에 없어 컴파일 대상이 아니었다. 따라서 이 실행은 그쪽 컴파일 오류와 무관하게 성립하며, 이 영수증은 그 문제를 해결했다고 주장하지 않는다."
+  ],
+  "blockers": [
+    "선적 런타임 결함(수정하지 않음): TrainDynamics.AdvanceBrake 가 고정 비상 프로필에서 0.05 s 스텝으로 자기 ValidateState 가 거부하는 BuildUp 상태를 쓴다. 재현과 수치는 shippedBoundaryHandoff 에 기록했다. Runtime/Simulation 제동 로직 변경은 시험과 리드 리뷰가 필요하므로 이 작업에서 손대지 않았다.",
+    "출력 경로 동시 덮어쓰기 위험: 이 작업의 필수 산출물 경로인 Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp08bOccupancyTests.cs 의 바이트가 내 실행 도중 외부에서 두 번 바뀌었다. 바뀌기 전 바이트는 지우지 않고 저장소 밖에 보존했다(58,979 B sha256 2da1f17d9182dff65fed5747bad6d7e07a201f71281031a725d90d76f53098b9 / 67,595 B sha256 77e7e5bf0a253f9b79567e0d96c8eeebebc07d620f75edcb862de7865237f88). 누가 언제 바꿨는지는 이 기록의 관측 범위 밖이다 - 관측된 것은 디스크 바이트가 내가 쓴 값과 달라졌다는 사실뿐이다. 앞선 실행 한 건은 내 바이트가 아닌 그 바이트를 컴파일해 실패했고 그 결과는 폐기했다. 이 경로가 공유 경로인 한 같은 덮어쓰기가 다시 날 수 있고, 그래서 이 작업의 재현 좌표는 커밋이 아니라 시험 파일의 sha256 이다.",
+    "Unity 프로젝트 잠금 경합: 같은 프로젝트를 동시에 여는 다른 인스턴스 때문에 batchmode 실행이 결과 파일 없이 종료되는 일이 있었다. 실행 직전 바이트 복원 + 결과 파일 신선도 검사로 재시도했고, 확정 영수증을 낸 실행은 첫 시도에서 성공했다(HASH_AT_LAUNCH == HASH_AFTER, RUN_OK round=1 exit=0)."
+  ],
+  "limits": {
+    "physical": "합성 평탄 노선, 합성 일정감속 제동 봉투. 실제 차량 제동곡선도, 실측 주행시험도 아니다. LLM 출력은 철도 절차나 물리적 안전의 근거가 아니다.",
+    "geometry": "편성 길이 40.0 m, 노선 440.0 m, 승강장 블록 180.0~260.0 m 는 저작 게임 치수이며 측량값이 아니다.",
+    "occupancyModel": "점유는 기하 구간일 뿐이다. 신호, 폐색 인터록, 선로전환기, 운영기관 규정은 모델링하지 않았다.",
+    "dockingModel": "정차 위치 오차는 자동 운전 상태기계의 수치 잔차다. 실제 정차 위치 정밀도나 승강장 연단 오차가 아니다.",
+    "syntheticAddition": "cross-segment 후미해제 케이스의 60 m 스텁은 합성이며 저작 노선이 아니다.",
+    "shippedDefectHandoff": "선적 적분기의 빌드업 경계 결함은 고치지 않고 인계했다. 이 영수증의 채택 궤적 스텝은 0.02 s 이며, 그 선택은 결과를 보고 고른 것이 아니라 0.05 s 에서의 결함 측정에 근거하고 그 배제 자체가 단정으로 고정되어 있다.",
+    "decimalPublication": "이 영수증의 double 은 소수 텍스트로 게재된다. 소수 텍스트는 비트정확 담체가 아니며, 측정된 왕복 드리프트는 DeterminismDecimalRoundTripUlps = 1 ulp 다. 위치의 비트정확 담체는 DeterminismFinalBits 이다.",
+    "recordAssembly": "이 파일(result.json)은 실행이 끝난 뒤 실행 산출물(로그의 FMP08B-ANALYTIC 영수증, results.xml)에서 조립한 기록이다. 하네스가 실행 중에 쓰는 것은 Temp/ 아래의 영수증 JSON 이며 그 파일은 Unity 종료 시 삭제된다. 따라서 이 파일 자체는 실행 시점에 다이제스트로 고정된 산출물이 아니고, 실행 로그와 results.xml 의 sha256 이 그 원천을 고정한다.",
+    "wholeServerBudget": "NOT_ASSESSED"
+  },
+  "evidenceFiles": {
+    "unityTestResultsXml": "scratchpad/p08b/results.xml",
+    "unityTestResultsXmlSha256": "37443597c32bd95ddbbd049ef9a068cc3f557d65451007a92dd86b3886c77bc7",
+    "unityTestResultsXmlBytes": 50791,
+    "unityTestResultsXmlMtime": "2026-09-15T01:03:42+0900",
+    "unityLog": "scratchpad/p08b/unity.log",
+    "unityLogSha256": "343138a52db09a7f5040634c8f9ef40d004080054da139c6d83d510877a5a7da",
+    "unityLogBytes": 58853,
+    "unityLogMtime": "2026-09-15T01:03:43+0900",
+    "unityLogCarriesReceipts": true,
+    "receiptMarkers": [
+      "FMP08B-ANALYTIC"
+    ],
+    "tempReceipts": [
+      "Temp/ChooGuardTrainAnalytic/fmp08b-train-analytic.json"
+    ],
+    "tempReceiptsNote": "Temp/ 는 Unity 종료 시 삭제되므로 수치는 실행 로그의 FMP08B-ANALYTIC 줄에서 읽는다.",
+    "receiptJsonSha256": "ed23ff14410941576c9a79c3b6548fe05cc319cf192876d2082b4c6f6151e315",
+    "receiptJsonBytes": 16879,
+    "receiptMarkerOccurrences": 1,
+    "outsideRepository": true,
+    "receiptExtractionNote": "Debug.Log 한 줄에 pretty-printed JSON 이 여러 줄로 실려 로그에 남는다. FMP08B-ANALYTIC 줄부터 짝이 맞는 닫는 '}' 까지를 잘라 JSON 으로 파싱했다 (깊이 세기). 이 파일의 영수증 사본이 그 파싱 결과다.",
+    "byteReproductionLimit": "results.xml, unity.log, 영수증 JSON 은 저장소 밖 스크래치패드에 있다. 저장소만 받은 사람은 같은 바이트를 재현할 수 없고, 같은 시험을 다시 돌려야 한다."
+  },
+  "testArtifact": {
+    "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp08bOccupancyTests.cs",
+    "sha256": "c0f2fddce6784d5731e0f1779d8ca9d203bd0265af18ac6270325f17691ecc04",
+    "bytes": 96212,
+    "lines": 1363,
+    "testMethods": 21,
+    "namespace": "ChooGuard.Foundation.Tests",
+    "framework": "NUnit (Unity EditMode)",
+    "absolutePath": null,
+    "absolutePathNote": "절대 경로를 기록하지 않는다. 작성자 작업공간 절대경로를 증거에 남기면 정체 누출이 된다(FMP-06b 가 같은 파일에서 남긴 결손을 반복하지 않는다). 저장소 상대 경로와 sha256 만으로 재현에 충분하다.",
+    "runtimeFilesModified": [],
+    "digestRequirements": {
+      "sourceRef": "required",
+      "outputDigest": "sha256:c0f2fddce6784d5731e0f1779d8ca9d203bd0265af18ac6270325f17691ecc04"
+    },
+    "descriptorHashReDeclaration": {
+      "supersededClaim": {
+        "sha256PrefixAsClaimed": "d3079264",
+        "bytes": 35819,
+        "lines": 878,
+        "claimSha256IsTruncated": true
+      },
+      "measuredWhenTheClaimWasMade": {
+        "sha256": "d83fc46522808babf8676de5c78e21364610d7b600d144a06cc25910c411845f",
+        "bytes": 37509,
+        "lines": 893
+      },
+      "measuredAtThisSubmission": {
+        "sha256": "c0f2fddce6784d5731e0f1779d8ca9d203bd0265af18ac6270325f17691ecc04",
+        "bytes": 96212,
+        "lines": 1363,
+        "testMethods": 21
+      },
+      "note": "이전 라운드가 지적한 대로 서술 해시가 낡아 있었다. 위 세 줄이 각 시점의 실측값이며, 제출 시점의 좌표는 measuredAtThisSubmission 이다."
+    },
+    "digestPinningMode": "run_time_partial_then_assembled",
+    "digestPinningNote": "하네스는 실행 중에 선적 API 를 호출해 영수증 JSON 을 Temp/ 에 쓰고 같은 문자열을 Debug.Log 로 남긴다. 그 영수증은 실행 중 생성물이지만 다이제스트로 서명되지는 않는다. 이 파일(result.json)은 그 로그와 results.xml 에서 실행 뒤에 조립되었으므로 실행 시점 다이제스트로 고정된 산출물이 아니다. 실행 시점에 고정되는 것은 시험 파일 바이트(ART_SHA, 실행 전후 동일)다."
+  },
+  "reusedSuites": {
+    "note": "이 작업은 기존 해석 시험을 재사용했다. 같은 실행에 세 필터를 걸었고 Runtime/Simulation 아래 어떤 파일도 수정하지 않았다.",
+    "suites": [
+      {
+        "name": "ChooGuard.Foundation.Tests.TrainDynamicsTests",
+        "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainDynamicsTests.cs",
+        "cases": 13,
+        "result": "passed"
+      },
+      {
+        "name": "ChooGuard.Foundation.Tests.TrainOperationTests",
+        "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainOperationTests.cs",
+        "cases": 6,
+        "result": "passed"
+      }
+    ]
+  }
+}
