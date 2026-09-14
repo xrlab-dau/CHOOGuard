@@ -1,0 +1,1823 @@
+{
+  "schemaVersion": 1,
+  "reviewId": "M4-01/fixture-review",
+  "issue": 32,
+  "workId": "M4-01",
+  "title": "M4-01 provisional fixture 의 모순·미해결 의미 검토",
+  "mode": "isolated_proposal",
+  "canonicalWriteAllowed": false,
+  "phase": "candidate",
+  "status": "proposed",
+  "selfAssessment": {
+    "label": "isolated_proposal",
+    "note": "이 산출물은 검토 가능한 유계 후보이며 accepted/approved/final/complete 로 표기하지 않는다. 수용 판정형 라벨을 발행하지 않는다(acceptanceVerdictPolicy). 어떤 PASS 도 런타임·설치·네트워크·Unity·게시·병합 권한을 만들지 않는다. 아래 모순·미해결 항목은 후보가 스스로 해소하지 않고 PM 판단으로 넘긴다."
+  },
+  "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+  "headCommitId": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+  "reviewPurpose": "issue #32 고유 검토: fixture 의 모순과 미해결 의미를 등록한다(work-graph outputs[2] qualification).",
+  "reviewedArtifacts": [
+    {
+      "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "role": "primary",
+      "sha256": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+      "gitBlobSha1": "ff84506fef8b444e287e8468859401895efb2a5d",
+      "bytes": 97923,
+      "lines": 1661,
+      "artifactRevisionId": "m4-01-fixture-0e15bbd8fcd45003",
+      "rowCount": 5,
+      "boundAtReviewGeneration": {
+        "value": true,
+        "scope": "conditional_observation_not_permanent_binding",
+        "statement": "이 검토를 작성한 시점에 이 경로에서 관측한 개정이 아래 sha256 과 일치했다. 같은 경로를 둘 이상의 생산자가 공유하므로 그 뒤 대체됐을 수 있다 — '영구 결속'이 아니라 '작성 시점 관측'이다.",
+        "observedAt": "2026-09-15T01:32:57+09:00",
+        "invalidatedBy": "선언 경로에 대한 이후의 동시 쓰기. 그 경우 이 값은 스테일이며, 권위 있는 개정 식별은 writeScopeCollision.evidence.preservedForeignRevisions 의 sha256 이다.",
+        "postCollisionSelfRewrite": true,
+        "postCollisionSelfRewriteNote": "이 개정은 동시 생산자가 같은 경로를 덮어쓴 뒤 이 후보가 다시 쓴 자기 재작성본이다."
+      },
+      "linesMethod": "개행 수(wc -l 과 동일). 이전 개정의 1503 은 후행 개행을 원소로 센 값이라 1 과대했다.",
+      "digestBindingStrength": "OBSERVED_AT_GENERATION_CONDITIONAL"
+    },
+    {
+      "path": "docs/team/M4-01/fixture-review.json",
+      "role": "self",
+      "sha256": null,
+      "notEmbeddableReason": "파일은 자기 자신의 다이제스트를 담을 수 없다.",
+      "selfDigest": {
+        "scheme": "sha256",
+        "scope": "self_digest_over_document_with_self_slots_nulled",
+        "value": "5af558fc59028ab4acc30a0da26ccc18c1ec5d1dabe5e2a6c3cb1db27dadc0d3",
+        "bytes": 141688,
+        "derivation": "이 문서를 json.dumps(ensure_ascii=False, indent=2) 로 직렬화하고 selfDigestExcludedFields 의 네 슬롯(두 위치에 있는 selfDigest.value / selfDigest.bytes)을 null 로 둔 뒤 sha256(직렬화 바이트 + 개행 1자) 을 계산한 값이다. 여기서 bytes 는 개행을 포함한 길이(len(직렬화)+1)다. 파일 전체 바이트의 sha256 은 자기 자신을 담을 수 없어 이 파생값으로 대신하며, 소비자는 같은 절차로 재계산해 대조한다. 이전 개정의 selfDigestExcludedFields 는 handoff.outputHashes['fixture-review.json'].value / .bytes 를 가리켰는데 그 두 슬롯은 이미 null 이라 제외 목록이 실제 제외 대상과 달랐고, 그 목록을 그대로 따르면 선언한 selfDigest 값이 재계산되지 않았다(이 개정에서 필드 경로를 정정했다).",
+        "selfDigestExcludedFields": [
+          "handoff.outputHashes['fixture-review.json'].selfDigest.value",
+          "handoff.outputHashes['fixture-review.json'].selfDigest.bytes",
+          "reviewedArtifacts[1].selfDigest.value",
+          "reviewedArtifacts[1].selfDigest.bytes"
+        ]
+      }
+    }
+  ],
+  "reviewScope": {
+    "observed": [
+      "foundation/team-fixtures/M4-01/role-action-fixture.json 의 후보 개정 전문",
+      "foundation/scenarios/foundation-demo.json /roles (sha256 결속)",
+      "foundation/anchors/synthetic-room.json (sha256 결속)",
+      "schemas/foundation-scenario.schema.json (sha256 결속)",
+      "Packages/com.xrlab.chooguard.foundation/Runtime/{TrainingContracts,ScenarioProfile,TrainingSession,StateHash,VirtualTeamSimulator,ScenarioValidation}.cs (action/result/prestate/feedback canonical 계약)",
+      "scripts/foundation/validate.py 와 scripts/foundation/tests (읽기 전용, 검사기로 import)",
+      "scripts/dev/check_foundation.py 실행 출력 전문",
+      "docs/context/work-graph.json items[number=32] (비-ref, 작업트리 사본)",
+      "docs/context/work-orders/032.json (비-ref, 작업트리 사본)",
+      "docs/choo-guard-execution-backlog-v1.md §8 M4-01 (작업트리 사본)",
+      "foundation/README.md (기존 게시 문면)",
+      "docs/context/work-graph.json items[number=32] 의 board.status/board.reason/reviewNotes (비-ref, 작업트리 사본 — context-only, workGraphItemUsage 참조)"
+    ],
+    "unobserved": [
+      "docs/choo-guard-native-team-contracts.md — sourceRef 트리에도 HEAD 작업트리에도 없다. 내용을 추정해 채우지 않았다.",
+      "기준 ref 트리 시점의 docs/choo-guard-execution-backlog-v1.md 문면(ref 시점 blob 만 대조, 내용 대조는 미실행).",
+      "선행/후속 이슈(26/33/34/57/72/93)의 실제 소비 방식과 그들의 요구 필드.",
+      "canonical preStateHash 의 런타임 값(C#/Unity 미실행).",
+      "실제 HMD·네트워크·NPC 동작(nonGoal).",
+      "동시 생산자가 같은 경로에 쓴 문서의 '값'(내용). 최상위 키 이름만 추출했고 값을 읽지 않았다(X05 evidence.foreignTopLevelKeySetAtDetection)."
+    ],
+    "note": "unobserved 항목은 이 검토의 어떤 PASS 근거로도 쓰지 않았다."
+  },
+  "acceptanceCriteriaReview": [
+    {
+      "criteriaId": "AC1",
+      "text": "Exactly five provisional role rows contain all required semantic fields.",
+      "evidence": "roleRows 길이 5, rowId m4-01-row-01..05. 각 행이 role(roleId), action(actionId), anchor(targetAnchorId), prestate(preState), expected output(expectedQuestState, expectedVirtualTeamEvents 4건, expectedFeedbackCode, feedbackText) 를 모두 가진다. 구조 검사 오류 0.",
+      "verificationCommand": "python3 <candidate-session-scratchpad>/verify_m401_fixture.py  (결속: verifyScriptBinding sha256 4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006, 17794 B — 픽스처 verification.C01/C02 참조; 스크립트가 없으면 픽스처 selfCheckRuleset 으로 재구현)",
+      "limits": "이 자기점검은 후보 자신의 관측이며 수용 판정이 아니다. 수용 판정은 PM/심사자 몫이다. 검사 스크립트는 저장소 밖에서만 실행돼 저장소에 없다 — 소비자는 결속된 sha256 또는 내장 selfCheckRuleset 으로 재현한다.",
+      "selfCheck": {
+        "observation": "roleRows 길이 5(실측), rowId m4-01-row-01..05. 각 행이 role(roleId), action(actionId), anchor(targetAnchorId), prestate(preState), expected output(expectedQuestState, expectedVirtualTeamEvents 4건, expectedFeedbackCode, feedbackText) 을 모두 가진다.",
+        "rule": "selfCheckRuleset R1/R2",
+        "measured": {
+          "rows": 5,
+          "rowsWithAllRequiredFields": 5,
+          "structuralErrors": 0
+        }
+      },
+      "selfCheckResult": "REQUIRED_FIELDS_PRESENT"
+    },
+    {
+      "criteriaId": "AC2",
+      "text": "Fixture meanings match canonical action/result fields.",
+      "evidence": "행 필드 집합을 canonical RoleActionFixture(ScenarioProfile.cs:42-53) 와 1:1 로 맞췄고, temporaryDisplayName/briefing/feedbackText 는 RoleDefinition(ScenarioProfile.cs:20-31) 에서 그대로 가져왔다. 행↔canonical /roles 교차검사에서 roleId/actionId/targetAnchorId/expectedQuestState/expectedVirtualTeamEvents/expectedFeedbackCode/representative/scenarioVersion 불일치 0. canonicalScenarioSnapshot.profile 은 저장소 validate_bundle() 로 schema 오류 0.",
+      "verificationCommand": "python3 <candidate-session-scratchpad>/verify_m401_fixture.py  (결속: verifyScriptBinding sha256 4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006, 17794 B — 픽스처 verification.C01/C02 참조; 스크립트가 없으면 픽스처 selfCheckRuleset 으로 재구현)",
+      "limits": "U01: canonical 에 '행동 의미'·'피드백 의미'의 정본 서술이 없다. U02: preStateHash 값 unknown. U06: preStateHash 타입 편차 — canonical 은 string(ScenarioProfile.cs:49), 후보 값은 null. canonicalRowMatch 에 NOT_CHECKED 로 계상했다. 이 자기점검은 후보 자신의 관측이며 수용 판정이 아니다.",
+      "selfCheck": {
+        "observation": "행 필드 집합을 canonical RoleActionFixture(ScenarioProfile.cs:42-53) 와 1:1 로 맞췄고, temporaryDisplayName/briefing/feedbackText 는 RoleDefinition(ScenarioProfile.cs:20-31) 에서 그대로 가져왔다. 행↔canonical /roles 교차검사에서 roleId/actionId/targetAnchorId/expectedQuestState/expectedVirtualTeamEvents/expectedFeedbackCode/representative/scenarioVersion 불일치 0.",
+        "rule": "selfCheckRuleset R8",
+        "measured": {
+          "comparedFields": 8,
+          "mismatches": 0,
+          "notCheckedFields": [
+            "preStateHash"
+          ]
+        },
+        "semanticFieldStatus": "canonical 에 '행동 의미'·'피드백 의미'의 정본 서술이 없다(ScenarioProfile.cs 는 actionId 를 불투명 식별자로만 다룬다). 따라서 actionMeaning/anchorMeaning/feedbackMeaning/preState.preStateMeaning 의 '의미 일치'는 반증도 검증도 불가능하다 — canonical 정본 부재로 미검증."
+      },
+      "selfCheckResult": "EVIDENCE_PRESENT_WITH_GAP_REGISTERED"
+    },
+    {
+      "criteriaId": "AC3",
+      "text": "Every role/action/feedback says synthetic/provisional and not official scoring.",
+      "evidence": "다섯 행 각각이 provisionalMarks.role / .action / .feedback 을 가지며 각각 synthetic=true, provisional=true, official=false, officialKorailProcedure=false, officialScoring=false, 비어 있지 않은 notice 를 갖는다. 행마다 officialScoringClaimed=false. 파일 상단에 provisionalNotice 와 disclaimer 가 있다. 부분 제거 변이(N09: officialScoring=true)는 구조 검사에서 거부된다.",
+      "verificationCommand": "python3 <candidate-session-scratchpad>/verify_m401_fixture.py  (결속: verifyScriptBinding sha256 4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006, 17794 B — 픽스처 verification.C01/C02 참조; 스크립트가 없으면 픽스처 selfCheckRuleset 으로 재구현)",
+      "limits": "문면 표기 검사이며, 읽는 사람이 표기를 무시하고 오독하는 것까지 막지는 않는다. 이 자기점검은 수용 판정이 아니다.",
+      "selfCheck": {
+        "observation": "다섯 행 각각이 provisionalMarks.role / .action / .feedback 을 가지며 각각 synthetic=true, provisional=true, official=false, officialKorailProcedure=false, officialScoring=false, 비어 있지 않은 notice 를 갖는다. 행마다 officialScoringClaimed=false. 파일 상단에 provisionalNotice 와 disclaimer 가 있다.",
+        "rule": "selfCheckRuleset R5/R6",
+        "measured": {
+          "rowsChecked": 5,
+          "rowsWithMarker": 5,
+          "violations": 0
+        }
+      },
+      "selfCheckResult": "PROVISIONAL_MARKERS_PRESENT"
+    },
+    {
+      "criteriaId": "AC4",
+      "text": "No current 20/100/2/HMD/network completion is claimed.",
+      "evidence": "fixture 와 이 검토 파일 어디에도 20/100/2 완료, HMD 연결 완료, 네트워크·NPC acceptance, 제품/안전/현장 효과를 주장하지 않는다. scopeDeclaration.excluded 와 provisionalNotice 가 명시한다. C02 영수증이 도구 자신의 미실행 필드(csharpCompilation/unityEditMode/unityPlayMode/unitySceneGeneration/desktopPlaythrough/hmd/independentProviderReview = not_run, playableDemoVerified=false, issueDone=false)를 그대로 보존한다.",
+      "verificationCommand": "python3 scripts/dev/check_foundation.py  (C02 영수증과 동일 명령. 결과는 '코드·데이터 점검 기록'이며 공식/SOP/HMD 통과가 아니다)",
+      "limits": "check_foundation.py 의 PASS 문면에 숫자 20 이 나온다 — 이는 합성 계약 항목 수(5역할 x 4가상팀이벤트)이며 완료·성능 수치가 아니다. X07 로 등록했다. 이 자기점검은 수용 판정이 아니다.",
+      "selfCheck": {
+        "observation": "fixture 와 이 검토 파일 어디에도 20/100/2 완료, HMD 연결 완료, 네트워크·NPC acceptance, 제품/안전/현장 효과를 주장하지 않는다. scopeDeclaration.excluded 와 provisionalNotice 가 명시한다. C02 영수증이 도구 자신의 미실행 필드(csharpCompilation/unityEditMode/unityPlayMode/unitySceneGeneration/desktopPlaythrough/hmd/independentProviderReview = not_run, playableDemoVerified=false, issueDone=false)를 그대로 보존한다.",
+        "rule": "자기주장 스캔",
+        "measured": {
+          "completionClaims": 0,
+          "toolNotRunFieldsPreserved": 7
+        }
+      },
+      "selfCheckResult": "NO_COMPLETION_CLAIM_FOUND"
+    }
+  ],
+  "contradictions": [
+    {
+      "contradictionId": "X01",
+      "severity": "P1",
+      "where": "docs/context/work-graph.json items[19].checks[0] (number=32 / M4-01; 배열 인덱스 19) vs scripts/foundation/validate.py",
+      "observed": "check C01 은 'python3 scripts/foundation/validate.py <fixture>' 로 'target fixture path 로 schema/required fields pass' 를 기대한다. 그러나 validate.py 의 argparse 에는 positional 이 없고 검증기는 저장소 고정 파일 3개만 읽는다. 명령을 그대로 실행하면 exit 2, 'validate.py: error: unrecognized arguments: foundation/team-fixtures/M4-01/role-action-fixture.json'. 인자 없이 실행하면 PASS 이지만 그 대상은 foundation-demo.json 이며 M4-01 fixture 가 아니다.",
+      "impact": "C01 은 'target fixture path 로 schema 통과' 라는 증거를 이 phase 에서 만들 수 없다. 이는 도구 형태의 한계이지 후보 산출물의 결함이 아니지만, 후보가 PASS 를 주장할 수 없는 check 다.",
+      "notCausedByDrift": "validate.py 의 blob sha1 이 ref(dc990c00e95bd48cc6438f77caf9fce4d392071c) 와 HEAD 에서 동일하다.",
+      "candidateHandling": "C01 을 NOT_RUN(조건 미성립)으로 기록하고, 실행한 것·실행하지 못한 것을 분리해 남겼다. 대체 증거로 저장소 자체 validate_bundle() 을 스냅샷에 적용한 결과와 구조/변이 검사 결과를 제시했으며, 이를 work-graph 명령의 PASS 로 승격하지 않는다.",
+      "requiredAction": "검증기에 fixture 경로를 받는 형태를 추가할지, C01 을 다른 명령으로 재정의할지 PM/QA 가 결정해야 한다.",
+      "reVerification": "검증기가 경로 인자를 받게 되면 'python3 scripts/foundation/validate.py <fixture>' 를 재실행해 exit 0 을 확인한다."
+    },
+    {
+      "contradictionId": "X02",
+      "severity": "P1",
+      "where": "docs/context/work-graph.json items[19].truth[1] (number=32 / M4-01; 배열 인덱스 19) vs 저장소 트리",
+      "observed": "truth[1] 은 level=present_in_worktree 로 'canonical core contracts define role/action/result fields' 를 주장하며 source 로 docs/choo-guard-native-team-contracts.md:18-29 을 든다. 그러나 그 경로는 sourceRef 6490956d 트리에도 HEAD 0794ecf 작업트리에도 존재하지 않는다(git cat-file 로 확인).",
+      "impact": "선언된 근거 경로가 실제로 없다. 다만 같은 계약 의미는 Runtime/TrainingContracts.cs 와 Runtime/ScenarioProfile.cs 로 확인되며 두 파일은 ref·HEAD 모두에 존재한다.",
+      "candidateHandling": "선언 source 를 근거로 쓰지 않았다. 그 문서에서 파생한 문장은 하나도 없고, canonical 필드는 C# 계약 파일에서만 가져왔다. 부재 사실을 drift.observedDivergences 에 ABSENT_AT_BOTH 로 남겼다.",
+      "requiredAction": "truth[1] 의 source 표기를 실제로 존재하는 경로로 정정하거나, 그 문서를 게시할지 결정해야 한다.",
+      "reVerification": "truth[1].source 경로가 작업트리에 존재하게 되면 그 :18-29 를 실제로 읽고 대조한다."
+    },
+    {
+      "contradictionId": "X03",
+      "severity": "P2",
+      "where": "docs/choo-guard-execution-backlog-v1.md (sourceRef vs HEAD)",
+      "observed": "blob sha1 이 ref 830bc16f4962b093c783dd19a19d5a484ca3ee32 에서 HEAD e8919c7ec5bf1c55f5183ad0519379d96ce34877 로 다르다.",
+      "impact": "§8 M4-01 필드 목록·provisional 경계는 HEAD 사본에서 읽었다. ref 시점 문면과의 내용 차이는 이 후보에서 대조하지 않았다.",
+      "candidateHandling": "drift 에 DRIFT 로 명시했고, 인용은 HEAD 사본으로 한정했다.",
+      "requiredAction": "ref 시점 §8 문면이 HEAD 와 의미상 같은지 확인이 필요하면 별도 대조를 수행한다.",
+      "reVerification": "ref 시점 blob 을 읽어 §8 M4-01 블록을 HEAD 사본과 문면 대조한다."
+    },
+    {
+      "contradictionId": "X04",
+      "severity": "P2",
+      "where": "docs/context/work-graph.json, docs/context/work-orders/032.json",
+      "observed": "두 파일 모두 sourceRef 트리에 없고 HEAD 트리에만 있다.",
+      "impact": "G6 하드 위상, checks/acceptance/stopConditions 값은 비-ref 입력에서 읽었다. 이 후보는 ref 트리만으로 그것을 재확인할 수 없다.",
+      "candidateHandling": "비-ref 입력임을 명시하고 context-only 로만 사용했다. 자기모순되는 이중 서술을 하지 않았다.",
+      "requiredAction": "없음(동결 기준이 정직한 등록 자체를 FAIL 로 보지 않는다).",
+      "reVerification": "해당 파일이 기준 ref 트리에 들어오면 재대조한다."
+    },
+    {
+      "contradictionId": "X05",
+      "severity": "P0",
+      "where": "foundation/team-fixtures/M4-01/, docs/team/M4-01/ (선언 쓰기 범위)",
+      "observed": "이 후보가 선언 경로 두 곳에 자기 개정(role-action-fixture.json 60252 bytes, mtime 00:25)을 쓴 직후, 같은 물리 작업공간의 다른 생산자가 같은 두 경로를 덮어썼다(role-action-fixture.json 22501 bytes sha256 b3f75cb8... mtime 00:25:04, fixture-review.json 37613 bytes sha256 5b116905... mtime 00:24).",
+      "impact": "두 후보가 같은 물리 경로를 공유한다. requiredLocks 가 비어 있고 resourceBindings 의 workspace-files-v1 이 경고한 'same physical workspace overlap' 이 실제로 발생했다. 어느 시점에도 한 개정만 남으므로, 어떤 후보의 출력 다이제스트 결속도 동시 쓰기가 계속되는 한 안정적일 수 없다.",
+      "candidateHandling": "동시 생산자의 바이트를 삭제로 잃지 않도록 그대로 스크래치패드에 보존했다. 보존 시 값은 읽지 않고 최상위 키 이름만 추출했다. 두 후보가 같은 물리 경로를 쓰는 한 어느 시점에도 한 개정만 남는다. 이 사실을 P0 로 등록하고 PM 직렬 통합을 요구한다.",
+      "requiredAction": "PM 이 두 후보를 서로 다른 물리 경로(또는 분리된 worktree/branch)로 직렬화한 뒤 각 개정을 그 경로에서 평가해야 한다. 동시 쓰기가 계속되는 한 어떤 후보의 출력 다이제스트 결속도 안정적일 수 없다. 후보는 재충돌 시 덮어쓰지 않고 '기록 후 중단·에스컬레이션' 하며, 그때 개정 식별은 위 preservedForeignRevisions 의 sha256 으로 한다.",
+      "reVerification": "직렬화 후 각 경로의 sha256 이 평가 대상 개정과 일치하는지 확인한다.",
+      "whatIsNotClaimed": "동시 생산자의 산출물 내용·품질·판정에 대해 아무것도 주장하지 않는다. 값(문자열·수치·중첩 구조)은 읽지 않았고 이 후보의 어떤 판단·판정에도 쓰지 않았다. 보존·식별을 위해 최상위 키 '이름'만 추출했다(위 evidence.foreignTopLevelKeySetAtDetection.extractionMethod).",
+      "myRevisionLineage": {
+        "destroyedByConcurrentWriter": {
+          "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+          "bytes": 60252,
+          "observedMtime": "2026-09-15T00:25:00+09:00",
+          "sha256": null,
+          "sha256UnavailableReason": "파괴된 개정의 바이트가 남아 있지 않다 — 스크래치패드·백업 경로를 실측 검색했으나 정확히 60252 B 인 파일이 없다. 따라서 해시를 소급 산출할 수 없다. 60252 B 와 현재 개정 B 는 같은 파일의 두 버전이 아니라 '후보 개정 A -> 동시 생산자 개정 -> 후보 재작성본 B' 의 서로 다른 두 개정이다."
+        },
+        "currentRevision": {
+          "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+          "bytes": null,
+          "sha256": null,
+          "role": "collision 이후 후보가 다시 쓴 자기 개정(개정 B). 60252 B 개정 A 와 내용이 같지 않다."
+        },
+        "timeline": [
+          "2026-09-15T00:25:00+09:00 — 후보가 선언 경로에 개정 A(60252 B)를 기록.",
+          "2026-09-15T00:25:04+09:00 — 동시 생산자가 같은 경로를 22501 B(b3f75cb8b600)로 덮어씀. 개정 A 는 파괴됨.",
+          "이후 — 후보가 개정 B(현재 파일)를 다시 작성. 이것이 현재 트리의 개정이다."
+        ],
+        "staleInlineMeasurementsRemoved": {
+          "removedValue": "이전 개정의 자기 바이트 수 리터럴(64837)",
+          "removedFrom": "myRevisionLineage.destroyedByConcurrentWriter.sha256UnavailableReason",
+          "reason": "이 파일은 개정마다 다시 쓰이므로 자기 바이트 수를 문면에 박아 두면 즉시 스테일이 된다. 그 리터럴은 그 시점의 개정 값이었고 현재 개정과 일치하지 않는다 — 현재 값은 reviewedArtifacts[0].bytes 가 권위 있다(이 파일은 자기 자신의 값을 담을 수 없다). 문면에서 제거한 사실 자체를 여기 남긴다.",
+          "selfCheckResult": "STALE_SELF_MEASUREMENT_REMOVED"
+        }
+      },
+      "preservedForeignRevisions": {
+        "location": "<candidate-session-scratchpad>/foreign_snapshot/",
+        "locationAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬).",
+        "deidentificationDisposition": "D01 은 보존 개정에 해석 가능한 '절대경로'를 요구하고 D06/G13 은 세션 UUID·사용자 홈 경로 게시를 금지한다. 두 요구는 같은 문자열에서 충돌하므로, 절대경로 대신 위 앵커 토큰(정의 포함)과 sha256·bytes 를 게시한다. 원 절대경로는 후보 세션에 그대로 있고 PM 이 요청하면 제공한다. 개정 식별은 sha256 으로 완결된다.",
+        "files": [
+          {
+            "name": "role-action-fixture.foreign.json",
+            "bytes": 22501,
+            "sha256": "b3f75cb8b600d8e30ea827894b0d4f210a70bca75f7f662db022f21fdae05ad5",
+            "observedMtime": "2026-09-15T00:25:04+09:00",
+            "isVerifiedOnDisk": true
+          },
+          {
+            "name": "fixture-review.foreign.json",
+            "bytes": 37613,
+            "sha256": "5b116905803ab1c2d78ec7e307126759d189c09932d127d4dd340bcc64acba8f",
+            "observedMtime": "2026-09-15T00:24:00+09:00",
+            "isVerifiedOnDisk": true
+          }
+        ]
+      }
+    },
+    {
+      "contradictionId": "X06",
+      "severity": "P2",
+      "where": "foundation/README.md (기존 게시 문면, 이 후보가 쓰지 않음)",
+      "observed": "'Unity 장면의 실제 Transform 연결은 학교 PC의 별도 장면 통합 작업이다' 라고 적혀 있다.",
+      "impact": "work-order 032 의 environment 는 '장소·학교 PC·개인 PC·고사양 장비 보유로 작업을 제한하지 않는다' 이다. 기존 게시 문서의 이 문면은 그 환경 중립 방침과 어긋나 읽힐 수 있다.",
+      "candidateHandling": "이 후보의 산출물 두 곳에는 위치·기기·고사양 배정 조건을 쓰지 않았다. 기존 문서는 read_only 이며 수정하지 않았다.",
+      "requiredAction": "기존 README 문면의 정정 여부는 이 이슈 범위 밖이므로 PM/문서 소유자가 판단한다.",
+      "reVerification": "README 가 정정되면 재확인한다."
+    },
+    {
+      "contradictionId": "X07",
+      "severity": "P2",
+      "where": "scripts/foundation/validate.py PASS 문면 vs work-graph nonGoals",
+      "observed": "validate.py 의 PASS 문면은 'PASS: synthetic foundation fixture - 5 roles, 5 anchor references, 20 virtual team notifications; provisional example only' 이다. 여기서 20 은 합성 계약 항목 수(5역할 x 4가상팀이벤트)다.",
+      "impact": "work-graph nonGoals 는 '과거 test count 를 현재 완료로 재사용' 을 금지한다. 이 20 을 완료·성능·규모 수치로 읽으면 그 금지를 위반한다.",
+      "candidateHandling": "이 후보는 20 을 어떤 완료 주장에도 쓰지 않았고, 영수증에는 도구 출력 원문으로만 남겼다.",
+      "requiredAction": "없음(등록 목적).",
+      "reVerification": "인용 시 이 20 이 계약 항목 수임을 유지하는지 확인한다."
+    }
+  ],
+  "unresolvedSemantics": [
+    {
+      "unresolvedId": "U01",
+      "topic": "action 의미의 정본 부재",
+      "detail": "canonical 은 actionId 를 불투명 식별자로만 다룬다. ScenarioValidation 은 '각 역할에 서로 다른 actionId' 만 요구하고(ScenarioValidation.cs:36) 행동 의미의 정본 서술이 없다. validate.py 도 actionId 를 enum 으로만 검사한다. 따라서 actionMeaning 은 후보가 canonical briefing 을 요약한 provisional 서술이며 actionMeaningStatus 로 그 지위를 표시했다.",
+      "affects": "actionMeaning, anchorMeaning",
+      "resolution": "PM/QA 가 행동 의미 정본을 어디에 둘지 정해야 한다. 그 전까지 소비자는 이 서술을 참고용으로만 쓴다."
+    },
+    {
+      "unresolvedId": "U02",
+      "topic": "preStateHash 런타임 값",
+      "detail": "canonical preStateHash 는 Ready 시점에 TrainingSession 이 StateHash.Session(...) 으로 계산한다(TrainingSession.cs:99, StateHash.cs:40-53). 이 phase 에서 C#/Unity 를 실행하지 않았으므로 값을 알 수 없다. 파이썬 재구현으로 대체하면 canonical 과 어긋날 경우 거짓 정본 값이 되므로 넣지 않았다.",
+      "affects": "roleRows[].preStateHash",
+      "resolution": "런타임(또는 canonical 구현과 동일한 재현기)을 실행해 값을 산출한 뒤 채운다. 그 전까지 소비자는 이 필드를 unknown 으로 다룬다."
+    },
+    {
+      "unresolvedId": "U03",
+      "topic": "feedback 문면의 채널",
+      "detail": "canonical RoleActionFixture 에는 expectedFeedbackCode 만 있고 feedbackText 가 없다. 문면은 DescriptiveFeedback.Text 로 런타임에 만들어진다(TrainingContracts.cs:72-84, TrainingSession.cs:81-82). 소비자가 fixture 만으로 피드백 문면이 필요하면 RoleDefinition.feedbackText 를 함께 읽어야 한다.",
+      "affects": "roleRows[].feedbackText, feedbackMeaning",
+      "resolution": "소비자(26/33/34/57/72/93)가 문면을 RoleActionFixture 밖에서 읽는지 확인이 필요하다."
+    },
+    {
+      "unresolvedId": "U04",
+      "topic": "'사전 상태' 의 해상도",
+      "detail": "backlog DoD 의 '사전 상태' 는 canonical 에서 두 가지로 읽힐 수 있다 — (a) Ready 시점의 세션 사전 상태(phase=Ready, questState=pending), (b) 역할별 초기 상태. 이 후보는 (a) 를 택해 preState.phase/preState.questState/virtualTeamStates 로 적고 basis 에 file:line 을 달았다. (b) 를 요구하면 필드가 달라진다.",
+      "affects": "roleRows[].preState",
+      "resolution": "PM/QA 가 '사전 상태' 의 정의를 확정해야 한다."
+    },
+    {
+      "unresolvedId": "U05",
+      "topic": "accept 소비자의 생산 단계 불일치(72, 93)",
+      "detail": "후속 12건 중 26/33/34/57 은 accept 소비자가 artifact:32:M4-01-fixture:accept 를 소비하지만, 72/93 은 accept 소비자도 artifact:32:M4-01-fixture:candidate 를 소비한다(producerPhase=candidate). 즉 72/93 에 대해서는 accept 단계 산출물이 별도로 존재하지 않는다.",
+      "affects": "topology",
+      "frozenCriteriaComparison": "동결 기준 §1 G6 의 후속 목록('72(candidate→candidate)', '72(accept→candidate)', '93(candidate→candidate)', '93(accept→candidate)')과 작업트리 사본 값이 일치한다(MATCH).",
+      "resolution": "의도된 위상인지 확인이 필요하다. 이 후보는 동결 기준과 일치함만 확인했다."
+    }
+  ],
+  "citationIntegrity": {
+    "check": "모든 file:line 인용이 실제 파일 범위 안에 있는지 기계적으로 확인",
+    "aggregationRule": {
+      "pattern": "([A-Za-z0-9_./-]+\\.(?:cs|json|md|py)):(\\d+)(?:-(\\d+))? — 저장소 상대 또는 약칭 경로 + 줄/줄범위",
+      "pathNormalization": "경로 토큰을 저장소 루트 기준 상대경로로 해석한다. 접두어가 잘린 약칭(예: Runtime/TrainingContracts.cs)은 저장소 파일 목록(git ls-files --cached --others --exclude-standard)의 경로 접미어로 유일하게 매칭될 때만 해석한다. 저장소 밖 사본(.planning/, <workspace-harness>/, .venv/ 등)은 해석 대상이 아니다.",
+      "deduplication": "(해석된 저장소 상대경로, 시작줄, 끝줄) 튜플로 중복 제거. 같은 인용이 여러 번 나와도 1로 세고, 약칭과 전체 경로가 같은 파일을 가리키면 역시 1로 센다. 해석 불가 토큰은 (경로토큰, 시작줄, 끝줄) 로 중복 제거한다.",
+      "inRangeCriterion": "1 <= 시작줄 <= 끝줄 <= 파일 총 줄 수. 끝줄이 생략되면 시작줄과 같다.",
+      "countedInputs": [
+        "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "docs/team/M4-01/fixture-review.json"
+      ],
+      "tool": "python3 표준 라이브러리(re) — 저장소에 검사기를 추가하지 않았다."
+    },
+    "resolvedInRange": 17,
+    "outOfRange": [],
+    "unresolvable": [
+      "docs/choo-guard-native-team-contracts.md:18-29"
+    ],
+    "selfCheckResult": "NO_OUT_OF_RANGE_CITATION_OBSERVED",
+    "unresolvableExplanation": "docs/choo-guard-native-team-contracts.md:18-29 은 후보의 인용이 아니라 work-graph items[19].truth[1] 이 든 선언 출처를 그대로 옮긴 것이며, 그 파일은 ref·HEAD 양쪽에 없다(X02). 후보는 그 내용을 읽지 않았고 그 문서에서 파생한 문장을 하나도 쓰지 않았다.",
+    "limits": "위 집계 규칙으로 재계산한 값이다. 이는 후보 자신의 기계 점검이며 수용 판정이 아니다. 표본 재검증에서 확인된 인용은 모두 실제 범위와 문면이 일치했고 outOfRange/unresolvable 도 위와 같다."
+  },
+  "inputDigests": {
+    "note": "선언·소비 입력의 다이제스트. checkFoundationFullClosure 는 scripts/dev/check_foundation.py 가 실제로 해시한 파일 전체의 지도다. 개수는 사람이 쓰지 않고 그 맵의 len() 에서 파생한다: len(verification.checkFoundationFullClosure.inputSha256) = 231 (실측 2026-09-15T00:47:00+09:00 기준). 주의 — 이 지도는 이 후보 자신의 출력(foundation/team-fixtures/M4-01/role-action-fixture.json)을 포함하므로 순수 입력 closure 가 아니다. 후보가 자기 개정을 다시 쓸 때마다 지도가 변한다(자기참조, unknowns 등록). 정확한 위치는 형제 절 verification.checkFoundationFullClosure 이다(inputDigests 아래가 아니다).",
+    "declaredSources": [
+      {
+        "path": "docs/choo-guard-execution-backlog-v1.md",
+        "selector": "§8 M4-01",
+        "declaredIn": "docs/context/work-orders/032.json minimumContext[0]",
+        "declaredRefGitBlobSha1": "830bc16f4962b093c783dd19a19d5a484ca3ee32",
+        "headGitBlobSha1": "e8919c7ec5bf1c55f5183ad0519379d96ce34877",
+        "sha256": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0",
+        "status": "DRIFT_HEAD_USED"
+      },
+      {
+        "path": "schemas/foundation-scenario.schema.json",
+        "declaredIn": "docs/context/work-orders/032.json minimumContext[1]",
+        "declaredRefGitBlobSha1": "03806f0d937f368ead210503373a15f523f03482",
+        "headGitBlobSha1": "03806f0d937f368ead210503373a15f523f03482",
+        "sha256": "fcb33eeea9eef91e2cb373cb605b71b0e5b65abbd5bfe7102239560c44d8193e",
+        "status": "NO_DRIFT"
+      },
+      {
+        "path": "docs/choo-guard-native-team-contracts.md",
+        "declaredIn": "work-graph items[19].truth[1] (number=32 / M4-01)",
+        "declaredAvailability": "local_unpublished",
+        "sourceRef": "ABSENT",
+        "head": "ABSENT",
+        "sha256": null,
+        "status": "ABSENT_UNREAD",
+        "declaredInCorrection": {
+          "removed": "docs/context/work-orders/032.json minimumContext[1]",
+          "reason": "work-orders/032.json 의 minimumContext 는 2개뿐이고 [1] 은 schemas/foundation-scenario.schema.json 이다. 그 파일은 docs/choo-guard-native-team-contracts.md 를 언급하지 않는다(검색 0건). 이 경로를 선언한 곳은 work-graph items[19].truth[1] 뿐이다.",
+          "verificationCommand": "grep -c \"choo-guard-native-team-contracts\" docs/context/work-orders/032.json",
+          "verificationResult": "0",
+          "selfCheckResult": "FALSE_DECLARED_IN_REMOVED"
+        }
+      }
+    ],
+    "canonicalContracts": [
+      {
+        "path": "foundation/scenarios/foundation-demo.json",
+        "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969"
+      },
+      {
+        "path": "foundation/anchors/synthetic-room.json",
+        "sha256": "e6051a3d9131e0e920c4976e197033d5c541f9452d4b4c1f3733d07ad593b5c5"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs",
+        "sha256": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs",
+        "sha256": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+        "sha256": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs",
+        "sha256": "f52ede22cef4f0146bdd1b6031da20ef11b8352e65fe9418a1d09c0339a9cc66"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs",
+        "sha256": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioValidation.cs",
+        "sha256": "aac8aa2c29253764df2d7810e6cd5c122f4ce6aeb02397c5982b781b8311a58e"
+      },
+      {
+        "path": "scripts/foundation/validate.py",
+        "sha256": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d",
+        "refGitBlobSha1": "dc990c00e95bd48cc6438f77caf9fce4d392071c",
+        "headGitBlobSha1": "dc990c00e95bd48cc6438f77caf9fce4d392071c",
+        "drift": "NO_DRIFT"
+      },
+      {
+        "path": "scripts/dev/check_foundation.py",
+        "sha256": "c783240a4f62c96eac4a1133aa355bbaf2e6e41963599fd60d4adc3924477315"
+      }
+    ],
+    "nonRefInputs": [
+      {
+        "path": "docs/context/work-graph.json",
+        "sha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6",
+        "ref": "ABSENT",
+        "from": "items[number=32]"
+      },
+      {
+        "path": "docs/context/work-orders/032.json",
+        "sha256": "b8905fa5116cd20294ef1cc32e8a2dc387777f8d377d19da4840d958d9d1ae5e",
+        "ref": "ABSENT"
+      }
+    ],
+    "packetInputs": {
+      "note": "이 후보를 생성한 패킷(비-ref 로컬 입력). <workspace-harness>/ 규칙으로 git 미추적이라 커밋으로 고정되지 않으므로 해시 결속이 유일한 고정 수단이다. 이 파일들은 판정 전 정답표로 쓰지 않았다 — 브리프·동결 기준은 작업 범위와 절차를 정하며, 수용 기준의 판정은 PM/심사자 몫이다. 동결 기준 사본이 이슈 #32 에 대해 두 부 존재하고 C01/C02 정의가 서로 다르다(아래 contextOnlyInputs.frozenCriteriaDuplicate 참조).",
+      "files": [
+        {
+          "path": "<workspace-harness>/sdd/m4-01-role-fixture/brief-32.md",
+          "sha256": "d5f108bbeb37f9c2b49dc291c8c71e11fd33c1124d2b6fec0d5eb1c9a648d504",
+          "bytes": 4382,
+          "tracked": false,
+          "role": "작업 브리프(비-ref 로컬 입력)"
+        },
+        {
+          "path": "<workspace-harness>/sdd/m4-01-role-fixture/frozen-criteria-32.md",
+          "sha256": "a1135d6fdcace6c47a366a134daed3beb52ab84b8294432ca36ee2d91fbb797a",
+          "bytes": 10129,
+          "tracked": false,
+          "role": "동결 비평 기준 v1(비-ref 로컬 입력)"
+        }
+      ]
+    },
+    "contextOnlyInputs": [
+      {
+        "path": "docs/context/work-graph.json",
+        "sha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6",
+        "ref": "ABSENT",
+        "from": "items[number=32]"
+      },
+      {
+        "path": "docs/context/work-orders/032.json",
+        "sha256": "b8905fa5116cd20294ef1cc32e8a2dc387777f8d377d19da4840d958d9d1ae5e",
+        "ref": "ABSENT"
+      },
+      {
+        "path": "<workspace-harness>/sdd/m4-01-role-fixture/frozen-criteria-32.md",
+        "sha256": "a1135d6fdcace6c47a366a134daed3beb52ab84b8294432ca36ee2d91fbb797a",
+        "kind": "frozen_criteria_duplicate",
+        "duplicateOf": "<workspace-harness>/sdd/m0-00-policy-baseline/frozen-criteria-32.md",
+        "duplicateSha256": "1b36c36db3db7069a14f87a3de4ac01d38290761352830652b80cab9f70ff978",
+        "duplicateBytes": 11553,
+        "duplicateSelfLabel": "v1.1 개정 — 라운드 3 부터 적용",
+        "conflict": "같은 이슈 #32 에 대해 제목이 같은 동결 기준서가 두 부 있고 C01/C02 정의가 다르다. m4-01 사본은 C01 을 단일 명령 'python3 scripts/foundation/validate.py <fixture>' 로, C02 를 '그대로 실행' 으로 규정한다. m0-00 사본(v1.1)은 C01 을 (a 인자 없음 + b 대상 fixture)로 쪼개고 C02 에 'unittest 실행 금지, 미실행분은 NOT_RUN + notRunReason' 을 요구한다.",
+        "impact": "이 차이가 판정을 가른다. 이 후보의 C02 영수증은 check_foundation.py 가 하위에서 unittest discover 를 돌린 사실을 그대로 기록한다. v1.1 이 구속하면 실행 정책 위반(H4), m4-01 v1 이 구속하면 정상이다. 후보 산출물만으로는 어느 기준서가 구속하는지 확정할 수 없다.",
+        "candidateAction": "없음 — PM 이 이번 라운드에 구속하는 기준서 한 부를 지정하고 그 sha256 을 비평 패킷에 명기해야 한다. 후보 과실이 아니다."
+      }
+    ]
+  },
+  "drift": {
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "headCommitId": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "sourceRefIsAncestorOfHead": {
+      "value": true,
+      "method": "git merge-base --is-ancestor 6490956d203549b56cbd86846120759889abb016 HEAD -> exit 0",
+      "commitsFromSourceRefToHead": 36,
+      "methodForCount": "git rev-list --count 6490956d203549b56cbd86846120759889abb016..HEAD",
+      "headCommitId": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+      "measuredAt": "2026-09-15T00:47:00+09:00",
+      "note": "같은 후보가 아래 observedDivergences 에서 ref/HEAD blob sha1 을 대조하는 데 바로 이 로컬 git 을 썼으므로, 조상 관계도 같은 도구로 결정 가능하다. 이전 라운드의 UNVERIFIED_IN_THIS_CANDIDATE 는 검증 깊이 불일치였다."
+    },
+    "observedDivergences": [
+      {
+        "path": "docs/choo-guard-execution-backlog-v1.md",
+        "sourceRefGitBlobSha1": "830bc16f4962b093c783dd19a19d5a484ca3ee32",
+        "headGitBlobSha1": "e8919c7ec5bf1c55f5183ad0519379d96ce34877",
+        "sha256": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0",
+        "status": "DRIFT",
+        "note": "§8 M4-01 항목은 HEAD 사본에서 읽었다. ref 시점 문면과의 차이는 이 후보에서 대조하지 않았다."
+      },
+      {
+        "path": "docs/choo-guard-native-team-contracts.md",
+        "sourceRef": "ABSENT",
+        "head": "ABSENT",
+        "status": "ABSENT_AT_BOTH",
+        "note": "work-graph items[19].truth[1] 은 present_in_worktree 라고 선언하며 이 경로 :18-29 를 근거로 든다. 그러나 이 경로는 sourceRef 트리에도 HEAD 작업트리에도 없다. 대신 canonical action/result 필드는 Runtime/TrainingContracts.cs 와 Runtime/ScenarioProfile.cs 로 확인했다(둘 다 ref·HEAD 에 존재)."
+      },
+      {
+        "path": "docs/context/work-graph.json",
+        "sourceRef": "ABSENT",
+        "head": "PRESENT",
+        "headSha256": "85dd3c647cd47ff593dcdeb7417d29f4f9ffe16fa199ab3f25ef685d6910acd6",
+        "status": "NON_REF_INPUT",
+        "note": "G6 하드 위상과 checks/acceptance/stopConditions 값의 출처다. ref 트리에 없으므로 context-only non-ref 입력이다."
+      },
+      {
+        "path": "docs/context/work-orders/032.json",
+        "sourceRef": "ABSENT",
+        "head": "PRESENT",
+        "headSha256": "b8905fa5116cd20294ef1cc32e8a2dc387777f8d377d19da4840d958d9d1ae5e",
+        "status": "NON_REF_INPUT",
+        "note": "작업 브리프가 지정한 워크오더. ref 트리에 없어 HEAD 사본에서 읽었으며 비-ref 입력임을 명시한다."
+      },
+      {
+        "path": "foundation/scenarios/foundation-demo.json",
+        "sourceRefGitBlobSha1": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b",
+        "headGitBlobSha1": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b",
+        "status": "NO_DRIFT"
+      },
+      {
+        "path": "schemas/foundation-scenario.schema.json",
+        "sourceRefGitBlobSha1": "03806f0d937f368ead210503373a15f523f03482",
+        "headGitBlobSha1": "03806f0d937f368ead210503373a15f523f03482",
+        "status": "NO_DRIFT"
+      },
+      {
+        "path": "scripts/foundation/validate.py",
+        "sourceRefGitBlobSha1": "dc990c00e95bd48cc6438f77caf9fce4d392071c",
+        "headGitBlobSha1": "dc990c00e95bd48cc6438f77caf9fce4d392071c",
+        "status": "NO_DRIFT",
+        "note": "ref 와 HEAD 가 동일하다. C01 의 명령 형태 불일치는 드리프트가 아니라 현행 도구의 형태다."
+      }
+    ]
+  },
+  "stopConditions": {
+    "fromWorkGraph": [
+      "Role name or action is presented as official KORAIL procedure; revert to provisional/blocked.",
+      "Canonical scenario contract would be modified; request central contract lease."
+    ],
+    "compliance": [
+      {
+        "condition": "#1 공식 직무/절차 표기",
+        "status": "NOT_VIOLATED",
+        "detail": "모든 행의 provisionalMarks.role/action/feedback 이 official=false, officialKorailProcedure=false, officialScoring=false 이고 notice 문면을 가진다. actionMeaning 은 후보 서술이며 actionMeaningStatus 로 canonical 정의 부재를 표시했다."
+      },
+      {
+        "condition": "#2 canonical 시나리오 계약 수정",
+        "status": "NOT_VIOLATED",
+        "detail": "foundation/scenarios/foundation-demo.json 과 schemas/foundation-scenario.schema.json 은 read_only 로만 읽었고 sha256/blob sha1 로 결속했다. 어떤 canonical 파일도 쓰지 않았다. canonicalScenarioSnapshot 은 authority=none 인 검사용 사본이다."
+      }
+    ]
+  },
+  "writeScopeCollision": {
+    "status": "contended_write_scope_observed",
+    "severity": "P0",
+    "observedAt": "2026-09-15T00:25:00+09:00",
+    "declaredWriteScope": [
+      "foundation/team-fixtures/M4-01/",
+      "docs/team/M4-01/"
+    ],
+    "whatHappened": "이 후보가 선언 경로 두 곳에 자기 개정을 쓴 직후, 동일 물리 작업공간의 다른 생산자가 같은 두 경로를 덮어썼다. 이 후보의 개정(60252 bytes, mtime 00:25)이 다른 형태의 문서(22501 bytes, mtime 00:25:04)로 대체되었다.",
+    "evidence": {
+      "myRevision": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 60252,
+        "observedMtime": "2026-09-15T00:25",
+        "status": "destroyed_by_concurrent_writer"
+      },
+      "foreignRevisionObservedAtSamePath": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 22501,
+        "sha256": "b3f75cb8b600d8e30ea827894b0d4f210a70bca75f7f662db022f21fdae05ad5",
+        "observedMtime": "2026-09-15T00:25:04"
+      },
+      "foreignRevisionObservedAtCompanionPath": {
+        "path": "docs/team/M4-01/fixture-review.json",
+        "bytes": 37613,
+        "sha256": "5b116905803ab1c2d78ec7e307126759d189c09932d127d4dd340bcc64acba8f",
+        "observedMtime": "2026-09-15T00:24"
+      },
+      "foreignTopLevelKeySetAtDetection": {
+        "keys": [
+          "canonicalFieldMapping",
+          "canonicalShapeConformanceProbe",
+          "canonicalShapeConformanceProbeNote",
+          "canonicalWriteAllowed",
+          "classification",
+          "disclaimer",
+          "draftStatus",
+          "drift",
+          "fixtureId",
+          "issue",
+          "limits",
+          "mode",
+          "noAcceptanceClaim",
+          "noPermissionStatement",
+          "notOfficialScoring",
+          "phase",
+          "preStateVocabulary",
+          "provisional",
+          "purpose",
+          "recordType",
+          "requiredRoleSemanticFields",
+          "roles",
+          "schemaVersion",
+          "sourceRef",
+          "sources",
+          "synthetic",
+          "workId"
+        ],
+        "extractionMethod": "json.load() 로 파싱해 최상위 키 이름만 추출했다(정규식 아님). 키 순서는 보존 스냅샷과 일치한다.",
+        "valuesRead": false,
+        "claim": "동시 생산자 문서의 최상위 키 '이름'만 추출했고 '값'(문자열·수치·중첩 구조의 내용)은 읽지 않았다. 키 이름 목록은 그 자체로 판단·품질·수용에 대해 아무것도 주장하지 않는다.",
+        "measuredAt": "2026-09-15T00:47:00+09:00",
+        "verification": "보존 스냅샷 sha256 b3f75cb8b600d8e30ea827894b0d4f210a70bca75f7f662db022f21fdae05ad5 (22501 B) 를 가진 소비자가 같은 파싱을 재실행하면 같은 키 목록이 나온다."
+      },
+      "siblingSessionScratchpadObserved": {
+        "identity": "opaque:concurrent-writer-5b116905803a",
+        "note": "동시 생산자의 세션 디렉터리 절대경로와 세션 UUID 는 G13 비식별 규칙에 따라 이 산출물에 게시하지 않는다. 식별은 그 개정의 sha256 으로만 한다.",
+        "preservedCopyAtSiblingSession": false,
+        "preservedCopyNote": "실측: 동시 생산자의 세션 디렉터리에는 foreign_snapshot 보존본이 없다. 보존본은 후보 자신의 세션 스크래치패드에만 있다(아래 preservedForeignRevisions). 이전 라운드가 게시한 동시 생산자 세션 절대경로는 그 위치에 보존본이 있다는 뜻이 아니었다."
+      },
+      "otherConcurrentWritesObserved": {
+        "paths": [
+          "docs/team/R-02/capability-contract.json",
+          "docs/team/R-02/decision.json"
+        ],
+        "gitStatus": "M (modified) — 이 후보가 쓴 파일이 아니다",
+        "note": "같은 작업공간의 다른 세션이 선언 범위 밖 파일도 동시에 고치고 있음을 보여주는 정황 증거다."
+      },
+      "preservedForeignRevisions": {
+        "location": "<candidate-session-scratchpad>/foreign_snapshot/",
+        "locationAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬).",
+        "deidentificationDisposition": "D01 은 보존 개정에 해석 가능한 '절대경로'를 요구하고 D06/G13 은 세션 UUID·사용자 홈 경로 게시를 금지한다. 두 요구는 같은 문자열에서 충돌하므로, 절대경로 대신 위 앵커 토큰(정의 포함)과 sha256·bytes 를 게시한다. 원 절대경로는 후보 세션에 그대로 있고 PM 이 요청하면 제공한다. 개정 식별은 sha256 으로 완결된다.",
+        "files": [
+          {
+            "name": "role-action-fixture.foreign.json",
+            "bytes": 22501,
+            "sha256": "b3f75cb8b600d8e30ea827894b0d4f210a70bca75f7f662db022f21fdae05ad5",
+            "observedMtime": "2026-09-15T00:25:04+09:00",
+            "isVerifiedOnDisk": true
+          },
+          {
+            "name": "fixture-review.foreign.json",
+            "bytes": 37613,
+            "sha256": "5b116905803ab1c2d78ec7e307126759d189c09932d127d4dd340bcc64acba8f",
+            "observedMtime": "2026-09-15T00:24:00+09:00",
+            "isVerifiedOnDisk": true
+          }
+        ],
+        "laterRevisions": {
+          "location": "<candidate-session-scratchpad>/foreign_snapshot_r3/",
+          "locationAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬). G13 비식별 규칙에 따라 절대경로·세션 UUID 는 게시하지 않는다.",
+          "deidentificationDisposition": "D01 은 해석 가능한 위치를 요구하고 D06/G13 은 세션 UUID·사용자 홈 경로 게시를 금지한다. 두 요구가 같은 문자열에서 충돌하므로 절대경로 대신 앵커 토큰(정의 포함)과 저장소 밖 상대 하위경로·파일명·sha256·bytes 를 게시한다. 개정 식별은 sha256 으로 완결된다.",
+          "files": [
+            {
+              "name": "role-action-fixture.foreign3.json",
+              "bytes": 83191,
+              "sha256": "7da14ca6547a1b3acd52c721127ea9f27ed67d8ef0931631abd4aa09f1d1f90d",
+              "lines": 1502,
+              "preserved": true,
+              "verifiedOnDiskAt": "2026-09-15T00:57:24+09:00",
+              "note": "스냅샷 시점(약 00:53)에 그 경로에 있던 바이트. 이후 재충돌로 스테일해졌다."
+            },
+            {
+              "name": "fixture-review.foreign3.json",
+              "bytes": 113936,
+              "sha256": "11e35f6eb651c98ee62e2ecf964171cdb2d0e002af3e5c32e56dcddc9bbcdee0",
+              "lines": 1459,
+              "preserved": true,
+              "verifiedOnDiskAt": "2026-09-15T00:57:24+09:00"
+            }
+          ],
+          "verifyCommand": "shasum -a 256 <candidate-session-scratchpad>/foreign_snapshot_r3/*.json",
+          "authorship": "UNVERIFIED — 보존은 '그 경로에 있던 바이트'를 대상으로 하며 생산자 신원을 주장하지 않는다.",
+          "observedButNotPreserved": {
+            "reason": "스냅샷 이후 이 후보의 쓰기 직전까지 다시 덮어쓰기가 있었고, 그 개정의 바이트는 이 후보의 쓰기로 대체되어 남아 있지 않다. 다이제스트는 대체 전에 계산해 두었으므로 여기 기록한다.",
+            "files": [
+              {
+                "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+                "bytes": 83201,
+                "sha256": "f761b9c10e13a5ad59d3f321b5b9e90e3bb2e59c69e2fee56086af72ccbfe761",
+                "lines": 1502,
+                "observedMtime": "2026-09-15T00:56:30+09:00",
+                "preserved": false
+              },
+              {
+                "path": "docs/team/M4-01/fixture-review.json",
+                "bytes": 118164,
+                "sha256": "118a4e353904d7e35d89c0a850e2f7a47fa967aa2cceceb8b80c60c5cf9ad63d",
+                "lines": 1507,
+                "observedMtime": "2026-09-15T00:57:01+09:00",
+                "preserved": false
+              }
+            ],
+            "claim": "이 두 다이제스트는 '그 시각 그 경로에 그 바이트가 있었다'는 관측 기록이다. 바이트를 갖고 있지 않으므로 재검증은 불가하며, 그 한계를 숨기지 않기 위해 preserved=false 로 적는다."
+          },
+          "preservedCount": 2,
+          "observedNotPreservedCount": 2
+        },
+        "duplicatePreservedRevisions": {
+          "location": "<candidate-session-scratchpad>/foreign_snapshot2/",
+          "locationAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬). G13 비식별 규칙에 따라 절대경로·세션 UUID 는 게시하지 않는다.",
+          "deidentificationDisposition": "D01 은 보존 개정에 해석 가능한 '절대경로'를 요구하고 D06/G13 은 세션 UUID·사용자 홈 경로 게시를 금지한다. 두 요구가 같은 문자열에서 충돌하므로 절대경로 대신 앵커 토큰(정의 포함)과 저장소 밖 상대 하위경로·파일명·sha256·bytes 를 게시한다. 개정 식별은 sha256 으로 완결된다.",
+          "files": [
+            {
+              "bytes": 83191,
+              "sha256": "7da14ca6547a1b3acd52c721127ea9f27ed67d8ef0931631abd4aa09f1d1f90d",
+              "observedMtime": "2026-09-15T00:49:12+09:00",
+              "name": "role-action-fixture.foreign2.json",
+              "isVerifiedOnDisk": true,
+              "note": "foreign_snapshot_r3/role-action-fixture.foreign3.json 과 바이트 동일(같은 sha256) — 같은 개정의 중복 보존본이다."
+            },
+            {
+              "bytes": 110677,
+              "sha256": "aaf1c8dd503f6299c639cb05ab69e06b5b881e21f6b310345b475ccbed1f64e7",
+              "observedMtime": "2026-09-15T00:49:12+09:00",
+              "name": "fixture-review.foreign2.json",
+              "isVerifiedOnDisk": true
+            }
+          ],
+          "note": "candidateHandling 이 보존 위치로 든 세 디렉터리 중 foreign_snapshot2/ 를 여기에 등록한다. 이전 개정의 evidence 는 foreign_snapshot/ 와 foreign_snapshot_r3/ 만 열거해 등록되지 않은 보존본이 있었다.",
+          "authorship": "UNVERIFIED — 보존은 '그 경로에 있던 바이트'를 대상으로 하며 생산자 신원을 주장하지 않는다.",
+          "verifyCommand": "shasum -a 256 <candidate-session-scratchpad>/foreign_snapshot2/*.json"
+        }
+      },
+      "foreignRevisionObservedAtLatestDetection": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 83201,
+        "sha256": "f761b9c10e13a5ad59d3f321b5b9e90e3bb2e59c69e2fee56086af72ccbfe761",
+        "lines": 1502,
+        "observedMtime": "2026-09-15T00:56:30+09:00",
+        "observedAt": "2026-09-15T00:57:02+09:00",
+        "authorship": "UNVERIFIED — 이 개정의 생산자를 이 후보는 확정할 수 없다. 같은 선언 경로에 둘 이상의 생산자가 쓰고 있다는 사실은 X05 로 이미 관측됐고, 개정 자체는 생산자 신원을 담지 않는다.",
+        "status": "present_at_this_write; superseded_by_this_candidate_revision",
+        "note": "이 후보가 이 개정을 쓰기 직전에 그 경로에서 관측한 상태다."
+      },
+      "foreignRevisionObservedAtLatestDetectionCompanionPath": {
+        "path": "docs/team/M4-01/fixture-review.json",
+        "bytes": 118164,
+        "sha256": "118a4e353904d7e35d89c0a850e2f7a47fa967aa2cceceb8b80c60c5cf9ad63d",
+        "lines": 1507,
+        "observedMtime": "2026-09-15T00:57:01+09:00",
+        "observedAt": "2026-09-15T00:57:02+09:00",
+        "authorship": "UNVERIFIED — 위와 같은 이유.",
+        "status": "present_at_this_write; superseded_by_this_candidate_revision"
+      }
+    },
+    "reading": "두 생산자가 같은 선언 경로를 공유한다. resourceBindings 의 workspace-files-v1 이 경고한 'same physical workspace overlap' 이 실제로 발생했고, 후보 단계에서는 requiredLocks 가 비어 있어 직렬화 장치가 없었다.",
+    "candidateHandling": [
+      "동시 생산자의 바이트를 삭제로 잃지 않도록 그대로 스크래치패드에 보존했다(foreign_snapshot/, foreign_snapshot2/, foreign_snapshot_r3/). 보존 시 값은 읽지 않고 최상위 키 이름만 추출했다.",
+      "이 후보는 충돌 후 자기 개정을 다시 썼다(post-collision self-rewrite). 두 생산자가 같은 물리 경로를 쓰는 한 어느 시점에도 한 개정만 남는다.",
+      "충돌이 재탐지되면 이 경로에 다시 덮어쓰지 않는다 — reDetectionPolicy 대로 기록·보존 후 중단하고 PM 에 에스컬레이션한다."
+    ],
+    "whatIsNotClaimed": "동시 생산자의 산출물 내용·품질·판정에 대해 아무것도 주장하지 않는다. 값(문자열·수치·중첩 구조)은 읽지 않았고 이 후보의 어떤 판단·판정에도 쓰지 않았다. 보존·식별을 위해 최상위 키 '이름'만 추출했다(위 evidence.foreignTopLevelKeySetAtDetection.extractionMethod).",
+    "requiredAction": "PM 이 두 후보를 서로 다른 물리 경로(또는 분리 worktree/branch)로 직렬화한 뒤 각 개정을 그 경로에서 평가해야 한다. 동시 쓰기가 계속되는 한 어떤 후보의 출력 다이제스트 결속도 안정적일 수 없다. 후보는 재충돌 시 덮어쓰지 않고 '기록 후 중단·에스컬레이션' 하며(reDetectionPolicy), 개정 식별은 evidence.preservedForeignRevisions 의 sha256 으로 한다.",
+    "myRevisionLineage": {
+      "destroyedByConcurrentWriter": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": 60252,
+        "observedMtime": "2026-09-15T00:25:00+09:00",
+        "sha256": null,
+        "sha256UnavailableReason": "파괴된 개정의 바이트가 남아 있지 않다 — 스크래치패드·백업 경로를 실측 검색했으나 정확히 60252 B 인 파일이 없다. 따라서 해시를 소급 산출할 수 없다. 60252 B 와 현재 개정 B 는 같은 파일의 두 버전이 아니라 '후보 개정 A -> 동시 생산자 개정 -> 후보 재작성본 B' 의 서로 다른 두 개정이다."
+      },
+      "currentRevision": {
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "bytes": null,
+        "sha256": null,
+        "role": "collision 이후 후보가 다시 쓴 자기 개정(개정 B). 60252 B 개정 A 와 내용이 같지 않다."
+      },
+      "timeline": [
+        "2026-09-15T00:25:00+09:00 — 후보가 선언 경로에 개정 A(60252 B)를 기록.",
+        "2026-09-15T00:25:04+09:00 — 동시 생산자가 같은 경로를 22501 B(b3f75cb8b600)로 덮어씀. 개정 A 는 파괴됨.",
+        "이후 — 후보가 개정 B(현재 파일)를 다시 작성. 이것이 현재 트리의 개정이다."
+      ],
+      "staleInlineMeasurementsRemoved": {
+        "removedValue": "이전 개정의 자기 바이트 수 리터럴(64837)",
+        "removedFrom": "myRevisionLineage.destroyedByConcurrentWriter.sha256UnavailableReason",
+        "reason": "이 파일은 개정마다 다시 쓰이므로 자기 바이트 수를 문면에 박아 두면 즉시 스테일이 된다. 그 리터럴은 그 시점의 개정 값이었고 현재 개정과 일치하지 않는다 — 현재 값은 reviewedArtifacts[0].bytes 가 권위 있다(이 파일은 자기 자신의 값을 담을 수 없다). 문면에서 제거한 사실 자체를 여기 남긴다.",
+        "selfCheckResult": "STALE_SELF_MEASUREMENT_REMOVED"
+      }
+    },
+    "reDetectionPolicy": {
+      "policy": "RECORD_AND_ESCALATE_NO_OVERWRITE",
+      "appliesFrom": "2026-09-15T00:57:02+09:00",
+      "statement": "동시 쓰기가 재탐지되면 이 후보는 선언 경로에 다시 덮어쓰지 않는다. 관측한 개정의 sha256·bytes·mtime 을 기록하고 바이트를 스크래치패드에 보존한 뒤 PM 에 에스컬레이션하고 중단한다.",
+      "revisionIdentity": "재충돌 시 개정 식별은 evidence.preservedForeignRevisions(laterRevisions 포함)의 sha256 으로 한다.",
+      "escalation": "PM 이 두 후보를 서로 다른 물리 경로(또는 분리 worktree/branch)로 직렬화한 뒤 각 개정을 그 경로에서 독립 평가한다.",
+      "whyNotOverwriteAgain": "한 물리 경로에 한 개정만 남는 한 다시 쓰는 것은 상대 개정을 또 파괴할 뿐 통합을 만들지 않는다. 통합은 PM 의 직렬화로만 가능하다.",
+      "observedRecurrence": "X05 충돌은 1회가 아니라 재발했다. 이 개정을 쓰기 직전에도 같은 경로에 후보 자신이 아닌 생산자의 개정이 있었다(evidence.foreignRevisionObservedAtLatestDetection).",
+      "selfApplication": "이번 쓰기 자체는 발주가 요구한 '수정된 산출물' 제출이므로 수행한다. 정책은 이 쓰기 이후의 재충돌부터 적용한다."
+    }
+  },
+  "handoff": {
+    "consumers": [
+      "M2-03",
+      "M2-04",
+      "M4-02",
+      "M4-03"
+    ],
+    "topologyConsumers": [
+      26,
+      33,
+      34,
+      57,
+      72,
+      93
+    ],
+    "sourceRef": "6490956d203549b56cbd86846120759889abb016",
+    "baseRef": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "exactWriteSet": [
+      "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "docs/team/M4-01/fixture-review.json"
+    ],
+    "lease": {
+      "mode": "isolated_proposal",
+      "canonicalWriteAllowed": false,
+      "requiredLocks": [],
+      "resourceBinding": "workspace-files-v1",
+      "contended": true,
+      "contentionEvidence": "X05",
+      "resourceBindings": {
+        "template": "workspace-files-v1",
+        "requiredFields": [
+          "workspaceId",
+          "realCheckoutPath",
+          "volumeIdentity",
+          "branchRef",
+          "baseRef",
+          "selectedWritePaths",
+          "leaseOwner",
+          "fencingToken"
+        ],
+        "filled": {
+          "workspaceId": {
+            "value": "ws-<masked-workspace-id>",
+            "derivation": "'ws-' + sha256(volumeIdentity + '|' + realCheckoutPath)[:16]. 위 realCheckoutPath 는 비식별 앵커이므로 이 값은 PM 이 실제 절대경로로 같은 식을 재계산해 대조할 수 있다."
+          },
+          "realCheckoutPath": {
+            "value": "<repo-checkout-root>",
+            "anchorDefinition": "<repo-checkout-root> = 이 저장소의 로컬 체크아웃 루트.",
+            "deidentificationDisposition": "절대경로는 사용자 홈 경로를 포함하므로 G13 비식별 규칙에 따라 게시하지 않는다. 동시 생산자 경로에 적용한 것과 같은 규칙이다. PM 은 절대경로를 직접 얻을 수 있다.",
+            "verifiedBy": "git rev-parse --show-toplevel (이 후보 세션에서 실행)"
+          },
+          "volumeIdentity": {
+            "value": "<candidate-volume>",
+            "kind": "물리 볼륨 UUID (macOS diskutil info / — 사용자 식별 정보 아님)",
+            "note": "X05 의 충돌 작업공간을 물리 볼륨 수준에서 특정한다."
+          },
+          "branchRef": {
+            "value": "develop",
+            "verifiedBy": "git rev-parse --abbrev-ref HEAD"
+          },
+          "baseRef": {
+            "value": "0794ecf5a128ff9e356b661cfc1142c039aa31f4"
+          },
+          "selectedWritePaths": {
+            "value": [
+              "foundation/team-fixtures/M4-01/role-action-fixture.json",
+              "docs/team/M4-01/fixture-review.json"
+            ],
+            "note": "선언 쓰기 범위(foundation/team-fixtures/M4-01/, docs/team/M4-01/) 안의 실제 선택 경로 집합이다."
+          }
+        },
+        "unfilled": [
+          {
+            "field": "leaseOwner",
+            "reason": "이 phase 에 lease 발급자가 없다 — requiredLocks 가 비어 있고 후보 단계에는 lock manager 가 없다. 값을 지어내지 않고 사유를 등록한다."
+          },
+          {
+            "field": "fencingToken",
+            "reason": "위와 같은 이유로 fencing 을 발급할 주체가 없다. 직렬 통합 시 PM 이 발급해야 한다."
+          }
+        ],
+        "failureModeObserved": "reject overlap in same physical workspace — 템플릿이 예고한 그대로 X05 에서 발생했다. 이 블록은 그 물리 작업공간을 workspaceId + volumeIdentity + realCheckoutPath 앵커로 특정해 PM 직렬 통합이 즉시 집행 가능하게 한다.",
+        "closure": {
+          "status": "ALL_REQUIRED_FIELDS_ADDRESSED",
+          "statement": "requiredFields 8개를 값(filled 6) 또는 '미배정 + 사유'(unfilled 2: leaseOwner, fencingToken)로 모두 닫았다. 어느 항목도 미기재로 남기지 않았다.",
+          "whyUnassignedTogether": "work-graph items[32].requiredLocks 가 빈 배열이고 후보 단계에는 리스·펜싱 장치가 없다. 그 결과가 X05 동시 쓰기 충돌이다."
+        }
+      }
+    },
+    "inputHashes": "inputDigests 참조",
+    "outputHashes": {
+      "role-action-fixture.json": {
+        "scheme": "sha256",
+        "scope": "whole_file_bytes",
+        "value": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+        "bytes": 97923,
+        "lines": 1661,
+        "gitBlobSha1": "ff84506fef8b444e287e8468859401895efb2a5d",
+        "observedAt": "2026-09-15T01:32:57+09:00",
+        "authoritative": true,
+        "conditionalNote": "선언 경로가 동시 쓰기로 대체되면 이 값은 스테일이 된다. 그 사실을 숨기지 않기 위해 조건부로 표기한다."
+      },
+      "fixture-review.json": {
+        "scheme": "sha256",
+        "scope": "whole_file_bytes",
+        "value": null,
+        "notEmbeddableReason": "파일은 자기 자신의 sha256 을 담을 수 없다.",
+        "obtainableAs": "소비자/PM 이 인테이크 시 이 파일 바이트의 sha256 을 계산해 결속한다. 그 전까지 이 항목은 미결속이며, 결속 전에는 이 파일에 대해 어떤 개정 동일성도 주장하지 않는다.",
+        "authoritative": true,
+        "bytes": null,
+        "selfDigest": {
+          "scheme": "sha256",
+          "scope": "self_digest_over_document_with_self_slots_nulled",
+          "value": "5af558fc59028ab4acc30a0da26ccc18c1ec5d1dabe5e2a6c3cb1db27dadc0d3",
+          "bytes": 141688,
+          "derivation": "이 문서를 json.dumps(ensure_ascii=False, indent=2) 로 직렬화하고 selfDigestExcludedFields 의 네 슬롯(두 위치에 있는 selfDigest.value / selfDigest.bytes)을 null 로 둔 뒤 sha256(직렬화 바이트 + 개행 1자) 을 계산한 값이다. 여기서 bytes 는 개행을 포함한 길이(len(직렬화)+1)다. 파일 전체 바이트의 sha256 은 자기 자신을 담을 수 없어 이 파생값으로 대신하며, 소비자는 같은 절차로 재계산해 대조한다. 이전 개정의 selfDigestExcludedFields 는 handoff.outputHashes['fixture-review.json'].value / .bytes 를 가리켰는데 그 두 슬롯은 이미 null 이라 제외 목록이 실제 제외 대상과 달랐고, 그 목록을 그대로 따르면 선언한 selfDigest 값이 재계산되지 않았다(이 개정에서 필드 경로를 정정했다).",
+          "selfDigestExcludedFields": [
+            "handoff.outputHashes['fixture-review.json'].selfDigest.value",
+            "handoff.outputHashes['fixture-review.json'].selfDigest.bytes",
+            "reviewedArtifacts[1].selfDigest.value",
+            "reviewedArtifacts[1].selfDigest.bytes"
+          ]
+        },
+        "authoritativeNote": "selfDigest 는 자기참조 회피용 파생값이며 권위 있는 결속이 아니다. 이 파일의 권위 있는 결속은 소비자가 인테이크 시 계산하는 파일 전체 바이트 sha256 이다."
+      }
+    },
+    "toolVersions": {
+      "python": "3.14.5",
+      "producerModel": {
+        "value": "claude-ocx-opencode-go2--deepseek-v4.1-flash",
+        "source": "실행 환경이 이 후보 세션에 보고한 모델 식별자(자기보고)",
+        "confidence": "self_reported — 산출물 밖에서 독립 검증되지 않았다."
+      },
+      "note": "검사는 Python 표준 라이브러리만 사용한다(네트워크·Unity·설치 불필요). 생산 모델은 위와 같으며, 확인 불가였다면 'unknown — 사유' 로 적었을 것이다.",
+      "verifierModel": {
+        "value": "unknown",
+        "reason": "이 후보에서 독립 검증 모델을 호출하지 않았다. verification.C02 의 independentProviderReview 결과가 그 사실을 그대로 보고한다."
+      },
+      "producerAgentKind": "claude-code subagent (issue #32 candidate worker)"
+    },
+    "limits": [
+      "소비자는 fixture 의미를 쓸 수 있지만 provisional disclaimer 를 유지해야 한다.",
+      "preStateHash 는 unknown 이다(U02). 소비자는 이 필드를 정본 값으로 쓰면 안 된다.",
+      "actionMeaning/anchorMeaning/feedbackMeaning 은 후보 서술이며 공식 절차가 아니다(U01).",
+      "이 후보는 어떤 PASS 도 런타임·설치·네트워크·Unity·게시·병합 권한을 만들지 않는다."
+    ],
+    "successorHandoff": "선행 topology 는 비어 있고(하드 선행 []), 이 후보는 26/33/34/57/72/93 에 candidate 단계로만 전달된다. claim 은 이 후보가 만들지 않는다."
+  },
+  "notRunAndLimits": [
+    {
+      "item": "C01 work-graph 명령 원문 실행",
+      "result": "NOT_RUN",
+      "reasonKind": "조건 미성립",
+      "reason": "validate.py 가 경로 인자를 받지 않는다(X01)."
+    },
+    {
+      "item": "target fixture 를 읽는 schema 검증기",
+      "result": "NOT_RUN",
+      "reasonKind": "검증 불가",
+      "reason": "현행 검증기는 고정 파일 3개만 읽는다. 대체로 저장소 validate_bundle() 을 스냅샷에 적용한 결과를 제시했다."
+    },
+    {
+      "item": "C# 컴파일·Unity EditMode/PlayMode·장면 생성",
+      "result": "NOT_RUN",
+      "reasonKind": "조건 미성립",
+      "reason": "nonGoal 이며 이 phase 의 검사가 아니다. C02 영수증이 not_run 으로 보존한다."
+    },
+    {
+      "item": "실제 HMD/네트워크/NPC acceptance",
+      "result": "NOT_RUN",
+      "reasonKind": "조건 미성립",
+      "reason": "nonGoal."
+    },
+    {
+      "item": "canonical preStateHash 산출",
+      "result": "NOT_RUN",
+      "reasonKind": "검증 불가",
+      "reason": "런타임 미실행. 재구현 대체값을 넣지 않았다(U02)."
+    },
+    {
+      "item": "다른 생산자 개정의 내용 대조",
+      "result": "NOT_RUN",
+      "reasonKind": "의도적 미실행",
+      "reason": "독립성 유지를 위해 값(내용)을 읽지 않았다. 보존·식별을 위해 최상위 키 '이름'만 파싱으로 추출했다(X05 evidence.foreignTopLevelKeySetAtDetection.extractionMethod)."
+    },
+    {
+      "item": "verify_m401_fixture.py 의 저장소 내 게시",
+      "result": "NOT_RUN",
+      "reasonKind": "조건 미성립",
+      "reason": "이 후보의 쓰기 범위 밖이라 저장소에 검사기를 추가하지 않았다. 대신 sha256·bytes 로 결속하고 재현 규칙을 내장했다(C01 selfCheckRuleset)."
+    },
+    {
+      "item": "동시 생산자 개정의 내용 대조",
+      "result": "NOT_RUN",
+      "reasonKind": "의도적 미실행",
+      "reason": "값을 읽지 않았다. 키 이름만 추출했고 그것도 판단에 쓰지 않았다."
+    }
+  ],
+  "unknowns": [
+    "canonical preStateHash 런타임 값.",
+    "actionId 넘어선 행동 의미의 정본 존재 여부.",
+    "소비자 26/33/34/57/72/93 의 실제 요구 필드와 소비 방식.",
+    "기준 ref 시점 backlog §8 문면과 HEAD 사본의 내용 차이.",
+    "동시 생산자와의 향후 쓰기 순서(재충돌 가능성).",
+    "C02 입력 다이제스트 지도는 이 후보 자신의 출력을 포함하므로 순수 입력 closure 가 아니며, 후보 개정마다 지도가 변한다(자기참조).",
+    "어느 동결 기준서(m4-01 v1 sha256 a1135d6f… / m0-00 v1.1 sha256 1b36c36d…)가 이 라운드에 구속하는지 — PM 지정 필요."
+  ],
+  "verification": {
+    "receiptSchemaVersion": 1,
+    "note": "이 영수증은 유계 자기점검이며 정책 수용(acceptance)이 아니다. 검사 스크립트는 저장소 밖 스크래치패드에서만 실행했고 저장소에는 검사기를 추가하지 않았다.",
+    "C01": {
+      "checkId": "C01",
+      "declaredCommand": "python3 scripts/foundation/validate.py <fixture>",
+      "expectation": "schema/required fields pass with target fixture path",
+      "negativeCase": "missing role/action/anchor/prestate/expected output => fail",
+      "appliesToPhases": [
+        "candidate",
+        "accept"
+      ],
+      "result": "NOT_RUN",
+      "notRunReason": "이 phase 에서 그 조건이 원리상 만들어지지 않는다(조건 미성립). scripts/foundation/validate.py 는 위치 인자를 받지 않는다 — argparse 에 positional 이 없고, 실행하면 'validate.py: error: unrecognized arguments: <fixture>' 로 종료코드 2 다. 또한 이 검증기는 저장소의 고정 파일 3개만 읽으며(foundation-demo.json, synthetic-room.json, foundation-scenario.schema.json) 지정 target fixture 는 읽기 집합에 없다. 즉 'target fixture path 로 schema/required fields pass' 라는 기대는 현행 도구로 산출할 수 없다. 후보의 쓰기 범위 밖(scripts/)이라 검증기를 확장하지 않았고, 그 한계를 남긴다.",
+      "artifactPath": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "artifactDigest": {
+        "scheme": "sha256",
+        "scope": "reviewed_output",
+        "value": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+        "bytes": 97923,
+        "gitBlobSha1": "ff84506fef8b444e287e8468859401895efb2a5d",
+        "boundAtReviewGeneration": {
+          "value": true,
+          "scope": "conditional",
+          "statement": "review 작성 시점에 이 개정임을 관측했다. 동시 쓰기가 계속되는 동안에는 안정적 결속을 주장하지 않는다. 아래 authoritativeBinding 이 스테일 판정의 기준이다.",
+          "observedAt": "2026-09-15T01:36:05+09:00"
+        },
+        "sha256": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+        "authoritativeBinding": {
+          "path": "docs/team/M4-01/fixture-review.json",
+          "field": "reviewedArtifacts[0].sha256",
+          "note": "이 영수증의 리터럴이 이후 개정으로 스테일해지면 이 경로의 값이 권위 있다."
+        }
+      },
+      "provenance": "roleRows 는 foundation/scenarios/foundation-demo.json /roles 에서 결정적으로 생성했고, canonicalScenarioSnapshot.profile 은 그 파일의 '의미 동등 사본' 이다(dict 비교 True). 바이트 동일은 아니다 — 재직렬화 형태에 따라 sha256 이 달라진다. 정본은 foundation/scenarios/foundation-demo.json 이며 이 사본의 authority 는 none 이다. schema 적합성은 저장소 자체 validate_bundle() 에 스냅샷을 넘겨 확인했다(아래 evidenceBlocks). actionMeaning/anchorMeaning/feedbackMeaning 서술만 후보 작성이며 actionMeaningStatus 로 정본 부재를 표시했다. 검사 스크립트는 verifyScriptBinding 에 sha256·bytes 로 결속했고, 재현 규칙은 selfCheckRuleset 에 내장했다.",
+      "thresholdEvaluation": "실행한 것: (a) C01 명령 원문 그대로 — exit 2, unrecognized arguments. (b) 인자 없는 validate.py — PASS, 고정 파일 3종에 한함. (c) 구조 검사 — 5행·필수필드·부정표기 통과. (d) 저장소 validate_bundle() 로 스냅샷 schema 검사 — 오류 0. (e) 행↔canonical 교차검사 — 불일치 0. (f) canonical 소스 다이제스트 결속 일치. (g) 부정 사례 10건 전부 거부. 실행하지 않은 것: target fixture path 를 받는 검증기 실행(도구에 그 형태가 없다), C# 런타임/Unity 실행, preStateHash 계산.",
+      "evidenceBlocks": [
+        {
+          "step": "C01 명령 원문 실행",
+          "observed": {
+            "command": "python3 scripts/foundation/validate.py foundation/team-fixtures/M4-01/role-action-fixture.json",
+            "exitCode": 2,
+            "stdout": "",
+            "stderr": "usage: validate.py [-h]\nvalidate.py: error: unrecognized arguments: foundation/team-fixtures/M4-01/role-action-fixture.json"
+          }
+        },
+        {
+          "step": "인자 없는 validate.py 실행(고정 읽기 집합)",
+          "observed": {
+            "command": "python3 scripts/foundation/validate.py",
+            "exitCode": 0,
+            "stdout": "PASS: synthetic foundation fixture - 5 roles, 5 anchor references, 20 virtual team notifications; provisional example only",
+            "stderr": ""
+          }
+        },
+        {
+          "step": "validate.py 부정 인자 실행",
+          "observed": {
+            "command": "python3 scripts/foundation/validate.py --not-a-flag",
+            "exitCode": 2,
+            "stdout": "",
+            "stderr": "usage: validate.py [-h]\nvalidate.py: error: unrecognized arguments: --not-a-flag"
+          }
+        },
+        {
+          "step": "저장소 validate_bundle() 로 canonicalScenarioSnapshot schema 검사",
+          "errors": [],
+          "verdict": "pass"
+        },
+        {
+          "step": "roleRows 구조·필수필드·provisional 표기 검사",
+          "errors": [],
+          "verdict": "pass"
+        },
+        {
+          "step": "roleRows ↔ canonical /roles 교차검사",
+          "mismatches": [],
+          "verdict": "pass"
+        },
+        {
+          "step": "canonical 소스 sha256 결속",
+          "verdict": "pass"
+        },
+        {
+          "step": "부정 사례 N01-N10",
+          "cases": [
+            {
+              "caseId": "N01",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].roleId: required field missing",
+                "roleRows[1].expectedVirtualTeamEvents: must cover the other four roles once",
+                "roleRows[2].expectedVirtualTeamEvents: must cover the other four roles once"
+              ]
+            },
+            {
+              "caseId": "N02",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].actionId: required field missing"
+              ]
+            },
+            {
+              "caseId": "N03",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].targetAnchorId: required field missing"
+              ]
+            },
+            {
+              "caseId": "N04",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].preState: required field missing",
+                "roleRows[0].preState: must define phase and questState"
+              ]
+            },
+            {
+              "caseId": "N05",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].expectedQuestState: required field missing"
+              ]
+            },
+            {
+              "caseId": "N06",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].expectedVirtualTeamEvents: required field missing",
+                "roleRows[0].expectedVirtualTeamEvents: expected 4 events"
+              ]
+            },
+            {
+              "caseId": "N07",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].expectedFeedbackCode: required field missing"
+              ]
+            },
+            {
+              "caseId": "N08",
+              "rejected": true,
+              "observed": [
+                "roleRows: expected exactly 5 rows, found 4",
+                "roleRows[0].expectedVirtualTeamEvents: must cover the other four roles once",
+                "roleRows[1].expectedVirtualTeamEvents: must cover the other four roles once"
+              ]
+            },
+            {
+              "caseId": "N09",
+              "rejected": true,
+              "observed": [
+                "roleRows[0].provisionalMarks.role.officialScoring: must be false"
+              ]
+            },
+            {
+              "caseId": "N10",
+              "rejected": true,
+              "observed": [
+                "scenario.roles: minItems=5 violated"
+              ]
+            }
+          ],
+          "verdict": "pass"
+        }
+      ],
+      "selfCheckRuleset": {
+        "canonicalLocation": "foundation/team-fixtures/M4-01/role-action-fixture.json#verification.selfCheckRuleset",
+        "ruleIds": [
+          "R1",
+          "R2",
+          "R3",
+          "R4",
+          "R5",
+          "R6",
+          "R7",
+          "R8",
+          "R9"
+        ],
+        "negativeCaseIds": [
+          "N01",
+          "N02",
+          "N03",
+          "N04",
+          "N05",
+          "N06",
+          "N07",
+          "N08",
+          "N09",
+          "N10"
+        ],
+        "note": "규칙 본문은 픽스처에 단일 사본으로 둔다(중복 사본의 드리프트를 피하기 위해). 이 검토의 acceptanceCriteriaReview[*].verificationCommand 가 인용하는 'selfCheckRuleset' 의 실체는 그 위치다. 픽스처를 손에 든 소비자는 그 경로에서 R1-R9 와 N01-N10 매핑을 그대로 읽는다."
+      },
+      "verifyScriptBinding": {
+        "canonicalLocation": "docs/team/M4-01/fixture-review.json#verification.C02.verifyScriptBinding",
+        "sha256": "4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006",
+        "bytes": 17794,
+        "note": "검사 스크립트 결속의 단일 사본은 C02.verifyScriptBinding 이다. C01 도 같은 도구를 쓴다."
+      }
+    },
+    "C02": {
+      "checkId": "C02",
+      "declaredCommand": "python3 scripts/dev/check_foundation.py",
+      "expectation": "records existing code/data check only; not official/SOP/HMD pass",
+      "negativeCase": "failure or local-only path => preserve limitation",
+      "appliesToPhases": [
+        "candidate",
+        "accept"
+      ],
+      "result": "PASS",
+      "notRunReason": "",
+      "artifactPath": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "artifactDigest": {
+        "scheme": "sha256",
+        "scope": "reviewed_output",
+        "value": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+        "bytes": 97923,
+        "gitBlobSha1": "ff84506fef8b444e287e8468859401895efb2a5d",
+        "boundAtReviewGeneration": {
+          "value": true,
+          "scope": "conditional",
+          "statement": "review 작성 시점에 이 개정임을 관측했다. 동시 쓰기가 계속되는 동안에는 안정적 결속을 주장하지 않는다. 아래 authoritativeBinding 이 스테일 판정의 기준이다.",
+          "observedAt": "2026-09-15T01:36:05+09:00"
+        },
+        "sha256": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+        "authoritativeBinding": {
+          "path": "docs/team/M4-01/fixture-review.json",
+          "field": "reviewedArtifacts[0].sha256",
+          "note": "이 영수증의 리터럴이 이후 개정으로 스테일해지면 이 경로의 값이 권위 있다."
+        }
+      },
+      "provenance": "명령을 저장소 루트에서 실행했고 종료코드와 stdout JSON 을 그대로 기록했다. 스크립트는 scripts/foundation/validate.py 와 scripts/foundation/tests 의 unittest 를 돌리고 foundation/·scripts/·Packages/ 하위 입력의 sha256 을 출력한다. 이 후보는 그 출력을 '공식/SOP/HMD 통과'로 승격하지 않는다. 주의 — 하위에서 unittest discover 가 실행된다. 동결 기준 v1.1 이 구속하면 이 실행은 정책 위반(H4)이므로 PM 지정이 필요하다(contextOnlyInputs.frozenCriteriaDuplicate).",
+      "thresholdEvaluation": "실행 결과 exit=0, status=passed, checks 2건(synthetic_contract, synthetic_negative_tests) 모두 passed. 동시에 스크립트 자신이 csharpCompilation/unityEditMode/unityPlayMode/unitySceneGeneration/desktopPlaythrough/hmd/independentProviderReview = not_run, playableDemoVerified=false, issueDone=false 를 보고한다. 이 후보는 그 not_run 을 그대로 유지하며 어떤 완료 주장도 하지 않는다. 출력의 숫자 20 은 validator PASS 문면의 합성 계약 항목 수(5역할 x 4이벤트)이며 완료·성능 수치가 아니다.",
+      "evidenceBlocks": [
+        {
+          "step": "check_foundation.py 실행 (도구 원출력 요약. 파생 카운트는 derived 절)",
+          "observed": {
+            "command": "python3 scripts/dev/check_foundation.py",
+            "exitCode": 0,
+            "scope": "foundation_python_data_checks",
+            "status": "passed",
+            "checks": [
+              {
+                "name": "synthetic_contract",
+                "exitCode": 0,
+                "status": "passed"
+              },
+              {
+                "name": "synthetic_negative_tests",
+                "exitCode": 0,
+                "status": "passed"
+              }
+            ],
+            "csharpCompilation": "not_run",
+            "unityEditMode": "not_run",
+            "unityPlayMode": "not_run",
+            "unitySceneGeneration": "not_run",
+            "desktopPlaythrough": "not_run",
+            "playableDemoVerified": false,
+            "hmd": "not_run",
+            "independentProviderReview": "not_run",
+            "issueDone": false
+          }
+        }
+      ],
+      "selfCheckRuleset": {
+        "canonicalLocation": "foundation/team-fixtures/M4-01/role-action-fixture.json#verification.selfCheckRuleset",
+        "ruleIds": [
+          "R1",
+          "R2",
+          "R3",
+          "R4",
+          "R5",
+          "R6",
+          "R7",
+          "R8",
+          "R9"
+        ],
+        "negativeCaseIds": [
+          "N01",
+          "N02",
+          "N03",
+          "N04",
+          "N05",
+          "N06",
+          "N07",
+          "N08",
+          "N09",
+          "N10"
+        ],
+        "note": "규칙 본문은 픽스처에 단일 사본으로 둔다(중복 사본의 드리프트를 피하기 위해). 이 검토의 acceptanceCriteriaReview[*].verificationCommand 가 인용하는 'selfCheckRuleset' 의 실체는 그 위치다. 픽스처를 손에 든 소비자는 그 경로에서 R1-R9 와 N01-N10 매핑을 그대로 읽는다."
+      },
+      "verifyScriptBinding": {
+        "scriptAnchor": "<candidate-session-scratchpad>/verify_m401_fixture.py",
+        "scriptAnchorDefinition": "<candidate-session-scratchpad> = 이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬).",
+        "sha256": "4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006",
+        "bytes": 17794,
+        "publishedInRepo": false,
+        "publishedInRepoReason": "이 후보의 쓰기 범위(foundation/team-fixtures/M4-01/, docs/team/M4-01/) 밖이므로 저장소에 검사기를 추가하지 않았다.",
+        "deidentificationDisposition": "경로는 앵커 토큰으로만 표기한다(세션 UUID·사용자 홈 경로 비게시, G13). 식별은 sha256·bytes 로 완결된다.",
+        "ifUnavailable": "스크립트를 얻을 수 없는 소비자는 아래 selfCheckRuleset 으로 같은 검사를 재구현해 재현할 수 있다. selfCheckRuleset 은 실행 코드가 아니라 규칙 서술이며, 부정 사례는 negativeCases 에 정의가 내장돼 있다."
+      },
+      "derived": {
+        "inputSha256Count": {
+          "value": 231,
+          "isToolOutput": false,
+          "derivation": "len(verification.checkFoundationFullClosure.inputSha256)",
+          "note": "scripts/dev/check_foundation.py:51-65 의 출력 키가 아니다(출력 키 실측: scope,status,checks,inputSha256,csharpCompilation,...). 검사 스크립트가 계산해 넣은 파생값이므로 도구 원출력 블록(observed) 밖에 둔다."
+        }
+      }
+    },
+    "checkFoundationFullClosure": {
+      "scope": "foundation_python_data_checks",
+      "status": "passed",
+      "checks": [
+        {
+          "name": "synthetic_contract",
+          "exitCode": 0,
+          "status": "passed"
+        },
+        {
+          "name": "synthetic_negative_tests",
+          "exitCode": 0,
+          "status": "passed"
+        }
+      ],
+      "inputSha256": {
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/ChooGuard.Foundation.Demo.Editor.asmdef": "a2b027abeabca4fad92e81edc64fbb346afa517f6cb3cf3bd8a4479f096bbb56",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationArtAudit.cs": "46c43693323ca112db14d1503882c1b9e680a7a58f7f00594f734c4b72d725e6",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationAssetPhysics.cs": "32cdb5ad6fcf1f22822da039c59fae9518dba3cb5583949de626365f362c2c73",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationBlenderAssets.cs": "2fa9c0fcb3fc1240d29fae9f5e42d170098d3cf31a6a593dd82127cc0abc2684",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationDemoDetailBuilder.cs": "97b43534536aa491c54a0f07f2be3b4f9b77e8086a37d8d183e2269f3a7da1d3",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationDemoSceneBuilder.cs": "d9fb3e15bf01159b8b5010db841dd15d15ad6dc6f36eb956847aac77a2201861",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationEvacuationBuilder.cs": "13b5bfc98ad34ed038f1a12defc4d5f1fed10ff782e0b1f81804bdc21852fc20",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationReferenceArchitecture.cs": "2643039779feaeb555712eec0bd5d7e7b9843a213dd21a1c9b2acad9a07e2058",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/FoundationSurfaceMaterials.cs": "abbe7d10a7bf2d54b1318c5c7b38db34b42459e80ae13afaafcb1183b3b783fa",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/ReconstructionReviewBuilder.cs": "d907453aea6ef10b06bc063831057fc53f9c10f870ef11e3e9ef2d2f9b2d354a",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Editor/StationWorldBuilder.cs": "f066a27373ded2a8d3f44c2ef6f8d381cc2ab5ca3b1d829547d6e613c0de2398",
+        "Packages/com.xrlab.chooguard.foundation/Demo/README.md": "270a47a7559a1bb8a99c98ca4c2a2f886e97c505d409b88478319ec6cabe610d",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ArtReviewController.cs": "32b03ddbb4f60d1a3aa102a6a812e9f23ea0f776ba36cedeca868981538642a5",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ChooGuard.Foundation.Demo.asmdef": "9c25b1ad3dc78a11592cf732bb8439c1df83082d6510430cda837ce6b37843fc",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoEvacuee.cs": "71a4aeb7e030f040159bb6aca2e7f3390d83a808f71a4489704bf5f6796cfef1",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoEvacueeVisual.cs": "a294bcd86ee736508e28611c1d18ef2f6e6615a254258b1a596e0da2c6f41617",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoExercise.cs": "6c1ffab87a80f9b72f07f17524dc35ebe8ef942ebf20391005701abb03925e21",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoFlow.cs": "04ae153f2e284e12083592889152d28a4538ff581d71fc8d6562b40c0b8843a6",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoGameController.cs": "1698efb7b47888f443997a02e1791b41464c5a94acb5fc8ddbffe74a0a045c7b",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoHands.cs": "c15b8c1660f816274234ce24f86a510373a14828451e9f3684dbd2551c64ac97",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoIncidentVisual.cs": "f6cddd0b717f89c6c15c9664d60b4b31d4357cdeaf858df8a94022bfaef92a31",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoInput.cs": "9a58100fe58ead71ff935327f2a413a1a817b536bfb5d4f3678c40fa3b682ff7",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoInteractable.cs": "6e49a825c251857b1b2a9ee2a86b05099e8ee501a5ac5b9b104a259603b385b7",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoNavigation.cs": "b695f2d4d0afdb286d55968530c860e5b39d82a1dcc73a771c2569eebc9a5678",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoPlayerController.cs": "a1dda4a0c1bf5b7755d4b3e0909f39ae04c081acd62d798b2209e38aa02a6591",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoRealtimeReflection.cs": "513db551ecf1d08dd5a7453d0885c0b84d80cdeb7816d079ea5de10fb8c93fee",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoWalkGraph.cs": "0ad03d657f9048f875b50106f2e59c054634c5b4489af6ff9d02387c53a7fff1",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoWorldGuide.cs": "e26fc594a274ca5b2a91d9849e6b1522a76bd75086bedd6960c6c836a1747e96",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/ReconstructionReviewController.cs": "f6eb149746a7bae3aa9b3dbd795b2bf4ec475df21382f6834d10c88441894b66",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/StationPortal.cs": "cd969b9cb87939ae443f13be5c79b0f99e6d2c86d7574c7de015a914f76e02a0",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/StationWorldController.cs": "4b110dbfbd9d9661ec5e35181e7d2b7bbfefc37aeb4a2a44a39d1a5a99e8b734",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/StationWorldSession.cs": "dc90e01b8ad45c1ffedafc530f535402dbb36ecfc7f892ce511056ecee674af7",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/link.xml": "154c9a98deb4d6a851b97ae9cf661edf05c7deed4201e1063a27bb543975e980",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ChooGuard.Foundation.Demo.Editor.Tests.asmdef": "d891df0d77b11fd1743d770a27cacf6fcfa0b52c77e7f2a4a5509b218e6afdcb",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/DemoExerciseTests.cs": "264eaa7a332b4d0864301781874bc02935ba0bb8915239021cb33e50960f4b65",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/DemoFlowTests.cs": "bfd189a2431d66757be302d1dcf6ddc91e55109c7ff15de8390702388de82bee",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/DemoNavigationTests.cs": "5a650e11cd749ec82feaa815f3386f480a21389febb08624ece71e77050de351",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/ReconstructionReviewTests.cs": "7b2264970a1de0da9276e519a26ccd7e93cd01a10647c9b7371aff5a7a713e78",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/SceneBuilderTests.cs": "5b8320f619317446debc91e43cc25c091b4dd04fded8a66642072c8dff59f334",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/StationWorldSceneTests.cs": "4db8467bd73328754dcd790d73dbb0595eaf22d5f54f533295bb94bf39d662f6",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/StationWorldSessionTests.cs": "2c8265866ea7f04b7d52767cb440d011687533adcaf8b4de7876ee1a0b27c1a5",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/ChooGuard.Foundation.Demo.PlayModeTests.asmdef": "e7438130ac52eb0f4b892e5bac3f6ae830fa8b9b774ec8492b54a199fd3c488d",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/DemoEvacuationTests.cs": "c0132b37b33cfb5337a1d099e60981ca8b0cc67c2aadb51998efb0e27d8aaa60",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/DemoGameControllerTests.cs": "906fd46e060ef5cdf28706d58c36ab54f92b1374c894e7a7eda7fa1562399b3d",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/DemoGeneratedDrillTests.cs": "6c84d4ebac04235cd0c960dcd9a681c46689e4c3092a56addd77948934ae7888",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/DemoInteractionTests.cs": "6dd4f78b7820b9f3b52c9754457c89f32072b58ad1ddc911c428f8fff560ec9f",
+        "Packages/com.xrlab.chooguard.foundation/Demo/Tests/PlayMode/StationWorldPlayTests.cs": "cbc243df81c5f4ec5bb7c3f20377ba4106f2312d4cedb597bc42379dbda145b2",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ChooGuard.Foundation.Multiplayer.Editor.asmdef": "c962a287776afe6b4dee4136287a558246291e8c111b35d9eca0d1c3cb39c9b5",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs": "c27037bc56869e527b1bc66360d1b83d519e947d61d125e3426c3811eeb90d72",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/FoundationReviewSceneBuilder.cs": "74fc744a33868c528cfc3d47fa45a76972ec23bfc49349afc05919d035754e57",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/FoundationSimulationSceneBuilder.cs": "65b8463b49407c1632b871dfa3f1b31af0fe6aa72f707c996c0979047faaa756",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/MultiplayerSceneBuilder.cs": "9614fbbd6a5a7e2490fa0bdd457e39777d104a689eec375b52b451d726a29689",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/NativeSdkImportPolicy.cs": "dc36ab12c64491128351387dba8ac4c9af904d238d11a7a2f6326fd3da16e469",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ChooGuard.Foundation.Multiplayer.asmdef": "74a2e7819454034aaddb12ff7e352abf6fbca66e2b81c003d3799f955212884f",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedPortalBarrier.cs": "741bbd4ca0f3ac6ebdbca375c6a54b8ce2c91ed0f8a4adaf01d7025e469cae5d",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedRegionView.cs": "a942e329d4f48fa3fffa5862a8f4f89e0fb134f5e1123cda2e80f0633e455e30",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWalkableSurface.cs": "252944cb73c667f2aeb54632fdb46ae1c0af875ba25cf6eab9c4b9a3a4c0e78b",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldGeometry.cs": "7aafde9c32a905276c28b178b9b473cd023c90b948dfd05c8691a99e5f643fde",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs": "a3c3b1ebee4bfe7c6dc39d9a0f3f87e9bd8267d508d2c458471df37d64cb3717",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs": "478057b853d6b78d7e7c34fd2f29ad454b8fd795710d2c0b2be9bb8c3f9e22cb",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs": "a4dace9814f2a4d910209ffbf0a18557dd0b68cf20ce06eb33abc90a5a7740dc",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/GroundedWorldMotor.cs": "10d1c57541244c2a7dc647af383b2c9b7335b65311d87f7f518944841d63aa58",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkEntityAnchor.cs": "01c6b71a503a3c66d230eb73c88012ec8c4e3d84d0bf0e92fd6f08dc0dca8488",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": "e0a31743ad60f88e44b2f4ee21aa63f80278804c21d281f112cb686063506e52",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ProtocolAudioSource.cs": "0dff78509c9fd04501f7dcb70315f9d9d2b2c7958b7ef3adca82a8c8cb485700",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeMetricAccumulator.cs": "ba7eecd96389b85a28c64e55a0bab229c9622846804021f7f79339a810b5b98f",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/RuntimeScheduling.cs": "a883b0f9e17c90c1f8e97fbbb78bbc56873f57eb4401f48b261fa9ede44d4c66",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ServerVoiceService.cs": "b188f680a67a5fa29565a62d762323190a8b667499102ccdcbbb31aceeedcb40",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SessionAdmission.cs": "606251ab8cf55726566099079d5e61ab23884f5e10e325a71aeb131448b8d194",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ShiftJournal.cs": "5af1eb7217647328f565cf53aaf797cd3f91c976dc19fcf92e52aefed46af348",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SimulationJournal.cs": "4864c778606c87aa9ef5ddd3b83fdf8994a772554d5a13b7a7a110c4aaa0f92d",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFragments.cs": "d5357c0802fdc4adcb28a15fb58f108411f590348a82443c730d68eb71d207eb",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFreshness.cs": "1c612b8583191b1b71042638750e0b29097a3ef14490a1054390bc74f985842b",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotPayload.cs": "2d93dcc9b5ce4a25750709cdf98c3113345c387358bbd5a5c2a3b39546ff4f11",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/VoiceRadio.cs": "a3f936932d83bef276ad26712b9a3686bd058c486f4fccad71ba7a0408ce27c9",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldBodyPresentation.cs": "07fdb09844daa2ebdb93263454ae2139a1db983f3d187bc9afc01b2f4d57be57",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldBodyView.cs": "ab65b7368749568ae26ef4f6f626a3f6eb38b7db1900c078e004d8af0fed1cfc",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldMotionCheckpoint.cs": "99632eb2f34421516e48c76907a9c17e8ffb5e25d3474e0292f1c056a162fafc",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldPhysicalView.cs": "fb0116127d35cd0350811462909ce0f4c4bc554302a9bf0237a0b75294722a2d",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldReviewCapture.cs": "f9d221bd792fbe47ae413da230e7a2534b0f218a3cd2ffa12368310cfaeb2cda",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/WorldSmokeView.cs": "8424dec86c14756e64b4183fea35c5619ec9bd00a38d9418d8b5b014306d9a70",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/AdmissionTests.cs": "d8be614a9460c2f018bb52783a6d2845f3e5acd4770a12a7b3cddf81d5cf98f2",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef": "64ac8be415fec32800e8b71ec16eb0921e5bb65fdbce642317f793d069f9acf8",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ConnectedRegionEffectTests.cs": "b303c9cf77359f9d57252bdda9ffb8dde56054e2a407e30cbbc55e612a4faab8",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ConnectedWorldTests.cs": "ca1ceec812872497f223995ebba0798c50541357334962d338293c7a293bf9f3",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs": "44c8dbec6bafc03a517d9b20f4c52a5aac8d1c86c7bd885a544d3a534bbee464",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs": "b436b66db0349964cfc0af6eb68997deb3a7a1cd38e81a4590c7fa71a7903f61",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FoundationSimulationTests.cs": "597700b7d822e68344d5f443781c286bd5594a491d7c36c315e66c0c087612d3",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/GroundedActorGeometryTests.cs": "2059a82cd2b5ad876ed83f922fe2043fdff46656280618da5dd6eaa8085772d6",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/IncidentDirectorTests.cs": "738989e09959d08226a887286f8c528965f035ade6b0e7c34cff18c527230db7",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/MultiplayerSceneTests.cs": "123e2dda456658c4d57ffdbff9fe5048a71c4473b5b2a3f56c2cc7a5cd7aef9b",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/NativeSdkImportTests.cs": "8a9e4eee49abf716a8c283e1ecb0c0986af41f416700af998d427bcc2b156f51",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeMetricAccumulatorTests.cs": "39dfe386f7740b8ceae8c59a3d309fbaa39ea451e34ae6428bde679414e6d446",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/RuntimeSchedulingTests.cs": "32bed54af1e9db8eecbf98edee535e2f4d54e0d965efdeb4d0ee8aa2215faac2",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ShiftJournalTests.cs": "d9bedac0bd598d8f6895151e54191fa443343900630dbf6c741dc451de19f2f5",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SimulationJournalTests.cs": "e61ac050ab03c8616ac10f4ddf6ce1f02f839c5d511d31a32ac7f7123488a735",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotFragmentTests.cs": "b30df4e7033a40907e1075842475750f245097e5618edfa2974481a311ef39f1",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotFreshnessTests.cs": "fd42413b3e279227b8d8ea6db22991187040b70bc253933bead4608254f1d09c",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotPayloadTests.cs": "1fa68d00336d91b6d12224d0509d2a06a677d2f0745b0e3c946847551460476c",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/SnapshotTransportTests.cs": "dce397a82fac4e01706006ddf9c2a107928f0415e2467055ba3cdbf8929e3be2",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/VoiceEpochCoordinatorTests.cs": "2c4c9ca60cdb7bad929db8c87599438c3c049793464422a3deaf9406c16cc1de",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionAdapterTests.cs": "35b6148cae0dd1350f21c16a700abf5e2900dc54b2616210774cbc336dace71d",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionPlaySceneSetup.cs": "fc9e987ea96c08869e381dd7cd6fa82885d10210a1c47be6a54d2f87fbf91783",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionTestRecovery.cs": "c3b443f0cd6ae69f6d042c1bd2cd9ce31409744fb153dc21094a8b21d1e92fb0",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldReviewContractTests.cs": "7c356ab33a042eb13d95c25060422db205c17011a30172c1cd47a597585f7ca1",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldShutdownTests.cs": "efe474696e7c9ad9b190edc77744f44982b5dcb80a24ed085148356b72b22df3",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldStackedGeometryTests.cs": "7a04ecaa52c063fba770239851cc4bd70131101a635425afd04a1eb97f26827b",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/ChooGuard.Foundation.Multiplayer.PlayModeTests.asmdef": "37158162cc9b32690e21e354abe4ab26c0d63f29fc410e4436ade6e404deea64",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP11aRouteProjectionTests.cs": "8267e576abc877a7ca680630ff1239ddcbda8db9ad7b4c55b23a2c518b244e1d",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/GroundedMovementTests.cs": "4582e387d04c93ae2a8ab19a37fb0d012d0d125568d78e640b2fe4f00a38206c",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/SmokeRenderingTests.cs": "85fec577db6e20dc3804ae8a1e0522ea7cd0f56d0c95f4470c1dfce72833a308",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/VoiceServiceIntegrationTests.cs": "504ac2f833f86b2778b8bcddb7c0821d7759b3a0fbcf99d6e5b8180826f605c4",
+        "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/WorldMotionPlayTests.cs": "72eaa6f1830c241f79ffc7bb206afda03112af96e7397079c7e90f33a2e45cbd",
+        "Packages/com.xrlab.chooguard.foundation/README.md": "097d72c21cbf41238f9dfccf32ccc1826bd5856960e01b81908d134103dd90e7",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/ChooGuard.Foundation.asmdef": "78018e7168d21f2dd44abce90bec751659d1e214214e7f3276267a609eeb5ad3",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs": "f764bcb7f98236a801285abbe1a4175ed9a16fed712df16b0f49d39b6bf3e260",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/ConnectedWorldDefinition.cs": "46d4c45a5bea7990be4a18f740d3d92adaff63daa3443532deca52f7cf283160",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/PushToTalkGate.cs": "4c7935007dbcfe7ebf8f14d600d9f0dd1a9aeed40b12fcad23ace93e1a234d10",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/SimulatedSpatialWorld.cs": "a289a855c28f323f4b77865fe1b02067d6d874fb5bd29c332391e5f4518725b8",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/VoiceEpochCoordinator.cs": "4e5932424e7eae3558cd608cce30d3fac28d6240941eadbeff1974d4348f91f7",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/VoiceTokenIssuer.cs": "6bcb934a43bed12059ed25286e2fceca6fa0b2c481e6fcd0f1d676857bdce769",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs": "4d8712a28c89f5d9cb6e22f8820357b076bdc0aa41e97cf9cbf837e349f73a1d",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioValidation.cs": "aac8aa2c29253764df2d7810e6cd5c122f4ce6aeb02397c5982b781b8311a58e",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/ConnectedThermalDomain.cs": "66b96b7cc4f30aaaab78a4fb7cf8223b98a569c0cc8dc2557f0f2263417b8238",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdCheckpoint.cs": "0b189848083587671ea9033688d3f6284269a1f1020719760dc3169b84fe97ae",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdCheckpointProof.cs": "356b99e096912ceb90ddb6840efbea77d7f89b02146728213ce15cc8cad34e22",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdContracts.cs": "2be31ff6275aa068feb6873a6bf61d81031ace1921b25550b7068a473bfd804e",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdMotionModel.cs": "3b33aefbc5aa9e06997010aa62e970265a7c1735608518b56e36b3693fd70023",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/CrowdPhaseReport.cs": "f7d1fc66e2f48f6ae18fe7a7416d5d8d4969bb8eaf2cc177b868dce5ce58180d",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FireContracts.cs": "19a8c7e89782d9838647000e07db753bd469c329d063b099dff2d1f8413b63c2",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/FoundationSimulationProfile.cs": "a4e5e78d4f760b9daa32e663aa910e58f036ddd21d7cb59852608aabbf28e498",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/IncidentDirector.cs": "cce5d86db17ef01e91c728c66d247e8046c2bf85675414f189f45ea74c8c37cd",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/PhysicalCheckpoint.cs": "4697ef15a77dfe280cb684b3442b77e6de6e309c03b46670d4c528120f65c053",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/SmokeOptics.cs": "9e8f11de8eec0049b7723536cf617a337f83672eec88f4e8539acc388e3bbf96",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/TrainDynamics.cs": "2125d22465b65807bf7c9b95c87a851d76778af72f67fb0f33b58e7fe38a8215",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/TrainOperation.cs": "86cd185b07b08f33d5c27d531530ff18ac24208145ce9d431e2d944aaae70708",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/Simulation/ZoneFireModel.cs": "206d6ae32281374fbecf289cf94988fea7d5e5fac4227832b5232ffd4973dd91",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/StateHash.cs": "f52ede22cef4f0146bdd1b6031da20ef11b8352e65fe9418a1d09c0339a9cc66",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b",
+        "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs": "c307c82cbf60411b2ed6fdf6ec6e221bff8f063f5da32b9a8ac3ccaac030b950",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CanonicalScenarioTests.cs": "7f78095afa6b3afdf5dc7d874c952169dc4b007e4500f9d317d5c96950d00f8a",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/ChooGuard.Foundation.Tests.asmdef": "2ada20baae2377fd276e1a28a7237449e93dacdd903ecef758b222a9fd87c2c4",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/ConnectedThermalTests.cs": "a16d02d8491b95b0905f6983fdd30690f1b0c990fbe31733b68e18a06f9f907c",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CoupledIncidentLifecycleTests.cs": "673b3ecf45af094e7c8109210da749814b5e546cd16f57e5a7746016820411cf",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdBenchmarkTests.cs": "b6d9304d61ed784597c6b2d81d57349b82e5c7657a140c829beb3c4711ec4c6f",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdForkTests.cs": "cf5e1c3e1af73ce27d9bac5e1df8d37aa6c7630786636addc908e3a573a4e8c2",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdLegacyFixture.cs": "4493963a421b27da4f5701baa8d0fc7c6dc57c43d86b1a66926f76197e1526e3",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionTests.cs": "82f9d2628d514e2e62e2246dffbb36312ad68ed67cf570badaa5a6613500e3b2",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionWindowTests.cs": "27a99a8ac29a9d4220413f8649950c34da2678218b1f2dfb9ef12efb55a11c37",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdPhaseTests.cs": "305c172aac69ae1be44c46f24eedb61cc38a6055cc32f7154ef5a8c758130fc9",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWallOptimizationTests.cs": "756146d86c4b279bbc9245b100a7e648af5ca4ab7567784469470059411f352f",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWorldContactTests.cs": "ba244d3b502ef6e277226b2cc467be239ee1a970e8f2118508a70b89e85610da",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FireBenchmarkTests.cs": "25e82959b20280e5043a35fb6ff048ad330bfd52238537a5db39358afd19408e",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FirePhysicsTests.cs": "4ee35e65dac4b9bc5f50d43cbf64a8b2bc5aa0465e6ccdc363db2ac7b35011c6",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06aThermalBudgetTests.cs": "0fc476f5c9e27b03ff223d8dedbd0170fe11f065223f9a00abb8260aecbbe877",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06bBoundaryMatrixTests.cs": "ecfbfd9210ab528f3123970e5d0101a5fdf2ed8b1c68a3d156703e85463b3065",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs": "483ba6b4dd5ae07f0c0e16ac36d7785d5569eab81489dd0304e50057936ed554",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp08bOccupancyTests.cs": "5f25e551837cded8967006daab48711c24526a184ef7d1b2673a799759dbcec8",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/FoundationLoadVerificationTests.cs": "0d2a8671e8b10c8d497006c2623269b857c095d9c2ff08b29783a6ae6dd3593d",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/PhysicalCheckpointTests.cs": "1114ae6c62422a502afc4fc8e62586f3f85e572e9f6c980fdb30d3ac2a3041c2",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedAuthorityTests.cs": "8bf2e17d6bae3c62b27f670abe8561f7ec6577fd058d01e2ca684ea8bae81ed9",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedSpatialTests.cs": "94c46b96c68a81c62e96b3e43c3c428d936fbb1e5972c0495e7e5f69fbb9b4c4",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SlopedFireCellTests.cs": "efb7a62a1a66e802472adea1dceb0b247b73bb36b7a5a679be054f15278a3b4e",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/SmokeOpticsTests.cs": "38926131026046257a55f4138a96060f81554d99565b32bb03a5aa63d8998b35",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainDynamicsTests.cs": "659a57f804806dc5c99bda29384e4881f9780d5d4acf6dcb390f5c95bc959478",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainOperationTests.cs": "fb20cb27d3bc6c93f8a3f68bf6e4957a5b7ee27ac489742ea39a6cc184f6dc5a",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs": "0670af37a515868fa7067c28a89febca9f81a4c67665c0b51ff8a0c6a06a0caa",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/VoiceContractTests.cs": "630cb629bc14acb1faf4d5db37079c48c004e07b0fa477952d84d26d6f018b5f",
+        "Packages/com.xrlab.chooguard.foundation/package.json": "dcda00db4bcdc04b4c1f07c34ca6e7d27486d50524d439d88420a093ae98b6dd",
+        "foundation/README.md": "02fee6d9d7dc24c880bb05ca86368f4027ff9f750ca9cac0e3e0c085777d98d3",
+        "foundation/anchors/synthetic-room.json": "e6051a3d9131e0e920c4976e197033d5c541f9452d4b4c1f3733d07ad593b5c5",
+        "foundation/art/README.md": "b660132174140e5377ddcd3c90c0ec28eb829a061ad8c6f430b8a398d8a1bd97",
+        "foundation/art/asset-manifest.json": "d8da4ae962cf43c87f5aec9fe5f1823574faaca5b6be95e94c4c0fce81703242",
+        "foundation/art/object-references.json": "e2530ec00bbc16ba24e475269343651616f8fdae8ecf56fc5ccaeec250a90559",
+        "foundation/art/synthetic-design.json": "6c9bc644d0f8fbb661e7f69854bd9164fbaf01ce36d04d89691f77f4fceda99e",
+        "foundation/art/team/TEAM-03/material-catalog.json": "0eeaefc038a3badd74a282054a22f817cff8a86ef74e10b747e8572f663f2cbd",
+        "foundation/art/team/TEAM-06/pilot-manifest.json": "4858d669fd9062a5be159905f041021b4b1dda71071c3f54e70279b419de431f",
+        "foundation/art/team/TEAM-17/render-manifest.json": "2c4f53c95768bc6a8cd11f32992fce1cd42f1822b40b627c6896f30a6dfcb38d",
+        "foundation/network/connected-world-layout.json": "fc6e7f2c0013c69da8a491362391fc9c56a84662d474a0ccc0ca497152c20c72",
+        "foundation/network/connected-world-scenes.json": "403521e7d18ac7f9c7b28ea072f2e4d75ad2f2aa727567226b9a5ceb4409d0f6",
+        "foundation/network/dependency-contract.json": "bb3cb83b86c1e036b12f9f0ad6c7b50caf8ee891a5844430bb36926f77a72adb",
+        "foundation/network/slice-layout.json": "d7ebea2c3ff2bbcb13f898afa40b3a25052dd179d86911880e034290ce2f3d99",
+        "foundation/physics/validation/juelich-corridor-aggregates.json": "aa031e8e710a090e8ecbe6e3e76544eca17ae592607781665266a53596175169",
+        "foundation/physics/validation/steckler-cases.json": "ffdc69168e41d953186b581c01b3de63bc322634e095d1ef44200ddeb89a6bfa",
+        "foundation/procedures/source-registry.json": "acd217eade028eb6b067233327afe6230e718465dec473c39fbf86d81d5c31f4",
+        "foundation/scenarios/evacuation-drills.json": "171f3cd31815eec254cf0e13d47a89eb65dba64112b4368ecf6e2ce53639c27a",
+        "foundation/scenarios/foundation-demo.json": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+        "foundation/team-fixtures/FND-04/cases.json": "e93f65b7fadb9cb66e2e49f5e42a12243e128fa5d184f5a965b76f38a7b25c1a",
+        "foundation/team-fixtures/FND-04/recipe.schema.json": "02a2256ec75eb743380eea8c67aace83af9a8bdec85b5686c5912ef6c72ec803",
+        "foundation/team-fixtures/M4-01/role-action-fixture.json": "983b54f265a09e5e18fff3c4de08b66f459212bce51ac805d395295f40d07b97",
+        "foundation/team-fixtures/TEAM-04/user-flows.json": "b1319c4e672e0dbc91fdb4d77af6c8a35ab5a12a79a0eee8a78b68404a4f9ab9",
+        "foundation/team-fixtures/TEAM-25/mapping-examples.json": "1862c9eb5eeb01c7a84bf8164906f291a02651392516792359a5f0c38122aaf4",
+        "foundation/team-fixtures/TEAM-26/anonymous-record.json": "4d7110186150b1877dc803af01f0a467013e81ddf9b288273561784102ed09a7",
+        "foundation/tests/FMP-07a/world-crowd-fixture.json": "9241f224533977d8af049efe0c9fbbbd757f4037af3e7e4167b8854b91093685",
+        "foundation/world/connected-world-profile.json": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+        "foundation/world/facility-coverage.json": "1e9700ab7ba388ca98561a6002464613864a80d18b99b709f3c247f9abe3b350",
+        "foundation/world/foundation-simulation-profile.json": "c053ecdab98e8f6577a4fe644b2a3e78c1ba4310cf6350d471e4f7dfe7bcdee2",
+        "foundation/world/station-twin-profile.json": "d727285e50f9ab8c1e13b6a84f32a6934d1fee1e21ab4f7b0d621b5a71a0f9e2",
+        "foundation/world/team/FND-05/plan-mapping.json": "95264a3b161e09ab3b074b1260b28cede6698d8d85ddf96c6e9787850724b2aa",
+        "foundation/world/zone-boundaries.json": "e7d35f150058a72498afb336069ab1f1e7a0a123f440d348a4edd7d14f61ebc8",
+        "schemas/foundation-scenario.schema.json": "fcb33eeea9eef91e2cb373cb605b71b0e5b65abbd5bfe7102239560c44d8193e",
+        "scripts/dev/build_foundation_candidates.py": "3d45d1586bd2fa9cc3cfc3b499db5fe609c15e44c273b39973dd67c9070152be",
+        "scripts/dev/check_foundation.py": "c783240a4f62c96eac4a1133aa355bbaf2e6e41963599fd60d4adc3924477315",
+        "scripts/dev/create_multiplayer_session.py": "97e0795d371a16482f54488ae81ecd4aee189ef76241de1dbb39a6bacc89834e",
+        "scripts/dev/fetch_crowd_benchmarks.py": "ab2d8177697dacbb7d3b2facdbd3853176d99ec1769db9ed5f6c4ca76c5ec942",
+        "scripts/dev/fetch_fire_benchmarks.py": "23674cd4c780b94bb6486f6d0a81001e0cf85632e29038237f229fdbe792348c",
+        "scripts/dev/foundation_load_metrics.py": "3184c252293d1551dba16adc33a67ab557e2767776f3e3b2b3d44e3acecd444a",
+        "scripts/dev/foundation_load_windows.py": "8a996cd72db54ca7cf0304a05e2b2acbca245d5bba7d915112d9e19e4e945096",
+        "scripts/dev/native_manifest.py": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83",
+        "scripts/dev/prepare_multiplayer_dependencies.py": "08f00022ec468c9bc87c04f96577f7e46dc57ab5ad333d66bc18d4aca6ed8e0b",
+        "scripts/dev/probe_journal.py": "7807ae8a093460d7cd9c97b2bf695a433a421de70078535e03023c934019928e",
+        "scripts/dev/run_connected_world_probe.py": "28fe6059e2016f4457240dee573b9b6c4f0e7f059491dba8a862e0356a589264",
+        "scripts/dev/run_foundation_load.py": "d1ae38c33bc0793f2273721b5018ab1b9c21ae6e9c6d3a5e11f2490144768949",
+        "scripts/dev/run_multiplayer_probe.py": "b1625536cd019f8aebfcb994de4e0441a98adbc081d4caa8b90604fb14688bd2",
+        "scripts/dev/run_multiplayer_recovery.py": "6876f94b6e2ea9d642e7a7385ed2735617b56b81739eaba1e3a3d1b9c01fa834",
+        "scripts/dev/run_simulation_probe.py": "937fba7d7068a43c3e4c308fd1a12d9df70760bf44748977af5893d853c4288d",
+        "scripts/dev/run_world_review_capture.py": "86dd7e213486de4fbda1ec254668f70000a0b26afe9a08bdcf113fe8f8ca01d4",
+        "scripts/dev/test_crowd_benchmarks.py": "a9f8e56de0dd08799892300b011eaa858b0e4312a1852879e9c5969c4efa30ab",
+        "scripts/dev/test_foundation_build_contract.py": "f5c43691d9a7b0ddf7b55fbce721331f99721e56563c9e1dcac50e8931b2a894",
+        "scripts/dev/test_foundation_load.py": "7de3105b962d5b4a19d639e8d3c910a0f808db724f90224fc0810d47f2399b21",
+        "scripts/dev/test_multiplayer_dependencies.py": "f5747b21efd1c062cff524168cb1f09ce5d8e55a4a82f72664d4cbcf21c9afb1",
+        "scripts/dev/test_native_manifest.py": "a6197c32a821af428e821333c02bd666d6f689e966f67451b41bd4d47eed7011",
+        "scripts/dev/test_simulation_probe.py": "f6f65dd73f4abcfbe320edc1335a0efca5450f5a79f94970c8d94117d46ba85d",
+        "scripts/dev/test_udp_impairment.py": "50dbf50e014ee75feaa5d04a7afb9330fa9664cf6f6a57f120905d7b2fcda49c",
+        "scripts/dev/test_verify_unity_receipt.py": "da514181e450632069ba43e444b72e7bbe2b42cec4d9ab348bca2ece5b993d62",
+        "scripts/dev/udp_impairment.py": "af2ebb3db132b3255b6d4f51cae7b8f43f27f57a540659ac5b8d52923008df48",
+        "scripts/foundation/tests/test_validate.py": "0394c784a02f523f86e1ef3debd6b6956a794b02dc19c56770d0a605a60a5721",
+        "scripts/foundation/validate.py": "202ee87e76a41b9b5c7cbe2684c7a487817b4308eebe7d2fd5429f492c372f1d"
+      },
+      "csharpCompilation": "not_run",
+      "unityEditMode": "not_run",
+      "unityPlayMode": "not_run",
+      "unitySceneGeneration": "not_run",
+      "desktopPlaythrough": "not_run",
+      "playableDemoVerified": false,
+      "hmd": "not_run",
+      "independentProviderReview": "not_run",
+      "issueDone": false,
+      "capturedAt": "2026-09-15T00:47:00+09:00",
+      "capturedAtUtc": "2026-09-14T15:47:00+00:00",
+      "snapshotNotice": "이 inputSha256 지도는 위 capturedAt 시점의 스냅샷이며, 동시 쓰기가 계속되는 동안 재현을 보장하지 않는다. 지금 같은 명령을 재실행하면 키 집합은 같지만 값이 달라지는 항목이 있다(아래 nonReproducibleAtRecheck). 독자는 이 차이가 스테일(stale)임을 알고, 조작으로 읽지 않도록 한다.",
+      "nonReproducibleAtRecheck": {
+        "recheckedAt": "2026-09-15T00:47:00+09:00",
+        "method": "같은 명령 python3 scripts/dev/check_foundation.py 재실행 후 값 비교",
+        "keySetEqual": true,
+        "valueDiffCount": 4,
+        "reason": "후보 범위 밖의 git 미추적 파일로 동시 생산자가 계속 갱신 중이며 값 자체가 분 단위로 변한다.",
+        "entries": [
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+            "recorded": "44c8dbec6bafc03a517d9b20f4c52a5aac8d1c86c7bd885a544d3a534bbee464",
+            "atRecheck": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs",
+            "recorded": "b436b66db0349964cfc0af6eb68997deb3a7a1cd38e81a4590c7fa71a7903f61",
+            "atRecheck": "f8d49456ca0e7610220cfd1512fdca8f15fd753e7e965af2685f06f205e3642a"
+          },
+          {
+            "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs",
+            "recorded": "483ba6b4dd5ae07f0c0e16ac36d7785d5569eab81489dd0304e50057936ed554",
+            "atRecheck": "f182a18fad0a3235981654699277356320455bf5091aa226097122b1d013725c"
+          },
+          {
+            "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+            "recorded": "9241f224533977d8af049efe0c9fbbbd757f4037af3e7e4167b8854b91093685",
+            "atRecheck": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70"
+          }
+        ]
+      },
+      "selfReference": {
+        "includesCandidateOwnOutput": true,
+        "selfPath": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "selfPathRecordedDigest": "983b54f265a09e5e18fff3c4de08b66f459212bce51ac805d395295f40d07b97",
+        "note": "이전 개정은 이 경로의 '현재 값'을 담는 리터럴 슬롯을 들고 있었고(개정마다 즉시 스테일이 된다), 이 개정에서 그 슬롯을 selfPathDigestAtCapture(관측 시점 값)로 바꾸고 권위 포인터를 추가했다. 지도는 check_foundation.py 가 해시한 파일 전체이며 이 후보 자신의 출력을 포함하므로 순수 입력 closure 가 아니다. 후보가 자기 개정을 다시 쓸 때마다 '입력' 지도가 변해 안정적 결속이 불가능하다. 지도 기록값과 현재값이 이미 다르며 unknowns 에 등록했다.",
+        "digestRelationship": "지도에 기록된 값은 983b54f265a0… (도구 실행 시점의 파일) 이고, 관측 시점(capturedAt) 파일 값은 17c9aafd3dc3… 다. 후보가 자기 출력을 다시 쓰면 지도 값이 변하므로 이 경로는 안정적 입력이 아니다. 최신 관측은 recheckObservations 에 있다.",
+        "selfPathDigestAtCapture": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+        "selfPathDigestAuthority": "이 경로의 '현재' 값은 이 파일에 자기참조로 박아 두지 않는다 — 개정마다 변해 즉시 스테일이 된다. 권위 값은 reviewedArtifacts[0].sha256 과 handoff.outputHashes['role-action-fixture.json'].value 다."
+      },
+      "derived": {
+        "inputSha256Count": {
+          "value": 231,
+          "isToolOutput": false,
+          "derivation": "len(verification.checkFoundationFullClosure.inputSha256)",
+          "computedAt": "2026-09-15T00:47:00+09:00"
+        }
+      },
+      "recheckObservations": [
+        {
+          "recheckedAt": "2026-09-15T01:36:05+09:00",
+          "method": "python3 scripts/dev/check_foundation.py 재실행 후 기록 지도와 키/값 비교",
+          "recordedCount": 231,
+          "observedCount": 233,
+          "keysAdded": [
+            "foundation/art/team/TEAM-17-work/plan-probe.json",
+            "foundation/art/team/TEAM-17-work/render_recipe.py"
+          ],
+          "keysRemoved": [],
+          "valueDiffCount": 7,
+          "valueDiffPaths": [
+            "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+            "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs",
+            "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs",
+            "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp08bOccupancyTests.cs",
+            "foundation/art/team/TEAM-17/render-manifest.json",
+            "foundation/team-fixtures/M4-01/role-action-fixture.json",
+            "foundation/tests/FMP-07a/world-crowd-fixture.json"
+          ],
+          "selfEntryChange": {
+            "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+            "recorded": "983b54f265a09e5e18fff3c4de08b66f459212bce51ac805d395295f40d07b97",
+            "observed": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+            "cause": "이 개정이 그 경로의 파일을 다시 썼다(자기참조)."
+          },
+          "conclusion": "지도는 입력 closure 로 쓸 수 없다. 기록 지도(231)는 capturedAt 시점 스냅샷으로만 유효하고 최신 실행 값은 233 다 — 두 수는 같은 시점의 측정이 아니므로 서로 모순이 아니다. derived.inputSha256Count 는 기록 지도의 len() 이며 여전히 231 다.",
+          "note": "직전 재검(capturedAt 근처: keySetEqual=true, valueDiffCount=4)은 형제 절 nonReproducibleAtRecheck 에 있다. 이 항목은 그 뒤의 재실행 관측이다."
+        }
+      ]
+    },
+    "selfCheckRuleset": {
+      "canonicalLocation": "foundation/team-fixtures/M4-01/role-action-fixture.json#verification.selfCheckRuleset",
+      "ruleIds": [
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "R7",
+        "R8",
+        "R9"
+      ],
+      "negativeCaseIds": [
+        "N01",
+        "N02",
+        "N03",
+        "N04",
+        "N05",
+        "N06",
+        "N07",
+        "N08",
+        "N09",
+        "N10"
+      ],
+      "note": "규칙 본문은 픽스처에 단일 사본으로 둔다(중복 사본의 드리프트를 피하기 위해). 이 검토의 acceptanceCriteriaReview[*].verificationCommand 가 인용하는 'selfCheckRuleset' 의 실체는 그 위치다. 픽스처를 손에 든 소비자는 그 경로에서 R1-R9 와 N01-N10 매핑을 그대로 읽는다.",
+      "replacesPreviousValue": null,
+      "previousValueWasNullReason": "이전 개정에서 이 키가 null 이었다. 그런데 acceptanceCriteriaReview[*] 는 '픽스처 selfCheckRuleset' 을 인용하고 C02.verifyScriptBinding.ifUnavailable 도 '아래 selfCheckRuleset' 을 가리켰다 — 실체 없는 인용이었다(D02). 이제 픽스처의 실제 블록을 가리킨다."
+    },
+    "verifyScriptBinding": {
+      "canonicalLocation": "docs/team/M4-01/fixture-review.json#verification.C02.verifyScriptBinding",
+      "sha256": "4cd262e48cd76d4b34274d21bcb5dd5612ddd68c607374d263d193de8642d006",
+      "bytes": 17794,
+      "note": "검사 스크립트 결속의 단일 사본은 C02.verifyScriptBinding 이다. C01 도 같은 도구를 쓴다."
+    }
+  },
+  "generatedAt": {
+    "local": "2026-09-15T01:32:57+09:00",
+    "utc": "2026-09-14T16:32:57+00:00",
+    "note": "이 시각은 이 개정의 생성 시각이며 수용·승인 시각이 아니다."
+  },
+  "workGraphItemUsage": {
+    "path": "docs/context/work-graph.json",
+    "itemNumber": 32,
+    "nonRef": true,
+    "used": [
+      {
+        "field": "checks",
+        "disposition": "C01/C02 명령·기대·부정사례 정의로 사용"
+      },
+      {
+        "field": "acceptance",
+        "disposition": "AC1..AC4 문면으로 사용"
+      },
+      {
+        "field": "stopConditions",
+        "disposition": "stopConditions.fromWorkGraph 로 사용"
+      },
+      {
+        "field": "nonGoals",
+        "disposition": "'과거 test count 재사용 금지' 경계로 사용(X07)"
+      },
+      {
+        "field": "outputs",
+        "disposition": "지정 출력 경로·digestRequirements(sourceRef required, outputDigest sha256)로 사용"
+      },
+      {
+        "field": "residentWriteScopes / phaseWriteScopes",
+        "disposition": "선언 쓰기 범위로 사용"
+      }
+    ],
+    "excludedWithReason": [
+      {
+        "field": "board.status",
+        "observedValue": "Blocked",
+        "reason": "프로젝트 보드 상태 스냅샷(2026-09-12T09:39:41Z, source=baseline/project1-items.json item #32)이다. 이 후보의 candidate 단계 진행 가능성에 관한 사실이므로 context-only 로 등록하되, 이 후보의 어떤 판정·진행 주장에도 쓰지 않았다. board.reason 도 함께 등록한다: 'Frozen Project-1 Status=Blocked observed at 2026-09-12T09:39:41Z. ... No live/current claim or status mutation is inferred.'"
+      },
+      {
+        "field": "board.reason / board.capturedProjectStatus",
+        "observedValue": "capturedProjectStatus.value=Blocked, observedAt=2026-09-12T09:39:41Z, sourceSnapshotCapturedAt=2026-09-12T09:39:41Z, sourceIssueUpdatedAt=2026-09-12T01:19:25Z",
+        "reason": "위와 동일 — 정본 문면 그대로 등록하며 이 후보는 현재 상태를 주장하지 않는다."
+      },
+      {
+        "field": "reviewNotes",
+        "observedValue": "Old issue body's historical 99/16 and PR claims are not reused as current acceptance.",
+        "reason": "§4 수용 기준 4번('No current 20/100/2/HMD/network completion is claimed')과 §8 의 '과거 test count 재사용 금지'에 직접 맞닿은 정본 문면이다. 이 후보는 이 문면을 준수했고(과거 99/16 수치를 어디에도 인용하지 않았다), 배제한 것이 아니라 위 수용기준의 근거로 등록한다."
+      }
+    ],
+    "note": "위 used/excluded 는 이 후보가 실제로 읽은 item 의 부분집합이며, 어떤 필드도 조용히 빠뜨리지 않았다.",
+    "indexNote": "이 항목은 work-graph items 배열의 0-기준 인덱스 items[19] 다(number=32, workId=M4-01). 이슈 번호 32 와 배열 인덱스 32 는 다르다 — 배열 인덱스 32 는 number=45 / R-05 이므로 이 후보를 가리키지 않는다. 따라서 이 산출물의 인용은 items[19] 또는 items[number=32] 로만 쓴다."
+  },
+  "acceptanceVerdictPolicy": "이 후보는 수용 판정형 라벨(판정 어휘)을 발행하지 않는다. 위 항목의 selfCheckResult 는 후보 자신이 관측한 사실의 라벨이며, work-graph 수용 기준의 충족 여부는 PM/심사자가 판정한다. 이전 라운드가 발행한 판정형 라벨 4건(수용기준 항목 3건 + citationIntegrity 1건)을 제거했고, 기계 판독 도구가 수용 판정으로 오독할 토큰은 남기지 않았다.",
+  "criteriaAuthorityConflict": {
+    "status": "UNRESOLVED_BY_CANDIDATE",
+    "candidates": [
+      {
+        "path": "<workspace-harness>/sdd/m4-01-role-fixture/frozen-criteria-32.md",
+        "sha256": "a1135d6fdcace6c47a366a134daed3beb52ab84b8294432ca36ee2d91fbb797a",
+        "bytes": 10129,
+        "selfLabel": "v1"
+      },
+      {
+        "path": "<workspace-harness>/sdd/m0-00-policy-baseline/frozen-criteria-32.md",
+        "sha256": "1b36c36db3db7069a14f87a3de4ac01d38290761352830652b80cab9f70ff978",
+        "bytes": 11553,
+        "selfLabel": "v1.1 개정 — 라운드 3 부터 적용"
+      }
+    ],
+    "note": "두 사본의 C01/C02 정의가 다르다(위 inputDigests.contextOnlyInputs.frozenCriteriaDuplicate). 어느 쪽이 구속하는지에 따라 C02 영수증의 정책 준수 여부가 갈린다. PM 이 구속 기준서 한 부와 그 sha256 을 지정해야 하며, 이것은 후보가 스스로 해소할 항목이 아니다."
+  },
+  "slotBriefScopeNote": {
+    "status": "NO_CANDIDATE_ACTION",
+    "observation": "이슈 #32 는 checks 를 정확히 두 개(C01 = scripts/foundation/validate.py, C02 = scripts/dev/check_foundation.py)만 정의한다. 동결 기준 §2 와 work-graph items[19].checks(number=32 / M4-01) 가 모두 2개다(실측). C03/C04 는 동결 기준·워크오더·후보 산출물 어디에도 없다.",
+    "reason": "후보는 존재하는 완전한 집합을 갖고 있다. C03/C04 의 부재를 후보 과실로 계상하면 안 된다.",
+    "requiredAction": "오케스트레이터가 슬롯 렌즈 브리프를 C01..C02 로 정정하거나, C03/C04 를 기대하는 라운드 전에 동결 기준/work-graph 에 그 정의를 게시해야 한다."
+  },
+  "citationCorrections": [
+    {
+      "findingId": "CC-01",
+      "grade": "P2",
+      "foundInField": "contradictions X01/X02 의 where, acceptanceCriteriaReview AC2 의 인용문",
+      "observed": "work-graph 배열을 잘못된 좌표(배열 인덱스 32)로 지시했으나 그 위치는 number=45 / R-05 ('리뷰 실패 중단·라운드·명령 통제') 다. 이 후보의 항목은 number=32 / M4-01 이고 배열 인덱스로는 items[19] 다.",
+      "cause": "이슈 번호 32 를 배열 인덱스로 오기했다.",
+      "corrected": "items[19] 로 정정하고 각 인용에 number=32 식별을 병기했다.",
+      "verificationCommand": "python3 -c \"import json;d=json.load(open('docs/context/work-graph.json'));print([(i,o['number'],o['workId']) for i,o in enumerate(d['items']) if o['number'] in (32,45)])\"",
+      "verificationResult": "배열 인덱스 19 -> number=32 workId=M4-01 / 배열 인덱스 32 -> number=45 workId=R-05",
+      "selfCheckResult": "CITATION_COORDINATE_CORRECTED"
+    },
+    {
+      "findingId": "CC-02",
+      "grade": "P2",
+      "foundInField": "inputDigests.declaredSources[2].declaredIn",
+      "observed": "docs/choo-guard-native-team-contracts.md 의 선언 출처로 'docs/context/work-orders/032.json minimumContext[1]' 을 함께 적었으나, work-orders/032.json 의 minimumContext[1] 은 schemas/foundation-scenario.schema.json 이다.",
+      "cause": "선언 출처를 검색 없이 기억으로 병기했다.",
+      "corrected": "work-orders/032.json 경로를 제거하고 work-graph items[19].truth[1] 만 남겼다.",
+      "verificationCommand": "grep -c \"choo-guard-native-team-contracts\" docs/context/work-orders/032.json",
+      "verificationResult": "0",
+      "selfCheckResult": "FALSE_DECLARED_IN_REMOVED"
+    },
+    {
+      "findingId": "CC-03",
+      "grade": "P2",
+      "foundInField": "reviewedArtifacts[0].lines",
+      "observed": "픽스처 줄 수를 1503 으로 적었으나 실제 개행 수는 1502 다.",
+      "cause": "문자열을 '\\n' 으로 split 한 뒤 후행 빈 원소를 한 줄로 계산했다.",
+      "corrected": "1502 로 정정하고 linesMethod 에 측정 기준을 명시했다.",
+      "verificationCommand": "wc -l < foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "verificationResult": "1502",
+      "selfCheckResult": "LINE_COUNT_METHOD_STATED"
+    }
+  ],
+  "deidentificationNotation": {
+    "rule": "저장소에 남는 산출물에는 로컬 절대경로·사용자 홈 경로·세션 UUID 를 게시하지 않는다. 대신 정의된 앵커 토큰과 저장소 밖 상대 하위경로, 그리고 sha256·bytes 로 대상을 특정한다. 이 규칙은 두 산출물에 동일하게 적용된다.",
+    "anchors": {
+      "<candidate-session-scratchpad>": "이 후보를 생성한 세션의 스크래치패드 디렉터리(저장소 밖, 세션 로컬). G13 비식별 규칙에 따라 절대경로·세션 UUID 는 게시하지 않는다.",
+      "<other-session-scratchpad>": "동시 생산자의 세션 스크래치패드 디렉터리(저장소 밖). 세션 UUID 는 게시하지 않는다.",
+      "<repo-checkout-root>": "이 저장소의 로컬 체크아웃 루트. `git rev-parse --show-toplevel` 로 해석한다."
+    },
+    "receiptCommandRule": "영수증의 명령은 선언 명령 그대로 적는다(예: python3 scripts/dev/check_foundation.py). 로컬 인터프리터 절대경로는 적지 않고 버전만 pythonVersion/toolVersions 에 적는다.",
+    "appliedTo": [
+      "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "docs/team/M4-01/fixture-review.json"
+    ]
+  },
+  "revisionNote": "이 개정은 직전 개정을 대체한다. 수정한 것: (1) 자기참조 스테일 수치 '현재 64837 B' 문면 제거(두 위치) — 권위 값 참조로 대체, (2) selfDigestExcludedFields 의 잘못된 필드 경로 정정(두 위치) — 종전 목록대로면 선언한 selfDigest 가 재계산되지 않았다, (3) candidateHandling 이 주장한 foreign_snapshot2/ 보존본을 evidence 에 등록, (4) 결속 픽스처 다이제스트 갱신. (5) C01/C02 영수증의 artifactDigest 리터럴과 selfReference 의 '현재 값' 리터럴을 이 개정 값으로 갱신 — '현재' 리터럴은 selfPathDigestAtCapture(관측 시점 값) + 권위 포인터로 대체, (6) 지도 재실행 관측을 recheckObservations 에 등록. 수용 판정형 라벨은 발행하지 않는다."
+}
