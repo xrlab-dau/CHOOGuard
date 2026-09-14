@@ -1,0 +1,332 @@
+{
+  "schemaVersion": 1,
+  "fixtureId": "TEAM-25-mapping-examples",
+  "issue": 93,
+  "workId": "TEAM-25",
+  "phase": "candidate",
+  "classification": "PUBLIC_SYNTHETIC",
+  "disclaimer": "KORAIL 검증 전 예시",
+  "generatedAt": "2026-09-13",
+  "purpose": "공개 출처의 절·쪽에서 임시 직무·행동·Anchor·기대 관측까지 역추적하는 양식의 합성 예시. 실제 기관 절차를 정의하지 않는다.",
+  "baseCommit": "e480e693721ca7c60fd259c0fbbf25aa6d51d722",
+  "boundInputs": [
+    {
+      "path": "foundation/procedures/source-registry.json",
+      "sha256": "acd217eade028eb6b067233327afe6230e718465dec473c39fbf86d81d5c31f4",
+      "selector": "/sources; /emptyApplicabilityMeans",
+      "availability": "published_on_develop",
+      "note": "work-order packet은 이 경로를 local_unpublished로 표시하지만 2026-09-13 기준 develop에 있다."
+    },
+    {
+      "path": "foundation/scenarios/foundation-demo.json",
+      "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+      "selector": "/roles",
+      "availability": "published_on_develop",
+      "scenarioVersion": "foundation-2"
+    },
+    {
+      "path": "foundation/anchors/synthetic-room.json",
+      "sha256": "e6051a3d9131e0e920c4976e197033d5c541f9452d4b4c1f3733d07ad593b5c5",
+      "selector": "/anchors",
+      "availability": "published_on_develop"
+    }
+  ],
+  "requiredFields": [
+    "exampleId",
+    "state",
+    "source.sourceId",
+    "source.locator",
+    "source.revisionStatus",
+    "source.verification",
+    "source.procedureAcceptance",
+    "source.allowedUse",
+    "simulation.roleId",
+    "simulation.actionId",
+    "simulation.targetAnchorId",
+    "simulation.expectedQuestState",
+    "simulation.expectedFeedbackCode",
+    "mapping.condition",
+    "mapping.staffObservation",
+    "mapping.expectedSimulationObservation",
+    "mapping.reportHandoff",
+    "applicability.operator",
+    "applicability.station",
+    "applicability.role",
+    "applicability.incidentKind",
+    "verdict",
+    "reverseTrace",
+    "notAccepted"
+  ],
+  "reviewStates": {
+    "applicable": "출처의 허용 용도 안에서 임시 직무·행동에 연결할 수 있다. 연결이 곧 기관 승인은 아니다.",
+    "prohibited_transfer": "대상 독자나 운영기관이 달라 그대로 전용할 수 없다.",
+    "gap": "적용 범위가 비어 있거나 해당 역·직무를 특정하지 못해 근거가 없다.",
+    "conflict": "둘 이상의 출처가 역할 명칭이나 보고 경로에서 어긋난다.",
+    "authority_unresolved": "현업 검수가 오지 않아 권위가 확정되지 않았다."
+  },
+  "refusalCodes": {
+    "SOURCE_NOT_REGISTERED": "출처 등록부에 없는 문서를 근거로 입력했다.",
+    "EMPTY_APPLICABILITY_ASSUMED_UNIVERSAL": "적용 목록이 비어 있는데 보편 적용으로 해석했다.",
+    "OPERATOR_MISMATCH": "다른 운영기관의 문서를 대상 기관 절차로 전용했다.",
+    "AUDIENCE_MISMATCH": "승객 안내를 직원 직무 절차로 전용했다.",
+    "ACCEPTANCE_PENDING": "현업 검수 미완료 상태를 확정된 절차로 표기했다.",
+    "REVISION_UNDATED_OR_HISTORICAL": "개정일이 없거나 과거판인 자료를 현행으로 표기했다.",
+    "MEANING_CHANGE_REQUIRES_IMPLEMENTATION": "행동·안전·판정 의미를 양식 작성만으로 바꾸려 했다."
+  },
+  "emptyApplicabilityMeans": "unspecified_not_universal_permission",
+  "examples": [
+    {
+      "exampleId": "TEAM-25-EX-01",
+      "state": "applicable",
+      "source": {
+        "sourceId": "KORAIL-SMS-20170526",
+        "locator": "PDF45–47쪽 §5.1;58–59쪽 §7.1",
+        "revisionStatus": "historical",
+        "verification": "primary_text_checked",
+        "procedureAcceptance": "pending_operator_review",
+        "allowedUse": ["초동·중간·종결보고 데이터 필드", "문서 수정 이력 구조"]
+      },
+      "simulation": {
+        "roleId": "role-03",
+        "actionId": "action-03",
+        "targetAnchorId": "anchor-03",
+        "expectedQuestState": "completed",
+        "expectedFeedbackCode": "synthetic-action-recorded"
+      },
+      "mapping": {
+        "condition": "플레이어가 상황을 관측한 뒤 보고 단말에 접근한 상태",
+        "staffObservation": "출처가 정의하는 보고 단계는 초동·중간·종결 세 단계이며 각 단계에 서로 다른 필드가 필요하다.",
+        "expectedSimulationObservation": "role-03이 anchor-03에서 action-03을 수행하면 Quest가 completed가 되고 네 직무에 synthetic-action-observed 알림이 전달된다.",
+        "reportHandoff": "게임은 보고 '단계 구조'만 빌려 쓴다. 실제 보고서 서식·수신처·시한은 채우지 않는다."
+      },
+      "applicability": {
+        "operator": "KORAIL",
+        "station": "unspecified",
+        "role": "출처에 직무 목록 없음",
+        "incidentKind": "사고·장애 보고 구조"
+      },
+      "defects": [],
+      "verdict": "mappable_with_limits",
+      "reverseTrace": [
+        "source:KORAIL-SMS-20170526",
+        "section:PDF45–47쪽 §5.1",
+        "allowedUse:초동·중간·종결보고 데이터 필드",
+        "role:role-03",
+        "action:action-03",
+        "anchor:anchor-03",
+        "expected:questState=completed, feedback=synthetic-action-recorded"
+      ],
+      "notAccepted": [
+        "이 연결은 현행 KORAIL 보고 절차의 승인이 아니다.",
+        "2017년 과거판이므로 현행 개정 상태를 별도로 확인해야 한다.",
+        "출처에 직무 목록이 없어 role-03 대응은 게임 내 임시 배정이다."
+      ]
+    },
+    {
+      "exampleId": "TEAM-25-EX-02",
+      "state": "prohibited_transfer",
+      "source": {
+        "sourceId": "HUMETRO-PASSENGER-EMERGENCY",
+        "locator": "HTML 승객행동요령",
+        "revisionStatus": "undated",
+        "verification": "primary_text_checked",
+        "procedureAcceptance": "pending_operator_review",
+        "allowedUse": ["승객 안내의 적용범위 참고"]
+      },
+      "simulation": {
+        "roleId": "role-04",
+        "actionId": "action-04",
+        "targetAnchorId": "anchor-04",
+        "expectedQuestState": "completed",
+        "expectedFeedbackCode": "synthetic-action-recorded"
+      },
+      "mapping": {
+        "condition": "차내 긴급상황에서 승객이 따라야 할 행동 안내",
+        "staffObservation": "출처의 독자는 승객이고 운영기관은 부산교통공사다.",
+        "expectedSimulationObservation": "role-04(방향 안내)의 직원 행동 근거로 쓰려 했으나 대상 독자와 운영기관이 모두 다르다.",
+        "reportHandoff": "전용하지 않는다. 승객 안내 문구의 존재만 참고로 남긴다."
+      },
+      "applicability": {
+        "operator": "HUMETRO",
+        "station": "unspecified",
+        "role": "승객",
+        "incidentKind": "차내 긴급상황·역사 화재"
+      },
+      "defects": ["AUDIENCE_MISMATCH", "OPERATOR_MISMATCH"],
+      "verdict": "refused",
+      "reverseTrace": [
+        "source:HUMETRO-PASSENGER-EMERGENCY",
+        "section:HTML 승객행동요령",
+        "audience:승객",
+        "requested:role-04 직원 행동 근거",
+        "refusal:AUDIENCE_MISMATCH + OPERATOR_MISMATCH"
+      ],
+      "notAccepted": [
+        "다른 운영기관의 승객 안내를 KORAIL 직원 직무로 옮기지 않는다.",
+        "게임의 방향 안내 행동은 이 출처 없이 합성 설계로만 유지한다."
+      ]
+    },
+    {
+      "exampleId": "TEAM-25-EX-03",
+      "state": "gap",
+      "source": {
+        "sourceId": "KORAIL-PUBLIC-REPORT",
+        "locator": "HTML 사고 보고 체계",
+        "revisionStatus": "undated",
+        "verification": "primary_text_checked",
+        "procedureAcceptance": "pending_operator_review",
+        "allowedUse": ["공개 보고 관계 참고"]
+      },
+      "simulation": {
+        "roleId": "role-01",
+        "actionId": "action-01",
+        "targetAnchorId": "anchor-01",
+        "expectedQuestState": "completed",
+        "expectedFeedbackCode": "synthetic-action-recorded"
+      },
+      "mapping": {
+        "condition": "부산역 맞이방에서 경미한 이상을 처음 관측한 상태",
+        "staffObservation": "출처는 사고현장·인접역·관제·운영상황실의 보고 관계를 설명하지만 적용 역이 비어 있다.",
+        "expectedSimulationObservation": "role-01이 anchor-01에서 상황을 확인하는 흐름은 있으나, 부산역의 실제 최초 조치·보고 대상은 이 출처로 확정할 수 없다.",
+        "reportHandoff": "결손으로 기록한다. 역 특정 조치는 미확정으로 남긴다."
+      },
+      "applicability": {
+        "operator": "KORAIL",
+        "station": "비어 있음 → 보편 적용으로 해석하지 않는다",
+        "role": "사고현장·인접역·철도교통관제·운영상황실",
+        "incidentKind": "경미한 사고 보고 체계"
+      },
+      "defects": ["EMPTY_APPLICABILITY_ASSUMED_UNIVERSAL"],
+      "verdict": "gap_recorded",
+      "reverseTrace": [
+        "source:KORAIL-PUBLIC-REPORT",
+        "section:HTML 사고 보고 체계",
+        "applicableStations:[] → unspecified_not_universal_permission",
+        "role:role-01",
+        "action:action-01",
+        "anchor:anchor-01",
+        "gap:부산역 특정 최초 조치·보고 대상 미확정"
+      ],
+      "notAccepted": [
+        "적용 역이 비어 있다는 사실을 모든 역에 적용 가능으로 읽지 않는다.",
+        "이 결손을 게임 기본 동작 변경으로 메우지 않는다."
+      ]
+    },
+    {
+      "exampleId": "TEAM-25-EX-04",
+      "state": "conflict",
+      "source": {
+        "sourceId": "KORAIL-PM-20250925",
+        "locator": "HTML 2025-09-25 보도자료",
+        "revisionStatus": "dated",
+        "verification": "primary_text_checked",
+        "procedureAcceptance": "pending_operator_review",
+        "allowedUse": ["역할별 개선 매뉴얼 자료 요청의 근거"]
+      },
+      "conflictsWith": {
+        "sourceId": "SR-LARGE-ACCIDENT-20240226",
+        "locator": "PDF3/8/10쪽 적용·개정;166–167쪽 보고서식;179쪽 수서역 인계",
+        "citedSection": "PDF166–167쪽 보고서식",
+        "publisherOperator": "SR",
+        "applicableRoles": ["초기대응반장"]
+      },
+      "simulation": {
+        "roleId": "role-02",
+        "actionId": "action-02",
+        "targetAnchorId": "anchor-02",
+        "expectedQuestState": "completed",
+        "expectedFeedbackCode": "synthetic-action-recorded"
+      },
+      "mapping": {
+        "condition": "초기 대응 인원이 경보를 전달하는 상태",
+        "staffObservation": "한 출처는 관제·기관사·초기대응팀을 쓰고 다른 출처는 초기대응반장을 쓴다. 운영기관도 KORAIL과 SR로 다르다.",
+        "expectedSimulationObservation": "role-02(경보 전달)에 어느 역할 명칭을 대응시킬지 두 출처가 서로 다른 답을 준다.",
+        "reportHandoff": "충돌로 기록하고 선택하지 않는다. 현업 검수에서 어느 체계를 기준으로 삼을지 질문한다."
+      },
+      "applicability": {
+        "operator": "KORAIL vs SR",
+        "station": "unspecified",
+        "role": "관제·기관사·초기대응팀 vs 초기대응반장",
+        "incidentKind": "개인형 이동장치 배터리 화재 vs 대형사고"
+      },
+      "defects": ["OPERATOR_MISMATCH"],
+      "verdict": "conflict_recorded",
+      "reverseTrace": [
+        "sourceA:KORAIL-PM-20250925 → roles:관제·기관사·초기대응팀",
+        "sourceB:SR-LARGE-ACCIDENT-20240226 → roles:초기대응반장",
+        "role:role-02",
+        "action:action-02",
+        "anchor:anchor-02",
+        "conflict:역할 명칭·운영기관 불일치, 선택 보류"
+      ],
+      "notAccepted": [
+        "두 기관의 역할 명칭을 임의로 합치지 않는다.",
+        "사건 종류가 다른 두 출처를 같은 대응 절차로 취급하지 않는다."
+      ]
+    },
+    {
+      "exampleId": "TEAM-25-EX-05",
+      "state": "authority_unresolved",
+      "source": {
+        "sourceId": "SR-LARGE-ACCIDENT-20240226",
+        "locator": "PDF3/8/10쪽 적용·개정;166–167쪽 보고서식;179쪽 수서역 인계",
+        "revisionStatus": "dated",
+        "verification": "primary_text_checked",
+        "procedureAcceptance": "pending_operator_review",
+        "allowedUse": ["확인/추정/미확인과 후속보고 관계의 데이터 구조 비교"]
+      },
+      "simulation": {
+        "roleId": "role-05",
+        "actionId": "action-05",
+        "targetAnchorId": "anchor-05",
+        "expectedQuestState": "completed",
+        "expectedFeedbackCode": "synthetic-action-recorded"
+      },
+      "mapping": {
+        "condition": "통로 사용 가능 여부를 확인하고 후속 보고를 준비하는 상태",
+        "staffObservation": "출처는 확인·추정·미확인을 구분한 보고 구조를 제공하지만 현업 검수 응답이 없다.",
+        "expectedSimulationObservation": "role-05의 통로 확인 결과를 확인·추정·미확인으로 구분해 기록하는 구조까지만 차용한다.",
+        "reportHandoff": "권위 미확정으로 표시한다. 검수 응답 전에는 절차 준수 판정을 만들지 않는다."
+      },
+      "applicability": {
+        "operator": "SR",
+        "station": "수서역 예시",
+        "role": "초기대응반장",
+        "incidentKind": "대형사고"
+      },
+      "defects": ["ACCEPTANCE_PENDING"],
+      "verdict": "authority_pending",
+      "reverseTrace": [
+        "source:SR-LARGE-ACCIDENT-20240226",
+        "section:PDF166–167쪽 보고서식",
+        "procedureAcceptance:pending_operator_review",
+        "role:role-05",
+        "action:action-05",
+        "anchor:anchor-05",
+        "hold:현업 검수 응답 전 절차 판정 없음"
+      ],
+      "notAccepted": [
+        "검수 응답이 없는 상태를 확정된 절차로 표기하지 않는다.",
+        "부산역이 아닌 역의 예시를 부산역 배치로 옮기지 않는다."
+      ]
+    }
+  ],
+  "refusedEntryExample": {
+    "exampleId": "TEAM-25-NEG-01",
+    "attempt": "등록부에 없는 '역사 화재 대응 매뉴얼'을 근거로 role-01에 의무 행동을 추가하려 했다.",
+    "defects": ["SOURCE_NOT_REGISTERED", "MEANING_CHANGE_REQUIRES_IMPLEMENTATION"],
+    "verdict": "refused",
+    "reason": "출처 등록부에 sourceId가 없고, 행동 의미 변경은 양식 작성으로 수용하지 않는다. 별도 구현·검토로 보낸다."
+  },
+  "notAccepted": [
+    "이 fixture는 실제 기관 SOP가 아니다. 어떤 예시도 현업 승인 절차로 읽지 않는다.",
+    "모든 출처의 procedureAcceptance가 pending_operator_review다. 검수 완료를 주장하지 않는다.",
+    "게임의 canonical 행동·안전·판정 의미를 이 양식으로 바꾸지 않는다.",
+    "실제 원문은 복사하지 않고 등록부의 locator와 URL로만 참조한다."
+  ],
+  "limits": [
+    "합성 예시다. 실제 직원 매뉴얼을 수신하거나 대조하지 않았다.",
+    "출처 5건은 모두 공개 자료이며 부산역 특정 현행 절차를 확정하지 못한다.",
+    "임시 직무·행동·Anchor 식별자는 foundation-demo의 provisional 값이며 KORAIL 검증 전 예시다."
+  ]
+}
