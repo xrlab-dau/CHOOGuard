@@ -1,0 +1,473 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "workId": "FMP-11a",
+  "issue": 137,
+  "domainCode": "FMP",
+  "phase": "candidate",
+  "artifact": "artifact:137:multifloor-route-ui:candidate",
+  "status": "candidate_run_recorded",
+  "syntheticDisclosure": {
+    "authority": "foundation/world/connected-world-profile.json",
+    "classification": "synthetic_design_not_facility_acceptance",
+    "geometrySchemaVersion": 1,
+    "statement": "All 13 regions, 12 portals, 3 frames, route geometry, portal closure geometry and route display output in this record are synthetic design data. They are not surveyed Korail facility geometry and are not facility, safety or procedure acceptance.",
+    "limits": [
+      "Only connector length 99.6 m and width 8.0 m use operator-published context; all placements, heights, portals, vehicle shapes and collision boundaries are synthetic design.",
+      "GameObject/level name '2층' is an authored label; no surveyed vertical geometry is claimed.",
+      "The three derived closure scenarios below are synthetic inputs injected into the observed view, not field equipment state."
+    ]
+  },
+  "runRecord": {
+    "recordKind": "complete_run_record",
+    "branch": "feature/137-multifloor-route-ui",
+    "commit": "ebf84c9c5322c516383870699e4405750887e07d",
+    "commitNote": "run executed against the candidate working tree based on this commit; the candidate commit is created after this record, so its own sha cannot be self-referenced. Bind to content with inputs[].candidateSha256.",
+    "baseRef": "ebf84c9",
+    "baseCommit": "ebf84c9c5322c516383870699e4405750887e07d",
+    "editor": {
+      "version": "6000.3.23f1",
+      "buildGUID": "00000000000000000000000000000000",
+      "projectVersionFile": [
+        "m_EditorVersion: 6000.3.23f1",
+        "m_EditorVersionWithRevision: 6000.3.23f1 (09d2ecc7fb28)"
+      ]
+    },
+    "platform": {
+      "testPlatform": "PlayMode",
+      "sysPlatform": "darwin",
+      "testRecordPlatform": "OSXEditor"
+    },
+    "buildHash": {
+      "value": "8e3152ba2799fc02a453fbdc3efd4b56ebf55f5f810b4ee679eb11d03e0c6cbe",
+      "algorithm": "sha256",
+      "source": "assembly:/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/par/i137/Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.dll"
+    },
+    "sourceRef": "ebf84c9c5322c516383870699e4405750887e07d",
+    "inputs": {
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": {
+        "baseBlobSha1": "67c44c4e9d9c576f862d096a615bb6c298033543",
+        "candidateBlobSha1": "33c7b20e7899a052c87342c74e580f8e9f39475d",
+        "candidateSha256": "afa7375c28027c434d1b3ad3ff13ca8873bf40071b090e1b108f7c9ccdd285fc",
+        "candidateSizeBytes": 61214,
+        "candidateLineCount": 964,
+        "newFileAtBase": false,
+        "baseBlobNote": null
+      },
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP11aRouteProjectionTests.cs": {
+        "baseBlobSha1": null,
+        "candidateBlobSha1": "5984fc3f3256c48344895e31a6f557effd18757f",
+        "candidateSha256": "8267e576abc877a7ca680630ff1239ddcbda8db9ad7b4c55b23a2c518b244e1d",
+        "candidateSizeBytes": 23759,
+        "candidateLineCount": 375,
+        "newFileAtBase": true,
+        "baseBlobNote": "path does not exist at base ebf84c9; this is a new file added by the candidate"
+      },
+      "foundation/world/connected-world-profile.json": {
+        "candidateSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+        "candidateSizeBytes": 20907,
+        "sourceDigestNote": "matches docs/context/publication/foundation-source-manifest.json digest e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba"
+      }
+    },
+    "commands": [
+      {
+        "cmd": "<unity> -batchmode -projectPath <worktree> -runTests -testPlatform PlayMode -testResults <run>/PlayMode.xml -logFile <run>/PlayMode.log -accept-apiupdate -cg-fmp11a-run-record <run>/fmp11a-run-record.json -cg-fmp11a-pinned-profile-sha256 e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba -cg-fmp11a-source-ref ebf84c9c5322c516383870699e4405750887e07d",
+        "unity": "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity",
+        "observed": "see results below"
+      }
+    ],
+    "attempts": [
+      {
+        "run": "run-20260914T1",
+        "producedXml": false,
+        "log": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T1/PlayMode.log",
+        "runRecordJsonWritten": false,
+        "abortSignature": {
+          "log": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T1/PlayMode.log",
+          "exists": true,
+          "logSha256": "cf60194d5bafa38116ea9996cf8817f2bf061ac9c5e9db2f7b6cb1f535d3e82b",
+          "logSizeBytes": 322459,
+          "xmlProduced": false,
+          "compilerErrorCount": 630,
+          "compilerErrorFiles": [
+            "Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/IlInterpreter/HostBinding.cs",
+            "Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/IlInterpreter/VmEngine.cs"
+          ],
+          "uniqueCompilerErrors": [
+            "CS0103: The name 'Unsafe' does not exist in the current context"
+          ],
+          "abortLine": null,
+          "scriptsHaveCompilerErrors": true,
+          "chooGuardCompilerErrors": []
+        },
+        "outcome": "ABORTED before test discovery: Scripts have compiler errors (630 x CS0103 Unsafe in the com.unity.pipeline IlInterpreter sources). No XML."
+      },
+      {
+        "run": "run-20260914T2",
+        "producedXml": false,
+        "log": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T2/PlayMode.log",
+        "runRecordJsonWritten": false,
+        "abortSignature": {
+          "log": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T2/PlayMode.log",
+          "exists": true,
+          "logSha256": "980e90d0e7fcd2b5bb7f0108ed9c25e1fbba9e504311d4d29b581ced12f2915c",
+          "logSizeBytes": 181195,
+          "xmlProduced": false,
+          "compilerErrorCount": 630,
+          "compilerErrorFiles": [
+            "Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/IlInterpreter/HostBinding.cs",
+            "Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/IlInterpreter/VmEngine.cs"
+          ],
+          "uniqueCompilerErrors": [
+            "CS0103: The name 'Unsafe' does not exist in the current context"
+          ],
+          "abortLine": null,
+          "scriptsHaveCompilerErrors": true,
+          "chooGuardCompilerErrors": []
+        },
+        "outcome": "ABORTED identically. Removing the duplicate plugin DLL alone changed nothing because Library/Bee reused the stale IlInterpreter.rsp that had been generated under the ambiguous duplicate resolution. No XML."
+      },
+      {
+        "run": "run-20260914T3",
+        "producedXml": true,
+        "log": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T3/PlayMode.log",
+        "runRecordJsonWritten": false,
+        "counts": {
+          "total": 31,
+          "passed": 27,
+          "failed": 0,
+          "skipped": 4,
+          "inconclusive": 0
+        },
+        "xmlSha256": "ae7f5e0a4d2bd775736c9afda432989c0a0c83472512f4ddd2f63917b3ad1c1f",
+        "result": "Passed",
+        "outcome": "SUCCEEDED: XML produced, 31 cases / 27 passed / 0 failed / 4 skipped, all 5 FMP11a cases passed. SUPERSEDED, because the test-side option parser looked for --cg-fmp11a-run-record while the Unity command line passed -cg-fmp11a-run-record, so the run record was never written and the run-record read-back assertions were skipped. No fmp11a-run-record.json exists for this run. Kept here rather than deleted: the XML is a real PlayMode result and is reported as such."
+      },
+      {
+        "run": "run-20260914T4",
+        "producedXml": true,
+        "log": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T4/PlayMode.log",
+        "runRecordJsonWritten": true,
+        "counts": {
+          "total": 31,
+          "passed": 27,
+          "failed": 0,
+          "skipped": 4,
+          "inconclusive": 0
+        },
+        "xmlSha256": "fc50e3b80e970b5ae5618d5d134da9d1bb78faa944022cb0050c78968c3093c5",
+        "result": "Passed",
+        "outcome": "Authoritative run for this record. Option parser fixed to accept single- or double-dash switches."
+      }
+    ],
+    "environmentRemediation": {
+      "symptom": "PlayMode attempts run-20260914T1 and run-20260914T2 both aborted with 'Aborting batchmode due to failure: Scripts have compiler errors.' - 630 x CS0103 'The name Unsafe does not exist in the current context' inside Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/IlInterpreter/HostBinding.cs and VmEngine.cs, plus the same error in the package's other Runtime/IlInterpreter sources. Zero compiler errors were reported in any ChooGuard assembly in either attempt.",
+      "diagnosis": [
+        "Packages/io.livekit.livekit-sdk/Runtime/Plugins/System.Runtime.CompilerServices.Unsafe.dll.meta declares isExplicitlyReferenced: 1, so that managed plugin is NOT auto-referenced by Unity.",
+        "Unity.Pipeline.IlInterpreter.asmdef declared overrideReferences: false with precompiledReferences: [], so the assembly could only consume auto-referenced plugins and therefore never received a reference to System.Runtime.CompilerServices.Unsafe.",
+        "The same filename was also present at Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Plugins/CodeAnalysis/System.Runtime.CompilerServices.Unsafe.dll (4.0.4.0 vs livekit's 6.0.0.0). Run 1 logged Unity's duplicate resolution choosing livekit's copy; with the duplicate present neither copy ended up on the IlInterpreter reference line.",
+        "Library/PackageCache/.../Unity.Pipeline.IlInterpreter.rsp in this worktree listed Microsoft.CodeAnalysis.dll / Microsoft.CodeAnalysis.CSharp.dll and omitted System.Runtime.CompilerServices.Unsafe.dll, whereas the already-built main checkout's rsp lists exactly three PackageCache plugins: System.Collections.Immutable.dll, System.Reflection.Metadata.dll and System.Runtime.CompilerServices.Unsafe.dll. Unity.Pipeline.IlInterpreter.dll exists in the main checkout's Library/ScriptAssemblies (built 2026-09-08 23:48) but was absent from this worktree, because this worktree's Library was cloned from the main checkout without a compiled IlInterpreter and had to compile the experimental package from scratch."
+      ],
+      "action": [
+        "Moved the duplicate plugin DLL and its .meta out of Library/PackageCache/com.unity.pipeline@9bb4172c603c/Runtime/Plugins/CodeAnalysis/ into the session scratchpad.",
+        "Set Unity.Pipeline.IlInterpreter.asmdef to overrideReferences: true with precompiledReferences listing exactly the three DLLs the working main-checkout rsp resolves, so the assembly names the reference explicitly instead of relying on auto-reference.",
+        "Deleted Library/Bee and Library/ScriptAssemblies so Bee could not reuse the stale rsp that had been generated under the ambiguous duplicate resolution."
+      ],
+      "backupPath": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-plugin-backup/",
+      "scopeNote": "All three edits are inside Library/, which is gitignored build state - not a repository path. No tracked file outside the declared write scope was modified. Copies of the original DLL, .meta and .asmdef are in the backup path above.",
+      "notCausedByCandidate": "The candidate touched only Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs and a new PlayMode test file. Library/ScriptAssemblies at 2026-09-14T17:36 (run 1) already contained ChooGuard.Foundation.Multiplayer.dll carrying RouteDisplayState/ProjectRoute/SyntheticBanner and ChooGuard.Foundation.Multiplayer.PlayModeTests.dll carrying FMP11aRouteProjectionTests and all five test methods, i.e. the candidate compiled cleanly on the first attempt while the unrelated experimental package failed.",
+      "requiresReview": "A reviewer should confirm that the correct durable fix is a project-level one (the precompiledReferences entry belongs in the package's own asmdef upstream, or the unreferenced duplicate DLL should not be shipped) rather than the local Library/ patch recorded here. The local patch is environment remediation for this run only and is not part of the candidate commit."
+    },
+    "results": {
+      "playModeXmlPath": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T4/PlayMode.xml",
+      "playModeXmlSha256": "fc50e3b80e970b5ae5618d5d134da9d1bb78faa944022cb0050c78968c3093c5",
+      "playModeXmlSizeBytes": 36727,
+      "playModeLogPath": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T4/PlayMode.log",
+      "playModeLogSha256": "e70740ee107096a1d4734fe742a3bef968b71eeb9dba5f36ef6b49265fc13e92",
+      "playModeLogSizeBytes": 117491,
+      "total": 31,
+      "passed": 27,
+      "failed": 0,
+      "skipped": 4,
+      "inconclusive": 0,
+      "issueTestClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests",
+      "issueTestCases": [
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.BlockedPortalProducesRouteChangeOrExplicitUnavailableState",
+          "result": "Passed",
+          "duration": "0.011935",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.EachOfThirteenRegionIdsMapsToExactlyOneCurrentLocationState",
+          "result": "Passed",
+          "duration": "0.002164",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.EachOfTwelvePortalIdsDrivesInterFloorOrInterRegionRouteTransition",
+          "result": "Passed",
+          "duration": "0.003607",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.RouteDisplayCarriesSyntheticLabelForObservedGeometry",
+          "result": "Passed",
+          "duration": "0.002004",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.RunRecordBindsSourceAndBuildHashToActualResult",
+          "result": "Passed",
+          "duration": "0.009162",
+          "message": ""
+        }
+      ],
+      "issueTestCaseCount": 5,
+      "skippedCases": [
+        "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ExactSdkConnectsScopedRoomsAndRetiredEpochCannotBeReopened",
+        "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.MismatchedEpochRecordMakesNoDeletionOfTheExistingVoiceRoom",
+        "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ServerRevocationAndRetirementRejectAlreadyIssuedRoomTokens",
+        "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.SyntheticVoiceRtpReachesOnlyItsTeamAndStopsAfterMute"
+      ],
+      "failedCases": [],
+      "allCases": [
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoEvacuationTests.FloorGapIsUnreachableAndDuplicateCrowdCannotMasqueradeAsSixPeople",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoEvacuationTests.FollowerRoutesAroundWallAndWaitsOnlyAfterRecruitmentAndArrival",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.AssemblyBeforeActionOrOnDifferentFloorCannotProduceResults",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.AssemblyGuidanceFollowsAcceptedActionAndResets",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.EveryRoleCanPlayAndRestartWithOnlyItsOwnPropCompleted",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.PauseUnlocksCursorAndBlocksInteractionAndAssembly",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoGameControllerTests.WrongDistantOccludedAndUnregisteredPropsNeverCompleteQuest",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoGeneratedDrillTests.ThreeDrillsAcrossFiveRolesRequireOrderedObjectsAndSixWalkingFollowers",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.CompletedPropRestoresMaterialAndMovingPartOnReset",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.CursorCaptureIgnoresStaleLookThenAllowsNormalLook",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.DetailedHousingKeepsItsMaterialWhenStatusLightChanges",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.InstantiatedHandsKeepTheirSerializedViewPose",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.RaycastFindsOnlyFirstVisibleTargetInsideReach",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.DemoInteractionTests.TeleportClearsPitchAndRestoresSpawnWithControllerEnabled",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.StationWorldPlayTests.OrdinaryPopulationMovesAndUnseenIncidentHasNoSolutionGuide",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Demo.Tests.StationWorldPlayTests.RandomIncidentVariationsAndTwoConsecutiveEpisodesRecoverWithoutTeleporting",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.BlockedPortalProducesRouteChangeOrExplicitUnavailableState",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.EachOfThirteenRegionIdsMapsToExactlyOneCurrentLocationState",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.EachOfTwelvePortalIdsDrivesInterFloorOrInterRegionRouteTransition",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.RouteDisplayCarriesSyntheticLabelForObservedGeometry",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests.RunRecordBindsSourceAndBuildHashToActualResult",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.GroundedMovementTests.GroundSupportFollowsSlopeWithoutFloatingOrPassingUnderIt",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.GroundedMovementTests.SweepsStopThinWallsAndCeilingsAndRejectVoidAndVerticalInput",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.SmokeRenderingTests.NativePixelsFollowLayerOpticalDepthAndOpaqueDistance",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ExactSdkConnectsScopedRoomsAndRetiredEpochCannotBeReopened",
+          "result": "Skipped"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.MismatchedEpochRecordMakesNoDeletionOfTheExistingVoiceRoom",
+          "result": "Skipped"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ServerRevocationAndRetirementRejectAlreadyIssuedRoomTokens",
+          "result": "Skipped"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.SyntheticVoiceRtpReachesOnlyItsTeamAndStopsAfterMute",
+          "result": "Skipped"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionPlayTests.ActualScene120BodiesMoveWithPresentationCollidersExcluded",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionPlayTests.MovingMetroOfflineBodyAndLateRestoreUseFrameDeltaAndFixedBridge",
+          "result": "Passed"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionPlayTests.NewPhysicalBlockerRejectsWholeCandidateWithoutPartialCommit",
+          "result": "Passed"
+        }
+      ]
+    },
+    "runRecordJsonPath": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/i137-runs/run-20260914T4/fmp11a-run-record.json",
+    "runRecordJsonSha256": "60e97b78fa192274deccd42735f1a3704fc00f7bdad03d413846f3f6e9ab9968",
+    "runRecordJson": {
+      "TestClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP11aRouteProjectionTests",
+      "ProfilePath": "foundation/world/connected-world-profile.json",
+      "ProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "TestSourcePath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP11aRouteProjectionTests.cs",
+      "TestSourceSha256": "8267e576abc877a7ca680630ff1239ddcbda8db9ad7b4c55b23a2c518b244e1d",
+      "EditorVersion": "6000.3.23f1",
+      "BuildGUID": "00000000000000000000000000000000",
+      "Platform": "OSXEditor",
+      "BuildHash": "8e3152ba2799fc02a453fbdc3efd4b56ebf55f5f810b4ee679eb11d03e0c6cbe",
+      "BuildHashSource": "assembly:/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/par/i137/Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.dll",
+      "AssemblyPath": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/40311ef6-12f0-41e7-9f12-f7ae1b72c68c/scratchpad/par/i137/Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.dll",
+      "PinnedProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "SourceRef": "ebf84c9c5322c516383870699e4405750887e07d",
+      "Result": "this test is reported only when the PlayMode XML records it",
+      "Classification": "synthetic_design_not_facility_acceptance",
+      "RenderEvidence": [
+        "현재: 기차/일반철도 차량 · train-mainline · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 기차/일반철도 차량 → 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 선로 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 선로 → 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 철도 승강장 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 철도 터미널 공용구역 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 역사2층 맞이방 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / )",
+        "현재: 역사1층 맞이방 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 역사1층 맞이방 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 매표/발권 구역 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 매표/발권 구역 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 역 앞 광장·유라시아플랫폼 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 역 앞 광장·유라시아플랫폼 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 부산역 지하연결통로 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 지하상가 접근 구역 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 도시철도 부산역 대합실 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 도시철도 부산역 대합실 → 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 도시철도 승강장 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 도시철도 승강장 → 도시철도 부산역 대합실 → 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "현재: 도시철도 차량 · train-metro · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 도시철도 차량 → 도시철도 승강장 → 도시철도 부산역 대합실 → 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)"
+      ],
+      "PortalRenderEvidence": [
+        "rolling_stock_mainline--rail_platforms_mainline => 공개 연결: 기차/일반철도 차량 → 철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "rail_tracks_mainline--rail_platforms_mainline => 공개 연결: 선로 → 철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "rail_platforms_mainline--station_concourse_2f => 공개 연결: 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "rail_terminal_public--station_concourse_2f => 공개 연결: 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "station_hall_1f--station_concourse_2f => 공개 연결: 역사1층 맞이방 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "station_ticket_area--rail_terminal_public => 공개 연결: 매표/발권 구역 → 철도 터미널 공용구역 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "rail_terminal_public--underground_connector => 공개 연결: 철도 터미널 공용구역 → 부산역 지하연결통로 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "forecourt_eurasia--underground_connector => 공개 연결: 역 앞 광장·유라시아플랫폼 → 부산역 지하연결통로 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "underground_connector--underground_shopping_passage => 공개 연결: 부산역 지하연결통로 → 지하상가 접근 구역 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "underground_shopping_passage--metro_concourse => 공개 연결: 지하상가 접근 구역 → 도시철도 부산역 대합실 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "metro_concourse--metro_platforms => 공개 연결: 도시철도 부산역 대합실 → 도시철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+        "rolling_stock_metro--metro_platforms => 공개 연결: 도시철도 차량 → 도시철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)"
+      ],
+      "UnavailableRenderEvidence": "현재: 역사2층 맞이방 | 공개 연결: 경로 없음 · 사용 불가 (차단된 포털 1개) | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, route-unreachable)",
+      "ExternalProfileSha256Pin": true,
+      "Synthetic": true,
+      "RegionCount": 13,
+      "PortalCount": 12
+    },
+    "collectedAt": "2026-09-14T08:51:30Z"
+  },
+  "acceptance": {
+    "1_thirteen_region_ids_map_to_one_displayed_state": "FMP11aRouteProjectionTests.EachOfThirteenRegionIdsMapsToExactlyOneCurrentLocationState",
+    "2_twelve_portal_ids_drive_route_transition": "FMP11aRouteProjectionTests.EachOfTwelvePortalIdsDrivesInterFloorOrInterRegionRouteTransition",
+    "3_blocked_portal_changes_route_or_explicit_unavailable": "FMP11aRouteProjectionTests.BlockedPortalProducesRouteChangeOrExplicitUnavailableState",
+    "4_evidence_labels_geometry_synthetic": "FMP11aRouteProjectionTests.RouteDisplayCarriesSyntheticLabelForObservedGeometry",
+    "5_xml_and_evidence_carry_source_build_hash_and_result": "FMP11aRouteProjectionTests.RunRecordBindsSourceAndBuildHashToActualResult + this record"
+  },
+  "limits": [
+    "Portal/id counts come from the authored profile; no region or portal ID was invented. 13 regions and 12 portals are enumerated from the file, not asserted from memory.",
+    "The portal graph is a tree (13 nodes, 12 bridge edges): a closed edge strands its far side and no bypass exists. The implementation and tests never invent a detour.",
+    "Three portals have an empty LinkedDoorEntityIds list (forecourt_eurasia--underground_connector, rail_terminal_public--underground_connector, underground_shopping_passage--metro_concourse). ConnectedWorldRuntime.ProjectPortals computes Open as All(active) over an empty set, which is vacuously true, so those three can never be closed by equipment state. Their blocked-route coverage is exercised only through a synthetic closure injected into the observed view, and is labelled as such.",
+    "The PlayMode test assembly (ChooGuard.Foundation.Multiplayer.PlayModeTests) does not reference ChooGuard.Foundation.Multiplayer.Editor, so scenes are NOT built and ConnectedWorldRuntime.Synchronize/scene loading is not exercised. The projection is tested as a pure function over the authored profile.",
+    "Assets/CHOOguardGenerated/ConnectedWorld/ is absent, so the 14 authored scenes do not exist locally.",
+    "Run 3 required a local, gitignored Library/ remediation to the experimental com.unity.pipeline package before any PlayMode test could execute at all. Two earlier attempts produced no XML. The candidate code compiled cleanly in every attempt; the blocker was an unrelated package reference, documented under environmentRemediation.",
+    "docs/evidence/foundation/proposed/FMP-11a-route-ui.json is the only record committed here; the PlayMode XML/log and the test run record live outside the repository under the session scratchpad.",
+    "Unity generated Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP11aRouteProjectionTests.cs.meta as an Editor-side asset database artefact; it is outside the declared 3-path write scope and is reported, not hidden.",
+    "Unity also generated Assets/CHOOguardTeam.meta and Assets/CHOOguardTeam/Art.meta (directory .meta files for an already-tracked directory tree). They are outside the declared write scope and were deliberately NOT staged or deleted."
+  ],
+  "renderEvidence": {
+    "producedBy": "NetworkFieldRuntime.ProjectRoute / ProjectCurrentLocation, captured inside FMP11aRouteProjectionTests.RunRecordBindsSourceAndBuildHashToActualResult",
+    "note": "Headless batchmode cannot paint the OnGUI overlay (OnGUI returns early under Application.isBatchMode), so the captured render surface is the exact display strings the overlay composes.",
+    "regionLines": [
+      "현재: 기차/일반철도 차량 · train-mainline · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 기차/일반철도 차량 → 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 선로 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 선로 → 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 철도 승강장 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 철도 터미널 공용구역 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 역사2층 맞이방 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / )",
+      "현재: 역사1층 맞이방 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 역사1층 맞이방 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 매표/발권 구역 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 매표/발권 구역 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 역 앞 광장·유라시아플랫폼 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 역 앞 광장·유라시아플랫폼 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 부산역 지하연결통로 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 지하상가 접근 구역 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 도시철도 부산역 대합실 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 도시철도 부산역 대합실 → 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 도시철도 승강장 · world · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 도시철도 승강장 → 도시철도 부산역 대합실 → 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "현재: 도시철도 차량 · train-metro · N 구역 길찾기 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending) | 공개 연결: 도시철도 차량 → 도시철도 승강장 → 도시철도 부산역 대합실 → 지하상가 접근 구역 → 부산역 지하연결통로 → 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)"
+    ],
+    "portalLines": [
+      "rolling_stock_mainline--rail_platforms_mainline => 공개 연결: 기차/일반철도 차량 → 철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "rail_tracks_mainline--rail_platforms_mainline => 공개 연결: 선로 → 철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "rail_platforms_mainline--station_concourse_2f => 공개 연결: 철도 승강장 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "rail_terminal_public--station_concourse_2f => 공개 연결: 철도 터미널 공용구역 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "station_hall_1f--station_concourse_2f => 공개 연결: 역사1층 맞이방 → 역사2층 맞이방 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "station_ticket_area--rail_terminal_public => 공개 연결: 매표/발권 구역 → 철도 터미널 공용구역 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "rail_terminal_public--underground_connector => 공개 연결: 철도 터미널 공용구역 → 부산역 지하연결통로 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "forecourt_eurasia--underground_connector => 공개 연결: 역 앞 광장·유라시아플랫폼 → 부산역 지하연결통로 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "underground_connector--underground_shopping_passage => 공개 연결: 부산역 지하연결통로 → 지하상가 접근 구역 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "underground_shopping_passage--metro_concourse => 공개 연결: 지하상가 접근 구역 → 도시철도 부산역 대합실 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "metro_concourse--metro_platforms => 공개 연결: 도시철도 부산역 대합실 → 도시철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)",
+      "rolling_stock_metro--metro_platforms => 공개 연결: 도시철도 차량 → 도시철도 승강장 | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, synthetic_design_visual_review_pending / synthetic_design_not_surveyed)"
+    ],
+    "unavailableLine": "현재: 역사2층 맞이방 | 공개 연결: 경로 없음 · 사용 불가 (차단된 포털 1개) | 합성 배치 · 실측/시설 인증 아님 (synthetic_design_not_facility_acceptance, route-unreachable)"
+  },
+  "predecessorStatus": {
+    "hardPredecessor": "artifact:120:foundation-published-source:accept",
+    "observed": "not asserted here; docs/context/publication/foundation-source-manifest.json is proposal_for_pm_review",
+    "note": "This record makes no claim that issue 120 acceptance is satisfied."
+  }
+}
