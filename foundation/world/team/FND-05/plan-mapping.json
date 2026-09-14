@@ -1,0 +1,565 @@
+{
+  "schemaVersion": 1,
+  "artifactId": "FND-05-plan-mapping",
+  "issue": "#119",
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "status": "pilot_ready_for_pm_review",
+  "authority": "공개 층별 평면도/안내도에서 읽은 값과 프로젝트가 추정한 값을 구역 ID·portal 로 매핑한 후보다. 실측 배치·안전 경계·완료된 재구성이 아니며, confirmed_public_measure 는 운영자 공표값이고 프로젝트 현장 측량값이 아니다. 이 문서는 스스로를 accepted/final/complete 로 표기하지 않는다.",
+  "prerequisiteIssues": {
+    "inputs": ["#14 출처 등급·사용 조건 규약", "#15 사용 조건·비공개 경계"],
+    "zoneGapSource": "#70 구역별 레퍼런스 공백 명세",
+    "consumers": ["#31 13구역 플레이 맵", "#56 임시 맵 제작"]
+  },
+  "coordinateFrame": {
+    "frameId": "world",
+    "handedness": "Unity left-handed, Y-up",
+    "axisConvention": "X = east(+) / KORAIL→Metro 진행 방향, Y = up, Z = north(+)",
+    "origin": { "X": 0, "Y": 0, "Z": 0 },
+    "yawDegrees": 0,
+    "elevationBasis": "region.worldCenter.Y is the walkable floor elevation; worldSize.Y is vertical extent above that floor",
+    "sourceRef": "foundation/world/connected-world-profile.json#Frames"
+  },
+  "units": {
+    "length": "meters",
+    "area": "m2",
+    "angle": "degrees",
+    "scaleRatio": "1:1 world scale (1 OBJ unit = 1 meter), no unit conversion factor applied"
+  },
+  "measureClasses": {
+    "confirmed_public_measure": "운영자/공공기관이 문서·안내 페이지에 수치와 단위를 함께 공표한 값. 출처 ID·취득 경로·sha256 으로 추적되며, 프로젝트가 현장 측량한 값은 아니다(surveyedByProject=false). 이 값만 축척·비례 검토의 근거가 될 수 있다.",
+    "estimated_synthetic_measure": "공개 자료에 수치가 없어 프로젝트가 상대 구성·도식·단일 기준 치수에서 유도했거나 게임 요구로 저작한 값. synthetic_design_not_surveyed 로 표기하며 실측으로 승격하지 않는다.",
+    "prohibited_measure": "출처가 없거나 원문과 불일치하여 수치로 쓰지 않기로 한 값. 기록만 남기고 계산에 넣지 않는다."
+  },
+  "tolerances": {
+    "confirmed_public_measure": { "absolute": 0.05, "unit": "m", "relative": 0.001, "basis": "운영자 공표값의 0.1 m 단위 반올림" },
+    "estimated_synthetic_measure": { "absolute": 0.10, "unit": "m", "relative": 0.02, "basis": "confirmed anchor에 정렬된 블록아웃 허용 오차" },
+    "estimated_synthetic_measure_unanchored": { "absolute": 0.50, "unit": "m", "relative": 0.05, "basis": "공개 치수 anchor가 없는 구역의 저작 배치" },
+    "angle": { "absolute": 0.5, "unit": "degrees" },
+    "area": { "absolute": 0.5, "unit": "m2" }
+  },
+  "numericConstraints": [
+    {
+      "id": "connector_operator_dimensions",
+      "zone": "underground_connector",
+      "sourceRef": "P04",
+      "lengthM": 99.6,
+      "widthM": 8.0,
+      "measureClass": "confirmed_public_measure",
+      "classification": "operator_published_not_independently_surveyed",
+      "surveyedByProject": false,
+      "allowedUse": ["해당 통로의 별도 모델 범위와 비례 검토", "파일럿 블록아웃 축척 검사"],
+      "notScaleAnchorFor": ["station_concourse_2f", "station_hall_1f", "rail_platforms_mainline", "metro_platforms", "forecourt_eurasia", "underground_shopping_passage"]
+    }
+  ],
+  "sources": [
+    {
+      "id": "P01",
+      "title": "KORAIL 부산역 공식 역 상세정보",
+      "operator": "KORAIL",
+      "sourceUrl": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "planDocumentType": "operator_facility_list_not_plan",
+      "documentDate": null,
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": ["1F", "2F", "3F"],
+      "mappedRegions": ["station_hall_1f", "station_concourse_2f", "rail_terminal_public", "station_ticket_area"],
+      "usableFacts": ["역 식별과 층별 시설 분류", "종합관광안내소는 2층 맞이방 표기"],
+      "limits": ["전체 평면도·치수·선로/승강장 배치가 아님", "SPA 셸 응답이라 색인 본문으로 확인"],
+      "measureClassProduced": "estimated_synthetic_measure",
+      "rights": "공개 안내 페이지. 도면/이미지 재사용 허가 미확인 → 메타데이터만 기록",
+      "imageInRepo": false
+    },
+    {
+      "id": "P02",
+      "title": "도면_경부선_부산역_141231.pdf",
+      "operator": "KORAIL",
+      "sourceUrl": "https://info.korail.com/info/selectBbsNttView.do?key=879&bbsNo=206&nttNo=12838",
+      "sha256": "dfd6d4a67aa9e456f48c82ff0123ffd30d1513a80df7eb87410c9869f0336597",
+      "planDocumentType": "historical_lease_layout_floor_outline_without_dimensions",
+      "documentDate": "2014-12-31",
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": ["1F"],
+      "mappedRegions": ["station_hall_1f"],
+      "usableFacts": ["당시 외곽·기둥열·계단/에스컬레이터 위치", "당시 임대 매장 구획 관계"],
+      "limits": ["1층 자료를 2층 맞이방에 같은 평면으로 적용하지 않음", "축척·치수선 없음, 면적칸 대부분 공백 → metric calibration 불가", "2019년 연결통로/현재 점포 개정판이 아님"],
+      "measureClassProduced": "estimated_synthetic_measure",
+      "rights": "공공누리 제4유형(출처표시·상업적 이용금지·변경금지) 표시. 원본 복제·변형 배포 미추정 → 메타데이터만 기록",
+      "licenseId": "KOGL-4",
+      "imageInRepo": false
+    },
+    {
+      "id": "P03",
+      "title": "부산교통공사 부산역(113) 이용/대피안내도",
+      "operator": "Busan Transportation Corporation",
+      "sourceUrl": "https://www2.humetro.busan.kr/homepage/default/stationinfo/page/list01.do?menu_no=1001010201&S_LINE=1&S_STATION=113",
+      "sha256": "eba1b4dd8467b34f884c43454aa59abd1cc9a9a4dceae9e3a83839f9fdc7c10a",
+      "planDocumentType": "wayfinding_evacuation_schematic_without_dimensions",
+      "documentDate": null,
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": ["지하 대합실", "상대식 승강장"],
+      "mappedRegions": ["metro_concourse", "metro_platforms"],
+      "usableFacts": ["대합실·승강장·계단/에스컬레이터/엘리베이터 상대 연결", "초량/중앙 방향 표기와 출구 1~7 도식"],
+      "limits": ["KORAIL 지상 맞이방 도면이 아님", "길이·폭·층고·선로 간격 없음", "P04/P09 의 8·10번 출구와 이 도식의 1~7 표시가 불일치"],
+      "measureClassProduced": "estimated_synthetic_measure",
+      "rights": "공식 공개 다운로드. All Rights Reserved, 재사용 라이선스 미확인 → 메타데이터만 기록",
+      "imageInRepo": false
+    },
+    {
+      "id": "P04",
+      "title": "부산역 지하연결통로 시설 안내",
+      "operator": "Busan Eurasia Platform / 부산시설공단",
+      "sourceUrl": "https://beplatform.or.kr/beplatform/index.php?pCode=facpassage",
+      "sha256": "3cedc8a7647d28c739a5e41f52b1e07021fbb693aff50e114d395ae410a7de28",
+      "planDocumentType": "operator_numeric_dimensions_plus_connection_diagram",
+      "documentDate": null,
+      "httpLastModified": "2019-11-07T02:11:25Z",
+      "scalePresent": false,
+      "dimensionsPresent": true,
+      "publishedDimensionsM": { "length": 99.6, "width": 8.0 },
+      "floorScope": ["지하연결통로"],
+      "mappedRegions": ["underground_connector"],
+      "usableFacts": ["해당 지하연결통로의 운영자 공개 길이·폭", "경부선 부산역 ↔ 지하연결통로 ↔ 부산역 지하상가/지하철 연결 도식"],
+      "limits": ["운영자 공표 수치이며 이번 현장 측량값이 아님", "굴곡별 길이·높이·경사·출입문/끝점 좌표 없음", "맞이방 스케일로 전이 불가"],
+      "measureClassProduced": "confirmed_public_measure",
+      "rights": "공개 운영 안내와 도식. Copyright 2019 All Rights Reserved, 이미지 재배포/변형 허가 미확인 → 메타데이터만 기록",
+      "imageInRepo": false,
+      "isPilotSource": true
+    },
+    {
+      "id": "P05",
+      "title": "부산유라시아플랫폼 전체시설 층별도",
+      "operator": "Busan Eurasia Platform / 부산시설공단",
+      "sourceUrl": "https://beplatform.or.kr/beplatform/index.php?pCode=facall",
+      "sha256": "1d2f97ce507017934bfad2f9cccf37b35ef9e56143ae4760f1fa707299815693",
+      "planDocumentType": "exploded_facility_wayfinding_diagram_without_dimensions",
+      "documentDate": null,
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": ["광장시설 1F", "광장시설 2F"],
+      "mappedRegions": ["forecourt_eurasia"],
+      "usableFacts": ["관리/운영동과 연결·보행·옥상광장의 상대 구성"],
+      "limits": ["철도 승강장이라는 뜻의 platform 이 아님", "KORAIL 2층 맞이방 구조로 혼용하지 않음", "치수·축척 없는 투시도"],
+      "measureClassProduced": "estimated_synthetic_measure",
+      "rights": "공식 공개 안내도. 별도 재사용 허가 미확인 → 메타데이터만 기록",
+      "imageInRepo": false
+    },
+    {
+      "id": "P06",
+      "title": "부산유라시아플랫폼 1F 운영동 웰컴존",
+      "operator": "Busan Eurasia Platform / 부산시설공단",
+      "sourceUrl": "https://beplatform.or.kr/beplatform/index.php?pCode=facwelcome",
+      "sha256": "33e370a9de2d23039789d2bc2dabbe1d26349481bb2cd32df726ac323e480a32",
+      "planDocumentType": "floor_facility_wayfinding_diagram_without_dimensions",
+      "documentDate": null,
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": ["유라시아플랫폼 1F 운영동"],
+      "mappedRegions": ["forecourt_eurasia"],
+      "usableFacts": ["호실과 승강/계단 시설의 상대 배치"],
+      "limits": ["철도 역사 1층 도면이 아님", "치수·축척 없음"],
+      "measureClassProduced": "estimated_synthetic_measure",
+      "rights": "공식 공개 안내도. 별도 재사용 허가 미확인 → 메타데이터만 기록",
+      "imageInRepo": false
+    },
+    {
+      "id": "P07",
+      "title": "부산유라시아플랫폼 2F 라운지",
+      "operator": "Busan Eurasia Platform / 부산시설공단",
+      "sourceUrl": "https://beplatform.or.kr/beplatform/index.php?pCode=faclounge",
+      "sha256": "de30efe367e23304a23c7b901b8c733b3028b9f48bf8a3dfdee9b136dcd52b87",
+      "planDocumentType": "floor_facility_wayfinding_diagram_without_dimensions",
+      "documentDate": null,
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": ["유라시아플랫폼 2F 라운지"],
+      "mappedRegions": ["forecourt_eurasia"],
+      "usableFacts": ["201·202·203호와 외부 보행공간의 상대 위치"],
+      "limits": ["코레일 맞이방 2층과 다른 건물/공간", "페이지 202호 설명의 7.5×7.5 m 와 57.76 m2 가 산술 불일치(56.25) → prohibited_measure", "도면 축척·개정일 없음"],
+      "measureClassProduced": "estimated_synthetic_measure",
+      "rights": "공식 공개 안내도. 별도 재사용 허가 미확인 → 메타데이터만 기록",
+      "imageInRepo": false
+    },
+    {
+      "id": "P08",
+      "title": "경부고속철도 연계교통체계 구축 기본계획(2003~2020)",
+      "operator": "건설교통부 / CODIL 공개 보관",
+      "sourceUrl": "https://www.codil.or.kr/filebank/original/RK/OTMCRK040623/OTMCRK040623.pdf",
+      "sha256": "25f6a448037640f30e57c1ec86623fc8cec3dde11700a2fdae0d756e6c4032ee",
+      "planDocumentType": "historical_strategic_masterplan_not_as_built",
+      "documentDate": "2003-04",
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": [],
+      "mappedRegions": [],
+      "usableFacts": ["당시 광역 연계교통계획의 맥락만"],
+      "limits": ["표지 확인, 개별 역 도면 전체 미검수", "2012 PDF 변환일은 원문 개정일이 아님", "현재 역사 배치·치수 근거로 사용하지 않음"],
+      "measureClassProduced": "prohibited_measure",
+      "rights": "정부 문서의 공개 PDF. 구체 재사용 조건 미확인 → 메타데이터만 기록",
+      "imageInRepo": false
+    },
+    {
+      "id": "P09",
+      "title": "부산유라시아플랫폼 공식 FAQ 오시는 길",
+      "operator": "Busan Eurasia Platform",
+      "sourceUrl": "https://beplatform.or.kr/beplatform/index.php?pCode=faq",
+      "planDocumentType": "operator_access_description",
+      "documentDate": null,
+      "scalePresent": false,
+      "dimensionsPresent": false,
+      "floorScope": ["도시철도 연결부", "광장 접근"],
+      "mappedRegions": ["underground_connector", "underground_shopping_passage", "metro_concourse"],
+      "usableFacts": ["도시철도 1호선 부산역 8·10번 출구 방향과 지하연결통로 에스컬레이터 접근 안내"],
+      "limits": ["기하 치수 없는 접근 설명", "P03 의 출구 1~7 도식과 버전 일치 확인 전 번호를 한 모델에 합치지 않음"],
+      "measureClassProduced": "estimated_synthetic_measure",
+      "rights": "공개 FAQ. 이미지별 재사용 조건 미확인 → 메타데이터만 기록",
+      "imageInRepo": false
+    }
+  ],
+  "planToRegionCoverage": [
+    { "sourceRef": "P04", "regionId": "underground_connector", "result": "공개 평면도로 확정", "confirmedAspect": "통로 길이 99.6 m 와 폭 8.0 m", "unconfirmedAspect": "높이·경사·굴곡·출입문 위치·끝점 좌표" },
+    { "sourceRef": "P03", "regionId": "metro_concourse", "result": "공개 자료로도 미확정", "confirmedAspect": "대합실↔승강장 상대 연결", "unconfirmedAspect": "치수·층고·선로 간격" },
+    { "sourceRef": "P03", "regionId": "metro_platforms", "result": "공개 자료로도 미확정", "confirmedAspect": "상대식 승강장 구성", "unconfirmedAspect": "승강장 길이·폭·궤간·정차 위치" },
+    { "sourceRef": "P01", "regionId": "station_hall_1f", "result": "공개 평면도로 확정", "confirmedAspect": "층별 시설 소속(1층)", "unconfirmedAspect": "평면 형상·치수 (시설 목록이며 도면이 아님)" },
+    { "sourceRef": "P01", "regionId": "station_concourse_2f", "result": "공개 평면도로 확정", "confirmedAspect": "층별 시설 소속(2층 맞이방)", "unconfirmedAspect": "평면 형상·치수" },
+    { "sourceRef": "P01", "regionId": "station_ticket_area", "result": "공개 자료로도 미확정", "confirmedAspect": "매표/발권 기능 존재", "unconfirmedAspect": "정확한 층·면적·창구 수" },
+    { "sourceRef": "P02", "regionId": "station_hall_1f", "result": "공개 자료로도 미확정", "confirmedAspect": "2014 임대 배치 맥락", "unconfirmedAspect": "축척·치수·현행 개정 일치" },
+    { "sourceRef": "P05", "regionId": "forecourt_eurasia", "result": "공개 자료로도 미확정", "confirmedAspect": "광장시설 상대 구성", "unconfirmedAspect": "치수·축척" },
+    { "sourceRef": "P06", "regionId": "forecourt_eurasia", "result": "공개 자료로도 미확정", "confirmedAspect": "1F 운영동 호실 상대 배치", "unconfirmedAspect": "치수·축척" },
+    { "sourceRef": "P07", "regionId": "forecourt_eurasia", "result": "공개 자료로도 미확정", "confirmedAspect": "2F 라운지 호실 상대 위치", "unconfirmedAspect": "치수(제시 수치 산술 불일치로 제외)" },
+    { "sourceRef": "P09", "regionId": "underground_connector", "result": "공개 자료로도 미확정", "confirmedAspect": "광장↔통로↔지하철 접근 위상", "unconfirmedAspect": "출입구 번호·경사·에스컬레이터 치수" },
+    { "sourceRef": null, "regionId": "rail_terminal_public", "result": "공개 자료로도 미확정", "confirmedAspect": "KORAIL 관할 공용구역 존재", "unconfirmedAspect": "공개 층별 평면도 없음" },
+    { "sourceRef": null, "regionId": "rail_platforms_mainline", "result": "공개 자료로도 미확정", "confirmedAspect": "없음", "unconfirmedAspect": "승강장 배치·길이·폭, 공개 도면 없음" },
+    { "sourceRef": null, "regionId": "rail_tracks_mainline", "result": "공개 자료로도 미확정", "confirmedAspect": "없음", "unconfirmedAspect": "선로 배선·궤간·궤도 높이, 공개 도면 없음" },
+    { "sourceRef": null, "regionId": "underground_shopping_passage", "result": "공개 자료로도 미확정", "confirmedAspect": "통로↔지하상가↔도시철도 연결 위상(P04 도식)", "unconfirmedAspect": "구역 치수·점포 배치" },
+    { "sourceRef": null, "regionId": "rolling_stock_mainline", "result": "공개 자료로도 미확정", "confirmedAspect": "없음", "unconfirmedAspect": "차량 형식·차체·문·차내 치수" },
+    { "sourceRef": null, "regionId": "rolling_stock_metro", "result": "공개 자료로도 미확정", "confirmedAspect": "없음", "unconfirmedAspect": "차량 형식·차체·문·차내 치수" }
+  ],
+  "regions": [
+    {
+      "regionId": "rolling_stock_mainline",
+      "label": "기차/일반철도 차량",
+      "template": "vehicle",
+      "frameId": "train-mainline",
+      "floorBand": null,
+      "worldBounds": { "min": { "X": -70.0, "Y": 2.0, "Z": 12.5 }, "max": { "X": -30.0, "Y": 5.2, "Z": 17.5 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "rolling_stock_mainline.extent_x", "metric": "size_x", "value": 40.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rolling_stock_mainline.extent_z", "metric": "size_z", "value": 5.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rolling_stock_mainline.height", "metric": "height_y", "value": 3.2, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["rolling_stock_mainline--rail_platforms_mainline"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": []
+    },
+    {
+      "regionId": "rail_tracks_mainline",
+      "label": "선로",
+      "template": "track",
+      "frameId": "world",
+      "floorBand": null,
+      "worldBounds": { "min": { "X": -76.0, "Y": 0.0, "Z": -22.0 }, "max": { "X": -24.0, "Y": 5.5, "Z": -12.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "rail_tracks_mainline.extent_x", "metric": "size_x", "value": 52.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rail_tracks_mainline.extent_z", "metric": "size_z", "value": 10.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rail_tracks_mainline.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["rail_tracks_mainline--rail_platforms_mainline"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": []
+    },
+    {
+      "regionId": "rail_platforms_mainline",
+      "label": "철도 승강장",
+      "template": "platform",
+      "frameId": "world",
+      "floorBand": null,
+      "worldBounds": { "min": { "X": -76.0, "Y": 2.0, "Z": -5.0 }, "max": { "X": -24.0, "Y": 7.5, "Z": 5.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "rail_platforms_mainline.extent_x", "metric": "size_x", "value": 52.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rail_platforms_mainline.extent_z", "metric": "size_z", "value": 10.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rail_platforms_mainline.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["rolling_stock_mainline--rail_platforms_mainline", "rail_tracks_mainline--rail_platforms_mainline", "rail_platforms_mainline--station_concourse_2f"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": []
+    },
+    {
+      "regionId": "rail_terminal_public",
+      "label": "철도 터미널 공용구역",
+      "template": "terminal",
+      "frameId": "world",
+      "floorBand": "지상 층별 시설 목록만 확인",
+      "worldBounds": { "min": { "X": 28.0, "Y": 6.0, "Z": -10.0 }, "max": { "X": 56.0, "Y": 11.5, "Z": 10.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "rail_terminal_public.extent_x", "metric": "size_x", "value": 28.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rail_terminal_public.extent_z", "metric": "size_z", "value": 20.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rail_terminal_public.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["rail_terminal_public--station_concourse_2f", "station_ticket_area--rail_terminal_public", "rail_terminal_public--underground_connector"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": ["P01", "P02"]
+    },
+    {
+      "regionId": "station_concourse_2f",
+      "label": "역사2층 맞이방",
+      "template": "concourse",
+      "frameId": "world",
+      "floorBand": "2F",
+      "worldBounds": { "min": { "X": -12.0, "Y": 6.0, "Z": -10.0 }, "max": { "X": 12.0, "Y": 11.5, "Z": 10.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "station_concourse_2f.extent_x", "metric": "size_x", "value": 24.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "station_concourse_2f.extent_z", "metric": "size_z", "value": 20.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "station_concourse_2f.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["rail_platforms_mainline--station_concourse_2f", "rail_terminal_public--station_concourse_2f", "station_hall_1f--station_concourse_2f"],
+      "publicPlanAvailability": "공개 평면도로 확정 (층 소속만; 치수 미확정)",
+      "sourceRefs": ["P01"]
+    },
+    {
+      "regionId": "station_hall_1f",
+      "label": "역사1층 맞이방",
+      "template": "hall",
+      "frameId": "world",
+      "floorBand": "1F",
+      "worldBounds": { "min": { "X": -12.0, "Y": 0.0, "Z": -48.0 }, "max": { "X": 12.0, "Y": 5.5, "Z": -28.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "station_hall_1f.extent_x", "metric": "size_x", "value": 24.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "station_hall_1f.extent_z", "metric": "size_z", "value": 20.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "station_hall_1f.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["station_hall_1f--station_concourse_2f"],
+      "publicPlanAvailability": "공개 평면도로 확정 (층 소속만; 치수 미확정)",
+      "sourceRefs": ["P01", "P02"]
+    },
+    {
+      "regionId": "station_ticket_area",
+      "label": "매표/발권 구역",
+      "template": "ticket",
+      "frameId": "world",
+      "floorBand": "2F (P01 목록 기준)",
+      "worldBounds": { "min": { "X": 30.0, "Y": 6.0, "Z": 26.0 }, "max": { "X": 54.0, "Y": 11.5, "Z": 42.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "station_ticket_area.extent_x", "metric": "size_x", "value": 24.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "station_ticket_area.extent_z", "metric": "size_z", "value": 16.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "station_ticket_area.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["station_ticket_area--rail_terminal_public"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": ["P01"]
+    },
+    {
+      "regionId": "forecourt_eurasia",
+      "label": "역 앞 광장·유라시아플랫폼",
+      "template": "forecourt",
+      "frameId": "world",
+      "floorBand": "1F/2F 광장시설",
+      "worldBounds": { "min": { "X": 107.8, "Y": 0.0, "Z": 24.0 }, "max": { "X": 151.8, "Y": 5.5, "Z": 48.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "forecourt_eurasia.extent_x", "metric": "size_x", "value": 44.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "forecourt_eurasia.extent_z", "metric": "size_z", "value": 24.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "forecourt_eurasia.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["forecourt_eurasia--underground_connector"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": ["P05", "P06", "P07"]
+    },
+    {
+      "regionId": "underground_connector",
+      "label": "부산역 지하연결통로",
+      "template": "connector",
+      "frameId": "world",
+      "floorBand": "지하 연결층 (숫자 B층 표기 미확인)",
+      "isPilotRegion": true,
+      "worldBounds": { "min": { "X": 80.0, "Y": -4.0, "Z": -4.0 }, "max": { "X": 179.6, "Y": -0.8, "Z": 4.0 } },
+      "confirmedPublicMeasures": [
+        {
+          "id": "underground_connector.length_x",
+          "metric": "size_x",
+          "value": 99.6,
+          "unit": "m",
+          "sourceRef": "P04",
+          "measureClass": "confirmed_public_measure",
+          "provenance": "Busan Eurasia Platform 시설 안내 페이지 공표 길이",
+          "surveyedByProject": false,
+          "toleranceRef": "confirmed_public_measure"
+        },
+        {
+          "id": "underground_connector.width_z",
+          "metric": "size_z",
+          "value": 8.0,
+          "unit": "m",
+          "sourceRef": "P04",
+          "measureClass": "confirmed_public_measure",
+          "provenance": "Busan Eurasia Platform 시설 안내 페이지 공표 폭",
+          "surveyedByProject": false,
+          "toleranceRef": "confirmed_public_measure"
+        }
+      ],
+      "estimatedSyntheticMeasures": [
+        { "id": "underground_connector.height_y", "metric": "height_y", "value": 3.2, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure", "note": "공개 자료에 통로 높이가 없다. 게임 통행 요구로 저작한 값이며 실측이 아니다." },
+        { "id": "underground_connector.floor_y", "metric": "floor_elevation_y", "value": -4.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored", "note": "도시철도 대합실과 같은 레벨로 둔 저작 배치값." },
+        { "id": "underground_connector.portal_clear_width", "metric": "portal_clear_width", "value": 3.2, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure" },
+        { "id": "underground_connector.portal_clear_height", "metric": "portal_clear_height", "value": 2.7, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure" }
+      ],
+      "portalIds": ["rail_terminal_public--underground_connector", "forecourt_eurasia--underground_connector", "underground_connector--underground_shopping_passage"],
+      "publicPlanAvailability": "공개 평면도로 확정 (길이·폭)",
+      "sourceRefs": ["P04", "P09"]
+    },
+    {
+      "regionId": "underground_shopping_passage",
+      "label": "지하상가 접근 구역",
+      "template": "shopping",
+      "frameId": "world",
+      "floorBand": "지하 연결층",
+      "worldBounds": { "min": { "X": 196.0, "Y": -4.0, "Z": -6.0 }, "max": { "X": 224.0, "Y": -0.8, "Z": 6.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "underground_shopping_passage.extent_x", "metric": "size_x", "value": 28.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "underground_shopping_passage.extent_z", "metric": "size_z", "value": 12.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "underground_shopping_passage.height", "metric": "height_y", "value": 3.2, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["underground_connector--underground_shopping_passage", "underground_shopping_passage--metro_concourse"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": ["P04", "P09"]
+    },
+    {
+      "regionId": "metro_concourse",
+      "label": "도시철도 부산역 대합실",
+      "template": "metro-hall",
+      "frameId": "world",
+      "floorBand": "지하 대합실 (B층 번호 미확인)",
+      "worldBounds": { "min": { "X": 240.0, "Y": -4.0, "Z": -10.0 }, "max": { "X": 268.0, "Y": 1.5, "Z": 10.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "metro_concourse.extent_x", "metric": "size_x", "value": 28.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "metro_concourse.extent_z", "metric": "size_z", "value": 20.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "metro_concourse.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["underground_shopping_passage--metro_concourse", "metro_concourse--metro_platforms"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": ["P03", "P09"]
+    },
+    {
+      "regionId": "metro_platforms",
+      "label": "도시철도 승강장",
+      "template": "metro-platform",
+      "frameId": "world",
+      "floorBand": "승강장층 (B층 번호 미확인)",
+      "worldBounds": { "min": { "X": 278.0, "Y": -8.0, "Z": -5.0 }, "max": { "X": 322.0, "Y": -2.5, "Z": 5.0 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "metro_platforms.extent_x", "metric": "size_x", "value": 44.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "metro_platforms.extent_z", "metric": "size_z", "value": 10.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "metro_platforms.height", "metric": "height_y", "value": 5.5, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["metro_concourse--metro_platforms", "rolling_stock_metro--metro_platforms"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": ["P03"]
+    },
+    {
+      "regionId": "rolling_stock_metro",
+      "label": "도시철도 차량",
+      "template": "vehicle",
+      "frameId": "train-metro",
+      "floorBand": null,
+      "worldBounds": { "min": { "X": 279.0, "Y": -8.0, "Z": 12.5 }, "max": { "X": 321.0, "Y": -4.8, "Z": 17.5 } },
+      "confirmedPublicMeasures": [],
+      "estimatedSyntheticMeasures": [
+        { "id": "rolling_stock_metro.extent_x", "metric": "size_x", "value": 42.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rolling_stock_metro.extent_z", "metric": "size_z", "value": 5.0, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" },
+        { "id": "rolling_stock_metro.height", "metric": "height_y", "value": 3.2, "unit": "m", "measureClass": "estimated_synthetic_measure", "toleranceRef": "estimated_synthetic_measure_unanchored" }
+      ],
+      "portalIds": ["rolling_stock_metro--metro_platforms"],
+      "publicPlanAvailability": "공개 자료로도 미확정",
+      "sourceRefs": []
+    }
+  ],
+  "portals": [
+    { "portalId": "rolling_stock_mainline--rail_platforms_mainline", "from": "rolling_stock_mainline", "to": "rail_platforms_mainline", "fromPoint": { "X": -50.0, "Y": 2.0, "Z": 12.5 }, "toPoint": { "X": -50.0, "Y": 2.0, "Z": 5.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": [], "topologyStatus": "required_game_connectivity_not_surveyed", "publicTopologyConfirmed": false, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "rail_tracks_mainline--rail_platforms_mainline", "from": "rail_tracks_mainline", "to": "rail_platforms_mainline", "fromPoint": { "X": -50.0, "Y": 0.0, "Z": -12.0 }, "toPoint": { "X": -50.0, "Y": 2.0, "Z": -5.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": [], "topologyStatus": "required_game_connectivity_not_surveyed", "publicTopologyConfirmed": false, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "rail_platforms_mainline--station_concourse_2f", "from": "rail_platforms_mainline", "to": "station_concourse_2f", "fromPoint": { "X": -24.0, "Y": 2.0, "Z": 0.0 }, "toPoint": { "X": -12.0, "Y": 6.0, "Z": 0.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": [], "topologyStatus": "proposed_connection_geometry_unverified", "publicTopologyConfirmed": false, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "rail_terminal_public--station_concourse_2f", "from": "rail_terminal_public", "to": "station_concourse_2f", "fromPoint": { "X": 28.0, "Y": 6.0, "Z": 0.0 }, "toPoint": { "X": 12.0, "Y": 6.0, "Z": 0.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P01"], "topologyStatus": "operator_floor_membership_only", "publicTopologyConfirmed": false, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "station_hall_1f--station_concourse_2f", "from": "station_hall_1f", "to": "station_concourse_2f", "fromPoint": { "X": 0.0, "Y": 0.0, "Z": -28.0 }, "toPoint": { "X": 0.0, "Y": 6.0, "Z": -10.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P01", "P02"], "topologyStatus": "proposed_vertical_connection_unverified", "publicTopologyConfirmed": false, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "station_ticket_area--rail_terminal_public", "from": "station_ticket_area", "to": "rail_terminal_public", "fromPoint": { "X": 42.0, "Y": 6.0, "Z": 26.0 }, "toPoint": { "X": 42.0, "Y": 6.0, "Z": 10.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P01"], "topologyStatus": "observed_facility_membership_exact_floor_unverified", "publicTopologyConfirmed": false, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "rail_terminal_public--underground_connector", "from": "rail_terminal_public", "to": "underground_connector", "fromPoint": { "X": 56.0, "Y": 6.0, "Z": 0.0 }, "toPoint": { "X": 80.0, "Y": -4.0, "Z": 0.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P04"], "topologyStatus": "supported_public_topology_exact_portal_unverified", "publicTopologyConfirmed": true, "geometryStatus": "synthetic_design_not_surveyed", "boundaryFace": "underground_connector.west_end_cap" },
+    { "portalId": "forecourt_eurasia--underground_connector", "from": "forecourt_eurasia", "to": "underground_connector", "fromPoint": { "X": 129.8, "Y": 0.0, "Z": 24.0 }, "toPoint": { "X": 129.8, "Y": -4.0, "Z": 4.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P04", "P09"], "topologyStatus": "supported_public_access_topology", "publicTopologyConfirmed": true, "geometryStatus": "synthetic_design_not_surveyed", "boundaryFace": "underground_connector.north_wall_midspan" },
+    { "portalId": "underground_connector--underground_shopping_passage", "from": "underground_connector", "to": "underground_shopping_passage", "fromPoint": { "X": 179.6, "Y": -4.0, "Z": 0.0 }, "toPoint": { "X": 196.0, "Y": -4.0, "Z": 0.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P04"], "topologyStatus": "supported_public_topology", "publicTopologyConfirmed": true, "geometryStatus": "synthetic_design_not_surveyed", "boundaryFace": "underground_connector.east_end_cap" },
+    { "portalId": "underground_shopping_passage--metro_concourse", "from": "underground_shopping_passage", "to": "metro_concourse", "fromPoint": { "X": 224.0, "Y": -4.0, "Z": 0.0 }, "toPoint": { "X": 240.0, "Y": -4.0, "Z": 0.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P04", "P09"], "topologyStatus": "supported_public_topology", "publicTopologyConfirmed": true, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "metro_concourse--metro_platforms", "from": "metro_concourse", "to": "metro_platforms", "fromPoint": { "X": 268.0, "Y": -4.0, "Z": 0.0 }, "toPoint": { "X": 278.0, "Y": -8.0, "Z": 0.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": ["P03"], "topologyStatus": "supported_schematic_vertical_topology", "publicTopologyConfirmed": true, "geometryStatus": "synthetic_design_not_surveyed" },
+    { "portalId": "rolling_stock_metro--metro_platforms", "from": "rolling_stock_metro", "to": "metro_platforms", "fromPoint": { "X": 300.0, "Y": -8.0, "Z": 12.5 }, "toPoint": { "X": 300.0, "Y": -8.0, "Z": 5.0 }, "clearWidthM": 3.2, "clearHeightM": 2.7, "sourceRefs": [], "topologyStatus": "required_game_connectivity_not_surveyed", "publicTopologyConfirmed": false, "geometryStatus": "synthetic_design_not_surveyed" }
+  ],
+  "pilot": {
+    "regionId": "underground_connector",
+    "blockoutScript": "scripts/art/team/FND-05/blockout_pilot.py",
+    "blockoutOutput": "foundation/world/team/FND-05/pilot-underground-connector.obj",
+    "anchoredDimension": { "metric": "size_x", "value": 99.6, "unit": "m", "sourceRef": "P04", "measureClass": "confirmed_public_measure" },
+    "secondaryDimension": { "metric": "size_z", "value": 8.0, "unit": "m", "sourceRef": "P04", "measureClass": "confirmed_public_measure" },
+    "scaleCheck": {
+      "declaredScaleRatio": "1:1",
+      "expectedLengthWidthRatio": 12.45,
+      "ratioTolerance": 0.001,
+      "endpointAnchors": [
+        { "portalId": "rail_terminal_public--underground_connector", "point": "toPoint", "axis": "X", "coordinate": 80.0, "face": "underground_connector.west_end_cap" },
+        { "portalId": "underground_connector--underground_shopping_passage", "point": "fromPoint", "axis": "X", "coordinate": 179.6, "face": "underground_connector.east_end_cap" },
+        { "portalId": "forecourt_eurasia--underground_connector", "point": "toPoint", "axis": "Z", "coordinate": 4.0, "face": "underground_connector.north_wall_midspan" }
+      ]
+    }
+  },
+  "worldBounds": { "min": { "X": -76.0, "Y": -8.0, "Z": -48.0 }, "max": { "X": 322.0, "Y": 11.5, "Z": 48.0 } },
+  "unverifiedFacilities": [
+    { "id": "UF-01", "item": "차량 형식·차체/문/차내 치수", "regions": ["rolling_stock_mainline", "rolling_stock_metro"], "reason": "공개 층별 평면도·차량 제원 공개 자료 없음" },
+    { "id": "UF-02", "item": "선로 배선·궤간·궤도 높이·플랫폼 간격", "regions": ["rail_tracks_mainline", "rail_platforms_mainline", "metro_platforms"], "reason": "현행 배선도·궤간 자료 미확보" },
+    { "id": "UF-03", "item": "승강장 길이·폭·정차 위치·스크린도어", "regions": ["rail_platforms_mainline", "metro_platforms"], "reason": "P03 도식은 상대 연결만 표기, 치수 없음" },
+    { "id": "UF-04", "item": "수직 이동 설비(계단·에스컬레이터·엘리베이터) 치수·대수", "regions": ["rail_terminal_public", "station_concourse_2f", "station_hall_1f", "forecourt_eurasia", "metro_concourse"], "reason": "공개 자료에 상대 위치만 있고 치수 없음" },
+    { "id": "UF-05", "item": "지하연결통로 경사·굴곡·출입문 위치", "regions": ["underground_connector"], "reason": "P04 는 길이·폭만 공표" },
+    { "id": "UF-06", "item": "지하상가 점포 구획·복도 폭", "regions": ["underground_shopping_passage"], "reason": "공개 도면 없음" },
+    { "id": "UF-07", "item": "구조 기둥열·경간", "regions": ["station_hall_1f", "station_concourse_2f", "rail_terminal_public"], "reason": "P02 는 2014 임대 배치이며 축척·치수선 없음" },
+    { "id": "UF-08", "item": "화장실·수유실·고객센터 등 부속실 위치·면적", "regions": ["station_hall_1f", "station_concourse_2f", "rail_terminal_public"], "reason": "P01 은 층별 시설 목록이며 도면이 아님" },
+    { "id": "UF-09", "item": "CCTV·안내표지·운영 콘솔 배치", "regions": ["전 구역"], "reason": "비공개 운영 설비 사양" },
+    { "id": "UF-10", "item": "마감재·천장고 세부·방수/배수", "regions": ["전 구역"], "reason": "공개 자료 범위 밖" }
+  ],
+  "unverifiedRegulations": [
+    { "id": "UR-01", "item": "소방시설법·피난시설 기준 적합성", "reason": "구역별 피난 동선·방화구획 실측 근거 없음. 규정 적합을 주장하지 않는다." },
+    { "id": "UR-02", "item": "장애인등편의증진법 접근성 기준", "reason": "경사로·점자블록·엘리베이터 치수 미확정" },
+    { "id": "UR-03", "item": "지하연결통로 운영시간·통행 제한 규정", "reason": "운영사 내부 규정, 공개 자료 아님" },
+    { "id": "UR-04", "item": "출입통제·보안 검색 절차", "reason": "비공개 운영 규정" },
+    { "id": "UR-05", "item": "영상정보처리기기 운영·개인정보 처리", "reason": "비공개 운영 규정" },
+    { "id": "UR-06", "item": "산업안전·작업 허가 절차", "reason": "운영사 SOP, 공개 자료 아님" },
+    { "id": "UR-07", "item": "감염병 대응·대피 훈련 주기", "reason": "운영사 내부 규정" }
+  ],
+  "prohibitedInferences": [
+    "다른 운영자 시설이나 같은 층번호를 동일 공간으로 합치지 않는다.",
+    "안내 투시도를 실측 CAD 로 변환했다고 주장하지 않는다.",
+    "2003년 계획이나 2014년 임대 배치를 현재 준공도면으로 사용하지 않는다.",
+    "사진에 없는 차량·선로·승강장·통로를 재구성 관측 결과로 발표하지 않는다.",
+    "P04 의 99.6×8.0 m 를 맞이방·승강장 등 다른 구역의 축척 anchor 로 전이하지 않는다.",
+    "P07 의 7.5×7.5 m 와 57.76 m2 를 수치로 사용하지 않는다(산술 불일치).",
+    "파일 존재나 과거 합성게임 테스트만으로 DA3/Blender 재구성 완료를 기록하지 않는다.",
+    "공개 자료로 확정되지 않는 설비 사양·내부 운영 규정을 확정된 것처럼 쓰지 않는다.",
+    "원본 이미지를 저장소에 넣지 않는다. 절차·수치·출처 메타데이터만 남긴다."
+  ],
+  "rightsCompliance": {
+    "licenses": [
+      { "sourceRef": "P02", "licenseId": "KOGL-4", "licenseNameKo": "공공누리 제4유형", "terms": ["출처표시", "상업적 이용금지", "변경금지"], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P01", "licenseId": "unverified", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P03", "licenseId": "unverified_all_rights_reserved", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P04", "licenseId": "unverified_all_rights_reserved_c2019", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P05", "licenseId": "unverified", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P06", "licenseId": "unverified", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P07", "licenseId": "unverified", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P08", "licenseId": "unverified_government_public_pdf", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" },
+      { "sourceRef": "P09", "licenseId": "unverified", "terms": [], "originalImageInRepo": false, "modificationAllowed": false, "commercialUseAllowed": false, "recordedContent": "metadata_only" }
+    ],
+    "rule": "라이선스가 확인된 자료도 원본 이미지 자체는 저장소·이슈·외부 생성 API 에 넣지 않는다. 저장하는 것은 출처 ID·URL·sha256·수치·서술 메타데이터뿐이다."
+  }
+}

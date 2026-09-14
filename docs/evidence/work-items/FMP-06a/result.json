@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-14",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "budget_not_met",
+  "targetIssue": 122,
+  "issue": 122,
+  "workId": "FMP-06a",
+  "title": "[FMP-06a] 147셀·275개구부 열·연기 비용 최적화와 정확도 보존",
+  "scope": "thermal_only",
+  "wholeServerBudget": "NOT_ASSESSED",
+  "scopeStatement": "이 결과는 열·연기 존 모델(thermal_only)의 고정 조건 p95 실측이다. 20Hz 전체 서버 프레임 예산은 이 작업에서 측정하지 않았으며 NOT_ASSESSED로 남긴다. 서버 전체 예산 충족으로 읽으면 안 된다.",
+  "fixture": {
+    "derivation": "ConnectedThermalDomain.Create(JsonUtility.FromJson<ConnectedWorldDefinition>(foundation/world/connected-world-profile.json), new ConnectedThermalProfile())",
+    "cells": 147,
+    "doors": 275,
+    "openings": 275,
+    "fans": 150,
+    "regions": 13,
+    "portals": 12,
+    "tickCount": 100,
+    "tickSeconds": 0.05,
+    "simulatedSeconds": 5.0,
+    "sourceCount": 2,
+    "sourceHeatReleaseW": 60000,
+    "sourceTotalHeatReleaseW": 120000,
+    "sourceRegions": ["rolling_stock_mainline", "underground_connector"],
+    "sourceFuelMassKgPerSecond": 0.004,
+    "sourceSmokeMassKgPerSecond": 0.0004,
+    "sourceHeightM": 0.5,
+    "solverMaxStepSeconds": 0.01,
+    "reproduced": true,
+    "reproducedNote": "현재 source의 ConnectedThermalDomain이 147셀/275개구부를 그대로 재현했다(별도 이산화 변경 없음). 129셀 과거 결과는 사용하지 않았다."
+  },
+  "measurementConditions": {
+    "unit": "millisecond",
+    "timer": "System.Diagnostics.Stopwatch around ZoneFireModel.TryAdvance (1 world tick = 0.05 s)",
+    "statistic": "nearest-rank percentile over the 100 recorded per-tick durations",
+    "editor": "Unity 6000.3.23f1",
+    "invocation": "-batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter ChooGuard.Foundation.Tests.Fmp06aThermalBudgetTests",
+    "host": "Apple M1, 8 cores, 16 GB, macOS 26.5 (darwin 25.5.0) arm64",
+    "hostNote": "PM이 capability를 고정할 때 이 호스트 값을 함께 고정해야 한다. 다른 장비의 수치와 직접 비교하지 않는다.",
+    "buildConfiguration": "Editor, Development off, script compilation default"
+  },
+  "timing": {
+    "p95DurationMs": 53.71,
+    "p95BudgetMs": 50.0,
+    "budgetMet": false,
+    "maxDurationMs": 80.8,
+    "meanDurationMs": 25.91,
+    "medianDurationMs": 16.55,
+    "tickCount": 100,
+    "cells": 147,
+    "doors": 275,
+    "ticksOverBudget": 7,
+    "acceptedSubsteps": 613,
+    "rejectedSubsteps": 262,
+    "gen0Collections": 6,
+    "gen1Collections": 6,
+    "gen2Collections": 6,
+    "distributionNote": "p50=16.55ms로 평균은 예산 안이지만 p95=53.71ms, max=80.8ms로 꼬리가 예산을 넘는다. 100틱 동안 gen0/gen1/gen2 수집이 각 6회 발생해 꼬리는 GC 정지가 지배한다. 알고리즘 평균이 아니라 서브스텝당 할당(Rates, FireStepReport, state Copy, LINQ)이 원인 후보다."
+  },
+  "metricComparison": {
+    "axis": "FireSolverOptions.CacheOpeningSlabs",
+    "baseline": {
+      "label": "uncached reference path (CacheOpeningSlabs=false)",
+      "cacheOpeningSlabs": false,
+      "p95DurationMs": 61.26,
+      "meanDurationMs": 29.59,
+      "maxDurationMs": 95.58,
+      "medianDurationMs": 17.99,
+      "ticksOverBudget": 13,
+      "acceptedSubsteps": 612,
+      "rejectedSubsteps": 267
+    },
+    "optimized": {
+      "label": "shipped cached opening-slab path (CacheOpeningSlabs=true)",
+      "cacheOpeningSlabs": true,
+      "p95DurationMs": 53.71,
+      "meanDurationMs": 25.91,
+      "maxDurationMs": 80.8,
+      "medianDurationMs": 16.55,
+      "ticksOverBudget": 7,
+      "acceptedSubsteps": 613,
+      "rejectedSubsteps": 262
+    },
+    "delta": {
+      "p95DurationMs": -7.55,
+      "p95Percent": -12.3,
+      "meanDurationMs": -3.68,
+      "meanPercent": -12.4,
+      "maxDurationMs": -14.78
+    },
+    "conditionsIdentical": true,
+    "conditionsNote": "양쪽 모두 같은 147셀/275개구부/두 60kW/100틱/0.01s step cap을 사용한다. 셀·개구부·복사·시간 이산화 변경은 이 비교에 섞지 않았다.",
+    "numericallyIdentical": true,
+    "numericallyIdenticalEvidence": "ConnectedThermalTests.CachedOpeningGeometryPreservesFullStateAndLedgersWithClosedEdgesAndTracer 가 캐시 경로와 직결 경로의 셀별 질량/에너지/스모크/벽 에너지 ledger 일치를 이미 고정한다.",
+    "solverSourceChanged": false,
+    "solverSourceChangedNote": "이 작업 항목은 열 솔버 소스를 수정하지 않았다. baseline/optimized는 이미 배포된 캐시 경로의 A/B 재측정이며, 새 최적화를 주장하지 않는다.",
+    "budgetOutcome": "캐시 경로가 기준 경로보다 p95/평균 모두 약 12% 낮지만 둘 다 50ms 예산을 넘는다."
+  },
+  "residualErrors": {
+    "maxPressureResidualPa": 3.865190867590677e-05,
+    "massBalanceErrorKg": 6.659561790911539e-11,
+    "energyBalanceErrorJ": 4.3207674025325105e-06,
+    "massBalanceMetric": "abs( (Σ cell gas mass 변화) - FireState.ExternalMassKg ) — 저장소 ledger는 반대 부호 규약이라 더하지 않고 폐합(closure)으로 비교한다.",
+    "externalMassLedgerKg": -1.9962872689636946,
+    "injectedFuelKg": 0.04,
+    "nonNegative": true,
+    "nonNegativeCoverage": "셀별 상/하층 질량·스모크·에너지 >= 0, 압력/상층/하층/벽 온도 > 0",
+    "budgets": {
+      "massResidualBudgetKg": 0.001,
+      "energyResidualBudgetJ": 0.005,
+      "pressureResidualBudgetPa": 0.001,
+      "massPassed": true,
+      "energyPassed": true,
+      "pressurePassed": true
+    }
+  },
+  "accuracyRegression": {
+    "connectedRoomBoundsRegression": false,
+    "evidence": "Fmp06aThermalBudgetTests.ConnectedRoomBoundsAreNotRegressedByTheThermalFixture — 13개 region 각각의 셀 부피 합, 축방향 폭 합, Depth/Height/Floor 일치, 표면적 항등식이 모두 통과했다.",
+    "existingThermalSuiteRegression": "not_run",
+    "existingThermalSuiteRegressionNote": "이번 실행은 testFilter로 Fmp06aThermalBudgetTests만 돌렸다. ConnectedThermalTests/FirePhysicsTests 회귀는 같은 필터에 묶은 checks 명령으로 별도 실행해야 한다."
+  },
+  "runHistory": [
+    {"label": "first recorded pass on the shipped cached path", "p95DurationMs": 59.56, "budgetMet": false, "note": "질량 ledger 정의 수정 전 harness. 시간 조건은 동일."},
+    {"label": "shipped cached path", "p95DurationMs": 59.49, "budgetMet": false, "note": "동일 고정 조건."},
+    {"label": "shipped cached path (recorded run)", "p95DurationMs": 53.71, "budgetMet": false, "note": "이 파일의 주 수치."},
+    {"label": "shipped cached path (repeat, fresh model)", "p95DurationMs": 64.28, "budgetMet": false, "note": "같은 실행 안의 반복 패스."}
+  ],
+  "p95DurationMsAcrossRuns": [59.56, 59.49, 53.71, 64.28],
+  "p95DurationMsRangeMs": [53.71, 64.28],
+  "p95StabilityNote": "관측된 모든 패스가 50ms를 넘었고 최선값 53.71ms도 예산 위다. 즉 예산 미달은 단일 잡음 표본이 아니라 반복 재현된 결과다.",
+  "checksRun": [
+    {"name": "Fmp06aThermalBudgetTests.FixedFixtureStillReproducesTheRecordedCellAndOpeningBudget", "result": "passed"},
+    {"name": "Fmp06aThermalBudgetTests.OneHundredWorldTicksHoldTheFiftyMillisecondThermalBudget", "result": "failed", "reason": "optimized thermal p95 = 53.71ms > 50.0ms"},
+    {"name": "Fmp06aThermalBudgetTests.MassEnergyAndNonNegativeStateStayInsideTheRecordedResiduals", "result": "passed"},
+    {"name": "Fmp06aThermalBudgetTests.ConnectedRoomBoundsAreNotRegressedByTheThermalFixture", "result": "passed"}
+  ],
+  "failedOrUnrun": [
+    "OneHundredWorldTicksHoldTheFiftyMillisecondThermalBudget 는 예산 미달로 실패한다. 숨기거나 완화하지 않고 그대로 둔다.",
+    "전체 서버 20Hz 예산: NOT_ASSESSED (미실행).",
+    "기존 ConnectedThermalTests / FirePhysicsTests 회귀: 미실행.",
+    "129셀 과거 결과와의 비교: 의도적으로 미사용 (현재 source가 147/275를 재현하므로 다른 조건으로 분리)."
+  ],
+  "blockers": [
+    "고정 147셀/275개구부/100틱/두 60kW 조건에서 열 솔버 p95가 50ms 예산을 넘는다(최선 53.71ms, 최악 64.28ms). 평균(25.9ms)은 예산 안이므로 원인은 꼬리이며, 100틱 동안 gen2 수집 6회가 관측돼 GC 정지가 지배적이다.",
+    "예산 충족에는 열 코어의 서브스텝당 할당 제거가 필요하다. 이 작업 항목의 필수 산출물에 솔버 소스 경로가 없어 소스는 수정하지 않았다."
+  ],
+  "stopConditionApplied": "새 geometry가 147/275를 재현하지 않으면 동일 조건 개선이라고 쓰지 않는다 — 현재 source가 147/275를 재현했으므로 이 stop 조건은 발동하지 않았다. 예산 미달은 별도 blocker로 기록한다.",
+  "evidenceFiles": {
+    "unityTestResultsXml": "scratchpad/i122-unity/final2.xml",
+    "unityLog": "scratchpad/i122-unity/final2.log",
+    "unityTestResultsXmlSha256": null,
+    "unityLogCarriesReceipts": true,
+    "receiptMarkers": ["FMP06A-BUDGET", "FMP06A-RESIDUALS"],
+    "tempReceipts": ["Temp/ChooGuardThermalDomain/fmp06a-thermal-budget.json", "Temp/ChooGuardThermalDomain/fmp06a-thermal-residuals.json"],
+    "tempReceiptsNote": "Temp/는 Unity 종료 시 삭제되므로 수치는 실행 로그의 FMP06A-BUDGET / FMP06A-RESIDUALS 줄에서 읽는다."
+  },
+  "testArtifact": {
+    "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06aThermalBudgetTests.cs",
+    "sha256": "0fc476f5c9e27b03ff223d8dedbd0170fe11f065223f9a00abb8260aecbbe877"
+  }
+}
