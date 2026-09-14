@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "workId": "R-02",
+  "issue": 42,
+  "phase": "candidate",
+  "status": "proposed_for_pm_review",
+  "sourceRef": "e5e56dba7a5d8dfd2805bd111dffec6fcca74d60",
+  "authority": "Candidate test contract derived from current repository decisions; no new device selection, approval or execution evidence.",
+  "unity": {
+    "version": "6000.3.23f1",
+    "revision": "09d2ecc7fb28",
+    "pipelinePackage": "0.6.0-exp.1",
+    "editorControl": "official Unity CLI Editor MCP",
+    "packagePinSource": "Packages/manifest.json"
+  },
+  "testTargets": [
+    {
+      "id": "desktop-windows",
+      "role": "desktop client and applicable Editor validation",
+      "os": "Windows",
+      "architecture": "x86_64",
+      "buildTarget": "StandaloneWindows64",
+      "requiredCapabilities": [
+        "matching Editor and Windows build module",
+        "project import and compilation",
+        "declared desktop input and display",
+        "relevant EditMode/PlayMode and client checks"
+      ],
+      "availability": "unknown",
+      "executionStatus": "not_run",
+      "evidenceRef": null,
+      "missingCapabilityEffect": "Record the reason for this test only; independent work remains eligible."
+    },
+    {
+      "id": "dedicated-linux",
+      "role": "dedicated server validation candidate",
+      "os": "Linux",
+      "architecture": "x86_64",
+      "buildTarget": "StandaloneLinux64",
+      "requiredCapabilities": [
+        "matching build module and runnable server artifact",
+        "declared process, network and measurement capability"
+      ],
+      "availability": "unknown",
+      "executionStatus": "not_run",
+      "evidenceRef": null,
+      "missingCapabilityEffect": "Record the reason for this test only; independent work remains eligible."
+    },
+    {
+      "id": "optional-hmd",
+      "role": "separately scoped later XR validation",
+      "os": null,
+      "architecture": null,
+      "buildTarget": null,
+      "deviceModel": null,
+      "runtime": null,
+      "selection": "undecided",
+      "requiredCapabilities": [
+        "PM-selected device/runtime/input contract",
+        "same spatial anchor and action meaning as desktop",
+        "actual device and relevant XR test evidence"
+      ],
+      "availability": "unknown",
+      "executionStatus": "not_run",
+      "evidenceRef": null,
+      "missingCapabilityEffect": "Record the reason for this test only; independent work remains eligible."
+    }
+  ],
+  "currentAcceptanceTarget": {
+    "regions": 13,
+    "clientsIncludingInstructors": 20,
+    "npcs": 100,
+    "concurrentIncidents": 2,
+    "durationMinutes": 60,
+    "status": "target_not_verified",
+    "limit": "A local or smaller synthetic run does not establish this target, device acceptance, or official railway procedure validation."
+  },
+  "policyRestrictions": {
+    "credentialLogin": "The account owner completes authentication. Never publish credentials, token values, license files or account secrets.",
+    "publicEvidence": "Use approved sanitized references and aggregate facts; exclude private absolute paths and restricted source metadata.",
+    "executionAuthority": "Capability availability does not authorize arbitrary C# execution, remote package installation, external generation, paid calls or publication.",
+    "failureHandling": "Preserve failed/not_run reasons; never replace missing evidence with a pass."
+  },
+  "requiredMeasurementFields": [
+    "runId",
+    "sourceCommit",
+    "buildArtifactReference",
+    "toolVersions",
+    "osAndArchitecture",
+    "selectedTargetId",
+    "observedCapabilities",
+    "clientCount",
+    "npcCount",
+    "incidentCount",
+    "duration",
+    "result",
+    "failureOrNotRunReason",
+    "sanitizedEvidenceReference"
+  ],
+  "assignmentPolicy": {
+    "namedAssignees": [],
+    "requiredLocations": [],
+    "requiredEquipmentOwners": [],
+    "rule": "Claim only the actual bounded task and mutable resources at execution time."
+  }
+}

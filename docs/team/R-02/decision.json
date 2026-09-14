@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "workId": "R-02",
+  "issue": 42,
+  "phase": "candidate",
+  "status": "pending_pm_review",
+  "approved": false,
+  "approvalRef": null,
+  "preservedRepositoryDecisions": [
+    "Use pinned Unity Editor and official Pipeline MCP.",
+    "Keep desktop and later XR acceptance separate.",
+    "Use measured capability as a test fact and keep policy restrictions independent.",
+    "Retain 13-region / 20-client / 100-NPC / 2-incident acceptance as an unverified target."
+  ],
+  "candidateChoices": [
+    "Windows desktop and Linux server rows name the intended test/build contexts; actual module availability and execution remain unknown.",
+    "Optional HMD model, runtime, OS and build target remain undecided."
+  ],
+  "openDecisions": [
+    {
+      "id": "hmd-selection",
+      "state": "undecided",
+      "needed": "PM-selected device/runtime/input scope before claiming hardware acceptance."
+    },
+    {
+      "id": "exact-test-environments",
+      "state": "unverified",
+      "needed": "Record exact OS, modules, target build and measured capability when a concrete run starts."
+    }
+  ],
+  "successorIssue": 89,
+  "handoff": "#89 may review this candidate contract; it is not a device selection, execution permission or final acceptance receipt."
+}
