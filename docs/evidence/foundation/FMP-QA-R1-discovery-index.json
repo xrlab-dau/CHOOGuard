@@ -1,0 +1,1396 @@
+{
+ "schemaVersion": 1,
+ "classification": "PUBLIC_PROJECT_CONTEXT",
+ "workId": "FMP-QA-R1",
+ "issue": 152,
+ "domainCode": "QA",
+ "phase": "candidate",
+ "artifact": "artifact:152:fixture-discovery-proof:candidate",
+ "title": "기존 70 skipped fixture의 discovery·환경 원인 규명",
+ "runRecord": {
+  "recordKind": "complete_run_record",
+  "branch": "test/152-skipped-fixture-discovery",
+  "commit": "29fc7d5242b2f00adbd4460ee03bed7ef4a32d41",
+  "commitNote": "runRecord.commit is the candidate commit that carries the fixture fix and the discovery receipts (13 NUnit XML + 2 editor logs). The fix-verification receipt run-20260914T1745-fix-full/EditMode.xml and this index land in the commit directly on top of it, so every receipt cited in this index is committed at the tip, the recorded sha names exactly the tree the receipts were produced against, and no commit carries a placeholder value.",
+  "baseRef": "origin/develop",
+  "baseCommit": "ebf84c9c5322c516383870699e4405750887e07d",
+  "unity": {
+   "version": "6000.3.23f1",
+   "revision": "09d2ecc7fb28",
+   "sha256": "dc79d1f00ba18e1a243c19916415aca7d7c5ea5b08d1558ea9c2d35b52e8cc2e",
+   "sizeBytes": 97549136,
+   "pathNote": "Unity Editor installed at the repository-independent default Unity Hub path; the raw receipts keep the full invocation."
+  },
+  "platform": {
+   "sysPlatform": "darwin",
+   "note": "Headless Unity Editor EditMode runs (-batchmode). The checkout had no Library cache, so the first launch was a full import."
+  },
+  "commandTemplate": "Unity -batchmode -projectPath <claim checkout> -runTests -testPlatform EditMode -testResults <run>/EditMode.xml -logFile <run>/EditMode.log -accept-apiupdate [-testFilter <filter>]",
+  "inputs": {
+   "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionAdapterTests.cs": {
+    "role": "the fixture that owns all 70 skipped cases; its [OneTimeSetUp] guard calls Assert.Ignore(\"Preserve unsaved scenes.\") when any loaded scene is dirty",
+    "baseBlobSha1": "0d85d5d19e930f0fcc244b89fc8c227c8a1bd7c4",
+    "candidateBlobSha1": "0d85d5d19e930f0fcc244b89fc8c227c8a1bd7c4",
+    "candidateSha256": "35b6148cae0dd1350f21c16a700abf5e2900dc54b2616210774cbc336dace71d",
+    "candidateSizeBytes": 32314,
+    "manifestIssue120Sha256": "35b6148cae0dd1350f21c16a700abf5e2900dc54b2616210774cbc336dace71d",
+    "matchesIssue120Manifest": true
+   },
+   "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/MultiplayerSceneTests.cs": {
+    "role": "the polluter identified by bisection and by the scene probe; fixed by this candidate",
+    "baseBlobSha1": "09806117b8940db7c8f505d423a86f2a021ccfca",
+    "candidateBlobSha1": "cfcdf4e21d3a505f633442fcd33bcfb1abcc00f8",
+    "candidateSha256": "123e2dda456658c4d57ffdbff9fe5048a71c4473b5b2a3f56c2cc7a5cd7aef9b",
+    "candidateSizeBytes": 3253,
+    "manifestIssue120Sha256": "fffd5b14aead9c2856c5bece4df2bfb8a9f0422b56fcb38ecbc1262ed56d526e",
+    "matchesIssue120Manifest": false
+   },
+   "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/VoiceEpochCoordinatorTests.cs": {
+    "role": "independent negative control fixture: 89/89 pass in every run and it does not disturb the shared scene",
+    "baseBlobSha1": "fa3a57ae9613662d1df5fa35da22a7643311307a",
+    "candidateBlobSha1": "fa3a57ae9613662d1df5fa35da22a7643311307a",
+    "candidateSha256": "2c4c9ca60cdb7bad929db8c87599438c3c049793464422a3deaf9406c16cc1de",
+    "candidateSizeBytes": 117257,
+    "manifestIssue120Sha256": "2c4c9ca60cdb7bad929db8c87599438c3c049793464422a3deaf9406c16cc1de",
+    "matchesIssue120Manifest": true
+   },
+   "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ConnectedWorldTests.cs": {
+    "role": "required regression holder: 1 case fails for a missing generated scene, not for a skip",
+    "baseBlobSha1": "b16e542c8e9a7e630709f5f7f0c2e7930afa9147",
+    "candidateBlobSha1": "b16e542c8e9a7e630709f5f7f0c2e7930afa9147",
+    "candidateSha256": "ca1ceec812872497f223995ebba0798c50541357334962d338293c7a293bf9f3",
+    "candidateSizeBytes": 26369,
+    "manifestIssue120Sha256": "ca1ceec812872497f223995ebba0798c50541357334962d338293c7a293bf9f3",
+    "matchesIssue120Manifest": true
+   },
+   "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/NativeSdkImportTests.cs": {
+    "role": "required regression holder: 1 case fails for a missing owned native import",
+    "baseBlobSha1": "04b048e500cc6ba1e8d67c6d118a4fce7ea7d757",
+    "candidateBlobSha1": "04b048e500cc6ba1e8d67c6d118a4fce7ea7d757",
+    "candidateSha256": "8a9e4eee49abf716a8c283e1ecb0c0986af41f416700af998d427bcc2b156f51",
+    "candidateSizeBytes": 800,
+    "manifestIssue120Sha256": "8a9e4eee49abf716a8c283e1ecb0c0986af41f416700af998d427bcc2b156f51",
+    "matchesIssue120Manifest": true
+   },
+   "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef": {
+    "role": "EditMode discovery boundary; its assembly name equals the namespace used as a -testFilter value",
+    "baseBlobSha1": "0fb12a1a3b7ff193855c6daf4f03aaeab2280e59",
+    "candidateBlobSha1": "0fb12a1a3b7ff193855c6daf4f03aaeab2280e59",
+    "candidateSha256": "64ac8be415fec32800e8b71ec16eb0921e5bb65fdbce642317f793d069f9acf8",
+    "candidateSizeBytes": 409,
+    "manifestIssue120Sha256": "64ac8be415fec32800e8b71ec16eb0921e5bb65fdbce642317f793d069f9acf8",
+    "matchesIssue120Manifest": true
+   },
+   "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdLegacyFixture.cs": {
+    "role": "fixture reviewed as an intentional preservation guard; digest matches the #120 manifest",
+    "baseBlobSha1": "c8efbf599d531979de8dce15a87d0694a9bbb9dd",
+    "candidateBlobSha1": "c8efbf599d531979de8dce15a87d0694a9bbb9dd",
+    "candidateSha256": "4493963a421b27da4f5701baa8d0fc7c6dc57c43d86b1a66926f76197e1526e3",
+    "candidateSizeBytes": 1657,
+    "manifestIssue120Sha256": "4493963a421b27da4f5701baa8d0fc7c6dc57c43d86b1a66926f76197e1526e3",
+    "matchesIssue120Manifest": true
+   },
+   "Packages/com.xrlab.chooguard.foundation/Tests/Editor/ChooGuard.Foundation.Tests.asmdef": {
+    "role": "Foundation EditMode assembly; -testFilter target for the 221-case split",
+    "baseBlobSha1": "a0b20c1b60a974e28a589e633064e406363cb033",
+    "candidateBlobSha1": "a0b20c1b60a974e28a589e633064e406363cb033",
+    "candidateSha256": "2ada20baae2377fd276e1a28a7237449e93dacdd903ecef758b222a9fd87c2c4",
+    "candidateSizeBytes": 542,
+    "manifestIssue120Sha256": "2ada20baae2377fd276e1a28a7237449e93dacdd903ecef758b222a9fd87c2c4",
+    "matchesIssue120Manifest": true
+   }
+  },
+  "inputProvenance": {
+   "predecessor": "artifact:120:source-only-access-manifest:candidate",
+   "manifestPath": "docs/context/publication/foundation-source-manifest.json",
+   "manifestIssue": 120,
+   "manifestStatus": "proposal_for_pm_review",
+   "manifestApproval": "not_obtained",
+   "manifestMatch": "47 of the 49 files under the two EditMode test directories are listed in the #120 manifest. At the base commit all 47 match its sha256 exactly; at the candidate tree 46 still match, and the 47th is MultiplayerSceneTests.cs, the one file this candidate intentionally changes (its base content digest still matches the manifest - verified with git rev-parse HEAD:<path> against the manifest blobSha1). The two files that are not listed, CanonicalScenarioTests.cs and TrainingSessionTests.cs, are byte-identical to base and outside the #120 selection rule. A temporary diagnostic probe file was removed before the commit and is not part of this tree.",
+   "manifestMatchCounts": {
+     "listedAmongTreeFiles": 47,
+     "listedAndMatchingManifestAtBase": 47,
+     "listedAndMatchingManifestAtCandidate": 46,
+     "treeFiles": 49
+   },
+   "candidateGradeOnly": true,
+   "notAcceptSubstitute": "the manifest is proposal_for_pm_review with publicationApproval=not_obtained; this candidate neither publishes nor accepts it"
+  },
+  "candidateTreeDigest": {
+   "scope": "every file under Packages/com.xrlab.chooguard.foundation/Tests/Editor and Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor, excluding .meta files",
+   "fileCount": 49,
+   "aggregateSha256": "428ce933b393b4b0454c29ac3f9432d2e484c10fe79bbaaea74b503edf93170c",
+   "method": "sha256 over the sorted 'path:sha256\n' lines, so the whole EditMode test surface is pinned by one digest",
+   "manifestListedFiles": 47,
+   "manifestListedMatchingCandidate": 46,
+   "manifestListedMatchingBase": 47,
+   "manifestListedMatchingBaseNote": "all 47 manifest-listed files match the manifest digest at the base commit, including MultiplayerSceneTests.cs; only the candidate-side count drops to 46, because that one file is the change this candidate makes",
+   "changedByThisCandidate": [
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/MultiplayerSceneTests.cs"
+   ],
+   "changedByThisCandidateNote": "content sha256 of the working file differs from the content sha256 of that same path at the base commit; git blob ids (SHA-1) are never compared with sha256 digests anywhere in this index",
+   "baseComparisonMethod": "base content is read with git show HEAD:<path> and hashed with sha256, matching the digest dimension used for the candidate files and by the #120 manifest; verified with git status --porcelain, which reports MultiplayerSceneTests.cs as the only modified file in the checkout"
+  },
+  "abortedRuns": [
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1737-full",
+    "unixExitCode": 1,
+    "observed": "Aborting batchmode due to failure: Scripts have compiler errors.",
+    "cause": "The LiveKit SDK package cache held 130-133 byte Git-LFS pointer stubs for its desktop binaries (Google.Protobuf.dll declared size 472864), so the package did not compile: 3645x CS0538, 117x CS0400, 24x CS0246. No test discovery happened; no XML was produced.",
+    "resolution": "Resolved locally without any network transfer: the seven desktop binaries pinned by foundation/network/dependency-contract.json were copied from a sibling local checkout of the same repository and verified against the contract sha256/size, then the repository script scripts/dev/prepare_multiplayer_dependencies.py --apply reported nothing missing and applied its reviewed Pipeline asmdef patch. Its verify mode then returned dependency_files_verified for all seven binaries.",
+    "receipt": "run-20260914T1737-full/full-EditMode.log (sha256 abb0d8629a1c409f581ca0812d2e219b4c2a13af8b4e05c52d7bd48362b3d878)",
+    "note": "This run is a refused/aborted run, not a skip observation, and is kept unmodified."
+   }
+  ]
+ },
+ "discovery": {
+  "claim": "The 70 skipped cases are exactly one fixture, and the same 70 cases execute when that fixture runs with a clean editor scene.",
+  "seventyCases": {
+   "fixture": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests",
+   "casesInFullRun": 70,
+   "casesSkippedInFullRun": 70,
+   "xmlSkipReason": "OneTimeSetUp: Preserve unsaved scenes.",
+   "reasonIsUniform": true,
+   "identicalSetInSplitMultiplayer": true,
+   "sameSeventyCasesPassWhenIsolated": true,
+   "verifiedBy": "set comparison of <test-case fullname> between the full run, the multiplayer split and the isolated run: the three sets are equal, and the isolated run reports Passed=70, Skipped=0."
+  },
+  "fullRunBudget": {
+   "total": 500,
+   "passed": 423,
+   "failed": 2,
+   "skipped": 75,
+   "decomposition": "70 WorldMotionAdapterTests skips + 5 intentional skips (1 File.Exists local-output guard in ReconstructionReviewTests + 4 [Test, Explicit] cases) + 2 failures (both required regressions)."
+  },
+  "discoveryBoundary": [
+   {
+    "finding": "-testFilter matches the assembly name as well as the type full name: ten fixtures live in the global namespace (IncidentDirectorTests, RuntimeMetricAccumulatorTests, RuntimeSchedulingTests, SnapshotFragmentTests, SnapshotPayloadTests, SnapshotTransportTests, WorldReviewContractTests, WorldShutdownTests, CrowdPhaseTests, SmokeOpticsTests) and are still discovered by namespace filters, because the asmdef names equal the namespace strings used as filters.",
+    "evidence": "the three namespace filters partition the full run exactly: 212 + 221 + 67 = 500 discovered cases with zero overlap."
+   },
+   {
+    "finding": "Repeating -testFilter does not union: the last filter wins. run-20260914T1745-pair-pre was launched with FoundationSimulationTests and WorldMotionAdapterTests as two -testFilter arguments and discovered only the 70 WorldMotionAdapterTests cases.",
+    "evidence": "run-20260914T1745-pair-pre/EditMode.xml testcasecount=70.",
+    "consequence": "the pairing design was inconclusive and was not used as pairing evidence; a single regex alternation filter was used instead."
+   },
+   {
+    "finding": "-testFilter accepts a regular-expression alternation and then unions the matching classes.",
+    "evidence": "run-20260914T1745-pair-voice-pre discovered 159 = 89 VoiceEpochCoordinatorTests + 70 WorldMotionAdapterTests cases from one filter."
+   },
+   {
+    "finding": "[Test, Explicit] selection depends on whether a filter is present: with no filter the cases are reported Skipped, while a filter that selects their assembly executes them and they pass.",
+    "evidence": "the full run reports CrowdBenchmarkTests and FireBenchmarkTests as Skipped (2 of the 5 intentional skips), while run-20260914T1745-split-foundation reports 221 passed and 0 skipped for the same assembly, and run-20260914T1745-split-multiplayer reports FoundationSimulationTests 11 passed against 9 passed + 2 skipped in the full run."
+   }
+  ],
+  "evidenceRuns": [
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-full",
+    "purpose": "baseline full EditMode run; 70 skips + 2 failures reproduced here",
+    "unixExitCode": 2,
+    "total": 500,
+    "results": {
+     "Passed": 423,
+     "Skipped": 75,
+     "Failed": 2
+    },
+    "worldMotionSkippedCases": 70,
+    "resultsByFixture": {
+     "DemoExerciseTests": {
+      "Passed": 3
+     },
+     "DemoFlowTests": {
+      "Passed": 10
+     },
+     "DemoNavigationTests": {
+      "Passed": 6
+     },
+     "ReconstructionReviewTests": {
+      "Passed": 11,
+      "Skipped": 1
+     },
+     "SceneBuilderTests": {
+      "Passed": 25
+     },
+     "StationWorldSceneTests": {
+      "Passed": 2
+     },
+     "StationWorldSessionTests": {
+      "Passed": 9
+     },
+     "AdmissionTests": {
+      "Passed": 2
+     },
+     "ConnectedRegionEffectTests": {
+      "Passed": 1
+     },
+     "ConnectedWorldTests": {
+      "Passed": 11,
+      "Failed": 1
+     },
+     "FoundationSimulationTests": {
+      "Passed": 9,
+      "Skipped": 2
+     },
+     "GroundedActorGeometryTests": {
+      "Passed": 2
+     },
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "NativeSdkImportTests": {
+      "Failed": 1
+     },
+     "ShiftJournalTests": {
+      "Passed": 4
+     },
+     "SimulationJournalTests": {
+      "Passed": 5
+     },
+     "SnapshotFreshnessTests": {
+      "Passed": 1
+     },
+     "VoiceEpochCoordinatorTests": {
+      "Passed": 89
+     },
+     "WorldMotionAdapterTests": {
+      "Skipped": 70
+     },
+     "WorldStackedGeometryTests": {
+      "Passed": 1
+     },
+     "IncidentDirectorTests": {
+      "Passed": 1
+     },
+     "RuntimeMetricAccumulatorTests": {
+      "Passed": 1
+     },
+     "RuntimeSchedulingTests": {
+      "Passed": 2
+     },
+     "SnapshotFragmentTests": {
+      "Passed": 1
+     },
+     "SnapshotPayloadTests": {
+      "Passed": 1
+     },
+     "SnapshotTransportTests": {
+      "Passed": 3
+     },
+     "WorldReviewContractTests": {
+      "Passed": 2
+     },
+     "WorldShutdownTests": {
+      "Passed": 1
+     },
+     "AuthoritativeShiftTests": {
+      "Passed": 23
+     },
+     "CanonicalScenarioTests": {
+      "Passed": 15
+     },
+     "ConnectedThermalTests": {
+      "Passed": 11
+     },
+     "CoupledIncidentLifecycleTests": {
+      "Passed": 5
+     },
+     "CrowdBenchmarkTests": {
+      "Skipped": 1
+     },
+     "CrowdForkTests": {
+      "Passed": 2
+     },
+     "CrowdMotionTests": {
+      "Passed": 28
+     },
+     "CrowdMotionWindowTests": {
+      "Passed": 3
+     },
+     "CrowdWallOptimizationTests": {
+      "Passed": 2
+     },
+     "CrowdWorldContactTests": {
+      "Passed": 17
+     },
+     "FireBenchmarkTests": {
+      "Skipped": 1
+     },
+     "FirePhysicsTests": {
+      "Passed": 17
+     },
+     "FoundationLoadVerificationTests": {
+      "Passed": 6
+     },
+     "PhysicalCheckpointTests": {
+      "Passed": 10
+     },
+     "SimulatedAuthorityTests": {
+      "Passed": 8
+     },
+     "SimulatedSpatialTests": {
+      "Passed": 4
+     },
+     "SlopedFireCellTests": {
+      "Passed": 2
+     },
+     "TrainDynamicsTests": {
+      "Passed": 13
+     },
+     "TrainingSessionTests": {
+      "Passed": 37
+     },
+     "TrainOperationTests": {
+      "Passed": 6
+     },
+     "VoiceContractTests": {
+      "Passed": 7
+     },
+     "CrowdPhaseTests": {
+      "Passed": 2
+     },
+     "SmokeOpticsTests": {
+      "Passed": 1
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "ReconstructionReviewTests :: ": 1,
+     "FoundationSimulationTests :: ": 2,
+     "WorldMotionAdapterTests :: ": 20,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",True,0 :: ": 2,
+     "ClosedTreeEdgeWaitsAndActualPropGetsAPathAroundIt(0 :: ": 2,
+     "CrowdBenchmarkTests :: ": 1,
+     "FireBenchmarkTests :: ": 1
+    },
+    "failed": {
+     "ChooGuard.Foundation.Multiplayer.Tests.ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"<claim-checkout>",
+     "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows": "Expected: not null\n  But was:  null"
+    },
+    "xmlSha256": "595096c7916519c8fdd5f12f69cc0c092564f608a8c0b640ddeaf2d6982d5f9e",
+    "xmlSizeBytes": 456295,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-split-multiplayer",
+    "purpose": "namespace split; the same 70 skips with the same XML reason",
+    "unixExitCode": 2,
+    "total": 212,
+    "results": {
+     "Passed": 140,
+     "Failed": 2,
+     "Skipped": 70
+    },
+    "worldMotionSkippedCases": 70,
+    "resultsByFixture": {
+     "AdmissionTests": {
+      "Passed": 2
+     },
+     "ConnectedRegionEffectTests": {
+      "Passed": 1
+     },
+     "ConnectedWorldTests": {
+      "Passed": 11,
+      "Failed": 1
+     },
+     "FoundationSimulationTests": {
+      "Passed": 11
+     },
+     "GroundedActorGeometryTests": {
+      "Passed": 2
+     },
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "NativeSdkImportTests": {
+      "Failed": 1
+     },
+     "ShiftJournalTests": {
+      "Passed": 4
+     },
+     "SimulationJournalTests": {
+      "Passed": 5
+     },
+     "SnapshotFreshnessTests": {
+      "Passed": 1
+     },
+     "VoiceEpochCoordinatorTests": {
+      "Passed": 89
+     },
+     "WorldMotionAdapterTests": {
+      "Skipped": 70
+     },
+     "WorldStackedGeometryTests": {
+      "Passed": 1
+     },
+     "IncidentDirectorTests": {
+      "Passed": 1
+     },
+     "RuntimeMetricAccumulatorTests": {
+      "Passed": 1
+     },
+     "RuntimeSchedulingTests": {
+      "Passed": 2
+     },
+     "SnapshotFragmentTests": {
+      "Passed": 1
+     },
+     "SnapshotPayloadTests": {
+      "Passed": 1
+     },
+     "SnapshotTransportTests": {
+      "Passed": 3
+     },
+     "WorldReviewContractTests": {
+      "Passed": 2
+     },
+     "WorldShutdownTests": {
+      "Passed": 1
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "WorldMotionAdapterTests :: ": 20,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",True,0 :: ": 2,
+     "ClosedTreeEdgeWaitsAndActualPropGetsAPathAroundIt(0 :: ": 2
+    },
+    "failed": {
+     "ChooGuard.Foundation.Multiplayer.Tests.ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"<claim-checkout>",
+     "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows": "Expected: not null\n  But was:  null"
+    },
+    "xmlSha256": "3c3e8c7646de9fec754807e2bc3f77ff2b20061ca3b64f334b83b48e469b1bec",
+    "xmlSizeBytes": 205673,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-split-foundation",
+    "purpose": "namespace split; 221 discovered, 0 skipped (Explicit cases executed under the filter)",
+    "unixExitCode": 0,
+    "total": 221,
+    "results": {
+     "Passed": 221
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "AuthoritativeShiftTests": {
+      "Passed": 23
+     },
+     "CanonicalScenarioTests": {
+      "Passed": 15
+     },
+     "ConnectedThermalTests": {
+      "Passed": 11
+     },
+     "CoupledIncidentLifecycleTests": {
+      "Passed": 5
+     },
+     "CrowdBenchmarkTests": {
+      "Passed": 1
+     },
+     "CrowdForkTests": {
+      "Passed": 2
+     },
+     "CrowdMotionTests": {
+      "Passed": 28
+     },
+     "CrowdMotionWindowTests": {
+      "Passed": 3
+     },
+     "CrowdWallOptimizationTests": {
+      "Passed": 2
+     },
+     "CrowdWorldContactTests": {
+      "Passed": 17
+     },
+     "FireBenchmarkTests": {
+      "Passed": 1
+     },
+     "FirePhysicsTests": {
+      "Passed": 17
+     },
+     "FoundationLoadVerificationTests": {
+      "Passed": 6
+     },
+     "PhysicalCheckpointTests": {
+      "Passed": 10
+     },
+     "SimulatedAuthorityTests": {
+      "Passed": 8
+     },
+     "SimulatedSpatialTests": {
+      "Passed": 4
+     },
+     "SlopedFireCellTests": {
+      "Passed": 2
+     },
+     "TrainDynamicsTests": {
+      "Passed": 13
+     },
+     "TrainingSessionTests": {
+      "Passed": 37
+     },
+     "TrainOperationTests": {
+      "Passed": 6
+     },
+     "VoiceContractTests": {
+      "Passed": 7
+     },
+     "CrowdPhaseTests": {
+      "Passed": 2
+     },
+     "SmokeOpticsTests": {
+      "Passed": 1
+     }
+    },
+    "skippedByFixtureAndReason": {},
+    "failed": {},
+    "xmlSha256": "5f517abe74cd0fb51f4e8a611298e808c48d26ec0d9a22b3f8272dad057f8826",
+    "xmlSizeBytes": 184026,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-split-demo",
+    "purpose": "namespace split; 67 discovered, 1 intentional File.Exists skip",
+    "unixExitCode": 0,
+    "total": 67,
+    "results": {
+     "Passed": 66,
+     "Skipped": 1
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "DemoExerciseTests": {
+      "Passed": 3
+     },
+     "DemoFlowTests": {
+      "Passed": 10
+     },
+     "DemoNavigationTests": {
+      "Passed": 6
+     },
+     "ReconstructionReviewTests": {
+      "Passed": 11,
+      "Skipped": 1
+     },
+     "SceneBuilderTests": {
+      "Passed": 25
+     },
+     "StationWorldSceneTests": {
+      "Passed": 2
+     },
+     "StationWorldSessionTests": {
+      "Passed": 9
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "ReconstructionReviewTests :: ": 1
+    },
+    "failed": {},
+    "xmlSha256": "a7ae6a7d7028d7be31af8f3f58dd4f8389de24e508ea48f9c12e41d162758f2a",
+    "xmlSizeBytes": 68892,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-isolated-worldmotion",
+    "purpose": "the 70 cases run alone: 70/70 pass, 0 skipped",
+    "unixExitCode": 0,
+    "total": 70,
+    "results": {
+     "Passed": 70
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "WorldMotionAdapterTests": {
+      "Passed": 70
+     }
+    },
+    "skippedByFixtureAndReason": {},
+    "failed": {},
+    "xmlSha256": "82a2a1151d06f226c4ac0e80b7b2c70c5657f9d784ebf1c23c1ca09490487fd5",
+    "xmlSizeBytes": 76238,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-pair-voice-pre",
+    "purpose": "single-alternation-regex filter; Voice 89 + WorldMotion 70 both pass, so Voice is not the polluter",
+    "unixExitCode": 0,
+    "total": 159,
+    "results": {
+     "Passed": 159
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "VoiceEpochCoordinatorTests": {
+      "Passed": 89
+     },
+     "WorldMotionAdapterTests": {
+      "Passed": 70
+     }
+    },
+    "skippedByFixtureAndReason": {},
+    "failed": {},
+    "xmlSha256": "166b08346e0e4259529efe881168754fc1d137c421e592832d8cf3b28a28e0cb",
+    "xmlSizeBytes": 159288,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-bisectA",
+    "purpose": "tail from MultiplayerSceneTests; 70 skips reproduce",
+    "unixExitCode": 2,
+    "total": 171,
+    "results": {
+     "Passed": 100,
+     "Failed": 1,
+     "Skipped": 70
+    },
+    "worldMotionSkippedCases": 70,
+    "resultsByFixture": {
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "NativeSdkImportTests": {
+      "Failed": 1
+     },
+     "ShiftJournalTests": {
+      "Passed": 4
+     },
+     "SimulationJournalTests": {
+      "Passed": 5
+     },
+     "SnapshotFreshnessTests": {
+      "Passed": 1
+     },
+     "VoiceEpochCoordinatorTests": {
+      "Passed": 89
+     },
+     "WorldMotionAdapterTests": {
+      "Skipped": 70
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "WorldMotionAdapterTests :: ": 20,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",True,0 :: ": 2,
+     "ClosedTreeEdgeWaitsAndActualPropGetsAPathAroundIt(0 :: ": 2
+    },
+    "failed": {
+     "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows": "Expected: not null\n  But was:  null"
+    },
+    "xmlSha256": "cd1b588fa7a9135a37d563be84f3c50e84c32f423a91a966b425aec28a9a4ad2",
+    "xmlSizeBytes": 166437,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-bisectB",
+    "purpose": "bisectA plus FoundationSimulationTests and GroundedActorGeometryTests; 70 skips still reproduce, so those two are not necessary",
+    "unixExitCode": 2,
+    "total": 184,
+    "results": {
+     "Passed": 113,
+     "Failed": 1,
+     "Skipped": 70
+    },
+    "worldMotionSkippedCases": 70,
+    "resultsByFixture": {
+     "FoundationSimulationTests": {
+      "Passed": 11
+     },
+     "GroundedActorGeometryTests": {
+      "Passed": 2
+     },
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "NativeSdkImportTests": {
+      "Failed": 1
+     },
+     "ShiftJournalTests": {
+      "Passed": 4
+     },
+     "SimulationJournalTests": {
+      "Passed": 5
+     },
+     "SnapshotFreshnessTests": {
+      "Passed": 1
+     },
+     "VoiceEpochCoordinatorTests": {
+      "Passed": 89
+     },
+     "WorldMotionAdapterTests": {
+      "Skipped": 70
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "WorldMotionAdapterTests :: ": 20,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",True,0 :: ": 2,
+     "ClosedTreeEdgeWaitsAndActualPropGetsAPathAroundIt(0 :: ": 2
+    },
+    "failed": {
+     "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows": "Expected: not null\n  But was:  null"
+    },
+    "xmlSha256": "063a5491d0575604566c0a0d89c8df64e82b8d45aa41c59dd01861f753f320af",
+    "xmlSizeBytes": 178057,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-bisectC",
+    "purpose": "only MultiplayerSceneTests and NativeSdkImportTests precede WorldMotionAdapterTests; 70 skips reproduce -> MultiplayerSceneTests is the polluter",
+    "unixExitCode": 2,
+    "total": 72,
+    "results": {
+     "Passed": 1,
+     "Failed": 1,
+     "Skipped": 70
+    },
+    "worldMotionSkippedCases": 70,
+    "resultsByFixture": {
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "NativeSdkImportTests": {
+      "Failed": 1
+     },
+     "WorldMotionAdapterTests": {
+      "Skipped": 70
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "WorldMotionAdapterTests :: ": 20,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",True,0 :: ": 2,
+     "ClosedTreeEdgeWaitsAndActualPropGetsAPathAroundIt(0 :: ": 2
+    },
+    "failed": {
+     "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows": "Expected: not null\n  But was:  null"
+    },
+    "xmlSha256": "29f0c6ab03dd7cc8ec8e6233f16b7af8b0386b580179180626de79a68cbd0f65",
+    "xmlSizeBytes": 74181,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-bisectD",
+    "purpose": "negative control without MultiplayerSceneTests: 169/169 pass, 0 skipped",
+    "unixExitCode": 0,
+    "total": 169,
+    "results": {
+     "Passed": 169
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "ShiftJournalTests": {
+      "Passed": 4
+     },
+     "SimulationJournalTests": {
+      "Passed": 5
+     },
+     "SnapshotFreshnessTests": {
+      "Passed": 1
+     },
+     "VoiceEpochCoordinatorTests": {
+      "Passed": 89
+     },
+     "WorldMotionAdapterTests": {
+      "Passed": 70
+     }
+    },
+    "skippedByFixtureAndReason": {},
+    "failed": {},
+    "xmlSha256": "6e4ffa288074d3636b358821d3353345ffd2ff65e0ea3d72708e0f15e56ef17c",
+    "xmlSizeBytes": 168493,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-probe-scene",
+    "purpose": "diagnostic probe fixture printing the loaded scene inventory between the two fixtures",
+    "unixExitCode": 0,
+    "total": 72,
+    "results": {
+     "Passed": 2,
+     "Skipped": 70
+    },
+    "worldMotionSkippedCases": 70,
+    "resultsByFixture": {
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "SceneInventoryProbeTests": {
+      "Passed": 1
+     },
+     "WorldMotionAdapterTests": {
+      "Skipped": 70
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "WorldMotionAdapterTests :: ": 20,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"forecourt_eurasia--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"metro_concourse--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_platforms_mainline--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_terminal_public--underground_connector\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rail_tracks_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_mainline--rail_platforms_mainline\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"rolling_stock_metro--metro_platforms\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_hall_1f--station_concourse_2f\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"station_ticket_area--rail_terminal_public\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_connector--underground_shopping_passage\",True,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",False,0 :: ": 2,
+     "BothProfilesTraverseAllThirteenRegionsAndAllTwentyFourPortalDirections(\"underground_shopping_passage--metro_concourse\",True,0 :: ": 2,
+     "ClosedTreeEdgeWaitsAndActualPropGetsAPathAroundIt(0 :: ": 2
+    },
+    "failed": {},
+    "xmlSha256": "90be6d7a97ccbefa2466d85c0790041a524d114f7c8a576819178c96b89ae872",
+    "xmlSizeBytes": 73846,
+    "xmlCommitted": true,
+    "logCommitted": true,
+    "logSha256": "7146c81c4a64d00718f8122036138da147a1345469a6d9d638bc335dba9895ee",
+    "logSizeBytes": 130163,
+    "logNote": "editor log committed because the probe observation is written with Debug.Log and appears only here"
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-pair-pre",
+    "purpose": "repeated -testFilter did not union; degenerated into a second isolated confirmation (70/70 pass)",
+    "unixExitCode": 0,
+    "total": 70,
+    "results": {
+     "Passed": 70
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "WorldMotionAdapterTests": {
+      "Passed": 70
+     }
+    },
+    "skippedByFixtureAndReason": {},
+    "failed": {},
+    "xmlSha256": "f6bb625dff68fe3bf027b5898f18b2d375565f63b9aeecf8a833bc06e8ee7481",
+    "xmlSizeBytes": 76235,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   }
+  ],
+  "fixVerificationRuns": [
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-fix-bisectC",
+    "purpose": "AFTER the fix: the exact controlled reproduction (MultiplayerSceneTests + NativeSdkImportTests + WorldMotionAdapterTests) that skipped 70 before now runs 70/70 and skips 0",
+    "unixExitCode": 2,
+    "total": 72,
+    "results": {
+     "Passed": 71,
+     "Failed": 1
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "NativeSdkImportTests": {
+      "Failed": 1
+     },
+     "WorldMotionAdapterTests": {
+      "Passed": 70
+     }
+    },
+    "skippedByFixtureAndReason": {},
+    "failed": {
+     "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows": "Expected: not null\n  But was:  null"
+    },
+    "xmlSha256": "db03c3ecad3e92dcdb2fd2bf55a9e74f009d2c925863ad002c5bd65cef461961",
+    "xmlSizeBytes": 80501,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   },
+   {
+    "runDirectory": "docs/evidence/foundation/FMP-QA-R1-discovery-runs/run-20260914T1745-fix-full",
+    "purpose": "AFTER the fix: full EditMode suite on the same command as the baseline",
+    "unixExitCode": 2,
+    "total": 500,
+    "results": {
+     "Passed": 493,
+     "Skipped": 5,
+     "Failed": 2
+    },
+    "worldMotionSkippedCases": 0,
+    "resultsByFixture": {
+     "DemoExerciseTests": {
+      "Passed": 3
+     },
+     "DemoFlowTests": {
+      "Passed": 10
+     },
+     "DemoNavigationTests": {
+      "Passed": 6
+     },
+     "ReconstructionReviewTests": {
+      "Passed": 11,
+      "Skipped": 1
+     },
+     "SceneBuilderTests": {
+      "Passed": 25
+     },
+     "StationWorldSceneTests": {
+      "Passed": 2
+     },
+     "StationWorldSessionTests": {
+      "Passed": 9
+     },
+     "AdmissionTests": {
+      "Passed": 2
+     },
+     "ConnectedRegionEffectTests": {
+      "Passed": 1
+     },
+     "ConnectedWorldTests": {
+      "Passed": 11,
+      "Failed": 1
+     },
+     "FoundationSimulationTests": {
+      "Passed": 9,
+      "Skipped": 2
+     },
+     "GroundedActorGeometryTests": {
+      "Passed": 2
+     },
+     "MultiplayerSceneTests": {
+      "Passed": 1
+     },
+     "NativeSdkImportTests": {
+      "Failed": 1
+     },
+     "ShiftJournalTests": {
+      "Passed": 4
+     },
+     "SimulationJournalTests": {
+      "Passed": 5
+     },
+     "SnapshotFreshnessTests": {
+      "Passed": 1
+     },
+     "VoiceEpochCoordinatorTests": {
+      "Passed": 89
+     },
+     "WorldMotionAdapterTests": {
+      "Passed": 70
+     },
+     "WorldStackedGeometryTests": {
+      "Passed": 1
+     },
+     "IncidentDirectorTests": {
+      "Passed": 1
+     },
+     "RuntimeMetricAccumulatorTests": {
+      "Passed": 1
+     },
+     "RuntimeSchedulingTests": {
+      "Passed": 2
+     },
+     "SnapshotFragmentTests": {
+      "Passed": 1
+     },
+     "SnapshotPayloadTests": {
+      "Passed": 1
+     },
+     "SnapshotTransportTests": {
+      "Passed": 3
+     },
+     "WorldReviewContractTests": {
+      "Passed": 2
+     },
+     "WorldShutdownTests": {
+      "Passed": 1
+     },
+     "AuthoritativeShiftTests": {
+      "Passed": 23
+     },
+     "CanonicalScenarioTests": {
+      "Passed": 15
+     },
+     "ConnectedThermalTests": {
+      "Passed": 11
+     },
+     "CoupledIncidentLifecycleTests": {
+      "Passed": 5
+     },
+     "CrowdBenchmarkTests": {
+      "Skipped": 1
+     },
+     "CrowdForkTests": {
+      "Passed": 2
+     },
+     "CrowdMotionTests": {
+      "Passed": 28
+     },
+     "CrowdMotionWindowTests": {
+      "Passed": 3
+     },
+     "CrowdWallOptimizationTests": {
+      "Passed": 2
+     },
+     "CrowdWorldContactTests": {
+      "Passed": 17
+     },
+     "FireBenchmarkTests": {
+      "Skipped": 1
+     },
+     "FirePhysicsTests": {
+      "Passed": 17
+     },
+     "FoundationLoadVerificationTests": {
+      "Passed": 6
+     },
+     "PhysicalCheckpointTests": {
+      "Passed": 10
+     },
+     "SimulatedAuthorityTests": {
+      "Passed": 8
+     },
+     "SimulatedSpatialTests": {
+      "Passed": 4
+     },
+     "SlopedFireCellTests": {
+      "Passed": 2
+     },
+     "TrainDynamicsTests": {
+      "Passed": 13
+     },
+     "TrainingSessionTests": {
+      "Passed": 37
+     },
+     "TrainOperationTests": {
+      "Passed": 6
+     },
+     "VoiceContractTests": {
+      "Passed": 7
+     },
+     "CrowdPhaseTests": {
+      "Passed": 2
+     },
+     "SmokeOpticsTests": {
+      "Passed": 1
+     }
+    },
+    "skippedByFixtureAndReason": {
+     "ReconstructionReviewTests :: ": 1,
+     "FoundationSimulationTests :: ": 2,
+     "CrowdBenchmarkTests :: ": 1,
+     "FireBenchmarkTests :: ": 1
+    },
+    "failed": {
+     "ChooGuard.Foundation.Multiplayer.Tests.ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"<claim-checkout>",
+     "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows": "Expected: not null\n  But was:  null"
+    },
+    "xmlSha256": "cb85016e7db95ecd40057654f91b34fba7baeb89890bc76a11d55ee94fba44a6",
+    "xmlSizeBytes": 462579,
+    "xmlCommitted": true,
+    "logCommitted": false,
+    "logNote": "editor log intentionally not committed (Unity editor chatter, multi-megabyte); the NUnit XML above is the run receipt and the exact command is recorded so the log can be regenerated."
+   }
+  ]
+ },
+ "cause": {
+  "summary": "A cross-fixture scene-dirt leak, not a discovery failure and not a broken test. MultiplayerSceneTests leaves the generated scene it built open and dirty, so the next dirty-scene guard in the assembly - WorldMotionAdapterTests.[OneTimeSetUp] - refuses to run and NUnit reports its 70 cases as Skipped with the guard message.",
+  "observedState": "scene[FoundationDemo] path='Assets/CHOOguardGenerated/MultiplayerTest_<guid>/FoundationDemo.unity' loaded=True dirty=True valid=True",
+  "observedBy": "run-20260914T1745-probe-scene, a temporary probe fixture run between MultiplayerSceneTests and WorldMotionAdapterTests; the probe file itself was deleted before the commit and only its receipt is kept.",
+  "chain": [
+   "MultiplayerSceneTests calls MultiplayerSceneBuilder.Build(path), which calls FoundationDemoSceneBuilder.Build.",
+   "FoundationDemoSceneBuilder computes replaceUntitled = sceneCount == 1 && the single scene has an empty path, which is exactly the batchmode startup scene, and therefore calls NewScene(EmptyScene, NewSceneMode.Single): the startup scene is destroyed and the generated scene becomes the only loaded scene.",
+   "The test finally block closes only scenes whose path starts with the build path. That scene is now the last loaded scene, so EditorSceneManager.CloseScene cannot remove it and the close silently leaves it open (its return value is not checked).",
+   "AssetDatabase.DeleteAsset(path) then deletes the asset that backs the still-open scene, which leaves the scene marked dirty.",
+   "SceneManager.SetActiveScene(previous) is skipped because the startup scene captured at the top was already destroyed, so nothing restores the editor.",
+   "The editor is left holding one loaded dirty scene; every later fixture that guards on Scene.isDirty in [OneTimeSetUp] or [SetUp] then calls Assert.Ignore and reports entirely as Skipped."
+  ],
+  "whyItIsAnEnvironmentCause": "The guard is correct and intentional: it protects unsaved user work. The defect is that a fixture leaked its build scene into the shared editor state, so the guard fired for a reason that has nothing to do with the 70 cases.",
+  "excludedCandidates": [
+   "VoiceEpochCoordinatorTests creates ~40 GameObjects in the active scene but destroys them all and does not pollute: Voice + WorldMotion pass together (run-20260914T1745-pair-voice-pre).",
+   "FoundationSimulationTests and GroundedActorGeometryTests are not necessary: bisectA reproduces the 70 skips without them.",
+   "The journal and snapshot fixtures (ShiftJournalTests, SimulationJournalTests, SnapshotFreshnessTests) do not touch scenes at all: bisectD passes 169/169.",
+   "NativeSdkImportTests only reads an AssetImporter and cannot dirty a scene; it is present in bisectC only because it shares the same neighbourhood, and its failure is a separate required regression."
+  ]
+ },
+ "fix": {
+  "kind": "test hygiene fix on the polluter fixture only; no guard, no test and no Ignore was removed or weakened",
+  "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/MultiplayerSceneTests.cs",
+  "change": "In the test finally block, after the existing close/delete/SetActiveScene cleanup, if any loaded scene is still dirty, replace it with a clean untitled scene via EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single). The test body, its assertions and its dirty-scene refusal guard are untouched.",
+  "verification": {
+   "controlledReproductionBefore": {
+    "run": "run-20260914T1745-bisectC",
+    "total": 72,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 70
+   },
+   "controlledReproductionAfter": {
+    "run": "run-20260914T1745-fix-bisectC",
+    "total": 72,
+    "passed": 71,
+    "failed": 1,
+    "skipped": 0,
+    "note": "WorldMotionAdapterTests runs all 70 and passes; the 1 remaining failure is the NativeSdkImportTests required regression, not a skip."
+   },
+   "fullSuiteBefore": {
+    "run": "run-20260914T1745-full",
+    "total": 500,
+    "passed": 423,
+    "failed": 2,
+    "skipped": 75
+   },
+   "fullSuiteAfter": {
+    "run": "run-20260914T1745-fix-full",
+    "total": 500,
+    "passed": 493,
+    "failed": 2,
+    "skipped": 5,
+    "note": "the 70 skips are gone because the 70 cases executed; the 5 remaining skips are exactly the intentional preservation guards, and the 2 failures are unchanged required regressions. total is unchanged at 500, so nothing was dropped or hidden."
+   }
+  },
+  "followsExistingRepoRemedy": "The repository already uses exactly this remedy where the captured previous scene may be gone: Packages/com.xrlab.chooguard.foundation/Demo/Tests/Editor/StationWorldSceneTests.cs [TearDown] and ReconstructionReviewTests.cs both fall back to EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single) when previous.IsValid() is false. MultiplayerSceneTests had that fallback only for SetActiveScene and never restored a clean scene.",
+  "notChangedOnPurpose": "the seven Editor dirty-scene guards, the SceneBuilderTests Directory.Exists guards, the ReconstructionReviewTests File.Exists guard and the four [Test, Explicit] attributes are all intentional and were left exactly as they were."
+ },
+ "skips": {
+  "totalSkipsInFullRun": 75,
+  "theSeventy": {
+   "classification": "ENVIRONMENT_CAUSE - required cases blocked by another fixture leaking scene dirt",
+   "count": 70,
+   "fixture": "WorldMotionAdapterTests",
+   "afterFix": "executed"
+  },
+  "theOtherFive": [
+   {
+    "classification": "INTENTIONAL_PRESERVATION_GUARD",
+    "count": 1,
+    "case": "ChooGuard.Foundation.Demo.Tests.ReconstructionReviewTests.SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
+    "xmlSkipReason": "Local reconstruction output is intentionally not Git-tracked.",
+    "source": "File.Exists guard on a local-only reconstruction output; kept as is."
+   },
+   {
+    "classification": "INTENTIONAL_PRESERVATION_GUARD",
+    "count": 4,
+    "cases": [
+     "ChooGuard.Foundation.Multiplayer.Tests.FoundationSimulationTests.OptimizedMotionMatchesPriorExecutionForAllTwentyFive120BodyWorldTicks",
+     "ChooGuard.Foundation.Multiplayer.Tests.FoundationSimulationTests.ProfileTwentyParticipantsAndOneHundredNpcWorld",
+     "ChooGuard.Foundation.Tests.CrowdBenchmarkTests.ExportPinnedJuelichConditionalCorridorComparisons",
+     "ChooGuard.Foundation.Tests.FireBenchmarkTests.ExportPinnedStecklerComparisonsAndNumericalBalances"
+    ],
+    "source": "[Test, Explicit(...)] attributes: long-running benchmark and profiling cases deliberately excluded from the default suite.",
+    "note": "these four execute and pass when a -testFilter selects their assembly; that is a runner property, not a fix."
+   }
+  ],
+  "notDoing": "No test was deleted, no Ignore was added, no skip allowance was widened and the skip total was not shrunk by declaring the 70 cases unnecessary. After the fix the 70 cases stop being skipped because they actually run."
+ },
+ "requiredRegressions": {
+  "summary": "Both genuine failures reproduced identically in the full run and in the multiplayer split, before and after the fix. They are failures, not skips, and they are not caused by the count of 70.",
+  "items": [
+   {
+    "case": "ChooGuard.Foundation.Multiplayer.Tests.ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams",
+    "observed": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"<checkout>/Assets/CHOOguardGenerated/MultiplayerSlice/FoundationDemo.unity\"",
+    "cause": "The shared station slice has never been built in this clean checkout, so the generated scene the test opens does not exist.",
+    "requiredAction": "Run the CHOOguard/Multiplayer/Build Shared Station Slice builder before this suite, or commit the generated asset, and fix the ordering dependency so the suite cannot pass for the wrong reason.",
+    "state": "NOT_RUN here: building it writes under Assets/CHOOguardGenerated/, which is outside this issue's write scope."
+   },
+   {
+    "case": "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows",
+    "observed": "Expected: not null\n  But was:  null",
+    "cause": "AssetImporter.GetAtPath(\"Assets/CHOOguardGenerated/MultiplayerNative/ffi-linux-x86_64/liblivekit_ffi.so\") returns null because the owned native import has not been prepared in this checkout.",
+    "requiredAction": "Run NativeSdkImportPolicy.Prepare() (the owned native copy step) before the suite, or make the test verify the policy without depending on an unrun editor menu action.",
+    "state": "NOT_RUN here: preparing it writes under Assets/CHOOguardGenerated/, which is outside this issue's write scope."
+   }
+  ]
+ },
+ "separateFrom": {
+  "voiceRegression": {
+   "fixture": "ChooGuard.Foundation.Multiplayer.Tests.VoiceEpochCoordinatorTests",
+   "cases": 89,
+   "note": "89/89 pass in the full run, in both splits and in the isolated pair run. This is an independent scope and is NOT evidence for the 70 cases; it is reported only to show the 70 skips are not a general multiplayer-assembly failure."
+  },
+  "foundationSplit": {
+   "cases": 221,
+   "note": "discovered and passing under -testFilter ChooGuard.Foundation.Tests; contains no skip of the 70."
+  }
+ },
+ "failedOrUnrun": [
+  {
+   "item": "ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams",
+   "state": "FAILED",
+   "reason": "missing generated Assets/CHOOguardGenerated/MultiplayerSlice/FoundationDemo.unity; building it is outside this issue's write scope"
+  },
+  {
+   "item": "NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows",
+   "state": "FAILED",
+   "reason": "missing owned native import at Assets/CHOOguardGenerated/MultiplayerNative; preparing it is outside this issue's write scope"
+  },
+  {
+   "item": "run-20260914T1737-full first launch",
+   "state": "REFUSED_ABORTED",
+   "reason": "LiveKit package cache held Git-LFS pointer stubs; the batchmode run aborted on compiler errors and discovered nothing. Receipt kept unmodified."
+  },
+  {
+   "item": "a genuine PlayMode/player-build verification of the 70 cases",
+   "state": "NOT_RUN",
+   "reason": "this issue covers EditMode discovery; no PlayMode or player build was executed"
+  }
+ ],
+ "blockers": [],
+ "successorHandoff": [
+  {
+   "issue": 152,
+   "artifact": "artifact:152:fixture-discovery-proof:accept",
+   "note": "The accept phase re-runs the full EditMode suite on the accepted commit and checks that the 70 cases execute while the 5 intentional skips and the skip-reason text stay unchanged."
+  },
+  {
+   "issue": null,
+   "artifact": null,
+   "note": "The two required regressions need an owner: generate the shared station slice and the owned native import in a pre-suite build step, or make both tests independent of unrun editor menu actions."
+  }
+ ],
+ "claimRelease": "Held until the candidate artifact is returned to PM, or released on a new claim.",
+ "digestScope": {
+  "baseBlobSha1": "git blob SHA-1 of the file at runRecord.baseCommit",
+  "candidateBlobSha1": "git hash-object of the candidate working-tree content",
+  "candidateSha256": "sha256 of the candidate working-tree bytes",
+  "runXmlSha256": "sha256 of the raw NUnit XML receipt committed under docs/evidence/foundation/FMP-QA-R1-discovery-runs/",
+  "note": "Every count in this index is read back from the committed receipts; no receipt is overwritten and no earlier XML is reused for a later claim."
+ },
+ "appendOnly": true,
+ "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log receipts. Raw receipts are machine-generated and may contain the claim checkout path in failure messages; this index itself carries no absolute machine paths."
+}

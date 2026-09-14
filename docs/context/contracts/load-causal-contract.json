@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "contractId": "CC00",
+  "contract": "load-causal-contract",
+  "issue": 149,
+  "workId": "FMP-12a-R1",
+  "domainCode": "QA",
+  "phase": "candidate",
+  "artifact": "artifact:149:load-causal-contract:candidate",
+  "status": "proposed_not_adopted",
+  "scope": "FMP-12a-R1 / load-causal-contract / candidate; the five R6B items as portable observation/schema, exact-variant, role, CLEANUP_BEGIN and deadline-sibling contracts plus the corpus that executes them. It does not claim issue 149 acceptance, issue 120 acceptance, CC00 acceptance or CC01-CC05 adoption.",
+  "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+  "candidateCommit": "4ca8e5f35e84b0559f687687f7b851e85d0bef55",
+  "baseCommit": "ebf84c9c5322c516383870699e4405750887e07d",
+  "derivation": {
+    "r6bProseAvailableInCheckout": false,
+    "basis": "docs/context/work-graph.json items[number=149].acceptance, the machine-readable five-item list and the FMP-12a-R1 work order docs/context/work-orders/149.json",
+    "r6bItemTextSource": "issue 149 captured acceptance strings, quoted verbatim in each claim.r6bItem",
+    "note": "The R6B review prose is not in this checkout and was not fetched (no network). The five items are taken from the captured acceptance list; anything the prose says beyond those strings is not claimed here."
+  },
+  "claims": [
+    {
+      "claimId": "CC01",
+      "r6bItem": "private journal readback 독립 관측의 이름/schema와 판정 입력을 분리한다.",
+      "target": "scripts/dev/probe_journal.py",
+      "mechanism": "The journal readback is named and versioned as an independent observation (ObservationName='private-journal-readback', ObservationSchema='chooguard.private-journal-observation/1', payload under 'Readback'). judgment_input() derives a separate document (JudgmentInputName='load-causal-judgment-input', JudgmentInputSchema='chooguard.load-causal-judgment-input/1') that references the observation and carries only declared judgment fields; validate_judgment_input() refuses a judgment input that embeds the private readback. read_journal() keeps its previous return shape so run_simulation_probe.py is unaffected.",
+      "observation": {
+        "name": "private-journal-readback",
+        "schema": "chooguard.private-journal-observation/1",
+        "keys": [
+          "ObservationName",
+          "ObservationSchema",
+          "Readback"
+        ]
+      },
+      "judgmentInput": {
+        "name": "load-causal-judgment-input",
+        "schema": "chooguard.load-causal-judgment-input/1",
+        "keys": [
+          "JudgmentInputName",
+          "JudgmentInputSchema",
+          "ObservationRef",
+          "Ordinal",
+          "Sequence",
+          "SimulationTick",
+          "SourceHashes",
+          "TruncatedTailBytes"
+        ],
+        "disjointness": "judgment input keys ∩ observation-only keys = {} observed at runtime"
+      },
+      "normalSiblings": [
+        {
+          "caseId": "c01-observation-schema-normal",
+          "proves": "the declared observation yields a judgment input whose keys embed no readback key"
+        }
+      ],
+      "negativeCases": [
+        {
+          "caseId": "c01-observation-schema-mismatch",
+          "expectedCode": "OBSERVATION_SCHEMA_MISMATCH",
+          "selects": "an observation that renames its own schema to the judgment-input schema"
+        },
+        {
+          "caseId": "c01-observation-field-set",
+          "expectedCode": "OBSERVATION_FIELD_SET",
+          "selects": "an observation carrying an undeclared top-level key (the raw State) alongside Readback"
+        },
+        {
+          "caseId": "c01-judgment-input-leak",
+          "expectedCode": "JUDGMENT_INPUT_CARRIES_PRIVATE_OBSERVATION",
+          "selects": "a judgment input that embeds the private readback State"
+        }
+      ],
+      "contradictionRemoved": null
+    },
+    {
+      "claimId": "CC02",
+      "r6bItem": "expected_kind exact variant와 grouped command_marker_P_fault dispatch가 동일 사례를 선택한다.",
+      "target": "scripts/dev/foundation_load_metrics.py, scripts/dev/run_foundation_load.py",
+      "mechanism": "One canonical fault-case table in foundation_load_metrics: EXACT_FAULT_VARIANTS maps the metrics exact variant (expected_kind) to a canonical case id and GROUPED_FAULT_MARKERS maps the player-log grouped marker to the same ids. dispatch_fault_case() resolves either selector; assert_fault_dispatch_agreement() requires a one-to-one, two-way agreement and is called at FaultLogReader construction, so the run refuses to start on a divergence. FaultLogReader.MARKERS is derived from the shared table and poll() returns the canonical case id (or None), raising PLAYER_FAULT_LOG_DISPATCH_AMBIGUOUS when two cases match one line, so the grouped dispatch is a function of the observation rather than an any() of substrings. A metrics fault row declaring an unknown variant is refused as FAULT_KIND_UNKNOWN.",
+      "exactVariantSelector": {
+        "command_fault": "command_marker_P_fault",
+        "exception_fault": "runtime_exception_fault",
+        "startup_fault": "startup_fault"
+      },
+      "groupedMarkerSelector": {
+        "fatal error": "command_marker_P_fault",
+        "command processing stopped": "command_marker_P_fault",
+        "exception:": "runtime_exception_fault",
+        "startup failed": "startup_fault"
+      },
+      "canonicalCases": [
+        "command_marker_P_fault",
+        "runtime_exception_fault",
+        "startup_fault"
+      ],
+      "normalSiblings": [
+        {
+          "caseId": "c02-exact-variant-selects-case",
+          "selects": "expected_kind=command_fault"
+        },
+        {
+          "caseId": "c02-grouped-marker-selects-case",
+          "selects": "grouped_marker=command processing stopped"
+        },
+        {
+          "caseId": "c02-fault-log-reader-case",
+          "selects": "the runner log reader over a real private log file"
+        },
+        {
+          "caseId": "c02-dispatch-agreement",
+          "selects": "every declared case through both selectors"
+        },
+        {
+          "caseId": "c02-metrics-fault-row-exact-variant",
+          "selects": "a metrics Kind=fault row with FaultKind"
+        }
+      ],
+      "negativeCases": [
+        {
+          "caseId": "c02-grouped-marker-divergence",
+          "expectedCode": "FAULT_DISPATCH_DIVERGENCE",
+          "selects": "a grouped marker naming a case with no exact variant"
+        },
+        {
+          "caseId": "c02-fault-log-dispatch-ambiguous",
+          "expectedCode": "PLAYER_FAULT_LOG_DISPATCH_AMBIGUOUS",
+          "selects": "one log line matching two canonical cases"
+        },
+        {
+          "caseId": "c02-metrics-fault-row-unknown-variant",
+          "expectedCode": "FAULT_KIND_UNKNOWN",
+          "selects": "a metrics fault row declaring an unregistered exact variant"
+        }
+      ],
+      "contradictionRemoved": null
+    },
+    {
+      "claimId": "CC03",
+      "r6bItem": "legacy MetricsReader의 server/client role 및 잘못된 role 부정시험을 명시한다.",
+      "target": "scripts/dev/foundation_load_metrics.py",
+      "mechanism": "ROLE_VALUES = ('server','client') is the declared role domain. MetricsReader.__post_init__ refuses any other role as INVALID_READER_ROLE, and Interval.parse separates INVALID_EXPECTED_ROLE (the caller asked for a role that does not exist) from ROLE_MISMATCH (a row produced for the other role). The legacy reader is therefore explicit about which role it sums instead of rejecting an unknown role with the wrong code.",
+      "roleDomain": [
+        "server",
+        "client"
+      ],
+      "normalSiblings": [
+        {
+          "caseId": "c03-server-role-normal",
+          "selects": "a server row read by a server reader"
+        },
+        {
+          "caseId": "c03-client-role-normal",
+          "selects": "a client row read by a client reader"
+        }
+      ],
+      "negativeCases": [
+        {
+          "caseId": "c03-wrong-role-server-reader",
+          "expectedCode": "ROLE_MISMATCH",
+          "selects": "a client row handed to a server reader"
+        },
+        {
+          "caseId": "c03-wrong-role-client-reader",
+          "expectedCode": "ROLE_MISMATCH",
+          "selects": "a server row handed to a client reader"
+        },
+        {
+          "caseId": "c03-invalid-reader-role",
+          "expectedCode": "INVALID_READER_ROLE",
+          "selects": "a reader constructed with role=observer"
+        },
+        {
+          "caseId": "c03-invalid-expected-role",
+          "expectedCode": "INVALID_EXPECTED_ROLE",
+          "selects": "Interval.parse asked for role=observer"
+        }
+      ],
+      "contradictionRemoved": null
+    },
+    {
+      "claimId": "CC04",
+      "r6bItem": "cleanup_begin local deadline 누락을 CLEANUP_BEGIN 참조로 표현한다.",
+      "target": "scripts/dev/run_foundation_load.py, scripts/dev/foundation_load_metrics.py",
+      "mechanism": "run() captures cleanup_begin = clock() before the blocking manager.close() and records result['CleanupBegin'] = {ObservedSeconds, LocalDeadlineSeconds, WithinLocalDeadline} with LocalDeadlineSeconds = duration + metrics_grace. The measurement window ends at that instant; shutdown work after it is not measurement evidence. assess() receives the pair and reports CLEANUP_BEGIN_REFERENCE_MISSING when an overall deadline exists without the cleanup-begin reference, so the previous omission is a code rather than a silent gap.",
+      "reference": {
+        "marker": "CLEANUP_BEGIN",
+        "localDeadlineSeconds": "duration + metrics_grace",
+        "observedAt": "the instant cleanup begins, before manager.close()"
+      },
+      "normalSiblings": [
+        {
+          "caseId": "c04-runner-cleanup-begin-reference",
+          "selects": "a full run() over injected processes and readers"
+        }
+      ],
+      "negativeCases": [
+        {
+          "caseId": "c04-cleanup-begin-reference-missing",
+          "expectedCode": "CLEANUP_BEGIN_REFERENCE_MISSING",
+          "selects": "an overall deadline with no cleanup-begin reference"
+        }
+      ],
+      "contradictionRemoved": null
+    },
+    {
+      "claimId": "CC05",
+      "r6bItem": "positive terminal reserve와 overall deadline before/equal/after의 정상 sibling 실현 가능성을 입증하고 모순을 제거한다.",
+      "target": "scripts/dev/foundation_load_metrics.py, scripts/dev/run_foundation_load.py",
+      "mechanism": "The overall deadline (duration + metrics_grace + shutdown_grace) is classified against the observed cleanup begin into three neutral siblings (before/equal/after, epsilon 1e-6). The required reserve sign is declared per sibling (before=positive, equal=zero, after=negative) via terminal_deadline(), so no sibling is both normal and failed and the positive reserve is not demanded of equal/after. The only deadline failure is DEADLINE_OUTCOME_CONTRADICTION: a sibling declared by the caller that the observed reserve sign does not match.",
+      "siblings": [
+        {
+          "outcome": "before",
+          "requiredReserveSign": "positive",
+          "caseId": "c05-deadline-before"
+        },
+        {
+          "outcome": "equal",
+          "requiredReserveSign": "zero",
+          "caseId": "c05-deadline-equal"
+        },
+        {
+          "outcome": "after",
+          "requiredReserveSign": "negative",
+          "caseId": "c05-deadline-after"
+        }
+      ],
+      "normalSiblings": [
+        {
+          "caseId": "c05-deadline-before",
+          "selects": "reserve +20.0 (cleanup begin 2.0 s, overall deadline 22.0 s)"
+        },
+        {
+          "caseId": "c05-deadline-equal",
+          "selects": "reserve 0.0 (cleanup begin == overall deadline 22.0 s)"
+        },
+        {
+          "caseId": "c05-deadline-after",
+          "selects": "reserve -1.0 (cleanup begin 23.0 s, overall deadline 22.0 s)"
+        }
+      ],
+      "negativeCases": [
+        {
+          "caseId": "c05-deadline-contradiction",
+          "expectedCode": "DEADLINE_OUTCOME_CONTRADICTION",
+          "selects": "declared outcome 'before' with a negative reserve"
+        }
+      ],
+      "contradictionRemoved": "An unconditional 'terminal reserve must be positive' rule made the equal and after siblings unrealizable (equal forces reserve == 0, after forces reserve < 0). The reserve sign is now a per-sibling declaration and all three siblings are observed as neutral, non-issue outcomes."
+    }
+  ],
+  "corpus": {
+    "indexPath": "docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+    "caseCount": 24,
+    "emitter": "python3 scripts/dev/test_foundation_load.py --emit-corpus docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+    "behaviourGate": "python3 -m unittest discover -s scripts/dev -p 'test_foundation_load.py'"
+  },
+  "sourceBindings": {
+    "scripts/dev/probe_journal.py": {
+      "baseBlobSha1": "e9c0358d40a756ad090c449fe593188b2855d384",
+      "candidateBlobSha1": "dc12d7952b4d8109ab71388ad3f9da5f603ab56f",
+      "candidateSha256": "7807ae8a093460d7cd9c97b2bf695a433a421de70078535e03023c934019928e",
+      "candidateSizeBytes": 12563,
+      "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/probe_journal.py` bytes"
+    },
+    "scripts/dev/foundation_load_metrics.py": {
+      "baseBlobSha1": "8171e4c5966c2a413d77204c0eafdcb548779271",
+      "candidateBlobSha1": "924e78b9e131097469e64181361417aa752587dc",
+      "candidateSha256": "162c130a25757c88015d56867b5935647963295a70ef729b7f3156889ccd9f66",
+      "candidateSizeBytes": 29927,
+      "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/foundation_load_metrics.py` bytes"
+    },
+    "scripts/dev/run_foundation_load.py": {
+      "baseBlobSha1": "896cfafde3a03520702b82d9828dad91a5faa13b",
+      "candidateBlobSha1": "247eef0b0be108c0df5d809d74e9f36e888b3252",
+      "candidateSha256": "d1ae38c33bc0793f2273721b5018ab1b9c21ae6e9c6d3a5e11f2490144768949",
+      "candidateSizeBytes": 37471,
+      "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/run_foundation_load.py` bytes"
+    },
+    "scripts/dev/foundation_load_windows.py": {
+      "baseBlobSha1": "1227c5367d28c86990571ca450979ebdbbbd28cd",
+      "candidateBlobSha1": "1227c5367d28c86990571ca450979ebdbbbd28cd",
+      "candidateSha256": "8a996cd72db54ca7cf0304a05e2b2acbca245d5bba7d915112d9e19e4e945096",
+      "candidateSizeBytes": 4999,
+      "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/foundation_load_windows.py` bytes"
+    },
+    "scripts/dev/test_foundation_load.py": {
+      "baseBlobSha1": "fb7f2da78d40eefa866e3777252a9ea9bd448af4",
+      "candidateBlobSha1": "dbedc43d2adea60270bd952440179d36fced27cf",
+      "candidateSha256": "db7c45cba6c57a803a8de609504db1b54d97b758a96709b1b8b1b0b6f5e08ab2",
+      "candidateSizeBytes": 72194,
+      "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/test_foundation_load.py` bytes"
+    }
+  },
+  "changedPaths": [
+    "scripts/dev/probe_journal.py",
+    "scripts/dev/foundation_load_metrics.py",
+    "scripts/dev/run_foundation_load.py",
+    "scripts/dev/test_foundation_load.py"
+  ],
+  "unchangedPathsInWriteScope": {
+    "scripts/dev/foundation_load_windows.py": "no R6B item selects the Windows job path; it is left byte-identical (Windows native execution is not offered by this environment)"
+  },
+  "boundaries": {
+    "candidateGradeOnly": "All writes are isolated proposals (canonicalWriteAllowed=false). This contract and its corpus are candidate evidence, not issue acceptance.",
+    "notAProbe": "probe_journal.read_journal() keeps its original return shape; the new observation layer is additive and is exercised on a synthetic Schema3 journal fixture, not on a real player run.",
+    "noRealPlayerRun": "run() was executed only with injected processes, clocks and readers; no Unity player, no live service and no real 20-client session was launched."
+  },
+  "notAsserted": [
+    "CC00 acceptance or CC01-CC05 adoption",
+    "2~4-client rehearsal (#140) or the 20/100/2 60-minute load (#141/#142)",
+    "issue 120 source-only manifest acceptance",
+    "Windows-native job ownership, or any non-darwin execution"
+  ]
+}
