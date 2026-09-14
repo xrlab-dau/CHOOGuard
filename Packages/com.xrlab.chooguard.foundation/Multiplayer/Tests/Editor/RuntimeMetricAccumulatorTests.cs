@@ -189,6 +189,37 @@ public class RuntimeMetricAccumulatorTests
         var row = a.Close(1, StartUtc.AddSeconds(1));
         Require(row.Role == "client" && row.Batch && !row.NullGraphics && row.TickCount == 5 && row.SimulationTickStart == row.SimulationTickEnd, "Do not equate frame calls and physics/GPU");
     }
+    private static void FnSimulationAndUnFrameSeparation()
+    {
+        var a = new RuntimeMetricAccumulator("server", 0, StartUtc, 100, 10, 20, true, true);
+        // Record 2 server simulation ticks (F(n)): 2ms each
+        a.RecordSimulationTick(.1, 2.0, 12, 22, 20, 100, 2, 101, false, 0);
+        a.RecordSimulationTick(.2, 2.0, 14, 24, 20, 100, 2, 102, false, 0);
+        // Record 5 engine frames (U(n)): 16.0ms each
+        for (var i = 1; i <= 5; i++)
+            a.RecordFrame(.2 + i * .016, 16.0, 14, 24, 20, 100, 2, 102, false, 0);
+        var row = a.Close(1.0, StartUtc.AddSeconds(1));
+        Require(row.SimulationTickCount == 2, "SimulationTickCount must be 2");
+        Require(row.FrameCount == 5, "FrameCount must be 5");
+        Require(row.TickCount == 2, "Server primary TickCount matches simulation ticks");
+        Require(row.SimulationTickMilliseconds.Counts[1] == 2, "2ms ticks in Bounds[1] (<= 2ms)");
+        Require(row.FrameMilliseconds.Counts[5] == 5, "16ms frames in Bounds[5] (<= 16ms)");
+        Require(row.SimulationTickStart == 100 && row.SimulationTickEnd == 102, "Simulation range correctly tracked");
+    }
+    private static void ZeroTickFramesPreserveFrameMetricsAndCarry()
+    {
+        var a = new RuntimeMetricAccumulator("server", 0, StartUtc, 50, 0, 0, true, true);
+        // 0-tick frame interval: only RecordFrame calls (e.g. idle or catchup pause)
+        for (var i = 1; i <= 10; i++)
+            a.RecordFrame(i * .016, 16.0, 0, 0, 20, 100, 2, 50, false, 0);
+        var row = a.Close(1.0, StartUtc.AddSeconds(1));
+        Require(row.SimulationTickCount == 0, "No simulation ticks occurred");
+        Require(row.FrameCount == 10, "10 frames recorded");
+        Require(row.SimulationTickStart == 50 && row.SimulationTickEnd == 50, "Simulation counter preserved");
+        Require(row.ConnectedClients == 20 && row.ConnectedClientsMin == 20, "Population held");
+        Require(row.FrameMilliseconds.Counts[5] == 10, "Frames bucketed into 16ms");
+    }
+
     [Test] public void IntervalContracts()
     {
         passed=failed=0;
@@ -204,6 +235,8 @@ public class RuntimeMetricAccumulatorTests
         Check(nameof(CumulativeLimitsDoNotWrapAndOverloadsAreObserved), CumulativeLimitsDoNotWrapAndOverloadsAreObserved);
         Check(nameof(StatisticalBoundsDoNotInventMeanP95Ordering), StatisticalBoundsDoNotInventMeanP95Ordering);
         Check(nameof(ClientRuntimeModeAndCallPhysicsSeparation), ClientRuntimeModeAndCallPhysicsSeparation);
+        Check(nameof(FnSimulationAndUnFrameSeparation), FnSimulationAndUnFrameSeparation);
+        Check(nameof(ZeroTickFramesPreserveFrameMetricsAndCarry), ZeroTickFramesPreserveFrameMetricsAndCarry);
         Console.WriteLine("{\"Scope\":\"unity_editor_metric_contract\",\"Passed\":" + passed + ",\"Failed\":" + failed + "}");
         Assert.That(failed,Is.Zero);
     }

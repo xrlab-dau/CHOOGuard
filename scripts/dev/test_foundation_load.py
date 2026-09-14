@@ -1,4 +1,5 @@
 import contextlib
+import sys
 import copy
 import io
 import json
@@ -16,6 +17,11 @@ from unittest import mock
 
 import foundation_load_metrics as metrics
 import run_foundation_load as load
+import base64
+import zlib
+
+import probe_journal as journal
+
 
 ROOT = Path(__file__).resolve().parent
 PROJECT = Path(os.environ.get('CHOOGUARD_PROJECT', Path(__file__).resolve().parents[2]))
@@ -602,6 +608,52 @@ class ProcessOwnership(unittest.TestCase):
             self.assertTrue(all(handle.closed for handle in manager.handles))
             manager.close()
 
+    def test_interval_parses_fn_simulation_and_un_frame_histograms(self):
+        row = metric('server')
+        bounds = list(metrics.Histogram.parse(row['TickMilliseconds'], row['TickCount']).bounds)
+        sim_counts = [0] * (len(bounds) + 1)
+        sim_counts[0] = 2  # 2 ticks in <= 10ms bucket
+        frame_counts = [0] * (len(bounds) + 1)
+        frame_counts[0] = 10  # 10 frames in <= 10ms bucket
+        row['SimulationTickCount'] = 2
+        row['SimulationTickMilliseconds'] = {'Bounds': bounds, 'Counts': sim_counts}
+        row['FrameCount'] = 10
+        row['FrameMilliseconds'] = {'Bounds': bounds, 'Counts': frame_counts}
+        row['TickCount'] = 2
+        row['TickMilliseconds'] = {'Bounds': bounds, 'Counts': sim_counts}
+        interval = metrics.Interval.parse(row, 'server')
+        self.assertEqual(interval.simulation_tick_count, 2)
+        self.assertEqual(interval.frame_count, 10)
+        self.assertEqual(sum(interval.simulation_tick_histogram.counts), 2)
+        self.assertEqual(sum(interval.frame_histogram.counts), 10)
+
+    def test_interval_rejects_mismatched_fn_histogram_tick_count(self):
+        row = metric('server')
+        bounds = list(metrics.Histogram.parse(row['TickMilliseconds'], row['TickCount']).bounds)
+        sim_counts = [0] * (len(bounds) + 1)
+        sim_counts[0] = 5  # count is 5, but declare 2
+        row['SimulationTickCount'] = 2
+        row['SimulationTickMilliseconds'] = {'Bounds': bounds, 'Counts': sim_counts}
+        with self.assertRaisesRegex(metrics.MetricsError, 'HISTOGRAM_TICK_COUNT'):
+            metrics.Interval.parse(row, 'server')
+
+    def test_zero_tick_frame_interval_parses_safely(self):
+        row = metric('server')
+        bounds = list(metrics.Histogram.parse(row['TickMilliseconds'], row['TickCount']).bounds)
+        zero_counts = [0] * (len(bounds) + 1)
+        frame_counts = [0] * (len(bounds) + 1)
+        frame_counts[0] = 5
+        row['TickCount'] = 0
+        row['TickMilliseconds'] = {'Bounds': bounds, 'Counts': zero_counts}
+        row['SimulationTickCount'] = 0
+        row['SimulationTickMilliseconds'] = {'Bounds': bounds, 'Counts': zero_counts}
+        row['FrameCount'] = 5
+        row['FrameMilliseconds'] = {'Bounds': bounds, 'Counts': frame_counts}
+        interval = metrics.Interval.parse(row, 'server')
+        self.assertEqual(interval.ticks, 0)
+        self.assertEqual(interval.simulation_tick_count, 0)
+        self.assertEqual(interval.frame_count, 5)
+
     def test_windows_assignment_failure_terminates_suspended_process(self):
         events=[]
         process=FakeProcess(7900)
@@ -832,5 +884,459 @@ class ProcessOwnership(unittest.TestCase):
             self.assertNotIn('private-',serialized)
 
 
-if __name__=='__main__':
-    unittest.main()
+# ---------------------------------------------------------------------------
+# FMP-12a-R1 load causal corpus (R6B items 1-5).
+#
+# Each case below is a function that executes the real code path and returns the
+# observed values. The same function backs both the behaviour gate under the
+# required unittest command and the appended corpus record written by
+# --emit-corpus, so a recorded observation is never a hand-typed expectation.
+# ---------------------------------------------------------------------------
+
+def journal_fixture(parent):
+    """Minimal Schema3 journal: one checkpoint, one approved command, one boundary."""
+    participant = {'ParticipantId': 'a', 'ObservedIds': []}
+    state = {'SchemaVersion': 3, 'WorldId': 'w', 'ShiftId': 's', 'SimulationDefinitionHash': 'd' * 64,
+             'SimulationTick': 0, 'Sequence': 0, 'Participants': [participant], 'Frames': [], 'Entities': [],
+             'Reports': [], 'Receipts': []}
+
+    def envelope(kind, ordinal, sequence, tick, previous, body):
+        plain = json.dumps(body, separators=(',', ':')).encode()
+        compressor = zlib.compressobj(wbits=-zlib.MAX_WBITS)
+        payload = compressor.compress(plain) + compressor.flush()
+        result = {'Schema': 3, 'Kind': kind, 'WorldId': 'w', 'ShiftId': 's', 'DefinitionHash': 'd' * 64,
+                  'Ordinal': ordinal, 'Sequence': sequence, 'Tick': tick, 'PreviousHash': previous,
+                  'PlainBytes': len(plain), 'Payload': base64.b64encode(payload).decode()}
+        result['Hash'] = journal.digest(result)
+        return result
+
+    checkpoint = envelope('checkpoint', 0, 0, 0, journal.EMPTY_HASH, state)
+    person = {'ParticipantId': 'a', 'ObservedIds': ['incident-1']}
+    receipt = {'WorldId': 'w', 'ShiftId': 's', 'ParticipantId': 'a', 'CommandId': 'discover', 'Fingerprint': 'f' * 64,
+               'Code': 0, 'Sequence': 1}
+    command = {'WorldSchemaVersion': 3, 'SimulationTick': 20, 'SimulationDefinitionHash': 'd' * 64, 'Receipt': receipt,
+               'Participants': [person], 'Entities': [], 'Frames': [], 'Reports': [],
+               'SimulationCheckpoint': 'private-cp', 'Paused': False}
+    first = envelope('command', 1, 1, 20, journal.EMPTY_HASH, command)
+    boundary = {'Sequence': 1, 'Participants': [person], 'Entities': [], 'Frames': [], 'Checkpoint': 'private-cp-2',
+                'Paused': False}
+    second = envelope('boundary', 2, 1, 40, first['Hash'], boundary)
+    parent.mkdir(parents=True, exist_ok=True)
+    (parent / 'checkpoint-v3.json').write_text(json.dumps(checkpoint))
+    (parent / 'actions-v3.jsonl').write_text(json.dumps(first) + '\n' + json.dumps(second) + '\n')
+    return parent
+
+
+def case_c01_observation_schema_normal():
+    with tempfile.TemporaryDirectory(dir=TEST_TMP) as tmp:
+        observation = journal.observe_journal(journal_fixture(Path(tmp) / 'records'))
+        derived = journal.judgment_input(observation)
+    return {'ObservationName': observation['ObservationName'],
+            'ObservationSchema': observation['ObservationSchema'],
+            'ObservationKeys': sorted(observation),
+            'JudgmentInputSchema': derived['JudgmentInputSchema'],
+            'JudgmentInputKeys': sorted(derived),
+            'JudgmentInputEmbedsReadback': sorted(set(derived) & journal.OBSERVATION_ONLY_KEYS),
+            'ObservationRefName': derived['ObservationRef']['ObservationName'],
+            'SimulationTick': derived['SimulationTick'], 'Sequence': derived['Sequence'],
+            'TruncatedTailBytes': derived['TruncatedTailBytes']}
+
+
+def case_c01_observation_schema_mismatch():
+    with tempfile.TemporaryDirectory(dir=TEST_TMP) as tmp:
+        observation = journal.observe_journal(journal_fixture(Path(tmp) / 'records'))
+    observation['ObservationSchema'] = journal.JUDGMENT_INPUT_SCHEMA
+    try:
+        journal.judgment_input(observation)
+    except journal.ProbeError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c01_observation_field_set():
+    with tempfile.TemporaryDirectory(dir=TEST_TMP) as tmp:
+        observation = journal.observe_journal(journal_fixture(Path(tmp) / 'records'))
+    # An undeclared top-level key (the raw private state) is not the declared field set.
+    observation['State'] = observation['Readback']['State']
+    try:
+        journal.judgment_input(observation)
+    except journal.ProbeError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c01_judgment_input_leak():
+    with tempfile.TemporaryDirectory(dir=TEST_TMP) as tmp:
+        observation = journal.observe_journal(journal_fixture(Path(tmp) / 'records'))
+        derived = journal.judgment_input(observation)
+    leaked = dict(derived)
+    leaked['State'] = observation['Readback']['State']
+    try:
+        journal.validate_judgment_input(leaked)
+    except journal.ProbeError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c02_exact_variant():
+    return {'Selector': 'expected_kind=command_fault',
+            'Case': metrics.dispatch_fault_case(expected_kind='command_fault')}
+
+
+def case_c02_grouped_marker():
+    return {'Selector': 'grouped_marker=command processing stopped',
+            'Case': metrics.dispatch_fault_case(grouped_marker='command processing stopped')}
+
+
+def case_c02_dispatch_agreement():
+    agreement = metrics.assert_fault_dispatch_agreement()
+    return {'Cases': sorted(agreement), 'AgreeingSelectors': len(metrics.EXACT_FAULT_VARIANTS) + len(metrics.GROUPED_FAULT_MARKERS)}
+
+
+def case_c02_grouped_divergence():
+    # A grouped marker that names a case with no exact variant is the divergence the
+    # review found: the log channel would select a case the metrics channel cannot.
+    injected = metrics.GROUPED_FAULT_MARKERS + (('unmapped fault token', 'orphan_marker_fault'),)
+    with mock.patch.object(metrics, 'GROUPED_FAULT_MARKERS', injected):
+        try:
+            metrics.assert_fault_dispatch_agreement()
+        except metrics.MetricsError as exc:
+            return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c02_metrics_fault_row():
+    row = {'Schema': 1, 'Role': 'server', 'Kind': 'fault', 'FaultKind': 'command_fault',
+           'Message': 'do-not-echo-private-secret'}
+    try:
+        metrics.Interval.parse(row, 'server')
+    except metrics.MetricsError as exc:
+        return {'Code': str(exc), 'Leaked': 'private-secret' in str(exc)}
+    return {'Code': None, 'Leaked': False}
+
+
+def case_c02_metrics_fault_row_unknown_variant():
+    row = {'Schema': 1, 'Role': 'server', 'Kind': 'fault', 'FaultKind': 'orphan_fault'}
+    try:
+        metrics.Interval.parse(row, 'server')
+    except metrics.MetricsError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c02_fault_log_reader_case():
+    """The log channel must report the same canonical case as the exact variant."""
+    with tempfile.TemporaryDirectory(dir=TEST_TMP) as tmp:
+        path = Path(tmp) / 'server.player.log'
+        path.write_bytes(b'ordinary startup\n')
+        reader = load.FaultLogReader(path)
+        before = reader.poll()
+        with path.open('ab') as stream:
+            stream.write(b'command processing stopped: private-token-value\n')
+        matched = reader.poll()
+    return {'Before': before, 'Case': matched,
+            'Markers': [marker.decode('ascii') for marker in reader.MARKERS]}
+
+
+def case_c02_fault_log_dispatch_ambiguous():
+    with tempfile.TemporaryDirectory(dir=TEST_TMP) as tmp:
+        path = Path(tmp) / 'server.player.log'
+        path.write_bytes(b'fatal error: exception: both groups on one line\n')
+        reader = load.FaultLogReader(path)
+        try:
+            reader.poll()
+        except load.LoadError as exc:
+            return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c03_server_role_normal():
+    interval = metrics.Interval.parse(metric('server'), 'server')
+    return {'Role': interval.role, 'Segments': interval.connected}
+
+
+def case_c03_client_role_normal():
+    interval = metrics.Interval.parse(metric('client'), 'client')
+    return {'Role': interval.role, 'Segments': interval.connected}
+
+
+def case_c03_wrong_role_server_reader_client_row():
+    try:
+        metrics.Interval.parse(metric('client'), 'server')
+    except metrics.MetricsError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c03_wrong_role_client_reader_server_row():
+    try:
+        metrics.Interval.parse(metric('server'), 'client')
+    except metrics.MetricsError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c03_invalid_reader_role():
+    try:
+        metrics.MetricsReader(ROOT / 'not-used', 'observer')
+    except metrics.MetricsError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c03_invalid_expected_role():
+    try:
+        metrics.Interval.parse(metric('server'), 'observer')
+    except metrics.MetricsError as exc:
+        return {'Code': str(exc)}
+    return {'Code': None}
+
+
+def case_c04_cleanup_begin_reference_missing():
+    readers = readers_with_rows(duration=2)
+    result = metrics.assess(readers, {}, 2, 2, overall_deadline_seconds=22.0)
+    return {'Issues': sorted(issue['Code'] for issue in result['Issues']),
+            'CleanupBeginSeconds': result['TerminalDeadline']['CleanupBeginSeconds']}
+
+
+class SyntheticClock:
+    def __init__(self):
+        self.now = 0.
+
+    def time(self):
+        return self.now
+
+    def sleep(self, seconds):
+        self.now += seconds
+
+
+def synthetic_run(*, duration=1, metrics_grace=10., shutdown_grace=10., reader_factory=None, scripted=None):
+    """Execute the real run() against injected processes and readers."""
+    clock = SyntheticClock()
+    holder = {}
+
+    class Manager:
+        def __init__(self, session):
+            self.processes = {}
+            self.incomplete_cleanup = False
+            self.closed = False
+            holder['manager'] = self
+
+        def launch(self, label, args):
+            self.processes[label] = FakeProcess(12000 + len(self.processes))
+
+        def check(self):
+            pass
+
+        def close(self, grace):
+            self.closed = True
+            for process in self.processes.values():
+                process.code = 0
+
+    class Reader:
+        def __init__(self, path, role):
+            self.role = role
+            self.label = path.stem
+            self.intervals = []
+            self.errors = []
+            self.path = path
+
+        def poll(self, final=False, through=None):
+            if self.label in holder['manager'].processes and not final and through is None:
+                row = metric(self.role, index=len(self.intervals), seconds=.2, ticks=4)
+                self.intervals.append(metrics.Interval.parse(row, self.role))
+
+    if scripted is not None:
+        reader_factory = None
+    with tempfile.TemporaryDirectory(dir=TEST_TMP) as tmp:
+        session = Path(tmp)
+        config = load.Config(PROJECT, session, session / 'not-executed', duration=duration,
+                             metrics_grace=metrics_grace, shutdown_grace=shutdown_grace, launch_stagger=0)
+        plan = {'ServerBinary': 'not-executed', 'ClientBinary': 'not-executed',
+                'ClientBinarySha256': 'c' * 64, 'ServerBinarySha256': 'd' * 64,
+                'Clients': [{'Label': f'client-{i:02d}', 'Credential': 'private-credential',
+                             'Probe': 'private-probe'} for i in range(20)],
+                'SourceSha256': {'world': 'a' * 64, 'world_profile': 'b' * 64, 'simulation': 'e' * 64},
+                'SimulationCopySha256': 'f' * 64}
+        result = load.run(config, plan, manager_factory=Manager, clock=clock.time, sleep=clock.sleep,
+                          reader_factory=reader_factory or Reader, emit=lambda _: None)
+    return result
+
+
+def case_c04_runner_cleanup_begin_reference():
+    result = synthetic_run()
+    return {'Status': result['Status'], 'CleanupBegin': result['CleanupBegin'],
+            'TerminalDeadline': result['TerminalDeadline']}
+
+
+def case_c05_deadline_before():
+    readers = readers_with_rows(duration=2)
+    result = metrics.assess(readers, {}, 2, 2.0, cleanup_begin_seconds=2.0, overall_deadline_seconds=22.0)
+    return {'Issues': sorted(issue['Code'] for issue in result['Issues']),
+            'DeadlineOutcome': result['TerminalDeadline']['DeadlineOutcome'],
+            'TerminalReserveSign': result['TerminalDeadline']['TerminalReserveSign'],
+            'TerminalReserveSeconds': result['TerminalDeadline']['TerminalReserveSeconds'],
+            'DeadlineIssues': sorted(code for code in (issue['Code'] for issue in result['Issues'])
+                                     if 'DEADLINE' in code or 'CLEANUP_BEGIN' in code)}
+
+
+def case_c05_deadline_equal():
+    readers = readers_with_rows(duration=2)
+    result = metrics.assess(readers, {}, 2, 22.0, cleanup_begin_seconds=22.0, overall_deadline_seconds=22.0)
+    return {'Issues': sorted(issue['Code'] for issue in result['Issues']),
+            'DeadlineOutcome': result['TerminalDeadline']['DeadlineOutcome'],
+            'TerminalReserveSign': result['TerminalDeadline']['TerminalReserveSign'],
+            'TerminalReserveSeconds': result['TerminalDeadline']['TerminalReserveSeconds'],
+            'DeadlineIssues': sorted(code for code in (issue['Code'] for issue in result['Issues'])
+                                     if 'DEADLINE' in code or 'CLEANUP_BEGIN' in code)}
+
+
+def case_c05_deadline_after():
+    readers = readers_with_rows(duration=2)
+    result = metrics.assess(readers, {}, 2, 23.0, cleanup_begin_seconds=23.0, overall_deadline_seconds=22.0)
+    return {'Issues': sorted(issue['Code'] for issue in result['Issues']),
+            'DeadlineOutcome': result['TerminalDeadline']['DeadlineOutcome'],
+            'TerminalReserveSign': result['TerminalDeadline']['TerminalReserveSign'],
+            'TerminalReserveSeconds': result['TerminalDeadline']['TerminalReserveSeconds'],
+            'DeadlineIssues': sorted(code for code in (issue['Code'] for issue in result['Issues'])
+                                     if 'DEADLINE' in code or 'CLEANUP_BEGIN' in code)}
+
+
+def case_c05_deadline_contradiction():
+    readers = readers_with_rows(duration=2)
+    result = metrics.assess(readers, {}, 2, 23.0, cleanup_begin_seconds=23.0, overall_deadline_seconds=22.0,
+                            declared_deadline_outcome='before')
+    return {'DeadlineIssues': sorted(code for code in (issue['Code'] for issue in result['Issues'])
+                                     if 'DEADLINE' in code),
+            'DeclaredOutcomeMatchesObservation':
+                result['TerminalDeadline']['DeclaredOutcomeMatchesObservation']}
+
+
+CORPUS_CASES = (
+    ('c01-observation-schema-normal', 'CC01', 'normal_sibling', case_c01_observation_schema_normal),
+    ('c01-observation-schema-mismatch', 'CC01', 'negative', case_c01_observation_schema_mismatch),
+    ('c01-observation-field-set', 'CC01', 'negative', case_c01_observation_field_set),
+    ('c01-judgment-input-leak', 'CC01', 'negative', case_c01_judgment_input_leak),
+    ('c02-exact-variant-selects-case', 'CC02', 'normal_sibling', case_c02_exact_variant),
+    ('c02-grouped-marker-selects-case', 'CC02', 'normal_sibling', case_c02_grouped_marker),
+    ('c02-dispatch-agreement', 'CC02', 'normal_sibling', case_c02_dispatch_agreement),
+    ('c02-grouped-marker-divergence', 'CC02', 'negative', case_c02_grouped_divergence),
+    ('c02-metrics-fault-row-exact-variant', 'CC02', 'normal_sibling', case_c02_metrics_fault_row),
+    ('c02-metrics-fault-row-unknown-variant', 'CC02', 'negative', case_c02_metrics_fault_row_unknown_variant),
+    ('c02-fault-log-reader-case', 'CC02', 'normal_sibling', case_c02_fault_log_reader_case),
+    ('c02-fault-log-dispatch-ambiguous', 'CC02', 'negative', case_c02_fault_log_dispatch_ambiguous),
+    ('c03-server-role-normal', 'CC03', 'normal_sibling', case_c03_server_role_normal),
+    ('c03-client-role-normal', 'CC03', 'normal_sibling', case_c03_client_role_normal),
+    ('c03-wrong-role-server-reader', 'CC03', 'negative', case_c03_wrong_role_server_reader_client_row),
+    ('c03-wrong-role-client-reader', 'CC03', 'negative', case_c03_wrong_role_client_reader_server_row),
+    ('c03-invalid-reader-role', 'CC03', 'negative', case_c03_invalid_reader_role),
+    ('c03-invalid-expected-role', 'CC03', 'negative', case_c03_invalid_expected_role),
+    ('c04-cleanup-begin-reference-missing', 'CC04', 'negative', case_c04_cleanup_begin_reference_missing),
+    ('c04-runner-cleanup-begin-reference', 'CC04', 'normal_sibling', case_c04_runner_cleanup_begin_reference),
+    ('c05-deadline-before', 'CC05', 'normal_sibling', case_c05_deadline_before),
+    ('c05-deadline-equal', 'CC05', 'normal_sibling', case_c05_deadline_equal),
+    ('c05-deadline-after', 'CC05', 'normal_sibling', case_c05_deadline_after),
+    ('c05-deadline-contradiction', 'CC05', 'negative', case_c05_deadline_contradiction),
+)
+
+
+def emit_corpus(index_path, *, command, exit_code):
+    """Append one complete run record per corpus case to an append-only index."""
+    path = Path(index_path)
+    record = {'recordKind': 'complete_run_record', 'command': command, 'exitCode': exit_code,
+              'cases': [{'caseId': case_id, 'claimId': claim, 'variant': variant, 'observed': function()}
+                        for case_id, claim, variant, function in CORPUS_CASES]}
+    if path.is_file():
+        document = json.loads(path.read_text())
+        document['runHistory'].append(record)
+    else:
+        document = {'schemaVersion': 1, 'classification': 'PUBLIC_PROJECT_CONTEXT', 'workId': 'FMP-12a-R1',
+                    'issue': 149, 'domainCode': 'QA', 'phase': 'candidate',
+                    'artifact': 'artifact:149:load-causal-corpus:candidate', 'appendOnly': True,
+                    'rawReceiptPolicy': 'Append complete sanitized run records; never overwrite prior raw '
+                                        'XML/log/receipt, failure or NOT_RUN evidence.',
+                    'runHistory': [record], 'supersedes': None}
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + '\n')
+    return document
+
+
+class LoadCausalContract(unittest.TestCase):
+    """Behaviour gate for the five R6B items; each case is also a corpus record."""
+
+    def test_c01_observation_name_and_schema_are_separate_from_the_judgment_input(self):
+        observed = case_c01_observation_schema_normal()
+        self.assertEqual(observed['ObservationName'], journal.OBSERVATION_NAME)
+        self.assertEqual(observed['ObservationSchema'], journal.OBSERVATION_SCHEMA)
+        self.assertEqual(observed['JudgmentInputSchema'], journal.JUDGMENT_INPUT_SCHEMA)
+        self.assertEqual(observed['JudgmentInputEmbedsReadback'], [])
+        self.assertEqual(observed['SimulationTick'], 40)
+
+    def test_c01_renamed_schema_undeclared_fields_and_embedded_readback_are_refused(self):
+        self.assertEqual(case_c01_observation_schema_mismatch()['Code'], 'OBSERVATION_SCHEMA_MISMATCH')
+        self.assertEqual(case_c01_observation_field_set()['Code'], 'OBSERVATION_FIELD_SET')
+        self.assertEqual(case_c01_judgment_input_leak()['Code'], 'JUDGMENT_INPUT_CARRIES_PRIVATE_OBSERVATION')
+
+    def test_c02_exact_variant_and_grouped_marker_select_the_same_case(self):
+        exact = case_c02_exact_variant()
+        grouped = case_c02_grouped_marker()
+        self.assertEqual(exact['Case'], grouped['Case'])
+        self.assertEqual(exact['Case'], 'command_marker_P_fault')
+        self.assertEqual(case_c02_dispatch_agreement()['Cases'], list(metrics.FAULT_CASES))
+
+    def test_c02_log_channel_reports_the_same_canonical_case(self):
+        observed = case_c02_fault_log_reader_case()
+        self.assertIsNone(observed['Before'])
+        self.assertEqual(observed['Case'], case_c02_exact_variant()['Case'])
+        self.assertEqual(observed['Case'], case_c02_grouped_marker()['Case'])
+        self.assertEqual(case_c02_fault_log_dispatch_ambiguous()['Code'], 'PLAYER_FAULT_LOG_DISPATCH_AMBIGUOUS')
+
+    def test_c02_grouped_marker_without_an_exact_variant_is_a_divergence(self):
+        self.assertEqual(case_c02_grouped_divergence()['Code'], 'FAULT_DISPATCH_DIVERGENCE')
+        exact = case_c02_metrics_fault_row()
+        self.assertEqual(exact['Code'], 'RUNTIME_METRIC_FAULT')
+        self.assertFalse(exact['Leaked'])
+        self.assertEqual(case_c02_metrics_fault_row_unknown_variant()['Code'], 'FAULT_KIND_UNKNOWN')
+
+    def test_c03_legacy_reader_roles_and_wrong_role_refusals(self):
+        self.assertEqual(case_c03_server_role_normal()['Role'], 'server')
+        self.assertEqual(case_c03_client_role_normal()['Role'], 'client')
+        self.assertEqual(case_c03_wrong_role_server_reader_client_row()['Code'], 'ROLE_MISMATCH')
+        self.assertEqual(case_c03_wrong_role_client_reader_server_row()['Code'], 'ROLE_MISMATCH')
+        self.assertEqual(case_c03_invalid_reader_role()['Code'], 'INVALID_READER_ROLE')
+        self.assertEqual(case_c03_invalid_expected_role()['Code'], 'INVALID_EXPECTED_ROLE')
+
+    def test_c04_cleanup_begin_is_a_recorded_reference_not_an_omission(self):
+        reference = case_c04_runner_cleanup_begin_reference()
+        self.assertEqual(reference['Status'], 'LOCAL_PROTOCOL_RUN_RECORDED')
+        self.assertIsNotNone(reference['CleanupBegin']['ObservedSeconds'])
+        self.assertIsNotNone(reference['CleanupBegin']['LocalDeadlineSeconds'])
+        self.assertTrue(reference['CleanupBegin']['WithinLocalDeadline'])
+        self.assertEqual(reference['TerminalDeadline']['DeadlineOutcome'], 'before')
+        missing = case_c04_cleanup_begin_reference_missing()
+        self.assertIn('CLEANUP_BEGIN_REFERENCE_MISSING', missing['Issues'])
+
+    def test_c05_all_three_deadline_siblings_are_realizable_and_neutral(self):
+        for name, case in (('before', case_c05_deadline_before), ('equal', case_c05_deadline_equal),
+                           ('after', case_c05_deadline_after)):
+            observed = case()
+            self.assertEqual(observed['DeadlineOutcome'], name)
+            self.assertEqual(observed['DeadlineIssues'], [])
+            self.assertEqual(observed['Issues'], [])
+        self.assertEqual(case_c05_deadline_before()['TerminalReserveSign'], 'positive')
+        self.assertEqual(case_c05_deadline_equal()['TerminalReserveSign'], 'zero')
+        self.assertEqual(case_c05_deadline_after()['TerminalReserveSign'], 'negative')
+
+    def test_c05_declared_sibling_contradicting_the_reserve_is_a_failure(self):
+        observed = case_c05_deadline_contradiction()
+        self.assertIn('DEADLINE_OUTCOME_CONTRADICTION', observed['DeadlineIssues'])
+        self.assertFalse(observed['DeclaredOutcomeMatchesObservation'])
+
+
+if __name__ == '__main__':
+    if '--emit-corpus' in sys.argv:
+        index = sys.argv[sys.argv.index('--emit-corpus') + 1]
+        emit_corpus(index, command=' '.join(sys.argv), exit_code=0)
+        print(json.dumps({'Status': 'CORPUS_EMITTED', 'Index': index, 'Cases': len(CORPUS_CASES)}))
+    else:
+        unittest.main()

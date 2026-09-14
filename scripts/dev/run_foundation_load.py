@@ -25,7 +25,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Callable
 
-from foundation_load_metrics import MetricsError, MetricsReader, assess, ready_for_measurement, strict_json
+from foundation_load_metrics import (GROUPED_FAULT_MARKERS, MetricsError, MetricsReader, assess,
+                                   assert_fault_dispatch_agreement, dispatch_fault_case,
+                                   ready_for_measurement, strict_json)
 
 PUBLICATION_RECEIPT_SCOPE = "local-headless-protocol-load-metrics"
 
@@ -421,9 +423,15 @@ def publication_safe_receipt(result, plan, metric_hashes):
 
 
 class FaultLogReader:
-    """Bounded incremental error detection; raw messages remain in private player logs."""
-    MARKERS = (b'exception:', b'startup failed', b'command processing stopped', b'fatal error')
+    """Bounded incremental error detection; raw messages remain in private player logs.
+
+    R6B item 2: the grouped marker dispatch is derived from the same canonical table
+    the metrics exact-variant dispatch uses, and both are checked for agreement here,
+    so the log channel and the metrics channel cannot select different cases.
+    """
+    MARKERS = tuple(marker.encode('ascii') for marker, _ in GROUPED_FAULT_MARKERS)
     def __init__(self, path):
+        assert_fault_dispatch_agreement()
         self.path, self.offset, self.pending, self.identity = path, 0, b'', None
     def poll(self, *, final=False):
         if not self.path.exists():
@@ -436,19 +444,26 @@ class FaultLogReader:
                 stat_result.st_size < self.offset or stat_result.st_size > 256 * 1024 * 1024):
             raise LoadError("PLAYER_LOG_REPLACED_OR_OVERSIZED")
         self.identity = identity
-        found = False
+        found = set()
         with self.path.open('rb') as stream:
             stream.seek(self.offset)
             while True:
                 data = stream.read(1024 * 1024)
                 self.offset += len(data)
                 joined = self.pending + data.lower()
-                found = found or any(marker in joined for marker in self.MARKERS)
+                # The case is resolved through the shared table; only the canonical
+                # id leaves this reader, never the matched private log text.
+                found.update(dispatch_fault_case(grouped_marker=marker.decode('ascii'))
+                             for marker in self.MARKERS if marker in joined)
                 # Retain only marker-overlap bytes; no arbitrary raw log content is copied to results.
                 self.pending = joined[-64:]
                 if not final or not data:
                     break
-        return found
+        if len(found) > 1:
+            # Two canonical cases matched one observed line: the grouped dispatch is
+            # not a function of the observation, so it cannot be reported as one case.
+            raise LoadError("PLAYER_FAULT_LOG_DISPATCH_AMBIGUOUS")
+        return found.pop() if found else None
 
 
 def run(config, plan, *, manager_factory=OwnedProcesses, clock=time.monotonic, sleep=time.sleep,
@@ -463,10 +478,17 @@ def run(config, plan, *, manager_factory=OwnedProcesses, clock=time.monotonic, s
     stops = None
     pre_cleanup_watermarks = None
     failure = None
+    # R6B item 2: every fault the log channel resolves is recorded by its canonical
+    # case id, so the reported case and the metrics exact-variant case are comparable.
+    fault_cases = []
 
     def poll():
         manager.check()
-        if any(log.poll() for log in fault_logs):
+        for log in fault_logs:
+            case = log.poll()
+            if case and case not in fault_cases:
+                fault_cases.append(case)
+        if fault_cases:
             raise LoadError("PLAYER_FAULT_LOG_DETECTED")
         for reader in readers.values():
             reader.poll()
@@ -570,7 +592,12 @@ def run(config, plan, *, manager_factory=OwnedProcesses, clock=time.monotonic, s
     except OSError:
         failure = "LOCAL_IO_FAILURE"
     finally:
-        wall = 0 if measured_at is None else clock() - measured_at
+        # R6B items 4 and 5: the local CLEANUP_BEGIN deadline is captured at the
+        # instant cleanup begins, before any blocking close, so the window end is a
+        # declared reference instead of an omission. The measurement window ends
+        # here; shutdown work after this instant is not measurement evidence.
+        cleanup_begin = clock()
+        wall = 0 if measured_at is None else cleanup_begin - measured_at
         try:
             manager.close(config.shutdown_grace)
         except (OSError, LoadError):
@@ -606,7 +633,10 @@ def run(config, plan, *, manager_factory=OwnedProcesses, clock=time.monotonic, s
                 failure = "MEASUREMENT_COVERAGE_UNVERIFIED"
         for log in fault_logs:
             try:
-                if log.poll(final=True) and failure is None:
+                case = log.poll(final=True)
+                if case and case not in fault_cases:
+                    fault_cases.append(case)
+                if case and failure is None:
                     failure = "PLAYER_FAULT_LOG_DETECTED"
             except (LoadError, OSError):
                 if failure is None:
@@ -624,8 +654,15 @@ def run(config, plan, *, manager_factory=OwnedProcesses, clock=time.monotonic, s
                     failure = "FINAL_METRIC_READ_FAILED"
     if manager.incomplete_cleanup:
         failure = "OWNED_PROCESS_CLEANUP_INCOMPLETE"
-    result = assess(readers, starts, config.duration, wall, process_failure=failure, stops=stops)
+    result = assess(readers, starts, config.duration, wall, process_failure=failure, stops=stops,
+                    cleanup_begin_seconds=None if measured_at is None else wall,
+                    overall_deadline_seconds=None if measured_at is None else
+                    config.duration + config.metrics_grace + config.shutdown_grace)
     result["PreparedLayout"] = config.layout
+    result["FaultCases"] = list(fault_cases)
+    result["CleanupBegin"] = {"ObservedSeconds": None if measured_at is None else wall,
+                              "LocalDeadlineSeconds": None if measured_at is None else config.duration + config.metrics_grace,
+                              "WithinLocalDeadline": None if measured_at is None else wall <= config.duration + config.metrics_grace}
     result["SourceSha256"] = plan["SourceSha256"]
     result["SimulationCopySha256"] = plan["SimulationCopySha256"]
     result["ExitCodes"] = {label: process.poll() for label, process in manager.processes.items()}

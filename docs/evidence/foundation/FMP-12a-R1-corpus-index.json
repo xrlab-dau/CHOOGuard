@@ -1,0 +1,556 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "workId": "FMP-12a-R1",
+  "issue": 149,
+  "domainCode": "QA",
+  "phase": "candidate",
+  "artifact": "artifact:149:load-causal-corpus:candidate",
+  "appendOnly": true,
+  "rawReceiptPolicy": "Append complete sanitized run records; never overwrite prior raw XML/log/receipt, failure or NOT_RUN evidence.",
+  "runHistory": [
+    {
+      "recordKind": "complete_run_record",
+      "branch": "feature/149-load-causal-contract",
+      "commit": "4ca8e5f35e84b0559f687687f7b851e85d0bef55",
+      "baseRef": "origin/develop",
+      "baseCommit": "ebf84c9c5322c516383870699e4405750887e07d",
+      "platform": {
+        "sysPlatform": "darwin",
+        "python": "3.14.5"
+      },
+      "sourceRef": "bdcb714849fcdaa2d7d9f7f431b661a26eb3090a",
+      "inputs": {
+        "scripts/dev/probe_journal.py": {
+          "baseBlobSha1": "e9c0358d40a756ad090c449fe593188b2855d384",
+          "candidateBlobSha1": "dc12d7952b4d8109ab71388ad3f9da5f603ab56f",
+          "candidateSha256": "7807ae8a093460d7cd9c97b2bf695a433a421de70078535e03023c934019928e",
+          "candidateSizeBytes": 12563,
+          "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/probe_journal.py` bytes"
+        },
+        "scripts/dev/foundation_load_metrics.py": {
+          "baseBlobSha1": "8171e4c5966c2a413d77204c0eafdcb548779271",
+          "candidateBlobSha1": "924e78b9e131097469e64181361417aa752587dc",
+          "candidateSha256": "162c130a25757c88015d56867b5935647963295a70ef729b7f3156889ccd9f66",
+          "candidateSizeBytes": 29927,
+          "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/foundation_load_metrics.py` bytes"
+        },
+        "scripts/dev/run_foundation_load.py": {
+          "baseBlobSha1": "896cfafde3a03520702b82d9828dad91a5faa13b",
+          "candidateBlobSha1": "247eef0b0be108c0df5d809d74e9f36e888b3252",
+          "candidateSha256": "d1ae38c33bc0793f2273721b5018ab1b9c21ae6e9c6d3a5e11f2490144768949",
+          "candidateSizeBytes": 37471,
+          "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/run_foundation_load.py` bytes"
+        },
+        "scripts/dev/foundation_load_windows.py": {
+          "baseBlobSha1": "1227c5367d28c86990571ca450979ebdbbbd28cd",
+          "candidateBlobSha1": "1227c5367d28c86990571ca450979ebdbbbd28cd",
+          "candidateSha256": "8a996cd72db54ca7cf0304a05e2b2acbca245d5bba7d915112d9e19e4e945096",
+          "candidateSizeBytes": 4999,
+          "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/foundation_load_windows.py` bytes"
+        },
+        "scripts/dev/test_foundation_load.py": {
+          "baseBlobSha1": "fb7f2da78d40eefa866e3777252a9ea9bd448af4",
+          "candidateBlobSha1": "dbedc43d2adea60270bd952440179d36fced27cf",
+          "candidateSha256": "db7c45cba6c57a803a8de609504db1b54d97b758a96709b1b8b1b0b6f5e08ab2",
+          "candidateSizeBytes": 72194,
+          "sha256Origin": "sha256 of `git cat-file blob 4ca8e5f35e84b0559f687687f7b851e85d0bef55:scripts/dev/test_foundation_load.py` bytes"
+        }
+      },
+      "inputProvenance": {
+        "predecessor": "artifact:120:source-only-access-manifest:candidate",
+        "note": "The base blobs reproduce the published #120-qualified source ref for the five selected paths; the candidate blobs are the committed change. Published source access is not issue 120 acceptance.",
+        "sourceRefDigestCheck": {
+          "method": "shasum -a 256 of the working tree at baseCommit, compared with the digest recorded for the matching path in `node scripts/context/task_context.mjs brief --issue 149 --section sources` codePointers, before any edit",
+          "runOnDiskBeforeEdit": {
+            "scripts/dev/run_foundation_load.py": "753815024f028dc17baaa2a08121a5c61a9cc4bbe5a0d959d37694b58f94c92f",
+            "scripts/dev/foundation_load_metrics.py": "eb3396943db2ada2e0ed4bba9f67342f01fa016b0a9bc94113f04a37a51e74d4",
+            "scripts/dev/foundation_load_windows.py": "8a996cd72db54ca7cf0304a05e2b2acbca245d5bba7d915112d9e19e4e945096",
+            "scripts/dev/probe_journal.py": "27304b509d0190edf02ef9fb22fe7ff650d5651adc2ad19ec5260ae5ce48d49f",
+            "scripts/dev/test_foundation_load.py": "035126d478f30b2e31b202888ded6e6bdeb6d4bdf6a3875254b70877e3cbce60"
+          },
+          "matched": "5/5 paths matched the recorded digest before editing"
+        }
+      },
+      "checks": [
+        {
+          "command": "python3 -m unittest discover -s scripts/dev -p 'test_foundation_load.py'",
+          "result": "PASS",
+          "exitCode": 0,
+          "testsRun": 61,
+          "testsFailed": 0,
+          "observed": "Ran 61 tests in 1.737s / OK",
+          "note": "52 tests existed before this change and 9 corpus/behaviour tests were added; the pre-existing 52 are unmodified and still pass. This is a local darwin/Python 3.14.5 run.",
+          "notASubstituteFor": "executed corpus under the accept phase is not claimed here"
+        },
+        {
+          "command": "python3 scripts/dev/test_foundation_load.py --emit-corpus docs/evidence/foundation/FMP-12a-R1-corpus-index.json",
+          "result": "PASS",
+          "exitCode": 0,
+          "observed": "{\"Status\": \"CORPUS_EMITTED\", \"Index\": \"...\", \"Cases\": 24}",
+          "note": "24 corpus cases executed through the real code paths; observations below are that run output."
+        },
+        {
+          "command": "mutation matrix, 10 mutations over the four gates, each removing exactly one mechanism",
+          "result": "PASS",
+          "exitCode": 0,
+          "killsCountedBy": "only a behavioural fixture that executes the mutated path counts as a kill; a source-digest, blob-hash or literal-source assertion dying is not counted. No mutation died only on a string or digest assertion.",
+          "baselineSuite": "Ran 61 tests / OK (exit 0)",
+          "mutations": [
+            {
+              "mutation": "M1-observation-field-set-check-removed",
+              "file": "scripts/dev/probe_journal.py",
+              "removedOrChanged": "if tuple(sorted(observation)) != tuple(sorted(OBSERVATION_KE",
+              "killedBehaviouralTests": 1,
+              "suite": "Ran 61 / failures=1",
+              "killedTests": [
+                "test_c01_renamed_schema_undeclared_fields_and_embedded_readback_are_refused"
+              ]
+            },
+            {
+              "mutation": "M2-judgment-input-leak-check-removed",
+              "file": "scripts/dev/probe_journal.py",
+              "removedOrChanged": "if isinstance(document, dict) and OBSERVATION_ONLY_KEYS & se",
+              "killedBehaviouralTests": 1,
+              "suite": "Ran 61 / failures=1",
+              "killedTests": [
+                "test_c01_renamed_schema_undeclared_fields_and_embedded_readback_are_refused"
+              ]
+            },
+            {
+              "mutation": "M3-exact-variant-maps-to-wrong-case",
+              "file": "scripts/dev/foundation_load_metrics.py",
+              "removedOrChanged": "'command_fault': 'command_marker_P_fault',",
+              "killedBehaviouralTests": 12,
+              "suite": "Ran 61 / errors=12",
+              "killedTests": [
+                "test_c02_exact_variant_and_grouped_marker_select_the_same_case",
+                "test_c02_log_channel_reports_the_same_canonical_case",
+                "test_c04_cleanup_begin_is_a_recorded_reference_not_an_omission",
+                "test_fault_log_disappearance_after_observation_is_a_safe_failure",
+                "test_fault_log_final_poll_drains_beyond_first_chunk",
+                "test_fault_log_replacement_is_rejected_even_when_not_shorter",
+                "test_fault_log_scanning_is_incremental_and_keeps_private_text_out_of_error",
+                "test_final_metric_error_recorded_without_exception_fails_the_run",
+                "test_final_metric_failure_does_not_hide_an_existing_child_failure",
+                "test_final_metric_failure_overrides_an_apparently_complete_run",
+                "test_pure_run_uses_fake_processes_and_records_without_acceptance_claim",
+                "test_result_receipt_binds_plan_and_actual_summary_hash_without_private_paths"
+              ]
+            },
+            {
+              "mutation": "M4-grouped-marker-entry-removed",
+              "file": "scripts/dev/foundation_load_metrics.py",
+              "removedOrChanged": "('command processing stopped', 'command_marker_P_fault'),",
+              "killedBehaviouralTests": 2,
+              "suite": "Ran 61 / failures=1, errors=1",
+              "killedTests": [
+                "test_c02_exact_variant_and_grouped_marker_select_the_same_case",
+                "test_c02_log_channel_reports_the_same_canonical_case"
+              ]
+            },
+            {
+              "mutation": "M5-role-mismatch-check-removed",
+              "file": "scripts/dev/foundation_load_metrics.py",
+              "removedOrChanged": "if row.get(\"Role\") != expected_role:\n            raise Metri",
+              "killedBehaviouralTests": 1,
+              "suite": "Ran 61 / failures=1",
+              "killedTests": [
+                "test_c03_legacy_reader_roles_and_wrong_role_refusals"
+              ]
+            },
+            {
+              "mutation": "M6-reader-role-validation-removed",
+              "file": "scripts/dev/foundation_load_metrics.py",
+              "removedOrChanged": "def __post_init__(self):\n        if self.role not in ROLE_VA",
+              "killedBehaviouralTests": 1,
+              "suite": "Ran 61 / failures=1",
+              "killedTests": [
+                "test_c03_legacy_reader_roles_and_wrong_role_refusals"
+              ]
+            },
+            {
+              "mutation": "M7-runner-cleanup-begin-not-passed",
+              "file": "scripts/dev/run_foundation_load.py",
+              "removedOrChanged": "cleanup_begin_seconds=None if measured_at is None else wall,",
+              "killedBehaviouralTests": 2,
+              "suite": "Ran 61 / failures=2",
+              "killedTests": [
+                "test_c04_cleanup_begin_is_a_recorded_reference_not_an_omission",
+                "test_pure_run_uses_fake_processes_and_records_without_acceptance_claim"
+              ]
+            },
+            {
+              "mutation": "M8-deadline-outcome-always-before",
+              "file": "scripts/dev/foundation_load_metrics.py",
+              "removedOrChanged": "if terminal_reserve_seconds > epsilon:\n        return 'befor",
+              "killedBehaviouralTests": 2,
+              "suite": "Ran 61 / failures=2",
+              "killedTests": [
+                "test_c05_all_three_deadline_siblings_are_realizable_and_neutral",
+                "test_c05_declared_sibling_contradicting_the_reserve_is_a_failure"
+              ]
+            },
+            {
+              "mutation": "M9-declared-outcome-always-matches",
+              "file": "scripts/dev/foundation_load_metrics.py",
+              "removedOrChanged": "\"DeclaredOutcomeMatchesObservation\": declared_outcome is Non",
+              "killedBehaviouralTests": 1,
+              "suite": "Ran 61 / failures=1",
+              "killedTests": [
+                "test_c05_declared_sibling_contradicting_the_reserve_is_a_failure"
+              ]
+            },
+            {
+              "mutation": "M10-fault-log-reader-not-using-shared-marker",
+              "file": "scripts/dev/run_foundation_load.py",
+              "removedOrChanged": "found.update(dispatch_fault_case(grouped_marker=marker.decod",
+              "killedBehaviouralTests": 3,
+              "suite": "Ran 61 / failures=2, errors=1",
+              "killedTests": [
+                "test_c02_log_channel_reports_the_same_canonical_case",
+                "test_fault_log_final_poll_drains_beyond_first_chunk",
+                "test_fault_log_scanning_is_incremental_and_keeps_private_text_out_of_error"
+              ]
+            }
+          ],
+          "totalKills": 26,
+          "zeroKillGates": []
+        }
+      ],
+      "corpusCases": [
+        {
+          "caseId": "c01-observation-schema-normal",
+          "claimId": "CC01",
+          "variant": "normal_sibling",
+          "observed": {
+            "ObservationName": "private-journal-readback",
+            "ObservationSchema": "chooguard.private-journal-observation/1",
+            "ObservationKeys": [
+              "ObservationName",
+              "ObservationSchema",
+              "Readback"
+            ],
+            "JudgmentInputSchema": "chooguard.load-causal-judgment-input/1",
+            "JudgmentInputKeys": [
+              "JudgmentInputName",
+              "JudgmentInputSchema",
+              "ObservationRef",
+              "Ordinal",
+              "Sequence",
+              "SimulationTick",
+              "SourceHashes",
+              "TruncatedTailBytes"
+            ],
+            "JudgmentInputEmbedsReadback": [],
+            "ObservationRefName": "private-journal-readback",
+            "SimulationTick": 40,
+            "Sequence": 1,
+            "TruncatedTailBytes": 0
+          }
+        },
+        {
+          "caseId": "c01-observation-schema-mismatch",
+          "claimId": "CC01",
+          "variant": "negative",
+          "observed": {
+            "Code": "OBSERVATION_SCHEMA_MISMATCH"
+          }
+        },
+        {
+          "caseId": "c01-observation-field-set",
+          "claimId": "CC01",
+          "variant": "negative",
+          "observed": {
+            "Code": "OBSERVATION_FIELD_SET"
+          }
+        },
+        {
+          "caseId": "c01-judgment-input-leak",
+          "claimId": "CC01",
+          "variant": "negative",
+          "observed": {
+            "Code": "JUDGMENT_INPUT_CARRIES_PRIVATE_OBSERVATION"
+          }
+        },
+        {
+          "caseId": "c02-exact-variant-selects-case",
+          "claimId": "CC02",
+          "variant": "normal_sibling",
+          "observed": {
+            "Selector": "expected_kind=command_fault",
+            "Case": "command_marker_P_fault"
+          }
+        },
+        {
+          "caseId": "c02-grouped-marker-selects-case",
+          "claimId": "CC02",
+          "variant": "normal_sibling",
+          "observed": {
+            "Selector": "grouped_marker=command processing stopped",
+            "Case": "command_marker_P_fault"
+          }
+        },
+        {
+          "caseId": "c02-dispatch-agreement",
+          "claimId": "CC02",
+          "variant": "normal_sibling",
+          "observed": {
+            "Cases": [
+              "command_marker_P_fault",
+              "runtime_exception_fault",
+              "startup_fault"
+            ],
+            "AgreeingSelectors": 7
+          }
+        },
+        {
+          "caseId": "c02-grouped-marker-divergence",
+          "claimId": "CC02",
+          "variant": "negative",
+          "observed": {
+            "Code": "FAULT_DISPATCH_DIVERGENCE"
+          }
+        },
+        {
+          "caseId": "c02-metrics-fault-row-exact-variant",
+          "claimId": "CC02",
+          "variant": "normal_sibling",
+          "observed": {
+            "Code": "RUNTIME_METRIC_FAULT",
+            "Leaked": false
+          }
+        },
+        {
+          "caseId": "c02-metrics-fault-row-unknown-variant",
+          "claimId": "CC02",
+          "variant": "negative",
+          "observed": {
+            "Code": "FAULT_KIND_UNKNOWN"
+          }
+        },
+        {
+          "caseId": "c02-fault-log-reader-case",
+          "claimId": "CC02",
+          "variant": "normal_sibling",
+          "observed": {
+            "Before": null,
+            "Case": "command_marker_P_fault",
+            "Markers": [
+              "fatal error",
+              "command processing stopped",
+              "exception:",
+              "startup failed"
+            ]
+          }
+        },
+        {
+          "caseId": "c02-fault-log-dispatch-ambiguous",
+          "claimId": "CC02",
+          "variant": "negative",
+          "observed": {
+            "Code": "PLAYER_FAULT_LOG_DISPATCH_AMBIGUOUS"
+          }
+        },
+        {
+          "caseId": "c03-server-role-normal",
+          "claimId": "CC03",
+          "variant": "normal_sibling",
+          "observed": {
+            "Role": "server",
+            "Segments": 20
+          }
+        },
+        {
+          "caseId": "c03-client-role-normal",
+          "claimId": "CC03",
+          "variant": "normal_sibling",
+          "observed": {
+            "Role": "client",
+            "Segments": 1
+          }
+        },
+        {
+          "caseId": "c03-wrong-role-server-reader",
+          "claimId": "CC03",
+          "variant": "negative",
+          "observed": {
+            "Code": "ROLE_MISMATCH"
+          }
+        },
+        {
+          "caseId": "c03-wrong-role-client-reader",
+          "claimId": "CC03",
+          "variant": "negative",
+          "observed": {
+            "Code": "ROLE_MISMATCH"
+          }
+        },
+        {
+          "caseId": "c03-invalid-reader-role",
+          "claimId": "CC03",
+          "variant": "negative",
+          "observed": {
+            "Code": "INVALID_READER_ROLE"
+          }
+        },
+        {
+          "caseId": "c03-invalid-expected-role",
+          "claimId": "CC03",
+          "variant": "negative",
+          "observed": {
+            "Code": "INVALID_EXPECTED_ROLE"
+          }
+        },
+        {
+          "caseId": "c04-cleanup-begin-reference-missing",
+          "claimId": "CC04",
+          "variant": "negative",
+          "observed": {
+            "Issues": [
+              "CLEANUP_BEGIN_REFERENCE_MISSING"
+            ],
+            "CleanupBeginSeconds": null
+          }
+        },
+        {
+          "caseId": "c04-runner-cleanup-begin-reference",
+          "claimId": "CC04",
+          "variant": "normal_sibling",
+          "observed": {
+            "Status": "LOCAL_PROTOCOL_RUN_RECORDED",
+            "CleanupBegin": {
+              "ObservedSeconds": 1.0999999999999999,
+              "LocalDeadlineSeconds": 11.0,
+              "WithinLocalDeadline": true
+            },
+            "TerminalDeadline": {
+              "CleanupBeginSeconds": 1.0999999999999999,
+              "OverallDeadlineSeconds": 21.0,
+              "TerminalReserveSeconds": 19.9,
+              "TerminalReserveSign": "positive",
+              "DeadlineOutcome": "before",
+              "DeclaredOutcome": null,
+              "DeclaredOutcomeMatchesObservation": true,
+              "RequiredReserveSign": "positive"
+            }
+          }
+        },
+        {
+          "caseId": "c05-deadline-before",
+          "claimId": "CC05",
+          "variant": "normal_sibling",
+          "observed": {
+            "Issues": [],
+            "DeadlineOutcome": "before",
+            "TerminalReserveSign": "positive",
+            "TerminalReserveSeconds": 20.0,
+            "DeadlineIssues": []
+          }
+        },
+        {
+          "caseId": "c05-deadline-equal",
+          "claimId": "CC05",
+          "variant": "normal_sibling",
+          "observed": {
+            "Issues": [],
+            "DeadlineOutcome": "equal",
+            "TerminalReserveSign": "zero",
+            "TerminalReserveSeconds": 0.0,
+            "DeadlineIssues": []
+          }
+        },
+        {
+          "caseId": "c05-deadline-after",
+          "claimId": "CC05",
+          "variant": "normal_sibling",
+          "observed": {
+            "Issues": [],
+            "DeadlineOutcome": "after",
+            "TerminalReserveSign": "negative",
+            "TerminalReserveSeconds": -1.0,
+            "DeadlineIssues": []
+          }
+        },
+        {
+          "caseId": "c05-deadline-contradiction",
+          "claimId": "CC05",
+          "variant": "negative",
+          "observed": {
+            "DeadlineIssues": [
+              "DEADLINE_OUTCOME_CONTRADICTION"
+            ],
+            "DeclaredOutcomeMatchesObservation": false
+          }
+        }
+      ],
+      "caseTally": {
+        "normal_sibling": 12,
+        "negative": 12
+      },
+      "failedOrUnrun": [
+        {
+          "item": "R6B review prose",
+          "state": "NOT_AVAILABLE",
+          "reason": "The normative R6B text is not in this checkout and was not fetched. The five items were taken from the captured issue-149 acceptance strings quoted in the contract."
+        },
+        {
+          "item": "real Unity player / 2~4 client rehearsal (#140) / 20-client 60-minute load (#141)",
+          "state": "NOT_RUN",
+          "reason": "Out of scope for this pure-Python candidate; no player binary and no service was launched."
+        },
+        {
+          "item": "run() against real child processes",
+          "state": "NOT_RUN",
+          "reason": "Every executed case injects processes, clocks and readers. OwnedProcesses was not exercised against a real child in this task."
+        },
+        {
+          "item": "Windows native job ownership (foundation_load_windows.py)",
+          "state": "NOT_RUN",
+          "reason": "darwin host; the Windows job path is not executable here and no R6B item selects it."
+        },
+        {
+          "item": "accept-phase canonical write",
+          "state": "NOT_RUN",
+          "reason": "Candidate writes are isolated proposals (canonicalWriteAllowed=false)."
+        },
+        {
+          "item": "CC00 acceptance and CC01-CC05 adoption",
+          "state": "NOT_RUN",
+          "reason": "These claims are proposals for PM evaluation; no external adoption was performed."
+        },
+        {
+          "item": "automated execution in CI",
+          "state": "NOT_RUN",
+          "reason": "The required command was run locally; no workflow under .github/workflows/ was inspected or changed."
+        }
+      ],
+      "blockers": [],
+      "successorHandoff": [
+        {
+          "issue": 150,
+          "artifact": "artifact:149:load-causal-contract:candidate",
+          "note": "F(n)/U(n) engine binding consumes the observation/schema, exact-variant, role and deadline siblings; the #140 rehearsal receipt does not substitute."
+        },
+        {
+          "issue": 150,
+          "artifact": "artifact:149:load-causal-corpus:candidate",
+          "note": "Engine binding maps its expectations onto these fixed normal/negative cases; this candidate corpus is not executed acceptance."
+        },
+        {
+          "issue": 140,
+          "artifact": "artifact:149:load-causal-corpus:accept",
+          "note": "The real 2~4 client rehearsal is preceded by the accept-phase executed corpus."
+        }
+      ],
+      "claimRelease": "Held until the candidate artifact is returned to PM, or released on abort with notice.",
+      "digestScope": {
+        "baseBlobSha1": "git blob SHA-1 at baseCommit",
+        "candidateBlobSha1": "git blob SHA-1 of the committed file at runRecord.commit",
+        "candidateSha256": "sha256 of the committed blob bytes at runRecord.commit",
+        "note": "The changed paths are committed at runRecord.commit; the corpus index and contract are appended in a later commit."
+      }
+    }
+  ],
+  "supersedes": null
+}
