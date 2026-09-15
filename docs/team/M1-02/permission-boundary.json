@@ -1,0 +1,1595 @@
+{
+  "schemaVersion": 1,
+  "kind": "m1-02-permission-boundary-run",
+  "state": "passed",
+  "profile": {
+    "path": "docs/team/M0-03/execution-profile.json",
+    "policyHashPublished": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+    "policyHashRecomputed": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+    "fileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc"
+  },
+  "settings": {
+    "path": ".pi/settings.json",
+    "fileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+  },
+  "capability": {
+    "osFamily": "Darwin",
+    "python": "3.14",
+    "linkCapability": "symlink",
+    "networkEgressExercised": false,
+    "osSandboxOrAclTested": false,
+    "mcpEnforcementTested": false,
+    "note": "anonymous capability facts only; no hostname, account, path or interpreter build string"
+  },
+  "cases": [
+    {
+      "id": "M02-01",
+      "category": "out_of_root",
+      "dcRef": "DC-09",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "../outside.txt",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "parent-escaping write is refused and the workspace digest is unchanged",
+      "expect": {
+        "decision": "deny",
+        "code": "out_of_root"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "out_of_root",
+        "dcRef": "DC-09",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-02",
+      "category": "out_of_root",
+      "dcRef": "DC-09",
+      "actor": "role:authoring-agent",
+      "action": "read",
+      "target": "/etc/passwd",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "absolute POSIX path is refused without reading",
+      "expect": {
+        "decision": "deny",
+        "code": "out_of_root"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "out_of_root",
+        "dcRef": "DC-09",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-03",
+      "category": "out_of_root",
+      "dcRef": "DC-09",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "C:/escape.txt",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "absolute drive path is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "out_of_root"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "out_of_root",
+        "dcRef": "DC-09",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-04",
+      "category": "out_of_root",
+      "dcRef": "DC-09",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "scripts/team/M1-02/../../../../escape.txt",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "a path that starts inside the scope but climbs out is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "out_of_root"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "out_of_root",
+        "dcRef": "DC-09",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-05",
+      "category": "symlink",
+      "dcRef": "DC-09",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "scripts/team/M1-02/link-out/planted.txt",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace; needs symlink privilege or a directory junction",
+      "expectedFailure": "write through a link that resolves outside the workspace is refused; the outside directory stays empty",
+      "expect": {
+        "decision": "deny",
+        "code": "link_escape"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "link_escape",
+        "dcRef": "DC-09",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-06",
+      "category": "secret",
+      "dcRef": "DC-02",
+      "actor": "role:authoring-agent",
+      "action": "read",
+      "target": ".env",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "environment file is refused for reading",
+      "expect": {
+        "decision": "deny",
+        "code": "secret_material"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "secret_material",
+        "dcRef": "DC-02",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-07",
+      "category": "secret",
+      "dcRef": "DC-02",
+      "actor": "role:authoring-agent",
+      "action": "read",
+      "target": "keys/service.pem",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "key file is refused for reading",
+      "expect": {
+        "decision": "deny",
+        "code": "secret_material"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "secret_material",
+        "dcRef": "DC-02",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-08",
+      "category": "secret",
+      "dcRef": "DC-02",
+      "actor": "role:pm",
+      "action": "write",
+      "target": ".env.local",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "even the PM role cannot write an environment file",
+      "expect": {
+        "decision": "deny",
+        "code": "secret_material"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "secret_material",
+        "dcRef": "DC-02",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-09",
+      "category": "secret",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "read",
+      "target": ".env.example",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "the committed example file is not a secret and stays readable",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "read_bytes:23",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-10",
+      "category": "restricted_input",
+      "dcRef": "DC-02",
+      "actor": "role:pm",
+      "action": "read",
+      "target": "private-data/facility-sources/placeholder.txt",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "restricted source location is refused for every role",
+      "expect": {
+        "decision": "deny",
+        "code": "restricted_input"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "restricted_input",
+        "dcRef": "DC-02",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-11",
+      "category": "restricted_input",
+      "dcRef": "DC-03",
+      "actor": "role:authoring-agent",
+      "action": "egress",
+      "target": "DEST-MODEL-AUTHOR",
+      "dataClass": "KORAIL_RESTRICTED",
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "restricted class is refused even with a recorded approval",
+      "expect": {
+        "decision": "deny",
+        "code": "restricted_egress"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "restricted_egress",
+        "dcRef": "DC-03",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-12",
+      "category": "egress",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "egress",
+      "target": "DEST-MODEL-AUTHOR",
+      "dataClass": "PUBLIC_SYNTHETIC",
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "public synthetic content to the granted model destination with approval is allowed",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "decision_only",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-13",
+      "category": "egress",
+      "dcRef": "DC-03",
+      "actor": "role:authoring-agent",
+      "action": "egress",
+      "target": "DEST-MODEL-AUTHOR",
+      "dataClass": "PUBLIC_SYNTHETIC",
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "sanitised public content still needs the recorded egress approval",
+      "expect": {
+        "decision": "deny",
+        "code": "approval_not_recorded"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "approval_not_recorded",
+        "dcRef": "DC-03",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-14",
+      "category": "egress",
+      "dcRef": "DC-03",
+      "actor": "role:authoring-agent",
+      "action": "egress",
+      "target": "DEST-MODEL-AUTHOR",
+      "dataClass": "TEAM_INTERNAL",
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "team-internal content above the model destination ceiling is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "data_class_above_ceiling"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "data_class_above_ceiling",
+        "dcRef": "DC-03",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-15",
+      "category": "egress",
+      "dcRef": "DC-10",
+      "actor": "role:authoring-agent",
+      "action": "egress",
+      "target": "DEST-UNLISTED-PASTE",
+      "dataClass": "PUBLIC_SYNTHETIC",
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "destination absent from the profile is refused by default",
+      "expect": {
+        "decision": "deny",
+        "code": "unknown_destination"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "unknown_destination",
+        "dcRef": "DC-10",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-16",
+      "category": "egress",
+      "dcRef": "DC-10",
+      "actor": "role:bootstrap-tooling",
+      "action": "egress",
+      "target": "DEST-MODEL-AUTHOR",
+      "dataClass": "PUBLIC_SYNTHETIC",
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "a listed destination not granted to the bootstrap role is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "destination_not_granted"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "destination_not_granted",
+        "dcRef": "DC-10",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-17",
+      "category": "egress",
+      "dcRef": null,
+      "actor": "role:unity-mcp-client",
+      "action": "egress",
+      "target": "DEST-UNITY-MCP",
+      "dataClass": "TEAM_INTERNAL",
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "local MCP transport accepts team-internal content with approval",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "decision_only",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-18",
+      "category": "egress",
+      "dcRef": "DC-11",
+      "actor": "role:bootstrap-tooling",
+      "action": "execute",
+      "target": "curl https://example.invalid/tool.sh",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "network command by a role with no destination is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "network_command_without_destination"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "network_command_without_destination",
+        "dcRef": "DC-11",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-19",
+      "category": "generated_output",
+      "dcRef": "DC-01",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "Library/ScriptAssemblies/planted.dll",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "Library/ write is refused even with a wildcard work scope",
+      "expect": {
+        "decision": "deny",
+        "code": "generated_output"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "generated_output",
+        "dcRef": "DC-01",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-20",
+      "category": "generated_output",
+      "dcRef": "DC-01",
+      "actor": "role:authoring-agent",
+      "action": "delete",
+      "target": "Library/.keep",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "Library/ delete is refused and the file remains",
+      "expect": {
+        "decision": "deny",
+        "code": "generated_output"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "generated_output",
+        "dcRef": "DC-01",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-21",
+      "category": "generated_output",
+      "dcRef": "DC-12",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "Logs/Editor.log",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "overwriting an existing log is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "log_modification"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "log_modification",
+        "dcRef": "DC-12",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-22",
+      "category": "generated_output",
+      "dcRef": "DC-12",
+      "actor": "role:authoring-agent",
+      "action": "delete",
+      "target": "Logs/Editor.log",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "deleting an existing log is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "log_modification"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "log_modification",
+        "dcRef": "DC-12",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-23",
+      "category": "generated_output",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "read",
+      "target": "Logs/Editor.log",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "reading logs stays allowed",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "read_bytes:19",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-24",
+      "category": "destructive_command",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "execute",
+      "target": "git reset --hard origin/develop",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "hard reset is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "destructive_command"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "destructive_command",
+        "dcRef": null,
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-25",
+      "category": "destructive_command",
+      "dcRef": null,
+      "actor": "role:pm",
+      "action": "execute",
+      "target": "git push --force origin develop",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "force push is refused even for the PM role",
+      "expect": {
+        "decision": "deny",
+        "code": "destructive_command"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "destructive_command",
+        "dcRef": null,
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-26",
+      "category": "destructive_command",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "execute",
+      "target": "rm -rf ./Assets",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "recursive forced delete is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "destructive_command"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "destructive_command",
+        "dcRef": null,
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-27",
+      "category": "destructive_command",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "execute",
+      "target": "Remove-Item -Recurse -Force Packages",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "PowerShell recursive delete is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "destructive_command"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "destructive_command",
+        "dcRef": null,
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-28",
+      "category": "destructive_command",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "execute",
+      "target": "git clean -fdx",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "forced clean is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "destructive_command"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "destructive_command",
+        "dcRef": null,
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-29",
+      "category": "destructive_command",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "execute",
+      "target": "git status --porcelain",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "a read-only command is allowed",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "decision_only",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-30",
+      "category": "policy_file",
+      "dcRef": "DC-08",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "AGENTS.md",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "agent write to a policy file is refused even with a wildcard scope",
+      "expect": {
+        "decision": "deny",
+        "code": "policy_file"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "policy_file",
+        "dcRef": "DC-08",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-31",
+      "category": "policy_file",
+      "dcRef": "DC-08",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": ".github/workflows/ci.yml",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "workflow edit is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "policy_file"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "policy_file",
+        "dcRef": "DC-08",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-32",
+      "category": "policy_file",
+      "dcRef": "DC-08",
+      "actor": "role:independent-reviewer",
+      "action": "write",
+      "target": "docs/team/M0-03/execution-profile.json",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "reviewer cannot edit the execution profile",
+      "expect": {
+        "decision": "deny",
+        "code": "policy_file"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "policy_file",
+        "dcRef": "DC-08",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-33",
+      "category": "policy_file",
+      "dcRef": null,
+      "actor": "role:pm",
+      "action": "write",
+      "target": "AGENTS.md",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "the PM role writes policy files",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "wrote",
+        "stateChanged": true
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-34",
+      "category": "policy_file",
+      "dcRef": "DC-08",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "docs/evidence/SYNTH/receipt.json",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "overwriting an existing verification result is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "verification_result_overwrite"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "verification_result_overwrite",
+        "dcRef": "DC-08",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-35",
+      "category": "work_scope",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "scripts/team/M1-02/new_fixture.py",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "write inside the declared work scope is applied",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "wrote",
+        "stateChanged": true
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-36",
+      "category": "work_scope",
+      "dcRef": "DC-09",
+      "actor": "role:authoring-agent",
+      "action": "write",
+      "target": "docs/team/OTHER/notes.md",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "write outside the declared scope is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "outside_work_scope"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "outside_work_scope",
+        "dcRef": "DC-09",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-37",
+      "category": "work_scope",
+      "dcRef": "DC-09",
+      "actor": "role:independent-reviewer",
+      "action": "write",
+      "target": "scripts/team/M1-02/README.txt",
+      "dataClass": null,
+      "capability": "policy decision plus a synthetic file action in a temporary workspace",
+      "expectedFailure": "reviewer cannot edit the artifact under review",
+      "expect": {
+        "decision": "deny",
+        "code": "outside_work_scope"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "outside_work_scope",
+        "dcRef": "DC-09",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-38",
+      "category": "model_scope",
+      "dcRef": "DC-05",
+      "actor": "role:independent-reviewer",
+      "action": "select_model",
+      "target": "anthropic/claude-opus-5",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "reviewer from the authoring provider is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "reviewer_same_provider"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "reviewer_same_provider",
+        "dcRef": "DC-05",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-39",
+      "category": "model_scope",
+      "dcRef": null,
+      "actor": "role:independent-reviewer",
+      "action": "select_model",
+      "target": "openai-codex/gpt-5.6-sol",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "provider-independent reviewer inside scope is allowed",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "decision_only",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-40",
+      "category": "model_scope",
+      "dcRef": "DC-06",
+      "actor": "role:authoring-agent",
+      "action": "select_model",
+      "target": "unlisted-provider/model-x",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "authoring model outside both allow lists is refused",
+      "expect": {
+        "decision": "deny",
+        "code": "model_outside_scope"
+      },
+      "observed": {
+        "decision": "deny",
+        "code": "model_outside_scope",
+        "dcRef": "DC-06",
+        "effect": "none",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    },
+    {
+      "id": "M02-41",
+      "category": "model_scope",
+      "dcRef": null,
+      "actor": "role:authoring-agent",
+      "action": "select_model",
+      "target": "anthropic/claude-opus-5",
+      "dataClass": null,
+      "capability": "policy decision only; no process, network or model call is made",
+      "expectedFailure": "authoring model inside the allow lists is allowed",
+      "expect": {
+        "decision": "allow",
+        "code": "allowed"
+      },
+      "observed": {
+        "decision": "allow",
+        "code": "allowed",
+        "dcRef": null,
+        "effect": "decision_only",
+        "stateChanged": false
+      },
+      "blocked": null,
+      "ok": true
+    }
+  ],
+  "hashChain": [
+    {
+      "caseId": "M02-01",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-02",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-03",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-04",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-05",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-06",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-07",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-08",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-09",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-10",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-11",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-12",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-13",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-14",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-15",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-16",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-17",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-18",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-19",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-20",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-21",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-22",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-23",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-24",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-25",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-26",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-27",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-28",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-29",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-30",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-31",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-32",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-33",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-34",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-35",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-36",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-37",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-38",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-39",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-40",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    },
+    {
+      "caseId": "M02-41",
+      "before": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "after": {
+        "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+        "profileFileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+        "settingsFileSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+      },
+      "intact": true
+    }
+  ],
+  "chainIntact": true,
+  "counts": {
+    "total": 41,
+    "matched": 41,
+    "mismatched": 0,
+    "blocked": 0,
+    "deny": 32,
+    "allow": 9
+  }
+}
