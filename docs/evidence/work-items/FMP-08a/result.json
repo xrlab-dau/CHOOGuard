@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-15",
+  "classification": "synthetic_design_not_facility_acceptance",
+  "status": "recorded_with_fresh_confirmation_run",
+  "statusHistory": [
+    { "status": "recorded_with_foreign_compile_block_on_fresh_run", "asOf": "2026-09-15 00:12 KST", "why": "that run was cut short by compiler errors outside this work item" },
+    { "status": "recorded_with_fresh_confirmation_run", "asOf": "2026-09-15 00:54 KST", "why": "replaced by this revision's r5 run; kept as a record of the previous 9-test revision" }
+  ],
+  "statusNote": "Third revision of this receipt. The r5 confirmation run compiled and executed the current test source (sha256 eeda0b26..., 857 lines, 10 tests) under the same three-suite filter: 92 cases, 91 passed, 1 failed, zero compile aborts. That one failure is the same pre-existing defect recorded in failedOrUnRun. This revision adds the three items the P1 review asked for: continuityToleranceTable (an explicit numeric tolerance table), builderProvenance (metadata labels proving the owner Editor builder generated the scene and geometry under test), and an ObservedFrame invariance section plus new assertions in the C# source (aliasing probes and a third coexisting carriage pose). The previous revision's status string stays in statusHistory.",
+  "targetIssue": 128,
+  "issue": 128,
+  "parentIssue": 102,
+  "workId": "FMP-08a",
+  "title": "[FMP-08a] rail alignment, moving carriage frame, boarding/alighting continuity",
+  "scope": "moving_frame_contract",
+  "wholeServerBudget": "NOT_ASSESSED",
+  "realVehicleValidation": "NOT_ASSESSED",
+  "signallingAcceptance": "NOT_ASSESSED",
+  "scopeStatement": "Coordinate-continuity contract for the synthetic design table foundation/world/connected-world-profile.json. Surveyed rail alignment, real carriage envelope, real platform edge, operator acceptance and the 20 Hz whole-server frame budget were neither supplied nor measured: all NOT_ASSESSED. 'Alignment' here is an authored synthetic frame origin/yaw, not a survey, and must not be cited as surveyed alignment evidence.",
+  "requiredOutputs": [
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs",
+    "docs/evidence/work-items/FMP-08a/result.json"
+  ],
+  "perAssertionDetail": "Per-assertion rationale and tolerances live in the submitted test source (ChooGuard.Foundation.Multiplayer.Tests, NUnit EditMode). This file is the receipt, the numeric summary, and the explicit tolerance table below.",
+  "fixture": {
+    "derivation": "ConnectedWorldSceneBuilder.Build emitted a bootstrap plus 13 region scenes; the test opens them additively, captures supports and the boarding bridge from real Unity colliders via ConnectedWorldGeometry.Capture, then re-reads the profile with JsonUtility and compares it byte-for-byte with the regenerated profile.",
+    "profileId": "native-connected-v1",
+    "profileSchemaVersion": 1,
+    "worldSchemaVersion": 3,
+    "frames": 3,
+    "regions": 13,
+    "portals": 12,
+    "staticBoardingPortals": 2,
+    "builderGeneratedScenePaths": 14,
+    "adapterSeed": 31,
+    "tickSeconds": 0.1,
+    "bodyRadiusM": 0.3,
+    "bodyRosterNote": "Each test's adapter adds only its own body: one carriage, one boarding portal. The rebinding planes 12.5 +/- (0.3 + 0.035) depend on this radius and must be recomputed for any other.",
+    "definitionHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "definitionHashNote": "Synthetic constant filling WorldState.SimulationDefinitionHash in the fixture; not a hash of any file."
+  },
+  "builderProvenance": {
+    "question": "Was the scene and geometry under test produced by this work item's owner Editor builder, or hand-authored into the fixture folder?",
+    "answer": "Produced by ConnectedWorldSceneBuilder.Build at editor time. The labels below are read back off the artefact by SceneAndGeometryProvenanceIsLabelledByTheOwnerEditorBuilder (Fmp08aMovingFrameTests.cs:183-243) rather than asserted in prose; the test name is the citation for every row.",
+    "owner": {
+      "kind": "editor_builder",
+      "type": "Unity Editor static class",
+      "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+      "sha256": "c27037bc56869e527b1bc66360d1b83d519e947d61d125e3426c3811eeb90d72",
+      "entryPoint": "public static string[] Build(string rootPath = Root, ConnectedWorldDefinition source = null) -- ConnectedWorldSceneBuilder.cs:26",
+      "declaredConstants": {
+        "DefinitionPath": "foundation/world/connected-world-profile.json (ConnectedWorldSceneBuilder.cs:15)",
+        "Root": "Assets/CHOOguardGenerated/ConnectedWorld (:16)",
+        "BootstrapPath": "Assets/CHOOguardGenerated/ConnectedWorld/ConnectedWorld.unity (:17)"
+      },
+      "writeStatements": [
+        "rootPath + \"/connected-world-profile.json\" written with the canonical JsonUtility.ToJson(world, true) + newline (:31-33)",
+        "rootPath + \"/ConnectedWorld.unity\" bootstrap saved first (:57-58)",
+        "rootPath + \"/\" + region.SceneName + \".unity\" saved once per authored region, in authored order (:76-77)",
+        ":81-88 writes foundation/network/connected-world-layout.json and connected-world-scenes.json only when rootPath == Root; the fixture never takes that branch"
+      ]
+    },
+    "labels": [
+      { "id": "BP-01", "label": "builder-constant identity", "line": 186, "value": "ConnectedWorldSceneBuilder.DefinitionPath == 'foundation/world/connected-world-profile.json', Root == 'Assets/CHOOguardGenerated/ConnectedWorld', BootstrapPath == Root + '/ConnectedWorld.unity' -- the fixture was generated under the builder's own declared identity." },
+      { "id": "BP-02", "label": "fixture isolation", "line": 193, "value": "folder starts with 'Assets/CHOOguardGenerated/', is not the builder's Root and is not under Root/. Every scene under test is a fresh builder product, not a checked-in or hand-edited artefact." },
+      { "id": "BP-03", "label": "authorship guard, behavioural", "line": 201, "value": "ConnectedWorldSceneBuilder.Build(Root, customSource) throws System.ArgumentException. The builder's own code refuses a custom geometry source in its shared root, so the isolated fixture folder is the only place this geometry could have been produced." },
+      { "id": "BP-04", "label": "scene file naming", "line": 206, "value": "paths.Length == world.Regions.Length + 1; paths[0] == folder + '/ConnectedWorld.unity'; paths[i + 1] == folder + '/' + world.Regions[i].SceneName + '.unity' for every i. The file names are the builder's loop output from the authored table, in authored region order." },
+      { "id": "BP-05", "label": "scene file uniqueness", "line": 211, "value": "paths.Distinct().Count() == paths.Length: one scene file per authored region, no duplicate or extra scene." },
+      { "id": "BP-06", "label": "runtime region-view labels", "line": 216, "value": "The ConnectedRegionView objects found in the loaded scenes are exactly the 13 authored region ids, one builder scene each; each view's gameObject.scene.path is one of paths; its scene file base name equals the authored region's SceneName; its FrameId equals the authored region's FrameId (lines 221-224)." },
+      { "id": "BP-07", "label": "captured-geometry scene of origin", "line": 232, "value": "Every captured support's BoxCollider lives in a scene whose path is one of paths (assertion at :232); the distinct scene paths of all captured supports number exactly the 13 authored regions (:241). No support comes from a prefab asset or a scene the builder did not write." },
+      { "id": "BP-08", "label": "support identity is the builder's own marker", "line": 234, "value": "For every support, the collider carries a ConnectedWalkableSurface marker and marker.SurfaceId == support.Id, marker.RegionId == support.RegionId, marker.FrameId == support.FrameId, marker.PortalId == support.PortalId. The support identity used throughout this file is the label the builder attached, in the scene the builder wrote." },
+      { "id": "BP-09", "label": "generated profile labels", "line": 245, "value": "folder + '/connected-world-profile.json' exists (:245); world.Classification == 'synthetic_design_not_facility_acceptance' (:247); every region's GeometryStatus starts with 'synthetic_design' (:248); region SceneNames are distinct (:249). The same two labels are also asserted against the checked-in profile at :130-131." }
+    ],
+    "geometryStatusLabel": {
+      "profileClassification": "synthetic_design_not_facility_acceptance",
+      "regionGeometryStatus": "synthetic_design_visual_review_pending (all 13)",
+      "boardingPortalGeometryStatus": "synthetic_design_not_surveyed",
+      "boardingPortalTopologyStatus": "required_game_connectivity_not_surveyed",
+      "assertedBy": "Fmp08aMovingFrameTests.cs:121-124 (classification and per-region status) and :242-243 (the generated profile file carries them)"
+    },
+    "notClaimed": [
+      "These labels prove the artefact came from ConnectedWorldSceneBuilder. They are not evidence that the geometry matches any real station; see classification and blockers.",
+      "The two derived network files (foundation/network/connected-world-layout.json, -scenes.json) were not written or read by this fixture: the builder takes that branch only when rootPath == Root (ConnectedWorldSceneBuilder.cs:81-88) and the fixture deliberately does not.",
+      "The scene-count constants are the builder's and the profile's own: ConnectedWorldDefinition.Validate fixes Regions.Length == 13 and Portals.Length == 12 (ConnectedWorldDefinition.cs:178), and the builder logs '13 region scenes and 12 provisional connections' (ConnectedWorldSceneBuilder.cs:90). This work item asserts the values, it did not choose them.",
+      "BP-03 is the only label that is behavioural rather than read-back; the other eight read values off the generated files and the loaded objects at test time."
+    ]
+  },
+  "continuityToleranceTable": {
+    "note": "The explicit numeric table the P1 review asked for. Every row is an assertion that exists in Fmp08aMovingFrameTests.cs at the cited line; 'assertedBy' is the test that owns it, so each row can be re-checked by reading that test at that line. 'kind' is 'exact' when the assertion is bit-equality (NUnit Is.Zero or an exact Equals on an integer/tick) and 'window' when it is an inequality or a +/- literal. No value here was measured by a separate instrument: they are the tolerances the definition and the movement contract are pinned to, and the tests are the authority. 0 m values are exact-equality assertions on float distance-squared, not measurements with a resolution.",
+    "unit": "metre unless stated; distance values are squared distances where the field says so",
+    "frameBoundaryMovement": [
+      { "id": "CF-01", "quantity": "per-tick world displacement of a walking body, boarding walk", "tolerance": "< 0.25", "kind": "window", "origin": "authored test bound", "assertedBy": { "test": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "line": 354, "expr": "Assert.That(maxStep, Is.LessThan(.25))" }, "negativeCase": "a frame-sized jump at any tick of the walk fails here" },
+      { "id": "CF-02", "quantity": "per-tick world displacement of a walking body, alighting walk", "tolerance": "< 0.25", "kind": "window", "origin": "authored test bound", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 653, "expr": "Assert.That(maxStep, Is.LessThan(.25))" }, "negativeCase": "same, in the reverse direction" },
+      { "id": "CF-03", "quantity": "pinned carriage body world gain per tick minus that tick's carriage frame delta", "tolerance": "+/- 1e-4", "kind": "window", "origin": "authored test bound", "assertedBy": { "test": "DepartingCarriageCarriesItsPinnedBodyAndLeavesStationBodiesFixed", "line": 470, "expr": "Assert.That(pose.Position.X - worldX, Is.EqualTo(deltas[i]).Within(1e-4))" }, "negativeCase": "the body moves by exactly the frame delta and never jumps, including across the 0.44 / 0.50 m steps" },
+      { "id": "CF-04", "quantity": "carriage-local pose change while the carriage frame moves 0.02-0.50 m per tick", "tolerance": "< 1e-9 (squared)", "kind": "exact", "origin": "authored test bound", "assertedBy": { "test": "DepartingCarriageCarriesItsPinnedBodyAndLeavesStationBodiesFixed", "line": 473, "expr": "Assert.That(pose.LocalPosition.DistanceSquared(local), Is.LessThan(1e-9))" }, "negativeCase": "moving the frame must not move the body inside the frame" },
+      { "id": "CF-05", "quantity": "station body displacement while the carriage frame moves", "tolerance": "< 1e-9 (squared)", "kind": "exact", "origin": "authored test bound", "assertedBy": { "test": "DepartingCarriageCarriesItsPinnedBodyAndLeavesStationBodiesFixed", "line": 475, "expr": "Assert.That(adapter.Pose(\"porter\").Position.DistanceSquared(porterAt), Is.LessThan(1e-9))" }, "negativeCase": "a station body is not dragged by the carriage frame; the support stays floor.rail_platforms_mainline (:477)" },
+      { "id": "CF-06", "quantity": "Unity transform of the fixed boarding bridge and of the platform floor while the carriage floor travels +4 m", "tolerance": "bridge < 1e-6; carriage floor gain 4 +/- 0.001; platform body < 1e-9 (squared)", "kind": "window", "origin": "authored test bound", "assertedBy": { "test": "VehicleBridgeAndPlatformFramesStaySeparateIdentities", "line": 294, "expr": "Vector3.Distance(bridge.Source.transform.position, bridgeAt) < 1e-6; carriage floor x +4 Within(.001); porter Position.DistanceSquared(porterAt) < 1e-9 (lines 294-297)" }, "negativeCase": "the station bridge is station geometry in the world frame and must never follow the carriage" },
+      { "id": "CF-07", "quantity": "carriage world X minus the applied carriage frame offset, across the alignment boundary", "tolerance": "+/- 5e-5", "kind": "window", "origin": "authored test bound", "assertedBy": { "test": "AlignmentToleranceFlipsTheContactSpaceWithoutMovingTheBody", "line": 326, "expr": "Assert.That(pose.Position.X - authored.X, Is.EqualTo(offset).Within(5e-5))" }, "negativeCase": "offsets 0.0499 and 0.0501 bracket the tolerance; neither side may jump" },
+      { "id": "CF-08", "quantity": "per-tick world displacement minus the increase in frame offset", "tolerance": "+/- 1e-4", "kind": "window", "origin": "authored test bound", "assertedBy": { "test": "AlignmentToleranceFlipsTheContactSpaceWithoutMovingTheBody", "line": 333, "expr": "Assert.That(advances[i], Is.EqualTo(offsets[i] - offsets[i-1]).Within(1e-4))" }, "negativeCase": "the contact-space flip adds no displacement of its own" },
+      { "id": "CF-09", "quantity": "alignment distance tolerance (the authored contract)", "tolerance": "distance squared <= 0.0025, i.e. a 0.05 m radius", "kind": "exact threshold", "origin": "runtime contract, SimulatedSpatialWorld.TrainAligned(:93-96)", "assertedBy": { "test": "AlignmentToleranceFlipsTheContactSpaceWithoutMovingTheBody", "line": 330, "expr": "contact space is 'world' at offsets 0.02/0.04/0.0499 (line 330) and 'train-mainline' at 0.0501/0.06/0.08 (line 331), over the offsets declared at line 314" }, "negativeCase": "the flip lands on one side or the other of the tolerance; tests that only move the distance still pass if the yaw term disappears, which is why YawIsHalfOfTheAlignmentToleranceAndTheMetroFrameRoundTripsAt180Degrees exists" },
+      { "id": "CF-10", "quantity": "alignment yaw tolerance", "tolerance": "0 degrees, exact equality", "kind": "exact", "origin": "runtime contract, SimulatedSpatialWorld.At(:18-24) and TrainAligned(:95)", "assertedBy": { "test": "YawIsHalfOfTheAlignmentToleranceAndTheMetroFrameRoundTripsAt180Degrees", "line": 811, "expr": "a frame 0.01 m from authored but yawed 1 degree is refused (Throws.ArgumentException); the adapter refuses it and commits nothing (lines 820-824)" }, "negativeCase": "0.01 m is inside the distance tolerance, so only the yaw term can refuse this frame" },
+      { "id": "CF-11", "quantity": "alignment height tolerance", "tolerance": "0 m, exact equality with the authored Origin.Y", "kind": "exact", "origin": "runtime contract, SimulatedSpatialWorld.At(:18-24)", "assertedBy": { "test": "YawIsHalfOfTheAlignmentToleranceAndTheMetroFrameRoundTripsAt180Degrees", "line": 816, "expr": "a carriage raised 0.1 m is refused (Throws.ArgumentException)" }, "negativeCase": "the straight level route is part of the same contract; a raised carriage cannot slip through the distance term" },
+      { "id": "CF-12", "quantity": "world pose minus frame.ToWorld(local pose)", "tolerance": "< 1e-9 (squared) under alignment; < 1e-7 (squared) during the alighting walk and after boarding", "kind": "exact", "origin": "authored contract: one transform for geometry, movement and reporting", "assertedBy": { "test": "AuthoredRailAlignmentIsOneSyntheticTableAndTheBuilderRegeneratesIt", "line": 166, "expr": "pose.Position.DistanceSquared(frame.ToWorld(pose.LocalPosition)) < 1e-9; also CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce:656 at 1e-7 and StationBodyOnTheFixedBridgeBlocksDepartureWithoutASupportSwap:444 at 1e-7" }, "negativeCase": "a second, divergent local-to-world path would fail here" },
+      { "id": "CF-13", "quantity": "applied alignment offset of the carriage frame origin", "tolerance": "exactly 12.5 m: the moved origin is bit-equal to (-37.5, 2, 15)", "kind": "exact", "origin": "authored test input", "assertedBy": { "test": "AuthoredRailAlignmentIsOneSyntheticTableAndTheBuilderRegeneratesIt", "line": 158, "expr": "Assert.That(moved.Single(CarFrame).Origin.DistanceSquared(new Point3(-37.5f, 2, 15)), Is.Zero); non-carriage frames move zero (:162)" }, "negativeCase": "an alignment that also moved another frame, or changed the level height (:160), fails" },
+      { "id": "CF-14", "quantity": "yaw-180 round trip and axis mapping on the metro frame", "tolerance": "< 1e-6 (squared) for ToLocal(ToWorld(p)) == p; +/- 1e-3 for the axis mapping", "kind": "window", "origin": "authored table (metro yaw 180)", "assertedBy": { "test": "YawIsHalfOfTheAlignmentToleranceAndTheMetroFrameRoundTripsAt180Degrees", "line": 832, "expr": "lines 832-834: round trip < 1e-6; local +X -> world -X within 1e-3; local -Z -> world +Z within 1e-3" }, "negativeCase": "a dropped yaw term flips the sign of every local offset on the metro carriage" },
+      { "id": "CF-15", "quantity": "geometry slack constant shared by support Contains, the plane-continuity check and binding validation", "tolerance": "0.0002", "kind": "contract constant", "origin": "ConnectedWorldGeometry.GeometrySlackM(:17)", "assertedBy": { "test": "VehicleBridgeAndPlatformFramesStaySeparateIdentities", "line": 284, "expr": "each deck's elevation minus the authored seam is <= ConnectedWorldGeometry.GeometrySlackM (lines 284-285)" }, "negativeCase": "the three decks must meet at one plane within this slack, and each is also asserted against the authored Y = 2 first" }
+    ],
+    "boarding": [
+      { "id": "BD-01", "quantity": "support handover plane, platform floor -> fixed bridge", "tolerance": "+/- 0.25 around Z = 5.0", "kind": "window", "origin": "authored portal ToPoint.Z", "assertedBy": { "test": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "line": 376, "expr": "Assert.That(supportFlipZs[0], Is.EqualTo(BridgeStationEdgeZ).Within(.25))" }, "negativeCase": "a handover at the carriage doorway (12.5) or at 0 instead of the station edge fails" },
+      { "id": "BD-02", "quantity": "support handover plane, fixed bridge -> carriage floor", "tolerance": "+/- 0.25 around Z = 12.5", "kind": "window", "origin": "authored portal FromPoint.Z (the doorway)", "assertedBy": { "test": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "line": 378, "expr": "Assert.That(supportFlipZs[1], Is.EqualTo(SeamZ).Within(.25))" }, "negativeCase": "the two planes are distinct authored values; collapsing them fails here and at BD-01" },
+      { "id": "BD-03", "quantity": "frame rebinding plane, station -> carriage", "tolerance": "+/- 0.25 around Z = 12.835", "kind": "window", "origin": "derived: 12.5 + body radius 0.3 + BoardingClearanceM 0.035", "assertedBy": { "test": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "line": 380, "expr": "Assert.That(frameFlipZ, Is.EqualTo(BoardingRebindZ).Within(.25))" }, "negativeCase": "rebinding at the support handover (12.5) instead of after the footprint clears the bridge fails: that was the defect fixed in run1" },
+      { "id": "BD-04", "quantity": "ordering of the two support handovers and of the support/frame handovers", "tolerance": "strict tick ordering: 5.0-tick < 12.5-tick <= frame-rebind tick", "kind": "exact ordering", "origin": "authored geometry", "assertedBy": { "test": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "line": 382, "expr": "supportFlipTicks[0] < supportFlipTicks[1] (:382) and supportFlipTicks[1] <= frameFlipTick (:384)" }, "negativeCase": "swapping the support and frame handovers fails here" },
+      { "id": "BD-05", "quantity": "carriage floor handover Z after a refused departure", "tolerance": "+/- 0.25 around Z = 12.5", "kind": "window", "origin": "authored doorway", "assertedBy": { "test": "StationBodyOnTheFixedBridgeBlocksDepartureWithoutASupportSwap", "line": 438, "expr": "Assert.That(floorZ, Is.EqualTo(SeamZ).Within(.25))" }, "negativeCase": "claiming the carriage floor at the platform edge or the bridge's station-side edge fails" },
+      { "id": "BD-06", "quantity": "rebinding plane derivation from the contract's own clearance constant", "tolerance": "+/- 1e-9", "kind": "exact derivation", "origin": "derived from SimulatedSpatialWorld.BoardingClearanceM(:10)", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 789, "expr": "BoardingRebindZ - SeamZ == BodyRadiusM + SimulatedSpatialWorld.BoardingClearanceM within 1e-9" }, "negativeCase": "redefining the plane as a bare constant decoupled from the runtime clearance fails here" },
+      { "id": "BD-07", "quantity": "boarding support sequence", "tolerance": "exactly 3 surfaces, in order, no others", "kind": "exact sequence", "origin": "authored geometry", "assertedBy": { "test": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "line": 370, "expr": "surfaces == { floor.rail_platforms_mainline, passage.rolling_stock_mainline--rail_platforms_mainline, floor.rolling_stock_mainline }" }, "negativeCase": "a direct platform-floor to carriage-floor transition fails here" }
+    ],
+    "alighting": [
+      { "id": "AL-01", "quantity": "support handover plane, carriage floor -> fixed bridge", "tolerance": "+/- 0.25 around Z = 12.5", "kind": "window", "origin": "authored portal FromPoint.Z", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 683, "expr": "Assert.That(supportFlipZ[0], Is.EqualTo(SeamZ).Within(.25))" }, "negativeCase": "the reverse walk must hand over carriage -> bridge at the doorway, not at the station edge (asserted at :685)" },
+      { "id": "AL-02", "quantity": "support handover plane, fixed bridge -> platform floor", "tolerance": "+/- 0.25 around Z = 5.0", "kind": "window", "origin": "authored portal ToPoint.Z", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 685, "expr": "Assert.That(supportFlipZ[1], Is.EqualTo(BridgeStationEdgeZ).Within(.25)); and supportFlipZ[1] < supportFlipZ[0] (:687)" }, "negativeCase": "crossing the two planes out of order fails here" },
+      { "id": "AL-03", "quantity": "frame release plane, carriage -> world", "tolerance": "+/- 0.25 around Z = 12.165", "kind": "window", "origin": "derived: 12.5 - body radius 0.3 - BoardingClearanceM 0.035 (mirror of BD-03)", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 694, "expr": "Assert.That(frameFlipZ, Is.EqualTo(carriageFootprintPlaneZ).Within(.25))" }, "negativeCase": "releasing the carriage frame at the doorway (12.5) rather than after the footprint clears fails here" },
+      { "id": "AL-04", "quantity": "carriage frame held on the bridge at or above AL-03 minus 0.01; world frame resumed strictly below AL-03 plus 0.01", "tolerance": "0.01 bracket around 12.165", "kind": "window", "origin": "derived, same as AL-03", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 720, "expr": "carriageSide.Min(Z) >= 12.165 - .01 (:720); stationSide.Max(Z) < 12.165 + .01 (:722)" }, "negativeCase": "a body still on the carriage floor is never left holding station coordinates" },
+      { "id": "AL-05", "quantity": "rebind tick adjacency: the flip tick is exactly the next tick after the last carriage-frame bridge tick", "tolerance": "exactly +1 tick", "kind": "exact", "origin": "implementation contract", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 724, "expr": "Assert.That(frameFlipTick, Is.EqualTo(carriageSide.Max(bridgeTickIndex) + 1))" }, "negativeCase": "a rebind one tick early lands on a carriage-frame bridge tick and fails here (the defect fixed by run4)" },
+      { "id": "AL-06", "quantity": "carriage-floor handover plane under a live, non-zero carriage delta (-0.048 m in Z)", "tolerance": "+/- 0.06 around 12.452, and strictly below 12.46", "kind": "window", "origin": "derived: SeamZ + live delta", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 750, "expr": "handoverZ < SeamZ - .04 (:748) and handoverZ == SeamZ + carriageDeltaZ within .06 (:750)" }, "negativeCase": "a handover at the authored 12.5 with the carriage moved means the live frame delta was ignored; the previous revision asserted this over a refused departure where the delta is zero and it could never fail" },
+      { "id": "AL-07", "quantity": "alighting support sequence", "tolerance": "exactly 3 surfaces, the reverse pair of boarding", "kind": "exact sequence", "origin": "authored geometry", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 680, "expr": "surfaces == { floor.rolling_stock_mainline, passage.rolling_stock_mainline--rail_platforms_mainline, floor.rail_platforms_mainline }" }, "negativeCase": "entering the platform floor directly from the carriage fails here" },
+      { "id": "AL-08", "quantity": "mirror relation between the two rebinding planes", "tolerance": "+/- 1e-9", "kind": "exact derivation", "origin": "derived from SimulatedSpatialWorld.BoardingClearanceM(:10)", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 791, "expr": "SeamZ - AlightingRebindZ == BodyRadiusM + BoardingClearanceM within 1e-9" }, "negativeCase": "redefining one plane only fails here" },
+      { "id": "AL-09", "quantity": "direct witness of the train-to-station arm: the same previous carriage pose resolves to the carriage at world Z 12.30 and to the station at world Z 12.10", "tolerance": "0.01 either side of 12.165", "kind": "exact branch witness", "origin": "runtime contract, SimulatedSpatialWorld.TryLocate(:60-66)", "assertedBy": { "test": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "line": 761, "expr": "lines 761-775: inDoorway.RegionId == carriage region and FrameId == train-mainline at 12.30; pastDoorway.RegionId == platform region and FrameId == world at 12.10; 12.10 lies outside the platform region so containment cannot produce it" }, "negativeCase": "a walk that never ran the carriage-local guard cannot produce both of these" }
+    ],
+    "reportPose": [
+      { "id": "RP-01", "quantity": "stored ObservedFrame origin minus the observation-time authored carriage origin", "tolerance": "exactly 0 (squared), bit-equality", "kind": "exact", "origin": "authored table", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 524, "expr": "kept.ObservedFrame.Origin.DistanceSquared(authored.Origin) Is.Zero -- also at :503 (on store), :537 (after a new report), :549 (after a checkpoint clobber), :562 (after a simulation-view clobber), :593 (after a second move), :573 (after Replay)" }, "negativeCase": "any rewrite of the stored pose by a later current pose fails at whichever moment it happens" },
+      { "id": "RP-02", "quantity": "stored ObservedFrame origin minus the current carriage origin", "tolerance": "must be non-zero (squared): they must be distinguishable", "kind": "exact, inequality", "origin": "authored table", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 553, "expr": "afterHandleClobber.ObservedFrame.Origin.DistanceSquared(departedFrame.Origin) Is.Not.Zero; also :593 for the third pose" }, "negativeCase": "a report that silently tracked the live frame would read equal to the current pose and fail here" },
+      { "id": "RP-03", "quantity": "ObservedSimulationTick", "tolerance": "exact equality, frozen at the observation tick", "kind": "exact", "origin": "AuthoritativeShift.cs:220", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 505, "expr": "reported.ObservedSimulationTick Is.Zero on store (:505) and kept.ObservedSimulationTick Is.Zero after the 42 m move (:529)" }, "negativeCase": "the observation tick must not follow the live tick" },
+      { "id": "RP-04", "quantity": "stored Position and LocalPosition minus the observation-time values", "tolerance": "exactly 0 (squared)", "kind": "exact", "origin": "authored test input", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 506, "expr": "reported.Position == seat (:506); kept.Position == seat (:527); kept.LocalPosition == local (:528); afterHandleClobber.Position == seat (:552)" }, "negativeCase": "the stored seat pose is not re-derived from the current frame" },
+      { "id": "RP-05", "quantity": "internal consistency of the frozen pose under its own ObservedFrame: ObservedFrame.ToWorld(report.LocalPosition) minus report.Position", "tolerance": "< 0.0001 (squared), the same bound AuthoritativeShift.ValidReportPose enforces", "kind": "window", "origin": "runtime contract, AuthoritativeShift.cs:383-390", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 566, "expr": "frozen.ObservedFrame.ToWorld(frozen.LocalPosition).DistanceSquared(frozen.Position) < .0001" }, "negativeCase": "the frozen pose is validated against report.ObservedFrame, never the live frame, so a live-frame revalidation would be caught by RP-01/RP-02" },
+      { "id": "RP-06", "quantity": "instance separation between two successive ExportCheckpoint() calls for the same stored report", "tolerance": "reference inequality (not a numeric tolerance)", "kind": "exact, identity", "origin": "runtime contract, TeamReport.Copy() copies ObservedFrame (WorldContracts.cs:73)", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 545, "expr": "Assert.That(ReferenceEquals(handle.ObservedFrame, kept.ObservedFrame), Is.False)" }, "negativeCase": "dropping the ObservedFrame copy would make the stored report follow the checkpoint handle; the clobber at :547-550 then fails too" },
+      { "id": "RP-07", "quantity": "instance separation between ReadSimulation() frames and the caller's frame array", "tolerance": "reference inequality (not a numeric tolerance)", "kind": "exact, identity", "origin": "runtime contract, AuthoritativeShift.ReadSimulation copies frames (:47)", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 557, "expr": "Assert.That(ReferenceEquals(liveHandle, departedFrame), Is.False); then liveHandle is clobbered in place (:558) and the live frame and both reports are re-read (:559-563)" }, "negativeCase": "if the view aliased the live frame, clobbering it would move the live carriage frame and fail at :559" },
+      { "id": "RP-08", "quantity": "approved Replay restoration of both historical poses next to the moved live frame", "tolerance": "exactly 0 (squared) for each restored report, and the live frame restored at the tick-1 origin", "kind": "exact", "origin": "authored test input", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 573, "expr": "lines 573-577: report-1 restored at the authored origin, report-2 at the tick-1 origin, the live frame at the tick-1 origin, SimulationTick 1" }, "negativeCase": "a restore that re-derived history from the live frame would collapse the two historical poses" },
+      { "id": "RP-09", "quantity": "three coexisting carriage poses: report-1 on the authored origin, report-2 on the tick-1 origin, the live frame on the tick-2 origin", "tolerance": "exactly 0 (squared) for each of the two stored reports; non-zero against the other two poses; exactly one report anchored on the authored pose", "kind": "exact", "origin": "authored test input", "assertedBy": { "test": "StoredReportKeepsItsObservationTimeCarriagePose", "line": 593, "expr": "lines 592-599: final frame == thirdFrame; report-1 == authored and != third; report-2 == departed and != third; Count(ObservedFrame origin == authored) == 1" }, "negativeCase": "the live pose moving a second time must overwrite neither stored observation" }
+    ],
+    "notInThisTable": [
+      "Wall-clock or CPU cost of any of these claims: not measured here.",
+      "Real carriage, platform, PSD or survey tolerances: NOT_ASSESSED; every number above is a synthetic-contract bound.",
+      "The 20 Hz whole-server frame budget: NOT_ASSESSED."
+    ]
+  },
+  "frameContract": {
+    "sharedTransform": "One SpatialFrame.ToWorld/ToLocal serves support geometry, body motion and reported pose; every assertion also checks Position == frame.ToWorld(LocalPosition).",
+    "delta": "geometry.Delta(frameId, frames) = current origin - authored origin (Y ignored). ConnectedWorldGeometry.cs:162.",
+    "contactSpaceRule": "geometry.Space(frameId, frames, closed) returns 'world' when the portal is not closed and delta.DistanceSquared(0) <= .0025, else the frameId itself.",
+    "alignmentTolerance": {
+      "distanceSquared": 0.0025,
+      "equivalentRadiusM": 0.05,
+      "yaw": "SimulatedSpatialWorld.TrainAligned(:93-96) accepts a carriage as aligned only when origin distance squared <= .0025 and YawDegrees and Origin.Y exactly equal the authored values; 0.05 m / 0 degrees / identical Y are the synthetic contract values. See continuityToleranceTable CF-09/CF-10/CF-11.",
+      "note": "YawIsHalfOfTheAlignmentToleranceAndTheMetroFrameRoundTripsAt180Degrees perturbs the yaw term and the Y term separately and demands rejection, because tests that only move the distance still pass if the yaw term disappears."
+    },
+    "geometrySlackM": 0.0002,
+    "geometrySlackNote": "One constant, ConnectedWorldGeometry.GeometrySlackM(:17), shared by support Contains, the plane-continuity check ('Discontinuous support plane', ConnectedWorldMotionAdapter.cs:233) and binding validation.",
+    "boardingClearanceM": 0.035,
+    "boardingClearanceNote": "SimulatedSpatialWorld.BoardingClearanceM(:10): the footprint must clear the bridge by this much before the station pose becomes the carriage pose, and vice versa.",
+    "runtimeSourceChanged": false,
+    "runtimeSourceChangedNote": "No runtime source was modified. This work item does not own the implementation; it pins the contract with tests. mutationRun records a temporary mutation restored byte-identically.",
+    "pinnedRuntimeSources": [
+      { "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs", "sha256": "a3c3b1ebee4bfe7c6dc39d9a0f3f87e9bd8267d508d2c458471df37d64cb3717", "citedLines": ["184: carriage frame delta correction", "233: 'Discontinuous support plane'"] },
+      { "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/SimulatedSpatialWorld.cs", "sha256": "a289a855c28f323f4b77865fe1b02067d6d874fb5bd29c332391e5f4518725b8", "citedLines": ["10: BoardingClearanceM = .035f", "18-24: At() rejects a non-level or yawed frame", "60: carriage-local guard", "65: carriage/station rebinding decision, the branch both boarding and alighting traverse", "93-96: TrainAligned"] },
+      { "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldGeometry.cs", "sha256": "7aafde9c32a905276c28b178b9b473cd023c90b948dfd05c8691a99e5f643fde", "citedLines": ["17: GeometrySlackM = .0002", "18-27: Support, whose Source is the BoxCollider the test labels by scene path", "55-95: Capture, which requires each of the 13 region scenes exactly once", "162: Delta(frameId, frames)"] },
+      { "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs", "sha256": "f764bcb7f98236a801285abbe1a4175ed9a16fed712df16b0f49d39b6bf3e260", "citedLines": ["47: ReadSimulation hands out frame copies", "220: captures ObservedFrame with .Copy() and ObservedSimulationTick at commit time; never reads the live frame later", "383-390: ValidReportPose validates against report.ObservedFrame, not the live frame"] },
+      { "path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs", "sha256": "not pinned", "citedLines": ["65-74: TeamReport, whose Copy() copies ObservedFrame (the snapshot that RP-06 pins)"] },
+      { "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs", "sha256": "c27037bc56869e527b1bc66360d1b83d519e947d61d125e3426c3811eeb90d72", "citedLines": ["15-17: DefinitionPath / Root / BootstrapPath", "26-28: Build entry point and the custom-source isolation guard", "31-33: profile write", "57-58: bootstrap save", "76-77: per-region scene save", "81-88: the Root-only branch the fixture never takes", "90: the builder's own '13 region scenes and 12 provisional connections' log line"] }
+    ],
+    "pinnedRuntimeSourcesNote": "Readings taken 2026-09-15 02:22 KST; git status showed no changes under Runtime/ or Multiplayer/Runtime/. ConnectedWorldMotionAdapter.cs was 7b252150... only during the mutation run and returned to a3c3b1eb... on revert. WorldContracts.cs is cited for its TeamReport.Copy() body only and is deliberately left unpinned: another work item edits contracts in this tree, so a sha256 for it would be a point-in-time snapshot rather than a stable identity. Unlike the other five, its citation is not hash-checked by the reverification pass."
+  },
+  "alignmentBeforeAfter": {
+    "test": "AuthoredRailAlignmentIsOneSyntheticTableAndTheBuilderRegeneratesIt",
+    "builderRegeneration": "The generated profile text was byte-identical to foundation/world/connected-world-profile.json (14 region scene paths).",
+    "tupleOrder": "[x, y, z, yawDegrees]",
+    "before": { "world": [0, 0, 0, 0], "train-mainline": [-50, 2, 15, 0], "train-metro": [300, -8, 15, 180] },
+    "after": { "world": [0, 0, 0, 0], "train-mainline": [-37.5, 2, 15, 0], "train-metro": [300, -8, 15, 180] },
+    "appliedOffsetM": 12.5,
+    "pinned": "After alignment the carriage frame origin is exactly (-37.5, 2, 15), yaw 0, Y unchanged, and non-carriage frames move zero. The pinned body keeps LocalPosition (0,0,0) with Position.X == -37.5 and Position == frame.ToWorld(LocalPosition): moving the carriage 12.5 m leaves the carriage-local pose unchanged and only the world pose follows, through the same transform.",
+    "builderRegenerationAssertedAt": 125,
+    "toleranceRows": ["CF-13", "CF-12"]
+  },
+  "transformContinuity": {
+    "tests": ["VehicleBridgeAndPlatformFramesStaySeparateIdentities", "DepartingCarriageCarriesItsPinnedBodyAndLeavesStationBodiesFixed"],
+    "pinned": "In the single tick that moves the carriage frame 4 m, the Unity transforms of the boarding bridge and platform floor did not move within 1e-6 (the bridge is station geometry in the world frame) while the carriage floor moved +4 m. The platform body stayed fixed within 1e-9, its support stayed floor.rail_platforms_mainline and the contact space stayed world.",
+    "pinnedBodyFollowsCarriage": {
+      "frameDeltasM": [0.02, 0.02, 0.02, 0.44, 0.5, 0.5],
+      "pinned": "Each tick the carriage body's world X gain equals that tick's frame delta within 1e-4, even across the 0.44/0.5 m step, so it moves by exactly the delta and never jumps. Each tick the carriage-local LocalPosition is unchanged within 1e-9, the platform body stays fixed within 1e-9 and its support is unchanged, and the contact space goes from world on the first tick to train-mainline on the last."
+    },
+    "toleranceRows": ["CF-01", "CF-02", "CF-03", "CF-04", "CF-05", "CF-06"]
+  },
+  "boundaryCrossing": {
+    "test": "AlignmentToleranceFlipsTheContactSpaceWithoutMovingTheBody",
+    "offsetsM": [0.02, 0.04, 0.0499, 0.0501, 0.06, 0.08],
+    "pinned": "Each tick the carriage body's world X displacement equals the offset within 5e-5, so there is no jump at the boundary. The contact space is 'world' at 0.02/0.04/0.0499 and 'train-mainline' at 0.0501/0.06/0.08: it flips exactly on either side of the tolerance (distance squared .0025 = 0.05 m). Per-tick displacement equals the difference from the previous offset within 1e-4, so the flip adds no displacement; FrameId stays train-mainline throughout with LocalPosition (0,0,0).",
+    "toleranceRows": ["CF-07", "CF-08", "CF-09"]
+  },
+  "boardingAndAlighting": {
+    "tests": ["PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "StationBodyOnTheFixedBridgeBlocksDepartureWithoutASupportSwap"],
+    "directionsCovered": [
+      "boarding: platform -> fixed bridge -> carriage floor (station arm of TryLocate)",
+      "alighting: carriage floor -> fixed bridge -> platform floor (carriage arm of TryLocate, decision at SimulatedSpatialWorld.cs:65)"
+    ],
+    "boardingSupportSequence": ["floor.rail_platforms_mainline", "passage.rolling_stock_mainline--rail_platforms_mainline", "floor.rolling_stock_mainline"],
+    "alightingSupportSequence": ["floor.rolling_stock_mainline", "passage.rolling_stock_mainline--rail_platforms_mainline", "floor.rail_platforms_mainline"],
+    "surfaceHandovers": { "count": 2, "platformToBridgeZ": 5.0, "bridgeToCarriageZ": 12.5, "toleranceM": 0.25 },
+    "frameHandover": { "boardingRebindZ": 12.835, "alightingRebindZ": 12.165, "boardingFrameSequence": ["world", "train-mainline"], "alightingFrameSequence": ["train-mainline", "world"] },
+    "maxStepPerTickM": 0.25,
+    "pinned": "The support sequence is exactly {platform floor, fixed bridge, carriage floor} for boarding and the exact reverse for alighting, and no other support ever appears: the walk never steps directly between platform floor and carriage floor in either direction. There are exactly two support handovers per direction, at the authored planes Z = 5.0 (station-side) and Z = 12.5 (doorway) within 0.25 m; the frame changes exactly once per direction and never flips back. The support handover tick precedes the frame handover tick, and every per-tick displacement is under 0.25 m, so no frame-sized jump occurs anywhere in the walk.",
+    "pinnedAlighting": "The carriage-to-station rebinding happens at Z = 12.5 - 0.3 - 0.035 = 12.165 m, clear of the doorway. Across every on-bridge tick, the maximum world Z of ticks that keep the carriage frame is at least 12.165 - .01 and the maximum world Z of ticks that switched to the world frame is below 12.165 + .01; the flip tick is the tick immediately after the last carriage-frame bridge tick (compared by tick number). On the bridge the world Z decreases monotonically toward 5.0, passing 12.835 -> 12.5 -> 5.0 in order, with carriage coordinates still in force at 12.835 and 12.5 and world coordinates already in force at 5.0, and every per-tick world displacement is under 0.25 m. Repeating the walk with the carriage frame moved -0.048 m in Z (inside the tolerance) asserts the carriage-floor support's turnover plane follows the live frame delta, not an authored constant.",
+    "pinnedStationSide": "A body on the bridge stays in the world frame and keeps its PortalId, with BoardingOccupied = true and CanClosePortal = false; departure (TryApplyFrames) then fails with 'Occupied portal prevents closure/departure', and ExportCheckpoint() is byte-identical before and after the failure, so there is no partial commit. Even after the refused departure, a body that clears the bridge reaches the carriage floor and the carriage frame. The carriage floor is never claimed before the authored doorway Z = 12.5, the carriage floor binds before the frame, and after the transition the carriage-local LocalPosition matches the carriage frame's world coordinates within 1e-7.",
+    "branchExecuted": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce genuinely traverses the carriage-local guard at SimulatedSpatialWorld.TryLocate(:60) and the rebinding decision inside it (:65). (1) It locates those two lines by string equality rather than line number, asserting the guard exists and the decision is the fifth statement inside it, so it cannot pass if the branch is moved or deleted. (2) It asserts an observation only that branch can produce: on the bridge there are both ticks that keep the carriage frame and ticks that switched to the world frame, their boundary being exactly the footprint-clearance plane 12.165. Separately, for the same prior carriage pose it asserts directly that world Z 12.30 resolves to the carriage and 12.10 to the station (12.10 lies outside the platform region, so that station pose cannot come from ordinary containment).",
+    "note": "The support-surface-confusion negative case was made concrete as (a) a direct platform-floor to carriage-floor transition, (b) inversion of support and frame ordering, (c) claiming the carriage floor in front of the doorway, (d) rebinding a bridge body to the departing carriage frame; each is blocked by its own assertion. The earlier revision that walked boarding only is not presented as boarding/alighting coverage: this revision added the alighting walk as a separate test, which is the basis of branchExecuted above.",
+    "toleranceRows": ["BD-01", "BD-02", "BD-03", "BD-04", "BD-05", "BD-06", "BD-07", "AL-01", "AL-02", "AL-03", "AL-04", "AL-05", "AL-06", "AL-07", "AL-08", "AL-09"]
+  },
+  "historicalReportPose": {
+    "test": "StoredReportKeepsItsObservationTimeCarriagePose",
+    "initialCarriagePose": { "x": -50, "y": 2, "z": 15, "yawDegrees": 0 },
+    "seatWorld": { "x": -46, "y": 2, "z": 14.2 },
+    "departureOffsetM": 42,
+    "secondDepartureOffsetM": 8,
+    "pinned": "Stored report-1 has ObservedFrame.Origin equal to the observation-time authored origin (-50,2,15) and ObservedSimulationTick 0. After the carriage moves 42 m, report-1's ObservedFrame.Origin is still (-50,2,15) and is not equal to the post-move origin, confirming in both directions that the current carriage pose did not overwrite it (Position and LocalPosition are likewise the observation-time values). A newly issued report-2 captures the post-move carriage pose and tick 1 and does not rewrite report-1. Replaying all sink commits through the approved Replay restores report-1 to the authored origin and report-2 to the post-move origin, with the current frame at the post-move origin. ValidReportPose is checked against the frozen report.ObservedFrame, never the live frame (AuthoritativeShift.cs:383-390).",
+    "observedFrameInvariance": {
+      "statement": "ObservedFrame is never overwritten by the current carriage pose, and it is never an alias of a live frame object. The report snapshot is taken once, at commit time, as a copy (AuthoritativeShift.cs:220), and nothing in the test can reach it through the live state.",
+      "momentsChecked": [
+        "M1 after storing (tick 0, carriage at the authored origin)",
+        "M2 after the carriage frame moves 42 m (tick 1)",
+        "M3 after a second report of the same entity is accepted",
+        "M4 after the checkpoint handle's own frame is clobbered in place to a sentinel (-1,-1,-1) with yaw 90",
+        "M5 after the simulation view's frame is clobbered in place the same way",
+        "M6 after the carriage frame moves a further 8 m (tick 2)",
+        "M7 after approved Replay restoration"
+      ],
+      "aliasingProbes": [
+        { "id": "RP-06", "probe": "two successive ExportCheckpoint() calls must return distinct ObservedFrame instances (line 545)", "catches": "TeamReport.Copy() dropping its ObservedFrame copy; a report that aliases the checkpoint it was read through", "wouldNotCatch": "an alias between the stored report and the shift's internal state frame when nothing in the test holds a reference to that state frame" },
+        { "id": "RP-07", "probe": "ReadSimulation() must return frames distinct from the caller's array, and clobbering one must not move the live frame (lines 556-559)", "catches": "ReadSimulation() dropping its frame copy", "wouldNotCatch": "the same limitation as RP-06" }
+      ],
+      "honestLimitation": "AuthoritativeShift keeps its own copies at every boundary this test can observe (constructor :31, ApplyServerSimulationCore :91, ExportCheckpoint :43, ReadSimulation :47), so the test has no handle on the internal state frame object. The probes above therefore catch a missing copy at the report and view boundaries, which is where the mutation-free code path is reachable; they cannot directly catch a hypothetical report that aliased the internal state frame, because that object is not exposed. The value-freeze assertions (RP-01 to RP-05, RP-08, RP-09) are what pin the observable behaviour regardless."
+    },
+    "note": "The old-report-overwritten negative case is checked at seven moments, M1-M7 above."
+  },
+  "negativeCaseCoverage": {
+    "frameBoundaryPositionJump": "AlignmentToleranceFlipsTheContactSpaceWithoutMovingTheBody (both sides of the tolerance, 0.0499/0.0501), DepartingCarriageCarriesItsPinnedBodyAndLeavesStationBodiesFixed (0.44/0.5 m step), PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce and CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce (per tick under 0.25 m).",
+    "boardingSupportConfusion": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce, CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce and StationBodyOnTheFixedBridgeBlocksDepartureWithoutASupportSwap pin the support ordering, the handover planes, the frame ordering, and the ban on claiming the carriage floor in front of the doorway, in both directions.",
+    "oldReportOverwrite": "StoredReportKeepsItsObservationTimeCarriagePose pins preservation of the observation-time carriage pose at seven moments and adds two in-place clobber probes (RP-06, RP-07) and a third coexisting carriage pose (RP-09).",
+    "forgedProvenance": "SceneAndGeometryProvenanceIsLabelledByTheOwnerEditorBuilder fails if any loaded region view or any captured support collider lives in a scene file the builder's own naming loop did not produce (BP-04, BP-06, BP-07), if a support's identity is not the ConnectedWalkableSurface marker the builder attached (BP-08), or if the fixture root is not isolated from the builder's shared output root (BP-02, BP-03). A hand-authored or copied scene dropped into the fixture folder cannot satisfy BP-06 and BP-07.",
+    "mutationEvidence": "Confirmed by mutation, not only by review (see mutationRun): neutralizing the frame delta correction at ConnectedWorldMotionAdapter.cs:184 moves the clean baseline 92/1 to 82/4 and fails 4 of this work item's 10 tests. The mutation is not covered by the two tests that do not move the frame through the adapter (SceneAndGeometryProvenanceIsLabelledByTheOwnerEditorBuilder and StoredReportKeepsItsObservationTimeCarriagePose); that is stated rather than glossed, and those four failing tests are the mutation's coverage.",
+    "honestyNote": "This coverage means the test file ran and passed, not that real equipment or a real carriage behaves this way."
+  },
+  "checksRun": [
+    { "suite": "Fmp08aMovingFrameTests", "name": "AuthoredRailAlignmentIsOneSyntheticTableAndTheBuilderRegeneratesIt", "result": "passed" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "SceneAndGeometryProvenanceIsLabelledByTheOwnerEditorBuilder", "result": "passed", "new": "this revision (P1 item 2)" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "VehicleBridgeAndPlatformFramesStaySeparateIdentities", "result": "passed" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "AlignmentToleranceFlipsTheContactSpaceWithoutMovingTheBody", "result": "passed" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "result": "passed" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "result": "passed" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "StationBodyOnTheFixedBridgeBlocksDepartureWithoutASupportSwap", "result": "passed" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "DepartingCarriageCarriesItsPinnedBodyAndLeavesStationBodiesFixed", "result": "passed" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "StoredReportKeepsItsObservationTimeCarriagePose", "result": "passed", "extended": "this revision (P1 item 3): seven moments plus two in-place clobber probes" },
+    { "suite": "Fmp08aMovingFrameTests", "name": "YawIsHalfOfTheAlignmentToleranceAndTheMetroFrameRoundTripsAt180Degrees", "result": "passed" },
+    { "suite": "WorldMotionAdapterTests", "result": "passed", "cases": 70, "reason": "Pre-existing suite bound by this filter, passed in full. Recomputed from the XML, not from memory.", "casesRecomputedFrom": "FMP-08a-edit-r5.xml" },
+    { "suite": "ConnectedWorldTests", "result": "failed", "cases": 12, "reason": "11 of 12 passed; SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams failed with System.IO.DirectoryNotFoundException for Assets/CHOOguardGenerated/MultiplayerSlice/FoundationDemo.unity, a pre-existing defect unrelated to this work item (see failedOrUnRun).", "casesRecomputedFrom": "FMP-08a-edit-r5.xml" }
+  ],
+  "suiteRollup": {
+    "total": 92,
+    "passed": 91,
+    "failed": 1,
+    "skipped": 0,
+    "mySuite": { "total": 10, "passed": 10, "failed": 0 },
+    "connectedWorldTests": { "total": 12, "passed": 11, "failed": 1 },
+    "worldMotionAdapterTests": { "total": 70, "passed": 70, "failed": 0 },
+    "resultXmlRoot": "Failed(Child)",
+    "durationSeconds": 47.7709261,
+    "sumCheck": "10 + 12 + 70 = 92 = total. 10 + 11 + 70 = 91 = passed. 1 = failed. Counted straight from the XML test-case elements by suite.",
+    "recomputedFrom": "FMP-08a-edit-r5.xml"
+  },
+  "runHistory": [
+    { "label": "run1, first execution", "total": 89, "passed": 86, "failed": 3, "note": "Two failures were this work item's own over-narrow assertions, one a pre-existing defect. (a) Collapsing the support handover into the single 'end of platform' plane (12.5) was wrong: the real planes are platform-to-bridge 5.0 (portal ToPoint) and bridge-to-carriage 12.5 (portal FromPoint). (b) The test asserted at the support handover (12.5) instead of waiting for the frame rebinding at 12.835 after the body leaves the bridge.", "resultXml": "docs/evidence/work-items/FMP-08a/FMP-08a-edit-run1.xml" },
+    { "label": "run2, main run of the first revision (7 tests)", "total": 89, "passed": 88, "failed": 1, "note": "7 + 12 + 70 = 89. The test walked boarding only at this point; it predates the alighting and yaw tests.", "resultXml": "docs/evidence/work-items/FMP-08a/FMP-08a-edit.xml" },
+    { "label": "run3, re-confirmation attempt (compile block, no tests executed)", "total": 0, "passed": 0, "failed": 0, "note": "Unity exited with 'Aborting batchmode due to failure: Scripts have compiler errors.' and no EditMode test ran; the blocking files were outside this work item (Fmp07cContactRestoreTests.cs, TmpProbe2.cs). An interim attempt at 00:46 the same day ran the alighting test (8 of 9 passed); its single failure was that test's own tick/index unit confusion, which run4 fixed, and it is not passing evidence.", "resultXml": null },
+    { "label": "run4, main run of the second revision (9 tests)", "total": 91, "passed": 90, "failed": 1, "note": "9 + 12 + 70 = 91. Fmp08aMovingFrameTests passed 9/9. Kept as the previous revision's receipt; the test file it compiled is no longer the file on disk.", "resultXml": "docs/evidence/work-items/FMP-08a/FMP-08a-edit-r4.xml", "unityLog": "docs/evidence/work-items/FMP-08a/FMP-08a-unity-r4.log" },
+    { "label": "run5, main run of this revision (10 tests), re-confirmation complete", "total": 92, "passed": 91, "failed": 1, "note": "10 + 12 + 70 = 92. Fmp08aMovingFrameTests passed 10/10, including the new provenance test. Zero compile errors anywhere in the log; the single failure is the same pre-existing defect as run4. This is the receipt for testArtifact.sha256.", "resultXml": "docs/evidence/work-items/FMP-08a/FMP-08a-edit-r5.xml", "unityLog": "docs/evidence/work-items/FMP-08a/FMP-08a-unity-r5.log" }
+  ],
+  "mutationRun": {
+    "revisionScope": "this revision: the 10-test file eeda0b26... This entry replaces the previous revision's mutation record, which had been produced against the 9-test file.",
+    "mutatedPath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldMotionAdapter.cs",
+    "mutatedLine": 184,
+    "pristineSha256": "a3c3b1ebee4bfe7c6dc39d9a0f3f87e9bd8267d508d2c458471df37d64cb3717",
+    "mutatedSha256": "7b25215056dcfbacaaffcdf5bbbae4f3e9a6976e046624f35d6458598cd8947f",
+    "mutation": "Rewrote 'wp.X += after.Origin.X - before.Origin.X; wp.Y += after.Origin.Z - before.Origin.Z;' as 'wp.X += (after.Origin.X - before.Origin.X) * 0; wp.Y += (after.Origin.Z - before.Origin.Z) * 0;', removing only the carriage frame delta correction while keeping the variables referenced so no new warning appears. Applied by exact string replace after asserting the source contained exactly one occurrence; the mutated file's sha256 equals the previous revision's mutated hash, so the mutation itself is unchanged.",
+    "filter": "Fmp08aMovingFrameTests",
+    "result": { "total": 10, "passed": 6, "failed": 4, "skipped": 0, "resultXmlRoot": "Failed(Child)", "durationSeconds": 3.0047981 },
+    "failedCases": [
+      { "name": "AlignmentToleranceFlipsTheContactSpaceWithoutMovingTheBody", "message": "offset 0.02 must not jump. Expected: 0.02d +/- 5e-05d But was: 0.0f" },
+      { "name": "AuthoredRailAlignmentIsOneSyntheticTableAndTheBuilderRegeneratesIt", "message": "The carriage-local pose is unchanged by alignment. Expected: less than 1e-09d But was: 156.25d" },
+      { "name": "DepartingCarriageCarriesItsPinnedBodyAndLeavesStationBodiesFixed", "message": "tick 0 must advance the carriage body by exactly the carriage frame delta. Expected: 0.02d +/- 1e-04d But was: 0.0f" },
+      { "name": "VehicleBridgeAndPlatformFramesStaySeparateIdentities", "message": "Expected: less than 1e-09d But was: 16.0d" }
+    ],
+    "passedUnderMutation": ["CarriageToPlatformAlightingStepsThroughTheStationBridgeOnce", "PlatformToCarriageBoardingStepsThroughTheStationBridgeOnce", "SceneAndGeometryProvenanceIsLabelledByTheOwnerEditorBuilder", "StationBodyOnTheFixedBridgeBlocksDepartureWithoutASupportSwap", "StoredReportKeepsItsObservationTimeCarriagePose", "YawIsHalfOfTheAlignmentToleranceAndTheMetroFrameRoundTripsAt180Degrees"],
+    "interpretation": "The mutation broke exactly the assertions it targeted. The two boarding/alighting tests do not move the carriage frame through the adapter during the walk, so the delta correction is a no-op for them and they do not verify it; that claim rests on the four failing tests above. The new provenance test does not use the adapter at all and the report test drives AuthoritativeShift rather than the adapter, so neither is expected to catch this mutation: their 6/6 pass under mutation is a statement about their scope, not about the mutation.",
+    "windowCaveat": "One shared working tree: the mutation existed only for the run and was reverted immediately, but a run started by another item in that window could have seen the mutated assembly. The window was kept minimal by narrowing the filter to this work item's 10 cases (3.0 s of test time) and reverting as the next command after the run reported completion.",
+    "revert": "After reverting, the sha256 matched pristineSha256, and git status showed no changes under Runtime/ or Multiplayer/Runtime/.",
+    "logLineCount": 1036,
+    "compileErrors": 0
+  },
+  "failedOrUnRun": [
+    "ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams also fails in run5: System.IO.DirectoryNotFoundException for Assets/CHOOguardGenerated/MultiplayerSlice/FoundationDemo.unity. That path does not exist in the current tree (Assets/CHOOguardGenerated holds only ArtReview, FoundationDemo and MultiplayerNative) and appears only in commit 801289a, which is not an ancestor of develop. This work item changed nothing under Assets/, and that test runs before this fixture in document order. Pre-existing defect, not counted as passing.",
+    "The full three-suite filter ends with exit code 2 because of that defect; the 91 successes and the 1 failure are recorded separately.",
+    "Surveyed rail alignment, real carriage envelope, real platform edge, operator acceptance and the 20 Hz whole-server frame budget: NOT_ASSESSED (not run).",
+    "PlayMode suites, and EditMode suites not bound by this filter (ConnectedThermalTests, FirePhysicsTests, Crowd*/Fire*, Fmp06a, Fmp06b, Fmp07c, Fmp08b and others): regression not run.",
+    "The rebinding boundaries 12.835 / 12.165 depend on a 0.3 m body radius and must be recomputed for other radii (wheelchair, cargo); this test does not claim that generality.",
+    "Two carriage frames (train-mainline, train-metro) moving at once, and one carriage occupying another carriage's boarding bridge, are not covered: only a single carriage and a single boarding portal are covered.",
+    "The alighting test keeps the carriage frame at its authored position during the main alighting walk (it moves it -0.048 m only in the separate slower sub-walk), so alighting from a moving carriage is covered only by that sub-walk and not by the main walk.",
+    "The observation-frame aliasing probes (RP-06, RP-07) verify the report and view copy boundaries. They do not reach the shift's internal state frame object, which this test cannot obtain a reference to (see historicalReportPose.observedFrameInvariance.honestLimitation).",
+    "The mutation receipt covers the narrow Fmp08aMovingFrameTests filter only. The previous revision had a three-suite corroboration run (FMP-08a-mutation-P.xml) and it is still recorded in evidenceFiles as that revision's artefact; it was not re-run for this 10-test revision."
+  ],
+  "blockers": [
+    "All alignment and boarding/alighting geometry is synthetic design (region GeometryStatus = synthetic_design_visual_review_pending; boarding portal synthetic_design_not_surveyed / required_game_connectivity_not_surveyed; profile Classification = synthetic_design_not_facility_acceptance). If surveyed rail and platform evidence arrives, Z = 5.0 / 12.5 / 12.835 / 12.165 and the 0.05 m alignment tolerance must be re-derived, and these values must not be cited as a real-world basis.",
+    "This work item runs in a working tree shared by several work items; files owned by others have repeatedly blocked compilation in earlier rounds. That did not happen in run5 (zero compile errors), but it is a live risk for any re-run, not something this receipt can promise.",
+    "The 'Fmp07cContactRestoreTests.cs sha256 9d8a621e...' cited in an earlier round is not reproducible now: that file is not owned by this work item and its owner keeps editing it. The reading at 2026-09-15 00:50:51 KST was d2ea04c98f0b9eedca861a415d88e039c56f8095a64b4dc8ff5013327a26ecb3, a point-in-time observation rather than a stable identity.",
+    "Five files in this evidence folder were not created by this work item (see evidenceFiles.foreignFilesInThisFolder). Their P suffix and mtimes (00:48-01:00) come from another slot on the same project; this work item did not write their contents.",
+    "This test only runs in the synthetic scene produced by the fixture; alignment in the real deployment scenes and prefabs needs separate confirmation.",
+    "builderProvenance pins that the geometry came from the owner Editor builder and says nothing about whether that geometry is a faithful model of any station. The two are separate claims and only the first is made here.",
+    "This evidence folder and the test source have been edited concurrently with another slot in earlier rounds. In this round the test source grew from 715 to 857 lines and result.json was rewritten once by this work item; the run receipt (FMP-08a-edit-r5.xml, written 02:21:27 KST) postdates the last test-source edit (02:20:08 KST), so the receipt does describe the file recorded in testArtifact. Every number here was recomputed by command at the same moment rather than transcribed from memory; the reverification time is in reverification.at."
+  ],
+  "handoff": {
+    "workId": "FMP-08a",
+    "phase": "candidate",
+    "branchRef": "develop",
+    "baseCommit": "87e38932d4dff74f32223f9e1e7cd0090539bd12",
+    "changedPaths": [
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs (new, this revision: +1 test, extended report test, 857 lines)",
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs.meta (Unity-generated)",
+      "docs/evidence/work-items/FMP-08a/result.json (new; third revision)",
+      "docs/evidence/work-items/FMP-08a/: FMP-08a-edit-r5.xml, FMP-08a-unity-r5.log (new, this revision's main run result and Unity log)",
+      "docs/evidence/work-items/FMP-08a/: FMP-08a-mutation-r5.xml, FMP-08a-unity-mutation-r5.log (new, this revision's negative-control result and log)",
+      "docs/evidence/work-items/FMP-08a/: FMP-08a-edit-r4.xml, FMP-08a-unity-r4.log (previous revision's main run, kept)",
+      "docs/evidence/work-items/FMP-08a/: FMP-08a-edit.xml, FMP-08a-unity.log (first revision run2 record), FMP-08a-edit-run1.xml (first execution record)",
+      "docs/evidence/work-items/FMP-08a/: FMP-08a-mutation.xml, FMP-08a-mutation-unity.log (previous revision's negative control), FMP-08a-standalone-compile.log (empty: zero diagnostics)",
+      "docs/evidence/work-items/FMP-08a/: FMP-08a-unity-compile-fail.log, FMP-08a-unity-blocked-by-fmp07c.log, FMP-08a-unity-blocked-by-tmpprobe2.log, FMP-08a-unity-run2.log (blocked-run logs)"
+    ],
+    "runtimeSourceChanged": false,
+    "existingTestsChanged": false,
+    "successorConsumption": "artifact:128:dynamic-frame-contract - rail alignment table, frame origin/yaw, alignment tolerance 0.05 m / 0 degrees / identical Y, delta transform, boarding/alighting support handover planes Z=5.0 and 12.5, rebinding planes Z=12.835 (boarding) and 12.165 (alighting), frozen observation-time report pose, and the numbered continuityToleranceTable (CF/BD/AL/RP rows) that a consumer can cite by identifier. Consumer: none (no consumer recorded). An earlier revision claimed FMP-08b(#129)'s result.json recorded 'consuming the #128 (FMP-08a) dynamic frame contract: not run'; re-checked 2026-09-15 01:01 KST, grepping that file for 'FMP-08a', '#128', 'dynamic frame' and 'consume' returned zero hits each, so that quotation and the claim resting on it were deleted. That file's owner is still editing it, so its sha256 is a snapshot of that moment and is not re-asserted here.",
+    "leadReviewNote": "No lead review is attached to this file or the test source yet (awaiting PM review). The unattached state is not hidden."
+  },
+  "evidenceFiles": {
+    "pathPrefix": "docs/evidence/work-items/FMP-08a/",
+    "mainRunResultXml": "FMP-08a-edit-r5.xml",
+    "mainRunResultXmlSha256": "c3a202934be4bc45dc34e3a47159f1b11f329a99e27ea55994dac83727a435ff",
+    "mainRunUnityLog": "FMP-08a-unity-r5.log",
+    "mainRunUnityLogSha256": "371410d7c684c65562a5e9d695d25b6bb587fbc50303ae438a1dbd9b08581f79",
+    "mainRunUnityLogLineCount": 4069,
+    "mainRunStartKst": "2026-09-15 02:20:39",
+    "mainRunEndKst": "2026-09-15 02:21:27",
+    "unityLogCompileErrorsEndingTheRun": 0,
+    "unityLogCompileErrorCheck": "grep -c 'error CS' over the whole 4069-line log returned 0. Unlike the previous revision, there is no foreign transient error to report this round.",
+    "unityLogTestRunCompletedLine": "Test run completed. Exiting with code 2 (Failed). One or more tests failed.",
+    "unityLogTestRunCompletedLinePosition": "Line 4023 of FMP-08a-unity-r5.log (4069 lines total).",
+    "previousRevisionResultXml": "FMP-08a-edit-r4.xml",
+    "previousRevisionResultXmlSha256": "c2023ab2f1d52369ccc4a7e16925bacace91a04b4fe7ddf44694b3fe1de0dc7c",
+    "previousRevisionUnityLog": "FMP-08a-unity-r4.log",
+    "previousRevisionUnityLogSha256": "f9fef69afb179ceba0a9a194b45f451913ab17198bbebc440e34f0fad0d75760",
+    "firstRevisionResultXml": "FMP-08a-edit.xml",
+    "firstRevisionResultXmlSha256": "7b34e5b847018760de10c790bd0d0aba32591fe83d8ae364f52d44c1dfe17e38",
+    "firstRevisionUnityLog": "FMP-08a-unity.log",
+    "firstRevisionUnityLogSha256": "ab00be45ffbd0bbf40ed3af911b370d9845f3a28ef335cfd7e94638df04f6ae0",
+    "firstRunResultXml": "FMP-08a-edit-run1.xml",
+    "firstRunResultXmlSha256": "9f165ff2a31d99fa358e6f7132f5dbdef55731a030c253a2caf63ce0c88cc063",
+    "mutationResultXml": "FMP-08a-mutation-r5.xml",
+    "mutationResultXmlSha256": "bfcc56a96ede54b3e7806419eaa64aabdf6a7a3a8ea2621703fd8a8f71d4d810",
+    "mutationUnityLog": "FMP-08a-unity-mutation-r5.log",
+    "mutationUnityLogSha256": "e942adca32333e5f5f5d5d30d819563cf2ec9b685e46a968d8b139a19166f2e3",
+    "mutationUnityLogLineCount": 1036,
+    "previousRevisionMutationResultXml": "FMP-08a-mutation.xml",
+    "previousRevisionMutationResultXmlSha256": "f1628fb4249d3c01641dac09e8c5df95dd74ef94babde9c1089652abcd83a200",
+    "previousRevisionMutationUnityLog": "FMP-08a-mutation-unity.log",
+    "previousRevisionMutationUnityLogSha256": "96ae333fa724f1627db439d20dfef1f8add9213e773c66ab555823e1f1c52b88",
+    "blockedLogs": [
+      { "path": "FMP-08a-unity-compile-fail.log", "sha256": "b3fa65fe6fea560937a1362a38396b06c783c6bd2a4222082c1af5682151d73b", "reason": "this work item's own first compile error (a Vector3.X typo) before the fix" },
+      { "path": "FMP-08a-unity-blocked-by-fmp07c.log", "sha256": "7e7f526ec00e39a58164c5780733aa0e518644dc86e8c400d5a9eb5aa2eb6a15", "reason": "three-suite run aborted on CS0236/CS0266 in Fmp07cContactRestoreTests.cs" },
+      { "path": "FMP-08a-unity-blocked-by-tmpprobe2.log", "sha256": "f7925fa1ffb6c14d396622c164c4e195e9a6b1f01944cf71f6dc1fe84670f639", "reason": "three-suite run aborted on CS7036 in Tests/Editor/TmpProbe2.cs" },
+      { "path": "FMP-08a-unity-run2.log", "sha256": "4fbf8885e04323840ffa0654ea92f9d40d4e1ed1164cb08ceb8eecb2264ae424", "reason": "same-filter re-confirmation attempt recorded in an earlier round; no test started and no result XML was produced. 'Scripts have compiler errors.' is at line 770 of this 777-line file." }
+    ],
+    "foreignFilesInThisFolder": ["FMP-08a-unity-P.log", "FMP-08a-unity-P-blocked.log", "FMP-08a-unity-P-blocked-attempt1.log", "FMP-08a-mutation-P.xml", "FMP-08a-unity-mutation-P.log"],
+    "foreignFilesInThisFolderNote": "Left by another slot (the P suffix) on the same project; this work item did not write them. FMP-08a-mutation-P.xml (sha256 cdc1bf0c24e900ada03033a0c5c363f52ba6719f5c9f27e7aa2e2d3948870262, 91 cases, 84 passed / 7 failed) is that slot's three-suite corroboration of the mutation against the previous 9-test revision; it is not re-run here and does not describe the current test file.",
+    "standaloneCompileLog": "FMP-08a-standalone-compile.log",
+    "standaloneCompileLogSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "standaloneCompileLogNote": "Diagnostics from compiling the previous revision's test source alone with Unity's bundled Roslyn (csc.dll); 0 bytes means zero diagnostics. It is a supporting artefact of the previous revision, not of this one. This revision's compile evidence is the run5 log, which contains zero 'error CS' lines.",
+    "receiptMarkers": [],
+    "receiptMarkersNote": "This work item's tests write no Temp/ receipt files. The verdict rests on the Unity result XML and log above, and the asserted values are in the test source itself."
+  },
+  "testArtifact": {
+    "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp08aMovingFrameTests.cs",
+    "sha256": "eeda0b266999e41af069e95688d8fdff8a0f820670d42e74fc5a5f1dd84168b7",
+    "lineCount": 857,
+    "byteCount": 71831,
+    "testCount": 10,
+    "namespace": "ChooGuard.Foundation.Multiplayer.Tests",
+    "framework": "NUnit (Unity EditMode)",
+    "assembly": "ChooGuard.Foundation.Multiplayer.Tests",
+    "reviewedAtThisHashNote": "The sha256 covers the exact contents Unity run r5 compiled and executed: the file's mtime is 2026-09-15 02:20:08 KST, the run's test XML was written at 02:21:27 KST, and the run reported the new tenth test SceneAndGeometryProvenanceIsLabelledByTheOwnerEditorBuilder as a passed case, which is only possible if the edited source was what compiled. Editing the file invalidates this hash and requires a re-run. The previous revision's 349228b8... / 715 lines / 9 tests, and the first revision's b436b66d... / 434 lines / 7 tests, are the values before the provenance test and the report-test extensions."
+  },
+  "reverification": {
+    "at": "2026-09-15 02:22 KST",
+    "method": "Every sha256 in evidenceFiles, testArtifact's sha256/lineCount/byteCount and [Test] count, the suiteRollup sums, the mutationRun numbers and every line citation in continuityToleranceTable and builderProvenance were recomputed by command (shasum, wc, grep -n, python xml.etree) and compared against the values recorded here, not recalled from memory.",
+    "result": "All matched. testArtifact eeda0b26... / 857 lines / 71831 bytes / 10 tests; suiteRollup 10 + 12 + 70 = 92 (passed 91 / failed 1); the mutation run 10 cases 6/4 against the clean 92/1 baseline, 0 compile errors; the builder sha256 c27037bc...; the profile sha256 e2cae663... / 20907 bytes.",
+    "citationCheck": "The FMP-08b citation in handoff.successorConsumption remains deleted; it was re-checked 2026-09-15 01:01 KST against that file with zero hits for 'FMP-08a', '#128', 'dynamic frame' and 'consume'. It is not re-asserted here because its owner is still editing it.",
+    "runtimeCitationCheck": "The file:line citations and sha256 values in frameContract.pinnedRuntimeSources were re-checked with grep -n and shasum: ConnectedWorldMotionAdapter.cs a3c3b1eb... (184, 233), SimulatedSpatialWorld.cs a289a855... (10, 18-24, 60, 65, 93-96), ConnectedWorldGeometry.cs 7aafde9c... (17, 18-27, 55-95, 162), AuthoritativeShift.cs f764bcb7... (47, 220, 383-390) and ConnectedWorldSceneBuilder.cs c27037bc... (15-17, 26-28, 31-33, 57-58, 76-77, 81-88, 90) all matched. WorldContracts.cs is cited for its TeamReport.Copy() body and is deliberately NOT hash-pinned; see pinnedRuntimeSourcesNote.",
+    "continuityTableCheck": "All 49 citations (40 continuityToleranceTable rows plus the 9 builderProvenance labels) were re-resolved against the current test source: every cited line was confirmed to be in range, non-blank, and to carry the assertion or label the row claims; the load-bearing rows were printed and read at the cited line. Two labels were re-anchored in this pass rather than left loose: BP-07's 'supports span all 13 region scenes' clause moved from :232 to :241, and BP-09 moved from :242 to :245 with its classification/geometry-status/SceneName assertions resolved individually to :247, :248 and :249. Rows that cite a test name plus a line were re-read at that line.",
+    "freshRun": "Complete: run5 executed all 92 cases under the same three-suite filter and Fmp08aMovingFrameTests passed 10/10 (FMP-08a-edit-r5.xml).",
+    "mutationRecheck": "The mutation run's revert was confirmed by shasum (ConnectedWorldMotionAdapter.cs = a3c3b1ebee4bfe7c6dc39d9a0f3f87e9bd8267d508d2c458471df37d64cb3717 = pristine) and by git status showing no changes under Runtime/ or Multiplayer/Runtime/."
+  }
+}
