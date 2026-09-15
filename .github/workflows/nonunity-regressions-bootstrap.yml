@@ -33,9 +33,7 @@ jobs:
         shell: python
         run: |
           import base64, hashlib, json, lzma, os, pathlib, subprocess, urllib.request
-          parts = ['e5d16ad74b1831674cb5d18cea73ce943fe2658f','27a916039f6a2669dc106744fa1911868c6f497e','1f1dfb29e12e5be9787106a8df67eefb213abd49','fe647c3f62413edc0d97b855dedafaddac3fcd0d']
-          packed = bytearray()
-          for sha in parts:
+          def read_blob(sha):
               req = urllib.request.Request('https://api.github.com/repos/xrlab-dau/CHOOGuard/git/blobs/'+sha,
                   headers={'Authorization':'Bearer '+os.environ['READ_TOKEN'],'Accept':'application/vnd.github+json'})
               with urllib.request.urlopen(req, timeout=30) as response:
@@ -43,7 +41,9 @@ jobs:
               data = base64.b64decode(blob['content'])
               if hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest() != sha:
                   raise SystemExit('Transport blob mismatch')
-              packed.extend(data)
+              return data
+          parts = ['e5d16ad74b1831674cb5d18cea73ce943fe2658f','27a916039f6a2669dc106744fa1911868c6f497e','1f1dfb29e12e5be9787106a8df67eefb213abd49','fe647c3f62413edc0d97b855dedafaddac3fcd0d']
+          packed = b''.join(read_blob(sha) for sha in parts)
           decoder = lzma.LZMADecompressor(memlimit=64*1024*1024)
           patch = decoder.decompress(packed, max_length=151475)
           if not decoder.eof or decoder.unused_data or len(patch)!=151474 or hashlib.sha256(patch).hexdigest()!='50f9b7b7b46a97726d1f72521aafc0157a04c3c6bd1be77cd659348997f47943':
@@ -62,9 +62,14 @@ jobs:
           if sorted(names) != sorted(allowed): raise SystemExit('Patch outside approved source scope')
           subprocess.run(['git','apply','--check','-'], input=patch, check=True)
           subprocess.run(['git','apply','-'], input=patch, check=True)
+          correction=read_blob('466ed03e167586a866d4f818d76c95b34c29f26a')
+          if hashlib.sha256(correction).hexdigest()!='5ff2365fc5451297a669c978405eb3e385a412163735758c7ecd8d94c39eff19':
+              raise SystemExit('Fixture correction digest mismatch')
+          subprocess.run(['git','apply','--check','-'], input=correction, check=True)
+          subprocess.run(['git','apply','-'], input=correction, check=True)
           evidence=pathlib.Path(os.environ['RUNNER_TEMP'])/'nonunity-results'; evidence.mkdir()
           (evidence/'publish-paths.json').write_text(json.dumps(allowed+['docs/context/index.html','docs/context/reviews/public-premise-dispositions.json']))
-          (evidence/'patch.json').write_text(json.dumps({'base':'86bb82bf5655562e2577cf2b83553ff261d8d5a6','patchSha256':hashlib.sha256(patch).hexdigest(),'UnityInvoked':False}))
+          (evidence/'patch.json').write_text(json.dumps({'base':'86bb82bf5655562e2577cf2b83553ff261d8d5a6','patchSha256':hashlib.sha256(patch).hexdigest(),'fixtureCorrectionSha256':hashlib.sha256(correction).hexdigest(),'UnityInvoked':False}))
       - name: Compile actual product sources and original plus new NUnit cases
         working-directory: tests/nonunity
         shell: bash
