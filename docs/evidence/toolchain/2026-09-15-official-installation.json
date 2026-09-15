@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-15T12:50:26.861507+00:00",
+  "scope": "Official toolchain installation and authentication diagnostics, not product acceptance",
+  "repository": "xrlab-dau/CHOOGuard",
+  "branch": "chore/astra-toolchain-bootstrap-20260915",
+  "testedSourceSha": "aa1e11d0f7ba509a36b494a65e1e40f48feeaca8",
+  "baseDevelopSha": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+  "workflowRun": 34969401523,
+  "workflowConclusion": "failure",
+  "executionEnvironment": "Ephemeral GitHub-hosted Ubuntu 24.04 runner, not the user computer",
+  "unity": {
+    "cliVersion": "1.0.0-beta.9",
+    "cliSha256": "8c0d6e2435449c8be7f0e6b2ce6330bfc5f17a98aec4b659c859940455dd0fe5",
+    "editorVersion": "6000.3.23f1",
+    "changeset": "09d2ecc7fb28",
+    "editorInstall": {
+      "completedUids": [
+        "6000.3.23f1-x86_64"
+      ],
+      "items": [
+        {
+          "uid": "6000.3.23f1-x86_64",
+          "name": "6000.3.23f1-x86_64",
+          "kind": "editor",
+          "status": "installed"
+        }
+      ]
+    },
+    "editorInstallExitCode": 0,
+    "editorTestLaunchAttempted": true,
+    "cliTestExitCode": 6,
+    "editorExitCode": 198,
+    "failureCode": "EDITOR_LICENSING_FAILURE",
+    "failureMessage": "No valid Unity Editor license found. Please activate your license.",
+    "loggedIn": false,
+    "licenseActive": false,
+    "mcpInitializeSucceeded": true,
+    "mcpServer": {
+      "name": "unity-mcp",
+      "version": "1.0.0-beta.9"
+    },
+    "mcpToolsListSucceeded": true,
+    "editorToolCount": 0,
+    "projectImported": false,
+    "testsExecuted": false,
+    "nunitReportPresent": false,
+    "licenseActivationAttempted": false,
+    "personalEligibilityAsserted": false,
+    "jobId": 104381686122,
+    "artifactId": 10396494147,
+    "artifactSha256": "93b4671362dbb961752682d74a458690cdd14de6c4f5206368719a54c98bed12"
+  },
+  "githubMcp": {
+    "sourceSha": "aa1e11d0f7ba509a36b494a65e1e40f48feeaca8",
+    "server": {
+      "name": "github-mcp-server",
+      "version": "1.12.1"
+    },
+    "credentialSource": "ephemeral_repository_actions_token",
+    "readOnly": true,
+    "oauthLoginAttempted": false,
+    "repositoryWritesAttemptedByProbe": false,
+    "projectWritesAttemptedByProbe": false,
+    "checks": {
+      "repository_read": {
+        "rpcSucceeded": true,
+        "toolSucceeded": true,
+        "responseSha256": "8863908ac6829947b2914286afea7b260237f8563b5017e81135d9122f74b4be",
+        "errorClasses": []
+      },
+      "project_1": {
+        "rpcSucceeded": true,
+        "toolSucceeded": false,
+        "responseSha256": "2476c77570deaa5681b2e717f0cc194847543a5d385f64a3707bf46cd81ad3a6",
+        "errorClasses": [
+          "HTTP_403",
+          "RESOURCE_NOT_ACCESSIBLE"
+        ]
+      },
+      "project_2": {
+        "rpcSucceeded": true,
+        "toolSucceeded": false,
+        "responseSha256": "12715246b2d7f1cb86b01ccec4caaed2972b4fbce804ff00bd091a2a76045bab",
+        "errorClasses": [
+          "HTTP_403",
+          "RESOURCE_NOT_ACCESSIBLE"
+        ]
+      }
+    },
+    "runId": 34969401523,
+    "jobId": 104381686600,
+    "artifactId": 10396433703,
+    "artifactSha256": "9860c52f8f24ac9d120eefe413b09e39be2bf729d332af58755e21371a1feff2",
+    "limits": "Repository writes are provided by the existing connector; this MCP probe was read-only. The current Actions token cannot access Projects. OAuth was documented, not completed. No authentication grant was created."
+  },
+  "priorAttempts": [
+    {
+      "head": "6134457c18868a458e137d24da12da17bef265e5",
+      "runId": 34967977102,
+      "result": "CLI installed; author used unsupported positional install-path argument; exit 2; Editor install not reached"
+    },
+    {
+      "head": "a6ba6e1a6a97110586fa9bfa30b9f5ba4a6e9f69",
+      "runId": 34968346307,
+      "result": "CLI installed and MCP initialized; author omitted directory creation before install-path --set; exit 6; Editor install not reached"
+    },
+    {
+      "head": "c568e13d2a08b15f1b257dab00d9671f1aa41140",
+      "result": "Directory fix published after PR215 closed; no PR workflow run observed"
+    }
+  ],
+  "pr215Observation": {
+    "state": "closed",
+    "merged": false,
+    "closedAt": "2026-09-15T12:22:10Z",
+    "reopenedByThisTask": false,
+    "closureReasonRecorded": false
+  },
+  "limits": [
+    "Repository commit/push/PR writes already succeeded through the existing managed connector. The added official MCP probe is intentionally read-only.",
+    "Both projects returned HTTP 403 Resource not accessible using the existing repository Actions token. OAuth user login and a Projects-authorized credential were not completed.",
+    "CLI and Editor installation succeeded. The actual Editor process exited with a licensing failure before import or tests. Installing software is not account authorization.",
+    "No license purchase, eligibility assertion, credential export, protected-branch push, force push, merge, or project membership/status change.",
+    "Runtime fixes from closed PR215 were not resubmitted on the diagnostics branch. No new product development PR was opened.",
+    "Hosted jobs are ephemeral and finished; no persistent Editor or MCP service is running for this chat."
+  ]
+}
