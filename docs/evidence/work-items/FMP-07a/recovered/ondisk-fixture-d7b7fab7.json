@@ -1,0 +1,221 @@
+{
+  "SchemaVersion": 1,
+  "WorkId": "FMP-07a",
+  "Title": "[FMP-07a] 13구역 실제 기하 기반 NPC100 군중 fixture",
+  "Classification": "PUBLIC_PROJECT_EVIDENCE",
+  "GeometricClassification": "synthetic_design_not_facility_acceptance",
+  "FixtureKind": "world_actual_collider_nav",
+  "ContractNature": "DECLARED CONTRACT, NOT A MEASURED RECEIPT. 이 파일의 모든 값은 (a) SourceProfile.Path 가 가리키는 선언 프로파일의 순수 함수로 저장소 밖에서 다시 계산 가능한 값이거나 (b) 시험마다 단언하는 계약 경계값이다. 캡처된 support/collider 수, 최소 swept gap, 최소 중심 간격, 최대 지상 속도, geometry 서명 같은 실측 집계값은 이 파일에 베껴 넣지 않고 실행 로그의 FMP07A-RECEIPT 줄과 docs/evidence/work-items/FMP-07a/result.json 에만 기록한다.",
+  "Seed": 107,
+  "FixtureKindNote": "이 fixture 는 13구역 authored 씬의 실제 콜라이더/지지면을 ConnectedWorldGeometry.Capture 로 뜨고 실제 NPC 동체 크기(WorldBodyPresentation.NpcRadiusM)를 쓴다. 선언 프로파일에서 파생한 벽만 쓰는 병목 fixture 나 반경 0.15 m 실험실 보정 단위 fixture 와 같은 종류가 아니며, 서로 바꿔 표기하면 FMP-07a 음성 계약 위반이다.",
+  "SeedNote": "FMP-07c 레시피의 seed 127 과 다른 값을 쓴다. 두 fixture 를 같은 seed 로 묶어 동일 실행으로 오인하지 않게 하기 위함이다.",
+  "JsonKeyConvention": "이 파일은 저장소의 선언 프로파일(foundation/world/connected-world-profile.json)과 같은 PascalCase 키를 쓴다. Unity JsonUtility 는 키 이름을 정확히 일치시켜 읽으므로, camelCase 로 적으면 예외 없이 전부 기본값으로 역직렬화되어 모든 계약 경계가 0/absent 로 읽힌다. 시험은 그 상태를 조용히 통과시키지 않고 즉시 실패시킨다.",
+  "SourceProfile": {
+    "Path": "foundation/world/connected-world-profile.json",
+    "Sha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+    "ProfileId": "native-connected-v1",
+    "Classification": "synthetic_design_not_facility_acceptance",
+    "SchemaVersion": 1,
+    "GeometrySchemaVersion": 1,
+    "Regions": 13,
+    "Portals": 12,
+    "Frames": 3
+  },
+  "SceneHash": {
+    "ManifestRule": "선언 순서대로 각 구역에 대해 'regionId|sceneName|frameId' 줄을 만들고 '\\n' 로 이은 뒤 마지막에 '\\n' 를 붙인 UTF-8 바이트의 sha256.",
+    "ManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+    "ProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+    "GeneratedSceneBytesNote": "생성된 14개 씬 파일의 바이트 해시는 실행 산출물이므로 이 계약 파일에 고정하지 않는다. 실행 로그의 FMP07A-RECEIPT 에서 읽는다.",
+    "RegionScenes": [
+      {
+        "RegionId": "rolling_stock_mainline",
+        "SceneName": "cg_region_rolling_stock_mainline",
+        "FrameId": "train-mainline"
+      },
+      {
+        "RegionId": "rail_tracks_mainline",
+        "SceneName": "cg_region_rail_tracks_mainline",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "rail_platforms_mainline",
+        "SceneName": "cg_region_rail_platforms_mainline",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "rail_terminal_public",
+        "SceneName": "cg_region_rail_terminal_public",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "station_concourse_2f",
+        "SceneName": "cg_region_station_concourse_2f",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "station_hall_1f",
+        "SceneName": "cg_region_station_hall_1f",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "station_ticket_area",
+        "SceneName": "cg_region_station_ticket_area",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "forecourt_eurasia",
+        "SceneName": "cg_region_forecourt_eurasia",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "underground_connector",
+        "SceneName": "cg_region_underground_connector",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "underground_shopping_passage",
+        "SceneName": "cg_region_underground_shopping_passage",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "metro_concourse",
+        "SceneName": "cg_region_metro_concourse",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "metro_platforms",
+        "SceneName": "cg_region_metro_platforms",
+        "FrameId": "world"
+      },
+      {
+        "RegionId": "rolling_stock_metro",
+        "SceneName": "cg_region_rolling_stock_metro",
+        "FrameId": "train-metro"
+      }
+    ]
+  },
+  "GeometryLoad": {
+    "LoadedRegionScenes": 13,
+    "DeclaredRegionScenes": 13,
+    "MustMatchDeclaredRegionSetExactly": true,
+    "EveryRegionMustContributeAtLeastOneSupport": true,
+    "MinimumCapturedSupports": 13,
+    "MinimumCapturedColliders": 100,
+    "EveryCapturedColliderMustBePresentEnabledAndUnchanged": true,
+    "NoColliderMayBeSilentlySkipped": true,
+    "MissingRegionPolicy": "13개 구역 씬을 정확히 한 번씩 싣지 않은 캡처는 ArgumentException 이다. 누락 구역을 감춘 부분 캡처는 이 fixture 가 될 수 없다.",
+    "UnloadedColliderPolicy": "적재된 구역 씬의 authored 콜라이더 집합과 캡처된 ColliderDescriptor 집합은 정확히 같아야 한다. 어떤 정적 콜라이더든 비활성·파괴되면 ValidateSourceGeometry 가 실패하고, 지지면 콜라이더가 비활성인 자리의 body 는 어댑터 생성이 거부된다."
+  },
+  "Body": {
+    "Kind": "npc",
+    "Count": 100,
+    "PlayerCount": 0,
+    "RadiusM": 0.41,
+    "HeightM": 1.8,
+    "PreferredSpeedMS": 1.5,
+    "RadiusConstant": "WorldBodyPresentation.NpcRadiusM",
+    "RadiusProvenance": "저작 Evacuee 메시의 보수적 상한이다(저장소 주석: sqrt(.3545^2 + .195^2) < .405 m). 0.15 m 실험실 보행로 보정 프로파일과 다른 세계 프로파일의 값이다.",
+    "ModelEnvelopeRule": "RadiusM 은 시험 시점에 저작 Evacuee 메시 정점에서 측정한 최대 수평 반경 이상이어야 하고 WorldBodyPresentation.NpcRadiusM 과 정확히 같아야 한다. 실제 모델보다 작은 반경을 world actual 로 선언하면 검증이 실패한다.",
+    "AbstractUnitRadiusM": 0.15,
+    "PlayerRadiusM": 0.3
+  },
+  "Placement": {
+    "Method": "ConnectedWorldGeometry.TryFindStandingPoint(regionId, region.Hub, radius, height, alreadyPlaced)",
+    "PerRegionCounts": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      7,
+      7,
+      7,
+      7
+    ],
+    "RegionsCovered": 13,
+    "SlotSpacingM": 0.9,
+    "InitialOverlapMarginM": 0.02,
+    "InitialOverlapPolicy": "배치는 이미 놓인 body 와의 중심 거리가 반경 합 + InitialOverlapMarginM(0.02 m) 이상인 자리만 고른다. 초기 겹침은 허용되지 않는다. 시험은 배치 후 모든 body 쌍에 대해 같은 축 규칙으로 이 여유를 다시 측정한다: 단언은 추정 반경 합이 아니라 반경 합 + 이 여유이다.",
+    "OverlapAxisRule": "두 body 가 서로 다른 층에 있으면 |ΔY| >= height 이므로 접촉 평면을 공유하지 않아 겹침 검사에서 제외한다. TryFindStandingPoint 가 이미 놓인 body 를 거르는 축 규칙과 같으며, 시험은 그 규칙을 그대로 재사용한다.",
+    "PerRegionCountsNote": "선언 순서 13개 구역에 대해 앞 9개 구역 8체 + 뒤 4개 구역 7체 = 정확히 100체다. 모든 구역이 최소 1체를 가지므로 누락 구역이 생길 수 없다.",
+    "SlotSpacingNote": "2 * 0.41 + 0.08 = 0.90 m. 실제 지지면·클리어런스 질의로 정해지며 선언 바닥 평면을 쓰지 않는다."
+  },
+  "MeasurementItems": [
+    "fixtureKind",
+    "fixtureIdentitySha256",
+    "bodyCount",
+    "distinctRegionCount",
+    "radiusM",
+    "heightM",
+    "tickSeconds",
+    "committedTicks",
+    "maximumGroundSpeedMS",
+    "minimumSweptGapM",
+    "minimumCentreClearanceM",
+    "supportCount",
+    "colliderCount",
+    "geometrySignature",
+    "contactSpaceIds"
+  ],
+  "MeasurementItemRule": "두 로스터(world actual, world 기하 위 abstract 반경 대조)는 정확히 이 15개 항목으로 측정한다. 각 항목은 시험 시점에 측정되어 영수증 자체의 필드로 존재해야 하며, 선언 파일의 이름만 있고 구현이 없는 항목은 계약이 아니다(시험이 리플렉션으로 모든 항목이 RunReceipt 필드에 존재함을 단언한다). fixtureIdentitySha256 은 그 기록 자신의 FixtureKind·동체수·반경·높이·seed 에서 실행 시점에 계산하므로 두 기록이 같은 값을 가질 수 없다.",
+  "Regression": {
+    "ExecutableTest": "Fmp07aWorldCrowdTests.Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt",
+    "TickSeconds": 0.05,
+    "Ticks": 20,
+    "SimulatedSeconds": 1.0,
+    "CommandKind": "DesiredVelocity",
+    "DesiredVelocityX": 0.2,
+    "DesiredVelocityZ": 0.05,
+    "PinnedEveryNthBody": 10,
+    "Assertions": {
+      "EveryTickCommitted": true,
+      "RegionCoverageAfterRun": 13,
+      "AllBodiesStayInTheWorldContactSpace": true,
+      "MinimumSweptGapMNonNegative": true,
+      "MinimumCentreClearanceMNonNegative": true,
+      "MaximumGroundSpeedAtMostPreferredSpeed": true,
+      "MinimumSweptGapMMustBeFinite": true,
+      "MinimumCentreClearanceMMustBeFinite": true,
+      "MeasuredPairCountPositive": true,
+      "MaximumGroundSpeedWithinCommandedSpeed": true,
+      "CommandedSpeedMS": 0.20615528128088306,
+      "MaximumGroundSpeedToleranceMS": 0.000001,
+      "NoBodyEverIntersectsAnAuthoredCollider": true,
+      "BodyCountAndRadiiUnchangedAtTheEnd": true
+    },
+    "AssertionNote": "위 값은 계약 경계다. 실측 집계값은 실행 로그 영수증과 result.json 에 기록하며, 결과를 보고 경계를 완화한 적이 없다.",
+    "CommandedSpeedRule": "지상 속도 상한은 선언 PreferredSpeedMS(1.5) 가 아니라 이 실행이 실제로 낸 명령 속도에 묶는다: sqrt(0.2^2 + 0.05^2) = 0.20615528128088306 m/s 에 허용 오차 1e-06 을 더한 값이다. 1.5 m/s 상한은 명령의 7.3배라 아무것도 검사하지 않는다.",
+    "SentinelRule": "미측정 sentinel(양의 무한대)은 측정된 0 으로 바꿔 철하지 않는다. sentinel 이 살아남으면 영수증은 실패하고, 실측 샘프 수가 0 이어도 실패한다."
+  },
+  "AbstractCounterpart": {
+    "FixtureKind": "abstract_unit_radius_control_on_world_geometry",
+    "LaboratoryCorridorKind": "abstract_unit_laboratory_corridor",
+    "ActualGeometry": false,
+    "RecordedSeparately": true,
+    "RadiusM": 0.15,
+    "HeightM": 1.8,
+    "PersonRepulsion": 5,
+    "RepulsionRangeM": 0.1,
+    "Sources": [
+      "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs (선언 프로파일에서 파생한 병목 벽)",
+      "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdBenchmarkTests.cs (고정 반경 0.15 m 실험실 보정)",
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionAdapterTests.cs (world motion 혼합 로스터, 저작 NPC 반경 상수 유지)"
+    ],
+    "Rule": "abstract 단위 결과를 이 파일의 FixtureKind 로 표기하거나 이 파일의 실측값을 abstract 결과에 붙이면 FMP-07a 음성 계약 위반이다. 두 기록은 FixtureKind 와 fixtureIdentitySha256 이 모두 달라야 한다. fixtureIdentitySha256 은 그 기록 자신의 FixtureKind·동체수·반경·높이·seed 에서 실행 시점에 계산하며 선언 파일에서 베끼 오지 않는다.",
+    "ReverseDirectionRule": "이 대조 기록을 world_actual_collider_nav 로 표기하거나, world actual 기록을 abstract_unit_radius_control_on_world_geometry 또는 LaboratoryCorridorKind 로 표기하면 실패해야 한다. 시험은 양 방향을 모두 실제로 뒤집어 두 방향 모두 거부되는지 확인한다.",
+    "DeletionPolicy": "기존 추상 fixture 는 삭제하지 않는다(비목표). 이 파일은 그 옆에 나란히 존재하는 별도 종류다."
+  },
+  "NegativeContract": {
+    "MissingRegion": "13개 구역을 정확히 한 번씩 싣지 않은 캡처, 12개 구역만 선언한 명부, 또는 저작 월드에 없는 구역을 끼워 넣은 명부는 실패해야 한다.",
+    "UnloadedCollider": "적재되지 않았거나 비활성·파괴된 authored 콜라이더를 감춘 fixture 는 실패해야 한다.",
+    "WrongFrame": "구역의 선언 FrameId 와 다른 프레임, 수직 이동·yaw 변경 프레임, world 프레임 이동은 실패해야 한다.",
+    "UndersizedRadius": "저작 Evacuee 외피보다 작은 반경(0.15 m 실험실 단위 포함)을 실제 크기로 선언하면 실패해야 한다.",
+    "MislabeledAbstract": "추상 단위 fixture 를 이 파일의 FixtureKind 로 표기하거나 그 반대로 표기하면 실패해야 한다.",
+    "Deletion": "기존 추상 fixture 삭제는 이 작업의 비목표다. 이 파일의 존재를 이유로 기존 fixture 를 지우면 실패다.",
+    "NonExecution": "장면이 dirty 라고 이 시험을 조용히 건너뛰지 않는다(Assert.Ignore 금지). 건너뛴 시험은 실패한 시험과 구분되지 않으므로 OneTimeSetUp 은 하드 실패하고, skip>0 인 호출은 통과로 취급하지 않는다."
+  }
+}
