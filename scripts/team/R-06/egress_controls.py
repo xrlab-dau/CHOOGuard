@@ -85,10 +85,24 @@ def check_binding(control: dict) -> dict:
 # ----------------------------------------------------------------------------- stage 1: input classification
 
 def admit_input(profile: dict, topics: dict, request: dict) -> dict:
+    if not isinstance(request, dict):
+        raise Refused("request_type_invalid")
     extra = sorted(set(request) - REQUEST_FIELDS)
     if extra:
         raise Refused("field_not_allowed:" + extra[0])
-    entry = topics.get(request.get("topicId"))
+    topic_id = request.get("topicId")
+    if not isinstance(topic_id, str):
+        raise Refused("field_type_invalid:topicId")
+    dest_id = request.get("destinationId")
+    if not isinstance(dest_id, str):
+        raise Refused("field_type_invalid:destinationId")
+    role = request.get("actorRole")
+    if not isinstance(role, str):
+        raise Refused("field_type_invalid:actorRole")
+    queries = request.get("queries")
+    if not isinstance(queries, list):
+        raise Refused("field_type_invalid:queries")
+    entry = topics.get(topic_id)
     if entry is None:
         raise Refused("topic_not_registered")
     if any(entry.get(field) in (None, "", []) for field in ENTRY_FIELDS):
@@ -127,9 +141,12 @@ def authorize_egress(profile: dict, entry: dict, request: dict, approvals: list)
     model = entry["modelId"]
     if not any(fnmatch.fnmatchcase(model, p) for p in scope.get("allow", [])) or any(fnmatch.fnmatchcase(model, p) for p in scope.get("deny", [])):
         raise Refused("model_outside_role_scope")
-    for query in request.get("queries", []):
+    queries = request.get("queries", [])
+    if not isinstance(queries, list):
+        raise Refused("field_type_invalid:queries")
+    for query in queries:
         if not isinstance(query, str):
-            raise Refused("query_contains_restricted_marker")
+            raise Refused("query_type_invalid")
         findings = text_findings(query)
         if findings:
             raise Refused("query_contains_" + findings[0])
@@ -287,7 +304,12 @@ def publish(schema: dict, result: dict, entry: dict, body, record: dict, approva
         raise Refused("approval_bound_to_other_manifest")
     if not isinstance(slug, str) or not SLUG.fullmatch(slug):
         raise Refused("invalid_slug")
+    if not isinstance(date, str) or not re.match(r"^\d{4}-\d{2}-\d{2}$", date):
+        raise Refused("invalid_date")
     targets = [target_dir / f"{date}-{slug}.json", target_dir / f"{date}-{slug}.md"]
+    for t in targets:
+        if not t.resolve().is_relative_to(target_dir.resolve()):
+            raise Refused("target_outside_research_root")
     if any(t.exists() for t in targets):
         raise Refused("target_exists_no_overwrite")
     document = {"topicId": entry["topicId"], "topic": entry["topic"], "dataClass": entry["dataClass"], "sanitizer": RULESET,

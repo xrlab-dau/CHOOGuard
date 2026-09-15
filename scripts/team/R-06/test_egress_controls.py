@@ -169,5 +169,36 @@ class Stages(Workspace):
         self.assertEqual(caught.exception.code, "egress_approval_not_recorded")
 
 
+    def test_queries_as_string_or_non_list_is_refused_and_never_sent(self):
+        # String queries (type confusion bypass) must be refused at admit stage and never sent
+        bad_req = dict(ec.REQ, queries="validator api_key=synthetic-fixture-not-a-key-0001")
+        res = ec.run_request(self.ctx, bad_req, [ec.ok(ec.clean_body())])
+        self.assertEqual(res["refusal"], {"stage": "inputClassification", "code": "field_type_invalid:queries"})
+        self.assertEqual(res["transportSends"], 0)
+
+    def test_invalid_field_types_are_refused(self):
+        entry = self.ctx["topics"]["T-PUB-01"]
+        with self.assertRaises(ec.Refused) as caught:
+            ec.admit_input(PROFILE, self.ctx["topics"], dict(ec.REQ, topicId=["T-PUB-01"]))
+        self.assertEqual(caught.exception.code, "field_type_invalid:topicId")
+
+        with self.assertRaises(ec.Refused) as caught:
+            ec.admit_input(PROFILE, self.ctx["topics"], dict(ec.REQ, destinationId={"d": 1}))
+        self.assertEqual(caught.exception.code, "field_type_invalid:destinationId")
+
+    def test_publish_date_traversal_and_invalid_date_are_refused(self):
+        entry = self.ctx["topics"]["T-PUB-01"]
+        record = {"manifestSha256": ec.sha256(b'{}'), "_manifestBytes": b'{}'}
+        approval = ec.approval_for()(record)
+        schema = SCHEMA
+        with tempfile.TemporaryDirectory() as tmp:
+            research_dir = Path(tmp) / "docs" / "research"
+            research_dir.mkdir(parents=True)
+            result = {"outputSanitization": "clean"}
+            with self.assertRaises(ec.Refused) as caught:
+                ec.publish(schema, result, entry, ec.clean_body(), record, approval, research_dir, "safe-slug", "../../etc")
+            self.assertEqual(caught.exception.code, "invalid_date")
+
+
 if __name__ == "__main__":
     unittest.main()
