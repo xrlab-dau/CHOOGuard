@@ -57,6 +57,174 @@ namespace ChooGuard.Foundation.Multiplayer
         public CommandKind Kind;
         public long ExpectedRevision;
     }
+    [Serializable] public sealed class ReportRow
+    {
+        public string ReportId = "", FromParticipantId = "", ToTeamId = "", EntityId = "", RegionId = "", FrameId = "";
+        public long ObservedRevision, Sequence;
+        public string[] AcknowledgedBy = Array.Empty<string>();
+        public bool AcknowledgedByLocal;
+    }
+    [Serializable] public sealed class EvacueeRow
+    {
+        public string EntityId = "", RegionId = "", LeaderId = "";
+        public long Revision;
+        public bool Unclaimed, LedByLocal;
+    }
+    [Serializable] public sealed class PendingCommandRow
+    {
+        public string CommandId = "", TargetId = "", Argument = "", RegionId = "";
+        public CommandKind Kind;
+        public long ExpectedRevision;
+    }
+    [Serializable] public sealed class CommandResultRow
+    {
+        public string CommandId = "", TargetId = "", Argument = "", Text = "";
+        public CommandKind Kind;
+        public CommandCode Code;
+        public bool Accepted;
+        public long Sequence;
+    }
+
+    /// <summary>Client report/acknowledgement/escort/hand-off screen state. Rows come only from the latest
+    /// server-projected view and results only from server receipts for commands this client sent; nothing is
+    /// shown optimistically. Commands can target only reports and entities present in that view.</summary>
+    public sealed class FieldCommandPanel
+    {
+        public const int ResultCapacity = 8;
+        private readonly List<PendingCommandRow> pending = new List<PendingCommandRow>();
+        private readonly List<CommandResultRow> results = new List<CommandResultRow>();
+        private FieldView view;
+        public string ParticipantId { get; }
+        public string TeamId => view?.TeamId ?? "";
+        public ReportRow[] Reports { get; private set; } = Array.Empty<ReportRow>();
+        public EvacueeRow[] Evacuees { get; private set; } = Array.Empty<EvacueeRow>();
+        public string[] ReportableIncidentIds { get; private set; } = Array.Empty<string>();
+        public PendingCommandRow[] Pending => pending.ToArray();
+        public CommandResultRow[] Results => results.ToArray();
+        public int IgnoredViews { get; private set; }
+        public int IgnoredReports { get; private set; }
+        public int IgnoredReceipts { get; private set; }
+
+        public FieldCommandPanel(string participantId)
+        {
+            if (string.IsNullOrEmpty(participantId)) throw new ArgumentException("A local participant is required.", nameof(participantId));
+            ParticipantId = participantId;
+        }
+
+        public void ApplyView(FieldView projected)
+        {
+            if (projected?.Observed == null || projected.Observed.ParticipantId != ParticipantId || string.IsNullOrEmpty(projected.TeamId) ||
+                view != null && (projected.Observed.WorldId != view.Observed.WorldId || projected.Observed.ShiftId != view.Observed.ShiftId))
+            { IgnoredViews++; return; }
+            view = projected;
+            var reports = projected.Observed.Reports ?? Array.Empty<TeamReport>();
+            IgnoredReports += reports.Count(r => r == null || r.ToTeamId != projected.TeamId);
+            Reports = reports.Where(r => r != null && r.ToTeamId == projected.TeamId).OrderBy(r => r.Sequence).Select(r => new ReportRow {
+                ReportId = r.ReportId ?? "", FromParticipantId = r.FromParticipantId ?? "", ToTeamId = r.ToTeamId, EntityId = r.EntityId ?? "",
+                RegionId = r.RegionId ?? "", FrameId = r.FrameId ?? "", ObservedRevision = r.ObservedRevision, Sequence = r.Sequence,
+                AcknowledgedBy = (r.AcknowledgedBy ?? Array.Empty<string>()).ToArray(),
+                AcknowledgedByLocal = (r.AcknowledgedBy ?? Array.Empty<string>()).Contains(ParticipantId) }).ToArray();
+            var entities = projected.Observed.Entities ?? Array.Empty<EntityState>();
+            Evacuees = entities.Where(e => e != null && e.Kind == EntityKind.Evacuee).OrderBy(e => e.EntityId, StringComparer.Ordinal)
+                .Select(e => new EvacueeRow { EntityId = e.EntityId, RegionId = e.RegionId ?? "", LeaderId = e.LeaderId ?? "", Revision = e.Revision,
+                    Unclaimed = string.IsNullOrEmpty(e.LeaderId), LedByLocal = e.LeaderId == ParticipantId }).ToArray();
+            ReportableIncidentIds = entities.Where(e => e != null && e.Kind == EntityKind.Incident && e.Active)
+                .Select(e => e.EntityId).OrderBy(id => id, StringComparer.Ordinal).ToArray();
+        }
+
+        /// <summary>Report payload: entity id, observed revision and recipient team. The protocol has no region field;
+        /// the server derives the report region from its authoritative target, and the report row shows that value.</summary>
+        public WorldCommand Report(string incidentId, string recipientTeamId = "", string commandId = null)
+        {
+            var target = ObservedEntity(incidentId);
+            return target == null || target.Kind != EntityKind.Incident || !target.Active ? null :
+                Command(CommandKind.Report, target.EntityId, recipientTeamId ?? "", target.Revision, commandId);
+        }
+
+        public WorldCommand Acknowledge(string reportId, string commandId = null) =>
+            Reports.Any(r => r.ReportId == reportId) ? Command(CommandKind.AcknowledgeReport, reportId, "", 0, commandId) : null;
+
+        public WorldCommand Claim(string evacueeId, string commandId = null)
+        {
+            var row = Evacuees.SingleOrDefault(e => e.EntityId == evacueeId);
+            return row == null || !row.Unclaimed ? null : Command(CommandKind.ClaimEvacuee, row.EntityId, "", row.Revision, commandId);
+        }
+
+        public WorldCommand HandOff(string evacueeId, string toParticipantId, string commandId = null)
+        {
+            var row = Evacuees.SingleOrDefault(e => e.EntityId == evacueeId);
+            return row == null || !row.LedByLocal || string.IsNullOrEmpty(toParticipantId) || toParticipantId == ParticipantId ? null :
+                Command(CommandKind.HandOffEvacuee, row.EntityId, toParticipantId, row.Revision, commandId);
+        }
+
+        /// <summary>R key: acknowledge the oldest shown team report the local participant has not acknowledged.</summary>
+        public WorldCommand AcknowledgeNext(string commandId = null)
+        {
+            var next = Reports.FirstOrDefault(r => !r.AcknowledgedByLocal);
+            return next == null ? null : Acknowledge(next.ReportId, commandId);
+        }
+
+        /// <summary>H key: hand the first evacuee the server shows as led by the local participant to <paramref name="toParticipantId"/>.</summary>
+        public WorldCommand HandOffLed(string toParticipantId, string commandId = null)
+        {
+            var led = Evacuees.FirstOrDefault(e => e.LedByLocal);
+            return led == null ? null : HandOff(led.EntityId, toParticipantId, commandId);
+        }
+
+        /// <summary>Call only after the command has actually been sent to the server.</summary>
+        public void Track(WorldCommand command)
+        {
+            if (command == null || command.ParticipantId != ParticipantId || pending.Any(p => p.CommandId == command.CommandId)) return;
+            var region = command.Kind == CommandKind.AcknowledgeReport ? Reports.SingleOrDefault(r => r.ReportId == command.TargetId)?.RegionId
+                : ObservedEntity(command.TargetId)?.RegionId;
+            pending.Add(new PendingCommandRow { CommandId = command.CommandId, Kind = command.Kind, TargetId = command.TargetId ?? "",
+                Argument = command.Argument ?? "", ExpectedRevision = command.ExpectedRevision, RegionId = region ?? "" });
+        }
+
+        /// <summary>Shows a server receipt only when it answers a command this client sent in the current shift.</summary>
+        public bool ApplyReceipt(CommandReceipt receipt)
+        {
+            var sent = receipt == null ? null : pending.SingleOrDefault(p => p.CommandId == receipt.CommandId);
+            if (sent == null || receipt.ParticipantId != ParticipantId || view == null ||
+                receipt.WorldId != view.Observed.WorldId || receipt.ShiftId != view.Observed.ShiftId)
+            { IgnoredReceipts++; return false; }
+            pending.Remove(sent);
+            results.Add(new CommandResultRow { CommandId = sent.CommandId, Kind = sent.Kind, TargetId = sent.TargetId, Argument = sent.Argument,
+                Code = receipt.Code, Accepted = receipt.Code == CommandCode.Accepted, Sequence = receipt.Sequence,
+                Text = (receipt.Code == CommandCode.Accepted ? "서버 승인" : "서버 거부(" + receipt.Code + ")") + ": " + KindLabel(sent.Kind) + " " + sent.TargetId +
+                    (string.IsNullOrEmpty(sent.Argument) ? "" : " → " + sent.Argument) });
+            if (results.Count > ResultCapacity) results.RemoveAt(0);
+            return true;
+        }
+
+        public string[] RenderLines()
+        {
+            var lines = new List<string> { "보고·수신확인·인계 · 서버 승인 상태만 표시" };
+            lines.AddRange(Reports.Select(r => "팀 보고 " + r.ReportId + ": " + r.EntityId + " / " + r.RegionId + " · 관측 rev " + r.ObservedRevision +
+                " · 보고자 " + r.FromParticipantId + " · 수신확인 " + (r.AcknowledgedBy.Length == 0 ? "없음" : string.Join(", ", r.AcknowledgedBy))));
+            lines.AddRange(Evacuees.Select(e => "대피자 " + e.EntityId + " / " + e.RegionId + " · " +
+                (e.Unclaimed ? "인솔자 없음" : e.LedByLocal ? "내가 인솔 중" : "인솔자 " + e.LeaderId) + " · rev " + e.Revision));
+            lines.AddRange(pending.Select(p => "서버 확인 대기: " + KindLabel(p.Kind) + " " + p.TargetId));
+            lines.AddRange(results.Select(r => r.Text));
+            return lines.ToArray();
+        }
+
+        public static string KindLabel(CommandKind kind) =>
+            kind == CommandKind.Report ? "보고" : kind == CommandKind.AcknowledgeReport ? "수신확인" :
+            kind == CommandKind.ClaimEvacuee ? "인솔" : kind == CommandKind.HandOffEvacuee ? "인계" : kind.ToString();
+
+        private EntityState ObservedEntity(string entityId) =>
+            view?.Observed?.Entities?.SingleOrDefault(e => e != null && e.EntityId == entityId);
+
+        private WorldCommand Command(CommandKind kind, string targetId, string argument, long revision, string commandId)
+        {
+            if (view?.Observed == null) return null;
+            return new WorldCommand { WorldId = view.Observed.WorldId, ShiftId = view.Observed.ShiftId, ParticipantId = ParticipantId,
+                TeamId = view.TeamId, CommandId = string.IsNullOrEmpty(commandId) ? Guid.NewGuid().ToString("N") : commandId,
+                Kind = kind, TargetId = targetId, Argument = argument, ExpectedRevision = revision };
+        }
+    }
+
     [Serializable] public sealed class VoiceProbeStep { public float AtSeconds; public string Channel; public bool Held; }
     [Serializable] public sealed class ProbeWaypoint { public Point3 Position; public string RegionId, TargetId; public int Operations; public float WaitSeconds; }
     [Serializable] public sealed class ProbePlan { public ProbeStep[] Steps; public VoiceProbeStep[] VoiceSteps;
@@ -121,7 +289,10 @@ namespace ChooGuard.Foundation.Multiplayer
         private bool navigationMenu;
         private bool spatialPersistenceFault;
         private Vector2 navigationScroll;
+        private FieldCommandPanel commandPanel;
+        private string handOffTarget = "";
         public FieldView CurrentView => view;
+        public FieldCommandPanel CommandPanel => commandPanel;
         public bool Connected => network != null && network.IsConnectedClient;
         public bool LocalInputEnabled => controls && snapshotFreshness.IsCurrent(Time.realtimeSinceStartupAsDouble);
 
@@ -227,6 +398,7 @@ namespace ChooGuard.Foundation.Multiplayer
             {
                 credential = JsonUtility.FromJson<JoinCredential>(File.ReadAllText(Required("--cg-credential")));
                 if (credential == null) throw new InvalidDataException("Invalid join credential file.");
+                commandPanel = new FieldCommandPanel(credential.ParticipantId);
                 network.NetworkConfig.ConnectionData = Encoding.UTF8.GetBytes(JsonUtility.ToJson(credential));
                 var plan = Argument("--cg-probe");
                 if (!string.IsNullOrEmpty(plan)) probe = JsonUtility.FromJson<ProbePlan>(File.ReadAllText(plan));
@@ -361,6 +533,7 @@ namespace ChooGuard.Foundation.Multiplayer
             if (sender != NetworkManager.ServerClientId || remaining <= 0 || remaining > 65536) return;
             reader.ReadValueSafe(out string text); receivedBytes += remaining;
             view = JsonUtility.FromJson<FieldView>(text);
+            commandPanel?.ApplyView(view);
             connectedWorld?.ApplyView(view);
             snapshotFreshness.Received(Time.realtimeSinceStartupAsDouble);
             StartClientMetrics();
@@ -380,7 +553,7 @@ namespace ChooGuard.Foundation.Multiplayer
                 var projected = JsonUtility.FromJson<FieldView>(SnapshotPayload.Decode(payload));
                 if (projected?.Observed == null || projected.Physical == null || projected.ProtocolVersion != 3 || projected.Observed.ParticipantId != credential.ParticipantId ||
                     projected.Observed.WorldId != credential.WorldId || projected.Observed.ShiftId != credential.ShiftId) throw new InvalidDataException("Invalid participant snapshot.");
-                connectedWorld.ApplyView(projected); view = projected; snapshotFreshness.Received(Time.realtimeSinceStartupAsDouble);
+                connectedWorld.ApplyView(projected); view = projected; commandPanel?.ApplyView(view); snapshotFreshness.Received(Time.realtimeSinceStartupAsDouble);
                 StartClientMetrics();
                 bodyView?.Apply(view); smokeView?.Apply(view); Evidence("view", view);
             }
@@ -393,6 +566,7 @@ namespace ChooGuard.Foundation.Multiplayer
             if (sender != NetworkManager.ServerClientId || remaining <= 0 || remaining > 4096) return;
             reader.ReadValueSafe(out string text); receivedBytes += remaining;
             var receipt = JsonUtility.FromJson<CommandReceipt>(text);
+            commandPanel?.ApplyReceipt(receipt);
             if (receipt.CommandId == pendingProbeCommand)
             {
                 if (receipt.Code == CommandCode.Accepted) { waypointOperations++; pendingProbeCommand = null; }
@@ -476,6 +650,9 @@ namespace ChooGuard.Foundation.Multiplayer
                 yaw += Input.GetAxisRaw("Mouse X") * 2;
                 pitch = Mathf.Clamp(pitch - Input.GetAxisRaw("Mouse Y") * 2, -80, 80);
                 if (Input.GetKeyDown(KeyCode.E)) InteractClosest();
+                // Commands need active input on the server, so panel actions are keys while controls are active.
+                if (commandPanel != null && Input.GetKeyDown(KeyCode.R)) SubmitPanelCommand(commandPanel.AcknowledgeNext());
+                if (commandPanel != null && Input.GetKeyDown(KeyCode.H)) SubmitPanelCommand(commandPanel.HandOffLed((handOffTarget ?? "").Trim()));
             }
             inputClock += Time.unscaledDeltaTime;
             if (inputClock >= TickSeconds)
@@ -662,6 +839,16 @@ namespace ChooGuard.Foundation.Multiplayer
             return true;
         }
 
+        /// <summary>Sends a report-panel command and tracks it so only the matching server receipt is shown.</summary>
+        public bool SubmitPanelCommand(WorldCommand command)
+        {
+            if (commandPanel == null || !Connected || view?.Observed == null || !LocalInputEnabled) return false;
+            if (command == null) { status = "현재 서버 상태로는 할 수 없는 행동입니다."; return false; }
+            Send(CommandChannel, NetworkManager.ServerClientId, JsonUtility.ToJson(command));
+            commandPanel.Track(command);
+            return true;
+        }
+
         private void InteractClosest()
         {
             if (view?.Observed == null || cameraView == null) return;
@@ -669,6 +856,8 @@ namespace ChooGuard.Foundation.Multiplayer
                 Vector3.Dot(cameraView.transform.forward, (Vector(x.Position) + Vector3.up - cameraView.transform.position).normalized) > .7f)
                 .OrderBy(x => x.Position.DistanceSquared(view.Position)).FirstOrDefault();
             if (target == null) { status = "가까운 설비나 대피자를 바라보세요."; return; }
+            if (commandPanel != null && target.Kind == EntityKind.Evacuee) { SubmitPanelCommand(commandPanel.Claim(target.EntityId)); return; }
+            if (commandPanel != null && target.Kind == EntityKind.Incident) { SubmitPanelCommand(commandPanel.Report(target.EntityId)); return; }
             Submit(new ProbeStep { TargetId = target.EntityId, ExpectedRevision = target.Revision,
                 Kind = target.Kind == EntityKind.Evacuee ? CommandKind.ClaimEvacuee : target.Kind == EntityKind.Incident ? CommandKind.Report : CommandKind.Operate });
         }
@@ -831,7 +1020,7 @@ namespace ChooGuard.Foundation.Multiplayer
         private void OnGUI()
         {
             if (Application.isBatchMode) return;
-            GUILayout.BeginArea(new Rect(16, 16, 500, navigationMenu ? 650 : 300), GUI.skin.box);
+            GUILayout.BeginArea(new Rect(16, 16, 500, navigationMenu ? 650 : commandPanel != null ? 620 : 300), GUI.skin.box);
             GUILayout.Label("CHOOguard 공동 근무 · 검증 전 훈련 예시");
             GUILayout.Label(status);
             if (view != null)
@@ -860,12 +1049,30 @@ namespace ChooGuard.Foundation.Multiplayer
                     }
                 }
                 if (voiceRadio != null) GUILayout.Label(voiceRadio.Status);
-                foreach (var report in view.Observed.Reports.TakeLast(3)) GUILayout.Label("팀 보고: " + report.EntityId + " / " + report.RegionId);
+                if (commandPanel != null && !navigationMenu) DrawCommandPanel();
+                else foreach (var report in view.Observed.Reports.TakeLast(3)) GUILayout.Label("팀 보고: " + report.EntityId + " / " + report.RegionId);
                 if (!controls && GUILayout.Button("현장으로 복귀")) SetControls(true);
                 if (view.Instructor && GUILayout.Button(view.Observed.Paused ? "근무 재개" : "근무 정지"))
                     Submit(new ProbeStep { Kind = view.Observed.Paused ? CommandKind.ResumeShift : CommandKind.PauseShift });
             }
             GUILayout.EndArea();
+        }
+
+        private void DrawCommandPanel()
+        {
+            var lines = commandPanel.RenderLines();
+            GUILayout.Label(lines[0] + " · E 보고/인솔 · R 수신확인 · H 인계");
+            foreach (var line in lines.Skip(1).Where(l => l.StartsWith("팀 보고", StringComparison.Ordinal)).TakeLast(4)) GUILayout.Label(line);
+            foreach (var line in lines.Skip(1).Where(l => l.StartsWith("대피자", StringComparison.Ordinal)).Take(4)) GUILayout.Label(line);
+            if (commandPanel.Evacuees.Any(e => e.LedByLocal))
+            {
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(controls ? "인계 받을 참가자 ID (Esc 후 입력)" : "인계 받을 참가자 ID", GUILayout.Width(190));
+                if (controls) GUILayout.Label(handOffTarget ?? "");
+                else handOffTarget = GUILayout.TextField(handOffTarget ?? "", 64);
+                GUILayout.EndHorizontal();
+            }
+            foreach (var line in lines.Skip(1).Where(l => l.StartsWith("서버 ", StringComparison.Ordinal)).TakeLast(4)) GUILayout.Label(line);
         }
 
         [Serializable] private sealed class ParticipantEvent { public string ParticipantId; }

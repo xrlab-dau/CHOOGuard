@@ -1,0 +1,666 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "workId": "FMP-10a",
+  "issue": 134,
+  "domainCode": "FMP",
+  "phase": "candidate",
+  "artifacts": [
+    "artifact:134:fmp10a-playmode-test:candidate",
+    "artifact:134:fmp10a-render-evidence:candidate"
+  ],
+  "status": "candidate_run_recorded",
+  "syntheticDisclosure": {
+    "statement": "Teams (team-a, team-b), roles (synthetic-role-1/2), participants, entities and positions in the executed tests are synthetic fixtures. They are not an official KORAIL reporting, acknowledgement or escort procedure, and no scoring or facility acceptance is implied.",
+    "authority": "server decisions come from the unmodified AuthoritativeShift at the base ref"
+  },
+  "runRecord": {
+    "recordKind": "complete_run_record",
+    "branch": "feature/134-fmp10a-report-ui",
+    "baseRef": "0794ecf",
+    "baseCommit": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "commitNote": "Runs executed against a fresh worktree at the base commit with the candidate files copied in; the candidate commit is created after this record, so its own sha cannot be self-referenced. Bind to content with inputs[].candidateSha256.",
+    "editor": {
+      "version": "6000.3.23f1",
+      "projectVersionFile": "m_EditorVersion: 6000.3.23f1"
+    },
+    "platform": {
+      "testPlatform": "PlayMode",
+      "host": "Windows 11 Education 10.0.26200 x64",
+      "testRecordPlatform": "WindowsEditor"
+    },
+    "buildHash": {
+      "value": "c89ca5ec04dd62592110b8ec11842966b57ebe37d8cc43d74cc60c91c6fbb4b9",
+      "algorithm": "sha256",
+      "source": "assembly:ChooGuard.Foundation.Multiplayer.dll"
+    },
+    "sourceRef": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "inputs": {
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": {
+        "baseBlobSha1": "8e6d6b4ac2cc38e8e765bf59fc1b8c830e3d0037",
+        "candidateBlobSha1": "e8bdc2a245fd7e04f8d2dd4a754d062761c62d75",
+        "candidateSha256": "97559813e833baaec5acfe3750bb92b2000f2f12f5a3ada47843c5069354ff36",
+        "candidateSizeBytes": 76751,
+        "candidateLineCount": 1195,
+        "newFileAtBase": false
+      },
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10aReportUiTests.cs": {
+        "baseBlobSha1": null,
+        "candidateBlobSha1": "f4af33fafc1aa71b3ca111c1122cf8fb78a04b07",
+        "candidateSha256": "93ab01193ddf36c266ff7cfe6bdacf1290acf08e2c9e3e6134efd5a05dd19f10",
+        "candidateSizeBytes": 25296,
+        "candidateLineCount": 396,
+        "newFileAtBase": true
+      },
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10aReportUiTests.cs.meta": {
+        "baseBlobSha1": null,
+        "candidateBlobSha1": "abd79f6e4d4a95accc3d98f58aa89be3ba4523df",
+        "candidateSha256": "cfc2add677e29e0968b12a76b3107cf5a4573d08a950f2b14117169353018b55",
+        "candidateSizeBytes": 60,
+        "candidateLineCount": 2,
+        "newFileAtBase": true
+      },
+      "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs": {
+        "baseBlobSha1": "9f3feb3b487b788c49ea9e783df00e05330d0369",
+        "sha256": "f764bcb7f98236a801285abbe1a4175ed9a16fed712df16b0f49d39b6bf3e260",
+        "readOnly": true
+      },
+      "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs": {
+        "baseBlobSha1": "5e6552ec286ed783198f93015d9bd711e6c636ca",
+        "sha256": "4d8712a28c89f5d9cb6e22f8820357b076bdc0aa41e97cf9cbf837e349f73a1d",
+        "readOnly": true
+      }
+    },
+    "environment": {
+      "checkout": "fresh git worktree outside the working checkout, detached at the base commit; tracked changes before Unity: 0",
+      "lfs": "38 files, 0 pointers left, git lfs fsck OK",
+      "firstImport": {
+        "exitCode": 1,
+        "compilerErrors": 630,
+        "signature": "CS0103 Unsafe in com.unity.pipeline IlInterpreter (known new-checkout issue)",
+        "log": {
+          "path": "<RUN_ROOT>/00-env/first-import.log",
+          "sha256": "2882a094a5f31490b34f6730b930cc01614ea3d9c7cef62a3b315314cb63765e",
+          "sizeBytes": 313834
+        }
+      },
+      "remediation": {
+        "command": "PYTHONUTF8=1 python scripts/dev/prepare_multiplayer_dependencies.py --project <worktree> --apply",
+        "exitCode": 0,
+        "pipelinePatchSha256": "bf384c549ac21afcf7a3a0ed7c6fabe7c27e7e599091192e1865c46780bda2e1",
+        "record": {
+          "path": "<RUN_ROOT>/00-env/patch-apply.txt",
+          "sha256": "c98b3e38b2747183c70057b3272a2f3eddcbfaaa27a8b7caebdbd2759b563059",
+          "sizeBytes": 263
+        }
+      },
+      "compileCheck": {
+        "exitCode": 0,
+        "compilerErrors": 0,
+        "log": {
+          "path": "<RUN_ROOT>/00-env/compile-check.log",
+          "sha256": "4cf08ee665b667500260cafe9db978b9498bd86c0ff337dd27e6ea04d8f82052",
+          "sizeBytes": 212010
+        }
+      },
+      "untrackedAfterImport": [
+        "Assets/CHOOguardTeam.meta",
+        "Assets/CHOOguardTeam/Art.meta",
+        "Assets/DefaultNetworkPrefabs.asset(.meta)",
+        "Assets/Resources(.meta)",
+        "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06bBoundaryMatrixTests.cs.meta (missing .meta at base, generated by Unity)"
+      ],
+      "setupTranscript": {
+        "path": "<RUN_ROOT>/00-env/setup.txt",
+        "sha256": "c27416c099abe7834c3284abd6fb0c8013b662b822b6b43c7f4acdbb3c70d7ad",
+        "sizeBytes": 399
+      }
+    },
+    "commands": [
+      {
+        "cmd": "<unity> -batchmode -projectPath <worktree> -runTests -testPlatform PlayMode -testResults <run>/PlayMode.xml -logFile <run>/PlayMode.log -cg-fmp10a-run-record <run>/fmp10a-run-record.json -cg-fmp10a-source-ref 0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+        "unity": "C:/Program Files/Unity/Hub/Editor/6000.3.23f1/Editor/Unity.exe"
+      }
+    ],
+    "attempts": [
+      {
+        "run": "01-playmode",
+        "purpose": "first execution",
+        "selected": false,
+        "exitCode": 0,
+        "runtimeSha256": "66dd91cfc517de73a0c6f83fbc2b35b4075168145dcc579f534a3b7d25efe39f",
+        "note": "Executed before a final one-line change in SubmitPanelCommand (status message when a panel command cannot be built). Same test source; all 5 FMP10a tests passed.",
+        "results": {
+          "xml": {
+            "path": "<RUN_ROOT>/01-playmode/PlayMode.xml",
+            "sha256": "ff9566a0f0f475eb03c7d78f4b9b5c8808f7a27656c7df0d385e33295b29fde0",
+            "sizeBytes": 52044
+          },
+          "result": "Passed",
+          "total": 36,
+          "passed": 32,
+          "failed": 0,
+          "skipped": 4,
+          "inconclusive": 0,
+          "startTime": "2026-09-14 17:22:00Z",
+          "endTime": "2026-09-14 17:22:08Z",
+          "testCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.AcknowledgeShowsSameTeamReportAndServerAcknowledgedBy",
+              "result": "Passed",
+              "duration": "0.026500",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ClaimAndHandOffShowRaceResultAndServerTargetState",
+              "result": "Passed",
+              "duration": "0.004961",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportOutsideObservationIsAbsentFromViewAndUiState",
+              "result": "Passed",
+              "duration": "0.002886",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportSubmitSendsObservedFieldsAndShowsServerResult",
+              "result": "Passed",
+              "duration": "0.004887",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.RunRecordBindsSourceAndBuildHashToRenderedPanelState",
+              "result": "Passed",
+              "duration": "0.020344",
+              "message": ""
+            }
+          ],
+          "skippedCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ExactSdkConnectsScopedRoomsAndRetiredEpochCannotBeReopened",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.MismatchedEpochRecordMakesNoDeletionOfTheExistingVoiceRoom",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ServerRevocationAndRetirementRejectAlreadyIssuedRoomTokens",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.SyntheticVoiceRtpReachesOnlyItsTeamAndStopsAfterMute",
+              "label": "Explicit"
+            }
+          ]
+        },
+        "log": {
+          "path": "<RUN_ROOT>/01-playmode/PlayMode.log",
+          "sha256": "c4637c34c348dd066e8ae7d64040651f0d1715efd8e71eb5f0c7643c2e4cb978",
+          "sizeBytes": 160792
+        },
+        "runRecord": {
+          "path": "<RUN_ROOT>/01-playmode/fmp10a-run-record.json",
+          "sha256": "1d343ab4af60471402277e58e5c3f6f53ca0c0e052f28efafd68c2d7948f2085",
+          "sizeBytes": 2570
+        }
+      },
+      {
+        "run": "02-playmode",
+        "purpose": "selected execution with final candidate sources",
+        "selected": true,
+        "exitCode": 0,
+        "runtimeSha256": "97559813e833baaec5acfe3750bb92b2000f2f12f5a3ada47843c5069354ff36"
+      },
+      {
+        "run": "03-mutation-no-team-filter",
+        "purpose": "negative control: FieldCommandPanel.ApplyView team filter removed in the worktree copy only",
+        "selected": false,
+        "exitCode": 2,
+        "mutationDiff": {
+          "path": "<RUN_ROOT>/03-mutation-no-team-filter/mutation.diff",
+          "sha256": "a59be13169e1a723cd155789896efe54711954f69d8f287cc02c8ce251fad026",
+          "sizeBytes": 20845
+        },
+        "results": {
+          "xml": {
+            "path": "<RUN_ROOT>/03-mutation-no-team-filter/PlayMode.xml",
+            "sha256": "59943744064af965977df251ffd1cea9fbf2b1fbd9678f00750507bddc7cb940",
+            "sizeBytes": 55661
+          },
+          "result": "Failed(Child)",
+          "total": 36,
+          "passed": 31,
+          "failed": 1,
+          "skipped": 4,
+          "inconclusive": 0,
+          "startTime": "2026-09-14 17:24:03Z",
+          "endTime": "2026-09-14 17:24:09Z",
+          "testCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.AcknowledgeShowsSameTeamReportAndServerAcknowledgedBy",
+              "result": "Passed",
+              "duration": "0.023805",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ClaimAndHandOffShowRaceResultAndServerTargetState",
+              "result": "Passed",
+              "duration": "0.004379",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportOutsideObservationIsAbsentFromViewAndUiState",
+              "result": "Failed",
+              "duration": "0.005911",
+              "message": "Expected: <empty>"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportSubmitSendsObservedFieldsAndShowsServerResult",
+              "result": "Passed",
+              "duration": "0.004424",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.RunRecordBindsSourceAndBuildHashToRenderedPanelState",
+              "result": "Passed",
+              "duration": "0.011734",
+              "message": ""
+            }
+          ],
+          "skippedCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ExactSdkConnectsScopedRoomsAndRetiredEpochCannotBeReopened",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.MismatchedEpochRecordMakesNoDeletionOfTheExistingVoiceRoom",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ServerRevocationAndRetirementRejectAlreadyIssuedRoomTokens",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.SyntheticVoiceRtpReachesOnlyItsTeamAndStopsAfterMute",
+              "label": "Explicit"
+            }
+          ]
+        },
+        "log": {
+          "path": "<RUN_ROOT>/03-mutation-no-team-filter/PlayMode.log",
+          "sha256": "0514f0a8643106370f96d1ea713f57208f02df73776fb1bb315a3ae32c95d609",
+          "sizeBytes": 166388
+        },
+        "detectedBy": "FMP10aReportUiTests.cs:300 Assert.That(a1.Reports, Is.Empty) after a misrouted projection"
+      },
+      {
+        "run": "04-mutation-unsolicited-receipt",
+        "purpose": "negative control: ApplyReceipt accepts receipts for commands never sent (worktree copy only)",
+        "selected": false,
+        "exitCode": 2,
+        "mutationDiff": {
+          "path": "<RUN_ROOT>/04-mutation-unsolicited-receipt/mutation.diff",
+          "sha256": "523ff6bb16a4ca6ec81b25d6da19b2f86621eccbe80171fdee410b9704914fdd",
+          "sizeBytes": 21035
+        },
+        "results": {
+          "xml": {
+            "path": "<RUN_ROOT>/04-mutation-unsolicited-receipt/PlayMode.xml",
+            "sha256": "5c8bfbb91d751f7980db3b642ddd90c7ce23dda4e32e7250d45d872859bd3b58",
+            "sizeBytes": 55618
+          },
+          "result": "Failed(Child)",
+          "total": 36,
+          "passed": 31,
+          "failed": 1,
+          "skipped": 4,
+          "inconclusive": 0,
+          "startTime": "2026-09-14 17:24:28Z",
+          "endTime": "2026-09-14 17:24:34Z",
+          "testCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.AcknowledgeShowsSameTeamReportAndServerAcknowledgedBy",
+              "result": "Passed",
+              "duration": "0.022086",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ClaimAndHandOffShowRaceResultAndServerTargetState",
+              "result": "Passed",
+              "duration": "0.004506",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportOutsideObservationIsAbsentFromViewAndUiState",
+              "result": "Failed",
+              "duration": "0.005754",
+              "message": "Expected: False"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportSubmitSendsObservedFieldsAndShowsServerResult",
+              "result": "Passed",
+              "duration": "0.004419",
+              "message": ""
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.RunRecordBindsSourceAndBuildHashToRenderedPanelState",
+              "result": "Passed",
+              "duration": "0.012084",
+              "message": ""
+            }
+          ],
+          "skippedCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ExactSdkConnectsScopedRoomsAndRetiredEpochCannotBeReopened",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.MismatchedEpochRecordMakesNoDeletionOfTheExistingVoiceRoom",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ServerRevocationAndRetirementRejectAlreadyIssuedRoomTokens",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.SyntheticVoiceRtpReachesOnlyItsTeamAndStopsAfterMute",
+              "label": "Explicit"
+            }
+          ]
+        },
+        "log": {
+          "path": "<RUN_ROOT>/04-mutation-unsolicited-receipt/PlayMode.log",
+          "sha256": "10bb68634aa5582011eab0455067c1784435d86b06136b8d9d59478754b734af",
+          "sizeBytes": 166664
+        },
+        "detectedBy": "FMP10aReportUiTests.cs:315 Assert.That(a1.ApplyReceipt(unsolicited), Is.False)"
+      },
+      {
+        "run": "05-editmode-regression",
+        "purpose": "regression: full EditMode suite with the candidate runtime",
+        "selected": false,
+        "exitCode": 2,
+        "results": {
+          "xml": {
+            "path": "<RUN_ROOT>/05-editmode-regression/EditMode.xml",
+            "sha256": "1d5558251edb12880cab700b044344f2e12b3c03396adbdb31056fcecef5c0ff",
+            "sizeBytes": 517707
+          },
+          "result": "Failed(Child)",
+          "total": 513,
+          "passed": 506,
+          "failed": 2,
+          "skipped": 5,
+          "inconclusive": 0,
+          "startTime": "2026-09-14 17:25:20Z",
+          "endTime": "2026-09-14 17:27:22Z",
+          "testCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams",
+              "result": "Failed",
+              "duration": "0.006216",
+              "message": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"<worktree>\\Assets\\CHOOguardGenerated\\MultiplayerSlice\\FoundationDemo.unity\"."
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows",
+              "result": "Failed",
+              "duration": "0.001446",
+              "message": "Expected: not null"
+            }
+          ],
+          "skippedCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Demo.Tests.ReconstructionReviewTests.SourceAvailableBuildPreservesBoundsOneViewAndSerializedOriginCamera",
+              "label": "Ignored"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FoundationSimulationTests.OptimizedMotionMatchesPriorExecutionForAllTwentyFive120BodyWorldTicks",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FoundationSimulationTests.ProfileTwentyParticipantsAndOneHundredNpcWorld",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Tests.CrowdBenchmarkTests.ExportPinnedJuelichConditionalCorridorComparisons",
+              "label": "Explicit"
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Tests.FireBenchmarkTests.ExportPinnedStecklerComparisonsAndNumericalBalances",
+              "label": "Explicit"
+            }
+          ]
+        },
+        "log": {
+          "path": "<RUN_ROOT>/05-editmode-regression/EditMode.log",
+          "sha256": "3a55707ccd4fcb762d51fa1c30560102fe35e754fa017d0ab731e9ac159b1876",
+          "sizeBytes": 2497606
+        }
+      },
+      {
+        "run": "06-editmode-baseline-control",
+        "purpose": "control: the two EditMode failures at the unmodified base runtime (runtime restored from HEAD, FMP10a test removed)",
+        "selected": false,
+        "exitCode": 2,
+        "results": {
+          "xml": {
+            "path": "<RUN_ROOT>/06-editmode-baseline-control/EditMode.xml",
+            "sha256": "b49a6eb09471a01704261b067232ccdfaddccc6f617fc6fe61c9c8d6eb6af53c",
+            "sizeBytes": 8930
+          },
+          "result": "Failed(Child)",
+          "total": 2,
+          "passed": 0,
+          "failed": 2,
+          "skipped": 0,
+          "inconclusive": 0,
+          "startTime": "2026-09-14 17:27:58Z",
+          "endTime": "2026-09-14 17:27:58Z",
+          "testCases": [
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.ConnectedWorldTests.SerializedScenesSupportEveryEdgeBothWaysEveryRegionActionAndClosedSeams",
+              "result": "Failed",
+              "duration": "0.013703",
+              "message": "System.IO.DirectoryNotFoundException : Could not find a part of the path \"<worktree>\\Assets\\CHOOguardGenerated\\MultiplayerSlice\\FoundationDemo.unity\"."
+            },
+            {
+              "fullname": "ChooGuard.Foundation.Multiplayer.Tests.NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows",
+              "result": "Failed",
+              "duration": "0.006440",
+              "message": "Expected: not null"
+            }
+          ],
+          "skippedCases": []
+        },
+        "log": {
+          "path": "<RUN_ROOT>/06-editmode-baseline-control/EditMode.log",
+          "sha256": "a040baebe5a66552990c729a0bb10b14c074489da498c8ea28b7fb6a56cea509",
+          "sizeBytes": 64748
+        },
+        "conclusion": "Both failures reproduce without the candidate change: ConnectedWorldTests needs the generated Assets/CHOOguardGenerated/MultiplayerSlice scenes absent from a fresh checkout; NativeSdkImportTests.LinuxVoiceLibraryCannotBeSelectedForMacOrWindows fails on this Windows host."
+      }
+    ],
+    "results": {
+      "xml": {
+        "path": "<RUN_ROOT>/02-playmode/PlayMode.xml",
+        "sha256": "392e9437811c559193c7bd7871c6cf0c9a05bf1d6d9452c4f6b31be1aec3adc2",
+        "sizeBytes": 52041
+      },
+      "result": "Passed",
+      "total": 36,
+      "passed": 32,
+      "failed": 0,
+      "skipped": 4,
+      "inconclusive": 0,
+      "startTime": "2026-09-14 17:23:05Z",
+      "endTime": "2026-09-14 17:23:11Z",
+      "testCases": [
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.AcknowledgeShowsSameTeamReportAndServerAcknowledgedBy",
+          "result": "Passed",
+          "duration": "0.023976",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ClaimAndHandOffShowRaceResultAndServerTargetState",
+          "result": "Passed",
+          "duration": "0.004721",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportOutsideObservationIsAbsentFromViewAndUiState",
+          "result": "Passed",
+          "duration": "0.002852",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.ReportSubmitSendsObservedFieldsAndShowsServerResult",
+          "result": "Passed",
+          "duration": "0.004544",
+          "message": ""
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests.RunRecordBindsSourceAndBuildHashToRenderedPanelState",
+          "result": "Passed",
+          "duration": "0.018456",
+          "message": ""
+        }
+      ],
+      "skippedCases": [
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ExactSdkConnectsScopedRoomsAndRetiredEpochCannotBeReopened",
+          "label": "Explicit"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.MismatchedEpochRecordMakesNoDeletionOfTheExistingVoiceRoom",
+          "label": "Explicit"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.ServerRevocationAndRetirementRejectAlreadyIssuedRoomTokens",
+          "label": "Explicit"
+        },
+        {
+          "fullname": "ChooGuard.Foundation.Multiplayer.Tests.VoiceServiceIntegrationTests.SyntheticVoiceRtpReachesOnlyItsTeamAndStopsAfterMute",
+          "label": "Explicit"
+        }
+      ],
+      "log": {
+        "path": "<RUN_ROOT>/02-playmode/PlayMode.log",
+        "sha256": "a1b1fbc5c46b1fabb259a40d00df405c1c95138816fc40698a28290ff678f663",
+        "sizeBytes": 153195
+      },
+      "issueTestClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests"
+    },
+    "runRecordJson": {
+      "path": "<RUN_ROOT>/02-playmode/fmp10a-run-record.json",
+      "sha256": "ebbf90b6cc3c8828fe6a6e1e480004f1b8f42e03236a43f0d3e46f72c2899661",
+      "sizeBytes": 2570,
+      "content": {
+        "TestClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests",
+        "EditorVersion": "6000.3.23f1",
+        "Platform": "WindowsEditor",
+        "BuildHash": "c89ca5ec04dd62592110b8ec11842966b57ebe37d8cc43d74cc60c91c6fbb4b9",
+        "BuildHashSource": "assembly:ChooGuard.Foundation.Multiplayer.dll",
+        "SourceRef": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+        "Result": "this test is reported only when the PlayMode XML records it",
+        "Synthetic": true,
+        "CommitWrites": 5,
+        "Sources": [
+          {
+            "Path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+            "Sha256": "97559813e833baaec5acfe3750bb92b2000f2f12f5a3ada47843c5069354ff36"
+          },
+          {
+            "Path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+            "Sha256": "f764bcb7f98236a801285abbe1a4175ed9a16fed712df16b0f49d39b6bf3e260"
+          },
+          {
+            "Path": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs",
+            "Sha256": "4d8712a28c89f5d9cb6e22f8820357b076bdc0aa41e97cf9cbf837e349f73a1d"
+          },
+          {
+            "Path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10aReportUiTests.cs",
+            "Sha256": "93ab01193ddf36c266ff7cfe6bdacf1290acf08e2c9e3e6134efd5a05dd19f10"
+          }
+        ],
+        "RenderEvidence": [
+          "a1 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+          "a1 | 팀 보고 report-2: incident-1 / hall · 관측 rev 0 · 보고자 a1 · 수신확인 a2",
+          "a1 | 대피자 evacuee-1 / hall · 인솔자 a2 · rev 2",
+          "a1 | 서버 승인: 보고 incident-1",
+          "a1 | 서버 승인: 인솔 evacuee-1",
+          "a1 | 서버 승인: 인계 evacuee-1 → a2",
+          "a2 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+          "a2 | 팀 보고 report-2: incident-1 / hall · 관측 rev 0 · 보고자 a1 · 수신확인 a2",
+          "a2 | 대피자 evacuee-1 / hall · 내가 인솔 중 · rev 2",
+          "a2 | 서버 승인: 수신확인 report-2",
+          "a2 | 서버 거부(StaleTarget): 인솔 evacuee-1",
+          "b1 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+          "b1 | 대피자 evacuee-1 / hall · 인솔자 a2 · rev 2"
+        ],
+        "ReceiptCodes": [
+          "a1:보고:incident-1:Accepted",
+          "a2:수신확인:report-2:Accepted",
+          "a1:인솔:evacuee-1:Accepted",
+          "a2:인솔:evacuee-1:StaleTarget",
+          "a1:인계:evacuee-1:Accepted"
+        ]
+      }
+    },
+    "collectedAt": "2026-09-14T17:22:50Z"
+  },
+  "acceptance": {
+    "1_report_submit_sends_payload_and_shows_server_result": "FMP10aReportUiTests.ReportSubmitSendsObservedFieldsAndShowsServerResult — payload TargetId/ExpectedRevision/Argument; server report row EntityId/RegionId/ObservedRevision equal the submitted entity, observed region and revision; NotObserved rejection shown",
+    "2_acknowledge_shows_same_team_report_and_acknowledged_by": "FMP10aReportUiTests.AcknowledgeShowsSameTeamReportAndServerAcknowledgedBy — AcknowledgedBy for reporter and acknowledger equals the server checkpoint only after a server view; other-team forged acknowledgement shown as UnknownTarget",
+    "3_claim_handoff_shows_race_result_and_target_state": "FMP10aReportUiTests.ClaimAndHandOffShowRaceResultAndServerTargetState — concurrent claims from the same view: Accepted vs StaleTarget, retry AlreadyClaimed, hand-off Accepted then RoleDenied for stale leader and other team; LeaderId/Revision equal the server checkpoint",
+    "4_out_of_observation_report_absent_negative_executed": "FMP10aReportUiTests.ReportOutsideObservationIsAbsentFromViewAndUiState — server view and panel state lack a report addressed to another team and out-of-interest entities; misrouted projection, another participant's view and unsolicited receipts are not displayed; mutation controls 03/04 make this test fail",
+    "5_xml_render_evidence_source_build_hash_preserved": "FMP10aReportUiTests.RunRecordBindsSourceAndBuildHashToRenderedPanelState + this record (PlayMode XML/log sha256, run record, source sha256 and build hash)"
+  },
+  "limits": [
+    "WorldCommand has no region field, so the report payload carries entity id, observed revision and recipient team. The region shown is the server-created TeamReport.RegionId, which the test checks equals the observed entity region. Adding a client-asserted region would need an AuthoritativeShift/WorldContracts change outside this issue's write scope.",
+    "The PlayMode tests call the real AuthoritativeShift and round-trip commands, receipts and projected views through JsonUtility, but no NGO transport, NetworkManager or second process runs. Two-process authority is the #27 input, not re-proven here.",
+    "Headless batchmode does not paint OnGUI (it returns early under Application.isBatchMode). Render evidence is FieldCommandPanel.RenderLines, the same strings DrawCommandPanel lays out; no screenshot or interactive run was made.",
+    "Server commands require active input (InputEnabled), and releasing the cursor to click IMGUI buttons disables input. Panel actions are therefore keys while controls are active: E report/claim nearest, R acknowledge oldest unacknowledged report, H hand off the led evacuee.",
+    "FieldView carries no teammate roster, so the hand-off recipient is a typed participant id (editable while controls are paused). The server validates the recipient.",
+    "Evacuee rows and reportable incidents are limited to entities in the participant's projected view (interest radius, visibility, discovered incidents); team reports follow the server's 16-report window.",
+    "PlayMode runs rewrote 16 generated FoundationDemo materials (_EMISSION keyword) in the isolated worktree; they are not part of this change.",
+    "EditMode regression run has 2 failures that also fail at the unmodified base runtime (attempt 06). The 4 skipped PlayMode tests are Explicit voice integration tests."
+  ],
+  "renderEvidence": {
+    "producedBy": "FieldCommandPanel.RenderLines captured inside FMP10aReportUiTests.RunRecordBindsSourceAndBuildHashToRenderedPanelState (selected run 02)",
+    "scenario": "a1 discovers and reports incident-1; a2 acknowledges; a1 and a2 claim evacuee-1 from the same view (a2 rejected StaleTarget); a1 hands off to a2",
+    "lines": [
+      "a1 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+      "a1 | 팀 보고 report-2: incident-1 / hall · 관측 rev 0 · 보고자 a1 · 수신확인 a2",
+      "a1 | 대피자 evacuee-1 / hall · 인솔자 a2 · rev 2",
+      "a1 | 서버 승인: 보고 incident-1",
+      "a1 | 서버 승인: 인솔 evacuee-1",
+      "a1 | 서버 승인: 인계 evacuee-1 → a2",
+      "a2 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+      "a2 | 팀 보고 report-2: incident-1 / hall · 관측 rev 0 · 보고자 a1 · 수신확인 a2",
+      "a2 | 대피자 evacuee-1 / hall · 내가 인솔 중 · rev 2",
+      "a2 | 서버 승인: 수신확인 report-2",
+      "a2 | 서버 거부(StaleTarget): 인솔 evacuee-1",
+      "b1 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+      "b1 | 대피자 evacuee-1 / hall · 인솔자 a2 · rev 2"
+    ],
+    "receiptCodes": [
+      "a1:보고:incident-1:Accepted",
+      "a2:수신확인:report-2:Accepted",
+      "a1:인솔:evacuee-1:Accepted",
+      "a2:인솔:evacuee-1:StaleTarget",
+      "a1:인계:evacuee-1:Accepted"
+    ],
+    "commitWrites": 5
+  },
+  "predecessorStatus": {
+    "hardPredecessors": [
+      "artifact:27:authority-protocol:candidate",
+      "artifact:120:foundation-published-source:accept"
+    ],
+    "observed": "#120 CLOSED; #27 OPEN with its candidate runtime sources on develop",
+    "note": "This record makes no claim that #27 acceptance is satisfied."
+  }
+}
