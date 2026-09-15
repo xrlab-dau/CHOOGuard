@@ -1,0 +1,273 @@
+name: Official Toolchain Installation
+
+on:
+  push:
+    branches: [chore/astra-toolchain-bootstrap-20260915]
+    paths: ['.github/workflows/official-toolchain.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: official-toolchain-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  install-and-launch:
+    name: Install official CLI and pinned Editor, then attempt real tests
+    if: github.repository == 'xrlab-dau/CHOOGuard' && github.ref == 'refs/heads/chore/astra-toolchain-bootstrap-20260915'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      UNITY_NO_UPDATE_CHECK: '1'
+    steps:
+      - name: Check out exact approved work branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          lfs: true
+      - name: Prepare evidence and OS dependencies
+        run: |
+          mkdir -p "$RUNNER_TEMP/unity-cli-evidence"
+          git rev-parse HEAD > "$RUNNER_TEMP/unity-cli-evidence/source-sha.txt"
+          cp ProjectSettings/ProjectVersion.txt "$RUNNER_TEMP/unity-cli-evidence/project-version.txt"
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libgtk-3-0t64 libnss3 libasound2t64 libsecret-1-0 libgbm1 libglu1-mesa xvfb
+      - name: Install official Unity CLI from Unity HTTPS distribution
+        id: cli
+        run: |
+          curl --fail --show-error --silent --location --proto '=https' --tlsv1.2 \
+            https://public-cdn.cloud.unity3d.com/hub/prod/cli/install.sh \
+            -o "$RUNNER_TEMP/unity-install.sh"
+          sha256sum "$RUNNER_TEMP/unity-install.sh" > "$RUNNER_TEMP/unity-cli-evidence/installer-sha256.txt"
+          echo "3e7cc67287e9100ab0950877a968925bd9cfe7a22539ad0e716114523cd4cbc4  $RUNNER_TEMP/unity-install.sh" | sha256sum --check
+          UNITY_CLI_VERSION=1.0.0-beta.9 UNITY_CLI_CHANNEL=beta bash "$RUNNER_TEMP/unity-install.sh" </dev/null
+          export PATH="$HOME/.local/bin:$HOME/.unity/bin:$HOME/.unity:$PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.unity/bin" >> "$GITHUB_PATH"
+          unity --version | tee "$RUNNER_TEMP/unity-cli-evidence/cli-version.txt"
+          sha256sum "$(command -v unity)" > "$RUNNER_TEMP/unity-cli-evidence/cli-sha256.txt"
+          echo "8c0d6e2435449c8be7f0e6b2ce6330bfc5f17a98aec4b659c859940455dd0fe5  $(command -v unity)" | sha256sum --check
+          unity analytics opt-out
+          cp "$RUNNER_TEMP/unity-install.sh" "$RUNNER_TEMP/unity-cli-evidence/official-installer.sh"
+          for cmd in 'install' 'editors install-path' 'mcp' 'test' 'license activate' 'auth login'; do
+            unity $cmd --help >> "$RUNNER_TEMP/unity-cli-evidence/cli-help.txt"
+          done
+      - name: Install exact project Editor through official CLI
+        id: editor
+        run: |
+          mkdir -p "$RUNNER_TEMP/UnityEditors"
+          unity --non-interactive editors install-path --set "$RUNNER_TEMP/UnityEditors"
+          status=0
+          timeout 1200 unity --non-interactive --format json install 6000.3.23f1 --changeset 09d2ecc7fb28 --yes \
+            > "$RUNNER_TEMP/unity-cli-evidence/editor-install.json" \
+            2> "$RUNNER_TEMP/unity-cli-evidence/editor-install.stderr" || status=$?
+          printf '%s\n' "$status" > "$RUNNER_TEMP/unity-cli-evidence/editor-install-exit.txt"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editor-install.json"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editor-install.stderr"
+          exit "$status"
+      - name: Record installed Editor and unauthenticated licensing state
+        if: ${{ !cancelled() && steps.cli.outcome == 'success' }}
+        run: |
+          capture() {
+            name="$1"; shift
+            status=0
+            timeout 45 "$@" > "$RUNNER_TEMP/unity-cli-evidence/$name.txt" 2>&1 || status=$?
+            printf '%s\n' "$status" > "$RUNNER_TEMP/unity-cli-evidence/$name-exit.txt"
+          }
+          capture editor-info unity --format json editors info 6000.3.23f1
+          capture auth-status unity --non-interactive --format json auth status
+          capture license-status unity --non-interactive --format json license status
+          capture mcp-config-dry-run unity mcp configure codex --project-path "$PWD" --dry-run
+          # No account login, eligibility assertion, secret read, or license purchase.
+      - name: Attempt actual EditMode execution with installed Editor
+        if: ${{ !cancelled() && steps.editor.outcome == 'success' }}
+        run: |
+          status=0
+          timeout 420 xvfb-run -a unity --non-interactive --format json test "$PWD" \
+            --editor-version 6000.3.23f1 --mode EditMode \
+            --output "$RUNNER_TEMP/unity-cli-evidence/editmode-results.xml" --timeout 360 \
+            > "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.json" \
+            2> "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.stderr" || status=$?
+          printf '%s\n' "$status" > "$RUNNER_TEMP/unity-cli-evidence/editmode-exit.txt"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.json"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.stderr"
+          exit "$status"
+      - name: Exercise actual official MCP initialize and tool discovery
+        if: ${{ !cancelled() && steps.cli.outcome == 'success' }}
+        run: |
+          python3 - <<'PY_MCP'
+          import json, os, select, subprocess, time
+          from pathlib import Path
+          out = Path(os.environ['RUNNER_TEMP']) / 'unity-cli-evidence'
+          result = {'schemaVersion': 1, 'transport': 'stdio', 'editorReady': None}
+          with (out/'mcp.stderr').open('w') as err:
+              p = subprocess.Popen(['unity', 'mcp', '--project-path', os.getcwd()], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err)
+              buf = b''
+              def send(message):
+                  p.stdin.write((json.dumps(message)+'\n').encode()); p.stdin.flush()
+              def receive(request_id):
+                  global buf
+                  deadline = time.monotonic()+30
+                  while time.monotonic()<deadline:
+                      while b'\n' in buf:
+                          line,buf=buf.split(b'\n',1)
+                          try: message=json.loads(line)
+                          except (ValueError, UnicodeDecodeError): continue
+                          if message.get('id') == request_id: return message
+                      ready,_,_=select.select([p.stdout],[],[],max(0,deadline-time.monotonic()))
+                      if not ready: break
+                      chunk=os.read(p.stdout.fileno(),65536)
+                      if not chunk: break
+                      buf+=chunk
+                      if len(buf)>2000000: raise RuntimeError('MCP_RESPONSE_BUDGET')
+                  raise TimeoutError('MCP_RESPONSE_TIMEOUT')
+              try:
+                  send({'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-03-26','capabilities':{},'clientInfo':{'name':'chooguard-install-verifier','version':'1.0'}}})
+                  response=receive(1)
+                  result['initialize']=response
+                  if 'error' in response: raise RuntimeError('MCP_INITIALIZE_ERROR')
+                  send({'jsonrpc':'2.0','method':'notifications/initialized'})
+                  send({'jsonrpc':'2.0','id':2,'method':'tools/list','params':{}})
+                  response=receive(2)
+                  result['discoveryError']=response.get('error')
+                  names=[t['name'] for t in response.get('result',{}).get('tools',[])]
+                  result['toolNames']=names
+                  result['toolsListSucceeded']='result' in response
+                  result['status']='MCP_TRANSPORT_OBSERVED_NOT_EDITOR_ACCEPTANCE'
+              except (OSError, ValueError, RuntimeError, TimeoutError) as exc:
+                  result['status']=type(exc).__name__
+              finally:
+                  p.terminate()
+                  try: p.wait(timeout=5)
+                  except subprocess.TimeoutExpired: p.kill(); p.wait()
+                  p.stdin.close(); p.stdout.close()
+          (out/'mcp-handshake.json').write_text(json.dumps(result,indent=2)+'\n')
+          print(json.dumps(result))
+          PY_MCP
+      - name: Upload installation and execution evidence, never credentials or binaries
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: official-unity-cli-${{ github.run_id }}
+          path: ${{ runner.temp }}/unity-cli-evidence/
+          if-no-files-found: error
+          retention-days: 7
+
+  github-mcp:
+    name: Install official GitHub MCP and test repository versus project access
+    if: github.repository == 'xrlab-dau/CHOOGuard' && github.ref == 'refs/heads/chore/astra-toolchain-bootstrap-20260915'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Download checksum-pinned official release
+        run: |
+          mkdir -p "$RUNNER_TEMP/github-mcp-bin" "$RUNNER_TEMP/github-mcp-evidence"
+          curl --fail --show-error --silent --location --proto '=https' --tlsv1.2 \
+            https://github.com/github/github-mcp-server/releases/download/v1.12.1/github-mcp-server_Linux_x86_64.tar.gz \
+            -o "$RUNNER_TEMP/github-mcp.tar.gz"
+          echo "e45c73a26a3c4cd643b40360db06f442de1e73a60d4eaf9e8639204ec3b95d3b  $RUNNER_TEMP/github-mcp.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/github-mcp.tar.gz" -C "$RUNNER_TEMP/github-mcp-bin"
+          binary="$RUNNER_TEMP/github-mcp-bin/github-mcp-server"
+          "$binary" --help > "$RUNNER_TEMP/github-mcp-evidence/server-help.txt"
+          sha256sum "$binary" > "$RUNNER_TEMP/github-mcp-evidence/binary-sha256.txt"
+          echo "MCP_BINARY=$binary" >> "$GITHUB_ENV"
+      - name: Actual MCP initialize discovery and scoped read calls
+        env:
+          GITHUB_PERSONAL_ACCESS_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY_GITHUB_MCP'
+          import hashlib, json, os, re, select, subprocess, time
+          from pathlib import Path
+          out = Path(os.environ['RUNNER_TEMP'])/'github-mcp-evidence'
+          result = {'schemaVersion': 1, 'sourceSha': os.environ['GITHUB_SHA'],
+                    'serverRelease': 'v1.12.1', 'credentialSource': 'ephemeral_repository_actions_token',
+                    'readOnly': True, 'repositoryWritesAttempted': False, 'projectWritesAttempted': False,
+                    'oauthLoginAttempted': False, 'checks': {}}
+          def summarize(response):
+              encoded = json.dumps(response, sort_keys=True).encode()
+              value = response.get('result', {})
+              text = encoded.decode().lower()
+              return {'rpcSucceeded': 'error' not in response,
+                      'toolSucceeded': 'error' not in response and value.get('isError') is not True,
+                      'responseSha256': hashlib.sha256(encoded).hexdigest(),
+                      'errorClasses': [name for term,name in [
+                          ('403', 'HTTP_403'), ('401', 'HTTP_401'), ('404', 'HTTP_404'),
+                          ('resource not accessible', 'RESOURCE_NOT_ACCESSIBLE'),
+                          ('not found', 'NOT_FOUND'), ('bad credentials', 'BAD_CREDENTIALS'),
+                          ('could not resolve', 'COULD_NOT_RESOLVE')]
+                          if term in text] if ('error' in response or value.get('isError') is True) else []}
+          p = subprocess.Popen([os.environ['MCP_BINARY'], '--read-only', '--toolsets', 'repos,projects', 'stdio'],
+                               stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
+          buf = b''
+          def send(message):
+              p.stdin.write((json.dumps(message)+'\n').encode()); p.stdin.flush()
+          def receive(request_id):
+              global buf
+              deadline = time.monotonic()+40
+              while time.monotonic()<deadline:
+                  while b'\n' in buf:
+                      line,buf=buf.split(b'\n',1)
+                      try: message=json.loads(line)
+                      except (ValueError,UnicodeDecodeError): continue
+                      if message.get('id')==request_id: return message
+                  ready,_,_=select.select([p.stdout],[],[],max(0,deadline-time.monotonic()))
+                  if not ready: break
+                  chunk=os.read(p.stdout.fileno(),65536)
+                  if not chunk: break
+                  buf+=chunk
+                  if len(buf)>2000000: raise RuntimeError('RESPONSE_BUDGET')
+              raise TimeoutError('RESPONSE_TIMEOUT')
+          try:
+              send({'jsonrpc':'2.0','id':1,'method':'initialize','params':{
+                  'protocolVersion':'2025-03-26','capabilities':{},
+                  'clientInfo':{'name':'chooguard-toolchain-verifier','version':'1.0'}}})
+              response=receive(1)
+              result['initialize']=summarize(response)
+              result['serverInfo']=response.get('result',{}).get('serverInfo')
+              if 'error' in response: raise RuntimeError('INITIALIZE_ERROR')
+              send({'jsonrpc':'2.0','method':'notifications/initialized'})
+              send({'jsonrpc':'2.0','id':2,'method':'tools/list','params':{}})
+              response=receive(2)
+              if 'error' in response: raise RuntimeError('DISCOVERY_ERROR')
+              tools={t['name']:t for t in response.get('result',{}).get('tools',[])}
+              result['toolNames']=sorted(tools)
+              result['selectedToolSchemas']={name:tools[name]['inputSchema'] for name in
+                  ('get_file_contents','projects_get') if name in tools}
+              requests=[('repository_read','get_file_contents',{
+                  'owner':'xrlab-dau','repo':'CHOOGuard','path':'README.md','ref':os.environ['GITHUB_SHA']}),
+                  ('project_1','projects_get',{'method':'get_project','owner':'xrlab-dau','owner_type':'org','project_number':1}),
+                  ('project_2','projects_get',{'method':'get_project','owner':'xrlab-dau','owner_type':'org','project_number':2})]
+              for rid,(name,tool,args) in enumerate(requests,3):
+                  if tool not in tools:
+                      result['checks'][name]={'status':'TOOL_NOT_EXPOSED'}; continue
+                  schema=tools[tool]['inputSchema']
+                  if not set(schema.get('required',[])).issubset(args):
+                      result['checks'][name]={'status':'SCHEMA_MISMATCH'}; continue
+                  send({'jsonrpc':'2.0','id':rid,'method':'tools/call','params':{'name':tool,'arguments':args}})
+                  result['checks'][name]=summarize(receive(rid))
+              result['status']='PROBE_RECORDED_NOT_PERMISSION_GRANT'
+          except (OSError,ValueError,RuntimeError,TimeoutError) as exc:
+              result['status']=type(exc).__name__
+          finally:
+              p.terminate()
+              try: p.wait(timeout=5)
+              except subprocess.TimeoutExpired: p.kill(); p.wait()
+              p.stdin.close(); p.stdout.close()
+          (out/'capability.json').write_text(json.dumps(result,indent=2)+'\n')
+          print(json.dumps({k:v for k,v in result.items() if k!='selectedToolSchemas'}))
+          # Installation/discovery/repository failures fail this job; missing Projects scope
+          # is retained in the receipt, not silently converted to access or product PASS.
+          if not result['checks'].get('repository_read',{}).get('toolSucceeded'):
+              raise SystemExit(1)
+          PY_GITHUB_MCP
+      - name: Upload only sanitized capability receipt and public tool metadata
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: official-github-mcp-${{ github.run_id }}
+          path: ${{ runner.temp }}/github-mcp-evidence/
+          if-no-files-found: error
+          retention-days: 7
