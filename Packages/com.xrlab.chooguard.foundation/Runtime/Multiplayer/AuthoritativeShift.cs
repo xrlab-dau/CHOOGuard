@@ -19,6 +19,7 @@ namespace ChooGuard.Foundation.Multiplayer
         private readonly Func<ParticipantState, EntityState, bool> visible;
         private readonly Func<EntityState, bool> canOperate;
         private bool persistenceFaulted;
+        private bool processingCommand;
         private readonly Dictionary<string, CommandReceipt> receipts = new Dictionary<string, CommandReceipt>(StringComparer.Ordinal);
 
         public AuthoritativeShift(WorldState initial, ICommitSink sink, Func<ParticipantState, EntityState, bool> visible,
@@ -59,6 +60,7 @@ namespace ChooGuard.Foundation.Multiplayer
 
         private void ApplyServerSimulationCore(ServerSimulationUpdate update, PreparedPhysicalCheckpoint prepared, PhysicalCheckpointTiming checkpointTiming)
         {
+            RequireIdleMutation();
             if (state.SchemaVersion != 3 || state.Paused || persistenceFaulted)
                 throw new InvalidOperationException("Physical simulation is unavailable or paused.");
             if (update == null || update.DefinitionHash != state.SimulationDefinitionHash || update.Tick != state.SimulationTick + 1 ||
@@ -98,6 +100,7 @@ namespace ChooGuard.Foundation.Multiplayer
         }
         public void FaultPersistence()
         {
+            // This emergency stop is allowed even while an adapter is being called.
             persistenceFaulted = true; state.Paused = true;
             foreach (var actor in state.Participants) actor.InputEnabled = false;
         }
@@ -105,6 +108,7 @@ namespace ChooGuard.Foundation.Multiplayer
         // Only the authenticated server movement/input adapter may call these, never a position RPC.
         public void SetServerPosition(string participantId, string regionId, Point3 position)
         {
+            RequireIdleMutation();
             if (state.SchemaVersion != 1) throw new InvalidOperationException("Spatial worlds require a frame-bound server pose.");
             if (!position.Finite || !Identifier(regionId)) throw new ArgumentException("Invalid server position.");
             var actor = FindParticipant(participantId);
@@ -112,6 +116,7 @@ namespace ChooGuard.Foundation.Multiplayer
         }
         public void SetServerPose(string participantId, SpatialPose pose)
         {
+            RequireIdleMutation();
             if ((state.SchemaVersion != 2 && state.SchemaVersion != 3) || pose == null || !Identifier(pose.RegionId) ||
                 (pose.PortalId != "" && !PortalIdentifier(pose.PortalId)) || !ValidFramePose(state, pose.FrameId, pose.Position, pose.LocalPosition))
                 throw new ArgumentException("Invalid frame-bound server position.");
@@ -119,7 +124,11 @@ namespace ChooGuard.Foundation.Multiplayer
             actor.RegionId = pose.RegionId; actor.FrameId = pose.FrameId; actor.PortalId = pose.PortalId;
             actor.Position = pose.Position; actor.LocalPosition = pose.LocalPosition;
         }
-        public void SetInputEnabled(string participantId, bool enabled) => FindParticipant(participantId).InputEnabled = enabled;
+        public void SetInputEnabled(string participantId, bool enabled)
+        {
+            RequireIdleMutation();
+            FindParticipant(participantId).InputEnabled = enabled;
+        }
 
         public ObservedState Observe(string participantId)
         {
@@ -137,6 +146,7 @@ namespace ChooGuard.Foundation.Multiplayer
 
         public int DiscoverNearby(string participantId, Func<Point3, bool> inView)
         {
+            RequireIdleMutation();
             var actor = FindParticipant(participantId);
             if (state.Paused || !actor.InputEnabled) return 0;
             var count = 0;
@@ -152,6 +162,16 @@ namespace ChooGuard.Foundation.Multiplayer
         }
 
         public CommandReceipt Submit(string authenticatedParticipantId, WorldCommand command)
+        {
+            // Single-threaded adapters may still call back synchronously. A nested command
+            // must not reserve the same sequence or replace the state prepared by its caller.
+            if (processingCommand) return Reject(command, CommandCode.AuthorityBusy);
+            processingCommand = true;
+            try { return SubmitCore(authenticatedParticipantId, command?.Copy()); }
+            finally { processingCommand = false; }
+        }
+
+        private CommandReceipt SubmitCore(string authenticatedParticipantId, WorldCommand command)
         {
             if (!WellFormed(command)) return Reject(command, CommandCode.InvalidCommand);
             var actor = state.Participants.SingleOrDefault(x => x.ParticipantId == authenticatedParticipantId);
@@ -174,13 +194,22 @@ namespace ChooGuard.Foundation.Multiplayer
                 CommandId = command.CommandId, Fingerprint = fingerprint, Code = CommandCode.Accepted,
                 Sequence = checked(state.Sequence + 1) } };
             var result = Prepare(actor, command, commit);
+            if (persistenceFaulted) return Reject(command, CommandCode.PersistenceUnavailable);
             if (result != CommandCode.Accepted) return Reject(command, result);
             if (state.SchemaVersion == 3)
                 commit.Entities = state.Entities.Select(e => (commit.Entities.SingleOrDefault(c => c.EntityId == e.EntityId) ?? e).Copy()).ToArray();
             var next = PrepareNextState(commit);
             try { sink.Append(commit.Copy()); }
-            catch (IOException) { FaultPersistence(); return Reject(command, CommandCode.PersistenceUnavailable); }
-            catch (UnauthorizedAccessException) { FaultPersistence(); return Reject(command, CommandCode.PersistenceUnavailable); }
+            catch (Exception)
+            {
+                // Append can fail after writing. Any sink failure is an ambiguous durable
+                // boundary: stop this authority and recover from the checked journal, not retry.
+                FaultPersistence();
+                return Reject(command, CommandCode.PersistenceUnavailable);
+            }
+            // A synchronous adapter can report a fault without throwing. Do not overwrite
+            // its pause/input stop with the state prepared before the callback.
+            if (persistenceFaulted) return Reject(command, CommandCode.PersistenceUnavailable);
             state = next;
             receipts.Add(Key(commit.Receipt.ParticipantId, commit.Receipt.CommandId), commit.Receipt.Copy());
             return commit.Receipt.Copy();
@@ -247,11 +276,13 @@ namespace ChooGuard.Foundation.Multiplayer
                     break;
                 case CommandKind.ClaimEvacuee:
                     if (target.Kind != EntityKind.Evacuee) return CommandCode.UnknownTarget;
+                    if (!target.Active) return CommandCode.TargetBlocked;
                     if (!string.IsNullOrEmpty(target.LeaderId)) return CommandCode.AlreadyClaimed;
                     changedTarget.LeaderId = actor.ParticipantId;
                     break;
                 case CommandKind.HandOffEvacuee:
                     if (target.Kind != EntityKind.Evacuee || target.LeaderId != actor.ParticipantId) return CommandCode.RoleDenied;
+                    if (!target.Active) return CommandCode.TargetBlocked;
                     var next = state.Participants.SingleOrDefault(x => x.ParticipantId == c.Argument);
                     if (next == null || !next.InputEnabled || !InReach(next, target) || !CanSee(next, target)) return CommandCode.OutOfReach;
                     if (!string.IsNullOrEmpty(target.RequiredRoleId) && next.RoleId != target.RequiredRoleId) return CommandCode.RoleDenied;
@@ -267,6 +298,7 @@ namespace ChooGuard.Foundation.Multiplayer
         // Replay only commits from the integrity-checked server journal; never from a client message.
         public void Replay(ShiftCommit commit)
         {
+            RequireIdleMutation();
             if (commit == null || commit.Receipt == null || commit.Receipt.Code != CommandCode.Accepted ||
                 commit.Receipt.WorldId != state.WorldId || commit.Receipt.ShiftId != state.ShiftId ||
                 commit.Receipt.Sequence != state.Sequence + 1 ||
@@ -275,6 +307,12 @@ namespace ChooGuard.Foundation.Multiplayer
             state = PrepareNextState(commit);
             receipts.Add(Key(commit.Receipt.ParticipantId, commit.Receipt.CommandId), commit.Receipt.Copy());
             state.Paused = true;
+        }
+
+        private void RequireIdleMutation()
+        {
+            if (processingCommand)
+                throw new InvalidOperationException("Cannot mutate authority during command preparation or persistence.");
         }
 
         private WorldState PrepareNextState(ShiftCommit commit)
