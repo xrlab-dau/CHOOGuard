@@ -1,0 +1,545 @@
+{
+  "schemaVersion": 1,
+  "artifactId": "artifact:19:M1-03-supply-review:candidate",
+  "issueNumber": 19,
+  "workId": "M1-03",
+  "phase": "candidate",
+  "recordedOn": "2026-09-15",
+  "recordType": "source_inspection_candidate",
+  "canonicalWriteAllowed": false,
+  "baseRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+  "branch": "docs/19-kkosso-unity-supply-review",
+  "scope": "Official Unity CLI/Pipeline supply inventory and call-boundary review; one isolated proposal file.",
+  "noAcceptanceClaim": "This candidate is ready for human review. It grants no installation, license, model, network or Editor permission and does not complete M1-03 acceptance.",
+  "inputs": [
+    {
+      "artifactId": "artifact:16:M0-03-allowlist:candidate",
+      "publishedRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+      "producerSourceRef": "6490956d203549b56cbd86846120759889abb016",
+      "consumedRows": [
+        "R-02",
+        "R-04",
+        "R-05",
+        "R-06",
+        "R-07"
+      ],
+      "qualification": "Reachable merged source, consumed as a candidate inventory with explicit blocked/unknown rows. Publication is not tool approval.",
+      "drift": "Producer used an older manifest/lock. This review recomputes the Pipeline dependency closure at baseRef; historical hashes and observations stay historical."
+    },
+    {
+      "artifactId": "artifact:18:M1-02-policy-record:candidate",
+      "publishedRef": "8c9836a470631845d7fa2fc34d3010918997a93a",
+      "url": "https://github.com/xrlab-dau/CHOOGuard/pull/198",
+      "qualification": "Reachable candidate with policy hash, capability, failed attempts and limits. Its bound execution-profile file hash equals this baseRef.",
+      "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+      "producerRun": {
+        "state": "passed",
+        "counts": {
+          "total": 41,
+          "matched": 41,
+          "mismatched": 0,
+          "blocked": 0,
+          "deny": 32,
+          "allow": 9
+        }
+      },
+      "limits": "Producer decision simulation only; not rerun here. No OS sandbox, network egress, MCP enforcement or independent acceptance proof."
+    }
+  ],
+  "sourceHashes": {
+    "algorithm": "SHA-256 of git show <ref>:<path> bytes, before checkout newline conversion",
+    "entries": [
+      {
+        "path": "docs/team/M0-03/allowlist.json",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a"
+      },
+      {
+        "path": "docs/team/M0-03/execution-profile.json",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc"
+      },
+      {
+        "path": "Packages/manifest.json",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "30082c1a38a6dffadad97cee4d966a02b41e754b26b923c5ff326b0ec1a31144"
+      },
+      {
+        "path": "Packages/packages-lock.json",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "01ef0fdb75879e375decafdf67b646fb577243ab74a544b611481a56995e9d32"
+      },
+      {
+        "path": "ProjectSettings/ProjectVersion.txt",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66"
+      },
+      {
+        "path": "docs/adr/0006-official-unity-editor-mcp.md",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "b7371e7a66765e0ea6eaa697aee9bb5309343a5e4e906e3aed51f290fba8bcb8"
+      },
+      {
+        "path": "docs/evidence/foundation/2026-09-08-official-editor-mcp.json",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "2df11f5582610c7766416ef6c06c3cf76192278eca1377d6bb2bab34c895b4a0"
+      },
+      {
+        "path": "docs/evidence/foundation/2026-09-08-official-editor-mcp-closing-observation.md",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "147d5a66b0eef917784835a609445ba0a50856f98431c5e2785a3ad4e90d07b9"
+      },
+      {
+        "path": "docs/context/work-orders/019.json",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "950874bd57d1d5dc35edfacfac3e5bfe3bee092c9c60b49f43bfcdd6f57e545e"
+      },
+      {
+        "path": "docs/choo-guard-execution-backlog-v1.md",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0"
+      },
+      {
+        "path": "docs/team/M1-02/permission-boundary.json",
+        "ref": "8c9836a470631845d7fa2fc34d3010918997a93a",
+        "sha256": "268bddc4b58db233151a577b5e6f935184fb52c3b613b5e1824462b18efb336d"
+      }
+    ]
+  },
+  "toolInventory": [
+    {
+      "tool": "Unity Editor",
+      "version": "6000.3.23f1",
+      "revision": "09d2ecc7fb28",
+      "source": "ProjectSettings/ProjectVersion.txt",
+      "distributionSha256": null,
+      "licenseState": "unknown",
+      "limit": "Project pin only; this review does not establish an installed Editor or distribution integrity."
+    },
+    {
+      "tool": "official Unity CLI",
+      "version": "1.0.0-beta.8",
+      "channel": "beta",
+      "versionSource": "ADR 0006 and dated 2026-09-08 observation, not a manifest or current executable measurement",
+      "distributionSha256": null,
+      "licenseIdentifier": null,
+      "licenseState": "unknown",
+      "dependencyBoundary": "CLI internal/bundled dependencies are not enumerated by the Unity UPM lock; release artifact/SBOM remains required.",
+      "executionStatus": "unresolved",
+      "nextEvidence": "Version-matched official distribution provenance, digest, license file digest and dependency inventory."
+    },
+    {
+      "tool": "com.unity.pipeline",
+      "version": "0.6.0-exp.1",
+      "channel": "experimental",
+      "versionSource": "manifest and lock agree at baseRef",
+      "registry": "https://packages.unity.com",
+      "distributionSha256": null,
+      "historicalDistributionSha256": "aa6cec6298a4e8711b326bd9deeaeb13632fc142c7d581c27c5d7476a0d61f10",
+      "historicalDigestQualification": "Reported tarball digest at 2026-09-08 baseCommit f2011ac2cd4510a09c78f0de111771fc5aa433e8; no distribution bytes re-fetched or rehashed in this review.",
+      "licenseState": "conflicting",
+      "licenseIdentifier": null,
+      "reportedLicenseFile": "Unity Package Distribution License",
+      "reportedReadmeLicense": "Different wording; exact README text is not in the inspected Git sources.",
+      "licenseFileSha256": null,
+      "executionStatus": "unresolved",
+      "nextEvidence": "Inspect both license texts from the exact digest-bound distribution and obtain a scoped resolution; do not copy the superseded Coplay MIT label."
+    },
+    {
+      "tool": "native MCP client (Codex / Claude Code)",
+      "version": null,
+      "distributionSha256": null,
+      "licenseState": "unknown",
+      "executionStatus": "unresolved",
+      "limit": "Direct connection is the chosen architecture, not approval of unspecified client versions or result destinations."
+    },
+    {
+      "tool": "pi-mcp-adapter",
+      "selected": false,
+      "version": null,
+      "distributionSha256": null,
+      "licenseState": "unknown",
+      "executionStatus": "not_adopted",
+      "prerequisiteForDirectConnection": false,
+      "nextEvidence": "Only if Pi needs this adapter: pin version, distribution, dependency closure, license, extension privileges and equivalent boundary tests."
+    }
+  ],
+  "pipelineDependencies": {
+    "scope": "Complete recursive closure reachable from com.unity.pipeline in this baseRef lock; excludes unrelated project packages and CLI/client internal dependencies.",
+    "packageCount": 13,
+    "packages": [
+      {
+        "package": "com.unity.ext.nunit",
+        "resolvedVersion": "2.0.5",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": null,
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.hierarchycore",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": null,
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.imageconversion",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.0.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.imgui",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.0.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.jsonserialize",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.0.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.physics",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.0.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.screencapture",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.0.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.ui",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.0.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.modules.uielements",
+        "resolvedVersion": "1.0.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.0.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.nuget.mono-cecil",
+        "resolvedVersion": "1.11.6",
+        "source": "registry",
+        "registry": "https://packages.unity.com",
+        "manifestPin": "1.11.6",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.nuget.newtonsoft-json",
+        "resolvedVersion": "3.2.2",
+        "source": "registry",
+        "registry": "https://packages.unity.com",
+        "manifestPin": "3.2.2",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      },
+      {
+        "package": "com.unity.pipeline",
+        "resolvedVersion": "0.6.0-exp.1",
+        "source": "registry",
+        "registry": "https://packages.unity.com",
+        "manifestPin": "0.6.0-exp.1",
+        "distributionSha256": null,
+        "licenseState": "conflicting"
+      },
+      {
+        "package": "com.unity.test-framework",
+        "resolvedVersion": "1.6.0",
+        "source": "builtin",
+        "registry": null,
+        "manifestPin": "1.6.0",
+        "distributionSha256": null,
+        "licenseState": "unknown"
+      }
+    ],
+    "edges": [
+      {
+        "from": "com.unity.modules.screencapture",
+        "to": "com.unity.modules.imageconversion",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.modules.uielements",
+        "to": "com.unity.modules.hierarchycore",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.modules.uielements",
+        "to": "com.unity.modules.imgui",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.modules.uielements",
+        "to": "com.unity.modules.jsonserialize",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.modules.uielements",
+        "to": "com.unity.modules.physics",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.modules.uielements",
+        "to": "com.unity.modules.ui",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.modules.jsonserialize",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.modules.screencapture",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.modules.uielements",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.nuget.mono-cecil",
+        "declaredVersion": "1.11.6",
+        "resolvedVersion": "1.11.6"
+      },
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.nuget.newtonsoft-json",
+        "declaredVersion": "3.0.2",
+        "resolvedVersion": "3.2.2"
+      },
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.test-framework",
+        "declaredVersion": "1.1.33",
+        "resolvedVersion": "1.6.0"
+      },
+      {
+        "from": "com.unity.test-framework",
+        "to": "com.unity.ext.nunit",
+        "declaredVersion": "2.0.3",
+        "resolvedVersion": "2.0.5"
+      },
+      {
+        "from": "com.unity.test-framework",
+        "to": "com.unity.modules.imgui",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      },
+      {
+        "from": "com.unity.test-framework",
+        "to": "com.unity.modules.jsonserialize",
+        "declaredVersion": "1.0.0",
+        "resolvedVersion": "1.0.0"
+      }
+    ],
+    "resolutionDifferences": [
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.nuget.newtonsoft-json",
+        "declaredVersion": "3.0.2",
+        "resolvedVersion": "3.2.2"
+      },
+      {
+        "from": "com.unity.pipeline",
+        "to": "com.unity.test-framework",
+        "declaredVersion": "1.1.33",
+        "resolvedVersion": "1.6.0"
+      },
+      {
+        "from": "com.unity.test-framework",
+        "to": "com.unity.ext.nunit",
+        "declaredVersion": "2.0.3",
+        "resolvedVersion": "2.0.5"
+      }
+    ],
+    "interpretation": "Declared and resolved versions are different fields. Differences are recorded, not silently rewritten or called runtime compatibility PASS.",
+    "integrityLimit": "Registry lock entries contain no distribution digest. Builtin packages need binding to the exact Editor distribution; an absent registry tarball does not make builtin package bytes unverifiable.",
+    "licenseLimit": "No version-matched CLI/Pipeline/dependency license files are tracked in the inspected base tree. Unrelated repository license files do not license these packages."
+  },
+  "callBoundaries": [
+    {
+      "path": "direct_cli",
+      "selected": true,
+      "flow": [
+        "authorized operator or agent shell",
+        "official Unity CLI command with explicit project path",
+        "Pipeline in target Editor",
+        "stdout to caller"
+      ],
+      "policyResult": "not_exercised",
+      "testStatus": "not_run",
+      "risks": [
+        "A shell caller can bypass native MCP client disabled_tools; apply the same role, path, approval and tool policy before launch.",
+        "Credentials, network requests and configuration discovery by the executable are not audited from the lockfile.",
+        "A manual stdout result reaches a model only if the caller forwards it; an agent-shell result may already enter its model context."
+      ],
+      "requiredEvidence": "Exact binary/package provenance and instrumented permitted/denied direct invocations in a synthetic scoped project."
+    },
+    {
+      "path": "native_stdio",
+      "selected": true,
+      "commandTemplate": "unity mcp --project-path <absolute-project-path>",
+      "flow": [
+        "native MCP client",
+        "official CLI stdio MCP server",
+        "Pipeline in target Editor",
+        "MCP result to client; provider forwarding depends on client configuration"
+      ],
+      "policyResult": "not_exercised",
+      "testStatus": "not_run",
+      "risks": [
+        "stdio is a local transport, not proof of offline operation or blocked provider egress.",
+        "Nested calls and direct shell equivalents must preserve deny policy; client settings alone are not an OS boundary.",
+        "Image/screenshot results must not be forwarded to the coding LLM under the standing instruction. Text results still require classification and redaction."
+      ],
+      "requiredEvidence": "Per-tool exposure, direct/nested deny cases and redacted result/destination receipts tied to policyHash."
+    },
+    {
+      "path": "optional_pi_adapter",
+      "selected": false,
+      "flow": [
+        "Pi extension host, only if separately adopted",
+        "reviewed adapter",
+        "official CLI stdio MCP server",
+        "Pipeline in target Editor",
+        "result back through adapter to Pi"
+      ],
+      "policyResult": "not_applicable_unselected",
+      "testStatus": "not_run",
+      "risks": [
+        "Adapter host privileges, configuration and output transformations are additional review surfaces if adopted."
+      ],
+      "requiredEvidence": "No requirement for native direct paths; if adopted, test equivalent tool and nested-call denials without broader permission."
+    }
+  ],
+  "toolExposureProposal": {
+    "state": "proposed_not_applied",
+    "exactCurrentToolNames": null,
+    "minimumGroups": [
+      "target Editor status",
+      "scene/selection read",
+      "redacted Console read"
+    ],
+    "approvalGatedGroups": [
+      "idempotent scoped authoring builders",
+      "compile and scoped tests",
+      "package changes"
+    ],
+    "deniedWithoutExplicitScope": [
+      "arbitrary C# eval/eval_file and equivalents",
+      "nested/proxy equivalents of denied calls",
+      "unapproved package installation",
+      "out-of-scope writes"
+    ],
+    "modelOutputRule": "No images/screenshots to the coding LLM. Before any text result egress, bind allowed data class, destination and role to the execution profile.",
+    "configurationEvidence": "ADR reports historical Codex disabled_tools and Claude Code deny settings. Current settings, exposed names and OS enforcement were not inspected or changed; never publish private configs."
+  },
+  "checks": [
+    {
+      "command": "inspection: dependency-contract, manifest/lock, ADR 0006 and license files",
+      "status": "completed_with_unresolved_findings",
+      "observed": "Pipeline manifest/lock pin agrees; closure has no missing lock node. Source digests and producer profile match checked. Package license files absent from Git; historical license disagreement retained.",
+      "negativeCase": "CLI/client/adapter unpinned fields and license/hash gaps remain null/unknown; Pipeline license remains conflicting."
+    },
+    {
+      "command": "proposed test: scripts/team/M1-03/test_call_boundary.py",
+      "status": "not_run",
+      "reason": "Test path absent in base tree. Candidate write scope is docs/team/M1-03 only; no boundary harness or approved exact executable/package evidence is available for this review.",
+      "perPathResultRef": "callBoundaries",
+      "substitutePass": false
+    }
+  ],
+  "historicalObservation": {
+    "source": "docs/evidence/foundation/2026-09-08-official-editor-mcp.json",
+    "baseCommit": "f2011ac2cd4510a09c78f0de111771fc5aa433e8",
+    "qualification": "Historical capability smoke only, not repeated for this commit; package materialization is not functional/network/voice PASS.",
+    "laterObservation": "The separate 2026-09-08 closing note reports a timeout during restart and one final Console error without another verification. Earlier zero-error results are not the final session state."
+  },
+  "openFindings": [
+    {
+      "id": "M103-01",
+      "scope": "CLI",
+      "resolution": "unresolved",
+      "need": "Exact distribution hash, license and bundled dependency provenance."
+    },
+    {
+      "id": "M103-02",
+      "scope": "Pipeline",
+      "resolution": "unresolved",
+      "need": "Digest-bound license/README texts and scoped resolution; no silent license selection."
+    },
+    {
+      "id": "M103-03",
+      "scope": "Pipeline dependency closure",
+      "resolution": "unresolved",
+      "need": "Resolved package license/integrity records, including exact Editor binding for builtin bytes."
+    },
+    {
+      "id": "M103-04",
+      "scope": "call boundary",
+      "resolution": "unresolved",
+      "need": "Available scoped harness plus direct/stdio deny and egress/result-path evidence before acceptance."
+    }
+  ],
+  "handoff": {
+    "to": [
+      "M0-03 #16",
+      "M1-04 #20",
+      "M2-01 #24"
+    ],
+    "usableNow": "Exact source-bound version/dependency matrix and explicit policy/coverage gaps for planning and review.",
+    "acceptanceBlockedBy": [
+      "M103-01",
+      "M103-02",
+      "M103-03",
+      "M103-04"
+    ],
+    "noAutomaticClosure": true
+  }
+}
