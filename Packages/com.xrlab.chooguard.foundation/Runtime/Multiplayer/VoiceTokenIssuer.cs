@@ -57,6 +57,10 @@ namespace ChooGuard.Foundation.Multiplayer
 
         private string Sign(string subject, string video, long now, int lifetime)
         {
+            // A malformed clock must fail before producing a signed token. Keep
+            // both expiry arithmetic and the five-second not-before skew bounded.
+            if (now < 0 || now > long.MaxValue - lifetime)
+                throw new ArgumentOutOfRangeException(nameof(now), "Voice token clock is outside its representable lifetime.");
             var header = Base64(Encoding.UTF8.GetBytes("{\"alg\":\"HS256\",\"typ\":\"JWT\"}"));
             var payload = "{\"iss\":\"" + key + "\",\"sub\":\"" + subject + "\",\"iat\":" + now.ToString(CultureInfo.InvariantCulture) +
                 ",\"nbf\":" + (now - 5).ToString(CultureInfo.InvariantCulture) + ",\"exp\":" + (now + lifetime).ToString(CultureInfo.InvariantCulture) + ",\"video\":{" + video + "}}";

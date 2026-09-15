@@ -58,9 +58,16 @@ jobs:
           retention-days: 3
 
   headless-core:
-    name: Actual C# core regression tests
-    runs-on: ubuntu-24.04
+    name: Actual C# core tests (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Check out exact candidate
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -71,44 +78,26 @@ jobs:
       - name: Install .NET 8 SDK
         uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '8.0.425'
+      - name: Restore exact locked dependencies
+        run: dotnet restore tests/headless/ChooGuard.Foundation.Headless.csproj --locked-mode
       - name: Compile and run canonical core fixtures
         run: |
           mkdir -p integration-evidence
-          dotnet run --project tests/headless/ChooGuard.Foundation.Headless.csproj -c Release -- --result=integration-evidence/headless-results.xml --workers=0
-      - name: Export temporary local compiler for this development branch
-        if: ${{ !cancelled() && github.head_ref == 'feature/astra-foundation-integration-20260915' }}
-        run: |
-          set -euo pipefail
-          root="$(dirname "$(readlink -f "$(command -v dotnet)")")"
-          sdk="$(dotnet --list-sdks | awk '$1 ~ /^8[.]/ {print $1}' | sort -V | tail -1)"
-          runtime="$(ls "$root/shared/Microsoft.NETCore.App" | grep '^8[.]' | sort -V | tail -1)"
-          reference="$(ls "$root/packs/Microsoft.NETCore.App.Ref" | grep '^8[.]' | sort -V | tail -1)"
-          out="$RUNNER_TEMP/chooguard-compiler"
-          mkdir -p "$out/host/fxr" "$out/shared/Microsoft.NETCore.App" "$out/compiler" "$out/reference" "$out/nunit"
-          cp "$root/dotnet" "$out/"
-          cp -a "$root/host/fxr/$runtime" "$out/host/fxr/"
-          cp -a "$root/shared/Microsoft.NETCore.App/$runtime" "$out/shared/Microsoft.NETCore.App/"
-          cp -a "$root/sdk/$sdk/Roslyn/bincore/." "$out/compiler/"
-          cp -a "$root/packs/Microsoft.NETCore.App.Ref/$reference/ref/net8.0/." "$out/reference/"
-          cp tests/headless/bin/Release/net8.0/nunit*.dll "$out/nunit/"
-          find "$root" -maxdepth 1 -type f \( -iname '*license*' -o -iname '*notice*' \) -exec cp {} "$out/" \;
-          for package in nunit nunitlite; do
-            mkdir -p "$out/nunit/$package-notices"
-            find "$HOME/.nuget/packages/$package/3.14.0" -maxdepth 1 -type f \( -iname '*license*' -o -iname '*notice*' \) -exec cp {} "$out/nunit/$package-notices/" \;
-          done
-          printf 'SDK=%s\nRuntime=%s\nReference=%s\n' "$sdk" "$runtime" "$reference" > "$out/versions.txt"
-          tar -czf integration-evidence/compiler.tar.gz -C "$out" .
-          sha256sum integration-evidence/compiler.tar.gz > integration-evidence/compiler-sha256.txt
-          cp tests/headless/packages.lock.json integration-evidence/packages.lock.json
-      - name: Upload regression results and temporary compiler
+          git rev-parse HEAD > integration-evidence/source-sha.txt
+          dotnet --info > integration-evidence/dotnet-info.txt
+          dotnet run --no-restore --project tests/headless/ChooGuard.Foundation.Headless.csproj -c Release -- --result=integration-evidence/headless-results.xml --workers=0
+      - name: Verify source and dependency lock were not rewritten
+        if: ${{ !cancelled() }}
+        run: git diff --exit-code
+      - name: Upload actual regression evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: foundation-headless-${{ github.run_id }}
+          name: foundation-headless-${{ matrix.os }}-${{ github.run_id }}
           path: integration-evidence/
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 7
 
   unity-capability:
     name: Verify Unity execution prerequisites
@@ -135,11 +124,73 @@ jobs:
                     'unityTestsExecuted': False}
           Path('unity-capability.json').write_text(json.dumps(result, indent=2)+'\n')
           print(json.dumps(result))
+          if result['status'].startswith('BLOCKED'):
+              print('::warning::Unity execution is unavailable: no existing CI license/account. Core test success is not Unity acceptance.')
           PY
       - name: Upload capability result only
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: foundation-unity-capability-${{ github.run_id }}
           path: unity-capability.json
+          if-no-files-found: error
+          retention-days: 3
+
+  project-context-probe:
+    name: Read public project context when authorized
+    if: ${{ github.event_name == 'pull_request' && github.head_ref == 'feature/astra-foundation-integration-20260915' && github.event.pull_request.head.repo.full_name == github.repository }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Query referenced Projects with existing read-only token
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request, urllib.error
+          from pathlib import Path
+          results = []
+          def query(text, variables):
+              request = urllib.request.Request('https://api.github.com/graphql',
+                  data=json.dumps({'query': text, 'variables': variables}).encode(),
+                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'], 'Content-Type': 'application/json'})
+              try:
+                  with urllib.request.urlopen(request, timeout=25) as response:
+                      return json.load(response)
+              except (urllib.error.URLError, TimeoutError):
+                  return {'errors': [{'type': 'TRANSPORT_FAILURE'}]}
+          for number in [1, 2]:
+              response = query('query($n:Int!){organization(login:"xrlab-dau"){projectV2(number:$n){number title url public closed}}}', {'n': number})
+              project = ((response.get('data') or {}).get('organization') or {}).get('projectV2')
+              if response.get('errors') or not project:
+                  results.append({'number': number, 'status': 'UNAVAILABLE_WITH_EXISTING_TOKEN',
+                      'errorTypes': sorted({e.get('type', 'UNSPECIFIED') for e in response.get('errors', [])})})
+                  continue
+              if not project['public']:
+                  results.append({'number': number, 'status': 'PRIVATE_BOARD_NOT_EXPORTED'})
+                  continue
+              project['items'] = []; project['status'] = 'PUBLIC_ITEMS_OBSERVED'; cursor = None
+              for page in range(20):
+                  response = query('query($n:Int!,$after:String){organization(login:"xrlab-dau"){projectV2(number:$n){items(first:100,after:$after){pageInfo{hasNextPage endCursor} nodes{content{...on Issue{number title state url repository{nameWithOwner isPrivate}} ...on PullRequest{number title state url repository{nameWithOwner isPrivate}}} fieldValues(first:50){pageInfo{hasNextPage} nodes{...on ProjectV2ItemFieldSingleSelectValue{name field{...on ProjectV2FieldCommon{name}}}}}}}}}}', {'n': number, 'after': cursor})
+                  block = ((((response.get('data') or {}).get('organization') or {}).get('projectV2') or {}).get('items'))
+                  if response.get('errors') or not block:
+                      project['status'] = 'PARTIAL_PUBLIC_ITEMS'; break
+                  for node in block['nodes']:
+                      content = node.get('content') or {}; repo = content.get('repository') or {}
+                      if repo.get('nameWithOwner') == 'xrlab-dau/CHOOGuard' and repo.get('isPrivate') is False:
+                          project['items'].append(node)
+                  if not block['pageInfo']['hasNextPage']: break
+                  cursor = block['pageInfo']['endCursor']
+              else:
+                  project['status'] = 'PARTIAL_PUBLIC_ITEMS_PAGE_BUDGET'
+              results.append(project)
+          result = {'schemaVersion': 1, 'scope': 'read-only public board metadata and CHOOGuard issue/PR single-select fields; no draft/private content', 'projects': results, 'writesPerformed': False}
+          Path('project-context-probe.json').write_text(json.dumps(result, ensure_ascii=False, indent=2)+'\n')
+          print(json.dumps([{'number': p['number'], 'status': p['status']} for p in results]))
+          PY
+      - name: Upload public context or explicit access gap
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: foundation-project-context-${{ github.run_id }}
+          path: project-context-probe.json
           if-no-files-found: error
           retention-days: 3

@@ -72,13 +72,23 @@ namespace ChooGuard.Foundation.Multiplayer
             FromPoint.Y + (ToPoint.Y - FromPoint.Y) * ClosureAlong, FromPoint.Z + (ToPoint.Z - FromPoint.Z) * ClosureAlong);
         public bool Contains(Point3 p, float radius, out float along)
         {
-            var dx = ToPoint.X - FromPoint.X; var dz = ToPoint.Z - FromPoint.Z;
+            along = 0;
+            if (!p.Finite || !FromPoint.Finite || !ToPoint.Finite ||
+                float.IsNaN(radius) || float.IsInfinity(radius) || radius < 0 ||
+                float.IsNaN(ClearWidth) || float.IsInfinity(ClearWidth) || ClearWidth <= 0)
+                return false;
+            var clearance = (double)ClearWidth / 2 - radius;
+            // A negative clearance is an oversized body, not a distance to square.
+            if (clearance < 0) return false;
+            var dx = (double)ToPoint.X - FromPoint.X; var dz = (double)ToPoint.Z - FromPoint.Z;
             var length2 = dx * dx + dz * dz;
-            along = ((p.X - FromPoint.X) * dx + (p.Z - FromPoint.Z) * dz) / length2;
-            if (along < -.005f || along > 1.005f) return false;
-            var x = FromPoint.X + along * dx; var z = FromPoint.Z + along * dz;
-            var y = FromPoint.Y + along * (ToPoint.Y - FromPoint.Y);
-            return (p.X - x) * (p.X - x) + (p.Z - z) * (p.Z - z) <= Math.Pow(ClearWidth / 2 - radius, 2) &&
+            if (length2 == 0) return false;
+            var projection = (((double)p.X - FromPoint.X) * dx + ((double)p.Z - FromPoint.Z) * dz) / length2;
+            if (projection < -.005f || projection > 1.005f) return false;
+            along = (float)projection;
+            var x = FromPoint.X + projection * dx; var z = FromPoint.Z + projection * dz;
+            var y = FromPoint.Y + projection * ((double)ToPoint.Y - FromPoint.Y);
+            return (p.X - x) * (p.X - x) + (p.Z - z) * (p.Z - z) <= clearance * clearance &&
                 Math.Abs(p.Y - y) <= .3f;
         }
     }
@@ -131,7 +141,9 @@ namespace ChooGuard.Foundation.Multiplayer
         public bool TryLocate(SpatialPose previous, Point3 point, float radius, ISet<string> closed, out SpatialPose result)
         {
             result = null;
-            if (!point.Finite || !Regions.Any(r => r.Id == previous.RegionId)) return false;
+            if (previous == null || !previous.Position.Finite || !point.Finite ||
+                float.IsNaN(radius) || float.IsInfinity(radius) || radius < 0 ||
+                !Regions.Any(r => r.Id == previous.RegionId)) return false;
             // Only the actor's current region or an explicitly adjacent corridor can receive a small server step.
             var current = Region(previous.RegionId);
             if (current.Contains(point) && !current.Exclusions.Any(e => e.Contains(point, radius)))
