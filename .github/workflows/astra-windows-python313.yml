@@ -1,0 +1,42 @@
+name: Astra Windows Required Python Baseline
+on:
+  push:
+    branches: [chore/astra-develop-audit-20260915]
+    paths: [.github/workflows/astra-windows-python313.yml]
+permissions:
+  contents: read
+jobs:
+  original-windows-python313:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: driver
+          lfs: false
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 86bb82bf5655562e2577cf2b83553ff261d8d5a6
+          path: baseline
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Use the Windows Python version required by original private-directory code
+        shell: bash
+        run: python -B driver/scripts/review/baseline_batch.py --root baseline --suite dev --output "$RUNNER_TEMP/astra-windows313-result"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: astra-windows313-dev
+          path: |
+            ${{ runner.temp }}/astra-windows313-result/receipt.json
+            ${{ runner.temp }}/astra-windows313-result/test-log.txt
+            ${{ runner.temp }}/astra-windows313-result/runner-error.txt
+          if-no-files-found: error
+          retention-days: 7

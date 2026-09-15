@@ -69,6 +69,21 @@ class InventoryTests(unittest.TestCase):
             self.assertEqual(z.read('scripts/code.py'), b'def f():\n    return 1\n')
             for path in ('scripts/untracked.py','Assets/art.png','.agents/tool.py','private-data/a.py','Assets/Scene.unity'):
                 self.assertNotIn(path,z.namelist())
+    def test_only_named_context_html_is_added_without_reclassifying_line_totals(self):
+        for name in ('docs/context/index.html', 'scripts/context/view-template.html', 'docs/arbitrary.html'):
+            file = self.root/name; file.parent.mkdir(parents=True, exist_ok=True)
+            file.write_bytes(b'<script>const value = 1;</script>\n')
+        git(self.root, 'add', '.'); git(self.root, 'commit', '-qm', 'context fixtures')
+        self.sha = git(self.root, 'rev-parse', 'HEAD').decode().strip()
+        result = self.run_inventory(); self.assertEqual(result.returncode, 0, result.stderr)
+        inventory = json.loads((self.output/'inventory.json').read_text())
+        rows = {r['path']:r for r in inventory['files']}
+        with zipfile.ZipFile(self.output/'sources.zip') as archive:
+            for name in ('docs/context/index.html', 'scripts/context/view-template.html'):
+                self.assertIn(name, archive.namelist())
+                self.assertEqual(archive.read(name), b'<script>const value = 1;</script>\n')
+                self.assertEqual(rows[name]['category'], 'other_text')
+            self.assertNotIn('docs/arbitrary.html', archive.namelist())
     def test_mutable_ref_is_rejected(self):
         r = self.run_inventory('HEAD'); self.assertNotEqual(r.returncode, 0)
         self.assertFalse(self.output.exists())

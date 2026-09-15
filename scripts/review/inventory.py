@@ -16,6 +16,7 @@ DOC = {'.md', '.rst', '.txt', '.csv', '.tsv'}
 SERIALIZED = {'.unity', '.prefab', '.asset', '.meta', '.mat', '.anim', '.controller'}
 VENDORED = {'.agents', '_bmad', '.specify', 'node_modules', 'vendor', 'third_party'}
 PROTECTED = {'private-data', '.env', 'credentials', 'secrets', 'keys', 'Library', 'Temp', 'Obj', 'Logs'}
+CONTEXT_HTML = {'docs/context/index.html', 'scripts/context/view-template.html'}
 MAX_BLOB = 16 * 1024 * 1024
 MAX_EXPORT = 128 * 1024 * 1024
 
@@ -94,7 +95,7 @@ def census(root: pathlib.Path, ref: str, out: pathlib.Path) -> dict:
                 row['sha256'] = sha(data)
                 if text is not None:
                     row['lines'] = data.count(b'\n') + int(bool(data) and not data.endswith(b'\n'))
-                if row['category'] in {'source_code', 'test_code', 'configuration_or_data', 'documentation'}:
+                if row['category'] in {'source_code', 'test_code', 'configuration_or_data', 'documentation'} or (text is not None and path in CONTEXT_HTML):
                     total_export += len(data)
                     if total_export > MAX_EXPORT: raise ValueError('export_limit_exceeded')
                     row['exported'] = True
