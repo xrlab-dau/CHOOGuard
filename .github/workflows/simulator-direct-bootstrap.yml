@@ -1,0 +1,74 @@
+name: Simulator Direct Toolchain
+on:
+  push:
+    branches: [feature/incident-response-lifecycle-20260915]
+    paths: [.github/workflows/simulator-direct-bootstrap.yml]
+permissions:
+  contents: read
+jobs:
+  dotnet:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Prepare isolated pinned test dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/core-tools/project" "$RUNNER_TEMP/core-tools/nuget"
+          export NUGET_PACKAGES="$RUNNER_TEMP/core-tools/nuget"
+          cd "$RUNNER_TEMP/core-tools/project"
+          cat > CoreTools.csproj <<'XML'
+          <Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net8.0</TargetFramework><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile><NuGetAudit>false</NuGetAudit></PropertyGroup><ItemGroup><PackageReference Include="Microsoft.NET.Test.Sdk" Version="[17.11.1]"/><PackageReference Include="NUnit" Version="[3.14.0]"/><PackageReference Include="NUnit3TestAdapter" Version="[4.6.0]"/></ItemGroup></Project>
+          XML
+          dotnet restore CoreTools.csproj
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,subprocess,tarfile
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'core-tools'
+          home=pathlib.Path(subprocess.check_output(['readlink','-f','/usr/bin/dotnet'],text=True).strip()).parent
+          version=sorted(p.name for p in (home/'sdk').iterdir() if p.name.startswith('8.0.'))[-1]
+          members=['dotnet','LICENSE.txt','ThirdPartyNotices.txt','host','shared/Microsoft.NETCore.App','sdk/'+version,'packs/Microsoft.NETCore.App.Ref','packs/Microsoft.NETCore.App.Host.linux-x64','packs/NETStandard.Library.Ref','sdk-manifests']
+          with tarfile.open(root/'dotnet.tar.gz','w:gz') as tar:
+              for name in members:
+                  if (home/name).exists(): tar.add(home/name,arcname=name)
+          with tarfile.open(root/'nuget.tar.gz','w:gz') as tar: tar.add(root/'nuget',arcname='packages')
+          result={'scope':'public .NET tooling only; no repository source, secrets or credentials','sdk':version,'files':{}}
+          for name in ['dotnet.tar.gz','nuget.tar.gz']:
+              data=(root/name).read_bytes();result['files'][name]={'sha256':hashlib.sha256(data).hexdigest(),'bytes':len(data)}
+          (root/'toolchain.json').write_text(json.dumps(result,indent=2)+'\n')
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: simulator-direct-dotnet
+          path: |
+            ${{ runner.temp }}/core-tools/*.tar.gz
+            ${{ runner.temp }}/core-tools/toolchain.json
+          retention-days: 2
+          compression-level: 0
+  unity-authorization:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check available license configuration without exposing values
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_LICENSING_SERVER: ${{ secrets.UNITY_LICENSING_SERVER }}
+          UNITY_CI_ENABLED: ${{ vars.UNITY_CI_ENABLED }}
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib
+          present=lambda n: bool(os.environ.get(n,'').strip())
+          ready=present('UNITY_LICENSE') or all(present(n) for n in ['UNITY_EMAIL','UNITY_PASSWORD','UNITY_SERIAL']) or present('UNITY_LICENSING_SERVER')
+          record={'state':'CONFIGURED_NOT_ACTIVATED' if ready else 'BLOCKED','reason':'LICENSE_ACTIVATION_NOT_YET_TESTED' if ready else 'UNITY_LICENSE_CREDENTIALS_NOT_CONFIGURED','existingCiEnabled':os.environ.get('UNITY_CI_ENABLED')=='true','licenseFilePresent':present('UNITY_LICENSE'),'serialCredentialsPresent':all(present(n) for n in ['UNITY_EMAIL','UNITY_PASSWORD','UNITY_SERIAL']),'licensingServerPresent':present('UNITY_LICENSING_SERVER'),'secretsPrinted':False,'testsRun':0}
+          pathlib.Path('unity-authorization.json').write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(record))
+          raise SystemExit(0 if ready else 2)
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: simulator-unity-authorization
+          path: unity-authorization.json
+          retention-days: 7
+          if-no-files-found: error
