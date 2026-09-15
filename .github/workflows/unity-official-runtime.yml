@@ -1,0 +1,109 @@
+name: Official Unity CLI Runtime
+on:
+  push:
+    branches: [chore/unity-cli-runtime-20260915]
+    paths: [.github/workflows/unity-official-runtime.yml]
+permissions:
+  contents: read
+concurrency:
+  group: official-unity-runtime-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  install-and-run:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+      UNITY_CLI_CHANNEL: beta
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 86bb82bf5655562e2577cf2b83553ff261d8d5a6
+          lfs: true
+          persist-credentials: false
+      - name: Install the official standalone CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/unity-runtime-public" "$RUNNER_TEMP/unity-runtime-private"
+          curl --fail --location --proto '=https' --proto-redir '=https' --connect-timeout 20 --max-time 120 https://public-cdn.cloud.unity3d.com/hub/prod/cli/install.sh -o "$RUNNER_TEMP/unity-runtime-public/install.sh"
+          bash "$RUNNER_TEMP/unity-runtime-public/install.sh"
+          export PATH="$HOME/.local/bin:$HOME/.unity:$HOME/.unity/bin:$PATH"
+          cli="$(command -v unity)"
+          echo "UNITY_CLI=$cli" >> "$GITHUB_ENV"
+          "$cli" --version | tee "$RUNNER_TEMP/unity-runtime-public/cli-version.txt"
+          "$cli" --help > "$RUNNER_TEMP/unity-runtime-public/cli-help.txt"
+          for cmd in install install-path mcp license auth test; do
+            "$cli" "$cmd" --help > "$RUNNER_TEMP/unity-runtime-public/$cmd-help.txt" 2>&1 || echo "help_exit=$?" >> "$RUNNER_TEMP/unity-runtime-public/$cmd-help.txt"
+          done
+          "$cli" auth login --help > "$RUNNER_TEMP/unity-runtime-public/auth-login-help.txt"
+          sha256sum "$cli" | awk '{print $1}' > "$RUNNER_TEMP/unity-runtime-public/cli.sha256"
+          tar -hczf "$RUNNER_TEMP/unity-runtime-public/cli-linux-x64.tar.gz" -C "$(dirname "$cli")" "$(basename "$cli")"
+      - name: Install exactly the project-pinned Editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$UNITY_CLI" install 6000.3.23f1 -c 09d2ecc7fb28 --format json > "$RUNNER_TEMP/unity-runtime-public/install-editor.json" 2> "$RUNNER_TEMP/unity-runtime-public/install-editor.stderr.txt"
+      - name: Observe installed runtime and attempt real Editor startup
+        if: always()
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib,re,subprocess
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])
+          public=root/'unity-runtime-public'; public.mkdir(exist_ok=True)
+          private=root/'unity-runtime-private'; private.mkdir(exist_ok=True,mode=0o700)
+          report={'sourceCommit':'86bb82bf5655562e2577cf2b83553ff261d8d5a6','requestedEditor':'6000.3.23f1','expectedPipeline':'0.6.0-exp.1','state':'NOT_RUN','testsRun':0,'editorInstalled':False,'editorStartup':False,'mcpConnectedToEditor':False,'settingsChanged':False,'credentialsProvided':{k:bool(os.environ.get(k)) for k in ('UNITY_LICENSE','UNITY_EMAIL','UNITY_PASSWORD')}}
+          cli=os.environ.get('UNITY_CLI')
+          if cli:
+              p=subprocess.run([cli,'editors','-i','--format','json'],capture_output=True,timeout=60)
+              (private/'editors.json').write_bytes(p.stdout)
+              report['editorListExitCode']=p.returncode
+          candidates=[]
+          for base in (pathlib.Path.home()/'Unity',pathlib.Path('/opt/unity'),root/'Unity'):
+              if base.exists(): candidates.extend(base.glob('**/Editor/Unity'))
+          candidates=[p for p in candidates if p.is_file() and '6000.3.23f1' in str(p)]
+          try:
+              if not candidates:
+                  report['state']='EDITOR_NOT_FOUND'
+              else:
+                  editor=candidates[0]; report['editorInstalled']=True
+                  env={k:v for k,v in os.environ.items() if k not in ('UNITY_LICENSE','UNITY_EMAIL','UNITY_PASSWORD')}
+                  p=subprocess.run([str(editor),'-version'],capture_output=True,env=env,timeout=30)
+                  report['editorVersionExitCode']=p.returncode
+                  report['editorVersionMatches']=b'6000.3.23f1' in p.stdout+p.stderr
+                  if os.environ.get('UNITY_LICENSE'):
+                      licensefile=private/'activation.ulf'
+                      fd=os.open(licensefile,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+                      with os.fdopen(fd,'w') as f: f.write(os.environ['UNITY_LICENSE'])
+                      a=subprocess.run(['xvfb-run','-a',str(editor),'-batchmode','-nographics','-quit','-manualLicenseFile',str(licensefile),'-logFile',str(private/'activation.log')],capture_output=True,env=env,timeout=120)
+                      report['licenseActivationExitCode']=a.returncode
+                      licensefile.unlink()
+                  p=subprocess.run(['xvfb-run','-a',str(editor),'-batchmode','-nographics','-quit','-projectPath',os.getcwd(),'-logFile',str(private/'editor.log')],capture_output=True,env=env,timeout=300)
+                  report['editorExitCode']=p.returncode
+                  log=(private/'editor.log').read_text(errors='replace') if (private/'editor.log').exists() else ''
+                  lower=(log+p.stderr.decode(errors='replace')).lower()
+                  report['editorStartup']=p.returncode==0
+                  report['state']='EDITOR_STARTUP_SUCCEEDED' if p.returncode==0 else ('LICENSE_REQUIRED' if any(s in lower for s in ('no valid unity editor license','no valid license','failed to activate','licensing::client','license is invalid')) else 'EDITOR_STARTUP_FAILED')
+                  report['compilerErrorCount']=len(re.findall(r'error CS\d+',log))
+                  report['diagnosticCodes']=[s for s in ('no valid unity editor license','no valid license','failed to activate','license is invalid','failed to load','error cs','no display') if s in lower]
+          except subprocess.TimeoutExpired:
+              report['state']='STARTUP_TIMEOUT'
+          except (OSError,ValueError) as e:
+              report['state']='RUNTIME_ERROR'; report['errorClass']=type(e).__name__
+          (public/'receipt.json').write_text(json.dumps(report,indent=2)+'\n')
+          print(json.dumps(report))
+          raise SystemExit(0 if report['editorStartup'] else 2)
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: official-unity-runtime
+          path: ${{ runner.temp }}/unity-runtime-public/
+          retention-days: 1
+          if-no-files-found: error
