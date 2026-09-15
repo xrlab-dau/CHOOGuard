@@ -1,0 +1,137 @@
+name: Non-Unity Product Regressions
+on:
+  pull_request:
+    branches: [develop, main]
+    paths:
+      - 'Packages/com.xrlab.chooguard.foundation/Runtime/**'
+      - 'Packages/com.xrlab.chooguard.foundation/Tests/**'
+      - 'scripts/**'
+      - 'services/livekit/**'
+      - 'docs/**'
+      - 'foundation/**'
+      - 'tests/nonunity/**'
+      - '.github/workflows/nonunity-tests.yml'
+  push:
+    branches: [develop]
+    paths:
+      - 'Packages/com.xrlab.chooguard.foundation/Runtime/**'
+      - 'Packages/com.xrlab.chooguard.foundation/Tests/**'
+      - 'scripts/**'
+      - 'services/livekit/**'
+      - 'docs/**'
+      - 'foundation/**'
+      - 'tests/nonunity/**'
+      - '.github/workflows/nonunity-tests.yml'
+permissions:
+  contents: read
+concurrency:
+  group: nonunity-product-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+jobs:
+  core:
+    name: Engine-independent C# / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          lfs: false
+          persist-credentials: false
+      - name: Compile actual core and run original plus regression tests
+        working-directory: tests/nonunity
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet --version
+          dotnet restore --locked-mode
+          dotnet test --no-restore --logger 'trx;LogFileName=core.trx' --results-directory ../../nonunity-results
+          git rev-parse HEAD > ../../nonunity-results/source-commit.txt
+          git -C ../.. ls-tree -r HEAD > ../../nonunity-results/source-tree.txt
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: nonunity-core-${{ matrix.os }}
+          path: |
+            nonunity-results/*.trx
+            nonunity-results/source-*.txt
+          if-no-files-found: error
+          retention-days: 14
+  research-and-context:
+    name: Research approval and generated map
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Install pinned test-only schema dependencies
+        run: python -m pip install -r tests/nonunity/requirements.txt
+      - name: Check the real research contract and record pipeline
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p nonunity-results
+          python -B -m unittest discover -s scripts/team/R-06 -p 'test_*.py' -v 2>&1 | tee nonunity-results/r06.log
+          python -B -m unittest discover -s scripts/team/M1-05 -p 'test_*.py' -v 2>&1 | tee nonunity-results/m105.log
+          python -B scripts/team/R-06/egress_controls.py run > nonunity-results/r06-cases.json
+      - name: Check generated map syntax and context regressions
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p nonunity-results
+          node --test scripts/context/*.test.mjs > nonunity-results/context-node.log
+          node scripts/context/render_pm_map.mjs
+          git diff --exit-code -- docs/context/index.html
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: nonunity-research-and-context
+          path: nonunity-results/
+          if-no-files-found: error
+          retention-days: 14
+  livekit-filesystem:
+    name: LiveKit configuration / macOS
+    runs-on: macos-14
+    timeout-minutes: 10
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - name: Run full private-filesystem and name-ordering tests on the supported backend
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p nonunity-results
+          python -B -m unittest discover -s services/livekit -p 'test_*.py' -v 2>&1 | tee nonunity-results/livekit.log
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: nonunity-livekit-macos
+          path: nonunity-results/livekit.log
+          if-no-files-found: error
+          retention-days: 14
