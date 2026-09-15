@@ -1,0 +1,58 @@
+name: Foundation Integration
+
+on:
+  pull_request:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: foundation-integration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-and-contracts:
+    name: Reproducible source and contract validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+          lfs: false
+      - name: Set up Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+          check-latest: false
+      - name: Record reproducible tracked-source snapshot
+        run: |
+          mkdir -p integration-evidence
+          git rev-parse HEAD > integration-evidence/source-sha.txt
+          git archive --format=tar.gz --output=integration-evidence/tracked-source.tar.gz HEAD
+          sha256sum integration-evidence/tracked-source.tar.gz > integration-evidence/archive-sha256.txt
+          printf '%s\n' 'Source archive contains tracked Git bytes, including LFS pointers, not materialized LFS assets.' > integration-evidence/scope.txt
+      - name: Validate phase graph
+        run: node scripts/context/work_graph.mjs validate
+      - name: Test phase graph
+        if: ${{ !cancelled() }}
+        run: node --test scripts/context/work_graph.test.mjs
+      - name: Validate portable context
+        if: ${{ !cancelled() }}
+        run: python3 scripts/context/context_graph.py validate
+      - name: Validate Foundation data
+        if: ${{ !cancelled() }}
+        run: python3 scripts/dev/check_foundation.py > integration-evidence/foundation-data.json
+      - name: Upload exact tracked source for reproducible diagnosis
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: foundation-integration-source-${{ github.run_id }}
+          path: integration-evidence/
+          if-no-files-found: error
+          retention-days: 3
