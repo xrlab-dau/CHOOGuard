@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "workId": "FMP-11b",
+  "issue": 138,
+  "decisionId": "FMP-11b-D01",
+  "decisionState": "accepted_decision_blocks_midshift_transition",
+  "approved": true,
+  "proposalMode": "exclusive",
+  "canonicalWriteAllowed": true,
+  "recordKind": "policy_decision",
+  "authority": "FMP-11b mid-shift mode transition specification and blocked reason contract",
+  "decision": {
+    "summary": "Practice and Evaluation modes operate within the exact same server world identity and topology. Mid-shift mode transition is strictly blocked during an active shift to preserve trajectory integrity, unannounced incident progression, and scoring isolation. Any training mode switch requires a clean shift restart with a verified roster.",
+    "rules": [
+      {
+        "id": "R1",
+        "rule": "Both Practice and Evaluation modes must consume the existing FoundationTrainingMode enum, FoundationSimulationProfile.TrainingMode, and FoundationWorldSimulation.TrainingMode getter without duplicating enums or creating separate world branches."
+      },
+      {
+        "id": "R2",
+        "rule": "In Practice mode, requested guidance responses include approved synthetic procedure hints, recommended actions, and evidence basis tags."
+      },
+      {
+        "id": "R3",
+        "rule": "In Evaluation mode, procedure hint fields and step-by-step guidance are strictly excluded from client projections and responses."
+      },
+      {
+        "id": "R4",
+        "rule": "Both modes assert the same server world identity (WorldId, ShiftId, 13 regions, 12 portals)."
+      },
+      {
+        "id": "R5",
+        "rule": "Mid-shift mode transition is unsupported and blocked without an accepted PM policy decision. Attempting a transition returns blocked and does not auto-restart or mutate the active simulation."
+      }
+    ]
+  },
+  "blockedReason": "Mid-shift mode transition is blocked without an accepted PM policy decision (FMP-11b-D01). Active shift trajectory and scoring fairness require a clean shift restart.",
+  "limits": [
+    "Does not invent official railway procedures or scoring rules.",
+    "Provisional synthetic guidance evidence basis only; not surveyed facility or operational acceptance."
+  ],
+  "verification": {
+    "testClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP11bModeResponseTests",
+    "testPath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11bModeResponseTests.cs"
+  }
+}
