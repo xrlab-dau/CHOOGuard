@@ -1,0 +1,75 @@
+name: R-06 Canonical Source Audit
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - '.github/workflows/r06-canonical-audit.yml'
+      - 'scripts/ci/export_r06_sources.py'
+      - 'scripts/ci/tests/test_export_r06_sources.py'
+      - 'scripts/team/R-06/**'
+      - 'scripts/team/M1-05/**'
+      - 'docs/team/R-06/**'
+      - 'docs/team/M1-05/**'
+      - 'docs/team/M0-03/execution-profile.json'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: r06-audit-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  canonical:
+    name: Canonical R-06 / ${{ matrix.os }} / Python 3.12
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+    steps:
+      - name: Check out the tested merge commit without persistent credentials
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 1
+          lfs: false
+          persist-credentials: false
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Export only pinned committed audit inputs
+        run: python -B scripts/ci/export_r06_sources.py --ref "$(git rev-parse HEAD)" --output "$RUNNER_TEMP/r06-source-export"
+      - name: Test exporter using real temporary Git objects
+        if: always()
+        run: python -B -m unittest discover -s scripts/ci/tests -p 'test_export_r06_sources.py' -v
+      - name: Run R-06 against original policy and schema bytes
+        if: always()
+        run: python -B -m unittest discover -s scripts/team/R-06 -p 'test_*.py' -v
+      - name: Run M1-05 standard-library redaction regressions
+        if: always()
+        run: python -B -m unittest discover -s scripts/team/M1-05 -p 'test_redaction.py' -v
+      - name: Run the digest-bound R-06 case catalog
+        if: always()
+        run: python -B scripts/team/R-06/egress_controls.py run > "$RUNNER_TEMP/r06-cases.json"
+      - name: Upload public source bytes even when a test fails
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: r06-canonical-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/r06-source-export/sources.zip
+            ${{ runner.temp }}/r06-source-export/manifest.json
+            ${{ runner.temp }}/r06-cases.json
+          if-no-files-found: error
+          retention-days: 7
