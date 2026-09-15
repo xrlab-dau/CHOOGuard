@@ -1,0 +1,142 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_CONTEXT",
+  "workId": "FMP-11c",
+  "issue": 139,
+  "domainCode": "QA",
+  "phase": "candidate",
+  "artifacts": [
+    "artifact:139:fmp11c-mismatch-evidence:candidate"
+  ],
+  "status": "candidate_run_recorded",
+  "syntheticDisclosure": {
+    "authority": "foundation/world/connected-world-profile.json",
+    "classification": "synthetic_design_not_facility_acceptance",
+    "geometrySchemaVersion": 1,
+    "statement": "All 13 regions, 12 portals, 3 frames, route geometry, portal closure state, entity observations, and team reports in this record are synthetic design data. They are not surveyed Korail facility geometry and are not operational procedure acceptance.",
+    "limits": [
+      "All entity placements, roles, teams, frames, and portal closures are synthetic design inputs.",
+      "Negative observation tests assert confidentiality of synthetic incident data before discovery, not physical security verification.",
+      "The four surfaces (Authoritative Server, Projected Client View, Route/Guidance Projection, and UI Display) operate under pure algorithmic contracts."
+    ]
+  },
+  "runRecord": {
+    "recordKind": "complete_run_record",
+    "branch": "feature/139-fmp11c-observed-route-consistency",
+    "baseRef": "develop",
+    "baseCommit": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+    "commitNote": "Runs executed against the isolated feature branch with candidate test implementation and verified against local Unity CLI Editor test runner.",
+    "editor": {
+      "version": "6000.3.23f1",
+      "projectVersionFile": "m_EditorVersion: 6000.3.23f1"
+    },
+    "platform": {
+      "testPlatform": "EditMode",
+      "host": "Windows 11 x64",
+      "testRecordPlatform": "WindowsEditor"
+    },
+    "inputs": {
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs": {
+        "candidateSha256": "ca1de493bee331b155f6f5f437771ef0a39bb0e9f73fc0ca5768f9049c656f68",
+        "candidateSizeBytes": 26261,
+        "candidateLineCount": 544,
+        "newFileAtBase": true
+      },
+      "foundation/world/connected-world-profile.json": {
+        "candidateSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+        "candidateSizeBytes": 20907,
+        "readOnly": true
+      },
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": {
+        "readOnly": true
+      },
+      "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs": {
+        "readOnly": true
+      },
+      "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs": {
+        "readOnly": true
+      },
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs": {
+        "readOnly": true
+      }
+    },
+    "commands": [
+      {
+        "cmd": "unity test . --mode EditMode --filter FMP11cObservedRouteConsistencyTests",
+        "exitCode": 0,
+        "outcome": "Passed"
+      }
+    ],
+    "results": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "issueTestClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP11cObservedRouteConsistencyTests",
+      "issueTestCases": [
+        {
+          "name": "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "result": "Passed",
+          "surfaceScope": "Equipment: Server state -> Client ObservedState.Entities -> Operate command acceptance -> Stale revision rejection"
+        },
+        {
+          "name": "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "result": "Passed",
+          "surfaceScope": "Portal: Active door -> Portal Open -> Route available vs Inactive door -> Portal Closed -> Route blocked unavailable"
+        },
+        {
+          "name": "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "result": "Passed",
+          "surfaceScope": "Frame: Local-to-world Point3 translation -> Moving frame displacement -> Route CrossesFrame boundary projection"
+        },
+        {
+          "name": "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "result": "Passed",
+          "surfaceScope": "Report: Submit report -> Teammate observed report reception -> Cross-team isolation -> Teammate acknowledge"
+        },
+        {
+          "name": "ObservedIdsExcludedInformationIsAbsentFromViewRouteAndUiNegativeScenario",
+          "result": "Passed",
+          "surfaceScope": "Negative Suppression: Undiscovered incident excluded from ObservedState -> Excluded from Route/Guidance -> Report rejected (NotObserved)"
+        },
+        {
+          "name": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection",
+          "result": "Passed",
+          "surfaceScope": "Explicit Failures: Stale revision (StaleTarget) -> Missing report (UnknownTarget) -> Out of reach (OutOfReach)"
+        },
+        {
+          "name": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported",
+          "result": "Passed",
+          "surfaceScope": "Scope Separation: SnapshotFreshness network transport timing vs Four-Surface semantic observation consistency"
+        }
+      ]
+    }
+  },
+  "acceptanceAssertions": [
+    {
+      "id": "acceptance_1_authoritative_consistency_scenario",
+      "criterion": "each of equipment, portal, frame, report has an executed consistency scenario against its named authoritative response.",
+      "satisfied": true,
+      "evidence": "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces, PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces, FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces, ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+    },
+    {
+      "id": "acceptance_2_observed_ids_exclusion_negative_scenario",
+      "criterion": "ObservedIds-excluded information is absent from UI/view/route negative scenario.",
+      "satisfied": true,
+      "evidence": "ObservedIdsExcludedInformationIsAbsentFromViewRouteAndUiNegativeScenario: Verified absence in ObservedState.Entities, RouteDisplayState hints, TrainingGuidanceState, and explicit rejection on unobserved report submission (CommandCode.NotObserved)"
+    },
+    {
+      "id": "acceptance_3_stale_frame_or_report_mismatch_explicit_failure",
+      "criterion": "stale frame or report mismatch creates explicit failed/rejected result, not client-side silent selection.",
+      "satisfied": true,
+      "evidence": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection: Explicit CommandCode.StaleTarget, CommandCode.UnknownTarget, and CommandCode.OutOfReach returned without client-side silent drop or fallback"
+    },
+    {
+      "id": "acceptance_4_separate_reporting_of_snapshot_freshness_scope",
+      "criterion": "existing SnapshotFreshness test scope and new four-surface test scope are separately reported.",
+      "satisfied": true,
+      "evidence": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported: Validates strict metric and architectural separation between network timing freshness (SnapshotFreshness) and four-surface spatial/permission consistency"
+    }
+  ]
+}
