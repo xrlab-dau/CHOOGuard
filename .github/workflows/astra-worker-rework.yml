@@ -1,0 +1,43 @@
+name: Astra Supervisor Rework
+on:
+  push:
+    branches: [chore/astra-develop-audit-20260915]
+    paths:
+      - scripts/review/rework_worker.py
+      - scripts/review/tests/test_rework_worker.py
+      - .github/workflows/astra-worker-rework.yml
+permissions:
+  contents: read
+jobs:
+  repair-rejected-candidate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Verify driver and immutable rejection binding
+        run: python -B -m unittest discover -s scripts/review/tests -v
+      - name: Build immutable upstream inference source in temporary storage
+        run: |
+          set -euo pipefail
+          git init "$RUNNER_TEMP/astra-llama"
+          git -C "$RUNNER_TEMP/astra-llama" fetch --depth=1 https://github.com/ggml-org/llama.cpp.git 391fac16460f15233a7740550d858ac96df3419d
+          git -C "$RUNNER_TEMP/astra-llama" checkout --detach FETCH_HEAD
+          test "$(git -C "$RUNNER_TEMP/astra-llama" rev-parse HEAD)" = 391fac16460f15233a7740550d858ac96df3419d
+          cmake -S "$RUNNER_TEMP/astra-llama" -B "$RUNNER_TEMP/astra-llama/build" -DCMAKE_BUILD_TYPE=Release -DGGML_NATIVE=OFF -DGGML_CUDA=OFF -DLLAMA_CURL=OFF -DLLAMA_BUILD_TESTS=OFF
+          cmake --build "$RUNNER_TEMP/astra-llama/build" --target llama-server -j 4
+      - name: Repair using supervisor rejection without changing the test oracle
+        run: python -B scripts/review/rework_worker.py --server "$RUNNER_TEMP/astra-llama/build/bin/llama-server" --output "$RUNNER_TEMP/astra-rework"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: astra-supervisor-rework
+          path: ${{ runner.temp }}/astra-rework/public/
+          retention-days: 7
+          if-no-files-found: error
