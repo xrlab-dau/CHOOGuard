@@ -1,0 +1,815 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-15",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "geometricClassification": "synthetic_design_not_facility_acceptance",
+  "status": "all_three_required_suites_passed_in_one_invocation_over_the_pinned_bytes",
+  "targetIssue": 125,
+  "issue": 125,
+  "workId": "FMP-07a",
+  "title": "[FMP-07a] 13구역 실제 기하 기반 NPC100 군중 fixture",
+  "scope": "world_authored_collider_nav_fixture",
+  "scopeStatement": "이 결과는 13구역 authored 씬을 실제로 적재해 ConnectedWorldGeometry.Capture 로 뜬 실제 콜라이더/지지면 위에, 실제 NPC 동체 크기(WorldBodyPresentation.NpcRadiusM = 0.41 m)로 세운 NPC100 군중 fixture 에 대한 것이다. 선언 프로파일에서 파생한 벽만 쓰는 병목 fixture(#127 FMP-07c)와 반경 0.15 m 실험실 보정 단위 fixture 와는 서로 다른 fixtureKind 이며, 이 결과는 그 둘을 실제 기하 결과로 재표기하지 않는다. 시설·철도·현장 인수 시험이 아니다.",
+  "conclusion": "세 필수 스위트가 한 번의 Unity 호출에서 세미콜론 구분자 하나로 함께 돌았고 모두 통과했다. NUnit 루트 result 는 Passed, total 105, passed 105, failed 0, inconclusive 0, skipped 0 이다. 어느 스위트도 not_run 이 아니다. 그 호출은 해시가 고정된 바이트 위에서 돌았고, 그 바이트는 이 슬롯이 설치한 것이며 실행 전후 해시가 같다.",
+  "provenance": {
+    "authorshipByRequiredOutput": [
+      {
+        "path": "docs/evidence/work-items/FMP-07a/result.json",
+        "author": "this slot",
+        "detail": "이 슬롯이 작성해 이 경로에 설치했다. 설치 시점에 같은 경로에 있던 파일은 sha256 778ce022c3b44dc93183ce22e95cbc52e7491d1631a1ca480d862b550877bdfb / 19208 B 였고, 그것은 이 슬롯의 산출물이 아니라 다른 작성자의 후보 레코드였다. 지금 이 경로의 바이트는 이 슬롯의 레코드이며 그 digest 는 selfRecordSha256 에 있다."
+      },
+      {
+        "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+        "sha256": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+        "bytes": 13513,
+        "author": "this slot",
+        "detail": "이 슬롯이 저작해 설치했다. 다른 작성자의 후보를 그대로 채택한 것이 아니다. baseline 은 검토자가 동결한 peer 후보(55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70)이고, 그 위에 이 슬롯이 계약 결손 수선을 적용해 새로 만든 바이트다."
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+        "sha256": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+        "bytes": 74074,
+        "author": "this slot",
+        "detail": "같은 방식으로 이 슬롯이 저작해 설치했다. baseline 은 동결 peer 후보(8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee)이며 수선은 이 슬롯의 것이다."
+      }
+    ],
+    "twoWriterCollision": {
+      "disclosed": true,
+      "detail": "이 슬롯과 다른 작성자(이하 peer)가 같은 세 경로를 동시에 썼다. 관측된 순서: (1) 01:24:20 KST 무렵 peer 가 두 파일을 덮어썼고, 그 전에 peer 레코드 result.json(778ce022c3b44dc93183ce22e95cbc52e7491d1631a1ca480d862b550877bdfb, 00:41)이 설치되어 있었다. (2) 2026-09-14T16:22:21Z-16:23:53Z 이 슬롯이 동결 해시(55151906 / 8676ad8e) 위에서 세 스위트를 한 호출로 돌려 baseline(103/103)을 얻었다. (3) 01:24:20 KST peer 가 foundation/tests/FMP-07a/world-crowd-fixture.json 를 다시 덮어써(sha256 8f4e0f7660fdbf2d41ce37b75e1ee4fe8470ab0508a4e67bd2d897d716f2374b) 디스크 상태가 이 슬롯이 방금 검증한 바이트와 어긋났다. (4) 01:29-01:31 KST 이 슬롯이 수선한 두 파일을 설치하고(해시 d7b7fab7 / 15a5eb3c) 자기 3차 실행 16:29:39Z-16:31:15Z 을 채택 실행으로 얻었다. (5) 16:31:21Z-16:32:36Z peer 가 같은 두 바이트 위에서 자기 실행을 한 번 더 돌렸다(아래 corroboratingRun).",
+      "whichCandidateThePinnedHashesAre": "peer 후보가 아니다. 이 레코드가 핀하는 fixture/test 해시 d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b / 15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a 는 이 슬롯이 수선해 설치한 바이트이고, 같은 바이트가 docs/evidence/work-items/FMP-07a/adopted/ 아래에 보존되어 있다.",
+      "unattributedPeerBytes": "docs/evidence/work-items/FMP-07a/recovered/ 와 FMP-07a-edit-current.xml, FMP-07a-unity-current.log, FMP-07a-current-host.txt, fmp07a-world-crowd-recovered-from-log.json 은 이 슬롯이 만들지 않았다. 같은 경로를 쓰는 다른 작성자가 01:24-01:32 KST 사이에 만들었다. 이 레코드의 어떤 핀도 그 파일들을 가리키지 않으며, 이 슬롯은 그 실행을 자기 실행으로 제시하지 않는다.",
+      "residualRisk": "이 레코드를 설치한 뒤에도 두 파일은 다시 덮어써질 수 있다. 소비자는 실행 전에 fixture/test 해시를 이 레코드의 핀과 대조해야 하고, 어긋나면 adopted/ 사본으로 복원해야 한다. reproduce-FMP-07a.sh 가 그 대조를 강제한다(불일치면 exit 91).",
+      "recoveryCommands": [
+        "shasum -a 256 foundation/tests/FMP-07a/world-crowd-fixture.json Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+        "cp docs/evidence/work-items/FMP-07a/adopted/world-crowd-fixture.json foundation/tests/FMP-07a/world-crowd-fixture.json",
+        "cp docs/evidence/work-items/FMP-07a/adopted/Fmp07aWorldCrowdTests.cs Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs"
+      ]
+    },
+    "supersededRecords": [
+      {
+        "path": "docs/evidence/work-items/FMP-07a/result.json",
+        "sha256": "778ce022c3b44dc93183ce22e95cbc52e7491d1631a1ca480d862b550877bdfb",
+        "bytes": 19208,
+        "author": "not this slot",
+        "disposition": "superseded by this record",
+        "preservedAt": "docs/evidence/work-items/FMP-07a/recovered/peer-result-778ce022.json (archived by another writer, not by this slot)"
+      },
+      {
+        "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+        "sha256": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+        "bytes": 10687,
+        "author": "not this slot",
+        "disposition": "frozen baseline for the baseline run; repaired by this slot",
+        "preservedAt": "docs/evidence/work-items/FMP-07a/frozen-candidate/world-crowd-fixture.json (restored by this slot) and recovered/peer-fixture-55151906.json (another writer)"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+        "sha256": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee",
+        "bytes": 58263,
+        "author": "not this slot",
+        "disposition": "frozen baseline for the baseline run; repaired by this slot",
+        "preservedAt": "docs/evidence/work-items/FMP-07a/frozen-candidate/Fmp07aWorldCrowdTests.cs (this slot) and recovered/peer-test-8676ad8e.cs (another writer)"
+      },
+      {
+        "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+        "sha256": "8f4e0f7660fdbf2d41ce37b75e1ee4fe8470ab0508a4e67bd2d897d716f2374b",
+        "bytes": 13921,
+        "author": "not this slot",
+        "disposition": "observed on disk at 01:24:20 KST; overwritten by this slot's repaired candidate. This slot briefly mis-filed those bytes as the frozen candidate at frozen-candidate/world-crowd-fixture.json and then replaced that file with the true frozen bytes, so the 8f4e0f76 copy is no longer preserved by this slot.",
+        "preservedAt": "not preserved by this slot"
+      },
+      {
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+        "sha256": "86d53d100546576ae5213e83420263a9714c3b8be02646ce348edaf8e8ad9edf",
+        "bytes": 73571,
+        "author": "this slot",
+        "disposition": "first repaired candidate; one assertion still named the old counterpart kind, so it failed 1 of 18 in the second run and was superseded by the pinned candidate",
+        "preservedAt": "docs/evidence/work-items/FMP-07a/recovered/ondisk-test-86d53d10.cs (archived by another writer, not by this slot)"
+      }
+    ]
+  },
+  "fixture": {
+    "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+    "sha256": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+    "bytes": 13513,
+    "lines": 221,
+    "fixtureKind": "world_actual_collider_nav",
+    "contractNature": "DECLARED CONTRACT, NOT A MEASURED RECEIPT",
+    "jsonKeyConvention": "PascalCase",
+    "jsonKeyConventionReason": "저장소의 선언 프로파일(foundation/world/connected-world-profile.json)이 PascalCase 키를 쓰고 Unity JsonUtility 는 키 이름을 정확히 일치시켜 읽는다. camelCase 로 적으면 예외 없이 전부 기본값으로 역직렬화되므로, 시험은 그 상태를 조용히 통과시키지 않고 즉시 실패시킨다.",
+    "sourceProfile": {
+      "path": "foundation/world/connected-world-profile.json",
+      "sha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "profileId": "native-connected-v1",
+      "regions": 13,
+      "portals": 12,
+      "frames": 3
+    },
+    "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+    "manifestRule": "선언 순서대로 'regionId|sceneName|frameId' 줄을 '\\n' 로 이어 마지막에 '\\n' 를 붙인 UTF-8 바이트의 sha256",
+    "seed": 107,
+    "body": {
+      "kind": "npc",
+      "count": 100,
+      "playerCount": 0,
+      "radiusM": 0.41,
+      "heightM": 1.8,
+      "preferredSpeedMS": 1.5,
+      "radiusConstant": "WorldBodyPresentation.NpcRadiusM",
+      "abstractUnitRadiusM": 0.15,
+      "playerRadiusM": 0.3
+    },
+    "placement": {
+      "method": "ConnectedWorldGeometry.TryFindStandingPoint(regionId, region.Hub, radius, height, alreadyPlaced)",
+      "perRegionCounts": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        7,
+        7,
+        7,
+        7
+      ],
+      "regionsCovered": 13,
+      "slotSpacingM": 0.9,
+      "initialOverlapMarginM": 0.02
+    },
+    "measurementItems": [
+      "fixtureKind",
+      "fixtureIdentitySha256",
+      "bodyCount",
+      "distinctRegionCount",
+      "radiusM",
+      "heightM",
+      "tickSeconds",
+      "committedTicks",
+      "maximumGroundSpeedMS",
+      "minimumSweptGapM",
+      "minimumCentreClearanceM",
+      "supportCount",
+      "colliderCount",
+      "geometrySignature",
+      "contactSpaceIds"
+    ],
+    "measurementItemCount": 15,
+    "measuredValuesAreNotCopiedIntoTheFixture": true,
+    "noAbsoluteAuthorPathInFixture": true
+  },
+  "testArtifact": {
+    "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+    "sha256": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+    "bytes": 74074,
+    "lines": 1075,
+    "testMethods": 18,
+    "namespace": "ChooGuard.Foundation.Multiplayer.Tests",
+    "framework": "NUnit (Unity EditMode), engine 3.5.0.0",
+    "absolutePath": null,
+    "absolutePathNote": "저장소 루트 상대 경로만 기록한다. 실행은 -projectPath . 로 저장소 루트에서 했다.",
+    "runtimeFilesModified": [],
+    "filesCreatedByTheTests": "Assets/CHOOguardGenerated/WorldCrowdTest_<hash>/ 아래에 월드 1개 + 구역 13개 씬을 생성하고 정리한다. 저장소에 영구 산출물을 남기지 않는다."
+  },
+  "measuredReceipt": {
+    "source": "Temp/ChooGuardWorldCrowd/fmp07a-world-crowd.json, written by the run and recovered from the FMP07A-RECEIPT log line",
+    "archivedAt": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json",
+    "archivedBytes": 9203,
+    "archivedSha256": "fced47368018ccc9e16d98eec57270bf0e8ad43ed1e30951f665718773070cce",
+    "extractionRule": "로그에서 'FMP07A-RECEIPT ' 다음 첫 토큰(파일명)을 버리고 그 뒤부터 줄 끝까지를 그대로 UTF-8 로 인코딩한 바이트. reproduce-FMP-07a.sh 가 같은 규칙을 실행하며, 다시 돌린 결과가 보관 바이트와 같은 sha256 임을 확인했다.",
+    "tempFilePresentAtPostCheck": false,
+    "tempFilePresentAtPostCheckNote": "실행 직후 host 기록의 receipt_present 값은 no 다. 편집기가 종료하며 Temp/ 를 정리하므로 Temp/ 아래 원본 파일은 남지 않는다. 따라서 저장소에 보관한 로그 추출 바이트가 영수증의 정본이다.",
+    "receiptMarkerOccurrencesInAdoptedLog": 1,
+    "receiptKind": "declared_fixture_plus_measured_run",
+    "fixturePathInReceipt": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+    "fixtureSha256AtRun": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+    "fixtureSha256AtRunEqualsInstalled": true,
+    "sourceProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+    "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+    "separationRule": "abstract 단위 결과를 이 파일의 FixtureKind 로 표기하거나 이 파일의 실측값을 abstract 결과에 붙이면 FMP-07a 음성 계약 위반이다. 두 기록은 FixtureKind 와 fixtureIdentitySha256 이 모두 달라야 한다. fixtureIdentitySha256 은 그 기록 자신의 FixtureKind·동체수·반경·높이·seed 에서 실행 시점에 계산하며 선언 파일에서 베끼 오지 않는다.",
+    "geometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e",
+    "bodyCount": 100,
+    "distinctRegionCount": 13,
+    "committedTicks": 20,
+    "supportCount": 25,
+    "colliderCount": 696,
+    "wallCount": 2568,
+    "pinnedCount": 10,
+    "seed": 107,
+    "coupledSteps": 42,
+    "radiusM": 0.41,
+    "heightM": 1.8,
+    "tickSeconds": 0.05,
+    "simulatedSeconds": 1.0,
+    "maximumGroundSpeedMS": 0.20615528435283612,
+    "minimumSweptGapM": 1.7891021997229473e-11,
+    "minimumCentreClearanceM": 1.7893353465581185e-11,
+    "sweptGapSamples": 20,
+    "centreClearanceSamples": 20,
+    "fixtureIdentitySha256": "28947360769fd7b67b0a6c644ad6692859da4cf32b54631c7eaff5912fe6e344",
+    "contactSpaceIds": [
+      "world"
+    ],
+    "regionIds": [
+      "forecourt_eurasia",
+      "metro_concourse",
+      "metro_platforms",
+      "rail_platforms_mainline",
+      "rail_terminal_public",
+      "rail_tracks_mainline",
+      "rolling_stock_mainline",
+      "rolling_stock_metro",
+      "station_concourse_2f",
+      "station_hall_1f",
+      "station_ticket_area",
+      "underground_connector",
+      "underground_shopping_passage"
+    ],
+    "abstractUnitCounterpartMeasured": {
+      "note": "같은 세계 기하 위에서 반경만 0.15 m 로 바꾼 대조 로스터다. 세계 기하에서 측정되었으므로 실험실 보행로 kind 로 표기하지 않는다.",
+      "fixtureKind": "abstract_unit_radius_control_on_world_geometry",
+      "laboratoryCorridorKind": "abstract_unit_laboratory_corridor",
+      "laboratoryCorridorKindIsNotThisRecord": true,
+      "radiusM": 0.15,
+      "heightM": 1.8,
+      "fixtureIdentitySha256": "adc6510fd852093a69b04dafa9fdd1b1a0f9ddd29176a082f33a7bbdecc30f5a",
+      "geometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e",
+      "sameCapturedGeometryAsWorldActual": true,
+      "bodyCount": 100,
+      "distinctRegionCount": 13,
+      "supportCount": 25,
+      "colliderCount": 696,
+      "wallCount": 2568,
+      "coupledSteps": 42,
+      "committedTicks": 20,
+      "minimumSweptGapM": 0.2744382690135684,
+      "minimumCentreClearanceM": 0.40177735145662513,
+      "maximumGroundSpeedMS": 0.20615528435283612,
+      "sweptGapSamples": 20,
+      "centreClearanceSamples": 20
+    },
+    "twoRecordsDifferOnTheIdentityAxis": true,
+    "measuredValueDiscipline": "fixture 계약 파일에는 위 실측값을 베껴 넣지 않았다. 계약 파일은 선언 경계값만 싣고, 실측 집계값은 이 레코드와 보관된 영수증 바이트에만 있다. 결과를 보고 계약 경계를 완화한 적이 없다."
+  },
+  "negativeCaseGuards": [
+    {
+      "negativeCase": "누락구역",
+      "guard": "ConnectedWorldGeometry.Capture 는 13개 구역 씬을 정확히 한 번씩 싣지 않으면 거부한다. 계약은 13개 구역 명부가 저작 월드 선언과 구역 단위로 일치할 것을 요구한다.",
+      "tests": [
+        "TwelveOrDuplicateRegionViewsCannotBeCapturedAsTheWorldFixture",
+        "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"
+      ]
+    },
+    {
+      "negativeCase": "미로드 collider",
+      "guard": "적재된 static 콜라이더를 비활성화하면 ValidateSourceGeometry 가 실패하고, 지지면 콜라이더를 비활성화하면 어댑터가 그 support 를 거부한다. 계약은 캡처된 콜라이더 집합이 적재된 저작 집합과 정확히 같고 조용히 건너뛴 콜라이더가 없을 것을 요구한다.",
+      "tests": [
+        "UnloadedOrDisabledAuthoredColliderIsDetectedAndCannotBeHidden",
+        "BodyOnADisabledAuthoredSupportIsRefusedInsteadOfBeingSilentlySimulated",
+        "CapturedGeometryIsTheActualAuthoredColliderSetWithEveryStaticColliderLoadedAndUnchanged"
+      ]
+    },
+    {
+      "negativeCase": "잘못된 frame",
+      "guard": "세 갈래로 막는다. (1) 구역 뷰는 현재 FrameId 와 다른 프레임 적재를 거부한다. (2) 어댑터는 프레임 id 변경, yaw 변경, 프레임 원점 Y 변경, world 원점 이동을 거부하고 거부된 tick 을 부분 커밋하지 않는다(체크포인트 바이트 동일). (3) 계약은 구역별 FrameId 가 저작 월드 선언과 같을 것을 요구한다.",
+      "tests": [
+        "WrongFrameIsRefusedByTheRegionViewAndByTheAdapterFrameValidation",
+        "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame"
+      ]
+    },
+    {
+      "negativeCase": "실제 모델보다 작은 반경",
+      "guard": "저작 Evacuee 메시 정점에서 시험 시점에 최대 수평 반경을 측정하고, 계약의 radiusM 이 그 값 이상이며 WorldBodyPresentation.NpcRadiusM 과 정확히 같을 것을 요구한다. undersized 탐침(0.15 m, envelope/2, envelope-0.001)은 모두 그 측정값에서 파생한다.",
+      "tests": [
+        "MeasuredAuthoredModelEnvelopeExceedsTheAbstractUnitAndNeverExceedsTheAuthoredRadius",
+        "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"
+      ]
+    },
+    {
+      "negativeCase": "abstract를 actual로 표기 (양방향)",
+      "guard": "fixtureKind 가 world_actual_collider_nav 가 아니면 검증이 실패한다(abstract 를 actual 로). 반대 방향도 실제로 뒤집어 확인한다: 대조 블록의 FixtureKind 는 world actual kind 도 laboratory corridor kind 도 될 수 없고, world actual 기록을 abstract kind 로 표기하면 거부된다. 두 기록은 fixtureKind 와 fixtureIdentitySha256 이 모두 달라야 하며, 이 축은 구현되어 있다(이 실행에서 28947360 vs adc6510f).",
+      "tests": [
+        "AbstractUnitNumbersCannotBeRecordedUnderTheWorldActualFixtureKind",
+        "WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart",
+        "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+        "ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind"
+      ]
+    }
+  ],
+  "measurementConditions": {
+    "unit": "SI (m, s, m/s)",
+    "toolchain": "Unity 6000.3.23f1; NUnit engine 3.5.0.0, CLR 4.0.30319.42000 (read from the results XML attributes)",
+    "host": "Apple M1 (hw.model MacBookAir10,1), 8 cores (hw.ncpu 8), 16 GiB (hw.memsize 17179869184), macOS 26.5 build 25F71 (Darwin 25.5.0, xnu-12377.121.6~2/RELEASE_ARM64_T8103, arm64). The raw host line recorded at launch is in FMP-07a-adopted-host.txt.",
+    "hostRecord": "docs/evidence/work-items/FMP-07a/FMP-07a-adopted-host.txt (sha256 4d53a02c2c96c26b64a0afb684ed702e8f513a4e159ed0592957a3d0ed0a30d0)",
+    "gitHeadAtRun": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "gitBranch": "develop",
+    "invocation": "\"$UNITY\" -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests;ChooGuard.Foundation.Tests.CrowdWorldContactTests;ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests\" -testResults docs/evidence/work-items/FMP-07a/FMP-07a-edit.xml -logFile docs/evidence/work-items/FMP-07a/FMP-07a-unity.log",
+    "invocationNote": "실행 디렉터리는 저장소 루트였고, 위 명령줄의 -testResults / -logFile 인자는 저장소 상대 증거 경로로 적은 형태다. 나머지 인자는 문자 그대로다. 작성자 작업공간 절대경로를 증거에 남기지 않는다는 규칙에 따라 절대 접두는 적지 않는다. 같은 명령을 재현하는 스크립트는 docs/evidence/work-items/FMP-07a/reproduce-FMP-07a.sh (sha256 c2adc917cf46e64d4410ebdc7c87aa6ee57288d507cfc7a40b25b167e30ec723) 이며, 핀된 바이트가 아니면 실행을 거부한다.",
+    "testFilter": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests;ChooGuard.Foundation.Tests.CrowdWorldContactTests;ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests",
+    "filterSeparatorNote": "한 번의 호출에 세 스위트를 세미콜론(;) 하나로 이어 지정했다. Unity 의 -testFilter 구분자는 세미콜론뿐이며 쉼표로 적으면 조용히 0개가 실행된다.",
+    "fixtureSha256AtLaunch": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+    "fixtureSha256AfterRun": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+    "testArtifactSha256AtLaunch": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+    "testArtifactSha256AfterRun": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+    "artifactUnchangedDuringRun": true,
+    "hashPinningNote": "실행 전후 시험 파일과 fixture 해시가 같음을 확인한 실행만 채택했다(FMP-07a-adopted-host.txt 의 pre/post 줄). 이 영수증의 수치는 확정 바이트 d7b7fab7 / 15a5eb3c 에서 나왔다.",
+    "startedUtc": "2026-09-14T16:29:39Z",
+    "endedUtc": "2026-09-14T16:31:15Z",
+    "unityExitCode": 0,
+    "resultsXmlAtRun": "docs/evidence/work-items/FMP-07a/FMP-07a-edit.xml",
+    "runCount": 3,
+    "runCountNote": "채택 실행은 이 슬롯의 3번째 실행이다. 1차는 동결 후보 바이트 위 baseline(103/103), 2차는 수선 후보 1차본(105 중 1 실패), 3차가 채택(105/105)이다.",
+    "testPlatform": "EditMode",
+    "batchmode": true,
+    "nographics": true
+  },
+  "requiredCheckSuites": [
+    {
+      "suite": "WorldMotionAdapterTests",
+      "fullName": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests",
+      "status": "passed",
+      "notRun": false,
+      "invocationIndex": 1,
+      "total": 70,
+      "passed": 70,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 65.282471
+    },
+    {
+      "suite": "CrowdWorldContactTests",
+      "fullName": "ChooGuard.Foundation.Tests.CrowdWorldContactTests",
+      "status": "passed",
+      "notRun": false,
+      "invocationIndex": 1,
+      "total": 17,
+      "passed": 17,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 0.424185
+    },
+    {
+      "suite": "Fmp07aWorldCrowdTests",
+      "fullName": "ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests",
+      "status": "passed",
+      "notRun": false,
+      "invocationIndex": 1,
+      "total": 18,
+      "passed": 18,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 16.274423
+    }
+  ],
+  "nunitRootResult": {
+    "result": "Passed",
+    "total": 105,
+    "passed": 105,
+    "failed": 0,
+    "inconclusive": 0,
+    "skipped": 0,
+    "durationSeconds": 82.0547364,
+    "testcaseCount": 105,
+    "resultsXmlSha256": "0379a9eba81a3e86ded832adc391afa05e78fc7fdf655d8258de59ad57a6eb57",
+    "gate": "NUnit 루트 result 는 Passed 이고 세 스위트 모두 failed=0, inconclusive=0, skipped=0 이다. skip>0 인 호출은 통과로 취급하지 않는다."
+  },
+  "perSuiteTotals": {
+    "WorldMotionAdapterTests": {
+      "total": 70,
+      "passed": 70,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 65.282471
+    },
+    "CrowdWorldContactTests": {
+      "total": 17,
+      "passed": 17,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 0.424185
+    },
+    "Fmp07aWorldCrowdTests": {
+      "total": 18,
+      "passed": 18,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 16.274423
+    }
+  },
+  "failedOrUnrunSuites": [],
+  "notRunSuites": [],
+  "checksRun": [
+    {
+      "name": "AbstractUnitNumbersCannotBeRecordedUnderTheWorldActualFixtureKind",
+      "result": "Passed",
+      "durationSeconds": 3.859658
+    },
+    {
+      "name": "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame",
+      "result": "Passed",
+      "durationSeconds": 0.00307
+    },
+    {
+      "name": "BodyOnADisabledAuthoredSupportIsRefusedInsteadOfBeingSilentlySimulated",
+      "result": "Passed",
+      "durationSeconds": 0.048237
+    },
+    {
+      "name": "CapturedGeometryIsTheActualAuthoredColliderSetWithEveryStaticColliderLoadedAndUnchanged",
+      "result": "Passed",
+      "durationSeconds": 0.016614
+    },
+    {
+      "name": "DeclaredProfileBytesAndTheThirteenRegionSceneManifestStillMatchTheFixtureAnchors",
+      "result": "Passed",
+      "durationSeconds": 0.001299
+    },
+    {
+      "name": "ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind",
+      "result": "Passed",
+      "durationSeconds": 0.002742
+    },
+    {
+      "name": "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart",
+      "result": "Passed",
+      "durationSeconds": 0.003529
+    },
+    {
+      "name": "MeasuredAuthoredModelEnvelopeExceedsTheAbstractUnitAndNeverExceedsTheAuthoredRadius",
+      "result": "Passed",
+      "durationSeconds": 0.005962
+    },
+    {
+      "name": "Npc100IsPlacedOnActualAuthoredSupportsAcrossAllThirteenRegionsWithNoOverlap",
+      "result": "Passed",
+      "durationSeconds": 0.114912
+    },
+    {
+      "name": "Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt",
+      "result": "Passed",
+      "durationSeconds": 3.247318
+    },
+    {
+      "name": "PinnedNpcBodiesOnTheActualFixtureHoldUnderNeighbourContact",
+      "result": "Passed",
+      "durationSeconds": 1.650246
+    },
+    {
+      "name": "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+      "result": "Passed",
+      "durationSeconds": 0.007056
+    },
+    {
+      "name": "SameSeedAndCommandsProduceTheSameActualFixtureCheckpoint",
+      "result": "Passed",
+      "durationSeconds": 1.338531
+    },
+    {
+      "name": "TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes",
+      "result": "Passed",
+      "durationSeconds": 0.001145
+    },
+    {
+      "name": "TwelveOrDuplicateRegionViewsCannotBeCapturedAsTheWorldFixture",
+      "result": "Passed",
+      "durationSeconds": 0.004876
+    },
+    {
+      "name": "UnloadedOrDisabledAuthoredColliderIsDetectedAndCannotBeHidden",
+      "result": "Passed",
+      "durationSeconds": 0.012141
+    },
+    {
+      "name": "WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind",
+      "result": "Passed",
+      "durationSeconds": 3.593755
+    },
+    {
+      "name": "WrongFrameIsRefusedByTheRegionViewAndByTheAdapterFrameValidation",
+      "result": "Passed",
+      "durationSeconds": 0.117783
+    }
+  ],
+  "checksRunSummary": {
+    "total": 18,
+    "passed": 18,
+    "failed": 0,
+    "inconclusive": 0,
+    "skipped": 0,
+    "result": "Passed",
+    "durationSeconds": 16.274423,
+    "byFixture": {
+      "ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests": {
+        "total": 18,
+        "passed": 18,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0
+      }
+    },
+    "note": "18개 시험 모두 실행되었고 18개 모두 통과했다. ignored/skipped 는 0 이다."
+  },
+  "frozenHashBaselineRun": {
+    "purpose": "검토자가 동결한 후보 바이트 위에서 세 스위트가 한 호출로 함께 통과함을 보이는 baseline 이다. 수선은 이 실행 뒤에 적용되었으므로 이 실행의 핀은 채택 바이트가 아니다.",
+    "fixtureSha256": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "testArtifactSha256": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee",
+    "invocation": "\"$UNITY\" -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests;ChooGuard.Foundation.Tests.CrowdWorldContactTests;ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests\" -testResults docs/evidence/work-items/FMP-07a/FMP-07a-edit.xml -logFile docs/evidence/work-items/FMP-07a/FMP-07a-unity.log",
+    "startedUtc": "2026-09-14T16:22:21Z",
+    "endedUtc": "2026-09-14T16:23:53Z",
+    "unityExitCode": 0,
+    "artifactUnchangedDuringRun": true,
+    "resultsXml": {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-edit-frozen-candidate.xml",
+      "sha256": "0a8320a4c360d67fe7e7ffe4842f5053a85f6375894ff8e1e8e9ad9b5dcd3c11",
+      "bytes": 113693
+    },
+    "unityLog": {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-unity-frozen-candidate.log",
+      "sha256": "116487f466801ab6eb05c95b00571768254504ea368a8c0869c4f5dd33fd818e",
+      "bytes": 662452
+    },
+    "receipt": {
+      "path": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd-frozen-candidate.json",
+      "sha256": "6828f531b96aebbda60c196e986d820a2f86ed5202f86a778aac314a48027740",
+      "bytes": 8724
+    },
+    "hostRecord": {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-frozen-candidate-host.txt",
+      "sha256": "c724b658f4a258f72f76aa2aa4634603f73db3a5f57de4404b237be18920c145"
+    },
+    "nunitRootResult": {
+      "result": "Passed",
+      "total": 103,
+      "passed": 103,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 76.5154913,
+      "testcaseCount": 103,
+      "resultsXmlSha256": "0a8320a4c360d67fe7e7ffe4842f5053a85f6375894ff8e1e8e9ad9b5dcd3c11"
+    },
+    "perSuite": [
+      {
+        "suite": "WorldMotionAdapterTests",
+        "fullName": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests",
+        "result": "Passed",
+        "total": 70,
+        "passed": 70,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 63.527036
+      },
+      {
+        "suite": "CrowdWorldContactTests",
+        "fullName": "ChooGuard.Foundation.Tests.CrowdWorldContactTests",
+        "result": "Passed",
+        "total": 17,
+        "passed": 17,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 0.389794
+      },
+      {
+        "suite": "Fmp07aWorldCrowdTests",
+        "fullName": "ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests",
+        "result": "Passed",
+        "total": 16,
+        "passed": 16,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 12.518279
+      }
+    ],
+    "note": "이 실행은 동결 후보의 Fmp07a 시험 16개를 담고 있다. 그 뒤 수선으로 시험이 18개가 되었고, 채택 실행의 18/18 이 정본이다."
+  },
+  "corroboratingRun": {
+    "attribution": "THIS RUN WAS NOT EXECUTED BY THIS SLOT. 다른 작성자가 같은 두 바이트 위에서 16:31:21Z-16:32:36Z 에 자기 방식으로 돌린 실행이며, 이 슬롯은 결과 XML 을 파싱해 읽기만 했다. 이 슬롯의 산출물로 제시하지 않는다.",
+    "fixtureSha256": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+    "testArtifactSha256": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+    "resultsXml": {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-edit-current.xml",
+      "sha256": "a05f51113a373fd625f17dc8f19b2d0b7abfa4abf7e7f46dcb68c0742649bc7b",
+      "bytes": 115688
+    },
+    "unityLog": {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-unity-current.log",
+      "sha256": "bdef50e1c6820bbbcbcdbdc7f1178e4a38b523deabb912cc059afff7e176c2f1",
+      "bytes": 662851
+    },
+    "hostRecord": {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-current-host.txt",
+      "sha256": "07a7aaf58767f95b8c18f06243fd635d2a969afe2b60b9ae3bd4a29b47c63fac"
+    },
+    "nunitRootResult": {
+      "result": "Passed",
+      "total": 105,
+      "passed": 105,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "durationSeconds": 66.9535518,
+      "testcaseCount": 105,
+      "resultsXmlSha256": "a05f51113a373fd625f17dc8f19b2d0b7abfa4abf7e7f46dcb68c0742649bc7b"
+    },
+    "perSuite": [
+      {
+        "suite": "WorldMotionAdapterTests",
+        "fullName": "ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests",
+        "result": "Passed",
+        "total": 70,
+        "passed": 70,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 54.058748
+      },
+      {
+        "suite": "CrowdWorldContactTests",
+        "fullName": "ChooGuard.Foundation.Tests.CrowdWorldContactTests",
+        "result": "Passed",
+        "total": 17,
+        "passed": 17,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 0.393923
+      },
+      {
+        "suite": "Fmp07aWorldCrowdTests",
+        "fullName": "ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests",
+        "result": "Passed",
+        "total": 18,
+        "passed": 18,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 12.426991
+      }
+    ],
+    "corroborates": "같은 핀 바이트 위에서 다른 작성자가 돌린 실행도 같은 세 스위트를 failed=0/skipped=0 으로 통과시켰다. 채택 실행의 초록이 한 번의 우연이 아님을 보강한다."
+  },
+  "evidenceFiles": {
+    "note": "모든 파일이 저장소 안에 있고 각자의 sha256 을 아래에 적는다. 저장소 밖 임시 경로에만 있는 증거는 없다.",
+    "adoptedTestResultsXml": "docs/evidence/work-items/FMP-07a/FMP-07a-edit.xml",
+    "adoptedTestResultsXmlSha256": "0379a9eba81a3e86ded832adc391afa05e78fc7fdf655d8258de59ad57a6eb57",
+    "adoptedTestResultsXmlBytes": 115708,
+    "adoptedUnityLog": "docs/evidence/work-items/FMP-07a/FMP-07a-unity.log",
+    "adoptedUnityLogSha256": "ed2a09ec656c91067ebaff79c1bf1ea55905e6893eef9512b4091f2c2e31ff6c",
+    "adoptedUnityLogBytes": 668273,
+    "hostRecord": "docs/evidence/work-items/FMP-07a/FMP-07a-adopted-host.txt",
+    "hostRecordSha256": "4d53a02c2c96c26b64a0afb684ed702e8f513a4e159ed0592957a3d0ed0a30d0",
+    "receiptJsonPath": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json",
+    "receiptJsonSha256": "fced47368018ccc9e16d98eec57270bf0e8ad43ed1e30951f665718773070cce",
+    "receiptJsonBytes": 9203,
+    "receiptJsonSha256Note": "이 값은 보관된 영수증 JSON 바이트의 실제 digest 다. 이전 레코드는 이 필드에 fixture 해시를 담았다(잘못된 라벨). fixture 해시는 fixtureSha256AtRun 과 measuredReceipt.fixtureSha256AtRun 에 따로 있다.",
+    "fixtureSha256AtRun": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+    "testArtifactSha256AtRun": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+    "reproductionScript": "docs/evidence/work-items/FMP-07a/reproduce-FMP-07a.sh",
+    "reproductionScriptSha256": "c2adc917cf46e64d4410ebdc7c87aa6ee57288d507cfc7a40b25b167e30ec723",
+    "adoptedCandidateBytes": [
+      {
+        "path": "docs/evidence/work-items/FMP-07a/adopted/world-crowd-fixture.json",
+        "sha256": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+        "bytes": 13513
+      },
+      {
+        "path": "docs/evidence/work-items/FMP-07a/adopted/Fmp07aWorldCrowdTests.cs",
+        "sha256": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+        "bytes": 74074
+      }
+    ],
+    "frozenCandidateBytes": [
+      {
+        "path": "docs/evidence/work-items/FMP-07a/frozen-candidate/world-crowd-fixture.json",
+        "sha256": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+        "bytes": 10687
+      },
+      {
+        "path": "docs/evidence/work-items/FMP-07a/frozen-candidate/Fmp07aWorldCrowdTests.cs",
+        "sha256": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee",
+        "bytes": 58263
+      }
+    ],
+    "authoredByAnotherWriterNotPinnedHere": [
+      "docs/evidence/work-items/FMP-07a/recovered/peer-fixture-55151906.json",
+      "docs/evidence/work-items/FMP-07a/recovered/peer-test-8676ad8e.cs",
+      "docs/evidence/work-items/FMP-07a/recovered/peer-result-778ce022.json",
+      "docs/evidence/work-items/FMP-07a/recovered/ondisk-fixture-d7b7fab7.json",
+      "docs/evidence/work-items/FMP-07a/recovered/ondisk-test-86d53d10.cs",
+      "docs/evidence/work-items/FMP-07a/recovered/SHA256SUMS.txt",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-edit-current.xml",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-unity-current.log",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-current-host.txt",
+      "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd-recovered-from-log.json"
+    ],
+    "outsideRepository": false,
+    "absolutePathNote": "절대 경로를 기록하지 않는다. 작성자 작업공간 절대경로를 증거에 남기면 정체 누출이 된다. Unity 가 생성한 로그와 XML 안에는 절대 경로가 남아 있으나 이 레코드로 옮겨 적지 않는다."
+  },
+  "repairsFromReview": [
+    {
+      "finding": "Install, do not defer: a required output that is not on disk at the required path is undelivered.",
+      "applied": "이 파일을 docs/evidence/work-items/FMP-07a/result.json 에 설치했다. superseded peer 레코드(778ce022c3b44dc93183ce22e95cbc52e7491d1631a1ca480d862b550877bdfb)와의 관계, 이 경로의 바이트가 누구 것인지(이 슬롯의 것), 새 레코드 sha256 을 명시했다. selfRecordSha256 참조."
+    },
+    {
+      "finding": "Re-run the three suites in ONE invocation with a semicolon-separated filter; no suite may remain not_run.",
+      "applied": "채택 실행은 세미콜론 구분자 하나로 세 스위트를 한 호출에 돌렸고 모두 failed=0/inconclusive=0/skipped=0 이다(requiredCheckSuites, perSuiteTotals, nunitRootResult). notRunSuites 는 빈 배열이다. 동결 후보 위 baseline 실행도 같은 방식이다."
+    },
+    {
+      "finding": "Archive the receipt bytes instead of transcribing them.",
+      "applied": "채택 실행 로그의 FMP07A-RECEIPT 줄에서 영수증 바이트를 그대로 추출해 docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json 으로 보관하고 sha256 fced4736 로 고정했다. 추출 규칙을 reproduce-FMP-07a.sh 에 넣고 다시 실행해 같은 sha256 이 나옴을 확인했다. Temp/ 원본은 편집기 종료 시 사라지므로(host 기록 receipt_present=no) 보관 바이트가 정본이다."
+    },
+    {
+      "finding": "Copy the NUnit XML and run log into the repository and pin their sha256; a green status must not rest on evidence outside the repo.",
+      "applied": "FMP-07a-edit.xml 과 FMP-07a-unity.log 를 저장소 증거 경로에 두고 sha256 을 고정했다. 영수증, 실행 XML, 실행 로그, 호스트 기록, 재현 스크립트가 모두 저장소 안에 있다."
+    },
+    {
+      "finding": "MeasurementItems declares a separation axis (fixtureHashSha256) that occurs 0 times in the implementation; RunReceipt had no per-record fixture hash field.",
+      "applied": "RunReceipt 에 실제 필드 fixtureIdentitySha256 을 추가했다. 각 기록이 자기 선언(FixtureKind·동체수·반경·높이·seed)에서 실행 시점에 계산하므로 두 기록이 같은 값을 가질 수 없고, 이 실행에서 실제로 28947360 vs adc6510f 로 다르다. 새 시험 TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes 가 리플렉션으로 선언된 모든 항목이 RunReceipt 필드로 존재함을 강제하므로 구현 없는 축은 다시 선언될 수 없다."
+    },
+    {
+      "finding": "Remove the vacuous-pass path that coerces a sentinel to 0 so that \">= 0\" passes on a run that measured nothing.",
+      "applied": "IsPositiveInfinity → 0 철자를 제거했다. sentinel 이 살아남으면 영수증을 실패시킨다. 실측 샘프 수를 세어 sweptGapSamples > 0, centreClearanceSamples > 0 을 단언한다. 채택 실행에서 두 값 모두 20 이다."
+    },
+    {
+      "finding": "Repair the MislabeledAbstract reverse-direction violation: world-geometry values were labelled abstract_unit_laboratory_corridor.",
+      "applied": "대조 기록의 kind 를 abstract_unit_radius_control_on_world_geometry 로 분리하고 실험실 보행로 kind 를 별도 선언으로 두었다. 계약은 대조 kind 가 world actual kind 도 실험실 kind 도 될 수 없다고 요구한다. 새 시험 WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind 가 양방향을 실제로 뒤집어 거부를 확인한다. 이 실행의 대조 값(최소 swept gap 0.2744382690135684, 최소 중심 간격 0.40177735145662513)은 세계 기하에서 측정된 것이며 실험실 보행로 결과로 표기되지 않는다."
+    },
+    {
+      "finding": "Replace the silent non-execution gate (Assert.Ignore) that turned all tests into Ignored while -runTests still exited failed=0/skipped>0.",
+      "applied": "OneTimeSetUp 은 dirty 장면 이름을 모아 하드 실패한다(Assert.Ignore 제거). 계약은 NegativeContract.NonExecution 에서 Assert.Ignore 를 금지하고 skip>0 인 호출을 통과로 취급하지 않는다. 채택 실행의 skipped 는 0 이다."
+    },
+    {
+      "finding": "Fix submission fidelity for hash-pinned artifacts: reproduce bytes verbatim and re-hash, or omit content and keep only the pin plus a recovery command.",
+      "applied": "이 레코드가 핀하는 모든 바이트는 저장소에 있고, 각 sha256 은 이 파일을 만들 때 디스크 바이트에서 다시 계산했다. 설치된 fixture/test 가 adopted/ 사본과 바이트 단위로 같음을 빌드 시점에 단언한다. 이 슬롯이 만들지 않은 peer 바이트는 핀 목록이 아니라 authoredByAnotherWriterNotPinnedHere 에 따로 두어 검증된 산출물로 통과하지 않게 했다."
+    },
+    {
+      "finding": "evidenceFiles.receiptJsonSha256 held the FIXTURE hash; the ground-speed bound was a hardcoded 1.5; the no-overlap bound was radiusSum - 1e-9.",
+      "applied": "receiptJsonSha256 은 보관 영수증의 실제 digest 이고 fixture 해시는 fixtureSha256AtRun 으로 분리했다. 지상 속도 상한은 선언된 명령 속도 0.20615528128088306 m/s + 1e-06 로 묶었고(계약이 그 값을 선언하며 시험이 선언값과 계산값을 대조한다. 실측 0.20615528435283612 가 그 안에 있다), 겹침 단언은 계약이 선언한 여유 0.02 m 를 더한 값으로 올렸다."
+    },
+    {
+      "finding": "Disclose provenance: authorship of all three required paths, the two-writer collision, which candidate the pinned hashes correspond to.",
+      "applied": "provenance 절에 세 필수 경로의 작성자, 관측된 충돌 시각과 순서, 핀이 가리키는 후보, 이 슬롯이 만들지 않은 peer 바이트의 위치와 그 사실을 적었다. corroboratingRun 도 \"이 슬롯이 실행한 것이 아니다\"로 명시했다."
+    }
+  ],
+  "blockers": [
+    {
+      "kind": "concurrent_write_conflict",
+      "detail": "필수 산출물 경로를 다른 작성자가 동시에 썼다. 관측: foundation/tests/FMP-07a/world-crowd-fixture.json 이 01:24:20 KST 에 다른 내용으로 덮어써졌고(sha256 8f4e0f76), recovered/ 와 *-current.* 파일들이 01:24-01:32 KST 에 다른 작성자에 의해 생성되었다.",
+      "resolution": "이 슬롯이 수선한 두 파일을 01:29-01:31 KST 에 설치하고 채택 실행 전후 해시가 같음을 확인했다(FMP-07a-adopted-host.txt). 설치·채택 바이트는 adopted/ 에, 동결 후보 바이트는 frozen-candidate/ 에 보존했다.",
+      "residualRisk": "이 레코드 설치 뒤에도 같은 경로가 덮어써질 수 있다. reproduce-FMP-07a.sh 가 핀 불일치를 감지해 실행을 거부한다."
+    },
+    {
+      "kind": "first_repaired_candidate_failed_one_check",
+      "detail": "2차 실행에서 Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt 가 1건 실패했다. 남아 있던 단언이 영수증 JSON 에 abstract_unit_laboratory_corridor 가 있기를 요구했지만, 대조 kind 를 분리한 뒤 그 문자열은 영수증에 0회 나타난다.",
+      "resolution": "그 단언을 새 대조 kind 로 바꾸고, 실험실 보행로 kind 로 분류된 측정 기록이 없음을 확인하는 Does.Not.Contain 단언으로 강화했다. 3차 실행에서 18/18 통과.",
+      "residualRisk": "없음. 이 실패는 수선이 만든 것이고 수선 안에서 닫혔다."
+    },
+    {
+      "kind": "lost_peer_intermediate_bytes",
+      "detail": "이 슬롯이 01:24:20 KST 디스크 상태를 스냅샷하며 다른 작성자의 fixture 중간본(8f4e0f76, 13921 B)을 동결 후보로 오인해 frozen-candidate/world-crowd-fixture.json 에 넣었다. 뒤에 그 자리를 진짜 동결 바이트(55151906)로 교체하면서 그 중간본 사본이 이 슬롯 쪽에서 사라졌다.",
+      "resolution": "정정: frozen-candidate/world-crowd-fixture.json 은 이제 진짜 동결 바이트이고 sha256 으로 확인된다. 그 중간본은 보존되지 않는다고 기록했다.",
+      "residualRisk": "낮음. 필수 산출물이 아니고, 이 레코드의 어떤 핀도 그 바이트를 가리키지 않는다."
+    }
+  ],
+  "limits": {
+    "singleHost": "이 수치는 Apple M1 macOS arm64 한 호스트의 한 실행에서 나왔다. 다른 장비와 직접 비교하지 않는다.",
+    "notFacilityAcceptance": "GeometricClassification 은 synthetic_design_not_facility_acceptance 다. 실제 시설·철도 인수 시험이 아니다.",
+    "authoredGeometryNotSurvey": "기하는 저작 저장소의 씬에서 캡처한 것이며 실측 측량이 아니다. 좌표와 지지면은 선언 프로파일과 저작 씬이 정본이다.",
+    "frameModel": "차량 프레임(train-mainline, train-metro)은 정적 선언이며 실제 차량 운동을 모사하지 않는다.",
+    "noServerBudget": "20 Hz 전체 서버 프레임 예산은 이 시험에서 측정하지 않았다.",
+    "noEndToEnd": "이 fixture 는 군중 기하·배치·전진 계약을 검증한다. EvacuationDirector 나 상위 시나리오 종단 간 성능은 이 결과의 범위가 아니다.",
+    "minimumSweepIsAMeasuredNearZero": "최소 swept gap 1.7891021997229473e-11 은 \"간격이 0 이 아니다\"를 뜻하는 측정값이지 여유 공간이 그 값이라는 설계 주장이 아니다. 구속하는 것은 매 tick 비관통 단언이다.",
+    "speedBoundHeadroom": "지상 속도 상한 0.20615628128088306 m/s 는 실측 0.20615528435283612 보다 약 3.1e-9 m/s 위다. 이 여유는 float32 명령 성분과 적분에서 오는 표현 오차이며, 1.5 m/s 같은 무검사 상한으로 되돌리지 않는다.",
+    "peerBytesNotVerified": "recovered/ 와 *-current.* 파일은 이 슬롯이 만들지 않았고, corroboratingRun 의 XML 파싱 외에는 검증하지 않았다. 이 레코드의 어떤 핀도 그 파일들을 가리키지 않는다.",
+    "notIndependentlyReproduced": "채택 실행은 이 슬롯이 직접 수행한 한 호스트의 실행이다. 제3자 재현은 이 결과의 범위가 아니다.",
+    "xmlParserNote": "이 레코드를 만든 스크립트는 저장소가 생성한 NUnit XML 을 표준 라이브러리 파서로 읽는다. 외부에서 받은 XML 을 파싱하는 용도가 아니다."
+  },
+  "digestRequirements": {
+    "sourceRef": "required",
+    "outputDigest": "sha256:d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+    "outputDigestNote": "outputDigest 는 fixture 바이트다. 시험 파일 digest 는 testArtifact.sha256, 이 레코드 자신의 digest 는 selfRecordSha256 에 있다."
+  },
+  "selfRecordSha256": {
+    "path": "docs/evidence/work-items/FMP-07a/result.json",
+    "bytes": 50502,
+    "sha256": "788270f31d3ab07c43ce349bb1fd4c336bd28aa2d686ba8a85efb2e8172e7031",
+    "canonicalRule": "이 파일을 JSON 으로 읽어 selfRecordSha256 안의 sha256 값만 리터럴 문자열 SELF 로, bytes 값만 0 으로 바꾼 뒤, ensure_ascii=False / indent=2 / sort_keys=False 로 다시 직렬화하고 끝에 '\\n' 을 붙인 UTF-8 바이트의 sha256 이다. 두 필드 모두 자기 자신을 가리키므로 완성본 위에 정의할 수 없어 이 정규형 위에 정의한다. 이 파일은 바로 그 직렬화 설정으로 만들어졌으므로 설치된 파일만으로 정규형이 재구성된다.",
+    "canonicalRecomputeCommand": "python3 -c \"import io,json,hashlib;p='docs/evidence/work-items/FMP-07a/result.json';r=json.load(io.open(p,encoding='utf-8'));r['selfRecordSha256']['sha256']='SELF';r['selfRecordSha256']['bytes']=0;b=(json.dumps(r,ensure_ascii=False,indent=2,sort_keys=False)+'\\n').encode('utf-8');print(hashlib.sha256(b).hexdigest())\"",
+    "plainRecomputeCommand": "shasum -a 256 docs/evidence/work-items/FMP-07a/result.json"
+  }
+}

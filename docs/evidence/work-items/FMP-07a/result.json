@@ -1,0 +1,691 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-15",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "geometricClassification": "synthetic_design_not_facility_acceptance",
+  "status": "green: 109/109 in ONE semicolon-separated invocation (Fmp07aWorldCrowdTests 22 + WorldMotionAdapterTests 70 + CrowdWorldContactTests 17 = 109, the per-suite totals sum exactly to the root total), failed=0 inconclusive=0 skipped=0, no suite not_run, unity exit 0, pinned fixture and test hashes equal pre and post. The world-actual fixture now DECLARES the thirteen regions' authored collider and navigation geometry instead of only policing it, and is separated from the abstract unit control by both FixtureKind and fixtureIdentitySha256.",
+  "targetIssue": 125,
+  "issue": 125,
+  "workId": "FMP-07a",
+  "title": "[FMP-07a] 13구역 실제 기하 기반 NPC100 군중 fixture",
+  "scope": "world_authored_collider_nav_fixture",
+  "scopeStatement": "An NPC100 fixture standing on the real colliders and supports of the thirteen additively-loaded authored region scenes, captured with ConnectedWorldGeometry.Capture and driven at the real NPC body size (WorldBodyPresentation.NpcRadiusM = 0.41 m, NpcHeightM = 1.8 m). It is not the wall-only bottleneck fixture and not the 0.15 m laboratory calibration unit fixture. GeometricClassification is synthetic_design_not_facility_acceptance: the geometry is authored scene content, not a survey, and this is not a facility or railway acceptance test.",
+  "conclusion": "All three required suites ran together in ONE Unity invocation with a single semicolon separator and all passed. NUnit root result is Passed, total 109, passed 109, failed 0, inconclusive 0, skipped 0. The per-suite totals sum exactly to the root total (22 + 70 + 17 = 109), which is the evidence the semicolon separator parsed and all three suites actually executed. The invocation ran on hash-pinned bytes whose pre-run and post-run hashes are equal. The declared authored geometry is not prose: DeclaredAuthoredGeometryMatchesTheCapturedAuthoredCollidersRegionByRegion compares all 148 declared AABBs in all 13 regions against the live capture within 0.001 m and passed, so the declaration and the authored scenes agree today.",
+  "requiredOutputs": [
+    {
+      "path": "docs/evidence/work-items/FMP-07a/result.json",
+      "role": "this record",
+      "sha256": "SELF (recomputable from selfPin below)",
+      "bytes": "SELF"
+    },
+    {
+      "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+      "role": "the test that runs the fixture and the negative-case contract",
+      "sha256": "a36021ede6feab5941e7501cc880ad1f192033bb3d078a7ce14c78e5062848ca",
+      "bytes": 115796
+    },
+    {
+      "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+      "role": "the declared contract: authored collider + navigation geometry of the thirteen regions",
+      "sha256": "d3beba2e8f1365e9844487d841dcfc7a242c9a43fb3db9ed75b0343e919a3aff",
+      "bytes": 74288
+    }
+  ],
+  "criticRequirementsAndWhatClosedThem": [
+    {
+      "requirement": "1. world-crowd-fixture.json must CONTAIN the thirteen regions' authored collider and nav geometry, not merely policies and counts.",
+      "stateBefore": "The fixture carried GeometryLoad policies, a region roster and measurement items; the numbers a consumer needed to compare against the authored scenes were not in the file.",
+      "whatChanged": "AuthoredGeometry and NavGeometry sections were added and are now required by Validate(). AuthoredGeometry declares 13 regions, each with its envelope rectangle, floor support surface id and rectangle, non-walkable beds, boundary wall thickness/height/segment count/solid length and every wall segment run, portal lintel boxes, ceiling collider presence, walkable support id list, passage supports (support rectangle, collider box, clear width/height, grade, guard prism counts, passage ceiling and door panel collider boxes) and derived furniture boxes. NavGeometry declares the exact runtime path-query configuration (agent radius margin, both query radii, height, climb, slope degrees and its source constant, voxel and tile overrides, min region area, walkable/barrier areas, query offset step, sample tolerance, require-path-complete, source hash and query keys).",
+      "where": "foundation/tests/FMP-07a/world-crowd-fixture.json -> AuthoredGeometry, NavGeometry",
+      "evidence": "DeclaredAuthoredGeometryMatchesTheCapturedAuthoredCollidersRegionByRegion compares every declared box against the live ConnectedWorldGeometry.Capture result within ToleranceM = 0.001 m: 148 declared boxes, 25 walkable supports, 76 wall segments, 12 passage supports over 13 regions. Passed."
+    },
+    {
+      "requirement": "2. Apply the NPC100 body radius (0.41 m) and height, and separate the result completely from the existing abstract unit result with fixtureKind = actual.",
+      "stateBefore": "The body size and the separation policy were declared, but the navigation query the run actually issued was not declared anywhere, so a record could keep the world-actual label while being measured at the abstract unit's radius.",
+      "whatChanged": "The fixture declares FixtureKind = world_actual_collider_nav with Body.RadiusM = 0.41, Body.HeightM = 1.8, Body.AbstractUnitRadiusM = 0.15, and NavGeometry.WorldActualQueryKey = 0.41/1.8 against NavGeometry.AbstractUnitQueryKey = 0.15/1.8. Validate() refuses a record whose query keys are not the record's own declared body sizes, and refuses them being equal.",
+      "where": "fixture -> FixtureKind, Body, NavGeometry.WorldActualQueryKey/AbstractUnitQueryKey; test -> Validate() query-key clause, DeclaredNavigationGeometryRefusesAMarginSlopeVoxelOrRadiusThatIsNotTheQuery",
+      "evidence": "The run receipt carries its own kind, its own radius and its own identity hash on both records: actual fixtureKind=world_actual_collider_nav radiusM=0.41 fixtureIdentitySha256=28947360769fd7b67b0a6c644ad6692859da4cf32b54631c7eaff5912fe6e344; abstract fixtureKind=abstract_unit_radius_control_on_world_geometry radiusM=0.15 fixtureIdentitySha256=adc6510fd852093a69b04dafa9fdd1b1a0f9ddd29176a082f33a7bbdecc30f5a. The two identity hashes differ, and the two records report the same colliderCount=696, wallCount=2568 and geometrySignature=9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e because they stand on the same authored geometry - the separation axis is the body, not the world."
+    },
+    {
+      "requirement": "3. Verify defences against the negative cases: missing region, wrong frame, and a radius shrink smaller than the real model that would conceal itself.",
+      "stateBefore": "The missing-region and wrong-frame probes existed against the world profile, but nothing refused a declaration that dropped a region, moved one into the wrong frame, or reshaped an envelope to match a bad capture.",
+      "whatChanged": "Validate() gained the AuthoredGeometry and NavGeometry clauses, and three test methods were added: 17 authored-geometry probes, 17 navigation probes plus the query-key shrink probe, and a structural-role vocabulary probe run in both directions against the live capture.",
+      "where": "test -> DeclaredAuthoredGeometryRefusesMissingRegionWrongFrameAndReshapedEnvelopes (17 probes), DeclaredNavigationGeometryRefusesAMarginSlopeVoxelOrRadiusThatIsNotTheQuery (17 probes + 1 shrink probe), AStructuralColliderInARegionThatDidNotDeclareItsRoleIsRefused",
+      "evidence": "Every probe is asserted to fail for its OWN clause string, so the refusal cannot be produced by an unrelated failure: the missing-region probe must say 'Missing region geometry', the wrong-frame probe must say 'Wrong frame for <region> in AuthoredGeometry', and the shrink probe must say 'navigation query keys'. All passed."
+    }
+  ],
+  "authoredGeometryDeclaration": {
+    "schemaVersion": 1,
+    "rule": "이 절은 13구역 저작 씬이 실제로 담는 구조 콜라이더와 보행 지지면의 기하다. 모든 값은 foundation/world/connected-world-profile.json 과 ConnectedWorldSceneBuilder 의 저작 산술의 순수 함수이며(중심·크기·배제·포털·천장·벽높이·포털 경사로만 계산), 저장소 밖에서 다시 계산할 수 있다. 따라서 이 절은 캡처가 아니라 선언이며, 실행 시점에 캡처된 실제 콜라이더·지지면과 대조하는 시험이 있다.",
+    "coordinateSpace": "프로파일 좌표계다. 프레임 델타가 0인 캡처에서의 월드 AABB 와 같다. 시험은 캡처된 ColliderDescriptor 의 MinX/MaxX/MinZ/MaxZ/Bottom/Top, 그리고 ConnectedWorldGeometry.Support 의 MinX/MaxX/MinZ/MaxZ/기울기를 이 값과 ToleranceM 이내로 대조한다.",
+    "toleranceM": 0.001,
+    "sourceBuilder": {
+      "Path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Editor/ConnectedWorldSceneBuilder.cs",
+      "Sha256": "c27037bc56869e527b1bc66360d1b83d519e947d61d125e3426c3811eeb90d72",
+      "Role": "Room/Corridor/Furnish/Equipment 가 위 값을 저작한다. 이 해시가 바뀌면 선언이 조용히 낡지 않도록 시험이 깨진다."
+    },
+    "regionCount": 13,
+    "regionIds": [
+      "rolling_stock_mainline",
+      "rail_tracks_mainline",
+      "rail_platforms_mainline",
+      "rail_terminal_public",
+      "station_concourse_2f",
+      "station_hall_1f",
+      "station_ticket_area",
+      "forecourt_eurasia",
+      "underground_connector",
+      "underground_shopping_passage",
+      "metro_concourse",
+      "metro_platforms",
+      "rolling_stock_metro"
+    ],
+    "framesById": {
+      "rolling_stock_mainline": "train-mainline",
+      "rail_tracks_mainline": "world",
+      "rail_platforms_mainline": "world",
+      "rail_terminal_public": "world",
+      "station_concourse_2f": "world",
+      "station_hall_1f": "world",
+      "station_ticket_area": "world",
+      "forecourt_eurasia": "world",
+      "underground_connector": "world",
+      "underground_shopping_passage": "world",
+      "metro_concourse": "world",
+      "metro_platforms": "world",
+      "rolling_stock_metro": "train-metro"
+    },
+    "declaredWalkableSupportCount": 25,
+    "floorSupports": 13,
+    "boundaryWallSegments": 76,
+    "boundaryWallSegmentCountSum": 76,
+    "boundaryWallSolidLengthM": 1342.4,
+    "portalLintels": 17,
+    "nonWalkableBeds": 1,
+    "ceilingColliders": 11,
+    "passageSupports": 12,
+    "derivedFurnitureBoxes": 6,
+    "derivedFurnitureBoxesByRole": [
+      [
+        "metro_platforms",
+        "Provisional_BoardingScreen",
+        281.75,
+        286.25
+      ],
+      [
+        "metro_platforms",
+        "Provisional_BoardingScreen",
+        287.75,
+        292.25
+      ],
+      [
+        "metro_platforms",
+        "Provisional_BoardingScreen",
+        307.75,
+        312.25
+      ],
+      [
+        "metro_platforms",
+        "Provisional_BoardingScreen",
+        313.75,
+        318.25
+      ],
+      [
+        "rail_tracks_mainline",
+        "Provisional_RailAdapter",
+        -75.5,
+        -24.5
+      ],
+      [
+        "rail_tracks_mainline",
+        "Provisional_RailAdapter",
+        -75.5,
+        -24.5
+      ]
+    ],
+    "declaredBoxes": 148,
+    "declaredRoleNames": 112,
+    "meshDerivedRoleNames": 24,
+    "notEnumeratedRule": "세 부류는 이 선언에 개수를 적지 않는다. (1) FBX 저작 메시에서 파생된 물리 콜라이더(Bench, InformationIsland, 장비 자산)는 저작 메시의 프리미티브 수에 달려 있다. (2) float32 누적 스텝으로 도는 절차 가구 상자(Provisional_SleeperAdapter 는 x += 1.2f, Provisional_ShopFront 는 x += 12f)는 반복 횟수가 스텝 누적에 달려 있다. (3) 정확히 셀 수 있는 절차 가구 상자(Provisional_RailAdapter, Provisional_BoardingScreen)는 DerivedFurnitureBoxes 에 AABB 를 그대로 적는다. 그 역할 이름만 AuthoredColliderRolesWithDerivedCount 와 MeshDerivedColliderRoles 에 남기고, 총계는 영수증 전용이다. 선언한 구조 콜라이더 수는 저작 메시 파생분을 포함한 캡처 총계보다 작아야 한다(작지 않으면 파생이 틀렸다).",
+    "slopedSupportRule": "경사 통로(포털 FromPoint.Y != ToPoint.Y)의 지지면은 기울어진 상면 평면이다. Support 사각형은 상면 네 꼭짓점의 AABB 이고 CentreElevationM 은 그 사각형 중심에서의 평면 고도이며, Collider 상자는 여덟 꼭짓점 전체의 AABB 다. 두 값이 같다고 적으면 경사 통로에서 틀린다.",
+    "meshDerivedRule": "MeshDerivedColliderRoles 의 이름은 저작 오브젝트 이름(Bench, InformationIsland, 장비 자산)이다. 캡처에서 그 오브젝트의 콜라이더 이름은 FoundationAssetPhysics.Apply 가 foundation/art/asset-manifest.json 의 collisionBoxes[].part 로 붙이는 Collision_<part> 다. 따라서 이 지역에 캡처된 모든 콜라이더 역할은 (a) AuthoredColliderRolesWithDerivedCount 와 DerivedFurnitureBoxes 가 이름으로 선언한 역할이거나 (b) Collision_ 접두어를 가진 저작 메시 프록시여야 한다. 그 밖의 역할이 나타나면 선언이 낡은 것이므로 시험이 실패한다.",
+    "derivedFurnitureNote": "Two regions declare derived furniture boxes whose role the region also enumerates: rail_tracks_mainline -> Provisional_RailAdapter x2, metro_platforms -> Provisional_BoardingScreen x4. They are the only colliders in the fixture that carry a per-part box rather than a region rectangle, so they are named individually."
+  },
+  "navGeometryDeclaration": {
+    "Rule": "13구역 캡처 기하 위에서 군중 경로 질의가 실제로 쓰는 내비게이션 기하다. 값은 Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldGeometry.cs 의 TryPath 와 그 캐시 키에서 그대로 읽은 선언이며, 시험은 이 파일의 해시를 고정해 코드가 바뀌면 선언이 조용히 낡지 않게 한다.",
+    "SourcePath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldGeometry.cs",
+    "SourceSha256": "7aafde9c32a905276c28b178b9b473cd023c90b948dfd05c8691a99e5f643fde",
+    "Builder": "UnityEngine.AI.NavMeshBuilder.BuildNavMeshData",
+    "SettingsSource": "NavMesh.GetSettingsByIndex(0) 을 (radius,height) 키마다 복제해 쓴다. NavMeshAreas.asset 은 변경하지 않는다.",
+    "AgentRadiusMarginM": 0.045,
+    "AgentRadiusForWorldActualM": 0.455,
+    "AgentRadiusForAbstractUnitM": 0.195,
+    "AgentHeightM": 1.8,
+    "AgentClimbM": 0.06,
+    "AgentSlopeDegrees": 35,
+    "SlopeConstant": "GroundedWorldMotor.MaximumSlopeDegrees",
+    "SlopeConstantSha256": "10d1c57541244c2a7dc647af383b2c9b7335b65311d87f7f518944841d63aa58",
+    "OverrideVoxelSize": true,
+    "VoxelSizeM": 0.055,
+    "OverrideTileSize": true,
+    "TileSize": 256,
+    "MinRegionAreaM2": 0.02,
+    "WalkableArea": 0,
+    "BarrierArea": 1,
+    "QueryOffsetStepM": 1000,
+    "QueryOffsetAxis": "up",
+    "QueryOffsetRule": "(radius,height) 키마다 1000 m 씩 위로 분리해 반경별 navmesh 가 서로의 고도를 가리지 않게 한다.",
+    "CacheKeyRule": "radius.ToString(\"R\",InvariantCulture) + \"/\" + height.ToString(\"R\",InvariantCulture)",
+    "SourceSelectionRule": "InitiallyEnabled 이고 PortalId 가 빈 콜라이더만 넣는다. BoxCollider 는 Box shape(트랜스폼 = AuthoredTransform * Translate(center), 크기 = box.size), MeshCollider 는 Mesh shape 로 넣고 area 는 Walkable ? 0 : 1 이다.",
+    "BoundsRule": "선택된 모든 콜라이더의 모든 정점을 Encapsulate 한 뒤 Expand(2) 한다.",
+    "SampleToleranceM": 0.3,
+    "RequirePathComplete": true,
+    "BodySizeSource": "WorldBodyPresentation.NpcRadiusM / NpcHeightM",
+    "BodySizeSourceSha256": "07fdb09844daa2ebdb93263454ae2139a1db983f3d187bc9afc01b2f4d57be57",
+    "WorldActualQueryKey": "0.41/1.8",
+    "AbstractUnitQueryKey": "0.15/1.8",
+    "NegativeRule": "에이전트 반경 여유(0.045 m)를 0 이하로 낮추거나, 슬로프를 GroundedWorldMotor.MaximumSlopeDegrees 가 아닌 값으로 바꾸거나, voxel/tile/minRegion 을 0 이하로 두거나, 에이전트 반경을 실제 동체 반경과 어긋나게 적으면 검증이 실패해야 한다. 줄어든 반경으로 좁은 통로를 통과시켜 실제 크기 군중을 가장하는 것이 이 절이 막는 음성 사례다."
+  },
+  "fixtureSeparationFromTheAbstractUnitResult": {
+    "worldActualKind": "world_actual_collider_nav",
+    "abstractControlKind": "abstract_unit_radius_control_on_world_geometry",
+    "laboratoryCorridorKindNotUsedByThisWorkItem": "abstract_unit_laboratory_corridor",
+    "worldActualIdentitySha256": "28947360769fd7b67b0a6c644ad6692859da4cf32b54631c7eaff5912fe6e344",
+    "abstractControlIdentitySha256": "adc6510fd852093a69b04dafa9fdd1b1a0f9ddd29176a082f33a7bbdecc30f5a",
+    "identitySha256IsComputedAtRunTimeFrom": "that record's own kind | body count | radius | height | seed",
+    "distinguishingAxes": [
+      "fixtureKind",
+      "fixtureIdentitySha256",
+      "body radius (0.41 vs 0.15)",
+      "NavGeometry.WorldActualQueryKey vs AbstractUnitQueryKey",
+      "minimumSweptGapM and minimumCentreClearanceM"
+    ],
+    "sharedOnPurpose": [
+      "authored world geometry (same scene set, same colliderCount, same geometrySignature)",
+      "body count (100), region count (13), seed (107), tick and committed ticks"
+    ],
+    "note": "The two records share the world and differ in the body. That is the point of the control: it isolates the effect of the real body size on the same authored geometry rather than comparing two different worlds."
+  },
+  "runs": {
+    "runCount": 1,
+    "separatorNote": "Unity's -testFilter accepts only ';' as the multi-suite separator; a comma silently runs zero tests. The invocation uses one semicolon-separated string and the per-suite totals are checked to sum to the root total, which is the evidence the separator parsed.",
+    "invocationShape": "-batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"<three suites, semicolon separated>\" -testResults ... -logFile ...",
+    "reproduceScript": "docs/evidence/work-items/FMP-07a/reproduce-FMP-07a.sh",
+    "reproduceScriptSha256": "fda30b8080e4511fb88a2f9b49b1550f6dddda46e17ed2e383970de2cabb9161",
+    "reproduceScriptRefusesOnHashMismatch": true,
+    "host": "Darwin eom-yunsang-ui-MacBookAir.local 25.5.0 Darwin Kernel Version 25.5.0: Mon Apr 27 20:38:00 PDT 2026; root:xnu-12377.121.6~2/RELEASE_ARM64_T8103 arm64",
+    "unity": "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity",
+    "gitHead": "fdb2dfd55d6185045dfc58cca17b4bbbb4199fc1",
+    "gitBranch": "develop",
+    "dateUtcStart": "2026-09-14T17:40:54Z",
+    "dateUtcEnd": "2026-09-14T17:41:50Z",
+    "unityExit": 0,
+    "fixtureSha256Pre": "d3beba2e8f1365e9844487d841dcfc7a242c9a43fb3db9ed75b0343e919a3aff",
+    "fixtureSha256Post": "d3beba2e8f1365e9844487d841dcfc7a242c9a43fb3db9ed75b0343e919a3aff",
+    "testSha256Pre": "a36021ede6feab5941e7501cc880ad1f192033bb3d078a7ce14c78e5062848ca",
+    "testSha256Post": "a36021ede6feab5941e7501cc880ad1f192033bb3d078a7ce14c78e5062848ca",
+    "artifactsUnchangedPrePost": true,
+    "root": {
+      "result": "Passed",
+      "total": "109",
+      "passed": "109",
+      "failed": "0",
+      "inconclusive": "0",
+      "skipped": "0"
+    },
+    "perSuite": {
+      "Fmp07aWorldCrowdTests": {
+        "assembly": "ChooGuard.Foundation.Multiplayer.Tests.dll",
+        "result": "Passed",
+        "total": 22,
+        "passed": 22,
+        "failed": 0,
+        "skipped": 0
+      },
+      "WorldMotionAdapterTests": {
+        "assembly": "ChooGuard.Foundation.Multiplayer.Tests.dll",
+        "result": "Passed",
+        "total": 70,
+        "passed": 70,
+        "failed": 0,
+        "skipped": 0
+      },
+      "CrowdWorldContactTests": {
+        "assembly": "ChooGuard.Foundation.Tests.dll",
+        "result": "Passed",
+        "total": 17,
+        "passed": 17,
+        "failed": 0,
+        "skipped": 0
+      }
+    },
+    "perSuiteSumsToRoot": true
+  },
+  "receipt": {
+    "path": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json",
+    "sha256": "3cc1a7c2a0619a6d7769de5f29e413e887b871f6472819db462eff6261b6a60c",
+    "bytes": 9203,
+    "fixtureSha256InsideTheReceiptMatchesTheInstalledFixture": true,
+    "fixtureSha256": "d3beba2e8f1365e9844487d841dcfc7a242c9a43fb3db9ed75b0343e919a3aff",
+    "separationRule": "abstract 단위 결과를 이 파일의 FixtureKind 로 표기하거나 이 파일의 실측값을 abstract 결과에 붙이면 FMP-07a 음성 계약 위반이다. 두 기록은 FixtureKind 와 fixtureIdentitySha256 이 모두 달라야 한다. fixtureIdentitySha256 은 그 기록 자신의 FixtureKind·동체수·반경·높이·seed 에서 실행 시점에 계산하며 선언 파일에서 베끼 오지 않는다.",
+    "actualFixture": {
+      "fixtureKind": "world_actual_collider_nav",
+      "fixtureIdentitySha256": "28947360769fd7b67b0a6c644ad6692859da4cf32b54631c7eaff5912fe6e344",
+      "executableTest": "Fmp07aWorldCrowdTests",
+      "sourceProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+      "geometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e",
+      "bodyCount": 100,
+      "distinctRegionCount": 13,
+      "committedTicks": 20,
+      "supportCount": 25,
+      "colliderCount": 696,
+      "wallCount": 2568,
+      "pinnedCount": 10,
+      "sweptGapSamples": 20,
+      "centreClearanceSamples": 20,
+      "seed": 107,
+      "coupledSteps": 42,
+      "radiusM": 0.41,
+      "heightM": 1.8,
+      "tickSeconds": 0.05,
+      "simulatedSeconds": 1.0,
+      "maximumGroundSpeedMS": 0.20615528435283612,
+      "minimumSweptGapM": 1.7891021997229473e-11,
+      "minimumCentreClearanceM": 1.7893353465581185e-11,
+      "measurementItems": [
+        "fixtureKind",
+        "fixtureIdentitySha256",
+        "bodyCount",
+        "distinctRegionCount",
+        "radiusM",
+        "heightM",
+        "tickSeconds",
+        "committedTicks",
+        "maximumGroundSpeedMS",
+        "minimumSweptGapM",
+        "minimumCentreClearanceM",
+        "supportCount",
+        "colliderCount",
+        "geometrySignature",
+        "contactSpaceIds"
+      ],
+      "contactSpaceIds": [
+        "world"
+      ],
+      "regionIds": [
+        "forecourt_eurasia",
+        "metro_concourse",
+        "metro_platforms",
+        "rail_platforms_mainline",
+        "rail_terminal_public",
+        "rail_tracks_mainline",
+        "rolling_stock_mainline",
+        "rolling_stock_metro",
+        "station_concourse_2f",
+        "station_hall_1f",
+        "station_ticket_area",
+        "underground_connector",
+        "underground_shopping_passage"
+      ],
+      "sceneFilePaths": [
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/ConnectedWorld.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rolling_stock_mainline.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rail_tracks_mainline.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rail_platforms_mainline.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rail_terminal_public.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_station_concourse_2f.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_station_hall_1f.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_station_ticket_area.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_forecourt_eurasia.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_underground_connector.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_underground_shopping_passage.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_metro_concourse.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_metro_platforms.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rolling_stock_metro.unity"
+      ],
+      "sceneFileSha256": [
+        "527322d6f87488e2ae7b5d21eaf2ce3bf1ddb2212846f490cfd17f9b60fdc9ee",
+        "3451260f442de2d74733975a5a490ddabf228a0561e4da419c3ed32be40e287c",
+        "78a9a25098d361d7707a1ffa1e9e843a3dcdd8a0a90b6aee3d3e4003eaebb6c3",
+        "c9ef4e3a89d3058ac378801d2c6581333db2e5fc2d4b240723ee813dc114c8a3",
+        "b858b5e813007bb5a586c548f7f65efe7238de3c61a05aae808163a60c286896",
+        "835aee520cb643d6955542d0cee6466b3b0dc6123b297adbc279cbffd0936177",
+        "aa90818b206bba087181d99ca32ea0d94455a91fb518fe17f06c4e9789e08f1c",
+        "e5934fff3efefb59b4b09794cd4ba7490d35127ee84b2a7bb6b57f1b00640795",
+        "b1be41b58c158c964dce85d927d1aa7a60d71dc229fee8685944d198cc168394",
+        "1ccf225a204812f10cbcaab35d19fc30235ad5a28643ee87c979d63d3eb9cfe7",
+        "83a0849ae79977c5a2c085f305d0b74030a40fc1c4ca6c5a06ce593e651f8e5a",
+        "82f500a4fc9660fec5bb603b0f730e4c0ca9e988925d3f2d98ecd93bcecf65b4",
+        "092e96b3eeeaa915c076571ceb1dcbc9fcaa90d94036c4f52ac8f95d563eefb5",
+        "fb3f876807655abbb8151ebd3a798b184f7f5bda12eda65525279d1f229121c3"
+      ]
+    },
+    "abstractUnitCounterpart": {
+      "fixtureKind": "abstract_unit_radius_control_on_world_geometry",
+      "fixtureIdentitySha256": "adc6510fd852093a69b04dafa9fdd1b1a0f9ddd29176a082f33a7bbdecc30f5a",
+      "executableTest": "Fmp07aWorldCrowdTests",
+      "sourceProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+      "geometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e",
+      "bodyCount": 100,
+      "distinctRegionCount": 13,
+      "committedTicks": 20,
+      "supportCount": 25,
+      "colliderCount": 696,
+      "wallCount": 2568,
+      "pinnedCount": 10,
+      "sweptGapSamples": 20,
+      "centreClearanceSamples": 20,
+      "seed": 107,
+      "coupledSteps": 42,
+      "radiusM": 0.15,
+      "heightM": 1.8,
+      "tickSeconds": 0.05,
+      "simulatedSeconds": 1.0,
+      "maximumGroundSpeedMS": 0.20615528435283612,
+      "minimumSweptGapM": 0.2744382690135684,
+      "minimumCentreClearanceM": 0.40177735145662513,
+      "measurementItems": [
+        "fixtureKind",
+        "fixtureIdentitySha256",
+        "bodyCount",
+        "distinctRegionCount",
+        "radiusM",
+        "heightM",
+        "tickSeconds",
+        "committedTicks",
+        "maximumGroundSpeedMS",
+        "minimumSweptGapM",
+        "minimumCentreClearanceM",
+        "supportCount",
+        "colliderCount",
+        "geometrySignature",
+        "contactSpaceIds"
+      ],
+      "contactSpaceIds": [
+        "world"
+      ],
+      "regionIds": [
+        "forecourt_eurasia",
+        "metro_concourse",
+        "metro_platforms",
+        "rail_platforms_mainline",
+        "rail_terminal_public",
+        "rail_tracks_mainline",
+        "rolling_stock_mainline",
+        "rolling_stock_metro",
+        "station_concourse_2f",
+        "station_hall_1f",
+        "station_ticket_area",
+        "underground_connector",
+        "underground_shopping_passage"
+      ],
+      "sceneFilePaths": [
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/ConnectedWorld.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rolling_stock_mainline.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rail_tracks_mainline.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rail_platforms_mainline.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rail_terminal_public.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_station_concourse_2f.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_station_hall_1f.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_station_ticket_area.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_forecourt_eurasia.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_underground_connector.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_underground_shopping_passage.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_metro_concourse.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_metro_platforms.unity",
+        "Assets/CHOOguardGenerated/WorldCrowdTest_59c1ae78142649a8a4164269016fc9e9/cg_region_rolling_stock_metro.unity"
+      ],
+      "sceneFileSha256": [
+        "527322d6f87488e2ae7b5d21eaf2ce3bf1ddb2212846f490cfd17f9b60fdc9ee",
+        "3451260f442de2d74733975a5a490ddabf228a0561e4da419c3ed32be40e287c",
+        "78a9a25098d361d7707a1ffa1e9e843a3dcdd8a0a90b6aee3d3e4003eaebb6c3",
+        "c9ef4e3a89d3058ac378801d2c6581333db2e5fc2d4b240723ee813dc114c8a3",
+        "b858b5e813007bb5a586c548f7f65efe7238de3c61a05aae808163a60c286896",
+        "835aee520cb643d6955542d0cee6466b3b0dc6123b297adbc279cbffd0936177",
+        "aa90818b206bba087181d99ca32ea0d94455a91fb518fe17f06c4e9789e08f1c",
+        "e5934fff3efefb59b4b09794cd4ba7490d35127ee84b2a7bb6b57f1b00640795",
+        "b1be41b58c158c964dce85d927d1aa7a60d71dc229fee8685944d198cc168394",
+        "1ccf225a204812f10cbcaab35d19fc30235ad5a28643ee87c979d63d3eb9cfe7",
+        "83a0849ae79977c5a2c085f305d0b74030a40fc1c4ca6c5a06ce593e651f8e5a",
+        "82f500a4fc9660fec5bb603b0f730e4c0ca9e988925d3f2d98ecd93bcecf65b4",
+        "092e96b3eeeaa915c076571ceb1dcbc9fcaa90d94036c4f52ac8f95d563eefb5",
+        "fb3f876807655abbb8151ebd3a798b184f7f5bda12eda65525279d1f229121c3"
+      ]
+    },
+    "sceneFileSha256ListsAreIdenticalBetweenTheTwoRecords": true
+  },
+  "checksRun": "ONE Unity 6000.3.23f1 EditMode batchmode invocation, 109 tests, 109 passed / 0 failed / 0 skipped, exit 0, on the hash-pinned fixture and test bytes. Suites: Fmp07aWorldCrowdTests (22), WorldMotionAdapterTests (70), CrowdWorldContactTests (17). The Fmp07a suite covers the declared fixture contract, the supported-placement and no-overlap checks on the authored supports, the receipt-emitting NPC100 run, determinism on the same seed, neighbour-contact held bodies, the twelve-region/duplicate-view refusal, the disabled-collider and disabled-support refusals, the wrong-frame refusal, the kind-separation refusals in both directions, the measurement-item reflection check, and the four new authored-geometry and authored-role checks described under criticRequirementsAndWhatClosedThem.",
+  "negativeCaseGuards": [
+    {
+      "negativeCase": "누락 구역 (missing region)",
+      "status": "covered and green in the recorded run",
+      "guard": "Two layers. Capture side: ConnectedWorldGeometry.Capture throws ArgumentException('Server geometry requires each of the 13 region scenes exactly once.') for a partial or duplicate view set, asserted on three view sets (12 views, 11 views, 13+1). Declaration side: Validate() refuses an AuthoredGeometry that does not declare all 13 regions ('Missing region geometry: AuthoredGeometry must declare all 13 regions, found N'), refuses a duplicated RegionId, and refuses a declared region that the loaded world does not have ('Missing region <id> geometry'). The declared roster is compared against the authored world region by region in the same loop that checks scene names and frames.",
+      "cases": [
+        "TwelveOrDuplicateRegionViewsCannotBeCapturedAsTheWorldFixture",
+        "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame",
+        "DeclaredAuthoredGeometryRefusesMissingRegionWrongFrameAndReshapedEnvelopes (probes: twelve regions, duplicate region)",
+        "DeclaredAuthoredGeometryMatchesTheCapturedAuthoredCollidersRegionByRegion"
+      ]
+    },
+    {
+      "negativeCase": "미로드 collider (unloaded collider)",
+      "status": "covered and green in the recorded run",
+      "guard": "Disabling one authored static collider makes ValidateSourceGeometry fail with 'Changed static collider availability <path>'; a body on a disabled authored support is refused at adapter construction with 'No authored support <id>'. Both restore and re-assert green afterwards, so the probe cannot be satisfied by a permanently broken world. The fixture requires the captured collider set to equal the loaded authored set exactly, with no silently skipped collider.",
+      "cases": [
+        "UnloadedOrDisabledAuthoredColliderIsDetectedAndCannotBeHidden",
+        "BodyOnADisabledAuthoredSupportIsRefusedInsteadOfBeingSilentlySimulated",
+        "CapturedGeometryIsTheActualAuthoredColliderSetWithEveryStaticColliderLoadedAndUnchanged"
+      ]
+    },
+    {
+      "negativeCase": "잘못된 frame (wrong frame)",
+      "status": "covered and green in the recorded run; the declaration-side probe is new",
+      "guard": "Four-way. ConnectedRegionView.ApplyFrame throws 'Region frame mismatch.' for a frame other than the current one. The adapter refuses vertical frame moves, yaw changes and world-frame moves with 'Physical frames must preserve the fixed world and level straight-route orientation.', and a refused tick is not partially committed. The fixture requires each region's declared FrameId to equal the authored world's ('Wrong frame for <region> in AuthoredGeometry'), and the new probe re-labels a train-frame region as 'world' to prove that clause fires - it must be refused by the clause that says 'in AuthoredGeometry', not by an unrelated failure. The measured receipt independently confirms contactSpaceIds=['world'] for both records.",
+      "cases": [
+        "WrongFrameIsRefusedByTheRegionViewAndByTheAdapterFrameValidation",
+        "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame",
+        "DeclaredAuthoredGeometryRefusesMissingRegionWrongFrameAndReshapedEnvelopes (probe: state the frame twice)",
+        "DeclaredAuthoredGeometryMatchesTheCapturedAuthoredCollidersRegionByRegion (asserts the declared frame per region)"
+      ]
+    },
+    {
+      "negativeCase": "실제 모델보다 작은 반경 / 반경 축소 은폐 (radius shrink smaller than the real model)",
+      "status": "covered and green in the recorded run; the query-key layer is new",
+      "guard": "Five layers, none of them a remembered threshold. (1) The authored Evacuee envelope is measured from the mesh vertices at run time; Validate() refuses Body.RadiusM < that measured envelope. (2) Validate() refuses Body.RadiusM != WorldBodyPresentation.NpcRadiusM, so the world-actual record cannot be shrunk at all. (3) The undersized probes in RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused are derived from the measured envelope (0.15 m, envelope/2, envelope-0.001), so the probe moves with the model. (4) NEW: NavGeometry must carry the query key the declared body size produces (WorldActualQueryKey = '0.41/1.8', AbstractUnitQueryKey = '0.15/1.8'), the two keys must differ, and the world query radius must exceed the abstract one - so a record that keeps the world-actual label while querying the abstract unit's navmesh is refused with 'The declared navigation query keys are not the declared body sizes.' (5) The receipt's own radiusM is a measured item, so a run that shrank the body would report the shrunk radius rather than the label.",
+      "cases": [
+        "MeasuredAuthoredModelEnvelopeExceedsTheAbstractUnitAndNeverExceedsTheAuthoredRadius",
+        "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+        "DeclaredNavigationGeometryRefusesAMarginSlopeVoxelOrRadiusThatIsNotTheQuery (probe: world radius is the abstract one; shrink probe: WorldActualQueryKey = AbstractUnitQueryKey)",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"
+      ],
+      "measuredConfirmation": "the recorded run's actual record reports radiusM=0.41 against the abstract control's radiusM=0.15, and the abstract control's minimumSweptGapM=0.2744382690135684 exceeds the actual record's 1.7891021997229473e-11 because the small body fits where the real one is held"
+    },
+    {
+      "negativeCase": "declared authored geometry that no longer matches the captured colliders",
+      "status": "covered and green in the recorded run; this is the new positive guard for critic requirement 1",
+      "guard": "DeclaredAuthoredGeometryMatchesTheCapturedAuthoredCollidersRegionByRegion compares, for all 13 regions, every declared box against the live capture from ConnectedWorldGeometry.Capture within the declared ToleranceM = 0.001 m: the envelope rectangle and wall height, the floor support rectangle and top elevation, each boundary wall segment run on its own axis, each portal lintel, each non-walkable bed, the ceiling collider, each passage support rectangle and its collider box, the guard prism and guard vertex counts, the passage ceiling and door panel boxes, and each derived furniture box. It also asserts the declared walkable support ids are exactly the captured supports in the region, that the declared total (25) equals both the per-region sum and the live capture's support count, and that every captured structural collider in a region is either a role that region declares or a FoundationAssetPhysics proxy named by its MeshDerivedColliderRoles. The run prints the per-region role inventory it compared as the FMP07A-GEOMETRY log line.",
+      "cases": [
+        "DeclaredAuthoredGeometryMatchesTheCapturedAuthoredCollidersRegionByRegion",
+        "DeclaredAuthoredGeometryRefusesMissingRegionWrongFrameAndReshapedEnvelopes (17 probes: envelope, floor, support ids, wall envelope and role, ceiling, passage, furniture, declared total)",
+        "DeclaredNavigationGeometryRefusesAMarginSlopeVoxelOrRadiusThatIsNotTheQuery (17 probes over every path-query value)"
+      ],
+      "measuredConfirmation": "148 declared boxes over 13 regions, 25 walkable supports, 76 wall segments, 17 portal lintels, 12 passage supports, 11 ceiling colliders, 6 derived furniture boxes; all matched the capture within 0.001 m"
+    },
+    {
+      "negativeCase": "a structural collider in a region that did not declare its role (a stale role vocabulary)",
+      "status": "covered and green in the recorded run",
+      "guard": "AStructuralColliderInARegionThatDidNotDeclareItsRoleIsRefused runs the vocabulary predicate against the live capture in both directions: it holds for the real declaration in all 13 regions, and fails for the same capture once one region's declared Floor role is trimmed. The predicate set is the difference between the enumerated roles and the mesh-derived roles, so a role added to either list changes the test instead of slipping past it, and the mesh-derived rule is checked per region.",
+      "cases": [
+        "AStructuralColliderInARegionThatDidNotDeclareItsRoleIsRefused"
+      ]
+    },
+    {
+      "negativeCase": "abstract-labeled-as-actual, BOTH directions",
+      "status": "covered and green in the recorded run",
+      "guard": "Forward: the abstract control cannot be presented as the world actual fixture. Reverse: the world actual roster cannot be presented as the abstract control, nor as the laboratory corridor kind whose fixtures never read the captured world geometry. The test first asserts both records pass their OWN kind check, so neither refusal is an accident of a broken record. A record that keeps its own kind but borrows the other roster's identity hash is refused too, with a distinct 'identity hash' failure.",
+      "cases": [
+        "AbstractUnitNumbersCannotBeRecordedUnderTheWorldActualFixtureKind",
+        "WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind",
+        "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"
+      ],
+      "measuredConfirmation": "the receipt carries its own kind on both records (world_actual_collider_nav, abstract_unit_radius_control_on_world_geometry) and never files a record under the laboratory corridor kind; the test asserts that on the serialized receipt text directly."
+    },
+    {
+      "negativeCase": "기존 추상 fixture 삭제 (deletion of the existing abstract fixtures)",
+      "status": "covered and green in the recorded run",
+      "guard": "The three abstract/mixed fixture sources must still exist and still carry their own body-size anchor; the fixture declares its non-deletion policy and the negative contract names deletion.",
+      "cases": [
+        "ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind"
+      ]
+    },
+    {
+      "negativeCase": "silent non-execution (a skip presented as a pass)",
+      "status": "covered and green in the recorded run",
+      "guard": "There is no Assert.Ignore call in the file. grep over the current bytes finds 'Assert.Ignore' only where the rule is stated and where the fixture's NonExecution clause must NAME Assert.Ignore as forbidden. The OneTimeSetUp hard-fails instead of skipping, and an invocation with skip>0 is not treated as a pass. The recorded run reports skipped=0 at the root and in all three suites.",
+      "cases": [
+        "TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes"
+      ]
+    },
+    {
+      "negativeCase": "vacuous pass on an unmeasured run",
+      "status": "covered and green in the recorded run",
+      "guard": "The sentinel coercion is gone: the minimum is never rewritten from an unmeasured PositiveInfinity to a measured-looking zero, a surviving sentinel fails the receipt, and sweptGapSamples/centreClearanceSamples must equal the committed tick count (20/20 measured). The ground-speed bound is tied to the commanded speed the roster was actually driven at (0.20615528128088306 plus 1e-06), never to the declared preferred speed 1.5 m/s, which is 7.3x the command and would assert nothing.",
+      "cases": [
+        "Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt"
+      ],
+      "measuredConfirmation": "sweptGapSamples 20, centreClearanceSamples 20, maximumGroundSpeedMS 0.20615528435283612 against a commanded 0.20615528128088306 plus 1e-06"
+    },
+    {
+      "negativeCase": "a declared separation axis with no implementation",
+      "status": "covered and green in the recorded run",
+      "guard": "The fixture's MeasurementItems list is checked reflectively against the real RunReceipt fields: every declared item must be implemented, the list must have no duplicates, and the old name fixtureHashSha256 must appear ZERO times in the record type's rule text and in the fixture text. A declared axis that occurs zero times in the implementation makes the receipt's contract vacuous, so it is enforced by reflection and not by a length check. Measured on the installed bytes: grep finds fixtureHashSha256 0 times in the fixture and exactly 2 times in the test file, both being the refusal literal itself (AbstractCounterpart.Rule and the fixture text), which is the assertion, not a use of the old name.",
+      "cases": [
+        "TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes"
+      ]
+    }
+  ],
+  "knownDefects": {
+    "sceneFileSha256IsNotReproducible": {
+      "detail": "The scene list the receipt hashes is a document digest, not a reproducible build: it depends on Unity's serializer output for the generated scenes, which this record does not attempt to pin to a generator revision.",
+      "impact": "A later reader can verify the scenes produced by the recorded run are internally consistent, but cannot independently regenerate byte-identical scene files from the fixture alone.",
+      "remedy": "The fixture declares the authored geometry the scenes must contain; the scene digest is evidence about one run, not part of the declaration."
+    },
+    "commandedSpeedDeclaredInDoubleRatherThanFloat32": {
+      "detail": "The receipt's commanded speed is serialized from a double (0.20615528435283612) while the tick loop runs in float32, so the printed last digits exceed what the simulation carries.",
+      "impact": "Nothing observable: the bound is asserted at commanded + 1e-06, which is far above float32 noise at this magnitude.",
+      "remedy": "Out of scope for FMP-07a; the fixture's own declared quantities are all exact in float32 or cast explicitly, and the authored profile numbers are compared after the same rounding."
+    },
+    "receiptCommandFieldIsATemplateNotTheInvocation": {
+      "detail": "The receipt's `command` field shows the -testFilter shape with $EVIDENCE_DIR placeholders rather than this invocation's resolved output paths.",
+      "impact": "A consumer copying the field verbatim runs the suites but writes its results elsewhere.",
+      "remedy": "The resolved invocation is recorded in runs.invocationShape and as host.txt in the evidence directory; the reproduction script carries the literal filter."
+    },
+    "receiptWrittenIntoUnityTemp": {
+      "detail": "The run writes its receipt under Temp/, which the editor removes on exit.",
+      "impact": "The receipt bytes are recoverable only from the FMP07A-RECEIPT log line, which is what the reproduction script does.",
+      "remedy": "reproduce-FMP-07a.sh extracts the line into fmp07a-world-crowd.json, and the receipt's own sha256 is recorded in receipt.sha256 above."
+    },
+    "declaredBoxesCoverProceduralBoxesAndNamedMeshProxiesDifferently": {
+      "detail": "The declaration enumerates every procedural box the builder creates, but the colliders derived from authored meshes are named Collision_<part> by FoundationAssetPhysics and are represented in the declaration only by their role list (MeshDerivedColliderRoles), not by per-box AABBs.",
+      "impact": "A per-box comparison against a mesh-derived collider is not possible from the declaration; the declaration instead proves the vocabulary is complete (every captured role is declared or Collision_-prefixed) and the total count is checked.",
+      "remedy": "Recorded as a declaration limit rather than hidden: the fixture's MeshDerivedRule states it, and the comparison test prints the per-region role inventory as FMP07A-GEOMETRY so a reader sees exactly which roles were compared as boxes and which as names."
+    }
+  },
+  "residualGaps": [
+    "The authored geometry in the fixture is derived from the builder in Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldGeometry.cs at its pinned hash; if a later revision of that builder changes a region's boxes, the declaration must be regenerated and the comparison test will fail until it is - the failure is the point, but regeneration is a manual step.",
+    "The collider geometry in the rendered scenes is authored synthetic content, not the published floor plan. GeometricClassification = synthetic_design_not_facility_acceptance stands: this is not a facility or railway acceptance measurement.",
+    "The record covers a one-second, twenty-tick run. It bounds nothing about long-run crowd behaviour, queueing, or behaviour beyond the tick budget the fixture declares.",
+    "NavGeometry declares the path-query configuration and the fixture is checked to equal it, but the fixture does not re-run a path query per region and record the returned corridors; the sweep and clearance measurements are the evidence that bodies actually moved on the authored supports.",
+    "The two-writer situation from the earlier record of this work item is not resolved by this record: files under recovered/ are other writers' preserved bytes, kept so a consumer can compare, and the earlier result.json is preserved there rather than deleted."
+  ],
+  "blockers": [],
+  "failedOrUnrun": "none: 109/109 executed and passed, failed=0 inconclusive=0 skipped=0, no suite not_run, unity exit 0",
+  "evidenceFiles": [
+    {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-edit.xml",
+      "sha256": "a3c183cc3e49df008b825493ca033733a89435a79ade0ad9d36abba7ec6c467d",
+      "bytes": 126104,
+      "role": "NUnit result of the recorded invocation"
+    },
+    {
+      "path": "docs/evidence/work-items/FMP-07a/FMP-07a-unity.log",
+      "sha256": "e3bef36f2b998ad32988a3fd6a3d03ddce78425d7137bd82984b2ccc77b0d51d",
+      "bytes": 679996,
+      "role": "editor log carrying the FMP07A-RECEIPT line and the FMP07A-GEOMETRY per-region role inventory"
+    },
+    {
+      "path": "docs/evidence/work-items/FMP-07a/host.txt",
+      "sha256": "721c4cfdfc7c7cf9af5bec3740678535e9f3af550182b52050d17c6a36ad7aaf",
+      "bytes": 751,
+      "role": "host, git head, unity path, pre/post artifact hashes, unity exit code"
+    },
+    {
+      "path": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json",
+      "sha256": "3cc1a7c2a0619a6d7769de5f29e413e887b871f6472819db462eff6261b6a60c",
+      "bytes": 9203,
+      "role": "receipt recovered from the FMP07A-RECEIPT log line"
+    },
+    {
+      "path": "docs/evidence/work-items/FMP-07a/reproduce-FMP-07a.sh",
+      "sha256": "fda30b8080e4511fb88a2f9b49b1550f6dddda46e17ed2e383970de2cabb9161",
+      "bytes": 3801,
+      "role": "hash-pinned reproduction; refuses to run unless the fixture and test match the pinned digests"
+    },
+    {
+      "path": "docs/evidence/work-items/FMP-07a/adopted/world-crowd-fixture.json",
+      "sha256": "d3beba2e8f1365e9844487d841dcfc7a242c9a43fb3db9ed75b0343e919a3aff",
+      "bytes": 74288,
+      "role": "the adopted fixture bytes, byte-identical to the required output"
+    },
+    {
+      "path": "docs/evidence/work-items/FMP-07a/adopted/Fmp07aWorldCrowdTests.cs",
+      "sha256": "a36021ede6feab5941e7501cc880ad1f192033bb3d078a7ce14c78e5062848ca",
+      "bytes": 115796,
+      "role": "the adopted test bytes, byte-identical to the required output"
+    },
+    {
+      "path": "docs/evidence/work-items/FMP-07a/recovered/peer-result-cc85d03e.json",
+      "sha256": "cc85d03eee6ca9067d7555147b2b1993fd10e4b8ce3ce21a9488921465f53e6e",
+      "bytes": 51430,
+      "role": "the previous result.json bytes for this work item, preserved byte-for-byte before this record replaced them"
+    }
+  ],
+  "authorship": {
+    "note": "Written by the writer that produced the current fixture and test bytes, on top of an earlier record for the same work item. The earlier result.json is preserved at recovered/peer-result-cc85d03e.json and the earlier recovered artifacts under recovered/ are left untouched; nothing in this record claims to be another writer's measurement.",
+    "pinnedHashesAreOfBytesThisWriterProduced": true
+  },
+  "handoff": {
+    "phase": "FMP-07a",
+    "workId": "FMP-07a",
+    "issue": 125,
+    "branch": "develop",
+    "gitHeadAtRun": "fdb2dfd55d6185045dfc58cca17b4bbbb4199fc1",
+    "committedByThisWriter": false,
+    "changedPathsByThisWriter": [
+      "foundation/tests/FMP-07a/world-crowd-fixture.json",
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+      "docs/evidence/work-items/FMP-07a/result.json",
+      "docs/evidence/work-items/FMP-07a/reproduce-FMP-07a.sh",
+      "docs/evidence/work-items/FMP-07a/adopted/world-crowd-fixture.json",
+      "docs/evidence/work-items/FMP-07a/adopted/Fmp07aWorldCrowdTests.cs",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-edit.xml",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-unity.log",
+      "docs/evidence/work-items/FMP-07a/host.txt",
+      "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json",
+      "docs/evidence/work-items/FMP-07a/recovered/peer-result-cc85d03e.json"
+    ],
+    "successorActions": [
+      "Regenerate the AuthoredGeometry declaration if ConnectedWorldGeometry.cs or the connected-world profile changes, then re-run reproduce-FMP-07a.sh so the pinned hashes and the declaration move together.",
+      "If the earlier record's two-writer question is still open, resolve it from the files under recovered/ rather than from any prose in this record."
+    ]
+  },
+  "selfPin": {
+    "path": "docs/evidence/work-items/FMP-07a/result.json",
+    "canonicalRule": "Read this file as UTF-8 JSON. Set selfPin.selfSha256 to the literal string \"SELF\" and selfPin.selfBytes to the integer 0. Re-serialize with json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=False) and append one trailing newline. The sha256 of those UTF-8 bytes is the value recorded in selfPin.selfSha256, and selfPin.selfBytes records the byte length of the file as installed. This record was emitted by exactly that transformation, so the pin is recomputable from the file alone.",
+    "selfSha256": "36afd2b1a40d62f3aad45bb5b1edf953e6dad500bafc2325993e574feafb0ed3",
+    "selfBytes": 53466
+  }
+}

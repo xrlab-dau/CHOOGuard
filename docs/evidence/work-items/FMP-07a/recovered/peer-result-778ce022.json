@@ -1,0 +1,186 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-15",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "recorded_all_16_checks_passed_on_the_hash_pinned_run",
+  "targetIssue": 125,
+  "issue": 125,
+  "workId": "FMP-07a",
+  "title": "[FMP-07a] 13구역 실제 기하 기반 NPC100 군중 fixture",
+  "scope": "world_authored_collider_nav_fixture",
+  "scopeStatement": "이 결과는 13구역 authored 씬을 실제로 적재해 ConnectedWorldGeometry.Capture 로 뜬 실제 콜라이더/지지면 위에서, 실제 NPC 동체 크기(WorldBodyPresentation.NpcRadiusM = 0.41 m)로 세운 NPC100 fixture 에 대한 것이다. 선언 프로파일에서 파생한 벽만 쓰는 병목 fixture(#127 FMP-07c)와 반경 0.15 m 실험실 보정 단위 fixture 는 서로 다른 fixtureKind 이며, 이 결과는 그 둘을 실제 기하로 재표기하지 않는다. 시설·철도·현장 인수 시험이 아니다(GeometricClassification = synthetic_design_not_facility_acceptance). 기하 출처는 저작 저장소의 씬이며 실측 측량이 아니다.",
+  "fixture": {
+    "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+    "sha256": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "bytes": 10687,
+    "fixtureKind": "world_actual_collider_nav",
+    "contractNature": "DECLARED CONTRACT, NOT A MEASURED RECEIPT",
+    "jsonKeyConvention": "PascalCase",
+    "jsonKeyConventionReason": "저장소의 선언 프로파일(foundation/world/connected-world-profile.json)이 PascalCase 키를 쓰고 Unity JsonUtility 는 키 이름을 정확히 일치시켜 읽는다. camelCase fixture 는 예외 없이 전부 기본값으로 역직렬화되므로, 시험은 그 상태를 조용히 통과시키지 않고 즉시 실패시킨다.",
+    "sourceProfile": "foundation/world/connected-world-profile.json",
+    "sourceProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+    "profileId": "native-connected-v1",
+    "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+    "manifestRule": "선언 순서대로 'regionId|sceneName|frameId' 를 '\\n' 로 이은 뒤 마지막에 '\\n' 를 붙인 UTF-8 바이트의 sha256",
+    "topology": { "regions": 13, "portals": 12, "frames": 3 },
+    "seed": 107,
+    "seedNote": "FMP-07c 레시피의 seed 127 과 다르다. 두 fixture 를 같은 seed 로 묶어 동일 실행으로 오인하지 않게 하기 위함이다.",
+    "body": { "kind": "npc", "count": 100, "playerCount": 0, "radiusM": 0.41, "heightM": 1.8, "preferredSpeedMS": 1.5, "radiusConstant": "WorldBodyPresentation.NpcRadiusM", "abstractUnitRadiusM": 0.15 },
+    "placement": { "method": "ConnectedWorldGeometry.TryFindStandingPoint", "perRegionCounts": [8,8,8,8,8,8,8,8,8,7,7,7,7], "regionsCovered": 13, "slotSpacingM": 0.9 },
+    "abstractCounterpart": { "fixtureKind": "abstract_unit_laboratory_corridor", "actualGeometry": false, "recordedSeparately": true, "radiusM": 0.15, "sources": ["Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs", "Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdBenchmarkTests.cs", "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/WorldMotionAdapterTests.cs"] }
+  },
+  "measuredReceipt": {
+    "source": "unity log FMP07A-RECEIPT fmp07a-world-crowd.json",
+    "fixtureSha256AtRun": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "receiptKind": "declared_fixture_plus_measured_run",
+    "geometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e",
+    "bodyCount": 100,
+    "distinctRegionCount": 13,
+    "committedTicks": 20,
+    "supportCount": 25,
+    "colliderCount": 696,
+    "wallCount": 2568,
+    "pinnedCount": 10,
+    "seed": 107,
+    "coupledSteps": 42,
+    "radiusM": 0.41,
+    "heightM": 1.8,
+    "tickSeconds": 0.05,
+    "simulatedSeconds": 1.0,
+    "maximumGroundSpeedMS": 0.20615528435283612,
+    "minimumSweptGapM": 1.7891021997229474e-11,
+    "minimumCentreClearanceM": 1.7893353465581187e-11,
+    "contactSpaceIds": ["world"],
+    "regionIds": ["forecourt_eurasia","metro_concourse","metro_platforms","rail_platforms_mainline","rail_terminal_public","rail_tracks_mainline","rolling_stock_mainline","rolling_stock_metro","station_concourse_2f","station_hall_1f","station_ticket_area","underground_connector","underground_shopping_passage"],
+    "abstractUnitCounterpartMeasured": {
+      "note": "같은 세계 기하 위에서 반경만 0.15 m 로 바꾼 대조 로스터다. 두 기록은 fixtureKind 와 fixtureHashSha256 이 모두 다르다.",
+      "fixtureKind": "abstract_unit_laboratory_corridor",
+      "radiusM": 0.15,
+      "minimumSweptGapM": 0.2744382690135684,
+      "minimumCentreClearanceM": 0.40177735145662515
+    },
+    "measuredValueDiscipline": "fixture 파일에는 위 실측값을 베껴 넣지 않았다. 계약 파일은 선언 경계값만 싣고, 실측 집계값은 이 result.json 과 실행 로그 영수증에만 있다. 결과를 보고 계약 경계를 완화한 적이 없다."
+  },
+  "negativeCaseGuards": [
+    { "negativeCase": "누락구역", "guard": "ConnectedWorldGeometry.Capture 는 13개 구역 씬을 정확히 한 번씩 싣지 않으면 ArgumentException('13 region scenes exactly once') 이다. 파일 쪽으로는 fixture 의 13개 구역 명부가 저작 월드와 구역 단위로 일치해야 한다.", "tests": ["TwelveOrDuplicateRegionViewsCannotBeCapturedAsTheWorldFixture", "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame", "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"] },
+    { "negativeCase": "미로드 collider", "guard": "적재된 authored 콜라이더를 비활성화하면 ValidateSourceGeometry 가 'Changed static collider availability' 로 실패하고, 지지면 콜라이더를 비활성화하면 어댑터 생성이 'No authored support <id>' 로 거부된다. fixture 쪽은 GeometryLoad 플래그로 캡처 집합이 저작 집합과 정확히 같고 조용히 건너뛴 콜라이더가 없음을 요구한다.", "tests": ["UnloadedOrDisabledAuthoredColliderIsDetectedAndCannotBeHidden", "BodyOnADisabledAuthoredSupportIsRefusedInsteadOfBeingSilentlySimulated", "CapturedGeometryIsTheActualAuthoredColliderSetWithEveryStaticColliderLoadedAndUnchanged"] },
+    { "negativeCase": "잘못된 frame", "guard": "세 갈래로 막는다. (1) ConnectedRegionView.ApplyFrame 은 현재 FrameId 와 다른 프레임에 'Region frame mismatch.' 를 던진다. (2) 어댑터는 프레임 id 변경·YawDegrees 변경·프레임 원점 Y 변경·world 원점 이동을 'Physical frames must preserve the fixed world and level straight-route orientation.' 로 거부하고, 거부된 tick 은 부분 커밋되지 않는다(체크포인트 바이트 동일). (3) fixture 의 구역별 FrameId 는 저작 월드 선언과 같아야 한다.", "tests": ["WrongFrameIsRefusedByTheRegionViewAndByTheAdapterFrameValidation", "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame"] },
+    { "negativeCase": "실제 모델보다 작은 반경", "guard": "저작 Evacuee 메시 정점에서 시험 시점에 최대 수평 반경을 측정하고, fixture 의 radiusM 이 그 값 이상이어야 하며 WorldBodyPresentation.NpcRadiusM 과 정확히 같아야 한다. 시험의 undersized 탐침은 모두 이 측정값에서 파생한다(0.15 m, envelope/2, envelope-0.001).", "tests": ["MeasuredAuthoredModelEnvelopeExceedsTheAbstractUnitAndNeverExceedsTheAuthoredRadius", "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused", "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"] },
+    { "negativeCase": "abstract를 actual로 표기", "guard": "fixtureKind 가 실제 기하 종류가 아니면 검증이 실패하고, 대조 블록은 다른 kind·ActualGeometry=false·RecordedSeparately=true 를 요구한다. 시험은 두 로스터를 같은 측정 항목 목록으로 측정하되 서로 다른 kind 와 서로 다른 신원으로만 기록하며, 추상 fixture 원본 파일 3개가 그대로 존재하고 각자의 동결 앵커를 유지함을 단언한다(삭제는 비목표).", "tests": ["AbstractUnitNumbersCannotBeRecordedUnderTheWorldActualFixtureKind", "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart", "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused", "ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind"] }
+  ],
+  "measurementConditions": {
+    "unit": "SI (m, s, m/s)",
+    "editor": "Unity 6000.3.23f1",
+    "invocation": "-batchmode -nographics -projectPath . -runTests -testPlatform EditMode",
+    "testFilter": "ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests",
+    "filterSeparatorNote": "이 실행은 단일 필터만 썼다. 체크리스트의 세 스위트를 한 번에 돌릴 때 Unity 의 -testFilter 구분자는 세미콜론(;)뿐이며, 쉼표로 적으면 조용히 0개가 실행된다.",
+    "host": "Apple M1, 8 cores, 16 GB, macOS 26.5 (darwin 25.5.0) arm64",
+    "hostNote": "다른 장비의 수치와 직접 비교하지 않는다.",
+    "gitHeadAtRun": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "gitBranch": "develop",
+    "testArtifactSha256AtLaunch": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee",
+    "testArtifactSha256AfterRun": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee",
+    "fixtureSha256AtLaunch": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "fixtureSha256AfterRun": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "artifactUnchangedDuringRun": true,
+    "hashPinningNote": "실행 전후 시험 파일과 fixture 해시가 동일함을 확인한 실행만 채택했다. 이 영수증의 수치는 확정 바이트 8676ad8e… / 55151906… 에서 나왔다.",
+    "resultsXmlMtime": "2026-09-15T00:40:32+09:00",
+    "unityLogMtime": "2026-09-15T00:40:35+09:00",
+    "resultsXmlBytes": 25218,
+    "unityLogBytes": 90484,
+    "resultsXmlSha256": "9003ac5fac91f28c5f36c3a7ad321bf720c5888101c37a90c10e93a51cf46839",
+    "unityLogSha256": "ca4232ee2d5ed956f37e2f5a1ba06b03b70fdf52eac7606c37e6254e3347e305"
+  },
+  "checksRun": [
+    { "name": "DeclarationAnchors:DeclaredProfileBytesAndTheThirteenRegionSceneManifestStillMatchTheFixtureAnchors", "result": "Passed", "durationSeconds": 0.0012 },
+    { "name": "SceneLoad:AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame", "result": "Passed", "durationSeconds": 0.0046 },
+    { "name": "FixtureKind:FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart", "result": "Passed", "durationSeconds": 0.0032 },
+    { "name": "ModelEnvelope:MeasuredAuthoredModelEnvelopeExceedsTheAbstractUnitAndNeverExceedsTheAuthoredRadius", "result": "Passed", "durationSeconds": 0.0048 },
+    { "name": "CapturedColliders:CapturedGeometryIsTheActualAuthoredColliderSetWithEveryStaticColliderLoadedAndUnchanged", "result": "Passed", "durationSeconds": 0.024 },
+    { "name": "Placement:Npc100IsPlacedOnActualAuthoredSupportsAcrossAllThirteenRegionsWithNoOverlap", "result": "Passed", "durationSeconds": 0.1053 },
+    { "name": "Regression:Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt", "result": "Passed", "durationSeconds": 3.5395 },
+    { "name": "Determinism:SameSeedAndCommandsProduceTheSameActualFixtureCheckpoint", "result": "Passed", "durationSeconds": 1.435 },
+    { "name": "Pinned:PinnedNpcBodiesOnTheActualFixtureHoldUnderNeighbourContact", "result": "Passed", "durationSeconds": 1.4349 },
+    { "name": "Negative:TwelveOrDuplicateRegionViewsCannotBeCapturedAsTheWorldFixture", "result": "Passed", "durationSeconds": 0.0151 },
+    { "name": "Negative:UnloadedOrDisabledAuthoredColliderIsDetectedAndCannotBeHidden", "result": "Passed", "durationSeconds": 0.0115 },
+    { "name": "Negative:BodyOnADisabledAuthoredSupportIsRefusedInsteadOfBeingSilentlySimulated", "result": "Passed", "durationSeconds": 0.0978 },
+    { "name": "Negative:WrongFrameIsRefusedByTheRegionViewAndByTheAdapterFrameValidation", "result": "Passed", "durationSeconds": 0.1641 },
+    { "name": "Negative:RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused", "result": "Passed", "durationSeconds": 0.0069 },
+    { "name": "Negative:AbstractUnitNumbersCannotBeRecordedUnderTheWorldActualFixtureKind", "result": "Passed", "durationSeconds": 4.2813 },
+    { "name": "Negative:ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind", "result": "Passed", "durationSeconds": 0.0015 }
+  ],
+  "checksRunSummary": {
+    "total": 16,
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0,
+    "result": "Passed",
+    "durationSeconds": 13.2138582,
+    "byFixture": { "ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests": { "total": 16, "passed": 16, "failed": 0 } }
+  },
+  "requiredCheckSuites": [
+    { "suite": "WorldMotionAdapterTests", "status": "not_run_in_this_invocation", "note": "이 실행은 FMP-07a 시험만 필터했다. 이 스위트는 이 작업에서 수정하지 않았고(수정 금지 대상 ConnectedWorldMotionAdapter.cs 와 짝), 그 소스는 그대로 존재하며 각자의 앵커를 유지함을 ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind 가 확인한다(.15 부재, WorldBodyPresentation.NpcRadiusM 9회)." },
+    { "suite": "CrowdWorldContactTests", "status": "not_run_in_this_invocation", "note": "같은 이유로 이 실행에서 돌지 않았다. 실행되지 않은 검사를 통과로 적지 않는다." },
+    { "suite": "Fmp07aWorldCrowdTests", "status": "passed", "note": "16/16 통과." }
+  ],
+  "failedOrUnrun": [
+    { "name": "WorldMotionAdapterTests", "state": "not_run", "reason": "이 호출의 -testFilter 가 FMP-07a 스위트만 지정했다." },
+    { "name": "CrowdWorldContactTests", "state": "not_run", "reason": "이 호출의 -testFilter 가 FMP-07a 스위트만 지정했다." }
+  ],
+  "runAttempts": {
+    "totalRuns": 2,
+    "adoptedRun": 2,
+    "runs": [
+      { "attempt": 1, "result": "Failed", "total": 16, "passed": 6, "failed": 10, "exitCode": 2, "diagnosis": "fixture 가 camelCase 키로 적혀 JsonUtility 가 전부 기본값으로 역직렬화했다(첫 위반 절 'Fixture schema version.'). fixture 를 PascalCase 로 다시 생성하고, views.Single(FrameId=='world') 를 First 로 고쳤다(13구역 중 11구역이 world 프레임이라 Single 은 실제 결함이었다)." },
+      { "attempt": 2, "result": "Passed", "total": 16, "passed": 16, "failed": 0, "exitCode": 0, "note": "채택 실행. 실행 전후 시험 파일·fixture 해시 동일." }
+    ]
+  },
+  "blockers": [
+    {
+      "kind": "concurrent_write_conflict",
+      "detail": "필수 산출물 두 경로가 이 작업 도중 다른 작성자에 의해 반복적으로 덮어써졌다. foundation/tests/FMP-07a/world-crowd-fixture.json 은 00:30 과 00:38 에 fixtureKind='world_authored_geometry', camelCase 키, negativeContract 키 다섯 개(deletion 절 없음)인 다른 계약으로 교체되었고, Packages/.../Fmp07aWorldCrowdTests.cs 는 00:36~00:37 에 삭제 후 다른 내용(719행, 이 작업의 심볼 0개)으로 대체되었다. 또한 두 번째 실행은 상대 Unity 인스턴스가 Temp/UnityLockfile 을 쥐고 있어 'another Unity instance is running with this project open' 으로 중단되었다.",
+      "resolution": "두 산출물을 각각 세션 기록에서 복원/재생성해 다시 기록하고, 락이 풀린 창에서 실행해 16/16 통과를 얻었다. 채택 실행의 전후 해시가 동일함을 확인했다.",
+      "residualRisk": "이 결과를 기록한 뒤에도 같은 경로가 다시 덮어써질 수 있다. 그 경우 이 result.json 이 기술하는 바이트(8676ad8e… / 55151906…)와 디스크 상태가 어긋나므로, 소비자는 실행 전에 해시를 대조해야 한다."
+    }
+  ],
+  "limits": {
+    "singleHost": "이 수치는 Apple M1 macOS arm64 한 호스트의 한 실행에서 나왔다. 다른 장비와 직접 비교하지 않는다.",
+    "notFacilityAcceptance": "GeometricClassification 은 synthetic_design_not_facility_acceptance 다. 실제 시설·철도 인수 시험이 아니다.",
+    "authoredGeometryNotSurvey": "기하는 저작 저장소의 씬에서 캡처한 것이며 실측 측량이 아니다. 좌표·지지면은 선언 프로파일과 저작 씬이 정본이다.",
+    "frameModel": "차량 프레임(train-mainline, train-metro)은 정적 선언이며 실제 차량 운동을 모사하지 않는다.",
+    "noServerBudget": "20 Hz 전체 서버 프레임 예산은 이 시험에서 측정하지 않았다.",
+    "noEndToEnd": "이 fixture 는 군중 기하·배치·전진 계약을 검증한다. EvacuationDirector 나 상위 시나리오 종단 간 성능은 이 결과의 범위가 아니다.",
+    "minimumSweepIsAMeasuredNearZero": "minimumSweptGapM 1.79e-11 은 '간격이 0 이 아니다'를 뜻하는 측정값이지 여유 공간이 1.79e-11 m 라는 설계 주장이 아니다. 구속하는 것은 매 tick 비관통 단언이다."
+  },
+  "evidenceFiles": {
+    "unityTestResultsXml": "edit3.xml (스크래치패드, 저장소 밖)",
+    "unityTestResultsXmlSha256": "9003ac5fac91f28c5f36c3a7ad321bf720c5888101c37a90c10e93a51cf46839",
+    "unityLog": "unity3.log (스크래치패드, 저장소 밖)",
+    "unityLogSha256": "ca4232ee2d5ed956f37e2f5a1ba06b03b70fdf52eac7606c37e6254e3347e305",
+    "unityLogCarriesReceipts": true,
+    "receiptMarkers": ["FMP07A-RECEIPT"],
+    "receiptMarkerOccurrences": 1,
+    "receiptJsonSha256": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "receiptExtractionNote": "시험은 영수증을 Temp/ChooGuardWorldCrowd/ 에도 쓰지만 Temp/ 는 편집기 종료 시 삭제된다. 로그의 FMP07A-RECEIPT 줄이 정본이며, receiptJsonSha256 은 그 줄이 자기 서술한 fixture 해시다.",
+    "outsideRepository": true,
+    "absolutePathNote": "절대 경로를 기록하지 않는다. 작성자 작업공간 절대경로를 증거에 남기면 정체 누출이 된다."
+  },
+  "testArtifact": {
+    "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+    "sha256": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee",
+    "bytes": 58263,
+    "lines": 879,
+    "testMethods": 16,
+    "namespace": "ChooGuard.Foundation.Multiplayer.Tests",
+    "framework": "NUnit (Unity EditMode)",
+    "absolutePath": null,
+    "absolutePathNote": "저장소 루트 상대 경로만 기록한다. −projectPath . 로 실행한다.",
+    "runtimeFilesModified": [],
+    "contractType": "internal static class WorldCrowdFixtureContract (동봉, 별도 파일 아님)"
+  },
+  "digestRequirements": {
+    "sourceRef": "required",
+    "outputDigest": "sha256:55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "note": "outputDigest 는 fixture 바이트다. 시험 파일 digest 는 testArtifact.sha256 에 있다."
+  }
+}

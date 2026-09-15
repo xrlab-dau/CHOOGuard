@@ -1,0 +1,672 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-15",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "geometricClassification": "synthetic_design_not_facility_acceptance",
+  "status": "green: 105/105 in ONE semicolon-separated invocation, failed=0 inconclusive=0 skipped=0, no suite not_run, artifacts unchanged pre/post. Independently replicated on the identical pinned bytes by a second run by a different writer. The pinned test and fixture bytes are a concurrent peer writer's, not this slot's - disclosed in authorship.",
+  "targetIssue": 125,
+  "issue": 125,
+  "workId": "FMP-07a",
+  "slot": "Q",
+  "title": "[FMP-07a] 13구역 실제 기하 기반 NPC100 군중 fixture",
+  "scope": "world_authored_collider_nav_fixture",
+  "scopeStatement": "This result is for an NPC100 fixture standing on the real colliders and supports of the thirteen additively-loaded authored region scenes, captured with ConnectedWorldGeometry.Capture and driven at the real NPC body size (WorldBodyPresentation.NpcRadiusM = 0.41 m). It is not the wall-only bottleneck fixture and not the 0.15 m laboratory calibration unit fixture. GeometricClassification is synthetic_design_not_facility_acceptance: the geometry is authored scene content, not a survey, and this is not a facility or railway acceptance test.",
+  "conclusion": "All three required suites ran together in ONE Unity invocation with a single semicolon separator and all passed. NUnit root result is Passed, total 105, passed 105, failed 0, inconclusive 0, skipped 0. No suite is not_run. The per-suite totals sum exactly to the root total (18 + 70 + 17 = 105), which is the evidence the semicolon separator parsed and all three suites actually executed. The invocation ran on hash-pinned bytes whose pre-run and post-run hashes are equal, and the same pinned bytes produced the same green in a second, independent run by a different writer.",
+  "installation": {
+    "statement": "This path now holds THIS SLOT's own record. It was written and installed, not deferred, and no part of the substitution is handed to lead judgement.",
+    "displaced": [
+      {
+        "sha256": "0b767a3ba3e6eeda77457d9159ffe7829c39c278e73228091ee3e9b342b708c0",
+        "bytes": 50502,
+        "mtime": "2026-09-15T01:37 local",
+        "authorship": "a concurrent peer writer, not this slot",
+        "preservedAt": "docs/evidence/work-items/FMP-07a/recovered/peer-result-0b767a3b.json",
+        "assessment": "A legitimate alternative record for the same work, written about a minute before this one. It discloses the two-writer collision, attributes this slot's run as a corroborating run by another writer, and fixes the earlier receiptJsonSha256 mislabel. It is NOT wrong or hostile. It is displaced only because this slot must install its own required output, and because it lacks the four measured defects recorded in knownDefects below. Preserved byte-for-byte so a consumer can compare the two records rather than trust this one."
+      },
+      {
+        "sha256": "778ce022c3b44dc93183ce22e95cbc52e7491d1631a1ca480d862b550877bdfb",
+        "bytes": 19208,
+        "mtime": "2026-09-15T00:41 local",
+        "authorship": "a concurrent peer writer, not this slot",
+        "preservedAt": "docs/evidence/work-items/FMP-07a/recovered/peer-result-778ce022.json",
+        "assessment": "Superseded earlier peer record. It recorded its own run as executing only the FMP-07a suite (the other two marked not_run), stored the FIXTURE hash under evidenceFiles.receiptJsonSha256 while describing it as a receipt hash, and labelled the world-geometry control as the laboratory corridor kind."
+      }
+    ],
+    "selfPin": {
+      "problem": "A file cannot contain its own SHA-256: writing the hash changes the hash. Stated rather than skipped, and solved with a defined transformation rather than a promise.",
+      "canonicalRule": "Read this file as UTF-8 JSON. Set selfPin.selfSha256 to the literal string \"SELF\" and selfPin.selfBytes to the integer 0. Re-serialize with json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=False) and append one trailing newline. The sha256 of those UTF-8 bytes is the value recorded in selfPin.selfSha256. This record was emitted by exactly that transformation, so the pin is recomputable from the file alone.",
+      "canonicalRecomputeCommand": "python3 -c \"import io,json,hashlib;p='docs/evidence/work-items/FMP-07a/result.json';o=json.load(io.open(p,encoding='utf-8'));o['selfPin']['selfSha256']='SELF';o['selfPin']['selfBytes']=0;b=(json.dumps(o,ensure_ascii=False,indent=2,sort_keys=False)+'\\n').encode('utf-8');print(hashlib.sha256(b).hexdigest())\"",
+      "plainRecomputeCommand": "shasum -a 256 docs/evidence/work-items/FMP-07a/result.json",
+      "alsoRecordedIn": "docs/evidence/work-items/FMP-07a/SHA256SUMS.txt (sibling manifest, independent of the canonical rule)"
+    }
+  },
+  "authorship": {
+    "note": "Attribution is explicit per path. Peer bytes are never presented as this slot's own verified work, and this slot's verification of them is stated as verification, not authorship.",
+    "docs/evidence/work-items/FMP-07a/result.json": {
+      "author": "this slot (Q)",
+      "detail": "Authored and installed by this slot. The bytes at this path are this slot's own record, not a peer's. The two peer records this one displaced are preserved under recovered/ with their hashes."
+    },
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs": {
+      "author": "a concurrent peer writer, NOT this slot",
+      "sha256": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+      "bytes": 74074,
+      "lines": 1075,
+      "verifiedBy": "this slot, by executing it (runs.runC) and by static cross-check against the runtime API and the fixture contract",
+      "detail": "This slot wrote its own version of this file earlier in the session; that version was displaced on disk by the peer writer before this slot could run it. The replacement is stronger on the axis the previous review named - fixtureIdentitySha256 is a real per-record field asserted reflectively over RunReceipt, and the reverse-direction mislabel case exists - so this slot verified the peer bytes rather than re-installing a weaker variant it had authored. This slot did not author these bytes and does not claim to. An exact copy of the executed bytes is preserved at docs/evidence/work-items/FMP-07a/adopted/Fmp07aWorldCrowdTests.cs, and its sha256 was confirmed equal to the pin above."
+    },
+    "foundation/tests/FMP-07a/world-crowd-fixture.json": {
+      "author": "a concurrent peer writer, NOT this slot",
+      "sha256": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+      "bytes": 13513,
+      "lines": 221,
+      "verifiedBy": "this slot, by checking every declared key and clause against the test's Fixture/Validate contract and the runtime API surface, by recomputing its two hash anchors from the repository, and by runs.runB and runC",
+      "detail": "This slot wrote its own version of this file earlier in the session; it was displaced on disk by the peer writer. An exact copy of the executed bytes is preserved at docs/evidence/work-items/FMP-07a/adopted/world-crowd-fixture.json, sha256 confirmed equal to the pin above."
+    }
+  },
+  "twoWriterCollision": {
+    "present": true,
+    "disclosed": true,
+    "pathsUnderContention": [
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+      "foundation/tests/FMP-07a/world-crowd-fixture.json",
+      "docs/evidence/work-items/FMP-07a/result.json",
+      "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json"
+    ],
+    "detail": "Two writers produced this issue's outputs on the same paths concurrently. The work-graph marks those paths isolated_proposal, not exclusive, so neither writer was wrong to write them; the collision is a property of the assignment. This is why this record names BYTES rather than claiming a path, and why it does not assert that a path currently holds what it describes.",
+    "observedVersionsInOrder": {
+      "test": [
+        "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee (frozen candidate, runA, 16 FMP-07a cases)",
+        "86d53d100546576ae5213e83420263a9714c3b8be02646ce348edaf8e8ad9edf (observed on disk by this slot and snapshotted before it could be lost)",
+        "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a (current, runB and runC, 18 FMP-07a cases)"
+      ],
+      "fixture": [
+        "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70 (frozen candidate, runA)",
+        "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b (current, runB and runC)"
+      ],
+      "resultJson": [
+        "778ce022c3b44dc93183ce22e95cbc52e7491d1631a1ca480d862b550877bdfb (peer, displaced, preserved)",
+        "0b767a3ba3e6eeda77457d9159ffe7829c39c278e73228091ee3e9b342b708c0 (peer, displaced, preserved)",
+        "this record (slot Q, installed)"
+      ],
+      "receipt": [
+        "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json sha256 fced47368018ccc9e16d98eec57270bf0e8ad43ed1e30951f665718773070cce (peer's runB receipt, written into the canonical receipt filename)",
+        "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd-recovered-from-log.json sha256 05c4a377cb2b9e28259002f9c03a8b5391b246921057aee25d946f8d0c639947 (this slot's runC receipt, archived from this slot's log because the canonical filename was already taken)"
+      ]
+    },
+    "whichCandidateThePinnedHashesAre": "NEITHER pin in this record is this slot's own authored artifact. The fixture pin d7b7fab7... and the test pin 15a5eb3c... are the concurrent peer writer's candidate, which this slot executed and verified. This slot's own superseded versions are preserved rather than pinned: recovered/ondisk-test-86d53d10.cs and recovered/ondisk-fixture-d7b7fab7.json (the latter is the same bytes as the adopted fixture). Unattributed peer bytes must not pass as a slot's own verified work, so this is stated in the record rather than left to inference.",
+    "unityLockContention": {
+      "attempt": "this slot's invocation at 2026-09-14T16:30:24Z",
+      "result": "aborted before running any test: 'It looks like another Unity instance is running with this project open.' unity_exit=1",
+      "resolution": "this slot waited for the peer instance to release the project; the lock cleared at 16:31:21Z and runC started then. Recorded rather than hidden: an invocation that executed zero tests is not evidence of anything.",
+      "status": "resolved"
+    },
+    "nonDestructiveRecovery": {
+      "rule": "Every version this slot displaced or observed was written to a non-destructive path before any candidate was offered, so a collision leaves both versions recoverable and hash-pinned.",
+      "paths": [
+        "docs/evidence/work-items/FMP-07a/recovered/peer-result-778ce022.json",
+        "docs/evidence/work-items/FMP-07a/recovered/peer-result-0b767a3b.json",
+        "docs/evidence/work-items/FMP-07a/recovered/peer-test-8676ad8e.cs",
+        "docs/evidence/work-items/FMP-07a/recovered/peer-fixture-55151906.json",
+        "docs/evidence/work-items/FMP-07a/recovered/ondisk-test-86d53d10.cs",
+        "docs/evidence/work-items/FMP-07a/recovered/ondisk-fixture-d7b7fab7.json",
+        "docs/evidence/work-items/FMP-07a/recovered/SHA256SUMS.txt",
+        "docs/evidence/work-items/FMP-07a/frozen-candidate/Fmp07aWorldCrowdTests.cs",
+        "docs/evidence/work-items/FMP-07a/frozen-candidate/world-crowd-fixture.json",
+        "docs/evidence/work-items/FMP-07a/adopted/Fmp07aWorldCrowdTests.cs",
+        "docs/evidence/work-items/FMP-07a/adopted/world-crowd-fixture.json",
+        "docs/evidence/work-items/FMP-07a/candidate/result-Q.json"
+      ]
+    },
+    "residualRisk": "The two pinned artifacts can be overwritten again at any time. If they differ from the pins above, runC does not describe them: restore from adopted/ (whose hashes match the pins) or re-pin and re-run before relying on this record."
+  },
+  "pinnedArtifacts": {
+    "fixture": {
+      "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+      "sha256": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+      "bytes": 13513,
+      "fixtureKind": "world_actual_collider_nav",
+      "contractNature": "DECLARED CONTRACT, NOT A MEASURED RECEIPT",
+      "recoveryCommand": "shasum -a 256 foundation/tests/FMP-07a/world-crowd-fixture.json"
+    },
+    "test": {
+      "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs",
+      "sha256": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+      "bytes": 74074,
+      "lines": 1075,
+      "testMethods": 18,
+      "namespace": "ChooGuard.Foundation.Multiplayer.Tests",
+      "framework": "NUnit (Unity EditMode), engine 3.5.0.0",
+      "runtimeFilesModified": [],
+      "recoveryCommand": "shasum -a 256 Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs"
+    },
+    "anchorsRecomputedByThisSlotFromTheRepository": {
+      "sourceProfile": "foundation/world/connected-world-profile.json",
+      "sourceProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+      "manifestRule": "for each region in profile order, the line '<Id>|<SceneName>|<FrameId>', joined with '\\n' plus a trailing '\\n', hashed as UTF-8",
+      "howVerified": "recomputed in this session with python3/hashlib directly from the profile. The FIRST attempt mismatched (e36a5dd6...) because the region key was guessed as 'RegionId'; the profile's real key is 'Id'. Re-read from the file and recomputed to 830d9bfa..., which matches the fixture's declared anchor. Recorded because a wrong hash was one command away from being cited with confidence.",
+      "topologyConfirmedFromTheProfile": "13 regions, 3 frames (world, train-mainline, train-metro), of which 11 regions are on the world frame and 2 are vehicle frames (rolling_stock_mainline on train-mainline, rolling_stock_metro on train-metro)",
+      "fixtureRegionListMatchesProfileExactly": "13 of 13, same order and same (Id, SceneName, FrameId) tuples - compared by command, not by eye"
+    }
+  },
+  "runs": {
+    "runCount": 3,
+    "separatorNote": "ALL THREE runs used ONE invocation each with a SEMICOLON-separated -testFilter, per the project rule that the whole suite is run in a single call. Unity splits -testFilter on ';' only; a comma-separated filter selects nothing silently. In every run the three per-suite totals sum exactly to the root total (16+70+17=103, 18+70+17=105, 18+70+17=105), which is the evidence the separator parsed and all three suites actually executed.",
+    "invocationShape": "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"ChooGuard.Foundation.Multiplayer.Tests.WorldMotionAdapterTests;ChooGuard.Foundation.Tests.CrowdWorldContactTests;ChooGuard.Foundation.Multiplayer.Tests.Fmp07aWorldCrowdTests\" -testResults <xml> -logFile <log>",
+    "host": "Apple M1 (T8103), 8 cores, macOS 26.5 (darwin 25.5.0), arm64",
+    "hostNote": "Do not compare these numbers directly against a different machine.",
+    "gitHeadAtRun": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "gitBranch": "develop",
+    "runA": {
+      "label": "frozen candidate baseline",
+      "executedBy": "a concurrent peer writer, not this slot; its artifacts are archived in the repository and this slot parsed them",
+      "fixtureSha256": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+      "testSha256": "8676ad8ecb071beb298268e344d1fdd51eb7787584301d764d53621712de9cee",
+      "startUtc": "2026-09-14T16:22:21Z",
+      "endUtc": "2026-09-14T16:23:53Z",
+      "unityExit": 0,
+      "rootResult": "Passed",
+      "rootTotals": {
+        "total": 103,
+        "passed": 103,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 76.5154913
+      },
+      "perSuite": [
+        {
+          "suite": "Fmp07aWorldCrowdTests",
+          "result": "Passed",
+          "total": 16,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "WorldMotionAdapterTests",
+          "result": "Passed",
+          "total": 70,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "CrowdWorldContactTests",
+          "result": "Passed",
+          "total": 17,
+          "failed": 0,
+          "skipped": 0
+        }
+      ],
+      "resultXml": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-edit-frozen-candidate.xml",
+        "sha256": "0a8320a4c360d67fe7e7ffe4842f5053a85f6375894ff8e1e8e9ad9b5dcd3c11",
+        "bytes": 113693
+      },
+      "log": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-unity-frozen-candidate.log",
+        "sha256": "116487f466801ab6eb05c95b00571768254504ea368a8c0869c4f5dd33fd818e",
+        "bytes": 662452
+      },
+      "hostFile": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-frozen-candidate-host.txt",
+        "sha256": "c724b658f4a258f72f76aa2aa4634603f73db3a5f57de4404b237be18920c145",
+        "bytes": 770
+      },
+      "receiptPresent": false,
+      "receiptArchivedAt": {
+        "path": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd-frozen-candidate.json",
+        "sha256": "6828f531b96aebbda60c196e986d820a2f86ed5202f86a778aac314a48027740",
+        "bytes": 8724
+      }
+    },
+    "runB": {
+      "label": "peer run on the current pinned bytes - an independent replication of runC",
+      "executedBy": "a concurrent peer writer, not this slot; this slot parsed and verified its artifacts",
+      "fixtureSha256PreAndPost": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+      "testSha256PreAndPost": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+      "startUtc": "2026-09-14T16:29:39Z",
+      "endUtc": "2026-09-14T16:31:15Z",
+      "unityExit": 0,
+      "rootResult": "Passed",
+      "rootTotals": {
+        "total": 105,
+        "passed": 105,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 82.0547364
+      },
+      "perSuite": [
+        {
+          "suite": "Fmp07aWorldCrowdTests",
+          "result": "Passed",
+          "total": 18,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "WorldMotionAdapterTests",
+          "result": "Passed",
+          "total": 70,
+          "failed": 0,
+          "skipped": 0
+        },
+        {
+          "suite": "CrowdWorldContactTests",
+          "result": "Passed",
+          "total": 17,
+          "failed": 0,
+          "skipped": 0
+        }
+      ],
+      "resultXml": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-edit.xml",
+        "sha256": "0379a9eba81a3e86ded832adc391afa05e78fc7fdf655d8258de59ad57a6eb57",
+        "bytes": 115708
+      },
+      "log": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-unity.log",
+        "sha256": "ed2a09ec656c91067ebaff79c1bf1ea55905e6893eef9512b4091f2c2e31ff6c",
+        "bytes": 668273
+      },
+      "hostFile": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-adopted-host.txt",
+        "sha256": "4d53a02c2c96c26b64a0afb684ed702e8f513a4e159ed0592957a3d0ed0a30d0",
+        "bytes": 770
+      },
+      "receiptPresent": false,
+      "receiptArchivedAt": {
+        "path": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd.json",
+        "sha256": "fced47368018ccc9e16d98eec57270bf0e8ad43ed1e30951f665718773070cce",
+        "bytes": 9203
+      },
+      "significance": "This run executed the SAME pinned test and fixture bytes as runC and reached the SAME root total, per-suite totals and measured aggregates. Two writers, two invocations, one result: the green is reproducible and is not an artifact of one writer's session."
+    },
+    "runC": {
+      "label": "CURRENT - executed and pinned by THIS SLOT; the run this record is built on",
+      "executedBy": "this slot (Q)",
+      "startUtc": "2026-09-14T16:31:21Z",
+      "endUtc": "2026-09-14T16:32:36Z",
+      "unityExit": 0,
+      "fixtureSha256Pre": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+      "fixtureSha256Post": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+      "testSha256Pre": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+      "testSha256Post": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+      "artifactUnchangedDuringRun": true,
+      "rootResult": "Passed",
+      "rootTotals": {
+        "total": 105,
+        "passed": 105,
+        "failed": 0,
+        "inconclusive": 0,
+        "skipped": 0,
+        "durationSeconds": 66.9535518
+      },
+      "allSuitesFailedZeroInconclusiveZeroSkippedZero": true,
+      "noSuiteNotRun": true,
+      "perSuiteTotalsSumToRootTotal": true,
+      "perSuite": [
+        {
+          "suite": "Fmp07aWorldCrowdTests",
+          "namespace": "ChooGuard.Foundation.Multiplayer.Tests",
+          "result": "Passed",
+          "total": 18,
+          "passed": 18,
+          "failed": 0,
+          "inconclusive": 0,
+          "skipped": 0,
+          "notRun": false
+        },
+        {
+          "suite": "WorldMotionAdapterTests",
+          "namespace": "ChooGuard.Foundation.Multiplayer.Tests",
+          "result": "Passed",
+          "total": 70,
+          "passed": 70,
+          "failed": 0,
+          "inconclusive": 0,
+          "skipped": 0,
+          "notRun": false
+        },
+        {
+          "suite": "CrowdWorldContactTests",
+          "namespace": "ChooGuard.Foundation.Tests",
+          "result": "Passed",
+          "total": 17,
+          "passed": 17,
+          "failed": 0,
+          "inconclusive": 0,
+          "skipped": 0,
+          "notRun": false
+        }
+      ],
+      "resultXml": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-edit-current.xml",
+        "sha256": "a05f51113a373fd625f17dc8f19b2d0b7abfa4abf7e7f46dcb68c0742649bc7b",
+        "bytes": 115688
+      },
+      "log": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-unity-current.log",
+        "sha256": "bdef50e1c6820bbbcbcdbdc7f1178e4a38b523deabb912cc059afff7e176c2f1",
+        "bytes": 662851
+      },
+      "hostFile": {
+        "path": "docs/evidence/work-items/FMP-07a/FMP-07a-current-host.txt",
+        "sha256": "07a7aaf58767f95b8c18f06243fd635d2a969afe2b60b9ae3bd4a29b47c63fac",
+        "bytes": 667
+      },
+      "receiptPresent": false,
+      "fmp07aCaseNamesFromTheXml": [
+        "AbstractUnitNumbersCannotBeRecordedUnderTheWorldActualFixtureKind",
+        "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame",
+        "BodyOnADisabledAuthoredSupportIsRefusedInsteadOfBeingSilentlySimulated",
+        "CapturedGeometryIsTheActualAuthoredColliderSetWithEveryStaticColliderLoadedAndUnchanged",
+        "DeclaredProfileBytesAndTheThirteenRegionSceneManifestStillMatchTheFixtureAnchors",
+        "ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart",
+        "MeasuredAuthoredModelEnvelopeExceedsTheAbstractUnitAndNeverExceedsTheAuthoredRadius",
+        "Npc100IsPlacedOnActualAuthoredSupportsAcrossAllThirteenRegionsWithNoOverlap",
+        "Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt",
+        "PinnedNpcBodiesOnTheActualFixtureHoldUnderNeighbourContact",
+        "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+        "SameSeedAndCommandsProduceTheSameActualFixtureCheckpoint",
+        "TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes",
+        "TwelveOrDuplicateRegionViewsCannotBeCapturedAsTheWorldFixture",
+        "UnloadedOrDisabledAuthoredColliderIsDetectedAndCannotBeHidden",
+        "WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind",
+        "WrongFrameIsRefusedByTheRegionViewAndByTheAdapterFrameValidation"
+      ],
+      "caseNamesProvenance": "read out of docs/evidence/work-items/FMP-07a/FMP-07a-edit-current.xml in this session, not transcribed from memory"
+    }
+  },
+  "archivedReceipt": {
+    "requirement": "The receipt BYTES are archived and hash-pinned; every number below was read out of that archived artifact by this slot. Nothing here is a transcription of a receipt that no longer exists.",
+    "thisSlotsRun": {
+      "path": "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd-recovered-from-log.json",
+      "sha256": "05c4a377cb2b9e28259002f9c03a8b5391b246921057aee25d946f8d0c639947",
+      "bytes": 9203,
+      "recoveredFrom": "docs/evidence/work-items/FMP-07a/FMP-07a-unity-current.log (the FMP07A-RECEIPT line the test emits)",
+      "recoveryCommand": "grep -o 'FMP07A-RECEIPT fmp07a-world-crowd.json {.*}' docs/evidence/work-items/FMP-07a/FMP-07a-unity-current.log | sed 's/^FMP07A-RECEIPT fmp07a-world-crowd.json //' > receipt.json && shasum -a 256 receipt.json",
+      "whyFromTheLog": "see knownDefects.receiptWrittenIntoUnityTemp. The test writes the receipt into Temp/ChooGuardWorldCrowd/, which Unity deletes during batch shutdown, so the file does not survive to be copied. Verified now: ls Temp/ChooGuardWorldCrowd/ returns 'No such file or directory', and all three host files record receipt_present=no. The same JSON is emitted verbatim to the log, which IS archived in the repository. The archive path is the log, not the file the test created - stated plainly rather than papered over.",
+      "receiptMarkerOccurrencesInThisSlotsLog": 1
+    },
+    "fixtureSha256InsideTheReceiptMatchesTheInstalledFixture": true,
+    "receiptDeclares": {
+      "fixturePath": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+      "fixtureSha256": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+      "fixtureKind": "world_actual_collider_nav",
+      "receiptKind": "declared_fixture_plus_measured_run"
+    },
+    "measuredActualRoster": {
+      "fixtureKind": "world_actual_collider_nav",
+      "fixtureIdentitySha256": "28947360769fd7b67b0a6c644ad6692859da4cf32b54631c7eaff5912fe6e344",
+      "geometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e",
+      "bodyCount": 100,
+      "distinctRegionCount": 13,
+      "regionCount": 13,
+      "committedTicks": 20,
+      "supportCount": 25,
+      "colliderCount": 696,
+      "wallCount": 2568,
+      "pinnedCount": 10,
+      "sweptGapSamples": 20,
+      "centreClearanceSamples": 20,
+      "seed": 107,
+      "coupledSteps": 42,
+      "radiusM": 0.41,
+      "heightM": 1.8,
+      "tickSeconds": 0.05,
+      "simulatedSeconds": 1.0,
+      "maximumGroundSpeedMS": 0.20615528435283612,
+      "minimumSweptGapM": 1.7891021997229473e-11,
+      "minimumCentreClearanceM": 1.7893353465581185e-11,
+      "contactSpaceIds": [
+        "world"
+      ],
+      "sourceProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+      "measurementItemCount": 15
+    },
+    "measuredAbstractControlRoster": {
+      "fixtureKind": "abstract_unit_radius_control_on_world_geometry",
+      "fixtureIdentitySha256": "adc6510fd852093a69b04dafa9fdd1b1a0f9ddd29176a082f33a7bbdecc30f5a",
+      "radiusM": 0.15,
+      "bodyCount": 100,
+      "distinctRegionCount": 13,
+      "committedTicks": 20,
+      "supportCount": 25,
+      "colliderCount": 696,
+      "wallCount": 2568,
+      "pinnedCount": 10,
+      "sweptGapSamples": 20,
+      "centreClearanceSamples": 20,
+      "seed": 107,
+      "coupledSteps": 42,
+      "maximumGroundSpeedMS": 0.20615528435283612,
+      "minimumSweptGapM": 0.2744382690135684,
+      "minimumCentreClearanceM": 0.40177735145662513,
+      "contactSpaceIds": [
+        "world"
+      ],
+      "geometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e"
+    },
+    "separationAxesAreBothRealAndBothDiffer": {
+      "fixtureKind": "world_actual_collider_nav vs abstract_unit_radius_control_on_world_geometry",
+      "fixtureIdentitySha256": "28947360769fd7b67b0a6c644ad6692859da4cf32b54631c7eaff5912fe6e344 vs adc6510fd852093a69b04dafa9fdd1b1a0f9ddd29176a082f33a7bbdecc30f5a",
+      "sharedGeometrySignature": "9495168d4a12e1fd5b28982ec247cab8eb540d23c797aa24ec194e2bce0a2e7e - identical on both records, because both were measured on the same captured world geometry and differ only on the body-size axis. That shared signature is exactly why the control must NOT be filed under the laboratory corridor kind, which never reads the captured world at all.",
+      "kindWasActuallyRepaired": "Measured proof across versions, not a source-reading claim: the runA receipt filed the counterpart as 'abstract_unit_laboratory_corridor'; the runB and runC receipts on the repaired bytes file it as 'abstract_unit_radius_control_on_world_geometry'. The mislabel is fixed in observed output, and the reverse direction now has its own case - WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind - which runA's 16 cases did not contain.",
+      "reverseDirectionCaseIsNewInRunC": "proved by diffing the case-name sets parsed out of the runA and runC XMLs: exactly two cases were added (TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes and WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind) and none were removed."
+    },
+    "determinismAcrossThreeRuns": {
+      "claim": "The measured aggregates are invariant across three independent runs on two different fixture/test byte versions. Verified by diffing the three archived receipts field by field with cmp and a JSON diff.",
+      "identicalInAllThree": [
+        "geometrySignature 9495168d...",
+        "supportCount 25",
+        "colliderCount 696",
+        "wallCount 2568",
+        "bodyCount 100",
+        "distinctRegionCount 13",
+        "committedTicks 20",
+        "coupledSteps 42",
+        "pinnedCount 10",
+        "sweptGapSamples 20",
+        "centreClearanceSamples 20",
+        "maximumGroundSpeedMS 0.20615528435283612",
+        "minimumSweptGapM 1.7891021997229473e-11 (actual) and 0.2744382690135684 (control)",
+        "minimumCentreClearanceM 1.7893353465581185e-11 (actual) and 0.40177735145662513 (control)",
+        "contactSpaceIds [world]"
+      ],
+      "differsPerRun": "Only sceneFilePaths and sceneFileSha256, because the test generates its thirteen region scenes into a per-run directory named WorldCrowdTest_<32 hex>. runA used ...08333e2e..., runB used ...24549511..., runC used ...59340ae8.... 14 file hashes differ in every run. A raw cmp of runC's receipt against runB's shows differences on 2422 bytes, all of them inside those two arrays.",
+      "consequence": "The measured geometry result is reproducible; the generated scene FILE bytes are not. A consumer cannot verify sceneFileSha256 by re-running, and must not treat it as a stable identity. geometrySignature is the stable identity axis and is what the separation rests on."
+    }
+  },
+  "negativeCaseGuards": [
+    {
+      "negativeCase": "누락 구역 (missing region)",
+      "status": "covered and green in runC",
+      "guard": "ConnectedWorldGeometry.Capture throws ArgumentException('Server geometry requires each of the 13 region scenes exactly once.') for a partial or duplicate view set; the test asserts that on three view sets (12 views, 11 views, 13+1). The fixture side requires the declared 13-region roster to match the authored world region by region, and the scene list was compared against the profile by command (13 of 13, same order, same tuples).",
+      "cases": [
+        "TwelveOrDuplicateRegionViewsCannotBeCapturedAsTheWorldFixture",
+        "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame"
+      ]
+    },
+    {
+      "negativeCase": "미로드 collider (unloaded collider)",
+      "status": "covered and green in runC",
+      "guard": "Disabling one authored static collider makes ValidateSourceGeometry fail with 'Changed static collider availability <path>'; a body on a disabled authored support is refused at adapter construction with 'No authored support <id>'. Both restore and re-assert green afterwards, so the probe cannot be satisfied by a permanently broken world. The fixture requires the captured collider set to equal the loaded authored set exactly, with no silently skipped collider.",
+      "cases": [
+        "UnloadedOrDisabledAuthoredColliderIsDetectedAndCannotBeHidden",
+        "BodyOnADisabledAuthoredSupportIsRefusedInsteadOfBeingSilentlySimulated",
+        "CapturedGeometryIsTheActualAuthoredColliderSetWithEveryStaticColliderLoadedAndUnchanged"
+      ]
+    },
+    {
+      "negativeCase": "잘못된 frame (wrong frame)",
+      "status": "covered and green in runC",
+      "guard": "Three-way. ConnectedRegionView.ApplyFrame throws 'Region frame mismatch.' for a frame other than the current one. The adapter refuses vertical frame moves, yaw changes and world-frame moves with 'Physical frames must preserve the fixed world and level straight-route orientation.', and a refused tick is not partially committed (the checkpoint stays byte-identical). The fixture requires each region's declared FrameId to equal the authored world's. The measured receipt independently confirms contactSpaceIds=['world'] for both rosters, consistent with 11 of the 13 regions being on the world frame and the 2 vehicle-frame regions being non-contact-space.",
+      "cases": [
+        "WrongFrameIsRefusedByTheRegionViewAndByTheAdapterFrameValidation",
+        "AllThirteenGeneratedRegionScenesAreLoadedWithTheDeclaredSceneNameAndFrame"
+      ]
+    },
+    {
+      "negativeCase": "실제 모델보다 작은 반경 (radius smaller than the actual model)",
+      "status": "covered and green in runC",
+      "guard": "The authored Evacuee envelope is measured from the mesh vertices at run time; the world-actual radius must be at least that measured envelope and must equal WorldBodyPresentation.NpcRadiusM. The undersized probes are derived from the measured envelope (0.15 m, envelope/2, envelope-0.001), so no threshold is a remembered literal.",
+      "cases": [
+        "MeasuredAuthoredModelEnvelopeExceedsTheAbstractUnitAndNeverExceedsTheAuthoredRadius",
+        "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"
+      ]
+    },
+    {
+      "negativeCase": "abstract-labeled-as-actual, BOTH directions",
+      "status": "covered and green in runC; the reverse direction is newly covered",
+      "guard": "Forward: the abstract control cannot be presented as the world actual fixture. Reverse: the world actual roster cannot be presented as the abstract control, nor as the laboratory corridor kind whose fixtures never read the captured world geometry. The test first asserts both records pass their OWN kind check, so neither refusal is an accident of a broken record. A record that keeps its own kind but borrows the other roster's identity hash is refused too, with a distinct 'identity hash' failure - the declared axis must describe the record it is attached to.",
+      "cases": [
+        "AbstractUnitNumbersCannotBeRecordedUnderTheWorldActualFixtureKind",
+        "WorldActualNumbersCannotBeRecordedUnderTheAbstractCounterpartKind",
+        "RadiusSmallerThanTheAuthoredModelAndMislabeledAbstractFixturesAreRefused",
+        "FixtureDeclaresTheWorldActualKindWithAnActualSizedNpcHundredRosterAndASeparatedAbstractCounterpart"
+      ],
+      "measuredConfirmation": "runC's receipt carries its own kind on both records and never files a record under the laboratory corridor kind; the test asserts that on the serialized receipt text directly."
+    },
+    {
+      "negativeCase": "기존 추상 fixture 삭제 (deletion of the existing abstract fixtures)",
+      "status": "covered and green in runC",
+      "guard": "The three abstract/mixed fixture sources must still exist and still carry their own body-size anchor; the fixture declares its non-deletion policy and the negative contract names deletion.",
+      "cases": [
+        "ExistingAbstractUnitFixturesAreStillPresentAndCarryTheirOwnKind"
+      ]
+    },
+    {
+      "negativeCase": "silent non-execution (a skip presented as a pass)",
+      "status": "covered and green in runC",
+      "guard": "There is no Assert.Ignore call in the file. grep over the current bytes finds 'Assert.Ignore' exactly twice: once in a comment stating the rule, once in the assertion that the fixture's NonExecution clause must NAME Assert.Ignore as forbidden. The OneTimeSetUp hard-fails instead of skipping, and an invocation with skip>0 is not treated as a pass. runC reports skipped=0 at the root and in all three suites.",
+      "cases": [
+        "TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes"
+      ]
+    },
+    {
+      "negativeCase": "vacuous pass on an unmeasured run",
+      "status": "covered and green in runC",
+      "guard": "The sentinel coercion is gone: the minimum is never rewritten from an unmeasured PositiveInfinity to a measured-looking zero, a surviving sentinel fails the receipt, and sweptGapSamples/centreClearanceSamples must equal the committed tick count (20/20 measured). The ground-speed bound is tied to the commanded speed the roster was actually driven at (0.20615528128088306 plus 1e-06), never to the declared preferred speed 1.5 m/s, which is 7.3x the command and would assert nothing.",
+      "cases": [
+        "Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt"
+      ],
+      "measuredConfirmation": "sweptGapSamples 20, centreClearanceSamples 20, maximumGroundSpeedMS 0.20615528435283612 against a commanded 0.20615528128088306 plus 1e-06"
+    },
+    {
+      "negativeCase": "a declared separation axis with no implementation",
+      "status": "covered and green in runC",
+      "guard": "The fixture's MeasurementItems list is checked reflectively against the real RunReceipt fields: every declared item must be implemented, the list must have no duplicates, and the old name fixtureHashSha256 must appear ZERO times in both the record type and the fixture text. A declared axis that occurs zero times in the implementation makes the receipt's contract vacuous, so it is enforced by reflection and not by a length check.",
+      "cases": [
+        "TheDeclaredMeasurementItemsAreImplementedByTheRecordItDescribes"
+      ]
+    }
+  ],
+  "knownDefects": {
+    "receiptCommandFieldIsATemplateNotTheInvocation": {
+      "severity": "medium - the receipt self-describes an invocation that never ran, and neither peer record caught it",
+      "detail": "The receipt's `command` field is a hardcoded literal in the test source at Fmp07aWorldCrowdTests.cs:243, containing unexpanded shell variables: -testResults \"$EVIDENCE_DIR/FMP-07a-edit.xml\" -logFile \"$EVIDENCE_DIR/FMP-07a-unity.log\". Verified as a literal rather than inferred: the field is byte-identical in this slot's receipt and in the peer's, even though runC wrote to FMP-07a-edit-current.xml / FMP-07a-unity-current.log and runB wrote to FMP-07a-edit.xml / FMP-07a-unity.log. A reader who trusts that field would check the wrong files and find the other writer's run.",
+      "whyItMatters": "The invocation is the load-bearing fact for a test receipt - it is what distinguishes one semicolon-separated whole-suite call from three suite-specific calls. A receipt that misstates it cannot be the evidence for that claim.",
+      "whatThisRecordDoesInstead": "the authoritative invocation is runs.invocationShape plus each run's host file, which records the pre/post artifact hashes, host, git head and unity_exit actually observed. The receipt's own `command` field is NOT cited as evidence anywhere in this record.",
+      "recommendedFix": "emit the real arguments (Environment.GetCommandLineArgs()) or drop the field"
+    },
+    "receiptWrittenIntoUnityTemp": {
+      "severity": "medium - the measured receipt does not survive the run that produced it",
+      "detail": "ReceiptDirectory is 'Temp/ChooGuardWorldCrowd'. Unity deletes Temp/ during batch shutdown, so after every run the directory did not exist and receipt_present=no was recorded. Verified now: ls Temp/ChooGuardWorldCrowd/ returns 'No such file or directory'. This is why the earliest peer record's receipt could only be self-described - its bytes were gone, and both writers have had to scrape the JSON back out of a log.",
+      "evidence": "runA, runB and runC host files all record receipt_present=no",
+      "recommendedFix": "set ReceiptDirectory to a repository path, e.g. 'docs/evidence/work-items/FMP-07a/receipt', so the receipt lands under version control and the log-scraping recovery step becomes unnecessary",
+      "whyNotAppliedHere": "the test file is being rewritten concurrently by another writer; editing it would re-pin a hash this slot just ran, race that writer's in-flight work, and invalidate the green run. The fix is one constant and is recorded for whoever owns those bytes.",
+      "mitigationInPlace": "the receipt bytes are archived from the run log and pinned with their own sha256 (archivedReceipt), so the measurement is not lost."
+    },
+    "receiptExecutableTestDoesNotMatchTheFixtureDeclaration": {
+      "severity": "low - declared-vs-measured naming drift, verifiable by command",
+      "detail": "The fixture declares Regression.ExecutableTest = 'Fmp07aWorldCrowdTests.Npc100OnActualAuthoredGeometryAdvancesAndEmitsTheFixtureReceipt' (class + method), and the test validates the fixture against exactly that literal at line 175. But the receipt emits executableTest = nameof(Fmp07aWorldCrowdTests) = 'Fmp07aWorldCrowdTests' (class only) at line 480. Confirmed against the archived receipt, which carries the class-only string. No assertion cross-checks the receipt's value against the declared one, so the two can drift silently forever.",
+      "recommendedFix": "emit nameof(class) + '.' + nameof(method) and assert equality with the fixture's declared value"
+    },
+    "staleKindClaimInTheClassDocComment": {
+      "severity": "cosmetic - comment only, no test impact, but it states the opposite of what the code asserts",
+      "detail": "Fmp07aWorldCrowdTests.cs:229 still says the counterpart 'is declared as abstract_unit_laboratory_corridor with actualGeometry = false', and line 230 speaks of 'DIFFERENT fixture hashes' rather than fixtureIdentitySha256. The fixture actually declares abstract_unit_radius_control_on_world_geometry, and the test itself asserts at lines 986 and 989 that the counterpart must NOT be the laboratory kind. A reader trusting the comment would conclude the opposite of the implemented contract.",
+      "recommendedFix": "update the comment block at lines 228-230 to name the control kind and fixtureIdentitySha256"
+    },
+    "sceneFileSha256IsNotReproducible": {
+      "severity": "low - a receipt field that cannot be re-derived",
+      "detail": "The test generates the thirteen region scenes into a per-run directory named WorldCrowdTest_<32 hex>, so all 14 sceneFileSha256 values change on every run (three runs, three different arrays). The measured geometry aggregates are invariant, but the scene file hashes are not. A consumer cannot verify this field by re-running and must not treat it as a stable identity.",
+      "recommendedFix": "either generate into a deterministic directory, or mark the field as run-scoped in the receipt"
+    },
+    "commandedSpeedDeclaredInDoubleRatherThanFloat32": {
+      "severity": "informational",
+      "detail": "The fixture declares CommandedSpeedMS = 0.20615528128088306, which is sqrt(0.2^2 + 0.05^2) in double. The command actually reaching the adapter is float32-rounded ((float)0.2, (float)0.05), whose speed is 0.20615528435283612 - larger by 3.07e-9. The measured maximum equals that float32 value exactly. The declared 1e-06 tolerance absorbs it with roughly 325x headroom, so the bound is sound; the derivation is simply stated in double rather than in the float32 the command is quantised to."
+    }
+  },
+  "residualGaps": [
+    "This slot did not author the test or the fixture that were actually run. It verified them (static cross-check against the runtime API and the fixture contract, plus runC). A reviewer who requires the pinned bytes to be authored by the slot reporting them should read the authorship block as the honest statement of that gap, and note that this slot's own earlier versions were displaced before they could be run.",
+    "The test and fixture were still being rewritten by the concurrent writer while this record was written. If the bytes at those paths differ from the pins, runC does not describe them; re-pin and re-run before relying on this record.",
+    "The receipt was archived from the run log rather than from Temp/ChooGuardWorldCrowd/, because Unity deletes Temp at shutdown. The bytes are identical to what the test wrote (it logs the same string it writes), but the archive path is the log, not the file the test created. If the test is ever changed to log something other than what it writes, this recovery method would silently diverge.",
+    "runB's and runA's host files were produced by the peer's harness and have a different field order and a fuller uname string than this slot's. The fields compared in this record (fixture_sha256_pre/post, test_sha256_pre/post, git_head, unity_exit, date_utc_start/end) are present in all three.",
+    "This slot ran the check once on the pinned bytes (plus one invocation aborted by the peer's lock). It did not run a mutation or flake battery, so the green is a single-slot corroborated observation, not a statistical statement about flakiness.",
+    "Whether the defects in knownDefects affect the measured numbers was not tested: none of them appears to touch the measured aggregates on reading, but this slot did not run a mutated build to prove the command-field defect is harmless."
+  ],
+  "blockers": [
+    {
+      "blocker": "concurrent_write_conflict",
+      "detail": "another writer holds the same isolated_proposal paths and iterated the test and fixture at least three times during this session. It also wrote its own receipt into the canonical filename fmp07a-world-crowd.json, and installed two records at result.json - 778ce022 and 0b767a3b - of which this record is the third.",
+      "impact": "the pinned test and fixture are the peer's bytes; this slot's own versions were displaced before they could be run",
+      "status": "open - recorded, not resolved; both writers' bytes are preserved and hash-pinned"
+    },
+    {
+      "blocker": "unity_project_lock_contention",
+      "detail": "Temp/UnityLockfile plus a live Unity process owned by the peer blocked this slot's 16:30:24Z invocation with unity_exit=1 and zero tests executed.",
+      "impact": "one wasted invocation; recorded rather than hidden, because an invocation that ran no tests is not evidence",
+      "status": "resolved - the lock cleared at 16:31:21Z and runC executed"
+    }
+  ],
+  "handoff": {
+    "phase": "candidate",
+    "workId": "FMP-07a",
+    "issue": 125,
+    "slot": "Q",
+    "branch": "develop",
+    "gitHead": "0794ecf5a128ff9e356b661cfc1142c039aa31f4",
+    "committedByThisSlot": false,
+    "changedPathsByThisSlot": [
+      "docs/evidence/work-items/FMP-07a/result.json (authored by this slot - the file you are reading)",
+      "docs/evidence/work-items/FMP-07a/SHA256SUMS.txt (authored by this slot)",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-edit-current.xml (runC NUnit XML)",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-unity-current.log (runC Unity log)",
+      "docs/evidence/work-items/FMP-07a/FMP-07a-current-host.txt (runC host record)",
+      "docs/evidence/work-items/FMP-07a/fmp07a-world-crowd-recovered-from-log.json (runC receipt bytes, archived)",
+      "docs/evidence/work-items/FMP-07a/recovered/* (non-destructive snapshots of every displaced or observed artifact)",
+      "docs/evidence/work-items/FMP-07a/frozen-candidate/* (frozen runA bytes)",
+      "docs/evidence/work-items/FMP-07a/candidate/result-Q.json (the staged copy of this record, so the install is reproducible)"
+    ],
+    "notChangedByThisSlot": [
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp07aWorldCrowdTests.cs (peer-authored; verified, not edited)",
+      "foundation/tests/FMP-07a/world-crowd-fixture.json (peer-authored; verified, not edited)",
+      "any runtime source (ConnectedWorldMotionAdapter.cs is locked by another issue)"
+    ],
+    "inputDigests": {
+      "fixture": "d7b7fab739ef117c640db435539cdedf0ae6287b9dd9d0de098c8da7bb45601b",
+      "test": "15a5eb3c875e04220730af7c7b994ba72c743f71c57b0894535488b3ccf8a03a",
+      "sourceProfile": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+      "sceneManifest": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541"
+    },
+    "checksRun": "ONE invocation, SEMICOLON-separated -testFilter over WorldMotionAdapterTests; CrowdWorldContactTests; Fmp07aWorldCrowdTests. Root result Passed, 105/105, failed=0, inconclusive=0, skipped=0, no suite not_run, unity_exit=0, artifacts unchanged pre/post. Per suite: Fmp07aWorldCrowdTests 18, WorldMotionAdapterTests 70, CrowdWorldContactTests 17 = 105. Independently replicated by runB on the same bytes.",
+    "failedOrUnrunItems": "None unrun in runC. Every case in all three suites executed and passed. One earlier invocation (16:30:24Z) executed zero tests and is recorded as a blocker rather than counted.",
+    "successorActions": [
+      "1. Move ReceiptDirectory out of Temp/ (one constant) so the receipt survives the run - knownDefects.receiptWrittenIntoUnityTemp.",
+      "2. Replace the receipt's hardcoded command template with the real arguments, or drop it - knownDefects.receiptCommandFieldIsATemplateNotTheInvocation.",
+      "3. Make executableTest match the fixture's declared value, and assert the equality - knownDefects.receiptExecutableTestDoesNotMatchTheFixtureDeclaration.",
+      "4. Fix the stale kind claim in the class doc comment at lines 228-230.",
+      "5. Resolve the two-writer collision on these paths before the next run, or re-pin on whichever bytes win."
+    ]
+  },
+  "selfPin": {
+    "path": "docs/evidence/work-items/FMP-07a/result.json",
+    "selfBytes": 51430,
+    "selfSha256": "58acd1d1d36a4108bed3611e61ea9afb5d2c1162b0873518803ab56179db22cd",
+    "canonicalRule": "Read this file as UTF-8 JSON. Set selfPin.selfSha256 to the literal string \"SELF\" and selfPin.selfBytes to the integer 0 - both are placeholders that exist only for this transformation, and selfBytes in the file you are reading holds the real installed byte count, not 0. Re-serialize with json.dumps(obj, ensure_ascii=False, indent=2, sort_keys=False) and append one trailing newline. The sha256 of those UTF-8 bytes is the value recorded in selfPin.selfSha256. This record was written by that transformation, so the pin is recomputable from the file alone, and the canonical hash is independent of the real selfSha256/selfBytes values because both are replaced by the placeholders before hashing."
+  }
+}
