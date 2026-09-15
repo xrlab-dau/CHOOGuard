@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "artifactId": "artifact:23:M1-07-review-contract:candidate",
+  "issue": 23,
+  "phase": "candidate",
+  "approval": "pending",
+  "scope": "synthetic_integrity_fixture",
+  "sources": [
+    {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0"
+    },
+    {
+      "path": "docs/adr/0003-independent-review-and-adversarial-graph.md",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "97fcf9bb588161e43c306d6cc916d75704c1047951365823bfe6112005c05600"
+    },
+    {
+      "path": "docs/team/M0-03/allowlist.json",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a"
+    },
+    {
+      "path": "docs/team/M0-03/execution-profile.json",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc"
+    },
+    {
+      "path": "docs/team/M1-02/permission-boundary.json",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "5e051ccd19eb6a7b160cf358757665c0ba52c28e9f6c471f50bd793d5e10bf34"
+    },
+    {
+      "path": "scripts/team/M1-02/permission_boundary.py",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "6cb3b6e6cafde5af357b6e14be59e7015b0c60e81476e661236a4fc793c62a1c"
+    },
+    {
+      "path": ".pi/settings.json",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+    },
+    {
+      "path": "scripts/dev/native_manifest.py",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83"
+    },
+    {
+      "path": "scripts/bootstrap/verify_toolchain.py",
+      "ref": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+      "sha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1"
+    }
+  ],
+  "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+  "consumedArtifacts": [
+    "artifact:16:M0-03-allowlist:candidate",
+    "artifact:18:M1-02-policy-record:candidate"
+  ],
+  "qualification": "Published supplier policy, recorded capabilities and limitations only; no unpublished Native source consumed.",
+  "request": {
+    "fields": [
+      "schemaVersion",
+      "scope",
+      "round",
+      "author",
+      "reviewer",
+      "target",
+      "uncommittedFiles",
+      "policyHash"
+    ],
+    "identityFields": [
+      "sessionId",
+      "provider",
+      "model"
+    ],
+    "independence": [
+      "different sessionId",
+      "different provider",
+      "allowed reviewer model"
+    ],
+    "targetFields": [
+      "relative paths",
+      "file SHA-256 and byte lengths",
+      "filesDigest",
+      "baseRef",
+      "headRef"
+    ],
+    "uncommittedFiles": "All selected synthetic fixture files with their exact hashes; no Git worktree discovery claim.",
+    "round": {
+      "min": 1,
+      "max": 3,
+      "enforcement": "per-request metadata only; no persistent round counter"
+    }
+  },
+  "paths": {
+    "request": "request.json",
+    "target": "input/",
+    "execution": "execution/",
+    "generated": "execution/generated/",
+    "result": "evidence/receipt.json"
+  },
+  "operations": {
+    "begin": "Fresh disjoint source/run; materialize copies and verify target before/after copying.",
+    "write_generated": "Create new files only under execution/generated/; never overwrite.",
+    "finalize": "Validate target, policy and reviewer result; reviewer role only, exclusive receipt creation.",
+    "verify_receipt": "Require trusted request/receipt digests and current writer source/base/head; reject any binding drift."
+  },
+  "reviewerOutput": {
+    "fields": [
+      "outcome",
+      "actionable",
+      "notes"
+    ],
+    "outcomes": [
+      "approved",
+      "changes_required",
+      "cannot_proceed"
+    ],
+    "findingFields": [
+      "id",
+      "severity",
+      "title",
+      "problem",
+      "fix",
+      "locations"
+    ],
+    "approvedRequiresEmptyActionable": true,
+    "isIndependentApproval": false
+  },
+  "failure": {
+    "exception": "Refused",
+    "outcome": "cannot_proceed",
+    "existingEvidence": "Never rewritten or removed by API; partial new runs retained on I/O failure."
+  },
+  "supplierCapabilities": {
+    "osFamily": "Darwin",
+    "python": "3.14",
+    "linkCapability": "symlink",
+    "networkEgressExercised": false,
+    "osSandboxOrAclTested": false,
+    "mcpEnforcementTested": false,
+    "note": "anonymous capability facts only; no hostname, account, path or interpreter build string"
+  },
+  "limitations": [
+    "Trusted fixture role/provider/ref inputs are not authenticated identities.",
+    "OS sandbox/ACL and direct writer filesystem denial are not implemented or validated.",
+    "Trusted external digest custody and exclusively owned local parents are required; no hostile race protection.",
+    "Actual independent review, three-perspective aggregation, retry/fallback enforcement and acceptance are not performed.",
+    "Synthetic success is not source qualification, product approval or operational permission."
+  ]
+}
