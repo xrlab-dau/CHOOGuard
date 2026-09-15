@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "workId": "M4-03",
+  "issue": 34,
+  "phase": "candidate",
+  "packetKind": "optional-xr-capability-packet",
+  "status": "blocked",
+  "runId": "m403-20260915T001538Z",
+  "capability": {
+    "hmdDevice": "unknown",
+    "xrRuntime": "unknown",
+    "openXrLoader": "not evaluated",
+    "trackedControllerInput": "unknown",
+    "targetBuild": "none",
+    "renderedFrames": "none"
+  },
+  "reason": "No head-mounted display or XR runtime was available on the test host. Per the stop condition the VR branch is kept blocked and the Desktop result is not downgraded.",
+  "notEvidence": "The VR enum value submitted in EditMode (desktop-run-record semanticParityOnly) is a mock input path. It does not satisfy HMD acceptance.",
+  "writeScopeNote": "Assets/CHOOguardTeam/XR/M4-03/ was not created because there is no XR adapter or device result to place there.",
+  "requiredToUnblock": [
+    "an attached HMD with its runtime identified anonymously",
+    "an XR input adapter that submits TrainingAction with InputModality.VR from tracked input",
+    "an executed run with receipt digests"
+  ]
+}

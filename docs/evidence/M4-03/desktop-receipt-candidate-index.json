@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "indexId": "M4-03-desktop-receipt-candidate-index",
+  "issue": 34,
+  "workId": "M4-03",
+  "phase": "candidate",
+  "artifact": "artifact:34:M4-03-desktop-receipt:candidate",
+  "recordType": "machine_observation_not_approval",
+  "overwritePolicy": "Append or replace this versioned index only with a new manifest entry; never overwrite or fabricate a prior raw execution receipt.",
+  "rawStorage": "Raw Unity result XML and editor logs stay outside Git under <RUN_ROOT>; this index and the run record keep sha256 digests only.",
+  "entries": [
+    {
+      "runId": "m403-20260915T001538Z",
+      "capturedAt": "2026-09-15T00:22:58Z",
+      "baselineRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+      "status": "desktop_candidate_run_recorded",
+      "desktop": {
+        "roles": [
+          "role-02",
+          "role-03",
+          "role-04",
+          "role-05"
+        ],
+        "behaviors": 4,
+        "tests": {
+          "total": 19,
+          "passed": 19,
+          "failed": 0,
+          "skipped": 0
+        },
+        "fixtureParity": "all four roles matched quest state, virtual team events, feedback code and text, and pre-state",
+        "rejectedInputsPerRole": 9,
+        "resultXmlSha256": "c7713279d63fa157e760e492ed7e2084cae98c5baf3abfb73e818434f5e561f2",
+        "editorLogSha256": "d573884ffb78b1cc20ee2349c515965094f72a8df6731e866af7453fbed07792"
+      },
+      "vr": {
+        "status": "blocked",
+        "packet": "docs/evidence/M4-03/xr-capability-packet-candidate.json"
+      },
+      "mutationControls": [
+        {
+          "change": "target anchor comparison removed from TrainingSession.ValidateAction",
+          "failed": 4
+        },
+        {
+          "change": "role-03 fixture row expectedFeedbackCode changed",
+          "failed": 2
+        },
+        {
+          "change": "VirtualTeamSimulator.ApplyValidated no longer applies states",
+          "failed": 4
+        }
+      ],
+      "records": {
+        "docs/evidence/M4-03/runs/m403-20260915T001538Z/desktop-run-record.json": "44c259e59d6e8577217184330d705451267e5aba3b3a5b27af82d030741d0eff",
+        "docs/evidence/M4-03/xr-capability-packet-candidate.json": "dabc11ffae0ad90fef1ad0b0ab6a913be818d227043c042edb62c875b2b8eeed"
+      },
+      "candidateTestSha256": {
+        "Assets/CHOOguardTeam/Tests/M4-03/ChooGuard.Team.M403.Tests.asmdef": "27558830700e8ceb2d3f15d689d3a469b10cb67914d2f7936ca06b63a93de045",
+        "Assets/CHOOguardTeam/Tests/M4-03/ChooGuard.Team.M403.Tests.asmdef.meta": "23dac404b0ee86d773bc6887314bc879d2ff0b0b5f20013a6e75eebc493afcc4",
+        "Assets/CHOOguardTeam/Tests/M4-03/M403DesktopRoleActionTests.cs": "23f6a67aae9e5a17a25a7397c73750d2aee8f742a76b066347617c3a29e7a641",
+        "Assets/CHOOguardTeam/Tests/M4-03/M403DesktopRoleActionTests.cs.meta": "1d4647138d80bbbe47c816e029f1404e476f7f1d1dc0e8d3b1643d3595ba0e59",
+        "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs": "5f60bb5204a51ee99e9753881f51428a4877d8e78f242fe1777fd6c7c83eb0ae",
+        "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs.meta": "e6b484355c6f2af31c74573ea9bb4c0530dde2ece041ce5d45d9b754e1e88e39"
+      },
+      "fixtureInput": {
+        "artifact": "artifact:32:M4-01-fixture:candidate",
+        "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+        "sha256": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243"
+      }
+    }
+  ]
+}
