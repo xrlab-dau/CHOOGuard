@@ -2,11 +2,18 @@ name: Astra Develop Audit
 on:
   push:
     branches: [chore/astra-develop-audit-20260915]
+    paths:
+      - scripts/review/inventory.py
+      - scripts/review/tests/test_inventory.py
+      - .github/workflows/astra-develop-audit.yml
 permissions:
   contents: read
 concurrency:
   group: astra-develop-audit-${{ github.ref }}
   cancel-in-progress: false
+# The Copilot probe was stopped after the server returned Access denied by
+# policy settings in run 34946265970. That denial is preserved, not bypassed or
+# interpreted as worker execution. No further Copilot token requests occur here.
 jobs:
   census:
     runs-on: ubuntu-24.04
@@ -29,58 +36,5 @@ jobs:
         with:
           name: astra-develop-census
           path: ${{ runner.temp }}/astra-census/
-          retention-days: 7
-          if-no-files-found: error
-  worker-auth:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 5
-    permissions:
-      contents: read
-      copilot-requests: write
-    steps:
-      - name: Install checksum-pinned official CLI
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/astra-cli" "$RUNNER_TEMP/astra-auth-public" "$RUNNER_TEMP/astra-auth-private"
-          curl --fail --location --proto '=https' --proto-redir '=https' https://github.com/github/copilot-cli/releases/download/v1.0.83/copilot-linux-x64.tar.gz -o "$RUNNER_TEMP/astra-cli/cli.tar.gz"
-          echo "ffbe1c429664b8a05efed67ecdb467123e40fcaa3c6c14ef9a98ba74da4687b7  $RUNNER_TEMP/astra-cli/cli.tar.gz" | sha256sum --check
-          tar -xzf "$RUNNER_TEMP/astra-cli/cli.tar.gz" -C "$RUNNER_TEMP/astra-cli"
-          "$RUNNER_TEMP/astra-cli/copilot" --version > "$RUNNER_TEMP/astra-auth-public/cli-version.txt"
-          "$RUNNER_TEMP/astra-cli/copilot" --help > "$RUNNER_TEMP/astra-auth-public/cli-help.txt"
-      - name: Probe one isolated no-tools model request
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        shell: bash
-        run: |
-          python3 - <<'PY'
-          import hashlib,json,os,pathlib,re,subprocess
-          root=pathlib.Path(os.environ['RUNNER_TEMP'])
-          private=root/'astra-auth-private'; public=root/'astra-auth-public'
-          env=dict(os.environ,HOME=str(private),COPILOT_HOME=str(private/'copilot'),XDG_CONFIG_HOME=str(private/'xdg'))
-          cmd=[str(root/'astra-cli/copilot'),'-p','Return exactly AS_AUDIT_READY. Do not call any tools.', '--model','gpt-5.4-mini','--silent','--no-ask-user','--no-auto-update','--no-custom-instructions','--disable-builtin-mcps','--available-tools=view','--deny-tool=read','--deny-tool=write','--deny-tool=shell','--no-remote-export','--no-bash-env']
-          try:
-              p=subprocess.run(cmd,cwd=private,env=env,capture_output=True,text=True,timeout=75)
-              ok=p.returncode==0 and p.stdout.strip()=='AS_AUDIT_READY'
-              lower=(p.stdout+'\n'+p.stderr).lower()
-              reason='ready' if ok else ('organization_policy_or_entitlement' if any(x in lower for x in ('not enabled','not allowed','policy','copilot license','subscription')) else 'authentication_or_cli_failure')
-              diagnostic=p.stderr
-              token=os.environ.get('GITHUB_TOKEN')
-              if token: diagnostic=diagnostic.replace(token,'<credential>')
-              diagnostic=re.sub(r'\x1b\[[0-9;]*[a-zA-Z]','',diagnostic)
-              diagnostic=re.sub(r'(?i)(?:gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+|bearer\s+\S+)','<credential>',diagnostic)
-              diagnostic=re.sub(r'/(?:home|tmp|mnt|root)/[^\s]+','<path>',diagnostic)
-              data={'state':'AUTHENTICATED' if ok else 'BLOCKED','reason':reason,'exitCode':p.returncode,'requestedModel':'gpt-5.4-mini','modelIdentityAttested':False,'cliInvocations':1,'modelCallCompleted':ok,'codeSent':False,'toolsAllowed':False,'diagnostic':diagnostic[:1500],'stdoutSha256':hashlib.sha256(p.stdout.encode()).hexdigest(),'stderrSha256':hashlib.sha256(p.stderr.encode()).hexdigest()}
-          except subprocess.TimeoutExpired:
-              data={'state':'BLOCKED','reason':'timeout','cliInvocations':1,'modelCallCompleted':False,'codeSent':False}
-          (public/'probe.json').write_text(json.dumps(data,indent=2)+'\n')
-          print(json.dumps(data))
-          raise SystemExit(0 if data['state']=='AUTHENTICATED' else 2)
-          PY
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        if: always()
-        with:
-          name: astra-worker-auth
-          path: ${{ runner.temp }}/astra-auth-public/
           retention-days: 7
           if-no-files-found: error
