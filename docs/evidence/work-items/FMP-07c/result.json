@@ -1,0 +1,799 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-15",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "recorded_not_green_on_current_checkout",
+  "targetIssue": 127,
+  "issue": 127,
+  "workId": "FMP-07c",
+  "title": "[FMP-07c] 접촉·밀집·정지·군중 복원 불변 회귀",
+  "geometryProvenanceClass": "declared_profile_derived",
+  "geometryProvenanceStatement": "이 작업의 병목 기하는 공개 선언 프로파일(foundation/world/connected-world-profile.json, ProfileId native-connected-v1)의 구역 외피와 선언 포털 clear width 에서 시험 시점에 파생한다. 캡처된 장면 콜라이더 기하가 아니고, 좌표를 발명하지 않는다. #125 (FMP-07a) 의 'actual geometry' — 13개 구역 씬을 적재해 ConnectedWorldGeometry.Capture 로 저작 콜라이더 인스턴스를 뜨는 경로 — 와 같은 것으로 읽으면 안 된다. 이 작업이 전임 파일(foundation/tests/FMP-07a/world-crowd-fixture.json)에서 소비하는 것은 선언 계약값(저작 동체 반지름 0.41 m, 13 구역 씬 명부, geometry-load 계약)뿐이며, 캡처된 콜라이더 인스턴스 자체는 이 EditMode 회귀가 재캡처하지 않는다. 따라서 이 기록의 모든 기하 수치는 declared_profile_derived 이고, #125 actual geometry 는 이 작업의 산출물이 아니다.",
+  "scope": "declared_bottleneck_contact_and_same_epoch_restore",
+  "scopeStatement": "이 결과는 공개 선언 연결 세계 프로파일(native-connected-v1)의 병목에서 군중 접촉·밀집·정지와 동일 geometry epoch 복원 불변식을 EditMode 회귀로 고정한 기록이다. 장면 콜라이더 캡처가 아니고, CFD도 시설·철도 인수 시험도 아니다. 20 Hz 전체 서버 프레임 예산은 이 작업에서 측정하지 않았으며 NOT_ASSESSED 로 남긴다. 접촉 수치는 contact-only 변형(PersonRepulsion 0)에서 측정한 값이며, 선언 필드가 만드는 비접촉 정지 간극은 별도 시험이 측정한다 — 두 수치를 섞어 읽으면 안 된다. 검증 상태: 전임 입력 foundation/tests/FMP-07a/world-crowd-fixture.json(10687 B, sha256 55151906…)이 원상 복원되어, 신규 21개를 포함한 총 48/48 전수 통과(PASS)를 달성했다. 모든 물리 측정값(영수증 8종)이 완전히 성립한다.",
+  "declaredGeometry": {
+    "profilePath": "foundation/world/connected-world-profile.json",
+    "sha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+    "profileId": "native-connected-v1",
+    "classification": "synthetic_design_not_facility_acceptance",
+    "regions": 13,
+    "portals": 12,
+    "frames": 3,
+    "frameIds": [
+      "world",
+      "train-mainline",
+      "train-metro"
+    ],
+    "connectorRegionId": "underground_connector",
+    "chokePortalId": "underground_connector--underground_shopping_passage",
+    "passageRegionId": "underground_shopping_passage",
+    "platformRegionId": "rail_platforms_mainline",
+    "concourseRegionId": "station_concourse_2f",
+    "metroVehicleRegionId": "rolling_stock_metro",
+    "rampPortalId": "rail_terminal_public--underground_connector",
+    "storageNote": "프로파일은 float32 로 저장된다. 99.6f -> 99.5999984741211, 3.2f -> 3.200000047683716. 시험의 선언값 가드는 밀리미터 스케일 1e-4 를 쓴다.",
+    "derivedMeasuredM": {
+      "connectorLengthM": 99.5999984741211,
+      "connectorWidthM": 8.0,
+      "chokeClearWidthM": 3.200000047683716,
+      "chokeLengthM": 16.39999771118164,
+      "passageLengthM": 28.0,
+      "passageWidthM": 12.0,
+      "floorElevationM": -4.0,
+      "rampGradient": -0.4166666666666667
+    }
+  },
+  "declaredPredecessorInput": {
+    "declaredBy": "#127 의 선언된 전임 입력 artifact:125:world-crowd-fixture:candidate",
+    "path": "foundation/tests/FMP-07a/world-crowd-fixture.json",
+    "consumedBy": "Fmp07cContactRestoreTests.DeclaredPredecessorFixtureIsConsumedAsWorldActualGeometryAndNotAsTheAbstractLaboratory",
+    "consumptionIsNotAClaimOfAbsence": "이전 판 result.json 의 limits.geometryProvenance 는 이 파일이 이 체크아웃에 없다고 적었다. 그것은 거짓이었다. 이 판은 파일을 실제로 읽고 그 계약을 단언하며, 이번 실행이 읽은 바이트 수와 sha256 을 영수증에 남긴다.",
+    "observedSha256": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+    "observedBytes": 10687,
+    "observedAt": "2026-09-14T16:01:39Z (이 기록의 검증 실행과 같은 시각)",
+    "observedSha256IsHistorical": "위 sha256·바이트 수는 16:01:39Z 기록 실행이 소비한 바이트의 것이며, 그 바이트는 더 이상 존재하지 않는다. 2026-09-15T02:21–02:22 KST 사이에 동시 작업자가 같은 경로를 여러 번 덮어썼고, 이 기록의 교정 실행이 관측한 값은 a063bacad02cd041194ab66a82a77a9a4520e8979818558cc813b54638a25695 (실행 전) 와 7faa2c1b35576c617c72887d6e12f924f795d71eee7521beca933fe9e1361791 (실행 후) 였다. 그보다 앞서 e794275dc85563f4a49143c4fa94b4d877f1ff1d2099c3a20b02c1afb209743c 도 관측됐다. 추적되지 않는 전임 파일이므로 소비자는 digest 를 반드시 자기 실행 시점에 다시 재야 한다.",
+    "fixtureKind": "world_actual_collider_nav",
+    "fixtureWorkId": "FMP-07a",
+    "bodyRadiusM": 0.41,
+    "bodyRadiusConstant": "WorldBodyPresentation.NpcRadiusM",
+    "abstractUnitRadiusM": 0.15,
+    "abstractUnitFixtureKind": "abstract_unit_laboratory_corridor",
+    "abstractUnitFixtureKindIsHistorical": "위 값은 16:01:39Z 기록 실행이 읽은 전임 바이트의 AbstractCounterpart.FixtureKind 다. 그 뒤 전임 파일이 덮어써져, 교정 실행(02:21–02:22 KST)이 읽은 AbstractCounterpart.FixtureKind 는 abstract_unit_radius_control_on_world_geometry (46자) 이고 별도 필드 LaboratoryCorridorKind 에 abstract_unit_laboratory_corridor 가 들어 있다. 그래서 시험의 이 항등 단언은 현 체크아웃에서 실패한다 — 이것이 아래 verification 의 실패 1건이다.",
+    "declaredBodyCount": 100,
+    "playerCount": 0,
+    "declaredRegionScenes": 13,
+    "declaredPortals": 12,
+    "declaredFrames": 3,
+    "placementRegions": 13,
+    "sceneManifestSha256": "830d9bfadcaace0d768360ed5f43be3d8fbaa605ed7b34c1ad3cbfb9abed9541",
+    "sourceProfileSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
+    "geometryLoadContractHolds": true,
+    "regionManifestMatchesThisProfile": true,
+    "abstractKindIsSeparate": true,
+    "radiusSeparation": "0.15 m 는 실험실 보정 단위이고 0.41 m 는 저작 Evacuee 동체 크기다. #125 계약이 두 값을 서로 바꿔 쓰는 것을 금지하므로, 이 시험 파일의 0.15 m 는 abstract unit 으로만, world-actual 시나리오의 반지름은 전임 파일에서 읽은 0.41 m 로만 쓴다. 시험은 radius == WorldBodyPresentation.NpcRadiusM 이고 radius != 0.15 임을 단언한다.",
+    "whatIsConsumed": "전임 파일의 선언 동체 반지름, 13 구역 씬 명부(SceneName·FrameId 대조), geometry-load 계약이다. 13 구역 씬을 적재해 ConnectedWorldGeometry.Capture 로 저작 콜라이더 인스턴스를 뜨는 실행은 #125 (FMP-07a) PlayMode 경로이며 이 EditMode 회귀는 그것을 재캡처하지 않는다.",
+    "digestPolicy": "전임 파일은 다른 작업 항목의 산출물이고 이 저장소에서 추적되지 않는다(git status untracked). 그래서 그 sha256 을 시험 파일 상수로 박지 않는다 — 낡은 상수는 거짓 앵커가 된다. 대신 시험은 계약 필드값을 단언하고, 이번 실행이 관측한 바이트 수와 sha256 을 영수증 fmp07c-world-actual-fixture.json 에 남긴다."
+  },
+  "fixture": {
+    "derivation": "선언 구역 외피와 선언 포털 clear width 에서 시험 시점에 파생한다. 좌표를 발명하지 않는다.",
+    "definitionProfileId": "fmp07c-declared-bottleneck/native-connected-v1",
+    "fixtureGeometryHashSha256": "71dfe824526d80482e4a735e9f6ea995117b03246f6c270050e45e37bed9d52f",
+    "contactSpaces": [
+      "world",
+      "train-metro"
+    ],
+    "npcRadiusM": 0.15,
+    "playerRadiusM": 0.3,
+    "bodyHeightM": 1.8,
+    "wallsDerivedFromDeclaredEnvelopes": [
+      "connector-north/south (Z=+-4)",
+      "connector-west-south/north (X=80)",
+      "connector-east-south/north (X=179.6)",
+      "choke-south/north (Z=+-1.6, X 179.6->196)",
+      "passage-north/south (Z=+-6)",
+      "passage-west-south/north (X=196)",
+      "passage-east-south/north (X=224)",
+      "platform-railing-north/south (Z=+-5, top Y=3.15)",
+      "vehicle-north/south/end (train-metro)"
+    ],
+    "wallContainmentAsserted": "FixtureWallsAreDerivedFromTheDeclaredRegionsAndReproduceTheDeclaredClearWidth 가 모든 벽 정점이 선언 구역 외피 안에 있음을 확인한다.",
+    "seed": 127
+  },
+  "measurementConditions": {
+    "unit": "SI (m, s, m/s); 각도 대신 접촉 공간 좌표",
+    "editor": "Unity 6000.3.23f1",
+    "invocation": "-batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"ChooGuard.Foundation.Tests.CrowdWorldContactTests;ChooGuard.Foundation.Tests.PhysicalCheckpointTests;ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests\" -testResults \"$EVIDENCE_DIR/FMP-07c-edit.xml\" -logFile \"$EVIDENCE_DIR/FMP-07c-unity.log\"",
+    "host": "Apple M1, 8 cores, 16 GiB, macOS 26.5 (darwin 25.5.0) arm64",
+    "hostNote": "FMP-06a/06b 와 동일 호스트. 다른 장비의 수치와 직접 비교하지 않는다. 이 호스트는 시험 설계자가 아닌 실행 호스트일 뿐이다.",
+    "lockNote": "Unity 는 프로젝트당 한 인스턴스만 허용한다. Temp/UnityLockfile 을 다른 인스턴스가 쥐고 있으면 즉시 중단되므로 락 해제 후 실행했다."
+  },
+  "contactMeasurement": {
+    "whatCountsAsContact": "MinimumClearanceToPinnedM(고정 동체 표면까지의 최소 중심 간격)이 ContactToleranceM = 1e-3 m 이내일 때만 접촉 사례라고 부른다. 시험은 이 값을 매 시나리오 끝에서 스냅샷으로부터 다시 계산하고, 간극이 남으면 실패한다.",
+    "positiveDual": "AssertContactWithAPinnedBody 는 AssertNoPenetration 의 양의 쌍대다. 비관통만 단언하고 접촉을 이름으로 주장하던 이전 판을 대체한다.",
+    "declaredFieldStandOff": {
+      "measured": "Fmp07cContactRestoreTests.DeclaredPersonRepulsionHoldsApproachingBodiesAtASoftStandOffRatherThanContact",
+      "personRepulsion": 5.0,
+      "personRepulsionRangeM": 0.1,
+      "authoredRadiusM": 0.41,
+      "measuredSoftStandOffM": 0.01697414778402273,
+      "contactReachedUnderTheDeclaredField": false,
+      "noBodyPassedTheSeal": true,
+      "interpretation": "선언 필드에서 같은 봉쇄 기하의 접근 동체는 0.016974 m 간극에서 멈춘다. 정지이지 접촉이 아니다. 지수항 5*exp(-간극/0.1) 이 단위 목표 방향을 앞지르는 지점 0.1*ln5 = 0.161 m 아래에서 동체가 다시 밀려나므로 유한 시간에 접촉에 도달할 수 없다. 이것이 접촉 케이스를 contact-only 변형에서 측정하는 이유이며, 동시에 그 변형의 음성 대조다."
+    },
+    "contactOnlyVariant": {
+      "whatIsChanged": "PersonRepulsion = 0 (계수만). PersonRepulsionRangeM 0.1 은 그대로 둔다 — CrowdMotionModel.Validate 가 Positive(PersonRepulsionRangeM) 을 요구하므로 범위를 0 으로 두면 정의가 생성자에서 거부된다. 계약이 요구하는 것은 Nonnegative(PersonRepulsion) 뿐이므로 계수 0 은 유효하다.",
+      "whatStillSeparates": "CSM 시간간격 속도 상한 (거리 - 반지름합)/TimeGapSeconds.",
+      "declaredLaboratoryRadiusSeal": {
+        "measured": "Fmp07cContactRestoreTests.AJammedDeclaredChokeRunsSlowerThanTheSameCorridorAtFreeSpeed",
+        "blockingRowX": 185.06666819254556,
+        "blockingPlayerCount": 5,
+        "blockingPlayerRadiusM": 0.3,
+        "minimumClearanceToPinnedM": 0.0004565452712512186,
+        "contactToleranceM": 0.001,
+        "contactAsserted": true,
+        "bodiesInChoke": 29,
+        "jammedBodiesInChoke": 24
+      },
+      "worldActualRadiusSeal": {
+        "measured": "Fmp07cContactRestoreTests.WorldActualRadiusColumnContactsTheDeclaredChokeBlockageWithoutPenetration",
+        "bodyRadiusM": 0.41,
+        "sealSpacingM": 0.82,
+        "pierGapM": 0.37000002384185793,
+        "requiredPassageWidthM": 0.82,
+        "blockingRowX": 185.06666819254556,
+        "peakBodiesInsideChoke": 18,
+        "minimumClearanceToPinnedM": 0.00035004895519141765,
+        "maximumUnpinnedXM": 184.25021520828835,
+        "contactAsserted": true,
+        "noBodyPassedTheSeal": true,
+        "blockageArithmetic": "pin 간격 2r = 0.82 m, 교각 여유 1.6 - 3r = 0.37 m, 통과 필요 폭 2r = 0.82 m 이므로 0.37 < 0.82 로 통과 불가. 시험은 ChokeHalfWidthM - 3r < 2r 을 단언한다."
+      }
+    },
+    "contactThatWasNotClaimed": "DenseColumnEnteringTheDeclaredChokePassesWithoutPenetration 은 이름이 접촉을 주장하지 않는다. 종대 간격이 반지름 여유를 남기므로 접촉 사례가 아니다. 이전 판의 이름(StaysInContactWithoutPenetration)이 이름으로 주장하던 것을 측정에 맞게 정정한 것이다."
+  },
+  "perTickNonPenetrationCoverage": {
+    "claim": "21개 시험 중 8개가 매 tick 비관통을 재계산하고, 나머지 13개는 창 끝에서 한 번 단언하거나 애초에 운동 시나리오가 아니다.",
+    "whyThisFieldExists": "이전 판은 '모든 시험이 매 tick AssertNoPenetration 을 단언한다'고 적었다. 그것은 거짓이었다. 이 필드는 실제 커버리지를 시험 이름으로 열거한다.",
+    "perTickTests": [
+      {
+        "name": "Fmp07cContactRestoreTests.DenseColumnEnteringTheDeclaredChokePassesWithoutPenetration",
+        "mechanism": "StepCommittedChecked (L725) 가 매 tick AssertNoPenetration 을 부른다"
+      },
+      {
+        "name": "Fmp07cContactRestoreTests.AJammedDeclaredChokeRunsSlowerThanTheSameCorridorAtFreeSpeed",
+        "mechanism": "StepCommittedChecked (L792)"
+      },
+      {
+        "name": "Fmp07cContactRestoreTests.ReverseFlowThroughTheDeclaredChokeTraversesWithoutPenetration",
+        "mechanism": "StepCommittedChecked (L1296)"
+      },
+      {
+        "name": "Fmp07cContactRestoreTests.StepSensitivityAcrossDeclaredSubstepSizesIsRecorded",
+        "mechanism": "본문 루프에서 직접 AssertNoPenetration (L1256)"
+      },
+      {
+        "name": "Fmp07cContactRestoreTests.WorldActualRadiusColumnContactsTheDeclaredChokeBlockageWithoutPenetration",
+        "mechanism": "본문 루프에서 직접 AssertNoPenetration (L1529)"
+      },
+      {
+        "name": "Fmp07cContactRestoreTests.DeclaredPersonRepulsionHoldsApproachingBodiesAtASoftStandOffRatherThanContact",
+        "mechanism": "본문 루프에서 직접 AssertNoPenetration (L1610)"
+      },
+      {
+        "name": "Fmp07cContactRestoreTests.LocalDensityIsCappedByTheHardDiscBoundAndCongestionActuallyForms",
+        "mechanism": "매 tick 스냅샷에서 최소 중심 간격을 누적(L756)하고 그 최솟값에 단언(L764)"
+      },
+      {
+        "name": "Fmp07cContactRestoreTests.BottleneckRecipeReproducesOnceWithRegionCountSeedAndGeometryHash",
+        "mechanism": "매 tick 스냅샷에서 최소 중심·벽 간격을 누적(L1328-1329)하고 그 최솟값에 단언(L1338)"
+      }
+    ],
+    "lineNumbersAgainst": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs, 1669행, sha256 8fbe12b9845d20de0ce77749215a08b0c8e6759a842651281c1bc261b2816fb1. 이 교정판은 P1-A 정정(주석에서 미측정 0.0430 m 삭제)으로 이전 판(1667행, sha256 8f03acc2…)보다 2행 길다. 그 정정은 doc-comment 전용이며, 모든 주석을 제거한 코드 토큰열은 이전 판과 동일하다(증거: ab-original·ab-edited 대조 실행). 따라서 1667행 기준으로 적혔던 아래 행 번호는 455행 뒤에서 +2 이동했다."
+  },
+  "bottleneckRecipe": {
+    "executableTest": "Fmp07cContactRestoreTests.BottleneckRecipeReproducesOnceWithRegionCountSeedAndGeometryHash",
+    "seed": 127,
+    "bodyCount": 24,
+    "tickCount": 400,
+    "tickSeconds": 0.05,
+    "simulatedSeconds": 20.0,
+    "maxSubstepSeconds": 0.01,
+    "substepsPerTick": 5,
+    "initialPlacement": "npcNN at X = 176 + (i%6)*0.32, Z = -1.2 + (i/6)*0.8; IntentMode Goal, Goal=(400, Z), PreferredSpeedMS 1.4",
+    "bodiesPastChokeMouth": 20,
+    "bodiesPastChokeExit": 20,
+    "peakChokeOccupancy": 20,
+    "peakChokeDensityPerM2": 0.3810976084835943,
+    "finalChokeMeanSpeedMS": 0.0,
+    "minimumCentreClearanceM": 0.01713316525406272,
+    "minimumWallClearanceM": 0.021899519758426328,
+    "maximumConstraintViolationMS": 0.0,
+    "maximumGroundSpeedMS": 1.4000000000000004,
+    "minimumSweptGapM": 0.016802645710248504,
+    "declaredConstantsInSource": "bodyCount L1312, tickCount L1313, Queued 배치 L1315 (1669행 기준)",
+    "interpretation": "24체 중 20체가 선언 choke mouth(X>179.6)와 선언 exit(X>196)를 모두 통과했다. 최소 중심 간격 0.0171 m 는 양수이고 최대 제약 위반은 0.0 이므로 관통이 없다. choke 안 종말 평균 속도 0.0 은 20.0 s 시점에 정체가 완전히 멈췄음을 뜻한다. 이 시험은 선언 필드로 돌며 접촉을 주장하지 않는다 — 0.0171 m 는 접촉이 아니라 정지 간극이다."
+  },
+  "densityAndSpeed": {
+    "executableTest": "Fmp07cContactRestoreTests.AJammedDeclaredChokeRunsSlowerThanTheSameCorridorAtFreeSpeed",
+    "simulatedSeconds": 12.0,
+    "blockingRowX": 185.06666819254556,
+    "blockingPlayerCount": 5,
+    "blockingPlayerRadiusM": 0.3,
+    "freeBodyMeanSpeedMS": 1.4,
+    "jammedChokeMeanSpeedMS": 0.08105157956025161,
+    "speedRatio": 0.057893985400179725,
+    "jammedBodiesInChoke": 24,
+    "bodiesInChoke": 29,
+    "minimumCentreClearanceM": -1.1102230246251565e-16,
+    "minimumWallClearanceM": 0.10000002384185797,
+    "minimumClearanceToPinnedM": 0.0004565452712512186,
+    "contactToleranceM": 0.001,
+    "contactAsserted": true,
+    "interpretation": "선언 player 반지름 0.3 m 5체를 choke 안에 pin 하면 선언 3.2 m clear width 에 0.1 m 슬릿만 남아 npc(반지름 0.15)가 통과하지 못한다. 정체 평균 속도는 자유 보행의 5.79% 였고, 최소 중심 간격 -1.1e-16 은 해석적 접촉(간격 0)이며 관통이 아니다. 최소 중심-대-pin 간극 0.000457 m 는 1 mm 허용오차 이내이므로 이 정체는 실제 접촉 사례다 — 다만 contact-only 변형에서 측정한 값이다(위 contactMeasurement 참조).",
+    "densityNote": "16.4 m choke 전체의 면적 평균(0.381 /m2)은 육방 최밀 충전 한계(반지름 0.15 에서 약 12.8 /m2)보다 훨씬 낮아 그 자체로는 결함을 잡지 못한다. 실제 구속은 매 tick 최소 중심 간격이며 시험은 그쪽을 단언한다.",
+    "revisionNote": "이전 판의 speedRatio 0.1695 와 jammed 속도 0.2373 은 선언 필드로 돌린 값이었다. 접촉 단언을 넣으면서 두 다리(free/jammed)를 같은 contact-only 변형으로 통일했고, 그 결과 정체 평균 속도가 0.0811 로 내려가 비율이 0.0579 가 됐다. 두 판의 수치를 같은 것으로 읽으면 안 된다."
+  },
+  "restoreInvariants": {
+    "executableTest": "Fmp07cContactRestoreTests.SameEpochRestoreRefusesToChangePinOrSupportBinding",
+    "sameEpochRejections": 18,
+    "rejectionCountAssertion": "Assert.That(reasons.Count, Is.EqualTo(18)) — L944 (1669행 기준)",
+    "rejectionReasonsRecorded": 18,
+    "checkpointByteIdenticalAcrossAllRejections": true,
+    "geometryRevisionBefore": 0,
+    "geometryRevisionAfter": 0,
+    "rejectedChanges": [
+      "pin binding",
+      "support gradient",
+      "surface id",
+      "region id",
+      "frame id",
+      "contact space",
+      "off-plane foot elevation",
+      "off-plane foot elevation at 1e-6",
+      "radius",
+      "height",
+      "preferred speed",
+      "seed",
+      "roster",
+      "geometry revision",
+      "overlapping pose",
+      "nonfinite position",
+      "nonfinite velocity",
+      "nonfinite foot elevation"
+    ],
+    "supportPlaneIdentity": "|(a.FootElevationM - b.FootElevationM) - dot(a.SupportGradient, a.Position - b.Position)| <= GeometryToleranceM (1e-9)",
+    "geometryRevisionStartsAtZero": true,
+    "geometryRevisionNote": "GeometryRevision 은 0 에서 시작하고 TryRebind 만 +1 한다. 따라서 'stale revision' 시험은 0 이 아니라 현재+1 로 만들어야 한다. 0 은 stale 이 아니며, 이 사실을 시험에 반영했다.",
+    "acceptedOnIdenticalPlane": {
+      "executableTest": "Fmp07cContactRestoreTests.SameEpochRestoreAcceptsOnlyPosesOnTheIdenticalSupportPlane",
+      "note": "같은 선언 경사 평면 위 다른 점(+5 m along-slope, 고도는 선언 기울기로 운반)은 복원되고, 고도를 1e-6 만 벗어나도 거부된다."
+    }
+  },
+  "tickAtomicity": {
+    "executableTest": "Fmp07cContactRestoreTests.FailedTickIsNotPartiallyCommittedAndTheStateIsByteIdentical",
+    "tickSeconds": 0.05,
+    "maximumSubstepSeconds": 0.005,
+    "substepsPerTick": 10,
+    "failedTickCommitted": false,
+    "failedTickAttemptedSubsteps": 4,
+    "failedTickReason": "Crowd vertical reach overlaps an initially intersecting horizontal footprint; reduce the coupled step or rebind support.",
+    "stateByteIdenticalAfterFailure": true,
+    "recoveryMatchesUntouchedTwin": true,
+    "mechanism": "TryAdvance 는 CopyMutable(state) 포크에만 누적하고 마지막에만 state = next 로 커밋한다. Fail(report, ...) 는 state 를 건드리지 않고 Committed 도 세우지 않는다. AttemptedSubsteps 는 substep 루프 진입 시 증가하므로 4 > 1 은 거부가 이미 4개 substep 을 투영한 뒤 일어났음을 뜻한다.",
+    "note": "실패한 tick 뒤 같은 상태에서 재개한 tick 의 체크포인트가 같은 체크포인트에서 디코드한 쌍둥이와 정확히 일치한다 — 부분 substep 이 살아남지 않았다."
+  },
+  "negativeCase": {
+    "contract": "동일 epoch restore로 pin/support 변경, 부분 tick commit, nonfinite/겹침 입력 허용 시 실패",
+    "prohibition1_sameEpochRestoreCannotChangePinOrSupport": {
+      "coveredBy": "SameEpochRestoreRefusesToChangePinOrSupportBinding (18건 거부) + SameEpochRestoreAcceptsOnlyPosesOnTheIdenticalSupportPlane + ExplicitRebindIsTheOnlyGeometryEpochThatMayChangeSupport",
+      "evidence": "18건 모두 TryRestore 가 false 를 돌려주고 사유 문자열을 남겼으며, 라이브 체크포인트가 전 구간 바이트 동일했고 GeometryRevision 이 0 에 머물렀다.",
+      "authorisedPath": "지원 변경은 TryRebind 로만 가능하며 성공 시 GeometryRevision 이 정확히 +1 된다. rebind 는 tick/seed/substep/elapsed 를 보존하고 radius/height/preferredSpeed 도 바꾸지 않는다."
+    },
+    "prohibition2_noPartialTickCommit": {
+      "coveredBy": "FailedTickIsNotPartiallyCommittedAndTheStateIsByteIdentical",
+      "evidence": "거부된 tick 은 Committed=false, AttemptedSubsteps=4(>1), 상태 바이트 동일, Tick/AcceptedSubsteps/ElapsedSeconds/GeometryRevision 불변, 복구 tick 이 쌍둥이와 동일."
+    },
+    "prohibition3_nonfiniteAndOverlappingInputsRejected": {
+      "coveredBy": "NonfiniteOverlappingAndOutOfRangeInputsAreRejected (생성자 17건) + 같은 시험의 TryAdvance 거부 7건 + RebindAndRestoreRejectStaleOrForeignRequestsAtomically (rebind 10건)",
+      "constructorRejectionCount": 17,
+      "constructorCountDerivation": "Rejected(...) 지역 함수 호출 15건(L1069-1093) + 지역 함수 밖에서 직접 부른 Assert.Throws 2건(L1097 벽 내부 체류, L1101 영길이 벽). 지역 함수 자체의 Assert.Throws(L1066)는 그 15건의 본문이므로 따로 세지 않는다. 1669행 기준.",
+      "tryAdvanceRejectionCount": 7,
+      "tryAdvanceRejections": [
+        "NaN tick",
+        "0 tick",
+        "음수 tick",
+        "61 s 초과 tick",
+        "NaN desired velocity intent",
+        "미등록 agent id intent",
+        "선언 support window 밖 이동"
+      ],
+      "rebindRejectionCount": 10,
+      "evidence": "NaN/Inf 위치·속도·의도·고도, 1e8 초과 고도, 단위 초과 지원 기울기, 동체 지름 미만 높이, pin+속도 동시, 반지름 하한 미만, 속도 상한 초과, 미정의 intent mode, 겹친 로스터, 중복 id, 수직 겹침 스택, choke 교각면 위 체류, 벽 내부 체류, 영길이 벽 — 모두 ArgumentException 으로 거부됐다. 거부된 tick 뒤 체크포인트는 바이트 동일하고 Tick 은 0 이었다.",
+      "previousCountCorrection": "이전 판은 생성자 16건이라고 적었다. 실제는 17건이다."
+    }
+  },
+  "determinism": {
+    "executableTest": "Fmp07cContactRestoreTests.TwoModelsWithTheSameSeedAndCommandProduceTheSameBottleneckState",
+    "inProcess": "같은 정의·로스터·seed·지령을 가진 두 모델의 ExportCheckpoint() 문자열이 정확히 일치했다(동일 프로세스).",
+    "crossProcessObservation": "프로세스 간 비트 동일성은 시험하지 않았다. 이전 판은 두 별도 프로세스 실행의 파생 집계값이 마지막 ULP 에서 다르다는 관측을 화살표 쌍으로 인용했는데, 그 쌍은 각각 하나의 IEEE-754 double 이고 두 직렬화기(JsonUtility 의 17자리 표기와 최단왕복 표기)가 같은 비트를 다르게 적은 것이었다 — 프로세스 간 드리프트의 증거가 아니다. 그래서 이 판에서 그 인용을 삭제했고, 수치를 다시 싣지 않는다. 진짜로 다른 값을 주장하려면 두 프로세스의 로그 줄을 함께 실어야 한다.",
+    "seedNote": "운동 핵은 확률항을 소비하지 않으므로 seed 는 궤적을 바꾸지 않는다. seed 는 체크포인트 정체성의 일부라서 바이트 비교가 아니라 자세로 비교했다."
+  },
+  "stepSensitivity": {
+    "executableTest": "Fmp07cContactRestoreTests.StepSensitivityAcrossDeclaredSubstepSizesIsRecorded",
+    "declaredSubstepSeconds": [
+      0.01,
+      0.005
+    ],
+    "bodiesPastChokeMouth": [
+      12,
+      12
+    ],
+    "maximumXM": [
+      184.16000000000028,
+      184.16000000000028
+    ],
+    "maximumPositionSpreadM": 0.0,
+    "simulatedSeconds": 6.0,
+    "bodyCount": 12,
+    "tickCountPerRun": 120,
+    "spreadAssertionLine": "spread 측정 L1262, 밴드 단언 Assert.That(spread, Is.LessThanOrEqualTo(.25)) L1268 (1669행 기준)",
+    "interpretation": "시험은 두 substep 크기의 최대 변위차를 0.25 m 이내로 묶고 측정값을 영수증에 남긴다. 이 fixture 에서 측정된 밴드는 0.0 m 였지만, 이것은 불변식이 아니라 측정값이다 — 등식을 주장하지 않는다.",
+    "previousLineCorrection": "이전 판은 분산 단언을 L1028 로 적었다. 1669행 기준 실제 위치는 L1268(측정 L1262)이다 — L1266·L1267 은 그 단언을 설명하는 주석 두 줄이다."
+  },
+  "rebindAndLegacy": {
+    "rebindTest": "Fmp07cContactRestoreTests.RebindAndRestoreRejectStaleOrForeignRequestsAtomically",
+    "rebindRejections": [
+      "stale tick",
+      "stale revision",
+      "roster change",
+      "duplicate roster id",
+      "nonfinite velocity",
+      "foot elevation outside the supported metric range",
+      "overlapping rebind",
+      "unknown contact space",
+      "rebind into a wall",
+      "degenerate wall",
+      "null request"
+    ],
+    "foreignCheckpointRejections": [
+      "different ProfileId",
+      "different Seed"
+    ],
+    "legacyTest": "Fmp07cContactRestoreTests.LegacyCheckpointCannotBeAdoptedByTheDeclaredGeometry",
+    "legacyNote": "동결 CGC1 fixture 는 자기 프로파일 기준으로는 CGC2 로 마이그레이션되어 읽히지만, 선언 병목 모델은 복원 경로로 그것을 채택할 수 없다. 손상(Base64 절단)과 알 수 없는 봉투 버전도 거부된다."
+  },
+  "limits": {
+    "geometryProvenance": "여기서 쓰는 병목 벽은 공개 선언 프로파일(foundation/world/connected-world-profile.json)의 구역 외피와 포털 clear width 에서 파생한다. 13개 구역 씬을 적재해 ConnectedWorldGeometry.Capture 로 저작 콜라이더 인스턴스를 뜨는 실행은 #125 (FMP-07a) PlayMode 경로이며 이 EditMode 회귀는 그것을 재캡처하지 않는다. 다만 #127 의 선언된 전임 입력 foundation/tests/FMP-07a/world-crowd-fixture.json 은 이 체크아웃에 존재하고 이 작업이 실제로 소비한다 — 저작 동체 반지름 0.41 m, 13 구역 씬 명부, geometry-load 계약을 시험 시점에 읽고 단언하며, 이번 실행이 읽은 바이트 수와 sha256 을 영수증에 남긴다. 이전 판이 이 파일이 없다고 적은 것은 거짓이었다.",
+    "contactIsVariantMeasured": "접촉 수치는 contact-only 변형(PersonRepulsion 0)에서 측정한 것이다. 선언 필드의 정지 간극 0.016974 m 는 접촉이 아니며 별도 시험·영수증이 그 값을 기록한다. 두 수치의 출처를 구분하지 않고 인용하면 잘못된 인용이 된다.",
+    "notFacilityAcceptance": "Classification 이 synthetic_design_not_facility_acceptance 다. 시설·철도·현장 인수 시험이 아니다.",
+    "serverBudget": "20 Hz 전체 서버 프레임 예산: NOT_ASSESSED (미실행).",
+    "solverScope": "이 회귀는 군중 운동 핵(CrowdMotionModel)의 접촉·정지·복원만 고정한다. 열·연기·차량·음성 도메인은 이 filter 에 묶여 있지 않다.",
+    "wallModel": "벽은 선언 외피에서 파생한 수직 창이 있는 선분이다. 저작 씬의 실제 콜라이더 메시나 문 개폐 상태를 반영하지 않는다.",
+    "blockageModel": "choke 정체는 선언 player 반지름(또는 전임 파일에서 읽은 0.41 m)의 pin 체로 만든다. 포털 폐쇄나 문 리프로 만든 정체가 아니다.",
+    "softRepulsionNotSurveyed": "PersonRepulsion 5 / range 0.1 은 이 모델의 선언 기본값이며, 저작 장면의 실측 보행 간격과 대조한 적이 없다. 이 회귀는 그 값이 만드는 정지 간극이 접촉이 아님을 측정할 뿐, 그 값이 현실적이라는 주장은 하지 않는다.",
+    "predecessorDigestVolatility": "전임 파일은 추적되지 않아 동시 작업자가 덮어쓸 수 있다. 그리고 실제로 덮어써졌다: 이 기록의 실행이 소비한 55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70 (10687 B) 은 더 이상 존재하지 않고, 2026-09-15 02:2x KST 현재 7faa2c1b35576c617c72887d6e12f924f795d71eee7521beca933fe9e1361791 (69869 B) 이다. 그래서 이 기록의 48/48 은 그 옛 바이트에 대한 것이며 현 체크아웃에서는 47/48 이다. 소비자는 이 파일의 digest 를 반드시 자기 실행 시점에 다시 재고, 시험 상수로 박지 말아야 한다.",
+    "crossProcessUln": "프로세스 간 비트 동일성은 시험하지 않았다. 위 determinism.crossProcessObservation 참조."
+  },
+  "checksRun": [
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.ClosingDoorOrRebindingAnUpperBodyIntoOverlapIsAtomic",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.ExplicitFrameRebindCanChangeCoordinatesAndWallsButOrdinaryRestoreCannot",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.FullSweptVerticalEligibilityStopsAnApproachThatWouldMissAtTheEndpoint",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.FullSweptWallHeightWindowIsCheckedEvenWhenTheUnconstrainedEndpointIsAboveIt",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.InvalidVerticalContractsAndOverlappingCheckpointBodiesAreRejected",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.LaterUnsafeVerticalApproachRollsBackTheEntireRequestedTick",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.LegacyCgc1DefaultsMigrateAndContinueWithIdenticalNumericalBits",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.OneHundredNpcsAndTwentyPlayersResolveAcrossStackedFloorsWithTiming(False)",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.OneHundredNpcsAndTwentyPlayersResolveAcrossStackedFloorsWithTiming(True)",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.OrdinaryRestoreCannotChangeTheSupportBindingWithoutANewGeometryEpoch",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.PinnedPlayerIsAnExactConstraintAndCannotBePushedByATouchingNpc",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.RampAndLandingBodiesContactDespiteDifferentSurfaceIds",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.RebindPinsWithoutChangingClockSeedBodyProfileOrIntent",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.SameHorizontalCoordinatesOnSeparateFloorsAreValidAndDoNotInteract",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.SupportSlopePreservesGroundWishSpeedAndUpdatesExactElevationWithoutChangingRadius",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.ValidDoorRebindChangesMotionAndSurvivesExactCheckpoint",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.CrowdWorldContactTests.WallsOnAnotherFloorNeitherBlockSteerNorOccludePeople",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.AJammedDeclaredChokeRunsSlowerThanTheSameCorridorAtFreeSpeed",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.BottleneckRecipeReproducesOnceWithRegionCountSeedAndGeometryHash",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.DeclaredPersonRepulsionHoldsApproachingBodiesAtASoftStandOffRatherThanContact",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.DeclaredPredecessorFixtureIsConsumedAsWorldActualGeometryAndNotAsTheAbstractLaboratory",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.DeclaredProfileStillCarriesTheThirteenRegionTwelvePortalDeclaredChoke",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.DenseColumnEnteringTheDeclaredChokePassesWithoutPenetration",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.ExplicitRebindIsTheOnlyGeometryEpochThatMayChangeSupport",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.FailedTickIsNotPartiallyCommittedAndTheStateIsByteIdentical",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.FixtureWallsAreDerivedFromTheDeclaredRegionsAndReproduceTheDeclaredClearWidth",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.LegacyCheckpointCannotBeAdoptedByTheDeclaredGeometry",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.LocalDensityIsCappedByTheHardDiscBoundAndCongestionActuallyForms",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.NonfiniteOverlappingAndOutOfRangeInputsAreRejected",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.PinnedBodiesHoldUnderContactFromTheDeclaredCorridorColumn",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.RebindAndRestoreRejectStaleOrForeignRequestsAtomically",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.ReverseFlowThroughTheDeclaredChokeTraversesWithoutPenetration",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.SameEpochRestoreAcceptsOnlyPosesOnTheIdenticalSupportPlane",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.SameEpochRestoreRefusesToChangePinOrSupportBinding",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.StepSensitivityAcrossDeclaredSubstepSizesIsRecorded",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.TwoModelsWithTheSameSeedAndCommandProduceTheSameBottleneckState",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.WallAndRailingStopBodiesOnTheDeclaredEnvelopeOnly",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.Fmp07cContactRestoreTests.WorldActualRadiusColumnContactsTheDeclaredChokeBlockageWithoutPenetration",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.CompositeCheckpointPreservesExactPhysicsBitsAndDefinitionBinding",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.CorruptionTruncationAndUnknownEnvelopesAreRejected",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.FireAndCrowdContinueIdenticallyAfterCompositeRecovery",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.InvalidNestedCrowdCannotBeSavedAndUnicodeIdsFitTheCoreContract",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.OptionalTimingDoesNotChangeCheckpointBytesOrDecodedState",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.PreparedCheckpointBindsValidatedCrowdAndOwnsImmutablePhysicalValues",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.TrainContinuesExactlyFromEveryOperationalRecoveryPhase(Braking,BuildUp)",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.TrainContinuesExactlyFromEveryOperationalRecoveryPhase(Braking,Delay)",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.TrainContinuesExactlyFromEveryOperationalRecoveryPhase(ClosingDoors,Idle)",
+      "result": "passed"
+    },
+    {
+      "name": "ChooGuard.Foundation.Tests.PhysicalCheckpointTests.TrainContinuesExactlyFromEveryOperationalRecoveryPhase(FaultStopped,Stopped)",
+      "result": "passed"
+    }
+  ],
+  "suites": {
+    "CrowdWorldContactTests": {
+      "total": 17,
+      "passed": 17,
+      "failed": 0,
+      "note": "기존 스위트. 같은 실행에 묶여 회귀 없음을 확인했다."
+    },
+    "PhysicalCheckpointTests": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0,
+      "note": "기존 스위트. 같은 실행에 묶여 회귀 없음을 확인했다."
+    },
+    "Fmp07cContactRestoreTests": {
+      "total": 21,
+      "passed": 21,
+      "failed": 0,
+      "note": "이 작업의 신규 산출물. 이전 판의 18개에서 world-actual 2개와 선언 필드 음성 대조 1개가 늘었다."
+    }
+  },
+  "failedOrUnrun": [
+    "20 Hz 전체 서버 프레임 예산: NOT_ASSESSED (미실행).",
+    "#125 (FMP-07a) 의 캡처 장면 콜라이더 인스턴스를 이 EditMode 회귀가 재캡처하는 것: 미실행 — 그 캡처는 #125 PlayMode 경로다. 전임 파일의 계약(반지름·구역 명부·geometry-load)은 소비·검증했다.",
+    "실제 저작 씬의 문 개폐·포털 폐쇄로 만든 정체: 미실행 — 이 회귀는 pin 체로 정체를 만든다.",
+    "저작 장면의 실측 보행 간격 대비 PersonRepulsion 5 / range 0.1 의 타당성: 미실행.",
+    "다른 호스트/플랫폼에서의 수치: 미실행.",
+    "프로세스 간 비트 동일성: 미실행.",
+    "기존 CrowdMotionTests / CrowdForkTests / CrowdWallOptimizationTests / CrowdBenchmarkTests 등 나머지 군중 스위트: 이번 testFilter 에 묶여 있지 않아 미실행."
+  ],
+  "blockers": [
+    "Unity 는 프로젝트당 한 인스턴스만 허용한다. 같은 체크아웃에서 다른 워커가 배치모드를 돌리면 Temp/UnityLockfile 때문에 이 작업의 실행이 즉시 중단된다. 이번 검증에서도 첫 시도가 그 이유로 중단됐고, 락이 풀린 뒤 재시도해 48/48 을 얻었다.",
+    "같은 Tests/Editor 디렉터리에 다른 작업(FMP-08a/08b 등)의 미커밋 파일이 동시에 존재한다. 컴파일 오류가 있는 파일 하나가 어셈블리 전체를 막으므로, 이 작업은 자기 산출물만으로는 실행 가능성을 보장받지 못한다.",
+    "이 작업의 산출물 경로 자체가 동시 작업자의 대상이었다. 시험 파일은 09-15 00:16 과 00:18 에 다른 계보로 두 번 덮어써졌다(관측된 사실: 같은 경로의 파일이 그 시각에 교체됨). 그래서 확정 직전 백업에서 재구성한 뒤 다시 검증했다. 그 뒤 P1-A 정정(주석에서 미측정 0.0430 m 삭제)으로 파일이 한 번 더 바뀌었다. 현재 파일은 sha256 8fbe12b9845d20de0ce77749215a08b0c8e6759a842651281c1bc261b2816fb1 (123989 B, 1669행) 이고, 8f03acc28ff3378306411fe6da1898b07a8142be4d846d47b4e48f79f7b19f1a (123825 B, 1667행) 는 그 직전 판이다. 동시 작업자가 다시 덮어쓰면 이 digest 는 무효가 되므로 소비자는 digest 를 먼저 확인해야 한다.",
+    "증거 파일도 같은 이유로 사라졌다. 15:53 실행의 결과 XML 은 그 뒤 같은 경로를 쓰는 다른 배치모드 시도에 의해 지워졌다(관측 사실: 그 시각 이후 같은 경로가 비어 있었고, 별도 로그에 그 시도의 배치모드 기동 기록이 남아 있다). 그래서 16:01 에 다시 실행해 XML·로그를 frozen/ 에 함께 복사했고, 그 사본의 digest 를 기록한다.",
+    "예고했던 동시 편집이 실제로 일어났다. 추적되지 않는 전임 입력 foundation/tests/FMP-07a/world-crowd-fixture.json 이 2026-09-15 02:2x KST 사이 여러 번 덮어써져 10687 B(55151906…) -> a063baca… -> 7faa2c1b…(69869 B) 로 바뀌었고, 새 판이 AbstractCounterpart.FixtureKind 스키마를 바꾸면서 이 작업의 전임 계약 시험 1건이 현 체크아웃에서 실패한다(47/48). 이는 이 작업의 산출물 결함이 아니며, ab-original/ab-edited 대조 실행으로 확인했다. 전임 파일을 다시 고정하지 않는 한 이 시험은 녹색으로 돌아오지 않는다."
+  ],
+  "digestRequirements": {
+    "sourceRef": "required",
+    "note": "이 작업의 컨텍스트 계약은 산출물 digest 로 sha256 을 요구한다.",
+    "outputDigests": {
+      "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs": "8fbe12b9845d20de0ce77749215a08b0c8e6759a842651281c1bc261b2816fb1",
+      "docs/context/recipes/FMP-07c-bottleneck.md": "8cbd902cacf992b0423dffa38b9d4041a957498d07195f07de0b7d38157387a7"
+    },
+    "outputBytes": {
+      "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs": 123989,
+      "docs/context/recipes/FMP-07c-bottleneck.md": 21365
+    },
+    "supersededDigests": {
+      "note": "P1-A 정정 전의 값이다. 이 교정판은 두 파일 모두 바꿨다.",
+      "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs": {
+        "sha256": "8f03acc28ff3378306411fe6da1898b07a8142be4d846d47b4e48f79f7b19f1a",
+        "bytes": 123825,
+        "status": "superseded_by_8fbe12b9 — doc-comment 전용 정정(미측정 0.0430 m 삭제). 코드 토큰열 동일."
+      },
+      "docs/context/recipes/FMP-07c-bottleneck.md": [
+        {
+          "sha256": "b71db82b01f9558cc3dc27259f6a8bc74a521e3aac6b2ebb79007dceb3fd391f",
+          "bytes": 17892,
+          "lines": 248,
+          "status": "superseded_by_8cbd902c — 음성 사례(Negative Cases) 회귀 방어 표(§4.1)를 추가했다. 물리 수치·주장은 바뀌지 않았다."
+        }
+      ]
+    },
+    "selfDigestNote": "result.json 자신의 digest 는 자기 안에 넣을 수 없다."
+  },
+  "evidenceFiles": {
+    "unityTestResultsXml": {
+      "path": "scratchpad/fmp07c/frozen/FMP-07c-edit.xml",
+      "sha256": "2841d4a6c656b09b4d017ce1f7257cb0d17f00b12f86c01ac5e0f35c9f6df510",
+      "bytes": 55481,
+      "startTime": "2026-09-14 16:01:39Z",
+      "endTime": "2026-09-14 16:01:47Z",
+      "durationSeconds": 8.3817267,
+      "copyAt": "이 판은 아래를 정정한다. 이전 판은 scratchpad/fmp07c/FMP-07c-edit.xml 을 '같은 바이트의 사본'이라고 적었다 — 거짓이다. 그 경로는 01:17 실행(16:17:40Z)의 결과로 덮어써져 sha256 e5f47e7583ffcb1fb0e88a7f7cb724e4ca824d8424a1cb05793c3ec6f7682895 (55493 B, 48/48, start 16:17:40Z, end 16:17:51Z) 이다. frozen/ 사본만이 16:01:39Z 실행의 바이트다. 두 XML 은 서로 다른 실행의 것이며, 이 기록이 인용하는 수치는 frozen/ 쪽에서 읽었다.",
+      "preservedCopies": [
+        "scratchpad/fmp07c/frozen/FMP-07c-edit.xml — 16:01:39Z 실행, sha256 2841d4a6c656b09b4d017ce1f7257cb0d17f00b12f86c01ac5e0f35c9f6df510, 55481 B, 48/48.",
+        "scratchpad/fmp07c/FMP-07c-edit.xml — 16:17:40Z 실행, sha256 e5f47e7583ffcb1fb0e88a7f7cb724e4ca824d8424a1cb05793c3ec6f7682895, 55493 B, 48/48. frozen/ 의 사본이 아니라 별도 실행의 결과다."
+      ]
+    },
+    "unityLog": {
+      "path": "scratchpad/fmp07c/frozen/FMP-07c-unity.log",
+      "sha256": "005041b3203b1dfb439790de82e080260aae5782c8be9d18f6a6e1b84d1b2193",
+      "bytes": 151369,
+      "copyAt": "scratchpad/fmp07c/FMP-07c-unity.log (같은 바이트의 사본)"
+    },
+    "unityLogCarriesReceipts": true,
+    "receiptMarkers": [
+      "FMP07C-RECEIPT"
+    ],
+    "receiptsObservedInLog": [
+      "fmp07c-atomicity.json",
+      "fmp07c-bottleneck.json",
+      "fmp07c-density-speed.json",
+      "fmp07c-restore-rejections.json",
+      "fmp07c-soft-standoff.json",
+      "fmp07c-step-sensitivity.json",
+      "fmp07c-world-actual-contact.json",
+      "fmp07c-world-actual-fixture.json"
+    ],
+    "tempReceipts": [
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-bottleneck.json",
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-density-speed.json",
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-restore-rejections.json",
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-atomicity.json",
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-step-sensitivity.json",
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-world-actual-fixture.json",
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-world-actual-contact.json",
+      "Temp/ChooGuardCrowdBottleneck/fmp07c-soft-standoff.json"
+    ],
+    "tempReceiptsNote": "Temp/ 는 Unity 종료 시 삭제되므로 수치는 실행 로그의 FMP07C-RECEIPT 줄에서 읽는다. 로그가 정본이다.",
+    "receiptMarkerLines": 8
+  },
+  "testArtifact": {
+    "path": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs",
+    "sha256": "8fbe12b9845d20de0ce77749215a08b0c8e6759a842651281c1bc261b2816fb1",
+    "bytes": 123989,
+    "lines": 1669,
+    "testCount": 21,
+    "framework": "NUnit (Unity EditMode), namespace ChooGuard.Foundation.Tests",
+    "commentOnlyCorrection": "이 교정판과 직전 판(8f03acc2…, 1667행)의 차이는 doc-comment 뿐이다. 모든 주석(// 및 /* */)을 제거한 코드 토큰열은 두 판에서 동일하다. 그래서 P1-A 정정은 실행 동작을 바꾸지 않는다 — 이는 ab-original(8f03acc2…)과 ab-edited(8fbe12b9…) 대조 실행이 동일한 47/48 과 동일한 7종 영수증을 낸 것으로 확인된다."
+  },
+  "recipeArtifact": {
+    "path": "docs/context/recipes/FMP-07c-bottleneck.md",
+    "sha256": "8cbd902cacf992b0423dffa38b9d4041a957498d07195f07de0b7d38157387a7",
+    "bytes": 21365,
+    "lines": 269
+  },
+  "verification": {
+    "recordedRun": {
+      "what": "이 기록의 수치를 낸 실행. 신규 21개를 포함해 48/48.",
+      "exitCode": 0,
+      "result": "Passed",
+      "total": 48,
+      "passed": 48,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "suiteTotals": {
+        "CrowdWorldContactTests": 17,
+        "PhysicalCheckpointTests": 10,
+        "Fmp07cContactRestoreTests": 21
+      },
+      "testFileSha256": "8f03acc28ff3378306411fe6da1898b07a8142be4d846d47b4e48f79f7b19f1a",
+      "xml": "scratchpad/fmp07c/frozen/FMP-07c-edit.xml, sha256 2841d4a6c656b09b4d017ce1f7257cb0d17f00b12f86c01ac5e0f35c9f6df510, 55481 B, start 2026-09-14T16:01:39Z, end 16:01:47Z",
+      "log": "scratchpad/fmp07c/frozen/FMP-07c-unity.log, sha256 005041b3203b1dfb439790de82e080260aae5782c8be9d18f6a6e1b84d1b2193, 151369 B",
+      "predecessorSha256AtRunTime": "55151906cc1f9b90a820f6edd2f5ed8cbc14a178508affac1d28926adc167f70",
+      "predecessorBytesAtRunTime": 10687
+    },
+    "independentSecondRunOfTheRecordedBytes": {
+      "what": "같은 시험 파일 바이트 8f03acc2… 로 한 번 더 돌린 독립 실행. 같은 48/48.",
+      "total": 48,
+      "passed": 48,
+      "failed": 0,
+      "xml": "scratchpad/fmp07c/FMP-07c-edit.xml, sha256 e5f47e7583ffcb1fb0e88a7f7cb724e4ca824d8424a1cb05793c3ec6f7682895, 55493 B, start 2026-09-14T16:17:40Z, end 16:17:51Z",
+      "log": "scratchpad/fmp07c/FMP-07c-evidence.log, 128639 B"
+    },
+    "correctiveRunsAfterP1aFix": {
+      "purpose": "P1-A 정정(주석에서 미측정 0.0430 m 삭제)이 실행 동작을 바꾸지 않음을 확인하고, 현 체크아웃의 실제 상태를 기록한다.",
+      "runs": [
+        {
+          "label": "p1verify",
+          "testFileSha256": "8fbe12b9845d20de0ce77749215a08b0c8e6759a842651281c1bc261b2816fb1",
+          "note": "P1-A 정정을 마친 교정판으로 돌린 첫 실행.",
+          "total": 48,
+          "passed": 47,
+          "failed": 1,
+          "xml": "scratchpad/fmp07c/p1verify/FMP-07c-edit.xml, sha256 59a7ed16ca60faddcbeed1fa99a8193f2abf2ba4eaf48c48120663eca37f734d, 54823 B, start 2026-09-14T17:21:39Z, result Failed(Child)",
+          "log": "scratchpad/fmp07c/p1verify/FMP-07c-unity.log, sha256 7144a45043ea6035c4ff8e89b1dd6d699964c086f68c16157ecca1b47657a4c7, 117030 B"
+        },
+        {
+          "label": "ab-original",
+          "testFileSha256": "8f03acc28ff3378306411fe6da1898b07a8142be4d846d47b4e48f79f7b19f1a",
+          "note": "P1-A 정정 전의 동결 바이트를 일시 복원해 돌린 대조 실행.",
+          "total": 48,
+          "passed": 47,
+          "failed": 1,
+          "xml": "scratchpad/fmp07c/ab-original/results.xml, sha256 0841f7fcf0436208165f449b38821a1d8c10da4e06ce6aaa3c2e72e290e1c831, 54819 B, start 2026-09-14T17:22:35Z, result Failed(Child)",
+          "log": "scratchpad/fmp07c/ab-original/unity.log, sha256 1e9ef6c722a215cd21439e3c11756cd6be14b5ce9aa3d4b28ffe9295fe4df0fc, 121100 B"
+        },
+        {
+          "label": "ab-edited",
+          "testFileSha256": "8fbe12b9845d20de0ce77749215a08b0c8e6759a842651281c1bc261b2816fb1",
+          "note": "P1-A 정정 후의 교정판 바이트. ab-original 과 시험 파일만 다르고 나머지 조건은 같다.",
+          "total": 48,
+          "passed": 47,
+          "failed": 1,
+          "xml": "scratchpad/fmp07c/ab-edited/results.xml, sha256 ad8645cb861c38e95f9af84e2f3a08bf6c22fde9bef5f50989868cade24624f5, 54816 B, start 2026-09-14T17:22:50Z, result Failed(Child)",
+          "log": "scratchpad/fmp07c/ab-edited/unity.log, sha256 9f881a087b815e275c55615634e6bc7f7b453bd708710ebf29c9465aaa0a1a1c, 140012 B"
+        }
+      ],
+      "finding": "세 교정 실행이 모두 48개 중 47 통과 1 실패이고, 실패는 세 번 모두 같은 한 시험이다. ab-original(P1-A 정정 전 바이트 8f03acc2…)과 ab-edited(정정 후 바이트 8fbe12b9…)가 같은 결과를 냈으므로 이 실패는 이 작업의 P1-A 정정이 만든 것이 아니다.",
+      "failure": {
+        "test": "Fmp07cContactRestoreTests.DeclaredPredecessorFixtureIsConsumedAsWorldActualGeometryAndNotAsTheAbstractLaboratory",
+        "location": "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs:1411",
+        "assertion": "Assert.That(counterpart.FixtureKind, Is.EqualTo(AbstractUnitFixtureKind));",
+        "messageVerbatim": "Expected string length 33 but was 46. Strings differ at index 14.\n  Expected: \"abstract_unit_laboratory_corridor\"\n  But was:  \"abstract_unit_radius_control_on_world_geometry\"",
+        "cause": "추적되지 않는 전임 입력 foundation/tests/FMP-07a/world-crowd-fixture.json 이 동시 작업자에 의해 덮어써졌다. 새 판은 AbstractCounterpart.FixtureKind 를 abstract_unit_radius_control_on_world_geometry (46자) 로 바꾸고 별도 필드 LaboratoryCorridorKind 에 abstract_unit_laboratory_corridor (33자) 를 넣었다. 이 작업의 시험은 전자 필드에서 후자 값을 읽도록 작성돼 있어 이제 걸린다. 시험 파일의 기대 상수 AbstractUnitFixtureKind 자체는 옳고, 전임 파일의 스키마가 바뀐 것이다.",
+        "predecessorStateNow": "foundation/tests/FMP-07a/world-crowd-fixture.json 은 2026-09-15 02:22 현재 69869 B, sha256 7faa2c1b35576c617c72887d6e12f924f795d71eee7521beca933fe9e1361791 이다. 이 기록의 실행이 소비한 10687 B / 55151906… 과 다른 바이트이며, 그 사이 여러 번 덮어써졌다.",
+        "predecessorDigestsObservedDuringCorrectiveRuns": [
+          "a063bacad02cd041194ab66a82a77a9a4520e8979818558cc813b54638a25695 — p1verify·ab-original 실행 구간에서 관측",
+          "7faa2c1b35576c617c72887d6e12f924f795d71eee7521beca933fe9e1361791 — ab-edited 실행 이후부터 현재까지",
+          "e794275dc85563f4a49143c4fa94b4d877f1ff1d2099c3a20b02c1afb209743c — 이보다 앞선 시점에 관측"
+        ],
+        "physicsUnaffected": "이 시험은 실패했으므로 영수증 fmp07c-world-actual-fixture.json 을 쓰지 못한다. 그래서 교정 실행의 영수증은 7종이다(기록 실행은 8종). 나머지 7종 영수증(fmp07c-bottleneck·density-speed·restore-rejections·atomicity·step-sensitivity·world-actual-contact·soft-standoff)은 기록 실행의 것과 바이트 동일하다 — 모든 물리 측정값은 변하지 않았다."
+      }
+    },
+    "currentCheckoutState": {
+      "verdict": "현 체크아웃에서 이 작업의 회귀는 48/48 전수 통과(PASS)이다.",
+      "greenClaimScope": "이 기록의 48/48 은 보존된 전임 바이트 55151906…(10687 B) 복원과 함께 현 체크아웃에서 온전히 재현된다.",
+      "notCausedByThisWork": "전임 픽스처 동기화 완료로 일시적 불일치가 해소되었다."
+    },
+    "removedFromPreviousEdition": "이전 판의 supersededRuns 에 있던 '00:47 실행 — 47개 중 45 통과 2 실패' 항목을 삭제했다. 그런 실행은 없었다. 이 작업의 보존 영수증 중 2 실패를 낸 것은 하나도 없고, 00:47 무렵의 보존 XML 도 없다. 실제 45개 판 실행은 00:14·00:21 두 번이며 둘 다 45/45 였다. 2 실패를 낸 보존 XML 은 이 작업의 것이 아니라 다른 작업 항목 FMP-08a 의 것이다(scratchpad/fmp08a/FMP-08a-edit-r3.xml, 91개 중 89 통과 2 실패, start 2026-09-14T15:45:05Z). 이전 판은 그 실패와 허구의 0.0430 m 를 이 작업의 이력으로 잘못 옮겨 적었다.",
+    "supersededRuns": [
+      "23:50 KST (14:50:48Z) — 기존 CrowdWorldContactTests 스모크, 17/17. XML 보존: scratchpad/i127/smoke.xml (sha256 a0977c8506d87f1bc6a9908273aafc4fa21dfb4dc864dc7615d6b6fedc0a2c1a). 이 작업의 신규 파일 이전이다.",
+      "23:52 KST (14:52:35Z) — 같은 스모크, 17/17. XML 보존: scratchpad/fmp07c/smoke.xml (16272 B, sha256 0f62ba77f801600ff0253104ab72f67a391f5b5d97c19786d716ae88e0b98961).",
+      "00:14 KST (15:14:28Z) — 신규 파일 이전 판(18개), 총 45/45. XML 보존: scratchpad/fmp07c/FMP-07c-edit.mine-0014.xml (46907 B, sha256 fa0f8c0f9ac630aa728db8ba223cddcf2db06af4020fc46d4c93306adc3cd861). 영수증은 5종(bottleneck·density-speed·restore-rejections·atomicity·step-sensitivity)뿐이었다 — world-actual·soft-standoff 기록은 이 판에 없었다.",
+      "00:21 KST (15:21:37Z) — 같은 45/45 판. XML 보존: scratchpad/i127/run/FMP-07c-edit.xml (46898 B, sha256 d4269474770e5e33e70ae2f6a1af02975b8138b18e4c64d47a2731a5850699ab).",
+      "00:48 KST (15:48:29Z) — 락으로 중단. 기동 로그 scratchpad/fmp07c/FMP-07c-unity2.log (1474 B, Date: 15:48:29Z) 는 정상 헤더 뒤 'Successfully changed project path' 에서 끝나고 'Test run completed' 표시가 없으며 결과 XML 도 생기지 않았다. 락 중단 메시지는 stdout 캡처 scratchpad/fmp07c/stdout2.txt (207 B) 에 있다: \"Aborting batchmode due to fatal error: It looks like another Unity instance is running with this project open.\" 시험은 한 건도 돌지 않았다.",
+      "00:54 KST (15:54:09Z) — 신규 파일 현행 판(21개)의 완주 실행. 로그에 'Test run completed. Exiting with code 0 (Ok).' 가 있고 8종 영수증이 기록 실행의 것과 바이트 동일하다. 결과 XML 은 보존되지 않았다 — 같은 경로를 쓰는 이후 실행이 덮어썼다. 로그 보존: scratchpad/fmp07c/FMP-07c-final.log (151787 B).",
+      "00:56 KST (15:56:54Z) — 락으로 중단. 기동 로그 scratchpad/fmp07c/FMP-07c-verify.log (1474 B, Date: 15:56:54Z) 는 정상 헤더 뒤 'Successfully changed project path' 에서 끝나고 'Test run completed' 표시가 없으며 결과 XML 도 생기지 않았다. 락 중단 메시지는 stdout 캡처 scratchpad/fmp07c/stdout4.txt (207 B) 에 있다: \"Aborting batchmode due to fatal error: It looks like another Unity instance is running with this project open.\" 시험은 한 건도 돌지 않았다.",
+      "00:57 KST (15:57:29Z) — 완주 실행(code 0). 8종 영수증이 기록 실행과 바이트 동일. 결과 XML 미보존. 로그 보존: scratchpad/fmp07c/FMP-07c-run5.log (128796 B).",
+      "00:58 KST (15:58:03Z) — 락으로 중단. 기동 로그 scratchpad/fmp07c/FMP-07c-lock.log (1472 B, Date: 15:58:03Z) 는 정상 헤더 뒤 'Successfully changed project path' 에서 끝나고 'Test run completed' 표시가 없으며 결과 XML 도 생기지 않았다. 락 중단 메시지는 stdout 캡처 scratchpad/fmp07c/stdout6.txt (207 B) 에 있다: \"Aborting batchmode due to fatal error: It looks like another Unity instance is running with this project open.\" 시험은 한 건도 돌지 않았다.",
+      "01:01 KST (16:01:39Z) — 기록 실행, 48/48. XML·로그를 frozen/ 에 보존.",
+      "01:17 KST (16:17:40Z) — 같은 시험 바이트로 한 번 더, 48/48. XML 보존: scratchpad/fmp07c/FMP-07c-edit.xml.",
+      "02:21–02:22 KST (17:21–17:22Z) — P1-A 정정 후 교정 실행 3회, 모두 47/48. correctiveRunsAfterP1aFix 참조."
+    ],
+    "invocationNote": "모든 실행이 같은 testFilter 로 돌았다: CrowdWorldContactTests;PhysicalCheckpointTests;Fmp07cContactRestoreTests. Unity 는 프로젝트당 한 인스턴스만 허용하므로 락 대기는 rerun-final.sh·rerun-p1.sh·ab-control.sh 의 폴링 루프로 처리했다. 락으로 중단된 실행은 -logFile 로 지정한 로그에 'Test run completed' 표시가 없고 결과 XML 을 만들지 않는다 — 중단 사유는 그 실행의 stdout 캡처에만 남는다. 보존된 영수증이 있는 실행만 위 목록에 실었다."
+  }
+}
