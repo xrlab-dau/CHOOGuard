@@ -1,0 +1,77 @@
+name: Astra Baseline CodeQL Audit
+on:
+  push:
+    branches: [chore/astra-develop-audit-20260915]
+    paths: [.github/workflows/astra-codeql-audit.yml]
+permissions:
+  contents: read
+  actions: read
+  security-events: write
+jobs:
+  static-analysis:
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        language: [csharp, python, javascript-typescript]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 86bb82bf5655562e2577cf2b83553ff261d8d5a6
+          lfs: false
+          persist-credentials: false
+      - name: Verify immutable original source
+        run: test "$(git rev-parse HEAD)" = 86bb82bf5655562e2577cf2b83553ff261d8d5a6
+      - name: Initialize pinned upstream security and quality analysis
+        uses: github/codeql-action/init@b96794f015dfd88f77b49b1c93e0fa7110f94c63
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+          queries: security-and-quality
+          config: |
+            name: original-develop-audit
+            paths-ignore:
+              - .agents
+              - _bmad
+              - .specify
+      - name: Analyze without uploading alerts or databases
+        uses: github/codeql-action/analyze@b96794f015dfd88f77b49b1c93e0fa7110f94c63
+        with:
+          output: ${{ runner.temp }}/astra-codeql
+          upload: never
+          upload-database: false
+          category: astra-original-${{ matrix.language }}
+      - name: Preserve findings as review work, never as automatic AAA approval
+        env:
+          LANGUAGE: ${{ matrix.language }}
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,os,pathlib
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'astra-codeql'
+          reports=list(root.glob('*.sarif'))
+          if not reports: raise SystemExit('BLOCKED: no SARIF report')
+          findings=[];invocations=[];files=[]
+          for p in reports:
+              data=json.loads(p.read_text())
+              if not data.get('runs'): raise SystemExit('BLOCKED: empty SARIF runs')
+              files.append({'file':p.name,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+              for run in data['runs']:
+                  invocations.extend(run.get('invocations',[]))
+                  for result in run.get('results',[]):
+                      findings.append({'ruleId':result.get('ruleId'),'level':result.get('level'),'message':result.get('message'),'locations':result.get('locations')})
+          failed=any(i.get('executionSuccessful') is False for i in invocations)
+          state='BLOCKED' if failed else ('FINDINGS_REVIEW_REQUIRED' if findings else 'NO_FINDINGS_BY_THIS_TOOL')
+          receipt={'schemaVersion':1,'sourceCommit':'86bb82bf5655562e2577cf2b83553ff261d8d5a6','language':os.environ['LANGUAGE'],'state':state,'findings':findings,'reports':files,'AAAApproved':False,'buildMode':'none','limits':'Static analysis only. C# dependency inference is not Unity compilation or execution. Empty findings are not source completeness, exploit absence, or product approval.'}
+          (root/'receipt.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\n')
+          print(json.dumps({'state':state,'findings':len(findings),'AAAApproved':False}))
+          raise SystemExit(2 if failed or findings else 0)
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: astra-codeql-${{ matrix.language }}
+          path: ${{ runner.temp }}/astra-codeql/
+          retention-days: 7
+          if-no-files-found: error
