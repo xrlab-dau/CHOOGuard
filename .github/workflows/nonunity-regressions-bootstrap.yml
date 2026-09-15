@@ -1,0 +1,42 @@
+name: Non-Unity core regression reproduction
+on:
+  push:
+    branches: [bugfix/nonunity-training-core-20260915]
+    paths: [.github/workflows/nonunity-regressions-bootstrap.yml]
+permissions:
+  contents: read
+jobs:
+  regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          lfs: false
+          persist-credentials: false
+      - name: Materialize hash-bound regression tests only
+        shell: python
+        run: |
+          import base64, hashlib, pathlib, subprocess, zlib
+          encoded = 'eNrNGllz2rr6vb/Clyc4EJs1JKfL1OwQtgABks6ZO8KWwcFYRrLZOvnv95NtCBC2piedm8m0sfTtu2RfXV0JkopnkukYxqdwOCwMJBszm0kmMR1Tt5dSnZgP/A+xw9dFhVmUPH/6/l24ikaiQjgWSSSE798/hb80YR0rttBWx18DNV2hhBHNFuv5jghLgW+fwoLw5T/AMG8OdRNf6aaKLQz/mLYANFVHsXViCow4VMFMQKYqEKoDKDKEOhdBcCUThToRXIkEZjsDeL668miDABam9rJIiWO5S7DYQXSI7QJFEzwndPzNxPaNGP0i7a/74HkTDQycwxpyDDtLJpZu4LKNJ+ybhgyGv0jHAXwKZcYN5Rvjm00dQNpd2wA2kTLm1Na0t1Z8mBagEYrd5SFmPd0eVYkyLgBTn/QpCNcq0luzfOEC71jJR29hDVNsKlgom4rhqHjfkVwN15tCF1MG7voaiKXFWEyMBQTpPDHXjVu4CTGWFKOXoyY4f1lFlo3pFpmkeL1DxXfLK7IoSvC7tpGkkIm4oAYaiMqIkKGDqCpqxDFVxCNQajmmrU+w9Ndf0l8Q76cIn9v/NcZuhkl5VQePSrJjjyD+bdia4fZI1+x1An4Qwywlc7UAufAn+FTxECnLgr6wHYo/mFeN8I0e1Bsy/xO6NUeI4T/BqIcMo2FBrOorF+SDeRZ0qDOjJdMV9sGcPC7IyI6wMraIbn507Lf1iWMgG6vrrFt+NEMDirLKLZrFhvHRzCZkjHmgfLjjOhTpZm5poskf4tWA1vYnYt9lppvDNmbs47l1ia7gLDFtipRDoQ8z2RtGW7RgoDFUYGiaMG5g9cp9voIZSwMBxWdGzIBQ1U0Y007DZIm17JCGY1uOnYNQVUC25ddAk2KG6QzX8RxEW4sF48vWVOGOHd60c3V+xmxbIDgyMq4KdJN721NmLH7tjpkOAy8I7SUDZp93H8VyY38FtJzur3XwwhYroOBmIwsOKboOKWyMKNZgvtMtAy0x3QC6Q4i4GRph/VMYYh0zC8Gs8kpmd2b+FP7p+c1yBoauCAwjA6uCYiDGhEOqe9A+kotI9RlUJxh4AVgBv/heaxJqIwOGUYhNd3j2FoIh4es3wcTzE5Bb1PlPgZJJkxda4auL6P6dCEYjAv8NRYQOObAde93PGhjRnq7aIwCJ+c8lrA9HHCfxyu3Ftdo5zXo8HLfEff0zGHrF3lNihiicERacIZ9/xRZGqsyr68IONpE9EiFHB3D0CHIr8/TikZB1KIyam0e+tYn1iHA6Q0Khz28lgOyA0AEZeIy1MQXv6itMxRzPGu/hyzE9vwW5EBHXxrvovHwTkwk/13lf0LGhMmDDzwHCy74knhRiF7AhoHHw7T5MXqYPtrX3su2dH66hYJoJiqmYFvrn0M7R9Wh0Z8cP/hnRVSFD1CXECqadETJzhNAsMk1iNyEhyjbLgjsoDmoGQbZAkao77LjPZQZWBbeNEPjYj36ROxPqNQtuxWpqE6oeyYhAHFv4LzyXmVjgB7DQeTNcHdPWFVZsEqbzcb1sug5dnoKtwwR8MSyqHzNl2ZxxF7dcnTwzZjD0GsyNyY+SbiIiOEv9vxn0iEL5BfS8gm7Lpuoygj4ywHcYW50R1mnDvxGoYcTbcfBf1UNMaZ4SPI2RQcyhp0wHMmw/f7bJu6AuZH7qIKNDIF200CmMCwQSo1EIti2hjln2PbRTnHJ0h+6+kn8gA34pqnk8t8/AQimAbJnRbcewLA5o7U4U6ud1CPvuVmpODLVX0KAdVsW0jantPZdWHswjDLhRoh4MellhWIz4BseQMTjlEBdsuq0ThZZiT2sZ7TR4+Hf2ao7lbNwcXf45w+0lQDW2xBDl/h+vFiVvTGR+SYDqc6cRh3FZlJrfws9voagQGRgJZ/WBCzVdhAMovFGxd0NHf+O4yS3uaHfWsZwYxzrPrXzTC+uTq+qExN3k/W/dg/3CJ1YuHGeQjHIxejY+hfABYQ3mDKRPb2ACTBzU+BGoiH+KDIQgIIlOKlsFDI4s72vij3eGIWvPweeOF5XoVcFxcUQZ+Lvd98hvhPMuzH9F/uOl358jb29uIsP7nKAWvsLkUdqZNwDmGUtUnus0xACwwcWyuV+CAARRvCDyvzna0+Uh7mon9nU6wttQbqNAlpA+qfJj+QdCLmGyMdJjwZjv0vozgf7MRVjvEIgYZLr1yXnOdAT29DgNv20QWGxG7QSFd2u4LADdYWfA9Zf18NKuHkmD9smEdVkdM+nkHmA+v+7D8aA1JDjt504YeWFb58gGOzFd7O+zWWbwv4Rr2F7LgEMph2c5kh+mdqc7KuNucFpeE747RQ79C8LAmB4lzoNDpvvE7kl6cCv5UA43PcPgtEpMpXvdH2X4N5PVlwIno16C8IWUkBL1q7BMUdNONeq/WbPj8+AeOjV6TO7ALe204YfbBw1dwcOd/P/EzvPAS2eXJf07jb6NHBH6Ow3S30m8mP3/oFl7g6LrL5udbrodzfaemvhrVY+jq/GqYl89vqW4igJI5++I7J4dstJlMvgW9qxR16xy9H0cv7wiEOvjCTaEye6f/j1nES0wvpbnHjwX9u1W+WEfZMKDSE5NPQ152eed60JjxzgKlfz0PuSnFfm8M3EkIiyfCJqkviy/FlW43WoOWuLkYE/tCWLBE/x4M+rcgCfGIsAPyuAPy6IG8Zcd/dvCedvCeXLzQqYiFmmW9nu880WHM3+4IQAKoinCIfDvactCy+g4OYlx7c2g8TGw3Lfz/Xi65DB4aZIAM94Jt6wLYvfz9GWDqOPD3z8DMe/Ub+DtwI0bFWDQaiAQogaQidI6oCuu86TO7gBF/wRh4uYiz5d/ViwZRxvsCRNJpTwauzasAUOjchfW3DIqOGaz6QRbwPjd4XYClI2/U/94OzIC9tDAsBbyryMBWEAUonjqABK0a9n/4r98jQmgPiBFj5sGs39Bv7yv8utO0S4iNOMhDorNMZlCR5J1wJz6Yt8fk1u5New+Nh9h1b9UujKfXDzerGU6nSCtTa1c7GbUmP9Fuvb6KdaaxOMpCK57cakpDqd3eP6FCaVoYfv26w/Owid5YJUtUnIXTIgVXHBF/B979tALcDRVg4j6UCLO3Ed9EorDV2vxvEt5pfe8DhlPG9z9xOGH7VlpvznPp8aCBmgkSXxlqrzLo4dq9PMvd5aKOocbT9zM50ZTlqhFzTCO9iM7ilTQu6pXG47M+6UoZp9hJdisTmky1ntvpVbIq/4rtIQ7hcMxbDp/2BxRaDxcsDqkVvcR6O59lvNOS7jccpwzpfeRx0o44FkbJmdOVHtvhsq1V05ok0WK4kpl1cbfaT05Kq0L+iSR7sWn+zrh5WsXT8nR235anJJyxy6uHLEkiuVJ7RKnrbr+dHDnqHOx4QO2j0XpI9w5Fpncr9jspajYrU6rIKb0ffoyOp6STQGErJ90YtCd102g5NfOVe9YhZps0V6nbys1gQu5HSrueLN6EHyrXydLY0aIrZ2FqznPcGJca06Qin1MPQiMLnVVcJxj7DR3F2GkHjlfRZr4XN0bT5RCPypJ63WfN7P0ql9a09PChgrrFZjff6V/HYhipRSYn5Jt0uqi2jYdotdWtZTslKcxTSM910Djcjt504+GzGu6Uj8aAT2M18Knxoc7Mx5+fpvLDdQX38l22bOQbtN2LkdjAKlWHg3hqac3u6hlpQjL9ZpcVHjNNVarM9XSDPqJRMRWt3CSqWmmFV4/lcBHlx5ZMbP2Xct5/GdrCGr8scl94YhvBvIc8X12fTf3zFfjj7Jczi+FiY1rpN6TsmEyNSg/nCp1hczTNSd3r7vShXE3MynV9le09JfrhEhtl7cFgmVPbpfv7/DNV4m1Dukss0aJ/zcKpaiGvPjrz9/WrEwF0pHfV8dyGgwpH5i/5XMAEn2POFduDdfqdVvaq+wkbp5/NQeshXI3eFPp3tcX0QTMW+b7dXU56szrE682yNHRu2XW+diOb9Lojzcv9pPkUvXmWnITMVmE762hW4rE7L7Tzs0Kn+TjJNOX32fhQGfILyhmTvTH1e4PSc9AJe1lWs2BllNlCZdoDMevKrNy5m1aNxGC66A1y2afyKtcrrZ4tVS61CtoTjubmt6WJHA2vUCxRVpd0WJlb41wnJ99qJbRoUDsePVK+Tmbvu+vzmQabbWRjSJcrz1kip4qZQvj+rhp3qtN8Bs+TFZYd309I6W5QT3SMxtMdimt31VUqa+mt+7vcKtpiciNfZN27aSOXGpAJ60+lZLtzv63g5qDgnRb+B5KWbys='
+          patch = zlib.decompress(base64.b64decode(encoded))
+          if hashlib.sha256(patch).hexdigest() != 'eaa9ac1aacd3beae6855e7cd9b7c072bd5e5372f68b96942f367e2b93ab43aab':
+              raise SystemExit('Regression input digest mismatch')
+          subprocess.run(['git','apply','--check','-'], input=patch, check=True)
+          subprocess.run(['git','apply','-'], input=patch, check=True)
+      - name: Compile original core and reproduce failing regressions
+        working-directory: tests/nonunity
+        run: |
+          dotnet --version
+          dotnet restore --locked-mode
+          dotnet test --no-restore --logger "trx;LogFileName=nonunity-red.trx" --results-directory ../../nonunity-results
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: nonunity-red
+          path: nonunity-results/*.trx
+          retention-days: 7
+          if-no-files-found: error
