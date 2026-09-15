@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>9.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnitLite" Version="3.14.0" />
+    <Compile Include="Program.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Runtime/**/*.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/*.cs"
+             Exclude="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CanonicalScenarioTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/ConnectedThermalTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CoupledIncidentLifecycleTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdBenchmarkTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWorldContactTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/FireBenchmarkTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06aThermalBudgetTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp06bBoundaryMatrixTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp07cContactRestoreTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp08bOccupancyTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/FoundationLoadVerificationTests.cs;
+                      ../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedSpatialTests.cs" />
+  </ItemGroup>
+</Project>
