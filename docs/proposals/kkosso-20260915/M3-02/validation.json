@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "workId": "M3-02",
+  "phase": "prepare",
+  "status": "passed_scoped_metadata_checks",
+  "inventorySha256": "931df25bdec8289c642374345a05a53ab76c73d3b5d3701aa3948cb59fb84d99",
+  "inventoryHashScope": "Exact UTF-8 LF bytes of source-inventory.json in this proposal.",
+  "checks": {
+    "sourceBlobHashes": 5,
+    "uniqueReferences": 6,
+    "pageJoins": 3,
+    "exactChecklistRegionJoin": 13,
+    "acquisitionClaimsRejectedWithoutEvidence": 6,
+    "pageAndImageHashFieldsSeparated": true
+  },
+  "actualHttpResults": [
+    {
+      "pageId": "korail",
+      "httpStatus": 200,
+      "status": "html_retrieved"
+    },
+    {
+      "pageId": "koreatodo",
+      "httpStatus": 200,
+      "status": "html_retrieved"
+    },
+    {
+      "pageId": "migratorybirds",
+      "httpStatus": 200,
+      "status": "html_retrieved"
+    }
+  ],
+  "notRun": [
+    "Fresh image inspection/content hashing",
+    "Candidate art test suite",
+    "Facility/runtime acceptance"
+  ],
+  "limits": [
+    "Validation checks the metadata and its explicit lack of acquisition approval, not web-page/image truth or license validity.",
+    "Dynamic page digests are observations, not archived/reproducible source payloads."
+  ]
+}

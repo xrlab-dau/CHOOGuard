@@ -1,0 +1,546 @@
+{
+  "schemaVersion": 1,
+  "issue": 29,
+  "workId": "M3-02",
+  "phase": "prepare",
+  "status": "proposal_for_review",
+  "branch": "docs/29-kkosso-public-source-inventory",
+  "baseRef": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+  "scope": "Six existing reference pointers and three text-only page probes joined to the 13-region prepare checklist.",
+  "sourceBindings": [
+    {
+      "path": "docs/proposals/kkosso-20260914/M3-01/public-acquisition-checklist.json",
+      "ref": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+      "sha256": "35ca0fafe5bfbc947aec4b30fe35d7f55c3448ffc32acc5e068dda69174d92b3"
+    },
+    {
+      "path": "docs/art/public-station-references.md",
+      "ref": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+      "sha256": "3e6dcc7995c053b2c42004efc80da48bff95e14afe9966be86cadadfa0723894"
+    },
+    {
+      "path": "docs/team/M0-02b/public-use-boundary.json",
+      "ref": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+      "sha256": "54798156a961c8d5b65953ed49c5dd3d384ec22eb976e534d17b95c35499efac"
+    },
+    {
+      "path": "docs/context/work-orders/029.json",
+      "ref": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+      "sha256": "9c5790b3ffe0743f319f968374b35c310c8954ad257c3c4afe512e95789dc462"
+    },
+    {
+      "path": "docs/context/publication/exclusions.md",
+      "ref": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+      "sha256": "92883e4a68afc92c1689f7d7bf248d0b7a465d3c4db96a256e7a85abe062df4a"
+    }
+  ],
+  "inputQualification": {
+    "checklistPhase": "prepare",
+    "checklistStatus": "proposal_for_review",
+    "checklistLimit": "#28 is a prepare artifact with zero qualified acquisition sources. Its merged PR is not candidate acquisition evidence.",
+    "boundaryArtifact": "artifact:15:M0-02b-use-boundary:candidate",
+    "boundaryRulesConsumed": [
+      "R-01",
+      "R-04",
+      "R-05",
+      "R-08"
+    ],
+    "boundaryLimit": "#15 candidate is used as published review context; it does not grant this inventory a license or acceptance.",
+    "oldGateObservation": "#28 records #15 unavailable at its own observation. #15 is now published at this base; this does not retroactively change #28 or resolve Native document qualification."
+  },
+  "candidateGate": {
+    "ready": false,
+    "missingQualifiedSources": [
+      "docs/choo-guard-native-validation.md",
+      "docs/choo-guard-native-team-contracts.md"
+    ],
+    "evidence": "Both remain in publication/exclusions.md; work-order sources have no qualified ref/digest. No candidate acquisition or candidate artifact ID is asserted."
+  },
+  "pageProbes": [
+    {
+      "pageId": "korail",
+      "requestedUrl": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "checkedAt": "2026-09-15T01:55:20.162250+00:00",
+      "method": "GET text/html only; no linked resources fetched",
+      "httpStatus": 200,
+      "effectiveUrl": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "pageSha256": "44b54bd5ca9b936001fa58340fa7ff5e0b8e3611e68901f716cefaeeffdfd4eb",
+      "pageByteCount": 8348,
+      "status": "html_retrieved",
+      "contentType": "text/html",
+      "qualification": "Response-byte identity and transport reachability only; not visual content, complete client-rendered page, image rights or capture-date verification.",
+      "titleElementsText": "코레일 승차권예매",
+      "titleScope": "Joined HTML title elements, possibly including inline SVG UI labels; not a parsed article body.",
+      "rawHtmlRetained": false,
+      "mediaFetched": false,
+      "sourceIdentity": "not_verified",
+      "limit": "200 response has a generic ticketing title. Station-guide body and station identity were not verified."
+    },
+    {
+      "pageId": "koreatodo",
+      "requestedUrl": "https://www.koreatodo.com/busan-station",
+      "checkedAt": "2026-09-15T01:55:20.163309+00:00",
+      "method": "GET text/html only; no linked resources fetched",
+      "httpStatus": 200,
+      "effectiveUrl": "https://www.koreatodo.com/busan-station",
+      "pageSha256": "702286233b62aded7f6c1e37c431e5738451ea552fca75870446a5031f5bed77",
+      "pageByteCount": 1633741,
+      "status": "html_retrieved",
+      "contentType": "text/html",
+      "qualification": "Response-byte identity and transport reachability only; not visual content, complete client-rendered page, image rights or capture-date verification.",
+      "titleElementsText": "Busan Station, luggage storage & getting there | KoreaToDo",
+      "titleScope": "Joined HTML title elements, possibly including inline SVG UI labels; not a parsed article body.",
+      "rawHtmlRetained": false,
+      "mediaFetched": false,
+      "sourceIdentity": "page_title_consistent_with_reference"
+    },
+    {
+      "pageId": "migratorybirds",
+      "requestedUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+      "checkedAt": "2026-09-15T01:55:20.164310+00:00",
+      "method": "GET text/html only; no linked resources fetched",
+      "httpStatus": 200,
+      "effectiveUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+      "pageSha256": "d84f81b7cd56d02e9e6147e1f67533df1d0fe5940e5fccc38eed6624952fb171",
+      "pageByteCount": 263784,
+      "status": "html_retrieved",
+      "contentType": "text/html",
+      "qualification": "Response-byte identity and transport reachability only; not visual content, complete client-rendered page, image rights or capture-date verification.",
+      "titleElementsText": "KTX - A quick Guide to South Korea's High-Speed Train - themigratorybirds.com Expand Expand Expand Toggle Menu Instagram Pinterest Email Expand Expand Expand",
+      "titleScope": "Joined HTML title elements, possibly including inline SVG UI labels; not a parsed article body.",
+      "rawHtmlRetained": false,
+      "mediaFetched": false,
+      "sourceIdentity": "page_title_consistent_with_reference"
+    }
+  ],
+  "references": [
+    {
+      "referenceId": "R01",
+      "pageId": "korail",
+      "pageUrl": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "imageUrl": null,
+      "regionIds": [
+        "rail_terminal_public"
+      ],
+      "regionMappingQualification": "Inherited historical reference description; not a fresh visual verification.",
+      "purpose": "station identification context only",
+      "historicalObservationDate": "2026-09-07",
+      "captureDate": null,
+      "reportedPublicationDate": null,
+      "reportedModificationDate": null,
+      "dateQualification": "Historical repository metadata, not revalidated; publication/modification are not capture dates.",
+      "licenseIdentifier": null,
+      "licenseEvidence": null,
+      "rightsState": "unknown",
+      "admission": "metadata_only",
+      "allowedUse": "metadata_citation_only",
+      "imageUrlChecked": false,
+      "imageContentSha256": null,
+      "imageContentRetained": false,
+      "transform": "blocked_missing_license_instrument",
+      "redistribute": "blocked_missing_license_and_privacy_review",
+      "acceptedForAcquisition": false,
+      "policyRuleRefs": [
+        "R-01",
+        "R-05"
+      ]
+    },
+    {
+      "referenceId": "R02",
+      "pageId": "koreatodo",
+      "pageUrl": "https://www.koreatodo.com/busan-station",
+      "imageUrl": "https://static.wixstatic.com/media/0505b9_0cbd8438e05e4528b3ccb2b6b33b1d72~mv2.jpg",
+      "regionIds": [
+        "station_concourse_2f"
+      ],
+      "regionMappingQualification": "Inherited historical reference description; not a fresh visual verification.",
+      "purpose": "concourse structure context",
+      "historicalObservationDate": "2026-09-07",
+      "captureDate": null,
+      "reportedPublicationDate": null,
+      "reportedModificationDate": null,
+      "dateQualification": "Historical repository metadata, not revalidated; publication/modification are not capture dates.",
+      "licenseIdentifier": null,
+      "licenseEvidence": null,
+      "rightsState": "unknown",
+      "admission": "metadata_only",
+      "allowedUse": "metadata_citation_only",
+      "imageUrlChecked": false,
+      "imageContentSha256": null,
+      "imageContentRetained": false,
+      "transform": "blocked_missing_license_instrument",
+      "redistribute": "blocked_missing_license_and_privacy_review",
+      "acceptedForAcquisition": false,
+      "policyRuleRefs": [
+        "R-01",
+        "R-04"
+      ]
+    },
+    {
+      "referenceId": "R03",
+      "pageId": "koreatodo",
+      "pageUrl": "https://www.koreatodo.com/busan-station",
+      "imageUrl": "https://static.wixstatic.com/media/0505b9_3d8f20a2799f4d0fb0a8fa0cd0781e95~mv2.jpg",
+      "regionIds": [
+        "station_concourse_2f"
+      ],
+      "regionMappingQualification": "Inherited historical reference description; not a fresh visual verification.",
+      "purpose": "second concourse viewpoint context",
+      "historicalObservationDate": "2026-09-07",
+      "captureDate": null,
+      "reportedPublicationDate": null,
+      "reportedModificationDate": null,
+      "dateQualification": "Historical repository metadata, not revalidated; publication/modification are not capture dates.",
+      "licenseIdentifier": null,
+      "licenseEvidence": null,
+      "rightsState": "unknown",
+      "admission": "metadata_only",
+      "allowedUse": "metadata_citation_only",
+      "imageUrlChecked": false,
+      "imageContentSha256": null,
+      "imageContentRetained": false,
+      "transform": "blocked_missing_license_instrument",
+      "redistribute": "blocked_missing_license_and_privacy_review",
+      "acceptedForAcquisition": false,
+      "policyRuleRefs": [
+        "R-01",
+        "R-04"
+      ]
+    },
+    {
+      "referenceId": "R04",
+      "pageId": "koreatodo",
+      "pageUrl": "https://www.koreatodo.com/busan-station",
+      "imageUrl": "https://static.wixstatic.com/media/0505b9_dff220d406584afbbe6a5e213a433668~mv2.jpg",
+      "regionIds": [
+        "station_concourse_2f"
+      ],
+      "regionMappingQualification": "Inherited historical reference description; not a fresh visual verification.",
+      "purpose": "departure display exterior context",
+      "historicalObservationDate": "2026-09-07",
+      "captureDate": null,
+      "reportedPublicationDate": null,
+      "reportedModificationDate": null,
+      "dateQualification": "Historical repository metadata, not revalidated; publication/modification are not capture dates.",
+      "licenseIdentifier": null,
+      "licenseEvidence": null,
+      "rightsState": "unknown",
+      "admission": "metadata_only",
+      "allowedUse": "metadata_citation_only",
+      "imageUrlChecked": false,
+      "imageContentSha256": null,
+      "imageContentRetained": false,
+      "transform": "blocked_missing_license_instrument",
+      "redistribute": "blocked_missing_license_and_privacy_review",
+      "acceptedForAcquisition": false,
+      "policyRuleRefs": [
+        "R-01",
+        "R-04"
+      ]
+    },
+    {
+      "referenceId": "R05",
+      "pageId": "koreatodo",
+      "pageUrl": "https://www.koreatodo.com/busan-station",
+      "imageUrl": "https://static.wixstatic.com/media/0505b9_48c36751955c4206a1604493fc8f47dc~mv2.jpg",
+      "regionIds": [
+        "station_concourse_2f"
+      ],
+      "regionMappingQualification": "Inherited historical reference description; not a fresh visual verification.",
+      "purpose": "information counter exterior context",
+      "historicalObservationDate": "2026-09-07",
+      "captureDate": null,
+      "reportedPublicationDate": null,
+      "reportedModificationDate": null,
+      "dateQualification": "Historical repository metadata, not revalidated; publication/modification are not capture dates.",
+      "licenseIdentifier": null,
+      "licenseEvidence": null,
+      "rightsState": "unknown",
+      "admission": "metadata_only",
+      "allowedUse": "metadata_citation_only",
+      "imageUrlChecked": false,
+      "imageContentSha256": null,
+      "imageContentRetained": false,
+      "transform": "blocked_missing_license_instrument",
+      "redistribute": "blocked_missing_license_and_privacy_review",
+      "acceptedForAcquisition": false,
+      "policyRuleRefs": [
+        "R-01",
+        "R-04"
+      ]
+    },
+    {
+      "referenceId": "R06",
+      "pageId": "migratorybirds",
+      "pageUrl": "https://themigratorybirds.com/ktx-south-korea-high-speed-train/",
+      "imageUrl": "https://themigratorybirds.com/wp-content/uploads/2025/01/ticket-counters-busan-station-1024x683.jpg",
+      "regionIds": [
+        "station_ticket_area"
+      ],
+      "regionMappingQualification": "Inherited historical reference description; not a fresh visual verification.",
+      "purpose": "ticket-area exterior context",
+      "historicalObservationDate": "2026-09-07",
+      "captureDate": null,
+      "reportedPublicationDate": "2025-01-08",
+      "reportedModificationDate": "2025-03-05",
+      "dateQualification": "Historical repository metadata, not revalidated; publication/modification are not capture dates.",
+      "licenseIdentifier": null,
+      "licenseEvidence": null,
+      "rightsState": "unknown",
+      "admission": "metadata_only",
+      "allowedUse": "metadata_citation_only",
+      "imageUrlChecked": false,
+      "imageContentSha256": null,
+      "imageContentRetained": false,
+      "transform": "blocked_missing_license_instrument",
+      "redistribute": "blocked_missing_license_and_privacy_review",
+      "acceptedForAcquisition": false,
+      "policyRuleRefs": [
+        "R-01",
+        "R-04"
+      ]
+    }
+  ],
+  "regionCoverage": [
+    {
+      "regionId": "rolling_stock_mainline",
+      "label": "기차/일반철도 차량",
+      "requiredViews": [
+        "vehicle exterior and door details",
+        "interior aisle and entry relationship"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "rail_tracks_mainline",
+      "label": "선로",
+      "requiredViews": [
+        "track direction and neighboring platform relationship",
+        "rail/support detail with an explicit scale source if available"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "rail_platforms_mainline",
+      "label": "철도 승강장",
+      "requiredViews": [
+        "platform overview in both directions",
+        "platform access and vertical connection details"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "rail_terminal_public",
+      "label": "철도 터미널 공용구역",
+      "requiredViews": [
+        "public region overview from complementary viewpoints",
+        "entrance, vertical connection and fixture detail"
+      ],
+      "selectedHistoricalReferenceIds": [
+        "R01"
+      ],
+      "historicalPlanPointers": [
+        "P01",
+        "P02"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Qualify original URL, capture date, byte hash, reuse terms and privacy before acquisition; current metadata does not close the view gap.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "station_concourse_2f",
+      "label": "역사2층 맞이방",
+      "requiredViews": [
+        "public region overview from complementary viewpoints",
+        "entrance, vertical connection and fixture detail"
+      ],
+      "selectedHistoricalReferenceIds": [
+        "R02",
+        "R03",
+        "R04",
+        "R05"
+      ],
+      "historicalPlanPointers": [
+        "P01"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Qualify original URL, capture date, byte hash, reuse terms and privacy before acquisition; current metadata does not close the view gap.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "station_hall_1f",
+      "label": "역사1층 맞이방",
+      "requiredViews": [
+        "public region overview from complementary viewpoints",
+        "entrance, vertical connection and fixture detail"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [
+        "P02"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "station_ticket_area",
+      "label": "매표/발권 구역",
+      "requiredViews": [
+        "ticketing frontage and circulation overview",
+        "counter/machine and guidance detail"
+      ],
+      "selectedHistoricalReferenceIds": [
+        "R06"
+      ],
+      "historicalPlanPointers": [
+        "P01"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Qualify original URL, capture date, byte hash, reuse terms and privacy before acquisition; current metadata does not close the view gap.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "forecourt_eurasia",
+      "label": "역 앞 광장·유라시아플랫폼",
+      "requiredViews": [
+        "public region overview from complementary viewpoints",
+        "entrance, vertical connection and fixture detail"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [
+        "P05",
+        "P06",
+        "P07"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "underground_connector",
+      "label": "부산역 지하연결통로",
+      "requiredViews": [
+        "public region overview from complementary viewpoints",
+        "entrance, vertical connection and fixture detail"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [
+        "P04",
+        "P09"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "underground_shopping_passage",
+      "label": "지하상가 접근 구역",
+      "requiredViews": [
+        "both connection endpoints",
+        "continuous route and vertical transition overview"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [
+        "P04",
+        "P09"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "metro_concourse",
+      "label": "도시철도 부산역 대합실",
+      "requiredViews": [
+        "public region overview from complementary viewpoints",
+        "entrance, vertical connection and fixture detail"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [
+        "P03",
+        "P09"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "metro_platforms",
+      "label": "도시철도 승강장",
+      "requiredViews": [
+        "platform overview in both directions",
+        "platform access and vertical connection details"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [
+        "P03"
+      ],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    },
+    {
+      "regionId": "rolling_stock_metro",
+      "label": "도시철도 차량",
+      "requiredViews": [
+        "vehicle exterior and door details",
+        "interior aisle and entry relationship"
+      ],
+      "selectedHistoricalReferenceIds": [],
+      "historicalPlanPointers": [],
+      "acceptedSourceCount": 0,
+      "coverage": "not_acquired",
+      "nextAction": "Select a region-specific source, then qualify URL, date, byte hash, rights and privacy.",
+      "limit": "Historical plan pointers are inherited labels only; no plan URL/content was checked in this run."
+    }
+  ],
+  "counts": {
+    "references": 6,
+    "pageProbes": 3,
+    "regions": 13,
+    "regionsWithHistoricalPointers": 3,
+    "acceptedForAcquisition": 0,
+    "rawImagesFetched": 0
+  },
+  "hashSemantics": {
+    "gitSources": "SHA-256 over Git blob bytes at the recorded baseRef.",
+    "pageSha256": "SHA-256 over response bytes at checkedAt. Dynamic HTML may change on the next request; raw HTML is not retained, so the old digest cannot be independently recomputed from this PR.",
+    "imageContentSha256": "Always null in this prepare run. HTML digest must never stand in for image/asset content identity."
+  },
+  "limits": [
+    "No fresh visual inspection or screenshot/image forwarded to a coding LLM.",
+    "HTTP 200 and public linking do not establish identity, license, privacy clearance or permission to transform/redistribute.",
+    "No station dimensions, current layout, official procedure, collision validity or facility acceptance is established.",
+    "sanitizeState and publicationApprovalState are separate; neither raw-material clearance nor reusable publication approval is asserted.",
+    "Candidate scripts/art tests were not run: no art code/assets changed and the selected prepare phase declares no such check."
+  ],
+  "handoff": {
+    "usable": "A traceable source selection and gap inventory for #29; metadata citation only.",
+    "next": "Receive qualified Native context and a qualified #28 candidate, then review exact source rights/date/content before producing the candidate public catalog.",
+    "issueComplete": false
+  }
+}
