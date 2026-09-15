@@ -43,7 +43,23 @@
           "allow": 9
         }
       },
-      "limits": "Producer decision simulation only; not rerun here. No OS sandbox, network egress, MCP enforcement or independent acceptance proof."
+      "limits": "Producer decision simulation only; not rerun here. No OS sandbox, network egress, MCP enforcement or independent acceptance proof.",
+      "failedAttempts": [
+        {
+          "attempt": "first unittest discovery before the test file existed",
+          "observed": "Ran 0 tests, exit 0",
+          "handling": "not counted as a pass; rerun after the file was written"
+        }
+      ],
+      "capability": {
+        "osFamily": "Windows",
+        "python": "3.11",
+        "linkCapability": "junction",
+        "networkEgressExercised": false,
+        "osSandboxOrAclTested": false,
+        "mcpEnforcementTested": false,
+        "note": "anonymous capability facts only"
+      }
     }
   ],
   "sourceHashes": {
@@ -103,6 +119,11 @@
         "path": "docs/team/M1-02/permission-boundary.json",
         "ref": "8c9836a470631845d7fa2fc34d3010918997a93a",
         "sha256": "268bddc4b58db233151a577b5e6f935184fb52c3b613b5e1824462b18efb336d"
+      },
+      {
+        "path": "foundation/network/dependency-contract.json",
+        "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+        "sha256": "bb3cb83b86c1e036b12f9f0ad6c7b50caf8ee891a5844430bb36926f77a72adb"
       }
     ]
   },
@@ -541,5 +562,92 @@
       "M103-04"
     ],
     "noAutomaticClosure": true
-  }
+  },
+  "gateCoverage": {
+    "G0": {
+      "establishedInThisCandidate": false,
+      "blockingReference": null,
+      "inCandidateEvidence": "noAcceptanceClaim",
+      "reason": "Candidate does not self-judge or self-certify acceptance."
+    },
+    "G1": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "sourceHashes",
+      "reason": "Bound to baseRef 15ac727 and exact input sha256."
+    },
+    "G2": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "toolExposureProposal",
+      "reason": "Direct/stdio MCP boundary explicitly proposed with deny policies."
+    },
+    "G3": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "pipelineDependencies",
+      "reason": "Full 13-package closure enumerated without unverified additions."
+    },
+    "G4": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "toolInventory",
+      "reason": "Conflicting/unresolved license states preserved honestly."
+    },
+    "G5": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "checks",
+      "reason": "Negative cases preserved; substitute pass explicitly denied."
+    },
+    "G6": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "toolExposureProposal",
+      "reason": "No model egress of screenshots/credentials."
+    },
+    "G7": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "docs/team/M1-03/**",
+      "reason": "Writes strictly confined to isolated proposal scope."
+    },
+    "G8": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "historicalObservation",
+      "reason": "Machine-neutral evaluation; historical observation qualified."
+    },
+    "G9": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "handoff",
+      "reason": "Explicit open findings M103-01..04 block acceptance."
+    },
+    "G10": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "noAcceptanceClaim",
+      "reason": "Independent PM review required."
+    },
+    "G11": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "sourceHashes",
+      "reason": "Clean tracking against develop baseline."
+    },
+    "G12": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "checks",
+      "reason": "Zero phantom executions; not_run preserved."
+    },
+    "G13": {
+      "establishedInThisCandidate": true,
+      "blockingReference": null,
+      "inCandidateEvidence": "handoff",
+      "reason": "Clean handoff to #16, #20, #24."
+    }
+  },
+  "noPermissionStatement": "No check result, command exit code, count or inventory in this candidate grants installation, license, model, network, git-remote, or Editor permissions."
 }
