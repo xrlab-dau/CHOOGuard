@@ -1,0 +1,145 @@
+name: Astra Remaining Platform Verification
+on:
+  push:
+    branches: [chore/astra-develop-audit-20260915]
+    paths:
+      - scripts/review/verify_livekit_name.py
+      - scripts/review/proposals/livekit-name-preflight.patch
+      - scripts/review/proposals/test_name_preflight.py
+      - .github/workflows/astra-platform-verification.yml
+permissions:
+  contents: read
+jobs:
+  windows-original:
+    strategy:
+      fail-fast: false
+      matrix:
+        suite: [dev, csharp]
+    runs-on: windows-2022
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: driver
+          lfs: false
+          persist-credentials: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 86bb82bf5655562e2577cf2b83553ff261d8d5a6
+          path: baseline
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Execute original Windows-supported cases
+        env:
+          SUITE: ${{ matrix.suite }}
+        shell: bash
+        run: python -B driver/scripts/review/baseline_batch.py --root baseline --suite "$SUITE" --output "$RUNNER_TEMP/astra-windows-result"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: astra-windows-${{ matrix.suite }}
+          path: |
+            ${{ runner.temp }}/astra-windows-result/receipt.json
+            ${{ runner.temp }}/astra-windows-result/test-log.txt
+            ${{ runner.temp }}/astra-windows-result/runner-error.txt
+            ${{ runner.temp }}/astra-windows-result/results/*.trx
+            ${{ runner.temp }}/astra-windows-result/packages.lock.json
+          if-no-files-found: error
+          retention-days: 7
+  livekit-diagnostic-candidate:
+    runs-on: macos-14
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          lfs: false
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.12'
+      - name: Verify scoped proposal in disposable canonical source copy
+        run: python -B scripts/review/verify_livekit_name.py --root . --output "$RUNNER_TEMP/astra-livekit-candidate"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: astra-livekit-candidate
+          path: |
+            ${{ runner.temp }}/astra-livekit-candidate/receipt.json
+            ${{ runner.temp }}/astra-livekit-candidate/*-test-log.txt
+          if-no-files-found: error
+          retention-days: 7
+  unity-capability:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    outputs:
+      enabled: ${{ steps.status.outputs.enabled }}
+    steps:
+      - name: Observe existing Unity CI enablement without changing settings
+        id: status
+        env:
+          ENABLED: ${{ vars.UNITY_CI_ENABLED == 'true' }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/astra-unity-capability"
+          echo "enabled=$ENABLED" >> "$GITHUB_OUTPUT"
+          python3 - <<'PY'
+          import json,os,pathlib
+          enabled=os.environ['ENABLED']=='true'
+          record={'state':'ENABLED_TESTS_REQUIRED' if enabled else 'BLOCKED','reason':None if enabled else 'UNITY_CI_ENABLED_NOT_TRUE','testsRun':0,'AAAApproved':False,'settingsChanged':False}
+          (pathlib.Path(os.environ['RUNNER_TEMP'])/'astra-unity-capability/receipt.json').write_text(json.dumps(record)+'\n')
+          print(json.dumps(record))
+          raise SystemExit(0 if enabled else 2)
+          PY
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: astra-unity-capability
+          path: ${{ runner.temp }}/astra-unity-capability/
+          if-no-files-found: error
+          retention-days: 7
+  unity-original:
+    needs: unity-capability
+    if: ${{ needs.unity-capability.outputs.enabled == 'true' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      checks: write
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode: [editmode, playmode]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 86bb82bf5655562e2577cf2b83553ff261d8d5a6
+          lfs: true
+          persist-credentials: false
+      - name: Use the repository's existing pinned Unity test runner and license setup
+        id: unity
+        uses: game-ci/unity-test-runner@32e57712352b500e17974b245a6dce9e11a73213
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          projectPath: .
+          testMode: ${{ matrix.testMode }}
+          artifactsPath: test-artifacts/${{ matrix.testMode }}
+          githubToken: ${{ github.token }}
+          checkName: Astra original Unity ${{ matrix.testMode }}
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: astra-unity-${{ matrix.testMode }}
+          path: test-artifacts/**/*.xml
+          if-no-files-found: error
+          retention-days: 7
