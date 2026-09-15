@@ -1,66 +1,138 @@
-name: Non-Unity core regression reproduction
+name: Verify and publish exact non-Unity repairs
 on:
   push:
     branches: [bugfix/nonunity-training-core-20260915]
     paths: [.github/workflows/nonunity-regressions-bootstrap.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
-  regression:
+  verify:
+    if: github.repository == 'xrlab-dau/CHOOGuard'
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
       DOTNET_CLI_TELEMETRY_OPTOUT: '1'
       DOTNET_NOLOGO: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
+          fetch-depth: 0
           lfs: false
           persist-credentials: false
-      - name: Prepare dependency-free reproductions against original runtime
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: '3.13'
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Materialize only the reviewed source patch from immutable Git blobs
+        env:
+          READ_TOKEN: ${{ github.token }}
         shell: python
         run: |
-          from pathlib import Path
-          p = Path('nonunity-probe'); p.mkdir()
-          (p/'global.json').write_text('{"sdk":{"version":"8.0.100","rollForward":"latestFeature"}}')
-          (p/'Probe.csproj').write_text('''<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0</TargetFramework></PropertyGroup><ItemGroup><Compile Include="../Packages/com.xrlab.chooguard.foundation/Runtime/**/*.cs" /></ItemGroup></Project>''')
-          (p/'Program.cs').write_text(r'''
-          using System;
-          using System.IO;
-          using System.Linq;
-          using System.Collections.Generic;
-          using System.Text.Json;
-          using ChooGuard.Foundation.Multiplayer;
-          class Program {
-            static ConnectedWorldDefinition D() {
-              var d=JsonSerializer.Deserialize<ConnectedWorldDefinition>(File.ReadAllText("../foundation/world/connected-world-profile.json"),new JsonSerializerOptions{IncludeFields=true});d.Validate();return d;
-            }
-            static bool Fits(float r) => new ConnectedPortalDefinition{FromPoint=new Point3(),ToPoint=new Point3(10,0,0),ClearWidth=1,ClearHeight=3}.Contains(new Point3(5,0,0),r,out _);
-            static int Main(){
-              var results=new List<object>();int failures=0;
-              void Check(string name,Func<bool> test){bool pass=false;string error=null;try{pass=test();}catch(Exception e){error=e.GetType().Name;}if(!pass)failures++;results.Add(new{name,pass,error});Console.WriteLine(name+": "+(pass?"PASS":"FAIL"));}
-              Check("oversized-body-cannot-fit",()=>!Fits(1));
-              Check("negative-radius-denied",()=>!Fits(-1));
-              Check("infinite-radius-denied",()=>!Fits(float.PositiveInfinity));
-              Check("exact-fit-preserved",()=>Fits(.5f));
-              Check("point-probe-preserved",()=>Fits(0));
-              Check("region-nan-radius-denied",()=>{var d=D();var r=d.Region(d.StartRegionId);return !d.TryLocate(d.Pose(r.Id,r.Hub),r.Hub,float.NaN,null,out _);});
-              Check("null-pose-rejected",()=>{var d=D();return !d.TryLocate(null,d.Region(d.StartRegionId).Hub,.25f,null,out _);});
-              Check("input-geometry-owned",()=>{var d=D();var w=new SimulatedSpatialWorld(d);var old=d.Regions[0].Hub.X;d.Regions[0].Hub=new Point3(999,0,0);return w.At(d.Frames).Regions[0].Hub.X==old;});
-              Check("output-portals-detached",()=>{var d=D();var w=new SimulatedSpatialWorld(d);var old=d.Portals[0].ClearWidth;w.At(d.Frames).Portals[0].ClearWidth=999;return w.At(d.Frames).Portals[0].ClearWidth==old;});
-              Check("null-exclusion-rejected",()=>{var d=D();d.Regions[0].Exclusions=new RegionExclusion[]{null};try{d.Validate();return false;}catch(InvalidDataException){return true;}});
-              Check("null-frame-rejected",()=>{var d=D();d.Frames[0]=null;try{d.Validate();return false;}catch(InvalidDataException){return true;}});
-              File.WriteAllText("../nonunity-red.json",JsonSerializer.Serialize(new{source="86bb82bf5655562e2577cf2b83553ff261d8d5a6",failures,results},new JsonSerializerOptions{WriteIndented=true}));return failures==0?0:1;
-            }
-          }
-          ''')
-      - name: Compile and execute original product logic without Unity
-        working-directory: nonunity-probe
-        run: dotnet run --project Probe.csproj
+          import base64, hashlib, json, lzma, os, pathlib, subprocess, urllib.request
+          parts = ['e5d16ad74b1831674cb5d18cea73ce943fe2658f','27a916039f6a2669dc106744fa1911868c6f497e','1f1dfb29e12e5be9787106a8df67eefb213abd49','fe647c3f62413edc0d97b855dedafaddac3fcd0d']
+          packed = bytearray()
+          for sha in parts:
+              req = urllib.request.Request('https://api.github.com/repos/xrlab-dau/CHOOGuard/git/blobs/'+sha,
+                  headers={'Authorization':'Bearer '+os.environ['READ_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(req, timeout=30) as response:
+                  blob = json.load(response)
+              data = base64.b64decode(blob['content'])
+              if hashlib.sha1(b'blob '+str(len(data)).encode()+b'\0'+data).hexdigest() != sha:
+                  raise SystemExit('Transport blob mismatch')
+              packed.extend(data)
+          decoder = lzma.LZMADecompressor(memlimit=64*1024*1024)
+          patch = decoder.decompress(packed, max_length=151475)
+          if not decoder.eof or decoder.unused_data or len(patch)!=151474 or hashlib.sha256(patch).hexdigest()!='50f9b7b7b46a97726d1f72521aafc0157a04c3c6bd1be77cd659348997f47943':
+              raise SystemExit('Reviewed patch digest mismatch')
+          allowed = ['Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/ConnectedWorldDefinition.cs',
+              'Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/SimulatedSpatialWorld.cs',
+              'docs/team/R-06/research-control.json','docs/team/R-06/security-hardening-candidate.md',
+              'scripts/context/render_pm_map.mjs','scripts/context/render_pm_map.test.mjs',
+              'scripts/team/R-06/egress_controls.py','scripts/team/R-06/test_approval_conformance.py',
+              'scripts/team/R-06/test_boundary_regressions.py','scripts/team/R-06/test_contract_regressions.py',
+              'scripts/team/R-06/test_migration_regressions.py','scripts/team/R-06/test_security_regressions.py',
+              'services/livekit/configure_local.py','services/livekit/test_name_preflight.py',
+              'tests/nonunity/NonUnity.Tests.csproj','tests/nonunity/README.md','tests/nonunity/SpatialBoundaryTests.cs',
+              'tests/nonunity/global.json','tests/nonunity/packages.lock.json','tests/nonunity/requirements.txt']
+          names = [line.split('\t',2)[2] for line in subprocess.check_output(['git','apply','--numstat','-'], input=patch).decode().splitlines()]
+          if sorted(names) != sorted(allowed): raise SystemExit('Patch outside approved source scope')
+          subprocess.run(['git','apply','--check','-'], input=patch, check=True)
+          subprocess.run(['git','apply','-'], input=patch, check=True)
+          evidence=pathlib.Path(os.environ['RUNNER_TEMP'])/'nonunity-results'; evidence.mkdir()
+          (evidence/'publish-paths.json').write_text(json.dumps(allowed+['docs/context/index.html','docs/context/reviews/public-premise-dispositions.json']))
+          (evidence/'patch.json').write_text(json.dumps({'base':'86bb82bf5655562e2577cf2b83553ff261d8d5a6','patchSha256':hashlib.sha256(patch).hexdigest(),'UnityInvoked':False}))
+      - name: Compile actual product sources and original plus new NUnit cases
+        working-directory: tests/nonunity
+        shell: bash
+        run: |
+          set -euo pipefail
+          dotnet restore --locked-mode
+          dotnet test --no-restore --logger 'trx;LogFileName=core.trx' --results-directory "$RUNNER_TEMP/nonunity-results" | tee "$RUNNER_TEMP/nonunity-results/core.log"
+      - name: Regenerate the PM map and only derivative occurrence locations
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/context/render_pm_map.mjs
+          python -B scripts/context/audit_public_premises.py --input . --output "$RUNNER_TEMP/nonunity-results/premises.json" --fail-on-unresolved
+          python - <<'PY'
+          import json,os,pathlib
+          path=pathlib.Path('docs/context/reviews/public-premise-dispositions.json')
+          old=json.loads(path.read_text()); new=json.loads((pathlib.Path(os.environ['RUNNER_TEMP'])/'nonunity-results/premises.json').read_text())
+          a={r['id']:r for r in old['findings']}; b={r['id']:r for r in new['findings']}
+          assert set(a)==set(b), 'No premise decision may be introduced or removed'
+          for key in a:
+              fields={f for f in set(a[key])|set(b[key]) if a[key].get(f)!=b[key].get(f)}
+              assert fields <= {'occurrences','occurrenceCount'}, 'No semantic or approval change'
+              added=[x for x in b[key]['occurrences'] if x not in a[key]['occurrences']]
+              removed=[x for x in a[key]['occurrences'] if x not in b[key]['occurrences']]
+              assert not removed and all(x=={'path':'docs/context/index.html','line':1} for x in added)
+          path.write_text(json.dumps(new,ensure_ascii=False,indent=2)+'\n')
+          PY
+      - name: Run complete canonical Python and JavaScript regression suites
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install -r tests/nonunity/requirements.txt
+          python -B -m unittest discover -s scripts/team/R-06 -p 'test_*.py' -v 2>&1 | tee "$RUNNER_TEMP/nonunity-results/r06.log"
+          python -B -m unittest discover -s scripts/team/M1-05 -p 'test_*.py' -v 2>&1 | tee "$RUNNER_TEMP/nonunity-results/m105.log"
+          python -B scripts/team/R-06/egress_controls.py run > "$RUNNER_TEMP/nonunity-results/r06-cases.json"
+          python -B -m unittest discover -s scripts/ci/tests -v 2>&1 | tee "$RUNNER_TEMP/nonunity-results/policy.log"
+          python -B -m unittest discover -s scripts/context -p 'test_*.py' -v 2>&1 | tee "$RUNNER_TEMP/nonunity-results/context.log"
+          python -B -m unittest discover -s scripts/art -p 'test_*.py' -v 2>&1 | tee "$RUNNER_TEMP/nonunity-results/art.log"
+          python -B -m unittest discover -s services/livekit -p test_name_preflight.py -v 2>&1 | tee "$RUNNER_TEMP/nonunity-results/livekit-preflight.log"
+          node --test scripts/context/*.test.mjs > "$RUNNER_TEMP/nonunity-results/node.log"
+          node scripts/context/work_graph.mjs validate > "$RUNNER_TEMP/nonunity-results/work-graph.json"
+          python -B scripts/dev/check_foundation.py > "$RUNNER_TEMP/nonunity-results/foundation.json"
+          git diff --check
+      - name: Commit only verified product files to the same unprotected work branch
+        env:
+          PUBLISH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = 'refs/heads/bugfix/nonunity-training-core-20260915'
+          python - <<'PY'
+          import json,os,pathlib,subprocess
+          root=pathlib.Path(os.environ['RUNNER_TEMP'])/'nonunity-results'
+          paths=json.loads((root/'publish-paths.json').read_text())
+          subprocess.run(['git','add','--',*paths],check=True)
+          staged=subprocess.check_output(['git','diff','--cached','--name-only'],text=True).splitlines()
+          assert sorted(staged)==sorted(paths), 'Unreviewed staged path or missing product file'
+          subprocess.run(['git','diff','--cached','--check'],check=True)
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix(core): isolate spatial snapshots and harden non-Unity publication boundaries'
+          git -c credential.helper='!f() { printf "username=x-access-token\npassword=%s\n" "$PUBLISH_TOKEN"; }; f' push https://github.com/xrlab-dau/CHOOGuard.git HEAD:refs/heads/bugfix/nonunity-training-core-20260915
+          git rev-parse HEAD > "$RUNNER_TEMP/nonunity-results/published-commit.txt"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
-          name: nonunity-red
-          path: nonunity-red.json
+          name: nonunity-product-verification
+          path: ${{ runner.temp }}/nonunity-results/
           retention-days: 7
           if-no-files-found: error
