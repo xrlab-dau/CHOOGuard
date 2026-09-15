@@ -1,0 +1,70 @@
+name: Simulator Unity Execution
+on:
+  push:
+    branches: [feature/incident-response-lifecycle-20260915]
+    paths: [.github/workflows/simulator-unity-execution.yml]
+permissions:
+  contents: read
+jobs:
+  unity:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          lfs: true
+          persist-credentials: false
+      - name: Resolve the repository-pinned editor image
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/unity-execution"
+          image=unityci/editor:ubuntu-6000.3.23f1-base-3
+          docker pull "$image"
+          docker image inspect "$image" --format '{{index .RepoDigests 0}}' > "$RUNNER_TEMP/unity-execution/image-digest.txt"
+          docker run --rm "$image" /opt/unity/Editor/Unity -version > "$RUNNER_TEMP/unity-execution/editor-version.txt" 2>&1
+      - name: Run actual editor test entrypoint without synthesizing activation
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json,os,pathlib,subprocess
+          out=pathlib.Path(os.environ['RUNNER_TEMP'])/'unity-execution'
+          if os.environ.get('UNITY_LICENSE','').strip() or all(os.environ.get(n,'').strip() for n in ['UNITY_EMAIL','UNITY_PASSWORD','UNITY_SERIAL']):
+              (out/'execution.json').write_text(json.dumps({'state':'ACTIVATION_CONFIGURED','next':'Use Unity Test Runner with the configured license; never export it','testsRun':0}))
+              raise SystemExit(0)
+          command=['docker','run','--rm','--env','UNITY_NOPROXY=1','--volume',os.getcwd()+':/project','--volume',str(out)+':/evidence','unityci/editor:ubuntu-6000.3.23f1-base-3','/opt/unity/Editor/Unity','-batchmode','-nographics','-projectPath','/project','-runTests','-testPlatform','EditMode','-testResults','/evidence/editmode.xml','-logFile','/evidence/editor.log']
+          try:
+              result=subprocess.run(command,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,timeout=150)
+              code=result.returncode
+          except subprocess.TimeoutExpired: code=124
+          log=(out/'editor.log').read_text(errors='replace') if (out/'editor.log').exists() else ''
+          state={'state':'BLOCKED','reason':'UNITY_LICENSE_CREDENTIALS_NOT_CONFIGURED','editorInvoked':True,'exitCode':code,'licenseDiagnosticObserved':any(s in log.lower() for s in ['no valid unity editor license','license activation','licensing','license is invalid']),'testXmlPresent':(out/'editmode.xml').exists(),'testsRun':0,'acceptanceClaim':False}
+          (out/'execution.json').write_text(json.dumps(state,indent=2)+'\n');print(json.dumps(state));raise SystemExit(2)
+          PY
+      - name: Run licensed Unity when credentials already exist
+        if: success()
+        uses: game-ci/unity-test-runner@32e57712352b500e17974b245a6dce9e11a73213
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          projectPath: .
+          unityVersion: 6000.3.23f1
+          testMode: All
+          artifactsPath: unity-test-results
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: simulator-unity-execution
+          path: |
+            ${{ runner.temp }}/unity-execution/
+            unity-test-results/
+          retention-days: 7
+          if-no-files-found: error
