@@ -67,6 +67,7 @@ jobs:
       - name: Install exact project Editor through official CLI
         id: editor
         run: |
+          mkdir -p "$RUNNER_TEMP/UnityEditors"
           unity --non-interactive editors install-path --set "$RUNNER_TEMP/UnityEditors"
           status=0
           timeout 1200 unity --non-interactive --format json install 6000.3.23f1 --changeset 09d2ecc7fb28 --yes \
@@ -110,7 +111,7 @@ jobs:
           import json, os, select, subprocess, time
           from pathlib import Path
           out = Path(os.environ['RUNNER_TEMP']) / 'unity-cli-evidence'
-          result = {'schemaVersion': 1, 'transport': 'stdio', 'editorReady': False}
+          result = {'schemaVersion': 1, 'transport': 'stdio', 'editorReady': None}
           with (out/'mcp.stderr').open('w') as err:
               p = subprocess.Popen(['unity', 'mcp', '--project-path', os.getcwd()], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=err)
               buf = b''
