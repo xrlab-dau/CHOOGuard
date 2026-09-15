@@ -11,6 +11,13 @@ change invalidates the whole run.
 This is a policy-decision layer with synthetic file effects. It does not claim OS-level sandbox, filesystem ACL,
 network firewall or MCP enforcement; those remain M1-03 and M1-04 per the profile's m1BoundarySeparation.
 
+Paths are compared case-insensitively, and spellings a Windows filesystem may alias (stream suffixes, trailing dots or
+spaces, 8.3 short names, device names) are refused rather than normalised. Commands are tokenised per shell segment;
+file deletion programs, destructive git sub-commands after any global options, and inline shells (-c / /c / -Command)
+are inspected, and command text that cannot be tokenised or is encoded is refused as undecidable. The effect step
+re-resolves the target immediately before writing; a race by a concurrent process after that check is not covered.
+Network detection lists known tools only; a general interpreter can still open a socket (M1-03 network enforcement).
+
 Exit codes (run): 0 = every non-blocked case matched and the hash chain is intact; 1 = a case mismatched or the
 chain was invalidated; 2 = the profile or settings are absent, invalid, or the published policy hash does not recompute.
 """
@@ -23,6 +30,7 @@ import json
 import os
 import platform
 import re
+import shlex
 import stat
 import subprocess
 import sys
@@ -42,9 +50,22 @@ GENERATED_WRITE_DENY = ("library", "temp", "obj")
 LOG_DIR = "logs"
 DESTRUCTIVE = [re.compile(p, re.I) for p in (
     r"\brm\s+(-[a-z]*r[a-z]*f|-[a-z]*f[a-z]*r)\b", r"\bgit\s+reset\s+--hard\b", r"\bgit\s+clean\s+-[a-z]*f", r"\bgit\s+push\b.*(--force|\s-f\b)",
-    r"\bgit\s+checkout\s+--\s", r"\bgit\s+branch\s+-D\b", r"\bRemove-Item\b.*-Recurse", r"\brmdir\s+/s\b", r"\bdel\s+/[sq]", r"\bformat\s+[a-z]:",
+    r"\bgit\s+checkout\s+--\s", r"\bgit\s+branch\s+(?-i:-D)\b", r"\bRemove-Item\b.*-Recurse", r"\brmdir\s+/s\b", r"\bdel\s+/[sq]", r"\bformat\s+[a-z]:",
     r"\bdrop\s+(table|database)\b")]
-NETWORK = re.compile(r"\b(curl|wget|Invoke-WebRequest|Invoke-RestMethod|ssh|scp|git\s+push|git\s+fetch|npm\s+install|pip\s+install|uv\s+sync)\b", re.I)
+NETWORK = re.compile(r"\b(curl|wget|Invoke-WebRequest|Invoke-RestMethod|iwr|irm|ssh|scp|sftp|rsync|ftp|telnet|nc|ncat|bitsadmin|certutil|"
+                     r"git\s+push|git\s+fetch|git\s+pull|git\s+clone|npm\s+install|pip\s+install|uv\s+sync)\b", re.I)
+DELETE_PROGRAMS = {"rm", "rmdir", "rd", "del", "erase", "unlink", "shred", "srm", "remove-item", "ri"}
+FORMAT_PROGRAMS = {"format", "diskpart", "mkfs", "wipefs"}
+WRAPPER_PROGRAMS = {"sudo", "env", "command", "nohup", "time", "nice", "exec", "xargs", "busybox"}
+SHELL_PROGRAMS = {"bash", "sh", "zsh", "dash", "cmd", "powershell", "pwsh"}
+INLINE_FLAGS = {"-c", "/c", "/k", "-command", "-command:"}
+ENCODED_FLAGS = {"-encodedcommand", "-enc", "-ec", "-e"}
+OPAQUE_PROGRAMS = {"eval", "invoke-expression", "iex"}
+INTERPRETERS = {"python", "python3", "py", "pythonw", "node", "deno", "bun", "perl", "ruby", "php", "lua", "osascript", "wscript", "cscript", "mshta"}
+INTERPRETER_INLINE_FLAGS = {"-c", "-e", "--eval", "-p", "--print", "-command"}
+GIT_OPTIONS_WITH_VALUE = {"-C", "-c", "--git-dir", "--work-tree", "--namespace", "--super-prefix", "--config-env", "--exec-path"}
+SQL_DROP = re.compile(r"\b(drop|truncate)\s+(table|database|schema)\b", re.I)
+RESERVED_DEVICE = re.compile(r"^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$", re.I)
 
 
 class ProfileError(ValueError):
@@ -113,8 +134,133 @@ def lexical(path: str):
     return "/".join(parts) if parts else None
 
 
+def non_canonical(rel: str) -> bool:
+    """Spellings a Windows filesystem may resolve to another name: stream suffix, trailing dot or space, short name, device."""
+    for part in rel.split("/"):
+        if (":" in part or part != part.strip(" ") or part.rstrip(".") != part or RESERVED_DEVICE.match(part)
+                or re.fullmatch(r"(?=[^.]{3,8}(\.[^.]{0,3})?$)[^.~]{1,6}~[0-9]{1,6}(\.[^.]{0,3})?", part) or any(ord(ch) < 32 for ch in part)):
+            return True
+    return False
+
+
 def matches(path: str, patterns) -> bool:
-    return any(fnmatch.fnmatchcase(path, p) or (p.endswith("/**") and path.startswith(p[:-2])) for p in patterns)
+    folded = path.casefold()
+    return any(fnmatch.fnmatchcase(folded, p.casefold()) or (p.endswith("/**") and folded.startswith(p[:-2].casefold())) for p in patterns)
+
+
+def resolves_inside(root: Path, rel: str) -> bool:
+    root_real = os.path.realpath(root)
+    target_real = os.path.realpath(os.path.join(root, *rel.split("/")))
+    return os.path.commonpath([os.path.normcase(root_real), os.path.normcase(target_real)]) == os.path.normcase(root_real)
+
+
+def program_name(token: str) -> str:
+    name = token.rsplit("/", 1)[-1].lower()
+    for ext in (".exe", ".cmd", ".bat", ".com", ".ps1"):
+        if name.endswith(ext):
+            return name[: -len(ext)]
+    return name
+
+
+def command_segments(command: str):
+    lexer = shlex.shlex(command.replace("\\", "/").replace("\n", " ; "), posix=True, punctuation_chars=True)
+    lexer.whitespace_split = True
+    segments, current = [], []
+    for token in lexer:
+        if token and all(ch in "();<>|&" for ch in token):
+            if current:
+                segments.append(current)
+            current = []
+        else:
+            current.append(token)
+    if current:
+        segments.append(current)
+    return segments
+
+
+def git_verdict(args: list) -> str | None:
+    index = 0
+    while index < len(args) and args[index].startswith("-"):
+        option = args[index].split("=", 1)[0]
+        index += 2 if option in GIT_OPTIONS_WITH_VALUE and "=" not in args[index] else 1
+    if index >= len(args):
+        return None
+    sub, rest = args[index].lower(), args[index + 1:]
+    longs = {r.split("=", 1)[0].lower() for r in rest if r.startswith("--")}
+    shorts = "".join(r[1:] for r in rest if r.startswith("-") and not r.startswith("--"))
+    words = [r for r in rest if not r.startswith("-")]
+    destructive = (
+        (sub == "reset" and "--hard" in longs)
+        or (sub == "clean" and ("f" in shorts or "--force" in longs))
+        or (sub == "push" and (longs & {"--force", "--force-with-lease", "--force-if-includes", "--mirror", "--delete", "--prune"}
+                               or "f" in shorts or "d" in shorts or any(w.startswith(("+", ":")) for w in words[1:])))
+        or (sub == "checkout" and ("--" in rest or "f" in shorts or "--force" in longs))
+        or sub == "restore"
+        or (sub == "switch" and ("--discard-changes" in longs or "--force" in longs or "f" in shorts))
+        or (sub == "branch" and ("D" in shorts or "M" in shorts or "C" in shorts or ("--delete" in longs and ("--force" in longs or "f" in shorts))))
+        or (sub == "worktree" and words[:1] and words[0] in ("remove", "prune"))
+        or (sub == "submodule" and words[:1] and words[0] == "deinit")
+        or (sub == "lfs" and words[:1] and words[0] == "prune")
+        or (sub == "stash" and words[:1] and words[0] in ("drop", "clear"))
+        or (sub == "reflog" and words[:1] and words[0] in ("expire", "delete"))
+        or (sub == "update-ref" and "d" in shorts)
+        or sub in ("filter-branch", "filter-repo")
+        or (sub == "gc" and any(r.startswith("--prune") for r in rest)))
+    return "destructive" if destructive else None
+
+
+def command_verdict(command: str, depth: int = 0) -> str | None:
+    """None when no destructive or opaque form is found; otherwise 'destructive' or 'undecidable'."""
+    if depth > 3 or "$(" in command or "`" in command:
+        return "undecidable"
+    if SQL_DROP.search(command) or any(p.search(command) for p in DESTRUCTIVE):
+        return "destructive"
+    try:
+        segments = command_segments(command)
+    except ValueError:
+        return "undecidable"
+    for tokens in segments:
+        while tokens and (re.match(r"^[A-Za-z_][A-Za-z0-9_]*=", tokens[0]) or program_name(tokens[0]) in WRAPPER_PROGRAMS):
+            tokens = tokens[1:]
+        if not tokens:
+            continue
+        program, args = program_name(tokens[0]), tokens[1:]
+        lowered = [a.lower() for a in args]
+        if program in OPAQUE_PROGRAMS or (program in ("powershell", "pwsh") and set(lowered) & ENCODED_FLAGS):
+            return "undecidable"
+        if program in SHELL_PROGRAMS:
+            flag = next((i for i, a in enumerate(lowered) if a in INLINE_FLAGS), None)
+            if flag is not None:
+                inner = command_verdict(" ".join(args[flag + 1:]), depth + 1)
+                if inner:
+                    return inner
+            continue
+        if re.fullmatch(r"(python|pypy|node|ruby|perl|php)[0-9.]*", program) or program in INTERPRETERS:
+            # Inline source for a general interpreter can do anything a deletion program can; it is not inspected blind.
+            if program == "deno" and lowered[:1] == ["eval"]:
+                return "undecidable"
+            for arg in lowered:
+                if not arg.startswith("-"):
+                    break  # the first non-option argument is a script path; its content is not inspected
+                if arg in INTERPRETER_INLINE_FLAGS or arg.startswith("--eval=") or re.fullmatch(r"-[a-z0-9]*c", arg):
+                    return "undecidable"
+            continue
+        if program == "find":
+            if "-delete" in lowered:
+                return "destructive"
+            action = next((i for i, a in enumerate(lowered) if a in ("-exec", "-execdir", "-ok", "-okdir")), None)
+            if action is not None:
+                inner = command_verdict(" ".join(t for t in args[action + 1:] if t not in ("{}", ";", "+")), depth + 1)
+                if inner:
+                    return inner
+            continue
+        if program in DELETE_PROGRAMS or program in FORMAT_PROGRAMS or (program == "dd" and any(a.startswith("of=") for a in lowered)):
+            return "destructive"
+        if program == "git":
+            verdict = git_verdict(args)
+            if verdict:
+                return verdict
+    return None
 
 
 def is_link(path: Path) -> bool:
@@ -139,9 +285,9 @@ def decide(model: dict, request: dict, root: Path) -> dict:
         rel = lexical(request.get("path"))
         if rel is None:
             return deny("out_of_root", "DC-09", "absolute or parent-escaping path")
-        root_real = os.path.realpath(root)
-        target_real = os.path.realpath(os.path.join(root, *rel.split("/")))
-        if os.path.commonpath([root_real, target_real]) != root_real:
+        if non_canonical(rel):
+            return deny("non_canonical_path", "DC-09", "stream suffix, trailing dot or space, short name or device name may alias another file")
+        if not resolves_inside(root, rel):
             return deny("link_escape", "DC-09", "a link or junction inside the workspace resolves outside it")
         lower = rel.lower()
         name = PurePosixPath(lower).name
@@ -166,7 +312,10 @@ def decide(model: dict, request: dict, root: Path) -> dict:
 
     if action == "execute":
         command = request.get("command") or ""
-        if any(p.search(command) for p in DESTRUCTIVE):
+        verdict = command_verdict(command)
+        if verdict == "undecidable":
+            return deny("undecidable_command", None, "command text cannot be tokenised, is encoded or uses substitution; it is not run blind")
+        if verdict == "destructive":
             return deny("destructive_command", None, "destructive command; the profile grants no destructive-command approval")
         
         # Guard against package installation (execution.installation = false)
@@ -244,8 +393,12 @@ class GuardedWorkspace:
         decision = decide(self.model, request, self.root)
         effect = "none"
         if decision["decision"] == "allow" and request.get("action") in ("read", "write", "delete"):
-            target = self.root.joinpath(*lexical(request["path"]).split("/"))
-            if request["action"] == "read":
+            rel = lexical(request["path"])
+            target = self.root.joinpath(*rel.split("/"))
+            if not resolves_inside(self.root, rel):
+                # Re-resolved immediately before the effect: a link planted after decide() is refused here.
+                decision = deny("link_escape", "DC-09", "the target resolved outside the workspace at effect time")
+            elif request["action"] == "read":
                 effect = "read_bytes:%d" % (len(target.read_bytes()) if target.is_file() else -1)
             elif request["action"] == "write":
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -330,6 +483,21 @@ CASES = [
     case("M02-39", "model_scope", None, {"actor": R, "action": "select_model", "agent": "reviewer", "model": "openai-codex/gpt-5.6-sol"}, "allow", "allowed", DECISION, "provider-independent reviewer inside scope is allowed"),
     case("M02-40", "model_scope", "DC-06", {"actor": A, "action": "select_model", "agent": "worker", "model": "unlisted-provider/model-x"}, "deny", "model_outside_scope", DECISION, "authoring model outside both allow lists is refused"),
     case("M02-41", "model_scope", None, {"actor": A, "action": "select_model", "agent": "worker", "model": "anthropic/claude-opus-5"}, "allow", "allowed", DECISION, "authoring model inside the allow lists is allowed"),
+    # Bypass spellings found by the independent review (2026-09-15); each was allowed before the fix.
+    case("M02-42", "destructive_command", None, {"actor": A, "action": "execute", "command": "rm -r -f ./Assets"}, "deny", "destructive_command", DECISION, "split short flags do not evade the delete check"),
+    case("M02-43", "destructive_command", None, {"actor": A, "action": "execute", "command": "rm --recursive --force ./Assets"}, "deny", "destructive_command", DECISION, "long-form flags do not evade the delete check"),
+    case("M02-44", "destructive_command", None, {"actor": A, "action": "execute", "command": "git --no-pager reset --hard"}, "deny", "destructive_command", DECISION, "a git global option before the sub-command does not evade the check"),
+    case("M02-45", "destructive_command", None, {"actor": A, "action": "execute", "command": "git -c core.pager=cat reset --hard HEAD"}, "deny", "destructive_command", DECISION, "a git config option before the sub-command does not evade the check"),
+    case("M02-46", "destructive_command", None, {"actor": A, "action": "execute", "command": "bash -c \"rm -r ./Assets\""}, "deny", "destructive_command", DECISION, "an inline shell string is inspected"),
+    case("M02-47", "destructive_command", None, {"actor": P, "action": "execute", "command": "git push origin +develop"}, "deny", "destructive_command", DECISION, "a forced refspec is a force push"),
+    case("M02-48", "destructive_command", None, {"actor": A, "action": "execute", "command": "status && del Assets\\old.txt"}, "deny", "destructive_command", DECISION, "a deletion program in a later shell segment is refused; deletes go through the file action"),
+    case("M02-49", "destructive_command", None, {"actor": A, "action": "execute", "command": "powershell -EncodedCommand ZQBjAGgAbwA="}, "deny", "undecidable_command", DECISION, "an encoded command cannot be inspected and is refused"),
+    case("M02-50", "destructive_command", None, {"actor": A, "action": "execute", "command": "git -C scripts log --oneline"}, "allow", "allowed", DECISION, "a read-only git command with a global option stays allowed"),
+    case("M02-51", "policy_file", "DC-08", {"actor": A, "action": "write", "path": "agents.md", "workScope": ["**"]}, "deny", "policy_file", FS, "a lower-case spelling of a policy file is still a policy file"),
+    case("M02-52", "alias_path", "DC-09", {"actor": A, "action": "write", "path": "AGENTS.md.", "workScope": ["**"]}, "deny", "non_canonical_path", FS, "a trailing dot that Windows strips is refused"),
+    case("M02-53", "alias_path", "DC-02", {"actor": A, "action": "write", "path": ".env:stream", "workScope": ["**"]}, "deny", "non_canonical_path", FS, "an alternate data stream on an environment file is refused"),
+    case("M02-54", "alias_path", "DC-09", {"actor": A, "action": "write", "path": "AGENTS~1.MD", "workScope": ["**"]}, "deny", "non_canonical_path", FS, "an 8.3 short name is refused"),
+    case("M02-55", "alias_path", "DC-09", {"actor": A, "action": "write", "path": "scripts/team/M1-02/NUL", "workScope": AUTHOR_SCOPE}, "deny", "non_canonical_path", FS, "a device name inside the work scope is refused"),
 ]
 
 
