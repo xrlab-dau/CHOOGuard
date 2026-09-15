@@ -1,0 +1,705 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "workId": "M4-03",
+  "issue": 34,
+  "phase": "candidate",
+  "artifact": "artifact:34:M4-03-desktop-receipt:candidate",
+  "recordType": "machine_observation_not_approval",
+  "runId": "m403-20260915T001538Z",
+  "syntheticDisclosure": "All five roles, actions, anchors, team events and feedback are the provisional synthetic M4-01 fixture. They are not an official role, procedure, report wording or score, and this run is not facility, network or HMD acceptance.",
+  "baseline": {
+    "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+    "checkout": "fresh git worktree outside the working checkout, detached at the ref, candidate test files copied in; Unity Library cache copied from an earlier isolated worktree; tracked changes after all runs: 0",
+    "dependencyPatch": "scripts/dev/prepare_multiplayer_dependencies.py verify: dependency_files_verified, pipelinePatchSha256 bf384c549ac21afcf7a3a0ed7c6fabe7c27e7e599091192e1865c46780bda2e1 (already present in the copied cache; --apply not run)"
+  },
+  "capability": {
+    "machineLabel": "local",
+    "route": "anonymous developer Windows laptop; no school PC, location, high-spec or named-owner condition",
+    "os": "Windows 11 Education 10.0.26200 x64",
+    "editor": "6000.3.23f1",
+    "testPlatform": "EditMode",
+    "graphics": "-nographics batchmode",
+    "hmd": "unknown (none attached; not tested)",
+    "xrRuntime": "unknown (not tested)"
+  },
+  "inputs": {
+    "foundation/team-fixtures/M4-01/role-action-fixture.json": {
+      "sha256": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+      "baseBlobSha1": "ff84506fef8b444e287e8468859401895efb2a5d",
+      "readOnly": true
+    },
+    "foundation/scenarios/foundation-demo.json": {
+      "sha256": "bd7dfa87529f2d3e94f517e28d23929ed693129406f6f1823090bff73fef3969",
+      "baseBlobSha1": "74a72f53d8f01eacc8b2ec4ee89784de15dfd57b",
+      "readOnly": true
+    },
+    "docs/team/M4-01/fixture-review.json": {
+      "sha256": "4a296e0d5d4b403411ba7c254b53377e120109c3935df76953dc9e91b3eb0d47",
+      "baseBlobSha1": "9ac450bcabcce0745d252d3a531fe763a195194e",
+      "readOnly": true
+    },
+    "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs": {
+      "sha256": "a24256395f04e60d01bb69e99a2f7933ece973d4dfaa73acb1bd92df214a526b",
+      "baseBlobSha1": "4c772a5a1f5359a083c3c151bfa0da3c769d7292",
+      "readOnly": true
+    },
+    "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingContracts.cs": {
+      "sha256": "630eb0be84f203491d764b462fa550d32bbadd12a1ad36322c574049eaac5945",
+      "baseBlobSha1": "c7819b147078e414727e31ae4c48b0a84e69de1f",
+      "readOnly": true
+    },
+    "Packages/com.xrlab.chooguard.foundation/Runtime/ScenarioProfile.cs": {
+      "sha256": "b4a5d8229e17626091687162d01df01d30ce62764168ac0c16e9ff9e19f5c513",
+      "baseBlobSha1": "bba47ba15dd6000fa2332e3e72cba489289a3bba",
+      "readOnly": true
+    },
+    "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs": {
+      "sha256": "86f2ff6d05bc09e97e57e039e61ebe93647d42f31adfe87b72ed67fe4b7d486a",
+      "baseBlobSha1": "b329ab0eb6c6f84c473fea39dcb463cd4ab45405",
+      "readOnly": true
+    },
+    "Packages/com.xrlab.chooguard.foundation/Demo/Runtime/DemoFlow.cs": {
+      "sha256": "04ae153f2e284e12083592889152d28a4538ff581d71fc8d6562b40c0b8843a6",
+      "baseBlobSha1": "926a9424110f8bc83a8b75e070c4294c34953a02",
+      "readOnly": true
+    }
+  },
+  "candidateFiles": {
+    "Assets/CHOOguardTeam/Tests/M4-03/ChooGuard.Team.M403.Tests.asmdef": {
+      "sha256": "27558830700e8ceb2d3f15d689d3a469b10cb67914d2f7936ca06b63a93de045",
+      "newFileAtBase": true
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/ChooGuard.Team.M403.Tests.asmdef.meta": {
+      "sha256": "23dac404b0ee86d773bc6887314bc879d2ff0b0b5f20013a6e75eebc493afcc4",
+      "newFileAtBase": true
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403DesktopRoleActionTests.cs": {
+      "sha256": "23f6a67aae9e5a17a25a7397c73750d2aee8f742a76b066347617c3a29e7a641",
+      "newFileAtBase": true
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403DesktopRoleActionTests.cs.meta": {
+      "sha256": "1d4647138d80bbbe47c816e029f1404e476f7f1d1dc0e8d3b1643d3595ba0e59",
+      "newFileAtBase": true
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs": {
+      "sha256": "5f60bb5204a51ee99e9753881f51428a4877d8e78f242fe1777fd6c7c83eb0ae",
+      "newFileAtBase": true
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs.meta": {
+      "sha256": "e6b484355c6f2af31c74573ea9bb4c0530dde2ece041ce5d45d9b754e1e88e39",
+      "newFileAtBase": true
+    }
+  },
+  "buildHash": {
+    "algorithm": "sha256",
+    "source": "Library/ScriptAssemblies after the run",
+    "assemblies": {
+      "ChooGuard.Team.M403.Tests.dll": "65646c56fe52e609c97af47cf34347d1d0b139f94b9f40893e0bedbe5bdd5d5d",
+      "ChooGuard.Foundation.dll": "ef26cbf6d1b85d339e201ce57702dc7c8feef5034018c89adf9bdc989341a85b",
+      "ChooGuard.Foundation.Demo.dll": "9d147c8664ecfa4c98dbe188b7f19abb17b3ed7022832ae1ef425742cf20f863"
+    }
+  },
+  "command": "<UnityEditor> -batchmode -nographics -projectPath <worktree> -runTests -testPlatform EditMode -assemblyNames ChooGuard.Team.M403.Tests -testResults <RUN_ROOT>/01-editmode/EditMode.xml -logFile <RUN_ROOT>/01-editmode/EditMode.log",
+  "result": {
+    "exitCode": 0,
+    "summary": {
+      "result": "Passed",
+      "total": 19,
+      "passed": 19,
+      "failed": 0,
+      "inconclusive": 0,
+      "skipped": 0,
+      "start-time": "2026-09-15 00:22:58Z",
+      "end-time": "2026-09-15 00:22:58Z",
+      "duration": "0.1656858"
+    },
+    "cases": [
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-05\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-05\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.FixtureIsBoundToTheCanonicalScenarioAndHasFourNonRepresentativeProvisionalRows",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.FourActionsAreDistinctFromEachOtherAndFromTheRepresentativeRole",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.MissingFixtureRowTargetOrModalityIsBlockedAndNotExecuted",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-05\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-05\")",
+        "result": "Passed"
+      }
+    ],
+    "resultXmlSha256": "c7713279d63fa157e760e492ed7e2084cae98c5baf3abfb73e818434f5e561f2",
+    "editorLogSha256": "d573884ffb78b1cc20ee2349c515965094f72a8df6731e866af7453fbed07792"
+  },
+  "desktopBehaviors": [
+    {
+      "roleId": "role-02",
+      "fixtureRowId": "m4-01-row-02",
+      "temporaryDisplayName": "경보 전달 · 임시 역할",
+      "actionId": "action-02",
+      "targetAnchorId": "anchor-02",
+      "modality": "Desktop",
+      "inputPath": "DemoFlow.BeginIncident -> DemoFlow.TryInteract(targetAnchorId) -> TrainingSession.Submit",
+      "observed": {
+        "code": "Accepted",
+        "questState": "completed",
+        "virtualTeamEvents": [
+          "role-01:synthetic-action-observed:notified",
+          "role-03:synthetic-action-observed:notified",
+          "role-04:synthetic-action-observed:notified",
+          "role-05:synthetic-action-observed:notified"
+        ],
+        "feedbackCode": "synthetic-action-recorded",
+        "teamStatesAfter": [
+          "role-01:notified",
+          "role-02:idle",
+          "role-03:notified",
+          "role-04:notified",
+          "role-05:notified"
+        ],
+        "preStateHash": "3164db12407d462339d839362490a51faf963785d82975870296e715a98be5c5",
+        "postStateHash": "054c627b8b7e29e7699f42385fde95745ff19d533efe2b227bc1ecdd1494af26"
+      },
+      "fixtureParity": {
+        "questState": true,
+        "virtualTeamEvents": true,
+        "feedbackCode": true,
+        "feedbackTextAndPreState": "asserted inside DesktopFlowMatchesTheFixtureRow (Passed)"
+      },
+      "rejectedInputs": [
+        {
+          "case": "duplicate-attempt",
+          "code": "DuplicateAttempt",
+          "stateUnchanged": true
+        },
+        {
+          "case": "empty-attempt",
+          "code": "InvalidAttemptId",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "missing-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-action",
+          "code": "ActionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-id",
+          "code": "RoleMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "scenario-version",
+          "code": "ScenarioVersionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "stale-prestate",
+          "code": "StaleState",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "unknown-modality",
+          "code": "InvalidModality",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        }
+      ]
+    },
+    {
+      "roleId": "role-03",
+      "fixtureRowId": "m4-01-row-03",
+      "temporaryDisplayName": "상황 보고 · 임시 역할",
+      "actionId": "action-03",
+      "targetAnchorId": "anchor-03",
+      "modality": "Desktop",
+      "inputPath": "DemoFlow.BeginIncident -> DemoFlow.TryInteract(targetAnchorId) -> TrainingSession.Submit",
+      "observed": {
+        "code": "Accepted",
+        "questState": "completed",
+        "virtualTeamEvents": [
+          "role-01:synthetic-action-observed:notified",
+          "role-02:synthetic-action-observed:notified",
+          "role-04:synthetic-action-observed:notified",
+          "role-05:synthetic-action-observed:notified"
+        ],
+        "feedbackCode": "synthetic-action-recorded",
+        "teamStatesAfter": [
+          "role-01:notified",
+          "role-02:notified",
+          "role-03:idle",
+          "role-04:notified",
+          "role-05:notified"
+        ],
+        "preStateHash": "7d1f576d2bf1d5fd2ec0b580718779ea1325c5d1df797931263ba35ef2939a3f",
+        "postStateHash": "13691b95b46c9b641dbb5a7183b8f7471e22d39a09c5a7dd29ae78efa563176d"
+      },
+      "fixtureParity": {
+        "questState": true,
+        "virtualTeamEvents": true,
+        "feedbackCode": true,
+        "feedbackTextAndPreState": "asserted inside DesktopFlowMatchesTheFixtureRow (Passed)"
+      },
+      "rejectedInputs": [
+        {
+          "case": "duplicate-attempt",
+          "code": "DuplicateAttempt",
+          "stateUnchanged": true
+        },
+        {
+          "case": "empty-attempt",
+          "code": "InvalidAttemptId",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "missing-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-action",
+          "code": "ActionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-id",
+          "code": "RoleMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "scenario-version",
+          "code": "ScenarioVersionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "stale-prestate",
+          "code": "StaleState",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "unknown-modality",
+          "code": "InvalidModality",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        }
+      ]
+    },
+    {
+      "roleId": "role-04",
+      "fixtureRowId": "m4-01-row-04",
+      "temporaryDisplayName": "방향 안내 · 임시 역할",
+      "actionId": "action-04",
+      "targetAnchorId": "anchor-04",
+      "modality": "Desktop",
+      "inputPath": "DemoFlow.BeginIncident -> DemoFlow.TryInteract(targetAnchorId) -> TrainingSession.Submit",
+      "observed": {
+        "code": "Accepted",
+        "questState": "completed",
+        "virtualTeamEvents": [
+          "role-01:synthetic-action-observed:notified",
+          "role-02:synthetic-action-observed:notified",
+          "role-03:synthetic-action-observed:notified",
+          "role-05:synthetic-action-observed:notified"
+        ],
+        "feedbackCode": "synthetic-action-recorded",
+        "teamStatesAfter": [
+          "role-01:notified",
+          "role-02:notified",
+          "role-03:notified",
+          "role-04:idle",
+          "role-05:notified"
+        ],
+        "preStateHash": "b7187bf719041d00c91527023c64094b9242ec6e8496cc774028ff6af9e96f47",
+        "postStateHash": "c61760eba5dbb17a0dfb79fd85e26cb5f3ae5ec09f0f0d75c3df1046c74fbce9"
+      },
+      "fixtureParity": {
+        "questState": true,
+        "virtualTeamEvents": true,
+        "feedbackCode": true,
+        "feedbackTextAndPreState": "asserted inside DesktopFlowMatchesTheFixtureRow (Passed)"
+      },
+      "rejectedInputs": [
+        {
+          "case": "duplicate-attempt",
+          "code": "DuplicateAttempt",
+          "stateUnchanged": true
+        },
+        {
+          "case": "empty-attempt",
+          "code": "InvalidAttemptId",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "missing-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-action",
+          "code": "ActionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-id",
+          "code": "RoleMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "scenario-version",
+          "code": "ScenarioVersionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "stale-prestate",
+          "code": "StaleState",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "unknown-modality",
+          "code": "InvalidModality",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        }
+      ]
+    },
+    {
+      "roleId": "role-05",
+      "fixtureRowId": "m4-01-row-05",
+      "temporaryDisplayName": "통로 확인 · 임시 역할",
+      "actionId": "action-05",
+      "targetAnchorId": "anchor-05",
+      "modality": "Desktop",
+      "inputPath": "DemoFlow.BeginIncident -> DemoFlow.TryInteract(targetAnchorId) -> TrainingSession.Submit",
+      "observed": {
+        "code": "Accepted",
+        "questState": "completed",
+        "virtualTeamEvents": [
+          "role-01:synthetic-action-observed:notified",
+          "role-02:synthetic-action-observed:notified",
+          "role-03:synthetic-action-observed:notified",
+          "role-04:synthetic-action-observed:notified"
+        ],
+        "feedbackCode": "synthetic-action-recorded",
+        "teamStatesAfter": [
+          "role-01:notified",
+          "role-02:notified",
+          "role-03:notified",
+          "role-04:notified",
+          "role-05:idle"
+        ],
+        "preStateHash": "dd41fa21396797957a6fa29bf939db7c70d4b09570b4fa3f751ad4f077a425d9",
+        "postStateHash": "681a1e2ece8f200e5d0f30753f316e328792f3257a678c35b8c9f716f6e84bb5"
+      },
+      "fixtureParity": {
+        "questState": true,
+        "virtualTeamEvents": true,
+        "feedbackCode": true,
+        "feedbackTextAndPreState": "asserted inside DesktopFlowMatchesTheFixtureRow (Passed)"
+      },
+      "rejectedInputs": [
+        {
+          "case": "duplicate-attempt",
+          "code": "DuplicateAttempt",
+          "stateUnchanged": true
+        },
+        {
+          "case": "empty-attempt",
+          "code": "InvalidAttemptId",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "missing-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-action",
+          "code": "ActionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-anchor",
+          "code": "TargetAnchorMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "other-role-id",
+          "code": "RoleMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "scenario-version",
+          "code": "ScenarioVersionMismatch",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "stale-prestate",
+          "code": "StaleState",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        },
+        {
+          "case": "unknown-modality",
+          "code": "InvalidModality",
+          "stateUnchanged": true,
+          "retryAccepted": true
+        }
+      ]
+    }
+  ],
+  "distinctness": "M403|distinct|actions=role-02=action-02@anchor-02,role-03=action-03@anchor-03,role-04=action-04@anchor-04,role-05=action-05@anchor-05",
+  "blockedResolution": [
+    {
+      "roleId": "role-02",
+      "reason": "action_missing"
+    },
+    {
+      "roleId": "role-02",
+      "reason": "expected_output_missing"
+    },
+    {
+      "roleId": "role-02",
+      "reason": "fixture_missing"
+    },
+    {
+      "roleId": "role-06",
+      "reason": "fixture_row_missing"
+    },
+    {
+      "roleId": "role-02",
+      "reason": "modality_missing"
+    },
+    {
+      "roleId": "role-02",
+      "reason": "modality_unknown"
+    },
+    {
+      "roleId": "role-02",
+      "reason": "prestate_missing"
+    },
+    {
+      "roleId": "role-01",
+      "reason": "representative_role_out_of_scope"
+    },
+    {
+      "roleId": "role-02",
+      "reason": "target_missing"
+    }
+  ],
+  "semanticParityOnly": {
+    "statement": "The same fixture row submitted with the VR enum value in a separate session gives the same quest state, events, feedback code and state hash as Desktop. This is contract-level semantic parity; it is not HMD, XR runtime or tracked-controller evidence.",
+    "lines": [
+      "M403|semantic-parity|role=role-02|vrEnumValueOnly=true|hmd=unknown|xrRuntime=unknown|trackedTarget=unknown",
+      "M403|semantic-parity|role=role-03|vrEnumValueOnly=true|hmd=unknown|xrRuntime=unknown|trackedTarget=unknown",
+      "M403|semantic-parity|role=role-04|vrEnumValueOnly=true|hmd=unknown|xrRuntime=unknown|trackedTarget=unknown",
+      "M403|semantic-parity|role=role-05|vrEnumValueOnly=true|hmd=unknown|xrRuntime=unknown|trackedTarget=unknown"
+    ]
+  },
+  "mutationControls": [
+    {
+      "step": "02-mutation-no-target-anchor-check",
+      "change": "target anchor comparison removed from TrainingSession.ValidateAction",
+      "file": "Packages/com.xrlab.chooguard.foundation/Runtime/TrainingSession.cs",
+      "appliedIn": "isolated worktree only; restored with git checkout; tracked changes after restore 0",
+      "exitCode": 2,
+      "summary": {
+        "total": 19,
+        "passed": 15,
+        "failed": 4
+      },
+      "failedTests": [
+        "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-02\")",
+        "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-03\")",
+        "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-04\")",
+        "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-05\")"
+      ],
+      "resultXmlSha256": "98302e9779b3f5e58ed0bf1ee91d76aca524386e0ead31582d5779d40d24ed4e"
+    },
+    {
+      "step": "03-mutation-fixture-row-feedback-code",
+      "change": "role-03 fixture row expectedFeedbackCode changed",
+      "file": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+      "appliedIn": "isolated worktree only; restored with git checkout; tracked changes after restore 0",
+      "exitCode": 2,
+      "summary": {
+        "total": 19,
+        "passed": 17,
+        "failed": 2
+      },
+      "failedTests": [
+        "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-03\")",
+        "M403DesktopRoleActionTests.FixtureIsBoundToTheCanonicalScenarioAndHasFourNonRepresentativeProvisionalRows"
+      ],
+      "resultXmlSha256": "4b0b376c416ed638fecf79ee048fc9754a78bfd97c28a32527d8235263e935a4"
+    },
+    {
+      "step": "04-mutation-team-state-not-applied",
+      "change": "VirtualTeamSimulator.ApplyValidated no longer applies states",
+      "file": "Packages/com.xrlab.chooguard.foundation/Runtime/VirtualTeamSimulator.cs",
+      "appliedIn": "isolated worktree only; restored with git checkout; tracked changes after restore 0",
+      "exitCode": 2,
+      "summary": {
+        "total": 19,
+        "passed": 15,
+        "failed": 4
+      },
+      "failedTests": [
+        "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-02\")",
+        "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-03\")",
+        "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-04\")",
+        "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-05\")"
+      ],
+      "resultXmlSha256": "ba6f06cde30f507615952be4957c86355c62c8c489a6314b0b96d2c7ab821adb"
+    }
+  ],
+  "afterRestore": {
+    "step": "05-editmode-after-restore",
+    "exitCode": 0,
+    "summary": {
+      "total": 19,
+      "passed": 19,
+      "failed": 0
+    },
+    "resultXmlSha256": "381ffdfa70013a14b6b26b577bff6e12e60a819b179bc09816c7bd3581d39742"
+  },
+  "baselineControl": {
+    "step": "06-baseline-existing-role-tests",
+    "filter": "DemoFlowTests; CanonicalScenarioTests; TrainingSessionTests (existing, unmodified)",
+    "exitCode": 0,
+    "summary": {
+      "total": 62,
+      "passed": 62,
+      "failed": 0,
+      "skipped": 0
+    },
+    "resultXmlSha256": "cdbe90cee63ef899824d346358c9057ef6523fec36648d5d0d0d6ac87c22ad65"
+  },
+  "observations": [
+    "Observed ready-state hashes for role-02..05 equal the golden values in the existing CanonicalScenarioTests, so the M4-01 fixture unknown about the runtime preStateHash is now observed for these four roles (the fixture itself is not edited).",
+    "DemoFlow always submits InputModality.Desktop; the state hash does not include modality, so modality is shown by the input path, not by the hash."
+  ],
+  "failedAttempts": [
+    {
+      "attempt": "background first-import wrapper",
+      "observed": "task reported exit 1 because the trailing grep found no compiler errors; Unity itself exited 0 with 0 CS errors",
+      "handling": "not a Unity failure; the next step ran against the imported project"
+    }
+  ],
+  "limits": [
+    "Unity EditMode contract execution with the presentation flow; no scene, raycast reach check, camera or rendered frame was exercised (StationWorldController and DemoGameController are not used, to avoid shared controller or scene writes).",
+    "No HMD, XR runtime or tracked input was used; the VR branch stays blocked.",
+    "Candidate test files include Unity .meta for files inside the M4-03 root only; parent folder .meta files (Assets/CHOOguardTeam/Tests.meta, Tests/M4-03.meta) are outside the write scope and not committed.",
+    "Raw result XML and editor logs stay outside Git under <RUN_ROOT>; only digests are recorded.",
+    "No independent review has been performed."
+  ]
+}
