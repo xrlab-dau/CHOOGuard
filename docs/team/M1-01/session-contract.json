@@ -1,0 +1,1081 @@
+{
+  "schemaVersion": 1,
+  "artifactId": "artifact:17:M1-01-session-contract:candidate",
+  "issueNumber": 17,
+  "workId": "M1-01",
+  "phase": "candidate",
+  "kind": "llm-session-and-writer-lease-contract",
+  "recordType": "candidate_contract_not_runtime_service",
+  "draftStatus": "candidate_draft",
+  "canonicalWriteAllowed": false,
+  "noAcceptanceClaim": "Candidate contract. It defines fields and transitions and is exercised only by a simulated registry in temporary directories. It is not an operating lease service and grants no write on any repository path.",
+  "noLiveLease": "No lease was acquired on any shared or canonical path while producing this contract.",
+  "inputs": {
+    "artifact:16:M0-03-execution-profile:candidate": {
+      "path": "docs/team/M0-03/execution-profile.json",
+      "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
+      "consumed": [
+        "roles[*].roleId",
+        "roles[*].modelScope.allow",
+        "policy.dataClasses",
+        "egress.destinations[*].approvalOwner"
+      ]
+    },
+    "toolRowSource": {
+      "path": "docs/team/M0-03/allowlist.json",
+      "consumed": [
+        "allowlistRows[*].rowId"
+      ]
+    },
+    "sessionStartFields": {
+      "path": "docs/choo-guard-ai-native-pipeline-v1.md",
+      "selector": "section 6.1 item 5: session start contract fields and Writer Lease record fields; abnormal termination is reclaimed only after the PM checks the existing hash"
+    },
+    "backlogScope": {
+      "path": "docs/choo-guard-execution-backlog-v1.md",
+      "selector": "section 5 M1-01: acquire, expire, release and abnormal-termination recovery rules; failure, retry and cancel result format"
+    },
+    "existingLeaseVocabulary": {
+      "path": "scripts/context/work_graph.mjs",
+      "selector": "writerContext.leases fields owner, baseSourceRef, acquiredAt, expiresAt, fence; resource template fields",
+      "use": "field names aligned; file not modified"
+    },
+    "notRead": [
+      "docs/choo-guard-native-team-contracts.md (absent on develop, no qualification)"
+    ]
+  },
+  "sessionInput": {
+    "purpose": "Everything a work session receives before it may request a lease or write.",
+    "required": [
+      {
+        "field": "sessionId",
+        "type": "token",
+        "rule": "opaque session identifier; it names a session, never a person"
+      },
+      {
+        "field": "workId",
+        "type": "string",
+        "rule": "stable work id taken from docs/context/work-orders/NNN.json"
+      },
+      {
+        "field": "issueNumber",
+        "type": "integer",
+        "rule": "positive"
+      },
+      {
+        "field": "phase",
+        "type": "enum",
+        "values": [
+          "prepare",
+          "candidate",
+          "accept"
+        ]
+      },
+      {
+        "field": "baseRef",
+        "type": "sha40",
+        "rule": "full 40-hex commit the session starts from"
+      },
+      {
+        "field": "writeScope",
+        "type": "array<repoPath>",
+        "rule": "non-empty exact repository-relative paths from the work order phaseWriteScopes; no absolute, drive or parent-escaping path; a trailing slash or /** marks a directory scope"
+      },
+      {
+        "field": "role",
+        "type": "enum",
+        "valuesFrom": "docs/team/M0-03/execution-profile.json#/roles[*]/roleId"
+      },
+      {
+        "field": "tools",
+        "type": "array<allowlistRowId>",
+        "rule": "non-empty row ids that exist in docs/team/M0-03/allowlist.json#/allowlistRows"
+      },
+      {
+        "field": "model",
+        "type": "object",
+        "fields": [
+          "provider",
+          "modelId"
+        ],
+        "rule": "modelId must match the role modelScope allow list; a role without model scope uses modelId none"
+      },
+      {
+        "field": "acceptance",
+        "type": "array<string>",
+        "rule": "non-empty; the work order acceptance entries or JSON pointers to them"
+      },
+      {
+        "field": "evidencePaths",
+        "type": "array<repoPath>",
+        "rule": "non-empty; every path lies inside writeScope"
+      }
+    ],
+    "optional": [
+      {
+        "field": "orchestrator",
+        "type": "enum",
+        "values": [
+          "pi",
+          "direct-client",
+          "none"
+        ],
+        "default": "none",
+        "rule": "Pi is optional; no required field, transition or tool row depends on it"
+      },
+      {
+        "field": "readScope",
+        "type": "array<repoPath>"
+      },
+      {
+        "field": "egressApprovals",
+        "type": "array<approvalOwner>",
+        "rule": "approval owners recorded for this session, e.g. APR-EGRESS"
+      },
+      {
+        "field": "leaseRequests",
+        "type": "array<resourceRef>",
+        "rule": "resources the session intends to lease; each must be covered by writeScope or be a Unity project, editor or generated-output resource of the same workspace"
+      }
+    ],
+    "forbiddenFields": [
+      "assignee",
+      "person",
+      "personName",
+      "teammate",
+      "email",
+      "hostname",
+      "accountName"
+    ],
+    "forbiddenRule": "No named teammate assignment is encoded; work is bound to a session, a role and a work id."
+  },
+  "lease": {
+    "fields": [
+      {
+        "field": "leaseId",
+        "type": "token"
+      },
+      {
+        "field": "resource",
+        "type": "object",
+        "fields": [
+          "kind",
+          "workspaceId",
+          "path|root|editorInstanceId"
+        ]
+      },
+      {
+        "field": "holder",
+        "type": "sessionId",
+        "alignsWith": "work_graph.mjs lease.owner"
+      },
+      {
+        "field": "baseRef",
+        "type": "sha40",
+        "alignsWith": "work_graph.mjs lease.baseSourceRef"
+      },
+      {
+        "field": "acquiredAt",
+        "type": "ISO-8601 UTC"
+      },
+      {
+        "field": "expiresAt",
+        "type": "ISO-8601 UTC",
+        "rule": "later than acquiredAt and at most maxTtlSeconds after it"
+      },
+      {
+        "field": "fence",
+        "type": "integer",
+        "rule": "strictly increasing per resource key; every write presents it and a stale fence is refused",
+        "alignsWith": "work_graph.mjs lease.fence"
+      },
+      {
+        "field": "baseContentSha256",
+        "type": "sha256",
+        "rule": "content digest of the leased resource at acquisition; crash recovery compares against it"
+      },
+      {
+        "field": "state",
+        "type": "enum",
+        "valuesFrom": "/states"
+      }
+    ],
+    "resourceKinds": [
+      {
+        "kind": "workspace-file",
+        "keyTemplate": "workspace-file:{workspaceId}:{path}",
+        "overlapRule": "same workspace and the paths are equal or one is a directory prefix of the other"
+      },
+      {
+        "kind": "generated-output",
+        "keyTemplate": "generated-output:{workspaceId}:{root}",
+        "overlapRule": "same workspace and roots overlap by prefix; also overlaps any workspace-file lease under the root"
+      },
+      {
+        "kind": "project-settings",
+        "keyTemplate": "project-settings:{workspaceId}",
+        "overlapRule": "same workspace; also overlaps any workspace-file lease under ProjectSettings/"
+      },
+      {
+        "kind": "unity-project",
+        "keyTemplate": "unity-project:{workspaceId}",
+        "overlapRule": "same workspace; one Unity writer per project instance, so it also overlaps generated-output and project-settings leases of that workspace"
+      },
+      {
+        "kind": "unity-editor",
+        "keyTemplate": "unity-editor:{editorInstanceId}",
+        "overlapRule": "same editor instance"
+      }
+    ],
+    "limits": {
+      "maxTtlSeconds": 3600
+    },
+    "blockingStates": [
+      "active",
+      "expired",
+      "crash_suspected",
+      "failed"
+    ],
+    "blockingRule": "An expired, crash-suspected or failed lease still blocks its resource until the PM recovers it; only released and recovered leases free the resource."
+  },
+  "states": [
+    "active",
+    "released",
+    "expired",
+    "crash_suspected",
+    "recovered",
+    "failed"
+  ],
+  "terminalStates": [
+    "released",
+    "recovered",
+    "failed"
+  ],
+  "transitions": [
+    {
+      "id": "T-acquire",
+      "from": null,
+      "event": "acquire",
+      "to": "active",
+      "guards": [
+        "holder, baseRef, expiresAt and baseContentSha256 are recordable",
+        "expiresAt within maxTtlSeconds",
+        "no lease in a blocking state overlaps the resource"
+      ],
+      "onReject": {
+        "to": "rejected_attempt",
+        "record": [
+          "requester",
+          "requestedResource",
+          "reason",
+          "conflictingLeaseId",
+          "conflictingHolder",
+          "conflictingScope",
+          "conflictingBaseRef"
+        ],
+        "preserves": [
+          "holder",
+          "baseRef"
+        ]
+      }
+    },
+    {
+      "id": "T-renew",
+      "from": "active",
+      "event": "renew",
+      "to": "active",
+      "guards": [
+        "caller is holder",
+        "fence is current",
+        "now is before expiresAt",
+        "new expiresAt within maxTtlSeconds of now"
+      ],
+      "onReject": {
+        "to": "active",
+        "record": [
+          "caller",
+          "reason"
+        ],
+        "preserves": [
+          "holder",
+          "baseRef",
+          "fence",
+          "expiresAt"
+        ]
+      }
+    },
+    {
+      "id": "T-write",
+      "from": "active",
+      "event": "write",
+      "to": "active",
+      "guards": [
+        "caller is holder",
+        "fence is current",
+        "now is before expiresAt",
+        "path inside the leased resource"
+      ],
+      "onReject": {
+        "to": "active",
+        "record": [
+          "caller",
+          "presentedFence",
+          "path",
+          "reason"
+        ],
+        "preserves": [
+          "holder",
+          "baseRef",
+          "fence"
+        ]
+      }
+    },
+    {
+      "id": "T-release",
+      "from": "active",
+      "event": "release",
+      "to": "released",
+      "guards": [
+        "caller is holder",
+        "fence is current"
+      ],
+      "onReject": {
+        "to": "active",
+        "record": [
+          "caller",
+          "reason"
+        ],
+        "preserves": [
+          "holder",
+          "baseRef",
+          "fence"
+        ]
+      },
+      "preserves": [
+        "holder",
+        "baseRef",
+        "fence",
+        "resource"
+      ]
+    },
+    {
+      "id": "T-handoff",
+      "from": "active",
+      "event": "handoff",
+      "to": "released",
+      "guards": [
+        "caller is holder",
+        "fence is current",
+        "handoff record names nextSessionId, outputs, tests and known limits"
+      ],
+      "onReject": {
+        "to": "active",
+        "record": [
+          "caller",
+          "reason"
+        ],
+        "preserves": [
+          "holder",
+          "baseRef",
+          "fence"
+        ]
+      },
+      "preserves": [
+        "holder",
+        "baseRef",
+        "fence",
+        "resource",
+        "handoff"
+      ],
+      "note": "The next session still performs T-acquire; the handoff record never transfers the lease implicitly."
+    },
+    {
+      "id": "T-expire",
+      "from": "active",
+      "event": "expire",
+      "to": "expired",
+      "guards": [
+        "now is at or after expiresAt"
+      ],
+      "preserves": [
+        "holder",
+        "baseRef",
+        "fence",
+        "resource",
+        "expiresAt"
+      ]
+    },
+    {
+      "id": "T-crash",
+      "from": "active",
+      "event": "crash_detected",
+      "to": "crash_suspected",
+      "guards": [
+        "the holder session exit or loss is reported"
+      ],
+      "preserves": [
+        "holder",
+        "baseRef",
+        "fence",
+        "resource"
+      ]
+    },
+    {
+      "id": "T-recover",
+      "from": [
+        "expired",
+        "crash_suspected"
+      ],
+      "event": "recover",
+      "to": "recovered",
+      "guards": [
+        "caller role is role:pm",
+        "current resource content sha256 equals baseContentSha256 or the last content digest recorded by an authorized write"
+      ],
+      "onReject": {
+        "to": "failed",
+        "whenReason": "content_changed_since_last_authorized_write",
+        "record": [
+          "caller",
+          "expectedSha256",
+          "observedSha256",
+          "reason"
+        ],
+        "preserves": [
+          "holder",
+          "baseRef",
+          "fence",
+          "resource"
+        ]
+      },
+      "onRejectOther": {
+        "to": "unchanged",
+        "whenReason": "caller_not_pm",
+        "record": [
+          "caller",
+          "reason"
+        ]
+      },
+      "preserves": [
+        "holder",
+        "baseRef",
+        "fence",
+        "resource"
+      ],
+      "note": "Recovery closes the old lease; a new session must T-acquire and receives fence + 1."
+    }
+  ],
+  "undefinedTransitionRule": "Any event not listed for the current state is refused with reason transition_not_in_contract and recorded.",
+  "journal": {
+    "form": "append-only JSON lines; every accepted transition and every refused attempt is one entry",
+    "entryFields": [
+      "seq",
+      "at",
+      "event",
+      "leaseId",
+      "result",
+      "reason",
+      "holder",
+      "baseRef",
+      "fence",
+      "details"
+    ],
+    "rule": "Entries are never rewritten or removed; refused attempts stay as retained failed fixtures."
+  },
+  "outcomeRecords": {
+    "kinds": [
+      "succeeded",
+      "failed",
+      "retried",
+      "cancelled"
+    ],
+    "requiredFields": [
+      "sessionId",
+      "workId",
+      "attempt",
+      "outcome",
+      "baseRef",
+      "startedAt",
+      "endedAt"
+    ],
+    "conditionalFields": {
+      "failed": [
+        "reason"
+      ],
+      "cancelled": [
+        "reason",
+        "cancelledBy"
+      ],
+      "retried": [
+        "retryOf"
+      ]
+    },
+    "rule": "A retry is a new attempt whose retryOf names the earlier attempt; the failed or cancelled attempt is kept unchanged."
+  },
+  "stopRules": [
+    "If a shared canonical path would have to be modified, the session stops and requests a serialized integration lease instead of writing.",
+    "If holder, baseRef or expiry cannot be recorded, no lease is issued and no write happens."
+  ],
+  "limits": [
+    "Leases here are simulated by scripts/team/M1-01/writer_lease.py in temporary directories; no lock service, filesystem lock or Unity Editor process is involved.",
+    "Clock values are injected by the caller; clock skew between machines is not modelled.",
+    "Unity project and editor overlap is modelled by resource keys only; no running Editor was inspected.",
+    "No independent review has been performed."
+  ],
+  "baseRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+  "outputs": {
+    "artifact:17:M1-01-negative-fixtures:candidate": {
+      "scripts/team/M1-01/writer_lease.py": "8d37a6ef2436f10b953dc8c1a7ab9d51d6f68285ba4f610713913b5b498feb2f",
+      "scripts/team/M1-01/test_writer_lease.py": "aec895e3a903b2bbd19c13ed4c936ea51416a3ba04eff6b5db3d68ae01739a5f"
+    }
+  },
+  "checksRun": [
+    {
+      "check": "inspection: session-contract.json schema and state transition table",
+      "command": "python scripts/team/M1-01/writer_lease.py inspect",
+      "exitCode": 0,
+      "ok": true,
+      "problems": [],
+      "transitions": 8,
+      "negativeCases": "test_mutated_contracts_are_reported_and_refused_by_registry removes the expiry limit, the duplicate-rejection holder record, a required session field, a preserved baseRef, a blocking state, the failed outcome of a mismatched recovery, the orchestrator optionality and the named-assignment ban; each is reported and the registry refuses to start"
+    },
+    {
+      "check": "proposed test: scripts/team/M1-01/test_writer_lease.py",
+      "command": "python -m unittest discover -s scripts/team/M1-01 -p 'test_*.py' -v",
+      "exitCode": 0,
+      "ran": 17,
+      "result": "OK",
+      "stderrSha256": "28a71d534ef907df0f01c8a00eea34b44cfd1775ad979fccd00d7ec31d0951a1"
+    },
+    {
+      "check": "scripted scenarios with retained refused attempts",
+      "command": "python scripts/team/M1-01/writer_lease.py scenarios",
+      "exitCode": 0,
+      "state": "passed",
+      "counts": {
+        "scenarios": 8,
+        "steps": 43,
+        "passed": 43
+      },
+      "journal": {
+        "entries": 50,
+        "rejectedEntriesRetained": 27,
+        "sequencesContiguous": true,
+        "sha256": "cfa1516c4798d75c0acbe342d4af8aa67a935bb806daf4f4ffadae24d02e4d96"
+      }
+    },
+    {
+      "check": "mutation controls (in-memory source replacement; file on disk unchanged)",
+      "mutations": [
+        {
+          "mutation": "path overlap reduced to exact equality",
+          "testsRun": 17,
+          "failures": 3,
+          "errors": 0,
+          "scenarioState": "mismatch",
+          "mismatchedSteps": [
+            "S1 same path / B parent directory refused",
+            "S3 generated output and settings / C ProjectSettings file refused",
+            "S5 renew, write and expiry / expired lease still blocks"
+          ]
+        },
+        {
+          "mutation": "fence comparison on renew/write/release/handoff",
+          "testsRun": 17,
+          "failures": 3,
+          "errors": 0,
+          "scenarioState": "mismatch",
+          "mismatchedSteps": [
+            "S5 renew, write and expiry / A stale fence write refused"
+          ]
+        },
+        {
+          "mutation": "content digest comparison on PM recovery",
+          "testsRun": 17,
+          "failures": 2,
+          "errors": 0,
+          "scenarioState": "mismatch",
+          "mismatchedSteps": [
+            "S8 recovery with changed content / PM recovery with unexpected content fails",
+            "S8 recovery with changed content / failed lease keeps blocking",
+            "S8 recovery with changed content / recovery of a failed lease is not in the contract"
+          ]
+        },
+        {
+          "mutation": "expired, crash-suspected and failed leases blocking reacquire",
+          "testsRun": 17,
+          "failures": 2,
+          "errors": 1,
+          "scenarioState": "mismatch",
+          "mismatchedSteps": [
+            "S5 renew, write and expiry / expired lease still blocks",
+            "S7 crash recovery / B cannot take a crash-suspected resource",
+            "S7 crash recovery / B acquires with fence 2",
+            "S8 recovery with changed content / failed lease keeps blocking"
+          ]
+        }
+      ]
+    },
+    {
+      "check": "example session input for this issue validated against the profile and allowlist",
+      "problems": []
+    }
+  ],
+  "scenarioRun": [
+    {
+      "scenario": "S1 same path",
+      "step": "A acquires",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "fence": 1
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S1 same path",
+      "step": "B same path refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active",
+        "conflictingHolder": "session-a",
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingScope": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Scenes/Main.unity"
+        }
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S1 same path",
+      "step": "B parent directory refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active",
+        "conflictingHolder": "session-a"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S1 same path",
+      "step": "B sibling prefix allowed",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "fence": 1
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S1 same path",
+      "step": "C other workspace allowed",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "fence": 1
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S2 one Unity writer",
+      "step": "A leases the Unity project",
+      "expected": {
+        "ok": true,
+        "reason": null
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S2 one Unity writer",
+      "step": "B generated output refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active",
+        "conflictingHolder": "session-a",
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S2 one Unity writer",
+      "step": "B project settings refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S2 one Unity writer",
+      "step": "B second Unity project writer refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S2 one Unity writer",
+      "step": "A leases editor instance",
+      "expected": {
+        "ok": true,
+        "reason": null
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S2 one Unity writer",
+      "step": "B same editor instance refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S3 generated output and settings",
+      "step": "A leases output root",
+      "expected": {
+        "ok": true,
+        "reason": null
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S3 generated output and settings",
+      "step": "B file under root refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active",
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S3 generated output and settings",
+      "step": "B project settings alongside output allowed",
+      "expected": {
+        "ok": true,
+        "reason": null
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S3 generated output and settings",
+      "step": "C ProjectSettings file refused",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_active",
+        "conflictingHolder": "session-b"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S4 unrecordable lease",
+      "step": "missing expiry refused",
+      "expected": {
+        "ok": false,
+        "reason": "lease_fields_unrecordable"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S4 unrecordable lease",
+      "step": "missing base ref refused",
+      "expected": {
+        "ok": false,
+        "reason": "lease_fields_unrecordable"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S4 unrecordable lease",
+      "step": "missing holder refused",
+      "expected": {
+        "ok": false,
+        "reason": "lease_fields_unrecordable"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S4 unrecordable lease",
+      "step": "TTL beyond limit refused",
+      "expected": {
+        "ok": false,
+        "reason": "expiry_out_of_bounds"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S4 unrecordable lease",
+      "step": "nothing was issued, so the first real lease gets fence 1",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "fence": 1
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "B renew refused",
+      "expected": {
+        "ok": false,
+        "reason": "caller_not_holder",
+        "holder": "session-a",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "A stale fence write refused",
+      "expected": {
+        "ok": false,
+        "reason": "stale_fence"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "A write outside lease refused",
+      "expected": {
+        "ok": false,
+        "reason": "path_outside_lease"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "A write accepted",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "lastWriteSha256": "2222222222222222222222222222222222222222222222222222222222222222"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "A renew accepted",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "expiresAt": "2026-09-15T00:40:00Z"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "A write after expiry refused",
+      "expected": {
+        "ok": false,
+        "reason": "lease_expired"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "A renew after expiry refused",
+      "expected": {
+        "ok": false,
+        "reason": "lease_expired"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "expired lease still blocks",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_expired",
+        "conflictingHolder": "session-a"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S5 renew, write and expiry",
+      "step": "release of an expired lease is not in the contract",
+      "expected": {
+        "ok": false,
+        "reason": "transition_not_in_contract",
+        "state": "expired",
+        "holder": "session-a",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S6 normal handoff",
+      "step": "incomplete handoff record refused",
+      "expected": {
+        "ok": false,
+        "reason": "handoff_record_incomplete",
+        "state": "active"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S6 normal handoff",
+      "step": "A hands off",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "state": "released",
+        "holder": "session-a",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S6 normal handoff",
+      "step": "B acquires with fence 2",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "fence": 2
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S6 normal handoff",
+      "step": "A write after handoff refused",
+      "expected": {
+        "ok": false,
+        "reason": "transition_not_in_contract"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S6 normal handoff",
+      "step": "B writes with fence 2",
+      "expected": {
+        "ok": true,
+        "reason": null
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S7 crash recovery",
+      "step": "crash reported",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "state": "crash_suspected",
+        "holder": "session-a",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S7 crash recovery",
+      "step": "B cannot take a crash-suspected resource",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_crash_suspected"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S7 crash recovery",
+      "step": "non-PM recovery refused",
+      "expected": {
+        "ok": false,
+        "reason": "caller_not_pm",
+        "state": "crash_suspected"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S7 crash recovery",
+      "step": "PM recovers when content equals the last authorized write",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "state": "recovered",
+        "holder": "session-a",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S7 crash recovery",
+      "step": "B acquires with fence 2",
+      "expected": {
+        "ok": true,
+        "reason": null,
+        "fence": 2
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S7 crash recovery",
+      "step": "A late write refused",
+      "expected": {
+        "ok": false,
+        "reason": "transition_not_in_contract"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S8 recovery with changed content",
+      "step": "PM recovery with unexpected content fails",
+      "expected": {
+        "ok": false,
+        "reason": "content_changed_since_last_authorized_write",
+        "state": "failed",
+        "holder": "session-a",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "fence": 1
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S8 recovery with changed content",
+      "step": "failed lease keeps blocking",
+      "expected": {
+        "ok": false,
+        "reason": "overlap_with_failed",
+        "conflictingHolder": "session-a"
+      },
+      "passed": true
+    },
+    {
+      "scenario": "S8 recovery with changed content",
+      "step": "recovery of a failed lease is not in the contract",
+      "expected": {
+        "ok": false,
+        "reason": "transition_not_in_contract",
+        "state": "failed"
+      },
+      "passed": true
+    }
+  ],
+  "failedAttempts": [
+    {
+      "attempt": "first unittest discovery ran while the test file write was still held by the local pre-write gate",
+      "observed": "Ran 0 tests, exit 0",
+      "handling": "not counted as a pass; rerun after the file existed (17 tests)"
+    }
+  ],
+  "acceptanceMapping": [
+    {
+      "criterion": "acceptance[0] session input carries stable workId, baseRef, exact writeScope, tool/model, acceptance and evidence paths",
+      "evidence": "/sessionInput/required; SessionInput tests (each missing field refused, evidence outside writeScope refused, unknown tool row or out-of-scope model refused)"
+    },
+    {
+      "criterion": "acceptance[1] lease states acquire/renew/expire/release/crash-recover explicit",
+      "evidence": "/states and /transitions (T-acquire, T-renew, T-write, T-release, T-handoff, T-expire, T-crash, T-recover); undefined events refused as transition_not_in_contract"
+    },
+    {
+      "criterion": "acceptance[2] same Unity, editor or generated output overlap rejected with holder, scope and base SHA",
+      "evidence": "/lease/resourceKinds; scenarioRun S1-S3; Overlap tests assert conflictingHolder, conflictingScope and conflictingBaseRef"
+    },
+    {
+      "criterion": "acceptance[3] Pi optional; no named teammate assignment",
+      "evidence": "/sessionInput/optional orchestrator default none; /sessionInput/forbiddenFields; test_complete_session_is_accepted_with_or_without_orchestrator; named_assignment_field refusal"
+    }
+  ]
+}
