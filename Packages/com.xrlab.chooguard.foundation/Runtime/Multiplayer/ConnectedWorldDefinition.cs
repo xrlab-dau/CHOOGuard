@@ -38,6 +38,7 @@ namespace ChooGuard.Foundation.Multiplayer
     {
         public Point3 Center;
         public float SizeX, SizeZ;
+        public RegionExclusion Copy() => (RegionExclusion)MemberwiseClone();
         public bool Contains(Point3 p, float margin) => Math.Abs(p.X - Center.X) < SizeX / 2 + margin &&
             Math.Abs(p.Z - Center.Z) < SizeZ / 2 + margin;
     }
@@ -56,6 +57,12 @@ namespace ChooGuard.Foundation.Multiplayer
             Math.Abs(p.Z - Center.Z) <= SizeZ / 2 + .01f && Math.Abs(p.Y - Center.Y) <= .3f;
         public Point3 LocalBoundsCenter(SpatialFrame frame) => frame.ToLocal(new Point3(Center.X, Center.Y + Height / 2, Center.Z));
         public Point3 LocalBoundsSize => new Point3(SizeX, Height, SizeZ);
+        public ConnectedRegionDefinition Copy()
+        {
+            var copy = (ConnectedRegionDefinition)MemberwiseClone();
+            copy.Exclusions = Exclusions?.Select(e => e?.Copy()).ToArray();
+            return copy;
+        }
     }
 
     [Serializable]
@@ -70,15 +77,36 @@ namespace ChooGuard.Foundation.Multiplayer
         public bool Ceiling;
         public Point3 ClosurePoint => new Point3(FromPoint.X + (ToPoint.X - FromPoint.X) * ClosureAlong,
             FromPoint.Y + (ToPoint.Y - FromPoint.Y) * ClosureAlong, FromPoint.Z + (ToPoint.Z - FromPoint.Z) * ClosureAlong);
+        public ConnectedPortalDefinition Copy()
+        {
+            var copy = (ConnectedPortalDefinition)MemberwiseClone();
+            copy.LinkedDoorEntityIds = LinkedDoorEntityIds?.ToArray();
+            copy.SourceRefs = SourceRefs?.ToArray();
+            return copy;
+        }
+
         public bool Contains(Point3 p, float radius, out float along)
         {
-            var dx = ToPoint.X - FromPoint.X; var dz = ToPoint.Z - FromPoint.Z;
+            along = 0;
+            if (!p.Finite || !FromPoint.Finite || !ToPoint.Finite || float.IsNaN(radius) ||
+                float.IsInfinity(radius) || radius < 0 || float.IsNaN(ClearWidth) ||
+                float.IsInfinity(ClearWidth) || ClearWidth <= 0)
+                return false;
+            // A negative clearance must not become positive when squared: a body wider
+            // than this passage cannot fit even on its centre line. Zero is a point probe.
+            var clearance = (double)ClearWidth / 2 - radius;
+            if (clearance < 0) return false;
+            var dx = (double)ToPoint.X - FromPoint.X;
+            var dz = (double)ToPoint.Z - FromPoint.Z;
             var length2 = dx * dx + dz * dz;
-            along = ((p.X - FromPoint.X) * dx + (p.Z - FromPoint.Z) * dz) / length2;
-            if (along < -.005f || along > 1.005f) return false;
-            var x = FromPoint.X + along * dx; var z = FromPoint.Z + along * dz;
-            var y = FromPoint.Y + along * (ToPoint.Y - FromPoint.Y);
-            return (p.X - x) * (p.X - x) + (p.Z - z) * (p.Z - z) <= Math.Pow(ClearWidth / 2 - radius, 2) &&
+            if (length2 <= 0) return false;
+            var progress = (((double)p.X - FromPoint.X) * dx + ((double)p.Z - FromPoint.Z) * dz) / length2;
+            if (progress < -.005f || progress > 1.005f) return false;
+            along = (float)progress;
+            var x = FromPoint.X + progress * dx;
+            var z = FromPoint.Z + progress * dz;
+            var y = FromPoint.Y + progress * ((double)ToPoint.Y - FromPoint.Y);
+            return ((double)p.X - x) * (p.X - x) + ((double)p.Z - z) * (p.Z - z) <= clearance * clearance &&
                 Math.Abs(p.Y - y) <= .3f;
         }
     }
@@ -94,6 +122,18 @@ namespace ChooGuard.Foundation.Multiplayer
         public ConnectedRegionDefinition[] Regions;
         public ConnectedPortalDefinition[] Portals;
         public string[] Limits;
+
+        // A snapshot owns every mutable array/object, including nested portal metadata.
+        // Copy before Validate when migrating legacy geometry so caller data stays unchanged.
+        public ConnectedWorldDefinition Copy()
+        {
+            var copy = (ConnectedWorldDefinition)MemberwiseClone();
+            copy.Frames = Frames?.Select(f => f?.Copy()).ToArray();
+            copy.Regions = Regions?.Select(r => r?.Copy()).ToArray();
+            copy.Portals = Portals?.Select(p => p?.Copy()).ToArray();
+            copy.Limits = Limits?.ToArray();
+            return copy;
+        }
 
         public ConnectedRegionDefinition Region(string id) => Regions.Single(r => r.Id == id);
         public SpatialFrame Frame(string id) => Frames.Single(f => f.FrameId == id);
@@ -131,7 +171,8 @@ namespace ChooGuard.Foundation.Multiplayer
         public bool TryLocate(SpatialPose previous, Point3 point, float radius, ISet<string> closed, out SpatialPose result)
         {
             result = null;
-            if (!point.Finite || !Regions.Any(r => r.Id == previous.RegionId)) return false;
+            if (previous == null || !point.Finite || float.IsNaN(radius) || float.IsInfinity(radius) ||
+                radius < 0 || !Regions.Any(r => r.Id == previous.RegionId)) return false;
             // Only the actor's current region or an explicitly adjacent corridor can receive a small server step.
             var current = Region(previous.RegionId);
             if (current.Contains(point) && !current.Exclusions.Any(e => e.Contains(point, radius)))
@@ -176,12 +217,14 @@ namespace ChooGuard.Foundation.Multiplayer
         {
             if (SchemaVersion != 1 || string.IsNullOrEmpty(ProfileId) || Regions == null || Portals == null || Frames == null ||
                 Regions.Length != 13 || Portals.Length != 12 || Frames.Length < 1 ||
+                Frames.Any(f => f == null || string.IsNullOrEmpty(f.FrameId) || !f.Origin.Finite ||
+                    float.IsNaN(f.YawDegrees) || float.IsInfinity(f.YawDegrees)) ||
                 Regions.Any(r => r == null || string.IsNullOrEmpty(r.Id) || !r.Center.Finite || !r.Hub.Finite || !r.EquipmentPosition.Finite ||
                     !Positive(r.SizeX) || !Positive(r.SizeZ) || !Positive(r.Height) || string.IsNullOrEmpty(r.Template) || r.Exclusions == null ||
+                    r.Exclusions.Any(e => e == null || !e.Center.Finite || !Positive(e.SizeX) || !Positive(e.SizeZ)) ||
                     !r.Contains(r.Hub) || !r.Contains(r.EquipmentPosition) || !Frames.Any(f => f.FrameId == r.FrameId)) ||
                 Regions.Select(r => r.Id).Distinct().Count() != Regions.Length ||
                 Regions.Select(r => r.SceneName).Distinct().Count() != Regions.Length ||
-                Frames.Any(f => f == null || string.IsNullOrEmpty(f.FrameId) || !f.Origin.Finite || float.IsNaN(f.YawDegrees) || float.IsInfinity(f.YawDegrees)) ||
                 Frames.Select(f => f.FrameId).Distinct().Count() != Frames.Length)
                 throw new InvalidDataException("Invalid connected-world regions or static frames.");
             // Existing generated scenes used these exact builder constants. Migration is in memory;

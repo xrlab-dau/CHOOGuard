@@ -760,6 +760,11 @@ def configure(output, node_ip="127.0.0.1"):
     output = Path(output).absolute()
     address = _validate_node_ip(node_ip)
     _require_privacy_backend()
+    # Classify impossible staging names before filesystem inspection can turn
+    # ENAMETOOLONG into a generic path refusal. Keep privacy checks unchanged.
+    staging_prefix = f".{output.name}."
+    if len(os.fsencode(staging_prefix)) + 24 + len(b".tmp") > 255:
+        raise ValueError("Configuration output name is too long")
     _validate_output(output)
 
     parent_fd = None
@@ -778,9 +783,6 @@ def configure(output, node_ip="127.0.0.1"):
     # authenticate.
     ownership = None
     try:
-        staging_prefix = f".{output.name}."
-        if len(os.fsencode(staging_prefix)) + 24 + len(b".tmp") > 255:
-            raise ValueError("Configuration output name is too long")
         parent_fd = _open_directory(output.parent)
         parent_stat = os.fstat(parent_fd)
         _verify_private_directory(dir_fd=parent_fd)

@@ -11,11 +11,12 @@ namespace ChooGuard.Foundation.Multiplayer
         private readonly ConnectedWorldDefinition authored;
         public SimulatedSpatialWorld(ConnectedWorldDefinition authored)
         {
-            authored.Validate();
-            if (authored.Portals.Any(p => authored.Region(p.From).FrameId != authored.Region(p.To).FrameId &&
-                (!p.StaticBoarding || (authored.Region(p.From).FrameId != "world" && authored.Region(p.To).FrameId != "world"))))
+            if (authored == null) throw new ArgumentNullException(nameof(authored));
+            this.authored = authored.Copy();
+            this.authored.Validate();
+            if (this.authored.Portals.Any(p => this.authored.Region(p.From).FrameId != this.authored.Region(p.To).FrameId &&
+                (!p.StaticBoarding || (this.authored.Region(p.From).FrameId != "world" && this.authored.Region(p.To).FrameId != "world"))))
                 throw new ArgumentException("Cross-frame portals require a stationary-world boarding boundary.");
-            this.authored = authored;
         }
 
         public ConnectedWorldDefinition At(SpatialFrame[] frames)
@@ -27,8 +28,8 @@ namespace ChooGuard.Foundation.Multiplayer
                 throw new ArgumentException("Physical frames must preserve the fixed world and level straight-route orientation.");
             Point3 Move(Point3 p, string frame) => frames.Single(f => f.FrameId == frame).ToWorld(authored.Frame(frame).ToLocal(p));
             return new ConnectedWorldDefinition { SchemaVersion = authored.SchemaVersion, GeometrySchemaVersion = authored.GeometrySchemaVersion, ProfileId = authored.ProfileId,
-                StartRegionId = authored.StartRegionId, Classification = authored.Classification, Limits = authored.Limits.ToArray(),
-                Frames = frames.Select(f => f.Copy()).ToArray(), Portals = authored.Portals,
+                StartRegionId = authored.StartRegionId, Classification = authored.Classification, Limits = authored.Limits?.ToArray() ?? Array.Empty<string>(),
+                Frames = frames.Select(f => f.Copy()).ToArray(), Portals = authored.Portals.Select(p => p.Copy()).ToArray(),
                 Regions = authored.Regions.Select(r => new ConnectedRegionDefinition { Id = r.Id, Label = r.Label, FrameId = r.FrameId,
                     SceneName = r.SceneName, Template = r.Template, EquipmentAsset = r.EquipmentAsset, EquipmentLabel = r.EquipmentLabel,
                     ControlledPortalId = r.ControlledPortalId, GeometryStatus = r.GeometryStatus, SizeX = r.SizeX, SizeZ = r.SizeZ, Height = r.Height,
@@ -41,7 +42,8 @@ namespace ChooGuard.Foundation.Multiplayer
             ISet<string> closed, out SpatialPose result)
         {
             result = null;
-            if (previous == null || !point.Finite || radius <= 0 || !current.Regions.Any(r => r.Id == previous.RegionId)) return false;
+            if (current == null || previous == null || !point.Finite || float.IsNaN(radius) ||
+                float.IsInfinity(radius) || radius <= 0 || !current.Regions.Any(r => r.Id == previous.RegionId)) return false;
             var region = current.Region(previous.RegionId);
             foreach (var portal in current.Portals.Where(p => p.StaticBoarding && (p.From == region.Id || p.To == region.Id)))
             {

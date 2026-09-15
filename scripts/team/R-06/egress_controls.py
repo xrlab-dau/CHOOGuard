@@ -13,12 +13,15 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import hashlib
+import html
 import json
+import os
 import re
 import sys
 import tempfile
 from pathlib import Path
-from urllib.parse import parse_qsl, urlsplit
+from datetime import date as CalendarDate
+from urllib.parse import parse_qsl, unquote, urlsplit
 
 REPO = Path(__file__).resolve().parents[3]
 CONTROL = REPO / "docs/team/R-06/research-control.json"
@@ -28,8 +31,13 @@ PIPELINE = REPO / "scripts/team/M1-05/record_pipeline.py"
 sys.path.insert(0, str(PIPELINE.parent))
 import record_pipeline  # noqa: E402  (#21 candidate, consumed by digest)
 
-RULESET = "R-06/sanitize-v1"
+RULESET = "R-06/sanitize-v2"
+CONTROL_VERSION = 2
+APPROVAL_BINDING = {"manifestKind": "r06-publication-manifest", "manifestSchemaVersion": 1,
+                    "digestField": "publicationManifestSha256"}
 REQUEST_FIELDS = {"topicId", "destinationId", "actorRole", "queries"}
+# Only fixed, documented field names may appear in public refusal codes.
+DISALLOWED_FIELDS = frozenset({"topic", "file", "path", "upload", "model", "provider"})
 ENTRY_FIELDS = ("topicId", "topic", "dataClass", "allowedSourceDomains", "provider", "modelId", "policyHash")
 SLUG = re.compile(r"^[a-z0-9][a-z0-9-]{0,59}$")
 MAX_EXCERPT = 500
@@ -61,25 +69,89 @@ def sha256(data: bytes) -> str:
 
 def read_json(path: Path):
     try:
-        return json.loads(Path(path).read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        raise InputError("missing:" + Path(path).name) from None
-    except ValueError:
-        raise InputError("invalid_json:" + Path(path).name) from None
+        return record_pipeline.decode(Path(path).read_bytes())
+    except OSError:
+        raise InputError("input_unavailable") from None
+    except (ValueError, UnicodeError):
+        raise InputError("invalid_json") from None
+
+
+def policy_digest(profile: dict) -> str:
+    """Read the digest value, not mutable provenance metadata, from a bound profile.
+
+    This does not authenticate the policy or recompute its upstream preimage.
+    check_binding separately pins the exact profile bytes.
+    """
+    try:
+        declared = profile["policy"]["policyHash"]
+        if not isinstance(declared, dict) or declared.get("algorithm") != "sha256":
+            raise Refused("policy_hash_invalid")
+        value = declared["value"]
+        if not isinstance(value, str) or not re.fullmatch(r"[0-9a-f]{64}", value):
+            raise Refused("policy_hash_invalid")
+        return value
+    except (KeyError, TypeError):
+        raise Refused("policy_hash_invalid") from None
 
 
 def check_binding(control: dict) -> dict:
-    """The #21 schema and pipeline and the #16 profile are consumed by digest; any drift stops the run."""
-    declared = control["inputs"]["artifact:21:M1-05-record-schema:candidate"]
-    profile_declared = control["inputs"]["artifact:16:M0-03-execution-profile:candidate"]
-    observed = {"schema": sha256(SCHEMA.read_bytes()), "pipeline": sha256(PIPELINE.read_bytes()), "profile": sha256(PROFILE.read_bytes())}
-    problems = [name + "_digest_mismatch" for name, expected in (("schema", declared["sha256"]), ("pipeline", declared["pipeline"]["sha256"]),
-                                                                  ("profile", profile_declared["fileSha256"])) if observed[name] != expected]
+    """Pin input bytes AND the versioned consumer contract before executing cases."""
+    try:
+        if type(control["schemaVersion"]) is not int or control["schemaVersion"] != CONTROL_VERSION:
+            raise InputError("control_version_mismatch")
+        stages = control["stages"]
+        if stages["outputSanitization"]["rulesetVersion"] != RULESET:
+            raise InputError("control_ruleset_mismatch")
+        binding = stages["publicApproval"]["approvalBinding"]
+        if (not isinstance(binding, dict) or type(binding.get("manifestSchemaVersion")) is not int
+                or binding != APPROVAL_BINDING):
+            raise InputError("control_approval_binding_mismatch")
+        declared = control["inputs"]["artifact:21:M1-05-record-schema:candidate"]
+        profile_declared = control["inputs"]["artifact:16:M0-03-execution-profile:candidate"]
+        expected = {"schema": declared["sha256"], "pipeline": declared["pipeline"]["sha256"],
+                    "profile": profile_declared["fileSha256"]}
+        if any(not isinstance(v, str) or not re.fullmatch(r"[0-9a-f]{64}", v) for v in expected.values()):
+            raise InputError("control_invalid")
+        if (declared["path"] != "docs/team/M1-05/record-schema.json" or
+                declared["pipeline"]["path"] != "scripts/team/M1-05/record_pipeline.py" or
+                profile_declared["path"] != "docs/team/M0-03/execution-profile.json" or
+                type(declared["schemaVersion"]) is not int or declared["schemaVersion"] != 1):
+            raise InputError("control_input_metadata_mismatch")
+        metadata = {"schemaPath": declared["path"], "schemaVersion": declared["schemaVersion"],
+                    "pipelinePath": declared["pipeline"]["path"], "profilePolicyHash": profile_declared["policyHash"]}
+    except (KeyError, TypeError):
+        raise InputError("control_invalid") from None
+    try:
+        payloads = {"schema": SCHEMA.read_bytes(), "pipeline": PIPELINE.read_bytes(), "profile": PROFILE.read_bytes()}
+    except OSError:
+        raise InputError("binding_input_unavailable") from None
+    observed = {name: sha256(data) for name, data in payloads.items()}
+    problems = [name + "_digest_mismatch" for name in expected if observed[name] != expected[name]]
     if problems:
         raise InputError("binding:" + ",".join(problems))
-    return {"schemaPath": declared["path"], "schemaVersion": declared["schemaVersion"], "schemaSha256": observed["schema"],
-            "pipelinePath": declared["pipeline"]["path"], "pipelineSha256": observed["pipeline"],
-            "profileFileSha256": observed["profile"], "profilePolicyHash": profile_declared["policyHash"]}
+    try:
+        profile = record_pipeline.decode(payloads["profile"])
+        schema = record_pipeline.decode(payloads["schema"])
+        if (policy_digest(profile) != metadata["profilePolicyHash"] or
+                schema["$defs"]["approval"]["properties"]["schemaVersion"]["const"] != declared["schemaVersion"]):
+            raise InputError("binding_contract_mismatch")
+    except (ValueError, Refused, KeyError, TypeError):
+        raise InputError("binding_contract_invalid") from None
+    return {**metadata, "schemaSha256": observed["schema"], "pipelineSha256": observed["pipeline"],
+            "profileFileSha256": observed["profile"]}
+
+
+def dns_name(value) -> bool:
+    """The candidate uses explicit ASCII DNS names, not URL authorities or patterns."""
+    return (isinstance(value, str) and len(value) <= 253 and "." in value and
+            all(re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", label, re.IGNORECASE | re.ASCII)
+                for label in value.split(".")))
+
+
+def source_domains(value) -> tuple:
+    if not isinstance(value, list) or not value or not all(dns_name(d) for d in value):
+        raise Refused("manifest_entry_invalid")
+    return tuple(d.lower() for d in value)
 
 
 # ----------------------------------------------------------------------------- stage 1: input classification
@@ -87,9 +159,10 @@ def check_binding(control: dict) -> dict:
 def admit_input(profile: dict, topics: dict, request: dict) -> dict:
     if not isinstance(request, dict):
         raise Refused("request_type_invalid")
-    extra = sorted(set(request) - REQUEST_FIELDS)
+    extra = set(request) - REQUEST_FIELDS
     if extra:
-        raise Refused("field_not_allowed:" + extra[0])
+        field = next((name for name in sorted(DISALLOWED_FIELDS) if name in extra), "unknown")
+        raise Refused("field_not_allowed:" + field)
     topic_id = request.get("topicId")
     if not isinstance(topic_id, str):
         raise Refused("field_type_invalid:topicId")
@@ -105,11 +178,18 @@ def admit_input(profile: dict, topics: dict, request: dict) -> dict:
     entry = topics.get(topic_id)
     if entry is None:
         raise Refused("topic_not_registered")
-    if any(entry.get(field) in (None, "", []) for field in ENTRY_FIELDS):
+    if not isinstance(entry, dict) or any(entry.get(field) in (None, "", []) for field in ENTRY_FIELDS):
         raise Refused("manifest_entry_incomplete")
+    if not all(isinstance(entry[field], str) for field in ("topicId", "topic", "dataClass", "provider", "modelId")) or entry["topicId"] != topic_id:
+        raise Refused("manifest_entry_invalid")
+    source_domains(entry["allowedSourceDomains"])
+    for field in ("topicId", "topic", "provider", "modelId"):
+        findings = transmitted_text_findings(entry[field])
+        if findings:
+            raise Refused("manifest_contains_" + findings[0])
     if entry["dataClass"] not in profile["policy"]["dataClasses"]:
         raise Refused("unknown_data_class")
-    if entry["policyHash"] != profile["policy"]["policyHash"]:
+    if not isinstance(entry["policyHash"], str) or entry["policyHash"] != policy_digest(profile):
         raise Refused("policy_hash_mismatch")
     return entry
 
@@ -117,7 +197,29 @@ def admit_input(profile: dict, topics: dict, request: dict) -> dict:
 # ----------------------------------------------------------------------------- stage 2: egress destination
 
 def text_findings(text: str) -> list:
+    try:
+        text.encode("utf-8")
+    except UnicodeError:
+        raise Refused("text_invalid_unicode") from None
     return [name for name, pattern in TEXT_RULES if pattern.search(text)]
+
+
+def transmitted_text_findings(text: str) -> list:
+    """Apply the declared detector to literal and bounded percent-decoded text."""
+    view = text
+    for depth in range(5):
+        findings = text_findings(view)
+        if findings:
+            return findings
+        try:
+            decoded = unquote(view, errors="strict")
+        except UnicodeError:
+            raise Refused("text_invalid_encoding") from None
+        if decoded == view:
+            return []
+        if depth == 4:
+            raise Refused("text_encoding_depth_exceeded")
+        view = decoded
 
 
 def authorize_egress(profile: dict, entry: dict, request: dict, approvals: list) -> dict:
@@ -131,11 +233,15 @@ def authorize_egress(profile: dict, entry: dict, request: dict, approvals: list)
     if entry["dataClass"] not in destination["allowedDataClasses"]:
         raise Refused("data_class_above_destination_ceiling")
     matrix = profile["egress"]["classMatrix"].get(entry["dataClass"], {})
-    if destination["kind"] == "model provider" and str(matrix.get("modelEgress", "DENY")).startswith("DENY"):
+    if destination["kind"] == "model provider" and (not isinstance(matrix, dict) or matrix.get("modelEgress") != "allowed-with-APR-EGRESS-recorded"):
         raise Refused("data_class_denied_for_model_egress")
+    if not isinstance(approvals, list) or any(not isinstance(a, dict) for a in approvals):
+        raise Refused("egress_approval_not_recorded")
     recorded = [a for a in approvals if a.get("topicId") == entry["topicId"] and a.get("destinationId") == destination["destinationId"]
-                and a.get("owner") == destination["approvalOwner"] and a.get("decision") == "approved" and str(a.get("decisionRef") or "").strip()]
-    if not recorded:
+                and a.get("owner") == destination["approvalOwner"]]
+    # No implicit latest-wins ordering: contradictory decisions require resolution.
+    if not recorded or any(a.get("decision") != "approved" or not isinstance(a.get("decisionRef"), str)
+                           or not a["decisionRef"].strip() for a in recorded):
         raise Refused("egress_approval_not_recorded")
     scope = next(r for r in profile["roles"] if r["roleId"] == role).get("modelScope", {})
     model = entry["modelId"]
@@ -147,7 +253,7 @@ def authorize_egress(profile: dict, entry: dict, request: dict, approvals: list)
     for query in queries:
         if not isinstance(query, str):
             raise Refused("query_type_invalid")
-        findings = text_findings(query)
+        findings = transmitted_text_findings(query)
         if findings:
             raise Refused("query_contains_" + findings[0])
     return {"destinationId": destination["destinationId"], "approvalOwner": destination["approvalOwner"]}
@@ -158,6 +264,7 @@ class FakeTransport:
 
     def __init__(self, hosts: dict, responses: list):
         self.hosts, self.responses, self.sends = hosts, list(responses), []
+        self.redirects_followed = 0
 
     def send(self, host: str, payload: dict) -> dict:
         self.sends.append({"host": host, "queryCount": len(payload.get("queries", []))})
@@ -166,30 +273,80 @@ class FakeTransport:
 
 
 def exchange(transport: FakeTransport, grant: dict, entry: dict, request: dict, max_hops: int = 3) -> tuple:
-    host = transport.hosts[grant["destinationId"]]
+    host = transport.hosts.get(grant.get("destinationId")) if isinstance(transport.hosts, dict) else None
+    if not dns_name(host):
+        raise Refused("transport_destination_unconfigured")
+    host = host.lower()
     payload = {"topic": entry["topic"], "model": entry["modelId"], "queries": list(request.get("queries", []))}
     response, followed = transport.send(host, payload), 0
-    while response.get("status") in (301, 302, 307, 308):
-        if urlsplit(response.get("location", "")).hostname != host or followed >= max_hops:
+    while True:
+        if not isinstance(response, dict) or type(response.get("status")) is not int:
+            raise Refused("transport_response_invalid")
+        if response["status"] not in (301, 302, 307, 308):
+            break
+        try:
+            redirect = parse_https_url(response.get("location", ""))
+        except Refused:
+            raise Refused("redirect_invalid") from None
+        if redirect.hostname != host or redirect.port not in (None, 443) or followed >= max_hops:
             raise Refused("redirect_to_other_host")
         followed += 1
+        transport.redirects_followed += 1
         response = transport.send(host, payload)
+    if response["status"] != 200:
+        raise Refused("transport_http_error")
     return response.get("body"), followed
 
 
 # ----------------------------------------------------------------------------- stage 3: output sanitisation
 
-def check_url(url: str, domains: list):
-    parts = urlsplit(url)
+def parse_https_url(url: str):
+    """Reject ambiguous raw syntax before urlsplit can silently normalise it."""
+    if not isinstance(url, str) or not url or len(url) > 8192 or any(
+            c.isspace() or ord(c) < 32 or ord(c) == 127 or c in '<>"`|\\' for c in url):
+        raise Refused("url_invalid")
+    try:
+        parts = urlsplit(url)
+        host, port = parts.hostname, parts.port  # Access validates malformed/out-of-range ports.
+    except ValueError:
+        raise Refused("url_invalid") from None
     if parts.scheme != "https":
         raise Refused("url_not_https")
     if parts.username is not None or parts.password is not None:
         raise Refused("url_userinfo")
-    if any(key.lower() in CREDENTIAL_KEYS for key, _ in parse_qsl(parts.query, keep_blank_values=True)):
-        raise Refused("url_credential_query")
-    host = (parts.hostname or "").lower()
-    if not any(host == d or host.endswith("." + d) for d in domains):
+    if not dns_name(host):
+        raise Refused("url_invalid")
+    return parts
+
+
+def check_url(url: str, domains: list):
+    parts = parse_https_url(url)
+    host = parts.hostname.lower()
+    if not any(host == d or host.endswith("." + d) for d in source_domains(domains)):
         raise Refused("url_domain_not_allowed")
+    # Scan URL components too, including encoded representations. A bounded decode
+    # prevents nested percent-encoding from hiding a known secret/PII pattern.
+    view = url
+    for depth in range(5):
+        try:
+            parsed = urlsplit(view)
+            query = parse_qsl(parsed.query, keep_blank_values=True, errors="strict")
+            decoded = unquote(view, errors="strict")
+        except (ValueError, UnicodeError):
+            raise Refused("url_invalid") from None
+        if any(key.lower() in CREDENTIAL_KEYS for key, _ in query):
+            raise Refused("url_credential_query")
+        for text in [parsed.netloc, parsed.path, parsed.query, parsed.fragment, *(value for _, value in query)]:
+            findings = text_findings(text)
+            if findings:
+                raise Refused("output_contains_" + findings[0])
+            if INSTRUCTION.search(text):
+                raise Refused("embedded_instruction")
+        if decoded == view:
+            return
+        if depth == 4:
+            raise Refused("url_encoding_depth_exceeded")
+        view = decoded
 
 
 def sanitize_output(entry: dict, body) -> dict:
@@ -230,7 +387,7 @@ def record_run(work: Path, result: dict, request: dict, body) -> dict:
 
     input_ok = result["inputClassification"].startswith("admitted:")
     events = [event("input", "passed" if input_ok else "failed", "public" if input_ok else "restricted",
-                    f"topicId={request.get('topicId')}" if input_ok else json.dumps(request, sort_keys=True))]
+                    f"topicId={request.get('topicId')}" if input_ok else json.dumps(request, sort_keys=False, ensure_ascii=True))]
     if result["egressDecision"] != "not_evaluated":
         events.append(event("tool", "passed" if result["egressDecision"].startswith("allowed:") else "failed", "public", "egress=" + result["egressDecision"]))
     if body is not None:
@@ -238,13 +395,19 @@ def record_run(work: Path, result: dict, request: dict, body) -> dict:
         finding = code.removeprefix("refused:output_contains_") if code.startswith("refused:output_contains_") else None
         classification = RAW_CLASS.get(finding) or ("public" if code == "clean" else "restricted")
         events.append(event("output", "passed" if code == "clean" else "failed", classification,
-                            json.dumps(body, sort_keys=True, ensure_ascii=False) if isinstance(body, (dict, list)) else str(body)))
+                            json.dumps(body, sort_keys=True, ensure_ascii=True)))
         events.append(event("redaction", "recorded", "public", "ruleset=" + RULESET))
     if result["refusal"]:
         events.append(event("failure", "failed", "public", "code=" + result["refusal"]["code"]))
     raw = {"schemaVersion": 1, "state": "raw", "events": events}
+    return write_record_bundle(work, raw)
+
+
+def write_record_bundle(work: Path, raw: dict) -> dict:
+    """Preserve a new private raw record and consume the unchanged M1-05 pipeline."""
     raw_path, private_dir, public_dir = work / "raw.json", work / "private", work / "public"
-    raw_path.write_bytes(record_pipeline.encoded(raw))
+    with open(raw_path, "xb", opener=lambda name, flags: os.open(name, flags, 0o600)) as stream:
+        stream.write(record_pipeline.encoded(raw))
     manifest = record_pipeline.build(raw_path, private_dir, public_dir)
     public_events = record_pipeline.decode((public_dir / "events.json").read_bytes())
     removals = {}
@@ -257,6 +420,31 @@ def record_run(work: Path, result: dict, request: dict, body) -> dict:
             "_manifestBytes": manifest_bytes}
 
 
+def record_publication(work: Path, result: dict, record: dict) -> dict:
+    """Record the actual fourth-stage outcome, not just the pre-publication attempt.
+
+    Approval references remain external/private; this audit records only fixed
+    decision/outcome codes and does not authenticate or grant approval.
+    """
+    outcome = result["publication"]["result"]
+    success = outcome == "published"
+    events = [
+        {"kind": "approval", "outcome": "recorded", "classification": "public",
+         "content": "decision=" + result["publicApproval"], "requiredForEvidence": False},
+        {"kind": "output" if success else "failure", "outcome": "passed" if success else "failed",
+         "classification": "public", "content": "publication=" + outcome, "requiredForEvidence": False},
+    ]
+    # Keep the evidence chain in the private raw record. M1-05 intentionally
+    # withholds free text from its public projection; that projection is not a
+    # substitute for inspecting this raw receipt and the actual file hashes.
+    binding = {"auditManifestSha256": record["manifestSha256"],
+               "publicationManifestSha256": record.get("publicationManifestSha256"),
+               "publishedFiles": result["publication"].get("sha256", {})}
+    events.append({"kind": "tool", "outcome": "recorded", "classification": "public",
+                   "content": json.dumps(binding, sort_keys=True), "requiredForEvidence": False})
+    return write_record_bundle(work, {"schemaVersion": 1, "state": "raw", "events": events})
+
+
 # ----------------------------------------------------------------------------- stage 4: publication approval
 
 def validate_approval_record(schema: dict, record) -> None:
@@ -264,7 +452,9 @@ def validate_approval_record(schema: dict, record) -> None:
     props = spec["properties"]
     if not isinstance(record, dict) or not set(spec["required"]) <= set(record) or not set(record) <= set(props):
         raise Refused("approval_record_invalid")
-    if record["schemaVersion"] != props["schemaVersion"]["const"] or record["state"] != props["state"]["const"]:
+    # JSON Schema numeric equality accepts 1.0 for const 1; Python bool is
+    # a subclass of int but is a distinct JSON type and must never be accepted.
+    if type(record["schemaVersion"]) not in (int, float) or record["schemaVersion"] != props["schemaVersion"]["const"] or record["state"] != props["state"]["const"]:
         raise Refused("approval_record_invalid")
     if not isinstance(record["manifestSha256"], str) or not re.fullmatch(props["manifestSha256"]["pattern"], record["manifestSha256"]):
         raise Refused("approval_record_invalid")
@@ -279,13 +469,49 @@ def validate_approval_record(schema: dict, record) -> None:
 
 def render_markdown(document: dict) -> str:
     def cell(text):
-        return re.sub(r"\s+", " ", text).replace("\\", "\\\\").replace("|", "\\|").replace("[", "\\[").replace("]", "\\]")
-    lines = [f"# {cell(document['topic'])}", "", f"- topicId: {document['topicId']}", f"- sanitiser: {document['sanitizer']}",
-             f"- manifestSha256: {document['manifestSha256']}", "", "| ID | claim | evidence |", "|---|---|---|"]
+        return html.escape(re.sub(r"\s+", " ", text), quote=True).replace("\\", "\\\\").replace("|", "\\|").replace("[", "\\[").replace("]", "\\]")
+    lines = [f"# {cell(document['topic'])}", "", f"- topicId: {cell(document['topicId'])}", f"- sanitiser: {cell(document['sanitizer'])}",
+             f"- auditManifestSha256: {document['auditManifestSha256']}", "", "| ID | claim | evidence |", "|---|---|---|"]
     for claim in document["claims"]:
         links = "<br>".join(f"{cell(e['title'])} <{e['url']}>" for e in claim["evidence"])
         lines.append(f"| {cell(claim['id'])} | {cell(claim['claim'])} | {links} |")
     return "\n".join(lines) + "\n"
+
+
+def validate_publication_name(slug: str, date: str) -> None:
+    if not isinstance(slug, str) or not SLUG.fullmatch(slug):
+        raise Refused("invalid_slug")
+    if not isinstance(date, str) or not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", date):
+        raise Refused("invalid_date")
+    try:
+        CalendarDate.fromisoformat(date)
+    except ValueError:
+        raise Refused("invalid_date") from None
+
+
+def publication_candidate(result: dict, entry: dict, body, record: dict, slug: str, date: str) -> dict:
+    """Freeze exact publication bytes; the M1-05 audit bundle is NOT this candidate.
+
+    This manifest has no circular digest: output files reference only the audit
+    manifest. APR-PUBLISH approves publicationManifestSha256, never manifestSha256.
+    A candidate is not an approval and is not automatically published.
+    """
+    if result["outputSanitization"] != "clean":
+        raise Refused("sanitization_not_passed")
+    sanitize_output(entry, body)
+    if sha256(record["_manifestBytes"]) != record["manifestSha256"]:
+        raise Refused("audit_manifest_digest_mismatch")
+    validate_publication_name(slug, date)
+    document = {"topicId": entry["topicId"], "topic": entry["topic"], "dataClass": entry["dataClass"], "sanitizer": RULESET,
+                "auditManifestSha256": record["manifestSha256"], "claims": body["claims"]}
+    files = ((f"{date}-{slug}.json", record_pipeline.encoded(document)),
+             (f"{date}-{slug}.md", render_markdown(document).encode("utf-8")))
+    manifest = {"schemaVersion": 1, "kind": "r06-publication-manifest", "sanitizer": RULESET,
+                "auditManifestSha256": record["manifestSha256"],
+                "files": {name: {"sha256": sha256(data), "bytes": len(data)} for name, data in files}}
+    manifest_bytes = record_pipeline.encoded(manifest)
+    return {**record, "publicationManifestSha256": sha256(manifest_bytes),
+            "_publicationManifestBytes": manifest_bytes, "_publicationFiles": files}
 
 
 def publish(schema: dict, result: dict, entry: dict, body, record: dict, approval: dict, target_dir: Path, slug: str, date: str) -> dict:
@@ -300,25 +526,36 @@ def publish(schema: dict, result: dict, entry: dict, body, record: dict, approva
     result["publicApproval"] = decision
     if decision != "approved":
         raise Refused("publication_not_approved:" + decision)
-    if approval["approvalRecord"]["manifestSha256"] != sha256(record["_manifestBytes"]):
+    validate_publication_name(slug, date)
+    if not all(key in record for key in ("publicationManifestSha256", "_publicationManifestBytes", "_publicationFiles")):
+        raise Refused("publication_candidate_missing")
+    if approval["approvalRecord"]["manifestSha256"] != sha256(record["_publicationManifestBytes"]):
         raise Refused("approval_bound_to_other_manifest")
-    if not isinstance(slug, str) or not SLUG.fullmatch(slug):
-        raise Refused("invalid_slug")
-    if not isinstance(date, str) or not re.match(r"^\d{4}-\d{2}-\d{2}$", date):
-        raise Refused("invalid_date")
-    targets = [target_dir / f"{date}-{slug}.json", target_dir / f"{date}-{slug}.md"]
+    current = publication_candidate(result, entry, body, record, slug, date)
+    if any(current[key] != record[key] for key in ("publicationManifestSha256", "_publicationManifestBytes", "_publicationFiles")):
+        raise Refused("publication_candidate_changed")
+    targets = [target_dir / name for name, _ in record["_publicationFiles"]]
+    if not target_dir.is_dir():
+        raise Refused("publication_root_unavailable")
+    # lexists includes dangling symlinks; refuse all pre-existing directory entries
+    # before writing either file. Exclusively owned, stable parent directories are
+    # still required; this is not an OS sandbox or an atomic multi-file transaction.
+    if any(os.path.lexists(t) for t in targets):
+        raise Refused("target_exists_no_overwrite")
     for t in targets:
         if not t.resolve().is_relative_to(target_dir.resolve()):
             raise Refused("target_outside_research_root")
-    if any(t.exists() for t in targets):
-        raise Refused("target_exists_no_overwrite")
-    document = {"topicId": entry["topicId"], "topic": entry["topic"], "dataClass": entry["dataClass"], "sanitizer": RULESET,
-                "manifestSha256": record["manifestSha256"], "claims": body["claims"]}
-    payloads = [(json.dumps(document, ensure_ascii=False, indent=2, sort_keys=True) + "\n").encode("utf-8"), render_markdown(document).encode("utf-8")]
-    for target, data in zip(targets, payloads):
-        with open(target, "xb") as stream:
-            stream.write(data)
-    return {"files": [t.name for t in targets], "sha256": {t.name: sha256(d) for t, d in zip(targets, payloads)}}
+    try:
+        for target, (_, data) in zip(targets, record["_publicationFiles"]):
+            with open(target, "xb") as stream:
+                stream.write(data)
+    except OSError:
+        # Preserve any already-written, approved bytes for diagnosis. Never report
+        # success, delete evidence, or expose exception text/private paths.
+        raise Refused("publication_io_failed") from None
+    return {"files": [t.name for t in targets], "sha256": {name: sha256(data) for name, data in record["_publicationFiles"]},
+            "manifestSha256": record["publicationManifestSha256"],
+            "manifest": record_pipeline.decode(record["_publicationManifestBytes"])}
 
 
 # ----------------------------------------------------------------------------- one run
@@ -344,10 +581,16 @@ def run_request(ctx: dict, request: dict, responses: list, publication: dict | N
         result[stage] = "refused:" + refusal.code
         result["refusal"] = {"stage": stage, "code": refusal.code}
     result["transportSends"] = len(transport.sends)
-    record = record_run(Path(tempfile.mkdtemp(prefix="r06-run-", dir=ctx["scratch"])), result, request, body)
+    result["redirectsFollowed"] = transport.redirects_followed
+    run_work = Path(tempfile.mkdtemp(prefix="r06-run-", dir=ctx["scratch"]))
+    record = record_run(run_work, result, request, body)
     if publication is not None and (result["refusal"] is None or publication.get("attemptAfterRefusal")):
         result["publicApproval"] = "unknown"
+        publication_work = run_work / "publication"
+        publication_work.mkdir(mode=0o700)
         try:
+            if result["outputSanitization"] == "clean":
+                record = publication_candidate(result, entry, body, record, publication["slug"], ctx["date"])
             approval = publication["approval"](record)
             result["publication"] = {"result": "published", **publish(ctx["schema"], result, entry, body, record, approval, ctx["researchDir"],
                                                                         publication["slug"], ctx["date"])}
@@ -355,6 +598,8 @@ def run_request(ctx: dict, request: dict, responses: list, publication: dict | N
             result["publication"] = {"result": "refused:" + refusal.code}
             if result["refusal"] is None:
                 result["refusal"] = {"stage": "publicApproval", "code": refusal.code}
+        publication_record = record_publication(publication_work, result, record)
+        result["publicationRecord"] = {k: v for k, v in publication_record.items() if not k.startswith("_")}
     result["record"] = {k: v for k, v in record.items() if not k.startswith("_")}
     return result
 
@@ -371,7 +616,7 @@ EXISTING_BYTES = b'{"synthetic": "pre-existing research record"}\n'
 
 def synthetic_context(profile: dict, schema: dict, scratch: Path, research_dir: Path) -> dict:
     classes = profile["policy"]["dataClasses"]
-    policy = profile["policy"]["policyHash"]
+    policy = policy_digest(profile)
 
     def topic(topic_id, data_class, **overrides):
         entry = {"topicId": topic_id, "topic": f"synthetic topic {topic_id}: JSON schema validator release notes", "dataClass": data_class,
@@ -403,7 +648,7 @@ def ok(body):
 
 def approval_for(decision="approved", owner="APR-PUBLISH", manifest=None, ref="synthetic-publish-ref"):
     def build(record):
-        return {"owner": owner, "approvalRecord": {"schemaVersion": 1, "state": "approval_record", "manifestSha256": manifest or record["manifestSha256"],
+        return {"owner": owner, "approvalRecord": {"schemaVersion": 1, "state": "approval_record", "manifestSha256": manifest or record.get("publicationManifestSha256", record["manifestSha256"]),
                                                    "decision": decision, "decisionRef": ref}}
     return build
 
@@ -509,10 +754,12 @@ def case_catalog() -> list:
 
 
 def run_cases(profile: dict, schema: dict, catalog: list | None = None) -> list:
+    if catalog is not None and (not isinstance(catalog, list) or not catalog):
+        raise InputError("case_catalog_empty_or_invalid")
     results = []
     with tempfile.TemporaryDirectory(prefix="r06-") as tmp:
         root = Path(tmp)
-        for case in catalog or case_catalog():
+        for case in case_catalog() if catalog is None else catalog:
             research = root / ("research-" + case["id"])
             research.mkdir()
             existing = research / "2026-09-15-synthetic-existing.json"
@@ -527,7 +774,8 @@ def run_cases(profile: dict, schema: dict, catalog: list | None = None) -> list:
             mismatches = sorted(k for k, v in case["expect"].items() if flat.get(k) != v)
             results.append({"id": case["id"], "category": case["category"], "capability": case["capability"], "expectedFailure": case["expectedFailure"],
                             "dcRef": case["dcRef"], "expected": case["expect"], "observed": flat, "refusal": observed["refusal"],
-                            "record": observed["record"], "publication": observed["publication"], "matched": not mismatches, "mismatches": mismatches})
+                            "record": observed["record"], "publication": observed["publication"],
+                            "publicationRecord": observed.get("publicationRecord"), "matched": not mismatches, "mismatches": mismatches})
     return results
 
 

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Engine-independent production sources and original NUnit tests. No Unity stubs. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <IsTestProject>true</IsTestProject>
+    <IsPackable>false</IsPackable>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="NUnit" Version="3.14.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Runtime/**/*.cs" />
+    <Compile Include="*.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/AuthoritativeShiftTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdForkTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdLegacyFixture.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdMotionWindowTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdPhaseTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/CrowdWallOptimizationTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/FirePhysicsTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/PhysicalCheckpointTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/SimulatedAuthorityTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/SlopedFireCellTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/SmokeOpticsTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainDynamicsTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainOperationTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/TrainingSessionTests.cs" />
+    <Compile Include="../../Packages/com.xrlab.chooguard.foundation/Tests/Editor/VoiceContractTests.cs" />
+    <None Include="../../foundation/world/connected-world-profile.json" Link="connected-world-profile.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>
