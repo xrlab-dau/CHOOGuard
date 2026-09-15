@@ -29,7 +29,11 @@ jobs:
       - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
         with:
           dotnet-version: '8.0.423'
-      - run: dotnet test tests/nonunity/ChooGuard.NonUnity.Tests.csproj --configuration Release --logger "trx;LogFileName=core.trx" --results-directory core-results
+      - name: Build and test actual runtime sources with the pinned SDK
+        working-directory: tests/nonunity
+        run: |
+          dotnet --version
+          dotnet test ChooGuard.NonUnity.Tests.csproj --configuration Release --logger "trx;LogFileName=core.trx" --results-directory ../../core-results
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         if: always()
         with:
