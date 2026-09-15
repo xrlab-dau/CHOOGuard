@@ -210,6 +210,50 @@ namespace ChooGuard.Team.M403.Tests
             }
         }
 
+        // The same blocked reasons, reached through the JSON loader with keys really absent from the document text
+        // (not by editing a loaded object), plus truncated and empty documents.
+        [Test]
+        public void DocumentsWithKeysRemovedOrTruncatedAreBlockedThroughTheLoader()
+        {
+            var source = fixture.roleRows.Single(row => row.roleId == "role-02");
+            var full = Document(source);
+            var control = M403Inputs.Resolve(M403Inputs.ParseFixture(full), "role-02", InputModality.Desktop);
+            Assert.That(control.Ready, Is.True, "control: the assembled document with every key resolves");
+            var row = control.Row;
+            Assert.That(new[] { row.rowId, row.roleId, row.actionId, row.targetAnchorId, row.scenarioVersion, row.expectedQuestState, row.expectedFeedbackCode, row.feedbackText },
+                Is.EqualTo(new[] { source.rowId, source.roleId, source.actionId, source.targetAnchorId, source.scenarioVersion, source.expectedQuestState, source.expectedFeedbackCode, source.feedbackText }),
+                "control: the assembled document carries the fixture row values, not only non-empty fields");
+            Assert.That(new[] { row.preState.phase, row.preState.questState }, Is.EqualTo(new[] { source.preState.phase, source.preState.questState }));
+            Assert.That(M403Inputs.Team(row.preState.virtualTeamStates), Is.EqualTo(M403Inputs.Team(source.preState.virtualTeamStates)));
+            Assert.That(M403Inputs.Events(row.expectedVirtualTeamEvents), Is.EqualTo(M403Inputs.Events(source.expectedVirtualTeamEvents)));
+
+            // Each case names the one reason its input can produce and whether JsonUtility parsed the text at all.
+            var cases = new (string name, string text, bool parses, string expected)[]
+            {
+                ("no-targetAnchorId", Document(source, "targetAnchorId"), true, "target_missing"),
+                ("no-actionId", Document(source, "actionId"), true, "action_missing"),
+                ("no-preState", Document(source, "preState"), true, "prestate_missing"),
+                ("no-expectedVirtualTeamEvents", Document(source, "expectedVirtualTeamEvents"), true, "expected_output_missing"),
+                ("no-expectedFeedbackCode", Document(source, "expectedFeedbackCode"), true, "expected_output_missing"),
+                ("no-roleId", Document(source, "roleId"), true, "fixture_row_missing"),
+                ("no-roleRows", "{\"fixtureId\":\"m403-synthetic\"}", true, "fixture_missing"),
+                ("truncated", full.Substring(0, full.IndexOf("\"expectedQuestState\"", StringComparison.Ordinal)), false, "fixture_missing"),
+                ("not-json", "role-02 target", false, "fixture_missing"),
+                ("empty", "", false, "fixture_missing"),
+            };
+            foreach (var item in cases)
+            {
+                M403Fixture parsed = null;
+                Assert.DoesNotThrow(() => parsed = M403Inputs.ParseFixture(item.text), item.name);
+                Assert.That(parsed != null, Is.EqualTo(item.parses), item.name + ": parse path");
+                var plan = M403Inputs.Resolve(parsed, "role-02", InputModality.Desktop);
+                Assert.That(plan.Ready, Is.False, item.name);
+                Assert.That(plan.Reason, Is.EqualTo(item.expected), item.name);
+                Assert.That(plan.Row, Is.Null, item.name);
+                TestContext.WriteLine("M403|blocked-document|case=" + item.name + "|parsed=" + (parsed != null).ToString().ToLowerInvariant() + "|reason=" + plan.Reason);
+            }
+        }
+
         [TestCase("role-02")]
         [TestCase("role-03")]
         [TestCase("role-04")]
@@ -248,6 +292,32 @@ namespace ChooGuard.Team.M403.Tests
         {
             return new TrainingAction(action.AttemptId, version ?? action.ScenarioVersion, roleId ?? action.RoleId, preState ?? action.PreStateHash,
                 actionId ?? action.ActionId, anchor ?? action.TargetAnchorId, action.Modality);
+        }
+
+        // A one-row fixture document assembled as text from a real row, leaving out the named keys entirely.
+        private static string Document(M403Row row, params string[] omit)
+        {
+            var fields = new (string key, string json)[]
+            {
+                ("rowId", Quote(row.rowId)),
+                ("roleId", Quote(row.roleId)),
+                ("representative", row.representative ? "true" : "false"),
+                ("actionId", Quote(row.actionId)),
+                ("targetAnchorId", Quote(row.targetAnchorId)),
+                ("scenarioVersion", Quote(row.scenarioVersion)),
+                ("preState", UnityEngine.JsonUtility.ToJson(row.preState)),
+                ("expectedQuestState", Quote(row.expectedQuestState)),
+                ("expectedVirtualTeamEvents", "[" + string.Join(",", row.expectedVirtualTeamEvents.Select(item => UnityEngine.JsonUtility.ToJson(item))) + "]"),
+                ("expectedFeedbackCode", Quote(row.expectedFeedbackCode)),
+                ("feedbackText", Quote(row.feedbackText)),
+            };
+            var body = string.Join(",", fields.Where(field => !omit.Contains(field.key)).Select(field => Quote(field.key) + ":" + field.json));
+            return "{\"fixtureId\":\"m403-synthetic\",\"roleRows\":[{" + body + "}]}";
+        }
+
+        private static string Quote(string value)
+        {
+            return "\"" + (value ?? "").Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"";
         }
 
         private M403Fixture Mutated(Action<M403Row> change)
