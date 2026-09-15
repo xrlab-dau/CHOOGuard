@@ -120,5 +120,28 @@ class PermissionBoundaryTests(unittest.TestCase):
                 self.assertNotIn(content.strip(), text)
 
 
+
+    def test_installation_and_push_and_reviewer_spoofing_are_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp) / "workspace"
+            root.mkdir()
+        # 1. Package install attempt is refused
+        req_install = {"actor": "role:authoring-agent", "action": "execute", "command": "pip install requests"}
+        dec_install = pb.decide(self.model, req_install, root)
+        self.assertEqual(dec_install["decision"], "deny")
+        self.assertEqual(dec_install["code"], "installation_disallowed")
+
+        # 2. Git push without APR-PUBLISH approval is refused
+        req_push = {"actor": "role:authoring-agent", "action": "execute", "command": "git push origin develop", "approvals": []}
+        dec_push = pb.decide(self.model, req_push, root)
+        self.assertEqual(dec_push["decision"], "deny")
+        self.assertEqual(dec_push["code"], "unapproved_publication")
+
+        # 3. Non-reviewer claiming agent=reviewer is refused
+        req_rev = {"actor": "role:unity-mcp-client", "action": "select_model", "agent": "reviewer", "model": "openai-codex/gpt-5.5"}
+        dec_rev = pb.decide(self.model, req_rev, root)
+        self.assertEqual(dec_rev["decision"], "deny")
+        self.assertEqual(dec_rev["code"], "reviewer_role_mismatch")
+
 if __name__ == "__main__":
     unittest.main()

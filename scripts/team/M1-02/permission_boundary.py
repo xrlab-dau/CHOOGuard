@@ -168,8 +168,26 @@ def decide(model: dict, request: dict, root: Path) -> dict:
         command = request.get("command") or ""
         if any(p.search(command) for p in DESTRUCTIVE):
             return deny("destructive_command", None, "destructive command; the profile grants no destructive-command approval")
-        if NETWORK.search(command) and not role.get("egress", {}).get("destinations"):
-            return deny("network_command_without_destination", "DC-11", "the role has no egress destination in the profile")
+        
+        # Guard against package installation (execution.installation = false)
+        install_pattern = re.compile(r"\b(pip|npm|yarn|pnpm|uv)\s+(install|add|sync)\b", re.IGNORECASE)
+        if install_pattern.search(command):
+            return deny("installation_disallowed", "DC-11", "package installation is disallowed by execution profile")
+
+        # Guard against unauthorized git publication (requires APR-PUBLISH approval)
+        push_pattern = re.compile(r"\bgit\s+push\b", re.IGNORECASE)
+        if push_pattern.search(command):
+            if "APR-PUBLISH" not in approvals:
+                return deny("unapproved_publication", "DC-03", "git push requires explicit APR-PUBLISH approval")
+
+        if NETWORK.search(command):
+            if not role.get("egress", {}).get("destinations"):
+                return deny("network_command_without_destination", "DC-11", "the role has no egress destination in the profile")
+            # For network commands, verify explicit approval and destination
+            dest_id = request.get("destination")
+            if not dest_id or dest_id not in role.get("egress", {}).get("destinations", []):
+                return deny("unapproved_network_destination", "DC-10", "network command without an approved profile destination")
+
         return allow("non-destructive command (decision only; not executed)")
 
     if action == "egress":
@@ -189,6 +207,8 @@ def decide(model: dict, request: dict, root: Path) -> dict:
     if action == "select_model":
         model_id = request.get("model") or ""
         if request.get("agent") == "reviewer":
+            if actor != "role:independent-reviewer":
+                return deny("reviewer_role_mismatch", "DC-06", "only the independent-reviewer role can select reviewer models")
             if any(fnmatch.fnmatchcase(model_id, p) for p in model["reviewerDeny"]):
                 return deny("reviewer_same_provider", "DC-05", "reviewer provider must differ from the authoring provider")
             if model_id not in model["modelScope"].get("agents", {}).get("reviewer", {}).get("allow", []):
