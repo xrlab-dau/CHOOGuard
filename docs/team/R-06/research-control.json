@@ -15,34 +15,98 @@
       "path": "docs/team/M1-05/record-schema.json",
       "schemaVersion": 1,
       "sha256": "451fcc0bb395e7c75d196bec43c91bac7228dff62dff9864196d1bdedd474427",
-      "pipeline": {"path": "scripts/team/M1-05/record_pipeline.py", "sha256": "8b0f94c0aef552d9787524abe558816435293d5cd487eb5592d2e397faba554b"},
-      "consumed": ["$defs.raw event kinds, outcomes and classifications", "$defs.approval required fields and decision values", "record_pipeline.build and verify (imported, not copied)"],
+      "pipeline": {
+        "path": "scripts/team/M1-05/record_pipeline.py",
+        "sha256": "8b0f94c0aef552d9787524abe558816435293d5cd487eb5592d2e397faba554b"
+      },
+      "consumed": [
+        "$defs.raw event kinds, outcomes and classifications",
+        "$defs.approval required fields and decision values",
+        "record_pipeline.build and verify (imported, not copied)"
+      ],
       "rule": "Consumed by version, path and digest. A different digest stops the run before any case executes."
     },
     "artifact:16:M0-03-execution-profile:candidate": {
       "path": "docs/team/M0-03/execution-profile.json",
       "fileSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
       "policyHash": "220e57ccb131c9ec2b9297277de53cebab93ee7f00a31f401e4373c7ae2ea050",
-      "consumed": ["policy.dataClasses", "policy.policyHash", "egress.destinations", "egress.classMatrix", "roles[*].roleId", "roles[*].modelScope"],
+      "consumed": [
+        "policy.dataClasses",
+        "policy.policyHash",
+        "egress.destinations",
+        "egress.classMatrix",
+        "roles[*].roleId",
+        "roles[*].modelScope"
+      ],
       "note": "The accept-phase profile is consumed at accept; this candidate reads the candidate on develop."
     },
-    "decisionRecord": {"path": "docs/adr/0004-research-harness-and-egress-policy.md", "sha256": "3443c68a294fd8988f290ea93078d6b0e9d483ee14d479ed8018fd0043a12718",
-                       "consumed": ["topic manifest id input only", "default-deny network including model-generated queries and redirects", "isolated output, sanitiser, publication approval as separate steps", "excerpt length, HTTPS, approved source domain, no credential query", "new files only under docs/research/"]},
-    "currentHarness": {"path": "tools/research/research.py", "sha256": "fb3bb218fea6188dac60433805f5580e7e0fa9b4ffc2c3554dabad00b7b4d710", "use": "read only; gaps listed under /harnessGaps"},
-    "notBound": ["artifact:18:M1-02-policy-record:accept (not accepted yet; PR #198 open)"]
+    "decisionRecord": {
+      "path": "docs/adr/0004-research-harness-and-egress-policy.md",
+      "sha256": "3443c68a294fd8988f290ea93078d6b0e9d483ee14d479ed8018fd0043a12718",
+      "consumed": [
+        "topic manifest id input only",
+        "default-deny network including model-generated queries and redirects",
+        "isolated output, sanitiser, publication approval as separate steps",
+        "excerpt length, HTTPS, approved source domain, no credential query",
+        "new files only under docs/research/"
+      ]
+    },
+    "currentHarness": {
+      "path": "tools/research/research.py",
+      "sha256": "fb3bb218fea6188dac60433805f5580e7e0fa9b4ffc2c3554dabad00b7b4d710",
+      "use": "read only; gaps listed under /harnessGaps"
+    },
+    "notBound": [
+      "artifact:18:M1-02-policy-record:accept (not accepted yet; PR #198 open)"
+    ]
   },
   "stages": {
     "inputClassification": {
       "field": "inputClassification",
-      "values": ["admitted:<dataClass>", "refused:<code>"],
-      "request": {"allowedFields": ["topicId", "destinationId", "actorRole", "queries"], "rule": "Only a registered topic id is accepted. Free text, file, path, upload, model or provider fields in a request are refused."},
-      "topicManifestEntry": {"requiredFields": ["topicId", "topic", "dataClass", "allowedSourceDomains", "provider", "modelId", "policyHash"],
-                             "rules": ["dataClass is one of the profile policy.dataClasses", "policyHash equals the profile policyHash", "the topic text is fixed in the manifest and never taken from the request"]},
-      "refusalCodes": ["field_not_allowed:<field>", "topic_not_registered", "unknown_data_class", "policy_hash_mismatch", "manifest_entry_incomplete"]
+      "values": [
+        "admitted:<dataClass>",
+        "refused:<code>"
+      ],
+      "request": {
+        "allowedFields": [
+          "topicId",
+          "destinationId",
+          "actorRole",
+          "queries"
+        ],
+        "rule": "Only a registered topic id is accepted. Free text, file, path, upload, model or provider fields in a request are refused."
+      },
+      "topicManifestEntry": {
+        "requiredFields": [
+          "topicId",
+          "topic",
+          "dataClass",
+          "allowedSourceDomains",
+          "provider",
+          "modelId",
+          "policyHash"
+        ],
+        "rules": [
+          "dataClass is one of the profile policy.dataClasses",
+          "policyHash equals the profile policyHash",
+          "the topic text is fixed in the manifest and never taken from the request"
+        ]
+      },
+      "refusalCodes": [
+        "field_not_allowed:<field>",
+        "topic_not_registered",
+        "unknown_data_class",
+        "policy_hash_mismatch",
+        "manifest_entry_incomplete"
+      ]
     },
     "egressDestination": {
       "field": "egressDecision",
-      "values": ["allowed:<destinationId>", "refused:<code>", "not_evaluated"],
+      "values": [
+        "allowed:<destinationId>",
+        "refused:<code>",
+        "not_evaluated"
+      ],
       "rules": [
         "default deny: the destination id must be listed in the profile egress.destinations",
         "the actor role must be in the destination usedBy list",
@@ -50,44 +114,124 @@
         "an egress approval with the destination approvalOwner, decision approved and a non-blank decisionRef must be recorded for the topic and destination",
         "the manifest modelId must match the actor role modelScope allow list and must not match its deny list",
         "every query, including a model-generated one, is checked for secret, personal and absolute path content before it is sent",
-        "a redirect or follow-up hop to any host other than the granted destination host is refused and not followed"
+        "a redirect or follow-up hop to any host other than the granted destination host, or to a non-https location, is refused and not followed"
       ],
-      "refusalCodes": ["destination_not_in_profile", "role_not_permitted_for_destination", "data_class_above_destination_ceiling", "data_class_denied_for_model_egress", "egress_approval_not_recorded", "model_outside_role_scope", "query_contains_secret", "query_contains_personal", "query_contains_absolute_path", "query_contains_restricted_marker", "redirect_to_other_host"],
+      "refusalCodes": [
+        "destination_not_in_profile",
+        "role_not_permitted_for_destination",
+        "data_class_above_destination_ceiling",
+        "data_class_denied_for_model_egress",
+        "egress_approval_not_recorded",
+        "model_outside_role_scope",
+        "query_contains_secret",
+        "query_contains_personal",
+        "query_contains_absolute_path",
+        "query_contains_restricted_marker",
+        "redirect_to_other_host",
+        "redirect_scheme_not_https",
+        "query_too_long"
+      ],
       "researchDestinationsOutsideProfile": [
-        {"destinationId": "DEST-SEARCH-API", "source": "docs/adr/0004 decision 1 (search capability of the candidate harness)", "state": "blocked", "reason": "not listed in the profile egress.destinations; no approval owner recorded"}
+        {
+          "destinationId": "DEST-SEARCH-API",
+          "source": "docs/adr/0004 decision 1 (search capability of the candidate harness)",
+          "state": "blocked",
+          "reason": "not listed in the profile egress.destinations; no approval owner recorded"
+        }
       ]
     },
     "outputSanitization": {
       "field": "outputSanitization",
-      "rulesetVersion": "R-06/sanitize-v1",
-      "values": ["clean", "refused:<code>", "not_evaluated"],
-      "outputShape": {"claims": [{"id": "string", "claim": "string", "evidence": [{"url": "string", "title": "string", "excerpt": "string"}]}]},
+      "rulesetVersion": "R-06/sanitize-v2",
+      "values": [
+        "clean",
+        "refused:<code>",
+        "not_evaluated"
+      ],
+      "outputShape": {
+        "claims": [
+          {
+            "id": "string",
+            "claim": "string",
+            "evidence": [
+              {
+                "url": "string",
+                "title": "string",
+                "excerpt": "string"
+              }
+            ]
+          }
+        ]
+      },
       "rules": [
         "unknown or non-string fields make the output undecidable and it is refused",
-        "every string is checked for secret tokens, e-mail addresses, absolute or UNC paths and restricted-source path markers",
-        "URLs must be https, carry no userinfo, carry no credential-like query keys and resolve to a host inside the topic allowedSourceDomains",
+        "every claim, title and excerpt string is checked for secret tokens (labelled values, bearer, provider-shaped keys, JWT, private key headers), e-mail addresses, absolute, home-relative or UNC paths (Windows drive paths, POSIX paths under common roots or with three or more segments) and restricted-source path markers",
+        "URLs must be https, carry no userinfo, carry no credential-like keys in the query or fragment, have an ASCII host inside the topic allowedSourceDomains, and the whole percent-decoded URL is checked by the same text, markup and instruction rules",
         "each excerpt is at most 500 characters",
-        "text that asks the harness to ignore instructions, call a tool or run a command is data; it is never dispatched and the output is refused as undecidable"
+        "text that asks the harness to ignore or override its instructions, call a tool, run or execute something, or change its role is data; it is never dispatched and the output is refused",
+        "raw HTML tags, character entities and javascript: schemes are refused as embedded markup; the Markdown renderer additionally escapes HTML"
       ],
-      "refusalCodes": ["output_schema_invalid", "output_contains_secret", "output_contains_personal", "output_contains_absolute_path", "output_contains_restricted_marker", "url_not_https", "url_userinfo", "url_credential_query", "url_domain_not_allowed", "excerpt_too_long", "embedded_instruction"],
+      "refusalCodes": [
+        "output_schema_invalid",
+        "output_contains_secret",
+        "output_contains_personal",
+        "output_contains_absolute_path",
+        "output_contains_restricted_marker",
+        "url_not_https",
+        "url_userinfo",
+        "url_credential_query",
+        "url_domain_not_allowed",
+        "excerpt_too_long",
+        "embedded_instruction",
+        "url_contains_secret",
+        "url_contains_personal",
+        "url_contains_absolute_path",
+        "url_contains_restricted_marker",
+        "embedded_markup",
+        "output_field_too_long",
+        "url_too_long"
+      ],
       "recording": "Every run, including refused ones, is written as an M1-05 raw record outside the repository and passed through record_pipeline.build, which keeps raw bytes private and emits a public_candidate plus public_manifest with approval pending."
     },
     "publicApproval": {
       "field": "publicApproval",
-      "values": ["unknown", "pending", "approved", "rejected", "not_evaluated"],
-      "record": {"owner": "APR-PUBLISH", "approvalRecord": "M1-05 $defs.approval (state approval_record, manifestSha256, decision, decisionRef)"},
+      "values": [
+        "unknown",
+        "pending",
+        "approved",
+        "rejected",
+        "not_evaluated"
+      ],
+      "record": {
+        "owner": "APR-PUBLISH",
+        "approvalRecord": "M1-05 $defs.approval (state approval_record, manifestSha256, decision, decisionRef)"
+      },
       "rules": [
         "sanitisation clean is required but is not approval",
         "an egress approval (APR-EGRESS) is not a publication approval",
         "decision approved with a non-blank decisionRef is required",
         "manifestSha256 must equal the sha256 of the exact manifest.json bytes of this run",
-        "the slug matches ^[a-z0-9][a-z0-9-]{0,59}$ and the target files must not already exist; nothing is overwritten"
+        "the slug matches ^[a-z0-9][a-z0-9-]{0,59}$ and the target files must not already exist; nothing is overwritten",
+        "both files are written to exclusive temporary files and linked into place only if neither target exists; any failure removes every file created by that attempt, so a publication yields both files or none"
       ],
-      "refusalCodes": ["approval_record_invalid", "approval_owner_not_publication", "publication_not_approved:<decision>", "approval_bound_to_other_manifest", "sanitization_not_passed", "invalid_slug", "target_exists_no_overwrite"]
+      "refusalCodes": [
+        "approval_record_invalid",
+        "approval_owner_not_publication",
+        "publication_not_approved:<decision>",
+        "approval_bound_to_other_manifest",
+        "sanitization_not_passed",
+        "invalid_slug",
+        "target_exists_no_overwrite",
+        "publication_io_failed"
+      ]
     }
   },
   "separation": "inputClassification, egressDecision, outputSanitization and publicApproval are four distinct fields of every run result. A value in one never implies a value in another: an allowed egress can end with a refused output, a clean output can stay pending publication, and an approved publication cannot be produced without its own record bound to the manifest digest.",
-  "profileDenyCaseRefs": {"DC-03": "content above PUBLIC_SYNTHETIC to a model provider without recorded APR-EGRESS", "DC-06": "model outside modelScope", "DC-10": "destination not on the profile list"},
+  "profileDenyCaseRefs": {
+    "DC-03": "content above PUBLIC_SYNTHETIC to a model provider without recorded APR-EGRESS",
+    "DC-06": "model outside modelScope",
+    "DC-10": "destination not on the profile list"
+  },
   "harnessGaps": [
     "tools/research/research.py accepts a free topic string and a --model override; this spec admits only a registered topic id and takes the model from the manifest.",
     "its keyword filter exits with a message and is not a classification, allowlist or sanitiser result.",
@@ -96,8 +240,13 @@
   ],
   "limits": [
     "Transport is an in-process fake. No DNS, socket, HTTP client, model SDK or search SDK is used, so network-level bypass (proxy, raw socket, subprocess curl) is not tested here; that belongs to OS or firewall enforcement (M1-03).",
-    "Sanitiser patterns are a candidate ruleset and not a complete sensitive-data detector; M1-05 additionally withholds all free text from the public candidate.",
     "Approval records are synthetic; the tool does not authenticate who approved.",
-    "No independent review has been performed."
+    "Independent review so far is an automated reviewer agent, not a human reviewer.",
+    "Sanitiser patterns are a candidate ruleset (sanitize-v2), not a complete sensitive-data or prompt-injection detector: unlabelled high-entropy strings, paraphrased instructions outside the listed forms and cross-script homoglyph spellings can still pass; M1-05 additionally withholds all free text from the public candidate.",
+    "URLs are percent-decoded to a fixpoint before the text rules apply; text still changing after 8 decoding passes is refused as url_encoding_undecidable.",
+    "Every output text field is limited to 2000 characters, every evidence URL to 2048 and every query to 1000 before any pattern runs, so matching time is bounded per field; longer values are refused, not truncated.",
+    "Matching runs on a copy decomposed with NFKD, stripped of format and combining characters and recomposed with NFKC, so fullwidth, zero-width and inserted-accent spellings are caught; the published text itself is not rewritten.",
+    "Absolute POSIX paths are recognised only under a listed set of well-known roots followed by at least one path segment (for example /home/<name>, /data/<name>); a bare root mention such as '/data/' in prose and a path under an unlisted root are not detected, the trade-off chosen so ordinary API and documentation text is not refused.",
+    "The instruction rule is a keyword-phrase heuristic: some benign build instructions (for example 'run the script') are refused as embedded_instruction."
   ]
 }

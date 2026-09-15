@@ -10,7 +10,7 @@
   "canonicalWriteAllowed": false,
   "noAcceptanceClaim": "Synthetic execution record. It shows how the candidate control code decided on synthetic inputs; it grants no egress, approves no publication and is not the accept-phase evidence index.",
   "noSensitiveExecution": "No real research ran. Every topic, approval, response, credential, e-mail address and path is a labelled synthetic fixture defined in scripts/team/R-06/egress_controls.py; the transport is an in-process fake and no network destination was contacted.",
-  "baseRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+  "baseRef": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
   "schemaBinding": {
     "schemaPath": "docs/team/M1-05/record-schema.json",
     "schemaVersion": 1,
@@ -22,12 +22,12 @@
   },
   "controlSpec": {
     "path": "docs/team/R-06/research-control.json",
-    "sha256": "d6288903ed0dafe87916148e310fc0788d00c971cae31b14d8369bf665ba1427"
+    "sha256": "d6d0b57c9ef0b6e1abe0be706e66912ed5be51587c10f744ca79f82f4a3bc433"
   },
   "outputs": {
     "artifact:46:R-06-negative-tests:candidate": {
-      "scripts/team/R-06/egress_controls.py": "dd83c012f90b43c7cca360c2d4a1b41032dfd3a457f1a9a5d3c5b16d3645b7d8",
-      "scripts/team/R-06/test_egress_controls.py": "3203e892af4eea1475cd6f967fec3ee9dcbbe3b9cac6d3c37cd34923bd8a7d72"
+      "scripts/team/R-06/egress_controls.py": "3310efce96be4237ed0abcabf6ecf28c7856edac683761cb9254482a75e9c2ca",
+      "scripts/team/R-06/test_egress_controls.py": "a592f8bda8e7a7c2241abbd0dd83247a05ad904f59325d4b98572abdd685fe6d"
     }
   },
   "run": {
@@ -36,16 +36,16 @@
     "state": "passed",
     "deterministicRerun": true,
     "counts": {
-      "cases": 36,
-      "matched": 36,
+      "cases": 44,
+      "matched": 44,
       "positive": 3,
-      "refused": 34,
+      "refused": 42,
       "refusedBeforeSend": 16,
       "sendsOnRefusedBeforeSend": 0,
       "published": 1
     },
     "syntheticMarkersInReport": [],
-    "stdoutSha256": "27ed95b67aa7f32199544519f541263cf4c1240af45c0bbe586234b7f1ead665",
+    "stdoutSha256": "c6aec361226f2a0ad1c9236452bf7101955c2f13f49363cb87293b4b41076d59",
     "rawAndPrivateRecords": "written by record_pipeline.build into a temporary directory outside the repository and removed with it after the run; only the public candidate digests below are kept",
     "publishedSyntheticFiles": {
       "result": "published",
@@ -54,8 +54,8 @@
         "2026-09-15-synthetic-validator.md"
       ],
       "sha256": {
-        "2026-09-15-synthetic-validator.json": "305f582f253514961b8a4a33515f84fe82a07c893aa0f6467c954460ff8ad0cd",
-        "2026-09-15-synthetic-validator.md": "2abac66345e38e10e435ab7cda660a07a7ce5a03ab1f59c43652d929cdeb8856"
+        "2026-09-15-synthetic-validator.json": "db657ad6ed70e82428b5ffe3e2d9a5f46fe731e1ff39d01af9c0f73a25bf7654",
+        "2026-09-15-synthetic-validator.md": "6ff4cb4c84480f1f67bbb90d38199b45e0556f9b3f87f737583d9550d56fd33c"
       }
     },
     "cases": [
@@ -104,8 +104,8 @@
             "2026-09-15-synthetic-validator.md"
           ],
           "sha256": {
-            "2026-09-15-synthetic-validator.json": "305f582f253514961b8a4a33515f84fe82a07c893aa0f6467c954460ff8ad0cd",
-            "2026-09-15-synthetic-validator.md": "2abac66345e38e10e435ab7cda660a07a7ce5a03ab1f59c43652d929cdeb8856"
+            "2026-09-15-synthetic-validator.json": "db657ad6ed70e82428b5ffe3e2d9a5f46fe731e1ff39d01af9c0f73a25bf7654",
+            "2026-09-15-synthetic-validator.md": "6ff4cb4c84480f1f67bbb90d38199b45e0556f9b3f87f737583d9550d56fd33c"
           }
         },
         "matched": true,
@@ -1526,16 +1526,349 @@
         },
         "matched": true,
         "mismatches": []
+      },
+      {
+        "id": "R06-N34",
+        "category": "output",
+        "capability": "credential-shaped token inside the evidence URL query",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:url_contains_secret",
+          "removals": {
+            "secret": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:url_contains_secret",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "secret": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "url_contains_secret"
+        },
+        "record": {
+          "filesDigest": "48698c4a2771bd662b9fe884c4c7ac496b19fba49aa959193e35c9284f21804e",
+          "manifestSha256": "47976afb8ebf0297fea4a373038545c0ece0d7ad7c0a537dc43249bf294a2ada",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "secret": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N35",
+        "category": "output",
+        "capability": "credential in the evidence URL fragment",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:url_credential_query"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:url_credential_query",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "url_credential_query"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N36",
+        "category": "output",
+        "capability": "percent-encoded e-mail address in the evidence URL path",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:url_contains_personal",
+          "removals": {
+            "personal": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:url_contains_personal",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "personal": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "url_contains_personal"
+        },
+        "record": {
+          "filesDigest": "88f15cbd0ca3ce6cb0c1977092b5fed351034e04acdbd73daf3cf6eb1160bbd2",
+          "manifestSha256": "bb9e90e3f70d7f6dd9f70a000e710c75ee1aff36aef5bb1bd688608bc3e69ea8",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "personal": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N37",
+        "category": "output",
+        "capability": "absolute path under a root outside the old fixed list",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:output_contains_absolute_path",
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_contains_absolute_path",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "output_contains_absolute_path"
+        },
+        "record": {
+          "filesDigest": "135bc681554d0e5b0901a444ee06e72863a57a19fe86827d64c625b27e644036",
+          "manifestSha256": "1488ae99166f180fee9f39cabfda2bd08f669fee80273f4c9ace61b122fd6833",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "absolute_path": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N38",
+        "category": "output",
+        "capability": "provider-shaped live key without a label",
+        "expectedFailure": "output refused",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:output_contains_secret",
+          "removals": {
+            "secret": 1
+          }
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:output_contains_secret",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "secret": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "output_contains_secret"
+        },
+        "record": {
+          "filesDigest": "48698c4a2771bd662b9fe884c4c7ac496b19fba49aa959193e35c9284f21804e",
+          "manifestSha256": "47976afb8ebf0297fea4a373038545c0ece0d7ad7c0a537dc43249bf294a2ada",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "secret": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N39",
+        "category": "output",
+        "capability": "rephrased instruction to discard earlier directions",
+        "expectedFailure": "output refused as data",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:embedded_instruction",
+          "dispatchedToolCalls": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:embedded_instruction",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "embedded_instruction"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N40",
+        "category": "output",
+        "capability": "raw HTML with an event handler in a claim",
+        "expectedFailure": "output refused; nothing rendered",
+        "dcRef": null,
+        "expected": {
+          "outputSanitization": "refused:embedded_markup"
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "allowed:DEST-MODEL-AUTHOR",
+          "outputSanitization": "refused:embedded_markup",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "refusal": {
+          "stage": "outputSanitization",
+          "code": "embedded_markup"
+        },
+        "record": {
+          "filesDigest": "3ce5fb520e328a9de633c485a6c57d0b408c67ca831dabeb6cf2533f62a7f8fe",
+          "manifestSha256": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+          "approval": "pending",
+          "events": 5,
+          "publicTextOmitted": 4,
+          "removals": {
+            "restricted": 1
+          }
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
+      },
+      {
+        "id": "R06-N41",
+        "category": "egress",
+        "capability": "redirect to the granted host over plain http",
+        "expectedFailure": "hop refused and not followed",
+        "dcRef": "DC-10",
+        "expected": {
+          "egressDecision": "refused:redirect_scheme_not_https",
+          "transportSends": 1,
+          "redirectsFollowed": 0
+        },
+        "observed": {
+          "inputClassification": "admitted:PUBLIC_SYNTHETIC",
+          "egressDecision": "refused:redirect_scheme_not_https",
+          "outputSanitization": "not_evaluated",
+          "publicApproval": "not_evaluated",
+          "transportSends": 1,
+          "redirectsFollowed": 0,
+          "dispatchedToolCalls": 0,
+          "publication": null,
+          "removals": {}
+        },
+        "refusal": {
+          "stage": "egressDecision",
+          "code": "redirect_scheme_not_https"
+        },
+        "record": {
+          "filesDigest": "10bbe78a83c9b9365966cd9ae5c46959cff9c95cc68eeea0bc0f1585b95b65aa",
+          "manifestSha256": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723",
+          "approval": "pending",
+          "events": 3,
+          "publicTextOmitted": 3,
+          "removals": {}
+        },
+        "publication": null,
+        "matched": true,
+        "mismatches": []
       }
-    ]
+    ],
+    "sanitizer": "R-06/sanitize-v2"
   },
   "checksRun": [
     {
       "check": "proposed test: scripts/team/R-06/test_egress_controls.py",
       "command": "python -m unittest discover -s scripts/team/R-06 -p 'test_*.py' -v",
       "exitCode": 0,
-      "ran": 15,
-      "result": "OK (15 tests passed)"
+      "ran": 22,
+      "result": "OK",
+      "stderrSha256": "749334b085eb40c879b6e4b43aeccd790966acee652d94af4bdb60c5da75cec9"
     },
     {
       "check": "inspection: R-06 output fields vs M1-05 central schema",
@@ -1578,7 +1911,15 @@
         "R06-N30": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
         "R06-N31": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
         "R06-N32": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
-        "R06-N33": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a"
+        "R06-N33": "7e6342caa5c07e305ea541dd5c3e738a715f23518f6f22b1c145d7cedf0f706a",
+        "R06-N34": "47976afb8ebf0297fea4a373038545c0ece0d7ad7c0a537dc43249bf294a2ada",
+        "R06-N35": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N36": "bb9e90e3f70d7f6dd9f70a000e710c75ee1aff36aef5bb1bd688608bc3e69ea8",
+        "R06-N37": "1488ae99166f180fee9f39cabfda2bd08f669fee80273f4c9ace61b122fd6833",
+        "R06-N38": "47976afb8ebf0297fea4a373038545c0ece0d7ad7c0a537dc43249bf294a2ada",
+        "R06-N39": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N40": "d1ea60bf3b351dff76368c41452fd6ff90ee3b348e030e5d96eeb18ef20913fe",
+        "R06-N41": "5980d2fa0aec81ccceb1804224521fb54cf60896c9eb0a4f3dbc29164ffdd723"
       }
     },
     {
@@ -1586,7 +1927,7 @@
       "mutations": [
         {
           "mutation": "unlisted destination falls back to the first profile destination",
-          "testsRun": 12,
+          "testsRun": 22,
           "failures": 3,
           "errors": 0,
           "runState": "mismatch",
@@ -1595,8 +1936,8 @@
           ]
         },
         {
-          "mutation": "source domain check weakened to substring match",
-          "testsRun": 12,
+          "mutation": "source domain check weakened to substring match without the ASCII host requirement",
+          "testsRun": 22,
           "failures": 1,
           "errors": 0,
           "runState": "mismatch",
@@ -1606,7 +1947,7 @@
         },
         {
           "mutation": "publication approval not compared with this manifest digest",
-          "testsRun": 12,
+          "testsRun": 22,
           "failures": 2,
           "errors": 0,
           "runState": "mismatch",
@@ -1616,26 +1957,130 @@
         },
         {
           "mutation": "e-mail address rule removed",
-          "testsRun": 12,
-          "failures": 2,
+          "testsRun": 22,
+          "failures": 5,
           "errors": 0,
           "runState": "mismatch",
           "mismatchedCases": [
             "R06-N15",
-            "R06-N19"
+            "R06-N19",
+            "R06-N36"
           ]
         },
         {
           "mutation": "redirect host comparison removed",
-          "testsRun": 12,
+          "testsRun": 22,
           "failures": 3,
           "errors": 0,
           "runState": "mismatch",
           "mismatchedCases": [
             "R06-N17"
           ]
+        },
+        {
+          "mutation": "redirect scheme check removed",
+          "testsRun": 22,
+          "failures": 1,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N41"
+          ]
+        },
+        {
+          "mutation": "text rules no longer applied to the decoded URL",
+          "testsRun": 22,
+          "failures": 3,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N34",
+            "R06-N36"
+          ]
+        },
+        {
+          "mutation": "markup rule removed",
+          "testsRun": 22,
+          "failures": 1,
+          "errors": 0,
+          "runState": "mismatch",
+          "mismatchedCases": [
+            "R06-N40"
+          ]
+        },
+        {
+          "mutation": "matching form no longer normalised or stripped of format and combining characters",
+          "testsRun": 22,
+          "failures": 4,
+          "errors": 0,
+          "runState": "passed",
+          "mismatchedCases": []
+        },
+        {
+          "mutation": "combining marks no longer stripped before matching",
+          "testsRun": 22,
+          "failures": 2,
+          "errors": 0,
+          "runState": "passed",
+          "mismatchedCases": []
+        },
+        {
+          "mutation": "legacy %uXXXX escapes no longer decoded",
+          "testsRun": 22,
+          "failures": 1,
+          "errors": 0,
+          "runState": "passed",
+          "mismatchedCases": []
+        },
+        {
+          "mutation": "output field length bound removed",
+          "testsRun": 22,
+          "failures": 1,
+          "errors": 0,
+          "runState": "passed",
+          "mismatchedCases": []
+        },
+        {
+          "mutation": "absolute path rule no longer requires a segment after the root",
+          "testsRun": 22,
+          "failures": 0,
+          "errors": 2,
+          "runState": "passed",
+          "mismatchedCases": []
+        },
+        {
+          "mutation": "URL decoded once instead of to a fixpoint",
+          "testsRun": 22,
+          "failures": 2,
+          "errors": 0,
+          "runState": "passed",
+          "mismatchedCases": []
+        },
+        {
+          "mutation": "partial publication not rolled back after an I/O failure",
+          "testsRun": 22,
+          "failures": 1,
+          "errors": 0,
+          "runState": "passed",
+          "mismatchedCases": []
+        },
+        {
+          "mutation": "HTML escaping removed from Markdown cells",
+          "testsRun": 22,
+          "failures": 1,
+          "errors": 0,
+          "runState": "passed",
+          "mismatchedCases": []
         }
-      ]
+      ],
+      "note": "every mutation fails the unit tests; 8 leave the case catalog passing because no case exercises them (matching form no longer normalised or stripped of format and combining characters; combining marks no longer stripped before matching; legacy %uXXXX escapes no longer decoded; output field length bound removed; absolute path rule no longer requires a segment after the root; URL decoded once instead of to a fixpoint; partial publication not rolled back after an I/O failure; HTML escaping removed from Markdown cells) and are detected by the unit tests only"
+    },
+    {
+      "check": "independent review of the fix (ECC reviewer agent, read-only)",
+      "round1": "found remaining gaps in the first fix: triple percent-encoding decoded only twice, an instruction phrase split by a newline, zero-width and fullwidth spellings, and ordinary URL paths with three or more segments refused as absolute paths",
+      "resolution": "decoding to a fixpoint with a pass limit, a gap that spans line breaks, matching on an NFKC-folded copy without format characters, and a POSIX root list instead of the generic segment rule; each added to the unit tests",
+      "round2": "found quadratic backtracking in the e-mail rule on long fields (tens of seconds per field) because length limits ran after matching, inserted combining accents splitting tokens, legacy %uXXXX escapes left undecoded, bare root mentions such as '/data/' in prose refused as paths, and a stale fixed-name temporary file blocking a later publication",
+      "resolution2": "length bounds for every text field, URL and query checked before any pattern, bounded quantifiers in the e-mail rule, NFKD decomposition with combining marks removed, %uXXXX decoding, a path segment required after the root, and uniquely named temporary files; each added to the unit tests and the mutation controls"
     }
   ],
   "observations": [
@@ -1661,6 +2106,21 @@
       "attempt": "first mutation-control run",
       "observed": "the destination-fallback mutation made an unscripted send and FakeTransport raised IndexError, stopping the whole run",
       "handling": "FakeTransport now counts an unscripted send and returns an empty body that the sanitiser refuses, so the mutation shows as a case mismatch; tests and cases rerun after the change"
+    },
+    {
+      "attempt": "previous record of this artifact (36/36 cases matched)",
+      "observed": "the review showed the evidence URL was never scanned by the text rules, so the passing state overstated the output control",
+      "handling": "URL, secret, path, instruction, redirect and publication fixes with cases R06-N34..N41 and unit tests; the earlier record is superseded by this revision and kept in git history"
+    },
+    {
+      "attempt": "first fix run",
+      "observed": "an ordinary sentence telling the reader to use a schema tool was refused as an instruction; the nesting test input reached a decoding fixpoint in three passes and did not exercise the pass limit; the rollback mutation passed because only the file-exists branch was tested",
+      "handling": "the verb 'use' removed from the tool pattern, the test input nests nine encodings, and an I/O-failure rollback test added; tests and mutations rerun"
+    },
+    {
+      "attempt": "moving the fixes onto develop after PR #200 was merged with an additional maintainer fix (request field types, publication date and path escape)",
+      "observed": "the maintainer tests appended at the end of the test file landed inside the new InputFiles class and failed with a missing fixture attribute",
+      "handling": "the maintainer tests were returned to the Stages class; all 22 tests and 44 cases rerun on the develop base"
     }
   ],
   "blockers": [
@@ -1692,7 +2152,7 @@
     },
     {
       "criterion": "acceptance[1] synthetic negative cases cover secret/PII/path leakage and destination bypass",
-      "evidence": "secret R06-N14/N18/N24, personal N15/N19, path N16/N20/N21, destination bypass N09/N17/N23, plus input N01-N06, egress N07-N13, output N22/N25-N28, publication N29-N33"
+      "evidence": "secret R06-N14/N18/N24/N34/N38, personal N15/N19/N36, path N16/N20/N21/N37, destination bypass N09/N17/N23, plus input N01-N06, egress N07-N13/N41, output N22/N25-N28/N35/N39/N40, publication N29-N33"
     },
     {
       "criterion": "acceptance[2] no actual sensitive research executes",
@@ -1709,9 +2169,65 @@
   ],
   "limits": [
     "Decisions come from candidate code with an in-process fake transport; proxy, raw-socket or subprocess network bypass is not tested (OS or firewall enforcement belongs to M1-03).",
-    "Sanitiser patterns are a candidate ruleset, not a complete sensitive-data detector.",
+    "Sanitiser patterns are a candidate ruleset (R-06/sanitize-v2), not a complete sensitive-data or prompt-injection detector: unlabelled high-entropy strings, paraphrased instructions and cross-script homoglyphs can pass.",
+    "Absolute POSIX paths are detected only under the listed roots followed by a segment; a bare root mention and a path under an unlisted root are not detected.",
+    "Text fields, URLs and queries above their length bounds are refused rather than scanned or truncated.",
     "Approval records are synthetic and unauthenticated.",
     "The accept-phase profile and M1-02 policy record are not bound yet.",
-    "No independent review has been performed."
-  ]
+    "Independent review was an automated reviewer agent, not a human reviewer."
+  ],
+  "reviewFixes": {
+    "reviewDate": "2026-09-15",
+    "findingsBeforeFix": [
+      {
+        "severity": "HIGH",
+        "input": "evidence URL carrying a token in the query, an api key in the fragment or an e-mail address in the path",
+        "observedBefore": "clean",
+        "now": "refused url_contains_secret / url_credential_query / url_contains_personal (R06-N34..N36)"
+      },
+      {
+        "severity": "MEDIUM",
+        "input": "absolute path under a root outside the fixed list, and reworded injected instructions",
+        "observedBefore": "clean",
+        "now": "refused output_contains_absolute_path / embedded_instruction for the listed roots and phrasings (R06-N37, N39); limit recorded"
+      },
+      {
+        "severity": "MEDIUM",
+        "input": "provider keys in the sk_live_, xoxb-, AIza and JWT formats; redirect to the same host over http",
+        "observedBefore": "clean / followed",
+        "now": "refused output_contains_secret (R06-N38) / redirect_scheme_not_https (R06-N41)"
+      },
+      {
+        "severity": "CRITICAL",
+        "input": "a 60000-character excerpt or an 80000-character URL without an @",
+        "observedBefore": "20-50 s of matching before refusal or acceptance (second review)",
+        "now": "refused output_field_too_long / url_too_long before any pattern runs (unit test, under 1 s)"
+      },
+      {
+        "severity": "HIGH",
+        "input": "an accent inserted inside 'ignore' or 'api_key'",
+        "observedBefore": "clean (second review)",
+        "now": "refused embedded_instruction / output_contains_secret (unit test)"
+      },
+      {
+        "severity": "LOW",
+        "input": "HTML in a claim, a failure while writing the second publication file, a missing bound input file",
+        "observedBefore": "raw HTML in Markdown / first file left behind / traceback",
+        "now": "HTML escaped and markup refused (R06-N40), both files or neither (unit tests), exit 2 with missing:<name> (unit test)"
+      }
+    ],
+    "addedCases": [
+      "R06-P01",
+      "R06-P02",
+      "R06-P03",
+      "R06-N34",
+      "R06-N35",
+      "R06-N36",
+      "R06-N37",
+      "R06-N38",
+      "R06-N39",
+      "R06-N40",
+      "R06-N41"
+    ]
+  }
 }
