@@ -40,9 +40,11 @@ def dispatch_fault_case(*, expected_kind=None, grouped_marker=None):
     if (expected_kind is None) == (grouped_marker is None):
         raise MetricsError('FAULT_DISPATCH_SELECTOR_COUNT')
     if expected_kind is not None:
-        if expected_kind not in EXACT_FAULT_VARIANTS:
+        if not isinstance(expected_kind, str) or expected_kind not in EXACT_FAULT_VARIANTS:
             raise MetricsError('FAULT_KIND_UNKNOWN')
         return EXACT_FAULT_VARIANTS[expected_kind]
+    if not isinstance(grouped_marker, str):
+        raise MetricsError('FAULT_MARKER_INVALID')
     lowered = grouped_marker.lower()
     selected = {case for marker, case in GROUPED_FAULT_MARKERS if marker in lowered}
     if len(selected) != 1:
@@ -192,7 +194,7 @@ class Interval:
 
     @classmethod
     def parse(cls, row, expected_role):
-        if not isinstance(row, dict) or row.get("Schema") != 1 or isinstance(row.get("Schema"), bool):
+        if not isinstance(row, dict) or type(row.get("Schema")) is not int or row["Schema"] != 1:
             raise MetricsError("UNSUPPORTED_SCHEMA")
         if expected_role not in ROLE_VALUES:
             raise MetricsError("INVALID_EXPECTED_ROLE")
@@ -271,6 +273,13 @@ class Interval:
             backlog = float(number(row["MaximumBacklogSeconds"]))
             if sim_end < sim_start or not isinstance(paused, bool):
                 raise MetricsError("INVALID_SIMULATION_PROGRESS")
+        # Optional legacy fields may be wholly absent, never half present.
+        # Otherwise corrupt engine evidence silently becomes "not measured".
+        for count_key, histogram_key, code in (
+                ("SimulationTickCount", "SimulationTickMilliseconds", "SIMULATION_TIMING_FIELDS_INCOMPLETE"),
+                ("FrameCount", "FrameMilliseconds", "FRAME_TIMING_FIELDS_INCOMPLETE")):
+            if (count_key in row) != (histogram_key in row):
+                raise MetricsError(code)
         sim_tick_count = sim_tick_histogram = frame_count = frame_histogram = None
         if "SimulationTickCount" in row and "SimulationTickMilliseconds" in row:
             sim_tick_count = number(row["SimulationTickCount"], integer=True)
@@ -380,6 +389,8 @@ class MetricsReader:
 def aggregate(intervals: list[Interval]):
     if not intervals:
         return None
+    if any(row.role != intervals[0].role for row in intervals):
+        raise MetricsError("AGGREGATE_ROLE_MISMATCH")
     bounds = intervals[0].histogram.bounds
     if any(r.histogram.bounds != bounds for r in intervals):
         raise MetricsError("HISTOGRAM_BOUNDS_CHANGED")
@@ -473,6 +484,9 @@ def terminal_deadline(cleanup_begin_seconds, overall_deadline_seconds, *, declar
 
 def assess(readers, starts, required_duration, observed_wall_seconds, *, process_failure=None, stops=None,
            cleanup_begin_seconds=None, overall_deadline_seconds=None, declared_deadline_outcome=None):
+    # NaN comparisons are false: validate before any coverage comparison.
+    number(required_duration, positive=True)
+    number(observed_wall_seconds)
     issues = []
     diagnostics = []
     summaries = {}
@@ -484,6 +498,9 @@ def assess(readers, starts, required_duration, observed_wall_seconds, *, process
         rows = reader.intervals[starts.get(label, 0):stops.get(label)]
         rows_by_label[label] = rows
         try:
+            expected_role = "server" if label == "server" else "client"
+            if reader.role != expected_role or any(row.role != expected_role for row in rows):
+                raise MetricsError("PROCESS_ROLE_MISMATCH")
             summary = aggregate(rows)
         except MetricsError as exc:
             summary = None

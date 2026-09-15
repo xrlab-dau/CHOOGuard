@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-15T09:30:12.711830Z",
+  "classification": "PUBLIC_SYNTHETIC",
+  "scope": "Foundation load-metric parser/assessor regression hardening; not whole-project implementation",
+  "repository": "xrlab-dau/CHOOGuard",
+  "baseCommit": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+  "baseBlobs": {
+    "scripts/dev/foundation_load_metrics.py": "4b68bf57bbfc0a5c9fb63e4fd015bfb3460825f7",
+    ".github/workflows/required-quality-gate.yml": "6affba374bcc98aae6c22bb3ab31efe0d5f8c551"
+  },
+  "files": [
+    {
+      "path": "scripts/dev/foundation_load_metrics.py",
+      "sha256": "45ed7ebea6b8816f610e8abadc6d5ebc038b01620e349ba0dc1f57325d8356f8",
+      "gitBlobSha1": "e7fa7665bf3cc7f3163504cea7374c778242532e",
+      "bytes": 31874
+    },
+    {
+      "path": "scripts/dev/test_metric_integrity_regressions.py",
+      "sha256": "8f25b580d256e47eb9e98864003b941263e700c4c9aba5385584c1b8e28b4fc7",
+      "gitBlobSha1": "de9380ebc1578876e65d771a934f0f7dbcfaaa10",
+      "bytes": 10776
+    },
+    {
+      "path": ".github/workflows/required-quality-gate.yml",
+      "sha256": "4972fd0008bbb3c9b57b25ed8747196afe2720232c74f3be92392023db713885",
+      "gitBlobSha1": "4d7c13fb980a3fc70b241c2720fcea237a60314f",
+      "bytes": 6563
+    }
+  ],
+  "verification": {
+    "pythonVersion": "3.13.5",
+    "command": "python -m unittest discover -s scripts/dev -p 'test_metric_integrity_regressions.py' -v",
+    "baselineExitCode": 1,
+    "candidateExitCode": 0,
+    "testMethods": 33,
+    "baselineSummary": "FAILED (failures=19, errors=9)",
+    "candidateSummary": "33 tests passed",
+    "secondReviewRound": "Two role-attribution regressions failed before the PROCESS_ROLE_MISMATCH fix and passed after it.",
+    "syntaxChecks": [
+      "Python 3.12 grammar parsed; not execution under Python 3.12",
+      "py_compile with recorded Python runtime",
+      "YAML parsed; all existing workflow steps, permissions, triggers and conditions unchanged"
+    ],
+    "ciChange": "Adds one mandatory always() regression step; remote CI not yet observed.",
+    "fixtureMeaning": "Twenty client labels in Python fixtures are not twenty executed Unity clients."
+  },
+  "projectTargets": {
+    "regions": 13,
+    "clientsIncludingInstructor": 20,
+    "npcs": 100,
+    "simultaneousIncidents": 2,
+    "changed": false
+  },
+  "relatedIssues": [
+    54,
+    91,
+    140,
+    149,
+    150
+  ],
+  "boardReferences": [
+    "https://github.com/orgs/xrlab-dau/projects/1",
+    "https://github.com/orgs/xrlab-dau/projects/2"
+  ],
+  "boardOperation": "Links only. Live board state and PR membership not verified or modified.",
+  "contextRead": [
+    "README.md",
+    "docs/context/orchestration-contract.md",
+    "docs/context/graphify/README.md",
+    "docs/context/work-orders/023.json (selected range)",
+    "docs/choo-guard-foundation-multiplayer.md (selected range)",
+    "GitHub issue 150 and issue 140/23 handoff comments"
+  ],
+  "preservedOtherWork": "M1-07 review integrity implementation is already claimed by kkosso in issue 23; no edits to that scope.",
+  "review": {
+    "method": "Single-session adversarial self-review with red/green regressions",
+    "workerRuns": 0,
+    "independentBlindComparisonPerformed": false,
+    "providerModelAttestation": null,
+    "AAA": "NOT_ASSESSED",
+    "productAcceptance": "NOT_ASSESSED"
+  },
+  "notExecuted": [
+    "Full repository regression suite",
+    "Unity compilation, EditMode/PlayMode and Player build",
+    "Real coupled-player protocol run",
+    "20-client/100-NPC/2-incident 60-minute acceptance",
+    "WAN, voice, desktop renderer, HMD and field validation",
+    "Independent/CODEOWNER approval",
+    "Official GitHub MCP server installation",
+    "Astra worker spawning and autonomous repair loop"
+  ],
+  "publication": "Candidate only. Do not close related issues, merge, change board status or reinterpret historical evidence from this record."
+}

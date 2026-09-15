@@ -104,6 +104,10 @@ jobs:
         if: always()
         run: python -m unittest discover -s scripts/ci/tests -v
 
+      - name: Test Foundation metric integrity
+        if: always()
+        run: python -m unittest discover -s scripts/dev -p 'test_metric_integrity_regressions.py' -v
+
       - name: Test synthetic Foundation contracts
         if: always()
         run: python scripts/dev/check_foundation.py > foundation-data-report.json
