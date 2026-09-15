@@ -11,6 +11,7 @@ no permission to use, transform or redistribute any source.
 """
 from __future__ import annotations
 
+import argparse
 import copy
 import hashlib
 import json
@@ -48,6 +49,12 @@ TRANSFORM = {"facts_only_synthetic_derivation", "blocked", "rejected"}
 REDISTRIBUTE = {"conditional", "blocked", "rejected"}
 PUBLICATION = {"not_requested", "requested", "approved", "denied"}
 SANITIZE = {"metadata_recorded_no_original", "not_sanitized", "sanitized"}
+# Groups that hold judgments, not content: any other key could carry the very content the judgment withholds.
+CLOSED_GROUPS = {
+    "personalData": {"present", "basis"},
+    "restrictedMetadata": {"present", "basis"},
+    "decisions": {"use", "transform", "redistribute", "privacy", "restrictedMetadata"},
+}
 
 
 class InputError(ValueError):
@@ -73,11 +80,18 @@ def get(record, dotted):
 
 
 def load_policy(policy) -> dict:
-    types = {t["sourceType"]: {"rating": t["rating"], "allowed": {c["id"] for c in t["allowedClaims"]},
-                               "forbidden": {c["id"] for c in t["forbiddenClaims"]}, "uncertainty": {u["id"] for u in t["uncertainty"]}}
-             for t in policy["sourceTypes"]}
-    licence_fields = policy["sourceTypes"][0]["license"]["recordingForm"]["requiredFields"]
-    return {"types": types, "global": {g["id"] for g in policy["globalForbiddenClaims"]}, "licenseFields": licence_fields}
+    try:
+        types = {t["sourceType"]: {"rating": t["rating"], "allowed": {c["id"] for c in t["allowedClaims"]},
+                                   "forbidden": {c["id"] for c in t["forbiddenClaims"]}, "uncertainty": {u["id"] for u in t["uncertainty"]}}
+                 for t in policy["sourceTypes"]}
+        licence_fields = list(policy["sourceTypes"][0]["license"]["recordingForm"]["requiredFields"])
+        return {"types": types, "global": {g["id"] for g in policy["globalForbiddenClaims"]}, "licenseFields": licence_fields}
+    except (KeyError, TypeError, IndexError):
+        raise InputError("invalid_structure:source-policy.json") from None
+
+
+def hashable(value, kinds=(str,)):
+    return isinstance(value, kinds)
 
 
 def violations(record, policy: dict) -> list[str]:
@@ -88,19 +102,29 @@ def violations(record, policy: dict) -> list[str]:
         value, present = get(record, field)
         if not present or value is None or value == "":
             found.append("missing_field:" + field)
-    kind = policy["types"].get(record.get("sourceType"))
+    for group, keys in CLOSED_GROUPS.items():
+        if isinstance(record.get(group), dict):
+            found += ["unexpected_field:" + group + "." + str(key) for key in record[group] if key not in keys]
+    claim_lists = {}
+    for field in ("allowedClaims", "forbiddenClaims"):
+        value = record.get(field) or []
+        if not isinstance(value, list) or not all(hashable(c) for c in value):
+            found.append("invalid_value:" + field)
+            value = []
+        claim_lists[field] = set(value)
+    source_type = record.get("sourceType")
+    kind = policy["types"].get(source_type) if hashable(source_type) else None
     if kind is None:
         found.append("unknown_source_type")
     else:
         if record.get("rating") != kind["rating"]:
             found.append("rating_mismatch")
-        allowed = set(record.get("allowedClaims") or [])
+        allowed = claim_lists["allowedClaims"]
         if allowed - kind["allowed"]:
             found.append("claim_outside_type")
         if allowed & (kind["forbidden"] | policy["global"]):
             found.append("forbidden_claim_allowed")
-        forbidden = set(record.get("forbiddenClaims") or [])
-        if not (kind["forbidden"] | policy["global"]) <= forbidden:
+        if not (kind["forbidden"] | policy["global"]) <= claim_lists["forbiddenClaims"]:
             found.append("forbidden_claims_incomplete")
     uncertainty = record.get("uncertainty")
     if not isinstance(uncertainty, list) or not uncertainty or any(
@@ -117,9 +141,16 @@ def violations(record, policy: dict) -> list[str]:
              (admission, ADMISSION, "admission.state"), (decisions.get("use"), USE, "decisions.use"),
              (decisions.get("transform"), TRANSFORM, "decisions.transform"), (decisions.get("redistribute"), REDISTRIBUTE, "decisions.redistribute"),
              (record.get("publicationApprovalState"), PUBLICATION, "publicationApprovalState"), (record.get("sanitizeState"), SANITIZE, "sanitizeState")]
-    found += ["invalid_value:" + name for value, allowed_values, name in enums if value is not None and value not in allowed_values]
+    found += ["invalid_value:" + name for value, allowed_values, name in enums
+              if value is not None and (not hashable(value) or value not in allowed_values)]
     found += ["invalid_value:" + name for value, name in ((personal, "personalData.present"), (restricted, "restrictedMetadata.present"))
-              if value is not None and value not in TRI_STATE]
+              if value is not None and (not hashable(value, (bool, str)) or value not in TRI_STATE)]
+
+    redistribute = decisions.get("redistribute")
+    if (redistribute in ("blocked", "rejected") and redistribution != "not_permitted_by_default") \
+            or (redistribute == "conditional" and redistribution == "not_permitted_by_default"):
+        # R-12: the machine-readable flag and the decision must say the same thing, whatever the licence or personal-data state.
+        found.append("redistribution_decision_contradicts_allowed")
 
     if licence == "unknown":
         if admission == "admitted_conditional":
@@ -128,14 +159,23 @@ def violations(record, policy: dict) -> list[str]:
             found.append("license_unknown_redistribution")
         if decisions.get("transform") not in ("blocked", "rejected"):
             found.append("license_unknown_transform")
-    if licence == "known_restrictive" and (decisions.get("redistribute") != "rejected" or decisions.get("transform") != "rejected"):
+    if licence == "known_restrictive" and (decisions.get("redistribute") != "rejected" or decisions.get("transform") != "rejected"
+                                           or redistribution != "not_permitted_by_default"):
         found.append("restrictive_license_not_rejected")
     if personal is True and decisions.get("redistribute") != "rejected":
         found.append("personal_data_redistribution")
-    if personal == "unknown" and (redistribution == "permitted" or (record.get("sourceType") == "video-photo" and redistribution != "not_permitted_by_default")):
-        found.append("personal_data_unknown_redistribution")
+    if personal == "unknown":
+        conditional = redistribution == "conditional" or decisions.get("redistribute") == "conditional"
+        if (redistribution == "permitted"
+                or (record.get("sourceType") == "video-photo" and redistribution != "not_permitted_by_default")
+                or (conditional and decisions.get("privacy") != "no_personal_data_copied")):
+            # R-04 for photographic media; R-09 for any other source kept redistributable while people are unverified.
+            found.append("personal_data_unknown_redistribution")
     if restricted is True and decisions.get("restrictedMetadata") != "withheld_hash_and_reason_only":
         found.append("restricted_metadata_not_withheld")
+    if restricted == "unknown" and not (decisions.get("restrictedMetadata") == "withheld_hash_and_reason_only"
+                                        or str(decisions.get("restrictedMetadata") or "").endswith("_not_copied")):
+        found.append("restricted_metadata_unknown_not_withheld")
     if record.get("rawCopyInRepository") is not False:
         found.append("raw_copy_in_repository")
     if record.get("korailReplyRequired") is not False:
@@ -159,25 +199,37 @@ def violations(record, policy: dict) -> list[str]:
     return sorted(set(found))
 
 
-def apply_patch(base: dict, patch: dict) -> dict:
+def apply_patch(base: dict, patch) -> dict:
+    """A patch that is not an object, or whose dotted path crosses a non-object value, is an invalid fixture file (exit 2)."""
+    if not isinstance(patch, dict) or not isinstance(patch.get("set") or {}, dict) or not isinstance(patch.get("delete") or [], list) \
+            or not all(isinstance(dotted, str) and dotted for dotted in patch.get("delete") or []):
+        raise InputError("invalid_structure:cases:patch")
     record = copy.deepcopy(base)
     for dotted, value in (patch.get("set") or {}).items():
-        node = record
-        parts = dotted.split(".")
+        node, parts = record, dotted.split(".")
         for part in parts[:-1]:
             node = node.setdefault(part, {})
+            if not isinstance(node, dict):
+                raise InputError("invalid_structure:cases:patch:" + dotted)
         node[parts[-1]] = value
     for dotted in patch.get("delete") or []:
-        node = record
-        parts = dotted.split(".")
+        node, parts = record, str(dotted).split(".")
         for part in parts[:-1]:
             node = node.get(part, {})
+            if not isinstance(node, dict):
+                raise InputError("invalid_structure:cases:patch:" + str(dotted))
         node.pop(parts[-1], None)
     return record
 
 
 def registry_ids() -> dict:
-    return {prefix: [f"{prefix}:{i}" for i in ids(read_json(REPO / path))] for prefix, (path, ids) in REGISTRIES.items()}
+    found = {}
+    for prefix, (path, ids) in REGISTRIES.items():
+        try:
+            found[prefix] = [f"{prefix}:{i}" for i in ids(read_json(REPO / path))]
+        except (KeyError, TypeError, IndexError):
+            raise InputError("invalid_structure:" + Path(path).name) from None
+    return found
 
 
 def join_report(sources: list, policy: dict) -> dict:
@@ -202,28 +254,45 @@ def run_fixtures(cases: dict, policy: dict) -> list:
     for case in cases["cases"]:
         got = violations(apply_patch(cases["baseRecord"], case.get("patch", {})), policy)
         expect = case["expect"]
-        ok = (got == []) if expect == "accept" else (bool(got) and set(expect) <= set(got))
+        # A negative fixture names every violation it produces, so an unexpected extra code also fails the fixture.
+        ok = (got == []) if expect == "accept" else (bool(got) and set(expect) == set(got))
         results.append({"caseId": case["caseId"], "expect": expect, "got": got, "ok": ok})
     return results
 
 
-def main() -> int:
+def main(argv=None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--boundary", type=Path, default=BOUNDARY)
+    parser.add_argument("--cases", type=Path, default=CASES)
+    args = parser.parse_args(argv)
     try:
+        policy_bytes, boundary_bytes, cases_bytes = POLICY.read_bytes() if POLICY.is_file() else b"", b"", b""
         policy = load_policy(read_json(POLICY))
-        boundary = read_json(BOUNDARY)
-        cases = read_json(CASES)
-        if not isinstance(boundary.get("sources"), list) or not isinstance(cases.get("cases"), list) or not isinstance(cases.get("baseRecord"), dict):
-            raise InputError("invalid_structure")
+        boundary = read_json(args.boundary)
+        cases = read_json(args.cases)
+        if not isinstance(boundary, dict) or not isinstance(boundary.get("sources"), list) or not all(isinstance(s, dict) for s in boundary["sources"]):
+            raise InputError("invalid_structure:" + args.boundary.name)
+        if not isinstance(cases, dict) or not isinstance(cases.get("cases"), list) or not isinstance(cases.get("baseRecord"), dict) \
+                or any(not isinstance(c, dict) or "caseId" not in c or not (c.get("expect") == "accept" or isinstance(c.get("expect"), list))
+                       for c in cases["cases"]):
+            raise InputError("invalid_structure:cases")
+        case_ids = [c["caseId"] for c in cases["cases"]]
+        duplicates = sorted({str(i) for i in case_ids if case_ids.count(i) > 1})
+        if duplicates:
+            # A copied fixture that kept its id would silently run twice and change the fixture count.
+            raise InputError("invalid_structure:cases:duplicate_caseid:" + duplicates[0])
+        join = join_report(boundary["sources"], policy)
+        fixtures = run_fixtures(cases, policy)
+        boundary_bytes, cases_bytes = args.boundary.read_bytes(), args.cases.read_bytes()
     except InputError as error:
+        # Only input-shape problems are reported as cannot_start; any other exception is a checker defect and propagates.
         print(json.dumps({"state": "cannot_start", "error": str(error)}))
         return 2
-    join = join_report(boundary["sources"], policy)
-    fixtures = run_fixtures(cases, policy)
     passed = (not join["missingJudgments"] and not join["unexpectedJudgments"] and not join["duplicateJudgments"]
               and not join["recordsWithViolations"] and join["everySourceHasConditionAndLimit"] and all(r["ok"] for r in fixtures))
     report = {"schemaVersion": 1, "kind": "m0-02b-boundary-check", "state": "consistent" if passed else "inconsistent",
-              "policySha256": hashlib.sha256(POLICY.read_bytes()).hexdigest(), "boundarySha256": hashlib.sha256(BOUNDARY.read_bytes()).hexdigest(),
-              "casesSha256": hashlib.sha256(CASES.read_bytes()).hexdigest(), "join": join,
+              "policySha256": hashlib.sha256(policy_bytes).hexdigest(), "boundarySha256": hashlib.sha256(boundary_bytes).hexdigest(),
+              "casesSha256": hashlib.sha256(cases_bytes).hexdigest(), "join": join,
               "fixtures": {"total": len(fixtures), "ok": sum(r["ok"] for r in fixtures), "results": fixtures}}
     print(json.dumps(report, ensure_ascii=False, indent=2))
     return 0 if passed else 1

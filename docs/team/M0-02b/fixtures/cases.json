@@ -8,18 +8,71 @@
     "sourceId": "FIXTURE:BASE",
     "sourceType": "official",
     "rating": "P1-institutional-primary",
-    "allowedClaims": ["OC-01"],
-    "forbiddenClaims": ["OF-01", "OF-02", "OF-03", "OF-04", "GF-01", "GF-02", "GF-03", "GF-04", "GF-05", "GF-06"],
-    "uncertainty": [{"id": "OU-01", "text": "synthetic revision currency", "state": "unknown", "resolutionOwner": "M0-02b"}],
-    "license": {"spdxOrTerms": "synthetic terms: attribution, non-commercial, no derivatives", "basis": "fixture", "state": "known_conditional", "evidenceRef": "fixture"},
-    "acquisition": {"date": "2026-09-15", "sourceClass": "synthetic_fixture"},
-    "retention": {"period": "metadata_only_no_original_retained", "store": "fixture"},
-    "redistribution": {"allowed": "conditional", "conditions": "unmodified, attributed, non-commercial; the project retains no original"},
-    "personalData": {"present": false, "basis": "synthetic record carries no person"},
-    "restrictedMetadata": {"present": false, "basis": "synthetic record carries no facility-internal data"},
-    "provenance": {"origin": "synthetic publisher", "publicLocation": "https://example.invalid/fixture", "retrievedDate": "2026-09-15"},
-    "decisions": {"use": "citation_with_conditions", "transform": "rejected", "redistribute": "conditional", "privacy": "no_personal_data_recorded", "restrictedMetadata": "none_recorded"},
-    "admission": {"state": "admitted_conditional", "reason": "known conditional terms permit the metadata-only intended use"},
+    "allowedClaims": [
+      "OC-01"
+    ],
+    "forbiddenClaims": [
+      "OF-01",
+      "OF-02",
+      "OF-03",
+      "OF-04",
+      "GF-01",
+      "GF-02",
+      "GF-03",
+      "GF-04",
+      "GF-05",
+      "GF-06"
+    ],
+    "uncertainty": [
+      {
+        "id": "OU-01",
+        "text": "synthetic revision currency",
+        "state": "unknown",
+        "resolutionOwner": "M0-02b"
+      }
+    ],
+    "license": {
+      "spdxOrTerms": "synthetic terms: attribution, non-commercial, no derivatives",
+      "basis": "fixture",
+      "state": "known_conditional",
+      "evidenceRef": "fixture"
+    },
+    "acquisition": {
+      "date": "2026-09-15",
+      "sourceClass": "synthetic_fixture"
+    },
+    "retention": {
+      "period": "metadata_only_no_original_retained",
+      "store": "fixture"
+    },
+    "redistribution": {
+      "allowed": "conditional",
+      "conditions": "unmodified, attributed, non-commercial; the project retains no original"
+    },
+    "personalData": {
+      "present": false,
+      "basis": "synthetic record carries no person"
+    },
+    "restrictedMetadata": {
+      "present": false,
+      "basis": "synthetic record carries no facility-internal data"
+    },
+    "provenance": {
+      "origin": "synthetic publisher",
+      "publicLocation": "https://example.invalid/fixture",
+      "retrievedDate": "2026-09-15"
+    },
+    "decisions": {
+      "use": "citation_with_conditions",
+      "transform": "rejected",
+      "redistribute": "conditional",
+      "privacy": "no_personal_data_recorded",
+      "restrictedMetadata": "none_recorded"
+    },
+    "admission": {
+      "state": "admitted_conditional",
+      "reason": "known conditional terms permit the metadata-only intended use"
+    },
     "sanitizeState": "metadata_recorded_no_original",
     "publicationApprovalState": "not_requested",
     "reviewerState": "unreviewed",
@@ -28,27 +81,441 @@
     "conflicts": []
   },
   "cases": [
-    {"caseId": "P01", "title": "known conditional terms, metadata-only use", "patch": {}, "expect": "accept"},
-    {"caseId": "P02", "title": "unknown license kept metadata-only", "patch": {"set": {"license.state": "unknown", "license.spdxOrTerms": "unknown: no instrument recorded", "admission.state": "metadata_only", "redistribution.allowed": "not_permitted_by_default", "decisions.redistribute": "blocked", "decisions.transform": "blocked", "decisions.use": "metadata_citation_only"}}, "expect": "accept"},
-    {"caseId": "N01", "title": "license state missing", "patch": {"delete": ["license.state"]}, "expect": ["missing_field:license.state"]},
-    {"caseId": "N02", "title": "unknown license admitted with conditional redistribution", "patch": {"set": {"license.state": "unknown"}}, "expect": ["license_unknown_but_admitted", "license_unknown_redistribution", "admitted_without_known_permitting_license"]},
-    {"caseId": "N02b", "title": "unknown license allowed to be transformed", "patch": {"set": {"license.state": "unknown", "admission.state": "metadata_only", "redistribution.allowed": "not_permitted_by_default", "decisions.redistribute": "blocked", "decisions.transform": "facts_only_synthetic_derivation"}}, "expect": ["license_unknown_transform"]},
-    {"caseId": "N03", "title": "privacy field missing", "patch": {"delete": ["personalData.present"]}, "expect": ["missing_field:personalData.present"]},
-    {"caseId": "N04", "title": "photo with unknown personal data kept redistributable", "patch": {"set": {"sourceType": "video-photo", "rating": "P3-observational-media", "allowedClaims": ["VC-01"], "forbiddenClaims": ["VF-01", "VF-02", "VF-03", "VF-04", "GF-01", "GF-02", "GF-03", "GF-04", "GF-05", "GF-06"], "uncertainty": [{"id": "VU-02", "state": "unknown", "resolutionOwner": "M0-02b"}], "personalData.present": "unknown", "personalData.basis": "not inspected"}}, "expect": ["personal_data_unknown_redistribution"]},
-    {"caseId": "N05", "title": "personal data present but redistribution not rejected", "patch": {"set": {"personalData.present": true}}, "expect": ["personal_data_redistribution"]},
-    {"caseId": "N06", "title": "raw original copied into the repository", "patch": {"set": {"rawCopyInRepository": true}}, "expect": ["raw_copy_in_repository"]},
-    {"caseId": "N07", "title": "allowed claim from another source type", "patch": {"set": {"allowedClaims": ["OC-01", "PC-01"]}}, "expect": ["claim_outside_type"]},
-    {"caseId": "N08", "title": "globally forbidden claim marked allowed", "patch": {"set": {"allowedClaims": ["OC-01", "GF-01"]}}, "expect": ["forbidden_claim_allowed"]},
-    {"caseId": "N09", "title": "global forbidden claim omitted", "patch": {"set": {"forbiddenClaims": ["OF-01", "OF-02", "OF-03", "OF-04", "GF-01", "GF-02", "GF-03", "GF-05", "GF-06"]}}, "expect": ["forbidden_claims_incomplete"]},
-    {"caseId": "N10", "title": "all-rights-reserved source allowed to be transformed", "patch": {"set": {"license.state": "known_restrictive", "decisions.transform": "facts_only_synthetic_derivation", "decisions.redistribute": "blocked", "admission.state": "metadata_only"}}, "expect": ["restrictive_license_not_rejected"]},
-    {"caseId": "N11", "title": "KORAIL reply treated as a prerequisite", "patch": {"set": {"korailReplyRequired": true}}, "expect": ["korail_reply_as_prerequisite"]},
-    {"caseId": "N12", "title": "sanitization treated as publication approval", "patch": {"set": {"sanitizeState": "sanitized", "publicationApprovalState": "approved"}}, "expect": ["publication_approved_without_approver", "sanitize_conflated_with_publication"]},
-    {"caseId": "N13", "title": "restricted spatial metadata kept with its location", "patch": {"set": {"restrictedMetadata.present": true, "decisions.restrictedMetadata": "public_location_recorded"}}, "expect": ["restricted_metadata_not_withheld"]},
-    {"caseId": "N14", "title": "rating does not match source type", "patch": {"set": {"rating": "P2-verified-secondary"}}, "expect": ["rating_mismatch"]},
-    {"caseId": "N15", "title": "policy conflict recorded but source still admitted", "patch": {"set": {"conflicts": ["C-01"]}}, "expect": ["conflict_not_blocked"]},
-    {"caseId": "N16", "title": "no uncertainty entry", "patch": {"set": {"uncertainty": []}}, "expect": ["uncertainty_incomplete"]},
-    {"caseId": "N17", "title": "redistribution conditions missing", "patch": {"delete": ["redistribution.conditions"]}, "expect": ["missing_field:redistribution.conditions"]},
-    {"caseId": "N18", "title": "unknown personal data without a reason", "patch": {"set": {"personalData.present": "unknown"}, "delete": ["personalData.basis"]}, "expect": ["missing_field:personalData.basis", "unknown_without_reason:personalData"]},
-    {"caseId": "N19", "title": "unknown source type", "patch": {"set": {"sourceType": "leaked-internal"}}, "expect": ["unknown_source_type"]}
+    {
+      "caseId": "P01",
+      "title": "known conditional terms, metadata-only use",
+      "patch": {},
+      "expect": "accept"
+    },
+    {
+      "caseId": "P02",
+      "title": "unknown license kept metadata-only",
+      "patch": {
+        "set": {
+          "license.state": "unknown",
+          "license.spdxOrTerms": "unknown: no instrument recorded",
+          "admission.state": "metadata_only",
+          "redistribution.allowed": "not_permitted_by_default",
+          "decisions.redistribute": "blocked",
+          "decisions.transform": "blocked",
+          "decisions.use": "metadata_citation_only"
+        }
+      },
+      "expect": "accept"
+    },
+    {
+      "caseId": "N01",
+      "title": "license state missing",
+      "patch": {
+        "delete": [
+          "license.state"
+        ]
+      },
+      "expect": [
+        "admitted_without_known_permitting_license",
+        "missing_field:license.state"
+      ]
+    },
+    {
+      "caseId": "N02",
+      "title": "unknown license admitted with conditional redistribution",
+      "patch": {
+        "set": {
+          "license.state": "unknown"
+        }
+      },
+      "expect": [
+        "license_unknown_but_admitted",
+        "license_unknown_redistribution",
+        "admitted_without_known_permitting_license"
+      ]
+    },
+    {
+      "caseId": "N02b",
+      "title": "unknown license allowed to be transformed",
+      "patch": {
+        "set": {
+          "license.state": "unknown",
+          "admission.state": "metadata_only",
+          "redistribution.allowed": "not_permitted_by_default",
+          "decisions.redistribute": "blocked",
+          "decisions.transform": "facts_only_synthetic_derivation"
+        }
+      },
+      "expect": [
+        "license_unknown_transform"
+      ]
+    },
+    {
+      "caseId": "N03",
+      "title": "privacy field missing",
+      "patch": {
+        "delete": [
+          "personalData.present"
+        ]
+      },
+      "expect": [
+        "missing_field:personalData.present"
+      ]
+    },
+    {
+      "caseId": "N04",
+      "title": "photo with unknown personal data kept redistributable",
+      "patch": {
+        "set": {
+          "sourceType": "video-photo",
+          "rating": "P3-observational-media",
+          "allowedClaims": [
+            "VC-01"
+          ],
+          "forbiddenClaims": [
+            "VF-01",
+            "VF-02",
+            "VF-03",
+            "VF-04",
+            "GF-01",
+            "GF-02",
+            "GF-03",
+            "GF-04",
+            "GF-05",
+            "GF-06"
+          ],
+          "uncertainty": [
+            {
+              "id": "VU-02",
+              "state": "unknown",
+              "resolutionOwner": "M0-02b"
+            }
+          ],
+          "personalData.present": "unknown",
+          "personalData.basis": "not inspected"
+        }
+      },
+      "expect": [
+        "personal_data_unknown_redistribution"
+      ]
+    },
+    {
+      "caseId": "N05",
+      "title": "personal data present but redistribution not rejected",
+      "patch": {
+        "set": {
+          "personalData.present": true
+        }
+      },
+      "expect": [
+        "personal_data_redistribution"
+      ]
+    },
+    {
+      "caseId": "N06",
+      "title": "raw original copied into the repository",
+      "patch": {
+        "set": {
+          "rawCopyInRepository": true
+        }
+      },
+      "expect": [
+        "raw_copy_in_repository"
+      ]
+    },
+    {
+      "caseId": "N07",
+      "title": "allowed claim from another source type",
+      "patch": {
+        "set": {
+          "allowedClaims": [
+            "OC-01",
+            "PC-01"
+          ]
+        }
+      },
+      "expect": [
+        "claim_outside_type"
+      ]
+    },
+    {
+      "caseId": "N08",
+      "title": "globally forbidden claim marked allowed",
+      "patch": {
+        "set": {
+          "allowedClaims": [
+            "OC-01",
+            "GF-01"
+          ]
+        }
+      },
+      "expect": [
+        "claim_outside_type",
+        "forbidden_claim_allowed"
+      ]
+    },
+    {
+      "caseId": "N09",
+      "title": "global forbidden claim omitted",
+      "patch": {
+        "set": {
+          "forbiddenClaims": [
+            "OF-01",
+            "OF-02",
+            "OF-03",
+            "OF-04",
+            "GF-01",
+            "GF-02",
+            "GF-03",
+            "GF-05",
+            "GF-06"
+          ]
+        }
+      },
+      "expect": [
+        "forbidden_claims_incomplete"
+      ]
+    },
+    {
+      "caseId": "N10",
+      "title": "all-rights-reserved source allowed to be transformed",
+      "patch": {
+        "set": {
+          "license.state": "known_restrictive",
+          "decisions.transform": "facts_only_synthetic_derivation",
+          "decisions.redistribute": "blocked",
+          "admission.state": "metadata_only"
+        }
+      },
+      "expect": [
+        "redistribution_decision_contradicts_allowed",
+        "restrictive_license_not_rejected"
+      ]
+    },
+    {
+      "caseId": "N11",
+      "title": "KORAIL reply treated as a prerequisite",
+      "patch": {
+        "set": {
+          "korailReplyRequired": true
+        }
+      },
+      "expect": [
+        "korail_reply_as_prerequisite"
+      ]
+    },
+    {
+      "caseId": "N12",
+      "title": "sanitization treated as publication approval",
+      "patch": {
+        "set": {
+          "sanitizeState": "sanitized",
+          "publicationApprovalState": "approved"
+        }
+      },
+      "expect": [
+        "publication_approved_without_approver",
+        "sanitize_conflated_with_publication"
+      ]
+    },
+    {
+      "caseId": "N13",
+      "title": "restricted spatial metadata kept with its location",
+      "patch": {
+        "set": {
+          "restrictedMetadata.present": true,
+          "decisions.restrictedMetadata": "public_location_recorded"
+        }
+      },
+      "expect": [
+        "restricted_metadata_not_withheld"
+      ]
+    },
+    {
+      "caseId": "N14",
+      "title": "rating does not match source type",
+      "patch": {
+        "set": {
+          "rating": "P2-verified-secondary"
+        }
+      },
+      "expect": [
+        "rating_mismatch"
+      ]
+    },
+    {
+      "caseId": "N15",
+      "title": "policy conflict recorded but source still admitted",
+      "patch": {
+        "set": {
+          "conflicts": [
+            "C-01"
+          ]
+        }
+      },
+      "expect": [
+        "conflict_not_blocked"
+      ]
+    },
+    {
+      "caseId": "N16",
+      "title": "no uncertainty entry",
+      "patch": {
+        "set": {
+          "uncertainty": []
+        }
+      },
+      "expect": [
+        "uncertainty_incomplete"
+      ]
+    },
+    {
+      "caseId": "N17",
+      "title": "redistribution conditions missing",
+      "patch": {
+        "delete": [
+          "redistribution.conditions"
+        ]
+      },
+      "expect": [
+        "missing_field:redistribution.conditions"
+      ]
+    },
+    {
+      "caseId": "N18",
+      "title": "unknown personal data without a reason",
+      "patch": {
+        "set": {
+          "personalData.present": "unknown"
+        },
+        "delete": [
+          "personalData.basis"
+        ]
+      },
+      "expect": [
+        "missing_field:personalData.basis",
+        "personal_data_unknown_redistribution",
+        "unknown_without_reason:personalData"
+      ]
+    },
+    {
+      "caseId": "N19",
+      "title": "unknown source type",
+      "patch": {
+        "set": {
+          "sourceType": "leaked-internal"
+        }
+      },
+      "expect": [
+        "unknown_source_type"
+      ]
+    },
+    {
+      "caseId": "P03",
+      "title": "non-photo source with people unverified, conditional use, no personal data copied",
+      "patch": {
+        "set": {
+          "personalData.present": "unknown",
+          "personalData.basis": "not re-inspected",
+          "decisions.privacy": "no_personal_data_copied"
+        }
+      },
+      "expect": "accept"
+    },
+    {
+      "caseId": "N04b",
+      "title": "non-photo source with people unverified kept conditionally redistributable without a no-copy privacy decision",
+      "patch": {
+        "set": {
+          "personalData.present": "unknown",
+          "personalData.basis": "not re-inspected",
+          "decisions.privacy": "not_assessed"
+        }
+      },
+      "expect": [
+        "personal_data_unknown_redistribution"
+      ]
+    },
+    {
+      "caseId": "N10b",
+      "title": "restrictive terms rejected in decisions but still marked conditionally redistributable",
+      "patch": {
+        "set": {
+          "license.state": "known_restrictive",
+          "decisions.transform": "rejected",
+          "decisions.redistribute": "rejected",
+          "admission.state": "metadata_only"
+        }
+      },
+      "expect": [
+        "redistribution_decision_contradicts_allowed",
+        "restrictive_license_not_rejected"
+      ]
+    },
+    {
+      "caseId": "N13b",
+      "title": "uninspected restricted metadata recorded with its location",
+      "patch": {
+        "set": {
+          "restrictedMetadata.present": "unknown",
+          "restrictedMetadata.basis": "not inspected",
+          "decisions.restrictedMetadata": "public_location_recorded"
+        }
+      },
+      "expect": [
+        "restricted_metadata_unknown_not_withheld"
+      ]
+    },
+    {
+      "caseId": "N20",
+      "title": "redistribution flag permits what the decision blocks (known conditional licence)",
+      "patch": {
+        "set": {
+          "redistribution.allowed": "permitted",
+          "decisions.redistribute": "blocked"
+        }
+      },
+      "expect": [
+        "redistribution_decision_contradicts_allowed"
+      ]
+    },
+    {
+      "caseId": "N20b",
+      "title": "decision keeps conditional redistribution although the flag says not permitted",
+      "patch": {
+        "set": {
+          "redistribution.allowed": "not_permitted_by_default",
+          "decisions.redistribute": "conditional"
+        }
+      },
+      "expect": [
+        "redistribution_decision_contradicts_allowed"
+      ]
+    },
+    {
+      "caseId": "N21",
+      "title": "personal data present: decision rejects redistribution but the flag still permits it",
+      "patch": {
+        "set": {
+          "personalData.present": true,
+          "decisions.redistribute": "rejected",
+          "redistribution.allowed": "permitted"
+        }
+      },
+      "expect": [
+        "redistribution_decision_contradicts_allowed"
+      ]
+    },
+    {
+      "caseId": "N22",
+      "title": "uninspected restricted metadata marked not copied while a sibling field records its location",
+      "patch": {
+        "set": {
+          "restrictedMetadata.present": "unknown",
+          "restrictedMetadata.basis": "not inspected",
+          "restrictedMetadata.knownPublicLocation": "synthetic-location-field",
+          "decisions.restrictedMetadata": "coords_not_copied"
+        }
+      },
+      "expect": [
+        "unexpected_field:restrictedMetadata.knownPublicLocation"
+      ]
+    }
   ]
 }

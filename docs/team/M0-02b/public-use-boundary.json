@@ -100,6 +100,26 @@
     {
       "id": "R-08",
       "rule": "Sanitization (sanitizeState) and external publication approval (publicationApprovalState) are separate fields; no publication is requested or approved here."
+    },
+    {
+      "id": "R-09",
+      "rule": "Any non-photographic source whose people were not verified (personalData.present=unknown) may stay conditionally redistributable only with decisions.privacy=no_personal_data_copied; otherwise redistribution is a violation (added after independent review, 2026-09-15)."
+    },
+    {
+      "id": "R-10",
+      "rule": "Uninspected restricted metadata (restrictedMetadata.present=unknown) must be recorded as not copied (*_not_copied) or withheld with hash and reason only (added after independent review)."
+    },
+    {
+      "id": "R-11",
+      "rule": "A known restrictive license keeps redistribution.allowed=not_permitted_by_default in addition to rejected transform and redistribute decisions, so the two fields cannot contradict (added after independent review)."
+    },
+    {
+      "id": "R-12",
+      "rule": "redistribution.allowed and decisions.redistribute must agree for every source: a blocked or rejected decision keeps the flag at not_permitted_by_default, and a conditional decision cannot sit under a not_permitted_by_default flag (added after the second independent review)."
+    },
+    {
+      "id": "R-13",
+      "rule": "personalData, restrictedMetadata and decisions hold judgments only and accept no fields beyond their listed keys, so withheld content cannot be parked in a sibling field (added after the second independent review)."
     }
   ],
   "checklist": [
@@ -7039,9 +7059,9 @@
   "negativeFixtures": {
     "artifact": "artifact:15:M0-02b-negative-fixtures:candidate",
     "path": "docs/team/M0-02b/fixtures/cases.json",
-    "sha256": "c77c3e0c467cd549723356e848e498c89fed81a6fa76ecae6efcb1cd70d10c10",
+    "sha256": "023d71d1095ea702efa2efbbd1dff68981e2420b4ca852ae6be8922a97ed8a43",
     "checker": "docs/team/M0-02b/fixtures/check_boundary.py",
-    "checkerSha256": "ddd68bc52501b8e880787fed76815369474e07e763ecc248c2ff26f414b8dabd",
+    "checkerSha256": "3d69438d15b3174d96092c992ab22761c5a25dacf3d3cca917c0bfdd8f7e2d49",
     "results": [
       {
         "caseId": "P01",
@@ -7130,8 +7150,41 @@
       {
         "caseId": "N19",
         "ok": true
+      },
+      {
+        "caseId": "P03",
+        "ok": true
+      },
+      {
+        "caseId": "N04b",
+        "ok": true
+      },
+      {
+        "caseId": "N10b",
+        "ok": true
+      },
+      {
+        "caseId": "N13b",
+        "ok": true
+      },
+      {
+        "caseId": "N20",
+        "ok": true
+      },
+      {
+        "caseId": "N20b",
+        "ok": true
+      },
+      {
+        "caseId": "N21",
+        "ok": true
+      },
+      {
+        "caseId": "N22",
+        "ok": true
       }
-    ]
+    ],
+    "expectationRule": "a negative fixture must list exactly the violation codes it produces; accept fixtures must produce none"
   },
   "acceptanceMapping": [
     {
@@ -7140,7 +7193,7 @@
     },
     {
       "criterion": "acceptance[1]: sources without permitting conditions remain rejected or blocked",
-      "evidence": "R-01, R-02, R-06; /summary/byAdmission; fixtures N02, N10, N15"
+      "evidence": "R-01, R-02, R-06, R-11, R-12; /summary/byAdmission; fixtures N02, N10, N10b, N15, N20, N20b, N21"
     },
     {
       "criterion": "acceptance[2]: operator correspondence, image-capture permission and site access are not required inputs",
@@ -7166,7 +7219,8 @@
     "personalData and restrictedMetadata are 'unknown' wherever the original was not re-inspected; this candidate opened no original.",
     "PLAN sources carry no retrieval date in FND-05, so acquisition and retrieved dates are unknown with reason.",
     "The #14 source-policy is a candidate; the accept-phase boundary must be re-judged against the accepted source-policy.",
-    "No independent reviewer has checked these judgments (reviewerState=unreviewed)."
+    "An automated independent review checked the checker logic; the per-source judgments themselves are still unreviewed by a person (reviewerState=unreviewed).",
+    "Closed key sets cover the judgment groups only; free-text fields such as title, conditions or reasons are not inspected for copied restricted content."
   ],
   "checksRun": [
     {
@@ -7178,8 +7232,8 @@
         "expectedSources": 69,
         "recordsWithViolations": 0,
         "everySourceHasConditionAndLimit": true,
-        "fixturesOk": 22,
-        "fixtures": 22
+        "fixturesOk": 30,
+        "fixtures": 30
       },
       "mutationControls": [
         {
@@ -7195,9 +7249,97 @@
           "failedFixtures": [
             "N06"
           ]
+        },
+        {
+          "removedRule": "non-photo unknown personal data rule (R-09)",
+          "exitCode": 1,
+          "failedFixtures": [
+            "N18",
+            "N04b"
+          ]
+        },
+        {
+          "removedRule": "unknown restricted metadata rule (R-10)",
+          "exitCode": 1,
+          "failedFixtures": [
+            "N13b"
+          ]
+        },
+        {
+          "removedRule": "restrictive licence redistribution flag (R-11)",
+          "exitCode": 1,
+          "failedFixtures": [
+            "N10b"
+          ]
+        },
+        {
+          "removedRule": "redistribution flag vs decision consistency (R-12)",
+          "exitCode": 1,
+          "failedFixtures": [
+            "N10",
+            "N10b",
+            "N20",
+            "N20b",
+            "N21"
+          ]
+        },
+        {
+          "removedRule": "closed judgment groups (R-13)",
+          "exitCode": 1,
+          "failedFixtures": [
+            "N22"
+          ]
+        },
+        {
+          "removedRule": "exact negative expectation",
+          "exitCode": 0,
+          "failedFixtures": []
         }
       ],
-      "scope": "record consistency against written rules; not a rights determination"
+      "scope": "record consistency against written rules; not a rights determination",
+      "mutationNote": "restoring subset matching for negative expectations is not observable with the current fixtures because every expectation equals its produced codes; it is kept as a checker rule, not as a detected mutation",
+      "malformedInput": {
+        "command": "python docs/team/M0-02b/fixtures/check_boundary.py --cases <file> | --boundary <file> (synthetic malformed copies outside the repository)",
+        "probes": [
+          {
+            "input": "duplicate caseId",
+            "exitCode": 2,
+            "state": "cannot_start",
+            "error": "invalid_structure:cases:duplicate_caseid:P01"
+          },
+          {
+            "input": "non-string delete entries",
+            "exitCode": 2,
+            "state": "cannot_start",
+            "error": "invalid_structure:cases:patch"
+          },
+          {
+            "input": "case entry without expect",
+            "exitCode": 2,
+            "state": "cannot_start",
+            "error": "invalid_structure:cases"
+          },
+          {
+            "input": "patch path crossing a string value",
+            "exitCode": 2,
+            "state": "cannot_start",
+            "error": "invalid_structure:cases:patch:decisions.privacy.sub"
+          },
+          {
+            "input": "boundary source that is not an object",
+            "exitCode": 2,
+            "state": "cannot_start",
+            "error": "invalid_structure:<boundary file name>"
+          },
+          {
+            "input": "licence state given as an object",
+            "exitCode": 1,
+            "state": "inconsistent",
+            "recordsWithViolations": 1
+          }
+        ],
+        "note": "only input-shape problems report cannot_start with exit 2; a wrongly typed value inside a source is judged as invalid_value (exit 1); any other exception is treated as a checker defect and is not caught"
+      }
     },
     {
       "check": "python3 -m unittest discover -s scripts/art -p 'test_*.py'",
@@ -7207,5 +7349,74 @@
       "logSha256": "d6f6b0a2d5a85e990a92012d13b181d928e244b5c55b8aa722e17ac699e7164b",
       "scope": "existing art tests only; recorded as observed and not promoted to a pass of this boundary contract"
     }
-  ]
+  ],
+  "reviewFixes": {
+    "reviewDate": "2026-09-15",
+    "reviewer": "ECC python-reviewer (automated, read-only)",
+    "findings": [
+      {
+        "severity": "HIGH",
+        "finding": "unknown personal data rule applied to photographic media only; a non-photo source could stay conditionally redistributable without any privacy decision",
+        "resolution": "R-09 and fixtures P03 (accept) and N04b (reject)"
+      },
+      {
+        "severity": "MEDIUM",
+        "finding": "restrictedMetadata.present=unknown had no withholding requirement",
+        "resolution": "R-10 and fixture N13b"
+      },
+      {
+        "severity": "MEDIUM",
+        "finding": "known_restrictive licence did not check redistribution.allowed against the rejected decisions",
+        "resolution": "R-11 and fixture N10b"
+      },
+      {
+        "severity": "MEDIUM",
+        "finding": "valid JSON with a missing key raised a traceback instead of exit 2",
+        "resolution": "structure errors now report cannot_start with exit 2 (malformedInput check)"
+      },
+      {
+        "severity": "LOW",
+        "finding": "negative fixtures matched by subset, hiding unexpected extra codes",
+        "resolution": "exact matching; N01, N08 and N18 expectations now list every produced code"
+      }
+    ],
+    "effectOnRecords": "re-judged all 69 source records under R-09..R-11: no record changed state and no violation was found (PLAN:P02 already carries decisions.privacy=no_personal_data_copied; every uninspected restricted record is *_not_copied)",
+    "secondReview": {
+      "reviewer": "ECC python-reviewer (automated, read-only), second round on the first fix",
+      "findings": [
+        {
+          "severity": "HIGH",
+          "finding": "redistribution.allowed was compared with decisions.redistribute only for unknown or restrictive licences and unknown personal data; permitted-with-blocked, permitted-with-rejected and conditional-under-not-permitted passed",
+          "resolution": "R-12 and fixtures N20, N20b and N21; N10 and N10b expectations now also list the contradiction they contain"
+        },
+        {
+          "severity": "HIGH",
+          "finding": "R-10 matched only the decision string, so a sibling field under restrictedMetadata could still record the withheld location",
+          "resolution": "R-13 closed key sets for personalData, restrictedMetadata and decisions, fixture N22"
+        },
+        {
+          "severity": "MEDIUM",
+          "finding": "a broad exception handler turned checker defects (for example a fixture patch crossing a string value) into cannot_start exit 2",
+          "resolution": "structure checks raise InputError explicitly for policy, registries, boundary, cases and patches; wrongly typed values are judged; the broad handler was removed"
+        }
+      ],
+      "effectOnRecords": "re-judged all 69 source records under R-12 and R-13: no record changed state and no violation was found (every blocked or rejected decision already carries not_permitted_by_default, both conditional decisions carry a conditional flag, and no judgment group has extra keys)"
+    },
+    "thirdReview": {
+      "reviewer": "ECC python-reviewer (automated, read-only), round on the R-12/R-13 revision",
+      "result": "the three earlier findings were confirmed closed, no crash was found across about twenty malformed inputs, the 69 source records stay consistent and the recorded mutation controls match the code",
+      "findings": [
+        {
+          "severity": "MEDIUM",
+          "finding": "a duplicated caseId in cases.json ran twice without error and changed the fixture count",
+          "resolution": "duplicate caseId is refused as invalid_structure:cases:duplicate_caseid:<id> (exit 2, probe recorded)"
+        },
+        {
+          "severity": "LOW",
+          "finding": "non-string delete entries in a fixture patch were silently ignored",
+          "resolution": "delete entries must be non-empty strings, otherwise invalid_structure:cases:patch (exit 2, probe recorded)"
+        }
+      ]
+    }
+  }
 }
