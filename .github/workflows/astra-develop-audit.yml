@@ -54,7 +54,7 @@ jobs:
         shell: bash
         run: |
           python3 - <<'PY'
-          import hashlib,json,os,pathlib,subprocess
+          import hashlib,json,os,pathlib,re,subprocess
           root=pathlib.Path(os.environ['RUNNER_TEMP'])
           private=root/'astra-auth-private'; public=root/'astra-auth-public'
           env=dict(os.environ,HOME=str(private),COPILOT_HOME=str(private/'copilot'),XDG_CONFIG_HOME=str(private/'xdg'))
@@ -64,7 +64,13 @@ jobs:
               ok=p.returncode==0 and p.stdout.strip()=='AS_AUDIT_READY'
               lower=(p.stdout+'\n'+p.stderr).lower()
               reason='ready' if ok else ('organization_policy_or_entitlement' if any(x in lower for x in ('not enabled','not allowed','policy','copilot license','subscription')) else 'authentication_or_cli_failure')
-              data={'state':'AUTHENTICATED' if ok else 'BLOCKED','reason':reason,'exitCode':p.returncode,'requestedModel':'gpt-5.4-mini','modelIdentityAttested':False,'requestsAttempted':1,'codeSent':False,'toolsAllowed':False,'stdoutSha256':hashlib.sha256(p.stdout.encode()).hexdigest(),'stderrSha256':hashlib.sha256(p.stderr.encode()).hexdigest()}
+              diagnostic=p.stderr
+              token=os.environ.get('GITHUB_TOKEN')
+              if token: diagnostic=diagnostic.replace(token,'<credential>')
+              diagnostic=re.sub(r'\x1b\[[0-9;]*[a-zA-Z]','',diagnostic)
+              diagnostic=re.sub(r'(?i)(?:gh[pousr]_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+|bearer\s+\S+)','<credential>',diagnostic)
+              diagnostic=re.sub(r'/(?:home|tmp|mnt|root)/[^\s]+','<path>',diagnostic)
+              data={'state':'AUTHENTICATED' if ok else 'BLOCKED','reason':reason,'exitCode':p.returncode,'requestedModel':'gpt-5.4-mini','modelIdentityAttested':False,'requestsAttempted':1,'codeSent':False,'toolsAllowed':False,'diagnostic':diagnostic[:1500],'stdoutSha256':hashlib.sha256(p.stdout.encode()).hexdigest(),'stderrSha256':hashlib.sha256(p.stderr.encode()).hexdigest()}
           except subprocess.TimeoutExpired:
               data={'state':'BLOCKED','reason':'timeout','requestsAttempted':1,'codeSent':False}
           (public/'probe.json').write_text(json.dumps(data,indent=2)+'\n')
