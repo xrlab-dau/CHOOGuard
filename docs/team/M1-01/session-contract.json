@@ -522,11 +522,11 @@
     "Unity project and editor overlap is modelled by resource keys only; no running Editor was inspected.",
     "No independent review has been performed."
   ],
-  "baseRef": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+  "baseRef": "e8cb58414d92a3049e38a847bd67b6d506c31b4d",
   "outputs": {
     "artifact:17:M1-01-negative-fixtures:candidate": {
-      "scripts/team/M1-01/writer_lease.py": "8d37a6ef2436f10b953dc8c1a7ab9d51d6f68285ba4f610713913b5b498feb2f",
-      "scripts/team/M1-01/test_writer_lease.py": "aec895e3a903b2bbd19c13ed4c936ea51416a3ba04eff6b5db3d68ae01739a5f"
+      "scripts/team/M1-01/writer_lease.py": "89b05046339f768e8031aa6013922a6989166fec5b5b367c859dca14b63b00d3",
+      "scripts/team/M1-01/test_writer_lease.py": "2e9a007754b8bd6bcf24ef6818d0d63cc6b45846c1fdf2fef32a35606aeb6737"
     }
   },
   "checksRun": [
@@ -543,9 +543,9 @@
       "check": "proposed test: scripts/team/M1-01/test_writer_lease.py",
       "command": "python -m unittest discover -s scripts/team/M1-01 -p 'test_*.py' -v",
       "exitCode": 0,
-      "ran": 17,
+      "ran": 21,
       "result": "OK",
-      "stderrSha256": "28a71d534ef907df0f01c8a00eea34b44cfd1775ad979fccd00d7ec31d0951a1"
+      "stderrSha256": "185220ac270dbb4e5f1282d44b4085cfe7775700ca13aa325589ec84e5299f7d"
     },
     {
       "check": "scripted scenarios with retained refused attempts",
@@ -561,7 +561,7 @@
         "entries": 50,
         "rejectedEntriesRetained": 27,
         "sequencesContiguous": true,
-        "sha256": "cfa1516c4798d75c0acbe342d4af8aa67a935bb806daf4f4ffadae24d02e4d96"
+        "sha256": "caee47b062af68ea92f20a074792ee0d4a6c6cdcc5946bf22dccdefcea98344a"
       }
     },
     {
@@ -569,9 +569,9 @@
       "mutations": [
         {
           "mutation": "path overlap reduced to exact equality",
-          "testsRun": 17,
+          "testsRun": 21,
           "failures": 3,
-          "errors": 0,
+          "errors": 1,
           "scenarioState": "mismatch",
           "mismatchedSteps": [
             "S1 same path / B parent directory refused",
@@ -581,8 +581,8 @@
         },
         {
           "mutation": "fence comparison on renew/write/release/handoff",
-          "testsRun": 17,
-          "failures": 3,
+          "testsRun": 21,
+          "failures": 4,
           "errors": 0,
           "scenarioState": "mismatch",
           "mismatchedSteps": [
@@ -591,7 +591,7 @@
         },
         {
           "mutation": "content digest comparison on PM recovery",
-          "testsRun": 17,
+          "testsRun": 21,
           "failures": 2,
           "errors": 0,
           "scenarioState": "mismatch",
@@ -602,8 +602,32 @@
           ]
         },
         {
+          "mutation": "case-insensitive path comparison (review fix)",
+          "testsRun": 21,
+          "failures": 1,
+          "errors": 3,
+          "scenarioState": "passed",
+          "mismatchedSteps": []
+        },
+        {
+          "mutation": "parent-segment collapse in path comparison (review fix)",
+          "testsRun": 21,
+          "failures": 2,
+          "errors": 1,
+          "scenarioState": "passed",
+          "mismatchedSteps": []
+        },
+        {
+          "mutation": "path in every write refusal journal entry (review fix)",
+          "testsRun": 21,
+          "failures": 3,
+          "errors": 0,
+          "scenarioState": "passed",
+          "mismatchedSteps": []
+        },
+        {
           "mutation": "expired, crash-suspected and failed leases blocking reacquire",
-          "testsRun": 17,
+          "testsRun": 21,
           "failures": 2,
           "errors": 1,
           "scenarioState": "mismatch",
@@ -1053,7 +1077,53 @@
       "passed": true
     }
   ],
+  "reviewFixes": {
+    "reviewDate": "2026-09-15",
+    "findingsBeforeFix": [
+      {
+        "severity": "HIGH",
+        "input": "Assets/Scenes/Main.unity held; assets/scenes/main.unity requested",
+        "observedBefore": "both leases active",
+        "now": "overlap_with_active"
+      },
+      {
+        "severity": "HIGH (found reviewing the first fix)",
+        "input": "Assets/Scenes/Foo/../Main.unity, Assets//Scenes//Main.unity, Assets/./Scenes/Main.unity",
+        "observedBefore": "both leases active",
+        "now": "overlap_with_active; root-escaping or absolute resource paths are not issued"
+      },
+      {
+        "severity": "MEDIUM",
+        "input": "write refused for stale fence, wrong caller or closed lease",
+        "observedBefore": "journal details had no path",
+        "now": "caller, presentedFence and path recorded for every write refusal"
+      },
+      {
+        "severity": "MEDIUM (found reviewing the first fix)",
+        "input": "unity-project workspaceId ws-1 vs WS-1",
+        "observedBefore": "both leases active",
+        "now": "overlap_with_active"
+      },
+      {
+        "severity": "LOW",
+        "input": "contract without enumerated phase/orchestrator values",
+        "observedBefore": "StopIteration",
+        "now": "contract_missing_values:<field> reported"
+      }
+    ],
+    "independentReview": "ECC python-reviewer, read-only; second round on the fix found dot-segment and workspace-id case gaps, both fixed and tested"
+  },
   "failedAttempts": [
+    {
+      "attempt": "previous record of this artifact (17 tests, 43 scenario steps)",
+      "observed": "the independent review showed case-variant and dot-segment paths could hold overlapping leases; the passing record did not cover those spellings",
+      "handling": "normalisation fixed, tests added; the earlier record is superseded by this revision and kept in git history"
+    },
+    {
+      "attempt": "first fix",
+      "observed": "case folding and trailing dot stripping alone still admitted ../, // and ./ spellings and case-variant workspace ids",
+      "handling": "segment collapse, unsafe resource path refusal and workspace id folding added before this record"
+    },
     {
       "attempt": "first unittest discovery ran while the test file write was still held by the local pre-write gate",
       "observed": "Ran 0 tests, exit 0",

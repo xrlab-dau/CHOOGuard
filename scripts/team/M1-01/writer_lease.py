@@ -121,9 +121,27 @@ def lexical_repo_path(text) -> bool:
 
 
 def norm(path: str) -> str:
+    """Comparison form: forward slashes, no trailing slash or /**, case-folded, and each segment without the trailing dots
+    or spaces a Windows filesystem ignores, so two spellings of one on-disk file compare equal."""
     value = str(path).replace("\\", "/")
     value = value[:-3] if value.endswith("/**") else value
-    return value.rstrip("/")
+    parts = []
+    for segment in value.split("/"):
+        if segment == "..":
+            if parts and parts[-1] != "..":
+                parts.pop()
+            else:
+                parts.append("..")  # escapes the root; kept so it never equals an in-root path and acquire refuses it
+            continue
+        segment = segment.rstrip(" .")  # also turns "", "." and all-dot segments into the empty current-directory form
+        if segment:
+            parts.append(segment)
+    return "/".join(parts).casefold()
+
+
+def unsafe_resource_path(path: str) -> bool:
+    raw = str(path).replace("\\", "/")
+    return not raw.strip() or raw.startswith("/") or bool(re.match(r"^[a-zA-Z]:", raw)) or norm(raw).split("/", 1)[0] in ("", "..")
 
 
 def within(path: str, base: str) -> bool:
@@ -140,9 +158,16 @@ def scope_covers(scope: list, path: str) -> bool:
         if entry.endswith("/") or entry.endswith("/**"):
             if within(path, entry):
                 return True
-        elif path == entry or fnmatch.fnmatchcase(path, entry):
+        elif norm(path) == norm(entry) or fnmatch.fnmatchcase(norm(path), norm(entry)):
             return True
     return False
+
+
+def field_values(fields: list, name: str):
+    """The contract's enumerated values for a session field, or None when the contract does not provide them."""
+    entry = next((f for f in fields if f.get("field") == name), None)
+    values = entry.get("values") if entry else None
+    return values if isinstance(values, list) and values else None
 
 
 def validate_session(contract: dict, profile: dict, allowlist: dict, session: dict) -> list:
@@ -153,7 +178,10 @@ def validate_session(contract: dict, profile: dict, allowlist: dict, session: di
         return sorted(problems + ["missing:" + name for name in missing])
     if not isinstance(session["issueNumber"], int) or isinstance(session["issueNumber"], bool) or session["issueNumber"] <= 0:
         problems.append("invalid:issueNumber")
-    if session["phase"] not in next(f["values"] for f in spec["required"] if f["field"] == "phase"):
+    phases = field_values(spec["required"], "phase")
+    if phases is None:
+        problems.append("contract_missing_values:phase")
+    elif session["phase"] not in phases:
         problems.append("invalid:phase")
     if not SHA40.match(str(session["baseRef"])):
         problems.append("invalid:baseRef")
@@ -175,7 +203,10 @@ def validate_session(contract: dict, profile: dict, allowlist: dict, session: di
         elif allowed and (not any(fnmatch.fnmatchcase(model["modelId"], p) for p in allowed) or any(fnmatch.fnmatchcase(model["modelId"], p) for p in denied)):
             problems.append("model_outside_role_scope")
     problems += [f"evidence_outside_write_scope:{p}" for p in session["evidencePaths"] if not scope_covers(session["writeScope"], p)]
-    if session.get("orchestrator", "none") not in next(f["values"] for f in spec["optional"] if f["field"] == "orchestrator"):
+    orchestrators = field_values(spec.get("optional", []), "orchestrator")
+    if orchestrators is None:
+        problems.append("contract_missing_values:orchestrator")
+    elif session.get("orchestrator", "none") not in orchestrators:
         problems.append("unknown_orchestrator")
     return sorted(set(problems))
 
@@ -185,11 +216,11 @@ def validate_session(contract: dict, profile: dict, allowlist: dict, session: di
 def resource_key(resource: dict) -> str:
     kind = resource.get("kind")
     if kind == "workspace-file":
-        return f"workspace-file:{resource['workspaceId']}:{norm(resource['path'])}"
+        return f"workspace-file:{str(resource['workspaceId']).casefold()}:{norm(resource['path'])}"
     if kind == "generated-output":
-        return f"generated-output:{resource['workspaceId']}:{norm(resource['root'])}"
+        return f"generated-output:{str(resource['workspaceId']).casefold()}:{norm(resource['root'])}"
     if kind in ("project-settings", "unity-project"):
-        return f"{kind}:{resource['workspaceId']}"
+        return f"{kind}:{str(resource['workspaceId']).casefold()}"
     if kind == "unity-editor":
         return f"unity-editor:{resource['editorInstanceId']}"
     raise InputError("unknown_resource_kind")
@@ -199,7 +230,7 @@ def overlaps(a: dict, b: dict) -> bool:
     kinds = {a["kind"], b["kind"]}
     if kinds == {"unity-editor"}:
         return a["editorInstanceId"] == b["editorInstanceId"]
-    if "unity-editor" in kinds or a.get("workspaceId") != b.get("workspaceId"):
+    if "unity-editor" in kinds or str(a.get("workspaceId")).casefold() != str(b.get("workspaceId")).casefold():
         return False
     pick = lambda kind, field: a[field] if a["kind"] == kind else b[field]  # noqa: E731
     if kinds == {"workspace-file"}:
@@ -210,6 +241,7 @@ def overlaps(a: dict, b: dict) -> bool:
         return within(pick("workspace-file", "path"), pick("generated-output", "root")) or within(pick("generated-output", "root"), pick("workspace-file", "path"))
     if kinds == {"project-settings", "workspace-file"}:
         return paths_overlap("ProjectSettings", pick("workspace-file", "path"))
+    # Unity project/editor overlap is by workspace or instance identity; workspace ids and editor ids compare exactly.
     return kinds in ({"project-settings"}, {"unity-project"}, {"unity-project", "generated-output"}, {"unity-project", "project-settings"})
 
 
@@ -264,6 +296,10 @@ class LeaseRegistry:
         request = {"requester": holder, "requestedResource": resource}
         if not holder or not SHA40.match(str(base_ref or "")) or expires_at is None or not SHA256.match(str(base_content_sha256 or "")):
             return self._reject("acquire", now, "lease_fields_unrecordable", details=request, holder=holder, base_ref=base_ref)
+        scoped = resource.get("path") if resource.get("kind") == "workspace-file" else resource.get("root") if resource.get("kind") == "generated-output" else None
+        if scoped is not None and unsafe_resource_path(scoped):
+            # An absolute or root-escaping resource path cannot be recorded as a workspace scope; no lease is issued.
+            return self._reject("acquire", now, "lease_fields_unrecordable", details={**request, "unsafePath": True}, holder=holder, base_ref=base_ref)
         if not self._ttl_ok(now, expires_at):
             return self._reject("acquire", now, "expiry_out_of_bounds", details=request, holder=holder, base_ref=base_ref)
         key = resource_key(resource)
@@ -280,13 +316,14 @@ class LeaseRegistry:
         self.leases[lease["leaseId"]] = lease
         return self._accept("acquire", now, lease)
 
-    def _guard_holder(self, event, lease, caller, fence, now):
+    def _guard_holder(self, event, lease, caller, fence, now, extra=None):
+        extra = extra or {}
         if (lease["state"], event) not in self.table:
-            return self._reject(event, now, "transition_not_in_contract", lease, {"caller": caller, "state": lease["state"]})
+            return self._reject(event, now, "transition_not_in_contract", lease, {"caller": caller, "state": lease["state"], **extra})
         if caller != lease["holder"]:
-            return self._reject(event, now, "caller_not_holder", lease, {"caller": caller})
+            return self._reject(event, now, "caller_not_holder", lease, {"caller": caller, **extra})
         if fence != lease["fence"] or self.fences[lease["resourceKey"]] != fence:
-            return self._reject(event, now, "stale_fence", lease, {"caller": caller, "presentedFence": fence})
+            return self._reject(event, now, "stale_fence", lease, {"caller": caller, "presentedFence": fence, **extra})
         return None
 
     def renew(self, lease_id, caller, fence, now, new_expires_at):
@@ -303,13 +340,14 @@ class LeaseRegistry:
 
     def write(self, lease_id, caller, fence, path, now, content_sha256_after):
         lease = self.leases[lease_id]
-        refused = self._guard_holder("write", lease, caller, fence, now)
+        # The contract's T-write onReject record names caller, presentedFence, path and reason for every refusal.
+        refused = self._guard_holder("write", lease, caller, fence, now, {"path": path, "presentedFence": fence})
         if refused:
             return refused
         if now >= parse(lease["expiresAt"]):
-            return self._reject("write", now, "lease_expired", lease, {"caller": caller, "path": path})
+            return self._reject("write", now, "lease_expired", lease, {"caller": caller, "presentedFence": fence, "path": path})
         if not path_inside_resource(lease["resource"], path):
-            return self._reject("write", now, "path_outside_lease", lease, {"caller": caller, "path": path})
+            return self._reject("write", now, "path_outside_lease", lease, {"caller": caller, "presentedFence": fence, "path": path})
         lease["lastWriteSha256"] = content_sha256_after
         return self._accept("write", now, lease, {"path": path})
 

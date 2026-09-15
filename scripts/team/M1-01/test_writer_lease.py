@@ -96,8 +96,37 @@ class SessionInput(unittest.TestCase):
                 self.assertIn(problem, self.validate(value))
         self.assertEqual(self.validate(session(role="role:pm", model={"provider": "none", "modelId": "none"})), [])
 
+    def test_contract_without_enumerated_values_reports_a_problem_instead_of_raising(self):
+        broken = copy.deepcopy(CONTRACT)
+        for field in broken["sessionInput"]["required"] + broken["sessionInput"]["optional"]:
+            field.pop("values", None)
+        problems = wl.validate_session(broken, PROFILE, ALLOWLIST, session())
+        self.assertIn("contract_missing_values:phase", problems)
+        self.assertIn("contract_missing_values:orchestrator", problems)
+
 
 class Overlap(RegistryCase):
+    def test_spellings_of_one_file_on_a_case_insensitive_filesystem_overlap(self):
+        held = wl.wf("Assets/Scenes/Main.unity")
+        self.assertTrue(self.acquire("session-a", held)["ok"])
+        for other in ("assets/scenes/main.unity", "ASSETS\\Scenes\\Main.unity", "Assets/Scenes/Main.unity.", "Assets/Scenes /Main.unity", "assets/SCENES/",
+                      "Assets/Scenes/Foo/../Main.unity", "Assets//Scenes//Main.unity", "Assets/./Scenes/Main.unity", "Assets/.../Scenes/Main.unity"):
+            with self.subTest(path=other):
+                result = self.acquire("session-b", wl.wf(other), base=wl.BASE_B)
+                self.assertEqual((result["ok"], result["reason"], result["details"]["conflictingHolder"]), (False, "overlap_with_active", "session-a"))
+        self.assertEqual(wl.resource_key(wl.wf("assets/scenes/main.unity")), wl.resource_key(held))
+        self.assertTrue(self.acquire("session-b", wl.wf("Assets/Scenes/Main.unity.meta"))["ok"])
+
+    def test_workspace_id_case_and_root_escaping_paths(self):
+        self.assertTrue(self.acquire("session-a", {"kind": "unity-project", "workspaceId": "ws-1"})["ok"])
+        refused = self.acquire("session-b", {"kind": "unity-project", "workspaceId": "WS-1"}, base=wl.BASE_B)
+        self.assertEqual(refused["reason"], "overlap_with_active")
+        for path in ("../outside.txt", "Assets/../../outside.txt", "/etc/passwd", "C:/escape.txt", "", "./"):
+            with self.subTest(path=path):
+                result = self.acquire("session-c", wl.wf(path, "ws-9"))
+                self.assertEqual((result["ok"], result["reason"]), (False, "lease_fields_unrecordable"))
+        self.assertEqual(len(self.registry.leases), 1)
+
     def assert_refused_with_holder(self, result, holder, base, scope):
         self.assertFalse(result["ok"])
         self.assertEqual(result["reason"], "overlap_with_active")
@@ -143,6 +172,20 @@ class Overlap(RegistryCase):
 
 
 class RenewWriteExpiry(RegistryCase):
+    def test_every_write_refusal_records_caller_fence_and_path(self):
+        lid = self.acquire("session-a", wl.wf("docs/team/M1-01/"), ttl=20)["lease"]["leaseId"]
+        attempts = [("session-b", 1, "docs/team/M1-01/a.json", 5), ("session-a", 7, "docs/team/M1-01/b.json", 5),
+                    ("session-a", 1, "docs/team/M1-02/c.json", 5), ("session-a", 1, "docs/team/M1-01/d.json", 25)]
+        for caller, fence, path, minute in attempts:
+            self.registry.write(lid, caller, fence, path, wl.at(minute), wl.SHA_Y)
+        self.registry.expire_due(wl.at(30))
+        self.registry.write(lid, "session-a", 1, "docs/team/M1-01/e.json", wl.at(31), wl.SHA_Y)
+        refusals = [e for e in self.registry.journal() if e["event"] == "write" and e["result"] == "rejected"]
+        self.assertEqual([e["reason"] for e in refusals], ["caller_not_holder", "stale_fence", "path_outside_lease", "lease_expired", "transition_not_in_contract"])
+        for entry in refusals:
+            with self.subTest(reason=entry["reason"]):
+                self.assertTrue({"caller", "presentedFence", "path"} <= set(entry["details"]), entry["details"])
+
     def test_renew_and_write_guards(self):
         lid = self.acquire("session-a", wl.wf("docs/team/M1-01/"), ttl=20)["lease"]["leaseId"]
         self.assertEqual(self.registry.renew(lid, "session-b", 1, wl.at(5), wl.at(25))["reason"], "caller_not_holder")
