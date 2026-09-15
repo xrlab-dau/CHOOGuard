@@ -1,0 +1,111 @@
+name: Official Unity CLI Bootstrap
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, synchronize, reopened]
+    paths:
+      - '.github/workflows/unity-cli-bootstrap.yml'
+      - 'scripts/ci/unity_cli_probe.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: unity-cli-bootstrap-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  install-and-launch:
+    name: Install official CLI and pinned Editor, then attempt real tests
+    if: >-
+      github.repository == 'xrlab-dau/CHOOGuard' &&
+      ((github.event_name == 'pull_request' &&
+      github.head_ref == 'feature/astra-foundation-integration-20260915' &&
+      github.event.pull_request.head.repo.full_name == github.repository) ||
+      (github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/feature/astra-foundation-integration-20260915'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      UNITY_NO_UPDATE_CHECK: '1'
+    steps:
+      - name: Check out exact approved work branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          persist-credentials: false
+          lfs: true
+      - name: Prepare evidence and OS dependencies
+        run: |
+          mkdir -p "$RUNNER_TEMP/unity-cli-evidence"
+          git rev-parse HEAD > "$RUNNER_TEMP/unity-cli-evidence/source-sha.txt"
+          cp ProjectSettings/ProjectVersion.txt "$RUNNER_TEMP/unity-cli-evidence/project-version.txt"
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends libgtk-3-0t64 libnss3 libasound2t64 libsecret-1-0 libgbm1 libglu1-mesa xvfb
+      - name: Install official Unity CLI from Unity HTTPS distribution
+        id: cli
+        run: |
+          curl --fail --show-error --silent --location --proto '=https' --tlsv1.2 \
+            https://public-cdn.cloud.unity3d.com/hub/prod/cli/install.sh \
+            -o "$RUNNER_TEMP/unity-install.sh"
+          sha256sum "$RUNNER_TEMP/unity-install.sh" > "$RUNNER_TEMP/unity-cli-evidence/installer-sha256.txt"
+          UNITY_CLI_CHANNEL=beta bash "$RUNNER_TEMP/unity-install.sh" </dev/null
+          export PATH="$HOME/.local/bin:$HOME/.unity/bin:$HOME/.unity:$PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.unity/bin" >> "$GITHUB_PATH"
+          unity --version | tee "$RUNNER_TEMP/unity-cli-evidence/cli-version.txt"
+          sha256sum "$(command -v unity)" > "$RUNNER_TEMP/unity-cli-evidence/cli-sha256.txt"
+          unity analytics opt-out
+          cp "$RUNNER_TEMP/unity-install.sh" "$RUNNER_TEMP/unity-cli-evidence/official-installer.sh"
+          for cmd in 'install' 'editors install-path' 'mcp' 'test' 'license activate' 'auth login'; do
+            unity $cmd --help >> "$RUNNER_TEMP/unity-cli-evidence/cli-help.txt"
+          done
+      - name: Install exact project Editor through official CLI
+        id: editor
+        run: |
+          unity --non-interactive editors install-path "$RUNNER_TEMP/UnityEditors"
+          status=0
+          timeout 1200 unity --non-interactive --format json install 6000.3.23f1 --changeset 09d2ecc7fb28 --yes \
+            > "$RUNNER_TEMP/unity-cli-evidence/editor-install.json" \
+            2> "$RUNNER_TEMP/unity-cli-evidence/editor-install.stderr" || status=$?
+          printf '%s\n' "$status" > "$RUNNER_TEMP/unity-cli-evidence/editor-install-exit.txt"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editor-install.json"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editor-install.stderr"
+          exit "$status"
+      - name: Record installed Editor and unauthenticated licensing state
+        if: ${{ !cancelled() && steps.cli.outcome == 'success' }}
+        run: |
+          capture() {
+            name="$1"; shift
+            status=0
+            timeout 45 "$@" > "$RUNNER_TEMP/unity-cli-evidence/$name.txt" 2>&1 || status=$?
+            printf '%s\n' "$status" > "$RUNNER_TEMP/unity-cli-evidence/$name-exit.txt"
+          }
+          capture editor-info unity --format json editors info 6000.3.23f1
+          capture auth-status unity --non-interactive --format json auth status
+          capture license-status unity --non-interactive --format json license status
+          capture mcp-config-dry-run unity mcp configure codex --project-path "$PWD" --dry-run
+          # No account login, eligibility assertion, secret read, or license purchase.
+      - name: Attempt actual EditMode execution with installed Editor
+        if: ${{ !cancelled() && steps.editor.outcome == 'success' }}
+        run: |
+          status=0
+          timeout 420 xvfb-run -a unity --non-interactive --format json test "$PWD" \
+            --editor-version 6000.3.23f1 --mode EditMode \
+            --output "$RUNNER_TEMP/unity-cli-evidence/editmode-results.xml" --timeout 360 \
+            > "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.json" \
+            2> "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.stderr" || status=$?
+          printf '%s\n' "$status" > "$RUNNER_TEMP/unity-cli-evidence/editmode-exit.txt"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.json"
+          cat "$RUNNER_TEMP/unity-cli-evidence/editmode-launch.stderr"
+          exit "$status"
+      - name: Upload installation and execution evidence, never credentials or binaries
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: official-unity-cli-${{ github.run_id }}
+          path: ${{ runner.temp }}/unity-cli-evidence/
+          if-no-files-found: error
+          retention-days: 7
