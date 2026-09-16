@@ -6,7 +6,7 @@ from functools import wraps
 import hashlib
 import importlib.util
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import shutil
 
@@ -56,6 +56,32 @@ def local(path):
     return path.resolve()
 
 
+def verified(root, record):
+    try:
+        return native.verify(root, record)
+    except (OSError, ValueError):
+        raise Refused('cannot_proceed: target_bytes_changed') from None
+
+
+def canonical(name):
+    """The one accepted spelling of a portable relative fixture path.
+
+    Native manifest keys are the caller's literal strings, while the copied files on
+    disk carry the normalized relative name. Any spelling whose normalization differs
+    from the text itself (a leading './', a '.' segment, a doubled slash) would freeze
+    a manifest key that no longer matches the materialized file, so it is refused here
+    instead of producing a run that can never be inspected or finalized.
+    """
+    if not isinstance(name, str) or not name or '\\' in name or ':' in name:
+        raise Refused('cannot_proceed: invalid_relative_name')
+    relative = PurePosixPath(name)
+    if relative.is_absolute() or not relative.parts or '..' in relative.parts or relative.parts[0] == '.git':
+        raise Refused('cannot_proceed: invalid_relative_name')
+    if relative.as_posix() != name:
+        raise Refused('cannot_proceed: non_canonical_relative_name')
+    return name
+
+
 def policy():
     model = boundary.load_model()
     record = json.loads((REPO / 'docs/team/M1-02/permission-boundary.json').read_bytes())
@@ -97,13 +123,12 @@ def begin(source, output, names, base, head, author, reviewer, round_number=1):
     if (type(round_number) is not int or not 1 <= round_number <= 3
             or not all(isinstance(ref, str) and re.fullmatch('[a-f0-9]{40}', ref) for ref in (base, head))):
         raise Refused('cannot_proceed: invalid_round_or_revision')
-    names = list(names)
+    names = [canonical(name) for name in names]
     if not names or len(set(names)) != len(names):
         raise Refused('cannot_proceed: empty_or_duplicate_target')
     for name in names:
-        path = native.contained_file(source, name)
-        local(path)
-        if name.split('/')[0] in RESERVED:
+        local(native.contained_file(source, name))
+        if PurePosixPath(name).parts[0] in RESERVED:
             raise Refused('cannot_proceed: protocol_output_is_not_target_input')
     model = policy()
     identity(model, author, reviewer)
@@ -120,8 +145,8 @@ def begin(source, output, names, base, head, author, reviewer, round_number=1):
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(native.contained_file(source, name), destination)
     for area in ('input', 'execution'):
-        native.verify(output / area, target)
-    native.verify(source, target)
+        verified(output / area, target)
+    verified(source, target)
     data = encoded(request)
     with (output / 'request.json').open('xb') as stream:
         stream.write(data)
@@ -147,20 +172,24 @@ def inspect(run):
                 name = entry.relative_to(root).as_posix()
                 if name not in request['target']['files'] and not (area == 'execution' and name.startswith('generated/')):
                     raise Refused('cannot_proceed: undeclared_target_file')
-        native.verify(root, request['target'])
+        verified(root, request['target'])
     return request
 
 
 @guarded
 def write_generated(run, name, data):
     inspect(run)
-    path = native.contained_file(run.root / 'execution', name)
-    local(path)
+    name = canonical(name)
     if not name.startswith('generated/'):
         raise Refused('cannot_proceed: write_outside_generated_scope')
+    path = native.contained_file(run.root / 'execution', name)
+    local(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open('xb') as stream:
-        stream.write(data)
+    try:
+        with path.open('xb') as stream:
+            stream.write(data)
+    except FileExistsError:
+        raise Refused('cannot_proceed: generated_output_exists') from None
 
 
 def validate_result(result):
@@ -188,8 +217,12 @@ def finalize(run, actor, result):
     receipt = {'schemaVersion': 1, 'scope': 'synthetic_integrity_fixture', 'requestSha256': run.request_hash,
                'targetFilesDigest': request['target']['filesDigest'], 'reviewer': request['reviewer'], 'result': result}
     data = encoded(receipt)
-    with path.open('xb') as stream:
-        stream.write(data)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open('xb') as stream:
+            stream.write(data)
+    except FileExistsError:
+        raise Refused('cannot_proceed: receipt_already_exists') from None
     return digest(data)
 
 

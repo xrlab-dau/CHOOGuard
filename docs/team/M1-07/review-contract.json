@@ -80,12 +80,14 @@
       "allowed reviewer model"
     ],
     "targetFields": [
-      "relative paths",
+      "canonical relative paths",
       "file SHA-256 and byte lengths",
       "filesDigest",
       "baseRef",
       "headRef"
     ],
+    "canonicalTargetNames": "A target name must be a portable relative path whose normalized form is the text itself: no '.' segment, no leading './', no doubled separator, no '..', no backslash, drive letter or absolute path. The literal text is the manifest key and the materialized relative name, so a differently normalized spelling can never freeze a manifest the run cannot satisfy.",
+    "reservedTargetNames": "A name whose first segment is input, execution or evidence, or whose whole name is request.json, is refused in every spelling because that path is a protocol output of the run, not target input.",
     "uncommittedFiles": "All selected synthetic fixture files with their exact hashes; no Git worktree discovery claim.",
     "round": {
       "min": 1,
@@ -131,7 +133,35 @@
   "failure": {
     "exception": "Refused",
     "outcome": "cannot_proceed",
-    "existingEvidence": "Never rewritten or removed by API; partial new runs retained on I/O failure."
+    "existingEvidence": "Never rewritten or removed by API; partial new runs retained on I/O failure.",
+    "reasonCodes": {
+      "cannot_proceed: invalid_relative_name": "A target or generated name is empty, absolute, or contains '..', a backslash or a drive letter.",
+      "cannot_proceed: non_canonical_relative_name": "The name is not its own normalized form, so it would freeze a manifest key that differs from the materialized file.",
+      "cannot_proceed: protocol_output_is_not_target_input": "The name addresses the run's own input/execution/evidence/request.json protocol namespace.",
+      "cannot_proceed: output_exists_or_overlaps_target": "The run directory exists or the run and source roots overlap.",
+      "cannot_proceed: empty_or_duplicate_target": "No target file, or the same canonical target name twice.",
+      "cannot_proceed: invalid_round_or_revision": "Round is not an integer in 1..3, or base/head is not a 40-character lowercase revision.",
+      "cannot_proceed: identity_missing_or_invalid": "An actor identity is not exactly sessionId/provider/model with non-empty string values.",
+      "cannot_proceed: reviewer_not_independent": "Reviewer and author share a session or a provider.",
+      "cannot_proceed: model_outside_scope": "The policy denies the reviewer's provider/model for the independent-reviewer role.",
+      "cannot_proceed: supplier_policy_drift": "The published M0-03/M1-02 profile, allowlist or receipt no longer recomputes.",
+      "cannot_proceed: linked_or_network_path": "A source, run or copied path is reached through a link; callers must pass a real root.",
+      "cannot_proceed: target_bytes_changed": "A materialized or current writer target file no longer matches the frozen manifest.",
+      "cannot_proceed: undeclared_target_file": "A file under input/ or execution/ is not in the frozen target manifest.",
+      "cannot_proceed: request_digest_changed": "The trusted request digest no longer matches request.json.",
+      "cannot_proceed: policy_or_scope_changed": "The request scope or policy hash no longer matches the live policy.",
+      "cannot_proceed: current_writer_target_changed": "The current writer source or refs no longer reproduce the reviewed target.",
+      "cannot_proceed: receipt_digest_changed": "The trusted receipt digest no longer matches evidence/receipt.json.",
+      "cannot_proceed: receipt_binding_changed": "The receipt no longer binds the request digest, target digest, reviewer or scope.",
+      "cannot_proceed: receipt_already_exists": "A receipt already exists; results are append-only and never overwritten.",
+      "cannot_proceed: writer_cannot_finalize": "Only the independent-reviewer role may write the result.",
+      "cannot_proceed: generated_output_exists": "A generated execution file already exists and is never overwritten.",
+      "cannot_proceed: write_outside_generated_scope": "Execution writes are limited to new files under execution/generated/.",
+      "cannot_proceed: result_schema_mismatch": "The reviewer result has no exact outcome/actionable/notes shape or a known outcome.",
+      "cannot_proceed: finding_schema_mismatch": "An actionable finding is missing a required non-empty field or locations.",
+      "cannot_proceed: findings_cannot_be_approved": "An approved outcome carried actionable findings.",
+      "cannot_proceed: invalid_or_inaccessible_fixture": "Catch-all for an unreadable or non-materialized fixture input."
+    }
   },
   "supplierCapabilities": {
     "osFamily": "Darwin",
@@ -147,6 +177,7 @@
     "OS sandbox/ACL and direct writer filesystem denial are not implemented or validated.",
     "Trusted external digest custody and exclusively owned local parents are required; no hostile race protection.",
     "Actual independent review, three-perspective aggregation, retry/fallback enforcement and acceptance are not performed.",
-    "Synthetic success is not source qualification, product approval or operational permission."
+    "Synthetic success is not source qualification, product approval or operational permission.",
+    "The M1-02 link guard refuses any root reached through a link, so callers must pass a real path; a host temporary directory reached through a system alias must be resolved before it is handed to this API."
   ]
 }
