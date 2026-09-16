@@ -325,15 +325,17 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             // The authored table carries yaw 0 and 180 only, and sin(0) = sin(180) = 0, so every frame above
             // pins the cosine term of the rotation while leaving the sine term algebraically inert. A quarter
             // turn is the one rotation where the sine term alone carries the horizontal offsets, so that frame
-            // is built here rather than read from the table: at yaw 90 the local +Z offset must land on world
-            // -X and the local +X offset on world -Z. Dropping the sine term would move them to world +X and
-            // world -Z, and flipping its sign to world +X and world +Z, so either defect falsifies both
-            // assertions and the round trip below along with them.
+            // is built here rather than read from the table. At yaw 90 the rotation sends the local +Z axis
+            // along world +X and the local +X axis along world -Z, so a NEGATIVE local Z offset reaches world
+            // -X: local.Z below is -3.75 for exactly that reason, and reading the sign off the axis direction
+            // instead of off the offset would invert it. Dropping the sine term sends both offsets to the
+            // origin's own X and Z, and flipping its sign sends the local +X offset to world +Z instead, so
+            // either defect falsifies both assertions and the round trip below along with them.
             var quarterTurn = new SpatialFrame { FrameId = "probe-quarter", Origin = new Point3(2, 0, -1), YawDegrees = 90 };
             var quarterLocal = new Point3(1.25f, .5f, -3.75f);
             var quarterWorld = quarterTurn.ToWorld(quarterLocal);
             Assert.That(quarterWorld.X, Is.EqualTo(quarterTurn.Origin.X - 3.75f).Within(1e-4),
-                "at yaw 90 the local +Z offset lands on world -X, which only the sine term can carry there");
+                "at yaw 90 the local -Z offset lands on world -X, which only the sine term can carry there");
             Assert.That(quarterWorld.Z, Is.EqualTo(quarterTurn.Origin.Z - 1.25f).Within(1e-4),
                 "at yaw 90 the local +X offset lands on world -Z; a sign-flipped sine term would land it on world +Z");
             Assert.That(quarterTurn.ToLocal(quarterWorld).DistanceSquared(quarterLocal), Is.LessThan(1e-6),
@@ -562,6 +564,8 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(blockedGuidance.UnavailableReason, Is.Not.Empty,
                 "an unavailable guidance projection must state why, or the leak assertion below passes on an empty reason");
             Assert.That(blockedGuidance.UnavailableReason, Does.Not.Contain(unobservedIncidentId));
+            Assert.That(blockedGuidance.UnavailableReason, Does.Not.Contain(discoveredIncidentId),
+                "the guidance reason on the blocked branch must not carry an incident id either, discovered or not");
 
             // Surface 2 negative: observation authority is region-scoped, not merely distance-scoped.
             // An incident the actor has in ObservedIds, standing at the actor's own position, is still
