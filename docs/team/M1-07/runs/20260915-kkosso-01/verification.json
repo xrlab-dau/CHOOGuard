@@ -1,0 +1,107 @@
+{
+  "approval": "pending",
+  "cases": [
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_distinct_target_execution_and_evidence_preserve_hash_chain"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_execution_source_edit_and_extra_target_file_are_refused"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_existing_run_is_never_reused"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_invalid_round_and_result_schema_are_refused"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_missing_same_provider_same_session_and_unlisted_model_refused"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_new_writer_revision_cannot_reuse_old_target_receipt"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_only_generated_output_can_be_written_through_execution_api"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_original_source_is_copied_without_shared_writes"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_output_overlap_self_reference_and_escaping_names_refused"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_request_and_receipt_tampering_fail_trusted_digest_check"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_target_change_invalidates_receipt_and_preserves_old_result"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_writer_cannot_create_or_overwrite_final_result_through_api"
+    }
+  ],
+  "limitations": [
+    "Trusted fixture role/provider/ref inputs are not authenticated identities.",
+    "OS sandbox/ACL and direct writer filesystem denial are not implemented or validated.",
+    "Trusted external digest custody and exclusively owned local parents are required; no hostile race protection.",
+    "Actual independent review, three-perspective aggregation, retry/fallback enforcement and acceptance are not performed.",
+    "Synthetic success is not source qualification, product approval or operational permission.",
+    "Existing CI gates do not discover the new test directory; these 12 tests ran locally."
+  ],
+  "osIsolationTested": false,
+  "otherChecks": {
+    "publicPremiseTests": 67,
+    "workGraphStructure": "valid"
+  },
+  "phase": "candidate",
+  "recordedAt": "2026-09-15T06:19:33.696578+00:00",
+  "runtimeIndependentReviewPerformed": false,
+  "sample": {
+    "files": {
+      "sample-receipt.json": {
+        "bytes": 471,
+        "sha256": "4f9152775ad1fc5132ff18874c4bf2936aa60cfc343514041db16bb72297b91c"
+      },
+      "sample-request.json": {
+        "bytes": 1002,
+        "sha256": "bf8ebe025bcf955db91909ce6d5c567069711f07a845d7e81fedf7202ba5383c"
+      },
+      "sample-target.txt": {
+        "bytes": 17,
+        "sha256": "b2c70bba7bf0ef43959341e03b923efd23fed1a0b3ed1895736736d88a5b39b0"
+      }
+    },
+    "receiptSha256": "4f9152775ad1fc5132ff18874c4bf2936aa60cfc343514041db16bb72297b91c",
+    "requestSha256": "bf8ebe025bcf955db91909ce6d5c567069711f07a845d7e81fedf7202ba5383c"
+  },
+  "schemaVersion": 1,
+  "scope": "synthetic_integrity_fixture",
+  "sourceRevision": "f7aef6cc73796eeb3cecfa1961c8635e097d7aa7",
+  "sourceSha256": {
+    ".pi/settings.json": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b",
+    "docs/adr/0003-independent-review-and-adversarial-graph.md": "97fcf9bb588161e43c306d6cc916d75704c1047951365823bfe6112005c05600",
+    "docs/choo-guard-execution-backlog-v1.md": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0",
+    "docs/team/M0-03/allowlist.json": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a",
+    "docs/team/M0-03/execution-profile.json": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+    "docs/team/M1-02/permission-boundary.json": "5e051ccd19eb6a7b160cf358757665c0ba52c28e9f6c471f50bd793d5e10bf34",
+    "docs/team/M1-07/review-contract.json": "1c92553ceb0a1eb1464f02db35059309f021945bcfcde9e41a25e857f55ade56",
+    "scripts/bootstrap/verify_toolchain.py": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+    "scripts/dev/native_manifest.py": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83",
+    "scripts/team/M1-02/permission_boundary.py": "6cb3b6e6cafde5af357b6e14be59e7015b0c60e81476e661236a4fc793c62a1c",
+    "scripts/team/M1-07/README.md": "8ab6077445bd079e0e26a91113aecf30ad942b2421b6ad62ac2954cc642cb4b1",
+    "scripts/team/M1-07/review_integrity.py": "abec6a1bd066aa031651dd638553018ba9a7b916b3cefbc06b4025c83a23f631",
+    "scripts/team/M1-07/test_review_integrity.py": "f948270fc85f1202623c6be61b3bc46dd56775e9a8f1f027d18981d953060143"
+  },
+  "state": "passed",
+  "testsRun": 12
+}
