@@ -84,7 +84,7 @@
           { "lines": "990-1074", "sha256": "56ed63554303aa12" },
           { "lines": "1079-1114", "sha256": "249d35e3b0b6268c" }
         ],
-        "fullDigests": "see runRecord.executedRun.artefacts for the per-block sha256 recorded by the run itself"
+        "fullDigests": "see runRecord.executedRun.extractionManifest for the per-block sha256 recorded by the run itself"
       },
       "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs": {
         "readOnly": true,
@@ -102,7 +102,7 @@
       "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs": {
         "readOnly": true
       },
-      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldDefinition.cs": {
+      "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/ConnectedWorldDefinition.cs": {
         "readOnly": true
       }
     },
@@ -150,7 +150,7 @@
           "name": "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario",
           "sourceLine": 470,
           "result": "Passed",
-          "surfaceScope": "Negative Suppression: Undiscovered incident absent from ObservedState.Entities -> absent from route/guidance ProcedureHint, RecommendedAction and UnavailableReason on both the available and the blocked branch -> foreign-region discovered incident still not observed -> Report rejected (NotObserved) -> Operate of a non-Equipment target rejected (UnknownTarget, target-kind check, NOT an observation gate)"
+          "surfaceScope": "Negative Suppression: Undiscovered incident absent from ObservedState.Entities -> absent from route.ProcedureHint, guidance.ProcedureHint and guidance.RecommendedAction on the available branch, and from route.UnavailableReason on the blocked branch -> foreign-region discovered incident still not observed -> Report rejected (NotObserved) -> Operate of a non-Equipment target rejected (UnknownTarget, target-kind check, NOT an observation gate)"
         },
         {
           "name": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
@@ -296,7 +296,7 @@
       "criterionChangeNote": "The criterion previously read 'absent from UI/view/route'. The UI term was removed because no UI render surface is EXERCISED by this unit: the test file constructs no MonoBehaviour and the harness never enters OnGUI. That is a coverage gap, not a demonstration that no UI surface exists - NetworkFieldRuntime.cs:1116 declares one, and it renders the very strings this criterion is about. The UI branch of the upstream criterion therefore remains untested here, and it is declared as untested rather than dropped on the false premise that no such surface exists.",
       "criterionSourceNote": "The upstream criterion text in work-graph.json items[number=139].acceptance[1] still reads 'absent from UI/view/route'. That file is not this unit's to edit, so the narrowing is recorded here as a declared divergence, not applied upstream.",
       "evidenceLimit": "The Operate assertion in this test rejects a non-Equipment target via the target-KIND check (CommandCode.UnknownTarget); it is NOT an ObservedIds gate. The route/guidance hints are region-level strings, so the leak assertions bound the contract rather than prove a sanitizer exists.",
-      "supportingScenario": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled (line 623) constructs the observation-vs-authority mismatch explicitly and shows the route follows the observed portal set."
+      "supportingScenario": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled (line 627) constructs the observation-vs-authority mismatch explicitly and shows the route follows the observed portal set."
     },
     {
       "id": "acceptance_3_stale_frame_or_report_mismatch_explicit_failure",
