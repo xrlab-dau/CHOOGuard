@@ -55,6 +55,13 @@ TESTS = os.path.join(FND, "Multiplayer", "Tests", "Editor", "FMP11cObservedRoute
 PROFILE = os.path.join(WT, "foundation", "world", "connected-world-profile.json")
 NOWARN = "0162,0219,0414,0649,1701,1702,8321,8632"
 
+# The absolute checkout root is NOT published. It embeds the operator's home directory and a
+# session scratch directory, and the repository contract forbids personal paths in published
+# evidence. A stable token still records that the run was made against a checkout root supplied
+# at run time, without naming one. This is emission-side redaction: the recorded files are
+# generated clean, not edited afterwards.
+WORKTREE_TOKEN = "<WORKTREE>"
+
 # Verbatim line ranges copied out of the two Unity-dependent projection files.
 NFR_POCO_BLOCKS = [(22, 77)]
 NFR_METHOD_BLOCKS = [(971, 971), (973, 974), (990, 1074), (1079, 1114)]
@@ -195,6 +202,43 @@ def sha256_of(path):
         return hashlib.sha256(fh.read()).hexdigest()
 
 
+def extraction_scope_note():
+    """State what the compiled production surface actually is, with numbers measured here.
+
+    A mutation harness reports 'survived' for two different situations: the test has a hole, or
+    the mutated code was never compiled. Without this note the record cannot tell a reader which
+    one applies, and the stronger reading is the wrong one to assume.
+    """
+    if not EXTRACTION_MANIFEST:
+        return "No extraction was recorded; no statement can be made about the compiled surface."
+    extracted_per_file = {}
+    total_extracted = 0
+    for entry in EXTRACTION_MANIFEST:
+        first, last = (int(x) for x in entry["lines"].split("-"))
+        count = last - first + 1
+        total_extracted += count
+        extracted_per_file[entry["file"]] = extracted_per_file.get(entry["file"], 0) + count
+    parts = []
+    total_whole = 0
+    for path, count in sorted(extracted_per_file.items()):
+        try:
+            whole = len(lines_of(os.path.join(WT, path)))
+        except OSError:
+            whole = 0
+        total_whole += whole
+        parts.append("%s %d of %d lines" % (os.path.basename(path), count, whole) if whole
+                     else "%s %d lines (whole-file count unavailable)" % (os.path.basename(path), count))
+    return (
+        "The compiled production surface is EXTRACTED LINE RANGES, not whole files. This run "
+        "compiled %d extracted lines: %s. The test file is compiled whole and unmodified. Code "
+        "outside the extracted ranges is not compiled, so a mutation landing there cannot fail "
+        "any test and reads as 'survived' for that reason alone -- not because a test has a hole. "
+        "The two readings of 'survived' are distinguishable only by crossing this note with "
+        "extractionManifest, which lists every range and its sha256."
+        % (total_extracted, "; ".join(parts))
+    )
+
+
 def main():
     global WORK
     parser = argparse.ArgumentParser()
@@ -217,7 +261,7 @@ def main():
         log_fh.write("FMP-11c (issue #139) out-of-editor harness raw output\n")
         log_fh.write("compiler: %s\n" % CSC)
         log_fh.write("runtime:  %s\n" % RT)
-        log_fh.write("worktree: %s\n" % WT)
+        log_fh.write("worktree: %s\n" % WORKTREE_TOKEN)
         log_fh.write("testfile: %s\n" % os.path.relpath(TESTS, WT))
         log_fh.write("testfile sha256: %s\n" % sha256_of(TESTS))
         log_fh.write("note: NOT the Unity test runner and NOT NUnit; console runner + local shim.\n")
@@ -236,10 +280,17 @@ def main():
                         "the editor environment, test categories, NUnit3 XML, asset import or PlayMode.",
         "testFile": os.path.relpath(TESTS, WT),
         "testFileSha256": sha256_of(TESTS),
-        "collectionRoot": WT,
+        "collectionRoot": WORKTREE_TOKEN,
+        "collectionRootNote": "The absolute checkout root is withheld: it embeds the operator's "
+                              "home directory and a session scratch directory, and published "
+                              "evidence in this repository does not carry personal paths. The "
+                              "token records that the run was made against a checkout root "
+                              "supplied at run time. See WORKTREE_TOKEN in this directory's "
+                              "out_of_editor_run.py.",
         "platform": {"sysPlatform": sys.platform, "machine": platform.machine(),
                      "dotnetRuntime": "6.0.21", "compiler": "Unity-bundled Roslyn csc.dll"},
         "extractionManifest": EXTRACTION_MANIFEST,
+        "extractionScopeNote": extraction_scope_note(),
         "results": results,
     }
     with open(os.path.join(args.out, "run-record.json"), "w", encoding="utf-8") as fh:
