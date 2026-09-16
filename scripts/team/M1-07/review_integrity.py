@@ -6,12 +6,19 @@ from functools import wraps
 import hashlib
 import importlib.util
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import re
 import shutil
+import subprocess
 
 REPO = Path(__file__).resolve().parents[3]
 RESERVED = {'input', 'execution', 'evidence', 'request.json'}
+CONTRACT = 'docs/team/M1-07/review-contract.json'
+SUPPLIERS = ('scripts/dev/native_manifest.py', 'scripts/team/M1-02/permission_boundary.py',
+             'scripts/bootstrap/verify_toolchain.py')
+native = boundary = None
+_bindings = None
+_contract_hash = None
 
 
 def module(name, relative):
@@ -21,22 +28,49 @@ def module(name, relative):
     return loaded
 
 
-native = module('m107_manifest', 'scripts/dev/native_manifest.py')
-boundary = module('m107_boundary', 'scripts/team/M1-02/permission_boundary.py')
-
-
 class Refused(ValueError):
     pass
+
+
+def load_suppliers():
+    """Trust committed bindings; check the complete Python closure before import."""
+    global native, boundary, _bindings, _contract_hash
+    if _bindings is None:
+        committed = subprocess.check_output(['git', 'show', 'HEAD:' + CONTRACT], cwd=REPO, stderr=subprocess.DEVNULL)
+        contract = json.loads(committed)
+        rows = {row['path']: row for row in contract['sources']}
+        if len(rows) != len(contract['sources']) or not set(SUPPLIERS) <= rows.keys():
+            raise Refused('cannot_proceed: supplier_binding_missing')
+        bindings = {path: rows[path] for path in SUPPLIERS}
+        for path, row in bindings.items():
+            if not re.fullmatch('[a-f0-9]{40}', row['ref']):
+                raise Refused('cannot_proceed: supplier_ref_invalid')
+            recorded = subprocess.check_output(['git', 'show', row['ref'] + ':' + path], cwd=REPO, stderr=subprocess.DEVNULL)
+            if digest(recorded) != row['sha256']:
+                raise Refused('cannot_proceed: supplier_binding_drift')
+        _bindings, _contract_hash = bindings, digest(committed.replace(b'\r\n', b'\n'))
+    if digest((REPO / CONTRACT).read_bytes().replace(b'\r\n', b'\n')) != _contract_hash:
+        raise Refused('cannot_proceed: supplier_contract_drift')
+    for path, row in _bindings.items():
+        if digest((REPO / path).read_bytes().replace(b'\r\n', b'\n')) != row['sha256']:
+            raise Refused('cannot_proceed: supplier_source_drift')
+    if native is None:
+        for path in SUPPLIERS:
+            compile((REPO / path).read_bytes(), path, 'exec')
+        loaded_native = module('m107_manifest', SUPPLIERS[0])
+        loaded_boundary = module('m107_boundary', SUPPLIERS[1])
+        native, boundary = loaded_native, loaded_boundary
 
 
 def guarded(function):
     @wraps(function)
     def call(*args, **kwargs):
         try:
+            load_suppliers()
             return function(*args, **kwargs)
         except Refused:
             raise
-        except (OSError, ValueError, KeyError, TypeError):
+        except (OSError, ValueError, KeyError, TypeError, SyntaxError, ImportError, subprocess.CalledProcessError):
             raise Refused('cannot_proceed: invalid_or_inaccessible_fixture') from None
     return call
 
@@ -47,6 +81,16 @@ def encoded(value):
 
 def digest(data):
     return hashlib.sha256(data).hexdigest()
+
+
+def target_name(name):
+    if not isinstance(name, str) or not name or name in ('.', './'):
+        raise Refused('cannot_proceed: noncanonical_target_name')
+    path = PurePosixPath(name)
+    if (path.as_posix() != name or path.is_absolute() or '..' in path.parts
+            or '\\' in name or ':' in name or path.parts[0] == '.git'):
+        raise Refused('cannot_proceed: noncanonical_target_name')
+    return name
 
 
 def local(path):
@@ -97,7 +141,7 @@ def begin(source, output, names, base, head, author, reviewer, round_number=1):
     if (type(round_number) is not int or not 1 <= round_number <= 3
             or not all(isinstance(ref, str) and re.fullmatch('[a-f0-9]{40}', ref) for ref in (base, head))):
         raise Refused('cannot_proceed: invalid_round_or_revision')
-    names = list(names)
+    names = [target_name(name) for name in names]
     if not names or len(set(names)) != len(names):
         raise Refused('cannot_proceed: empty_or_duplicate_target')
     for name in names:

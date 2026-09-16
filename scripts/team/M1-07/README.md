@@ -8,8 +8,14 @@ python scripts/team/M1-07/test_review_integrity.py
 
 `review_integrity.py` reuses the published native manifest helper and M1-02
 permission decisions. It checks the M0-03 allowlist/profile and M1-02 receipt
-bindings before use. Supplier drift stops the operation. It invokes no model,
-shell command, Unity process or review/rework loop.
+bindings before use. Standard-library preflight reads the contract from Git HEAD,
+checks its declared refs/hashes, and verifies both direct Python suppliers plus
+their transitive `verify_toolchain.py` dependency before importing any of them.
+Every public operation rechecks checkout contract/source bytes, including after
+the modules are cached. Missing/changed supplier bytes return `Refused` with
+`cannot_proceed` before run/output creation. Complete local Git history and a
+committed contract are required. Git commands only read source bindings; no model,
+Unity process or review/rework loop is invoked.
 
 `begin` receives fixture author/reviewer identities, a scoped list of synthetic
 source files, base/head refs and round 1–3. It requires different sessions and
@@ -28,6 +34,9 @@ The new run directory has four distinct areas:
 The fixture treats its selected files as uncommitted synthetic inputs and records
 their exact hashes alongside base/head. Source names cannot point to protocol
 outputs; linked/escaping paths and overlapping run/source roots are refused.
+Only canonical portable file names are accepted: aliases such as `./fixture.txt`,
+`.`/`./`, doubled separators and trailing slashes are refused before creating a
+run. The same accepted names are used for copying, manifest keys and inspection.
 Generated files are not silently added to the reviewed target manifest.
 
 `finalize` accepts only the fixture reviewer role and a valid reviewer-output

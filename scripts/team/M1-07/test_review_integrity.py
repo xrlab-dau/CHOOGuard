@@ -3,6 +3,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+import shutil
+import subprocess
+import sys
 
 from review_integrity import Refused, begin, finalize, verify_receipt, write_generated
 
@@ -131,6 +134,14 @@ class ReviewIntegrity(unittest.TestCase):
             self.begin()
         self.assertEqual((run.root / 'request.json').read_bytes(), before)
 
+    def test_noncanonical_names_are_refused_before_run_creation(self):
+        for names in (['./fixture.txt'], ['.'], ['./'], ['fixture.txt/'],
+                      ['folder//fixture.txt'], ['folder/./fixture.txt'],
+                      ['fixture.txt', './fixture.txt'], ['./request.json']):
+            with self.subTest(names=names), self.assertRaises(Refused):
+                self.begin(names=names)
+            self.assertFalse((self.root / 'run').exists())
+
     def test_only_generated_output_can_be_written_through_execution_api(self):
         run = self.begin()
         for name in ('fixture.txt', '../input/fixture.txt', '../evidence/receipt.json', 'generated/../../fixture.txt'):
@@ -148,6 +159,88 @@ class ReviewIntegrity(unittest.TestCase):
         for result in invalid:
             with self.subTest(result=result), self.assertRaises(Refused):
                 finalize(run, 'role:independent-reviewer', result)
+
+
+class SupplierPreflight(unittest.TestCase):
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory(prefix='m107-preflight-')
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.repo = self.root / 'repo'
+        self.repo.mkdir()
+        original = Path(__file__).resolve().parents[3]
+        contract_path = 'docs/team/M1-07/review-contract.json'
+        contract = json.loads((original / contract_path).read_bytes())
+        for item in contract['sources']:
+            target = self.repo / item['path']
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(original / item['path'], target)
+        self.git('init', '--quiet')
+        self.git('add', '--all')
+        self.git('commit', '--quiet', '-m', 'Synthetic supplier binding')
+        ref = self.git('rev-parse', 'HEAD').stdout.strip()
+        for item in contract['sources']:
+            item['ref'] = ref
+        target = self.repo / contract_path
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(json.dumps(contract), encoding='utf-8')
+        target = self.repo / 'scripts/team/M1-07/review_integrity.py'
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(original / target.relative_to(self.repo), target)
+        self.git('add', '--all')
+        self.git('commit', '--quiet', '-m', 'Synthetic consumer')
+
+    def git(self, *args):
+        return subprocess.run(['git', '-c', 'core.autocrlf=false', '-c', 'commit.gpgsign=false',
+                               '-c', 'core.hooksPath=' + str(self.root / 'no-hooks'),
+                               '-c', 'user.name=Synthetic fixture', '-c', 'user.email=fixture@example.invalid',
+                               *args], cwd=self.repo, check=True, capture_output=True, text=True)
+
+    def invoke(self):
+        script = '''import sys
+from pathlib import Path
+sys.path.insert(0, 'scripts/team/M1-07')
+import review_integrity as api
+root = Path(sys.argv[1])
+source = root / 'source'
+source.mkdir(exist_ok=True)
+(source / 'fixture.txt').write_bytes(b'synthetic source')
+try:
+    run = api.begin(source, root / 'run', ['fixture.txt'], 'a'*40, 'b'*40,
+                    {'sessionId':'author','provider':'anthropic','model':'claude-opus-5'},
+                    {'sessionId':'reviewer','provider':'openai-codex','model':'gpt-5.6-luna'})
+    api.finalize(run, 'role:independent-reviewer', {'outcome':'approved','actionable':[],'notes':'synthetic'})
+except api.Refused as error:
+    print(str(error))
+    raise SystemExit(2)
+'''
+        return subprocess.run([sys.executable, '-c', script, str(self.root)], cwd=self.repo, capture_output=True, text=True)
+
+    def test_clean_supplier_closure_allows_normal_round(self):
+        result = self.invoke()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((self.root / 'run/evidence/receipt.json').is_file())
+
+    def test_changed_or_missing_supplier_closure_refuses_before_execution(self):
+        for relative in ('scripts/dev/native_manifest.py', 'scripts/team/M1-02/permission_boundary.py',
+                         'scripts/bootstrap/verify_toolchain.py'):
+            target = self.repo / relative
+            original = target.read_bytes()
+            for missing in (False, True):
+                with self.subTest(supplier=relative, missing=missing):
+                    if missing:
+                        target.unlink()
+                    else:
+                        target.write_bytes(original + b'\nfrom pathlib import Path\nPath(__file__).with_suffix(".marker").touch()\n')
+                    try:
+                        result = self.invoke()
+                        self.assertEqual(result.returncode, 2, result.stderr)
+                        self.assertIn('cannot_proceed', result.stdout)
+                        self.assertNotIn('Traceback', result.stderr)
+                        self.assertFalse(target.with_suffix('.marker').exists())
+                        self.assertFalse((self.root / 'run').exists())
+                    finally:
+                        target.write_bytes(original)
 
 
 if __name__ == '__main__':

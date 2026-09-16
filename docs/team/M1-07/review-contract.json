@@ -101,7 +101,7 @@
     "result": "evidence/receipt.json"
   },
   "operations": {
-    "begin": "Fresh disjoint source/run; materialize copies and verify target before/after copying.",
+    "begin": "Verify committed supplier bindings before import; refuse noncanonical target names before output creation, then materialize copies in a fresh disjoint run and verify target before/after copying.",
     "write_generated": "Create new files only under execution/generated/; never overwrite.",
     "finalize": "Validate target, policy and reviewer result; reviewer role only, exclusive receipt creation.",
     "verify_receipt": "Require trusted request/receipt digests and current writer source/base/head; reject any binding drift."
