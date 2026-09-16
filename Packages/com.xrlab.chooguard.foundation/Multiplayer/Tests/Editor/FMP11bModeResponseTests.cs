@@ -29,6 +29,7 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
         private const string TargetRegion = "metro_platforms";
 
         private SceneSetup[] previousSetup;
+        private bool fixtureBuilt;
         private string generatedFolder;
         private ConnectedWorldDefinition world;
         private ConnectedRegionView[] views;
@@ -38,7 +39,15 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
         [OneTimeSetUp] public void BuildServerFixture()
         {
             previousSetup = EditorSceneManager.GetSceneManagerSetup();
-            if (Enumerable.Range(0, SceneManager.sceneCount).Any(i => SceneManager.GetSceneAt(i).isDirty)) Assert.Ignore("Preserve unsaved scenes.");
+            // This fixture replaces the open scene setup to load the generated region scenes, so an
+            // unsaved open scene would be lost. That is a broken environment, not a reason to pass:
+            // issue 138's negativeCase says a skipped test does not meet acceptance, so the fixture
+            // fails loudly instead of self-skipping, and the flag below keeps the teardown from
+            // discarding scenes the fixture never touched.
+            if (Enumerable.Range(0, SceneManager.sceneCount).Any(i => SceneManager.GetSceneAt(i).isDirty))
+                Assert.Fail("FMP11bModeResponseTests must not self-skip: save or close the unsaved scene(s) first; "
+                    + "this fixture replaces the open scene setup to load the generated region scenes.");
+            fixtureBuilt = true;
             generatedFolder = "Assets/CHOOguardGenerated/FMP11bMode_" + Guid.NewGuid().ToString("N");
             var paths = ConnectedWorldSceneBuilder.Build(generatedFolder);
             foreach (var path in paths.Skip(1)) EditorSceneManager.OpenScene(path, OpenSceneMode.Additive);
@@ -54,6 +63,9 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
 
         [OneTimeTearDown] public void ClearServerFixture()
         {
+            // The dirty-scene guard fails before the fixture touches anything: tearing down here would
+            // close the very scenes the guard refused to disturb.
+            if (!fixtureBuilt) return;
             practiceSimulation?.Dispose(); evaluationSimulation?.Dispose();
             practiceSimulation = null; evaluationSimulation = null;
             EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
@@ -62,10 +74,14 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             if (generatedFolder != null) AssetDatabase.DeleteAsset(generatedFolder);
         }
 
-        private sealed class Sink : ICommitSink { public void Append(ShiftCommit commit) { } }
+        /// <summary>Recording commit sink. A refused transition must append nothing, and that zero is
+        /// only a measurement if the same sink counts a commit that genuinely is accepted.</summary>
+        private sealed class Sink : ICommitSink { public int Appends; public void Append(ShiftCommit commit) => Appends++; }
 
-        private static AuthoritativeShift Shift(FoundationWorldSimulation simulation) =>
-            new AuthoritativeShift(simulation.InitialState, new Sink(), (_, __) => true, simulation.CanOperate);
+        private static AuthoritativeShift Shift(FoundationWorldSimulation simulation) => Shift(simulation, new Sink());
+
+        private static AuthoritativeShift Shift(FoundationWorldSimulation simulation, ICommitSink sink) =>
+            new AuthoritativeShift(simulation.InitialState, sink, (_, __) => true, simulation.CanOperate);
 
         /// <summary>Authored synthetic simulation profile with the training mode under test. NpcCount is
         /// reduced only to keep the fixture small; the world definition and incident bindings are authored.</summary>
@@ -98,12 +114,14 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
         }
 
         /// <summary>The client field view the server would send: identity, pose and training mode come from the
-        /// running simulation and its command authority. Only the observed portal states are synthesized open,
-        /// because the closure channel is a client observation and this fixture asserts topology, not closures.</summary>
+        /// running simulation and its command authority. The mode is stamped through the same seam SendView
+        /// stamps every outgoing view with, so a hard-coded mode at the send site cannot survive. Only the
+        /// observed portal states are synthesized open, because the closure channel is a client observation
+        /// and this fixture asserts topology, not closures.</summary>
         private static FieldView ServerView(ConnectedWorldDefinition definition, FoundationWorldSimulation simulation, AuthoritativeShift shift)
         {
             var actor = shift.Participant(ParticipantId);
-            return new FieldView
+            return NetworkFieldRuntime.ApplyProjectedTrainingMode(new FieldView
             {
                 Observed = shift.Observe(ParticipantId),
                 Position = actor.Position,
@@ -116,9 +134,8 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                 PortalId = actor.PortalId,
                 SpatialProfileId = definition.ProfileId,
                 RequiredRegions = definition.RequiredRegions(actor.RegionId),
-                TrainingMode = NetworkFieldRuntime.ProjectedTrainingMode(simulation),
                 Portals = definition.Portals.Select(p => new ObservedPortalState { PortalId = p.Id, Open = true }).ToArray()
-            };
+            }, simulation);
         }
 
         [Serializable] private sealed class TransitionDecisionRecord
@@ -143,8 +160,21 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
         {
             Assert.That(world.Regions, Has.Length.EqualTo(13), "profile region count");
             Assert.That(world.Portals, Has.Length.EqualTo(12), "profile portal count");
-            Assert.That(ConnectedWorldSceneBuilder.DefinitionPath, Is.EqualTo(WorldProfilePath),
-                "the fixture world must be the authored profile the route projection suite consumes");
+
+            // The fixture world must be the authored profile the route projection suite consumes.
+            // Both sides are read from disk and compared as data: ConnectedWorldSceneBuilder.DefinitionPath
+            // is a compile-time constant, so comparing it to WorldProfilePath would be an assertion no
+            // product mutation could ever fail. If DefinitionPath pointed at a different file, the world
+            // built by the fixture would not carry this file's regions, portals or profile id.
+            Assert.That(File.Exists(WorldProfilePath), Is.True, "the authored profile must exist on disk at " + WorldProfilePath);
+            var authoredOnDisk = JsonUtility.FromJson<ConnectedWorldDefinition>(File.ReadAllText(WorldProfilePath));
+            authoredOnDisk.Validate();
+            CollectionAssert.AreEqual(authoredOnDisk.Regions.Select(r => r.Id).ToArray(), world.Regions.Select(r => r.Id).ToArray(),
+                "the built fixture world must be the authored profile at " + WorldProfilePath);
+            CollectionAssert.AreEqual(authoredOnDisk.Portals.Select(p => p.Id).ToArray(), world.Portals.Select(p => p.Id).ToArray(),
+                "the built fixture world must carry the authored profile's portals");
+            Assert.That(world.ProfileId, Is.EqualTo(authoredOnDisk.ProfileId),
+                "the fixture world's spatial profile id must be read from the same authored profile");
 
             // The mode vocabulary is exactly the one existing enum; no second enum or parallel world branch.
             Assert.That(Enum.GetValues(typeof(FoundationTrainingMode)).Cast<FoundationTrainingMode>(),
@@ -160,13 +190,28 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             // The running server simulation, not the test, carries the mode.
             Assert.That(practiceSimulation.TrainingMode, Is.EqualTo(FoundationTrainingMode.Practice));
             Assert.That(evaluationSimulation.TrainingMode, Is.EqualTo(FoundationTrainingMode.Evaluation));
-            Assert.That(practiceSimulation.NpcCount, Is.EqualTo(evaluationSimulation.NpcCount));
 
-            // The projection helper the server stamps views with reads that simulation; without a coupled
-            // simulation it falls back to Practice instead of forking a second world branch.
-            Assert.That(NetworkFieldRuntime.ProjectedTrainingMode(practiceSimulation), Is.EqualTo(FoundationTrainingMode.Practice));
-            Assert.That(NetworkFieldRuntime.ProjectedTrainingMode(evaluationSimulation), Is.EqualTo(FoundationTrainingMode.Evaluation));
-            Assert.That(NetworkFieldRuntime.ProjectedTrainingMode(null), Is.EqualTo(FoundationTrainingMode.Practice));
+            // Mode must not fork the world population or the admitted roster. Both simulations consume
+            // the same authored profile, so mode-dependent NPC spawning would diverge these entity sets.
+            // An NpcCount-versus-NpcCount comparison could not detect that: both counts are read from the
+            // same profile object, so they are equal by construction.
+            CollectionAssert.AreEqual(
+                practiceSimulation.InitialState.Entities.Select(e => e.EntityId).OrderBy(x => x, StringComparer.Ordinal).ToArray(),
+                evaluationSimulation.InitialState.Entities.Select(e => e.EntityId).OrderBy(x => x, StringComparer.Ordinal).ToArray(),
+                "the two modes must carry the same world population");
+            CollectionAssert.AreEqual(
+                practiceSimulation.InitialState.Participants.Select(p => p.ParticipantId).OrderBy(x => x, StringComparer.Ordinal).ToArray(),
+                evaluationSimulation.InitialState.Participants.Select(p => p.ParticipantId).OrderBy(x => x, StringComparer.Ordinal).ToArray(),
+                "the two modes must carry the same admitted roster");
+
+            // The projection seam SendView stamps every outgoing view with reads that simulation; without
+            // a coupled simulation it falls back to Practice instead of forking a second world branch.
+            Assert.That(NetworkFieldRuntime.ApplyProjectedTrainingMode(new FieldView(), practiceSimulation).TrainingMode,
+                Is.EqualTo(FoundationTrainingMode.Practice));
+            Assert.That(NetworkFieldRuntime.ApplyProjectedTrainingMode(new FieldView(), evaluationSimulation).TrainingMode,
+                Is.EqualTo(FoundationTrainingMode.Evaluation));
+            Assert.That(NetworkFieldRuntime.ApplyProjectedTrainingMode(new FieldView(), null).TrainingMode,
+                Is.EqualTo(FoundationTrainingMode.Practice));
         }
 
         // Acceptance 2: in Practice mode the requested guidance response includes the synthetic evidence fields.
@@ -217,6 +262,30 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(string.IsNullOrEmpty(guidance.ProcedureHint), Is.True, "Evaluation guidance must exclude procedure hint");
             Assert.That(string.IsNullOrEmpty(guidance.RecommendedAction), Is.True, "Evaluation guidance must exclude recommended action");
             Assert.That(string.IsNullOrEmpty(guidance.EvidenceBasis), Is.True, "Evaluation guidance must exclude evidence basis");
+        }
+
+        // Acceptance 2/3 transport boundary: the mode a client receives must come from the running
+        // simulation at the seam SendView stamps every outgoing field view with. Hard-coding Practice in
+        // that seam (or dropping the assignment) must fail here, so the mode cannot be a send-site constant.
+        [Test]
+        public void OutgoingViewModeIsStampedFromTheSimulationAtTheSendSeam()
+        {
+            var evaluationView = NetworkFieldRuntime.ApplyProjectedTrainingMode(new FieldView(), evaluationSimulation);
+            var practiceView = NetworkFieldRuntime.ApplyProjectedTrainingMode(new FieldView(), practiceSimulation);
+
+            Assert.That(evaluationView.TrainingMode, Is.EqualTo(FoundationTrainingMode.Evaluation),
+                "an Evaluation server must stamp Evaluation, not the enum default");
+            Assert.That(practiceView.TrainingMode, Is.EqualTo(FoundationTrainingMode.Practice));
+            Assert.That(NetworkFieldRuntime.ApplyProjectedTrainingMode(new FieldView(), null).TrainingMode,
+                Is.EqualTo(FoundationTrainingMode.Practice), "a session without a coupled simulation projects Practice");
+
+            // The enum default is Practice, so a view only becomes Evaluation through this seam: losing
+            // the assignment leaves the field at the default and the client is told the wrong mode.
+            Assert.That(new FieldView().TrainingMode, Is.EqualTo(FoundationTrainingMode.Practice));
+
+            // The mode the seam stamps is the one the response filtering then acts on.
+            Assert.That(NetworkFieldRuntime.ProjectCurrentLocation(world, evaluationView).ProcedureHintsVisible, Is.False);
+            Assert.That(NetworkFieldRuntime.ProjectCurrentLocation(world, practiceView).ProcedureHintsVisible, Is.True);
         }
 
         // Acceptance 4: both modes keep the same server world identity and topology, read through the actual
@@ -303,7 +372,8 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
         public void MidShiftModeTransitionIsBlockedWithoutAcceptedDecision()
         {
             using var simulation = new FoundationWorldSimulation(world, views, IncidentProfile(world, FoundationTrainingMode.Practice), Seed(world));
-            var shift = Shift(simulation);
+            var commits = new Sink();
+            var shift = Shift(simulation, commits);
             var input = new[] { new ServerMovementInput { ParticipantId = ParticipantId, LoadedRegions = world.Regions.Select(r => r.Id).ToArray() } };
             for (var tick = 0; tick < 3; tick++) Assert.That(simulation.TryAdvance(shift, input, out var report), Is.True, report.Failure);
 
@@ -311,6 +381,11 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             var tickBefore = simulation.Tick;
             var activeBefore = simulation.ActiveIncidentCount;
             var boundaryBefore = shift.ExportCheckpoint();
+            // Durable state, sequence counter and commit sink, captured together so the refusal can be
+            // checked against all three rather than against the error code alone.
+            var ledgerBefore = JsonUtility.ToJson(boundaryBefore);
+            var sequenceBefore = shift.ReadSimulation().Sequence;
+            var appendsBefore = commits.Appends;
             Assert.That(modeBefore, Is.EqualTo(FoundationTrainingMode.Practice));
             Assert.That(tickBefore, Is.EqualTo(3), "the guard must be exercised on a live, advanced shift");
             Assert.That(activeBefore, Is.GreaterThan(0), "a live incident must exist for the invariance assertion to mean anything");
@@ -334,6 +409,16 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                 "a refused transition must not auto-restart the shift");
             Assert.That(boundaryAfter.Participants.Single(p => p.ParticipantId == ParticipantId).RegionId,
                 Is.EqualTo(boundaryBefore.Participants.Single(p => p.ParticipantId == ParticipantId).RegionId));
+            // The refusal must be inert on every durable channel at once, not only on the mode field.
+            // JsonUtility.ToJson over the exported ledger makes the comparison byte-identical over the whole
+            // durable state (sequence, receipts, reports, entities, frames), so a refusal that appends a
+            // receipt or bumps the sequence counter cannot slip through a field-by-field spot check.
+            Assert.That(JsonUtility.ToJson(boundaryAfter), Is.EqualTo(ledgerBefore),
+                "a refused transition must not append a receipt or otherwise mutate the durable ledger");
+            Assert.That(shift.ReadSimulation().Sequence, Is.EqualTo(sequenceBefore),
+                "a refused transition must not advance the commit sequence counter");
+            Assert.That(commits.Appends, Is.EqualTo(appendsBefore),
+                "a refused transition must not append a commit to the sink");
 
             // Same-mode request semantics: idempotent no-op, reports success, still changes nothing.
             Assert.That(simulation.TryTransitionMode(FoundationTrainingMode.Practice, out var sameModeReason), Is.True,
@@ -343,6 +428,27 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(simulation.Tick, Is.EqualTo(tickBefore));
             Assert.That(simulation.ActiveIncidentCount, Is.EqualTo(activeBefore));
             Assert.That(shift.ExportCheckpoint().SimulationCheckpoint, Is.EqualTo(boundaryBefore.SimulationCheckpoint));
+            Assert.That(JsonUtility.ToJson(shift.ExportCheckpoint()), Is.EqualTo(ledgerBefore),
+                "the idempotent same-mode no-op must not mutate the durable ledger either");
+            Assert.That(shift.ReadSimulation().Sequence, Is.EqualTo(sequenceBefore));
+            Assert.That(commits.Appends, Is.EqualTo(appendsBefore));
+
+            // Liveness probe: appendsBefore == 0 above is only a measurement if this sink counts a commit
+            // that genuinely is accepted. An instructor PauseShift is accepted by the real Submit path and
+            // must be seen by the same sink the refusals left at zero, so a sink wired to a no-op (or a
+            // counter that never increments) fails here instead of passing the refusal assertions silently.
+            var pause = shift.Submit(ParticipantId, new WorldCommand
+            {
+                WorldId = boundaryBefore.WorldId, ShiftId = boundaryBefore.ShiftId, ParticipantId = ParticipantId, TeamId = "command",
+                CommandId = "fmp11b-liveness-pause", TargetId = "", Argument = "", Kind = CommandKind.PauseShift
+            });
+            Assert.That(pause.Code, Is.EqualTo(CommandCode.Accepted),
+                "the liveness probe must be an accepted, sink-visible commit");
+            Assert.That(commits.Appends, Is.EqualTo(appendsBefore + 1),
+                "an accepted commit must be observed by the sink the refused transitions left at zero");
+            Assert.That(shift.ReadSimulation().Sequence, Is.EqualTo(sequenceBefore + 1),
+                "an accepted commit must advance the sequence counter the refusals left unchanged");
+            Assert.That(shift.Paused, Is.True);
 
             // The guard is symmetric: an Evaluation shift may not switch to Practice either.
             using var reverseSimulation = new FoundationWorldSimulation(world, views, IncidentProfile(world, FoundationTrainingMode.Evaluation), Seed(world));

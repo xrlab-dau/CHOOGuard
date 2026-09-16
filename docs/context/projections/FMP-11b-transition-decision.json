@@ -48,11 +48,76 @@
     "Does not invent official railway procedures or scoring rules.",
     "Provisional synthetic guidance evidence basis only; not surveyed facility or operational acceptance."
   ],
+  "recordScope": {
+    "statement": "This artifact is inside issue 138's declared write scope. It is not an out-of-scope edit and must not be reported as one.",
+    "evidence": [
+      "docs/context/work-graph.json item 138 artifactOutputBindings.accept binds artifact:138:fmp11b-mode-transition-decision:accept to path docs/context/projections/FMP-11b-transition-decision.json with scopeMode exclusive and canonicalWriteAllowed true.",
+      "docs/context/work-graph.json item 138 requiredLocks lists repo-path:xrlab-dau/CHOOGuard:docs/context/projections/FMP-11b-transition-decision.json.",
+      "docs/context/work-orders/138.json requiredOutputPaths lists docs/context/projections/FMP-11b-transition-decision.json."
+    ],
+    "limit": "Being in scope is authority to edit this record. It is not an approval of the policy the record describes; approved stays false."
+  },
+  "citations": {
+    "derivation": "Every line below was produced by a grep/scan of the file at the committed HEAD of this repair, not carried over from an earlier report. Line numbers shift whenever the file is edited, so read them as anchors into this revision, not as stable identifiers.",
+    "entries": [
+      {
+        "symbol": "NetworkFieldRuntime.ApplyProjectedTrainingMode",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 792,
+        "guardLine": 794,
+        "assignmentLine": 795,
+        "orderingClaim": "The null-view guard at 794 precedes the mode assignment at 795, so the assignment may dereference the view without a ternary.",
+        "supersedes": "An earlier report cited the view null-check as NetworkFieldRuntime.cs:791-792; at that revision 791-792 was instead the tail of the ProjectedTrainingMode doc comment and signature, and the null-check actually sat at 797-798. Both figures are stale for this revision: the guard now lives at 794 inside the seam, and the ProjectCurrentLocation guard at 804. This entry replaces both."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.SendView",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 652,
+        "seamCallLine": 656,
+        "orderingClaim": "The send site builds the FieldView and passes it to the seam at 656; there is no TrainingMode initializer at the send site, so no mode literal exists there to drift."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.ProjectCurrentLocation",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 801,
+        "guardLine": 804,
+        "modeStampLine": 811,
+        "hintFlagLine": 812,
+        "unresolvableRegionReturnLine": 818,
+        "orderingClaim": "The mode stamp at 811 precedes the unresolvable-region early return at 818, so that path carries the caller's mode instead of the default."
+      }
+    ]
+  },
   "verification": {
     "testClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP11bModeResponseTests",
     "testPath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11bModeResponseTests.cs",
+    "testAssembly": "ChooGuard.Foundation.Multiplayer.Tests",
+    "testAssemblyDefinition": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef",
+    "platform": "EditMode",
+    "platformNote": "The assembly definition declares includePlatforms: [\"Editor\"], which is what makes this an EditMode assembly. The folder name Tests/Editor is not the determinant.",
     "executionState": "not_run_in_this_worktree",
     "executionNote": "No Unity batchmode run was performed by the author of this record; the orchestrator runs Unity. Each rule below records only which test asserts it, never a PASS.",
+    "skipPath": {
+      "state": "cannot_self_skip",
+      "statement": "The fixture has no self-skip path. The dirty-scene bail-out that could mark the whole fixture skipped was removed and replaced with Assert.Fail, so an unsaved scene fails the run loudly instead of reporting the class as passed-with-zero-executed-assertions.",
+      "why": "docs/context/work-graph.json item 138 checks[0].negativeCase states that a skipped test does not meet acceptance, so a self-skip path is a non-acceptance state and must not exist in the suite."
+    },
+    "declaredAcceptanceCommand": {
+      "source": "docs/context/work-graph.json item 138 checks[0].command",
+      "command": "<unityExe> -batchmode -projectPath <projectRoot> -runTests -testPlatform PlayMode -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
+      "platform": "PlayMode",
+      "issueClassCollected": false,
+      "state": "not_satisfiable_as_written",
+      "reason": "FMP11bModeResponseTests lives in ChooGuard.Foundation.Multiplayer.Tests, whose asmdef sets includePlatforms: [\"Editor\"]. A -testPlatform PlayMode run cannot collect a class from an Editor-only assembly, so this command would report zero tests for the class even when every guard passes. A green run of it is not evidence that any guard in this record holds.",
+      "expectedFieldConflict": "checks[0].expected asks PlayMode.xml to record the issue-specific test class as executed. Under the declared platform that expectation is unreachable."
+    },
+    "correctAcceptanceCommand": {
+      "command": "\"$UNITY_EDITOR\" -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"ChooGuard.Foundation.Multiplayer.Tests.FMP11bModeResponseTests\" -testResults \"$EVIDENCE_DIR/138-edit.xml\" -logFile \"$EVIDENCE_DIR/138-unity.log\"",
+      "platform": "EditMode",
+      "formSource": "The EditMode -testFilter form is the repository's own convention; docs/context/work-graph.json carries it for every other EditMode check (for example the FMP-03 and FMP-06a check commands).",
+      "state": "recorded_not_run",
+      "note": "Recorded here because work-graph.json is not in this unit's write scope (item 138 requiredLocks and writeScope do not list it), so the declared check entry could not be corrected in place. This record states the correct command; the work-graph entry itself still declares PlayMode."
+    },
     "rules": [
       { "id": "R1", "assertedBy": "FoundationTrainingModeEnumAndProfileValidationConsumedDirectly", "state": "asserted_pending_execution" },
       { "id": "R2", "assertedBy": "PracticeModeGuidanceResponseIncludesApprovedEvidenceFields", "state": "asserted_pending_execution" },
@@ -61,9 +126,24 @@
       { "id": "R5", "assertedBy": "MidShiftModeTransitionIsBlockedWithoutAcceptedDecision", "state": "asserted_pending_execution" },
       { "id": "R6", "assertedBy": "ModeFieldDoesNotReplaceGeometryStatusOrRouteLabelInputs", "state": "asserted_pending_execution" }
     ],
+    "additionalGuards": [
+      {
+        "guard": "NetworkFieldRuntime.ApplyProjectedTrainingMode is the single place the outgoing mode is decided, and SendView stamps every client view through it.",
+        "assertedBy": "OutgoingViewModeIsStampedFromTheSimulationAtTheSendSeam",
+        "state": "asserted_pending_execution",
+        "note": "This seam replaced the previous inline `TrainingMode = ProjectedTrainingMode(simulation)` initializer at the send site. Before the change a mutation hard-coding Practice at the send site was unreachable by any test, because every test built its own FieldView and called the read-only helper."
+      },
+      {
+        "guard": "ProjectCurrentLocation stamps the mode on every return path, including the unresolvable-region path.",
+        "assertedBy": "OutgoingViewModeIsStampedFromTheSimulationAtTheSendSeam",
+        "state": "asserted_pending_execution",
+        "note": "Before the change the unresolvable-region early return left TrainingMode at the default Practice while ProcedureHintsVisible was false, so an Evaluation session read as Practice for a region it could not resolve."
+      }
+    ],
     "notVerified": [
       "The clean-shift-restart policy itself: no PM decision ref is linked and no authority accepted it.",
-      "Any Unity test result: this record's rules are asserted in source only."
+      "Any Unity test result: this record's rules are asserted in source only.",
+      "That SendView itself cannot be mutated to drop or bypass the seam call: SendView is a private method on a MonoBehaviour reached only through the Unity runtime, so no test outside the Editor can execute it. The seam makes the decision point testable, but the call site that invokes it remains covered only by review."
     ]
   }
 }

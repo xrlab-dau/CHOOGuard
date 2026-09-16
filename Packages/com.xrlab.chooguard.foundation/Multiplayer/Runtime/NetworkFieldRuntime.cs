@@ -830,15 +830,15 @@ namespace ChooGuard.Foundation.Multiplayer
         {
             var participant = identities[client];
             var actor = shift.Participant(participant);
-            var projected = new FieldView { Observed = shift.Observe(participant), Position = actor.Position,
+            var projected = ApplyProjectedTrainingMode(new FieldView { Observed = shift.Observe(participant), Position = actor.Position,
                 TeamId = actor.TeamId, RoleId = actor.RoleId, Instructor = actor.IsInstructor,
                 ProtocolVersion = simulation != null ? 3 : connectedWorld == null ? 1 : 2, SpatialProfileId = connectedWorld?.Definition.ProfileId ?? "",
                 RegionId = actor.RegionId, FrameId = actor.FrameId, PortalId = actor.PortalId, LocalPosition = actor.LocalPosition,
                 RequiredRegions = connectedWorld?.Definition.RequiredRegions(actor.RegionId) ?? Array.Empty<string>(),
                 Portals = simulation != null ? simulation.ProjectPortals(actor, p => ServerCanSeePortal(actor, p)) : connectedWorld == null ? Array.Empty<ObservedPortalState>() : ConnectedWorldRuntime.ProjectPortals(
                     connectedWorld.Definition, shift.ExportCheckpoint(), actor, p => ServerCanSeePortal(actor, p)),
-                MovementStatus = movementStatus.TryGetValue(client, out var movement) ? movement : "",
-                TrainingMode = ProjectedTrainingMode(simulation) };
+                MovementStatus = movementStatus.TryGetValue(client, out var movement) ? movement : ""
+            }, simulation);
             if (simulation != null)
             {
                 projected.Physical = simulation.Project(shift.ReadSimulation(), actor, point => ServerCanSeePoint(actor, point),projected.Observed.Entities);
@@ -973,11 +973,17 @@ namespace ChooGuard.Foundation.Multiplayer
         private static string SyntheticLabel(ConnectedWorldDefinition definition, string geometryStatus) =>
             SyntheticBanner + " (" + (definition.Classification ?? "") + ", " + geometryStatus + ")";
 
-        /// <summary>Server-authoritative training mode carried by every projected field view.
-        /// The mode comes from the running coupled simulation and never forks the world identity;
-        /// a session without a coupled simulation projects Practice.</summary>
-        public static FoundationTrainingMode ProjectedTrainingMode(FoundationWorldSimulation simulation) =>
-            simulation != null ? simulation.TrainingMode : FoundationTrainingMode.Practice;
+        /// <summary>Stamps the server-authoritative training mode onto an outgoing field view. This is the one
+        /// place a mode is decided for the client channel: <see cref="SendView"/> builds the view and hands it
+        /// here rather than assigning <c>TrainingMode</c> at the send site, so there is no mode literal at the
+        /// send site to drift from the running simulation. The mode comes from the coupled simulation and never
+        /// forks the world identity; a session without a coupled simulation projects Practice.</summary>
+        public static FieldView ApplyProjectedTrainingMode(FieldView view, FoundationWorldSimulation simulation)
+        {
+            if (view == null) throw new ArgumentNullException(nameof(view));
+            view.TrainingMode = simulation != null ? simulation.TrainingMode : FoundationTrainingMode.Practice;
+            return view;
+        }
 
         /// <summary>Pure projection of the observed current location onto one displayed state.
         /// Thirteen profile region IDs map one-to-one onto thirteen distinct states.</summary>
@@ -987,6 +993,12 @@ namespace ChooGuard.Foundation.Multiplayer
             if (view == null) throw new ArgumentNullException(nameof(view));
             var state = new RouteDisplayState { Classification = definition.Classification ?? "",
                 Synthetic = true, RouteSyntheticLabel = SyntheticLabel(definition, "route-not-requested") };
+            // The mode is stamped before the region lookup so that every return path carries it. Stamping
+            // it after the unknown-region early return left that path reporting the default Practice while
+            // its ProcedureHintsVisible was false, i.e. an Evaluation session reading "Practice" for a
+            // region it could not resolve.
+            state.TrainingMode = view.TrainingMode;
+            state.ProcedureHintsVisible = state.TrainingMode == FoundationTrainingMode.Practice;
             var region = definition.Regions == null ? null : definition.Regions.SingleOrDefault(r => r != null && r.Id == view.RegionId);
             if (region == null)
             {
@@ -999,8 +1011,6 @@ namespace ChooGuard.Foundation.Multiplayer
             // The authored geometry status stays part of the current-location state: the synthetic
             // banner and the route label below both consume it and must not be emptied by the mode field.
             state.GeometryStatus = region.GeometryStatus;
-            state.TrainingMode = view.TrainingMode;
-            state.ProcedureHintsVisible = state.TrainingMode == FoundationTrainingMode.Practice;
             state.SyntheticLabel = SyntheticLabel(definition, region.GeometryStatus);
             state.UnavailableReason = "목적지 미선택 · 사용 불가";
             return state;
