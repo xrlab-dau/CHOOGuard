@@ -63,7 +63,8 @@ class ContentionRecords(unittest.TestCase):
         self.assertTrue(self.report['journalMatchesCalls'])
 
     def test_changed_public_event_bytes_fail_manifest_verification(self):
-        with tempfile.TemporaryDirectory(prefix='m1-06-tamper-') as temporary:
+        with tempfile.TemporaryDirectory(prefix='m1-06-tamper-',
+                                         dir=str(Path(tempfile.gettempdir()).resolve())) as temporary:
             root = Path(temporary)
             for name, data in self.bundle.items():
                 (root / name).write_bytes(data)
@@ -84,7 +85,8 @@ class ContentionCLI(unittest.TestCase):
     def setUp(self):
         # Commit the working source in a disposable repo: tests also work before
         # the implementation is committed in the developer's checkout.
-        temporary = tempfile.TemporaryDirectory(prefix='m1-06-cli-')
+        temporary = tempfile.TemporaryDirectory(prefix='m1-06-cli-',
+                                                dir=str(Path(tempfile.gettempdir()).resolve()))
         self.addCleanup(temporary.cleanup)
         self.root = Path(temporary.name)
         self.repo = self.root / 'repo'

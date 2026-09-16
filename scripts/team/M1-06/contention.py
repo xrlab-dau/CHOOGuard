@@ -60,7 +60,11 @@ def run_fixture(inject_precondition_failure=False, *, inject_failure=None):
         inject_failure = "initial"
     cases, registries, skipped, failures, completed = [], {}, [], [], {}
     at, wf = lease_module.at, lease_module.wf
-    with tempfile.TemporaryDirectory(prefix="m1-06-synthetic-") as temporary:
+    # A supplier refuses any path with a symlinked ancestor; on macOS TMPDIR is
+    # /var/folders/... and /var is a symlink to private/var. Resolve the temp
+    # root before handing paths across the boundary.
+    with tempfile.TemporaryDirectory(prefix="m1-06-synthetic-",
+                                     dir=str(Path(tempfile.gettempdir()).resolve())) as temporary:
         root = Path(temporary)
 
         def registry(name):
