@@ -46231,10 +46231,21 @@
       },
       "checks": [
         {
+          "command": "<unityExe> -batchmode -projectPath <projectRoot> -runTests -testPlatform EditMode -testResults <runOutput>/EditMode.xml -logFile <runOutput>/EditMode.log",
+          "expected": "EditMode.xml records FMP11bModeResponseTests as executed, with its test count, failures and skips. EditMode is the only platform that collects it: the mode-separation guards live in Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef, whose assembly definition declares includePlatforms [\"Editor\"]. A filtered PlayMode run of FMP11bModeResponseTests was measured to collect 0 tests at both the repaired and the un-repaired head, so -testPlatform PlayMode cannot produce the evidence this check demands.",
+          "negativeCase": "a PlayMode run, a new test file's presence, static UI, source inspection, or a skipped test does not meet acceptance",
+          "evidence": "EditMode.xml, EditMode.log, issue evidence JSON",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "id": "issue-138-playmode-regression-control",
           "command": "<unityExe> -batchmode -projectPath <projectRoot> -runTests -testPlatform PlayMode -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
-          "expected": "PlayMode.xml records the issue-specific test class as executed, with test count, failures and skips.",
-          "negativeCase": "new test file presence, static UI, source inspection, or skipped test does not meet acceptance.",
-          "evidence": "PlayMode.xml, PlayMode.log, issue evidence JSON",
+          "expected": "PlayMode.xml records FMP11aRouteProjectionTests as executed and passing: the same change restores the GeometryStatus assignment on the projected current-location state, and the only test that observes that assignment is this class, so this run is the control that fails if that projection is broken again.",
+          "negativeCase": "an EditMode-only run does not cover this class; a green EditMode run is not evidence for the projection path",
+          "evidence": "PlayMode.xml, PlayMode.log",
           "phases": [
             "candidate",
             "accept"
@@ -46700,10 +46711,21 @@
       },
       "checks": [
         {
+          "command": "<unityExe> -batchmode -projectPath <projectRoot> -runTests -testPlatform EditMode -testResults <runOutput>/EditMode.xml -logFile <runOutput>/EditMode.log",
+          "expected": "EditMode.xml records FMP11cObservedRouteConsistencyTests as executed, with its test count, failures and skips. EditMode is the only platform that collects it: the class is compiled into the same assembly as FMP11bModeResponseTests, Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef, which declares includePlatforms [\"Editor\"], so a PlayMode run cannot collect it either. The PlayMode measurement above was taken on that assembly's FMP11b class; this item's post-rebase run must record the FMP11c EditMode count so the count is measured rather than inferred.",
+          "negativeCase": "a PlayMode run, a new test file's presence, static UI, source inspection, or a skipped test does not meet acceptance",
+          "evidence": "EditMode.xml, EditMode.log, issue evidence JSON",
+          "phases": [
+            "candidate",
+            "accept"
+          ]
+        },
+        {
+          "id": "issue-139-playmode-regression-control",
           "command": "<unityExe> -batchmode -projectPath <projectRoot> -runTests -testPlatform PlayMode -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
-          "expected": "PlayMode.xml records the issue-specific test class as executed, with test count, failures and skips.",
-          "negativeCase": "new test file presence, static UI, source inspection, or skipped test does not meet acceptance.",
-          "evidence": "PlayMode.xml, PlayMode.log, issue evidence JSON",
+          "expected": "PlayMode.xml records FMP11aRouteProjectionTests as executed and passing: the route-guidance assertions read the projected current-location state, and the regression control for that projection is this class, so this run is the control that fails if that projection is broken again.",
+          "negativeCase": "an EditMode-only run does not cover this class; a green EditMode run is not evidence for the projection path",
+          "evidence": "PlayMode.xml, PlayMode.log",
           "phases": [
             "candidate",
             "accept"
