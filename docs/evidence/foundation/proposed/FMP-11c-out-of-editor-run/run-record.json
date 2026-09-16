@@ -2,7 +2,7 @@
   "recordKind": "out_of_editor_run_record",
   "harnessIsNot": "Not NUnit and not the Unity Test Runner: Unity-bundled Roslyn csc.dll + .NET runtime + local NUnit-shaped shim + console runner. Cannot show [OneTimeSetUp]/[SetUp] lifecycle, the editor environment, test categories, NUnit3 XML, asset import or PlayMode.",
   "testFile": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs",
-  "testFileSha256": "0b873133e33c6fd23c410d37fff3455af8a51d581e5d83bc1fb34a40eb35d06b",
+  "testFileSha256": "eaa74bdd4c49deda482e791e6194413cfed237d551eae73918194c4d29a40a73",
   "collectionRoot": "<WORKTREE>",
   "collectionRootNote": "The absolute checkout root is withheld: it embeds the operator's home directory and a session scratch directory, and published evidence in this repository does not carry personal paths. The token records that the run was made against a checkout root supplied at run time. See WORKTREE_TOKEN in this directory's out_of_editor_run.py.",
   "platform": {
@@ -12,9 +12,9 @@
     "compiler": "Unity-bundled Roslyn csc.dll"
   },
   "sourceRevision": {
-    "head": "a7ff7d8dcd62007ffd826dbad40881137d722ce9",
-    "describe": "a7ff7d8-dirty",
-    "branch": "feature/139-fmp11c-observed-route-consistency",
+    "head": "d8e51d8731eefa4584c5cf21457bd5b2fafb591b",
+    "describe": "d8e51d8",
+    "branch": "test/139-observed-route-consistency-hardening",
     "dirtyCompiledPaths": [
       "none: the compiled paths matched HEAD exactly at run time"
     ]
@@ -233,7 +233,7 @@
       "sha256": "1fdee2d5fde679a70938d738182c6e9776acb5a4607bb07ac9258d8838197718"
     }
   ],
-  "extractionScopeNote": "TWO scope limits make 'survived' ambiguous, and this note states both. (1) PRODUCTION SOURCE: the compiled production surface is EXTRACTED LINE RANGES, not whole files. This run compiled 189 extracted lines: ConnectedWorldRuntime.cs 9 of 211 lines; NetworkFieldRuntime.cs 180 of 1296 lines. Code outside the extracted ranges is not compiled, so a mutation landing there cannot fail any test and reads as 'survived' because it never ran -- not because a test has a hole. (2) TEST SOURCE: exactly ONE test file is compiled (FMP11cObservedRouteConsistencyTests.cs). It is one of 27 test files in the same test assembly; the other 26 are not compiled. A mutation pinned only by a sibling file therefore also reads as 'survived' here. That is the reading which applies to M14, the one mutation this run reports as surviving: M14 forces ProcedureHintsVisible on in Evaluation mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in that same assembly asserts the identical guard four times (lines 227, 234, 254, 260). Because this harness never compiles that sibling file, M14's survival here is a limit of the harness, not evidence that no test pins the guard. Both readings are distinguishable only by crossing this note with extractionManifest and with the compiledInputs list.",
+  "extractionScopeNote": "TWO scope limits make 'survived' ambiguous, and this note states both. (1) PRODUCTION SOURCE: the compiled production surface is EXTRACTED LINE RANGES, not whole files. This run compiled 189 extracted lines: ConnectedWorldRuntime.cs 9 of 210 lines; NetworkFieldRuntime.cs 180 of 1295 lines. Code outside the extracted ranges is not compiled, so a mutation landing there cannot fail any test and reads as 'survived' because it never ran -- not because a test has a hole. (2) TEST SOURCE: exactly ONE test file is compiled (FMP11cObservedRouteConsistencyTests.cs). It is one of 27 test files in the same test assembly; the other 26 are not compiled. A mutation pinned only by a sibling file therefore also reads as 'survived' here. That is the reading which applies to M14, the one mutation this run reports as surviving: M14 forces ProcedureHintsVisible on in Evaluation mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in that same assembly pins the Evaluation-mode suppression M14 falsifies at five sites (lines 254, 260, 287, 328, 360), alongside the matching Practice-mode positive at 227, 234, 288, 327 and 354. Only the five Evaluation sites would fail under M14; the Practice sites still pass, so citing them as pinning evidence would overstate the file's coverage of this guard. Because this harness never compiles that sibling file, M14's survival here is a limit of the harness, not evidence that no test pins the guard. Both readings are distinguishable only by crossing this note with extractionManifest and with the compiledInputs list.",
   "results": [
     {
       "id": "baseline-unmutated",
@@ -243,7 +243,7 @@
       "passed": 8,
       "failedCount": 0,
       "caughtBy": [],
-      "elapsedSeconds": 1.0
+      "elapsedSeconds": 1.1
     },
     {
       "id": "M01",
@@ -267,7 +267,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.8
+      "elapsedSeconds": 1.1
     },
     {
       "id": "M03",
@@ -279,7 +279,7 @@
       "caughtBy": [
         "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.9
+      "elapsedSeconds": 1.3
     },
     {
       "id": "M04",
@@ -292,7 +292,7 @@
         "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
         "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection"
       ],
-      "elapsedSeconds": 0.8
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M05",
@@ -304,7 +304,7 @@
       "caughtBy": [
         "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M06",
@@ -316,7 +316,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.9
     },
     {
       "id": "M07",
@@ -328,7 +328,7 @@
       "caughtBy": [
         "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M08",
@@ -341,7 +341,7 @@
         "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M09",
@@ -356,7 +356,7 @@
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M10",
@@ -368,7 +368,7 @@
       "caughtBy": [
         "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.9
     },
     {
       "id": "M11",
@@ -384,7 +384,7 @@
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M12",
@@ -396,19 +396,19 @@
       "caughtBy": [
         "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M13",
       "status": "caught",
-      "mutation": "ConnectedWorldDefinition.cs:17-18 flip the yaw rotation sign in ToWorld (only observable when YawDegrees != 0).",
+      "mutation": "ConnectedWorldDefinition.cs:17-18 negate both terms of the ToWorld Z row (Origin.Z - s * local.X + c * local.Z becomes Origin.Z + s * local.X - c * local.Z). This is NOT a pure yaw-sign flip: the mutation negates BOTH terms of the Z row, so it is observable at yaw 0 too, where the sine term is zero. That row is Origin.Z - s*local.X + c*local.Z, so the local.Z contribution is c*local.Z and the mutant makes it -c*local.Z: at yaw 0 (c = 1) it moves -3.750 -> +3.750 for local.Z = -3.75, and at yaw 180 (c = -1) the same contribution moves the other way, +3.750 -> -3.750. At yaw 90 the cosine factor is zero in exact arithmetic, and the executed float value is 6.123234262925839e-17, so that contribution moves by 4.59e-16 rather than by nothing -- far below the 1e-4 tolerance these assertions use, which is why it is unobservable rather than literally immobile; there the row is carried by local.X, whose contribution -s*local.X flips to +s*local.X. A single sentence claiming a -3.750 -> +3.750 movement at all three yaws would therefore have been wrong at two of them, which is why this note states the arithmetic per yaw instead. The defect that IS genuinely invisible at yaw 0 is the dropped sine term, recorded separately as PH.",
       "testsRun": 8,
       "passed": 7,
       "failedCount": 1,
       "caughtBy": [
         "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M14",
@@ -418,7 +418,7 @@
       "passed": 8,
       "failedCount": 0,
       "caughtBy": [],
-      "elapsedSeconds": 0.8
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M15",
@@ -430,7 +430,7 @@
       "caughtBy": [
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M16",
@@ -442,7 +442,7 @@
       "caughtBy": [
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M17",
@@ -526,7 +526,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.8
     },
     {
       "id": "PA",
@@ -541,7 +541,7 @@
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "PF",
@@ -553,7 +553,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.8
     },
     {
       "id": "PG",
@@ -565,7 +565,19 @@
       "caughtBy": [
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.8
+    },
+    {
+      "id": "PH",
+      "status": "caught",
+      "mutation": "ConnectedWorldDefinition.cs:17-18 drop the sine term from SpatialFrame.ToWorld while leaving the cosine term intact (Origin.X + c * local.X + s * local.Z becomes Origin.X + c * local.X, and the matching Z row loses - s * local.X). This is the narrower defect M12 and M13 cannot express: M13 alters the cosine term as well, M12 drops the frame origin, and every frame in the authored table has sin(yaw) = 0, so before this probe no case in this file pinned the SINE term of the transform. (The authored table does still distinguish a transform that applies rotation from one that ignores it, through train-metro, whose yaw is 180: cos(180) = -1, which is what Fmp08aMovingFrameTests.cs pins. What no authored frame can pin is the sine term.) It is caught by the yaw 90 assertions added to FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces for exactly this case. ToLocal is deliberately left unmutated, so the round trip assertion fails alongside the two axis assertions.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 0.8
     }
   ]
 }

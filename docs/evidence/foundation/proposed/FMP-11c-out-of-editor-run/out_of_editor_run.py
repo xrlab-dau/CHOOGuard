@@ -82,6 +82,22 @@ def lines_of(path):
         return fh.read().split("\n")
 
 
+def wc_lines_of(path):
+    """Whole-file line count in the convention a reader can reproduce with `wc -l`.
+
+    lines_of() splits on newlines, so a file that ends in one yields a trailing empty element
+    and len(lines_of(p)) is one too high against the number a verifier counts. Reporting that
+    inflated figure next to an extraction numerator invites a mismatch that is an artefact of
+    this helper, not a defect in the run. This matches the record's own candidateLineCount
+    convention, which is also wc-style.
+    """
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    if not text:
+        return 0
+    return len(text.split("\n")) - (1 if text.endswith("\n") else 0)
+
+
 def block_text(path, ranges):
     src = lines_of(path)
     out = []
@@ -305,7 +321,7 @@ def extraction_scope_note():
     total_whole = 0
     for path, count in sorted(extracted_per_file.items()):
         try:
-            whole = len(lines_of(os.path.join(WT, path)))
+            whole = wc_lines_of(os.path.join(WT, path))
         except OSError:
             whole = 0
         total_whole += whole
@@ -324,7 +340,11 @@ def extraction_scope_note():
         "therefore also reads as 'survived' here. That is the reading which applies to M14, the one "
         "mutation this run reports as surviving: M14 forces ProcedureHintsVisible on in Evaluation "
         "mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in that same assembly "
-        "asserts the identical guard four times (lines 227, 234, 254, 260). Because this harness "
+        "pins the Evaluation-mode suppression M14 falsifies at five sites (lines 254, 260, 287, "
+        "328, 360), alongside the matching Practice-mode positive at 227, 234, 288, 327 and 354. "
+        "Only the five Evaluation sites would fail under M14; the Practice sites still pass, so "
+        "citing them as pinning evidence would overstate the file's coverage of this guard. "
+        "Because this harness "
         "never compiles that sibling file, M14's survival here is a limit of the harness, not "
         "evidence that no test pins the guard. "
         "Both readings are distinguishable only by crossing this note with extractionManifest and "

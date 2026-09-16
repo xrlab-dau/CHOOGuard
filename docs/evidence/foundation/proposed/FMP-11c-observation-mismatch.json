@@ -20,7 +20,7 @@
       "DATA: Negative observation tests assert confidentiality of synthetic incident data before discovery, not physical security verification.",
       "CAPABILITY: The executed run is NOT NUnit and NOT the Unity Test Runner. It compiles the test file with the Unity-bundled Roslyn csc.dll plus the .NET 6.0.21 runtime against verbatim copies of the production sources, and runs the [Test] methods under a console runner and a local NUnit-shaped assertion shim. It therefore cannot show [OneTimeSetUp]/[SetUp] lifecycle, the Unity editor environment, test categories, NUnit3 XML, asset import, or PlayMode. A green run here shows the assertions hold against the production sources; it does NOT show the same tests pass inside the editor.",
       "CAPABILITY: Two production files under test (Multiplayer/Runtime/NetworkFieldRuntime.cs, Multiplayer/Runtime/ConnectedWorldRuntime.cs) are MonoBehaviours that depend on Unity.Netcode/Unity.Collections/UnityEngine, for which no assembly exists outside the Unity project Library. Their projection methods are compiled from verbatim line-range copies, not from their compiled assemblies. The copied blocks and their per-block sha256 are listed under runRecord.executedRun.extractionManifest; if production diverges from a copied range, that block's digest stops matching and the run must be re-taken.",
-      "CAPABILITY: There is NO UI SURFACE in this unit. The test file references no panel, view or display type, and the executed run exercises no UI code. The 'four surfaces' named in the acceptance criteria are realised here as three exercised surfaces - authoritative server state, the client observed view, and the route/guidance projection - plus a negative command-submission surface. No UI display claim is made or tested by this record.",
+      "COVERAGE GAP: No UI render surface is exercised by this record, so the UI branch of acceptance criterion 2 is NOT shown false here. A UI render surface DOES exist inside the audited production file: NetworkFieldRuntime.cs:1116 declares OnGUI, and it renders exactly the strings that criterion is about - routeDisplay.RouteLabels and routeDisplay.UnavailableReason at lines 1135-1136, and routeDisplay.ProcedureHint at line 1140. The test file constructs no MonoBehaviour and can never enter OnGUI, and the harness compiles the projection methods as line-range copies rather than running the component, so no UI code path is reached. An earlier revision of this entry asserted that no UI surface existed in the unit at all; that was false as written, because the surface exists and is simply untested. The 'four surfaces' named in the acceptance criteria are realised here as three exercised surfaces - authoritative server state, the client observed view, and the route/guidance projection - plus a negative command-submission surface.",
       "COVERAGE GAP: A stale FRAME mismatch and a stale REPORT mismatch are NOT exercised. The mismatch test covers a stale entity revision (CommandCode.StaleTarget), a non-existent report target (CommandCode.UnknownTarget) and an out-of-reach target (CommandCode.OutOfReach). A frame that has moved since the client read its snapshot is not constructed, and neither is a stale report snapshot. acceptance_3 is narrowed to the three rejection paths that are actually executed.",
       "COVERAGE GAP: Mutation probe M14 SURVIVES the repaired suite. M14 forces ProcedureHintsVisible on at NetworkFieldRuntime.cs:1001 even in Evaluation mode; no test in this file moves with that behaviour. The mode-scoped visibility rule is owned by issue #138's FMP-11b scope, not by this unit, and is declared here rather than claimed covered.",
       "COVERAGE GAP: Several production branches are never reached by any test in this file, so a mutation applied to them would be a no-op and was not filed as a surviving mutant: Occluded, TargetBlocked, RoleDenied, IdentityMismatch, WrongWorld, AuthorityBusy, CommandIdConflict, canOperate and the Evaluation mode branch. Their absence from mutation results is a coverage hole, not evidence that they are correct.",
@@ -30,13 +30,13 @@
   },
   "runRecord": {
     "recordKind": "complete_run_record",
-    "branch": "feature/139-fmp11c-observed-route-consistency",
-    "commit": "a7ff7d8dcd62007ffd826dbad40881137d722ce9",
-    "commitNote": "This is the revision the working tree was at when the run was taken, expressed in the PRE-REBASE numbering; see revisionRewriteNote for why this sha is no longer reachable from the branch. The content under test is pinned by inputs[].candidateSha256 and executedRun.testFileSha256, not by this sha alone. The value moved from 578c024 to this commit because later commits on the same branch added evidence-only changes; testFileSha256 is unchanged across that move, so every digest binding in this record survives it. run-record.json's sourceRevision carries the same revision plus the branch name and a dirty check over the compiled paths.",
-    "revisionRewriteNote": "The branch was rebased onto develop after this run, because PR #208 and PR #209 shared a base and develop enforces linear history. A rebase is a history rewrite: the revision cited in runRecord.commit was rewritten and its old sha is no longer an ancestor of the branch tip, so citing it alone would point a reader at a commit they cannot fetch. The rewrite preserved every tree EXACTLY, so no file content changed and no digest in this record was invalidated -- only the commit identities moved. The mapping, each confirmed by direct tree comparison and not by position in the log: a7ff7d8dcd62007ffd826dbad40881137d722ce9 (the run revision) -> 42e2488, same tree cf037ed6eb2a14c0; 578c024f23a0c7ef5c14aa12ce3f79f23dec0341 -> 3c873cf, same tree 663549fdee24b3fc; c3a387f0 -> a2bc2e3, same tree 3c3b4e99e7d041b8; 3bda2054 -> af74675, same tree cdfdd53f983e97bc. Verifying this record does not require the git sha at all: executedRun.runRecordJsonSha256 and executedRun.driverSha256 pin the content directly, and run-record.json's compiledInputs carries a sha256 for each of the 30 files the harness compiled.",
+    "branch": "test/139-observed-route-consistency-hardening",
+    "commit": "d8e51d8731eefa4584c5cf21457bd5b2fafb591b",
+    "commitNote": "Bound to the clean run at d8e51d8731eefa4584c5cf21457bd5b2fafb591b, an ancestor of this branch tip.",
+    "revisionRewriteNote": "This note describes a SUPERSEDED binding and is retained so that the sha it cites can still be resolved. An earlier run recorded for this bundle was taken at a7ff7d8dcd62007ffd826dbad40881137d722ce9 on feature/139-fmp11c-observed-route-consistency, before that branch was rebased onto develop, because PR #208 and PR #209 shared a base and develop enforces linear history. A rebase is a history rewrite: that sha is no longer an ancestor of any branch or remote ref, so citing it alone would point a reader at a commit they cannot fetch. The rewrite preserved every tree EXACTLY, so no file content changed and no digest was invalidated by it -- only the commit identities moved. The mapping, each confirmed by direct tree comparison and not by position in the log: a7ff7d8dcd62007ffd826dbad40881137d722ce9 -> 42e2488, same tree cf037ed6eb2a14c0, and 42e2488 is still on feature/139-fmp11c-observed-route-consistency both locally and on origin; 578c024f23a0c7ef5c14aa12ce3f79f23dec0341 -> 3c873cf, same tree 663549fdee24b3fc; c3a387f0 -> a2bc2e3, same tree 3c3b4e99e7d041b8; 3bda2054 -> af74675, same tree cdfdd53f983e97bc. #209 was afterwards squashed into develop as 70f516384e332ed760de69626b177ed0cf7fa3f8. || A SECOND rewrite followed: the branch this record binds was rebased onto a later develop tip, 1756dd630f14a3cea6cd21bbd35f8a1e9a9f9ff3, which rewrote all six of its commits. That rebase left another set of revisions this record had bound reachable from no ref -- the run taken at fe34d40487de36540be98b805bd5ac9e49fc3b54 (tree 41b87679af57cb2c6007f3f8dabc7aab1be31d73), now unreachable from any ref. An earlier revision of this note called fe34d404 the pre-rebase tip of this branch and said this rebase killed it; both were wrong, and both are corrected here rather than narrowed. The tip immediately before this rebase was 52cd5ca -- it is the commit entry the reflog places directly before the rebase-start entry -- and fe34d404 was already orphaned by the FIRST rebase, being the parent of the fixup commit 6f8b9b1 and not an ancestor of that rebase's output f68dfe6; and the record commits 4b1fe2f, 0a236bc, f68dfe6, 15c0c13 and ddec511..52cd5ca, whose post-rebase counterparts are c93764f, 8419770, e45f9c4, 31f55db and 8d56715..7c9b1c9. None of those superseded shas is offered as fetchable; they are named so that a reader meeting one in an older message knows it was rewritten rather than lost. The two rewrites did NOT behave alike, and an earlier revision of this note said they did. The FIRST rewrite preserved every tree exactly, and its mapping pairs show it by direct tree comparison: a7ff7d8d -> 42e2488, both tree cf037ed6eb2a14c0; 578c024f -> 3c873cf, both tree 663549fdee24b3fc. The SECOND could not, and the same treatment shows that too: it moved the base from 70f5163 to 1756dd63, and 1756dd63 adds nine paths under docs/team/M1-07/ and scripts/team/M1-07/, so identical trees were arithmetically impossible. All six of its pairs carry DIFFERENT tree SHAs: 4b1fe2f (tree 4de2788a8875) -> c93764f (8a2b64887f53); 0a236bc (cc1028825220) -> 8419770 (965c01318e9b); f68dfe6 (41b500339d20) -> e45f9c4 (2ff2cd0f174d); 15c0c13 (91209ca3f194) -> 31f55db (b58e6892456b); ddec511 (bab310a45af2) -> 8d56715 (c00e4b0cd96e); 52cd5ca (60b7aae763db) -> 7c9b1c9 (a9230d528a8d). What the earlier sentence was reaching for still holds, but it needs the base move named to be true: the second rebase added only those nine paths, and none of them is a file this record digests, so no digest moved BECAUSE of that rebase either -- the digests moved because the content changed, and each was re-measured from disk. The run recorded here was taken AFTER the second rebase, so its own binding resolves to a revision that is still reachable.",
     "baseRef": "develop",
-    "baseCommit": "3e59f97ee1eaa8e9c71ba07a274e03ad77805310",
-    "baseCommitNote": "Re-derived at repair time as the merge-base of this branch with origin/develop. The previously recorded baseCommit b233fdb964323d0d936215ddb1348570fac2a0ef was the develop tip at branch creation and is no longer the merge base.",
+    "baseCommit": "1756dd630f14a3cea6cd21bbd35f8a1e9a9f9ff3",
+    "baseCommitNote": "Re-derived as the merge-base of this branch with origin/develop; at the time of the run the two were the same commit, 1756dd630f14a3cea6cd21bbd35f8a1e9a9f9ff3. That is a later develop tip than the one an earlier binding used (70f516384e332ed760de69626b177ed0cf7fa3f8, still the commit that carried #209 in), and the two bases share no changed file with this branch, so the rebase replayed it without conflict. The FMP-11c test file already exists at the base and this branch adds only hardening on top of it: the run recorded here measures the hardened file, not the file as it was merged. The earlier recorded baseCommit 3e59f97ee1eaa8e9c71ba07a274e03ad77805310 was the merge base of a superseded run's branch, which was cut before that merge; it is retained here only to explain the change.",
     "editor": {
       "version": "6000.3.23f1",
       "projectVersionFile": [
@@ -63,11 +63,11 @@
     },
     "inputs": {
       "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs": {
-        "candidateSha256": "0b873133e33c6fd23c410d37fff3455af8a51d581e5d83bc1fb34a40eb35d06b",
-        "candidateSizeBytes": 42893,
-        "candidateLineCount": 801,
+        "candidateSha256": "eaa74bdd4c49deda482e791e6194413cfed237d551eae73918194c4d29a40a73",
+        "candidateSizeBytes": 46486,
+        "candidateLineCount": 848,
         "newFileAtBase": true,
-        "candidateDigestNote": "Refreshed at repair time. The previously recorded candidateSha256 ca1de493bee331b155f6f5f437771ef0a39bb0e9f73fc0ca5768f9049c656f68 / 26261 bytes / 544 lines was stale and referred to the pre-repair file."
+        "candidateDigestNote": "Re-bound when this record was moved to the run at 4ca07e053af4544771e5487da59f6657463cd6ac, the branch tip after it was rebased onto the current origin/develop and the driver's M14 note was corrected. Earlier digests describe earlier states: 0b873133e33c6fd23c410d37fff3455af8a51d581e5d83bc1fb34a40eb35d06b / 42893 bytes / 801 lines is the file as merged, before the hardening; 0e45fd3516e3f29c9d9015438c45b78bf3f3544e6add55ffe23c74b47eb420b3 / 46019 bytes / 844 lines is the hardened file as the previous binding recorded it. Four edits account for the growth from the merged state. In ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario, an unavailable guidance projection must now state a non-empty reason before its leak assertion is allowed to pass, and the discovered incident id is now asserted absent from guidance.UnavailableReason as well as the undiscovered one. In ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled, the client-side disagreement is now produced by running the same projection over a door-open world instead of being written as a literal. In FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces, a yaw 90 frame was added -- the only case in the file that pins the SINE term of SpatialFrame.ToWorld, because every frame in the authored profile has sin(yaw) = 0. Its comment and its first failure message state the axis mapping at yaw 90 explicitly, because an earlier wording named the wrong sign there and described a reflection rather than a rotation. The [Test] method count is unchanged at 8."
       },
       "foundation/world/connected-world-profile.json": {
         "candidateSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
@@ -78,19 +78,37 @@
         "readOnly": true,
         "compiledFrom": "verbatim line-range copy",
         "copiedBlockDigests": [
-          { "lines": "22-77", "sha256": "fa23867111ff7146" },
-          { "lines": "971-971", "sha256": "8968f03edac4f55a" },
-          { "lines": "973-974", "sha256": "24eb4dce296ab6ed" },
-          { "lines": "990-1074", "sha256": "56ed63554303aa12" },
-          { "lines": "1079-1114", "sha256": "249d35e3b0b6268c" }
+          {
+            "lines": "22-77",
+            "sha256": "fa23867111ff7146"
+          },
+          {
+            "lines": "971-971",
+            "sha256": "8968f03edac4f55a"
+          },
+          {
+            "lines": "973-974",
+            "sha256": "24eb4dce296ab6ed"
+          },
+          {
+            "lines": "990-1074",
+            "sha256": "56ed63554303aa12"
+          },
+          {
+            "lines": "1079-1114",
+            "sha256": "249d35e3b0b6268c"
+          }
         ],
-        "fullDigests": "see runRecord.executedRun.artefacts for the per-block sha256 recorded by the run itself"
+        "fullDigests": "see runRecord.executedRun.extractionManifest for the per-block sha256 recorded by the run itself"
       },
       "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs": {
         "readOnly": true,
         "compiledFrom": "verbatim line-range copy",
         "copiedBlockDigests": [
-          { "lines": "155-163", "sha256": "70a99c1ca3a7bee5" }
+          {
+            "lines": "155-163",
+            "sha256": "70a99c1ca3a7bee5"
+          }
         ]
       },
       "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFreshness.cs": {
@@ -102,15 +120,15 @@
       "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs": {
         "readOnly": true
       },
-      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldDefinition.cs": {
+      "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/ConnectedWorldDefinition.cs": {
         "readOnly": true
       }
     },
     "commands": [
       {
-        "cmd": "CG_UNITY_SCRIPTING=/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scripting python3 docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/out_of_editor_run.py",
+        "cmd": "CG_UNITY_SCRIPTING=/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scripting python3 docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/out_of_editor_run.py --out <RUN_DIR>",
         "exitCode": 0,
-        "outcome": "27 cases executed: 1 baseline + 26 mutations; baseline all 8 tests pass; 25 mutations caught, 1 survived (M14)"
+        "outcome": "28 cases executed: 1 baseline + 27 mutations; baseline all 8 tests pass; 26 mutations caught, 1 survived (M14)"
       }
     ],
     "results": {
@@ -138,35 +156,35 @@
           "name": "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
           "sourceLine": 294,
           "result": "Passed",
-          "surfaceScope": "Frame: Local-to-world Point3 translation (origin and yaw) -> Moving frame displacement -> Route CrossesFrame boundary projection"
+          "surfaceScope": "Frame: Local-to-world Point3 translation (the origin, the two authored yaw 0 frames this file reads, and a constructed yaw 90 frame) -> Moving frame displacement -> Route CrossesFrame boundary projection. The yaw 90 frame is deliberately not from the authored profile: every authored frame has sin(yaw) = 0, so no authored frame pins the SINE term of the transform, and that term is what this constructed frame exists to pin. The profile's third frame (train-metro, yaw 180) is NOT read by this file and is not covered here; it does separate a rotation-applying transform from a rotation-ignoring one, through cos(180) = -1, and that case is pinned by Fmp08aMovingFrameTests.cs in the same test assembly, not by this unit. An earlier revision of this entry listed the yaw 180 frame as covered and justified the yaw 90 frame with the stronger claim that the profile cannot distinguish the two transform classes at all; both were wrong and are corrected here."
         },
         {
           "name": "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
-          "sourceLine": 349,
+          "sourceLine": 368,
           "result": "Passed",
           "surfaceScope": "Report: Submit report -> Teammate observed report reception -> Cross-team isolation (read) -> Teammate acknowledge -> Cross-team acknowledgement rejection"
         },
         {
           "name": "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario",
-          "sourceLine": 451,
+          "sourceLine": 470,
           "result": "Passed",
-          "surfaceScope": "Negative Suppression: Undiscovered incident absent from ObservedState.Entities -> absent from route/guidance ProcedureHint, RecommendedAction and UnavailableReason on both the available and the blocked branch -> foreign-region discovered incident still not observed -> Report rejected (NotObserved) -> Operate of a non-Equipment target rejected (UnknownTarget, target-kind check, NOT an observation gate)"
+          "surfaceScope": "Negative Suppression: Undiscovered incident absent from ObservedState.Entities -> absent from route.ProcedureHint, guidance.ProcedureHint and guidance.RecommendedAction on the available branch, and from route.UnavailableReason on the blocked branch -> foreign-region discovered incident still not observed -> Report rejected (NotObserved) -> Operate of a non-Equipment target rejected (UnknownTarget, target-kind check, NOT an observation gate)"
         },
         {
           "name": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
-          "sourceLine": 604,
+          "sourceLine": 627,
           "result": "Passed",
           "surfaceScope": "Observation-vs-authority disagreement: an authoritative door that is inactive while the observed portal reports Open -> the route projection follows the OBSERVED portal and stays available; the same route with the authoritative portal state is blocked. The mismatch is exposed, never silently reconciled."
         },
         {
           "name": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection",
-          "sourceLine": 688,
+          "sourceLine": 735,
           "result": "Passed",
           "surfaceScope": "Explicit Failures: Stale entity revision (StaleTarget) -> Missing report target (UnknownTarget) -> Out of reach (OutOfReach). A stale FRAME mismatch and a stale REPORT snapshot are NOT covered - see syntheticDisclosure.limits."
         },
         {
           "name": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported",
-          "sourceLine": 757,
+          "sourceLine": 804,
           "result": "Passed",
           "surfaceScope": "Scope Separation, asserted behaviourally: the route verdict moves with the observed portal set while the freshness verdict does not; the freshness verdict moves with the clock while the route verdict does not."
         }
@@ -174,39 +192,70 @@
     },
     "executedRun": {
       "driver": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/out_of_editor_run.py",
-      "driverSha256": "88c9457c28bef3e2a6283f3eb87b7eb0122f8c985f4d0049ca1304ff1a87deec",
+      "driverSha256": "ad213de784e944f30d9514ce88a396f2ffdbb187215ba404968c4457fed546cf",
       "runRecordJsonPath": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/run-record.json",
-      "runRecordJsonSha256": "b0f3a6b9de34a4d47b429cb6ec06bb7892cb32412e26535732aac5df21508636",
-      "runRecordJsonSizeBytes": 24119,
+      "runRecordJsonSha256": "3764ad632d01ced0fa5f0807d85feda2e9951afa18f6b6d363284b34b7da6fa3",
+      "runRecordJsonSizeBytes": 26769,
       "rawOutputPath": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/harness-raw-output.txt",
-      "rawOutputSha256": "3e7fe397f70b93aee9b036bb50e377822f7e6aade4ba30e05a224bcfef86f2fc",
+      "rawOutputSha256": "18a3d32028619b99e9e4ed6010e73b327899e0e02aae176b8536ab2904e0b273",
       "mutationSpecPath": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/mutation-spec.json",
-      "mutationSpecSha256": "0d66fc6d698fdfafcf6d5b500708ab789ed1af5d2c27da582f00475fcb07beee",
-      "testFileSha256": "0b873133e33c6fd23c410d37fff3455af8a51d581e5d83bc1fb34a40eb35d06b",
-      "collectedAt": "2026-09-16T04:26:58Z",
-      "attempts": 4,
-      "attemptsNote": "The driver was run twice: the first attempt recorded 162 accumulated extraction-manifest entries because the manifest was not reset between cases, which inflated run-record.json to 47735 bytes; the manifest reset was fixed and the driver re-run. Only the second run is recorded here. Disk byte-consumption was the reason for the fix, not a test outcome.",
-      "reRunNote": "The driver was run a fourth time to correct four reporting defects found by an adversarial audit of this bundle. (1) The unmutated baseline was labelled 'survived', which filed a passing control under mutant-escape vocabulary and inflated the survivor count; it is now 'baseline_passed' and the survivor list holds M14 alone. (2) The scope note did not disclose that the harness compiles exactly ONE test file, which is the actual reason M14 survives here. (3) The record bound no source revision, and 27 of the 30 compiled files carried no digest at all. (4) The mutation spec's own note said 7 tests where the file declares 8. The driver and the spec were edited, and run-record.json was REGENERATED -- the recorded run was not edited after the fact. driverSha256, runRecordJsonSha256, mutationSpecSha256 and runRecordJsonSizeBytes above were re-read from the regenerated files. rawOutputSha256 is UNCHANGED: the test outcomes are deterministic, so the raw log is byte-identical across the two runs, which is itself evidence that the edit changed the reporting and not the measurement. All six extractionManifest block digests are unchanged. The verdicts are otherwise identical (27 cases, 25 caught). collectedAt above is the filesystem mtime of the regenerated run-record.json, because the driver emits no timestamp of its own.",
-
+      "mutationSpecSha256": "9f63a35a7f166c7e7ebcbef37977ce90e43c23a7429e39c45ef7e3288fcfa2b5",
+      "testFileSha256": "eaa74bdd4c49deda482e791e6194413cfed237d551eae73918194c4d29a40a73",
+      "collectedAt": "2026-09-16T06:08:54Z",
+      "attempts": 11,
+      "attemptsNote": "The field counts DISTINCT sourceRevision.describe values the driver recorded for this bundle -- one per revision it was run at, not one per invocation. That definition is deliberate, because a per-invocation count is not recoverable: runs overwritten in place left no artefact, and several directories hold more than one run-record.json at the SAME describe (a probe, a refuter, a baseline-only run), so counting directories would overcount while counting deliverables would undercount. Re-derive the field by collecting the describe values from the run directories and counting the distinct ones; there are ten. THREE were taken against dirty trees and none of them is bound here: 70f5163-dirty, e45acca-dirty, and f35781a-dirty -- the last taken after the driver's M14 note had been corrected but before that correction was committed, and discarded for exactly that reason. SIX were taken on clean, committed trees and were later superseded, either by a rebase or by this rebind: 79a6e22, fe34d40, f68dfe6, 15c0c13, 7c9b1c9 and f35781a. One of the six recorded 162 accumulated extraction-manifest entries because the manifest was not reset between cases, which inflated run-record.json to 47735 bytes; the reset was fixed and the driver re-run, and disk byte-consumption rather than a test outcome was the reason for that fix. Another corrected the four reporting defects described in reRunNote. The run at fe34d40 was left reachable from no ref by the second rebase, which is why this note exists at all; the run at 7c9b1c9 was the previous binding. The TENTH is the run recorded here, 4ca07e0, and it is the one this record binds. This is a count of revisions run at, not a census of every document that exists: directories from three other bundles also carry a run-record.json, and they are excluded because their testFileSha256 is a different, pre-hardening test file. An earlier revision of this note understated the run count relative to this field, and separately claimed the recorded run was the first taken on a clean tree that carried the hardening; both were false and are corrected rather than narrowed. What is true of the recorded run is what sourceRevision.dirtyCompiledPaths states: the tree was clean across every compiled path.",
+      "reRunNote": "The driver was run a fourth time to correct four reporting defects found by an adversarial audit of this bundle. (1) The unmutated baseline was labelled 'survived', which filed a passing control under mutant-escape vocabulary and inflated the survivor count; it is now 'baseline_passed' and the survivor list holds M14 alone. (2) The scope note did not disclose that the harness compiles exactly ONE test file, which is the actual reason M14 survives here. (3) The record bound no source revision, and 27 of the 30 compiled files carried no digest at all. (4) The mutation spec's own note said 7 tests where the file declares 8. The driver and the spec were edited, and run-record.json was REGENERATED -- the recorded run was not edited after the fact. driverSha256, runRecordJsonSha256, mutationSpecSha256 and runRecordJsonSizeBytes above were re-read from the regenerated files. rawOutputSha256 is UNCHANGED: the test outcomes are deterministic, so the raw log is byte-identical across the two runs, which is itself evidence that the edit changed the reporting and not the measurement. All six extractionManifest block digests are unchanged. The verdicts are otherwise identical (27 cases, 25 caught). collectedAt above is the filesystem mtime of the regenerated run-record.json, because the driver emits no timestamp of its own. The runs recorded here were taken with --out pointing outside the repository and the two artefacts were then copied in, for exactly that reason. One further re-run followed the hardening edits: because the test file changed, run-record.json was regenerated and rawOutputSha256 moved with it. The raw log does NOT carry a source revision: its header records the compiler, the runtime, the worktree token, the test file path and the test file's sha256, and nothing else. What it echoes is that test-file CONTENT digest, so a carried-over log could not have matched once the test file changed; the digest moving is the check that the artefacts belong to this run. An earlier revision of this note said the log echoed the source revision, which would have sent a verifier looking in the log for a revision that is not there. The mechanism is corrected here; the conclusion it supported still holds, on the content digest. mutationSpecSha256 was UNCHANGED by that re-run, since the spec was already final. || 2026-09-16, after an adversarial audit of the hardening wave: a later re-run corrected the spec notes, the test file's yaw-90 axis prose and one leak assertion, so BOTH mutationSpecSha256 and rawOutputSha256 moved with it, and the run was re-taken at the rebased tip rather than carried over. Its verdicts are unchanged: 28 cases, 26 caught, M14 the only survivor, baseline passing.",
       "extractionManifest": [
-        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "22-77", "sha256": "fa23867111ff7146ad2c09c085012edc5fb00fe14a71bd22211880a4543804ba" },
-        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "971-971", "sha256": "8968f03edac4f55a8413162009db9ce24bb582cb55be5d9a0fec81b6307913b9" },
-        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "973-974", "sha256": "24eb4dce296ab6edff8cdbd51cb0cec8c0fda9ee28bc2f18a23537653930dd84" },
-        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "990-1074", "sha256": "56ed63554303aa12d78bf4ad7ed797bae9efee17acf842484068ea5f5fa10a45" },
-        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "1079-1114", "sha256": "249d35e3b0b6268c4446b87c9728c8b133300fb074098f79e5a305a4eb9e1b55" },
-        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs", "lines": "155-163", "sha256": "70a99c1ca3a7bee5492f233225937094feee41b0a8e9317173d6555e23d79191" }
+        {
+          "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "lines": "22-77",
+          "sha256": "fa23867111ff7146ad2c09c085012edc5fb00fe14a71bd22211880a4543804ba"
+        },
+        {
+          "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "lines": "971-971",
+          "sha256": "8968f03edac4f55a8413162009db9ce24bb582cb55be5d9a0fec81b6307913b9"
+        },
+        {
+          "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "lines": "973-974",
+          "sha256": "24eb4dce296ab6edff8cdbd51cb0cec8c0fda9ee28bc2f18a23537653930dd84"
+        },
+        {
+          "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "lines": "990-1074",
+          "sha256": "56ed63554303aa12d78bf4ad7ed797bae9efee17acf842484068ea5f5fa10a45"
+        },
+        {
+          "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+          "lines": "1079-1114",
+          "sha256": "249d35e3b0b6268c4446b87c9728c8b133300fb074098f79e5a305a4eb9e1b55"
+        },
+        {
+          "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs",
+          "lines": "155-163",
+          "sha256": "70a99c1ca3a7bee5492f233225937094feee41b0a8e9317173d6555e23d79191"
+        }
       ],
       "extractionManifestNote": "These six entries are the manifest exactly as produced by the recorded run (run-record.json, extractionManifest, 6 entries). The sha256 values here were read back from that file, and the manifest's own sha256 for each block remains authoritative: recompute from run-record.json rather than trusting this copy. If a copied block ever diverges from production, its digest stops matching."
     },
     "mutations": {
-      "executed": 26,
-      "caught": 25,
-      "survived": ["M14"],
-      "survivedNote": "run-record.json reports status 'survived' for exactly one case, 'M14'. The unmutated control is reported as 'baseline_passed' and excluded from the survivor list, because a run with no mutant applied cannot escape one. M14's survival is a limit of this harness rather than evidence that no test pins the guard: M14 forces ProcedureHintsVisible on in Evaluation mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in the same test assembly asserts the identical guard four times (lines 227, 234, 254, 260), but this harness compiles only the one FMP-11c test file. The extractionScopeNote inside run-record.json states both scope limits.",
-      "baselineControl": { "id": "baseline-unmutated", "status": "survived", "testsRun": 8, "passed": 8, "note": "Unmutated control; its 'survived' status means every test passed, which is the expected outcome, not a surviving mutant." },
+      "executed": 27,
+      "caught": 26,
+      "survived": [
+        "M14"
+      ],
+      "survivedNote": "run-record.json reports status 'survived' for exactly one case, 'M14'. The unmutated control is reported as 'baseline_passed' and excluded from the survivor list, because a run with no mutant applied cannot escape one. M14's survival is a limit of this harness rather than evidence that no test pins the guard: M14 forces ProcedureHintsVisible on in Evaluation mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in the same test assembly asserts ProcedureHintsVisible ten times. What M14 falsifies is the Evaluation-mode suppression, pinned at five sites (lines 254, 260, 287, 328, 360); the other five are the Practice-mode positive (lines 227, 234, 288, 327, 354), which still passes under M14. Only the five Evaluation sites would fail, so citing the Practice sites as pinning evidence would overstate that file's coverage of this guard. None of the ten is compiled here either, since this harness compiles only the one FMP-11c test file. The extractionScopeNote inside run-record.json states both scope limits.",
+      "baselineControl": {
+        "id": "baseline-unmutated",
+        "status": "baseline_passed",
+        "testsRun": 8,
+        "passed": 8,
+        "note": "Unmutated control. The status is 'baseline_passed', not 'survived': a case with no mutant applied has nothing to escape, and filing it under mutant-escape vocabulary inflated the survivor count by one in an earlier revision of this record."
+      },
       "probeErrors": 0,
       "baselineCases": 1,
-      "totalCases": 27,
+      "totalCases": 28,
       "method": "Each mutation is a single-defect production edit applied to the scratch copy of the production sources before compilation; a mutation is CAUGHT when at least one assertion in the test file fails or errors, and SURVIVED when all tests still pass.",
       "survivingMutant": {
         "id": "M14",
@@ -221,7 +270,8 @@
         "PD - echo every observed entity id into the ProjectGuidance hint in the Practice branch",
         "PE - echo every observed entity id into the unavailable branch of ProjectRoute",
         "PF - echo every observed entity id into ProjectGuidance",
-        "PG - ignore the actor's visibility delegate in ProjectPortals"
+        "PG - ignore the actor's visibility delegate in ProjectPortals",
+        "PH - drop the sine term from SpatialFrame.ToWorld while leaving the cosine term intact"
       ],
       "guardsNeverReached": [
         "Occluded",
@@ -245,7 +295,7 @@
       "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/Runner.cs",
       "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/harness.runtimeconfig.json"
     ],
-    "artefactsScopeNote": "These eight files live in a NEW directory, docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/, which is not among the two paths declared in work-graph.json items[number=139].phaseWriteScopes. The directory was created to satisfy the requirement that an executed run carry a reproducible artefact: inlining a 13 KB run record and a 25 KB raw output into the evidence JSON was rejected because the raw output would then no longer be independently digest-checkable as a distinct file. The divergence is declared here rather than hidden, and it cannot be repaired from inside this unit because work-graph.json is not this unit's to edit.",
+    "artefactsScopeNote": "These eight files live in a NEW directory, docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/, which is not among the two paths declared in work-graph.json items[number=139].phaseWriteScopes. The directory was created to satisfy the requirement that an executed run carry a reproducible artefact: inlining a 13 KB run record and a 25 KB raw output into the evidence JSON was rejected because the raw output would then no longer be independently digest-checkable as a distinct file. The divergence is declared here rather than hidden, and it cannot be repaired from inside this unit because work-graph.json is not this unit's to edit. This note was extended on 2026-09-16, when the hardening re-bound the record. No ninth file was added. The new coverage was placed deliberately INSIDE the one test file already in scope, even though the more natural home for a frame-transform assertion is Fmp08aMovingFrameTests.cs in the same test assembly: that file is not among the declared write-scope paths, so putting the assertion there would have opened a second divergence of the same kind this note exists to declare. One edit to Fmp08aMovingFrameTests.cs was drafted and then discarded with git reset for precisely that reason. The only other paths this re-binding touched are the two artefacts inside the already-divergent directory, both listed in artefacts above. A second re-binding, after the adversarial audit of the hardening wave, touched the same two artefacts and the spec note beside them, and again added no ninth file: the corrections were confined to text inside files already declared.",
     "reRunNote": "The driver writes run-record.json and harness-raw-output.txt into its own directory by default. Re-running it there OVERWRITES the committed artefact and makes the digests recorded above stop matching. To re-run without clobbering the recorded evidence, pass --out <a different directory>. If the digests ever stop matching, that is the signal that the artefact has been replaced, not that the record is wrong.",
     "artefactFidelityNote": "harness-raw-output.txt records the worktree it ran in as the token <WORKTREE> in place of an absolute path, so the file carries no operator home directory, no session directory and no account name. The checkout identity that matters is bound by digest instead: executedRun.testFileSha256, runRecordJsonSha256 and rawOutputSha256, plus the source revision recorded in run-record.json's sourceRevision block."
   },
@@ -266,7 +316,13 @@
       "host": "Windows 11 x64",
       "testRecordPlatform": "WindowsEditor"
     },
-    "results": { "total": 7, "passed": 7, "failed": 0, "skipped": 0, "inconclusive": 0 },
+    "results": {
+      "total": 7,
+      "passed": 7,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    },
     "evidenceArtefact": null,
     "evidenceArtefactNote": "No artefact exists for this declared run. It must not be cited as executed evidence.",
     "inputs": {
@@ -284,25 +340,25 @@
       "id": "acceptance_1_authoritative_consistency_scenario",
       "criterion": "each of equipment, portal, frame, report has an executed consistency scenario against its named authoritative response.",
       "satisfied": true,
-      "evidence": "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 110), PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 174), FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 294), ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 349) - all four executed and passing in runRecord.executedRun.",
+      "evidence": "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 110), PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 174), FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 294), ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 368) - all four executed and passing in runRecord.executedRun. The frame scenario additionally builds a yaw 90 frame (lines 334-342): every frame in the authored profile has sin(yaw) = 0, so no authored case pins the SINE term of the transform, and this is the one case that does.",
       "evidenceLimit": "Executed in the out-of-editor harness, not in the Unity Test Runner. See syntheticDisclosure.limits."
     },
     {
       "id": "acceptance_2_observed_ids_exclusion_negative_scenario",
-      "criterion": "ObservedIds-excluded information is absent from the client view and from the route/guidance projection negative scenario. This criterion does NOT cover a UI display surface; no UI surface exists in this unit.",
+      "criterion": "ObservedIds-excluded information is absent from the client view and from the route/guidance projection negative scenario. This criterion does NOT cover a UI display surface: a UI render surface exists in the audited file (NetworkFieldRuntime.cs:1116 OnGUI) but is not exercised by this record. See syntheticDisclosure.limits for that coverage gap.",
       "satisfied": true,
-      "evidence": "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario (line 451): the undiscovered incident id is asserted absent from ObservedState.Entities; both the undiscovered and a discovered incident id are asserted absent from route.ProcedureHint, guidance.ProcedureHint and guidance.RecommendedAction on the available branch and from route.UnavailableReason and guidance.UnavailableReason on the blocked branch; a discovered incident in a foreign region at the actor's own position is asserted not observed; an unobserved report is rejected with CommandCode.NotObserved.",
-      "criterionChangeNote": "The criterion previously read 'absent from UI/view/route'. The UI term was removed because no UI surface is referenced or exercised anywhere in this unit.",
+      "evidence": "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario (line 470): the undiscovered incident id is asserted absent from ObservedState.Entities; both the undiscovered and the discovered incident id are asserted absent from route.ProcedureHint, guidance.ProcedureHint and guidance.RecommendedAction on the available branch, and from route.UnavailableReason on the blocked branch; on the blocked branch guidance.UnavailableReason is first asserted non-empty and then asserted to contain neither id; a discovered incident in a foreign region at the actor's own position is asserted not observed; an unobserved report is rejected with CommandCode.NotObserved. An earlier revision of this entry claimed the discovered id was asserted against guidance.UnavailableReason when only the undiscovered id was; the assertion was added rather than the claim withdrawn.",
+      "criterionChangeNote": "The criterion previously read 'absent from UI/view/route'. The UI term was removed because no UI render surface is EXERCISED by this unit: the test file constructs no MonoBehaviour and the harness never enters OnGUI. That is a coverage gap, not a demonstration that no UI surface exists - NetworkFieldRuntime.cs:1116 declares one, and it renders the very strings this criterion is about. The UI branch of the upstream criterion therefore remains untested here, and it is declared as untested rather than dropped on the false premise that no such surface exists.",
       "criterionSourceNote": "The upstream criterion text in work-graph.json items[number=139].acceptance[1] still reads 'absent from UI/view/route'. That file is not this unit's to edit, so the narrowing is recorded here as a declared divergence, not applied upstream.",
       "evidenceLimit": "The Operate assertion in this test rejects a non-Equipment target via the target-KIND check (CommandCode.UnknownTarget); it is NOT an ObservedIds gate. The route/guidance hints are region-level strings, so the leak assertions bound the contract rather than prove a sanitizer exists.",
-      "supportingScenario": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled (line 604) constructs the observation-vs-authority mismatch explicitly and shows the route follows the observed portal set."
+      "supportingScenario": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled (line 627) constructs the observation-vs-authority mismatch explicitly and shows the route follows the observed portal set."
     },
     {
       "id": "acceptance_3_stale_frame_or_report_mismatch_explicit_failure",
       "criterion": "a stale or mismatched command/report produces an explicit failed/rejected result rather than a client-side silent selection.",
       "satisfied": true,
       "satisfiedScope": "partial - three rejection paths only",
-      "evidence": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection (line 688): CommandCode.StaleTarget for a stale entity revision, CommandCode.UnknownTarget for a non-existent report target, and CommandCode.OutOfReach for a target beyond InterestRadius (25 m).",
+      "evidence": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection (line 735): CommandCode.StaleTarget for a stale entity revision, CommandCode.UnknownTarget for a non-existent report target, and CommandCode.OutOfReach for a target beyond InterestRadius (25 m).",
       "criterionChangeNote": "The criterion previously claimed 'stale frame or report mismatch' generally. No stale FRAME mismatch and no stale REPORT snapshot is constructed by any test in this file, so the claim is narrowed to the three rejection paths that are actually executed rather than left overstated.",
       "criterionSourceNote": "The upstream criterion text in work-graph.json items[number=139].acceptance[2] is unchanged; the narrowing is recorded here as a declared divergence because that file is not this unit's to edit.",
       "evidenceLimit": "The only revision comparison production performs here is the command's ExpectedRevision against the entity's live Revision at admission time; there is no frame-age or report-age comparison under test."
@@ -311,7 +367,7 @@
       "id": "acceptance_4_separate_reporting_of_snapshot_freshness_scope",
       "criterion": "the SnapshotFreshness scope and this unit's projection-consistency scope are reported separately.",
       "satisfied": true,
-      "evidence": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported (line 757), asserted behaviourally in both directions rather than by type inspection: opening and closing the confluence portal moves route.Available (line 790) while the freshness object reads no spatial input; advancing the clock from 10.4 s to 10.9 s moves freshness.IsCurrent (line 792) while the route projection reads no clock. The profile inputs are additionally bound at lines 797-798 (13 regions, 12 portals).",
+      "evidence": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported (line 804), asserted behaviourally in both directions rather than by type inspection: opening and closing the confluence portal moves route.Available (line 837) while the freshness object reads no spatial input; advancing the clock from 10.4 s to 10.9 s moves freshness.IsCurrent (line 839) while the route projection reads no clock. The profile inputs are additionally bound at lines 844-845 (13 regions, 12 portals).",
       "evidenceLimit": "The freshness half duplicates existing SnapshotFreshness suite coverage; the separability witness is the only new claim it carries. An earlier version of this test asserted separability by reflection over the SnapshotFreshness type (absence of a Received/IsCurrent shape difference and a type-name comparison); that was a tautology about the class rather than a behavioural claim and was replaced."
     }
   ]

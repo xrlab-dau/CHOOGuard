@@ -322,6 +322,25 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(roundTripLocal.Y, Is.EqualTo(localPos.Y).Within(0.001));
             Assert.That(roundTripLocal.Z, Is.EqualTo(localPos.Z).Within(0.001));
 
+            // The authored table carries yaw 0 and 180 only, and sin(0) = sin(180) = 0, so every frame above
+            // pins the cosine term of the rotation while leaving the sine term algebraically inert. A quarter
+            // turn is the one rotation where the sine term alone carries the horizontal offsets, so that frame
+            // is built here rather than read from the table. At yaw 90 the rotation sends the local +Z axis
+            // along world +X and the local +X axis along world -Z, so a NEGATIVE local Z offset reaches world
+            // -X: local.Z below is -3.75 for exactly that reason, and reading the sign off the axis direction
+            // instead of off the offset would invert it. Dropping the sine term sends both offsets to the
+            // origin's own X and Z, and flipping its sign sends the local +X offset to world +Z instead, so
+            // either defect falsifies both assertions and the round trip below along with them.
+            var quarterTurn = new SpatialFrame { FrameId = "probe-quarter", Origin = new Point3(2, 0, -1), YawDegrees = 90 };
+            var quarterLocal = new Point3(1.25f, .5f, -3.75f);
+            var quarterWorld = quarterTurn.ToWorld(quarterLocal);
+            Assert.That(quarterWorld.X, Is.EqualTo(quarterTurn.Origin.X - 3.75f).Within(1e-4),
+                "at yaw 90 the local -Z offset lands on world -X, which only the sine term can carry there");
+            Assert.That(quarterWorld.Z, Is.EqualTo(quarterTurn.Origin.Z - 1.25f).Within(1e-4),
+                "at yaw 90 the local +X offset lands on world -Z; a sign-flipped sine term would land it on world +Z");
+            Assert.That(quarterTurn.ToLocal(quarterWorld).DistanceSquared(quarterLocal), Is.LessThan(1e-6),
+                "ToLocal(ToWorld(p)) == p at yaw 90, so the sine term round-trips as the cosine term does");
+
             // Surface 3: Moving frame displacement updates world pose
             var movedFrame = trainFrame.Copy();
             movedFrame.Origin = new Point3(trainFrame.Origin.X + 35.0f, trainFrame.Origin.Y, trainFrame.Origin.Z);
@@ -542,7 +561,11 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
 
             var blockedGuidance = NetworkFieldRuntime.ProjectGuidance(def, blockedView, "metro_platforms");
             Assert.That(blockedGuidance.Available, Is.False);
+            Assert.That(blockedGuidance.UnavailableReason, Is.Not.Empty,
+                "an unavailable guidance projection must state why, or the leak assertion below passes on an empty reason");
             Assert.That(blockedGuidance.UnavailableReason, Does.Not.Contain(unobservedIncidentId));
+            Assert.That(blockedGuidance.UnavailableReason, Does.Not.Contain(discoveredIncidentId),
+                "the guidance reason on the blocked branch must not carry an incident id either, discovered or not");
 
             // Surface 2 negative: observation authority is region-scoped, not merely distance-scoped.
             // An incident the actor has in ObservedIds, standing at the actor's own position, is still
@@ -641,8 +664,32 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                 .Single(p => p.PortalId == portal.Id);
             Assert.That(authoritative.Open, Is.False, "an inactive door must project an authoritatively Closed portal");
 
-            // The client's last snapshot still says the door was open: the two states disagree.
-            var staleObserved = new[] { new ObservedPortalState { PortalId = portal.Id, Open = true } };
+            // The client's last snapshot still says the door was open. It is not written as a literal: it is
+            // the same projection run against a world where the door was still active, so the disagreement
+            // below is produced by the two world states rather than asserted by the fixture. A literal
+            // compared against the value the assertion directly above already pinned could never fail on
+            // its own: the two sides would be the same expression, so the fixture would assert nothing.
+            var openDoorEntity = new EntityState
+            {
+                EntityId = doorEntityId,
+                RegionId = portal.From,
+                Kind = EntityKind.Equipment,
+                Position = portal.FromPoint,
+                Active = true,
+                Revision = 1
+            };
+            var openWorld = new WorldState
+            {
+                WorldId = WorldId,
+                ShiftId = ShiftId,
+                Participants = new[] { actor },
+                Entities = new[] { openDoorEntity }
+            };
+            var openShift = new AuthoritativeShift(openWorld, sink, (p, e) => true);
+            var staleObserved = ConnectedWorldRuntime.ProjectPortals(def, openShift.ExportCheckpoint(), actor, p => true)
+                .Where(p => p.PortalId == portal.Id).ToArray();
+            Assert.That(staleObserved, Has.Length.EqualTo(1),
+                "fixture guard: the door-open projection must carry the portal under test");
             Assert.That(staleObserved[0].Open, Is.Not.EqualTo(authoritative.Open),
                 "fixture guard: the client observation must actually disagree with the authority");
 
