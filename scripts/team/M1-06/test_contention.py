@@ -6,8 +6,9 @@ import unittest
 from pathlib import Path
 import subprocess
 import sys
+import shutil
 
-from contention import BASE_A, BASE_B, load_suppliers, run_fixture, schema_errors
+from contention import BASE_A, BASE_B, REPO, SOURCES, load_suppliers, run_fixture, schema_errors
 
 
 class ContentionRecords(unittest.TestCase):
@@ -78,17 +79,120 @@ class ContentionRecords(unittest.TestCase):
         bad['events'][0]['kind'] = 'undeclared_lease_kind'
         self.assertTrue(schema_errors(bad))
 
-    def test_cli_precondition_failure_preserves_failure_receipt_and_skips_handoff(self):
-        with tempfile.TemporaryDirectory(prefix='m1-06-cli-failure-') as temporary:
-            output = Path(temporary) / 'run'
-            completed = subprocess.run([sys.executable, 'scripts/team/M1-06/contention.py', '--output', str(output),
-                                        '--inject-precondition-failure'], capture_output=True, text=True)
-            self.assertEqual(completed.returncode, 1, completed.stderr)
-            receipt = json.loads((output / 'receipt.json').read_bytes())
-            self.assertEqual(receipt['state'], 'failed')
-            self.assertIn('handoff-dependent-skipped', {c['id'] for c in receipt['cases']})
-            self.assertEqual(receipt['cases'][10]['reason'], 'lease_fields_unrecordable')
-            self.assertFalse(any(c['id'] == 'handoff' for c in receipt['cases']))
+
+class ContentionCLI(unittest.TestCase):
+    def setUp(self):
+        # Commit the working source in a disposable repo: tests also work before
+        # the implementation is committed in the developer's checkout.
+        temporary = tempfile.TemporaryDirectory(prefix='m1-06-cli-')
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.repo = self.root / 'repo'
+        self.repo.mkdir()
+        for relative in SOURCES:
+            target = self.repo / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(REPO / relative, target)
+        self.git('init', '--quiet')
+        self.commit()
+        self.output = self.root / 'run'
+
+    def git(self, *args):
+        return subprocess.run(['git', '-c', 'core.autocrlf=false', '-c', 'commit.gpgsign=false',
+                               '-c', 'core.hooksPath=' + str(self.root / 'no-hooks'),
+                               '-c', 'user.name=Synthetic fixture', '-c', 'user.email=fixture@example.invalid',
+                               *args], cwd=self.repo, check=True, capture_output=True, text=True)
+
+    def commit(self):
+        self.git('add', '--all')
+        self.git('commit', '--quiet', '-m', 'Synthetic CLI fixture')
+
+    def cli(self, *args):
+        return subprocess.run([sys.executable, str(self.repo / SOURCES[4]), '--output', str(self.output), *args],
+                              cwd=self.repo, capture_output=True, text=True)
+
+    def assert_cannot_proceed(self, result):
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertIn('cannot_proceed', result.stderr)
+        self.assertNotIn('Traceback', result.stderr)
+        self.assertFalse(self.output.exists())
+
+    def test_normal_cli_and_existing_output_refusal(self):
+        result = self.cli()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        receipt = json.loads((self.output / 'receipt.json').read_bytes())
+        self.assertEqual(receipt['state'], 'passed')
+        self.assertEqual(len(receipt['cases']), 33)
+        self.assertEqual(receipt['skippedSteps'], [])
+        before = {str(p.relative_to(self.output)): p.read_bytes() for p in self.output.rglob('*') if p.is_file()}
+        self.assertEqual(self.cli().returncode, 2)
+        after = {str(p.relative_to(self.output)): p.read_bytes() for p in self.output.rglob('*') if p.is_file()}
+        self.assertEqual(before, after)
+
+    def test_initial_and_reacquire_refusal_preserve_evidence_and_skip_dependents(self):
+        for injection, failed, skipped in (
+            ('initial', 'handoff-start', {'handoff', 'handoff-acquire', 'old-holder-write', 'cancel'}),
+            ('reacquire', 'handoff-acquire', {'cancel'}),
+        ):
+            with self.subTest(injection=injection):
+                self.output = self.root / injection
+                result = self.cli('--inject-failure', injection)
+                self.assertEqual(result.returncode, 1, result.stderr)
+                receipt = json.loads((self.output / 'receipt.json').read_bytes())
+                self.assertEqual(receipt['state'], 'failed')
+                cases = {c['id']: c for c in receipt['cases']}
+                self.assertEqual([c['id'] for c in cases.values() if not c['passed']], [failed])
+                self.assertEqual(cases[failed]['reason'], 'lease_fields_unrecordable')
+                self.assertEqual({s['id'] for s in receipt['skippedSteps']}, skipped)
+                self.assertFalse(skipped & cases.keys())
+                self.assertTrue(receipt['journalMatchesCalls'])
+                self.assertEqual(sum(map(len, receipt['journals'].values())), len(cases))
+                self.assertEqual(len(cases) + len(skipped), 33)
+                self.assertTrue(receipt['eventOrderPreserved'])
+                self.assertTrue(receipt['privateInputUnchanged'])
+
+    def test_changed_suppliers_are_not_executed(self):
+        for relative in (SOURCES[1], SOURCES[3]):
+            with self.subTest(relative=relative):
+                target = self.repo / relative
+                original = target.read_bytes()
+                target.write_bytes(original + b'\nfrom pathlib import Path\nPath(__file__).with_suffix(".marker").touch()\n')
+                try:
+                    self.assert_cannot_proceed(self.cli())
+                    self.assertFalse(target.with_suffix('.marker').exists())
+                finally:
+                    target.write_bytes(original)
+
+    def test_missing_suppliers_are_cannot_proceed(self):
+        for relative in (SOURCES[1], SOURCES[3]):
+            with self.subTest(relative=relative):
+                target = self.repo / relative
+                original = target.read_bytes()
+                target.unlink()
+                try:
+                    self.assert_cannot_proceed(self.cli())
+                finally:
+                    target.write_bytes(original)
+
+    def test_committed_supplier_syntax_error_is_cannot_proceed(self):
+        target = self.repo / SOURCES[3]
+        target.write_bytes(target.read_bytes() + b'\ninvalid syntax !!\n')
+        self.commit()
+        self.assert_cannot_proceed(self.cli())
+
+    def test_unexpected_exception_retains_prior_safe_journal(self):
+        target = self.repo / SOURCES[1]
+        target.write_bytes(target.read_bytes() + b'\ndef fail(*args, **kwargs):\n    raise RuntimeError("private sentinel")\nLeaseRegistry.handoff = fail\n')
+        self.commit()
+        result = self.cli()
+        self.assertEqual(result.returncode, 1, result.stderr)
+        raw = (self.output / 'receipt.json').read_text(encoding='utf-8')
+        receipt = json.loads(raw)
+        self.assertEqual(receipt['state'], 'failed')
+        self.assertEqual(receipt['failures'], [{'id': 'handoff', 'type': 'RuntimeError'}])
+        self.assertTrue(receipt['journals']['handoff'])
+        self.assertTrue(receipt['journalMatchesCalls'])
+        self.assertNotIn('private sentinel', raw + result.stderr)
 
 
 if __name__ == '__main__':

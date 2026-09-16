@@ -42,3 +42,17 @@ a failed receipt; invalid/missing supplier input stops with `cannot_proceed`.
 The candidate index binds each immutable run's receipt and public files by hash.
 Source qualification and final acceptance remain review decisions; no accept index
 is produced.
+
+Unexpected acquisition refusal skips dependent operations. `skippedSteps` names
+those operations and their unmet prerequisites; they are neither passed cases
+nor invented journal entries. A supplier call exception retains earlier synthetic
+cases/journals and records only its step and exception type, without private error
+text. Any such failure or skipped step makes the run fail (exit 1).
+
+The CLI tests create disposable committed copies of the current source, so they
+can run before committing an edit. They cover normal execution/output reuse,
+initial acquisition and reacquisition refusal, changed/missing suppliers,
+committed supplier syntax errors, and retained evidence after a call exception.
+Changed/missing source and invalid imports stop before output creation (exit 2).
+For reproducible synthetic failure receipts, use `--inject-failure initial` or
+`--inject-failure reacquire`; the receipt labels this injection explicitly.
