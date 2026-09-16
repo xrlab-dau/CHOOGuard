@@ -838,7 +838,7 @@ namespace ChooGuard.Foundation.Multiplayer
                 Portals = simulation != null ? simulation.ProjectPortals(actor, p => ServerCanSeePortal(actor, p)) : connectedWorld == null ? Array.Empty<ObservedPortalState>() : ConnectedWorldRuntime.ProjectPortals(
                     connectedWorld.Definition, shift.ExportCheckpoint(), actor, p => ServerCanSeePortal(actor, p)),
                 MovementStatus = movementStatus.TryGetValue(client, out var movement) ? movement : "",
-                TrainingMode = simulation != null ? simulation.TrainingMode : FoundationTrainingMode.Practice };
+                TrainingMode = ProjectedTrainingMode(simulation) };
             if (simulation != null)
             {
                 projected.Physical = simulation.Project(shift.ReadSimulation(), actor, point => ServerCanSeePoint(actor, point),projected.Observed.Entities);
@@ -973,6 +973,12 @@ namespace ChooGuard.Foundation.Multiplayer
         private static string SyntheticLabel(ConnectedWorldDefinition definition, string geometryStatus) =>
             SyntheticBanner + " (" + (definition.Classification ?? "") + ", " + geometryStatus + ")";
 
+        /// <summary>Server-authoritative training mode carried by every projected field view.
+        /// The mode comes from the running coupled simulation and never forks the world identity;
+        /// a session without a coupled simulation projects Practice.</summary>
+        public static FoundationTrainingMode ProjectedTrainingMode(FoundationWorldSimulation simulation) =>
+            simulation != null ? simulation.TrainingMode : FoundationTrainingMode.Practice;
+
         /// <summary>Pure projection of the observed current location onto one displayed state.
         /// Thirteen profile region IDs map one-to-one onto thirteen distinct states.</summary>
         public static RouteDisplayState ProjectCurrentLocation(ConnectedWorldDefinition definition, FieldView view)
@@ -990,7 +996,10 @@ namespace ChooGuard.Foundation.Multiplayer
                 return state;
             }
             state.RegionId = region.Id; state.RegionLabel = region.Label; state.FrameId = region.FrameId;
-            state.TrainingMode = view != null ? view.TrainingMode : FoundationTrainingMode.Practice;
+            // The authored geometry status stays part of the current-location state: the synthetic
+            // banner and the route label below both consume it and must not be emptied by the mode field.
+            state.GeometryStatus = region.GeometryStatus;
+            state.TrainingMode = view.TrainingMode;
             state.ProcedureHintsVisible = state.TrainingMode == FoundationTrainingMode.Practice;
             state.SyntheticLabel = SyntheticLabel(definition, region.GeometryStatus);
             state.UnavailableReason = "목적지 미선택 · 사용 불가";

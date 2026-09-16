@@ -3,22 +3,23 @@
   "workId": "FMP-11b",
   "issue": 138,
   "decisionId": "FMP-11b-D01",
-  "decisionState": "accepted_decision_blocks_midshift_transition",
-  "approved": true,
+  "decisionState": "unapproved_proposal_blocked_by_default",
+  "recordKind": "proposal_not_approved",
+  "approved": false,
+  "approvalRef": "",
   "proposalMode": "exclusive",
-  "canonicalWriteAllowed": true,
-  "recordKind": "policy_decision",
-  "authority": "FMP-11b mid-shift mode transition specification and blocked reason contract",
-  "decision": {
-    "summary": "Practice and Evaluation modes operate within the exact same server world identity and topology. Mid-shift mode transition is strictly blocked during an active shift to preserve trajectory integrity, unannounced incident progression, and scoring isolation. Any training mode switch requires a clean shift restart with a verified roster.",
+  "canonicalWriteAllowed": false,
+  "attribution": "unattributed_proposal_no_linked_authority",
+  "proposal": {
+    "summary": "Proposal only, not an accepted policy decision. Practice and Evaluation modes are asked to operate within the exact same server world identity and topology, and a mid-shift mode transition is to be refused during an active shift so that trajectory integrity, unannounced incident progression and scoring isolation survive. Any training mode switch would require a clean shift restart with a verified roster.",
     "rules": [
       {
         "id": "R1",
-        "rule": "Both Practice and Evaluation modes must consume the existing FoundationTrainingMode enum, FoundationSimulationProfile.TrainingMode, and FoundationWorldSimulation.TrainingMode getter without duplicating enums or creating separate world branches."
+        "rule": "Both Practice and Evaluation modes consume the existing FoundationTrainingMode enum, FoundationSimulationProfile.TrainingMode, and the FoundationWorldSimulation.TrainingMode getter without duplicating enums or creating separate world branches."
       },
       {
         "id": "R2",
-        "rule": "In Practice mode, requested guidance responses include approved synthetic procedure hints, recommended actions, and evidence basis tags."
+        "rule": "In Practice mode, requested guidance responses include the synthetic procedure hint, recommended action and evidence basis tag."
       },
       {
         "id": "R3",
@@ -26,21 +27,43 @@
       },
       {
         "id": "R4",
-        "rule": "Both modes assert the same server world identity (WorldId, ShiftId, 13 regions, 12 portals)."
+        "rule": "Both modes project the same server world identity (WorldId, ShiftId, 13 regions, 12 portals) and differ only in the mode response filtering."
       },
       {
         "id": "R5",
-        "rule": "Mid-shift mode transition is unsupported and blocked without an accepted PM policy decision. Attempting a transition returns blocked and does not auto-restart or mutate the active simulation."
+        "rule": "A mid-shift mode transition is refused while the shift is live: the call returns false with the documented blocked reason and does not auto-restart, clear or otherwise mutate the active simulation. A request for the mode already running is an idempotent no-op."
+      },
+      {
+        "id": "R6",
+        "rule": "Adding the mode to a projection must not delete the authored geometry status, which the current-location banner and the route synthetic label consume."
       }
     ]
   },
   "blockedReason": "Mid-shift mode transition is blocked without an accepted PM policy decision (FMP-11b-D01). Active shift trajectory and scoring fairness require a clean shift restart.",
+  "blockedReasonSource": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/FoundationWorldSimulation.cs:FoundationWorldSimulation.MidShiftTransitionBlockedReason",
   "limits": [
+    "No verifiable PM policy decision ref is linked to this record. It is an unapproved proposal and must not be read as an approved policy decision; approved=false and canonicalWriteAllowed=false above say exactly that.",
+    "Implementing a safe default block in code is not evidence that the clean-shift-restart policy itself was approved.",
+    "These rules are asserted by tests, not accepted by a human authority. Test assertions are not staff procedure or facility acceptance.",
     "Does not invent official railway procedures or scoring rules.",
     "Provisional synthetic guidance evidence basis only; not surveyed facility or operational acceptance."
   ],
   "verification": {
     "testClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP11bModeResponseTests",
-    "testPath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11bModeResponseTests.cs"
+    "testPath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11bModeResponseTests.cs",
+    "executionState": "not_run_in_this_worktree",
+    "executionNote": "No Unity batchmode run was performed by the author of this record; the orchestrator runs Unity. Each rule below records only which test asserts it, never a PASS.",
+    "rules": [
+      { "id": "R1", "assertedBy": "FoundationTrainingModeEnumAndProfileValidationConsumedDirectly", "state": "asserted_pending_execution" },
+      { "id": "R2", "assertedBy": "PracticeModeGuidanceResponseIncludesApprovedEvidenceFields", "state": "asserted_pending_execution" },
+      { "id": "R3", "assertedBy": "EvaluationModeResponseExcludesProcedureHintFieldsInNegativeTest", "state": "asserted_pending_execution" },
+      { "id": "R4", "assertedBy": "BothModesProjectTheSameServerWorldIdentityAndTopology", "state": "asserted_pending_execution" },
+      { "id": "R5", "assertedBy": "MidShiftModeTransitionIsBlockedWithoutAcceptedDecision", "state": "asserted_pending_execution" },
+      { "id": "R6", "assertedBy": "ModeFieldDoesNotReplaceGeometryStatusOrRouteLabelInputs", "state": "asserted_pending_execution" }
+    ],
+    "notVerified": [
+      "The clean-shift-restart policy itself: no PM decision ref is linked and no authority accepted it.",
+      "Any Unity test result: this record's rules are asserted in source only."
+    ]
   }
 }
