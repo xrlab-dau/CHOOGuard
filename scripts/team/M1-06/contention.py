@@ -204,7 +204,7 @@ def main():
             with (args.output / "public" / name).open("xb") as stream:
                 stream.write(data)
         with (args.output / "receipt.json").open("xb") as stream:
-            stream.write(record_pipeline.encoded(report))
+            stream.write(pipeline.encoded(report))
         print(json.dumps({"state": report["state"], "steps": len(report["cases"]), "sourceRevision": revision}))
         return {"passed": 0, "failed": 1, "cannot_proceed": 2}[report["state"]]
     except (OSError, ValueError, SchemaError, subprocess.CalledProcessError) as error:
