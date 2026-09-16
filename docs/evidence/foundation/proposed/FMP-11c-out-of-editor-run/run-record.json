@@ -12,8 +12,8 @@
     "compiler": "Unity-bundled Roslyn csc.dll"
   },
   "sourceRevision": {
-    "head": "7c9b1c9ef9ed366c022f6cd78f035b37a7d5cbcd",
-    "describe": "7c9b1c9",
+    "head": "4ca07e053af4544771e5487da59f6657463cd6ac",
+    "describe": "4ca07e0",
     "branch": "test/139-observed-route-consistency-hardening",
     "dirtyCompiledPaths": [
       "none: the compiled paths matched HEAD exactly at run time"
@@ -233,7 +233,7 @@
       "sha256": "1fdee2d5fde679a70938d738182c6e9776acb5a4607bb07ac9258d8838197718"
     }
   ],
-  "extractionScopeNote": "TWO scope limits make 'survived' ambiguous, and this note states both. (1) PRODUCTION SOURCE: the compiled production surface is EXTRACTED LINE RANGES, not whole files. This run compiled 189 extracted lines: ConnectedWorldRuntime.cs 9 of 211 lines; NetworkFieldRuntime.cs 180 of 1296 lines. Code outside the extracted ranges is not compiled, so a mutation landing there cannot fail any test and reads as 'survived' because it never ran -- not because a test has a hole. (2) TEST SOURCE: exactly ONE test file is compiled (FMP11cObservedRouteConsistencyTests.cs). It is one of 27 test files in the same test assembly; the other 26 are not compiled. A mutation pinned only by a sibling file therefore also reads as 'survived' here. That is the reading which applies to M14, the one mutation this run reports as surviving: M14 forces ProcedureHintsVisible on in Evaluation mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in that same assembly asserts the identical guard four times (lines 227, 234, 254, 260). Because this harness never compiles that sibling file, M14's survival here is a limit of the harness, not evidence that no test pins the guard. Both readings are distinguishable only by crossing this note with extractionManifest and with the compiledInputs list.",
+  "extractionScopeNote": "TWO scope limits make 'survived' ambiguous, and this note states both. (1) PRODUCTION SOURCE: the compiled production surface is EXTRACTED LINE RANGES, not whole files. This run compiled 189 extracted lines: ConnectedWorldRuntime.cs 9 of 211 lines; NetworkFieldRuntime.cs 180 of 1296 lines. Code outside the extracted ranges is not compiled, so a mutation landing there cannot fail any test and reads as 'survived' because it never ran -- not because a test has a hole. (2) TEST SOURCE: exactly ONE test file is compiled (FMP11cObservedRouteConsistencyTests.cs). It is one of 27 test files in the same test assembly; the other 26 are not compiled. A mutation pinned only by a sibling file therefore also reads as 'survived' here. That is the reading which applies to M14, the one mutation this run reports as surviving: M14 forces ProcedureHintsVisible on in Evaluation mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in that same assembly pins the Evaluation-mode suppression M14 falsifies at five sites (lines 254, 260, 287, 328, 360), alongside the matching Practice-mode positive at 227, 234, 288, 327 and 354. Only the five Evaluation sites would fail under M14; the Practice sites still pass, so citing them as pinning evidence would overstate the file's coverage of this guard. Because this harness never compiles that sibling file, M14's survival here is a limit of the harness, not evidence that no test pins the guard. Both readings are distinguishable only by crossing this note with extractionManifest and with the compiledInputs list.",
   "results": [
     {
       "id": "baseline-unmutated",
@@ -243,7 +243,7 @@
       "passed": 8,
       "failedCount": 0,
       "caughtBy": [],
-      "elapsedSeconds": 0.8
+      "elapsedSeconds": 0.9
     },
     {
       "id": "M01",
@@ -255,7 +255,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.9
     },
     {
       "id": "M02",
@@ -267,7 +267,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M03",
@@ -304,7 +304,7 @@
       "caughtBy": [
         "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.8
     },
     {
       "id": "M06",
@@ -316,7 +316,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M07",
@@ -328,7 +328,7 @@
       "caughtBy": [
         "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M08",
@@ -341,7 +341,7 @@
         "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M09",
@@ -356,7 +356,7 @@
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.6
     },
     {
       "id": "M10",
@@ -408,7 +408,7 @@
       "caughtBy": [
         "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M14",
@@ -430,7 +430,7 @@
       "caughtBy": [
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M16",
@@ -442,7 +442,7 @@
       "caughtBy": [
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M17",
@@ -454,7 +454,7 @@
       "caughtBy": [
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.6
     },
     {
       "id": "M18",
@@ -466,7 +466,7 @@
       "caughtBy": [
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M19",
@@ -490,7 +490,7 @@
       "caughtBy": [
         "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.6
     },
     {
       "id": "PC",
@@ -553,7 +553,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.6
     },
     {
       "id": "PG",
@@ -565,7 +565,7 @@
       "caughtBy": [
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "PH",
@@ -577,7 +577,7 @@
       "caughtBy": [
         "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     }
   ]
 }
