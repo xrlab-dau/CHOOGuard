@@ -6,7 +6,10 @@
   "approval": "pending",
   "historicalMetadataCorrections": [
     {
-      "runIds": ["20260916-kkosso-03", "20260916-kkosso-05"],
+      "runIds": [
+        "20260916-kkosso-03",
+        "20260916-kkosso-05"
+      ],
       "recordedAt": "The midnight timestamps in these historical entries were placeholders, not observed execution times; actual execution times are unknown.",
       "checks": "Historical check summaries are not current-code validation. In particular, failedDependencyReceipt covered initial refusal only, not reacquire refusal or unexpected exceptions.",
       "sourceRevision": "These entries name pre-rebase local commits. They are preserved as historical receipts; current evidence must bind a new commit reachable from the PR branch.",
@@ -97,6 +100,87 @@
         "docs/evidence/M1-06/runs/20260916-kkosso-05/receipt.json": {
           "sha256": "0a5abcef4e2bf45a53be06ea4cc3b5c1f5cee4a0d33b11a31fe5a5efbf68b2c6",
           "bytes": 49367
+        }
+      }
+    },
+    {
+      "id": "20260916-kkosso-06-normal",
+      "recordedAt": "2026-09-16T02:19:38.158307+00:00",
+      "sourceRevision": "655c19e2332f6e9462e151671c37122ddf27a3eb",
+      "state": "passed",
+      "steps": 33,
+      "skippedSteps": 0,
+      "faultInjection": null,
+      "checks": {
+        "integrationTests": 13,
+        "sourceAndOutputDigests": "verified"
+      },
+      "files": {
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-normal/public/events.json": {
+          "sha256": "f9e0554f2243b56cf19c0f1c6a76f5e145bab09294f919db95c7f8e9a0b9498e",
+          "bytes": 4358
+        },
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-normal/public/manifest.json": {
+          "sha256": "81c93e8f5f8187773ed5d0003bc5da9b43b087537517a8ac80557c0ea4dc4a99",
+          "bytes": 334
+        },
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-normal/receipt.json": {
+          "sha256": "67a65c72d3cea568cb4b4d693fe90afceee13df8dad709a0e185efa9395263fd",
+          "bytes": 49485
+        }
+      }
+    },
+    {
+      "id": "20260916-kkosso-06-initial",
+      "recordedAt": "2026-09-16T02:19:41.154079+00:00",
+      "sourceRevision": "655c19e2332f6e9462e151671c37122ddf27a3eb",
+      "state": "failed",
+      "steps": 29,
+      "skippedSteps": 4,
+      "faultInjection": "initial",
+      "checks": {
+        "integrationTests": 13,
+        "sourceAndOutputDigests": "verified"
+      },
+      "files": {
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-initial/public/events.json": {
+          "sha256": "f00acb57a14c7e7aa41b820805442cfe8bad5df73ae85bc3d5708502e93d8c30",
+          "bytes": 3842
+        },
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-initial/public/manifest.json": {
+          "sha256": "2b7f85b4eb76be6ba8bc88715a539df7adc09c9c26adad216d11f7de78c4252e",
+          "bytes": 334
+        },
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-initial/receipt.json": {
+          "sha256": "813b1a6b47d83ea49b3e5ba19c9d40c31ad58d4ef9e03b160fca5538d6aefb98",
+          "bytes": 45898
+        }
+      }
+    },
+    {
+      "id": "20260916-kkosso-06-reacquire",
+      "recordedAt": "2026-09-16T02:19:44.180547+00:00",
+      "sourceRevision": "655c19e2332f6e9462e151671c37122ddf27a3eb",
+      "state": "failed",
+      "steps": 32,
+      "skippedSteps": 1,
+      "faultInjection": "reacquire",
+      "checks": {
+        "integrationTests": 13,
+        "sourceAndOutputDigests": "verified"
+      },
+      "files": {
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-reacquire/public/events.json": {
+          "sha256": "bae433f4588dbba1862b49b533ec5bff5cb43730525917f7dd04eb7abbef27b4",
+          "bytes": 4227
+        },
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-reacquire/public/manifest.json": {
+          "sha256": "e1fe218b179dd5e215dacca82da790698e050374624a4d44b2f3b26245522e0b",
+          "bytes": 334
+        },
+        "docs/evidence/M1-06/runs/20260916-kkosso-06-reacquire/receipt.json": {
+          "sha256": "e181f04df35c7444ce6c3ac23f6d4c35b03c5794e87775fd86f2bd679dfdad44",
+          "bytes": 48900
         }
       }
     }
