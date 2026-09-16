@@ -9,6 +9,8 @@ Run with Python 3 and `jsonschema` (also used by repository validation):
 
 ```sh
 python scripts/team/M1-06/test_contention.py
+# After committing evidence/index edits; requires complete Git history.
+python scripts/team/M1-06/test_evidence_index.py
 # Commit source first; choose a fresh output path for every recorded run.
 python scripts/team/M1-06/contention.py --output docs/evidence/M1-06/runs/UNIQUE-RUN
 ```
@@ -42,6 +44,15 @@ a failed receipt; invalid/missing supplier input stops with `cannot_proceed`.
 The candidate index binds each immutable run's receipt and public files by hash.
 Source qualification and final acceptance remain review decisions; no accept index
 is produced.
+
+The separate standard-library index regression reads the index and all run files
+from Git `HEAD`, not uncommitted working files. It checks JSON parsing, exact file
+membership, byte lengths, SHA-256, receipt/index agreement and all six source-file
+bindings for every run. For historical pre-rebase runs, `sourceVerificationRevision`
+names a reachable commit with identical recorded source bytes; `sourceRevision`
+retains the original execution reference. Historical timing/acceptance limits
+remain unchanged. Existing CI does not discover either M1-06 test file; run both
+commands locally when reviewing this candidate.
 
 Unexpected acquisition refusal skips dependent operations. `skippedSteps` names
 those operations and their unmet prerequisites; they are neither passed cases
