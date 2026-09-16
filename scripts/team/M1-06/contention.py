@@ -138,6 +138,9 @@ def run_fixture(inject_precondition_failure=False):
         journals = {name: r.journal() for name, r in registries.items()}
         matched = sum(map(len, journals.values())) == len(cases)
         for case in cases:
+            if case["journalSeq"] is None:
+                matched = False
+                continue
             entry = journals[case["registry"]][case["journalSeq"] - 1]
             matched = matched and all(entry[key] == case[key] for key in ("reason", "holder", "baseRef", "fence", "details"))
             matched = matched and (entry["result"] == "accepted") == case["accepted"]

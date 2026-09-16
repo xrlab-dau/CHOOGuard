@@ -1,5 +1,6 @@
 """M1-01/M1-05 synthetic integration tests; no live Editor or shared registry."""
 import copy
+import json
 import tempfile
 import unittest
 from pathlib import Path
