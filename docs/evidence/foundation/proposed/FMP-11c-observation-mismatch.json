@@ -8,39 +8,65 @@
   "artifacts": [
     "artifact:139:fmp11c-mismatch-evidence:candidate"
   ],
-  "status": "candidate_run_recorded",
+  "status": "candidate_run_recorded_out_of_editor",
+  "statusNote": "This record replaces the earlier 'candidate_run_recorded' status because the run it describes is an out-of-editor harness run, not a Unity Test Runner run. The earlier declared Unity CLI run is retained verbatim under previousDeclaredRun and marked unverified; it was not deleted, but it also cannot be relied on.",
   "syntheticDisclosure": {
     "authority": "foundation/world/connected-world-profile.json",
     "classification": "synthetic_design_not_facility_acceptance",
     "geometrySchemaVersion": 1,
     "statement": "All 13 regions, 12 portals, 3 frames, route geometry, portal closure state, entity observations, and team reports in this record are synthetic design data. They are not surveyed Korail facility geometry and are not operational procedure acceptance.",
     "limits": [
-      "All entity placements, roles, teams, frames, and portal closures are synthetic design inputs.",
-      "Negative observation tests assert confidentiality of synthetic incident data before discovery, not physical security verification.",
-      "The four surfaces (Authoritative Server, Projected Client View, Route/Guidance Projection, and UI Display) operate under pure algorithmic contracts."
+      "DATA: All entity placements, roles, teams, frames, and portal closures are synthetic design inputs.",
+      "DATA: Negative observation tests assert confidentiality of synthetic incident data before discovery, not physical security verification.",
+      "CAPABILITY: The executed run is NOT NUnit and NOT the Unity Test Runner. It compiles the test file with the Unity-bundled Roslyn csc.dll plus the .NET 6.0.21 runtime against verbatim copies of the production sources, and runs the [Test] methods under a console runner and a local NUnit-shaped assertion shim. It therefore cannot show [OneTimeSetUp]/[SetUp] lifecycle, the Unity editor environment, test categories, NUnit3 XML, asset import, or PlayMode. A green run here shows the assertions hold against the production sources; it does NOT show the same tests pass inside the editor.",
+      "CAPABILITY: Two production files under test (Multiplayer/Runtime/NetworkFieldRuntime.cs, Multiplayer/Runtime/ConnectedWorldRuntime.cs) are MonoBehaviours that depend on Unity.Netcode/Unity.Collections/UnityEngine, for which no assembly exists outside the Unity project Library. Their projection methods are compiled from verbatim line-range copies, not from their compiled assemblies. The copied blocks and their per-block sha256 are listed under runRecord.executedRun.extractionManifest; if production diverges from a copied range, that block's digest stops matching and the run must be re-taken.",
+      "CAPABILITY: There is NO UI SURFACE in this unit. The test file references no panel, view or display type, and the executed run exercises no UI code. The 'four surfaces' named in the acceptance criteria are realised here as three exercised surfaces - authoritative server state, the client observed view, and the route/guidance projection - plus a negative command-submission surface. No UI display claim is made or tested by this record.",
+      "COVERAGE GAP: A stale FRAME mismatch and a stale REPORT mismatch are NOT exercised. The mismatch test covers a stale entity revision (CommandCode.StaleTarget), a non-existent report target (CommandCode.UnknownTarget) and an out-of-reach target (CommandCode.OutOfReach). A frame that has moved since the client read its snapshot is not constructed, and neither is a stale report snapshot. acceptance_3 is narrowed to the three rejection paths that are actually executed.",
+      "COVERAGE GAP: Mutation probe M14 SURVIVES the repaired suite. M14 forces ProcedureHintsVisible on at NetworkFieldRuntime.cs:1001 even in Evaluation mode; no test in this file moves with that behaviour. The mode-scoped visibility rule is owned by issue #138's FMP-11b scope, not by this unit, and is declared here rather than claimed covered.",
+      "COVERAGE GAP: Several production branches are never reached by any test in this file, so a mutation applied to them would be a no-op and was not filed as a surviving mutant: Occluded, TargetBlocked, RoleDenied, IdentityMismatch, WrongWorld, AuthorityBusy, CommandIdConflict, canOperate and the Evaluation mode branch. Their absence from mutation results is a coverage hole, not evidence that they are correct.",
+      "COVERAGE GAP: The SnapshotFreshness half of the acceptance-4 test duplicates coverage already held by the existing SnapshotFreshness test suite. It is retained here only as the second term of a separability assertion and is not offered as new freshness coverage.",
+      "COVERAGE GAP: Mutation probing targeted the projection surfaces and the named rejection codes. It is not an exhaustive mutation of every branch in the two extracted files."
     ]
   },
   "runRecord": {
     "recordKind": "complete_run_record",
     "branch": "feature/139-fmp11c-observed-route-consistency",
+    "commit": "578c024f23a0c7ef5c14aa12ce3f79f23dec0341",
+    "commitNote": "The run was executed against the candidate working tree whose content is pinned by inputs[].candidateSha256 and runRecord.executedRun.testFileSha256 below. The candidate commit is created after this record, so a record cannot self-reference the sha of the commit that contains it. This field names the HEAD commit at the time the run was taken; binding to content is by digest, not by this sha.",
     "baseRef": "develop",
-    "baseCommit": "b233fdb964323d0d936215ddb1348570fac2a0ef",
-    "commitNote": "Runs executed against the isolated feature branch with candidate test implementation and verified against local Unity CLI Editor test runner.",
+    "baseCommit": "3e59f97ee1eaa8e9c71ba07a274e03ad77805310",
+    "baseCommitNote": "Re-derived at repair time as the merge-base of this branch with origin/develop. The previously recorded baseCommit b233fdb964323d0d936215ddb1348570fac2a0ef was the develop tip at branch creation and is no longer the merge base.",
     "editor": {
       "version": "6000.3.23f1",
-      "projectVersionFile": "m_EditorVersion: 6000.3.23f1"
+      "projectVersionFile": [
+        "m_EditorVersion: 6000.3.23f1",
+        "m_EditorVersionWithRevision: 6000.3.23f1 (09d2ecc7fb28)"
+      ],
+      "usedByExecutedRun": false,
+      "usedByExecutedRunNote": "The Unity editor was not launched for the executed run. Only the editor's bundled toolchain (Roslyn csc.dll and the .NET runtime under Contents/Resources/Scripting) was used, which is why the version is still pinned here."
+    },
+    "declaredTestPlatform": {
+      "testPlatform": "EditMode",
+      "basis": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/ChooGuard.Foundation.Multiplayer.Tests.asmdef declares \"includePlatforms\": [\"Editor\"], so the Unity Test Runner would collect this class in EditMode only. A PlayMode check command for this issue was rejected and corrected on bugfix/138-139-declared-check-platform.",
+      "verifiedInEditor": false,
+      "verifiedInEditorNote": "Declared from the asmdef, not observed in a runner: no Unity Test Runner run was executed for this record."
     },
     "platform": {
-      "testPlatform": "EditMode",
-      "host": "Windows 11 x64",
-      "testRecordPlatform": "WindowsEditor"
+      "testPlatform": "out-of-editor console (not a Unity test platform)",
+      "sysPlatform": "darwin",
+      "machine": "arm64",
+      "testRecordPlatform": "OSXEditor host, no editor process",
+      "dotnetRuntime": "6.0.21",
+      "compiler": "Unity-bundled Roslyn csc.dll",
+      "compilerPath": "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scripting/DotNetSdkRoslyn/csc.dll"
     },
     "inputs": {
       "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs": {
-        "candidateSha256": "ca1de493bee331b155f6f5f437771ef0a39bb0e9f73fc0ca5768f9049c656f68",
-        "candidateSizeBytes": 26261,
-        "candidateLineCount": 544,
-        "newFileAtBase": true
+        "candidateSha256": "0b873133e33c6fd23c410d37fff3455af8a51d581e5d83bc1fb34a40eb35d06b",
+        "candidateSizeBytes": 42893,
+        "candidateLineCount": 801,
+        "newFileAtBase": true,
+        "candidateDigestNote": "Refreshed at repair time. The previously recorded candidateSha256 ca1de493bee331b155f6f5f437771ef0a39bb0e9f73fc0ca5768f9049c656f68 / 26261 bytes / 544 lines was stale and referred to the pre-repair file."
       },
       "foundation/world/connected-world-profile.json": {
         "candidateSha256": "e2cae663ce04b63b197c99dda7a26a394619430e47cb071834254c3d23f94cba",
@@ -48,6 +74,25 @@
         "readOnly": true
       },
       "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": {
+        "readOnly": true,
+        "compiledFrom": "verbatim line-range copy",
+        "copiedBlockDigests": [
+          { "lines": "22-77", "sha256": "fa23867111ff7146" },
+          { "lines": "971-971", "sha256": "8968f03edac4f55a" },
+          { "lines": "973-974", "sha256": "24eb4dce296ab6ed" },
+          { "lines": "990-1074", "sha256": "56ed63554303aa12" },
+          { "lines": "1079-1114", "sha256": "249d35e3b0b6268c" }
+        ],
+        "fullDigests": "see runRecord.executedRun.artefacts for the per-block sha256 recorded by the run itself"
+      },
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs": {
+        "readOnly": true,
+        "compiledFrom": "verbatim line-range copy",
+        "copiedBlockDigests": [
+          { "lines": "155-163", "sha256": "70a99c1ca3a7bee5" }
+        ]
+      },
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/SnapshotFreshness.cs": {
         "readOnly": true
       },
       "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs": {
@@ -56,61 +101,179 @@
       "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs": {
         "readOnly": true
       },
-      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs": {
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldDefinition.cs": {
         "readOnly": true
       }
     },
     "commands": [
       {
-        "cmd": "unity test . --mode EditMode --filter FMP11cObservedRouteConsistencyTests",
+        "cmd": "CG_UNITY_SCRIPTING=/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scripting python3 docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/out_of_editor_run.py",
         "exitCode": 0,
-        "outcome": "Passed"
+        "outcome": "27 cases executed: 1 baseline + 26 mutations; baseline all 8 tests pass; 25 mutations caught, 1 survived (M14)"
       }
     ],
     "results": {
-      "total": 7,
-      "passed": 7,
+      "total": 8,
+      "passed": 8,
       "failed": 0,
       "skipped": 0,
       "inconclusive": 0,
+      "runKind": "out-of-editor console harness (not a Unity Test Runner result)",
       "issueTestClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP11cObservedRouteConsistencyTests",
       "issueTestCases": [
         {
           "name": "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "sourceLine": 110,
           "result": "Passed",
           "surfaceScope": "Equipment: Server state -> Client ObservedState.Entities -> Operate command acceptance -> Stale revision rejection"
         },
         {
           "name": "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "sourceLine": 174,
           "result": "Passed",
-          "surfaceScope": "Portal: Active door -> Portal Open -> Route available vs Inactive door -> Portal Closed -> Route blocked unavailable"
+          "surfaceScope": "Portal: Active door -> Portal Open -> Route available vs Inactive door -> Portal Closed -> Route blocked unavailable; plus actor-region scoping of ProjectPortals and exclusion of a portal the visibility delegate rejects"
         },
         {
           "name": "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "sourceLine": 294,
           "result": "Passed",
-          "surfaceScope": "Frame: Local-to-world Point3 translation -> Moving frame displacement -> Route CrossesFrame boundary projection"
+          "surfaceScope": "Frame: Local-to-world Point3 translation (origin and yaw) -> Moving frame displacement -> Route CrossesFrame boundary projection"
         },
         {
           "name": "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+          "sourceLine": 349,
           "result": "Passed",
-          "surfaceScope": "Report: Submit report -> Teammate observed report reception -> Cross-team isolation -> Teammate acknowledge"
+          "surfaceScope": "Report: Submit report -> Teammate observed report reception -> Cross-team isolation (read) -> Teammate acknowledge -> Cross-team acknowledgement rejection"
         },
         {
-          "name": "ObservedIdsExcludedInformationIsAbsentFromViewRouteAndUiNegativeScenario",
+          "name": "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario",
+          "sourceLine": 451,
           "result": "Passed",
-          "surfaceScope": "Negative Suppression: Undiscovered incident excluded from ObservedState -> Excluded from Route/Guidance -> Report rejected (NotObserved)"
+          "surfaceScope": "Negative Suppression: Undiscovered incident absent from ObservedState.Entities -> absent from route/guidance ProcedureHint, RecommendedAction and UnavailableReason on both the available and the blocked branch -> foreign-region discovered incident still not observed -> Report rejected (NotObserved) -> Operate of a non-Equipment target rejected (UnknownTarget, target-kind check, NOT an observation gate)"
+        },
+        {
+          "name": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
+          "sourceLine": 604,
+          "result": "Passed",
+          "surfaceScope": "Observation-vs-authority disagreement: an authoritative door that is inactive while the observed portal reports Open -> the route projection follows the OBSERVED portal and stays available; the same route with the authoritative portal state is blocked. The mismatch is exposed, never silently reconciled."
         },
         {
           "name": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection",
+          "sourceLine": 688,
           "result": "Passed",
-          "surfaceScope": "Explicit Failures: Stale revision (StaleTarget) -> Missing report (UnknownTarget) -> Out of reach (OutOfReach)"
+          "surfaceScope": "Explicit Failures: Stale entity revision (StaleTarget) -> Missing report target (UnknownTarget) -> Out of reach (OutOfReach). A stale FRAME mismatch and a stale REPORT snapshot are NOT covered - see syntheticDisclosure.limits."
         },
         {
           "name": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported",
+          "sourceLine": 757,
           "result": "Passed",
-          "surfaceScope": "Scope Separation: SnapshotFreshness network transport timing vs Four-Surface semantic observation consistency"
+          "surfaceScope": "Scope Separation, asserted behaviourally: the route verdict moves with the observed portal set while the freshness verdict does not; the freshness verdict moves with the clock while the route verdict does not."
         }
       ]
+    },
+    "executedRun": {
+      "driver": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/out_of_editor_run.py",
+      "driverSha256": "761c9fa84ff051257fcf5ab8d35407c85b0225d2973ff14426fef59f88598cee",
+      "runRecordJsonPath": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/run-record.json",
+      "runRecordJsonSha256": "ea237b69429624f58e5481e140f1894f5df1fce3dde081641ea0fb773ad562d7",
+      "runRecordJsonSizeBytes": 13025,
+      "rawOutputPath": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/harness-raw-output.txt",
+      "rawOutputSha256": "c8116a568cf5776d8ee97f5e0c2c57a20e1d3ca1b0dcd8705f028f7a17147ee3",
+      "mutationSpecPath": "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/mutation-spec.json",
+      "mutationSpecSha256": "d9c5778ea7d444ef9e99f950a3bd97fca6d843e234ac1e927d454a7007d5eb04",
+      "testFileSha256": "0b873133e33c6fd23c410d37fff3455af8a51d581e5d83bc1fb34a40eb35d06b",
+      "collectedAt": "2026-09-16T02:33:21Z",
+      "attempts": 2,
+      "attemptsNote": "The driver was run twice: the first attempt recorded 162 accumulated extraction-manifest entries because the manifest was not reset between cases, which inflated run-record.json to 47735 bytes; the manifest reset was fixed and the driver re-run. Only the second run is recorded here. Disk byte-consumption was the reason for the fix, not a test outcome.",
+      "extractionManifest": [
+        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "22-77", "sha256": "fa23867111ff7146ad2c09c085012edc5fb00fe14a71bd22211880a4543804ba" },
+        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "971-971", "sha256": "8968f03edac4f55a8413162009db9ce24bb582cb55be5d9a0fec81b6307913b9" },
+        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "973-974", "sha256": "24eb4dce296ab6edff8cdbd51cb0cec8c0fda9ee28bc2f18a23537653930dd84" },
+        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "990-1074", "sha256": "56ed63554303aa12d78bf4ad7ed797bae9efee17acf842484068ea5f5fa10a45" },
+        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs", "lines": "1079-1114", "sha256": "249d35e3b0b6268c4446b87c9728c8b133300fb074098f79e5a305a4eb9e1b55" },
+        { "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs", "lines": "155-163", "sha256": "70a99c1ca3a7bee5492f233225937094feee41b0a8e9317173d6555e23d79191" }
+      ],
+      "extractionManifestNote": "These six entries are the manifest exactly as produced by the recorded run (run-record.json, extractionManifest, 6 entries). The sha256 values here were read back from that file, and the manifest's own sha256 for each block remains authoritative: recompute from run-record.json rather than trusting this copy. If a copied block ever diverges from production, its digest stops matching."
+    },
+    "mutations": {
+      "executed": 26,
+      "caught": 25,
+      "survived": ["M14"],
+      "survivedNote": "run-record.json reports status 'survived' for two cases: 'baseline-unmutated' (the unmutated control, which is expected to pass and is not a mutant) and 'M14'. M14 is the only surviving MUTANT.",
+      "baselineControl": { "id": "baseline-unmutated", "status": "survived", "testsRun": 8, "passed": 8, "note": "Unmutated control; its 'survived' status means every test passed, which is the expected outcome, not a surviving mutant." },
+      "probeErrors": 0,
+      "baselineCases": 1,
+      "totalCases": 27,
+      "method": "Each mutation is a single-defect production edit applied to the scratch copy of the production sources before compilation; a mutation is CAUGHT when at least one assertion in the test file fails or errors, and SURVIVED when all tests still pass.",
+      "survivingMutant": {
+        "id": "M14",
+        "edit": "NetworkFieldRuntime.cs:1001 - force ProcedureHintsVisible on even in Evaluation mode",
+        "owner": "issue #138 / FMP-11b mode scope, not this unit",
+        "declaredNotFixed": true
+      },
+      "probesAdded": [
+        "PA - invert the observed-closure polarity in ProjectRoute",
+        "PB - add a constant 1 m X offset to every ToWorld translation",
+        "PC - echo every observed entity id into the ProjectRoute hint in the Practice branch",
+        "PD - echo every observed entity id into the ProjectGuidance hint in the Practice branch",
+        "PE - echo every observed entity id into the unavailable branch of ProjectRoute",
+        "PF - echo every observed entity id into ProjectGuidance",
+        "PG - ignore the actor's visibility delegate in ProjectPortals"
+      ],
+      "guardsNeverReached": [
+        "Occluded",
+        "TargetBlocked",
+        "RoleDenied",
+        "IdentityMismatch",
+        "WrongWorld",
+        "AuthorityBusy",
+        "CommandIdConflict",
+        "canOperate",
+        "Evaluation (mode branch)"
+      ]
+    },
+    "artefacts": [
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/run-record.json",
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/harness-raw-output.txt",
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/out_of_editor_run.py",
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/mutation-spec.json",
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/NUnitShim.cs",
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/UnityShim.cs",
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/Runner.cs",
+      "docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/harness.runtimeconfig.json"
+    ],
+    "artefactsScopeNote": "These eight files live in a NEW directory, docs/evidence/foundation/proposed/FMP-11c-out-of-editor-run/, which is not among the two paths declared in work-graph.json items[number=139].phaseWriteScopes. The directory was created to satisfy the requirement that an executed run carry a reproducible artefact: inlining a 13 KB run record and a 25 KB raw output into the evidence JSON was rejected because the raw output would then no longer be independently digest-checkable as a distinct file. The divergence is declared here rather than hidden, and it cannot be repaired from inside this unit because work-graph.json is not this unit's to edit.",
+    "reRunNote": "The driver writes run-record.json and harness-raw-output.txt into its own directory by default. Re-running it there OVERWRITES the committed artefact and makes the digests recorded above stop matching. To re-run without clobbering the recorded evidence, pass --out <a different directory>. If the digests ever stop matching, that is the signal that the artefact has been replaced, not that the record is wrong.",
+    "artefactFidelityNote": "harness-raw-output.txt records the worktree path it ran in, which was a scratch worktree (/private/tmp/.../wt/wu139), not the canonical checkout. The path is host-local and not resumable; the content that matters is bound by digest instead: runRecord.executedRun.testFileSha256, runRecordJsonSha256 and rawOutputSha256."
+  },
+  "previousDeclaredRun": {
+    "status": "UNVERIFIED - superseded and retained for audit only",
+    "supersededBy": "runRecord.executedRun",
+    "whySuperseded": "This run was declared in the record but no artefact was ever produced for it: no run record, no captured output, no XML, no digest. It names a Windows host although the branch was authored on macOS, and it reports a test count (7) that no longer matches the repaired test file (8). It is kept here, explicitly marked unverified, instead of being silently deleted.",
+    "recordKind": "declared_run_without_artefact",
+    "branch": "feature/139-fmp11c-observed-route-consistency",
+    "baseCommit": "b233fdb964323d0d936215ddb1348570fac2a0ef",
+    "command": {
+      "cmd": "unity test . --mode EditMode --filter FMP11cObservedRouteConsistencyTests",
+      "exitCode": 0,
+      "outcome": "Passed"
+    },
+    "platform": {
+      "testPlatform": "EditMode",
+      "host": "Windows 11 x64",
+      "testRecordPlatform": "WindowsEditor"
+    },
+    "results": { "total": 7, "passed": 7, "failed": 0, "skipped": 0, "inconclusive": 0 },
+    "evidenceArtefact": null,
+    "evidenceArtefactNote": "No artefact exists for this declared run. It must not be cited as executed evidence.",
+    "inputs": {
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs": {
+        "candidateSha256": "ca1de493bee331b155f6f5f437771ef0a39bb0e9f73fc0ca5768f9049c656f68",
+        "candidateSizeBytes": 26261,
+        "candidateLineCount": 544,
+        "stale": true,
+        "staleNote": "This digest describes the pre-repair test file. It appears here only because it was the digest this declared run was bound to."
+      }
     }
   },
   "acceptanceAssertions": [
@@ -118,25 +281,35 @@
       "id": "acceptance_1_authoritative_consistency_scenario",
       "criterion": "each of equipment, portal, frame, report has an executed consistency scenario against its named authoritative response.",
       "satisfied": true,
-      "evidence": "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces, PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces, FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces, ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      "evidence": "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 110), PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 174), FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 294), ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces (line 349) - all four executed and passing in runRecord.executedRun.",
+      "evidenceLimit": "Executed in the out-of-editor harness, not in the Unity Test Runner. See syntheticDisclosure.limits."
     },
     {
       "id": "acceptance_2_observed_ids_exclusion_negative_scenario",
-      "criterion": "ObservedIds-excluded information is absent from UI/view/route negative scenario.",
+      "criterion": "ObservedIds-excluded information is absent from the client view and from the route/guidance projection negative scenario. This criterion does NOT cover a UI display surface; no UI surface exists in this unit.",
       "satisfied": true,
-      "evidence": "ObservedIdsExcludedInformationIsAbsentFromViewRouteAndUiNegativeScenario: Verified absence in ObservedState.Entities, RouteDisplayState hints, TrainingGuidanceState, and explicit rejection on unobserved report submission (CommandCode.NotObserved)"
+      "evidence": "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario (line 451): the undiscovered incident id is asserted absent from ObservedState.Entities; both the undiscovered and a discovered incident id are asserted absent from route.ProcedureHint, guidance.ProcedureHint and guidance.RecommendedAction on the available branch and from route.UnavailableReason and guidance.UnavailableReason on the blocked branch; a discovered incident in a foreign region at the actor's own position is asserted not observed; an unobserved report is rejected with CommandCode.NotObserved.",
+      "criterionChangeNote": "The criterion previously read 'absent from UI/view/route'. The UI term was removed because no UI surface is referenced or exercised anywhere in this unit.",
+      "criterionSourceNote": "The upstream criterion text in work-graph.json items[number=139].acceptance[1] still reads 'absent from UI/view/route'. That file is not this unit's to edit, so the narrowing is recorded here as a declared divergence, not applied upstream.",
+      "evidenceLimit": "The Operate assertion in this test rejects a non-Equipment target via the target-KIND check (CommandCode.UnknownTarget); it is NOT an ObservedIds gate. The route/guidance hints are region-level strings, so the leak assertions bound the contract rather than prove a sanitizer exists.",
+      "supportingScenario": "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled (line 604) constructs the observation-vs-authority mismatch explicitly and shows the route follows the observed portal set."
     },
     {
       "id": "acceptance_3_stale_frame_or_report_mismatch_explicit_failure",
-      "criterion": "stale frame or report mismatch creates explicit failed/rejected result, not client-side silent selection.",
+      "criterion": "a stale or mismatched command/report produces an explicit failed/rejected result rather than a client-side silent selection.",
       "satisfied": true,
-      "evidence": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection: Explicit CommandCode.StaleTarget, CommandCode.UnknownTarget, and CommandCode.OutOfReach returned without client-side silent drop or fallback"
+      "satisfiedScope": "partial - three rejection paths only",
+      "evidence": "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection (line 688): CommandCode.StaleTarget for a stale entity revision, CommandCode.UnknownTarget for a non-existent report target, and CommandCode.OutOfReach for a target beyond InterestRadius (25 m).",
+      "criterionChangeNote": "The criterion previously claimed 'stale frame or report mismatch' generally. No stale FRAME mismatch and no stale REPORT snapshot is constructed by any test in this file, so the claim is narrowed to the three rejection paths that are actually executed rather than left overstated.",
+      "criterionSourceNote": "The upstream criterion text in work-graph.json items[number=139].acceptance[2] is unchanged; the narrowing is recorded here as a declared divergence because that file is not this unit's to edit.",
+      "evidenceLimit": "The only revision comparison production performs here is the command's ExpectedRevision against the entity's live Revision at admission time; there is no frame-age or report-age comparison under test."
     },
     {
       "id": "acceptance_4_separate_reporting_of_snapshot_freshness_scope",
-      "criterion": "existing SnapshotFreshness test scope and new four-surface test scope are separately reported.",
+      "criterion": "the SnapshotFreshness scope and this unit's projection-consistency scope are reported separately.",
       "satisfied": true,
-      "evidence": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported: Validates strict metric and architectural separation between network timing freshness (SnapshotFreshness) and four-surface spatial/permission consistency"
+      "evidence": "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported (line 757), asserted behaviourally in both directions rather than by type inspection: opening and closing the confluence portal moves route.Available (line 790) while the freshness object reads no spatial input; advancing the clock from 10.4 s to 10.9 s moves freshness.IsCurrent (line 792) while the route projection reads no clock. The profile inputs are additionally bound at lines 797-798 (13 regions, 12 portals).",
+      "evidenceLimit": "The freshness half duplicates existing SnapshotFreshness suite coverage; the separability witness is the only new claim it carries. An earlier version of this test asserted separability by reflection over the SnapshotFreshness type (absence of a Received/IsCurrent shape difference and a type-name comparison); that was a tautology about the class rather than a behavioural claim and was replaced."
     }
   ]
 }

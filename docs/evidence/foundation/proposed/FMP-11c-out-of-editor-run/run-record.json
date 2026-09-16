@@ -1,0 +1,379 @@
+{
+  "recordKind": "out_of_editor_run_record",
+  "harnessIsNot": "Not NUnit and not the Unity Test Runner: Unity-bundled Roslyn csc.dll + .NET runtime + local NUnit-shaped shim + console runner. Cannot show [OneTimeSetUp]/[SetUp] lifecycle, the editor environment, test categories, NUnit3 XML, asset import or PlayMode.",
+  "testFile": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs",
+  "testFileSha256": "0b873133e33c6fd23c410d37fff3455af8a51d581e5d83bc1fb34a40eb35d06b",
+  "collectionRoot": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/5e1a963e-9e06-4dbb-a866-b0e88736a544/scratchpad/wt/wu139",
+  "platform": {
+    "sysPlatform": "darwin",
+    "machine": "arm64",
+    "dotnetRuntime": "6.0.21",
+    "compiler": "Unity-bundled Roslyn csc.dll"
+  },
+  "extractionManifest": [
+    {
+      "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+      "lines": "22-77",
+      "sha256": "fa23867111ff7146ad2c09c085012edc5fb00fe14a71bd22211880a4543804ba"
+    },
+    {
+      "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+      "lines": "971-971",
+      "sha256": "8968f03edac4f55a8413162009db9ce24bb582cb55be5d9a0fec81b6307913b9"
+    },
+    {
+      "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+      "lines": "973-974",
+      "sha256": "24eb4dce296ab6edff8cdbd51cb0cec8c0fda9ee28bc2f18a23537653930dd84"
+    },
+    {
+      "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+      "lines": "990-1074",
+      "sha256": "56ed63554303aa12d78bf4ad7ed797bae9efee17acf842484068ea5f5fa10a45"
+    },
+    {
+      "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+      "lines": "1079-1114",
+      "sha256": "249d35e3b0b6268c4446b87c9728c8b133300fb074098f79e5a305a4eb9e1b55"
+    },
+    {
+      "file": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/ConnectedWorldRuntime.cs",
+      "lines": "155-163",
+      "sha256": "70a99c1ca3a7bee5492f233225937094feee41b0a8e9317173d6555e23d79191"
+    }
+  ],
+  "results": [
+    {
+      "id": "baseline-unmutated",
+      "status": "survived",
+      "mutation": "baseline (no mutation)",
+      "testsRun": 8,
+      "passed": 8,
+      "failedCount": 0,
+      "caughtBy": [],
+      "elapsedSeconds": 1.2
+    },
+    {
+      "id": "M01",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:140 Observe(): drop the ObservedIds/Active incident gate, so every incident in range is projected to the client.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 1.3
+    },
+    {
+      "id": "M02",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:240 Report: delete the NotObserved observation gate.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 1.2
+    },
+    {
+      "id": "M03",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:142-143 Observe(): drop the team filter on report projection so team-beta sees team-alpha reports.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 1.6
+    },
+    {
+      "id": "M04",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:268 delete the stale-revision rejection.",
+      "testsRun": 8,
+      "passed": 6,
+      "failedCount": 2,
+      "caughtBy": [
+        "EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+        "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection"
+      ],
+      "elapsedSeconds": 1.2
+    },
+    {
+      "id": "M05",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:264 delete the reach check so a 100 m away target accepts Operate.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection"
+      ],
+      "elapsedSeconds": 1.3
+    },
+    {
+      "id": "M06",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:273 delete the Operate kind check so an Incident accepts Operate.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 1.3
+    },
+    {
+      "id": "M07",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:229 drop the ToTeamId condition on report acknowledgement, so any participant can acknowledge another team's report.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ReportConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 1.6
+    },
+    {
+      "id": "M08",
+      "status": "caught",
+      "mutation": "ConnectedWorldRuntime.cs:162 invert the door->portal Open mapping.",
+      "testsRun": 8,
+      "passed": 6,
+      "failedCount": 2,
+      "caughtBy": [
+        "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
+        "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 1.0
+    },
+    {
+      "id": "M09",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.cs:1036 stop feeding observed-closed portals into the route search.",
+      "testsRun": 8,
+      "passed": 4,
+      "failedCount": 4,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario",
+        "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
+        "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+        "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "M10",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.cs:1057 flip the frame-change comparison so a cross-frame route never reports CrossesFrame.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "M11",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.cs:1044 stop marking a found route as available.",
+      "testsRun": 8,
+      "passed": 3,
+      "failedCount": 5,
+      "caughtBy": [
+        "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario",
+        "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
+        "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+        "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "M12",
+      "status": "caught",
+      "mutation": "ConnectedWorldDefinition.cs:17 drop the frame origin from ToWorld (local->world translation loses the offset).",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "M13",
+      "status": "caught",
+      "mutation": "ConnectedWorldDefinition.cs:17-18 flip the yaw rotation sign in ToWorld (only observable when YawDegrees != 0).",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "M14",
+      "status": "survived",
+      "mutation": "NetworkFieldRuntime.cs:1001 force ProcedureHintsVisible on even in Evaluation mode.",
+      "testsRun": 8,
+      "passed": 8,
+      "failedCount": 0,
+      "caughtBy": [],
+      "elapsedSeconds": 0.8
+    },
+    {
+      "id": "M15",
+      "status": "caught",
+      "mutation": "SnapshotFreshness.cs:7 widen the freshness window from .5 s to 5 s.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "M16",
+      "status": "caught",
+      "mutation": "SnapshotFreshness.cs:10 remove the backward-clock rejection.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
+      ],
+      "elapsedSeconds": 1.2
+    },
+    {
+      "id": "M17",
+      "status": "caught",
+      "mutation": "SnapshotFreshness.cs:14 stop rejecting NaN/Infinity/negative clocks.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
+      ],
+      "elapsedSeconds": 1.2
+    },
+    {
+      "id": "M18",
+      "status": "caught",
+      "mutation": "ConnectedWorldRuntime.cs:158 drop the actor-region filter from ProjectPortals so every portal in the definition is projected.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 1.2
+    },
+    {
+      "id": "M19",
+      "status": "caught",
+      "mutation": "AuthoritativeShift.cs:138 drop the schema-1 same-region filter in Observe.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "PB",
+      "status": "caught",
+      "mutation": "ConnectedWorldDefinition.ToWorld: add a constant 1 m X offset to every local->world translation (should be caught by the world-frame identity assertion).",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 1.0
+    },
+    {
+      "id": "PC",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.ProjectRoute: in the Practice branch echo every observed entity id into ProcedureHint.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 1.0
+    },
+    {
+      "id": "PD",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.ProjectGuidance: in the Practice branch echo every observed entity id into ProcedureHint.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 1.0
+    },
+    {
+      "id": "PE",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.ProjectRoute: in the unavailable branch echo every observed entity id into UnavailableReason.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 1.0
+    },
+    {
+      "id": "PA",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.ProjectRoute: invert the observed-closure polarity, so an observed-OPEN portal counts as closed.",
+      "testsRun": 8,
+      "passed": 4,
+      "failedCount": 4,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario",
+        "ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled",
+        "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
+        "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
+      ],
+      "elapsedSeconds": 0.8
+    },
+    {
+      "id": "PF",
+      "status": "caught",
+      "mutation": "NetworkFieldRuntime.ProjectGuidance: echo every observed entity id into RecommendedAction.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
+      ],
+      "elapsedSeconds": 0.9
+    },
+    {
+      "id": "PG",
+      "status": "caught",
+      "mutation": "ConnectedWorldRuntime.ProjectPortals: ignore the actor's visibility function so every in-scope portal is projected.",
+      "testsRun": 8,
+      "passed": 7,
+      "failedCount": 1,
+      "caughtBy": [
+        "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
+      ],
+      "elapsedSeconds": 1.4
+    }
+  ]
+}
