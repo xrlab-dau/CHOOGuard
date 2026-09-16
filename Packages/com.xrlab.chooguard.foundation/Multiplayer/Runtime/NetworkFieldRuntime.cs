@@ -31,8 +31,29 @@ namespace ChooGuard.Foundation.Multiplayer
         public string[] RequiredRegions = Array.Empty<string>();
         public ObservedPortalState[] Portals = Array.Empty<ObservedPortalState>();
         public WorldPhysicalView Physical;
+        public FoundationTrainingMode TrainingMode;
     }
     [Serializable] public sealed class ObservedPortalState { public string PortalId; public bool Open; }
+
+    /// <summary>Pure guidance projection contract for practice vs evaluation modes.
+    /// In Practice mode, requested guidance exposes approved synthetic procedure hints and evidence.
+    /// In Evaluation mode, procedure hint fields are strictly excluded from the response.</summary>
+    [Serializable] public sealed class TrainingGuidanceState
+    {
+        public FoundationTrainingMode Mode;
+        public string WorldId = "";
+        public string ParticipantId = "";
+        public string RoleId = "";
+        public string CurrentRegionId = "";
+        public string TargetRegionId = "";
+        public bool Available;
+        public string UnavailableReason = "";
+        public bool ProcedureHintsVisible;
+        public string ProcedureHint = "";
+        public string RecommendedAction = "";
+        public string EvidenceBasis = "";
+        public string SyntheticLabel = "";
+    }
 
     /// <summary>Route/current-location display contract for the connected-world navigation UI.
     /// Every value is derived from the authored synthetic profile; nothing here is surveyed or
@@ -49,6 +70,10 @@ namespace ChooGuard.Foundation.Multiplayer
         public string UnavailableReason = "";
         public bool CrossesFrame, CrossesLevel;
         public string RouteSyntheticLabel = "";
+        public FoundationTrainingMode TrainingMode;
+        public bool ProcedureHintsVisible;
+        public string ProcedureHint = "";
+        public string GuidanceEvidenceBasis = "";
     }
     [Serializable] public sealed class ProbeStep
     {
@@ -805,14 +830,15 @@ namespace ChooGuard.Foundation.Multiplayer
         {
             var participant = identities[client];
             var actor = shift.Participant(participant);
-            var projected = new FieldView { Observed = shift.Observe(participant), Position = actor.Position,
+            var projected = ApplyProjectedTrainingMode(new FieldView { Observed = shift.Observe(participant), Position = actor.Position,
                 TeamId = actor.TeamId, RoleId = actor.RoleId, Instructor = actor.IsInstructor,
                 ProtocolVersion = simulation != null ? 3 : connectedWorld == null ? 1 : 2, SpatialProfileId = connectedWorld?.Definition.ProfileId ?? "",
                 RegionId = actor.RegionId, FrameId = actor.FrameId, PortalId = actor.PortalId, LocalPosition = actor.LocalPosition,
                 RequiredRegions = connectedWorld?.Definition.RequiredRegions(actor.RegionId) ?? Array.Empty<string>(),
                 Portals = simulation != null ? simulation.ProjectPortals(actor, p => ServerCanSeePortal(actor, p)) : connectedWorld == null ? Array.Empty<ObservedPortalState>() : ConnectedWorldRuntime.ProjectPortals(
                     connectedWorld.Definition, shift.ExportCheckpoint(), actor, p => ServerCanSeePortal(actor, p)),
-                MovementStatus = movementStatus.TryGetValue(client, out var movement) ? movement : "" };
+                MovementStatus = movementStatus.TryGetValue(client, out var movement) ? movement : ""
+            }, simulation);
             if (simulation != null)
             {
                 projected.Physical = simulation.Project(shift.ReadSimulation(), actor, point => ServerCanSeePoint(actor, point),projected.Observed.Entities);
@@ -947,6 +973,18 @@ namespace ChooGuard.Foundation.Multiplayer
         private static string SyntheticLabel(ConnectedWorldDefinition definition, string geometryStatus) =>
             SyntheticBanner + " (" + (definition.Classification ?? "") + ", " + geometryStatus + ")";
 
+        /// <summary>Stamps the server-authoritative training mode onto an outgoing field view. This is the one
+        /// place a mode is decided for the client channel: <see cref="SendView"/> builds the view and hands it
+        /// here rather than assigning <c>TrainingMode</c> at the send site, so there is no mode literal at the
+        /// send site to drift from the running simulation. The mode comes from the coupled simulation and never
+        /// forks the world identity; a session without a coupled simulation projects Practice.</summary>
+        public static FieldView ApplyProjectedTrainingMode(FieldView view, FoundationWorldSimulation simulation)
+        {
+            if (view == null) throw new ArgumentNullException(nameof(view));
+            view.TrainingMode = simulation != null ? simulation.TrainingMode : FoundationTrainingMode.Practice;
+            return view;
+        }
+
         /// <summary>Pure projection of the observed current location onto one displayed state.
         /// Thirteen profile region IDs map one-to-one onto thirteen distinct states.</summary>
         public static RouteDisplayState ProjectCurrentLocation(ConnectedWorldDefinition definition, FieldView view)
@@ -955,6 +993,12 @@ namespace ChooGuard.Foundation.Multiplayer
             if (view == null) throw new ArgumentNullException(nameof(view));
             var state = new RouteDisplayState { Classification = definition.Classification ?? "",
                 Synthetic = true, RouteSyntheticLabel = SyntheticLabel(definition, "route-not-requested") };
+            // The mode is stamped before the region lookup so that every return path carries it. Stamping
+            // it after the unknown-region early return left that path reporting the default Practice while
+            // its ProcedureHintsVisible was false, i.e. an Evaluation session reading "Practice" for a
+            // region it could not resolve.
+            state.TrainingMode = view.TrainingMode;
+            state.ProcedureHintsVisible = state.TrainingMode == FoundationTrainingMode.Practice;
             var region = definition.Regions == null ? null : definition.Regions.SingleOrDefault(r => r != null && r.Id == view.RegionId);
             if (region == null)
             {
@@ -964,6 +1008,8 @@ namespace ChooGuard.Foundation.Multiplayer
                 return state;
             }
             state.RegionId = region.Id; state.RegionLabel = region.Label; state.FrameId = region.FrameId;
+            // The authored geometry status stays part of the current-location state: the synthetic
+            // banner and the route label below both consume it and must not be emptied by the mode field.
             state.GeometryStatus = region.GeometryStatus;
             state.SyntheticLabel = SyntheticLabel(definition, region.GeometryStatus);
             state.UnavailableReason = "목적지 미선택 · 사용 불가";
@@ -1014,6 +1060,56 @@ namespace ChooGuard.Foundation.Multiplayer
             state.RouteGeometryStatuses = portals.Select(p => p.GeometryStatus).ToArray();
             state.RouteSyntheticLabel = SyntheticLabel(definition,
                 state.GeometryStatus + " / " + string.Join(", ", state.RouteGeometryStatuses.Distinct()));
+            if (state.ProcedureHintsVisible)
+            {
+                state.ProcedureHint = "다음 이동 구역: " + (route.Length > 1 ? definition.Region(route[1]).Label : state.TargetRegionLabel) + " (연습 힌트)";
+                state.GuidanceEvidenceBasis = "synthetic_guidance_evidence_provisional";
+            }
+            else
+            {
+                state.ProcedureHint = "";
+                state.GuidanceEvidenceBasis = "";
+            }
+            return state;
+        }
+
+        /// <summary>Pure projection of training guidance based on training mode.
+        /// In Practice mode, requested guidance exposes approved evidence fields (procedure hint, recommended action).
+        /// In Evaluation mode, procedure hint fields are strictly excluded.</summary>
+        public static TrainingGuidanceState ProjectGuidance(ConnectedWorldDefinition definition, FieldView view, string targetRegionId = "")
+        {
+            if (definition == null) throw new ArgumentNullException(nameof(definition));
+            if (view == null) throw new ArgumentNullException(nameof(view));
+            var mode = view.TrainingMode;
+            var target = string.IsNullOrEmpty(targetRegionId) ? view.RegionId : targetRegionId;
+            var routeDisplay = ProjectRoute(definition, view, target);
+            var state = new TrainingGuidanceState
+            {
+                Mode = mode,
+                WorldId = view.Observed?.WorldId ?? "",
+                ParticipantId = view.Observed?.ParticipantId ?? "",
+                RoleId = view.RoleId ?? "",
+                CurrentRegionId = view.RegionId ?? "",
+                TargetRegionId = target ?? "",
+                Available = routeDisplay.Available || (!string.IsNullOrEmpty(view.RegionId) && view.RegionId == target),
+                UnavailableReason = routeDisplay.UnavailableReason,
+                ProcedureHintsVisible = mode == FoundationTrainingMode.Practice,
+                SyntheticLabel = routeDisplay.SyntheticLabel
+            };
+
+            if (state.ProcedureHintsVisible)
+            {
+                var nextStep = routeDisplay.RouteLabels.Length > 1 ? routeDisplay.RouteLabels[1] : (definition.Region(view.RegionId)?.Label ?? view.RegionId);
+                state.ProcedureHint = "현장 이동 및 대응 절차: " + nextStep + " 방면 이동 (연습 모드 절차 안내)";
+                state.RecommendedAction = "MoveTo:" + (routeDisplay.RouteRegionIds.Length > 1 ? routeDisplay.RouteRegionIds[1] : view.RegionId);
+                state.EvidenceBasis = "synthetic_sop_reference_provisional_not_facility_accepted";
+            }
+            else
+            {
+                state.ProcedureHint = "";
+                state.RecommendedAction = "";
+                state.EvidenceBasis = "";
+            }
             return state;
         }
 
@@ -1025,7 +1121,7 @@ namespace ChooGuard.Foundation.Multiplayer
             GUILayout.Label(status);
             if (view != null)
             {
-                GUILayout.Label(view.TeamId + " · " + view.RoleId + (view.Observed.Paused ? " · 교관이 근무를 정지했습니다" : ""));
+                GUILayout.Label(view.TeamId + " · " + view.RoleId + (view.TrainingMode == FoundationTrainingMode.Practice ? " · [연습 모드]" : " · [평가 모드]") + (view.Observed.Paused ? " · 교관이 근무를 정지했습니다" : ""));
                 GUILayout.Label("WASD 이동 · 마우스 시점 · E 상호작용 · Esc 개인 메뉴");
                 if (connectedWorld != null)
                 {
@@ -1039,6 +1135,10 @@ namespace ChooGuard.Foundation.Multiplayer
                             ? "공개 연결: " + string.Join(" → ", routeDisplay.RouteLabels)
                             : "공개 연결: " + routeDisplay.UnavailableReason);
                         GUILayout.Label(routeDisplay.RouteSyntheticLabel);
+                        if (routeDisplay.ProcedureHintsVisible && !string.IsNullOrEmpty(routeDisplay.ProcedureHint))
+                        {
+                            GUILayout.Label("절차 힌트: " + routeDisplay.ProcedureHint);
+                        }
                     }
                     if (navigationMenu)
                     {

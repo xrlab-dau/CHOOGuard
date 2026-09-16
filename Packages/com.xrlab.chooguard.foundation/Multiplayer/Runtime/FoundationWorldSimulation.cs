@@ -56,6 +56,23 @@ namespace ChooGuard.Foundation.Multiplayer
         public string DefinitionHash { get; }
         public long Tick => tick;
         public FoundationTrainingMode TrainingMode => profile.TrainingMode;
+        /// <summary>Documented blocked-reason contract for <see cref="TryTransitionMode"/>; FMP-11b-D01.
+        /// The same text is recorded in docs/context/projections/FMP-11b-transition-decision.json, which is an
+        /// unapproved proposal and not a PM policy decision.</summary>
+        public const string MidShiftTransitionBlockedReason = "Mid-shift mode transition is blocked without an accepted PM policy decision (FMP-11b-D01). Active shift trajectory and scoring fairness require a clean shift restart.";
+        /// <summary>Mid-shift mode transition guard. A request for the mode the shift is already running is an
+        /// idempotent no-op and reports success; any other mode is refused while the shift is live, and the
+        /// refusal never restarts, clears or otherwise mutates the running simulation.</summary>
+        public bool TryTransitionMode(FoundationTrainingMode newMode, out string blockedReason)
+        {
+            if (newMode == TrainingMode)
+            {
+                blockedReason = "";
+                return true;
+            }
+            blockedReason = MidShiftTransitionBlockedReason;
+            return false;
+        }
         public WorldState InitialState => initial.Copy();
         public int ActiveIncidentCount => director.Active.Count;
         public int NpcCount => profile.NpcCount;
