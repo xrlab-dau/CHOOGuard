@@ -542,6 +542,8 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
 
             var blockedGuidance = NetworkFieldRuntime.ProjectGuidance(def, blockedView, "metro_platforms");
             Assert.That(blockedGuidance.Available, Is.False);
+            Assert.That(blockedGuidance.UnavailableReason, Is.Not.Empty,
+                "an unavailable guidance projection must state why, or the leak assertion below passes on an empty reason");
             Assert.That(blockedGuidance.UnavailableReason, Does.Not.Contain(unobservedIncidentId));
 
             // Surface 2 negative: observation authority is region-scoped, not merely distance-scoped.
@@ -641,8 +643,32 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                 .Single(p => p.PortalId == portal.Id);
             Assert.That(authoritative.Open, Is.False, "an inactive door must project an authoritatively Closed portal");
 
-            // The client's last snapshot still says the door was open: the two states disagree.
-            var staleObserved = new[] { new ObservedPortalState { PortalId = portal.Id, Open = true } };
+            // The client's last snapshot still says the door was open. It is not written as a literal: it is
+            // the same projection run against a world where the door was still active, so the disagreement
+            // below is produced by the two world states rather than asserted by the fixture. A literal
+            // compared against the value the assertion directly above already pinned could never fail on
+            // its own: the two sides would be the same expression, so the fixture would assert nothing.
+            var openDoorEntity = new EntityState
+            {
+                EntityId = doorEntityId,
+                RegionId = portal.From,
+                Kind = EntityKind.Equipment,
+                Position = portal.FromPoint,
+                Active = true,
+                Revision = 1
+            };
+            var openWorld = new WorldState
+            {
+                WorldId = WorldId,
+                ShiftId = ShiftId,
+                Participants = new[] { actor },
+                Entities = new[] { openDoorEntity }
+            };
+            var openShift = new AuthoritativeShift(openWorld, sink, (p, e) => true);
+            var staleObserved = ConnectedWorldRuntime.ProjectPortals(def, openShift.ExportCheckpoint(), actor, p => true)
+                .Where(p => p.PortalId == portal.Id).ToArray();
+            Assert.That(staleObserved, Has.Length.EqualTo(1),
+                "fixture guard: the door-open projection must carry the portal under test");
             Assert.That(staleObserved[0].Open, Is.Not.EqualTo(authoritative.Open),
                 "fixture guard: the client observation must actually disagree with the authority");
 
