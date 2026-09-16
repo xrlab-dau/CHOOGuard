@@ -3,6 +3,10 @@
   "cases": [
     {
       "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_committed_sample_manifest_and_receipt_hashes_agree"
+    },
+    {
+      "state": "passed",
       "test": "test_review_integrity.ReviewIntegrity.test_distinct_target_execution_and_evidence_preserve_hash_chain"
     },
     {
@@ -15,7 +19,11 @@
     },
     {
       "state": "passed",
-      "test": "test_review_integrity.ReviewIntegrity.test_invalid_round_and_result_schema_are_refused"
+      "test": "test_review_integrity.ReviewIntegrity.test_invalid_round_revision_and_result_schema_are_refused"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_linked_source_and_output_roots_are_still_refused"
     },
     {
       "state": "passed",
@@ -24,6 +32,10 @@
     {
       "state": "passed",
       "test": "test_review_integrity.ReviewIntegrity.test_new_writer_revision_cannot_reuse_old_target_receipt"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_non_canonical_spellings_cannot_smuggle_protocol_output_names"
     },
     {
       "state": "passed",
@@ -39,7 +51,19 @@
     },
     {
       "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_receipt_bound_to_another_target_cannot_be_replayed"
+    },
+    {
+      "state": "passed",
       "test": "test_review_integrity.ReviewIntegrity.test_request_and_receipt_tampering_fail_trusted_digest_check"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_review_output_is_not_target_input_and_binds_the_requested_target"
+    },
+    {
+      "state": "passed",
+      "test": "test_review_integrity.ReviewIntegrity.test_reviewer_identity_is_recorded_from_the_call_not_preassigned"
     },
     {
       "state": "passed",
@@ -50,21 +74,23 @@
       "test": "test_review_integrity.ReviewIntegrity.test_writer_cannot_create_or_overwrite_final_result_through_api"
     }
   ],
+  "check": {
+    "command": "python3 scripts/team/M1-07/test_review_integrity.py",
+    "environment": "default environment and shell, no environment variable override; each case asserts its exact cannot_proceed reason code",
+    "exitCode": 0,
+    "summary": "Ran 18 tests, OK"
+  },
   "limitations": [
     "Trusted fixture role/provider/ref inputs are not authenticated identities.",
     "OS sandbox/ACL and direct writer filesystem denial are not implemented or validated.",
     "Trusted external digest custody and exclusively owned local parents are required; no hostile race protection.",
     "Actual independent review, three-perspective aggregation, retry/fallback enforcement and acceptance are not performed.",
     "Synthetic success is not source qualification, product approval or operational permission.",
-    "Existing CI gates do not discover the new test directory; these 12 tests ran locally."
+    "Existing CI gates do not discover scripts/team; these cases ran locally on the recorded revision."
   ],
   "osIsolationTested": false,
-  "otherChecks": {
-    "publicPremiseTests": 67,
-    "workGraphStructure": "valid"
-  },
   "phase": "candidate",
-  "recordedAt": "2026-09-15T06:19:33.696578+00:00",
+  "recordedAt": "2026-09-16T03:17:30.726950+00:00",
   "runtimeIndependentReviewPerformed": false,
   "sample": {
     "files": {
@@ -86,7 +112,8 @@
   },
   "schemaVersion": 1,
   "scope": "synthetic_integrity_fixture",
-  "sourceRevision": "f7aef6cc73796eeb3cecfa1961c8635e097d7aa7",
+  "sourceRevision": "92f70c6817e693ebc5bb80f2f889c7876733fb9f",
+  "sourceRevisionNote": "The revision that contains exactly the hashed sources below; it is an ancestor of the branch head, which adds only this record file. Checking out sourceRevision reproduces the recorded run.",
   "sourceSha256": {
     ".pi/settings.json": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b",
     "docs/adr/0003-independent-review-and-adversarial-graph.md": "97fcf9bb588161e43c306d6cc916d75704c1047951365823bfe6112005c05600",
@@ -94,14 +121,19 @@
     "docs/team/M0-03/allowlist.json": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a",
     "docs/team/M0-03/execution-profile.json": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
     "docs/team/M1-02/permission-boundary.json": "5e051ccd19eb6a7b160cf358757665c0ba52c28e9f6c471f50bd793d5e10bf34",
-    "docs/team/M1-07/review-contract.json": "1c92553ceb0a1eb1464f02db35059309f021945bcfcde9e41a25e857f55ade56",
+    "docs/team/M1-07/review-contract.json": "1ff8256d3fbd39bbd220df918f248d2d542d9eec9949089b69bd585b91252724",
     "scripts/bootstrap/verify_toolchain.py": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
     "scripts/dev/native_manifest.py": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83",
     "scripts/team/M1-02/permission_boundary.py": "6cb3b6e6cafde5af357b6e14be59e7015b0c60e81476e661236a4fc793c62a1c",
-    "scripts/team/M1-07/README.md": "8ab6077445bd079e0e26a91113aecf30ad942b2421b6ad62ac2954cc642cb4b1",
-    "scripts/team/M1-07/review_integrity.py": "abec6a1bd066aa031651dd638553018ba9a7b916b3cefbc06b4025c83a23f631",
-    "scripts/team/M1-07/test_review_integrity.py": "f948270fc85f1202623c6be61b3bc46dd56775e9a8f1f027d18981d953060143"
+    "scripts/team/M1-07/README.md": "088e3dfabed915570d4e3b77f577b91d4b72e43fe45ff3b9629b18ed23ec75a7",
+    "scripts/team/M1-07/review_integrity.py": "9e7053c1736f47277fb8597a860bd3ee8cfae06294ef1f859931d0094b7e6ee6",
+    "scripts/team/M1-07/test_review_integrity.py": "d523df0a6585e786d84142adfd5f529e4ed16c190de3252a90b7315d990f8c20"
   },
   "state": "passed",
-  "testsRun": 12
+  "supersededClaims": {
+    "archivedAs": "superseded-verification.json",
+    "archivedSha256": "cab464087d664d37e134d8a6071b95f65d47a74267408f410fcdf7cebdb9391e",
+    "reason": "The earlier record in this directory stated state=passed, testsRun=12, 12/12 cases passed and bound the run to sourceRevision f7aef6cc73796eeb3cecfa1961c8635e097d7aa7, which resolves to no commit in this repository. The required check did not pass in the default environment: it reported FAILED (errors=10) because the suite handed an unresolved host temporary path to the M1-02 link guard. That record is preserved unchanged alongside this one and is not an active claim."
+  },
+  "testsRun": 18
 }
