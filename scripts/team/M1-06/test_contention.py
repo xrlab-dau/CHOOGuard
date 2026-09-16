@@ -4,12 +4,13 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from contention import BASE_A, BASE_B, pipeline, run_fixture, schema_errors
+from contention import BASE_A, BASE_B, load_suppliers, run_fixture, schema_errors
 
 
 class ContentionRecords(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        cls.pipeline = load_suppliers()[1]
         cls.report, cls.bundle = run_fixture()
         cls.cases = {c['id']: c for c in cls.report['cases']}
 
@@ -62,12 +63,12 @@ class ContentionRecords(unittest.TestCase):
             root = Path(temporary)
             for name, data in self.bundle.items():
                 (root / name).write_bytes(data)
-            self.assertEqual(pipeline.verify(root), self.report['publicManifest'])
+            self.assertEqual(self.pipeline.verify(root), self.report['publicManifest'])
             changed = copy.deepcopy(self.report['publicCandidate'])
             changed['events'][0]['outcome'] = 'unknown'
-            (root / 'events.json').write_bytes(pipeline.encoded(changed))
-            with self.assertRaisesRegex(pipeline.RecordError, 'digest mismatch'):
-                pipeline.verify(root)
+            (root / 'events.json').write_bytes(self.pipeline.encoded(changed))
+            with self.assertRaisesRegex(self.pipeline.RecordError, 'digest mismatch'):
+                self.pipeline.verify(root)
 
     def test_invalid_event_kind_is_rejected_by_central_schema(self):
         bad = copy.deepcopy(self.report['publicCandidate'])
