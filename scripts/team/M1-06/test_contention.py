@@ -3,6 +3,8 @@ import copy
 import tempfile
 import unittest
 from pathlib import Path
+import subprocess
+import sys
 
 from contention import BASE_A, BASE_B, load_suppliers, run_fixture, schema_errors
 
@@ -74,6 +76,18 @@ class ContentionRecords(unittest.TestCase):
         bad = copy.deepcopy(self.report['publicCandidate'])
         bad['events'][0]['kind'] = 'undeclared_lease_kind'
         self.assertTrue(schema_errors(bad))
+
+    def test_cli_precondition_failure_preserves_failure_receipt_and_skips_handoff(self):
+        with tempfile.TemporaryDirectory(prefix='m1-06-cli-failure-') as temporary:
+            output = Path(temporary) / 'run'
+            completed = subprocess.run([sys.executable, 'scripts/team/M1-06/contention.py', '--output', str(output),
+                                        '--inject-precondition-failure'], capture_output=True, text=True)
+            self.assertEqual(completed.returncode, 1, completed.stderr)
+            receipt = json.loads((output / 'receipt.json').read_bytes())
+            self.assertEqual(receipt['state'], 'failed')
+            self.assertIn('handoff-dependent-skipped', {c['id'] for c in receipt['cases']})
+            self.assertEqual(receipt['cases'][10]['reason'], 'lease_fields_unrecordable')
+            self.assertFalse(any(c['id'] == 'handoff' for c in receipt['cases']))
 
 
 if __name__ == '__main__':

@@ -49,7 +49,7 @@ def schema_errors(record):
     return [error.message for error in Draft202012Validator(schema).iter_errors(record)]
 
 
-def run_fixture():
+def run_fixture(inject_precondition_failure=False):
     lease_module, record_pipeline = load_suppliers()
     contract = lease_module.read_json(REPO / SOURCES[0])
     cases, registries = [], {}
@@ -90,7 +90,7 @@ def run_fixture():
 
         name, resource = "handoff", wf("Assets/Synthetic.fixture")
         r = registry(name)
-        old = record("handoff-start", name, r.acquire("synthetic-a", resource, BASE_A, at(0), at(30), lease_module.SHA_X))
+        old = record("handoff-start", name, r.acquire("" if inject_precondition_failure else "synthetic-a", resource, BASE_A, at(0), at(30), lease_module.SHA_X))
         if old is None:
             cases.append({"id": "handoff-dependent-skipped", "registry": name, "journalSeq": None,
                           "accepted": False, "reason": "dependent_step_not_run",
@@ -183,6 +183,7 @@ def safe_fixture():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path, help="new, exclusively owned run directory")
+    parser.add_argument("--inject-precondition-failure", action="store_true", help=argparse.SUPPRESS)
     args = parser.parse_args()
     try:
         revision = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=REPO, text=True).strip()
@@ -196,7 +197,7 @@ def main():
             sources[relative] = {"sha256": hashlib.sha256(actual).hexdigest(), "gitBlobSha256": hashlib.sha256(committed).hexdigest()}
         if args.output.exists():
             raise ValueError("output exists; choose a fresh run directory")
-        report, bundle = safe_fixture()
+        report, bundle = safe_fixture() if not args.inject_precondition_failure else run_fixture(True)
         report["sourceRevision"], report["sourceFiles"] = revision, sources
         args.output.mkdir(parents=True, exist_ok=False)
         (args.output / "public").mkdir()
