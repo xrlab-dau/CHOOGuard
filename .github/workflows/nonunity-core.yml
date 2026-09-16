@@ -1,0 +1,43 @@
+name: Non-Unity Training Core
+on:
+  push:
+    branches: [bugfix/training-state-integrity-20260915]
+  pull_request:
+    paths:
+      - Packages/com.xrlab.chooguard.foundation/Runtime/**
+      - Packages/com.xrlab.chooguard.foundation/Tests/Editor/**
+      - tests/nonunity/**
+      - .github/workflows/nonunity-core.yml
+permissions:
+  contents: read
+jobs:
+  core:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+      DOTNET_NOLOGO: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+          lfs: false
+      - uses: actions/setup-dotnet@26b0ec14cb23fa6904739307f278c14f94c95bf1
+        with:
+          dotnet-version: '8.0.423'
+      - name: Build and test actual runtime sources with the pinned SDK
+        working-directory: tests/nonunity
+        run: |
+          dotnet --version
+          dotnet test ChooGuard.NonUnity.Tests.csproj --configuration Release --logger "trx;LogFileName=core.trx" --results-directory ../../core-results
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        if: always()
+        with:
+          name: nonunity-core-${{ matrix.os }}
+          path: core-results/*.trx
+          if-no-files-found: error
+          retention-days: 7

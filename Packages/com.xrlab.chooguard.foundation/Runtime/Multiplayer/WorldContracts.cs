@@ -7,7 +7,7 @@ namespace ChooGuard.Foundation.Multiplayer
     public enum CommandKind { Operate, Discover, Report, AcknowledgeReport, ClaimEvacuee, HandOffEvacuee, PauseShift, ResumeShift }
     public enum CommandCode { Accepted, InvalidCommand, IdentityMismatch, WrongWorld, CommandIdConflict,
         RoleDenied, UnknownTarget, StaleTarget, OutOfReach, Occluded, NotObserved, AlreadyClaimed,
-        InputPaused, ShiftPaused, PersistenceUnavailable, TargetBlocked }
+        InputPaused, ShiftPaused, PersistenceUnavailable, TargetBlocked, AuthorityBusy }
 
     [Serializable]
     public struct Point3
@@ -27,6 +27,8 @@ namespace ChooGuard.Foundation.Multiplayer
         public string WorldId, ShiftId, ParticipantId, TeamId, CommandId, TargetId = "", Argument = "";
         public CommandKind Kind;
         public long ExpectedRevision;
+        // All fields are strings or value types. The authority snapshots before calling adapters.
+        public WorldCommand Copy() => (WorldCommand)MemberwiseClone();
     }
 
     [Serializable]
