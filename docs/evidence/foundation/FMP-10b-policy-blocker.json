@@ -8,7 +8,9 @@
   "phase": "candidate",
   "artifacts": [
     "artifact:135:fmp10b-authority-tests:candidate",
-    "artifact:135:fmp10b-policy-blocker:candidate"
+    "artifact:135:fmp10b-policy-blocker:candidate",
+    "docs/evidence/foundation/FMP-10b/EditMode.xml",
+    "docs/evidence/foundation/FMP-10b/EditMode.log"
   ],
   "status": "candidate_policy_blocker_pending_pm",
   "syntheticDisclosure": {
@@ -18,10 +20,16 @@
   "directive": "세 명 이상의 NPC 인솔 경합, 명시적 인계, 중복 명령 거부를 회귀 시험으로 검증하세요. 접속 종료·구역 이동 정책이 없으면 해당 항목을 PM 결정으로 남기세요.",
   "verifiedBehaviors": [
     {
-      "id": "claim_race_3_participants",
-      "name": "Three-way concurrent evacuee claim race",
-      "behavior": "First arriving claim at expected revision 0 is Accepted; concurrent claim with stale revision 0 is rejected with StaleTarget; subsequent claim with current revision 1 is rejected with AlreadyClaimed. Evacuee leader remains single authoritative winner without corruption.",
-      "testMethod": "ClaimRace_ThreeParticipantsCompete_AcceptsFirst_RejectsSubsequent"
+      "id": "claim_race_3_participants_all_permutations",
+      "name": "Three-way concurrent evacuee claim race (all arrival permutations)",
+      "behavior": "Three participants (guide-a, guide-b, guide-c) submit claim commands concurrently at expected revision 0 across all 6 arrival permutations. Under single-server-thread command serialization, the first arriving claim is Accepted, while both subsequent claims with stale revision 0 are rejected with StaleTarget. LeaderId is set to first arrival, revision increments to 1, sequence increments to 1, exactly 1 sink write occurs, and exactly 1 accepted receipt is recorded in the ledger.",
+      "testMethod": "ClaimRace_ThreeParticipantsCompete_AllPermutations_AcceptsOnlyFirst_SubsequentStaleTarget"
+    },
+    {
+      "id": "claim_race_subsequent_observed_revision",
+      "name": "Subsequent claim observing current revision",
+      "behavior": "After evacuee is claimed at revision 0, a subsequent participant observing current revision 1 submits a claim with ExpectedRevision=1. The command is rejected with AlreadyClaimed.",
+      "testMethod": "ClaimRace_SubsequentClaimWithObservedRevision_RejectedWithAlreadyClaimed"
     },
     {
       "id": "explicit_handoff_chain",
@@ -42,29 +50,65 @@
       "testMethod": "ExplicitHandoff_RecipientValidation_RoleRequirementAndReachability"
     },
     {
+      "id": "handoff_recipient_input_disabled",
+      "name": "Inactive recipient handoff rejection",
+      "behavior": "Handoff to a recipient whose InputEnabled is false (paused/inactive) is rejected with OutOfReach. Evacuee leader, revision, world sequence, ledger, and sink writes remain strictly unchanged. Re-enabling input allows subsequent handoff to succeed.",
+      "testMethod": "ExplicitHandoff_RecipientInputDisabled_RejectedWithOutOfReach"
+    },
+    {
+      "id": "region_boundary_same_coordinates_diff_region",
+      "name": "Schema 1 region boundary rejection at zero distance",
+      "behavior": "In SchemaVersion 1, when actor and target share identical 3D coordinates (distance = 0) but reside in different RegionIds, InReach fails and the command is rejected with OutOfReach.",
+      "testMethod": "RegionBoundary_SameCoordinatesDifferentRegion_RejectedWithOutOfReachInSchema1"
+    },
+    {
+      "id": "distance_boundary_actor_precision",
+      "name": "Actor interaction radius boundary precision (2.5m threshold)",
+      "behavior": "Actor reachability to target evacuee accepts claims at 2.49m (2.5 - epsilon) and exactly 2.50m (threshold boundary), but rejects claims at 2.51m (2.5 + epsilon) with OutOfReach, leaving state and revision unmodified.",
+      "testMethod": "DistanceBoundary_InteractionRadiusPrecision_AcceptsAtAndBelow2Point5_RejectsAbove"
+    },
+    {
+      "id": "distance_boundary_recipient_precision",
+      "name": "Recipient interaction radius boundary precision (2.5m threshold)",
+      "behavior": "Recipient reachability during handoff accepts transfers at 2.49m and 2.50m, but rejects transfers at 2.51m with OutOfReach, leaving leader, revision, sequence, and ledger unmodified.",
+      "testMethod": "DistanceBoundary_RecipientReachabilityPrecision_AcceptsAtAndBelow2Point5_RejectsAbove"
+    },
+    {
       "id": "duplicate_command_idempotency",
       "name": "Idempotent duplicate command retry",
       "behavior": "Re-submitting identical command with matching fingerprint returns original cached CommandReceipt without secondary revision increment or storage commit.",
       "testMethod": "DuplicateCommand_IdempotentRetry_ReturnsCachedReceiptWithoutRevisionIncrement"
     },
     {
-      "id": "duplicate_command_conflict",
-      "name": "CommandId conflict on parameter mismatch",
-      "behavior": "Reusing existing CommandId with differing command payload is rejected with CommandIdConflict.",
-      "testMethod": "DuplicateCommand_ConflictingParameters_RejectedWithCommandIdConflict"
+      "id": "duplicate_command_single_field_conflicts",
+      "name": "Single-field command ID mutation conflicts",
+      "behavior": "Reusing existing CommandId while mutating exactly one field independently (Kind, TargetId, ExpectedRevision, Argument) produces CommandIdConflict across all 4 independent single-field variants, leaving state and ledger unmodified.",
+      "testMethod": "DuplicateCommand_SingleFieldMutationConflict_RejectsWithCommandIdConflict"
+    },
+    {
+      "id": "duplicate_command_handoff_replay",
+      "name": "Handoff command replay after downstream transfer",
+      "behavior": "Replaying the original handoff command (A -> B) after downstream transfer (B -> C) returns the original cached Sequence 2 receipt without reverting current evacuee ownership from guide-c back to guide-b.",
+      "testMethod": "DuplicateCommand_HandoffReplayAfterDownstreamTransfer_ReturnsOriginalReceiptWithoutRevertingOwnership"
     },
     {
       "id": "duplicate_claim_already_leader",
       "name": "Redundant claim submission by current leader",
       "behavior": "Current leader submitting a new claim command on already-led evacuee is rejected with AlreadyClaimed.",
       "testMethod": "DuplicateCommand_SameLeaderSubmitsNewClaimCommand_RejectedWithAlreadyClaimed"
+    },
+    {
+      "id": "disconnection_boundary_leader_input_disabled",
+      "name": "Leader input disabled leaves evacuee orphaned under current rules",
+      "behavior": "When current leader input is disabled (InputEnabled = false), leader cannot hand off (InputPaused), and peers cannot claim (AlreadyClaimed) or hand off (RoleDenied), demonstrating the verified command-layer orphan state.",
+      "testMethod": "DisconnectionBoundary_LeaderInputDisabled_LeavesEvacueeOrphanedUnderCurrentRules"
     }
   ],
   "policyBlockers": [
     {
       "id": "PB-01",
       "title": "인솔자 세션 접속 종료 및 입력 비활성화(Disconnection / InputPaused) 시 NPC 고착 블로커",
-      "currentBehavior": "인솔자 플레이어가 네트워크 장애로 접속 종료되거나 입력이 비활성화(InputEnabled = false)되었을 때, 인솔자 본인은 InputPaused로 인해 인계(HandOff) 명령을 실행할 수 없습니다. 동시에 다른 참가자들은 AlreadyClaimed로 인해 인솔(Claim)할 수 없고, RoleDenied로 인해 인계를 수행할 수도 없습니다. 따라서 해당 NPC는 활성 인솔자 없이 영구 또는 무기한 고착됩니다.",
+      "currentBehavior": "인솔자 세션의 입력이 비활성화(InputEnabled = false)되었을 때의 명령 계층 동작은 검증되었습니다: 인솔자 본인은 InputPaused로 인해 인계(HandOff) 명령을 실행할 수 없고, 다른 참가자들은 AlreadyClaimed로 인해 인솔(Claim)할 수 없으며 RoleDenied로 인해 인계를 수행할 수도 없어 NPC가 고착됩니다. 단, 이는 SetInputEnabled(false)에 의한 메모리 내 명령 계층 단위시험으로 확인된 사실이며, 실제 전송 계층 소켓 연결 종료(Socket Drop), 네트워크 타임아웃 감지 및 세션 재접속 시의 처리 로직은 본 시험 범위에 포함되지 않은 미검증 가설(Untested Hypothesis)입니다.",
       "architecturalBoundary": "AuthoritativeShift.cs line 166 (InputEnabled check) and line 250/254 (LeaderId and ownership check).",
       "impact": "멀티플레이어 대피 훈련 도중 인솔자 세션이 끊기면 대피 대상 NPC가 그 자리에 멈춰 훈련 진행이 중단됩니다.",
       "decisionNeededFrom": "role:pm",
@@ -89,7 +133,7 @@
     {
       "id": "PB-02",
       "title": "인솔자의 단독 구역 이동(Region Movement / Portal Traversal) 시 사거리 초과 블로커",
-      "currentBehavior": "인솔자가 포털을 통과하여 타 구역(Region)으로 이동하거나 NPC와 2.5m(InteractionRadius) 이상 멀어질 경우, NPC는 이전 구역/좌표에 그대로 머무릅니다. 이 상태에서 인솔자가 이전 구역의 동료에게 NPC 인계를 시도하면 InReach(actor, target) 검사에서 OutOfReach로 즉시 거부되며, 동료는 AlreadyClaimed로 인해 인솔할 수 없습니다.",
+      "currentBehavior": "SchemaVersion 1 명령 계층 단위시험에서 확인된 사실: 인솔자와 NPC의 거리가 2.5m를 초과(distance > 2.5m)하거나 구역(RegionId)이 불일치하면 InReach 검사에서 OutOfReach로 즉시 거부되며, 동료는 AlreadyClaimed로 인해 인솔할 수 없습니다(정확히 2.5m 이하는 허용). 단, 본 검증은 actor만 수동 이동하고 물리 시뮬레이션(Physics Tick) 및 포털 통과 로직을 실행하지 않은 in-process 단위 시험입니다. 실제 AuthoritativeShift.cs의 InReach 구현은 `(SchemaVersion == 3 || actor.RegionId == target.RegionId) && distance <= radius`이므로, SchemaVersion 3에서는 구역 불일치만으로 즉시 거부되지 않습니다. 따라서 포털 통과 시 NPC 추종 실패나 13개 구역 간 고립 여부는 실제 물리/포털 런타임 검증이 필요한 미검증 추론(Inferred/Untested)입니다.",
       "architecturalBoundary": "AuthoritativeShift.cs line 235 (InReach check) and line 375 (RegionId / InteractionRadius comparison).",
       "impact": "13개 구역 간 대피 과정에서 인솔자가 포털을 단독 통과하면 NPC가 고립되고 인계 경로가 단절됩니다.",
       "decisionNeededFrom": "role:pm",
@@ -115,10 +159,27 @@
   "verification": {
     "testClass": "ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests",
     "testPlatform": "EditMode",
-    "total": 9,
-    "passed": 9,
+    "total": 14,
+    "passed": 14,
     "failed": 0,
     "skipped": 0,
-    "command": "unity test . --mode EditMode --filter FMP10bHandoffBoundaryTests"
+    "testedCommit": "2c9291f5325fc025cbf96aadcac4f4ad551471ad",
+    "runnerVersion": "Unity 6000.3.23f1",
+    "command": "Unity.exe -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests -testResults docs/evidence/foundation/FMP-10b/EditMode.xml -logFile docs/evidence/foundation/FMP-10b/EditMode.log",
+    "executedAt": "2026-09-16T06:05:10Z",
+    "artifacts": [
+      {
+        "path": "docs/evidence/foundation/FMP-10b/EditMode.xml",
+        "type": "nunit3_xml",
+        "bytes": 14049,
+        "sha256": "2308ba34f625eada63f0f033b3889d6763f8811d862f6a12f3238492fda36f6f"
+      },
+      {
+        "path": "docs/evidence/foundation/FMP-10b/EditMode.log",
+        "type": "unity_editor_log",
+        "bytes": 50661,
+        "sha256": "97a07c94a3160bfbe5cda55059550717a655432c73066f1affd145a27f679d6d"
+      }
+    ]
   }
 }
