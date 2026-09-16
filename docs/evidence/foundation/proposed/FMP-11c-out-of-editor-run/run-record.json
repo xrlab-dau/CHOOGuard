@@ -2,7 +2,7 @@
   "recordKind": "out_of_editor_run_record",
   "harnessIsNot": "Not NUnit and not the Unity Test Runner: Unity-bundled Roslyn csc.dll + .NET runtime + local NUnit-shaped shim + console runner. Cannot show [OneTimeSetUp]/[SetUp] lifecycle, the editor environment, test categories, NUnit3 XML, asset import or PlayMode.",
   "testFile": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs",
-  "testFileSha256": "0e45fd3516e3f29c9d9015438c45b78bf3f3544e6add55ffe23c74b47eb420b3",
+  "testFileSha256": "eaa74bdd4c49deda482e791e6194413cfed237d551eae73918194c4d29a40a73",
   "collectionRoot": "<WORKTREE>",
   "collectionRootNote": "The absolute checkout root is withheld: it embeds the operator's home directory and a session scratch directory, and published evidence in this repository does not carry personal paths. The token records that the run was made against a checkout root supplied at run time. See WORKTREE_TOKEN in this directory's out_of_editor_run.py.",
   "platform": {
@@ -12,8 +12,8 @@
     "compiler": "Unity-bundled Roslyn csc.dll"
   },
   "sourceRevision": {
-    "head": "f68dfe6323925382ee5f926ee48c080456200a8f",
-    "describe": "f68dfe6",
+    "head": "7c9b1c9ef9ed366c022f6cd78f035b37a7d5cbcd",
+    "describe": "7c9b1c9",
     "branch": "test/139-observed-route-consistency-hardening",
     "dirtyCompiledPaths": [
       "none: the compiled paths matched HEAD exactly at run time"
@@ -255,7 +255,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M02",
@@ -356,7 +356,7 @@
         "PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces",
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M10",
@@ -401,7 +401,7 @@
     {
       "id": "M13",
       "status": "caught",
-      "mutation": "ConnectedWorldDefinition.cs:17-18 negate both terms of the ToWorld Z row (Origin.Z - s * local.X + c * local.Z becomes Origin.Z + s * local.X - c * local.Z). This is NOT a pure yaw-sign flip and is NOT limited to non-zero yaw: the cosine term is negated too, so it is observable at yaw 0 as well. Measured for local.Z = -3.75: the Z term moves from -3.750 to +3.750 at yaw 0, at yaw 90 and at yaw 180 alike. The narrower defect that is genuinely invisible at yaw 0 is the dropped sine term, which is recorded separately as PH.",
+      "mutation": "ConnectedWorldDefinition.cs:17-18 negate both terms of the ToWorld Z row (Origin.Z - s * local.X + c * local.Z becomes Origin.Z + s * local.X - c * local.Z). This is NOT a pure yaw-sign flip: the mutation negates BOTH terms of the Z row, so it is observable at yaw 0 too, where the sine term is zero. That row is Origin.Z - s*local.X + c*local.Z, so the local.Z contribution is c*local.Z and the mutant makes it -c*local.Z: at yaw 0 (c = 1) it moves -3.750 -> +3.750 for local.Z = -3.75, and at yaw 180 (c = -1) the same contribution moves the other way, +3.750 -> -3.750. At yaw 90 c = 0, so local.Z contributes nothing to that row in either version and the movement is nil; there the row is carried by local.X, whose contribution -s*local.X flips to +s*local.X. A single sentence claiming a -3.750 -> +3.750 movement at all three yaws would therefore have been wrong at two of them, which is why this note states the arithmetic per yaw instead. The defect that IS genuinely invisible at yaw 0 is the dropped sine term, recorded separately as PH.",
       "testsRun": 8,
       "passed": 7,
       "failedCount": 1,
@@ -454,7 +454,7 @@
       "caughtBy": [
         "SnapshotFreshnessScopeAndFourSurfaceScopeAreSeparatelyReported"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "M18",
@@ -490,7 +490,7 @@
       "caughtBy": [
         "FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "PC",
@@ -526,7 +526,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.7
+      "elapsedSeconds": 0.6
     },
     {
       "id": "PA",
@@ -553,7 +553,7 @@
       "caughtBy": [
         "ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario"
       ],
-      "elapsedSeconds": 0.6
+      "elapsedSeconds": 0.7
     },
     {
       "id": "PG",
@@ -570,7 +570,7 @@
     {
       "id": "PH",
       "status": "caught",
-      "mutation": "ConnectedWorldDefinition.cs:17-18 drop the sine term from SpatialFrame.ToWorld while leaving the cosine term intact (Origin.X + c * local.X + s * local.Z becomes Origin.X + c * local.X, and the matching Z row loses - s * local.X). This is the narrower defect M12 and M13 cannot express: both of those also disturb the cosine term, and every frame in the authored table has sin(yaw) = 0, so before this probe no case in this file could distinguish a frame transform that carries rotation from one that ignores it. It is caught by the yaw 90 assertions added to FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces for exactly this case. ToLocal is deliberately left unmutated, so the round trip assertion fails alongside the two axis assertions.",
+      "mutation": "ConnectedWorldDefinition.cs:17-18 drop the sine term from SpatialFrame.ToWorld while leaving the cosine term intact (Origin.X + c * local.X + s * local.Z becomes Origin.X + c * local.X, and the matching Z row loses - s * local.X). This is the narrower defect M12 and M13 cannot express: M13 alters the cosine term as well, M12 drops the frame origin, and every frame in the authored table has sin(yaw) = 0, so before this probe no case in this file pinned the SINE term of the transform. (The authored table does still distinguish a transform that applies rotation from one that ignores it, through train-metro, whose yaw is 180: cos(180) = -1, which is what Fmp08aMovingFrameTests.cs pins. What no authored frame can pin is the sine term.) It is caught by the yaw 90 assertions added to FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces for exactly this case. ToLocal is deliberately left unmutated, so the round trip assertion fails alongside the two axis assertions.",
       "testsRun": 8,
       "passed": 7,
       "failedCount": 1,

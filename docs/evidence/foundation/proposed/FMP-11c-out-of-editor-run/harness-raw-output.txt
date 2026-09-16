@@ -3,7 +3,7 @@ compiler: /Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scr
 runtime:  /Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scripting/NetCoreRuntime/shared/Microsoft.NETCore.App/6.0.21
 worktree: <WORKTREE>
 testfile: Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs
-testfile sha256: 0e45fd3516e3f29c9d9015438c45b78bf3f3544e6add55ffe23c74b47eb420b3
+testfile sha256: eaa74bdd4c49deda482e791e6194413cfed237d551eae73918194c4d29a40a73
 note: NOT the Unity test runner and NOT NUnit; console runner + local shim.
 
 ===== CASE baseline-unmutated (baseline (no mutation)) =====
@@ -196,7 +196,7 @@ PASS  StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection
 
 == 7 passed, 1 failed, 8 total ==
 
-===== CASE M13 (ConnectedWorldDefinition.cs:17-18 negate both terms of the ToWorld Z row (Origin.Z - s * local.X + c * local.Z becomes Origin.Z + s * local.X - c * local.Z). This is NOT a pure yaw-sign flip and is NOT limited to non-zero yaw: the cosine term is negated too, so it is observable at yaw 0 as well. Measured for local.Z = -3.75: the Z term moves from -3.750 to +3.750 at yaw 0, at yaw 90 and at yaw 180 alike. The narrower defect that is genuinely invisible at yaw 0 is the dropped sine term, which is recorded separately as PH.) =====
+===== CASE M13 (ConnectedWorldDefinition.cs:17-18 negate both terms of the ToWorld Z row (Origin.Z - s * local.X + c * local.Z becomes Origin.Z + s * local.X - c * local.Z). This is NOT a pure yaw-sign flip: the mutation negates BOTH terms of the Z row, so it is observable at yaw 0 too, where the sine term is zero. That row is Origin.Z - s*local.X + c*local.Z, so the local.Z contribution is c*local.Z and the mutant makes it -c*local.Z: at yaw 0 (c = 1) it moves -3.750 -> +3.750 for local.Z = -3.75, and at yaw 180 (c = -1) the same contribution moves the other way, +3.750 -> -3.750. At yaw 90 c = 0, so local.Z contributes nothing to that row in either version and the movement is nil; there the row is carried by local.X, whose contribution -s*local.X flips to +s*local.X. A single sentence claiming a -3.750 -> +3.750 movement at all three yaws would therefore have been wrong at two of them, which is why this note states the arithmetic per yaw instead. The defect that IS genuinely invisible at yaw 0 is the dropped sine term, recorded separately as PH.) =====
 compile: rc=0
 PASS  EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces
 FAIL  FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces
@@ -394,11 +394,11 @@ PASS  StaleFrameOrReportMismatchCreatesExplicitFailedResultNotSilentSelection
 
 == 7 passed, 1 failed, 8 total ==
 
-===== CASE PH (ConnectedWorldDefinition.cs:17-18 drop the sine term from SpatialFrame.ToWorld while leaving the cosine term intact (Origin.X + c * local.X + s * local.Z becomes Origin.X + c * local.X, and the matching Z row loses - s * local.X). This is the narrower defect M12 and M13 cannot express: both of those also disturb the cosine term, and every frame in the authored table has sin(yaw) = 0, so before this probe no case in this file could distinguish a frame transform that carries rotation from one that ignores it. It is caught by the yaw 90 assertions added to FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces for exactly this case. ToLocal is deliberately left unmutated, so the round trip assertion fails alongside the two axis assertions.) =====
+===== CASE PH (ConnectedWorldDefinition.cs:17-18 drop the sine term from SpatialFrame.ToWorld while leaving the cosine term intact (Origin.X + c * local.X + s * local.Z becomes Origin.X + c * local.X, and the matching Z row loses - s * local.X). This is the narrower defect M12 and M13 cannot express: M13 alters the cosine term as well, M12 drops the frame origin, and every frame in the authored table has sin(yaw) = 0, so before this probe no case in this file pinned the SINE term of the transform. (The authored table does still distinguish a transform that applies rotation from one that ignores it, through train-metro, whose yaw is 180: cos(180) = -1, which is what Fmp08aMovingFrameTests.cs pins. What no authored frame can pin is the sine term.) It is caught by the yaw 90 assertions added to FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces for exactly this case. ToLocal is deliberately left unmutated, so the round trip assertion fails alongside the two axis assertions.) =====
 compile: rc=0
 PASS  EquipmentConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces
 FAIL  FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces
-        AssertionException: Expected: -1.75  But was: 2 -- at yaw 90 the local +Z offset lands on world -X, which only the sine term can carry there
+        AssertionException: Expected: -1.75  But was: 2 -- at yaw 90 the local -Z offset lands on world -X, which only the sine term can carry there
 PASS  ObservedIdsExcludedInformationIsAbsentFromViewAndRouteNegativeScenario
 PASS  ObservedPortalDisagreementWithAuthoritativeDoorIsExposedNotReconciled
 PASS  PortalConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces
