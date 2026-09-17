@@ -156,6 +156,32 @@ namespace ChooGuard.Foundation.Tests
             };
         }
 
+        private static void AssertReceiptLedgerAndStateEqual(
+            WorldState before, int writesBefore,
+            WorldState after, int writesAfter,
+            string relevantEntityId = null)
+        {
+            Assert.That(writesAfter, Is.EqualTo(writesBefore), "Sink writes count must not change on rejected command");
+            Assert.That(after.Sequence, Is.EqualTo(before.Sequence), "World sequence must not change on rejected command");
+            Assert.That(after.Receipts.Length, Is.EqualTo(before.Receipts.Length), "Receipt ledger count must not change on rejected command");
+            for (int i = 0; i < before.Receipts.Length; i++)
+            {
+                Assert.That(after.Receipts[i].CommandId, Is.EqualTo(before.Receipts[i].CommandId));
+                Assert.That(after.Receipts[i].ParticipantId, Is.EqualTo(before.Receipts[i].ParticipantId));
+                Assert.That(after.Receipts[i].Fingerprint, Is.EqualTo(before.Receipts[i].Fingerprint));
+                Assert.That(after.Receipts[i].Code, Is.EqualTo(before.Receipts[i].Code));
+                Assert.That(after.Receipts[i].Sequence, Is.EqualTo(before.Receipts[i].Sequence));
+            }
+            if (!string.IsNullOrEmpty(relevantEntityId))
+            {
+                var eBefore = before.Entities.Single(e => e.EntityId == relevantEntityId);
+                var eAfter = after.Entities.Single(e => e.EntityId == relevantEntityId);
+                Assert.That(eAfter.LeaderId, Is.EqualTo(eBefore.LeaderId), $"LeaderId of {relevantEntityId} must remain unchanged");
+                Assert.That(eAfter.Revision, Is.EqualTo(eBefore.Revision), $"Revision of {relevantEntityId} must remain unchanged");
+            }
+        }
+
+
         [Test]
         public void ClaimRace_ThreeParticipantsCompete_AllPermutations_AcceptsOnlyFirst_SubsequentStaleTarget()
         {
@@ -358,7 +384,7 @@ namespace ChooGuard.Foundation.Tests
         public void ExplicitHandoff_RecipientInputDisabled_RejectedWithOutOfReach()
         {
             var claim = shift.Submit("guide-a", MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-01", expectedRevision: 0));
-            Assert.That(claim.Code, Is.EqualTo(CommandCode.Accepted));
+            Assert.That(claim.Code, Is.EqualTo(CommandCode.Accepted), "Initial claim must be accepted");
 
             // Disable input of recipient guide-b (same role, same region, within 0.5m, visible)
             shift.SetInputEnabled("guide-b", false);
@@ -366,12 +392,12 @@ namespace ChooGuard.Foundation.Tests
             var stateBefore = shift.ExportCheckpoint();
             var writesBefore = sink.Writes;
 
-            // Attempt handoff to input-disabled recipient -> OutOfReach per AuthoritativeShift.cs line 256
+            // Attempt handoff to input-disabled recipient -> OutOfReach per AuthoritativeShift.cs line 287
             var handoffToDisabled = MakeCommand("guide-a", CommandKind.HandOffEvacuee, "npc-evacuee-01", expectedRevision: 1, argument: "guide-b");
             var receipt = shift.Submit("guide-a", handoffToDisabled);
 
             Assert.That(receipt.Code, Is.EqualTo(CommandCode.OutOfReach), "Handoff to input-disabled recipient must be rejected with OutOfReach");
-            Assert.That(sink.Writes, Is.EqualTo(writesBefore), "Rejected handoff must not commit writes to sink");
+            AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-01");
 
             var stateAfter = shift.ExportCheckpoint();
             var evacuee = stateAfter.Entities.Single(e => e.EntityId == "npc-evacuee-01");
@@ -397,13 +423,14 @@ namespace ChooGuard.Foundation.Tests
             // Move actor to "platform", but place at the EXACT same position (1, 0, 1) -> distance is 0.0m <= 2.5m
             shift.SetServerPosition("guide-a", "platform", new Point3(1f, 0f, 1f));
 
+            var stateBefore = shift.ExportCheckpoint();
             var writesBefore = sink.Writes;
             var cmd = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-01", expectedRevision: 0);
             var receipt = shift.Submit("guide-a", cmd);
 
             // In SchemaVersion 1, InReach requires actor.RegionId == target.RegionId
             Assert.That(receipt.Code, Is.EqualTo(CommandCode.OutOfReach), "In SchemaVersion 1, different RegionId must be rejected with OutOfReach even at distance 0");
-            Assert.That(sink.Writes, Is.EqualTo(writesBefore));
+            AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-01");
 
             var checkpoint = shift.ExportCheckpoint();
             var evacuee = checkpoint.Entities.Single(e => e.EntityId == "npc-evacuee-01");
@@ -460,6 +487,9 @@ namespace ChooGuard.Foundation.Tests
                 var testShift = new AuthoritativeShift(CreateDefaultWorldState(), testSink, (_, __) => true);
                 testShift.SetServerPosition("guide-a", "hall", new Point3(1f + 2.5f + epsilon, 0f, 1f));
 
+                var stateBefore = testShift.ExportCheckpoint();
+                var writesBefore = testSink.Writes;
+
                 var cmd = new WorldCommand
                 {
                     WorldId = "world-fmp10b", ShiftId = "shift-01",
@@ -469,7 +499,7 @@ namespace ChooGuard.Foundation.Tests
                 };
                 var receipt = testShift.Submit("guide-a", cmd);
                 Assert.That(receipt.Code, Is.EqualTo(CommandCode.OutOfReach), "Distance at (2.5 + eps) must be rejected with OutOfReach");
-                Assert.That(testSink.Writes, Is.Zero, "Rejected claim must not write to sink");
+                AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, testShift.ExportCheckpoint(), testSink.Writes, "npc-evacuee-01");
 
                 var checkpoint = testShift.ExportCheckpoint();
                 var evacuee = checkpoint.Entities.Single(e => e.EntityId == "npc-evacuee-01");
@@ -517,12 +547,17 @@ namespace ChooGuard.Foundation.Tests
             {
                 var testSink = new TestCommitSink();
                 var testShift = new AuthoritativeShift(CreateDefaultWorldState(), testSink, (_, __) => true);
-                testShift.Submit("guide-a", new WorldCommand { WorldId = "world-fmp10b", ShiftId = "shift-01", ParticipantId = "guide-a", TeamId = "team-alpha", CommandId = "c1", Kind = CommandKind.ClaimEvacuee, TargetId = "npc-evacuee-01", ExpectedRevision = 0 });
+                var cReceipt = testShift.Submit("guide-a", new WorldCommand { WorldId = "world-fmp10b", ShiftId = "shift-01", ParticipantId = "guide-a", TeamId = "team-alpha", CommandId = "c1", Kind = CommandKind.ClaimEvacuee, TargetId = "npc-evacuee-01", ExpectedRevision = 0 });
+                Assert.That(cReceipt.Code, Is.EqualTo(CommandCode.Accepted), "Preparation claim must be accepted");
 
                 testShift.SetServerPosition("guide-b", "hall", new Point3(1f + 2.5f + epsilon, 0f, 1f));
+                var stateBefore = testShift.ExportCheckpoint();
+                var writesBefore = testSink.Writes;
+
                 var handoff = new WorldCommand { WorldId = "world-fmp10b", ShiftId = "shift-01", ParticipantId = "guide-a", TeamId = "team-alpha", CommandId = "h3", Kind = CommandKind.HandOffEvacuee, TargetId = "npc-evacuee-01", ExpectedRevision = 1, Argument = "guide-b" };
                 var receipt = testShift.Submit("guide-a", handoff);
                 Assert.That(receipt.Code, Is.EqualTo(CommandCode.OutOfReach), "Recipient distance at 2.51m must be rejected with OutOfReach");
+                AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, testShift.ExportCheckpoint(), testSink.Writes, "npc-evacuee-01");
 
                 var checkpoint = testShift.ExportCheckpoint();
                 var evacuee = checkpoint.Entities.Single(e => e.EntityId == "npc-evacuee-01");
@@ -561,38 +596,60 @@ namespace ChooGuard.Foundation.Tests
             const string reuseId = "reuse-single-mutation-cmd";
             var baseCmd = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-free", commandId: reuseId, expectedRevision: 0, argument: "");
             var baseReceipt = shift.Submit("guide-a", baseCmd);
-            Assert.That(baseReceipt.Code, Is.EqualTo(CommandCode.Accepted));
-
-            var writesBefore = sink.Writes;
-            var seqBefore = shift.ExportCheckpoint().Sequence;
+            Assert.That(baseReceipt.Code, Is.EqualTo(CommandCode.Accepted), "Initial base claim must be accepted");
 
             // Mutation 1: Only Kind modified
-            var modKind = MakeCommand("guide-a", CommandKind.Operate, "npc-evacuee-free", commandId: reuseId, expectedRevision: 0, argument: "");
-            var recKind = shift.Submit("guide-a", modKind);
-            Assert.That(recKind.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered Kind must yield CommandIdConflict");
-            Assert.That(sink.Writes, Is.EqualTo(writesBefore));
-            Assert.That(shift.ExportCheckpoint().Sequence, Is.EqualTo(seqBefore));
+            {
+                var stateBefore = shift.ExportCheckpoint();
+                var writesBefore = sink.Writes;
+                var modKind = MakeCommand("guide-a", CommandKind.Operate, "npc-evacuee-free", commandId: reuseId, expectedRevision: 0, argument: "");
+                var recKind = shift.Submit("guide-a", modKind);
+                Assert.That(recKind.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered Kind must yield CommandIdConflict");
+                AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-free");
+            }
 
             // Mutation 2: Only TargetId modified
-            var modTarget = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-01", commandId: reuseId, expectedRevision: 0, argument: "");
-            var recTarget = shift.Submit("guide-a", modTarget);
-            Assert.That(recTarget.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered TargetId must yield CommandIdConflict");
-            Assert.That(sink.Writes, Is.EqualTo(writesBefore));
-            Assert.That(shift.ExportCheckpoint().Sequence, Is.EqualTo(seqBefore));
+            {
+                var stateBefore = shift.ExportCheckpoint();
+                var writesBefore = sink.Writes;
+                var modTarget = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-01", commandId: reuseId, expectedRevision: 0, argument: "");
+                var recTarget = shift.Submit("guide-a", modTarget);
+                Assert.That(recTarget.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered TargetId must yield CommandIdConflict");
+                AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-free");
+                Assert.That(shift.ExportCheckpoint().Entities.Single(e => e.EntityId == "npc-evacuee-01").LeaderId, Is.EqualTo(stateBefore.Entities.Single(e => e.EntityId == "npc-evacuee-01").LeaderId));
+            }
 
             // Mutation 3: Only ExpectedRevision modified
-            var modRev = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-free", commandId: reuseId, expectedRevision: 42, argument: "");
-            var recRev = shift.Submit("guide-a", modRev);
-            Assert.That(recRev.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered ExpectedRevision must yield CommandIdConflict");
-            Assert.That(sink.Writes, Is.EqualTo(writesBefore));
-            Assert.That(shift.ExportCheckpoint().Sequence, Is.EqualTo(seqBefore));
+            {
+                var stateBefore = shift.ExportCheckpoint();
+                var writesBefore = sink.Writes;
+                var modRev = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-free", commandId: reuseId, expectedRevision: 42, argument: "");
+                var recRev = shift.Submit("guide-a", modRev);
+                Assert.That(recRev.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered ExpectedRevision must yield CommandIdConflict");
+                AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-free");
+            }
 
             // Mutation 4: Only Argument modified
-            var modArg = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-free", commandId: reuseId, expectedRevision: 0, argument: "unexpected-arg");
-            var recArg = shift.Submit("guide-a", modArg);
-            Assert.That(recArg.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered Argument must yield CommandIdConflict");
-            Assert.That(sink.Writes, Is.EqualTo(writesBefore));
-            Assert.That(shift.ExportCheckpoint().Sequence, Is.EqualTo(seqBefore));
+            {
+                var stateBefore = shift.ExportCheckpoint();
+                var writesBefore = sink.Writes;
+                var modArg = MakeCommand("guide-a", CommandKind.ClaimEvacuee, "npc-evacuee-free", commandId: reuseId, expectedRevision: 0, argument: "unexpected-arg");
+                var recArg = shift.Submit("guide-a", modArg);
+                Assert.That(recArg.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered Argument must yield CommandIdConflict");
+                AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-free");
+            }
+
+            // Post-conflict retry: submitting the ORIGINAL command again returns the original cached receipt and fingerprint
+            {
+                var stateBefore = shift.ExportCheckpoint();
+                var writesBefore = sink.Writes;
+                var replayBase = shift.Submit("guide-a", baseCmd);
+                Assert.That(replayBase.Code, Is.EqualTo(CommandCode.Accepted));
+                Assert.That(replayBase.CommandId, Is.EqualTo(baseReceipt.CommandId));
+                Assert.That(replayBase.Fingerprint, Is.EqualTo(baseReceipt.Fingerprint));
+                Assert.That(replayBase.Sequence, Is.EqualTo(baseReceipt.Sequence));
+                AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-free");
+            }
         }
 
         [Test]
