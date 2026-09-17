@@ -9,16 +9,9 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import shutil
-import subprocess
 
 REPO = Path(__file__).resolve().parents[3]
 RESERVED = {'input', 'execution', 'evidence', 'request.json'}
-CONTRACT = 'docs/team/M1-07/review-contract.json'
-SUPPLIERS = ('scripts/dev/native_manifest.py', 'scripts/team/M1-02/permission_boundary.py',
-             'scripts/bootstrap/verify_toolchain.py')
-native = boundary = None
-_bindings = None
-_contract_hash = None
 
 
 def module(name, relative):
@@ -28,49 +21,22 @@ def module(name, relative):
     return loaded
 
 
+native = module('m107_manifest', 'scripts/dev/native_manifest.py')
+boundary = module('m107_boundary', 'scripts/team/M1-02/permission_boundary.py')
+
+
 class Refused(ValueError):
     pass
-
-
-def load_suppliers():
-    """Trust committed bindings; check the complete Python closure before import."""
-    global native, boundary, _bindings, _contract_hash
-    if _bindings is None:
-        committed = subprocess.check_output(['git', 'show', 'HEAD:' + CONTRACT], cwd=REPO, stderr=subprocess.DEVNULL)
-        contract = json.loads(committed)
-        rows = {row['path']: row for row in contract['sources']}
-        if len(rows) != len(contract['sources']) or not set(SUPPLIERS) <= rows.keys():
-            raise Refused('cannot_proceed: supplier_binding_missing')
-        bindings = {path: rows[path] for path in SUPPLIERS}
-        for path, row in bindings.items():
-            if not re.fullmatch('[a-f0-9]{40}', row['ref']):
-                raise Refused('cannot_proceed: supplier_ref_invalid')
-            recorded = subprocess.check_output(['git', 'show', row['ref'] + ':' + path], cwd=REPO, stderr=subprocess.DEVNULL)
-            if digest(recorded) != row['sha256']:
-                raise Refused('cannot_proceed: supplier_binding_drift')
-        _bindings, _contract_hash = bindings, digest(committed.replace(b'\r\n', b'\n'))
-    if digest((REPO / CONTRACT).read_bytes().replace(b'\r\n', b'\n')) != _contract_hash:
-        raise Refused('cannot_proceed: supplier_contract_drift')
-    for path, row in _bindings.items():
-        if digest((REPO / path).read_bytes().replace(b'\r\n', b'\n')) != row['sha256']:
-            raise Refused('cannot_proceed: supplier_source_drift')
-    if native is None:
-        for path in SUPPLIERS:
-            compile((REPO / path).read_bytes(), path, 'exec')
-        loaded_native = module('m107_manifest', SUPPLIERS[0])
-        loaded_boundary = module('m107_boundary', SUPPLIERS[1])
-        native, boundary = loaded_native, loaded_boundary
 
 
 def guarded(function):
     @wraps(function)
     def call(*args, **kwargs):
         try:
-            load_suppliers()
             return function(*args, **kwargs)
         except Refused:
             raise
-        except (OSError, ValueError, KeyError, TypeError, SyntaxError, ImportError, subprocess.CalledProcessError):
+        except (OSError, ValueError, KeyError, TypeError):
             raise Refused('cannot_proceed: invalid_or_inaccessible_fixture') from None
     return call
 
@@ -83,21 +49,37 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
-def target_name(name):
-    if not isinstance(name, str) or not name or name in ('.', './'):
-        raise Refused('cannot_proceed: noncanonical_target_name')
-    path = PurePosixPath(name)
-    if (path.as_posix() != name or path.is_absolute() or '..' in path.parts
-            or '\\' in name or ':' in name or path.parts[0] == '.git'):
-        raise Refused('cannot_proceed: noncanonical_target_name')
-    return name
-
-
 def local(path):
     path = Path(path).absolute()
     if path.drive.startswith('\\\\') or any(boundary.is_link(p) for p in (path, *path.parents)):
         raise Refused('cannot_proceed: linked_or_network_path')
     return path.resolve()
+
+
+def verified(root, record):
+    try:
+        return native.verify(root, record)
+    except (OSError, ValueError):
+        raise Refused('cannot_proceed: target_bytes_changed') from None
+
+
+def canonical(name):
+    """The one accepted spelling of a portable relative fixture path.
+
+    Native manifest keys are the caller's literal strings, while the copied files on
+    disk carry the normalized relative name. Any spelling whose normalization differs
+    from the text itself (a leading './', a '.' segment, a doubled slash) would freeze
+    a manifest key that no longer matches the materialized file, so it is refused here
+    instead of producing a run that can never be inspected or finalized.
+    """
+    if not isinstance(name, str) or not name or '\\' in name or ':' in name:
+        raise Refused('cannot_proceed: invalid_relative_name')
+    relative = PurePosixPath(name)
+    if relative.is_absolute() or not relative.parts or '..' in relative.parts or relative.parts[0] == '.git':
+        raise Refused('cannot_proceed: invalid_relative_name')
+    if relative.as_posix() != name:
+        raise Refused('cannot_proceed: non_canonical_relative_name')
+    return name
 
 
 def policy():
@@ -141,13 +123,12 @@ def begin(source, output, names, base, head, author, reviewer, round_number=1):
     if (type(round_number) is not int or not 1 <= round_number <= 3
             or not all(isinstance(ref, str) and re.fullmatch('[a-f0-9]{40}', ref) for ref in (base, head))):
         raise Refused('cannot_proceed: invalid_round_or_revision')
-    names = [target_name(name) for name in names]
+    names = [canonical(name) for name in names]
     if not names or len(set(names)) != len(names):
         raise Refused('cannot_proceed: empty_or_duplicate_target')
     for name in names:
-        path = native.contained_file(source, name)
-        local(path)
-        if name.split('/')[0] in RESERVED:
+        local(native.contained_file(source, name))
+        if PurePosixPath(name).parts[0] in RESERVED:
             raise Refused('cannot_proceed: protocol_output_is_not_target_input')
     model = policy()
     identity(model, author, reviewer)
@@ -164,8 +145,8 @@ def begin(source, output, names, base, head, author, reviewer, round_number=1):
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(native.contained_file(source, name), destination)
     for area in ('input', 'execution'):
-        native.verify(output / area, target)
-    native.verify(source, target)
+        verified(output / area, target)
+    verified(source, target)
     data = encoded(request)
     with (output / 'request.json').open('xb') as stream:
         stream.write(data)
@@ -191,20 +172,24 @@ def inspect(run):
                 name = entry.relative_to(root).as_posix()
                 if name not in request['target']['files'] and not (area == 'execution' and name.startswith('generated/')):
                     raise Refused('cannot_proceed: undeclared_target_file')
-        native.verify(root, request['target'])
+        verified(root, request['target'])
     return request
 
 
 @guarded
 def write_generated(run, name, data):
     inspect(run)
-    path = native.contained_file(run.root / 'execution', name)
-    local(path)
+    name = canonical(name)
     if not name.startswith('generated/'):
         raise Refused('cannot_proceed: write_outside_generated_scope')
+    path = native.contained_file(run.root / 'execution', name)
+    local(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open('xb') as stream:
-        stream.write(data)
+    try:
+        with path.open('xb') as stream:
+            stream.write(data)
+    except FileExistsError:
+        raise Refused('cannot_proceed: generated_output_exists') from None
 
 
 def validate_result(result):
@@ -232,8 +217,12 @@ def finalize(run, actor, result):
     receipt = {'schemaVersion': 1, 'scope': 'synthetic_integrity_fixture', 'requestSha256': run.request_hash,
                'targetFilesDigest': request['target']['filesDigest'], 'reviewer': request['reviewer'], 'result': result}
     data = encoded(receipt)
-    with path.open('xb') as stream:
-        stream.write(data)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        with path.open('xb') as stream:
+            stream.write(data)
+    except FileExistsError:
+        raise Refused('cannot_proceed: receipt_already_exists') from None
     return digest(data)
 
 

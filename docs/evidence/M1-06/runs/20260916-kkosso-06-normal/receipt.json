@@ -1,0 +1,1788 @@
+{
+  "schemaVersion": 1,
+  "phase": "candidate",
+  "state": "passed",
+  "scope": "synthetic registry/record integration; no live Editor, Native runtime or OS lock",
+  "fixtureIdentity": "holders, timestamps, base refs and content hashes in cases/journals are synthetic",
+  "cases": [
+    {
+      "id": "workspace-file-acquire",
+      "registry": "workspace-file",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "workspace-file-conflict",
+      "registry": "workspace-file",
+      "journalSeq": 2,
+      "accepted": false,
+      "reason": "overlap_with_active",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "active",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "unity-project-acquire",
+      "registry": "unity-project",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "unity-project",
+        "workspaceId": "ws-1"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "unity-project-conflict",
+      "registry": "unity-project",
+      "journalSeq": 2,
+      "accepted": false,
+      "reason": "overlap_with_active",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "unity-project",
+        "workspaceId": "ws-1"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "unity-project",
+          "workspaceId": "ws-1"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "unity-project",
+          "workspaceId": "ws-1"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "active",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "unity-editor-acquire",
+      "registry": "unity-editor",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "unity-editor",
+        "editorInstanceId": "synthetic-editor"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "unity-editor-conflict",
+      "registry": "unity-editor",
+      "journalSeq": 2,
+      "accepted": false,
+      "reason": "overlap_with_active",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "unity-editor",
+        "editorInstanceId": "synthetic-editor"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "unity-editor",
+          "editorInstanceId": "synthetic-editor"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "unity-editor",
+          "editorInstanceId": "synthetic-editor"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "active",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "generated-output-acquire",
+      "registry": "generated-output",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "generated-output",
+        "workspaceId": "ws-1",
+        "root": "Exports/"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "generated-output-conflict",
+      "registry": "generated-output",
+      "journalSeq": 2,
+      "accepted": false,
+      "reason": "overlap_with_active",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "generated-output",
+        "workspaceId": "ws-1",
+        "root": "Exports/"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "generated-output",
+          "workspaceId": "ws-1",
+          "root": "Exports/"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "generated-output",
+          "workspaceId": "ws-1",
+          "root": "Exports/"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "active",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "manifest-acquire",
+      "registry": "manifest",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Packages/manifest.json"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "manifest-conflict",
+      "registry": "manifest",
+      "journalSeq": 2,
+      "accepted": false,
+      "reason": "overlap_with_active",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_active"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Packages/manifest.json"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Packages/manifest.json"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Packages/manifest.json"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "active",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "handoff-start",
+      "registry": "handoff",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "handoff",
+      "registry": "handoff",
+      "journalSeq": 2,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "nextSessionId": "synthetic-b"
+      },
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "handoff-acquire",
+      "registry": "handoff",
+      "journalSeq": 3,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": 2,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "retry",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "old-holder-write",
+      "registry": "handoff",
+      "journalSeq": 4,
+      "accepted": false,
+      "reason": "transition_not_in_contract",
+      "expected": {
+        "accepted": false,
+        "reason": "transition_not_in_contract"
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "caller": "synthetic-a",
+        "state": "released"
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "cancel",
+      "registry": "handoff",
+      "journalSeq": 5,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": 2,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "cancel",
+      "eventOutcome": "cancelled"
+    },
+    {
+      "id": "unknown-holder",
+      "registry": "unknown",
+      "journalSeq": 1,
+      "accepted": false,
+      "reason": "lease_fields_unrecordable",
+      "expected": {
+        "accepted": false,
+        "reason": "lease_fields_unrecordable"
+      },
+      "passed": true,
+      "holder": "",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": null,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "requester": "",
+        "requestedResource": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        }
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "expiry-start",
+      "registry": "expiry",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "expire",
+      "registry": "expiry",
+      "journalSeq": 2,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "expired-conflict",
+      "registry": "expiry",
+      "journalSeq": 3,
+      "accepted": false,
+      "reason": "overlap_with_expired",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_expired"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "expired",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "expiry-recover",
+      "registry": "expiry",
+      "journalSeq": 4,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "caller": "synthetic-pm"
+      },
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "recovery-retry",
+      "registry": "expiry",
+      "journalSeq": 5,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": 2,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "retry",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "crash-start",
+      "registry": "crash",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "crash-write",
+      "registry": "crash",
+      "journalSeq": 2,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "path": "Assets/Synthetic.fixture"
+      },
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "crash-detected",
+      "registry": "crash",
+      "journalSeq": 3,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "crash-conflict",
+      "registry": "crash",
+      "journalSeq": 4,
+      "accepted": false,
+      "reason": "overlap_with_crash_suspected",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_crash_suspected"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "crash_suspected",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "crash-recovery",
+      "registry": "crash",
+      "journalSeq": 5,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "caller": "synthetic-pm"
+      },
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "crash-retry",
+      "registry": "crash",
+      "journalSeq": 6,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": 2,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "retry",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "dirty-start",
+      "registry": "dirty",
+      "journalSeq": 1,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "dirty-write",
+      "registry": "dirty",
+      "journalSeq": 2,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "path": "Assets/Synthetic.fixture"
+      },
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "dirty-detected",
+      "registry": "dirty",
+      "journalSeq": 3,
+      "accepted": true,
+      "reason": null,
+      "expected": {
+        "accepted": true,
+        "reason": null
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {},
+      "eventKind": "tool",
+      "eventOutcome": "recorded"
+    },
+    {
+      "id": "dirty-conflict",
+      "registry": "dirty",
+      "journalSeq": 4,
+      "accepted": false,
+      "reason": "overlap_with_crash_suspected",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_crash_suspected"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "crash_suspected",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "dirty-recovery",
+      "registry": "dirty",
+      "journalSeq": 5,
+      "accepted": false,
+      "reason": "content_changed_since_last_authorized_write",
+      "expected": {
+        "accepted": false,
+        "reason": "content_changed_since_last_authorized_write"
+      },
+      "passed": true,
+      "holder": "synthetic-a",
+      "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "fence": 1,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "caller": "synthetic-pm",
+        "expectedSha256": [
+          "1111111111111111111111111111111111111111111111111111111111111111",
+          "2222222222222222222222222222222222222222222222222222222222222222"
+        ],
+        "observedSha256": "3333333333333333333333333333333333333333333333333333333333333333"
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    },
+    {
+      "id": "dirty-still-blocks",
+      "registry": "dirty",
+      "journalSeq": 6,
+      "accepted": false,
+      "reason": "overlap_with_failed",
+      "expected": {
+        "accepted": false,
+        "reason": "overlap_with_failed"
+      },
+      "passed": true,
+      "holder": "synthetic-b",
+      "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "fence": null,
+      "scope": {
+        "kind": "workspace-file",
+        "workspaceId": "ws-1",
+        "path": "Assets/Synthetic.fixture"
+      },
+      "details": {
+        "requester": "synthetic-b",
+        "requestedResource": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingLeaseId": "lease-1",
+        "conflictingHolder": "synthetic-a",
+        "conflictingScope": {
+          "kind": "workspace-file",
+          "workspaceId": "ws-1",
+          "path": "Assets/Synthetic.fixture"
+        },
+        "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "conflictingState": "failed",
+        "conflictCount": 1
+      },
+      "eventKind": "failure",
+      "eventOutcome": "failed"
+    }
+  ],
+  "skippedSteps": [],
+  "failures": [],
+  "faultInjection": null,
+  "journals": {
+    "workspace-file": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "active",
+          "requestedResource": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_active",
+        "result": "rejected",
+        "seq": 2
+      }
+    ],
+    "unity-project": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "unity-project",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "active",
+          "requestedResource": {
+            "kind": "unity-project",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_active",
+        "result": "rejected",
+        "seq": 2
+      }
+    ],
+    "unity-editor": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "editorInstanceId": "synthetic-editor",
+            "kind": "unity-editor"
+          },
+          "conflictingState": "active",
+          "requestedResource": {
+            "editorInstanceId": "synthetic-editor",
+            "kind": "unity-editor"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_active",
+        "result": "rejected",
+        "seq": 2
+      }
+    ],
+    "generated-output": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "generated-output",
+            "root": "Exports/",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "active",
+          "requestedResource": {
+            "kind": "generated-output",
+            "root": "Exports/",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_active",
+        "result": "rejected",
+        "seq": 2
+      }
+    ],
+    "manifest": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "workspace-file",
+            "path": "Packages/manifest.json",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "active",
+          "requestedResource": {
+            "kind": "workspace-file",
+            "path": "Packages/manifest.json",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_active",
+        "result": "rejected",
+        "seq": 2
+      }
+    ],
+    "handoff": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "nextSessionId": "synthetic-b"
+        },
+        "event": "handoff",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 2
+      },
+      {
+        "at": "2026-09-15T00:02:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {},
+        "event": "acquire",
+        "fence": 2,
+        "holder": "synthetic-b",
+        "leaseId": "lease-2",
+        "reason": null,
+        "result": "accepted",
+        "seq": 3
+      },
+      {
+        "at": "2026-09-15T00:03:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "caller": "synthetic-a",
+          "state": "released"
+        },
+        "event": "write",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": "transition_not_in_contract",
+        "result": "rejected",
+        "seq": 4
+      },
+      {
+        "at": "2026-09-15T00:04:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {},
+        "event": "release",
+        "fence": 2,
+        "holder": "synthetic-b",
+        "leaseId": "lease-2",
+        "reason": null,
+        "result": "accepted",
+        "seq": 5
+      }
+    ],
+    "unknown": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "requestedResource": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "requester": ""
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "",
+        "leaseId": null,
+        "reason": "lease_fields_unrecordable",
+        "result": "rejected",
+        "seq": 1
+      }
+    ],
+    "expiry": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:11:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "expire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 2
+      },
+      {
+        "at": "2026-09-15T00:12:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "expired",
+          "requestedResource": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_expired",
+        "result": "rejected",
+        "seq": 3
+      },
+      {
+        "at": "2026-09-15T00:13:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "caller": "synthetic-pm"
+        },
+        "event": "recover",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 4
+      },
+      {
+        "at": "2026-09-15T00:14:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {},
+        "event": "acquire",
+        "fence": 2,
+        "holder": "synthetic-b",
+        "leaseId": "lease-2",
+        "reason": null,
+        "result": "accepted",
+        "seq": 5
+      }
+    ],
+    "crash": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "path": "Assets/Synthetic.fixture"
+        },
+        "event": "write",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 2
+      },
+      {
+        "at": "2026-09-15T00:02:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "crash_detected",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 3
+      },
+      {
+        "at": "2026-09-15T00:03:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "crash_suspected",
+          "requestedResource": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_crash_suspected",
+        "result": "rejected",
+        "seq": 4
+      },
+      {
+        "at": "2026-09-15T00:04:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "caller": "synthetic-pm"
+        },
+        "event": "recover",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 5
+      },
+      {
+        "at": "2026-09-15T00:05:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {},
+        "event": "acquire",
+        "fence": 2,
+        "holder": "synthetic-b",
+        "leaseId": "lease-2",
+        "reason": null,
+        "result": "accepted",
+        "seq": 6
+      }
+    ],
+    "dirty": [
+      {
+        "at": "2026-09-15T00:00:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "acquire",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 1
+      },
+      {
+        "at": "2026-09-15T00:01:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "path": "Assets/Synthetic.fixture"
+        },
+        "event": "write",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 2
+      },
+      {
+        "at": "2026-09-15T00:02:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {},
+        "event": "crash_detected",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": null,
+        "result": "accepted",
+        "seq": 3
+      },
+      {
+        "at": "2026-09-15T00:03:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "crash_suspected",
+          "requestedResource": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_crash_suspected",
+        "result": "rejected",
+        "seq": 4
+      },
+      {
+        "at": "2026-09-15T00:04:00Z",
+        "baseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "details": {
+          "caller": "synthetic-pm",
+          "expectedSha256": [
+            "1111111111111111111111111111111111111111111111111111111111111111",
+            "2222222222222222222222222222222222222222222222222222222222222222"
+          ],
+          "observedSha256": "3333333333333333333333333333333333333333333333333333333333333333"
+        },
+        "event": "recover",
+        "fence": 1,
+        "holder": "synthetic-a",
+        "leaseId": "lease-1",
+        "reason": "content_changed_since_last_authorized_write",
+        "result": "rejected",
+        "seq": 5
+      },
+      {
+        "at": "2026-09-15T00:05:00Z",
+        "baseRef": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "details": {
+          "conflictCount": 1,
+          "conflictingBaseRef": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "conflictingHolder": "synthetic-a",
+          "conflictingLeaseId": "lease-1",
+          "conflictingScope": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "conflictingState": "failed",
+          "requestedResource": {
+            "kind": "workspace-file",
+            "path": "Assets/Synthetic.fixture",
+            "workspaceId": "ws-1"
+          },
+          "requester": "synthetic-b"
+        },
+        "event": "acquire",
+        "fence": null,
+        "holder": "synthetic-b",
+        "leaseId": null,
+        "reason": "overlap_with_failed",
+        "result": "rejected",
+        "seq": 6
+      }
+    ]
+  },
+  "journalMatchesCalls": true,
+  "schemaErrors": [],
+  "privateInputUnchanged": true,
+  "eventOrderPreserved": true,
+  "publicCandidate": {
+    "approval": "pending",
+    "events": [
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 0,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 1,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 2,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 3,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 4,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 5,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 6,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 7,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 8,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 9,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 10,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 11,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "retry",
+        "ordinal": 12,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 13,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "cancel",
+        "ordinal": 14,
+        "outcome": "cancelled"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 15,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 16,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 17,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 18,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 19,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "retry",
+        "ordinal": 20,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 21,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 22,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 23,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 24,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 25,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "retry",
+        "ordinal": 26,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 27,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 28,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "tool",
+        "ordinal": 29,
+        "outcome": "recorded"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 30,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 31,
+        "outcome": "failed"
+      },
+      {
+        "disposition": "public_text_omitted",
+        "kind": "failure",
+        "ordinal": 32,
+        "outcome": "failed"
+      }
+    ],
+    "publicTextOmitted": 33,
+    "schemaVersion": 1,
+    "state": "public_candidate"
+  },
+  "publicManifest": {
+    "approval": "pending",
+    "files": {
+      "events.json": {
+        "bytes": 4358,
+        "sha256": "f9e0554f2243b56cf19c0f1c6a76f5e145bab09294f919db95c7f8e9a0b9498e",
+        "version": 1
+      }
+    },
+    "filesDigest": "70480fcf0e60b18fb79620ac2febdb5654545ffd4ecdb9f93b4597db5714b8a1",
+    "schemaVersion": 1,
+    "state": "public_manifest"
+  },
+  "sourceRevision": "655c19e2332f6e9462e151671c37122ddf27a3eb",
+  "sourceFiles": {
+    "docs/team/M1-01/session-contract.json": {
+      "sha256": "a1b740847e3d2a2ca114e3d49df8633d667c40e258ef5f2ba951482047bbc8c7",
+      "gitBlobSha256": "a1b740847e3d2a2ca114e3d49df8633d667c40e258ef5f2ba951482047bbc8c7"
+    },
+    "scripts/team/M1-01/writer_lease.py": {
+      "sha256": "8d37a6ef2436f10b953dc8c1a7ab9d51d6f68285ba4f610713913b5b498feb2f",
+      "gitBlobSha256": "8d37a6ef2436f10b953dc8c1a7ab9d51d6f68285ba4f610713913b5b498feb2f"
+    },
+    "docs/team/M1-05/record-schema.json": {
+      "sha256": "451fcc0bb395e7c75d196bec43c91bac7228dff62dff9864196d1bdedd474427",
+      "gitBlobSha256": "451fcc0bb395e7c75d196bec43c91bac7228dff62dff9864196d1bdedd474427"
+    },
+    "scripts/team/M1-05/record_pipeline.py": {
+      "sha256": "8b0f94c0aef552d9787524abe558816435293d5cd487eb5592d2e397faba554b",
+      "gitBlobSha256": "8b0f94c0aef552d9787524abe558816435293d5cd487eb5592d2e397faba554b"
+    },
+    "scripts/team/M1-06/contention.py": {
+      "sha256": "3ed91d5cb6f76e3070b8e4984901fb38e19d11a1d6c3672e60081e3608088c3b",
+      "gitBlobSha256": "3ed91d5cb6f76e3070b8e4984901fb38e19d11a1d6c3672e60081e3608088c3b"
+    },
+    "scripts/team/M1-06/test_contention.py": {
+      "sha256": "8366bd4229aebf3b4ed5ba7d54bffa3fd5702c4a37887638a1e27aba7d5953e5",
+      "gitBlobSha256": "8366bd4229aebf3b4ed5ba7d54bffa3fd5702c4a37887638a1e27aba7d5953e5"
+    }
+  },
+  "recordedAt": "2026-09-16T02:19:38.158307+00:00"
+}

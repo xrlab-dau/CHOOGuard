@@ -1,0 +1,275 @@
+{
+  "note": "Each entry is a single-defect source-text mutation of PRODUCTION code, applied to an isolated copy of the Runtime sources, then compiled together with the unmodified FMP-11c test file. 'caught' means at least one of the 8 tests failed (the harness prints which). 'survived' means all 8 still passed, i.e. the unit does not pin that guard. || repair139 added probes PA-PG; the 2026-09-16 rotation pass added PH. || 2026-09-16 correction: this note said 7 tests; the file declares 8 [Test] methods and every case runs 8, so the count was raised to 8 to match the run. An unmutated baseline case has no mutant to escape and is reported as baseline_passed/baseline_failed, never as 'survived'. || 2026-09-16 rotation scope: the three frames in foundation/world/connected-world-profile.json carry yaw 0, 0 and 180, and sin(0) = sin(180) = 0, so the sine terms of SpatialFrame.ToWorld/ToLocal are algebraically inert in every authored frame. Those values, and every other '= 0' or 'inert' in this file, are the exact-arithmetic ones: the executed float values are cos(90 deg) = 6.123234262925839e-17 and sin(180 deg) = 1.2246468525851679e-16, so a term called inert here contributes about 1e-16 -- below the 1e-4 tolerance the assertions use, but not bitwise zero. M13 is caught through the cosine term; M12 keeps both rotation terms and is caught through the frame origin it drops instead. Neither shows the sine term is pinned: probe PH drops the sine term alone and is the case that does. The yaw 90 assertions it is caught by were added to FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces in this same file, which is the file this harness compiles.",
+  "mutations": [
+    {
+      "id": "M01",
+      "note": "AuthoritativeShift.cs:140 Observe(): drop the ObservedIds/Active incident gate, so every incident in range is projected to the client.",
+      "replacements": [
+        {
+          "old": "(x.Kind != EntityKind.Incident || x.Active && actor.ObservedIds.Contains(x.EntityId)) && CanSee(actor, x))",
+          "new": "(x.Kind != EntityKind.Incident || true) && CanSee(actor, x))"
+        }
+      ]
+    },
+    {
+      "id": "M02",
+      "note": "AuthoritativeShift.cs:240 Report: delete the NotObserved observation gate.",
+      "replacements": [
+        {
+          "old": "if (!actor.ObservedIds.Contains(target.EntityId) || target.Kind == EntityKind.Incident && !target.Active) return CommandCode.NotObserved;",
+          "new": "if (target.Kind == EntityKind.Incident && !target.Active) return CommandCode.NotObserved;"
+        }
+      ]
+    },
+    {
+      "id": "M03",
+      "note": "AuthoritativeShift.cs:142-143 Observe(): drop the team filter on report projection so team-beta sees team-alpha reports.",
+      "replacements": [
+        {
+          "old": "TotalReports = state.Reports.Count(x => x.ToTeamId == actor.TeamId),\n                Reports = state.Reports.Where(x => x.ToTeamId == actor.TeamId)",
+          "new": "TotalReports = state.Reports.Count(x => true),\n                Reports = state.Reports.Where(x => true)"
+        }
+      ]
+    },
+    {
+      "id": "M04",
+      "note": "AuthoritativeShift.cs:268 delete the stale-revision rejection.",
+      "replacements": [
+        {
+          "old": "            if (target.Revision != c.ExpectedRevision) return CommandCode.StaleTarget;\n",
+          "new": ""
+        }
+      ]
+    },
+    {
+      "id": "M05",
+      "note": "AuthoritativeShift.cs:264 delete the reach check so a 100 m away target accepts Operate.",
+      "replacements": [
+        {
+          "old": "            if (!InReach(actor, target)) return CommandCode.OutOfReach;\n",
+          "new": ""
+        }
+      ]
+    },
+    {
+      "id": "M06",
+      "note": "AuthoritativeShift.cs:273 delete the Operate kind check so an Incident accepts Operate.",
+      "replacements": [
+        {
+          "old": "                    if (target.Kind != EntityKind.Equipment) return CommandCode.UnknownTarget;\n",
+          "new": ""
+        }
+      ]
+    },
+    {
+      "id": "M07",
+      "note": "AuthoritativeShift.cs:229 drop the ToTeamId condition on report acknowledgement, so any participant can acknowledge another team's report.",
+      "replacements": [
+        {
+          "old": "var report = state.Reports.SingleOrDefault(x => x.ReportId == c.TargetId && x.ToTeamId == actor.TeamId);",
+          "new": "var report = state.Reports.SingleOrDefault(x => x.ReportId == c.TargetId);"
+        }
+      ]
+    },
+    {
+      "id": "M08",
+      "note": "ConnectedWorldRuntime.cs:162 invert the door->portal Open mapping.",
+      "replacements": [
+        {
+          "old": "Open = p.LinkedDoorEntityIds.All(id => state.Entities.Single(e => e.EntityId == id).Active) }).ToArray();",
+          "new": "Open = !p.LinkedDoorEntityIds.All(id => state.Entities.Single(e => e.EntityId == id).Active) }).ToArray();"
+        }
+      ]
+    },
+    {
+      "id": "M09",
+      "note": "NetworkFieldRuntime.cs:1036 stop feeding observed-closed portals into the route search.",
+      "replacements": [
+        {
+          "old": "var route = definition.Route(state.RegionId, target.Id, knownClosed);",
+          "new": "var route = definition.Route(state.RegionId, target.Id);"
+        }
+      ]
+    },
+    {
+      "id": "M10",
+      "note": "NetworkFieldRuntime.cs:1057 flip the frame-change comparison so a cross-frame route never reports CrossesFrame.",
+      "replacements": [
+        {
+          "old": "if (definition.Region(portal.From).FrameId != definition.Region(portal.To).FrameId) state.CrossesFrame = true;",
+          "new": "if (definition.Region(portal.From).FrameId == definition.Region(portal.To).FrameId) state.CrossesFrame = true;"
+        }
+      ]
+    },
+    {
+      "id": "M11",
+      "note": "NetworkFieldRuntime.cs:1044 stop marking a found route as available.",
+      "replacements": [
+        {
+          "old": "            state.Available = true;\n            state.UnavailableReason = \"\";",
+          "new": "            state.UnavailableReason = \"\";"
+        }
+      ]
+    },
+    {
+      "id": "M12",
+      "note": "ConnectedWorldDefinition.cs:17 drop the frame origin from ToWorld (local->world translation loses the offset).",
+      "replacements": [
+        {
+          "old": "return new Point3(Origin.X + c * local.X + s * local.Z, Origin.Y + local.Y,",
+          "new": "return new Point3(c * local.X + s * local.Z, Origin.Y + local.Y,"
+        }
+      ]
+    },
+    {
+      "id": "M13",
+      "note": "ConnectedWorldDefinition.cs:17-18 negate both terms of the ToWorld Z row (Origin.Z - s * local.X + c * local.Z becomes Origin.Z + s * local.X - c * local.Z). This is NOT a pure yaw-sign flip: the mutation negates BOTH terms of the Z row, so it is observable at yaw 0 too, where the sine term is zero. That row is Origin.Z - s*local.X + c*local.Z, so the local.Z contribution is c*local.Z and the mutant makes it -c*local.Z: at yaw 0 (c = 1) it moves -3.750 -> +3.750 for local.Z = -3.75, and at yaw 180 (c = -1) the same contribution moves the other way, +3.750 -> -3.750. At yaw 90 the cosine factor is zero in exact arithmetic, and the executed float value is 6.123234262925839e-17, so that contribution moves by 4.59e-16 rather than by nothing -- far below the 1e-4 tolerance these assertions use, which is why it is unobservable rather than literally immobile; there the row is carried by local.X, whose contribution -s*local.X flips to +s*local.X. A single sentence claiming a -3.750 -> +3.750 movement at all three yaws would therefore have been wrong at two of them, which is why this note states the arithmetic per yaw instead. The defect that IS genuinely invisible at yaw 0 is the dropped sine term, recorded separately as PH.",
+      "replacements": [
+        {
+          "old": "            return new Point3(Origin.X + c * local.X + s * local.Z, Origin.Y + local.Y,\n                Origin.Z - s * local.X + c * local.Z);",
+          "new": "            return new Point3(Origin.X + c * local.X + s * local.Z, Origin.Y + local.Y,\n                Origin.Z + s * local.X - c * local.Z);"
+        }
+      ]
+    },
+    {
+      "id": "M14",
+      "note": "NetworkFieldRuntime.cs:1001 force ProcedureHintsVisible on even in Evaluation mode.",
+      "replacements": [
+        {
+          "old": "state.ProcedureHintsVisible = state.TrainingMode == FoundationTrainingMode.Practice;",
+          "new": "state.ProcedureHintsVisible = true;"
+        }
+      ]
+    },
+    {
+      "id": "M15",
+      "note": "SnapshotFreshness.cs:7 widen the freshness window from .5 s to 5 s.",
+      "replacements": [
+        {
+          "old": "public const double MaximumAgeSeconds=.5;",
+          "new": "public const double MaximumAgeSeconds=5;"
+        }
+      ]
+    },
+    {
+      "id": "M16",
+      "note": "SnapshotFreshness.cs:10 remove the backward-clock rejection.",
+      "replacements": [
+        {
+          "old": "if (now<receivedAt) throw new ArgumentException(\"Snapshot clock went backwards.\"); ",
+          "new": ""
+        }
+      ]
+    },
+    {
+      "id": "M17",
+      "note": "SnapshotFreshness.cs:14 stop rejecting NaN/Infinity/negative clocks.",
+      "replacements": [
+        {
+          "old": "private static void Validate(double now) { if (double.IsNaN(now)||double.IsInfinity(now)||now<0) throw new ArgumentException(\"Invalid snapshot clock.\"); }",
+          "new": "private static void Validate(double now) { }"
+        }
+      ]
+    },
+    {
+      "id": "M18",
+      "note": "ConnectedWorldRuntime.cs:158 drop the actor-region filter from ProjectPortals so every portal in the definition is projected.",
+      "replacements": [
+        {
+          "old": "return definition.Portals.Where(p => (p.From == actor.RegionId || p.To == actor.RegionId) &&",
+          "new": "return definition.Portals.Where(p => true &&"
+        }
+      ]
+    },
+    {
+      "id": "M19",
+      "note": "AuthoritativeShift.cs:138 drop the schema-1 same-region filter in Observe.",
+      "replacements": [
+        {
+          "old": "Entities = state.Entities.Where(x => (state.SchemaVersion == 3 || x.RegionId == actor.RegionId) &&",
+          "new": "Entities = state.Entities.Where(x => (state.SchemaVersion == 3 || true) &&"
+        }
+      ]
+    },
+    {
+      "id": "PB",
+      "note": "ConnectedWorldDefinition.ToWorld: add a constant 1 m X offset to every local->world translation (should be caught by the world-frame identity assertion).",
+      "replacements": [
+        {
+          "old": "            return new Point3(Origin.X + c * local.X + s * local.Z, Origin.Y + local.Y,",
+          "new": "            return new Point3(Origin.X + c * local.X + s * local.Z + 1f, Origin.Y + local.Y,"
+        }
+      ]
+    },
+    {
+      "id": "PC",
+      "note": "NetworkFieldRuntime.ProjectRoute: in the Practice branch echo every observed entity id into ProcedureHint.",
+      "replacements": [
+        {
+          "old": "                state.ProcedureHint = \"다음 이동 구역: \" + (route.Length > 1 ? definition.Region(route[1]).Label : state.TargetRegionLabel) + \" (연습 힌트)\";",
+          "new": "                state.ProcedureHint = \"다음 이동 구역: \" + (route.Length > 1 ? definition.Region(route[1]).Label : state.TargetRegionLabel) + \" (연습 힌트)\" + string.Join(\",\", (view.Observed?.Entities ?? System.Array.Empty<EntityState>()).Select(e => e.EntityId));"
+        }
+      ]
+    },
+    {
+      "id": "PD",
+      "note": "NetworkFieldRuntime.ProjectGuidance: in the Practice branch echo every observed entity id into ProcedureHint.",
+      "replacements": [
+        {
+          "old": "                state.ProcedureHint = \"현장 이동 및 대응 절차: \" + nextStep + \" 방면 이동 (연습 모드 절차 안내)\";",
+          "new": "                state.ProcedureHint = \"현장 이동 및 대응 절차: \" + nextStep + \" 방면 이동 (연습 모드 절차 안내)\" + string.Join(\",\", (view.Observed?.Entities ?? System.Array.Empty<EntityState>()).Select(e => e.EntityId));"
+        }
+      ]
+    },
+    {
+      "id": "PE",
+      "note": "NetworkFieldRuntime.ProjectRoute: in the unavailable branch echo every observed entity id into UnavailableReason.",
+      "replacements": [
+        {
+          "old": "                state.UnavailableReason = \"경로 없음 · 사용 불가 (차단된 포털 \" +",
+          "new": "                state.UnavailableReason = \"경로 없음 · 사용 불가 (차단된 포털 \" + string.Join(\",\", (view.Observed?.Entities ?? System.Array.Empty<EntityState>()).Select(e => e.EntityId)) + \" \" +"
+        }
+      ]
+    },
+    {
+      "id": "PA",
+      "note": "NetworkFieldRuntime.ProjectRoute: invert the observed-closure polarity, so an observed-OPEN portal counts as closed.",
+      "replacements": [
+        {
+          "old": "            var knownClosed = new HashSet<string>(observed.Where(p => p != null && !p.Open).Select(p => p.PortalId));",
+          "new": "            var knownClosed = new HashSet<string>(observed.Where(p => p != null && p.Open).Select(p => p.PortalId));"
+        }
+      ]
+    },
+    {
+      "id": "PF",
+      "note": "NetworkFieldRuntime.ProjectGuidance: echo every observed entity id into RecommendedAction.",
+      "replacements": [
+        {
+          "old": "                state.RecommendedAction = \"MoveTo:\" + (routeDisplay.RouteRegionIds.Length > 1 ? routeDisplay.RouteRegionIds[1] : view.RegionId);",
+          "new": "                state.RecommendedAction = \"MoveTo:\" + (routeDisplay.RouteRegionIds.Length > 1 ? routeDisplay.RouteRegionIds[1] : view.RegionId) + string.Join(\",\", (view.Observed?.Entities ?? System.Array.Empty<EntityState>()).Select(e => e.EntityId));"
+        }
+      ]
+    },
+    {
+      "id": "PG",
+      "note": "ConnectedWorldRuntime.ProjectPortals: ignore the actor's visibility function so every in-scope portal is projected.",
+      "replacements": [
+        {
+          "old": "InterestRadius * AuthoritativeShift.InterestRadius && visible(p))",
+          "new": "InterestRadius * AuthoritativeShift.InterestRadius && true)"
+        }
+      ]
+    },
+    {
+      "id": "PH",
+      "note": "ConnectedWorldDefinition.cs:17-18 drop the sine term from SpatialFrame.ToWorld while leaving the cosine term intact (Origin.X + c * local.X + s * local.Z becomes Origin.X + c * local.X, and the matching Z row loses - s * local.X). This is the narrower defect M12 and M13 cannot express: M13 alters the cosine term as well, M12 drops the frame origin, and every frame in the authored table has sin(yaw) = 0, so before this probe no case in this file pinned the SINE term of the transform. (The authored table does still distinguish a transform that applies rotation from one that ignores it, through train-metro, whose yaw is 180: cos(180) = -1, which is what Fmp08aMovingFrameTests.cs pins. What no authored frame can pin is the sine term.) It is caught by the yaw 90 assertions added to FrameConsistencyMatchesAuthoritativeResponseAcrossAllSurfaces for exactly this case. ToLocal is deliberately left unmutated, so the round trip assertion fails alongside the two axis assertions.",
+      "replacements": [
+        {
+          "old": "            return new Point3(Origin.X + c * local.X + s * local.Z, Origin.Y + local.Y,\n                Origin.Z - s * local.X + c * local.Z);",
+          "new": "            return new Point3(Origin.X + c * local.X, Origin.Y + local.Y,\n                Origin.Z + c * local.Z);"
+        }
+      ]
+    }
+  ]
+}

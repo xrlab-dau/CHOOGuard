@@ -1,0 +1,426 @@
+#!/usr/bin/env python3
+"""Out-of-editor execution driver for the FMP-11c (issue #139) test file.
+
+WHAT THIS IS
+  Compiles Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/FMP11cObservedRouteConsistencyTests.cs
+  against the real Runtime sources using the Roslyn compiler and the .NET runtime that ship inside
+  the Unity editor install, then runs the [Test] methods with a console runner and a local
+  NUnit-shaped assertion shim.
+
+WHAT THIS IS NOT
+  This is NOT NUnit and NOT the Unity Test Runner. There is no [OneTimeSetUp]/[SetUp] lifecycle
+  beyond the minimal shim, no Unity editor environment, no test categories, no NUnit3 XML, no
+  asset import, no scene, no PlayMode. A pass here shows the assertions hold against the real
+  Runtime sources; it does NOT show that the same tests pass inside the editor.
+
+WHY TWO FILES ARE EXTRACTED BY LINE RANGE
+  Multiplayer/Runtime/NetworkFieldRuntime.cs and Multiplayer/Runtime/ConnectedWorldRuntime.cs are
+  MonoBehaviours that reference Unity.Netcode / Unity.Collections / UnityEngine. No assembly for
+  those packages exists outside the Unity project Library, so the two projection methods under
+  test are copied out verbatim by line range (see EXTRACTION_MANIFEST below and each block's
+  sha256 in the run record). The copy is exact; if it ever diverges from production the recorded
+  block digests stop matching.
+
+USAGE
+  CG_UNITY_SCRIPTING=<.../Unity.app/Contents/Resources/Scripting> \
+  CG_WORK=<scratch dir> \
+  python3 out_of_editor_run.py [--baseline-only] [--case <ID> ...] [--out <dir>]
+"""
+import argparse
+import hashlib
+import json
+import os
+import platform
+import shutil
+import subprocess
+import sys
+import tempfile
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+WT = os.path.abspath(os.path.join(HERE, "..", "..", "..", "..", ".."))
+U = os.environ.get("CG_UNITY_SCRIPTING",
+                   "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scripting")
+DOTNET = os.path.join(U, "NetCoreRuntime", "dotnet")
+RT = os.path.join(U, "NetCoreRuntime", "shared", "Microsoft.NETCore.App", "6.0.21")
+CSC = os.path.join(U, "DotNetSdkRoslyn", "csc.dll")
+
+FND = os.path.join(WT, "Packages", "com.xrlab.chooguard.foundation")
+RUNTIME_SRC = os.path.join(FND, "Runtime")
+NFR = os.path.join(FND, "Multiplayer", "Runtime", "NetworkFieldRuntime.cs")
+CWR = os.path.join(FND, "Multiplayer", "Runtime", "ConnectedWorldRuntime.cs")
+FRESHNESS = os.path.join(FND, "Multiplayer", "Runtime", "SnapshotFreshness.cs")
+PHYSICAL = os.path.join(FND, "Multiplayer", "Runtime", "WorldPhysicalView.cs")
+TESTS = os.path.join(FND, "Multiplayer", "Tests", "Editor", "FMP11cObservedRouteConsistencyTests.cs")
+PROFILE = os.path.join(WT, "foundation", "world", "connected-world-profile.json")
+NOWARN = "0162,0219,0414,0649,1701,1702,8321,8632"
+
+# The absolute checkout root is NOT published. It embeds the operator's home directory and a
+# session scratch directory, and the repository contract forbids personal paths in published
+# evidence. A stable token still records that the run was made against a checkout root supplied
+# at run time, without naming one. This is emission-side redaction: the recorded files are
+# generated clean, not edited afterwards.
+WORKTREE_TOKEN = "<WORKTREE>"
+
+# Verbatim line ranges copied out of the two Unity-dependent projection files.
+NFR_POCO_BLOCKS = [(22, 77)]
+NFR_METHOD_BLOCKS = [(971, 971), (973, 974), (990, 1074), (1079, 1114)]
+CWR_BLOCKS = [(155, 163)]
+
+EXTRACTION_MANIFEST = []
+COMPILED_INPUTS = []
+WORK = None
+
+# The repository-relative prefix of the tree that is copied whole into the scratch directory and
+# compiled in full. Files under it carry no line-range extraction, so before this manifest existed
+# they were compiled without any digest binding them to a revision.
+RUNTIME_REPO_PREFIX = "Packages/com.xrlab.chooguard.foundation/Runtime"
+
+
+def lines_of(path):
+    with open(path, encoding="utf-8") as fh:
+        return fh.read().split("\n")
+
+
+def wc_lines_of(path):
+    """Whole-file line count in the convention a reader can reproduce with `wc -l`.
+
+    lines_of() splits on newlines, so a file that ends in one yields a trailing empty element
+    and len(lines_of(p)) is one too high against the number a verifier counts. Reporting that
+    inflated figure next to an extraction numerator invites a mismatch that is an artefact of
+    this helper, not a defect in the run. This matches the record's own candidateLineCount
+    convention, which is also wc-style.
+    """
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    if not text:
+        return 0
+    return len(text.split("\n")) - (1 if text.endswith("\n") else 0)
+
+
+def block_text(path, ranges):
+    src = lines_of(path)
+    out = []
+    for (a, b) in ranges:
+        text = "\n".join(src[a - 1:b])
+        out.append(text)
+        EXTRACTION_MANIFEST.append({"file": os.path.relpath(path, WT), "lines": "%d-%d" % (a, b),
+                                    "sha256": hashlib.sha256(text.encode("utf-8")).hexdigest()})
+    return "\n".join(out)
+
+
+def write_extracted(path):
+    header = ("// GENERATED by out_of_editor_run.py: verbatim line-range copies of production sources.\n"
+              "// Do not edit. Each block's source file and line range is recorded in the run record\n"
+              "// together with its sha256.\n")
+    body = ("using System;\nusing System.Collections.Generic;\nusing System.Linq;\n"
+            "using ChooGuard.Foundation.Simulation;\n\nnamespace ChooGuard.Foundation.Multiplayer\n{\n")
+    body += block_text(NFR, NFR_POCO_BLOCKS) + "\n\n"
+    body += "    public sealed class NetworkFieldRuntime\n    {\n"
+    body += block_text(NFR, NFR_METHOD_BLOCKS) + "\n    }\n\n"
+    body += "    public sealed class ConnectedWorldRuntime\n    {\n"
+    body += block_text(CWR, CWR_BLOCKS) + "\n    }\n"
+    body += "}\n"
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write(header + body)
+
+
+def fresh_tree():
+    src_dir = os.path.join(WORK, "src")
+    del EXTRACTION_MANIFEST[:]
+    if os.path.isdir(WORK):
+        shutil.rmtree(WORK)
+    os.makedirs(src_dir)
+    subprocess.run(["cp", "-R", RUNTIME_SRC + "/.", src_dir + "/"], check=True)
+    shutil.copy(FRESHNESS, os.path.join(src_dir, "_SnapshotFreshness.cs"))
+    shutil.copy(PHYSICAL, os.path.join(src_dir, "_WorldPhysicalView.cs"))
+    write_extracted(os.path.join(src_dir, "_ExtractedProjections.cs"))
+    os.makedirs(os.path.join(WORK, "foundation", "world"))
+    shutil.copy(PROFILE, os.path.join(WORK, "foundation", "world", "connected-world-profile.json"))
+
+
+def apply_mutation(src_dir, mutation):
+    for rep in mutation["replacements"]:
+        hits = 0
+        for root, _dirs, files in os.walk(src_dir):
+            for f in files:
+                if not f.endswith(".cs"):
+                    continue
+                p = os.path.join(root, f)
+                with open(p, encoding="utf-8") as fh:
+                    text = fh.read()
+                n = text.count(rep["old"])
+                if n:
+                    if n != 1:
+                        return "PROBE ERROR: anchor occurs %d times in %s" % (n, f)
+                    with open(p, "w", encoding="utf-8") as fh:
+                        fh.write(text.replace(rep["old"], rep["new"]))
+                    hits += n
+        if hits != 1:
+            return "PROBE ERROR: anchor not found (hits=%d)" % hits
+    return None
+
+
+def build_rsp(dll_out, rsp_path):
+    lines = ["-nologo", "-nostdlib", "-target:exe", "-langversion:latest", "-warn:0",
+             "-nowarn:" + NOWARN, "-out:" + dll_out]
+    for f in sorted(os.listdir(RT)):
+        if f.endswith(".dll"):
+            lines.append("-r:" + RT + "/" + f)
+    src_cs = []
+    for root, _dirs, files in os.walk(os.path.join(WORK, "src")):
+        for f in sorted(files):
+            if f.endswith(".cs"):
+                src_cs.append(os.path.join(root, f))
+    # Record the digest of every source file this harness compiles, once, from the unmutated
+    # baseline. Later cases compile a deliberately altered copy, so a manifest taken from them would
+    # describe the mutation rather than the production revision.
+    if not COMPILED_INPUTS:
+        COMPILED_INPUTS.extend(compiled_inputs_manifest(src_cs))
+    lines += src_cs
+    for extra in ("NUnitShim.cs", "UnityShim.cs", "Runner.cs"):
+        lines.append(os.path.join(HERE, extra))
+    lines.append(TESTS)
+    with open(rsp_path, "w", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")
+
+
+def run_case(case_id, mutations, log_fh):
+    import re
+    t0 = time.time()
+    fresh_tree()
+    src_dir = os.path.join(WORK, "src")
+    note = "baseline (no mutation)"
+    if mutations:
+        for m in mutations:
+            err = apply_mutation(src_dir, m)
+            if err:
+                log_fh.write("\n===== CASE %s =====\n%s\n" % (case_id, err))
+                return {"id": case_id, "status": "probe_error", "error": err}
+        note = mutations[0]["note"]
+
+    dll = os.path.join(WORK, "harness.dll")
+    rsp = os.path.join(WORK, "build.rsp")
+    build_rsp(dll, rsp)
+    cp = subprocess.run([DOTNET, "exec", CSC, "@" + rsp], capture_output=True, text=True)
+    compile_out = (cp.stdout or "") + (cp.stderr or "")
+    errors = [l for l in compile_out.splitlines() if " error CS" in l]
+    if cp.returncode != 0 or errors:
+        log_fh.write("\n===== CASE %s (%s) =====\nBUILD FAILED rc=%d\n%s\n" % (case_id, note, cp.returncode, compile_out))
+        return {"id": case_id, "status": "build_failed", "compileOutput": compile_out[:4000]}
+
+    shutil.copy(os.path.join(HERE, "harness.runtimeconfig.json"), os.path.join(WORK, "harness.runtimeconfig.json"))
+    rp = subprocess.run([DOTNET, "exec", dll], capture_output=True, text=True, cwd=WORK)
+    out = (rp.stdout or "") + (rp.stderr or "")
+    fails = re.findall(r"^FAIL\s+(\S+)", out, re.M)
+    errors2 = re.findall(r"^ERROR\s+(\S+)", out, re.M)
+    passes = re.findall(r"^PASS\s+(\S+)", out, re.M)
+    total = len(fails) + len(passes) + len(errors2)
+    log_fh.write("\n===== CASE %s (%s) =====\ncompile: rc=%d\n" % (case_id, note, cp.returncode))
+    log_fh.write(out if out.endswith("\n") else out + "\n")
+    log_fh.flush()
+    if total == 0:
+        # A runner that crashed and a suite that legitimately collected nothing both produce zero
+        # test lines. They are different facts and must not share a status: under a single "no_tests"
+        # label a crash was counted as a quiet no-op rather than as a failed run.
+        status = "runner_crashed" if rp.returncode != 0 else "no_tests_collected"
+        log_fh.write("runner rc=%d, no test lines parsed -> %s\n" % (rp.returncode, status))
+        return {"id": case_id, "status": status, "runnerExitCode": rp.returncode,
+                "rawOutput": out[:4000]}
+    if mutations:
+        status = "caught" if (fails or errors2) else "survived"
+    else:
+        # The unmutated baseline cannot "survive" anything: there is no mutant to escape. Labelling
+        # it "survived" both inflates the survivor count and files a passing run under mutant-escape
+        # vocabulary, so it gets its own status and is excluded from the survivor list.
+        status = "baseline_failed" if (fails or errors2) else "baseline_passed"
+    return {"id": case_id, "status": status, "mutation": note,
+            "testsRun": total, "passed": len(passes), "failedCount": len(fails) + len(errors2),
+            "caughtBy": fails + errors2, "elapsedSeconds": round(time.time() - t0, 1)}
+
+
+def sha256_of(path):
+    with open(path, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()
+
+
+def compiled_inputs_manifest(src_cs):
+    """Digest every source file the harness hands to the compiler.
+
+    The record previously bound only the two line-range extractions and the test file. Everything
+    else the compiler read -- the whole Runtime tree copied into the scratch directory, the two
+    additional production files, the generated extraction file, the shims and the runner -- carried
+    no digest at all, so a reader could not tell which production revision had been compiled.
+    """
+    src_dir = os.path.join(WORK, "src")
+    out = []
+    for p in src_cs:
+        rel = os.path.relpath(p, src_dir)
+        if os.path.basename(p).startswith("_"):
+            origin = "copied whole into the scratch tree, or generated by this driver"
+            repo_path = None
+        else:
+            origin = "verbatim copy of the repository Runtime tree"
+            repo_path = RUNTIME_REPO_PREFIX + "/" + rel
+        out.append({"compiledPath": rel, "origin": origin, "repoPath": repo_path,
+                    "sha256": sha256_of(p)})
+    return out
+
+
+def sibling_test_files():
+    """The other test files in the same test assembly, which this harness does not compile."""
+    try:
+        return sorted(f for f in os.listdir(os.path.dirname(TESTS)) if f.endswith(".cs"))
+    except OSError:
+        return []
+
+
+def source_revision():
+    """Bind the run to the revision it compiled, and disclose whether that revision was clean.
+
+    Without this the record describes a set of digests but no revision, so a reader cannot tell
+    whether the sources came from a commit, a branch tip, or somebody's uncommitted working tree.
+    """
+    def git(args):
+        try:
+            cp = subprocess.run(["git"] + args, cwd=WT, capture_output=True, text=True)
+            return cp.stdout.strip() if cp.returncode == 0 else "unavailable (git rc=%d)" % cp.returncode
+        except OSError as exc:
+            return "unavailable (%s)" % exc
+
+    # Only the COMPILED surface decides whether this run describes HEAD. This driver's own digest is
+    # bound separately in the declared record, so including it here would only make every record
+    # report itself dirty at the moment it is regenerated.
+    status = git(["status", "--porcelain", "--", RUNTIME_REPO_PREFIX, os.path.relpath(TESTS, WT)])
+    return {
+        "head": git(["rev-parse", "HEAD"]),
+        "describe": git(["describe", "--always", "--dirty"]),
+        "branch": git(["rev-parse", "--abbrev-ref", "HEAD"]),
+        "dirtyCompiledPaths": [l for l in status.splitlines() if l.strip()] or
+                              ["none: the compiled paths matched HEAD exactly at run time"],
+    }
+
+
+def extraction_scope_note():
+    """State what the compiled production surface actually is, with numbers measured here.
+
+    A mutation harness reports 'survived' for two different situations: the test has a hole, or
+    the mutated code was never compiled. Without this note the record cannot tell a reader which
+    one applies, and the stronger reading is the wrong one to assume.
+    """
+    if not EXTRACTION_MANIFEST:
+        return "No extraction was recorded; no statement can be made about the compiled surface."
+    extracted_per_file = {}
+    total_extracted = 0
+    for entry in EXTRACTION_MANIFEST:
+        first, last = (int(x) for x in entry["lines"].split("-"))
+        count = last - first + 1
+        total_extracted += count
+        extracted_per_file[entry["file"]] = extracted_per_file.get(entry["file"], 0) + count
+    parts = []
+    total_whole = 0
+    for path, count in sorted(extracted_per_file.items()):
+        try:
+            whole = wc_lines_of(os.path.join(WT, path))
+        except OSError:
+            whole = 0
+        total_whole += whole
+        parts.append("%s %d of %d lines" % (os.path.basename(path), count, whole) if whole
+                     else "%s %d lines (whole-file count unavailable)" % (os.path.basename(path), count))
+    siblings = sibling_test_files()
+    others = [f for f in siblings if f != os.path.basename(TESTS)]
+    return (
+        "TWO scope limits make 'survived' ambiguous, and this note states both. "
+        "(1) PRODUCTION SOURCE: the compiled production surface is EXTRACTED LINE RANGES, not whole "
+        "files. This run compiled %d extracted lines: %s. Code outside the extracted ranges is not "
+        "compiled, so a mutation landing there cannot fail any test and reads as 'survived' because "
+        "it never ran -- not because a test has a hole. "
+        "(2) TEST SOURCE: exactly ONE test file is compiled (%s). It is one of %d test files in the "
+        "same test assembly; the other %d are not compiled. A mutation pinned only by a sibling file "
+        "therefore also reads as 'survived' here. That is the reading which applies to M14, the one "
+        "mutation this run reports as surviving: M14 forces ProcedureHintsVisible on in Evaluation "
+        "mode (NetworkFieldRuntime.cs:1001), and FMP11bModeResponseTests.cs in that same assembly "
+        "pins the Evaluation-mode suppression M14 falsifies at five sites (lines 254, 260, 287, "
+        "328, 360), alongside the matching Practice-mode positive at 227, 234, 288, 327 and 354. "
+        "Only the five Evaluation sites would fail under M14; the Practice sites still pass, so "
+        "citing them as pinning evidence would overstate the file's coverage of this guard. "
+        "Because this harness "
+        "never compiles that sibling file, M14's survival here is a limit of the harness, not "
+        "evidence that no test pins the guard. "
+        "Both readings are distinguishable only by crossing this note with extractionManifest and "
+        "with the compiledInputs list."
+        % (total_extracted, "; ".join(parts), os.path.basename(TESTS), len(siblings), len(others))
+    )
+
+
+def main():
+    global WORK
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--baseline-only", action="store_true")
+    parser.add_argument("--case", action="append", default=[])
+    parser.add_argument("--out", default=HERE)
+    args = parser.parse_args()
+    os.makedirs(args.out, exist_ok=True)
+    WORK = os.environ.get("CG_WORK") or tempfile.mkdtemp(prefix="fmp11c-out-of-editor-")
+
+    for required in (DOTNET, CSC, RT):
+        if not os.path.exists(required):
+            print("missing Unity-bundled toolchain: " + required)
+            return 3
+
+    spec = json.load(open(os.path.join(HERE, "mutation-spec.json"), encoding="utf-8"))
+    log_path = os.path.join(args.out, "harness-raw-output.txt")
+    results = []
+    with open(log_path, "w", encoding="utf-8") as log_fh:
+        log_fh.write("FMP-11c (issue #139) out-of-editor harness raw output\n")
+        log_fh.write("compiler: %s\n" % CSC)
+        log_fh.write("runtime:  %s\n" % RT)
+        log_fh.write("worktree: %s\n" % WORKTREE_TOKEN)
+        log_fh.write("testfile: %s\n" % os.path.relpath(TESTS, WT))
+        log_fh.write("testfile sha256: %s\n" % sha256_of(TESTS))
+        log_fh.write("note: NOT the Unity test runner and NOT NUnit; console runner + local shim.\n")
+        log_fh.flush()
+        results.append(run_case("baseline-unmutated", [], log_fh))
+        if not args.baseline_only:
+            for m in spec["mutations"]:
+                if args.case and m["id"] not in args.case:
+                    continue
+                results.append(run_case(m["id"], [m], log_fh))
+
+    record = {
+        "recordKind": "out_of_editor_run_record",
+        "harnessIsNot": "Not NUnit and not the Unity Test Runner: Unity-bundled Roslyn csc.dll + .NET runtime "
+                        "+ local NUnit-shaped shim + console runner. Cannot show [OneTimeSetUp]/[SetUp] lifecycle, "
+                        "the editor environment, test categories, NUnit3 XML, asset import or PlayMode.",
+        "testFile": os.path.relpath(TESTS, WT),
+        "testFileSha256": sha256_of(TESTS),
+        "collectionRoot": WORKTREE_TOKEN,
+        "collectionRootNote": "The absolute checkout root is withheld: it embeds the operator's "
+                              "home directory and a session scratch directory, and published "
+                              "evidence in this repository does not carry personal paths. The "
+                              "token records that the run was made against a checkout root "
+                              "supplied at run time. See WORKTREE_TOKEN in this directory's "
+                              "out_of_editor_run.py.",
+        "platform": {"sysPlatform": sys.platform, "machine": platform.machine(),
+                     "dotnetRuntime": "6.0.21", "compiler": "Unity-bundled Roslyn csc.dll"},
+        "sourceRevision": source_revision(),
+        "extractionManifest": EXTRACTION_MANIFEST,
+        "compiledInputs": COMPILED_INPUTS,
+        "extractionScopeNote": extraction_scope_note(),
+        "results": results,
+    }
+    with open(os.path.join(args.out, "run-record.json"), "w", encoding="utf-8") as fh:
+        json.dump(record, fh, ensure_ascii=False, indent=2)
+    caught = sum(1 for r in results if r["status"] == "caught")
+    survived = [r["id"] for r in results if r["status"] == "survived"]
+    baseline = [r["status"] for r in results if r["status"].startswith("baseline")]
+    abnormal = [r["id"] for r in results
+                if r["status"] in ("runner_crashed", "no_tests_collected", "probe_error", "build_failed")]
+    print("cases=%d caught=%d survived=%s baseline=%s abnormal=%s"
+          % (len(results), caught, survived, baseline, abnormal))
+    print("wrote %s" % os.path.join(args.out, "run-record.json"))
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
