@@ -36,30 +36,41 @@ class Refused(ValueError):
 
 def load_suppliers():
     global native, boundary, _bindings, _contract_hash
-    if _bindings is None:
-        committed = subprocess.check_output(['git', 'show', 'HEAD:' + CONTRACT], cwd=REPO, stderr=subprocess.DEVNULL)
-        rows = {row['path']: row for row in json.loads(committed)['sources']}
-        if len(rows) != len(json.loads(committed)['sources']) or not set(SUPPLIERS) <= rows.keys():
-            raise Refused('cannot_proceed: supplier_binding_missing')
-        _bindings = {path: rows[path] for path in SUPPLIERS}
-        for path, row in _bindings.items():
-            recorded = subprocess.check_output(['git', 'show', row['ref'] + ':' + path], cwd=REPO, stderr=subprocess.DEVNULL)
-            if digest(recorded) != row['sha256']:
-                raise Refused('cannot_proceed: supplier_binding_drift')
-        _contract_hash = digest(committed.replace(b'\r\n', b'\n'))
-    if digest((REPO / CONTRACT).read_bytes().replace(b'\r\n', b'\n')) != _contract_hash:
-        raise Refused('cannot_proceed: supplier_contract_drift')
-    for path, row in _bindings.items():
-        try:
-            current = (REPO / path).read_bytes().replace(b'\r\n', b'\n')
-        except OSError:
-            raise Refused('cannot_proceed: supplier_source_drift') from None
-        if digest(current) != row['sha256']:
-            raise Refused('cannot_proceed: supplier_source_drift')
-        compile((REPO / path).read_bytes(), path, 'exec')
-    if native is None:
-        native = module('m107_manifest', SUPPLIERS[0])
-        boundary = module('m107_boundary', SUPPLIERS[1])
+    try:
+        if _bindings is None:
+            committed = subprocess.check_output(['git', 'show', 'HEAD:' + CONTRACT], cwd=REPO, stderr=subprocess.DEVNULL)
+            sources = json.loads(committed)['sources']
+            rows = {row['path']: row for row in sources}
+            if len(rows) != len(sources) or not set(SUPPLIERS) <= rows.keys():
+                raise Refused('cannot_proceed: supplier_binding_missing')
+            bindings = {path: rows[path] for path in SUPPLIERS}
+            for path, row in bindings.items():
+                if not re.fullmatch(r'[a-f0-9]{40}', row['ref']) or not re.fullmatch(r'[a-f0-9]{64}', row['sha256']):
+                    raise Refused('cannot_proceed: supplier_binding_invalid')
+                recorded = subprocess.check_output(['git', 'show', row['ref'] + ':' + path], cwd=REPO, stderr=subprocess.DEVNULL)
+                if digest(recorded) != row['sha256']:
+                    raise Refused('cannot_proceed: supplier_binding_drift')
+            contract_hash = digest(committed.replace(b'\r\n', b'\n'))
+        else:
+            bindings, contract_hash = _bindings, _contract_hash
+        if digest((REPO / CONTRACT).read_bytes().replace(b'\r\n', b'\n')) != contract_hash:
+            raise Refused('cannot_proceed: supplier_contract_drift')
+        for path, row in bindings.items():
+            try:
+                current = (REPO / path).read_bytes().replace(b'\r\n', b'\n')
+            except OSError:
+                raise Refused('cannot_proceed: supplier_source_drift') from None
+            if digest(current) != row['sha256']:
+                raise Refused('cannot_proceed: supplier_source_drift')
+            compile(current, path, 'exec')
+        loaded_native = module('m107_manifest', SUPPLIERS[0])
+        loaded_boundary = module('m107_boundary', SUPPLIERS[1])
+        _bindings, _contract_hash = bindings, contract_hash
+        native, boundary = loaded_native, loaded_boundary
+    except Refused:
+      raise
+    except Exception:
+      raise Refused('cannot_proceed: supplier_preflight_failed') from None
 
 
 def guarded(function):
@@ -70,7 +81,7 @@ def guarded(function):
             return function(*args, **kwargs)
         except Refused:
             raise
-        except (OSError, ValueError, KeyError, TypeError, SyntaxError, ImportError, subprocess.CalledProcessError):
+        except (OSError, ValueError, KeyError, TypeError, SyntaxError, ImportError, RuntimeError, subprocess.CalledProcessError):
             raise Refused('cannot_proceed: invalid_or_inaccessible_fixture') from None
     return call
 
