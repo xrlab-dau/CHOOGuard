@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-18",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "recorded_all_26_checks_passed_on_the_hash_pinned_run",
+  "targetIssue": 131,
+  "issue": 131,
+  "workId": "FMP-09a",
+  "title": "[FMP-09a] 사건 데이터 스키마·검토 변형·공개근거 목록",
+  "scope": "foundation_incident_catalog",
+  "scopeStatement": "이 결과는 사건 데이터 스키마(schemas/foundation-incident-catalog.schema.json)와 검토/미검토 사건 카탈로그(foundation/scenarios/reviewed-incident-catalog.json)를 정의하고 검증한 수치 영수증이다. 저작 합성 사건 변형 7종(reviewedVariants)과 공개 절차 근거 5종에 대응하는 미검토 변형 5종(unreviewedVariants)을 엄격히 분리하고, executionAllowlist에는 검토 변형 7종만 등록하여 실행 가능하도록 통제한다. 실제 철도 운영기관(KORAIL/HUMETRO/SR)의 현업 절차를 임의 승인하거나 전용하지 않으며, 미검토 및 합성 변형의 권위 날조를 8종의 네거티브 프로브로 원천 차단한다.",
+  "exaStatus": "blocked_403_1010",
+  "emptyApplicabilityMeans": "unspecified_not_universal_permission",
+  "measurementConditions": {
+    "editor": "Unity 6000.3.23f1",
+    "invocation": "Start-Process -FilePath 'C:\\Program Files\\Unity 6000.3.23f1\\Editor\\Unity.exe' -ArgumentList '-batchmode', '-nographics', '-projectPath', '.', '-runTests', '-testPlatform', 'EditMode', '-testFilter', 'ChooGuard.Foundation.Multiplayer.Tests.IncidentDirectorTests;ChooGuard.Foundation.Tests.CanonicalScenarioTests;ChooGuard.Foundation.Tests.Fmp09aIncidentCatalogTests', '-testResults', 'docs/evidence/work-items/FMP-09a/FMP-09a-edit.xml', '-logFile', 'docs/evidence/work-items/FMP-09a/FMP-09a-unity.log' -Wait",
+    "gitHeadAtRun": "56a175a45951c2472c4021372a8f4bccca8d24c0",
+    "launchUtc": "2026-09-17T17:45:34Z",
+    "resultsXmlMtime": "2026-09-18T02:45:56+0900",
+    "unityLogMtime": "2026-09-18T02:45:56+0900",
+    "resultsXmlBytes": 24214,
+    "unityLogBytes": 35952,
+    "resultsXmlSha256": "455c09301349011100d4fe74a63eeb7ad10806b4aa4f5ee59c289434491da0ac",
+    "unityLogSha256": "75a689b94994df4695afacb3188998bbed2ef966391966efcbf5fbb027b73c89"
+  },
+  "hashes": {
+    "schemas/foundation-incident-catalog.schema.json": {
+      "bytes": 7769,
+      "sha256": "63f7ed0deb3ed1a9f35d89d716f120ad7d354256e157a40defebafba6fc4e905"
+    },
+    "foundation/scenarios/reviewed-incident-catalog.json": {
+      "bytes": 19999,
+      "sha256": "4941c12bfcc55e77272a1db9e856e286647d209be936f38e7992de387f187eb0"
+    },
+    "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp09aIncidentCatalogTests.cs": {
+      "bytes": 29758,
+      "sha256": "b2c6d7228f5e099004e85b3e1c729106a9212eb1acbf448a2d574dbe37d5c5ff"
+    },
+    "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp09aIncidentCatalogTests.cs.meta": {
+      "bytes": 243,
+      "sha256": "3261348cf2fee9682c96e0fe7ff9c24080f3649d916922b642d890a7b5c3cfd1"
+    }
+  },
+  "sources": [
+    {
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "publisherOperator": "SYNTHETIC",
+      "title": "CHOOGuard Synthetic Functional Incidents Profile V1",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "reviewedVariantsCount": 7,
+      "unreviewedVariantsCount": 0
+    },
+    {
+      "sourceId": "KORAIL-PUBLIC-REPORT",
+      "publisherOperator": "KORAIL",
+      "title": "코레일 재난관리체계",
+      "procedureAcceptance": "pending_operator_review",
+      "reviewedVariantsCount": 0,
+      "unreviewedVariantsCount": 1
+    },
+    {
+      "sourceId": "KORAIL-SMS-20170526",
+      "publisherOperator": "KORAIL",
+      "title": "철도안전관리체계 프로그램",
+      "procedureAcceptance": "pending_operator_review",
+      "reviewedVariantsCount": 0,
+      "unreviewedVariantsCount": 1
+    },
+    {
+      "sourceId": "KORAIL-PM-20250925",
+      "publisherOperator": "KORAIL",
+      "title": "개인형 이동장치 화재 대응·예방 보도자료",
+      "procedureAcceptance": "pending_operator_review",
+      "reviewedVariantsCount": 0,
+      "unreviewedVariantsCount": 1
+    },
+    {
+      "sourceId": "HUMETRO-PASSENGER-EMERGENCY",
+      "publisherOperator": "HUMETRO",
+      "title": "긴급상황 대피요령",
+      "procedureAcceptance": "pending_operator_review",
+      "reviewedVariantsCount": 0,
+      "unreviewedVariantsCount": 1
+    },
+    {
+      "sourceId": "SR-LARGE-ACCIDENT-20240226",
+      "publisherOperator": "SR",
+      "title": "고속철도 대형사고 현장조치 행동매뉴얼",
+      "procedureAcceptance": "pending_operator_review",
+      "reviewedVariantsCount": 0,
+      "unreviewedVariantsCount": 1
+    }
+  ],
+  "variantsSummary": {
+    "totalReviewed": 7,
+    "totalUnreviewed": 5,
+    "executionAllowlist": [
+      "fire-concourse",
+      "fire-mainline",
+      "power-ticket",
+      "pa-metro",
+      "blocked-connector",
+      "train-mainline-fault",
+      "train-metro-stop"
+    ],
+    "regionsCoveredCount": 7,
+    "totalValidRegionsCount": 13
+  },
+  "testMatrix": {
+    "total": 26,
+    "passed": 26,
+    "failed": 0,
+    "inconclusive": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "ChooGuard.Foundation.Tests.CanonicalScenarioTests",
+        "total": 15,
+        "passed": 15,
+        "failed": 0
+      },
+      {
+        "name": "ChooGuard.Foundation.Tests.Fmp09aIncidentCatalogTests",
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "CanonicalCatalogLoadsAndPassesValidation",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalCatalogMatchesJsonSchemaIntegrity",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalCatalogDrivesIncidentDirectorDeterministically",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseUnreviewedVariantInExecutionAllowlist",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseDuplicateChoiceOrIncidentId",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseConflationOfSRDataAsKORARILSOP",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseUniversalPermissionForEmptyApplicability",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseUnknownOrOrphanRegionResourceKey",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseMissingOrUnregisteredSourceId",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseUndefinedIncidentKindEnum",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseHallucinatedOfficialAuthorityForSyntheticVariant",
+            "result": "Passed"
+          }
+        ]
+      }
+    ]
+  }
+}
