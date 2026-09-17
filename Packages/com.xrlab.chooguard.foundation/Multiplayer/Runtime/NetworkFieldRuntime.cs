@@ -100,6 +100,7 @@ namespace ChooGuard.Foundation.Multiplayer
         public string CommandId = "", TargetId = "", Argument = "", RegionId = "";
         public CommandKind Kind;
         public long ExpectedRevision;
+        public int TrackedAtView;
     }
     [Serializable] public sealed class CommandResultRow
     {
@@ -110,12 +111,18 @@ namespace ChooGuard.Foundation.Multiplayer
         public long Sequence;
     }
 
+    public enum PanelSubmitOutcome { Sent, TransportNotReady, NotAllowed, OtherParticipant }
+
     /// <summary>Client report/acknowledgement/escort/hand-off screen state. Rows come only from the latest
     /// server-projected view and results only from server receipts for commands this client sent; nothing is
     /// shown optimistically. Commands can target only reports and entities present in that view.</summary>
     public sealed class FieldCommandPanel
     {
         public const int ResultCapacity = 8;
+        /// <summary>Server views after which an acknowledgement still waiting for its receipt may be sent again,
+        /// so one lost receipt cannot block a report for the rest of the session.</summary>
+        public const int AcknowledgeRetryViews = 30;
+        private int appliedViews;
         private readonly List<PendingCommandRow> pending = new List<PendingCommandRow>();
         private readonly List<CommandResultRow> results = new List<CommandResultRow>();
         private FieldView view;
@@ -142,19 +149,26 @@ namespace ChooGuard.Foundation.Multiplayer
             if (projected?.Observed == null || projected.Observed.ParticipantId != ParticipantId || string.IsNullOrEmpty(projected.TeamId) ||
                 view != null && (projected.Observed.WorldId != view.Observed.WorldId || projected.Observed.ShiftId != view.Observed.ShiftId))
             { IgnoredViews++; return; }
-            view = projected;
+            // Rows without an id cannot be targeted and are skipped. A view that repeats an id among the rows the panel
+            // shows or targets cannot be displayed unambiguously; the previous view stays.
             var reports = projected.Observed.Reports ?? Array.Empty<TeamReport>();
-            IgnoredReports += reports.Count(r => r == null || r.ToTeamId != projected.TeamId);
-            Reports = reports.Where(r => r != null && r.ToTeamId == projected.TeamId).OrderBy(r => r.Sequence).Select(r => new ReportRow {
+            var shownReports = reports.Where(r => r != null && r.ToTeamId == projected.TeamId && !string.IsNullOrEmpty(r.ReportId)).ToArray();
+            var entities = projected.Observed.Entities ?? Array.Empty<EntityState>();
+            if (HasDuplicates(shownReports.Select(r => r.ReportId)) ||
+                HasDuplicates(entities.Where(e => e != null && !string.IsNullOrEmpty(e.EntityId)).Select(e => e.EntityId)))
+            { IgnoredViews++; Debug.LogWarning("FieldCommandPanel ignored a server view with repeated report or entity ids."); return; }
+            view = projected;
+            appliedViews++;
+            IgnoredReports += reports.Length - shownReports.Length;
+            Reports = shownReports.OrderBy(r => r.Sequence).Select(r => new ReportRow {
                 ReportId = r.ReportId ?? "", FromParticipantId = r.FromParticipantId ?? "", ToTeamId = r.ToTeamId, EntityId = r.EntityId ?? "",
                 RegionId = r.RegionId ?? "", FrameId = r.FrameId ?? "", ObservedRevision = r.ObservedRevision, Sequence = r.Sequence,
                 AcknowledgedBy = (r.AcknowledgedBy ?? Array.Empty<string>()).ToArray(),
                 AcknowledgedByLocal = (r.AcknowledgedBy ?? Array.Empty<string>()).Contains(ParticipantId) }).ToArray();
-            var entities = projected.Observed.Entities ?? Array.Empty<EntityState>();
-            Evacuees = entities.Where(e => e != null && e.Kind == EntityKind.Evacuee).OrderBy(e => e.EntityId, StringComparer.Ordinal)
+            Evacuees = entities.Where(e => e != null && !string.IsNullOrEmpty(e.EntityId) && e.Kind == EntityKind.Evacuee).OrderBy(e => e.EntityId, StringComparer.Ordinal)
                 .Select(e => new EvacueeRow { EntityId = e.EntityId, RegionId = e.RegionId ?? "", LeaderId = e.LeaderId ?? "", Revision = e.Revision,
                     Unclaimed = string.IsNullOrEmpty(e.LeaderId), LedByLocal = e.LeaderId == ParticipantId }).ToArray();
-            ReportableIncidentIds = entities.Where(e => e != null && e.Kind == EntityKind.Incident && e.Active)
+            ReportableIncidentIds = entities.Where(e => e != null && !string.IsNullOrEmpty(e.EntityId) && e.Kind == EntityKind.Incident && e.Active)
                 .Select(e => e.EntityId).OrderBy(id => id, StringComparer.Ordinal).ToArray();
         }
 
@@ -183,10 +197,14 @@ namespace ChooGuard.Foundation.Multiplayer
                 Command(CommandKind.HandOffEvacuee, row.EntityId, toParticipantId, row.Revision, commandId);
         }
 
-        /// <summary>R key: acknowledge the oldest shown team report the local participant has not acknowledged.</summary>
+        /// <summary>R key: acknowledge the oldest shown team report the local participant has not acknowledged and
+        /// has no acknowledgement still waiting for a server receipt, so repeated presses do not send duplicates.
+        /// A waiting acknowledgement older than <see cref="AcknowledgeRetryViews"/> server views no longer blocks a resend.</summary>
         public WorldCommand AcknowledgeNext(string commandId = null)
         {
-            var next = Reports.FirstOrDefault(r => !r.AcknowledgedByLocal);
+            var next = Reports.FirstOrDefault(r => !r.AcknowledgedByLocal &&
+                !pending.Any(p => p.Kind == CommandKind.AcknowledgeReport && p.TargetId == r.ReportId &&
+                                  appliedViews - p.TrackedAtView < AcknowledgeRetryViews));
             return next == null ? null : Acknowledge(next.ReportId, commandId);
         }
 
@@ -226,6 +244,19 @@ namespace ChooGuard.Foundation.Multiplayer
             return admission.Allows(credential);
         }
 
+        /// <summary>Panel send path used by <see cref="NetworkFieldRuntime.SubmitPanelCommand"/>: nothing is sent while the
+        /// transport or input is not ready, a command the panel could not build is not sent, and a command is tracked
+        /// only after <paramref name="send"/> has handed its wire text to the transport.</summary>
+        public PanelSubmitOutcome Submit(WorldCommand command, bool transportReady, Action<string> send)
+        {
+            if (!transportReady || send == null) return PanelSubmitOutcome.TransportNotReady;
+            if (command == null) return PanelSubmitOutcome.NotAllowed;
+            if (command.ParticipantId != ParticipantId) return PanelSubmitOutcome.OtherParticipant;
+            send(JsonUtility.ToJson(command));
+            Track(command);
+            return PanelSubmitOutcome.Sent;
+        }
+
         /// <summary>Call only after the command has actually been sent to the server.</summary>
         public void Track(WorldCommand command)
         {
@@ -233,7 +264,7 @@ namespace ChooGuard.Foundation.Multiplayer
             var region = command.Kind == CommandKind.AcknowledgeReport ? Reports.SingleOrDefault(r => r.ReportId == command.TargetId)?.RegionId
                 : ObservedEntity(command.TargetId)?.RegionId;
             pending.Add(new PendingCommandRow { CommandId = command.CommandId, Kind = command.Kind, TargetId = command.TargetId ?? "",
-                Argument = command.Argument ?? "", ExpectedRevision = command.ExpectedRevision, RegionId = region ?? "" });
+                Argument = command.Argument ?? "", ExpectedRevision = command.ExpectedRevision, RegionId = region ?? "", TrackedAtView = appliedViews });
         }
 
         /// <summary>Shows a server receipt only when it answers a command this client sent in the current shift.</summary>
@@ -276,7 +307,14 @@ namespace ChooGuard.Foundation.Multiplayer
             kind == CommandKind.ClaimEvacuee ? "인솔" : kind == CommandKind.HandOffEvacuee ? "인계" :
             kind == CommandKind.PauseShift ? "근무정지" : kind == CommandKind.ResumeShift ? "근무재개" : kind.ToString();
 
-        private EntityState ObservedEntity(string entityId) =>
+        private static bool HasDuplicates(IEnumerable<string> ids)
+        {
+            if (ids == null) return false;
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            return ids.Any(id => !seen.Add(id ?? ""));
+        }
+
+        private EntityState ObservedEntity(string entityId) => string.IsNullOrEmpty(entityId) ? null :
             view?.Observed?.Entities?.SingleOrDefault(e => e != null && e.EntityId == entityId);
 
         private WorldCommand Command(CommandKind kind, string targetId, string argument, long revision, string commandId)
@@ -1106,14 +1144,14 @@ namespace ChooGuard.Foundation.Multiplayer
         /// <summary>Sends a report-panel command and tracks it so only the matching server receipt is shown.</summary>
         public bool SubmitPanelCommand(WorldCommand command)
         {
-            if (commandPanel == null || !Connected || view?.Observed == null) return false;
-            if (command == null) { status = "현재 서버 상태로는 할 수 없는 행동입니다."; return false; }
-            var pause = view.Instructor && command.Kind == CommandKind.PauseShift;
-            var resume = view.Instructor && command.Kind == CommandKind.ResumeShift && snapshotFreshness.IsCurrent(CurrentTime);
-            if (!LocalInputEnabled && !pause && !resume) return false;
-            Send(CommandChannel, NetworkManager.ServerClientId, JsonUtility.ToJson(command));
-            commandPanel.Track(command);
-            return true;
+            if (commandPanel == null) return false;
+            var pause = view?.Instructor == true && command?.Kind == CommandKind.PauseShift;
+            var resume = view?.Instructor == true && command?.Kind == CommandKind.ResumeShift && snapshotFreshness.IsCurrent(CurrentTime);
+            var ready = Connected && view?.Observed != null && (LocalInputEnabled || pause || resume);
+            var outcome = commandPanel.Submit(command, ready, text => Send(CommandChannel, NetworkManager.ServerClientId, text));
+            if (outcome == PanelSubmitOutcome.NotAllowed) status = "현재 서버 상태로는 할 수 없는 행동입니다.";
+            else if (outcome == PanelSubmitOutcome.OtherParticipant) status = "다른 참가자 명령은 보낼 수 없습니다.";
+            return outcome == PanelSubmitOutcome.Sent;
         }
 
         private void InteractClosest()

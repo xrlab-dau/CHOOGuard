@@ -1,0 +1,284 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "workId": "M4-03",
+  "issue": 34,
+  "phase": "candidate",
+  "artifact": "artifact:34:M4-03-desktop-receipt:candidate",
+  "recordType": "machine_observation_not_approval",
+  "runId": "m403-20260915T111101Z",
+  "supplements": "docs/evidence/M4-03/runs/m403-20260915T001538Z/desktop-run-record.json (kept unchanged)",
+  "purpose": "review fix: blocked resolution is now also exercised through the JSON loader with keys really absent from the document text, a truncated document, non-JSON text and an empty document, instead of only by editing a loaded object",
+  "syntheticDisclosure": "All roles, actions, anchors, team events and feedback are the provisional synthetic M4-01 fixture; the documents in this run are assembled in memory from one fixture row. This is not facility, network or HMD acceptance.",
+  "baseline": {
+    "ref": "15ac727f63830d6f70e87f6d2dc54c7d724e22c4",
+    "candidateBranchBase": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+    "checkout": "the same isolated worktree detached at the ref as the first run, candidate test files copied in from the follow-up branch; tracked changes after all runs: 0",
+    "inputsUnchangedSinceFirstRun": "fixture, scenario and foundation runtime files read by the tests are identical between the ref and the follow-up branch base"
+  },
+  "capability": {
+    "machineLabel": "local",
+    "os": "Windows 11 Education 10.0.26200 x64",
+    "editor": "6000.3.23f1",
+    "testPlatform": "EditMode",
+    "graphics": "-nographics batchmode",
+    "hmd": "unknown (none attached; not tested)",
+    "xrRuntime": "unknown (not tested)"
+  },
+  "candidateFiles": {
+    "Assets/CHOOguardTeam/Tests/M4-03/ChooGuard.Team.M403.Tests.asmdef": {
+      "sha256": "27558830700e8ceb2d3f15d689d3a469b10cb67914d2f7936ca06b63a93de045"
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/ChooGuard.Team.M403.Tests.asmdef.meta": {
+      "sha256": "23dac404b0ee86d773bc6887314bc879d2ff0b0b5f20013a6e75eebc493afcc4"
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403DesktopRoleActionTests.cs": {
+      "sha256": "78d5273b43e9c3f1870d6cec0c99e4d4a73a32680edd1e58651b689a29250abc"
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403DesktopRoleActionTests.cs.meta": {
+      "sha256": "1d4647138d80bbbe47c816e029f1404e476f7f1d1dc0e8d3b1643d3595ba0e59"
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs": {
+      "sha256": "960b193851e15781269d1600893eafb5c8109e6628e177ec0746343f448ff588"
+    },
+    "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs.meta": {
+      "sha256": "e6b484355c6f2af31c74573ea9bb4c0530dde2ece041ce5d45d9b754e1e88e39"
+    }
+  },
+  "fixtureInput": {
+    "path": "foundation/team-fixtures/M4-01/role-action-fixture.json",
+    "sha256": "17c9aafd3dc356bed0e2ec42f1feda83714e66df5fda403b25c154972bb53243",
+    "readOnly": true
+  },
+  "buildHash": {
+    "algorithm": "sha256",
+    "source": "Library/ScriptAssemblies after the run",
+    "assemblies": {
+      "ChooGuard.Team.M403.Tests.dll": "603de8c56011d80260efaf57a84f9f70ad32147cd246960a1b74c5b8c21641ec",
+      "ChooGuard.Foundation.dll": "ef26cbf6d1b85d339e201ce57702dc7c8feef5034018c89adf9bdc989341a85b",
+      "ChooGuard.Foundation.Demo.dll": "9d147c8664ecfa4c98dbe188b7f19abb17b3ed7022832ae1ef425742cf20f863"
+    }
+  },
+  "command": "<UnityEditor> -batchmode -nographics -projectPath <worktree> -runTests -testPlatform EditMode -assemblyNames ChooGuard.Team.M403.Tests -testResults <RUN_ROOT>/01-editmode/EditMode.xml -logFile <RUN_ROOT>/01-editmode/EditMode.log",
+  "result": {
+    "exitCode": 0,
+    "summary": {
+      "total": 20,
+      "passed": 20,
+      "failed": 0,
+      "skipped": 0
+    },
+    "cases": [
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.DesktopFlowMatchesTheFixtureRow(\"role-05\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.DocumentsWithKeysRemovedOrTruncatedAreBlockedThroughTheLoader",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.ExplicitDesktopSubmissionEqualsTheDesktopFlowOutcome(\"role-05\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.FixtureIsBoundToTheCanonicalScenarioAndHasFourNonRepresentativeProvisionalRows",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.FourActionsAreDistinctFromEachOtherAndFromTheRepresentativeRole",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.MissingFixtureRowTargetOrModalityIsBlockedAndNotExecuted",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.RejectedDesktopInputsChangeNothingAndTheCorrectActionStillWorks(\"role-05\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-02\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-03\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-04\")",
+        "result": "Passed"
+      },
+      {
+        "name": "M403DesktopRoleActionTests.VrEnumValueGivesTheSameSemanticsAsDesktop_SemanticParityOnly_NotHmdEvidence(\"role-05\")",
+        "result": "Passed"
+      }
+    ],
+    "resultXmlSha256": "56fcaedf0e5b64b30794ddd4d75ff2115355f263be65d242d57ad185db386e53",
+    "editorLogSha256": "562ad84099c3c44ef64b2ca3b5a6b729873c5fa6c39b562177b9e1bc2584d571"
+  },
+  "loaderBlockedDocuments": {
+    "test": "DocumentsWithKeysRemovedOrTruncatedAreBlockedThroughTheLoader",
+    "control": "the assembled document with every key resolves as ready and its parsed row values (ids, action, anchor, scenario version, pre-state, team states, events, quest state, feedback) equal the fixture row",
+    "expectation": "each case asserts exactly one blocked reason and whether JsonUtility parsed the text",
+    "cases": [
+      {
+        "case": "empty",
+        "parsed": false,
+        "reason": "fixture_missing"
+      },
+      {
+        "case": "no-actionId",
+        "parsed": true,
+        "reason": "action_missing"
+      },
+      {
+        "case": "no-expectedFeedbackCode",
+        "parsed": true,
+        "reason": "expected_output_missing"
+      },
+      {
+        "case": "no-expectedVirtualTeamEvents",
+        "parsed": true,
+        "reason": "expected_output_missing"
+      },
+      {
+        "case": "no-preState",
+        "parsed": true,
+        "reason": "prestate_missing"
+      },
+      {
+        "case": "no-roleId",
+        "parsed": true,
+        "reason": "fixture_row_missing"
+      },
+      {
+        "case": "no-roleRows",
+        "parsed": true,
+        "reason": "fixture_missing"
+      },
+      {
+        "case": "no-targetAnchorId",
+        "parsed": true,
+        "reason": "target_missing"
+      },
+      {
+        "case": "not-json",
+        "parsed": false,
+        "reason": "fixture_missing"
+      },
+      {
+        "case": "truncated",
+        "parsed": false,
+        "reason": "fixture_missing"
+      }
+    ],
+    "note": "parsed=false means ParseFixture returned no fixture (JsonUtility refused the text); a parsable document with a key removed leaves that field at its default and Resolve reports the matching blocked reason"
+  },
+  "mutationControls": [
+    {
+      "step": "02-mutation-loader-rethrows-parse-error",
+      "change": "ParseFixture no longer catches the JsonUtility parse exception",
+      "file": "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs",
+      "appliedIn": "untracked candidate copy in the isolated worktree only; restored by copying the candidate file back",
+      "exitCode": 2,
+      "summary": {
+        "total": 20,
+        "passed": 19,
+        "failed": 1
+      },
+      "failedTests": [
+        "M403DesktopRoleActionTests.DocumentsWithKeysRemovedOrTruncatedAreBlockedThroughTheLoader"
+      ],
+      "resultXmlSha256": "f35a2c2e1aff896ff40ccc7a93592293b0d34eff8d596ea224a57cfb6c0b126d"
+    },
+    {
+      "step": "03-mutation-no-target-missing-check",
+      "change": "Resolve no longer reports target_missing",
+      "file": "Assets/CHOOguardTeam/Tests/M4-03/M403Fixture.cs",
+      "appliedIn": "untracked candidate copy in the isolated worktree only; restored by copying the candidate file back",
+      "exitCode": 2,
+      "summary": {
+        "total": 20,
+        "passed": 18,
+        "failed": 2
+      },
+      "failedTests": [
+        "M403DesktopRoleActionTests.DocumentsWithKeysRemovedOrTruncatedAreBlockedThroughTheLoader",
+        "M403DesktopRoleActionTests.MissingFixtureRowTargetOrModalityIsBlockedAndNotExecuted"
+      ],
+      "resultXmlSha256": "12ec4eda24cb91cffc669164c5278f635cba87e0f01d463af54b7b60196439a9"
+    }
+  ],
+  "afterRestore": {
+    "step": "04-editmode-after-restore",
+    "exitCode": 0,
+    "summary": {
+      "total": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    "resultXmlSha256": "e42f431a55ed9c0827110aabb7591df83ca0d61492798272b009a34d604e7820"
+  },
+  "failedAttempts": [
+    {
+      "runId": "m403-20260915T062824Z",
+      "observed": "the first loader test used NUnit Is.AnyOf, which the Unity Test Framework NUnit build does not provide; every step aborted with a compile error (CS0117) and no test ran",
+      "handling": "the assertion was rewritten as Does.Contain on the expected reason list and the whole run was repeated; the aborted run is not counted",
+      "editorLogSha256": "fbaa8fd5c8be7b553c32ef9a5824e01ec783cd56d8d6fd683454891bf24f1b4e"
+    },
+    {
+      "runId": "m403-20260915T064706Z",
+      "observed": "20/20 passed, but an automated review found the loader test too weak: the control only checked that the assembled document resolved, and the truncated and no-roleRows cases each accepted two reasons although their input can produce one",
+      "handling": "the control now compares the parsed row values with the fixture row, each case names one reason and whether JsonUtility parsed the text; the run record of that attempt was not kept"
+    },
+    {
+      "runId": "m403-20260915T110743Z",
+      "observed": "the test edit had not been applied when this run started, so it repeated the previous test source",
+      "handling": "not counted; the edit was applied and the run repeated as this record"
+    }
+  ],
+  "limits": [
+    "JsonUtility ignores unknown keys and fills absent keys with defaults, so a removed key is detected only for the fields Resolve checks (target, action, pre-state, expected quest state, events and feedback code, role id); other absent fields are not detected by the loader.",
+    "The loader documents are one-row fixtures assembled from the real role-02 row; the fixture file on disk is not edited.",
+    "No scene, HMD, XR runtime or tracked input was used; the VR branch stays blocked as in the first run.",
+    "Raw result XML and editor logs stay outside Git under <RUN_ROOT>; only digests are recorded.",
+    "Independent review was an automated reviewer agent, not a human reviewer."
+  ]
+}

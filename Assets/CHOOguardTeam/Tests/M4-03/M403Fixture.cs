@@ -101,7 +101,22 @@ namespace ChooGuard.Team.M403.Tests
         {
             var path = Path.Combine(RepoRoot, FixturePath);
             if (!File.Exists(path)) return null;
-            return JsonUtility.FromJson<M403Fixture>(File.ReadAllText(path));
+            return ParseFixture(File.ReadAllText(path));
+        }
+
+        // Empty or unparsable text yields no fixture (Resolve then reports fixture_missing) instead of an exception.
+        // Keys absent from a parsable document are left at their defaults and are caught by Resolve's field checks.
+        public static M403Fixture ParseFixture(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json)) return null;
+            try
+            {
+                return JsonUtility.FromJson<M403Fixture>(json);
+            }
+            catch (ArgumentException)
+            {
+                return null;
+            }
         }
 
         public static ScenarioProfile LoadScenario()
