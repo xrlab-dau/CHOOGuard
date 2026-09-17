@@ -616,7 +616,10 @@ namespace ChooGuard.Foundation.Tests
                 var recTarget = shift.Submit("guide-a", modTarget);
                 Assert.That(recTarget.Code, Is.EqualTo(CommandCode.CommandIdConflict), "Reusing CommandId with altered TargetId must yield CommandIdConflict");
                 AssertReceiptLedgerAndStateEqual(stateBefore, writesBefore, shift.ExportCheckpoint(), sink.Writes, "npc-evacuee-free");
-                Assert.That(shift.ExportCheckpoint().Entities.Single(e => e.EntityId == "npc-evacuee-01").LeaderId, Is.EqualTo(stateBefore.Entities.Single(e => e.EntityId == "npc-evacuee-01").LeaderId));
+                var evacuee01Before = stateBefore.Entities.Single(e => e.EntityId == "npc-evacuee-01");
+                var evacuee01After = shift.ExportCheckpoint().Entities.Single(e => e.EntityId == "npc-evacuee-01");
+                Assert.That(evacuee01After.LeaderId, Is.EqualTo(evacuee01Before.LeaderId), "LeaderId of altered target npc-evacuee-01 must remain unchanged");
+                Assert.That(evacuee01After.Revision, Is.EqualTo(evacuee01Before.Revision), "Revision of altered target npc-evacuee-01 must remain unchanged");
             }
 
             // Mutation 3: Only ExpectedRevision modified
@@ -673,7 +676,8 @@ namespace ChooGuard.Foundation.Tests
             Assert.That(recHandoffBC.Sequence, Is.EqualTo(3));
 
             var writesBeforeReplay = sink.Writes;
-            var seqBeforeReplay = shift.ExportCheckpoint().Sequence;
+            var stateBeforeReplay = shift.ExportCheckpoint();
+            var seqBeforeReplay = stateBeforeReplay.Sequence;
 
             // Step 4: guide-a resubmits the ORIGINAL cmd-handoff-a-to-b
             var replayReceipt = shift.Submit("guide-a", handoffAB);
@@ -687,8 +691,11 @@ namespace ChooGuard.Foundation.Tests
             Assert.That(replayReceipt.Fingerprint, Is.EqualTo(recHandoffAB.Fingerprint));
             Assert.That(replayReceipt.Sequence, Is.EqualTo(recHandoffAB.Sequence), "Replay receipt must reflect original Sequence 2");
 
-            // Assert final state did NOT revert ownership to guide-b
+            // Assert entire receipt ledger and entity state immutability across the cached replay
             var postReplayState = shift.ExportCheckpoint();
+            AssertReceiptLedgerAndStateEqual(stateBeforeReplay, writesBeforeReplay, postReplayState, sink.Writes, "npc-evacuee-01");
+
+            // Assert final state did NOT revert ownership to guide-b
             var finalEvacuee = postReplayState.Entities.Single(e => e.EntityId == "npc-evacuee-01");
             Assert.That(finalEvacuee.LeaderId, Is.EqualTo("guide-c"), "Replaying handoff A->B must NOT revert current leader guide-c");
             Assert.That(finalEvacuee.Revision, Is.EqualTo(3));
