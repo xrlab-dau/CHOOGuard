@@ -53,7 +53,7 @@
     "limit": "Being in scope is authority to edit this record. It is not an approval of the policy the record describes; approved stays false."
   },
   "citations": {
-    "derivation": "Every line below was produced by a scan of the file at the committed HEAD 2963d6e452d839a3a31c448a3733708ad13651eb of this branch, not carried over from an earlier report.",
+    "derivation": "Every line below was produced by a scan of the file at the committed HEAD 77e099ffb4695346690e61f4e66c5432918ba160 of this branch, not carried over from an earlier report.",
     "entries": [
       {
         "symbol": "FieldCommandPanel.IsInstructor",
@@ -98,40 +98,70 @@
         "orderingClaim": "KindLabel maps PauseShift to '근무정지' and ResumeShift to '근무재개'."
       },
       {
+        "symbol": "NetworkFieldRuntime.MeasureWireLength",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 398,
+        "orderingClaim": "MeasureWireLength computes exact serialized wire length using FastBufferWriter for telemetry calibration."
+      },
+      {
         "symbol": "NetworkFieldRuntime.SetInstructorAdmission",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 510,
+        "declarationLine": 544,
         "orderingClaim": "SetInstructorAdmission stores admission decisions in runtime and synchronizes with commandPanel."
       },
       {
         "symbol": "NetworkFieldRuntime.EvaluateConnectionApproval",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 520,
+        "declarationLine": 554,
         "orderingClaim": "EvaluateConnectionApproval enforces SessionAdmission.Allows cryptographic validation and respects instructor denial."
       },
       {
         "symbol": "NetworkFieldRuntime.Approve",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 534,
+        "declarationLine": 568,
         "orderingClaim": "Approve delegates connection evaluation to EvaluateConnectionApproval, denying unapproved or cryptographically invalid tickets."
       },
       {
         "symbol": "NetworkFieldRuntime.OnDisconnected",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 584,
+        "declarationLine": 618,
         "orderingClaim": "OnDisconnected disables participant input and revokes connection without mutating other roster roles."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.ProcessAdmissionRequest",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 773,
+        "orderingClaim": "ProcessAdmissionRequest verifies sender instructor role and session shift before recording admission decision on server."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.ProcessAdmissionResponse",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 834,
+        "orderingClaim": "ProcessAdmissionResponse updates local command panel decisions only upon confirmed server response."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.RequestInstructorAdmission",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 851,
+        "orderingClaim": "RequestInstructorAdmission transmits admission decision requests across the network wire to the dedicated server."
       },
       {
         "symbol": "NetworkFieldRuntime.SubmitPanelCommand",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 963,
+        "declarationLine": 1107,
         "orderingClaim": "SubmitPanelCommand enforces snapshot freshness on ResumeShift and allows instructor PauseShift even when input is paused."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.Send",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 1155,
+        "orderingClaim": "Send accumulates exact serialized writer.Length into sentBytes rather than allocated buffer capacity."
       },
       {
         "symbol": "NetworkFieldRuntime.DrawCommandPanel",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 1263,
-        "orderingClaim": "DrawCommandPanel renders instructor pause/resume and admission review controls only when commandPanel.IsInstructor is true."
+        "declarationLine": 1410,
+        "orderingClaim": "DrawCommandPanel renders instructor controls and routes admission buttons through RequestInstructorAdmission wire transmission."
       }
     ]
   },
@@ -143,21 +173,21 @@
     "platform": "PlayMode",
     "platformNote": "The assembly definition declares defineConstraints: ['UNITY_INCLUDE_TESTS'], collected and verified as PlayMode tests.",
     "executionState": "executed_verified",
-    "testedCommit": "2963d6e452d839a3a31c448a3733708ad13651eb",
+    "testedCommit": "77e099ffb4695346690e61f4e66c5432918ba160",
     "runner": "Unity 6000.3.23f1 (09d2ecc7fb28)",
     "command": "<unityExe> -batchmode -nographics -projectPath <projectRoot> -runTests -testPlatform PlayMode -testFilter ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
     "evidence": {
       "playModeXml": {
         "path": "docs/evidence/foundation/FMP-10c/PlayMode.xml",
-        "sha256": "567bd16902fce3cbf055b23e9fad056ee348df32968340e86c5ea4564d855b5c",
-        "total": 6,
-        "passed": 6,
+        "sha256": "5e92301540159041b40921dd723a23e2c7ba598b592315f84977123413f42fbf",
+        "total": 7,
+        "passed": 7,
         "failed": 0,
         "skipped": 0
       },
       "playModeLog": {
         "path": "docs/evidence/foundation/FMP-10c/PlayMode.log",
-        "sha256": "495ba61227f1f422fec2dd7b216776f8a27ffb4b5e7a215ee6425be379e4e374",
+        "sha256": "355752353ca119a54f0930dda6fc697ac9c15d1097b604ad4692ec64d3eb4df9",
         "status": "zero_errors"
       }
     },
@@ -170,31 +200,37 @@
         "id": "R1",
         "assertedBy": "InstructorPanelCanBuildAndSubmitPauseShiftAndResumeShiftCommands",
         "state": "executed_verified",
-        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
+        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
       },
       {
         "id": "R2",
         "assertedBy": "NonInstructorParticipantCannotBuildPauseOrResumeAndForgedCommandsRecordedAsRoleDenied",
         "state": "executed_verified",
-        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
+        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
       },
       {
         "id": "R3",
         "assertedBy": "AdmissionGateRequiresBothInstructorRoleAndSessionAdmissionAllowsWithoutBypass",
         "state": "executed_verified",
-        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
+        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
       },
       {
         "id": "R4",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
         "state": "executed_verified",
-        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
+        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
       },
       {
         "id": "R5",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
         "state": "executed_verified",
-        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
+        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
+      },
+      {
+        "id": "R6",
+        "assertedBy": "SendByteAccountingAccumulatesExactWireLengthWithoutCapacityInflation",
+        "state": "executed_verified",
+        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
       }
     ],
     "notVerified": [
