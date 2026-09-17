@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using ChooGuard.Foundation.Multiplayer;
 using NUnit.Framework;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
     /// FMP-10c acceptance: instructor control UI, role-gated shift pause/resume,
     /// cryptographic admission gate without UI bypass, and instructor leave/recovery behavior.
     /// Commands and receipts cross the same JsonUtility encoding as multiplayer named-message channels.
+    /// Runtime boundaries (SubmitPanelCommand, EvaluateConnectionApproval, Approve) are verified with failure injection.
     /// </summary>
     public sealed class FMP10cInstructorUiTests
     {
@@ -30,6 +32,7 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
         private SessionAdmission admission;
         private FieldCommandPanel inst1, a1, b1;
         private readonly List<string> receiptLog = new List<string>();
+        private readonly List<GameObject> createdObjects = new List<GameObject>();
 
         [SetUp]
         public void SetUp()
@@ -85,6 +88,16 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Refresh(inst1, a1, b1);
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            foreach (var go in createdObjects)
+            {
+                if (go != null) UnityEngine.Object.DestroyImmediate(go);
+            }
+            createdObjects.Clear();
+        }
+
         private static T Wire<T>(T value) => JsonUtility.FromJson<T>(JsonUtility.ToJson(value));
 
         private FieldView Project(string participantId)
@@ -132,7 +145,55 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                 Argument = argument
             };
 
+        private sealed class TestClientRuntimeScope
+        {
+            public NetworkFieldRuntime Runtime;
+            public List<WorldCommand> SentCommands;
+            public double Clock = 1000.0;
+        }
+
+        private TestClientRuntimeScope CreateTestClientRuntime(FieldCommandPanel panel, bool isInstructor, bool isPaused)
+        {
+            var go = new GameObject("TestClientRuntime_" + panel.ParticipantId);
+            createdObjects.Add(go);
+            var runtime = go.AddComponent<NetworkFieldRuntime>();
+            runtime.connectedOverride = true;
+            runtime.SetControlsForTest(true);
+            runtime.SetCommandPanelForTest(panel);
+
+            var scope = new TestClientRuntimeScope
+            {
+                Runtime = runtime,
+                SentCommands = new List<WorldCommand>(),
+                Clock = 1000.0
+            };
+            runtime.TimeProvider = () => scope.Clock;
+
+            var view = Project(panel.ParticipantId);
+            view.Observed.Paused = isPaused;
+            view.Instructor = isInstructor;
+            runtime.SetViewForTest(view);
+
+            runtime.MessageSender = (channel, client, text) =>
+            {
+                if (channel == NetworkFieldRuntime.CommandChannelName)
+                    scope.SentCommands.Add(JsonUtility.FromJson<WorldCommand>(text));
+            };
+            return scope;
+        }
+
+        private NetworkFieldRuntime CreateTestServerRuntime()
+        {
+            var go = new GameObject("TestServerRuntime");
+            createdObjects.Add(go);
+            var runtime = go.AddComponent<NetworkFieldRuntime>();
+            runtime.SetAdmissionForTest(admission);
+            runtime.SetShiftForTest(shift);
+            return runtime;
+        }
+
         // Acceptance 1: IsInstructor participant can build, submit, and track PauseShift and ResumeShift commands.
+        // Also verifies runtime boundary SubmitPanelCommand enforcing snapshot freshness on resume.
         [Test]
         public void InstructorPanelCanBuildAndSubmitPauseShiftAndResumeShiftCommands()
         {
@@ -168,13 +229,34 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(a1.ApplyReceipt(claimReceipt), Is.True);
             Assert.That(a1.Results.Single().Text, Is.EqualTo("서버 거부(ShiftPaused): 인솔 evacuee-1"));
 
-            // 2. Instructor resumes the shift
-            var resumeCmd = inst1.ResumeShift("cmd-inst-resume-1");
-            Assert.That(resumeCmd, Is.Not.Null);
-            Assert.That(resumeCmd.Kind, Is.EqualTo(CommandKind.ResumeShift));
-            Assert.That(resumeCmd.ParticipantId, Is.EqualTo("inst1"));
+            // 2. Runtime boundary verification for SubmitPanelCommand on ResumeShift
+            var instScope = CreateTestClientRuntime(inst1, isInstructor: true, isPaused: true);
 
-            var resumeReceipt = Send(inst1, resumeCmd);
+            // 2a. Failure injection: Stale snapshot prevents ResumeShift submission at runtime boundary
+            instScope.Runtime.RecordSnapshotTimeForTest(1000.0);
+            instScope.Clock = 1005.0; // 5 seconds later; exceeds MaximumAgeSeconds (0.5s)
+            var staleResumeCmd = inst1.ResumeShift("cmd-inst-resume-stale");
+            Assert.That(staleResumeCmd, Is.Not.Null);
+            var staleSubmitted = instScope.Runtime.SubmitPanelCommand(staleResumeCmd);
+            Assert.That(staleSubmitted, Is.False, "Stale snapshot must strictly prevent ResumeShift submission.");
+            Assert.That(instScope.SentCommands.Any(c => c.CommandId == "cmd-inst-resume-stale"), Is.False,
+                "Command must not be sent over network channel when snapshot is stale.");
+            Assert.That(inst1.Pending.Any(p => p.CommandId == "cmd-inst-resume-stale"), Is.False,
+                "Command must not be registered in pending tracking when snapshot is stale.");
+
+            // 2b. Positive case: Fresh snapshot permits ResumeShift submission at runtime boundary
+            instScope.Runtime.RecordSnapshotTimeForTest(1005.0);
+            instScope.Clock = 1005.1; // 0.1s later; well within 0.5s threshold
+            var freshResumeCmd = inst1.ResumeShift("cmd-inst-resume-fresh");
+            var freshSubmitted = instScope.Runtime.SubmitPanelCommand(freshResumeCmd);
+            Assert.That(freshSubmitted, Is.True, "Fresh snapshot allows instructor ResumeShift submission.");
+            Assert.That(instScope.SentCommands.Any(c => c.CommandId == "cmd-inst-resume-fresh"), Is.True,
+                "Command must be transmitted over CommandChannel.");
+            Assert.That(inst1.Pending.Any(p => p.CommandId == "cmd-inst-resume-fresh"), Is.True,
+                "Command must be registered in pending tracking.");
+
+            // 3. Authoritative shift resumes upon valid receipt
+            var resumeReceipt = Wire(shift.Submit(inst1.ParticipantId, freshResumeCmd));
             Assert.That(resumeReceipt.Code, Is.EqualTo(CommandCode.Accepted));
             Assert.That(shift.Paused, Is.False, "Server authority reflects resumed state.");
             Assert.That(inst1.ApplyReceipt(resumeReceipt), Is.True);
@@ -199,6 +281,12 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(a1.ResumeShift(), Is.Null, "Non-instructor panel returns null for ResumeShift.");
             Assert.That(b1.PauseShift(), Is.Null);
             Assert.That(b1.ResumeShift(), Is.Null);
+
+            // Runtime boundary: non-instructor runtime cannot submit null pause/resume
+            var a1Scope = CreateTestClientRuntime(a1, isInstructor: false, isPaused: false);
+            Assert.That(a1Scope.Runtime.SubmitPanelCommand(a1.PauseShift()), Is.False);
+            Assert.That(a1Scope.Runtime.SubmitPanelCommand(a1.ResumeShift()), Is.False);
+            Assert.That(a1Scope.SentCommands, Is.Empty);
 
             // Forged wire attempt for PauseShift by non-instructor participant a1
             var forgedPause = Forged(a1, "team-a", CommandKind.PauseShift, "", "cmd-forged-pause-a1");
@@ -233,7 +321,8 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(a1.RenderLines(), Has.Some.EqualTo("서버 거부(RoleDenied): 근무재개"));
         }
 
-        // Acceptance 3: Admission allow/deny UI never bypasses SessionAdmission.Allows.
+        // Acceptance 3: Admission allow/deny UI never bypasses SessionAdmission.Allows,
+        // and instructor admission review is wired into server connection approval.
         [Test]
         public void AdmissionGateRequiresBothInstructorRoleAndSessionAdmissionAllowsWithoutBypass()
         {
@@ -245,11 +334,44 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                 Secret = SecretA1
             };
 
+            var validTraineeCredB1 = new JoinCredential
+            {
+                WorldId = WorldId,
+                ShiftId = ShiftId,
+                ParticipantId = "b1",
+                Secret = SecretB1
+            };
+
+            // Part A: Panel-level decision tracking & evaluation
             // 1. Positive case: instructor approves and SessionAdmission allows
             Assert.That(admission.Allows(validTraineeCred), Is.True);
             Assert.That(inst1.EvaluateAdmission(validTraineeCred, admission, instructorApproved: true), Is.True);
 
-            // 2. Bypass rejection: instructor approves, but credential carries incorrect secret
+            // 2. Instructor decision tracking via SetAdmissionDecision
+            Assert.That(inst1.SetAdmissionDecision("a1", true), Is.True);
+            Assert.That(inst1.AdmissionDecisions["a1"], Is.True);
+            Assert.That(inst1.EvaluateAdmission(validTraineeCred, admission), Is.True);
+
+            // 3. Instructor explicitly denies participant
+            Assert.That(inst1.SetAdmissionDecision("a1", false), Is.True);
+            Assert.That(inst1.AdmissionDecisions["a1"], Is.False);
+            Assert.That(inst1.EvaluateAdmission(validTraineeCred, admission), Is.False,
+                "Instructor denial in panel must cause EvaluateAdmission to return false.");
+            Assert.That(inst1.RenderLines(), Has.Some.EqualTo("입장 심사: a1 → 교관 거부"));
+
+            // Reset back to approved
+            inst1.SetAdmissionDecision("a1", true);
+            Assert.That(inst1.RenderLines(), Has.Some.EqualTo("입장 심사: a1 → 교관 승인"));
+
+            // 4. Non-instructor cannot record admission decisions
+            Assert.That(a1.SetAdmissionDecision("b1", true), Is.False,
+                "Non-instructor panel must reject SetAdmissionDecision.");
+            Assert.That(a1.AdmissionDecisions, Is.Empty);
+            Assert.That(a1.EvaluateAdmission(validTraineeCred, admission, instructorApproved: true), Is.False,
+                "Non-instructor participant cannot exercise admission review authority.");
+            Assert.That(b1.EvaluateAdmission(validTraineeCred, admission, instructorApproved: true), Is.False);
+
+            // 5. Bypass rejection: instructor approves, but credential carries incorrect secret
             var wrongSecretCred = new JoinCredential
             {
                 WorldId = WorldId,
@@ -261,7 +383,7 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(inst1.EvaluateAdmission(wrongSecretCred, admission, instructorApproved: true), Is.False,
                 "Instructor approval cannot bypass cryptographic admission validation.");
 
-            // 3. Bypass rejection: instructor approves, but WorldId or ShiftId mismatches
+            // 6. Bypass rejection: instructor approves, but WorldId or ShiftId mismatches
             var wrongWorldCred = new JoinCredential
             {
                 WorldId = "different-world",
@@ -272,17 +394,52 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(admission.Allows(wrongWorldCred), Is.False);
             Assert.That(inst1.EvaluateAdmission(wrongWorldCred, admission, instructorApproved: true), Is.False);
 
-            // 4. Role gate rejection: non-instructor attempts to evaluate/grant admission
-            Assert.That(a1.EvaluateAdmission(validTraineeCred, admission, instructorApproved: true), Is.False,
-                "Non-instructor participant cannot exercise admission review authority.");
-            Assert.That(b1.EvaluateAdmission(validTraineeCred, admission, instructorApproved: true), Is.False);
-
-            // 5. Instructor disapproval rejection: valid ticket rejected if instructor rejects
-            Assert.That(inst1.EvaluateAdmission(validTraineeCred, admission, instructorApproved: false), Is.False);
-
-            // 6. Defensive null validation
+            // Defensive null validation
             Assert.That(inst1.EvaluateAdmission(null, admission, true), Is.False);
             Assert.That(inst1.EvaluateAdmission(validTraineeCred, null, true), Is.False);
+
+            // Part B: Server runtime connection approval wiring (EvaluateConnectionApproval & TestApproveConnection)
+            var serverRuntime = CreateTestServerRuntime();
+
+            // B1. Valid connection without denial succeeds
+            byte[] validPayloadA1 = Encoding.UTF8.GetBytes(JsonUtility.ToJson(validTraineeCred));
+            Assert.That(serverRuntime.EvaluateConnectionApproval(validTraineeCred, out var reasonOk), Is.True);
+            Assert.That(reasonOk, Is.Empty);
+            Assert.That(serverRuntime.TestApproveConnection(1001, validPayloadA1, out var appReasonOk), Is.True);
+            Assert.That(appReasonOk, Is.Empty);
+
+            // B2. Instructor denial in server runtime denies connection with explicit reason
+            serverRuntime.SetInstructorAdmission("b1", false);
+            byte[] validPayloadB1 = Encoding.UTF8.GetBytes(JsonUtility.ToJson(validTraineeCredB1));
+            Assert.That(serverRuntime.EvaluateConnectionApproval(validTraineeCredB1, out var deniedReason), Is.False);
+            Assert.That(deniedReason, Is.EqualTo("Admission denied by instructor"));
+            Assert.That(serverRuntime.TestApproveConnection(1002, validPayloadB1, out var appDeniedReason), Is.False,
+                "Instructor denial must cause server Approve to reject connection.");
+            Assert.That(appDeniedReason, Is.EqualTo("Admission denied by instructor"));
+
+            // B3. Cryptographic check is never bypassed even if instructor approved participant
+            serverRuntime.SetInstructorAdmission("b1", true);
+            var badSecretTicketB1 = new JoinCredential
+            {
+                WorldId = WorldId,
+                ShiftId = ShiftId,
+                ParticipantId = "b1",
+                Secret = "forged-secret-cannot-bypass"
+            };
+            byte[] badSecretPayloadB1 = Encoding.UTF8.GetBytes(JsonUtility.ToJson(badSecretTicketB1));
+            Assert.That(serverRuntime.EvaluateConnectionApproval(badSecretTicketB1, out var cryptoDenialReason), Is.False);
+            Assert.That(cryptoDenialReason, Is.EqualTo("Admission denied"));
+            Assert.That(serverRuntime.TestApproveConnection(1003, badSecretPayloadB1, out var appCryptoDenialReason), Is.False,
+                "Server Approve must never bypass SessionAdmission.Allows for instructor-approved participant with bad secret.");
+            Assert.That(appCryptoDenialReason, Is.EqualTo("Admission denied"));
+
+            // B4. Duplicate participant rejected
+            Assert.That(serverRuntime.TestApproveConnection(1004, validPayloadA1, out _), Is.False,
+                "Duplicate participant already in server roster must be rejected.");
+
+            // B5. Malformed payload rejected
+            Assert.That(serverRuntime.TestApproveConnection(1005, new byte[] { 0x00, 0x11, 0x22 }, out var badPayloadReason), Is.False);
+            Assert.That(badPayloadReason, Is.EqualTo("Admission denied"));
         }
 
         // Acceptance 4: Instructor leave/restart behavior follows #99 recovery authority; paused on restore.
@@ -324,28 +481,56 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(recoveredShift.Paused, Is.False, "Recovered shift is resumed only upon authoritative instructor command.");
         }
 
-        // Acceptance 5: Input-disabled instructor can still submit PauseShift and ResumeShift.
+        // Acceptance 5: Input-disabled instructor can still submit PauseShift and ResumeShift with fresh snapshot.
         [Test]
         public void InputDisabledInstructorCanStillSubmitPauseAndResume()
         {
             shift.SetInputEnabled("inst1", false);
             Assert.That(shift.Participant("inst1").InputEnabled, Is.False);
 
-            // Instructor can pause even when normal input is disabled
+            // Authoritative shift level
             var pauseCmd = inst1.PauseShift("cmd-disabled-inst-pause");
             var receipt = Send(inst1, pauseCmd);
             Assert.That(receipt.Code, Is.EqualTo(CommandCode.Accepted));
             Assert.That(shift.Paused, Is.True);
 
-            // Instructor can resume even when normal input is disabled
             var resumeCmd = inst1.ResumeShift("cmd-disabled-inst-resume");
             var resumeReceipt = Send(inst1, resumeCmd);
             Assert.That(resumeReceipt.Code, Is.EqualTo(CommandCode.Accepted));
             Assert.That(shift.Paused, Is.False);
 
-            // But a non-instructor with disabled input receives InputPaused
-            shift.SetInputEnabled("a1", false);
+            // Runtime boundary level: controls disabled
+            var instScope = CreateTestClientRuntime(inst1, isInstructor: true, isPaused: true);
+            instScope.Runtime.SetControlsForTest(false);
+            Assert.That(instScope.Runtime.LocalInputEnabled, Is.False, "LocalInputEnabled is false when controls are disabled.");
+
+            // Instructor can pause even when local controls are disabled
+            var runtimePause = inst1.PauseShift("cmd-runtime-disabled-pause");
+            Assert.That(instScope.Runtime.SubmitPanelCommand(runtimePause), Is.True);
+            Assert.That(instScope.SentCommands.Any(c => c.CommandId == "cmd-runtime-disabled-pause"), Is.True);
+
+            // Instructor can resume when fresh, but NOT when stale
+            instScope.Runtime.RecordSnapshotTimeForTest(1000.0);
+            instScope.Clock = 1000.1;
+            var runtimeResumeFresh = inst1.ResumeShift("cmd-runtime-disabled-resume-fresh");
+            Assert.That(instScope.Runtime.SubmitPanelCommand(runtimeResumeFresh), Is.True);
+            Assert.That(instScope.SentCommands.Any(c => c.CommandId == "cmd-runtime-disabled-resume-fresh"), Is.True);
+
+            // Stale failure injection with disabled controls
+            instScope.Clock = 1005.0; // 5 seconds later
+            var runtimeResumeStale = inst1.ResumeShift("cmd-runtime-disabled-resume-stale");
+            Assert.That(instScope.Runtime.SubmitPanelCommand(runtimeResumeStale), Is.False,
+                "Stale snapshot must prevent resume even for instructor with disabled controls.");
+
+            // But a non-instructor with disabled controls receives false from SubmitPanelCommand
+            var a1Scope = CreateTestClientRuntime(a1, isInstructor: false, isPaused: true);
+            a1Scope.Runtime.SetControlsForTest(false);
             var forged = Forged(a1, "team-a", CommandKind.PauseShift, "", "cmd-disabled-a1-pause");
+            Assert.That(a1Scope.Runtime.SubmitPanelCommand(forged), Is.False);
+            Assert.That(a1Scope.SentCommands, Is.Empty);
+
+            // And non-instructor with disabled input in authoritative shift receives InputPaused
+            shift.SetInputEnabled("a1", false);
             var a1Receipt = Send(a1, forged);
             Assert.That(a1Receipt.Code, Is.EqualTo(CommandCode.InputPaused));
         }

@@ -205,11 +205,24 @@ namespace ChooGuard.Foundation.Multiplayer
         public WorldCommand ResumeShift(string commandId = null) =>
             IsInstructor ? Command(CommandKind.ResumeShift, "", "", 0, commandId) : null;
 
+        private readonly Dictionary<string, bool> admissionDecisions = new Dictionary<string, bool>(StringComparer.Ordinal);
+        public IReadOnlyDictionary<string, bool> AdmissionDecisions => admissionDecisions;
+
+        /// <summary>Records an instructor admission decision for a participant.
+        /// Returns false if the current panel does not belong to an instructor.</summary>
+        public bool SetAdmissionDecision(string participantId, bool approved)
+        {
+            if (!IsInstructor || string.IsNullOrEmpty(participantId)) return false;
+            admissionDecisions[participantId] = approved;
+            return true;
+        }
+
         /// <summary>Instructor admission review gate: evaluates whether a join credential may be approved.
         /// Enforces that instructor authorization cannot bypass SessionAdmission.Allows.</summary>
         public bool EvaluateAdmission(JoinCredential credential, SessionAdmission admission, bool instructorApproved = true)
         {
             if (!IsInstructor || !instructorApproved || admission == null || credential == null) return false;
+            if (admissionDecisions.TryGetValue(credential.ParticipantId, out var dec) && !dec) return false;
             return admission.Allows(credential);
         }
 
@@ -244,6 +257,11 @@ namespace ChooGuard.Foundation.Multiplayer
         {
             var lines = new List<string> { "보고·수신확인·인계 · 서버 승인 상태만 표시" };
             if (IsInstructor) lines.Add(view?.Observed?.Paused == true ? "교관 제어: 근무 정지됨 (복구 승인 대기)" : "교관 제어: 정상 근무 진행 중");
+            if (IsInstructor)
+            {
+                foreach (var dec in admissionDecisions)
+                    lines.Add("입장 심사: " + dec.Key + " → " + (dec.Value ? "교관 승인" : "교관 거부"));
+            }
             lines.AddRange(Reports.Select(r => "팀 보고 " + r.ReportId + ": " + r.EntityId + " / " + r.RegionId + " · 관측 rev " + r.ObservedRevision +
                 " · 보고자 " + r.FromParticipantId + " · 수신확인 " + (r.AcknowledgedBy.Length == 0 ? "없음" : string.Join(", ", r.AcknowledgedBy))));
             lines.AddRange(Evacuees.Select(e => "대피자 " + e.EntityId + " / " + e.RegionId + " · " +
@@ -336,10 +354,24 @@ namespace ChooGuard.Foundation.Multiplayer
         private Vector2 navigationScroll;
         private FieldCommandPanel commandPanel;
         private string handOffTarget = "";
+        private string admissionTargetParticipantId = "";
+        private readonly Dictionary<string, bool> instructorAdmissionDecisions = new Dictionary<string, bool>(StringComparer.Ordinal);
+        public IReadOnlyDictionary<string, bool> InstructorAdmissionDecisions => instructorAdmissionDecisions;
+        public const string CommandChannelName = "cg.field.command.v1";
+        public bool? connectedOverride;
+        public Action<string, ulong, string> MessageSender;
         public FieldView CurrentView => view;
         public FieldCommandPanel CommandPanel => commandPanel;
-        public bool Connected => network != null && network.IsConnectedClient;
-        public bool LocalInputEnabled => controls && snapshotFreshness.IsCurrent(Time.realtimeSinceStartupAsDouble);
+        public bool Connected => connectedOverride ?? (network != null && network.IsConnectedClient);
+        public Func<double> TimeProvider;
+        public double CurrentTime => TimeProvider != null ? TimeProvider() : Time.realtimeSinceStartupAsDouble;
+        public bool LocalInputEnabled => controls && snapshotFreshness.IsCurrent(CurrentTime);
+        public void SetControlsForTest(bool value) => controls = value;
+        public void SetViewForTest(FieldView v) { view = v; commandPanel?.ApplyView(v); }
+        public void SetCommandPanelForTest(FieldCommandPanel panel) => commandPanel = panel;
+        public void RecordSnapshotTimeForTest(double time) => snapshotFreshness.Received(time);
+        public void SetAdmissionForTest(SessionAdmission adm) => admission = adm;
+        public void SetShiftForTest(AuthoritativeShift s) => shift = s;
 
         private IEnumerator Start()
         {
@@ -474,6 +506,31 @@ namespace ChooGuard.Foundation.Multiplayer
         private void Register(string channel, CustomMessagingManager.HandleNamedMessageDelegate handler) =>
             network.CustomMessagingManager.RegisterNamedMessageHandler(channel, handler);
 
+        /// <summary>Records an instructor admission decision for a participant ID.</summary>
+        public bool SetInstructorAdmission(string participantId, bool approved)
+        {
+            if (string.IsNullOrEmpty(participantId)) return false;
+            instructorAdmissionDecisions[participantId] = approved;
+            commandPanel?.SetAdmissionDecision(participantId, approved);
+            return true;
+        }
+
+        /// <summary>Evaluates connection approval for a join credential against both SessionAdmission and instructor admission decisions.
+        /// Ensures that SessionAdmission.Allows is strictly required and instructor rejection denies connection.</summary>
+        public bool EvaluateConnectionApproval(JoinCredential ticket, out string reason)
+        {
+            reason = "Admission denied";
+            if (ticket == null || admission == null) return false;
+            if (!admission.Allows(ticket)) return false;
+            if (instructorAdmissionDecisions.TryGetValue(ticket.ParticipantId, out var approved) && !approved)
+            {
+                reason = "Admission denied by instructor";
+                return false;
+            }
+            reason = "";
+            return true;
+        }
+
         private void Approve(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
         {
             response.Approved = false; response.CreatePlayerObject = false; response.Pending = false;
@@ -483,11 +540,28 @@ namespace ChooGuard.Foundation.Multiplayer
             JoinCredential ticket;
             try { ticket = JsonUtility.FromJson<JoinCredential>(new UTF8Encoding(false, true).GetString(request.Payload)); }
             catch (Exception) { return; }
-            if (!admission.Allows(ticket) || identities.Values.Contains(ticket.ParticipantId)) return;
+            if (ticket == null || identities.Values.Contains(ticket.ParticipantId)) return;
+            if (!EvaluateConnectionApproval(ticket, out var denialReason))
+            {
+                response.Reason = denialReason;
+                return;
+            }
             identities.Add(request.ClientNetworkId, ticket.ParticipantId);
-                inputs[request.ClientNetworkId] = new FieldInput();
+            inputs[request.ClientNetworkId] = new FieldInput();
             lastInput[request.ClientNetworkId] = Time.realtimeSinceStartupAsDouble;
             response.Approved = true; response.Reason = "";
+        }
+
+        public void ApproveForTest(NetworkManager.ConnectionApprovalRequest req, NetworkManager.ConnectionApprovalResponse res) => Approve(req, res);
+
+        /// <summary>Simulates NetworkManager connection approval processing for verification.</summary>
+        public bool TestApproveConnection(ulong clientNetworkId, byte[] payload, out string reason)
+        {
+            var req = new NetworkManager.ConnectionApprovalRequest { ClientNetworkId = clientNetworkId, Payload = payload };
+            var res = new NetworkManager.ConnectionApprovalResponse();
+            Approve(req, res);
+            reason = res.Reason;
+            return res.Approved;
         }
 
         private void OnConnected(ulong client)
@@ -876,7 +950,7 @@ namespace ChooGuard.Foundation.Multiplayer
         {
             if (!Connected || view?.Observed == null) return false;
             var pause=view.Instructor && step.Kind==CommandKind.PauseShift;
-            var resume=view.Instructor && step.Kind==CommandKind.ResumeShift && snapshotFreshness.IsCurrent(Time.realtimeSinceStartupAsDouble);
+            var resume=view.Instructor && step.Kind==CommandKind.ResumeShift && snapshotFreshness.IsCurrent(CurrentTime);
             if (!LocalInputEnabled && !pause && !resume) return false;
             Send(CommandChannel, NetworkManager.ServerClientId, JsonUtility.ToJson(new WorldCommand {
                 WorldId = view.Observed.WorldId, ShiftId = view.Observed.ShiftId, ParticipantId = credential.ParticipantId,
@@ -891,7 +965,7 @@ namespace ChooGuard.Foundation.Multiplayer
             if (commandPanel == null || !Connected || view?.Observed == null) return false;
             if (command == null) { status = "현재 서버 상태로는 할 수 없는 행동입니다."; return false; }
             var pause = view.Instructor && command.Kind == CommandKind.PauseShift;
-            var resume = view.Instructor && command.Kind == CommandKind.ResumeShift;
+            var resume = view.Instructor && command.Kind == CommandKind.ResumeShift && snapshotFreshness.IsCurrent(CurrentTime);
             if (!LocalInputEnabled && !pause && !resume) return false;
             Send(CommandChannel, NetworkManager.ServerClientId, JsonUtility.ToJson(command));
             commandPanel.Track(command);
@@ -938,10 +1012,15 @@ namespace ChooGuard.Foundation.Multiplayer
         {
             var capacity = Encoding.UTF8.GetByteCount(text) * 2 + 16;
             if (capacity > 65536) throw new InvalidDataException("Projected message exceeds its protocol bound.");
+            sentBytes += capacity;
+            if (MessageSender != null)
+            {
+                MessageSender(channel, client, text);
+                return;
+            }
             using (var writer = new FastBufferWriter(capacity, Allocator.Temp))
             {
                 writer.WriteValueSafe(text);
-                sentBytes += writer.Length;
                 network.CustomMessagingManager.SendNamedMessage(channel, client, writer,
                     channel == InputChannel && writer.Length <= 900 ? NetworkDelivery.UnreliableSequenced : NetworkDelivery.ReliableFragmentedSequenced);
             }
@@ -1186,6 +1265,7 @@ namespace ChooGuard.Foundation.Multiplayer
             var lines = commandPanel.RenderLines();
             GUILayout.Label(lines[0] + " · E 보고/인솔 · R 수신확인 · H 인계" + (commandPanel.IsInstructor ? " · 교관 제어 활성" : ""));
             foreach (var line in lines.Skip(1).Where(l => l.StartsWith("교관 제어", StringComparison.Ordinal))) GUILayout.Label(line);
+            foreach (var line in lines.Skip(1).Where(l => l.StartsWith("입장 심사", StringComparison.Ordinal))) GUILayout.Label(line);
             foreach (var line in lines.Skip(1).Where(l => l.StartsWith("팀 보고", StringComparison.Ordinal)).TakeLast(4)) GUILayout.Label(line);
             foreach (var line in lines.Skip(1).Where(l => l.StartsWith("대피자", StringComparison.Ordinal)).Take(4)) GUILayout.Label(line);
             if (commandPanel.Evacuees.Any(e => e.LedByLocal))
@@ -1203,6 +1283,27 @@ namespace ChooGuard.Foundation.Multiplayer
                     var cmd = view.Observed.Paused ? commandPanel.ResumeShift() : commandPanel.PauseShift();
                     SubmitPanelCommand(cmd);
                 }
+                GUILayout.BeginHorizontal();
+                GUILayout.Label(controls ? "입장 심사 대상 ID (Esc 후 입력)" : "입장 심사 대상 ID", GUILayout.Width(190));
+                if (controls) GUILayout.Label(admissionTargetParticipantId ?? "");
+                else admissionTargetParticipantId = GUILayout.TextField(admissionTargetParticipantId ?? "", 64);
+                if (GUILayout.Button("입장 승인", GUILayout.Width(80)))
+                {
+                    var target = (admissionTargetParticipantId ?? "").Trim();
+                    if (!string.IsNullOrEmpty(target))
+                    {
+                        SetInstructorAdmission(target, true);
+                    }
+                }
+                if (GUILayout.Button("입장 거부", GUILayout.Width(80)))
+                {
+                    var target = (admissionTargetParticipantId ?? "").Trim();
+                    if (!string.IsNullOrEmpty(target))
+                    {
+                        SetInstructorAdmission(target, false);
+                    }
+                }
+                GUILayout.EndHorizontal();
             }
             foreach (var line in lines.Skip(1).Where(l => l.StartsWith("서버 ", StringComparison.Ordinal)).TakeLast(4)) GUILayout.Label(line);
         }
