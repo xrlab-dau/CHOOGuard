@@ -117,7 +117,8 @@ class PolicyBaselineTests(unittest.TestCase):
                   {**self.baseline, "files": {"C:/AGENTS.md": self.baseline["files"]["AGENTS.md"]}},
                   {**self.baseline, "files": {"AGENTS.md": {"sha256": "A" * 64, "bytes": 7}}},
                   {**self.baseline, "files": {"AGENTS.md": {"sha256": "a" * 64, "bytes": 0}}},
-                  {**self.baseline, "files": {"AGENTS.md": {"sha256": "a" * 64, "bytes": True}}}]
+                  {**self.baseline, "files": {"AGENTS.md": {"sha256": "a" * 64, "bytes": True}}},
+                  {**self.baseline, "files": {**self.baseline["files"], "agents.md": self.baseline["files"]["AGENTS.md"]}}]
         for value in broken:
             with self.subTest(value=str(value)[:60]), self.assertRaisesRegex(gate.TargetError, "^baseline_invalid$"):
                 gate.check(self.fixture.root, value, verifier_globs=GLOBS)
@@ -137,6 +138,40 @@ class PolicyBaselineTests(unittest.TestCase):
                     {**receipt, "policy_sha256": {"/abs": "a" * 64}}, {**receipt, "policy_sha256": {"AGENTS.md": "short"}}):
             with self.subTest(bad=str(bad)[:50]), self.assertRaisesRegex(gate.TargetError, "^receipt_invalid$"):
                 gate.check_receipt(bad, self.baseline)
+
+    def test_letter_case_only_rename_is_a_case_change_not_an_unexpected_file(self):
+        workflows = self.fixture.root / ".github/workflows"
+        (workflows / "ci.yml").rename(workflows / "ci.tmp")
+        (workflows / "ci.tmp").rename(workflows / "CI.yml")
+        self.assertEqual(self.codes(self.check()), [("path_case_changed", ".github/workflows/CI.yml")])
+        (workflows / "CI.yml").write_bytes(b"on: pull_request\n")
+        self.assertEqual(self.codes(self.check()), [("hash_drift", ".github/workflows/ci.yml"), ("path_case_changed", ".github/workflows/CI.yml")])
+
+        hashes = {name: entry["sha256"] for name, entry in self.baseline["files"].items()}
+        hashes["agents.md"] = hashes.pop("AGENTS.md")
+        receipt = {"record_type": "machine_observation_not_approval", "policy_sha256": hashes}
+        self.assertEqual(self.codes(gate.check_receipt(receipt, self.baseline)), [("path_case_changed", "agents.md")])
+
+    def test_file_vanishing_during_the_check_is_missing_not_a_crash(self):
+        original = gate.verifier.sha256
+
+        def vanished(path):
+            if Path(path).name == "policy.py":
+                raise FileNotFoundError(str(path))
+            return original(path)
+
+        gate.verifier.sha256 = vanished
+        self.addCleanup(setattr, gate.verifier, "sha256", original)
+        self.assertEqual(self.codes(self.check()), [("missing_path", "scripts/ci/policy.py")])
+        with self.assertRaisesRegex(gate.TargetError, "^baseline_source_changed_during_build$"):
+            self.fixture.baseline()
+
+    def test_json_inputs_written_with_a_byte_order_mark_are_read(self):
+        real_scope = {**self.baseline, "globs": list(gate.verifier.POLICY_GLOBS)}
+        path = self.base / "bom-baseline.json"
+        path.write_bytes(b"\xef\xbb\xbf" + json.dumps(real_scope).encode("utf-8"))
+        code, report = run_cli("check", "--root", self.fixture.root, "--baseline", path)
+        self.assertEqual(code, gate.EXIT_OK, report)
 
     def test_cli_exit_codes_and_target_absence(self):
         baseline_path = self.base / "baseline.json"

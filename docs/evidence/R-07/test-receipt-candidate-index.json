@@ -1108,6 +1108,295 @@
         "policy_baseline.orig.py": "ddbe04930d93da44eb4a8f016d9722c8689f8e3d5ddcdcc776dc3aaca29bdb63",
         "transcript.txt": "957971e8af1a116f77260b735daadf187265ec2409e3eac2246165fb5e429739"
       }
+    },
+    {
+      "runId": "r07-20260917T073804Z",
+      "capturedAt": "20260917T073804Z",
+      "purpose": "review fix after PR #196 merge: UTF-8 BOM inputs, letter-case-only path changes, files vanishing between listing and reading, and the P1 proposal missing required_glob_unmatched",
+      "baseline": {
+        "ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+        "checkout": "the same isolated worktree detached at the ref as the first run; P1 applied to the worktree copy only and restored with git checkout; tracked changes after all steps: 0",
+        "gateSource": "follow-up branch copy of scripts/team/R-07/policy_baseline.py, run against the worktree with --root"
+      },
+      "sources": {
+        "candidate": {
+          "scripts/team/R-07/policy_baseline.py": "f05620993ffc76f035273edda40649afa2e5e3232113b22411cccab505abf445",
+          "scripts/team/R-07/test_policy_baseline.py": "bc233a16924954d36a1d4dc54c9f05a0e4fb3c3f4db0fd5bca4f1ff54d75a564",
+          "docs/team/R-07/proposals/P1-verify_toolchain-policy-baseline.diff": "128f8bbacd5742006b0c106f565c633d1bc719d575da1c0d962c05a7f494a8a9"
+        }
+      },
+      "steps": [
+        {
+          "id": "R2",
+          "label": "python",
+          "argv": "python -m unittest discover -s scripts/team/R-07 -p test_*.py -v",
+          "result": {
+            "exitCode": 0,
+            "ran": 18,
+            "failed": 0,
+            "errors": 0,
+            "skipped": 0,
+            "failedTests": [],
+            "stderrSha256": "7bcb4d2ba5f0ac594e4b63d659748702ba87798ae82548f6d5556fa8087804d9"
+          }
+        },
+        {
+          "id": "R3",
+          "label": "python-mutation-control",
+          "purpose": "each mutation disables one review fix in a copy of the gate; the tests must fail",
+          "mutations": [
+            {
+              "id": "R3a",
+              "mutation": "path_case_changed finding removed",
+              "exitCode": 1,
+              "ran": 18,
+              "failed": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failedTests": [
+                "test_letter_case_only_rename_is_a_case_change_not_an_unexpected_file"
+              ],
+              "stderrSha256": "1bfaf951a3400362844afdabbdc3943677b8dc535263e31893d7a496c710e6ba"
+            },
+            {
+              "id": "R3b",
+              "mutation": "vanished-file guard no longer catches OSError",
+              "exitCode": 1,
+              "ran": 18,
+              "failed": 0,
+              "errors": 1,
+              "skipped": 0,
+              "failedTests": [
+                "test_file_vanishing_during_the_check_is_missing_not_a_crash"
+              ],
+              "stderrSha256": "d81042edc786d7bdf55ab3eea95cd43301b5a08e5a873d77f0c5a1284c7ea254"
+            },
+            {
+              "id": "R3c",
+              "mutation": "JSON read as utf-8 instead of utf-8-sig",
+              "exitCode": 1,
+              "ran": 18,
+              "failed": 1,
+              "errors": 0,
+              "skipped": 0,
+              "failedTests": [
+                "test_json_inputs_written_with_a_byte_order_mark_are_read"
+              ],
+              "stderrSha256": "46572d80091273f30be7f5efe1a5a11b9e1ca717ab9f22ac107228325ec67ad0"
+            }
+          ]
+        },
+        {
+          "id": "R4",
+          "label": "native-worktree",
+          "cases": [
+            {
+              "id": "R4a-build",
+              "exitCode": 0,
+              "output": {
+                "state": "baseline_written",
+                "files": 48,
+                "baselineSha256": "61fa2e8d10ef2fd9ba796bb29be676559a8da18d3e34bfbf2a6b24c6c9e99196"
+              },
+              "note": "built after P1 was applied to the worktree copy, so the baseline includes the P1 verifier"
+            },
+            {
+              "id": "R4b-check-bom-baseline",
+              "exitCode": 0,
+              "state": "ok",
+              "input": "the same baseline prefixed with a UTF-8 byte order mark"
+            },
+            {
+              "id": "R4c-check-empty-required",
+              "exitCode": 1,
+              "findings": [
+                {
+                  "code": "empty_file",
+                  "path": ".github/CODEOWNERS"
+                },
+                {
+                  "code": "required_glob_unmatched",
+                  "path": ".github/CODEOWNERS"
+                }
+              ],
+              "tamper": ".github/CODEOWNERS emptied, restored afterwards"
+            }
+          ]
+        },
+        {
+          "id": "R5",
+          "label": "proposal-P1-worktree-copy",
+          "proposal": "docs/team/R-07/proposals/P1-verify_toolchain-policy-baseline.diff",
+          "proposalSha256": "128f8bbacd5742006b0c106f565c633d1bc719d575da1c0d962c05a7f494a8a9",
+          "cases": [
+            {
+              "id": "R5a-verifier-p1-clean",
+              "exitCode": 1,
+              "baselineInput": "byte order mark baseline",
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/p1-clean.json",
+                "sha256": "825611a0cbe825ce6c6cbfee65c1655fd94ea6f33fd48ea98204863bfaee1df2",
+                "requiredOk": false,
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv"
+                ],
+                "policyBaseline": {
+                  "source_ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+                  "files": 48,
+                  "findings": [],
+                  "ok": true
+                }
+              }
+            },
+            {
+              "id": "R5b-verifier-p1-empty-required",
+              "exitCode": 1,
+              "tamper": ".github/CODEOWNERS emptied",
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/p1-empty.json",
+                "sha256": "7358db374a3b765dd6fabc6b1d485cbb37cbf4c8efc29b75bb88287807845369",
+                "requiredOk": false,
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "policy_hash_scope",
+                  "policy_baseline"
+                ],
+                "policyBaseline": {
+                  "source_ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+                  "files": 48,
+                  "findings": [
+                    {
+                      "code": "empty_file",
+                      "path": ".github/CODEOWNERS"
+                    },
+                    {
+                      "code": "required_glob_unmatched",
+                      "path": ".github/CODEOWNERS"
+                    }
+                  ],
+                  "ok": false
+                }
+              },
+              "observation": "the updated P1 now reports required_glob_unmatched alongside empty_file"
+            },
+            {
+              "id": "R5c-verifier-p1-drift",
+              "exitCode": 1,
+              "tamper": "AGENTS.md one line appended",
+              "receipt": {
+                "file": "<RUN_ROOT>/E4/p1-drift.json",
+                "sha256": "c38f577521904cae460cc5d1d6693adfa47c34bd3cfa90366b6ae97ff4409932",
+                "requiredOk": false,
+                "failedRequiredChecks": [
+                  "pi",
+                  "uv",
+                  "pi_packages",
+                  "research_venv",
+                  "policy_baseline"
+                ],
+                "policyBaseline": {
+                  "source_ref": "4ac58dfbc8969d5ba94a38637577878b990c83ad",
+                  "files": 48,
+                  "findings": [
+                    {
+                      "code": "hash_drift",
+                      "path": "AGENTS.md"
+                    }
+                  ],
+                  "ok": false
+                }
+              }
+            },
+            {
+              "id": "R5d-bootstrap-unittest-with-P1",
+              "exitCode": 1,
+              "ran": 42,
+              "failed": 5,
+              "errors": 0,
+              "skipped": 2,
+              "failedTests": [
+                "test_default_never_installs_or_syncs",
+                "test_failed_native_npm_stops_before_sync_and_verification",
+                "test_failed_native_uv_stops_before_verification",
+                "test_installed_node_version_check_survives_powershell_quoting",
+                "test_verifier_exit_code_is_preserved"
+              ],
+              "stderrSha256": "162afdf8271c0f75c7dcd4d6c435b3515c3e57619a296b83ac7db7a223283e72",
+              "note": "same 5 PowerShell failures as E1 (R-04 F1, P2 not applied in this run); no new failure from the P1 change"
+            }
+          ]
+        }
+      ],
+      "separation": "R2/R3/R5d are Python unittest results; R4/R5a-c are native executions of the gate and the P1 verifier on the worktree.",
+      "findings": [
+        {
+          "id": "R07-F4",
+          "summary": "Review fixes: BOM-tolerant JSON reads, path_case_changed instead of a false unexpected_file, vanished files reported as missing_path, and required_glob_unmatched in the P1 comparison.",
+          "addressedBy": [
+            "scripts/team/R-07/policy_baseline.py",
+            "docs/team/R-07/proposals/P1-verify_toolchain-policy-baseline.diff"
+          ]
+        }
+      ],
+      "failedAttempts": [
+        {
+          "runId": "r07-20260915T111852Z",
+          "observed": "passed, but an automated review then found that a baseline whose file names differ only in letter case produced duplicate findings",
+          "handling": "validate_baseline now refuses such a baseline (baseline_invalid); the run was repeated and its entry is not kept"
+        },
+        {
+          "runId": "r07-20260917T073726Z",
+          "observed": "the run script did not apply P1 before the verifier steps, so R5a-c exited 2 on the unknown --policy-baseline option",
+          "handling": "not counted; P1 is applied before the baseline is built and the run was repeated"
+        }
+      ],
+      "notRun": [
+        "case-only rename on a case-sensitive file system (the unit test renames on this Windows host)",
+        "bootstrap.sh / POSIX host",
+        "PowerShell 7 (pwsh)",
+        "independent human review"
+      ],
+      "rawReceipts": {
+        "R2-r07-unittest.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "R2-r07-unittest.stderr.log": "7bcb4d2ba5f0ac594e4b63d659748702ba87798ae82548f6d5556fa8087804d9",
+        "R2-r07-unittest.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R3a-mutation-no-case-change.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R3a-mutation-no-case-change.stderr.log": "1bfaf951a3400362844afdabbdc3943677b8dc535263e31893d7a496c710e6ba",
+        "R3a-mutation-no-case-change.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R3b-mutation-no-vanish-guard.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R3b-mutation-no-vanish-guard.stderr.log": "d81042edc786d7bdf55ab3eea95cd43301b5a08e5a873d77f0c5a1284c7ea254",
+        "R3b-mutation-no-vanish-guard.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R3c-mutation-no-bom.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R3c-mutation-no-bom.stderr.log": "46572d80091273f30be7f5efe1a5a11b9e1ca717ab9f22ac107228325ec67ad0",
+        "R3c-mutation-no-bom.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R4a-build.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "R4a-build.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R4a-build.stdout.log": "e52634e65fe492a62095dcf590ae88897dd0557cd6d528cae63b252cd77518bb",
+        "R4b-check-bom-baseline.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+        "R4b-check-bom-baseline.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R4b-check-bom-baseline.stdout.log": "cb0228040a1f16ae484fb2eccfa74a1b298e2d0c3bf17f1ac054dbedd865dc2f",
+        "R4c-check-empty-required.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R4c-check-empty-required.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R4c-check-empty-required.stdout.log": "70fd53db247b75ea04087639d38a21d430075b420f6a2a75c17e72946e8ad3db",
+        "R5a-verifier-p1-clean.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R5a-verifier-p1-clean.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R5a-verifier-p1-clean.stdout.log": "8e3aa3b4bf23b0b2aa986581a80e3e6ed63e75b65e8d687a8be6230bb4106542",
+        "R5b-verifier-p1-empty-required.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R5b-verifier-p1-empty-required.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R5b-verifier-p1-empty-required.stdout.log": "7736d7a3a67f8ad07195994d4d46be128798fcdc3cd05bb32a1421229bcf9444",
+        "R5c-verifier-p1-drift.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R5c-verifier-p1-drift.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "R5c-verifier-p1-drift.stdout.log": "0ac910d96ed502f2a6910955ec6265adf2fafccd6d376ced85e68ea2218b32f9",
+        "R5d-bootstrap-unittest-with-P1.exit": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+        "R5d-bootstrap-unittest-with-P1.stderr.log": "162afdf8271c0f75c7dcd4d6c435b3515c3e57619a296b83ac7db7a223283e72",
+        "R5d-bootstrap-unittest-with-P1.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
     }
   ]
 }

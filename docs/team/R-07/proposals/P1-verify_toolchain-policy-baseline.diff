@@ -1,15 +1,15 @@
 diff --git a/scripts/bootstrap/verify_toolchain.py b/scripts/bootstrap/verify_toolchain.py
-index f96a145..cc26e70 100755
+index f96a145..15347e9 100755
 --- a/scripts/bootstrap/verify_toolchain.py
 +++ b/scripts/bootstrap/verify_toolchain.py
-@@ -271,13 +271,47 @@ def receipt_target(root: Path, requested: str) -> Path:
+@@ -271,13 +271,68 @@ def receipt_target(root: Path, requested: str) -> Path:
      return out
  
  
 +def load_policy_baseline(path: str) -> dict:
 +    """R-07 정책 기준선(`r07-policy-baseline`)을 읽는다. 없거나 형식이 틀리면 ValueError."""
 +    try:
-+        baseline = json.loads(Path(path).read_text(encoding="utf-8"))
++        baseline = json.loads(Path(path).read_text(encoding="utf-8-sig"))
 +    except (OSError, ValueError) as error:
 +        raise ValueError(f"정책 기준선을 읽을 수 없다: {error.__class__.__name__}") from None
 +    files = baseline.get("files") if isinstance(baseline, dict) else None
@@ -20,13 +20,34 @@ index f96a145..cc26e70 100755
 +
 +
 +def compare_policy_baseline(root: Path, hashes: dict, baseline: dict) -> dict:
-+    """기록한 policy_sha256 을 기준선과 대조한다. 누락·빈 파일·hash drift·범위 밖 새 파일·범위 변경을 모두 보고한다."""
++    """기록한 policy_sha256 을 기준선과 대조한다. 누락·빈 파일·hash drift·범위 밖 새 파일·필수 glob 미충족·범위 변경·
++    대소문자만 다른 경로를 모두 보고한다. 목록 작성 뒤 사라진 파일은 예외 대신 missing_path 로 본다."""
 +    expected = baseline["files"]
-+    findings = [{"code": "missing_path", "path": p} for p in sorted(expected) if p not in hashes]
-+    findings += [{"code": "empty_file", "path": p} for p in sorted(expected) if p in hashes and (root / p).stat().st_size == 0]
-+    findings += [{"code": "hash_drift", "path": p} for p in sorted(expected)
-+                 if p in hashes and (root / p).stat().st_size > 0 and hashes[p] != expected[p]["sha256"]]
-+    findings += [{"code": "unexpected_file", "path": p} for p in sorted(hashes) if p not in expected]
++    folded = {}
++    for p in hashes:
++        folded.setdefault(p.casefold(), []).append(p)
++
++    def size(p: str):
++        try:
++            return (root / p).stat().st_size
++        except OSError:
++            return None
++
++    findings, matched = [], set()
++    for p in sorted(expected):
++        seen = p if p in hashes else next((v for v in folded.get(p.casefold(), []) if v not in expected), None)
++        if seen is None or size(seen) is None:
++            findings.append({"code": "missing_path", "path": p})
++            continue
++        matched.add(seen)
++        if seen != p:
++            findings.append({"code": "path_case_changed", "path": seen})
++        if size(seen) == 0:
++            findings.append({"code": "empty_file", "path": p})
++        elif hashes[seen] != expected[p]["sha256"]:
++            findings.append({"code": "hash_drift", "path": p})
++    findings += [{"code": "unexpected_file", "path": p} for p in sorted(hashes) if p not in expected and p not in matched]
++    findings += [{"code": "required_glob_unmatched", "path": g} for g in missing_required_policy(root)]
 +    if baseline.get("globs") != POLICY_GLOBS:
 +        findings.append({"code": "scope_changed", "path": "POLICY_GLOBS"})
 +    return {"source_ref": baseline.get("sourceRef", ""), "files": len(expected), "findings": findings, "ok": not findings}
@@ -50,7 +71,7 @@ index f96a145..cc26e70 100755
  
      out: Path | None = None
      if args.write:
-@@ -361,8 +395,12 @@ def main() -> int:
+@@ -361,8 +416,12 @@ def main() -> int:
          "env_present": {n: bool(os.environ.get(n)) for n in ENV_NAMES},
          "policy_sha256": hashes,
      }

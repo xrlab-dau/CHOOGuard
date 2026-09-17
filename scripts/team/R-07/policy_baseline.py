@@ -11,6 +11,11 @@ the verifier's own POLICY_GLOBS, REQUIRED_POLICY_GLOBS and sha256 and rejects:
 - unexpected_file           a file newly matches the policy scope
 - required_glob_unmatched   a required policy glob has no non-empty file
 - scope_changed             the verifier's current POLICY_GLOBS differ from the baseline scope
+- path_case_changed         a baseline policy file is present only under a spelling that differs in letter case
+                            (reported instead of a false unexpected_file on case-insensitive file systems)
+
+A file that disappears between the glob and the read is reported as missing_path, not as a crash.
+Baseline, receipt and profile JSON may carry a UTF-8 byte order mark (as Windows PowerShell 5.1 writes).
 
 Exit codes: 0 = state ok, 1 = findings (state cannot_proceed), 2 = a target input (root, baseline,
 receipt, profile or output) is absent, invalid or would be overwritten; nothing is checked.
@@ -32,7 +37,7 @@ SCHEMA_VERSION = 1
 BASELINE_KIND = "r07-policy-baseline"
 RESULT_KIND = "r07-policy-baseline-result"
 EXIT_OK, EXIT_FINDINGS, EXIT_CANNOT_START = 0, 1, 2
-FINDING_CODES = ("missing_path", "empty_file", "hash_drift", "unexpected_file", "required_glob_unmatched", "scope_changed")
+FINDING_CODES = ("missing_path", "empty_file", "hash_drift", "unexpected_file", "required_glob_unmatched", "scope_changed", "path_case_changed")
 
 
 class TargetError(ValueError):
@@ -55,8 +60,57 @@ def scope_files(root: Path, globs: list[str]) -> list[str]:
     return sorted(found)
 
 
+def size_of(path: Path) -> int | None:
+    """File size, or None when the file is absent or vanished after it was listed."""
+    try:
+        return path.stat().st_size if path.is_file() else None
+    except OSError:
+        return None
+
+
+def digest_of(path: Path) -> str | None:
+    try:
+        return verifier.sha256(path)
+    except OSError:
+        return None
+
+
 def unmatched_required(root: Path, required: list[str]) -> list[str]:
-    return [g for g in required if not any(p.is_file() and p.stat().st_size > 0 for p in root.glob(g))]
+    return [g for g in required if not any((size_of(p) or 0) > 0 for p in root.glob(g))]
+
+
+def fold(name: str) -> str:
+    return name.casefold()
+
+
+def compare_names(expected: dict, present: dict) -> list[dict]:
+    """expected: baseline name -> sha256; present: observed name -> sha256 or None (unreadable).
+
+    Names are matched exactly first; a baseline name observed only under a different letter case is reported
+    as path_case_changed (and its content still compared), never as a missing plus an unexpected file."""
+    findings, by_fold = [], {}
+    for name in present:
+        by_fold.setdefault(fold(name), []).append(name)
+    matched = set()
+    for name, sha in expected.items():
+        if name in present:
+            observed = name
+        else:
+            variants = [v for v in by_fold.get(fold(name), []) if v not in expected]
+            if not variants:
+                findings.append({"code": "missing_path", "path": name})
+                continue
+            observed = variants[0]
+            findings.append({"code": "path_case_changed", "path": observed})
+        matched.add(observed)
+        if present[observed] is None:
+            findings.append({"code": "missing_path", "path": name})
+        elif present[observed] == "":
+            findings.append({"code": "empty_file", "path": name})
+        elif present[observed] != sha:
+            findings.append({"code": "hash_drift", "path": name})
+    findings += [{"code": "unexpected_file", "path": name} for name in sorted(present) if name not in matched and name not in expected]
+    return findings
 
 
 def require_root(root: Path) -> Path:
@@ -73,10 +127,14 @@ def build(root: Path, globs: list[str] | None = None, required: list[str] | None
         raise TargetError("baseline_source_required_glob_unmatched")
     files = {}
     for name in scope_files(root, globs):
-        size = (root / name).stat().st_size
+        size, sha = size_of(root / name), digest_of(root / name)
+        if size is None or sha is None:
+            raise TargetError("baseline_source_changed_during_build")
         if size == 0:
             raise TargetError("baseline_source_empty_file")
-        files[name] = {"sha256": verifier.sha256(root / name), "bytes": size}
+        files[name] = {"sha256": sha, "bytes": size}
+    if len({fold(name) for name in files}) != len(files):
+        raise TargetError("baseline_source_case_ambiguous")
     if not files:
         raise TargetError("baseline_source_empty_scope")
     return {"schemaVersion": SCHEMA_VERSION, "kind": BASELINE_KIND, "sourceRef": source_ref,
@@ -95,6 +153,9 @@ def validate_baseline(baseline) -> dict:
                     and isinstance(entry.get("bytes"), int) and not isinstance(entry.get("bytes"), bool) and entry["bytes"] > 0):
                 ok = False
                 break
+        # Names differing only in letter case would let two entries claim one present file.
+        if ok and len({fold(name) for name in baseline["files"]}) != len(baseline["files"]):
+            ok = False
     if not ok:
         raise TargetError("baseline_invalid")
     return baseline
@@ -115,16 +176,17 @@ def result(baseline: dict, findings: list[dict], subject: str) -> dict:
 def check(root: Path, baseline: dict, verifier_globs: list[str] | None = None) -> dict:
     baseline = validate_baseline(baseline)
     root = require_root(root)
-    findings = []
-    for name, expected in baseline["files"].items():
-        path = root / name
-        if not path.is_file():
-            findings.append({"code": "missing_path", "path": name})
-        elif path.stat().st_size == 0:
-            findings.append({"code": "empty_file", "path": name})
-        elif verifier.sha256(path) != expected["sha256"]:
-            findings.append({"code": "hash_drift", "path": name})
-    findings += [{"code": "unexpected_file", "path": name} for name in scope_files(root, baseline["globs"]) if name not in baseline["files"]]
+    present = {}
+    for name in scope_files(root, baseline["globs"]):
+        size = size_of(root / name)
+        present[name] = None if size is None else "" if size == 0 else digest_of(root / name)
+    for name in baseline["files"]:
+        # A baseline file the globs no longer list (for example a changed scope) is still read directly.
+        if name not in present and not any(fold(name) == fold(p) for p in present):
+            size = size_of(root / name)
+            if size is not None:
+                present[name] = "" if size == 0 else digest_of(root / name)
+    findings = compare_names({n: e["sha256"] for n, e in baseline["files"].items()}, present)
     findings += [{"code": "required_glob_unmatched", "path": g} for g in unmatched_required(root, baseline["requiredGlobs"])]
     current = list(verifier.POLICY_GLOBS if verifier_globs is None else verifier_globs)
     if current != baseline["globs"]:
@@ -140,13 +202,7 @@ def check_receipt(receipt, baseline: dict) -> dict:
     if (not isinstance(hashes, dict) or not hashes or receipt.get("record_type") != "machine_observation_not_approval"
             or any(not portable(k) or not isinstance(v, str) or len(v) != 64 for k, v in hashes.items())):
         raise TargetError("receipt_invalid")
-    findings = []
-    for name, expected in baseline["files"].items():
-        if name not in hashes:
-            findings.append({"code": "missing_path", "path": name})
-        elif hashes[name] != expected["sha256"]:
-            findings.append({"code": "hash_drift", "path": name})
-    findings += [{"code": "unexpected_file", "path": name} for name in sorted(hashes) if name not in baseline["files"]]
+    findings = compare_names({n: e["sha256"] for n, e in baseline["files"].items()}, dict(hashes))
     return result(baseline, findings, "verifier_receipt")
 
 
@@ -174,7 +230,8 @@ def read_json(path: Path, code: str):
     if not path.is_file():
         raise TargetError(code + "_missing")
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        # utf-8-sig also accepts a leading byte order mark, which Windows PowerShell 5.1 writes by default.
+        return json.loads(path.read_text(encoding="utf-8-sig"))
     except (OSError, UnicodeError, ValueError):
         raise TargetError(code + "_invalid") from None
 
