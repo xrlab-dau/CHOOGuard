@@ -40,6 +40,8 @@
     "No verifiable PM policy decision ref is linked to this record. It is an unapproved proposal and must not be read as an approved policy decision; approved=false and decisionState='unapproved_proposal_blocked_by_default' say exactly that.",
     "Implementing safe role gating and paused defaults in code is not evidence that the operational recovery policy itself was approved.",
     "These rules are asserted by tests, not accepted by a human authority. Test assertions are not staff procedure or facility acceptance.",
+    "In-process delegate/wire-serialization verification only: FMP10c tests verify in-process client/server message delegation, serializer wire byte lengths, and model-level disconnect input revocation (SetInputEnabled(false) -> Restore).",
+    "Real NGO network transport boundaries not executed: Actual live NGO network connections, FastBufferReader driver receive callbacks, physical socket drops/reconnects, multi-process network sessions, and wire packet transmission are NOT executed in this test fixture.",
     "Does not invent official railway procedures or scoring rules.",
     "Provisional synthetic multiplayer authorization boundary only; not surveyed facility or operational acceptance."
   ],
@@ -53,114 +55,114 @@
     "limit": "Being in scope is authority to edit this record. It is not an approval of the policy the record describes; approved stays false."
   },
   "citations": {
-    "derivation": "Every line below was produced by a scan of the file at the committed HEAD 77e099ffb4695346690e61f4e66c5432918ba160 of this branch, not carried over from an earlier report.",
+    "derivation": "Every line below was produced by a scan of the file at the committed HEAD 6fda03957245d4444dd1a04ecde79c9ee0997f75 of this branch, not carried over from an earlier report.",
     "entries": [
       {
         "symbol": "FieldCommandPanel.IsInstructor",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 124,
+        "declarationLine": 131,
         "orderingClaim": "FieldCommandPanel exposes IsInstructor property reflecting projected view.Instructor."
       },
       {
         "symbol": "FieldCommandPanel.PauseShift",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 201,
+        "declarationLine": 219,
         "orderingClaim": "PauseShift evaluates IsInstructor and returns null for non-instructors."
       },
       {
         "symbol": "FieldCommandPanel.ResumeShift",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 205,
+        "declarationLine": 223,
         "orderingClaim": "ResumeShift evaluates IsInstructor and returns null for non-instructors."
       },
       {
         "symbol": "FieldCommandPanel.SetAdmissionDecision",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 213,
+        "declarationLine": 231,
         "orderingClaim": "SetAdmissionDecision records instructor admission review decisions and rejects non-instructor callers."
       },
       {
         "symbol": "FieldCommandPanel.EvaluateAdmission",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 222,
+        "declarationLine": 240,
         "orderingClaim": "EvaluateAdmission checks IsInstructor, instructor admission decisions, and delegates to SessionAdmission.Allows without bypass."
       },
       {
         "symbol": "FieldCommandPanel.ApplyReceipt",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 240,
+        "declarationLine": 271,
         "orderingClaim": "ApplyReceipt records RoleDenied server rejections into Results ledger."
       },
       {
         "symbol": "FieldCommandPanel.KindLabel",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 274,
+        "declarationLine": 305,
         "orderingClaim": "KindLabel maps PauseShift to '근무정지' and ResumeShift to '근무재개'."
       },
       {
         "symbol": "NetworkFieldRuntime.MeasureWireLength",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 398,
+        "declarationLine": 436,
         "orderingClaim": "MeasureWireLength computes exact serialized wire length using FastBufferWriter for telemetry calibration."
       },
       {
         "symbol": "NetworkFieldRuntime.SetInstructorAdmission",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 544,
+        "declarationLine": 582,
         "orderingClaim": "SetInstructorAdmission stores admission decisions in runtime and synchronizes with commandPanel."
       },
       {
         "symbol": "NetworkFieldRuntime.EvaluateConnectionApproval",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 554,
+        "declarationLine": 592,
         "orderingClaim": "EvaluateConnectionApproval enforces SessionAdmission.Allows cryptographic validation and respects instructor denial."
       },
       {
         "symbol": "NetworkFieldRuntime.Approve",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 568,
+        "declarationLine": 606,
         "orderingClaim": "Approve delegates connection evaluation to EvaluateConnectionApproval, denying unapproved or cryptographically invalid tickets."
       },
       {
         "symbol": "NetworkFieldRuntime.OnDisconnected",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 618,
+        "declarationLine": 656,
         "orderingClaim": "OnDisconnected disables participant input and revokes connection without mutating other roster roles."
       },
       {
         "symbol": "NetworkFieldRuntime.ProcessAdmissionRequest",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 773,
+        "declarationLine": 811,
         "orderingClaim": "ProcessAdmissionRequest verifies sender instructor role and session shift before recording admission decision on server."
       },
       {
         "symbol": "NetworkFieldRuntime.ProcessAdmissionResponse",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 834,
+        "declarationLine": 872,
         "orderingClaim": "ProcessAdmissionResponse updates local command panel decisions only upon confirmed server response."
       },
       {
         "symbol": "NetworkFieldRuntime.RequestInstructorAdmission",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 851,
+        "declarationLine": 889,
         "orderingClaim": "RequestInstructorAdmission transmits admission decision requests across the network wire to the dedicated server."
       },
       {
         "symbol": "NetworkFieldRuntime.SubmitPanelCommand",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 1107,
+        "declarationLine": 1145,
         "orderingClaim": "SubmitPanelCommand enforces snapshot freshness on ResumeShift and allows instructor PauseShift even when input is paused."
       },
       {
         "symbol": "NetworkFieldRuntime.Send",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 1155,
+        "declarationLine": 1193,
         "orderingClaim": "Send accumulates exact serialized writer.Length into sentBytes rather than allocated buffer capacity."
       },
       {
         "symbol": "NetworkFieldRuntime.DrawCommandPanel",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 1410,
+        "declarationLine": 1448,
         "orderingClaim": "DrawCommandPanel renders instructor controls and routes admission buttons through RequestInstructorAdmission wire transmission."
       }
     ]
@@ -173,13 +175,13 @@
     "platform": "PlayMode",
     "platformNote": "The assembly definition declares defineConstraints: ['UNITY_INCLUDE_TESTS'], collected and verified as PlayMode tests.",
     "executionState": "executed_verified",
-    "testedCommit": "77e099ffb4695346690e61f4e66c5432918ba160",
+    "testedCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75",
     "runner": "Unity 6000.3.23f1 (09d2ecc7fb28)",
     "command": "<unityExe> -batchmode -nographics -projectPath <projectRoot> -runTests -testPlatform PlayMode -testFilter ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
     "evidence": {
       "playModeXml": {
         "path": "docs/evidence/foundation/FMP-10c/PlayMode.xml",
-        "sha256": "5e92301540159041b40921dd723a23e2c7ba598b592315f84977123413f42fbf",
+        "sha256": "79b887847654047c559d26ebd9d9856a9071b5c07c0f417ec68b130f58e4dda6",
         "total": 7,
         "passed": 7,
         "failed": 0,
@@ -187,7 +189,7 @@
       },
       "playModeLog": {
         "path": "docs/evidence/foundation/FMP-10c/PlayMode.log",
-        "sha256": "355752353ca119a54f0930dda6fc697ac9c15d1097b604ad4692ec64d3eb4df9",
+        "sha256": "248a567bfc2f1f75eca881699dd080f2229918a7d757d9271fafab4a6ad1106d",
         "status": "zero_errors"
       }
     },
@@ -200,40 +202,47 @@
         "id": "R1",
         "assertedBy": "InstructorPanelCanBuildAndSubmitPauseShiftAndResumeShiftCommands",
         "state": "executed_verified",
-        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
+        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
       },
       {
         "id": "R2",
         "assertedBy": "NonInstructorParticipantCannotBuildPauseOrResumeAndForgedCommandsRecordedAsRoleDenied",
         "state": "executed_verified",
-        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
+        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
       },
       {
         "id": "R3",
         "assertedBy": "AdmissionGateRequiresBothInstructorRoleAndSessionAdmissionAllowsWithoutBypass",
         "state": "executed_verified",
-        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
+        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
       },
       {
         "id": "R4",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
         "state": "executed_verified",
-        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
+        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75",
+        "executionScope": "in_process_input_revocation_and_role_immutability",
+        "executionBoundary": "Asserts model-level input revocation (SetInputEnabled(false)) and immutable roster role. Real socket disconnection, OnClientDisconnectCallback, and multi-process network drop are not run (untested transport hypothesis)."
       },
       {
         "id": "R5",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
         "state": "executed_verified",
-        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
+        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75",
+        "executionScope": "in_process_checkpoint_paused_restore_and_explicit_resumption",
+        "executionBoundary": "Asserts in-process AuthoritativeShift.Restore defaults to Paused=true and requires authenticated instructor ResumeShift. Real network re-admission, session handoff, and live server restart are not run."
       },
       {
         "id": "R6",
         "assertedBy": "SendByteAccountingAccumulatesExactWireLengthWithoutCapacityInflation",
         "state": "executed_verified",
-        "verifiedInCommit": "77e099ffb4695346690e61f4e66c5432918ba160"
+        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
       }
     ],
     "notVerified": [
+      "Real NGO transport driver reception: FastBufferReader driver receive callbacks and multi-process socket networking were not executed (in-process message delegate used).",
+      "Actual socket disconnection and network re-admission: Real socket drop, OnClientDisconnectCallback, network timeout detection, and multi-process re-admission were not executed (model-level SetInputEnabled(false) and Restore used).",
+      "Live network packet transmission: Wire byte accounting measures FastBufferWriter serializer payload byte length directly, not physical network adapter packet transmission.",
       "Operational recovery policy: Issue #99 authoritative recovery contract is not yet approved.",
       "Any staff manual procedure or physical railway recovery action: not facility accepted."
     ]
