@@ -1,0 +1,109 @@
+{
+  "approval": "pending",
+  "commands": [
+    "python -m unittest discover -s scripts/team/M1-07 -p 'test_*.py'"
+  ],
+  "errors": 0,
+  "failures": 0,
+  "limitations": [
+    "Trusted fixture role/provider/ref inputs are not authenticated identities.",
+    "OS sandbox/ACL and direct writer filesystem denial are not implemented or validated.",
+    "Trusted external digest custody and exclusively owned local parents are required; no hostile race protection.",
+    "Actual independent review, three-perspective aggregation, retry/fallback enforcement and acceptance are not performed.",
+    "Synthetic success is not source qualification, product approval or operational permission.",
+    "The M1-02 link guard refuses any root reached through a link, so callers must pass a real path; a host temporary directory reached through a system alias must be resolved before it is handed to this API.",
+    "Local validation; existing remote CI does not discover the M1-07 test directory."
+  ],
+  "osIsolationTested": false,
+  "passed": 22,
+  "phase": "candidate",
+  "recordedAt": "2026-09-17T03:01:59.666966+00:00",
+  "runtimeIndependentReviewPerformed": false,
+  "sample": {
+    "files": {
+      "sample-receipt.json": {
+        "bytes": 471,
+        "sha256": "4f9152775ad1fc5132ff18874c4bf2936aa60cfc343514041db16bb72297b91c"
+      },
+      "sample-request.json": {
+        "bytes": 1002,
+        "sha256": "bf8ebe025bcf955db91909ce6d5c567069711f07a845d7e81fedf7202ba5383c"
+      },
+      "sample-target.txt": {
+        "bytes": 17,
+        "sha256": "b2c70bba7bf0ef43959341e03b923efd23fed1a0b3ed1895736736d88a5b39b0"
+      }
+    },
+    "receiptSha256": "4f9152775ad1fc5132ff18874c4bf2936aa60cfc343514041db16bb72297b91c",
+    "requestSha256": "bf8ebe025bcf955db91909ce6d5c567069711f07a845d7e81fedf7202ba5383c"
+  },
+  "schemaVersion": 1,
+  "scope": "synthetic_supplier_preflight",
+  "skipped": [
+    {
+      "reason": "symlink creation is unavailable on this host",
+      "test": "test_linked_source_and_output_roots_are_still_refused (test_review_integrity.ReviewIntegrity.test_linked_source_and_output_roots_are_still_refused)"
+    }
+  ],
+  "sourceFiles": {
+    ".pi/settings.json": {
+      "gitBlobSha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b",
+      "sha256": "6728179a13bf90988ea627c9e2c7a23952564ffb9b0cd755df887d301389545b"
+    },
+    "docs/adr/0003-independent-review-and-adversarial-graph.md": {
+      "gitBlobSha256": "97fcf9bb588161e43c306d6cc916d75704c1047951365823bfe6112005c05600",
+      "sha256": "97fcf9bb588161e43c306d6cc916d75704c1047951365823bfe6112005c05600"
+    },
+    "docs/choo-guard-execution-backlog-v1.md": {
+      "gitBlobSha256": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0",
+      "sha256": "179494fe32b9509d1c425b316f4a4033a89db3723a2182b99e51ac62f6ec02f0"
+    },
+    "docs/team/M0-03/allowlist.json": {
+      "gitBlobSha256": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a",
+      "sha256": "f823e940e5a7e07d118194bb146b2269abf48b45e84f1941c6bfe784c47a387a"
+    },
+    "docs/team/M0-03/execution-profile.json": {
+      "gitBlobSha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc",
+      "sha256": "787fbcf6fc8dc7a63e31b54835b87a32eaa2a68d2c71e1b2ab9b4e4b36eaf5fc"
+    },
+    "docs/team/M1-02/permission-boundary.json": {
+      "gitBlobSha256": "5e051ccd19eb6a7b160cf358757665c0ba52c28e9f6c471f50bd793d5e10bf34",
+      "sha256": "5e051ccd19eb6a7b160cf358757665c0ba52c28e9f6c471f50bd793d5e10bf34"
+    },
+    "docs/team/M1-07/review-contract.json": {
+      "gitBlobSha256": "1ff8256d3fbd39bbd220df918f248d2d542d9eec9949089b69bd585b91252724",
+      "sha256": "1ff8256d3fbd39bbd220df918f248d2d542d9eec9949089b69bd585b91252724"
+    },
+    "scripts/bootstrap/verify_toolchain.py": {
+      "gitBlobSha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1",
+      "sha256": "cc4f77dfd02ca7d46c2c9e7bc821bff4513a9ad39d54c2dfa87bf797160016a1"
+    },
+    "scripts/dev/native_manifest.py": {
+      "gitBlobSha256": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83",
+      "sha256": "e31f05957e204fd3207af58e866cec5f2f027219857f0240805fa2ccdaf64f83"
+    },
+    "scripts/team/M1-02/permission_boundary.py": {
+      "gitBlobSha256": "6cb3b6e6cafde5af357b6e14be59e7015b0c60e81476e661236a4fc793c62a1c",
+      "sha256": "6cb3b6e6cafde5af357b6e14be59e7015b0c60e81476e661236a4fc793c62a1c"
+    },
+    "scripts/team/M1-07/README.md": {
+      "gitBlobSha256": "50b68a6afb702e42f0551b7a580917639f4a180632ca548e721dacec9f9737ae",
+      "sha256": "50b68a6afb702e42f0551b7a580917639f4a180632ca548e721dacec9f9737ae"
+    },
+    "scripts/team/M1-07/review_integrity.py": {
+      "gitBlobSha256": "dc210d92770aede17b627bc5e0adc68ba7acacb8fa4f1d2dd508ba595a8cf095",
+      "sha256": "dc210d92770aede17b627bc5e0adc68ba7acacb8fa4f1d2dd508ba595a8cf095"
+    },
+    "scripts/team/M1-07/test_review_integrity.py": {
+      "gitBlobSha256": "d523df0a6585e786d84142adfd5f529e4ed16c190de3252a90b7315d990f8c20",
+      "sha256": "d523df0a6585e786d84142adfd5f529e4ed16c190de3252a90b7315d990f8c20"
+    },
+    "scripts/team/M1-07/test_supplier_preflight.py": {
+      "gitBlobSha256": "afbc4da31a80db0d919dce68a8855588a8631fb7bc99536930fcfbef9246bab7",
+      "sha256": "afbc4da31a80db0d919dce68a8855588a8631fb7bc99536930fcfbef9246bab7"
+    }
+  },
+  "sourceRevision": "c221dac8a6750e83811a4f4666ff9200da9c3500",
+  "state": "passed",
+  "testsRun": 23
+}
