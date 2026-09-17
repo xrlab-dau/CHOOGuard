@@ -664,17 +664,17 @@
     "note": "This record makes no claim that #27 acceptance is satisfied."
   },
   "reviewFixRun": {
-    "runId": "fmp10a-20260917T074057Z",
+    "runId": "fmp10a-20260917T074619Z",
     "purpose": "fixes after PR #192 was merged, from automated review: duplicate server ids no longer throw, the panel send path used by SubmitPanelCommand is tested, repeated R presses do not duplicate an acknowledgement, and a lost acknowledgement receipt stops blocking after a bounded number of views",
-    "baseCommit": "86bb82bf5655562e2577cf2b83553ff261d8d5a6",
+    "baseCommit": "a727bf7459e9791845115dc45ae10217b3302231",
     "checkout": "fresh git worktree detached at the develop base commit, candidate runtime and test copied in; Unity Library cache copied from an earlier isolated worktree; pipeline patch applied with prepare_multiplayer_dependencies.py --apply",
     "command": "<unity> -batchmode -projectPath <worktree> -runTests -testPlatform PlayMode -testFilter ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests -testResults <run>/PlayMode.xml -logFile <run>/PlayMode.log -cg-fmp10a-source-ref <base> [-cg-fmp10a-run-record <run>/fmp10a-run-record.json]",
     "inputs": {
-      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": "1b9dc42d733974d511968f0d9245863bd4db7f8ff87808c9732d16b52e02a3bf",
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": "40a3ba24762f4aa5befa83241ea28f910977de797f0f97f05440a2565cf9a06c",
       "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10aReportUiTests.cs": "db6868d3b8776a6cb8498c87065bc3af74a1ff7bdcac644a8fa02f2090ced2bd"
     },
     "buildHash": {
-      "value": "6f59d2ae8105dfa062d2c83b151ddf78b7330293a5226910a00a1a9c71ee4ebb",
+      "value": "a91b2974ab4e4ae4d100be5c79edcc264debe7da01334ef2fb1909410411e569",
       "source": "assembly:ChooGuard.Foundation.Multiplayer.dll"
     },
     "results": {
@@ -687,11 +687,11 @@
       "failedTests": [],
       "xml": {
         "path": "<RUN_ROOT>/01-playmode/PlayMode.xml",
-        "sha256": "df13d95e203d9c32b6567870ed1213a33c182aa739487d9ebe18d72f77a655ed"
+        "sha256": "bf38080b337831016d195d46ee903c02642e9e405f86a58f1048bf0e5d3b40dd"
       },
       "log": {
         "path": "<RUN_ROOT>/01-playmode/PlayMode.log",
-        "sha256": "797b5ae30d68a3e55a01936e1aff4527379312e2d7565c729bc5d4fd1e845dd0"
+        "sha256": "cb1d6beba82164564522d8e5fe3140e8ab19ce5617cc31097c356ed44159465f"
       },
       "mutationDiff": null
     },
@@ -708,15 +708,15 @@
         ],
         "xml": {
           "path": "<RUN_ROOT>/02-mutation-duplicate-ids-accepted/PlayMode.xml",
-          "sha256": "79e2022d3c0d8ee656c1858aae75f90b6dbab3cd96b5aed29fbae4edc16a9dea"
+          "sha256": "7101da79aa52f76538eca10e3f71ea4e0255ac46ffe67fd7fc058e1530d03284"
         },
         "log": {
           "path": "<RUN_ROOT>/02-mutation-duplicate-ids-accepted/PlayMode.log",
-          "sha256": "5ee4507a88385e8085abcbf446503162c47961dcb19e835ed3350edfb64d45d8"
+          "sha256": "51a7dd57bda1a09e5f74a5844d3c2411420d4289fdc35f7bf38a84674bd76682"
         },
         "mutationDiff": {
           "path": "<RUN_ROOT>/02-mutation-duplicate-ids-accepted/mutation.diff",
-          "sha256": "4a3fe80850f68602cb58446e7d3db1a9e92b7138bc253c6de318c780efa2fe87"
+          "sha256": "5a398ef06c1a609db82c631c3ea15262e63973bcddc91aa8ed081ed86d931507"
         }
       },
       {
@@ -731,15 +731,15 @@
         ],
         "xml": {
           "path": "<RUN_ROOT>/03-mutation-repeat-acknowledgement/PlayMode.xml",
-          "sha256": "08279fd6f9cb580a508e2f7b5e7633aebace8535e066a81f6d4be6bbbcb086ba"
+          "sha256": "a86cc8036a9ec41a571b607d5c52e0f66c0cfbedfac75f1226b8a31b7c8a40aa"
         },
         "log": {
           "path": "<RUN_ROOT>/03-mutation-repeat-acknowledgement/PlayMode.log",
-          "sha256": "601008669ea855f2e19965a4c024986c79d66bcee8d2fa064446332cb357e349"
+          "sha256": "a1c430ac9597536f5355f4d44fa84ad4a229928227ce390938d3ac3e0ebb9985"
         },
         "mutationDiff": {
           "path": "<RUN_ROOT>/03-mutation-repeat-acknowledgement/mutation.diff",
-          "sha256": "362b683ceea3ee108e0b7b5033edc84a9aa0335c8a441289fd9cc4e19f5a4e63"
+          "sha256": "348d15befd166161c871583894098e83c5ab1df191fc28f2c080f2bb3b3f1ed3"
         }
       },
       {
@@ -754,15 +754,15 @@
         ],
         "xml": {
           "path": "<RUN_ROOT>/04-mutation-send-while-not-ready/PlayMode.xml",
-          "sha256": "0e7649fcd59ca0e98f68f1fab77ffeb20091e1e5e2c3be8c9e74b23de5c5b268"
+          "sha256": "b46cca9f0c150e732eb7787b32104ddd9b87e0c2c8263ddf3e2c72e0deaaeccf"
         },
         "log": {
           "path": "<RUN_ROOT>/04-mutation-send-while-not-ready/PlayMode.log",
-          "sha256": "5282fd9ab33face490358b5a05ca07e4732db694d05ad101698e7f73a858e4a5"
+          "sha256": "cfcaab494666e39db98675a5547bb3897c07f58fc696e33a5ac34c4464225935"
         },
         "mutationDiff": {
           "path": "<RUN_ROOT>/04-mutation-send-while-not-ready/mutation.diff",
-          "sha256": "08a7cde0fe15b73e15841216fe3c8dbef3b552d12dfe3676c5b1b64ee3bb4426"
+          "sha256": "2f47c2c6534517f0c6c1536bb2baab4f7b38d83b2201e9686bf1a4cd4706ca4b"
         }
       },
       {
@@ -777,15 +777,15 @@
         ],
         "xml": {
           "path": "<RUN_ROOT>/05-mutation-no-acknowledge-retry/PlayMode.xml",
-          "sha256": "37d72ecedb1693d2ca87016eb24ea010a6810d813e620b22952042035de662c1"
+          "sha256": "e5248008bebbcdcae6852abf0d6cee105f2f5cce7566236b135ff9cdc6c44d7b"
         },
         "log": {
           "path": "<RUN_ROOT>/05-mutation-no-acknowledge-retry/PlayMode.log",
-          "sha256": "d9a14bc07fd4e407256b08ed93cca2a4567666eb77c247607941af1a6a7de37c"
+          "sha256": "76bd07a00a7388116a8f1987bb664a7b9422b6eb189c73b663871dcd8dfe39dd"
         },
         "mutationDiff": {
           "path": "<RUN_ROOT>/05-mutation-no-acknowledge-retry/mutation.diff",
-          "sha256": "6751b605b75b82141e2978e8d39dd62ef979c599e9e410de773cce1206a5f11d"
+          "sha256": "855e956628e1076c9bf1df6187372eb039ed5083bcb3e1d7f046974afb3c1afb"
         }
       },
       {
@@ -800,15 +800,15 @@
         ],
         "xml": {
           "path": "<RUN_ROOT>/06-mutation-blank-ids-counted/PlayMode.xml",
-          "sha256": "e486f54062cc4288f42f4ca88c25bd440d1ca9b53b59e621f78a22159a641ec2"
+          "sha256": "21c98258a986ad163c5cbaa88980f345ce8bbc7b6010838fd7d849bbf7edc5c2"
         },
         "log": {
           "path": "<RUN_ROOT>/06-mutation-blank-ids-counted/PlayMode.log",
-          "sha256": "91c9097644cab3d7e32ddacf1899db34190d2ace0a79233d202a5b438a73b5e7"
+          "sha256": "8f572f629f35284830ed327023c217c16cbd4d2852488089ea2178369748aef9"
         },
         "mutationDiff": {
           "path": "<RUN_ROOT>/06-mutation-blank-ids-counted/mutation.diff",
-          "sha256": "cb98a31785b4f0db7df2e24154297823cb1afa317b339fbbe75028e2f56b1e06"
+          "sha256": "d56498c8fcc74a53c84213eb652351227d06bfbf916e3b4505018ea041034b9e"
         }
       }
     ],
@@ -822,18 +822,18 @@
       "failedTests": [],
       "xml": {
         "path": "<RUN_ROOT>/07-playmode-after-restore/PlayMode.xml",
-        "sha256": "7004a3c2e0f15c7a286bc558a9012f872a00b2ef8aa24dd9cf508e1ee10e558e"
+        "sha256": "3ade6efd96348bf0eba558e3f6de29ddc1ffe166d4e31c926e35348272cdb5ac"
       },
       "log": {
         "path": "<RUN_ROOT>/07-playmode-after-restore/PlayMode.log",
-        "sha256": "3cb3d1293aea27768952f9cc4a51f3e9b07aa1f04ba390c76f62107157e30c88"
+        "sha256": "7a7d5e1cd37d768c2a52c1af02f967809401002a621c02405e5a2c5556bd2d47"
       },
       "mutationDiff": null
     },
     "setup": {
       "transcript": {
         "path": "<RUN_ROOT>/00-env/setup.txt",
-        "sha256": "81b43b6e304a5ef51a036dcc3ecc9545e27f535bfb123cfcfbe4fd886b2315eb"
+        "sha256": "a4ae04b547b7902ead821b0f6ba04ad2e8ec2071a0e479974c9b23eda9240c6d"
       },
       "patchApply": {
         "path": "<RUN_ROOT>/00-env/patch-apply.txt",
@@ -875,6 +875,11 @@
         "runId": "fmp10a-20260915T111420Z",
         "observed": "6/6 passed with three mutation controls, but an automated review then asked for a distinct outcome for other-participant commands, a bounded wait for lost acknowledgement receipts and a narrower duplicate-id check",
         "handling": "code and test changed; the run was repeated and only this repeated run is recorded"
+      },
+      {
+        "runId": "fmp10a-20260917T074057Z",
+        "observed": "6/6 passed with five mutation controls on the earlier develop base, but develop then gained #208 (practice and evaluation mode separation) in the same runtime file",
+        "handling": "the branch was rebased without conflicts and the run was repeated on the new develop base"
       }
     ],
     "limits": [
