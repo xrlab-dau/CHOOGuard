@@ -1,0 +1,210 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-09-18",
+  "classification": "PUBLIC_PROJECT_EVIDENCE",
+  "status": "recorded_all_27_checks_passed_on_the_hash_pinned_run",
+  "targetIssue": 132,
+  "issue": 132,
+  "workId": "FMP-09b",
+  "title": "[FMP-09b] 동시2사건의 공유자원·독립 복구 통합 시험",
+  "scope": "concurrent_incidents_shared_resources_and_independent_recovery",
+  "scopeStatement": "이 결과는 사건 카탈로그(foundation/scenarios/reviewed-incident-catalog.json)의 검토 변형에 기반한 동시 2사건의 공유자원 제약, 상호 물리적/공간적 고립, 비대칭 독립 복구, 5종의 네거티브 무결성 프로브 및 무리셋 7단계 연속 운용 수명주기를 검증한 수치 영수증이다. 허용 동시 3쌍(대합실화재+매표전력상실, 연결통로폐쇄+도시철도방송고장, 대합실화재+연결통로폐쇄)의 물리 효과와 자원 격리를 확인하고, 한 사건의 복구가 다른 사건의 물리 효과 및 서버 상태에 영향을 주지 않는 비대칭 독립 복구를 입증한다.",
+  "exaStatus": "blocked_403_1010",
+  "emptyApplicabilityMeans": "unspecified_not_universal_permission",
+  "measurementConditions": {
+    "editor": "Unity 6000.3.23f1",
+    "invocation": "Start-Process -FilePath 'C:\\Program Files\\Unity 6000.3.23f1\\Editor\\Unity.exe' -ArgumentList '-batchmode', '-nographics', '-projectPath', '.', '-runTests', '-testPlatform', 'EditMode', '-testFilter', 'ChooGuard.Foundation.Tests.CoupledIncidentLifecycleTests;ChooGuard.Foundation.Multiplayer.Tests.FoundationSimulationTests;ChooGuard.Foundation.Multiplayer.Tests.IncidentDirectorTests;ChooGuard.Foundation.Multiplayer.Tests.Fmp09bConcurrentIncidentTests', '-testResults', 'docs/evidence/work-items/FMP-09b/FMP-09b-edit.xml', '-logFile', 'docs/evidence/work-items/FMP-09b/FMP-09b-unity.log' -Wait",
+    "gitHeadAtRun": "fe64fc08f7436c683bad75e0f03b72220a1a1312",
+    "launchUtc": "2026-09-17T18:42:20Z",
+    "resultsXmlMtime": "2026-09-18T03:53:15+0900",
+    "unityLogMtime": "2026-09-18T03:53:15+0900",
+    "resultsXmlBytes": 28392,
+    "unityLogBytes": 82749,
+    "resultsXmlSha256": "aad56607f77644d006744548b57561d6d38139b244271fc7d9c0407ccb2ac563",
+    "unityLogSha256": "42f8045f4bbe6770be598f8d4622a87a2aeaa0e52309a3173a9e950d41d64714"
+  },
+  "hashes": {
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp09bConcurrentIncidentTests.cs": {
+      "bytes": 56083,
+      "sha256": "547d67682a9839b16f93312ecab2573b747ea6bb285b41c59ca30b524c8a0f47"
+    },
+    "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/Editor/Fmp09bConcurrentIncidentTests.cs.meta": {
+      "bytes": 60,
+      "sha256": "d5329c7d6fe9c124d2159cb10413971018fdd58d45cac650517d6e661d3cde1e"
+    },
+    "foundation/scenarios/reviewed-incident-catalog.json": {
+      "bytes": 19999,
+      "sha256": "4941c12bfcc55e77272a1db9e856e286647d209be936f38e7992de387f187eb0"
+    }
+  },
+  "allowedConcurrentPairs": [
+    {
+      "pairId": "pair-1",
+      "name": "Pair1_ConcourseFireAndTicketPowerLoss_EquipmentAndThermalIsolation",
+      "choiceA": "fire-concourse",
+      "choiceB": "power-ticket",
+      "resourceKeyA": "station_concourse_2f",
+      "resourceKeyB": "station_ticket_area",
+      "isolationMode": "EquipmentAndThermalIsolation"
+    },
+    {
+      "pairId": "pair-2",
+      "name": "Pair2_BlockedConnectorAndMetroPa_PassagewayAndGuidanceIsolation",
+      "choiceA": "blocked-connector",
+      "choiceB": "pa-metro",
+      "resourceKeyA": "underground_connector",
+      "resourceKeyB": "metro_concourse",
+      "isolationMode": "PassagewayAndGuidanceIsolation"
+    },
+    {
+      "pairId": "pair-3",
+      "name": "Pair3_ConcourseFireAndBlockedConnector_EvacuationBottleneckPreservation",
+      "choiceA": "fire-concourse",
+      "choiceB": "blocked-connector",
+      "resourceKeyA": "station_concourse_2f",
+      "resourceKeyB": "underground_connector",
+      "isolationMode": "EvacuationBottleneckPreservation"
+    }
+  ],
+  "testMatrix": {
+    "total": 27,
+    "passed": 27,
+    "failed": 0,
+    "inconclusive": 0,
+    "skipped": 0,
+    "suites": [
+      {
+        "name": "ChooGuard.Foundation.Multiplayer.Tests.Fmp09bConcurrentIncidentTests",
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "Pair1_ConcourseFireAndTicketPowerLoss_EquipmentAndThermalIsolation",
+            "result": "Passed"
+          },
+          {
+            "name": "Pair2_BlockedConnectorAndMetroPa_PassagewayAndGuidanceIsolation",
+            "result": "Passed"
+          },
+          {
+            "name": "Pair3_ConcourseFireAndBlockedConnector_EvacuationBottleneckPreservation",
+            "result": "Passed"
+          },
+          {
+            "name": "AsymmetricRecovery_MitigateFirstIncident_PreservesSecondIncidentStateAndPhysicalEffects",
+            "result": "Passed"
+          },
+          {
+            "name": "AsymmetricRecovery_MitigateSecondIncidentFirst_PreservesFirstIncidentStateAndPhysicalEffects",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_SameResourceKeyCollision_RefusedWithoutStateCorruption",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_MaximumActiveCapacityOverflow_RefusesThirdActiveIncident",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_UnreviewedVariantOrInvalidId_RejectedAtomically",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_TamperedCheckpointRestore_RejectedAtomically",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_UnauthorizedMitigation_ReturnsRoleDeniedWithoutStateMutation",
+            "result": "Passed"
+          },
+          {
+            "name": "ContinuousLifecycle_NormalToConcurrentRecoveryToSubsequentOnset_WithoutSimulationReset",
+            "result": "Passed"
+          }
+        ]
+      },
+      {
+        "name": "ChooGuard.Foundation.Multiplayer.Tests.FoundationSimulationTests",
+        "total": 11,
+        "passed": 11,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "AcceptedDoorRequestSurvivesPreTickRecoveryWithoutTurningOffCarServices",
+            "result": "Passed"
+          },
+          {
+            "name": "ActiveIncidentIdentityCannotDisappearFromRecoveredWorld",
+            "result": "Passed"
+          },
+          {
+            "name": "InvalidLoadedRegionInputCannotAdvanceAnySubsystem",
+            "result": "Passed"
+          },
+          {
+            "name": "ObservedSmokeAndServerOpticalDepthUseTheSameConservedGasState",
+            "result": "Passed"
+          },
+          {
+            "name": "OptimizedMotionMatchesPriorExecutionForAllTwentyFive120BodyWorldTicks",
+            "result": "Passed"
+          },
+          {
+            "name": "PhysicalProjectionHidesUnseenFramesAndPrivateIncidentSchedule",
+            "result": "Passed"
+          },
+          {
+            "name": "PhysicalTrainFrameAndClockMismatchIsRejectedBeforeMutation",
+            "result": "Passed"
+          },
+          {
+            "name": "ProfileRejectsUnboundIncidentAndInvalidTrainStops",
+            "result": "Passed"
+          },
+          {
+            "name": "ProfileTwentyParticipantsAndOneHundredNpcWorld",
+            "result": "Passed"
+          },
+          {
+            "name": "ServerTickCouplesTwoIncidentsFireCrowdTrainsAndExactRecovery",
+            "result": "Passed"
+          },
+          {
+            "name": "VisibleBodiesAlwaysCarryTheirReferencedFrame",
+            "result": "Passed"
+          }
+        ]
+      },
+      {
+        "name": "ChooGuard.Foundation.Tests.CoupledIncidentLifecycleTests",
+        "total": 5,
+        "passed": 5,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "CompleteFivePhaseEmergencyResponseLifecycle_WithFiveRolesAndInstructor",
+            "result": "Passed"
+          },
+          {
+            "name": "FullStateAndCheckpointRecovery_IncidentDirectorAndPhysicalState_ZeroDrift",
+            "result": "Passed"
+          },
+          {
+            "name": "SimulationJournal_ReplaysCoupledActionsAcrossAllFiveRoles_DurableIntegrity",
+            "result": "Passed"
+          },
+          {
+            "name": "StrictObservationPrivacy_OpticalDepthAndTeamIsolation",
+            "result": "Passed"
+          },
+          {
+            "name": "ThirteenRegionsCoveredByAuthoredIncidentScheduleAndDeterministicConcurrency",
+            "result": "Passed"
+          }
+        ]
+      }
+    ]
+  }
+}
