@@ -63,14 +63,16 @@ def load_suppliers():
             if digest(current) != row['sha256']:
                 raise Refused('cannot_proceed: supplier_source_drift')
             compile(current, path, 'exec')
-        loaded_native = module('m107_manifest', SUPPLIERS[0])
-        loaded_boundary = module('m107_boundary', SUPPLIERS[1])
+        loaded_native, loaded_boundary = native, boundary
+        if loaded_native is None or loaded_boundary is None:
+            loaded_native = module('m107_manifest', SUPPLIERS[0])
+            loaded_boundary = module('m107_boundary', SUPPLIERS[1])
         _bindings, _contract_hash = bindings, contract_hash
         native, boundary = loaded_native, loaded_boundary
     except Refused:
-      raise
+        raise
     except Exception:
-      raise Refused('cannot_proceed: supplier_preflight_failed') from None
+        raise Refused('cannot_proceed: supplier_preflight_failed') from None
 
 
 def guarded(function):
