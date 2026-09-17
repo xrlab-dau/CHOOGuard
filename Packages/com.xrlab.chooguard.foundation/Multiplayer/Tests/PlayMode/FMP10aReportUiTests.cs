@@ -317,6 +317,84 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(a1.IgnoredReceipts, Is.EqualTo(2));
         }
 
+        // Review fix: the panel send path used by NetworkFieldRuntime.SubmitPanelCommand, repeated acknowledgement presses,
+        // ambiguous server views and views from another shift.
+        [Test]
+        public void PanelSendPathTracksOnlySentCommandsAndRejectsAmbiguousOrOtherShiftViews()
+        {
+            var reportId = ReportFromA1();
+            var wires = new List<string>();
+
+            // Transport or input not ready: nothing is sent and nothing is tracked.
+            Assert.That(a2.Submit(a2.AcknowledgeNext("cmd-ack-offline"), false, wires.Add), Is.EqualTo(PanelSubmitOutcome.TransportNotReady));
+            Assert.That(a2.Submit(a2.AcknowledgeNext("cmd-ack-offline"), true, null), Is.EqualTo(PanelSubmitOutcome.TransportNotReady));
+            Assert.That(wires, Is.Empty);
+            Assert.That(a2.Pending, Is.Empty);
+
+            // A command the panel could not build, or one built for another participant, is not sent.
+            Assert.That(a2.Submit(a2.Claim("evacuee-far"), true, wires.Add), Is.EqualTo(PanelSubmitOutcome.NotAllowed));
+            var foreignCommand = a1.AcknowledgeNext("cmd-ack-as-a1");
+            Assert.That(foreignCommand, Is.Not.Null, "a real command built by another participant's panel");
+            Assert.That(a2.Submit(foreignCommand, true, wires.Add), Is.EqualTo(PanelSubmitOutcome.OtherParticipant));
+            Assert.That(wires, Is.Empty);
+
+            // Sent: the wire text is exactly the command JSON, and the command is tracked after it was handed over.
+            var command = a2.AcknowledgeNext("cmd-ack-a2");
+            Assert.That(a2.Submit(command, true, text => { Assert.That(a2.Pending, Is.Empty, "tracked only after send"); wires.Add(text); }),
+                Is.EqualTo(PanelSubmitOutcome.Sent));
+            Assert.That(wires, Has.Count.EqualTo(1));
+            Assert.That(wires[0], Is.EqualTo(JsonUtility.ToJson(command)));
+            Assert.That(a2.Pending.Single().CommandId, Is.EqualTo("cmd-ack-a2"));
+
+            // Pressing R again while the acknowledgement waits for its receipt builds no duplicate.
+            Assert.That(a2.AcknowledgeNext("cmd-ack-a2-again"), Is.Null);
+            // If the receipt never arrives, the waiting acknowledgement stops blocking after enough server views.
+            for (var i = 0; i < FieldCommandPanel.AcknowledgeRetryViews - 1; i++) Refresh(a2);
+            Assert.That(a2.AcknowledgeNext("cmd-ack-a2-early"), Is.Null, "still inside the retry window");
+            Refresh(a2);
+            Assert.That(a2.AcknowledgeNext("cmd-ack-a2-retry")?.TargetId, Is.EqualTo(reportId), "resend allowed once the window has passed");
+            var receipt = Wire(shift.Submit("a2", JsonUtility.FromJson<WorldCommand>(wires[0])));
+            Assert.That(a2.ApplyReceipt(receipt), Is.True);
+            Assert.That(receipt.Code, Is.EqualTo(CommandCode.Accepted));
+            Refresh(a2);
+            Assert.That(a2.AcknowledgeNext(), Is.Null, "acknowledged by the server view now");
+
+            // A view repeating a report id or an entity id is ignored whole; the previous rows stay.
+            var before = a1.Reports.Single().ReportId;
+            var views = a1.IgnoredViews;
+            var repeatedReport = Project("a1");
+            repeatedReport.Observed.Reports = repeatedReport.Observed.Reports.Concat(repeatedReport.Observed.Reports).ToArray();
+            Assert.DoesNotThrow(() => a1.ApplyView(repeatedReport));
+            var repeatedEntity = Project("a1");
+            repeatedEntity.Observed.Entities = repeatedEntity.Observed.Entities.Concat(new[] { repeatedEntity.Observed.Entities[0] }).ToArray();
+            Assert.DoesNotThrow(() => a1.ApplyView(repeatedEntity));
+            Assert.That(a1.IgnoredViews, Is.EqualTo(views + 2));
+            Assert.That(a1.Reports.Single().ReportId, Is.EqualTo(before).And.EqualTo(reportId));
+
+            // Rows without an id are skipped instead of discarding the whole view, and cannot be targeted.
+            var blankIds = Project("a1");
+            blankIds.Observed.Entities = blankIds.Observed.Entities.Concat(new[] {
+                new EntityState { EntityId = "", RegionId = "hall", Kind = EntityKind.Evacuee },
+                new EntityState { EntityId = null, RegionId = "hall", Kind = EntityKind.Incident, Active = true } }).ToArray();
+            a1.ApplyView(blankIds);
+            Assert.That(a1.IgnoredViews, Is.EqualTo(views + 2), "a view with blank ids is still applied");
+            Assert.That(a1.Evacuees.All(e => !string.IsNullOrEmpty(e.EntityId)), Is.True);
+            Assert.That(a1.ReportableIncidentIds.All(id => !string.IsNullOrEmpty(id)), Is.True);
+            Assert.DoesNotThrow(() => a1.Claim(""));
+            Assert.That(a1.Claim(""), Is.Null);
+            Assert.That(a1.Report(null), Is.Null);
+            Assert.That(a1.Evacuees.Select(e => e.EntityId), Is.EquivalentTo(new[] { "evacuee-1" }), "the named evacuee row is still shown");
+            Assert.DoesNotThrow(() => a1.Claim("evacuee-1"));
+
+            // A view from another shift is ignored; the runtime also refuses such a snapshot before the panel sees it.
+            var otherShift = Project("a1");
+            otherShift.Observed.ShiftId = "fmp10a-other-shift";
+            a1.ApplyView(otherShift);
+            Assert.That(a1.IgnoredViews, Is.EqualTo(views + 3));
+            Assert.That(a1.Reports.Single().ReportId, Is.EqualTo(reportId), "rows from the ignored view are not shown");
+            Assert.That(a1.Acknowledge(reportId).ShiftId, Is.EqualTo(ShiftId));
+        }
+
         // Acceptance 5: run record binds source/build hash and rendered panel lines to the executed test.
         [Test]
         public void RunRecordBindsSourceAndBuildHashToRenderedPanelState()
