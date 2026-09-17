@@ -398,8 +398,30 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(inst1.EvaluateAdmission(null, admission, true), Is.False);
             Assert.That(inst1.EvaluateAdmission(validTraineeCred, null, true), Is.False);
 
-            // Part B: Server runtime connection approval wiring (EvaluateConnectionApproval & TestApproveConnection)
+            // Part B: Distributed Client-Server Admission Wire Protocol Verification
+            // Tests must never manually populate server admission dictionaries; decisions must travel over the wire.
             var serverRuntime = CreateTestServerRuntime();
+            var instScope = CreateTestClientRuntime(inst1, isInstructor: true, isPaused: false);
+            serverRuntime.RegisterIdentityForTest(1000, "inst1");
+
+            // Wire transport setup: connects instructor client and server message handlers
+            instScope.Runtime.MessageSender = (channel, client, text) =>
+            {
+                if (channel == NetworkFieldRuntime.AdmissionRequestChannel)
+                    serverRuntime.ProcessAdmissionRequest(1000, text);
+            };
+
+            AdmissionReviewResponse lastTraineeResponse = null;
+            serverRuntime.MessageSender = (channel, client, text) =>
+            {
+                if (channel == NetworkFieldRuntime.AdmissionResponseChannel)
+                {
+                    if (client == 1000)
+                        instScope.Runtime.ProcessAdmissionResponse(text);
+                    else if (client == 2000)
+                        lastTraineeResponse = JsonUtility.FromJson<AdmissionReviewResponse>(text);
+                }
+            };
 
             // B1. Valid connection without denial succeeds
             byte[] validPayloadA1 = Encoding.UTF8.GetBytes(JsonUtility.ToJson(validTraineeCred));
@@ -408,17 +430,53 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             Assert.That(serverRuntime.TestApproveConnection(1001, validPayloadA1, out var appReasonOk), Is.True);
             Assert.That(appReasonOk, Is.Empty);
 
-            // B2. Instructor denial in server runtime denies connection with explicit reason
-            serverRuntime.SetInstructorAdmission("b1", false);
+            // B2. Instructor client transmits admission denial over the wire
+            // Verifies client RequestInstructorAdmission -> server ProcessAdmissionRequest -> server confirms -> client UI updates
+            Assert.That(serverRuntime.InstructorAdmissionDecisions.ContainsKey("b1"), Is.False,
+                "Server dictionary must not have b1 decision before wire transmission.");
+            var denialRequested = instScope.Runtime.RequestInstructorAdmission("b1", false);
+            Assert.That(denialRequested, Is.True, "Instructor client must successfully transmit admission request.");
+            Assert.That(serverRuntime.InstructorAdmissionDecisions["b1"], Is.False,
+                "Authoritative server dictionary must be updated via wire request processing.");
+            Assert.That(inst1.AdmissionDecisions["b1"], Is.False,
+                "Instructor client panel must be updated upon receiving server wire confirmation.");
+            Assert.That(inst1.RenderLines(), Has.Some.EqualTo("입장 심사: b1 → 교관 거부"),
+                "Instructor client UI lines must reflect confirmed server decision.");
+
+            // Subsequent connection attempt with valid ticket is denied by server due to instructor decision
             byte[] validPayloadB1 = Encoding.UTF8.GetBytes(JsonUtility.ToJson(validTraineeCredB1));
             Assert.That(serverRuntime.EvaluateConnectionApproval(validTraineeCredB1, out var deniedReason), Is.False);
             Assert.That(deniedReason, Is.EqualTo("Admission denied by instructor"));
             Assert.That(serverRuntime.TestApproveConnection(1002, validPayloadB1, out var appDeniedReason), Is.False,
-                "Instructor denial must cause server Approve to reject connection.");
+                "Instructor wire denial must cause server Approve to reject connection.");
             Assert.That(appDeniedReason, Is.EqualTo("Admission denied by instructor"));
 
-            // B3. Cryptographic check is never bypassed even if instructor approved participant
-            serverRuntime.SetInstructorAdmission("b1", true);
+            // B3. Non-instructor trainee client sending forged admission request is rejected with RoleDenied
+            serverRuntime.RegisterIdentityForTest(2000, "a1");
+            var forgedReq = new AdmissionReviewRequest
+            {
+                WorldId = WorldId,
+                ShiftId = ShiftId,
+                TargetParticipantId = "b1",
+                Approved = true
+            };
+            var traineeProcessed = serverRuntime.ProcessAdmissionRequest(2000, JsonUtility.ToJson(forgedReq));
+            Assert.That(traineeProcessed, Is.False, "Server must reject non-instructor admission review request.");
+            Assert.That(lastTraineeResponse, Is.Not.Null);
+            Assert.That(lastTraineeResponse.Confirmed, Is.False);
+            Assert.That(lastTraineeResponse.Reason, Is.EqualTo("RoleDenied"));
+            Assert.That(serverRuntime.InstructorAdmissionDecisions["b1"], Is.False,
+                "Authoritative server dictionary must remain unaltered after non-instructor attempt.");
+
+            // B4. Instructor client transmits approval over the wire; cryptographic validation is still never bypassed
+            var approvalRequested = instScope.Runtime.RequestInstructorAdmission("b1", true);
+            Assert.That(approvalRequested, Is.True);
+            Assert.That(serverRuntime.InstructorAdmissionDecisions["b1"], Is.True,
+                "Server dictionary updated to approved via wire request.");
+            Assert.That(inst1.AdmissionDecisions["b1"], Is.True);
+            Assert.That(inst1.RenderLines(), Has.Some.EqualTo("입장 심사: b1 → 교관 승인"));
+
+            // Cryptographic check: even though instructor approved b1, bad secret is rejected
             var badSecretTicketB1 = new JoinCredential
             {
                 WorldId = WorldId,
@@ -433,11 +491,20 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
                 "Server Approve must never bypass SessionAdmission.Allows for instructor-approved participant with bad secret.");
             Assert.That(appCryptoDenialReason, Is.EqualTo("Admission denied"));
 
-            // B4. Duplicate participant rejected
+            // B5. Session mismatch request rejected by server
+            var mismatchReq = new AdmissionReviewRequest
+            {
+                WorldId = "wrong-world",
+                ShiftId = ShiftId,
+                TargetParticipantId = "b1",
+                Approved = true
+            };
+            var mismatchProcessed = serverRuntime.ProcessAdmissionRequest(1000, JsonUtility.ToJson(mismatchReq));
+            Assert.That(mismatchProcessed, Is.False, "Session mismatch request must be rejected by server.");
+
+            // B6. Duplicate participant and malformed payload rejected
             Assert.That(serverRuntime.TestApproveConnection(1004, validPayloadA1, out _), Is.False,
                 "Duplicate participant already in server roster must be rejected.");
-
-            // B5. Malformed payload rejected
             Assert.That(serverRuntime.TestApproveConnection(1005, new byte[] { 0x00, 0x11, 0x22 }, out var badPayloadReason), Is.False);
             Assert.That(badPayloadReason, Is.EqualTo("Admission denied"));
         }
@@ -564,6 +631,64 @@ namespace ChooGuard.Foundation.Multiplayer.Tests
             };
             Assert.That(inst1.ApplyReceipt(foreignReceipt), Is.False);
             Assert.That(inst1.IgnoredReceipts, Is.GreaterThan(0));
+        }
+        // Acceptance 7: Exact wire serialization byte accounting in Send without capacity inflation.
+        [Test]
+        public void SendByteAccountingAccumulatesExactWireLengthWithoutCapacityInflation()
+        {
+            var go = new GameObject("TestSendAccounting");
+            createdObjects.Add(go);
+            var runtime = go.AddComponent<NetworkFieldRuntime>();
+            runtime.connectedOverride = true;
+            runtime.SetControlsForTest(true);
+
+            Assert.That(runtime.SentBytes, Is.EqualTo(0));
+
+            // 1. ASCII payload
+            var asciiText = "CHOOguard";
+            var actualAsciiWriterLength = NetworkFieldRuntime.MeasureWireLength(asciiText);
+            var oldCapacityAscii = Encoding.UTF8.GetByteCount(asciiText) * 2 + 16;
+
+            var beforeAscii = runtime.SentBytes;
+            runtime.SendForTest("test.channel", 1, asciiText);
+            var asciiDelta = runtime.SentBytes - beforeAscii;
+
+            Assert.That(asciiDelta, Is.EqualTo(actualAsciiWriterLength),
+                "SentBytes delta must equal actual FastBufferWriter.Length for ASCII payload.");
+            Assert.That(asciiDelta, Is.Not.EqualTo(oldCapacityAscii),
+                "SentBytes must not be inflated by buffer allocation capacity.");
+
+            // 2. Multi-byte payload (Korean characters)
+            var koreanText = "근무정지";
+            var actualKoreanWriterLength = NetworkFieldRuntime.MeasureWireLength(koreanText);
+            var oldCapacityKorean = Encoding.UTF8.GetByteCount(koreanText) * 2 + 16;
+
+            var beforeKorean = runtime.SentBytes;
+            runtime.SendForTest("test.channel", 1, koreanText);
+            var koreanDelta = runtime.SentBytes - beforeKorean;
+
+            Assert.That(koreanDelta, Is.EqualTo(actualKoreanWriterLength),
+                "SentBytes delta must equal actual FastBufferWriter.Length for Korean payload.");
+            Assert.That(koreanDelta, Is.Not.EqualTo(oldCapacityKorean),
+                "Zero capacity inflation allowed.");
+
+            // 3. Integration with RuntimeMetricAccumulator
+            var totalExpected = actualAsciiWriterLength + actualKoreanWriterLength;
+            var accumulator = new RuntimeMetricAccumulator("client", 100.0, DateTime.UtcNow, 0, 0, 0, true, true);
+            accumulator.Record(101.0, 16.0, runtime.SentBytes, 0, 1, 0, 0, 0, false, 0);
+            var metricsRow = accumulator.Close(101.0, DateTime.UtcNow);
+            Assert.That(metricsRow.SentPayloadBytes, Is.EqualTo(totalExpected),
+                "RuntimeMetricAccumulator.SentPayloadBytes must reflect the exact sum of serialized wire bytes.");
+
+            // 4. Verification with custom MessageSender delegate
+            var intercepted = false;
+            runtime.MessageSender = (ch, cl, txt) => { intercepted = true; };
+            var mockText = "OK";
+            var actualMockWriterLength = NetworkFieldRuntime.MeasureWireLength(mockText);
+            var beforeMock = runtime.SentBytes;
+            runtime.SendForTest("test.mock", 2, mockText);
+            Assert.That(intercepted, Is.True);
+            Assert.That(runtime.SentBytes - beforeMock, Is.EqualTo(actualMockWriterLength));
         }
     }
 }

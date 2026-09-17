@@ -293,9 +293,29 @@ namespace ChooGuard.Foundation.Multiplayer
     [Serializable] public sealed class ProbePlan { public ProbeStep[] Steps; public VoiceProbeStep[] VoiceSteps;
         public ProbeWaypoint[] Waypoints; public bool ExitWhenRouteComplete; public float ExitAfterSeconds = 10; }
 
+    [Serializable]
+    public sealed class AdmissionReviewRequest
+    {
+        public string WorldId;
+        public string ShiftId;
+        public string TargetParticipantId;
+        public bool Approved;
+    }
+
+    [Serializable]
+    public sealed class AdmissionReviewResponse
+    {
+        public string TargetParticipantId;
+        public bool Approved;
+        public bool Confirmed;
+        public string Reason;
+    }
+
     /// <summary>Real NGO protocol adapter. Clients receive only projected FieldView, never WorldState.</summary>
     public sealed class NetworkFieldRuntime : MonoBehaviour
     {
+        public const string AdmissionRequestChannel = "cg.field.admission.request.v1",
+            AdmissionResponseChannel = "cg.field.admission.response.v1";
         private const string InputChannel = "cg.field.input.v1", CommandChannel = "cg.field.command.v1",
             ViewChannel = "cg.field.view.v1", ReceiptChannel = "cg.field.receipt.v1";
         private const string VoiceRequestChannel = "cg.voice.request.v1", VoiceGrantChannel = "cg.voice.grant.v1";
@@ -372,6 +392,18 @@ namespace ChooGuard.Foundation.Multiplayer
         public void RecordSnapshotTimeForTest(double time) => snapshotFreshness.Received(time);
         public void SetAdmissionForTest(SessionAdmission adm) => admission = adm;
         public void SetShiftForTest(AuthoritativeShift s) => shift = s;
+        public long SentBytes => sentBytes;
+        public void SendForTest(string channel, ulong client, string text) => Send(channel, client, text);
+        public void RegisterIdentityForTest(ulong clientNetworkId, string participantId) => identities[clientNetworkId] = participantId;
+        public static int MeasureWireLength(string text)
+        {
+            var capacity = Encoding.UTF8.GetByteCount(text) * 2 + 16;
+            using (var writer = new FastBufferWriter(capacity, Allocator.Temp))
+            {
+                writer.WriteValueSafe(text);
+                return writer.Length;
+            }
+        }
 
         private IEnumerator Start()
         {
@@ -460,6 +492,7 @@ namespace ChooGuard.Foundation.Multiplayer
                 Register(InputChannel, ReceiveInput);
                 Register(CommandChannel, ReceiveCommand);
                 Register(VoiceRequestChannel, ReceiveVoiceRequest);
+                Register(AdmissionRequestChannel, ReceiveAdmissionRequest);
                 var voiceConfig = Argument("--cg-voice-config");
                 if (!string.IsNullOrEmpty(voiceConfig))
                 {
@@ -484,6 +517,7 @@ namespace ChooGuard.Foundation.Multiplayer
                 Register(SnapshotChannel, ReceiveSnapshot);
                 Register(ReceiptChannel, ReceiveReceipt);
                 Register(VoiceGrantChannel, ReceiveVoiceGrant);
+                Register(AdmissionResponseChannel, ReceiveAdmissionResponse);
                 voiceRadio = gameObject.AddComponent<VoiceRadio>();
                 voiceRadio.Configure(this, Environment.GetCommandLineArgs().Contains("--cg-voice-fixture"));
                 bodyView = gameObject.AddComponent<WorldBodyView>(); bodyView.Configure(BodyPrefab, connectedWorld);
@@ -717,6 +751,116 @@ namespace ChooGuard.Foundation.Multiplayer
             voiceRadio.ApplyGrant(JsonUtility.FromJson<VoiceGrant>(text));
             // Never put room tokens or API credentials in diagnostic records.
             Evidence("voice_grant_received", new ParticipantEvent { ParticipantId = credential.ParticipantId });
+        }
+
+        private void ReceiveAdmissionRequest(ulong sender, FastBufferReader reader)
+        {
+            if (!Permit(sender, reader)) return;
+            try
+            {
+                reader.ReadValueSafe(out string text);
+                ProcessAdmissionRequest(sender, text);
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError("Server admission request processing stopped: " + exception.GetType().Name);
+                network.DisconnectClient(sender);
+            }
+        }
+
+        /// <summary>Processes an admission review request from a connected client.
+        /// Rejects non-instructor requests and updates server authoritative admission decisions.</summary>
+        public bool ProcessAdmissionRequest(ulong sender, string text)
+        {
+            if (!identities.TryGetValue(sender, out var participantId) || shift == null) return false;
+            AdmissionReviewRequest request;
+            try { request = JsonUtility.FromJson<AdmissionReviewRequest>(text); }
+            catch { return false; }
+            if (request == null || string.IsNullOrEmpty(request.TargetParticipantId)) return false;
+
+            var checkpoint = shift.ExportCheckpoint();
+            if (request.WorldId != checkpoint.WorldId || request.ShiftId != checkpoint.ShiftId)
+            {
+                var rejectRes = new AdmissionReviewResponse
+                {
+                    TargetParticipantId = request.TargetParticipantId,
+                    Approved = request.Approved,
+                    Confirmed = false,
+                    Reason = "SessionMismatch"
+                };
+                Send(AdmissionResponseChannel, sender, JsonUtility.ToJson(rejectRes));
+                return false;
+            }
+
+            ParticipantState actor;
+            try { actor = shift.Participant(participantId); }
+            catch { return false; }
+
+            if (actor == null || !actor.IsInstructor)
+            {
+                var rejectRes = new AdmissionReviewResponse
+                {
+                    TargetParticipantId = request.TargetParticipantId,
+                    Approved = request.Approved,
+                    Confirmed = false,
+                    Reason = "RoleDenied"
+                };
+                Send(AdmissionResponseChannel, sender, JsonUtility.ToJson(rejectRes));
+                return false;
+            }
+
+            instructorAdmissionDecisions[request.TargetParticipantId] = request.Approved;
+            var confirmRes = new AdmissionReviewResponse
+            {
+                TargetParticipantId = request.TargetParticipantId,
+                Approved = request.Approved,
+                Confirmed = true,
+                Reason = ""
+            };
+            Send(AdmissionResponseChannel, sender, JsonUtility.ToJson(confirmRes));
+            return true;
+        }
+
+        private void ReceiveAdmissionResponse(ulong sender, FastBufferReader reader)
+        {
+            var remaining = reader.Length - reader.Position;
+            if (sender != NetworkManager.ServerClientId || remaining <= 0 || remaining > 4096) return;
+            reader.ReadValueSafe(out string text); receivedBytes += remaining;
+            ProcessAdmissionResponse(text);
+        }
+
+        /// <summary>Processes an admission review response from the server.
+        /// Updates the local command panel only upon authoritative server confirmation.</summary>
+        public bool ProcessAdmissionResponse(string text)
+        {
+            AdmissionReviewResponse response;
+            try { response = JsonUtility.FromJson<AdmissionReviewResponse>(text); }
+            catch { return false; }
+            if (response == null || string.IsNullOrEmpty(response.TargetParticipantId)) return false;
+            if (response.Confirmed)
+            {
+                instructorAdmissionDecisions[response.TargetParticipantId] = response.Approved;
+                commandPanel?.SetAdmissionDecision(response.TargetParticipantId, response.Approved);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>Transmits an instructor admission decision review request to the server over the wire.
+        /// Does not update local UI state until the server confirms the request.</summary>
+        public bool RequestInstructorAdmission(string targetParticipantId, bool approved)
+        {
+            if (string.IsNullOrEmpty(targetParticipantId) || !Connected || view?.Observed == null || !view.Instructor)
+                return false;
+            var req = new AdmissionReviewRequest
+            {
+                WorldId = view.Observed.WorldId,
+                ShiftId = view.Observed.ShiftId,
+                TargetParticipantId = targetParticipantId.Trim(),
+                Approved = approved
+            };
+            Send(AdmissionRequestChannel, NetworkManager.ServerClientId, JsonUtility.ToJson(req));
+            return true;
         }
 
         private void Update()
@@ -1012,17 +1156,20 @@ namespace ChooGuard.Foundation.Multiplayer
         {
             var capacity = Encoding.UTF8.GetByteCount(text) * 2 + 16;
             if (capacity > 65536) throw new InvalidDataException("Projected message exceeds its protocol bound.");
-            sentBytes += capacity;
-            if (MessageSender != null)
-            {
-                MessageSender(channel, client, text);
-                return;
-            }
             using (var writer = new FastBufferWriter(capacity, Allocator.Temp))
             {
                 writer.WriteValueSafe(text);
-                network.CustomMessagingManager.SendNamedMessage(channel, client, writer,
-                    channel == InputChannel && writer.Length <= 900 ? NetworkDelivery.UnreliableSequenced : NetworkDelivery.ReliableFragmentedSequenced);
+                sentBytes += writer.Length;
+                if (MessageSender != null)
+                {
+                    MessageSender(channel, client, text);
+                    return;
+                }
+                if (network != null && network.CustomMessagingManager != null)
+                {
+                    network.CustomMessagingManager.SendNamedMessage(channel, client, writer,
+                        channel == InputChannel && writer.Length <= 900 ? NetworkDelivery.UnreliableSequenced : NetworkDelivery.ReliableFragmentedSequenced);
+                }
             }
         }
 
@@ -1292,7 +1439,7 @@ namespace ChooGuard.Foundation.Multiplayer
                     var target = (admissionTargetParticipantId ?? "").Trim();
                     if (!string.IsNullOrEmpty(target))
                     {
-                        SetInstructorAdmission(target, true);
+                        RequestInstructorAdmission(target, true);
                     }
                 }
                 if (GUILayout.Button("입장 거부", GUILayout.Width(80)))
@@ -1300,7 +1447,7 @@ namespace ChooGuard.Foundation.Multiplayer
                     var target = (admissionTargetParticipantId ?? "").Trim();
                     if (!string.IsNullOrEmpty(target))
                     {
-                        SetInstructorAdmission(target, false);
+                        RequestInstructorAdmission(target, false);
                     }
                 }
                 GUILayout.EndHorizontal();
