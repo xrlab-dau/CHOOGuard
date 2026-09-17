@@ -662,5 +662,230 @@
     ],
     "observed": "#120 CLOSED; #27 OPEN with its candidate runtime sources on develop",
     "note": "This record makes no claim that #27 acceptance is satisfied."
+  },
+  "reviewFixRun": {
+    "runId": "fmp10a-20260917T074619Z",
+    "purpose": "fixes after PR #192 was merged, from automated review: duplicate server ids no longer throw, the panel send path used by SubmitPanelCommand is tested, repeated R presses do not duplicate an acknowledgement, and a lost acknowledgement receipt stops blocking after a bounded number of views",
+    "baseCommit": "a727bf7459e9791845115dc45ae10217b3302231",
+    "checkout": "fresh git worktree detached at the develop base commit, candidate runtime and test copied in; Unity Library cache copied from an earlier isolated worktree; pipeline patch applied with prepare_multiplayer_dependencies.py --apply",
+    "command": "<unity> -batchmode -projectPath <worktree> -runTests -testPlatform PlayMode -testFilter ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests -testResults <run>/PlayMode.xml -logFile <run>/PlayMode.log -cg-fmp10a-source-ref <base> [-cg-fmp10a-run-record <run>/fmp10a-run-record.json]",
+    "inputs": {
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs": "40a3ba24762f4aa5befa83241ea28f910977de797f0f97f05440a2565cf9a06c",
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10aReportUiTests.cs": "db6868d3b8776a6cb8498c87065bc3af74a1ff7bdcac644a8fa02f2090ced2bd"
+    },
+    "buildHash": {
+      "value": "a91b2974ab4e4ae4d100be5c79edcc264debe7da01334ef2fb1909410411e569",
+      "source": "assembly:ChooGuard.Foundation.Multiplayer.dll"
+    },
+    "results": {
+      "step": "01-playmode",
+      "exitCode": 0,
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "failedTests": [],
+      "xml": {
+        "path": "<RUN_ROOT>/01-playmode/PlayMode.xml",
+        "sha256": "bf38080b337831016d195d46ee903c02642e9e405f86a58f1048bf0e5d3b40dd"
+      },
+      "log": {
+        "path": "<RUN_ROOT>/01-playmode/PlayMode.log",
+        "sha256": "cb1d6beba82164564522d8e5fe3140e8ab19ce5617cc31097c356ed44159465f"
+      },
+      "mutationDiff": null
+    },
+    "mutationControls": [
+      {
+        "step": "02-mutation-duplicate-ids-accepted",
+        "exitCode": 2,
+        "total": 6,
+        "passed": 5,
+        "failed": 1,
+        "skipped": 0,
+        "failedTests": [
+          "PanelSendPathTracksOnlySentCommandsAndRejectsAmbiguousOrOtherShiftViews"
+        ],
+        "xml": {
+          "path": "<RUN_ROOT>/02-mutation-duplicate-ids-accepted/PlayMode.xml",
+          "sha256": "7101da79aa52f76538eca10e3f71ea4e0255ac46ffe67fd7fc058e1530d03284"
+        },
+        "log": {
+          "path": "<RUN_ROOT>/02-mutation-duplicate-ids-accepted/PlayMode.log",
+          "sha256": "51a7dd57bda1a09e5f74a5844d3c2411420d4289fdc35f7bf38a84674bd76682"
+        },
+        "mutationDiff": {
+          "path": "<RUN_ROOT>/02-mutation-duplicate-ids-accepted/mutation.diff",
+          "sha256": "5a398ef06c1a609db82c631c3ea15262e63973bcddc91aa8ed081ed86d931507"
+        }
+      },
+      {
+        "step": "03-mutation-repeat-acknowledgement",
+        "exitCode": 2,
+        "total": 6,
+        "passed": 5,
+        "failed": 1,
+        "skipped": 0,
+        "failedTests": [
+          "PanelSendPathTracksOnlySentCommandsAndRejectsAmbiguousOrOtherShiftViews"
+        ],
+        "xml": {
+          "path": "<RUN_ROOT>/03-mutation-repeat-acknowledgement/PlayMode.xml",
+          "sha256": "a86cc8036a9ec41a571b607d5c52e0f66c0cfbedfac75f1226b8a31b7c8a40aa"
+        },
+        "log": {
+          "path": "<RUN_ROOT>/03-mutation-repeat-acknowledgement/PlayMode.log",
+          "sha256": "a1c430ac9597536f5355f4d44fa84ad4a229928227ce390938d3ac3e0ebb9985"
+        },
+        "mutationDiff": {
+          "path": "<RUN_ROOT>/03-mutation-repeat-acknowledgement/mutation.diff",
+          "sha256": "348d15befd166161c871583894098e83c5ab1df191fc28f2c080f2bb3b3f1ed3"
+        }
+      },
+      {
+        "step": "04-mutation-send-while-not-ready",
+        "exitCode": 2,
+        "total": 6,
+        "passed": 5,
+        "failed": 1,
+        "skipped": 0,
+        "failedTests": [
+          "PanelSendPathTracksOnlySentCommandsAndRejectsAmbiguousOrOtherShiftViews"
+        ],
+        "xml": {
+          "path": "<RUN_ROOT>/04-mutation-send-while-not-ready/PlayMode.xml",
+          "sha256": "b46cca9f0c150e732eb7787b32104ddd9b87e0c2c8263ddf3e2c72e0deaaeccf"
+        },
+        "log": {
+          "path": "<RUN_ROOT>/04-mutation-send-while-not-ready/PlayMode.log",
+          "sha256": "cfcaab494666e39db98675a5547bb3897c07f58fc696e33a5ac34c4464225935"
+        },
+        "mutationDiff": {
+          "path": "<RUN_ROOT>/04-mutation-send-while-not-ready/mutation.diff",
+          "sha256": "2f47c2c6534517f0c6c1536bb2baab4f7b38d83b2201e9686bf1a4cd4706ca4b"
+        }
+      },
+      {
+        "step": "05-mutation-no-acknowledge-retry",
+        "exitCode": 2,
+        "total": 6,
+        "passed": 5,
+        "failed": 1,
+        "skipped": 0,
+        "failedTests": [
+          "PanelSendPathTracksOnlySentCommandsAndRejectsAmbiguousOrOtherShiftViews"
+        ],
+        "xml": {
+          "path": "<RUN_ROOT>/05-mutation-no-acknowledge-retry/PlayMode.xml",
+          "sha256": "e5248008bebbcdcae6852abf0d6cee105f2f5cce7566236b135ff9cdc6c44d7b"
+        },
+        "log": {
+          "path": "<RUN_ROOT>/05-mutation-no-acknowledge-retry/PlayMode.log",
+          "sha256": "76bd07a00a7388116a8f1987bb664a7b9422b6eb189c73b663871dcd8dfe39dd"
+        },
+        "mutationDiff": {
+          "path": "<RUN_ROOT>/05-mutation-no-acknowledge-retry/mutation.diff",
+          "sha256": "855e956628e1076c9bf1df6187372eb039ed5083bcb3e1d7f046974afb3c1afb"
+        }
+      },
+      {
+        "step": "06-mutation-blank-ids-counted",
+        "exitCode": 2,
+        "total": 6,
+        "passed": 5,
+        "failed": 1,
+        "skipped": 0,
+        "failedTests": [
+          "PanelSendPathTracksOnlySentCommandsAndRejectsAmbiguousOrOtherShiftViews"
+        ],
+        "xml": {
+          "path": "<RUN_ROOT>/06-mutation-blank-ids-counted/PlayMode.xml",
+          "sha256": "21c98258a986ad163c5cbaa88980f345ce8bbc7b6010838fd7d849bbf7edc5c2"
+        },
+        "log": {
+          "path": "<RUN_ROOT>/06-mutation-blank-ids-counted/PlayMode.log",
+          "sha256": "8f572f629f35284830ed327023c217c16cbd4d2852488089ea2178369748aef9"
+        },
+        "mutationDiff": {
+          "path": "<RUN_ROOT>/06-mutation-blank-ids-counted/mutation.diff",
+          "sha256": "d56498c8fcc74a53c84213eb652351227d06bfbf916e3b4505018ea041034b9e"
+        }
+      }
+    ],
+    "afterRestore": {
+      "step": "07-playmode-after-restore",
+      "exitCode": 0,
+      "total": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "failedTests": [],
+      "xml": {
+        "path": "<RUN_ROOT>/07-playmode-after-restore/PlayMode.xml",
+        "sha256": "3ade6efd96348bf0eba558e3f6de29ddc1ffe166d4e31c926e35348272cdb5ac"
+      },
+      "log": {
+        "path": "<RUN_ROOT>/07-playmode-after-restore/PlayMode.log",
+        "sha256": "7a7d5e1cd37d768c2a52c1af02f967809401002a621c02405e5a2c5556bd2d47"
+      },
+      "mutationDiff": null
+    },
+    "setup": {
+      "transcript": {
+        "path": "<RUN_ROOT>/00-env/setup.txt",
+        "sha256": "a4ae04b547b7902ead821b0f6ba04ad2e8ec2071a0e479974c9b23eda9240c6d"
+      },
+      "patchApply": {
+        "path": "<RUN_ROOT>/00-env/patch-apply.txt",
+        "sha256": "affcc01359869195a362c24545bec1d6d34cabddb658feaba17b6d8857024b75"
+      }
+    },
+    "changes": [
+      "FieldCommandPanel.ApplyView skips rows without an id and ignores a view only when a shown report id or an entity id repeats; the previous rows stay and a warning is logged",
+      "FieldCommandPanel.Submit is the send path of NetworkFieldRuntime.SubmitPanelCommand: TransportNotReady sends nothing, NotAllowed (no command) and OtherParticipant (a command built for another participant) are not sent, and a sent command is tracked only after its wire text was handed over",
+      "AcknowledgeNext skips a report whose acknowledgement waits for a receipt, for at most AcknowledgeRetryViews (30) applied server views"
+    ],
+    "renderEvidence": {
+      "lines": [
+        "a1 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+        "a1 | 팀 보고 report-2: incident-1 / hall · 관측 rev 0 · 보고자 a1 · 수신확인 a2",
+        "a1 | 대피자 evacuee-1 / hall · 인솔자 a2 · rev 2",
+        "a1 | 서버 승인: 보고 incident-1",
+        "a1 | 서버 승인: 인솔 evacuee-1",
+        "a1 | 서버 승인: 인계 evacuee-1 → a2",
+        "a2 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+        "a2 | 팀 보고 report-2: incident-1 / hall · 관측 rev 0 · 보고자 a1 · 수신확인 a2",
+        "a2 | 대피자 evacuee-1 / hall · 내가 인솔 중 · rev 2",
+        "a2 | 서버 승인: 수신확인 report-2",
+        "a2 | 서버 거부(StaleTarget): 인솔 evacuee-1",
+        "b1 | 보고·수신확인·인계 · 서버 승인 상태만 표시",
+        "b1 | 대피자 evacuee-1 / hall · 인솔자 a2 · rev 2"
+      ],
+      "receiptCodes": [
+        "a1:보고:incident-1:Accepted",
+        "a2:수신확인:report-2:Accepted",
+        "a1:인솔:evacuee-1:Accepted",
+        "a2:인솔:evacuee-1:StaleTarget",
+        "a1:인계:evacuee-1:Accepted"
+      ],
+      "commitWrites": 5
+    },
+    "failedAttempts": [
+      {
+        "runId": "fmp10a-20260915T111420Z",
+        "observed": "6/6 passed with three mutation controls, but an automated review then asked for a distinct outcome for other-participant commands, a bounded wait for lost acknowledgement receipts and a narrower duplicate-id check",
+        "handling": "code and test changed; the run was repeated and only this repeated run is recorded"
+      },
+      {
+        "runId": "fmp10a-20260917T074057Z",
+        "observed": "6/6 passed with five mutation controls on the earlier develop base, but develop then gained #208 (practice and evaluation mode separation) in the same runtime file",
+        "handling": "the branch was rebased without conflicts and the run was repeated on the new develop base"
+      }
+    ],
+    "limits": [
+      "The retry window counts applied server views, not wall time; views arrive with snapshots, so the window length in seconds follows the snapshot rate.",
+      "Still no NGO transport, NetworkManager or second process; SubmitPanelCommand's transport readiness is exercised through FieldCommandPanel.Submit with a fake send.",
+      "Headless batchmode does not paint OnGUI; render evidence is FieldCommandPanel.RenderLines."
+    ]
   }
 }
