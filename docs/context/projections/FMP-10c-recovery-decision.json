@@ -53,7 +53,7 @@
     "limit": "Being in scope is authority to edit this record. It is not an approval of the policy the record describes; approved stays false."
   },
   "citations": {
-    "derivation": "Every line below was produced by a grep/scan of the file at the committed HEAD of this branch, not carried over from an earlier report.",
+    "derivation": "Every line below was produced by a scan of the file at the committed HEAD 2963d6e452d839a3a31c448a3733708ad13651eb of this branch, not carried over from an earlier report.",
     "entries": [
       {
         "symbol": "FieldCommandPanel.IsInstructor",
@@ -74,40 +74,64 @@
         "orderingClaim": "ResumeShift evaluates IsInstructor and returns null for non-instructors."
       },
       {
+        "symbol": "FieldCommandPanel.SetAdmissionDecision",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 213,
+        "orderingClaim": "SetAdmissionDecision records instructor admission review decisions and rejects non-instructor callers."
+      },
+      {
         "symbol": "FieldCommandPanel.EvaluateAdmission",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 210,
-        "orderingClaim": "EvaluateAdmission checks IsInstructor and delegates to SessionAdmission.Allows without bypass."
+        "declarationLine": 222,
+        "orderingClaim": "EvaluateAdmission checks IsInstructor, instructor admission decisions, and delegates to SessionAdmission.Allows without bypass."
       },
       {
         "symbol": "FieldCommandPanel.ApplyReceipt",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 227,
+        "declarationLine": 240,
         "orderingClaim": "ApplyReceipt records RoleDenied server rejections into Results ledger."
       },
       {
         "symbol": "FieldCommandPanel.KindLabel",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 256,
+        "declarationLine": 274,
         "orderingClaim": "KindLabel maps PauseShift to '근무정지' and ResumeShift to '근무재개'."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.SetInstructorAdmission",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 510,
+        "orderingClaim": "SetInstructorAdmission stores admission decisions in runtime and synchronizes with commandPanel."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.EvaluateConnectionApproval",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 520,
+        "orderingClaim": "EvaluateConnectionApproval enforces SessionAdmission.Allows cryptographic validation and respects instructor denial."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.Approve",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 534,
+        "orderingClaim": "Approve delegates connection evaluation to EvaluateConnectionApproval, denying unapproved or cryptographically invalid tickets."
       },
       {
         "symbol": "NetworkFieldRuntime.OnDisconnected",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 510,
+        "declarationLine": 584,
         "orderingClaim": "OnDisconnected disables participant input and revokes connection without mutating other roster roles."
       },
       {
         "symbol": "NetworkFieldRuntime.SubmitPanelCommand",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 889,
-        "orderingClaim": "SubmitPanelCommand allows instructor pause and resume commands even when local input is paused."
+        "declarationLine": 963,
+        "orderingClaim": "SubmitPanelCommand enforces snapshot freshness on ResumeShift and allows instructor PauseShift even when input is paused."
       },
       {
         "symbol": "NetworkFieldRuntime.DrawCommandPanel",
         "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
-        "declarationLine": 1184,
-        "orderingClaim": "DrawCommandPanel renders instructor control action button only when commandPanel.IsInstructor is true."
+        "declarationLine": 1263,
+        "orderingClaim": "DrawCommandPanel renders instructor pause/resume and admission review controls only when commandPanel.IsInstructor is true."
       }
     ]
   },
@@ -117,8 +141,26 @@
     "testAssembly": "ChooGuard.Foundation.Multiplayer.PlayModeTests",
     "testAssemblyDefinition": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/ChooGuard.Foundation.Multiplayer.PlayModeTests.asmdef",
     "platform": "PlayMode",
-    "platformNote": "The assembly definition declares defineConstraints: ['UNITY_INCLUDE_TESTS'], collected as PlayMode tests.",
-    "executionState": "asserted_pending_execution",
+    "platformNote": "The assembly definition declares defineConstraints: ['UNITY_INCLUDE_TESTS'], collected and verified as PlayMode tests.",
+    "executionState": "executed_verified",
+    "testedCommit": "2963d6e452d839a3a31c448a3733708ad13651eb",
+    "runner": "Unity 6000.3.23f1 (09d2ecc7fb28)",
+    "command": "<unityExe> -batchmode -nographics -projectPath <projectRoot> -runTests -testPlatform PlayMode -testFilter ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
+    "evidence": {
+      "playModeXml": {
+        "path": "docs/evidence/foundation/FMP-10c/PlayMode.xml",
+        "sha256": "567bd16902fce3cbf055b23e9fad056ee348df32968340e86c5ea4564d855b5c",
+        "total": 6,
+        "passed": 6,
+        "failed": 0,
+        "skipped": 0
+      },
+      "playModeLog": {
+        "path": "docs/evidence/foundation/FMP-10c/PlayMode.log",
+        "sha256": "495ba61227f1f422fec2dd7b216776f8a27ffb4b5e7a215ee6425be379e4e374",
+        "status": "zero_errors"
+      }
+    },
     "skipPath": {
       "state": "cannot_self_skip",
       "statement": "The fixture has zero self-skip paths. No Assert.Ignore, environment checks, or dirty-scene bailouts exist."
@@ -127,27 +169,32 @@
       {
         "id": "R1",
         "assertedBy": "InstructorPanelCanBuildAndSubmitPauseShiftAndResumeShiftCommands",
-        "state": "asserted_pending_execution"
+        "state": "executed_verified",
+        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
       },
       {
         "id": "R2",
         "assertedBy": "NonInstructorParticipantCannotBuildPauseOrResumeAndForgedCommandsRecordedAsRoleDenied",
-        "state": "asserted_pending_execution"
+        "state": "executed_verified",
+        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
       },
       {
         "id": "R3",
         "assertedBy": "AdmissionGateRequiresBothInstructorRoleAndSessionAdmissionAllowsWithoutBypass",
-        "state": "asserted_pending_execution"
+        "state": "executed_verified",
+        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
       },
       {
         "id": "R4",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
-        "state": "asserted_pending_execution"
+        "state": "executed_verified",
+        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
       },
       {
         "id": "R5",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
-        "state": "asserted_pending_execution"
+        "state": "executed_verified",
+        "verifiedInCommit": "2963d6e452d839a3a31c448a3733708ad13651eb"
       }
     ],
     "notVerified": [
