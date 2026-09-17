@@ -1,0 +1,607 @@
+{
+  "schemaVersion": "1.0",
+  "catalogId": "reviewed-incident-catalog",
+  "catalogVersion": "1.0",
+  "classification": "PUBLIC_REFERENCE_AND_SYNTHETIC_METADATA",
+  "disclaimer": "KORAIL 검증 전 예시",
+  "exaStatus": "blocked_403_1010",
+  "emptyApplicabilityMeans": "unspecified_not_universal_permission",
+  "sources": [
+    {
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "publisherOperator": "SYNTHETIC",
+      "title": "CHOOGuard Synthetic Functional Incidents Profile V1",
+      "documentRevisionDate": "2026-09-18",
+      "revisionStatus": "dated",
+      "audience": "simulation_engine",
+      "applicableOperators": [
+        "SYNTHETIC"
+      ],
+      "applicableStations": [
+        "synthetic-room"
+      ],
+      "applicableLines": [],
+      "applicableVehicles": [],
+      "applicableRoles": [],
+      "applicableIncidentKinds": [
+        "Fire",
+        "PowerLoss",
+        "PublicAddressFailure",
+        "RouteRestriction",
+        "TrainFault",
+        "EmergencyStop"
+      ],
+      "locator": "foundation/world/foundation-simulation-profile.json#Schedule.Choices",
+      "originalUrl": null,
+      "sha256": null,
+      "allowedUse": [
+        "서버 측 가상 훈련 사건 주입 및 회복 검증",
+        "기능적 시뮬레이션 제어"
+      ],
+      "limits": [
+        "공식 철도 운영기관(KORAIL/SR/HUMETRO)의 검증 또는 승인된 실제 운영 절차가 아님",
+        "게임 및 시뮬레이션 기능 시험용 합성 데이터"
+      ],
+      "retrievedAt": "2026-09-18",
+      "verification": "authored_functional_profile",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "discoveryMethod": "repository_authored_baseline"
+    },
+    {
+      "sourceId": "KORAIL-PUBLIC-REPORT",
+      "publisherOperator": "KORAIL",
+      "title": "코레일 재난관리체계",
+      "documentRevisionDate": null,
+      "revisionStatus": "undated",
+      "audience": "public_overview",
+      "applicableOperators": [
+        "KORAIL"
+      ],
+      "applicableStations": [],
+      "applicableLines": [],
+      "applicableVehicles": [],
+      "applicableRoles": [
+        "사고현장",
+        "인접역",
+        "철도교통관제",
+        "운영상황실"
+      ],
+      "applicableIncidentKinds": [
+        "경미한 사고 보고 체계"
+      ],
+      "locator": "HTML 사고 보고 체계",
+      "originalUrl": "https://info.korail.com/info/contents.do?key=969",
+      "sha256": null,
+      "allowedUse": [
+        "공개 보고 관계 참고"
+      ],
+      "limits": [
+        "개별 사고의 직원 조치·현재 부산역 조직·인계 조건은 확인하지 않았다."
+      ],
+      "retrievedAt": "2026-09-09",
+      "verification": "primary_text_checked",
+      "procedureAcceptance": "pending_operator_review",
+      "discoveryMethod": "official_web_fallback"
+    },
+    {
+      "sourceId": "KORAIL-SMS-20170526",
+      "publisherOperator": "KORAIL",
+      "title": "철도안전관리체계 프로그램",
+      "documentRevisionDate": "2017-05-26",
+      "revisionStatus": "historical",
+      "audience": "staff",
+      "applicableOperators": [
+        "KORAIL"
+      ],
+      "applicableStations": [],
+      "applicableLines": [],
+      "applicableVehicles": [],
+      "applicableRoles": [],
+      "applicableIncidentKinds": [
+        "사고·장애 보고 구조"
+      ],
+      "locator": "PDF45–47쪽 §5.1;58–59쪽 §7.1",
+      "originalUrl": "https://info.korail.com/mbs/www/jsp/contents/images/2017_26.pdf",
+      "sha256": "1ab6638142760635cb74cfa6d3fa96b92d32fcc923ce72ac9dda9104aa7661a6",
+      "allowedUse": [
+        "초동·중간·종결보고 데이터 필드",
+        "문서 수정 이력 구조"
+      ],
+      "limits": [
+        "2017년 역사적 문서이며 당시 수치·시간 제한·조직을 현재 SOP로 사용하지 않는다."
+      ],
+      "retrievedAt": "2026-09-09",
+      "verification": "primary_text_checked",
+      "procedureAcceptance": "pending_operator_review",
+      "discoveryMethod": "official_web_fallback"
+    },
+    {
+      "sourceId": "KORAIL-PM-20250925",
+      "publisherOperator": "KORAIL",
+      "title": "개인형 이동장치 화재 대응·예방 보도자료",
+      "documentRevisionDate": "2025-09-25",
+      "revisionStatus": "dated",
+      "audience": "public_overview",
+      "applicableOperators": [
+        "KORAIL"
+      ],
+      "applicableStations": [],
+      "applicableLines": [
+        "광역철도"
+      ],
+      "applicableVehicles": [
+        "전동열차"
+      ],
+      "applicableRoles": [
+        "관제",
+        "기관사",
+        "초기대응팀"
+      ],
+      "applicableIncidentKinds": [
+        "개인형 이동장치 배터리 화재"
+      ],
+      "locator": "HTML 2025-09-25 보도자료",
+      "originalUrl": "https://info.korail.com/info/selectBbsNttView.do?key=911&bbsNo=199&nttNo=25489",
+      "sha256": null,
+      "allowedUse": [
+        "역할별 개선 매뉴얼 자료 요청의 근거"
+      ],
+      "limits": [
+        "비상정차·개문에 관한 구체 기준 원문은 공개 본문에 없으므로 구현 절차를 만들어내지 않는다."
+      ],
+      "retrievedAt": "2026-09-09",
+      "verification": "primary_text_checked",
+      "procedureAcceptance": "pending_operator_review",
+      "discoveryMethod": "official_web_fallback"
+    },
+    {
+      "sourceId": "HUMETRO-PASSENGER-EMERGENCY",
+      "publisherOperator": "HUMETRO",
+      "title": "긴급상황 대피요령",
+      "documentRevisionDate": null,
+      "revisionStatus": "undated",
+      "audience": "passenger",
+      "applicableOperators": [
+        "HUMETRO"
+      ],
+      "applicableStations": [],
+      "applicableLines": [
+        "1호선",
+        "2호선",
+        "3호선",
+        "4호선"
+      ],
+      "applicableVehicles": [
+        "호선별 장치 차이 미검증"
+      ],
+      "applicableRoles": [
+        "승객"
+      ],
+      "applicableIncidentKinds": [
+        "차내 긴급상황",
+        "역사 화재"
+      ],
+      "locator": "HTML 승객행동요령",
+      "originalUrl": "https://www2.humetro.busan.kr/homepage/default/page/subLocation.do?menu_no=100101060202",
+      "sha256": null,
+      "allowedUse": [
+        "승객 안내의 적용범위 참고"
+      ],
+      "limits": [
+        "직원 지휘·보고·인계 SOP가 아니다. 호선별 장치와 정차 위치를 구분하며 현행 모든 편성 일치는 미확인이다."
+      ],
+      "retrievedAt": "2026-09-09",
+      "verification": "primary_text_checked",
+      "procedureAcceptance": "pending_operator_review",
+      "discoveryMethod": "official_web_fallback"
+    },
+    {
+      "sourceId": "SR-LARGE-ACCIDENT-20240226",
+      "publisherOperator": "SR",
+      "title": "고속철도 대형사고 현장조치 행동매뉴얼",
+      "documentRevisionDate": "2024-02-26",
+      "revisionStatus": "dated",
+      "audience": "staff",
+      "applicableOperators": [
+        "SR"
+      ],
+      "applicableStations": [
+        "수서역 임무카드의 인계 예시"
+      ],
+      "applicableLines": [
+        "SR 고속철도"
+      ],
+      "applicableVehicles": [
+        "SR 고속철도 적용범위"
+      ],
+      "applicableRoles": [
+        "초기대응반장"
+      ],
+      "applicableIncidentKinds": [
+        "대형사고"
+      ],
+      "locator": "PDF3/8/10쪽 적용·개정;166–167쪽 보고서식;179쪽 수서역 인계",
+      "originalUrl": "https://www.srail.or.kr/cms/attach/download.do?pageId=KR0701300007&atchNo=47",
+      "sha256": "b2f99b7d0820eb2ef1a670cdc1474bf7ed7ef44bb37711f6211603d86bb6772a",
+      "allowedUse": [
+        "확인/추정/미확인과 후속보고 관계의 데이터 구조 비교"
+      ],
+      "limits": [
+        "코레일 직원·부산역 임무로 전용하지 않는다. 2026년 현재 최신 유효판 여부는 확인하지 않았다."
+      ],
+      "retrievedAt": "2026-09-09",
+      "verification": "primary_text_checked",
+      "procedureAcceptance": "pending_operator_review",
+      "discoveryMethod": "official_web_fallback"
+    }
+  ],
+  "executionAllowlist": [
+    "fire-concourse",
+    "fire-mainline",
+    "power-ticket",
+    "pa-metro",
+    "blocked-connector",
+    "train-mainline-fault",
+    "train-metro-stop"
+  ],
+  "reviewedVariants": [
+    {
+      "id": "variant-fire-concourse",
+      "choiceId": "fire-concourse",
+      "kind": "Fire",
+      "kindOrdinal": 0,
+      "regionId": "station_concourse_2f",
+      "resourceKey": "station_concourse_2f",
+      "onsetTick": 1200,
+      "durationTicks": 2400,
+      "recoveryCondition": "extinguish_flame_and_clear_smoke",
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "applicability": {
+        "operator": "SYNTHETIC",
+        "stations": [
+          "synthetic-room"
+        ],
+        "lines": [],
+        "vehicles": [],
+        "roles": [
+          "role-01",
+          "role-02"
+        ]
+      },
+      "reviewStatus": "reviewed",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "isExecutionCandidate": true,
+      "rationale": "대합실 화재 시뮬레이션 합성 검토 변형. 열/연기 전파 및 피난 유도 기능 검증."
+    },
+    {
+      "id": "variant-fire-mainline",
+      "choiceId": "fire-mainline",
+      "kind": "Fire",
+      "kindOrdinal": 0,
+      "regionId": "rolling_stock_mainline",
+      "resourceKey": "rolling_stock_mainline",
+      "onsetTick": 1200,
+      "durationTicks": 2400,
+      "recoveryCondition": "train_fire_contained_passengers_evacuated",
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "applicability": {
+        "operator": "SYNTHETIC",
+        "stations": [
+          "synthetic-room"
+        ],
+        "lines": [
+          "mainline"
+        ],
+        "vehicles": [
+          "rolling_stock_mainline"
+        ],
+        "roles": [
+          "role-01",
+          "role-03"
+        ]
+      },
+      "reviewStatus": "reviewed",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "isExecutionCandidate": true,
+      "rationale": "간선 열차 차내 화재 합성 검토 변형. 승강장 대피 및 소화 조치 연계 기능 검증."
+    },
+    {
+      "id": "variant-power-ticket",
+      "choiceId": "power-ticket",
+      "kind": "PowerLoss",
+      "kindOrdinal": 1,
+      "regionId": "station_ticket_area",
+      "resourceKey": "station_ticket_area",
+      "onsetTick": 1200,
+      "durationTicks": 1800,
+      "recoveryCondition": "backup_power_restored_or_manual_gate_opened",
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "applicability": {
+        "operator": "SYNTHETIC",
+        "stations": [
+          "synthetic-room"
+        ],
+        "lines": [],
+        "vehicles": [],
+        "roles": [
+          "role-02",
+          "role-04"
+        ]
+      },
+      "reviewStatus": "reviewed",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "isExecutionCandidate": true,
+      "rationale": "매표 구역 전력 상실 합성 검토 변형. 비상 조명 및 게이트 수동 개방 연계 검증."
+    },
+    {
+      "id": "variant-pa-metro",
+      "choiceId": "pa-metro",
+      "kind": "PublicAddressFailure",
+      "kindOrdinal": 2,
+      "regionId": "metro_concourse",
+      "resourceKey": "metro_concourse",
+      "onsetTick": 1200,
+      "durationTicks": 1200,
+      "recoveryCondition": "handheld_loudspeaker_deployed_manual_broadcast",
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "applicability": {
+        "operator": "SYNTHETIC",
+        "stations": [
+          "synthetic-room"
+        ],
+        "lines": [
+          "metro"
+        ],
+        "vehicles": [],
+        "roles": [
+          "role-02",
+          "role-05"
+        ]
+      },
+      "reviewStatus": "reviewed",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "isExecutionCandidate": true,
+      "rationale": "도시철도 대합실 방송 설비 고장 합성 검토 변형. 메가폰 및 육성 안내 대체 절차 연계 검증."
+    },
+    {
+      "id": "variant-blocked-connector",
+      "choiceId": "blocked-connector",
+      "kind": "RouteRestriction",
+      "kindOrdinal": 3,
+      "regionId": "underground_connector",
+      "resourceKey": "underground_connector",
+      "onsetTick": 1200,
+      "durationTicks": 3000,
+      "recoveryCondition": "connector_debris_cleared_crowd_diverted",
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "applicability": {
+        "operator": "SYNTHETIC",
+        "stations": [
+          "synthetic-room"
+        ],
+        "lines": [],
+        "vehicles": [],
+        "roles": [
+          "role-03",
+          "role-04"
+        ]
+      },
+      "reviewStatus": "reviewed",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "isExecutionCandidate": true,
+      "rationale": "지하 연결통로 폐쇄 및 통행 제한 합성 검토 변형. 우회로 안내 및 군집 분산 검증."
+    },
+    {
+      "id": "variant-train-mainline-fault",
+      "choiceId": "train-mainline-fault",
+      "kind": "TrainFault",
+      "kindOrdinal": 4,
+      "regionId": "rolling_stock_mainline",
+      "resourceKey": "rolling_stock_mainline",
+      "onsetTick": 1200,
+      "durationTicks": 2400,
+      "recoveryCondition": "traction_fault_reset_or_shunted",
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "applicability": {
+        "operator": "SYNTHETIC",
+        "stations": [
+          "synthetic-room"
+        ],
+        "lines": [
+          "mainline"
+        ],
+        "vehicles": [
+          "rolling_stock_mainline"
+        ],
+        "roles": [
+          "role-01",
+          "role-05"
+        ]
+      },
+      "reviewStatus": "reviewed",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "isExecutionCandidate": true,
+      "rationale": "간선 열차 동력 이상 합성 검토 변형. 승강장 안전 대기 및 구원 조치 연계 검증."
+    },
+    {
+      "id": "variant-train-metro-stop",
+      "choiceId": "train-metro-stop",
+      "kind": "EmergencyStop",
+      "kindOrdinal": 5,
+      "regionId": "rolling_stock_metro",
+      "resourceKey": "rolling_stock_metro",
+      "onsetTick": 1200,
+      "durationTicks": 1800,
+      "recoveryCondition": "emergency_brake_acknowledged_track_confirmed_clear",
+      "sourceId": "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1",
+      "applicability": {
+        "operator": "SYNTHETIC",
+        "stations": [
+          "synthetic-room"
+        ],
+        "lines": [
+          "metro"
+        ],
+        "vehicles": [
+          "rolling_stock_metro"
+        ],
+        "roles": [
+          "role-01",
+          "role-02",
+          "role-03"
+        ]
+      },
+      "reviewStatus": "reviewed",
+      "procedureAcceptance": "provisional_synthetic_reviewed",
+      "isExecutionCandidate": true,
+      "rationale": "도시철도 열차 비상정차 합성 검토 변형. 방호 조치 및 승객 유도 절차 검증."
+    }
+  ],
+  "unreviewedVariants": [
+    {
+      "id": "variant-unreviewed-korail-public-report",
+      "choiceId": "unreviewed-korail-public-report",
+      "kind": "RouteRestriction",
+      "kindOrdinal": 3,
+      "regionId": "rail_terminal_public",
+      "resourceKey": "rail_terminal_public",
+      "onsetTick": 1200,
+      "durationTicks": 3600,
+      "recoveryCondition": "pending_official_operator_procedure",
+      "sourceId": "KORAIL-PUBLIC-REPORT",
+      "applicability": {
+        "operator": "KORAIL",
+        "stations": [],
+        "lines": [],
+        "vehicles": [],
+        "roles": [
+          "사고현장",
+          "인접역",
+          "철도교통관제",
+          "운영상황실"
+        ]
+      },
+      "reviewStatus": "unreviewed",
+      "procedureAcceptance": "pending_operator_review",
+      "isExecutionCandidate": false,
+      "rationale": "KORAIL 재난관리체계 공개 보고 체계 기반 미검토 변형. 현업 검수 미완료로 실행 불가."
+    },
+    {
+      "id": "variant-unreviewed-korail-sms-20170526",
+      "choiceId": "unreviewed-korail-sms-20170526",
+      "kind": "PowerLoss",
+      "kindOrdinal": 1,
+      "regionId": "station_hall_1f",
+      "resourceKey": "station_hall_1f",
+      "onsetTick": 1200,
+      "durationTicks": 3600,
+      "recoveryCondition": "pending_official_operator_procedure",
+      "sourceId": "KORAIL-SMS-20170526",
+      "applicability": {
+        "operator": "KORAIL",
+        "stations": [],
+        "lines": [],
+        "vehicles": [],
+        "roles": []
+      },
+      "reviewStatus": "unreviewed",
+      "procedureAcceptance": "pending_operator_review",
+      "isExecutionCandidate": false,
+      "rationale": "KORAIL 2017 안전관리체계 프로그램 역사적 보고 서식 기반 미검토 변형. 현재 SOP 미확인으로 실행 차단."
+    },
+    {
+      "id": "variant-unreviewed-korail-pm-20250925",
+      "choiceId": "unreviewed-korail-pm-20250925",
+      "kind": "Fire",
+      "kindOrdinal": 0,
+      "regionId": "rolling_stock_mainline",
+      "resourceKey": "rolling_stock_mainline",
+      "onsetTick": 1200,
+      "durationTicks": 3600,
+      "recoveryCondition": "pending_official_operator_procedure",
+      "sourceId": "KORAIL-PM-20250925",
+      "applicability": {
+        "operator": "KORAIL",
+        "stations": [],
+        "lines": [
+          "광역철도"
+        ],
+        "vehicles": [
+          "전동열차"
+        ],
+        "roles": [
+          "관제",
+          "기관사",
+          "초기대응팀"
+        ]
+      },
+      "reviewStatus": "unreviewed",
+      "procedureAcceptance": "pending_operator_review",
+      "isExecutionCandidate": false,
+      "rationale": "KORAIL 2025-09-25 개인형 이동장치 화재 보도자료 기반 미검토 변형. 비상정차·개문 원문 부재로 실행 불가."
+    },
+    {
+      "id": "variant-unreviewed-humetro-passenger-emergency",
+      "choiceId": "unreviewed-humetro-passenger-emergency",
+      "kind": "EmergencyStop",
+      "kindOrdinal": 5,
+      "regionId": "metro_platforms",
+      "resourceKey": "metro_platforms",
+      "onsetTick": 1200,
+      "durationTicks": 3600,
+      "recoveryCondition": "pending_official_operator_procedure",
+      "sourceId": "HUMETRO-PASSENGER-EMERGENCY",
+      "applicability": {
+        "operator": "HUMETRO",
+        "stations": [],
+        "lines": [
+          "1호선",
+          "2호선",
+          "3호선",
+          "4호선"
+        ],
+        "vehicles": [
+          "호선별 장치 차이 미검증"
+        ],
+        "roles": [
+          "승객"
+        ]
+      },
+      "reviewStatus": "unreviewed",
+      "procedureAcceptance": "pending_operator_review",
+      "isExecutionCandidate": false,
+      "rationale": "부산교통공사 긴급상황 대피요령 승객 안내 기반 미검토 변형. 승객용 안내이며 직원 SOP가 아니므로 실행 제외."
+    },
+    {
+      "id": "variant-unreviewed-sr-large-accident-20240226",
+      "choiceId": "unreviewed-sr-large-accident-20240226",
+      "kind": "TrainFault",
+      "kindOrdinal": 4,
+      "regionId": "rail_tracks_mainline",
+      "resourceKey": "rail_tracks_mainline",
+      "onsetTick": 1200,
+      "durationTicks": 3600,
+      "recoveryCondition": "pending_official_operator_procedure",
+      "sourceId": "SR-LARGE-ACCIDENT-20240226",
+      "applicability": {
+        "operator": "SR",
+        "stations": [
+          "수서역 임무카드의 인계 예시"
+        ],
+        "lines": [
+          "SR 고속철도"
+        ],
+        "vehicles": [
+          "SR 고속철도 적용범위"
+        ],
+        "roles": [
+          "초기대응반장"
+        ]
+      },
+      "reviewStatus": "unreviewed",
+      "procedureAcceptance": "pending_operator_review",
+      "isExecutionCandidate": false,
+      "rationale": "SR 2024 고속철도 대형사고 행동매뉴얼 기반 미검토 변형. 타 기관(SR) 자료이며 코레일/부산역 전용 불가로 실행 차단."
+    }
+  ]
+}

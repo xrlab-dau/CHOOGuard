@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/xrlab-dau/CHOOGuard/schemas/foundation-incident-catalog.schema.json",
+  "title": "CHOOGuard foundation incident catalog schema",
+  "description": "Reviewed and unreviewed incident catalog with public reference provenance. KORAIL 검증 전 예시.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "catalogId",
+    "catalogVersion",
+    "classification",
+    "disclaimer",
+    "exaStatus",
+    "emptyApplicabilityMeans",
+    "sources",
+    "executionAllowlist",
+    "reviewedVariants",
+    "unreviewedVariants"
+  ],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0" },
+    "catalogId": { "type": "string", "const": "reviewed-incident-catalog" },
+    "catalogVersion": { "type": "string", "const": "1.0" },
+    "classification": { "type": "string", "const": "PUBLIC_REFERENCE_AND_SYNTHETIC_METADATA" },
+    "disclaimer": { "type": "string", "const": "KORAIL 검증 전 예시" },
+    "exaStatus": { "type": "string", "const": "blocked_403_1010" },
+    "emptyApplicabilityMeans": { "type": "string", "const": "unspecified_not_universal_permission" },
+    "sources": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sourceId",
+          "publisherOperator",
+          "title",
+          "documentRevisionDate",
+          "revisionStatus",
+          "audience",
+          "applicableOperators",
+          "applicableStations",
+          "applicableLines",
+          "applicableVehicles",
+          "applicableRoles",
+          "applicableIncidentKinds",
+          "locator",
+          "originalUrl",
+          "sha256",
+          "allowedUse",
+          "limits",
+          "retrievedAt",
+          "verification",
+          "procedureAcceptance",
+          "discoveryMethod"
+        ],
+        "properties": {
+          "sourceId": { "type": "string", "minLength": 1 },
+          "publisherOperator": { "type": "string", "enum": ["KORAIL", "HUMETRO", "SR", "SYNTHETIC"] },
+          "title": { "type": "string", "minLength": 1 },
+          "documentRevisionDate": { "type": ["string", "null"] },
+          "revisionStatus": { "type": "string", "enum": ["dated", "undated", "historical"] },
+          "audience": { "type": "string", "minLength": 1 },
+          "applicableOperators": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "applicableStations": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "applicableLines": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "applicableVehicles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "applicableRoles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "applicableIncidentKinds": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "locator": { "type": "string", "minLength": 1 },
+          "originalUrl": { "type": ["string", "null"] },
+          "sha256": { "type": ["string", "null"] },
+          "allowedUse": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "limits": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "retrievedAt": { "type": "string", "minLength": 1 },
+          "verification": { "type": "string", "minLength": 1 },
+          "procedureAcceptance": { "type": "string", "minLength": 1 },
+          "discoveryMethod": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "executionAllowlist": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true
+    },
+    "reviewedVariants": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/variant" }
+    },
+    "unreviewedVariants": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/variant" }
+    }
+  },
+  "$defs": {
+    "variant": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "choiceId",
+        "kind",
+        "kindOrdinal",
+        "regionId",
+        "resourceKey",
+        "onsetTick",
+        "durationTicks",
+        "recoveryCondition",
+        "sourceId",
+        "applicability",
+        "reviewStatus",
+        "procedureAcceptance",
+        "isExecutionCandidate",
+        "rationale"
+      ],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "choiceId": { "type": "string", "minLength": 1 },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "Fire",
+            "PowerLoss",
+            "PublicAddressFailure",
+            "RouteRestriction",
+            "TrainFault",
+            "EmergencyStop"
+          ]
+        },
+        "kindOrdinal": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "regionId": {
+          "type": "string",
+          "enum": [
+            "rolling_stock_mainline",
+            "rail_tracks_mainline",
+            "rail_platforms_mainline",
+            "rail_terminal_public",
+            "station_concourse_2f",
+            "station_hall_1f",
+            "station_ticket_area",
+            "forecourt_eurasia",
+            "underground_connector",
+            "underground_shopping_passage",
+            "metro_concourse",
+            "metro_platforms",
+            "rolling_stock_metro"
+          ]
+        },
+        "resourceKey": {
+          "type": "string",
+          "enum": [
+            "rolling_stock_mainline",
+            "rail_tracks_mainline",
+            "rail_platforms_mainline",
+            "rail_terminal_public",
+            "station_concourse_2f",
+            "station_hall_1f",
+            "station_ticket_area",
+            "forecourt_eurasia",
+            "underground_connector",
+            "underground_shopping_passage",
+            "metro_concourse",
+            "metro_platforms",
+            "rolling_stock_metro"
+          ]
+        },
+        "onsetTick": { "type": "integer", "minimum": 0 },
+        "durationTicks": { "type": "integer", "minimum": 1 },
+        "recoveryCondition": { "type": "string", "minLength": 1 },
+        "sourceId": { "type": "string", "minLength": 1 },
+        "applicability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "operator",
+            "stations",
+            "lines",
+            "vehicles",
+            "roles"
+          ],
+          "properties": {
+            "operator": {
+              "type": "string",
+              "enum": ["KORAIL", "HUMETRO", "SR", "SYNTHETIC"]
+            },
+            "stations": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "lines": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "vehicles": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "roles": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          }
+        },
+        "reviewStatus": {
+          "type": "string",
+          "enum": ["reviewed", "unreviewed"]
+        },
+        "procedureAcceptance": {
+          "type": "string",
+          "enum": [
+            "provisional_synthetic_reviewed",
+            "pending_operator_review"
+          ]
+        },
+        "isExecutionCandidate": { "type": "boolean" },
+        "rationale": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}
