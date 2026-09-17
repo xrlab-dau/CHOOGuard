@@ -18,7 +18,11 @@
     "docs/evidence/foundation/FMP-10b/mutations/M03-remove-input-enabled-guard.xml",
     "docs/evidence/foundation/FMP-10b/mutations/M03-remove-input-enabled-guard.log",
     "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.xml",
-    "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.log"
+    "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.log",
+    "docs/evidence/foundation/FMP-10b/mutations/M05-cached-replay-corrupt-ledger.xml",
+    "docs/evidence/foundation/FMP-10b/mutations/M05-cached-replay-corrupt-ledger.log",
+    "docs/evidence/foundation/FMP-10b/mutations/M06-target-conflict-mutates-revision.xml",
+    "docs/evidence/foundation/FMP-10b/mutations/M06-target-conflict-mutates-revision.log"
   ],
   "status": "candidate_policy_blocker_pending_pm",
   "syntheticDisclosure": {
@@ -177,13 +181,14 @@
     "testedCommit": "d6b0bcee86a33d57eeac4e8418c08c7ddbfcca58",
     "runnerVersion": "Unity 6000.3.23f1",
     "command": "Unity.exe -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests|ChooGuard.Foundation.Tests.AuthoritativeShiftTests\" -testResults docs/evidence/foundation/FMP-10b/EditMode.xml -logFile docs/evidence/foundation/FMP-10b/EditMode.log",
-    "executedAt": "2026-09-17T04:30:28Z",
+    "executedAt": "2026-09-17T03:59:19Z",
+    "recordedAt": "2026-09-17T04:30:28Z",
     "artifacts": [
       {
         "path": "docs/evidence/foundation/FMP-10b/EditMode.xml",
         "type": "nunit3_xml",
-        "bytes": 30551,
-        "sha256": "c7f78ce0e6f8999fc537fbe2e71b799cf580add41f8f471535bdae03f4ed52ed"
+        "bytes": 30557,
+        "sha256": "d1dac7a03e214087bf085fa82493ab25cb79b5804820980f6b36c7eec1d8c309"
       },
       {
         "path": "docs/evidence/foundation/FMP-10b/EditMode.log",
@@ -274,6 +279,48 @@
             "path": "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.log",
             "bytes": 73500,
             "sha256": "d056fe761f4344e1fb337465c2f57b6bde83a52f114537c0617f29e8d3ed7950"
+          }
+        ]
+      },
+      {
+        "id": "M05",
+        "name": "Cached replay corrupt ledger sequence mutation",
+        "description": "Mutates state.Receipts[0].Sequence on cached command replay while preserving returned receipt, Sequence, and Writes. Verifies AssertReceiptLedgerAndStateEqual fails in DuplicateCommand_HandoffReplayAfterDownstreamTransfer_ReturnsOriginalReceiptWithoutRevertingOwnership.",
+        "targetFile": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+        "expectedFailingTest": "DuplicateCommand_HandoffReplayAfterDownstreamTransfer_ReturnsOriginalReceiptWithoutRevertingOwnership",
+        "actualOutcome": "failed=1, exitCode=2",
+        "revertVerified": true,
+        "artifacts": [
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M05-cached-replay-corrupt-ledger.xml",
+            "bytes": 5564,
+            "sha256": "234729b9858fb3d5a8908dfee1e798479627be29f4e94a1839be48bfc85076eb"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M05-cached-replay-corrupt-ledger.log",
+            "bytes": 51692,
+            "sha256": "a8ffb2f790d3be0ce8bffc9900106b536a61b163e4fdbd6965f14e9358fa8c49"
+          }
+        ]
+      },
+      {
+        "id": "M06",
+        "name": "TargetId conflict mutates altered target Revision mutation",
+        "description": "Mutates altered target (npc-evacuee-01) Revision on CommandIdConflict rejection while preserving rejection code and original target. Verifies Assert.That(evacuee01After.Revision, Is.EqualTo(evacuee01Before.Revision)) fails in DuplicateCommand_SingleFieldMutationConflict_RejectsWithCommandIdConflict.",
+        "targetFile": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+        "expectedFailingTest": "DuplicateCommand_SingleFieldMutationConflict_RejectsWithCommandIdConflict",
+        "actualOutcome": "failed=1, exitCode=2",
+        "revertVerified": true,
+        "artifacts": [
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M06-target-conflict-mutates-revision.xml",
+            "bytes": 5137,
+            "sha256": "00ad8391cbadf8e74b10e038730b34835764ed17813aafba8f8066e6700e2607"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M06-target-conflict-mutates-revision.log",
+            "bytes": 47659,
+            "sha256": "e30c9edc4e90b501971698da9073ad7a0f447e206dd21fa905bb282952df2d41"
           }
         ]
       }
