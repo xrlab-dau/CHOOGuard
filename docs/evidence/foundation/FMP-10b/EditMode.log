@@ -1,30 +1,30 @@
 [Licensing::Module] Trying to connect to existing licensing client channel...
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-<USER>" at "2026-09-16T06:04:42.0996892Z"
 Built from '6000.3/staging' branch; Version is '6000.3.23f1 (09d2ecc7fb28) revision 643820'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-<USER>" at "2026-09-17T01:35:51.9202589Z"
 OS: 'Windows 11  (10.0.26200) Professional' Language: 'ko' Physical Memory: 32005 MB
 BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
 System  architecture: x64
 Process architecture: x64
-Date: 2026-09-16T06:04:42Z
+Date: 2026-09-17T01:35:51Z
 [Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 37212, path: "C:/Program Files/Unity Hub/UnityLicensingClient_V1/Unity.Licensing.Client.exe")
 [Licensing::Module] LicensingClient has failed validation; ignoring
 [Licensing::Client] Handshaking with LicensingClient:
   Version:                 1.18.3+d7ffd15
-  Session Id:              0e4a8a82427b459794c933a73b1856af
-  Correlation Id:          19baaed3023a25c6faefa597730d6056
-  External correlation Id: 8025974497690475602
-  Machine Id:              NZ73yEGqQEvHOddqqOphb0riQZs=
-[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-<USER>" (connect: 0.00s, validation: 0.00s, handshake: 0.16s)
-[Licensing::IpcConnector] Successfully connected to: "LicenseClient-<USER>-notifications" at "2026-09-16T06:04:42.2626699Z"
+  Session Id:              <SESSION_ID>
+  Correlation Id:          <CORRELATION_ID>
+  External correlation Id: <EXTERNAL_CORRELATION_ID>
+  Machine Id:              <MACHINE_ID>
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-<USER>" (connect: 0.00s, validation: 0.00s, handshake: 0.07s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-<USER>" at "2026-09-17T01:35:51.9916552Z"
 [Licensing::Module] Error: Access token is unavailable; failed to update
 [Licensing::Client] Successfully resolved entitlement details
 [Licensing::Module] License group:
-  Id: 14569723082062-UnityPersXXXX
+  Id: <LICENSE_GROUP_ID>
   Product: Unity Personal
   Type: Assigned
   Expiration: Unlimited
 [Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
-[Licensing::Module] Licensing Background thread has ended after 0.17s
+[Licensing::Module] Licensing Background thread has ended after 0.08s
 
 COMMAND LINE ARGUMENTS:
 C:\Program Files\Unity 6000.3.23f1\Editor\Unity.exe
@@ -36,7 +36,7 @@ C:\Program Files\Unity 6000.3.23f1\Editor\Unity.exe
 -testPlatform
 EditMode
 -testFilter
-ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests
+ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests|ChooGuard.Foundation.Tests.AuthoritativeShiftTests
 -testResults
 docs/evidence/foundation/FMP-10b/EditMode.xml
 -logFile
@@ -79,16 +79,16 @@ Successfully changed project path to: <WORKTREE>
     "memorysetup-job-temp-allocator-block-size-background=1048576"
     "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
     "memorysetup-temp-allocator-size-cloud-worker=32768"
-Player connection [38088]  Target information:
+Player connection [44424]  Target information:
 
-Player connection [38088]  * "[IP] 172.27.193.227 [Port] 55504 [Flags] 2 [Guid] 3579633827 [EditorId] 3579633827 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-8RO47E6) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+Player connection [44424]  * "[IP] <IP> [Port] <PORT> [Flags] 2 [Guid] <GUID> [EditorId] <EDITOR_ID> [Version] <VERSION> [Id] WindowsEditor(<MACHINE>) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
 
-Player connection [38088] Host joined multi-casting on [225.0.0.222:54997]...
-Player connection [38088] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Player connection [44424] Host joined multi-casting on [<MULTICAST_ADDR>]...
+Player connection [44424] Host joined alternative multi-casting on [<MULTICAST_ADDR>]...
 Input System module state changed to: Initialized.
 [Physics::Module] Initialized fallback backend.
 [Physics::Module] Id: 0xdecafbad
-[Package Manager] Connected to IPC stream "Upm-13996" after 0.4 seconds.
+[Package Manager] Connected to IPC stream "Upm-13408" after 0.4 seconds.
 [Licensing::Client] Successfully resolved entitlement details
 Library Redirect Path: Library/
 [Physics::Module] Selected backend.
@@ -97,7 +97,7 @@ Library Redirect Path: Library/
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Refreshing native plugins compatible for Editor in 3.24 ms, found 0 plugins.
+Refreshing native plugins compatible for Editor in 3.51 ms, found 0 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.3.23f1 (09d2ecc7fb28)
 [Subsystems] Discovering subsystems at path C:/Program Files/Unity 6000.3.23f1/Editor/Data/Resources/UnitySubsystems
@@ -112,7 +112,7 @@ Initialize mono
 Mono path[0] = 'C:/Program Files/Unity 6000.3.23f1/Editor/Data/Managed'
 Mono path[1] = 'C:/Program Files/Unity 6000.3.23f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
 Mono config path = 'C:/Program Files/Unity 6000.3.23f1/Editor/Data/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56996
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=<LOOPBACK_ADDR>
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
 ImportWorker Server TCP listen port: 0
@@ -120,41 +120,41 @@ AcceleratorClientConnectionCallback - disconnected - :0
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: C:/Program Files/Unity 6000.3.23f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
-Registered in 0.009578 seconds.
-- Loaded All Assemblies, in  1.092 seconds
+Registered in 0.011645 seconds.
+- Loaded All Assemblies, in  1.168 seconds
 Native extension for WindowsStandalone target not found
 Package Manager log level set to [2]
 ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:False
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.735 seconds
-Domain Reload Profiling: 1819ms
-	BeginReloadAssembly (505ms)
+- Finished resetting the current domain, in  0.864 seconds
+Domain Reload Profiling: 2023ms
+	BeginReloadAssembly (482ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (18ms)
-	RebuildCommonClasses (87ms)
-	RebuildNativeTypeToScriptingClass (24ms)
-	initialDomainReloadingComplete (112ms)
-	LoadAllAssembliesAndSetupDomain (355ms)
-		LoadAssemblies (476ms)
+		CreateAndSetChildDomain (19ms)
+	RebuildCommonClasses (89ms)
+	RebuildNativeTypeToScriptingClass (23ms)
+	initialDomainReloadingComplete (120ms)
+	LoadAllAssembliesAndSetupDomain (444ms)
+		LoadAssemblies (452ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (348ms)
-			TypeCache.Refresh (345ms)
-				TypeCache.ScanAssembly (315ms)
+		AnalyzeDomain (423ms)
+			TypeCache.Refresh (419ms)
+				TypeCache.ScanAssembly (356ms)
 			BuildScriptInfoCaches (0ms)
-			ResolveRequiredComponents (1ms)
-	FinalizeReload (736ms)
+			ResolveRequiredComponents (2ms)
+	FinalizeReload (865ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (665ms)
+		SetupLoadedEditorAssemblies (802ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (93ms)
+			InitializePlatformSupportModulesInManaged (89ms)
 			SetLoadedEditorAssemblies (6ms)
-			BeforeProcessingInitializeOnLoad (137ms)
-			ProcessInitializeOnLoadAttributes (259ms)
-			ProcessInitializeOnLoadMethodAttributes (169ms)
+			BeforeProcessingInitializeOnLoad (244ms)
+			ProcessInitializeOnLoadAttributes (303ms)
+			ProcessInitializeOnLoadMethodAttributes (159ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (1ms)
 		ExecutionOrderSort2 (0ms)
@@ -219,245 +219,16 @@ Application.AssetDatabase Initial Refresh Start
   Git packages:
     io.livekit.livekit-sdk@https://github.com/livekit/client-sdk-unity.git#v2.0.0 (location: <WORKTREE>\Library\PackageCache\io.livekit.livekit-sdk@ae9b98b38164)
 [Subsystems] No new subsystems found in resolved package list.
-[Package Manager] Done registering packages in 0.04 seconds
+[Package Manager] Done registering packages in 0.03 seconds
 [ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
 Duplicate assembly 'System.Runtime.CompilerServices.Unsafe.dll' with different versions detected, using 'Packages/io.livekit.livekit-sdk/Runtime/Plugins/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' and ignoring 'Packages/com.unity.pipeline/Runtime/Plugins/CodeAnalysis/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.Starting: C:\Program Files\Unity 6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
 WorkingDir: <WORKTREE>
 DisplayProgressbar: Compiling Scripts
-Starting: C:\Program Files\Unity 6000.3.23f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity 6000.3.23f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
-WorkingDir: <WORKTREE>
-ExitCode: 4 Duration: 3s271ms
-Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
-[426/535    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[427/535    2s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.dll (+2 others)
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-*** Tundra requires additional run (3.19 seconds), 2 items updated, 425 evaluated
-ExitCode: 0 Duration: 0s939ms
-Starting: C:\Program Files\Unity 6000.3.23f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
-WorkingDir: <WORKTREE>
-ExitCode: 0 Duration: 6s200ms
-Finished compiling graph: 538 nodes, 7838 flattened edges (6704 ToBuild, 76 ToUse), maximum node priority 325
-[339/535    0s] WriteText Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.Tests.rsp
-[427/535    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
-[488/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.dll, with 139 defines and 130 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[489/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.pdb
-[490/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.dll
-[491/535    1s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.dll (+2 others)
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[492/535    1s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.dll (+2 others)
-[493/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Demo.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.dll, with 139 defines and 266 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[494/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.pdb
-[495/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.dll
-[496/535    0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Team.M403.Tests.dll (+2 others)
-[497/535    0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.PlayModeTests.dll (+2 others)
-[498/535    0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.Editor.dll (+2 others)
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.PlayModeTests.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[499/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Team.M403.Tests.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Team.M403.Tests.dll, with 137 defines and 268 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.Editor.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[500/535    0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.PlayModeTests.dll (+2 others)
-[501/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Demo.PlayModeTests.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.PlayModeTests.dll, with 139 defines and 260 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[502/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Team.M403.Tests.pdb
-[503/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Team.M403.Tests.dll
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.PlayModeTests.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[504/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Demo.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.Editor.dll, with 137 defines and 276 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[505/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.PlayModeTests.pdb
-[506/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.PlayModeTests.dll
-[507/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.Editor.pdb
-[508/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.Editor.dll
-[509/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Multiplayer.PlayModeTests.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.PlayModeTests.dll, with 139 defines and 261 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[510/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.PlayModeTests.pdb
-[511/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.PlayModeTests.dll
-[512/535    0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.Editor.dll (+2 others)
-[513/535    0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.Editor.Tests.dll (+2 others)
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.Editor.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.Editor.Tests.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[514/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Multiplayer.Editor.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.Editor.dll, with 137 defines and 278 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[515/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Demo.Editor.Tests.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Demo.Editor.Tests.dll, with 137 defines and 269 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[516/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.Editor.pdb
-[517/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.Editor.dll
-[518/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.Editor.Tests.dll
-[519/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Demo.Editor.Tests.pdb
-[520/535    2s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Multiplayer.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.dll, with 139 defines and 270 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[521/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.pdb
-[522/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.dll
-[523/535    1s] Csc Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll (+2 others)
-[524/535    1s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.Tests.dll (+2 others)
-[           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.Tests.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[525/535    1s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Tests.dll (+2 others)
+ExitCode: 0 Duration: 4s497ms
+[437/535    0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[531/535    3s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Tests.dll (+2 others)
 [           0s] Csc Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Tests.dll (+2 others) [CacheWrite 00000000000000000000000000000005]
-[526/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/Assembly-CSharp.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/Assembly-CSharp.dll, with 139 defines and 286 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[527/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Tests.dll (+pdb)
+[532/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Tests.dll (+pdb)
 Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Tests.dll, with 137 defines and 269 references
 
 processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
@@ -475,146 +246,124 @@ running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
 running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
 
 running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[528/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Tests.pdb
-[529/535    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.pdb
-[530/535    0s] CopyFiles Library/ScriptAssemblies/Assembly-CSharp.dll
-[531/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Tests.dll
-[532/535    0s] ILPostProcess Library/Bee/artifacts/1900b0aE.dag/post-processed/ChooGuard.Foundation.Multiplayer.Tests.dll (+pdb)
-Processing assembly Library/Bee/artifacts/1900b0aE.dag/ChooGuard.Foundation.Multiplayer.Tests.dll, with 137 defines and 272 references
-
-processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Netcode.Editor.CodeGen.INetworkMessageILPP, Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP, Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP, Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
-
-running Unity.Jobs.CodeGen.JobsILPostProcessor
-
-running Unity.Netcode.Editor.CodeGen.INetworkMessageILPP
-
-running Unity.Netcode.Editor.CodeGen.INetworkSerializableILPP
-
-running Unity.Netcode.Editor.CodeGen.NetworkBehaviourILPP
-
-running Unity.Netcode.Editor.CodeGen.RuntimeAccessModifiersILPP
-
-running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
-
-running zzzUnity.Burst.CodeGen.BurstILPostProcessor
-[533/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.Tests.pdb
-[534/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Multiplayer.Tests.dll
-*** Tundra build success (6.13 seconds), 49 items updated, 535 evaluated
-AssetDatabase: script compilation time: 11.338291s
+[533/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Tests.pdb
+[534/535    0s] CopyFiles Library/ScriptAssemblies/ChooGuard.Foundation.Tests.dll
+*** Tundra build success (4.41 seconds), 5 items updated, 535 evaluated
+AssetDatabase: script compilation time: 5.498223s
 Begin MonoManager ReloadAssembly
-Total cache size 23150176
-Total cache size after purge 23150176, took 00:00:00.1139248
-Duplicate assembly 'System.Runtime.CompilerServices.Unsafe.dll' with different versions detected, using 'Packages/io.livekit.livekit-sdk/Runtime/Plugins/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' and ignoring 'Packages/com.unity.pipeline/Runtime/Plugins/CodeAnalysis/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.- Loaded All Assemblies, in  2.771 seconds
-Start importing Assets/CHOOguardTeam using Guid(5db2d890c6d03fe40b74f14ed78e5e39) (DefaultImporter) -> (artifact id: '7741504f807a29940c8af56837734eb1') in 0.0436979 seconds
-Start importing Assets/CHOOguardTeam/Tests using Guid(22b2a331e57bced41b01fdaf615e61a2) (DefaultImporter) -> (artifact id: 'ab383d5368b2d6ea1e49205bfea9421d') in 0.0091322 seconds
-Start importing Assets/CHOOguardTeam/Art using Guid(caef1648b50fc234a9f90f199b9eb997) (DefaultImporter) -> (artifact id: 'd38001cc6e234561217714ad9bba0863') in 0.0064886 seconds
-Start importing Assets/CHOOguardTeam/Tests/M4-03 using Guid(9ad96d95ba5bc304aae86fbd9e931948) (DefaultImporter) -> (artifact id: '642ea17ccf81cc09166c5f46289fa19a') in 0.0063572 seconds
-Refreshing native plugins compatible for Editor in 41.77 ms, found 1 plugins.
+Total cache size 23836532
+Total cache size after purge 23836532, took 00:00:00.1145470
+Duplicate assembly 'System.Runtime.CompilerServices.Unsafe.dll' with different versions detected, using 'Packages/io.livekit.livekit-sdk/Runtime/Plugins/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' and ignoring 'Packages/com.unity.pipeline/Runtime/Plugins/CodeAnalysis/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.- Loaded All Assemblies, in  2.926 seconds
+Start importing Assets/CHOOguardTeam using Guid(5db2d890c6d03fe40b74f14ed78e5e39) (DefaultImporter) -> (artifact id: '7741504f807a29940c8af56837734eb1') in 0.0365042 seconds
+Start importing Assets/CHOOguardTeam/Tests using Guid(22b2a331e57bced41b01fdaf615e61a2) (DefaultImporter) -> (artifact id: 'ab383d5368b2d6ea1e49205bfea9421d') in 0.0067003 seconds
+Start importing Assets/CHOOguardTeam/Art using Guid(caef1648b50fc234a9f90f199b9eb997) (DefaultImporter) -> (artifact id: 'd38001cc6e234561217714ad9bba0863') in 0.0050461 seconds
+Start importing Assets/CHOOguardTeam/Tests/M4-03 using Guid(9ad96d95ba5bc304aae86fbd9e931948) (DefaultImporter) -> (artifact id: '642ea17ccf81cc09166c5f46289fa19a') in 0.0045233 seconds
+Refreshing native plugins compatible for Editor in 35.76 ms, found 1 plugins.
 Native extension for WindowsStandalone target not found
 Duplicate assembly 'System.Runtime.CompilerServices.Unsafe.dll' with different versions detected, using 'Packages/io.livekit.livekit-sdk/Runtime/Plugins/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' and ignoring 'Packages/com.unity.pipeline/Runtime/Plugins/CodeAnalysis/System.Runtime.CompilerServices.Unsafe.dll, AssemblyName=System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'.Start HTTP server: port:7800
 ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:False
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  4.875 seconds
-Domain Reload Profiling: 7628ms
-	BeginReloadAssembly (452ms)
+- Finished resetting the current domain, in  5.115 seconds
+Domain Reload Profiling: 8024ms
+	BeginReloadAssembly (429ms)
 		ExecutionOrderSort (0ms)
-		DisableScriptedObjects (64ms)
+		DisableScriptedObjects (49ms)
 		BackupInstance (0ms)
 		ReleaseScriptingObjects (0ms)
-		CreateAndSetChildDomain (73ms)
-	RebuildCommonClasses (72ms)
+		CreateAndSetChildDomain (56ms)
+	RebuildCommonClasses (70ms)
 	RebuildNativeTypeToScriptingClass (22ms)
-	initialDomainReloadingComplete (79ms)
-	LoadAllAssembliesAndSetupDomain (2128ms)
-		LoadAssemblies (2041ms)
+	initialDomainReloadingComplete (83ms)
+	LoadAllAssembliesAndSetupDomain (2304ms)
+		LoadAssemblies (2094ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (335ms)
-			TypeCache.Refresh (293ms)
-				TypeCache.ScanAssembly (278ms)
-			BuildScriptInfoCaches (35ms)
+		AnalyzeDomain (452ms)
+			TypeCache.Refresh (406ms)
+				TypeCache.ScanAssembly (391ms)
+			BuildScriptInfoCaches (39ms)
 			ResolveRequiredComponents (2ms)
-	FinalizeReload (4876ms)
+	FinalizeReload (5116ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (4637ms)
+		SetupLoadedEditorAssemblies (4850ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (42ms)
-			SetLoadedEditorAssemblies (4ms)
-			BeforeProcessingInitializeOnLoad (259ms)
-			ProcessInitializeOnLoadAttributes (4204ms)
-			ProcessInitializeOnLoadMethodAttributes (102ms)
-			AfterProcessingInitializeOnLoad (24ms)
+			InitializePlatformSupportModulesInManaged (49ms)
+			SetLoadedEditorAssemblies (6ms)
+			BeforeProcessingInitializeOnLoad (271ms)
+			ProcessInitializeOnLoadAttributes (4403ms)
+			ProcessInitializeOnLoadMethodAttributes (100ms)
+			AfterProcessingInitializeOnLoad (22ms)
 			EditorAssembliesLoaded (1ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (42ms)
-Start importing Assets/Resources using Guid(424f677a9d13d6a44bdfd3cf51c16b3b) (DefaultImporter) -> (artifact id: '3f6bc3c2c98fa34f5535e96633b8f4e8') in 0.0071183 seconds
-Start importing Assets/Resources/LiveKitSdkVersionInfo.txt using Guid(7fb674dc4c9edca4c856f0ef0cc0df3e) (TextScriptImporter) -> (artifact id: 'b8a8423bf7e701951a0fbd01fd4239d0') in 0.0267555 seconds
-Start importing Assets/DefaultNetworkPrefabs.asset using Guid(bde757fa2db24f347a6f7f653b7b904f) (NativeFormatImporter) -> (artifact id: 'b12e2e950daca68b7db55d41f8adda25') in 0.0046553 seconds
-Refreshing native plugins compatible for Editor in 8.33 ms, found 1 plugins.
-Preloading 1 native plugins for Editor in 0.35 ms.
-Asset Pipeline Refresh (id=01c41b814cf4b3f47becc9d90403b21f): Total: 21.020 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+		AwakeInstancesAfterBackupRestoration (36ms)
+Start importing Assets/Resources using Guid(424f677a9d13d6a44bdfd3cf51c16b3b) (DefaultImporter) -> (artifact id: '3f6bc3c2c98fa34f5535e96633b8f4e8') in 0.0068388 seconds
+Start importing Assets/Resources/LiveKitSdkVersionInfo.txt using Guid(7fb674dc4c9edca4c856f0ef0cc0df3e) (TextScriptImporter) -> (artifact id: 'b8a8423bf7e701951a0fbd01fd4239d0') in 0.023626 seconds
+Start importing Assets/DefaultNetworkPrefabs.asset using Guid(bde757fa2db24f347a6f7f653b7b904f) (NativeFormatImporter) -> (artifact id: 'b12e2e950daca68b7db55d41f8adda25') in 0.0048824 seconds
+Refreshing native plugins compatible for Editor in 7.42 ms, found 1 plugins.
+Preloading 1 native plugins for Editor in 0.19 ms.
+Asset Pipeline Refresh (id=1b0f92a48a6748d41994910d05493f1f): Total: 15.514 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
 	Summary:
 		Imports: total=9 (actual=7, local cache=2, cache server=0)
-		Asset DB Process Time: managed=8 ms, native=6326 ms
-		Asset DB Callback time: managed=411 ms, native=73 ms
-		Scripting: domain reloads=1, domain reload time=2772 ms, compile time=11341 ms, other=85 ms
+		Asset DB Process Time: managed=6 ms, native=6518 ms
+		Asset DB Callback time: managed=382 ms, native=101 ms
+		Scripting: domain reloads=1, domain reload time=2926 ms, compile time=5500 ms, other=77 ms
 		Project Asset Count: scripts=475, non-scripts=279
-		Asset File Changes: new=5, changed=14, moved=0, deleted=3
+		Asset File Changes: new=3, changed=8, moved=0, deleted=3
 		Scan Filter Count: 2
 	InvokeCustomDependenciesCallbacks: 0.003ms
-	InvokePackagesCallback: 61.403ms
-	ApplyChangesToAssetFolders: 1.836ms
-	Scan: 309.166ms
-	OnSourceAssetsModified: 3.119ms
-	CategorizeAssetsWithTransientArtifact: 213.400ms
-	ProcessAssetsWithTransientArtifactChanges: 56.282ms
+	InvokePackagesCallback: 52.420ms
+	ApplyChangesToAssetFolders: 1.856ms
+	Scan: 355.601ms
+	OnSourceAssetsModified: 2.825ms
+	CategorizeAssetsWithTransientArtifact: 200.525ms
+	ProcessAssetsWithTransientArtifactChanges: 83.881ms
 	UnregisterDeletedAssets: 0.003ms
-	CategorizeAssets: 13.177ms
-	ImportOutOfDateAssets: 5287.768ms (-6174.567ms without children)
-		ImportManagerImport: 118.256ms (10.039ms without children)
-			ImportInProcess: 108.020ms
-			UpdateCategorizedAssets: 0.197ms
-		CompileScripts: 11341.163ms
+	CategorizeAssets: 10.138ms
+	ImportOutOfDateAssets: 5471.324ms (-130.837ms without children)
+		ImportManagerImport: 99.563ms (7.603ms without children)
+			ImportInProcess: 91.494ms
+			UpdateCategorizedAssets: 0.466ms
+		CompileScripts: 5500.042ms
 		ReloadNativeAssets: 0.025ms
-		UnloadImportedAssets: 1.132ms
+		UnloadImportedAssets: 1.040ms
 		ReloadImportedAssets: 0.001ms
-		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.800ms
-		InitializingProgressBar: 0.023ms
-		PostProcessAllAssetNotificationsAddChangedAssets: 0.003ms
-		OnDemandSchedulerStart: 0.931ms
-	PostProcessAllAssets: 483.828ms
-	Hotreload: 13.605ms
-	GatherAllCurrentPrimaryArtifactRevisions: 0.088ms
-	UnloadStreamsBegin: 2.743ms
-	PersistCurrentRevisions: 0.291ms
-	UnloadStreamsEnd: 0.005ms
-	GenerateScriptTypeHashes: 0.529ms
-	Untracked: 14572.892ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.402ms
+		InitializingProgressBar: 0.032ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.004ms
+		OnDemandSchedulerStart: 1.053ms
+	PostProcessAllAssets: 451.269ms
+	Hotreload: 49.941ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.073ms
+	UnloadStreamsBegin: 2.495ms
+	PersistCurrentRevisions: 0.288ms
+	UnloadStreamsEnd: 0.004ms
+	GenerateScriptTypeHashes: 0.388ms
+	Untracked: 8831.763ms
 
 Application.AssetDatabase Initial Refresh End
-Scanning for USB devices : 27.096ms
+Scanning for USB devices : 5.639ms
 Initializing Unity extensions:
 [MODES] ModeService[none].Initialize
 [MODES] ModeService[none].LoadModes
 [MODES] Loading mode Default (0) for mode-current-id-CHOOguard Foundation
 Unloading 3 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 4137 unused Assets / (2.1 MB). Loaded Objects now: 2685.
-Memory consumption went from 116.8 MB to 114.8 MB.
-Total: 14.256400 ms (FindLiveObjects: 0.681300 ms CreateObjectMapping: 0.231100 ms MarkObjects: 10.703000 ms  DeleteObjects: 2.638200 ms)
+Unloading 4137 unused Assets / (2.0 MB). Loaded Objects now: 2685.
+Memory consumption went from 124.6 MB to 122.6 MB.
+Total: 11.881200 ms (FindLiveObjects: 0.497100 ms CreateObjectMapping: 0.179900 ms MarkObjects: 8.331000 ms  DeleteObjects: 2.870700 ms)
 
 Microsoft Media Foundation video decoding to texture disabled: graphics device is Null, only Direct3D 11 and Direct3D 12 (only on desktop) are supported for hardware-accelerated video decoding.
-[Project] Loading completed in 25.581 seconds
-	Project init time: 				24.965 seconds
+[Project] Loading completed in 20.272 seconds
+	Project init time: 				19.695 seconds
 		Template init time: 		0.000 seconds
-		Package Manager init time: 		0.445 seconds
-		Asset Database init time: 		0.789 seconds
-		Global illumination init time: 	0.019 seconds
-		Assemblies load time: 			1.897 seconds
+		Package Manager init time: 		0.413 seconds
+		Asset Database init time: 		0.893 seconds
+		Global illumination init time: 	0.017 seconds
+		Assemblies load time: 			2.088 seconds
 		Unity extensions init time: 	0.004 seconds
-		Asset Database refresh time: 	21.020 seconds
-	Scene opening time: 			0.255 seconds
-##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1789538707652,"processId":13996,"projectLoad":25.5814215,"projectInit":24.9650694,"templateInit":0.0,"packageManagerInit":0.4452164,"assetDatabaseInit":0.7885405,"globalIlluminationInit":0.0194626,"assembliesLoad":1.8965399,"unityExtensionsInit":0.0038995,"assetDatabaseRefresh":21.0203825,"sceneOpening":0.25479}
-##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1789538707652,"processId":13996,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
+		Asset Database refresh time: 	15.515 seconds
+	Scene opening time: 			0.220 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1789608972126,"processId":13408,"projectLoad":20.2719314,"projectInit":19.6952818,"templateInit":0.0,"packageManagerInit":0.4128414,"assetDatabaseInit":0.892561,"globalIlluminationInit":0.0169269,"assembliesLoad":2.0883897,"unityExtensionsInit":0.003868,"assetDatabaseRefresh":15.5153653,"sceneOpening":0.2202337}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1789608972126,"processId":13408,"editorVersion":"6000.3.23f1 (09d2ecc7fb28)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
 [Licensing::Client] Successfully resolved entitlement details
 Running tests for ExecutionSettings with details:
 targetPlatform = 
@@ -624,7 +373,7 @@ filters[0] =
    testMode = EditMode
    targetPlatform = 
    testNames = null
-   groupNames = ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests
+   groupNames = ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests|ChooGuard.Foundation.Tests.AuthoritativeShiftTests
    categoryNames = null
    assemblyNames = null
 ignoreTests = {}
@@ -643,11 +392,11 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 (Filename: ./Library/PackageCache/com.unity.test-framework@bd7f943e9647/UnityEditor.TestRunner/CommandLineTest/Executer.cs Line: 53)
 
 [UnityConnectServicesConfig] config is NOT valid, switching to default
-Created GICache directory at <USERPROFILE>/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.071s, timestamps: [25.588 - 25.658]
+Created GICache directory at <USERPROFILE>/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.052s, timestamps: [20.277 - 20.330]
 Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 0 unused Assets / (43.9 KB). Loaded Objects now: 2705.
-Memory consumption went from 108.1 MB to 108.1 MB.
-Total: 11.729500 ms (FindLiveObjects: 0.190200 ms CreateObjectMapping: 0.050900 ms MarkObjects: 11.476500 ms  DeleteObjects: 0.010400 ms)
+Memory consumption went from 115.8 MB to 115.8 MB.
+Total: 11.127900 ms (FindLiveObjects: 0.318200 ms CreateObjectMapping: 0.078200 ms MarkObjects: 10.717100 ms  DeleteObjects: 0.011500 ms)
 
 Executing IPrebuildSetup for: Unity.PerformanceTesting.Editor.TestRunBuilder.
 UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
@@ -683,8 +432,8 @@ UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
 
 Unloading 0 Unused Serialized files (Serialized files now loaded: 0)
 Unloading 0 unused Assets / (0 B). Loaded Objects now: 2705.
-Memory consumption went from 106.2 MB to 106.2 MB.
-Total: 12.394000 ms (FindLiveObjects: 0.126600 ms CreateObjectMapping: 0.049900 ms MarkObjects: 12.207000 ms  DeleteObjects: 0.009100 ms)
+Memory consumption went from 113.9 MB to 113.9 MB.
+Total: 11.999500 ms (FindLiveObjects: 0.132700 ms CreateObjectMapping: 0.049200 ms MarkObjects: 11.804100 ms  DeleteObjects: 0.011800 ms)
 
 DisplayProgressbar: Undo
 Test run completed. Exiting with code 0 (Ok). Run completed.
@@ -706,11 +455,11 @@ Pipeline Server stopped
 Input System module state changed to: ShutdownInProgress.
 Input System polling thread exited.
 Input System module state changed to: Shutdown.
-[Licensing::IpcConnector] LicenseClient-<USER>-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-<USER> channel disconnected successfully.
 [Licensing::IpcConnector] LicenseClient-<USER> channel disconnected successfully.
 AcceleratorClientConnectionCallback - disconnected - :0
 Cleanup mono
 Checking for leaked weakptr:
   Found no leaked weakptrs.
 [Package Manager] Server process was shutdown
-##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1789538711250,"processId":13996,"allocatedMemory":11089091,"memoryLabels":[{"Default":14409},{"Permanent":15236},{"NewDelete":67595},{"Thread":4230344},{"Manager":33501},{"VertexData":8},{"Geometry":816},{"Texture":296},{"Shader":79359},{"Material":24},{"GfxDevice":55872},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":720},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"ScriptingNativeRuntime":155060},{"BaseObject":1620208},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":1016},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":14097},{"DynamicArray":98098},{"HashMap":77967},{"Utility":2660822},{"Curl":2498},{"PoolAlloc":2104},{"AI":80},{"TypeTree":11341},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":288},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":336},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":108081},{"VersionControl":4},{"Undo":947},{"AssetDatabase":1267593},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":268},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3240},{"Licensing":12576},{"AssetReference":32},{"IPCStream":32}]}
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1789608975703,"processId":13408,"allocatedMemory":11089091,"memoryLabels":[{"Default":14409},{"Permanent":15236},{"NewDelete":67595},{"Thread":4230344},{"Manager":33501},{"VertexData":8},{"Geometry":816},{"Texture":296},{"Shader":79359},{"Material":24},{"GfxDevice":55872},{"Animation":392},{"Audio":3040},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":720},{"Input":14984},{"JobScheduler":33024},{"TextLib":280},{"Mono":32},{"ScriptingNativeRuntime":155060},{"BaseObject":1620208},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":1016},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":14097},{"DynamicArray":98098},{"HashMap":77967},{"Utility":2660822},{"Curl":2498},{"PoolAlloc":2104},{"AI":80},{"TypeTree":11341},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":288},{"WebRequest":552},{"VR":47994},{"SceneManager":504},{"Video":64},{"LazyScriptCache":32},{"Camera":17},{"Secure":2377},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":336},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":96},{"EditorUtility":108081},{"VersionControl":4},{"Undo":947},{"AssetDatabase":1267593},{"EditorGi":328},{"UnityConnect":29232},{"Upm":1896},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":268},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3240},{"Licensing":12576},{"AssetReference":32},{"IPCStream":32}]}

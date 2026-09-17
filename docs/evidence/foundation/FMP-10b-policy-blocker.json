@@ -10,7 +10,15 @@
     "artifact:135:fmp10b-authority-tests:candidate",
     "artifact:135:fmp10b-policy-blocker:candidate",
     "docs/evidence/foundation/FMP-10b/EditMode.xml",
-    "docs/evidence/foundation/FMP-10b/EditMode.log"
+    "docs/evidence/foundation/FMP-10b/EditMode.log",
+    "docs/evidence/foundation/FMP-10b/mutations/M01-interaction-radius-5.xml",
+    "docs/evidence/foundation/FMP-10b/mutations/M01-interaction-radius-5.log",
+    "docs/evidence/foundation/FMP-10b/mutations/M02-remove-region-guard.xml",
+    "docs/evidence/foundation/FMP-10b/mutations/M02-remove-region-guard.log",
+    "docs/evidence/foundation/FMP-10b/mutations/M03-remove-input-enabled-guard.xml",
+    "docs/evidence/foundation/FMP-10b/mutations/M03-remove-input-enabled-guard.log",
+    "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.xml",
+    "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.log"
   ],
   "status": "candidate_policy_blocker_pending_pm",
   "syntheticDisclosure": {
@@ -51,26 +59,26 @@
     },
     {
       "id": "handoff_recipient_input_disabled",
-      "name": "Inactive recipient handoff rejection",
-      "behavior": "Handoff to a recipient whose InputEnabled is false (paused/inactive) is rejected with OutOfReach. Evacuee leader, revision, world sequence, ledger, and sink writes remain strictly unchanged. Re-enabling input allows subsequent handoff to succeed.",
+      "name": "Inactive recipient handoff rejection and ledger immutability",
+      "behavior": "Handoff to a recipient whose InputEnabled is false is rejected with OutOfReach. Evacuee leader, revision, world sequence, receipt ledger entries, and sink writes remain strictly unchanged. Re-enabling input allows subsequent handoff to succeed.",
       "testMethod": "ExplicitHandoff_RecipientInputDisabled_RejectedWithOutOfReach"
     },
     {
       "id": "region_boundary_same_coordinates_diff_region",
       "name": "Schema 1 region boundary rejection at zero distance",
-      "behavior": "In SchemaVersion 1, when actor and target share identical 3D coordinates (distance = 0) but reside in different RegionIds, InReach fails and the command is rejected with OutOfReach.",
+      "behavior": "In SchemaVersion 1, when actor and target share identical 3D coordinates (distance = 0) but reside in different RegionIds, InReach fails and the command is rejected with OutOfReach, leaving state and ledger unmodified.",
       "testMethod": "RegionBoundary_SameCoordinatesDifferentRegion_RejectedWithOutOfReachInSchema1"
     },
     {
       "id": "distance_boundary_actor_precision",
       "name": "Actor interaction radius boundary precision (2.5m threshold)",
-      "behavior": "Actor reachability to target evacuee accepts claims at 2.49m (2.5 - epsilon) and exactly 2.50m (threshold boundary), but rejects claims at 2.51m (2.5 + epsilon) with OutOfReach, leaving state and revision unmodified.",
+      "behavior": "Actor reachability to target evacuee accepts claims at 2.49m (2.5 - epsilon) and exactly 2.50m (threshold boundary), but rejects claims at 2.51m (2.5 + epsilon) with OutOfReach, strictly preserving state, revision, and ledger.",
       "testMethod": "DistanceBoundary_InteractionRadiusPrecision_AcceptsAtAndBelow2Point5_RejectsAbove"
     },
     {
       "id": "distance_boundary_recipient_precision",
       "name": "Recipient interaction radius boundary precision (2.5m threshold)",
-      "behavior": "Recipient reachability during handoff accepts transfers at 2.49m and 2.50m, but rejects transfers at 2.51m with OutOfReach, leaving leader, revision, sequence, and ledger unmodified.",
+      "behavior": "Recipient reachability during handoff accepts transfers at 2.49m and 2.50m, but rejects transfers at 2.51m with OutOfReach, strictly preserving leader, revision, sequence, ledger entries, and sink writes.",
       "testMethod": "DistanceBoundary_RecipientReachabilityPrecision_AcceptsAtAndBelow2Point5_RejectsAbove"
     },
     {
@@ -81,8 +89,8 @@
     },
     {
       "id": "duplicate_command_single_field_conflicts",
-      "name": "Single-field command ID mutation conflicts",
-      "behavior": "Reusing existing CommandId while mutating exactly one field independently (Kind, TargetId, ExpectedRevision, Argument) produces CommandIdConflict across all 4 independent single-field variants, leaving state and ledger unmodified.",
+      "name": "Single-field command ID mutation conflicts and state/ledger immutability",
+      "behavior": "Reusing existing CommandId while mutating exactly one field independently (Kind, TargetId, ExpectedRevision, Argument) produces CommandIdConflict across all 4 independent single-field variants, with full assertions confirming entity state, world sequence, receipt ledger, and sink writes are unmodified. Resubmitting the original unmutated command returns original cached receipt and fingerprint.",
       "testMethod": "DuplicateCommand_SingleFieldMutationConflict_RejectsWithCommandIdConflict"
     },
     {
@@ -109,8 +117,8 @@
       "id": "PB-01",
       "title": "인솔자 세션 접속 종료 및 입력 비활성화(Disconnection / InputPaused) 시 NPC 고착 블로커",
       "currentBehavior": "인솔자 세션의 입력이 비활성화(InputEnabled = false)되었을 때의 명령 계층 동작은 검증되었습니다: 인솔자 본인은 InputPaused로 인해 인계(HandOff) 명령을 실행할 수 없고, 다른 참가자들은 AlreadyClaimed로 인해 인솔(Claim)할 수 없으며 RoleDenied로 인해 인계를 수행할 수도 없어 NPC가 고착됩니다. 단, 이는 SetInputEnabled(false)에 의한 메모리 내 명령 계층 단위시험으로 확인된 사실이며, 실제 전송 계층 소켓 연결 종료(Socket Drop), 네트워크 타임아웃 감지 및 세션 재접속 시의 처리 로직은 본 시험 범위에 포함되지 않은 미검증 가설(Untested Hypothesis)입니다.",
-      "architecturalBoundary": "AuthoritativeShift.cs line 166 (InputEnabled check) and line 250/254 (LeaderId and ownership check).",
-      "impact": "멀티플레이어 대피 훈련 도중 인솔자 세션이 끊기면 대피 대상 NPC가 그 자리에 멈춰 훈련 진행이 중단됩니다.",
+      "architecturalBoundary": "AuthoritativeShift.cs line 186 (InputEnabled check) and line 287 (next.InputEnabled check).",
+      "impact": "실제 전송 계층의 연결 끊김(Disconnection)이 인솔자의 입력 비활성화(InputEnabled = false)로 매핑되고 별도의 타임아웃/강제 해제 메커니즘이 동작하지 않을 경우, NPC 인솔권이 회복되지 않고 고착되어 대피 훈련 진행이 중단될 잠재적 위험이 있습니다 (단, 실제 전송 계층 소켓 단절 및 재접속/복구 경로는 본 단위 시험에서 검증되지 않은 미검증 가설입니다).",
       "decisionNeededFrom": "role:pm",
       "proposedOptions": [
         {
@@ -134,8 +142,8 @@
       "id": "PB-02",
       "title": "인솔자의 단독 구역 이동(Region Movement / Portal Traversal) 시 사거리 초과 블로커",
       "currentBehavior": "SchemaVersion 1 명령 계층 단위시험에서 확인된 사실: 인솔자와 NPC의 거리가 2.5m를 초과(distance > 2.5m)하거나 구역(RegionId)이 불일치하면 InReach 검사에서 OutOfReach로 즉시 거부되며, 동료는 AlreadyClaimed로 인해 인솔할 수 없습니다(정확히 2.5m 이하는 허용). 단, 본 검증은 actor만 수동 이동하고 물리 시뮬레이션(Physics Tick) 및 포털 통과 로직을 실행하지 않은 in-process 단위 시험입니다. 실제 AuthoritativeShift.cs의 InReach 구현은 `(SchemaVersion == 3 || actor.RegionId == target.RegionId) && distance <= radius`이므로, SchemaVersion 3에서는 구역 불일치만으로 즉시 거부되지 않습니다. 따라서 포털 통과 시 NPC 추종 실패나 13개 구역 간 고립 여부는 실제 물리/포털 런타임 검증이 필요한 미검증 추론(Inferred/Untested)입니다.",
-      "architecturalBoundary": "AuthoritativeShift.cs line 235 (InReach check) and line 375 (RegionId / InteractionRadius comparison).",
-      "impact": "13개 구역 간 대피 과정에서 인솔자가 포털을 단독 통과하면 NPC가 고립되고 인계 경로가 단절됩니다.",
+      "architecturalBoundary": "AuthoritativeShift.cs line 413 (InReach comparison) and line 287 (next InReach check).",
+      "impact": "SchemaVersion 1 명령 계층 단위 시험 규칙(동일 RegionId 필수)이 실제 훈련 환경에 그대로 적용될 경우, 인솔자가 포털 통과 시 NPC가 이전 구역에 남아 인계 경로가 단절될 위험이 있습니다. 단, SchemaVersion 3의 실제 InReach 구현은 거리 기반(distance <= 2.5m)으로 구역 불일치만으로 거부되지 않으며, 포털 통과 시 NPC 물리 동반 추종 및 구역 고립 여부는 물리 시뮬레이션 및 포털 런타임 검증이 필요한 미검증 추론(Inferred/Untested)입니다.",
       "decisionNeededFrom": "role:pm",
       "proposedOptions": [
         {
@@ -157,28 +165,117 @@
     }
   ],
   "verification": {
-    "testClass": "ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests",
+    "testClasses": [
+      "ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests",
+      "ChooGuard.Foundation.Tests.AuthoritativeShiftTests"
+    ],
     "testPlatform": "EditMode",
-    "total": 14,
-    "passed": 14,
+    "total": 37,
+    "passed": 37,
     "failed": 0,
     "skipped": 0,
-    "testedCommit": "2c9291f5325fc025cbf96aadcac4f4ad551471ad",
+    "testedCommit": "528cb54045f2a15c3ec0b0164c0fc8cb267e74d3",
     "runnerVersion": "Unity 6000.3.23f1",
-    "command": "Unity.exe -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests -testResults docs/evidence/foundation/FMP-10b/EditMode.xml -logFile docs/evidence/foundation/FMP-10b/EditMode.log",
-    "executedAt": "2026-09-16T06:05:10Z",
+    "command": "Unity.exe -batchmode -nographics -projectPath . -runTests -testPlatform EditMode -testFilter \"ChooGuard.Foundation.Tests.FMP10bHandoffBoundaryTests|ChooGuard.Foundation.Tests.AuthoritativeShiftTests\" -testResults docs/evidence/foundation/FMP-10b/EditMode.xml -logFile docs/evidence/foundation/FMP-10b/EditMode.log",
+    "executedAt": "2026-09-17T01:36:00Z",
     "artifacts": [
       {
         "path": "docs/evidence/foundation/FMP-10b/EditMode.xml",
         "type": "nunit3_xml",
-        "bytes": 14049,
-        "sha256": "2308ba34f625eada63f0f033b3889d6763f8811d862f6a12f3238492fda36f6f"
+        "bytes": 30557,
+        "sha256": "263a1d0377bf7972cc3d7d74b48742e289f5f54d4f29b77bb7c18e47f72c1476"
       },
       {
         "path": "docs/evidence/foundation/FMP-10b/EditMode.log",
         "type": "unity_editor_log",
-        "bytes": 50661,
-        "sha256": "97a07c94a3160bfbe5cda55059550717a655432c73066f1affd145a27f679d6d"
+        "bytes": 33728,
+        "sha256": "639dac629921810bc00645c273dee95da1696e70682753066bcf99ae2e8ba622"
+      }
+    ],
+    "mutations": [
+      {
+        "id": "M01",
+        "name": "InteractionRadius 2.5m -> 5.0m mutation",
+        "description": "Mutates AuthoritativeShift.InteractionRadius from 2.5 to 5.0. Verifies DistanceBoundary precision test fails at 2.51m.",
+        "targetFile": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+        "expectedFailingTest": "DistanceBoundary_InteractionRadiusPrecision_AcceptsAtAndBelow2Point5_RejectsAbove",
+        "actualOutcome": "failed=1, exitCode=2",
+        "revertVerified": true,
+        "artifacts": [
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M01-interaction-radius-5.xml",
+            "bytes": 5075,
+            "sha256": "99822857b964693e10193a9f068c56b60687c5ad6c20aa45b58505e653c69659"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M01-interaction-radius-5.log",
+            "bytes": 77950,
+            "sha256": "547a5c5d60d9b4875549f91864f61ddbd04c426184915b16c41f21e373e24518"
+          }
+        ]
+      },
+      {
+        "id": "M02",
+        "name": "Remove legacy region equality guard mutation",
+        "description": "Removes (state.SchemaVersion == 3 || actor.RegionId == target.RegionId) in InReach. Verifies RegionBoundary test fails at zero distance with different region.",
+        "targetFile": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+        "expectedFailingTest": "RegionBoundary_SameCoordinatesDifferentRegion_RejectedWithOutOfReachInSchema1",
+        "actualOutcome": "failed=1, exitCode=2",
+        "revertVerified": true,
+        "artifacts": [
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M02-remove-region-guard.xml",
+            "bytes": 5092,
+            "sha256": "f5ec79acf8ce9024585b7cbcb4fb9a7efa87de6aeaf9aea01b7fed9478bc5b9f"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M02-remove-region-guard.log",
+            "bytes": 78453,
+            "sha256": "b5b42a2087de5efbf43dafed41877ebaffc7724c7019cabf0ead77659c47605b"
+          }
+        ]
+      },
+      {
+        "id": "M03",
+        "name": "Remove recipient InputEnabled guard mutation",
+        "description": "Removes !next.InputEnabled check in AuthoritativeShift.Prepare. Verifies ExplicitHandoff_RecipientInputDisabled test fails.",
+        "targetFile": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+        "expectedFailingTest": "ExplicitHandoff_RecipientInputDisabled_RejectedWithOutOfReach",
+        "actualOutcome": "failed=1, exitCode=2",
+        "revertVerified": true,
+        "artifacts": [
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M03-remove-input-enabled-guard.xml",
+            "bytes": 5006,
+            "sha256": "35d81b5a9f28a94e923e315b5c7db0733ff7515bc9770cbdf92ba52524214ade"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M03-remove-input-enabled-guard.log",
+            "bytes": 73461,
+            "sha256": "f46c5db414f3b8d2d2a7e78645bf4bdbff5694defeeaa31c442ce7b2a838d772"
+          }
+        ]
+      },
+      {
+        "id": "M04",
+        "name": "Omit ExpectedRevision from Fingerprint mutation",
+        "description": "Omits c.ExpectedRevision from Fingerprint calculation. Verifies DuplicateCommand single-field ExpectedRevision mutation conflict fails.",
+        "targetFile": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+        "expectedFailingTest": "DuplicateCommand_SingleFieldMutationConflict_RejectsWithCommandIdConflict",
+        "actualOutcome": "failed=1, exitCode=2",
+        "revertVerified": true,
+        "artifacts": [
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.xml",
+            "bytes": 5070,
+            "sha256": "71c43f109bf04be394e9efe2113580d8b8d778f60b3602791e284484bf4bfd3d"
+          },
+          {
+            "path": "docs/evidence/foundation/FMP-10b/mutations/M04-omit-revision-from-fingerprint.log",
+            "bytes": 73500,
+            "sha256": "d056fe761f4344e1fb337465c2f57b6bde83a52f114537c0617f29e8d3ed7950"
+          }
+        ]
       }
     ]
   }
