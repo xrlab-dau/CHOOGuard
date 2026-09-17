@@ -50,7 +50,11 @@ def load_suppliers():
     if digest((REPO / CONTRACT).read_bytes().replace(b'\r\n', b'\n')) != _contract_hash:
         raise Refused('cannot_proceed: supplier_contract_drift')
     for path, row in _bindings.items():
-        if digest((REPO / path).read_bytes().replace(b'\r\n', b'\n')) != row['sha256']:
+        try:
+            current = (REPO / path).read_bytes().replace(b'\r\n', b'\n')
+        except OSError:
+            raise Refused('cannot_proceed: supplier_source_drift') from None
+        if digest(current) != row['sha256']:
             raise Refused('cannot_proceed: supplier_source_drift')
         compile((REPO / path).read_bytes(), path, 'exec')
     if native is None:
