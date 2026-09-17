@@ -9,9 +9,15 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import shutil
+import subprocess
 
 REPO = Path(__file__).resolve().parents[3]
 RESERVED = {'input', 'execution', 'evidence', 'request.json'}
+CONTRACT = 'docs/team/M1-07/review-contract.json'
+SUPPLIERS = ('scripts/dev/native_manifest.py', 'scripts/team/M1-02/permission_boundary.py',
+             'scripts/bootstrap/verify_toolchain.py')
+_bindings = None
+_contract_hash = None
 
 
 def module(name, relative):
@@ -21,22 +27,46 @@ def module(name, relative):
     return loaded
 
 
-native = module('m107_manifest', 'scripts/dev/native_manifest.py')
-boundary = module('m107_boundary', 'scripts/team/M1-02/permission_boundary.py')
+native = boundary = None
 
 
 class Refused(ValueError):
     pass
 
 
+def load_suppliers():
+    global native, boundary, _bindings, _contract_hash
+    if _bindings is None:
+        committed = subprocess.check_output(['git', 'show', 'HEAD:' + CONTRACT], cwd=REPO, stderr=subprocess.DEVNULL)
+        rows = {row['path']: row for row in json.loads(committed)['sources']}
+        if len(rows) != len(json.loads(committed)['sources']) or not set(SUPPLIERS) <= rows.keys():
+            raise Refused('cannot_proceed: supplier_binding_missing')
+        _bindings = {path: rows[path] for path in SUPPLIERS}
+        for path, row in _bindings.items():
+            recorded = subprocess.check_output(['git', 'show', row['ref'] + ':' + path], cwd=REPO, stderr=subprocess.DEVNULL)
+            if digest(recorded) != row['sha256']:
+                raise Refused('cannot_proceed: supplier_binding_drift')
+        _contract_hash = digest(committed.replace(b'\r\n', b'\n'))
+    if digest((REPO / CONTRACT).read_bytes().replace(b'\r\n', b'\n')) != _contract_hash:
+        raise Refused('cannot_proceed: supplier_contract_drift')
+    for path, row in _bindings.items():
+        if digest((REPO / path).read_bytes().replace(b'\r\n', b'\n')) != row['sha256']:
+            raise Refused('cannot_proceed: supplier_source_drift')
+        compile((REPO / path).read_bytes(), path, 'exec')
+    if native is None:
+        native = module('m107_manifest', SUPPLIERS[0])
+        boundary = module('m107_boundary', SUPPLIERS[1])
+
+
 def guarded(function):
     @wraps(function)
     def call(*args, **kwargs):
         try:
+            load_suppliers()
             return function(*args, **kwargs)
         except Refused:
             raise
-        except (OSError, ValueError, KeyError, TypeError):
+        except (OSError, ValueError, KeyError, TypeError, SyntaxError, ImportError, subprocess.CalledProcessError):
             raise Refused('cannot_proceed: invalid_or_inaccessible_fixture') from None
     return call
 
