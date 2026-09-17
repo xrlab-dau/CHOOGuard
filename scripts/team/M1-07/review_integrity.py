@@ -9,9 +9,15 @@ import json
 from pathlib import Path, PurePosixPath
 import re
 import shutil
+import subprocess
 
 REPO = Path(__file__).resolve().parents[3]
 RESERVED = {'input', 'execution', 'evidence', 'request.json'}
+CONTRACT = 'docs/team/M1-07/review-contract.json'
+SUPPLIERS = ('scripts/dev/native_manifest.py', 'scripts/team/M1-02/permission_boundary.py',
+             'scripts/bootstrap/verify_toolchain.py')
+_bindings = None
+_contract_hash = None
 
 
 def module(name, relative):
@@ -21,22 +27,63 @@ def module(name, relative):
     return loaded
 
 
-native = module('m107_manifest', 'scripts/dev/native_manifest.py')
-boundary = module('m107_boundary', 'scripts/team/M1-02/permission_boundary.py')
+native = boundary = None
 
 
 class Refused(ValueError):
     pass
 
 
+def load_suppliers():
+    global native, boundary, _bindings, _contract_hash
+    try:
+        if _bindings is None:
+            committed = subprocess.check_output(['git', 'show', 'HEAD:' + CONTRACT], cwd=REPO, stderr=subprocess.DEVNULL)
+            sources = json.loads(committed)['sources']
+            rows = {row['path']: row for row in sources}
+            if len(rows) != len(sources) or not set(SUPPLIERS) <= rows.keys():
+                raise Refused('cannot_proceed: supplier_binding_missing')
+            bindings = {path: rows[path] for path in SUPPLIERS}
+            for path, row in bindings.items():
+                if not re.fullmatch(r'[a-f0-9]{40}', row['ref']) or not re.fullmatch(r'[a-f0-9]{64}', row['sha256']):
+                    raise Refused('cannot_proceed: supplier_binding_invalid')
+                recorded = subprocess.check_output(['git', 'show', row['ref'] + ':' + path], cwd=REPO, stderr=subprocess.DEVNULL)
+                if digest(recorded) != row['sha256']:
+                    raise Refused('cannot_proceed: supplier_binding_drift')
+            contract_hash = digest(committed.replace(b'\r\n', b'\n'))
+        else:
+            bindings, contract_hash = _bindings, _contract_hash
+        if digest((REPO / CONTRACT).read_bytes().replace(b'\r\n', b'\n')) != contract_hash:
+            raise Refused('cannot_proceed: supplier_contract_drift')
+        for path, row in bindings.items():
+            try:
+                current = (REPO / path).read_bytes().replace(b'\r\n', b'\n')
+            except OSError:
+                raise Refused('cannot_proceed: supplier_source_drift') from None
+            if digest(current) != row['sha256']:
+                raise Refused('cannot_proceed: supplier_source_drift')
+            compile(current, path, 'exec')
+        loaded_native, loaded_boundary = native, boundary
+        if loaded_native is None or loaded_boundary is None:
+            loaded_native = module('m107_manifest', SUPPLIERS[0])
+            loaded_boundary = module('m107_boundary', SUPPLIERS[1])
+        _bindings, _contract_hash = bindings, contract_hash
+        native, boundary = loaded_native, loaded_boundary
+    except Refused:
+        raise
+    except Exception:
+        raise Refused('cannot_proceed: supplier_preflight_failed') from None
+
+
 def guarded(function):
     @wraps(function)
     def call(*args, **kwargs):
         try:
+            load_suppliers()
             return function(*args, **kwargs)
         except Refused:
             raise
-        except (OSError, ValueError, KeyError, TypeError):
+        except (OSError, ValueError, KeyError, TypeError, SyntaxError, ImportError, RuntimeError, subprocess.CalledProcessError):
             raise Refused('cannot_proceed: invalid_or_inaccessible_fixture') from None
     return call
 
