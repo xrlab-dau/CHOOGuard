@@ -1,19 +1,23 @@
 # M1-07 review integrity candidate
 
-Refs #23. Run the synthetic contract checks with the default environment and Python 3:
+Refs #23. Run the synthetic contract checks with Python 3:
 
-```sh
-python3 scripts/team/M1-07/test_review_integrity.py
+```powershell
+py -3 -m unittest discover -s scripts/team/M1-07 -p 'test_*.py' -v
 ```
 
-The suite exits 0 with every case reporting `ok` on the default environment; no environment
-variable or special `TMPDIR` is required. Each case asserts its exact refusal code, so a
-refusal raised for an unrelated reason cannot satisfy a negative case.
+The suite uses isolated Git fixtures for supplier preflight. The link-guard case is skipped
+when the host cannot create a symlink; a successful suite can therefore include a skip. Each
+negative case asserts its exact refusal code, so an unrelated refusal cannot satisfy it.
 
 `review_integrity.py` reuses the published native manifest helper and M1-02
 permission decisions. It checks the M0-03 allowlist/profile and M1-02 receipt
-bindings before use. Supplier drift stops the operation. It invokes no model,
-shell command, Unity process or review/rework loop.
+bindings before use. Before each public `begin` or `finalize` call imports a supplier, the
+fixture checks the committed contract bindings and current source bytes for
+`native_manifest.py`, `permission_boundary.py`, and `verify_toolchain.py`. It invokes Git
+through subprocess argument lists without a shell, and needs a Git worktree with the contract,
+the bound history, and supplier sources available. It invokes no model, Unity process, or
+review/rework loop.
 
 `begin` receives fixture author/reviewer identities, a scoped list of canonical
 synthetic source file names, base/head refs and round 1–3. It requires different
