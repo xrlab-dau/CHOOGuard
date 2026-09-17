@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 1,
+  "workId": "FMP-10c",
+  "issue": 136,
+  "decisionId": "FMP-10c-D01",
+  "decisionState": "unapproved_proposal_blocked_by_default",
+  "recordKind": "proposal_not_approved",
+  "approved": false,
+  "approvalRef": "",
+  "canonicalWriteAllowed": true,
+  "attribution": "unattributed_proposal_no_linked_authority",
+  "proposal": {
+    "summary": "Proposal only, not an accepted policy decision. Instructor disconnect and recovery restart behaviors require explicit instructor re-admission and manual resumption approval rather than automatic recovery or dynamic instructor role delegation.",
+    "rules": [
+      {
+        "id": "R1",
+        "rule": "Only participants with IsInstructor=true can execute PauseShift and ResumeShift commands."
+      },
+      {
+        "id": "R2",
+        "rule": "Non-instructor participants attempting PauseShift or ResumeShift are rejected with CommandCode.RoleDenied, recorded in client results."
+      },
+      {
+        "id": "R3",
+        "rule": "Instructor admission review gate strictly verifies SessionAdmission.Allows and cannot bypass cryptographic validation."
+      },
+      {
+        "id": "R4",
+        "rule": "Upon instructor disconnect, participant input is revoked and roster roles remain immutable; no non-instructor participant is auto-promoted."
+      },
+      {
+        "id": "R5",
+        "rule": "A restored shift from a checkpoint starts in Paused=true state by invariant, requiring an authenticated instructor ResumeShift command to proceed."
+      }
+    ]
+  },
+  "blockedReason": "Instructor leave and recovery restart policy is blocked pending Issue #99 authoritative contract approval. In the absence of ratified #99 recovery authority, automatic mid-shift failover or unsupervised recovery resumption is disallowed.",
+  "blockedReasonSource": "Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs:AuthoritativeShift.Restore",
+  "limits": [
+    "No verifiable PM policy decision ref is linked to this record. It is an unapproved proposal and must not be read as an approved policy decision; approved=false and decisionState='unapproved_proposal_blocked_by_default' say exactly that.",
+    "Implementing safe role gating and paused defaults in code is not evidence that the operational recovery policy itself was approved.",
+    "These rules are asserted by tests, not accepted by a human authority. Test assertions are not staff procedure or facility acceptance.",
+    "Does not invent official railway procedures or scoring rules.",
+    "Provisional synthetic multiplayer authorization boundary only; not surveyed facility or operational acceptance."
+  ],
+  "recordScope": {
+    "statement": "This artifact is inside issue 136's declared write scope. It is not an out-of-scope edit and must not be reported as one.",
+    "evidence": [
+      "docs/context/work-graph.json item 136 artifactOutputBindings.accept binds artifact:136:fmp10c-recovery-question:accept to path docs/context/projections/FMP-10c-recovery-decision.json with scopeMode exclusive and canonicalWriteAllowed true.",
+      "docs/context/work-graph.json item 136 requiredLocks lists repo-path:xrlab-dau/CHOOGuard:docs/context/projections/FMP-10c-recovery-decision.json.",
+      "docs/context/work-orders/136.json requiredOutputPaths lists docs/context/projections/FMP-10c-recovery-decision.json."
+    ],
+    "limit": "Being in scope is authority to edit this record. It is not an approval of the policy the record describes; approved stays false."
+  },
+  "citations": {
+    "derivation": "Every line below was produced by a grep/scan of the file at the committed HEAD of this branch, not carried over from an earlier report.",
+    "entries": [
+      {
+        "symbol": "FieldCommandPanel.IsInstructor",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 124,
+        "orderingClaim": "FieldCommandPanel exposes IsInstructor property reflecting projected view.Instructor."
+      },
+      {
+        "symbol": "FieldCommandPanel.PauseShift",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 201,
+        "orderingClaim": "PauseShift evaluates IsInstructor and returns null for non-instructors."
+      },
+      {
+        "symbol": "FieldCommandPanel.ResumeShift",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 205,
+        "orderingClaim": "ResumeShift evaluates IsInstructor and returns null for non-instructors."
+      },
+      {
+        "symbol": "FieldCommandPanel.EvaluateAdmission",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 210,
+        "orderingClaim": "EvaluateAdmission checks IsInstructor and delegates to SessionAdmission.Allows without bypass."
+      },
+      {
+        "symbol": "FieldCommandPanel.ApplyReceipt",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 227,
+        "orderingClaim": "ApplyReceipt records RoleDenied server rejections into Results ledger."
+      },
+      {
+        "symbol": "FieldCommandPanel.KindLabel",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 256,
+        "orderingClaim": "KindLabel maps PauseShift to '근무정지' and ResumeShift to '근무재개'."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.OnDisconnected",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 510,
+        "orderingClaim": "OnDisconnected disables participant input and revokes connection without mutating other roster roles."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.SubmitPanelCommand",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 889,
+        "orderingClaim": "SubmitPanelCommand allows instructor pause and resume commands even when local input is paused."
+      },
+      {
+        "symbol": "NetworkFieldRuntime.DrawCommandPanel",
+        "path": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Runtime/NetworkFieldRuntime.cs",
+        "declarationLine": 1184,
+        "orderingClaim": "DrawCommandPanel renders instructor control action button only when commandPanel.IsInstructor is true."
+      }
+    ]
+  },
+  "verification": {
+    "testClass": "ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests",
+    "testPath": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10cInstructorUiTests.cs",
+    "testAssembly": "ChooGuard.Foundation.Multiplayer.PlayModeTests",
+    "testAssemblyDefinition": "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/ChooGuard.Foundation.Multiplayer.PlayModeTests.asmdef",
+    "platform": "PlayMode",
+    "platformNote": "The assembly definition declares defineConstraints: ['UNITY_INCLUDE_TESTS'], collected as PlayMode tests.",
+    "executionState": "asserted_pending_execution",
+    "skipPath": {
+      "state": "cannot_self_skip",
+      "statement": "The fixture has zero self-skip paths. No Assert.Ignore, environment checks, or dirty-scene bailouts exist."
+    },
+    "rules": [
+      {
+        "id": "R1",
+        "assertedBy": "InstructorPanelCanBuildAndSubmitPauseShiftAndResumeShiftCommands",
+        "state": "asserted_pending_execution"
+      },
+      {
+        "id": "R2",
+        "assertedBy": "NonInstructorParticipantCannotBuildPauseOrResumeAndForgedCommandsRecordedAsRoleDenied",
+        "state": "asserted_pending_execution"
+      },
+      {
+        "id": "R3",
+        "assertedBy": "AdmissionGateRequiresBothInstructorRoleAndSessionAdmissionAllowsWithoutBypass",
+        "state": "asserted_pending_execution"
+      },
+      {
+        "id": "R4",
+        "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
+        "state": "asserted_pending_execution"
+      },
+      {
+        "id": "R5",
+        "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
+        "state": "asserted_pending_execution"
+      }
+    ],
+    "notVerified": [
+      "Operational recovery policy: Issue #99 authoritative recovery contract is not yet approved.",
+      "Any staff manual procedure or physical railway recovery action: not facility accepted."
+    ]
+  }
+}

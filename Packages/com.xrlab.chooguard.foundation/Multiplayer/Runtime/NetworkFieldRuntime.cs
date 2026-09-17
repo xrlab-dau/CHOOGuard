@@ -121,6 +121,7 @@ namespace ChooGuard.Foundation.Multiplayer
         private FieldView view;
         public string ParticipantId { get; }
         public string TeamId => view?.TeamId ?? "";
+        public bool IsInstructor => view?.Instructor ?? false;
         public ReportRow[] Reports { get; private set; } = Array.Empty<ReportRow>();
         public EvacueeRow[] Evacuees { get; private set; } = Array.Empty<EvacueeRow>();
         public string[] ReportableIncidentIds { get; private set; } = Array.Empty<string>();
@@ -196,6 +197,22 @@ namespace ChooGuard.Foundation.Multiplayer
             return led == null ? null : HandOff(led.EntityId, toParticipantId, commandId);
         }
 
+        /// <summary>Instructor pause shift command. Returns null for non-instructor participants.</summary>
+        public WorldCommand PauseShift(string commandId = null) =>
+            IsInstructor ? Command(CommandKind.PauseShift, "", "", 0, commandId) : null;
+
+        /// <summary>Instructor resume shift command. Returns null for non-instructor participants.</summary>
+        public WorldCommand ResumeShift(string commandId = null) =>
+            IsInstructor ? Command(CommandKind.ResumeShift, "", "", 0, commandId) : null;
+
+        /// <summary>Instructor admission review gate: evaluates whether a join credential may be approved.
+        /// Enforces that instructor authorization cannot bypass SessionAdmission.Allows.</summary>
+        public bool EvaluateAdmission(JoinCredential credential, SessionAdmission admission, bool instructorApproved = true)
+        {
+            if (!IsInstructor || !instructorApproved || admission == null || credential == null) return false;
+            return admission.Allows(credential);
+        }
+
         /// <summary>Call only after the command has actually been sent to the server.</summary>
         public void Track(WorldCommand command)
         {
@@ -216,7 +233,8 @@ namespace ChooGuard.Foundation.Multiplayer
             pending.Remove(sent);
             results.Add(new CommandResultRow { CommandId = sent.CommandId, Kind = sent.Kind, TargetId = sent.TargetId, Argument = sent.Argument,
                 Code = receipt.Code, Accepted = receipt.Code == CommandCode.Accepted, Sequence = receipt.Sequence,
-                Text = (receipt.Code == CommandCode.Accepted ? "서버 승인" : "서버 거부(" + receipt.Code + ")") + ": " + KindLabel(sent.Kind) + " " + sent.TargetId +
+                Text = (receipt.Code == CommandCode.Accepted ? "서버 승인" : "서버 거부(" + receipt.Code + ")") + ": " + KindLabel(sent.Kind) +
+                    (string.IsNullOrEmpty(sent.TargetId) ? "" : " " + sent.TargetId) +
                     (string.IsNullOrEmpty(sent.Argument) ? "" : " → " + sent.Argument) });
             if (results.Count > ResultCapacity) results.RemoveAt(0);
             return true;
@@ -225,18 +243,20 @@ namespace ChooGuard.Foundation.Multiplayer
         public string[] RenderLines()
         {
             var lines = new List<string> { "보고·수신확인·인계 · 서버 승인 상태만 표시" };
+            if (IsInstructor) lines.Add(view?.Observed?.Paused == true ? "교관 제어: 근무 정지됨 (복구 승인 대기)" : "교관 제어: 정상 근무 진행 중");
             lines.AddRange(Reports.Select(r => "팀 보고 " + r.ReportId + ": " + r.EntityId + " / " + r.RegionId + " · 관측 rev " + r.ObservedRevision +
                 " · 보고자 " + r.FromParticipantId + " · 수신확인 " + (r.AcknowledgedBy.Length == 0 ? "없음" : string.Join(", ", r.AcknowledgedBy))));
             lines.AddRange(Evacuees.Select(e => "대피자 " + e.EntityId + " / " + e.RegionId + " · " +
                 (e.Unclaimed ? "인솔자 없음" : e.LedByLocal ? "내가 인솔 중" : "인솔자 " + e.LeaderId) + " · rev " + e.Revision));
-            lines.AddRange(pending.Select(p => "서버 확인 대기: " + KindLabel(p.Kind) + " " + p.TargetId));
+            lines.AddRange(pending.Select(p => "서버 확인 대기: " + KindLabel(p.Kind) + (string.IsNullOrEmpty(p.TargetId) ? "" : " " + p.TargetId)));
             lines.AddRange(results.Select(r => r.Text));
             return lines.ToArray();
         }
 
         public static string KindLabel(CommandKind kind) =>
             kind == CommandKind.Report ? "보고" : kind == CommandKind.AcknowledgeReport ? "수신확인" :
-            kind == CommandKind.ClaimEvacuee ? "인솔" : kind == CommandKind.HandOffEvacuee ? "인계" : kind.ToString();
+            kind == CommandKind.ClaimEvacuee ? "인솔" : kind == CommandKind.HandOffEvacuee ? "인계" :
+            kind == CommandKind.PauseShift ? "근무정지" : kind == CommandKind.ResumeShift ? "근무재개" : kind.ToString();
 
         private EntityState ObservedEntity(string entityId) =>
             view?.Observed?.Entities?.SingleOrDefault(e => e != null && e.EntityId == entityId);
@@ -868,8 +888,11 @@ namespace ChooGuard.Foundation.Multiplayer
         /// <summary>Sends a report-panel command and tracks it so only the matching server receipt is shown.</summary>
         public bool SubmitPanelCommand(WorldCommand command)
         {
-            if (commandPanel == null || !Connected || view?.Observed == null || !LocalInputEnabled) return false;
+            if (commandPanel == null || !Connected || view?.Observed == null) return false;
             if (command == null) { status = "현재 서버 상태로는 할 수 없는 행동입니다."; return false; }
+            var pause = view.Instructor && command.Kind == CommandKind.PauseShift;
+            var resume = view.Instructor && command.Kind == CommandKind.ResumeShift;
+            if (!LocalInputEnabled && !pause && !resume) return false;
             Send(CommandChannel, NetworkManager.ServerClientId, JsonUtility.ToJson(command));
             commandPanel.Track(command);
             return true;
@@ -1161,7 +1184,8 @@ namespace ChooGuard.Foundation.Multiplayer
         private void DrawCommandPanel()
         {
             var lines = commandPanel.RenderLines();
-            GUILayout.Label(lines[0] + " · E 보고/인솔 · R 수신확인 · H 인계");
+            GUILayout.Label(lines[0] + " · E 보고/인솔 · R 수신확인 · H 인계" + (commandPanel.IsInstructor ? " · 교관 제어 활성" : ""));
+            foreach (var line in lines.Skip(1).Where(l => l.StartsWith("교관 제어", StringComparison.Ordinal))) GUILayout.Label(line);
             foreach (var line in lines.Skip(1).Where(l => l.StartsWith("팀 보고", StringComparison.Ordinal)).TakeLast(4)) GUILayout.Label(line);
             foreach (var line in lines.Skip(1).Where(l => l.StartsWith("대피자", StringComparison.Ordinal)).Take(4)) GUILayout.Label(line);
             if (commandPanel.Evacuees.Any(e => e.LedByLocal))
@@ -1171,6 +1195,14 @@ namespace ChooGuard.Foundation.Multiplayer
                 if (controls) GUILayout.Label(handOffTarget ?? "");
                 else handOffTarget = GUILayout.TextField(handOffTarget ?? "", 64);
                 GUILayout.EndHorizontal();
+            }
+            if (commandPanel.IsInstructor)
+            {
+                if (GUILayout.Button(view.Observed.Paused ? "복구 승인 및 근무 재개" : "훈련 일시정지"))
+                {
+                    var cmd = view.Observed.Paused ? commandPanel.ResumeShift() : commandPanel.PauseShift();
+                    SubmitPanelCommand(cmd);
+                }
             }
             foreach (var line in lines.Skip(1).Where(l => l.StartsWith("서버 ", StringComparison.Ordinal)).TakeLast(4)) GUILayout.Label(line);
         }
