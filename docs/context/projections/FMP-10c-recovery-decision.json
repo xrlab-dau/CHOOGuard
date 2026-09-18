@@ -55,7 +55,7 @@
     "limit": "Being in scope is authority to edit this record. It is not an approval of the policy the record describes; approved stays false."
   },
   "citations": {
-    "derivation": "Every line below was produced by a scan of the file at the committed HEAD 6fda03957245d4444dd1a04ecde79c9ee0997f75 of this branch, not carried over from an earlier report.",
+    "derivation": "Every line below was produced by a scan of the file at the committed HEAD 6fda039abb338b1d3ac6b680980fbac1f72eee01 of this branch, not carried over from an earlier report.",
     "entries": [
       {
         "symbol": "FieldCommandPanel.IsInstructor",
@@ -175,21 +175,27 @@
     "platform": "PlayMode",
     "platformNote": "The assembly definition declares defineConstraints: ['UNITY_INCLUDE_TESTS'], collected and verified as PlayMode tests.",
     "executionState": "executed_verified",
-    "testedCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75",
+    "testedCommit": "6fda039abb338b1d3ac6b680980fbac1f72eee01",
     "runner": "Unity 6000.3.23f1 (09d2ecc7fb28)",
-    "command": "<unityExe> -batchmode -nographics -projectPath <projectRoot> -runTests -testPlatform PlayMode -testFilter ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
+    "command": "<unityExe> -batchmode -nographics -projectPath <projectRoot> -runTests -testPlatform PlayMode -testFilter \"ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests;ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests\" -testResults <runOutput>/PlayMode.xml -logFile <runOutput>/PlayMode.log",
     "evidence": {
       "playModeXml": {
         "path": "docs/evidence/foundation/FMP-10c/PlayMode.xml",
-        "sha256": "79b887847654047c559d26ebd9d9856a9071b5c07c0f417ec68b130f58e4dda6",
-        "total": 7,
-        "passed": 7,
+        "bytes": 16438,
+        "sha256": "9e5f85697ea4a2cff03d6ae0a6162816a8dc31842a4359f4d8749f0223879835",
+        "total": 13,
+        "passed": 13,
         "failed": 0,
-        "skipped": 0
+        "skipped": 0,
+        "suiteBreakdown": {
+          "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests": 6,
+          "ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests": 7
+        }
       },
       "playModeLog": {
         "path": "docs/evidence/foundation/FMP-10c/PlayMode.log",
-        "sha256": "248a567bfc2f1f75eca881699dd080f2229918a7d757d9271fafab4a6ad1106d",
+        "bytes": 84405,
+        "sha256": "9a5b025c7ecfac878847b5c5a4c32c2b2db4d7476d9bff2c5638fc38d89ccb13",
         "status": "zero_errors"
       }
     },
@@ -202,25 +208,25 @@
         "id": "R1",
         "assertedBy": "InstructorPanelCanBuildAndSubmitPauseShiftAndResumeShiftCommands",
         "state": "executed_verified",
-        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
+        "verifiedInCommit": "6fda039abb338b1d3ac6b680980fbac1f72eee01"
       },
       {
         "id": "R2",
         "assertedBy": "NonInstructorParticipantCannotBuildPauseOrResumeAndForgedCommandsRecordedAsRoleDenied",
         "state": "executed_verified",
-        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
+        "verifiedInCommit": "6fda039abb338b1d3ac6b680980fbac1f72eee01"
       },
       {
         "id": "R3",
         "assertedBy": "AdmissionGateRequiresBothInstructorRoleAndSessionAdmissionAllowsWithoutBypass",
         "state": "executed_verified",
-        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
+        "verifiedInCommit": "6fda039abb338b1d3ac6b680980fbac1f72eee01"
       },
       {
         "id": "R4",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
         "state": "executed_verified",
-        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75",
+        "verifiedInCommit": "6fda039abb338b1d3ac6b680980fbac1f72eee01",
         "executionScope": "in_process_input_revocation_and_role_immutability",
         "executionBoundary": "Asserts model-level input revocation (SetInputEnabled(false)) and immutable roster role. Real socket disconnection, OnClientDisconnectCallback, and multi-process network drop are not run (untested transport hypothesis)."
       },
@@ -228,7 +234,7 @@
         "id": "R5",
         "assertedBy": "InstructorDisconnectAndRecoveryRestartRequireExplicitResumption",
         "state": "executed_verified",
-        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75",
+        "verifiedInCommit": "6fda039abb338b1d3ac6b680980fbac1f72eee01",
         "executionScope": "in_process_checkpoint_paused_restore_and_explicit_resumption",
         "executionBoundary": "Asserts in-process AuthoritativeShift.Restore defaults to Paused=true and requires authenticated instructor ResumeShift. Real network re-admission, session handoff, and live server restart are not run."
       },
@@ -236,7 +242,7 @@
         "id": "R6",
         "assertedBy": "SendByteAccountingAccumulatesExactWireLengthWithoutCapacityInflation",
         "state": "executed_verified",
-        "verifiedInCommit": "6fda03957245d4444dd1a04ecde79c9ee0997f75"
+        "verifiedInCommit": "6fda039abb338b1d3ac6b680980fbac1f72eee01"
       }
     ],
     "notVerified": [
@@ -245,6 +251,14 @@
       "Live network packet transmission: Wire byte accounting measures FastBufferWriter serializer payload byte length directly, not physical network adapter packet transmission.",
       "Operational recovery policy: Issue #99 authoritative recovery contract is not yet approved.",
       "Any staff manual procedure or physical railway recovery action: not facility accepted."
+    ],
+    "testClasses": [
+      "ChooGuard.Foundation.Multiplayer.Tests.FMP10aReportUiTests",
+      "ChooGuard.Foundation.Multiplayer.Tests.FMP10cInstructorUiTests"
+    ],
+    "testPaths": [
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10aReportUiTests.cs",
+      "Packages/com.xrlab.chooguard.foundation/Multiplayer/Tests/PlayMode/FMP10cInstructorUiTests.cs"
     ]
   }
 }
