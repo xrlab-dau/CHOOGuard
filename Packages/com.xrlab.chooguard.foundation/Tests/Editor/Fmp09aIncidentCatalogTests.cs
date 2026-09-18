@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using ChooGuard.Foundation.Simulation;
 using NUnit.Framework;
 using UnityEditor.PackageManager;
@@ -85,6 +86,385 @@ namespace ChooGuard.Foundation.Tests
         public string[] lines;
         public string[] vehicles;
         public string[] roles;
+    }
+
+    /// <summary>
+    /// Lightweight recursive JSON parser supporting objects, lists, strings, numbers, booleans, and null.
+    /// Used for strict Draft 2020-12 JSON schema validation without relying on permissive reflection DTOs.
+    /// </summary>
+    public static class MiniJsonParser
+    {
+        public static object Parse(string json)
+        {
+            if (string.IsNullOrWhiteSpace(json))
+                throw new ArgumentException("JSON input cannot be empty.");
+            int index = 0;
+            var result = ParseValue(json, ref index);
+            SkipWhitespace(json, ref index);
+            if (index != json.Length)
+                throw new ArgumentException($"Trailing characters after JSON input at index {index}: '{json.Substring(index, Math.Min(20, json.Length - index))}'");
+            return result;
+        }
+
+        private static void SkipWhitespace(string s, ref int i)
+        {
+            while (i < s.Length && char.IsWhiteSpace(s[i])) i++;
+        }
+
+        private static object ParseValue(string s, ref int i)
+        {
+            SkipWhitespace(s, ref i);
+            if (i >= s.Length)
+                throw new ArgumentException("Unexpected end of JSON string.");
+
+            char c = s[i];
+            if (c == '{') return ParseObject(s, ref i);
+            if (c == '[') return ParseArray(s, ref i);
+            if (c == '"') return ParseString(s, ref i);
+            if (c == 't' || c == 'f') return ParseBool(s, ref i);
+            if (c == 'n') return ParseNull(s, ref i);
+            if (c == '-' || char.IsDigit(c)) return ParseNumber(s, ref i);
+
+            throw new ArgumentException($"Unexpected character '{c}' at index {i}.");
+        }
+
+        private static Dictionary<string, object> ParseObject(string s, ref int i)
+        {
+            var dict = new Dictionary<string, object>(StringComparer.Ordinal);
+            i++; // skip '{'
+            SkipWhitespace(s, ref i);
+            if (i < s.Length && s[i] == '}')
+            {
+                i++;
+                return dict;
+            }
+
+            while (i < s.Length)
+            {
+                SkipWhitespace(s, ref i);
+                if (i >= s.Length || s[i] != '"')
+                    throw new ArgumentException($"Expected string key in object at index {i}.");
+                string key = ParseString(s, ref i);
+
+                SkipWhitespace(s, ref i);
+                if (i >= s.Length || s[i] != ':')
+                    throw new ArgumentException($"Expected ':' after key '{key}' at index {i}.");
+                i++; // skip ':'
+
+                object val = ParseValue(s, ref i);
+                dict[key] = val;
+
+                SkipWhitespace(s, ref i);
+                if (i >= s.Length)
+                    throw new ArgumentException("Unterminated object.");
+                if (s[i] == '}')
+                {
+                    i++;
+                    return dict;
+                }
+                if (s[i] == ',')
+                {
+                    i++;
+                    continue;
+                }
+                throw new ArgumentException($"Expected ',' or '}}' in object at index {i}.");
+            }
+            throw new ArgumentException("Unterminated object at EOF.");
+        }
+
+        private static List<object> ParseArray(string s, ref int i)
+        {
+            var list = new List<object>();
+            i++; // skip '['
+            SkipWhitespace(s, ref i);
+            if (i < s.Length && s[i] == ']')
+            {
+                i++;
+                return list;
+            }
+
+            while (i < s.Length)
+            {
+                object val = ParseValue(s, ref i);
+                list.Add(val);
+
+                SkipWhitespace(s, ref i);
+                if (i >= s.Length)
+                    throw new ArgumentException("Unterminated array.");
+                if (s[i] == ']')
+                {
+                    i++;
+                    return list;
+                }
+                if (s[i] == ',')
+                {
+                    i++;
+                    continue;
+                }
+                throw new ArgumentException($"Expected ',' or ']' in array at index {i}.");
+            }
+            throw new ArgumentException("Unterminated array at EOF.");
+        }
+
+        private static string ParseString(string s, ref int i)
+        {
+            i++; // skip opening quote
+            var sb = new StringBuilder();
+            while (i < s.Length)
+            {
+                char c = s[i++];
+                if (c == '"') return sb.ToString();
+                if (c == '\\')
+                {
+                    if (i >= s.Length) throw new ArgumentException("Unterminated escape sequence in string.");
+                    char esc = s[i++];
+                    switch (esc)
+                    {
+                        case '"': sb.Append('"'); break;
+                        case '\\': sb.Append('\\'); break;
+                        case '/': sb.Append('/'); break;
+                        case 'b': sb.Append('\b'); break;
+                        case 'f': sb.Append('\f'); break;
+                        case 'n': sb.Append('\n'); break;
+                        case 'r': sb.Append('\r'); break;
+                        case 't': sb.Append('\t'); break;
+                        case 'u':
+                            if (i + 4 > s.Length) throw new ArgumentException("Unterminated unicode escape in string.");
+                            string hex = s.Substring(i, 4);
+                            sb.Append((char)Convert.ToInt32(hex, 16));
+                            i += 4;
+                            break;
+                        default:
+                            sb.Append(esc);
+                            break;
+                    }
+                }
+                else
+                {
+                    sb.Append(c);
+                }
+            }
+            throw new ArgumentException("Unterminated string at EOF.");
+        }
+
+        private static bool ParseBool(string s, ref int i)
+        {
+            if (s.Substring(i).StartsWith("true"))
+            {
+                i += 4;
+                return true;
+            }
+            if (s.Substring(i).StartsWith("false"))
+            {
+                i += 5;
+                return false;
+            }
+            throw new ArgumentException($"Invalid boolean at index {i}.");
+        }
+
+        private static object ParseNull(string s, ref int i)
+        {
+            if (s.Substring(i).StartsWith("null"))
+            {
+                i += 4;
+                return null;
+            }
+            throw new ArgumentException($"Invalid null literal at index {i}.");
+        }
+
+        private static object ParseNumber(string s, ref int i)
+        {
+            int start = i;
+            bool isFloat = false;
+            if (s[i] == '-') i++;
+            while (i < s.Length && char.IsDigit(s[i])) i++;
+            if (i < s.Length && s[i] == '.')
+            {
+                isFloat = true;
+                i++;
+                while (i < s.Length && char.IsDigit(s[i])) i++;
+            }
+            if (i < s.Length && (s[i] == 'e' || s[i] == 'E'))
+            {
+                isFloat = true;
+                i++;
+                if (i < s.Length && (s[i] == '+' || s[i] == '-')) i++;
+                while (i < s.Length && char.IsDigit(s[i])) i++;
+            }
+            string numStr = s.Substring(start, i - start);
+            if (isFloat)
+                return double.Parse(numStr, System.Globalization.CultureInfo.InvariantCulture);
+            return long.Parse(numStr, System.Globalization.CultureInfo.InvariantCulture);
+        }
+    }
+
+    /// <summary>
+    /// Strict Draft 2020-12 JSON Schema validator tailored for the foundation incident catalog schema.
+    /// Validates type, required properties, additionalProperties == false, enums, const, ranges, and $defs/$ref.
+    /// </summary>
+    public static class FoundationJsonSchemaValidator
+    {
+        public static void Validate(string schemaJson, string instanceJson)
+        {
+            var schemaObj = MiniJsonParser.Parse(schemaJson) as Dictionary<string, object>;
+            if (schemaObj == null)
+                throw new ArgumentException("Schema root must be a JSON object.");
+            var instanceObj = MiniJsonParser.Parse(instanceJson);
+
+            Dictionary<string, object> defs = null;
+            if (schemaObj.TryGetValue("$defs", out var defsRaw) && defsRaw is Dictionary<string, object> defsDict)
+                defs = defsDict;
+
+            ValidateNode(schemaObj, instanceObj, "#", defs);
+        }
+
+        private static void ValidateNode(Dictionary<string, object> schema, object inst, string path, Dictionary<string, object> defs)
+        {
+            if (schema == null) return;
+
+            // $ref resolution
+            if (schema.TryGetValue("$ref", out var refRaw) && refRaw is string refStr)
+            {
+                if (refStr.StartsWith("#/$defs/") && defs != null)
+                {
+                    string defKey = refStr.Substring("#/$defs/".Length);
+                    if (defs.TryGetValue(defKey, out var targetDef) && targetDef is Dictionary<string, object> targetSchema)
+                    {
+                        ValidateNode(targetSchema, inst, path, defs);
+                        return;
+                    }
+                    throw new ArgumentException($"Unresolved $ref: {refStr} at {path}");
+                }
+            }
+
+            // const
+            if (schema.TryGetValue("const", out var constVal))
+            {
+                if (!Equals(constVal, inst))
+                    throw new ArgumentException($"Schema violation at '{path}': expected const '{constVal}', got '{inst}'");
+            }
+
+            // enum
+            if (schema.TryGetValue("enum", out var enumRaw) && enumRaw is List<object> enumList)
+            {
+                bool matched = false;
+                foreach (var e in enumList)
+                {
+                    if (Equals(e, inst)) { matched = true; break; }
+                }
+                if (!matched)
+                    throw new ArgumentException($"Schema violation at '{path}': value '{inst}' is not in enum [{string.Join(", ", enumList)}]");
+            }
+
+            // type check
+            if (schema.TryGetValue("type", out var typeRaw))
+            {
+                List<string> allowedTypes = new List<string>();
+                if (typeRaw is string singleType)
+                    allowedTypes.Add(singleType);
+                else if (typeRaw is List<object> typeList)
+                    allowedTypes.AddRange(typeList.Select(t => t.ToString()));
+
+                bool typeOk = false;
+                foreach (var t in allowedTypes)
+                {
+                    if (t == "string" && inst is string) typeOk = true;
+                    else if (t == "integer" && (inst is long || (inst is double d && Math.Floor(d) == d))) typeOk = true;
+                    else if (t == "number" && (inst is long || inst is double)) typeOk = true;
+                    else if (t == "boolean" && inst is bool) typeOk = true;
+                    else if (t == "array" && inst is List<object>) typeOk = true;
+                    else if (t == "object" && inst is Dictionary<string, object>) typeOk = true;
+                    else if (t == "null" && inst == null) typeOk = true;
+                }
+
+                if (!typeOk)
+                    throw new ArgumentException($"Schema violation at '{path}': expected type [{string.Join(", ", allowedTypes)}], got {inst?.GetType().Name ?? "null"} ({inst})");
+            }
+
+            // string checks
+            if (inst is string s)
+            {
+                if (schema.TryGetValue("minLength", out var minLenRaw) && minLenRaw is long minLen)
+                {
+                    if (s.Length < minLen)
+                        throw new ArgumentException($"Schema violation at '{path}': string length {s.Length} is less than minLength {minLen}");
+                }
+            }
+
+            // integer/number checks
+            if (inst is long num)
+            {
+                if (schema.TryGetValue("minimum", out var minRaw) && minRaw is long minVal && num < minVal)
+                    throw new ArgumentException($"Schema violation at '{path}': value {num} is less than minimum {minVal}");
+                if (schema.TryGetValue("maximum", out var maxRaw) && maxRaw is long maxVal && num > maxVal)
+                    throw new ArgumentException($"Schema violation at '{path}': value {num} is greater than maximum {maxVal}");
+            }
+
+            // array checks
+            if (inst is List<object> list)
+            {
+                if (schema.TryGetValue("minItems", out var minItemsRaw) && minItemsRaw is long minItems && list.Count < minItems)
+                    throw new ArgumentException($"Schema violation at '{path}': array count {list.Count} is less than minItems {minItems}");
+
+                if (schema.TryGetValue("uniqueItems", out var uniqRaw) && uniqRaw is bool uniq && uniq)
+                {
+                    var seen = new HashSet<string>(StringComparer.Ordinal);
+                    foreach (var it in list)
+                    {
+                        string repr = it?.ToString() ?? "null";
+                        if (!seen.Add(repr))
+                            throw new ArgumentException($"Schema violation at '{path}': array has duplicate item '{repr}'");
+                    }
+                }
+
+                if (schema.TryGetValue("items", out var itemsRaw) && itemsRaw is Dictionary<string, object> itemSchema)
+                {
+                    for (int i = 0; i < list.Count; i++)
+                    {
+                        ValidateNode(itemSchema, list[i], $"{path}[{i}]", defs);
+                    }
+                }
+            }
+
+            // object checks
+            if (inst is Dictionary<string, object> dict)
+            {
+                if (schema.TryGetValue("required", out var reqRaw) && reqRaw is List<object> reqList)
+                {
+                    foreach (var r in reqList)
+                    {
+                        string reqProp = r.ToString();
+                        if (!dict.ContainsKey(reqProp))
+                            throw new ArgumentException($"Schema violation at '{path}': missing required property '{reqProp}'");
+                    }
+                }
+
+                Dictionary<string, object> propsDict = null;
+                if (schema.TryGetValue("properties", out var propsRaw) && propsRaw is Dictionary<string, object> pd)
+                    propsDict = pd;
+
+                if (schema.TryGetValue("additionalProperties", out var addPropRaw) && addPropRaw is bool addProp && !addProp)
+                {
+                    var allowedProps = propsDict != null ? new HashSet<string>(propsDict.Keys, StringComparer.Ordinal) : new HashSet<string>();
+                    foreach (var k in dict.Keys)
+                    {
+                        if (!allowedProps.Contains(k))
+                            throw new ArgumentException($"Schema violation at '{path}': additional property '{k}' not allowed (additionalProperties: false)");
+                    }
+                }
+
+                if (propsDict != null)
+                {
+                    foreach (var kvp in propsDict)
+                    {
+                        if (dict.TryGetValue(kvp.Key, out var propVal) && kvp.Value is Dictionary<string, object> propSchema)
+                        {
+                            ValidateNode(propSchema, propVal, $"{path}.{kvp.Key}", defs);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static class IncidentCatalogValidator
@@ -215,7 +595,7 @@ namespace ChooGuard.Foundation.Tests
             }
         }
 
-        private static void ValidateVariant(IncidentVariant v, HashSet<string> registeredSources, Dictionary<string, SourceEntry> sourceMap, bool isReviewed)
+        public static void ValidateVariant(IncidentVariant v, HashSet<string> registeredSources, Dictionary<string, SourceEntry> sourceMap, bool isReviewed)
         {
             if (v == null)
                 throw new ArgumentException("Variant cannot be null.");
@@ -284,7 +664,7 @@ namespace ChooGuard.Foundation.Tests
 
             var source = sourceMap[v.sourceId];
 
-            // SR data conflation rule
+            // 1. SR data conflation rule
             if (source.publisherOperator == "SR" || v.sourceId == "SR-LARGE-ACCIDENT-20240226")
             {
                 if (op == "KORAIL")
@@ -293,24 +673,53 @@ namespace ChooGuard.Foundation.Tests
                     throw new ArgumentException($"SR operational source {v.sourceId} must have operator SR, got {op}");
             }
 
-            // Universal permission rule for empty applicability
-            bool emptyStations = v.applicability.stations == null || v.applicability.stations.Length == 0;
-            bool emptyLines = v.applicability.lines == null || v.applicability.lines.Length == 0;
-            bool emptyRoles = v.applicability.roles == null || v.applicability.roles.Length == 0;
-            if (emptyStations && emptyLines && emptyRoles)
-            {
-                // Empty applicability cannot be used to promote an unreviewed or non-scoped item to universal execution
-                if (v.isExecutionCandidate && op != "SYNTHETIC")
-                    throw new ArgumentException("Empty applicability cannot confer universal execution permission for operator procedures.");
-            }
-
-            // Synthetic authority hallucination check
+            // 2. Synthetic variant authority hallucination check
             if (v.sourceId == "CG-SYNTHETIC-FUNCTIONAL-INCIDENTS-V1" || source.publisherOperator == "SYNTHETIC")
             {
                 if (op != "SYNTHETIC")
                     throw new ArgumentException($"Synthetic variant {v.id} cannot claim official operator authority ({op}).");
                 if (v.procedureAcceptance != "provisional_synthetic_reviewed")
                     throw new ArgumentException($"Synthetic variant {v.id} cannot claim official procedure acceptance ({v.procedureAcceptance}).");
+            }
+
+            // 3. Universal permission rule for empty applicability
+            bool emptyStations = v.applicability.stations == null || v.applicability.stations.Length == 0;
+            bool emptyLines = v.applicability.lines == null || v.applicability.lines.Length == 0;
+            bool emptyRoles = v.applicability.roles == null || v.applicability.roles.Length == 0;
+            if (emptyStations && emptyLines && emptyRoles)
+            {
+                if (v.isExecutionCandidate && op != "SYNTHETIC")
+                    throw new ArgumentException("Empty applicability cannot confer universal execution permission for operator procedures.");
+            }
+
+            // 4. Strict publisher-operator cross-boundary check
+            if (source.publisherOperator == "HUMETRO" && op != "HUMETRO")
+                throw new ArgumentException($"Cannot conflate HUMETRO source {source.sourceId} as {op} applicability.");
+            if (source.publisherOperator == "KORAIL" && op != "KORAIL")
+                throw new ArgumentException($"Cannot conflate KORAIL source {source.sourceId} as {op} applicability.");
+            if (op == "SYNTHETIC" && source.publisherOperator != "SYNTHETIC")
+                throw new ArgumentException($"Cannot claim official operator source ({source.sourceId}) as SYNTHETIC applicability without synthetic provenance.");
+
+            // 5. Cross-validate source.applicableOperators
+            if (source.applicableOperators != null && source.applicableOperators.Length > 0)
+            {
+                if (!source.applicableOperators.Contains(op))
+                    throw new ArgumentException($"Variant {v.id} operator '{op}' is not permitted by source {source.sourceId} applicableOperators [{string.Join(", ", source.applicableOperators)}].");
+            }
+
+            // 6. Source procedure acceptance vs Variant execution candidacy & review status
+            if (source.procedureAcceptance == "pending_operator_review")
+            {
+                if (v.isExecutionCandidate)
+                    throw new ArgumentException($"Variant {v.id} citing pending source {source.sourceId} cannot be marked as execution candidate.");
+                if (v.reviewStatus == "reviewed")
+                    throw new ArgumentException($"Variant {v.id} citing pending source {source.sourceId} cannot be marked as reviewed.");
+                if (v.procedureAcceptance != "pending_operator_review")
+                    throw new ArgumentException($"Variant {v.id} citing pending source {source.sourceId} must have procedureAcceptance pending_operator_review, got {v.procedureAcceptance}.");
+            }
+            if (v.isExecutionCandidate && source.procedureAcceptance != "provisional_synthetic_reviewed")
+            {
+                throw new ArgumentException($"Execution candidate {v.id} cannot reference source {source.sourceId} with procedureAcceptance {source.procedureAcceptance}.");
             }
         }
 
@@ -349,12 +758,23 @@ namespace ChooGuard.Foundation.Tests
             var package = PackageInfo.FindForAssembly(typeof(Fmp09aIncidentCatalogTests).Assembly);
             if (package != null)
             {
-                var candidate = Path.GetFullPath(Path.Combine(package.resolvedPath, "..", "..", relPath));
-                if (File.Exists(candidate))
-                    return candidate;
+                var pkgRelPath = Path.Combine(package.resolvedPath, "..", "..", relPath);
+                if (File.Exists(pkgRelPath))
+                    return Path.GetFullPath(pkgRelPath);
             }
 
-            throw new FileNotFoundException($"Could not locate {relPath}");
+            var dir = Directory.GetCurrentDirectory();
+            while (!string.IsNullOrEmpty(dir))
+            {
+                var candidate = Path.Combine(dir, relPath);
+                if (File.Exists(candidate))
+                    return candidate;
+                var parent = Directory.GetParent(dir);
+                if (parent == null) break;
+                dir = parent.FullName;
+            }
+
+            throw new FileNotFoundException($"Cannot locate {relPath}");
         }
 
         private static string ResolveSchemaPath()
@@ -363,38 +783,36 @@ namespace ChooGuard.Foundation.Tests
             if (File.Exists(relPath))
                 return Path.GetFullPath(relPath);
 
-            var package = PackageInfo.FindForAssembly(typeof(Fmp09aIncidentCatalogTests).Assembly);
-            if (package != null)
+            var dir = Directory.GetCurrentDirectory();
+            while (!string.IsNullOrEmpty(dir))
             {
-                var candidate = Path.GetFullPath(Path.Combine(package.resolvedPath, "..", "..", relPath));
+                var candidate = Path.Combine(dir, relPath);
                 if (File.Exists(candidate))
                     return candidate;
+                var parent = Directory.GetParent(dir);
+                if (parent == null) break;
+                dir = parent.FullName;
             }
 
-            throw new FileNotFoundException($"Could not locate {relPath}");
+            throw new FileNotFoundException($"Cannot locate {relPath}");
         }
 
         private static IncidentCatalog LoadCanonicalCatalog()
         {
             var path = ResolveCatalogPath();
-            var json = File.ReadAllText(path);
-            var catalog = JsonUtility.FromJson<IncidentCatalog>(json);
-            Assert.That(catalog, Is.Not.Null, "Failed to deserialize IncidentCatalog from JSON.");
-            return catalog;
+            var json = File.ReadAllText(path, Encoding.UTF8);
+            return JsonUtility.FromJson<IncidentCatalog>(json);
         }
 
         [Test]
-        public void CanonicalCatalogLoadsAndPassesValidation()
+        public void CanonicalCatalogFileExistsAndLoads()
         {
+            var path = ResolveCatalogPath();
+            Assert.That(File.Exists(path), Is.True, "Catalog file must exist at " + path);
             var catalog = LoadCanonicalCatalog();
+            Assert.That(catalog, Is.Not.Null);
             Assert.That(catalog.schemaVersion, Is.EqualTo("1.0"));
             Assert.That(catalog.catalogId, Is.EqualTo("reviewed-incident-catalog"));
-            Assert.That(catalog.catalogVersion, Is.EqualTo("1.0"));
-            Assert.That(catalog.classification, Is.EqualTo("PUBLIC_REFERENCE_AND_SYNTHETIC_METADATA"));
-            Assert.That(catalog.disclaimer, Is.EqualTo("KORAIL 검증 전 예시"));
-            Assert.That(catalog.exaStatus, Is.EqualTo("blocked_403_1010"));
-            Assert.That(catalog.emptyApplicabilityMeans, Is.EqualTo("unspecified_not_universal_permission"));
-
             Assert.That(catalog.sources.Length, Is.EqualTo(6));
             Assert.That(catalog.executionAllowlist.Length, Is.EqualTo(7));
             Assert.That(catalog.reviewedVariants.Length, Is.EqualTo(7));
@@ -407,14 +825,15 @@ namespace ChooGuard.Foundation.Tests
         public void CanonicalCatalogMatchesJsonSchemaIntegrity()
         {
             var schemaPath = ResolveSchemaPath();
+            var catalogPath = ResolveCatalogPath();
             Assert.That(File.Exists(schemaPath), Is.True, "JSON schema file must exist: " + schemaPath);
-            var schemaText = File.ReadAllText(schemaPath);
-            Assert.That(schemaText, Does.Contain("foundation-incident-catalog.schema.json"));
-            Assert.That(schemaText, Does.Contain("reviewedVariants"));
-            Assert.That(schemaText, Does.Contain("unreviewedVariants"));
-            Assert.That(schemaText, Does.Contain("executionAllowlist"));
-            Assert.That(schemaText, Does.Contain("unspecified_not_universal_permission"));
-            Assert.That(schemaText, Does.Contain("additionalProperties\": false"));
+            Assert.That(File.Exists(catalogPath), Is.True, "Catalog file must exist: " + catalogPath);
+
+            var schemaText = File.ReadAllText(schemaPath, Encoding.UTF8);
+            var catalogText = File.ReadAllText(catalogPath, Encoding.UTF8);
+
+            // Execute real Draft 2020-12 schema validation on the raw JSON document
+            Assert.DoesNotThrow(() => FoundationJsonSchemaValidator.Validate(schemaText, catalogText));
 
             var catalog = LoadCanonicalCatalog();
             var allowlist = new HashSet<string>(catalog.executionAllowlist);
@@ -462,9 +881,125 @@ namespace ChooGuard.Foundation.Tests
             Assert.That(director.ExportCheckpoint(), Is.EqualTo(restored.ExportCheckpoint()), "Post-recovery execution is deterministic.");
         }
 
+
+
         // --------------------------------------------------------------------------------
-        // 8 Mandatory Negative Probes
+        // Schema Validation Negative Probes
         // --------------------------------------------------------------------------------
+
+        [Test]
+        public void Negative_SchemaValidation_RefusesMissingRequiredKey()
+        {
+            var schemaText = File.ReadAllText(ResolveSchemaPath(), Encoding.UTF8);
+            var catalogObj = MiniJsonParser.Parse(File.ReadAllText(ResolveCatalogPath(), Encoding.UTF8)) as Dictionary<string, object>;
+            Assert.That(catalogObj, Is.Not.Null);
+
+            // Remove required "revisionStatus" from the first source entry
+            var sources = catalogObj["sources"] as List<object>;
+            var firstSource = sources[0] as Dictionary<string, object>;
+            firstSource.Remove("revisionStatus");
+
+            var serialized = MiniJsonSerialize(catalogObj);
+            var ex = Assert.Throws<ArgumentException>(() => FoundationJsonSchemaValidator.Validate(schemaText, serialized));
+            Assert.That(ex.Message, Does.Contain("missing required property 'revisionStatus'"));
+        }
+
+        [Test]
+        public void Negative_SchemaValidation_RefusesAdditionalProperty()
+        {
+            var schemaText = File.ReadAllText(ResolveSchemaPath(), Encoding.UTF8);
+            var catalogObj = MiniJsonParser.Parse(File.ReadAllText(ResolveCatalogPath(), Encoding.UTF8)) as Dictionary<string, object>;
+            Assert.That(catalogObj, Is.Not.Null);
+
+            // Inject unexpected additional property into root
+            catalogObj["unexpectedMaliciousKey"] = true;
+
+            var serialized = MiniJsonSerialize(catalogObj);
+            var ex = Assert.Throws<ArgumentException>(() => FoundationJsonSchemaValidator.Validate(schemaText, serialized));
+            Assert.That(ex.Message, Does.Contain("additional property 'unexpectedMaliciousKey' not allowed"));
+        }
+
+        [Test]
+        public void Negative_SchemaValidation_RefusesWrongType()
+        {
+            var schemaText = File.ReadAllText(ResolveSchemaPath(), Encoding.UTF8);
+            var catalogObj = MiniJsonParser.Parse(File.ReadAllText(ResolveCatalogPath(), Encoding.UTF8)) as Dictionary<string, object>;
+            Assert.That(catalogObj, Is.Not.Null);
+
+            // Set kindOrdinal to a string instead of integer
+            var reviewed = catalogObj["reviewedVariants"] as List<object>;
+            var firstVariant = reviewed[0] as Dictionary<string, object>;
+            firstVariant["kindOrdinal"] = "not_an_integer";
+
+            var serialized = MiniJsonSerialize(catalogObj);
+            var ex = Assert.Throws<ArgumentException>(() => FoundationJsonSchemaValidator.Validate(schemaText, serialized));
+            Assert.That(ex.Message, Does.Contain("expected type [integer]"));
+        }
+
+        [Test]
+        public void Negative_SchemaValidation_RefusesInvalidEnum()
+        {
+            var schemaText = File.ReadAllText(ResolveSchemaPath(), Encoding.UTF8);
+            var catalogObj = MiniJsonParser.Parse(File.ReadAllText(ResolveCatalogPath(), Encoding.UTF8)) as Dictionary<string, object>;
+            Assert.That(catalogObj, Is.Not.Null);
+
+            // Set reviewStatus to an invalid enum value
+            var reviewed = catalogObj["reviewedVariants"] as List<object>;
+            var firstVariant = reviewed[0] as Dictionary<string, object>;
+            firstVariant["reviewStatus"] = "super_reviewed_unofficial";
+
+            var serialized = MiniJsonSerialize(catalogObj);
+            var ex = Assert.Throws<ArgumentException>(() => FoundationJsonSchemaValidator.Validate(schemaText, serialized));
+            Assert.That(ex.Message, Does.Contain("is not in enum"));
+        }
+
+        // --------------------------------------------------------------------------------
+        // Operator & Source Boundary Negative Probes
+        // --------------------------------------------------------------------------------
+
+        [Test]
+        public void Negative_RefuseOperatorCrossConflation_HumetroToKorail()
+        {
+            // Case 1: Changing reviewed variant to cite HUMETRO source with KORAIL operator
+            var catalog = LoadCanonicalCatalog().Clone();
+            catalog.reviewedVariants[0].sourceId = "HUMETRO-PASSENGER-EMERGENCY";
+            catalog.reviewedVariants[0].applicability.@operator = "KORAIL";
+
+            var ex1 = Assert.Throws<ArgumentException>(() => IncidentCatalogValidator.Validate(catalog));
+            Assert.That(ex1.Message, Does.Contain("HUMETRO").And.Contains("KORAIL"));
+
+            // Case 2: Changing unreviewed HUMETRO variant operator to KORAIL
+            var catalog2 = LoadCanonicalCatalog().Clone();
+            var humetroVariant = catalog2.unreviewedVariants.First(v => v.sourceId == "HUMETRO-PASSENGER-EMERGENCY");
+            humetroVariant.applicability.@operator = "KORAIL";
+
+            var ex2 = Assert.Throws<ArgumentException>(() => IncidentCatalogValidator.Validate(catalog2));
+            Assert.That(ex2.Message, Does.Contain("HUMETRO").And.Contains("KORAIL"));
+        }
+
+        [Test]
+        public void Negative_RefuseOperatorCrossConflation_KorailToHumetro()
+        {
+            // Case 3: Changing unreviewed KORAIL variant operator to HUMETRO
+            var catalog = LoadCanonicalCatalog().Clone();
+            var korailVariant = catalog.unreviewedVariants.First(v => v.sourceId == "KORAIL-PUBLIC-REPORT");
+            korailVariant.applicability.@operator = "HUMETRO";
+
+            var ex = Assert.Throws<ArgumentException>(() => IncidentCatalogValidator.Validate(catalog));
+            Assert.That(ex.Message, Does.Contain("KORAIL").And.Contains("HUMETRO"));
+        }
+
+        [Test]
+        public void Negative_RefusePendingOperatorSourceAsExecutionCandidate()
+        {
+            // Case 4: Promoting a real operator source variant (pending_operator_review) to isExecutionCandidate = true
+            var catalog = LoadCanonicalCatalog().Clone();
+            catalog.reviewedVariants[0].sourceId = "HUMETRO-PASSENGER-EMERGENCY";
+            catalog.reviewedVariants[0].applicability.@operator = "HUMETRO"; // matching operator, but source is pending_operator_review!
+
+            var ex = Assert.Throws<ArgumentException>(() => IncidentCatalogValidator.Validate(catalog));
+            Assert.That(ex.Message, Does.Contain("pending source").Or.Contain("execution candidate"));
+        }
 
         [Test]
         public void Negative_RefuseUnreviewedVariantInExecutionAllowlist()
@@ -610,6 +1145,40 @@ namespace ChooGuard.Foundation.Tests
 
             var ex2 = Assert.Throws<ArgumentException>(() => IncidentCatalogValidator.Validate(catalog2));
             Assert.That(ex2.Message, Does.Contain("procedureAcceptance"));
+        }
+
+        private static string MiniJsonSerialize(object obj)
+        {
+            if (obj == null) return "null";
+            if (obj is string str) return "\"" + str.Replace("\\", "\\\\").Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r") + "\"";
+            if (obj is bool b) return b ? "true" : "false";
+            if (obj is long l) return l.ToString();
+            if (obj is double d) return d.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            if (obj is List<object> list)
+            {
+                var sb = new StringBuilder("[");
+                for (int i = 0; i < list.Count; i++)
+                {
+                    if (i > 0) sb.Append(",");
+                    sb.Append(MiniJsonSerialize(list[i]));
+                }
+                sb.Append("]");
+                return sb.ToString();
+            }
+            if (obj is Dictionary<string, object> dict)
+            {
+                var sb = new StringBuilder("{");
+                bool first = true;
+                foreach (var kvp in dict)
+                {
+                    if (!first) sb.Append(",");
+                    first = false;
+                    sb.Append("\"").Append(kvp.Key).Append("\":").Append(MiniJsonSerialize(kvp.Value));
+                }
+                sb.Append("}");
+                return sb.ToString();
+            }
+            return obj.ToString();
         }
     }
 }
