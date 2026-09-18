@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "date": "2026-09-18",
   "classification": "PUBLIC_PROJECT_EVIDENCE",
-  "status": "recorded_all_26_checks_passed_on_the_hash_pinned_run",
+  "status": "recorded_all_34_checks_passed_on_the_hash_pinned_run",
   "targetIssue": 131,
   "issue": 131,
   "workId": "FMP-09a",
@@ -13,15 +13,15 @@
   "emptyApplicabilityMeans": "unspecified_not_universal_permission",
   "measurementConditions": {
     "editor": "Unity 6000.3.23f1",
-    "invocation": "Start-Process -FilePath 'C:\\Program Files\\Unity 6000.3.23f1\\Editor\\Unity.exe' -ArgumentList '-batchmode', '-nographics', '-projectPath', '.', '-runTests', '-testPlatform', 'EditMode', '-testFilter', 'ChooGuard.Foundation.Multiplayer.Tests.IncidentDirectorTests;ChooGuard.Foundation.Tests.CanonicalScenarioTests;ChooGuard.Foundation.Tests.Fmp09aIncidentCatalogTests', '-testResults', 'docs/evidence/work-items/FMP-09a/FMP-09a-edit.xml', '-logFile', 'docs/evidence/work-items/FMP-09a/FMP-09a-unity.log' -Wait",
+    "invocation": "Start-Process -FilePath 'C:\\Program Files\\Unity 6000.3.23f1\\Editor\\Unity.exe' -ArgumentList '-batchmode', '-nographics', '-projectPath', '.', '-runTests', '-testPlatform', 'EditMode', '-testFilter', 'IncidentDirectorTests;ChooGuard.Foundation.Tests.CanonicalScenarioTests;ChooGuard.Foundation.Tests.Fmp09aIncidentCatalogTests', '-testResults', 'docs/evidence/work-items/FMP-09a/FMP-09a-edit.xml', '-logFile', 'docs/evidence/work-items/FMP-09a/FMP-09a-unity.log' -Wait",
     "gitHeadAtRun": "56a175a45951c2472c4021372a8f4bccca8d24c0",
     "launchUtc": "2026-09-17T17:45:34Z",
     "resultsXmlMtime": "2026-09-18T02:45:56+0900",
     "unityLogMtime": "2026-09-18T02:45:56+0900",
-    "resultsXmlBytes": 24214,
-    "unityLogBytes": 35952,
-    "resultsXmlSha256": "455c09301349011100d4fe74a63eeb7ad10806b4aa4f5ee59c289434491da0ac",
-    "unityLogSha256": "75a689b94994df4695afacb3188998bbed2ef966391966efcbf5fbb027b73c89"
+    "resultsXmlBytes": 30575,
+    "unityLogBytes": 35324,
+    "resultsXmlSha256": "388f31d0beef9b5f2945fe0be06695ff73ac4ee8a518d737f8e38b1482278d98",
+    "unityLogSha256": "8a516bb133e74f2b8f84d275465e7a7d755a884cd65de49520ea1fecd77973d6"
   },
   "hashes": {
     "schemas/foundation-incident-catalog.schema.json": {
@@ -33,8 +33,8 @@
       "sha256": "4941c12bfcc55e77272a1db9e856e286647d209be936f38e7992de387f187eb0"
     },
     "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp09aIncidentCatalogTests.cs": {
-      "bytes": 29758,
-      "sha256": "b2c6d7228f5e099004e85b3e1c729106a9212eb1acbf448a2d574dbe37d5c5ff"
+      "bytes": 56592,
+      "sha256": "d48c723b2b776a09a1205332117b96fc6f866f1ae524b56bd4b4a66b74be69fc"
     },
     "Packages/com.xrlab.chooguard.foundation/Tests/Editor/Fmp09aIncidentCatalogTests.cs.meta": {
       "bytes": 243,
@@ -107,26 +107,104 @@
     "totalValidRegionsCount": 13
   },
   "testMatrix": {
-    "total": 26,
-    "passed": 26,
+    "total": 34,
+    "passed": 34,
     "failed": 0,
     "inconclusive": 0,
     "skipped": 0,
     "suites": [
       {
-        "name": "ChooGuard.Foundation.Tests.CanonicalScenarioTests",
-        "total": 15,
-        "passed": 15,
-        "failed": 0
-      },
-      {
-        "name": "ChooGuard.Foundation.Tests.Fmp09aIncidentCatalogTests",
-        "total": 11,
-        "passed": 11,
+        "name": "IncidentDirectorTests",
+        "total": 1,
+        "passed": 1,
         "failed": 0,
         "tests": [
           {
-            "name": "CanonicalCatalogLoadsAndPassesValidation",
+            "name": "BoundedContract",
+            "result": "Passed"
+          }
+        ]
+      },
+      {
+        "name": "CanonicalScenarioTests",
+        "total": 15,
+        "passed": 15,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-01\",VR)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-01\",Desktop)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-02\",VR)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-02\",Desktop)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-03\",VR)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-03\",Desktop)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-04\",VR)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-04\",Desktop)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-05\",VR)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonDrivesAllTenRoleModalityPaths(\"role-05\",Desktop)",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonHasGoldenReadyState(\"role-01\",\"e286c404bc7df3fb629399e92bdf3b383f626eff5b959b34c57f07f972438d2c\")",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonHasGoldenReadyState(\"role-02\",\"3164db12407d462339d839362490a51faf963785d82975870296e715a98be5c5\")",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonHasGoldenReadyState(\"role-03\",\"7d1f576d2bf1d5fd2ec0b580718779ea1325c5d1df797931263ba35ef2939a3f\")",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonHasGoldenReadyState(\"role-04\",\"b7187bf719041d00c91527023c64094b9242ec6e8496cc774028ff6af9e96f47\")",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalJsonHasGoldenReadyState(\"role-05\",\"dd41fa21396797957a6fa29bf939db7c70d4b09570b4fa3f751ad4f077a425d9\")",
+            "result": "Passed"
+          }
+        ]
+      },
+      {
+        "name": "Fmp09aIncidentCatalogTests",
+        "total": 18,
+        "passed": 18,
+        "failed": 0,
+        "tests": [
+          {
+            "name": "CanonicalCatalogDrivesIncidentDirectorDeterministically",
+            "result": "Passed"
+          },
+          {
+            "name": "CanonicalCatalogFileExistsAndLoads",
             "result": "Passed"
           },
           {
@@ -134,11 +212,7 @@
             "result": "Passed"
           },
           {
-            "name": "CanonicalCatalogDrivesIncidentDirectorDeterministically",
-            "result": "Passed"
-          },
-          {
-            "name": "Negative_RefuseUnreviewedVariantInExecutionAllowlist",
+            "name": "Negative_RefuseConflationOfSRDataAsKORARILSOP",
             "result": "Passed"
           },
           {
@@ -146,7 +220,27 @@
             "result": "Passed"
           },
           {
-            "name": "Negative_RefuseConflationOfSRDataAsKORARILSOP",
+            "name": "Negative_RefuseHallucinatedOfficialAuthorityForSyntheticVariant",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseMissingOrUnregisteredSourceId",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseOperatorCrossConflation_HumetroToKorail",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseOperatorCrossConflation_KorailToHumetro",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefusePendingOperatorSourceAsExecutionCandidate",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_RefuseUndefinedIncidentKindEnum",
             "result": "Passed"
           },
           {
@@ -158,15 +252,23 @@
             "result": "Passed"
           },
           {
-            "name": "Negative_RefuseMissingOrUnregisteredSourceId",
+            "name": "Negative_RefuseUnreviewedVariantInExecutionAllowlist",
             "result": "Passed"
           },
           {
-            "name": "Negative_RefuseUndefinedIncidentKindEnum",
+            "name": "Negative_SchemaValidation_RefusesAdditionalProperty",
             "result": "Passed"
           },
           {
-            "name": "Negative_RefuseHallucinatedOfficialAuthorityForSyntheticVariant",
+            "name": "Negative_SchemaValidation_RefusesInvalidEnum",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_SchemaValidation_RefusesMissingRequiredKey",
+            "result": "Passed"
+          },
+          {
+            "name": "Negative_SchemaValidation_RefusesWrongType",
             "result": "Passed"
           }
         ]
