@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:content:scenario",
+  "title": "후보 ScenarioSpec 참조 골격",
+  "description": "CS-EXEC.01.01 후보 설계의 참조 전용 형태. 시나리오 조건이나 운영 실행 구현이 아니다. site는 함께 전달한 SiteBundle의 id/revision에 결속해야 하며 외부 source catalog로 대체할 수 없다. 형태 유효성은 현장 검증 또는 기관 승인을 뜻하지 않는다.",
+  "x-wire-lexical-form": "RFC JSON만 허용. decoded key 중복 금지, 올바른 Unicode surrogate pair 필수, trailing data 금지. 문서 UTF16 code units 최대 1048576, nesting 최대 32(root=1), 모든 배열 최대 4096. lexical 및 관계 검사는 표준 JSON Schema와 별도이다.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "revision", "site"],
+  "properties": {
+    "id": {"$ref": "#/$defs/id"},
+    "revision": {"$ref": "#/$defs/revision"},
+    "site": {"$ref": "#/$defs/revisionRef"}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$(?![\\s\\S])"},
+    "revision": {"type": "integer", "minimum": 0, "maximum": 9223372036854775807, "x-wire-lexical-form": "0|[1-9][0-9]* 전체 lexeme만 허용. -0, 음수, decimal, exponent 금지. 표준 JSON Schema integer와 별개인 wire 규칙이다."},
+    "revisionRef": {"type": "object", "additionalProperties": false, "required": ["id", "revision"], "properties": {"id": {"$ref": "#/$defs/id"}, "revision": {"$ref": "#/$defs/revision"}}}
+  }
+}

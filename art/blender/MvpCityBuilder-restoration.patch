@@ -1,0 +1,23 @@
+--- Assets/ChooGuard/Editor/MvpCityBuilder.cs
++++ Assets/ChooGuard/Editor/MvpCityBuilder.cs
+@@ -50,6 +50,7 @@
+                 if(feature.kind=="building"||feature.kind=="water")
+                 {
+                     if(feature.id=="165346389"||feature.id=="165346394")continue;
++                    if(MvpEvidenceBuildingBuilder.ReplacementAvailable(feature.id))continue;
+                     if((feature.id=="480601129"&&AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ChooGuard/Art/WorldSet/BusanTower.fbx")!=null)||(feature.id=="368597686"&&AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ChooGuard/Art/WorldSet/PortTerminal.fbx")!=null)||(feature.id=="382696296"&&AssetDatabase.LoadAssetAtPath<GameObject>("Assets/ChooGuard/Art/WorldSet/JagalchiMarket.fbx")!=null))continue;
+                     var polygon=Clip(feature.points.Select(p=>new Vector2(p.x,p.z)).ToList(),bound);if(polygon.Count<3)continue;
+                     for(int i=polygon.Count-1;i>0;i--)if((polygon[i]-polygon[i-1]).sqrMagnitude<.001f)polygon.RemoveAt(i);
+@@ -59,8 +60,10 @@
+                     var centroid=polygon.Aggregate(Vector2.zero,(sum,p)=>sum+p)/polygon.Count;float baseHeight=MvpWorldSurfaceBuilder.Height(centroid.x,centroid.y);foreach(var corner in polygon)baseHeight=Mathf.Max(baseHeight,MvpWorldSurfaceBuilder.Height(corner.x,corner.y)); // Raise a support plinth on slopes; skirts reach the shared terrain.
+                     if(feature.kind=="water") { Roof(water,polygon,-.55f);continue; }
+                     long.TryParse(feature.id,out long number);int color=archetypes.TryGetValue(feature.id,out var archetype)?archetype:0;
+-                    float height;if(!float.TryParse((feature.height??"").Replace(" m",""),NumberStyles.Float,CultureInfo.InvariantCulture,out height)) { float levels;height=float.TryParse(feature.levels,NumberStyles.Float,CultureInfo.InvariantCulture,out levels)?levels*3:6+(number%4)*3; }
+-                    height=Mathf.Clamp(height,6f,192f);if(feature.id=="764492639")height=8f;float signed=0;for(int i=0;i<polygon.Count;i++)signed+=Cross(polygon[i],polygon[(i+1)%polygon.Count]);if(signed<0)polygon.Reverse();Roof(buildings[color],polygon,height);
++                    // Positive source heights survive exactly, including below 6m and above 192m.
++                    float height;bool knownHeight=float.TryParse((feature.height??"").Replace(" m",""),NumberStyles.Float,CultureInfo.InvariantCulture,out height)&&height>0&&!float.IsNaN(height)&&!float.IsInfinity(height);
++                    if(!knownHeight) { float levels;bool knownLevels=float.TryParse(feature.levels,NumberStyles.Float,CultureInfo.InvariantCulture,out levels)&&levels>0&&!float.IsNaN(levels)&&!float.IsInfinity(levels);height=knownLevels?levels*3f:9f; } // INFERRED: levels use 3m; unknown uses one stable 9m proxy, never OSM-ID modulo.
++                    float signed=0;for(int i=0;i<polygon.Count;i++)signed+=Cross(polygon[i],polygon[(i+1)%polygon.Count]);if(signed<0)polygon.Reverse();Roof(buildings[color],polygon,height);
+                     for(int i=0;i<polygon.Count;i++) { var a=polygon[i];var b=polygon[(i+1)%polygon.Count];buildings[color].Quad(new Vector3(a.x,-.15f,a.y),new Vector3(a.x,height,a.y),new Vector3(b.x,height,b.y),new Vector3(b.x,-.15f,b.y)); }
+                     // Window rhythm, parapets and compact rooftop plant are visual detail, not source dimensions.
+                     for(int edge=0;edge<polygon.Count;edge++)

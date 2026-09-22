@@ -1,0 +1,1 @@
+All three phases complete. Local pinned macOS arm64 binaries verified. Full-source import, directed geographic route, actual single vehicle SUMO run retained with 169 FCD samples and positive arrival. Coordinate inspection uses native bundled PROJ transform. No Unity integration claimed.
