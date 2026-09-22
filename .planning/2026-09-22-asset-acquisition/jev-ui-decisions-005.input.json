@@ -1,0 +1,54 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "product": "CHOOGuard — Unity 1인칭 코레일 역무 직무 시뮬레이터. 튜토리얼 모드(My Summer Car 계열, 결정적·반복·채점)와 비상대응 모드(랜덤·시간압박)가 별개. 무기·전투·HP 배제. 소화기 월간점검 8단계 절차가 이미 동작하고 PlayMode 시험 7건 통과.",
+    "rejected": "화면 좌상단 560x660px 판에 절차 8단계를 라벨+근거조항으로 전부 나열한 HUD. 사용자 기각: '게임에서 저런 나열식은 공간만 차지하잖아.'",
+    "regulation": "코레일 소방안전관리 시행세칙 제23조2-1 '유지관리는 소화기에 부착되어 있는 제원표에 따른다', 제23조2-3 '점검표를 소화기에 부착', 제22조3 '소화기에 고유번호를 부여'. 즉 규정이 절차 정보를 월드 오브젝트에 두라고 지시한다.",
+    "already_wired": "TutorialSession.RefreshPrompt() 가 이미 Target.Prompt=단계라벨, Target.UnavailableMessage=거부사유 를 넣고 FirstPersonResponder.cs:128 이 'E · '+프롬프트로 조립해 기존 중앙 HUD 로 보낸다. 현재 단계·거부사유·완료피드백은 신규 UI 없이 이미 흐른다. 내가 만든 나열판은 처음부터 중복이었다.",
+    "hard_constraints": "상호작용 거리 3m 하드 상한(Mathf.Clamp(...,.25f,3)). 한국어 폰트는 TextMeshPro SDF 전용 자산. UI Toolkit 런타임 사용 이력 0(UXML/USS 0개) — uGUI 유지 판정.",
+    "evidence_lethal_company": "실측 확인: 클립보드는 비사용 시 화면 점유 0%, 열면 거의 전체화면, 그리고 시간이 멈추지 않는다. 읽는 데 기회비용이 붙는다. 페이지 상태는 열고 닫아도 보존된다.",
+    "evidence_viscera": "실측 확인: 작업 중 진행률 표시가 0%이고 완료 판정을 마지막에 월드 단말(Punchomatic)에서만 한다. 표준 모드에는 라이브 % 자체가 없다.",
+    "evidence_shipbreaker": "실측 확인: GDC 2021 'Cutting Apart The Diegetic Interface'. 위험 유형을 선박 등급 해금에 맞춰 단계적으로 드립피드하고 목록을 선제시하지 않는다. 헬멧 HUD 는 가장자리 요소만 쓴다.",
+    "evidence_msc": "실측 확인: My Summer Car 은 절차 UI 가 아예 없고 정비 지식이 게임 밖 위키에 있다. 절차 UI 를 의도적으로 제공하지 않는 것도 장르적으로 정당한 선택이다.",
+    "evidence_none_use_list": "조사 결론: 기각된 8단계 나열 방식을 5개 게임 중 어느 것도 쓰지 않는다.",
+    "existing_wheels": "저장소에 InputContextRouter.cs 377줄(OpenModal/CloseModal/RouteCancel/HitContext/SetCompositionActive)과 PointerCaptureOwner.cs 의 InputContext/InputOwner 열거(Modal/Focus/Context/World/Hud), CommandPreviewPresenter.cs 461줄+CommandPreview.prefab, MvpWorkspace.cs 418줄의 패널 생성 코드가 이미 있다. 손에 든 문서의 모달 포커스 전환은 새로 만들 필요가 없다.",
+    "squint_reference": "stevenharmongames/Unity-FirstPersonInteractionToolkit(MPL-2.0, 72스타) 의 Squint.cs 6217B 가 우클릭 FOV 80->45 보간 + 비네트 + DoF 초점으로 '몸을 기울여 작은 글씨를 읽는' 조작을 구현한다. 다만 Post Processing v2 패키지에 의존하고 이 프로젝트에는 없다(URP Volume 로 재작성 필요). 같은 레포의 InspectNote.cs 4101B 는 손에 든 문서 상태기계다.",
+    "unverified": "제원표 쿼드에 조항 텍스트를 넣었을 때 3m 거리에서 한국어 SDF 가 읽히는지 실측하지 않았다. squint 없이는 읽히지 않을 가능성이 있다."
+  },
+  "questions": {
+    "checklist_cost": {
+      "type": "choice",
+      "instructions": "8단계 전체 목록을 조회하는 비용을 어디에 둘 것인가? 이 선택이 튜토리얼 모드가 '연습'인지 '시험'인지를 정한다.",
+      "criteria": {
+        "hold_and_block": "TAB 을 누르고 있는 동안만 표시하고 그동안 E 상호작용을 차단한다(양손이 찼다). 조회에 실제 대가가 붙어 기억해서 수행하는 것이 채점 가능한 행위가 된다. Lethal Company 클립보드의 기회비용 구조와 같다.",
+        "free_toggle": "TAB 토글로 자유 조회. 마찰 0. 학습 초기 접근성은 높지만 보면서 따라 하기로 퇴화하고 시험 성격이 약해진다.",
+        "world_terminal_only": "손에 드는 문서를 아예 만들지 않는다. 절차 목록은 역무실 벽의 월드 단말에서만 조회하고 현장에서는 못 본다. Viscera Cleanup 의 Punchomatic 과 Tarkov 의 라이드 전 숙지 구조. 가장 급진적이고 기억 부담이 가장 크다.",
+        "staged_dripfeed": "전체 목록을 어디에서도 보여주지 않고 단계를 하나씩만 드립피드한다. Hardspace Shipbreaker 의 등급별 위험 도입 구조. 첫 회차 학습에는 좋으나 반복 숙달에는 목록 조회가 필요할 수 있다."
+      }
+    },
+    "squint_gate": {
+      "type": "noul",
+      "instructions": "제원표 판독을 squint(우클릭 FOV 축소)에 걸어야 하는가?",
+      "criteria": {
+        "true": "걸어야 한다. 규정이 지시한 물리 제원표의 충실도가 유지되고 3m 상한과 자연스럽게 맞물리며, 작은 글씨를 읽기 위해 몸을 기울이는 행위 자체가 육안점검이라는 규정 동사와 일치한다.",
+        "false": "걸지 말아야 한다. 조작이 하나 늘고 FirstPersonResponder.Simulate/StepInput 양쪽에 입력 파라미터를 추가해야 하며 URP Volume 작업이 붙는다. 제원표 텍스트를 크게 그려 해결하는 편이 싸다."
+      }
+    },
+    "delete_checklist_hud": {
+      "type": "noul",
+      "instructions": "내가 만든 FpsChecklistHud.cs 를 삭제하는 것이 옳은가? 한 조사 레인은 '재사용 가능, 확장의 기반으로 삼아라'고 했고 다른 계획은 '삭제하라'고 했다.",
+      "criteria": {
+        "true": "삭제가 옳다. 단계 라벨·거부 사유·완료 피드백은 이미 중앙 프롬프트 배관으로 흐르므로 이 파일은 중복이다. 남기면 같은 정보를 두 곳에서 그리는 구조가 굳는다.",
+        "false": "남기는 것이 옳다. 렌더 계층이 이미 작성돼 있고 TAB 토글·가시성 분기·감사 열거 로직이 들어 있으므로 레이아웃만 고쳐 재사용하는 편이 싸다."
+      }
+    },
+    "audit_defer": {
+      "type": "noul",
+      "instructions": "감사 결과(미충족 열거·오판정·역할경계 위반)를 절차 진행 중에는 전혀 보여주지 않고 종료 후 전용 화면에서만 보여주는 것이 옳은가?",
+      "criteria": {
+        "true": "옳다. Viscera Cleanup 이 작업 중 진행률을 0% 로 두고 완료 판정을 끝에 단말에서만 하는 것이 검증된 선례이고, TutorialSession.Audit() 의 주석도 스스로 '즉시 야단치지 않는다'고 적었다.",
+        "false": "옳지 않다. 학습 목적이므로 틀린 순간에 알려주는 편이 교육 효과가 크다."
+      }
+    }
+  }
+}

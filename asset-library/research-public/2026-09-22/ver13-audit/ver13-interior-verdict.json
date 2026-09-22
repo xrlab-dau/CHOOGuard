@@ -1,0 +1,127 @@
+{
+  "schema": "chooguard.station-interior-audit.v1",
+  "auditedAt": "2026-09-22",
+  "question": "부산역 공식 SKP 원본에 걸어다닐 수 있는 내부가 있는가?",
+  "verdict": "INTERIOR_PRESENT",
+  "confidence": "정량 프로브 기반. 벽 둘러쌈 검사와 Unity 실보행 검증은 미수행이므로 PARTIAL 로 강등될 수 있다.",
+
+  "hypothesisTested": {
+    "claim": "부산역ver13.skp(100.7MB, 2026-03)가 한 번도 변환·감사되지 않았으므로 여기에 내부가 있을 것이다",
+    "result": "REFUTED",
+    "evidence": "ver13 을 같은 파이프라인으로 변환한 결과 (수정) 변환물과 지오메트리가 완전히 동일하다 — bounds size [447.1, 450.5, 100.1], triangles 4,115,319, vertices 2,517,217, meshChunks 51, materials 372, layers 15 가 모두 일치. 35MB 파일 크기 차이는 지오메트리가 아니다.",
+    "note": "가설은 틀렸으나 이 검증으로 두 파일이 동일함이 확정되어, 앞으로 어느 쪽을 써도 무방함이 밝혀졌다."
+  },
+
+  "priorVerdictWasWrong": {
+    "priorClaim": "역사 내부가 없다 (station-model-source/floor-support.log, 앵커 7개 전부 False)",
+    "whyItWasWrong": [
+      "프로브가 작성자 임의 선택 7개 점뿐이었다(원본 JSON 이 'author-selected interior probes' 라고 자인). 7점이 전부 빗나가도 결과는 '없음'과 구별되지 않는다.",
+      "audit_floor_support.py 가 레이어 4개만 남기고 나머지를 삭제한 뒤 프로브했다.",
+      "위를 보는 면만 셌다. '바닥 위에 천장이 있는가'를 묻지 않아 실내와 실외 캐노피를 구분할 수 없었다."
+    ],
+    "correction": "격자 프로브 + 바닥·천장 쌍 검출로 재측정했다."
+  },
+
+  "method": {
+    "grid": "역사 레이어(-부산역, -부산역_선로상층부, -부산역_선로상층부(주차장), -부산역_출구지붕)의 XY 바운딩박스를 2m 간격으로 훑음",
+    "ray": "z=140m 에서 수직 하향, 한 점당 최대 120 면까지 관통 수집",
+    "roomDefinition": "위를 보는 면(normalZ>0.8) 위 2.2~6.0m 에 아래를 보는 면(normalZ<-0.8)이 있으면 방 1 표본",
+    "noLayerDeletion": true,
+    "scripts": [
+      "convert_ver13.py",
+      "audit_ver13_floors.py",
+      "audit_enclosed_space.py",
+      "render_sections.py"
+    ]
+  },
+
+  "measurements": {
+    "probePoints": 13803,
+    "roomSamples": 3334,
+    "roomShareOfProbes": 0.2415,
+    "gridStepMetres": 2.0,
+    "areaPerSampleSquareMetres": 4.0,
+    "floorBands": [
+      {
+        "floorZMetres": 0.0,
+        "samples": 1988,
+        "dominantLayerPair": "Layer0 / -부산역_선로상층부",
+        "dominantCount": 1753,
+        "reading": "선로 상층부가 천장이 되는 지상 공간. 역사 건물 실내라기보다 고가 선로 하부의 덮인 공간으로 해석하는 것이 안전하다."
+      },
+      {
+        "floorZMetres": 7.0,
+        "samples": 678,
+        "dominantLayerPair": "-부산역 / -부산역",
+        "dominantCount": 402,
+        "reading": "★ 역사 건물 레이어가 바닥이자 천장인 실내. 약 1,608제곱미터. 공개 편의시설 안내도가 2F 를 중심층(종합안내소·매표창구·역무실)이라고 표시한 것과 높이가 부합한다."
+      },
+      {
+        "floorZMetres": 26.5,
+        "samples": 169,
+        "dominantLayerPair": "-부산역 / -부산역",
+        "dominantCount": 169,
+        "reading": "상층 실내. 머리 공간 4.2~4.6m."
+      },
+      {
+        "floorZMetres": 23.0,
+        "samples": 42,
+        "dominantLayerPair": "-부산역 / -부산역",
+        "dominantCount": 39,
+        "reading": "상층 실내"
+      },
+      {
+        "floorZMetres": 24.0,
+        "samples": 34,
+        "dominantLayerPair": "-부산역 / -부산역",
+        "dominantCount": 34,
+        "reading": "상층 실내"
+      },
+      {
+        "floorZMetres": 17.5,
+        "samples": 83,
+        "dominantLayerPair": "-부산역_선로상층부 / -부산역_선로상층부",
+        "dominantCount": 81,
+        "reading": "선로 상층부 내부 공간"
+      }
+    ],
+    "stationOwnInteriorSamples": 402,
+    "stationOwnInteriorSquareMetresApprox": 1608,
+    "triangleMassByLayer": {
+      "Layer0": 922223,
+      "-부산역": 670179,
+      "-부산역_출구지붕": 187565,
+      "-부산역_선로상층부": 85279,
+      "-부산역_선로상층부(주차장)": 42156
+    }
+  },
+
+  "whatThisMeansForBuild": {
+    "doNotModelFromScratch": "역사 실내 골격을 손으로 만들 필요가 없다. 공식 원본에 이미 있다.",
+    "nextExtraction": "-부산역 레이어의 z=5~30m 구간과 Layer0 의 z=-1.2~13.4m 구간이 실내 후보다. 기존 export_full_site.py 관례를 따라 FBX 로 분할 추출한다.",
+    "unityState": "FpsStation.unity 의 NavMesh·Occlusion·Lightmap 이 모두 미베이크(m_NavMeshData/m_OcclusionCullingData 가 fileID 0). 실내를 넣은 뒤 베이크가 필요하다.",
+    "existingProceduralPipeline": "Editor/MvpStationBuilder.cs 가 busan-site-selected.json 을 읽어 MvpFloorBuilder/MvpInteriorBuilder/MvpStationZones 로 바닥·벽·구역을 절차 생성한다. 공식 실내를 쓰면 이 경로는 보조로 내려간다."
+  },
+
+  "license": {
+    "source": "부산디지털로케이션 (부산광역시 · 부산정보산업진흥원 BIPA, 부산글로벌웹툰센터 운영)",
+    "sourcePage": "https://bwebtoon.com/webtoon-home/core-businesses/digital-location/",
+    "commercialUse": "허용",
+    "modification": "콘텐츠 제작을 위해 자유롭게 수정 가능",
+    "resale": "원본·가공본 재판매 금지",
+    "attributionRequired": true,
+    "attributionText": "부산역 3D 배경: 부산광역시 · 부산정보산업진흥원(BIPA) 부산디지털로케이션",
+    "attributionPlacement": "게임 내 크레딧 화면. 구현은 Phase 0 범위 밖."
+  },
+
+  "honest_limits": [
+    "수직 레이 표본만 썼다. 2m 격자보다 작은 방은 통째로 누락될 수 있다.",
+    "벽 둘러쌈 검사를 하지 않았다. 옆이 트인 덮인 공간도 '방'으로 계수된다 — z=0.0m 대역 1,988 표본이 특히 이 경우일 가능성이 높다.",
+    "Layer0 은 SketchUp 기본 레이어라 소품과 구조가 섞여 있다. Layer0 을 실내로 취급한 것은 과대계수일 수 있다.",
+    "아래를 보는 면이 마감된 천장이라는 증명은 아니다. 캐노피 밑면일 수 있다.",
+    "Unity 에서 실제로 걸어본 적이 없다. 충돌·계단 연결·문 통과 가능 여부는 전부 미검증이다.",
+    "면적 추정치(표본수 x 4제곱미터)는 격자 해상도에 의존하는 개략값이며 실측이 아니다.",
+    "단면 렌더 3장은 파사드가 앞을 가려 실내 판정에 기여하지 못했다. 판정은 전적으로 프로브 수치에 근거한다.",
+    "공개 편의시설 안내도와의 대조는 '2F 가 중심층'이라는 층 개념 수준에서만 했고, 평면 배치를 한 칸씩 맞춰보지 않았다."
+  ]
+}

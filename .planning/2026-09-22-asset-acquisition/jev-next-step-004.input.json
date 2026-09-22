@@ -1,0 +1,50 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "product": "CHOOGuard — Unity 1인칭 코레일 역무 직무 시뮬레이터. 튜토리얼 모드(My Summer Car 계열, 결정적·반복·채점)와 비상대응 모드(랜덤·시간압박·FPS 조작문법)가 사용자 확정으로 별개이며 세이브 이월이 없다. 다리는 동형성(같은 프리팹·같은 콜라이더 위치·같은 프롬프트·같은 단계 순서)뿐이다.",
+    "done_today": "수직 슬라이스 완성. 소화기 월간점검 8단계가 실제 레이캐스트·실제 E 상호작용으로 처음부터 끝까지 동작한다. 신규 PlayMode 시험 7건 전부 통과(이 저장소 최초의 FPS 자동시험). 정상수행·오판정·관측없이E·현장수리거부·무점검표재시행 5개 경로 검증. 신규 코드 5개(FpsGazeTracker, FacilityInspectable, ProcedureRunner, TutorialSession, FpsChecklistHud) + 절차 정의 JSON + 에디터 배치기 + 시험.",
+    "bugs_fixed": "① FirstPersonResponder 가 자기 CharacterController 캡슐을 맞으면 레이캐스트 전체를 포기해 눈높이 35도 아래 모든 설비가 조작 불가였다 — RaycastNonAlloc 으로 자기 콜라이더만 건너뛰게 고쳤다. ② AddComponent 의 Awake 동기 실행 때문에 자산 주입이 늦어 런타임 구성이 깨졌다 — 최초 사용 시점 로드로 미뤘다. ③ 조건부 단계를 코드에 하드코딩해 적합 판정 시 뒤 단계가 막혔다 — conditional 을 데이터로 옮겼다.",
+    "test_conflict": "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs:78 이 EditorBuildSettings.scenes.Length == 1 을 단정한다. 수직 슬라이스 선행조건으로 FpsStation.unity 를 등록해 이제 2개다. 그런데 같은 테스트가 62행에서 먼저 실패한다 — BootstrapValidator.Validate 가 LOCAL_PLUGIN_UNDECLARED 1건을 돌려준다(기존 문제, 빌드설정과 무관, 검증기는 EditorBuildSettings 를 읽지 않음). 즉 78행 실패는 현재 가려져 있고 LOCAL_PLUGIN_UNDECLARED 를 고치는 순간 드러난다. 이 테스트는 부트스트랩 시절 '제출 씬은 하나' 불변식을 담고 있고, 설계는 FpsStation 등록을 '모든 후속 작업의 선행 조건'으로 명시했다.",
+    "editmode_baseline": "489건 중 439 통과 / 45 실패 / 5 건너뜀. 45건 전부 Stories 네임스페이스의 빌드 인자·경로 경계 테스트이며 외부 스크래치 픽스처 경로를 요구한다. FPS·상호작용 관련 실패는 0건.",
+    "pending_work": "(1) 「소방안전관리 시행세칙」 별지 제7호서식의 실제 점검표 항목이 HWP 표 추출에서 미확보다 — PDF본에서 표적 추출하면 인게임 점검표를 규정 원문으로 채울 수 있다(이전 Jev 판정 pdf_only_targeted 0.86). (2) EmergencySession 최소 구현 — 설계 최대 위험이 '두 세션 클래스를 동시에 여는 순간 둘 다 미완으로 수렴'이었고 리트머스는 'EmergencySession.cs 가 있는데 FpsProcedureTests 가 녹색이 아니면 순서 위반'인데 지금 녹색이다. (3) 두 번째 절차 추가 — 코레일 사규 327건 색인이 있고 ProcedureRunner 가 데이터 주도라 JSON 하나로 추가된다. (4) FpsChecklistHud 시각 검증 — 코드는 돌지만 실제 화면에 그려지는지 눈으로 본 적이 없다. (5) 커밋 — 변경 7묶음이 untracked 다.",
+    "constraints": "커밋·push·PR 은 사용자 지시 없이 하지 않는다(저장소 규율). 세션 비용이 이미 120달러를 넘었다. 사용자가 '메인 모델인 네가 Jev 판정을 바탕으로 판단하고 진행해'라고 지시했다."
+  },
+  "questions": {
+    "test_conflict": {
+      "type": "choice",
+      "instructions": "CSBOOT0101Tests:78 의 '빌드 씬 정확히 1개' 단정을 어떻게 처리할 것인가? 이 테스트는 부트스트랩 시절 불변식이고 제품 방향이 바뀌어 씬이 2개가 됐다.",
+      "criteria": {
+        "update_assertion": "78~80행 단정을 FPS 전환에 맞게 갱신한다. Bootstrap 과 FpsStation 두 씬이 등록된 상태를 정상으로 인정하고, 왜 바뀌었는지 주석으로 남긴다.",
+        "remove_from_build": "FpsStation 을 빌드 목록에서 빼고 런타임에 추가 로드한다. 기존 테스트를 손대지 않는다.",
+        "leave_masked": "그대로 둔다. 지금 아무것도 막고 있지 않고 원인은 메모리에 기록됐으므로 나중에 드러날 때 처리한다.",
+        "assert_contains": "'정확히 1개'를 '부트스트랩 씬이 0번 인덱스에 enabled 로 있다'로 약화한다. 씬 추가에 열려 있으면서 부트스트랩 불변식은 지킨다."
+      }
+    },
+    "next_work": {
+      "type": "choice",
+      "instructions": "지금 착수할 단 하나의 작업을 고르시오. 수직 슬라이스가 녹색이고 비용이 이미 많이 소모된 상태다.",
+      "criteria": {
+        "extract_form7": "별지 제7호서식을 PDF본에서 표적 추출해 인게임 점검표 항목을 규정 원문으로 채운다. 이 제품의 차별점이 '판정과 조항의 왕복'이다.",
+        "emergency_minimal": "EmergencySession 최소 구현. 같은 소화기·같은 절차를 시드 랜덤 초기상태와 제17조 사전식 채점으로 돌려 두 모드 분리 명제를 실제로 검증한다.",
+        "second_procedure": "두 번째 절차를 JSON 으로 추가해 ProcedureRunner 의 데이터 주도성을 입증한다. 코드 변경 없이 콘텐츠가 늘어나는지 본다.",
+        "hud_visual": "FpsChecklistHud 가 실제 화면에 그려지는지 스크린샷으로 확인한다. 코드는 돌지만 눈으로 본 적이 없다."
+      }
+    },
+    "emergency_now_safe": {
+      "type": "noul",
+      "instructions": "튜토리얼 슬라이스가 녹색이 된 지금 EmergencySession 을 열어도 안전한가? 설계 최대 위험은 '두 장르를 다 어설프게 만드는 것'이고 그 리트머스는 'EmergencySession.cs 가 있는데 FpsProcedureTests 가 녹색이 아니면 순서 위반'이었다.",
+      "criteria": {
+        "true": "안전하다. 리트머스가 요구한 조건(튜토리얼 시험 녹색)이 충족됐고, 두 모드 분리 명제는 두 모드가 모두 최소한으로라도 돌아야 검증되므로 지금이 적기다.",
+        "false": "아직 위험하다. 튜토리얼 모드가 절차 하나뿐이고 HUD 가 시각 검증되지 않았으며 점검표 항목이 규정 원문이 아니다. 한 모드를 더 두껍게 만든 뒤에 두 번째 모드를 열어야 한다."
+      }
+    },
+    "commit_now": {
+      "type": "noul",
+      "instructions": "지금 변경사항을 커밋하도록 사용자에게 제안하는 것이 적절한가? 저장소 규율상 커밋은 사용자 지시 없이 하지 않으며, 변경 7묶음이 untracked 상태다.",
+      "criteria": {
+        "true": "제안해야 한다. 수직 슬라이스가 검증까지 끝난 자연스러운 경계이고, 다음 작업이 이 위에 쌓이므로 지금 고정하지 않으면 되돌릴 지점이 사라진다.",
+        "false": "제안하지 않아도 된다. 사용자가 진행을 지시했고 커밋은 별개 결정이므로 작업을 계속하는 것이 지시에 맞다."
+      }
+    }
+  }
+}

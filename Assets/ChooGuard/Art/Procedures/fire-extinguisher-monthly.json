@@ -1,0 +1,98 @@
+{
+  "id": "fire-extinguisher-monthly",
+  "version": 1,
+  "title": "소화기 월간 상태점검",
+  "basis": "코레일 「소방안전관리 시행세칙」 제17조⑤ · 제22조3 · 제23조②1 · 제23조②3",
+  "sourceNote": "별지 제7호서식의 실제 항목은 HWP 표 추출에서 미확보 상태이므로 서식 항목 수치를 넣지 않았다. 여기의 단계는 본문 조문에서만 유도했다.",
+  "steps": [
+    {
+      "id": "read-serial",
+      "label": "고유번호 판독",
+      "basis": "제22조3 — 소화기에 고유번호를 부여하고 소화기관리현황을 작성·관리",
+      "requires": [],
+      "allFacts": ["serial-gazed"],
+      "notFacts": [],
+      "effect": "record-serial",
+      "observe": "고유번호 문자열이 점검 기록의 대상 슬롯에 채워짐",
+      "failReason": "소화기의 고유번호를 먼저 확인하세요"
+    },
+    {
+      "id": "read-spec-plate",
+      "label": "제원표 판독",
+      "basis": "제23조②1 — 유지관리는 소화기에 부착되어 있는 제원표에 따른다",
+      "requires": ["read-serial"],
+      "allFacts": ["spec-plate-gazed"],
+      "notFacts": [],
+      "effect": "none",
+      "observe": "제원표 콜라이더에 시선이 최소 체류시간 이상 머무름",
+      "failReason": "제원표를 읽지 않고는 유지관리 기준을 알 수 없습니다"
+    },
+    {
+      "id": "check-gauge",
+      "label": "지시압력계 육안 확인",
+      "basis": "제17조⑤ — 육안 또는 신체감각을 이용하는 외관점검을 월1회 이상",
+      "requires": ["read-spec-plate"],
+      "allFacts": ["gauge-gazed"],
+      "notFacts": [],
+      "effect": "none",
+      "observe": "지시압력계 콜라이더에 시선이 최소 체류시간 이상 머무름",
+      "failReason": "지시압력계를 육안으로 확인하세요"
+    },
+    {
+      "id": "check-body",
+      "label": "외관 부식·기계적 결함 확인",
+      "basis": "제23조②1 — 기한 도달 이전이라도 부식되었거나 기계적인 결함이 발견된 경우에는 폐기",
+      "requires": ["check-gauge"],
+      "allFacts": ["body-gazed"],
+      "notFacts": [],
+      "effect": "none",
+      "observe": "본체 콜라이더에 시선이 최소 체류시간 이상 머무름",
+      "failReason": "본체 외관을 확인하세요"
+    },
+    {
+      "id": "record-verdict",
+      "label": "적합·부적합 판정 기재",
+      "basis": "제23조②1 — 제원표 기한과 부식·결함을 함께 본 뒤에 판정한다",
+      "requires": ["check-body"],
+      "allFacts": ["serial-recorded"],
+      "notFacts": [],
+      "effect": "record-verdict",
+      "observe": "판정이 기록되고, 월드 상태와 판정이 일치하는지 대조 가능",
+      "failReason": "고유번호를 기재하기 전에는 판정을 기록할 수 없습니다"
+    },
+    {
+      "id": "issue-repair-order",
+      "label": "폐기·교체 요구 인계 발행",
+      "conditional": true,
+      "basis": "제23조①1 — 구입·수리에 필요한 예산은 소방관리 책임자가 요구 (역무원은 직접 수리하지 않는다)",
+      "requires": ["record-verdict"],
+      "allFacts": ["verdict-unfit"],
+      "notFacts": [],
+      "effect": "issue-repair-order",
+      "observe": "부적합 판정에 대응하는 요구 인계가 발행됨",
+      "failReason": "적합 판정에는 폐기·교체 요구가 필요하지 않습니다"
+    },
+    {
+      "id": "attach-tag",
+      "label": "점검표 부착",
+      "basis": "제23조②3 — 별지 제7호서식의 소화기 점검표를 소화기에 부착",
+      "requires": ["record-verdict"],
+      "allFacts": ["verdict-recorded"],
+      "notFacts": [],
+      "effect": "attach-tag",
+      "observe": "점검표 오브젝트가 소화기 트랜스폼의 자식으로 씬에 실재함",
+      "failReason": "판정을 기록하기 전에는 점검표를 부착할 수 없습니다"
+    },
+    {
+      "id": "close-inspection",
+      "label": "역무실 단말 재스캔",
+      "basis": "제22조3 — 소화기관리현황 작성·관리",
+      "requires": ["attach-tag"],
+      "allFacts": ["tag-attached"],
+      "notFacts": [],
+      "effect": "close-inspection",
+      "observe": "단말이 월드를 다시 읽어 미충족 항목을 위치+항목 형태로 열거함",
+      "failReason": "점검표를 부착하지 않으면 단말이 완료로 읽지 않습니다"
+    }
+  ]
+}

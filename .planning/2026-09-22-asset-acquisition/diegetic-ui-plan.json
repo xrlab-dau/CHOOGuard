@@ -1,0 +1,197 @@
+{
+ "verdict": "560×660 나열판을 삭제하고 절차 정보를 네 곳으로 분산한다: (1) **현재 단계와 거부 사유는 이미 동작하는 중앙 프롬프트**에 — `TutorialSession.RefreshPrompt()` 가 `Target.Prompt=decision.Step.Label` / `Target.UnavailableMessage=decision.Reason` 을 쓰고 `FirstPersonResponder.cs:128` 이 `\"E · \"+InteractionPrompt` 로 조립해 HUD 에 보내므로 **배관이 이미 있다. 내가 만든 판은 처음부터 중복이었다**; (2) **근거 조항·완료 상태는 월드 오브젝트로** — 규정이 직접 지시한다(제23조②1 제원표, 제23조②3 점검표 부착, 제22조3 고유번호). 화면에 조항을 띄우는 것은 규정과 반대 방향이다; (3) **8단계 전체 목록은 TAB 을 누르고 있는 동안만 손에 드는 월드 스페이스 판** — PowerWash Simulator 가 같은 목록을 Esc→Details 메뉴로 치우고 HUD 에는 단일 %만 남긴 것, 그리고 Far Cry 2·Firewatch 의 손에 든 지도가 선례다. 사용자가 기각한 것은 목록의 존재가 아니라 **상시 점유**이므로, 조회에 실제 비용(양손이 차서 E 상호작용 불가)을 붙이면 목록은 남고 점유는 사라진다; (4) **감사 열거는 절차 종료 후 전용 화면** — `TutorialSession.Audit()` 의 주석이 스스로 \"감사관 단말\"이라 부른다. 두 모드 분기는 오브젝트가 아니라 **문서만 사라지는 것**으로 구현한다: `ChecklistVisible=false` 면 TAB 판이 비지만 제원표와 태그는 남는다(규정이 부착을 명령했으므로 지우면 오히려 위반). 결과적으로 상시 화면 점유는 중앙 한 줄 + 4px 점뿐이고, 증가분은 0이다.",
+ "information_placement": [
+  {
+   "information": "현재 단계 라벨 (ProcedureRunner.Step.Label)",
+   "placement": "screen-minimal",
+   "trigger": "점검 대상을 3m 이내에서 조준할 때 (FirstPersonResponder.RefreshInteraction 이 CurrentPrompt 를 채우는 순간)",
+   "screen_cost": "증가 0 — 기존 FirstPersonInteractionHud 의 prompt 라벨(760×48, 중앙 -155) 을 그대로 쓴다",
+   "rationale": "신규 UI 가 전혀 필요 없다. TutorialSession.RefreshPrompt() 가 이미 Target.Prompt=decision.Step.Label 을 넣고, FirstPersonResponder.cs:128 이 CanInteract 성공 시 \"E · \"+InteractionPrompt 로 조립한다. 판정 기준 5 를 문자 그대로 지키는 배치 — 확장이 아니라 '이미 흐르고 있는 것을 쓰기'다.",
+   "reference": "stevenharmongames/Unity-FirstPersonInteractionToolkit 의 Interact.cs (dist<3 일 때만 hover 프롬프트를 띄우는 표준 구조); 1인칭 상호작용 게임의 사실상 공통 문법"
+  },
+  {
+   "information": "거부 사유 (Step.FailReason / Decision.Reason / Session.LastReason)",
+   "placement": "screen-minimal",
+   "trigger": "CanInteract 가 false 를 반환한 그 순간에만. 같은 프롬프트 슬롯의 문자열이 교체된다",
+   "screen_cost": "증가 0 — 프롬프트 슬롯 공유. 4초 피드백은 기존 feedback 라벨(900×60)",
+   "rationale": "거부는 목록에 상주할 이유가 전혀 없다 — 시도한 순간에만 의미를 갖는 정보다. FirstPersonResponder.cs:128 의 else 분기가 reason 을 그대로 프롬프트에 넣도록 이미 작성되어 있고, TutorialSession 은 역할 경계 위반 시 Responder.ShowFeedback(reason) 을 호출한다. 설교가 아니라 감점으로 전달한다는 기존 주석과도 일치.",
+   "reference": "Dead Space 는 불가능한 동작을 화면 목록이 아니라 그 자리·그 순간에 알린다 (Ignacio, GDC 2013 'Crafting Destruction')"
+  },
+  {
+   "information": "근거 조항 (Step.Basis, Definition.basis)",
+   "placement": "diegetic-world-object",
+   "trigger": "상시 물리적으로 존재. 단 3m 이내 접근 + (선택) 우클릭 squint 로만 판독 가능. 화면 트리거 없음",
+   "screen_cost": "0 픽셀. 월드 오브젝트다",
+   "rationale": "**제23조②1 — \"유지관리는 소화기에 부착되어 있는 제원표에 따른다\"**. 판정 근거의 1차 소재지가 규정상 물리 오브젝트로 지정되어 있다. 조항을 화면 패널에 띄우는 것은 규정이 가리키는 방향의 정반대다. 취향이 아니라 준거의 문제. 제22조3(고유번호)도 같은 논리로 대상 식별을 월드에 둔다 — FacilityInspectable.SerialNumber 가 이미 그 주석을 달고 있다.",
+   "reference": "Dead Space RIG — 정보를 화면이 아니라 캐릭터/월드 표면으로 옮긴 원형 (Ignacio, GDC Vault 'Crafting Destruction: The Evolution of the Dead Space User Interface'); 판독 조작은 Squint.cs (MPL-2.0) 의 우클릭 FOV 80→45 축소"
+  },
+  {
+   "information": "관측 요구 (Step.Observe) 와 시선 체류 진행 (FpsGazeTracker.DwellOf / InspectionPoint.RequiredDwellSeconds)",
+   "placement": "spatial-3d-label",
+   "trigger": "해당 InspectionPoint.Surface 가 현재 gaze target 인 동안에만. 시선이 벗어나면 즉시 사라진다",
+   "screen_cost": "0 — 월드 공간에 고정된 작은 호(arc). 화면 좌표에 고정되지 않으므로 시선을 돌리면 화면에서 나간다",
+   "rationale": "자료가 이미 있다: FacilityInspectable.Points 가 Surface·RequiredDwellSeconds·Label 을, FpsGazeTracker 가 콜라이더별 dwell 을 들고 있다(FpsGazeTracker.cs:36). 진행 표시를 대상 표면 위에 두면 '어디를 봐야 하는가'와 '얼마나 봤는가'가 한 곳에서 동시에 해결되어 별도 지시문이 불필요해진다.",
+   "reference": "PowerWash Simulator 의 'Crosshair Dirt Details' — 보고 있는 대상에 관한 정보를 크로스헤어 옆/대상 근처에 두고 목록으로 빼지 않는다"
+  },
+  {
+   "information": "단계 완료 상태 (Step.Done) 와 진행률 (done/total)",
+   "placement": "diegetic-world-object",
+   "trigger": "소화기에 부착된 점검표 태그를 보면 보인다. 키 입력 없음",
+   "screen_cost": "0",
+   "rationale": "**제23조②3 — \"별지 제7호서식의 소화기 점검표를 소화기에 부착\"**. 기록물 자체가 월드 오브젝트로 지정되어 있다. TutorialSession.ApplyEffect 의 attach-tag 분기가 이미 InspectionTagPrefab 을 Instantiate 하고 RecordedSerial 로 이름을 붙인다 — 그 프리팹이 곧 진행률 표시기다. 새 개념을 넣는 게 아니라 이미 생성되는 오브젝트에 의미를 부여한다.",
+   "reference": "PowerWash Simulator 는 상시 노출을 단일 완료 %로 줄이고 부품별 목록은 Esc→Details 로 치웠다; Dead Space 는 체력을 화면 바에서 Isaac 등의 광막대로 옮겼다"
+  },
+  {
+   "information": "8단계 전체 목록 (ProcedureRunner.Steps 전부 — Label + Basis + Done)",
+   "placement": "on-demand-document",
+   "trigger": "TAB 을 **누르고 있는 동안만**. 놓으면 사라진다. 드는 동안 이동은 되지만 E 상호작용은 차단된다(양손이 찼다)",
+   "screen_cost": "하단 우측 약 30~35%, 누르고 있는 동안만. 상시 0",
+   "rationale": "사용자가 기각한 것은 목록의 존재가 아니라 **상시 점유**다. 같은 자료를 조회 비용 뒤로 옮기면 점유는 0이 되고 자료는 남는다. 조회 중 상호작용 차단이 곧 '기억해서 수행하기'를 채점 가능한 행위로 만들어, ChecklistVisible=false 재시행(무점검표)과 연속적인 난이도 축을 만든다 — 별개 기능이 아니라 같은 축의 양 끝이다.",
+   "reference": "PowerWash Simulator 가 부품 목록을 HUD 가 아닌 Esc→Details 메뉴에 둔 판단; Far Cry 2·Firewatch 의 손에 든 물리 지도; Alien: Isolation 의 모션트래커(보는 동안 위험이 증가해 조회에 실제 비용이 붙는다); 상태 전이는 InspectNote.cs (MPL-2.0) 의 freeze-look + paper-shuffle in/out 구조"
+  },
+  {
+   "information": "비상대응 모드에서의 같은 8단계 목록 (ChecklistVisible=false)",
+   "placement": "none(삭제)",
+   "trigger": "없음. TAB 은 빈 판을 내거나 아무것도 내지 않는다. 제원표와 점검표 태그는 **그대로 남는다**",
+   "screen_cost": "0",
+   "rationale": "판정 기준 4 의 코드 표현: 자료 원본은 ProcedureRunner 하나이고 가시성만 갈린다. 중요한 비대칭 — 사라지는 것은 **문서**뿐이고 월드 오브젝트는 남는다. 규정이 제원표·점검표의 물리적 부착을 명령했으므로(제23조②1·②3) 비상 상황이라고 그것을 지우면 오히려 규정 위반이 된다. 즉 이 배치는 두 모드가 별개면서도 같은 세계를 공유한다는 것을 UI 층에서 증명한다.",
+   "reference": "Alien: Isolation Nightmare 난이도 — 미니맵을 제거하고 모션트래커를 불신뢰하게 만든다. 세계의 사물이 아니라 플레이어의 계기를 뺀다"
+  },
+  {
+   "information": "감사 열거 (Session.AuditFindings, MisjudgementCount, RoleBoundaryViolations)",
+   "placement": "on-demand-document",
+   "trigger": "Audit() 이 Finished=true 로 만든 뒤에만 열리는 전용 감사관 단말 화면. 절차 진행 중에는 존재하지 않는다",
+   "screen_cost": "절차 중 0. 종료 후 전체 화면",
+   "rationale": "감사는 사후 열거다. 현재 코드는 이것을 라이브 목록 끝에 붙여(FpsChecklistHud.cs:99~104) 가장 나쁜 위치에 뒀다 — 아직 일어나지 않은 판정을 작업 중 화면에 상주시킨다. TutorialSession.Audit() 위의 주석이 스스로 \"감사관 단말. 즉시 야단치지 않는다\"고 쓰여 있다. 코드가 이미 다른 배치를 원하고 있었고 내 HUD 가 그것을 어겼다.",
+   "reference": "PowerWash Simulator 의 레벨 종료 정산 화면; 작업 중 HUD 와 사후 디브리프의 분리는 절차 시뮬레이터의 공통 구조"
+  },
+  {
+   "information": "시간압박 (비상대응 모드 전용 — 잔여 시간, 상황 악화)",
+   "placement": "audio",
+   "trigger": "상황 진행에 따라 무선 호출·사이렌의 템포와 레이어가 변한다. 화면 요소 없음. 정확한 시각은 손목 시계를 들어 확인(TAB 과 별개 조작)",
+   "screen_cost": "0",
+   "rationale": "과제가 FPS 에서 가져오기로 정한 네 문법 중 '청각 주의배분'과 '시간압박'이 정확히 이 지점이다. 타이머 바를 화면에 두면 시선이 화면에 붙어 1인칭 공간 탐색이 죽는다. 소리로 압박을 주고 정확한 수치는 조회 비용 뒤에 두면, 플레이어는 '지금 시계를 볼 여유가 있는가'를 스스로 판단해야 한다 — 그것이 비상대응의 핵심 판단이다.",
+   "reference": "Metro Exodus — 손목 nixie 시계가 필터 잔량과 은폐도를 들고 있고 미션 마커를 의도적으로 배제했다; Alien: Isolation — 트래커 소리 자체가 위험이 되어 계기 사용이 판단 대상이 된다"
+  },
+  {
+   "information": "일시정지 안내 + 조작 안내 (기존 pause 라벨)",
+   "placement": "screen-minimal",
+   "trigger": "IsPaused 일 때만 (FirstPersonInteractionHud.cs:33 그대로)",
+   "screen_cost": "증가 0 — 기존. 정지 중에만 표시되므로 플레이 화면을 먹지 않는다",
+   "rationale": "이미 올바른 배치다. 조작 안내가 정지 화면에만 있는 것은 정확한 판단이므로 손대지 않는다. 다만 TAB(점검표)·우클릭(판독) 항목을 이 문자열에 추가해야 한다 — 새 조작을 안내 없이 넣으면 발견 불가능하다.",
+   "reference": "기존 코드 자체. 변경 최소화 원칙(판정 기준 5)"
+  }
+ ],
+ "snippets_to_port": [
+  {
+   "repo": "simonoliver/InputSystemActionPrompts (MIT, 152★, pushed 2025-07-05, 미아카이브 — gh api 로 확인)",
+   "license": "MIT — 이식 가능. 헤더 고지만 유지",
+   "what_to_take": "Runtime/InputSystemActionPrompts/InputDevicePromptSystem.cs 의 InsertPromptSprites(string) (line 153) 과 GetDeviceSprite(string) (line 195), 그리고 PromptText.cs 전체(TextMeshProUGUI 위에 붙어 문자열의 태그를 디바이스 스프라이트로 치환하고 OnActiveDeviceChanged 구독으로 디바이스 변경 시 재적용). 저장소에 스프라이트 시트 포함.",
+   "target_file": "Assets/ChooGuard/App/Fps/FirstPersonInteractionHud.cs (prompt 라벨) — 또는 Assets/ChooGuard/App/Fps/Diegetic/ 신규 파일",
+   "adaptation": "CHOOGuard 는 InputActionAsset 을 쓰지 않고 Keyboard.current.eKey 를 직접 읽는다(FirstPersonResponder.cs:81). PromptText.cs 는 [SerializeField] InputActionAsset 을 요구하므로 (a) InputActionAsset 하나를 만들어 붙이거나 (b) GetDeviceSprite 만 쓰는 축소 경로를 택한다. 값: FirstPersonResponder.cs:128 의 하드코딩 \"E · \" 가 한국어 프롬프트에 라틴 키 문자를 섞는 문제를 글리프로 해결한다. 컴포넌트가 TMP_Text 를 요구하는데 우리 라벨은 TextMeshProUGUI 이므로 호환된다.",
+   "size": "S"
+  },
+  {
+   "repo": "Robinseibold/Unity-URP-Outlines (MIT, 717★, pushed 2024-07-27) — LICENSE 파일 실물 확인: \"MIT License / Copyright (c) 2022 Robin Seibold\"",
+   "license": "MIT — 이식 가능",
+   "what_to_take": "Outlines/Scripts/RendererFeatures/ScreenSpaceOutlines.cs (173줄 ScriptableRendererFeature) + Outlines/ShaderGraphs/Outlines.shadergraph + ViewSpaceNormals.shadergraph. 핵심: outlinesLayerMask (line 149) 가 FilteringSettings(RenderQueueRange.opaque, layerMask) (line 79) 로 실제 적용되어 **전체 화면을 칠하지 않고 지정 레이어만** 윤곽을 잡는다. Roberts cross 에지 검출 + depth/normal threshold 파라미터 노출.",
+   "target_file": "Assets/ChooGuard/Rendering/ (신규) — 비상대응 모드의 대상 탐색용. 튜토리얼 모드에는 불필요",
+   "adaptation": "**여기가 실제 위험이다.** 이 레포는 2022년 URP 12~14 시절 구형 API(Execute(ScriptableRenderContext, ref RenderingData)) 를 쓰고, 프로젝트는 URP 17.3 으로 RenderGraph 가 기본이다. RecordRenderGraph 경로로 포팅하거나 Compatibility Mode 를 켜야 한다. 포팅 비용이 실질적이며 나는 컴파일해보지 않았다. 튜토리얼 모드 1단계에서는 착수하지 말 것 — 아래 InspectNote 의 material color 틴트가 0 셰이더로 같은 목적을 달성한다.",
+   "size": "M~L"
+  },
+  {
+   "repo": "chrisnolet/QuickOutline (MIT, 697★, pushed 2024-05-23)",
+   "license": "MIT — 이식 가능",
+   "what_to_take": "QuickOutline/Scripts/Outline.cs (309줄) 의 per-object 2-pass mask/fill 구성과 SmoothNormals() 기법(line 227~252, 하드 에지 메시에서 윤곽이 갈라지는 문제를 UV3 에 평활 법선을 구워 해결), Mode enum(OutlineAll/OutlineVisible/OutlineHidden/SilhouetteOnly) 의 ZTest 조합(line 279~305).",
+   "target_file": "Assets/ChooGuard/Rendering/ (대안 경로) — 우선순위 낮음",
+   "adaptation": "셰이더 두 개(OutlineFill.shader, OutlineMask.shader)가 CGPROGRAM + UnityCG.cginc 로 작성된 **Built-in RP 코드**다. SubShader Tags 는 Queue=Transparent+110 / RenderType=Transparent / DisableBatching=True 이고 **LightMode 태그가 없어** URP 에서 SRPDefaultUnlit 로 떨어진다 — 그려지기는 하겠지만 URP 17 의 depth priming·native render pass 와 Stencil{Ref 1 Comp NotEqual} 의 상호작용이 불안정할 것으로 **예상된다(미검증)**. HLSL/URP 로 두 셰이더를 다시 쓰는 작업이 필요하다. 권고: **채택하지 말 것.** 실제 필요가 확인되면 Robinseibold 를 먼저 시도한다.",
+   "size": "M (그러나 권고하지 않음)"
+  },
+  {
+   "repo": "stevenharmongames/Unity-FirstPersonInteractionToolkit → Assets/Scripts/InspectNote.cs (MPL-2.0, 72★) — 파일 실물 열어 확인",
+   "license": "MPL-2.0 — **파일 단위 약한 카피레프트. GPL 은 아니지만 이식하면 그 파일이 MPL 로 남고 소스 공개 의무가 붙는다. 따라서 reference-only 로 격하하고 패턴만 참조해 새로 쓴다.**",
+   "what_to_take": "이식하지 않고 참조만: 문서 열람 상태기계 — 열 때 PlayerMovement 와 MouseLook[] 을 비활성, 종이 소리 2클립(in/out) 재생, hover 시 pageRend.material.color 를 targetColor(기본 Color.yellow) 로 틴트하고 닫을 때 originColor 복원, prompts[] 배열로 hover 문구 관리. **material color 틴트가 핵심 발견 — 셰이더 0개로 상호작용 대상 강조가 끝난다.**",
+   "target_file": "Assets/ChooGuard/App/Fps/Diegetic/HeldChecklistDocument.cs (신규, 직접 작성)",
+   "adaptation": "세 가지가 그대로 쓸 수 없다. (1) MPL 라이선스 때문에 코드 복사 대신 재작성. (2) 원본은 문서를 **화면 스페이스 Canvas Image**(noteUI) 로 그린다 — 우리는 월드 스페이스 판이어야 하므로 렌더 방식은 전면 교체. (3) 원본은 플레이어 이동 스크립트를 비활성하는데, CHOOGuard 에서 Responder.Pause() 를 부르면 커서가 풀리고 캡처가 끊긴다(FirstPersonResponder.cs:54, 61) — 이동은 유지하고 상호작용만 막는 새 플래그가 필요하다.",
+   "size": "S"
+  },
+  {
+   "repo": "stevenharmongames/Unity-FirstPersonInteractionToolkit → Assets/Scripts/Squint.cs (MPL-2.0) — 파일 실물 열어 확인",
+   "license": "MPL-2.0 — reference-only, 동일 이유",
+   "what_to_take": "이식하지 않고 참조만: 우클릭 시 FOV 80→45 보간(toggle/hold 선택 가능), 비네트 강도 동반 상승, hitLayer/maxDistance 레이캐스트로 응시점을 찾아 DoF 초점을 interpolationTime 으로 보간(DoFAFocusQuality enum, interpolateFocus 플래그). '몸을 기울여 작은 글씨를 읽는' 조작의 완성된 형태.",
+   "target_file": "Assets/ChooGuard/App/Fps/Diegetic/LeanInToRead.cs (신규, 직접 작성)",
+   "adaptation": "**원본은 UnityEngine.Rendering.PostProcessing (Post Processing v2 패키지) 에 의존하고 이 프로젝트에는 그 패키지가 없다** — Packages/manifest.json 에는 com.unity.render-pipelines.universal 17.3.0 만 있고 URP 는 Volume 프레임워크를 쓴다. 따라서 FOV 보간 로직만 재사용 가능하고 Vignette·DepthOfField 는 URP Volume + VolumeProfile 로 다시 만들어야 한다. 또 CHOOGuard 는 우클릭을 아직 쓰지 않으므로 FirstPersonResponder.Simulate 에 입력 경로를 추가해야 하고, ExternalInputMode 시험 경로(StepInput)에도 같은 파라미터를 넣어 기존 계약의 대칭을 깨지 않아야 한다.",
+   "size": "M"
+  }
+ ],
+ "ui_toolkit_verdict": "**uGUI + TextMeshPro 유지. UI Toolkit 으로 전환하지 않는다.** 근거 네 개, 앞의 둘은 명령으로 실측했다. (1) **런타임 UI Toolkit 사용 이력이 0 이다** — `grep -rln \"UnityEngine.UIElements|UIDocument|PanelSettings\" Assets --include=\"*.cs\"` 가 0건, `find Assets -name \"*.uxml\" -o -name \"*.uss\"` 도 0개. 반면 uGUI/TMP 를 쓰는 파일은 19개(Mvp 뷰 6개, Fps HUD 2개, Presentation 2개, Editor 3개, 시험 5개 등). manifest 에 있는 것은 com.unity.modules.uielements(에디터 UI 용 내장 모듈)뿐이고 com.unity.ui 런타임 패키지 항목이 아니다. 즉 전환은 '이전'이 아니라 **두 번째 UI 스택의 신규 도입**이며 모든 시험 코드가 걸린 uGUI 자산을 남긴 채 병행 운영하게 된다. (2) **한국어 폰트 자산이 TMP 전용 타입이다** — `Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset` 는 내부에 `Noto Sans CJK KR - Regular Atlas` Texture2D 를 품은 TMP_FontAsset 이다(파일 헤더 확인). UI Toolkit 은 `UnityEngine.TextCore.Text.FontAsset` 를 요구하므로 CJK SDF 아틀라스를 다시 구워야 한다 — CJK 는 글리프 수 때문에 아틀라스가 크고, 두 스택이 같은 폰트를 두 형식으로 중복 보관하게 된다. (3) **이 설계는 월드 스페이스가 주력이다** — 제원표, 점검표 태그, 손에 든 판, 체류 호가 전부 3D 공간에 있다. 월드 스페이스 TMP + uGUI Canvas 는 성숙하고 널리 검증된 경로다. 월드 스페이스 UI Toolkit 은 Unity 6.2 에서 처음 들어온 신기능이고 렌더 텍스처 경유이며, 프로젝트가 6000.3.23f1(=6.3)이라 **사용은 가능하지만** 신규 기능을 신규 스택과 동시에 도입하는 이중 위험이다. (4) **남는 상시 화면 요소가 텍스트 한 줄과 4px 점뿐이어서 UI Toolkit 의 강점(복잡 레이아웃, 데이터 바인딩, USS 스타일 시트, 에디터 오서링)이 적용될 표면이 없다.** 예외 한 곳: 감사관 단말이 긴 스크롤 문서·표로 커질 때. 그때는 **그 화면 하나만** 격리해서 UI Toolkit 으로 만드는 것이 합리적이며, 절차 중 HUD 는 그와 무관하게 uGUI 로 남길 수 있다.",
+ "code_deltas": [
+  {
+   "file": "Assets/ChooGuard/App/Fps/Hud/FpsChecklistHud.cs",
+   "change": "**삭제** (108줄 전체). 560×660 검은 판, 8단계 나열, 라이브 감사 열거, TAB 토글이 모두 여기 있다. 기각 대상 전부가 한 파일이라 순삭이 가능하다. 단 이 파일이 담고 있던 교훈 하나는 다른 파일로 옮겨야 한다 — 13~14행 주석이 지적한 FirstPersonInteractionHud 의 침묵 실패.",
+   "size": "L (순감)"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/FirstPersonInteractionHud.cs",
+   "change": "17행 `if(Responder==null||KoreanFont==null)return;` 을 Debug.LogError + enabled=false 로 교체한다. 지금은 폰트 미지정 시 **오류 한 줄 없이 return** 해 캔버스 자체가 생성되지 않고 프롬프트·레티클·피드백이 전부 사라진다. 나열판이 삭제되면 이 프롬프트가 **유일한 화면 정보원**이 되므로 침묵 실패의 대가가 훨씬 커진다. FpsChecklistHud.cs:33~34 가 쓰던 진단 문구(폰트 경로 포함)를 그대로 옮긴다. 추가로 33행 정지 안내 문자열에 TAB(점검표)·우클릭(판독) 항목을 넣는다.",
+   "size": "XS"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/FirstPersonResponder.cs",
+   "change": "`public bool InteractionSuppressed` 를 추가하고 TryInteract 서두(133행)에서 참이면 거부한다. 문서를 든 동안 이동은 되지만 상호작용만 막기 위한 것 — `Pause()` 는 쓸 수 없다(54·61행이 커서 락을 풀고 PauseChanged 를 발화해 캡처가 끊긴다). RefreshInteraction 은 계속 돌게 두어 프롬프트가 죽지 않게 한다.",
+   "size": "XS"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/Diegetic/SpecPlateLabel.cs (신규)",
+   "change": "소화기 표면에 붙는 월드 스페이스 TMP 판. 현재 단계의 `Basis` 와 `SerialNumber` 만 표시한다(8단계 전체가 아니다 — 나열식 금지). **빌보드를 쓰지 않는다**: 실제 제원표는 회전하지 않으므로 고정이 오히려 정확하고, 비스듬히 보면 안 읽히는 것이 접근을 강제한다. 거리 기반 알파로 3m 밖에서는 판독 불가하게 만든다.",
+   "size": "S~M"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/Diegetic/DwellArc.cs (신규)",
+   "change": "InspectionPoint.Surface 위에 뜨는 체류 진행 호. FpsGazeTracker.DwellOf(collider) / RequiredDwellSeconds 를 읽는다. 현재 gaze target 인 동안만 보인다. 자료 계층은 손대지 않는다.",
+   "size": "S"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/Diegetic/HeldChecklistDocument.cs (신규)",
+   "change": "TAB hold 시 카메라 앞 하단에 기울어져 나타나는 월드 스페이스 판. `ProcedureRunner.Steps` 를 순회해 Label·Basis·Done 을 렌더하고, `Session.ChecklistVisible==false` 면 빈 판을 낸다(자료 원본 하나·가시성만 분기). 드는 동안 `Responder.InteractionSuppressed=true`. 판을 플레이어의 자식으로 두어 RefreshInteraction 의 `IsChildOf(transform)` 제외(119행)에 걸리게 해야 한다 — 그렇지 않으면 판이 레이캐스트를 먹는다.",
+   "size": "M"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/Diegetic/InspectionTagBoard.cs (신규)",
+   "change": "`InspectionTagPrefab` 에 붙어 부착 후 완료 줄을 채우는 컴포넌트. TutorialSession.ApplyEffect 의 attach-tag 분기가 이미 Instantiate 하고 RecordedSerial 로 명명하므로 생성 경로는 건드리지 않는다.",
+   "size": "S"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/Hud/AuditTerminalScreen.cs (신규)",
+   "change": "`Session.Finished` 이후에만 열리는 감사관 단말. AuditFindings, MisjudgementCount, RoleBoundaryViolations 를 열거한다. 절차 진행 중에는 존재하지 않는다 — 삭제하는 라이브 열거(FpsChecklistHud.cs:99~104)의 올바른 대체지.",
+   "size": "M"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/Work/ProcedureRunner.cs",
+   "change": "**변경 없음.** 판정 기준 6 — 자료 계층은 문제가 없다. Label/Basis/Observe/FailReason/Done/Conditional/Requires 와 Unmet()·Revision CAS 가 위 배치 전부를 이미 지탱한다. 렌더 계층만 바꾼다.",
+   "size": "없음"
+  },
+  {
+   "file": "Assets/ChooGuard/App/Fps/Tutorial/TutorialSession.cs",
+   "change": "**변경 없음(1단계 기준).** RefreshPrompt() 가 이미 Target.Prompt=Step.Label, Target.UnavailableMessage=Decision.Reason 을 쓰고 있어 중앙 프롬프트 배치에 추가 배관이 필요 없다. 이것이 사실인지는 아래 first_step 의 시험으로 못박는다.",
+   "size": "없음"
+  }
+ ],
+ "first_step": "**아무것도 새로 만들지 않고, 나열판이 중복이었다는 것을 먼저 증명한다.** (1) `Assets/ChooGuard/App/Fps/Hud/FpsChecklistHud.cs` 삭제(+.meta). (2) `FirstPersonInteractionHud.cs:17` 의 침묵 return 을 Debug.LogError + enabled=false 로 교체하고 FpsChecklistHud.cs:33~34 의 폰트 경로 진단 문구를 옮긴다. (3) **EditMode 시험 하나**를 추가한다: TutorialSession 을 로드해 `Peek()` 후 `Target.Prompt == decision.Step.Label` 이고, 거부 상황에서 `Target.UnavailableMessage == decision.Reason` 이며, `Advance()` 후 `Target.SuccessMessage` 가 방금 끝낸 단계 라벨을 담는지 단정한다. 이 세 단정이 통과하면 '현재 단계 · 거부 사유 · 완료 피드백'이 이미 중앙 프롬프트로 흐른다는 것이 확정되고, 화면은 즉시 깨끗해지며 나머지 9개 배치가 그 위에 성립한다. 실패하면 새 UI 를 만드는 것이 아니라 **배관을 먼저 고쳐야 한다**는 뜻이므로, 어느 쪽이든 다음 행동이 결정된다. 신규 시각 요소 0개, 신규 패키지 0개, 신규 셰이더 0개.",
+ "honest_limits": [
+  "**게임플레이 영상을 단 하나도 보지 않았다.** PowerWash Simulator 의 Tab 하이라이트·Esc→Details 목록·크로스헤어 dirt detail, Dead Space RIG, Metro Exodus 손목 nixie 시계, Alien: Isolation 모션트래커는 전부 웹 검색 결과 텍스트와 위키·기사 서술로만 확인했다. 과제문이 제시한 `aside repl` + youtube.search 경로를 쓰지 않았다. 따라서 픽셀 치수, 정확한 화면 배치 비율, 전환 애니메이션 타이밍, 실제 가독성은 전부 미확인이다. 내가 쓴 '하단 우측 30~35%' 같은 수치는 **추정이며 실측이 아니다.**",
+  "**GDC Vault 의 Dino Ignacio 'Crafting Destruction: The Evolution of the Dead Space User Interface' 강연을 열지 않았다.** 존재·제목·발표자·소속(Visceral Games)·연도(GDC 2013)는 검색으로 확인했지만 내용은 2차 서술을 옮긴 것이다. 인용으로 쓸 때 원 강연을 직접 확인해야 한다.",
+  "**Game UI Database 의 PowerWash Simulator(id=1313)·Metro Exodus(id=218) 스크린샷 페이지를 열지 않았다.** URL 만 검색 결과에서 확인했다. 실제 HUD 레이아웃을 보려면 이 두 페이지가 가장 값싼 경로다.",
+  "**어떤 저장소도 Unity 에서 컴파일하거나 실행해보지 않았다.** 확인한 것은 git clone --depth 1 후의 파일 존재, 라이선스 파일 실물, 그리고 grep 으로 뽑은 특정 행뿐이다. 따라서 Robinseibold/Unity-URP-Outlines 가 URP 17.3 의 RenderGraph 에서 정확히 어디서 깨지는지, QuickOutline 의 스텐실이 URP 17 depth priming 과 어떻게 충돌하는지는 **코드 독해 기반 예측이며 실측이 아니다.** 특히 QuickOutline 의 '불안정할 것'은 내 추정이다.",
+  "**월드 스페이스 UI Toolkit 이 6000.3.23f1 에서 정식인지 실험적인지 Unity 공식 문서로 확인하지 않았다.** '6.2 이상에서만 지원'이라는 검색 결과 서술만 봤고, 프로젝트 버전이 6000.3.23f1 이라는 것만 ProjectVersion.txt 로 실측했다. UI Toolkit 유지/전환 판정은 이 항목에 의존하지 않으므로(근거 1·2 가 독립적으로 성립) 판정 자체는 영향받지 않는다.",
+  "**'손에 든 판'이 3m 레이캐스트와 충돌하지 않는다는 것을 검증하지 않았다.** FirstPersonResponder.cs:119 가 `candidateCollider.transform.IsChildOf(transform)` 로 자기 콜라이더를 제외하므로 판을 플레이어의 자식으로 두면 될 것으로 보이지만, 판에 콜라이더를 붙이지 않는 것이 더 단순할 수 있고 어느 쪽도 실행해보지 않았다.",
+  "**가독성을 실측하지 않았다.** 제원표 쿼드에 근거 조항 텍스트를 넣었을 때 3m 거리에서 NotoSansCJKkr SDF 가 읽히는지는 화면 해상도·판 크기·폰트 크기의 함수이고, 아마 squint(우클릭 FOV 축소) 없이는 읽히지 않을 것이다. 이것이 user_decisions 2 를 실제 결정으로 만드는 이유다.",
+  "**MPL-2.0 의 의무 범위를 법적으로 검토하지 않았다.** '파일 단위 약한 카피레프트이고 GPL 과 달리 프로젝트 전체로 전파되지 않는다'는 일반적 이해에 기반해 stevenharmongames 의 두 파일을 reference-only 로 격하했다. 보수적 선택이며, 실제로는 이식이 허용될 수도 있다.",
+  "**코레일 「소방안전관리 시행세칙」 조항(제23조②1, 제23조②3, 제22조3)의 원문을 직접 확인하지 않았다.** 과제문이 제시한 문구를 그대로 인용했다. 이 조항들이 설계 근거의 핵심이므로, 발행 전에 원문 대조가 필요하다.",
+  "**비상대응 모드의 청각 설계는 참조 게임 이름만 있고 구체 설계가 없다.** 사이렌·무선 호출의 레이어 구성, 템포 매핑, 어느 오디오 미들웨어를 쓸지는 조사하지 않았다. manifest 에 com.unity.modules.audio 만 있고 FMOD/Wwise 는 없다는 것만 확인했다."
+ ],
+ "user_decisions": [
+  "**'손에 든 점검표'의 조회 비용을 어디에 둘 것인가.** (a) TAB 을 누르고 있는 동안만 표시 + 그동안 E 상호작용 차단(권장) — 조회에 실제 대가가 붙어 '기억해서 수행하기'가 채점 가능한 행위가 되고, ChecklistVisible=false 무점검표 재시행과 같은 난이도 축의 연속이 된다. (b) TAB 토글로 자유 조회 — 마찰 0, 학습 초기 접근성은 높지만 튜토리얼의 시험 성격이 약해지고 '보면서 따라 하기'로 퇴화한다. 이 선택이 튜토리얼 모드가 '연습'인지 '시험'인지를 정한다.",
+  "**제원표 판독을 squint(우클릭 FOV 축소 + URP Volume 비네트)에 걸 것인가.** 걸면 디제틱 충실도가 최고이고 3m 상호작용 상한과 자연스럽게 맞물리지만, 조작 하나가 늘고 FirstPersonResponder.Simulate/StepInput 양쪽에 입력 파라미터를 추가해야 하며 URP Volume 작업이 붙는다(size M). 걸지 않으면 제원표 텍스트를 실제 규정 제원표보다 크게 그려야 해서 '규정이 지시한 물리 제원표'라는 근거가 약해진다."
+ ]
+}
