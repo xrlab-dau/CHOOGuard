@@ -1,0 +1,53 @@
+﻿; Animation by Charles Y.A.
+; KuHa 103-597
+; Numbering system by Charles
+
+
+
+;[Include]
+
+;straps_C.animated
+;Position=0,0,2.1
+
+
+
+[Object]
+Position = 0, 0, 0
+States = 1.csv
+
+
+
+
+[Object]
+Position = 0, 0, 9.525
+States = door1.csv
+TranslateXDirection = 0, 0, 1
+TranslateXFunction = leftdoors * 0.7 
+
+[Object]
+Position = 0, 0, 9.525
+States = door2.csv
+TranslateXDirection = 0, 0, 1
+TranslateXFunction = rightdoors * 0.7 
+
+[Object]
+Position = 0, 0, 8.845
+States = door1-1.csv
+TranslateXDirection = 0, 0, -1
+TranslateXFunction = leftdoors * 0.7 
+
+[Object]
+Position = 0, 0, 8.845
+States = door2-1.csv
+TranslateXDirection = 0, 0, -1
+TranslateXFunction = rightdoors * 0.7 
+
+
+
+[Object]
+Position = 0, 0, 0
+States = nopo.csv, shinpeyong.csv
+StateFunction = pluginstate[151]
+
+
+

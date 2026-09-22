@@ -1,0 +1,6 @@
+import ctypes as C,pathlib,json
+D=pathlib.Path.cwd()/'asset-library/research-public/2026-09-21/quality-a/station-model-source'
+class Ref(C.Structure):_fields_=[('ptr',C.c_void_p)]
+lib=C.CDLL(str(D/'importer-isolated/sketchup_importer/SketchUpAPI.framework/Versions/A/SketchUpAPI'))
+lib.SUInitialize();lib.SUModelCreateFromFile.argtypes=[C.POINTER(Ref),C.c_char_p];lib.SUModelIsGeoReferenced.argtypes=[Ref,C.POINTER(C.c_bool)];lib.SUModelGetLocation.argtypes=[Ref,C.POINTER(Ref)];lib.SULocationGetLatLong.argtypes=[Ref,C.POINTER(C.c_double),C.POINTER(C.c_double)];lib.SUModelRelease.argtypes=[C.POINTER(Ref)]
+m=Ref();status=lib.SUModelCreateFromFile(C.byref(m),str(D/'station-extracted/부산역(수정).skp').encode());geo=C.c_bool();a=lib.SUModelIsGeoReferenced(m,C.byref(geo));loc=Ref();b=lib.SUModelGetLocation(m,C.byref(loc));lat=C.c_double();lon=C.c_double();c=lib.SULocationGetLatLong(loc,C.byref(lat),C.byref(lon));j={'loadStatus':status,'geoStatus':a,'isGeoReferenced':geo.value,'locationStatus':b,'latLongStatus':c,'latitude':lat.value,'longitude':lon.value,'authority':'Original SKP official SDK read only; default location does not establish registration when isGeoReferenced=false'};lib.SUModelRelease(C.byref(m));lib.SUTerminate();(D/'station-georeference.json').write_text(json.dumps(j,indent=2));print(j)

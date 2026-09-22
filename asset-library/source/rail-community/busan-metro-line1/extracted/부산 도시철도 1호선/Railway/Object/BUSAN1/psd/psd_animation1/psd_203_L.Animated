@@ -1,0 +1,19 @@
+[Object]
+Position = 0, 0, 0
+States = psd_203_L(1).csv, psd_203_L(2).csv
+;StateFunction = Ceiling[leftdoors[0]]
+StateFunction = If[abs[trackdistance] < 1.3, 0.5 * (Sin[leftdoors * 3.14159 + 4.9200002] + 1), 0]
+
+[Object]
+Position = 0, 0, 0
+States = psd_L(1).csv
+;TranslateXDirection = 0, 0, -1.5
+;TranslateXFunctionRPN = leftdoors 1 * 1.7 * 
+TranslateZFunction = If[abs[trackdistance] < 1.3, Min[0.165 * Sin[leftdoors * 12] - 2.1 * leftdoors + 1.08,0], 0]
+
+[Object]
+Position = 0, 0, 0
+States = psd_L(4).csv
+;TranslateXDirection = 0, 0, 1.5
+;TranslateXFunctionRPN = leftdoors 1 * 1.7 * 
+TranslateZFunction = If[abs[trackdistance] < 1.3, Max[ -0.165 * Sin[leftdoors * 12] + 2.1 * leftdoors - 1.08,0 ], 0]

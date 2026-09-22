@@ -1,0 +1,5 @@
+import bpy,pathlib,json,math
+from mathutils import Vector
+D=pathlib.Path.cwd()/'asset-library/research-public/2026-09-21/quality-a/station-model-source';bpy.ops.wm.open_mainfile(filepath=str(D/'station-batched-no3dletters.blend'));s=bpy.context.scene;s.render.engine='BLENDER_EEVEE_NEXT';s.eevee.taa_render_samples=16;s.render.resolution_x=1440;s.render.resolution_y=900;s.render.resolution_percentage=100;s.world.use_nodes=True;s.world.node_tree.nodes['Background'].inputs['Color'].default_value=(.35,.4,.45,1);s.world.node_tree.nodes['Background'].inputs['Strength'].default_value=.7
+bpy.ops.object.light_add(type='SUN');bpy.context.object.rotation_euler=(.4,-.6,-.4);bpy.context.object.data.energy=2.5
+c=json.loads((D/'station-source-cameras.json').read_text())[0];bpy.ops.object.camera_add();cam=bpy.context.object;s.camera=cam;cam.data.clip_end=5000;cam.location=c['orientation'][0];cam.rotation_euler=(Vector(c['orientation'][1])-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.angle_y=math.radians(c['fov']);s.render.filepath=str(D/'station-source-camera-no3dletters.png');bpy.ops.render.render(write_still=True)

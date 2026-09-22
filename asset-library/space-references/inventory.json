@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "lane": "space-references",
+  "reviewDate": "2026-09-20",
+  "status": "BLOCKED_TARGET_AND_SOURCE_RIGHTS_UNCONFIRMED",
+  "downloadedAssetCount": 0,
+  "downloadedAssetBytes": 0,
+  "extractedBytes": 0,
+  "unityCompatibilityVerification": "NOT_RUN",
+  "target": {
+    "confirmedSite": null,
+    "referenceCandidate": "부산역",
+    "candidateIsApprovedTarget": false,
+    "scope": "코레일 철도역과 부산 도시철도 부산역은 동일 이름으로 합치지 않는다.",
+    "requiredDecision": "실제 제작 대상역 및 대상 공간·층·기준 시점을 확정해야 한다. 부산역은 정본상 후보이며 이번 작업에서 임의 확정하지 않았다."
+  },
+  "localEvidence": [
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v5/ACTIVE_STORY.md",
+      "lines": "108-114",
+      "finding": "공개 층별 도면·지도 근거와 가정을 구별하며 임의 배치로 실제 공간을 대체하지 않는다."
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/PRODUCT_BASELINE.md",
+      "lines": "27-30",
+      "finding": "외부 도착 경계–현장 업무 공간–맞이방–승강장–선택 객실. 부산역을 실제 참조 후보로 유지한다. 합성 fixture 성공은 실측 정확도 증거가 아니다."
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/specs/07-content-and-rule-contract.md",
+      "lines": "4-10",
+      "finding": "원본 없으면 rawHash=null. 과거 링크를 이번 취득으로 계산하지 않는다. 도면·시각자료를 같은 target/site/time으로 결속하고 코레일역과 지하철역을 구분한다."
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/tasks/CS-WORLD.01.json",
+      "lines": "62-65",
+      "finding": "초기 두 공간·문 fixture는 실제 자료 취득을 기다리지 않되 SYNTHETIC_FIXTURE로 표시한다."
+    }
+  ],
+  "items": [
+    {
+      "name": "부산역 공개 층별 도면·지도 원자료 후보",
+      "purpose": "확정된 실제 공간의 형상·층 연결 근거. generic 모델의 권위적 배치 근거로 사용하지 않는다.",
+      "officialPage": null,
+      "downloadUrl": null,
+      "resolvedUrl": null,
+      "licenseId": "UNCONFIRMED",
+      "licenseUrl": "https://info.korail.com/info/contents.do?key=924",
+      "licenseEvidencePath": null,
+      "attribution": "원자료와 개별 권리자를 확인하지 못했으므로 미확정",
+      "redistributionNotes": "공개열람 가능 여부와 복제·변경·재배포 권한은 별개다. 코레일 일반 정책을 확인했지만 특정 부산역 안내도에 자동 적용하지 않았다.",
+      "archivePath": null,
+      "extractedPath": null,
+      "bytes": null,
+      "sha256": null,
+      "rawHash": null,
+      "formats": [],
+      "status": "NOT_DOWNLOADED_TARGET_AND_RIGHTS_UNCONFIRMED",
+      "limitations": [
+        "정본에서 부산역은 후보일 뿐 확정 대상이라고 명시되지 않는다.",
+        "공식 도메인 대상 좁은 웹검색에서 부산역 층별 도면의 특정 원본 페이지·파일을 확인하지 못했다. 이는 자료가 존재하지 않는다는 증명이 아니다.",
+        "공식 일반 저작권정책은 코레일이 저작재산권 전부를 보유한 자료에 관해 설명하지만 개별 도면의 권리 귀속·제3자 권리·파생모델 허용은 확인되지 않았다.",
+        "정책 페이지 자체에 공공누리 제4유형(출처표시·상업적 이용금지·변경금지)이 표시된다. 이를 미확인 도면에 포괄 적용하거나 permissive 허락으로 해석하지 않았다.",
+        "원자료 미취득으로 HTTP 다운로드 상태·파일형식·크기·SHA256·압축 무결성 검사는 해당 없음. VERIFIED_LOCAL_NOT_IMPORTED 상태가 아니다.",
+        "정책 원문을 파일로 복제하지 않았다. licenseEvidencePath=null이며 확인 내용은 policyChecks에 요약했다."
+      ]
+    }
+  ],
+  "policyChecks": [
+    {
+      "officialUrl": "https://info.korail.com/info/contents.do?key=924",
+      "method": "WebFetch로 공식 저작권정책 본문 열람",
+      "checkResult": "코레일에 저작재산권 전체가 귀속된 홈페이지 자료의 이용 안내와 페이지 자체의 공공누리 제4유형 표시를 확인했다. 개별 부산역 도면의 복제·파생모델링·재배포 권한 증거는 아니다.",
+      "rawPolicySaved": false
+    }
+  ],
+  "nextActions": [
+    "제작 대상역·대상 공간·층·기준 시점 확정",
+    "해당 대상의 공식 공개 원자료 URL 및 파일별 권리 귀속 확인",
+    "로컬 복제와 파생모델링 및 필요 배포범위를 명백히 허용하는 라이선스 원문 확인 후에만 취득",
+    "NC/ND·권리불명확 자료, 비공개·출입제한 도면, 개인정보·민감운영정보는 제외"
+  ],
+  "boundaries": [
+    "임의 역 선택·일반 건물 모델로 실제역 대체·도면 없는 권위적 공간 배치 금지",
+    "지도 타일 수집, 로그인, API키, 캡차 우회, 외부 업로드 없음",
+    "Assets·Packages·ProjectSettings·기존 docs 수정, Unity 실행·임포트, commit·push·PR 없음",
+    "라이선스 검토는 확인 가능한 공개 문구의 범위만 정리한 것이며 법적 보증이 아니다."
+  ]
+}

@@ -1,0 +1,4 @@
+import sys,pathlib,json
+D=pathlib.Path.cwd()/'asset-library/research-public/2026-09-21/quality-a/station-model-source';sys.path.insert(0,str(D/'importer-isolated'));from sketchup_importer import sketchup
+m=sketchup.Model.from_file(str(D/'ktx-extracted/KTX.skp'))
+g={'componentNames':[c.name for c in m.component_definitions],'materials':m.NumMaterials(),'definitions':m.NumComponentDefinitions(),'scenes':[s.name for s in m.scenes],'layers':[l.name for l in m.layers],'rootGroups':[{'name':g.name,'layer':g.layer.name,'hidden':g.hidden,'instances':[i.definition.name for i in g.entities.instances]} for g in m.entities.groups],'rootInstances':[{'name':i.name,'definition':i.definition.name,'transform':i.transform} for i in m.entities.instances]};(D/'ktx-sdk-structure.json').write_text(json.dumps(g,ensure_ascii=False,indent=2));print(json.dumps(g,ensure_ascii=False)[:3000])

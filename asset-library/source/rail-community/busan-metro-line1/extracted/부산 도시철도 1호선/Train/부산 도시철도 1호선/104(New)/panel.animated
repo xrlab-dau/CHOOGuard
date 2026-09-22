@@ -1,0 +1,76 @@
+﻿;메인 틀
+
+[object]
+states = 3dcab\3dcab.csv
+
+;압력계
+
+[object]
+states = 3dcab\needle_pressuregauge_lower.csv
+position = 0.0427, 2.155, 9.584
+rotatezdirection = 0, 0, -1
+rotatezfunction = mainReservoir * 0.00000489692190558412
+
+[object]
+states = 3dcab\needle_pressuregauge_upper.csv
+position = 0.0427, 2.155, 9.584
+rotatezdirection = 0, 0, -1
+rotatezfunction = brakeCylinder * 0.00000489692190558412 
+
+;속도계
+
+[object]
+states = 3dcab\needle_speedometer.csv
+position = -0.102, 2.154, 9.595
+rotatezdirection = 0, 0, -1
+rotatezfunction = abs[speedometer] * 0.125663706143592
+
+;브레이크
+
+[object]
+states = 3dcab\brake_lever.csv
+position = 0.31, 1.9735, 9.25
+rotateyfunction = (brakeNotchLinear / brakeNotchesLinear) * 1.5 - 1.5
+rotateydirection = 0, -1, 0
+rotateydamping = 20, 0.8
+
+;역전기
+
+[object]
+states = 3dcab\reveser_lever.csv
+position = -0.5, 1.973, 9.38
+rotateyfunction = 0.95 * reverserNotch 
+rotateydirection = 0, -1, 0
+rotateydamping = 20, 0.8
+
+;가감간
+
+[object]
+states = 3dcab\power_lever.csv
+position = -0.61, 1.973, 9.272
+rotateyfunction = ((powerNotch / powerNotches) * 2 - 1) * 0.4
+rotateydirection = 0, 1, 0
+rotateydamping = 20, 0.8
+
+[object]
+states = 3dcab\power_mount.csv
+position = -0.61, 1.973, 9.272
+rotateyfunction = ((powerNotch / powerNotches) * 13 - 1) * 0.12
+rotateydirection = 0, 1, 0
+rotateydamping = 20, 0.8
+
+;출입문 제어
+
+[object]
+states = 3dcab\dooron.csv
+statefunction = ceiling[doors]
+
+[object]
+states = 3dcab\tgisldoor.csv
+position = 0, 0, -0.0001
+statefunction = ceiling[leftdoors]
+
+[object]
+states = 3dcab\tgisrdoor.csv
+position = 0, 0, -0.0001
+statefunction = ceiling[rightdoors]

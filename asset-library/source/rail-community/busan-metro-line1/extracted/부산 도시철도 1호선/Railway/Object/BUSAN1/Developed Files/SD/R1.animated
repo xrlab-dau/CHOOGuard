@@ -1,0 +1,18 @@
+[object]
+states=R1Pole.csv
+position=0,0,0
+
+[object]
+states=R1B.csv
+position=0,0,0
+TranslateXDirection = 0, 0, -1
+TranslateXFunctionRPN = rightdoors 1.2 * 1 * 
+TranslateZFunction = If[abs[trackdistance] < 0, Min[ 0.165 * Sin[rightdoors * 12] - 2 * rightdoors + 1.08,0 ], 0]
+
+[object]
+states=R1F.csv
+position=0,0,0
+TranslateXDirection = 0, 0, 1
+
+TranslateXFunctionRPN = rightdoors 1.2 * 1 * 
+TranslateZFunction = If[abs[trackdistance] < 0, Max[-0.165 * Sin[rightdoors * 12] + 2 * rightdoors - 1.08,0], 0]

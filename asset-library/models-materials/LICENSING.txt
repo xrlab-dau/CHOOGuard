@@ -1,0 +1,52 @@
+모델·재질 로컬 라이선스 검토 — 2026-09-20
+
+상태: VERIFIED_LOCAL_NOT_IMPORTED
+이 기록은 공식 배포 페이지와 ZIP 내부 라이선스 확인에 근거한 실무 검토이며 법적 보증이 아니다.
+
+1. Kenney Train Kit 1.1
+공식: https://kenney.nl/assets/train-kit
+ZIP 내부 License.txt: Creative Commons Zero, CC0. 개인·교육·상업 사용 허용.
+선택적 표기: Kenney (www.kenney.nl). 원문 추가 기여자: Guus Vermeulen, Tony Schaer.
+선택 추출: 일반 지하철 앞/중간/뒤 모델, 연결기, 직선·곡선 선로. 각 FBX/GLB와 해당 PNG 텍스처.
+
+2. Kenney Mini Characters 1.0
+공식: https://kenney.nl/assets/mini-characters
+ZIP 내부 License.txt: Creative Commons Zero, CC0. 개인·교육·상업 사용 허용.
+선택적 표기: Kenney (www.kenney.nl).
+선택 추출: 남녀 각 1명, 흰지팡이, 휠체어, AED. 각 FBX/GLB와 해당 PNG 텍스처.
+GLB 정적 JSON 검사로 두 인물 각각 skin 2개와 animation 32개 존재 확인. idle/walk/sprint/sit 및 wheelchair 동작 포함.
+이는 Unity Humanoid 호환, clip 재생 품질, 의료·보행 모델 정확성의 검증이 아니다.
+사용할 교육 동작만 별도 검토할 것. 원본의 전투·사망 등 불필요 clip은 제품 기능 채택을 뜻하지 않는다.
+
+3. ambientCG Concrete031 / Metal032, 각 1K JPG
+공식: https://ambientcg.com/view?id=Concrete031
+공식: https://ambientcg.com/view?id=Metal032
+라이선스: https://docs.ambientcg.com/license/
+공식 선언: All ambientCG assets are provided under the Creative Commons CC0 1.0 Universal License.
+다운로드 파일과 미리보기 이미지에 적용하며 수정, 상업 이용, 원본 재배포 가능. 크레딧은 선택 사항.
+각 ZIP은 별도 license.txt를 포함하지 않으므로 공식 라이선스 페이지, 자산 페이지, CC0 원문을 evidence/에 보관했다.
+추출은 JPG 맵만. 원본 ZIP의 .blend/.usdc/.mtlx/.tres 및 미리보기 PNG는 추출·실행하지 않았다.
+NormalDX/NormalGL 둘 다 존재한다. URP에서는 사용할 노멀 규약, metallic/roughness→smoothness, 채널 패킹을 별도 검토해야 한다.
+
+공통 허용/제약
+CC0-1.0 저작권 포기 및 보충 허락에 따라 복사·수정·상업 이용·재배포 가능. 출처 표시는 강제가 아니지만 보존을 권장한다.
+원문: https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt
+로컬 원문: evidence/CC0-1.0-legalcode.txt
+CC0는 상표·특허를 허락하지 않으며 제3자의 초상·개인정보·인격권까지 보증하지 않는다. 무보증이다.
+실제 기관 브랜드·로고에 대한 정밀 시각검수는 미실행. 로고·상표가 확인되는 모델/텍스처는 사용하지 말 것.
+웹페이지 HTML은 공식 설명·라이선스 증거용이며 페이지 전체가 CC0라는 뜻은 아니다. 제품에 동봉하지 않는다.
+
+generic_visual_only
+모든 모델·재질은 비권위적 시각화 후보일 뿐이다. 실제 역/시설 규격, 실제 열차, 의료 효능, 현장 안전을 보증하지 않는다.
+공개 층별 도면·지도에 근거한 geometry/layout, 운영 의미 레이어 또는 물리·행동 계산을 대체하지 않는다.
+Unity 실행, Assets 임포트, 메타파일 생성, shader 자동 변환, 코드 실행, Blender 실행, 설치는 수행하지 않았다.
+단위·축·pivot·collision·rig 재생·Unity6000.3.23f1/URP17.3 호환성 검증 미실행.
+ZIP에 있는 코드·설치기는 실행하지 않았으며 안전한 데이터 확장자/선택 파일만 추출했다.
+
+검증 범위
+4개 다운로드 모두 HTTP 200. 원본 ZIP 총 19,143,223 bytes.
+모든 ZIP 항목의 상대 경로·상위 이동·드라이브 경로·중복·symlink/특수파일·암호화·크기/압축률 검사 및 CRC 검사 통과.
+선택 추출 42파일 총 11,800,979 bytes. 아카이브·추출 파일별 SHA-256은 inventory.json에 기록.
+원본 ZIP은 보관 전용, extracted/는 데이터 준비본이며 둘 다 자동 Unity 임포트 대상이 아니다.
+별도 도시 전체 팩/도로차량 팩은 불필요 수집을 피하려고 추가하지 않았다.
+다운로드 URL과 redirect 후 URL, 크기·해시·증거 경로·추출 목록·정적 GLB 검사 결과는 inventory.json 참조.
