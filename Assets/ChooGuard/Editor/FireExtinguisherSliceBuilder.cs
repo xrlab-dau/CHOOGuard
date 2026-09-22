@@ -19,6 +19,10 @@ namespace ChooGuard.EditorTools
         private const string ProcedurePath="Assets/ChooGuard/Art/Procedures/fire-extinguisher-monthly.json";
         private const string FontPath="Assets/ChooGuard/Settings/ImportedAssets/Fonts/NotoSansCJKkr SDF.asset";
         private const string RootName="튜토리얼 · 소화기 월간점검";
+        // 유닛 루트는 고유해야 한다 — TutorialSession.Audit 이 Target.name 을 지적 접두사로,
+        // Bind 가 보고 제목으로 쓴다(TutorialSession.cs:157,:75). 이름이 겹치면 보고가 무너진다.
+        // 제거 훑기가 RootName 과 이 접두사를 둘 다 본다.
+        private const string UnitPrefix="소화기 · ";
 
         [MenuItem("ChooGuard/수직 슬라이스/소화기 월간점검 배치")]
         public static void BuildMenu(){BindMaterials();Build(true);}
@@ -102,39 +106,138 @@ namespace ChooGuard.EditorTools
             textureImporter.SaveAndReimport();
         }
 
+        // 배치 하나의 사양. 좌표·식별자·월드 상태를 바깥에서 주입받는다.
+        // NFTC 101 보행거리·구획 산정 결과(extinguisher-placement-v3.json)를 그대로 받기 위한 것이다.
+        public struct Placement
+        {
+            public Vector3 Position;      // 바닥 접지점. 본체는 여기서 1.10m 위에 온다.
+            public Quaternion Rotation;   // 로컬 +Z 가 플레이어를 향해야 판독면이 보인다.
+            public string Serial;
+            public bool Corroded;         // 월드 상태. PendingVerdict 와 짝이다 — 따로 놀면 거짓 오판정이 난다.
+            public bool ExpiryPassed;
+            public bool TutorialTarget;   // 절차 세션이 물릴 대상. 정확히 하나여야 한다.
+        }
+
+        // 기존 단일 배치 경로. 플레이어 정면 1.2m 에 하나를 두던 동작을 그대로 보존한다.
         public static GameObject Build(bool saveScene)
         {
-            var scene=EditorSceneManager.GetActiveScene();
-            if(scene.path!=ScenePath)
-            {
-                if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return null;
-                scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
-            }
-
-            var responder=Object.FindFirstObjectByType<FirstPersonResponder>();
-            if(responder==null){Debug.LogError("[슬라이스] FpsStation 에 FirstPersonResponder 가 없습니다.");return null;}
-
-            var model=AssetDatabase.LoadAssetAtPath<GameObject>(ModelPath);
-            var procedure=AssetDatabase.LoadAssetAtPath<TextAsset>(ProcedurePath);
-            var font=AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
-            if(model==null){Debug.LogError("[슬라이스] 소화기 모델 없음 · "+ModelPath);return null;}
-            if(procedure==null){Debug.LogError("[슬라이스] 절차 정의 없음 · "+ProcedurePath);return null;}
-            if(font==null)Debug.LogWarning("[슬라이스] 한국어 폰트 없음 · "+FontPath+" · 점검표 HUD 는 비활성으로 남습니다.");
-
-            var existing=GameObject.Find(RootName);
-            if(existing!=null)Undo.DestroyObjectImmediate(existing);
-
-            var root=new GameObject(RootName);
-            Undo.RegisterCreatedObjectUndo(root,"소화기 슬라이스 배치");
-
-            // 플레이어 정면 1.2m, 높이 1.10m. 3m 상한 안이라 어느 씬 배치에서도 팔 닿는 거리다.
+            if(!Prepare(out var scene,out var responder,out _,out _,out _))return null;
             var player=responder.transform;
             var forward=player.forward;forward.y=0;
             if(forward.sqrMagnitude<.0001f)forward=Vector3.forward;
             forward.Normalize();
             var stand=player.position+forward*1.2f;
-            root.transform.position=new Vector3(stand.x,player.position.y,stand.z);
-            root.transform.rotation=Quaternion.LookRotation(-forward,Vector3.up);
+            var one=new Placement
+            {
+                Position=new Vector3(stand.x,player.position.y,stand.z),
+                Rotation=Quaternion.LookRotation(-forward,Vector3.up),
+                Serial="BSN-CONC-FE-003",
+                Corroded=true,          // 정답은 '부적합'이다(제23조②1)
+                ExpiryPassed=false,     // 기한만 보고 통과시키면 틀린다
+                TutorialTarget=true,
+            };
+            var built=Build(new[]{one},saveScene);
+            return built!=null&&built.Length>0?built[0]:null;
+        }
+
+        // 여러 배치. 세션과 판정 단말은 유닛마다 만들지 않고 한 번만 만들어 바깥에 둔다
+        // (Jev 005 session_and_terminal=one_each_hoisted 0.87). 유닛 루트를 지워도 살아남아야 하기 때문이다.
+        public static GameObject[] Build(IReadOnlyList<Placement> placements,bool saveScene)
+        {
+            if(placements==null||placements.Count==0){Debug.LogError("[슬라이스] 배치 목록이 비었습니다.");return null;}
+            if(!Prepare(out var scene,out var responder,out var model,out var procedure,out var font))return null;
+
+            int targets=0;
+            foreach(var p in placements)if(p.TutorialTarget)targets++;
+            if(targets!=1){Debug.LogError("[슬라이스] 튜토리얼 대상은 정확히 1개여야 합니다 · 현재 "+targets);return null;}
+
+            // 근접 경고. RefreshInteraction 은 3m 상한 안에서 가장 가까운 콜라이더만 고르므로
+            // 두 유닛이 그 안에 들어오면 어느 것을 겨눈 것인지 모호해진다(Jev 005 assert_and_report 0.95).
+            float minGap=float.PositiveInfinity;string gapPair="";
+            for(int i=0;i<placements.Count;i++)for(int j=i+1;j<placements.Count;j++)
+            {
+                float g=Vector3.Distance(placements[i].Position,placements[j].Position);
+                if(g<minGap){minGap=g;gapPair=placements[i].Serial+" ↔ "+placements[j].Serial;}
+            }
+            if(minGap<3f)Debug.LogWarning("[슬라이스] 유닛 간 최소 간격 "+minGap.ToString("0.00")+"m · "+gapPair+" · 상호작용 상한 3m 안이라 조준이 모호할 수 있습니다.");
+
+            // 기존 산출물 제거. GameObject.Find 는 하나만, 그것도 활성 객체만 돌려주므로
+            // 유닛이 여럿이면 앞선 것들이 남는다(Jev 005 iterate_roots_by_prefix 0.87).
+            int removed=0;
+            foreach(var r in scene.GetRootGameObjects())
+                if(r!=null&&(r.name.StartsWith(RootName)||r.name.StartsWith(UnitPrefix)))
+                {Undo.DestroyObjectImmediate(r);removed++;}
+
+            var tracker=responder.GetComponent<FpsGazeTracker>();
+            if(tracker==null)tracker=Undo.AddComponent<FpsGazeTracker>(responder.gameObject);
+            tracker.Responder=responder;
+
+            var roots=new List<GameObject>();
+            FacilityInspectable tutorialTarget=null;
+            foreach(var p in placements)
+            {
+                var built=BuildUnit(p,model,tracker,out var inspectable);
+                roots.Add(built);
+                if(p.TutorialTarget)tutorialTarget=inspectable;
+            }
+
+            // 세션·단말은 어느 유닛에도 속하지 않는 자체 루트에 둔다.
+            var host=new GameObject(RootName);
+            Undo.RegisterCreatedObjectUndo(host,"튜토리얼 세션 호스트");
+            var playerT=responder.transform;
+            var fwd=playerT.forward;fwd.y=0;
+            if(fwd.sqrMagnitude<.0001f)fwd=Vector3.forward;
+            fwd.Normalize();
+
+            var sessionObject=new GameObject("튜토리얼 세션");
+            Undo.RegisterCreatedObjectUndo(sessionObject,"튜토리얼 세션 생성");
+            sessionObject.transform.SetParent(host.transform,false);
+            var session=sessionObject.AddComponent<TutorialSession>();
+            session.Responder=responder;session.GazeTracker=tracker;session.Target=tutorialTarget;
+            session.ProcedureAsset=procedure;session.ChecklistVisible=true;
+            session.PendingVerdict=tutorialTarget!=null&&tutorialTarget.Corroded?InspectionVerdict.UNFIT:InspectionVerdict.FIT;
+
+            // 점검표 HUD 를 붙이지 않는다. 조사 결론(2026-09-22): 단계 라벨·거부 사유·완료 피드백은
+            // FirstPersonInteractionHud 의 중앙 프롬프트로 이미 흐르므로 별도 패널은 중복이다.
+            // 8단계 전모는 작업 중 어디에도 표시하지 않고 판정 단말에서만 열거한다(Viscera Cleanup 선례).
+            if(font==null)Debug.LogWarning("[슬라이스] 한국어 폰트 미확인 — 기존 HUD 표시를 점검하세요.");
+
+            session.AuditTerminal=BuildAuditTerminal(host,playerT,fwd,font);
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            if(saveScene)EditorSceneManager.SaveScene(scene);
+            Debug.Log("[슬라이스] 배치 "+roots.Count+"개 · 기존 제거 "+removed+"개 · 최소 간격 "+minGap.ToString("0.00")+"m · 절차 "+procedure.name);
+            if(roots.Count>0)Selection.activeGameObject=roots[0];
+            return roots.ToArray();
+        }
+
+        private static bool Prepare(out UnityEngine.SceneManagement.Scene scene,out FirstPersonResponder responder,
+                                    out GameObject model,out TextAsset procedure,out TMP_FontAsset font)
+        {
+            responder=null;model=null;procedure=null;font=null;
+            scene=EditorSceneManager.GetActiveScene();
+            if(scene.path!=ScenePath)
+            {
+                if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return false;
+                scene=EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
+            }
+            responder=Object.FindFirstObjectByType<FirstPersonResponder>();
+            if(responder==null){Debug.LogError("[슬라이스] FpsStation 에 FirstPersonResponder 가 없습니다.");return false;}
+            model=AssetDatabase.LoadAssetAtPath<GameObject>(ModelPath);
+            procedure=AssetDatabase.LoadAssetAtPath<TextAsset>(ProcedurePath);
+            font=AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
+            if(model==null){Debug.LogError("[슬라이스] 소화기 모델 없음 · "+ModelPath);return false;}
+            if(procedure==null){Debug.LogError("[슬라이스] 절차 정의 없음 · "+ProcedurePath);return false;}
+            if(font==null)Debug.LogWarning("[슬라이스] 한국어 폰트 없음 · "+FontPath+" · 점검표 HUD 는 비활성으로 남습니다.");
+            return true;
+        }
+
+        // 유닛 하나. 관측 지점 4개의 id 는 TutorialSession.cs:92~95 와 문자열로 맞물려 있으므로 건드리지 않는다.
+        private static GameObject BuildUnit(Placement p,GameObject model,FpsGazeTracker tracker,out FacilityInspectable inspectable)
+        {
+            var root=new GameObject(UnitPrefix+p.Serial);
+            Undo.RegisterCreatedObjectUndo(root,"소화기 배치");
+            root.transform.SetPositionAndRotation(p.Position,p.Rotation);
 
             var instance=(GameObject)PrefabUtility.InstantiatePrefab(model);
             instance.name="소화기 본체";
@@ -145,16 +248,20 @@ namespace ChooGuard.EditorTools
             var bounds=RendererBounds(instance);
             float height=Mathf.Max(bounds.size.y,.1f);
             float width=Mathf.Max(Mathf.Max(bounds.size.x,bounds.size.z),.05f);
-            float mount=1.10f-bounds.center.y+bounds.extents.y*0f;   // 본체 중심을 1.10m 에 둔다
+            // RendererBounds 는 renderer.bounds, 즉 월드 공간이다. 1.10f-bounds.center.y 를 그대로
+            // 로컬 오프셋으로 쓰면 최종 월드 높이가 층과 무관하게 1.10m 로 고정된다. 플레이어가
+            // 도로(y≈0.145)에 있을 때만 우연히 맞았고, 대합실(y≈7.05)로 옮기자 바닥 아래로 내려갔다.
+            // 루트 높이를 더해 "루트 바닥에서 1.10m" 라는 원래 의도대로 만든다. 1.5m 이하 규정 안이다.
+            float mount=root.transform.position.y+1.10f-bounds.center.y;
             instance.transform.localPosition=new Vector3(0,mount,0);
             bounds=RendererBounds(instance);
 
-            var inspectable=root.AddComponent<FacilityInspectable>();
-            inspectable.SerialNumber="BSN-CONC-FE-003";
+            inspectable=root.AddComponent<FacilityInspectable>();
+            inspectable.SerialNumber=p.Serial;
             inspectable.Prompt="소화기 점검";
-            inspectable.Corroded=true;          // 월드 상태: 부식 있음 → 정답은 '부적합'이다(제23조②1)
-            inspectable.ExpiryPassed=false;     // 기한은 남았다 — 기한만 보고 통과시키면 틀린다
-            inspectable.AllowFieldRepair=false; // 제23조①1 — 역무원은 수리를 '요구'한다
+            inspectable.Corroded=p.Corroded;          // 월드 상태. 세션의 PendingVerdict 와 짝이다(제23조②1)
+            inspectable.ExpiryPassed=p.ExpiryPassed;  // 기한만 보고 통과시키면 틀린다
+            inspectable.AllowFieldRepair=false;       // 제23조①1 — 역무원은 수리를 '요구'한다
 
             // 배치 규율 두 개 모두 실측으로 잡았다.
             // ① 레이캐스트는 가장 가까운 솔리드 콜라이더만 고른다(FirstPersonResponder.cs:111).
@@ -177,32 +284,7 @@ namespace ChooGuard.EditorTools
                 Point(root,"gauge","지시압력계",bounds,new Vector3(0,.88f,faceZ*.7f),new Vector3(width*.4f,height*.12f,.04f),.6f),
             };
             inspectable.Points=points.ToArray();
-
-            var tracker=responder.GetComponent<FpsGazeTracker>();
-            if(tracker==null)tracker=Undo.AddComponent<FpsGazeTracker>(responder.gameObject);
-            tracker.Responder=responder;
             inspectable.Bind(tracker);
-
-            var sessionObject=new GameObject("튜토리얼 세션");
-            Undo.RegisterCreatedObjectUndo(sessionObject,"튜토리얼 세션 생성");
-            sessionObject.transform.SetParent(root.transform,false);
-            var session=sessionObject.AddComponent<TutorialSession>();
-            session.Responder=responder;session.GazeTracker=tracker;session.Target=inspectable;
-            session.ProcedureAsset=procedure;session.ChecklistVisible=true;
-            session.PendingVerdict=InspectionVerdict.UNFIT;   // 부식이 있으므로 이것이 정답
-
-            // 점검표 HUD 를 붙이지 않는다. 조사 결론(2026-09-22): 단계 라벨·거부 사유·완료 피드백은
-            // FirstPersonInteractionHud 의 중앙 프롬프트로 이미 흐르므로 별도 패널은 중복이다.
-            // 8단계 전모는 작업 중 어디에도 표시하지 않고 판정 단말에서만 열거한다(Viscera Cleanup 선례).
-            if(font==null)Debug.LogWarning("[슬라이스] 한국어 폰트 미확인 — 기존 HUD 표시를 점검하세요.");
-
-            session.AuditTerminal=BuildAuditTerminal(root,player,forward,font);
-
-            EditorSceneManager.MarkSceneDirty(scene);
-            if(saveScene)EditorSceneManager.SaveScene(scene);
-            // 피벗이 아니라 메시 중심 높이를 찍는다 — 피벗은 소화기 밑바닥이라 오해를 부른다.
-            Debug.Log("[슬라이스] 배치 완료 · 관측지점 "+points.Count+"개 · 메시 중심 y="+bounds.center.y.ToString("0.00")+"m (피벗 "+instance.transform.position.y.ToString("0.00")+"m) · 절차 "+procedure.name);
-            Selection.activeGameObject=root;
             return root;
         }
 

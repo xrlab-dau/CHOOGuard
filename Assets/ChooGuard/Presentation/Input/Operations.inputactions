@@ -1,0 +1,50 @@
+{
+  "name": "Operations",
+  "maps": [
+    {
+      "name": "UI",
+      "id": "adee4200-2fb5-4de5-b002-adfc7f011001",
+      "actions": [
+        {"name":"Point","type":"PassThrough","id":"adee4200-2fb5-4de5-b002-adfc7f011101","expectedControlType":"Vector2"},
+        {"name":"Click","type":"PassThrough","id":"adee4200-2fb5-4de5-b002-adfc7f011102","expectedControlType":"Button"},
+        {"name":"ScrollWheel","type":"PassThrough","id":"adee4200-2fb5-4de5-b002-adfc7f011103","expectedControlType":"Vector2"},
+        {"name":"Navigate","type":"PassThrough","id":"adee4200-2fb5-4de5-b002-adfc7f011104","expectedControlType":"Vector2"},
+        {"name":"Submit","type":"Button","id":"adee4200-2fb5-4de5-b002-adfc7f011105","expectedControlType":"Button"},
+        {"name":"Cancel","type":"Button","id":"adee4200-2fb5-4de5-b002-adfc7f011106","expectedControlType":"Button"},
+        {"name":"RightClick","type":"PassThrough","id":"adee4200-2fb5-4de5-b002-adfc7f011107","expectedControlType":"Button"},
+        {"name":"MiddleClick","type":"PassThrough","id":"adee4200-2fb5-4de5-b002-adfc7f011108","expectedControlType":"Button"}
+      ],
+      "bindings": [
+        {"path":"<Mouse>/position","action":"Point","id":"adee4200-2fb5-4de5-b002-adfc7f012101"},
+        {"path":"<Mouse>/leftButton","action":"Click","id":"adee4200-2fb5-4de5-b002-adfc7f012102"},
+        {"path":"<Mouse>/scroll","action":"ScrollWheel","id":"adee4200-2fb5-4de5-b002-adfc7f012103"},
+        {"name":"Arrows","path":"2DVector","action":"Navigate","isComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f012104"},
+        {"name":"up","path":"<Keyboard>/upArrow","action":"Navigate","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f012105"},
+        {"name":"down","path":"<Keyboard>/downArrow","action":"Navigate","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f012106"},
+        {"name":"left","path":"<Keyboard>/leftArrow","action":"Navigate","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f012107"},
+        {"name":"right","path":"<Keyboard>/rightArrow","action":"Navigate","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f012108"},
+        {"path":"<Keyboard>/enter","action":"Submit","id":"adee4200-2fb5-4de5-b002-adfc7f012109"},
+        {"path":"<Keyboard>/escape","action":"Cancel","id":"adee4200-2fb5-4de5-b002-adfc7f012110"},
+        {"path":"<Mouse>/rightButton","action":"RightClick","id":"adee4200-2fb5-4de5-b002-adfc7f012111"},
+        {"path":"<Mouse>/middleButton","action":"MiddleClick","id":"adee4200-2fb5-4de5-b002-adfc7f012112"}
+      ]
+    },
+    {
+      "name":"Game",
+      "id":"adee4200-2fb5-4de5-b002-adfc7f021001",
+      "actions":[
+        {"name":"Move","type":"Value","id":"adee4200-2fb5-4de5-b002-adfc7f021101","expectedControlType":"Vector2","initialStateCheck":false},
+        {"name":"Pause","type":"Button","id":"adee4200-2fb5-4de5-b002-adfc7f021102","expectedControlType":"Button"}
+      ],
+      "bindings":[
+        {"name":"WASD","path":"2DVector","action":"Move","isComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f022101"},
+        {"name":"up","path":"<Keyboard>/w","action":"Move","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f022102"},
+        {"name":"down","path":"<Keyboard>/s","action":"Move","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f022103"},
+        {"name":"left","path":"<Keyboard>/a","action":"Move","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f022104"},
+        {"name":"right","path":"<Keyboard>/d","action":"Move","isPartOfComposite":true,"id":"adee4200-2fb5-4de5-b002-adfc7f022105"},
+        {"path":"<Keyboard>/space","action":"Pause","id":"adee4200-2fb5-4de5-b002-adfc7f022106"}
+      ]
+    }
+  ],
+  "controlSchemes": []
+}
