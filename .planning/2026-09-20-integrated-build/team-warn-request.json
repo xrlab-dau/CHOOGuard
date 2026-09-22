@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>();var b=w.GetComponentsInChildren<UnityEngine.UI.Button>(true);b.First(x=>x.name==\"TrainingWarn\").onClick.Invoke();return w.GetComponent<ChooGuard.App.Mvp.MvpTrainingDirector>().Events.TakeLast(3).ToArray();"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": [
+        "44.0초 · 계산 0/86명 · 밀도 1.59",
+        "45.0초 · 계산 0/86명 · 밀도 1.59",
+        "45.0초 · 경고 방송 요청"
+      ]
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

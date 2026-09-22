@@ -1,0 +1,41 @@
+{
+  "status": "source_complete_pending_Unity",
+  "syntax": {
+    "Assets/ChooGuard/Editor/MvpCityBuilder.cs": true,
+    "Assets/ChooGuard/Editor/MvpWorldSurfaceBuilder.cs": true
+  },
+  "terrain": {
+    "source": "Mapzen Terrarium four tiles, receipt.json",
+    "decode": "R*256+G+B/256-32768 metres",
+    "rawMin": -6.9273970526834425,
+    "rawMax": 389.98451053805184,
+    "datumOffsetMeters": 11,
+    "gridStepMeters": 40.0,
+    "gridPoints": 10816,
+    "flatPads": "station/terminal/market bounding envelopes plus60m apron,60m smooth transition; visual only",
+    "verticalScale": 0.25,
+    "accuracy": "not surveyed, visual sampled relief only"
+  },
+  "flatPadSourceHeightChecks": {
+    "station": 0.0,
+    "BusanTower": 28.42471214368047,
+    "PortTerminal": 0.0,
+    "JagalchiMarket": 0.0
+  },
+  "surfaceTriangles": 275558,
+  "sharedPlaneAlignment": "All nonwater surfaces clipped to same40m grid triangle diagonals; C# Height uses identical piecewise plane interpolation",
+  "buildingSupport": "centroid datum raised to max footprint corner height where needed; skirts terminate at sampled terrain to avoid buried walls",
+  "materials": {
+    "expectedFBX": 9,
+    "presentFBX": 9,
+    "manifestMaterials": 15,
+    "shader": "Universal Render Pipeline/Lit",
+    "remap": "renderer material name to manifest-created shared material before batching",
+    "roughness": "two packed metallicR/inverted roughnessA PNGs",
+    "normal": "normalGL imported NormalMap, bumpScale.45"
+  },
+  "limits": [
+    "No Unity compilation or screenshot claim",
+    "Terrain source and datum/shore taper/flatpads are visual approximations; physics coordinates unchanged"
+  ]
+}

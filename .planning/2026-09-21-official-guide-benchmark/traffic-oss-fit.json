@@ -1,0 +1,48 @@
+{
+  "subject": "Eclipse SUMO traffic feasibility for CHOOGuard",
+  "checked_at": "2026-09-21",
+  "scope": "Read-only official documentation and local command availability; no installation or simulation run",
+  "platform": {
+    "target": "macOS arm64 / Unity 6000",
+    "local_evidence": {"uname_m": "arm64", "macos": "26.5", "brew": "/opt/homebrew/bin/brew", "python3": "/opt/homebrew/bin/python3", "sumo": null, "netconvert": null},
+    "current_official_release": "1.27.1 (SUMO Downloads page, checked 2026-09-21)"
+  },
+  "primary_sources": [
+    {"url": "https://sumo.dlr.de/docs/Downloads.php", "supports": ["1.27.1 macOS package", "Python eclipse-sumo package", "Homebrew support warning", "macOS dependency note"]},
+    {"url": "https://sumo.dlr.de/docs/Installing/index.html", "supports": ["macOS pkg and XQuartz", "historical Homebrew tap recipe", "SUMO_HOME"]},
+    {"url": "https://sumo.dlr.de/docs/Networks/Import/OpenStreetMap.html", "supports": ["native netconvert --osm-files import", "WGS84 to UTM transformation", "recommended network options"]},
+    {"url": "https://sumo.dlr.de/docs/TraCI/Protocol.html", "supports": ["client-triggered simulation step", "one step per command", "connection lifecycle"]},
+    {"url": "https://sumo.dlr.de/docs/Simulation/Emergency.html", "supports": ["vClass=emergency behavior and rescue vehicle model"]}
+  ],
+  "fit": {
+    "osm_to_network": "YES: netconvert directly accepts OSM XML via --osm-files and emits .net.xml; this matches the repository's asset-library/space-references/busan-reconstruction/osm-busan-map.xml.",
+    "directed_route_station_return": "YES: SUMO routes are edge sequences and TraCI can add/control vehicles; station/return orchestration remains CHOOGuard-side scenario logic.",
+    "fixed_speed_8mps": "YES: define a vType maxSpeed=8 and use TraCI/route controls; SUMO may still apply car-following and junction constraints.",
+    "one_second_stepping": "YES: TraCI advances only when the client issues simulationStep; configure step-length 1s and call it once per Unity tick/bridge cycle.",
+    "emergency_vehicle": "YES: vClass=emergency is built in, including rescue shape and special lane/overtaking permissions; it is not a calibrated emergency-response model.",
+    "unity_integration": "PRACTICAL via a local SUMO process plus TraCI TCP or libsumo; bridge ownership and time synchronization are implementation decisions for Astra."
+  },
+  "install_options": {
+    "recommended": "Official macOS pkg from Downloads page; install Python/XQuartz as needed. The Downloads page explicitly says Homebrew bottles are discouraged and no longer maintained.",
+    "python_wheel": "After the standard macOS dependencies are installed: python3 -m venv .venv-sumo; . .venv-sumo/bin/activate; pip install eclipse-sumo. The official page says macOS wheels are available, but dependencies must first be installed/up to date.",
+    "legacy_or_secondary": "brew tap dlr-ts/sumo && brew install sumo (official Installing page documents it, while Downloads page warns it is no longer maintained)."
+  },
+  "recipe_for_existing_osm": {
+    "input": "asset-library/space-references/busan-reconstruction/osm-busan-map.xml",
+    "commands_after_install": [
+      "export SUMO_HOME=/path/to/sumo",
+      "mkdir -p /tmp/chooguard-sumo",
+      "netconvert --osm-files asset-library/space-references/busan-reconstruction/osm-busan-map.xml --output-file /tmp/chooguard-sumo/busan.net.xml --geometry.remove --ramps.guess --junctions.join --tls.guess-signals --tls.discard-simple --tls.join",
+      "sumo --net-file /tmp/chooguard-sumo/busan.net.xml --step-length 1 --remote-port 8813"
+    ],
+    "TraCI_smoke": "Connect to localhost:8813, load a route/vehicle with vClass=emergency and maxSpeed=8, then issue simulationStep() once per second; close the connection when the route completes.",
+    "local_run_status": "NOT_RUN: sumo and netconvert are absent locally; this artifact records a reproducible post-install recipe rather than claiming generated output."
+  },
+  "limits": [
+    "OSM geometry, lane permissions, and guessed signals are map-derived/heuristic; they do not establish surveyed geometry or observed traffic fidelity.",
+    "No observed traffic counts, travel-time distributions, signal timing validation, incident logs, or emergency response calibration are present in this check.",
+    "SUMO emergency permissions do not prove real-world driver yielding, dispatch behavior, or CHOOGuard product acceptance.",
+    "The current local check did not install packages, generate a network, open Unity, or validate a TraCI bridge."
+  ],
+  "recommendation": "USEFUL NEXT, NON-BLOCKING: SUMO is a credible optional traffic digital-twin lane for later route/time/traffic experiments and can consume the existing OSM XML. Keep the current Unity agency core moving; add SUMO only behind a small local bridge spike with explicit synchronization and calibration gates."
+}

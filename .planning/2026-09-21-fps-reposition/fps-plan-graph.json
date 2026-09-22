@@ -1,0 +1,496 @@
+{
+  "schemaVersion": "fps-reposition-plan-1",
+  "story": "CS-EXEC.01.01",
+  "status": "PROPOSED_FOR_ROOT_ADOPTION_NOT_PRODUCT_ACCEPTANCE",
+  "authority": "Latest user FPS scope and KORAIL station-staff role override prior RTS direction; latest clarification excludes separate debrief/review/quiz/manual-learning features.",
+  "acceptedScope": {
+    "world": "Busan railway station and KTX operational area only; freely traversable bounded site, not the Nampo/North Port city.",
+    "experience": "Single-player first person, Korean UI. PUBG/SuddenAttack/battle-royale references concern embodied movement, immediate interaction, readable spatial objectives and responsive feedback.",
+    "player": "KORAIL station staff: report, communicate/broadcast, guide passengers, control access and cooperate with NPC colleagues/responders.",
+    "learning": "Recall procedures through actions, consequences, NPC behaviour and radio acknowledgements. Ordinary mission completion feedback is sufficient.",
+    "events": "Authored terror/disaster missions. No scenario-draft generation. First increment is one fire-related evacuation mission.",
+    "constraints": [
+      "No armed counterterror role, shooting or suspect-neutralization loop inferred from FPS references.",
+      "Root owns integration and native Unity validation; Astra low implements bounded lanes; no computer-use automation.",
+      "Jev may classify short inputs or support internal calculations with deterministic fallback; no public probabilities/forecast panel or generative mission authority.",
+      "Reuse installed Input System 1.20.0 and URP 17.3.0 from Packages/manifest.json; no dependency migration required for first slice."
+    ]
+  },
+  "supersededRequirements": [
+    {
+      "old": "Station–Choryang–Jungang–Nampo–North Port continuous city/road/agency roundtrip",
+      "replacement": "Station/KTX boundary; responders can arrive at a declared site ingress without simulating the city.",
+      "reason": "Explicit new user scope"
+    },
+    {
+      "old": "RTS overhead selection, team commands, resource-building management and public graph dashboard",
+      "replacement": "Player body/camera, local interaction, radio/NPC coordination and visible passenger consequences.",
+      "reason": "Explicit new user experience"
+    },
+    {
+      "old": "G1 requires three 20–30-minute resource/recovery sessions; G2 copies management placement/undo",
+      "replacement": "FPS G1/G2 below; target mission duration is an authored pacing choice, not a gate satisfied by waiting.",
+      "reason": "RTS-specific evidence no longer assesses the requested game"
+    },
+    {
+      "old": "G3 requires team selection/follow/zoom/floor-command UI",
+      "replacement": "FPS movement/look/interaction/modal input, Korean HUD and embodied readability.",
+      "reason": "Control surface changed"
+    },
+    {
+      "old": "Postmission debrief, quiz, explicit manual study/review module",
+      "replacement": "Procedural feedback occurs within play; only ordinary mission result/retry controls.",
+      "reason": "Latest explicit user clarification"
+    },
+    {
+      "old": "Existing y=0/5/10 authored floors establish station interior truth",
+      "replacement": "Unbound mission anchors until source support, collision and route continuity are proven.",
+      "reason": "Current source audit contradicts those anchors"
+    },
+    {
+      "old": "Prior RTS receipts imply new FPS readiness",
+      "replacement": "Retain as historical component evidence only; new native FPS build/input receipts required.",
+      "reason": "Changed interaction and geometry surface"
+    }
+  ],
+  "evidence": [
+    {
+      "id": "E_SCOPE",
+      "classification": "directly_supported",
+      "source": "Root task and subsequent latest-user clarification",
+      "supports": "Scope, role, first-person framing and no separate debrief; these are accepted requirements, not implemented-state evidence."
+    },
+    {
+      "id": "E_WORLD",
+      "classification": "directly_supported",
+      "source": ".planning/2026-09-21-quality-a/station-model-conversion-graph.json; progress.md",
+      "supports": "Reported active official source: 8 segments, 51 meshes, 299 textures and rigid fit. Source main-shell hash 151039b533a88f586b884551645e10a763cdde8a41f47fc0a3834fdfed56aba0.",
+      "limit": "Worker read artifacts; did not reopen Unity or independently remeasure the active scene."
+    },
+    {
+      "id": "E_FLOORS",
+      "classification": "contradicts_premise",
+      "source": ".planning/2026-09-21-quality-a/station-interior-audit-graph.json#floorAudit,#sourceHeightEvidence",
+      "supports": "Seven probes do not support old authored floor anchors. Door thresholds occur near source 0/7 m and stair treads span about 0–7 m.",
+      "limit": "Point probes and cutaways are not a global absence proof or a locomotion/path test."
+    },
+    {
+      "id": "E_INTERIOR",
+      "classification": "insufficient",
+      "source": ".planning/2026-09-21-quality-a/station-interior-source-graph.json#nextAstraLowGeometryInput",
+      "supports": "Current evidence cannot establish continuous railway interior decks, current exit routes or as-built heights.",
+      "action": "Keep unsupported interior links blocked/reference-only; do not construct a source-certified floor from facility listings or the unrelated Metro plan."
+    },
+    {
+      "id": "E_FIRE",
+      "classification": "directly_supported",
+      "authority": "Ministry of the Interior and Safety, public fire guidance",
+      "url": "https://old.safekorea.go.kr/idsiSFK/neo/main_m/sot/fire.html",
+      "retrieved": "2026-09-21",
+      "supports": [
+        "Warn nearby people when fire is discovered.",
+        "Evacuate and report to 119 from safety without letting reporting delay escape.",
+        "Account for people at the agreed meeting place and tell arriving firefighters about missing people."
+      ],
+      "limit": "General public guidance only. Does not establish a current Busan Station staff command chain, radio protocol, PA access, meeting point, smoke model or safe distance."
+    },
+    {
+      "id": "E_KORAIL_2017",
+      "classification": "near_match_only",
+      "authority": "KORAIL published railway safety-management program dated 2017-05-26",
+      "url": "https://info.korail.com/mbs/www/jsp/contents/images/2017_26.pdf",
+      "retrieved": "2026-09-21",
+      "sha256": "1ab6638142760635cb74cfa6d3fa96b92d32fcc923ce72ac9dda9104aa7661a6",
+      "bytes": 8134142,
+      "pages": 553,
+      "located": "PDF p.168, printed p.16, H343 hazardous-goods/tunnel incident chart",
+      "limit": "Dated different incident scope; discovery/navigation only. Do not transfer its station-staff procedure, sequence or permissions into this mission as verified current authority."
+    },
+    {
+      "id": "E_RUNTIME",
+      "classification": "insufficient",
+      "source": ".planning/2026-09-21-quality-a/quality-a-scorecard.json; progress.md",
+      "supports": "Previous game is NOT_A. Latest recorded narrow 20-second stationary Editor sample at 1920 resolution on M1 had p95 90.41 ms.",
+      "limit": "Not a new FPS player build benchmark; current child executes no Unity validation."
+    }
+  ],
+  "firstMission": {
+    "id": "FPS-M01",
+    "titleKo": "출입구 주변 연기 — 승객을 안전한 곳으로 안내",
+    "purpose": "One coherent station-staff evacuation response implemented as an authored playable fixture; not a scenario generator or verified current KORAIL manual training product.",
+    "location": "Source-existing exterior entrance apron/forecourt. Incident, staff, passengers, alternate route and meeting point all remain outside unsupported interior decks.",
+    "bindingStatus": "UNBOUND: choose actual supported native polygons and record their transforms/collider IDs; do not copy old ExitAnchor or ConcourseAnchor coordinates.",
+    "cast": {
+      "player": "Station staff",
+      "colleague": 1,
+      "passengers": 6,
+      "arrivingResponder": 1,
+      "countBoundary": "Small authored gameplay population; no claim about real station occupancy."
+    },
+    "tools": [
+      "Context interaction",
+      "Voice/nearby warning",
+      "Radio reporting/broadcast request",
+      "Passenger guidance",
+      "Access-control instruction to colleague"
+    ],
+    "authoredBoundary": [
+      "Radio contact, PA request and colleague authority are provisional role-play affordances until exact KORAIL procedures are sourced.",
+      "Meeting point and blocked route are authored mission objects, never labelled as official evacuation geography.",
+      "Visible smoke may be a clearly scoped gameplay cue. It cannot imply calibrated spread, safe exposure, injuries or extinguishment.",
+      "Completion means the specified group reached the authored collection area and information was handed over; not that the fire is suppressed or the real station is safe."
+    ],
+    "learningInPlay": [
+      "A nearby passenger reacts to the first warning and points out someone who has not moved.",
+      "Radio acknowledgement repeats the player-selected location and observation; missing information prompts correction within the conversation.",
+      "Colleague visibly walks to and holds the assigned approach; passengers do not comply until the action is acknowledged.",
+      "A passenger who misses the direction remains in the world until addressed; a returning passenger creates an access-control decision.",
+      "Responder asks about remaining people/last known position during the handoff; no later quiz or review screen."
+    ],
+    "stateNodes": [
+      {
+        "id": "M0",
+        "name": "On duty",
+        "entry": "Spawn on validated ground; player has control; colleague and passengers are already present.",
+        "exitEvent": "Player reaches a line-of-sight trigger for the incident cue."
+      },
+      {
+        "id": "M1",
+        "name": "Recognize and act",
+        "objectiveKo": "주변에 알리고 안전한 곳에서 상황을 전하세요.",
+        "actions": [
+          "Warn nearby passengers",
+          "Move away from cue",
+          "Report position/visible condition/people needing help to radio contact"
+        ],
+        "order": "Warning, movement and reporting can interleave. No requirement to approach the hazard or finish a phone UI before moving."
+      },
+      {
+        "id": "M2",
+        "name": "Coordinate",
+        "objectiveKo": "동료와 대피 방향을 맞추세요.",
+        "actions": [
+          "Request the provisional broadcast via radio",
+          "Ask colleague to hold the unsafe approach",
+          "Identify the open supported route"
+        ],
+        "effects": "Explicit acknowledgements change NPC assignments and objective facts; button acceptance alone does not move people."
+      },
+      {
+        "id": "M3",
+        "name": "Guide passengers",
+        "objectiveKo": "승객을 안내 지점으로 이끄세요.",
+        "actions": [
+          "Walk the valid route and address the group",
+          "Notice a lagging passenger",
+          "Use the verified alternate path when the short path is blocked"
+        ],
+        "effects": "Each same passenger travels physically; behind-wall prompts, teleport completion and unsupported floor links are rejected."
+      },
+      {
+        "id": "M4",
+        "name": "Maintain control and account",
+        "objectiveKo": "대피 인원을 확인하고 재진입을 막으세요.",
+        "actions": [
+          "Account for the six identifiable passengers",
+          "Ask colleague to continue holding the approach",
+          "Prevent the scripted returning passenger from re-entering the incident zone through dialogue/guidance"
+        ],
+        "effects": "Accounting uses actual NPC state; movement and control continue while the radio is used."
+      },
+      {
+        "id": "M5",
+        "name": "Handoff",
+        "objectiveKo": "도착한 대응 인력에게 상황을 인계하세요.",
+        "actions": [
+          "Report incident location, observed condition and accounted/missing people",
+          "Responder acknowledges information"
+        ],
+        "effects": "No simulated treatment, fire suppression or reopening is inferred."
+      },
+      {
+        "id": "M6",
+        "name": "Mission clear",
+        "ui": "Brief Korean in-world/radio completion acknowledgement plus ordinary restart/continue control.",
+        "noSeparateDebrief": true
+      },
+      {
+        "id": "MR",
+        "name": "Recoverable correction",
+        "triggers": [
+          "Incomplete report",
+          "Wrong approach selected",
+          "Passenger falls behind",
+          "Colleague not yet in position"
+        ],
+        "effect": "NPC/radio feedback identifies the immediate issue; player can correct within the same incident."
+      },
+      {
+        "id": "MB",
+        "name": "Technical blocked state",
+        "triggers": [
+          "No continuous route",
+          "NPC stuck beyond declared recovery threshold",
+          "Missing authority required by a release claim"
+        ],
+        "effect": "Do not label a technical limitation as player procedural failure or successful training."
+      }
+    ],
+    "stateEdges": [
+      {
+        "from": "M0",
+        "to": "M1",
+        "when": "incidentVisible"
+      },
+      {
+        "from": "M1",
+        "to": "M2",
+        "when": "nearbyWarningHeard AND reportAcknowledged AND playerAtSafeInteractionAnchor"
+      },
+      {
+        "from": "M2",
+        "to": "M3",
+        "when": "broadcastRequestAcknowledged AND colleagueAssignmentAcknowledged AND routeValidated"
+      },
+      {
+        "from": "M3",
+        "to": "M4",
+        "when": "allSixPassengersPhysicallyAtCollectionArea"
+      },
+      {
+        "from": "M4",
+        "to": "M5",
+        "when": "allSixAccounted AND approachControlled AND responderAtHandoffAnchor"
+      },
+      {
+        "from": "M5",
+        "to": "M6",
+        "when": "handoffAcknowledged AND noPendingPassengerReturn"
+      },
+      {
+        "from": "M1..M5",
+        "to": "MR",
+        "when": "correctableActionMismatch",
+        "return": "resume current stage after acknowledged correction"
+      },
+      {
+        "from": "M0..M5",
+        "to": "MB",
+        "when": "fixture/route/runtime prerequisite invalid",
+        "return": "retry only after valid reset; never auto-clear"
+      }
+    ],
+    "invariants": [
+      "Warn/guide actions remain possible before a report is completed; assistance must not be artificially withheld by a linear checklist.",
+      "Player and NPC movement use the same validated geometric route; all goals use actual positions.",
+      "Repeated interaction cannot duplicate reports, spawn extra NPCs or advance a completed step twice.",
+      "No weapon mechanics or operations outside the station-staff role.",
+      "The mission graph is internal development state; no public graph or probability display."
+    ],
+    "authoredVariants": [
+      "Primary path open",
+      "Short approach blocked, alternate exterior route open",
+      "Passenger missed instruction/tries to return, requiring renewed guidance"
+    ],
+    "duration": "Aim for 5–8 minutes of active play for this first slice; pacing target only, never success from elapsed time."
+  },
+  "firstNativeIncrement": {
+    "id": "FPS-I0",
+    "canStartNow": true,
+    "scope": "Playable first-person exterior traversal and one colleague interaction in the active official station world; no dependency on manual role-chain decisions.",
+    "implementation": [
+      "Add a dedicated FPS runtime root and camera/controller using installed Input System; disable competing RTS input/camera/HUD only in FPS mode.",
+      "Bind a grounded spawn and short exterior loop only after downward support rays plus capsule overlap/sweep checks.",
+      "Use metre dimensions, CharacterController or equivalent collision-aware locomotion, yaw/pitch, gravity, cursor capture/release and a contextual interaction ray.",
+      "Place one colleague target on verified ground; Korean E prompt and acknowledged line respond only inside reach and line of sight.",
+      "Exit/return to play resets input safely; preserve raw source assets and archived RTS systems."
+    ],
+    "acceptance": [
+      "Native Unity Play Mode: actual Input System Move/Look/Interact events traverse the loop and reach the colleague.",
+      "No fall-through, wall penetration, roof spawn or movement over unsupported interior on that route.",
+      "Pause/focus loss releases cursor and suppresses movement; resume has no stuck keys or duplicate input.",
+      "World and Korean interaction text are readable in fresh correctly sized game frames.",
+      "Record exact scene/script/input hashes, anchor/collider manifest, route trace and screenshots in a root-owned receipt."
+    ],
+    "completionLabel": "FPS locomotion/interaction increment PASS only; not first-mission completion and not product A."
+  },
+  "priorityFiles": [
+    {
+      "priority": 0,
+      "path": "Assets/ChooGuard/Scenes/MvpWorkspace.unity",
+      "action": "Root-owned integration: explicit FPS mode/root; only one active controlling camera/input path."
+    },
+    {
+      "priority": 0,
+      "path": "Assets/ChooGuard/App/Fps/",
+      "action": "Proposed dedicated controller/interactor/mission/NPC/HUD modules; exact filenames may follow the ongoing locomotion owner. Do not duplicate that lane."
+    },
+    {
+      "priority": 0,
+      "path": "Assets/ChooGuard/Presentation/Input/Operations.inputactions",
+      "action": "Inspect bindings and context ownership; add isolated FPS actions or a dedicated FPS action asset without both maps consuming play input."
+    },
+    {
+      "priority": 0,
+      "path": "Assets/ChooGuard/Presentation/Input/InputContextRouter.cs",
+      "action": "Reuse focus/modal ownership contract where compatible; verify cursor and FPS look suppression with UI open."
+    },
+    {
+      "priority": 0,
+      "path": "Assets/ChooGuard/Editor/MvpOfficialStationBinder.cs",
+      "action": "Reuse published source and rigid registration; do not rebuild/squash official meshes to fit old floor anchors."
+    },
+    {
+      "priority": 1,
+      "path": "Assets/ChooGuard/App/Mvp/MvpOpenWorldCamera.cs; MvpWorkspace.cs; MvpStationView.cs",
+      "action": "Archive/disable RTS camera and management HUD in FPS mode; preserve unrelated backend state and old receipts."
+    },
+    {
+      "priority": 1,
+      "path": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs; MvpTeamNavigation.cs; MvpPhysicsBridge.cs",
+      "action": "Inspect reusable contracts; replace old floor-bound mission routing. Keep old FDS/crowd reference data out of unverified new site predictions."
+    },
+    {
+      "priority": 1,
+      "path": "Assets/ChooGuard/App/Mvp/MvpJevOperationalKernel.cs; MvpJevForecastView.cs",
+      "action": "Retain only relevant internal bounded classification/calculation; forecast UI stays outside FPS player experience."
+    },
+    {
+      "priority": 2,
+      "path": "docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md; PRODUCTION_GAME_BENCHMARK.md; ACTIVE_STORY.md; state/progress.json",
+      "action": "Root updates canonical direction and scorecard once it adopts scope/rubric. This planning worker must not edit them."
+    }
+  ],
+  "evidenceGates": {
+    "version": "A-FPS-1-PROPOSED",
+    "grade": "NOT_A_NOT_VERIFIED",
+    "adoption": "Root must record adoption and freeze before evaluating. Scope change is explicit; no retroactive PASS from old receipts and no averaging missing domains.",
+    "productVsSlice": "FPS-I0 and FPS-M01 are increments. Product A evaluates the accepted station/KTX FPS scope, including source-grounded terror and disaster mission coverage; an exterior fire slice cannot substitute for it.",
+    "domains": [
+      {
+        "id": "G1",
+        "name": "Playable first-person mission loop",
+        "pass": "Native single-player play physically connects recognition, reporting/communication, NPC cooperation, passenger guidance, site control and handoff. The accepted release mission set includes at least one disaster and one terror-related staff response with source-matched duties. Normal, route-blocked and delayed/missed-communication variants remain playable and correctable. Completion follows world/NPC state, not button sequence or waiting. No separate debrief/quiz is required.",
+        "current": "NOT_VERIFIED; plan only"
+      },
+      {
+        "id": "G2",
+        "name": "FPS reference application and role fit",
+        "pass": "A source-to-runtime comparison maps movement/look responsiveness, interaction reach/visibility, spatial objectives, audiovisual acknowledgement and tension from the selected FPS references to station-staff play. Independent native review confirms actual embodied choices and readable consequences. No score for copied combat, resource building or shooter art alone.",
+        "current": "NOT_VERIFIED; references are user intent, not yet independently benchmarked"
+      },
+      {
+        "id": "G3",
+        "name": "First-person usability and Korean presentation",
+        "pass": "Test real Input System handlers for movement/look/interact, invalid/out-of-range/occluded targets, cancel, radio/menu focus, pause, cursor release and re-entry. At declared supported resolutions Korean prompts remain legible without blocking hazards/passengers; objectives can be followed without internal implementation knowledge. Fresh game captures and input traces required; no OS/human-parity inference.",
+        "current": "NOT_VERIFIED; former RTS G3 does not transfer"
+      },
+      {
+        "id": "G4",
+        "name": "Station/KTX geometry and character presentation",
+        "pass": "Every release mission route, including the accepted KTX access/play area, has continuous collision, grounded spawn, correct door/platform/step scale and NPC navigation. Source-existing versus authored geometry is recorded. Close first-person views have coherent material scale, legible roles and walk/wait/guide/hold behaviour; no core placeholder route or inaccessible hollow interior passed as complete.",
+        "current": "FAIL_GAP: old interior floors unsupported; KTX playable access unverified"
+      },
+      {
+        "id": "G5",
+        "name": "Bounded open site and performance",
+        "pass": "Station/KTX playable boundary and all release routes are traversable with blocked-route recovery; outside-city travel is excluded. On declared hardware/resolution, player-build warm and sustained mission runs including crowded turns have p95 frame time <=33.3 ms, no crashes/stalls/unbounded memory growth, and correctly timed captures.",
+        "current": "NOT_VERIFIED; narrow prior Editor sample is insufficient and above target"
+      },
+      {
+        "id": "G6",
+        "name": "Deterministic mission and durable state",
+        "pass": "Typed accepted events advance mission/NPC state once. Pause/retry/focus loss, duplicate/stale acknowledgements and fallback responses preserve invariants. Save/reload or checkpoint restart restores player, passengers, incident flags and assignments consistently. Late Jev replies cannot revise completed actions. No evacuation-as-medical-recovery or timer-as-extinguishment.",
+        "current": "NOT_VERIFIED; only older component invariants exist"
+      },
+      {
+        "id": "G7",
+        "name": "Computational verification and validation",
+        "pass": "Retain the existing scientific evidence boundary: all claimed fire/smoke/crowd/contact/health outcomes require applicable pinned published V&V, units/time/coupling/convergence and source-supported tolerances. The short old reference field cannot be stretched across the new geometry or mission time. A procedural cue-only slice has no predictive-physics PASS.",
+        "current": "NOT_VERIFIED; old 120-second reference and interrupted long run do not establish new site physics"
+      },
+      {
+        "id": "G8",
+        "name": "Procedure and real-site authority",
+        "pass": "Every release-critical staff action is mapped to a dated applicable public manual or operator-confirmed procedure; match incident, role and site scope. Geometry/exits/occupancy/material/ventilation used in site-outcome claims retain provenance and uncertainty, with independent observed site validation for those claims. General guidance or an old different-incident chart cannot certify Busan procedures or as-built outcomes.",
+        "current": "NOT_VERIFIED; exact current KORAIL role chain/interior/site calibration absent"
+      }
+    ],
+    "criticalFail": [
+      "Missing/failed domain blocks A; no grade from plan quality, artifact count or compile alone.",
+      "Unsupported manual, calibrated-physics, medical, as-built or full-mission claims block A.",
+      "Scope/rubric revisions must be logged against the user direction, not silently lowered after a failure."
+    ],
+    "requiredReceipts": [
+      "Root-adopted scope/rubric version",
+      "Build/scene/script/input/source hashes",
+      "Native input-handler traces and continuous player/NPC route traces",
+      "Fresh game frames at actual target resolution",
+      "Pinned mission event log and negative/recovery cases",
+      "Declared player-build performance trace",
+      "Claim-to-source procedure/site/model matrix"
+    ]
+  },
+  "risks": [
+    {
+      "id": "R1",
+      "issue": "No verified continuous interior",
+      "mitigation": "Exterior-only first slice; require primary plan/survey and native support/path checks before interior expansion.",
+      "blocks": "Full product G4/G8, not exterior FPS-I0"
+    },
+    {
+      "id": "R2",
+      "issue": "Manual-like affordances could be presented as actual KORAIL workflow",
+      "mitigation": "Source each operational requirement by role/incident; provisional radio/PA control stays explicitly authored until verified.",
+      "blocks": "Manual-authenticity claim and G8"
+    },
+    {
+      "id": "R3",
+      "issue": "RTS and FPS input/camera/mission directors conflict",
+      "mitigation": "Single active mode owner and action-map ownership; no destructive removal of archived backend."
+    },
+    {
+      "id": "R4",
+      "issue": "First-person close views expose mesh/collision/texture defects and performance cost",
+      "mitigation": "Collision proxies only from verified surfaces; eye-height route review and player-build frame-time traces."
+    },
+    {
+      "id": "R5",
+      "issue": "First exterior slice silently replaces the full station/KTX goal",
+      "mitigation": "Separate increment PASS from product A; retained G4/G7/G8 gaps remain visible."
+    },
+    {
+      "id": "R6",
+      "issue": "A fixed state checklist teaches a false mandatory action order",
+      "mitigation": "Allow immediate warning/movement; report and coordination can overlap. Guards check acknowledged world state, not an arbitrary exact button order."
+    }
+  ],
+  "planningState": {
+    "skill": "planning-with-files read; task is the bounded one-artifact branch of the root active plan.",
+    "writeBoundary": "Only this JSON; no Assets, Unity, canonical docs, downloads, memory updates or child agents.",
+    "phases": [
+      {
+        "name": "Inspect scope/source geometry/runtime contracts",
+        "status": "complete"
+      },
+      {
+        "name": "Check public authority and select bounded mission",
+        "status": "complete"
+      },
+      {
+        "name": "Write mission graph and proposed fixed FPS acceptance",
+        "status": "complete"
+      }
+    ],
+    "findings": "Current official exterior is reusable; source interior and current station procedures are not established. Locomotion can start before mission authority is fully resolved.",
+    "validation": "JSON syntax, graph references and required nodes checked locally; no gameplay/native acceptance executed.",
+    "errors": [
+      "Project AGENTS.md and requested navigation guide absent in this checkout; followed supplied global instructions and parent ownership.",
+      "Current fire-page route failed; official legacy public fire page read successfully.",
+      "Web PDF renderer rejected application/x-pdf; exact PDF fetched in memory and parsed locally without writing an asset."
+    ],
+    "stopCondition": "Deliver this graph to root and stop; root owns next implementation/native decisions."
+  },
+  "rootStatus": "PROVISIONAL_MISSION_CANDIDATE_PENDING_DEEP_KORAIL_AND_FPS_RESEARCH",
+  "latestUserConstraint": "Learning comes through gameplay; no separate debrief/review/quiz feature. Research sufficiently and Jev-review concrete proposals before fixing mission rules."
+}

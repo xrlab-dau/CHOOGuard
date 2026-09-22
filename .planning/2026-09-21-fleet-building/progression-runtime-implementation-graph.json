@@ -1,0 +1,80 @@
+{
+  "schema": "chooguard.progression-runtime-implementation.v1",
+  "status": "source_frozen_pending_root_native",
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpProgressionGraph.cs",
+      "sha256": "36e3d0616fff7d77f3672a546be81dd27c66fb5e5c98d491ec0cb736f0e766b0"
+    },
+    {
+      "path": "Assets/ChooGuard/Art/Progression/response-flow.json",
+      "sha256": "212de2f60d3989b0e8c46d8214c9e960c8edc113d6591d8cbd1e07991101823c"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/MvpProgressionGraphBinder.cs",
+      "sha256": "511fed19916d51e89e3f28b8f0d8fa8ffb08687c670e966b565b68b131441dd3"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "sha256": "432a1673950c95f216229221777e009ab88364581a9ab52ca1b3983b464c78ca"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+      "sha256": "dd12eeeea734bd0299e837432b4ce99800cb0c30a092413c66ad12c984ca308e"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+      "sha256": "82a041a075a725d0f1a4e57466558ab87ae3f30c48a75a212091d617218fc157"
+    }
+  ],
+  "graph": {
+    "id": "agency-response-flow",
+    "version": 1,
+    "nodes": 12,
+    "edges": 19,
+    "sha256": "212de2f60d3989b0e8c46d8214c9e960c8edc113d6591d8cbd1e07991101823c",
+    "truthEvaluator": "ChooGuard.Contracts.RuleExpression + RuleFacts; only TRUE executes; UNKNOWN/CONFLICTED/FALSE wait",
+    "ordering": "ascending priority then ordinal edge ID",
+    "bounds": "128KiB,32nodes,128edges,24positive/negative facts peredge; whitelisted effects/events/facts; unique IDs and referenced nodes validated"
+  },
+  "integration": {
+    "actualDecisionOwner": "MvpAgencyDispatchController.ObserveAcceptedResult uses graph.Evaluate then effect primitive then Commit; prior result-branch tree removed",
+    "preserved": "accepted-delta movement, shared member paths, leases, exact own request ACK validation, medical confirmation boundary, reset/cancel/headway ownership",
+    "inputChoices": "register accepted operation; graph events for confirm/withdraw/cancel; no new mandatory tactical choice",
+    "unavailable": "invalid/missing graph rejects work; effect/movement-event mismatch blocks operation; calculation failure/incomplete records separate unavailable state and historical limits"
+  },
+  "dto": {
+    "component": "MvpProgressionGraph same Workspace GameObject",
+    "contract": "approved nested ViewSnapshot/NodeView/EdgeView/TraceView field contract preserved; additive actual provenance",
+    "snapshotEmpty": "Snapshot(\"\") yields no selected operation and no traces, never another team",
+    "snapshotNull": "Snapshot(null) projects latest registered operation; no-operation startup displays waiting graph",
+    "order": "Recent oldest→newest; selected snapshots contain own operation records only; TraceRecords contains bounded global process/model observation archive",
+    "states": "Node.State Korean 현재/지남/대기",
+    "identity": "sequence,actual SimTime/runId/generation/physics requestId/releaseRevision/opId/agency/team/choiceRequestId/GraphHash/EdgeId",
+    "dedup": "edge cursor revision, exact ACK identity, changed model observation fingerprint;512record retention; no frame-based trace logging",
+    "observedCopy": "Concise 현장 전체 관찰 counts; causal attribution boundary remains in metadata/docs, not repeated on every player card."
+  },
+  "bindAPI": "ChooGuard.Editor.MvpProgressionGraphBinder.BindExisting() in Edit mode, then existing agency binder only if needed",
+  "nativeProbeInstructions": [
+    "Compile/import, BindExisting then verify Ready and GraphHash equal response-flow bytes. Missing graph must reject RequestWork visibly.",
+    "StartCrowdSession(271828), settle pause, request existing logical team work through current UI/API. At accepted departure and arrival inspect requested→travelling→onsite per operation.",
+    "Trigger actual incident with unchanged worker; verify own warn ACK chooses warn-ack-next, own evacuate ACK chooses evac-ack, actual allEvacuated chooses evac-outcome and return. Two operations keep separate cursors/leases.",
+    "Medical task during recovery must choose medical-work→medical-confirmation from own medical ACK only, never from allEvacuated; user confirmation chooses medical-confirm then return.",
+    "Use graph.Evaluate on an existing eligible cursor with empty RuleFacts to confirm required missing conditions do not select an edge; repeated same facts select same deterministic candidate without mutation.",
+    "Inspect TraceRecords actual run/request/op identifiers and graphHash, sequence monotonic, selected Snapshot(op).Recent chronological. Outcome transition observations include actual evacuated/total; no isolated causal-effect/clinical claim.",
+    "Snapshot(\"\") has no other-team trace. Existing failure/incomplete marks observations historical/unavailable. New run resets cursors, traces and sequence with new run provenance.",
+    "Graph view binding/visibility owned by separate UI lane. Preserve camera/building/settings references; no full-suite rerun required."
+  ],
+  "validation": {
+    "jsonReferencesAndMedicalBoundary": "PASS bounded source assertions",
+    "ownedDiffWhitespace": "PASS",
+    "UnityCompile": "PENDING root",
+    "liveProgression": "PENDING root"
+  },
+  "limits": [
+    "One existing agency workflow graph, not a general node editor or private JWE engine reconstruction.",
+    "Process observations and model observations distinguished; temporal succession is not established individual-command causal effect.",
+    "No exact midrun fork/replay claim; no live Jev/API adapter; no embedded credentials.",
+    "Earlier operations-native-proof.json remains predecessor workflow evidence, not proof of this migration."
+  ]
+}

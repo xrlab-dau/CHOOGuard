@@ -1,0 +1,146 @@
+[
+  {
+    "id": "NUX-01",
+    "name": "UI click-through",
+    "given": "UI Button 뒤에 팀을 배치",
+    "when": "버튼 클릭",
+    "then": "팀 선택·이동 명령 0건",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-02",
+    "name": "Drag ownership",
+    "given": "UI에서 pointer-down",
+    "when": "월드까지 드래그 후 release",
+    "then": "UI drag만 완료, 월드 선택 발생하지 않음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-03",
+    "name": "World selection",
+    "given": "현재 층에 팀 배치",
+    "when": "빈 월드에서 박스 선택",
+    "then": "허용된 객체만 선택, 선택 집합과 목록 일치",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-04",
+    "name": "Context command",
+    "given": "혼합 기관 선택",
+    "when": "대상 우클릭 후 요청",
+    "then": "대상별 적격·부적격 미리보기, 조용한 부분 성공 없음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-05",
+    "name": "Wheel routing",
+    "given": "ScrollRect 위 마우스",
+    "when": "스크롤",
+    "then": "패널만 스크롤, 카메라 줌 변화 없음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-06",
+    "name": "Korean IME",
+    "given": "TMP_InputField focus",
+    "when": "한글 조합/Enter/Esc/Space",
+    "then": "문자 조합 정상, 진행·취소 게임 명령 발생 없음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-07",
+    "name": "Modal focus",
+    "given": "S07 열림",
+    "when": "Tab 반복·Escape",
+    "then": "모달 안 focus 유지, 닫기 뒤 원 focus 복구",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-08",
+    "name": "Modal pause",
+    "given": "실행 중 modal 요청",
+    "when": "modal 표시",
+    "then": "코어 pause ack에 따라 표시; Time.timeScale만 변경해 정지 주장 금지",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-09",
+    "name": "Large text",
+    "given": "1366×768 및 큰 글자",
+    "when": "100→150→200%",
+    "then": "핵심 기능 접근 가능, 자동 글자 축소·잘림 없음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-10",
+    "name": "Window resize",
+    "given": "비교 overlay 표시",
+    "when": "1080p/1440p/ultrawide/창크기 변경",
+    "then": "앵커·선택·스크롤 유지",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-11",
+    "name": "World labels",
+    "given": "카메라 뒤/다른 층 객체",
+    "when": "카메라 이동",
+    "then": "잘못된 투영·비공개 정보 노출 없음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-12",
+    "name": "Minimap coordinates",
+    "given": "minimap RenderTexture",
+    "when": "minimap 클릭",
+    "then": "정확한 층·좌표 변환, 원점·y축 오류 없음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-13",
+    "name": "Checkpoint invalid",
+    "given": "내부 모델 이력 없는 snapshot",
+    "when": "정확 분기 요청",
+    "then": "거부 이유와 재실행 경로 표시",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-14",
+    "name": "Command stale",
+    "given": "preview 뒤 상태 버전 갱신",
+    "when": "요청 확정",
+    "then": "코어가 stale 거부, UI가 성공 생성 금지",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-15",
+    "name": "UI lifecycle",
+    "given": "S05에서 overlay/scene unload 반복",
+    "when": "선택·닫기·불러오기",
+    "then": "이벤트 중복 구독·자원 삭제·입력 유출 없음",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  },
+  {
+    "id": "NUX-16",
+    "name": "Native performance",
+    "given": "목표 fixture 인원·표시밀도 고정",
+    "when": "UI/카메라/큰 글자·목록 조작",
+    "then": "UI 리빌드·GC·프레임·input latency 원시 측정; 브라우저 결과 대체 금지",
+    "status": "NOT_RUN",
+    "environment": "Unity Editor Game View AND target PC Player"
+  }
+]

@@ -1,0 +1,1 @@
+Approved causal graph plan read. Published fixed DTOs to view owner. JSON12nodes/19edges validated; actual result branches migrated to existing RuleExpression evaluator; primitives retained. Added ownACK/model/failure/choice provenance, per-operation traces and visible fail-closed behavior. Source freeze ready; no Unity calls. Root native probe pending.

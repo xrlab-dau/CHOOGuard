@@ -1,0 +1,410 @@
+{
+  "schema": "chooguard.management-benchmark.v1",
+  "status": "actionable_matrix_complete",
+  "scope": {
+    "lane": "management gameplay, economy, and operating loop only",
+    "representativeGames": [
+      "Jurassic World Evolution 3",
+      "Planet Zoo",
+      "Planet Coaster 2",
+      "Two Point Museum"
+    ],
+    "claimBoundary": "공식 가이드와 개발사 설명에서 관찰 가능한 플레이 구조만 비교했다. 비공개 엔진, AI, 스케줄러, 경제 공식 또는 내부 구현은 추정하지 않았다. 네 작품은 대표 표본이며 장르 전체를 대표한다는 주장이 아니다.",
+    "researchDate": "2026-09-21"
+  },
+  "decision": {
+    "position": "CHOOGuard의 운영 게임성은 손님 수익 극대화가 아니라 제한된 공공 자원으로 대응 준비도와 실제 사건 결과를 개선하는 데 둔다.",
+    "coreLoop": [
+      "도시·시설 위험과 서비스 공백을 지도/오버레이에서 발견",
+      "예산·인력·차량·소모품·시간을 시설 또는 관할 구역에 배치",
+      "훈련·점검·정비·순찰로 준비도를 높이거나 사건 요청을 접수",
+      "논리 팀이 출동하고 실제 ACK·이동·현장 업무·물리 결과를 관찰",
+      "복구·보충·정비·피로 회복·복기로 다음 선택의 비용과 가용성이 변함",
+      "검증된 성과로 더 복잡한 지역·사건·기관 협업 시나리오를 해금"
+    ],
+    "economy": {
+      "currencies": [
+        "운영예산: 시설, 차량, 교육, 정비, 소모품에 쓰는 지역 단위 자원",
+        "가용시간: 팀 이동·작업·복구·훈련이 공유하는 병목",
+        "준비도/신뢰: 성공을 판정하는 비화폐 성과이며 피해·지연·근거 없는 안전 선언으로 하락",
+        "전문역량: 검증된 훈련·복기를 통해 장기적으로 해금되는 캠페인 자원"
+      ],
+      "guardrails": [
+        "사상자·환자·재난을 수익원이나 점수 파밍 대상으로 만들지 않는다.",
+        "의료 요청 ACK는 치료·회복·이송 완료로 환산하지 않는다.",
+        "현금 파산형 패배보다 운영 공백, 초과 응답시간, 준비도 저하, 복구 비용을 보여준다.",
+        "점수는 실제 관찰과 임무 조건에 연결하고, 단일 합성 별점만으로 안전을 선언하지 않는다."
+      ]
+    }
+  },
+  "benchmarkMatrix": [
+    {
+      "game": "Jurassic World Evolution 3",
+      "role": "primary anchor",
+      "progressionLoop": "캠페인이 여러 현장을 이동하며 메커닉을 점진적으로 소개한다. 현장 목표·계약·평판·연구·평점이 새 현장과 운영 개선을 연다. 지역 자원과 캠페인 전역 자원을 구분한다.",
+      "facilityTasks": "발전소-변전소-경로 연결, 대응/정비/의료 시설, 차량 팀의 직접 작업과 초소 반경 자동 순찰이 함께 작동한다.",
+      "coverageAndResources": "전력 용량/반경, 정비 초소의 내·외부 반경, 연료·식량 재보급, 과학자 기술·시간·불안이 병목을 만든다.",
+      "failuresAndRecovery": "마모·정전·악천후·사보타주·탈출이 시설 고장과 안전 저하를 만들고, 대피소 개방·차량 작업·수리·재부팅·재보급으로 복구한다.",
+      "onboardingAndFeedback": "캠페인 단계 소개, 사이트 맵의 적색 주의 표시, 다수 관리 오버레이, 일시정지/배속, 수익·유지비 및 계약 조건이 원인과 다음 행동을 노출한다.",
+      "fitForChooguard": "시설 의존성→서비스 반경→차량 작업→복구의 사슬과 지역/장기 자원 분리를 직접 채택할 가치가 가장 높다.",
+      "doNotCopy": "예측 가능한 운영 실패를 임의 사보타주나 재난 spectacle로 대체하지 않는다. 공공 안전을 손님 만족·티켓 수익과 결합하지 않는다.",
+      "support": [
+        "S01",
+        "S02",
+        "S03",
+        "S04"
+      ]
+    },
+    {
+      "game": "Planet Zoo",
+      "role": "welfare and service-capacity benchmark",
+      "progressionLoop": "공식 초보자 가이드가 직원·손님·시설 의존성을 순차 설명한다. 동물 복지와 교육·관람 품질이 손님 행복, 체류, 지출·기부, 검사 결과로 이어진다.",
+      "facilityTasks": "사육·수의·운송·청소·정비·보안·교육 직무가 각각 시설과 작업을 요구한다. 직원은 작업 구역에 배정되고 휴식·훈련·급여가 효율에 영향을 준다.",
+      "coverageAndResources": "경로·전력·시설 용량·이동거리·작업 구역이 실제 처리량을 제한한다. 사육사 오두막, 휴게실, 검역·수술실, 연구실은 용량과 접근 조건을 가진다.",
+      "failuresAndRecovery": "벽과 처리 시설이 열화하고 질병·탈출·혼잡·불결이 연쇄된다. 정비 호출, 수의 포획·치료, 격리, 직원 재배치로 복구하며 검사관/기자 보고서가 사후 피드백을 준다.",
+      "onboardingAndFeedback": "Career 튜토리얼, 개체/시설 정보 패널, 업무 구역 개요, 복지·교육·검사 보고가 미시 상태와 전체 운영 상태를 연결한다.",
+      "fitForChooguard": "기관별 역할, 관할 구역, 시설 용량, 이동거리, 휴식/재교육을 하나의 준비도 네트워크로 엮는 참고가 된다.",
+      "doNotCopy": "시민을 욕구 게이지의 소비자 집단으로 축소하거나, 다수 개체 미세관리와 장식 만족도를 핵심 대응 판단 위에 올리지 않는다.",
+      "support": [
+        "S05",
+        "S06"
+      ]
+    },
+    {
+      "game": "Planet Coaster 2",
+      "role": "management UI and bottleneck benchmark",
+      "progressionLoop": "Career 목표가 Bronze/Silver/Gold/Platinum 단계로 이어지고 연구 포인트가 시설을 연다. 공원 등급은 가장 약한 영역의 영향을 크게 받아 한 지표만 최적화하는 것을 막는다.",
+      "facilityTasks": "직원 스케줄·구역, 놀이시설 운영, 상점 근무, 연구, 청소, 구조, 정비가 시간표와 위치에 묶인다.",
+      "coverageAndResources": "전력·수처리 네트워크와 사용량, 직원 근무시간·휴식, 시설 열화·정비 중 다운타임, 수입·급여·운영비·대출이 상충한다.",
+      "failuresAndRecovery": "시설 열화나 오염은 서비스 중단과 손님 상태 악화로 이어진다. 정비 타이밍, 임시 인력, 용량 증설, 가격·대출 조정으로 회복한다.",
+      "onboardingAndFeedback": "상위 관리 메뉴, 심각도별 알림, 목표 고정, 손님·직원·유틸리티·재정·운영 히트맵, 세부 재정 그래프가 발견→진단→행동 흐름을 만든다.",
+      "fitForChooguard": "전국/도시 개요에서 적색 문제를 찾고 커버리지·응답시간·팀 부하 오버레이로 원인을 좁힌 뒤 해당 시설/팀을 여는 UI 계층이 특히 적합하다.",
+      "doNotCopy": "대출·가격 탄력성과 여덟 개 손님 욕구를 그대로 이식하지 않는다. 가장 낮은 지표 하나가 전체 안전을 기계적으로 결정하게 하지 않는다.",
+      "support": [
+        "S07"
+      ]
+    },
+    {
+      "game": "Two Point Museum",
+      "role": "assignment-return-investment benchmark",
+      "progressionLoop": "전문가를 탐사 지점에 보내고 시간·위험을 감수해 전시물을 회수한 뒤 배치·관리하여 Buzz와 기부를 얻고 다음 탐사와 박물관 확장에 재투자한다.",
+      "facilityTasks": "전문가 원정, 전시 유지, 투어, 가격 최적화, 직원 구역, 청소·편의·보안 업무가 전면 운영과 외부 파견 사이의 인력 선택을 만든다.",
+      "coverageAndResources": "부분 훈련된 전문가의 가용성, 원정 시간과 위험, 직원 회복, 전시 상태, 보안, 손님 편의와 기부가 연결된다.",
+      "failuresAndRecovery": "공식 공개 설명에서 전시 상태 유지, 보안, 직원 가용성과 운영 혼란이 관리 축으로 확인된다. 실패 확률·복구 공식과 직원 손실 규칙은 이번 근거만으로 확정하지 않는다.",
+      "onboardingAndFeedback": "공식 공개 설명은 지도에서 탐사 지점을 선택하고 전문가를 보내 전시물을 회수·배치하는 가시적 왕복 루프와 팝업 도전을 보여준다. 기본 캠페인의 정확한 별 단계는 이번 근거로 확정하지 않는다.",
+      "fitForChooguard": "훈련/점검팀을 제한 시간 동안 외부 과업에 배치하고, 귀환한 검증 결과가 장비·역량·시나리오를 여는 구조로 번역할 수 있다.",
+      "doNotCopy": "재난 현장 출동을 확률형 전리품 원정으로 만들거나 실제 지역·기관 데이터를 수집품 도감으로 취급하지 않는다. 직원 사망을 유머 보상으로 만들지 않는다.",
+      "support": [
+        "S08",
+        "S09"
+      ]
+    }
+  ],
+  "highestImpactMigrationItems": [
+    {
+      "rank": 1,
+      "name": "서비스 커버리지와 운영 용량 레이어",
+      "implementationSlice": [
+        "각 기관 시설에 관할 반경/경로, 논리 팀 수, 차량·인력 슬롯, 연료·의료·소방 소모품, 정비 상태를 둔다.",
+        "지도 오버레이는 미커버 지역, 예상 응답시간, 사용 중/복구 중 팀, 소모품 부족을 한 번에 한 레이어씩 표시한다.",
+        "자동 순찰·점검은 지정 구역 안의 반복 업무만 처리하고, 큰 사건과 예외는 플레이어가 기관→지원업무→목표를 선택한다."
+      ],
+      "whyNow": "현재의 기관 클릭→업무→목표→자동 출동 루프에 실제 선택 비용을 추가하면서 차량별 명령 UI를 만들지 않는다.",
+      "acceptanceSignal": "같은 사건에서도 시설 위치·팀 점유·소모품·정비 상태에 따라 적격 선택과 도착 시간이 설명 가능하게 달라진다.",
+      "evidence": [
+        "S01",
+        "S02",
+        "S05",
+        "S06",
+        "S07"
+      ]
+    },
+    {
+      "rank": 2,
+      "name": "준비도 기반 캠페인 경제와 단계적 계약",
+      "implementationSlice": [
+        "현장 운영예산은 시설 유지·훈련·보충·정비에 사용하고, 전문역량/신뢰는 실제 목표와 복기 근거로만 오른다.",
+        "한 시나리오는 한두 개 새 의존성만 도입한다: 단일 기관→커버리지→동시 사건→기관 간 공조→복구와 다음 교대.",
+        "목표는 필수 안전조건, 선택적 효율조건, 근거 품질조건으로 나눠 Bronze/Silver/Gold와 유사한 읽기 쉬운 계층을 제공하되 안전 자체를 별점으로 환원하지 않는다."
+      ],
+      "whyNow": "반복 가능한 장기 진행과 시설 투자 이유를 만들고, 기존 그래프의 실제 ACK·결과를 해금 근거로 재사용한다.",
+      "acceptanceSignal": "플레이어가 왜 새 시설/훈련을 사는지, 어떤 검증된 성과가 다음 지역을 열었는지, 다음 실행에서 무엇이 유지되는지 설명할 수 있다.",
+      "evidence": [
+        "S03",
+        "S04",
+        "S07",
+        "S08"
+      ]
+    },
+    {
+      "rank": 3,
+      "name": "문제 발견→복구→복기 피드백 사슬",
+      "implementationSlice": [
+        "심각도 알림은 지도 대상과 원인 오버레이로 연결하고, 상세 패널은 필요한 팀·자원·예상 영향과 실제 관찰을 분리한다.",
+        "실패는 명령 거절, 경로 차단, 자원 부족, 시설 열화, 계산 불완전처럼 재현 가능한 운영 상태로 발생한다.",
+        "완료 후에는 요청→ACK→이동→현장 작업→물리 결과→복구 비용을 시간순으로 보여주고 다음 예방 행동을 제안한다."
+      ],
+      "whyNow": "현재 progression trace와 운영 알림을 경영 판단으로 연결하며 fake cure·fake safety 문제를 피한다.",
+      "acceptanceSignal": "플레이어가 알림 하나에서 원인 시설/팀을 찾고, 복구 작업을 실행하고, 사후 기록에서 실제 변화와 남은 불확실성을 구별한다.",
+      "evidence": [
+        "S01",
+        "S02",
+        "S05",
+        "S07",
+        "S09"
+      ]
+    }
+  ],
+  "emergencyOperationsBenchmarks": [
+    {
+      "game": "112 Operator",
+      "scope": "dispatch and real-city operations benchmark",
+      "observableLoop": "실제 도시 기반 지도에서 신고를 받고 경찰·소방·구급 자원을 사건에 배차한다. 교통·날씨·계절과 대형 사건이 배차 판단을 바꾸며, 현장 도착 뒤 tactical/OnSite 시각화에서 대응 행동을 확인한다.",
+      "domainFit": "부산 실제 지리 위에서 사건 위치, 이동 중 유닛, 도착과 현장 상태를 한 운영 화면에 연결하는 가장 가까운 비교 사례다.",
+      "chooguardDecision": "신고 분류와 배차만 가져오되 사건 해결을 지도 아이콘의 시간 경과나 숨은 확률로 끝내지 않는다. CHOOGuard는 차량 이동, 현장 작업, 요청 ACK, 시민·위험장 관찰을 계속 보이고 실제 결과가 다음 선택을 열게 한다.",
+      "doNotClaim": "공식 설명은 실제 지도와 현장 시각화를 말하지만 실제 응급기관 정확도, 부산 데이터 적합성, 임상적 타당성은 입증하지 않는다.",
+      "support": ["S10", "S11"]
+    },
+    {
+      "game": "Rescue HQ – The Tycoon",
+      "scope": "station readiness and scarce-resource benchmark",
+      "observableLoop": "소방·경찰·구급이 공유하는 본부를 건설하고 인력·차량·장비·교대·재정을 준비해 예고 없이 들어오는 임무에 대응한다. 제한된 시간과 자원 때문에 어떤 역량을 상시 준비할지 선택한다.",
+      "domainFit": "복합 기관 본부의 인력 슬롯, 차량, 특수 장비, 교대, 시설 확장을 사건 전 준비도 게임으로 만드는 직접 사례다.",
+      "chooguardDecision": "본부 준비·훈련·정비·보급의 장기 루프는 채택하되 임무를 본부 밖의 통계 결과로만 처리하지 않는다. 준비 선택이 출동 차량의 실제 가용성·경로·현장 업무와 물리 결과로 드러나야 한다.",
+      "doNotClaim": "공식 설명만으로 임무 해결 알고리즘, 의료 정확성, 현장 시뮬레이션 깊이는 판단하지 않는다.",
+      "support": ["S12", "S13"]
+    }
+  ],
+  "sourceReceipts": [
+    {
+      "id": "S01",
+      "title": "Jurassic World Evolution 3 Operations Guide",
+      "publisher": "Frontier Developments",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/operations-guide",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": "asset-library/research-public/2026-09-21/jwe-official/operations-guide.txt",
+      "localSha256": "989f2d09a83ce6e1cced275a2c9cd5a086a11e9e2adf9dcada42820dc7ebc316",
+      "deepRead": true,
+      "supports": "전력망, 백업 연료, 정비 초소 반경, 직접/자동 차량 작업, 수리·재부팅·재보급·검사",
+      "retrievalScope": "cached_visible_guide_body_read"
+    },
+    {
+      "id": "S02",
+      "title": "Jurassic World Evolution 3 Park Management Guide",
+      "publisher": "Frontier Developments",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/park-management-guide",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": "asset-library/research-public/2026-09-21/jwe-official/park-management-guide.txt",
+      "localSha256": "dd93a23c481a0f36cc11a67d32f837aa209e08b97bc3e8b40d458c4f1550615c",
+      "deepRead": true,
+      "supports": "사이트 맵, 관리 오버레이, 일시정지, 평점·연구·평판, 지역/전역 자원, 열화와 정비",
+      "retrievalScope": "cached_visible_guide_body_read"
+    },
+    {
+      "id": "S03",
+      "title": "Jurassic World Evolution 3 Finances Guide",
+      "publisher": "Frontier Developments",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/finances-guide",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": "asset-library/research-public/2026-09-21/jwe-official/finances-guide.txt",
+      "localSha256": "43f84e4d0d8bfa8eeb3fe00d9e58c696be9e5ce363f7df66ca2f20c6679bbe13",
+      "deepRead": true,
+      "supports": "수입/유지비와 일회 지출 분리, 계약 보상과 평판, 재난 뒤 저수익 회복, 파산 대응",
+      "retrievalScope": "cached_visible_guide_body_read"
+    },
+    {
+      "id": "S04",
+      "title": "Jurassic World Evolution 3 Quickstart Guide",
+      "publisher": "Frontier Developments",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/quickstart-guide",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": "asset-library/research-public/2026-09-21/jwe-official/quickstart-guide.txt",
+      "localSha256": "84fefecf6e4ecb90db5a4e4c1c65eb1d59ff0e34bbf8d812632d924ae3bb60f3",
+      "deepRead": false,
+      "supports": "캠페인의 점진적 메커닉 소개와 Challenge/Sandbox 이전 온보딩",
+      "retrievalScope": "cached_visible_guide_body_section_read"
+    },
+    {
+      "id": "S05",
+      "title": "A Beginner's Guide to Planet Zoo – Staff & Guests",
+      "publisher": "Frontier Developments",
+      "url": "https://www.planetzoogame.com/help-centre/player-guides/staff-and-guests",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/4",
+      "deepRead": false,
+      "supports": "직무별 시설·작업, 직원 욕구/훈련, 작업 구역, 손님 상태, 시위·검사·보고서",
+      "retrievalScope": "official_page_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "공식 추출문은 직무별 직원 업무와 필수 시설, 직원 에너지·행복·훈련을 설명한다.",
+        "작업 구역은 시설 묶음을 한 명 이상의 직원에게 할당해 이동과 업무 범위를 제한한다.",
+        "손님 불만, 시위, 검사관·기자 보고가 복지와 운영 상태를 재정·평판 피드백에 연결한다."
+      ]
+    },
+    {
+      "id": "S06",
+      "title": "A Beginner's Guide to Planet Zoo – Building Your Zoo",
+      "publisher": "Frontier Developments",
+      "url": "https://www.planetzoogame.com/help-centre/player-guides/building-your-zoo",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/5",
+      "deepRead": false,
+      "supports": "경로·전력·처리시설·용량·이동거리, 열화·탈출·수리, 직원/손님 시설 의존성",
+      "retrievalScope": "official_page_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "공식 추출문은 시설이 경로와 전력에 연결되어야 하고, 직원 시설에 용량과 이동거리 비용이 있음을 설명한다.",
+        "장벽·수처리 시설은 열화하며 정비공 호출 또는 순찰 수리 대상이 된다.",
+        "탈출 시 수의사가 포획·복귀시키며 검역과 수술실은 치료 용량을 제한한다."
+      ]
+    },
+    {
+      "id": "S07",
+      "title": "Deep Dive: Mastering Management – Planet Coaster 2",
+      "publisher": "Frontier Developments",
+      "url": "https://www.planetcoaster.com/en-US/news/2024-09-25/deep-dive-mastering-management",
+      "publicationDate": "2024-09-25",
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/6",
+      "deepRead": false,
+      "supports": "관리 메뉴, 목표 고정, 심각도 알림, 6종 히트맵, 직원 스케줄/구역, 전력·수처리·정비·재정",
+      "retrievalScope": "official_page_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "공식 추출문은 상위 관리 메뉴, 목표 고정, 심각도별 알림과 손님·직원·유틸리티·재정·운영 히트맵을 열거한다.",
+        "직원 스케줄과 구역, 전력·수처리 네트워크, 시설 열화와 정비 다운타임을 설명한다.",
+        "수입·급여·운영비·건설비·대출을 그래프와 세부 메뉴로 보여준다고 설명한다."
+      ]
+    },
+    {
+      "id": "S08",
+      "title": "Two Point Museum Release Date & Preorder Announcement",
+      "publisher": "Two Point Studios / SEGA",
+      "url": "https://www.twopointstudios.com/en/post/two-point-museum-release-date-preorder-announcement",
+      "publicationDate": "2024-09-19",
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/7",
+      "deepRead": false,
+      "supports": "탐사·전시·직원 구역·가격·투어·보안·운영 혼란과 팝업 도전 구조",
+      "retrievalScope": "official_page_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "공식 추출문은 전문가 탐사, 전시물 회수, 직원 구역, 가격 최적화, 투어와 보안을 공개 기능으로 열거한다.",
+        "팝업 도전 박물관과 탐사 위험, 전문가 회복 보조 아이템을 설명한다.",
+        "기본 게임의 정확한 경제 공식이나 캠페인 별 단계는 이 추출문에 없다."
+      ]
+    },
+    {
+      "id": "S09",
+      "title": "Two Point Museum – official game page",
+      "publisher": "Two Point Studios / SEGA",
+      "url": "https://www.twopointstudios.com/games/two-point-museum/",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/8",
+      "deepRead": false,
+      "supports": "전문가 탐사, 전시 배치, 직원 행복, 손님 편의·오락, 기부, 보안",
+      "retrievalScope": "official_page_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "공식 제품 페이지 추출문은 전문가 탐사, 전시 설계, 직원 행복, 손님 오락·편의, 기부를 핵심 관리 요소로 설명한다.",
+        "영상 제목과 짧은 소개는 돈의 배분과 보안 관리를 언급하지만 내부 수식은 공개하지 않는다."
+      ]
+    },
+    {
+      "id": "S10",
+      "title": "112 Operator – Steam store description",
+      "publisher": "Games Operators / Jutsu Games",
+      "url": "https://store.steampowered.com/app/793460/112_Operator/",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/9",
+      "deepRead": false,
+      "supports": "신고 접수와 배차, 실제 도시 지도, 교통·날씨·계절, tactical/OnSite 현장 시각화",
+      "retrievalScope": "official_store_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "개발사 제공 Steam 설명은 세계 실제 도시 지도에서 신고를 받고 유닛을 배차한다고 명시한다.",
+        "교통·날씨·계절이 사건과 근무에 영향을 주며, 유닛 도착 후 tactical view와 OnSite 시각화로 행동을 확인한다고 설명한다."
+      ]
+    },
+    {
+      "id": "S11",
+      "title": "112 Operator – official developer page",
+      "publisher": "Jutsu Games",
+      "url": "https://jutsugames.com/index.php/operator-112/",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/10",
+      "deepRead": false,
+      "supports": "실제 지리 데이터, 교통·날씨 상황, 신고 접수와 구조대 배차",
+      "retrievalScope": "official_developer_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "개발사 페이지 추출문은 세계 어느 도시에서든 응급 서비스를 관리하고 신고를 받아 구조대를 배차하는 게임이라고 설명한다.",
+        "실제 지리 데이터 표현과 교통·날씨 의존 상황 시뮬레이션을 개발 범위로 명시한다."
+      ]
+    },
+    {
+      "id": "S12",
+      "title": "Rescue HQ – The Tycoon official page",
+      "publisher": "Aerosoft / stillalive studios",
+      "url": "https://rescue-hq.aerosoft.com/?lang=en",
+      "publicationDate": null,
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/11",
+      "deepRead": false,
+      "supports": "경찰·소방·구급 공동 본부, 상시 인력·자원 준비, 예고 없는 임무, 재정과 확장",
+      "retrievalScope": "official_publisher_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "공식 페이지 추출문은 세 응급 부서를 조직하고 관리하며, 언제든 들어올 임무에 맞춰 충분한 인력과 자원을 유지해야 한다고 설명한다.",
+        "재정과 본부 확장 사이의 선택, 임무·희소 자원의 동시 압박을 명시한다."
+      ]
+    },
+    {
+      "id": "S13",
+      "title": "Rescue HQ – The Tycoon Steam store description",
+      "publisher": "Aerosoft / stillalive studios",
+      "url": "https://store.steampowered.com/app/809720/Rescue_HQ__The_Tycoon/",
+      "publicationDate": "2019-05-28",
+      "accessDate": "2026-09-21",
+      "localReceipt": ".planning/2026-09-21-production-benchmark/management-benchmark-graph.json#/sourceReceipts/12",
+      "deepRead": false,
+      "supports": "본부 건설, 직원 고용·훈련·교대, 차량·특수 장비, 제한된 시간·자원의 절충",
+      "retrievalScope": "official_store_search_result_extract_only_not_full_page",
+      "capturedEvidence": [
+        "개발사 제공 Steam 설명은 본부를 건설하고 직원 채용·훈련, 차량·장비, 교대를 준비하는 루프를 설명한다.",
+        "소방 임무 유형에 맞는 차량·자원·특수 장비와 시간·자원 부족 속 절충을 명시한다."
+      ]
+    }
+  ],
+  "evidencePolicy": {
+    "directlySupported": "각 작품의 루프·시설 작업·자원·실패·피드백 설명은 연결된 공식 출처가 직접 말하는 범위로 제한했다.",
+    "inferred": "CHOOGuard 경제 명칭, 세 이식 항목, 수용 기준과 금지선은 공식 사례를 부산 공공안전 게임에 맞춰 번역한 설계 판단이다.",
+    "insufficient": "정확한 내부 경제 수식, 작업 우선순위 알고리즘, 에이전트 AI, 비공개 기술 스택은 근거 부족으로 제외했다."
+  },
+  "researchAccounting": {
+    "sourceCount": 13,
+    "cachedFullBodyDeepReads": [
+      "S01",
+      "S02",
+      "S03"
+    ],
+    "cachedSectionRead": [
+      "S04"
+    ],
+    "officialSearchExtractOnly": [
+      "S05",
+      "S06",
+      "S07",
+      "S08",
+      "S09",
+      "S10",
+      "S11",
+      "S12",
+      "S13"
+    ],
+    "deepReadCount": 3,
+    "extractOnlyCount": 9,
+    "note": "검색 결과 추출문은 전체 페이지 정독으로 계산하지 않았다. 403 직접 열기 실패 페이지도 추출문에 보인 내용만 사용했다."
+  }
+}

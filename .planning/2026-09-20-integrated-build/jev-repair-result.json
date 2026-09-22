@@ -1,0 +1,55 @@
+{
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "dispatch": {
+          "type": "choice",
+          "choice": "two_disjoint",
+          "confidence": 0.97,
+          "probabilities": {
+            "duplicate": 0,
+            "two_disjoint": 0.98,
+            "escalate": 0.02
+          }
+        },
+        "cause": {
+          "type": "choice",
+          "choice": "new_contract_mismatch",
+          "confidence": 0.96,
+          "probabilities": {
+            "new_contract_mismatch": 0.98,
+            "repeated_environment": 0.02,
+            "auth": 0
+          }
+        },
+        "abandonment": {
+          "type": "choice",
+          "choice": "no",
+          "confidence": 0.99,
+          "probabilities": {
+            "no": 0.99,
+            "yes": 0.01
+          }
+        },
+        "depth": {
+          "type": "choice",
+          "choice": "low",
+          "confidence": 1,
+          "probabilities": {
+            "low": 1,
+            "high": 0,
+            "max": 0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 777,
+        "output_tokens": 159
+      },
+      "truncated": false,
+      "action": "auto"
+    }
+  ]
+}

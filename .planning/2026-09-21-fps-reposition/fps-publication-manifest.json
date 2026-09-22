@@ -1,0 +1,81 @@
+{
+  "schema": "fps-publication-manifest.v1",
+  "status": "PUBLISHED_8_CODE_FILES_ROOT_AUTHORIZED_NATIVE_NOT_RUN",
+  "files": [
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/FirstPersonInteractionHud.cs",
+      "target": "Assets/ChooGuard/App/Fps/FirstPersonInteractionHud.cs",
+      "sha256": "dc4872c306f8122e6068770456a1b84cf267512ce8549fdba04ea38ed6843c36"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/FpsInteractable.cs",
+      "target": "Assets/ChooGuard/App/Fps/FpsInteractable.cs",
+      "sha256": "0ec458b91c898dabf66ff11302202dce35eb34abe39275247d9aeca3b03dcc97"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/FirstPersonResponder.cs",
+      "target": "Assets/ChooGuard/App/Fps/FirstPersonResponder.cs",
+      "sha256": "4e4929f4a9ba07782958d833b766cea9e426c8414a7e0b63d0a83ba370058dcc"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/IFpsInteraction.cs",
+      "target": "Assets/ChooGuard/App/Fps/IFpsInteraction.cs",
+      "sha256": "9ca7c2370a7d0354990d0ad70137a73cdd1d42517331c50aac1fb7545cd06501"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsStationSceneBuilder.cs",
+      "target": "Assets/ChooGuard/Editor/FpsStationSceneBuilder.cs",
+      "sha256": "4351e7b0a78223f80c5b5ade1890e1fa3b070c236bda3e78a4e503ed76eb3f5e"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsAuthoredTransferBuilder.cs",
+      "target": "Assets/ChooGuard/Editor/FpsAuthoredTransferBuilder.cs",
+      "sha256": "629a8978699cb01dd4620ab0c158b6ed63ad62a60567a7d0eddb80ee01a943d7"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsSourceOpening.cs",
+      "target": "Assets/ChooGuard/Editor/FpsSourceOpening.cs",
+      "sha256": "0b40764b810bd2be6bf6a15c91f707858d3eb420461be4a0aa1351ac4a2a4763"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsSourceAssetImporter.cs",
+      "target": "Assets/ChooGuard/Editor/FpsSourceAssetImporter.cs",
+      "sha256": "4dde90f91b0abb10aaf6711d43efc6d588fa31ce52fd1941dddc981a6dcbc296"
+    }
+  ],
+  "sourceBaseCheck": "All8 target files absent before copying; no existing source overwritten",
+  "lighting": "New scene light masks all layers; source scene ambient/sky/fog/reflection intensity copied; sun mapped to cloned Light; no pipeline/settings asset modifications",
+  "materialContractFix": "Importer only republished after current source SHA check and normalized manifest/hash validations; uses export_rgba, explicit additive unlit SrcAlpha/One, strict all-slot remap checks",
+  "nativeCompileHistory": [
+    {
+      "status": "FAIL",
+      "diagnostic": "FirstPersonResponder.cs(47,42) CS0234 Application.isFocused resolves ChooGuard.Application namespace"
+    },
+    {
+      "status": "SCOPED_FIX_PUBLISHED_NOT_RECOMPILED",
+      "fix": "UnityEngine.Application.isFocused; scanned all8 files, only one Application usage"
+    },
+    {
+      "status": "FAIL",
+      "diagnostic": "FpsAuthoredTransferBuilder.cs(10,99) CS0664 clearance_m=2.6 double literal assigned to float"
+    },
+    {
+      "status": "SCOPED_FIX_PUBLISHED_NOT_RECOMPILED",
+      "fix": "clearance_m=2.6f; all8 files inspected for unsuffixed decimal literals"
+    }
+  ],
+  "sceneExclusionFix": "Source clone exclusions remove official SiteTrains only in new scene; generated visible prototype connector materials enabled explicitly; root authorized narrow helper publication",
+  "nativeBuildHistory": [
+    {
+      "status": "ROOT_FOUND_FRAME_FAILURE_FIXED_NOT_RERUN",
+      "initialFailure": "Original MvpStationView worldY=-1000; world-preserving clone left official geometry 1000m below station-local imported models; previous spawn on authored connector was not connectivity proof",
+      "fix": "Use sourceFrame.worldToLocalMatrix * source.localToWorldMatrix for official clones; light position/rotation normalized; official root |Y|<=100 and pre-save world bounds -100<=Y<=500 enforced"
+    },
+    {
+      "status": "ROOT_FOUND_IMPORTED_CANONICAL_ROOT_LOSS_FIXED_NOT_RERUN",
+      "initialFailure": "KTX asset root rotation270.0198 scale100 overwritten with placement/one, reducing train to centimetres",
+      "fix": "Compose placement rotation with original asset rotation; retain asset scale and transform asset root position; preserve hierarchy and collider paths; compare canonical measured bounds against original asset and reviewed KTX metre envelope"
+    }
+  ],
+  "authoredConnectorRevision": "Root authorized -2.8m prototype concourse and explicit .15m floor thickness; preserves all source geometry"
+}

@@ -1,0 +1,158 @@
+{
+  "id": "CS-SIM.04",
+  "epicId": "CS-SIM",
+  "title": "화재·열·연기 기준 계산",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SIM.04",
+    "description": "실제 geometry/material/boundary와 FDS 기준 결과",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SIM.04",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.04.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.04.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.04.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.04.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Simulation/HazardReferenceAdapter.cs",
+    "workers/hazard/reference_runner.py",
+    "benchmarks/hazard/reference-protocol.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SIM/Sim04Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-SIM.01",
+      "artifactId": "A-CS-SIM.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-WORLD.02",
+      "artifactId": "A-CS-WORLD.02",
+      "stage": "candidate",
+      "consumerStage": "qualification",
+      "condition": "NAMED_SITE_ACCURACY"
+    }
+  ],
+  "algorithm": [
+    "고정된 FDS 실행 버전과 물성·형상·개구·열원·경계·관측을 검사한다.",
+    "기본 경로는 batch reference이며 live rollback을 지원한다고 가정하지 않는다. 수렴·독립 데이터·QoI를 별도 평가한다.",
+    "필요 기준을 실행 전에 고정한다. 영상 전환·VFX를 온도/농도 데이터로 사용하지 않는다."
+  ],
+  "contract": "HazardRun {inputHash,solverLock,boundaryHistory,grid,qoi,resultRefs,validation}; 실제 관측없는 기준계산 일치는 현실 검증이 아님.",
+  "sourceIds": [
+    "TECH-FDS",
+    "TECH-FDS-SCOPE"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SIM.04-P",
+      "given": "고정 grid/material/history",
+      "when": "reference 계산",
+      "then": "QoI와 수렴/관측 역할 분리",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SIM.04-N",
+      "given": "FDS 결과만으로 현장검증 선언",
+      "when": "reference 계산",
+      "then": "NO_INDEPENDENT_OBSERVATION",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-042"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/05-worker-and-cosimulation.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "FIELD_DATA_AND_INDEPENDENT_REFERENCE",
+      "requiredFor": "NAMED_SITE_QUANTITATIVE_OR_FIELD_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "해당 주장/검수만 제한하며 기술 fixture 개발을 전역 차단하지 않는다."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/05-worker-and-cosimulation.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-042"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SIM/Sim04Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "WORKER_INTEGRATION",
+      "path": "benchmarks/tests/CS-SIM.04.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "고정 grid/material/history",
+    "operation": "reference 계산",
+    "expectedPositive": "QoI와 수렴/관측 역할 분리",
+    "negativeInput": "FDS 결과만으로 현장검증 선언",
+    "expectedNegative": "NO_INDEPENDENT_OBSERVATION",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

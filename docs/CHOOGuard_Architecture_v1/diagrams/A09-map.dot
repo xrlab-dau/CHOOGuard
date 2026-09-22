@@ -1,0 +1,28 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+RAW [label="사진·도면·측정 / 무료 모델\n서로 다른 증거 등급", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+IN [label="입고·격리 검사\nbytes/hash · 파트·rig·scale", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+REC [label="선택 복원·정합\nMapAnything/COLMAP + 독립 치수", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+ID [label="PhysicalAssetId\nframe · topology · version", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+REN [label="시각 표현\nprefab · 재질 · LOD", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+NAV [label="이동 표현\ncollision · graph · 연결부", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+CAL [label="계산 표현\n체적 · 개구 · 물성·경계", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+SEM [label="의미 표현\n역할·상태·source·qualification", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+BUN [label="immutable SiteBundle\ninput lock · 미확인 범위", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+GAME [label="Unity WorldCamera + HUD\n동일 ID로 상태 표시", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+RAW -> IN [label="실제 취득한 것만"];
+IN -> REC [label="관측이 있는 구간"];
+IN -> ID [label="기초 자산/형상"];
+REC -> ID [label="검증한 정합"];
+ID -> REN [label="같은 대상"];
+ID -> NAV [label="같은 대상"];
+ID -> CAL [label="같은 대상"];
+ID -> SEM [label="같은 대상"];
+REN -> BUN [label="버전 고정"];
+NAV -> BUN [label="버전 고정"];
+CAL -> BUN [label="버전 고정"];
+SEM -> BUN [label="버전 고정"];
+BUN -> GAME [label="로드·연결"];
+}

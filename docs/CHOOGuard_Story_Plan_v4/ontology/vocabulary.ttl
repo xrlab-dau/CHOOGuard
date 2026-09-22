@@ -1,0 +1,30 @@
+@prefix cg: <urn:chooguard:work:> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+cg:DeliveryPlan a owl:Class ; rdfs:subClassOf prov:Plan .
+cg:Epic a owl:Class . cg:CapabilityTask a owl:Class .
+cg:Story a owl:Class ; rdfs:subClassOf prov:Plan .
+cg:ArtifactSpec a owl:Class ; owl:disjointWith cg:ArtifactRevision .
+cg:ArtifactRevision a owl:Class ; rdfs:subClassOf prov:Entity .
+cg:ExecutionAttempt a owl:Class ; rdfs:subClassOf prov:Activity .
+cg:EvidenceRecord a owl:Class ; rdfs:subClassOf prov:Entity .
+cg:ReviewDecision a owl:Class ; rdfs:subClassOf prov:Entity .
+cg:Dependency a owl:Class . cg:AcceptanceCriterion a owl:Class .
+cg:Requirement a owl:Class . cg:ExternalInput a owl:Class .
+cg:WorkWindow a owl:Class . cg:WriteTarget a owl:Class . cg:ResourceClaim a owl:Class .
+cg:partOf a owl:ObjectProperty ; rdfs:comment "Containment only; it grants neither precedence nor completion." .
+cg:producesSpec a owl:ObjectProperty ; rdfs:range cg:ArtifactSpec .
+cg:dependsOn a owl:ObjectProperty ; rdfs:range cg:Dependency .
+cg:producer a owl:ObjectProperty ; rdfs:range cg:Story .
+cg:consumer a owl:ObjectProperty ; rdfs:range cg:Story .
+cg:artifact a owl:ObjectProperty ; rdfs:range cg:ArtifactSpec .
+cg:supports a owl:ObjectProperty ; rdfs:range cg:Requirement .
+cg:fulfills a owl:ObjectProperty ; rdfs:range cg:Requirement .
+cg:hasCriterion a owl:ObjectProperty ; rdfs:range cg:AcceptanceCriterion .
+cg:includes a owl:ObjectProperty ; rdfs:range cg:Story .
+cg:writeTarget a owl:ObjectProperty ; rdfs:range cg:WriteTarget .
+cg:producerStage a owl:DatatypeProperty . cg:consumerStage a owl:DatatypeProperty .
+cg:condition a owl:DatatypeProperty . cg:status a owl:DatatypeProperty .
+cg:ordinal a owl:DatatypeProperty . cg:given a owl:DatatypeProperty .
+cg:when a owl:DatatypeProperty . cg:then a owl:DatatypeProperty . cg:path a owl:DatatypeProperty .

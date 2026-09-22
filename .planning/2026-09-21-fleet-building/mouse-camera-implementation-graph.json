@@ -1,0 +1,53 @@
+{
+  "schema": "chooguard.mouse-camera-implementation.v1",
+  "status": "SOURCE_READY_NATIVE_VALIDATION_PENDING_ROOT",
+  "authority": "User approved v2 mouse anchored zoom; numeric tuning is CHOOGuard choice, not exact JWE3 behavior",
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpOpenWorldCamera.cs",
+      "sha256": "cf2ab673d9ed7a3d1dd16f82703e0eb191b191856d5cc7ffbf9840f069f9eddc"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpCameraSurfaceProfile.cs",
+      "sha256": "2b07ea9dae2915e324efaf01b28b5190c3452aca25a9f2e0cfbc93644f399ddd"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/MvpCameraRigBinder.cs",
+      "sha256": "1561067d8335a32d726e3cd1ac75fb2d4436399fd4113947dd63dea4f9cdcc7e"
+    }
+  ],
+  "api": [
+    "Focus(Vector3 local,float framing)",
+    "FocusLocal",
+    "Zoom",
+    "ViewDistance",
+    "BeginFollow(Transform target,float initialFraming=0)",
+    "EndFollow()",
+    "IsFollowing",
+    "FollowedTarget",
+    "ZoomAtScreenPoint(Vector2 screen,float scrollDelta)",
+    "Pan(Vector2 localAxes)",
+    "TryCancelFollow()",
+    "IsInputCaptured",
+    "TryGetSurfacePoint(Vector2 screen,out Vector3 point)"
+  ],
+  "rootBinder": "ChooGuard.Editor.MvpCameraRigBinder.Bind (edit mode; explicit save by root)",
+  "nativeChecks": [
+    "Compile first",
+    "Bind DEM then save scene",
+    "Pick off-center ground point, record WorldToScreenPoint, call ZoomAtScreenPoint with 120 and -120; compare actual pixel drift",
+    "Focus legacy 100/80/22: no immediate center jump, smooth settling",
+    "Follow moving target, zoom, advance frames; Zoom does not reset and focal offset persists",
+    "Pan and TryCancelFollow break tracking; modal/text edit consumes cancel and zoom",
+    "Actual input system wheel uses identical ZoomAtScreenPoint code; validate cursor through native input",
+    "Confirm camera eye clears hillside DEM and visible floor near view"
+  ],
+  "limits": [
+    "Source inspection only; no Unity calls or runtime tests performed by implementation worker",
+    "DEM binding requires generated art/world/world-layers.json and city root",
+    "DEM respects city visibility; serialized actual upward floor mesh triangles respect floor visibility; no-hit fallback is focus-height plane. No physics mutations.",
+    "Camera-only DEM does not change operational clock, physics colliders, render assets or global project settings",
+    "Pointer anchoring can be limited at steep terrain clearance discontinuities; root must measure actual pixel drift",
+    "No right mouse orbit mapping added"
+  ]
+}

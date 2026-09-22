@@ -1,0 +1,376 @@
+{
+  "schemaVersion": "11.0.0",
+  "issue": 222,
+  "scope": "DIGITAL_TWIN_MAP_MATERIAL_INTAKE",
+  "notAScheduler": true,
+  "preservePriority": "P0-0",
+  "productAcceptance": "NOT_EVALUATED",
+  "lookup": "select one id or DT task; do not load all references by default",
+  "countMeaning": "13 provider/material records; not 13 acquired raw files",
+  "materials": [
+    {
+      "id": "MAT-KTX-I",
+      "title": "KTX-I OpenBVE 원본",
+      "sourceUrl": "https://haesangang-0317.tistory.com/268",
+      "directUrl": "https://drive.google.com/file/d/1RM6z73cuYlPbyZW2YaxQs22QxQfeJfZQ/view?usp=sharing",
+      "linkKind": "PROVIDER_FILE",
+      "status": "PRIOR_RAW_REINSPECTED",
+      "sourceBytes": 165230362,
+      "acquiredSHA256": "099ba06693b50e36f937215d13b73da9b65ba151844f0334cbd3c540c44d7e06",
+      "dt": [
+        "DT01",
+        "DT04",
+        "DT07"
+      ],
+      "regions": [
+        "rolling_stock_mainline"
+      ],
+      "nextAction": "원본 해시 대조 후 Car/T1 4car.animated의 내장·좌석·좌우 문 1호차를 입고 시험. DLL 실행 금지.",
+      "limits": [
+        "이번 신규 다운로드 아님. 391파일 전체 byte read 및 133래스터/3PSD composite decode.",
+        "AddFace는 삼각형 수가 아님. 실제 치수·Unity·물성 미검증."
+      ],
+      "evidenceFile": "ktx-object-index.json",
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "MAT-BUSAN1-ZIP",
+      "title": "부산 도시철도 1호선 OpenBVE 원본",
+      "sourceUrl": "https://haesangang-0317.tistory.com/55",
+      "directUrl": "https://drive.google.com/file/d/1_AA20Su-NtUXcGMEpYstImpe58e2RiYt/view?usp=sharing",
+      "linkKind": "PROVIDER_FILE",
+      "status": "TRANSFER_BLOCKED_TOOL_SIZE_LIMIT",
+      "sourceBytes": 544549043,
+      "dt": [
+        "DT01",
+        "DT04",
+        "DT07"
+      ],
+      "regions": [
+        "metro_platforms",
+        "rolling_stock_metro"
+      ],
+      "nextAction": "대용량 다운로드 가능한 개발 환경에서 원본 취득 후 Railway/Train/부산역 구간 확인.",
+      "limits": [
+        "이번 재시도도 268435456바이트 연결 도구 한도로 HTTP413.",
+        "내부 구성·현재성·실측성 미검증. 자료 삭제 판정 아님."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "MAT-BIPA-BUSAN3",
+      "title": "부산 디지털로케이션 제3구역",
+      "sourceUrl": "https://bwebtoon.com/webtoon-home/core-businesses/digital-location/",
+      "directUrl": null,
+      "linkKind": "LANDING_ONLY",
+      "status": "ORIGINAL_TRANSFER_URL_UNRESOLVED",
+      "supportingUrls": [
+        "https://www.busan.go.kr/brandwebtoon"
+      ],
+      "dt": [
+        "DT01",
+        "DT04",
+        "DT07"
+      ],
+      "regions": [
+        "rail_terminal_public",
+        "rail_platforms_mainline",
+        "forecourt_eurasia"
+      ],
+      "nextAction": "제공 페이지의 제3구역 배포 원본을 확보하고 층별 내부·승강장·KTX 포함범위를 목록화.",
+      "limits": [
+        "제공 안내는 확인. SKP 원본 미취득. 브라우저 검증 화면은 우회하지 않음.",
+        "실측 정확성 및 내부 전체 포함 미확인."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-UD-MASTER",
+      "title": "역사시설 유니버설디자인 조사",
+      "sourceUrl": "https://www.data.go.kr/data/15097492/fileData.do",
+      "directUrl": null,
+      "linkKind": "FILE_DOWNLOAD_ON_PAGE",
+      "status": "METADATA_READ_RAW_NOT_ACQUIRED",
+      "sourceDate": "2021-12-28",
+      "dt": [
+        "DT01",
+        "DT03",
+        "DT05"
+      ],
+      "regions": [
+        "metro_concourse",
+        "metro_platforms"
+      ],
+      "nextAction": "원본 취득 후 운영기관·호선·역번호·역명으로 부산역 행을 선택하고 DAT-UD-KEYMAP과 조사 항목을 결합.",
+      "limits": [
+        "과거 카탈로그는 114역 조사/ZIP, 현재 표기는 CSV. 실제 패키지 형식·역113 포함·단위 검증 필요.",
+        "다대포해수욕장095 예시를 부산역113 자료로 대체하지 않음."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-UD-KEYMAP",
+      "title": "역사시설 유니버설디자인 키맵",
+      "sourceUrl": "https://www.data.go.kr/data/15098253/fileData.do",
+      "directUrl": null,
+      "linkKind": "FILE_DOWNLOAD_ON_PAGE",
+      "status": "METADATA_READ_RAW_NOT_ACQUIRED",
+      "sourceDate": "2022-01-17",
+      "dt": [
+        "DT01",
+        "DT03",
+        "DT04"
+      ],
+      "regions": [
+        "metro_concourse",
+        "metro_platforms"
+      ],
+      "nextAction": "PNG 원본 목록에서 부산역의 해당 층 도면을 확인하고 축척/개정/항목ID를 조사 데이터와 연결.",
+      "limits": [
+        "PNG 도면 등록 확인, 원본 픽셀 미취득·미검수.",
+        "코레일 지상 역사 도면으로 사용하지 않음."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-FLOORS",
+      "title": "부산지하철 역구조",
+      "sourceUrl": "https://www.data.go.kr/data/15041134/fileData.do",
+      "directUrl": null,
+      "linkKind": "FILE_DOWNLOAD_ON_PAGE",
+      "status": "COLUMN_SCHEMA_READ_RAW_NOT_ACQUIRED",
+      "sourceDate": "2025-06-30",
+      "advertisedRows": 384,
+      "dt": [
+        "DT01",
+        "DT03",
+        "DT05"
+      ],
+      "regions": [
+        "metro_concourse",
+        "metro_platforms"
+      ],
+      "nextAction": "부산역 행을 선별하고 층/구분/면적을 키맵과 대조. 면적 단위 확인 후 수치 제약에 사용.",
+      "limits": [
+        "384는 페이지 표시행수, 이번 확보행수 아님.",
+        "SQR의 단위는 스키마상 미표시. 공란은 미집계이지0이 아님."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-PLATFORM-GAP",
+      "title": "승강장 간격·곡선구간",
+      "sourceUrl": "https://www.data.go.kr/data/15132723/fileData.do",
+      "directUrl": null,
+      "linkKind": "FILE_DOWNLOAD_ON_PAGE",
+      "status": "SCHEMA_CONFLICT_RAW_NOT_ACQUIRED",
+      "sourceDate": "2024-07-31",
+      "advertisedRows": 4864,
+      "dt": [
+        "DT01",
+        "DT03",
+        "DT04"
+      ],
+      "regions": [
+        "metro_platforms",
+        "rolling_stock_metro"
+      ],
+      "nextAction": "부산역·상하선·승강장위치 행의 실제 값과 단위를 검사. 형식 충돌 해소 전 거리 계산 입력 금지.",
+      "limits": [
+        "설명은 최소/최대 간격·곡선반경을 말하지만 컬럼은 연단간격 VARCHAR 넓음/보통/좁음.",
+        "카테고리를 mm로 환산하지 않음. 실제 측정 수치는 확보하지 못함."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-FACILITIES",
+      "title": "역사 편의시설현황",
+      "sourceUrl": "https://www.data.go.kr/data/15052664/fileData.do",
+      "directUrl": null,
+      "linkKind": "FILE_DOWNLOAD_ON_PAGE",
+      "status": "METADATA_READ_RAW_NOT_ACQUIRED",
+      "sourceDate": "2025-12-31",
+      "advertisedRows": 114,
+      "dt": [
+        "DT01",
+        "DT05"
+      ],
+      "regions": [
+        "metro_concourse",
+        "metro_platforms"
+      ],
+      "nextAction": "부산역의 설비 종류·개수를 확인하고 개별 설비 위치는 별도 도면/관측으로 결속.",
+      "limits": [
+        "설비 통계는 개별 설치좌표·실시간 작동상태가 아님."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-ALT-ROUTES",
+      "title": "엘리베이터 고장 시 대체 이동경로",
+      "sourceUrl": "https://www.data.go.kr/data/15151579/fileData.do",
+      "directUrl": null,
+      "linkKind": "FILE_DOWNLOAD_ON_PAGE",
+      "status": "COLUMN_SCHEMA_READ_RAW_NOT_ACQUIRED",
+      "sourceDate": "2025-11-06",
+      "advertisedRows": 932,
+      "dt": [
+        "DT01",
+        "DT03",
+        "DT05",
+        "DT09"
+      ],
+      "regions": [
+        "metro_concourse",
+        "metro_platforms"
+      ],
+      "nextAction": "부산역 행을 선택하고 출발/도착층·고장승강기·조건부 경로를 그래프로 변환. DAT-ALT-SCHEMA 정의와 대조.",
+      "limits": [
+        "쉼표는 단계, 또는은 선택지. 선택지를 전부 AND로 붙이지 않음.",
+        "이용불가N의 복잡도 공란을0으로 바꾸지 않음. 932는 원본 파일 파싱 행수가 아님.",
+        "과거 고장 가정 경로이며 현재 상태나 화재 대피 안전 검증값이 아님."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-ALT-SCHEMA",
+      "title": "대체 이동경로 AI 메타데이터 XLSX",
+      "sourceUrl": "https://www.humetro.busan.kr/homepage/default/page/subLocation.do?menu_no=1001040401",
+      "directUrl": "https://www.humetro.busan.kr/servlet/DownloadServlet?file_name=Meta_El_route.xlsx&file_name_origin=Meta_El_route.xlsx&upload_dir=opendata",
+      "linkKind": "ORIGINAL_FILE_ENDPOINT",
+      "status": "DIRECT_LINK_RESOLVED_TRANSFER_FAILED",
+      "dt": [
+        "DT01",
+        "DT05"
+      ],
+      "regions": [
+        "metro_concourse",
+        "metro_platforms"
+      ],
+      "nextAction": "XLSX 취득 후 시트별 컬럼/라벨/복잡도 규칙을 DAT-ALT-ROUTES와 검증.",
+      "limits": [
+        "공개 다운로드 링크 확인. 웹 텍스트 디코드 오류 및 컨테이너 다운로드 실패; 파일 바이트·시트 미검사.",
+        "데이터 없음/404 판정으로 바꾸지 않음."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-TRAIN-CROWD",
+      "title": "1호선 열차혼잡도",
+      "sourceUrl": "https://www.data.go.kr/data/15139787/fileData.do",
+      "directUrl": null,
+      "linkKind": "FILE_DOWNLOAD_ON_PAGE",
+      "status": "METADATA_READ_RAW_NOT_ACQUIRED",
+      "sourceDate": "2021-08-31",
+      "dt": [
+        "DT01",
+        "DT06",
+        "DT08"
+      ],
+      "regions": [
+        "rolling_stock_metro",
+        "metro_platforms"
+      ],
+      "nextAction": "시간·역·방향·1~8호차별 자료와 혼잡률 분모를 확인해 과거 시나리오 조건으로 사용.",
+      "limits": [
+        "2021년 자료, 현재 실시간 혼잡이나 부산역 인원 계수 아님.",
+        "혼잡률%를 인원으로 변환하려면 대응 정원 정의/편성 필요."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "REF-BUSANJIN-SCAN",
+      "title": "부산진역 측선 실사 스캔 열람",
+      "sourceUrl": "https://www.data.go.kr/data/15121037/fileData.do",
+      "directUrl": "https://my.matterport.com/show/?m=f67nqYWVxTz",
+      "linkKind": "VIEWER_ONLY",
+      "status": "VIEWER_LINK_RESOLVED_RAW_NOT_DOWNLOADABLE",
+      "sourceDate": "2024-08-28",
+      "dt": [
+        "DT01"
+      ],
+      "regions": [],
+      "nextAction": "PC 공개 뷰어를 공간 관찰 참고로만 검토. 원본 export가 필요하면 별도 제공 경로를 확인.",
+      "limits": [
+        "제공자가 다운로드 불가를 명시. 3DS 메타데이터를 원본 메쉬 확보로 해석하지 않음.",
+        "부산진역 측선은 부산역 역사/도시철도 부산역과 다른 대상. 목표구역 대체 금지.",
+        "캡처 자료 참고이며 장치 개발·착용 시험 범위를 추가하지 않음."
+      ],
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    },
+    {
+      "id": "DAT-METRO1-SPECS",
+      "title": "부산 1호선 전동차 운영기관 공개 제원",
+      "sourceUrl": "https://www.humetro.busan.kr/homepage/manage/page/subLocation.do?menu_no=1001050403",
+      "directUrl": null,
+      "linkKind": "PRIMARY_TABLE_DERIVED_JSON",
+      "status": "VALUES_EXTRACTED_NOT_SITE_MEASURED",
+      "dt": [
+        "DT01",
+        "DT03",
+        "DT06"
+      ],
+      "regions": [
+        "rolling_stock_metro"
+      ],
+      "nextAction": "operator-data.json의 공개 제원을 선택 차량 세대/차종과 결속하고 외형 축척 교차검사.",
+      "limits": [
+        "폭2750mm/높이3670mm는 차체 외형이며 객실 유효 폭·높이가 아님.",
+        "차체 길이17500/17900mm의 세대별 대응은 미확인. 임의 평균 금지."
+      ],
+      "evidenceFile": "operator-data.json",
+      "acquiredSHA256": null,
+      "checkedOn": "2026-09-16",
+      "runtimeImport": "NOT_RUN",
+      "targetRowsExtracted": false,
+      "distributionPolicy": "SOURCE_LINK_ONLY_FOR_THIRD_PARTY_BYTES"
+    }
+  ]
+}

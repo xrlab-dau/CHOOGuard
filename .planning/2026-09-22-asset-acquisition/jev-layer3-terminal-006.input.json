@@ -1,0 +1,44 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "product": "CHOOGuard — Unity 6000.3/URP 17.3 1인칭 코레일 역무 직무 시뮬레이터. 튜토리얼 모드(결정적·반복·채점)와 비상대응 모드가 별개. 무기·전투·HP 배제. 소화기 월간점검 8단계가 동작하고 PlayMode 24/24 통과.",
+    "layer3_task": "감사 열거(미충족 단계·오판정·역할경계 위반)를 '판정 단말'로 옮긴다. 직전 단계에서 나열식 HUD(FpsChecklistHud, 560x660 상시 패널)를 삭제해 현재 감사 결과는 어디에도 렌더되지 않는다 — 데이터만 있고 표시처가 없다.",
+    "data_already_exists": "TutorialSession.AuditFindings(IReadOnlyList<string>), MisjudgementCount(int), RoleBoundaryViolations(int) 가 이미 채워진다. Audit() 은 절차 마지막 단계 effect=close-inspection 에서 자동 호출되어 Finished=true 로 만든다. 자료 계층 변경은 0줄이면 된다.",
+    "audit_comment_self_describes": "TutorialSession.Audit() 위 주석 원문: '감사관 단말. 월드를 다시 읽어 미충족을 위치·항목으로 열거한다. 즉시 야단치지 않는다.' 코드가 스스로 배치를 지시했다.",
+    "regulation_mandates_world": "코레일 소방안전관리 시행세칙 제23조②3 — '별지 제7호서식의 소화기 점검표를 소화기에 부착'. 즉 점검 기록물의 1차 소재지가 규정상 월드 오브젝트(태그)다. TutorialSession.ApplyEffect 의 attach-tag 분기가 이미 InspectionTagPrefab 을 Instantiate 하고 RecordedSerial 로 명명한다.",
+    "existing_wheels": "재사용 가능한 저장소 내 기존 코드: (1) FpsInteractable.cs — Prompt/SuccessMessage/UnavailableMessage/CanInteract(virtual)/TryInteract/InteractionPerformed 완비. 월드 E-상호작용 단말의 본체로 그대로 쓸 수 있다. (2) FacilityInspectable 의 GateReason Func<string> 델리게이트 패턴 — 설비가 세션 타입을 모른 채 게이트만 받는다. (3) FirstPersonInteractionHud.Label() 3줄 코드생성 패턴(TMP+한국어폰트). (4) InputContextRouter.OpenModal/CloseModal(377줄) — 단 EventSystem+InputSystemUIInputModule+InputActionAsset 을 요구하고 FPS 씬은 Keyboard.current 직접 읽기라 배선 비용이 있다. (5) MvpWorkspace — RTS 네임스페이스라 FPS 가 참조하면 모드 경계를 깬다.",
+    "hard_constraints": "상호작용 거리 Mathf.Clamp(...,.25f,3) 3m 상한. 한국어 폰트는 TMP_FontAsset(UI Toolkit 은 FontAsset 요구 — 저장소 내 UXML/USS 0건, 런타임 UIElements 0건). RenderMode.WorldSpace 용례 저장소 0건. FirstPersonResponder.Pause() 를 부르면 커서 락이 풀리고 캡처가 끊긴다.",
+    "core_doctrine": "사용자 지배 원칙: '자동차를 개발하는데 바퀴를 개발하지 마.' 저장소 내 기존 코드도 바퀴다. 직전에 UI 를 0부터 써서 기각당한 실패 이력이 있다.",
+    "prior_jev": "직전 배치 005 에서 audit_defer=noul 0.56(절차 중 비표시·종료 후 전용 화면 채택), delete_checklist_hud=noul 0.81(삭제 실행함).",
+    "unverified": "FpsStation.unity 에 역무실·벽면 단말로 쓸 기존 프롭이 있는지 미확인. 월드 스페이스 TMP 가 3m 에서 한국어로 읽히는지 미실측."
+  },
+  "questions": {
+    "audit_surface": {
+      "type": "choice",
+      "instructions": "감사 열거를 어디에 어떻게 렌더할 것인가? 데이터(AuditFindings)는 이미 있고 표시처만 정한다. 비용과 디제틱 충실도의 교환이다.",
+      "criteria": {
+        "world_terminal_worldspace": "역무실 벽의 물리 단말 오브젝트(FpsInteractable 상속)에 걸어가 E 를 누르면 그 자리의 RenderMode.WorldSpace 캔버스에 열거된다. 가장 디제틱하고 Viscera Cleanup 의 Punchomatic 선례와 일치. 비용: 월드스페이스 캔버스 신규 도입(저장소 용례 0건) + 단말 프롭 + 3m 한국어 가독성 미검증.",
+        "world_terminal_screenspace": "단말 오브젝트로 걸어가 E 를 누르는 접근은 디제틱이되, 열리는 화면은 기존 스크린스페이스 캔버스(FirstPersonInteractionHud.Label 패턴 재사용). 접근에 물리적 대가가 붙고 렌더는 검증된 경로. 실제 단말 게임(Alien Isolation, Deus Ex)이 흔히 쓰는 혼합.",
+        "fullscreen_on_finish": "단말 오브젝트 없이 Finished=true 인 순간 전체화면 정산 오버레이가 자동으로 열린다. 가장 싸고 PowerWash Simulator 의 레벨 종료 정산 선례. 그러나 걸어가는 행위가 없어 '단말'이라는 코드 주석의 의도를 버린다.",
+        "printed_on_tag": "단말을 만들지 않고 규정이 부착을 명령한 점검표 태그(이미 Instantiate 된다) 표면에 감사 결과를 인쇄한다. 제23조②3 에 가장 충실하고 신규 오브젝트 0개. 그러나 긴 열거(미충족 N건+오판정+역할경계)가 작은 태그에 안 들어가고, 부적합 판정 시 태그 자체가 안 붙는 경로가 있다."
+      }
+    },
+    "terminal_gate_shape": {
+      "type": "choice",
+      "instructions": "단말을 만든다면(앞 질문이 단말 계열일 때) 절차 진행 중 그 단말은 어떤 상태여야 하는가?",
+      "criteria": {
+        "present_but_refuses": "단말은 처음부터 월드에 존재하고 E 를 누르면 '점검이 끝나지 않았습니다' 로 거부한다. FacilityInspectable 의 GateReason 델리게이트 패턴을 그대로 재사용하므로 신규 개념 0개이고, 플레이어가 단말의 존재와 위치를 미리 학습한다.",
+        "absent_until_finished": "Finished 이전에는 단말 오브젝트가 비활성이며 종료 시 나타난다. 절차 중 주의 분산이 0 이지만 갑자기 생기는 물체는 디제틱 파탄이고 위치 학습이 불가능하다.",
+        "always_open_live": "단말이 항상 열리고 현재까지의 미충족을 실시간으로 보여준다. 학습 피드백이 즉시적이나 직전 판정(audit_defer 0.56)과 Audit() 주석의 '즉시 야단치지 않는다'를 정면으로 뒤집는다."
+      }
+    },
+    "session_coupling": {
+      "type": "noul",
+      "instructions": "단말이 TutorialSession 을 직접 참조(public 필드로 들고 AuditFindings 를 읽기)해도 되는가? 대안은 FacilityInspectable 처럼 델리게이트/인터페이스로 역전시키는 것이다.",
+      "criteria": {
+        "true": "직접 참조해도 된다. 단말은 튜토리얼 모드 전용 오브젝트이고 TutorialSession 과 같은 네임스페이스(App.Fps.Tutorial)에 두면 모드 경계를 깨지 않는다. 델리게이트 역전은 이 경우 추상화 비용만 늘린다.",
+        "false": "역전해야 한다. 비상대응 모드도 언젠가 감사 결과를 열거할 것이고, 그때 단말을 재사용하려면 세션 타입에 묶여 있으면 안 된다. FacilityInspectable 이 GateReason 으로 세션을 모르게 만든 것과 같은 규율을 지켜야 한다."
+      }
+    }
+  }
+}

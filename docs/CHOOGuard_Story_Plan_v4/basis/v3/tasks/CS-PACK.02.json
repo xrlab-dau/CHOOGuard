@@ -1,0 +1,143 @@
+{
+  "id": "CS-PACK.02",
+  "epicId": "CS-PACK",
+  "title": "기관 매뉴얼을 검수 가능한 규칙으로 구성",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PACK.02",
+    "description": "RuleBundle과 판본·적용성·예외·검토 기록",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PACK.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Contracts/RuleTypes.cs",
+    "Assets/ChooGuard/Content/RuleCatalog.cs",
+    "content/schemas/rule.schema.json",
+    "content/rules/catalog.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PACK/Pack02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "원문 locator·판본·기관·상황·단위·조건·권한·효과·인계·예외를 필드로 만든다.",
+    "REQUIRED, DISCRETIONARY, ADVISORY, INVARIANT, UNKNOWN을 구분한다.",
+    "승인 주체와 revision 결속이 없는 후보는 official rule로 활성화하지 않는다. 규칙 변경은 의존 초안의 자격만 만료시킨다."
+  ],
+  "contract": "RuleClause {id,revision,kind,scope,guard,effect,handoff,exception,sourceLocator,review}; DTO는 예외를 검토자료로 유지.",
+  "sourceIds": [
+    "MAN-KORAIL",
+    "MAN-MEDICAL",
+    "MAN-SOP"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PACK.02-P",
+      "given": "기관a 범위와 revision2 승인",
+      "when": "rule 활성화",
+      "then": "a/rev2에만 적용",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PACK.02-N",
+      "given": "rev3에 rev2 승인 재사용",
+      "when": "rule 활성화",
+      "then": "STALE_REVIEW",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-031",
+    "REQ-033",
+    "REQ-034"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-031",
+    "REQ-033",
+    "REQ-034"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PACK/Pack02Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "기관a 범위와 revision2 승인",
+    "operation": "rule 활성화",
+    "expectedPositive": "a/rev2에만 적용",
+    "negativeInput": "rev3에 rev2 승인 재사용",
+    "expectedNegative": "STALE_REVIEW",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

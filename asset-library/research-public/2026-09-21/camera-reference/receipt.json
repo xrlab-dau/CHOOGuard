@@ -1,0 +1,49 @@
+{
+  "schema": "chooguard.official-video-frame-receipt.v1",
+  "source": {
+    "officialPageUrl": "https://www.jurassicworldevolution.com/en-US/3/gallery/video/feature-focus-building-your-parks",
+    "embeddedPublishedVideoUrl": "https://www.youtube.com/watch?v=biTAmzkPYd4",
+    "title": "Jurassic World Evolution 3 | Building Your Parks | Feature Focus",
+    "publisher": "Jurassic World Evolution 3"
+  },
+  "toolSurface": {
+    "download": "shell CLI: yt-dlp 2026.03.17",
+    "probeAndExtraction": "shell CLI: ffprobe/ffmpeg 8.1",
+    "visualInspection": "Codex view_image on generated contact sheets and selected-frame sheet"
+  },
+  "download": {
+    "command": "yt-dlp --no-playlist -f 'worst[ext=mp4]/worst' -o '/tmp/jwe-camera.b73Rtk/video.%(ext)s' 'https://www.youtube.com/watch?v=biTAmzkPYd4'",
+    "localScratchPath": "/tmp/jwe-camera.b73Rtk/video.mp4",
+    "pathLifecycle": "temporary scratch; not durable evidence",
+    "sha256": "d0ced883f5522ee41b3c86499d2b36cb734e80ebc746ae439809672360d1c38f",
+    "sizeBytes": 1591579,
+    "durationSeconds": 102.957279
+  },
+  "frames": [
+    {
+      "timestampSeconds": 54,
+      "extractionCommand": "ffmpeg -v error -ss 54 -i /tmp/jwe-camera.b73Rtk/video.mp4 -frames:v 1 -vf 'scale=384:-1' /tmp/jwe-camera.b73Rtk/f54.jpg",
+      "scratchPath": "/tmp/jwe-camera.b73Rtk/f54.jpg",
+      "durablePath": "asset-library/research-public/2026-09-21/camera-reference/jwe3-building-feature-focus-54s-gameplay-ui.jpg",
+      "sha256": "4d3a922e6ff93004e19653498e5d85a64d8b9bed00991ffef07cf849cb898b58",
+      "sizeBytes": 13929,
+      "dimensions": "384x216",
+      "classification": "representative frame with gameplay UI and oblique world view"
+    },
+    {
+      "timestampSeconds": 66,
+      "extractionCommand": "ffmpeg -v error -ss 66 -i /tmp/jwe-camera.b73Rtk/video.mp4 -frames:v 1 -vf 'scale=384:-1' /tmp/jwe-camera.b73Rtk/f66.jpg",
+      "scratchPath": "/tmp/jwe-camera.b73Rtk/f66.jpg",
+      "durablePath": "asset-library/research-public/2026-09-21/camera-reference/jwe3-building-feature-focus-66s-gameplay-ui.jpg",
+      "sha256": "7112cadbf73c2e569a566af816557c6200c71d0aeb46577b78833fd251dbbfcb",
+      "sizeBytes": 15508,
+      "dimensions": "384x216",
+      "classification": "representative frame with gameplay UI, building menu, and oblique world view"
+    }
+  ],
+  "claimBoundary": {
+    "supported": "The preserved gameplay-UI frames show perspective depth and oblique presentation in this official published video.",
+    "notSupported": "The frames do not establish a universal gameplay projection, exact FOV, controls, input causality, focus timing, easing, or follow/cancel behavior.",
+    "requiredReview": "Root must visually inspect both durable frames before treating the perspective-reference claim as supported."
+  }
+}

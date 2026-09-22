@@ -1,0 +1,23 @@
+flowchart LR
+    SITE["SiteBundleVersion<br/>실물·좌표·형상·연결"]
+    RULE["RuleBundle / ModelLock<br/>판본·가정·적용범위"]
+    SC["ScenarioSpec<br/>외생 조건·사건 법칙"]
+    PLAN["PlanRevision<br/>작성자 운영 규칙"]
+    RUN["Run<br/>고정 inputHash · parent cutoff"]
+    EV["Event / Receipt / Hold<br/>기록·결정·예약"]
+    CP["Checkpoint / Artifacts<br/>완전 상태·blob hash"]
+    COM["Comparison<br/>같은 조건·QoI"]
+    SCRIPT["ScriptIRRevision<br/>계획 + 대표 실행"]
+    REV["Evidence / Review<br/>subject hash · facet · scope"]
+    SITE -->|"pinned input"| RUN
+    RULE -->|"pinned input"| RUN
+    SC -->|"환경"| RUN
+    PLAN -->|"운영 정책"| RUN
+    RUN -->|"1:N"| EV
+    RUN -->|"1:N"| CP
+    RUN -->|"A/B 참조"| COM
+    PLAN -->|"정책 원천"| SCRIPT
+    RUN -->|"실행 근거"| SCRIPT
+    REV -->|"적용 검토"| RULE
+    REV -->|"결과 자격"| COM
+    REV -->|"사용 승인"| SCRIPT

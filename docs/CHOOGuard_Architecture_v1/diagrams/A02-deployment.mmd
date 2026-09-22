@@ -1,0 +1,19 @@
+flowchart TB
+    BOOT["기존 Bootstrap<br/>CompositionRoot · 버전/권한 고정"]
+    MAIN["Unity main thread<br/>Canvas/TMP · WorldCamera · 입력"]
+    OWN["Serialized run owner<br/>APP / OPS / SIM · commit 순서"]
+    BG["비동기 응용 작업<br/>비교 · 저작 · content 검사"]
+    STORE["단일 DB writer<br/>SQLite + content-addressed files"]
+    PROC["Child processes<br/>필요한 solver / 문서변환 / AI"]
+    REMOTE["선택적 외부 계산<br/>정책 허용 시에만 전송"]
+    HEAD["Headless host (별도 run)<br/>같은 코어 · 독립 runId"]
+    BOOT -->|"조립"| MAIN
+    BOOT -->|"owner 지정"| OWN
+    MAIN -->|"bounded mailbox"| OWN
+    OWN -->|"읽기 전용 snapshot"| MAIN
+    OWN -->|"원자 commit"| STORE
+    BG -->|"조회 / 직렬화 write"| STORE
+    OWN -->|"private pipe + artifacts"| PROC
+    BG -->|"export / model job"| PROC
+    PROC -->|"명시적 승인 경로"| REMOTE
+    HEAD -->|"같은 adapter 계약"| PROC

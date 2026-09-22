@@ -1,0 +1,62 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "userGoal": "게임 진행의 분기·선택·영향을 그래프맵으로 구성하고 Jev로 설계 및 검수. 사용자에게 예상 영향과 실제 관찰 결과를 이해하기 쉽게 보여준다.",
+    "sourceEvidence": [
+      "W3C SCXML: event+condition enables ordered transitions and parallel states. W3C PROV-O: provenance links inputs, activities, actors, derived results. Pearl2009: trace/dependency alone does not identify scientific causal effect.",
+      "Local RuleExpression/RuleFacts support TRUE FALSE UNKNOWN CONFLICTED; onlyTRUE enables transitions. No existing live gameplay decisiongraph found.",
+      "Live Unity baseline: agency UI→target ray→3logicalteam jobs→owned actualmedicalACK+pending→actual50evacuated→return→Ready verified. Sixteams/eightvisualmembers, no individualcar orders.",
+      "Bridge preserves run/generation/request/releaseRevision; eachoperation owns actionACK. Scenario chosen atworkerinitialization; begin_incident preserves samecitizens/scenario. Arbitrarily changing fire/crowd midrun unsupported.",
+      "Fire range error can failbridge without publishing incompleteRESULT; graph must record calculationunavailable and keep lastmetrics historical, neverconvert tosuccessfuloutcome.",
+      "Jev typedchoicegateway actualclientroundtrips1–3seconds. No measured0.1s guarantee. Runtimepreference question pending."
+    ],
+    "proposal": "Local JSON event-state graph uses existing guard evaluator to actually choose evacuation/medical/resolved/blocked branches, per-operation cursors + incident state, graphhash and append-only acceptedtransition evidence. High-level branch logic migrates outofhardcoded ObserveAcceptedResult; movement,lease,ownedACK andworker remainmechanics. Korean operation-flow view shows actual graph branches, observedmetrics and nexteligibleactions; no nodeeditor jargon. Jev reviews graph freeze; optionalruntimeproposal onlyovereligibleIDs,3sdeadline0retry,staleresultignored,recordedresponse not recalled onreplay."
+  },
+  "questions": {
+    "architecture": {
+      "type": "choice",
+      "instructions": "Best first executable graph approach given existing code and evidence?",
+      "criteria": {
+        "typed_event_stategraph": "Existing four-valued guards + local JSON transitions + peroperationstate + provenance trace",
+        "learned_influence_network": "Learn a probabilistic causal network first; parameter data still absent",
+        "realtime_llm_controller": "Make every mission transition depend on realtime model reply"
+      }
+    },
+    "medical_guard": {
+      "type": "choice",
+      "instructions": "Choose branch contract for allEvacuated while medicalwork pending.",
+      "criteria": {
+        "separate_completion": "Evacuation may return; medical requires its own ACK and explicitcompletionconfirm",
+        "shared_incident_terminal": "AllEvacuated terminates every supportbranch",
+        "unknown_everything": "Neverallow any branch after allEvacuated"
+      }
+    },
+    "realtime_now": {
+      "type": "choice",
+      "instructions": "Which candidate set is consistent with present physicalworker?",
+      "criteria": {
+        "bounded_onset_or_advice": "Only eligibleonsetnow/observewithinexistingwindow or advisory; cannot invent newphysicalscenario",
+        "any_new_hazard": "Choose arbitrarynewfire/crowdhazards withoutworkerchanges",
+        "per_frame_simulation": "Modelreply replaces everyphysicaltimestep"
+      }
+    },
+    "evidence": {
+      "type": "choice",
+      "instructions": "What can graph edges honestly communicate now?",
+      "criteria": {
+        "process_and_model_observation": "Acceptedchoice→ownedworkACK→within-modelobservedchange→eligibility; prediction/observationdistinct",
+        "realworld_causality": "Singleplaytrace establishes realworldtrainingcausaleffects",
+        "decorative_flow": "Showarrowswithnorelation toruntimebranching"
+      }
+    },
+    "depth": {
+      "type": "choice",
+      "instructions": "Effort estimate for crossmodule realgraph migration?",
+      "criteria": {
+        "high": "High planning/contract review, AstraLOW boundedimplementation and focusednativechecks",
+        "low": "Onlyspellingchange",
+        "max": "Live destructive DB migration"
+      }
+    }
+  }
+}

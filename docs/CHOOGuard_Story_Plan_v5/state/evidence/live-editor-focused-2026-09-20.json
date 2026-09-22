@@ -1,0 +1,59 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "overall": "FAIL",
+  "scope": "기존 열린 Editor에서 공식 Unity Pipeline CLI로 여섯 class를 각각 실행한 결과. 전체 suite 단일 실행이나 제품 수용이 아니다. 후속 outbox 변경 이전 증거다.",
+  "editor": {"pid": 4832, "version": "6000.3.23f1", "port": 7800, "pipeline": "0.7.0-exp.1"},
+  "discoveredSelected": 98,
+  "executed": 77,
+  "passed": 75,
+  "failed": 2,
+  "skipped": 0,
+  "inconclusive": 0,
+  "notRun": 21,
+  "classes": {
+    "CSBOOT0201": {"discovered": 47, "executed": 47, "passed": 45, "failed": 2},
+    "CSOPS0201": {"discovered": 3, "executed": 3, "passed": 3, "failed": 0},
+    "CSOPS0202": {"discovered": 15, "executed": 15, "passed": 15, "failed": 0},
+    "CSOPS0203": {"discovered": 1, "executed": 1, "passed": 1, "failed": 0},
+    "CSPLAY0201": {"discovered": 3, "executed": 3, "passed": 3, "failed": 0},
+    "CSPLAY0202": {"discovered": 8, "executed": 8, "passed": 8, "failed": 0},
+    "CSWORLD0101": {"discovered": 14, "executed": 0, "status": "NOT_RUN"},
+    "CSWORLD0102": {"discovered": 7, "executed": 0, "status": "NOT_RUN"}
+  },
+  "failures": {
+    "tests": ["SubmittedAssemblies_MatchThirteenModulesAndTwoTestBoundaries", "SourceInspection_DoesNotMistakeCommentsOrLiteralsForUnityDependencies"],
+    "message": "references:ChooGuard.EditModeTests",
+    "cause": "실제 test asmdef에는 Persistence가 있으나 BOOT0201 exact reference 기대값에는 누락. 생산 assembly 참조를 완화할 근거가 아니다.",
+    "fixRetested": false
+  },
+  "scene": {
+    "identityPreserved": false,
+    "beforeRootInstanceIds": [-1394, -1402],
+    "afterRootInstanceIds": [-6810, -6818],
+    "beforeAndAfter": {"path": "", "dirty": false, "ordinarySceneCount": 1, "previewSceneCount": 1},
+    "contentLoss": "NOT_DETERMINED",
+    "runnerSource": [
+      "Library/PackageCache/com.unity.test-framework@bd7f943e9647/UnityEditor.TestRunner/TestRun/TaskList.cs:48-58",
+      "Library/PackageCache/com.unity.test-framework@bd7f943e9647/UnityEditor.TestRunner/TestRun/Tasks/CreateBootstrapSceneTask.cs:32",
+      "Library/PackageCache/com.unity.test-framework@bd7f943e9647/UnityEditor.TestRunner/TestRun/Tasks/Scene/RestoreSceneSetupTask.cs:18-27"
+    ],
+    "action": "추가 TestRunner 실행·임의 씬 복원 중지. 소스 개발 및 비파괴 조회는 계속 가능. 동기 실행 설정도 같은 bootstrap task list를 사용하므로 보존 해법이 아니다."
+  },
+  "sqliteTestEnvironmentRestored": true,
+  "rawEvidenceRoot": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad",
+  "rawSha256": {
+    "live-discovery.json": "fc2013961e43d61f6a019a85c5e887f53bf76e2c7307240b7abfd45f0a4c654f",
+    "live-CSBOOT0201-status.json": "9740a46c433f11125c3e1d0c37519d968dea51e18164e2f5ee6a03906b4a418e",
+    "live-CSOPS0201-status.json": "87d7e013536f3d51cc7b789028a7ce5ecb546d308d049d0e1294290c94b6a185",
+    "live-CSOPS0202-status.json": "57af4a004089e57ef1d403b84ce56f7974b30f339bea402a69fcaa2abe4ef94d",
+    "live-CSOPS0203-status.json": "15e3c58fc98de0489cee0706c45d37e3f25c76108049ac66939768344cde1812",
+    "live-CSPLAY0201-status.json": "387d56f6ee55d9aa475c25141c4b24b49db839e4810853af219c8fe1b30c4827",
+    "live-CSPLAY0202-status.json": "f26127f2cfa9b25154fd3df6715e77740ed604b5875851918a2dccbe97e5ba3d",
+    "live-scene-before.json": "7ac1d34fec219716608d5b6225b13137ddd78d38bc340b3ea6ad7ba5ebfdcd49",
+    "live-scene-after.json": "af142e35fb7ade75b945a60e13e928b69905403ab2c50a05c94e250d0959cd9d",
+    "live-env-restored.json": "fe7800f09c6e83b4896e40f102f9c851f37c2913d22d833b343ce74bb19ea703"
+  },
+  "verification": "Root가 저장된 결과·수집 목록·씬 ID·환경 복원 결과를 직접 읽고 counts와 SHA-256을 계산했다. 현재 소스 해시를 과거 실행 revision으로 소급 기록하지 않는다.",
+  "notEstablished": ["World fixture tests", "새 outbox lease 구현 시험", "실제 IOperationsPort/materializer/transport 통합", "Windows Player", "현장 수용", "전체 제품 완료"]
+}

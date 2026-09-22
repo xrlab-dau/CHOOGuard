@@ -1,0 +1,48 @@
+{
+  "mode": "LIVE",
+  "endpoint": "https://ai-gateway.vercel.sh/typesafe",
+  "inputSchemaValidated": true,
+  "transportIsError": false,
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "overlap": {
+          "type": "choice",
+          "choice": "disjoint",
+          "confidence": 0.93,
+          "probabilities": {
+            "overlap": 0.04,
+            "disjoint": 0.96
+          }
+        },
+        "root_effort": {
+          "type": "choice",
+          "choice": "high",
+          "confidence": 0.98,
+          "probabilities": {
+            "low": 0.01,
+            "high": 0.99,
+            "max": 0
+          }
+        },
+        "scope": {
+          "type": "choice",
+          "choice": "targeted",
+          "confidence": 1,
+          "probabilities": {
+            "full": 0,
+            "none": 0,
+            "targeted": 1
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 763,
+        "output_tokens": 113
+      },
+      "truncated": false,
+      "action": "auto"
+    }
+  ]
+}

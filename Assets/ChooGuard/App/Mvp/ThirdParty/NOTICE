@@ -1,0 +1,24 @@
+OpenRaCountdown.cs contains an adaptation of actual OpenRA source.
+
+Upstream: https://github.com/OpenRA/OpenRA
+Commit: f3ec7f8e1593b482f85fd101652deb740c33dee6
+Source: OpenRA.Mods.Common/Activities/Wait.cs, class Wait
+Copyright (c) The OpenRA Developers and Contributors
+License: GNU General Public License version 3 or (at your option) any later version.
+The upstream COPYING is retained beside this notice without alteration.
+
+Port mapping:
+- Wait.remainingTicks -> OpenRaCountdown.remainingTicks.
+- Wait constructor period assignment -> millisecond ceiling of accepted duration.
+- Wait.Tick IsCanceling early completion -> isCanceling / Cancel().
+- Wait.Tick `return remainingTicks-- == 0;` -> same expression in Tick().
+- Actor/Activity scheduling -> AdvanceAcceptedSeconds invoked by existing accepted clock.
+- Original Wait(N) completes on call N+1. Constructor primes call 1; the N
+  remaining calls are one per accepted millisecond. Positive durations round up
+  by less than 1 ms. Fractional milliseconds carry between accepted updates.
+- Completion/cancellation are latched; no wall-clock, camera, actor or Unity dependency.
+- WaitFor and its predicate are not reused.
+
+CHOOGuard local adaptation for automatic logical-team turnaround, 2026-09-21.
+The selected turnaround time is authored game operation balance, not measured
+119 procedure, clinical recovery or physically calibrated readiness.

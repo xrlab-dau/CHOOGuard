@@ -1,0 +1,151 @@
+{
+  "id": "CS-SIM.01",
+  "epicId": "CS-SIM",
+  "title": "새 worker 프로토콜·시험 워커",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SIM.01",
+    "description": "능력협상·취소·재시도·구간결과와 명시적인 시험 워커",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SIM.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Contracts/WorkerTypes.cs",
+    "Assets/ChooGuard/Simulation/WorkerProcessClient.cs",
+    "workers/fixture/worker.py",
+    "workers/protocol/worker.schema.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SIM/Sim01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-BOOT.02",
+      "artifactId": "A-CS-BOOT.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "로컬 child process 표준입출력에 UTF-8 JSONL을 사용한다. 1줄 최대 1 MiB, 깊이 32, inline payload 64 KiB, 큰 장은 allowlisted relative blobRef로 전달한다. stdout은 protocol 전용, stderr는 bounded log다. 프로세스는 검수된 executable·argv만 실행한다.",
+    "capability에 현상·단위·time-step·batch/interactive·checkpoint·검증영역을 선언한다.",
+    "worker timeout/exit/corrupt/late result/다른 branch 응답을 검사한다. 시험 워커는 SYNTHETIC_FIXTURE이며 실제 모델로 승격하지 않는다.",
+    "requestId·jobId·attemptId·runId·generation·inputDigest를 확인하고 다음 correlation이 없는 결과는 격리한다. 취소 후 generation이 이전인 결과는 publish하지 않는다.",
+    "worker handle은 OS process 종료·timeout과 메모리/출력 한도를 검사한다. 이런 제한은 sandbox 보장을 뜻하지 않으므로 임의 내려받은 코드를 실행하지 않는다."
+  ],
+  "contract": "WorkerCapability, SimulationJob, FieldBatch; 임의 shell 문자열을 입력으로 실행하지 않는다.",
+  "sourceIds": [
+    "AUD-FMI"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SIM.01-P",
+      "given": "JSONL 1줄+정상 correlation",
+      "when": "worker 결과 수신",
+      "then": "job/run/generation/input 일치",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SIM.01-N",
+      "given": "1MiB 초과 또는 duplicate key",
+      "when": "worker 결과 수신",
+      "then": "PROTOCOL_REJECT",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/05-worker-and-cosimulation.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/05-worker-and-cosimulation.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-049"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SIM/Sim01Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "WORKER_INTEGRATION",
+      "path": "benchmarks/tests/CS-SIM.01.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "JSONL 1줄+정상 correlation",
+    "operation": "worker 결과 수신",
+    "expectedPositive": "job/run/generation/input 일치",
+    "negativeInput": "1MiB 초과 또는 duplicate key",
+    "expectedNegative": "PROTOCOL_REJECT",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

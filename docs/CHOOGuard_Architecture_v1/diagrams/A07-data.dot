@@ -1,0 +1,27 @@
+digraph G {
+graph [rankdir=LR, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+SITE [label="SiteBundleVersion\n실물·좌표·형상·연결", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+RULE [label="RuleBundle / ModelLock\n판본·가정·적용범위", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+SC [label="ScenarioSpec\n외생 조건·사건 법칙", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+PLAN [label="PlanRevision\n작성자 운영 규칙", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+RUN [label="Run\n고정 inputHash · parent cutoff", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+EV [label="Event / Receipt / Hold\n기록·결정·예약", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+CP [label="Checkpoint / Artifacts\n완전 상태·blob hash", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+COM [label="Comparison\n같은 조건·QoI", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+SCRIPT [label="ScriptIRRevision\n계획 + 대표 실행", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+REV [label="Evidence / Review\nsubject hash · facet · scope", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+SITE -> RUN [label="pinned input"];
+RULE -> RUN [label="pinned input"];
+SC -> RUN [label="환경"];
+PLAN -> RUN [label="운영 정책"];
+RUN -> EV [label="1:N"];
+RUN -> CP [label="1:N"];
+RUN -> COM [label="A/B 참조"];
+PLAN -> SCRIPT [label="정책 원천"];
+RUN -> SCRIPT [label="실행 근거"];
+REV -> RULE [label="적용 검토"];
+REV -> COM [label="결과 자격"];
+REV -> SCRIPT [label="사용 승인"];
+}

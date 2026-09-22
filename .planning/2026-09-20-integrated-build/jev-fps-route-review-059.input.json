@@ -1,0 +1,40 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "sourceEvidence": [
+      "Native Metro materialrepair restores originalwalls/nanrail; smallceilingskygap remains; no needwholeenclosureblanket.",
+      "KTXsourcecanonicalframe restored preserving1670colliders; localexteriordoor->vestibule nativepass, interiorglassdoorcapsuleblock triangle3814 identified.",
+      "KTX mixedfractional/opaquealpha meshes rendered see-throughfragmentation; narrowdepthcorrectness investigationinprogress; no blanketcutout.",
+      "Railwayaccesscandidate links existingstairs via4authoredfloorstrips but cuts8barriers,7withoutdoorsemanticidentity. Missingprobe count14vs40 is notactualcirculationproof. Userwantsrealspace reconstruction."
+    ],
+    "rootDecision": "Do notapply eightblindcuts. Reviewsourcecutaway, realdoor/corridor alternatives. Unconfirmedhall stayspending. Implementonlyevidence-supported doorleaf/ceiling/renderrepairs."
+  },
+  "questions": {
+    "route": {
+      "type": "choice",
+      "instructions": "Judge root decision on8unknownbarriercuts",
+      "criteria": {
+        "review_semantics": "Need spatial/architecturalreview beforecutting; supportendpointgeometry aloneinsufficient",
+        "auto_cut": "Fewermissingprobes provesrealroute",
+        "quit_all": "Abandonallmapwork"
+      }
+    },
+    "completion": {
+      "type": "choice",
+      "instructions": "Current defensible mapintegration claim",
+      "criteria": {
+        "partial_connected_metro": "Metroplaza link operational; KTXvestibulelocalonly; continuousrailhallroutepending",
+        "whole_map_connected": "Wholemodelconnectedandproductionready"
+      }
+    },
+    "depth": {
+      "type": "choice",
+      "instructions": "Reasoning layer for branch",
+      "criteria": {
+        "high": "Multiassetgeometryandrenderingcauses",
+        "low": "Simplewording",
+        "max": "IrreversibleliveDB"
+      }
+    }
+  }
+}

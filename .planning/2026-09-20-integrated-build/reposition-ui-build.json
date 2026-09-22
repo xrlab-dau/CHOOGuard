@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "if(UnityEditor.EditorApplication.isPlaying)throw new System.InvalidOperationException(\"Expected Edit mode\");ChooGuard.Editor.MvpWorkspaceBuilder.Build();var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>();return w.GetComponentsInChildren<UnityEngine.UI.Button>(true).Where(b=>b.name.StartsWith(\"Cohort\")||b.name==\"TrainingReplay\").Select(b=>b.name).ToArray();"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": [
+        "TrainingReplay",
+        "Cohort_0",
+        "Cohort_1",
+        "Cohort_2",
+        "CohortRelease",
+        "CohortHold"
+      ]
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

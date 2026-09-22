@@ -1,0 +1,53 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "established_by_measurement": [
+      "Interior extraction was already complete before this session. MainShell.fbx carries layer -부산역 with 666537 triangles and is placed in FpsStation.unity with 8 MeshColliders, all non-convex and enabled.",
+      "Unity collider probe v2 confirms the Blender audit: rooms with floor and ceiling 2.2 to 6.0m apart exist. Station-owned floor at y=7.0 measures 1992 square metres by transform-ancestry filter, comparable to the audit estimate of 1608.",
+      "Connected component decomposition over standable voxels finds component id 192: 1820 square metres, y range 6.1 to 10.9, world X -24 to 74, world Z -91 to -28. This is the 2F concourse and it is one continuous walkable space.",
+      "Larger components exist at y 12 to 16 (3161), y 23 to 24 (4175) and y 29.4 to 31.9 (6471). The y 29.4 to 31.9 one has no ceiling in the v2 probe so it is roof surface, not interior.",
+      "Flood fill from the receipt spawn on a road reaches only 639 of 1992 station cells at y=7.0, and the reachable part is an isolated block separate from the concourse. The concourse itself is unreachable from that spawn."
+    ],
+    "wheel_found_but_disqualified": [
+      "Assets/ChooGuard/Settings/MvpInterior holds assets named 1층/2층/3층-공개 안내도 기반 내부, produced by Editor/MvpInteriorBuilder.cs and Editor/MvpStationZones.cs.",
+      "MvpStationZones.cs line 7 states in its own comment: Dimensions and zoning are visual design assumptions, not measured station rooms.",
+      "Its Layout method places zones at hardcoded coordinates such as 매표 공간 at x -43 to -25 z -64, and 수직 동선 코어 at (-43,-76) and (8,-15).",
+      "Standing user rule on this project: build from actual public floor plans and maps, arbitrary placement is forbidden."
+    ],
+    "available_signals_in_source": [
+      "The converted source carries 372 materials and 15 layers. Room boundaries may be recoverable from floor material changes rather than authored by hand.",
+      "Ceiling height varies across the concourse; the v2 probe records headroom per sample.",
+      "The source is 부산디지털로케이션 official data, commercial use allowed, modification allowed for content production, attribution required."
+    ],
+    "user_request": "Proceed with building interior construction and design work after the extraction work."
+  },
+  "questions": {
+    "zone_method": {
+      "type": "choice",
+      "instructions": "How should interior zones be defined on the confirmed 1820 square metre concourse?",
+      "criteria": {
+        "derive_from_source_signals": "Derive room boundaries from measurable signals already in the official geometry, such as floor material changes and ceiling height changes, so placement is read out of the source rather than invented",
+        "reuse_mvp_zone_coordinates": "Reuse the hardcoded MvpStationZones coordinates and remap them onto the official interior",
+        "author_new_layout_by_judgement": "Author a fresh zone layout using architectural judgement about how a station concourse is usually arranged",
+        "defer_until_public_plan_obtained": "Do nothing until an actual published floor plan of Busan station 2F is obtained and registered as evidence"
+      }
+    },
+    "spawn_fix": {
+      "type": "choice",
+      "instructions": "The concourse is unreachable from the current road spawn. What should be done?",
+      "criteria": {
+        "spawn_inside_concourse": "Move the tutorial spawn into the concourse, because a station employee starts a shift inside the building and no road approach is required for this mode",
+        "build_connector_stairs": "Author new stairs or ramps to connect the road spawn to the concourse",
+        "leave_unreachable": "Leave the spawn as is and accept that the concourse cannot be entered"
+      }
+    },
+    "mvp_zone_reuse": {
+      "type": "choice",
+      "instructions": "Given its own comment disclaims measurement, is MvpStationZones a usable wheel here?",
+      "criteria": {
+        "not_usable_as_placement": "Its coordinates are disqualified as placement, though its structural conventions such as zone kinds and reserved circulation may still be reused",
+        "fully_usable": "It is a valid wheel and its coordinates can be reused directly"
+      }
+    }
+  }
+}

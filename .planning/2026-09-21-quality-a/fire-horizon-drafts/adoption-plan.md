@@ -1,0 +1,11 @@
+# Bounded adoption plan (production unchanged)
+
+Read `workers/physics/cases/reference-hall-1800/field-manifest.json` only after validator passes. Pin its SHA-256 in trusted worker/Unity case configuration; do not let CAPABILITIES alone authorize arbitrary metadata. Validate receipt success, deck and each output hash before loading. Validate actual native coordinates, six quantity/unit pairs, all finite samples, strict timestamps and each field's [0,1800] coverage against the pinned manifest.
+
+Worker adoption: replace CASE and fixed case identity with selected, validated case descriptor; derive NativeNodeSampler endpoints, FireFields.check/frame bounds and fieldValidUntil from verified interval. Include manifest digest, selected case ID and verified interval in capabilities/results. Source hash, deck hash, native shape, 1.5 m height and existing float32 payload hashing remain enforced. Reject requested times beyond 1800 rather than reuse/extrapolate.
+
+Bridge adoption: bind selected trusted manifest/case constants before HELLO. Require capability/result case and manifest digest agreement. Replace caseId, 120 s endpoint and 4.27322674 display maximum constants with the pinned new manifest values, retaining finite checks, exact grid/units/encoding, source/deck/payload hash checks and requested/sample time bounds. Permit timestamp deviation only according to validated maxTimestampGap. Do not merely accept larger validUntil or self-reported displayMax.
+
+Native acceptance: run validate_horizon.py with workers/physics/.venv/bin/python. After integration, run real worker start_routine/begin_incident and 1 s advance through incident 121, 1200 and 1800; at 1800.05 require ERROR and physicsReady false. Compare decoded frames at selected times against native slices, reject altered source/deck/payload/manifest hashes and intervals, then root-owned Unity CLI/MCP exercise exact same frames. This data validation is not worker or Unity integration acceptance.
+
+The extended case retains continuous prescribed propane burner. It is an uncalibrated one-way reference, not actual site validation, responding suppression, evacuation impact on fire, thermal incapacitation or clinical outcome simulation. Recovery mechanics must state their operational scope separately.

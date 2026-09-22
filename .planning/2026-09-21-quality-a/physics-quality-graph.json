@@ -1,0 +1,84 @@
+{
+  "lane": "physics-quality",
+  "status": "bounded-complete",
+  "classification": "component verification only; real-site validation not covered",
+  "engine": "JuPedSim 1.4.2 CFSV3",
+  "receipt": "workers/physics/verification/receipt.json",
+  "results": [
+    {
+      "case": "free-0",
+      "displacement_m": 39.999999999999865,
+      "transverse_m": 0.0,
+      "passed": true
+    },
+    {
+      "case": "free-45",
+      "displacement_m": 40.000000000000796,
+      "transverse_m": 3.552713678800501e-15,
+      "passed": true
+    },
+    {
+      "case": "corner",
+      "initial": 20,
+      "removed": 20,
+      "remaining": 0,
+      "elapsed_s": 31.150000000000002,
+      "first_exit_s": 12.3,
+      "boundary_violations": 0,
+      "removal_api_overlap_steps": 20,
+      "conserved": true,
+      "passed": true
+    },
+    {
+      "case": "bottleneck-1.0",
+      "initial": 40,
+      "removed": 40,
+      "remaining": 0,
+      "elapsed_s": 40.800000000000004,
+      "first_exit_s": 5.300000000000001,
+      "boundary_violations": 0,
+      "removal_api_overlap_steps": 39,
+      "conserved": true,
+      "passed": true
+    },
+    {
+      "case": "bottleneck-2.0",
+      "initial": 40,
+      "removed": 40,
+      "remaining": 0,
+      "elapsed_s": 26.0,
+      "first_exit_s": 5.1000000000000005,
+      "boundary_violations": 0,
+      "removal_api_overlap_steps": 36,
+      "conserved": true,
+      "passed": true
+    },
+    {
+      "case": "width-consistency",
+      "passed": true,
+      "narrow_s": 40.800000000000004,
+      "wide_s": 26.0
+    }
+  ],
+  "notCovered": [
+    "real-site calibration/validation",
+    "contact force or pressure validation",
+    "FDS or smoke coupling",
+    "stairs and full NIST configurations",
+    "time-step convergence and stochastic ensemble"
+  ],
+  "failureRetained": "initial-api-semantics-receipt.json documents observer/API mismatch, not physical agent loss",
+  "contactAudit": "workers/physics/verification/README.md",
+  "nextChange": "Independent measured bottleneck calibration/holdout and timestep sensitivity before asserting site accuracy; force telemetry needs separate calibrated candidate",
+  "scope": "Only verification artifacts; worker and models unchanged",
+  "artifacts": {
+    "workers/physics/verification/prespecified.json": "7c13748c6c8b8ef440db310e01de84e535345fdf6606ac30a2246e434edadd1a",
+    "workers/physics/verification/run_probes.py": "9bfb8b461b73fdfdc953a5d6b09e0041895b69bd06f1e19023a7129ff3d65449",
+    "workers/physics/verification/initial-api-semantics-receipt.json": "cced4f052196510cd6f25e6e40e50f6ebef76e8bd7754d4d9d0d3e2c18e3dec4",
+    "workers/physics/verification/README.md": "ab042c0ebf131a1eaf194533ea1fe3a3ee8736d15a73639c8c72967a05353d01",
+    "workers/physics/verification/trajectories.jsonl": "a372c9a6cb69df18cde69f6c278faf1577a06037b6ddb2fd1f1f97170ea53770",
+    "workers/physics/verification/receipt.json": "eb0a575485a90ebe51b23fa3b66234d54040621bbf83fb78a044205dbbfda33c",
+    "workers/physics/verification/sources/GeneralizedCentrifugalForceModel-v1.4.2.cpp": "20a7a85e3bb772321fd9f619c116e704f9ca3d8d24e41eb4f46acb680ad038be",
+    "workers/physics/verification/sources/SocialForceModel-v1.4.2.cpp": "53569b2b310f84a855fd01ee2702792352acef6c553a39c356eed8650b44a2b3"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 592,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "test_conflict": {
+          "type": "choice",
+          "choice": "update_assertion",
+          "confidence": 0.45,
+          "probabilities": {
+            "remove_from_build": 0.01,
+            "assert_contains": 0.4,
+            "leave_masked": 0.01,
+            "update_assertion": 0.58
+          }
+        },
+        "next_work": {
+          "type": "choice",
+          "choice": "emergency_minimal",
+          "confidence": 0.46,
+          "probabilities": {
+            "emergency_minimal": 0.6,
+            "hud_visual": 0.14,
+            "extract_form7": 0.25,
+            "second_procedure": 0.01
+          }
+        },
+        "emergency_now_safe": {
+          "type": "noul",
+          "noul": 0.51
+        },
+        "commit_now": {
+          "type": "noul",
+          "noul": 0.7
+        }
+      },
+      "usage": {
+        "input_tokens": 2536,
+        "output_tokens": 153
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

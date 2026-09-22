@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:content:site",
+  "title": "후보 SiteBundle 참조 골격",
+  "description": "CS-EXEC.01.01 후보 설계의 참조 전용 형태. geometry, 현장 검증, 기관 승인, 실행 가능성을 증명하지 않는다. 빈 배열을 허용한다. 중복 key, lexical 형태, 참조 관계와 catalog 검증은 ContentValidator의 별도 책임이다.",
+  "x-wire-lexical-form": "RFC JSON만 허용. decoded key 중복 금지, 올바른 Unicode surrogate pair 필수, trailing data 금지. 문서 UTF16 code units 최대 1048576, nesting 최대 32(root=1), 모든 배열 최대 4096. 이 규칙은 표준 JSON Schema 검증만으로 보장되지 않는다.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "revision", "frames", "regions", "portals", "entities", "sourceRefs", "qualification"],
+  "properties": {
+    "id": {"$ref": "#/$defs/id"},
+    "revision": {"$ref": "#/$defs/revision"},
+    "frames": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/frame"}},
+    "regions": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/region"}},
+    "portals": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/portal"}},
+    "entities": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/entity"}},
+    "sourceRefs": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/revisionRef"}},
+    "qualification": {"type": "array", "maxItems": 4096, "items": {"$ref": "#/$defs/qualification"}}
+  },
+  "$defs": {
+    "id": {"type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$(?![\\s\\S])"},
+    "revision": {"type": "integer", "minimum": 0, "maximum": 9223372036854775807, "x-wire-lexical-form": "0|[1-9][0-9]* 전체 lexeme만 허용. -0, 음수, decimal, exponent 금지. 표준 JSON Schema integer와 별개인 wire 규칙이다."},
+    "revisionRef": {"type": "object", "additionalProperties": false, "required": ["id", "revision"], "properties": {"id": {"$ref": "#/$defs/id"}, "revision": {"$ref": "#/$defs/revision"}}},
+    "frame": {"type": "object", "additionalProperties": false, "required": ["id"], "properties": {"id": {"$ref": "#/$defs/id"}}},
+    "region": {"type": "object", "additionalProperties": false, "required": ["id", "frameId"], "properties": {"id": {"$ref": "#/$defs/id"}, "frameId": {"$ref": "#/$defs/id"}}},
+    "portal": {"type": "object", "additionalProperties": false, "required": ["id", "fromRegionId", "toRegionId"], "properties": {"id": {"$ref": "#/$defs/id"}, "fromRegionId": {"$ref": "#/$defs/id"}, "toRegionId": {"$ref": "#/$defs/id"}}},
+    "entity": {"type": "object", "additionalProperties": false, "required": ["id", "frameId", "regionId"], "properties": {"id": {"$ref": "#/$defs/id"}, "frameId": {"$ref": "#/$defs/id"}, "regionId": {"$ref": "#/$defs/id"}}},
+    "qualification": {"type": "object", "additionalProperties": false, "required": ["id", "sourceRefIds"], "properties": {"id": {"$ref": "#/$defs/id"}, "sourceRefIds": {"type": "array", "minItems": 1, "maxItems": 4096, "items": {"$ref": "#/$defs/id"}}}}
+  }
+}

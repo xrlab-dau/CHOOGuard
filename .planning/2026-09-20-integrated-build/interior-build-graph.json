@@ -1,0 +1,173 @@
+{
+  "nodes": [
+    {
+      "id": "station-guide",
+      "type": "source",
+      "path": "asset-library/space-references/floorplan-sources/busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg",
+      "evidence": "Viewed unofficial public facility guide; zoning only, not surveyed dimensions"
+    },
+    {
+      "id": "market-guide",
+      "type": "source",
+      "paths": [
+        "asset-library/research-public/2026-09-21/jagalchi-1f-facil_01_02_07.jpg",
+        "asset-library/research-public/2026-09-21/jagalchi-2f-facil_01_02_06.jpg"
+      ],
+      "evidence": "Viewed official guide; representative 1F longitudinal public hall and stall rows implemented"
+    },
+    {
+      "id": "metre-contract",
+      "type": "derived-design",
+      "path": ".planning/2026-09-20-integrated-build/spatial-metre-contract.json",
+      "code": "Assets/ChooGuard/App/Mvp/MvpSpatialMetrics.cs",
+      "numericalChecks": {
+        "stationSourceBoundsMetres": [
+          -61.78390738366596,
+          191.58019564703997,
+          -97.99499599984557,
+          254.4329920000493
+        ],
+        "referenceBoundsMetres": [
+          -52,
+          -22,
+          -48,
+          -28
+        ],
+        "referenceAreaM2": 600,
+        "barrierBoundsReference": [
+          [
+            24,
+            25,
+            0,
+            9
+          ],
+          [
+            24,
+            25,
+            11,
+            20
+          ]
+        ],
+        "barrierGapMetres": 2,
+        "exitBoundaryReference": [
+          30,
+          10
+        ],
+        "sourceSolverExitStage": [
+          28.5,
+          29.8,
+          9,
+          11
+        ],
+        "crewHeightDesign": 1.78,
+        "crowdHeightDesign": 1.72,
+        "seatTopDesign": 0.45,
+        "doorClearHeightDesign": 2.1,
+        "floorPitchDesign": 5,
+        "stairsTopDesign": 5.0,
+        "walkingSpeedDesign": 1.4,
+        "worldTextConstructionMatches": 0,
+        "verification": "Static arithmetic/source inspection only, actual scene bounds and screenshots pending root rebuild"
+      }
+    },
+    {
+      "id": "interior",
+      "type": "derived",
+      "entrypoint": "MvpInteriorBuilder.Build + Platform",
+      "details": [
+        "Source footprint 1 unit/metre; previous layout control points x/z4 only",
+        "Human and furnishing dimensions metre-native, no parent x4 scaling",
+        "Three floor fit-outs; columns8x10m grid outside solver reference hall; shops3.3m and seating2m repeated",
+        "No world text; geometry pictograms only; canvas UI unchanged",
+        "Shared bevel module32vertices60triangles, material batches; final mesh/renderer counts pending Unity"
+      ],
+      "remainingEstimates": [
+        "Module room positions and proportions are visual designs, not surveyed",
+        "Third-floor outline remains guide-derived approximate",
+        "Platform canopy and train positions/heights are visual designs",
+        "Inter-floor flights are visual geometry, no navigation claim"
+      ]
+    },
+    {
+      "id": "hubs",
+      "type": "derived",
+      "entrypoint": "MvpInteriorBuilder.BuildWorldHubs",
+      "sourceContract": "world-layers sourceScale must be1; PortTerminal368597686 / JagalchiMarket382696296; no fallback positions",
+      "details": [
+        "Actual source centroid and footprint bbox in metres",
+        "Market repeated ordinary-size seafood stalls and end services; terminal ordinary-size waiting seats/ticket counters",
+        "Training control and medical support are authored temporary layouts",
+        "Camera focus and zoom cutaway thresholds derive from metre footprint"
+      ],
+      "remainingEstimates": [
+        "Representative public hall only, not exhaustive market floors",
+        "Terminal interior is public-hall archetype, not verified measured room plan"
+      ]
+    },
+    {
+      "id": "rendering",
+      "type": "derived",
+      "code": [
+        "MvpOpenWorldCamera.cs",
+        "MvpWorldPresentation.cs"
+      ],
+      "details": [
+        "Source world bounds -1975.992..2121.688 / -2794.132..1324.708 metres",
+        "Station overview260m/interior125m/ref hall22m/city2000m orthographic sizes",
+        "Eye max750m or1.6zoom+150; conservative terrain clearance estimate",
+        "Play-only URP clone renderScale1 MSAA4 main shadow4096 soft shadows cascades4; shadowDistance=max1050,eye+2zoom+300",
+        "No shared pipeline writes; disable restores captured quality override if own clone still active"
+      ]
+    },
+    {
+      "id": "integration",
+      "type": "build",
+      "entrypoint": "MvpStationBuilder.Build",
+      "invariants": [
+        "rootY-1000",
+        "FloorRoots0..2 and WholeEnvelope cutaway",
+        "Crew animation loop import unchanged",
+        "Worker physics untouched; source geometry inspected for exact barrier coordinates",
+        "CityBuilder then WorldHubs seam retained"
+      ],
+      "verification": "No Unity run by worker; root owns compile, actual bounds, TMP0 and floor/hub views"
+    }
+  ],
+  "edges": [
+    {
+      "from": "station-guide",
+      "to": "interior",
+      "relation": "zoning source"
+    },
+    {
+      "from": "market-guide",
+      "to": "hubs",
+      "relation": "1F topology source"
+    },
+    {
+      "from": "metre-contract",
+      "to": "interior",
+      "relation": "metre-native design dimensions"
+    },
+    {
+      "from": "metre-contract",
+      "to": "hubs",
+      "relation": "sourceScale1"
+    },
+    {
+      "from": "interior",
+      "to": "integration",
+      "relation": "build call"
+    },
+    {
+      "from": "hubs",
+      "to": "integration",
+      "relation": "build call"
+    },
+    {
+      "from": "rendering",
+      "to": "integration",
+      "relation": "scene-owned attach"
+    }
+  ]
+}

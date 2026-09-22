@@ -1,0 +1,132 @@
+{
+  "status": "BOUNDED_SOURCE_GAP_NO_CURRENT_PRIMARY_RAILWAY_INTERIOR_PLAN_PUBLICLY_OBTAINED",
+  "scope": "Busan railway station (KORAIL KTX/general-rail building, stationSeq 10279506); the separate Busan Metro Line 1 station 113 is retained only to prevent facility conflation.",
+  "retrievedAtUtc": "2026-09-21T10:10:39Z",
+  "sourcePaths": [
+    {
+      "id": "official_station_source_cutaway",
+      "classification": "directly_supported",
+      "authority": "Busan Metropolitan City / BIPA digital-location source archive, locally received through the official catalog route",
+      "sourcePath": "asset-library/research-public/2026-09-21/quality-a/station-model-source/station-batched-no3dletters.blend",
+      "provenance": {
+        "catalogUrl": "https://bwebtoon.com/webtoon-home/core-businesses/digital-location/",
+        "archiveSha256": "b892a7ed9c9be58e5e4bcaae56188098a439062f2ebff91c05b3b26db807cd0e",
+        "cutaways": [
+          {
+            "path": "asset-library/research-public/2026-09-21/quality-a/station-model-source/station-cutaway-z4m.png",
+            "sha256": "fd536b795f167e032398c0e5ef5e1decc1fc17a0d09643e190b1fb72462f1e2f"
+          },
+          {
+            "path": "asset-library/research-public/2026-09-21/quality-a/station-model-source/station-cutaway-z10m.png",
+            "sha256": "01b6e4d95b8e77b75a24740e15f709cc56fd2bdce24ee0e691e38b2e9e669386"
+          },
+          {
+            "path": "asset-library/research-public/2026-09-21/quality-a/station-model-source/station-cutaway-z16m.png",
+            "sha256": "4ccc5ed98021c72f1eeda36fcf6fcd8f597c5cb29dc87a647b36ab243413470e"
+          }
+        ]
+      },
+      "directlySupported": [
+        "The source has detailed track/platform access structures and entrance/door/stair components.",
+        "The broad headhouse cavity has no complete concourse-room-floor system at the audited cut levels; it cannot supply a 1F/2F/3F interior reconstruction by itself."
+      ],
+      "doesNotSupport": [
+        "Floor names, usable room boundaries, exit numbers, current tenant locations, passenger-flow directions, floor elevations, ventilation, or as-built accuracy."
+      ]
+    },
+    {
+      "id": "korail_current_station_api",
+      "classification": "directly_supported_with_age_limit",
+      "authority": "KORAIL",
+      "url": "https://www.korail.com/com/userStation.do?mode=view&stationSeq=10279506&floor=",
+      "sourcePage": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "retrievedAtUtc": "2026-09-21T10:10:39Z",
+      "responseSha256": "346cf5562be1bb18fbe39448034fa36cfdec6833255d8ce0ec7277c3113202dc",
+      "recordDate": "2012-02-24 (record write date; not a plan revision date)",
+      "directlySupported": [
+        "Target identity: 부산역, 부산 동구 중앙대로 206, KTX 경부선; the record describes it as a KTX and general-rail terminus.",
+        "The record states that the 2F waiting hall and parking were enlarged for the 2010-11-01 high-speed-rail phase-2 opening.",
+        "The live response still enumerates facility entries labelled 1F, 2F, and 3F, including '스토리웨이(1층 맞이방)' on 1F."
+      ],
+      "doesNotSupport": [
+        "A floor plan: floorResultList records facility photographs/listings only.",
+        "Platform geometry or a spatial inference from its item field: records labelled '승강장' include shops and service listings, so that taxonomy is not a plan legend.",
+        "Current tenant layout, exact 3F function, floor elevations, or actual passenger routes."
+      ]
+    },
+    {
+      "id": "existing_railway_facilities_map_photo",
+      "classification": "near_match_only",
+      "authority": "Unverified re-post/photo of a Busan Station convenience-facilities sign; not a KORAIL primary floor-plan release",
+      "sourcePath": "asset-library/space-references/floorplan-sources/busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg",
+      "provenance": {
+        "sourcePage": "https://dawn-sunup.tistory.com/650",
+        "publicationDate": "2025-02-27T12:33:00+09:00 (post date only)",
+        "sha256": "c093483624850b67960776312f202f64ee3f41c71c19e16a7edb344b718c1ece",
+        "referenceDate": "UNKNOWN",
+        "scale": "UNKNOWN"
+      },
+      "directlyVisibleTopology": [
+        "1F, 2F, and 3F are shown as separate diagram panels, with no measured scale or cardinal orientation.",
+        "1F visibly places entrance-facing commercial strips, a KTX-special-delivery label, baggage-deposit labels, lifts/escalators/stairs, and toilets.",
+        "2F visibly places a station-office block, ticket-window label, railway-police-station label, baggage-deposit label, vertical circulation symbols, and two 'tracks' wayfinding arrows in one concourse diagram.",
+        "3F visibly places a food-court/restaurant zone and two vertical-circulation/toilet groups.",
+        "The diagram supports only relative adjacency inside its own drawing, never metre coordinates, vertical height, exit numbering, or present-day operation."
+      ],
+      "useBoundary": "Use only as a trace-to-verify checklist against a later primary map or field measurement. Do not trace it into production geometry and do not treat its shop labels as current."
+    },
+    {
+      "id": "busan_metro_station_113_distinction",
+      "classification": "contradicts_premise",
+      "authority": "Busan Transportation Corporation (Humetro)",
+      "url": "https://work.humetro.busan.kr/homepage/default/stationinfo/page/list01.do?menu_no=1001010201&S_LINE=1&S_STATION=113",
+      "retrievedAtUtc": "2026-09-21T10:10:39Z",
+      "responseSha256": "162c8b919fe399e45802be38872c0fc0efca8fd3d3c181b9b512376008380a88",
+      "directlySupported": [
+        "This is a separate Busan Metro station: address 부산광역시 동구 중앙대로 지하 200, with Metro-specific facilities such as an elevator and locker.",
+        "Its own page describes the subway stop as built to connect passengers to the railway station west of it."
+      ],
+      "excludedFromRailwayGeometry": [
+        "The official page exposes a station-map download link, but the existing acquisition record documents that the work.humetro /servlet/ route is disallowed by robots; it was not requested or downloaded.",
+        "Metro Station 113 entrances, platforms, exits, and vertical circulation must not be copied into the KORAIL station interior."
+      ]
+    }
+  ],
+  "directlySupportedFloorTopology": {
+    "railwayBuilding": [
+      "A 1F waiting-hall label and a 2F waiting-hall enlargement are KORAIL-record facts, with the record date stated above.",
+      "The source model independently supports rail/platform-access and entrance/stair presence, but leaves the headhouse interior incomplete."
+    ],
+    "unverifiedDiagramOnly": [
+      "The re-posted sign supplies 1F/2F/3F relative-adjacency cues and named public-service zones, subject to the stated no-tracing boundary."
+    ]
+  },
+  "contradictedAssumptions": [
+    "A roofed or walled official source shell supplies an interior deck at source Z=5 m: contradicted by the cutaway audit; no such deck was observed there.",
+    "KORAIL floor facility records are floor plans: contradicted by the endpoint's photo/listing schema and mixed item taxonomy.",
+    "Busan Metro Station 113's map can fill the KORAIL building gap: contradicted by the operator, underground address, and the Metro page's stated railway-connection role.",
+    "The re-posted facilities-map photo is a dated, scaled, current as-built plan: unsupported; its photo/reference date, scale, revision state, and primary provenance are unknown."
+  ],
+  "unknowns": [
+    "Current primary 1F/2F/3F railway floor-plan release, drawing revision date, scale, coordinate system, and all-floor coverage beyond the three public-facing diagram panels.",
+    "Exact current room walls, gate/exit identifiers, vertical-circulation locations and directions, platform access geometry, accessible routes, tenant currency, fire egress, ventilation, smoke control, structural loads, and as-built floor heights.",
+    "Any SRT-specific passenger-routing distinction inside the shared railway building."
+  ],
+  "nextAstraLowGeometryInput": {
+    "action": "HOLD interior-deck/room construction until an official KORAIL/KR plan release or a dated, scaled field-survey package is supplied.",
+    "permittedNow": [
+      "Retain and expose only source-existing entrance openings, stair components, platform-access structures, and roof/outer-shell surfaces.",
+      "Represent railway-to-concourse and concourse-to-platform links as non-geometric blocked/reference nodes, labelled 'plan required', rather than invented walkable floors."
+    ],
+    "requiredBeforeGeometry": [
+      "One dated primary 1F/2F/3F plan (or field survey) with scale/coordinates and explicit public-space, exit, stair/escalator/lift, ticket, gate, and platform-access labels.",
+      "A revision/date check against the KORAIL station operator before treating named facilities as current."
+    ],
+    "acceptanceCheck": "The received plan must agree on target identity with KORAIL stationSeq 10279506 and be stored with URL/source, retrieval date, hash, revision date, and a statement of scope; otherwise it remains a reference-only overlay."
+  },
+  "workPerformed": {
+    "newAssetsDownloaded": 0,
+    "unityOrAssetChanges": 0,
+    "reason": "The only available railway layout image was already acquired and is non-primary; duplicate download and geometry inference were intentionally avoided."
+  }
+}

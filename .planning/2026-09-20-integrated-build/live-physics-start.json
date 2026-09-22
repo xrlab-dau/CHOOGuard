@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); var b=w.GetComponentsInChildren<UnityEngine.UI.Button>(true).First(x=>x.name==\"TrainingStart\"); b.onClick.Invoke(); var d=w.GetComponent<ChooGuard.App.Mvp.MvpTrainingDirector>(); return new {state=d.State,bridge=w.GetComponent<ChooGuard.App.Mvp.MvpPhysicsBridge>()!=null,frame=UnityEngine.Time.frameCount};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "state": "Running",
+        "bridge": true,
+        "frame": 41487
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

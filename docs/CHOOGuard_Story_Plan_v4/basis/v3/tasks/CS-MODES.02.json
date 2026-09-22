@@ -1,0 +1,145 @@
+{
+  "id": "CS-MODES.02",
+  "epicId": "CS-MODES",
+  "title": "제약 기반 랜덤 상황",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-MODES.02",
+    "description": "인과·기관·공간·모델에 맞는 scenario generator",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-MODES.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Scenarios/ScenarioGenerator.cs",
+    "Assets/ChooGuard/Scenarios/ScenarioConstraintChecker.cs",
+    "content/exercises/random/grammar.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/MODES/Modes02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.06",
+      "artifactId": "A-CS-OPS.06",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "기관·공간·자원과 검토된 사건 문법을 입력으로 받고 조건부로 사건을 표본화한다.",
+    "성공/거부 분포와 seed·각 난수 혁신·거부 이유를 보존한다. 반복상한에서 무한생성 대신 조건 조정을 요구한다.",
+    "FEASIBLE·ESCALATION_REQUIRED·CONFLICTED_INPUT·UNSUPPORTED_DOMAIN을 구분한다."
+  ],
+  "contract": "GeneratedScenario {spec,seedManifest,provenance,constraintReport,qualification}; 무작위 발생확률은 현실 빈도와 별개.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-MODES.02-P",
+      "given": "고정 grammar와 동일 seed manifest",
+      "when": "제약상황 생성",
+      "then": "같은 spec; rejection 추적",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-MODES.02-N",
+      "given": "64회 연속 조건실패",
+      "when": "제약상황 생성",
+      "then": "GENERATION_EXHAUSTED",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-005",
+    "REQ-006",
+    "REQ-007"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/08-modes-and-scenario-generation.md",
+    "specs/04-checkpoint-and-comparison.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/08-modes-and-scenario-generation.md",
+    "specs/04-checkpoint-and-comparison.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-005",
+    "REQ-006",
+    "REQ-007"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/MODES/Modes02Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "고정 grammar와 동일 seed manifest",
+    "operation": "제약상황 생성",
+    "expectedPositive": "같은 spec; rejection 추적",
+    "negativeInput": "64회 연속 조건실패",
+    "expectedNegative": "GENERATION_EXHAUSTED",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

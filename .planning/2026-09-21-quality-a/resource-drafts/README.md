@@ -1,0 +1,1 @@
+Staged only. Root must authorize publication in safe Edit state. Verify publish-manifest baseline hashes, copy NEW files to graph target paths, apply controller-resource-hooks.patch, then run MvpFacilityResourcesBinder.BindExisting. Do not overwrite controller from draft blindly if baseline drifted. No existing UI edits.

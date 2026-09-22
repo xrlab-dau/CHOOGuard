@@ -1,0 +1,31 @@
+{
+  "nodes": [
+    {
+      "id": "defect",
+      "finding": "Editor Bind encountered a non-null empty cohortStats array; selected index access threw IndexOutOfRangeException"
+    },
+    {
+      "id": "repair",
+      "path": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+      "sha256": "55bdf518eec79d0179f778b4b280c69cbdf1a05443cf97323c67870ae9dc0f7f",
+      "change": "Render selects cohort by id, skips null entries and shows Korean waiting/missing-selection guidance for empty or unmatched data"
+    },
+    {
+      "id": "verification",
+      "status": "source inspection only; root owns import, Bind and Save; no world regeneration or Unity calls"
+    }
+  ],
+  "edges": [
+    {
+      "from": "defect",
+      "to": "repair",
+      "relation": "remove direct selected-index access"
+    },
+    {
+      "from": "repair",
+      "to": "verification",
+      "relation": "ready for narrow existing-geometry Bind/Save check"
+    }
+  ],
+  "scope": "Only rendering fallback changed; valid controls and physical calculation unchanged"
+}

@@ -1,0 +1,389 @@
+{
+  "schema": "chooguard.operating-unit-evidence.v2",
+  "createdLocalDate": "2026-09-21",
+  "scope": "Read-only public-play audit of Jurassic World Evolution 3 operational granularity, translated into a reviewable CHOOGuard interaction contract",
+  "implementationStatus": "NOT_AUTHORIZED_NOT_STARTED",
+  "verdict": {
+    "operatingUnit": "The strongest public evidence makes an operational team/vehicle the manually selected work unit. A facility owns or provides teams; a selected team receives a direct task, or is assigned to a post/camera patrol that automatically reacts within range.",
+    "visibleActors": "Many visible actors do not imply one player command surface per rendered object. Public guides distinguish guests, dinosaurs, operational teams/vehicles, and staff/scientists by different management verbs.",
+    "microControlBoundary": "Direct vehicle control exists as a separate optional mode. It does not prove that normal management play requires driving each vehicle or selecting each crew body.",
+    "unknownBoundary": "The public guides do not establish whether an operational vehicle and its crew are separate internal entities. They establish only the player-facing team/vehicle task surface.",
+    "chooguardConsequence": "Use facility-owned response groups or teams as selectable command units, then issue tasks to incident or area targets. Do not make each visible vehicle, crew body, or visitor a required controller row."
+  },
+  "revokedProposals": [
+    "The earlier proposal to require independent selection of every vehicle/crew is withdrawn.",
+    "The earlier eight-row per-vehicle controller is only an unimplemented proposal and is withdrawn from the interaction contract.",
+    "WASD may remain an optional shortcut, but it cannot be required for the primary operation path.",
+    "Earlier pending camera/fleet proposal questions are superseded by this evidence graph."
+  ],
+  "sourceBudget": {
+    "cachedOfficialPagesUsed": 8,
+    "newPrimaryPagesSuccessfullyOpened": 0,
+    "maximumNewPagesAllowed": 3,
+    "failedReadOnlyAttempt": {
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/controls-keyboard-shortcuts",
+      "result": "403 Forbidden through the web fetcher",
+      "effect": "No claim was derived from the failed request; the dated local official cache is used instead."
+    }
+  },
+  "sources": [
+    {
+      "id": "JWE3_OPERATIONS",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/operations-guide",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/operations-guide.txt",
+      "localSha256": "989f2d09a83ce6e1cced275a2c9cd5a086a11e9e2adf9dcada42820dc7ebc316",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "69", "text": "Select Add Task."},
+        {"lines": "113", "text": "Response Facility to access Ranger and Capture Teams"},
+        {"lines": "67", "text": "automatically complete any relevant tasks from this Maintenance Post"}
+      ],
+      "lineEvidence": [
+        {"lines": "57-58", "fact": "A Maintenance ATV Team can be assigned to a Maintenance Post; inner and outer radii govern different automatic coverage."},
+        {"lines": "62-71", "fact": "Maintenance work has two public paths: a direct task on a selected team, or automatic work through a post assignment."},
+        {"lines": "75-81", "fact": "Ranger Teams use Response Facility supplies, can receive task assignment, and can automate status checks and feeder work through a Ranger Post."},
+        {"lines": "100-106", "fact": "Capture Teams come from Response Facilities and can tranquilise through a direct task or an automatic security-camera patrol response."},
+        {"lines": "113-118", "fact": "Building a Response Facility is the documented way to access Ranger and Capture Teams; placement distance affects travel to targets."}
+      ]
+    },
+    {
+      "id": "JWE3_VEHICLES",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/vehicles-guide",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/vehicles-guide.txt",
+      "localSha256": "5199ed73793d59d006c937d348ce1fe47a985281c127d1fa09bd918212032ca7",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "18", "text": "drive ground-based vehicles by taking direct control"},
+        {"lines": "43", "text": "All park teams carry a camera"}
+      ],
+      "lineEvidence": [
+        {"lines": "18-24", "fact": "ATVs, MVUs, Ranger Vehicles, and helicopters can enter direct-control mode; the player can exit back to the normal camera."},
+        {"lines": "27-32", "fact": "Vehicle-specific tools are available in direct control, including capture-team dart actions."},
+        {"lines": "35-36", "fact": "Capture Teams may be assigned for automatic protection in range, while damaged vehicles return to a base of operation."},
+        {"lines": "43-46", "fact": "The guide speaks of park teams and team vehicles together, including a camera used while controlling a team vehicle."}
+      ]
+    },
+    {
+      "id": "JWE3_ENCLOSURES",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/enclosures-guide",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/enclosures-guide/visible.txt",
+      "localSha256": "e9a93c0f5df486b1cc3734dee9b52f357e13be3a45b251940e7ff42327388e51",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "99", "text": "Ranger Teams can be assigned to Ranger Posts."},
+        {"lines": "99", "text": "automatically carry out Status Checks on dinosaurs within range"}
+      ],
+      "lineEvidence": [
+        {"lines": "92-95", "fact": "A powered Security Camera with a Capture Team patrol automatically detects a threatening dinosaur in range and calls the team."},
+        {"lines": "98-100", "fact": "Ranger, MVU, and Capture teams can be assigned to a Ranger Post for different automatic monitoring work around that post."}
+      ]
+    },
+    {
+      "id": "JWE3_GUESTS",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/guests-guide",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/guests-guide/visible.txt",
+      "localSha256": "92ff646b7ba128749a80637be9bf6adc0f5bc77aa352afd0a01aab3c1d0643bf",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "99", "text": "Guests are grouped together by their interests"},
+        {"lines": "22", "text": "control the split of groups at specific locations"}
+      ],
+      "lineEvidence": [
+        {"lines": "13-23", "fact": "Guests are managed as demographic groups whose distribution is influenced by species, enclosure design, and attraction placement."},
+        {"lines": "82-95", "fact": "Guest safety is managed through park conditions, Capture Teams, and shelters; the guide does not describe direct per-guest commands."}
+      ]
+    },
+    {
+      "id": "JWE3_TIPS",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/tips-and-tricks",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/tips-and-tricks/visible.txt",
+      "localSha256": "4fc39c4367cce511598c035d260b4a2acd3eecd14c5319572714115b74c3a205",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "24", "text": "Teams can be assigned to automatically deal with dinosaur escapes, broken fences or sick animals"}
+      ],
+      "lineEvidence": [
+        {"lines": "22-24", "fact": "The manager delegates day-to-day operations to staffed facilities and automatically assigned teams."},
+        {"lines": "27-28", "fact": "Security-camera detection alerts a Capture Team, after which a Maintenance Team can be sent to repair the escape point."}
+      ]
+    },
+    {
+      "id": "JWE3_CONTROLS",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/controls-keyboard-shortcuts",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/controls-keyboard-shortcuts.txt",
+      "localSha256": "a0eebb057d98d181151928b1de13dbe8ee311260a39da7c661646bb842656f7d",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "189-193", "text": "Vehicle Task Assignment / Next Vehicle / Previous Vehicle"},
+        {"lines": "132-135", "text": "Zoom In / Zoom Out"}
+      ],
+      "lineEvidence": [
+        {"lines": "123-139", "fact": "The cached keyboard table lists camera movement, zoom, and rotation keys. It does not preserve a mouse-wheel binding."},
+        {"lines": "157-162", "fact": "Shortcuts navigate to the nearest Response, Paleo-Medical, or Maintenance facility."},
+        {"lines": "189-198", "fact": "The public control surface calls the task context Vehicle Task Assignment and provides next/previous vehicle navigation."},
+        {"lines": "198-229", "fact": "Ranger/wheeled vehicles and Capture Teams have separate direct-control bindings, reinforcing direct driving as a distinct mode."}
+      ]
+    },
+    {
+      "id": "JWE3_QUICKSTART",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/quickstart-guide",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/quickstart-guide.txt",
+      "localSha256": "84fefecf6e4ecb90db5a4e4c1c65eb1d59ff0e34bbf8d812632d924ae3bb60f3",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "109", "text": "fleet of vehicles that you can call on"}
+      ],
+      "lineEvidence": [
+        {"lines": "105-109", "fact": "The player is framed as a park manager who manages a workforce and calls on a vehicle fleet to run operations."}
+      ]
+    },
+    {
+      "id": "JWE3_PARK_MANAGEMENT",
+      "authority": "primary_official_cached",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/park-management-guide",
+      "localPath": "asset-library/research-public/2026-09-21/jwe-official/park-management-guide.txt",
+      "localSha256": "dd93a23c481a0f36cc11a67d32f837aa209e08b97bc3e8b40d458c4f1550615c",
+      "accessDate": "2026-09-21",
+      "exactTextBudget": [
+        {"lines": "108", "text": "Maintenance Posts to automate Repair, Reboot, Resupply and Inspection tasks"}
+      ],
+      "lineEvidence": [
+        {"lines": "103-108", "fact": "Maintenance Facilities own assignable ATV Teams; Maintenance Posts automate coverage by inner and outer radii."},
+        {"lines": "118-119", "fact": "Team resources live at respective facilities and may be restocked directly at a building or through Maintenance Patrol automation."}
+      ]
+    }
+  ],
+  "publicInteractionStatechart": {
+    "mermaid": "stateDiagram-v2\n  [*] --> Overview\n  Overview --> FacilityContext: select Response/Maintenance/Paleo-Medical facility\n  FacilityContext --> TeamSelected: choose team/vehicle\n  TeamSelected --> DirectTask: Add Task + choose eligible work/target\n  DirectTask --> AssignedWork: accept assignment\n  AssignedWork --> TravelAndAct: team uses facility resources and performs work\n  TravelAndAct --> FacilityContext: task complete / returns or awaits next work\n  TeamSelected --> PatrolAssigned: assign to Maintenance Post, Ranger Post, or Security Camera patrol\n  PatrolAssigned --> AutomaticCoverage: facility/post/camera monitors supported events in range\n  AutomaticCoverage --> TravelAndAct: matching event triggers team response\n  TeamSelected --> DirectControl: optional take direct control of team vehicle\n  DirectControl --> Overview: back out to normal camera",
+    "sourceEdges": [
+      {"edge": "FacilityContext -> TeamSelected", "support": ["JWE3_OPERATIONS lines 64-68", "JWE3_OPERATIONS lines 113-118"]},
+      {"edge": "TeamSelected -> DirectTask", "support": ["JWE3_OPERATIONS lines 68-70"]},
+      {"edge": "TeamSelected -> PatrolAssigned", "support": ["JWE3_OPERATIONS lines 57-67", "JWE3_ENCLOSURES lines 98-100"]},
+      {"edge": "PatrolAssigned -> AutomaticCoverage", "support": ["JWE3_OPERATIONS lines 57-58 and 81", "JWE3_ENCLOSURES lines 92-100"]},
+      {"edge": "TeamSelected -> DirectControl", "support": ["JWE3_VEHICLES lines 18-24"]},
+      {"edge": "DirectControl -> Overview", "support": ["JWE3_VEHICLES line 24"]}
+    ],
+    "limits": [
+      "The guides prove assignment and automatic response, but do not document a visible multi-task queue depth or reorder UI.",
+      "The guides use both team and vehicle language; they do not prove a separate selectable on-foot crew-body layer.",
+      "The cached official controls prove keyboard zoom and vehicle cycling, but not an exact mouse-wheel binding."
+    ]
+  },
+  "groupOwnershipGraph": {
+    "nodes": [
+      {"id": "park_manager", "kind": "player_role"},
+      {"id": "response_facility", "kind": "facility"},
+      {"id": "maintenance_facility", "kind": "facility"},
+      {"id": "paleo_medical_facility", "kind": "facility"},
+      {"id": "ranger_team_vehicle", "kind": "operational_unit"},
+      {"id": "capture_team_helicopter", "kind": "operational_unit"},
+      {"id": "maintenance_atv_team", "kind": "operational_unit"},
+      {"id": "mvu_team_vehicle", "kind": "operational_unit"},
+      {"id": "maintenance_post", "kind": "automation_anchor"},
+      {"id": "ranger_post", "kind": "automation_anchor"},
+      {"id": "security_camera", "kind": "automation_anchor"},
+      {"id": "guest_demographic_crowd", "kind": "managed_population"},
+      {"id": "dinosaur", "kind": "world_actor_and_task_target"},
+      {"id": "scientist", "kind": "assignable_staff_record"},
+      {"id": "visible_crew_body", "kind": "public_control_status_unknown"}
+    ],
+    "edges": [
+      {"from": "park_manager", "relation": "selects_and_assigns", "to": "ranger_team_vehicle", "status": "directly_supported"},
+      {"from": "park_manager", "relation": "selects_and_assigns", "to": "capture_team_helicopter", "status": "directly_supported"},
+      {"from": "park_manager", "relation": "selects_and_assigns", "to": "maintenance_atv_team", "status": "directly_supported"},
+      {"from": "park_manager", "relation": "selects_and_assigns", "to": "mvu_team_vehicle", "status": "directly_supported"},
+      {"from": "response_facility", "relation": "provides_and_resupplies", "to": "ranger_team_vehicle", "status": "directly_supported"},
+      {"from": "response_facility", "relation": "provides_and_resupplies", "to": "capture_team_helicopter", "status": "directly_supported"},
+      {"from": "maintenance_facility", "relation": "provides", "to": "maintenance_atv_team", "status": "directly_supported"},
+      {"from": "paleo_medical_facility", "relation": "provides", "to": "mvu_team_vehicle", "status": "directly_supported"},
+      {"from": "maintenance_atv_team", "relation": "may_patrol", "to": "maintenance_post", "status": "directly_supported"},
+      {"from": "ranger_team_vehicle", "relation": "may_patrol", "to": "ranger_post", "status": "directly_supported"},
+      {"from": "mvu_team_vehicle", "relation": "may_patrol", "to": "ranger_post", "status": "directly_supported"},
+      {"from": "capture_team_helicopter", "relation": "may_patrol", "to": "ranger_post", "status": "directly_supported"},
+      {"from": "capture_team_helicopter", "relation": "may_patrol", "to": "security_camera", "status": "directly_supported"},
+      {"from": "park_manager", "relation": "influences_by_layout_services_and_shelters", "to": "guest_demographic_crowd", "status": "directly_supported"},
+      {"from": "ranger_team_vehicle", "relation": "checks_and_wrangles", "to": "dinosaur", "status": "directly_supported"},
+      {"from": "capture_team_helicopter", "relation": "tranquilises_or_stimulates", "to": "dinosaur", "status": "directly_supported"},
+      {"from": "mvu_team_vehicle", "relation": "scans_and_treats", "to": "dinosaur", "status": "directly_supported"},
+      {"from": "park_manager", "relation": "direct_individual_control", "to": "visible_crew_body", "status": "insufficient_public_evidence"}
+    ]
+  },
+  "actorClassifications": [
+    {
+      "actor": "visitor_or_guest_crowd",
+      "directFact": "Public guidance manages guests through demographics, park layout, attractions, comfort, transport, shelter coverage, and site-wide or local shelter operation.",
+      "playerControlClaim": "No direct per-guest command is documented in the inspected public guides.",
+      "classification": "managed_population",
+      "inferenceGuard": "Do not claim guests are one AI, many independent AIs, or non-selectable internal GameObjects; only the player-facing management surface is evidenced."
+    },
+    {
+      "actor": "dinosaur",
+      "directFact": "Dinosaurs are scanned, treated, tranquilised, transported, photographed, wrangled, or commanded with Send/Summon through relevant team and vehicle tools.",
+      "playerControlClaim": "They are eligible task targets and can receive limited behavior commands from a vehicle; this is not evidence that they share guest behavior or operational-unit ownership.",
+      "classification": "world_actor_and_task_target"
+    },
+    {
+      "actor": "response_or_maintenance_vehicle_team",
+      "directFact": "A team/vehicle can be selected in its facility or in the park, assigned a direct task or patrol, and optionally driven in a separate direct-control mode.",
+      "playerControlClaim": "This is the evidenced operational command unit.",
+      "classification": "selectable_operational_unit"
+    },
+    {
+      "actor": "visible_crew_body",
+      "directFact": "The guides describe teams, team vehicles, facilities, supplies, scientists, and staff, but do not document selecting an individual embodied crew member for field movement.",
+      "playerControlClaim": "Treat an on-screen crew body as presentation unless another primary source or product requirement grants it a command surface.",
+      "classification": "public_control_status_unknown",
+      "inferenceGuard": "Do not claim the crew body is or is not a separate simulation entity."
+    },
+    {
+      "actor": "scientist_or_staff_record",
+      "directFact": "Scientists are assigned to research and expedition tasks through management interfaces; Staff Centres manage capacity, rest, and training.",
+      "playerControlClaim": "The inspected guides evidence roster/task assignment, not direct embodied movement.",
+      "classification": "assignable_staff_record"
+    }
+  ],
+  "mouseFirstOperationRecipe": {
+    "status": "CHOOGUARD_PRODUCT_TRANSLATION_FOR_JEV_THEN_USER_REVIEW",
+    "principle": "The cursor selects a command context and group-owned unit; the wheel navigates scale; clicks compose facility/team, task, and target. Keyboard shortcuts remain optional accelerators.",
+    "steps": [
+      {
+        "step": 1,
+        "interaction": "Move the cursor over the world and use the mouse wheel to zoom to the facility or incident.",
+        "evidenceStatus": "user_required_and_current_code_supported; exact JWE3 wheel binding unverified",
+        "support": ["Current MvpOpenWorldCamera.cs line 28", "JWE3_CONTROLS lines 123-135 proves zoom as a camera action but only preserves keyboard bindings"]
+      },
+      {
+        "step": 2,
+        "interaction": "Left-click a Response, Maintenance, or Paleo-Medical facility to open its owned operational groups; alternatively click an incident to see eligible groups.",
+        "evidenceStatus": "source-grounded information architecture; exact click gesture is a CHOOGuard translation",
+        "support": ["JWE3_OPERATIONS lines 64-68 and 113-118", "JWE3_CONTROLS lines 157-162"]
+      },
+      {
+        "step": 3,
+        "interaction": "Left-click one team/vehicle group, then click Add Task or Assign Patrol. Do not require selecting every rendered vehicle or crew body.",
+        "evidenceStatus": "directly_supported unit and command verbs; grouping multiple visible members under one CHOOGuard row is a product inference",
+        "support": ["JWE3_OPERATIONS lines 64-70", "JWE3_CONTROLS lines 189-193"]
+      },
+      {
+        "step": 4,
+        "interaction": "For a direct task, click an eligible incident, infrastructure item, dinosaur, or area target. For automation, click a post/camera and confirm the coverage assignment.",
+        "evidenceStatus": "direct-task and range-automation distinction directly supported; CHOOGuard target taxonomy requires design review",
+        "support": ["JWE3_OPERATIONS lines 57-71 and 81", "JWE3_ENCLOSURES lines 92-100"]
+      },
+      {
+        "step": 5,
+        "interaction": "Show one accepted assignment on the group card, travel/work state, and automatic coverage radius. Further task queuing is optional product behavior and must not be presented as proven JWE3 semantics.",
+        "evidenceStatus": "assignment and automatic work directly supported; visible queue behavior insufficient",
+        "support": ["JWE3_OPERATIONS lines 62-70 and 103-106"]
+      },
+      {
+        "step": 6,
+        "interaction": "Offer Direct Control as a secondary action on supported operational vehicles, with an explicit return to overview.",
+        "evidenceStatus": "directly_supported",
+        "support": ["JWE3_VEHICLES lines 18-32"]
+      }
+    ],
+    "optionalAccelerators": [
+      "WASD or arrow-key pan may remain available, but no required task step depends on them.",
+      "Facility and next/previous vehicle shortcuts may be added as optional accelerators after the pointer path works."
+    ]
+  },
+  "currentChooguardGap": {
+    "files": [
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpOpenWorldCamera.cs",
+        "sha256": "1eb9332475405ca371e6e3f3711638422999d36faa0b4add079db8cb480d6471",
+        "lines": "22-29",
+        "current": "Wheel zoom and middle-button drag pan exist; WASD/arrows and Q/E also control the camera.",
+        "gap": "The primary operation path is not yet specified and validated as mouse-first; WASD must be an optional shortcut rather than a prerequisite."
+      },
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+        "sha256": "b0eb3a2c2b48149b62e80268c434fbd3e44ea17f814e05821729272c7e465b29",
+        "lines": "83-104, 187-228, 294-336",
+        "current": "The workspace exposes three abstract team buttons: operations, fire, and medical; actions and targets are fixed to move/hold and platform/concourse/exit plus crowd controls.",
+        "gap": "There is no facility-owned roster, Add Task flow, incident eligibility panel, patrol/post assignment, or coverage-radius feedback."
+      },
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+        "sha256": "db898ec3c6635b6c49b9f1889eb9557913d673f138b6400287cf04e43652a6ef",
+        "lines": "11-24",
+        "current": "The agency panel contains exactly two request/return/tracking rows, one for fire and one for medical.",
+        "gap": "No eight-row vehicle controller exists. The panel groups by two fixed support-team IDs but does not express facility ownership or group capacity."
+      },
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+        "sha256": "c0123de426c1da601ebb13d0407bce53e55bc446c6d69f505859134496dd8d22",
+        "lines": "19-29, 60-78, 94-106",
+        "current": "Queues are keyed by selected logical team. Left-click selects one of three team markers or a crowd cohort; right-click chooses a hard-coded destination or triggers cohort release.",
+        "gap": "The world click contract is coupled to team markers and fixed station targets, rather than facility/team ownership, eligible incident targets, and area automation."
+      },
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpOperationsPort.cs",
+        "sha256": "5d9cf14a1328a48fdb2fe18624b6d927ba4236c7d78d7935859b8cc0aa52cb01",
+        "lines": "40-43, 53-76, 100-112",
+        "current": "The local synthetic port stores three logical teams and validates exactly one team, one target, and only move/hold actions.",
+        "gap": "The state model has no facility-to-team ownership, operational-unit category, task capability, incident target, patrol anchor, or coverage assignment."
+      }
+    ],
+    "acceptanceGap": "This audit is source and code inspection only. It does not establish runtime usability, Unity scene behavior, or product acceptance."
+  },
+  "directFactsVsInferences": [
+    {
+      "claim": "Facilities provide operational teams and supplies.",
+      "classification": "directly_supported",
+      "sources": ["JWE3_OPERATIONS lines 78-80 and 113-118", "JWE3_PARK_MANAGEMENT lines 105 and 118-119"]
+    },
+    {
+      "claim": "A team/vehicle is selectable for direct task assignment.",
+      "classification": "directly_supported",
+      "sources": ["JWE3_OPERATIONS lines 68-70", "JWE3_CONTROLS lines 189-193"]
+    },
+    {
+      "claim": "A single CHOOGuard response-group row may represent multiple visible vehicles or crew members.",
+      "classification": "product_inference_consistent_with_sources",
+      "sources": ["JWE3_QUICKSTART lines 105-109", "JWE3_TIPS lines 22-24"],
+      "guard": "The public sources do not specify CHOOGuard group size, pooling, or one-to-many rendering."
+    },
+    {
+      "claim": "Every visible operational vehicle must be independently selectable.",
+      "classification": "not_supported_and_rejected_by_user",
+      "sources": ["JWE3_OPERATIONS lines 62-71", "JWE3_CONTROLS lines 189-193"]
+    },
+    {
+      "claim": "Visible crew bodies and their vehicles are the same internal entity.",
+      "classification": "insufficient",
+      "sources": ["JWE3_VEHICLES lines 18-24 and 43-46"]
+    },
+    {
+      "claim": "Visitors, dinosaurs, response vehicles, and crew bodies share one AI or one selection model.",
+      "classification": "unsupported",
+      "sources": ["JWE3_GUESTS lines 13-23", "JWE3_OPERATIONS lines 75-106"]
+    },
+    {
+      "claim": "JWE3 publicly documents mouse-wheel zoom and exact left-click task composition.",
+      "classification": "insufficient_in_cached_official_text",
+      "sources": ["JWE3_CONTROLS lines 106-139", "JWE3_OPERATIONS lines 64-70"],
+      "guard": "Use mouse wheel and left click as the explicit CHOOGuard product requirement, not as a falsely attributed exact JWE3 binding."
+    }
+  ],
+  "reviewGate": {
+    "next": "Jev independent review of source-to-claim fidelity, actor boundaries, and the mouse-first CHOOGuard translation",
+    "then": "Present the reviewed concrete interaction contract to the user for confirmation",
+    "implementation": "Only after user confirmation",
+    "reviewQuestions": [
+      "Does every directly_supported claim have a matching local line range and no broader wording than the source?",
+      "Does the contract keep facility, operational group, rendered vehicle, crew body, guest crowd, and dinosaur distinct?",
+      "Does the pointer path avoid requiring selection of every visible object?",
+      "Are wheel and click choices labeled as CHOOGuard requirements where exact JWE3 bindings are unverified?",
+      "Does the plan avoid presenting the current per-team queue as proven JWE3 behavior?"
+    ]
+  }
+}

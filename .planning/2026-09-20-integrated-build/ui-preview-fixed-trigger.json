@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); var b=w.GetComponentsInChildren<UnityEngine.UI.Button>(true); b.First(x=>x.name==\"Team_fire-1\").onClick.Invoke(); b.First(x=>x.name==\"Target_exit\").onClick.Invoke(); b.First(x=>x.name==\"Move\").onClick.Invoke(); return new {state=w.Preview.State.ToString(), error=w.Preview.DisplayError, footer=w.GetComponentsInChildren<TMPro.TMP_Text>(true).First(t=>t.name==\"Footer\").text};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "state": "Loading",
+        "error": null,
+        "footer": "LOCAL TRAINING SESSION  |  Backend revision 0  |  State and original command receipts persisted on this device."
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

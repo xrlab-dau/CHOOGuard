@@ -1,0 +1,184 @@
+{
+  "nodes": [
+    {
+      "id": "defect",
+      "finding": "MissionPanel y496 and child y508 were split by y500 threshold; canvas height changed their relative positions"
+    },
+    {
+      "id": "repair",
+      "path": "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+      "sha256": "577b36043a4c6296653aeabc1d117c812cbc2d03c611bfef197f6eecbee20973",
+      "change": "Named RightBottomHud/RightTopHud/LeftBottomHud groups replace coordinate thresholds",
+      "rightBottomMembers": [
+        "MissionPanel",
+        "MissionStatus",
+        "MissionObjective",
+        "CohortSummary",
+        "MissionDetail",
+        "MissionProgressTrack",
+        "MissionProgress",
+        "ReferenceScope",
+        "ScopeDetails",
+        "Disclaimer",
+        "TrainingPause",
+        "TrainingSpeed"
+      ],
+      "topRightMembers": [
+        "TrainingStart",
+        "TrainingReplay",
+        "TrainingMedical"
+      ],
+      "topbar": "top anchored and horizontally stretched",
+      "layoutVersion": 8
+    },
+    {
+      "id": "coordinateChecks",
+      "checks": [
+        {
+          "canvas": [
+            1600,
+            900
+          ],
+          "method": "RectTransform anchor algebra only; not Unity render",
+          "missionPanel": [
+            1230.0,
+            496.0,
+            346.0,
+            342.0
+          ],
+          "relativeOffsets": {
+            "MissionStatus": [
+              16.0,
+              12.0
+            ],
+            "MissionObjective": [
+              16.0,
+              53.0
+            ],
+            "CohortSummary": [
+              16.0,
+              111.0
+            ],
+            "MissionDetail": [
+              16.0,
+              200.0
+            ],
+            "MissionProgressTrack": [
+              16.0,
+              295.0
+            ],
+            "MissionProgress": [
+              16.0,
+              295.0
+            ],
+            "ReferenceScope": [
+              16.0,
+              311.0
+            ],
+            "ScopeDetails": [
+              216.0,
+              -33.0
+            ],
+            "Disclaimer": [
+              16.0,
+              -56.0
+            ],
+            "TrainingPause": [
+              0.0,
+              354.0
+            ],
+            "TrainingSpeed": [
+              178.0,
+              354.0
+            ]
+          },
+          "missionChildrenInsidePanel": true
+        },
+        {
+          "canvas": [
+            1440,
+            1213.68
+          ],
+          "method": "RectTransform anchor algebra only; not Unity render",
+          "missionPanel": [
+            1070.0,
+            809.6800000000001,
+            346.0,
+            342.0
+          ],
+          "relativeOffsets": {
+            "MissionStatus": [
+              16.0,
+              12.0
+            ],
+            "MissionObjective": [
+              16.0,
+              53.0
+            ],
+            "CohortSummary": [
+              16.0,
+              111.0
+            ],
+            "MissionDetail": [
+              16.0,
+              200.0
+            ],
+            "MissionProgressTrack": [
+              16.0,
+              295.0
+            ],
+            "MissionProgress": [
+              16.0,
+              295.0
+            ],
+            "ReferenceScope": [
+              16.0,
+              311.0
+            ],
+            "ScopeDetails": [
+              216.0,
+              -33.0
+            ],
+            "Disclaimer": [
+              16.0,
+              -56.0
+            ],
+            "TrainingPause": [
+              0.0,
+              354.0
+            ],
+            "TrainingSpeed": [
+              178.0,
+              354.0
+            ]
+          },
+          "missionChildrenInsidePanel": true
+        }
+      ],
+      "relativeOffsetsInvariant": true
+    },
+    {
+      "id": "rootVerification",
+      "status": "pending Unity render verification by root; no Editor or GUI calls performed",
+      "migration": "MvpWorkspace.RefreshLayout rebuilds saved layoutVersion < 8 through existing builder"
+    }
+  ],
+  "edges": [
+    {
+      "from": "defect",
+      "to": "repair",
+      "relation": "same bottom-right anchor for whole mission group"
+    },
+    {
+      "from": "repair",
+      "to": "coordinateChecks",
+      "relation": "relative offsets checked at 16:9 reference canvas and observed narrow-window canvas"
+    },
+    {
+      "from": "coordinateChecks",
+      "to": "rootVerification",
+      "relation": "algebra does not replace rendered acceptance"
+    }
+  ],
+  "scope": "Only MvpWorkspace layout anchoring and layout version changed; physics/gameplay/art unchanged"
+}

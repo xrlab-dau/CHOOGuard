@@ -1,0 +1,94 @@
+{
+  "windows": [
+    {
+      "id": "W0",
+      "title": "새 Native 부팅·타입·시험 경로",
+      "goal": "새 Player와 경계 타입의 기준을 만든다. 후행 도메인 미구현으로 부팅을 막지 않는다.",
+      "storyIds": [
+        "CS-BOOT.01.01",
+        "CS-BOOT.01.02",
+        "CS-BOOT.02.01",
+        "CS-PACK.01.01",
+        "CS-BOOT.02.02",
+        "CS-BOOT.03.01",
+        "CS-BOOT.03.02"
+      ],
+      "exit": "같은 입력으로 새 Player 부팅·한글 표시·단일 입력 모듈·테스트 실패 전파를 확인한다.",
+      "scheduleKind": "DELIVERABLE_WINDOW_NOT_CALENDAR_SPRINT",
+      "status": "PLANNED",
+      "startDate": null,
+      "endDate": null,
+      "capacityHours": null
+    },
+    {
+      "id": "W1",
+      "title": "두 기관 fixture의 영속 요청·권한·예약",
+      "goal": "요청을 저장 전에 성공으로 알리지 않고 자원 중복·응답 손실을 처리한다.",
+      "storyIds": [
+        "CS-PACK.01.02",
+        "CS-PACK.01.03",
+        "CS-PACK.02.01",
+        "CS-OPS.01.01",
+        "CS-OPS.01.02",
+        "CS-OPS.03.01",
+        "CS-OPS.02.01",
+        "CS-OPS.02.02",
+        "CS-OPS.01.03"
+      ],
+      "exit": "실제 파일 DB의 원자 commit·거부 무변경·requester 포함 멱등 키를 확인한다.",
+      "scheduleKind": "DELIVERABLE_WINDOW_NOT_CALENDAR_SPRINT",
+      "status": "PLANNED",
+      "startDate": null,
+      "endDate": null,
+      "capacityHours": null
+    },
+    {
+      "id": "W2",
+      "title": "2공간 fixture와 native 조작 연결",
+      "goal": "웹/브라우저가 아닌 Unity에서 입력을 분리하고 실제 port를 연결한다.",
+      "storyIds": [
+        "CS-WORLD.01.01",
+        "CS-WORLD.01.02",
+        "CS-PLAY.01.01",
+        "CS-PLAY.01.02",
+        "CS-PLAY.01.03",
+        "CS-PLAY.03.01",
+        "CS-BOOT.02.03",
+        "CS-PLAY.02.01",
+        "CS-PLAY.02.02"
+      ],
+      "exit": "UI뒤클릭0·IME 누출0·한 요청 한 receipt·요청수락과 완료를 분리한다.",
+      "scheduleKind": "DELIVERABLE_WINDOW_NOT_CALENDAR_SPRINT",
+      "status": "PLANNED",
+      "startDate": null,
+      "endDate": null,
+      "capacityHours": null
+    },
+    {
+      "id": "W3",
+      "title": "재시작·장애 반례까지 첫 구간 수용",
+      "goal": "native 요청과 durable 상태를 실제 재열기·중복·저장실패로 검수한다.",
+      "storyIds": [
+        "CS-OPS.02.03",
+        "CS-OPS.02.04",
+        "CS-PROOF.02.01"
+      ],
+      "exit": "종료/재시작 후 reservation·receipt·outbox 일치. 기술 첫 구간만 수용; 전체 공조/A-B/물리/현장 승인은 아님.",
+      "scheduleKind": "DELIVERABLE_WINDOW_NOT_CALENDAR_SPRINT",
+      "status": "PLANNED",
+      "startDate": null,
+      "endDate": null,
+      "capacityHours": null
+    }
+  ],
+  "sideLaneStories": [
+    "CS-PROOF.01.01",
+    "CS-PACK.04.01",
+    "CS-PACK.03.01",
+    "CS-SIM.01.01",
+    "CS-SIM.01.02",
+    "CS-SIM.01.03"
+  ],
+  "firstStory": "CS-BOOT.01.01",
+  "capacityProvided": false
+}

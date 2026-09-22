@@ -1,0 +1,153 @@
+{
+  "id": "CS-PLAY.06",
+  "epicId": "CS-PLAY",
+  "title": "체크포인트·분기·A/B 비교 네이티브 화면",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PLAY.06",
+    "description": "체크포인트·분기·A/B 비교 네이티브 화면",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PLAY.06",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.06.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.06.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.06.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.06.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Presentation/Experiments/BranchDialog.cs",
+    "Assets/ChooGuard/Presentation/Experiments/ComparisonPresenter.cs",
+    "Assets/ChooGuard/Presentation/Experiments/BranchDialog.prefab",
+    "Assets/ChooGuard/Presentation/Experiments/ComparisonOverlay.prefab"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PLAY/CSPLAY06Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PLAY.05",
+      "artifactId": "A-CS-PLAY.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-LAB.03",
+      "artifactId": "A-CS-LAB.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "분기 후보의 복원 가능성·원본·시각·누락 워커를 표시하고 허용된 요청만 명시 확인 후 전송한다.",
+    "비교 전 inputBasis의 일치 여부와 공통 QoI를 표시하며 비교불가·실패·우열 불명을 정상적인 결과로 보인다.",
+    "타임라인·공간 카메라를 연동하되 미래 정보를 기관 지식에 쓰지 않는다. 선택 이유를 받아 대본 편집으로 전달한다."
+  ],
+  "contract": "CheckpointCapabilities→BranchRequest; ComparisonReport→read-only UI; 기록 replay와 새 branch·운영안 수정 구분.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PLAY.06-P",
+      "given": "A snapshot 완전/B 다른계획",
+      "when": "분기→비교",
+      "then": "부모불변; B 별도 run; 근거와 선택이유",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PLAY.06-N",
+      "given": "worker 빠진 checkpoint",
+      "when": "분기→비교",
+      "then": "EXACT_FORK_DISABLED",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-008",
+    "REQ-072"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PLAY/CSPLAY06Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSPLAY06PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-PLAY.06.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "A snapshot 완전/B 다른계획",
+    "operation": "분기→비교",
+    "expectedPositive": "부모불변; B 별도 run; 근거와 선택이유",
+    "negativeInput": "worker 빠진 checkpoint",
+    "expectedNegative": "EXACT_FORK_DISABLED",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

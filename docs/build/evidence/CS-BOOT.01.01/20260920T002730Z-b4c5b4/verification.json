@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 1,
+  "storyId": "CS-BOOT.01.01",
+  "runId": "20260920T002730Z-b4c5b4",
+  "scope": "SCRATCH_TMP_STATIC_ASSET_AND_PLAN_REGRESSION_ONLY",
+  "commands": [
+    {
+      "name": "plan-validate",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/um-yunsang/CHOOGuard/docs/CHOOGuard_Story_Plan_v4/tools/plan.py",
+        "validate"
+      ],
+      "exitCode": 0,
+      "startedUtc": "2026-09-20T00:54:07.812786+00:00",
+      "endedUtc": "2026-09-20T00:54:08.046301+00:00",
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/plan-validate.log"
+    },
+    {
+      "name": "full-unittest",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/Users/um-yunsang/CHOOGuard/docs/CHOOGuard_Story_Plan_v4/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "exitCode": 1,
+      "startedUtc": "2026-09-20T00:54:08.046397+00:00",
+      "endedUtc": "2026-09-20T00:54:10.209749+00:00",
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/full-unittest.log"
+    },
+    {
+      "name": "render-check",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "/Users/um-yunsang/CHOOGuard/docs/CHOOGuard_Story_Plan_v4/tools/render_plan.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "startedUtc": "2026-09-20T00:54:10.209841+00:00",
+      "endedUtc": "2026-09-20T00:54:10.351035+00:00",
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/render-check.log"
+    },
+    {
+      "name": "available-regressions",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "test_plan.CliTests.test_budget_overflow_never_truncates_to_complete",
+        "test_plan.CliTests.test_order_is_not_ready_list",
+        "test_plan.CliTests.test_prepare_can_read_but_not_authorize",
+        "test_plan.CliTests.test_unknown_story_not_a_blank_success",
+        "test_plan.ReceiptTests.test_accepted_receipt_cannot_skip_external_input",
+        "test_plan.ReceiptTests.test_active_claim_has_real_remaining_effect",
+        "test_plan.ReceiptTests.test_ambiguous_external_status_rejected",
+        "test_plan.ReceiptTests.test_empty_state_valid_no_execution",
+        "test_plan.ReceiptTests.test_external_satisfied_needs_evidence",
+        "test_plan.ReceiptTests.test_missing_or_modified_file_invalidates_receipt",
+        "test_plan.ReceiptTests.test_no_records_not_ready_to_integrate",
+        "test_plan.ReceiptTests.test_not_run_is_not_accepted",
+        "test_plan.ReceiptTests.test_plan_revision_invalidates_receipt",
+        "test_plan.ReceiptTests.test_self_review_not_independent",
+        "test_plan.ReceiptTests.test_stage_receipt_cannot_skip_own_candidate",
+        "test_plan.ReceiptTests.test_synthetic_receipt_schema_positive",
+        "test_plan.StaticPlanTests.test_all_profiles_have_acyclic_phase_graphs",
+        "test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies",
+        "test_plan.StaticPlanTests.test_bootstrap_tmp_whitelist_and_metadata_are_owned",
+        "test_plan.StaticPlanTests.test_complete_plan_validates",
+        "test_plan.StaticPlanTests.test_cycle_detected",
+        "test_plan.StaticPlanTests.test_duplicate_json_key_and_nonfinite_rejected",
+        "test_plan.StaticPlanTests.test_empty_steps_or_given_rejected",
+        "test_plan.StaticPlanTests.test_every_leaf_has_existing_parent_and_technical_specs",
+        "test_plan.StaticPlanTests.test_integration_horizon_is_also_closed",
+        "test_plan.StaticPlanTests.test_meta_and_case_alias_detected",
+        "test_plan.StaticPlanTests.test_missing_parent_rejected",
+        "test_plan.StaticPlanTests.test_no_calendar_fabricated",
+        "test_plan.StaticPlanTests.test_ontology_write_targets_equal_canonical_writes",
+        "test_plan.StaticPlanTests.test_parallel_does_not_mean_authorized",
+        "test_plan.StaticPlanTests.test_parent_children_cannot_disappear",
+        "test_plan.StaticPlanTests.test_path_escape_rejected",
+        "test_plan.StaticPlanTests.test_platform_regression_rejected",
+        "test_plan.StaticPlanTests.test_priority_never_overrides_dependency",
+        "test_plan.StaticPlanTests.test_requirement_support_links_preserved",
+        "test_plan.StaticPlanTests.test_scientific_input_does_not_block_fixture_coding",
+        "test_plan.StaticPlanTests.test_sequential_writers_are_not_parallel",
+        "test_plan.StaticPlanTests.test_short_horizon_closed",
+        "test_plan.StaticPlanTests.test_source_url_cannot_silently_change",
+        "test_plan.StaticPlanTests.test_third_mode_rejected",
+        "test_plan.StaticPlanTests.test_unknown_condition_is_not_false",
+        "test_plan.StaticPlanTests.test_unknown_profile_rejected",
+        "test_plan.StaticPlanTests.test_wrong_artifact_producer_rejected"
+      ],
+      "exitCode": 0,
+      "startedUtc": "2026-09-20T00:54:10.355375+00:00",
+      "endedUtc": "2026-09-20T00:54:12.539167+00:00",
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/available-regressions.log"
+    }
+  ],
+  "fullSuite": {
+    "executed": 46,
+    "passed": 43,
+    "errors": 3,
+    "assertionFailures": 0,
+    "status": "ENVIRONMENT_ERRORS_NOT_FULL_GREEN",
+    "unavailableTests": [
+      "test_plan.StaticPlanTests.test_jsonld_is_parseable_and_story_count_matches",
+      "test_plan.StaticPlanTests.test_ontology_turtle_and_shapes_parse",
+      "test_plan.StaticPlanTests.test_schema_ontology_not_actual_execution"
+    ]
+  },
+  "availableSubset": {
+    "executed": 43,
+    "passed": 43,
+    "failed": 0,
+    "excluded": [
+      "test_plan.StaticPlanTests.test_jsonld_is_parseable_and_story_count_matches",
+      "test_plan.StaticPlanTests.test_ontology_turtle_and_shapes_parse",
+      "test_plan.StaticPlanTests.test_schema_ontology_not_actual_execution"
+    ]
+  },
+  "targetedBoundary": {
+    "executed": 3,
+    "passed": 3,
+    "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/green-seven-path-boundary.log"
+  },
+  "unity": {
+    "red": {
+      "total": 1,
+      "failed": 1,
+      "reason": "TMP_RESOURCE_MISSING settings assertion; compilation succeeded",
+      "xml": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/unity/red/results.xml"
+    },
+    "finalGreen": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0,
+      "xml": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/unity/green-final/results.xml",
+      "receipt": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/unity/green-final/command.json",
+      "codeHashes": {
+        "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef": "0885beac16a35a3f416bcaf383f1b82d600e43f8b95e3150bc2d318fe94c6c22",
+        "Assets/ChooGuard/Editor/Bootstrap/BootstrapProject.cs": "3b49278073128f1d842bccac55ae6683b8048ca17c0ac079a2af002258fd7e08",
+        "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef": "389a86973ab54f0921c4bf6c9030ae21b66b662bb0b28bf188f6dedc6501918e",
+        "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef": "166dc546e927ff53bffb0554b438aa202348a0dfe1b8b4487a25d5f81d442a89",
+        "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs": "848cf124fd96921f09988991160498c97955ebf3cf2eee9a59af63c2afe42469"
+      }
+    },
+    "setupFailures": [
+      {
+        "name": "generate",
+        "reason": "ImportPackage deferred completion, source unavailable",
+        "productRed": false
+      },
+      {
+        "name": "generate-imported",
+        "reason": "Unity removed Temp source guard marker",
+        "productRed": false
+      }
+    ],
+    "guardedReimport": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/unity/generate-guarded/command.json"
+  },
+  "checksums": {
+    "entries": 383,
+    "updatedExistingEntries": [
+      "IMPLEMENTATION_STORIES.md",
+      "ontology/work-graph.jsonld",
+      "plan.json",
+      "stories/CS-BOOT.01.01.json",
+      "stories/CS-BOOT.01.01.md",
+      "tests/test_plan.py"
+    ],
+    "coverageUnchanged": true
+  },
+  "planErrors": [],
+  "stateErrors": [],
+  "rootProductCreated": false,
+  "records": [],
+  "claims": [],
+  "coverage": "NOT_RUN",
+  "notRun": [
+    "root Unity project",
+    "scene/URP/bootstrap acceptance",
+    "PlayMode",
+    "Game View/manual graphics",
+    "Windows Player",
+    "macOS Player"
+  ],
+  "candidateManifest": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/root-copy-candidate.json",
+  "historicalEightPathEvidence": {
+    "directory": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/boundary-evidence/tmp-boundary/eight-path-historical",
+    "preserved": true
+  },
+  "historicalInitialBoundaryEvidence": "docs/build/evidence/CS-BOOT.01.01/20260920T002150Z-ecbf11/verification.json"
+}

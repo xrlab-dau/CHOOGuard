@@ -1,0 +1,142 @@
+{
+  "id": "CS-OPS.01",
+  "epicId": "CS-OPS",
+  "title": "신규 run·단일 writer·명령 상태머신",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-OPS.01",
+    "description": "fresh OperationsSession과 미리보기/접수/조회 포트",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-OPS.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Application/OperationsSession.cs",
+    "Assets/ChooGuard/Application/CommandDispatcher.cs",
+    "Assets/ChooGuard/Domain/RunState.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/OPS/Ops01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-BOOT.02",
+      "artifactId": "A-CS-BOOT.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "run별 mailbox와 single-writer queue를 만들고 순서는 simulation tick·priority·monotonic sequence로 고정한다.",
+    "Preview는 side effect 없이 현재 guard를 평가한다. Submit은 requester와 acting team을 구분해 재검사한다.",
+    "같은 key+payload는 같은 receipt, 다른 payload는 INTENT_CONFLICT를 반환한다. 인메모리 double은 기능시험 전용이다."
+  ],
+  "contract": "CommandIntent→CommandReceipt, stateVersion/readSet; 수락은 수행완료와 다르다.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-OPS.01-P",
+      "given": "동일 run/requester/key/payload 2회",
+      "when": "Submit 재전송",
+      "then": "receipt 동일1개; 효과1회",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-OPS.01-N",
+      "given": "동일 key 다른 target",
+      "when": "Submit 재전송",
+      "then": "INTENT_CONFLICT",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/02-wire-and-ports.md",
+    "specs/03-durable-operations.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/02-wire-and-ports.md",
+    "specs/03-durable-operations.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-001",
+    "REQ-071"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/OPS/Ops01Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "동일 run/requester/key/payload 2회",
+    "operation": "Submit 재전송",
+    "expectedPositive": "receipt 동일1개; 효과1회",
+    "negativeInput": "동일 key 다른 target",
+    "expectedNegative": "INTENT_CONFLICT",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

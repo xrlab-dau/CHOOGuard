@@ -1,0 +1,303 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "4.0.0"
+    },
+    "records": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "storyId": {
+            "type": "string",
+            "pattern": "^CS-[A-Z]+\\.\\d{2}\\.\\d{2}$"
+          },
+          "phase": {
+            "enum": [
+              "prepare",
+              "candidate",
+              "integration",
+              "qualification"
+            ]
+          },
+          "profile": {
+            "enum": [
+              "fixture",
+              "pedestrian",
+              "hazard",
+              "coupled",
+              "field",
+              "full-research"
+            ]
+          },
+          "status": {
+            "enum": [
+              "ACCEPTED",
+              "REJECTED",
+              "SUBMITTED"
+            ]
+          },
+          "planDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "storyDigest": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "codeRevision": {
+            "type": "string",
+            "minLength": 1
+          },
+          "executorId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewerId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "reviewScope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "independentReview": {
+            "type": "boolean"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "inputReceiptIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0
+          },
+          "testResult": {
+            "type": "object",
+            "properties": {
+              "executed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "passed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "failed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "notRun": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "executed",
+              "passed",
+              "failed",
+              "notRun"
+            ],
+            "additionalProperties": false
+          },
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "artifactId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "artifactId",
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          },
+          "evidenceFiles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "id",
+          "storyId",
+          "phase",
+          "profile",
+          "status",
+          "planDigest",
+          "storyDigest",
+          "codeRevision",
+          "executorId",
+          "reviewerId",
+          "reviewScope",
+          "independentReview",
+          "recordedAt",
+          "inputReceiptIds",
+          "testResult",
+          "artifacts",
+          "evidenceFiles"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "externalInputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "enum": [
+              "SATISFIED",
+              "UNKNOWN",
+              "MISSING"
+            ]
+          },
+          "evidenceFiles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "path": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^[a-f0-9]{64}$"
+                }
+              },
+              "required": [
+                "path",
+                "sha256"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "id",
+          "state",
+          "evidenceFiles"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "storyId": {
+            "type": "string",
+            "pattern": "^CS-[A-Z]+\\.\\d{2}\\.\\d{2}$"
+          },
+          "phase": {
+            "enum": [
+              "prepare",
+              "candidate",
+              "integration",
+              "qualification"
+            ]
+          },
+          "status": {
+            "enum": [
+              "ACTIVE",
+              "RELEASED"
+            ]
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0
+          },
+          "resourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "id",
+          "storyId",
+          "phase",
+          "status",
+          "paths",
+          "resourceIds"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "note": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "records",
+    "externalInputs",
+    "claims",
+    "note"
+  ],
+  "additionalProperties": false
+}

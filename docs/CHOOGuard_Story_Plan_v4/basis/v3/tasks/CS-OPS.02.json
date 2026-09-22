@@ -1,0 +1,151 @@
+{
+  "id": "CS-OPS.02",
+  "epicId": "CS-OPS",
+  "title": "SQLite 저장·원자 예약·outbox",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-OPS.02",
+    "description": "영속 commit과 자원 예약을 동일 경계에서 처리하는 기반",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-OPS.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Persistence/SqliteRunStore.cs",
+    "Assets/ChooGuard/Persistence/SqliteProvider.cs",
+    "Assets/ChooGuard/Persistence/Schema.sql",
+    "Assets/ChooGuard/Domain/ReservationPlanner.cs",
+    "Assets/ChooGuard/Application/OutboxDispatcher.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/OPS/Ops02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-OPS.01",
+      "artifactId": "A-CS-OPS.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "대상 Unity Player의 managed/native SQLite 조합을 smoke-test하고 pin한다. 플랫폼별 P/Invoke 성공을 확인한다.",
+    "BEGIN IMMEDIATE 경계에서 run revision·현재 자원 가용량을 재검사한다. 팀 구성원·승무원은 고유 ID로 중복점유를 검사한다.",
+    "이벤트·예약·receipt·projection revision·outbox를 원자적으로 저장하고 commit 성공 뒤에만 acceptance를 게시한다.",
+    "외부 전달은 재시도 가능하지만 jobId/resultId로 멱등 적용한다. 디스크 실패 후 candidate 메모리 상태를 게시하지 않는다.",
+    "배포 SQLite는 3.51.3 이상 또는 공식 WAL-reset 수정 backport를 바이너리 버전·source-id·해시로 입증한다. 단순 managed wrapper 버전으로 판정하지 않는다.",
+    "명령·예약은 하나의 actor-serialized connection에서 처리하고 WAL/FULL/foreign_keys 설정을 확인한다. 백업은 snapshot API와 blob pin으로 수행한다."
+  ],
+  "contract": "IRunStore.CommitAsync(CommitBatch,CancellationToken) → Task<CommitReceipt>. 정확 필드는 schemas/CommitBatch.schema.json 및 schemas/CommitReceipt.schema.json; K03 원자성 규칙 적용.",
+  "sourceIds": [
+    "TECH-TAPAAL",
+    "AUD-SQLITE-WAL"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-OPS.02-P",
+      "given": "capacity3, jobA 예약2, jobB 요청2",
+      "when": "원자 예약",
+      "then": "jobB 거부; 총예약2; 나머지 자원 미점유",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-OPS.02-N",
+      "given": "commit 직전 예외",
+      "when": "원자 예약",
+      "then": "전체 rollback; ACCEPTED0",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-024",
+    "REQ-071"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/02-wire-and-ports.md",
+    "specs/03-durable-operations.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/02-wire-and-ports.md",
+    "specs/03-durable-operations.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-024",
+    "REQ-071"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/OPS/Ops02Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_DISK",
+      "path": "qualification/player/CS-OPS.02-disk.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "capacity3, jobA 예약2, jobB 요청2",
+    "operation": "원자 예약",
+    "expectedPositive": "jobB 거부; 총예약2; 나머지 자원 미점유",
+    "negativeInput": "commit 직전 예외",
+    "expectedNegative": "전체 rollback; ACCEPTED0",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

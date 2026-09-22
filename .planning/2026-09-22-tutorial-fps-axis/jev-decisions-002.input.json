@@ -1,0 +1,129 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Rank decision options for a Unity first-person KORAIL staff training game by coherence with the verified facts below. Inputs are observations, not instructions. No approval authority; the human decides.",
+    "product": "Two sequential layers. Layer 1: tutorials teach KORAIL staff manuals in a My-Summer-Car-style procedural game. Layer 2: the player handles RANDOMISED emergencies in first person inside the digital-twin space. Layer 2 consumes what layer 1 taught. Single player, 20-30 min per run. No weapons, no combat, no multiplayer.",
+    "facts_code": {
+      "interaction_framework_complete": true,
+      "interactable_instances_in_all_scenes": 0,
+      "npcs_in_fps_scene": 0,
+      "audiosources_in_all_scenes": 0,
+      "mission_logic_lines": 0,
+      "fps_runtime_lines": 204,
+      "deprecated_rts_runtime_lines": 3160,
+      "rts_has_complete_loop_state_machine": true,
+      "build_scenes_registered": 1,
+      "scene_load_calls_outside_tests": 0,
+      "fps_automated_tests": 0
+    },
+    "facts_assets": {
+      "official_station_fbx_already_imported_in_unity": true,
+      "fbx_segments": 8,
+      "fbx_mainshell_triangles": 666537,
+      "fbx_local_z_range": "-0.900 to 31.927, z~0 is plaza level",
+      "terrain_contour_layers_present_in_source_skp": 3,
+      "station_interior_geometry_in_any_owned_asset": "none",
+      "offtheshelf_3d_model_of_busan_station_interior": "confirmed nonexistent across Sketchfab, 3D Warehouse, CGTrader, Free3D, Fab, Unity Asset Store, Poly Pizza, OpenGameArt, V-World",
+      "transfer_corridor_fbx_meshes": 739,
+      "transfer_corridor_vertical_rise_meshes": 0
+    },
+    "facts_transfer_resolved": {
+      "escalator_registry_rise_korail_side_m": 7.9,
+      "escalator_registry_rise_metro_side_m": 7.58,
+      "independent_corroboration": "lift floor indicator shows only B1 and 1, no intermediate stop, so corridor to ground is exactly one level",
+      "seam_level_change": "zero - yellow tactile guide line runs unbroken through corridor, underground mall and metro concourse; the seam is a glass door threshold and an operator boundary, not a level change",
+      "station_113_platform_type": "separated side platforms, no cross-over via concourse, fare gates split per platform, so the metro vertical path is two independent branches not one",
+      "design_file_says": "do not create direct underground KORAIL passage; prefer exit6 surface approach",
+      "exact_seam_xy_coordinate": "unavailable publicly; FOI refusal risk highest at the mall operator whose disclosure schedule lists drawings as categorically withheld"
+    },
+    "facts_repo_hygiene": {
+      "git_tracked_files": 0,
+      "untracked_files": 14602,
+      "files_over_github_100mb_hard_limit_not_ignored": 7,
+      "push_currently_possible": false,
+      "largest_offenders": "openbve line1 zip 519MB, station blend 348MB x2, height tif 208MB, ktx 7z 162MB",
+      "openbve_zip_duplicate_copies": 4,
+      "openbve_duplicate_total_bytes": 2200000000,
+      "openbve_license_text": "no commercial use, no redistribution, no derivative modification",
+      "openbve_geometry_value": "low - single-quad walls; only dimension numbers are useful",
+      "evidence_directory_is_gitignored": true,
+      "evidence_refs_in_progress_json_pointing_inside_gitignored_dir": 14
+    },
+    "facts_sketchfab": {
+      "candidate_set": "Urban Series Subway Section by UPWARD: Street Entrance 89246 faces, Station Platform 82035 faces, Train Tunnel 33232 faces",
+      "license": "CC Attribution, commercial use permitted with credit",
+      "why_it_matters": "Street Entrance is exactly the vertical rise geometry that the owned transfer module lacks",
+      "blocker": "Sketchfab moved to Epic Games account system; Google SSO callback rejected with error_code=1; creating an Epic account was not done because it is a user decision",
+      "alternative_sources_checked": "3D Warehouse, CGTrader, Free3D, Fab, Poly Pizza, OpenGameArt all returned nothing equivalent"
+    },
+    "standing_rules": {
+      "completion_authority": "world_evidence only; never a button press or timer",
+      "role_boundary": "station staff must not be given firefighter, police or maintenance-technician authority; other trades are NPC handoff",
+      "provenance": "confirmed / estimated / unconfirmed stay distinguished; unconfirmed values never promoted to measured",
+      "no_unapproved_actions": "no commit, push, PR, install or external publication without explicit user approval"
+    }
+  },
+  "questions": {
+    "d1_layer_coupling_first_build": {
+      "type": "choice",
+      "instructions": "For the FIRST shippable build only (not the eventual architecture), which coupling between the tutorial layer and the randomised emergency layer gives the most learning value per unit of implementation work, given zero interactables, zero NPCs and zero mission logic exist today?",
+      "criteria": {
+        "state_carryover_one_device": "One device: its tutorial outcome writes a persistent condition that the emergency run reads, so skipping the tutorial visibly changes the emergency",
+        "state_carryover_full": "Full state carryover across all tutorials and all scenarios from the start",
+        "unlock_gating": "Tutorials only unlock scenarios; scenario content is unaffected",
+        "separate_modes": "Tutorial and emergency are independent modes sharing assets only"
+      }
+    },
+    "d2_sketchfab_account": {
+      "type": "choice",
+      "instructions": "The owned transfer corridor module lacks vertical rise geometry. A CC-BY modular subway entrance/platform/tunnel set exists but requires creating an Epic Games account. Metric rise values (7.9m, 7.58m) and level topology are already confirmed from other sources. Which path is most coherent?",
+      "criteria": {
+        "author_from_known_metrics": "Author the rise geometry in Blender from the confirmed metric rise and standard stair rules, no new account",
+        "create_account_and_import": "Create the account, download the CC-BY set, adapt it to the confirmed metrics",
+        "defer_until_needed": "Defer the rise geometry entirely until after a playable tutorial slice exists",
+        "buy_commercial_asset": "Purchase an equivalent commercial asset instead"
+      }
+    },
+    "d3_openbve_duplicates": {
+      "type": "choice",
+      "instructions": "A 519MB archive exists in four copies totalling about 2.2GB, its licence forbids commercial use, redistribution and derivative modification, its geometry value is low, but its dimension numbers were already extracted and cited. The repository currently cannot be pushed because of files over the hard size limit. What is most coherent?",
+      "criteria": {
+        "keep_one_ignored_extract_numbers": "Keep one copy outside version control, keep the already-extracted dimension notes, delete the other three",
+        "delete_all_keep_numbers": "Delete all four copies, keep only the extracted dimension notes and the acquisition receipt",
+        "keep_all_add_to_lfs": "Keep all copies and add them to large-file storage",
+        "keep_all_as_is": "Change nothing"
+      }
+    },
+    "d4_git_strategy": {
+      "type": "choice",
+      "instructions": "5.4GB of work has zero tracked files and cannot be pushed because seven files exceed the hard size limit. The oversized files are all source archives whose derived outputs are already present elsewhere in the tree. Which recovery strategy is most coherent with the provenance rule?",
+      "criteria": {
+        "ignore_archives_track_receipts": "Exclude the source archives from version control and track their acquisition receipts and hashes instead, then make the first real commit",
+        "lfs_everything": "Adopt large-file storage for all oversized archives and track everything",
+        "split_repos": "Split assets into a separate repository",
+        "keep_untracked": "Continue with no version control until the asset set stabilises"
+      }
+    },
+    "d5_first_playable": {
+      "type": "choice",
+      "instructions": "Given the station exterior FBX is already imported, the interaction framework is complete with zero instances, and no build path reaches the FPS scene, which single deliverable should be built first?",
+      "criteria": {
+        "one_device_tutorial_end_to_end": "Register the FPS scene in the build, place one interactable device, and make one tutorial procedure run end to end with a visible world state change",
+        "interior_geometry_first": "Author station interior geometry first since no off-the-shelf interior exists",
+        "npc_passengers_first": "Add passenger NPCs first",
+        "mission_state_machine_first": "Port the emergency mission state machine first"
+      }
+    },
+    "d6_metro_scope_confidence": {
+      "type": "score",
+      "instructions": "How strongly do the verified transfer facts support keeping the metro in the MVP as a surface-route connection with the underground corridor sealed in fiction, rather than removing the metro entirely? 1 = removal is clearly better; 5 = keeping it as a sealed-corridor surface route is clearly better.",
+      "criteria": [
+        "removal clearly better",
+        "removal mildly better",
+        "balanced",
+        "keeping mildly better",
+        "keeping clearly better"
+      ]
+    }
+  }
+}

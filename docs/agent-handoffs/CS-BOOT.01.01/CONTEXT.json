@@ -1,0 +1,474 @@
+{
+  "storyId": "CS-BOOT.01.01",
+  "planRevision": "6-review-inventory-handoff",
+  "sourceRefs": [
+    {
+      "path": "prompts/00-context-audit-max.md",
+      "section": "점검 순서·기록할 내용",
+      "sha256": "8ffef82c84f53d55304266de7e5cf3cc8e291e718d7f12ce75644e09350148af",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "prompts/01-plan-story-max.md",
+      "section": "PLAN.json 최소 항목",
+      "sha256": "f8d945f7ffcd33bd01dcb6e6dadfc914ada12ecb9ba3ca33e3a19a4699d2bac7",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "prompts/02-implement-story-low.md",
+      "section": "시작 점검·구현·최종 status",
+      "sha256": "8fd67046677ee6e46ef711f8f6002ff412e790149bac6b7d0a66a78e2b367fc5",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/GLOBAL_CONTRACT.md",
+      "section": "읽기·정본 / 수정·협업 경계 / 테스트·인계",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/plan.json",
+      "section": "CS-BOOT.01.01, CS-BOOT.02.01, CS-BOOT.03.01",
+      "sha256": "b57635dee70548214f611a1572dadb855047fbc7bf2e88d5846023c9a11e7307",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/tools/planlib.py",
+      "section": "validate_plan, validate_state, read_json, digest, safe_path",
+      "sha256": "be5ea847beb33f54fd7c83ecc7feccf7284f3695f40562d2ee64cbe5c121ffcb",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/tools/render_plan.py",
+      "section": "views",
+      "sha256": "24b840dc025aa5691f0c19baff48c95dd0e6340925d39818b9eea16641f83800",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py",
+      "section": "StaticPlanTests bootstrap ownership and ontology contracts",
+      "sha256": "c89b68e92cd71249ccb4354f737b1f61f8f686586b714e18d5d0bab0e80f294b",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/schemas/story.schema.json",
+      "section": "writes.operation CREATE/MODIFY",
+      "sha256": "f8a71ef65273bdd225c6c0453f09ad7c13452db9a69fae82e1c9979425df0437",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/specs/01-build-and-assemblies.md",
+      "section": "최초 부팅의 순환 제거·재현 가능한 환경·컴파일 구조·시험 실행 계약",
+      "sha256": "cbaef6bfdbf734cd033a06e45ea7f95e5bb9f13c746a7cf0fc245abdd5e9595e",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/specs/02-wire-and-ports.md",
+      "section": "기술 기준; 제품 wire 구현은 이번 범위 밖",
+      "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/specs/12-evidence-and-performance.md",
+      "section": "주장별 증거·기술 반복 검수",
+      "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/assembly-layout.json",
+      "section": "Editor 경계; 13개 최종 모듈 유지",
+      "sha256": "6b942b4795c61ed5571ec640910c9e942ad49628370f08c23536a5dcf38a6ffb",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "~/.claude/plans/distributed-churning-garden.md",
+      "section": "전체 승인 계획, 특히 Task 1·최소 경계 조정·구현 계약",
+      "sha256": "4ecadee4306dbe14fbc00fab2a10b73e7baa58e987f652566e1d1a46843610d8",
+      "hashKind": "raw-file-sha256"
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/state/evidence/CS-BOOT.01.01/20260920T002150Z-ecbf11/environment.json",
+      "section": "sanitized EXT-UNITY probe",
+      "sha256": "cf32a3636b827aca9996aa344924ccbcc3a6f8844721212655951df81da66e59",
+      "hashKind": "raw-file-sha256"
+    }
+  ],
+  "canonicalDigests": {
+    "planCurrent": "1399115c47999aae7825233666c4c3471fc2bdda43f99000d45f98c1718c65a4",
+    "storyCurrent": "f787db34bbfe57d5e748ad45d556d13df70a5a2fa6d8bb701e19ebe9969dd527"
+  },
+  "relatedSymbols": [
+    "public static void BootstrapProject.CreateBootstrapAssets();",
+    "public static void BootstrapProject.WriteBaseline();",
+    "public static void BootstrapProject.BuildDevelopmentPlayer();",
+    "public static BootstrapSnapshot BootstrapValidator.Capture(string projectRoot);",
+    "public static BootstrapValidationReport BootstrapValidator.Validate(BootstrapSnapshot snapshot);",
+    "public bool BootstrapValidationReport.IsValid { get; }",
+    "public IReadOnlyList<string> BootstrapValidationReport.Errors { get; }"
+  ],
+  "symbolsStatus": "Root product APIs implemented; fresh EditMode51/51 and PlayMode1/1; Windows/Player acceptance not verified.",
+  "graphRef": {
+    "path": "graphify-out/graph.json",
+    "sha256": "c8aff223d916b2eb73eac8e8478a42411da6f4562a9e8e1af4521893e2b2dacf",
+    "kind": "undirected context graph; not dependency authority",
+    "version": "0.9.64 (prior plan observation, not rerun)",
+    "freshness": "UNKNOWN",
+    "changes": "NOT_UPDATED; graph update prohibited in this task",
+    "queryMethod": "prior context investigation reused; no graph query or rebuild in this task",
+    "relationMapping": {
+      "requirement": "plan.story.requirementIds/supportsRequirementIds",
+      "consumes": "requires artifactId + producerStage + consumerStage + condition",
+      "produces": "outputs",
+      "validates": "acceptance/testKinds",
+      "writes": "writes/testFile",
+      "partOf": "parent classification only; never dependency",
+      "similarity": "not requires",
+      "confidence": "not approval"
+    },
+    "codeFreshness": "STALE",
+    "globalSemanticFreshness": "UNKNOWN"
+  },
+  "rawProbeSource": "${SESSION_SCRATCHPAD}/probe-evidence/report.json",
+  "rawProbeSha256": "d9af406176c42fd19b9b80a2dac88fe8e8471bf05f7a43d886f115d9207acb58",
+  "tmpResourcePolicy": {
+    "status": "APPLIED_AND_LOCALLY_TESTED",
+    "rootCopyAuthorized": true,
+    "resourcePaths": [
+      "Assets/ChooGuard/Settings/Resources/TMP Settings.asset",
+      "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset",
+      "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader",
+      "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc",
+      "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt",
+      "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt",
+      "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt"
+    ],
+    "metadataPaths": [
+      "Assets/ChooGuard.meta",
+      "Assets/ChooGuard/Settings.meta",
+      "Assets/ChooGuard/Settings/Resources.meta",
+      "Assets/ChooGuard/Settings/Resources/TMP Settings.asset.meta",
+      "Assets/ChooGuard/Settings/TMP.meta",
+      "Assets/ChooGuard/Settings/TMP/Fonts.meta",
+      "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset.meta",
+      "Assets/ChooGuard/Settings/TMP/LineBreaking.meta",
+      "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt.meta",
+      "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt.meta",
+      "Assets/ChooGuard/Settings/TMP/Shaders.meta",
+      "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader.meta",
+      "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc.meta",
+      "Assets/ChooGuard/ThirdPartyNotices.meta",
+      "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt.meta"
+    ],
+    "packageDependencyPolicy": "GetDependencies union includes two registry TMP scripts and one registry Editor icon; not copied to Assets",
+    "claimsExcluded": [
+      "legal certainty",
+      "Windows Player success",
+      "graphics render success",
+      "root product acceptance",
+      "coverage threshold"
+    ],
+    "verification": {
+      "path": "docs/build/evidence/CS-BOOT.01.01/20260920T023553Z-09c7d4/final-verification-repaired.json",
+      "sha256": "b0ed972a4b7306a4a2b460a7ee5c80917b43ec1012d4c491661c1b7db3f110db"
+    },
+    "stageProvenance": {
+      "status": "SCRATCH_VERIFIED_ROOT_BUILD_AUTHORIZED",
+      "resourcePaths": [
+        "Assets/ChooGuard/Settings/Resources/TMP Settings.asset",
+        "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt",
+        "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt"
+      ],
+      "metadataPaths": [
+        "Assets/ChooGuard.meta",
+        "Assets/ChooGuard/Settings.meta",
+        "Assets/ChooGuard/Settings/Resources.meta",
+        "Assets/ChooGuard/Settings/Resources/TMP Settings.asset.meta",
+        "Assets/ChooGuard/Settings/TMP.meta",
+        "Assets/ChooGuard/Settings/TMP/Fonts.meta",
+        "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset.meta",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking.meta",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt.meta",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt.meta",
+        "Assets/ChooGuard/Settings/TMP/Shaders.meta",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader.meta",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc.meta",
+        "Assets/ChooGuard/ThirdPartyNotices.meta",
+        "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt.meta"
+      ],
+      "rootCopyAuthorized": true,
+      "candidateManifest": {
+        "path": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/root-copy-candidate.json",
+        "sha256": "dc8f5023767158cd28eeb3c843579d3e5da09daa24357bd8fda1cf3bf813e41e"
+      },
+      "procedure": [
+        "Official Essential was staged only in isolated scratch; original source tree removed before final reload test",
+        "AssetDatabase.CopyAsset copied static SDF; exactly one font/material/atlas in one asset, renamed ChooGuard Bootstrap SDF series",
+        "Persistent serialized source GUID/path/sourceFontFile, creation source/reference fields and fallback table cleared; Static population",
+        "m_SourceFontFile_EditorRef is a nonserialized internal Editor cache; narrowly reflected, cleared and independently observed null after reload",
+        "New minimal TMP_Settings retains only default font and leading/following line-breaking assets; empty fallback/sprite/style/emoji/color-gradient refs/paths",
+        "One mobile shader plus actual TMPro_Properties.cginc closure, original bytes/GUIDs preserved; unused TMPro_Mobile.cginc excluded",
+        "OFL original bytes preserved; no separate material/atlas files or original fonts in candidates"
+      ],
+      "observation": {
+        "scope": "SCRATCH_STATIC_ASSET_TEST_NOT_PLAYER_OR_RENDER",
+        "editorVersion": "6000.3.23f1",
+        "resources": [
+          "Assets/ChooGuard/Settings/Resources/TMP Settings.asset",
+          "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset",
+          "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader",
+          "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc",
+          "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt",
+          "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt",
+          "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt"
+        ],
+        "dependencies": [
+          "Assets/ChooGuard/Settings/Resources/TMP Settings.asset",
+          "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset",
+          "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt",
+          "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt",
+          "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader",
+          "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc",
+          "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt",
+          "Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Font Asset Icon.psd",
+          "Packages/com.unity.ugui/Runtime/TMP/TMP_FontAsset.cs",
+          "Packages/com.unity.ugui/Runtime/TMP/TMP_Settings.cs"
+        ],
+        "packageDependencies": [
+          "Packages/com.unity.ugui/Editor Resources/Gizmos/TMP - Font Asset Icon.psd",
+          "Packages/com.unity.ugui/Runtime/TMP/TMP_FontAsset.cs",
+          "Packages/com.unity.ugui/Runtime/TMP/TMP_Settings.cs"
+        ],
+        "subassetTypes": [
+          "TMPro.TMP_FontAsset",
+          "UnityEngine.Material",
+          "UnityEngine.Texture2D"
+        ],
+        "subassetNames": [
+          "ChooGuard Bootstrap SDF",
+          "ChooGuard Bootstrap SDF Material",
+          "ChooGuard Bootstrap SDF Atlas"
+        ],
+        "shader": "TextMeshPro/Mobile/Distance Field",
+        "sourceEditorReferencePolicy": "Runtime/TMP/TMP_FontAsset.cs internal nonserialized Editor cache; reflection checked null",
+        "marker": "CHOOGuard bootstrap",
+        "markerGlyphsPresent": true
+      },
+      "packageDependencyPolicy": "GetDependencies union includes two registry TMP scripts and one registry Editor icon; not copied to Assets",
+      "shaderClosure": {
+        "archiveSha256": "58564ec64cef8a8cea3d0b8ffb5e6fecf4176d544a2f6a29a2b43a0a33256431",
+        "files": [
+          {
+            "sourceArchivePath": "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader",
+            "archiveGuid": "fe393ace9b354375a9cb14cdbbc28be4",
+            "sha256": "44c39aabc7e88e7e1feffc1880df754f4adf86b62e9512aa89e9d2d65171aff4",
+            "includes": [
+              "#include \"UnityCG.cginc\"",
+              "#include \"UnityUI.cginc\"",
+              "#include \"TMPro_Properties.cginc\""
+            ],
+            "selected": true
+          },
+          {
+            "sourceArchivePath": "Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc",
+            "archiveGuid": "3997e2241185407d80309a82f9148466",
+            "sha256": "66db1f03e8d7a413eba79bcb6602fdb2de710b586f34a6f2584ed6f68f028e90",
+            "includes": [],
+            "selected": true
+          },
+          {
+            "sourceArchivePath": "Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc",
+            "archiveGuid": "c334973cef89a9840b0b0c507e0377ab",
+            "sha256": "d9d43ddd9810476162f21b42477d9ce2cdc4e6cc7571d354c3253aafc6673ead",
+            "includes": [],
+            "selected": false
+          }
+        ],
+        "conclusion": "TMPro_Mobile.cginc is not included by installed TMP_SDF-Mobile.shader or TMPro_Properties.cginc; excluded from actual root copy candidate under coordinator clarification."
+      },
+      "verification": {
+        "path": "docs/build/evidence/CS-BOOT.01.01/20260920T002730Z-b4c5b4/verification.json",
+        "sha256": "30880abe1213e42474437424928d612afe61b73b60db418af15d5053e2c3d995"
+      },
+      "claimsExcluded": [
+        "legal certainty",
+        "Windows Player success",
+        "graphics render success",
+        "root product acceptance",
+        "coverage threshold"
+      ]
+    }
+  },
+  "status": "IMPLEMENTED_NOT_VERIFIED",
+  "statusReason": "Two authorized repair categories addressed (Terra MEDIUM1, Sol followup MEDIUM3: four individual findings); fresh local evidence complete, Windows acceptance unverified. Post-repair independent review not performed.",
+  "implementationHandoff": "docs/agent-handoffs/CS-BOOT.01.01/IMPLEMENTATION.json",
+  "evidenceRoot": "docs/build/evidence/CS-BOOT.01.01/20260920T023553Z-09c7d4",
+  "sourceTreeDigest": "ebc9e92b0ee88779e10c6ea2c195cc1a3d22d7db8bca7198fc5c296f0cca23e0",
+  "buildOutputContract": {
+    "requiredArgs": [
+      "-cgBuildTarget",
+      "-cgBuildRoot",
+      "-cgBuildOutput"
+    ],
+    "approvedCallerRoot": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad",
+    "reason": "Path.GetTempPath differs from session scratch; caller provides approved root, code enforces boundaries but does not attest human approval. No fallback/attestation.",
+    "validationOrder": [
+      "exact args and absolute paths",
+      "existing non-symlink root/parent; strict containment; reject project overlap and any existing leaf",
+      "module/Windows host check; unsupported receipt NOT_RUN without validator/output",
+      "supported target validator then actual Development BuildReport"
+    ],
+    "comparison": "separator-aware canonical full path, conservative OrdinalIgnoreCase, reject every existing symlink/reparse component and dangling leaf",
+    "raceLimitation": "Preflight does not claim resistance to deliberate filesystem races",
+    "requiredTests": [
+      "missing/duplicate/relative/no fallback",
+      "outside/equal root",
+      "existing file/directory",
+      "root project equal/ancestor/descendant including case alias",
+      "root/parent/leaf symlink and dangling",
+      "unsupported Windows no output/validator/fallback",
+      "valid fresh scratch output"
+    ],
+    "historicalMacInvocation": [
+      "-cgBuildTarget",
+      "StandaloneOSX",
+      "-cgBuildRoot",
+      "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad",
+      "-cgBuildOutput",
+      "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/mac-build-final/CHOOGuard.app"
+    ],
+    "latestWindowsInvocation": [
+      "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity",
+      "-batchmode",
+      "-projectPath",
+      "/Users/um-yunsang/CHOOGuard",
+      "-logFile",
+      "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/root-unity-raw/20260920T023553Z-09c7d4/windows-cli-not-run/editor.log",
+      "-quit",
+      "-executeMethod",
+      "ChooGuard.Editor.Bootstrap.BootstrapProject.BuildDevelopmentPlayer",
+      "-cgBuildTarget",
+      "StandaloneWindows64",
+      "-cgBuildRoot",
+      "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad",
+      "-cgBuildOutput",
+      "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/review-repair-windows.exe"
+    ],
+    "reportedOutputPolicy": "Collect existing returned report paths before result verdict; FAILED propagates; UNOBSERVED/INCOMPLETE reason on missing report or inventory failure, no directory crawler."
+  },
+  "finalVerificationRef": {
+    "path": "docs/build/evidence/CS-BOOT.01.01/20260920T023553Z-09c7d4/final-verification-repaired.json",
+    "sha256": "b0ed972a4b7306a4a2b460a7ee5c80917b43ec1012d4c491661c1b7db3f110db"
+  },
+  "stageProvenance": {
+    "beforeReviewRepair": {
+      "snapshotRef": {
+        "path": "docs/build/evidence/CS-BOOT.01.01/20260920T023553Z-09c7d4/before/docs/agent-handoffs/CS-BOOT.01.01/CONTEXT.json",
+        "sha256": "03eded54714963b32b42e14a4191c54f609a1063ecbb48cec21120b8630f8224"
+      },
+      "meaning": "Full previous handoff preserved verbatim; stale stages here are history, not current state."
+    },
+    "rootBoundaryInspection": {
+      "path": "docs/build/evidence/CS-BOOT.01.01/20260920T010925Z-20b06c/boundary-inspection.json",
+      "sha256": "f6451333a5e71add63c264edcf49ea7f87dae34551fa945d7a59de54d20a38b0"
+    },
+    "canonicalDigests": {
+      "planBefore": "a72479df58f7fe7758ad9c12a14e6382e7ad3d7f96e38460e2e851d012c467f9",
+      "planCurrent": "1399115c47999aae7825233666c4c3471fc2bdda43f99000d45f98c1718c65a4",
+      "storyCurrent": "f787db34bbfe57d5e748ad45d556d13df70a5a2fa6d8bb701e19ebe9969dd527"
+    },
+    "scratchSymbols": [
+      "BootstrapProject.StageTmpResources",
+      "CSBOOT0101Tests.TmpStaticWhitelist_HasDetachedSourcesAndClosedDependencies",
+      "CSBOOT0101Tests.TmpStageGuard_RejectsRootMismatchAndChangedManifest"
+    ]
+  },
+  "actualModelEffort": {
+    "model": "UNKNOWN",
+    "effort": "UNKNOWN",
+    "requestedRouting": "Astra low; not changed",
+    "evidence": "Runtime model/effort not independently introspected; requested routing is not proof",
+    "launchConfigurationEvidence": {
+      "scriptPath": "/Users/um-yunsang/.claude/projects/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/workflows/scripts/chooguard-bootstrap-boundaries-wf_9036261f-05a.js",
+      "scriptSha256": "d328b923d8445e9374dda7e7855a128b7cbd9e38733d646bd956d3533230ef9b",
+      "line": 6,
+      "configuredModel": "claude-ocx-native--gpt-6-astra",
+      "configuredEffort": "low",
+      "journalPath": "/Users/um-yunsang/.claude/projects/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/subagents/workflows/wf_9036261f-05a/journal.jsonl",
+      "startedAgentId": "af0115aa91a905c7d",
+      "scope": "Harness launch configuration, not independent execution-provider attestation. Same agent resumed; no routing change."
+    }
+  },
+  "claim": {
+    "id": "CS-BOOT.01.01-candidate-fixture-20260920T010925Z-20b06c",
+    "status": "RELEASED",
+    "records": [],
+    "resourceIds": [
+      "UNITY_EDITOR_SINGLE_INSTANCE"
+    ]
+  },
+  "notRun": [
+    "Windows Player build/run NOT_RUN: macOS host; explicit CLI observed no supported Windows module/host and no output.",
+    "Mac Player execution NOT_RUN; historical Mac build succeeded on pre-build input only, not repaired final-source runtime evidence. No rebuild required for this repair.",
+    "Game View/manual screen/physical pointer/OS IME acceptance MANUAL_NOT_RUN.",
+    "Standalone OFL distribution notice NOT_CONFIRMED; not deployment-ready and no legal-certainty claim.",
+    "Coverage NOT_MEASURED.",
+    "Post-repair independent review NOT_RUN; Terra/Sol reviewed only source 763c09ae5ab28f61a978f58fa5fe548184ee460622e1523a14e8f88ed83abbe3.",
+    "Three rdflib-dependent ontology tests NOT_RUN; missing dependency was not installed.",
+    "Graph update NOT_RUN; codeFreshness=STALE; globalSemanticFreshness=UNKNOWN."
+  ],
+  "remainingRisks": [
+    "Windows AC-CS-BOOT.01.01-P / AT-066 not accepted; progress records remain empty.",
+    "First two generator reruns lack prior raw scene copies: field-level changes and semantic equality UNKNOWN. Later retained saved-scene pair is separate limited evidence.",
+    "Mac pre/post hashes changed three authorized paths; no raw pre-build copies of those three files were saved. Full field-level diff UNKNOWN, final-source/Mac-output equality UNPROVEN. Historical Mac receipt unchanged.",
+    "19 same-owned-file persistent VolumeComponents observed with hidden flags and IsSubAsset=false. No flag-toggle experiment established the cause of that classification.",
+    "Detailed identity-oracle substitution proposal was reported after editing, before the late pre-edit-report instruction arrived; no prior approval claimed.",
+    "Private seam regression simulates BuildResult and report path retrieval with real scratch files. It is not an actual Unity failed/cancelled BuildReport integration run; no new full Mac build.",
+    "Filesystem preflight is not an adversarial-race lock; arbitrary nonempty VolumeComponent cross-reference cloning remains unproven.",
+    "Docs-root ledger/product-root evidence boundary unchanged; no acceptance framework or schema modification."
+  ],
+  "sourceCollection": {
+    "commandSourceHashes": {
+      "fileCount": 78,
+      "scope": [
+        "Assets",
+        "Packages",
+        "ProjectSettings"
+      ],
+      "schemaIncluded": false
+    },
+    "manifestAndReceiptDigest": {
+      "fileCount": 79,
+      "scope": [
+        "Assets",
+        "Packages",
+        "ProjectSettings",
+        "docs/build/baseline.schema.json"
+      ],
+      "schemaIncluded": true
+    },
+    "historicalCommands": "Unmodified; different collection scope is explicit, not silently backfilled",
+    "separateSchemaCapture": {
+      "notCaptured": [
+        "editmode-inventory-red",
+        "editmode-final"
+      ],
+      "capturedBeforeInvocation": [
+        "playmode-final",
+        "windows-cli-not-run",
+        "baseline-final"
+      ],
+      "field": "schemaSha256; not added to sourceHashes or historical commands"
+    }
+  },
+  "historicalEvidenceNotes": [
+    "Historical final-verification.json sameInputInvocations proves product78 equality, not full79 per-invocation identity; that raw report and all old commands/XML/receipts are preserved.",
+    "Historical baseline original path now points to new baseline; prior bytes are preserved at historicalBaselineSnapshotRef, restoring old hash 38988fdd332fdcb0ea38ea6aad08068b2eb25f91fe1520373b9a67e70bd72e8e.",
+    "No raw pre-Mac copies of three drifted source files; full field-level diff UNKNOWN.",
+    "No hide-flag toggle experiment and no claim of prior approval of the detailed replacement oracle.",
+    "Terra identity-oracle conclusion is prior-source evidence only; post-repair Terra/Sol review NOT_RUN."
+  ]
+}

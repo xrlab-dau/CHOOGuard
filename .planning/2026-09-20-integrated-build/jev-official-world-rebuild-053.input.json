@@ -1,0 +1,43 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "userDirection": "Replace legacy model with downloaded official Busan Station+KTX; rebuild active open world. Direction is not measurement.",
+    "evidence": [
+      "Actual66MB station SKP, official source, metre conversion checked; wholecontext447x450m,4.1Mtriangles,51chunks; main shell670ktriangles",
+      "SKP isGeoReferenced=false; stored37.5/127 is default-like, notBusan authority",
+      "Rigid sourcefacade→OSMfit scale1, yawXY-0.437deg,translation(-41.342,-19.308)m,78samples RMS0.0855m; independentrailheadingdifference0.155deg. This fits two representations, notsurvey",
+      "Existing city512m combinedbatches cannot beremoved aswholeobjects withoutlosingoutsidegeometry",
+      "Existingfloors0/5/10m vs sourcehighest31.927m; interiorwalkabletopology notestablished"
+    ],
+    "plan": "Astra-low separatedowners: sourcefullsegmentedexport/material/registration+coverage, newbinder inactive-staging/safe publication, City+Surfaceclipreplacement preserving outside. Rootnativeaxis/material/geometry/seam/floor/navigationchecks. Originalrawsource/backups retained; oldactiveoverlapremoved."
+  },
+  "questions": {
+    "fitMeaning": {
+      "type": "choice",
+      "instructions": "What can registration residual justify?",
+      "criteria": {
+        "cross_representation_fit": "Closeness to selected OSMoutline only; independent siteaccuracy remainsunknown",
+        "survey_twin": "Actual station accuracy within0.09m includinginteriors",
+        "irrelevant": "Metre scaleandOSMfit provide no placement evidence"
+      }
+    },
+    "coverage": {
+      "type": "choice",
+      "instructions": "Which world replacement path preserves requestedregion?",
+      "criteria": {
+        "clip_source_coverage": "Use actualsourcecoverage for clippedreplacement and regenerateoutsidegeodata; separatelytestseams",
+        "delete_tile": "Deleteevery512mrendererwhoseboundsintersectmodel",
+        "overlay_all": "Stackallnewsourcegeometryoveralloldgeometry"
+      }
+    },
+    "nextGate": {
+      "type": "choice",
+      "instructions": "Most important beforeactivepublication?",
+      "criteria": {
+        "native_axis_material_and_seams": "Verify nativecoordinate mapping/material textures, explicitreplacementcoverage andfunctionalreferences; retaininteriorunknown",
+        "source_preview_only": "PublishA because Blender preview looksdetailed",
+        "scale_to_old": "Squashsourceheighttokeepoldfloorplaceholderswithoutcompatibilityreview"
+      }
+    }
+  }
+}

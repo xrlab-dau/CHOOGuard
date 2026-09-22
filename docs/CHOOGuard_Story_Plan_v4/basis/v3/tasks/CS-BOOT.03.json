@@ -1,0 +1,160 @@
+{
+  "id": "CS-BOOT.03",
+  "epicId": "CS-BOOT",
+  "title": "새 테스트·빌드 실행 경로",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-BOOT.03",
+    "description": "EditMode·PlayMode·Player 실행과 원시 결과 보존 명령",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-BOOT.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "scripts/Run-UnityTests.ps1",
+    "scripts/Build-Player.ps1",
+    ".github/workflows/verify.yml",
+    "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef",
+    "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef",
+    "Assets/ChooGuard/Editor/BuildCommands.cs",
+    "Assets/ChooGuard/Tests/Acceptance/ChooGuard.AcceptanceTests.asmdef",
+    "scripts/Run-PlayerAcceptance.ps1"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/BOOT/Boot03Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-BOOT.01",
+      "artifactId": "A-CS-BOOT.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-BOOT.02",
+      "artifactId": "A-CS-BOOT.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "UNITY_EDITOR_PATH와 PROJECT_PATH를 입력받아 Test Framework를 실행하고 결과 XML·로그·exit code를 보존한다.",
+    "라이선스/장치가 없는 CI는 미실행으로 실패 또는 중립 상태를 명시하고 임의 PASS를 만들지 않는다.",
+    "일반 compile smoke와 Player의 렌더·IME·입력·디스크 시험을 분리한다."
+  ],
+  "contract": "TestReceipt {testSet, commit, environment, startedAt, command, resultFiles, status, notRunReason}; CI credential은 저장소에 넣지 않는다.",
+  "sourceIds": [
+    "AUD-UNITY-ASSEMBLY"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-BOOT.03-P",
+      "given": "실패 시험1개와 새 결과 경로",
+      "when": "test runner 실행",
+      "then": "실패 XML과 nonzero exit",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-BOOT.03-N",
+      "given": "시험0개 또는 stale XML",
+      "when": "test runner 실행",
+      "then": "NO_TESTS_OR_STALE_RESULT",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-061"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/01-build-and-assemblies.md",
+    "specs/02-wire-and-ports.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/01-build-and-assemblies.md",
+    "specs/02-wire-and-ports.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-061"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/BOOT/Boot03Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSBOOT03PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-BOOT.03.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "실패 시험1개와 새 결과 경로",
+    "operation": "test runner 실행",
+    "expectedPositive": "실패 XML과 nonzero exit",
+    "negativeInput": "시험0개 또는 stale XML",
+    "expectedNegative": "NO_TESTS_OR_STALE_RESULT",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

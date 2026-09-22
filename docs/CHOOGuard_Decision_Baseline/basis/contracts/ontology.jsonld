@@ -1,0 +1,1682 @@
+{
+  "@context": {
+    "cg": "urn:chooguard:v10:",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "label": "rdfs:label",
+    "comment": "rdfs:comment",
+    "domain": {
+      "@id": "rdfs:domain",
+      "@type": "@id"
+    },
+    "range": {
+      "@id": "rdfs:range",
+      "@type": "@id"
+    },
+    "subClassOf": {
+      "@id": "rdfs:subClassOf",
+      "@type": "@id"
+    },
+    "status": "cg:status",
+    "verifiedByTest": {
+      "@id": "cg:verifiedByTest",
+      "@type": "@id"
+    },
+    "implementedBy": {
+      "@id": "cg:implementedBy",
+      "@type": "@id"
+    }
+  },
+  "@graph": [
+    {
+      "@id": "cg:ontology",
+      "@type": "owl:Ontology",
+      "label": "CHOOGuard 운영 시뮬레이션 PRD v10 설계 어휘",
+      "status": "DESIGN_SPEC_NOT_RUNTIME_QUALIFICATION"
+    },
+    {
+      "@id": "cg:PhysicalSite",
+      "@type": "owl:Class",
+      "label": "PhysicalSite",
+      "comment": "실제 장소. 가상 공간과 다르다.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:PhysicalAsset",
+      "@type": "owl:Class",
+      "label": "PhysicalAsset",
+      "comment": "실제 시설·차량·장비의 대응물.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:SourceDocument",
+      "@type": "owl:Class",
+      "label": "SourceDocument",
+      "comment": "출처와 판본이 있는 자료. URL 존재만으로 입고가 아니다.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:AcquisitionReceipt",
+      "@type": "owl:Class",
+      "label": "AcquisitionReceipt",
+      "comment": "원본 취득·hash·범위를 기록.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Observation",
+      "@type": "owl:Class",
+      "label": "Observation",
+      "comment": "시간·대상·단위·원시근거가 있는 현실 관측.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:SpatialWorld",
+      "@type": "owl:Class",
+      "label": "SpatialWorld",
+      "comment": "맵·연결·객체·프레임의 버전된 모델.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Zone",
+      "@type": "owl:Class",
+      "label": "Zone",
+      "comment": "공간 구역.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Portal",
+      "@type": "owl:Class",
+      "label": "Portal",
+      "comment": "구역 사이의 통과 연결.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Representation",
+      "@type": "owl:Class",
+      "label": "Representation",
+      "comment": "시각·충돌·보행·계산 표현.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Agency",
+      "@type": "owl:Class",
+      "label": "Agency",
+      "comment": "실제 기관별 주체. 기능군과 다르다."
+    },
+    {
+      "@id": "cg:Team",
+      "@type": "owl:Class",
+      "label": "Team",
+      "comment": "소속·인력·차량·장비 결속."
+    },
+    {
+      "@id": "cg:Role",
+      "@type": "owl:Class",
+      "label": "Role",
+      "comment": "임무·능력의 역할."
+    },
+    {
+      "@id": "cg:AuthorityScope",
+      "@type": "owl:Class",
+      "label": "AuthorityScope",
+      "comment": "관할과 명령/협조 권한.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Task",
+      "@type": "owl:Class",
+      "label": "Task",
+      "comment": "조건·자원·결과를 가진 업무.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Reservation",
+      "@type": "owl:Class",
+      "label": "Reservation",
+      "comment": "개별 자원의 원자적 점유.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Message",
+      "@type": "owl:Class",
+      "label": "Message",
+      "comment": "발신·수신·확인·만료를 가진 정보.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Handover",
+      "@type": "owl:Class",
+      "label": "Handover",
+      "comment": "권한·업무·대상의 검토된 인계.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ManualClause",
+      "@type": "owl:Class",
+      "label": "ManualClause",
+      "comment": "판본·절·적용범위가 있는 원문 근거.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:RuleCandidate",
+      "@type": "owl:Class",
+      "label": "RuleCandidate",
+      "comment": "미승인 규칙 후보.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ApprovedRule",
+      "@type": "owl:Class",
+      "label": "ApprovedRule",
+      "comment": "정해진 주체·범위에 대한 검토 결과가 연결된 규칙.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ScenarioSpec",
+      "@type": "owl:Class",
+      "label": "ScenarioSpec",
+      "comment": "상황·초기조건·사건생성 규격.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:OperationalPlan",
+      "@type": "owl:Class",
+      "label": "OperationalPlan",
+      "comment": "역할별 조건부 업무·공조 규칙.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:RunSession",
+      "@type": "owl:Class",
+      "label": "RunSession",
+      "comment": "하나의 실제 프로그램 실행.",
+      "subClassOf": "prov:Activity"
+    },
+    {
+      "@id": "cg:Event",
+      "@type": "owl:Class",
+      "label": "Event",
+      "comment": "실제로 처리된 사건·상태 변화.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Snapshot",
+      "@type": "owl:Class",
+      "label": "Snapshot",
+      "comment": "전체 상태와 외부 solver 복원 범위를 가진 스냅샷.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Branch",
+      "@type": "owl:Class",
+      "label": "Branch",
+      "comment": "기존 기록을 보존하는 독립 실험 분기.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ModelRun",
+      "@type": "owl:Class",
+      "label": "ModelRun",
+      "comment": "모델·가중치·입력·명령·출력이 결속된 실행.",
+      "subClassOf": "prov:Activity"
+    },
+    {
+      "@id": "cg:ModelQualification",
+      "@type": "owl:Class",
+      "label": "ModelQualification",
+      "comment": "모델의 목적·영역·오차·불확도·기간 자격.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:QoIContract",
+      "@type": "owl:Class",
+      "label": "QoIContract",
+      "comment": "사전 고정된 출력수량·단위·오차·검증 계약.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Evidence",
+      "@type": "owl:Class",
+      "label": "Evidence",
+      "comment": "원시 결과와 주장의 범위.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ReviewDecision",
+      "@type": "owl:Class",
+      "label": "ReviewDecision",
+      "comment": "사람 검토의 주체·권한·scope·대상버전.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ScriptBundle",
+      "@type": "owl:Class",
+      "label": "ScriptBundle",
+      "comment": "선택 운영안의 대본·실행형 파생물.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Requirement",
+      "@type": "owl:Class",
+      "label": "Requirement",
+      "comment": "제품이 충족해야 할 계약.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:AcceptanceTest",
+      "@type": "owl:Class",
+      "label": "AcceptanceTest",
+      "comment": "향후 제품 인수시험 정의.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:WorkPackage",
+      "@type": "owl:Class",
+      "label": "WorkPackage",
+      "comment": "단계별 구현·인계 단위.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:represents",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Representation",
+      "range": "cg:PhysicalAsset",
+      "comment": "표현과 실물을 연결하되 실측 일치를 암묵적으로 보장하지 않음."
+    },
+    {
+      "@id": "cg:usesWorld",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScenarioSpec",
+      "range": "cg:SpatialWorld",
+      "comment": "초기 조건이 참조하는 맵 버전."
+    },
+    {
+      "@id": "cg:belongsToAgency",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Team",
+      "range": "cg:Agency",
+      "comment": "기관별 소속."
+    },
+    {
+      "@id": "cg:hasAuthority",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Role",
+      "range": "cg:AuthorityScope",
+      "comment": "소속 기관·상황별 권한."
+    },
+    {
+      "@id": "cg:requiresTask",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Task",
+      "range": "cg:Task",
+      "comment": "특정 선행 완료·인계 조건; 시간 및 예외는 별도 payload."
+    },
+    {
+      "@id": "cg:reservesFor",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Reservation",
+      "range": "cg:Task",
+      "comment": "자원 점유가 어느 업무에 필요한지."
+    },
+    {
+      "@id": "cg:justifiedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:RuleCandidate",
+      "range": "cg:ManualClause",
+      "comment": "출처 연결이며 자동 승인 아님."
+    },
+    {
+      "@id": "cg:approvedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ApprovedRule",
+      "range": "cg:ReviewDecision",
+      "comment": "권한·판본·scope가 맞는 실제 검토만 허용."
+    },
+    {
+      "@id": "cg:executesPlan",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:RunSession",
+      "range": "cg:OperationalPlan",
+      "comment": "실행 입력이 되는 운영안."
+    },
+    {
+      "@id": "cg:hasEvent",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:RunSession",
+      "range": "cg:Event",
+      "comment": "실행 사실."
+    },
+    {
+      "@id": "cg:forkedFrom",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Branch",
+      "range": "cg:Snapshot",
+      "comment": "스냅샷의 복원 가능한 범위 안에서 분기."
+    },
+    {
+      "@id": "cg:validatedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ModelQualification",
+      "range": "cg:Evidence",
+      "comment": "조건·버전·domain을 결속한 증거."
+    },
+    {
+      "@id": "cg:derivedFromPlan",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScriptBundle",
+      "range": "cg:OperationalPlan",
+      "comment": "대본 정본을 선택한 조건부 운영안에 연결."
+    },
+    {
+      "@id": "cg:citesEvidence",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScriptBundle",
+      "range": "cg:Evidence",
+      "comment": "로그의 사실과 규범 근거를 구분."
+    },
+    {
+      "@id": "cg:verifiedByTest",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Requirement",
+      "range": "cg:AcceptanceTest",
+      "comment": "시험 명세 연결은 시험 실행 완료가 아님."
+    },
+    {
+      "@id": "cg:implementedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Requirement",
+      "range": "cg:WorkPackage",
+      "comment": "계획된 책임 분해이며 완료나 쓰기권한 아님."
+    },
+    {
+      "@id": "cg:REQ-001",
+      "@type": "cg:Requirement",
+      "label": "작성자 중심 전체 운영 여정",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-001"
+      ],
+      "implementedBy": "cg:EP10"
+    },
+    {
+      "@id": "cg:REQ-002",
+      "@type": "cg:Requirement",
+      "label": "두 사용자 모드와 동일 코어",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-002"
+      ],
+      "implementedBy": "cg:EP06"
+    },
+    {
+      "@id": "cg:REQ-003",
+      "@type": "cg:Requirement",
+      "label": "튜토리얼 출처·재구성 표시",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-003"
+      ],
+      "implementedBy": "cg:EP06"
+    },
+    {
+      "@id": "cg:REQ-004",
+      "@type": "cg:Requirement",
+      "label": "부분순서와 유효 대안 학습",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-004"
+      ],
+      "implementedBy": "cg:EP06"
+    },
+    {
+      "@id": "cg:REQ-005",
+      "@type": "cg:Requirement",
+      "label": "조건부 랜덤 초기 상태",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-005"
+      ],
+      "implementedBy": "cg:EP06"
+    },
+    {
+      "@id": "cg:REQ-006",
+      "@type": "cg:Requirement",
+      "label": "불가능·범위밖 상황 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-006"
+      ],
+      "implementedBy": "cg:EP06"
+    },
+    {
+      "@id": "cg:REQ-007",
+      "@type": "cg:Requirement",
+      "label": "생성기 재현·거부 기록",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-007"
+      ],
+      "implementedBy": "cg:EP06"
+    },
+    {
+      "@id": "cg:REQ-008",
+      "@type": "cg:Requirement",
+      "label": "RTS 팀·차량 선택",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-008"
+      ],
+      "implementedBy": "cg:EP04"
+    },
+    {
+      "@id": "cg:REQ-009",
+      "@type": "cg:Requirement",
+      "label": "업무 우선 배정",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-009"
+      ],
+      "implementedBy": "cg:EP04"
+    },
+    {
+      "@id": "cg:REQ-010",
+      "@type": "cg:Requirement",
+      "label": "혼합기관 선택 결과 확인",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-010"
+      ],
+      "implementedBy": "cg:EP04"
+    },
+    {
+      "@id": "cg:REQ-011",
+      "@type": "cg:Requirement",
+      "label": "작성자 전지적 보기와 기관 정보",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-011"
+      ],
+      "implementedBy": "cg:EP04"
+    },
+    {
+      "@id": "cg:REQ-012",
+      "@type": "cg:Requirement",
+      "label": "취소·큐·지원요청 조작",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-012"
+      ],
+      "implementedBy": "cg:EP04"
+    },
+    {
+      "@id": "cg:REQ-013",
+      "@type": "cg:Requirement",
+      "label": "다축 상태·복수 원인 표시",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-013"
+      ],
+      "implementedBy": "cg:EP04"
+    },
+    {
+      "@id": "cg:REQ-014",
+      "@type": "cg:Requirement",
+      "label": "현실 기반 연결 맵",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-014"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-015",
+      "@type": "cg:Requirement",
+      "label": "기존 13구역 식별자 보존",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-015"
+      ],
+      "implementedBy": "cg:EP11"
+    },
+    {
+      "@id": "cg:REQ-016",
+      "@type": "cg:Requirement",
+      "label": "층·지붕·LOD와 운영 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-016"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-017",
+      "@type": "cg:Requirement",
+      "label": "네 표현과 같은 객체 결속",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-017"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-018",
+      "@type": "cg:Requirement",
+      "label": "좌표·단위·도킹 시험",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-018"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-019",
+      "@type": "cg:Requirement",
+      "label": "이동 엔진 단일 권위",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-019"
+      ],
+      "implementedBy": "cg:EP07"
+    },
+    {
+      "@id": "cg:REQ-020",
+      "@type": "cg:Requirement",
+      "label": "구역 미준비·로딩 실패 처리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-020"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-021",
+      "@type": "cg:Requirement",
+      "label": "소속 권한·공조 요청 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-021"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-022",
+      "@type": "cg:Requirement",
+      "label": "지휘 인계 버전·범위",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-022"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-023",
+      "@type": "cg:Requirement",
+      "label": "도착·등록·대기자원",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-023"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-024",
+      "@type": "cg:Requirement",
+      "label": "복합 자원 원자 예약",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-024"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-025",
+      "@type": "cg:Requirement",
+      "label": "팀 분리와 capability 재계산",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-025"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-026",
+      "@type": "cg:Requirement",
+      "label": "업무 완료와 재가용 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-026"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-027",
+      "@type": "cg:Requirement",
+      "label": "메시지 수명·중복·만료",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-027"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-028",
+      "@type": "cg:Requirement",
+      "label": "지식 불확실성·시점 보존",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-028"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-029",
+      "@type": "cg:Requirement",
+      "label": "수용·인계·종료 조건",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-029"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-030",
+      "@type": "cg:Requirement",
+      "label": "순환대기·외부대기 분류",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-030"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-031",
+      "@type": "cg:Requirement",
+      "label": "매뉴얼 출처·판본·적용범위",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-031"
+      ],
+      "implementedBy": "cg:EP01"
+    },
+    {
+      "@id": "cg:REQ-032",
+      "@type": "cg:Requirement",
+      "label": "원문 기반 후보 추출",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-032"
+      ],
+      "implementedBy": "cg:EP01"
+    },
+    {
+      "@id": "cg:REQ-033",
+      "@type": "cg:Requirement",
+      "label": "필수·재량·공학제약 구별",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-033"
+      ],
+      "implementedBy": "cg:EP01"
+    },
+    {
+      "@id": "cg:REQ-034",
+      "@type": "cg:Requirement",
+      "label": "규칙 개정 영향분석",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-034"
+      ],
+      "implementedBy": "cg:EP01"
+    },
+    {
+      "@id": "cg:REQ-035",
+      "@type": "cg:Requirement",
+      "label": "시뮬레이션 시간 통제",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-035"
+      ],
+      "implementedBy": "cg:EP05"
+    },
+    {
+      "@id": "cg:REQ-036",
+      "@type": "cg:Requirement",
+      "label": "완전 checkpoint/정직한 재시작",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-036"
+      ],
+      "implementedBy": "cg:EP05"
+    },
+    {
+      "@id": "cg:REQ-037",
+      "@type": "cg:Requirement",
+      "label": "원본 불변·분기 혈통",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-037"
+      ],
+      "implementedBy": "cg:EP05"
+    },
+    {
+      "@id": "cg:REQ-038",
+      "@type": "cg:Requirement",
+      "label": "공정한 A/B 외생 조건",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-038"
+      ],
+      "implementedBy": "cg:EP05"
+    },
+    {
+      "@id": "cg:REQ-039",
+      "@type": "cg:Requirement",
+      "label": "다목적·불확도 비교",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-039"
+      ],
+      "implementedBy": "cg:EP05"
+    },
+    {
+      "@id": "cg:REQ-040",
+      "@type": "cg:Requirement",
+      "label": "선정·평가 자료 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-040"
+      ],
+      "implementedBy": "cg:EP10"
+    },
+    {
+      "@id": "cg:REQ-041",
+      "@type": "cg:Requirement",
+      "label": "운영 모델-런타임 의미 일치",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-041"
+      ],
+      "implementedBy": "cg:EP02"
+    },
+    {
+      "@id": "cg:REQ-042",
+      "@type": "cg:Requirement",
+      "label": "기준 화재 solver와 실제 입력",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-042"
+      ],
+      "implementedBy": "cg:EP08"
+    },
+    {
+      "@id": "cg:REQ-043",
+      "@type": "cg:Requirement",
+      "label": "보행 현상별 검증",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-043"
+      ],
+      "implementedBy": "cg:EP07"
+    },
+    {
+      "@id": "cg:REQ-044",
+      "@type": "cg:Requirement",
+      "label": "차량·교통 shortcut 탐지",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-044"
+      ],
+      "implementedBy": "cg:EP07"
+    },
+    {
+      "@id": "cg:REQ-045",
+      "@type": "cg:Requirement",
+      "label": "의료 운영과 임상 범위 구분",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-045"
+      ],
+      "implementedBy": "cg:EP07"
+    },
+    {
+      "@id": "cg:REQ-046",
+      "@type": "cg:Requirement",
+      "label": "SOTA 후보의 공정 선정",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-046"
+      ],
+      "implementedBy": "cg:EP08"
+    },
+    {
+      "@id": "cg:REQ-047",
+      "@type": "cg:Requirement",
+      "label": "대체모델 독립·장기 검증",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-047"
+      ],
+      "implementedBy": "cg:EP08"
+    },
+    {
+      "@id": "cg:REQ-048",
+      "@type": "cg:Requirement",
+      "label": "OOD 정량 승인 차단",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-048"
+      ],
+      "implementedBy": "cg:EP08"
+    },
+    {
+      "@id": "cg:REQ-049",
+      "@type": "cg:Requirement",
+      "label": "다중엔진 단일 소유권·결합",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-049"
+      ],
+      "implementedBy": "cg:EP08"
+    },
+    {
+      "@id": "cg:REQ-050",
+      "@type": "cg:Requirement",
+      "label": "실측·가상 관측 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-050"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-051",
+      "@type": "cg:Requirement",
+      "label": "로그 사실·의도·가설 구분",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-051"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-052",
+      "@type": "cg:Requirement",
+      "label": "인과 주장과 계산 근거",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-052"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-053",
+      "@type": "cg:Requirement",
+      "label": "운영안 일반화·조건부 단계",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-053"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-054",
+      "@type": "cg:Requirement",
+      "label": "대본·실행 데이터 동등성",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-054"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-055",
+      "@type": "cg:Requirement",
+      "label": "근거를 여는 역추적",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-055"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-056",
+      "@type": "cg:Requirement",
+      "label": "승인 분리·변경 무효화",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-056"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-057",
+      "@type": "cg:Requirement",
+      "label": "새 실행과 리플레이 구별",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-057"
+      ],
+      "implementedBy": "cg:EP05"
+    },
+    {
+      "@id": "cg:REQ-058",
+      "@type": "cg:Requirement",
+      "label": "LLM 실패시 운영 지속",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-058"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-059",
+      "@type": "cg:Requirement",
+      "label": "외부 문서 지시 격리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-059"
+      ],
+      "implementedBy": "cg:EP09"
+    },
+    {
+      "@id": "cg:REQ-060",
+      "@type": "cg:Requirement",
+      "label": "온톨로지·ID·버전 추적",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-060"
+      ],
+      "implementedBy": "cg:EP01"
+    },
+    {
+      "@id": "cg:REQ-061",
+      "@type": "cg:Requirement",
+      "label": "기계 친화형 최소 문맥",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-061"
+      ],
+      "implementedBy": "cg:EP01"
+    },
+    {
+      "@id": "cg:REQ-062",
+      "@type": "cg:Requirement",
+      "label": "자료 발견·확보·검사 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-062"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-063",
+      "@type": "cg:Requirement",
+      "label": "KTX·역사 원본 재검사",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-063"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-064",
+      "@type": "cg:Requirement",
+      "label": "에셋 기능·한국화·성능 검수",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-064"
+      ],
+      "implementedBy": "cg:EP03"
+    },
+    {
+      "@id": "cg:REQ-065",
+      "@type": "cg:Requirement",
+      "label": "실제훈련 인원·영상 근거",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-065"
+      ],
+      "implementedBy": "cg:EP06"
+    },
+    {
+      "@id": "cg:REQ-066",
+      "@type": "cg:Requirement",
+      "label": "기존코드 재사용·범위 보존",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-066"
+      ],
+      "implementedBy": "cg:EP00"
+    },
+    {
+      "@id": "cg:REQ-067",
+      "@type": "cg:Requirement",
+      "label": "초기버전과 검증출시 분리",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-067"
+      ],
+      "implementedBy": "cg:EP10"
+    },
+    {
+      "@id": "cg:REQ-068",
+      "@type": "cg:Requirement",
+      "label": "사전 QoI·오차·독립 검증",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-068"
+      ],
+      "implementedBy": "cg:EP08"
+    },
+    {
+      "@id": "cg:REQ-069",
+      "@type": "cg:Requirement",
+      "label": "작성시간·수정량·교육평가",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-069"
+      ],
+      "implementedBy": "cg:EP10"
+    },
+    {
+      "@id": "cg:REQ-070",
+      "@type": "cg:Requirement",
+      "label": "정직한 성능 프로파일",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-070"
+      ],
+      "implementedBy": "cg:EP10"
+    },
+    {
+      "@id": "cg:REQ-071",
+      "@type": "cg:Requirement",
+      "label": "접수된 이벤트 내구성",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-071"
+      ],
+      "implementedBy": "cg:EP05"
+    },
+    {
+      "@id": "cg:REQ-072",
+      "@type": "cg:Requirement",
+      "label": "접근성·한국어 용어",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-072"
+      ],
+      "implementedBy": "cg:EP04"
+    },
+    {
+      "@id": "cg:REQ-073",
+      "@type": "cg:Requirement",
+      "label": "개인정보·배포·원본 접근",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-073"
+      ],
+      "implementedBy": "cg:EP01"
+    },
+    {
+      "@id": "cg:REQ-074",
+      "@type": "cg:Requirement",
+      "label": "엄격한 수용·한정 재작업",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-074"
+      ],
+      "implementedBy": "cg:EP10"
+    },
+    {
+      "@id": "cg:REQ-075",
+      "@type": "cg:Requirement",
+      "label": "최종 13구역·유형 확대",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-075"
+      ],
+      "implementedBy": "cg:EP11"
+    },
+    {
+      "@id": "cg:REQ-076",
+      "@type": "cg:Requirement",
+      "label": "현장 적용 passport",
+      "status": "PLANNED",
+      "verifiedByTest": [
+        "cg:AT-076"
+      ],
+      "implementedBy": "cg:EP11"
+    },
+    {
+      "@id": "cg:AT-001",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-001",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-002",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-002",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-003",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-003",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-004",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-004",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-005",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-005",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-006",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-006",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-007",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-007",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-008",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-008",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-009",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-009",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-010",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-010",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-011",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-011",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-012",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-012",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-013",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-013",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-014",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-014",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-015",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-015",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-016",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-016",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-017",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-017",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-018",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-018",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-019",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-019",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-020",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-020",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-021",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-021",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-022",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-022",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-023",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-023",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-024",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-024",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-025",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-025",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-026",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-026",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-027",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-027",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-028",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-028",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-029",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-029",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-030",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-030",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-031",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-031",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-032",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-032",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-033",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-033",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-034",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-034",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-035",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-035",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-036",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-036",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-037",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-037",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-038",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-038",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-039",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-039",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-040",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-040",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-041",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-041",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-042",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-042",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-043",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-043",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-044",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-044",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-045",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-045",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-046",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-046",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-047",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-047",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-048",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-048",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-049",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-049",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-050",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-050",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-051",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-051",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-052",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-052",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-053",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-053",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-054",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-054",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-055",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-055",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-056",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-056",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-057",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-057",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-058",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-058",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-059",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-059",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-060",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-060",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-061",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-061",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-062",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-062",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-063",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-063",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-064",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-064",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-065",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-065",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-066",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-066",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-067",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-067",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-068",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-068",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-069",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-069",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-070",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-070",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-071",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-071",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-072",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-072",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-073",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-073",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-074",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-074",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-075",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-075",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-076",
+      "@type": "cg:AcceptanceTest",
+      "label": "AT-076",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:EP00",
+      "@type": "cg:WorkPackage",
+      "label": "범위·사용자·평가기준",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP01",
+      "@type": "cg:WorkPackage",
+      "label": "계약·온톨로지·규칙",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP02",
+      "@type": "cg:WorkPackage",
+      "label": "운영 커널·자원·통신",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP03",
+      "@type": "cg:WorkPackage",
+      "label": "맵·자료·자산",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP04",
+      "@type": "cg:WorkPackage",
+      "label": "RTS·업무 UI",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP05",
+      "@type": "cg:WorkPackage",
+      "label": "로그·분기·비교",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP06",
+      "@type": "cg:WorkPackage",
+      "label": "튜토리얼·랜덤",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP07",
+      "@type": "cg:WorkPackage",
+      "label": "보행·교통·운영 검증",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP08",
+      "@type": "cg:WorkPackage",
+      "label": "위험장·대체모델·결합",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP09",
+      "@type": "cg:WorkPackage",
+      "label": "AI 저작·대본",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP10",
+      "@type": "cg:WorkPackage",
+      "label": "통합·사용자·검수",
+      "status": "NOT_PRODUCED"
+    },
+    {
+      "@id": "cg:EP11",
+      "@type": "cg:WorkPackage",
+      "label": "확장·배포",
+      "status": "NOT_PRODUCED"
+    }
+  ]
+}

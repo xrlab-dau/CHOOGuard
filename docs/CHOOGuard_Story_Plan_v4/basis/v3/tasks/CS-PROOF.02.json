@@ -1,0 +1,190 @@
+{
+  "id": "CS-PROOF.02",
+  "epicId": "CS-PROOF",
+  "title": "종단 작동·장애·성능 검수",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PROOF.02",
+    "description": "같은 실행을 UI·저장·시나리오·대본까지 시험하는 suite",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PROOF.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Tests/Acceptance/EndToEndFlowTests.cs",
+    "Assets/ChooGuard/Tests/Acceptance/FaultInjectionTests.cs",
+    "qualification/technical-profile.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PROOF/Proof02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-OPS.06",
+      "artifactId": "A-CS-OPS.06",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PLAY.05",
+      "artifactId": "A-CS-PLAY.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-LAB.04",
+      "artifactId": "A-CS-LAB.04",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-MODES.03",
+      "artifactId": "A-CS-MODES.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-SCRIPT.04",
+      "artifactId": "A-CS-SCRIPT.04",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PLAY.06",
+      "artifactId": "A-CS-PLAY.06",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.07",
+      "artifactId": "A-CS-OPS.07",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "A안 문제발견→B수정→비교→대본→새 run을 실제 Player에서 끝까지 수행한다.",
+    "저장실패·worker장애·로그손상·중복명령·UI뒤클릭·IME·network loss를 반례로 만든다.",
+    "고정 부하에서 UI/렌더/운영/solver/AI 비용을 나누고 인원·모델을 몰래 낮추지 않는다."
+  ],
+  "contract": "Qualification별 evidence bundle; 기능/성능/정량/현장 수용은 별도.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PROOF.02-P",
+      "given": "native A→B→대본 실제서비스",
+      "when": "E2E/장애 주입",
+      "then": "동일 run/version 근거",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PROOF.02-N",
+      "given": "문서검사만 성공",
+      "when": "E2E/장애 주입",
+      "then": "PRODUCT_NOT_TESTED",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-001",
+    "REQ-070",
+    "REQ-074"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-001",
+    "REQ-070",
+    "REQ-074"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PROOF/Proof02Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSPROOF02PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-PROOF.02.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "native A→B→대본 실제서비스",
+    "operation": "E2E/장애 주입",
+    "expectedPositive": "동일 run/version 근거",
+    "negativeInput": "문서검사만 성공",
+    "expectedNegative": "PRODUCT_NOT_TESTED",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

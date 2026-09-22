@@ -1,0 +1,26 @@
+{
+  "schema": "chooguard.extinguisher-placement.v2",
+  "computedAt": "2026-09-22",
+  "regulation": "NFTC 101 — 보행거리 20m 이내(소형), 33제곱미터 이상 구획 거실마다, 바닥 1.5m 이하 비치, 축광식 표지",
+  "supersedes": "extinguisher-placement.json v1 — 구획을 바닥 머티리얼로 잡아 자투리 5건을 만들었고, 커버리지 BFS 가 단차를 무시했으며, 플레이어가 자기 셀을 가렸다",
+  "method": "rooms = components blocked by WALLS only (dual-height linecast); walking distance = BFS blocked by walls AND steps over stepOffset; candidates = cells with a mountable wall within 1.2m at 1.2m height; one unit forced per room of 33 sqm or more, then greedy set cover (Chvatal 1979)",
+  "jevBasis": "jev-poi-placement-004: bfs_coverage_then_greedy_cover 1.00, wall_adjacent_reachable_cells 0.86",
+  "playerExcluded": true, "walkableCells": 1817, "wallEdges": 58, "stepEdges": 108,
+  "analysisWindow": {"x": [-30, 80], "z": [-97, -22]}, "cellsTouchingWindowEdge": 2,
+  "roomCount": 52, "legalRooms": 5, "candidates": 106, "uncoveredAfterSolve": 8,
+  "legalRoomAreas": [404, 106, 785, 225, 45],
+  "placements": [
+    {"index": 0, "floorPosition": [-10.0, 6.70, -73.0], "mountY": 7.90, "wallNormalDir": [1, 0, 0], "roomSqm": 404, "coverCells": 284},
+    {"index": 1, "floorPosition": [-6.0, 7.00, -39.0], "mountY": 8.20, "wallNormalDir": [-1, 0, 0], "roomSqm": 106, "coverCells": 106},
+    {"index": 2, "floorPosition": [14.0, 7.00, -49.0], "mountY": 8.20, "wallNormalDir": [0, 0, -1], "roomSqm": 785, "coverCells": 384},
+    {"index": 3, "floorPosition": [48.0, 7.02, -47.0], "mountY": 8.22, "wallNormalDir": [0, 0, -1], "roomSqm": 225, "coverCells": 224},
+    {"index": 4, "floorPosition": [60.0, 6.70, -65.0], "mountY": 7.90, "wallNormalDir": [0, 0, -1], "roomSqm": 45, "coverCells": 39},
+    {"index": 5, "floorPosition": [48.0, 7.00, -49.0], "mountY": 8.20, "wallNormalDir": [0, 0, 1], "roomSqm": 785, "coverCells": 366},
+    {"index": 6, "floorPosition": [-8.0, 6.70, -53.0], "mountY": 7.90, "wallNormalDir": [1, 0, 0], "roomSqm": 404, "coverCells": 198},
+    {"index": 7, "floorPosition": [-16.0, 6.70, -89.0], "mountY": 7.90, "wallNormalDir": [1, 0, 0], "roomSqm": 404, "coverCells": 181},
+    {"index": 8, "floorPosition": [16.0, 7.00, -37.0], "mountY": 8.20, "wallNormalDir": [0, 0, 1], "roomSqm": 785, "coverCells": 337},
+    {"index": 9, "floorPosition": [24.0, 7.00, -53.0], "mountY": 8.20, "wallNormalDir": [0, 0, -1], "roomSqm": 785, "coverCells": 378},
+    {"index": 10, "floorPosition": [40.0, 7.00, -59.0], "mountY": 8.20, "wallNormalDir": [0, 0, -1], "roomSqm": 785, "coverCells": 367},
+    {"index": 11, "floorPosition": [44.0, 7.20, -35.0], "mountY": 8.40, "wallNormalDir": [0, 0, 1], "roomSqm": 225, "coverCells": 202}
+  ]
+}

@@ -1,0 +1,154 @@
+{
+  "schema_version": "1.0",
+  "status": "SEAM_NOT_EXACTLY_LOCATED__CURRENT_MALL_ADJACENCY_ANCHORED",
+  "scope": "HUMETRO Busan Station 113 concourse/free area ↔ BISCO Busan Station underground-mall spine. No model placement, metre conversion, exit renumbering, or direction inference.",
+  "claims": [
+    {
+      "claim": "The BISCO Busan Station underground mall is physically adjacent to Metro Busan Station and carries Line 1 vibration/noise.",
+      "classification": "directly_supported_for_adjacency_not_seam_coordinate",
+      "evidence": ["S1", "S2"],
+      "limit": "Adjacency and train noise do not identify the Metro free-area doorway, fare gates, or exact wall opening."
+    },
+    {
+      "claim": "BISCO mall unit ga-25 / na-22 is a current physical interior anchor in the mall spine.",
+      "classification": "directly_supported",
+      "evidence": ["S1", "S2"],
+      "limit": "No public operator map located in this lane places ga-25 / na-22 relative to HUMETRO gates."
+    },
+    {
+      "claim": "The exact HUMETRO 113 concourse/free-area ↔ BISCO mall seam is located at a particular gate, door, turn, or BISCO-map arrow endpoint.",
+      "classification": "insufficient",
+      "evidence": ["S3", "S4", "S5"],
+      "reason": "No inspected source co-locates a Metro gate/direction sign with a BISCO shop identifier or labels a shared operator boundary."
+    },
+    {
+      "claim": "A generic current HUMETRO connection-corridor program record proves a Line 1 underground-mall seam at Busan Station.",
+      "classification": "contradicts_premise",
+      "evidence": ["S5"],
+      "reason": "The current program table reports zero Line 1 underground-mall cases; it is generic policy/approval information, not a site-specific Busan Station seam record."
+    },
+    {
+      "claim": "OSM node 8266060524, tagged ref 6, locates the HUMETRO/BISCO seam or proves it is HUMETRO Exit 6.",
+      "classification": "insufficient",
+      "evidence": ["S6"],
+      "reason": "The node is a third-party outdoor subway-entrance feature with no operator, mall, indoor-footpath, or shared-boundary tag. Its number cannot resolve the separate HUMETRO and BISCO exit namespaces."
+    }
+  ],
+  "shown_segments": [
+    {
+      "id": "mall_current_unit_frontage",
+      "from": "BISCO mall corridor",
+      "to": "Open Business Center ga-25 / na-22 frontage",
+      "classification": "directly_supported",
+      "evidence": ["S1", "S2"],
+      "landmark_anchor": {
+        "image": "public-sourcefiles/featcoco-2025/20251019_142621.webp",
+        "image_size_px": [2560, 1930],
+        "coordinate_origin": "top-left",
+        "feature": "Open Business Center fascia",
+        "approx_feature_bbox_px": [1030, 350, 1980, 530],
+        "adjacent_landmarks": ["BISCO identification at fascia left/right", "frosted-glass double doors", "꾸미실 sign and bag-retail display at right", "green segmented ceiling", "beige/grey tile floor with dark red-brown grid"],
+        "confidence": "high for unit-frontage identification; low for position relative to HUMETRO concourse"
+      }
+    },
+    {
+      "id": "mall_to_railway_passage_junction",
+      "from": "BISCO mall main spine",
+      "to": "branch labelled 부산역 연결통로",
+      "classification": "directly_supported_in_prior_official_graph",
+      "evidence": ["S3"],
+      "landmark_anchor": {
+        "image": "../official-metro/bisco-busan-underground-map.png",
+        "image_size_px": [1300, 364],
+        "feature": "branch labelled 부산역 연결통로",
+        "approx_branch_bbox_px": [210, 190, 260, 318],
+        "nearby_mall_exit_labels_px": {"1": [351, 139], "2": [282, 235]},
+        "confidence": "high for labelled mall-side branch; no direction or HUMETRO seam implied"
+      }
+    }
+  ],
+  "unresolved_segments": [
+    {
+      "id": "humetro_free_area_to_bisco_mall_spine_seam",
+      "classification": "insufficient",
+      "missing": ["shared drawing control point", "visible Metro gate or direction sign with a BISCO shop/unit marker", "wall/door opening", "level datum or measured offset"],
+      "implementation_constraint": "Leave an explicit unresolved seam; do not attach it to a HUMETRO exit number, the BISCO arrow, or ga-25/na-22."
+    },
+    {
+      "id": "metro_concourse_to_mall_direction",
+      "classification": "insufficient",
+      "reason": "The BISCO map arrow is unlabelled and separate station/mall sources do not give a shared orientation."
+    }
+  ],
+  "sources": [
+    {
+      "id": "S1",
+      "publisher": "Feat.coco (first-person visit)",
+      "title": "부산역지하도상가 오픈비즈니스센터 간단 이용 후기",
+      "url": "https://featcoco.com/%EB%B6%80%EC%82%B0%EC%97%AD%EC%A7%80%ED%95%98%EB%8F%84%EC%83%81%EA%B0%80-%EC%98%A4%ED%94%88%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4%EC%84%BC%ED%84%B0/",
+      "published": "2025-12-13",
+      "filmed_image_date": "2025-10-19 inferred from original filenames",
+      "public_files": [
+        "public-sourcefiles/featcoco-2025/20251019_142621.webp",
+        "public-sourcefiles/featcoco-2025/20251019_145056.webp"
+      ],
+      "supports": ["mall facility is 붙어있는 to Metro Busan Station", "ga-25 / na-22 unit labels", "author experiences passing Line 1 vibration/noise", "visible current unit frontage"],
+      "limitation": "No Metro gate, Metro sign, or externally verifiable unit map in the pictured view."
+    },
+    {
+      "id": "S2",
+      "publisher": "BISCO",
+      "title": "Busan Station Open Business Center official facility page",
+      "url": "https://www.bisco.or.kr/undershop/05_cad/cad05_2.asp",
+      "public_files": [
+        "public-sourcefiles-bisco-cad05_2.html",
+        "public-sourcefiles/bisco-open-center/bs_studio_1.jpg",
+        "public-sourcefiles/bisco-open-center/bs_studio_2.jpg",
+        "public-sourcefiles/bisco-open-center/bs_studio_3.jpg",
+        "public-sourcefiles/bisco-open-center/bs_studio_5.jpg"
+      ],
+      "supports": ["BISCO official listing of Busan Station underground-mall ga-25 and na-22", "Open Business Center is an official mall facility"],
+      "limitation": "Interior-room photos and page do not show the mall corridor to Metro seam."
+    },
+    {
+      "id": "S3",
+      "publisher": "BISCO",
+      "title": "Busan Station underground-mall wayfinding plan",
+      "url": "https://www.bisco.or.kr/undershop/images/map_n24/busan_main.png",
+      "content_condition": "HTTP Last-Modified 2024-07-01; retrieved by prior official-metro lane 2026-09-21",
+      "local": "../official-metro/bisco-busan-underground-map.png",
+      "supports": ["mall exits 1–8 namespace", "mall main spine", "branch explicitly labelled 부산역 연결통로 near mall exits 1–2"],
+      "limitation": "No gate, shared wall, direction, metric scale, or ga-25/na-22 placement."
+    },
+    {
+      "id": "S4",
+      "publisher": "International Newspaper, reporting BISCO and HUMETRO statements",
+      "title": "부산역 연결통로, 지하상권 부활길 된다",
+      "url": "https://www.kookje.co.kr/news2011/asp/newsbody.asp?code=0300&key=20151204.22009193251",
+      "published": "2015-12-03",
+      "supports": ["BISCO management/remodelling of the 1994 mall", "a partial connection segment opened from bus stop to Metro via escalator", "project purpose connected railway Busan Station and Metro Busan Station"],
+      "limitation": "Pre-completion schedule and dimensions differ from final 2019 facility; no exact seam drawing or co-located visual landmark."
+    },
+    {
+      "id": "S5",
+      "publisher": "HUMETRO",
+      "title": "Connection-corridor installation policy page",
+      "url": "https://work.humetro.busan.kr/homepage/default/page/subLocation.do?menu_no=1001050705",
+      "retrieved": "2026-09-21",
+      "supports": ["generic rule: connect at an existing entrance unless separately agreed", "generic Line 1 table reports zero underground-mall cases"],
+      "limitation": "Not a Busan Station-specific drawing or historical asset inventory."
+    },
+    {
+      "id": "S6",
+      "publisher": "OpenStreetMap contributors, live API audit supplied by root",
+      "local": "../root-anchors/osm-entrance-audit.json",
+      "content": "Node 8266060524 is at 35.1147648,129.0397587 with railway=subway_entrance and ref=6; it has no operator, mall, indoor-footpath, or platform tag.",
+      "classification": "navigation_hint_only",
+      "limitation": "OSM has no authoritative namespace binding to HUMETRO Exit 6 or BISCO mall Exit 6 and does not map the indoor seam."
+    }
+  ],
+  "next_evidence_needed": [
+    "A current inspected image or plan showing a HUMETRO 113 gate/direction sign and a BISCO shop identifier in the same frame.",
+    "A BISCO unit/lease/evacuation plan locating ga-25/na-22 or a shared Metro/BISCO architectural plan with a labelled doorway/control point."
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "id": "CS-PROOF.03",
+  "epicId": "CS-PROOF",
+  "title": "A/B/C 사용자효용과 반복 비용",
+  "scope": "USER_RESEARCH",
+  "artifact": {
+    "id": "A-CS-PROOF.03",
+    "description": "순절감·정합성·3D 추가가치의 실제 평가",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PROOF.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "research/usability/protocol.json",
+    "research/usability/analysis.py",
+    "research/usability/report-template.md"
+  ],
+  "verificationFile": "research/proof/03-evaluation-protocol.md",
+  "dependsOn": [
+    {
+      "taskId": "CS-PROOF.01",
+      "artifactId": "A-CS-PROOF.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PROOF.02",
+      "artifactId": "A-CS-PROOF.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PLAY.07",
+      "artifactId": "A-CS-PLAY.07",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "A 고객기존방식, B 동일코어 표/타임라인, C UnityRTS 조건을 고정한다. B는 연구 조건이며 제품모드 추가가 아니다.",
+    "순서·난이도·도움·기존AI 허용조건·검수가림을 기록하고 품질이 유지된 총인시를 비교한다.",
+    "미완료·중단·보조·초기비용·유지비를 포함하며 20%는 사전합의한 탐색목표로만 쓴다."
+  ],
+  "contract": "StudyResult {conditions,participants,quality,time,censoring,assistance,limits}; 제품정확도를 선호도로 증명하지 않음.",
+  "sourceIds": [
+    "DISC-05",
+    "DISC-07",
+    "DISC-08",
+    "DISC-09",
+    "DISC-11",
+    "FREE-001"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PROOF.03-P",
+      "given": "A/B/C 모든 참가자 결과",
+      "when": "효용분석",
+      "then": "중단·미완료·도움 분모유지",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PROOF.03-N",
+      "given": "좋은 완료자만 분석",
+      "when": "효용분석",
+      "then": "PROTOCOL_VIOLATION",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-069",
+    "REQ-080",
+    "REQ-082",
+    "REQ-089"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "requiredFor": "CUSTOMER_EFFICACY_OR_FORMAT_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "모집/실제양식 확인 전 고객 효용/지원완료 주장 금지."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-069",
+    "REQ-080",
+    "REQ-082",
+    "REQ-089"
+  ],
+  "testTargets": [
+    {
+      "kind": "DOCUMENT_REVIEW",
+      "path": "research/proof/03-evaluation-protocol.md",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "A/B/C 모든 참가자 결과",
+    "operation": "효용분석",
+    "expectedPositive": "중단·미완료·도움 분모유지",
+    "negativeInput": "좋은 완료자만 분석",
+    "expectedNegative": "PROTOCOL_VIOLATION",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

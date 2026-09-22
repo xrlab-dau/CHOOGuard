@@ -1,0 +1,150 @@
+{
+  "id": "CS-MODES.01",
+  "epicId": "CS-MODES",
+  "title": "한 개의 근거 기반 교육 과정",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-MODES.01",
+    "description": "안내·힌트 축소·복기의 튜토리얼과 교육목표",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-MODES.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Scenarios/TutorialDirector.cs",
+    "content/exercises/tutorial/course.json",
+    "Assets/ChooGuard/Presentation/Tutorial/TutorialOverlay.prefab",
+    "Assets/ChooGuard/Presentation/Tutorial/TutorialPresenter.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/MODES/Modes01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PACK.02",
+      "artifactId": "A-CS-PACK.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.05",
+      "artifactId": "A-CS-OPS.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "실제 사례를 재구성한 부분과 원 대본이 확인된 부분을 구분한다.",
+    "평가는 부분순서·조건·증거를 사용하고 독립 업무의 유효한 순서 변경을 허용한다.",
+    "힌트는 표시만 바꾸며 물리·기관권한·자원능력·전달시간을 수정하지 않는다."
+  ],
+  "contract": "TutorialCourse {source,scope,goals,partialOrder,hints,assessment}; 공식 이수·훈련 정확재현은 별도 검수.",
+  "sourceIds": [
+    "CASE-READY2026",
+    "CASE-YULHYEON",
+    "MAN-SOP"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-MODES.01-P",
+      "given": "독립 taskA/taskB 목표",
+      "when": "순서 AB와 BA",
+      "then": "둘 다 학습통과",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-MODES.01-N",
+      "given": "hint가 speed 변경",
+      "when": "순서 AB와 BA",
+      "then": "CORE_PARITY_FAIL",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-003",
+    "REQ-004",
+    "REQ-065"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/08-modes-and-scenario-generation.md",
+    "specs/04-checkpoint-and-comparison.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/08-modes-and-scenario-generation.md",
+    "specs/04-checkpoint-and-comparison.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-003",
+    "REQ-004",
+    "REQ-065"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/MODES/Modes01Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "독립 taskA/taskB 목표",
+    "operation": "순서 AB와 BA",
+    "expectedPositive": "둘 다 학습통과",
+    "negativeInput": "hint가 speed 변경",
+    "expectedNegative": "CORE_PARITY_FAIL",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

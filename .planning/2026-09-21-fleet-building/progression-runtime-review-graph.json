@@ -1,0 +1,74 @@
+{
+  "schema": "chooguard.progression-runtime-review.v1",
+  "status": "scoped_none",
+  "reviewed": [
+    {"path":"Assets/ChooGuard/App/Mvp/MvpProgressionGraph.cs","sha256":"36e3d0616fff7d77f3672a546be81dd27c66fb5e5c98d491ec0cb736f0e766b0"},
+    {"path":"Assets/ChooGuard/Art/Progression/response-flow.json","sha256":"212de2f60d3989b0e8c46d8214c9e960c8edc113d6591d8cbd1e07991101823c"},
+    {"path":"Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs","sha256":"432a1673950c95f216229221777e009ab88364581a9ab52ca1b3983b464c78ca"},
+    {"path":"Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs","sha256":"82a041a075a725d0f1a4e57466558ab87ae3f30c48a75a212091d617218fc157"},
+    {"path":"Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs","sha256":"dd12eeeea734bd0299e837432b4ce99800cb0c30a092413c66ad12c984ca308e"},
+    {"path":"Assets/ChooGuard/App/Mvp/MvpProgressionGraphView.cs","sha256":"e72ec44d270fef7770c43267e811fe1b6531c46860df0997831d3d11b56e6b9c"}
+  ],
+  "references": [
+    {"path":".planning/2026-09-21-fleet-building/causal-graph-plan.json","sha256":"9f9e559c62043325224863959cc11d5e8ffb21b09c42c95978c8ee42dff04c97"},
+    {"path":".planning/2026-09-20-integrated-build/jev-progression-graph-plan-048.input.json","sha256":"baa17646aa5f4dfaf15b35488c342e76a7697e8d32cc1319ee948306e78b0e2a"},
+    {"path":".planning/2026-09-20-integrated-build/jev-progression-graph-plan-048.result.json","sha256":"49cf67b6769ed9764369419b9c51eb12901f029709b5adfbb23b112e90bbfd86"}
+  ],
+  "findings": [],
+  "checks": [
+    {
+      "id": "graph-selects-runtime-branches",
+      "result": "supported",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:195-210",
+        "Assets/ChooGuard/App/Mvp/MvpProgressionGraph.cs:76-88",
+        "Assets/ChooGuard/Art/Progression/response-flow.json:111-233"
+      ],
+      "reproduction": "For an onsite evacuation cursor, calculation-current + evacuation-task + response-phase + channel-free + !all-evacuated selects onsite-evac; replacing the last fact with all-evacuated selects priority-0 onsite-resolved. Controller has no parallel result branch and commits only the returned graph decision."
+    },
+    {
+      "id": "stale-or-wrong-operation-evidence-does-not-advance",
+      "result": "supported",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:138-171",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:54-60",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:183-193"
+      ],
+      "reproduction": "A result with a different run/generation or in-flight request is discarded before ResultReceived. An ACK with another job requestId/lastControlRequestId, or an evacuation ACK with the wrong release revision, is not stored in operationAcks; the graph therefore cannot receive own-*-ack=TRUE for that operation."
+    },
+    {
+      "id": "effect-failure-does-not-commit-cursor",
+      "result": "supported",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:195-239",
+        "Assets/ChooGuard/App/Mvp/MvpProgressionGraph.cs:76-88"
+      ],
+      "reproduction": "Make EnqueueOperation or return eligibility fail after Evaluate. ObserveAcceptedResult marks the operation unavailable and exits, while ApplyUserProgression returns rejection; neither path calls Commit after the failed effect, so node/revision/taken-edge do not record success."
+    },
+    {
+      "id": "medical-all-evacuated-boundary",
+      "result": "supported",
+      "evidence": [
+        "Assets/ChooGuard/Art/Progression/response-flow.json:111-233",
+        "Assets/ChooGuard/Art/Progression/response-flow.json:321-356",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:183-193",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:246-250"
+      ],
+      "reproduction": "At onsite or standby with medical-task=TRUE and all-evacuated=TRUE, evacuation-task remains FALSE, so resolved evacuation edges cannot fire. The medical path requires its own ACK, reaches medical-confirmation, and only manual-confirm selects return."
+    },
+    {
+      "id": "pause-reset-unknown-and-recent-order",
+      "result": "supported",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:53-74",
+        "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:112-124",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:261-265",
+        "Assets/ChooGuard/App/Mvp/MvpProgressionGraph.cs:124-136",
+        "Assets/ChooGuard/App/Mvp/MvpProgressionGraphView.cs:49-67",
+        "Assets/ChooGuard/App/Mvp/MvpProgressionGraphView.cs:99-116"
+      ],
+      "reproduction": "Pause prevents new Tick processing; a new run clears task queues, missions, graph cursors, traces, evidence keys and sequence. Missing facts evaluate UNKNOWN and never enable/select an edge because execution requires TRUE. Snapshot Recent is emitted oldest-to-newest for the selected operation; the view scans it backward and displays the newest matching record."
+    }
+  ],
+  "scopeBoundary": "Read-only source review only. No Unity/native execution or broad test run; scene binding, compilation, and live branch traversal remain root-owned acceptance evidence."
+}

@@ -1,0 +1,61 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "status": "PARTIAL",
+  "writerRun": "wf_2dad1ddc-228",
+  "reviewRun": "wf_45cc6199-2ae",
+  "implementation": "기존 plain controller를 같은 파일의 CommandPreviewController로 분리하고 MonoBehaviour CommandPreviewPresenter 및 실제 uGUI/TMP prefab 작성. 명시적 backend/selection/router 주입, 확인·취소·조회·원본 재전송, 대상별 사유·근거 표시. 실제 backend와 Canvas/씬 조립은 미수행.",
+  "hostProbe": {
+    "result": "PASS",
+    "count": 12,
+    "output": "PASS 12 NUnit assertion cases, isolated BCL probe; Unity NOT_RUN",
+    "scope": "기존 presentation scratch runner 재사용. controller/selection assertion 직접 호출이며 native lifecycle 시험이 아니다.",
+    "evidence": "Root가 writer transcript tool call_0GVufrzaa7dJK01a1aHaBKTE의 compile && probe 실제 출력을 확인. 초기 missing Unity reference 경로 오류를 수정한 뒤 컴파일 성공. CS0649 직렬화 필드 경고만 최종 로그에 있음.",
+    "workerTranscript": "/Users/um-yunsang/.claude/projects/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/subagents/workflows/wf_2dad1ddc-228/agent-a300f3013cbbb65fb.jsonl"
+  },
+  "prefabStatic": {
+    "result": "PASS",
+    "objects": 73,
+    "localGuids": 7,
+    "scope": "fileID 중복/로컬 참조 및 GUID 존재 검사. ECC 정적 검수에서 GUID 타입·직렬화 필드·스크롤 연결 일치 확인. 실제 화면 검증 아님."
+  },
+  "nativeHostTests": {
+    "result": "NOT_RUN",
+    "count": 3,
+    "scope": "HostDisconnectedIsNotConfirmableAndBrokenWiringRejectsBind, HostExplicitConfirmDisableLateResponseAndReenableRecoverOriginalKey, HostOtherModalCloseDoesNotCancelAndDisableInvalidatesLatePreview. 소스 컴파일만 확인; 후속 수정으로 시험 수/내용이 바뀔 수 있음."
+  },
+  "liveEditor": {
+    "pid": 4832,
+    "port": 7800,
+    "initial": "prefab 파일은 있으나 AssetDatabase GUID/path/mainType 미등록, LoadAsset null. Presenter 이름은 존재했으나 새 host임을 확인하지 못함.",
+    "targetedImport": "공식 CLI eval로 preview prefab 하나만 ForceSynchronousImport. 뒤의 GetComponent(Type)가 기존 plain Presenter 타입 때문에 Runtime Error, 전체 호출 exit6. import 이후 read-only 조회는 성공(exit0).",
+    "postImport": {
+      "prefabLoaded": true,
+      "guid": "a0ad8a72c7f84e05b451ca5e880f3da9",
+      "scriptBase": "System.Object",
+      "componentType": false,
+      "controllerLoaded": false,
+      "presentationMvid": "257be5eb-5f3a-411c-b16e-31fcb63de3c8",
+      "compiling": false,
+      "scenePath": "",
+      "sceneDirty": false,
+      "sceneRoots": [-6810, -6818]
+    },
+    "limits": "prefab 등록은 확인했으나 Editor는 이전 plain Presenter assembly를 사용 중이다. 새 MonoBehaviour host/import bindings/render 검증은 아직 미완료. 씬 저장·교체·playmode·TestRunner·전체 Refresh 실행 없음. 이전 scene 사고의 복구를 뜻하지 않음."
+  },
+  "review": {
+    "sourceConfirmedDefects": 1,
+    "finding": "제출 후 disable/reenable 시 OnDisable은 모달을 닫지만 OnEnable은 구독·렌더만 하므로 복구 화면의 modal input ownership이 복원되지 않음. Root가 Presenter와 InputContextRouter 경로를 확인. 런타임 재현 미실시.",
+    "prefabConcreteDefects": 0,
+    "fixRun": "wf_ae679b50-9f6",
+    "fixStatus": "IN_PROGRESS"
+  },
+  "jev": {
+    "015": "bounded_review / partial / high advisory; 1300ms, retry0/fallback0",
+    "016": "two_disjoint / targeted / partial; 1117ms, retry0/fallback0",
+    "approvalAuthority": 0
+  },
+  "rawEvidenceRoot": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad",
+  "rawFiles": ["command-preview-compile.log", "command-preview-compile.rsp", "preview-live-asset-observation.json", "preview-live-registration.json", "preview-targeted-import.json", "preview-loaded-type-diagnostic.json", "jev-ui-015.result.json", "jev-fix-016.result.json"],
+  "remaining": ["모달 복구 수정 후 검증", "새 host의 Unity assembly 로드 및 prefab 컴포넌트 연결", "native host lifecycle/button tests", "실제 화면·입력·focus·해상도·OS IME", "production backend 및 Canvas/scene 조립", "Windows/Player/현장 수용"]
+}

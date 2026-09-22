@@ -1,0 +1,26 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+I [label="CommandIntent\nrequester ≠ acting team", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+D [label="ID / fingerprint 조회", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+R [label="기존 receipt 반환\n다른 payload면 ID_CONFLICT", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+V [label="권한 · 읽기 revision\n원자 자원 조건 검사", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+C [label="Candidate events\n아직 외부 상태 변경 없음", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+TX [label="한 SQLite transaction\nledger + receipt + holds + outbox", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+REJECT [label="도메인 거부\n이유 제공 · 상태 변경 없음", shape=box, style="rounded,filled", fillcolor="#F8EBE8", color="#B45847", fontcolor="#18314A"];
+FAIL [label="commit 실패\n기존 상태 보존 · 승인 금지", shape=box, style="rounded,filled", fillcolor="#F8EBE8", color="#B45847", fontcolor="#18314A"];
+PUB [label="durable commit 후\n메모리/조회 snapshot 게시", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+W [label="outbox 전송\nworker job 재전송은 멱등", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+ACK [label="UI Receipt\n접수됨 ≠ 업무 완료", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+I -> D [label="수신"];
+D -> R [label="키가 존재"];
+D -> V [label="새 키"];
+V -> C [label="유효"];
+V -> REJECT [label="조건 미충족"];
+C -> TX [label="직렬화 owner"];
+TX -> FAIL [label="disk/transaction 실패"];
+TX -> PUB [label="성공"];
+PUB -> ACK [label="acceptedSeq"];
+TX -> W [label="commit 이후"];
+}

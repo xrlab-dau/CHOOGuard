@@ -1,0 +1,36 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var original = UnityEngine.SceneManagement.SceneManager.GetActiveScene(); if (!string.IsNullOrEmpty(original.path)) throw new System.InvalidOperationException(\"Expected original untitled scene.\"); var ids = original.GetRootGameObjects().Select(o => o.GetInstanceID()).ToArray(); var backup = \"Assets/ChooGuard/Scenes/SessionBackup-\" + System.DateTime.UtcNow.ToString(\"yyyyMMdd-HHmmss\") + \".unity\"; System.IO.Directory.CreateDirectory(\"Assets/ChooGuard/Scenes\"); if (System.IO.File.Exists(backup)) throw new System.IO.IOException(\"Backup path exists.\"); if (!UnityEditor.SceneManagement.EditorSceneManager.SaveScene(original, backup)) throw new System.IO.IOException(\"Original scene backup failed.\"); ChooGuard.Editor.MvpWorkspaceBuilder.Build(); return new { backup, originalRootsBefore=ids, originalRootsAfter=original.GetRootGameObjects().Select(o=>o.GetInstanceID()).ToArray(), sceneCount=UnityEngine.SceneManagement.SceneManager.sceneCount, mvpPath=ChooGuard.Editor.MvpWorkspaceBuilder.ScenePath };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "backup": "Assets/ChooGuard/Scenes/SessionBackup-20260920-144137.unity",
+        "originalRootsBefore": [
+          -6810,
+          -6818
+        ],
+        "originalRootsAfter": [
+          -6810,
+          -6818
+        ],
+        "sceneCount": 2,
+        "mvpPath": "Assets/ChooGuard/Scenes/MvpWorkspace.unity"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

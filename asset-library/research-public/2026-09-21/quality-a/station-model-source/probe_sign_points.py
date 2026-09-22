@@ -1,0 +1,6 @@
+import bpy,pathlib,json,math
+from mathutils import Vector
+D=pathlib.Path.cwd()/'asset-library/research-public/2026-09-21/quality-a/station-model-source';bpy.ops.wm.open_mainfile(filepath=str(D/'station-batched.blend'));s=bpy.context.scene;s.render.resolution_x=1440;s.render.resolution_y=900;s.render.resolution_percentage=100;c=json.loads((D/'station-source-cameras.json').read_text())[0];eye,target,up=c['orientation'];bpy.ops.object.camera_add();cam=bpy.context.object;cam.location=eye;cam.rotation_euler=(Vector(target)-cam.location).to_track_quat('-Z','Y').to_euler();cam.data.angle_y=math.radians(c['fov']);frame=cam.data.view_frame(scene=s);results=[]
+for px,py in [(560,365),(630,400),(675,418),(585,444),(565,420),(658,438)]:
+ x=(px/1440*2-1)*max(abs(v.x) for v in frame);y=(1-py/900*2)*max(abs(v.y) for v in frame);direction=cam.rotation_euler.to_quaternion()@Vector((x,y,frame[0].z)).normalized();hit,loc,n,idx,o,m=s.ray_cast(bpy.context.evaluated_depsgraph_get(),cam.location,direction);results.append({'pixel':[px,py],'hit':hit,'point':list(loc),'normal':list(n),'material':o.data.materials[o.data.polygons[idx].material_index].name if hit else None})
+(D/'sign-raycast-points.json').write_text(json.dumps(results,ensure_ascii=False,indent=2));print(results)

@@ -1,0 +1,405 @@
+{
+  "epics": [
+    {
+      "id": "CS-BOOT",
+      "title": "새 Unity 제품의 부팅·입력·빌드 기반",
+      "goal": "빈 저장소에서 반복 가능한 native PC 실행본을 만든다.",
+      "inScope": [
+        "Unity 프로젝트 신규 생성",
+        "패키지·렌더·스크립팅 backend 고정",
+        "도메인/표현 assembly 경계",
+        "EditMode·PlayMode·Player 실행 경로"
+      ],
+      "exitCriteria": [
+        "새 checkout에서 프로젝트 열기·컴파일·부팅 재현",
+        "필수 패키지와 로컬 의존성 명시",
+        "과거 프로젝트·사설 로컬 경로 없이 실행"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/App",
+        "Assets/ChooGuard/Contracts",
+        "Packages",
+        "ProjectSettings",
+        "scripts"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-BOOT.01",
+        "CS-BOOT.02",
+        "CS-BOOT.03"
+      ],
+      "sourceIds": []
+    },
+    {
+      "id": "CS-PACK",
+      "title": "현장·기관 매뉴얼·자료 패키지 제작",
+      "goal": "근거가 있는 콘텐츠를 실행 규칙과 새 공간 식별자로 구조화한다.",
+      "inScope": [
+        "새 식별자·단위·시간·자격 스키마",
+        "RuleBundle 및 적용성 검수",
+        "무료 원본 입고 등록",
+        "새 SiteBundle·관측/가상 분리"
+      ],
+      "exitCriteria": [
+        "같은 이름의 다른 시설·기관을 구별",
+        "출처의 발견/취득/검사/수용 구분",
+        "실물 입력이 없는 기술 시험용 콘텐츠를 명확히 표시"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/Content",
+        "Assets/ChooGuard/Contracts",
+        "content",
+        "sources"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-PACK.01",
+        "CS-PACK.02",
+        "CS-PACK.03",
+        "CS-PACK.04"
+      ],
+      "sourceIds": [
+        "FREE-001",
+        "FREE-010",
+        "FREE-011",
+        "FREE-018",
+        "MAN-KORAIL",
+        "MAN-MEDICAL",
+        "MAN-SOP",
+        "MAT-BIPA-BUSAN3",
+        "MAT-KTX-I",
+        "STD-DTC",
+        "STD-JSONLD",
+        "STD-PROV",
+        "STD-SOSA"
+      ]
+    },
+    {
+      "id": "CS-OPS",
+      "title": "영속 상태를 가진 다기관 운영 커널",
+      "goal": "요청·권한·자원·업무·보고의 실제 상태변화를 한 권위자로 실행한다.",
+      "inScope": [
+        "명령 계약·단일 writer",
+        "SQLite·원자 예약·outbox",
+        "기관 권한/지원요청",
+        "업무망·지식·다축 원인"
+      ],
+      "exitCriteria": [
+        "저장 전 성공 응답 없음",
+        "중복 예약과 요청 재적용 없음",
+        "기관 수신 정보와 작성자 전체 분석 분리"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/Domain",
+        "Assets/ChooGuard/Application",
+        "Assets/ChooGuard/Persistence"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-OPS.01",
+        "CS-OPS.02",
+        "CS-OPS.03",
+        "CS-OPS.04",
+        "CS-OPS.05",
+        "CS-OPS.06",
+        "CS-OPS.07"
+      ],
+      "sourceIds": [
+        "MAN-KORAIL",
+        "MAN-MEDICAL",
+        "MAN-SOP",
+        "TECH-TAPAAL"
+      ]
+    },
+    {
+      "id": "CS-WORLD",
+      "title": "현실 기반 철도 운영 공간",
+      "goal": "맵의 시각·이동·계산·의미 표현을 새로 구축한다.",
+      "inScope": [
+        "기술 fixture",
+        "실제 첫 연결 구간·무료 자산",
+        "개체 anchor·상태 투영",
+        "구역 준비·로딩·차량 연결"
+      ],
+      "exitCriteria": [
+        "첫 현장의 근거/가정 분리",
+        "카메라·LOD가 운영결과를 바꾸지 않음",
+        "필요한 상태가 준비되기 전 잘못된 공간 진입 없음"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/World",
+        "Assets/ChooGuard/Art",
+        "Assets/ChooGuard/Scenes",
+        "content/sites"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-WORLD.01",
+        "CS-WORLD.02",
+        "CS-WORLD.03",
+        "CS-WORLD.04"
+      ],
+      "sourceIds": [
+        "FREE-001",
+        "FREE-003",
+        "FREE-018",
+        "MAT-BIPA-BUSAN3",
+        "MAT-KTX-I",
+        "TECH-MAPANYTHING",
+        "TECH-UNITY-FBX",
+        "TECH-UNITY-LOAD"
+      ]
+    },
+    {
+      "id": "CS-PLAY",
+      "title": "Unity 네이티브 RTS 운영 작업공간",
+      "goal": "팀과 업무를 선택해 실제 명령을 제출하고 근거를 읽게 한다.",
+      "inScope": [
+        "uGUI·TMP·Input System 입력소유권",
+        "RTS 선택/명령 미리보기",
+        "HUD·카메라·월드마커",
+        "원인·정보·접근성·저작 오버레이"
+      ],
+      "exitCriteria": [
+        "UI 뒤 월드 클릭·IME 단축키 충돌 없음",
+        "요청과 업무 완료를 구분",
+        "정밀 월드 클릭 없이 목록으로도 핵심 과업 가능"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/Presentation"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-PLAY.01",
+        "CS-PLAY.02",
+        "CS-PLAY.03",
+        "CS-PLAY.04",
+        "CS-PLAY.05",
+        "CS-PLAY.06",
+        "CS-PLAY.07"
+      ],
+      "sourceIds": [
+        "GAME-EMERGENCY",
+        "GAME-RESCUEHQ"
+      ]
+    },
+    {
+      "id": "CS-LAB",
+      "title": "저장된 운영안의 분기·비교 실험",
+      "goal": "동일 입력에서 운영 대안을 재현·수정·비교한다.",
+      "inScope": [
+        "완전 checkpoint·replay",
+        "불변 분기와 복원가능성",
+        "공정한 반복 A/B",
+        "변경영향·부분 재계산"
+      ],
+      "exitCriteria": [
+        "불완전 snapshot을 정확 분기로 표시하지 않음",
+        "내생 결과를 두 안에 강제 복사하지 않음",
+        "우열 불명·실패·미완료를 보존"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/Experiments"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-LAB.01",
+        "CS-LAB.02",
+        "CS-LAB.03",
+        "CS-LAB.04"
+      ],
+      "sourceIds": []
+    },
+    {
+      "id": "CS-MODES",
+      "title": "매뉴얼 교육과 제약 기반 랜덤 실험",
+      "goal": "하나의 코어에 두 사용자 모드를 구성한다.",
+      "inScope": [
+        "실제 사례 기반 하나의 튜토리얼 과정",
+        "조건부 사건 생성",
+        "현장 묶음 재사용·다음 판단 지점 진행"
+      ],
+      "exitCriteria": [
+        "TUTORIAL/RANDOM_OPERATIONS_LAB만 제공",
+        "힌트로 모델/자원 능력을 바꾸지 않음",
+        "추가지원 필요와 미지원 계산을 구별"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/Scenarios",
+        "content/exercises"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-MODES.01",
+        "CS-MODES.02",
+        "CS-MODES.03"
+      ],
+      "sourceIds": [
+        "CASE-READY2026",
+        "CASE-YULHYEON",
+        "MAN-SOP"
+      ]
+    },
+    {
+      "id": "CS-SIM",
+      "title": "다중 물리·행동 계산과 정량 검증",
+      "goal": "운영 판단에 필요한 현상만 검증된 어댑터로 연결한다.",
+      "inScope": [
+        "격리 worker·기능협상",
+        "보행/층간 이동",
+        "접근교통/차량",
+        "화재/열/연기 기준계산",
+        "결합·불확도·선택적 가속"
+      ],
+      "exitCriteria": [
+        "수량별 단일 소유자·단위/시간/버전 일치",
+        "기준모델·최신 후보 공정 비교",
+        "유효범위 이탈·실패 시 결과를 정상처럼 표시하지 않음"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/Simulation",
+        "workers",
+        "benchmarks"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-SIM.01",
+        "CS-SIM.02",
+        "CS-SIM.03",
+        "CS-SIM.04",
+        "CS-SIM.05"
+      ],
+      "sourceIds": [
+        "STD-FMI",
+        "TECH-FDS",
+        "TECH-FDS-SCOPE",
+        "TECH-JPS14",
+        "TECH-JUPED",
+        "TECH-MAPANYTHING",
+        "TECH-PEDDATA",
+        "TECH-PHYSICSNEMO",
+        "TECH-SUMO",
+        "TECH-SUMO-RAIL"
+      ]
+    },
+    {
+      "id": "CS-SCRIPT",
+      "title": "선택 운영안의 근거 기반 대본 저작",
+      "goal": "실행 사실과 규칙에서 검토 가능한 대본·실행데이터를 만든다.",
+      "inScope": [
+        "근거 조회·권한 제한 AI",
+        "ScriptIR·조건부 운영규칙",
+        "native 대본 편집·승인 만료",
+        "고객양식 출력·의미 변경 회수"
+      ],
+      "exitCriteria": [
+        "LLM이 물리/권한/승인을 직접 변경하지 않음",
+        "대본과 실행형 시나리오 의미 일치",
+        "외부 서비스 실패에도 수동편집·저장 유지"
+      ],
+      "plannedRoots": [
+        "Assets/ChooGuard/Authoring",
+        "Assets/ChooGuard/Presentation/Authoring",
+        "workers/authoring"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-SCRIPT.01",
+        "CS-SCRIPT.02",
+        "CS-SCRIPT.03",
+        "CS-SCRIPT.04"
+      ],
+      "sourceIds": [
+        "DISC-05",
+        "DISC-07",
+        "REF-MSEL"
+      ]
+    },
+    {
+      "id": "CS-PROOF",
+      "title": "사용자 가치·현장 적합성 검증",
+      "goal": "기술 성공과 실제 작성 효용·모델/기관 수용을 분리해 검증한다.",
+      "inScope": [
+        "실제 반복 작성팀 발견조사",
+        "종단 과제·장애·성능",
+        "A/B/C·총인시/품질",
+        "현장/기관 지정 용도 검토"
+      ],
+      "exitCriteria": [
+        "문서 시험과 제품 시험 구분",
+        "소표본/미완료/도움/무인계산 정직하게 집계",
+        "독립 검수 없는 현실 승인 금지"
+      ],
+      "plannedRoots": [
+        "research",
+        "Assets/ChooGuard/Tests/Acceptance",
+        "qualification"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-PROOF.01",
+        "CS-PROOF.02",
+        "CS-PROOF.03",
+        "CS-PROOF.04"
+      ],
+      "sourceIds": [
+        "DISC-01",
+        "DISC-03",
+        "DISC-05",
+        "DISC-07",
+        "DISC-08",
+        "DISC-09",
+        "DISC-11",
+        "DISC-18",
+        "FREE-001",
+        "STD-DTC",
+        "TECH-VV"
+      ]
+    },
+    {
+      "id": "CS-SHIP",
+      "title": "로컬 배포·복구·현장 확장",
+      "goal": "오프라인 사용과 갱신·복구·추가 현장을 반복 가능한 제품으로 인계한다.",
+      "inScope": [
+        "실행파일·번들·모델 설치",
+        "백업·업그레이드·보관·외부전송 정책",
+        "새 구역/기관/유형 확장·비용"
+      ],
+      "exitCriteria": [
+        "깨끗한 PC에서 승인 범위 실행",
+        "복구 시 receipt/예약/실행 혈통 보존",
+        "새 현장의 기존 검증 자동 상속 금지"
+      ],
+      "plannedRoots": [
+        "packaging",
+        "scripts/release",
+        "content/releases"
+      ],
+      "implementationStatus": "NOT_STARTED_IN_NEW_BASELINE",
+      "acceptanceStatus": "NOT_RUN",
+      "taskIds": [
+        "CS-SHIP.01",
+        "CS-SHIP.02",
+        "CS-SHIP.03"
+      ],
+      "sourceIds": [
+        "DISC-02",
+        "DISC-04",
+        "DISC-07",
+        "DISC-08",
+        "DISC-09",
+        "DISC-10"
+      ]
+    }
+  ]
+}

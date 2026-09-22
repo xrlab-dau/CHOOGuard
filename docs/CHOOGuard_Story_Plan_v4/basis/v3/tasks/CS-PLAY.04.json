@@ -1,0 +1,153 @@
+{
+  "id": "CS-PLAY.04",
+  "epicId": "CS-PLAY",
+  "title": "복수 원인·기관별 정보·작업 오버레이",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PLAY.04",
+    "description": "대기 사유·근거·타임라인·비교/대본 화면의 native 연결",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PLAY.04",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.04.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.04.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.04.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.04.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Presentation/Inspector/ReasonInspector.cs",
+    "Assets/ChooGuard/Presentation/Timeline/AgencyTimeline.cs",
+    "Assets/ChooGuard/Presentation/Overlays/ToolOverlayRouter.cs",
+    "Assets/ChooGuard/Presentation/Inspector/ReasonInspector.prefab"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PLAY/Play04Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PLAY.02",
+      "artifactId": "A-CS-PLAY.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.06",
+      "artifactId": "A-CS-OPS.06",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "각 reason에 원인·영향·관련 업무/보고·해결 조건·근거를 붙인다.",
+    "전체 분석에서 기관 정보 보기로 전환해도 도메인 knowledge는 읽기만 한다.",
+    "모달/도구 종료시 focus·selection·camera를 복원한다. 열린 창과 session pause는 다른 상태다."
+  ],
+  "contract": "ReasonView/AgencyTimeline는 read-only; pause는 코어 ack 이후 표시.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PLAY.04-P",
+      "given": "task 원인2개와 원문근거",
+      "when": "inspector 열기/닫기",
+      "then": "복수원인/영향/focus 보존",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PLAY.04-N",
+      "given": "author 분석을 agency 지식으로 쓰기",
+      "when": "inspector 열기/닫기",
+      "then": "READ_SCOPE_VIOLATION",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-008",
+    "REQ-072"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PLAY/Play04Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSPLAY04PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-PLAY.04.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "task 원인2개와 원문근거",
+    "operation": "inspector 열기/닫기",
+    "expectedPositive": "복수원인/영향/focus 보존",
+    "negativeInput": "author 분석을 agency 지식으로 쓰기",
+    "expectedNegative": "READ_SCOPE_VIOLATION",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

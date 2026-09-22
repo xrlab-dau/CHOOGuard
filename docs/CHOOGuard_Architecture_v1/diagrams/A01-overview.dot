@@ -1,0 +1,32 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+U [label="작성 담당자 · 검수자", shape=box, style="rounded,filled", fillcolor="#E8EEF5", color="#455B73", fontcolor="#18314A"];
+UI [label="Unity Native\nRTS HUD · 실제 3D · 비교/대본", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+APP [label="Application Facade\n명령 · 조회 · 권한 · 미리보기", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+OPS [label="Operations Core\n업무 · 예약 · 기관 정보 · 인계", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+SIM [label="Simulation Coordinator\n교환 시각 · 결과 검증 · 단일 소유권", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+W [label="격리 계산 워커\n기존 모델 / JPS / SUMO / FDS·ROM", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+EXP [label="Experiment Service\n완전 checkpoint · 분기 · A/B", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+AUTH [label="Authoring + Evidence\n검토 · ScriptIR · 자격", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+AI [label="AI Adapter\n근거 기반 제안만", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+DB [label="로컬 저장\nSQLite · 불변 blob · 원시 기록", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+C [label="SiteBundle / RuleBundle\n현장 · 모델 · 자료 · 판본", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+O [label="훈련 대본 + 실행형 데이터\n근거 · 한계 · 검토 범위", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+U -> UI [label="선택·판단"];
+UI -> APP [label="명령 의도 / 조회"];
+APP -> OPS [label="검사 후 요청"];
+APP -> EXP [label="정지·분기·비교"];
+APP -> AUTH [label="저작·검토"];
+OPS -> SIM [label="경계 입력"];
+SIM -> W [label="job / accepted result", dir=both];
+OPS -> DB [label="commit 후 승인"];
+EXP -> DB [label="snapshot / lineage"];
+AUTH -> AI [label="허용 근거 pack"];
+AI -> AUTH [label="구조화 초안"];
+AUTH -> O [label="자격 있는 출력"];
+C -> OPS [label="규칙·현장"];
+C -> W [label="수치 입력"];
+DB -> AUTH [label="기록·비교 근거"];
+}

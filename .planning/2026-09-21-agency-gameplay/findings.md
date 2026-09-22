@@ -1,0 +1,1 @@
+Catalog: two source coordinates, only central119 supports fire/medical training slots. Fleet and entrances unknown. Existing director accepted result delta is timing authority. No native calls in this lane.

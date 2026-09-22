@@ -1,0 +1,109 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-21T04:33:51.617064+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "Currentintegratedmechanismbenchmark/localEditorcheckpoint. Notoverallproduction/wholeBusanphysicaltwin/Windows/OSinputacceptance.",
+  "corePosition": "Source-located publicagency→ingamesupportrequest→roadvehicle→onsiteteamwork→return/readiness;localteamcontrolislast-mile.",
+  "requirementAuthority": "Userrequirements definegoals;primarysources andactualexecution provideevidence;Jev isadvisoryonly.",
+  "checkpoints": [
+    {
+      "name": "Official guide review",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/coverage.json",
+      "summary": "15guidepages catalogued,14bodytexts+welcomeoverview,52HowToanchors,help/controls/2toolboxes;wholewelcomevideo notviewed"
+    },
+    {
+      "name": "Four source agency points",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-coordinate-native-parity.json",
+      "summary": "Nativepoints match sourcecatalog projection, notsurveyedentranceaccuracy"
+    },
+    {
+      "name": "Central119 actual city roundtrip",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-native-proof.json",
+      "summary": "PausedUIrequest→directedroad→135ssimarrival→onsiteownACK170s→return→343sbaseReady;duplicate/busy/unavailablegates"
+    },
+    {
+      "name": "Current 2F path query",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/nav-query-source-validation.json",
+      "summary": "NativeDetour obstacleavoidance,3stagingtargetsreachable,unsupportedfloorrejected"
+    },
+    {
+      "name": "Current 50-person evacuation and Recovery",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/nav-evac-native-proof.json",
+      "summary": "Currentnav+actualworker50exited67simseconds;separate runfromagencytrip"
+    },
+    {
+      "name": "Corrected Ready UI",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/ready-hud-native-proof.json",
+      "summary": "Unavailablecrewcard showsagency;onsitebuttonsdisabled;emptyfirepanelhidden"
+    },
+    {
+      "name": "SUMO installed and used",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/sumo-tooling-graph.json",
+      "summary": "ProjectlocalmacOSarm64SUMO1.27.1;fullOSMnetconvert/duarouter/SUMOexit0;one169s/1330.3mreferencevehicle;UnityvehiclemotionnotSUMO-driven"
+    },
+    {
+      "name": "Agency-first context",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-context-native-proof.json",
+      "summary": "Actual city startup foregroundsagency;sitebuttonshows2Flocalcontrols;agencybuttonreturns0/city;globalcontrolsremainvisible"
+    }
+  ],
+  "benchmarkRef": "docs/CHOOGuard_Story_Plan_v5/FRONTIER_GUIDE_BENCHMARK.md",
+  "physicalFieldRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-production-benchmark-migration.json",
+  "acquiredDataRef": "asset-library/research-public/2026-09-21/busan-twin/bpa-northport-package-receipt.json",
+  "dataScope": "Public2023CAD/parcel/buildingcontrol/landuseplans,notas-builtstationgeometry.4agencylocations crosscheckedwithofficialaddresses/publicmapentities;fleet/entrances/liveavailabilityunknown.",
+  "modelLimits": [
+    "CurrentdispatchonlyCentral119 fire/EMS trainingslots;other3locations focus-only.",
+    "Agencyvehiclecurrentmodel followsdirectedOSMpolylineat8m/sassumed,approximate65.668mconnectors;turnrestrictionrelations notmodeled.",
+    "SUMOactualreferencecaseinstalled/usedbutnotUnitytrafficmodelyet.",
+    "FDSactualreference1.5mslice0..120incidentsec;originaldataimmutable;earlierfireoutcomes legacysampler.",
+    "3floors/hubs andcitybuildingsremainproceduralwithassumedgeometry. Detailedas-builtinterior/exteriorreconstruction remainsinprogress.",
+    "Hospitalhandoff/otheragencyroles,facilitymaintenance/resources/autocoverage,full20–30minuteplay,measuredsite/crush/clinical/Windowsacceptance incomplete."
+  ],
+  "sourceHashes": {
+    "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs": "282835b0d69f82ad925a88e0d645fab9cb7e00facda5e8892e01f5808a89d3f3",
+    "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs": "db898ec3c6635b6c49b9f1889eb9557913d673f138b6400287cf04e43652a6ef",
+    "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs": "80701a04ea08a571660d58e580c539f0ac53f73e73b0715b8dd4712a1a1a1ad7",
+    "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs": "c0123de426c1da601ebb13d0407bce53e55bc446c6d69f505859134496dd8d22",
+    "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs": "b0eb3a2c2b48149b62e80268c434fbd3e44ea17f814e05821729272c7e465b29",
+    "Assets/ChooGuard/App/Mvp/MvpStationView.cs": "6c96cc4571c5c22d082c1d0a3218c593c39a988bc0189dfb7c7b99d74363cf78",
+    "Assets/ChooGuard/App/Mvp/MvpTeamNavigation.cs": "2b1b169e18c9562c4e70bf22e2ace6ba64fd0fbb7f2b823b92683ace97ff6f5d",
+    "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs": "9961b7d31e36be150d01a1f75233d8d19206895ac8c81b004a559d098853fc7f",
+    "Assets/ChooGuard/Art/AgencyDispatch/agency-routes.json": "7c328663d56d5345312db677cbed36d73961ba2de2c8a70f39fe429b2e279dd2",
+    "Assets/ChooGuard/Art/AgencyDispatch/agency-catalog.json": "10f692dcd7e297f39934b1c1bf8a6312e76b302ff1e18d51ed6e4e38d5d18a09",
+    "Packages/manifest.json": "8975d9a511b3eb19cf1dad62e7f3230b09bb4a5f61f1c42b9b7473414c16762e",
+    "Assets/packages.config": "d9d61b34e2e6d467a6dcf15568843a7338248d734742e696208a8e124959cd0b",
+    "Assets/NuGet.config": "8590c8aa0bc13ffcbb305c26466b27789a523cc79a909750accf9828d6db040d"
+  },
+  "jevUsageRef": ".planning/2026-09-20-integrated-build/jev-usage-summary.json",
+  "priorFailuresPreserved": [
+    "NuGet activePackageSource missing; repairedconfigandactualrestore/compilepassed",
+    "Agencybuilder malformednullguard; repairedandcompiled",
+    "Unity JsonUtility null-nestedfieldmaterialization; nativeadapterfixpassed",
+    "Civilianlayer0vsstationcamera29 causedinvisible/nonanimatedrender; correctedandnativeverified"
+  ],
+  "editorSaveRef": ".planning/2026-09-21-official-guide-benchmark/final-save-native.json",
+  "finalClaimsRef": ".planning/2026-09-20-integrated-build/jev-agency-final-claims-043.result.json",
+  "sharedSettingsRef": ".planning/2026-09-21-official-guide-benchmark/protected-settings-final.json",
+  "currentGraphRef": ".planning/2026-09-20-integrated-build/session-graph.json",
+  "finalHandoffRef": ".planning/2026-09-21-official-guide-benchmark/final-handoff-native.json",
+  "runtimeHandoff": {
+    "playing": true,
+    "paused": true,
+    "time": 0,
+    "phase": "ordinary",
+    "floor": 0,
+    "agencyCount": 4,
+    "scene": "Assets/ChooGuard/Scenes/MvpWorkspace.unity",
+    "sceneDirty": false,
+    "navigationEnabled": true
+  }
+}

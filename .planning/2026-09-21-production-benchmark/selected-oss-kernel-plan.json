@@ -1,0 +1,52 @@
+{
+  "status": "ROOT_SELECTED_ONE_IMPLEMENTATION_SLICE",
+  "story": "CS-EXEC.01.01",
+  "reason": "Official JWE3 supply/replenishment and operatingcapacity contrast with current instantReady afterreturn; actualOpenRAWait timedactivity fitscurrentgap. Alsofulfills userJev internal arithmetic ratherthanpublicforecastUI.",
+  "scope": "Logical response team: return→automaticturnaround→Ready. No pervehicle tasks, no publicgraph/AI panels, no randomincident selection or physicalsolverreplacement.",
+  "oss": {
+    "repo": "https://github.com/OpenRA/OpenRA",
+    "commit": "f3ec7f8e1593b482f85fd101652deb740c33dee6",
+    "path": "OpenRA.Mods.Common/Activities/Wait.cs",
+    "local": ".tools/game-source-research/2026-09-21/openra/Wait.cs",
+    "reuse": "Adapt actual Wait remainingTicks countdown/cancellation into engine-independent C# helper drivenONLY byaccepted simulationtime. PreserveN+1 callsemanticsorclearlydocument wrapperinitial tick; no wallclock timer.",
+    "license": "Retain upstreamcopyright/header GPL3+ andCOPYING, thirdpartymapping. Localreuseauthorized; no remote/distributionaction."
+  },
+  "arithmetic": {
+    "parameters": "normalSeconds=15,extendedSeconds=45 defaults inserializedkernelprofile, explicitly authored traininggame operatingtimes, notsurveyed119procedure",
+    "modelQuestion": "noul probability that the observed completed operation workload fits the normal turnaround regime ratherthan an extended regime (latentworkloadclassification, NOT advertisedprobabilityof readinessbyexactdeadline).",
+    "formula": "expectedSeconds = pNormal*normalSeconds + (1-pNormal)*extendedSeconds",
+    "purpose": "Use expectedoperatingduration inactualteamreadinesscountdown. Treatasboundedmean-duration approximation, notcalibratedhumanphysics/medicalsuccess.",
+    "fallback": "If modelmissing/invalid/late, use explicitnormalSeconds baseline withsource=baseline/no probability. Neverfabricatep. Freezeparameteratbasearrival; laterreplycannotretroactivelyalterclock."
+  },
+  "kernelLane": {
+    "owner": "agency_gameplay AstraLOW",
+    "files": [
+      "newAssets/ChooGuard/App/Mvp/MvpJevOperationalKernel.cs",
+      "newAssets/ChooGuard/Editor/MvpJevOperationalKernelBinder.cs",
+      "workers/prediction/jev-proxy.mjs /turnaround",
+      "workers/prediction/README.md"
+    ],
+    "API": "onWorkspace; BindExisting()edit; public PrepareTurnaround(operationId,agencyId,logicalTeamId,workType,memberCount,operationStartedSim,onsiteSim,travelMetres) called oncewhenreturnstarts; public TimingDecision ResolveTurnaround(operationId) freezes15..45s decision frommatchingresponseorbaseline. public ResetRun(). public IReadOnlyList<TimingDecision> Decisions. Decisionfields OperationId,RunId,Generation,HasProbability,ProbabilityNormal,NormalSeconds,ExtendedSeconds,ExpectedSeconds,Source,InputHash,Model,LatencyMs.",
+    "input": "Read currentactual acceptedBridgeRESULT+finitephysics+cohortstats, completedoperationworkload; retainIDs inlocalprovenance, keepmodelstatecompact. Reuseexistinggatewayprocesskeyhiddenstdin, addfixedPOST/turnaroundtypedprotocol,3sdeadline0retry, boundedoneinflight; no externalkey/headersinUnity/files/logs. Startduringreturntripsoasyncresultusuallyarrivesbeforebase. Nevercommandgraph/physicsfromkernel.",
+    "doNotEdit": "Controller,progressionJSON,UI,cam,building,settings. Timedlaneownscontroller."
+  },
+  "timedLane": {
+    "owner": "AstraLOW worker",
+    "files": [
+      "newAssets/ChooGuard/App/Mvp/ThirdParty/OpenRaCountdown.cs",
+      "newthirdpartyNOTICE/COPYING retention",
+      "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "Assets/ChooGuard/App/Mvp/MvpProgressionGraph.cs",
+      "Assets/ChooGuard/Art/Progression/response-flow.json"
+    ],
+    "integration": "Onreturnstart callkernelPrepare once. Returningarrival entersReplenishing anduseskernelResolve.ExpectedSeconds (explicit15s baselineifkernelabsent), startsacceptedtimecountdown. Graph returnededge targetsreplenishing; addreplenished event/nodepath→ready. PreserveWork/LastCompletedOperationIduntilturnarounddone. Replenishing isnotReady/cannotreceivework; groupmembersparkedtogether. NewKoreanState 보충 중. TickexistingmissionsalreadyReplenishing beforemovementloop; donotchargearrivalstepagain. Resetcancelstimer+kernel. ExposeadditiveMissionSnapshot TurnaroundRemainingSeconds/TurnaroundTotalSeconds/TimingSource forrootproof; UIalreadyreadsstate/readycounts, no predictorpanel.",
+    "avoid": "Do not addresourceeconomy/secondtargets/publicAIcontrols or replacecurrentdispatcher/RuleFacts."
+  },
+  "verification": [
+    "Sourceattribution mapsoriginalWaitcode↔adaptedfile/NOTICE",
+    "native100%APIproblimit+formula check, baselinefailure/late-responsefreeze explicit",
+    "actualvehicle return entersReplenishing, remainsunavailable/parkedwhenpaused, Readyonlyafteracceptedduration withgraphedgeproof",
+    "existingcontextualbuildingUI preserved;publicforecastclients/panels0;no pervehicle commands",
+    "fullsitephysicalcalibration/production/replay notclaimed; mean-durationapproximation remainsunvalidatedgamebalance"
+  ]
+}

@@ -1,0 +1,628 @@
+{
+  "planRawSha256": "c04243923227d8eacf8c1ae7dbd73be4bc4c7cde0995607c651b9aa1ef6c6314",
+  "canonicalPlanDigest": "a72479df58f7fe7758ad9c12a14e6382e7ad3d7f96e38460e2e851d012c467f9",
+  "stories": [
+    {
+      "id": "CS-BOOT.01.01",
+      "epicId": "CS-BOOT",
+      "parentTaskId": "CS-BOOT.01",
+      "title": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다",
+      "goal": "정식 Unity 6 LTS/URP 새 프로젝트와 editor·backend·package lock을 기록한다. Camera/Canvas/EventSystem만으로 부팅하고 도메인 조립은 요구하지 않는다.",
+      "scopeKind": "IMPLEMENTATION",
+      "splitKind": "SMALL_EXECUTABLE_STORY",
+      "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+      "implementationStatus": "NOT_STARTED",
+      "acceptanceStatus": "NOT_RUN",
+      "assignee": null,
+      "requirementIds": [
+        "REQ-066"
+      ],
+      "supportsRequirementIds": [
+        "REQ-066"
+      ],
+      "parentProductTestIds": [
+        "AT-066"
+      ],
+      "invariants": [
+        "UNITY_NATIVE_PC",
+        "EXACTLY_TWO_PRODUCT_MODES",
+        "GREENFIELD_NO_LEGACY",
+        "NO_FAKE_ACCEPTANCE"
+      ],
+      "writes": [
+        {
+          "path": "ProjectSettings/ProjectVersion.txt",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.01.01",
+          "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+        },
+        {
+          "path": "ProjectSettings/GraphicsSettings.asset",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.01.01",
+          "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+        },
+        {
+          "path": "Packages/manifest.json",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.01.01",
+          "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+        },
+        {
+          "path": "Packages/packages-lock.json",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.01.01",
+          "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Scenes/Bootstrap.unity",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.01.01",
+          "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+        },
+        {
+          "path": "docs/build/baseline.json",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.01.01",
+          "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+        }
+      ],
+      "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs",
+      "testKinds": [
+        "EDIT_MODE",
+        "PLAY_MODE",
+        "PLAYER_ACCEPTANCE"
+      ],
+      "outputs": [
+        {
+          "id": "OUT-CS-BOOT.01.01",
+          "kind": "PlannedArtifact",
+          "producer": "CS-BOOT.01.01",
+          "contract": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다",
+          "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+          "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+          "status": "NOT_PRODUCED",
+          "paths": [
+            "ProjectSettings/ProjectVersion.txt",
+            "ProjectSettings/GraphicsSettings.asset",
+            "Packages/manifest.json",
+            "Packages/packages-lock.json",
+            "Assets/ChooGuard/Scenes/Bootstrap.unity",
+            "docs/build/baseline.json"
+          ],
+          "productEvidence": []
+        }
+      ],
+      "requires": [],
+      "externalInputs": [
+        {
+          "id": "EXT-UNITY",
+          "requiredAt": "candidate",
+          "condition": "ALWAYS",
+          "description": "본인이 사용할 Unity Editor 실행경로·사용 가능한 라이선스·지원 OS. 설치 probe 기록 없이는 Player 실행했다고 주장하지 않는다.",
+          "state": "UNKNOWN",
+          "effect": "해당 story/phase만 보류; 다른 독립 개발은 지속"
+        }
+      ],
+      "sourceIds": [],
+      "sourceRefs": [],
+      "specRefs": [
+        "GLOBAL_CONTRACT.md",
+        "basis/v3/specs/01-build-and-assemblies.md",
+        "basis/v3/specs/02-wire-and-ports.md",
+        "basis/v3/specs/12-evidence-and-performance.md"
+      ],
+      "parentContract": "BuildBaseline {editorVersion, packageLockSha256, renderPipeline, backend, os, nativePlugins, buildReceiptRef}; 모든 값은 새 실행에서 기록.",
+      "parentSpecRef": "basis/v3/tasks/CS-BOOT.01.json",
+      "behaviorSteps": [
+        "정식 Unity 6 LTS/URP 새 프로젝트와 editor·backend·package lock을 기록한다. Camera/Canvas/EventSystem만으로 부팅하고 도메인 조립은 요구하지 않는다.",
+        "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+        "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+      ],
+      "acceptance": [
+        {
+          "id": "AC-CS-BOOT.01.01-P",
+          "kind": "POSITIVE",
+          "given": "고정한 입력/환경과 새 Unity 프로젝트에서 정적 PC 부팅을 재현한다의 유효 조건",
+          "when": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다를 실행한다",
+          "then": "빈 폴더에서 생성한 Player가 부팅되고 version receipt와 EventSystem 1개가 확인된다.",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "AC-CS-BOOT.01.01-N",
+          "kind": "NEGATIVE",
+          "given": "로컬 전용 DLL·누락 패키지·두 EventSystem을 넣으면 원인을 남기고 baseline 수용을 거부한다.",
+          "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+          "then": "로컬 전용 DLL·누락 패키지·두 EventSystem을 넣으면 원인을 남기고 baseline 수용을 거부한다.",
+          "status": "NOT_RUN"
+        }
+      ],
+      "workSteps": [
+        {
+          "id": "read",
+          "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+        },
+        {
+          "id": "red",
+          "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+        },
+        {
+          "id": "implement",
+          "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+        },
+        {
+          "id": "green",
+          "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+        },
+        {
+          "id": "review",
+          "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+        },
+        {
+          "id": "handoff",
+          "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+        }
+      ],
+      "stopRules": [
+        "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+        "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+        "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+      ],
+      "lane": "ENGINEERING",
+      "window": "W0",
+      "orderRank": 0,
+      "requiredReads": [
+        {
+          "path": "GLOBAL_CONTRACT.md",
+          "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+        },
+        {
+          "path": "basis/v3/specs/01-build-and-assemblies.md",
+          "sha256": "cbaef6bfdbf734cd033a06e45ea7f95e5bb9f13c746a7cf0fc245abdd5e9595e"
+        },
+        {
+          "path": "basis/v3/specs/02-wire-and-ports.md",
+          "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+        },
+        {
+          "path": "basis/v3/specs/12-evidence-and-performance.md",
+          "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68"
+        }
+      ]
+    },
+    {
+      "id": "CS-BOOT.02.01",
+      "epicId": "CS-BOOT",
+      "parentTaskId": "CS-BOOT.02",
+      "title": "13개 모듈과 시험 assembly의 의존 경계를 고정한다",
+      "goal": "assembly-layout을 새 asmdef로 옮긴다. Contracts/Domain의 UnityEngine 참조를 금지하고 Editor 코드를 분리한다.",
+      "scopeKind": "IMPLEMENTATION",
+      "splitKind": "SMALL_EXECUTABLE_STORY",
+      "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+      "implementationStatus": "NOT_STARTED",
+      "acceptanceStatus": "NOT_RUN",
+      "assignee": null,
+      "requirementIds": [],
+      "supportsRequirementIds": [
+        "REQ-066"
+      ],
+      "parentProductTestIds": [
+        "AT-066"
+      ],
+      "invariants": [
+        "UNITY_NATIVE_PC",
+        "EXACTLY_TWO_PRODUCT_MODES",
+        "GREENFIELD_NO_LEGACY",
+        "NO_FAKE_ACCEPTANCE"
+      ],
+      "writes": [
+        {
+          "path": "Assets/ChooGuard/Contracts/ChooGuard.Contracts.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Domain/ChooGuard.Domain.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Application/ChooGuard.Application.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Presentation/ChooGuard.Presentation.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Content/ChooGuard.Content.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Persistence/ChooGuard.Persistence.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/World/ChooGuard.World.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Experiments/ChooGuard.Experiments.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Scenarios/ChooGuard.Scenarios.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Simulation/ChooGuard.Simulation.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Authoring/ChooGuard.Authoring.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/App/ChooGuard.App.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        },
+        {
+          "path": "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.02.01",
+          "scope": "13개 모듈과 시험 assembly의 의존 경계를 고정한다"
+        }
+      ],
+      "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0201Tests.cs",
+      "testKinds": [
+        "EDIT_MODE",
+        "PLAY_MODE",
+        "PLAYER_ACCEPTANCE"
+      ],
+      "outputs": [
+        {
+          "id": "OUT-CS-BOOT.02.01",
+          "kind": "PlannedArtifact",
+          "producer": "CS-BOOT.02.01",
+          "contract": "13개 모듈과 시험 assembly의 의존 경계를 고정한다",
+          "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+          "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+          "status": "NOT_PRODUCED",
+          "paths": [
+            "Assets/ChooGuard/Contracts/ChooGuard.Contracts.asmdef",
+            "Assets/ChooGuard/Domain/ChooGuard.Domain.asmdef",
+            "Assets/ChooGuard/Application/ChooGuard.Application.asmdef",
+            "Assets/ChooGuard/Presentation/ChooGuard.Presentation.asmdef",
+            "Assets/ChooGuard/Content/ChooGuard.Content.asmdef",
+            "Assets/ChooGuard/Persistence/ChooGuard.Persistence.asmdef",
+            "Assets/ChooGuard/World/ChooGuard.World.asmdef",
+            "Assets/ChooGuard/Experiments/ChooGuard.Experiments.asmdef",
+            "Assets/ChooGuard/Scenarios/ChooGuard.Scenarios.asmdef",
+            "Assets/ChooGuard/Simulation/ChooGuard.Simulation.asmdef",
+            "Assets/ChooGuard/Authoring/ChooGuard.Authoring.asmdef",
+            "Assets/ChooGuard/App/ChooGuard.App.asmdef",
+            "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef"
+          ],
+          "productEvidence": []
+        }
+      ],
+      "requires": [
+        {
+          "producer": "CS-BOOT.01.01",
+          "artifactId": "OUT-CS-BOOT.01.01",
+          "producerStage": "candidate",
+          "consumerStage": "candidate",
+          "condition": "ALWAYS",
+          "why": "필요한 구체 산출물만 소비한다."
+        }
+      ],
+      "externalInputs": [],
+      "sourceIds": [
+        "AUD-UNITY-ASSEMBLY"
+      ],
+      "sourceRefs": [
+        {
+          "sourceId": "AUD-UNITY-ASSEMBLY",
+          "url": "https://docs.unity.cn/6000.3/Documentation/Manual/assembly-definitions-referencing.html",
+          "record": "basis/v3/reference/sources.json",
+          "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+        }
+      ],
+      "specRefs": [
+        "GLOBAL_CONTRACT.md",
+        "basis/v3/specs/01-build-and-assemblies.md",
+        "basis/v3/specs/02-wire-and-ports.md",
+        "basis/v3/specs/12-evidence-and-performance.md"
+      ],
+      "parentContract": "IOperationsPort.PreviewAsync(CommandIntent,CancellationToken); SubmitAsync(CommandIntent,CancellationToken); ReadReceiptAsync(ReceiptKey,CancellationToken); ReadProjectionAsync(ProjectionQuery,CancellationToken). 정확 타입은 specs/02-wire-and-ports.md.",
+      "parentSpecRef": "basis/v3/tasks/CS-BOOT.02.json",
+      "behaviorSteps": [
+        "assembly-layout을 새 asmdef로 옮긴다. Contracts/Domain의 UnityEngine 참조를 금지하고 Editor 코드를 분리한다.",
+        "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+        "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+      ],
+      "acceptance": [
+        {
+          "id": "AC-CS-BOOT.02.01-P",
+          "kind": "POSITIVE",
+          "given": "고정한 입력/환경과 13개 모듈과 시험 assembly의 의존 경계를 고정한다의 유효 조건",
+          "when": "13개 모듈과 시험 assembly의 의존 경계를 고정한다를 실행한다",
+          "then": "각 신규 C# 경로가 정확히 한 asmdef에 속하고 의존 그래프가 순환하지 않는다.",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "AC-CS-BOOT.02.01-N",
+          "kind": "NEGATIVE",
+          "given": "Domain에 UnityEngine 참조 또는 default Assembly-CSharp 의존을 추가하면 검사 실패한다.",
+          "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+          "then": "Domain에 UnityEngine 참조 또는 default Assembly-CSharp 의존을 추가하면 검사 실패한다.",
+          "status": "NOT_RUN"
+        }
+      ],
+      "workSteps": [
+        {
+          "id": "read",
+          "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+        },
+        {
+          "id": "red",
+          "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0201Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+        },
+        {
+          "id": "implement",
+          "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+        },
+        {
+          "id": "green",
+          "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+        },
+        {
+          "id": "review",
+          "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+        },
+        {
+          "id": "handoff",
+          "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+        }
+      ],
+      "stopRules": [
+        "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+        "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+        "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+      ],
+      "lane": "ENGINEERING",
+      "window": "W0",
+      "orderRank": 2,
+      "requiredReads": [
+        {
+          "path": "GLOBAL_CONTRACT.md",
+          "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+        },
+        {
+          "path": "basis/v3/specs/01-build-and-assemblies.md",
+          "sha256": "cbaef6bfdbf734cd033a06e45ea7f95e5bb9f13c746a7cf0fc245abdd5e9595e"
+        },
+        {
+          "path": "basis/v3/specs/02-wire-and-ports.md",
+          "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+        },
+        {
+          "path": "basis/v3/specs/12-evidence-and-performance.md",
+          "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68"
+        }
+      ]
+    },
+    {
+      "id": "CS-BOOT.03.01",
+      "epicId": "CS-BOOT",
+      "parentTaskId": "CS-BOOT.03",
+      "title": "EditMode·PlayMode 실행기의 실패 전파를 만든다",
+      "goal": "설치 editor/project 경로를 명시 인자로 받아 결과 XML·exit code·로그를 저장한다. 테스트 0개를 성공으로 집계하지 않는다.",
+      "scopeKind": "IMPLEMENTATION",
+      "splitKind": "SMALL_EXECUTABLE_STORY",
+      "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+      "implementationStatus": "NOT_STARTED",
+      "acceptanceStatus": "NOT_RUN",
+      "assignee": null,
+      "requirementIds": [
+        "REQ-061"
+      ],
+      "supportsRequirementIds": [
+        "REQ-061"
+      ],
+      "parentProductTestIds": [
+        "AT-061"
+      ],
+      "invariants": [
+        "UNITY_NATIVE_PC",
+        "EXACTLY_TWO_PRODUCT_MODES",
+        "GREENFIELD_NO_LEGACY",
+        "NO_FAKE_ACCEPTANCE"
+      ],
+      "writes": [
+        {
+          "path": "scripts/Run-UnityTests.ps1",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.03.01",
+          "scope": "EditMode·PlayMode 실행기의 실패 전파를 만든다"
+        },
+        {
+          "path": ".github/workflows/verify.yml",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.03.01",
+          "scope": "EditMode·PlayMode 실행기의 실패 전파를 만든다"
+        },
+        {
+          "path": "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.03.01",
+          "scope": "EditMode·PlayMode 실행기의 실패 전파를 만든다"
+        },
+        {
+          "path": "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.03.01",
+          "scope": "EditMode·PlayMode 실행기의 실패 전파를 만든다"
+        },
+        {
+          "path": "Assets/ChooGuard/Tests/Acceptance/ChooGuard.AcceptanceTests.asmdef",
+          "operation": "CREATE",
+          "createdBy": "CS-BOOT.03.01",
+          "scope": "EditMode·PlayMode 실행기의 실패 전파를 만든다"
+        }
+      ],
+      "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0301Tests.cs",
+      "testKinds": [
+        "EDIT_MODE",
+        "PLAY_MODE",
+        "PLAYER_ACCEPTANCE"
+      ],
+      "outputs": [
+        {
+          "id": "OUT-CS-BOOT.03.01",
+          "kind": "PlannedArtifact",
+          "producer": "CS-BOOT.03.01",
+          "contract": "EditMode·PlayMode 실행기의 실패 전파를 만든다",
+          "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+          "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+          "status": "NOT_PRODUCED",
+          "paths": [
+            "scripts/Run-UnityTests.ps1",
+            ".github/workflows/verify.yml",
+            "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef",
+            "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef",
+            "Assets/ChooGuard/Tests/Acceptance/ChooGuard.AcceptanceTests.asmdef"
+          ],
+          "productEvidence": []
+        }
+      ],
+      "requires": [
+        {
+          "producer": "CS-BOOT.02.01",
+          "artifactId": "OUT-CS-BOOT.02.01",
+          "producerStage": "candidate",
+          "consumerStage": "candidate",
+          "condition": "ALWAYS",
+          "why": "필요한 구체 산출물만 소비한다."
+        }
+      ],
+      "externalInputs": [],
+      "sourceIds": [
+        "AUD-UNITY-ASSEMBLY"
+      ],
+      "sourceRefs": [
+        {
+          "sourceId": "AUD-UNITY-ASSEMBLY",
+          "url": "https://docs.unity.cn/6000.3/Documentation/Manual/assembly-definitions-referencing.html",
+          "record": "basis/v3/reference/sources.json",
+          "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+        }
+      ],
+      "specRefs": [
+        "GLOBAL_CONTRACT.md",
+        "basis/v3/specs/01-build-and-assemblies.md",
+        "basis/v3/specs/02-wire-and-ports.md",
+        "basis/v3/specs/12-evidence-and-performance.md"
+      ],
+      "parentContract": "TestReceipt {testSet, commit, environment, startedAt, command, resultFiles, status, notRunReason}; CI credential은 저장소에 넣지 않는다.",
+      "parentSpecRef": "basis/v3/tasks/CS-BOOT.03.json",
+      "behaviorSteps": [
+        "설치 editor/project 경로를 명시 인자로 받아 결과 XML·exit code·로그를 저장한다. 테스트 0개를 성공으로 집계하지 않는다.",
+        "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+        "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+      ],
+      "acceptance": [
+        {
+          "id": "AC-CS-BOOT.03.01-P",
+          "kind": "POSITIVE",
+          "given": "고정한 입력/환경과 EditMode·PlayMode 실행기의 실패 전파를 만든다의 유효 조건",
+          "when": "EditMode·PlayMode 실행기의 실패 전파를 만든다를 실행한다",
+          "then": "정상 테스트와 의도적 assertion 실패가 다른 종료코드·결과로 기록된다.",
+          "status": "NOT_RUN"
+        },
+        {
+          "id": "AC-CS-BOOT.03.01-N",
+          "kind": "NEGATIVE",
+          "given": "라이선스 없음·XML 없음·테스트 0개면 PASS 대신 환경 오류/NOT_RUN을 반환한다.",
+          "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+          "then": "라이선스 없음·XML 없음·테스트 0개면 PASS 대신 환경 오류/NOT_RUN을 반환한다.",
+          "status": "NOT_RUN"
+        }
+      ],
+      "workSteps": [
+        {
+          "id": "read",
+          "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+        },
+        {
+          "id": "red",
+          "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0301Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+        },
+        {
+          "id": "implement",
+          "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+        },
+        {
+          "id": "green",
+          "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+        },
+        {
+          "id": "review",
+          "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+        },
+        {
+          "id": "handoff",
+          "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+        }
+      ],
+      "stopRules": [
+        "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+        "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+        "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+      ],
+      "lane": "ENGINEERING",
+      "window": "W0",
+      "orderRank": 5,
+      "requiredReads": [
+        {
+          "path": "GLOBAL_CONTRACT.md",
+          "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+        },
+        {
+          "path": "basis/v3/specs/01-build-and-assemblies.md",
+          "sha256": "cbaef6bfdbf734cd033a06e45ea7f95e5bb9f13c746a7cf0fc245abdd5e9595e"
+        },
+        {
+          "path": "basis/v3/specs/02-wire-and-ports.md",
+          "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+        },
+        {
+          "path": "basis/v3/specs/12-evidence-and-performance.md",
+          "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68"
+        }
+      ]
+    }
+  ]
+}

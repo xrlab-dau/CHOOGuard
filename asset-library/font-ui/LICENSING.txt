@@ -1,0 +1,39 @@
+폰트·UI 에셋 로컬 준비 / VERIFIED_LOCAL_NOT_IMPORTED
+
+범위: 공식 저장소에서 취득한 Noto Sans CJK KR Regular OTF 1개와 Lucide SVG 20개만 검토했다. 전체 릴리스·저장소의 모든 파일을 감사한 것이 아니다. 법률 자문 또는 권리 무결성 보증이 아니다. 소프트웨어·폰트 설치, Unity 실행/임포트, TMP SDF 생성, 렌더링, Windows IME, 배포패키지 검증은 NOT_RUN이다.
+
+1. Noto Sans CJK KR Regular 2.004 — SIL Open Font License 1.1
+공식 프로젝트: https://github.com/notofonts/noto-cjk
+고정 revision: f8d157532fbfaeda587e826d4cd5b21a49186f7c
+원본: extracted/noto/NotoSansCJKkr-Regular.otf
+전체 라이선스: evidence/noto-LICENSE.txt
+폰트에 포함된 copyright: © 2014-2021 Adobe (http://www.adobe.com/).
+폰트 metadata/문자 검증: evidence/noto-name-and-coverage.json
+상표 고지: Noto is a trademark of Google Inc. 이는 Reserved Font Name 지정과 동일하지 않다. 브랜드/로고 아이콘을 취득한 것이 아니며 상표 사용허락을 주장하지 않는다.
+
+- 상업·비상업 사용, 수정, 소프트웨어와 함께 동봉·임베딩·재배포 가능하나 해당 copyright와 OFL 전문을 각 사본에 유지해야 한다. 사용자에게 쉽게 열람 가능한 별도 텍스트 또는 적절한 metadata 방식이 허용된다.
+- 원본/수정본 폰트 또는 그 개별 구성요소를 그 자체만으로 판매할 수 없다. 폰트를 포함한 앱의 유료 판매 금지와 혼동하지 않는다.
+- 폰트 및 파생 폰트는 OFL로 유지한다. 폰트로 만든 문서나 앱 전체가 OFL로 강제 전환되는 것은 아니다.
+- OFL의 Reserved Font Name(RFN)은 copyright 뒤에 명시적으로 지정된 이름을 말한다. 확인한 Sans/LICENSE 및 이 OTF name metadata에는 별도 RFN 지정이 발견되지 않았다. 모든 Noto 릴리스에 RFN이 없다고 일반화하지 않는다.
+- 실제 RFN이 지정된 수정본이라면 해당 기본 폰트명 사용에 권리자의 서면 허가가 필요하다. 지정이 없는 경우에도 상표권·권리자 보증을 암시하는 표시는 별개다. '수정한 모든 폰트는 무조건 개명'이라고 해석하지 않는다.
+- 형식 변환/서브셋/TMP 관련 파생 산출물의 명명·고지·배포 조건은 생성 시 다시 확인한다. 이번에는 원본 bytes를 바꾸지 않고 staging만 했다.
+
+2. Lucide UI 선택 세트 20 SVG — ISC 및 Feather 유래 아이콘의 MIT
+공식 안내: https://lucide.dev/license
+공식 프로젝트: https://github.com/lucide-icons/lucide
+고정 revision: 951813ce76a859d4d8b145366972cbb237147a4e
+파일: extracted/lucide/*.svg
+전체 고지 및 해당 Feather 아이콘 목록: evidence/lucide-LICENSE.txt
+Copyright (c) 2026 Lucide Icons and Contributors
+Copyright (c) 2013-present Cole Bemis
+
+사용·수정·상업적 배포 가능. ISC copyright/permission notice 및 적용되는 MIT copyright/permission notice를 사본에 유지한다. 전체 공식 LICENSE를 통째로 보존하여 Feather 유래 아이콘 고지도 누락하지 않는다. inventory의 ISC AND MIT는 선택 세트에 적용되는 두 고지의 보존을 뜻하며 사용자가 마음대로 둘 중 하나를 고르는 dual license 표시가 아니다. UI 아이콘은 공식 철도 안전표지나 기관 승인 기호를 대체하지 않는다. 텍스트를 함께 사용하고 색상만으로 상태를 구분하지 않는다.
+SVG는 geometry XML로만 정적 검사했으며 스크립트·이벤트·외부 참조가 없다. 현 uGUI에서 SVG 직접 표시 가능함을 검증한 것은 아니다. 래스터 변환/임포터 추가 없이 원본만 보관했다.
+
+3. 취득·검증
+inventory.json: 항목별 목적, 공식 URL, 고정 원본 URL, HTTP 결과, 파일 크기/SHA256, 형식, 제한.
+evidence/download-verification.json: 취득한 원본/공식 설명의 HTTP 200 및 Git blob hash 일치 기록.
+evidence/*-tree.json: 공식 API 파일 경로/크기/blob 식별 근거. 전체 저장소 clone은 하지 않았다.
+압축파일 없이 공식 raw 데이터 파일만 취득하여 archive 무결성/압축 해제는 NOT_APPLICABLE. 실행 파일·설치기·외부 코드를 취득/실행하지 않았다. 검사에는 로컬 표준 라이브러리를 사용했다. 새 다운로드는 250MB, 준비 데이터는 600MB 한도 미만이다.
+
+원문 라이선스가 이 한국어 요약보다 우선한다. 배포 시 OTF 내부 notice에만 기대지 말고 OFL 전문과 위 copyright, Lucide LICENSE 전체를 읽을 수 있게 동봉해야 한다. 로컬 취득은 배포패키지 승인이나 제품 수용 완료를 의미하지 않는다.

@@ -1,0 +1,60 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1057,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "stack": {
+          "type": "choice",
+          "choice": "fds_jupedsim",
+          "confidence": 1,
+          "probabilities": {
+            "neural_only": 0,
+            "fds_jupedsim": 1,
+            "unity_only": 0
+          }
+        },
+        "certainty": {
+          "type": "choice",
+          "choice": "runtime_only",
+          "confidence": 1,
+          "probabilities": {
+            "twin_validated": 0,
+            "runtime_only": 1
+          }
+        },
+        "routing": {
+          "type": "choice",
+          "choice": "disjoint",
+          "confidence": 0.79,
+          "probabilities": {
+            "overlap": 0.11,
+            "disjoint": 0.89
+          }
+        },
+        "continuation": {
+          "type": "choice",
+          "choice": "compute_or_wait",
+          "confidence": 1,
+          "probabilities": {
+            "compute_or_wait": 1,
+            "reuse_stale": 0,
+            "timer": 0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1045,
+        "output_tokens": 160
+      },
+      "truncated": false,
+      "action": "review"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

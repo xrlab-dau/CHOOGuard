@@ -1,0 +1,1302 @@
+{
+ "schemaVersion": 1,
+ "acquiredAt": "2026-09-21T23:56:00Z",
+ "acquiredBy": "Claude Code 세션 f8a23313 (사용자 지시: \"계정만들고 에셋 다운받아\")",
+ "source": {
+  "name": "Poly Haven",
+  "site": "https://polyhaven.com",
+  "api": "https://api.polyhaven.com",
+  "license": "CC0 1.0 — 저작자 표시 불요, 상업적 이용 가능, 재배포·개작 자유",
+  "auth_required": false,
+  "verified_how": "curl 로 /assets, /files/<slug>, dl.polyhaven.org 전부 HTTP 200 실측. 로그인·토큰 없이 성공."
+ },
+ "why_this_source": "Sketchfab 은 네이티브 이메일 가입을 폐지하고 소셜 SSO 만 남겼으며, Aside Browser 의 쿠키 항아리는 사용자 개인 브라우저와 분리돼 있어 자동화로 로그인할 수 없었다. Sketchfab 검색 API 는 인증 없이 200 이지만 /v3/models/<uid>/download 는 401 이다(uid 3건 실측). Poly Haven 은 로그인 없이 직다운 가능하고 CC0 이라 라이선스 제약도 없다.",
+ "texture_downgrade_note": "Poly Haven FBX 번들은 16비트 PNG 를, glTF 번들은 JPG 를 배포한다. 같은 2k 텍스처가 PNG 16.3MB vs JPG 0.4MB 로 약 40배 차이난다. Unity 는 임포트 시 DXT/ASTC 로 재압축하므로 PNG 의 추가 정밀도는 GPU 에 도달하지 않는다. FBX 지오메트리는 유지하고 텍스처만 JPG 로 교체했다. 원본 PNG 가 필요하면 api_metadata_url 의 fbx 노드 include 에서 재취득할 수 있다.",
+ "coverage_gaps": [
+  "Poly Haven 전체 521 모델에 지하철·전동차·승강장·터널·개찰구·에스컬레이터가 0건이다.",
+  "AED/제세동기 0건. 버니어 캘리퍼스·토크렌치·마이크로미터 0건.",
+  "즉 비상대응 모드의 공간 지오메트리와 정밀 계측 공구는 이 출처로 충당되지 않는다.",
+  "비상대응 모드 공간은 asset-library/source/rail-community/busan-metro-line1/ 의 OpenBVE 데이터(CSV 1,133 / B3D 97 / BMP 1,002 / WAV 250)가 후보이며 변환기가 필요하다."
+ ],
+ "item_count": 31,
+ "total_bytes": 256984158,
+ "items": [
+  {
+   "slug": "fire_alarm",
+   "group": "A_비상소방의료",
+   "purpose": "튜토리얼 모드 설비 — 코레일 비상대응 절차의 조작 대상",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/fire_alarm",
+   "asset_page": "https://polyhaven.com/a/fire_alarm",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 6726299,
+   "files": [
+    {
+     "path": "A_비상소방의료/fire_alarm/fire_alarm_2k.fbx",
+     "bytes": 107564,
+     "sha256": "851b57c7fe0d1c282448e2fcb55a8a846b5b88b641446c7c1b3935fa101498da"
+    },
+    {
+     "path": "A_비상소방의료/fire_alarm/textures/fire_alarm_arm_2k.jpg",
+     "bytes": 2222852,
+     "sha256": "63b2614033bca70b193b18a0ffc006dfd59bc3302d38fff99c5f1a7c773b8f25"
+    },
+    {
+     "path": "A_비상소방의료/fire_alarm/textures/fire_alarm_diff_2k.jpg",
+     "bytes": 1781248,
+     "sha256": "20dad1f8be81ed277417a49085768505eab2f6f7d9c59f526f37bbd4fd56609b"
+    },
+    {
+     "path": "A_비상소방의료/fire_alarm/textures/fire_alarm_nor_gl_2k.jpg",
+     "bytes": 2614635,
+     "sha256": "12e02dd197db7da8136d73d5ed69123f3e84f92da1b7b7c490996b3cf44ecad6"
+    }
+   ]
+  },
+  {
+   "slug": "fire_hydrant",
+   "group": "A_비상소방의료",
+   "purpose": "튜토리얼 모드 설비 — 코레일 비상대응 절차의 조작 대상",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/fire_hydrant",
+   "asset_page": "https://polyhaven.com/a/fire_hydrant",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 7,
+   "total_bytes": 15418093,
+   "files": [
+    {
+     "path": "A_비상소방의료/fire_hydrant/fire_hydrant_2k.fbx",
+     "bytes": 2678220,
+     "sha256": "cdc69fb6a7b681ab23cb90196af99a6f5215fd86aa99e6b668d676184e4dd221"
+    },
+    {
+     "path": "A_비상소방의료/fire_hydrant/textures/fire_hydrant_aged_arm_2k.jpg",
+     "bytes": 2268350,
+     "sha256": "edcc286284098e20d6f29215f05efb11658a71d7ed5664c8680a747c3721f329"
+    },
+    {
+     "path": "A_비상소방의료/fire_hydrant/textures/fire_hydrant_aged_diff_2k.jpg",
+     "bytes": 2191944,
+     "sha256": "02cc548f6c88a7c0c2062cb201ba542fa33e9f836c602bac69405e848ff232c3"
+    },
+    {
+     "path": "A_비상소방의료/fire_hydrant/textures/fire_hydrant_aged_nor_gl_2k.jpg",
+     "bytes": 2097229,
+     "sha256": "b27858fb50356fd5bd1b76350a1ea689b5e570c5f04a641bab7b25d16ce695cf"
+    },
+    {
+     "path": "A_비상소방의료/fire_hydrant/textures/fire_hydrant_arm_2k.jpg",
+     "bytes": 2322663,
+     "sha256": "9422e07195a865958594ba65d9446f284a5032b07cfc4fe766486d3a69f934d3"
+    },
+    {
+     "path": "A_비상소방의료/fire_hydrant/textures/fire_hydrant_diff_2k.jpg",
+     "bytes": 2012585,
+     "sha256": "d7d3181b80ccf18e60614b21104e39218e8483d2c999c7d96867deba2f13bb38"
+    },
+    {
+     "path": "A_비상소방의료/fire_hydrant/textures/fire_hydrant_nor_gl_2k.jpg",
+     "bytes": 1847102,
+     "sha256": "2edf5b7ac369f5657db079bf6913e1b971136e8218bd1c7ace12a3d77263896d"
+    }
+   ]
+  },
+  {
+   "slug": "korean_fire_extinguisher_01",
+   "group": "A_비상소방의료",
+   "purpose": "튜토리얼 모드 설비 — 코레일 비상대응 절차의 조작 대상",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/korean_fire_extinguisher_01",
+   "asset_page": "https://polyhaven.com/a/korean_fire_extinguisher_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 10,
+   "total_bytes": 5535473,
+   "files": [
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/korean_fire_extinguisher_01_2k.fbx",
+     "bytes": 345196,
+     "sha256": "21d92267a43e1b2493d88a983b36c72a9d31088c9bbe1132ea8c2bafb2836f5e"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_body_arm_2k.jpg",
+     "bytes": 720892,
+     "sha256": "2f5387154f4985ae8103825f05acd1a9c43e3307642f3b74b26db8932346e34c"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_body_diff_2k.jpg",
+     "bytes": 404041,
+     "sha256": "7e06bcb002addaa30c8fea0e4432f3855d77a5348d7cc41791bd10b44cd511f4"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_body_nor_gl_2k.jpg",
+     "bytes": 317767,
+     "sha256": "6fdb28b9bfd83f530f1abaa0ac0e6401a98466d74f20bca0fabf47ba2d2b75f4"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_glass_arm_2k.jpg",
+     "bytes": 211879,
+     "sha256": "d618f13b5c84957ae3e3b79f189465f52f9d409e17a0e110ded95adf39dcda62"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_glass_diff_2k.jpg",
+     "bytes": 509469,
+     "sha256": "a9b4a14d19b38947eee3a868e2453053b09804b2addc82f5603b40ec11917ca7"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_glass_nor_gl_2k.jpg",
+     "bytes": 113323,
+     "sha256": "cfd8ebf3c668f0db5f37baa4b3abe8678f088b18c5eb493e8ccef2e4c78de45e"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_paper_arm_2k.jpg",
+     "bytes": 864091,
+     "sha256": "b4ea1553ae5a841cc837f92cced525868f0f67d02d72914adba553d3154ce6c5"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_paper_diff_2k.jpg",
+     "bytes": 594598,
+     "sha256": "7b257c41705c1188017712889e40d5ec4f1a60a065c7c16f54dea4c0b56d9936"
+    },
+    {
+     "path": "A_비상소방의료/korean_fire_extinguisher_01/textures/korean_fire_extinguisher_01_paper_nor_gl_2k.jpg",
+     "bytes": 1454217,
+     "sha256": "2446b9fa2516a5b86ec31227630fb46d297a79c365f00d5f93d010d254bb3794"
+    }
+   ]
+  },
+  {
+   "slug": "medical_box",
+   "group": "A_비상소방의료",
+   "purpose": "튜토리얼 모드 설비 — 코레일 비상대응 절차의 조작 대상",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/medical_box",
+   "asset_page": "https://polyhaven.com/a/medical_box",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 7025835,
+   "files": [
+    {
+     "path": "A_비상소방의료/medical_box/medical_box_2k.fbx",
+     "bytes": 139628,
+     "sha256": "a9a07fb8261fb98f83d4955eb261861bb069cddde1fec9a62c209886cf800acb"
+    },
+    {
+     "path": "A_비상소방의료/medical_box/textures/medical_box_arm_2k.jpg",
+     "bytes": 2981163,
+     "sha256": "e8534aa869866d2135ea004f87685d0c983e0e4ab7eb46b0c958ee3c3f8f0ae9"
+    },
+    {
+     "path": "A_비상소방의료/medical_box/textures/medical_box_diff_2k.jpg",
+     "bytes": 2536442,
+     "sha256": "589255b0a99ea2dfa931474bf16041e1fda6cd353c299006a0f7292f35c3af5d"
+    },
+    {
+     "path": "A_비상소방의료/medical_box/textures/medical_box_nor_gl_2k.jpg",
+     "bytes": 1368602,
+     "sha256": "aefdb919cf0ea1ac3d5f3216a5460c6d4bc45c0f4b9150963f2d1efceb2053e4"
+    }
+   ]
+  },
+  {
+   "slug": "modular_fire_escape",
+   "group": "A_비상소방의료",
+   "purpose": "튜토리얼 모드 설비 — 코레일 비상대응 절차의 조작 대상",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/modular_fire_escape",
+   "asset_page": "https://polyhaven.com/a/modular_fire_escape",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 7,
+   "total_bytes": 16570637,
+   "files": [
+    {
+     "path": "A_비상소방의료/modular_fire_escape/modular_fire_escape_2k.fbx",
+     "bytes": 322364,
+     "sha256": "56da8c2442b76589b4558b37ac4ba6556dabdd13c82d1beb3d846fe9ca9ca27d"
+    },
+    {
+     "path": "A_비상소방의료/modular_fire_escape/textures/modular_fire_escape_01_arm_2k.jpg",
+     "bytes": 2727166,
+     "sha256": "afabe05d73d27cb7079f9acf8bf05ba21460dd92ecea7b6eca4d2b395644b8e6"
+    },
+    {
+     "path": "A_비상소방의료/modular_fire_escape/textures/modular_fire_escape_01_diff_2k.jpg",
+     "bytes": 2123381,
+     "sha256": "6890195b554f7d3bc9caa098be30673b7c21d08af8ce49f8379d93e56dd3438a"
+    },
+    {
+     "path": "A_비상소방의료/modular_fire_escape/textures/modular_fire_escape_01_nor_gl_2k.jpg",
+     "bytes": 2451897,
+     "sha256": "967001955d1a3049ac90e26c87920199c281e709749961bb83838fa0e7cf4614"
+    },
+    {
+     "path": "A_비상소방의료/modular_fire_escape/textures/modular_fire_escape_02_arm_2k.jpg",
+     "bytes": 2874079,
+     "sha256": "ec1916947900e19706fa06935b9f4ce8f837cf392e01e758b28a60ba1c586770"
+    },
+    {
+     "path": "A_비상소방의료/modular_fire_escape/textures/modular_fire_escape_02_diff_2k.jpg",
+     "bytes": 2271643,
+     "sha256": "f2dfa6154feec86d2eb9e72a16695614ffa337487af65007915f71e45d703e86"
+    },
+    {
+     "path": "A_비상소방의료/modular_fire_escape/textures/modular_fire_escape_02_nor_gl_2k.jpg",
+     "bytes": 3800107,
+     "sha256": "8277e70a2695b237c168a332831a1fe0daadb4f9ba300988873e4eb421c9ae04"
+    }
+   ]
+  },
+  {
+   "slug": "signal_flashlight",
+   "group": "A_비상소방의료",
+   "purpose": "튜토리얼 모드 설비 — 코레일 비상대응 절차의 조작 대상",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/signal_flashlight",
+   "asset_page": "https://polyhaven.com/a/signal_flashlight",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 7373324,
+   "files": [
+    {
+     "path": "A_비상소방의료/signal_flashlight/signal_flashlight_2k.fbx",
+     "bytes": 293532,
+     "sha256": "d44a9b42a4efebf910315082fba49ff57684374c91074eadae5daf00af7a9b85"
+    },
+    {
+     "path": "A_비상소방의료/signal_flashlight/textures/signal_flashlight_arm_2k.jpg",
+     "bytes": 3107551,
+     "sha256": "1024ba603bba9d062afa65650c135051820ef640a09a97c7942b4dd455f25e62"
+    },
+    {
+     "path": "A_비상소방의료/signal_flashlight/textures/signal_flashlight_diff_2k.jpg",
+     "bytes": 2080703,
+     "sha256": "2d64620cc0e1f215894738daae59a4f2fa617a1cc4090c28298387bec384279c"
+    },
+    {
+     "path": "A_비상소방의료/signal_flashlight/textures/signal_flashlight_nor_gl_2k.jpg",
+     "bytes": 1891538,
+     "sha256": "625df065a91a18d3cbd51b065081802526585b8caf7fe9d786bed82a47eb53a8"
+    }
+   ]
+  },
+  {
+   "slug": "adjustable_wrench",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/adjustable_wrench",
+   "asset_page": "https://polyhaven.com/a/adjustable_wrench",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 9732121,
+   "files": [
+    {
+     "path": "A_정비공구/adjustable_wrench/adjustable_wrench_2k.fbx",
+     "bytes": 235708,
+     "sha256": "e4072c911cff0c545bb3b29550b6cf550b49e796e8c991ad513bc822a1aedc8a"
+    },
+    {
+     "path": "A_정비공구/adjustable_wrench/textures/adjustable_wrench_arm_2k.jpg",
+     "bytes": 3372817,
+     "sha256": "efbf43d2a3f34347e37531a030c0fdec94bb6e4c3204102014de1dea8bf1b93b"
+    },
+    {
+     "path": "A_정비공구/adjustable_wrench/textures/adjustable_wrench_diff_2k.jpg",
+     "bytes": 3052831,
+     "sha256": "9162708b7d4604c8d81eb77d999b3e1fc57f554427963f7153e8f7d19af2a858"
+    },
+    {
+     "path": "A_정비공구/adjustable_wrench/textures/adjustable_wrench_nor_gl_2k.jpg",
+     "bytes": 3070765,
+     "sha256": "94f140336908d6d4eb6a29279c20be265703e1fd25520a9317b9157a8f8c496a"
+    }
+   ]
+  },
+  {
+   "slug": "bench_vice_01",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/bench_vice_01",
+   "asset_page": "https://polyhaven.com/a/bench_vice_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 9279992,
+   "files": [
+    {
+     "path": "A_정비공구/bench_vice_01/bench_vice_01_2k.fbx",
+     "bytes": 181356,
+     "sha256": "5c86e13d593bbcbd0e44d1e09405398d8b500e46d92b9a88a3c4396e28dbf7df"
+    },
+    {
+     "path": "A_정비공구/bench_vice_01/textures/bench_vice_01_arm_2k.jpg",
+     "bytes": 2624521,
+     "sha256": "220b9d0a4fcdbc3354622334e8fa3f87d297979cef0ef334bbfb8146f2ce1583"
+    },
+    {
+     "path": "A_정비공구/bench_vice_01/textures/bench_vice_01_diff_2k.jpg",
+     "bytes": 2680037,
+     "sha256": "543227c390f657d5bf9f014a7e9b74f3bbc46b41ce6b4370f445513af419d483"
+    },
+    {
+     "path": "A_정비공구/bench_vice_01/textures/bench_vice_01_nor_gl_2k.jpg",
+     "bytes": 3794078,
+     "sha256": "d890d29aa7f508e1be3fe0956ff720c069e192a3b971687214ad765a4ba8be5a"
+    }
+   ]
+  },
+  {
+   "slug": "bolt_cutters_01",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/bolt_cutters_01",
+   "asset_page": "https://polyhaven.com/a/bolt_cutters_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 9378336,
+   "files": [
+    {
+     "path": "A_정비공구/bolt_cutters_01/bolt_cutters_01_2k.fbx",
+     "bytes": 184332,
+     "sha256": "ae65f05f847e8a3e85f18b080ca6506dc07e22eae29f27a39ad500df6ee0f0be"
+    },
+    {
+     "path": "A_정비공구/bolt_cutters_01/textures/bolt_cutters_01_arm_2k.jpg",
+     "bytes": 2970575,
+     "sha256": "86e7c239b8e85f9ac16db4aa4c86cb46e3fdc1c9f9238c3a0aaa3bcec6166ab0"
+    },
+    {
+     "path": "A_정비공구/bolt_cutters_01/textures/bolt_cutters_01_diff_2k.jpg",
+     "bytes": 2922960,
+     "sha256": "d475acd1927f1ee3852d12226efd016697b7e28fb8d664396a777cecf2959ca6"
+    },
+    {
+     "path": "A_정비공구/bolt_cutters_01/textures/bolt_cutters_01_nor_gl_2k.jpg",
+     "bytes": 3300469,
+     "sha256": "ef3e979c345e6aa7c9cc9b9aea82217cb665bff0e191fa79ffbe42fefa0998d6"
+    }
+   ]
+  },
+  {
+   "slug": "combination_wrench",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/combination_wrench",
+   "asset_page": "https://polyhaven.com/a/combination_wrench",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 5318832,
+   "files": [
+    {
+     "path": "A_정비공구/combination_wrench/combination_wrench_2k.fbx",
+     "bytes": 86972,
+     "sha256": "8a41e0deb37aab3b43545094eedfc52b9bd996b5a4e938b11ef21bf17e434099"
+    },
+    {
+     "path": "A_정비공구/combination_wrench/textures/combination_wrench_arm_2k.jpg",
+     "bytes": 1576929,
+     "sha256": "61e4c67d9f6d497130c587a5fda9438b8bbcaaf99ed3afe37638b84d7b02c4ba"
+    },
+    {
+     "path": "A_정비공구/combination_wrench/textures/combination_wrench_diff_2k.jpg",
+     "bytes": 1801425,
+     "sha256": "bfbf6af7d428aee25fc7a8a30a74f04053ff533afde8f028facb35be10f409ad"
+    },
+    {
+     "path": "A_정비공구/combination_wrench/textures/combination_wrench_nor_gl_2k.jpg",
+     "bytes": 1853506,
+     "sha256": "c9b17a9276154e958d6f8b13b529ef995e779c01ae3f5f71d47b19ea4fdd2131"
+    }
+   ]
+  },
+  {
+   "slug": "cross_pein_hammer",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/cross_pein_hammer",
+   "asset_page": "https://polyhaven.com/a/cross_pein_hammer",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 4616405,
+   "files": [
+    {
+     "path": "A_정비공구/cross_pein_hammer/cross_pein_hammer_2k.fbx",
+     "bytes": 80364,
+     "sha256": "29472d0c00931b0281d0d63ac1c347e7bec28fc6f26070668d5e9a9edf6ed759"
+    },
+    {
+     "path": "A_정비공구/cross_pein_hammer/textures/cross_pein_hammer_arm_2k.jpg",
+     "bytes": 1687371,
+     "sha256": "fa21cd8fff723859a55e5eeaeada83a2cfd50753b83f3e7491492f965a6b8ab4"
+    },
+    {
+     "path": "A_정비공구/cross_pein_hammer/textures/cross_pein_hammer_diff_2k.jpg",
+     "bytes": 1409450,
+     "sha256": "5f61f71f02f164ec9e42215073fe2dedcdf3468b653df8ac23afe43a2074a5d8"
+    },
+    {
+     "path": "A_정비공구/cross_pein_hammer/textures/cross_pein_hammer_nor_gl_2k.jpg",
+     "bytes": 1439220,
+     "sha256": "dc5bc7c8be9cea0b38a3328f1662fb5ccb7f067111040df7002e1b982348f9fa"
+    }
+   ]
+  },
+  {
+   "slug": "crowbar_01",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/crowbar_01",
+   "asset_page": "https://polyhaven.com/a/crowbar_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 5979488,
+   "files": [
+    {
+     "path": "A_정비공구/crowbar_01/crowbar_01_2k.fbx",
+     "bytes": 95084,
+     "sha256": "a4855cb69323ec6741e40a8ca503ce7bd92d2d5ba7fff2ae2ad8865e4fecbe0a"
+    },
+    {
+     "path": "A_정비공구/crowbar_01/textures/crowbar_01_arm_2k.jpg",
+     "bytes": 1925619,
+     "sha256": "d7b97a51775433e4777d016d89576e0cef41b9486a37d2782ff783c4df76056a"
+    },
+    {
+     "path": "A_정비공구/crowbar_01/textures/crowbar_01_diff_2k.jpg",
+     "bytes": 1814525,
+     "sha256": "da7e3f1ee2b107eb9228befe8a2bf27d70ef821fc4f90b78e02fdf1c7b5a023b"
+    },
+    {
+     "path": "A_정비공구/crowbar_01/textures/crowbar_01_nor_gl_2k.jpg",
+     "bytes": 2144260,
+     "sha256": "129f1c315ef7d9abfa651f5acc8c55d3465868632e55815b20af4f02a15efb9a"
+    }
+   ]
+  },
+  {
+   "slug": "flathead_screwdriver",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/flathead_screwdriver",
+   "asset_page": "https://polyhaven.com/a/flathead_screwdriver",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 6986383,
+   "files": [
+    {
+     "path": "A_정비공구/flathead_screwdriver/flathead_screwdriver_2k.fbx",
+     "bytes": 85548,
+     "sha256": "c1b36a9db30689d0c546774e164835564f392efcbaa9d6fe030336451a81964a"
+    },
+    {
+     "path": "A_정비공구/flathead_screwdriver/textures/flathead_screwdriver_arm_2k.jpg",
+     "bytes": 2156078,
+     "sha256": "8233d5bb3a3af32989a650ee2eaef2340d666c094d750142be0f9e162c072922"
+    },
+    {
+     "path": "A_정비공구/flathead_screwdriver/textures/flathead_screwdriver_diff_2k.jpg",
+     "bytes": 2044442,
+     "sha256": "6c96bbfcfd30830ba1027e588dfea08a200d809d68f3cfa8c3011fb434d05e0f"
+    },
+    {
+     "path": "A_정비공구/flathead_screwdriver/textures/flathead_screwdriver_nor_gl_2k.jpg",
+     "bytes": 2700315,
+     "sha256": "582dcc7d9f9a5d81ecd0f28dad9f847977f143d92e0df4b9f7cb6f61dc77dc8e"
+    }
+   ]
+  },
+  {
+   "slug": "measuring_tape_01",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/measuring_tape_01",
+   "asset_page": "https://polyhaven.com/a/measuring_tape_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 5,
+   "total_bytes": 1759778,
+   "files": [
+    {
+     "path": "A_정비공구/measuring_tape_01/measuring_tape_01_2k.fbx",
+     "bytes": 117580,
+     "sha256": "7c986322a113206e1e610e7106237901b158c7068a59396fc8a46463257becac"
+    },
+    {
+     "path": "A_정비공구/measuring_tape_01/textures/measuring_tape_01_arm_2k.jpg",
+     "bytes": 467680,
+     "sha256": "6d676ba73797ee7e2361102aaa31e4638ee7950dd2d9e23773d988f9a6913661"
+    },
+    {
+     "path": "A_정비공구/measuring_tape_01/textures/measuring_tape_01_diff_2k.jpg",
+     "bytes": 258603,
+     "sha256": "9d87cec36b1543a7444f2870b4c627aa1f584489de5ed2b9e40eca692b3aabdd"
+    },
+    {
+     "path": "A_정비공구/measuring_tape_01/textures/measuring_tape_01_nor_gl_2k.jpg",
+     "bytes": 443667,
+     "sha256": "efb9a1a6e13d3e9886f39611bd3617f032cb8cbf79a1503d18202093a5486e81"
+    },
+    {
+     "path": "A_정비공구/measuring_tape_01/textures/measuring_tape_01_rough_2k.jpg",
+     "bytes": 472248,
+     "sha256": "cfb7519b93b7c9ed4ad2353cacb3bfafcaa736e22aa7c69cf57f75d7cae6a596"
+    }
+   ]
+  },
+  {
+   "slug": "metal_tool_chest",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/metal_tool_chest",
+   "asset_page": "https://polyhaven.com/a/metal_tool_chest",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 7741599,
+   "files": [
+    {
+     "path": "A_정비공구/metal_tool_chest/metal_tool_chest_2k.fbx",
+     "bytes": 440460,
+     "sha256": "2d5424986f14a7e679c9a55111c346fff6250702f06b064b2de1f68f362fdc66"
+    },
+    {
+     "path": "A_정비공구/metal_tool_chest/textures/metal_tool_chest_arm_2k.jpg",
+     "bytes": 2758131,
+     "sha256": "8887f2f4a1e080294196918a29d6d8a7efa9fc164b9a9a502fcac412eb3de8f4"
+    },
+    {
+     "path": "A_정비공구/metal_tool_chest/textures/metal_tool_chest_diff_2k.jpg",
+     "bytes": 2086113,
+     "sha256": "5f7a86356df60972a369734e8faeb955e2ff7f5914416059721cbfee3442d975"
+    },
+    {
+     "path": "A_정비공구/metal_tool_chest/textures/metal_tool_chest_nor_gl_2k.jpg",
+     "bytes": 2456895,
+     "sha256": "9275d16e87fadd4d282b684e7dabe41cd139c15fae8257c7b43f2f8943e7e3b5"
+    }
+   ]
+  },
+  {
+   "slug": "metal_toolbox",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/metal_toolbox",
+   "asset_page": "https://polyhaven.com/a/metal_toolbox",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 10178400,
+   "files": [
+    {
+     "path": "A_정비공구/metal_toolbox/metal_toolbox_2k.fbx",
+     "bytes": 536476,
+     "sha256": "023bec6ae542df94d07b4a2bcdab0dc6c7fdbdd4313465a239b7f9d3ee710cd3"
+    },
+    {
+     "path": "A_정비공구/metal_toolbox/textures/metal_toolbox_arm_2k.jpg",
+     "bytes": 4376677,
+     "sha256": "a44b02d7a7d0e694cac55f74942d4a16246a74fbc9d5bdb551aded247c5ff623"
+    },
+    {
+     "path": "A_정비공구/metal_toolbox/textures/metal_toolbox_diff_2k.jpg",
+     "bytes": 2884619,
+     "sha256": "ff84f51ac4c88c13407a591abd2111ed6210566b3528232c655806429e4e0b44"
+    },
+    {
+     "path": "A_정비공구/metal_toolbox/textures/metal_toolbox_nor_gl_2k.jpg",
+     "bytes": 2380628,
+     "sha256": "e2eeb85716bd244973583dd74b7aec7a2aee1cde5d15d2f49a6a7c2b8cc60b0f"
+    }
+   ]
+  },
+  {
+   "slug": "pipe_wrench",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/pipe_wrench",
+   "asset_page": "https://polyhaven.com/a/pipe_wrench",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 10550892,
+   "files": [
+    {
+     "path": "A_정비공구/pipe_wrench/pipe_wrench_2k.fbx",
+     "bytes": 365068,
+     "sha256": "4b96e3cfd0330dc06ec854f34ee97bb95bcee9fd569596c18617fd71e750f658"
+    },
+    {
+     "path": "A_정비공구/pipe_wrench/textures/pipe_wrench_arm_2k.jpg",
+     "bytes": 2889323,
+     "sha256": "11ec368aa88802aac2f826776e10b66be3e7b7e996f01a4cde54141acabd8f79"
+    },
+    {
+     "path": "A_정비공구/pipe_wrench/textures/pipe_wrench_diff_2k.jpg",
+     "bytes": 3067542,
+     "sha256": "aec05d4fdca5467f5c4fd611f70e3e9b1e53d79ca95693c8127bed0cfaaede65"
+    },
+    {
+     "path": "A_정비공구/pipe_wrench/textures/pipe_wrench_nor_gl_2k.jpg",
+     "bytes": 4228959,
+     "sha256": "72969e047b68ee7da67af9d2dee83b5d2d9ffa0e9bbd0cbe4acd23485f22ee0c"
+    }
+   ]
+  },
+  {
+   "slug": "portable_searchlight",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/portable_searchlight",
+   "asset_page": "https://polyhaven.com/a/portable_searchlight",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 5306718,
+   "files": [
+    {
+     "path": "A_정비공구/portable_searchlight/portable_searchlight_2k.fbx",
+     "bytes": 506380,
+     "sha256": "a7392b7a49376b6c60cee1e5819e875226734a413f6dfeec7c0027cf621f2ec3"
+    },
+    {
+     "path": "A_정비공구/portable_searchlight/textures/portable_searchlight_arm_2k.jpg",
+     "bytes": 2108044,
+     "sha256": "348a7b805d289b274fbef8b71fbe30391465443c6a41cfc0cf440d31d3082bad"
+    },
+    {
+     "path": "A_정비공구/portable_searchlight/textures/portable_searchlight_diff_2k.jpg",
+     "bytes": 916718,
+     "sha256": "5ca77a1fe2dff387269d4fa64325ebae16648a1563239465eafb11c0e2ce577b"
+    },
+    {
+     "path": "A_정비공구/portable_searchlight/textures/portable_searchlight_nor_gl_2k.jpg",
+     "bytes": 1775576,
+     "sha256": "501b10b21fda0003dca651906953d6eca64caff2c0655df28d44d4d33993a0be"
+    }
+   ]
+  },
+  {
+   "slug": "ratchet_wrench",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/ratchet_wrench",
+   "asset_page": "https://polyhaven.com/a/ratchet_wrench",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 4733370,
+   "files": [
+    {
+     "path": "A_정비공구/ratchet_wrench/ratchet_wrench_2k.fbx",
+     "bytes": 348972,
+     "sha256": "89f9dd9a8b101c304fc50b2e022fc8ba17de3a18ae91892af8dbd2fc3aabbd3c"
+    },
+    {
+     "path": "A_정비공구/ratchet_wrench/textures/ratchet_wrench_arm_2k.jpg",
+     "bytes": 2145513,
+     "sha256": "d024f5bbdcf4da22eec58bbb6ea58d11d229b59dd28ecdd58e590d4700fb9dcb"
+    },
+    {
+     "path": "A_정비공구/ratchet_wrench/textures/ratchet_wrench_diff_2k.jpg",
+     "bytes": 897323,
+     "sha256": "bcd214f047ee45c7268ef2758c1036120984853b434768530d5bf9fa18c9f253"
+    },
+    {
+     "path": "A_정비공구/ratchet_wrench/textures/ratchet_wrench_nor_gl_2k.jpg",
+     "bytes": 1341562,
+     "sha256": "96ad79ffaf6f2dc947aec80e8a1638cd26ad5f527b69fb9737b42c60d2ae20a1"
+    }
+   ]
+  },
+  {
+   "slug": "retro_multimeter",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/retro_multimeter",
+   "asset_page": "https://polyhaven.com/a/retro_multimeter",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 4298538,
+   "files": [
+    {
+     "path": "A_정비공구/retro_multimeter/retro_multimeter_2k.fbx",
+     "bytes": 339596,
+     "sha256": "6c121fcbdc56719e081e3232a6460621bbc959e362551084b58c986b0b02ead2"
+    },
+    {
+     "path": "A_정비공구/retro_multimeter/textures/retro_multimeter_arm_2k.jpg",
+     "bytes": 1580720,
+     "sha256": "8dbe287ad5fac8f6ff6c4fa885411aba0136829a7743c6f708c0b472f2ad11f2"
+    },
+    {
+     "path": "A_정비공구/retro_multimeter/textures/retro_multimeter_diff_2k.jpg",
+     "bytes": 1327058,
+     "sha256": "b3ba9213aa2c8becdf2660b6f549ef27817d11e19116915f345a58c844080db7"
+    },
+    {
+     "path": "A_정비공구/retro_multimeter/textures/retro_multimeter_nor_gl_2k.jpg",
+     "bytes": 1051164,
+     "sha256": "0555cb6c0ea9566ebc43fb75ac452bf683c47874735ee1d88fe077bea2426716"
+    }
+   ]
+  },
+  {
+   "slug": "screwdriver",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/screwdriver",
+   "asset_page": "https://polyhaven.com/a/screwdriver",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 5281663,
+   "files": [
+    {
+     "path": "A_정비공구/screwdriver/screwdriver_2k.fbx",
+     "bytes": 115484,
+     "sha256": "8620682ee6181c0a33b58d0e9b27d51c073c22672d28cf63de176800ad80473b"
+    },
+    {
+     "path": "A_정비공구/screwdriver/textures/screwdriver_arm_2k.jpg",
+     "bytes": 2627044,
+     "sha256": "24d5fd99f4d35299151bfbbae464cb370c68e68f026a47ffa54e09a13d74604c"
+    },
+    {
+     "path": "A_정비공구/screwdriver/textures/screwdriver_diff_2k.jpg",
+     "bytes": 1888035,
+     "sha256": "5cac08266a13a2baa2fbb07bddd4a62481636194bc7ad90cbffc17ee3cd0be1a"
+    },
+    {
+     "path": "A_정비공구/screwdriver/textures/screwdriver_nor_gl_2k.jpg",
+     "bytes": 651100,
+     "sha256": "74c42dcff353422ae735848a22876b115148c63a65f5e870f0ecf5404f33e554"
+    }
+   ]
+  },
+  {
+   "slug": "small_plastic_torch",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/small_plastic_torch",
+   "asset_page": "https://polyhaven.com/a/small_plastic_torch",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 8075066,
+   "files": [
+    {
+     "path": "A_정비공구/small_plastic_torch/small_plastic_torch_2k.fbx",
+     "bytes": 376492,
+     "sha256": "a085a458f1062a3b92171eeb16c1bde6eeedeea6dcb6e03c6e1dae16735209be"
+    },
+    {
+     "path": "A_정비공구/small_plastic_torch/textures/small_plastic_torch_arm_2k.jpg",
+     "bytes": 2657899,
+     "sha256": "5f3b76c8dff8a7e6c401b0a159eff35da869fe0166fe088c6ee56713830f97a5"
+    },
+    {
+     "path": "A_정비공구/small_plastic_torch/textures/small_plastic_torch_diff_2k.jpg",
+     "bytes": 1959145,
+     "sha256": "bcc3047320183777ca156e5064752700816d35f5db601e904128e94058eda8eb"
+    },
+    {
+     "path": "A_정비공구/small_plastic_torch/textures/small_plastic_torch_nor_gl_2k.jpg",
+     "bytes": 3081530,
+     "sha256": "085cab4d3413195c5bde5c2ce4924bdd4c637f9ce8c6c350a2353d56b58c34a9"
+    }
+   ]
+  },
+  {
+   "slug": "tongue_groove_pliers",
+   "group": "A_정비공구",
+   "purpose": "튜토리얼 모드 공구 — My Summer Car 계열 손에 드는 도구",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/tongue_groove_pliers",
+   "asset_page": "https://polyhaven.com/a/tongue_groove_pliers",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 7448951,
+   "files": [
+    {
+     "path": "A_정비공구/tongue_groove_pliers/textures/tongue_groove_pliers_arm_2k.jpg",
+     "bytes": 2548545,
+     "sha256": "b3174116dfc24cc3ae59d1b4c22e01f10c06a492bee2af6b64a2449152da5f52"
+    },
+    {
+     "path": "A_정비공구/tongue_groove_pliers/textures/tongue_groove_pliers_diff_2k.jpg",
+     "bytes": 1900997,
+     "sha256": "17ba479fa189e544de669aa0fe73edf689e49b90ab72ca8d119a0a35569f9aea"
+    },
+    {
+     "path": "A_정비공구/tongue_groove_pliers/textures/tongue_groove_pliers_nor_gl_2k.jpg",
+     "bytes": 2891077,
+     "sha256": "82c5414ce694c4ecfc9e4aeeddd2cf28771764bafcedb1a52143e392acb319b3"
+    },
+    {
+     "path": "A_정비공구/tongue_groove_pliers/tongue_groove_pliers_2k.fbx",
+     "bytes": 108332,
+     "sha256": "b5bc6a01d529a49762bfaa78c510e58c227b10a1f1961d2f017b57b985b3c408"
+    }
+   ]
+  },
+  {
+   "slug": "Barrel_01",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/Barrel_01",
+   "asset_page": "https://polyhaven.com/a/Barrel_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 2399796,
+   "files": [
+    {
+     "path": "B_역사설비/Barrel_01/Barrel_01_2k.fbx",
+     "bytes": 97052,
+     "sha256": "1355ed97d3b568378f02fe1665413298c2835828f6a32f7b0af1acf0fb338c1e"
+    },
+    {
+     "path": "B_역사설비/Barrel_01/textures/Barrel_01_explosive_arm_2k.jpg",
+     "bytes": 814101,
+     "sha256": "3f6fdb68391e4369e551d90f8577b0899c30589b532ebd416e996170279cd852"
+    },
+    {
+     "path": "B_역사설비/Barrel_01/textures/Barrel_01_explosive_diff_2k.jpg",
+     "bytes": 613078,
+     "sha256": "09da9d519d87d34c0318da3bb293296071ce2e09c78415befe1157949a644b8b"
+    },
+    {
+     "path": "B_역사설비/Barrel_01/textures/Barrel_01_explosive_nor_gl_2k.jpg",
+     "bytes": 875565,
+     "sha256": "050d5dfcf86b37172708637d1c1939010dd1837ed503b7e5561b5b1e67cb0379"
+    }
+   ]
+  },
+  {
+   "slug": "WetFloorSign_01",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/WetFloorSign_01",
+   "asset_page": "https://polyhaven.com/a/WetFloorSign_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 5,
+   "total_bytes": 1174037,
+   "files": [
+    {
+     "path": "B_역사설비/WetFloorSign_01/WetFloorSign_01_2k.fbx",
+     "bytes": 30492,
+     "sha256": "4f2831ef394e79ce44c5b2a4b5b9599eecc5bc560a02ff2c10f108b8d43c1161"
+    },
+    {
+     "path": "B_역사설비/WetFloorSign_01/textures/WetFloorSign_01_arm_2k.jpg",
+     "bytes": 408113,
+     "sha256": "dfe8b7eaa199845ba5e0049d73407c5fae8567803c7c22bdd7cf6c16c05e750d"
+    },
+    {
+     "path": "B_역사설비/WetFloorSign_01/textures/WetFloorSign_01_diff_2k.jpg",
+     "bytes": 115837,
+     "sha256": "f2cc0de3faa39fa922c878ecdb84935f444a0d9276afe7e993e7e59e28f75b49"
+    },
+    {
+     "path": "B_역사설비/WetFloorSign_01/textures/WetFloorSign_01_nor_gl_2k.jpg",
+     "bytes": 234546,
+     "sha256": "9f1d068237273aae2a76b4b1cfb9fc79269b0b8c265ce0859e8daff21e22440f"
+    },
+    {
+     "path": "B_역사설비/WetFloorSign_01/textures/WetFloorSign_01_roughness_2k.jpg",
+     "bytes": 385049,
+     "sha256": "8a8ad2745e4f9728de36fad4c9952bd3f1302110aab53c6496827c0332d0ea5d"
+    }
+   ]
+  },
+  {
+   "slug": "concrete_road_barrier",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/concrete_road_barrier",
+   "asset_page": "https://polyhaven.com/a/concrete_road_barrier",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 12481070,
+   "files": [
+    {
+     "path": "B_역사설비/concrete_road_barrier/concrete_road_barrier_2k.fbx",
+     "bytes": 2887532,
+     "sha256": "f6a9c2a0a7bc9cc22468f1eda214490b981a12ddc5cbcc2dc8af6c29a3db366e"
+    },
+    {
+     "path": "B_역사설비/concrete_road_barrier/textures/concrete_road_barrier_arm_2k.jpg",
+     "bytes": 2515448,
+     "sha256": "8c17f77897138a5ee0f80d0b5d194fd00554371e33b9f62f6d7b6a4e640094d6"
+    },
+    {
+     "path": "B_역사설비/concrete_road_barrier/textures/concrete_road_barrier_diff_2k.jpg",
+     "bytes": 3189621,
+     "sha256": "51832691e0769a04246b61222e5df1ce7dc22e9c7162f786a314409ac76d643c"
+    },
+    {
+     "path": "B_역사설비/concrete_road_barrier/textures/concrete_road_barrier_nor_gl_2k.jpg",
+     "bytes": 3888469,
+     "sha256": "8e48a287ae58a53030635c585d57a2da72660531a907a8e6cd04836bc60bf3a3"
+    }
+   ]
+  },
+  {
+   "slug": "concrete_road_barrier_02",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/concrete_road_barrier_02",
+   "asset_page": "https://polyhaven.com/a/concrete_road_barrier_02",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 11259065,
+   "files": [
+    {
+     "path": "B_역사설비/concrete_road_barrier_02/concrete_road_barrier_02_2k.fbx",
+     "bytes": 1972364,
+     "sha256": "ec3bb0c070b8ed5bf4e0cb804bab2d0e9715f5bf6f5ff4187358c41faa31a751"
+    },
+    {
+     "path": "B_역사설비/concrete_road_barrier_02/textures/concrete_road_barrier_02_arm_2k.jpg",
+     "bytes": 2791052,
+     "sha256": "4d479e15c0ad5e02df48b999b691e17aabf4ebd55b599e571163a2b3b834379e"
+    },
+    {
+     "path": "B_역사설비/concrete_road_barrier_02/textures/concrete_road_barrier_02_diff_2k.jpg",
+     "bytes": 2974035,
+     "sha256": "ca2e3ea67558887b80d113d6b5414f12a37967d4a868600ab23b118acaff11ba"
+    },
+    {
+     "path": "B_역사설비/concrete_road_barrier_02/textures/concrete_road_barrier_02_nor_gl_2k.jpg",
+     "bytes": 3521614,
+     "sha256": "57a9d9448612f0e904964e7c9e01681adb2c3565cf3e47ed60cc152ab7df3b2b"
+    }
+   ]
+  },
+  {
+   "slug": "metal_trash_can",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/metal_trash_can",
+   "asset_page": "https://polyhaven.com/a/metal_trash_can",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 7,
+   "total_bytes": 17513801,
+   "files": [
+    {
+     "path": "B_역사설비/metal_trash_can/metal_trash_can_2k.fbx",
+     "bytes": 431724,
+     "sha256": "be68b77221ae3b8eda768c9f87c6b1dbadf3d22ca4105d2c9126f1fcb7454ec1"
+    },
+    {
+     "path": "B_역사설비/metal_trash_can/textures/metal_trash_can_arm_2k.jpg",
+     "bytes": 2756651,
+     "sha256": "168c3143575152a64c4d5b205a53e0748d76eeb6ea8376e14914b41c9f6fd6a2"
+    },
+    {
+     "path": "B_역사설비/metal_trash_can/textures/metal_trash_can_diff_2k.jpg",
+     "bytes": 2073937,
+     "sha256": "2f2cec31a3d8cd2117eb0358e253e53f78181310975441b9e6e45b580d0079e7"
+    },
+    {
+     "path": "B_역사설비/metal_trash_can/textures/metal_trash_can_nor_gl_2k.jpg",
+     "bytes": 3034809,
+     "sha256": "7bb12839b501bdb605be02a8ba86c3f283197ec35bbcb5be5a85e8cdfdb7f953"
+    },
+    {
+     "path": "B_역사설비/metal_trash_can/textures/metal_trash_can_rust_arm_2k.jpg",
+     "bytes": 2270609,
+     "sha256": "410d2508ed6ef2525f2126979f5a55f0f3d273bcb4ab5231f1a624c47f300488"
+    },
+    {
+     "path": "B_역사설비/metal_trash_can/textures/metal_trash_can_rust_diff_2k.jpg",
+     "bytes": 2716140,
+     "sha256": "b927a4eeb7be65eb8f0bb1fd8d4ae19647bf7a86759c09c0de43cdc8256a45d6"
+    },
+    {
+     "path": "B_역사설비/metal_trash_can/textures/metal_trash_can_rust_nor_gl_2k.jpg",
+     "bytes": 4229931,
+     "sha256": "48c901b6acd1fa161fc9d0de0f4b6945629315133819f2d5ad5957a67686722c"
+    }
+   ]
+  },
+  {
+   "slug": "modular_street_seating",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/modular_street_seating",
+   "asset_page": "https://polyhaven.com/a/modular_street_seating",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 13,
+   "total_bytes": 26261186,
+   "files": [
+    {
+     "path": "B_역사설비/modular_street_seating/modular_street_seating_2k.fbx",
+     "bytes": 842396,
+     "sha256": "598eb4a5791fa0ff083360b4a9ed0f2249ff41e9ea9c29ced46ebdbc5e99046e"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_armrests_arm_2k.jpg",
+     "bytes": 2348093,
+     "sha256": "0353d72a88894fde9d981364fb9cc22a5f37fecf7c0553f16cdc9195cc49acc6"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_armrests_diff_2k.jpg",
+     "bytes": 2299594,
+     "sha256": "108e03dceeec52949a6b1c3dd0275d526360e5b7e228f1a874c51ba6ec44c627"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_armrests_nor_gl_2k.jpg",
+     "bytes": 1165480,
+     "sha256": "195c3891efcb73dd6df05841db0d16568dd23583a7d729aa9f3b7d73b4fbe905"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_connectors_arm_2k.jpg",
+     "bytes": 2108273,
+     "sha256": "d13e865491c9be16a49c4945dbceaebe8af6d1fd9e5292160093ea2176d568b9"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_connectors_diff_2k.jpg",
+     "bytes": 758472,
+     "sha256": "643d9bfd835cdfd074371ebb3b9e094ed00040e8c96aacce68588ac4b76cf7ac"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_connectors_nor_gl_2k.jpg",
+     "bytes": 1821216,
+     "sha256": "13a8c1d9804c8ec9107444cea7df2698b951f0750f7af5401774438f34243ec4"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_supports_arm_2k.jpg",
+     "bytes": 2624832,
+     "sha256": "1141eba656fc493c378a54332cfd827fea8425c3680d168bdc808a346e6f8e16"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_supports_diff_2k.jpg",
+     "bytes": 2552643,
+     "sha256": "005542d67891932d799b48dc010a1c96886e68366aa146d1dfcf7b0415ee0642"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_supports_nor_gl_2k.jpg",
+     "bytes": 1733497,
+     "sha256": "9e8e772bb7482f3ff6aaf20092500a15176ec185d99ceb09e3c2a3f44aaad3ae"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_timber_arm_2k.jpg",
+     "bytes": 3013735,
+     "sha256": "ffe4fa8e6be4309cd26053ee9723dc66288f62ba62d78bc95aa17734d2deea45"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_timber_diff_2k.jpg",
+     "bytes": 2400500,
+     "sha256": "4571cee6a7c43caf39135bc84af124396b945935080bfc88ecee6c8456f201be"
+    },
+    {
+     "path": "B_역사설비/modular_street_seating/textures/modular_street_seating_timber_nor_gl_2k.jpg",
+     "bytes": 2592455,
+     "sha256": "a14540e6c86144cc36cf02d34721fa135efc1865b6cc798992b736700c2d7b53"
+    }
+   ]
+  },
+  {
+   "slug": "security_camera_01",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/security_camera_01",
+   "asset_page": "https://polyhaven.com/a/security_camera_01",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 5133484,
+   "files": [
+    {
+     "path": "B_역사설비/security_camera_01/security_camera_01_2k.fbx",
+     "bytes": 459724,
+     "sha256": "f1cbe5fa4daf3d29d8694ae7416eee43b68d4793ff471fb5bd4cdbe9f2de581b"
+    },
+    {
+     "path": "B_역사설비/security_camera_01/textures/security_camera_01_arm_2k.jpg",
+     "bytes": 1807993,
+     "sha256": "666909428a2cf5ebc209a56078852862ca7717747321f4d486193db854277383"
+    },
+    {
+     "path": "B_역사설비/security_camera_01/textures/security_camera_01_diff_2k.jpg",
+     "bytes": 1913417,
+     "sha256": "9e87e4b75983636cebb4e98ea74a96f09f5a4cb9a2460385ec0e9a056a42ad6e"
+    },
+    {
+     "path": "B_역사설비/security_camera_01/textures/security_camera_01_nor_gl_2k.jpg",
+     "bytes": 952350,
+     "sha256": "ba0720b10eac5cb1d7e5ff332d472b6ec8c31e40da5f2003d8e48a42e748555d"
+    }
+   ]
+  },
+  {
+   "slug": "security_camera_02",
+   "group": "B_역사설비",
+   "purpose": "비상대응 모드 역사 소품 — 승강장·대합실 배치",
+   "source": "Poly Haven",
+   "api_metadata_url": "https://api.polyhaven.com/files/security_camera_02",
+   "asset_page": "https://polyhaven.com/a/security_camera_02",
+   "license": "CC0 1.0 Universal (public domain dedication)",
+   "auth_required": false,
+   "geometry_format": "FBX",
+   "texture_format": "JPG (glTF 번들 텍스처로 교체 — FBX 기본 PNG 는 제거)",
+   "resolution": "2k",
+   "file_count": 4,
+   "total_bytes": 5445526,
+   "files": [
+    {
+     "path": "B_역사설비/security_camera_02/security_camera_02_2k.fbx",
+     "bytes": 451324,
+     "sha256": "8c4f1ec413c791ced06817cf00432b9b34e1c53887195dea3747fed4a3dadc52"
+    },
+    {
+     "path": "B_역사설비/security_camera_02/textures/security_camera_02_arm_2k.jpg",
+     "bytes": 1738160,
+     "sha256": "5123eea1d25d07e05c7dcda7ff3d561bf672ad71cb43d6341ecf71780e4f8bcc"
+    },
+    {
+     "path": "B_역사설비/security_camera_02/textures/security_camera_02_diff_2k.jpg",
+     "bytes": 1475390,
+     "sha256": "cee7add026ac8435e6229cc96e8898114859f4a77d139e9151864e123b958004"
+    },
+    {
+     "path": "B_역사설비/security_camera_02/textures/security_camera_02_nor_gl_2k.jpg",
+     "bytes": 1780652,
+     "sha256": "47e10d8cd1b49b16fec0dc5ff03f03df7630bf239ee535352056de5a014a9772"
+    }
+   ]
+  }
+ ]
+}

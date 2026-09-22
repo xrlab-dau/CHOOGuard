@@ -1,0 +1,583 @@
+{
+  "schema": "chooguard.fps-benchmark-source-graph.v1",
+  "generatedAt": "2026-09-21",
+  "status": "RESEARCH_COMPLETE_PROPOSAL_INPUT_NOT_PRODUCT_ACCEPTANCE",
+  "authorityBoundary": "This graph compares documented game abstractions. It does not authorize a KORAIL procedure, armed station staff, firefighter duties, calibrated hazard physics, or implementation.",
+  "scope": {
+    "targetExperience": "Single-player first-person Busan Station and KTX mission experience with the player as KORAIL station staff performing report, broadcast/communication, passenger guidance, evacuation support, access control and site coordination.",
+    "learningConstraint": "Procedure recall should arise through action, consequence, NPC response and in-world correction. No separate quiz or debrief feature is proposed here.",
+    "researchOnly": true,
+    "gameCount": 6,
+    "localGameExecution": "NOT_RUN",
+    "unityExecution": "NOT_RUN",
+    "jevReview": "NOT_RUN_BY_THIS_LANE_ROOT_OWNS",
+    "manualAuthority": "PENDING_KORAIL_SOURCE_LANE_AND_ROOT_SYNTHESIS"
+  },
+  "artifacts": {
+    "sourceIndex": "asset-library/research-public/2026-09-21/fps-research/benchmark/source-index.json",
+    "sourceCaptures": "asset-library/research-public/2026-09-21/fps-research/benchmark/source-captures.json"
+  },
+  "method": {
+    "eligibleEvidence": [
+      "official developer or publisher pages",
+      "official game support and manuals",
+      "official patch notes",
+      "developer-authored platform posts",
+      "developer conference session pages"
+    ],
+    "causalityRule": "A title, trailer description or marketing adjective does not establish an input-to-feedback mechanic. Concrete claims require a table, named section, patch-note paragraph, developer passage, or inspected footage timestamp.",
+    "classification": [
+      "directly_supported",
+      "near_match_only",
+      "insufficient"
+    ],
+    "playableEvidenceRule": "All six entries are documentation-level benchmarks. No claim says this lane personally reproduced behavior in a current build."
+  },
+  "games": [
+    {
+      "id": "G_PUBG",
+      "title": "PUBG: BATTLEGROUNDS",
+      "whySelected": "Explicit user reference and a strong example of turning a large uncertain space into embodied movement, route choice, spatial communication and escalating time pressure.",
+      "sourceIds": ["PUBG-CONTROLS", "PUBG-PING", "PUBG-ZONE"],
+      "documentedAbstractions": [
+        {
+          "concept": "body movement across exposed space",
+          "abstraction": "a compact stance and speed vocabulary: walk, sprint, crouch, prone, jump/vault and lean",
+          "locator": "PUBG-CONTROLS > Movement table",
+          "classification": "directly_supported"
+        },
+        {
+          "concept": "communicating a place faster than describing it",
+          "abstraction": "point crosshair and place a world/map ping visible to teammates",
+          "locator": "PUBG-PING > Screen Ping Marker",
+          "classification": "directly_supported"
+        },
+        {
+          "concept": "time-dependent loss of usable space",
+          "abstraction": "a shrinking boundary that continuously costs health if ignored",
+          "locator": "PUBG-ZONE > BLUE ZONE",
+          "classification": "directly_supported"
+        }
+      ],
+      "stationStaffSafeTransfer": [
+        "Use walking pace, brisk movement and collision-aware traversal to make distance and route choice felt.",
+        "Let a player point to a world location and convert it into a provisional report or colleague assignment that must be acknowledged.",
+        "Represent an authored operational window through changing route availability and visible NPC consequences only when the governing scenario source supports it."
+      ],
+      "combatOnlyReject": [
+        "weapon handling, looting and armor economy",
+        "last-survivor incentives",
+        "health-draining circles as a smoke or evacuation model",
+        "free-climbing or vaulting that bypasses station access controls"
+      ],
+      "playableEvidenceScope": "Official commands, patch notes and overview inspected; no local match or current-build reproduction."
+    },
+    {
+      "id": "G_SUDDEN",
+      "title": "Sudden Attack",
+      "whySelected": "Explicit user reference and a useful case of high-tempo attention management through radar, timer, mission-state, radio, sound focus and redundant feedback.",
+      "sourceIds": ["SUDDEN-INTERFACE", "SUDDEN-ATTENTION"],
+      "documentedAbstractions": [
+        {
+          "concept": "maintaining awareness while moving",
+          "abstraction": "separate radar, remaining-time and mission-state HUD regions",
+          "locator": "SUDDEN-INTERFACE > 전투화면",
+          "classification": "directly_supported"
+        },
+        {
+          "concept": "selective attention to sound and urgent events",
+          "abstraction": "radio shortcuts, footstep volume controls and visual warnings for nearby danger",
+          "locator": "SUDDEN-ATTENTION > 캐릭터 기능 table",
+          "classification": "directly_supported"
+        }
+      ],
+      "stationStaffSafeTransfer": [
+        "Keep the mission HUD compact: current task, known people state and a timer only when source-authorized.",
+        "Pair radio, PA, alarm and passenger calls with Korean text and a restrained direction cue.",
+        "Make acknowledgements visible in both animation and text so the player knows which instruction an NPC heard."
+      ],
+      "combatOnlyReject": [
+        "hit markers, damage numbers and enemy HP",
+        "enemy-reveal radar",
+        "kill/death scoreboards and streak effects",
+        "paid character advantages as training mechanics"
+      ],
+      "playableEvidenceScope": "Current official Korean guide sections inspected; no local play or latency/legibility test."
+    },
+    {
+      "id": "G_RON",
+      "title": "Ready or Not",
+      "whySelected": "Useful for route readability, doorway and sightline design, uncertain civilian response and observable teammate behavior, while its police combat role demands strict quarantine.",
+      "sourceIds": ["RON-LEVEL", "RON-NPC-ROUTE"],
+      "documentedAbstractions": [
+        {
+          "concept": "translating real locations into playable spaces",
+          "abstraction": "research and disposable blockouts followed by navigation, door, AI, cover, interactable and sightline passes",
+          "locator": "RON-LEVEL > Level Creation Deep-dive",
+          "classification": "directly_supported"
+        },
+        {
+          "concept": "people and routes do not respond uniformly",
+          "abstraction": "civilian response variables and door states alter behavior, sightlines and traversal burden",
+          "locator": "RON-NPC-ROUTE > Civilian AI Modifiers; Miscellaneous Modifiers",
+          "classification": "directly_supported"
+        }
+      ],
+      "stationStaffSafeTransfer": [
+        "Prototype routes for sightline, crowd width, doorway readability and NPC navigation before dressing them as realistic interiors.",
+        "Model passenger responses such as heard, confused, hesitant, following, separated and re-entering without making every instruction instantly succeed.",
+        "Make alternate-route value visible through who can see the guide, which threshold is blocked and where a colleague is stationed."
+      ],
+      "combatOnlyReject": [
+        "armed police role, suspect pursuit and rules of engagement",
+        "coercive compliance and restraint",
+        "breaching, room clearing, fatal funnels and wedges",
+        "police command language presented as railway procedure"
+      ],
+      "playableEvidenceScope": "Developer briefings and official Steam mirrors inspected; no local mission play. Work-in-progress sections remain WIP evidence."
+    },
+    {
+      "id": "G_ALIEN",
+      "title": "Alien: Isolation",
+      "whySelected": "Strong non-power fantasy reference for incomplete information, aural attention and behavior that reacts to the player without exposing internal state.",
+      "sourceIds": ["ALIEN-AI", "ALIEN-SYSTEMIC", "ALIEN-FEAR"],
+      "documentedAbstractions": [
+        {
+          "concept": "uncertain threat location and intent",
+          "abstraction": "a systemic, unscripted actor reacts to player behavior and preserves unpredictability",
+          "locator": "ALIEN-AI > 2015-04-17 entry; ALIEN-SYSTEMIC > Animating the Alien",
+          "classification": "directly_supported"
+        },
+        {
+          "concept": "sustained vigilance by an underpowered player",
+          "abstraction": "one meaningful encounter supported by creature senses and visual/aural immersion",
+          "locator": "ALIEN-FEAR > Session overview",
+          "classification": "directly_supported"
+        }
+      ],
+      "stationStaffSafeTransfer": [
+        "Keep unobserved passenger and hazard facts unknown until seen, heard or reported.",
+        "Use distinct, source-bounded sound cues and imperfect radio reports to motivate verification and route choice.",
+        "Let the world react to actions so the player reads consequences instead of reading hidden simulation values."
+      ],
+      "combatOnlyReject": [
+        "stalking attacker or monster as a substitute for a disaster",
+        "jump scares as training feedback",
+        "opaque random failure with no observable cause",
+        "claiming a proprietary adaptive-AI implementation"
+      ],
+      "playableEvidenceScope": "Official SEGA diary index, developer-authored platform post and GDC overview inspected. Detailed AI architecture and exact sensory behavior remain unsupported."
+    },
+    {
+      "id": "G_ALYX",
+      "title": "Half-Life: Alyx",
+      "whySelected": "Well-matched reference for making tools and world objects the interface, and for supporting more than one locomotion/input configuration.",
+      "sourceIds": ["ALYX-AFFORDANCE"],
+      "documentedAbstractions": [
+        {
+          "concept": "using a tool on a specific object",
+          "abstraction": "reach, rummage, grasp and manipulate a world object rather than select an abstract menu verb",
+          "locator": "ALYX-AFFORDANCE > built from the ground up for virtual reality",
+          "classification": "directly_supported"
+        },
+        {
+          "concept": "different bodies and play spaces",
+          "abstraction": "multiple play environments, locomotion methods and input devices",
+          "locator": "ALYX-AFFORDANCE > same section",
+          "classification": "directly_supported"
+        }
+      ],
+      "stationStaffSafeTransfer": [
+        "Represent a radio handset, PA console, barrier control or passenger aid point as a readable world object with one clear primary action.",
+        "Show reach, target, action progress, cancellation and result in the world and Korean UI.",
+        "Provide remappable keyboard/mouse/controller input and low-precision alternatives rather than making twitch aim part of procedure recall."
+      ],
+      "combatOnlyReject": [
+        "weapons and violent object use",
+        "VR hand-physics fidelity claims for a desktop game",
+        "precision gesture requirements",
+        "physical interaction spectacle that obscures the procedural consequence"
+      ],
+      "playableEvidenceScope": "Official Valve product page inspected. No headset, locomotion mode or accessibility test was run."
+    },
+    {
+      "id": "G_FIRE",
+      "title": "Firefighting Simulator - The Squad",
+      "whySelected": "Closest selected reference for hazardous-scene teamwork, AI crew delegation, tool dependencies and several viable response paths, with a major role and jurisdiction mismatch.",
+      "sourceIds": ["FIRE-SQUAD", "FIRE-LEAD"],
+      "documentedAbstractions": [
+        {
+          "concept": "coordinating people in a changing hazardous scene",
+          "abstraction": "player and AI crew take tasks while fire, smoke and other conditions change",
+          "locator": "FIRE-SQUAD > feature list and operations paragraph",
+          "classification": "directly_supported"
+        },
+        {
+          "concept": "delegation under a single-player role",
+          "abstraction": "assign tasks to an experienced AI squad or perform a task directly",
+          "locator": "FIRE-LEAD > Features",
+          "classification": "directly_supported"
+        }
+      ],
+      "stationStaffSafeTransfer": [
+        "Acknowledge an instruction, move the assigned colleague through the world, show work state and report completion or obstruction.",
+        "Let tools or staffed positions gate an action, then expose the missing dependency instead of silently rejecting input.",
+        "Support alternate safe routes and division of labor when more than one source-valid solution exists."
+      ],
+      "combatOnlyReject": [
+        "fire attack, building entry and victim rescue by station staff",
+        "US firefighter command hierarchy or equipment as KORAIL authority",
+        "calibrated fire, smoke, heat or flashover claims",
+        "extinguisher-as-gun scoring"
+      ],
+      "playableEvidenceScope": "Official publisher and platform feature descriptions inspected; no local AI reliability, tool-chain or fire-behavior reproduction."
+    }
+  ],
+  "migrationMatrix": [
+    {
+      "id": "T01_EMBODIED_PACE",
+      "sourceGameIds": ["G_PUBG"],
+      "realConcept": "A staff member must move through a bounded facility while keeping orientation and deciding when speed is justified.",
+      "gameAbstraction": "A small movement vocabulary makes pace and body position legible without simulating every gait.",
+      "input": "WASD movement; Shift for brief brisk movement; mouse look. Crouch/vault only if a sourced mission and geometry need them.",
+      "constraint": "Collision, stairs, doors, people and access boundaries; no parkour or unrestricted vaulting.",
+      "observableFeedback": "Camera/body acceleration, footstep cadence, NPC yielding/obstruction and route-progress cues.",
+      "success": "Player reaches a supported interaction or guidance position without clipping, teleporting or bypassing an access boundary.",
+      "failure": "Blocked path, loss of line of sight to the group or attempted traversal of an unauthorized boundary.",
+      "recovery": "Slow down, reposition, take the alternate supported path or ask an NPC to clear/hold a threshold.",
+      "stationStaffFit": "appropriate_with_manual_and_geometry_binding",
+      "sourceIds": ["PUBG-CONTROLS"],
+      "authorityStatus": "PROVISIONAL_DESIGN_PATTERN"
+    },
+    {
+      "id": "T02_POINT_REPORT_ACK",
+      "sourceGameIds": ["G_PUBG", "G_SUDDEN"],
+      "realConcept": "A person reporting an incident must identify a location and ensure the receiver understood it.",
+      "gameAbstraction": "Point at a visible site, attach a concise location fact, and require an acknowledgement before the assignment changes state.",
+      "input": "Aim/gaze at a valid world anchor; press context/report; choose one short fact if needed; confirm or cancel.",
+      "constraint": "Line of sight, bounded range, named supported anchors and no through-wall marking. The player cannot report unobserved hidden state.",
+      "observableFeedback": "World marker, Korean phrase echo, radio voice/text acknowledgement and colleague head-turn/movement.",
+      "success": "Acknowledgement repeats the intended location and the receiving NPC acts on that same anchor.",
+      "failure": "Ambiguous anchor, missing required fact, receiver unavailable or contradictory later observation.",
+      "recovery": "Re-point, correct the fact, choose a nearby valid anchor or contact an available colleague.",
+      "stationStaffFit": "strong_fit_pending_real_phraseology",
+      "sourceIds": ["PUBG-PING", "SUDDEN-ATTENTION"],
+      "authorityStatus": "PENDING_KORAIL_REPORTING_SOURCE"
+    },
+    {
+      "id": "T03_OPERATIONAL_WINDOW",
+      "sourceGameIds": ["G_PUBG", "G_SUDDEN"],
+      "realConcept": "Some routes or tasks become less viable as an incident evolves.",
+      "gameAbstraction": "Time is embodied as a changing spatial option and visible mission-state, rather than only a countdown.",
+      "input": "Player observes world cues, checks the compact mission state and chooses a route or task order.",
+      "constraint": "Only authored, source-backed phase changes; no claim that the timing predicts real smoke, crowd or injury dynamics.",
+      "observableFeedback": "Door/route state, PA/radio updates, passenger movement and a timer only when the source defines a real deadline.",
+      "success": "Player changes plan before a declared route or task window closes and guides affected NPCs to the supported alternative.",
+      "failure": "The chosen option becomes unavailable, leaving a recoverable alternate rather than applying unexplained damage.",
+      "recovery": "Receive the update, identify the alternate route, redirect passengers and update the colleague assignment.",
+      "stationStaffFit": "conditional_fit",
+      "sourceIds": ["PUBG-ZONE", "SUDDEN-INTERFACE"],
+      "authorityStatus": "PENDING_SCENARIO_AND_HAZARD_SOURCE"
+    },
+    {
+      "id": "T04_ATTENTION_STACK",
+      "sourceGameIds": ["G_SUDDEN"],
+      "realConcept": "The player must maintain spatial, temporal and communication awareness without stopping movement.",
+      "gameAbstraction": "Stable HUD regions show current task, known people state and source-authorized time; audio cues receive text and direction redundancy.",
+      "input": "Glance-level HUD reading; optional map key; separate audio/subtitle/display settings.",
+      "constraint": "No enemy radar, no omniscient passenger markers, no color-only meaning and no full-screen radio menu during urgent traversal.",
+      "observableFeedback": "Known-state icons, concise Korean text, alarm/radio subtitles and a low-clutter direction cue.",
+      "success": "A player can identify the next action and the source of a cue while continuing to move.",
+      "failure": "Cue is missed, duplicated, ambiguous or exposes information the player never obtained.",
+      "recovery": "Repeat critical radio information, preserve it in a log, allow volume/text scaling and let the player request clarification.",
+      "stationStaffFit": "strong_fit",
+      "sourceIds": ["SUDDEN-INTERFACE", "SUDDEN-ATTENTION"],
+      "authorityStatus": "PROVISIONAL_UI_PATTERN"
+    },
+    {
+      "id": "T05_ROUTE_SIGHTLINE",
+      "sourceGameIds": ["G_RON"],
+      "realConcept": "A guide can influence only people who can see, hear and physically follow them through usable thresholds.",
+      "gameAbstraction": "Doors, corners, corridor width and visible alternatives create route decisions and determine which NPCs receive guidance.",
+      "input": "Look, move, open an allowed threshold, point or issue a guidance cue, then check the group physically.",
+      "constraint": "Routes must be collision- and NPC-navigation tested; no tactical clearing, breaching or source-unsupported interior link.",
+      "observableFeedback": "Line-of-sight highlight at close range, passenger head/voice acknowledgement, actual pathing and lagging/separated state.",
+      "success": "The same passengers traverse the selected continuous route and remain observable or accounted for.",
+      "failure": "A passenger cannot see/hear, a threshold is blocked or the route is too narrow for the authored group.",
+      "recovery": "Return, regroup, reposition the guide, open a permitted alternative or assign a colleague to the threshold.",
+      "stationStaffFit": "strong_fit_pending_official_route_binding",
+      "sourceIds": ["RON-LEVEL", "RON-NPC-ROUTE"],
+      "authorityStatus": "PENDING_BUSAN_STATION_ROUTE_SOURCE"
+    },
+    {
+      "id": "T06_PASSENGER_RESPONSE_STATE",
+      "sourceGameIds": ["G_RON"],
+      "realConcept": "People may misunderstand, hesitate, separate, follow others or try to return; an instruction is not the same as compliance.",
+      "gameAbstraction": "Each passenger enters an observable response state based on hearing, visibility, mobility and the current route.",
+      "input": "Address individual/group; point to route; repeat or simplify; call a colleague for support.",
+      "constraint": "No coercion, restraint, morale damage or hidden dice-only refusal. Variation must have a readable cause and bounded recovery.",
+      "observableFeedback": "Spoken response, posture, gaze, movement start, hesitation, separation or a question asking for clarification.",
+      "success": "Passenger begins the intended safe movement or explicitly transfers to another staff member's care.",
+      "failure": "Passenger does not hear, cannot move, follows the wrong group or attempts re-entry.",
+      "recovery": "Re-address, reduce distance, clarify direction, remove the local obstacle or involve the scripted colleague.",
+      "stationStaffFit": "strong_fit_pending_behavioral_review",
+      "sourceIds": ["RON-NPC-ROUTE"],
+      "authorityStatus": "PENDING_KORAIL_DRILL_AND_HUMAN_FACTORS_REVIEW"
+    },
+    {
+      "id": "T07_PARTIAL_INFORMATION",
+      "sourceGameIds": ["G_ALIEN"],
+      "realConcept": "At incident onset, staff possess observations and reports rather than complete ground truth.",
+      "gameAbstraction": "Unknown facts remain hidden; sound, sight and radio reports reveal bounded evidence that can conflict or become stale.",
+      "input": "Look/listen, move to a supported observation point, question an NPC or request a radio repeat.",
+      "constraint": "No invisible adaptive adversary, no fake randomness and no requirement to approach a hazard to fill an information bar.",
+      "observableFeedback": "Directional sound, visible world state, timestamped report text and confidence expressed as source identity rather than a fabricated probability.",
+      "success": "Player bases the next instruction on a confirmed observation or clearly attributed report.",
+      "failure": "Player treats an unconfirmed report as certain or ignores a contradictory observation.",
+      "recovery": "Verify from a safe point, ask for clarification, update the shared fact and redirect affected NPCs.",
+      "stationStaffFit": "strong_fit",
+      "sourceIds": ["ALIEN-AI", "ALIEN-SYSTEMIC", "ALIEN-FEAR"],
+      "authorityStatus": "PROVISIONAL_INFORMATION_DESIGN"
+    },
+    {
+      "id": "T08_WORLD_TOOL_AFFORDANCE",
+      "sourceGameIds": ["G_ALYX"],
+      "realConcept": "A staff action is often mediated by a particular handset, console, barrier or assistance point.",
+      "gameAbstraction": "The world object exposes one dominant contextual verb and visibly changes state when operated.",
+      "input": "Aim within forgiving bounds; press/tap interaction; use short directional or choice input; cancel at any time.",
+      "constraint": "No pixel hunt, precision gesture or physics puzzle. The exact tool, permission and sequence require a KORAIL source.",
+      "observableFeedback": "Target outline/prompt, hand or object animation, progress, sound, Korean status text and changed world/NPC behavior.",
+      "success": "The intended object changes to an acknowledged operational state and downstream actors respond.",
+      "failure": "Wrong object, unavailable permission, missing prerequisite or interrupted action.",
+      "recovery": "Explain the missing prerequisite in-world, release/cancel safely, choose the correct object or ask the authorized NPC.",
+      "stationStaffFit": "strong_fit_pending_equipment_authority",
+      "sourceIds": ["ALYX-AFFORDANCE"],
+      "authorityStatus": "PENDING_KORAIL_EQUIPMENT_SOURCE"
+    },
+    {
+      "id": "T09_VISIBLE_DELEGATION",
+      "sourceGameIds": ["G_FIRE", "G_RON"],
+      "realConcept": "Coordination requires assigning a bounded task and knowing whether the colleague accepted, reached and completed it.",
+      "gameAbstraction": "A command becomes an NPC state chain: heard, accepted, moving, working, complete or blocked.",
+      "input": "Select a visible/contactable colleague; point to a supported location; choose one role-valid task; confirm.",
+      "constraint": "Colleague capability, current assignment, path and authority; no firefighter or police task transfer.",
+      "observableFeedback": "Voice/text repeat-back, visible travel, work animation, maintained position and completion/blocked report.",
+      "success": "The colleague physically reaches the location and performs the assigned station-staff action.",
+      "failure": "Task conflicts, no path, colleague unavailable or target invalid.",
+      "recovery": "Reassign, clear the route, choose another colleague or perform the role-valid task directly.",
+      "stationStaffFit": "strong_fit_pending_staff_role_source",
+      "sourceIds": ["FIRE-LEAD", "RON-LEVEL"],
+      "authorityStatus": "PENDING_KORAIL_ROLE_MATRIX"
+    },
+    {
+      "id": "T10_RESOURCE_AND_TOOL_DEPENDENCY",
+      "sourceGameIds": ["G_FIRE", "G_ALYX"],
+      "realConcept": "A response option may require an available person, working device, route, key or other authorized resource.",
+      "gameAbstraction": "The action is gated by a small explicit dependency chain, and the missing link is shown in the world.",
+      "input": "Inspect the target; attempt action; retrieve/request the valid resource; retry or choose an alternate.",
+      "constraint": "Only real, source-backed dependencies. No invented equipment scarcity or inventory grind.",
+      "observableFeedback": "Object state, staff availability, route state and a short explanation of the missing dependency.",
+      "success": "The correct authorized resource enables the action and produces its expected world consequence.",
+      "failure": "Resource absent, busy, inoperable or used at an invalid target.",
+      "recovery": "Request replacement/support, reroute, use another valid method or escalate through the sourced chain.",
+      "stationStaffFit": "conditional_fit",
+      "sourceIds": ["FIRE-SQUAD", "FIRE-LEAD", "ALYX-AFFORDANCE"],
+      "authorityStatus": "PENDING_KORAIL_RESOURCE_SOURCE"
+    }
+  ],
+  "commonPatterns": [
+    {
+      "id": "P01",
+      "pattern": "Reality becomes playable when it is reduced to a few situated verbs, explicit constraints and immediate world consequences.",
+      "seenIn": ["G_PUBG", "G_ALYX", "G_FIRE"],
+      "implication": "Start with report, point, guide, assign, operate and account; do not start with a catalogue of real equipment animations."
+    },
+    {
+      "id": "P02",
+      "pattern": "Urgency works when elapsed time changes space, people or available options, not when a timer exists by itself.",
+      "seenIn": ["G_PUBG", "G_SUDDEN", "G_FIRE"],
+      "implication": "A source-authorized deadline should visibly change route or NPC state and still provide a plausible recovery path."
+    },
+    {
+      "id": "P03",
+      "pattern": "Information is valuable when it is partial, attributed and actionable.",
+      "seenIn": ["G_PUBG", "G_SUDDEN", "G_ALIEN"],
+      "implication": "Distinguish observed, reported, acknowledged and unknown state; avoid omniscient overlays."
+    },
+    {
+      "id": "P04",
+      "pattern": "NPC cooperation is believable when acknowledgement, travel, work and obstruction are visible.",
+      "seenIn": ["G_RON", "G_FIRE"],
+      "implication": "Never let a command button silently flip a mission flag or teleport a colleague."
+    },
+    {
+      "id": "P05",
+      "pattern": "Route choice is created by visibility, width, thresholds, people and changing availability rather than by decorative map complexity.",
+      "seenIn": ["G_PUBG", "G_RON"],
+      "implication": "Validate continuous player/NPC routes and sightlines before visual polish."
+    },
+    {
+      "id": "P06",
+      "pattern": "Failure teaches through a readable cause and an in-world correction loop.",
+      "seenIn": ["G_RON", "G_ALIEN", "G_ALYX", "G_FIRE"],
+      "implication": "Prefer clarification, regrouping, rerouting and reassignment over instant mission failure or a later quiz."
+    }
+  ],
+  "accessibilityAndAgency": [
+    {
+      "id": "A01",
+      "insight": "Critical cues need at least two channels.",
+      "sourceBasis": ["SUDDEN-ATTENTION", "ALYX-AFFORDANCE"],
+      "proposal": "Pair radio/PA/alarm audio with Korean subtitles and restrained direction or source labels; never encode mission state only by color."
+    },
+    {
+      "id": "A02",
+      "insight": "Input choice should preserve the decision rather than change the training content.",
+      "sourceBasis": ["ALYX-AFFORDANCE", "SUDDEN-INTERFACE"],
+      "proposal": "Remap movement and interaction, expose sensitivity and text/audio scale, and offer tap/hold alternatives for noncontinuous actions."
+    },
+    {
+      "id": "A03",
+      "insight": "Station-staff competence is attention and judgement, not twitch aim.",
+      "sourceBasis": ["PUBG-PING", "SUDDEN-INTERFACE", "RON-LEVEL"],
+      "proposal": "Use forgiving interaction cones, named anchors and clarification; do not grade pixel-perfect pointing or reaction speed unless a source explicitly makes time critical."
+    },
+    {
+      "id": "A04",
+      "insight": "Agency requires visible downstream effects and the ability to revise a decision.",
+      "sourceBasis": ["PUBG-PING", "RON-NPC-ROUTE", "FIRE-LEAD"],
+      "proposal": "Every report, route choice and colleague assignment should show who heard it, what changed and how the player can correct it."
+    },
+    {
+      "id": "A05",
+      "insight": "Partial information should constrain knowledge, not remove control.",
+      "sourceBasis": ["ALIEN-AI", "ALIEN-SYSTEMIC"],
+      "proposal": "Withhold unobserved facts but always expose a safe verification path, attributed report or explicit unknown state."
+    },
+    {
+      "id": "A06",
+      "insight": "Menus should not suspend embodied responsibilities by accident.",
+      "sourceBasis": ["SUDDEN-INTERFACE", "ALYX-AFFORDANCE"],
+      "proposal": "Keep radio choices short and contextual; preserve situational audio and allow cancel/retry without losing movement context."
+    }
+  ],
+  "antiPatterns": [
+    {
+      "id": "X01_WEAPON_RESKIN",
+      "wrongLesson": "Replace a rifle with an extinguisher or radio, keep crosshair, hit points and DPS, and call it procedural training.",
+      "whyWrong": "It rewards aim and depletion rather than observation, authority, communication and consequence; it can also imply suppression duties the station-staff role does not have.",
+      "blockedSourcePatterns": ["G_SUDDEN combat feedback", "G_FIRE firefighting role"]
+    },
+    {
+      "id": "X02_OMNISCIENT_RADAR",
+      "wrongLesson": "Show every passenger, hazard and colleague through walls from mission start.",
+      "whyWrong": "It removes reporting, accounting, uncertainty and line-of-sight work, and teaches confidence in information the player never obtained.",
+      "blockedSourcePatterns": ["G_SUDDEN enemy radar", "G_ALIEN partial information"]
+    },
+    {
+      "id": "X03_FAKE_HAZARD_PHYSICS",
+      "wrongLesson": "Copy PUBG's shrinking ring or health drain and label it smoke spread, safe distance or evacuation timing.",
+      "whyWrong": "The game abstraction has no authority for fire/smoke dynamics and would teach false thresholds.",
+      "blockedSourcePatterns": ["G_PUBG Blue Zone", "G_FIRE advertised fire simulation"]
+    },
+    {
+      "id": "X04_TACTICAL_POLICE_TRANSFER",
+      "wrongLesson": "Give station staff suspect pursuit, weapon handling, coercive compliance, breaching or room-clearing procedures because the camera is first person.",
+      "whyWrong": "It changes the player role, creates unsafe procedural confusion and imports a police combat problem the user explicitly excluded.",
+      "blockedSourcePatterns": ["G_RON police combat wrapper", "G_SUDDEN and G_PUBG combat loops"]
+    },
+    {
+      "id": "X05_INVISIBLE_COMPLETION",
+      "wrongLesson": "A menu click, invisible NPC teleport or later quiz stands in for whether a person heard, moved, was accounted for or reached a supported location.",
+      "whyWrong": "It separates recall from action and conceals causal failure; the latest product direction requires learning through play.",
+      "blockedSourcePatterns": ["G_FIRE visible crew task", "G_RON route and NPC passes", "G_ALYX world-object interaction"]
+    }
+  ],
+  "jevReviewPacket": {
+    "status": "READY_FOR_ROOT_JEV_REVIEW",
+    "questions": [
+      "Does any proposed transfer accidentally give station staff police, firefighter or armed-counterterror authority?",
+      "Does each urgency mechanic alter an observable option without pretending to model real smoke, injury or safe distance?",
+      "Does every NPC failure have a visible cause and an in-world recovery instead of hidden randomness?",
+      "Does the HUD expose only observed, reported or acknowledged information?",
+      "Can the same procedural judgement be exercised with remapped input, subtitles and lower pointer precision?",
+      "Are report, broadcast, guidance, evacuation support, access control and site coordination still the dominant verbs?"
+    ],
+    "minimumPass": "No role violation; no unsupported hazard claim; no omniscient state; every failure recoverable or explicitly technical; every accepted mission mechanic bound to a public KORAIL/manual/drill source before implementation."
+  },
+  "nextUse": [
+    "Root joins T02-T10 to verified KORAIL manual/drill facts. A pattern with no procedural source remains a design candidate, not a mission requirement.",
+    "Jev reviews role and causality boundaries before root proposes missions to the user.",
+    "Only after user selects a proposal should implementation bind inputs, NPC states, equipment and routes in Unity.",
+    "The existing unpublished controller draft remains generic and unvalidated; this research does not approve publication."
+  ],
+  "graph": {
+    "nodes": [
+      {"id": "PUBG-CONTROLS", "kind": "source"},
+      {"id": "PUBG-PING", "kind": "source"},
+      {"id": "PUBG-ZONE", "kind": "source"},
+      {"id": "SUDDEN-INTERFACE", "kind": "source"},
+      {"id": "SUDDEN-ATTENTION", "kind": "source"},
+      {"id": "RON-LEVEL", "kind": "source"},
+      {"id": "RON-NPC-ROUTE", "kind": "source"},
+      {"id": "ALIEN-AI", "kind": "source"},
+      {"id": "ALIEN-SYSTEMIC", "kind": "source"},
+      {"id": "ALIEN-FEAR", "kind": "source"},
+      {"id": "ALYX-AFFORDANCE", "kind": "source"},
+      {"id": "FIRE-SQUAD", "kind": "source"},
+      {"id": "FIRE-LEAD", "kind": "source"},
+      {"id": "G_PUBG", "kind": "game"},
+      {"id": "G_SUDDEN", "kind": "game"},
+      {"id": "G_RON", "kind": "game"},
+      {"id": "G_ALIEN", "kind": "game"},
+      {"id": "G_ALYX", "kind": "game"},
+      {"id": "G_FIRE", "kind": "game"},
+      {"id": "T02_POINT_REPORT_ACK", "kind": "transfer"},
+      {"id": "T03_OPERATIONAL_WINDOW", "kind": "transfer"},
+      {"id": "T04_ATTENTION_STACK", "kind": "transfer"},
+      {"id": "T05_ROUTE_SIGHTLINE", "kind": "transfer"},
+      {"id": "T06_PASSENGER_RESPONSE_STATE", "kind": "transfer"},
+      {"id": "T07_PARTIAL_INFORMATION", "kind": "transfer"},
+      {"id": "T08_WORLD_TOOL_AFFORDANCE", "kind": "transfer"},
+      {"id": "T09_VISIBLE_DELEGATION", "kind": "transfer"},
+      {"id": "T10_RESOURCE_AND_TOOL_DEPENDENCY", "kind": "transfer"}
+    ],
+    "edges": [
+      {"from": "PUBG-CONTROLS", "to": "G_PUBG", "relation": "supports"},
+      {"from": "PUBG-PING", "to": "G_PUBG", "relation": "supports"},
+      {"from": "PUBG-ZONE", "to": "G_PUBG", "relation": "supports"},
+      {"from": "SUDDEN-INTERFACE", "to": "G_SUDDEN", "relation": "supports"},
+      {"from": "SUDDEN-ATTENTION", "to": "G_SUDDEN", "relation": "supports"},
+      {"from": "RON-LEVEL", "to": "G_RON", "relation": "supports"},
+      {"from": "RON-NPC-ROUTE", "to": "G_RON", "relation": "supports"},
+      {"from": "ALIEN-AI", "to": "G_ALIEN", "relation": "supports"},
+      {"from": "ALIEN-SYSTEMIC", "to": "G_ALIEN", "relation": "supports"},
+      {"from": "ALIEN-FEAR", "to": "G_ALIEN", "relation": "supports"},
+      {"from": "ALYX-AFFORDANCE", "to": "G_ALYX", "relation": "supports"},
+      {"from": "FIRE-SQUAD", "to": "G_FIRE", "relation": "supports"},
+      {"from": "FIRE-LEAD", "to": "G_FIRE", "relation": "supports"},
+      {"from": "G_PUBG", "to": "T02_POINT_REPORT_ACK", "relation": "abstracts_to"},
+      {"from": "G_PUBG", "to": "T03_OPERATIONAL_WINDOW", "relation": "abstracts_to"},
+      {"from": "G_SUDDEN", "to": "T04_ATTENTION_STACK", "relation": "abstracts_to"},
+      {"from": "G_RON", "to": "T05_ROUTE_SIGHTLINE", "relation": "abstracts_to"},
+      {"from": "G_RON", "to": "T06_PASSENGER_RESPONSE_STATE", "relation": "abstracts_to"},
+      {"from": "G_ALIEN", "to": "T07_PARTIAL_INFORMATION", "relation": "abstracts_to"},
+      {"from": "G_ALYX", "to": "T08_WORLD_TOOL_AFFORDANCE", "relation": "abstracts_to"},
+      {"from": "G_FIRE", "to": "T09_VISIBLE_DELEGATION", "relation": "abstracts_to"},
+      {"from": "G_FIRE", "to": "T10_RESOURCE_AND_TOOL_DEPENDENCY", "relation": "abstracts_to"}
+    ]
+  },
+  "validation": {
+    "jsonParse": "PASS_JQ_2026-09-21",
+    "sourceFileParse": "PASS_ALL_REFERENCED_SOURCE_IDS_RESOLVE",
+    "urlPresence": "PASS_13_INDEXED_OFFICIAL_SOURCE_URLS_NONEMPTY",
+    "writeBoundary": "Only requested research/planning paths were changed by this lane.",
+    "limitations": [
+      "No videos were used as causal proof solely from their title or description.",
+      "The GDC Alien overview supports only its stated design goals, not detailed AI architecture.",
+      "Ready or Not Vol.90 described a then-upcoming feature and is retained as developer design evidence, not current-build verification.",
+      "Official product pages may describe intended or marketed behavior; hands-on reliability remains untested.",
+      "No claim is made about proprietary code, physical accuracy or state-of-the-art AI."
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>();
+var g=w.GetComponent<ChooGuard.App.Mvp.MvpProgressionGraph>();
+var c=w.GetComponent<ChooGuard.App.Mvp.MvpAgencyDispatchController>();
+var d=w.GetComponent<ChooGuard.App.Mvp.MvpTrainingDirector>();
+var records=System.Linq.Enumerable.ToArray(g.TraceRecords);
+System.IO.File.WriteAllText(".planning/2026-09-21-fleet-building/progression-native-traces.json","["+string.Join(",",System.Linq.Enumerable.Select(records,t=>UnityEngine.JsonUtility.ToJson(t)))+"]");
+var target=System.Linq.Enumerable.First(c.MissionSnapshots,m=>m.TeamId=="central119-evacuation-response");
+var snapshot=g.Snapshot(target.LastCompletedOperationId);
+bool own=System.Linq.Enumerable.All(snapshot.Recent,t=>t.OperationId==target.LastCompletedOperationId);
+bool ordered=true;for(int i=1;i<snapshot.Recent.Length;i++)if(snapshot.Recent[i].Sequence<=snapshot.Recent[i-1].Sequence)ordered=false;
+var go=new UnityEngine.GameObject("IsolatedGraphGuardProbe");var test=go.AddComponent<ChooGuard.App.Mvp.MvpProgressionGraph>();test.GraphAsset=g.GraphAsset;test.Initialize();
+var evidence=new ChooGuard.App.Mvp.MvpPhysicsResult{runId="isolated-guard-fixture",generation=1,requestId="fixture-result",phase="incident",physicsReady=true,total=50};
+test.RegisterOperation("fixture-operation","fixture-agency","fixture-team",evidence,0);
+test.ObservePrimitive("fixture-operation","depart",evidence,0);test.ObservePrimitive("fixture-operation","arrive",evidence,0);
+var empty=ChooGuard.App.Mvp.MvpProgressionGraph.FactsFrom(new System.Collections.Generic.Dictionary<string,ChooGuard.Contracts.RuleTruth>());
+bool unknownWaits=test.Evaluate("fixture-operation","result",empty,evidence)==null;
+var facts=new System.Collections.Generic.Dictionary<string,ChooGuard.Contracts.RuleTruth>{{"calculation-current",ChooGuard.Contracts.RuleTruth.TRUE},{"response-phase",ChooGuard.Contracts.RuleTruth.TRUE},{"evacuation-task",ChooGuard.Contracts.RuleTruth.TRUE},{"medical-task",ChooGuard.Contracts.RuleTruth.FALSE},{"all-evacuated",ChooGuard.Contracts.RuleTruth.FALSE},{"channel-free",ChooGuard.Contracts.RuleTruth.TRUE}};
+var packet=ChooGuard.App.Mvp.MvpProgressionGraph.FactsFrom(facts);var a=test.Evaluate("fixture-operation","result",packet,evidence);var b=test.Evaluate("fixture-operation","result",packet,evidence);
+bool repeat=a!=null&&b!=null&&a.EdgeId==b.EdgeId&&a.Effect=="lease-warn";
+facts["calculation-current"]=ChooGuard.Contracts.RuleTruth.CONFLICTED;
+bool conflictedWaits=test.Evaluate("fixture-operation","result",ChooGuard.App.Mvp.MvpProgressionGraph.FactsFrom(facts),evidence)==null;
+// Fresh equal facts, then verify a duplicate decision cannot commit twice.
+a=test.Evaluate("fixture-operation","result",packet,evidence);b=test.Evaluate("fixture-operation","result",packet,evidence);
+bool committed=test.Commit(a,evidence,0,"isolated guard test only");bool staleRejected=!test.Commit(b,evidence,0,"must not repeat");UnityEngine.Object.DestroyImmediate(go);
+c.SelectOperationalTeam("central119-evacuation-response");
+var button=System.Array.Find(w.GetComponentsInChildren<UnityEngine.UI.Button>(true),x=>x.name=="운영 흐름");button.onClick.Invoke();
+var overlay=w.transform.Find("WorkspaceCanvas/ProgressionGraphOverlay");
+return new{hash=g.GraphHash,records=records.Length,completedNode=snapshot.CurrentNodeId,own,ordered,idleTraceEmpty=g.Snapshot("").Recent.Length==0,unknownWaits,conflictedWaits,repeat,committed,staleRejected,overlay=overlay!=null&&overlay.gameObject.activeSelf,phase=d.Phase,sim=d.SimulatedSeconds,guardSurface="isolated native graph instance; no physical effects",flowSurface="actual live run records"};

@@ -1,0 +1,9 @@
+Completed Central-only staged FBX/blend/source. Matched previews directly viewed. 112 meshes (16 added), three open bays retained; original outer bounds unchanged; FBX roundtrip max error 0.0000611 m. Native pending. No Assets, Unity or protected setting changes.
+
+Completed bounded station model acquisition audit; no archive acquired. Exact access block, official preview SHA, terms, conversion candidates recorded in ../station-model-acquisition-graph.json. No Assets/Unity/account changes.
+
+Official user-provided archives received: KTX is rolling stock, station ZIP separately verified by root. Central FBX published with original meta unchanged. KTX SDK import+FBX completed but reference planes remain; not publishable. Station SKP v24 contains 370 materials, 761 components, 80 camera scenes and separate station/plaza/neighbor/rail layers. Generic importer hits object-hierarchy overhead (process sample proves active Blender object creation). Stopped that owned process and switched to source-layer batching with original SDK tessellation/UV/materials, no decimation or native edits.
+
+Fullstation source pipeline complete. Rigid yawXY-.437025956deg,translation[-41.342199,-19.307788]m;78samplesRMS.0855m is source/OSM agreement, notsurvey. Full8segments51chunks published with299textures370materials. Exact originalgroupROOT/g56/g0/g0/g12 removed3642lettertriangles viaallvertex matching, frameg13retained; finalpreview directlyviewed. MainFBX finalSHA151039b5...56aba0. Nativeassembly/coverageclip ownedbyroot/otherworker.
+
+Interioraudit complete: sourcehasplatforms/upperdecks/doors/stairtreadgeometry butbroadheadhousecavity remains. Concourseanchor(-20,0) onlyintersectsroof30.64/23m; nosupportnear5m.51namedstaircomponents aretreads/trim, not51stairs.35door-relatedinstances includehandles/buttons, not35clearopenings. Allpositionsandthreecutaways ininteriorauditgraph; noassetwrites.

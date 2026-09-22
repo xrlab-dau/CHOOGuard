@@ -1,0 +1,77 @@
+{
+  "schemaVersion": "1.0",
+  "researchDate": "2026-09-21",
+  "scope": "Public, no-account sources that can regionally obtain height information for Busan, South Korea",
+  "localContext": {
+    "existingFootprints": 1150,
+    "existingNumericHeight": 95,
+    "existingLevelsOnly": 390,
+    "existingHeightUnknown": 665,
+    "warning": "These sources are estimates or gridded summaries; they do not establish surveyed facade heights or whole-Busan twin accuracy."
+  },
+  "candidates": [
+    {
+      "id": "microsoft-tempo-global-2023q4",
+      "status": "best_minimal_regional_access_candidate",
+      "primarySource": "https://github.com/microsoft/buildings",
+      "publisher": "Microsoft AI for Good",
+      "release": "2023 Q4 global layer; repository documents initial public release 2025-11-12",
+      "coverage": "Global, therefore includes Busan in the stated world layer; Busan tile intersection must still be checked against the tile index.",
+      "resolution": "Approximately 100 m per pixel",
+      "heightSemantics": "COG band 2 is normalized predicted building height; multiply by 100 for metres. Band 1 is building-density fraction. NoData is -1.",
+      "access": "GeoPackage tile index at https://opendata.aiforgood.ai/building-density/tile_index.gpkg exposes EPSG:3857 tile geometry and direct 2023q4 COG URLs. Query the index by bbox and read only intersecting COG windows/ranges.",
+      "license": "CDLA Permissive 2.0 for dataset/COGs/index; attribution required. Repository code is MIT.",
+      "fit": "Good for a bounded city-scale height prior aligned to existing footprints; not per-building surveyed height and 100 m cells blur adjacent buildings.",
+      "limitations": ["No Busan-specific 40 m time series; 40 m locations list excludes Busan.", "ML estimates can be wrong; do not present as as-built measurement."]
+    },
+    {
+      "id": "jrc-ghsl-built-h-r2023a",
+      "status": "strong_open_fallback_for_regional_prior",
+      "primarySource": "https://doi.org/10.2905/JRC.0QXQQJ8",
+      "publisher": "European Commission Joint Research Centre",
+      "release": "R2023A; source composite epoch 2018",
+      "coverage": "Global; catalogue describes the world raster and the GHSL download service supports geographic extraction.",
+      "resolution": "100 m, World Mollweide EPSG:54009",
+      "heightSemantics": "ANBH is Average Net Building Height in metres for built surfaces in each grid cell. AGBH is average gross built volume per surface unit, not metres.",
+      "access": "Use the official GHSL download wizard/dataset package with Busan bbox, or the JRC FTP tile collection; select GHS-BUILT-H_ANBH_GLOBE_R2023A and clip the intersecting tile(s). Do not download the globe.",
+      "license": "GHSL open and free data/methods policy as documented by JRC; retain citation and metadata.",
+      "fit": "Best transparent regional prior when open policy and documented semantics matter; it is cell-average height, not a building-level attribute.",
+      "limitations": ["100 m aggregation cannot resolve individual footprints reliably.", "2018 source epoch is not current as-built evidence."]
+    },
+    {
+      "id": "global-building-atlas-gba-height",
+      "status": "conditional_candidate_license_review_required",
+      "primarySource": "https://github.com/zhu-xlab/GlobalBuildingAtlas",
+      "publisher": "TUM / zhu-xlab",
+      "release": "GlobalBuildingAtlas paper/dataset 2025",
+      "coverage": "Aims at global coverage and says all countries/cities should be included, but warns areas may be absent or lack height attributes; Busan availability must be checked in the viewer/tile index.",
+      "resolution": "Building-level height maps/tiles; exact tile resolution and per-feature uncertainty must be read from the selected tile metadata before use.",
+      "heightSemantics": "Machine-learning-derived height product, linked to polygons/LoD1 through height_tif.geojson/height_zip.geojson; not a survey.",
+      "access": "Use the release tile indexes to identify only tiles intersecting a Busan bbox, then download the required GBA.Height tile from mediaTUM. The README explicitly discourages WFS streaming/bulk extraction.",
+      "license": "GBA.Height and GBA.Polygon/LoD1 are CC BY-NC 4.0; ODbL polygons are separate. Commons Clause/MIT applies to repository code. Commercial/production use needs a separate legal decision.",
+      "fit": "Potentially closest to footprint-linked height, subject to confirming Busan tile presence and usable metadata.",
+      "limitations": ["No completeness guarantee for Busan.", "Non-commercial restriction and mixed-license joins are material.", "README documents possible missing/incorrect heights."]
+    }
+  ],
+  "recommendedRecipe": {
+    "sourceId": "microsoft-tempo-global-2023q4",
+    "purpose": "Obtain a bounded Busan height prior without downloading a world raster",
+    "bboxWgs84": [128.75, 35.00, 129.30, 35.38],
+    "steps": [
+      "Download only the small tile_index.gpkg index from the documented URL.",
+      "Transform the WGS84 bbox to EPSG:3857 and spatially query index.geometry for intersecting rows.",
+      "For each intersecting row, use its data_2023q4 URL as a COG and read only the bbox window via an HTTP range-capable COG reader; do not fetch unrelated tiles.",
+      "Convert band-2 values to metres by multiplying by 100, preserve NoData=-1, and record source URL, quarter, tile filename, bbox and pixel window.",
+      "Join the resulting 100 m prior to existing OSM footprints only as an explicitly estimated source field; retain OSM numeric height/levels as separate authorities and leave unresolved buildings unresolved when the raster is NoData or mixed-cell ambiguity is material."
+    ],
+    "expectedOutput": "A regional raster/lookup prior for review, not replacement of footprint geometry or proof of surveyed building heights.",
+    "accessGap": "The primary sources reviewed do not provide a verified, free, current, Busan-specific, building-level surveyed-height catalog. A native acceptance receipt still needs source-tile checks and a documented per-feature join policy."
+  },
+  "primarySourcesReviewed": [
+    "https://github.com/microsoft/buildings",
+    "https://doi.org/10.2905/JRC.0QXQQJ8",
+    "https://github.com/zhu-xlab/GlobalBuildingAtlas",
+    "https://mediatum.ub.tum.de/1520883?show_id=1782307"
+  ],
+  "claimsBoundary": "No SOTA, accuracy, survey, current-inventory, or whole-Busan-digital-twin claim is supported by this packet."
+}

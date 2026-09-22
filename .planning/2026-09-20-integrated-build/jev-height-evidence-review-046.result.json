@@ -1,0 +1,52 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1397,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "runtime": {
+          "type": "choice",
+          "choice": "quarantine_candidate",
+          "confidence": 1,
+          "probabilities": {
+            "quarantine_candidate": 1,
+            "discard_known": 0,
+            "blind_apply": 0
+          }
+        },
+        "claim": {
+          "type": "choice",
+          "choice": "data_acquired_not_accuracy",
+          "confidence": 1,
+          "probabilities": {
+            "data_acquired_not_accuracy": 1,
+            "osm_ground_truth": 0,
+            "digital_twin_complete": 0
+          }
+        },
+        "effort": {
+          "type": "choice",
+          "choice": "low",
+          "confidence": 0.68,
+          "probabilities": {
+            "high": 0.2,
+            "low": 0.79,
+            "max": 0.01
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 792,
+        "output_tokens": 130
+      },
+      "truncated": false,
+      "action": "review"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

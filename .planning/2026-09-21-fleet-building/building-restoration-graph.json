@@ -1,0 +1,196 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "building_restoration",
+  "status": "SOURCE_AXIS_FIX_READY_ROOT_NATIVE_RETRY",
+  "sourceAuthority": ".planning/2026-09-21-fleet-building/building-source-graph.json",
+  "evidenceClassification": "directly_supported footprint coordinates, level tags and view-limited photo features; inferred dimensions/frontage/hidden surfaces explicitly labelled",
+  "ownership": [
+    "art/blender/build_restored_facilities.py",
+    "art/blender/verify_restored_facilities.py",
+    "art/blender/restored-facilities.blend",
+    "art/blender/restored-facilities-manifest.json",
+    "art/blender/restoration-exports/",
+    "art/blender/MvpEvidenceBuildingBuilder.cs.draft",
+    "art/blender/MvpCityBuilder-restoration.patch",
+    ".planning/2026-09-21-fleet-building/building-restoration-graph.json"
+  ],
+  "deliverables": {
+    "manifest": "art/blender/restored-facilities-manifest.json",
+    "blend": "art/blender/restored-facilities.blend",
+    "previews": [
+      "art/blender/Central119Restored-preview.png",
+      "art/blender/Choryang119Restored-preview.png",
+      "art/blender/BusanStationRestored-preview.png"
+    ],
+    "exports": [
+      "art/blender/restoration-exports/Central119Restored.fbx",
+      "art/blender/restoration-exports/Choryang119Restored.fbx",
+      "art/blender/restoration-exports/BusanStationRestored.fbx"
+    ],
+    "geometryVerification": "art/blender/restoration-verification.json",
+    "applyExistingDraft": "art/blender/MvpEvidenceBuildingBuilder.cs.draft",
+    "cityHeightExclusionPatch": "art/blender/MvpCityBuilder-restoration.patch",
+    "publishedBuilder": "Assets/ChooGuard/Editor/MvpEvidenceBuildingBuilder.cs",
+    "heightResolver": "Assets/ChooGuard/Editor/MvpBuildingHeightResolver.cs",
+    "preflight": "art/world/building-restoration-preflight.json"
+  },
+  "constraints": {
+    "UnityCalls": 0,
+    "AssetsEdits": "Three reviewed FBXs and manifest published; three building Editor source files only; no scene or Unity execution",
+    "cameraFleetUIEdits": 0,
+    "worldText": 0,
+    "ResponseSetOverwrites": 0,
+    "interiorEdits": 0,
+    "originWgs84": [
+      35.1151,
+      129.0417
+    ],
+    "FDSReferenceHall": "30x20m untouched",
+    "floorAnchors": [
+      0,
+      5,
+      10
+    ],
+    "navKeepouts": "untouched",
+    "sourceCatalogAndRoutes": "untouched",
+    "meshPersistence": "FBX meshes only; existing MvpMeshPersistence.Store explicit upload channels + UploadMeshData(false) untouched; no static batch changes"
+  },
+  "visibleDelta": [
+    "Central source L footprint, four tagged tiers, three apparatus recesses, two broad window bands below opaque white top fascia, localized red upper-left opening surround and narrow low top windows",
+    "Choryang source polygon, five tagged tiers, brown base, three minimum observed frontage modules, punched windows, AC boxes and narrow glass strip",
+    "Station source curved western chain, wider shallow roof, repeated inclined struts, dense curtain grid, broad central canopy, two glazed vertical cores and approach detail"
+  ],
+  "verification": {
+    "surface": "Blender FBX roundtrip and geometry assertions only; not Unity validation",
+    "results": [
+      {
+        "name": "Central119Restored",
+        "importedBounds": {
+          "min": [
+            -485.2432556152344,
+            -898.012939453125,
+            -7.053250214994478e-07
+          ],
+          "max": [
+            -428.52996826171875,
+            -854.0118408203125,
+            18.479999542236328
+          ]
+        },
+        "maximumBoundsDifferenceMeters": 6.103515625e-05,
+        "bayRecesses": 3,
+        "roofHasUpwardAndDownwardFaces": true,
+        "meshCount": 96,
+        "axisAndMetreRoundTrip": "PASS"
+      },
+      {
+        "name": "Choryang119Restored",
+        "importedBounds": {
+          "min": [
+            123.77323150634766,
+            511.2729797363281,
+            -8.665359200676903e-05
+          ],
+          "max": [
+            152.76576232910156,
+            531.98974609375,
+            16.64991569519043
+          ]
+        },
+        "maximumBoundsDifferenceMeters": 8.665359200676903e-05,
+        "bayRecesses": 3,
+        "roofHasUpwardAndDownwardFaces": true,
+        "meshCount": 120,
+        "axisAndMetreRoundTrip": "PASS"
+      },
+      {
+        "name": "BusanStationRestored",
+        "importedBounds": {
+          "min": [
+            -70.84364318847656,
+            -74.97277069091797,
+            -7.528411060775397e-06
+          ],
+          "max": [
+            1.963949203491211,
+            86.78853607177734,
+            17.550010681152344
+          ]
+        },
+        "maximumBoundsDifferenceMeters": 1.1444091796875e-05,
+        "bayRecesses": 0,
+        "roofHasUpwardAndDownwardFaces": false,
+        "meshCount": 406,
+        "axisAndMetreRoundTrip": "PASS"
+      }
+    ]
+  },
+  "visualReview": {
+    "directViewSources": 3,
+    "directViewFinalPreviews": 3,
+    "result": "All three full exterior drafts visible after render-only framing correction; geometry changed visibly, no letters",
+    "limitations": "Orthographic design previews and Blender assertions only, not native Unity acceptance"
+  },
+  "integration": {
+    "sequence": [
+      "Root compiles all writers together",
+      "MvpEvidenceBuildingBuilder.BuildCityWithExclusions(existingStationTransform): configure only three imports at globalScale1/useFileScale, validate expected source-metre bounds, establish depot instances outside city, rebuild city with actual-instance-aware exclusions, reparent depots under new city visibility root",
+      "MvpEvidenceBuildingBuilder.ApplyExisting(existingStationTransform): replace exact facade root and refreshed depots, preserve floors/anchors/nav/teams/camera references; persist actual placement and reference receipts",
+      "Root rebinds cameraSurface.CityRoot to regenerated city root",
+      "Root verifies native material/terrain/bay access/vehicle grounding using runtime placement receipt, then saves scene"
+    ],
+    "precondition": "No boolean exclusion assertion: loaded FBX plus real reviewed depot instance required by ShouldExcludeGeneric. Staging survives city rebuild, then depots inherit city visibility.",
+    "heightPolicyDraft": "IMPLEMENTED shared resolver: 95 positive finite numeric tags preserved, including both200m and below6m; levels*3 inferred; unknown9m temporary pending ML probe, not measured",
+    "notYetDone": [
+      "Unity compile/import/apply",
+      "runtime receipts from actual C# execution",
+      "native lighting/material/placement and vehicle connector acceptance"
+    ],
+    "runtimeReceipts": [
+      "art/world/building-height-generation-receipt.json",
+      "art/world/building-depot-placement-receipt.json",
+      "art/world/building-restoration-apply-receipt.json"
+    ]
+  },
+  "knownUncertainty": [
+    "Central front edge 1→2 road-facing inference; Choryang edge 2→3 south street inference must be site-confirmed",
+    "Choryang roof is inferred flat closure and official photo HTTP date is 2015; no claim of current as-built facade",
+    "All floor-to-floor heights, bay widths/depths, roof profiles/depths and apron extents inferred",
+    "No room adjacency or measured hidden elevations generated"
+  ],
+  "centralFacadeRevision": {
+    "scope": "Central119 front only",
+    "topStorey": "Mainly opaque white fascia, localized red left opening surround and narrow low glazing strip",
+    "lowerUpperStoreys": "Two broad horizontal glazing bands retained",
+    "redAccents": "Localized upper left surround, apparatus lintel and selected right return; repeated full-floor red bands removed",
+    "sourcePhoto": "asset-library/research-public/2026-09-21/building-restoration/central119-exterior-front.JPG",
+    "validation": "Updated preview directly viewed; floor count, source footprint and three bays preserved",
+    "otherTwoFbxHashesUnchanged": true
+  },
+  "terrainSupport": "Exact piecewise-affine terrain maximum over source polygon and inferred apron using grid vertices and triangle intersections; datum=max+.025m; full concave footprint foundation top+terrain-conforming skirts via unchanged MvpMeshPersistence.Store",
+  "sourceFreeze": {
+    "sourceGraphSha256": "40c1121cc81ef88abfb4d904fb783ed3d6ad7446e2ef6bb10f67bd092a433243",
+    "publishedAssets": [
+      {
+        "path": "Assets/ChooGuard/Art/RestoredFacilities/Central119Restored.fbx",
+        "sha256": "fb05236ed6f44649ce827aa989f8dc2e07088be247cb6fa967174a7c233a4e84"
+      },
+      {
+        "path": "Assets/ChooGuard/Art/RestoredFacilities/Choryang119Restored.fbx",
+        "sha256": "76af0d3b1eb5dadd10097e57316e27977d30f1593dac9a05634a82ee55f1f49a"
+      },
+      {
+        "path": "Assets/ChooGuard/Art/RestoredFacilities/BusanStationRestored.fbx",
+        "sha256": "bf595ddaf40b0013f1ef299e6c8c73cf0ed7a7c8bd4a4f4d858bf47a7f410776"
+      }
+    ],
+    "sceneMutation": false
+  },
+  "nativeAxisCorrection": {
+    "evidence": ".planning/2026-09-21-fleet-building/building-apply-native.json",
+    "failure": "Unity imported Central FBX center east/north signs reversed; metre extents correct, root scale1 rotation0; child scale100 carries FBX centimetres",
+    "fix": "180-degree yaw at each reviewed FBX instance root only; strict expected bounds checked in parent source frame after conversion",
+    "preserved": "Expected bounds tolerance .35m unchanged; station/floor/nav origin and units unchanged; no FBX regeneration or Unity calls",
+    "validation": "Root must retry native bounds validation for all three models; first failed before city replacement and staging was cleaned"
+  }
+}

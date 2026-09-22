@@ -1,0 +1,14 @@
+@prefix cg: <urn:chooguard:work:> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+cg:StoryShape a sh:NodeShape ; sh:targetClass cg:Story ;
+ sh:property [ sh:path cg:partOf ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:CapabilityTask ] ;
+ sh:property [ sh:path cg:producesSpec ; sh:minCount 1 ; sh:class cg:ArtifactSpec ] ;
+ sh:property [ sh:path cg:hasCriterion ; sh:minCount 2 ; sh:class cg:AcceptanceCriterion ] ;
+ sh:property [ sh:path cg:status ; sh:hasValue "NOT_STARTED" ] .
+cg:DependencyShape a sh:NodeShape ; sh:targetClass cg:Dependency ;
+ sh:property [ sh:path cg:producer ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Story ] ;
+ sh:property [ sh:path cg:consumer ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:Story ] ;
+ sh:property [ sh:path cg:artifact ; sh:minCount 1 ; sh:maxCount 1 ; sh:class cg:ArtifactSpec ] ;
+ sh:property [ sh:path cg:producerStage ; sh:in ("prepare" "candidate" "integration" "qualification") ; sh:minCount 1 ; sh:maxCount 1 ] ;
+ sh:property [ sh:path cg:consumerStage ; sh:in ("prepare" "candidate" "integration" "qualification") ; sh:minCount 1 ; sh:maxCount 1 ] .

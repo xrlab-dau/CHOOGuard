@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:field-batch:1.0.0",
+  "title": "field-batch",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "resultId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "jobId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "workerId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "workerEpoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "inputHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "boundaryRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "time": {
+      "type": "object",
+      "properties": {
+        "fromTicks": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$"
+        },
+        "toTicks": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$"
+        },
+        "clockProfileId": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+        }
+      },
+      "required": [
+        "fromTicks",
+        "toTicks",
+        "clockProfileId"
+      ],
+      "additionalProperties": false
+    },
+    "fields": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "quantity": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "frameId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "spatialSupportId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "blobHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "dtype": {
+            "type": "string",
+            "enum": [
+              "FLOAT32_LE",
+              "FLOAT64_LE",
+              "INT64_LE"
+            ]
+          },
+          "shape": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "minItems": 1,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "quantity",
+          "unit",
+          "frameId",
+          "spatialSupportId",
+          "blobHash",
+          "dtype",
+          "shape"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "qualification": {
+      "type": "string",
+      "enum": [
+        "FIXTURE_ONLY",
+        "NOT_EVALUATED",
+        "WITHIN_QUALIFIED_SCOPE",
+        "OUT_OF_DOMAIN"
+      ]
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "resultId",
+    "jobId",
+    "runId",
+    "workerId",
+    "workerEpoch",
+    "inputHash",
+    "boundaryRevision",
+    "time",
+    "fields",
+    "qualification",
+    "dataClass"
+  ],
+  "additionalProperties": false
+}

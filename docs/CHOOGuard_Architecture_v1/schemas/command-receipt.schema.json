@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:command-receipt:1.0.0",
+  "title": "command-receipt",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "intentId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "decision": {
+      "type": "string",
+      "enum": [
+        "ACCEPTED",
+        "REJECTED",
+        "PENDING_DURABILITY"
+      ]
+    },
+    "reasonCodes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "committedSeq": {
+      "oneOf": [
+        {
+          "type": "integer",
+          "minimum": 0
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "taskLifecycle": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "REQUESTED",
+        "ACKNOWLEDGED",
+        "RESERVED",
+        "MOVING",
+        "EXECUTING",
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "intentId",
+    "runId",
+    "fingerprint",
+    "decision",
+    "reasonCodes",
+    "committedSeq",
+    "taskLifecycle",
+    "dataClass"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "decision": {
+            "const": "ACCEPTED"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "committedSeq": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,690 @@
+{
+  "status": "completed_actual_headless_run",
+  "source": "asset-library/space-references/busan-reconstruction/osm-busan-openworld.xml",
+  "sourceSha256": "156897dcccedbf979f5e818f3c7549d7ad36ec3e31b179d9d3861048f0760c64",
+  "sourceCRS": "EPSG:4326 WGS84",
+  "location": {
+    "netOffset": "-501237.49,-3881756.75",
+    "convBoundary": "0.00,0.00,5360.69,5883.09",
+    "origBoundary": "126.536071,33.520332,135.422007,35.197389",
+    "projParameter": "+proj=utm +zone=52 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+  },
+  "commands": [
+    {
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/sumo/.venv/bin/netconvert",
+        "--osm-files",
+        "/Users/um-yunsang/CHOOGuard/asset-library/space-references/busan-reconstruction/osm-busan-openworld.xml",
+        "--output-file",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/busan.net.xml",
+        "--geometry.remove",
+        "--output.original-names",
+        "true",
+        "--keep-edges.by-vclass",
+        "passenger"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/sumo/.venv/bin/duarouter",
+        "--net-file",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/busan.net.xml",
+        "--route-files",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/emergency.trips.xml",
+        "--output-file",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/emergency.rou.xml",
+        "--seed",
+        "4242"
+      ],
+      "exitCode": 0
+    },
+    {
+      "argv": [
+        "/Users/um-yunsang/CHOOGuard/.tools/sumo/.venv/bin/sumo",
+        "--net-file",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/busan.net.xml",
+        "--route-files",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/emergency.rou.xml",
+        "--step-length",
+        "1",
+        "--seed",
+        "4242",
+        "--end",
+        "3600",
+        "--time-to-teleport",
+        "-1",
+        "--fcd-output",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/trajectory.xml",
+        "--tripinfo-output",
+        "/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/tripinfo.xml",
+        "--duration-log.statistics",
+        "true",
+        "--no-step-log",
+        "true"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "sourceAnchors": {
+    "start": {
+      "id": "busan-jungbu-central-119",
+      "label": "중앙119안전센터",
+      "role": "fire_rescue_ems_response_base",
+      "address": "부산광역시 중구 중앙대로 110(중앙동4가)",
+      "lat": 35.1072071,
+      "lon": 129.0367023,
+      "sourceURLs": [
+        "https://119.busan.go.kr/jungbu/119jbintro01",
+        "https://www.openstreetmap.org/way/825455699",
+        "https://api.openstreetmap.org/api/0.6/map?bbox=129.0200,35.0900,129.0650,35.1270"
+      ],
+      "coordinateSource": "OpenStreetMap way 825455699 building geometry (timestamp 2025-02-05T02:58:57Z), cross-checked to the official center address; representative point is the mean of unique polygon vertices transformed from busan-openworld.json origin 35.1151,129.0417 to WGS84",
+      "confidence": "high",
+      "knownUnknown": {
+        "known": [
+          "Official Busan Fire page identifies the center, address, and public service area",
+          "The OSM fire-station building carries the same street address and house number"
+        ],
+        "unknown": [
+          "Current fleet and staffing",
+          "Incident-specific dispatch availability",
+          "Response time",
+          "Entrance or apparatus-bay coordinate"
+        ]
+      }
+    },
+    "target": {
+      "osmNode": "5004274563",
+      "name": "Busan Station surface bus stop",
+      "lon": "129.0401156",
+      "lat": "35.1160842"
+    }
+  },
+  "routeEdges": [
+    "1355582554#0",
+    "1355582554#1",
+    "1355582554#2",
+    "1355582554#3",
+    "1355585544#1",
+    "1355585544#2",
+    "1355585544#3",
+    "1355585544#4",
+    "1335340143#2",
+    "797760104#0",
+    "797760104#2",
+    "-165572520#7",
+    "-165572520#6",
+    "-165572520#4",
+    "-165572520#3",
+    "-165572520#2",
+    "-165572520#1",
+    "-165572520#0",
+    "-1305526805#0",
+    "37402347#0"
+  ],
+  "routeLaneShapes": [
+    {
+      "edge": "1355582554#0",
+      "lanes": [
+        {
+          "id": "1355582554#0_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "64.32",
+          "shape": "2084.42,3189.27 2096.30,3222.44 2107.09,3249.25"
+        },
+        {
+          "id": "1355582554#0_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "64.32",
+          "shape": "2081.41,3190.35 2093.31,3223.58 2104.12,3250.44"
+        },
+        {
+          "id": "1355582554#0_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "64.32",
+          "shape": "2078.39,3191.43 2090.31,3224.72 2101.16,3251.64"
+        },
+        {
+          "id": "1355582554#0_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "64.32",
+          "shape": "2075.38,3192.51 2087.32,3225.86 2098.19,3252.84"
+        }
+      ]
+    },
+    {
+      "edge": "1355582554#1",
+      "lanes": [
+        {
+          "id": "1355582554#1_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "135.68",
+          "shape": "2112.80,3262.57 2125.04,3289.78 2162.63,3389.03"
+        },
+        {
+          "id": "1355582554#1_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "135.68",
+          "shape": "2109.88,3263.88 2122.08,3291.01 2159.64,3390.16"
+        },
+        {
+          "id": "1355582554#1_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "135.68",
+          "shape": "2106.96,3265.20 2119.12,3292.23 2156.65,3391.30"
+        },
+        {
+          "id": "1355582554#1_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "135.68",
+          "shape": "2104.04,3266.51 2116.16,3293.46 2153.66,3392.43"
+        }
+      ]
+    },
+    {
+      "edge": "1355582554#2",
+      "lanes": [
+        {
+          "id": "1355582554#2_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "11.04",
+          "shape": "2167.49,3402.49 2171.08,3412.93"
+        },
+        {
+          "id": "1355582554#2_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "11.04",
+          "shape": "2164.47,3403.53 2168.06,3413.97"
+        },
+        {
+          "id": "1355582554#2_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "11.04",
+          "shape": "2161.44,3404.57 2165.03,3415.01"
+        },
+        {
+          "id": "1355582554#2_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "11.04",
+          "shape": "2158.42,3405.61 2162.00,3416.05"
+        }
+      ]
+    },
+    {
+      "edge": "1355582554#3",
+      "lanes": [
+        {
+          "id": "1355582554#3_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "132.16",
+          "shape": "2171.20,3413.27 2187.75,3463.75 2205.24,3523.83 2210.09,3539.67"
+        },
+        {
+          "id": "1355582554#3_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "132.16",
+          "shape": "2168.16,3414.27 2184.69,3464.70 2202.17,3524.74 2207.03,3540.60"
+        },
+        {
+          "id": "1355582554#3_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "132.16",
+          "shape": "2165.11,3415.27 2181.63,3465.64 2199.11,3525.66 2203.97,3541.54"
+        },
+        {
+          "id": "1355582554#3_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "132.16",
+          "shape": "2162.07,3416.26 2178.57,3466.59 2196.04,3526.57 2200.91,3542.48"
+        }
+      ]
+    },
+    {
+      "edge": "1355585544#1",
+      "lanes": [
+        {
+          "id": "1355585544#1_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "122.43",
+          "shape": "2213.89,3553.47 2221.51,3584.91 2248.49,3670.51"
+        },
+        {
+          "id": "1355585544#1_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "122.43",
+          "shape": "2210.78,3554.22 2218.42,3585.77 2245.44,3671.47"
+        },
+        {
+          "id": "1355585544#1_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "122.43",
+          "shape": "2207.67,3554.97 2215.34,3586.63 2242.39,3672.44"
+        },
+        {
+          "id": "1355585544#1_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "122.43",
+          "shape": "2204.56,3555.73 2212.25,3587.49 2239.34,3673.40"
+        }
+      ]
+    },
+    {
+      "edge": "1355585544#2",
+      "lanes": [
+        {
+          "id": "1355585544#2_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "0.93",
+          "shape": "2250.95,3678.07 2251.24,3678.95"
+        },
+        {
+          "id": "1355585544#2_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "0.93",
+          "shape": "2247.90,3679.05 2248.19,3679.93"
+        },
+        {
+          "id": "1355585544#2_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "0.93",
+          "shape": "2244.86,3680.02 2245.14,3680.91"
+        },
+        {
+          "id": "1355585544#2_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "0.93",
+          "shape": "2241.81,3681.00 2242.10,3681.89"
+        }
+      ]
+    },
+    {
+      "edge": "1355585544#3",
+      "lanes": [
+        {
+          "id": "1355585544#3_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "4.47",
+          "shape": "2251.41,3679.55 2252.54,3683.88"
+        },
+        {
+          "id": "1355585544#3_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "4.47",
+          "shape": "2248.31,3680.36 2249.44,3684.68"
+        },
+        {
+          "id": "1355585544#3_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "4.47",
+          "shape": "2245.22,3681.17 2246.34,3685.49"
+        },
+        {
+          "id": "1355585544#3_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "4.47",
+          "shape": "2242.12,3681.97 2243.25,3686.30"
+        }
+      ]
+    },
+    {
+      "edge": "1355585544#4",
+      "lanes": [
+        {
+          "id": "1355585544#4_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "6.59",
+          "shape": "2255.71,3695.31 2257.59,3701.63"
+        },
+        {
+          "id": "1355585544#4_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "6.59",
+          "shape": "2252.64,3696.22 2254.52,3702.54"
+        },
+        {
+          "id": "1355585544#4_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "6.59",
+          "shape": "2249.58,3697.13 2251.45,3703.45"
+        },
+        {
+          "id": "1355585544#4_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "6.59",
+          "shape": "2246.51,3698.04 2248.39,3704.36"
+        }
+      ]
+    },
+    {
+      "edge": "1335340143#2",
+      "lanes": [
+        {
+          "id": "1335340143#2_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "0.20",
+          "shape": "2246.84,3711.76 2246.65,3711.83"
+        }
+      ]
+    },
+    {
+      "edge": "797760104#0",
+      "lanes": [
+        {
+          "id": "797760104#0_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "22.61",
+          "shape": "2228.83,3717.85 2219.25,3721.08 2207.09,3723.98"
+        }
+      ]
+    },
+    {
+      "edge": "797760104#2",
+      "lanes": [
+        {
+          "id": "797760104#2_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "18.90",
+          "shape": "2188.05,3728.30 2178.41,3729.22 2169.22,3730.04"
+        }
+      ]
+    },
+    {
+      "edge": "-165572520#7",
+      "lanes": [
+        {
+          "id": "-165572520#7_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "19.03",
+          "width": "1.60",
+          "shape": "2164.93,3736.02 2166.56,3754.98"
+        }
+      ]
+    },
+    {
+      "edge": "-165572520#6",
+      "lanes": [
+        {
+          "id": "-165572520#6_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "131.61",
+          "width": "1.60",
+          "shape": "2168.74,3768.29 2170.19,3774.24 2190.39,3828.00 2215.12,3891.41"
+        }
+      ]
+    },
+    {
+      "edge": "-165572520#4",
+      "lanes": [
+        {
+          "id": "-165572520#4_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "105.78",
+          "width": "1.60",
+          "shape": "2222.34,3904.07 2231.21,3915.55 2271.46,3997.48"
+        }
+      ]
+    },
+    {
+      "edge": "-165572520#3",
+      "lanes": [
+        {
+          "id": "-165572520#3_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "31.57",
+          "width": "1.60",
+          "shape": "2278.05,4010.37 2282.33,4018.40 2293.26,4038.02"
+        }
+      ]
+    },
+    {
+      "edge": "-165572520#2",
+      "lanes": [
+        {
+          "id": "-165572520#2_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "66.22",
+          "width": "1.60",
+          "shape": "2300.41,4050.88 2312.19,4072.09 2337.41,4105.62"
+        }
+      ]
+    },
+    {
+      "edge": "-165572520#1",
+      "lanes": [
+        {
+          "id": "-165572520#1_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "37.42",
+          "width": "1.60",
+          "shape": "2346.33,4117.21 2369.45,4146.62"
+        }
+      ]
+    },
+    {
+      "edge": "-165572520#0",
+      "lanes": [
+        {
+          "id": "-165572520#0_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "104.23",
+          "width": "1.60",
+          "shape": "2378.54,4158.98 2411.69,4207.32 2432.07,4235.20 2438.40,4244.30"
+        }
+      ]
+    },
+    {
+      "edge": "-1305526805#0",
+      "lanes": [
+        {
+          "id": "-1305526805#0_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "13.89",
+          "length": "0.20",
+          "shape": "2443.71,4248.43 2443.89,4248.34"
+        }
+      ]
+    },
+    {
+      "edge": "37402347#0",
+      "lanes": [
+        {
+          "id": "37402347#0_0",
+          "index": "0",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2443.26,4242.15 2427.56,4221.55 2393.27,4152.28"
+        },
+        {
+          "id": "37402347#0_1",
+          "index": "1",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2445.86,4240.28 2430.29,4219.86 2396.14,4150.86"
+        },
+        {
+          "id": "37402347#0_2",
+          "index": "2",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2448.45,4238.41 2433.02,4218.16 2399.01,4149.44"
+        },
+        {
+          "id": "37402347#0_3",
+          "index": "3",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2451.05,4236.53 2435.75,4216.47 2401.87,4148.02"
+        },
+        {
+          "id": "37402347#0_4",
+          "index": "4",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2453.64,4234.66 2438.49,4214.77 2404.74,4146.60"
+        },
+        {
+          "id": "37402347#0_5",
+          "index": "5",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2456.24,4232.79 2441.22,4213.08 2407.61,4145.19"
+        },
+        {
+          "id": "37402347#0_6",
+          "index": "6",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2458.83,4230.91 2443.95,4211.38 2410.48,4143.77"
+        },
+        {
+          "id": "37402347#0_7",
+          "index": "7",
+          "disallow": "tram rail_urban rail rail_electric rail_fast ship container cable_car subway aircraft wheelchair scooter drone",
+          "speed": "27.78",
+          "length": "101.33",
+          "shape": "2461.43,4229.04 2446.68,4209.69 2413.34,4142.35"
+        }
+      ]
+    }
+  ],
+  "tripinfo": {
+    "id": "central119-busan-station-source-check",
+    "depart": "0.00",
+    "departLane": "1355582554#0_3",
+    "departPos": "6.60",
+    "departSpeed": "8.00",
+    "departDelay": "0.00",
+    "arrival": "169.00",
+    "arrivalLane": "37402347#0_0",
+    "arrivalPos": "101.33",
+    "arrivalSpeed": "8.00",
+    "duration": "169.00",
+    "routeLength": "1330.30",
+    "waitingTime": "0.00",
+    "waitingCount": "0",
+    "stopTime": "0.00",
+    "timeLoss": "1.39",
+    "rerouteNo": "0",
+    "devices": "tripinfo_central119-busan-station-source-check fcd_central119-busan-station-source-check",
+    "vType": "rescue",
+    "speedFactor": "1.00",
+    "vaporized": ""
+  },
+  "trajectorySamples": 169,
+  "maxObservedSpeedMps": 8.0,
+  "networkEdgeCount": 23741,
+  "heuristics": [
+    "Default OSM typemap supplies missing speeds and lane counts; lane connections and signal programs are generated, not field calibrated.",
+    "No ramps.guess or tls.guess-signals enabled.",
+    "Coordinate endpoints snap to imported passenger-road network; no validated apparatus bay or station entrance."
+  ],
+  "limits": [
+    "One synthetic vehicle; no measured traffic, real emergency ETA or site calibration.",
+    "This is an independent SUMO foundation; Unity agency Dijkstra gameplay does not use this process."
+  ],
+  "artifacts": {
+    "emergency.rou.alt.xml": "869e952d0aa80a7b9f34bf88bf5a8cabb0fa00e0a7ea15e3cdffb1eccaa044e2",
+    "trajectory.xml": "4ce5e2fdcbdf7141da6588e24fe038aab648525e31d09d0c4810bf31dbbfd7b4",
+    "netconvert.log": "88d2a1bb1d6772e6737622ca47be69a62cc1abb00baaf9e465c3d0ee749665d7",
+    "emergency.rou.xml": "0a56d5ac135f9b1419842126bccbe7bbe2bacb3a4ce99fda1a9fcafc7558578c",
+    "tripinfo.xml": "2052df8e9707c3c6599bc4e6fece4d972a5bb806204b81068cb406938815c2ef",
+    "sumo.log": "3c53643706083c9a6339555b0f83aa30547d7dddd9c7a5f4761d17b688da7c45",
+    "emergency.trips.xml": "3045948d4a713bd279ce024e8715970826f5378c010bc88680e58c89bab5364a",
+    "trajectory.csv": "da167f26cd0485eff736bf02930fd46d71b4953a284dd227a8869571fed47fd6",
+    "busan.net.xml": "c36620e564d5195ded8eb388b5f70183ec99498ee981538932223ff524cc3dca",
+    "duarouter.log": "6e38adda9400aa6336540401a6aa8d7cfc952d05d3a524b50209a51f0029a93a"
+  }
+}

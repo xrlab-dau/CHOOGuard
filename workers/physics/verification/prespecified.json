@@ -1,0 +1,14 @@
+{
+  "source": "NIST TN 1822 (2013), Verif.2.1, Verif.2.3, flow constraints 3.1.5",
+  "classification": "adapted component verification, not full NIST suite or real-site validation",
+  "dt_s": 0.05,
+  "speed_m_s": 1.0,
+  "radius_m": 0.2,
+  "time_gap_s": 1.0,
+  "prespecified_checks": {
+    "free_walk": "40m displacement in 40s at 0 and 45deg; absolute distance error <= 0.05m (one integration step), transverse error <= 1e-6m",
+    "corner": "20 agents, no center or step-segment outside geometry (1e-9m geometry arithmetic tolerance), all exit within 120s execution cap",
+    "bottleneck": "same 40 positions at widths 1m and 2m: conserve identities, contain paths, complete within 120s cap; narrow completion >= wide minus one dt; qualitative width consistency only, no universal flow threshold"
+  },
+  "adaptations": "Corridor extends beyond 40m measurement to avoid exit removal. Corner is a 2m-wide L; bottleneck is a flat 8x5m room plus 4m outlet (not NIST staircase)."
+}

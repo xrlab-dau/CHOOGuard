@@ -1,0 +1,53 @@
+{
+  "schema": "chooguard.actual-transfer.visual-registration-aid.v1",
+  "status": "COMPARISON_READY_CONTROL_CORRESPONDENCE_INSUFFICIENT",
+  "sourceGeometryMutated": false,
+  "UnityChanged": false,
+  "existingRegistrationChanged": false,
+  "acceptedSharedControlPairs": [],
+  "acceptedPairCount": 0,
+  "sourceOnlyCandidates": [
+    "F01",
+    "B02",
+    "R02",
+    "T01"
+  ],
+  "rejectedSourcePicks": [
+    "B01",
+    "R01"
+  ],
+  "fit": {
+    "attempted": false,
+    "reason": "0 accepted photo-to-model control pairs; six good noncollinear controls threshold not met",
+    "residualPixels": null,
+    "PnPCamera": null,
+    "projectedCorridorAnnotation": null
+  },
+  "exactRemainingGap": [
+    "Identify at least six unique shared fixed corners across station facade and plaza with broad noncollinear distribution and reliable source XYZ. Current 680x346 photo has occlusion, repeated roof/tower features, and differing construction details.",
+    "Identify the same KTX landing or door edge in model and photo; photo annotation endpoint is not that landing.",
+    "A camera-calibrated view, higher-resolution original aerial, or dimensioned surveyed tie to a unique existing building corner is needed before horizontal anchoring.",
+    "Do not fit the 99.6m passage length between convenient source points; no such constraint was used."
+  ],
+  "coordinateContract": {
+    "source": "Blender metric XYZ only",
+    "existingRigidCandidate": "station-rigid-registration.json remains candidate-not-survey and unchanged",
+    "absoluteZ": "Source geometry values retained only; no height datum or underground depth inferred"
+  },
+  "artifacts": [
+    "comparison.html",
+    "source-top.png",
+    "source-oblique.png",
+    "facade-oblique.png",
+    "aerial-comparison-oblique.png",
+    "source-feature-candidates.json",
+    "aerial-search-regions.json",
+    "render-receipt.json",
+    "aerial-view-receipt.json"
+  ],
+  "sourceHashes": {
+    "station-batched-no3dletters.blend": "b9199223eedcc82828e1b3fea2f679bd205087e91162e5dd7496f2ce8b68f622",
+    "station-rigid-registration.json": "6010bb9a5f0547c35ee59b36eb84f80e67c61d1450164e6818c5fd11a13fa38f",
+    "BIN0001.jpg.jpg": "855313b4514a609ef0d281d8458a08cccfc562e81cb0263738f8bb6141e5a9fb"
+  }
+}

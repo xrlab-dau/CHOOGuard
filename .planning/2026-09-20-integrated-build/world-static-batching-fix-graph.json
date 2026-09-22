@@ -1,0 +1,13 @@
+{
+  "scope": "Confirmed by root controlled comparison in this MVP scene only; not a general Unity static batching defect claim",
+  "rootEvidence": "same Play scene and same runtime URP: clearing1036 city renderer static flags resolved displaced ghost windows; original pipeline and occlusion-off controls did not",
+  "sourceChange": "City and surface/prop emitters explicitly disable static flags; imported prop child renderer flags cleared too",
+  "repairEntry": "MvpWorldSurfaceBuilder.RepairStaticFlags(cityRootTransform), no mesh regeneration required",
+  "preserved": "512m manual spatial/material batches, geometry, crowd, global PlayerSettings, global URP settings",
+  "syntaxChecks": {
+    "Assets/ChooGuard/Editor/MvpCityBuilder.cs": true,
+    "Assets/ChooGuard/Editor/MvpWorldSurfaceBuilder.cs": true
+  },
+  "runtimeEvidenceOwner": "root",
+  "capture": "Assets/.planning/2026-09-20-integrated-build/metre-floor2-no-static-batching.png"
+}

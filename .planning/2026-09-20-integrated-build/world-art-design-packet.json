@@ -1,0 +1,83 @@
+{
+  "version": 1,
+  "story": "CS-EXEC.01.01",
+  "authority": "root decision after Jev019 advisory",
+  "jevRef": ".planning/2026-09-20-integrated-build/jev-world-interior-design-019.result.json",
+  "sourceRef": ".planning/2026-09-20-integrated-build/world-art-reference-graph.json",
+  "style": "coherent detailed coastal Korean city for readable RTS; not toy blocks, not forest island; production target not accepted label",
+  "palette": "warm_limestone_coastal",
+  "lighting": "clear_coastal_afternoon",
+  "density": "district_batched",
+  "interior": "zoned_public_concourse",
+  "geography": {
+    "origin": [
+      35.1151,
+      129.0417
+    ],
+    "unityScale": 0.25,
+    "preserve": "OSM buildings/roads/rails/verified coast topology; historical source unmodified",
+    "water": "12 open coastline ways must form boundary-connected water, never arbitrary closed roofs; do not surface culverted streams",
+    "unverified": "visual terrain/detail approximations distinct from calibrated solver geometry"
+  },
+  "ownership": {
+    "world_surface": [
+      "MvpCityBuilder.cs",
+      "MvpWorldSurfaceBuilder.cs",
+      "art/world/prepare_world_layers.py",
+      "art/world/world-layers.json",
+      "Assets/ChooGuard/Art/WorldSurfaces"
+    ],
+    "busan_world": [
+      "art/blender/build_world_set.py",
+      "art/blender/world_set.blend",
+      "art/blender/world-set-*",
+      "Assets/ChooGuard/Art/WorldSet"
+    ],
+    "root": [
+      "Unity calls",
+      "canonical docs",
+      "Jev",
+      "integration",
+      "acceptance"
+    ],
+    "station_interior": [
+      "MvpInteriorBuilder.cs",
+      "MvpStationBuilder.cs",
+      "MvpInteriorHubView.cs"
+    ]
+  },
+  "exports": [
+    "TreeBroadleaf",
+    "TreePine",
+    "StreetLamp",
+    "Bench",
+    "BusStop",
+    "Planter",
+    "BusanTower",
+    "PortTerminal",
+    "JagalchiMarket"
+  ],
+  "exportContract": {
+    "folder": "Assets/ChooGuard/Art/WorldSet",
+    "units": "meters authored, +Y forward FBX conventional with manifest dimensions; root/worker use observed renderer bounds to fit intended geographic visual scale",
+    "manifest": "art/blender/world-set-manifest.json",
+    "groundPivot": true,
+    "materialNames": true,
+    "detail": "bevels, varied silhouettes, layered surfaces, no detached primitives",
+    "preview": "contact sheet and hero landmark close view"
+  },
+  "worldRequirements": [
+    "6 distinguishable building archetypes driven by source tags/district, varied warm concrete/brick/glass, visible base/roof/entrance hierarchy",
+    "UV tiled asphalt/concrete/stone/green surfaces, shoulders/curbs, bounded lane markings and source intersections, rail track detail",
+    "Source-grounded parks/trees/quay/waterfront and three distinctive landmarks placed from source centroids; no trees on road/building/water polygons",
+    "Spatial mesh chunks and shared materials; bounded props budgets, report actual mesh/triangle/renderer counts"
+  ],
+  "interiorRequirements": [
+    "All3 Busan floors visually detailed from public facilityguide: circulation, repeated columns, walls/openings, stairs/escalators/lifts, hall furniture, ticketing/shops/platform canopy, Hangul wayfinding",
+    "Each layer can be viewed via existing SetFloor; roof hides for interior; avoid stacked solid floors obscuring active floor",
+    "Preserve FloorRoots/anchors/team/physics/controller bindings and existing local referencehall coordinates",
+    "No invented ventilation/fire-system precision or digital-twin validation"
+  ],
+  "verification": "One live build + district wide/mid/near captures, one interior cutaway capture per floor, actual renderer/mesh stats; no broad test rerun or solver rerun",
+  "interiorScopeConfirmed": "부산역 전 층 + 주요 훈련 거점 내부"
+}

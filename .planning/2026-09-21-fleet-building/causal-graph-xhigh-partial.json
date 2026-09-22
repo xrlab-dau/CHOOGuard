@@ -1,0 +1,32 @@
+{
+  "schema": "chooguard.causal-graph-plan.v1",
+  "status": "planning_in_progress",
+  "story": "CS-EXEC.01.01",
+  "scope": "One local runtime decision graph and Korean choice-to-observation-to-next-choice view for the existing reference-hall operation flow; planning only in this lane.",
+  "planning_state": {
+    "skill": "/Users/um-yunsang/.agents/skills/planning-with-files/SKILL.md",
+    "parent_plan": ".planning/2026-09-21-fleet-building/task_plan.md",
+    "write_boundary": "This graph plan only; root owns shared task_plan/findings/progress and native verification.",
+    "phases": [
+      {"id": "inspect", "status": "complete"},
+      {"id": "graph_contract", "status": "in_progress"},
+      {"id": "ownership_acceptance", "status": "pending"}
+    ],
+    "findings": [
+      "MvpTrainingDirector.Receive currently establishes accepted simulation time, advances station/agency movement, observes owned action ACKs, sets phase, then updates mission state.",
+      "MvpAgencyDispatchController.ObserveAcceptedResult hardcodes warn -> evacuate -> actual outcome -> return and medical ACK -> HandoffPending -> explicit user release.",
+      "Contracts.RuleExpression/RuleFacts already implement closed, bounded four-valued guards; reuse them rather than create a parallel expression language.",
+      "Content.RuleCatalog is a reviewed source-clause candidate registry, not an operation graph executor. Scenarios contains only an assembly definition in the inspected checkout.",
+      "Existing debrief is capped free-text history; it cannot reconstruct precise graph edges, request/ACK ownership, or alternative branches without new typed trace data.",
+      "Graphify and planning graphs are source/navigation/planning artifacts, not an executable gameplay graph in inspected runtime paths."
+    ],
+    "progress": [
+      "Read parent active plan, compact operation graph, MVP_DIRECTION, director/controller/task/UI and reusable rule contracts.",
+      "No production writes, Unity actions, remote calls, or tests performed."
+    ],
+    "lookup_errors": [
+      "No AGENTS.md exists at repository root; user-provided global instructions and current canonical MVP_DIRECTION applied.",
+      "tools/, scripts/, .codex/, Assets/ChooGuard/Infrastructure were absent in targeted navigation; searches continued against present Assets, workers, content and docs."
+    ]
+  }
+}

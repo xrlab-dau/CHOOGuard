@@ -1,0 +1,34 @@
+{
+  "schema": "chooguard.progression-view-implementation.v1",
+  "status": "SOURCE_FROZEN_NATIVE_CHECK_PENDING",
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpProgressionGraphView.cs",
+      "sha256": "e72ec44d270fef7770c43267e811fe1b6531c46860df0997831d3d11b56e6b9c"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+      "sha256": "5eb4dfae697e78d48d453556097f7541cd4017bb2207ebd2a54b1632b79127fc"
+    }
+  ],
+  "integration": {
+    "entry": "MvpAgencyDispatchView.Start adds/binds view and 운영 흐름 toggle",
+    "runtime": "Workspace.GetComponent<MvpProgressionGraph>(); Snapshot(operationId ?? empty string); Revision + selected team + operation refresh",
+    "selection": "SelectedOperationalTeamId -> MissionSnapshot.OperationId or LastCompletedOperationId; runtime owner confirmed Snapshot(empty string) projects no-operation graph without traces",
+    "render": "Runtime nodes with actual directed connections; selectable node cards and edge rows; Korean status, expected and observed details; observed trace filtered to selected operation",
+    "capture": "Canvas overlay Image and masked ScrollRect; close button; no physical/camera writes"
+  },
+  "validation": [
+    "Source written against exact approved public nested DTO contract",
+    "git diff --check returned no whitespace errors; sources currently untracked so narrow check only",
+    "No Unity/native calls by worker",
+    "Root UX correction: player terminology 단계/흐름; raw current/visited/available/blocked/pending mapped to Korean"
+  ],
+  "limits": [
+    "Runtime owner confirmed DTO publication and empty-string projection; compilation and native integration still require root verification",
+    "Native Korean font/readability and camera/world-click interception require root probe",
+    "Graph layout uses source node order in three columns; connections can cross",
+    "Detail text ellipsizes unusually long runtime descriptions",
+    "No player tactical choices added; read-only diagram"
+  ]
+}

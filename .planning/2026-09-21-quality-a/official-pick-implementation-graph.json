@@ -1,0 +1,77 @@
+{
+  "schema": "chooguard.official-source-picking.v1",
+  "status": "PUBLISHED_BOUND_NATIVE_PICK_VISIBILITY_PASS",
+  "files": [
+    {
+      "target": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "baseSha256": "e31af4c4d43c31db6f85779a98a11039d2dcc9facfdfecba3e2e1d8e10f8dff1",
+      "draft": ".planning/2026-09-21-quality-a/official-pick-drafts/MvpAgencyDispatchController.cs",
+      "draftSha256": "e7b5f3fd2759486566b6f4a9f1868073b0a626242c0cbcf24e502a47b8f7709e",
+      "publishedSha256": "e7b5f3fd2759486566b6f4a9f1868073b0a626242c0cbcf24e502a47b8f7709e"
+    },
+    {
+      "target": "Assets/ChooGuard/App/Mvp/MvpStationView.cs",
+      "baseSha256": "6c96cc4571c5c22d082c1d0a3218c593c39a988bc0189dfb7c7b99d74363cf78",
+      "draft": ".planning/2026-09-21-quality-a/official-pick-drafts/MvpStationView.cs",
+      "draftSha256": "95127133954f1fd91780212d43e1f89b5e73b58063fefce817ff4d44a90dea10",
+      "publishedSha256": "95127133954f1fd91780212d43e1f89b5e73b58063fefce817ff4d44a90dea10"
+    },
+    {
+      "draft": ".planning/2026-09-21-quality-a/official-pick-drafts/MvpOfficialStationPickBinder.cs",
+      "target": "Assets/ChooGuard/Editor/MvpOfficialStationPickBinder.cs",
+      "sha256": "180a354da4d0598bf90b24abb8daf133bed7886dca709c0144ff9b80d9abebd9",
+      "publishedSha256": "180a354da4d0598bf90b24abb8daf133bed7886dca709c0144ff9b80d9abebd9"
+    }
+  ],
+  "patch": ".planning/2026-09-21-quality-a/official-pick-drafts/source-pick-and-city-floor.patch",
+  "difference": {
+    "old": "Station target created from oldpolygon+hardcoded20m height; camera first Physics.Raycast then oldfloor/DEM, officialFBXs have no querycollider",
+    "new": "Editor computes actual station-local bounds from publishedMainShell+ExitRoofs nativevertices only; controller reads generatedtargetasset with actual~32mheight. Officialworld without validsourceasset does notfallback20m.",
+    "semantics": "Building selection continues mapping to existingbusan-station-reference task target; no newincidentarea/interiorfloorclaim",
+    "trigger": "Officialstation selectionBoxCollider istrigger; direct Collider.Raycast stillselects, camera QueryTriggerInteraction.Ignore avoidsusingcoarseboxroof as actualcamera surface",
+    "camera": "Separate invisible persistentMeshCollider proxy,2mroof raster+outerboundary skirts fromMainShell+ExitRoofs only, maximum24000triangles. Built onceeditor; runtimePhysicsBVH raycast, no source4Mtriangle scan.",
+    "legacyCityFloorCorrection": "When actual published official shell exists, cityfloor0 no longer enables legacyFloorRoots. Interior1/2/3 stillenable onlyselectedfunctionalroot. References/navdataunchanged; camera FloorSurface checks activeInHierarchy so oldfloortriangle hits also disappear fromcity."
+  },
+  "generatedAssets": [
+    "Assets/ChooGuard/Art/OfficialBusanStation/Picking/station-target-geometry.json",
+    "Assets/ChooGuard/Art/OfficialBusanStation/Picking/station-camera-query.asset"
+  ],
+  "binder": "ChooGuard.Editor.MvpOfficialStationPickBinder.BindExisting() onlyEdit afterofficialworldpublication",
+  "receipt": "art/world/official-station-picking-receipt.json",
+  "preservation": [
+    "No camera/runtimeSurfaceProfile source edits",
+    "No official/city/surfacebuilder edits",
+    "No floor/target/people/teamrelocation; actualanchor matrices compared before/after",
+    "Originalsource meshes untouched; generatedquerymesh usesMvpMeshPersistence.Store+UploadMeshData(false), notCopySerialized/staticbatch",
+    "Proxy underWholeEnvelope hideswithsourceexteriorinexistingfloorviews; internalreferencehall picking preserved",
+    "Rootauthorized only2line SetFloor visibility condition change; nofloorreference/nav deletion."
+  ],
+  "rootProbe": [
+    "Afterroot safeEditsignal, verifycontrollerbasehash andapplypatch/newbinder thencompile.",
+    "RunBindExisting afterofficialworldpublish; inspectreceiptactualcenter/size, sourcecount, proxy<=24000triangles andanchorMatrices unchanged.",
+    "NativeclickhighMainShellroof (>old20m) andExitRoofs shouldselectstation/requestregisteredreferencehall only. ClickingSiteTrains/Contextnotincludedmerelybecausefullsiteextent islarge.",
+    "Nativecity0: alllegacyFloorRoots inactive, officialWholeEnvelope active; interior2: onlylegacy2Frootactive andWholeEnvelope hidden; no pink/tanplates overofficialtracks. Sourceinterioralignment stillunverified.",
+    "Atcityview querycamera.TryGetSurfacePoint/zoom onvisibleroof; shouldhitboundedproxyaboveoldDEM, no selectionbox20/32mflatplane hijack.",
+    "Verifyexistinginsidehallclickandmouseconsumption; no interiorrealignmentclaim."
+  ],
+  "limitations": [
+    "2mheightfield/boundaryproxy approximatesroofsilhouette/overhangs; notexactglassfacade/collisionengineering model or workerphysics input.",
+    "Otherofficialcontextsurfaces stilluseexistingcamera DEM/floor logic; excludedoldDEM may differ fromsourceplaza. Thislane doesnotclaimallsitecamera-groundrealignment.",
+    "Currentauthored0/5/10m gameplayfloorpositions remainpending sourcecutawayaudit.",
+    "Root nativebuilding/camera verificationrequired; noAclaim."
+  ],
+  "validation": {
+    "patch": "PASS git apply --check againstcurrentpublishedcontroller",
+    "ownership": "NoUnitycalls/noRendereroptimizations/nojobs beyondmanifest3files",
+    "native": "NOT_RUN",
+    "publication": "PASS rootEdit-mode authorization;2basehashes verified,2narrowpatches +1newbinder only; existingmetas untouched"
+  },
+  "manifest": ".planning/2026-09-21-quality-a/official-pick-drafts/manifest.json",
+  "nativeReceipt": ".planning/2026-09-21-quality-a/official-picking-native-proof.json",
+  "cameraSurfaceObserved": {
+    "surface": "NativeNavigation.TryGetSurfacePoint at projectedsourcepoint",
+    "heightMetres": 31.152771,
+    "proxyActive": true,
+    "scope": "APIquery, notOSwheelinput"
+  }
+}

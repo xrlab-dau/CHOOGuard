@@ -1,0 +1,1 @@
+World layers are triangle lists in station-local metres. City rail/marking batches are flat then DEM lifted. Buildings have OSM IDs and polygon footprints. Whole batch removal loses outside geometry. Source registration is rigid candidate, not surveyed.

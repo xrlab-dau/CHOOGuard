@@ -1,0 +1,104 @@
+{
+  "schema": "chooguard.jev-forecast-service.v1",
+  "status": "source_frozen_pending_root_live",
+  "files": [
+    {
+      "path": "workers/prediction/jev-proxy.mjs",
+      "sha256": "bd53731135bd9a7e3b31e2d7f6f461723f70170c48f16666455b98b336071959"
+    },
+    {
+      "path": "workers/prediction/probe.mjs",
+      "sha256": "f79fbfe1e87b350d3e7598630ee94ca152d98773b46c60b84214604a4b367a0a"
+    },
+    {
+      "path": "workers/prediction/README.md",
+      "sha256": "0951aa13f3457bdb04569b60c43a3aac1ccefa0e01a38af9f245b6f2078eb204"
+    }
+  ],
+  "officialWireEvidence": {
+    "package": "@typesafe-ai/sdk",
+    "version": "0.6.0",
+    "sources": [
+      {
+        "path": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/jev-runtime/node_modules/@typesafe-ai/sdk/dist/index.mjs",
+        "sha256": "bbb851dfe375c586c5bee3c082a04ab71882813dde39df0e95eaa23f30ec7012"
+      },
+      {
+        "path": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/jev-runtime/node_modules/@typesafe-ai/sdk/dist/index.d.mts",
+        "sha256": "e54673ef76353afcaea6f422cd80df658a7852c321ed3d5084ce4d0e063833a4"
+      }
+    ],
+    "method": "TypeSafeClient.systemOne -> POST /v1/systemone",
+    "request": "{model,state,questions}; {type:noul,instructions,criteria}",
+    "response": "{model,answers:{id:{type:noul,noul:number}},usage:{input_tokens,output_tokens}}",
+    "probabilityBoundary": "noul is declared probability of yes in0..1; no choice confidence conversion"
+  },
+  "endpoint": {
+    "listen": "127.0.0.1:18764",
+    "routes": [
+      "GET /health",
+      "POST /forecast"
+    ],
+    "upstream": "https://ai-gateway.vercel.sh/typesafe/v1/systemone",
+    "model": "typesafe-ai/jev",
+    "connection": "Persistent Node https.Agent keepAlive,maxSockets1",
+    "deadlineMs": 3000,
+    "retries": 0,
+    "maxInFlight": 1,
+    "pending": "None in service; busy response, client owns latest-pending replacement",
+    "maxBodyBytes": 32768,
+    "maxResponseBytes": 65536,
+    "maxExactCacheEntries": 32
+  },
+  "responseContract": {
+    "echo": [
+      "snapshotId",
+      "stateHash",
+      "decisionKey",
+      "runId",
+      "generation",
+      "basisSimTime"
+    ],
+    "probabilities": "Only finite noul0..1 for requested fixed outcome IDs, exact120/120/60 horizons",
+    "notApplicable": "Omitted, never fabricated zero",
+    "unavailable": "safe reason enum + emptyforecasts, no upstream body/header/key",
+    "cacheHit": "additive bool, latencyMs remains original live model roundtrip",
+    "safeUpstreamDiagnostics": "Additive upstreamHttpStatus integer, diagnosticCode from closed allowlist/status enum, validationPaths from allowlisted schema tokens only. No upstream message/body/headers/key.",
+    "additiveInput": "Root-added cohorts/releaseRevision/lastControlRequestId/cohortScheme/releasePolicyHistoryDigest and physics fire/exposure fields remain in snapshot state sent upstream; not dropped."
+  },
+  "launch": {
+    "preferred": "node workers/prediction/jev-proxy.mjs --key-stdin; root writes exactly one secret line via hiddenstdin, never args/files/logs",
+    "hiddenPromptRecipe": "workers/prediction/README.md Python getpass/Popen example",
+    "alternative": "Inherited VERCEL_AI_GATEWAY_API_KEY only; never shellliteralsecret",
+    "shutdown": "SIGINT/SIGTERM closes listener/upstream agent"
+  },
+  "probe": {
+    "command": "node workers/prediction/probe.mjs REAL_ACCEPTED_SNAPSHOT_JSON",
+    "liveOwner": "root only",
+    "method": "Three sequential actual calls; fresh snapshot UUID avoids exactcache; first process-cold and later persistentwarm",
+    "caveat": "Model cold/cache state unknown; no calibration claim; no fabricated physicsfixture"
+  },
+  "validation": {
+    "serverSyntax": "PASS node --check",
+    "helperSyntax": "PASS node --check",
+    "liveGateway": "Root actual direct probe succeeded at972ms: support_arrival_120 .49,density_rise_60 .12. Earlier upstream_rejected1167ms cause unresolved; no schema/auth change claimed.",
+    "Unity": "NOT_TOUCHED"
+  },
+  "limits": [
+    "Only forecasts defined future observable events; no control/graph/physics API exists in service.",
+    "Current-snapshot conditional probabilities are AI estimates, not calibrated site/clinical facts.",
+    "Client rejects stale run/decision replies and compares forecasts against later actual observations.",
+    "All Assets/camera/native settings untouched; no liveJevauth access or networkcall by implementation author."
+  ],
+  "mechanicalConsistency": {
+    "upstreamState": "Derived per-origin remainingMetres/8 earliestTravelSeconds, unknown nonnegative departure waits, min eligible bound; fixed closed citizen population/no new inflow after all exit",
+    "questions": "Explicit hard-bound conditioning, no new physics/mechanics",
+    "response": "Additive derivedMechanics and consistencyDiagnostics; raw noul probabilities unchanged",
+    "diagnostics": [
+      "probability_conflicts_with_route_lower_bound",
+      "probability_conflicts_with_closed_empty_population"
+    ],
+    "scope": "Conditional authored-mechanics consistency, not calibrated or certified outcome probabilities",
+    "next": "Root restart once and probe; no live call by author"
+  }
+}

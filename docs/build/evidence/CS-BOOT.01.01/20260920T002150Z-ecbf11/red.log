@@ -1,0 +1,104 @@
+.................FFF......E...E.......E........
+======================================================================
+ERROR: test_jsonld_is_parseable_and_story_count_matches (test_plan.StaticPlanTests.test_jsonld_is_parseable_and_story_count_matches)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 97, in test_jsonld_is_parseable_and_story_count_matches
+    from rdflib import Graph,URIRef,RDF
+ModuleNotFoundError: No module named 'rdflib'
+
+======================================================================
+ERROR: test_ontology_turtle_and_shapes_parse (test_plan.StaticPlanTests.test_ontology_turtle_and_shapes_parse)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 103, in test_ontology_turtle_and_shapes_parse
+    from rdflib import Graph
+ModuleNotFoundError: No module named 'rdflib'
+
+======================================================================
+ERROR: test_schema_ontology_not_actual_execution (test_plan.StaticPlanTests.test_schema_ontology_not_actual_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 100, in test_schema_ontology_not_actual_execution
+    from rdflib import Graph,URIRef,RDF
+ModuleNotFoundError: No module named 'rdflib'
+
+======================================================================
+FAIL: test_bootstrap_owns_initial_assemblies (test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies) (path='Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 19, in test_bootstrap_owns_initial_assemblies
+    self.assertEqual([(sid,w['operation'],w['createdBy']) for sid,w in rows],[(owner,'CREATE',owner),(successor,'UPDATE',owner)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('CS-BOOT.02.01', 'CREATE', 'CS-BOOT.02.01')] != [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'), ('CS-B[34 chars]01')]
+
+First differing element 0:
+('CS-BOOT.02.01', 'CREATE', 'CS-BOOT.02.01')
+('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01')
+
+Second list contains 1 additional elements.
+First extra element 1:
+('CS-BOOT.02.01', 'UPDATE', 'CS-BOOT.01.01')
+
+- [('CS-BOOT.02.01', 'CREATE', 'CS-BOOT.02.01')]
+?             ^                          ^     ^
+
++ [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'),
+?             ^                          ^     ^
+
++  ('CS-BOOT.02.01', 'UPDATE', 'CS-BOOT.01.01')]
+
+======================================================================
+FAIL: test_bootstrap_owns_initial_assemblies (test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies) (path='Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 19, in test_bootstrap_owns_initial_assemblies
+    self.assertEqual([(sid,w['operation'],w['createdBy']) for sid,w in rows],[(owner,'CREATE',owner),(successor,'UPDATE',owner)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')] != [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'), ('CS-B[34 chars]01')]
+
+First differing element 0:
+('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')
+('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01')
+
+Second list contains 1 additional elements.
+First extra element 1:
+('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')
+
+- [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')]
+?             ^                          ^     ^
+
++ [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'),
+?             ^                          ^     ^
+
++  ('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')]
+
+======================================================================
+FAIL: test_bootstrap_owns_initial_assemblies (test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies) (path='Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 19, in test_bootstrap_owns_initial_assemblies
+    self.assertEqual([(sid,w['operation'],w['createdBy']) for sid,w in rows],[(owner,'CREATE',owner),(successor,'UPDATE',owner)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')] != [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'), ('CS-B[34 chars]01')]
+
+First differing element 0:
+('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')
+('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01')
+
+Second list contains 1 additional elements.
+First extra element 1:
+('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')
+
+- [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')]
+?             ^                          ^     ^
+
++ [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'),
+?             ^                          ^     ^
+
++  ('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')]
+
+----------------------------------------------------------------------
+Ran 45 tests in 1.971s
+
+FAILED (failures=3, errors=3)

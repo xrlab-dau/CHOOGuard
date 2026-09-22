@@ -1,0 +1,50 @@
+{
+  "owner": "world_surface",
+  "status": "read_complete_awaiting_design_packet",
+  "classification": "directly_supported",
+  "sources": [
+    "Assets/ChooGuard/Editor/MvpCityBuilder.cs",
+    "asset-library/space-references/busan-reconstruction/busan-openworld.json",
+    "asset-library/space-references/busan-reconstruction/osm-busan-openworld.xml"
+  ],
+  "counts": {
+    "buildings": 1150,
+    "roads": 2536,
+    "rail": 134,
+    "water": 19,
+    "platform_ignored": 6,
+    "open_water_ways": 15,
+    "open_coastlines": 12,
+    "open_streams": 3
+  },
+  "risks": [
+    {
+      "issue": "Water kinds lose raw tag semantics; all open coastlines and streams closed as polygons",
+      "action": "Reconstruct connected oriented coastline against bounds; exclude culvert streams; never blindly close open ways"
+    },
+    {
+      "issue": "Flat green rectangle underlies sea; water only 0.10 world units above ground",
+      "action": "Use verified coastline land/water separation before surface detail"
+    },
+    {
+      "issue": "Building palette only three gray values; window counts capped at 7 columns and 5 rows independent of size",
+      "action": "District-aware roof/facade rhythm and frontage bounded to existing footprints"
+    },
+    {
+      "issue": "Roads unjoined segment strips with no sidewalks/markings and unscaled width constants",
+      "action": "Define widths explicitly in scaled world units; batch visual markings and verges without colliders"
+    },
+    {
+      "issue": "OSM platform geometry dropped",
+      "action": "Use if design packet calls for station continuity"
+    }
+  ],
+  "constraints": [
+    "No Unity calls",
+    "No computer use",
+    "No nested agents",
+    "Only assigned C# files after design packet",
+    "No gameplay or physics edits"
+  ],
+  "verification": "Python source counts + XML tag correspondence; no Unity acceptance"
+}

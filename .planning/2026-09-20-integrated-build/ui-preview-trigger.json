@@ -1,0 +1,28 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w = UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); var buttons=w.GetComponentsInChildren<UnityEngine.UI.Button>(true); buttons.First(b=>b.name==\"Team_fire-1\").onClick.Invoke(); buttons.First(b=>b.name==\"Target_exit\").onClick.Invoke(); buttons.First(b=>b.name==\"Move\").onClick.Invoke(); return new { state=w.Preview.State.ToString(), modal=w.Router.ActiveModal?.name, error=w.Preview.DisplayError };"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "state": "Loading",
+        "modal": "CommandPreview",
+        "error": null
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

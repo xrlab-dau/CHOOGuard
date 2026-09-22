@@ -1,0 +1,180 @@
+{
+  "id": "CS-MODES.03",
+  "epicId": "CS-MODES",
+  "title": "현장 재사용·모드 연결·다음 판단 지점",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-MODES.03",
+    "description": "재사용 workspace와 생략 없는 시간 진행",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-MODES.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-MODES.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Scenarios/WorkspaceSessionFactory.cs",
+    "Assets/ChooGuard/Scenarios/DecisionBoundaryRunner.cs",
+    "Assets/ChooGuard/Scenarios/ModePolicy.cs",
+    "Assets/ChooGuard/Presentation/Scenarios/ScenarioSetupPresenter.cs",
+    "Assets/ChooGuard/Presentation/Scenarios/SiteSelectionPresenter.cs",
+    "Assets/ChooGuard/Presentation/Scenarios/ScenarioSetup.prefab",
+    "Assets/ChooGuard/Presentation/Scenarios/SiteSelection.prefab"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/MODES/Modes03Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-MODES.01",
+      "artifactId": "A-CS-MODES.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-MODES.02",
+      "artifactId": "A-CS-MODES.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-LAB.02",
+      "artifactId": "A-CS-LAB.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PLAY.05",
+      "artifactId": "A-CS-PLAY.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-SIM.01",
+      "artifactId": "A-CS-SIM.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "현장·규칙·template·model 묶음을 읽고 새 운영안을 만든다. 원본 번들은 바꾸지 않는다.",
+    "제품 모드는 두 개만 허용하고 analysis/branch/solver profile은 공통 도구로 둔다.",
+    "다음 판단지점 이동은 사건과 solver를 순차 처리한다. 미래 결과를 예측 없이 미리 게시하거나 dt를 늘리지 않는다."
+  ],
+  "contract": "Mode={TUTORIAL,RANDOM_OPERATIONS_LAB}; RuntimeConfig는 같은 코어와 lock을 공유.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-MODES.03-P",
+      "given": "다음 의사결정 이벤트 tick100",
+      "when": "진행요청",
+      "then": "순차계산 후100; 미래정보 노출0",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-MODES.03-N",
+      "given": "worker 미준비",
+      "when": "진행요청",
+      "then": "COMPUTING_NOT_FAST_FORWARD",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-002",
+    "REQ-083",
+    "REQ-085"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/08-modes-and-scenario-generation.md",
+    "specs/04-checkpoint-and-comparison.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/08-modes-and-scenario-generation.md",
+    "specs/04-checkpoint-and-comparison.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-002",
+    "REQ-083",
+    "REQ-085"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/MODES/Modes03Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSMODES03PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-MODES.03.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "다음 의사결정 이벤트 tick100",
+    "operation": "진행요청",
+    "expectedPositive": "순차계산 후100; 미래정보 노출0",
+    "negativeInput": "worker 미준비",
+    "expectedNegative": "COMPUTING_NOT_FAST_FORWARD",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

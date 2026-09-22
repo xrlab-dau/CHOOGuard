@@ -1,0 +1,152 @@
+{
+  "id": "CS-PLAY.01",
+  "epicId": "CS-PLAY",
+  "title": "native 입력 소유권·IME",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PLAY.01",
+    "description": "uGUI/TMP HUD와 월드/카메라 충돌 방지",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PLAY.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Presentation/Input/InputContextRouter.cs",
+    "Assets/ChooGuard/Presentation/Input/PointerCaptureOwner.cs",
+    "Assets/ChooGuard/Presentation/Input/Operations.inputactions"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PLAY/Play01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-BOOT.01",
+      "artifactId": "A-CS-BOOT.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-WORLD.01",
+      "artifactId": "A-CS-WORLD.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "모달→텍스트/IME→HUD→월드→카메라 순서로 입력 소유권을 고정한다.",
+    "pointer-down의 소유자를 up/cancel까지 유지하고 UI drag가 월드 선택으로 전환되지 않게 한다.",
+    "TMP 입력·IME 조합 중 Space/WASD/Esc를 game action으로 전달하지 않는다. 실제 Player에서 조합/확정/취소 시험을 한다."
+  ],
+  "contract": "InputOwner {context,pointerId,focus,modal}; 소비한 event를 하위 입력에 재전달하지 않는다.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PLAY.01-P",
+      "given": "UI에서 pointerDown 후 월드로 drag",
+      "when": "pointerUp",
+      "then": "UI 소비; world command0",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PLAY.01-N",
+      "given": "IME 중 Space/WASD",
+      "when": "pointerUp",
+      "then": "GAME_ACTION0",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-008",
+    "REQ-072"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PLAY/Play01Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSPLAY01PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-PLAY.01.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "UI에서 pointerDown 후 월드로 drag",
+    "operation": "pointerUp",
+    "expectedPositive": "UI 소비; world command0",
+    "negativeInput": "IME 중 Space/WASD",
+    "expectedNegative": "GAME_ACTION0",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

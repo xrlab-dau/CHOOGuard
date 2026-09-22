@@ -1,0 +1,117 @@
+{
+  "schemaVersion": "11.0.0",
+  "epicId": "EP09",
+  "title": "AI 저작·대본",
+  "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+  "read": [
+    "START_HERE.md",
+    "PRD.md §14",
+    "contracts/requirements.json: REQ-051, REQ-052, REQ-053, REQ-054, REQ-055, REQ-056, REQ-058, REQ-059, REQ-086"
+  ],
+  "requirementIds": [
+    "REQ-051",
+    "REQ-052",
+    "REQ-053",
+    "REQ-054",
+    "REQ-055",
+    "REQ-056",
+    "REQ-058",
+    "REQ-059",
+    "REQ-086"
+  ],
+  "testIds": [
+    "AT-051",
+    "AT-052",
+    "AT-053",
+    "AT-054",
+    "AT-055",
+    "AT-056",
+    "AT-058",
+    "AT-059",
+    "AT-086"
+  ],
+  "sourceIds": [
+    "DISC-05",
+    "DISC-07",
+    "REF-MSEL"
+  ],
+  "candidateInputs": [
+    {
+      "producer": "EP01",
+      "producerPhase": "candidate",
+      "consumerPhase": "candidate",
+      "artifactGroup": [
+        "production-schema-bundle"
+      ]
+    },
+    {
+      "producer": "EP05",
+      "producerPhase": "candidate",
+      "consumerPhase": "candidate",
+      "artifactGroup": [
+        "event-store",
+        "comparison-report"
+      ]
+    }
+  ],
+  "outputs": [
+    "authoring-assistant",
+    "script-bundle",
+    "grounding-report",
+    "template-profile.json",
+    "export-receipt.json"
+  ],
+  "outputStatus": "PLANNED_NOT_VERIFIED_THIS_REVISION",
+  "prepare": "현재 기준과 배정 작업·lane만 읽고 필요한 입력/출처·쓰기 경계를 확인한다. 불필요한 매뉴얼 전체를 문맥에 넣지 않는다.",
+  "candidate": "필수 산출물의 생산 단계·실제 ref/hash/접근을 확인한 뒤 한정 구현·실행한다. fixture/mocked input을 명시하고 공통 코어를 재사용한다.",
+  "accept": "선택 lane의 실제 원시결과·버전·실패·미실행·검수권한·허용범위를 제출한다. 문서 검사를 제품 완료로 승격하지 않는다.",
+  "stopConditions": [
+    "unresolved write/claim conflict",
+    "required input unavailable for selected phase",
+    "source or domain qualification missing for claimed use",
+    "repeated failure exceeds bounded retry budget"
+  ],
+  "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+  "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+  "notRun": [
+    "Unity product",
+    "physics domain tests",
+    "institutional approval"
+  ],
+  "readScope": "Read the assigned task and chosen lane only. Not a new scheduler or source checkout.",
+  "critiqueIds": [
+    "C03",
+    "C10",
+    "C11"
+  ],
+  "lanes": {
+    "fixture": {
+      "inputPolicy": "Common candidate inputs may be explicitly labeled fixture contracts. No real-site or user value claim.",
+      "qualifiesOnly": [
+        "PIPELINE"
+      ],
+      "doesNotRequire": [
+        "customer interview completed",
+        "all physical domain reports",
+        "live synchronization",
+        "purchase contract"
+      ]
+    }
+  },
+  "returnFields": [
+    "epicId",
+    "lane",
+    "phase",
+    "branchAndCommit",
+    "changedPaths",
+    "inputRefsAndHashes",
+    "outputRefsAndHashes",
+    "testsRun",
+    "rawResults",
+    "notRun",
+    "failures",
+    "qualificationScope",
+    "nextConsumer",
+    "claimRelease"
+  ]
+}

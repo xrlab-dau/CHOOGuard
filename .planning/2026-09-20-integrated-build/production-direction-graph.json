@@ -1,0 +1,152 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "date": "2026-09-21",
+  "status": "BOUNDED_DIRECTION_COMPLETE",
+  "productAcceptance": "NOT_ACCEPTED",
+  "owner": "root",
+  "scope": "Read-only source planning; only this graph written. No Unity run, gameplay edit, external research or nested delegation.",
+  "planning": {
+    "skill": "/Users/um-yunsang/.codex/skills/planning-with-files/SKILL.md",
+    "activePlan": ".planning/2026-09-20-integrated-build/task_plan.md",
+    "phases": ["COMPLETE: current direction and session graph read", "COMPLETE: actual lifecycle, worker, clock and input contracts inspected", "COMPLETE: next playable slice and production criteria bounded"],
+    "finding": "Existing start resets crowd and worker; routine and recovery are absent. Team motion uses wall time while worker speed changes simulation time.",
+    "progress": "Deliverable is a design handoff, not implementation evidence. Root retains shared plan updates and all integration decisions.",
+    "errors": [{"operation": "initial source search", "detail": "Assets/ChooGuard/Runtime does not exist", "resolution": "Used actual Assets/ChooGuard/App/Mvp files"}]
+  },
+  "nodes": [
+    {
+      "id": "authority",
+      "type": "accepted_direction",
+      "refs": ["docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md", "docs/CHOOGuard_Story_Plan_v5/NPC_OPERATIONS_PROPOSAL.md", ".planning/2026-09-20-integrated-build/session-graph.json"],
+      "latestRootBrief": "User accepted NPC proposal and 20-30 minute ordinary-operation plus long-response session; implementation Astra low, one story, no TDD or repetitive gates, Jev advisory only.",
+      "constraints": ["Korean UI; no world text; 1 Unity unit = 1 metre", "No computer-use; root owns existing Editor integration", "Scenario drafting excluded; tutorial later", "No production, calibrated Busan, crush-force or clinical claim from current reference evidence"]
+    },
+    {
+      "id": "current-evidence",
+      "type": "directly_supported",
+      "facts": [
+        {"ref": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:49", "fact": "StartConfigured selects immediate incident, clears crowd/history/tasks, resets time, starts a new worker; Receive ends entire run at allEvacuated. No ordinary/recovery phase."},
+        {"ref": "workers/physics/worker.py:74", "fact": "Session spawns agents directly onto exit journey with desired_speed zero; only released cohorts move. No ordinary itinerary or begin-incident transition."},
+        {"ref": "workers/physics/worker.py:62", "fact": "FDS sampling rejects time outside 0..120 seconds; worker currently uses JuPedSim elapsed_time directly for field time."},
+        {"ref": "Assets/ChooGuard/App/Mvp/MvpStationView.cs:101", "fact": "Team travel and interaction use Time.unscaledDeltaTime/Time.unscaledTime, while Director requests worker advances at 1/2/4 speed."},
+        {"ref": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:19", "fact": "Per-team task queue and request/revision acknowledgment exist; job completion depends on arrived visual actor, interaction duration, then worker acknowledgment."},
+        {"ref": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:81", "fact": "Crowd picking and right-click region still use old -13/-12 origin and 0.65 scale; actual MvpSpatialMetrics.ReferenceOrigin is -52/5.05/-48 and scale is one."},
+        {"ref": "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:123", "fact": "Bridge enforces fixed initial digest, population conservation, three cohorts and monotonic simTime. Lifecycle extension must preserve or explicitly version these invariants."}
+      ],
+      "verificationSurface": "Current source inspection only; no new runtime/product acceptance asserted. Older memory was navigation only and rechecked against current source."
+    },
+    {
+      "id": "player-loop",
+      "type": "production_direction",
+      "duration": "20-30 minutes of active play is the design target at ordinary speed; tactical pauses can increase wall time. Phase pacing is a tuning target, never a timer-based clear condition.",
+      "lines": [
+        "평시: 열차 수요와 대기열을 보며 순찰·팀 대기 위치·혼잡 지원을 배치하고, 시민의 출입·발매·대기·승차가 이어지는 모습을 확인한다.",
+        "무작위 사건: 같은 시민이 인지·대기·우회·지원 요청으로 전환하며, 플레이어는 신고와 관찰 근거로 영향 구역과 투입 우선순위를 정한다.",
+        "대응: 제한된 팀의 출동·준비·작업·인계를 지휘하고 통제·대기·집단 유도 순서를 바꾸며 이동 지연·대기열·밀집·노출의 변화를 확인한다.",
+        "부분 재개: 영향 구역을 계속 통제하면서 근거가 확보된 구역의 유입·서비스를 단계적으로 열고, 대기 수요와 다시 커지는 병목을 관리한다.",
+        "복기: 사건 전 배치부터 지시·현장 반영까지의 시간과 인원 흐름을 돌아보고, 같은 초기 상태에서 다른 대응 순서의 대피·노출·운영 중단을 비교한다."
+      ]
+    },
+    {
+      "id": "time-contract",
+      "type": "required_state_contract",
+      "wallClock": "Real elapsed time for UI pacing, input latency and worker timeout only; never used as evidence of travel, work completion or safety.",
+      "sessionSimClock": "Monotonic accepted simulation time shared by ordinary itineraries, service queues, team travel/preparation, operational events and logs. Advance only on accepted worker step. Speed affects requested simulation work; waiting on worker cannot make teams finish ahead of physics.",
+      "incidentClock": "Unset before incident; then sessionSimTime minus immutable incidentOnsetSimTime. FDS reads this incident clock in seconds at 1:1 physical time, never session wall time or normalized session progress.",
+      "pause": "Pause becomes effective at the acknowledged step boundary; expose any pending step. Once settled, no itinerary, dose, service or team progress. Rendering interpolation may smooth accepted positions but cannot authorize task completion.",
+      "fieldBoundary": "At the actual field limit, stop affected hazard progression with an explicit incomplete result. No looping, stretching, clamping the last slice, resetting exposure, timer clear, or automatic declaration of safe reopening.",
+      "neededForProduction": "Long incident response requires genuinely computed longer FDS fields or validated model coverage with retained provenance, plus supported boundaries/ventilation controls and site geometry. Session duration alone does not extend the current reference. Crowd-only operations may continue on JuPedSim without pretending to supply missing fire results."
+    },
+    {
+      "id": "next-slice",
+      "type": "one_coherent_playable_increment",
+      "title": "평시 배치가 같은 시민의 사건 대응으로 이어지는 국소 운영 한 흐름",
+      "playerValue": "플레이어가 평시에 팀을 어디에 대기시켰는지에 따라 사건 뒤 현장 지시 반영 시점이 실제로 달라지고, 같은 시민의 대기·유도·도달 결과에서 그 차이를 읽는다.",
+      "scope": [
+        "Use the existing 30x20m reference hall and a finite 50-citizen population first. Give each existing worker agent a ticket/wait itinerary with explicit queue/dwell state through JuPedSim journeys; all routine motion remains engine-owned.",
+        "Let the player preposition the existing three teams during ordinary operation; show team occupation and citizen waiting as the first limited-resource choices. Do not invent money, fatigue or clinical values to simulate depth.",
+        "Seed an incident onset during ordinary operation and switch the same active agent IDs, positions, cohort memberships and dose records to response behavior. Do not call StartRun or clear/reinstantiate the crowd for this transition.",
+        "Reuse existing warn/hold/release/medical-request task and receipt flow; align team simulation progression with the accepted session clock and repair stale scaled picking coordinates.",
+        "End the bounded affected-cohort response into debrief with a structured preposition→dispatch→arrival→control acknowledgment→exit timeline. Evacuation completion does not mean extinguished fire or recovered patient.",
+        "Implement the normal-to-crowd incident path as the focused acceptance flow. Preserve current fire operation and explicitly expose its 120-second coverage boundary; the new lifecycle must not weaken that boundary."
+      ],
+      "notYet": "This first slice does not constitute a 20-30 minute production session, continuous city demand, four complete citizen profiles, accessible multi-floor navigation, full resources or validated partial reopening. These remain required product work, not replaced by this local check."
+    },
+    {
+      "id": "lifecycle-contract",
+      "type": "implementation_handoff",
+      "phases": "Ordinary -> IncidentActive -> AffectedCohortResolved -> Debrief; any unsupported field/worker result -> Incomplete. Recovery is a later explicit phase with its own operational evidence, not an alias for allEvacuated.",
+      "identity": "Use (runId,generation,agentId) as entity key. Preserve IDs, positions, group links when present, itinerary state and accumulated exposure across onset. Snapshot incident membership atomically, freeze the affected denominator, retain departed outcomes. Same active ID must retain its existing visual object.",
+      "minimalFields": ["lifecycleVersion", "phase", "sessionSimTime", "incidentOnsetSimTime", "incidentTime", "citizenId", "routineState", "destinationId", "cohortId", "sessionInitialDigest", "incidentInitialDigest", "incidentMemberIds", "normalDepartedCount", "incidentEvacuatedCount", "fieldValidUntil"],
+      "accounting": "Do not infer evacuation as initial population minus all active NPCs once ordinary exits exist. Count normal departures separately from affected-cohort exits. For today's finite population, normal departure may be deferred at the waiting stage; do not fabricate arrivals/respawns to fill space.",
+      "digests": "Keep existing initial-state integrity. A session-start digest and an incident snapshot digest serve different comparisons. Same seed alone does not guarantee the same incident starting positions after different pre-incident choices.",
+      "protocol": "Root freezes one lifecycle contract before two makers start. Declare lifecycle capability/version; existing immediate-incident request semantics remain explicit. Worker and bridge must agree on ordinary-versus-fireRequired handling and cohort conservation; no silent fallback or weakening of result validation.",
+      "taskResource": "One executing task per team; queued task remains queued until the prior command is acknowledged. Travel/preparation uses accepted simulation deltas. A response task cannot claim work while the actor is only visually interpolating toward its required point. Reachable real multi-floor routes remain a subsequent production requirement.",
+      "scene": "All coordinates use MvpSpatialMetrics.Reference or its inverse. Reuse existing crowd models, animations and HUD. No new world text, geometry regeneration or floor binding edits."
+    },
+    {
+      "id": "ownership",
+      "type": "parallel_file_boundaries",
+      "makerA": {
+        "model": "Astra low",
+        "deliverable": "Persistent worker ordinary-to-incident lifecycle and matching JSON bridge contract",
+        "owns": ["workers/physics/worker.py", "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs"],
+        "optionalNewFiles": ["workers/physics/operations_lifecycle.py", "workers/physics/operations_lifecycle_probe.py"],
+        "stop": "Exact lifecycle packet implemented and one focused actual-worker flow proves identity/time/accounting. Return contract and compact evidence; no FDS rerun or city expansion."
+      },
+      "makerB": {
+        "model": "Astra low",
+        "deliverable": "Ordinary gameplay start, team clock integration, unchanged-identity rendering, Korean state/debrief display",
+        "owns": ["Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs", "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs", "Assets/ChooGuard/App/Mvp/MvpStationView.cs", "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs"],
+        "optionalNewFiles": ["Assets/ChooGuard/App/Mvp/MvpOperationsLifecycle.cs"],
+        "stop": "UI flow wired against frozen packet and actual positions use metre transform; return source handoff without opening/changing Editor or rebuilding world."
+      },
+      "root": "Own contract choice, Jev counterquestion/critique synthesis and one serialized native integration after both makers return. Native build/scene saving remains single-owner.",
+      "floorLaneExclusions": ["Assets/ChooGuard/Editor/MvpStationBuilder.cs", "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs", "Assets/ChooGuard/Editor/MvpMeshPersistence.cs", "Assets/ChooGuard/Editor/MvpWorldSurfaceBuilder.cs", "Generated floor materials/meshes", "Scene rebuild/save"],
+      "integrationNote": "Existing scene already has bridge/director/task/view components. Prefer adapting those bindings; no full scene rebuild is required just to add lifecycle. Do not alter StationView.SetFloor in this slice."
+    },
+    {
+      "id": "minimal-verification",
+      "type": "focused_runtime_evidence",
+      "checks": [
+        "One actual-worker flow: routine agents visibly change engine positions with ordinary state, begin incident at an accepted step, identical pre/post ID set and positions at the boundary, preserved accumulated values and distinct normal/incident accounting.",
+        "One short sequence checks settled pause and 1x/4x progression against the same accepted simulation clock; team preparation cannot finish on wall time while worker time is stopped.",
+        "One fire boundary negative case confirms pre-incident time does not consume field history and a beyond-120 request yields incomplete/stopped coverage, never a pass or replayed field.",
+        "Compile once after integration, then one official Unity CLI/MCP flow through ordinary preposition -> incident -> team arrival/control acknowledgment -> affected exits -> debrief. Inspect same citizen visual identities, metre-correct selection and the Korean UI timeline.",
+        "The result is scoped lifecycle evidence. Do not rerun unrelated floor/physics suites or call this production, usability, full-duration or Windows acceptance."
+      ]
+    },
+    {
+      "id": "stop-conditions",
+      "type": "bounded_delivery",
+      "completeSlice": "Stop this implementation lane when its actual ordinary-to-incident flow and one native integration are evidenced; hand remaining production work back to root under the same story.",
+      "stopAndReport": ["Worker cannot retain agent identity on journey change", "Scene coordinate or routine path leaves verified reference geometry", "New lifecycle breaks receipt/replay/dose conservation", "Required gameplay depends on unsupported hazard interval or clinical/pressure claims", "A file ownership collision requires root reassignment"],
+      "doNotExpand": "No nested agents, new story board, route-wide art regeneration, FDS dataset recreation, full-city simulation or testing framework build during this increment."
+    },
+    {
+      "id": "production-criteria",
+      "type": "product_outcomes_not_current_gates",
+      "criteria": [
+        {"id": "P1", "result": "한 판의 운영성과 선택", "evidence": "Target users can play ordinary operation, incident, sustained response, controlled partial reopening and debrief within the 20-30 minute design envelope. Preposition, admission and response order change visible backlog, service interruption and supported risk outcomes; a clock alone never awards success."},
+        {"id": "P2", "result": "이어지는 시민과 공간", "evidence": "Citizens maintain purpose, identity and group/support state before and after incidents; routes across included station floors and hubs are traversable, with credible queues/accessibility. Any distant/detail transfer preserves counts, position meaning and exposure. No teleport or replacement population is credited as evacuation."},
+        {"id": "P3", "result": "유한한 자원과 현장 수행", "evidence": "Teams, staff, service capacity and operational restrictions force real prioritization. Travel, preparation, work and handover visibly consume time and capacity, cannot occur simultaneously at different sites, and acknowledge only applied effects. Closed routes and staged reopening actually affect movement and demand."},
+        {"id": "P4", "result": "훈련에 사용할 수 있는 계산 범위", "evidence": "Movement/hazard boundaries and physical time match the represented scenario with applicable evidence and calibration. Required fire, smoke, crowd and medical outcomes have supported models over the complete incident interval. Current pressure indicator and medical request are not crush/clinical outcomes; missing required scope needs implemented evidence or explicit user-approved scope change, not a silent substitute."},
+        {"id": "P5", "result": "판단을 배우는 복기", "evidence": "A user can explain a result from recorded observations, choices, actual task completion and computed outcomes. Replaying identical incident conditions with a different command order exposes the operational/time/density/exposure tradeoff without resetting doses or changing the initial crowd behind the comparison."},
+        {"id": "P6", "result": "실제 대상 환경의 완주 경험", "evidence": "On the intended Windows target, a full session remains responsive and legible through pause/speed changes, camera/floor transitions, saving/resuming and replay without lost agents, duplicate tasks or crashes. Korean UI, metre-scale people/space and readable floors support unaided play; local macOS compile or camera capture cannot stand in for this experience."}
+      ],
+      "interpretation": "These define the eventual product outcome. They are not six new blocking review ceremonies before the next implementation."
+    }
+  ],
+  "edges": [
+    {"from": "authority", "to": "player-loop", "relation": "sets intended production experience"},
+    {"from": "current-evidence", "to": "next-slice", "relation": "identifies immediate lifecycle gap"},
+    {"from": "current-evidence", "to": "time-contract", "relation": "requires separating wall/session/incident clocks"},
+    {"from": "time-contract", "to": "lifecycle-contract", "relation": "constrains causal progression and FDS coverage"},
+    {"from": "next-slice", "to": "lifecycle-contract", "relation": "uses stable identity and atomic incident boundary"},
+    {"from": "lifecycle-contract", "to": "ownership", "relation": "freeze before parallel independent-file implementation"},
+    {"from": "ownership", "to": "minimal-verification", "relation": "root integrates after maker evidence"},
+    {"from": "minimal-verification", "to": "stop-conditions", "relation": "ends bounded increment without scope inflation"},
+    {"from": "player-loop", "to": "production-criteria", "relation": "requires complete operational and training utility"},
+    {"from": "next-slice", "to": "production-criteria", "relation": "advances P1/P2/P3/P5 but does not satisfy production acceptance"}
+  ]
+}

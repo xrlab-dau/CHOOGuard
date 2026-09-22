@@ -1,0 +1,73 @@
+{
+  "spec_sha256": "7c13748c6c8b8ef440db310e01de84e535345fdf6606ac30a2246e434edadd1a",
+  "script_sha256": "fb166b91ba0786676e2f54df2f0673dd6090fb25d171685729a9b1091a6b782c",
+  "trajectory_sha256": "d09dc9265b171019cfdcff7bc3e9949d7641bcb65bb7a88f7fecf75d1ff35eff",
+  "jupedsim_version": "1.4.2",
+  "python": "3.12.11",
+  "platform": "macOS-26.5-arm64-arm-64bit",
+  "runtime_s": 0.7369270324707031,
+  "results": [
+    {
+      "case": "free-0",
+      "displacement_m": 39.999999999999865,
+      "transverse_m": 0.0,
+      "passed": true
+    },
+    {
+      "case": "free-45",
+      "displacement_m": 40.000000000000796,
+      "transverse_m": 3.552713678800501e-15,
+      "passed": true
+    },
+    {
+      "case": "corner",
+      "initial": 20,
+      "removed": 20,
+      "remaining": 0,
+      "elapsed_s": 31.150000000000002,
+      "first_exit_s": 12.25,
+      "boundary_violations": 0,
+      "conserved": false,
+      "passed": false
+    },
+    {
+      "case": "bottleneck-1.0",
+      "initial": 40,
+      "removed": 40,
+      "remaining": 0,
+      "elapsed_s": 40.800000000000004,
+      "first_exit_s": 5.25,
+      "boundary_violations": 0,
+      "conserved": false,
+      "passed": false
+    },
+    {
+      "case": "bottleneck-2.0",
+      "initial": 40,
+      "removed": 40,
+      "remaining": 0,
+      "elapsed_s": 26.0,
+      "first_exit_s": 5.050000000000001,
+      "boundary_violations": 0,
+      "conserved": false,
+      "passed": false
+    },
+    {
+      "case": "width-consistency",
+      "passed": true,
+      "narrow_s": 40.800000000000004,
+      "wide_s": 26.0
+    }
+  ],
+  "not_covered": [
+    "real-site calibration/validation",
+    "contact force or pressure validation",
+    "FDS or smoke coupling",
+    "stairs and full NIST configurations",
+    "time-step convergence and stochastic ensemble"
+  ],
+  "source_digests": {
+    "sources/GeneralizedCentrifugalForceModel-v1.4.2.cpp": "20a7a85e3bb772321fd9f619c116e704f9ca3d8d24e41eb4f46acb680ad038be",
+    "sources/SocialForceModel-v1.4.2.cpp": "53569b2b310f84a855fd01ee2702792352acef6c553a39c356eed8650b44a2b3"
+  }
+}

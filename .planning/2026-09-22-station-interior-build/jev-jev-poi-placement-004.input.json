@@ -1,0 +1,53 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "walk_test_passed": "In Play mode the player at (26.00, 7.05, -47.00) walked 3.60m in all four directions with grounded true and y staying between 7.02 and 7.05. 3.60m equals WalkSpeed 1.8 times 2 seconds exactly. The concourse floor holds the character controller.",
+    "regulation_researched": {
+      "source": "소화기구 및 자동소화장치의 화재안전기술기준 NFTC 101 via 국가법령정보센터",
+      "walkingDistance": "각 부분으로부터 1개의 소화기까지의 보행거리가 소형소화기 20미터 이내",
+      "perRoom": "각 층마다 설치하되, 바닥면적 33제곱미터 이상으로 구획된 각 거실에도 배치",
+      "mountHeight": "바닥으로부터 높이 1.5미터 이하에 비치하고 종류를 표시한 축광식 표지 부착",
+      "keyPoint": "기준은 직선거리가 아니라 보행거리다. 장애물을 우회한 실제 걷는 거리이므로 보행 가능 격자 위의 최단경로로 계산해야 한다."
+    },
+    "assets_measured": {
+      "mainConcourse": "883 sqm, y 7.0, x -7..59 (66m), z -64..-30 (34m), floor mesh -부산역_6 normals UP",
+      "eastRoom": "217 sqm, y 7.1, x 40..59, z -49..-32, over the 33 sqm threshold so it needs its own extinguisher",
+      "westCorridor": "355 sqm, y 6.7, floor mesh -부산역_5 normals DOWN, excluded from this slice by jev-slice-direction-003"
+    },
+    "repository_wheels": [
+      "AgentScripts/StationReach.cs already builds standable voxels and does a BFS flood fill with CharacterController semantics. A walking-distance field is the same BFS with a distance counter.",
+      "Editor/FireExtinguisherSliceBuilder.cs already spawns the extinguisher model and authors 4 FacilityInspectable.InspectionPoint entries with dwell times. jev-slice-direction-003 ruled poi_authoring_basis=extend_existing_slice_builder at 1.00.",
+      "Art/Procedures/fire-extinguisher-monthly.json holds the 8 procedure steps; App/Fps/Work/ProcedureRunner.cs runs them."
+    ],
+    "user_method_rule": "Jev judgement, then research, then obtain a snippet, then stack layers. Never develop a wheel. Repository code counts as a wheel.",
+    "standing_rule": "Arbitrary placement is forbidden on this project. Placement must be grounded in public plans or measurable facts."
+  },
+  "questions": {
+    "placement_method": {
+      "type": "choice",
+      "instructions": "How should extinguisher positions in the concourse be decided?",
+      "criteria": {
+        "bfs_coverage_then_greedy_cover": "Compute a walking-distance field by BFS over the walkable grid, then choose the minimum set of wall-adjacent positions whose 20m walking-distance coverage includes every walkable cell",
+        "even_grid_spacing": "Place them on an evenly spaced grid sized so nothing is more than 20m away in straight line",
+        "single_central_extinguisher": "Place one extinguisher at the concourse centre since 20m covers most of it",
+        "copy_mvp_zone_coordinates": "Reuse the hardcoded MvpStationZones positions"
+      }
+    },
+    "candidate_positions": {
+      "type": "choice",
+      "instructions": "Where may an extinguisher legally and physically sit?",
+      "criteria": {
+        "wall_adjacent_reachable_cells": "Only walkable cells adjacent to a wall, so the unit is mounted on structure at 1.5m or below and does not obstruct circulation",
+        "any_walkable_cell": "Any walkable cell including the middle of open floor"
+      }
+    },
+    "east_room_handling": {
+      "type": "choice",
+      "instructions": "The east room is 217 sqm, above the 33 sqm per-room threshold. How should it be treated?",
+      "criteria": {
+        "own_extinguisher_required": "It needs its own extinguisher regardless of whether the concourse unit is within 20m walking distance",
+        "covered_if_within_20m": "No separate unit if a concourse extinguisher is within 20m walking distance"
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "schema": "chooguard.final-korean-label-cleanup.v1",
+  "status": "PUBLISHED_SOURCE_FROZEN",
+  "scope": "Display strings only; no timing, IDs, ACK, edge definitions, or graph mechanics changed",
+  "changes": [
+    "Provenance displayed labels retain agency and logical team; operation/request GUID suffix removed",
+    "Replenishing display reason/state/logs use 재출동 준비; internal Replenishing unchanged",
+    "Only graph node label changed; edges untouched",
+    "Controller.Log displayed bracket operation GUID removed; agency/team/action labels retained"
+  ],
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+      "sha256": "cf5cdb4e4394198d75a68e16e258e7db77cff2f5463531ad4c062a26f9a17466"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "sha256": "c702d61d0898e4253b0feeed33c3527229fc8b589078a0acc5a9c0c7216b500f"
+    },
+    {
+      "path": "Assets/ChooGuard/Art/Progression/response-flow.json",
+      "sha256": "374d931299053077f090dd455476fed8f0fa6ef6d7170bb09fb539007071b736"
+    }
+  ],
+  "verification": "Searched public RecordAgencyEvent/RecordTeamEvent formatting across MVP sources; display formatters now use human labels without operation/request GUID suffixes. Internal provenance unchanged. Root compile pending; no native calls."
+}

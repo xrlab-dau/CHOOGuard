@@ -1,0 +1,21 @@
+flowchart TB
+    BOOT["CompositionRoot<br/>실제 구현은 여기서 조립"]
+    UI["UI NativePresentation"]
+    APP["ApplicationFacade"]
+    FEATURES["응용 모듈<br/>OPS · CONTENT · EXPERIMENT<br/>AUTHOR · EVIDENCE"]
+    SIM["SimulationCoordinator"]
+    ADAPTERS["외부 구현 Adapter<br/>STORE · WORKERS · AI · LEGACY"]
+    PORTS["ApplicationPorts<br/>저장 · 계산 · 검색 · 출력 인터페이스"]
+    DOMAIN["DomainContracts<br/>ID · DTO · 수량 · 규칙 AST"]
+    BOOT -->|"조립 참조"| UI
+    BOOT -->|"구현 결속"| ADAPTERS
+    BOOT -->|"구현 결속"| SIM
+    UI -->|"참조"| APP
+    APP -->|"기능 계약"| FEATURES
+    FEATURES -->|"port 참조"| PORTS
+    SIM -->|"port 참조"| PORTS
+    ADAPTERS -->|"구현하는 port"| PORTS
+    PORTS -->|"도메인 타입"| DOMAIN
+    FEATURES -->|"도메인 타입"| DOMAIN
+    SIM -->|"도메인 타입"| DOMAIN
+    ADAPTERS -->|"도메인 타입"| DOMAIN

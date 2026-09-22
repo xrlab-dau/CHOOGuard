@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "status",
+    "requirements"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "11.0.0"
+    },
+    "status": {
+      "type": "string"
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "statement",
+          "priority",
+          "delivery",
+          "epicId",
+          "userRequirementIds",
+          "prdSection",
+          "sourceIds",
+          "acceptanceTestIds",
+          "implementationStatus"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^REQ-[0-9]{3}$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "priority": {
+            "enum": [
+              "MUST",
+              "SHOULD",
+              "MAY"
+            ]
+          },
+          "delivery": {
+            "enum": [
+              "D0",
+              "D1",
+              "D2",
+              "D3",
+              "D4"
+            ]
+          },
+          "epicId": {
+            "type": "string",
+            "pattern": "^EP[0-9]{2}$"
+          },
+          "userRequirementIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^UR-[0-9]{2}$"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "prdSection": {
+            "type": "string",
+            "pattern": "^[0-9]{2}$"
+          },
+          "sourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Z0-9-]+$"
+            },
+            "uniqueItems": true
+          },
+          "acceptanceTestIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^AT-[0-9]{3}$"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "implementationStatus": {
+            "const": "NOT_VERIFIED_IN_THIS_REVISION"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "critiqueIds": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^C[0-9]{2}$"
+            }
+          },
+          "changeType": {
+            "enum": [
+              "RETAINED_WITH_STANDALONE_CONTEXT",
+              "ADDED_AFTER_CRITIQUE",
+              "AMENDED_AFTER_CRITIQUE"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,28 @@
+flowchart TB
+    U["작성 담당자 · 검수자"]
+    UI["Unity Native<br/>RTS HUD · 실제 3D · 비교/대본"]
+    APP["Application Facade<br/>명령 · 조회 · 권한 · 미리보기"]
+    OPS["Operations Core<br/>업무 · 예약 · 기관 정보 · 인계"]
+    SIM["Simulation Coordinator<br/>교환 시각 · 결과 검증 · 단일 소유권"]
+    W["격리 계산 워커<br/>기존 모델 / JPS / SUMO / FDS·ROM"]
+    EXP["Experiment Service<br/>완전 checkpoint · 분기 · A/B"]
+    AUTH["Authoring + Evidence<br/>검토 · ScriptIR · 자격"]
+    AI["AI Adapter<br/>근거 기반 제안만"]
+    DB["로컬 저장<br/>SQLite · 불변 blob · 원시 기록"]
+    C["SiteBundle / RuleBundle<br/>현장 · 모델 · 자료 · 판본"]
+    O["훈련 대본 + 실행형 데이터<br/>근거 · 한계 · 검토 범위"]
+    U -->|"선택·판단"| UI
+    UI -->|"명령 의도 / 조회"| APP
+    APP -->|"검사 후 요청"| OPS
+    APP -->|"정지·분기·비교"| EXP
+    APP -->|"저작·검토"| AUTH
+    OPS -->|"경계 입력"| SIM
+    SIM <-->|"job / accepted result"| W
+    OPS -->|"commit 후 승인"| DB
+    EXP -->|"snapshot / lineage"| DB
+    AUTH -->|"허용 근거 pack"| AI
+    AI -->|"구조화 초안"| AUTH
+    AUTH -->|"자격 있는 출력"| O
+    C -->|"규칙·현장"| OPS
+    C -->|"수치 입력"| W
+    DB -->|"기록·비교 근거"| AUTH

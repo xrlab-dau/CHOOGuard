@@ -1,0 +1,31 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "observed": [
+      "Metre nativebuildsaved; actualworldTMP0 UI51, rootScale1,crewheight1.78m, reference30x20 confirmed.",
+      "Actualcamera screenshot inside2F shows floating city-window patterns with no matchingopaque walls. Repeatcamera-only capture withnavigationdisabled confirmsartifact. Numericalunitcheckaloneisnotvisualacceptance.",
+      "Only2tinyextraOSMbuildings intersectnearstation; notenough toexplainpatterns. DuringPlay windowMeshFilters nowpointtoUnitycombinedstaticbatchmeshes (assetpathblank,worldY-1000vertices) so wholemeshvertexscan misleading.",
+      "Viewposes also drifted between scriptcaptureandlaterread (zoom70→10.8); external/rawinputcauseunresolved. Freezeonlyprobe navigation toinspectintendedviews."
+    ],
+    "next": "Root compare Edit-mode originalmesh assets+camera againstPlay staticbatch result. Existingcityowner independently inspect windowgeometry/transform/materialcode. Do notregenerateallBlender/DEM, do notclaimvisualaccepted."
+  },
+  "questions": {
+    "diagnostic": {
+      "type": "choice",
+      "instructions": "Proportionate next step before mutatingrendering source?",
+      "criteria": {
+        "isolate_runtime_vs_asset": "Compare originalgeometry andruntimebatch; cause-specificrepair",
+        "random_regenerate": "Regenerateallart",
+        "accept_numeric": "CallvisualPASScauseheightpassed"
+      }
+    },
+    "claim": {
+      "type": "choice",
+      "instructions": "Current honest status?",
+      "criteria": {
+        "numeric_pass_visual_fail": "Unit/textchecksPASS, visibleartifactunresolved",
+        "all_pass": "Productionvisualaccepted"
+      }
+    }
+  }
+}

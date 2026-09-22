@@ -1,0 +1,408 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-21T12:20:00+09:00",
+  "purpose": "공식 JWE3 건설·공간관리 가이드의 플레이 방법을 CHOOGuard의 20~30분 지속형 역사 훈련에 적용할 수 있는지 판정하는 Jev 입력 그래프",
+  "status": "OFFICIAL_SOURCE_BENCHMARK_ONLY_NOT_IMPLEMENTED",
+  "coverage": {
+    "assignedUrlCount": 7,
+    "covered": 7,
+    "unavailable": 0,
+    "snapshotManifest": "asset-library/research-public/2026-09-21/jwe-official/build-guides/manifest.json",
+    "extraction": "전체 HTML 보존 + 해당 article에서 script/style/noscript/template/svg를 제거한 visible text",
+    "quotePolicy": "직접 인용 없음; 한국어 요약만 사용"
+  },
+  "productContract": {
+    "session": "평시 시민 지속 → 화재/군중 사건 → 팀 협업 → 연속 복구 → 복기",
+    "duration": "20~30분",
+    "worldScale": "Unity 1 unit = 1 metre",
+    "currentWorld": "세 층 역사와 내부 허브가 존재하며 FDS 2D field는 연결됨",
+    "priority": "그래픽 복제가 아니라 플레이어 건설 절차, 모듈 방식, 공간 운영 결과, UX 피드백",
+    "excluded": [
+      "시나리오 생성기",
+      "Frontier Workshop 또는 온라인 공유",
+      "공룡·테마파크 경제·프랜차이즈 외형 복제",
+      "JWE3 엔진 내부 구현 또는 Cobra 기능 추정",
+      "공식 가이드가 입증하지 않는 실제 역사 안전·화재·군중 물리"
+    ]
+  },
+  "pages": [
+    {
+      "id": "construction-guide",
+      "availability": "covered",
+      "sourceUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/construction-guide",
+      "finalUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/construction-guide",
+      "httpStatus": 200,
+      "title": "Construction Guide - Player Guides - Jurassic World Evolution 3",
+      "accessedAt": "2026-09-21T12:09:42+09:00",
+      "sourceSha256": "3c8be0aa9915bcc22f3d30a6ff31dafe0a6bd6e0711f606cfe762caebc44d357",
+      "visibleTextSha256": "67e62ae35a656c74b3f872aceaf3c4d9cc2fe8114b57126607deba2fee3c9218",
+      "sourcePath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/construction-guide/source.html",
+      "visibleTextPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/construction-guide/visible.txt",
+      "sectionInventory": ["Construction Tools", "Paths", "Environment Tools", "Demolish Tools", "Editing Light Colours", "Complexity Meter", "Grids", "Groups", "Advanced Tools", "Undo/Redo", "Scenery Tools", "Blueprints", "Structures and Modules", "Building Variants and the Frontier Workshop", "Island Generator"],
+      "directFacts": [
+        {
+          "mechanic": "연결성과 용량을 가진 경로망",
+          "workflow": "경로 유형·폭·곡선·교체 여부를 정하고 노드를 연결한다.",
+          "preconditions": ["대부분의 건물은 부착점에서 도착 지점 또는 적합한 운송수단까지 연결되어야 작동"],
+          "consequences": ["넓은 경로는 수용량을 늘리고 혼잡을 줄임", "자동 지형 조정은 비탈면에 완만한 램프를 만듦"],
+          "uiFeedback": ["Overcrowding View로 병목 확인", "Adjust Terrain 기본 활성화와 토글"],
+          "evidenceSection": "Paths",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "정밀 배치와 재사용 가능한 모듈 조립",
+          "workflow": "그리드 크기·높이와 자동 적층을 조절하고, 다중 선택을 그룹으로 확정해 일괄 변환하며, 축과 스냅 값으로 정밀 이동·회전한다.",
+          "preconditions": ["Custom Layout은 구조를 먼저 놓아 건물 유형을 정함", "필수 모듈은 구조 가까이에 배치"],
+          "consequences": ["필수량을 넘는 모듈은 추가 효익 없음", "그룹은 분할 후 개별 조정 가능"],
+          "uiFeedback": ["Grid Props 필터와 아이콘", "복잡도 100% 근접 시 화면 표시"],
+          "evidenceSection": "Grids; Groups; Advanced Tools; Structures and Modules",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "청사진과 거래적 실행취소",
+          "workflow": "선택한 물체·건물을 이름·설명·태그가 있는 청사진으로 저장하며, 건설 행동을 Undo/Redo한다.",
+          "preconditions": ["청사진은 그룹 물체 또는 저장한 사용자 건물"],
+          "consequences": ["Undo/Redo는 행동에 따른 자금 증감도 함께 되돌리거나 재적용"],
+          "uiFeedback": ["Make Blueprint/Create New 흐름"],
+          "evidenceSection": "Undo/Redo; Blueprints",
+          "classification": "directly_supported"
+        }
+      ]
+    },
+    {
+      "id": "enclosures-guide",
+      "availability": "covered",
+      "sourceUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/enclosures-guide",
+      "finalUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/enclosures-guide",
+      "httpStatus": 200,
+      "title": "Enclosures Guide - Player Guides - Jurassic World Evolution 3",
+      "accessedAt": "2026-09-21T12:09:43+09:00",
+      "sourceSha256": "e3adfd50daceb1131660e610727cd06e79879182f4f6039ad0c1b2b71b0de1d9",
+      "visibleTextSha256": "e9a93c0f5df486b1cc3734dee9b52f357e13be3a45b251940e7ff42327388e51",
+      "sourcePath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/enclosures-guide/source.html",
+      "visibleTextPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/enclosures-guide/visible.txt",
+      "sectionInventory": ["Dinosaur Environments", "Enclosures", "Lagoons", "Aviaries", "Delivery Zones", "Nests", "Environmental Needs", "Security", "Security Rating", "Security Cameras", "Ranger Posts"],
+      "directFacts": [
+        {
+          "mechanic": "여러 종류의 경계가 만드는 폐쇄 영역과 접근 게이트",
+          "workflow": "울타리 노드를 연결하거나 암석·급경사·깊은 물을 보조 경계로 써 폐쇄 영역을 만들고 게이트를 붙인다.",
+          "preconditions": ["팀 차량 접근에는 게이트 필요", "경계 강도는 수용 대상의 보안 등급 이상이어야 안전"],
+          "consequences": ["일부 대상은 물을 통과하므로 자연 경계가 보편 해법은 아님", "전력 상실 시 전력 울타리의 보안 등급 상실 가능"],
+          "uiFeedback": ["배치 뒤 영역 크기와 환경 요구를 조정"],
+          "evidenceSection": "Enclosures; Security Rating",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "소켓형 단위 확장과 기능 모듈",
+          "workflow": "동일 종류의 라군 단위나 조류장 돔을 가장자리 지정 위치에 스냅해 단지를 확장한다.",
+          "preconditions": ["모니터링에는 부착되고 전력이 공급된 부화장 필요"],
+          "consequences": ["부화장은 순찰 접근과 일부 합성/이동 기능을 제공"],
+          "uiFeedback": ["Appearance 선택 후 추가 단위 부착"],
+          "evidenceSection": "Lagoons; Aviaries",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "공간 커버리지 기반 자동 대응",
+          "workflow": "보안 카메라 범위와 순찰 배정으로 위협 감지 후 대응팀을 자동 호출한다.",
+          "preconditions": ["카메라 전력", "Capture Team 순찰 배정"],
+          "consequences": ["병목이나 실제 이용자 영역만 덮어 필요한 카메라 수를 줄일 수 있음"],
+          "uiFeedback": ["위협 감지 시 자동 팀 호출"],
+          "evidenceSection": "Security Cameras; Ranger Posts",
+          "classification": "directly_supported"
+        }
+      ]
+    },
+    {
+      "id": "attractions-guide",
+      "availability": "covered",
+      "sourceUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/attractions-guide",
+      "finalUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/attractions-guide",
+      "httpStatus": 200,
+      "title": "Attractions Guide - Player Guides - Jurassic World Evolution 3",
+      "accessedAt": "2026-09-21T12:09:43+09:00",
+      "sourceSha256": "0ba5492cb950f3533a4c7893fdc85ed4792c7d77164b917a35dd7e088ed6e6c3",
+      "visibleTextSha256": "4545995a8f22476e1fb6569671ec79ac5e63156e6eb93ac7ef35b2292f8b56bd",
+      "sourcePath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/attractions-guide/source.html",
+      "visibleTextPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/attractions-guide/visible.txt",
+      "sectionInventory": ["Creating Appeal", "Appeal", "Visibility", "Building Attractions", "Viewing Platforms & Galleries", "Dinosaur Encounter", "Ziplines", "Tours", "Activity Centres", "Innovation Centres", "Amphitheatres", "Cretaceous Cruise", "Balloon Tours"],
+      "directFacts": [
+        {
+          "mechanic": "가시선과 국소 수요를 만드는 시설 배치",
+          "workflow": "관람 시설의 시야 범위를 계획하고 시야 공백을 관리 뷰로 확인한다.",
+          "preconditions": ["공룡의 Appeal은 관람 시설에서 보여야 방문 수요에 기여"],
+          "consequences": ["높은 국소 Appeal은 방문자를 모아 혼잡을 만듦", "넓은 경로와 대체 시설은 군중을 분산"],
+          "uiFeedback": ["Dinosaur Visibility View Mode로 커버리지 공백 표시"],
+          "evidenceSection": "Appeal; Visibility",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "시설 종류별 공간·연결 선행조건",
+          "workflow": "울타리 부착형, 터널 연결형, 노선형, 수상형 시설을 각 제약에 맞게 놓고 경로망과 전력을 연결한다.",
+          "preconditions": ["원격 갤러리는 입구와 터널 연결", "수상 노선은 물 위에 있고 선착장은 일부가 물에 위치", "대부분의 시설은 경로 연결과 전력 필요"],
+          "consequences": ["투어 경로가 울타리·경로를 지날 때 게이트나 횡단 요소를 자동 선택", "일부 시설은 식량 재보급이나 자동 대응팀 배치가 필요"],
+          "uiFeedback": ["외형 또는 Custom Design 선택", "시설 정보 패널에서 방향·높이·유형 편집"],
+          "evidenceSection": "Types of Attractions",
+          "classification": "directly_supported"
+        }
+      ]
+    },
+    {
+      "id": "guests-guide",
+      "availability": "covered",
+      "sourceUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/guests-guide",
+      "finalUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/guests-guide",
+      "httpStatus": 200,
+      "title": "Guests Guide - Player Guides - Jurassic World Evolution 3",
+      "accessedAt": "2026-09-21T12:09:45+09:00",
+      "sourceSha256": "02b008588603ad16580a3420a50914d291e2817cd2388b9ac83a9a8f1ffcd83f",
+      "visibleTextSha256": "92ff646b7ba128749a80637be9bf6adc0f5bc77aa352afd0a01aab3c1d0643bf",
+      "sourcePath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/guests-guide/source.html",
+      "visibleTextPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/guests-guide/visible.txt",
+      "sectionInventory": ["Guest Demographics", "Guest Comfort", "Accommodation Rating", "Shelter Coverage", "Restroom Coverage", "Transport Rating", "Monorails", "Hyper Loop", "Guest Approval", "Dinosaur Welfare", "Incident Prevention", "Safety Rating", "Publicity Rating"],
+      "directFacts": [
+        {
+          "mechanic": "공간 커버리지의 합성 평가와 반복 보정",
+          "workflow": "Site Economy와 Management Views에서 부족한 운송·화장실·대피소·숙박 커버리지를 찾고 시설을 추가한 뒤 다시 평가한다.",
+          "preconditions": ["수요가 있는 인구 영역에 시설 배치", "운송 역은 경로망과 전력 연결"],
+          "consequences": ["Comfort 하락은 잠재 방문자 수를 줄임", "역 추가는 국소 운송 커버리지를 늘림"],
+          "uiFeedback": ["Management Views의 커버리지 공백", "Site Economy의 구성 등급"],
+          "evidenceSection": "Guest Comfort; Transport Rating",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "사건 대응과 시간 경과를 반영하는 평판 상태",
+          "workflow": "사건을 예방하거나 빠르게 완화하고 대피소와 대응팀을 사용한 뒤 등급 회복을 기다린다.",
+          "preconditions": ["위험 인근 및 위험 기상 시 전 구역의 대피소 커버리지"],
+          "consequences": ["Approval 저하는 수요와 수익을 제한", "Incident Prevention과 Publicity는 시간이 지나며 회복", "대피소를 계속 열어두면 Safety Rating 저하"],
+          "uiFeedback": ["Guest Approval의 Welfare·Incident Prevention·Safety·Publicity 구성요소"],
+          "evidenceSection": "Guest Approval; Shelter Coverage",
+          "classification": "directly_supported"
+        }
+      ]
+    },
+    {
+      "id": "tips-and-tricks",
+      "availability": "covered",
+      "sourceUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/tips-and-tricks",
+      "finalUrl": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/tips-and-tricks",
+      "httpStatus": 200,
+      "title": "Tips & Tricks - Player Guides - Jurassic World Evolution 3",
+      "accessedAt": "2026-09-21T12:09:46+09:00",
+      "sourceSha256": "2f08236d136f823e9e182753dae70476d8415fde10158c76379d9842f92277b8",
+      "visibleTextSha256": "4fc39c4367cce511598c035d260b4a2acd3eecd14c5319572714115b74c3a205",
+      "sourcePath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/tips-and-tricks/source.html",
+      "visibleTextPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/tips-and-tricks/visible.txt",
+      "sectionInventory": ["Build with Blueprints", "Customise Your Park", "Create Natural Enclosures", "Synthesise a Variety of Dinosaurs", "Delegate to Your Staff", "Stay Secure", "Increasing Your Park Appeal"],
+      "directFacts": [
+        {
+          "mechanic": "빠른 기능 배치와 세부 사용자 조립의 이중 경로",
+          "workflow": "미리 만든 청사진으로 기능 사이트를 빨리 시작하거나, 빈 핵심 모듈에 필수 요소를 더해 사용자 건물을 만든다.",
+          "preconditions": ["핵심 모듈과 일부 기초는 거친 지형을 평탄화"],
+          "consequences": ["초기 설정 시간을 줄이거나 세부 조립 자유도를 선택"],
+          "uiFeedback": ["Custom Design과 blueprint 선택"],
+          "evidenceSection": "Build with Blueprints; Customise Your Park",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "자원 조건이 있는 직원 자동화와 보안 연쇄",
+          "workflow": "팀에 자동 작업을 배정하고, 감지 후 대응팀을 보내며 파손 경계를 수리한 다음 대상을 복귀시킨다.",
+          "preconditions": ["팀의 연료와 자원", "보안 카메라 커버리지"],
+          "consequences": ["경계 수리 전 복귀시키면 원인 제거가 끝나지 않음"],
+          "uiFeedback": ["카메라 위협 감지 뒤 대응팀 경보"],
+          "evidenceSection": "Delegate to Your Staff; Stay Secure",
+          "classification": "directly_supported"
+        }
+      ]
+    },
+    {
+      "id": "park-build-ideas",
+      "availability": "covered",
+      "sourceUrl": "https://www.jurassicworldevolution.com/en-US/3/news/park-managers-toolbox-park-build-ideas",
+      "finalUrl": "https://www.jurassicworldevolution.com/en-US/3/news/park-managers-toolbox-park-build-ideas",
+      "httpStatus": 200,
+      "title": "Park Managers’ Toolbox – Park Build Ideas - Jurassic World Evolution 3",
+      "accessedAt": "2026-09-21T12:09:47+09:00",
+      "sourceSha256": "bb4b18f112d1b319c5405a4ac10cfdfc1f1820f1e3f2998bffc684c1ee47cdec",
+      "visibleTextSha256": "ea517a067d71bb6d302349a5783db915846a9c4066dc0024446c02ba3b2449c7",
+      "sourcePath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/park-build-ideas/source.html",
+      "visibleTextPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/park-build-ideas/visible.txt",
+      "sectionInventory": ["Tectonic Terrain", "From the Ground Up", "Throughout Time", "Realise the Original Vision", "Island Life", "Water World"],
+      "excludedPageChrome": ["Community Creations", "Jurassic World Evolution 3 is Out Now!", "More news"],
+      "directFacts": [
+        {
+          "mechanic": "지형 경계, 구역 분리, 현장 시점 검토",
+          "workflow": "급경사·깊은 물·암석으로 접근을 제한하고, 위험·연구와 방문자·편의 구역을 분리하며, 1인칭 시점에서 확인한다.",
+          "preconditions": ["자연 경계는 대상 이동 능력에 따라 유효성이 다름"],
+          "consequences": ["격리 구역 사이에는 별도 운송 연결 필요"],
+          "uiFeedback": ["First Person View로 이용자 시점 검사"],
+          "evidenceSection": "Tectonic Terrain; Island Life",
+          "classification": "directly_supported"
+        },
+        {
+          "mechanic": "배치 전 크기 조절과 청사진 우선 구축",
+          "workflow": "PC는 B 입력과 전후 이동, 콘솔은 Advanced Move의 Scale로 장식 크기를 배치 전에 조정한다.",
+          "preconditions": ["플랫폼별 입력 방식 상이"],
+          "consequences": ["청사진으로 핵심 시설·편의·매력을 빠르게 구성 가능"],
+          "uiFeedback": ["Advanced Move의 Scale 선택"],
+          "evidenceSection": "From the Ground Up; Realise the Original Vision",
+          "classification": "directly_supported"
+        }
+      ]
+    },
+    {
+      "id": "attraction-build-ideas",
+      "availability": "covered",
+      "sourceUrl": "https://www.jurassicworldevolution.com/en-US/3/news/park-managers-toolbox-attraction-build-ideas",
+      "finalUrl": "https://www.jurassicworldevolution.com/en-US/3/news/park-managers-toolbox-attraction-build-ideas",
+      "httpStatus": 200,
+      "title": "Park Managers’ Toolbox – Attraction Build Ideas - Jurassic World Evolution 3",
+      "accessedAt": "2026-09-21T12:09:48+09:00",
+      "sourceSha256": "58ce26dc40444a45cb5fc46f0093c36b63f85a8f164f089d1d38e7f9cce90419",
+      "visibleTextSha256": "00b42b2db4eec55e44770f13ed0b595907fa53806a12d754a867668fff29ff4a",
+      "sourcePath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/attraction-build-ideas/source.html",
+      "visibleTextPath": "asset-library/research-public/2026-09-21/jwe-official/build-guides/attraction-build-ideas/visible.txt",
+      "sectionInventory": ["Building On the Edge", "Wetlands Tours", "Blending Lagoons in"],
+      "excludedPageChrome": ["Community Creations", "Jurassic World Evolution 3 is Out Now!", "More news"],
+      "directFacts": [
+        {
+          "mechanic": "수직·경계 조건 위의 모듈 배치",
+          "workflow": "절벽·수면 경계 위로 시설을 확장하고 기둥·벽 모듈로 지지 구조를 구성한다.",
+          "preconditions": ["폭포는 충분한 경사 설정 필요"],
+          "consequences": ["원형 단위도 배치 조합으로 더 유기적인 전체 윤곽 구성 가능"],
+          "uiFeedback": ["Environment brush와 Slope 설정"],
+          "evidenceSection": "Building On the Edge; Blending Lagoons in",
+          "classification": "directly_supported"
+        }
+      ]
+    }
+  ],
+  "currentRepoSeams": [
+    {
+      "id": "static-metre-zone-kit",
+      "paths": ["Assets/ChooGuard/Editor/MvpStationZones.cs", "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs", "Assets/ChooGuard/Editor/MvpFloorBuilder.cs"],
+      "currentCapability": "세 층 외곽 안에 포털·코어·좌석·역무 등의 미터 기반 시각 구역을 배치하고 주 통로를 예약함",
+      "gap": "편집기 생성 전용이며 플레이어 배치, 소켓, 유효성 판정, 기능 상태가 없음",
+      "classification": "directly_supported"
+    },
+    {
+      "id": "command-and-receipt-loop",
+      "paths": ["Assets/ChooGuard/App/Mvp/MvpOperationsPort.cs", "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs", "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs"],
+      "currentCapability": "platform/concourse/exit 목적지, 팀 명령 미리보기·접수·영수증, 일시정지 중 계획 큐, 현장 도착/작업/계산 반영 피드백",
+      "gap": "시설 설치·이동·연결·철거를 상태 변경 명령으로 다루지 않음",
+      "classification": "directly_supported"
+    },
+    {
+      "id": "persistent-training-lifecycle",
+      "paths": ["Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs", "Assets/ChooGuard/App/Mvp/MvpStationView.cs"],
+      "currentCapability": "같은 시민과 팀 배치를 평시에서 사건으로 유지하고, 복구/미완료 상태와 결정 기록을 표시함",
+      "gap": "사건 전 공간 변경이 사건 결과와 복기에 이어지는 건설 상태가 없음",
+      "classification": "directly_supported"
+    },
+    {
+      "id": "current-spatial-feedback",
+      "paths": ["Assets/ChooGuard/App/Mvp/MvpWorkspace.cs", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs", "Assets/ChooGuard/App/Mvp/MvpInteriorHubView.cs"],
+      "currentCapability": "알림, 선택 팀·집단 상태, FDS 장 표시, 층/허브 컷어웨이",
+      "gap": "연결성·출구 커버리지·병목·시설 접근성을 직접 보여주는 관리 뷰가 없음",
+      "classification": "directly_supported"
+    }
+  ],
+  "migrationCandidates": [
+    {
+      "id": "M1-runtime-modular-station-kit",
+      "priority": 1,
+      "classification": "CHOOGuard_inference",
+      "proposal": "현재 MvpStationZones의 포털·코어·좌석·통제·의료 요소를 런타임 모듈 정의로 옮겨, 1m 그리드·층 높이·90도 회전·명시적 소켓·그룹 이동을 제공한다.",
+      "minimumIncrement": "2층 기준 홀 안에서 통제소, 의료 지원점, 임시 차단, 유도 표지를 배치·이동·삭제하고 유효/무효 미리보기 색과 이유를 표시",
+      "officialBasis": ["construction-guide: Grids/Groups/Advanced Tools/Structures and Modules", "tips-and-tricks: Customise Your Park"],
+      "repoSeams": ["Assets/ChooGuard/Editor/MvpStationZones.cs", "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs", "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs"],
+      "preconditions": ["Editor 전용 생성 코드와 런타임 상태 분리", "모듈 footprint·socket·requiredClearance를 metre 단위 데이터로 정의", "기존 FDS 기준 홀 좌표를 침범하지 않는 명시적 배치 경계"],
+      "acceptance": ["동일 입력이 동일 배치 상태를 생성", "포털·주 통로 예약영역 침범이 이유와 함께 거절", "그룹 이동·분할 뒤 기능 연결성 재검사", "Unity 실제 PlayMode 검증 필요"],
+      "limits": ["실제 부산역 공간 적합성이나 법규 적합성 아님", "자유 스케일은 물리·동선 의미를 훼손하므로 기능 모듈에는 적용하지 않음"]
+    },
+    {
+      "id": "M2-connectivity-and-operability-graph",
+      "priority": 2,
+      "classification": "CHOOGuard_inference",
+      "proposal": "출구·계단/코어·층 통로·팀 접근점·전력/통신 대신 훈련 기능 의존성을 노드/엣지로 계산해 시설 상태를 준비/부분/불가로 표시한다.",
+      "minimumIncrement": "배치된 통제소와 의료점이 출구 및 팀 접근 앵커에 연결되지 않으면 비가동, 연결되면 팀 작업 목적지로 등록",
+      "officialBasis": ["construction-guide: Paths/Structures and Modules", "enclosures-guide: Enclosures/Security Cameras", "attractions-guide: Types of Attractions"],
+      "repoSeams": ["Assets/ChooGuard/App/Mvp/MvpOperationsPort.cs", "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs", "Assets/ChooGuard/App/Mvp/MvpStationView.cs"],
+      "preconditions": ["TargetIds의 고정 3개 값 확장 또는 별도 시설 식별자 계약", "연결성은 NavMesh 추정이 아니라 명시적 socket/portal graph로 먼저 구현"],
+      "acceptance": ["연결 끊김 즉시 비가동 원인 표시", "유효 시설만 팀 명령 목표가 됨", "철거/이동 후 명령 미리보기와 receipt가 최신 revision을 검증"],
+      "limits": ["JWE3 경로·전력 규칙을 그대로 복제하지 않음", "실제 소방 전력/통신 설계 판정 아님"]
+    },
+    {
+      "id": "M3-spatial-management-views",
+      "priority": 3,
+      "classification": "CHOOGuard_inference",
+      "proposal": "출구 도달거리, 대응팀 접근시간, 국소 군중밀도, FDS 가시거리/노출을 선택식 관리 뷰로 겹쳐 배치 전후 병목과 커버리지 공백을 보여준다.",
+      "minimumIncrement": "2층 30×20m 기준 홀에서 출구 거리와 밀도 두 레이어를 전환하고, 선택 모듈 배치 미리보기에서 영향 셀을 강조",
+      "officialBasis": ["construction-guide: Overcrowding View", "attractions-guide: Visibility", "guests-guide: Management Views"],
+      "repoSeams": ["Assets/ChooGuard/App/Mvp/MvpWorkspace.cs", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs", "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs"],
+      "preconditions": ["현재 scalar 결과와 실제 grid/agent 데이터의 구분", "시간·층·단위 범례", "FDS 장은 현재 연결된 2D slice 범위만 사용"],
+      "acceptance": ["레이어마다 데이터 시각·단위·범위 표시", "데이터 없음과 0값 구분", "배치 변경 전후 동일 시드 비교 가능"],
+      "limits": ["게임용 휴리스틱 커버리지와 실제 피난 검증을 구분", "JWE3 관리 뷰의 시각 외형은 복제하지 않음"]
+    },
+    {
+      "id": "M4-local-presets-and-transaction-history",
+      "priority": 4,
+      "classification": "CHOOGuard_inference",
+      "proposal": "검증된 모듈 그룹을 로컬 훈련 프리셋으로 저장하고 모든 배치 변경을 revision 기반 명령으로 기록해 Undo/Redo와 복기에서 같은 변경을 재현한다.",
+      "minimumIncrement": "통제소+의료점+유도표지 그룹 하나를 로컬 preset으로 저장/재배치하고, 비용 대신 배치 revision을 Undo/Redo",
+      "officialBasis": ["construction-guide: Blueprints/Undo/Redo", "tips-and-tricks: Build with Blueprints"],
+      "repoSeams": ["Assets/ChooGuard/App/Mvp/MvpOperationsPort.cs", "Assets/ChooGuard/Application/CommandDispatcher.cs", "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs"],
+      "preconditions": ["버전된 preset schema", "stable module IDs", "명령 fingerprint와 replay-safe serialization"],
+      "acceptance": ["Undo/Redo 뒤 연결성과 작업목표 일치", "동일 preset+seed의 초기 배치 digest 동일", "debrief가 누가 언제 어떤 공간 변경을 했는지 표시"],
+      "limits": ["Workshop 업로드/다운로드 없음", "검증되지 않은 사용자 프리셋을 실제 대응 표준으로 표현하지 않음"]
+    },
+    {
+      "id": "M5-persistent-build-to-incident-consequence",
+      "priority": 5,
+      "classification": "CHOOGuard_inference",
+      "proposal": "평시 배치한 시설과 통로 변경을 사건 발생 때 초기화하지 않고 유지해 접근시간·대피 흐름·팀 작업 가능 여부에 영향을 주며, 복구 단계에서 재배치와 재검증을 요구한다.",
+      "minimumIncrement": "평시 유도표지/임시 차단 배치가 같은 시민 상태의 군중 사건에서 집단 유도 가능 경로와 팀 이동시간을 바꾸고 복기에 기록",
+      "officialBasis": ["guests-guide: Guest Approval/Shelter Coverage", "tips-and-tricks: Stay Secure", "enclosures-guide: Security Cameras/Ranger Posts"],
+      "repoSeams": ["Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs", "Assets/ChooGuard/App/Mvp/MvpStationView.cs", "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs"],
+      "preconditions": ["현재 ordinary→incident 동일 시민/배치 계약 보존", "공간 변경이 solver에 들어가는 방식과 시점을 명시", "복구 완료와 영업 재개 안전 판정 분리"],
+      "acceptance": ["사건 전후 module IDs와 revision 유지", "같은 시드에서 배치 차이만 둔 비교 결과 제공", "resolved가 실제 안전·환자회복 완료로 오해되지 않음"],
+      "limits": ["공식 JWE3 가이드는 CHOOGuard 물리 연동을 입증하지 않음", "공간 변경의 실제 효과는 Unity+worker 통합 검증 전까지 제안"]
+    }
+  ],
+  "transferLimits": [
+    {
+      "item": "자유 스케일·절벽/수상 건축·테마 장식",
+      "decision": "기능 모듈에는 이전하지 않음",
+      "reason": "1m 물리 좌표와 접근성 의미를 훼손하며 현재 역사 훈련의 핵심 플레이가 아님"
+    },
+    {
+      "item": "공룡 보안 등급·Appeal·Guest Demographics·티켓 수익",
+      "decision": "명칭과 수치 체계는 이전하지 않음",
+      "reason": "CHOOGuard에는 위험등급, 시민 취약도, 대응 커버리지 등 도메인별 별도 계약이 필요"
+    },
+    {
+      "item": "Workshop, 온라인 공유, 커뮤니티 청사진",
+      "decision": "이전하지 않음",
+      "reason": "현재 범위는 로컬 훈련 프리셋과 재현성; 외부 콘텐츠·권한·검증 문제는 별도 제품 결정"
+    },
+    {
+      "item": "자연 경계와 카메라 자동 대응 규칙",
+      "decision": "추상 패턴만 이전",
+      "reason": "공식 페이지의 게임 규칙은 실제 부산역 안전 설계나 물리 증거가 아님"
+    },
+    {
+      "item": "Island Generator 또는 시나리오 생성기",
+      "decision": "이전하지 않음",
+      "reason": "사용자 범위에서 명시적으로 제외됨"
+    }
+  ],
+  "synthesis": {
+    "directFact": "JWE3 공식 가이드는 모듈/그리드/스냅/그룹/청사진과 연결·전력·접근·커버리지·용량의 운영 조건, 그리고 관리 뷰 피드백을 문서화한다.",
+    "CHOOGuardInference": "현재 정적 역사 키트를 런타임 모듈과 연결성 그래프로 승격하고, 기존 명령 receipt·지속 세션·FDS/군중 피드백에 연결하는 것이 가장 작은 고가치 이전이다.",
+    "notEstablished": [
+      "JWE3가 Unity 또는 Unreal로 구현되었다는 주장",
+      "JWE3 내부 경로찾기·커버리지·건설 데이터 구조",
+      "제안한 시스템이 현재 CHOOGuard에 구현되었거나 Unity에서 검증되었다는 주장",
+      "공식 게임 규칙이 실제 역사 운영·소방·군중 안전 기준이라는 주장"
+    ]
+  }
+}

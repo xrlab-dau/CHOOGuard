@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "10.0.0",
+  "profiles": [
+    {
+      "id": "EXPERIMENTAL",
+      "use": "개발·가정 기반 탐색",
+      "productionPredictionAllowed": false
+    },
+    {
+      "id": "VALIDATED_DOMAIN",
+      "use": "지정 목적·영역에서 검증된 정량 비교",
+      "requires": [
+        "frozen QoI contract",
+        "independent data validation",
+        "version-bound receipt"
+      ]
+    },
+    {
+      "id": "TWIN_QUALIFIED",
+      "use": "실제 대응물의 추적 가능한 갱신과 지정 모델 검증",
+      "requires": [
+        "VALIDATED_DOMAIN",
+        "real observation revision",
+        "cadence and freshness contract",
+        "change impact review"
+      ]
+    }
+  ],
+  "sameProfilesAvailableInBothUserModes": true,
+  "silentDowngradeAllowed": false,
+  "allCurrentQualifications": "NOT_EVALUATED"
+}

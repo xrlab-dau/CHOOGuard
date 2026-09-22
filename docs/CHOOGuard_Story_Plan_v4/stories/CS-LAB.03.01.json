@@ -1,0 +1,163 @@
+{
+  "id": "CS-LAB.03.01",
+  "epicId": "CS-LAB",
+  "parentTaskId": "CS-LAB.03",
+  "title": "같은 비교 basis와 외생 혁신을 결속한다",
+  "goal": "맵/규칙/모델/QoI·외생 조건을 비교하고 stable process key로 RNG 스트림을 묶는다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-038",
+    "REQ-039"
+  ],
+  "supportsRequirementIds": [
+    "REQ-038",
+    "REQ-039"
+  ],
+  "parentProductTestIds": [
+    "AT-038",
+    "AT-039"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "Assets/ChooGuard/Experiments/ComparisonService.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-LAB.03.01",
+      "scope": "같은 비교 basis와 외생 혁신을 결속한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Experiments/ExogenousScenarioStreams.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-LAB.03.01",
+      "scope": "같은 비교 basis와 외생 혁신을 결속한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Experiments/ComparisonReport.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-LAB.03.01",
+      "scope": "같은 비교 basis와 외생 혁신을 결속한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSLAB0301Tests.cs",
+  "testKinds": [
+    "EDIT_MODE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-LAB.03.01",
+      "kind": "PlannedArtifact",
+      "producer": "CS-LAB.03.01",
+      "contract": "같은 비교 basis와 외생 혁신을 결속한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "Assets/ChooGuard/Experiments/ComparisonService.cs",
+        "Assets/ChooGuard/Experiments/ExogenousScenarioStreams.cs",
+        "Assets/ChooGuard/Experiments/ComparisonReport.cs"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-LAB.02.01",
+      "artifactId": "OUT-CS-LAB.02.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    }
+  ],
+  "externalInputs": [],
+  "sourceIds": [],
+  "sourceRefs": [],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/04-checkpoint-and-comparison.md",
+    "basis/v3/specs/03-durable-operations.md"
+  ],
+  "parentContract": "Comparison {basis,inputs,qoi,violations,uncertainty,status,selectionReason}; 현실 전체 최적을 주장하지 않음.",
+  "parentSpecRef": "basis/v3/tasks/CS-LAB.03.json",
+  "behaviorSteps": [
+    "맵/규칙/모델/QoI·외생 조건을 비교하고 stable process key로 RNG 스트림을 묶는다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-LAB.03.01-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 같은 비교 basis와 외생 혁신을 결속한다의 유효 조건",
+      "when": "같은 비교 basis와 외생 혁신을 결속한다를 실행한다",
+      "then": "같은 외생 조건에 다른 운영안을 실행하되 내생 결과는 별도로 계산된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-LAB.03.01-N",
+      "kind": "NEGATIVE",
+      "given": "맵/규칙 불일치를 숨기거나 조치가 바꾼 도착을 고정 외생 사건으로 강제하지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "맵/규칙 불일치를 숨기거나 조치가 바꾼 도착을 고정 외생 사건으로 강제하지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSLAB0301Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10062,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/04-checkpoint-and-comparison.md",
+      "sha256": "2cc1a236ebd91dfb341ed97b3242536e4a5d982aecf7cef90a188e5ff3cd0af3"
+    },
+    {
+      "path": "basis/v3/specs/03-durable-operations.md",
+      "sha256": "7262e5711eebeac1bb5d42cf3e4446645787a9fa75799978e89cb50687c18752"
+    }
+  ]
+}

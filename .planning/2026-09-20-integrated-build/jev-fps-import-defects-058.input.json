@@ -1,0 +1,41 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "evidence": [
+      "LocalKTXboarding failed; native444meshroot bounds .0412x2.0066x.0562m despite source200.66m train. Builder overwrites importedroot localrotation/scale with worldplacement/one. Need read importedroot frame and keep it under parent.",
+      "Metro actual texture sourceFormwall4bluekeypixels/131072 vs exportedalltransparent; safetybar92829bluekeypixels vs exportzeroalpha. Actual conversiondefect; do not mask with walls."
+    ],
+    "assignments": [
+      "MetroAstra fixes textures only; KTXAstra examines source accessgeometry only; FPSsceneAstra fixes builder placement only; root onlyUnity."
+    ],
+    "old_failure": "worldYminus1000 fixed; newKTXsourcecanonicalrootreset is different cause.",
+    "proposed": "Parent wrapper uses placement; importedasset child keeps native authored transform; verify per-model expected nativebounds. Preserve oldfailed receipts."
+  },
+  "questions": {
+    "retry": {
+      "type": "choice",
+      "instructions": "Next action judged by native evidence",
+      "criteria": {
+        "fix_cause_scoped": "Fix builderframe and textureconversion in disjointAstra scopes then targetednative checks",
+        "repeat_walk": "Retry same failedwalk unmodified",
+        "hide_with_geometry": "Add new genericwall and invisibleboardingramp"
+      }
+    },
+    "overlap": {
+      "type": "choice",
+      "instructions": "Is dispatch duplication?",
+      "criteria": {
+        "distinct_owner": "Three separate writeownership targets",
+        "duplicate": "Same files edited by multiple workers"
+      }
+    },
+    "claims": {
+      "type": "choice",
+      "instructions": "How report imports",
+      "criteria": {
+        "counts_insufficient": "Meshcounts andmaterialbindings are insufficient; sourceframealpha defects invalidate visual readiness",
+        "ready": "Counts provecomplete integration"
+      }
+    }
+  }
+}

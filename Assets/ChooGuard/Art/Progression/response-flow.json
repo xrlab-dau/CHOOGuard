@@ -1,0 +1,384 @@
+{
+  "id": "agency-response-flow",
+  "version": 1,
+  "startNode": "requested",
+  "nodes": [
+    {
+      "id": "requested",
+      "label": "출발 대기"
+    },
+    {
+      "id": "travelling",
+      "label": "현장으로 이동"
+    },
+    {
+      "id": "onsite",
+      "label": "현장 도착"
+    },
+    {
+      "id": "standby",
+      "label": "실행팀 배정 대기"
+    },
+    {
+      "id": "warn-work",
+      "label": "경고 방송"
+    },
+    {
+      "id": "evac-work",
+      "label": "대피 유도"
+    },
+    {
+      "id": "awaiting-evacuation",
+      "label": "대피 결과 관찰"
+    },
+    {
+      "id": "medical-work",
+      "label": "의료 지원 요청"
+    },
+    {
+      "id": "medical-confirmation",
+      "label": "의료 업무 종료 확인"
+    },
+    {
+      "id": "returning",
+      "label": "기관으로 복귀"
+    },
+    {
+      "id": "replenishing",
+      "label": "재출동 준비 중"
+    },
+    {
+      "id": "ready",
+      "label": "다음 지원 가능"
+    },
+    {
+      "id": "canceled",
+      "label": "출발 전 취소"
+    }
+  ],
+  "edges": [
+    {
+      "id": "depart",
+      "from": "requested",
+      "to": "travelling",
+      "event": "depart",
+      "priority": 10,
+      "allFacts": [],
+      "notFacts": [],
+      "effect": "none",
+      "label": "대응팀 출발",
+      "prediction": "도로 경로를 따라 현장으로 이동",
+      "reason": "실제 출발을 기다립니다"
+    },
+    {
+      "id": "arrive",
+      "from": "travelling",
+      "to": "onsite",
+      "event": "arrive",
+      "priority": 10,
+      "allFacts": [],
+      "notFacts": [],
+      "effect": "none",
+      "label": "현장 도착 확인",
+      "prediction": "사건 상태와 실행팀 가용성을 확인",
+      "reason": "차량 구성원이 도착해야 합니다"
+    },
+    {
+      "id": "returned",
+      "from": "returning",
+      "to": "replenishing",
+      "event": "returned",
+      "priority": 10,
+      "allFacts": [],
+      "notFacts": [],
+      "effect": "none",
+      "label": "기관 복귀 후 보충 시작",
+      "prediction": "보충을 마친 뒤 다음 지원 가능",
+      "reason": "구성원 복귀를 기다립니다"
+    },
+    {
+      "id": "replenished",
+      "from": "replenishing",
+      "to": "ready",
+      "event": "replenished",
+      "priority": 10,
+      "allFacts": [],
+      "notFacts": [],
+      "effect": "none",
+      "label": "보충 완료",
+      "prediction": "대응팀이 다음 지원을 맡을 수 있음",
+      "reason": "승인된 운영 시간으로 보충을 마쳐야 합니다"
+    },
+    {
+      "id": "cancel",
+      "from": "requested",
+      "to": "canceled",
+      "event": "cancel",
+      "priority": 10,
+      "allFacts": [
+        "can-cancel"
+      ],
+      "notFacts": [],
+      "effect": "none",
+      "label": "출발 전 업무 취소",
+      "prediction": "배정과 출발 예약을 해제",
+      "reason": "출발하기 전에만 취소할 수 있습니다"
+    },
+    {
+      "id": "onsite-resolved",
+      "from": "onsite",
+      "to": "returning",
+      "event": "result",
+      "priority": 0,
+      "allFacts": [
+        "calculation-current",
+        "evacuation-task",
+        "all-evacuated"
+      ],
+      "notFacts": [],
+      "effect": "return",
+      "label": "이미 대피 완료 · 복귀",
+      "prediction": "불필요한 대피 지시를 생략하고 복귀",
+      "reason": "실제 대피 완료 관찰이 필요합니다"
+    },
+    {
+      "id": "onsite-evac",
+      "from": "onsite",
+      "to": "warn-work",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "evacuation-task",
+        "response-phase",
+        "channel-free"
+      ],
+      "notFacts": [
+        "all-evacuated"
+      ],
+      "effect": "lease-warn",
+      "label": "경고 방송 업무 시작",
+      "prediction": "현장 실행팀을 배정하고 방송 접수를 확인",
+      "reason": "사건 발생과 실행팀 가용성을 기다립니다"
+    },
+    {
+      "id": "onsite-medical",
+      "from": "onsite",
+      "to": "medical-work",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "medical-task",
+        "response-phase",
+        "channel-free"
+      ],
+      "notFacts": [],
+      "effect": "lease-medical",
+      "label": "의료 지원 요청 시작",
+      "prediction": "요청 접수 확인 후 사용자 종료 확인 대기",
+      "reason": "사건 대응 또는 복구 단계와 실행팀 가용성을 기다립니다"
+    },
+    {
+      "id": "onsite-withdraw",
+      "from": "onsite",
+      "to": "returning",
+      "event": "withdraw",
+      "priority": 10,
+      "allFacts": [
+        "can-withdraw"
+      ],
+      "notFacts": [],
+      "effect": "return",
+      "label": "사용자 지원 종료 요청",
+      "prediction": "현장 지원을 종료하고 복귀",
+      "reason": "진행 중인 현장 업무가 없어야 합니다"
+    },
+    {
+      "id": "standby-resolved",
+      "from": "standby",
+      "to": "returning",
+      "event": "result",
+      "priority": 0,
+      "allFacts": [
+        "calculation-current",
+        "evacuation-task",
+        "all-evacuated"
+      ],
+      "notFacts": [],
+      "effect": "return",
+      "label": "이미 대피 완료 · 복귀",
+      "prediction": "불필요한 대피 지시를 생략하고 복귀",
+      "reason": "실제 대피 완료 관찰이 필요합니다"
+    },
+    {
+      "id": "standby-evac",
+      "from": "standby",
+      "to": "warn-work",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "evacuation-task",
+        "response-phase",
+        "channel-free"
+      ],
+      "notFacts": [
+        "all-evacuated"
+      ],
+      "effect": "lease-warn",
+      "label": "경고 방송 업무 시작",
+      "prediction": "현장 실행팀을 배정하고 방송 접수를 확인",
+      "reason": "사건 발생과 실행팀 가용성을 기다립니다"
+    },
+    {
+      "id": "standby-medical",
+      "from": "standby",
+      "to": "medical-work",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "medical-task",
+        "response-phase",
+        "channel-free"
+      ],
+      "notFacts": [],
+      "effect": "lease-medical",
+      "label": "의료 지원 요청 시작",
+      "prediction": "요청 접수 확인 후 사용자 종료 확인 대기",
+      "reason": "사건 대응 또는 복구 단계와 실행팀 가용성을 기다립니다"
+    },
+    {
+      "id": "standby-withdraw",
+      "from": "standby",
+      "to": "returning",
+      "event": "withdraw",
+      "priority": 10,
+      "allFacts": [
+        "can-withdraw"
+      ],
+      "notFacts": [],
+      "effect": "return",
+      "label": "사용자 지원 종료 요청",
+      "prediction": "현장 지원을 종료하고 복귀",
+      "reason": "진행 중인 현장 업무가 없어야 합니다"
+    },
+    {
+      "id": "onsite-busy",
+      "from": "onsite",
+      "to": "standby",
+      "event": "result",
+      "priority": 20,
+      "allFacts": [
+        "calculation-current",
+        "response-phase"
+      ],
+      "notFacts": [
+        "channel-free"
+      ],
+      "effect": "support-standby",
+      "label": "실행팀 사용 중 · 대기",
+      "prediction": "다른 업무가 실행팀을 반환하면 배정 가능",
+      "reason": "같은 역할의 실행팀을 중복 배정하지 않습니다"
+    },
+    {
+      "id": "warn-ack-next",
+      "from": "warn-work",
+      "to": "evac-work",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "own-warn-ack"
+      ],
+      "notFacts": [
+        "all-evacuated"
+      ],
+      "effect": "enqueue-evacuate",
+      "label": "방송 접수 확인 · 대피 유도",
+      "prediction": "같은 업무의 대피 유도 접수를 확인",
+      "reason": "이 업무가 보낸 방송의 실제 접수 확인이 필요합니다"
+    },
+    {
+      "id": "warn-ack-resolved",
+      "from": "warn-work",
+      "to": "awaiting-evacuation",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "own-warn-ack",
+        "all-evacuated"
+      ],
+      "notFacts": [],
+      "effect": "await-outcome",
+      "label": "방송 접수 확인 · 이미 대피 완료",
+      "prediction": "추가 지시 없이 관찰 결과로 복귀 판단",
+      "reason": "방송 접수와 실제 대피 완료가 확인돼야 합니다"
+    },
+    {
+      "id": "evac-ack",
+      "from": "evac-work",
+      "to": "awaiting-evacuation",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "own-evacuate-ack"
+      ],
+      "notFacts": [],
+      "effect": "await-outcome",
+      "label": "대피 유도 접수 확인",
+      "prediction": "시민의 실제 출구 도달 결과를 기다림",
+      "reason": "이 업무가 보낸 대피 유도의 실제 접수 확인이 필요합니다"
+    },
+    {
+      "id": "evac-outcome",
+      "from": "awaiting-evacuation",
+      "to": "returning",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "all-evacuated"
+      ],
+      "notFacts": [],
+      "effect": "return",
+      "label": "대피 결과 확인 · 자동 복귀",
+      "prediction": "현장 실행팀 배정을 해제하고 복귀",
+      "reason": "실제 계산에서 모든 시민의 출구 도달을 기다립니다"
+    },
+    {
+      "id": "medical-ack",
+      "from": "medical-work",
+      "to": "medical-confirmation",
+      "event": "result",
+      "priority": 10,
+      "allFacts": [
+        "calculation-current",
+        "own-medical-ack"
+      ],
+      "notFacts": [],
+      "effect": "handoff-pending",
+      "label": "의료 요청 접수 · 종료 확인 대기",
+      "prediction": "환자 회복·이송을 판정하지 않고 확인 대기",
+      "reason": "이 업무의 의료 요청 접수 확인이 필요합니다"
+    },
+    {
+      "id": "medical-confirm",
+      "from": "medical-confirmation",
+      "to": "returning",
+      "event": "confirm",
+      "priority": 10,
+      "allFacts": [
+        "manual-confirm"
+      ],
+      "notFacts": [],
+      "effect": "return",
+      "label": "사용자 의료 업무 종료 확인",
+      "prediction": "업무 종료 확인 후 복귀 · 실제 인계 판정 아님",
+      "reason": "사용자가 의료 업무 종료를 확인해야 합니다"
+    }
+  ]
+}

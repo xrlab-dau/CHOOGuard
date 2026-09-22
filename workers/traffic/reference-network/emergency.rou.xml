@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 2026-09-21T12:52:16.330842+09:00 by Eclipse SUMO duarouter 1.27.1
+<duarouterConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
+
+    <input>
+        <net-file value="/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/busan.net.xml"/>
+        <route-files value="/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/emergency.trips.xml"/>
+    </input>
+
+    <output>
+        <output-file value="/Users/um-yunsang/CHOOGuard/workers/traffic/reference-network/emergency.rou.xml"/>
+    </output>
+
+    <random_number>
+        <seed value="4242"/>
+    </random_number>
+
+</duarouterConfiguration>
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+    <vType id="rescue" maxSpeed="8.00" speedFactor="1.00" vClass="emergency" sigma="0"/>
+    <vehicle id="central119-busan-station-source-check" type="rescue" depart="0.00">
+        <route edges="1355582554#0 1355582554#1 1355582554#2 1355582554#3 1355585544#1 1355585544#2 1355585544#3 1355585544#4 1335340143#2 797760104#0 797760104#2 -165572520#7 -165572520#6 -165572520#4 -165572520#3 -165572520#2 -165572520#1 -165572520#0 -1305526805#0 37402347#0"/>
+    </vehicle>
+</routes>

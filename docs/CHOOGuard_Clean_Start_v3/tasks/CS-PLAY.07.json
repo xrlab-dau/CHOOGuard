@@ -1,0 +1,153 @@
+{
+  "id": "CS-PLAY.07",
+  "epicId": "CS-PLAY",
+  "title": "동일 코어의 연구용 표·타임라인 비교 인터페이스",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PLAY.07",
+    "description": "동일 코어의 연구용 표·타임라인 비교 인터페이스",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PLAY.07",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.07.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.07.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.07.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.07.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Presentation/Research/TabularStudyPresenter.cs",
+    "Assets/ChooGuard/Presentation/Research/TabularStudy.prefab",
+    "Assets/ChooGuard/Contracts/StudyConfiguration.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PLAY/CSPLAY07Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PLAY.05",
+      "artifactId": "A-CS-PLAY.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.07",
+      "artifactId": "A-CS-OPS.07",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "연구 빌드에서만 B/C 조건을 제시하고 동일 OperationsPort·로그·규칙·AI·도움 정책을 사용한다. B에는 3D만 감춘다.",
+    "B에서 배정·취소·원인 조회·분기·비교·대본이라는 동일 과업을 수행할 수 있도록 표 기반 경로를 제공한다.",
+    "배포 메뉴에는 두 사용자 모드만 유지한다. 연구 조건과 실행순서를 기록하며 B에 다른 계산이나 축소된 정보를 주지 않는다."
+  ],
+  "contract": "StudyConfiguration {condition, coreLock, assistancePolicy, informationScope, caseId}; 연구 전용 condition이며 사용자 모드가 아님.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PLAY.07-P",
+      "given": "같은 core/model/info/AI lock의 B/C",
+      "when": "같은 과제",
+      "then": "3D 외 기능·정보 parity",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PLAY.07-N",
+      "given": "B만 다른 업무 timer",
+      "when": "같은 과제",
+      "then": "STUDY_PARITY_FAIL",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-081"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-081"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PLAY/CSPLAY07Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSPLAY07PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-PLAY.07.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "같은 core/model/info/AI lock의 B/C",
+    "operation": "같은 과제",
+    "expectedPositive": "3D 외 기능·정보 parity",
+    "negativeInput": "B만 다른 업무 timer",
+    "expectedNegative": "STUDY_PARITY_FAIL",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

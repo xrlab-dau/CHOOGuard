@@ -1,0 +1,149 @@
+{
+  "id": "CS-SHIP.02",
+  "epicId": "CS-SHIP",
+  "title": "백업·스키마 갱신·장애 복구",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SHIP.02",
+    "description": "새 제품 내부에서의 안전한 저장형식 갱신과 restore",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SHIP.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Persistence/BackupService.cs",
+    "Assets/ChooGuard/Persistence/SchemaUpgrade.cs",
+    "packaging/restore-policy.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SHIP/Ship02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-SHIP.01",
+      "artifactId": "A-CS-SHIP.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-LAB.01",
+      "artifactId": "A-CS-LAB.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "DB와 blob/checkpoint 참조를 일관된 cut으로 백업하고 누락·손상을 검사한다.",
+    "이후 새 제품의 schema version 간 업그레이드는 별도 백업·검증·rollback 경로로 수행한다. 이는 초기화 이전 제품 호환을 뜻하지 않는다.",
+    "복구후 receipt·예약·outbox·lineage를 검사한다. 해시는 동일성 검사용이며 기관 승인을 증명하는 서명이 아니다.",
+    "실행 중 .db 파일만 복사하지 않는다. 백업 API snapshot에서 참조 집합을 구하고 blob GC를 pin한 후 해시 검증→새 폴더→manifest-last로 게시한다.",
+    "복구는 현재 DB를 덮지 않고 별도 staging에서 integrity_check/foreign_key_check·receipt·blob 검증 후 전환한다. migration 실패는 원본을 보존한다."
+  ],
+  "contract": "BackupManifest {cut,dbHash,blobHashes,schema,format,scope}; 삭제는 별도 명시된 운영정책에 따른다.",
+  "sourceIds": [
+    "AUD-SQLITE-BACKUP",
+    "AUD-SQLITE-WAL"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SHIP.02-P",
+      "given": "live DB와 checkpoint blobs",
+      "when": "API 백업·복원",
+      "then": "consistent cut; 원본보존",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SHIP.02-N",
+      "given": "blob 누락/WAL 분리",
+      "when": "API 백업·복원",
+      "then": "RESTORE_REJECT",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/11-release-and-backup.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/11-release-and-backup.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-001"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SHIP/Ship02Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_DISK",
+      "path": "qualification/player/CS-SHIP.02-disk.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "live DB와 checkpoint blobs",
+    "operation": "API 백업·복원",
+    "expectedPositive": "consistent cut; 원본보존",
+    "negativeInput": "blob 누락/WAL 분리",
+    "expectedNegative": "RESTORE_REJECT",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

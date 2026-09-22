@@ -1,0 +1,714 @@
+{
+  "nodes": [
+    {
+      "id": "basis",
+      "type": "production-adaptation",
+      "sources": [
+        ".planning/2026-09-20-integrated-build/production-benchmark-graph.json P3",
+        "Jev033",
+        "existing public facility guide zoning"
+      ],
+      "adopted": "Architectural hierarchy and reusable spatial kit: portal > room shell > seat island > prop. Function is expressed by volume and circulation, not added decorative clutter. Designs are not measured station room plans."
+    },
+    {
+      "id": "entry",
+      "type": "implementation",
+      "call": "MvpInteriorBuilder.UpgradeExistingFunctionalZones()",
+      "files": [
+        "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs",
+        "Assets/ChooGuard/Editor/MvpStationZones.cs"
+      ],
+      "behavior": "Reads existing floor mesh top outline; destroys only named prior interior geometry root per floor; builds one replacement; saves generated assets and marks scene dirty but leaves scene save/capture to root. Main station Build uses same path."
+    },
+    {
+      "id": "kit",
+      "type": "derived-design",
+      "dimensionsMetres": {
+        "entryPortal": [
+          8,
+          3
+        ],
+        "platformPortal": [
+          9,
+          3
+        ],
+        "shopRestaurant": [
+          8,
+          6
+        ],
+        "ticketOperations": [
+          8,
+          7
+        ],
+        "verticalCore": [
+          9,
+          10
+        ],
+        "seatingIsland": [
+          8,
+          8
+        ]
+      },
+      "wireReuse": [
+        "Existing bevel mesh / stone, plaster, steel, glass, oak, navy materials",
+        "Existing Bench, Table, Counter, Stair, Lift, geometry Sign helpers",
+        "Existing material batching via MvpMeshPersistence.Store"
+      ],
+      "function": "Ground level has 3 large portals, perimeter shop shells and seating clusters; second floor ticket/operations shells, waiting islands, platform portals and 2 vertical cores; third floor restaurant fronts, dining clusters and incoming core."
+    },
+    {
+      "id": "placement",
+      "type": "static-layout-check",
+      "counts": [
+        {
+          "entry_portal": 3,
+          "shop": 10,
+          "waiting_island": 16
+        },
+        {
+          "ticket": 2,
+          "operations": 1,
+          "platform_portal": 2,
+          "core": 2,
+          "waiting_island": 16
+        },
+        {
+          "core": 1,
+          "restaurant": 5,
+          "dining_seats": 3
+        }
+      ],
+      "floorZones": [
+        [
+          {
+            "kind": "entry_portal",
+            "bounds": [
+              -49.0,
+              -75.5,
+              -41.0,
+              -72.5
+            ]
+          },
+          {
+            "kind": "entry_portal",
+            "bounds": [
+              -52.0,
+              -18.5,
+              -44.0,
+              -15.5
+            ]
+          },
+          {
+            "kind": "entry_portal",
+            "bounds": [
+              -34.0,
+              37.5,
+              -26.0,
+              40.5
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              -47.0,
+              -64.0,
+              -39.0,
+              -58.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              -37.0,
+              -64.0,
+              -29.0,
+              -58.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              -7.0,
+              46.0,
+              1.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              3.0,
+              46.0,
+              11.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              13.0,
+              46.0,
+              21.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              23.0,
+              46.0,
+              31.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              33.0,
+              46.0,
+              41.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              43.0,
+              46.0,
+              51.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              53.0,
+              46.0,
+              61.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "shop",
+            "bounds": [
+              63.0,
+              46.0,
+              71.0,
+              52.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -47.0,
+              -57.0,
+              -39.0,
+              -49.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -34.0,
+              -57.0,
+              -26.0,
+              -49.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -8.0,
+              -57.0,
+              0.0,
+              -49.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -47.0,
+              -44.0,
+              -39.0,
+              -36.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -34.0,
+              -44.0,
+              -26.0,
+              -36.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -8.0,
+              -44.0,
+              0.0,
+              -36.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              70.0,
+              -44.0,
+              78.0,
+              -36.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -47.0,
+              -31.0,
+              -39.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -34.0,
+              -31.0,
+              -26.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -8.0,
+              -31.0,
+              0.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              5.0,
+              -31.0,
+              13.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              31.0,
+              -31.0,
+              39.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              44.0,
+              -31.0,
+              52.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              57.0,
+              -31.0,
+              65.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              70.0,
+              -31.0,
+              78.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -34.0,
+              -18.0,
+              -26.0,
+              -10.0
+            ]
+          }
+        ],
+        [
+          {
+            "kind": "ticket",
+            "bounds": [
+              -47.0,
+              -67.5,
+              -39.0,
+              -60.5
+            ]
+          },
+          {
+            "kind": "ticket",
+            "bounds": [
+              -37.0,
+              -67.5,
+              -29.0,
+              -60.5
+            ]
+          },
+          {
+            "kind": "operations",
+            "bounds": [
+              -42.0,
+              -20.5,
+              -34.0,
+              -13.5
+            ]
+          },
+          {
+            "kind": "platform_portal",
+            "bounds": [
+              37.5,
+              13.5,
+              46.5,
+              16.5
+            ]
+          },
+          {
+            "kind": "platform_portal",
+            "bounds": [
+              62.5,
+              35.5,
+              71.5,
+              38.5
+            ]
+          },
+          {
+            "kind": "core",
+            "bounds": [
+              -47.5,
+              -81.0,
+              -38.5,
+              -71.0
+            ]
+          },
+          {
+            "kind": "core",
+            "bounds": [
+              3.5,
+              -20.0,
+              12.5,
+              -10.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -47.0,
+              -57.0,
+              -39.0,
+              -49.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -34.0,
+              -57.0,
+              -26.0,
+              -49.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -8.0,
+              -57.0,
+              0.0,
+              -49.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -8.0,
+              -44.0,
+              0.0,
+              -36.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              70.0,
+              -44.0,
+              78.0,
+              -36.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -8.0,
+              -31.0,
+              0.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              5.0,
+              -31.0,
+              13.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              31.0,
+              -31.0,
+              39.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              44.0,
+              -31.0,
+              52.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              57.0,
+              -31.0,
+              65.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              70.0,
+              -31.0,
+              78.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              -8.0,
+              -18.0,
+              0.0,
+              -10.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              18.0,
+              -18.0,
+              26.0,
+              -10.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              31.0,
+              -18.0,
+              39.0,
+              -10.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              44.0,
+              -18.0,
+              52.0,
+              -10.0
+            ]
+          },
+          {
+            "kind": "waiting_island",
+            "bounds": [
+              57.0,
+              -18.0,
+              65.0,
+              -10.0
+            ]
+          }
+        ],
+        [
+          {
+            "kind": "core",
+            "bounds": [
+              3.5,
+              -20.0,
+              12.5,
+              -10.0
+            ]
+          },
+          {
+            "kind": "restaurant",
+            "bounds": [
+              -43.0,
+              -69.0,
+              -35.0,
+              -63.0
+            ]
+          },
+          {
+            "kind": "restaurant",
+            "bounds": [
+              -33.0,
+              -69.0,
+              -25.0,
+              -63.0
+            ]
+          },
+          {
+            "kind": "restaurant",
+            "bounds": [
+              17.0,
+              -19.0,
+              25.0,
+              -13.0
+            ]
+          },
+          {
+            "kind": "restaurant",
+            "bounds": [
+              27.0,
+              -19.0,
+              35.0,
+              -13.0
+            ]
+          },
+          {
+            "kind": "restaurant",
+            "bounds": [
+              37.0,
+              -19.0,
+              45.0,
+              -13.0
+            ]
+          },
+          {
+            "kind": "dining_seats",
+            "bounds": [
+              -34.0,
+              -57.0,
+              -26.0,
+              -49.0
+            ]
+          },
+          {
+            "kind": "dining_seats",
+            "bounds": [
+              -8.0,
+              -31.0,
+              0.0,
+              -23.0
+            ]
+          },
+          {
+            "kind": "dining_seats",
+            "bounds": [
+              -8.0,
+              -18.0,
+              0.0,
+              -10.0
+            ]
+          }
+        ]
+      ],
+      "containment": "Corner and metre-spaced perimeter samples plus exact proper edge-crossing rejection against concave floor polygon. Module dimensions include all furniture. Candidate overlap rejected with 1m margin. Independent static dense-grid check sampled each proposed rectangle 21x21. Unity bounds/capture pending."
+    },
+    {
+      "id": "keepout",
+      "type": "implementation",
+      "rectsMetres": {
+        "mainAisle": [
+          -68,
+          -7,
+          117,
+          8
+        ],
+        "northSouthAisle": [
+          -21,
+          -85,
+          -11,
+          70
+        ],
+        "floor2ReferenceMargin": [
+          -53,
+          -49,
+          -21,
+          -27
+        ],
+        "floor2TeamApproach": [
+          -25,
+          -49,
+          -15,
+          4
+        ]
+      },
+      "protected": [
+        "Floor slabs/finish meshes unchanged",
+        "Reference box30x20 / barrier geometry / team task points unchanged",
+        "No visual colliders or physics authority changes",
+        "No world text, new FBX, UI changes, auto static batching or city rebuild"
+      ]
+    },
+    {
+      "id": "verification",
+      "type": "remaining-risk",
+      "details": [
+        "No Unity invocation or screenshot acceptance by worker",
+        "Root should compare full-floor and near views for volume hierarchy, column/shell contact, circulation and projected sight lines",
+        "Existing source perimeter walls/columns retained, except column bases now avoid reserved circulation",
+        "Roof additions deferred; existing WholeEnvelope unchanged"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "basis",
+      "to": "kit",
+      "relation": "translates production hierarchy into reusable architecture"
+    },
+    {
+      "from": "kit",
+      "to": "placement",
+      "relation": "bounded module placement"
+    },
+    {
+      "from": "keepout",
+      "to": "placement",
+      "relation": "rejects obstructive candidates"
+    },
+    {
+      "from": "entry",
+      "to": "kit",
+      "relation": "replaces existing geometry in place"
+    },
+    {
+      "from": "placement",
+      "to": "verification",
+      "relation": "static numerical evidence needs official Unity views"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "id": "CS-PLAY.05",
+  "epicId": "CS-PLAY",
+  "title": "접근성·재배정·텍스트와 반복 조작 효율",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PLAY.05",
+    "description": "큰 글자·키보드·한글·재사용 화면의 실제 runtime 수용",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PLAY.05",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.05.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.05.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.05.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.05.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Presentation/Accessibility/UiPreferences.cs",
+    "Assets/ChooGuard/Presentation/Accessibility/FocusManager.cs",
+    "Assets/ChooGuard/Presentation/Menu/WorkspaceLauncher.cs",
+    "Assets/ChooGuard/Presentation/Menu/WorkspaceLauncher.prefab",
+    "Assets/ChooGuard/Presentation/Accessibility/Preferences.prefab"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PLAY/Play05Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PLAY.03",
+      "artifactId": "A-CS-PLAY.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PLAY.04",
+      "artifactId": "A-CS-PLAY.04",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "1920x1080 기준에서 창 크기·100/150/200% 텍스트·모달 포커스 순서를 검사한다.",
+    "World 정밀 클릭 없이 목록/업무 패널만으로 배정·취소·비교·근거 조회가 가능하게 한다.",
+    "지원한 접근성 기능만 표시한다. DOM/웹 시험이나 Editor 성공을 Player 적합성으로 사용하지 않는다."
+  ],
+  "contract": "Preferences는 물리·정보·업무 결과를 수정하지 않는다.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PLAY.05-P",
+      "given": "1280폭·글자200%·keyboard only",
+      "when": "핵심 과제",
+      "then": "클리핑 없이 목록 배정 가능",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PLAY.05-N",
+      "given": "글자를 자동축소해 확대 무력화",
+      "when": "핵심 과제",
+      "then": "ACCESSIBILITY_REJECT",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-072"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-072"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PLAY/Play05Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSPLAY05PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-PLAY.05.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "1280폭·글자200%·keyboard only",
+    "operation": "핵심 과제",
+    "expectedPositive": "클리핑 없이 목록 배정 가능",
+    "negativeInput": "글자를 자동축소해 확대 무력화",
+    "expectedNegative": "ACCESSIBILITY_REJECT",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

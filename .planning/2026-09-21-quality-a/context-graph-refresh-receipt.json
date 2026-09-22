@@ -1,0 +1,46 @@
+{
+  "schema": "chooguard-context-graph-refresh-receipt/v1",
+  "date": "2026-09-21",
+  "status": "complete",
+  "active_graph": "graphify-out/graph.json",
+  "mode": "direct-filter",
+  "source_counts": {
+    "nodes": 17008,
+    "links": 27445,
+    "semantic_hyperedges": 12
+  },
+  "active_counts": {
+    "nodes": 16615,
+    "links": 26254,
+    "semantic_hyperedges": 12,
+    "dangling_links": 0,
+    "dangling_hyperedge_members": 0
+  },
+  "preserved_backup": "graphify-out/2026-09-21/graph.json",
+  "ignore_file": ".graphifyignore",
+  "excluded": {
+    "patterns": [
+      "asset-library/**/station-model-source/importer-isolated/"
+    ],
+    "node_count": 393,
+    "reason": "downloaded SketchUp SDK headers and isolated importer implementation noise"
+  },
+  "provenance": {
+    "ast": "current graphify update log: .planning/2026-09-21-quality-a/graphify-update.log",
+    "semantic": "12 current hyperedges matched the dated curated backup and were retained",
+    "edge_filter": "links retained only when both endpoints remained in the active node set"
+  },
+  "queries": [
+    {
+      "query": "MvpFacilityResources",
+      "command": "graphify query 'MvpFacilityResources' --budget 500",
+      "project_nodes_found": ["MvpFacilityResources", "MvpFacilityResources.cs"]
+    },
+    {
+      "query": "OfficialStationBinder",
+      "command": "graphify query 'OfficialStationBinder' --budget 500",
+      "project_nodes_found": ["MvpOfficialStationBinder", "MvpOfficialStationBinder.cs"]
+    }
+  ],
+  "scope_guard": "No Assets/C# files or Unity runtime state changed; no LLM extraction or global config change"
+}

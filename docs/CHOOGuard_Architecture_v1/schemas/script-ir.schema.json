@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:script-ir:1.0.0",
+  "title": "script-ir",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "scriptId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "planRevision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "representativeRunId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "inputHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "stepId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "claimType": {
+            "type": "string",
+            "enum": [
+              "OBSERVED_IN_RUN",
+              "AUTHOR_ANNOTATION",
+              "HYPOTHESIS",
+              "MANUAL_SUPPORTED_PROPOSAL"
+            ]
+          },
+          "condition": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "actingAgencyId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "actionId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "text": {
+            "type": "string",
+            "maxLength": 8000
+          },
+          "eventRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          },
+          "clauseRefs": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "stepId",
+          "claimType",
+          "condition",
+          "actingAgencyId",
+          "actionId",
+          "text",
+          "eventRefs",
+          "clauseRefs"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "reviewState": {
+      "type": "string",
+      "enum": [
+        "DRAFT",
+        "PENDING_REVIEW",
+        "REJECTED",
+        "STALE"
+      ]
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "scriptId",
+    "revision",
+    "planRevision",
+    "representativeRunId",
+    "inputHash",
+    "steps",
+    "reviewState",
+    "dataClass"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,101 @@
+{
+  "status": "APPROVED_DIRECTION_IMPLEMENT_NOW",
+  "story": "CS-EXEC.01.01",
+  "userCorrection": "Realtime Jev is a forecasting core: current physics variables and player decisions/operations -> probabilistic future outcomes continuously updated; not random incident chooser.",
+  "source": "Existing official @typesafe-ai/sdk supports noul (0..1 yes probability), choice, score. Use noul for well-defined future events; do not use choice confidence as event probability. TypeSafe primary site/blog checked2026-09-21. Site latency claims require our measured direct API test; no site-calibration claim.",
+  "architecture": "Unity accepted snapshot -> local loopback prediction service with persistent direct gateway connection -> typed Jev future event probabilities -> read-only Korean forecast panel -> later observed event comparison. Physical/control/graph authority unchanged. Latest pending snapshot replaces old, no perframe network/LLM or queued backlog.",
+  "serviceOwner": "AstraLOW /root/agency_gameplay: workers/prediction/jev-proxy.mjs (Nodebuiltins, direct Vercel POST official SDK wire inspected locally), README, schema+graph report. No Assets edits or key access. Bind127.0.0.1:18764; GET/health, POST/forecast. Root starts keyviahiddenstdin; keyneverfiles/args/Unity/client/errors. Warm persistent fetch/client; upstream timeout3000ms retry0. Bodylimit32KiB; max1upstreaminflight; exactrequestcache<=32. No fake/mock livefallback. Graphreportonly.",
+  "clientOwner": "AstraLOW /root/progression_graph_view: author new MvpJevForecastClient.cs, MvpJevForecastView.cs and minimal AgencyDispatchView integration. STAGE OUTSIDE Assets at .planning/2026-09-21-fleet-building/forecast-client-drafts untilrootpublishespermission AFTER running native graph lifecycle. No graph/controller/physics/camera mutations. HTTP via System.Net.Http or UnityWebRequest ifworks inEditor withoutsharedsettingchanges. Keyonlyinservice. Own DTOs contractbelow.",
+  "request": {
+    "schemaVersion": 1,
+    "snapshotId": "uuid",
+    "stateHash": "sha256 canonical snapshot bytes",
+    "decisionKey": "run+generation+selectedoperation+acceptedchoiceIds; invalidate changedchoices, notevery timeadvance",
+    "runId": "actual worker runId",
+    "generation": 1,
+    "simTime": 0,
+    "graphHash": "loaded runtimegraph",
+    "phase": "actual phase",
+    "selectedOperationId": "logical operation or empty",
+    "physics": {
+      "total": 50,
+      "evacuated": 0,
+      "density": 0,
+      "pressureIndicator": 0,
+      "visibility": 0,
+      "temperature": 0,
+      "maxFedToxic": 0,
+      "fieldCurrent": true,
+      "fireRequired": false,
+      "warned": false,
+      "evacuationOrdered": false,
+      "medicalAssistanceRequested": false
+    },
+    "missions": [
+      {
+        "teamId": "logical ID",
+        "operationId": "actual",
+        "workType": "actual",
+        "state": "actual",
+        "stage": "actual",
+        "distanceTravelled": 0,
+        "routeDistance": 1000,
+        "memberCount": 2
+      }
+    ],
+    "decisionSummary": "bounded Korean currentchoice/work only; no prompt/key",
+    "calculationCurrent": true
+  },
+  "response": {
+    "schemaVersion": 1,
+    "snapshotId": "echo",
+    "stateHash": "echo",
+    "decisionKey": "echo",
+    "runId": "echo",
+    "generation": 1,
+    "basisSimTime": 0,
+    "status": "ok|unavailable",
+    "model": "typesafe-ai/jev",
+    "latencyMs": 0,
+    "forecasts": [
+      {
+        "id": "support_arrival_120",
+        "horizonSeconds": 120,
+        "probability": 0.5
+      },
+      {
+        "id": "evacuation_complete_120",
+        "horizonSeconds": 120,
+        "probability": 0.5
+      },
+      {
+        "id": "density_rise_60",
+        "horizonSeconds": 60,
+        "probability": 0.5
+      }
+    ],
+    "reasonCode": "safe_enum_only",
+    "usage": {
+      "input_tokens": 0,
+      "output_tokens": 0
+    }
+  },
+  "outcomes": {
+    "support_arrival_120": "At least one currently accepted travelling/requested mission reaches onsite/working/standby/handoff/return afterarrival within120 accepted simseconds. Alreadyonsiteor noassigned mission: outcome NOT_APPLICABLE (omit forecast, neverfakezero).",
+    "evacuation_complete_120": "Current target population reachesallEvacuated within120 acceptedsimseconds. AlreadyallEvacuated or ordinary withoutincident: omit or explicitlyunknown, do not predict clinicalcure.",
+    "density_rise_60": "Any observed accepted density >= originDensity+0.5 persons/m2 within60simseconds. Authored forecastevent, not injury threshold. Zero baseline valid. Use only finite actualdensity."
+  },
+  "refresh": "Initial or meaningful decision/phase/stage/releaseRevision/evacuationbucket/densitybucket changes; debounce250ms, maxoneinflight, min2wallseconds betweenchanged requests and default5swallcadence whenphysicschanges. No pollingunchangedpausedstate. Aggregate3questionsinoneAPIrequest. Allowreplylag stampedbasisSimTime ifsame decision/run; rejectolddecision/run. Onerror/timeouthidenumbersshow예측갱신대기; no autoorders.",
+  "display": "Korean AI 예측 코어 card/toggle nearoperatingUI; futurehorizonandpercent from noul, basis simtimestamp/latency, AI추정·관찰로검증중 shortlabel. Do notshow rawnodeIDs/hashes/internalclaims. Snapshot/currentrecord sourcealwaysclear.",
+  "comparison": "Keepboundedpredictionrecords, outcome trueonfirstobservedcriterionwithinwindow, falseonlyvalidcurrentobservationreachesdeadlinewithoutcriterion; solverfailure/reset/changedconditionaldecision => unscored/unavailable. Record p,y,Brier=(p-y)^2 withsamplecountinternal, neverclaim calibratedfromfewruns. No replay/rerun callsforoldrecords.",
+  "nativeAcceptance": [
+    "Direct live noul response fromprovided Vercel key viahiddenstdin; measurewarm/coldlatency, no fakefixturesclaimedlive",
+    "Actual Unity snapshot→service→Jev→probability UI bound tosame run/decision; no keyassets",
+    "Atleast1forecast comparedto lateractual result atmeasurable horizon; futureprobability distinct from modelconfidence",
+    "Timeout/unavailable andoldrunresponse cannot mutatephysics orgraph; shutdown/restartserviceclean whenneeded",
+    "Do not disrupt current root native graph check; stagedclient publish onlyafterrootsignal"
+  ],
+  "supersededPublicUi": "REJECTED_AND_REMOVED_BY_USER_CORRECTION",
+  "currentAuthority": "docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md",
+  "currentImplementation": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-production-benchmark-oss-kernel.json"
+}

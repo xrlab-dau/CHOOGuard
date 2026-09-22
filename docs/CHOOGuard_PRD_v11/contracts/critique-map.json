@@ -1,0 +1,387 @@
+{
+  "schemaVersion": "11.0.0",
+  "basis": "history/RESEARCH_AND_CRITIQUE.md",
+  "claimsResolvedByDocument": false,
+  "critiques": [
+    {
+      "id": "C01",
+      "severity": "치명적",
+      "challenge": "담당자는 게임을 하고 싶은가, 대본을 빨리 검토하고 싶은가?",
+      "priorAssessment": "RTS 효용 미검증",
+      "requiredEvidence": "같은 데이터·로직의 표/타임라인 UI와 3D UI 비교",
+      "requirementIds": [
+        "REQ-008",
+        "REQ-009",
+        "REQ-069",
+        "REQ-077",
+        "REQ-081",
+        "REQ-082",
+        "REQ-085"
+      ],
+      "testIds": [
+        "AT-008",
+        "AT-009",
+        "AT-069",
+        "AT-077",
+        "AT-081",
+        "AT-082",
+        "AT-085"
+      ],
+      "ownerEpicIds": [
+        "EP00",
+        "EP04",
+        "EP10"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C02",
+      "severity": "치명적",
+      "challenge": "초안 시간만 줄이고 규칙 입력·계산·검수 시간을 늘리는 것 아닌가?",
+      "priorAssessment": "순절감 미검증",
+      "requiredEvidence": "최초 구축과 반복 사용 총인시를 모두 계측",
+      "requirementIds": [
+        "REQ-069",
+        "REQ-079",
+        "REQ-080",
+        "REQ-083",
+        "REQ-084",
+        "REQ-085",
+        "REQ-088"
+      ],
+      "testIds": [
+        "AT-069",
+        "AT-079",
+        "AT-080",
+        "AT-083",
+        "AT-084",
+        "AT-085",
+        "AT-088"
+      ],
+      "ownerEpicIds": [
+        "EP00",
+        "EP01",
+        "EP04",
+        "EP05",
+        "EP10"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C03",
+      "severity": "높음",
+      "challenge": "기존 XVR·SR·Conducttr와 실제로 무엇이 다른가?",
+      "priorAssessment": "기능명 차별화 부족",
+      "requiredEvidence": "철도 공조 결함 발견·추적·출력·재사용에서 비교",
+      "requirementIds": [
+        "REQ-001",
+        "REQ-054",
+        "REQ-081",
+        "REQ-091"
+      ],
+      "testIds": [
+        "AT-001",
+        "AT-054",
+        "AT-081",
+        "AT-091"
+      ],
+      "ownerEpicIds": [
+        "EP00",
+        "EP09",
+        "EP10"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C04",
+      "severity": "치명적",
+      "challenge": "매뉴얼·기준 치수·작업시간이 없는데 정합성을 무엇으로 판정하는가?",
+      "priorAssessment": "대상 자료 공백",
+      "requiredEvidence": "허용된 대표 대본·규칙·자원·기하와 담당 검수자 확보",
+      "requirementIds": [
+        "REQ-018",
+        "REQ-031",
+        "REQ-062",
+        "REQ-063",
+        "REQ-077",
+        "REQ-078"
+      ],
+      "testIds": [
+        "AT-018",
+        "AT-031",
+        "AT-062",
+        "AT-063",
+        "AT-077",
+        "AT-078"
+      ],
+      "ownerEpicIds": [
+        "EP00",
+        "EP01",
+        "EP03"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C05",
+      "severity": "치명적",
+      "challenge": "모든 매뉴얼을 절대적 클릭 규칙으로 만들면 잘못된 권한·예외를 학습시키지 않는가?",
+      "priorAssessment": "규칙 번역 위험",
+      "requiredEvidence": "판본·관할·예외·재량·승인자를 규칙별 추적",
+      "requirementIds": [
+        "REQ-021",
+        "REQ-022",
+        "REQ-031",
+        "REQ-032",
+        "REQ-033",
+        "REQ-034"
+      ],
+      "testIds": [
+        "AT-021",
+        "AT-022",
+        "AT-031",
+        "AT-032",
+        "AT-033",
+        "AT-034"
+      ],
+      "ownerEpicIds": [
+        "EP01",
+        "EP02"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C06",
+      "severity": "높음",
+      "challenge": "solver를 많이 연결할수록 오차와 지연도 늘어나지 않는가?",
+      "priorAssessment": "통합 미실행",
+      "requiredEvidence": "한 사용사례의 결합·재시작·시간/단위·보존량 검사",
+      "requirementIds": [
+        "REQ-019",
+        "REQ-036",
+        "REQ-049",
+        "REQ-084",
+        "REQ-090"
+      ],
+      "testIds": [
+        "AT-019",
+        "AT-036",
+        "AT-049",
+        "AT-084",
+        "AT-090"
+      ],
+      "ownerEpicIds": [
+        "EP05",
+        "EP07",
+        "EP08",
+        "EP10"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C07",
+      "severity": "치명적",
+      "challenge": "시뮬레이션 최적안이 현실에서도 최적이라는 보장이 있는가?",
+      "priorAssessment": "보장 없음",
+      "requiredEvidence": "유효범위·불확도·순위 안정성·독립 검증·기관 검토",
+      "requirementIds": [
+        "REQ-039",
+        "REQ-040",
+        "REQ-047",
+        "REQ-048",
+        "REQ-068",
+        "REQ-076",
+        "REQ-089",
+        "REQ-090"
+      ],
+      "testIds": [
+        "AT-039",
+        "AT-040",
+        "AT-047",
+        "AT-048",
+        "AT-068",
+        "AT-076",
+        "AT-089",
+        "AT-090"
+      ],
+      "ownerEpicIds": [
+        "EP04",
+        "EP05",
+        "EP08",
+        "EP10",
+        "EP11"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C08",
+      "severity": "높음",
+      "challenge": "무작위 상황이 단지 기괴하거나 풀 수 없는 문제를 만들지 않는가?",
+      "priorAssessment": "생성기 미검증",
+      "requiredEvidence": "제약·인과·교육목표·상황 범위로 생성하고 결함 검사",
+      "requirementIds": [
+        "REQ-005",
+        "REQ-006",
+        "REQ-007",
+        "REQ-038"
+      ],
+      "testIds": [
+        "AT-005",
+        "AT-006",
+        "AT-007",
+        "AT-038"
+      ],
+      "ownerEpicIds": [
+        "EP05",
+        "EP06"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C09",
+      "severity": "높음",
+      "challenge": "구매 담당자가 누구며 반복 활용 예산은 있는가?",
+      "priorAssessment": "사업성 미검증",
+      "requiredEvidence": "실제 구매 단위·보안·유지비·다음 실증 협의",
+      "requirementIds": [
+        "REQ-077",
+        "REQ-080",
+        "REQ-083",
+        "REQ-087",
+        "REQ-088",
+        "REQ-091"
+      ],
+      "testIds": [
+        "AT-077",
+        "AT-080",
+        "AT-083",
+        "AT-087",
+        "AT-088",
+        "AT-091"
+      ],
+      "ownerEpicIds": [
+        "EP00",
+        "EP01",
+        "EP10",
+        "EP11"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C10",
+      "severity": "높음",
+      "challenge": "출력이 결국 다시 수작업 서식 편집을 요구하지 않는가?",
+      "priorAssessment": "실제 양식 미입고",
+      "requiredEvidence": "고객 표준 양식과 초안→검토→최종 수정량 대조",
+      "requirementIds": [
+        "REQ-053",
+        "REQ-054",
+        "REQ-056",
+        "REQ-078",
+        "REQ-084",
+        "REQ-086"
+      ],
+      "testIds": [
+        "AT-053",
+        "AT-054",
+        "AT-056",
+        "AT-078",
+        "AT-084",
+        "AT-086"
+      ],
+      "ownerEpicIds": [
+        "EP00",
+        "EP05",
+        "EP09"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C11",
+      "severity": "높음",
+      "challenge": "모니터에서 좋아 보이는 결과가 과신을 낳지 않는가?",
+      "priorAssessment": "표현 위험",
+      "requiredEvidence": "가정·모델 범위·미검증 상태 상시 노출, 허위 승인 금지",
+      "requirementIds": [
+        "REQ-048",
+        "REQ-051",
+        "REQ-052",
+        "REQ-056",
+        "REQ-067",
+        "REQ-073",
+        "REQ-089"
+      ],
+      "testIds": [
+        "AT-048",
+        "AT-051",
+        "AT-052",
+        "AT-056",
+        "AT-067",
+        "AT-073",
+        "AT-089"
+      ],
+      "ownerEpicIds": [
+        "EP01",
+        "EP04",
+        "EP08",
+        "EP09",
+        "EP10"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    },
+    {
+      "id": "C12",
+      "severity": "중대",
+      "challenge": "76개 요구와 AAA 문서 검사가 핵심 가설 검증을 가리고 있지 않은가?",
+      "priorAssessment": "과설계 위험",
+      "requiredEvidence": "사용자 한 명의 실제 작성 작업과 최소 작동 구간으로 검증",
+      "requirementIds": [
+        "REQ-001",
+        "REQ-061",
+        "REQ-066",
+        "REQ-074",
+        "REQ-078",
+        "REQ-082",
+        "REQ-090"
+      ],
+      "testIds": [
+        "AT-001",
+        "AT-061",
+        "AT-066",
+        "AT-074",
+        "AT-078",
+        "AT-082",
+        "AT-090"
+      ],
+      "ownerEpicIds": [
+        "EP00",
+        "EP01",
+        "EP10"
+      ],
+      "designDisposition": "SPECIFIED",
+      "empiricalResolution": "NOT_TESTED",
+      "decisionOnFailure": "해당 기능·주장·확대만 보류하고 원인·새 입력·재시험을 기록한다. 핵심 운영 시뮬레이션 방향 변경은 사용자 결정으로 반환한다."
+    }
+  ]
+}

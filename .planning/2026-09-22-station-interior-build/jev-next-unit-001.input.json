@@ -1,0 +1,58 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "prior_verdict": "Audit ver13-interior-verdict.json concluded INTERIOR_PRESENT: grid probe 13803 points, 24.15 percent have floor+ceiling pair; source z=7.0m band has 402 samples of layer -부산역 as both floor and ceiling, approx 1608 square metres. Verdict instructed nextExtraction: export -부산역 layer z=5..30m as FBX.",
+    "measured_after_verdict": [
+      "Verdict was written without querying Unity assets. Measurement now shows extraction already exists.",
+      "station-fullsite-segments.json: segment MainShell = layer -부산역, triangles 666537, 8 meshes, bounds z -0.9 to 31.9 metres. Audit triangleMass for -부산역 was 670179. Same layer.",
+      "Interior candidate band z 5..30 is fully inside MainShell bounds z -0.9..31.9. No geometry is missing from the exported FBX.",
+      "OfficialBusanStation_MainShell.fbx exists in Assets/ChooGuard/Art/OfficialBusanStation and is referenced 16 times in Assets/ChooGuard/Scenes/FpsStation.unity.",
+      "fps-scene-native-receipt.json collisionMeshes lists all 8 MainShell meshes with MeshCollider. colliderCount 1670 of meshCount 1671.",
+      "FBX export used axis_up Y, so source z maps to Unity y. Interior floor band is Unity y=7.0m.",
+      "Receipt spawnFeet is y=0.145 on surface ContextPlaza 유라시아 도로, which is ground level road, not inside the building.",
+      "Receipt connectionStatus is PROVISIONAL_CONNECTOR_UNVERIFIED and validation string says no traversal acceptance."
+    ],
+    "unverified": [
+      "Whether a player capsule can reach Unity y=7.0m interior from spawn. Stairs, escalators, ramps between ground and y=7.0 are unmeasured.",
+      "Whether the 402 interior samples are enclosed by walls. Audit honest_limits states wall-enclosure test was not run.",
+      "Whether downward-facing faces at y=7.0 are finished ceilings or canopy undersides.",
+      "FpsStation.unity NavMesh, Occlusion and Lightmap are unbaked, fileID 0."
+    ],
+    "constraints": [
+      "Project rule: do not rebuild an existing wheel. Reuse repository code and already produced assets before writing new ones.",
+      "Project rule: do not hand-model station interior. Only official public source geometry may be used.",
+      "Unity Editor is open and ready, version 6000.3.23f1, play mode stopped.",
+      "Blender 4.5.9 is available locally with the 365MB ver13-batched.blend source."
+    ],
+    "user_request": "Proceed with building interior construction and design work after the extraction work."
+  },
+  "questions": {
+    "next_unit": {
+      "type": "choice",
+      "instructions": "Given that extraction already exists and is in the scene with colliders, choose the next unit of work.",
+      "criteria": {
+        "measure_reachability_then_design": "First measure in Unity whether the y=7.0m interior is enclosed and reachable from spawn, then design interior zones from the measured result",
+        "reextract_interior_fbx": "Follow the verdict literally and export -부산역 z=5..30m as a new separate FBX before anything else",
+        "design_zones_immediately": "Skip measurement and immediately author interior zones, POIs and lighting on the existing geometry",
+        "bake_navmesh_first": "Bake NavMesh on the current scene first and let the bake result answer reachability"
+      }
+    },
+    "extraction_status": {
+      "type": "choice",
+      "instructions": "Is the extraction work that the user refers to already complete?",
+      "criteria": {
+        "already_complete": "Interior geometry is already extracted into MainShell.fbx and present in the scene, so a new extraction adds nothing",
+        "partially_complete": "Geometry exists but must be split into a separate interior-only asset before it is usable",
+        "not_complete": "Required interior geometry is still missing from Unity"
+      }
+    },
+    "enclosure_risk": {
+      "type": "choice",
+      "instructions": "The audit did not run a wall-enclosure test. How should this affect the plan?",
+      "criteria": {
+        "must_test_before_design": "Enclosure must be tested before committing design effort, because an unenclosed canopy cannot host indoor procedures",
+        "ignore_for_now": "Proceed with design and handle enclosure defects later if they appear"
+      }
+    }
+  }
+}

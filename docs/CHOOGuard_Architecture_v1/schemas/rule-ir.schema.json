@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:rule-ir:1.0.0",
+  "title": "rule-ir",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "ruleId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "applicability": {
+      "type": "object",
+      "properties": {
+        "agencyIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "minItems": 1,
+          "maxItems": 4096
+        },
+        "incidentFamilyIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "minItems": 1,
+          "maxItems": 4096
+        },
+        "siteScope": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "agencyIds",
+        "incidentFamilyIds",
+        "siteScope"
+      ],
+      "additionalProperties": false
+    },
+    "ruleType": {
+      "type": "string",
+      "enum": [
+        "ENGINEERING_INVARIANT",
+        "REVIEWED_MANDATORY",
+        "PERMITTED_DISCRETION",
+        "ADVISORY",
+        "UNKNOWN"
+      ]
+    },
+    "sourceClauses": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "sourceHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "locator": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        },
+        "required": [
+          "sourceId",
+          "sourceHash",
+          "locator"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "guard": {
+      "type": "object",
+      "properties": {
+        "combine": {
+          "type": "string",
+          "enum": [
+            "ALL",
+            "ANY"
+          ]
+        },
+        "predicates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "field": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  "EQ",
+                  "NE",
+                  "GT",
+                  "GE",
+                  "LT",
+                  "LE",
+                  "IN"
+                ]
+              },
+              "value": {
+                "type": [
+                  "string",
+                  "number",
+                  "boolean",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "field",
+              "operator",
+              "value"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "maxItems": 4096
+        }
+      },
+      "required": [
+        "combine",
+        "predicates"
+      ],
+      "additionalProperties": false
+    },
+    "effectIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "exceptionRuleIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "reviewStatus": {
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "REVIEWED",
+        "REJECTED",
+        "STALE"
+      ]
+    },
+    "approvalRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "ruleId",
+    "revision",
+    "applicability",
+    "ruleType",
+    "sourceClauses",
+    "guard",
+    "effectIds",
+    "exceptionRuleIds",
+    "reviewStatus",
+    "approvalRefs",
+    "dataClass"
+  ],
+  "additionalProperties": false
+}

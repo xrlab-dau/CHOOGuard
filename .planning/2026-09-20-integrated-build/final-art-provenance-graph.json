@@ -1,0 +1,260 @@
+{
+  "scope": "읽기 전용 현재 파일 연결 확인. 재생성·컴퓨터 use·Unity 호출 없음. 시각적 품질 승인이나 Unity 재생 검증을 뜻하지 않음.",
+  "roles": {
+    "Jev": "제한된 선택과 매개변수 판단; 메시·코드 작성 또는 이미지 검토 주장 없음",
+    "Astra low": "스크립트 작성 및 기록된 Blender 실제 생성 실행"
+  },
+  "receiptMatchesParameterPack": true,
+  "exportCount": 8,
+  "allEightPresent": true,
+  "nodes": [
+    {
+      "id": "jev",
+      "path": "art/blender/jev-parameters.json",
+      "role": "선택과 매개변수 판단",
+      "parameters": {
+        "glassPalette": "blue_grey",
+        "framePlacement": "outside_glass",
+        "detailScale": "rts_readable",
+        "crewFix": "correct_action_slot_first",
+        "trainWindows": "conform_to_body_surface",
+        "previewGate": "front_threequarter_walk_pose"
+      },
+      "decisionRef": ".planning/2026-09-20-integrated-build/jev-model-parameters-012.result.json"
+    },
+    {
+      "id": "script",
+      "path": "art/blender/build_response_set.py",
+      "role": "Astra low가 작성한 스크립트와 실제 생성 연산",
+      "parameterUseLines": {
+        "GLASS_SPEC": [
+          11,
+          17,
+          31
+        ],
+        "FRAME_OFFSET": [
+          12,
+          17,
+          78,
+          81
+        ],
+        "DETAIL": [
+          13,
+          17,
+          51,
+          54,
+          78,
+          81,
+          202
+        ],
+        "CREW_OPERATION": [
+          14,
+          17,
+          19
+        ],
+        "WINDOW_SPEC": [
+          15,
+          17,
+          104,
+          113
+        ],
+        "PREVIEW_VIEWS": [
+          16,
+          17,
+          292,
+          294,
+          296
+        ]
+      },
+      "sha256": "4f5ffd0d5373e3297c89b8c96510e0323df95d8334ed4b51fe4915f0d5b5f584"
+    },
+    {
+      "id": "receipt",
+      "path": "art/blender/build-receipt.json",
+      "role": "기록된 실행 결과",
+      "blender": "4.5.9 LTS",
+      "executionMode": "headless scripted Blender; no desktop input",
+      "appliedOperations": {
+        "glass": {
+          "color": [
+            0.16,
+            0.22,
+            0.25
+          ],
+          "metallic": 0.45,
+          "roughness": 0.24
+        },
+        "mullionOffsetMeters": -0.15,
+        "detailBudget": {
+          "cylinder_sides": 16,
+          "sphere_rings": 8,
+          "bevel_segments": 2,
+          "frame_radius": 0.065
+        },
+        "crewOperation": "bind_action_and_nla_slots_before_bake",
+        "trainWindowConstruction": {
+          "profile": [
+            [
+              1,
+              0
+            ],
+            [
+              1,
+              0.45
+            ],
+            [
+              0.88,
+              0.83
+            ],
+            [
+              0.55,
+              1
+            ],
+            [
+              -0.55,
+              1
+            ],
+            [
+              -0.88,
+              0.83
+            ],
+            [
+              -1,
+              0.45
+            ],
+            [
+              -1,
+              0
+            ],
+            [
+              -0.85,
+              -0.55
+            ],
+            [
+              -0.5,
+              -0.68
+            ],
+            [
+              0.5,
+              -0.68
+            ],
+            [
+              0.85,
+              -0.55
+            ]
+          ],
+          "surface_offset": 0.015,
+          "center_z": 1.49,
+          "height": 0.48
+        },
+        "previewViews": [
+          "three_quarter",
+          "front",
+          "walk"
+        ]
+      }
+    },
+    {
+      "id": "fbx:BusanFacade",
+      "path": "Assets/ChooGuard/Art/ResponseSet/BusanFacade.fbx",
+      "exists": true,
+      "bytes": 701004
+    },
+    {
+      "id": "fbx:HighSpeedCab",
+      "path": "Assets/ChooGuard/Art/ResponseSet/HighSpeedCab.fbx",
+      "exists": true,
+      "bytes": 156028
+    },
+    {
+      "id": "fbx:HighSpeedCoach",
+      "path": "Assets/ChooGuard/Art/ResponseSet/HighSpeedCoach.fbx",
+      "exists": true,
+      "bytes": 130972
+    },
+    {
+      "id": "fbx:FireEngine119",
+      "path": "Assets/ChooGuard/Art/ResponseSet/FireEngine119.fbx",
+      "exists": true,
+      "bytes": 292748
+    },
+    {
+      "id": "fbx:Ambulance119",
+      "path": "Assets/ChooGuard/Art/ResponseSet/Ambulance119.fbx",
+      "exists": true,
+      "bytes": 169436
+    },
+    {
+      "id": "fbx:CrewOperations",
+      "path": "Assets/ChooGuard/Art/ResponseSet/CrewOperations.fbx",
+      "exists": true,
+      "bytes": 236652
+    },
+    {
+      "id": "fbx:CrewFire",
+      "path": "Assets/ChooGuard/Art/ResponseSet/CrewFire.fbx",
+      "exists": true,
+      "bytes": 264956
+    },
+    {
+      "id": "fbx:CrewMedical",
+      "path": "Assets/ChooGuard/Art/ResponseSet/CrewMedical.fbx",
+      "exists": true,
+      "bytes": 254588
+    }
+  ],
+  "edges": [
+    {
+      "from": "jev",
+      "to": "script",
+      "relation": "열거값 검증 후 재질 색상·거칠기, 프레임 오프셋, 세부 예산, action/NLA slot, 창호 단면, 렌더 시점에 사용",
+      "verified": true
+    },
+    {
+      "from": "script",
+      "to": "receipt",
+      "relation": "스크립트가 appliedOperations 및 exports 기록을 작성하는 코드 경로 존재",
+      "verified": true
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:BusanFacade",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:HighSpeedCab",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:HighSpeedCoach",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:FireEngine119",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:Ambulance119",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:CrewOperations",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:CrewFire",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    },
+    {
+      "from": "receipt",
+      "to": "fbx:CrewMedical",
+      "relation": "exports 항목과 현존 FBX 파일 연결"
+    }
+  ]
+}

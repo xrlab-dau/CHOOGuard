@@ -1,0 +1,60 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Inject 12 regulation-derived extinguisher coordinates into Editor/FireExtinguisherSliceBuilder.cs, which today builds exactly one unit.",
+    "current_builder_creates_per_call": [
+      "root GameObject named by the single const RootName",
+      "the FBX model as child 소화기 본체",
+      "FacilityInspectable on the root with hardcoded SerialNumber BSN-CONC-FE-003, Corroded=true, ExpiryPassed=false",
+      "4 InspectionPoint child colliders with fixed ids body / spec-plate / serial / gauge",
+      "a TutorialSession child wired to that inspectable with PendingVerdict=UNFIT",
+      "an AuditTerminal child placed at a player-relative offset and parented to the unit root"
+    ],
+    "measured_facts": [
+      "FpsGazeTracker.MaxTrackedColliders is 64 and the overflow path is a silent return (FpsGazeTracker.cs:31). The dwell dictionary only grows when the player ACTUALLY gazes at a collider — Bind() is a one-line assignment and registers nothing. So 12 units times 4 points = 48 is potential, not immediate.",
+      "FacilityInspectable.Corroded and TutorialSession.PendingVerdict are a matched pair. TutorialSession.ApplyEffect increments MisjudgementCount when they disagree, so setting Corroded=true on all 12 while only one has an answer key would manufacture false misjudgements.",
+      "The four point ids body/spec-plate/serial/gauge are matched by literal against TutorialSession.cs:92-95 and must stay byte-identical.",
+      "TutorialSession.Audit() uses Target.name as the finding prefix (TutorialSession.cs:157) and Bind() uses it as the report subject (:75), so a shared RootName across 12 units breaks the report.",
+      "FpsAuditTerminalTests.cs:137-138 asserts the subject appears an exact number of times in the terminal body.",
+      "FirstPersonResponder.RefreshInteraction keeps only the nearest non-self collider within InteractionDistance clamped to 3m, so units closer than a few metres to each other create ambiguity.",
+      "The 12 v3 positions are spread across five walled rooms of 785, 404, 225, 106 and 45 sqm; the closest pair is about 2m apart (48,-47) and (48,-49)."
+    ],
+    "product_context": "Tutorial mode and emergency response mode are separate products with no state carry-over (user decision 2026-09-22). The tutorial is one monthly inspection of ONE extinguisher. The other units exist because NFTC 101 requires them in the building.",
+    "user_method_rule": "Extend the existing wheel, never write a new system. jev-slice-direction-003 already ruled poi_authoring_basis=extend_existing_slice_builder at 1.00."
+  },
+  "questions": {
+    "inspectable_scope": {
+      "type": "choice",
+      "instructions": "Which of the 12 units should carry FacilityInspectable with the 4 observation colliders?",
+      "criteria": {
+        "all_twelve_with_per_unit_state": "All 12 get FacilityInspectable with their own serial and their own world state, so the building is consistent and any unit can be inspected later; only one carries the tutorial answer key",
+        "one_tutorial_target_rest_props": "Only the designated tutorial unit is inspectable; the other 11 are model-only props that satisfy the regulation visually",
+        "all_twelve_same_state": "All 12 inspectable and all with Corroded=true like today"
+      }
+    },
+    "session_and_terminal": {
+      "type": "choice",
+      "instructions": "How many TutorialSession and AuditTerminal instances should exist?",
+      "criteria": {
+        "one_each_hoisted": "Exactly one TutorialSession bound to the designated tutorial unit and exactly one AuditTerminal, both created outside the per-unit loop and parented outside any single unit root",
+        "one_per_unit": "One session and one terminal per unit as today"
+      }
+    },
+    "destroy_sweep": {
+      "type": "choice",
+      "instructions": "The builder currently clears the previous build with GameObject.Find(RootName) then destroys it. With 12 distinct names, what should it do?",
+      "criteria": {
+        "iterate_roots_by_prefix": "Iterate the scene roots and destroy every root whose name starts with RootName, before the loop begins",
+        "keep_find": "Keep GameObject.Find, which returns only one active object"
+      }
+    },
+    "proximity_guard": {
+      "type": "choice",
+      "instructions": "Two v3 positions are about 2m apart, within the 3m interaction clamp. What should the builder do?",
+      "criteria": {
+        "assert_and_report": "Measure the minimum pairwise distance, refuse or loudly report when two units are closer than the interaction distance, so the ambiguity cannot pass silently",
+        "ignore": "Place them anyway and let the nearest-collider rule decide"
+      }
+    }
+  }
+}

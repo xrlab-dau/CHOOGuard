@@ -1,0 +1,175 @@
+{
+  "fixtureKind": "SYNTHETIC_FIXTURE",
+  "provenance": {
+    "dataClass": "SYNTHETIC_FIXTURE",
+    "approval": "NOT_FIELD_APPROVED",
+    "geometry": "LOGICAL_ONLY"
+  },
+  "integrity": {
+    "inputHashAlgorithm": "SHA-256",
+    "hashScope": "WHOLE_FIXTURE_BYTES"
+  },
+  "siteBundle": {
+    "id": "site-two-agency",
+    "revision": 1,
+    "frames": [
+      {
+        "id": "frame-logical"
+      }
+    ],
+    "regions": [
+      {
+        "id": "region-rail",
+        "frameId": "frame-logical"
+      },
+      {
+        "id": "region-coop",
+        "frameId": "frame-logical"
+      }
+    ],
+    "portals": [
+      {
+        "id": "portal-rail-coop",
+        "fromRegionId": "region-rail",
+        "toRegionId": "region-coop"
+      }
+    ],
+    "entities": [],
+    "sourceRefs": [],
+    "qualification": []
+  },
+  "scenarioSpec": {
+    "id": "scenario-two-agency",
+    "revision": 2,
+    "site": {
+      "id": "site-two-agency",
+      "revision": 1
+    }
+  },
+  "operationalPlan": {
+    "id": "plan-two-agency",
+    "revision": 3,
+    "siteRef": {
+      "id": "site-two-agency",
+      "revision": 1
+    },
+    "scenarioRef": {
+      "id": "scenario-two-agency",
+      "revision": 2
+    },
+    "agencies": [
+      {
+        "id": "agency-rail",
+        "displayName": "운영기관",
+        "role": "RAIL"
+      },
+      {
+        "id": "agency-coop",
+        "displayName": "운영기관",
+        "role": "COOPERATING"
+      }
+    ],
+    "spaces": [
+      {
+        "id": "space-rail",
+        "regionId": "region-rail",
+        "agencyId": "agency-rail"
+      },
+      {
+        "id": "space-coop",
+        "regionId": "region-coop",
+        "agencyId": "agency-coop"
+      }
+    ],
+    "resources": [
+      {
+        "id": "resource-shared-inspection",
+        "displayName": "공유 점검 자원",
+        "shareMode": "SHARED",
+        "capacityUnits": 1,
+        "participantAgencyIds": [
+          "agency-rail",
+          "agency-coop"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "id": "task-rail-inspection",
+        "agencyId": "agency-rail",
+        "spaceId": "space-rail",
+        "requiredResourceIds": [
+          "resource-shared-inspection"
+        ]
+      },
+      {
+        "id": "task-coop-inspection",
+        "agencyId": "agency-coop",
+        "spaceId": "space-coop",
+        "requiredResourceIds": [
+          "resource-shared-inspection"
+        ]
+      }
+    ],
+    "cases": [
+      {
+        "id": "case-normal",
+        "assignments": [
+          {
+            "id": "assignment-normal-rail",
+            "taskId": "task-rail-inspection",
+            "resourceId": "resource-shared-inspection",
+            "startUs": 1000,
+            "endUs": 2000,
+            "timingBasis": "SYNTHETIC_FIXTURE"
+          },
+          {
+            "id": "assignment-normal-coop",
+            "taskId": "task-coop-inspection",
+            "resourceId": "resource-shared-inspection",
+            "startUs": 2000,
+            "endUs": 3000,
+            "timingBasis": "SYNTHETIC_FIXTURE"
+          }
+        ],
+        "reportId": "report-normal"
+      },
+      {
+        "id": "case-resource-conflict",
+        "assignments": [
+          {
+            "id": "assignment-conflict-rail",
+            "taskId": "task-rail-inspection",
+            "resourceId": "resource-shared-inspection",
+            "startUs": 1000,
+            "endUs": 2000,
+            "timingBasis": "SYNTHETIC_FIXTURE"
+          },
+          {
+            "id": "assignment-conflict-coop",
+            "taskId": "task-coop-inspection",
+            "resourceId": "resource-shared-inspection",
+            "startUs": 1500,
+            "endUs": 2500,
+            "timingBasis": "SYNTHETIC_FIXTURE"
+          }
+        ],
+        "reportId": "report-resource-conflict"
+      }
+    ],
+    "reports": [
+      {
+        "id": "report-normal",
+        "caseId": "case-normal",
+        "kind": "SYNTHETIC_FIXTURE_EXPECTATION",
+        "expectedOutcome": "NO_RESOURCE_CONFLICT"
+      },
+      {
+        "id": "report-resource-conflict",
+        "caseId": "case-resource-conflict",
+        "kind": "SYNTHETIC_FIXTURE_EXPECTATION",
+        "expectedOutcome": "RESOURCE_CONFLICT"
+      }
+    ]
+  }
+}

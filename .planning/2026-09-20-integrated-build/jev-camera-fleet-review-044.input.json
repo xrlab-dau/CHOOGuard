@@ -1,0 +1,63 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "userBoundary": "User explicitly requires evidence/insight review and final confirmation before camera/focus changes. Requirements set direction, not accuracy evidence. No camera/app mutation this turn.",
+    "verified": [
+      "Current code forces orthographic fixed55degree pitch, instant Focus position+zoom; follow calls FocusVehicle(zoom80) every frame and overrides user zoom/pan.",
+      "Official JWE3 keyboard controls:WASD pan,Q/E rotate,PgUp/PgDown zoom,Tab follow notification,Esc commoncancel. Actual official published gameplay-UI frames at54/66s inspected byroot: perspective appearance, not numericFOV/input/easing proof.",
+      "ExactPCmousebuttons,focusduration,easing,followinterruption remain UNVERIFIED.",
+      "Official Busan Jungbu published aggregate39vehicles includes7pump7EMS andotherapparatus, notper-centerallocation. Currentcode2fixedmissions. Twoofficialdepotexteriorphotos+OSMfootprints4/5levels, unknownrear/roomdimensions anddatedphotos.",
+      "Currentcitycode truncates2source200mheights to192 and usesID-modulofallback whenheightmissing."
+    ],
+    "cameraProposal": "User-reviewed starting spec:perspective45deg initialtuning, WASD/QE/PgUpDown; wheelzoom,MMBdragpan,RMBdragorbit above6px while shortrightclickorders; focus0.45s ease-out preserveyaw/pitch/currentzoom unlessinitialexplicitpreset; followcenteronly,allowzoom/orbit;WASD/pan/Esc cancelfollow;UI/modal/textcapture consumesinput;cityfloorbuttonshidden,stationcontextcutawaycontrols only. Mouse/timing/stop/FOV are projectadaptations, NOT measuredJWE3constants.",
+    "fleetProposal": "Data-driven initial8scenarioallocations across2realcenters (2fire+2EMS each), pervehicle independentmission/route, explicitexclusiveonsiteassignment andvisible standby/relief. Existingfixtureonefire+onemedicalcrewcapacityexplicit,notfake8crewconcurrency.",
+    "buildingProposal": "Replace2depotgenericboxes withsourcefootprint/observedfacadeassemblies; improveBusanstationroof/frontapproach andsupportedtopology only; preserve200m heighttags;perfeatureheightprovenance andunknownproxygeometry,notclaim fullasbuilt."
+  },
+  "questions": {
+    "cameraEvidence": {
+      "type": "choice",
+      "instructions": "What can be truthfully labelled reference-backed?",
+      "criteria": {
+        "split_evidence": "Officialkeys+perspectiveappearance;markmouse/timing/follow rules asproposed",
+        "exact_clone": "AllparametersareverifiedJWE3defaults",
+        "insufficient_all": "No usefulreferenceevidenceexists"
+      }
+    },
+    "cameraApproval": {
+      "type": "choice",
+      "instructions": "Nextaction underlatest explicituserboundary?",
+      "criteria": {
+        "review_packet": "Presentexactspecandobtainconfirmationbeforecameraediting",
+        "implement_now": "Implementallnewcameraassumptionsnow",
+        "only_apology": "Stopwithoutconcretereviewableproposal"
+      }
+    },
+    "fleet": {
+      "type": "choice",
+      "instructions": "Which inventory statement is supported?",
+      "criteria": {
+        "authored_scenario": "8scenariounits,notrealcenterstock;genericregistryhasnofixed8limit",
+        "actual_eight": "Two centersactuallyhave8units",
+        "actual_39_each": "Eachcenterhas39"
+      }
+    },
+    "building": {
+      "type": "choice",
+      "instructions": "What follows from photos/OSM andcurrentbuilder evidence?",
+      "criteria": {
+        "source_constrained": "Upgradeobservedmassing/facades+heightparity;unseengeometryremainsinferred",
+        "complete_twin": "Exactcompleteinteriorscanbeclaimed",
+        "discard_sources": "No modelimprovementpossible"
+      }
+    },
+    "risk": {
+      "type": "choice",
+      "instructions": "Primary implementation interaction risk toverify afterapproval?",
+      "criteria": {
+        "drag_vs_order": "OrbitdragmustconsumeRMBrelease;followmustnotresetzoom;inputcapturepriority",
+        "more_art": "Morecharacteranimationsneededfirst",
+        "none": "No runtimeinteractioncheckneeded"
+      }
+    }
+  }
+}

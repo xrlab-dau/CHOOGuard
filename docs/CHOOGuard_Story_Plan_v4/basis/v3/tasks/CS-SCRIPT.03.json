@@ -1,0 +1,154 @@
+{
+  "id": "CS-SCRIPT.03",
+  "epicId": "CS-SCRIPT",
+  "title": "native 대본 편집·검토 상태",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SCRIPT.03",
+    "description": "TMP 편집·변경차이·의미검토·자격 표시",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SCRIPT.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Presentation/Authoring/ScriptEditorPresenter.cs",
+    "Assets/ChooGuard/Presentation/Authoring/ScriptEditor.prefab",
+    "Assets/ChooGuard/Authoring/ReviewLedger.cs",
+    "Assets/ChooGuard/Authoring/QualificationPolicy.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SCRIPT/Script03Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-SCRIPT.02",
+      "artifactId": "A-CS-SCRIPT.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PLAY.05",
+      "artifactId": "A-CS-PLAY.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "native overlay에서 입력·선택·커서·IME를 유지하고 문장을 누르면 실제 근거를 연다.",
+    "서식 변경과 의미 변경을 분리하고 의미 변경은 관련 검토를 만료시킨다.",
+    "초안/시뮬레이션사용 검토/기관의 지정훈련 수용은 다른 주체·범위·버전 기록이다. 단어만으로 승인되지 않는다."
+  ],
+  "contract": "ReviewDecision {reviewer,role,scope,revision,evidence,time,status}; focus와 UI가 승인권을 부여하지 않음.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SCRIPT.03-P",
+      "given": "approved script rev2",
+      "when": "의미 수정 rev3",
+      "then": "approval stale; raw log 불변",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SCRIPT.03-N",
+      "given": "AI 문구 승인됨",
+      "when": "의미 수정 rev3",
+      "then": "승인 상태 변화0",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-055",
+    "REQ-056"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/09-script-and-approval.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/09-script-and-approval.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-055",
+    "REQ-056"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SCRIPT/Script03Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSSCRIPT03PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-SCRIPT.03.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "approved script rev2",
+    "operation": "의미 수정 rev3",
+    "expectedPositive": "approval stale; raw log 불변",
+    "negativeInput": "AI 문구 승인됨",
+    "expectedNegative": "승인 상태 변화0",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

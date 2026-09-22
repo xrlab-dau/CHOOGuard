@@ -1,0 +1,54 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "project": "CHOOGuard — Unity 1인칭 비상대응 훈련 시뮬레이션. 두 개의 별개 모드: (1) 튜토리얼 모드 = 코레일 매뉴얼 절차를 My Summer Car 식으로 체득, (2) 비상대응 모드 = 부산역·도시철도 디지털 트윈에서 랜덤 비상상황 대응. 사용자가 두 모드는 별개라고 확정했고 상태 이월은 없다.",
+    "code_state": "FirstPersonResponder.cs 128줄 완성(CharacterController+마우스룩+E 레이캐스트). IFpsInteraction/FpsInteractable 인터페이스 완성. 그러나 씬에 상호작용 인스턴스 0개라 E키가 아무 일도 하지 않는다. NPC 0, 미션 0, FPS 자동시험 0. 폐기 선언된 RTS 코드 App/Mvp 3160줄에 상태기 게임루프가 남아있다.",
+    "scene_state": "Assets/ChooGuard/Scenes/FpsStation.unity 파일은 존재하나 EditorBuildSettings 에는 Bootstrap.unity 하나만 등록돼 있다.",
+    "assets_tutorial": "2026-09-22 실측 취득 완료. Poly Haven CC0 31건 150파일 257MB, sha256 150/150 일치 검증. 한국형 소화기(korean_fire_extinguisher_01), 발신기, 소화전, 구급함, 손전등 2종, 정비공구 17종(렌치4·드라이버2·펜치·볼트커터·빠루·망치·공구함2·줄자·멀티미터·바이스), 역사소품 8종. 로그인·라이선스 제약 없음.",
+    "assets_emergency_missing": "Poly Haven 전체 521 모델에 지하철·전동차·승강장·터널·개찰구·에스컬레이터 0건. AED 0건. 버니어캘리퍼스 0건.",
+    "assets_emergency_existing": "저장소에 이미 OpenBVE 부산1호선 데이터가 있다: CSV 1133 / B3D 97 / BMP 1002 / PNG 387 / WAV 250. 오브젝트 이름에 StaRoofL(승강장지붕), StawallR(승강장벽), station curve 700, stair11~17(계단), Roof tail nampoR·jagalchiL(남포·자갈치역), door1-2, FormwallL/R(터널벽)이 실재한다. CSV와 B3D 둘 다 메시 포맷이라 변환기를 만들면 Unity 로 가져올 수 있다. 다만 변환기는 아직 없다.",
+    "sketchfab": "검색 API 는 인증 없이 HTTP 200 이지만 /v3/models/<uid>/download 는 401 이다(uid 3건 실측). 네이티브 이메일 가입은 폐지됐고 소셜 SSO 만 남았다. Aside 브라우저의 쿠키는 사용자 개인 브라우저와 분리돼 있고 Google 계정 선택 화면이 합성 클릭을 무시해 자동 로그인은 불가능하다. CC-BY 로 Metro/Subway Station Interior(56667면), Urban Series Station Platform(82035면), Subway Turnstile(1872면), Double Escalator, Subway train interior 등이 존재함은 확인했다. 받으려면 사람이 직접 한 번 로그인해야 한다.",
+    "korail_manuals": "사규 공개 게시판에서 327건 색인, 92파일 24MB 다운로드 완료. 철도차량 유지보수 세칙 별표1(정비주기 KTX ES 5000km/LI 150000km·4개월/GI 300000km·8개월, ±10% 범위), 별표2(정비 의존행렬), 제3조 제1/2/3한도 계측 판정식, 비상대응계획 시행세칙 제17조 우선순위(1.인명구조 2.본선개통 3.재산보호) 확보.",
+    "user_directive": "사용자는 보고를 쉽게 하고 자기 결정이 필요한 부분만 보고하라고 했다. 그리고 계정 만들고 에셋 다운받고 중복파일 제거하라고 지시했으며 중복제거와 에셋취득은 완료됐다.",
+    "prior_jev": "이전 Jev 호출이 다음 수로 '씬 빌드 등록 → 설비 1개 배치 → 튜토리얼 절차 1회 끝까지'를 확률 0.98 로 권고했다."
+  },
+  "questions": {
+    "next_move": {
+      "type": "choice",
+      "instructions": "위 상태에서 지금 당장 착수할 단 하나의 작업을 고르시오. 에셋 가용성과 코드 기준선을 근거로 판단하시오.",
+      "criteria": {
+        "tutorial_vertical_slice": "FpsStation 씬을 빌드에 등록하고 한국형 소화기 1개를 배치해 튜토리얼 절차 1회를 끝까지 완성한다. 에셋이 이미 있고 상호작용 프레임워크도 완성돼 있다.",
+        "openbve_converter": "OpenBVE CSV/B3D → FBX 변환기를 먼저 만들어 부산1호선 역사 공간을 Unity 로 들여온다. 비상대응 모드의 병목을 먼저 제거한다.",
+        "sketchfab_login": "사용자에게 Sketchfab 로그인을 한 번 요청해 기성 역사·개찰구·에스컬레이터 모델을 받는다. 변환기 제작을 우회한다.",
+        "procedure_data_model": "코레일 매뉴얼 절차를 표현할 데이터 구조(단계·전제조건·계측판정·실패분기)를 먼저 설계하고 코드로 만든다. 에셋 배치 전에 규칙 엔진을 세운다."
+      }
+    },
+    "tutorial_first": {
+      "type": "noul",
+      "instructions": "튜토리얼 모드를 비상대응 모드보다 먼저 완성하는 것이 옳은 순서인가?",
+      "criteria": {
+        "true": "튜토리얼 모드를 먼저 완성해야 한다. 에셋이 완비됐고, 절차가 결정적이라 검증이 쉽고, 비상대응 모드가 요구하는 조작 문법을 먼저 확정하기 때문이다.",
+        "false": "비상대응 모드를 먼저 해야 한다. 그것이 제품의 정체성이고 공간 없이는 튜토리얼도 무대가 없기 때문이다."
+      }
+    },
+    "sketchfab_worth": {
+      "type": "score",
+      "instructions": "사용자에게 Sketchfab 로그인 1회를 요청할 가치가 지금 시점에 얼마나 되는가? 이미 OpenBVE 역사 지오메트리를 보유하고 있고 튜토리얼 모드 에셋은 완비된 상태임을 고려하시오.",
+      "criteria": [
+        "전혀 불필요하다 요청하지 말라",
+        "지금은 불필요하나 나중에 필요할 수 있다",
+        "있으면 좋지만 급하지 않다",
+        "요청할 가치가 있다",
+        "지금 당장 요청해야 한다"
+      ]
+    },
+    "converter_risk": {
+      "type": "noul",
+      "instructions": "OpenBVE CSV/B3D → FBX 변환기 제작이 예상보다 훨씬 오래 걸려 프로젝트를 지연시킬 위험이 큰가?",
+      "criteria": {
+        "true": "위험이 크다. OpenBVE 포맷은 문서화가 빈약하고 텍스처 매핑·좌표계·애니메이션 처리에서 함정이 많아 일정을 크게 잡아먹을 것이다.",
+        "false": "위험이 작다. CSV 와 B3D 는 단순한 정점·면·텍스처 선언 포맷이고 파서는 수백 줄이면 되며 이미 공개 구현 참고가 많다."
+      }
+    }
+  }
+}

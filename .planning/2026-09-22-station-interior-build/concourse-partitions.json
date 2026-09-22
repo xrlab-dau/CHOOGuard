@@ -1,0 +1,12 @@
+{
+  "schema": "chooguard.concourse-partitions.v2",
+  "probedAt": "2026-09-22",
+  "question": "NFTC 101 의 '33제곱미터 이상으로 구획된 각 거실'이 이 대합실에 몇 개 있는가",
+  "method": "a wall separates two adjacent walkable cells when the linecast between them is blocked at BOTH 0.5m and 1.3m above the floor; doorways stay open. Height steps over stepOffset block walking but are NOT partitions, so two graphs are kept: wall-only for rooms, wall+step for walking.",
+  "v1Defects": "v1 counted 104 wall edges that were really 54 wall + 50 step, inflating the partition count; and the player capsule hid its own cell.",
+  "playerExcluded": true,
+  "walkableCells": 1355, "wallEdges": 54, "stepEdges": 50, "openEdges": 4630,
+  "roomCount": 37, "roomsAtLeast33sqm": 3, "walkComponentCount": 50,
+  "rooms": [{"rank": 0, "sqm": 787, "needsOwnUnit": true}, {"rank": 1, "sqm": 225, "needsOwnUnit": true}, {"rank": 2, "sqm": 105, "needsOwnUnit": true}, {"rank": 3, "sqm": 32, "needsOwnUnit": false}, {"rank": 4, "sqm": 31, "needsOwnUnit": false}, {"rank": 5, "sqm": 28, "needsOwnUnit": false}, {"rank": 6, "sqm": 22, "needsOwnUnit": false}, {"rank": 7, "sqm": 21, "needsOwnUnit": false}, {"rank": 8, "sqm": 19, "needsOwnUnit": false}, {"rank": 9, "sqm": 19, "needsOwnUnit": false}, {"rank": 10, "sqm": 13, "needsOwnUnit": false}, {"rank": 11, "sqm": 8, "needsOwnUnit": false}, {"rank": 12, "sqm": 5, "needsOwnUnit": false}, {"rank": 13, "sqm": 5, "needsOwnUnit": false}],
+  "partitionMapPng": ".planning/2026-09-22-station-interior-build/concourse-partitions.png"
+}

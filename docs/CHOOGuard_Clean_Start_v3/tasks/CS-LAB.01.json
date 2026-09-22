@@ -1,0 +1,148 @@
+{
+  "id": "CS-LAB.01",
+  "epicId": "CS-LAB",
+  "title": "이벤트 재생·완전 checkpoint",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-LAB.01",
+    "description": "예약/메시지/난수/worker 상태를 담은 snapshot",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-LAB.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Experiments/CheckpointService.cs",
+    "Assets/ChooGuard/Experiments/ReplayReader.cs",
+    "Assets/ChooGuard/Experiments/CheckpointManifest.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/LAB/Lab01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-OPS.02",
+      "artifactId": "A-CS-OPS.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.05",
+      "artifactId": "A-CS-OPS.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-SIM.01",
+      "artifactId": "A-CS-SIM.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "EXTERNAL_WORKER_USED"
+    }
+  ],
+  "algorithm": [
+    "공통 cut에서 업무·예약·기관지식·미전달 메시지·난수·worker 상태 또는 재계산 recipe를 모은다.",
+    "필수 worker 목록은 capability와 run config에서 구한다. 파일 이름 존재만으로 정확 복원을 허용하지 않는다.",
+    "hash·version·시간을 검증한 후 manifest를 durable로 게시한다. 누락되면 복구 제한을 명시한다."
+  ],
+  "contract": "Checkpoint: schemas/Checkpoint.schema.json. cutSequence/tickUs/coreStateRef/eventQueueRef/randomStreamsRef/contentLockRef와 필수 workerStates를 검증한다.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-LAB.01-P",
+      "given": "required w1,w2; 동일 cut7/tick20",
+      "when": "checkpoint 검사",
+      "then": "동일 worker집합·시간·해시",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-LAB.01-N",
+      "given": "w2 누락 또는 w1 중복",
+      "when": "checkpoint 검사",
+      "then": "INCOMPLETE_CHECKPOINT",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-036"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/03-durable-operations.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/03-durable-operations.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-036"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/LAB/Lab01Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "required w1,w2; 동일 cut7/tick20",
+    "operation": "checkpoint 검사",
+    "expectedPositive": "동일 worker집합·시간·해시",
+    "negativeInput": "w2 누락 또는 w1 중복",
+    "expectedNegative": "INCOMPLETE_CHECKPOINT",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

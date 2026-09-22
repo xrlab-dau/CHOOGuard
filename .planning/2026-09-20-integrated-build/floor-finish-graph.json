@@ -1,0 +1,101 @@
+{
+  "nodes": [
+    {
+      "id": "entry",
+      "type": "implementation",
+      "build": "MvpFloorBuilder.Build / ReferencePatch",
+      "inPlace": "MvpFloorBuilder.UpgradeExistingFloors()",
+      "ownership": "Existing three station slabs and reference patch only. No city/art/worker rebuild."
+    },
+    {
+      "id": "geometry",
+      "type": "static-measurement",
+      "floor1": {
+        "outlineVertices": 48,
+        "topTriangles": 46,
+        "polygonAreaM2": 20614.23622026562,
+        "topTriangleAreaM2": 20614.23622026562,
+        "topWinding": "+Y"
+      },
+      "floor2": {
+        "outlineVertices": 48,
+        "topTriangles": 46,
+        "polygonAreaM2": 20614.23622026562,
+        "topTriangleAreaM2": 20614.23622026562,
+        "topWinding": "+Y"
+      },
+      "floor3": {
+        "outlineVertices": 7,
+        "topTriangles": 5,
+        "polygonAreaM2": 3960.0,
+        "topTriangleAreaM2": 3960.0,
+        "topWinding": "+Y"
+      },
+      "referenceAreaM2": 600,
+      "topsMetres": [
+        0,
+        5,
+        10
+      ],
+      "bottomsMetres": [
+        -0.3,
+        4.7,
+        9.7
+      ],
+      "referencePatchTopMetres": 5.05,
+      "thicknessMetres": 0.3,
+      "notes": "Source OSM footprint clipped at z68 preserved. Runtime area guard compares all top triangles to polygon shoelace area before assigning mesh. Upward top normals, closed side/bottom mesh."
+    },
+    {
+      "id": "finish",
+      "type": "derived-design",
+      "materials": [
+        "1F neutral grey stone",
+        "2F light terrazzo",
+        "3F warm stone"
+      ],
+      "tileMetres": 0.7,
+      "textureRepeatMetres": 2.8,
+      "texturePixels": 512,
+      "groutVisualMetres": 0.00546875,
+      "variation": "Restrained per-tile tone and fine grain; 2F sparse terrazzo flecks. Material choices are not surveyed real finishes. Reference patch uses identical 2F material and world-aligned UV."
+    },
+    {
+      "id": "persistence",
+      "type": "implementation",
+      "details": "All regenerated meshes use MvpMeshPersistence.Store. No CopySerialized and no automatic static batching."
+    },
+    {
+      "id": "limits",
+      "type": "remaining-risk",
+      "details": [
+        "No Unity calls or compile/render acceptance by worker",
+        "Root must inspect all floor tops/undersides, active cutaway, texture mip readability and reference patch foot alignment",
+        "Third-floor outline remains previously accepted guide-derived approximation",
+        "Slab thickness is visual design, not measured structural specification"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "entry",
+      "to": "geometry",
+      "relation": "builds verified top coverage and downward depth"
+    },
+    {
+      "from": "entry",
+      "to": "finish",
+      "relation": "assigns per-floor materials"
+    },
+    {
+      "from": "entry",
+      "to": "persistence",
+      "relation": "updates existing assets while retaining GUIDs"
+    },
+    {
+      "from": "geometry",
+      "to": "limits",
+      "relation": "static area evidence is not Unity visual acceptance"
+    }
+  ]
+}

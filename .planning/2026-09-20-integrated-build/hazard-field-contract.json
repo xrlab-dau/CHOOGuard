@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "story": "CS-EXEC.01.01",
+  "decisionRef": ".planning/2026-09-20-integrated-build/jev-field-coordinate-migration-035.result.json",
+  "sourceObservation": ".planning/2026-09-20-integrated-build/field-contract-observations.json",
+  "format": {
+    "resultField": "hazardField",
+    "csharpType": "MvpHazardFieldFrame",
+    "capabilityFields": [
+      "hazardFieldVersion=1",
+      "hazardFieldSourceSha256",
+      "hazardFieldDeckSha256",
+      "samplerVersion=native_nodes_nearest_v1"
+    ],
+    "fields": {
+      "version": "int1",
+      "caseId": "string currentreferencecase",
+      "quantity": "SOOT EXTINCTION COEFFICIENT",
+      "unit": "1/m",
+      "samplerVersion": "native_nodes_nearest_v1",
+      "encoding": "base64-float32-le-row-major-yx",
+      "width": "int61 observed",
+      "height": "int41 observed",
+      "originX": "float0",
+      "originY": "float0 (FDSY→UnityZ)",
+      "stepX": "float.5",
+      "stepY": "float.5",
+      "sampleHeight": "float1.5",
+      "requestedIncidentTime": "float actualincidentclock",
+      "sampledIncidentTime": "float actualnearestnonuniformtimestamp",
+      "validFrom": "float0",
+      "validUntil": "float120",
+      "displayMin": "float0",
+      "displayMax": "floatglobalmaximum4.27322674 measuredfromwholecase",
+      "sourceSha256": "hashoriginal.sf",
+      "deckSha256": "hashoriginal.fds",
+      "payloadSha256": "hashdecodedfloat32bytes",
+      "valuesBase64": "values[ix,iy] transposed to bytearrayindex iy*width+ix, littleendian float32"
+    }
+  },
+  "authority": [
+    "Use actual native coordinate arrays for all6physicsfield samplers. Nearest-time uses actual timestamps, not frame index/seconds assumption.",
+    "Local wrapper only, pinned pyFDS-Evac and original FDS outputs immutable. Source/time/cellCentered metadata checked.",
+    "Old fire reports remain legacy sampler results; don'tcarry numericaloutcomeclaims acrosscoordinatefix.",
+    "Emit fieldonlywhenfireRequired and fieldCurrent inincident; omitbefore/aftervalidcoverage. Existingline limits respected."
+  ],
+  "bridge": [
+    "Add DTO publicfields and public static TryDecodeHazardField(MvpHazardFieldFrame frame,out float[] values,out string error).",
+    "Validate case identity/source hashes againstcapabilities,dimensions/span, finite nonnegativefloatvalues, payloadhash and timebounds beforeResultReceived. Invalidrequiredfieldmustnotreachrenderer silently.",
+    "Legacycrowd pathunchanged; no clinical/whole-siteclaim."
+  ],
+  "view": [
+    "New MvpHazardFieldView + Editor/MvpHazardFieldBinder.BindExisting() only, no StationBuilder/Workspace/Director edits byviewowner.",
+    "Subscribe existingBridge.ResultReceived and status; dependencyserializedStation/Bridge/Workspace fields populatedbybinder.",
+    "2Danalysisoverlay at referencefloor+.03m, source sampleheight1.5m explicitlyshown inKorean UI. Not3Dsmoke.",
+    "Metre-correct30x20 quad withnode-centreUV offset .5/width ..1-.5/width, Pointsampling. Nonlinearvisualpalette allowediflegendstatesactualrange; underlyingfloats retained forprobe.",
+    "ScreenSpace UItoggle/legend integratedunderexistingWorkspaceCanvas, no worldtext. API debug: public bool OverlayVisible, int Width/Height, float SampleAt(float localX,float localZ) or equivalentforcomparison.",
+    "Hideonlyorange marker meshes whilevalidfield isdisplayed; invalid/expiredfieldnotreused. Don'tclaimfireextinguished whenfieldhidden. Projectiondoesnotalterphysics.",
+    "LateUpdate handlesfloorvisibility and recreatedCanvas withoutblockingexistinginput; no Collider/staticbatch."
+  ],
+  "ownership": {
+    "A": [
+      "workers/physics/worker.py",
+      "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs",
+      "workers/physics/hazard_field_probe.py"
+    ],
+    "B": [
+      "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs",
+      "Assets/ChooGuard/Editor/MvpHazardFieldBinder.cs",
+      "optional localfieldmaterial/textureassets"
+    ]
+  },
+  "verify": "A actualraw-frame/pointparity0/30/60/120, mismatchnegative+fieldboundary. Rootonefireliveview atknownincidenttime comparingdecodedfield/agent sample/quadcorners; ordinarycrowdflowalreadyPASS andnotrerunwithoutcause."
+}

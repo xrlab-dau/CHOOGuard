@@ -1,0 +1,106 @@
+{
+  "parameterSource": ".planning/2026-09-20-integrated-build/world-art-design-packet.json",
+  "parameterSha256": "3209280d4aadabbebafef66af7b0ff95d24e22369f7f840c5dd768df5a128483",
+  "scriptSha256": "34965d386c94511aca8805cb212448323c274ae83e9036289b6a1b37b9278f35",
+  "blender": "4.5.9 LTS",
+  "executed": "headless build, FBX export, Cycles contact and hero renders",
+  "appliedOperations": {
+    "palette": {
+      "stone": [
+        0.65,
+        0.61,
+        0.51
+      ],
+      "metal": [
+        0.19,
+        0.24,
+        0.25
+      ],
+      "glass": [
+        0.13,
+        0.24,
+        0.29
+      ],
+      "wood": [
+        0.31,
+        0.17,
+        0.078
+      ],
+      "roof": [
+        0.72,
+        0.74,
+        0.69
+      ],
+      "leaves": [
+        [
+          0.12,
+          0.24,
+          0.07
+        ],
+        [
+          0.2,
+          0.32,
+          0.1
+        ],
+        [
+          0.28,
+          0.38,
+          0.14
+        ]
+      ]
+    },
+    "lighting": {
+      "sunEnergy": 2.3,
+      "sunRotation": [
+        0.46,
+        -0.42,
+        -0.7
+      ],
+      "worldEnergy": 0.6,
+      "color": [
+        0.72,
+        0.82,
+        0.94
+      ]
+    },
+    "budget": {
+      "mergeByMaterial": true,
+      "branchSides": 9,
+      "foliageSubdivisions": 2,
+      "pineFoliageSubdivisions": 1,
+      "bevelSegments": 2,
+      "architecturalSides": 48
+    },
+    "seed": 190921
+  },
+  "exports": [
+    "Assets/ChooGuard/Art/WorldSet/TreeBroadleaf.fbx",
+    "Assets/ChooGuard/Art/WorldSet/TreePine.fbx",
+    "Assets/ChooGuard/Art/WorldSet/StreetLamp.fbx",
+    "Assets/ChooGuard/Art/WorldSet/Bench.fbx",
+    "Assets/ChooGuard/Art/WorldSet/BusStop.fbx",
+    "Assets/ChooGuard/Art/WorldSet/Planter.fbx",
+    "Assets/ChooGuard/Art/WorldSet/BusanTower.fbx",
+    "Assets/ChooGuard/Art/WorldSet/PortTerminal.fbx",
+    "Assets/ChooGuard/Art/WorldSet/JagalchiMarket.fbx"
+  ],
+  "totalMeshes": 41,
+  "totalTriangles": 63280,
+  "manifest": "art/blender/world-set-manifest.json",
+  "renders": [
+    "art/blender/world-set-contact.png",
+    "art/blender/world-set-landmark-hero.png"
+  ],
+  "scope": "stylized detailed RTS kit; production acceptance and Unity validation not claimed",
+  "busStopTextPatch": {
+    "authority": "root-authorized latest UI-only world text constraint",
+    "mode": "BusStop-only FBX export; no render, no other8 FBX or textures modified",
+    "removedMeshes": [
+      "Korean sign"
+    ],
+    "replacement": "geometric bus silhouette/windows/wheels plus plain route backing",
+    "otherEightHashesUnchanged": true,
+    "scriptSha256": "4e33782c3d28410422e48c8d3055a65fb675c40f1ca289ee27f9cab35747d45a",
+    "sourceBlend": "world_set.blend remains prior frozen source snapshot; generator updated for future builds"
+  }
+}

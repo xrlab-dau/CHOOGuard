@@ -1,0 +1,59 @@
+{
+  "gates": [
+    {
+      "id": "STRUCTURE",
+      "requires": [
+        "schema",
+        "reference-integrity"
+      ],
+      "canAssert": "문서/데이터 구조의 일관성"
+    },
+    {
+      "id": "NATIVE_RUNTIME",
+      "requires": [
+        "unity-compile",
+        "player-interaction",
+        "disk-restart"
+      ],
+      "canAssert": "기록한 build/환경에서의 실행"
+    },
+    {
+      "id": "USER_VALUE",
+      "requires": [
+        "consented-participants",
+        "pre-registered-study",
+        "all-outcomes"
+      ],
+      "canAssert": "관찰한 업무/표본 범위의 효용"
+    },
+    {
+      "id": "MODEL_VALIDATED",
+      "requires": [
+        "qoi-protocol",
+        "independent-holdout",
+        "coupling-error"
+      ],
+      "canAssert": "검증한 조건·수량·허용오차"
+    },
+    {
+      "id": "FIELD_USE",
+      "requires": [
+        "MODEL_VALIDATED",
+        "manual-scope-review",
+        "external-agency-review"
+      ],
+      "canAssert": "해당 장소·훈련·판본의 기관 검토"
+    },
+    {
+      "id": "DYNAMIC_TWIN",
+      "requires": [
+        "MODEL_VALIDATED",
+        "new-reality-observation",
+        "update-and-revalidation"
+      ],
+      "canAssert": "지정 빈도/범위의 현실 갱신"
+    }
+  ],
+  "state": "NOT_EVALUATED",
+  "rule": "스키마 유효와 원시 hash는 진실/기관 승인/안전성의 충분조건이 아니다. 같은 작성자의 self-review는 independent review가 아니다."
+}

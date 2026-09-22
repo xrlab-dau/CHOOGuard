@@ -1,0 +1,311 @@
+{
+  "schema": "actual-transfer-official-metro/v1",
+  "generated_at": "2026-09-21T22:28:00+09:00",
+  "scope": "Official HUMETRO station-113 internal topology, BISCO underground-mall interface, exit-number namespaces, and platform vertical circulation. No Unity or scene work.",
+  "overall_status": "confirmed_segments_with_critical_seam_gap",
+  "classification_legend": {
+    "directly_supported": "Exact official page, operator plan, or inventory supports the claim.",
+    "contradicts_premise": "Official evidence conflicts with the modeled or stated premise.",
+    "near_match_only": "Related official evidence does not resolve the exact segment.",
+    "insufficient": "No primary integrated evidence resolves the claim."
+  },
+  "key_verdicts": [
+    {
+      "claim": "The actual railway-to-Metro transfer is a purpose-built underground route through the 부산역지하도상가 interface, not an authored straight outdoor corridor from HUMETRO Exit 6.",
+      "classification": "contradicts_premise",
+      "evidence": ["S2", "S4", "S6", "S9"],
+      "reason": "HUMETRO identifies Exit 6 only as a 부산역광장 exit. BISCO's plan separately marks a 부산역 연결통로 branch from the underground mall, and Busan City describes the underground Metro-to-KTX connection."
+    },
+    {
+      "claim": "The number 8 on the current BISCO plan is a 부산역지하도상가 surface-exit number, not a current HUMETRO station-113 exit number.",
+      "classification": "directly_supported",
+      "evidence": ["S2", "S3", "S4", "S5"],
+      "reason": "The live HUMETRO station exit table and station map enumerate 1–7; the independently operated BISCO mall plan enumerates 1–8."
+    },
+    {
+      "claim": "An official Metro Exit 8 renumbering is established.",
+      "classification": "insufficient",
+      "evidence": ["S2", "S3", "S4"],
+      "reason": "No official HUMETRO source found in this lane lists station 113 Exit 8. The observed 8 belongs to the mall plan."
+    }
+  ],
+  "numbering_namespaces": [
+    {
+      "namespace": "humetro_station_113_surface_exits",
+      "numbers": [1, 2, 3, 4, 5, 6, 7],
+      "status": "live official HUMETRO table and downloadable schematic as retrieved 2026-09-21",
+      "classification": "directly_supported",
+      "evidence": ["S2", "S3"],
+      "notes": "Exit 4 destinations include 부산역광장; Exit 6 destinations include 부산역광장. Neither row calls itself the underground KTX transfer."
+    },
+    {
+      "namespace": "bisco_busan_station_underground_mall_surface_exits",
+      "numbers": [1, 2, 3, 4, 5, 6, 7, 8],
+      "status": "live official BISCO plan; image Last-Modified 2024-07-01T03:50:43Z, retrieved 2026-09-21",
+      "classification": "directly_supported",
+      "evidence": ["S4", "S5"],
+      "notes": "These are mall exits. They must not be merged with HUMETRO station exit IDs."
+    },
+    {
+      "namespace": "railway_station_building_exits",
+      "numbers": [],
+      "status": "out of this lane",
+      "classification": "insufficient",
+      "notes": "Official city pages can use 부산역 plus an exit number for the railway station. Such references do not establish HUMETRO numbering without an explicit operator namespace."
+    }
+  ],
+  "nodes": [
+    {
+      "id": "metro113_platform_nampo_direction",
+      "kind": "side_platform",
+      "classification": "directly_supported",
+      "evidence": ["S3"]
+    },
+    {
+      "id": "metro113_platform_choryang_direction",
+      "kind": "side_platform",
+      "classification": "directly_supported",
+      "evidence": ["S3"]
+    },
+    {
+      "id": "metro113_paid_and_unpaid_concourse",
+      "kind": "upper_concourse",
+      "classification": "directly_supported",
+      "evidence": ["S3"]
+    },
+    {
+      "id": "humetro_to_bisco_mall_seam",
+      "kind": "operator_boundary_and_public_corridor_seam",
+      "classification": "insufficient",
+      "evidence": ["S3", "S4", "S5"],
+      "notes": "Both operator diagrams imply continuity, but neither supplies a shared control point, dimension, fare-gate coordinate, or wall opening."
+    },
+    {
+      "id": "bisco_mall_main_spine",
+      "kind": "underground_shopping_mall_corridor",
+      "classification": "directly_supported",
+      "evidence": ["S4", "S5"]
+    },
+    {
+      "id": "bisco_mall_railway_passage_junction",
+      "kind": "perpendicular_branch_junction",
+      "classification": "directly_supported",
+      "evidence": ["S4", "S6"],
+      "plan_coordinates": {
+        "source": "S4",
+        "image_size_px": [1300, 364],
+        "coordinate_origin": "top-left",
+        "approx_branch_bbox_px": [210, 190, 260, 318],
+        "nearby_mall_exit_1_label_center_px": [351, 139],
+        "nearby_mall_exit_2_label_center_px": [282, 235],
+        "precision": "visual plan reading; pixels are for source localization, not surveyed geometry"
+      }
+    },
+    {
+      "id": "railway_connection_passage_2019",
+      "kind": "purpose_built_underground_passage",
+      "classification": "directly_supported",
+      "evidence": ["S9"],
+      "notes": "Overall passage geometry and KTX end are root-lane owned; included only to close the topology graph."
+    }
+  ],
+  "edges": [
+    {
+      "from": "metro113_platform_nampo_direction",
+      "to": "metro113_paid_and_unpaid_concourse",
+      "kind": "vertical_public_circulation",
+      "classification": "directly_supported",
+      "modes": ["stairs", "escalator", "internal_elevator"],
+      "evidence": ["S3", "S7", "S8"]
+    },
+    {
+      "from": "metro113_platform_choryang_direction",
+      "to": "metro113_paid_and_unpaid_concourse",
+      "kind": "vertical_public_circulation",
+      "classification": "directly_supported",
+      "modes": ["stairs", "escalator", "internal_elevator"],
+      "evidence": ["S3", "S7", "S8"]
+    },
+    {
+      "from": "metro113_paid_and_unpaid_concourse",
+      "to": "humetro_to_bisco_mall_seam",
+      "kind": "fare_gate_and_concourse_walk",
+      "classification": "near_match_only",
+      "evidence": ["S3"],
+      "gap": "HUMETRO diagram shows gates/concourse but omits a labelled mall or railway-passage interface."
+    },
+    {
+      "from": "humetro_to_bisco_mall_seam",
+      "to": "bisco_mall_main_spine",
+      "kind": "continuous_underground_public_corridor",
+      "classification": "insufficient",
+      "evidence": ["S4", "S5"],
+      "gap": "BISCO plan has a continuation arrow and the page defines the mall extent as 부산역~중앙회관, but the exact shared seam is unlabeled and undimensioned."
+    },
+    {
+      "from": "bisco_mall_main_spine",
+      "to": "bisco_mall_railway_passage_junction",
+      "kind": "plan_visible_at_grade_junction",
+      "classification": "directly_supported",
+      "evidence": ["S4", "S6"],
+      "notes": "Use the branch labelled 부산역 연결통로 near mall exits 1–2; do not substitute a HUMETRO surface exit."
+    },
+    {
+      "from": "bisco_mall_railway_passage_junction",
+      "to": "railway_connection_passage_2019",
+      "kind": "operator_plan_tie",
+      "classification": "directly_supported",
+      "evidence": ["S4", "S6", "S9"]
+    }
+  ],
+  "vertical_circulation": {
+    "current_inventory": {
+      "internal_elevators": 2,
+      "external_elevators": 2,
+      "escalators_total": 6,
+      "classification": "directly_supported",
+      "evidence": ["S7", "S8"],
+      "limitation": "The live inventories give counts but no shaft-by-shaft placement."
+    },
+    "station_schematic_observations": {
+      "image_source": "S3",
+      "image_size_px": [1000, 661],
+      "coordinate_origin": "top-left",
+      "internal_lift_shaft_centers_px": [[410, 426], [648, 463]],
+      "visible_surface_concourse_lift_center_px": [580, 337],
+      "topology": "two side platforms below an upper concourse; each platform has stairs/escalator circulation plus an internal lift to concourse",
+      "classification": "directly_supported",
+      "limitation": "Schematic only; no metric scale, section elevations, construction date, or integrated 2019 passage."
+    }
+  },
+  "sources": [
+    {
+      "id": "S1",
+      "publisher": "Busan Transportation Corporation (HUMETRO)",
+      "title": "Busan Station 113 basic information",
+      "url": "https://www2.humetro.busan.kr/homepage/default/stationinfo/page/list01.do?menu_no=1001010201&S_LINE=1&S_STATION=113",
+      "retrieved_at": "2026-09-21T22:16:00+09:00",
+      "content_date": null,
+      "local": "humetro113-station.html",
+      "sha256": "e3cddaa52a41763615bc57a9bc0041230713d05d989fb99f1799f25b492bdd8b",
+      "supports": ["station identifier 113", "official station-map download URL", "address 중앙대로 지하 200"],
+      "limitation": "No page-level publication/update date."
+    },
+    {
+      "id": "S2",
+      "publisher": "Busan Transportation Corporation (HUMETRO)",
+      "title": "Busan Station 113 exit-area table",
+      "url": "https://www2.humetro.busan.kr/homepage/default/stationinfo/page/list02.do?menu_no=1001010202&S_LINE=1&S_STATION=113",
+      "retrieved_at": "2026-09-21T22:16:00+09:00",
+      "content_date": null,
+      "local": "humetro113-exits.html",
+      "sha256": "bc348144d378adc6a3a060b357237e9721009e53a38e629339172c00cad53b6c",
+      "supports": ["live official Metro exits 1–7", "Exit 4 destination includes 부산역광장", "Exit 6 destination includes 부산역광장"],
+      "limitation": "No page-level publication/update date and no 2019 passage row."
+    },
+    {
+      "id": "S3",
+      "publisher": "Busan Transportation Corporation (HUMETRO)",
+      "title": "Busan Station information and evacuation schematic (113.gif)",
+      "url": "https://www2.humetro.busan.kr/servlet/DownloadServlet?file_name=113.gif&file_name_origin=113.gif&upload_dir=stationmap",
+      "retrieved_at": "2026-09-21T22:17:00+09:00",
+      "content_date": null,
+      "http_last_modified": null,
+      "local": "humetro113-map.gif",
+      "sha256": "eba1b4dd8467b34f884c43454aa59abd1cc9a9a4dceae9e3a83839f9fdc7c10a",
+      "image_size_px": [1000, 661],
+      "supports": ["two side platforms", "upper concourse and fare gates", "platform stairs/escalators", "two internal platform lifts", "Metro exits 1–7"],
+      "limitation": "No scale, vertical datum, content date, mall label, or 2019 passage."
+    },
+    {
+      "id": "S4",
+      "publisher": "Busan Infrastructure Corporation (BISCO)",
+      "title": "Busan Station underground shopping mall plan",
+      "url": "https://www.bisco.or.kr/undershop/images/map_n24/busan_main.png",
+      "retrieved_at": "2026-09-21T22:18:59+09:00",
+      "content_date": null,
+      "http_last_modified": "2024-07-01T03:50:43Z",
+      "local": "bisco-busan-underground-map.png",
+      "sha256": "c9e5c79ae242e40a27a6561b8acf487edfdf23697561147b4b05110f3f169533",
+      "image_size_px": [1300, 364],
+      "supports": ["mall exits 1–8", "mall main spine", "branch labelled 부산역 연결통로", "junction near mall exits 1–2"],
+      "limitation": "Operator wayfinding plan, not an engineering drawing; compass, scale, fare gates, and HUMETRO seam omitted."
+    },
+    {
+      "id": "S5",
+      "publisher": "Busan Infrastructure Corporation (BISCO)",
+      "title": "부산역지하도상가 official facility page",
+      "url": "https://www.bisco.or.kr/undershop/07_bsn/bsn01.asp",
+      "retrieved_at": "2026-09-21T22:19:00+09:00",
+      "content_date": null,
+      "local": "bisco-busan-underground-page.html",
+      "sha256": "0be71b3642cf4f5b91815ae8c2915614bb6ceda241e65c2e50c884dbe0c279dd",
+      "supports": ["mall location 동구 중앙대로 지하200", "mall extent 부산역~중앙회관", "official plan context"],
+      "limitation": "No page-level publication/update date."
+    },
+    {
+      "id": "S6",
+      "publisher": "Busan Infrastructure Corporation (BISCO)",
+      "title": "2016 Statistical Yearbook, 부산역 연결통로 section",
+      "url": "https://www.bisco.or.kr/Web-App/Upload/2019/12/02/2016%EC%82%AC%EC%97%85%EB%85%84%EB%8F%84%20%ED%86%B5%EA%B3%84%EC%97%B0%EA%B0%90%28%EC%95%88%29-%EC%B5%9C%EC%A2%85.pdf",
+      "retrieved_at": "2026-09-21T22:23:00+09:00",
+      "content_date": "2016-12-31",
+      "pdf_file_page": 141,
+      "printed_pages": [271, 272],
+      "local": "bisco-2016-statistical-yearbook.pdf",
+      "sha256": "083d37cb7ccb382099cf604081359c9ed8d78e3abe2d71559993074122c416bc",
+      "page_visual_local": "bisco-2016-yearbook-p141.png",
+      "page_visual_sha256": "8d7f3ee139c2266f145c89268684c9fd332d671943b0ce3352818868372fb6fe",
+      "supports": ["2015-11-01 mall entrance escalator priority opening", "underground mall connection context", "then-planned passage and new entrance facilities"],
+      "limitation": "Pre-completion plan values differ from the final 2019 dimensions; use for topology/history, not as-built passage length."
+    },
+    {
+      "id": "S7",
+      "publisher": "Busan Transportation Corporation (HUMETRO)",
+      "title": "Current elevator inventory",
+      "url": "https://data.humetro.busan.kr/homepage/default/facilities/list.do?gubun=2&menu_no=1001010702",
+      "retrieved_at": "2026-09-21T22:25:00+09:00",
+      "content_date": null,
+      "local": "humetro-elevator-inventory.html",
+      "sha256": "f9b450fbf503c6ba0e802875699bb18cd34464f74eb2d446b273e2d69419ea16",
+      "supports": ["Busan Station: 2 internal elevators", "Busan Station: 2 external elevators"],
+      "limitation": "Counts only; no shaft coordinates or explicit update date."
+    },
+    {
+      "id": "S8",
+      "publisher": "Busan Transportation Corporation (HUMETRO)",
+      "title": "Current escalator inventory",
+      "url": "https://data.humetro.busan.kr/homepage/default/facilities/list.do?gubun=3&menu_no=1001010703",
+      "retrieved_at": "2026-09-21T22:25:00+09:00",
+      "content_date": null,
+      "local": "humetro-escalator-inventory.html",
+      "sha256": "ec8b1e81696b31b088cebd93caa8d17e490bd6939e7ddc0ddeb3f0f1c7e2d02e",
+      "supports": ["Busan Station: 6 escalators"],
+      "limitation": "Count only; no level-by-level assignment or explicit update date."
+    },
+    {
+      "id": "S9",
+      "publisher": "Busan Metropolitan City",
+      "title": "부산시의 관문, 부산역광장이 확! 달라졌습니다!",
+      "url": "https://www.busan.go.kr/nbtnewsBU/1382448",
+      "retrieved_at": "2026-09-21",
+      "content_date": "2019-06-30",
+      "local": null,
+      "supports": ["Metro Busan Station to KTX Busan Station underground connection", "opening 2019-07-01", "final length 99.6 m and width 8 m", "50 m two-way moving walk, 4 escalators, 1 elevator"],
+      "limitation": "Does not identify the Metro fare-gate/mall seam; original attachment handling is owned by the root lane."
+    }
+  ],
+  "implementation_constraints": [
+    "Do not model the transfer as HUMETRO Exit 6 to plaza to an authored straight corridor.",
+    "Namespace HUMETRO exits and BISCO mall exits separately.",
+    "The supported sequence is platform -> upper Metro concourse -> unresolved exact HUMETRO/BISCO seam -> mall main spine -> labelled 부산역 연결통로 branch near mall exits 1–2 -> 2019 passage -> KTX end.",
+    "Do not convert source-image pixels into world metres; they only locate evidence in schematic images.",
+    "Keep the Metro/mall seam provisional until an integrated architectural plan or measured observation supplies a shared control point and dimensions."
+  ],
+  "validation": {
+    "json_parse": true,
+    "source_hashes_checked": true,
+    "unity_or_scene_validation": false,
+    "product_acceptance": false
+  }
+}

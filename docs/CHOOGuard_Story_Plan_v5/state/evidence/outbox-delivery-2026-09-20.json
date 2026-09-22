@@ -1,0 +1,62 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "status": "PARTIAL",
+  "writerRun": "wf_262d7dd3-c78",
+  "reviewRun": "wf_09712683-294",
+  "implementation": ["BOOT0201 exact expected test references 및 정상 음성 fixture에 Persistence 추가, 누락 반례 추가; 생산 asmdef 변경 없음", "SqliteRunStore v1→v2 additive transactional migration 및 durable delivery 상태", "BEGIN IMMEDIATE claim, UTC clock 주입, 최대 5분 lease, expiry/reopen 재전달", "run/job/commit/generation/attempt/owner 일치와 lease 유효성으로 ack fencing", "hash 검증 outbox의 generation은 필수 trusted decoder에서 읽음; permissive default 없음", "OutboxDispatcher는 명시적 일치 ack만 저장, 전송 예외/취소/null/mismatch를 성공으로 처리하지 않음"],
+  "host": {
+    "result": "PASS",
+    "count": 5,
+    "scope": "기존 scratch host 재사용. native SQLite fixture 기반 다섯 메서드 직접 호출; 하나는 다수 delivery 시나리오를 포함. Unity NUnit 전체 실행이나 Player 증거가 아니다.",
+    "tests": ["MissingDeploymentIdentityFailsClosed", "WrongBinaryHashFailsBeforeNativeLoad", "FileDatabaseReopensWithRequiredPragmas", "FileCommitRetryConflictRollbackCancellationAndReopen", "DurableDeliveryMigrationRestartFencingAndFailures"],
+    "actualOutput": "PASS 5 focused host tests; fixture materializer/transport only; Player NOT_VERIFIED",
+    "schemaOutput": "PASS embedded/file schema equality: 4 tables",
+    "evidence": "Root가 writer transcript의 실제 Bash result를 읽었다. compile && probe 출력 후 schema 검사가 이어졌다. 기존 host.log의 PASS4는 과거 결과이므로 이 실행의 증거로 사용하지 않는다.",
+    "workerTranscript": "/Users/um-yunsang/.claude/projects/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/subagents/workflows/wf_262d7dd3-c78/agent-aaee6ac09b9856112.jsonl",
+    "probeSha256": "07e2a4739fdab85135091e0475cb6fd38cf055c87d06ba0a7c5c9c9494e5e616",
+    "compilerBoundary": "host는 생산 소스를 한 assembly로 컴파일하므로 asmdef 경계 검증이 아님"
+  },
+  "editorObservation": {
+    "result": "PASS",
+    "scope": "공식 CLI read-only console_status/eval 조회; 시험 재실행·강제 refresh/recompile·scene 조작 없음",
+    "pid": 4832,
+    "port": 7800,
+    "compiling": false,
+    "compilationFailed": false,
+    "loadedNewTypes": ["ChooGuard.Application.OutboxDispatcher", "ChooGuard.Contracts.IOutboxStore"],
+    "loadedMvid": {"ChooGuard.Application": "254a2ac0-3bbe-4201-a0a4-f8d59785a823", "ChooGuard.Contracts": "ca404669-ed22-48f6-98d5-fbfdd7d097fd", "ChooGuard.Persistence": "f18232eb-a95d-40d9-9d9c-f234216a42d4", "ChooGuard.EditModeTests": "b4ad7702-23d1-4f31-a9ca-5a8093d7783c"},
+    "sceneRoots": [-6810, -6818],
+    "scenePath": "",
+    "sceneDirty": false,
+    "newMetaExists": true,
+    "limits": "새 outbox 타입의 분리 assembly 로드 관측만 확인. 각 소스의 완전한 일치·전체 asmdef 시험·BOOT 수정 후 재시험·Unity 기능 시험 PASS는 아니다. 앞선 scene identity 사고를 복원하거나 해소한 증거도 아니다.",
+    "correctedInvocation": "eval --code <C#>; 첫 Root 호출은 JSON을 code 위치 인자로 전달해 평가 단편 parse 실패(exit6). 제품 compile 실패가 아니다. 수정한 read-only 호출은 exit0."
+  },
+  "review": {
+    "concreteDefectsReported": 0,
+    "scope": "ECC csharp-reviewer: store/schema; ECC code-reviewer: contract/dispatcher/BOOT/test coverage. 읽기 전용.",
+    "limits": ["대상 소스가 untracked여서 git diff가 비어 있음. baseline 비교에 의한 무회귀 증거는 아님", "dispatcher non-null mismatched ACK 직접 회귀 미실행. store 직접 mismatch 시험과 구분", "독립 build/Unity 실행 없음"]
+  },
+  "jev": {"review013": "bounded_review / partial_host_only / high advisory; 1581ms, retry0/fallback0", "next014": "correct_once / bounded_ui / high advisory; 1256ms, retry0/fallback0", "approvalAuthority": 0, "mainRuntimeEffortChanged": false},
+  "observedSourceSha256": {
+    "Assets/ChooGuard/Contracts/OperationsPorts.cs": "51e664656666fc9d7fc949b8bdf7bc7dfaa1669aab24b5c59b964b06962f48a4",
+    "Assets/ChooGuard/Contracts/OperationMessages.cs": "564c467c0a38e288f05be637ebe59f17f4c877869c9f56d51f5013fe003e617a",
+    "Assets/ChooGuard/Persistence/SqliteRunStore.cs": "804ef8761d5f873c989b0db62ea522fd312b2992d3234a23c2bfce4bc6e0317b",
+    "Assets/ChooGuard/Persistence/Schema.sql": "5e55e3f795b68bd4648b7a0bfb55d12e6797021acb277b61087fa1d91b89549b",
+    "Assets/ChooGuard/Application/OutboxDispatcher.cs": "5ce8f9ff543079992fdb6ab3416e6707d1c4b9980019c14b8bd38afb928ce34e",
+    "Assets/ChooGuard/Tests/EditMode/Stories/CSOPS0203Tests.cs": "e1c392cec8025666bd03654100c4e7e06a0425a1e23b3832a87558ac3b53e7ba",
+    "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0201Tests.cs": "69eea72e6fba225abf30f07a05acae0c319aee569fadca341f9159d8ceb9225e"
+  },
+  "rawEvidenceRoot": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad",
+  "rawSha256": {
+    "outbox-live-compile-observation.json": "e57738beb9cf08511b7c11fd95c1e4a5ad730945f4ac26622a5d232d03dba4b8",
+    "outbox-live-compile-observation-corrected.json": "8734e12089612db7be33cd4d408a4923ea64be604d0efcbfd9d393ffd772094f",
+    "persistence-integration-runner.cs": "bbcdd030180ccfca16c56e6295e36bf57a71af89e2cce565de9896b84e0b81a6",
+    "persistence-integration-build/compile.rsp": "b2b7f44a3b9604ade30d15fcc0e5652ce812034d87a0835cbbeb05cadbcbb9b6",
+    "jev-review-013.result.json": "48a5a94688eba7d66b47eb30bb4189b33b8bf96ce0a6af14bae7591d48375e85",
+    "jev-next-014.result.json": "59cdcc6568f65160f2213bc5dc2ca3f9de85c1ad1562c674f2201fd36060747b"
+  },
+  "notEstablished": ["production transport/outbox decoder composition", "operational IOperationsPort/materializer integration", "run generation cancellation/update orchestration", "simulation result atomic exactly-once effect application", "real simultaneous claims and forced process/power-loss recovery", "BOOT0201 correction retest", "Unity feature tests after delivery change", "Windows/Player/field acceptance"],
+  "next": "wf_2dad1ddc-228 Astra low가 기존 Presenter/prefab/PLAY0202 경로의 native UI host 구현 중. 아직 결과 없음."
+}

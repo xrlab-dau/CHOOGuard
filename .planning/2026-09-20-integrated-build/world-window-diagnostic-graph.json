@@ -1,0 +1,88 @@
+{
+  "status": "read_only_initial_diagnosis",
+  "image": "Assets/.planning/2026-09-20-integrated-build/metre-floor2-frozen-camera.png",
+  "classification": "directly_supported",
+  "codeFindings": [
+    "Walls/windows use same source polygon and same metre Scale1",
+    "Both receive same per-building baseHeight through bounded per-batch starts",
+    "Both renderer transforms parent local identity, same layer29",
+    "Wall and window winding have same facing",
+    "No city TextMeshPro creation remains",
+    "Current MvpStationView toggles FloorRoots/WholeEnvelope only; no explicit city windows/building toggle found"
+  ],
+  "materialFindings": "building0 and window saved assets both URP Lit, Surface0, Cull2, alpha1",
+  "assetEvidenceMethod": "decode original mesh YAML typeless vertex buffer, stride from bytes/count, not runtime combinedmesh",
+  "referenceHallBoundsXZ": [
+    -52,
+    -22,
+    -48,
+    -28
+  ],
+  "windowVerticesInsideReferenceHall": 0,
+  "nearStationWindows": [
+    {
+      "asset": "도시 창호_0_0.asset",
+      "nearVertexCount": 5262,
+      "min": [
+        -0.13133692741394043,
+        0.0,
+        67.75237274169922
+      ],
+      "max": [
+        85.50878143310547,
+        86.62000274658203,
+        148.60836791992188
+      ]
+    },
+    {
+      "asset": "도시 창호_-1_0.asset",
+      "nearVertexCount": 6240,
+      "min": [
+        -99.71697998046875,
+        0.0,
+        61.15129470825195
+      ],
+      "max": [
+        -0.6081628799438477,
+        86.62000274658203,
+        149.95924377441406
+      ]
+    },
+    {
+      "asset": "도시 창호_-1_-1.asset",
+      "nearVertexCount": 4737,
+      "min": [
+        -99.95733642578125,
+        0.0,
+        -149.9983367919922
+      ],
+      "max": [
+        -32.60472869873047,
+        65.75491333007812,
+        -92.0901107788086
+      ]
+    },
+    {
+      "asset": "도시 창호_0_-1.asset",
+      "nearVertexCount": 132,
+      "min": [
+        92.24726867675781,
+        0.0,
+        -104.31002044677734
+      ],
+      "max": [
+        99.28010559082031,
+        8.84000015258789,
+        -82.44764709472656
+      ]
+    }
+  ],
+  "initialVerdict": "Current source asset positions do not place windows inside referencehall. Runtime/Edit capture and mesh reference/transform mismatch must be isolated before modifying geometry. Material transparency and sourceScale residual are not supported by inspected files.",
+  "notEstablished": [
+    "Which drawcall produces pictured ghost planes",
+    "Whether Edit capture differs",
+    "Runtime static batching or stale binding as exact cause"
+  ],
+  "mutations": "Only this graph; no source or assets modified",
+  "nextOwner": "root main-thread Edit source mesh/render comparison"
+}

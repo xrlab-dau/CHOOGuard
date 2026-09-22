@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "notOfficialManualCodes",
+    "rules"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "11.0.0"
+    },
+    "notOfficialManualCodes": {
+      "const": true
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "ruleClass",
+          "basisSourceIds",
+          "approvalStatus",
+          "manualEditionQualified",
+          "literalManualTerm",
+          "requirements",
+          "acceptanceTestIds",
+          "proposedMechanic"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^OP-[0-9]{2}$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "ruleClass": {
+            "type": "string"
+          },
+          "basisSourceIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Z]+-[A-Z0-9-]+$"
+            },
+            "uniqueItems": true
+          },
+          "approvalStatus": {
+            "const": "CANDIDATE_NOT_APPROVED"
+          },
+          "manualEditionQualified": {
+            "const": false
+          },
+          "literalManualTerm": {
+            "const": false
+          },
+          "requirements": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^REQ-[0-9]{3}$"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "acceptanceTestIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^AT-[0-9]{3}$"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+          },
+          "proposedMechanic": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}

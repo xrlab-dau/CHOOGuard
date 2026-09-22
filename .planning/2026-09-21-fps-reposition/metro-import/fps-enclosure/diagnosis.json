@@ -1,0 +1,20 @@
+{
+  "status": "EXACT_CORRECTION_READY_NO_ENCLOSURE_ADDED",
+  "cause": "Blender copied BMP pixel alpha save conversion produces wrong PNG alpha; isolated2texture reproduction confirms source key counts correct before save",
+  "not_cause": [
+    "black transparency key omission: source declares blue0,0,255",
+    "Unity importer:Assets14texturehashesmatchalreadybadexports",
+    "proven missingsourcewall geometry:Formwall meshes exist and were madefullytransparent"
+  ],
+  "correction_manifest": "fps-material-manifest.corrected.normalized.json",
+  "scope": "14materialPNGalpha/RGB deterministic source8bit conversion; noFBX orsource changes",
+  "verification": [
+    "PNG reload exactbyteequality",
+    "RGBpreserved",
+    "sourceexpectedzeroalpha equals correctedzeroalpha14/14",
+    "Assetsoriginalbadexporthashes14/14"
+  ],
+  "recommendation": "Shared exporter should create a newRGBA image with explicit alpha buffer or deterministic8bitRGBA conversion, not save modified copy ofBMP; hash+alphahistogram gate before normalizedmanifest",
+  "ktx": "Current normalizedKTXmanifest0keyedtextures; no directinstanceofkeyfailure. Shared BMPcopy+tint path structurallyshared, so audit separately ifused",
+  "supplemental_geometry": "deferred until correctednativeview; existing wallplanes cannot be assessed whilefullytransparent"
+}

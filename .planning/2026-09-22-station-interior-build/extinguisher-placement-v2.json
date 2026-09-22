@@ -1,0 +1,20 @@
+{
+  "schema": "chooguard.extinguisher-placement.v2",
+  "computedAt": "2026-09-22",
+  "regulation": "NFTC 101 — 보행거리 20m 이내(소형), 33제곱미터 이상 구획 거실마다, 바닥 1.5m 이하 비치, 축광식 표지",
+  "supersedes": "extinguisher-placement.json v1 — 구획을 바닥 머티리얼로 잡아 자투리 5건을 만들었고, 커버리지 BFS 가 단차를 무시했으며, 플레이어가 자기 셀을 가렸다",
+  "method": "rooms = components blocked by WALLS only (dual-height linecast); walking distance = BFS blocked by walls AND steps over stepOffset; candidates = cells with a mountable wall within 1.2m at 1.2m height; one unit forced per room of 33 sqm or more, then greedy set cover (Chvatal 1979)",
+  "jevBasis": "jev-poi-placement-004: bfs_coverage_then_greedy_cover 1.00, wall_adjacent_reachable_cells 0.86",
+  "playerExcluded": true, "walkableCells": 1355, "wallEdges": 54, "stepEdges": 50,
+  "roomCount": 37, "legalRooms": 3, "candidates": 86, "uncoveredAfterSolve": 0,
+  "legalRoomAreas": [105, 787, 225],
+  "placements": [
+    {"index": 0, "floorPosition": [-7.0, 7.00, -42.0], "mountY": 8.20, "wallNormalDir": [-1, 0, 0], "roomSqm": 105, "coverCells": 105},
+    {"index": 1, "floorPosition": [33.0, 7.00, -56.0], "mountY": 8.20, "wallNormalDir": [0, 0, -1], "roomSqm": 787, "coverCells": 386},
+    {"index": 2, "floorPosition": [51.0, 7.03, -48.0], "mountY": 8.23, "wallNormalDir": [0, 0, -1], "roomSqm": 225, "coverCells": 222},
+    {"index": 3, "floorPosition": [13.0, 7.00, -36.0], "mountY": 8.20, "wallNormalDir": [0, 0, 1], "roomSqm": 787, "coverCells": 304},
+    {"index": 4, "floorPosition": [49.0, 7.00, -62.0], "mountY": 8.20, "wallNormalDir": [0, 0, -1], "roomSqm": 787, "coverCells": 265},
+    {"index": 5, "floorPosition": [41.0, 7.05, -44.0], "mountY": 8.25, "wallNormalDir": [-1, 0, 0], "roomSqm": 225, "coverCells": 206},
+    {"index": 6, "floorPosition": [1.0, 7.00, -42.0], "mountY": 8.20, "wallNormalDir": [-1, 0, 0], "roomSqm": 787, "coverCells": 230}
+  ]
+}

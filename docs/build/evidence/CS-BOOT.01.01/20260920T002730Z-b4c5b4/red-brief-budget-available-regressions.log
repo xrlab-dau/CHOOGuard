@@ -1,0 +1,14 @@
+..F........................................
+======================================================================
+FAIL: test_prepare_can_read_but_not_authorize (test_plan.CliTests.test_prepare_can_read_but_not_authorize)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/um-yunsang/CHOOGuard/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 175, in test_prepare_can_read_but_not_authorize
+    r=self.run_cli('brief','CS-BOOT.01.01','--phase','prepare');self.assertEqual(r.returncode,0);d=json.loads(r.stdout);self.assertTrue(d['complete']);self.assertFalse(d['readiness']['executionAuthorized'])
+                                                                ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: 3 != 0
+
+----------------------------------------------------------------------
+Ran 43 tests in 2.058s
+
+FAILED (failures=1)

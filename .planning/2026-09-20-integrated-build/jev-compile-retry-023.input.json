@@ -1,0 +1,32 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "operation": "Official Unity MCP import succeeded; actual compiler now fails2 errors only.",
+    "errors": [
+      "MvpWorldPresentation.cs17 CS0234 Application.isPlaying resolves to ChooGuard.Application namespace; use UnityEngine.Application.",
+      "MvpWorldPresentation.cs23 CS0200 UniversalRenderPipelineAsset.supportsMainLightShadows is read-only in installedURP."
+    ],
+    "history": "First actual compiler run for new presentation source. API static review missed setter visibility; renderer source not accepted yet. Other model/DEM data exists.",
+    "proposal": "Same Astra low owner narrow1file correction; qualifiedApplication and clone-only serialized m_MainLightShadowsSupported along with existing softshadow field (verify installed field name). Reimportscript once and readactualcompiler; do not regenerate art/terrain/CFD or askcredentialpermission."
+  },
+  "questions": {
+    "cause": {
+      "type": "choice",
+      "instructions": "Classify actual retry cause.",
+      "criteria": {
+        "source_api_mismatch": "Namespace/API declaration error",
+        "auth_environment": "Credentials/environment",
+        "repeated_same_failure": "Identical previously retriedfailure"
+      }
+    },
+    "route": {
+      "type": "choice",
+      "instructions": "Select proportionate next attempt.",
+      "criteria": {
+        "same_owner_narrow": "Existing Astra low source correction then singlecompilerobservation",
+        "rebuild_assets": "Rerunallgeneration",
+        "stop": "No allowedprogress"
+      }
+    }
+  }
+}

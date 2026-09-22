@@ -1,0 +1,41 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "observations": [
+      "Actual Unity actor moves and animated leg changes after loop flags. Interaction playable advances and restarts at zero.",
+      "Official Unity backbuffer capture shows mission panel detached from labels. Root inspected, Jev has not seen image.",
+      "Canvas1440x1213.68 from narrow Editor aspect; reference1440x900. In Rect helper MissionPanel y496 anchors top, MissionStatus y508 anchors right-bottom. Different anchors deterministically explain separation.",
+      "No native desktop use allowed. Root uses official UnityCLI only. Art8 exports provenance verified."
+    ],
+    "proposal": "Reuse resident Astra-low for bounded UI grouping anchor repair in MvpWorkspace.cs. Explicit right-bottom region instead of threshold inconsistent with panel. Bump layoutVersion for saved canvas. No art, solver, gameplay contract changes. Root checks existing aspect and capture, not broad tests.",
+    "authority": "Root retains deterministic decision"
+  },
+  "questions": {
+    "scope": {
+      "type": "choice",
+      "instructions": "Choose evidence-matched repair.",
+      "criteria": {
+        "bounded_anchor_repair": "Same UI owner, align region anchors and migrate existing layout",
+        "rebuild_everything": "Redo Blender and CFD",
+        "accept_as_is": "Ignore visible defect"
+      }
+    },
+    "duplication": {
+      "type": "choice",
+      "instructions": "Is this useful new work?",
+      "criteria": {
+        "new_concrete_defect": "Concrete visual/layout cause, previous animation fix unrelated",
+        "duplicate": "No new evidence"
+      }
+    },
+    "effort": {
+      "type": "choice",
+      "instructions": "Assign implementation reasoning depth.",
+      "criteria": {
+        "low": "Small localized change",
+        "high": "Many interacting modules",
+        "max": "Live risky database operation"
+      }
+    }
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "id": "CS-BOOT.02",
+  "epicId": "CS-BOOT",
+  "title": "assembly 경계와 신규 공개 계약",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-BOOT.02",
+    "description": "Contracts·Domain·Application·Presentation의 신규 참조 방향과 typed ports",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-BOOT.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Contracts/ChooGuard.Contracts.asmdef",
+    "Assets/ChooGuard/Domain/ChooGuard.Domain.asmdef",
+    "Assets/ChooGuard/Application/ChooGuard.Application.asmdef",
+    "Assets/ChooGuard/Presentation/ChooGuard.Presentation.asmdef",
+    "Assets/ChooGuard/Contracts/OperationsPorts.cs",
+    "Assets/ChooGuard/App/CompositionRoot.cs",
+    "Assets/ChooGuard/Editor/InstallCompositionRoot.cs",
+    "Assets/ChooGuard/Content/ChooGuard.Content.asmdef",
+    "Assets/ChooGuard/Persistence/ChooGuard.Persistence.asmdef",
+    "Assets/ChooGuard/World/ChooGuard.World.asmdef",
+    "Assets/ChooGuard/Experiments/ChooGuard.Experiments.asmdef",
+    "Assets/ChooGuard/Scenarios/ChooGuard.Scenarios.asmdef",
+    "Assets/ChooGuard/Simulation/ChooGuard.Simulation.asmdef",
+    "Assets/ChooGuard/Authoring/ChooGuard.Authoring.asmdef",
+    "Assets/ChooGuard/App/ChooGuard.App.asmdef",
+    "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/BOOT/Boot02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-BOOT.01",
+      "artifactId": "A-CS-BOOT.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "Contracts와 Domain은 UnityEngine에 의존하지 않는 경계로 만든다. 저장과 계산은 port로 연결한다.",
+    "CommandIntent, CommandReceipt, SessionProjection, IOperationsPort를 CONTRACTS.md의 신규 모델대로 정의한다.",
+    "CompositionRoot는 한 run당 한 state writer를 생성한다. 각 외부 worker는 별도 기능을 확인하기 전 생성하지 않는다.",
+    "contracts/assembly-layout.json의 모든 모듈과 test assembly 경계를 만들고 각 신규 C# 파일이 정확히 한 assembly에 속하는지 검사한다.",
+    "specs/02-wire-and-ports.md의 타입·오류·비동기 계약을 사용한다. ReadReceipt는 runId뿐 아니라 requesterId를 포함한다."
+  ],
+  "contract": "IOperationsPort.PreviewAsync(CommandIntent,CancellationToken); SubmitAsync(CommandIntent,CancellationToken); ReadReceiptAsync(ReceiptKey,CancellationToken); ReadProjectionAsync(ProjectionQuery,CancellationToken). 정확 타입은 specs/02-wire-and-ports.md.",
+  "sourceIds": [
+    "AUD-UNITY-ASSEMBLY"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-BOOT.02-P",
+      "given": "13 module roots와 1개 Contracts DTO",
+      "when": "경계 컴파일",
+      "then": "Domain→Contracts만; 모든 runtime C# 소속1",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-BOOT.02-N",
+      "given": "World.cs를 asmdef 밖으로 이동",
+      "when": "경계 컴파일",
+      "then": "PREDEFINED_ASSEMBLY_LEAK",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/01-build-and-assemblies.md",
+    "specs/02-wire-and-ports.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/01-build-and-assemblies.md",
+    "specs/02-wire-and-ports.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-066"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/BOOT/Boot02Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "13 module roots와 1개 Contracts DTO",
+    "operation": "경계 컴파일",
+    "expectedPositive": "Domain→Contracts만; 모든 runtime C# 소속1",
+    "negativeInput": "World.cs를 asmdef 밖으로 이동",
+    "expectedNegative": "PREDEFINED_ASSEMBLY_LEAK",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

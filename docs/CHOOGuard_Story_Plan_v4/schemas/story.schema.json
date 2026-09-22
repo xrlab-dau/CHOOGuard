@@ -1,0 +1,505 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^CS-[A-Z]+\\.\\d{2}\\.\\d{2}$"
+    },
+    "epicId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentTaskId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scopeKind": {
+      "type": "string",
+      "minLength": 1
+    },
+    "splitKind": {
+      "const": "SMALL_EXECUTABLE_STORY"
+    },
+    "sizingRule": {
+      "type": "string",
+      "minLength": 1
+    },
+    "implementationStatus": {
+      "const": "NOT_STARTED"
+    },
+    "acceptanceStatus": {
+      "const": "NOT_RUN"
+    },
+    "assignee": {
+      "type": "null"
+    },
+    "requirementIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0
+    },
+    "supportsRequirementIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0
+    },
+    "parentProductTestIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "invariants": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 4
+    },
+    "writes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "operation": {
+            "enum": [
+              "CREATE",
+              "MODIFY"
+            ]
+          },
+          "createdBy": {
+            "type": "string",
+            "pattern": "^CS-[A-Z]+\\.\\d{2}\\.\\d{2}$"
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "path",
+          "operation",
+          "createdBy",
+          "scope"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "testFile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "testKinds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "const": "PlannedArtifact"
+          },
+          "producer": {
+            "type": "string",
+            "pattern": "^CS-[A-Z]+\\.\\d{2}\\.\\d{2}$"
+          },
+          "contract": {
+            "type": "string",
+            "minLength": 1
+          },
+          "candidateMeaning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "integrationMeaning": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "const": "NOT_PRODUCED"
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "minItems": 1
+          },
+          "productEvidence": {
+            "type": "array",
+            "maxItems": 0
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "producer",
+          "contract",
+          "candidateMeaning",
+          "integrationMeaning",
+          "status",
+          "paths",
+          "productEvidence"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "requires": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "producer": {
+            "type": "string",
+            "pattern": "^CS-[A-Z]+\\.\\d{2}\\.\\d{2}$"
+          },
+          "artifactId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "producerStage": {
+            "enum": [
+              "prepare",
+              "candidate",
+              "integration",
+              "qualification"
+            ]
+          },
+          "consumerStage": {
+            "enum": [
+              "prepare",
+              "candidate",
+              "integration",
+              "qualification"
+            ]
+          },
+          "condition": {
+            "enum": [
+              "ALWAYS",
+              "EXTERNAL_WORKER_USED",
+              "NAMED_SITE_ACCURACY",
+              "PEDESTRIAN_QOI",
+              "TRAFFIC_QOI",
+              "HAZARD_QOI",
+              "CLAIM_FIELD_USE",
+              "PEDESTRIAN_USED",
+              "TRAFFIC_USED",
+              "HAZARD_USED"
+            ]
+          },
+          "why": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "producer",
+          "artifactId",
+          "producerStage",
+          "consumerStage",
+          "condition",
+          "why"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "externalInputs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "requiredAt": {
+            "enum": [
+              "prepare",
+              "candidate",
+              "integration",
+              "qualification"
+            ]
+          },
+          "condition": {
+            "enum": [
+              "ALWAYS",
+              "EXTERNAL_WORKER_USED",
+              "NAMED_SITE_ACCURACY",
+              "PEDESTRIAN_QOI",
+              "TRAFFIC_QOI",
+              "HAZARD_QOI",
+              "CLAIM_FIELD_USE",
+              "PEDESTRIAN_USED",
+              "TRAFFIC_USED",
+              "HAZARD_USED"
+            ]
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "state": {
+            "const": "UNKNOWN"
+          },
+          "effect": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "requiredAt",
+          "condition",
+          "description",
+          "state",
+          "effect"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "sourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 0
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "record": {
+            "type": "string",
+            "minLength": 1
+          },
+          "currentStatus": {
+            "const": "INHERITED_REFERENCE_NOT_RECHECKED"
+          }
+        },
+        "required": [
+          "sourceId",
+          "url",
+          "record",
+          "currentStatus"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "specRefs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "parentContract": {
+      "type": "string",
+      "minLength": 1
+    },
+    "parentSpecRef": {
+      "type": "string",
+      "minLength": 1
+    },
+    "behaviorSteps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "acceptance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "kind": {
+            "enum": [
+              "POSITIVE",
+              "NEGATIVE"
+            ]
+          },
+          "given": {
+            "type": "string",
+            "minLength": 1
+          },
+          "when": {
+            "type": "string",
+            "minLength": 1
+          },
+          "then": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "const": "NOT_RUN"
+          }
+        },
+        "required": [
+          "id",
+          "kind",
+          "given",
+          "when",
+          "then",
+          "status"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 2
+    },
+    "workSteps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "action"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 6
+    },
+    "stopRules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "lane": {
+      "type": "string",
+      "minLength": 1
+    },
+    "window": {
+      "type": "string",
+      "minLength": 1
+    },
+    "orderRank": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requiredReads": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "id",
+    "epicId",
+    "parentTaskId",
+    "title",
+    "goal",
+    "scopeKind",
+    "splitKind",
+    "sizingRule",
+    "implementationStatus",
+    "acceptanceStatus",
+    "assignee",
+    "requirementIds",
+    "supportsRequirementIds",
+    "parentProductTestIds",
+    "invariants",
+    "writes",
+    "testFile",
+    "testKinds",
+    "outputs",
+    "requires",
+    "externalInputs",
+    "sourceIds",
+    "sourceRefs",
+    "specRefs",
+    "parentContract",
+    "parentSpecRef",
+    "behaviorSteps",
+    "acceptance",
+    "workSteps",
+    "stopRules",
+    "lane",
+    "window",
+    "orderRank",
+    "requiredReads"
+  ],
+  "additionalProperties": false
+}

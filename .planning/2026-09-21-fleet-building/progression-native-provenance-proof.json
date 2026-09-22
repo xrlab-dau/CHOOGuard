@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "surface": "Actual live runtime trace/provenance audit",
+  "records": 56,
+  "linkedEdges": 19,
+  "ownedRecords": 26,
+  "ackRecords": 5,
+  "runIds": [
+    "56f697ab025d49e2a5f7e09c1e8cf5c1"
+  ],
+  "graphHash": "212de2f60d3989b0e8c46d8214c9e960c8edc113d6591d8cbd1e07991101823c",
+  "allHashesMatch": true,
+  "monotonic": true,
+  "edgeEndpointsMatch": true,
+  "ackRequestIdsPresent": true,
+  "operations": [
+    {
+      "operationId": "4eb41dab60804ffd8e0ca601b262c257",
+      "team": "central119-medical-support",
+      "lastNode": "canceled",
+      "edges": [
+        "cancel"
+      ]
+    },
+    {
+      "operationId": "4598cb7911df438883cd92dd5dc840a8",
+      "team": "central119-evacuation-response",
+      "lastNode": "ready",
+      "edges": [
+        "depart",
+        "arrive",
+        "onsite-evac",
+        "warn-ack-next",
+        "evac-ack",
+        "evac-outcome",
+        "returned"
+      ]
+    },
+    {
+      "operationId": "a114d93a3b564a158943255e924faef7",
+      "team": "central119-medical-support",
+      "lastNode": "ready",
+      "edges": [
+        "depart",
+        "arrive",
+        "onsite-medical",
+        "medical-ack",
+        "medical-confirm",
+        "returned"
+      ]
+    },
+    {
+      "operationId": "a6c181cb6af24513bda67aba06531c52",
+      "team": "choryang119-evacuation-response",
+      "lastNode": "ready",
+      "edges": [
+        "depart",
+        "arrive",
+        "onsite-busy",
+        "standby-resolved",
+        "returned"
+      ]
+    }
+  ]
+}

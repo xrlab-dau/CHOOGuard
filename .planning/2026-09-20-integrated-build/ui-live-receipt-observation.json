@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); return new {state=w.Preview.State.ToString(),error=w.Preview.DisplayError,modal=w.Router.ActiveModal?.name,footer=w.GetComponentsInChildren<TMPro.TMP_Text>(true).First(t=>t.name==\"Footer\").text,status=w.Preview.GetComponentsInChildren<TMPro.TMP_Text>(true).First(t=>t.name==\"Status\").text,fire=w.GetComponentsInChildren<UnityEngine.UI.Button>(true).First(b=>b.name==\"Team_fire-1\").GetComponentInChildren<TMPro.TMP_Text>().text};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "state": "Receipt",
+        "error": null,
+        "modal": "CommandPreview",
+        "footer": "LOCAL TRAINING SESSION  |  Backend revision 2  |  State and original command receipts persisted on this device.",
+        "status": "Command preview: Receipt\nKey: mvp-synthetic-run/mvp-local-trainee/4033584cef0540c19253c55349a34708\nReceipt: ACCEPTED | commit: 046470e1088c4de69432bedcf746e6ca | sequence: ChooGuard.Contracts.Sequence\nACCEPTED/QUEUED is not task completion.",
+        "fire": "Fire\nexit  /  Moved"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

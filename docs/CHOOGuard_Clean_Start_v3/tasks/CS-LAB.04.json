@@ -1,0 +1,134 @@
+{
+  "id": "CS-LAB.04",
+  "epicId": "CS-LAB",
+  "title": "변경 영향·캐시·부분 재실행",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-LAB.04",
+    "description": "정확성 조건을 가진 빠른 반복 실험",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-LAB.04",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.04.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.04.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.04.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.04.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Experiments/ImpactGraph.cs",
+    "Assets/ChooGuard/Experiments/ReplayCache.cs",
+    "Assets/ChooGuard/Experiments/RunInvalidation.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/LAB/Lab04Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-LAB.03",
+      "artifactId": "A-CS-LAB.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "표현/서식 변경과 의미/물리 입력 변경을 구분한다.",
+    "입력·버전·설정 hash와 영향 경계를 입증할 수 있을 때만 파생결과를 재사용한다.",
+    "영향이 누락됐거나 비선형 파급을 제한할 수 없으면 확대 재계산한다. 과거 증거를 삭제하지 않고 현재 사용 자격을 STALE로 둔다."
+  ],
+  "contract": "Impact {changedInputs,dirtyOutputs,evidence,allowedReuse,requiredRecompute}; 관계 부재는 영향 없음이 아님.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-LAB.04-P",
+      "given": "의미입력 하나 변경",
+      "when": "부분/전체 재실행 대조",
+      "then": "동일 허용오차내 결과",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-LAB.04-N",
+      "given": "영향 graph 불완전",
+      "when": "부분/전체 재실행 대조",
+      "then": "FULL_RECOMPUTE_REQUIRED",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-084"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/03-durable-operations.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/03-durable-operations.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-084"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/LAB/Lab04Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "의미입력 하나 변경",
+    "operation": "부분/전체 재실행 대조",
+    "expectedPositive": "동일 허용오차내 결과",
+    "negativeInput": "영향 graph 불완전",
+    "expectedNegative": "FULL_RECOMPUTE_REQUIRED",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

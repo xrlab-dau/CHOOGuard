@@ -1,0 +1,25 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+BOOT [label="CompositionRoot\n실제 구현은 여기서 조립", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+UI [label="UI NativePresentation", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+APP [label="ApplicationFacade", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+FEATURES [label="응용 모듈\nOPS · CONTENT · EXPERIMENT\nAUTHOR · EVIDENCE", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+SIM [label="SimulationCoordinator", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+ADAPTERS [label="외부 구현 Adapter\nSTORE · WORKERS · AI · LEGACY", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+PORTS [label="ApplicationPorts\n저장 · 계산 · 검색 · 출력 인터페이스", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+DOMAIN [label="DomainContracts\nID · DTO · 수량 · 규칙 AST", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+BOOT -> UI [label="조립 참조"];
+BOOT -> ADAPTERS [label="구현 결속"];
+BOOT -> SIM [label="구현 결속"];
+UI -> APP [label="참조"];
+APP -> FEATURES [label="기능 계약"];
+FEATURES -> PORTS [label="port 참조"];
+SIM -> PORTS [label="port 참조"];
+ADAPTERS -> PORTS [label="구현하는 port"];
+PORTS -> DOMAIN [label="도메인 타입"];
+FEATURES -> DOMAIN [label="도메인 타입"];
+SIM -> DOMAIN [label="도메인 타입"];
+ADAPTERS -> DOMAIN [label="도메인 타입"];
+}

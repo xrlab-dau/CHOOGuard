@@ -1,0 +1,62 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1338,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "clock": {
+          "type": "choice",
+          "choice": "consume_accepted",
+          "confidence": 0.9,
+          "probabilities": {
+            "wallclock": 0,
+            "drop_on_pause": 0.07,
+            "consume_accepted": 0.93
+          }
+        },
+        "planning": {
+          "type": "choice",
+          "choice": "plan_when_paused",
+          "confidence": 0.77,
+          "probabilities": {
+            "immediate_arrival": 0,
+            "plan_when_paused": 0.85,
+            "reject_paused": 0.15
+          }
+        },
+        "view": {
+          "type": "choice",
+          "choice": "station_floor",
+          "confidence": 0.99,
+          "probabilities": {
+            "station_floor": 0.99,
+            "disable_all": 0,
+            "agency_overrides": 0.01
+          }
+        },
+        "scope": {
+          "type": "choice",
+          "choice": "existing_owner_focused",
+          "confidence": 0.99,
+          "probabilities": {
+            "redo_art": 0,
+            "existing_owner_focused": 0.99,
+            "all_suites": 0.01
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 887,
+        "output_tokens": 184
+      },
+      "truncated": false,
+      "action": "review"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

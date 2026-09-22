@@ -1,0 +1,1 @@
+var t=typeof(ChooGuard.Editor.FpsAuthoredTransferBuilder.PathSpec);return new{playing=UnityEditor.EditorApplication.isPlaying,ready=t.GetField("floor_thickness_m")!=null&&!UnityEditor.EditorApplication.isCompiling&&!UnityEditor.EditorApplication.isUpdating};

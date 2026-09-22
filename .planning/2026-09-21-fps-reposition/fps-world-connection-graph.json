@@ -1,0 +1,106 @@
+{
+  "schema": "fps.world-connection-checkpoint.v1",
+  "story": "CS-EXEC.01.01",
+  "authority": "nativeEvidenceAndRoot",
+  "grade": "NOT_A",
+  "scope": [
+    "BusanRailwayStation",
+    "KTX",
+    "MetroBusan113",
+    "transfer",
+    "adjacentTracks"
+  ],
+  "nodes": [
+    {
+      "id": "metro-walk",
+      "state": "TECHNICAL_PROTOTYPE_WALK_ONLY_NOT_ACTUAL_STATION_CONNECTION",
+      "evidence": [
+        "fps-walk-metro-afterpassage.json",
+        "fps-walk-metro-reverse.json",
+        "fps-walk-metro-afteralpha.json"
+      ],
+      "surface": "CharacterControllerStepInputNoTeleport",
+      "limits": "NoOSinputclaim; authoreddepthsnotasbuilt",
+      "latestEvidence": [
+        "fps-walk-metro-final.json",
+        "fps-walk-metro-reverse-final.json"
+      ],
+      "prototypeConcourseY": -2.8,
+      "claimInvalidation": "CapsulePASSdoesnotvalidateactualstationtransferroute"
+    },
+    {
+      "id": "metro-visual",
+      "state": "ORIGINAL_ALPHA_AND_ROOF_RECOVERED_TARGETED_NATIVE_VISUAL_PASS",
+      "evidence": [
+        "metro-import/fps-enclosure/correction-receipt.json",
+        "metro-alpha-import-status.txt",
+        "Assets/.planning/2026-09-21-fps-reposition/metro-platform-afteralpha-native.png"
+      ],
+      "sourceRoofEvidence": "fps-install-recovered-roof-contractfixed.json",
+      "latestEvidence": "Assets/.planning/2026-09-21-fps-reposition/metro-platform-final-native.png"
+    },
+    {
+      "id": "ktx-frame",
+      "state": "REPAIRED_NATIVE",
+      "evidence": [
+        "fps-canonical-model-repair-native-afterreload.json",
+        "fps-imported-root-frames.json"
+      ],
+      "collidersPreserved": 1670
+    },
+    {
+      "id": "ktx-board",
+      "state": "LOCAL_COACH02_BOARDING_AND_RETURN_PASS",
+      "evidence": [
+        "fps-ktx-final-local-walk.json",
+        "fps-ktx-final-local-return.json",
+        "fps-install-ktx-innerdoor-patch-pathfixed.json"
+      ],
+      "limits": "Local platformfixture only; no wholeplaza-to-KTXrouteclaim; one innerdoor authoredstaticopen",
+      "rendering": "Opaque depth repair visiblefloor/seats confirmed",
+      "renderEvidence": "Assets/.planning/2026-09-21-fps-reposition/ktx-cabin-final-native.png"
+    },
+    {
+      "id": "railway-hall",
+      "state": "INCOMPLETE_SOURCE_MISSING_FLOORS",
+      "evidence": [
+        "bve-import/railway-access/railway-access-graph.json",
+        "bve-import/railway-access/railway-access-restoration-spec.json"
+      ],
+      "rootDecision": "DoNotApply8UnknownBarrierCutsWithoutSpatialReview"
+    },
+    {
+      "id": "missions",
+      "state": "NOT_IMPLEMENTED",
+      "evidence": "docs/CHOOGuard_Story_Plan_v5/FPS_RESEARCH_PROPOSAL.md"
+    }
+  ],
+  "edges": [
+    {
+      "from": "metro-walk",
+      "to": "railway-hall",
+      "type": "plaza_link_available_hall_incomplete"
+    },
+    {
+      "from": "railway-hall",
+      "to": "ktx-board",
+      "type": "INCOMPLETE_FULL_ROUTE"
+    },
+    {
+      "from": "ktx-frame",
+      "to": "ktx-board",
+      "type": "required_for_local_fixture"
+    }
+  ],
+  "postBuildNativeSteps": [
+    "CorrectedMetroalphaimport and sourceRoofCLCRincludedinbuildspec",
+    "KTX depth helper",
+    "Exactcoach2innerdoorpatch replacements; currentlysavedscene and root eval, notyetunifiedbuilder"
+  ],
+  "sourceAssetHashes": {
+    "ktx": "611434d4e69f8881ca94e77867ebdf291d4587da7954bdfbf35c8bd8c1d2be1d",
+    "metro": "aef5806f64327bea5060520d30ab25dadeb2e05bbd4c70e637056c554b052e29"
+  },
+  "userCorrection": "2026-09-21: arbitraryassetbridging rejected; real BusanRailway↔Metro connection evidence required before construction",
+  "connectionAcceptance": "REJECTED_BY_USER_ACTUAL_ROUTE_NOT_ESTABLISHED"
+}

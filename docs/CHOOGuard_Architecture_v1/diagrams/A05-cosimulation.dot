@@ -1,0 +1,25 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+B [label="Committed Boundary t\ninput lock · owner epochs", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+N [label="다음 사건/교환 horizon\ncapability 협상", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+MOV [label="보행·교통 워커\n내부 timestep · 상태", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+HAZ [label="위험장 워커\n검증된 adapter/ROM", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+R [label="오프라인 FDS reference\n고정 조작 이력으로 대조", shape=box, style="rounded,filled,dashed", fillcolor="#F8F8F8", color="#8D98A2", fontcolor="#18314A"];
+J [label="결과 수집·검사\ntime / units / frame / inputHash", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+K [label="일관 field set commit\n새 committed boundary t+h", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+UI [label="UI 및 후속 계산\n수락된 결과만 사용", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+E [label="실패·불일치·OOD\n이전 일관 checkpoint 복원/재실행", shape=box, style="rounded,filled", fillcolor="#F8EBE8", color="#B45847", fontcolor="#18314A"];
+B -> N [label="고정 시작 상태"];
+N -> MOV [label="boundary event"];
+N -> HAZ [label="boundary event"];
+MOV -> J [label="결과 + restart 정보"];
+HAZ -> J [label="결과 + restart 정보"];
+R -> HAZ [label="검증 근거 / 범위"];
+J -> K [label="필수 결과 모두 적합"];
+J -> E [label="누락·불일치"];
+E -> B [label="복원 또는 replay"];
+K -> UI [label="게시"];
+K -> N [label="다음 교환"];
+}

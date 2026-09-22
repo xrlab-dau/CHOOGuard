@@ -1,0 +1,65 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "user_decision": "Move the tutorial spawn into the concourse and build a vertical slice: spawn inside, verify walking in Play mode, place POIs across the three read zones, relocate the 8-step fire extinguisher procedure to interior coordinates.",
+    "user_method_rule": "Jev judgement first, then research the internet and open source ecosystem, then obtain a snippet, then stack layers on the snippet. Do not develop a wheel when building a car. Repository code counts as an existing wheel.",
+    "spawn_measured": {
+      "feet": [26.0, 7.05, -47.0],
+      "headroom": 4.0,
+      "openDirections": "8 of 8 clear for 2m",
+      "distanceToZoneCentre": 0.0,
+      "floorMesh": "OfficialStation_-부산역_6",
+      "floorNormal": "UP",
+      "candidatesConsidered": 1212,
+      "rule": "FpsStationSceneBuilder.cs:165-171 convention plus ceiling and openness ranking"
+    },
+    "flipped_normal_finding": [
+      "Main concourse floor mesh OfficialStation_-부산역_6 has upward normals. Correct.",
+      "West concourse floor mesh OfficialStation_-부산역_5 at y=6.7 returns normal.y = -1.000. The face points down.",
+      "ProjectSettings/DynamicsManager.asset line 15: m_QueriesHitBackfaces is 0. The runtime does not register backface hits.",
+      "CharacterController collision uses shape sweeps against the triangle mesh, which blocks from both sides, so standing on a flipped face still works.",
+      "FirstPersonResponder uses a raycast for the E-key interaction, so a flipped surface is invisible to interaction and to any raycast-based gaze or placement logic at runtime."
+    ],
+    "repository_wheels_available": [
+      "Editor/FireExtinguisherSliceBuilder.cs already spawns the extinguisher and authors 4 FacilityInspectable.InspectionPoint entries (body, spec-plate, serial, gauge) with dwell times.",
+      "App/Fps/Work/ProcedureRunner.cs runs the step sequence; Art/Procedures/fire-extinguisher-monthly.json holds the 8 steps.",
+      "App/Fps/Work/AuditTerminal.cs and AuditTerminalView.cs render the audit findings on a physical terminal.",
+      "Tests/PlayMode/FpsProcedureTests.cs, FpsAuditTerminalTests.cs, FpsPromptPipelineTests.cs already cover the slice; FPS suite is 19 of 19.",
+      "FpsStationSceneBuilder.cs composes the scene and writes a receipt, but it refuses to run if the target scene already exists."
+    ],
+    "zones_read_from_source": [
+      "main concourse 883 sqm, y 7.0, headroom 4.13, x -7..59, z -64..-30",
+      "west concourse corridor 355 sqm, y 6.7, headroom 5.40, x -24..-1, z -91..-46, this is the one with flipped floor normals",
+      "east separate room 217 sqm, y 7.1, headroom 4.01, x 40..59, z -49..-32"
+    ]
+  },
+  "questions": {
+    "flipped_normal_action": {
+      "type": "choice",
+      "instructions": "The west concourse floor has downward normals and the runtime ignores backfaces. What should be done?",
+      "criteria": {
+        "confine_slice_to_correct_zones": "Keep the vertical slice on the main concourse and east room whose normals are correct, record the west corridor defect, and decide on it only when that area is actually needed",
+        "flip_normals_in_asset": "Fix the winding or normals of that mesh in the source asset pipeline now",
+        "enable_backface_queries_globally": "Turn on m_QueriesHitBackfaces project wide so raycasts see those faces",
+        "ignore": "Treat it as harmless because collision still works"
+      }
+    },
+    "next_work_unit": {
+      "type": "choice",
+      "instructions": "With the spawn point measured, what is the next unit of work?",
+      "criteria": {
+        "move_spawn_and_walk_test_first": "Move the player to the measured spawn and verify actual walking in Play mode before authoring any content, because every reachability claim so far comes from static queries that were shown to be unreliable",
+        "author_pois_first": "Author the zone POIs and relocate the procedure first, then test everything together",
+        "bake_navmesh_first": "Bake NavMesh before anything else"
+      }
+    },
+    "poi_authoring_basis": {
+      "type": "choice",
+      "instructions": "How should the POIs for the three zones be produced?",
+      "criteria": {
+        "extend_existing_slice_builder": "Extend Editor/FireExtinguisherSliceBuilder.cs, which already authors inspection points with dwell times, rather than writing a new placement system",
+        "write_new_poi_system": "Write a new POI placement system for the interior"
+      }
+    }
+  }
+}

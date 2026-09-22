@@ -1,0 +1,348 @@
+{
+  "schemaVersion": "korail-training-source-graph-1",
+  "status": "PUBLIC_SOURCE_RESEARCH_COMPLETE__NOT_A_CURRENT_BUSAN_STATION_OPERATING_MANUAL",
+  "retrievedAt": "2026-09-21",
+  "scope": {
+    "productConstraint": "부산역+KTX 범위의 단일 플레이어 역무원 역할을 위한 공개 근거 조사. 별도 퀴즈·복기·매뉴얼 학습 기능을 설계하거나 구현하지 않는다.",
+    "researchBoundary": "공개 문서·공개 영상·공개 보도만 사용했다. 계정 생성, 비공개 문서 접근, 연락처 수집, 내부 절차 추정은 하지 않았다.",
+    "interpretationRule": "각 fact는 출처에 명시된 사고유형·장소·직군까지만 주장한다. KTX 승무원, 역무원, 초기대응팀, 소방·경찰을 서로 대체하지 않는다."
+  },
+  "sourceNodes": [
+    {
+      "id": "S01_KORAIL_2017_EMERGENCY_PLAN",
+      "titleKo": "철도안전관리체계 프로그램 — 비상대응계획",
+      "issuer": "한국철도공사(KORAIL)",
+      "publishedOrRevision": "변경승인 제2017-026호, 2017-05-26; 화재 F133 쪽에 2016-05-10·2016-12-29 개정 표기",
+      "url": "https://info.korail.com/mbs/www/jsp/contents/images/2017_26.pdf",
+      "sourceType": "공개 공식 PDF",
+      "scenario": "F133: 역간 터널 내 여객열차 화재. 부산역 역사 화재가 아니다.",
+      "exactLocation": [
+        "PDF 153, 인쇄 p.1: 적용범위에서 고속철도 대형사고·지하철 대형사고는 각각 별도 위기대응 매뉴얼에 따른다고 명시",
+        "PDF 166-167, 인쇄 p.14-15: F133 절차도와 대응주체별 역할·책임",
+        "PDF 168, 인쇄 p.16: H343 위험물열차 황산누출·화재 터널 절차도"
+      ],
+      "authorityBoundary": "공식 KORAIL 안전관리체계의 과거 공개본이다. 현재판·부산역 현장조치매뉴얼·PA 문안·집결지·권한을 증명하지 않는다.",
+      "capture": {
+        "file": "asset-library/research-public/2026-09-21/fps-research/korail/korail-2017-railway-safety-management-program.pdf",
+        "bytes": 8134142,
+        "sha256": "1ab6638142760635cb74cfa6d3fa96b92d32fcc923ce72ac9dda9104aa7661a6",
+        "extract": "asset-library/research-public/2026-09-21/fps-research/korail/korail-2017-pdf166-167-fire-scenario-excerpt.txt",
+        "extractBytes": 6171,
+        "extractSha256": "36b49b1830ed80d414352e1e03792cc0d718b10402ab0d696e48b522c6b6212a"
+      }
+    },
+    {
+      "id": "S02_KOTI_2014_KORAIL_2013_MANUAL_COMPARISON",
+      "titleKo": "도시철도사고 예방 및 대응체계 개선 연구 — 표 5-6 화재 시 비상대응행동 요령 현황",
+      "issuer": "한국교통연구원(KOTI)",
+      "publishedOrRevision": "연구총서 2014-03, 2014-11; 표의 KORAIL 열은 한국철도공사(2013.12) 『비상대응현장매뉴얼』을 참조해 재정리했다고 명시",
+      "url": "https://www.codil.or.kr/filebank/original/RK/OTKCRK180540/OTKCRK180540.pdf",
+      "sourceType": "공개 연구 PDF; KORAIL 2013 매뉴얼의 2차 재정리",
+      "scenario": "화재 시 KORAIL 기관사(승무원)와 역무원 행동요령 비교표. 특정 역사·부산역을 특정하지 않는다.",
+      "exactLocation": [
+        "PDF 104, 인쇄 p.80, 표 5-6 계속: KORAIL 역무원 1~7 항목",
+        "동일 표 하단: KORAIL 자료가 2013.12 『비상대응현장매뉴얼』 참조임을 명시"
+      ],
+      "authorityBoundary": "원 매뉴얼의 공개 최신본이 아니며 도시철도 연구의 비교표다. 역사적 KORAIL 역할분해의 근거로만 사용하고, 현재 또는 부산역 절차로 승격하지 않는다.",
+      "capture": {
+        "file": "asset-library/research-public/2026-09-21/fps-research/korail/kict-2014-railway-accident-response-research.pdf",
+        "bytes": 3911365,
+        "sha256": "033e6348ab92cd3f0686b5c2c1037179ed5c3f83c06e87446b8bac130c68d043",
+        "extract": "asset-library/research-public/2026-09-21/fps-research/korail/kict-2014-pdf104-106-korail-comparison-excerpt.txt",
+        "extractBytes": 10583,
+        "extractSha256": "2643455a628099662c78a709467090623319a1000352101c9d848e868e73b05d"
+      }
+    },
+    {
+      "id": "S03_KORAIL_2022_SAFETY_KOREA_VIDEO",
+      "titleKo": "2022 안전한국훈련 영상(한국철도공사)",
+      "issuer": "안전한국훈련 공개 YouTube 채널; 영상 내 한국철도공사 주관이라고 설명",
+      "publishedOrRevision": "2022-12-02 업로드; 06:16",
+      "url": "https://www.youtube.com/watch?v=xo5sFNFlLwM",
+      "sourceType": "공개 훈련 영상과 자동 생성 한국어 자막; 주요 장면 직접 확인",
+      "scenario": "경부고속선 금정터널에서 서울역→부산역 운행 KTX가 지진으로 긴급정차하고 객차 화재가 난 가상훈련. 부산역 역사 내부 훈련은 아니다.",
+      "exactLocation": [
+        "00:00:29-00:01:04: 일시·금정터널·KORAIL 주관·유관기관·고객대피 설명",
+        "00:01:28-00:02:16: 지진 긴급정차+객차화재와 4단계(운영자 초기대응→초기대응팀 인명구호·고객대피→소방·병원 화재진압·구호→철도시설 복구) 설명",
+        "직접 확인 프레임 00:01:16: 현장 운영 화면, 00:01:53/00:02:05: 4단계 훈련 진행순서 화면"
+      ],
+      "authorityBoundary": "실제 수행된 훈련의 공개 설명이다. 절차의 현행성·부산역 역무원 권한·시간기준을 확정하는 운용매뉴얼은 아니다.",
+      "capture": {
+        "video": "asset-library/research-public/2026-09-21/fps-research/korail/xo5sFNFlLwM.mp4",
+        "videoBytes": 6286777,
+        "videoSha256": "3b6712c919b752382558685da5f43fd390f3288ca675dd06c4f314572de4c63f",
+        "transcript": "asset-library/research-public/2026-09-21/fps-research/korail/xo5sFNFlLwM.ko-orig.vtt",
+        "transcriptBytes": 33104,
+        "transcriptSha256": "abc95809aff18755cdde9c0d4736ef6aef31065f42aeb40aba0d791117aa9051",
+        "observedFrames": [
+          "frames/xo5sFNFlLwM-01m16s.jpg: 952e631d5f0436283303c2de7a0ed416e202650c58bd6a0f9d9fd65d7ae34209",
+          "frames/xo5sFNFlLwM-01m53s.jpg: f9ab0d5209177778842f404ee9ecf0716965f84bc91b4b3ff361f1fedbdd29da",
+          "frames/xo5sFNFlLwM-02m05s.jpg: f3d6e873b9c29f0d41c2d8316167de6445ec1f7f2e4941db8b3360b251e2cabb"
+        ]
+      }
+    },
+    {
+      "id": "S04_MOIS_2026_RAIL_FUEL_DRILL",
+      "titleKo": "화물열차 탈선으로 유류 누출·폭발 사고 올해 두 번째 레디 코리아 훈련 실시",
+      "issuer": "행정안전부 재난대응훈련과",
+      "publishedOrRevision": "2026-06-10",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=126762",
+      "sourceType": "공개 정부 보도자료",
+      "scenario": "부강역 인근에서 토사 유입→항공유 적재 화물열차 탈선→135톤 누출·폭발로 이어지는 25개 기관 합동훈련. KTX·여객역 시나리오가 아니다.",
+      "exactLocation": [
+        "본문 2026-09-21 확인본 lines 795-817",
+        "lines 804: 기관사 신고→119·관계기관 전파→KORAIL 초기대응팀과 소방·경찰 선착대 도착",
+        "lines 813: 소방 화재진압·확산방지, 경찰 현장통제·주민대피 지원"
+      ],
+      "authorityBoundary": "현재 공개된 실제 훈련 보도다. 화물·위험물·부강역의 다기관 분업 예시이지 부산역/KTX 역무원 매뉴얼이 아니다.",
+      "capture": {
+        "file": "asset-library/research-public/2026-09-21/fps-research/korail/mois-2026-ready-korea-rail-fuel-derailment.html",
+        "bytes": 230975,
+        "sha256": "34f9534e3ee8b6a6cf5cabc81b4d609fa2f6416e16898990f87f9f66d63b997b"
+      }
+    },
+    {
+      "id": "S05_MOIS_2025_GTX_FLOOD_DRILL_VIDEO",
+      "titleKo": "레디코리아 2차 훈련···집중호우 지하철역 침수 대응",
+      "issuer": "행정안전부 동영상뉴스 / KTV 국민방송",
+      "publishedOrRevision": "2025-05-22",
+      "url": "https://www.mois.go.kr/video/bbs/type019/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000255&nttId=117887&searchCode1=A06",
+      "sourceType": "공개 정부 영상뉴스 전문",
+      "scenario": "GTX 구성역에서 폭우·역류로 역사 침수, 대피 중 인명사고, 지하4층 전기합선 화재를 가정한 훈련. KORAIL/부산역이 아니다.",
+      "exactLocation": [
+        "공개 전문 lines 24-50",
+        "lines 34-43: 침수·인명사고·화재, 초기대응→비상대응→수습복구, 초기대응팀의 특별피난계단 이용 인명대피 유도·부상자 응급조치"
+      ],
+      "authorityBoundary": "다른 운영사·다른 역사에서의 복합재난 훈련 사례다. 연기·인파·경로 연속성 검토에는 비교 근거가 되나 KORAIL 역무원 절차에는 사용하지 않는다.",
+      "capture": {
+        "captureStatus": "공개 페이지 전문은 브라우저에서 확인했다. 해당 서버의 세션형 URL은 재현 가능한 원문 파일로 저장하지 못했다.",
+        "bytes": null,
+        "sha256": null
+      }
+    },
+    {
+      "id": "S06_MOIS_2025_TERROR_PUBLIC_GUIDANCE",
+      "titleKo": "테러유형별 행동요령",
+      "issuer": "행정안전부 사회재난대응총괄과",
+      "publishedOrRevision": "2025-08-06",
+      "url": "https://www.mois.go.kr/frt/bbs/type002/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000530&nttId=119580",
+      "sourceType": "공개 시민 행동요령",
+      "scenario": "다중이용시설·의심 폭발물 등 테러 상황의 시민 안전행동. 철도역 운영절차가 아니다.",
+      "exactLocation": [
+        "공개 본문 lines 790-796",
+        "lines 790-791: 의심물품 비접촉·대피·신고, 폭발 뒤 반대방향 대피",
+        "line 796: 다중이용시설에서 사고 예상지점 반대방향·비상구 대피, 군중 반대방향 이동 또는 안전시설 대피"
+      ],
+      "authorityBoundary": "승객·시민용 현재 행동요령이다. 역무원의 수색·처리·현장지휘 권한이나 보안 절차를 제공하지 않는다.",
+      "capture": {
+        "file": "asset-library/research-public/2026-09-21/fps-research/korail/mois-2025-terror-action-guidance.html",
+        "bytes": 180376,
+        "sha256": "5f9b2b600da5b6700039d464092d2789472931db2b48f546dc888ed246c69168"
+      }
+    },
+    {
+      "id": "S07_BUSAN_2025_FIRE_GUIDANCE",
+      "titleKo": "발생시 행동요령 — 화재 발생시 행동요령",
+      "issuer": "부산광역시 안전정책과",
+      "publishedOrRevision": "페이지 최근 업데이트 2025-08-01",
+      "url": "https://www.busan.go.kr/depart/fire01",
+      "sourceType": "공개 부산시 시민 화재 행동요령",
+      "scenario": "화재 시 일반 대피 행동. 부산시 소재이지만 부산역 특정 자료가 아니다.",
+      "exactLocation": [
+        "페이지 '일반적인 대응요령'; 2026-09-21 확인",
+        "주변에 알림, 비상벨·119 신고, 낮은 자세·엘리베이터 미사용·안내방송에 따른 행동 등의 일반 안내"
+      ],
+      "authorityBoundary": "부산 지역의 시민용 일반 화재대피 안내다. 직원 역할배분·KTX·부산역 출구·대피집결지·PA 권한은 증명하지 않는다.",
+      "capture": {
+        "file": "asset-library/research-public/2026-09-21/fps-research/korail/busan-2025-fire-action-guidance.html",
+        "bytes": 389323,
+        "sha256": "05591c304574a332f51f0e324a0684bfc6716f63600a51214de9ad3131221e39"
+      }
+    },
+    {
+      "id": "S08_BUSAN_STATION_2015_KORAIL_COUNTERTERROR_DRILL",
+      "titleKo": "부산역 폭발물 설치 가정 코레일, 대테러 합동훈련 실시",
+      "issuer": "NSP통신 보도; 코레일 부산경남본부 제공 사진·훈련 설명을 인용",
+      "publishedOrRevision": "2015-11-25; 기사에 따르면 훈련일 2015-11-24",
+      "url": "https://www.nspna.com/country/?mode=view&newsid=149961",
+      "sourceType": "공개 언론 이벤트 기록 (KORAIL 제공 사진 포함), 공식 운용매뉴얼이 아님",
+      "scenario": "부산역 내 폭발물 의심물체 발견을 가정한 대테러 유관기관 합동훈련. 2019-2026 범위 밖의 가장 직접적인 부산역 현장 사례다.",
+      "exactLocation": [
+        "기사 lines 159-170",
+        "lines 166: KORAIL 부산경남본부·철도특별사법경찰대·부산지방경찰청 경찰특공대·부산역 자위소방대원 합동훈련",
+        "lines 168: 부산역 직원 초동조치 뒤 경찰특공대 탐지견 투입과 의심물체 처리 순서"
+      ],
+      "authorityBoundary": "부산역 장소와 다기관 인계 순서는 직접 확인되는 사건기록이지만, 2015년의 언론 보도다. 현재 절차·직원 세부행동·수색/처리 권한의 최신 근거나 상세 매뉴얼이 아니다.",
+      "capture": {
+        "file": "asset-library/research-public/2026-09-21/fps-research/korail/nsp-2015-busan-station-counterterror-drill.html",
+        "bytes": 77883,
+        "sha256": "92724fb9cdc7d7bf408076ebbb63f3603a1c3862755325faa0eb187085f92436"
+      }
+    }
+  ],
+  "actionFacts": [
+    {
+      "id": "F01",
+      "source": "S01_KORAIL_2017_EMERGENCY_PLAN",
+      "classification": "directly_supported_historical_official",
+      "scenario": "F133 터널 내 여객열차 화재",
+      "actor": "초기대응팀 (역·차량·시설·전기분야 직원으로 구성되는 정의는 PDF 153 인쇄 p.1)",
+      "trigger": "사고상황 급보·화재통보와 초기대응팀 출동지시",
+      "action": "사상자 응급구호, 현장 질서유지, 승객대피 유도",
+      "feedbackOrHandoff": "인접역이 119·112·철도경찰 긴급지원을 요청하고, 외부기관은 화재진압·응급구호·병원이송 및 현장 질서유지·통제를 맡는다.",
+      "completion": "절차도상 승객피난·연계수송·복구완료·상황종료로 이어지나, 각 완료판정의 현행 세부조건은 이 공개본에 없다.",
+      "roleBoundary": "초기대응팀은 단일 역무원과 같지 않으며, 화재진압·의료·경찰 통제는 외부기관 역할로 분리되어 있다."
+    },
+    {
+      "id": "F02",
+      "source": "S02_KOTI_2014_KORAIL_2013_MANUAL_COMPARISON",
+      "classification": "directly_supported_historical_secondary",
+      "scenario": "화재 시 KORAIL 역무원 행동요령 표",
+      "actor": "역무원",
+      "trigger": "화재 사실 인지",
+      "action": "관제센터·소방서 전파, 역내 승객에게 비상방송으로 화재 사실 전파, 안전한 피난 유도, 자체소방대 임무에 따른 화재현장 출동·진압, 제연 등 방재설비 가동, 게이트 개방, 사고현장 시민접근 통제",
+      "feedbackOrHandoff": "표는 전파·방송·대피·게이트·접근통제를 역할 항목으로 열거할 뿐, 현재 부산역의 방송 문안·명령권·관제 응답 규칙은 제공하지 않는다.",
+      "completion": "표에 직원 단위 완료기준은 명시하지 않는다.",
+      "roleBoundary": "2013 KORAIL 매뉴얼의 2차 재정리이며, 기관사/승무원 행은 별도다. 열차 승무원 역할을 역무원 역할로 합치지 않는다."
+    },
+    {
+      "id": "F03",
+      "source": "S03_KORAIL_2022_SAFETY_KOREA_VIDEO",
+      "classification": "directly_supported_training_example",
+      "scenario": "금정터널 KTX 지진 긴급정차+객차화재 가상훈련",
+      "actor": "철도운영자·초기대응팀·소방서/병원 등 유관기관",
+      "trigger": "지진으로 인한 터널 내 긴급정차와 객차 화재",
+      "action": "1단계 철도운영자의 사고급보·병발사고 방지, 2단계 초기대응팀의 인명구호·고객대피, 3단계 유관기관의 화재진압·부상자 구호, 4단계 철도운영자의 시설복구",
+      "feedbackOrHandoff": "각 단계의 다음 주체가 도착·인수하는 4단계 순서가 영상·자막과 관찰 프레임에 표시된다.",
+      "completion": "4단계 철도시설 복구로 설명된다.",
+      "roleBoundary": "영상은 철도운영자 단위를 세분화하여 부산역 역무원 개인에게 배정하지 않는다."
+    },
+    {
+      "id": "F04",
+      "source": "S04_MOIS_2026_RAIL_FUEL_DRILL",
+      "classification": "directly_supported_current_training_example",
+      "scenario": "부강역 인근 위험물 화물열차 탈선·유류누출·폭발",
+      "actor": "기관사, KORAIL 초기대응팀, 소방·경찰",
+      "trigger": "토사 유입으로 항공유 적재 화물열차 탈선·누출",
+      "action": "기관사 신고→119·관계기관 상황전파→KORAIL 초기대응팀과 소방·경찰 선착대 현장수습",
+      "feedbackOrHandoff": "소방은 진압·확산방지, 경찰은 현장통제·주민대피 지원으로 역할을 나눈다.",
+      "completion": "수습·복구 단계에서 KORAIL은 대체교통수단 확보와 선로복구 준비를 맡는다고 설명된다.",
+      "roleBoundary": "위험물 화물·선로 사고의 기관사 보고를 역무원 신고나 여객역 화재 대응으로 일반화하지 않는다."
+    },
+    {
+      "id": "F05",
+      "source": "S05_MOIS_2025_GTX_FLOOD_DRILL_VIDEO",
+      "classification": "directly_supported_near_match_other_operator",
+      "scenario": "GTX 구성역 침수+대피 중 인명사고+전기합선 화재",
+      "actor": "초기대응팀과 구조·소방 대응기관",
+      "trigger": "폭우·하수관 역류에 따른 역사 유입수, 이어진 인명사고와 화재",
+      "action": "특별피난계단을 이용해 인명대피 유도와 부상자 응급조치를 수행",
+      "feedbackOrHandoff": "초기대응→비상대응→수습복구 순으로 이어지고, 특수장비가 인명구조·배수·화재진압을 수행한다.",
+      "completion": "보도는 수습복구 단계까지 언급하되 역할별 세부 완료기준은 제시하지 않는다.",
+      "roleBoundary": "GTX 구성역의 타 운영사 훈련이므로 KORAIL·부산역 역할 근거가 아니다."
+    },
+    {
+      "id": "F06",
+      "source": "S06_MOIS_2025_TERROR_PUBLIC_GUIDANCE",
+      "classification": "directly_supported_current_public_guidance",
+      "scenario": "다중이용시설 테러·의심 폭발물",
+      "actor": "시민·승객",
+      "trigger": "의심물품·폭발 또는 다중이용시설 테러 상황 인지",
+      "action": "의심물품을 만지지 않고 대피·신고하며, 사고 예상지점과 군중 반대방향으로 비상구 또는 안전시설에 이동",
+      "feedbackOrHandoff": "신고 후 경찰·관계기관 대응이 전제되나 현장직원 보안행동은 제시하지 않는다.",
+      "completion": "안전한 장소 대피까지의 시민 안전행동이며, 시설 수색·해제·재개 기준은 없다.",
+      "roleBoundary": "역무원을 무장 대응자·폭발물 처리자·현장지휘자로 만들 근거가 아니다."
+    },
+    {
+      "id": "F07",
+      "source": "S07_BUSAN_2025_FIRE_GUIDANCE",
+      "classification": "directly_supported_current_local_public_guidance",
+      "scenario": "일반 화재",
+      "actor": "시민·이용객",
+      "trigger": "화재 또는 연기 인지",
+      "action": "주변에 알림, 비상벨·119 신고, 낮은 자세의 안전장소 대피, 엘리베이터 미사용과 안내방송 준수",
+      "feedbackOrHandoff": "신고·안내방송에 따라 이동한다는 일반 시민 행동 수준만 확인된다.",
+      "completion": "안전한 장소로 대피하는 수준; 인원점검·재개는 규정하지 않는다.",
+      "roleBoundary": "부산역 장소·역무원 방송권한·대피경로·점검책임 근거가 아니다."
+    },
+    {
+      "id": "F08",
+      "source": "S08_BUSAN_STATION_2015_KORAIL_COUNTERTERROR_DRILL",
+      "classification": "directly_supported_historical_station_specific_training_event",
+      "scenario": "부산역 내 폭발물 의심물체 발견 가정",
+      "actor": "부산역 직원, 철도특별사법경찰대, 부산지방경찰청 경찰특공대, 부산역 자위소방대원",
+      "trigger": "부산역 내 폭발물 의심물체 발견이라는 훈련 상황",
+      "action": "부산역 직원의 초동조치 후 경찰특공대가 탐지견을 투입해 의심물체를 처리",
+      "feedbackOrHandoff": "직원 초동조치가 경찰특공대 대응으로 명시적으로 인계된다.",
+      "completion": "기사에는 의심물체 처리까지의 순서만 있고 역 재개·승객 대피완료·현장 해제의 기준은 없다.",
+      "roleBoundary": "부산역 직원의 초동조치 내용은 공개되지 않았고, 탐지·처리는 경찰특공대 역할이다. 역무원이 수색·처리 주체라는 추론은 금지한다."
+    }
+  ],
+  "actorBoundaryGraph": {
+    "stationStaffHistoricalEvidence": ["F01 초기대응팀의 대피유도·질서유지", "F02 역무원의 전파·방송·피난유도·게이트·접근통제"],
+    "trainCrewEvidence": ["S01 F133 기관사: 열차방호·인접역 사고급보·승객대피 협조", "S02 기관사/승무원 행은 역무원 행과 별도"],
+    "respondersEvidence": ["F01·F04 소방: 진압·응급구호·이송, 경찰/철도경찰: 질서유지·통제", "F03 3단계: 소방서·병원 화재진압·부상자구호"],
+    "passengerEvidence": ["F06 다중이용시설의 반대방향·비상구 대피", "F07 일반 화재 시 알림·신고·낮은 자세 대피"],
+    "prohibitedInference": ["역무원의 화재진압·제연·게이트 조작을 현재 부산역의 개인 플레이어 기본권한으로 확정", "역무원을 테러 대응의 무장·수색·폭발물 처리 주체로 설정", "열차 승무원의 열차방호·객실 안내를 역무원에게 이관", "소방·경찰의 도착 뒤 현장지휘와 진압을 역무원에게 지속 배정"]
+  },
+  "knownGaps": [
+    {
+      "id": "G01_CURRENT_BUSAN_STATION_FIELD_MANUAL",
+      "gap": "공개 최신 부산역 현장조치매뉴얼, 역할별 PA 문안, 관제/119 보고 항목, 권한전환, 집결·대피지도는 확보하지 못했다.",
+      "impact": "부산역 실제 출구·집결지·권한·완료판정 주장은 금지된다.",
+      "resolution": "KORAIL이 공개한 최신 부산역/부산경남본부 매뉴얼 또는 공개 훈련 보도·영상에서 정확한 장소·역무원 역할이 확인될 때만 갱신."
+    },
+    {
+      "id": "G02_STATION_VS_TRAIN_ROLE",
+      "gap": "확보된 KORAIL 공식 절차와 실제 영상의 핵심 시나리오는 터널 열차화재이며, 부산역 역사 내부가 아니다.",
+      "impact": "승강장·대합실·역외 연결부에 그대로 전이할 수 없다.",
+      "resolution": "부산역 역사 시나리오가 필요한 경우 공개 역 훈련 근거 또는 권한 있는 문서가 별도로 필요하다."
+    },
+    {
+      "id": "G03_GEOMETRY_AND_ROUTE",
+      "gap": "이 조사에는 부산역 실제 비상구, 특별피난계단, 접근통제선, 소방 진입로, 집결지의 검증된 위치가 없다.",
+      "impact": "어떤 실제 지형·동선·층 연결도 출처 인증으로 표기할 수 없다.",
+      "resolution": "공개 도면/현장 표지/공식 안내와 별도 3D 연속성 검증을 결합해야 한다."
+    },
+    {
+      "id": "G04_COMPLETION_CRITERIA",
+      "gap": "공개 자료는 대피·인수·복구의 순서는 보이나, 부산역 개인 역무원의 실시간 완료기준·인원점검 체계·재개권한은 밝히지 않는다.",
+      "impact": "재난 진압 완료나 역 재개를 플레이어 단독 완료로 표현할 수 없다.",
+      "resolution": "완료권한은 외부 대응기관/운영 지휘계통으로 남기고, 정확한 기준은 공개 최신 근거가 생길 때까지 미확정으로 유지한다."
+    },
+    {
+      "id": "G05_2019_2026_BUSAN_STATION_DRILL_RECORD",
+      "gap": "행안부·부산시·동구·부산소방·경찰·KORAIL 공개 검색으로 2019-2026년 부산역 화재·테러·지진 합동훈련의 사건기록을 찾지 못했다. S08은 2015년으로 시점 범위 밖이다.",
+      "impact": "2019년 이후 부산역에서 특정 훈련 절차가 지속·개정됐다고 주장할 수 없다.",
+      "resolution": "KORAIL 또는 유관기관의 날짜·장소·역무원 역할이 함께 보이는 후속 공개 보도·영상이 확인될 때만 S08을 최신화한다."
+    }
+  ],
+  "bestSourcePriority": [
+    {
+      "priority": 1,
+      "need": "공개된 최신 KORAIL 또는 부산경남본부의 부산역 현장 훈련 영상·보도·PDF",
+      "reason": "장소·직군·사고유형을 한 번에 맞출 수 있는 유일한 근거"
+    },
+    {
+      "priority": 2,
+      "need": "공개 최신 KORAIL 비상대응계획/현장조치매뉴얼의 개정일과 부산역 적용범위",
+      "reason": "S01·S02의 2013/2017 현행성 공백 해소"
+    },
+    {
+      "priority": 3,
+      "need": "공개 부산역 이용객 화재·대피 안내와 현장 표지의 날짜 있는 자료",
+      "reason": "승객용 경로·방송·안내 표지를 실제 장소와 연결하되 운영권한을 추정하지 않기 위함"
+    },
+    {
+      "priority": 4,
+      "need": "공개 KORAIL/소방/경찰 합동훈련의 역무원-대응기관 인계 기록",
+      "reason": "보고·대피유도·접근통제·인계의 경계를 최신 훈련 사례로 교차검증"
+    }
+  ],
+  "nonClaims": [
+    "이 그래프는 FPS 임무·HUD·NPC·점수·지형·미션 순서를 제안하지 않는다.",
+    "현재 부산역 KORAIL 매뉴얼 또는 실제 운영권한을 보유·재현했다고 주장하지 않는다.",
+    "공개 영상의 자동자막은 시간 식별용이며, 일부 인식 오류가 있는 2019 영상은 절차 사실에 사용하지 않았다.",
+    "수집본은 훈련·연구·시민안내의 근거이며 상품 수용성, Unity 동작, 3D 지형의 검증 근거가 아니다."
+  ]
+}

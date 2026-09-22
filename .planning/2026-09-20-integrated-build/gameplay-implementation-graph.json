@@ -1,0 +1,37 @@
+{
+  "owner": "root",
+  "decision": "direct field-command RTS with tactical pause and optional team autonomy",
+  "basis": [
+    "user repeated explicit team-command goal",
+    "12-game primary-source mechanics matrix",
+    "jev-gameplay-candidates-013.result.json (primary confidence low; root decided from user intent)"
+  ],
+  "implementationContract": {
+    "worker": "workers/physics/worker.py:Session.__init__/advance/result/main",
+    "teamCommands": "existing MvpOperationsPort CreateIntent -> PreviewAsync -> SubmitAsync -> ReadReceiptAsync, no modal required by backend",
+    "release": "action=evacuate plus releasePolicy all|staged|hold and cohortId -1|0..2",
+    "cohortAssignment": "spawn-z-thirds-v1, immutable3cohorts; included input digest",
+    "movement": "CFSV3 sole authority; released baseSpeed*FDS smoke factor; held desired_speed0",
+    "exposure": "waiting agents remain in simulation and accumulate sampled toxic/convective exposure",
+    "result": [
+      "initialStateDigest",
+      "cohortScheme",
+      "releaseRevision",
+      "releasePolicyHistoryDigest",
+      "cohortStats(id,total,active,evacuated,released,maxFedToxic,maxFedConvectiveHeat)",
+      "agent cohort/released/dose"
+    ],
+    "history": "retain final exit time/dose after agents removed; no fabrication of unexecuted comparison"
+  },
+  "checks": [
+    "same seed/population/scenario/deck+initialStateDigest for all/staged comparisons",
+    "pause queues orders and stops advances/work progression; resume appliescontrols before next advance",
+    "FDS interval ends120s; no extrapolation",
+    "warn cannot override explicit held-cohort state"
+  ],
+  "limits": [
+    "supervised cohort behavior is a declared scenario/model assumption, not calibrated human compliance",
+    "no clinical/contact-crush qualification",
+    "do not invent new FDS vent/door topology for this slice"
+  ]
+}

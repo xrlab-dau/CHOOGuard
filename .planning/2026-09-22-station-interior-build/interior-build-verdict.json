@@ -1,0 +1,643 @@
+{
+  "schema": "chooguard.station-interior-build.v1",
+  "verdictAt": "2026-09-22",
+  "branch": "feature/fps-audit-terminal-and-station-interior-audit",
+  "question": "추출 작업 이후 건물 내부 구축·설계를 진행할 수 있는가, 그리고 무엇을 지어야 하는가",
+  "headline": "추출은 이미 끝나 있었다. 실내는 Unity 콜라이더 기준으로 실재하고 걸을 수 있으며, 설계 가능한 연속 공간은 2층 대합실 1,887제곱미터다. 구역 경계는 손으로 긋지 않고 원본 바닥 머티리얼에서 읽어냈다.",
+  "correction_of_prior_instruction": {
+    "priorInstruction": "ver13-interior-verdict.json 의 nextExtraction: '-부산역 레이어의 z=5~30m 구간을 export_full_site.py 관례로 FBX 분할 추출한다'",
+    "whyItWasUnnecessary": [
+      "그 판정서는 Unity 자산 현황을 조회하지 않고 작성됐다. 원본 SKP 만 봤다.",
+      "station-fullsite-segments.json: segment MainShell = layer -부산역, triangles 666537, 8 meshes, bounds z -0.9~31.9. 감사가 센 -부산역 triangleMass 는 670179 로 같은 레이어다.",
+      "실내 후보 구간 z 5~30 은 MainShell bounds 안에 완전히 포함된다. 빠진 지오메트리가 없다.",
+      "OfficialBusanStation_MainShell.fbx 는 Assets/ChooGuard/Art/OfficialBusanStation 에 있고 FpsStation.unity 가 16회 참조한다.",
+      "fps-scene-native-receipt.json 의 collisionMeshes 가 MainShell 8개 메시를 전부 포함한다. convex 0, disabled 0."
+    ],
+    "jevBasis": "jev-next-unit-001: extraction_status=already_complete 0.87, next_unit=measure_reachability_then_design 0.99 (reextract_interior_fbx 0.00), enclosure_risk=must_test_before_design 1.00"
+  },
+  "measurement_method_defects_found_and_fixed": [
+    {
+      "defect": "Physics.queriesHitBackfaces 가 기본 false 라 아래로 쏜 레이가 천장(뒷면)을 놓쳤다",
+      "symptom": "v1 프로브가 방 0개를 냈다",
+      "fix": "뒷면 히트를 켜고 재측정 — 방 660개",
+      "artifact": "unity-interior-probe.json"
+    },
+    {
+      "defect": "PhysX 는 RaycastNonAlloc 에서 콜라이더(shape)당 최근접 히트 하나만 돌려준다. MainShell 은 메시가 8개뿐이라 위에서 관통시키는 감사 방식으로는 다층을 셀 수 없다",
+      "proof": "unity-interior-probe-v2.json perShapeHitProof: singleDownwardCastHits 3, distinctColliders 3, maxHitsOnOneCollider 1. 점당 2.2히트 대 감사의 최대 120면",
+      "fix": "공간 안에 서서 아래 3.5m / 위 6.5m 로 짧게 쏘는 높이 주사로 교체",
+      "artifact": "unity-interior-probe-v2.json"
+    },
+    {
+      "defect": "역사 소유 판정을 이름 접두사 'OfficialStation_-부산역' 으로 했는데 '-부산역_출구지붕', '-부산역_선로상층부' 도 같은 접두사로 시작한다",
+      "symptom": "y=7.0 역사 바닥을 12405 로 6배 과대계수했다",
+      "fix": "Collider.transform.IsChildOf(MainShell) 계보 판정으로 교체 — 1992",
+      "artifact": "station-floorplan.json"
+    }
+  ],
+  "measurements": {
+    "interiorExistsInUnityColliders": true,
+    "stationOwnFloorAtY7SquareMetres": 1992,
+    "auditEstimateSquareMetres": 1608,
+    "agreementNote": "감사의 1,608제곱미터 추정과 같은 규모대다. 감사는 옳았다.",
+    "largestContinuousInteriorComponent": {
+      "id": 192,
+      "squareMetres": 1820,
+      "yRange": [
+        6.1,
+        10.9
+      ],
+      "worldX": [
+        -24.0,
+        74.0
+      ],
+      "worldZ": [
+        -91.0,
+        -28.0
+      ],
+      "source": "station-rooms.json"
+    },
+    "zoneSignalCells": 1887,
+    "crossCheck": "구역 신호 1,887셀과 성분 1,820셀이 일치한다. 서로 다른 두 스크립트가 같은 공간을 잡았다.",
+    "reachabilityFromRoadSpawn": {
+      "spawnFeet": [
+        -169.5,
+        0.145,
+        -40.647
+      ],
+      "stationCellsReachedAtY7": 639,
+      "stationCellsTotalAtY7": 1992,
+      "finding": "도달 가능한 639제곱미터는 대합실과 떨어진 고립 블록이다. 대합실 본체는 도로 스폰에서 걸어 들어갈 수 없다.",
+      "unresolved": true,
+      "recheckedWithRealControllerRule": true,
+      "controllerRuleSource": "FirstPersonResponder.cs:41 — stepOffset=0.28, slopeLimit=45",
+      "priorThresholdWasWrong": "station-floorplan.json 은 1m 당 0.45m(약 24도) 고정 임계를 썼다. 정상 계단은 30~35도로 1m 당 0.58~0.70m 오르므로 계단을 막는다.",
+      "afterCorrection": {
+        "concourseCells": 1999,
+        "concourseReachable": 0,
+        "stairEdgesAccepted": 215,
+        "ledgeEdgesRejected": 741,
+        "capsuleBlockedEdges": 7552,
+        "finding": "임계값 교정으로도 대합실 도달은 0 이다. 임계값이 원인이 아니었다. 지배적 차단 사유는 경사·단차가 아니라 캡슐 간섭(7,552)이다."
+      },
+      "methodLimitAcknowledged": "계단에 서면 다음 단 라이저가 캡슐 반경 0.28m 안에 들어와 정적 CheckCapsule 이 거짓 차단을 낸다. 실제 CharacterController 는 스윕하며 stepOffset 만큼 올라간다. 이 근사는 계단에서 신뢰할 수 없다.",
+      "correctTool": "NavMesh 베이크. 에이전트 반지름·높이·경사·계단을 정식으로 처리한다. 판정서 ver13 도 이미 베이크가 필요하다고 적었다.",
+      "artifact": "station-reach.json"
+    },
+    "unreachableUpperFloors": [
+      {
+        "yRange": [
+          12.0,
+          16.1
+        ],
+        "squareMetres": 3161
+      },
+      {
+        "yRange": [
+          23.0,
+          23.9
+        ],
+        "squareMetres": 4175
+      },
+      {
+        "yRange": [
+          29.4,
+          31.9
+        ],
+        "squareMetres": 6471,
+        "note": "v2 에서 천장이 없다 — 지붕 상면이지 실내가 아니다"
+      }
+    ]
+  },
+  "zones_read_from_source": {
+    "method": "1m 셀마다 바닥 레이의 triangleIndex 를 서브메시 범위와 대조해 머티리얼 이름을 얻고, 위 레이로 천장고를 잰다. 배치를 저작하지 않는다.",
+    "jevBasis": "jev-design-method-002: zone_method=derive_from_source_signals 0.94 (author_new_layout_by_judgement 0.00, reuse_mvp_zone_coordinates 0.00), mvp_zone_reuse=not_usable_as_placement 1.00",
+    "whyMvpZonesDisqualified": "Assets/ChooGuard/Editor/MvpStationZones.cs 의 자체 주석: 'Dimensions and zoning are visual design assumptions, not measured station rooms.' 자산 이름은 '공개 안내도 기반'이라고 하지만 코드가 실측이 아님을 자인한다. 사용자 확정 규칙 '임의 배치 금지'에 걸린다.",
+    "zones": [
+      {
+        "material": "source-01c3e0dccb083b7bc73a",
+        "squareMetres": 883,
+        "floorY": 7.0,
+        "headroom": 4.13,
+        "x": [
+          -7,
+          59
+        ],
+        "z": [
+          -64,
+          -30
+        ],
+        "shape": "회전된 대형 직사각형 홀",
+        "reading": "주 대합실"
+      },
+      {
+        "material": "source-c9602e8d3ebc9381a7bc",
+        "squareMetres": 355,
+        "floorY": 6.7,
+        "headroom": 5.4,
+        "x": [
+          -24,
+          -1
+        ],
+        "z": [
+          -91,
+          -46
+        ],
+        "shape": "폭 좁고 45m 긴 통로",
+        "reading": "서남 방향 콩코스·연결 통로"
+      },
+      {
+        "material": "source-4d5162a8119a6fa90240",
+        "squareMetres": 217,
+        "floorY": 7.1,
+        "headroom": 4.01,
+        "x": [
+          40,
+          59
+        ],
+        "z": [
+          -49,
+          -32
+        ],
+        "shape": "19x17m 독립 방",
+        "reading": "동측 독립 실 — 용도 미확정"
+      },
+      {
+        "material": "source-29e0e0d02d790f52d02b",
+        "squareMetres": 160,
+        "floorY": 7.0,
+        "headroom": 4.07,
+        "x": [
+          -7,
+          62
+        ],
+        "z": [
+          -67,
+          -30
+        ],
+        "shape": "대합실 가장자리를 두르는 띠",
+        "reading": "벽면 마감대이지 방이 아니다"
+      }
+    ],
+    "headroomHistogram": {
+      "4.0": 1137,
+      "5.5": 406,
+      "4.5": 82,
+      "5.0": 79,
+      "3.5": 65,
+      "2.5": 55
+    },
+    "independentSupport": "천장고가 4.0m 와 5.5m 두 봉우리로 갈리며 머티리얼 경계와 같은 분할을 지지한다. 서로 독립인 두 신호가 일치한다."
+  },
+  "honest_limits": [
+    "구역에 붙인 '주 대합실', '콩코스' 같은 읽기는 형상·천장고·위치에 근거한 해석이며, 공개 편의시설 안내도와 한 칸씩 대조하지 않았다. 용도 확정은 미수행이다.",
+    "머티리얼 이름이 해시(source-xxxx)라 재질 자체가 무엇인지는 텍스처를 보기 전까지 모른다.",
+    "실제로 Play 모드에서 걸어본 적이 없다. 캡슐 여유와 홍수 채우기는 정적 물리 질의이며 CharacterController 의 실제 거동과 다를 수 있다.",
+    "도로 스폰에서 대합실이 도달 불가인 원인을 규명하지 않았다. 원본에 계단이 없는 것인지, 있는데 단차가 0.45m 를 넘는 것인지, 문이 막힌 것인지 미확인이다.",
+    "y 12~24m 상층 7,336제곱미터가 도달 불가인 원인도 같은 이유로 미확인이다.",
+    "홍수 채우기의 걸음 규칙(1m 당 0.45m)은 CharacterController 기본 slopeLimit 45도보다 보수적이다. 실제로는 더 많이 도달할 수 있다.",
+    "NavMesh·Occlusion·Lightmap 은 여전히 미베이크다.",
+    "도달성 측정을 두 번 했고 두 번 다 손으로 만든 NavMesh 근사다. 계단 위 정적 캡슐 검사가 거짓 차단을 내므로 '도달 불가 0셀'은 상한이 아니라 하한으로 읽어야 한다. 정식 판정은 NavMesh 베이크로만 가능하다.",
+    "소화기 배치 1차 산정(extinguisher-placement.json, 13개)은 구획을 머티리얼로 잡은 결함이 있어 폐기 대상이다. 벽 기반 구획 3개로 재산정해야 한다.",
+    "구획 측정의 벽 판정은 두 높이(0.5m, 1.3m) 가시선 차단에 근거한다. 유리벽은 콜라이더가 있으면 벽으로, 없으면 열린 것으로 세어진다. 원본에서 유리가 어떻게 모델링됐는지 확인하지 않았다.",
+    "구획 3개 수치는 단차를 벽으로 함께 센 상태에서 나왔다. 벽만으로 재산정하면 더 적고 더 큰 거실이 나올 것이다.",
+    "v3 에 미커버 8셀(0.44%)이 남는다. 적대검증은 이런 셀을 '살아 있는 법규 위반' 으로 본다. 그 좌표를 출력하지 않으므로 정체를 확인해야 한다.",
+    "창 경계에 닿은 보행 셀이 2개 남아 아직 미세하게 잘렸을 수 있다.",
+    "소화기는 아직 1개만 실제 배치됐다(빌더 기본 경로, 플레이어 정면). v3 좌표 12개를 주입하려면 빌더에 Placement 목록 오버로드가 필요하다 — 저장소 조사가 6개 지점을 file:line 으로 특정해 뒀다.",
+    "유닛 두 개가 0.44m 간격으로 배치됐다. 빌더가 경고를 냈지만 막지는 않았다. 산정 단계에 최소 간격 제약이 없다.",
+    "계단 탐지는 1.5m 격자다. 폭 1.5m 미만의 계단은 통째로 누락될 수 있다.",
+    "조명은 시각 확인만 했고 정량 휘도를 재지 않았다. 베이크 후 어두워지는지는 미검증이다."
+  ],
+  "next_decision_required_from_user": {
+    "question": "대합실이 도로 스폰에서 도달 불가인 문제를 어떻게 풀 것인가",
+    "jevSplit": "jev-design-method-002 spawn_fix: build_connector_stairs 0.50 / spawn_inside_concourse 0.48 — Jev 가 가르지 못했다(confidence 0.26). 제품 결정이므로 사용자 판단이 필요하다.",
+    "optionA": "튜토리얼 스폰을 대합실 안으로 옮긴다. 역무원은 근무 중 역사 안에서 점검을 시작하므로 도로 진입이 필요 없다. 임의 지오메트리를 만들지 않는다.",
+    "optionB": "도달 불가 원인을 먼저 규명한다. 원본에 계단이 있는데 단차·콜라이더 문제라면 고치는 것이 옳고, 아예 없다면 신설은 '임의 배치 금지'에 걸린다."
+  },
+  "artifacts": [
+    "unity-interior-probe.json",
+    "unity-interior-probe-v2.json",
+    "station-floorplan.json",
+    "floorplan-y7.png",
+    "station-rooms.json",
+    "rooms-largest-component.png",
+    "station-zone-signals.json",
+    "zone-floor-materials.png",
+    "jev-jev-next-unit-001.result.json",
+    "jev-jev-design-method-002.result.json"
+  ],
+  "scripts": [
+    "AgentScripts/StationInteriorProbe.cs",
+    "AgentScripts/StationInteriorProbeV2.cs",
+    "AgentScripts/StationFloorPlan.cs",
+    "AgentScripts/StationRooms.cs",
+    "AgentScripts/StationZoneSignals.cs"
+  ],
+  "walk_verification": {
+    "performedAt": "2026-09-22 Play mode",
+    "spawnMovedTo": [
+      26.0,
+      7.05,
+      -47.0
+    ],
+    "spawnBasis": "station-spawn-pick.json — 1,212 후보 중 8/8 방향 2m 개방, 천장고 4.0m, 주 대합실 중심 거리 0.0",
+    "method": "FirstPersonResponder.SetExternalInputMode(true) + Resume(false) + StepInput 120스텝(=2초분). FpsProcedureTests.cs:11 이 결정론적 경로라고 적어 둔 관례를 그대로 썼다. 실제 입력 장치를 거치지 않으므로 Application.isFocused 에 의존하지 않는다.",
+    "results": {
+      "전진": {
+        "moved": 3.6,
+        "yMin": 7.02,
+        "yMax": 7.05,
+        "grounded": true
+      },
+      "후진": {
+        "moved": 3.6,
+        "yMin": 7.03,
+        "yMax": 7.03,
+        "grounded": true
+      },
+      "좌": {
+        "moved": 3.6,
+        "yMin": 7.03,
+        "yMax": 7.03,
+        "grounded": true
+      },
+      "우": {
+        "moved": 3.6,
+        "yMin": 7.03,
+        "yMax": 7.03,
+        "grounded": true
+      }
+    },
+    "crossCheck": "이동 3.60m 는 WalkSpeed 1.8m/s 곱하기 2초와 정확히 일치한다. y 가 7.02~7.05 를 벗어나지 않아 바닥을 뚫지 않는다.",
+    "resolves": "honest_limits 의 'Unity 에서 실제로 걸어본 적이 없다' 를 해소한다.",
+    "sceneSaved": true,
+    "jevBasis": "jev-slice-direction-003: next_work_unit=move_spawn_and_walk_test_first 1.00"
+  },
+  "partition_measurement": {
+    "why": "NFTC 101 은 '바닥면적 33제곱미터 이상으로 구획된 각 거실'에 소화기를 요구한다. '구획'은 벽이지 바닥 머티리얼이 아니다.",
+    "defectCorrected": "ExtinguisherPlacement.cs 는 구획을 바닥 머티리얼 경계로 잡아, 판정서 스스로 '대합실 가장자리를 두르는 띠, 방이 아니다' 라고 적은 source-29e0e0d02d790f52d02b(139제곱미터)를 별도 거실로 취급했다. 자투리 배치 5건(커버 1~5셀)이 같은 뿌리에서 나왔다.",
+    "method": "인접한 두 보행 셀 사이 레이가 바닥 위 0.5m 와 1.3m 두 높이에서 모두 막히면 벽으로 센다. 문간은 뚫리므로 방들이 문으로 이어지는 실제 의미와 일치한다. 벽을 넘지 않는 연결 성분이 거실이다.",
+    "walkableCells": 1354,
+    "wallEdges": 104,
+    "openEdges": 4622,
+    "partitionCount": 50,
+    "partitionsAtLeast33sqm": 3,
+    "rooms": [
+      {
+        "sqm": 786,
+        "reading": "주 대합실 — 내부에 벽이 없는 단일 거실"
+      },
+      {
+        "sqm": 225,
+        "reading": "동측 독립실"
+      },
+      {
+        "sqm": 105,
+        "reading": "좌상단 실"
+      }
+    ],
+    "note": "머티리얼 기준이 냈던 4개(885/217/139/42제곱미터)와 다르다. 나머지 47개 구획은 전부 33제곱미터 미만이라 법규 대상이 아니다.",
+    "artifact": "concourse-partitions.json, concourse-partitions.png",
+    "defectFoundInItself": {
+      "finding": "wallEdges 104 는 실제로 가시선 차단 54 + 높이 단차 차단 50 의 합이었다. 둘을 합쳐 세는 바람에 구획이 50조각으로 부풀었다.",
+      "whyItMatters": "단차는 구획이 아니다. 계단 한 단이 방을 둘로 나누지 않는다. 반면 보행거리 계산에는 단차도 장벽이 맞다.",
+      "correctModel": "그래프가 둘 필요하다 — 거실 식별용(벽만 차단)과 보행거리용(벽+단차 차단).",
+      "blockingColliders": {
+        "OfficialStation_-부산역_6": 39,
+        "OfficialStation_-부산역_7": 15
+      },
+      "blockersAreRealGeometry": "차단한 콜라이더가 전부 MainShell 메시다. 계측 잡음이 아니라 실제 건물 면이다.",
+      "playerArtifact": "플레이어를 SetActive(false) 로 제외하니 보행셀이 1354 에서 1355 로 정확히 1 늘었다. 스폰 이후 측정한 ExtinguisherPlacement 와 ConcoursePartitions 는 플레이어 자신이 발밑 셀을 가린 아티팩트를 갖는다. FpsStationSceneBuilder.cs:175 의 priorStates 패턴이 저장소의 해법이다.",
+      "status": "구획 3개(786/225/105제곱미터)는 이 결함 위에서 나온 값이므로 재산정 대상이다."
+    }
+  },
+  "regulation_basis": {
+    "standard": "소화기구 및 자동소화장치의 화재안전기술기준(NFTC 101) / 성능기준(NFPC 101), 국가법령정보센터",
+    "walkingDistance": "각 부분으로부터 1개의 소화기까지 보행거리 20m 이내(소형소화기), 30m 이내(대형)",
+    "perRoom": "각 층마다 설치하되, 바닥면적 33제곱미터 이상으로 구획된 각 거실에도 배치",
+    "mountHeight": "바닥으로부터 1.5m 이하에 비치",
+    "signage": "종류를 표시한 축광식 표지 부착",
+    "whyItMatters": "기준이 직선거리가 아니라 보행거리이므로 보행 가능 격자 위 BFS 최단경로로 재야 한다. 직선거리로 재면 벽 너머를 커버한다고 거짓 주장하게 된다.",
+    "jevBasis": "jev-poi-placement-004: placement_method=bfs_coverage_then_greedy_cover 1.00, candidate_positions=wall_adjacent_reachable_cells 0.86",
+    "partitionMeaning": "구획 = 물리적 벽 또는 칸막이. NFPC 101 제3조제5호(= NFTC 101 1.7.1.5)가 거실을 '방'으로 정의한다. 바닥 마감 변화·천장 재질·기둥 그리드·기능 구역은 구획이 아니다.",
+    "largeHallRule": "벽 없는 880제곱미터 개방 대합실은 면적과 무관하게 '하나의 거실'이다. 쪼개지지 않는다. '33제곱미터 격자 규칙' 같은 것은 존재하지 않는다.",
+    "conditionalRider": "제4조제1항제4호가목의 거실별 의무는 조건절이다 — '각 층이 둘 이상의 거실로 구획된 경우에는' 일 때만 발동한다.",
+    "capacityUnits": "철도역사 = 운수시설. 제4조제1항제2호다목에 따라 능력단위 100제곱미터마다 1단위. 표 2.1.1.2 비고의 내화구조 + 벽·반자 불연/준불연/난연 마감 시 200제곱미터로 2배 완화(2차 전사 기준, 원문 미대조).",
+    "noReduction": "제5조제1항의 감소 규정은 제2호·제3호에만 미치고 제4호에는 미치지 않는다. 역사는 감소 대상이 아니다.",
+    "citations": "NFPC 101 제3조제5호, 제4조제1항제2호다목·제4호가목·제4호나목·제6호, 제5조제1항 / 국가법령정보센터 원문 대조",
+    "unverified": [
+      "소방청 질의회신집 미검색",
+      "화재안전기준 해설서 원문 확보 실패",
+      "3.3kg ABC 소화기 능력단위 A-3 는 업계 통용치로 형식승인 미대조",
+      "표 2.1.1.2 비고 2배 완화는 2차 전사 기준"
+    ]
+  },
+  "slice_working": {
+    "achievedAt": "2026-09-22 Play mode",
+    "builderDefectFixed": {
+      "file": "Assets/ChooGuard/Editor/FireExtinguisherSliceBuilder.cs:148 (now :152)",
+      "was": "float mount=1.10f-bounds.center.y+bounds.extents.y*0f;",
+      "now": "float mount=root.transform.position.y+1.10f-bounds.center.y;",
+      "why": "RendererBounds 는 renderer.bounds, 즉 월드 공간이다. 1.10f-bounds.center.y 를 로컬 오프셋으로 쓰면 최종 월드 높이가 층과 무관하게 1.10m 로 고정된다. 플레이어가 도로(y=0.145)에 있을 때만 우연히 맞았고, 스폰을 대합실(y=7.05)로 옮기자 소화기가 바닥 아래 5.9m 로 내려갔다.",
+      "foundBy": "workflow wf_cd9a0a84-ea3 repo agent, 실측으로 확증",
+      "verified": "배치 후 bodyWorldCenterY=8.15 = 루트 7.05 + 1.10"
+    },
+    "placement": {
+      "root": "튜토리얼 · 소화기 월간점검",
+      "rootPos": [
+        24.8,
+        7.05,
+        -47.0
+      ],
+      "children": [
+        "소화기 본체",
+        "관측 · 본체 외관",
+        "관측 · 제원표",
+        "관측 · 고유번호",
+        "관측 · 지시압력계",
+        "튜토리얼 세션",
+        "판정 단말"
+      ]
+    },
+    "interactionVerified": {
+      "aim": "pitch 22.6, camFwd 가 목표 방향과 정확히 일치",
+      "target": "관측 · 본체 외관 (1.11m)",
+      "prompt": "소화기의 고유번호를 먼저 확인하세요",
+      "reading": "본체를 조준했는데 시스템이 절차 순서를 강제한다. 8단계 절차 로직이 실내에서 살아 있다."
+    },
+    "note": "pitch 부호 규약은 음수가 위다(pitch -85 에서 camFwd.y=+0.996). 양수 lookDegrees.y 가 pitch 를 감소시킨다."
+  },
+  "adversarial_review": {
+    "runId": "wf_cd9a0a84-ea3",
+    "verdictOnV1": "DEFECTIVE",
+    "alreadyFixedInV2": [
+      "구획=머티리얼",
+      "플레이어 자기 가림",
+      "단차 미분리",
+      "자투리 배치 5건",
+      "미커버 10셀",
+      "벽 방향 미기록"
+    ],
+    "stillOpenInV2": [
+      {
+        "severity": "critical",
+        "claim": "분석 창이 하드코딩된 바운딩박스(x -7~59, z -64~-30)다. 창 밖의 20m 보행거리 보장은 거짓이며, 거실이 창에서 잘렸는지 출력이 말하지 않는다."
+      },
+      {
+        "severity": "new",
+        "claim": "능력단위 총량 요구를 전혀 다루지 않았다. 운수시설 100제곱미터/1단위 기준으로 787제곱미터 거실은 최소 8단위(내화구조면 4단위)가 필요하다. 배치 개수가 커버리지가 아니라 능력단위로 결정될 수 있다."
+      },
+      {
+        "severity": "medium",
+        "claim": "mountY 1.2m 가 브래킷 높이인지 소화기 본체 상단인지 명시되지 않았다."
+      }
+    ]
+  },
+  "placement_v3": {
+    "supersedes": "extinguisher-placement.json(v1, 13개) 과 extinguisher-placement-v2.json(7개)",
+    "fixedCriticalDefect": "분석 창이 x -7~59 / z -64~-30 으로 하드코딩돼 실제 공간(StationRooms id=192 는 X -24~74, Z -91~-28)보다 작았다. 창 밖 보행거리 보장이 거짓이었고, 404제곱미터 거실이 통째로 창 밖에 있어 소화기가 하나도 배치되지 않았다.",
+    "newWindow": {
+      "x": [
+        -30,
+        80
+      ],
+      "z": [
+        -97,
+        -22
+      ]
+    },
+    "cellsTouchingWindowEdge": 2,
+    "walkableCells": {
+      "before": 1355,
+      "after": 1817,
+      "delta": 462
+    },
+    "legalRooms": [
+      785,
+      404,
+      225,
+      106,
+      45
+    ],
+    "placements": 12,
+    "uncovered": 8,
+    "capacityUnitCheck": {
+      "basis": "운수시설 100제곱미터당 능력단위 1 (NFPC 101 제4조제1항제2호다목). 3.3kg ABC 분말소화기 = 능력단위 3(업계 통용치, 형식승인 미대조).",
+      "result": [
+        {
+          "roomSqm": 785,
+          "units": 5,
+          "capacity": 15,
+          "required": 8,
+          "ok": true
+        },
+        {
+          "roomSqm": 404,
+          "units": 3,
+          "capacity": 9,
+          "required": 5,
+          "ok": true
+        },
+        {
+          "roomSqm": 225,
+          "units": 2,
+          "capacity": 6,
+          "required": 3,
+          "ok": true
+        },
+        {
+          "roomSqm": 106,
+          "units": 1,
+          "capacity": 3,
+          "required": 2,
+          "ok": true
+        },
+        {
+          "roomSqm": 45,
+          "units": 1,
+          "capacity": 3,
+          "required": 1,
+          "ok": true
+        }
+      ],
+      "reading": "보행거리가 구속 조건이고 능력단위는 여유가 있다. 법규 조사 에이전트가 예측한 대로다."
+    },
+    "regulationAgentEndorsement": "법규 에이전트 최종 권고와 일치한다: 'treat the open concourse as one 거실; place by 20 m walking distance from every reachable point; add ONE additional unit inside each genuinely wall-enclosed room of 33 sqm or more. Do not place one per floor-material region.'",
+    "artifact": "extinguisher-placement-v3.json"
+  },
+  "injection_v3": {
+    "completedAt": "2026-09-22",
+    "jevBasis": "jev-inject-structure-005: inspectable_scope=all_twelve_with_per_unit_state 0.48(0.65 대 0.34), session_and_terminal=one_each_hoisted 0.73, destroy_sweep=iterate_roots_by_prefix 0.87, proximity_guard=assert_and_report 0.90",
+    "builderExtension": {
+      "file": "Assets/ChooGuard/Editor/FireExtinguisherSliceBuilder.cs",
+      "added": [
+        "public struct Placement (Position/Rotation/Serial/Corroded/ExpiryPassed/TutorialTarget)",
+        "public static GameObject[] Build(IReadOnlyList<Placement>, bool)",
+        "private static bool Prepare(...) — 씬·응답자·자산 검증 공유",
+        "private static GameObject BuildUnit(...) — 유닛 하나",
+        "private const string UnitPrefix = \"소화기 · \""
+      ],
+      "preserved": [
+        "Build(bool) 파사드가 기존 플레이어 정면 1.2m 동작을 그대로 낸다",
+        "관측 지점 id 4개(body/spec-plate/serial/gauge) — TutorialSession.cs:92~95 와 문자열로 맞물려 건드리지 않음",
+        "Point(), RendererBounds(), BindMaterials()"
+      ],
+      "changes": [
+        "RootName 단일 const -> 유닛마다 UnitPrefix+Serial (TutorialSession.Audit 이 Target.name 을 지적 접두사로 쓴다)",
+        "GameObject.Find 제거 -> 씬 루트를 접두사로 훑어 전부 제거 (Find 는 하나만·활성만 돌려준다)",
+        "좌표를 플레이어 상대에서 Placement 주입으로",
+        "SerialNumber/Corroded/ExpiryPassed/PendingVerdict 하드코딩 -> Placement 필드",
+        "세션·단말을 루프 밖으로 호이스팅해 자체 호스트 루트에 둠"
+      ]
+    },
+    "injectionScript": "AgentScripts/InjectExtinguishers.cs — v3 JSON 을 읽어 좌표만 변환한다. 벽까지 실측해 (벽거리-0.22m) 붙이고, 회전은 LookRotation(-wallDir) 로 빌더의 '로컬 +Z 가 플레이어 쪽' 관례를 지킨다.",
+    "result": {
+      "requested": 12,
+      "created": 12,
+      "previousRemoved": 1,
+      "tutorialTarget": "BSN-CONC-FE-010 (24.00, 7.00, -53.62) — 스폰 최근접",
+      "wallGapRange": "0.22~0.94m",
+      "sceneVerification": {
+        "unitRoots": 12,
+        "tutorialSession": 1,
+        "auditTerminal": 1,
+        "facilityInspectable": 12,
+        "corrodedUnits": 1,
+        "observationColliders": 48,
+        "gazeTrackerCap": 64,
+        "sessionTarget": "BSN-CONC-FE-010",
+        "pendingVerdict": "UNFIT",
+        "bodyHeightDelta": 1.1
+      },
+      "playModeWalk": {
+        "from": [
+          26.0,
+          7.05,
+          -47.0
+        ],
+        "to": [
+          24.34,
+          7.03,
+          -52.37
+        ],
+        "walked": 6.91,
+        "grounded": true,
+        "aimedCollider": "관측 · 고유번호",
+        "owningUnit": "소화기 · BSN-CONC-FE-010",
+        "prompt": "소화기의 고유번호를 먼저 확인하세요"
+      },
+      "regression": "FPS PlayMode 19/19 통과"
+    },
+    "openIssue": {
+      "proximity": "BSN-CONC-FE-004 와 FE-006 이 0.44m 간격이다. 산정에서 후보를 2m 격자로 솎았지만 벽 보정이 그 간격을 먹었다. 3m 상호작용 상한 안이라 조준이 모호하다. 경고는 나왔으나 배치는 그대로다.",
+      "uncovered": "v3 미커버 8셀(0.44%)의 좌표를 출력하지 않아 정체가 미확인이다."
+    }
+  },
+  "completion_survey": {
+    "jevBasis": "jev-completion-plan-006: close_open_defects_then_bake 0.72, flipped_normals 0.65, measure_before_authoring 0.97, measure_then_decide 1.00",
+    "normalPolarity": {
+      "method": "실내 바닥 대역 y 6.4~7.7 을 2m 격자로 훑어 콜라이더별 위/아래 법선 표본을 센다",
+      "OfficialStation_-부산역_6": {
+        "up": 392,
+        "down": 13,
+        "note": "주 대합실 — 97% 정상. 튜토리얼 슬라이스가 있는 곳이라 현재 작업은 안전하다."
+      },
+      "OfficialStation_-부산역_5": {
+        "up": 19,
+        "down": 102,
+        "note": "서측 — 84% 뒤집힘. 런타임 m_QueriesHitBackfaces=0 이라 상호작용 레이가 통과한다."
+      },
+      "OfficialStation_-부산역_7": {
+        "up": 8,
+        "down": 0
+      },
+      "reading": "뒤집힘이 한 메시에 집중돼 있어 수리 범위가 좁다."
+    },
+    "verticalCirculation": {
+      "detectorCorrection": "InteriorSurvey 는 경사면(|n.y| 0.35~0.7072)을 찾아 2개만 검출했다. 계단은 경사면이 아니라 평탄한 디딤판(n.y≈1)과 수직 챌판(n.y≈0)의 반복이므로 탐지기가 틀렸다. 게다가 높이를 0.5m 로 묶었는데 디딤판 간격은 0.15~0.2m 라 전부 뭉개졌다.",
+      "correctSignature": "한 XZ 기둥에서 0.10~0.32m 간격으로 4단 이상 연속 상승하는 평탄면",
+      "found": [
+        {
+          "xz": [
+            58.0,
+            -48.3
+          ],
+          "y": [
+            10.5,
+            11.0
+          ],
+          "treads": 4,
+          "meanRise": 0.167,
+          "collider": "OfficialStation_-부산역_7"
+        },
+        {
+          "xz": [
+            -47.0,
+            22.2
+          ],
+          "y": [
+            21.79,
+            22.63
+          ],
+          "treads": 6,
+          "meanRise": 0.169,
+          "collider": "OfficialStation_-부산역_1"
+        },
+        {
+          "xz": [
+            -33.5,
+            16.2
+          ],
+          "y": [
+            28.69,
+            29.78
+          ],
+          "treads": 5,
+          "meanRise": 0.273,
+          "collider": "OfficialStation_-부산역_4"
+        },
+        {
+          "xz": [
+            -45.5,
+            14.7
+          ],
+          "y": [
+            26.17,
+            26.57
+          ],
+          "treads": 4,
+          "meanRise": 0.134,
+          "collider": "OfficialStation_-부산역_1"
+        },
+        {
+          "xz": [
+            -44.0,
+            19.2
+          ],
+          "y": [
+            26.17,
+            26.57
+          ],
+          "treads": 4,
+          "meanRise": 0.135,
+          "collider": "OfficialStation_-부산역_1"
+        }
+      ],
+      "concourseBandCheck": "MainShell 필터를 풀고 대합실 y6.5~12.5 를 전부 훑어도 계단 기둥은 1개뿐이다(-부산역_5).",
+      "visualContradictionResolved": "씬 뷰에 난간과 황흑 경고띠를 갖춘 에스컬레이터가 보여 '계단이 있다' 는 인상을 줬으나, 그것은 승강장 구역(더 낮은 높이)의 구조물이었다. 시각 인상과 계측이 충돌했고 계측이 이겼다.",
+      "verdict": "대합실(y7.0)은 상층부(y11~12.5, y23, y29)와 물리적으로 단절돼 있다. 원본이 그렇게 만들어졌다. Jev 가 author_stairs 를 0.00 으로 금지했으므로 계단 저작은 불가하다.",
+      "meanRiseReading": "검출된 평균 상승 0.134~0.273m 는 공공건물 계단 챌판 기준(0.18m 이하)과 대체로 부합한다. 즉 진짜 계단 지오메트리다."
+    },
+    "lighting": {
+      "lightCount": 1,
+      "light": "공간 조명 · Directional · intensity 1.15",
+      "ambientMode": "Skybox",
+      "ambientIntensity": 1.0,
+      "ambientColor": "#363A42",
+      "visualCheck": "플레이어 카메라 캡처 결과 대합실은 충분히 밝다. 목재 리브 천장·유리창·회색 벽이 보이고 소화기 2개가 벽에 붙어 식별된다.",
+      "risk": "밝은 이유는 Skybox 앰비언트가 실내까지 채우기 때문이다. 라이트맵·오클루전이 미베이크라 차단되지 않는다. 베이크하면 실내가 어두워질 수 있다 — 베이크 전후 비교가 필요하다.",
+      "jevReading": "measure_before_authoring 0.97 이 값을 했다. 측정 없이 조명을 저작했다면 이미 밝은 공간에 불필요한 라이트를 넣었을 것이다."
+    },
+    "editorVisibility": "사용자 요청(2026-09-22)에 따라 작업물을 유니티 에디터 씬에 띄운다. 소화기 12개 + 세션 호스트를 선택하고 씬 뷰를 대합실로 프레이밍했다."
+  }
+}

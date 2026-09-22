@@ -1,0 +1,78 @@
+{
+  "version": 1,
+  "userLocked": [
+    "UI외 world text 금지",
+    "실제공간과사람크기 관계 수치 재구축",
+    "NPC/운영요소는 JWE3와 비교대조 제안"
+  ],
+  "jevRef": ".planning/2026-09-20-integrated-build/jev-metre-normalization-025.result.json",
+  "rootDecision": "metre-native relayout, no whole-parent scaling",
+  "units": {
+    "unityUnitsPerMetre": 1,
+    "osmSourceScale": 1,
+    "demScale": 1,
+    "referenceHallXZ": [
+      30,
+      20
+    ],
+    "referenceHallHeight": 4,
+    "referenceOrigin": [
+      -52,
+      5.05,
+      -48
+    ]
+  },
+  "designNotMeasured": {
+    "crewHeight": 1.78,
+    "adultCivilianHeight": 1.72,
+    "floorToFloor": 5,
+    "doorClearHeight": 2.1,
+    "seatHeight": 0.45,
+    "walkingSpeedMetresPerSecond": 1.4
+  },
+  "world": {
+    "bounds": {
+      "minX": -1975.992,
+      "maxX": 2121.688,
+      "minZ": -2794.132,
+      "maxZ": 1324.708
+    },
+    "spatialChunkMetres": 512,
+    "physicsWorkerNoChange": true,
+    "flatPadsKeep": true
+  },
+  "ownership": {
+    "world_surface": [
+      "MvpCityBuilder.cs",
+      "MvpWorldSurfaceBuilder.cs",
+      "art/world/prepare_world_layers.py",
+      "art/world/world-layers.json"
+    ],
+    "station_interior": [
+      "MvpStationBuilder.cs",
+      "MvpInteriorBuilder.cs",
+      "MvpStationView.cs",
+      "MvpOpenWorldCamera.cs",
+      "MvpInteriorHubView.cs",
+      "MvpWorldPresentation.cs",
+      "new MvpSpatialMetrics.cs"
+    ],
+    "busan_world": [
+      "Blender ResponseSet facade geometry only if needed; no C#overlap"
+    ],
+    "root": [
+      "Jev/design",
+      "Unity",
+      "NPCproposal",
+      "evidence"
+    ]
+  },
+  "rules": [
+    "No 3D TextMeshPro objects or text meshes on buildings/NPC/signage. Existing UI Canvas text preserved. Geometric pictograms and shape/color allowed.",
+    "Position layouts previously in .25 world may convert x/z4; furniture/person sizes must stay realmetres instead of multiplyingwholehierarchy.",
+    "Facade authoring uses new measuredsource x/z rather than fourfold-wide doors/canopies. Width/depth1:1, height design17m roughly, clearlyunmeasured.",
+    "Source landmark/worldmodels already authoredmetres, fitdimensions withScale1.",
+    "Solver display has30x20metre actualrectangle, positions1:1, no .65 or .5crowdshrink; physicalworker unchanged.",
+    "One integrated Unity rebuild and geometricbounds/TMP0/threefloor+hubcutaway observation. No broadtests/CFD rerun."
+  ]
+}

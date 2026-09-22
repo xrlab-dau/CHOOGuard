@@ -1,0 +1,25 @@
+{
+  "schema": "chooguard.extinguisher-placement.v1",
+  "computedAt": "2026-09-22",
+  "regulation": "소화기구 및 자동소화장치의 화재안전기술기준(NFTC 101) — 보행거리 20m 이내(소형), 33제곱미터 이상 구획 거실마다, 바닥 1.5m 이하 비치",
+  "jevBasis": "jev-poi-placement-004: placement_method=bfs_coverage_then_greedy_cover 1.00, candidate_positions=wall_adjacent_reachable_cells 0.86, east_room_handling=own_extinguisher_required 0.97",
+  "method": "walking distance by 8-connected BFS on walkable cells with CharacterController semantics (StationReach convention), then classic greedy set cover (Chvatal 1979, ln n approximation). Room-partition rule forces one unit inside every floor-material region of at least 33 sqm.",
+  "walkLimitMetres": 20, "roomAreaThreshold": 33,
+  "walkableCells": 1354, "wallAdjacentCandidates": 114, "uncoveredAfterSolve": 10,
+  "materialRegions": [{"material": "source-c9602e8d3ebc9381a7bc", "sqm": 42, "needsOwnUnit": true}, {"material": "source-6df65da90f8211785446", "sqm": 20, "needsOwnUnit": false}, {"material": "source-29e0e0d02d790f52d02b", "sqm": 139, "needsOwnUnit": true}, {"material": "source-01c3e0dccb083b7bc73a", "sqm": 885, "needsOwnUnit": true}, {"material": "source-8eddb1b0a5205b2b6f07", "sqm": 1, "needsOwnUnit": false}, {"material": "source-6f52b8c093704af3a96b", "sqm": 4, "needsOwnUnit": false}, {"material": "source-49c2967b36f82d3a2877", "sqm": 7, "needsOwnUnit": false}, {"material": "source-cbd526341a0bfb21a37f", "sqm": 5, "needsOwnUnit": false}, {"material": "source-563a47a9fb37ecdbc516", "sqm": 8, "needsOwnUnit": false}, {"material": "source-84be71a79bade48f6bfa", "sqm": 3, "needsOwnUnit": false}, {"material": "source-2d546c6fd3c02a46d766", "sqm": 1, "needsOwnUnit": false}, {"material": "source-50b2c6456d9db4d74a2e", "sqm": 12, "needsOwnUnit": false}, {"material": "source-4d5162a8119a6fa90240", "sqm": 217, "needsOwnUnit": true}, {"material": "source-c14e32bf9e30743d6940", "sqm": 4, "needsOwnUnit": false}, {"material": "source-e2c1c2e09ca2098fca43", "sqm": 2, "needsOwnUnit": false}, {"material": "source-2bdf882fae3f7b0cfe00", "sqm": 4, "needsOwnUnit": false}],
+  "placements": [
+    {"index": 0, "floorPosition": [-5.0, 6.70, -60.0], "mountY": 7.90, "coverCells": 62, "material": "source-c9602e8d3ebc9381a7bc"},
+    {"index": 1, "floorPosition": [35.0, 7.00, -42.0], "mountY": 8.20, "coverCells": 558, "material": "source-29e0e0d02d790f52d02b"},
+    {"index": 2, "floorPosition": [7.0, 7.00, -46.0], "mountY": 8.20, "coverCells": 500, "material": "source-01c3e0dccb083b7bc73a"},
+    {"index": 3, "floorPosition": [51.0, 7.03, -48.0], "mountY": 8.23, "coverCells": 590, "material": "source-4d5162a8119a6fa90240"},
+    {"index": 4, "floorPosition": [31.0, 7.00, -58.0], "mountY": 8.20, "coverCells": 290, "material": "source-29e0e0d02d790f52d02b"},
+    {"index": 5, "floorPosition": [5.0, 7.20, -30.0], "mountY": 8.40, "coverCells": 117, "material": "source-cbd526341a0bfb21a37f"},
+    {"index": 6, "floorPosition": [43.0, 6.75, -32.0], "mountY": 7.95, "coverCells": 5, "material": "source-50b2c6456d9db4d74a2e"},
+    {"index": 7, "floorPosition": [59.0, 6.70, -64.0], "mountY": 7.90, "coverCells": 4, "material": "source-2bdf882fae3f7b0cfe00"},
+    {"index": 8, "floorPosition": [-3.0, 7.00, -46.0], "mountY": 8.20, "coverCells": 302, "material": "source-29e0e0d02d790f52d02b"},
+    {"index": 9, "floorPosition": [41.0, 7.00, -46.0], "mountY": 8.20, "coverCells": 715, "material": "source-01c3e0dccb083b7bc73a"},
+    {"index": 10, "floorPosition": [19.0, 7.60, -34.0], "mountY": 8.80, "coverCells": 2, "material": "source-563a47a9fb37ecdbc516"},
+    {"index": 11, "floorPosition": [35.0, 7.60, -40.0], "mountY": 8.80, "coverCells": 1, "material": "source-563a47a9fb37ecdbc516"},
+    {"index": 12, "floorPosition": [57.0, 7.00, -50.0], "mountY": 8.20, "coverCells": 1, "material": "source-84be71a79bade48f6bfa"}
+  ]
+}

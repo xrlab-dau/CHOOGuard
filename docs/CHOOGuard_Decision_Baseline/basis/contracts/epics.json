@@ -1,0 +1,902 @@
+{
+  "schemaVersion": "10.0.0",
+  "epics": [
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP00",
+      "title": "범위·사용자·평가기준",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 18",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-066"
+      ],
+      "testIds": [
+        "AT-066"
+      ],
+      "sourceIds": [
+        "REPO-ORCH"
+      ],
+      "candidateInputs": [],
+      "outputs": [
+        "product-baseline.json",
+        "evaluation-plan.json"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP01",
+      "title": "계약·온톨로지·규칙",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 08, 15, 20",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-031",
+        "REQ-032",
+        "REQ-033",
+        "REQ-034",
+        "REQ-060",
+        "REQ-061",
+        "REQ-073"
+      ],
+      "testIds": [
+        "AT-031",
+        "AT-032",
+        "AT-033",
+        "AT-034",
+        "AT-060",
+        "AT-061",
+        "AT-073"
+      ],
+      "sourceIds": [
+        "MAN-KORAIL",
+        "MAN-MEDICAL",
+        "MAN-SOP",
+        "STD-JSONLD",
+        "STD-PROV"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP00",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "product-baseline.json",
+            "evaluation-plan.json"
+          ]
+        }
+      ],
+      "outputs": [
+        "production-schema-bundle",
+        "rule-registry"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP02",
+      "title": "운영 커널·자원·통신",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 07, 11",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-021",
+        "REQ-022",
+        "REQ-023",
+        "REQ-024",
+        "REQ-025",
+        "REQ-026",
+        "REQ-027",
+        "REQ-028",
+        "REQ-029",
+        "REQ-030",
+        "REQ-041"
+      ],
+      "testIds": [
+        "AT-021",
+        "AT-022",
+        "AT-023",
+        "AT-024",
+        "AT-025",
+        "AT-026",
+        "AT-027",
+        "AT-028",
+        "AT-029",
+        "AT-030",
+        "AT-041"
+      ],
+      "sourceIds": [
+        "MAN-KORAIL",
+        "MAN-MEDICAL",
+        "MAN-SOP",
+        "TECH-TAPAAL"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP01",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "production-schema-bundle",
+            "rule-registry"
+          ]
+        }
+      ],
+      "outputs": [
+        "operational-kernel",
+        "invariant-test-results"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP03",
+      "title": "맵·자료·자산",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 06, 12, 13, 17",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-014",
+        "REQ-016",
+        "REQ-017",
+        "REQ-018",
+        "REQ-020",
+        "REQ-050",
+        "REQ-062",
+        "REQ-063",
+        "REQ-064"
+      ],
+      "testIds": [
+        "AT-014",
+        "AT-016",
+        "AT-017",
+        "AT-018",
+        "AT-020",
+        "AT-050",
+        "AT-062",
+        "AT-063",
+        "AT-064"
+      ],
+      "sourceIds": [
+        "AST-ANIM",
+        "AST-SYNTY",
+        "MAT-BIPA-BUSAN3",
+        "MAT-KTX-I",
+        "STD-DTC",
+        "STD-SOSA",
+        "TECH-MAPANYTHING",
+        "TECH-UNITY-FBX",
+        "TECH-UNITY-LOAD"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP00",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "product-baseline.json",
+            "evaluation-plan.json"
+          ]
+        }
+      ],
+      "outputs": [
+        "world.manifest.json",
+        "asset-intake-receipts"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP04",
+      "title": "RTS·업무 UI",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 05, 07, 20",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-008",
+        "REQ-009",
+        "REQ-010",
+        "REQ-011",
+        "REQ-012",
+        "REQ-013",
+        "REQ-072"
+      ],
+      "testIds": [
+        "AT-008",
+        "AT-009",
+        "AT-010",
+        "AT-011",
+        "AT-012",
+        "AT-013",
+        "AT-072"
+      ],
+      "sourceIds": [
+        "GAME-EMERGENCY",
+        "GAME-RESCUEHQ"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP01",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "production-schema-bundle",
+            "rule-registry"
+          ]
+        },
+        {
+          "producer": "EP02",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "operational-kernel",
+            "invariant-test-results"
+          ]
+        },
+        {
+          "producer": "EP03",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "world.manifest.json",
+            "asset-intake-receipts"
+          ]
+        }
+      ],
+      "outputs": [
+        "operations-ui",
+        "interaction-test-results"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP05",
+      "title": "로그·분기·비교",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 10, 20",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-035",
+        "REQ-036",
+        "REQ-037",
+        "REQ-038",
+        "REQ-039",
+        "REQ-057",
+        "REQ-071"
+      ],
+      "testIds": [
+        "AT-035",
+        "AT-036",
+        "AT-037",
+        "AT-038",
+        "AT-039",
+        "AT-057",
+        "AT-071"
+      ],
+      "sourceIds": [],
+      "candidateInputs": [
+        {
+          "producer": "EP01",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "production-schema-bundle",
+            "rule-registry"
+          ]
+        },
+        {
+          "producer": "EP02",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "operational-kernel",
+            "invariant-test-results"
+          ]
+        }
+      ],
+      "outputs": [
+        "event-store",
+        "snapshot-branch-receipts",
+        "comparison-report"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP06",
+      "title": "튜토리얼·랜덤",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 04, 09, 17",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-002",
+        "REQ-003",
+        "REQ-004",
+        "REQ-005",
+        "REQ-006",
+        "REQ-007",
+        "REQ-065"
+      ],
+      "testIds": [
+        "AT-002",
+        "AT-003",
+        "AT-004",
+        "AT-005",
+        "AT-006",
+        "AT-007",
+        "AT-065"
+      ],
+      "sourceIds": [
+        "CASE-READY2026",
+        "CASE-YULHYEON",
+        "MAN-SOP"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP01",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "production-schema-bundle",
+            "rule-registry"
+          ]
+        },
+        {
+          "producer": "EP02",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "operational-kernel",
+            "invariant-test-results"
+          ]
+        },
+        {
+          "producer": "EP03",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "world.manifest.json",
+            "asset-intake-receipts"
+          ]
+        }
+      ],
+      "outputs": [
+        "tutorial-pack",
+        "random-generator",
+        "generation-report"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP07",
+      "title": "보행·교통·운영 검증",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 11",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-019",
+        "REQ-043",
+        "REQ-044",
+        "REQ-045"
+      ],
+      "testIds": [
+        "AT-019",
+        "AT-043",
+        "AT-044",
+        "AT-045"
+      ],
+      "sourceIds": [
+        "MAN-MEDICAL",
+        "TECH-JPS14",
+        "TECH-JUPED",
+        "TECH-PEDDATA",
+        "TECH-SUMO",
+        "TECH-SUMO-RAIL"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP02",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "operational-kernel",
+            "invariant-test-results"
+          ]
+        },
+        {
+          "producer": "EP03",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "world.manifest.json",
+            "asset-intake-receipts"
+          ]
+        }
+      ],
+      "outputs": [
+        "mobility-adapters",
+        "domain-validation-report"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP08",
+      "title": "위험장·대체모델·결합",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 11, 12, 16",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-042",
+        "REQ-046",
+        "REQ-047",
+        "REQ-048",
+        "REQ-049",
+        "REQ-068"
+      ],
+      "testIds": [
+        "AT-042",
+        "AT-046",
+        "AT-047",
+        "AT-048",
+        "AT-049",
+        "AT-068"
+      ],
+      "sourceIds": [
+        "STD-FMI",
+        "TECH-FDS",
+        "TECH-FDS-SCOPE",
+        "TECH-MAPANYTHING",
+        "TECH-PHYSICSNEMO",
+        "TECH-VV"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP03",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "world.manifest.json",
+            "asset-intake-receipts"
+          ]
+        },
+        {
+          "producer": "EP07",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "mobility-adapters",
+            "domain-validation-report"
+          ]
+        }
+      ],
+      "outputs": [
+        "hazard-adapter",
+        "surrogate-qualification",
+        "coupling-report"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP09",
+      "title": "AI 저작·대본",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 14",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-051",
+        "REQ-052",
+        "REQ-053",
+        "REQ-054",
+        "REQ-055",
+        "REQ-056",
+        "REQ-058",
+        "REQ-059"
+      ],
+      "testIds": [
+        "AT-051",
+        "AT-052",
+        "AT-053",
+        "AT-054",
+        "AT-055",
+        "AT-056",
+        "AT-058",
+        "AT-059"
+      ],
+      "sourceIds": [
+        "REF-MSEL"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP01",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "production-schema-bundle",
+            "rule-registry"
+          ]
+        },
+        {
+          "producer": "EP05",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "event-store",
+            "snapshot-branch-receipts",
+            "comparison-report"
+          ]
+        }
+      ],
+      "outputs": [
+        "authoring-assistant",
+        "script-bundle",
+        "grounding-report"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP10",
+      "title": "통합·사용자·검수",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 01, 16, 19, 20",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-001",
+        "REQ-040",
+        "REQ-067",
+        "REQ-069",
+        "REQ-070",
+        "REQ-074"
+      ],
+      "testIds": [
+        "AT-001",
+        "AT-040",
+        "AT-067",
+        "AT-069",
+        "AT-070",
+        "AT-074"
+      ],
+      "sourceIds": [
+        "REPO-222"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP04",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "operations-ui",
+            "interaction-test-results"
+          ]
+        },
+        {
+          "producer": "EP05",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "event-store",
+            "snapshot-branch-receipts",
+            "comparison-report"
+          ]
+        },
+        {
+          "producer": "EP06",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "tutorial-pack",
+            "random-generator",
+            "generation-report"
+          ]
+        },
+        {
+          "producer": "EP07",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "mobility-adapters",
+            "domain-validation-report"
+          ]
+        },
+        {
+          "producer": "EP08",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "hazard-adapter",
+            "surrogate-qualification",
+            "coupling-report"
+          ]
+        },
+        {
+          "producer": "EP09",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "authoring-assistant",
+            "script-bundle",
+            "grounding-report"
+          ]
+        }
+      ],
+      "outputs": [
+        "e2e-evidence",
+        "usability-results",
+        "field-review"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    },
+    {
+      "schemaVersion": "10.0.0",
+      "epicId": "EP11",
+      "title": "확장·배포",
+      "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+      "read": [
+        "START_HERE.md",
+        "PRD.md section(s) 06, 16, 18",
+        "contracts/requirements.json filtered by epicId"
+      ],
+      "requirementIds": [
+        "REQ-015",
+        "REQ-075",
+        "REQ-076"
+      ],
+      "testIds": [
+        "AT-015",
+        "AT-075",
+        "AT-076"
+      ],
+      "sourceIds": [
+        "STD-DTC"
+      ],
+      "candidateInputs": [
+        {
+          "producer": "EP10",
+          "producerPhase": "accept",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "e2e-evidence",
+            "usability-results",
+            "field-review"
+          ]
+        }
+      ],
+      "outputs": [
+        "release-passport",
+        "expanded-coverage",
+        "regression-index"
+      ],
+      "outputStatus": "NOT_PRODUCED",
+      "prepare": "읽기·설계·실제 입력 공백·기존 경로/활성 claim 확인. 제품 실행을 한 것으로 기록하지 않는다.",
+      "candidate": "해당 단계 입력·쓰기 경계를 실제 코드 기준선에 결속하고 구현/시험한다. mock·fixture는 명시한다.",
+      "accept": "필수 산출물의 원시 결과·입력/출력 hash·미실행·검수 주체·적용영역을 반환한다.",
+      "stopConditions": [
+        "unresolved write/claim conflict",
+        "required input unavailable for selected phase",
+        "source or domain qualification missing for claimed use",
+        "repeated failure exceeds bounded retry budget"
+      ],
+      "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+      "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+      "notRun": [
+        "Unity product",
+        "physics domain tests",
+        "institutional approval"
+      ]
+    }
+  ]
+}

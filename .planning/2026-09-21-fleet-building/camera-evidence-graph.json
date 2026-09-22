@@ -1,0 +1,309 @@
+{
+  "schema": "chooguard.camera-evidence-graph.v1",
+  "createdLocalDate": "2026-09-21",
+  "scope": "Read-only JWE3 camera/focus benchmark for user review before implementation",
+  "implementationStatus": "NOT_AUTHORIZED_NOT_STARTED",
+  "reviewSequence": [
+    "Jev independent evidence/contract review",
+    "user approval of the concrete interaction proposal",
+    "implementation only after approval"
+  ],
+  "sourceBudget": {
+    "newPrimaryPagesOpened": 1,
+    "maximumAllowed": 5,
+    "newPrimaryPage": "https://www.jurassicworldevolution.com/en-US/3/gallery/video/feature-focus-building-your-parks"
+  },
+  "sources": [
+    {
+      "id": "JWE3_CONTROLS",
+      "authority": "primary_official",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/controls-keyboard-shortcuts",
+      "cachedText": "asset-library/research-public/2026-09-21/jwe-official/controls-keyboard-shortcuts.txt",
+      "cachedMetadata": "asset-library/research-public/2026-09-21/jwe-official/controls-keyboard-shortcuts.metadata.json",
+      "retrievedUtc": "2026-09-21T03:08:41.658107+00:00",
+      "sourceSha256": "edebb5c10a77aeb038de08d9fc646f8ef480f2a6875022a7a197058c8d172cbd",
+      "sections": [
+        {
+          "name": "Mouse and Keyboard / Common",
+          "cachedLines": "106-110",
+          "evidence": "Controls can be remapped; Open options menu / cancel is Esc."
+        },
+        {
+          "name": "Mouse and Keyboard / Camera",
+          "cachedLines": "123-139",
+          "evidence": "A/D left-right, W/S forward-backward, Page Up/Page Down zoom in-out, Q/E rotate left-right in Standard view."
+        },
+        {
+          "name": "Mouse and Keyboard / Shortcuts",
+          "cachedLines": "157-164",
+          "evidence": "R/T/Y select nearest response, paleo-medical, and maintenance facilities; Tab is Follow Notification."
+        },
+        {
+          "name": "Controller overview",
+          "cachedLines": "92-103",
+          "evidence": "The official diagram labels Move Camera, Zoom In, Zoom Out, Back, and Orbit Camera; live HTML associates left stick with Move Camera and right stick with Orbit Camera. This is controller evidence, not a PC mouse-button binding."
+        }
+      ]
+    },
+    {
+      "id": "JWE3_CONSTRUCTION",
+      "authority": "primary_official",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/construction-guide",
+      "cachedText": "asset-library/research-public/2026-09-21/jwe-official/build-guides/construction-guide/visible.txt",
+      "cachedReceipt": "asset-library/research-public/2026-09-21/jwe-official/build-guides/construction-guide/receipt.json",
+      "retrievedLocal": "2026-09-21T12:09:42+09:00",
+      "sourceSha256": "3c8be0aa9915bcc22f3d30a6ff31dafe0a6bd6e0711f606cfe762caebc44d357",
+      "sections": [
+        {
+          "name": "Advanced Tools",
+          "cachedLines": "80-81",
+          "evidence": "Advanced Move and Rotation precisely place scenery by choosing a transform axis and snap value.",
+          "limit": "This concerns object placement, not free-camera mouse controls, focus animation, or follow interruption."
+        }
+      ]
+    },
+    {
+      "id": "JWE3_VEHICLES",
+      "authority": "primary_official",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/vehicles-guide",
+      "cachedText": "asset-library/research-public/2026-09-21/jwe-official/vehicles-guide.txt",
+      "sections": [
+        {
+          "name": "Vehicles",
+          "cachedLines": "18-24",
+          "evidence": "While directly controlling a vehicle, the player can back out to the normal camera view.",
+          "limit": "This supports an explicit exit concept but does not define management-camera vehicle follow behavior or its binding."
+        }
+      ]
+    },
+    {
+      "id": "JWE3_BUILDING_VIDEO",
+      "authority": "primary_official_published_footage",
+      "officialPageUrl": "https://www.jurassicworldevolution.com/en-US/3/gallery/video/feature-focus-building-your-parks",
+      "youtubeUrl": "https://www.youtube.com/watch?v=biTAmzkPYd4",
+      "title": "Jurassic World Evolution 3 | Building Your Parks | Feature Focus",
+      "publisher": "Jurassic World Evolution 3",
+      "inspection": {
+        "method": "Downloaded the official embedded publication at its lowest MP4 rendition and inspected extracted frames; this is footage inspection, not metadata-only inference.",
+        "toolSurface": "shell CLI yt-dlp 2026.03.17; ffprobe/ffmpeg 8.1; Codex view_image for contact-sheet inspection",
+        "receipt": "asset-library/research-public/2026-09-21/camera-reference/receipt.json",
+        "scratchVideo": {
+          "path": "/tmp/jwe-camera.b73Rtk/video.mp4",
+          "sha256": "d0ced883f5522ee41b3c86499d2b36cb734e80ebc746ae439809672360d1c38f",
+          "sizeBytes": 1591579,
+          "lifecycle": "temporary; durable representative frames and receipt are stored in asset-library"
+        },
+        "durationSeconds": 102.957279,
+        "durableRepresentativeFrames": [
+          {
+            "timestampSeconds": 54,
+            "path": "asset-library/research-public/2026-09-21/camera-reference/jwe3-building-feature-focus-54s-gameplay-ui.jpg",
+            "sha256": "4d3a922e6ff93004e19653498e5d85a64d8b9bed00991ffef07cf849cb898b58"
+          },
+          {
+            "timestampSeconds": 66,
+            "path": "asset-library/research-public/2026-09-21/camera-reference/jwe3-building-feature-focus-66s-gameplay-ui.jpg",
+            "sha256": "7112cadbf73c2e569a566af816557c6200c71d0aeb46577b78833fd251dbbfcb"
+          }
+        ],
+        "observedRangesSeconds": [
+          "0-40: cinematic park establishing views",
+          "50-74: in-game UI and world views during building/customization",
+          "80-86: wide and ground-level park presentation"
+        ],
+        "observed": [
+          "Published footage repeatedly uses perspective depth and oblique framing across near and wide views.",
+          "The in-game UI sequences show materially different view distances and target framings without an orthographic visual signature."
+        ],
+        "notEstablished": [
+          "Which mouse button caused any move, orbit, or zoom",
+          "Whether a transition was direct player input, scripted capture, or an edit",
+          "Exact focus duration, easing curve, acceleration, FOV, pitch, zoom bounds, follow rules, or cancellation rules",
+          "A universal gameplay projection mode; the preserved frames support a perspective visual reference only"
+        ]
+      }
+    }
+  ],
+  "verifiedBindings": [
+    {
+      "action": "pan_left_right_forward_backward",
+      "binding": "A/D/W/S",
+      "status": "directly_supported",
+      "source": "JWE3_CONTROLS Camera lines 123-131"
+    },
+    {
+      "action": "zoom_in_out",
+      "binding": "Page Up/Page Down",
+      "status": "directly_supported",
+      "source": "JWE3_CONTROLS Camera lines 132-135"
+    },
+    {
+      "action": "rotate_left_right_standard_view",
+      "binding": "Q/E",
+      "status": "directly_supported",
+      "source": "JWE3_CONTROLS Camera lines 136-139"
+    },
+    {
+      "action": "cancel_or_open_options",
+      "binding": "Escape",
+      "status": "directly_supported_but_context_overloaded",
+      "source": "JWE3_CONTROLS Common lines 108-110"
+    },
+    {
+      "action": "follow_notification",
+      "binding": "Tab",
+      "status": "directly_supported_for_notification_only",
+      "source": "JWE3_CONTROLS Shortcuts lines 163-164",
+      "limit": "It does not establish vehicle follow or how follow stops."
+    }
+  ],
+  "unverifiedJwe3Behavior": [
+    "Exact PC mouse mapping for pan, orbit/rotate, and wheel zoom",
+    "Whether keyboard or mouse movement interrupts target follow",
+    "Whether zoom and rotation remain available while following",
+    "Whether Escape exits follow before other world cancellation",
+    "Focus/follow interpolation duration, damping, easing, acceleration, dead zones, and target lead",
+    "Numeric FOV, pitch, yaw, zoom limits, focus distance, and near/far clipping",
+    "Whether footage camera moves are gameplay input, scripted capture, or edits"
+  ],
+  "currentCode": [
+    {
+      "file": "Assets/ChooGuard/App/Mvp/MvpOpenWorldCamera.cs",
+      "sha256": "1eb9332475405ca371e6e3f3711638422999d36faa0b4add079db8cb480d6471",
+      "evidence": [
+        "Line 14 Focus(local, zoom) directly overwrites FocusLocal and Zoom and immediately calls Apply().",
+        "Lines 24-27 implement WASD plus arrow-key pan relative to yaw and Q/E yaw rotation.",
+        "Line 28 implements mouse-wheel zoom and middle-button drag pan.",
+        "Lines 37-43 force orthographic projection with a fixed 55-degree pitch and place the camera from the focus point."
+      ]
+    },
+    {
+      "file": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "sha256": "282835b0d69f82ad925a88e0d645fab9cb7e00facda5e8892e01f5808a89d3f3",
+      "evidence": [
+        "Line 84 FocusAgency snaps to an agency with zoom 100.",
+        "Line 85 FocusVehicle snaps to a vehicle with zoom 80."
+      ]
+    },
+    {
+      "file": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+      "sha256": "db898ec3c6635b6c49b9f1889eb9557913d673f138b6400287cf04e43652a6ef",
+      "evidence": [
+        "Line 18 toggles a private following team and calls FocusVehicle once on enable.",
+        "Lines 19-22 stop following only through other panel focus buttons.",
+        "Line 30 calls FocusVehicle(following) every Update while following."
+      ]
+    }
+  ],
+  "contradictionsAndDefects": [
+    {
+      "id": "C1_SNAP_FOCUS",
+      "severity": "high",
+      "finding": "Every agency/vehicle focus teleports the camera center and zoom because Focus immediately overwrites both state values and calls Apply.",
+      "userImpact": "The focus action reads as a snap rather than a navigable camera transition."
+    },
+    {
+      "id": "C2_LOCKED_FOLLOW_ZOOM_AND_PAN",
+      "severity": "critical",
+      "finding": "During follow, Update calls FocusVehicle every frame with zoom 80. Mouse wheel, WASD, and middle-drag changes made later in the frame are overwritten on the next Update.",
+      "userImpact": "Zoom and pan appear locked or spring back while tracking a vehicle."
+    },
+    {
+      "id": "C3_NO_GENERAL_FOLLOW_CANCEL",
+      "severity": "high",
+      "finding": "Follow is private view state. It stops only when the same Vehicle Tracking button is toggled or another dispatch-panel location button clears it. Escape and direct navigation do not clear it.",
+      "userImpact": "Users cannot predictably leave tracking from the world view."
+    },
+    {
+      "id": "C4_PROJECTION_REFERENCE_MISMATCH",
+      "severity": "medium",
+      "finding": "Current code forces an orthographic camera. Official published footage shows perspective depth in both cinematic and in-game UI views.",
+      "limit": "The footage supports perspective as a visual reference but does not provide an exact FOV or prove one universal gameplay camera mode."
+    },
+    {
+      "id": "C5_PARTIAL_OFFICIAL_KEYBOARD_CONTRACT",
+      "severity": "medium",
+      "finding": "Current code implements WASD and Q/E but omits the officially listed Page Up/Page Down zoom bindings. Mouse wheel zoom is present as a project-specific extension."
+    }
+  ],
+  "concreteUserReviewableProposal": {
+    "status": "SUPERSEDED_DO_NOT_IMPLEMENT",
+    "sourceBackedCore": [
+      "WASD pans relative to current yaw.",
+      "Q/E rotates left/right.",
+      "Page Up/Page Down zooms in/out.",
+      "Escape is available as contextual cancel only after modal/text-edit priority is respected."
+    ],
+    "projectSpecificMouseChoices": [
+      {
+        "action": "pan",
+        "proposedBinding": "hold middle mouse and drag",
+        "reason": "Preserves the current working input and avoids the existing right-click world-order action.",
+        "jwe3Status": "unverified"
+      },
+      {
+        "action": "orbit_rotate",
+        "proposedBinding": "hold right mouse and drag beyond the existing click threshold; a short right click remains the world-order action",
+        "reason": "Adds direct mouse orbit without removing the current right-click command, but needs interaction testing for accidental orders.",
+        "jwe3Status": "unverified"
+      },
+      {
+        "action": "zoom",
+        "proposedBinding": "mouse wheel plus Page Up/Page Down",
+        "reason": "Keeps the existing wheel behavior while adding the verified official keyboard pair.",
+        "jwe3Status": "mouse wheel unverified; keyboard verified"
+      }
+    ],
+    "focus": {
+      "proposal": "Move the focus center with a 0.45-second ease-out transition. Preserve the user's current yaw, pitch, and zoom by default. A named preset may supply a target zoom only on the initial focus action, never every frame.",
+      "candidateCurve": "easeOutCubic",
+      "jwe3Status": "timing and easing unverified",
+      "acceptanceExample": "Selecting an agency visibly travels to it; wheel zoom during or after arrival remains at the user's chosen value."
+    },
+    "follow": {
+      "proposal": "Follow owns only the moving focus center. Zoom, yaw, and pitch remain user-owned. Smooth the center toward the vehicle without calling the one-shot Focus preset each frame.",
+      "candidatePositionHalfLifeSeconds": 0.18,
+      "jwe3Status": "smoothing and half-life unverified",
+      "acceptanceExample": "While a vehicle moves, wheel/Page Up/Page Down changes distance and Q/E or mouse orbit changes angle without breaking follow or snapping back."
+    },
+    "followStop": {
+      "proposal": [
+        "Escape stops follow when no modal or text edit has higher priority.",
+        "WASD or middle-drag pan stops follow because it expresses intent to leave the target.",
+        "Clicking the active Vehicle Tracking button stops follow.",
+        "Focusing another agency, vehicle, incident, building, or floor stops/replaces follow.",
+        "Zoom and orbit do not stop follow."
+      ],
+      "jwe3Status": "interruption policy unverified",
+      "acceptanceExample": "After Escape or manual pan, the camera stays where the user leaves it and no longer re-centers on the vehicle."
+    },
+    "projectionGate": {
+      "proposal": "Adopt perspective presentation as the JWE3-aligned direction; begin review with a 45-degree vertical FOV candidate and retain existing pitch/yaw as a tuning baseline.",
+      "jwe3Status": "perspective appearance observed; numeric FOV and angle unverified",
+      "approvalQuestion": "Approve perspective conversion now, or approve the snap/follow/input fix first while keeping orthographic projection for a separate visual review?"
+    },
+    "approvalQuestions": [
+      "Approve the proposed mouse split: middle-drag pan, right-drag orbit, short right-click world order?",
+      "Approve manual pan and Escape as follow-stop actions while zoom/orbit continue following?",
+      "Approve 0.45-second focus ease-out and 0.18-second follow half-life as initial tuning values?",
+      "Approve perspective conversion in the same implementation increment, or defer it to a separately reviewed visual increment?"
+    ]
+  },
+  "acceptanceRubricAfterApproval": [
+    "Verified inputs: WASD pan, Q/E rotate, Page Up/Page Down zoom, mouse wheel zoom, middle-drag pan, approved mouse orbit mapping.",
+    "One-shot agency/vehicle focus does not teleport and does not repeatedly overwrite zoom.",
+    "Vehicle follow keeps the target centered while allowing continuous zoom and orbit.",
+    "Escape and manual pan stop follow under the approved input-context priority.",
+    "No right-click order is emitted by an orbit drag beyond the threshold.",
+    "Unity runtime observation is required; compilation alone is not acceptance."
+  ],
+  "rootVisualReview": {
+    "status": "inspected",
+    "framesSeconds": [
+      54,
+      66
+    ],
+    "finding": "Root inspectedactualpublishedin-gameUI frames;depth/perspectiveappearance supported. Mousemapping/FOV/timing/followrules notproven."
+  },
+  "userApproval": "NOT_APPROVED; priorquestion/proposalwithdrawn afteruserclarified mouse-first cursoranchoredzoom+click."
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "chooguard.progression-plan.v1",
+  "status": "ROOT_DECISION_READY_FOR_IMPLEMENTATION",
+  "story": "CS-EXEC.01.01",
+  "basis": [
+    "causal-graph-research.json",
+    "xhigh planner inspected actual RuleExpression, controller and worker seams; compact findings integrated by root",
+    "jev-progression-graph-plan-048.result.json: typed_event_stategraph/separate_completion/bounded_onset_or_advice/process_and_model_observation"
+  ],
+  "scope": "One executable JSON progression graph for existing agency tasks; per-operation cursor + incident evidence; Korean player-facing graph. Preserve approved automatic workflow. No framework install, fake causal effect, new mandatory tactical decision or full-world acceptance.",
+  "runtime": {
+    "reuse": "Contracts.RuleExpression/RuleFacts; TRUE only; UNKNOWN/CONFLICTED nonexecuting with reason",
+    "file": "Assets/ChooGuard/Art/Progression/response-flow.json",
+    "schema": "graph id/version; nodes{id,label}; edges{id,from,to,event,priority,allFacts[],notFacts[],effect,label,prediction,reason}; optional richer closed AST. Stable sorted priority thenID. Validate IDs/effect whitelist/references/bounds. Hash loaded bytes.",
+    "examples": [
+      {
+        "id": "evac-already-resolved",
+        "from": "onsite",
+        "to": "returning",
+        "event": "result",
+        "allFacts": [
+          "evacuation-task",
+          "all-evacuated"
+        ],
+        "effect": "return",
+        "label": "대피 완료 확인 후 복귀"
+      },
+      {
+        "id": "medical-ack",
+        "from": "medical-work",
+        "to": "medical-confirmation",
+        "event": "result",
+        "allFacts": [
+          "own-medical-ack"
+        ],
+        "effect": "handoff-pending",
+        "label": "의료 요청 접수 · 종료 확인 대기"
+      },
+      {
+        "id": "evac-outcome",
+        "from": "awaiting-evacuation",
+        "to": "returning",
+        "event": "result",
+        "allFacts": [
+          "all-evacuated"
+        ],
+        "effect": "return",
+        "label": "대피 결과 확인 후 복귀"
+      }
+    ],
+    "integration": "Graph evaluator ACTUALLY selects high-level branches formerly in ObserveAcceptedResult; physical motion, leases, EnqueueOperation, own-ACK validation remain action primitives. PeroperationState prevents serializing allteams. Record choice accepted/canceled, graph edge decisions, ACK observations, observed model deltas. Graph unavailable fails closed visibly, no hidden hardcoded successful fallback.",
+    "evidence": "runId/generation/requestId/releaseRevision/opId/simTime + graphHash; monotonic traceSequence. Reset on run reset. Deduplicate unchanged snapshots/edges. Only observed changes recorded, not every frame. Calculation failure separate unavailable event; historical metrics not current success. No exact midrun replay/fork claim.",
+    "uiContract": {
+      "component": "ChooGuard.App.Mvp.MvpProgressionGraph on same Workspace GameObject",
+      "fields": "public TextAsset GraphAsset; public bool Ready; public string GraphHash,StatusReason; public int Revision; public ViewSnapshot Snapshot(string operationId=null)",
+      "dto": "Public nested serializable classes: ViewSnapshot{string Title,CurrentNodeId,Status;NodeView[] Nodes;EdgeView[] Edges;TraceView[] Recent}; NodeView{string Id,Label,State,Detail}; EdgeView{string Id,From,To,Label,Reason,Prediction,Truth;bool Enabled,Taken}; TraceView{long Sequence;float SimTime;string OperationId,From,To,Label,Observed,Expected,ClaimClass}. Coordinate layout may be view-owned; methods/properties with getters acceptable. Runtime owner owns allDTOs."
+    }
+  },
+  "ownership": {
+    "runtime_maker": "AstraLOW: new MvpProgressionGraph.cs plus own DTO/internal files; response-flow.json; Controller,TeamTaskController,TrainingDirector graph hooks; new Editor/MvpProgressionGraphBinder.cs. Do not edit camera/building/UI files. TellUIowner whenDTOsready.",
+    "view_maker": "AstraLOW: new MvpProgressionGraphView.cs; minimal MvpAgencyDispatchView.cs addition of 운영 흐름 toggle/view component. Consume fixedDTO contract; do not edit runtime/controllers/camera/builders. Pure read view, no direct physical mutation.",
+    "root": "Serial officialUnity bind/probe; source decision/Jev review; canonicalgraph/progress. No nativecalls byworkers."
+  },
+  "view": "Korean 운영 흐름 drawer/overlay: graph nodes+connectingedges from actualruntimeprojection, selectedteam status, selectable edge/card details showing 예상 영향 vs 관찰 결과 + why nextstep available/waiting. No raw guard/ACK/hash/nodeeditor jargon inplay. CanvasTextonly, no world text. Preserveclicktarget/camera capture. No mandatorymicromanagement decisions.",
+  "nativeAcceptance": [
+    "Actual 3job lifecycle current proof baseline retained; after graphmigration focused actuallivewarn→evac→ownresult→return and medicalcompletion scope",
+    "GraphAsset hash+valid nodes/edges, deterministicsamefacts sameedge, unknownmissing facts disables; use existing evaluator not mirrored unit suite",
+    "Trace links actualoperation/run/request IDs and claimed outcome to actualworker; medical never auto completes from allEvacuated; pause/reset respected",
+    "Graph view shows realcurrentnode/outgoingbranches/observations and hides with no worldtext; camera funcs/settings preserved"
+  ],
+  "realtime": "Preference question pending. Baseline authoring/review viaJevis implementeddecision now. Optional runtime ranks only eligibleIDs with3sdeadline0retries,staledigestreject,recordadvisory. Currentworker cannot change scenario midrun; only bounded onset-now/observe or advice canbe offered. No clientembeddedkey, no silentphysics/medical mutation. Do not buildunapprovedliveLLMdirector inthisslice.",
+  "supersededPublicUi": "REJECTED_AND_REMOVED_BY_USER_CORRECTION",
+  "currentAuthority": "docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md",
+  "currentImplementation": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-production-benchmark-oss-kernel.json"
+}

@@ -1,0 +1,1 @@
+Directly supported: native 61x41 nodes span 30x20m; ReferenceLocal maps FDS XY to Unity XZ. Workspace Font is TMP_FontAsset and canvas may be rebuilt. URP Unlit exposes _BaseMap/_Surface/_SrcBlend/_DstBlend/_ZWrite/_Cull.

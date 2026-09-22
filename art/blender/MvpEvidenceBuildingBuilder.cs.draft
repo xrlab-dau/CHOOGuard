@@ -1,0 +1,56 @@
+// DRAFT: promote only after root review and FBX import validation. Never rebuilds the station.
+using System;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+namespace ChooGuard.Editor
+{
+ public static class MvpEvidenceBuildingBuilder
+ {
+  const string Folder="Assets/ChooGuard/Art/RestoredFacilities/";
+  const string DepotRoot="Evidence restored fire facilities";
+  const string StationRoot="Evidence restored station facade";
+  public static bool ReplacementAvailable(string osmId)
+  {
+   string name=osmId=="825455699"?"Central119Restored":osmId=="825456385"?"Choryang119Restored":null;
+   var asset=name==null?null:AssetDatabase.LoadAssetAtPath<GameObject>(Folder+name+".fbx");
+   return asset!=null&&asset.GetComponentsInChildren<MeshFilter>(true).Any(x=>x.sharedMesh!=null&&x.sharedMesh.vertexCount>0);
+  }
+  // Call after city generic geometry has been regenerated with ReplacementAvailable exclusions.
+  // The root owns that serial step and scene saving. No whole-station teardown or floor edits.
+  public static void ApplyExisting(Transform station, bool genericDepotGeometryExcluded)
+  {
+   if(station==null)throw new ArgumentNullException(nameof(station));
+   if(!genericDepotGeometryExcluded)throw new InvalidOperationException("Regenerate city with replacement-aware depot exclusions first.");
+   var envelope=station.Find("전체 역사 외관");
+   if(envelope==null)throw new InvalidOperationException("Existing station envelope is required.");
+   string[] names={"Central119Restored","Choryang119Restored","BusanStationRestored"};
+   var assets=names.Select(n=>AssetDatabase.LoadAssetAtPath<GameObject>(Folder+n+".fbx")).ToArray();
+   if(assets.Any(a=>a==null))throw new InvalidOperationException("All three reviewed FBX assets must be imported before replacement.");
+   var staged=new GameObject(DepotRoot+" staging");staged.transform.SetParent(station,false);staged.SetActive(false);
+   var facade=UnityEngine.Object.Instantiate(assets[2],envelope,false);facade.name=StationRoot+" staging";facade.SetActive(false);
+   try
+   {
+    for(int i=0;i<2;i++)
+    {
+     var obj=UnityEngine.Object.Instantiate(assets[i],staged.transform,false);obj.name=names[i];obj.transform.localPosition=Vector3.zero;obj.transform.localRotation=Quaternion.identity;obj.transform.localScale=Vector3.one;
+     // FBX contains absolute source east/north coordinates. Only terrain datum is added.
+     var meshes=obj.GetComponentsInChildren<MeshFilter>(true);float datum=float.NegativeInfinity;
+     foreach(var filter in meshes)foreach(var v in filter.sharedMesh.vertices)
+     {var p=station.InverseTransformPoint(filter.transform.TransformPoint(v));datum=Mathf.Max(datum,MvpWorldSurfaceBuilder.Height(p.x,p.z));}
+     if(float.IsNaN(datum)||float.IsInfinity(datum))throw new InvalidOperationException("Invalid depot terrain datum.");
+     obj.transform.localPosition=Vector3.up*datum;
+    }
+    facade.transform.localPosition=Vector3.zero;facade.transform.localRotation=Quaternion.identity;facade.transform.localScale=Vector3.one;
+    Layer(staged.transform);Layer(facade.transform);
+    var old=station.Find(DepotRoot);if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);
+    // Exact owned facade roots only; keep envelope object, floors, cameras, teams and anchors.
+    foreach(string oldName in new[]{StationRoot,"부산역 곡면 유리 역사"})
+    {var previous=envelope.Find(oldName);if(previous!=null)UnityEngine.Object.DestroyImmediate(previous.gameObject);}
+    staged.name=DepotRoot;facade.name=StationRoot;staged.SetActive(true);facade.SetActive(true);
+   }
+   catch {UnityEngine.Object.DestroyImmediate(staged);UnityEngine.Object.DestroyImmediate(facade);throw;}
+  }
+  static void Layer(Transform root){root.gameObject.layer=29;foreach(Transform child in root)Layer(child);}
+ }
+}

@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CHOOGuard Bootstrap baseline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["editorVersion", "packageLockSha256", "renderPipeline", "backend", "os", "nativePlugins", "buildReceiptRef"],
+  "properties": {
+    "editorVersion": {"const": "6000.3.23f1"},
+    "packageLockSha256": {"$ref": "#/$defs/sha256"},
+    "renderPipeline": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "packageVersion", "assetPath", "assetSha256"],
+      "properties": {
+        "name": {"const": "URP"}, "packageVersion": {"const": "17.3.0"},
+        "assetPath": {"const": "Assets/ChooGuard/Settings/BootstrapURP.asset"},
+        "assetSha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "backend": {
+      "type": "object", "additionalProperties": false,
+      "required": ["target", "architecture", "scriptingBackend", "development"],
+      "properties": {
+        "target": {"const": "StandaloneWindows64"}, "architecture": {"const": "x86_64"},
+        "scriptingBackend": {"const": "Mono"}, "development": {"const": true}
+      }
+    },
+    "os": {"$ref": "#/$defs/host"},
+    "nativePlugins": {"type": "array", "maxItems": 0, "items": {"$ref": "#/$defs/fileHash"}},
+    "buildReceiptRef": {"$ref": "#/$defs/fileHash"}
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "text": {"type": "string", "minLength": 1},
+    "fileHash": {
+      "type": "object", "additionalProperties": false, "required": ["path", "sha256"],
+      "properties": {"path": {"$ref": "#/$defs/text"}, "sha256": {"$ref": "#/$defs/sha256"}}
+    },
+    "host": {
+      "type": "object", "additionalProperties": false, "required": ["name", "version", "architecture"],
+      "properties": {"name": {"$ref": "#/$defs/text"}, "version": {"$ref": "#/$defs/text"}, "architecture": {"$ref": "#/$defs/text"}}
+    },
+    "receipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["schemaVersion", "storyId", "runId", "sourceTreeDigest", "editorVersion", "packageLockSha256", "host", "requestedTarget", "buildStatus", "runStatus", "reason", "outputs"],
+      "properties": {
+        "schemaVersion": {"const": 1}, "storyId": {"const": "CS-BOOT.01.01"},
+        "runId": {"type": "string", "pattern": "^[0-9]{8}T[0-9]{13}Z-[0-9a-f]{6}$"},
+        "sourceTreeDigest": {"$ref": "#/$defs/sha256"}, "editorVersion": {"const": "6000.3.23f1"},
+        "packageLockSha256": {"$ref": "#/$defs/sha256"}, "host": {"$ref": "#/$defs/host"},
+        "requestedTarget": {"enum": ["StandaloneWindows64", "StandaloneOSX"]},
+        "buildStatus": {"enum": ["NOT_RUN", "SUCCEEDED", "FAILED"]},
+        "runStatus": {"enum": ["NOT_RUN", "SUCCEEDED", "FAILED"]},
+        "reason": {"$ref": "#/$defs/text"},
+        "outputs": {"type": "array", "items": {"$ref": "#/$defs/fileHash"}}
+      },
+      "allOf": [
+        {"if": {"properties": {"buildStatus": {"const": "NOT_RUN"}}}, "then": {"properties": {"runStatus": {"const": "NOT_RUN"}, "outputs": {"maxItems": 0}}}},
+        {"if": {"properties": {"runStatus": {"const": "SUCCEEDED"}}}, "then": {"properties": {"buildStatus": {"const": "SUCCEEDED"}}}}
+      ]
+    }
+  }
+}

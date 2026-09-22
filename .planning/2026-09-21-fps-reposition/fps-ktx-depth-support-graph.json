@@ -1,0 +1,55 @@
+{
+  "schema": "chooguard.ktx-opaque-depth.v1",
+  "status": "PUBLISHED_NATIVE_SHADER_AND_TARGETED_VISUAL_CHECKED",
+  "files": [
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/ktx-render/KtxOpaqueTexelDepth.shader",
+      "target": "Assets/ChooGuard/Shaders/Fps/KtxOpaqueTexelDepth.shader",
+      "sha256": "e3d67b81e65e8f27d5ee661854c3a6aeb873dc7eb27379a7a7a28d2506e96bf1"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/ktx-render/KtxOpaqueTexelDepthSupport.cs",
+      "target": "Assets/ChooGuard/Editor/KtxOpaqueTexelDepthSupport.cs",
+      "sha256": "1933c25389dbfd65800aa7ecb1692b4726bf8946dffe643701a2cfdd36753997"
+    }
+  ],
+  "evidence": [
+    ".planning/2026-09-21-fps-reposition/scene-drafts/ktx-render/source-uv-depth-evidence.json",
+    "Assets/ChooGuard/Art/Fps/KTX/Materials/BVE_14928114ecb0.mat (queue3000,ZWrite0,BaseColor alpha1)",
+    "Assets/.planning/2026-09-21-fps-reposition/ktx-boarding-entry-corrected-native.png"
+  ],
+  "findings": {
+    "actualUV": "Coach2 source blend UV centroid texture samples include thousands of alpha1 pixels assigned to transparent material; exact source UV/material mapping preserved",
+    "coincidentSourceFaces": 64,
+    "coincidentInterpretation": "Source coordinate-identical faces exist (including possible deliberate two-sided faces); no arbitrary duplicate deletion performed. Native full source triangle-order diagnosis still requires render comparison.",
+    "causeConfidence": "Confirmed no-depth-write contract for fully opaque portions within blended geometry; strongly consistent with visible self-ordering, not proof every visual defect has this cause"
+  },
+  "fix": "Separate shared-mesh depth-only children in opaquequeue2499, ColorMask0,ZWriteOn; discard sampled source alpha*factor below.99999. Original color pass/glass/fractionalalpha remains unchanged. Additive and uniformalpha<1 excluded.",
+  "scope": "KTXSource only; no importer/global pipeline/FBX/Metro/collider/source UV changes",
+  "repairEval": ".planning/2026-09-21-fps-reposition/scene-drafts/ktx-render/repair-eval.txt",
+  "idempotence": "Named depth children reused; same mesh/material support updated; no cumulative transforms. Collider count before/after must match.",
+  "validation": {
+    "sourceUV": "Blender readonly inspection completed",
+    "shaderCompile": "PASS shaderMessages0",
+    "nativeSceneRepair": "PASS249depthrenderers1670colliderspreserved",
+    "nativeVisualAcceptance": "TARGETED_PASS floor/seatsselfordering; completevisual/productacceptancepending"
+  },
+  "limits": [
+    "64coincident coordinate source faces remain; depth prepass does not remove source geometry",
+    "Fractionalglass-to-glass sorting remains normal renderer sorting; this only resolves opaque-texel depth ordering",
+    "Fullyopaque texels near filtered edges may fail threshold and retain original transparency behavior",
+    "Support adds render-only mesh draws, no colliders; performance needs native observation"
+  ],
+  "publication": {
+    "status": "PUBLISHED_NATIVE_COMPILE_PENDING",
+    "paths": [
+      "Assets/ChooGuard/Shaders/Fps/KtxOpaqueTexelDepth.shader",
+      "Assets/ChooGuard/Editor/KtxOpaqueTexelDepthSupport.cs"
+    ]
+  },
+  "nativeEvidence": [
+    "ktx-depth-repair-native.json",
+    "fps-depth-load-check.json",
+    "Assets/.planning/2026-09-21-fps-reposition/ktx-vestibule-depth-native.png"
+  ]
+}

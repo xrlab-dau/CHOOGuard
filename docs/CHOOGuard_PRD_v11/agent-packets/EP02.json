@@ -1,0 +1,110 @@
+{
+  "schemaVersion": "11.0.0",
+  "epicId": "EP02",
+  "title": "운영 커널·자원·통신",
+  "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+  "read": [
+    "START_HERE.md",
+    "PRD.md §07",
+    "PRD.md §11",
+    "contracts/requirements.json: REQ-021, REQ-022, REQ-023, REQ-024, REQ-025, REQ-026, REQ-027, REQ-028, REQ-029, REQ-030, REQ-041"
+  ],
+  "requirementIds": [
+    "REQ-021",
+    "REQ-022",
+    "REQ-023",
+    "REQ-024",
+    "REQ-025",
+    "REQ-026",
+    "REQ-027",
+    "REQ-028",
+    "REQ-029",
+    "REQ-030",
+    "REQ-041"
+  ],
+  "testIds": [
+    "AT-021",
+    "AT-022",
+    "AT-023",
+    "AT-024",
+    "AT-025",
+    "AT-026",
+    "AT-027",
+    "AT-028",
+    "AT-029",
+    "AT-030",
+    "AT-041"
+  ],
+  "sourceIds": [
+    "MAN-KORAIL",
+    "MAN-MEDICAL",
+    "MAN-SOP",
+    "TECH-TAPAAL"
+  ],
+  "candidateInputs": [
+    {
+      "producer": "EP01",
+      "producerPhase": "candidate",
+      "consumerPhase": "candidate",
+      "artifactGroup": [
+        "production-schema-bundle",
+        "rule-registry"
+      ]
+    }
+  ],
+  "outputs": [
+    "operational-kernel",
+    "invariant-test-results"
+  ],
+  "outputStatus": "PLANNED_NOT_VERIFIED_THIS_REVISION",
+  "prepare": "현재 기준과 배정 작업·lane만 읽고 필요한 입력/출처·쓰기 경계를 확인한다. 불필요한 매뉴얼 전체를 문맥에 넣지 않는다.",
+  "candidate": "필수 산출물의 생산 단계·실제 ref/hash/접근을 확인한 뒤 한정 구현·실행한다. fixture/mocked input을 명시하고 공통 코어를 재사용한다.",
+  "accept": "선택 lane의 실제 원시결과·버전·실패·미실행·검수권한·허용범위를 제출한다. 문서 검사를 제품 완료로 승격하지 않는다.",
+  "stopConditions": [
+    "unresolved write/claim conflict",
+    "required input unavailable for selected phase",
+    "source or domain qualification missing for claimed use",
+    "repeated failure exceeds bounded retry budget"
+  ],
+  "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+  "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+  "notRun": [
+    "Unity product",
+    "physics domain tests",
+    "institutional approval"
+  ],
+  "readScope": "Read the assigned task and chosen lane only. Not a new scheduler or source checkout.",
+  "critiqueIds": [
+    "C05"
+  ],
+  "lanes": {
+    "fixture": {
+      "inputPolicy": "Common candidate inputs may be explicitly labeled fixture contracts. No real-site or user value claim.",
+      "qualifiesOnly": [
+        "PIPELINE"
+      ],
+      "doesNotRequire": [
+        "customer interview completed",
+        "all physical domain reports",
+        "live synchronization",
+        "purchase contract"
+      ]
+    }
+  },
+  "returnFields": [
+    "epicId",
+    "lane",
+    "phase",
+    "branchAndCommit",
+    "changedPaths",
+    "inputRefsAndHashes",
+    "outputRefsAndHashes",
+    "testsRun",
+    "rawResults",
+    "notRun",
+    "failures",
+    "qualificationScope",
+    "nextConsumer",
+    "claimRelease"
+  ]
+}

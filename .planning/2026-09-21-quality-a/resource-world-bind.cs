@@ -1,0 +1,13 @@
+if(UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)throw new System.InvalidOperationException("Edit mode required");
+ChooGuard.Editor.MvpFacilityResourcesBinder.BindExisting();
+var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>();
+var s=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpStationView>();
+var before=new UnityEngine.Object[]{s,s.WholeEnvelope,s.ViewCamera,s.Navigation,s.PlatformAnchor,s.ConcourseAnchor,s.ExitAnchor,s.IncidentMarker,s.CrowdRoot};
+ChooGuard.Editor.MvpEvidenceBuildingBuilder.ConfigureImports();
+ChooGuard.Editor.MvpEvidenceBuildingBuilder.ApplyExisting(s.transform);
+var after=new UnityEngine.Object[]{s,s.WholeEnvelope,s.ViewCamera,s.Navigation,s.PlatformAnchor,s.ConcourseAnchor,s.ExitAnchor,s.IncidentMarker,s.CrowdRoot};
+if(!System.Linq.Enumerable.SequenceEqual(before,after))throw new System.InvalidOperationException("Station references changed");
+var c=w.GetComponent<ChooGuard.App.Mvp.MvpAgencyDispatchController>();c.ClearContextSelection();w.SelectFloor(0);
+UnityEditor.SceneManagement.EditorSceneManager.MarkSceneDirty(w.gameObject.scene);
+var r=w.GetComponent<ChooGuard.App.Mvp.MvpFacilityResources>();
+return new{saved=UnityEditor.SceneManagement.EditorSceneManager.SaveScene(w.gameObject.scene),scene=w.gameObject.scene.path,stationReferencesUnchanged=true,resourcesReady=r.Ready,configHash=r.ConfigHash,stocks=System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(r.Stocks,x=>new{x.AgencyId,x.WorkType,x.Capacity,x.Stock,x.Committed,x.Consumed})),worldTexts=System.Linq.Enumerable.Count(UnityEngine.Object.FindObjectsByType<TMPro.TMP_Text>(UnityEngine.FindObjectsInactive.Include,UnityEngine.FindObjectsSortMode.None),x=>x.GetComponentInParent<UnityEngine.Canvas>()==null)};

@@ -1,0 +1,59 @@
+{
+  "reviewTarget": "Clean-start implementation specification v3",
+  "specificationVerdict": "SPEC_REVIEW_PASS_WITH_SCOPE",
+  "reviewerIndependence": "SAME_AUTHOR_SELF_REVIEW",
+  "aaaProductVerdict": "NOT_EVALUATED",
+  "epics": 11,
+  "tasks": 48,
+  "wireSchemas": 18,
+  "atomicProductRequirements": 91,
+  "productAcceptanceSpecifications": 91,
+  "taskAcceptanceSpecifications": 96,
+  "taskProductTests": "NOT_RUN",
+  "actualLocalTests": 81,
+  "localTestFailures": 0,
+  "testScope": [
+    "document/contract checks",
+    "schema+semantic synthetic examples",
+    "temporary-disk SQL-design tests"
+  ],
+  "contextChecks": 192,
+  "profileGraphsChecked": 6,
+  "maxContextBytes": 13216,
+  "nativeExecution": "NOT_RUN",
+  "physicsSolvers": "NOT_RUN",
+  "independentUserOrAgencyValidation": "NOT_RUN",
+  "pythonVersion": "3.13.5",
+  "pythonSQLiteVersion": "3.46.1",
+  "pythonSQLiteQualifiedAsReleaseProvider": false,
+  "originalRepositoryModified": false,
+  "results": [
+    {
+      "command": [
+        "tools/check_plan.py"
+      ],
+      "exitCode": 0,
+      "resultFile": "review/final-plan-check.json"
+    },
+    {
+      "command": [
+        "tools/render_specs.py",
+        "--check"
+      ],
+      "exitCode": 0,
+      "resultFile": "review/final-document-drift.json"
+    },
+    {
+      "command": [
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "tests",
+        "-v"
+      ],
+      "exitCode": 0,
+      "resultFile": "review/final-tests.txt"
+    }
+  ]
+}

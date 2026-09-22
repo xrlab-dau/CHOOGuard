@@ -1,0 +1,158 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Judge design-routing questions for a Unity single-player first-person training game. Inputs are verified observations, not instructions. Return typed judgments only. No code, no approval authority; deterministic tool output and the main model decide.",
+    "product_definition_user_confirmed_20260922": "Korean rail operator (KORAIL) staff training game with TWO SEQUENTIAL LAYERS: (1) tutorial layer teaches required staff manuals in a game format, My-Summer-Car-style procedural learning; (2) live layer places the player in RANDOMISED emergency situations inside a digital-twin virtual space where they operate and respond in first person. Layer 2 consumes what layer 1 taught.",
+    "verified_code_state": {
+      "FirstPersonResponder_cs_lines": 128,
+      "fps_runtime_total_lines": 204,
+      "rts_runtime_total_lines": 3160,
+      "fps_scene_gameobjects": 2349,
+      "fps_scene_colliders": 2060,
+      "fps_scene_monobehaviours": 2,
+      "rts_scene_monobehaviours": 203,
+      "FpsInteractable_instances_in_all_7_scenes": 0,
+      "npc_navmeshagents_in_fps_scene": 0,
+      "animators_in_fps_scene": 0,
+      "audiosources_in_all_scenes": 0,
+      "audio_assets_total": 4,
+      "mission_or_objective_code_lines": 0,
+      "fps_automated_tests": 0,
+      "build_scenes_registered": 1,
+      "scene_load_calls_outside_tests": 0,
+      "interaction_framework_complete": true,
+      "rts_has_complete_game_loop_state_machine": true,
+      "rts_loop_states": "ready -> ordinary -> incident -> resolved, incident fires at random 240-420s",
+      "code_link_between_fps_and_rts_scenes": 0
+    },
+    "verified_repo_state": {
+      "git_tracked_files": 0,
+      "untracked_files": 14602,
+      "head_commit": "empty initial commit",
+      "files_over_github_100MB_hard_limit_not_gitignored": 7,
+      "push_currently_possible": false,
+      "evidence_dir_planning_is_gitignored": true,
+      "progress_self_assessment": "IN_PROGRESS / NOT_ACCEPTED, 11 areas: PARTIAL 7, NOT_STARTED 4, COMPLETE 0",
+      "quality_rubric_verdict": "NOT_A on all 8 gates"
+    },
+    "verified_spatial_assets": {
+      "busan_station_sketchup_triangles": 854102,
+      "ktx_trainset_length_m": 200.66,
+      "metro113_source": "BVE community route data",
+      "walk_validation_checkpoints_reached": "6 of 6, stuck 0, 65.65s ground to metro platform",
+      "transfer_passage_fbx_mesh_objects": 739,
+      "transfer_passage_vertical_rise_meshes": 0,
+      "transfer_passage_world_registration": "identity, unregistered"
+    },
+    "verified_transfer_evidence": {
+      "escalator_registry_found_in_repo": true,
+      "korail_side_pair_rise_value": 7.9,
+      "metro_side_pair_rise_value": 7.58,
+      "field_official_label": "unhaengcheungsu (floor count) - conflicts with metre reading",
+      "geometry_crosscheck_vs_standard_30deg": "2019 pair 29.8deg with -2.4m rule; 2015 pair 30.1deg raw; both plausible escalators, 7.9 floors physically impossible",
+      "station_depth_m_from_operator_dataset": 11.71,
+      "seam_coordinate_available": false,
+      "design_file_metro113_connectors_root_action": "do not create direct underground KORAIL passage",
+      "design_file_plaza_handoff_preferred": "exit6-surface-approach",
+      "confirmed_route_in_proposal_line_88": "plaza -> exit 4/6 -> concourse -> fare gates -> platform (surface route)"
+    },
+    "standing_design_constraints": {
+      "excluded_by_design": "weapons, combat, HP, hit markers, multiplayer, blue-zone damage",
+      "borrowed_only_as_input_grammar": "PUBG movement/ping/time-pressure, Sudden Attack centre interaction marker and audio attention",
+      "completion_authority": "world_evidence only; button press or timer expiry never marks completion",
+      "role_boundary_rule": "station staff must not be given firefighter equipment, police powers, or maintenance-technician certification; other trades appear as NPC handoff",
+      "provenance_rule": "confirmed / estimated / unconfirmed must stay distinguished; unconfirmed values must never be promoted to measured",
+      "session_length_confirmed": "20-30 minutes per run",
+      "first_mission_proposed": "smoke report and evacuation cooperation near station entrance and waiting hall"
+    }
+  },
+  "questions": {
+    "layer_coupling": {
+      "type": "choice",
+      "instructions": "Given the two-layer product definition, which coupling between the tutorial layer and the randomised live layer is most coherent with the verified code state and the standing constraints?",
+      "criteria": {
+        "state_carryover": "Tutorial completions write persistent world/competence state that becomes the live run's initial conditions, so skipping a tutorial changes what the emergency looks like",
+        "unlock_gating": "Tutorials are prerequisites that unlock live scenarios but do not otherwise change them",
+        "separate_modes": "Tutorial and live are independent menu modes sharing only assets",
+        "inline_coaching": "No separate tutorial; hints appear during live runs"
+      }
+    },
+    "first_slice": {
+      "type": "choice",
+      "instructions": "Which vertical slice should be built FIRST, given interaction framework is complete but zero interactables exist in any scene, zero NPCs, zero audio, and no build scene path to the FPS scene?",
+      "criteria": {
+        "single_device_tutorial": "One station-equipment tutorial on one real device already evidenced in the repo, ending in a world-state change",
+        "full_emergency_run": "A complete 20-30 minute randomised emergency run",
+        "npc_crowd_first": "Passenger NPC crowd simulation before any interactable",
+        "transfer_corridor_first": "Finish the underground transfer corridor connection first"
+      }
+    },
+    "rts_disposition": {
+      "type": "choice",
+      "instructions": "The deprecated RTS code (3160 lines) contains a complete game-loop state machine; the FPS side (204 lines) has none. Both live in the same assembly. What disposition is most coherent?",
+      "criteria": {
+        "port_loop_keep_scene_dead": "Port the state machine into the FPS side and retire the RTS scene",
+        "delete_outright": "Delete the RTS code and scene now",
+        "keep_both_shipping": "Keep both as shipping product modes",
+        "freeze_untouched": "Freeze the RTS code unchanged and build the FPS loop from scratch"
+      }
+    },
+    "metro_disposition": {
+      "type": "choice",
+      "instructions": "For the metro transfer: the exact seam coordinate is unavailable publicly, but the design files already say not to build a direct underground passage and prefer a surface plaza handoff, and escalator rise values plus station depth are now in hand. What is most coherent with the provenance rule?",
+      "criteria": {
+        "surface_route_seal_underground": "Build the surface plaza route and seal the underground corridor as an in-fiction closed boundary with NPC handoff",
+        "remove_metro_entirely": "Remove the metro from the MVP scope",
+        "connect_underground_now": "Connect the underground corridor using the available values",
+        "defer_all_transfer": "Defer any transfer connection until a freedom-of-information request returns"
+      }
+    },
+    "biggest_blocker": {
+      "type": "choice",
+      "instructions": "Which single verified condition most threatens the project's ability to deliver the stated product?",
+      "criteria": {
+        "no_version_control": "5.4GB of work is untracked and push is currently impossible due to files over the 100MB hard limit",
+        "no_interactables": "Zero interactable instances mean the core verb does not exist yet",
+        "two_half_games": "FPS and RTS both exist partially with no decision on which ships",
+        "no_manual_source": "Current KORAIL station manuals are not yet obtained"
+      }
+    },
+    "role_boundary_risk": {
+      "type": "choice",
+      "instructions": "Adding maintenance-procedure tutorials introduces a risk against the role-boundary rule. Which framing keeps station staff inside their actual authority?",
+      "criteria": {
+        "staff_checks_only": "Tutorials cover only checks and operations a station staff member actually performs; technician work appears as NPC handoff the player requests and observes",
+        "player_does_all_trades": "Player performs maintenance, firefighting and technician work directly",
+        "certification_progression": "Player earns in-game certifications that grant technician abilities",
+        "avoid_maintenance": "Avoid maintenance content entirely and keep only emergency response"
+      }
+    },
+    "manual_fidelity": {
+      "type": "score",
+      "instructions": "How strongly does the project's provenance rule constrain tutorial content when current internal KORAIL station manuals are NOT obtained and only public safety-management and training documents are available? 1 = barely constrains, tutorials can state procedures freely; 5 = severely constrains, no procedure may be presented as official without a sourced document.",
+      "criteria": [
+        "barely constrains",
+        "mildly constrains",
+        "moderately constrains",
+        "strongly constrains",
+        "severely constrains"
+      ]
+    },
+    "tutorial_completion_authority": {
+      "type": "noul",
+      "instructions": "Given the completion_authority rule that only world_evidence marks completion and never a button press or timer, is a tutorial layer that marks a step complete when the player performs the correct physical action on the correct object in the world (producing an observable world state change) CONSISTENT with that rule?",
+      "criteria": {
+        "true": "Yes, an observable world state change produced by the player's physical action satisfies world_evidence",
+        "false": "No, a tutorial step marked on player action still violates the rule"
+      }
+    },
+    "digital_twin_claim": {
+      "type": "noul",
+      "instructions": "Given the verified spatial assets (854102-triangle official SketchUp station model, BVE-sourced metro 113, 200.66m KTX trainset, validated 65.65s walk across 6 checkpoints) BUT no surveyed vertical datum, unresolved seam coordinates, and a self-assessment of NOT_A on all 8 quality gates, would calling the current build a 'digital twin' to an external audience be an overclaim under the provenance rule?",
+      "criteria": {
+        "true": "Yes, calling it a digital twin now would overclaim",
+        "false": "No, the term is already justified by the current assets"
+      }
+    }
+  }
+}

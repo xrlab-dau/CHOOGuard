@@ -1,0 +1,47 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "user": "Continue toward production operationsgame; latest feedback floors seemabsent. Session20-30minutesconfirmed. OnlyUItext,1unit1m,noComputeruse,Astra lowimplementation.",
+    "liveEvidence": "Editor4832: floor1/2 slabs48vertices, floor3slab7vertices. All heightbounds0,UVcount0, textureNone, sameplain바닥material. Facesexist but no depth/materialreadability. Need coverage/normal check beforeassumingonlycosmetic.",
+    "proposal": "Existinginterior Astra-low owner adds dedicated floor builder with actualmetreUV, subtle stone/terrazzo finish per floor, clear perimeter/riser and downward slabthickness; geometry coverage/normals validation. Preservetop heights0/5/10,referencehall30x20/agentfoot5.05, solver andworldtext0. Styleexistingdark referencepatch consistently so itdoesnotlook likefloatingplaceholder. One in-placefloorupgrade+actual3floorcaptures, notwholecity/CFDregen.",
+    "parallel": "Astra xhigh read-only production plan; floorwriteownershipStationBuilder+newFloorBuilder. SubsequentNPCscope dependsplan, nofileoverlap."
+  },
+  "questions": {
+    "priority": {
+      "type": "choice",
+      "instructions": "Choose response supportedbylivefloor evidence.",
+      "criteria": {
+        "surface_depth_and_finish": "Coverage check plus opaque slab depth, metreUV/finish",
+        "labels_only": "Addworldtexttoexplainfloors",
+        "everything_rebuild": "Regeneratewholeworld"
+      }
+    },
+    "palette": {
+      "type": "choice",
+      "instructions": "Choose readable real-scale station-floor treatment.",
+      "criteria": {
+        "neutral_stone_subtle_zones": "Neutral tile/terrazzo, restrained zone accents, visibleedge",
+        "bright_floor_colors": "Eachfloor saturatedprimarycolor",
+        "plain_again": "Sameflatuntexturedsurface"
+      }
+    },
+    "dispatch": {
+      "type": "choice",
+      "instructions": "Is scopedmakerlane independent?",
+      "criteria": {
+        "floor_owner_low": "ExistingAstra lowfloorowner, plannerreadonly",
+        "duplicate": "Duplicateongoingimplementation",
+        "escalate_all": "Alltasksrequireexpensivemakers"
+      }
+    },
+    "verification": {
+      "type": "choice",
+      "instructions": "Proportionate evidence?",
+      "criteria": {
+        "coverage_and_three_views": "Actualmesh coverage/normals/thickness/UV andthreefloorviews",
+        "full_physics": "RerunFDSandsuites",
+        "file_presence": "Filesalone"
+      }
+    }
+  }
+}

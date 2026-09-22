@@ -1,0 +1,93 @@
+{
+  "schema": "chooguard.fps-controller-draft.v1",
+  "status": "PUBLISHED_NATIVE_LOCOMOTION_METRO_BIDIRECTIONAL_PASS_NO_MISSIONS",
+  "direction": "SingleplayerFPS KORAIL station staff withinBusanStation+KTX; formerRTS/cityoperation work stopped. No mission story implementation in thisgenericlane.",
+  "files": [
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/FirstPersonResponder.cs",
+      "target": "Assets/ChooGuard/App/Fps/FirstPersonResponder.cs",
+      "sha256": "4e4929f4a9ba07782958d833b766cea9e426c8414a7e0b63d0a83ba370058dcc",
+      "published_sha256": "4e4929f4a9ba07782958d833b766cea9e426c8414a7e0b63d0a83ba370058dcc"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/IFpsInteraction.cs",
+      "target": "Assets/ChooGuard/App/Fps/IFpsInteraction.cs",
+      "sha256": "9ca7c2370a7d0354990d0ad70137a73cdd1d42517331c50aac1fb7545cd06501",
+      "published_sha256": "9ca7c2370a7d0354990d0ad70137a73cdd1d42517331c50aac1fb7545cd06501"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/FpsInteractable.cs",
+      "target": "Assets/ChooGuard/App/Fps/FpsInteractable.cs",
+      "sha256": "0ec458b91c898dabf66ff11302202dce35eb34abe39275247d9aeca3b03dcc97",
+      "published_sha256": "0ec458b91c898dabf66ff11302202dce35eb34abe39275247d9aeca3b03dcc97"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/controller-drafts/FirstPersonInteractionHud.cs",
+      "target": "Assets/ChooGuard/App/Fps/FirstPersonInteractionHud.cs",
+      "sha256": "dc4872c306f8122e6068770456a1b84cf267512ce8549fdba04ea38ed6843c36",
+      "published_sha256": "dc4872c306f8122e6068770456a1b84cf267512ce8549fdba04ea38ed6843c36"
+    }
+  ],
+  "localDependencies": {
+    "assembly": "Assets/ChooGuard/App/ChooGuard.App.asmdef already references Unity.InputSystem,TMPro,UnityEngine.UI",
+    "inputSystemVersion": "1.20.0 fromPackages/manifest.json",
+    "uguiVersion": "2.0.0",
+    "activeInputHandler": 1,
+    "installs": "None",
+    "RTSDependency": "None innewcodes"
+  },
+  "contracts": {
+    "responder": "ChooGuard.App.Fps.FirstPersonResponder requires CharacterController, owns explicit PlayerCamera",
+    "metres": "Body1.72m,eye1.60m,radius.28m,skin.025m,step.28m,slope45deg; authored initialcontrols, notresearch-derived physiology",
+    "locomotion": "WASD normalized localmovement; swept CharacterController.Move; <=.05s bounded substeps consume ALL accepted elapsed <=.5s; >.5s external StepInput returns false without state mutation, native Update explicitly pauses with feedback; look and interaction edge once per frame; speedcap5m/s",
+    "look": "Mouse delta*.09deg/pixel, perstep±45deg,pitch±85deg; noRTScamera",
+    "jump": "Optional disabledbydefault; normalstepping retained",
+    "interaction": "Nearestsolid Physics.Raycast≤2.5m(default), boundedmax3m; no skipthroughwall. Collider owner/parents canimplementIFpsInteraction. No target→noaction. Eheld edge latch prevents repeats untilrelease.",
+    "genericEndpoint": "FpsInteractable Prompt/SuccessMessage/Availability; UnityEvent andactor event forlatermissionowner; noquest/storyifelse",
+    "pause": "Esc pauses responder/unlocks; focusloss/applicationpause pauses andneverautoresumes. Focusreturn requiresrelease+deliberateclick; no movement/gravity during pause. PauseChanged(bool) event is integrationcontract forfuturemission/NPCclock; thiscomponent doesnotgloballysetTime.timeScale.",
+    "externalAdapter": "SetExternalInputMode(true); Resume(false); StepInput(move,lookDegrees,sprint,interactHeld,jumpHeld,deltaSeconds). OS inputnot synthesized; boundedsamecollision/interactionpath. Focuslossstillpauses; explicitResume(false) isrequiredafterloss.",
+    "observables": "IsPaused,HasFocus,ExternalInputMode,PitchDegrees,YawDegrees,LastCollisionFlags,CurrentPrompt,CurrentTargetCollider,SuccessfulInteractions,LastFeedback",
+    "HUD": "FirstPersonInteractionHud screenCanvas Koreanprompt/reticle/pause/actionfeedback only; explicitKoreanFontrequired. No debrief/review/quiz/publicAI/graph or RTScontrols."
+  },
+  "futureNativeBindInstructions": [
+    "NOT AUTHORIZED NOW: awaitrootresearch/Jev-groundedproposal and publication signal; existingAssets/scenes untouched.",
+    "After futureapproval createNEWFPSscene/player atverifiedwalkable officialsource/KTXsurface. AddCharacterController+FirstPersonResponder, assignchildCamera and1metre root scale. Do not use camera-onlyroofproxy as assumed player-walk topology.",
+    "OptionalHUD: addFirstPersonInteractionHud, assignResponder and existingNotoSansCJKkrSDFfont asset; noexistingRTSCanvas required.",
+    "World targets require actualsolid colliders anddedicatedFpsInteractable/IFpsInteraction. Addblockingwall betweenplayerandtarget toverifynearest-colliderocclusion.",
+    "Scriptednativeproof: externalmode+Resume(false), multipleboundedStepInput calls towardactualwall; verifycapsulestops, lookclamps, noemptytargetaction, holdinginteracttrue causesoneinteraction untilfalse→true. Do notcallthisOSmouseplaytest.",
+    "Focus/pause proof mustshow bodyposition/interactioncountsunchanged whenpaused; focusgainalone neverlocks/resumes. FuturemissionclockmustsubscribePauseChanged beforeclaimingwholegamepause.",
+    "Root/player mustperformactualmousecamera/collision/usability assessment later; C#compile/runtime notclaimed fromdraft."
+  ],
+  "learningBoundary": "Learningandrecallingmanual shouldarise fromfuturein-worldstaffactions/radio/context/feedback. No separatedebrief/review/quiz module wasadded. Root now researchespublicKORAILdrills/FPSpredecessors thenJev proposal BEFOREmission design.",
+  "validation": {
+    "localPackagesAndAssembly": "READ_CONFIRMED",
+    "sourceBoundary": "PASS newdraftfiles only, noRTS/sourceAsset orscenechanges",
+    "CSharpCompile": "NOT_RUN",
+    "nativeCollisionInput": "NOT_RUN",
+    "userApprovalForMission": "PENDINGROOTPROPOSAL",
+    "frameDeltaFix": "Static arithmetic verification: .09s=2*.045s; .5s=10*.05s; native not run",
+    "nativeCompileHistory": [
+      {
+        "status": "FAIL",
+        "diagnostic": "FirstPersonResponder.cs(47,42) CS0234 Application.isFocused resolves ChooGuard.Application namespace"
+      },
+      {
+        "status": "SCOPED_FIX_PUBLISHED_NOT_RECOMPILED",
+        "fix": "UnityEngine.Application.isFocused; scanned all8 files, only one Application usage"
+      }
+    ]
+  },
+  "limitations": [
+    "Genericcontroller only; noapprovedmission,NPCbehavior,traininteraction or fullgamepause integration yet.",
+    "CharacterControllerrequires actualmovementcollision geometry suppliedbyroot; officialvisualmesh/heightfield byitselfis notproof ofwalkability.",
+    "Controlspeeds/sensitivity/humanheight are authoreddefaults, notclaimed extractedvalues fromFPSresearch orKORAILtraining.",
+    "NoUnitycalls, computeruse,children,assetpacks,TDD/broadsuite orAssetspublication."
+  ],
+  "previousStatus": "DRAFT_FROZEN_NO_PUBLICATION_PENDING_RESEARCH_AND_JEV_PROPOSAL",
+  "nativeEvidence": [
+    "fps-walk-metro-afterpassage.json",
+    "fps-walk-metro-reverse.json",
+    "fps-walk-metro-afteralpha.json"
+  ],
+  "claimBoundary": "Actual CharacterController via external StepInput, notOSkeyboard/mouse/humanacceptance; genericinteractioncodepublished but no missionboundobjects yet."
+}

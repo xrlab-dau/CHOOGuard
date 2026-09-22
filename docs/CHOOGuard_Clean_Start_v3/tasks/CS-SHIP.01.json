@@ -1,0 +1,155 @@
+{
+  "id": "CS-SHIP.01",
+  "epicId": "CS-SHIP",
+  "title": "오프라인 제품 묶음·업데이트",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SHIP.01",
+    "description": "PC 실행파일·native UI·필요 모델·번들·출력기 설치",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SHIP.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "packaging/product-manifest.json",
+    "scripts/release/Build-Installer.ps1",
+    "packaging/update-policy.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SHIP/Ship01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-BOOT.03",
+      "artifactId": "A-CS-BOOT.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PROOF.02",
+      "artifactId": "A-CS-PROOF.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PROOF.04",
+      "artifactId": "A-CS-PROOF.04",
+      "stage": "candidate",
+      "consumerStage": "qualification",
+      "condition": "CLAIM_FIELD_USE"
+    }
+  ],
+  "algorithm": [
+    "새 source와 dependency lock·모델/콘텐츠 hash를 결속하고 개인정보·키·제한원본을 제외한다.",
+    "원격AI·외부 worker는 승인된 환경에서만 사용하고 오프라인은 가용계산·저장·수동편집을 유지한다.",
+    "기술 배포와 현장용 qualification을 구별하여 미검증 표식이 설치과정에서 사라지지 않게 한다."
+  ],
+  "contract": "ProductManifest {buildLock,contentRefs,modelRefs,capabilities,qualification}; 구매승인은 개발선행이 아님.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SHIP.01-P",
+      "given": "새 PC offline/locked package",
+      "when": "설치·재실행",
+      "then": "local 저장·편집; 미지원 표시",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SHIP.01-N",
+      "given": "bundle hash 불일치",
+      "when": "설치·재실행",
+      "then": "CONTENT_INTEGRITY_FAIL",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-073",
+    "REQ-087"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/11-release-and-backup.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/11-release-and-backup.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-073",
+    "REQ-087"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SHIP/Ship01Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_DISK",
+      "path": "qualification/player/CS-SHIP.01-disk.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "새 PC offline/locked package",
+    "operation": "설치·재실행",
+    "expectedPositive": "local 저장·편집; 미지원 표시",
+    "negativeInput": "bundle hash 불일치",
+    "expectedNegative": "CONTENT_INTEGRITY_FAIL",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

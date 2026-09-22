@@ -1,0 +1,167 @@
+{
+  "id": "CS-PLAY.02",
+  "epicId": "CS-PLAY",
+  "title": "팀·업무 선택과 명령 미리보기",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PLAY.02",
+    "description": "RTS 선택·업무 우선 배정·혼합기관 결과 확인",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PLAY.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PLAY.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Presentation/Selection/SelectionService.cs",
+    "Assets/ChooGuard/Presentation/Commands/CommandPreviewPresenter.cs",
+    "Assets/ChooGuard/Presentation/Commands/CommandPreview.prefab"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PLAY/Play02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PLAY.01",
+      "artifactId": "A-CS-PLAY.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.01",
+      "artifactId": "A-CS-OPS.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.02",
+      "artifactId": "A-CS-OPS.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "팀·승무원 연결 차량을 기본 단위로 하고 목록/월드 선택을 같은 SelectionSet으로 연결한다.",
+    "혼합기관 선택은 대상별 조건·요청/거부를 표시한다. 한 업무의 원자성 경계와 독립 업무의 부분 성공을 구분한다.",
+    "Submit은 명시적인 확인 뒤 수행한다. 테스트 double UI 완료와 실물 커널 통합 완료를 별도로 기록한다."
+  ],
+  "contract": "SelectionSet→CommandIntent→PreviewResult→CommandReceipt; UI 수락은 업무 완료가 아님.",
+  "sourceIds": [
+    "GAME-EMERGENCY",
+    "GAME-RESCUEHQ"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PLAY.02-P",
+      "given": "teamA valid/teamB denied",
+      "when": "preview 뒤 제출",
+      "then": "대상별 결과; 한 업무 원자성",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PLAY.02-N",
+      "given": "preview 후 state revision 변화",
+      "when": "preview 뒤 제출",
+      "then": "STALE_STATE_REPREVIEW",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-008",
+    "REQ-009",
+    "REQ-010"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/06-native-surfaces.md",
+    "specs/02-wire-and-ports.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-008",
+    "REQ-009",
+    "REQ-010"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PLAY/Play02Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSPLAY02PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-PLAY.02.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "teamA valid/teamB denied",
+    "operation": "preview 뒤 제출",
+    "expectedPositive": "대상별 결과; 한 업무 원자성",
+    "negativeInput": "preview 후 state revision 변화",
+    "expectedNegative": "STALE_STATE_REPREVIEW",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

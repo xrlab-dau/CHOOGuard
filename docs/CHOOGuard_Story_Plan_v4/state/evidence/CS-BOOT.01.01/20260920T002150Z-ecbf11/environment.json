@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "storyId": "CS-BOOT.01.01",
+  "runId": "20260920T002150Z-ecbf11",
+  "recordedAt": "2026-09-20T00:21:50.329780+00:00",
+  "externalInputId": "EXT-UNITY",
+  "state": "SATISFIED",
+  "scope": "macOS Editor initialization and existing usable license only; not Windows Player acceptance",
+  "sourceProbeAt": "2026-09-20T00:08:17.820272+00:00",
+  "editorVersion": "6000.3.23f1",
+  "editorRevision": "09d2ecc7fb28",
+  "host": {
+    "os": "macOS",
+    "version": "26.5",
+    "build": "25F71",
+    "architecture": "arm64",
+    "kernelRelease": "25.5.0"
+  },
+  "editorUsable": true,
+  "licenseUsable": true,
+  "automaticActivationPerformed": false,
+  "licenseCaveat": "자동 활성화 명령 없이 기존 entitlement로 초기화 성공. Access token unavailable 경고와 이후 license initialized/success 로그를 함께 보존.",
+  "projectVersion": {
+    "content": "m_EditorVersion: 6000.3.23f1\nm_EditorVersionWithRevision: 6000.3.23f1 (09d2ecc7fb28)\n",
+    "sha256": "ccbded48add235cebc157983154aaa49ed9035f56398fcb5e2b41bae3ebd2b66"
+  },
+  "packageResolve": "SUCCEEDED",
+  "requiredVersionsMatch": true,
+  "packages": {
+    "com.unity.render-pipelines.universal": {
+      "version": "17.3.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "17.3.0",
+        "com.unity.shadergraph": "17.3.0",
+        "com.unity.render-pipelines.universal-config": "17.0.3"
+      }
+    },
+    "com.unity.ugui": {
+      "version": "2.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.modules.ui": "1.0.0",
+        "com.unity.modules.imgui": "1.0.0"
+      }
+    },
+    "com.unity.textmeshpro": {
+      "version": "5.0.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.ugui": "2.0.0"
+      }
+    },
+    "com.unity.test-framework": {
+      "version": "1.6.0",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.ext.nunit": "2.0.3",
+        "com.unity.modules.imgui": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
+    },
+    "com.unity.inputsystem": {
+      "version": "1.20.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.uielements": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    }
+  },
+  "packageLockSha256": "eaa46bb599611490c22e220dc0d97140c38c3d272e9221c417e126c067a97f07",
+  "commands": [
+    {
+      "command": "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity -batchmode -nographics -quit -createProject ${SESSION_SCRATCHPAD}/csboot0101-probe -logFile ${SESSION_SCRATCHPAD}/probe-evidence/create.log",
+      "startedUtc": "2026-09-20T00:08:17.849408+00:00",
+      "endedUtc": "2026-09-20T00:08:33.923454+00:00",
+      "exitCode": 0,
+      "timedOut": false
+    },
+    {
+      "command": "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity -batchmode -nographics -quit -projectPath ${SESSION_SCRATCHPAD}/csboot0101-probe -logFile ${SESSION_SCRATCHPAD}/probe-evidence/resolve.log",
+      "startedUtc": "2026-09-20T00:09:03.752633+00:00",
+      "endedUtc": "2026-09-20T00:09:51.598784+00:00",
+      "exitCode": 0,
+      "timedOut": false
+    }
+  ],
+  "rawSources": [
+    {
+      "path": "${SESSION_SCRATCHPAD}/probe-evidence/report.json",
+      "sha256": "d9af406176c42fd19b9b80a2dac88fe8e8471bf05f7a43d886f115d9207acb58"
+    },
+    {
+      "path": "${SESSION_SCRATCHPAD}/probe-evidence/create.log",
+      "sha256": "40d0a6a6fc6cfc80cef044ba47a3e0140d7e8aa1673f0aee72cdd581edcac4df"
+    },
+    {
+      "path": "${SESSION_SCRATCHPAD}/probe-evidence/resolve.log",
+      "sha256": "dc17c66b81145b8a7a3a4cbe521a6dcff40ea125c32444330144bd3884098237"
+    }
+  ],
+  "rawSourceLocator": {
+    "sessionId": "6b3eea63-2426-429e-825b-36b51c3d9b46",
+    "variable": "SESSION_SCRATCHPAD",
+    "note": "Local session scratchpad; exact absolute locations are retained in scratch boundary-evidence/locations.json. Raw logs are not copied to repository."
+  },
+  "windowsBuild": "NOT_RUN",
+  "windowsRun": "NOT_RUN",
+  "windowsReason": "macOS arm64 host; PlaybackEngines에 MacStandaloneSupport만 존재",
+  "macPlayerBuild": "NOT_RUN",
+  "productTests": "NOT_RUN",
+  "warnings": [
+    "Native extension for OSXStandalone target not found 로그: Mac module 폴더 존재만으로 Player build 가능을 주장하지 않음",
+    "headless import 중 Terrain/SpeedTree shader dependency not found 및 종료 Curl error 42; 실제 그래픽 렌더 검증 미실행"
+  ],
+  "remainingDecision": "TMP static-only resource and license dependencies; this does not invalidate observed usable Editor/license."
+}

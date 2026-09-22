@@ -1,0 +1,205 @@
+{
+  "id": "CS-OPS.05.01",
+  "epicId": "CS-OPS",
+  "parentTaskId": "CS-OPS.05",
+  "title": "선행조건·정보·공간 도달이 있는 업무망을 실행한다",
+  "goal": "요청→준비→수행→완료는 명시 guard로 진행한다. 미확인 조건을 0초/true로 대체하지 않는다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-012",
+    "REQ-023",
+    "REQ-025",
+    "REQ-026",
+    "REQ-029",
+    "REQ-045"
+  ],
+  "supportsRequirementIds": [
+    "REQ-012",
+    "REQ-023",
+    "REQ-025",
+    "REQ-026",
+    "REQ-029",
+    "REQ-045"
+  ],
+  "parentProductTestIds": [
+    "AT-012",
+    "AT-023",
+    "AT-025",
+    "AT-026",
+    "AT-029",
+    "AT-045"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "Assets/ChooGuard/Domain/WorkflowEngine.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-OPS.05.01",
+      "scope": "선행조건·정보·공간 도달이 있는 업무망을 실행한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Domain/TaskConditions.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-OPS.05.01",
+      "scope": "선행조건·정보·공간 도달이 있는 업무망을 실행한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSOPS0501Tests.cs",
+  "testKinds": [
+    "EDIT_MODE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-OPS.05.01",
+      "kind": "PlannedArtifact",
+      "producer": "CS-OPS.05.01",
+      "contract": "선행조건·정보·공간 도달이 있는 업무망을 실행한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "Assets/ChooGuard/Domain/WorkflowEngine.cs",
+        "Assets/ChooGuard/Domain/TaskConditions.cs"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-OPS.03.01",
+      "artifactId": "OUT-CS-OPS.03.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    },
+    {
+      "producer": "CS-OPS.04.01",
+      "artifactId": "OUT-CS-OPS.04.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    },
+    {
+      "producer": "CS-OPS.02.02",
+      "artifactId": "OUT-CS-OPS.02.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    }
+  ],
+  "externalInputs": [],
+  "sourceIds": [
+    "MAN-MEDICAL",
+    "MAN-SOP"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "MAN-MEDICAL",
+      "url": "https://www.mohw.go.kr/board.es?act=view&bid=0009&list_no=1478957&mid=a10402000000&nPage=1&tag=",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "MAN-SOP",
+      "url": "https://www.daegu.go.kr/cmsh/daegu.go.kr/119/files/%EC%9E%AC%EB%82%9C%ED%98%84%EC%9E%A5%ED%91%9C%EC%A4%80%EC%9E%91%EC%A0%84%EC%A0%88%EC%B0%A8.pdf",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    }
+  ],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/02-wire-and-ports.md",
+    "basis/v3/specs/03-durable-operations.md",
+    "basis/v3/specs/10-observability-and-study.md"
+  ],
+  "parentContract": "TaskState {lifecycle,guards,reasons,reservations,outcome,handoff}; GuardResult는 truth/status와 evidence refs를 가진다.",
+  "parentSpecRef": "basis/v3/tasks/CS-OPS.05.json",
+  "behaviorSteps": [
+    "요청→준비→수행→완료는 명시 guard로 진행한다. 미확인 조건을 0초/true로 대체하지 않는다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-OPS.05.01-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 선행조건·정보·공간 도달이 있는 업무망을 실행한다의 유효 조건",
+      "when": "선행조건·정보·공간 도달이 있는 업무망을 실행한다를 실행한다",
+      "then": "필수 보고 전에는 대기하고 전달 확인 후에만 수행 단계에 들어간다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-OPS.05.01-N",
+      "kind": "NEGATIVE",
+      "given": "UI 애니메이션 종료만으로 완료하거나 미확인 소요시간을 사실값으로 계산하지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "UI 애니메이션 종료만으로 완료하거나 미확인 소요시간을 사실값으로 계산하지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSOPS0501Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10027,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/02-wire-and-ports.md",
+      "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+    },
+    {
+      "path": "basis/v3/specs/03-durable-operations.md",
+      "sha256": "7262e5711eebeac1bb5d42cf3e4446645787a9fa75799978e89cb50687c18752"
+    },
+    {
+      "path": "basis/v3/specs/10-observability-and-study.md",
+      "sha256": "06c0643d3b25db1fb62ad9d25a90b61e5508da763efae7f3b1e70d1e242cff02"
+    }
+  ]
+}
