@@ -1,0 +1,104 @@
+{
+  "scope": "JWE3 official-primary comparison only; CHOOGuard MVP excludes scenario-draft generation and world-3D text.",
+  "sources": [
+    "https://www.jurassicworldevolution.com/en-US/3/news/jurassic-world-evolution-3-erscheint-am-21-oktober",
+    "https://www.jurassicworldevolution.com/en-US/3/game-modes",
+    "https://store.steampowered.com/app/2958130/Jurassic_World_Evolution_3/",
+    "https://store.playstation.com/en-us/concept/10012067/",
+    "https://www.universalproductsexperiences.com/news/jurassic-world-evolution-3-is-out-now%21",
+    "https://store.epicgames.com/en-US/news/jurassic-world-evolution-3-interview-baby-dinosaurs-terraforming-atvs-more"
+  ],
+  "nodes": [
+    {
+      "id": "jwe3_guest_presence",
+      "type": "JWE3 supported fact",
+      "sourceClaim": "Guests interact with dinosaurs and new attractions.",
+      "url": "https://store.playstation.com/en-us/concept/10012067/",
+      "chooguardProposal": "보행 시민·이용객을 월드에서 보이게 하되, 상태 판정은 UI/오버레이에서만 제공한다.",
+      "inference": false,
+      "mvpPriority": "P1"
+    },
+    {
+      "id": "jwe3_social_needs_boundary",
+      "type": "JWE3 supported fact / boundary",
+      "sourceClaim": "Official text assigns unique social needs to dinosaur species, not individual guests.",
+      "url": "https://store.steampowered.com/app/2958130/Jurassic_World_Evolution_3/",
+      "chooguardProposal": "시민·환자별 욕구 모델은 JWE3 전례로 주장하지 말고 집단 위험/대피 상태부터 구현한다.",
+      "inference": false,
+      "mvpPriority": "P0"
+    },
+    {
+      "id": "jwe3_camera_maintenance_loop",
+      "type": "JWE3 supported fact",
+      "sourceClaim": "Security cameras automate escaped-dinosaur response; Maintenance teams deliver critical repairs.",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/news/jurassic-world-evolution-3-erscheint-am-21-oktober",
+      "chooguardProposal": "사건 감지→팀 배치/자율 수행→시설·경로 복구를 부산역–남포–북항 루프로 만든다.",
+      "inference": true,
+      "mvpPriority": "P0"
+    },
+    {
+      "id": "jwe3_first_response_automation",
+      "type": "JWE3 supported fact",
+      "sourceClaim": "Maintenance posts outsource first response; cameras can alert and dispatch a capture team after a breach.",
+      "url": "https://store.epicgames.com/en-US/news/jurassic-world-evolution-3-interview-baby-dinosaurs-terraforming-atvs-more",
+      "chooguardProposal": "플레이어는 우선순위·목표·재배정만 명령하고, 운영직원은 배정 뒤 자율 이동한다.",
+      "inference": true,
+      "mvpPriority": "P0"
+    },
+    {
+      "id": "jwe3_direct_team_boundary",
+      "type": "JWE3 supported fact with scope boundary",
+      "sourceClaim": "Root checked the linked game-director interview: JWE3 directly supports player-driven ATV inspection and repair, plus automated maintenance/capture dispatch. Specific Ranger/medical/transport naming and individual guest psychology remain unestablished by this source set.",
+      "url": "https://store.epicgames.com/en-US/news/jurassic-world-evolution-3-interview-baby-dinosaurs-terraforming-atvs-more",
+      "chooguardProposal": "RTS 목표 지시와 실제 작업을 먼저 구현하고 차량 직접운전은 후속으로 제안한다.",
+      "inference": false,
+      "mvpPriority": "P0"
+    },
+    {
+      "id": "chooguard_agent_authority",
+      "type": "CHOOGuard proposal",
+      "sourceClaim": "No JWE3 source establishes civilian per-NPC simulation or physics authority.",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/game-modes",
+      "chooguardProposal": "물리 권위는 지원된 보행/연기 결과에만 두고, 개별 시민 애니메이션·일상 행동은 ambient cosmetic으로 분리한다.",
+      "inference": true,
+      "mvpPriority": "P0"
+    },
+    {
+      "id": "chooguard_routine_incident_recovery",
+      "type": "CHOOGuard proposal",
+      "sourceClaim": "JWE3 frames normal park operation, disaster preparation, containment, and repair; it does not specify public-transit patient recovery states.",
+      "url": "https://store.playstation.com/en-us/concept/10012067/",
+      "chooguardProposal": "ordinary routine→incident→recovery를 집단 이동·팀 작업·시설/경로 복구로만 닫고, 임상 회복 판정은 MVP 밖에 둔다.",
+      "inference": true,
+      "mvpPriority": "P1"
+    }
+  ],
+  "edges": [
+    {
+      "from": "jwe3_guest_presence",
+      "to": "chooguard_agent_authority",
+      "relation": "visible-world-reference; behaviour-authority is inference"
+    },
+    {
+      "from": "jwe3_social_needs_boundary",
+      "to": "chooguard_agent_authority",
+      "relation": "prevents guest-needs overclaim"
+    },
+    {
+      "from": "jwe3_camera_maintenance_loop",
+      "to": "chooguard_routine_incident_recovery",
+      "relation": "operation-incident-repair analogue"
+    },
+    {
+      "from": "jwe3_first_response_automation",
+      "to": "chooguard_agent_authority",
+      "relation": "target-and-priority delegation analogue"
+    },
+    {
+      "from": "jwe3_direct_team_boundary",
+      "to": "chooguard_agent_authority",
+      "relation": "CHOOGuard direct-command scope is independent"
+    }
+  ],
+  "rootCorrection": "Earlier broad direct-control-unconfirmed claim was too strong; exact ATV inspection/repair is directly supported in the already-linked interview."
+}

@@ -1,0 +1,50 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "facts": [
+      "Source RequestSupport/Return requires Director.CanExecuteTasks, whose predicate includes !IsPaused; actual UI therefore rejects planned agency commands during tactical pause.",
+      "Director.Receive advances SimulatedSeconds and invokes Agency.AdvanceAcceptedTime(acceptedDelta), but Agency method discards accepted delta when IsPaused. An already accepted in-flight step can therefore advance the world clock without advancing that vehicle.",
+      "Agency LateUpdate unconditionally enables OnScene team renderers, overriding Station floor cutaway rules. Agency focus calls Station.SetFloor without Workspace.SelectFloor and site-view camera does not select2F.",
+      "New vehicle layer and existing real source road routes compiled/native flow untested. Source data now4 verified institution locations, dispatch implemented onlyCentral119 two training slots."
+    ],
+    "proposal": "Existing Astra owner: CanPlanAgencyOrders predicate allows queue while paused but valid running+ready model; accepted delta always consumed regardless current pause flag; onlyforcehide unavailableteams, Station owns visiblefloor; focus throughWorkspace.SelectFloor. Then one actual native agency roundtrip + pause/duplicate/onsite action gate."
+  },
+  "questions": {
+    "clock": {
+      "type": "choice",
+      "instructions": "Select correct synchronization for already accepted delta.",
+      "criteria": {
+        "consume_accepted": "Consume acknowledged positive delta; pauses prevent future requests",
+        "drop_on_pause": "Discard if UI paused now",
+        "wallclock": "Replace with walltime"
+      }
+    },
+    "planning": {
+      "type": "choice",
+      "instructions": "Select interaction aligned with existing tactical-pause planning.",
+      "criteria": {
+        "plan_when_paused": "Queue requests/return while paused; travel waits for accepted time",
+        "reject_paused": "Force all users to unpause before agency orders",
+        "immediate_arrival": "Make paused request teleport units"
+      }
+    },
+    "view": {
+      "type": "choice",
+      "instructions": "Which component owns spatial visibility?",
+      "criteria": {
+        "station_floor": "Agency only hides unavailable units; Station floor rules display available units",
+        "agency_overrides": "Agency always forces all on-scene teams visible",
+        "disable_all": "Hide all teams always"
+      }
+    },
+    "scope": {
+      "type": "choice",
+      "instructions": "Smallest justified fix and verification?",
+      "criteria": {
+        "existing_owner_focused": "Same owner repairs these adapters then native loop check",
+        "redo_art": "Regenerate characters and buildings",
+        "all_suites": "Full project retest first"
+      }
+    }
+  }
+}

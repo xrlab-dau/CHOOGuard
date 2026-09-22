@@ -1,0 +1,80 @@
+FFF.
+======================================================================
+FAIL: test_bootstrap_owns_initial_assemblies (test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies) (path='Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 19, in test_bootstrap_owns_initial_assemblies
+    self.assertEqual([(sid,w['operation'],w['createdBy']) for sid,w in rows],[(owner,'CREATE',owner),(successor,'UPDATE',owner)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('CS-BOOT.02.01', 'CREATE', 'CS-BOOT.02.01')] != [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'), ('CS-B[34 chars]01')]
+
+First differing element 0:
+('CS-BOOT.02.01', 'CREATE', 'CS-BOOT.02.01')
+('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01')
+
+Second list contains 1 additional elements.
+First extra element 1:
+('CS-BOOT.02.01', 'UPDATE', 'CS-BOOT.01.01')
+
+- [('CS-BOOT.02.01', 'CREATE', 'CS-BOOT.02.01')]
+?             ^                          ^     ^
+
++ [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'),
+?             ^                          ^     ^
+
++  ('CS-BOOT.02.01', 'UPDATE', 'CS-BOOT.01.01')]
+
+======================================================================
+FAIL: test_bootstrap_owns_initial_assemblies (test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies) (path='Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 19, in test_bootstrap_owns_initial_assemblies
+    self.assertEqual([(sid,w['operation'],w['createdBy']) for sid,w in rows],[(owner,'CREATE',owner),(successor,'UPDATE',owner)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')] != [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'), ('CS-B[34 chars]01')]
+
+First differing element 0:
+('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')
+('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01')
+
+Second list contains 1 additional elements.
+First extra element 1:
+('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')
+
+- [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')]
+?             ^                          ^     ^
+
++ [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'),
+?             ^                          ^     ^
+
++  ('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')]
+
+======================================================================
+FAIL: test_bootstrap_owns_initial_assemblies (test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies) (path='Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests/test_plan.py", line 19, in test_bootstrap_owns_initial_assemblies
+    self.assertEqual([(sid,w['operation'],w['createdBy']) for sid,w in rows],[(owner,'CREATE',owner),(successor,'UPDATE',owner)])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')] != [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'), ('CS-B[34 chars]01')]
+
+First differing element 0:
+('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')
+('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01')
+
+Second list contains 1 additional elements.
+First extra element 1:
+('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')
+
+- [('CS-BOOT.03.01', 'CREATE', 'CS-BOOT.03.01')]
+?             ^                          ^     ^
+
++ [('CS-BOOT.01.01', 'CREATE', 'CS-BOOT.01.01'),
+?             ^                          ^     ^
+
++  ('CS-BOOT.03.01', 'UPDATE', 'CS-BOOT.01.01')]
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.009s
+
+FAILED (failures=3)

@@ -1,0 +1,1186 @@
+{
+  "status": "PASS",
+  "selectedTeam": "central119-medical-support",
+  "operationId": "bb6baec2ce8c40be8066eef9c9ad358c",
+  "decision": {
+    "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+    "run": "60ff0b4c69bb46fc8ed644a47cffb7bc",
+    "generation": 1,
+    "hasProbability": true,
+    "probability": 0.55,
+    "normal": 15,
+    "extended": 45,
+    "expected": 28.5,
+    "source": "jev_expected",
+    "inputHash": "71ce6ea12fa89eb695a8bb40676fa1667a1ba1d3e817c9592bfb4f2af1fb70f5",
+    "model": "typesafe-ai/jev",
+    "latencyMs": 780,
+    "reason": "matching_response"
+  },
+  "expectedByFormula": 28.499999999999996,
+  "observedTurnaroundSeconds": 29,
+  "transitionTimes": [
+    {
+      "edge": "returned",
+      "sim": 368,
+      "from": "returning",
+      "to": "replenishing"
+    },
+    {
+      "edge": "replenished",
+      "sim": 397,
+      "from": "replenishing",
+      "to": "ready"
+    }
+  ],
+  "pausedFrozen": true,
+  "immutableDecision": true,
+  "isolatedFallbackGuards": {
+    "baseline": true,
+    "frozen": true,
+    "reset": true
+  },
+  "publicDebug": {
+    "forecastViews": 0,
+    "graphViews": 0,
+    "forecastClients": 0
+  },
+  "scope": "Actual live Jev workload probability consumed in internal duration arithmetic and OpenRA-derived accepted-time countdown. Authored15/45s mean-regime model; not calibrated119 procedure, physicalsurrogate or forecastaccuracy proof.",
+  "trace": [
+    {
+      "label": "ready",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "phase": "ordinary",
+      "allEvacuated": false,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": []
+    },
+    {
+      "label": "onsite",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 152,
+      "paused": false,
+      "phase": "ordinary",
+      "allEvacuated": false,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "WaitingIncident",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "WaitingIncident",
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -43.0000267,
+              "y": 0.18,
+              "z": -69.99996
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": []
+    },
+    {
+      "label": "incident-pause",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 153,
+      "paused": true,
+      "phase": "ordinary",
+      "allEvacuated": false,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "WaitingIncident",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "WaitingIncident",
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -43.0000267,
+              "y": 0.18,
+              "z": -69.99996
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": []
+    },
+    {
+      "label": "incident",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 153,
+      "paused": true,
+      "phase": "incident",
+      "allEvacuated": false,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Working",
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -43.0000267,
+              "y": 0.18,
+              "z": -69.99996
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": []
+    },
+    {
+      "label": "medical-owned-ack",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 196,
+      "paused": false,
+      "phase": "incident",
+      "allEvacuated": false,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "HandoffPending",
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -43.0000267,
+              "y": 0.18,
+              "z": -69.99996
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": []
+    },
+    {
+      "label": "live-Jev-parameter-used-at-base",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 368,
+      "paused": false,
+      "phase": "resolved",
+      "allEvacuated": true,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Returning",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -367.567,
+              "y": 5.02895975,
+              "z": -862.9717
+            },
+            {
+              "x": -365.8725,
+              "y": 4.944003,
+              "z": -847.69635
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Replenishing",
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "completed": null,
+          "remaining": 28.5,
+          "total": 28.5,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "run": "60ff0b4c69bb46fc8ed644a47cffb7bc",
+          "generation": 1,
+          "hasProbability": true,
+          "probability": 0.55,
+          "normal": 15,
+          "extended": 45,
+          "expected": 28.5,
+          "source": "jev_expected",
+          "inputHash": "71ce6ea12fa89eb695a8bb40676fa1667a1ba1d3e817c9592bfb4f2af1fb70f5",
+          "model": "typesafe-ai/jev",
+          "latencyMs": 780,
+          "reason": "matching_response"
+        }
+      ]
+    },
+    {
+      "label": "replenishing-pause",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 369,
+      "paused": true,
+      "phase": "resolved",
+      "allEvacuated": true,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Returning",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -368.449,
+              "y": 5.073181,
+              "z": -870.9228
+            },
+            {
+              "x": -366.754517,
+              "y": 4.98822451,
+              "z": -855.647461
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Replenishing",
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "completed": null,
+          "remaining": 27.5,
+          "total": 28.5,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "run": "60ff0b4c69bb46fc8ed644a47cffb7bc",
+          "generation": 1,
+          "hasProbability": true,
+          "probability": 0.55,
+          "normal": 15,
+          "extended": 45,
+          "expected": 28.5,
+          "source": "jev_expected",
+          "inputHash": "71ce6ea12fa89eb695a8bb40676fa1667a1ba1d3e817c9592bfb4f2af1fb70f5",
+          "model": "typesafe-ai/jev",
+          "latencyMs": 780,
+          "reason": "matching_response"
+        }
+      ]
+    },
+    {
+      "label": "ready-after-accepted-countdown",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 398,
+      "paused": false,
+      "phase": "resolved",
+      "allEvacuated": true,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Returning",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -492.526276,
+              "y": 13.7326336,
+              "z": -941.7364
+            },
+            {
+              "x": -492.216827,
+              "y": 14.4582987,
+              "z": -957.0854
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "remaining": 0,
+          "total": 28.5,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "run": "60ff0b4c69bb46fc8ed644a47cffb7bc",
+          "generation": 1,
+          "hasProbability": true,
+          "probability": 0.55,
+          "normal": 15,
+          "extended": 45,
+          "expected": 28.5,
+          "source": "jev_expected",
+          "inputHash": "71ce6ea12fa89eb695a8bb40676fa1667a1ba1d3e817c9592bfb4f2af1fb70f5",
+          "model": "typesafe-ai/jev",
+          "latencyMs": 780,
+          "reason": "matching_response"
+        }
+      ]
+    },
+    {
+      "label": "final-pause",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 399,
+      "paused": true,
+      "phase": "resolved",
+      "allEvacuated": true,
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Returning",
+          "op": "23ae71e1a5d84b8f80a518903c6c1429",
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -492.687317,
+              "y": 13.3549109,
+              "z": -933.746948
+            },
+            {
+              "x": -492.3779,
+              "y": 14.0805759,
+              "z": -949.095947
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "remaining": 0,
+          "total": 28.5,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ],
+      "decisions": [
+        {
+          "op": "bb6baec2ce8c40be8066eef9c9ad358c",
+          "run": "60ff0b4c69bb46fc8ed644a47cffb7bc",
+          "generation": 1,
+          "hasProbability": true,
+          "probability": 0.55,
+          "normal": 15,
+          "extended": 45,
+          "expected": 28.5,
+          "source": "jev_expected",
+          "inputHash": "71ce6ea12fa89eb695a8bb40676fa1667a1ba1d3e817c9592bfb4f2af1fb70f5",
+          "model": "typesafe-ai/jev",
+          "latencyMs": 780,
+          "reason": "matching_response"
+        }
+      ]
+    }
+  ]
+}

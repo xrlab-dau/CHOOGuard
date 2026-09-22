@@ -1,0 +1,157 @@
+{
+  "id": "CS-SCRIPT.04",
+  "epicId": "CS-SCRIPT",
+  "title": "고객 양식 출력·재로드·수정 회수",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SCRIPT.04",
+    "description": "문서/실행데이터의 동일 의미와 출력 후 작업 기록",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SCRIPT.04",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.04.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.04.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.04.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.04.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Authoring/ExportService.cs",
+    "Assets/ChooGuard/Authoring/ImportReconciliation.cs",
+    "workers/authoring/export_document.py",
+    "content/templates/profiles.json",
+    "Assets/ChooGuard/Presentation/Authoring/ExportDialog.prefab",
+    "Assets/ChooGuard/Presentation/Authoring/ExportDialogPresenter.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SCRIPT/Script04Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-SCRIPT.03",
+      "artifactId": "A-CS-SCRIPT.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "JSON·Markdown·DOCX를 공통 IR에서 출력한다. 기관별 다른 형식은 실제 템플릿의 입력/출력 검증 후 활성화한다.",
+    "출력 문서와 실행형 구조의 역할·사건·분기·조건을 비교한다.",
+    "외부 편집본 의미diff는 수동 또는 지원한 importer로 조정한다. 자동 왕복이 안 되는 형식을 가능한 것으로 표시하지 않는다."
+  ],
+  "contract": "TemplateProfile {format,revision,fields,exporter,qualification}; 결과는 임의 script를 실행하지 않는다.",
+  "sourceIds": [
+    "DISC-05",
+    "DISC-07"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SCRIPT.04-P",
+      "given": "유효 template/ScriptIR",
+      "when": "출력·의미 재로드",
+      "then": "조건/역할/근거 동등",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SCRIPT.04-N",
+      "given": "미지원 HWPX를 지원 주장",
+      "when": "출력·의미 재로드",
+      "then": "UNSUPPORTED_TEMPLATE",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-086"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/09-script-and-approval.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "requiredFor": "CUSTOMER_EFFICACY_OR_FORMAT_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "모집/실제양식 확인 전 고객 효용/지원완료 주장 금지."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/09-script-and-approval.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-086"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SCRIPT/Script04Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSSCRIPT04PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-SCRIPT.04.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "유효 template/ScriptIR",
+    "operation": "출력·의미 재로드",
+    "expectedPositive": "조건/역할/근거 동등",
+    "negativeInput": "미지원 HWPX를 지원 주장",
+    "expectedNegative": "UNSUPPORTED_TEMPLATE",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

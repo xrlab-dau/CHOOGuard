@@ -1,0 +1,72 @@
+{
+  "schema": "chooguard.internal-operational-kernel.v1",
+  "status": "source_frozen_pending_root_native",
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpJevOperationalKernel.cs",
+      "sha256": "9cd6b819eb9a4e94b8a3a5f01c958b600bc073db9f1232636fab28073478e140"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/MvpJevOperationalKernelBinder.cs",
+      "sha256": "4048c56331dc6651b2784cd7c78068249d6752d6c45e4530ddfc0400f756d20b"
+    },
+    {
+      "path": "workers/prediction/jev-proxy.mjs",
+      "sha256": "48db47fe5bfdc8c2f737f29a9dc7cdc385ec1f3f1d48fc7406417222f574a49a"
+    },
+    {
+      "path": "workers/prediction/README.md",
+      "sha256": "6356a06b6375a2c6ddc58e1f262b4cc680ce0d595a7f2732b7f9573169a5fc16"
+    }
+  ],
+  "scope": "Internal normal-versus-extended turnaround workload classification → immutable expected-duration parameter; no public probabilities or incident selection",
+  "api": {
+    "binder": "ChooGuard.Editor.MvpJevOperationalKernelBinder.BindExisting() in Edit mode",
+    "prepare": "PrepareTurnaround(operationId,agencyId,logicalTeamId,workType,memberCount,operationStartedSim,onsiteSim,travelMetres)",
+    "onsiteSim": "cumulative accepted onsite duration, not absolute timestamp; agreed with timed owner",
+    "resolve": "ResolveTurnaround(operationId) returns immutable nested TimingDecision, freezes on first resolution",
+    "reset": "ResetRun cancels/clears pending, flight, records and decisions",
+    "decisions": "IReadOnlyList<TimingDecision>; OperationId,RunId,Generation,HasProbability,ProbabilityNormal(float? null baseline),NormalSeconds,ExtendedSeconds,ExpectedSeconds,Source,InputHash,Model,LatencyMs,ReasonCode"
+  },
+  "arithmetic": {
+    "formula": "pNormal*NormalSeconds+(1-pNormal)*ExtendedSeconds",
+    "defaults": [
+      15,
+      45
+    ],
+    "bounds": "ordered finite profile within15..45; otherwise baseline15/45",
+    "sourceValid": "jev_expected",
+    "fallback": "baseline, no probability (nullable null), captured normalSeconds",
+    "freeze": "matching reply must already be available at base arrival; late result cannot modify immutable cached decision; missing/invalid/error/late use explicit baseline"
+  },
+  "service": {
+    "endpoint": "POST http://127.0.0.1:18764/turnaround",
+    "gateway": "Direct fixed https://ai-gateway.vercel.sh/typesafe/v1/systemone typesafe-ai/jev noul",
+    "question": "normal_workload_regime latent normal-vs-extended observed completed-workload classification; not exact-deadline prediction",
+    "compactState": "accepted operation/on-site durations, travelmetres/membercount/worktype, actual accepted physics/cohort observations and last8 own operation labels; provenance IDs local/echo only",
+    "matching": "requestId,inputHash,operationId,runId,generation and captured timing profile; typed finite0..1 noul",
+    "deadline": "3s client and upstream,0retry; max1inflight client/service,16pending preparations,32cached service responses",
+    "credentials": "Root-only hiddenstdin/inheritedenv per existing README; no key in Unity/source/args/logs",
+    "retired": "/forecast returns404; no public forecast request is forwarded; historical helper not used"
+  },
+  "nativeProbeInstructions": [
+    "Root stopPlay then import/compile and call kernel binder plus timed-lane binding as needed; service currently stopped until root hiddenstdin launch.",
+    "Run actual existing operation into return; kernel Prepare captures actual workload once and starts HTTP during trip. Inspect Decisions only after arrival Resolve.",
+    "With matching live normal_workload_regime noul response, verify ExpectedSeconds equals p*15+(1-p)*45 and stays within15..45. HasProbability true, InputHash/run/op matching.",
+    "With service absent or response after arrival, Resolve immediately gives Source baseline/HasProbability false/ProbabilityNormal null/ExpectedSeconds15. Repeated Resolve returns same immutable object even after response later completes.",
+    "ResetRun cancels oldflight and prevents oldrun/generation candidate adoption; no physical/control commands issued by kernel.",
+    "Timed owner verifies parked Replenishing unavailable during pause and Ready only after accepted duration; this lane did not edit countdown/controller/graph/UI."
+  ],
+  "validation": {
+    "serverSyntax": "PASS node --check",
+    "ownedDiffWhitespace": "PASS",
+    "CSharpCompile": "PENDING root Unity",
+    "liveTurnaround": "NOT_RUN by author"
+  },
+  "limits": [
+    "15/45seconds are authored training balance, not real119 procedure or calibrated human/medical physics.",
+    "Expected duration is a bounded mean-regime approximation, not sampled stochastic duration or clinical success.",
+    "OpenRA adapted countdown and third-party retention belong to timed lane; not duplicated here.",
+    "No native/keys/livegateway/toolcalls by this lane; no Controller/Graph/UI/camera/building edits."
+  ]
+}

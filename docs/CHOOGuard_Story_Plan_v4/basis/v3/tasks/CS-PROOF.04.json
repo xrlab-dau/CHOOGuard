@@ -1,0 +1,174 @@
+{
+  "id": "CS-PROOF.04",
+  "epicId": "CS-PROOF",
+  "title": "지정 현장의 독립 검증·기관 수용",
+  "scope": "FIELD_VALIDATION",
+  "artifact": {
+    "id": "A-CS-PROOF.04",
+    "description": "선택한 사용목적의 매뉴얼/기하/물리/결합과 새 관측 근거",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PROOF.04",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.04.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.04.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.04.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.04.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "qualification/field/protocol.json",
+    "qualification/field/passport.schema.json",
+    "qualification/field/review-ledger.json"
+  ],
+  "verificationFile": "research/proof/04-evaluation-protocol.md",
+  "dependsOn": [
+    {
+      "taskId": "CS-PACK.04",
+      "artifactId": "A-CS-PACK.04",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PROOF.02",
+      "artifactId": "A-CS-PROOF.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-SIM.05",
+      "artifactId": "A-CS-SIM.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-WORLD.02",
+      "artifactId": "A-CS-WORLD.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "QoI와 허용오차·독립 split을 사전 고정하고 대상별 규칙·형상·시간·행동·결합을 대조한다.",
+    "실행가능·모델검증·현실 관측 연동·기관 지정훈련 수용을 분리한다. surrogate/reference 일치를 현장 검증으로 대체하지 않는다.",
+    "안전한 도상/시범 검토와 별도 검수자를 기록한다. 추가 현상은 필요한 독립 증거가 준비될 때만 수용한다."
+  ],
+  "contract": "UsePassport {site,scope,manuals,models,qoi,observations,uncertainty,reviews}; 실제 설비 제어 기능 없음.",
+  "sourceIds": [
+    "DISC-11",
+    "STD-DTC",
+    "TECH-VV"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PROOF.04-P",
+      "given": "독립 holdout·scope·reviewer",
+      "when": "지정 수용",
+      "then": "해당 QoI/장소/판본만 수용",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PROOF.04-N",
+      "given": "같은 개발자료만 재사용",
+      "when": "지정 수용",
+      "then": "NOT_INDEPENDENT",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-040",
+    "REQ-067",
+    "REQ-068",
+    "REQ-076",
+    "REQ-090"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "FIELD_DATA_AND_INDEPENDENT_REFERENCE",
+      "requiredFor": "NAMED_SITE_QUANTITATIVE_OR_FIELD_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "해당 주장/검수만 제한하며 기술 fixture 개발을 전역 차단하지 않는다."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-040",
+    "REQ-067",
+    "REQ-068",
+    "REQ-076",
+    "REQ-090"
+  ],
+  "testTargets": [
+    {
+      "kind": "DOCUMENT_REVIEW",
+      "path": "research/proof/04-evaluation-protocol.md",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "독립 holdout·scope·reviewer",
+    "operation": "지정 수용",
+    "expectedPositive": "해당 QoI/장소/판본만 수용",
+    "negativeInput": "같은 개발자료만 재사용",
+    "expectedNegative": "NOT_INDEPENDENT",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

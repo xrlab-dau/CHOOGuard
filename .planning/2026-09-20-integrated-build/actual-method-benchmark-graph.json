@@ -1,0 +1,320 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-21T00:00:00+09:00",
+  "purpose": "Jev가 공개 구현과 현재 CHOOGuard seam 사이에서 실제 migration 우선순위를 선택하기 위한 읽기 전용 기술 벤치마크",
+  "status": "BENCHMARK_ONLY_NOT_PORTED",
+  "constraints": {
+    "proposalLimit": 4,
+    "primarySourceCount": 8,
+    "runtimeActions": "Unity, FDS, JuPedSim, Blender 실행 없음",
+    "productEdits": "없음",
+    "claimsExcluded": [
+      "부산역 현장 보정 또는 디지털 트윈 정확도",
+      "mesh/time convergence",
+      "임상·압사력 검증",
+      "정밀 BIM/IFC 보유",
+      "보정된 photogrammetry 또는 Gaussian splatting 입력 보유",
+      "아래 제안의 포팅 완료"
+    ]
+  },
+  "localInventory": {
+    "fdsCase": {
+      "deck": "workers/physics/cases/reference-hall/hall.fds",
+      "smokeviewIndex": "workers/physics/cases/reference-hall/hall.smv",
+      "receipt": "workers/physics/cases/reference-hall/receipt.json",
+      "solver": "FDS 6.11.1, revision FDS-6.11.1-0-gff928db-release",
+      "domainMeters": [30, 20, 4],
+      "cellSizeMeters": [0.5, 0.5, 0.5],
+      "cellCount": [60, 40, 8],
+      "timeRangeSeconds": [0, 120],
+      "sliceHeightMeters": 1.5,
+      "sliceFiles": [
+        {"path": "workers/physics/cases/reference-hall/hall_1_1.sf", "quantity": "SOOT EXTINCTION COEFFICIENT", "unit": "1/m"},
+        {"path": "workers/physics/cases/reference-hall/hall_1_2.sf", "quantity": "TEMPERATURE", "unit": "C"},
+        {"path": "workers/physics/cases/reference-hall/hall_1_3.sf", "quantity": "SOOT DENSITY", "unit": "kg/m3"},
+        {"path": "workers/physics/cases/reference-hall/hall_1_4.sf", "quantity": "CARBON MONOXIDE VOLUME FRACTION", "unit": "mol/mol"},
+        {"path": "workers/physics/cases/reference-hall/hall_1_5.sf", "quantity": "CARBON DIOXIDE VOLUME FRACTION", "unit": "mol/mol"},
+        {"path": "workers/physics/cases/reference-hall/hall_1_6.sf", "quantity": "OXYGEN VOLUME FRACTION", "unit": "mol/mol"}
+      ],
+      "smoke3dFiles": [
+        {"path": "workers/physics/cases/reference-hall/hall_1_1.s3d", "quantity": "SOOT DENSITY"},
+        {"path": "workers/physics/cases/reference-hall/hall_1_2.s3d", "quantity": "HRRPUV"},
+        {"path": "workers/physics/cases/reference-hall/hall_1_3.s3d", "quantity": "EFFECTIVE FLAME TEMPERATURE"}
+      ],
+      "truthBoundary": "실제 완료된 reference-hall 계산 산출물이지만 receipt가 명시하듯 uncalibrated이며 mesh/time convergence와 Busan validation이 없다. 현재 worker는 .sf를 점 표본으로 읽고 .s3d는 읽지 않는다."
+    },
+    "currentOrangeCube": {
+      "creation": "Assets/ChooGuard/Editor/MvpStationBuilder.cs:67,182",
+      "positionAndToggle": "Assets/ChooGuard/App/Mvp/MvpStationView.cs:13,21,81",
+      "lifecycleToggle": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:61,98-99",
+      "observedBehavior": "사건 위치에 2 x 2 x 2 m 주황 cube를 켜고 끄며 물리장 값을 표시하지 않는다."
+    },
+    "currentPhysicsSeam": {
+      "sampler": ".tools/physics/pyfds-evac/pyfds_evac/core/fds_sampling.py:27-179",
+      "worker": "workers/physics/worker.py:57,111-145,182",
+      "bridge": "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:14-26,36-38,101-157",
+      "observedBehavior": "worker는 agent 위치의 nearest slice/time 값을 사용하고 Unity 결과 계약은 scalar summary와 agents만 가진다. 전체 격자 field frame은 없다."
+    },
+    "publicModelInputs": [
+      "asset-library/space-references/busan-reconstruction/busan-site-selected.json",
+      "asset-library/space-references/busan-reconstruction/osm-busan-openworld.xml",
+      "asset-library/space-references/busan-reconstruction/terrain/receipt.json"
+    ]
+  },
+  "nodes": [
+    {
+      "id": "source.openttd-code",
+      "type": "primarySource",
+      "title": "OpenTTD authoritative command queues and vehicle servicing",
+      "url": "https://github.com/OpenTTD/OpenTTD",
+      "codeFiles": ["src/network/network_command.cpp", "src/vehicle.cpp"],
+      "facts": [
+        "network_command.cpp defines local wait and execution queues, assigns an execution frame, synchronizes pending commands to a joining client, executes in frame order, and limits distribution per tick.",
+        "VehicleServiceInDepot resets service dates, breakdown count, and reliability; NeedsServicing and NeedsAutomaticServicing guard when service should interrupt operation."
+      ],
+      "whyMature": "Public production code for a long-running transport management game; exact queue and recovery behavior is inspectable rather than inferred."
+    },
+    {
+      "id": "source.openttd-release",
+      "type": "primarySource",
+      "title": "OpenTTD 15.3 release",
+      "url": "https://www.openttd.org/downloads/openttd-releases/latest",
+      "facts": ["The official site lists 15.3 as the current stable release, dated 2026-04-04, with platform downloads and checksums."],
+      "whyMature": "Current maintained binary release and reproducible download metadata support using its public code as a living production reference."
+    },
+    {
+      "id": "source.openrct2-code",
+      "type": "primarySource",
+      "title": "OpenRCT2 action execution, tick loop, peep state, and ride recovery",
+      "url": "https://github.com/OpenRCT2/OpenRCT2",
+      "codeFiles": [
+        "distribution/scripting/scripting.md",
+        "src/openrct2/GameState.cpp",
+        "src/openrct2/entity/Peep.cpp",
+        "src/openrct2/ride/Ride.cpp"
+      ],
+      "facts": [
+        "Game actions use query then execute; in multiplayer the server re-queries and schedules the same action for clients on the same tick.",
+        "GameState tick updates date, scenario, weather, peeps, vehicles, rides, park, research, and news before processing queued game actions.",
+        "Peep and ride code retains entity state through queues/rides and breakdown, inspection, and repair updates rather than replacing the whole world state."
+      ],
+      "whyMature": "The public reimplementation exposes deterministic action and continuous park-operation behavior at file and function level."
+    },
+    {
+      "id": "source.openrct2-release",
+      "type": "primarySource",
+      "title": "OpenRCT2 maintained changelog",
+      "url": "https://github.com/OpenRCT2/OpenRCT2/blob/develop/distribution/changelog.txt",
+      "facts": ["The project changelog records 0.5.1 on 2026-05-17 and continued additions around ride reliability, guest/queue telemetry, refurbishment actions, and ride-breakdown hooks."],
+      "whyMature": "A current release history demonstrates active maintenance of the same operations surfaces used as reference."
+    },
+    {
+      "id": "source.fds-manuals",
+      "type": "primarySource",
+      "title": "NIST FDS and Smokeview manuals",
+      "url": "https://pages.nist.gov/fds/manuals.html",
+      "facts": [
+        "NIST publishes current User, Technical Reference, Verification, Validation, Smokeview User, and Smokeview Verification guides.",
+        "FDS performs low-speed fire-driven flow simulation and Smokeview displays FDS/CFAST output."
+      ],
+      "whyValidated": "The maintained toolchain publishes separate verification and validation evidence; those documents define a stronger standard than successful execution alone."
+    },
+    {
+      "id": "source.fds-output-code",
+      "type": "primarySource",
+      "title": "FDS output writer and official conversion utility",
+      "url": "https://github.com/firemodels/fds",
+      "codeFiles": ["Source/dump.f90", "Utilities/fds2ascii/fds2ascii.f90"],
+      "facts": ["The FDS source maps Smoke3D and slice output to .s3d, .sf, and .sf.bnd files; the repository also includes the official fds2ascii slice conversion utility."],
+      "whyMature": "The file semantics can be checked against maintained solver source instead of reverse-engineered from a renderer."
+    },
+    {
+      "id": "source.jupedsim",
+      "type": "primarySource",
+      "title": "JuPedSim 1.4.2 source and release",
+      "url": "https://github.com/PedestrianDynamics/jupedsim",
+      "releaseTag": "v1.4.2",
+      "facts": ["The repository provides source, documentation, system tests, and performance tests; release 1.4.2 includes an A-star routing correction and is the version pinned by this repository."],
+      "whyValidated": "A versioned simulator with public tests is reproducible, while CHOOGuard still needs its own scenario and site validation before stronger claims."
+    },
+    {
+      "id": "source.blender-lts-units",
+      "type": "primarySource",
+      "title": "Blender 4.5 LTS and metric-unit contract",
+      "url": "https://www.blender.org/download/lts/",
+      "documentationPath": "Blender Manual / Scene Properties / Units",
+      "facts": [
+        "Blender 4.5 is an LTS line supported through July 2027.",
+        "The manual states that Unit Scale changes displayed units and does not by itself change internal physics behavior."
+      ],
+      "whyMature": "The current LTS and explicit unit semantics support a repeatable scripted model pipeline with numerical dimension checks."
+    },
+    {
+      "id": "proposal.command-envelope",
+      "type": "productionProposal",
+      "priority": 1,
+      "title": "시뮬레이션 tick 기반 authoritative command envelope",
+      "currentDefect": "현재 bridge는 InFlight 단일 요청과 requestId/generation 차단은 갖지만, 명령의 승인 시각·실행 tick·대상 revision·precondition을 하나의 재생 가능한 계약으로 남기지 않는다.",
+      "referenceObservation": {
+        "fact": "OpenTTD는 대기/실행 queue를 분리하고 서버가 실행 frame을 부여해 순서대로 배포·실행하며 합류 client에 pending queue를 동기화한다.",
+        "inference": "CHOOGuard도 UI 클릭 시각이 아니라 physics session time에서 명령 수락과 적용을 기록하면 pause/retry/replay에서 동일한 운영 결과를 설명하기 쉬워진다."
+      },
+      "productionApplication": [
+        "MvpControlOrder에 commandId, issuedSessionTime, executeAtSessionTime, targetRevision, preconditionDigest를 추가한다.",
+        "worker는 validate/query 결과와 apply 결과를 분리하고 ACK에 acceptedAt, appliedAt, releaseRevision, rejectionReason을 반환한다.",
+        "MvpTrainingDirector는 ACK 전에는 팀 작업을 적용 완료로 표시하지 않고 ordered pending queue를 저장한다.",
+        "명령 처리량을 physics tick당 제한해 입력 burst가 simulation time을 건너뛰지 않게 한다."
+      ],
+      "portSeams": [
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:MvpControlOrder,SendControl,ReadStdout",
+        "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:queued actions and Receive",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:ControlSent and task state",
+        "workers/physics/worker.py:request validation and action dispatch"
+      ],
+      "prerequisites": ["활성 Mvp/NPC 작업 merge 후 계약 freeze", "simulation-time monotonicity 규칙", "request replay ledger 형식"],
+      "implementationCost": "중간: worker protocol + C# DTO/queue + replay tests, 약 2-4 개발일",
+      "limits": ["OpenTTD GPLv2 코드를 복사하지 않고 관찰된 동작을 clean-room 재구현한다.", "네트워크 multiplayer 자체를 도입하는 제안이 아니다."],
+      "verification": [
+        "동일 seed와 동일 command ledger를 두 번 재생해 appliedAt/revision/final outcome hash 일치",
+        "pause 중 입력, duplicate commandId, stale revision, out-of-order response negative fixtures",
+        "검수 사진: command rail에 명령 ID·수락 sim time·적용 sim time이 보이는 incident/recovery 장면"
+      ],
+      "migrationStatus": "PROPOSED_NOT_PORTED"
+    },
+    {
+      "id": "proposal.persistent-recovery",
+      "type": "productionProposal",
+      "priority": 2,
+      "title": "평시 개체를 유지하는 service/degradation/recovery tick",
+      "currentDefect": "현재 worker는 ordinary에서 incident로 동일 agent를 보존하지만 Unity 흐름은 incident/resolved 중심이며 시설의 격리·수리·제한 재개가 지속적인 운영 상태로 표현되지 않는다.",
+      "referenceObservation": {
+        "fact": "OpenRCT2 tick은 peep·vehicle·ride·park를 계속 갱신한 뒤 action queue를 처리하고 ride breakdown/inspection/repair를 별도 상태로 갱신한다. OpenTTD depot service는 service date, breakdown count, reliability를 갱신한다.",
+        "inference": "사건 종료를 world reset으로 처리하지 않고 시설과 시민의 기존 ID 위에 degradation과 팀 작업을 누적하면 20-30분 운영 세션에서 평시-사건-복구가 한 연속 세계로 읽힌다."
+      },
+      "productionApplication": [
+        "시설 상태를 operational, degraded, isolated, repair_assigned, repaired, limited_reopen, operational로 두고 전이는 sim tick과 완료된 team task만으로 발생시킨다.",
+        "시민 ID·routine·누적 exposure와 팀 resource를 phase 전환 뒤에도 유지한다.",
+        "resolved는 전원 출구 도달과 분리하고, 잔여 위험장 유효성·점검·수리·재개 판단을 별도 조건으로 둔다.",
+        "매 tick 서비스 수요와 복구 작업을 갱신한 뒤 authoritative command queue를 적용한다."
+      ],
+      "portSeams": [
+        "workers/physics/worker.py:Session state, begin_incident, advance, final outcomes",
+        "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:phase and completion conditions",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:finite repair/inspection tasks"
+      ],
+      "prerequisites": ["시설 stable ID와 component inventory", "team skill/resource cost 표", "limited reopen 수용 기준"],
+      "implementationCost": "중상: 상태 계약, 팀 작업, save/replay 및 운영 UI 연결 포함 4-7 개발일",
+      "limits": ["OpenRCT2 GPLv3/OpenTTD GPLv2 코드를 복사하지 않는다.", "게임 reference는 부산역 운영규정이나 실제 복구시간의 근거가 아니다."],
+      "verification": [
+        "ordinary 5분 후 incident를 발생시켜 시민 ID와 routine history가 유지되는지 확인",
+        "수리팀 미배정 시 reopen 불가, 중복 배정 시 resource 불변, stale FDS field에서 안전 재개 불가",
+        "검수 사진: 같은 카메라에서 평시 운영, 격리+수리, 제한 재개 세 장과 동일 시설/시민 ID"
+      ],
+      "migrationStatus": "PROPOSED_NOT_PORTED"
+    },
+    {
+      "id": "proposal.fds-slice-field",
+      "type": "productionProposal",
+      "priority": 3,
+      "title": "주황 cube를 실제 FDS extinction slice field로 교체",
+      "currentDefect": "현재 2 m cube는 사건 위치만 표시하고 실제 FDS 공간장, 계산 시각, 단위, 유효기간을 표현하지 않는다. 로컬 .s3d가 있어도 현 bridge/parser에는 volume field 계약이 없다.",
+      "referenceObservation": {
+        "fact": "NIST FDS/Smokeview는 .sf slice와 .s3d Smoke3D 출력을 정의하고 별도 verification/validation 문서를 제공한다. 로컬 hall.smv는 z=1.5 m SOOT EXTINCTION COEFFICIENT slice의 bounds 0..60 x 0..40을 기록한다.",
+        "inference": "현재 구현에 가장 작은 정직한 이식은 기존 pinned slice reader에서 실제 extinction 격자를 꺼내 time-stamped 2D texture로 표시하는 것이다. 이는 volumetric smoke가 아니라 1.5 m 수평 단면이다."
+      },
+      "productionApplication": [
+        "worker가 nearest fieldTime의 extinction slice를 origin, spacing=0.5 m, dimensions from data, unit=1/m, case/deck digest와 함께 FIELD_FRAME으로 내보낸다.",
+        "60 x 40 cell 기준 uint8 quantization이면 base64 약 3.2 KB이므로 현재 64 KiB JSON line 한도 안에서 1 Hz 갱신이 가능하다. 실제 배열 shape는 parser test로 확정하고 61 x 41로 추정하지 않는다.",
+        "새 MvpHazardFieldView가 reference hall의 30 x 20 m 평면에 투명 texture를 1 Unity unit=1m로 정렬한다. palette 범위와 포화값을 payload에 명시한다.",
+        "field frame이 유효할 때만 orange cube를 숨긴다. 120초 초과, digest 불일치, 좌표/시간 오류에서는 마지막 frame 재사용 없이 field를 숨기고 진단을 남긴다.",
+        "Smoke3D 세 파일은 후속 volume 연구 입력으로만 inventory에 남기며 이번 slice 구현이 .s3d를 사용한다고 표시하지 않는다."
+      ],
+      "portSeams": [
+        ".tools/physics/pyfds-evac/pyfds_evac/core/fds_sampling.py:SliceFieldSampler/load_slice_sampler",
+        "workers/physics/worker.py:FDSFieldSet and response serialization",
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:MvpPhysicsResult and stdout parser",
+        "new Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs after active-owner merge",
+        "Assets/ChooGuard/App/Mvp/MvpStationView.cs:SetIncidentVisible",
+        "Assets/ChooGuard/Editor/MvpStationBuilder.cs:orange marker construction"
+      ],
+      "prerequisites": ["field-frame schema/version", "quantization range and perceptual palette", "hall-to-Unity axis/origin fixture", "active MvpUI file ownership release"],
+      "implementationCost": "중간: worker field serialization, C# texture renderer, coordinate/golden tests 포함 3-5 개발일",
+      "limits": [
+        "2D z=1.5 m 단면이며 volumetric smoke가 아니다.",
+        "local case는 uncalibrated reference hall이고 Busan 현장 예측이 아니다.",
+        "현재 one-way FDS replay -> JuPedSim coupling이며 crowd가 FDS를 되먹임하지 않는다.",
+        "JuPedSim 1.4.2 실행 재현은 모델·현장 validation을 대신하지 않는다."
+      ],
+      "verification": [
+        "t=0,30,60,120 golden frame의 dimensions/min/max/hash를 pinned reader 원본 배열과 비교",
+        "격자 좌표 probe와 같은 위치 agent sampler의 extinction 값이 quantization 허용오차 내 일치",
+        "axis/origin corner test: (0,0), burner 주변, exit가 Unity 30 x 20 m 기준 위치에 일치",
+        "검수 사진: 같은 sim time의 field texture + UI의 '1.5 m 수평 단면', time, 1/m, case digest; cube가 없어야 함"
+      ],
+      "migrationStatus": "PROPOSED_NOT_PORTED"
+    },
+    {
+      "id": "proposal.procedural-source-model",
+      "type": "productionProposal",
+      "priority": 4,
+      "title": "OSM+DEM source layer를 보존하는 Blender LTS 재현 모델링",
+      "currentDefect": "공개 OSM/DEM과 설계 가정으로 이미 world를 만들었지만 이를 정밀 BIM·photogrammetry twin으로 승격할 입력은 없고, Unit Scale 설정만으로 metre/axis/physics 정합을 보장할 수 없다.",
+      "referenceObservation": {
+        "fact": "Blender 4.5 LTS는 장기지원 버전이며 공식 manual은 Unit Scale이 표시 단위를 바꿀 뿐 내부 물리를 자동 보정하지 않는다고 설명한다.",
+        "inference": "현재 보유한 OSM footprint와 Terrarium DEM에는 source/design-assumption을 분리한 procedural mesh + 숫자 기반 bbox/origin/axis 검사가 가장 재현 가능한 방법이다."
+      },
+      "productionApplication": [
+        "prepare_world_layers.py가 OSM ID, 원좌표/CRS 변환, DEM tile/hash를 canonical layer manifest에 기록한다.",
+        "build_world_set.py는 source footprint/elevation과 palette, fallback height, furniture 같은 design assumption을 mesh/chunk별로 분리 기록한다.",
+        "FBX export 뒤 Blender bbox와 Unity imported bbox, known 1 m control object, origin/axis matrix를 기계적으로 비교한다.",
+        "숨은 층·출입구·실내 구조는 공개 입력에 없으면 생성하지 않고 unknown/assumption으로 남긴다."
+      ],
+      "portSeams": [
+        "art/world/prepare_world_layers.py",
+        "art/blender/build_world_set.py",
+        "art/blender/world-set-manifest.json",
+        "art/blender/world-set-build-receipt.json",
+        "asset-library/space-references/busan-reconstruction/terrain/receipt.json"
+      ],
+      "prerequisites": ["canonical CRS/origin contract", "OSM/DEM input hash freeze", "known-distance control points", "source versus assumption enum"],
+      "implementationCost": "중하: 기존 pipeline의 provenance/metric gates 강화 2-3 개발일",
+      "limits": [
+        "정밀 IFC/BIM 파일이 없어 IfcOpenShell route를 선택하지 않는다.",
+        "중첩·보정된 사진 세트와 camera calibration이 없어 photogrammetry/Gaussian splatting route를 선택하지 않는다.",
+        "DEM은 현장 측량이 아니며 실내·출입구 높이를 증명하지 않는다.",
+        "기존 script/assets의 존재는 호환성 근거일 뿐 새 port 완료나 digital-twin acceptance가 아니다."
+      ],
+      "verification": [
+        "동일 input hashes/seed/LTS version으로 manifest와 mesh metrics 재생성 일치",
+        "control distances, bbox, handedness, up axis, 1unit1m 검사",
+        "DEM sample과 생성 vertex 고도 오차표, source/assumption 누락 0건",
+        "검수 사진: 동일 정사영 카메라의 OSM footprint overlay, DEM wireframe, Unity imported metre control"
+      ],
+      "migrationStatus": "EXISTING_PIPELINE_HARDENING_PROPOSED_NOT_PORTED"
+    }
+  ],
+  "edges": [
+    {"from": "source.openttd-code", "to": "proposal.command-envelope", "relation": "behavioral_pattern"},
+    {"from": "source.openttd-release", "to": "source.openttd-code", "relation": "maintenance_evidence"},
+    {"from": "source.openrct2-code", "to": "proposal.persistent-recovery", "relation": "continuous_state_pattern"},
+    {"from": "source.openttd-code", "to": "proposal.persistent-recovery", "relation": "service_recovery_pattern"},
+    {"from": "source.openrct2-release", "to": "source.openrct2-code", "relation": "maintenance_evidence"},
+    {"from": "source.fds-manuals", "to": "proposal.fds-slice-field", "relation": "format_and_validation_authority"},
+    {"from": "source.fds-output-code", "to": "proposal.fds-slice-field", "relation": "output_semantics"},
+    {"from": "source.jupedsim", "to": "proposal.fds-slice-field", "relation": "pinned_coupling_boundary"},
+    {"from": "proposal.command-envelope", "to": "proposal.persistent-recovery", "relation": "ordered_actions_drive_state"},
+    {"from": "proposal.fds-slice-field", "to": "proposal.persistent-recovery", "relation": "valid_field_gates_reopen"},
+    {"from": "source.blender-lts-units", "to": "proposal.procedural-source-model", "relation": "tool_and_unit_contract"}
+  ],
+  "selectionAdvice": {
+    "firstVerticalSlice": "proposal.fds-slice-field",
+    "reason": "이미 존재하는 실제 reference-hall extinction slice와 orange-cube seam을 이용해 가짜 위치표시를 provenance가 있는 물리 단면으로 교체할 수 있으며, 검증 범위와 한계가 가장 명확하다.",
+    "implementationOrder": [
+      "proposal.command-envelope",
+      "proposal.persistent-recovery",
+      "proposal.fds-slice-field",
+      "proposal.procedural-source-model"
+    ],
+    "orderNote": "계약 안정성은 command envelope가 먼저지만, 사용자에게 보이는 첫 독립 vertical slice는 field renderer로 병렬 제작 가능하다. 활성 MvpUI 소유권이 해제된 뒤 연결한다."
+  }
+}

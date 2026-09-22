@@ -1,0 +1,41 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "direction": "User approved operations v2; root applies camera/buildings; this is height candidate classification only. Requirements are direction, measured observations outrank model opinions.",
+    "evidence": [
+      "Exact Busan 3m raster acquired using HTTP ranges, ZIP CRC and CRS EPSG:32652 verified. Source paper 2025; primarily 2019 imagery.",
+      "Unknown 665 building footprints: 650 reviewable ML estimates, 15 unresolved. All 95 positive numeric OSM heights and 390 levels-only preserved.",
+      "Against 95 tagged OSM buildings, published maximum aggregation mean absolute difference 37.03m, mean signed difference -36.73m, median absolute difference29.18m. Neither source is surveyed ground truth.",
+      "Unknown max estimates range0.219–43.687m. This raster is not established as current reliable building height for our ROI. Current city has explicit temporary9m unknown-height proxy, no random numeric heights."
+    ]
+  },
+  "questions": {
+    "runtime": {
+      "type": "choice",
+      "instructions": "What treatment follows the actual discrepancy evidence?",
+      "criteria": {
+        "quarantine_candidate": "Retain ML candidates and provenance for research; do not silently use as true runtime building height or replace known source tags",
+        "blind_apply": "Apply all ML heights as verified site truth because paper is recent",
+        "discard_known": "Replace all95 source heights with ML raster"
+      }
+    },
+    "claim": {
+      "type": "choice",
+      "instructions": "Which claim is justified?",
+      "criteria": {
+        "data_acquired_not_accuracy": "Actual data acquisition and source comparison succeeded; site height accuracy remains unverified",
+        "digital_twin_complete": "All1150 buildings now digitally exact",
+        "osm_ground_truth": "OSM disagreement proves raster absolutely wrong"
+      }
+    },
+    "effort": {
+      "type": "choice",
+      "instructions": "Choose review depth for this bounded data decision; root keeps authority.",
+      "criteria": {
+        "low": "Low classification sufficient to quarantine, native building integration can proceed",
+        "high": "High root review must delay unrelated integration indefinitely",
+        "max": "Max because all source values require destructive overwrite"
+      }
+    }
+  }
+}

@@ -1,0 +1,414 @@
+{
+  "schemaVersion": "1.0",
+  "researchDate": "2026-09-21",
+  "scope": {
+    "facility": "Busan railway station (KTX/SRT), explicitly not the same-name metro station",
+    "stationGoal": "all three public-facing floors plus major training hubs; measured structure and inferred/game-authored fill must remain separate",
+    "corridor": "Busan Station-Choryang-Jungang-Nampo-North Port",
+    "existingBaselineExcludedFromRediscovery": [
+      "OSM-derived buildings, roads, railway, platforms and coastline already present in asset-library/space-references/busan-reconstruction",
+      "four Mapzen Terrarium elevation tiles already decoded by art/world/prepare_world_layers.py"
+    ],
+    "referenceOriginWgs84": {
+      "latitude": 35.1151,
+      "longitude": 129.0417
+    },
+    "currentWorkingBboxWgs84": [
+      129.02,
+      35.09,
+      129.065,
+      35.127
+    ]
+  },
+  "decision": {
+    "readyEditableStationBimFound": false,
+    "readyEditableCityMeshFound": false,
+    "bestImmediateLicensedAcquisition": "C01",
+    "bestConditionalRoadDetailAcquisition": "C02",
+    "bestAuthoritativeNorthPortPlanLead": "C03",
+    "summary": "No public authoritative Busan railway-station BIM, measured floor plan, CityGML package, or reusable textured city mesh was found. The defensible next increment is an authoritative 2.5D exterior reconstruction from the licensed national building SHP, optionally strengthened by NGII precision-road vectors/point clouds where the target corridor is covered. Interior topology remains reference-constrained reconstruction rather than measured digital-twin acceptance."
+  },
+  "candidates": [
+    {
+      "id": "C01",
+      "rank": 1,
+      "title": "MOLIT GIS Integrated Building Information",
+      "authority": "Ministry of Land, Infrastructure and Transport / National Spatial Information Center",
+      "officialCatalogUrl": "https://www.data.go.kr/data/15083092/fileData.do",
+      "downloadLandingUrl": "https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?svcCde=NA&dsId=18",
+      "accessStatus": "PUBLIC_CATALOG; provider download landing may require normal VWorld interaction or account; no key or account was used in this research",
+      "formats": [
+        "SHP plus package-side DBF/SHX/PRJ expected from a normal shapefile distribution"
+      ],
+      "coverage": "nationwide catalog, crop after acquisition to WGS84 bbox 129.0200,35.0900,129.0650,35.1270",
+      "coordinates": "product CRS must be read from its PRJ/package metadata; do not assume an EPSG",
+      "date": {
+        "edition": "2026-08-09",
+        "catalogModified": "2026-08-31",
+        "updatePolicy": "ad hoc automatic refresh"
+      },
+      "license": {
+        "name": "Korea Open Government License Type 1",
+        "conditions": "attribution",
+        "catalogEvidence": "public-data portal states free and public work attribution Type 1"
+      },
+      "whatItProves": "Official building footprint geometry integrated with building-register attributes. The catalog proves SHP delivery, 6,656,497 nationwide records, and a reference-use limitation caused by differing builders.",
+      "whatItDoesNotProve": "It is not surveyed exterior mesh, facade detail, roof shape, station interior, or a guarantee that HEIGHT and floor attributes are complete for every feature.",
+      "pipelineUse": "Replace or cross-check OSM building polygons. Read HEIGHT when present; otherwise use GRND_FLR only as a visibly marked estimate. Reproject from the package CRS to the existing local east/north metre origin and feed polygon plus provenance fields into world-layers.json/MvpCityBuilder.",
+      "priority": "ACQUIRE_NEXT",
+      "evidenceClass": "directly_supported"
+    },
+    {
+      "id": "C02",
+      "rank": 2,
+      "title": "NGII Precision Road Map vectors and MMS point clouds",
+      "authority": "National Geographic Information Institute",
+      "officialCatalogUrl": "https://www.data.go.kr/data/15059912/fileData.do",
+      "accessUrl": "https://map.ngii.go.kr/ms/map/NlipMap.do?tabGb=total",
+      "accessStatus": "DOWNLOAD_REQUIRES_LOGIN_AND_NGII_LARGE_FILE_TRANSFER_SOFTWARE; exact target-road coverage not verified without the interactive selection",
+      "formats": [
+        "SHP vector",
+        "MMS point cloud selectable in the official portal"
+      ],
+      "coverage": "highways, general roads and major roads; target corridor coverage must be checked before download",
+      "coordinates": "not declared by the catalog; use downloaded PRJ/package metadata as authority",
+      "date": {
+        "edition": "2025-04-30",
+        "catalogModified": "2025-06-23",
+        "updatePolicy": "ad hoc automatic refresh"
+      },
+      "license": {
+        "name": "Korea Open Government License Type 1",
+        "conditions": "attribution"
+      },
+      "whatItProves": "The official catalog defines the product as high-precision 3D road data covering lanes, road boundaries, stop lines, road centerlines, medians, tunnels, bridges, underpasses, signs, road markings and signals, and explicitly offers vector and point-cloud selection.",
+      "whatItDoesNotProve": "The catalog does not establish that every street from Busan Station to Nampo and North Port has coverage. It does not provide complete building or station geometry.",
+      "pipelineUse": "After a normal authorized portal download, clip to the corridor, reproject to the local metre origin, generate road ribbons/curbs and point-cloud reference meshes in Blender, then compare against existing OSM centerlines. Preserve the point cloud as reference evidence instead of shipping it directly in Unity.",
+      "priority": "VERIFY_COVERAGE_THEN_ACQUIRE",
+      "evidenceClass": "directly_supported"
+    },
+    {
+      "id": "C03",
+      "rank": 3,
+      "title": "Busan Port Authority North Port redevelopment CAD and official plan package",
+      "authority": "Busan Port Authority",
+      "officialListingUrl": "https://www.busanpa.com/redevelopment/board/list.bpa?boardId=BBS_0000089&listCel=1&listRow=10&menuCd=DOM_000000505001000000&paging=ok&startPage=4",
+      "directDownloadUrl": "https://www.busanpa.com/redevelopment/board/download.bpa?boardId=BBS_0000089&command=update&dataSid=31362&fileSid=33571&menuCd=DOM_000000505001000000&paging=ok&startPage=4",
+      "relatedCurrentPlanUrl": "https://www.busanpa.com/redevelopment/board/view.bpa?boardId=BBS_0000091&dataSid=29735&menuCd=DOM_000000505003000000&paging=ok&startPage=1",
+      "accessStatus": "DOWNLOADED_PUBLIC_PACKAGE_21124427_BYTES_AND_INSPECTED_ZIP_INVENTORY",
+      "formats": [
+        "ZIP described by BPA as CAD files etc.",
+        "PDF current 2023 plan notice"
+      ],
+      "coverage": "North Port phase-1 marine-culture landmark parcel Z-1-2 and related redevelopment planning; not the full station-to-Nampo corridor",
+      "coordinates": "unknown until CAD metadata/layers are inspected",
+      "date": {
+        "cadPackagePosted": "2023-12-29",
+        "currentPlanNoticePosted": "2023-04-17",
+        "projectPeriodOnCurrentBpaPage": "2008-2027"
+      },
+      "license": {
+        "name": "UNCONFIRMED",
+        "conditions": "the public page footer says all rights reserved; public download does not by itself establish derivative-game redistribution rights"
+      },
+      "whatItProves": "BPA publicly distributes an official CAD package for a North Port landmark-site competition and a current plan notice. It is a concrete official geometry lead within the target corridor.",
+      "whatItDoesNotProve": "The unopened archive is not established as a complete survey, current as-built model, 3D geometry, or reusable game asset, and it does not cover Busan Station.",
+      "pipelineUse": "If rights permit local derivative use, inventory archive members and CAD units/CRS, isolate parcel, waterfront, road and elevation layers, compare them to current OSM/NGII geometry, then import only source-grounded vectors into Blender. Keep proposed and as-built features in separate collections.",
+      "priority": "PLANNED_GEOMETRY_REFERENCE_NOT_AS_BUILT",
+      "evidenceClass": "directly_supported",
+      "priorInventoryAccessStatus": "PUBLIC_20,629_KB_ZIP; not downloaded because contents and reuse rights were not yet inspected and this lane was inventory-first",
+      "acquisitionReceipt": "asset-library/research-public/2026-09-21/busan-twin/bpa-northport-package-receipt.json",
+      "contentsVerified": "3DWG+3PDF+3JPG;2023parcel/buildingcontrol/landuseplans"
+    },
+    {
+      "id": "C04",
+      "rank": 4,
+      "title": "NGII orthophoto, DEM and aerial LiDAR product access",
+      "authority": "National Geographic Information Institute",
+      "accessUrl": "https://map.ngii.go.kr/ms/map/NlipMap.do",
+      "coverageInventoryUrl": "https://www.data.go.kr/data/15148107/fileData.do",
+      "publicDataPolicyUrl": "https://map.ngii.go.kr/nw/common/login/publicInformation.do",
+      "accessStatus": "PRODUCT_SELECTION_REQUIRED; coverage-year and resolution for the target sheets were not confirmed; higher-resolution DEM products may be non-public",
+      "formats": [
+        "orthophoto raster",
+        "DEM raster",
+        "aerial LiDAR where available"
+      ],
+      "coverage": "NGII manages nationwide imagery/DEM/LiDAR projects, but the official catalog entry is project-area metadata rather than the actual target payload",
+      "coordinates": "product-specific Korean TM/GRS80 metadata; inspect the selected package and control points",
+      "date": {
+        "coverageInventoryModified": "2026-08-25",
+        "targetAcquisitionYear": "UNKNOWN"
+      },
+      "license": {
+        "name": "NGII public-data policy",
+        "conditions": "commercial reuse generally allowed for public data, subject to statutory exclusions and third-party rights; verify per selected product"
+      },
+      "whatItProves": "NGII officially manages orthophoto, DEM and LiDAR project products and publishes a public-data reuse policy.",
+      "whatItDoesNotProve": "It does not prove that downloadable LiDAR or fine urban DEM currently covers this exact corridor, and imagery does not reveal hidden interiors.",
+      "pipelineUse": "Use georeferenced orthophoto only for alignment and material/roof reference; use selected DEM to replace the current coarse visual terrain after CRS/datum verification. Use LiDAR, if legally obtainable for the target, as a Blender registration/reference layer rather than an automatic facade truth source.",
+      "priority": "QUERY_TARGET_SHEETS",
+      "evidenceClass": "directly_supported_with_target_coverage_unknown"
+    },
+    {
+      "id": "C05",
+      "rank": 5,
+      "title": "Busan city 3D analysis viewer",
+      "authority": "Busan Metropolitan City",
+      "officialUrl": "https://lifemap.busan.go.kr/md/index3d.do",
+      "accessStatus": "PUBLIC_BROWSER_VIEW; no published geometry download or documented API found",
+      "formats": [
+        "browser-rendered 3D building and terrain layers; raw format undisclosed"
+      ],
+      "coverage": "Busan city viewer; exact model recency and target-detail level undisclosed",
+      "coordinates": "undisclosed by the public page",
+      "date": {
+        "viewerLiveCheck": "2026-09-21",
+        "dataAcquisitionDate": "UNKNOWN"
+      },
+      "license": {
+        "name": "UNCONFIRMED",
+        "conditions": "view-only until the city publishes an export/API and reuse terms"
+      },
+      "whatItProves": "The city operates a browser-visible 3D building and terrain analysis surface with elevation, landscape and sunlight tools and building attributes.",
+      "whatItDoesNotProve": "No public download, API, 3D Tiles/CityGML/OBJ/GLB format, CRS, data date, accuracy, or derivative-use permission was found.",
+      "pipelineUse": "Use as a manual visual cross-check for massing and terrain only. Do not scrape, extract or trace streamed geometry.",
+      "priority": "REFERENCE_ONLY",
+      "evidenceClass": "directly_supported"
+    },
+    {
+      "id": "C06",
+      "rank": 6,
+      "title": "VWorld WebGL 3D building service",
+      "authority": "VWorld / Ministry of Land, Infrastructure and Transport",
+      "officialSampleUrl": "https://github.com/V-world/V-world_API_sample/blob/master/%EB%B8%8C%EC%9D%B4%EC%9B%94%EB%93%9C_%EA%B5%90%EC%9C%A1/2026%EB%85%84_%EB%B8%8C%EC%9D%B4%EC%9B%94%EB%93%9C_%EA%B5%90%EC%9C%A1/Readme.md",
+      "loaderUrlTemplate": "https://map.vworld.kr/js/webglMapInit.js.do?version=3.0&apiKey=YOUR_ISSUED_KEY",
+      "accessStatus": "API_KEY_REQUIRED; official sample supports the facility_build layer; no key was requested or used",
+      "formats": [
+        "proprietary streamed WebGL 3D service"
+      ],
+      "coverage": "national 3D map service; exact Busan object completeness must be checked through authorized use",
+      "coordinates": "official sample positions the camera with longitude, latitude and altitude",
+      "date": {
+        "officialTrainingSurface": "2026"
+      },
+      "license": {
+        "name": "VWorld API terms",
+        "conditions": "issued-key use and attribution; no current primary-source authorization found for crawling or converting streamed building payloads"
+      },
+      "whatItProves": "An official Korean 3D building display layer exists and can be viewed through the supported WebGL API.",
+      "whatItDoesNotProve": "The current official sample exposes no supported 3D Tiles, CityGML, OBJ, GLB or raw-building export for Unity ingestion.",
+      "pipelineUse": "Reference/visual comparison only unless VWorld provides an explicit downloadable product and derivative-use permission.",
+      "priority": "REFERENCE_ONLY",
+      "evidenceClass": "directly_supported"
+    },
+    {
+      "id": "C07",
+      "rank": 7,
+      "title": "Korail Busan railway-station guide and floor-facility evidence",
+      "authority": "Korea Railroad Corporation",
+      "officialStationUrl": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "officialFacilityApiUrl": "https://www.korail.com/com/userStation.do?mode=view&stationSeq=10279506&floor=",
+      "localEvidence": [
+        "asset-library/space-references/source-downloads/rail-station.jpg",
+        "asset-library/space-references/source-downloads/rail-parking.jpg",
+        "asset-library/space-references/floorplan-sources/busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg",
+        "asset-library/space-references/FLOORPLANS.txt"
+      ],
+      "accessStatus": "PUBLIC_REFERENCE; current direct station page intermittently returns a service guidance page; previously acquired official images are locally hashed; the facility API returns facility photos, not floor-plan geometry",
+      "formats": [
+        "HTML/JSON-like facility response",
+        "JPEG official exterior/parking reference",
+        "unofficial JPEG photograph of a 1F/2F/3F facility board"
+      ],
+      "coverage": "Busan railway station at 206 Jungang-daero, Dong-gu; three labelled floors in the local board photograph",
+      "coordinates": {
+        "workingReference": [
+          129.0417,
+          35.1151
+        ],
+        "authority": "local reconstruction origin; exact official station control point not claimed"
+      },
+      "date": {
+        "facilityBoardSourcePost": "2025-02-27",
+        "boardPhotoDate": "UNKNOWN",
+        "officialImageDate": "UNKNOWN"
+      },
+      "license": {
+        "name": "UNCONFIRMED_PER_IMAGE",
+        "conditions": "reference use only; Korail general copyright policy and a public page do not establish derivative or redistribution permission for each image"
+      },
+      "whatItProves": "Station identity, official exterior/parking context, and a three-floor relative facility/topology diagram containing entrances, ticketing, toilets, elevators, escalators, boarding areas and shops.",
+      "whatItDoesNotProve": "No scale, measured room geometry, floor heights, structural grid, detailed platforms, emergency systems, photo date, or current as-built condition. The unofficial board photo is diagrammatic and perspective-distorted.",
+      "pipelineUse": "Convert only explicit adjacency, floor membership and vertical-circulation relations into a topology graph. Keep every unshown room, wall length and elevation tagged INFERRED_GAMEPLAY; do not infer dimensions from pixels.",
+      "priority": "TOPOLOGY_CONSTRAINT",
+      "evidenceClass": "directly_supported_with_rights_and_scale_limits"
+    },
+    {
+      "id": "C08",
+      "rank": 8,
+      "title": "Open overlapping street and facility imagery",
+      "authority": "individual Wikimedia Commons, Mapillary and KartaView contributors",
+      "urls": {
+        "wikimediaBusanStationCategory": "https://commons.wikimedia.org/wiki/Category:Busan_Station",
+        "wikimediaJagalchiCategory": "https://commons.wikimedia.org/wiki/Category:Jagalchi_Market",
+        "mapillaryStationView": "https://www.mapillary.com/app/?lat=35.1151&lng=129.0417&z=16",
+        "mapillaryLicense": "https://help.mapillary.com/hc/en-us/articles/115001770409-CC-BY-SA-license-for-open-data",
+        "kartaViewExplorer": "https://kartaview.org/map/@35.1151,129.0417,16z",
+        "kartaViewApiDocs": "https://api.openstreetcam.org/api/doc.html",
+        "kartaViewTerms": "https://kartaview.org/terms"
+      },
+      "accessStatus": "WIKIMEDIA_CATEGORIES_CONFIRMED; Mapillary exact corridor coverage not confirmed by the non-interactive research surface; KartaView unauthenticated nearby-tracks request timed out after 20 seconds and yielded no coverage evidence",
+      "formats": [
+        "licensed still photographs with per-file metadata",
+        "geotagged street-image sequences where coverage exists"
+      ],
+      "coverage": "Wikimedia currently lists 17 Busan Station files and 99 Jagalchi Market files, but the station category mixes railway and same-name metro content and must be filtered per file",
+      "coordinates": "per-file or per-image GPS when supplied; category object coordinates are not camera poses",
+      "date": {
+        "categoryLiveCheck": "2026-09-21",
+        "individualCaptureDates": "per-file metadata; mixed and often historical"
+      },
+      "license": {
+        "name": "PER_FILE for Wikimedia; CC BY-SA for Mapillary images; CC BY-SA 4.0 for KartaView street images/3D spatial data",
+        "conditions": "record creator, source URL, exact license/version and share-alike obligations for every selected image; category membership alone is not a license receipt"
+      },
+      "whatItProves": "Overlapping public exterior/interior visual references exist for facade vocabulary, platform appearance, entrances and Jagalchi training-hub character. Mapillary and KartaView publish open-image licensing and geotagged sequence APIs.",
+      "whatItDoesNotProve": "Photos alone do not establish accurate dimensions, hidden structure, a current floor plan, camera calibration, or complete/continuous corridor coverage.",
+      "pipelineUse": "Create a per-image receipt table, reject metro images and stale/uncalibrated views, and use overlapping views for qualitative facade/material checks. Only attempt photogrammetry where source overlap, camera metadata and a separately authoritative scale/control network exist; otherwise produce no metric claim.",
+      "priority": "CURATE_SMALL_REFERENCE_SET",
+      "evidenceClass": "directly_supported_with_coverage_unknown"
+    }
+  ],
+  "explicitUnavailableOrDisqualified": [
+    {
+      "claim": "Busan 1365 Twin supplies target-corridor geometry",
+      "status": "CONTRADICTED_BY_SCOPE",
+      "evidence": [
+        "https://1365twin.busan.kr/",
+        "https://www.busan.go.kr/policy01/view?curPage=30&listNo=1041"
+      ],
+      "finding": "The official pilot and 3D building database are stated for Busanjin-gu. Busan railway station is in Dong-gu and Nampo/North Port are outside that pilot scope. No public CityGML, 3D Tiles or download endpoint for the requested corridor was found."
+    },
+    {
+      "claim": "BPA operational digital twin supplies North Port geometry",
+      "status": "CONTRADICTED_BY_SCOPE",
+      "evidence": "https://www.busanpa.com/board/view.bpa?boardId=BBS_0000031&dataSid=30866&menuCd=DOM_000000105002001000",
+      "finding": "BPA's published operational system is at Busan New Port berth 1/PNIT, not North Port, and exposes no public geometry API/download, CRS or reuse license."
+    },
+    {
+      "claim": "Google Photorealistic 3D Tiles can be converted into project assets",
+      "status": "DISALLOWED_BY_SOURCE_POLICY",
+      "evidence": "https://developers.google.com/maps/documentation/tile/policies",
+      "finding": "The official policy limits the API to visualization and prohibits unauthorized caching, extraction, offline use and tracing/derivation. It may be streamed with billing/key and on-screen attribution, but it is not a reconstruction input or distributable Unity asset."
+    },
+    {
+      "claim": "A public shared model provides the target station or corridor digital twin",
+      "status": "NOT_FOUND",
+      "evidence": [
+        "https://sketchfab.com/tags/busan",
+        "https://sketchfab.com/3d-models/busan-tower-a549e07211484bcc833fa307d09e3478"
+      ],
+      "finding": "The source-creator scan found no downloadable, authoritative Busan railway-station or corridor model. A 2025 Busan Tower model points to a commercial Fab listing and does not establish survey accuracy; generic Busan uploads are wrong-place or non-authoritative."
+    },
+    {
+      "claim": "Public station imagery is a measured floor plan or BIM",
+      "status": "NOT_FOUND",
+      "finding": "No official reusable station BIM, structural plan, scaled all-floor plan, platform/track measured plan, point cloud or photogrammetric mesh was located. Existing imagery supports only visible appearance and relative topology."
+    }
+  ],
+  "reconstructionRecipe": [
+    {
+      "step": 1,
+      "action": "Acquire C01 through its normal VWorld download route, retain the original archive, license page snapshot/metadata, SHA-256 and PRJ, and crop only after preserving the source receipt.",
+      "output": "immutable official building source plus a target-bbox derivative"
+    },
+    {
+      "step": 2,
+      "action": "Reproject the package CRS to WGS84 and then to the existing local east/north metre frame centered at 35.1151,129.0417. Compare control points against the current OSM geometry; never silently rescale to fit.",
+      "output": "coordinate transform receipt and residual table"
+    },
+    {
+      "step": 3,
+      "action": "Generate LoD1 exterior solids from official footprints. Use an explicit HEIGHT only when populated and plausible; otherwise derive a provisional height from GRND_FLR with an INFERRED_HEIGHT tag. Preserve source ID, date, license, height method and confidence per object.",
+      "output": "Blender collections and world-layers building records at 1 unit = 1 metre"
+    },
+    {
+      "step": 4,
+      "action": "Check C02 corridor coverage. If present, align its 3D road vectors and MMS point-cloud reference to the same frame and replace generic road widths/curbs. Keep the raw point cloud out of the runtime build unless a bounded decimated derivative is separately licensed and documented.",
+      "output": "road/curb geometry with authoritative source tier"
+    },
+    {
+      "step": 5,
+      "action": "Inspect C03 only after recording rights. Separate North Port as-built, approved-plan and proposal layers. Import verified waterfront/parcel/road vectors; never merge future-plan massing into the present-day world without a visible temporal tag.",
+      "output": "dated North Port plan layer"
+    },
+    {
+      "step": 6,
+      "action": "For Busan Station, use the existing footprint/platform relations and C07 to build a graph of floor membership, public entrances, boarding zones, elevators and escalators. Author room widths, hidden walls, heights and emergency-service details as INFERRED_GAMEPLAY until measured public evidence appears.",
+      "output": "station-topology.json plus separate measured/reference/inferred Blender collections"
+    },
+    {
+      "step": 7,
+      "action": "Curate C08 per-file receipts. Use photos for facade, material, signage placement and qualitative visual comparison. Metric photogrammetry requires overlapping calibrated images plus an independent authoritative scale/control network; photo-only reconstruction must remain non-metric.",
+      "output": "small licensed reference set and visual-check matrix"
+    },
+    {
+      "step": 8,
+      "action": "Export deterministic metre-native FBX or glTF from Blender with origin, axis, units, source IDs and evidence tier in a manifest. Feed the exterior through the existing world-layers/MvpCityBuilder route and the station topology through MvpInteriorBuilder; keep render mesh, collision/navmesh and physics zones separately reviewable.",
+      "output": "Unity-ready geometry plus provenance manifest"
+    },
+    {
+      "step": 9,
+      "action": "Validate coordinate residuals, floor/topology constraints, mesh bounds, collision/navigation continuity and visible agreement at wide/mid/close views. Label the result RECONSTRUCTION_DRAFT until target-site measurements or equivalent authoritative geometry support accuracy acceptance.",
+      "output": "fresh Unity scene evidence and unresolved-assumption ledger"
+    }
+  ],
+  "knownVsAssumptions": {
+    "known": [
+      "The target is the Korail Busan railway station, not Busan Metro station 113.",
+      "The current pipeline uses local east/north metres around 35.1151,129.0417 and Unity 1 unit = 1 metre.",
+      "Official downloadable nationwide building SHP exists under Type 1 attribution licensing.",
+      "Official precision-road SHP and MMS point-cloud selection exists, but target coverage requires portal verification.",
+      "BPA publicly lists a 20,629 KB CAD package for one North Port landmark-site competition.",
+      "The locally held three-floor facility-board photo has no scale and no verified capture/reference date."
+    ],
+    "assumptionsToKeepExplicit": [
+      "C01 contains useful nonzero HEIGHT or GRND_FLR values for all target buildings.",
+      "C02 covers the full station-Nampo-North Port street network.",
+      "C03 CAD units, CRS and layers match current as-built waterfront conditions.",
+      "The facility board reflects the current station after renovations.",
+      "Any room dimension, floor height, structural grid, restricted area, ventilation/fire system or hidden circulation not shown by public evidence.",
+      "Any geometry derived only from public photographs is metrically accurate."
+    ]
+  },
+  "researchBoundaries": {
+    "performed": [
+      "public web and official catalog research",
+      "read-only local repository inspection",
+      "one unauthenticated KartaView coverage request that timed out with no data"
+    ],
+    "notPerformed": [
+      "computer-use/browser automation",
+      "account creation",
+      "API-key acquisition",
+      "auth bypass",
+      "paid job or purchase",
+      "large model download",
+      "software install",
+      "private/restricted-plan search",
+      "Unity import or product acceptance test"
+    ],
+    "savedPublicPayloadBytes": 0
+  },
+  "validation": {
+    "surface": "source graph JSON syntax plus URL/evidence consistency review",
+    "doesNotConstitute": [
+      "asset acquisition",
+      "geometry verification",
+      "license warranty",
+      "Unity runtime validation",
+      "digital-twin acceptance"
+    ]
+  }
+}

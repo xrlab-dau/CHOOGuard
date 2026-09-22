@@ -1,0 +1,24 @@
+flowchart TB
+    RAW["사진·도면·측정 / 무료 모델<br/>서로 다른 증거 등급"]
+    IN["입고·격리 검사<br/>bytes/hash · 파트·rig·scale"]
+    REC["선택 복원·정합<br/>MapAnything/COLMAP + 독립 치수"]
+    ID["PhysicalAssetId<br/>frame · topology · version"]
+    REN["시각 표현<br/>prefab · 재질 · LOD"]
+    NAV["이동 표현<br/>collision · graph · 연결부"]
+    CAL["계산 표현<br/>체적 · 개구 · 물성·경계"]
+    SEM["의미 표현<br/>역할·상태·source·qualification"]
+    BUN["immutable SiteBundle<br/>input lock · 미확인 범위"]
+    GAME["Unity WorldCamera + HUD<br/>동일 ID로 상태 표시"]
+    RAW -->|"실제 취득한 것만"| IN
+    IN -->|"관측이 있는 구간"| REC
+    IN -->|"기초 자산/형상"| ID
+    REC -->|"검증한 정합"| ID
+    ID -->|"같은 대상"| REN
+    ID -->|"같은 대상"| NAV
+    ID -->|"같은 대상"| CAL
+    ID -->|"같은 대상"| SEM
+    REN -->|"버전 고정"| BUN
+    NAV -->|"버전 고정"| BUN
+    CAL -->|"버전 고정"| BUN
+    SEM -->|"버전 고정"| BUN
+    BUN -->|"로드·연결"| GAME

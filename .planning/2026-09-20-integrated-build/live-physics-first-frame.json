@@ -1,0 +1,48 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); var p=w.GetComponent<ChooGuard.App.Mvp.MvpPhysicsBridge>(); var d=w.GetComponent<ChooGuard.App.Mvp.MvpTrainingDirector>(); var r=p.LastResult; return new {state=d.State,ready=p.Ready,failed=p.Failed,inFlight=p.InFlight,diagnostic=p.Diagnostic,result=r==null?null:new {r.engine,r.engineVersion,r.fdsStatus,r.caseId,r.seed,r.simTime,r.total,r.evacuated,r.temperature,r.visibility,agents=r.agents.Length},events=d.Events.TakeLast(3).ToArray()};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "state": "Running",
+        "ready": true,
+        "failed": false,
+        "inFlight": false,
+        "diagnostic": null,
+        "result": {
+          "engine": "JuPedSim CFSV3",
+          "engineVersion": "1.4.2",
+          "fdsStatus": "not_required",
+          "caseId": "reference-hall-30x20-v1",
+          "seed": 268301273,
+          "simTime": 24,
+          "total": 86,
+          "evacuated": 0,
+          "temperature": 20,
+          "visibility": 30,
+          "agents": 86
+        },
+        "events": [
+          "22.0초 · 계산 0/86명 · 밀도 1.59",
+          "23.0초 · 계산 0/86명 · 밀도 1.59",
+          "24.0초 · 계산 0/86명 · 밀도 1.59"
+        ]
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

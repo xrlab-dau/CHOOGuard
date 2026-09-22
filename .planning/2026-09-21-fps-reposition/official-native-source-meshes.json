@@ -1,0 +1,382 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpStationView>();var roots=new[]{s.WholeEnvelope.Find(\"공식 자료 부산역 역사\"),s.transform.Find(\"공식 자료 부산역 주변 공간\")};var rows=new System.Collections.Generic.List<object>();foreach(var root in roots)foreach(var f in root.GetComponentsInChildren<UnityEngine.MeshFilter>(true)){var path=f.name;var p=f.transform.parent;while(p!=root&&p!=null){path=p.name+\"/\"+path;p=p.parent;}rows.Add(new{root=root.name,path,vertices=f.sharedMesh.vertexCount,triangles=f.sharedMesh.triangles.Length/3,readable=f.sharedMesh.isReadable});}return rows;"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": [
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_0",
+          "vertices": 107443,
+          "triangles": 91289,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_1",
+          "vertices": 89085,
+          "triangles": 92558,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_2",
+          "vertices": 88121,
+          "triangles": 92822,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_3",
+          "vertices": 104935,
+          "triangles": 83716,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_4",
+          "vertices": 95566,
+          "triangles": 86627,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_5",
+          "vertices": 98239,
+          "triangles": 94776,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_6",
+          "vertices": 93732,
+          "triangles": 96273,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "MainShell/OfficialStation_-부산역_7",
+          "vertices": 22553,
+          "triangles": 28476,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "ExitRoofs/OfficialStation_-부산역_출구지붕_0",
+          "vertices": 77090,
+          "triangles": 115278,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "ExitRoofs/OfficialStation_-부산역_출구지붕_1",
+          "vertices": 67589,
+          "triangles": 72287,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "PlatformsParking/OfficialStation_-부산역_선로상층부(주차장)_0",
+          "vertices": 47955,
+          "triangles": 42156,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "PlatformsParking/OfficialStation_-부산역_선로상층부_0",
+          "vertices": 87277,
+          "triangles": 85279,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_0",
+          "vertices": 84055,
+          "triangles": 104079,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_1",
+          "vertices": 87604,
+          "triangles": 103975,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_2",
+          "vertices": 86045,
+          "triangles": 103530,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_3",
+          "vertices": 125566,
+          "triangles": 106948,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_4",
+          "vertices": 91493,
+          "triangles": 94743,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_5",
+          "vertices": 94705,
+          "triangles": 101542,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_6",
+          "vertices": 94173,
+          "triangles": 100514,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_7",
+          "vertices": 97543,
+          "triangles": 99588,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_8",
+          "vertices": 104764,
+          "triangles": 103444,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "Layer0PlatformsDetails/OfficialStation_Layer0_9",
+          "vertices": 7245,
+          "triangles": 3860,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "SiteTrains/OfficialStation_-기차_0",
+          "vertices": 120091,
+          "triangles": 109575,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "SiteTrains/OfficialStation_-기차_1",
+          "vertices": 123041,
+          "triangles": 109448,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "SiteTrains/OfficialStation_-기차_2",
+          "vertices": 122544,
+          "triangles": 109873,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "SiteTrains/OfficialStation_-기차_3",
+          "vertices": 119751,
+          "triangles": 109427,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "SiteTrains/OfficialStation_-기차_4",
+          "vertices": 123303,
+          "triangles": 109598,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 역사",
+          "path": "SiteTrains/OfficialStation_-기차_5",
+          "vertices": 87783,
+          "triangles": 78291,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextPlaza/OfficialStation_-길건너 콘타_0",
+          "vertices": 3114,
+          "triangles": 1924,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextPlaza/OfficialStation_-대형도로_0",
+          "vertices": 93045,
+          "triangles": 97281,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextPlaza/OfficialStation_-대형도로_1",
+          "vertices": 47493,
+          "triangles": 56111,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextPlaza/OfficialStation_-우측 콘타_0",
+          "vertices": 938,
+          "triangles": 562,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextPlaza/OfficialStation_-유라시아 도로_0",
+          "vertices": 107211,
+          "triangles": 95974,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextPlaza/OfficialStation_-유라시아 도로_1",
+          "vertices": 105544,
+          "triangles": 92816,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextPlaza/OfficialStation_-좌측 콘타_0",
+          "vertices": 176,
+          "triangles": 103,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-우측 건물_0",
+          "vertices": 96569,
+          "triangles": 99286,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-우측 건물_1",
+          "vertices": 93546,
+          "triangles": 98102,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-우측 건물_2",
+          "vertices": 24397,
+          "triangles": 25924,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_0",
+          "vertices": 92603,
+          "triangles": 92620,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_1",
+          "vertices": 94952,
+          "triangles": 93247,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_2",
+          "vertices": 98363,
+          "triangles": 95817,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_3",
+          "vertices": 100367,
+          "triangles": 88871,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_4",
+          "vertices": 102355,
+          "triangles": 92058,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_5",
+          "vertices": 105003,
+          "triangles": 94398,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_6",
+          "vertices": 106819,
+          "triangles": 100264,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-유라시아 건물_7",
+          "vertices": 7865,
+          "triangles": 8274,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-좌측 건물_0",
+          "vertices": 105786,
+          "triangles": 93024,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-좌측 건물_1",
+          "vertices": 102835,
+          "triangles": 96618,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-좌측 건물_2",
+          "vertices": 91809,
+          "triangles": 105640,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "ContextNeighbours/OfficialStation_-좌측 건물_3",
+          "vertices": 21243,
+          "triangles": 16814,
+          "readable": true
+        },
+        {
+          "root": "공식 자료 부산역 주변 공간",
+          "path": "SiteTrees",
+          "vertices": 34109,
+          "triangles": 35977,
+          "readable": true
+        }
+      ]
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,113 @@
+{
+  "status": "INSTALLED_AND_USED_HEADLESS",
+  "scope": "Independent next traffic-engine foundation; no Unity/core modifications or integration claim",
+  "packages": [
+    {
+      "name": "eclipse-sumo",
+      "version": "1.27.1",
+      "url": "https://files.pythonhosted.org/packages/96/6e/fef6f21243e6f58b57e8356af0d03e45733bf7817afc059b20aec375f431/eclipse_sumo-1.27.1-py3-none-macosx_14_0_arm64.whl",
+      "sha256": "2255536237d81383efe5e53862b030e2dee6e18025210ff6ba4819f11edbb0d4"
+    },
+    {
+      "name": "sumo-data",
+      "version": "1.27.1",
+      "url": "https://files.pythonhosted.org/packages/ea/f9/0ed46d6d8bed8d96f5901907903baea2200196741b579b1b6768396a9f7c/sumo_data-1.27.1-py3-none-macosx_14_0_arm64.whl",
+      "sha256": "cc3f71bbeac8dc45a67ef90b023fa8d7ee4bd25c7f62f8006c5c036d545a9527"
+    }
+  ],
+  "verifiedBinaryVersions": {
+    "sumo": "Eclipse SUMO sumo 1.27.1",
+    "netconvert": "Eclipse SUMO netconvert 1.27.1",
+    "duarouter": "Eclipse SUMO duarouter 1.27.1"
+  },
+  "primarySources": [
+    "https://sumo.dlr.de/docs/Downloads.php",
+    "https://pypi.org/pypi/eclipse-sumo/1.27.1/json",
+    "https://pypi.org/pypi/sumo-data/1.27.1/json",
+    "https://sumo.dlr.de/docs/Networks/Import/OpenStreetMap.html",
+    "https://sumo.dlr.de/docs/Simulation/Emergency.html"
+  ],
+  "receipt": "workers/traffic/reference-network/receipt.json",
+  "reproduction": "workers/traffic/reproduce.py",
+  "network": "workers/traffic/reference-network/busan.net.xml",
+  "trajectory": [
+    "workers/traffic/reference-network/trajectory.xml",
+    "workers/traffic/reference-network/trajectory.csv"
+  ],
+  "sourceSha256": "156897dcccedbf979f5e818f3c7549d7ad36ec3e31b179d9d3861048f0760c64",
+  "location": {
+    "netOffset": "-501237.49,-3881756.75",
+    "convBoundary": "0.00,0.00,5360.69,5883.09",
+    "origBoundary": "126.536071,33.520332,135.422007,35.197389",
+    "projParameter": "+proj=utm +zone=52 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
+  },
+  "actualCoordinateInspection": {
+    "start": {
+      "sourceProjectedLocalMetres": [
+        2107.2816036197473,
+        3175.8956944090314
+      ],
+      "sampleLocalMetres": [
+        2077.61,
+        3198.74
+      ],
+      "sampleDistanceToSourceAnchorMetres": 37.44684712096525,
+      "sampleTime": "0.00"
+    },
+    "target": {
+      "sourceProjectedLocalMetres": [
+        2417.947666736436,
+        4160.470496476628
+      ],
+      "sampleLocalMetres": [
+        2395.6,
+        4156.99
+      ],
+      "sampleDistanceToSourceAnchorMetres": 22.61707461823116,
+      "sampleTime": "168.00"
+    }
+  },
+  "result": {
+    "id": "central119-busan-station-source-check",
+    "depart": "0.00",
+    "departLane": "1355582554#0_3",
+    "departPos": "6.60",
+    "departSpeed": "8.00",
+    "departDelay": "0.00",
+    "arrival": "169.00",
+    "arrivalLane": "37402347#0_0",
+    "arrivalPos": "101.33",
+    "arrivalSpeed": "8.00",
+    "duration": "169.00",
+    "routeLength": "1330.30",
+    "waitingTime": "0.00",
+    "waitingCount": "0",
+    "stopTime": "0.00",
+    "timeLoss": "1.39",
+    "rerouteNo": "0",
+    "devices": "tripinfo_central119-busan-station-source-check fcd_central119-busan-station-source-check",
+    "vType": "rescue",
+    "speedFactor": "1.00",
+    "vaporized": ""
+  },
+  "trajectorySamples": 169,
+  "maxObservedSpeedMps": 8.0,
+  "validation": "Actual netconvert, duarouter and SUMO runs exit 0; tripinfo arrival positive; 169 FCD records; speed <=8.001. Software fixture evidence only.",
+  "limitations": [
+    "Default OSM typemap supplies missing speeds and lane counts; lane connections and signal programs are generated, not field calibrated.",
+    "No ramps.guess or tls.guess-signals enabled.",
+    "Coordinate endpoints snap to imported passenger-road network; no validated apparatus bay or station entrance.",
+    "One synthetic vehicle; no measured traffic, real emergency ETA or site calibration.",
+    "This is an independent SUMO foundation; Unity agency Dijkstra gameplay does not use this process.",
+    "Original OSM bound includes outlying relation nodes; actual converted extent is convBoundary. Import warnings retained.",
+    "Departure and arrival use mapped road edge positions, not exact institution or stop coordinate; coordinate distances retained."
+  ],
+  "plan": {
+    "install": "complete",
+    "networkImport": "complete",
+    "singleVehicleRun": "complete"
+  },
+  "probeNotes": [
+    "Optional coordinate CRS database probe failed because bundled PROJ database was not configured. Direct native projection string transform succeeded without database; no simulation rerun required."
+  ]
+}

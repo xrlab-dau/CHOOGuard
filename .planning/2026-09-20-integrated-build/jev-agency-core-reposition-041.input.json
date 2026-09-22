@@ -1,0 +1,51 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "direction": "User direction: real agency base -> in-game request -> road dispatch -> onsite work -> return/readiness. Requirements are goals, not empirical evidence. NPC art work frozen.",
+    "evidence": [
+      "Official Busan Fire + OSM same address verify 중앙119안전센터, 중앙대로110, 35.1072071,129.0367023, building825455699. OfficialPolice+OSM verify 영주파출소, 동영로77,35.1119423,129.032198,building825455453.",
+      "Official identity/address of 초량119 and 메리놀ER verified, coordinates unresolved/null. Actual fleet, entrances, availability and response times unknown for all.",
+      "Existing original OSM XML has shared node IDs, directions/access/layers. Origin35.1151,129.0417. Current code has only local station teams and decorative vehicles, no agency missions. DotRecast last-mile implementation is not city dispatch."
+    ],
+    "proposal": "One Astra low builds source-located agency requests, directed OSM road routes, visible vehicles and return, actual accepted-clock movement, availability gate so external teams act only after arrival. Central119 fire/EMS slots are explicitly training allocation, not live fleet. Unknown coordinates remain unavailable. Existing physical solver unaffected, no real calls.",
+    "authority": "Root owns decisions; exact source + runtime evidence required."
+  },
+  "questions": {
+    "priority": {
+      "type": "choice",
+      "instructions": "Select next central deliverable from observed missing behavior.",
+      "criteria": {
+        "agency_roundtrip": "Agency request, road travel, onsite availability and return",
+        "more_npc": "More character visual polish",
+        "interior_only": "Only finish local navigation before any city dispatch"
+      }
+    },
+    "coordinates": {
+      "type": "choice",
+      "instructions": "Choose source rule.",
+      "criteria": {
+        "verified_only": "Place only matched verified coordinates",
+        "guess": "Fill nulls with district centers",
+        "names": "Names alone prove coordinates"
+      }
+    },
+    "routing": {
+      "type": "choice",
+      "instructions": "Choose actual road connectivity method.",
+      "criteria": {
+        "directed_nodes": "Shared OSM nodes/directions; estimate connectors explicitly",
+        "all_crossings": "Join all geometric crossings including bridges",
+        "beeline": "Straight line"
+      }
+    },
+    "claim": {
+      "type": "choice",
+      "instructions": "What can this demonstrate after native verification?",
+      "criteria": {
+        "source_gameplay": "Source-located game dispatch; capacity/travel assumptions not live prediction",
+        "full_twin": "Certified real emergency system",
+        "blocked": "Nothing possible without private fleet data"
+      }
+    }
+  }
+}

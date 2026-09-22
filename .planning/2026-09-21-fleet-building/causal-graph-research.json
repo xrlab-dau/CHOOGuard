@@ -1,0 +1,240 @@
+{
+  "schema": "chooguard.progression-causal-graph-research.v1",
+  "status": "RESEARCH_COMPLETE_RECOMMENDATION_ONLY",
+  "scope": "Unity MVP progression graph linking player choices to accepted commands, actual task or physics acknowledgements, observed changes, and next eligible choices",
+  "authorityBoundary": {
+    "recommendedName": "progression event graph",
+    "branchMeaning": "A deterministic game-state transition or run-lineage branch.",
+    "causalMeaning": "Do not label ordered trace edges as identified scientific causality. Reserve identified_causal_effect for a declared intervention/comparison design with assumptions, fixed comparison basis, and scoped outcomes.",
+    "currentClaim": "The MVP can prove which accepted event preceded and enabled a later game choice, and can record within-model observed deltas. It cannot infer real-world emergency causal effects from that trace."
+  },
+  "primarySources": [
+    {
+      "id": "W3C_SCXML",
+      "url": "https://www.w3.org/TR/scxml/",
+      "kind": "official_standard",
+      "directlySupported": [
+        "Event plus condition drives enabled transitions.",
+        "Run-to-completion and ordered transition selection provide deterministic state-machine semantics for a given input sequence when external nondeterminism is excluded.",
+        "Parallel regions are supported without making transition order implicit."
+      ],
+      "useHere": "Model mission and scenario progression as explicit states, events, guards, and transition priority; implement only the small subset needed by the MVP."
+    },
+    {
+      "id": "W3C_PROV_O",
+      "url": "https://www.w3.org/TR/prov-o/",
+      "kind": "official_standard",
+      "directlySupported": [
+        "Entity, Activity, and Agent form a provenance basis.",
+        "used, wasGeneratedBy, wasInformedBy, and wasDerivedFrom form provenance and dependency chains."
+      ],
+      "useHere": "Use a small PROV-inspired vocabulary for who issued a choice, which receipt or result was used, and which projection or eligibility snapshot was generated; do not adopt RDF as a runtime requirement."
+    },
+    {
+      "id": "PEARL_CAUSAL_OVERVIEW",
+      "url": "https://doi.org/10.1214/09-SS057",
+      "kind": "primary_paper",
+      "directlySupported": [
+        "Causal claims require assumptions and a language for interventions or counterfactuals beyond ordinary association.",
+        "Effects of interventions are a distinct query from observed association."
+      ],
+      "useHere": "Keep process dependency, temporal order, and observed model delta separate from identified causal effect."
+    },
+    {
+      "id": "TAPAAL",
+      "url": "https://www.tapaal.net/",
+      "kind": "official_academic_tool",
+      "directlySupported": [
+        "Timed-arc Petri nets model distributed computations with token age and time-constrained transitions.",
+        "TAPAAL supports simulation plus CTL, LTL, HyperLTL, and boundedness verification."
+      ],
+      "useHere": "Defer Petri nets from the runtime slice. Later project only resource/channel concurrency into a bounded offline model to check deadlock, reachability, and capacity invariants."
+    },
+    {
+      "id": "TEMPORAL_HISTORY",
+      "url": "https://github.com/temporalio/temporal/blob/main/docs/architecture/history-service.md",
+      "kind": "official_project_architecture",
+      "directlySupported": [
+        "Workflow history is an ordered event sequence sufficient to recover workflow execution state.",
+        "Reset or conflict resolution can produce branching history topology."
+      ],
+      "useHere": "Adopt the event-history principle locally without installing a workflow framework: immutable run prefix, sequence-keyed events, derived current projection, and explicit branch parent."
+    }
+  ],
+  "localEvidence": [
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/specs/02-wire-and-ports.md",
+      "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0",
+      "lines": "5-27",
+      "classification": "directly_supported",
+      "finding": "Stable IDs, sequence distinct from time, receipt keys, fingerprints, accepted receipts, later completion events, and semantic validation already define most event-graph identity rules."
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/specs/04-checkpoint-and-comparison.md",
+      "sha256": "2cc1a236ebd91dfb341ed97b3242536e4a5d982aecf7cef90a188e5ff3cd0af3",
+      "lines": "4-21",
+      "classification": "directly_supported",
+      "finding": "Append-only run events, complete checkpoint requirements, explicit branch parents, and REEXECUTE_FROM_ORIGIN fallback already exist as canonical design boundaries."
+    },
+    {
+      "path": "docs/CHOOGuard_Story_Plan_v4/basis/v3/specs/09-script-and-approval.md",
+      "sha256": "5dea909ecdc6349d1aa4bc52cd2d4c814134bc72f992b4c8ac70ef58415a9261",
+      "lines": "4-16",
+      "classification": "directly_supported",
+      "finding": "AI is already constrained to consume deterministic state; timeout, invalid output, and model metadata must not mutate the run."
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+      "sha256": "3000ad1721392f6b4b3c0623404dfcb177f1d2e28b586a1c94a03fe7de593198",
+      "lines": "31-64",
+      "classification": "directly_supported",
+      "finding": "Operation, agency, logical-team ownership and request/revision ACK matching already provide the action-to-ack seam."
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+      "sha256": "530a61e90a36f7a88321d8c45c459b61783c9a898610ce8b63d5c76d5a43329d",
+      "lines": "89-106",
+      "classification": "directly_supported",
+      "finding": "Accepted worker results advance simulation time, update task ACKs, expose physics results, and then advance agency mission state."
+    },
+    {
+      "path": "workers/physics/README.md",
+      "sha256": "126209ec20f31e2565544b86253a096a7135711e9b87b2c68e57e81bd4042226",
+      "lines": "18-28",
+      "classification": "directly_supported",
+      "finding": "The worker distinguishes warn, evacuate, and medical effects, fences generations, and explicitly lacks durable checkpoint/replay."
+    }
+  ],
+  "recommendedMinimalGraph": {
+    "runtimeAuthority": "Deterministic C# transition evaluator over typed events and guards; no graph database or new framework.",
+    "nodeTypes": [
+      "Run",
+      "StateSnapshot",
+      "ChoiceSet",
+      "PlayerChoice",
+      "CommandReceipt",
+      "TaskAck",
+      "PhysicsResult",
+      "ObservedDelta",
+      "Transition",
+      "JevAdvisory"
+    ],
+    "edgeTypes": [
+      "offers",
+      "selects",
+      "accepted_by",
+      "applied_by_ack",
+      "observed_in_result",
+      "changes_projection",
+      "enables",
+      "disables",
+      "transitions_to",
+      "branched_from",
+      "reviewed_by"
+    ],
+    "requiredFields": [
+      "runId",
+      "sequence",
+      "simTick",
+      "eventId",
+      "eventType",
+      "actorId",
+      "operationId",
+      "requestId",
+      "stateBeforeDigest",
+      "stateAfterDigest",
+      "evidenceRefs",
+      "sourceKind",
+      "claimClass"
+    ],
+    "claimClasses": [
+      "planned_effect",
+      "command_accepted",
+      "task_acknowledged",
+      "observed_model_delta",
+      "state_transition",
+      "identified_causal_effect"
+    ],
+    "invariant": "identified_causal_effect defaults false and requires a separate comparison-design record; state_transition never upgrades it.",
+    "exampleChain": [
+      "choice:evacuation_support_all",
+      "receipt:accepted",
+      "ack:warn",
+      "ack:evacuate",
+      "physics_result:releaseRevision_and_agent_state",
+      "observed_delta:evacuated_or_exposure_metric",
+      "transition:AwaitingOutcome_to_Returning",
+      "choice_set:next_eligible_actions"
+    ],
+    "guardReuse": "Reuse the existing TRUE/FALSE/UNKNOWN/CONFLICTED RuleExpression result. Only TRUE enables a choice; FALSE disables with reason; UNKNOWN and CONFLICTED remain visible and non-executable."
+  },
+  "branchingRecommendation": {
+    "mvpNow": "Record an immutable linear event stream and render alternative eligible outgoing edges from each accepted snapshot.",
+    "exactFork": "Not supported until a complete checkpoint includes domain state, queues, leases, RNG streams, worker state or certified replay recipe.",
+    "currentFallback": "Use REEXECUTE_FROM_ORIGIN with pinned seed, inputs, model/code hashes, and recorded player choices; compare state digest and declared outcomes. Label failure to reproduce as incomparable.",
+    "petriNetBoundary": "After the event/state slice stabilizes, export channel leases, team availability, queue capacity, and return/reuse as a bounded offline net. Do not make the Petri net a second runtime authority."
+  },
+  "jevRecommendation": {
+    "preferredRoles": [
+      {
+        "role": "authoring_advisor",
+        "use": "Before release, choose among enumerated graph topology or wording options and emit a proposed revision."
+      },
+      {
+        "role": "reviewer",
+        "use": "After deterministic validation, classify bounded questions such as missing ACK edge, unsupported causal label, or unsafe fallback. Root accepts or rejects."
+      }
+    ],
+    "runtimeProposal": {
+      "decision": "OPTIONAL_ADVISORY_PILOT_ONLY",
+      "allowed": "Rank or explain only the deterministic engine-provided eligible choice IDs.",
+      "forbidden": [
+        "Generate code or guards",
+        "Create a new choice ID",
+        "Change eligibility",
+        "Emit a command",
+        "Advance state",
+        "Convert confidence into authority"
+      ],
+      "typedContract": "Send state digest, evidence summaries, and a questions object whose entries are type=choice with closed criteria. Accept only a returned choice present in the supplied criteria plus confidence/probabilities.",
+      "deadlineMs": 3000,
+      "deadlineBasis": "inferred from local receipts: 41 measured calls, p50 1509ms, p95 2338ms, max 2691ms; existing Jev dispatch also specified a <=3s budget",
+      "retry": "0 retries in the decision tick",
+      "fallback": "On timeout, transport error, invalid JSON, unknown choice, or stale state digest, record advisory_unavailable and show the unchanged deterministic eligible set. Do not auto-select.",
+      "replay": "Persist input hash, exact eligible IDs, model ID, response bytes/hash, latency, deadline/fallback outcome, and accepted root/player decision. Replay the recorded advisory; never call Jev again for an existing event sequence."
+    },
+    "actualLocalJevEvidence": {
+      "inputPath": ".planning/2026-09-20-integrated-build/jev-operating-model-v2-045.input.json",
+      "inputSha256": "f268b8a2bbc1e1b85a0b0367bd0525f8186b889ea58703aa7e47a4a666284e3d",
+      "resultPath": ".planning/2026-09-20-integrated-build/jev-operating-model-v2-045.result.json",
+      "resultSha256": "08cbb6dadba477a4fc3ee686b359d4ecaea88b781c1ecff10d8cbe0bb65b4e27",
+      "classification": "directly_supported",
+      "finding": "typesafe-ai/jev accepted closed type=choice criteria and returned choice, confidence, and probabilities; result authority was explicitly 0.",
+      "latencyPath": ".planning/2026-09-20-integrated-build/jev-usage-summary.json",
+      "latencySha256": "1425d1406acc1a159c7487f98988e7279f31e09f5ec02147f1484dfad2d915ad"
+    }
+  },
+  "implementationSequence": [
+    "Define the typed event and graph JSON schema using existing IDs, receipt keys, sequence, simTick, state digest, and evidence refs.",
+    "Emit one append-only event at player choice, receipt, task ACK, accepted physics result, observed delta, transition, and eligibility recomputation.",
+    "Project the current state and choice graph from events; never let the view mutate authority.",
+    "Render Korean choice nodes and evidence edges from that projection.",
+    "Add deterministic replay from origin for one fixed scenario and verify event/state digests.",
+    "Run Jev typed review on the frozen graph artifact; keep any realtime call behind an optional advisory flag."
+  ],
+  "deferred": [
+    "Graph database",
+    "General SCXML interpreter",
+    "Petri-net runtime",
+    "Exact mid-run fork before complete checkpoint",
+    "Scientific causal identification from one gameplay trace",
+    "Jev-generated code or autonomous runtime decisions"
+  ],
+  "stopCondition": "Stop this research lane after the JSON graph parses and root receives the recommendation; Unity implementation and Jev invocation remain separate owner decisions.",
+  "validation": {
+    "webResearch": "PASS_PRIMARY_OR_OFFICIAL_ONLY",
+    "sourceCount": 5,
+    "jsonParse": "PASS",
+    "unityOrNative": "NOT_RUN_BY_SCOPE"
+  }
+}

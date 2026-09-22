@@ -1,0 +1,51 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1365,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "terrain": {
+          "type": "choice",
+          "choice": "bounded_dem",
+          "confidence": 1,
+          "probabilities": {
+            "skip_relief": 0,
+            "bounded_dem": 1,
+            "arbitrary_hills": 0
+          }
+        },
+        "claims": {
+          "type": "choice",
+          "choice": "source_derived_visual",
+          "confidence": 1,
+          "probabilities": {
+            "measured_twin": 0,
+            "source_derived_visual": 1
+          }
+        },
+        "risk": {
+          "type": "choice",
+          "choice": "shared_surface_alignment",
+          "confidence": 1,
+          "probabilities": {
+            "shared_surface_alignment": 1,
+            "token_only": 0,
+            "auth": 0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 853,
+        "output_tokens": 124
+      },
+      "truncated": false,
+      "action": "auto"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

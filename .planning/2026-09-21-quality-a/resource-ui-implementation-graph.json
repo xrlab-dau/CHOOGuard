@@ -1,0 +1,36 @@
+{
+  "schema": "chooguard.resource-ui.v1",
+  "status": "PUBLISHED_SOURCE_FROZEN_NATIVE_PENDING",
+  "file": {
+    "draft": ".planning/2026-09-21-quality-a/resource-ui-drafts/MvpAgencyDispatchView.cs",
+    "target": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+    "sha256": "dbcea477fd7d2086abf6cd9f99c92628fc3cfa8aafaa23491431ca0fcc1bffc9",
+    "baseSha256": "f0e502d8123dd6a47e5bba96b897477fcc92a272316e75d3329ddfe8ecd50609",
+    "publishedSha256": "dbcea477fd7d2086abf6cd9f99c92628fc3cfa8aafaa23491431ca0fcc1bffc9"
+  },
+  "patch": {
+    "path": ".planning/2026-09-21-quality-a/resource-ui-drafts/agency-resource-ui.patch",
+    "sha256": "47f214013963909f00a9d20293aa7e22b9c0bf7e46491cdc95b055726f908c04"
+  },
+  "behavior": {
+    "scope": "Selected agency or station chosen base only; no default global roster, graph, AI or dialog",
+    "counts": "Immutable Stocks snapshots: Stock=>가용, Committed=>배정, Consumed=>사용; ready logical team count retained, no cumulative TotalConsumed mislabel",
+    "boundary": "재사용 훈련장비 세트; 사용분은 준비 후 회수; 훈련용 배정 수량 · 실제 기관 재고 아님",
+    "availability": "Independent CanRequestWork(agencyId,evacuation-support,out reason) and medical-support checks. Each own interactable; both unavailable reasons appended with explicit 대피/의료 labels without click",
+    "layout": "Context building card320x542,104px equipment summary,118px guidance/reasons; existing compact teamcard320x278 retained",
+    "writes": "UI source draft and patch only; no Assets, controller/resources/physics/native mutation"
+  },
+  "verification": [
+    "Read resource immutable StockSnapshot and staged Controller.CanRequestWork exact API",
+    "Source assertions count fields/independent buttons/no public AI/graph creation pass",
+    "No compile or native render performed; root owns after dependent resources publish",
+    "Root-approved publication: current base and draft hashes verified; copied only owned UI C# source; meta unchanged; no Unity calls"
+  ],
+  "publishInstructions": [
+    "First publish resource/controller implementation and ensure safe Edit state",
+    "Verify current AgencyDispatchView SHA256 equals baseSha256; then apply agency-resource-ui.patch or copy draft",
+    "If base differs, rebase only this UI change; do not overwrite newer owner edits",
+    "Compile, selectCentral/Choryang and station source: verify1/0/0 stock initially, distinct disable reasons after independent reservations, no panel beforeselection",
+    "Check long Korean reasons render inside118px region and both labels remain visible without clicking; root native review may adjust wrapping if needed"
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:wire:ActivityInterval",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "participantCode": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "caseId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "intervalId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+    },
+    "startMonoUs": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 9223372036854775807
+    },
+    "endMonoUs": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "category": {
+      "enum": [
+        "SETUP",
+        "AUTHORING",
+        "REVIEW",
+        "EXPORT_REWORK",
+        "ATTENDED_WAIT",
+        "UNATTENDED_COMPUTE",
+        "EXTERNAL_REPLY_WAIT"
+      ]
+    },
+    "assistance": {
+      "type": "boolean"
+    },
+    "consentRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9223372036854775807
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "revision",
+        "sha256"
+      ]
+    },
+    "completeness": {
+      "enum": [
+        "COMPLETE",
+        "CENSORED"
+      ]
+    }
+  },
+  "required": [
+    "participantCode",
+    "caseId",
+    "intervalId",
+    "startMonoUs",
+    "endMonoUs",
+    "category",
+    "assistance",
+    "consentRef",
+    "completeness"
+  ]
+}

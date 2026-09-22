@@ -1,0 +1,58 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 595,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "inspectable_scope": {
+          "type": "choice",
+          "choice": "all_twelve_with_per_unit_state",
+          "confidence": 0.48,
+          "probabilities": {
+            "all_twelve_same_state": 0.01,
+            "one_tutorial_target_rest_props": 0.34,
+            "all_twelve_with_per_unit_state": 0.65
+          }
+        },
+        "session_and_terminal": {
+          "type": "choice",
+          "choice": "one_each_hoisted",
+          "confidence": 0.73,
+          "probabilities": {
+            "one_per_unit": 0.13,
+            "one_each_hoisted": 0.87
+          }
+        },
+        "destroy_sweep": {
+          "type": "choice",
+          "choice": "iterate_roots_by_prefix",
+          "confidence": 0.87,
+          "probabilities": {
+            "iterate_roots_by_prefix": 0.93,
+            "keep_find": 0.07
+          }
+        },
+        "proximity_guard": {
+          "type": "choice",
+          "choice": "assert_and_report",
+          "confidence": 0.9,
+          "probabilities": {
+            "ignore": 0.05,
+            "assert_and_report": 0.95
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1476,
+        "output_tokens": 181
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

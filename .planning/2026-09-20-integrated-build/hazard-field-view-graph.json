@@ -1,0 +1,67 @@
+{
+  "status": "source_complete_runtime_unverified",
+  "nodes": [
+    {
+      "id": "binder",
+      "file": "Assets/ChooGuard/Editor/MvpHazardFieldBinder.cs",
+      "entry": "ChooGuard.Editor.MvpHazardFieldBinder.BindExisting()",
+      "effect": "Find scene Station/Workspace/Bridge; add view to Workspace; serialize dependencies/font; mark dirty; caller saves scene."
+    },
+    {
+      "id": "view",
+      "file": "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs",
+      "api": [
+        "SetOverlayEnabled(bool)",
+        "OverlayVisible",
+        "Width",
+        "Height",
+        "SampleAt(float localFDSX,float localFDSY)",
+        "SampledIncidentTime"
+      ],
+      "limits": [
+        "Optional toggle defaults OFF",
+        "Incident + fireRequired + fieldCurrent only; bridge validates identity/source/time/hash and decoder validates grid/finite values",
+        "30x20m ReferenceLocal corners + 0.03m; height1.5m 2D measurement projected to floor",
+        "61x41 RGBA32 point palette; original float values retained; square-root range0..4.27322674",
+        "SampleAt returns NaN without valid data/outside; midpoint nearest ties choose lower native coordinate",
+        "Only orange marker renderer named 상황 표지 suppressed while visible; previous enabled state restored",
+        "Ordinary/invalid/expired/cancel/error result hides; no inferred wall-clock advancement",
+        "No Collider/static flag/world text; no physics-clock changes",
+        "UI recreated under current WorkspaceCanvas; workspace font reused",
+        "Root must verify Unity compilation, BindExisting, Save, Play, point/corner parity",
+        "HazardFieldPanel visible only when Bridge.LastResult exists, fireRequired is true, and phase is not ordinary; component stays enabled. Before-run, ordinary and crowd-only HUD hide panel; fire-boundary error retains context legend."
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "MvpPhysicsBridge.ResultReceived",
+      "to": "view",
+      "contract": "MvpPhysicsResult.hazardField -> TryDecodeHazardField"
+    },
+    {
+      "from": "MvpPhysicsBridge.StatusChanged",
+      "to": "view",
+      "contract": "Failure/not ready clears accepted frame"
+    },
+    {
+      "from": "binder",
+      "to": "view",
+      "contract": "serialized dependencies"
+    },
+    {
+      "from": "view",
+      "to": "WorkspaceCanvas",
+      "contract": "screen-space compact Korean toggle and legend"
+    }
+  ],
+  "checks": {
+    "git_diff_check": "pass",
+    "unity": "not run by lane; root owned"
+  },
+  "context_ui_freeze": {
+    "status": "source_frozen_pending_root_ready_hud_check",
+    "scope": "MvpHazardFieldView.RefreshVisibility panel context only",
+    "validation": "git diff --check; no Unity or test suite invoked"
+  }
+}

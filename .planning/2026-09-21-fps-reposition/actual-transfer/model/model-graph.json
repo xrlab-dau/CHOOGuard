@@ -1,0 +1,83 @@
+{
+  "schema": "chooguard.actual-transfer-local-model.v1",
+  "status": "SOURCE_BASED_LOCAL_MODULE_READY_REGISTRATION_AND_RISE_BLOCKED",
+  "nodes": {
+    "source": "../root-public/ad-BIN0001.png.png",
+    "model": "actual_transfer_local.blend",
+    "export": "actual_transfer_local.fbx",
+    "interior": "interior.png",
+    "plan": "plan.png",
+    "dimensions": "manifest.json",
+    "all_objects": "object-dimensions-provenance.json",
+    "verification": "geometry-checks.json"
+  },
+  "edges": [
+    {
+      "from": "2021_operator_CAD",
+      "to": "local_plan",
+      "kind": "dimension_chain_and_raster_trace",
+      "precision": "dimensions exact where readable; traced footprints ±0.20m"
+    },
+    {
+      "from": "2018_official_notice",
+      "to": "shell",
+      "kind": "clear_width8_height4.37"
+    },
+    {
+      "from": "2019_photos",
+      "to": "materials_panels_tactile_twin_walks",
+      "kind": "visual_interpretation_not_survey"
+    },
+    {
+      "from": "local_model",
+      "to": "Unity_city",
+      "kind": "BLOCKED_no_world_transform_or_endpoint_registration"
+    },
+    {
+      "from": "KTX_and_bus_plan_outlines",
+      "to": "vertical_traversal",
+      "kind": "BLOCKED_no_rise_elevation"
+    }
+  ],
+  "checks": {
+    "scope": "Blender_local_geometry_checks_only_not_Unity_or_registration_acceptance",
+    "checks": {
+      "floor_clear_width_is_8": true,
+      "lower_floor_ends_at_73p49": true,
+      "two_movingwalk_bays": true,
+      "no_rise_geometry": true,
+      "pending_collection_present": true,
+      "clear_height_4p37": true
+    },
+    "pass": true
+  },
+  "guards": [
+    "No Unity or source building mutations",
+    "No invented underground depth",
+    "No invented KTX rise",
+    "No source image AI generation",
+    "No 3D text",
+    "Orange pending footprints excluded from FBX",
+    "Only2 centralKTX escalator lanes; remaining official2 allocation unresolved"
+  ],
+  "sha256": {
+    "actual_transfer_local.blend": "5ff912d39ceb59815458d01904691498c2a4f9ddb554322edc0529f2b4d6ced3",
+    "actual_transfer_local.fbx": "75e8bbf5f59ca2c3012f3929f37da87cd62404473bef9a14b367bf328e11baf2",
+    "manifest.json": "5064d23b7be6a6bdefc4f4b0cc3c27093005811b59ccaa808cca9bc08446ee65",
+    "object-dimensions-provenance.json": "058e576b148a4dd79e87cdce0a1c220f5c1195d570a8b39fa4f60e34630013e4",
+    "build_module.py": "6b318cb6c6c65bdf43f5bfca43b4bd469a175e5214b7969ca5bf6fbe5a682727",
+    "verify_module.py": "e4b3195036da53327887465a0235369b59dfcea6b93f21ce13143912894cf73a"
+  },
+  "metadata_correction": {
+    "field": "movingwalk_belt_interpreted_width",
+    "value_m": 1.2,
+    "nominal_type_verbatim": "1200형",
+    "basis": "modelling interpretation; manufacturer/section drawing pending; type not measured width",
+    "length47p7": "remains photo estimate",
+    "objects_corrected": 2,
+    "other_type_to_dimension_inferences_found": 0,
+    "geometry_unchanged": true,
+    "legacy_binary_metadata": "blend and FBX retained unchanged; embedded former evidence_status label is superseded by corrected manifest/object provenance; build and verify scripts now emit corrected attribution",
+    "source_hashes_rechecked": true
+  }
+}

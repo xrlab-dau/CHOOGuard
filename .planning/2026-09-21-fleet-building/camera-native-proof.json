@@ -1,0 +1,138 @@
+{
+  "status": "FAIL",
+  "scope": "Camera native API seams plus one queued InputSystem mouse wheel path; no OS input, simulation restart, physics/settings changes, modal coverage, or product acceptance.",
+  "checks": [
+    {
+      "name": "perspective",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "orthographic": false,
+        "fov": 50,
+        "captured": false
+      }
+    },
+    {
+      "name": "api_cursor_anchor_120",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "picked": true,
+        "accepted": true,
+        "driftPixels": 0.2072068,
+        "before": 1999.98779,
+        "afterZoom": 1670.53027
+      }
+    },
+    {
+      "name": "api_cursor_anchor_-120",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "picked": true,
+        "accepted": true,
+        "driftPixels": 0.257923126,
+        "before": 1670.53027,
+        "afterZoom": 1999.98779
+      }
+    },
+    {
+      "name": "focus_not_instant",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "remaining": 50
+      }
+    },
+    {
+      "name": "focus_settles_frames",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "remaining": 0.0190216061,
+        "frame": 45123
+      }
+    },
+    {
+      "name": "follow_zoom",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "accepted": true,
+        "following": true
+      }
+    },
+    {
+      "name": "follow_move_preserves_zoom",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "moved": 19.6271629,
+        "zoomError": 0
+      }
+    },
+    {
+      "name": "pan_cancels_follow",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "captured": false
+      }
+    },
+    {
+      "name": "cancel_follow_api",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "cancelled": true
+      }
+    },
+    {
+      "name": "tmp_selection_captures_api",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "captured": true,
+        "accepted": false,
+        "cancelled": false
+      }
+    },
+    {
+      "name": "queued_mouse_wheel_lateupdate",
+      "status": "FAIL",
+      "evidence": {
+        "ok": false,
+        "before": 1670.53027,
+        "after": 1670.53027,
+        "captured": false,
+        "path": "InputSystem.QueueStateEvent -> actual LateUpdate"
+      }
+    },
+    {
+      "name": "active_floor_triangle_rays",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "checkedCount": 3,
+        "worst": 0,
+        "scope": "active serialized floor triangles"
+      }
+    },
+    {
+      "name": "dem_ray_and_eye_clearance",
+      "status": "PASS",
+      "evidence": {
+        "ok": true,
+        "samples": 3,
+        "worstRay": 0,
+        "minClearance": 3,
+        "scope": "API Apply seam at three DEM interior coordinates; no physics changes"
+      }
+    },
+    {
+      "name": "cleanup",
+      "status": "PASS",
+      "evidence": "restored navigation fields, follow target, selection, mouse; destroyed probe objects"
+    }
+  ]
+}

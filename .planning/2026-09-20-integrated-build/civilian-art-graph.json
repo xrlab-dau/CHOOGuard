@@ -1,0 +1,136 @@
+{
+  "status": "SOURCE_FROZEN_LAYER_FIX_READY_FOR_ROOT",
+  "source": "Assets/ChooGuard/ThirdParty/Models/MiniCharacters/character-male-a.fbx",
+  "sourceSha256": "5c99dc0ede89c720e2e38b0fdaaa80fafb1d06ad5a2b95f95c7b9946a01b5591",
+  "license": "Assets/ChooGuard/ThirdParty/Licenses/Kenney-MiniCharacters.txt",
+  "provenance": "Existing Kenney Mini Characters rig and original idle/walk/interact actions; newly authored civilian clothing mesh; no downloaded files",
+  "binderEntry": "ChooGuard.Editor.MvpCivilianBinder.BindExisting",
+  "preview": "art/blender/civilian-set-preview.png",
+  "previewInspected": true,
+  "dimensions": [
+    {
+      "name": "CivilianJacket",
+      "width": 2.304771304130554,
+      "depth": 1.6496814489364624,
+      "height": 1.7200000286102295,
+      "grounded": true
+    },
+    {
+      "name": "CivilianBlue",
+      "width": 2.304771304130554,
+      "depth": 1.303939938545227,
+      "height": 1.7200000286102295,
+      "grounded": true
+    },
+    {
+      "name": "CivilianRose",
+      "width": 2.304771304130554,
+      "depth": 1.303939938545227,
+      "height": 1.7200000286102295,
+      "grounded": true
+    }
+  ],
+  "runtimeContract": {
+    "variant": "unsigned stable agent id modulo3",
+    "civilianScale": "metre-native1.72m assets, multiplier1; crew fallback1.72/1.78",
+    "animation": "separate per-variant CivilianWalkClips; existing PlayableGraph and looping reused; team WalkClip unchanged",
+    "physicalOutcomes": "unchanged"
+  },
+  "localVerification": {
+    "headlessBlender": "4.5.9 export/render success",
+    "fbxReimportActions": [
+      {
+        "model": "CivilianJacket",
+        "boneCount": 6,
+        "clips": {
+          "idle": {
+            "action": "root|idle",
+            "frames": [
+              1.0,
+              82.0
+            ],
+            "sampledBoneDelta": 0.41136664152145386
+          },
+          "walk": {
+            "action": "root|walk",
+            "frames": [
+              1.0,
+              42.0
+            ],
+            "sampledBoneDelta": 2.060160994529724
+          }
+        }
+      },
+      {
+        "model": "CivilianBlue",
+        "boneCount": 6,
+        "clips": {
+          "idle": {
+            "action": "root|idle",
+            "frames": [
+              1.0,
+              82.0
+            ],
+            "sampledBoneDelta": 0.41136664152145386
+          },
+          "walk": {
+            "action": "root|walk",
+            "frames": [
+              1.0,
+              42.0
+            ],
+            "sampledBoneDelta": 2.060160994529724
+          }
+        }
+      },
+      {
+        "model": "CivilianRose",
+        "boneCount": 6,
+        "clips": {
+          "idle": {
+            "action": "root|idle",
+            "frames": [
+              1.0,
+              82.0
+            ],
+            "sampledBoneDelta": 0.41136664152145386
+          },
+          "walk": {
+            "action": "root|walk",
+            "frames": [
+              1.0,
+              42.0
+            ],
+            "sampledBoneDelta": 2.060160994529724
+          }
+        }
+      }
+    ],
+    "noHelmetUniformHighvisEquipment": true,
+    "noWorldText": true,
+    "visualLimits": "Stylized existing simple rig retained. Close-up shoulder/hip seam deformation visible; not realistic hero art. RTS civilian identity improved. Unity visual/motion acceptance pending."
+  },
+  "files": {
+    "art/blender/build_civilian_set.py": "9d15096a3160bfe14fc8a9f93172a8044d3921464559c27d8f30fc5bf9c25984",
+    "art/blender/civilian_set.blend": "bc9af5e22ed7735489af08575a700313be3fb25211955934668b7bb20ecc71ab",
+    "art/blender/civilian-set-preview.png": "45ef22ba6efffdfc11ae43fbf18bfe53b321e86db639760525c2be8cd15802f1",
+    "art/blender/civilian-action-verification.json": "41a8fab24bca451b2398fc422a5cda636d6055d2700fd07a5eb2bdc0adbcaeac",
+    "Assets/ChooGuard/Editor/MvpCivilianBinder.cs": "25f445a6f90481368467519de353710019afa5e3f1df19615eaa9b648dfcbb22",
+    "Assets/ChooGuard/App/Mvp/MvpStationView.cs": "f3888297ef3d7d1fb2440dc036f6d659b3c639cdd0dba0158769c3470c3d46e1",
+    "Assets/ChooGuard/Art/CivilianSet/manifest.json": "ee4c6712230598bed52d8cd1912039305baad3ef284a200ccc86d479f2517409",
+    "Assets/ChooGuard/Art/CivilianSet/CivilianJacket.fbx": "94a53b9b3cd005d713b50326fad9afbcd004f722a92fd82ad493119e9e5666b0",
+    "Assets/ChooGuard/Art/CivilianSet/CivilianBlue.fbx": "775300bfdc4d50d46a74554eab6e73b561de0d94fe2afd87a8ec6fff8c9db0ab",
+    "Assets/ChooGuard/Art/CivilianSet/CivilianRose.fbx": "c9ef55ae587d21f6601ba8bb0757a1784110a2cdec188bfa52bd0931593f0ce2"
+  },
+  "remaining": [
+    "Root Unity import and binder",
+    "Unity actual avatar scale, material colors, three identities, crowd movement and team animation check",
+    "Save scene through root-owned Unity path"
+  ],
+  "nativeImportFollowup": {
+    "evidenceFromRoot": "50 civilians imported at approximately1.72m; child layer0 versus camera-only layer29; playable time progresses and clip rotation valid; renderer invisible with AnimatorCullUpdateTransforms",
+    "cause": "Instantiated asset hierarchy retains default layer0 and is excluded by station camera culling mask",
+    "fix": "Every spawned body transform including inactive children inherits CrowdRoot.gameObject.layer immediately after Instantiate, for civilian and crew fallback",
+    "verification": "Exact source replacement verified; root owns next Unity visibility and motion check"
+  }
+}

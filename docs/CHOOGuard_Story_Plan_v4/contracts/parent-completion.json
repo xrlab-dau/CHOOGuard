@@ -1,0 +1,1441 @@
+[
+  {
+    "parentTaskId": "CS-BOOT.01",
+    "children": [
+      "CS-BOOT.01.01",
+      "CS-BOOT.01.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-BOOT.01-P",
+        "given": "빈 디렉터리, Camera/Canvas/EventSystem 각1",
+        "when": "새 native smoke 부팅",
+        "then": "composition-root 참조0; EventSystem1; 신규 version receipt",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-BOOT.01-N",
+        "given": "존재하지 않는 local DLL",
+        "when": "새 native smoke 부팅",
+        "then": "빌드 미실행/실패; 과거 receipt 재사용0",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-066"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-BOOT.02",
+    "children": [
+      "CS-BOOT.02.01",
+      "CS-BOOT.02.02",
+      "CS-BOOT.02.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-BOOT.02-P",
+        "given": "13 module roots와 1개 Contracts DTO",
+        "when": "경계 컴파일",
+        "then": "Domain→Contracts만; 모든 runtime C# 소속1",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-BOOT.02-N",
+        "given": "World.cs를 asmdef 밖으로 이동",
+        "when": "경계 컴파일",
+        "then": "PREDEFINED_ASSEMBLY_LEAK",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-BOOT.03",
+    "children": [
+      "CS-BOOT.03.01",
+      "CS-BOOT.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-BOOT.03-P",
+        "given": "실패 시험1개와 새 결과 경로",
+        "when": "test runner 실행",
+        "then": "실패 XML과 nonzero exit",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-BOOT.03-N",
+        "given": "시험0개 또는 stale XML",
+        "when": "test runner 실행",
+        "then": "NO_TESTS_OR_STALE_RESULT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-061"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PACK.01",
+    "children": [
+      "CS-PACK.01.01",
+      "CS-PACK.01.02",
+      "CS-PACK.01.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PACK.01-P",
+        "given": "같은 표시명 기관 a,b와 양수 자원",
+        "when": "콘텐츠 등록",
+        "then": "ID a,b 유지; 이름 병합0",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PACK.01-N",
+        "given": "미존재 region-z",
+        "when": "콘텐츠 등록",
+        "then": "UNKNOWN_REFERENCE",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-015",
+      "REQ-060"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PACK.02",
+    "children": [
+      "CS-PACK.02.01",
+      "CS-PACK.02.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PACK.02-P",
+        "given": "기관a 범위와 revision2 승인",
+        "when": "rule 활성화",
+        "then": "a/rev2에만 적용",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PACK.02-N",
+        "given": "rev3에 rev2 승인 재사용",
+        "when": "rule 활성화",
+        "then": "STALE_REVIEW",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-031",
+      "REQ-033",
+      "REQ-034"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PACK.03",
+    "children": [
+      "CS-PACK.03.01",
+      "CS-PACK.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PACK.03-P",
+        "given": "무료 archive의 서로 다른 파일2개",
+        "when": "입고 검사",
+        "then": "raw bytes·해시·tier 분리",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PACK.03-N",
+        "given": "../escape.cs 또는 A.fbx/a.fbx",
+        "when": "입고 검사",
+        "then": "UNSAFE_ARCHIVE",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-062",
+      "REQ-063",
+      "REQ-064"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PACK.04",
+    "children": [
+      "CS-PACK.04.01",
+      "CS-PACK.04.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PACK.04-P",
+        "given": "관측시각 t10 뒤 t12 실제관측",
+        "when": "reality 갱신",
+        "then": "새 revision; 과거 run 불변",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PACK.04-N",
+        "given": "가상 run의 문 이벤트",
+        "when": "reality 갱신",
+        "then": "NOT_REALITY_OBSERVATION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-050"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-OPS.01",
+    "children": [
+      "CS-OPS.01.01",
+      "CS-OPS.01.02",
+      "CS-OPS.01.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-OPS.01-P",
+        "given": "동일 run/requester/key/payload 2회",
+        "when": "Submit 재전송",
+        "then": "receipt 동일1개; 효과1회",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-OPS.01-N",
+        "given": "동일 key 다른 target",
+        "when": "Submit 재전송",
+        "then": "INTENT_CONFLICT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-OPS.02",
+    "children": [
+      "CS-OPS.02.01",
+      "CS-OPS.02.02",
+      "CS-OPS.02.03",
+      "CS-OPS.02.04"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-OPS.02-P",
+        "given": "capacity3, jobA 예약2, jobB 요청2",
+        "when": "원자 예약",
+        "then": "jobB 거부; 총예약2; 나머지 자원 미점유",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-OPS.02-N",
+        "given": "commit 직전 예외",
+        "when": "원자 예약",
+        "then": "전체 rollback; ACCEPTED0",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-024",
+      "REQ-071"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-OPS.03",
+    "children": [
+      "CS-OPS.03.01",
+      "CS-OPS.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-OPS.03-P",
+        "given": "agencyA command와 agencyB resource",
+        "when": "외부 support 요청",
+        "then": "B 접수 전 배정0",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-OPS.03-N",
+        "given": "A가 B 자원을 직접확정",
+        "when": "외부 support 요청",
+        "then": "AUTHORITY_DENIED",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-021",
+      "REQ-022"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-OPS.04",
+    "children": [
+      "CS-OPS.04.01",
+      "CS-OPS.04.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-OPS.04-P",
+        "given": "message m1 두번 도착",
+        "when": "ack 처리",
+        "then": "지식효과1회; received 원시기록 보존",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-OPS.04-N",
+        "given": "TTL 만료후 guard 충족 요청",
+        "when": "ack 처리",
+        "then": "STALE_INFORMATION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-011",
+      "REQ-027",
+      "REQ-028"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-OPS.05",
+    "children": [
+      "CS-OPS.05.01",
+      "CS-OPS.05.02",
+      "CS-OPS.05.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-OPS.05-P",
+        "given": "선행 t1 완료; 장비reserved; report pending",
+        "when": "t2 평가",
+        "then": "WAITING_REPORT; 자원보존",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-OPS.05-N",
+        "given": "다른 task 예약 취소",
+        "when": "t2 평가",
+        "then": "RESERVATION_OWNERSHIP_MISMATCH",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-012",
+      "REQ-023",
+      "REQ-025",
+      "REQ-026",
+      "REQ-029",
+      "REQ-045"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-OPS.06",
+    "children": [
+      "CS-OPS.06.01",
+      "CS-OPS.06.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-OPS.06-P",
+        "given": "taskA→B→A wait graph",
+        "when": "대기 분석",
+        "then": "cycle 설명; 미래 외부자원과 분리",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-OPS.06-N",
+        "given": "등록되지 않은 원인 code",
+        "when": "대기 분석",
+        "then": "UNKNOWN_REASON_CODE",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-013",
+      "REQ-030",
+      "REQ-041"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-OPS.07",
+    "children": [
+      "CS-OPS.07.01",
+      "CS-OPS.07.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-OPS.07-P",
+        "given": "한 사람 [0,10),[5,15)분; 다른사람[0,10)",
+        "when": "작업량 집계",
+        "then": "합25인분; 같은사람15분",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-OPS.07-N",
+        "given": "종료 없는 interval",
+        "when": "작업량 집계",
+        "then": "CENSORED; 완료자 평균에서 숨김0",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-079"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-WORLD.01",
+    "children": [
+      "CS-WORLD.01.01",
+      "CS-WORLD.01.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-WORLD.01-P",
+        "given": "1m 비대칭 기준체와 2방1문",
+        "when": "fixture 생성",
+        "then": "좌표 축·문 피벗·고유ID 확인",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-WORLD.01-N",
+        "given": "실측 표식 강제",
+        "when": "fixture 생성",
+        "then": "SYNTHETIC_NOT_FIELD",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-WORLD.02",
+    "children": [
+      "CS-WORLD.02.01",
+      "CS-WORLD.02.02",
+      "CS-WORLD.02.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-WORLD.02-P",
+        "given": "첫현장 scene와 source/geometry receipt",
+        "when": "입고/장면대조",
+        "then": "Scene·geometry·source가 같은 ID/축척",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-WORLD.02-N",
+        "given": "source 없는 3D 치수",
+        "when": "입고/장면대조",
+        "then": "UNVERIFIED_GEOMETRY",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-014",
+      "REQ-017",
+      "REQ-018"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-WORLD.03",
+    "children": [
+      "CS-WORLD.03.01",
+      "CS-WORLD.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-WORLD.03-P",
+        "given": "run-a revision2 projection",
+        "when": "main-thread apply",
+        "then": "a/rev2만 표시",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-WORLD.03-N",
+        "given": "run-b 응답 또는 a/rev1",
+        "when": "main-thread apply",
+        "then": "STALE_OR_FOREIGN_PROJECTION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-016"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-WORLD.04",
+    "children": [
+      "CS-WORLD.04.01",
+      "CS-WORLD.04.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-WORLD.04-P",
+        "given": "logical ready, visual loading",
+        "when": "카메라 전환",
+        "then": "sim 이동결과 불변",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-WORLD.04-N",
+        "given": "required computational geometry 없음",
+        "when": "카메라 전환",
+        "then": "RUN_LOAD_BLOCKED; 현장지연 수치로 대체0",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-020"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PLAY.01",
+    "children": [
+      "CS-PLAY.01.01",
+      "CS-PLAY.01.02",
+      "CS-PLAY.01.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PLAY.01-P",
+        "given": "UI에서 pointerDown 후 월드로 drag",
+        "when": "pointerUp",
+        "then": "UI 소비; world command0",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PLAY.01-N",
+        "given": "IME 중 Space/WASD",
+        "when": "pointerUp",
+        "then": "GAME_ACTION0",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PLAY.02",
+    "children": [
+      "CS-PLAY.02.01",
+      "CS-PLAY.02.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PLAY.02-P",
+        "given": "teamA valid/teamB denied",
+        "when": "preview 뒤 제출",
+        "then": "대상별 결과; 한 업무 원자성",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PLAY.02-N",
+        "given": "preview 후 state revision 변화",
+        "when": "preview 뒤 제출",
+        "then": "STALE_STATE_REPREVIEW",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-008",
+      "REQ-009",
+      "REQ-010"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PLAY.03",
+    "children": [
+      "CS-PLAY.03.01",
+      "CS-PLAY.03.02",
+      "CS-PLAY.03.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PLAY.03-P",
+        "given": "실제 world marker와 다른 층 대상",
+        "when": "카메라/층 조작",
+        "then": "ID anchor 일치; 미니맵 실제좌표",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PLAY.03-N",
+        "given": "behind-camera 좌표",
+        "when": "카메라/층 조작",
+        "then": "라벨 숨김; domain 불변",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PLAY.04",
+    "children": [
+      "CS-PLAY.04.01",
+      "CS-PLAY.04.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PLAY.04-P",
+        "given": "task 원인2개와 원문근거",
+        "when": "inspector 열기/닫기",
+        "then": "복수원인/영향/focus 보존",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PLAY.04-N",
+        "given": "author 분석을 agency 지식으로 쓰기",
+        "when": "inspector 열기/닫기",
+        "then": "READ_SCOPE_VIOLATION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PLAY.05",
+    "children": [
+      "CS-PLAY.05.01",
+      "CS-PLAY.05.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PLAY.05-P",
+        "given": "1280폭·글자200%·keyboard only",
+        "when": "핵심 과제",
+        "then": "클리핑 없이 목록 배정 가능",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PLAY.05-N",
+        "given": "글자를 자동축소해 확대 무력화",
+        "when": "핵심 과제",
+        "then": "ACCESSIBILITY_REJECT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-072"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PLAY.06",
+    "children": [
+      "CS-PLAY.06.01",
+      "CS-PLAY.06.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PLAY.06-P",
+        "given": "A snapshot 완전/B 다른계획",
+        "when": "분기→비교",
+        "then": "부모불변; B 별도 run; 근거와 선택이유",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PLAY.06-N",
+        "given": "worker 빠진 checkpoint",
+        "when": "분기→비교",
+        "then": "EXACT_FORK_DISABLED",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PLAY.07",
+    "children": [
+      "CS-PLAY.07.01"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PLAY.07-P",
+        "given": "같은 core/model/info/AI lock의 B/C",
+        "when": "같은 과제",
+        "then": "3D 외 기능·정보 parity",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PLAY.07-N",
+        "given": "B만 다른 업무 timer",
+        "when": "같은 과제",
+        "then": "STUDY_PARITY_FAIL",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-081"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-LAB.01",
+    "children": [
+      "CS-LAB.01.01",
+      "CS-LAB.01.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-LAB.01-P",
+        "given": "required w1,w2; 동일 cut7/tick20",
+        "when": "checkpoint 검사",
+        "then": "동일 worker집합·시간·해시",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-LAB.01-N",
+        "given": "w2 누락 또는 w1 중복",
+        "when": "checkpoint 검사",
+        "then": "INCOMPLETE_CHECKPOINT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-036"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-LAB.02",
+    "children": [
+      "CS-LAB.02.01",
+      "CS-LAB.02.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-LAB.02-P",
+        "given": "parent run-a/cut7",
+        "when": "branch b",
+        "then": "parent bytes 불변; child generation 신규",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-LAB.02-N",
+        "given": "parent의 late RESULT",
+        "when": "branch b",
+        "then": "FOREIGN_GENERATION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-037",
+      "REQ-057"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-LAB.03",
+    "children": [
+      "CS-LAB.03.01",
+      "CS-LAB.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-LAB.03-P",
+        "given": "동일 exogenous process key, 다른 운영안",
+        "when": "A/B 비교",
+        "then": "외생 혁신 동일·내생값 재계산",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-LAB.03-N",
+        "given": "modelLock 다른 두 run",
+        "when": "A/B 비교",
+        "then": "INCOMPARABLE",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-038",
+      "REQ-039"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-LAB.04",
+    "children": [
+      "CS-LAB.04.01",
+      "CS-LAB.04.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-LAB.04-P",
+        "given": "의미입력 하나 변경",
+        "when": "부분/전체 재실행 대조",
+        "then": "동일 허용오차내 결과",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-LAB.04-N",
+        "given": "영향 graph 불완전",
+        "when": "부분/전체 재실행 대조",
+        "then": "FULL_RECOMPUTE_REQUIRED",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-084"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-MODES.01",
+    "children": [
+      "CS-MODES.01.01",
+      "CS-MODES.01.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-MODES.01-P",
+        "given": "독립 taskA/taskB 목표",
+        "when": "순서 AB와 BA",
+        "then": "둘 다 학습통과",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-MODES.01-N",
+        "given": "hint가 speed 변경",
+        "when": "순서 AB와 BA",
+        "then": "CORE_PARITY_FAIL",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-003",
+      "REQ-004",
+      "REQ-065"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-MODES.02",
+    "children": [
+      "CS-MODES.02.01",
+      "CS-MODES.02.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-MODES.02-P",
+        "given": "고정 grammar와 동일 seed manifest",
+        "when": "제약상황 생성",
+        "then": "같은 spec; rejection 추적",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-MODES.02-N",
+        "given": "64회 연속 조건실패",
+        "when": "제약상황 생성",
+        "then": "GENERATION_EXHAUSTED",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-005",
+      "REQ-006",
+      "REQ-007"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-MODES.03",
+    "children": [
+      "CS-MODES.03.01",
+      "CS-MODES.03.02",
+      "CS-MODES.03.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-MODES.03-P",
+        "given": "다음 의사결정 이벤트 tick100",
+        "when": "진행요청",
+        "then": "순차계산 후100; 미래정보 노출0",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-MODES.03-N",
+        "given": "worker 미준비",
+        "when": "진행요청",
+        "then": "COMPUTING_NOT_FAST_FORWARD",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-002",
+      "REQ-083",
+      "REQ-085"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SIM.01",
+    "children": [
+      "CS-SIM.01.01",
+      "CS-SIM.01.02",
+      "CS-SIM.01.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SIM.01-P",
+        "given": "JSONL 1줄+정상 correlation",
+        "when": "worker 결과 수신",
+        "then": "job/run/generation/input 일치",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SIM.01-N",
+        "given": "1MiB 초과 또는 duplicate key",
+        "when": "worker 결과 수신",
+        "then": "PROTOCOL_REJECT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SIM.02",
+    "children": [
+      "CS-SIM.02.01",
+      "CS-SIM.02.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SIM.02-P",
+        "given": "동일 geometry,독립 pedestrian 관측",
+        "when": "adapter 비교",
+        "then": "위치 owner1; holdout별 오차",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SIM.02-N",
+        "given": "Unity 별도 위치갱신",
+        "when": "adapter 비교",
+        "then": "DUPLICATE_FIELD_OWNER",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-019",
+      "REQ-043"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SIM.03",
+    "children": [
+      "CS-SIM.03.01",
+      "CS-SIM.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SIM.03-P",
+        "given": "입력 route/model lock",
+        "when": "traffic 실행",
+        "then": "사례범위 및 shortcut 기록",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SIM.03-N",
+        "given": "teleport 사용 실행을 정상예측 표시",
+        "when": "traffic 실행",
+        "then": "UNQUALIFIED_TRAFFIC_RESULT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-044"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SIM.04",
+    "children": [
+      "CS-SIM.04.01",
+      "CS-SIM.04.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SIM.04-P",
+        "given": "고정 grid/material/history",
+        "when": "reference 계산",
+        "then": "QoI와 수렴/관측 역할 분리",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SIM.04-N",
+        "given": "FDS 결과만으로 현장검증 선언",
+        "when": "reference 계산",
+        "then": "NO_INDEPENDENT_OBSERVATION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-042"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SIM.05",
+    "children": [
+      "CS-SIM.05.01",
+      "CS-SIM.05.02",
+      "CS-SIM.05.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SIM.05-P",
+        "given": "두 worker 동일 경계 ready",
+        "when": "co-sim publish",
+        "then": "single committed boundary",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SIM.05-N",
+        "given": "worker1전진,worker2실패",
+        "when": "co-sim publish",
+        "then": "NO_PARTIAL_PUBLISH; 공통cut 복원",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-035",
+      "REQ-046",
+      "REQ-047",
+      "REQ-048",
+      "REQ-049"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SCRIPT.01",
+    "children": [
+      "CS-SCRIPT.01.01",
+      "CS-SCRIPT.01.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SCRIPT.01-P",
+        "given": "허용된 clause/run 근거",
+        "when": "AI proposal",
+        "then": "기록·가설·제안 분리",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SCRIPT.01-N",
+        "given": "원문에서 shell 지시",
+        "when": "AI proposal",
+        "then": "UNTRUSTED_INSTRUCTION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-032",
+      "REQ-052",
+      "REQ-058",
+      "REQ-059"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SCRIPT.02",
+    "children": [
+      "CS-SCRIPT.02.01",
+      "CS-SCRIPT.02.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SCRIPT.02-P",
+        "given": "plan/scenario와 실제 event refs",
+        "when": "ScriptIR 생성",
+        "then": "역할/조건/분기 동등",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SCRIPT.02-N",
+        "given": "미존재 event로 사실 주장",
+        "when": "ScriptIR 생성",
+        "then": "MISSING_EVIDENCE",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-051",
+      "REQ-053",
+      "REQ-054"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SCRIPT.03",
+    "children": [
+      "CS-SCRIPT.03.01",
+      "CS-SCRIPT.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SCRIPT.03-P",
+        "given": "approved script rev2",
+        "when": "의미 수정 rev3",
+        "then": "approval stale; raw log 불변",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SCRIPT.03-N",
+        "given": "AI 문구 승인됨",
+        "when": "의미 수정 rev3",
+        "then": "승인 상태 변화0",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-055",
+      "REQ-056"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SCRIPT.04",
+    "children": [
+      "CS-SCRIPT.04.01",
+      "CS-SCRIPT.04.02",
+      "CS-SCRIPT.04.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SCRIPT.04-P",
+        "given": "유효 template/ScriptIR",
+        "when": "출력·의미 재로드",
+        "then": "조건/역할/근거 동등",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SCRIPT.04-N",
+        "given": "미지원 HWPX를 지원 주장",
+        "when": "출력·의미 재로드",
+        "then": "UNSUPPORTED_TEMPLATE",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-086"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PROOF.01",
+    "children": [
+      "CS-PROOF.01.01",
+      "CS-PROOF.01.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PROOF.01-P",
+        "given": "동의된 실제 과제",
+        "when": "최근 업무관찰",
+        "then": "가명/누락/도움 표시",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PROOF.01-N",
+        "given": "가상의 인터뷰 답",
+        "when": "최근 업무관찰",
+        "then": "NOT_OBSERVED",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-077",
+      "REQ-078"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PROOF.02",
+    "children": [
+      "CS-PROOF.02.01",
+      "CS-PROOF.02.02",
+      "CS-PROOF.02.03"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PROOF.02-P",
+        "given": "native A→B→대본 실제서비스",
+        "when": "E2E/장애 주입",
+        "then": "동일 run/version 근거",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PROOF.02-N",
+        "given": "문서검사만 성공",
+        "when": "E2E/장애 주입",
+        "then": "PRODUCT_NOT_TESTED",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-001",
+      "REQ-070",
+      "REQ-074"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PROOF.03",
+    "children": [
+      "CS-PROOF.03.01",
+      "CS-PROOF.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PROOF.03-P",
+        "given": "A/B/C 모든 참가자 결과",
+        "when": "효용분석",
+        "then": "중단·미완료·도움 분모유지",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PROOF.03-N",
+        "given": "좋은 완료자만 분석",
+        "when": "효용분석",
+        "then": "PROTOCOL_VIOLATION",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-069",
+      "REQ-080",
+      "REQ-082",
+      "REQ-089"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-PROOF.04",
+    "children": [
+      "CS-PROOF.04.01",
+      "CS-PROOF.04.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-PROOF.04-P",
+        "given": "독립 holdout·scope·reviewer",
+        "when": "지정 수용",
+        "then": "해당 QoI/장소/판본만 수용",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-PROOF.04-N",
+        "given": "같은 개발자료만 재사용",
+        "when": "지정 수용",
+        "then": "NOT_INDEPENDENT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-040",
+      "REQ-067",
+      "REQ-068",
+      "REQ-076",
+      "REQ-090"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SHIP.01",
+    "children": [
+      "CS-SHIP.01.01",
+      "CS-SHIP.01.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SHIP.01-P",
+        "given": "새 PC offline/locked package",
+        "when": "설치·재실행",
+        "then": "local 저장·편집; 미지원 표시",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SHIP.01-N",
+        "given": "bundle hash 불일치",
+        "when": "설치·재실행",
+        "then": "CONTENT_INTEGRITY_FAIL",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-073",
+      "REQ-087"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SHIP.02",
+    "children": [
+      "CS-SHIP.02.01",
+      "CS-SHIP.02.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SHIP.02-P",
+        "given": "live DB와 checkpoint blobs",
+        "when": "API 백업·복원",
+        "then": "consistent cut; 원본보존",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SHIP.02-N",
+        "given": "blob 누락/WAL 분리",
+        "when": "API 백업·복원",
+        "then": "RESTORE_REJECT",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  },
+  {
+    "parentTaskId": "CS-SHIP.03",
+    "children": [
+      "CS-SHIP.03.01",
+      "CS-SHIP.03.02"
+    ],
+    "allChildrenImplementedRequired": true,
+    "parentAcceptance": [
+      {
+        "id": "TEST-CS-SHIP.03-P",
+        "given": "새 site/rule scope",
+        "when": "확장등록",
+        "then": "새 qualification 필요",
+        "status": "NOT_RUN"
+      },
+      {
+        "id": "TEST-CS-SHIP.03-N",
+        "given": "옛 현장 승인 복사",
+        "when": "확장등록",
+        "then": "SCOPE_MISMATCH",
+        "status": "NOT_RUN"
+      }
+    ],
+    "productRequirementIds": [
+      "REQ-075",
+      "REQ-088",
+      "REQ-091"
+    ],
+    "rule": "자식 story 한 개 수용은 부모 완료 아님. 원래 parent integration/qualification 및 제품 AT를 모두 필요한 scope에서 별도 검수한다.",
+    "status": "NOT_RUN"
+  }
+]

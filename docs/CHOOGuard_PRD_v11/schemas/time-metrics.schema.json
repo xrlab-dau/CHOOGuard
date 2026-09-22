@@ -1,0 +1,28 @@
+{
+  "required": [
+    "schemaVersion",
+    "measurementStatus",
+    "clocks",
+    "rawEntries"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "11.0.0"
+    },
+    "measurementStatus": {
+      "const": "NOT_RUN"
+    },
+    "clocks": {
+      "type": "array",
+      "uniqueItems": true,
+      "minItems": 4
+    },
+    "rawEntries": {
+      "type": "array",
+      "maxItems": 0
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": true
+}

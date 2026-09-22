@@ -1,0 +1,105 @@
+{
+  "schema": "chooguard.facility-resources-implementation.v1",
+  "status": "PUBLISHED_NATIVE_LIFECYCLE_PASS",
+  "story": "CS-EXEC.01.01",
+  "files": [
+    {
+      "draft": ".planning/2026-09-21-quality-a/resource-drafts/MvpFacilityResources.cs",
+      "target": "Assets/ChooGuard/App/Mvp/MvpFacilityResources.cs",
+      "sha256": "2124fdc9d1cc9519079a654906e39288c1453944d325d4177c6e0c590b04bed3",
+      "publishedSha256": "2124fdc9d1cc9519079a654906e39288c1453944d325d4177c6e0c590b04bed3"
+    },
+    {
+      "draft": ".planning/2026-09-21-quality-a/resource-drafts/Editor/MvpFacilityResourcesBinder.cs",
+      "target": "Assets/ChooGuard/Editor/MvpFacilityResourcesBinder.cs",
+      "sha256": "975c289458bac2ebf297fe3bd4733240aa12c54169ad9e8869cb892299e45148",
+      "publishedSha256": "975c289458bac2ebf297fe3bd4733240aa12c54169ad9e8869cb892299e45148"
+    },
+    {
+      "draft": ".planning/2026-09-21-quality-a/resource-drafts/Art/facility-resources.json",
+      "target": "Assets/ChooGuard/Art/Resources/facility-resources.json",
+      "sha256": "aea0047a8009be39d192af7d4610b097afc0c1015c653eb0c91fdb2ca6ea1214",
+      "publishedSha256": "aea0047a8009be39d192af7d4610b097afc0c1015c653eb0c91fdb2ca6ea1214"
+    },
+    {
+      "target": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "baseSha256": "c702d61d0898e4253b0feeed33c3527229fc8b589078a0acc5a9c0c7216b500f",
+      "draft": ".planning/2026-09-21-quality-a/resource-drafts/MvpAgencyDispatchController.cs",
+      "sha256": "e31af4c4d43c31db6f85779a98a11039d2dcc9facfdfecba3e2e1d8e10f8dff1",
+      "publishedSha256": "e31af4c4d43c31db6f85779a98a11039d2dcc9facfdfecba3e2e1d8e10f8dff1"
+    },
+    {
+      "target": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+      "baseSha256": "cf5cdb4e4394198d75a68e16e258e7db77cff2f5463531ad4c062a26f9a17466",
+      "draft": ".planning/2026-09-21-quality-a/resource-drafts/MvpTeamTaskController.cs",
+      "sha256": "3de2c8e8b260f623efab01bdeddc5871437fb2e9e4c83d6030391212c68ae66c",
+      "publishedSha256": "3de2c8e8b260f623efab01bdeddc5871437fb2e9e4c83d6030391212c68ae66c"
+    }
+  ],
+  "patch": {
+    "path": ".planning/2026-09-21-quality-a/resource-drafts/controller-resource-hooks.patch",
+    "sha256": "61c272de4d7969027854e803ad9ba7971874a557f3901dfd305ab85e2180c937",
+    "check": "PASS git apply --check; current target hashes match baseline manifest"
+  },
+  "decisions": {
+    "allocation": "Each verified119 base has1 evacuation-support kit and1 medical-support kit;4 kit slots total. Each base still has2 evacuation logical teams, so a spare team does not imply an extra kit. Cross-base dispatch is a real scarcity choice.",
+    "scope": "One reusable training kit per logical operation regardless of rendered membercount; not actual center inventory/procurement or medical supply use",
+    "invariant": "Stock+Committed+Consumed==Capacity; Consumed is used/outstanding reconditioning, TotalConsumed is per-run cumulative actual-use audit",
+    "reserve": "After duplicate/request-id and compatible Ready team checks, reserve before committing logicaljob. FailedStartNext rolls back reservation; no false refund claim if rollback fails.",
+    "execution": "Single owned Func<string,bool> OperationExecutionGate executes after actual interaction, BEFORE job.Released and TaskReady. Missing gate or false result holds owned work and cannot dispatch physical control. Unowned local ops unchanged. Same owned operation after first consume returns true without another decrement.",
+    "refund": "Only actual Requested zero-distance predeparture job may refund; graph cancellation accepted first, then one refund. Same canceled request ID remains rejected.",
+    "restock": "Only matching Replenishing mission with actual accepted countdown completed and total>=15 may restock, after replenished graph event. Used kit and unused carried reservation both return exactly one bounded slot. Duplicate restock adds nothing.",
+    "reset": "New training run resets per-run authored allocation, reservation audit, outstanding/cumulative counters; kernel15..45seconds and countdown code unchanged"
+  },
+  "api": {
+    "resources": "MvpFacilityResources on same Workspace, ResourceAsset, Initialize(), Ready/StatusReason/ConfigHash/Revision/RunRevision",
+    "immutableRead": "Stocks IReadOnlyList<StockSnapshot> with AgencyId/AgencyLabel/WorkType/Label/Capacity/Stock/Committed/Consumed/TotalConsumed/Revision/Available/Reason; Reservations immutable views",
+    "availability": "CanReserve(agencyId,workType,out reason) resource-only; Controller.CanRequestWork(agencyId,workType,out reason) combines planning readiness, graph, kit and compatible Ready team",
+    "proofMutations": "TryReserve; ConsumeForExecution (Working owner guard/idempotent); RefundBeforeDeparture (Requested guard); CompleteReplenishment (actual timer/mission guard); ResetRun",
+    "binder": "MvpFacilityResourcesBinder.BindExisting() Edit mode"
+  },
+  "ownership": {
+    "noAssetsChanges": "Root explicit Edit-mode publication signal received; exactly3new files copied and2manifest-owned files patched; existing metas untouched.",
+    "TaskControllerException": "Root authorized rejectable single gate declaration + pre-release invocation; no other task/navigation changes.",
+    "untouched": [
+      "Existing UI",
+      "world/buildings",
+      "camera",
+      "PhysicsBridge",
+      "graph engine/JSON",
+      "Jev kernel",
+      "OpenRA countdown"
+    ]
+  },
+  "nativeProbeInstructions": [
+    "Files published after root Edit-mode signal. Root imports/compiles then calls ChooGuard.Editor.MvpFacilityResourcesBinder.BindExisting().",
+    "At newrun expect4 distinct bins,each Stock1/Committed0/Consumed0. Central evacuation reserve→Stock0/Committed1; duplicate same request unchanged; explicit same-base reinforcement rejected despite spareevacuationteam; Choryang evacuation remains available.",
+    "Cancel a Requested job before movement: one refund, repeated cancel/reused canceled request ID no extra stock. Wrong agency/work IDs reject.",
+    "Run actual field interaction/TaskReady: reserved→Consumed exactlyonce, TotalConsumed1; following own warn/evacuate ACKs/execution retain1. Medical kit remains distinct.",
+    "Remove owned OperationExecutionGate or force consumption rejection: job stays unreleased and TaskReady/physical command must not fire; restore gate and verify successful owned release. Unowned ops-1 tasks remain unaffected.",
+    "Early CompleteReplenishment while travelling/working/returning/pausedtimer rejects. Actual return Replenishing keeps stockunavailable; only accepted15..45s process + graph replenished restocks exactly1. Duplicate completion no increment.",
+    "Already-resolved/no-execution mission never increases TotalConsumed and holds reservation until actual return/turnaround then restores. Reset restores explicittraininginitialallocation, not a claimedreal-worldshipment.",
+    "No pervehicle controls or publicAI/graph panels added; existing UIowner maywire immutable stockavailability APIs."
+  ],
+  "validation": {
+    "configUniqueScope": "PASS four unique bin IDs/capacity1",
+    "patchApplication": "PASS dry-run only",
+    "CSharpCompile": "PASS native current editor compilationFailed=false",
+    "runtimeResourceLifecycle": {
+      "receipt": ".planning/2026-09-21-quality-a/resources-native-proof.json",
+      "sha256": "3b8671f471d2ad0954994457ae57394ab5e4df6456df494d1023a1c629f5f175",
+      "actualEvacuated": 50,
+      "totalConsumed": 1,
+      "turnaroundAcceptedSeconds": 28,
+      "guards": "duplicate/scarcity/refund/falsegate/missinggate/earlyrestock/pause/duplicatecompletion pass",
+      "scope": "One actual crowd workflow; no FDS range extension, model calibration, camera retest, or A-quality acceptance claim. Gate fixture is explicit failure-path instrumentation only."
+    },
+    "publication": "PASS both baseline hashes verified before mutation, narrow patch applied, all5target hashes equal reviewed drafts; no Unity calls"
+  },
+  "limits": [
+    "This is finite reusable-kit capacity plus existing turnaround cost, not money/campaign/logistics procurement.",
+    "A quality score or full product acceptance is not claimed from staged source.",
+    "Actual execution means completed on-site task interaction released to control workflow; a later worker failure is not retroactively described as successful physics."
+  ],
+  "reviewCorrection": "Fail-open Action notification replaced by fail-closed single Func gate before release; draft only."
+}

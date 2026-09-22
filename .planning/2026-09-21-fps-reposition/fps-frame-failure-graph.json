@@ -1,0 +1,12 @@
+{
+  "status": "FAILED_COMMON_FRAME_CHECK",
+  "observed": {
+    "officialRootY": -1000,
+    "contextRootY": -1000,
+    "playerY": 0.045,
+    "scene": "FpsStation"
+  },
+  "cause": "Original MVP stationframe has worldY=-1000; cloner wronglypreservedworldpose instead ofmappingto commonstation-localframe0",
+  "acceptance": "Prior scene-composition/spawnreceiptdoesnotproveconnectedFPSmap; do notcountpass",
+  "repair": "Normalizeclonedsourceandlightsusingoriginalstationframe; rebuildfrompreservedMvpWorkspace. AuthorAstraLow."
+}

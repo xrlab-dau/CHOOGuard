@@ -1,0 +1,36 @@
+{
+  "schema": "chooguard.contextual-game-ui.v1",
+  "status": "PUBLISHED_SOURCE_FROZEN_NATIVE_PENDING",
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+      "sha256": "f0e502d8123dd6a47e5bba96b897477fcc92a272316e75d3329ddfe8ecd50609"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+      "sha256": "252079dea48a12424b64534110d81eef472fab1411ff1271db840d0f2794e997"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "sha256": "d33efca3f35b43f5037c5ac3249b8e6f4d1d281de0f57bd6bcd2c3bd48146ec9"
+    }
+  ],
+  "changes": {
+    "view": "No card until world context selected. Agency building -> support then existing target click. Station -> local source selection Central/Choryang + direct existing request into selected station. Team -> logical group state/cancel/return/follow. Explicit station internal/external view. No public graph or prediction entry, no predictor client creation.",
+    "workspace": "Old global team commands, replay/manual incident/scope/debrief/editor HUD hidden. Floor strip only selected station inside. Notices select appropriate context without implicit inside view. Game start/pause/speed/current status/notices retained. Recovery/resolved exposes 대응 결과·복기 and its result scroll; hidden in ordinary play. Visibility refreshed with training display.",
+    "controllerScope": "Only selection state/methods/world picking. Default selected agency null; ContextKind/HasContextSelection; station target normal click recognized; empty click clears only without pending target; invalid pending-target clicks stay pending/consumed with guidance and explicit cancel/RMB remain; actual visible group members prioritized over broad building volumes. Mission routing/physics/graph/timing untouched."
+  },
+  "verification": [
+    "Read current target pick volumes, actual logical MissionSnapshot fields and existing request contracts",
+    "Source check no public forecast/graph creation or global agency enumeration in new view",
+    "Source check default agency selection removed",
+    "git diff --check no whitespace errors; Unity/native not called",
+    "Root preserve-contract correction applied: pending invalid target consumes without clearing; recovery debrief reachable via end-state HUD"
+  ],
+  "limits": [
+    "Root must compile/native check contextual cards, station/agency/group world rays, empty clearing and camera capture",
+    "Existing backend owns availability/duplicate validation; support request may show its rejection reason",
+    "Public reinforcement toggle removed with former global wizard; gameplay API remains unchanged",
+    "Old graph/forecast scripts retained as source; root owns internal kernel binding and removal of any stale serialized debug view components"
+  ]
+}

@@ -1,0 +1,221 @@
+{
+  "id": "CS-MODES.03.03",
+  "epicId": "CS-MODES",
+  "parentTaskId": "CS-MODES.03",
+  "title": "현장 선택·상황 설정을 native 프리팹으로 연결한다",
+  "goal": "현장 자격·두 모드·초기조건을 검토한 후 새 세션을 요청한다. 누락자료는 해당 주장 범위만 차단한다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-002",
+    "REQ-083",
+    "REQ-085"
+  ],
+  "supportsRequirementIds": [
+    "REQ-002",
+    "REQ-083",
+    "REQ-085"
+  ],
+  "parentProductTestIds": [
+    "AT-002",
+    "AT-083",
+    "AT-085"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "Assets/ChooGuard/Presentation/Scenarios/ScenarioSetupPresenter.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-MODES.03.03",
+      "scope": "현장 선택·상황 설정을 native 프리팹으로 연결한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Presentation/Scenarios/SiteSelectionPresenter.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-MODES.03.03",
+      "scope": "현장 선택·상황 설정을 native 프리팹으로 연결한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Presentation/Scenarios/ScenarioSetup.prefab",
+      "operation": "CREATE",
+      "createdBy": "CS-MODES.03.03",
+      "scope": "현장 선택·상황 설정을 native 프리팹으로 연결한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Presentation/Scenarios/SiteSelection.prefab",
+      "operation": "CREATE",
+      "createdBy": "CS-MODES.03.03",
+      "scope": "현장 선택·상황 설정을 native 프리팹으로 연결한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSMODES0303Tests.cs",
+  "testKinds": [
+    "EDIT_MODE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-MODES.03.03",
+      "kind": "PlannedArtifact",
+      "producer": "CS-MODES.03.03",
+      "contract": "현장 선택·상황 설정을 native 프리팹으로 연결한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "Assets/ChooGuard/Presentation/Scenarios/ScenarioSetupPresenter.cs",
+        "Assets/ChooGuard/Presentation/Scenarios/SiteSelectionPresenter.cs",
+        "Assets/ChooGuard/Presentation/Scenarios/ScenarioSetup.prefab",
+        "Assets/ChooGuard/Presentation/Scenarios/SiteSelection.prefab"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-MODES.03.02",
+      "artifactId": "OUT-CS-MODES.03.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "같은 기능의 다음 독립 결과; 이전 구현 후보/수정할 파일을 소비한다."
+    },
+    {
+      "producer": "CS-MODES.01.02",
+      "artifactId": "OUT-CS-MODES.01.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-MODES.02.02",
+      "artifactId": "OUT-CS-MODES.02.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-LAB.02.02",
+      "artifactId": "OUT-CS-LAB.02.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PLAY.05.02",
+      "artifactId": "OUT-CS-PLAY.05.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-SIM.01.02",
+      "artifactId": "OUT-CS-SIM.01.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PLAY.05.02",
+      "artifactId": "OUT-CS-PLAY.05.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    }
+  ],
+  "externalInputs": [],
+  "sourceIds": [],
+  "sourceRefs": [],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/08-modes-and-scenario-generation.md",
+    "basis/v3/specs/04-checkpoint-and-comparison.md"
+  ],
+  "parentContract": "Mode={TUTORIAL,RANDOM_OPERATIONS_LAB}; RuntimeConfig는 같은 코어와 lock을 공유.",
+  "parentSpecRef": "basis/v3/tasks/CS-MODES.03.json",
+  "behaviorSteps": [
+    "현장 자격·두 모드·초기조건을 검토한 후 새 세션을 요청한다. 누락자료는 해당 주장 범위만 차단한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-MODES.03.03-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 현장 선택·상황 설정을 native 프리팹으로 연결한다의 유효 조건",
+      "when": "현장 선택·상황 설정을 native 프리팹으로 연결한다를 실행한다",
+      "then": "선택→설정→작업공간이 올바른 run/현장 revision으로 이어진다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-MODES.03.03-N",
+      "kind": "NEGATIVE",
+      "given": "닫기/재열기로 draft 손실·이중세션·정량자격 자동승격이 생기지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "닫기/재열기로 draft 손실·이중세션·정량자격 자동승격이 생기지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSMODES0303Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10072,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/08-modes-and-scenario-generation.md",
+      "sha256": "3624b9020f6409042e191e7b02d36fd6a8d609142c83febd7d27b5dadcb0e68a"
+    },
+    {
+      "path": "basis/v3/specs/04-checkpoint-and-comparison.md",
+      "sha256": "2cc1a236ebd91dfb341ed97b3242536e4a5d982aecf7cef90a188e5ff3cd0af3"
+    }
+  ]
+}

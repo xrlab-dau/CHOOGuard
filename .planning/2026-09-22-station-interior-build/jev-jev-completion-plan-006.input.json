@@ -1,0 +1,74 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "goal": "부산역 내부 구조를 완벽하게 개발한다 (complete the Busan station interior). The user wants continuous orchestration to completion, not incremental check-ins.",
+    "done": [
+      "Interior geometry confirmed present in Unity colliders; 2F concourse walkable, player walks 4 directions grounded",
+      "Spawn moved inside concourse at (26.00,7.05,-47.00), scene saved",
+      "Zones read from source floor materials and ceiling height, not authored",
+      "Wall-based partitions measured: 5 rooms of at least 33 sqm (785/404/225/106/45)",
+      "NFTC 101 regulation basis established from primary sources",
+      "12 extinguishers placed by BFS walking distance plus greedy set cover, verified in Play mode, FPS PlayMode 19/19",
+      "Builder extended with Placement list overload; absolute mount-height defect fixed"
+    ],
+    "open_defects": [
+      "Two units 0.44m apart (FE-004, FE-006) inside the 3m interaction clamp — aiming is ambiguous. Root cause: candidates thinned on a 2m grid but the wall-hug correction consumed that gap. No minimum-separation constraint in the solver.",
+      "8 walkable cells (0.44%) remain beyond 20m walking distance; their coordinates are not emitted so their nature is unknown",
+      "West concourse floor mesh OfficialStation_-부산역_5 has downward normals; runtime m_QueriesHitBackfaces is 0 so raycast interaction passes through it. The slice was confined to correct-normal zones instead of fixing it."
+    ],
+    "not_started": [
+      "NavMesh, Occlusion Culling and Lightmap are all unbaked (fileID 0) in FpsStation.unity",
+      "Interior lighting has not been examined at all — the concourse may be unlit or lit only by the scene directional light leaking through geometry",
+      "Zone purposes are unconfirmed: the readings 'main concourse', 'west concourse corridor', 'east separate room' are interpretations from shape and ceiling height, never checked against the public facility guide",
+      "Upper floors at y 12 to 31 hold about 7,336 sqm of walkable surface with zero reachability from the concourse; the vertical circulation was never investigated",
+      "No fire hydrants, emergency exits, evacuation signage or other 소방시설 beyond extinguishers",
+      "No civilians, no ambient life, no audio",
+      "Attribution credit for 부산디지털로케이션 is required by licence and unimplemented"
+    ],
+    "constraints": [
+      "Arbitrary placement is forbidden. Everything must derive from measurement of the official source or from regulation.",
+      "Never build a wheel. Repository code and official Unity tooling come first.",
+      "Tutorial mode and emergency response mode are separate products with no state carry-over.",
+      "The user wants Jev to drive the reasoning deterministically and workflows to execute in parallel."
+    ]
+  },
+  "questions": {
+    "next_phase": {
+      "type": "choice",
+      "instructions": "What is the single next phase of work that most advances a complete interior?",
+      "criteria": {
+        "close_open_defects_then_bake": "Close the three open defects first, then bake NavMesh and lighting, because an interior with ambiguous interaction, uncovered cells and an invisible floor is not complete at any scale",
+        "bake_navmesh_and_lighting_first": "Bake NavMesh, occlusion and lightmaps first because nothing else can be judged until the space renders and agents can move",
+        "investigate_vertical_circulation": "Investigate how the upper 7,336 sqm connects, because an interior that is one floor out of several is not the building",
+        "confirm_zone_purposes": "Confirm zone purposes against the public facility guide before adding anything else"
+      }
+    },
+    "defect_priority": {
+      "type": "choice",
+      "instructions": "Among the three open defects, which must be fixed first?",
+      "criteria": {
+        "flipped_normals": "The flipped floor normals, because a floor the runtime raycast passes through silently breaks every interaction placed on it and the defect is invisible until something is built there",
+        "proximity_pair": "The 0.44m pair, because it is a live interaction ambiguity in content that already exists",
+        "uncovered_cells": "The 8 uncovered cells, because they are a live regulation non-compliance"
+      }
+    },
+    "lighting_approach": {
+      "type": "choice",
+      "instructions": "Interior lighting has never been examined. How should it be approached?",
+      "criteria": {
+        "measure_before_authoring": "Measure the current luminance inside the concourse first — capture from the player camera and sample it — then decide whether any light needs authoring",
+        "author_lights_immediately": "Author interior lights now based on typical station lighting design",
+        "bake_and_see": "Bake lightmaps with current settings and judge from the result"
+      }
+    },
+    "upper_floors": {
+      "type": "choice",
+      "instructions": "The upper floors hold 7,336 sqm with zero reachability. What does completeness require?",
+      "criteria": {
+        "measure_then_decide": "Measure whether vertical circulation exists in the source geometry before deciding; if stairs exist the reachability failure is a probe or collider problem, if they do not then authoring them would be arbitrary placement",
+        "author_stairs": "Author stairs to connect them",
+        "exclude_upper_floors": "Declare the 2F concourse the product scope and exclude the upper floors"
+      }
+    }
+  }
+}

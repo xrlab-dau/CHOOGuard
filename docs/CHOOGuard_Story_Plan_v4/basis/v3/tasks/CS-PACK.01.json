@@ -1,0 +1,141 @@
+{
+  "id": "CS-PACK.01",
+  "epicId": "CS-PACK",
+  "title": "새 공간·기관·시간·데이터 식별자",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PACK.01",
+    "description": "새 namespace의 도메인 DTO와 schema·합성 입력",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PACK.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Contracts/ContentTypes.cs",
+    "Assets/ChooGuard/Content/ContentValidator.cs",
+    "content/schemas/site.schema.json",
+    "content/schemas/scenario.schema.json",
+    "content/fixtures/two-agency.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PACK/Pack01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-BOOT.02",
+      "artifactId": "A-CS-BOOT.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "새 stable ID를 발급하고 표시 이름과 분리한다. 구역 수·ID 집합은 실제 목표 범위로 정의하며 과거 ID 목록을 요구하지 않는다.",
+    "SI 단위, 좌표 frame, simulation tick, event sequence, authored/observed/received 시간을 분리한다.",
+    "SiteBundle·ScenarioSpec·OperationalPlan의 참조/버전을 검사하고 원본을 immutable로 보관한다."
+  ],
+  "contract": "SiteBundle {id,revision,frames,regions,portals,entities,sourceRefs,qualification}; ScenarioSpec와 OperationalPlan은 별도 revision.",
+  "sourceIds": [
+    "STD-JSONLD",
+    "STD-PROV"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PACK.01-P",
+      "given": "같은 표시명 기관 a,b와 양수 자원",
+      "when": "콘텐츠 등록",
+      "then": "ID a,b 유지; 이름 병합0",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PACK.01-N",
+      "given": "미존재 region-z",
+      "when": "콘텐츠 등록",
+      "then": "UNKNOWN_REFERENCE",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-015",
+    "REQ-060"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-015",
+    "REQ-060"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PACK/Pack01Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "같은 표시명 기관 a,b와 양수 자원",
+    "operation": "콘텐츠 등록",
+    "expectedPositive": "ID a,b 유지; 이름 병합0",
+    "negativeInput": "미존재 region-z",
+    "expectedNegative": "UNKNOWN_REFERENCE",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

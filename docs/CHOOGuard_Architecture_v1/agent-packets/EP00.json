@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "1.0.0",
+  "epicId": "EP00",
+  "title": "범위·사용자·평가기준",
+  "sourcePRD": "11.0.0",
+  "authority": "DESIGN_PACKET_NOT_WRITE_GRANT",
+  "implementationStatus": "NOT_RUN",
+  "components": [
+    "APP",
+    "EVIDENCE"
+  ],
+  "read": [
+    "START_HERE.md",
+    "docs/00.md",
+    "docs/01.md",
+    "docs/14.md",
+    "docs/15.md",
+    "INTERFACES.md"
+  ],
+  "requirementIds": [
+    "REQ-066",
+    "REQ-077",
+    "REQ-078",
+    "REQ-088",
+    "REQ-091"
+  ],
+  "acceptanceTestIds": [
+    "AT-066",
+    "AT-077",
+    "AT-078",
+    "AT-088",
+    "AT-091"
+  ],
+  "originalEPContractRef": "basis/epics.json#EP00",
+  "phases": {
+    "prepare": "현재 source·work-order·claim·입력·이전 실행 증거 확인. 설계만으로 존재/승인/성공을 주장하지 않는다.",
+    "candidate": "해당 소비 lane에 필요한 입력과 쓰기 범위 확인 후 구현·원시검사 결과 전달. EP 전체 완료를 불필요한 선행으로 만들지 않는다.",
+    "accept": "실제 산출물·원시 로그·해시·지원범위·독립검수 조건 확인. fixture와 현실 수용을 분리한다."
+  },
+  "returnFields": [
+    "epicId",
+    "phase",
+    "lane",
+    "sourceCommit",
+    "branch",
+    "changedPaths",
+    "inputsAndHashes",
+    "outputsAndHashes",
+    "testsRun",
+    "failedAndNotRun",
+    "actualBlocker",
+    "handoffConsumers",
+    "claimReleased"
+  ],
+  "stopConditions": [
+    "요구·판본·권한의 충돌은 근거와 영향을 보고한다.",
+    "필수 물리량이 없으면 해당 정량 주장을 차단한다. 독립 UI 개발까지 전역 차단하지 않는다.",
+    "LLM·표현 계층에서 업무·물리·승인 값을 창작하지 않는다."
+  ]
+}

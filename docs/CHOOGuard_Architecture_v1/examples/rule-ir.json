@@ -1,0 +1,39 @@
+{
+  "schemaVersion": "1.0.0",
+  "dataClass": "SYNTHETIC_FIXTURE",
+  "ruleId": "rule:reservation",
+  "revision": "1",
+  "applicability": {
+    "agencyIds": [
+      "agency:rail"
+    ],
+    "incidentFamilyIds": [
+      "family:fixture"
+    ],
+    "siteScope": "synthetic:test"
+  },
+  "ruleType": "ENGINEERING_INVARIANT",
+  "sourceClauses": [
+    {
+      "sourceId": "source:fixture-design",
+      "sourceHash": "7f49eb0c27184fc53b8661ba7340db25b75916288c08a6834d9cfc8fef783edc",
+      "locator": "engineering invariant; not agency SOP"
+    }
+  ],
+  "guard": {
+    "combine": "ALL",
+    "predicates": [
+      {
+        "field": "resource.available",
+        "operator": "EQ",
+        "value": true
+      }
+    ]
+  },
+  "effectIds": [
+    "effect:reserve"
+  ],
+  "exceptionRuleIds": [],
+  "reviewStatus": "PROPOSED",
+  "approvalRefs": []
+}

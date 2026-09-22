@@ -1,0 +1,65 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>();var s=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpStationView>();var r=w.GetComponent<ChooGuard.App.Mvp.MvpFacilityResources>();var c=s.transform.Find(\"도시 공개지형/Evidence restored fire facilities/Central119Restored\");return new{playing=UnityEditor.EditorApplication.isPlaying,resourcesReady=r.Ready,configHash=r.ConfigHash,stocks=System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Select(r.Stocks,x=>new{x.AgencyId,x.WorkType,x.Capacity,x.Stock,x.Committed,x.Consumed})),centralMeshes=c.GetComponentsInChildren<UnityEngine.MeshFilter>(true).Length,sceneDirty=w.gameObject.scene.isDirty,worldTexts=System.Linq.Enumerable.Count(UnityEngine.Object.FindObjectsByType<TMPro.TMP_Text>(UnityEngine.FindObjectsInactive.Include,UnityEngine.FindObjectsSortMode.None),x=>x.GetComponentInParent<UnityEngine.Canvas>()==null)};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "playing": false,
+        "resourcesReady": true,
+        "configHash": "aea0047a8009be39d192af7d4610b097afc0c1015c653eb0c91fdb2ca6ea1214",
+        "stocks": [
+          {
+            "AgencyId": "busan-jungbu-central-119",
+            "WorkType": "evacuation-support",
+            "Capacity": 1,
+            "Stock": 1,
+            "Committed": 0,
+            "Consumed": 0
+          },
+          {
+            "AgencyId": "busan-jungbu-central-119",
+            "WorkType": "medical-support",
+            "Capacity": 1,
+            "Stock": 1,
+            "Committed": 0,
+            "Consumed": 0
+          },
+          {
+            "AgencyId": "busan-jungbu-choryang-119",
+            "WorkType": "evacuation-support",
+            "Capacity": 1,
+            "Stock": 1,
+            "Committed": 0,
+            "Consumed": 0
+          },
+          {
+            "AgencyId": "busan-jungbu-choryang-119",
+            "WorkType": "medical-support",
+            "Capacity": 1,
+            "Stock": 1,
+            "Committed": 0,
+            "Consumed": 0
+          }
+        ],
+        "centralMeshes": 112,
+        "sceneDirty": false,
+        "worldTexts": 0
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

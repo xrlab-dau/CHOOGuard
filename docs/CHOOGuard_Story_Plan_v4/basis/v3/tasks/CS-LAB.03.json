@@ -1,0 +1,136 @@
+{
+  "id": "CS-LAB.03",
+  "epicId": "CS-LAB",
+  "title": "동일조건·불확도·비지배 비교",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-LAB.03",
+    "description": "의도적으로 고정한 외생조건과 조건별 비교 보고",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-LAB.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-LAB.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Experiments/ComparisonService.cs",
+    "Assets/ChooGuard/Experiments/ExogenousScenarioStreams.cs",
+    "Assets/ChooGuard/Experiments/ComparisonReport.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/LAB/Lab03Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-LAB.02",
+      "artifactId": "A-CS-LAB.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "map/rule/model/QoI basis가 호환되는지 먼저 검사한다. 외생 난수 혁신은 stable process key로 결속한다.",
+    "사용자 조치가 바꾸는 후속 이동·보고·혼잡은 각 run에서 다시 계산한다.",
+    "제약 위반을 속도 점수로 상쇄하지 않는다. 불확도·실패·우열 불명과 다목적 비지배 대안을 표시한다."
+  ],
+  "contract": "Comparison {basis,inputs,qoi,violations,uncertainty,status,selectionReason}; 현실 전체 최적을 주장하지 않음.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-LAB.03-P",
+      "given": "동일 exogenous process key, 다른 운영안",
+      "when": "A/B 비교",
+      "then": "외생 혁신 동일·내생값 재계산",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-LAB.03-N",
+      "given": "modelLock 다른 두 run",
+      "when": "A/B 비교",
+      "then": "INCOMPARABLE",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-038",
+    "REQ-039"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/03-durable-operations.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/03-durable-operations.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-038",
+    "REQ-039"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/LAB/Lab03Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "동일 exogenous process key, 다른 운영안",
+    "operation": "A/B 비교",
+    "expectedPositive": "외생 혁신 동일·내생값 재계산",
+    "negativeInput": "modelLock 다른 두 run",
+    "expectedNegative": "INCOMPARABLE",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

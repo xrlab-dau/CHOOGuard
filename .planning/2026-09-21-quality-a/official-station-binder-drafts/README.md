@@ -1,0 +1,1 @@
+Rootpublicationonly: copy MvpOfficialStationBinder.cs to Assets/ChooGuard/Editor aftersignal andcompile. Operationalregistration: .planning/2026-09-21-quality-a/official-station-registration.json. Stage→nativeinspect→separatecoveragebuild→explicitPublishExisting. Oldvisuals inactivebackup only; functionalalignment remainsopen.

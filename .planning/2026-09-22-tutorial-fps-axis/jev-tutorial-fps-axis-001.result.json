@@ -1,0 +1,114 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 566,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "layer_coupling": {
+          "type": "choice",
+          "choice": "state_carryover",
+          "confidence": 0.52,
+          "probabilities": {
+            "unlock_gating": 0.14,
+            "state_carryover": 0.63,
+            "inline_coaching": 0.01,
+            "separate_modes": 0.22
+          }
+        },
+        "first_slice": {
+          "type": "choice",
+          "choice": "single_device_tutorial",
+          "confidence": 1,
+          "probabilities": {
+            "single_device_tutorial": 1,
+            "full_emergency_run": 0,
+            "npc_crowd_first": 0,
+            "transfer_corridor_first": 0
+          }
+        },
+        "rts_disposition": {
+          "type": "choice",
+          "choice": "port_loop_keep_scene_dead",
+          "confidence": 0.73,
+          "probabilities": {
+            "keep_both_shipping": 0.02,
+            "delete_outright": 0.02,
+            "port_loop_keep_scene_dead": 0.8,
+            "freeze_untouched": 0.16
+          }
+        },
+        "metro_disposition": {
+          "type": "choice",
+          "choice": "surface_route_seal_underground",
+          "confidence": 0.99,
+          "probabilities": {
+            "defer_all_transfer": 0.01,
+            "surface_route_seal_underground": 0.99,
+            "remove_metro_entirely": 0,
+            "connect_underground_now": 0
+          }
+        },
+        "biggest_blocker": {
+          "type": "choice",
+          "choice": "no_version_control",
+          "confidence": 0.64,
+          "probabilities": {
+            "two_half_games": 0.14,
+            "no_interactables": 0.13,
+            "no_manual_source": 0.01,
+            "no_version_control": 0.72
+          }
+        },
+        "role_boundary_risk": {
+          "type": "choice",
+          "choice": "staff_checks_only",
+          "confidence": 1,
+          "probabilities": {
+            "certification_progression": 0,
+            "avoid_maintenance": 0,
+            "player_does_all_trades": 0,
+            "staff_checks_only": 1
+          }
+        },
+        "manual_fidelity": {
+          "type": "score",
+          "score": 3.81,
+          "confidence": 0.84,
+          "legend": {
+            "0": "barely constrains",
+            "1": "mildly constrains",
+            "2": "moderately constrains",
+            "3": "strongly constrains",
+            "4": "severely constrains"
+          },
+          "probabilities": {
+            "0": 0.01,
+            "1": 0,
+            "2": 0.01,
+            "3": 0.15,
+            "4": 0.83
+          }
+        },
+        "tutorial_completion_authority": {
+          "type": "noul",
+          "noul": 0.9
+        },
+        "digital_twin_claim": {
+          "type": "noul",
+          "noul": 0.91
+        }
+      },
+      "usage": {
+        "input_tokens": 2833,
+        "output_tokens": 443
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

@@ -1,0 +1,317 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-21",
+  "storyId": "CS-EXEC.01.01",
+  "purpose": "Jev가 현재 에셋으로 바로 채택할 생산 개선을 고르기 위한 읽기 전용 벤치마크 그래프",
+  "constraints": {
+    "sessionTarget": "20-30분 평시 운영 -> 사건 -> 지속 대응 -> 부분 복구",
+    "primaryGameReference": "Jurassic World Evolution 3",
+    "presentation": "한국어 UI, 1 Unity unit = 1m, world text 0",
+    "currentOwnership": "NPC lifecycle과 MvpWorkspace 구현은 진행 중이므로 이 그래프는 제안만 하며 해당 파일을 수정하지 않았다.",
+    "ipBoundary": "레퍼런스의 정보 계층과 상호작용 원리만 적용한다. 화면 구성, 아이콘, 명칭, 미술을 복제하지 않는다.",
+    "evidenceBoundary": "공개 화면에서 보이는 사실과 공식 설명만 사실로 기록한다. 비공개 AI, NPC, 경로, 알림 시스템 내부 구현은 추정하지 않는다."
+  },
+  "nodes": [
+    {
+      "id": "S1-jwe3-official-operations",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "JWE3 공식 운영·유지보수 소개",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/news/jurassic-world-evolution-3-erscheint-am-21-oktober",
+      "observedFacts": [
+        "공식 소개는 보안 카메라와 차량 유지보수 팀이 위협 통제, 긴급 수리, 탈출 상황 대응을 지원한다고 설명한다.",
+        "지형·텍스처·정밀 소품 배치를 서로 다른 제작 층으로 다룬다."
+      ],
+      "localImagePaths": []
+    },
+    {
+      "id": "S2-jwe3-director-interview",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "JWE3 게임 디렉터 인터뷰",
+      "url": "https://store.epicgames.com/en-US/news/jurassic-world-evolution-3-interview-baby-dinosaurs-terraforming-atvs-more",
+      "observedFacts": [
+        "직접 ATV를 운전해 울타리를 점검·수리할 수 있다고 설명한다.",
+        "유지보수 거점은 정해진 범위의 초기 대응을 위임하고, 보안 카메라는 경보와 포획팀 출동을 연결한다고 설명한다."
+      ],
+      "localImagePaths": []
+    },
+    {
+      "id": "S3-jwe2-visible-ui-accessibility",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "JWE 계열 관리 UI 접근성",
+      "url": "https://www.jurassicworldevolution.com/en-US/2/accessibility",
+      "observedFacts": [
+        "관리 오버레이는 색각 모드와 고대비 표현을 제공한다.",
+        "시간은 정지·1배·2배·3배를 지원하고 재난 발생 때 속도를 1배로 되돌리는 옵션이 있다."
+      ],
+      "localImagePaths": [
+        "asset-library/reference-ui/jwe3/ranger-status.png",
+        "asset-library/reference-ui/jwe3/capture-team.png"
+      ],
+      "visibleImageObservation": "로컬 분석용 캡처에서는 선택 팀의 상태·작업 수를 작은 카드로 묶고, 얇은 작업선·대상 링·작은 상태 배지를 월드에 겹쳐 큰 화면 면적을 비워 둔다. 이것은 보이는 UI 사실이며 내부 시스템 근거가 아니다."
+    },
+    {
+      "id": "S4-korail-operational-readiness",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "코레일 특별수송 운영·대응 자원",
+      "url": "https://info.korail.com/info/selectBbsNttView.do?bbsNo=199&integrDeptCode=&key=911&nttNo=22683&pageIndex=65&searchCnd=SJ&searchCtgry=&searchKrwd=",
+      "observedFacts": [
+        "운영상황실은 관제·여객·광역·차량 분야를 묶어 상시 모니터링한다.",
+        "예비 열차·사고복구 장비·기동정비반을 분산 배치하고, 안내표시기·승강설비·조명·방송·편의시설을 점검한다."
+      ],
+      "localImagePaths": []
+    },
+    {
+      "id": "S5-kr-station-design-guidance",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "국가철도공단 역사 설계 지침 공개자료",
+      "url": "https://www.kr.or.kr/boardCnts/view.do?boardID=1000009&boardSeq=16618&page=167",
+      "observedFacts": [
+        "이용객 수를 바탕으로 에스컬레이터, 개집표기, 승강장 대합실 기준을 다룬다.",
+        "출입구·수직동선·대합 공간은 장식물이 아니라 이용 흐름을 정의하는 주요 공간 요소다."
+      ],
+      "localImagePaths": []
+    },
+    {
+      "id": "S6-korail-busan-station",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "코레일 부산역 안내와 공식 외관 이미지",
+      "url": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "observedFacts": [
+        "보존된 공식 외관 이미지는 긴 수평 지붕, 전면 유리 커튼월, 반복 구조 프레임, 큰 진입 캐노피, 계단·엘리베이터·광장의 층차를 보여준다."
+      ],
+      "localImagePaths": [
+        "asset-library/space-references/source-downloads/rail-station.jpg"
+      ]
+    },
+    {
+      "id": "S7-visitbusan-station-archive",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "부산관광공사 부산역 사진 아카이브",
+      "url": "https://www.visitbusan.net/archive/dataSearch/view.nm?dataSid=METADATA015480&menuCd=36",
+      "observedFacts": [
+        "부산역을 동구 중앙대로 206의 철도 교통시설로 식별하고 2024년 전경 사진을 제공한다.",
+        "사진은 공공누리 제1유형으로 표시되어 있으나 이 그래프는 이미지를 제품 텍스처로 복제하지 않고 형태 관찰에만 사용한다."
+      ],
+      "localImagePaths": []
+    },
+    {
+      "id": "S8-bisco-jagalchi-layout",
+      "type": "source",
+      "classification": "directly_supported",
+      "title": "부산시설공단 자갈치시장 1층 시설 배치",
+      "url": "https://www.bisco.or.kr/jagalchimarket/facil/facil01/facil01_3/",
+      "observedFacts": [
+        "공식 시설도는 길게 굽은 외피 안에 반복 판매 섬을 두고, 양 끝과 중앙에 출입구·계단·엘리베이터·에스컬레이터를 분산한다.",
+        "반복 가구와 수직동선 실루엣만으로도 한국 대형 공공·상업 실내의 기능 구역을 읽을 수 있다."
+      ],
+      "localImagePaths": [
+        "asset-library/research-public/2026-09-21/jagalchi-1f-facil_01_02_07.jpg"
+      ]
+    },
+    {
+      "id": "P1-context-command-ui",
+      "type": "productionProposal",
+      "priority": 1,
+      "title": "선택 대상 중심의 팀 카드·맥락 행동·작업선",
+      "currentDefect": "현재 캡처는 좌측 팀 패널과 하단 전체 행동판이 항상 큰 면적을 차지하고, 선택 팀의 이동·준비·작업·인계 단계와 실제 대상 관계가 월드에서 약하다.",
+      "referenceObservation": {
+        "facts": [
+          "로컬 JWE3 분석 캡처는 선택 팀 상태와 작업을 작은 카드에 묶고, 대상까지 얇은 선·링·상태 배지를 표시한다.",
+          "JWE3 공식 자료는 유지보수 팀·카메라·거점이 실제 대응 역할을 나눠 가진다고 설명한다."
+        ],
+        "inference": "CHOOGuard도 고정 행동판을 줄이고 선택한 팀과 현장 대상 주변에서만 가능한 행동과 진행 단계를 보여주면 3D 현장이 주 화면으로 남는다."
+      },
+      "productionApplication": [
+        "좌상단 선택 팀 카드를 화면 높이의 약 22% 이내로 축소하고 체력식 수치 대신 현재 위치, 다음 작업, 대기 이유, ETA만 표시한다.",
+        "대상 선택 시 월드 링과 얇은 경로선을 띄우고 그 근처에 가능한 행동 3개 이하를 표시한다. 불가능 행동은 비활성 상태와 한 줄 이유를 한국어 UI에 표시한다.",
+        "작업 큐는 이동 -> 준비 -> 작업 -> 인계 네 단계로 표시하고, 실제 시뮬레이션 ACK가 오기 전에는 완료 색으로 바꾸지 않는다.",
+        "기존 119 차량·대응팀 FBX와 선택 윤곽을 재사용하고 새 캐릭터나 차량 세트를 만들지 않는다."
+      ],
+      "ownership": {
+        "files": [
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+          "Assets/ChooGuard/App/Mvp/MvpStationView.cs"
+        ],
+        "collisionRule": "현재 NPC/UI Astra 작업이 끝난 뒤 root가 단일 UI 소유자에게 연결한다."
+      },
+      "implementationCost": {
+        "size": "M",
+        "estimate": "1.5-2 엔지니어일",
+        "reason": "기존 위젯과 팀 상태를 재배치하지만 월드 투영, ACK 단계 매핑, 다양한 카메라 거리 검증이 필요하다."
+      },
+      "acceptancePhotos": [
+        "도시 광각: UI가 월드 면적의 30% 미만이고 선택하지 않은 상태에서 큰 하단 행동판이 보이지 않는다.",
+        "역사 중경: 한 팀을 선택했을 때 카드, 경로선, 대상 링, ETA가 동시에 보인다.",
+        "현장 근경: 이동·준비·작업·인계 중 서로 다른 한 단계가 강조되고 실제 팀/차량이 같은 대상 옆에 보인다."
+      ]
+    },
+    {
+      "id": "P2-actionable-notification-loop",
+      "type": "productionProposal",
+      "priority": 2,
+      "title": "평시-사건-복구를 잇는 행동 가능한 알림 레일",
+      "currentDefect": "현재 우측 패널은 긴 설명과 계산 대기 상태를 고정 표시하지만 20-30분 운영에서 무엇이 변했고 어떤 팀·시설이 영향을 받았는지 우선순위가 드러나지 않는다.",
+      "referenceObservation": {
+        "facts": [
+          "JWE3 게임 디렉터 인터뷰는 감지 장치가 경보를 만들고 대응팀 출동으로 이어지는 흐름을 설명한다.",
+          "코레일 자료는 운영상황실의 상시 모니터링, 분야별 자원, 분산된 예비·복구 자원, 시설 점검을 구분한다.",
+          "JWE 계열 공식 접근성 자료는 재난 시 게임 속도를 1배로 되돌리는 선택지를 제공한다."
+        ],
+        "inference": "알림은 로그가 아니라 카메라 초점·팀 선택·행동 예약으로 이어지는 작은 운영 단위여야 하며, 평시 점검과 사건 알림이 같은 레일에서 상태를 이어가야 한다."
+      },
+      "productionApplication": [
+        "우측 고정 설명판을 접히는 최근 알림 3개 레일로 바꾸고 각 항목에 시각, 위치, 영향, 담당 가능 팀, 상태를 표시한다.",
+        "알림 클릭은 해당 위치 초점과 관련 팀 필터까지만 수행한다. 출동은 별도 확인으로 남겨 오조작을 막는다.",
+        "심각도는 색상만 쓰지 않고 아이콘·테두리 패턴·짧은 한국어 동사를 함께 사용한다.",
+        "치명 알림은 전술 일시정지 또는 1배 전환을 제안하되 사용자 설정을 존중하고, 복구 단계에서는 재개 가능 구역과 남은 제한을 분리해 보여준다."
+      ],
+      "ownership": {
+        "files": [
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+          "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs"
+        ],
+        "collisionRule": "진행 중인 persistent NPC lifecycle 결과의 실제 phase와 ACK를 소비하며 별도 가짜 타이머를 만들지 않는다."
+      },
+      "implementationCost": {
+        "size": "M",
+        "estimate": "1-2 엔지니어일",
+        "reason": "기존 상태를 요약하는 UI는 작지만 사건·팀·카메라·시간제어 연결과 중복 알림 억제가 필요하다."
+      },
+      "acceptancePhotos": [
+        "평시 광각: 점검 알림 1개와 비어 있는 사건 슬롯, 움직이는 시민·팀이 함께 보인다.",
+        "사건 발생 프레임: 치명 알림, 위치, 영향, 관련 팀, 현재 속도 변화가 한 화면에서 읽힌다.",
+        "복구 프레임: 해제된 제한과 남은 제한이 별도 행으로 보이고 같은 시민·팀이 현장에 남아 있다."
+      ]
+    },
+    {
+      "id": "P3-station-functional-silhouettes",
+      "type": "productionProposal",
+      "priority": 3,
+      "title": "부산역 3개 층을 출입구·수직동선·대합·상업 띠로 분절",
+      "currentDefect": "final-floor1/2/3은 넓은 밝은 평면과 반복 가는 기둥이 대부분이며 문·벽·출입구·에스컬레이터·엘리베이터·매표/역무·점포 전면·가구 군집의 실루엣이 부족하다. 층별 목적과 이동 선택이 시점만으로 구분되지 않는다.",
+      "referenceObservation": {
+        "facts": [
+          "국가철도공단 공개자료는 역사 계획에서 에스컬레이터, 개집표, 승강장 대합실을 이용 흐름과 연결한다.",
+          "코레일 부산역 외관 이미지는 수평 캐노피, 전면 유리, 반복 프레임, 여러 높이의 계단·엘리베이터·진입부를 보여준다.",
+          "부산시설공단 자갈치 1층 시설도는 반복 판매 섬 사이에 통로를 만들고 양 끝·중앙에 출입구와 수직동선을 분산한다."
+        ],
+        "inference": "실측 복원 없이도 각 층을 기능 실루엣으로 분절하면 플레이어가 병목, 집결, 팀 접근 방향을 읽을 수 있다. 비공식 부산역 편의시설 안내 사진은 점포 띠와 층별 용도 탐색용 near-match로만 사용한다."
+      },
+      "productionApplication": [
+        "1층은 외부 광장과 연결되는 3개 큰 진입 포털, 주변 점포 셸, 중앙 통로, 벤치 군집으로 만든다.",
+        "2층은 매표·역무/경찰 셸, 대합 섬, 승강장 접근 포털, 두 수직동선 코어를 서로 다른 높이와 재질 실루엣으로 만든다.",
+        "3층은 L형 외곽을 유지하면서 식당가 전면 모듈, 중앙 보행 여백, 좌석 군집, 서비스 코어를 구분한다.",
+        "기존 Bench, concrete/metal textures, glass/painted-metal 재질을 우선 재사용한다. 공간 표시는 월드 텍스트 대신 문 폭, 캐노피, 바닥 재질 경계, 조명, 아이콘으로 처리한다.",
+        "700mm slab/finish repair는 별도 Astra 결과를 그대로 받아 그 위에 배치하며 슬래브와 UV를 다시 생성하지 않는다."
+      ],
+      "ownership": {
+        "files": [
+          "Assets/ChooGuard/Editor/MvpStationBuilder.cs",
+          "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs"
+        ],
+        "assetReuse": [
+          "Assets/ChooGuard/Art/WorldSet/Bench.fbx",
+          "Assets/ChooGuard/Art/WorldSet/Textures/Concrete031_1K-JPG_Color.jpg",
+          "Assets/ChooGuard/Art/WorldSet/Textures/Metal032_1K-JPG_Color.jpg"
+        ],
+        "collisionRule": "floor repair가 병합·검수된 뒤 같은 빌더 소유자가 한 번만 추가한다."
+      },
+      "implementationCost": {
+        "size": "M",
+        "estimate": "2-3 엔지니어일",
+        "reason": "새 영웅 에셋 없이 모듈 셸과 기존 소품을 쓰지만 3개 층 배치, 층 전환, 통로·가시성 검수가 필요하다."
+      },
+      "acceptancePhotos": [
+        "층별 동일 카메라 각도 3장: UI를 숨긴 상태에서도 1층 진입, 2층 대합/승강장, 3층 식당가가 실루엣만으로 구분된다.",
+        "1.7m 사람 눈높이 1장: 문·벤치·카운터·난간 크기가 metre 기준에서 자연스럽다.",
+        "RTS 사선 1장: 팀에서 사건 대상까지 통로가 소품에 막히지 않고 두 개 이상의 접근 선택이 보인다."
+      ],
+      "localReferenceBoundary": {
+        "path": "asset-library/space-references/floorplan-sources/busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg",
+        "classification": "near_match_only",
+        "use": "층별 기능 띠 탐색만 허용; 공식 실측 도면이나 파생모델 허가로 취급하지 않음"
+      }
+    },
+    {
+      "id": "P4-busan-asset-composition",
+      "type": "productionProposal",
+      "priority": 4,
+      "title": "17개 기존 모델을 관문·운영 거점·생활 구역 군집으로 재구성",
+      "currentDefect": "final-world와 final-station은 도시 범위와 철도망은 읽히지만 다수 건물이 비슷한 베이지/청색 상자로 보이고, 부산역·시장·대응 거점의 입구와 활동 흔적이 원거리에서 약하다.",
+      "referenceObservation": {
+        "facts": [
+          "코레일·부산관광공사 자료에서 부산역은 긴 수평 지붕과 유리 전면, 큰 캐노피와 광장으로 읽힌다.",
+          "부산시설공단 자료에서 시장은 반복 판매 섬과 출입·수직동선이 결합된 생활 구역으로 읽힌다.",
+          "프로젝트에는 차량·대응팀·열차·부산 파사드, 벤치·정류장·화분·가로등·수목·부산타워·터미널·자갈치시장 등 17개 FBX가 이미 있다."
+        ],
+        "inference": "새 모델 수를 늘리기보다 기존 자산을 장소별 작은 군집으로 조합하면 저비용으로 평시 업무와 대응 준비가 보이는 부산형 운영 공간을 만들 수 있다."
+      },
+      "productionApplication": [
+        "부산역은 BusanFacade, 유리/금속 재질, 반복 가로등, 벤치, 정류장으로 전면 관문 군집을 만들고 차량 진입 띠와 보행 광장을 분리한다.",
+        "역무·소방·의료 거점마다 동일한 임의 장식을 뿌리지 말고 전용 차량 1대, 팀 대기점, 조명 2-4개, 벤치/화분 소수로 준비 상태를 보여준다.",
+        "자갈치·남포는 JagalchiMarket 주변에 차양색·상자형 판매 섬·젖은 바닥 재질의 작은 반복군을 배치하고, 북항은 PortTerminal·정류장·벤치로 넓은 수평 여백을 유지한다.",
+        "도시 전체 랜덤 scatter 대신 station, response, market, waterfront 네 구역별 seed와 예산을 사용한다."
+      ],
+      "ownership": {
+        "files": [
+          "Assets/ChooGuard/Editor/MvpCityBuilder.cs",
+          "Assets/ChooGuard/Editor/MvpWorldSurfaceBuilder.cs",
+          "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs"
+        ],
+        "assetRoots": [
+          "Assets/ChooGuard/Art/ResponseSet",
+          "Assets/ChooGuard/Art/WorldSet",
+          "Assets/ChooGuard/Art/WorldSurfaces"
+        ],
+        "collisionRule": "진행 중 NPC/UI와 독립적이지만 floor builder 변경은 P3 또는 floor repair와 직렬화한다."
+      },
+      "implementationCost": {
+        "size": "S-M",
+        "estimate": "1-2 엔지니어일",
+        "reason": "모델 제작 없이 배치 규칙과 재질 변형을 추가하지만 도시 광각 성능과 중복 배치 검수가 필요하다."
+      },
+      "acceptancePhotos": [
+        "무표식 도시 광각: 부산역 관문, 대응 거점, 자갈치 시장, 북항 터미널이 서로 다른 군집 실루엣으로 식별된다.",
+        "부산역 중경: 캐노피 아래 보행 진입과 차량 진입이 분리되고 기존 팀/차량의 대기 위치가 보인다.",
+        "시장·수변 각 1장: 같은 소품을 전역에 흩뿌리지 않고 장소별 바닥·가구·여백 차이가 확인된다."
+      ]
+    }
+  ],
+  "edges": [
+    {"from": "S1-jwe3-official-operations", "to": "P1-context-command-ui", "relation": "팀과 시설의 역할을 선택 대상 중심 UI로 번역"},
+    {"from": "S2-jwe3-director-interview", "to": "P1-context-command-ui", "relation": "거점·감지·팀 대응을 작업선과 단계로 표현"},
+    {"from": "S3-jwe2-visible-ui-accessibility", "to": "P1-context-command-ui", "relation": "고대비와 작은 관리 카드 원리 적용"},
+    {"from": "S2-jwe3-director-interview", "to": "P2-actionable-notification-loop", "relation": "감지에서 경보와 대응으로 이어지는 공개 설명을 알림 흐름에 적용"},
+    {"from": "S3-jwe2-visible-ui-accessibility", "to": "P2-actionable-notification-loop", "relation": "재난 시 속도 제어와 색상 이외 중복 표현 적용"},
+    {"from": "S4-korail-operational-readiness", "to": "P2-actionable-notification-loop", "relation": "운영 분야·대기 자원·시설 점검을 알림 속 영향과 담당 필드로 반영"},
+    {"from": "S5-kr-station-design-guidance", "to": "P3-station-functional-silhouettes", "relation": "출입·수직동선·대합 기능을 층별 공간 실루엣으로 반영"},
+    {"from": "S6-korail-busan-station", "to": "P3-station-functional-silhouettes", "relation": "부산역 관문의 수평 캐노피·유리·층차를 입구 문법으로 반영"},
+    {"from": "S8-bisco-jagalchi-layout", "to": "P3-station-functional-silhouettes", "relation": "부산 공공 상업 실내의 반복 섬과 분산 수직동선 원리를 참조"},
+    {"from": "S6-korail-busan-station", "to": "P4-busan-asset-composition", "relation": "부산역 영웅 실루엣과 광장 군집 구성"},
+    {"from": "S7-visitbusan-station-archive", "to": "P4-busan-asset-composition", "relation": "최근 부산역 전경을 장소성 검수 참조로 사용"},
+    {"from": "S8-bisco-jagalchi-layout", "to": "P4-busan-asset-composition", "relation": "시장 반복군과 출입 노드의 장소별 배치 원리 적용"},
+    {"from": "P1-context-command-ui", "to": "P2-actionable-notification-loop", "relation": "알림에서 위치 초점 후 선택 카드와 맥락 행동으로 연결"},
+    {"from": "P3-station-functional-silhouettes", "to": "P1-context-command-ui", "relation": "실제 통로와 포털이 월드 작업선의 읽을 수 있는 배경을 제공"},
+    {"from": "P4-busan-asset-composition", "to": "P2-actionable-notification-loop", "relation": "장소별 운영 거점이 알림의 위치·담당 팀을 시각적으로 식별하게 함"}
+  ],
+  "selectionRecommendation": {
+    "first": [
+      "P1-context-command-ui",
+      "P2-actionable-notification-loop"
+    ],
+    "why": "진행 중 persistent lifecycle의 실제 phase·ACK를 플레이어가 읽고 조작하게 하며, 새 3D 자산 없이 20-30분 운영 루프의 가시성을 가장 빨리 높인다.",
+    "second": "P3-station-functional-silhouettes",
+    "dependency": "700mm floor finish/depth repair가 병합되고 캡처 검수된 뒤 시작",
+    "parallelSafe": "P4-busan-asset-composition은 NPC/UI 파일과 독립적이나 MvpInteriorBuilder 구간은 P3/floor repair와 직렬화",
+    "stopCondition": "각 제안의 지정 사진 관점이 충족되면 중단하고 전체 게임 완성 또는 JWE3 동등성을 주장하지 않는다."
+  }
+}

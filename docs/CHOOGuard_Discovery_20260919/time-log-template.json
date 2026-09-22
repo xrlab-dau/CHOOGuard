@@ -1,0 +1,41 @@
+{
+  "purpose": "schema-like capture template; no participant observations exist",
+  "records": [],
+  "requiredFields": [
+    "caseId",
+    "participantCode",
+    "condition",
+    "activityId",
+    "startedAt",
+    "finishedAt",
+    "activityType",
+    "observationBasis",
+    "concurrentActivityIds",
+    "qualityOutcome",
+    "assistance",
+    "notes"
+  ],
+  "activityTypes": [
+    "SOURCE_COLLECTION",
+    "RULE_REVIEW",
+    "SITE_PREPARATION",
+    "ONBOARDING",
+    "INPUT",
+    "OPERATE",
+    "ATTENDED_COMPUTE",
+    "UNATTENDED_COMPUTE",
+    "REVIEW",
+    "MEETING",
+    "EXPORT_REWORK",
+    "EXTERNAL_WAIT",
+    "MAINTENANCE"
+  ],
+  "aggregationRules": [
+    "deduplicate overlapping intervals for the same participant",
+    "sum actual person-time for meeting participants",
+    "do not count unattended compute or external waiting as person-hours",
+    "record incomplete and timed-out outcomes, not false fast completions",
+    "separate initial setup and repeat-use totals",
+    "do not use simulation time as authoring effort"
+  ]
+}

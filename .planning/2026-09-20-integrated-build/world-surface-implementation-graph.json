@@ -1,0 +1,144 @@
+{
+  "status": "implementation_complete_pending_root_Unity_build",
+  "nodes": [
+    {
+      "id": "osm",
+      "sha256": "156897dcccedbf979f5e818f3c7549d7ad36ec3e31b179d9d3861048f0760c64"
+    },
+    {
+      "id": "world-layers",
+      "path": "art/world/world-layers.json",
+      "receipt": {
+        "sourceSha256": "156897dcccedbf979f5e818f3c7549d7ad36ec3e31b179d9d3861048f0760c64",
+        "coastWays": 13,
+        "partitionCells": 6,
+        "landAreaM2": 11772295.0,
+        "waterAreaM2": 5105393.29,
+        "triangles": 143831,
+        "props": {
+          "TreeBroadleaf": 492,
+          "TreePine": 128,
+          "StreetLamp": 122,
+          "BusanTower": 1,
+          "PortTerminal": 1,
+          "JagalchiMarket": 1
+        },
+        "archetypes": {
+          "0": 544,
+          "3": 27,
+          "4": 148,
+          "1": 323,
+          "5": 64,
+          "2": 44
+        },
+        "source": "OSM footprints, directed coastlines, tagged park polygons, road paths and landmark centroids",
+        "derived": "Palette, fallback heights, surface widths, furniture, tree grid and landmark visual dimensions; no solver geometry",
+        "culvertStreamsRendered": 0,
+        "topology": "polygonized original coastline plus requested boundary; land lies left of directed coastline",
+        "geometryValidation": {
+          "coverageErrorM2": 0.0,
+          "overlapM2": 0.0,
+          "landValid": true,
+          "waterValid": true
+        }
+      }
+    },
+    {
+      "id": "surface-builder",
+      "path": "Assets/ChooGuard/Editor/MvpWorldSurfaceBuilder.cs"
+    },
+    {
+      "id": "city-builder",
+      "path": "Assets/ChooGuard/Editor/MvpCityBuilder.cs"
+    }
+  ],
+  "edges": [
+    [
+      "osm",
+      "world-layers",
+      "source coast, roads, tags, source landmark centroids"
+    ],
+    [
+      "world-layers",
+      "surface-builder",
+      "triangulated visual surfaces and placements"
+    ],
+    [
+      "world-layers",
+      "city-builder",
+      "six building archetypes"
+    ]
+  ],
+  "checks": {
+    "csharpSyntax": {
+      "Assets/ChooGuard/Editor/MvpCityBuilder.cs": true,
+      "Assets/ChooGuard/Editor/MvpWorldSurfaceBuilder.cs": true
+    },
+    "pythonGenerator": "passed",
+    "polygonCoverage": "zero gap and overlap",
+    "everyPolygonTriangulation": "area checked within .01m2 before rounding",
+    "surfaceChunks": 342,
+    "surfaceTrianglesByKind": {
+      "land": 429,
+      "water": 429,
+      "sidewalk": 39290,
+      "walk": 8215,
+      "asphalt": 29381,
+      "curb": 65263,
+      "park": 513,
+      "plaza": 311
+    },
+    "landmarkContract": [
+      {
+        "kind": "BusanTower",
+        "x": -862.368,
+        "z": -1536.963,
+        "size": 120,
+        "angle": 0,
+        "sourceId": "480601129",
+        "positionEvidence": "source building centroid",
+        "footprintWidth": 14.742,
+        "footprintDepth": 14.661
+      },
+      {
+        "kind": "PortTerminal",
+        "x": 665.893,
+        "z": 265.377,
+        "size": 25,
+        "angle": 0,
+        "sourceId": "368597686",
+        "positionEvidence": "source building centroid",
+        "footprintWidth": 208.963,
+        "footprintDepth": 268.181
+      },
+      {
+        "kind": "JagalchiMarket",
+        "x": -1010.194,
+        "z": -2055.15,
+        "size": 24,
+        "angle": 0,
+        "sourceId": "382696296",
+        "positionEvidence": "source building centroid",
+        "footprintWidth": 151.442,
+        "footprintDepth": 48.124
+      }
+    ]
+  },
+  "budgets": {
+    "trees": 620,
+    "lamps": 122,
+    "landmarks": 3,
+    "chunkWidthUnityUnits": 128,
+    "buildingWindowColumnsMax": 28,
+    "buildingWindowRowsMax": 20,
+    "roadDashesPerSegmentMax": 80
+  },
+  "runtimeCounts": "Actual renderer/mesh/triangle counts require root Unity build; surfaces generation counts are not runtime acceptance",
+  "fallback": "Missing prop asset skipped with logged count; missing landmark retains existing OSM massing; root reimport/rebuild required",
+  "limits": [
+    "Source OSM heights incomplete; roof and facade details are visual estimates",
+    "No physics geometry changed",
+    "No Unity or GUI calls performed",
+    "Landmark shell fitted to source bounding box; source footprint remains provenance rather than authored precise shell shape"
+  ]
+}

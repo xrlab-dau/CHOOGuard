@@ -1,0 +1,199 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-09-21",
+  "scope": "부산역-초량-중앙-남포-북항 오픈월드의 절차적 Blender 및 Unity 시각 개선용 참조 그래프. 소스 사진을 텍스처로 복제하거나 실측 정확도를 주장하지 않는다.",
+  "globalRule": {
+    "directly_supported": "공식 공개 페이지 또는 기존에 보존한 공식 원자료에서 직접 확인한 형태와 장소 특성",
+    "inferred": "직접 근거를 Astra-low가 저비용 절차 메시, 재질, 소품 배치 규칙으로 번역한 제안",
+    "antiPattern": "서구식 침엽수림/교외 잔디를 전역에 도포하지 않는다. 녹지는 용두산 수관과 북항 설계공원에 국소화하고, 원도심은 포장·옹벽·상가 입면·표지·전선·시장 집기로 식별한다."
+  },
+  "directionBasis": {
+    "evidenceStatus": "inferred_from_local_osm_not_official_source_claim",
+    "localReference": "asset-library/space-references/busan-reconstruction/busan-site-selected.json",
+    "origin": {
+      "lat": 35.1151,
+      "lon": 129.0417
+    },
+    "coordinateNote": "로컬 OSM 변환은 east/north 근사이며 측량 정확도를 뜻하지 않는다. 이 그래프의 방위 표기는 공식 관광 원문의 주장과 분리된 로컬 배치 추론이다.",
+    "correctedRelationship": "초량 168계단·언덕은 부산역 서측·북서측, 북항은 철도역 동측·남동측에 배치한다."
+  },
+  "nodes": [
+    {
+      "id": "busan-station-gateway",
+      "title": "부산 철도역 관문과 전면 광장",
+      "url": "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+      "localReferences": [
+        "asset-library/space-references/source-downloads/rail-station.jpg",
+        "asset-library/space-references/source-downloads/rail-parking.jpg"
+      ],
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "코레일 공식 외관 사진은 넓고 수평적인 역사 전면, 유리 중심 입면, 큰 캐노피, 외부 계단과 열린 광장을 보여준다.",
+        "공식 주차 안내도는 철도역, 선상 A/B 주차장, 북항 측 접근의 상대 관계를 보여주지만 실측 도면은 아니다."
+      ],
+      "inferred": [
+        "역사는 주변 매스보다 밝은 청회색 유리와 장스팬 캐노피로 한눈에 읽히는 hero silhouette로 만들고, 전면은 회색 건물 숲이 아니라 밝은 광장 포장·택시/버스 정차띠·볼라드·한국식 안내표지로 비운다.",
+        "역사-북항 방향 보행축은 넓은 시야와 공중보행교 실루엣으로 연결한다."
+      ],
+      "applicableLocation": "부산역 철도역, 중앙대로 측 광장, 북항 접근부",
+      "proceduralForm": "1개 영웅 메시 + 캐노피 반복 모듈 + 광장 포장 decal/색상 패치 + 정차시설 소품",
+      "rights": "기존 취득 기록상 공개 참고용이며 제품 재배포 권리는 미확정; 사진을 재배포하거나 그대로 텍스처화하지 않는다."
+    },
+    {
+      "id": "choryang-hillside",
+      "title": "초량 이바구길 경사지 주거와 계단",
+      "url": "https://www.visitbusan.net/index.do?lang_cd=ko&menuCd=DOM_000000201001001000&uc_seq=2594",
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "부산역 인근 언덕길에 피란민 주거 흔적과 골목 풍경이 남아 있고, 168계단·모노레일·담장 갤러리·벽화 거리·중턱 전망대가 핵심 요소다."
+      ],
+      "inferred": [
+        "로컬 OSM 원점·방위에 따른 배치 추론으로, 평지 extrude를 중단하고 부산역 서측·북서측 초량 168계단 방향부터 고도 단을 3-5개로 올린다. 낮은 다세대·점포주택을 옹벽 위에 촘촘히 적층하고 좁은 계단, 난간, 전신주, 공중선, 벽면 표식을 넣는다.",
+        "수목은 전망대와 작은 쉼터에만 군집시키고 골목 전체를 숲으로 덮지 않는다."
+      ],
+      "applicableLocation": "부산역 서측·북서측 초량동 168계단·경사면 (로컬 OSM 기반 배치 추론)",
+      "proceduralForm": "terrace terrain + 2-5층 저층 블록 변형 + 계단/옹벽 spline + 전신주/난간 반복 소품"
+    },
+    {
+      "id": "north-port-landuse",
+      "title": "북항 재개발의 수로·공원·마리나 구조",
+      "url": "https://www.busan.go.kr/ghbusan02/",
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "공식 1단계 계획은 항만·복합항만·공원녹지·광장·환승센터·도로·보행자도로·마리나와 418,004㎡ 수로/해수면을 구분한다."
+      ],
+      "inferred": [
+        "북항은 회색 건물 밀집지가 아니라 긴 수평 수변, 큰 빈 공공공간, 곡선 수로, 낮은 문화시설, 교량과 마리나가 만드는 열린 skyline으로 제작한다.",
+        "실제 계획도에 없는 고층 랜드마크를 임의 배치하지 않고 OSM footprint는 매스로 유지하되 수변 여백을 우선 보존한다."
+      ],
+      "applicableLocation": "부산 철도역 동측·남동측-중앙동 북항 재개발구역 (로컬 OSM 기반 배치 추론)",
+      "proceduralForm": "water polygons + quay edge spline + low civic masses + bridge/terminal silhouettes + marina mast scatter"
+    },
+    {
+      "id": "north-port-park-kit",
+      "title": "북항 친수공원 지면과 수변 소품 키트",
+      "url": "https://www.busanpa.com/board/view.do?boardId=BBS_0000027&dataSid=27067&menuCd=DOM_000000105001001000&paging=ok&startPage=38",
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "BPA 공개 공원 지도에는 다목적광장, 잔디마당, 바닥분수, 휴게·조망데크, 수변산책로·스탠드, 하버블록가든, 모래사장, 자갈마당, 꽃길과 수경시설이 표기된다."
+      ],
+      "inferred": [
+        "단일 녹색 바닥 대신 콘크리트 광장, 목재 데크, 잔디, 모래, 자갈, 수경면 6종을 큰 패치로 교차시키고 수변 난간·벤치·저상 조명·팜파스 군락을 경계에 배치한다.",
+        "야간에는 수변축과 교량을 선형 조명으로 읽히게 하되 과도한 네온을 피한다."
+      ],
+      "applicableLocation": "북항 친수공원과 부산역 공중보행 연결부",
+      "proceduralForm": "6-material ground atlas + deck/railing spline + fountain planes + bench/light/pampas scatter"
+    },
+    {
+      "id": "yongdusan-landmark",
+      "title": "용두산공원과 부산타워의 수직 표지",
+      "url": "https://www.busan.go.kr/eng/park09",
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "용두산은 중구 도심의 구릉 공원이며 정상에 120m 부산타워가 있고 팔각정, 꽃시계, 시민의 종, 이순신 동상이 있다."
+      ],
+      "inferred": [
+        "부산타워를 남포·중앙 시야에서 보이는 가느다란 120m급 landmark silhouette로 우선 제작하고, 공원은 주변 상업가로보다 한 단 높은 녹색 섬으로 만든다.",
+        "광복로에서 오르는 계단/에스컬레이터 축, 석재광장, 팔각정과 국소 수관을 배치해 평면 OSM 공원을 입체화한다."
+      ],
+      "applicableLocation": "중앙동-남포동 사이 용두산 구릉",
+      "proceduralForm": "tower hero mesh + raised park terrace + broadleaf canopy clusters + pavilion/clock/statue proxy"
+    },
+    {
+      "id": "jagalchi-market-edge",
+      "title": "자갈치의 시장가로와 항만 가장자리",
+      "url": "https://www.visitbusan.net/index.do?lang_cd=ko&menuCd=DOM_000000201013001000&uc_seq=412",
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "공식 관광 자료는 남포 대로 건너 좁은 길, 형형색색 파라솔, 야외 수산 노점, 붉고 푸른 고무대야·수조, 건어물, 현대식 실내시장과 바다 인접성을 묘사한다."
+      ],
+      "inferred": [
+        "자갈치·남포는 유리 오피스 매스가 아니라 촘촘한 점포 입면, 돌출 간판, 차양, 파라솔, 상자·대야·수조와 젖은 포장 반사로 구별한다.",
+        "시장 전면의 해안도로와 부두 가장자리를 열고 어선 mast와 방현재를 저비용 silhouette로 추가한다."
+      ],
+      "applicableLocation": "남포역-자갈치시장-남항 수변",
+      "proceduralForm": "shopfront facade variants + Hangul sign planes + awning/parasol/crate/tub scatter + wet-ground material + quay props"
+    },
+    {
+      "id": "jwe3-environment-grammar",
+      "title": "JWE3의 지형·텍스처·정밀 소품 배치 문법",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/news/jurassic-world-evolution-3-erscheint-am-21-oktober",
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "Frontier는 지형 도구로 봉우리·협곡·폭포를 만들고, texture brush로 지면 변화를 주며, scenery를 정밀 배치하는 제작 방식을 공식 설명한다."
+      ],
+      "inferred": [
+        "CHOOGuard는 JWE3의 생물군을 복제하지 않고 '큰 지형 형태→넓은 지면 재질 패치→랜드마크→구역별 소품 군집'의 4단계 가독성 문법만 차용한다.",
+        "Blender 생성기는 전역 랜덤 scatter 대신 station/hillside/waterfront/market 구역별 seed와 prop palette를 사용한다."
+      ],
+      "applicableLocation": "전체 오픈월드 제작 파이프라인",
+      "proceduralForm": "district masks driving terrain tiers, ground palettes, hero assets and bounded prop scatters"
+    },
+    {
+      "id": "jwe-management-accessibility",
+      "title": "JWE 계열 관리화면의 고대비·시간 제어 접근성",
+      "url": "https://www.jurassicworldevolution.com/en-US/2/accessibility",
+      "evidenceStatus": "directly_supported",
+      "directly_supported": [
+        "공식 접근성 문서는 관리 오버레이의 색각 모드·고대비, 구조물 뒤 대상 highlight, pause/x1/x2/x3 시간 제어, 재난 시 속도 초기화를 제공한다고 설명한다."
+      ],
+      "inferred": [
+        "사실적인 도시 미술 위에 임무 시에만 고대비 팀·환자·병목 윤곽과 도로 접근성 레이어를 켜서 회색 매스 속 식별 실패를 막는다.",
+        "화재·압박 급변 시 전술 일시정지를 유지하고, 색상만으로 상태를 전달하지 않으며 아이콘·패턴·한국어 레이블을 병용한다."
+      ],
+      "applicableLocation": "전술 카메라, 도시/현장 전환, 긴급상황 오버레이",
+      "proceduralForm": "toggleable high-contrast overlay + outline/icon/pattern redundancy + pause-aware camera framing"
+    }
+  ],
+  "edges": [
+    {
+      "from": "busan-station-gateway",
+      "to": "choryang-hillside",
+      "relation": "로컬 OSM 방위 기준으로 부산역 서측·북서측에 초량 급경사 저층 골목과 168계단 방향을 배치한다.",
+      "evidenceStatus": "inferred_from_local_osm_not_official_source_claim"
+    },
+    {
+      "from": "busan-station-gateway",
+      "to": "north-port-landuse",
+      "relation": "로컬 OSM 방위 기준으로 부산 철도역 동측·남동측의 북항을 역사-공중보행축-수변 관문 시퀀스로 연결한다.",
+      "evidenceStatus": "inferred_from_local_osm_not_official_source_claim"
+    },
+    {
+      "from": "north-port-landuse",
+      "to": "north-port-park-kit",
+      "relation": "계획상의 큰 수로·공원 틀 안에서 공원별 지면과 수변 소품을 배치한다."
+    },
+    {
+      "from": "yongdusan-landmark",
+      "to": "jagalchi-market-edge",
+      "relation": "위쪽의 타워·수관과 아래쪽의 간판·차양·항만시장을 수직 시야축으로 연결한다."
+    },
+    {
+      "from": "jwe3-environment-grammar",
+      "to": "busan-station-gateway",
+      "relation": "4단계 환경 문법을 적용하되 부산 공식 참조가 형태와 palette를 결정한다."
+    },
+    {
+      "from": "jwe3-environment-grammar",
+      "to": "choryang-hillside",
+      "relation": "구역 마스크 기반의 지형·재질·소품 배치를 적용하고 전역 수목 scatter를 금지한다."
+    },
+    {
+      "from": "jwe-management-accessibility",
+      "to": "north-port-landuse",
+      "relation": "넓은 수변과 도시 매스 위에 임무 정보만 선택적으로 강조해 미술과 조작 가독성을 분리한다."
+    }
+  ],
+  "implementationOrder": [
+    "부산역·부산타워·자갈치시장·북항 수변의 네 hero silhouette를 먼저 배치한다.",
+    "초량 고도 단과 북항 수로/부두선을 만든 뒤 도로·건물 footprint를 지형에 맞춘다.",
+    "구역별 지면 palette를 칠하고 회색 기본 건물에 높이·지붕·입면 색 변형을 준다.",
+    "각 구역의 제한된 소품 키트를 배치하고 마지막에 고대비 임무 오버레이를 점검한다."
+  ],
+  "acceptanceChecks": [
+    "무표식 항공 시점에서도 부산역, 초량 경사, 북항 수변, 부산타워, 자갈치 시장가로가 서로 다른 실루엣으로 구분된다.",
+    "수목 밀집은 용두산과 북항 공원에 집중되고 초량·남포 상업가로는 한국 도심 요소로 읽힌다.",
+    "OSM footprint를 유지하되 실측되지 않은 높이·외관은 inferred로 남으며 실제 도시 복원 정확도로 표현하지 않는다.",
+    "관리 오버레이를 꺼도 도시가 장소성을 가지며, 켜면 색상 외 아이콘·패턴으로 팀과 위험이 식별된다."
+  ]
+}

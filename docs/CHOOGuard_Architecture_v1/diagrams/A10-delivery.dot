@@ -1,0 +1,25 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+E0 [label="EP00 / 기준선\nsource·claim·시험 조건", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+E1 [label="EP01 / 계약\nID·규칙·현장 묶음", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+E2 [label="EP02 / 운영 코어\n요청·자원·원자 commit", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+E34 [label="EP03–04 / Native 구간\n맵·HUD·입력", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+E56 [label="EP05–06 / 실험 흐름\ncheckpoint·A/B·두 모드", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+E78 [label="EP07–08 / 모델 연계\n기존/외부 비교·검증", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+E9 [label="EP09 / 대본\n근거·review·양식", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+E10 [label="EP10 / 독립 검수\n제품 · 사용자 · 모델 · 기관", shape=box, style="rounded,filled", fillcolor="#E8EEF5", color="#455B73", fontcolor="#18314A"];
+E11 [label="EP11 / 배포·확장\n반복 사용·13구역", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+E0 -> E1 [label="입력·범위"];
+E1 -> E2 [label="계약"];
+E1 -> E34 [label="fixture로 병행"];
+E2 -> E56 [label="실행 trace"];
+E34 -> E56 [label="native 조작"];
+E1 -> E78 [label="수량 계약"];
+E56 -> E9 [label="운영 근거"];
+E78 -> E10 [label="정량 lane"];
+E56 -> E10 [label="작동/효용 lane"];
+E9 -> E10 [label="출력/사용 lane"];
+E10 -> E11 [label="범위별 수용"];
+}

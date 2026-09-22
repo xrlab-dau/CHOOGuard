@@ -1,0 +1,54 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); var buttons=w.Preview.GetComponentsInChildren<UnityEngine.UI.Button>(true); return new {state=w.Preview.State.ToString(),error=w.Preview.DisplayError,buttons=buttons.Select(b=>new {b.name,b.interactable}).ToArray(), previewActive=w.Preview.gameObject.activeInHierarchy};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "state": "Loading",
+        "error": null,
+        "buttons": [
+          {
+            "name": "ConfirmButton",
+            "interactable": false
+          },
+          {
+            "name": "CancelButton",
+            "interactable": true
+          },
+          {
+            "name": "LookupreceiptButton",
+            "interactable": false
+          },
+          {
+            "name": "RetryoriginalButton",
+            "interactable": false
+          },
+          {
+            "name": "PreviousdetailButton",
+            "interactable": false
+          },
+          {
+            "name": "NextdetailButton",
+            "interactable": false
+          }
+        ],
+        "previewActive": true
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

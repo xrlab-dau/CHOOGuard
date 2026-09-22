@@ -1,0 +1,6 @@
+Source review: approved v2 operational unit evidence and review read. Earlier eight per-car control proposal explicitly superseded.
+Implemented source-only: two directed base routes, six data-driven logical teams/eight visual members, work/target registry; shared accepted-distance travel with member headway and departure scheduling; explicit leased fire/medical fixture channels; provenance + own action ACK; evacuation warn→evacuate→actual outcome→return; medical ACK→honest HandoffPending→explicit release; duplicate and invalid-ID guards; reset/cancel ownership.
+Facility/work UI and exact world-volume target picking; legacy pointer consumption; camera BeginFollow once; city interior floor tabs hidden; old exact decorative vehicle names removed by binder only.
+Depot placement receipt ingestion implemented, waiting for root-native building application to produce receipt before final grounding regeneration.
+No Unity/computer use or broad suite in this lane. Root-native acceptance pending.
+Corrected native depot receipt received and consumed. Central route1044.607/1337.273m, Choryang1638.505/915.476m before member parking connectors;18m member headway. Sol blockers fixed: medical recovery support preserved; canceled request IDs terminal + departure rescheduling. Bounded source invariants and diff checks PASS; final graph frozen pending root native.

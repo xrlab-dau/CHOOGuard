@@ -1,0 +1,686 @@
+{
+  "schema": "chooguard.railway-access-gap.v1",
+  "status": "PENDING_SPATIAL_ROUTE_REVIEW",
+  "complete_plaza_to_platform_path_supported": false,
+  "source_blend": "asset-library/research-public/2026-09-21/quality-a/station-model-source/station-batched-no3dletters.blend",
+  "frame": "sourceXYZ metres -> stationEastUpNorth through existingrigidregistration scale1 yaw-.437025956 translation[-41.342199,-19.307788]; no verticaltranslation",
+  "waypoints": [
+    {
+      "name": "WestEntranceOutside",
+      "source_xyz": [
+        -17,
+        -35,
+        0
+      ],
+      "station_east_up_north": [
+        -58.60866590627329,
+        0,
+        -54.17710319962721
+      ],
+      "status": "PLAZA_SUPPORT_NOT_TESTED_THIS_LANE",
+      "source_ref": "stationselectedlayers excludedContextPlaza; user spawn[-169.5003,.145,-40.647] connection remains root-owned"
+    },
+    {
+      "name": "ClosedWestDoor",
+      "source_xyz": [
+        -13.39,
+        -35.9,
+        0
+      ],
+      "station_east_up_north": [
+        -55.005635640674754,
+        0,
+        -55.10461217811793
+      ],
+      "status": "CLOSED_GLASS_BODY",
+      "source_ref": "ROOT/g56/g0/g0/i26/i2..i5; OfficialStation_-부산역_4 face1336 glass,1374/1384 frame"
+    },
+    {
+      "name": "InsideDoorNoFloor",
+      "source_xyz": [
+        -11,
+        -35,
+        0
+      ],
+      "station_east_up_north": [
+        -52.60884044361124,
+        0,
+        -54.22286800698137
+      ],
+      "status": "MISSING_SOURCE_FLOOR",
+      "source_ref": "routegroundsample0"
+    },
+    {
+      "name": "NamedStairLowerApproach",
+      "source_xyz": [
+        31.10188,
+        -48.3,
+        0
+      ],
+      "station_east_up_north": [
+        -10.609630491589318,
+        0,
+        -67.84361185379026
+      ],
+      "status": "SOURCE_STAIR_NEARBY_APPROACH_NOT_PROVEN",
+      "source_ref": "ROOT/g56/g1/g9/i0 topbbox.178"
+    },
+    {
+      "name": "NamedStairTop",
+      "source_xyz": [
+        35.80976865074304,
+        -34.29010159141964,
+        7.002572790692458
+      ],
+      "station_east_up_north": [
+        -5.795018740951676,
+        7.002572790692458,
+        -53.87003025646314
+      ],
+      "status": "SOURCE_COMPONENT_TOP_7M",
+      "source_ref": "ROOT/g56/g1/g9/i39 and treadi39/i0, not a testedcontinuouslanding"
+    },
+    {
+      "name": "ChosenPlatformStairTop",
+      "source_xyz": [
+        78.12075805664062,
+        -21.843656539916992,
+        7.000000953674316
+      ],
+      "station_east_up_north": [
+        36.60967471704077,
+        7.000000953674316,
+        -41.74667297971237
+      ],
+      "status": "SOURCE_UPWARD_TACTILE_LANDING",
+      "source_ref": "OfficialStation_-부산역_5 face92917"
+    },
+    {
+      "name": "lower_landing_forward_bypass",
+      "source_xyz": [
+        83.90382385253906,
+        -5.857527732849121,
+        -5.960464477539063e-08
+      ],
+      "station_east_up_north": [
+        42.51450597032005,
+        -5.960464477539063e-08,
+        -25.805119350716495
+      ],
+      "status": "SOURCE_UPWARD_FLOOR_SAMPLE",
+      "source_ref": "OfficialStation_Layer0_3 face36508 타일P#022"
+    },
+    {
+      "name": "lower_landing_to_edgewalk",
+      "source_xyz": [
+        88.60562133789062,
+        -7.558427810668945,
+        0.009999990463256836
+      ],
+      "station_east_up_north": [
+        47.20319312173715,
+        0.009999990463256836,
+        -27.541832759463603
+      ],
+      "status": "SOURCE_UPWARD_FLOOR_SAMPLE",
+      "source_ref": "OfficialStation_Layer0_3 face41981 베이스#001"
+    },
+    {
+      "name": "platform_edgewalk_to_coach2",
+      "source_xyz": [
+        110.10160064697266,
+        51.862937927246094,
+        2.384185791015625e-07
+      ],
+      "station_east_up_north": [
+        69.15178168160449,
+        2.384185791015625e-07,
+        31.713844545290975
+      ],
+      "status": "SOURCE_UPWARD_FLOOR_SAMPLE",
+      "source_ref": "OfficialStation_Layer0_3 face36704 타일P#022"
+    }
+  ],
+  "source_rise_stair": {
+    "path": "ROOT/g56/g1/g9",
+    "lower_bounds": [
+      [
+        29.686876250898685,
+        -47.93360626523927,
+        7.507464311425197e-07
+      ],
+      [
+        32.51688436104391,
+        -46.661738542763324,
+        0.17846437414184954
+      ]
+    ],
+    "upper_bounds": [
+      [
+        34.39476459567043,
+        -34.926035452657615,
+        6.82410916729704
+      ],
+      [
+        37.22477270581565,
+        -33.65416773018166,
+        7.002572790692458
+      ]
+    ],
+    "status": "namedactual0→7treadgeometry; 51namedcomponentsareNOT51stairs"
+  },
+  "source_platform_descent": {
+    "route": "platform_stair_descent",
+    "status": "actualtreads0→7 onselectedKTXleftisland; upperprobeceiling avoidance matters",
+    "object": "OfficialStation_-부산역_5",
+    "example_faces": [
+      93070,
+      94030,
+      93550,
+      93646,
+      93423
+    ],
+    "materials": [
+      "타일#025(계단)",
+      "보도블럭_맹인#001"
+    ],
+    "direction": "fromsource[78.12,-21.84,7] toward[83.90,-5.86,0] thenrightacrosssameplatform only"
+  },
+  "supported_segments": [
+    {
+      "route": "platform_stair_descent",
+      "samples": 47,
+      "hits": 47,
+      "upward_hits": 45,
+      "height_range": [
+        0.3500007390975952,
+        7.000000953674316
+      ],
+      "unique_source_faces": [
+        "OfficialStation_-부산역_5:92917",
+        "OfficialStation_-부산역_5:92932",
+        "OfficialStation_-부산역_5:92933",
+        "OfficialStation_-부산역_5:92938",
+        "OfficialStation_-부산역_5:92939",
+        "OfficialStation_-부산역_5:92966",
+        "OfficialStation_-부산역_5:92974",
+        "OfficialStation_-부산역_5:93006",
+        "OfficialStation_-부산역_5:93038",
+        "OfficialStation_-부산역_5:93070",
+        "OfficialStation_-부산역_5:93102",
+        "OfficialStation_-부산역_5:93134",
+        "OfficialStation_-부산역_5:93166",
+        "OfficialStation_-부산역_5:93199",
+        "OfficialStation_-부산역_5:93231",
+        "OfficialStation_-부산역_5:93263",
+        "OfficialStation_-부산역_5:93295",
+        "OfficialStation_-부산역_5:93327",
+        "OfficialStation_-부산역_5:93359",
+        "OfficialStation_-부산역_5:93391",
+        "OfficialStation_-부산역_5:93423",
+        "OfficialStation_-부산역_5:93518",
+        "OfficialStation_-부산역_5:93550",
+        "OfficialStation_-부산역_5:93606",
+        "OfficialStation_-부산역_5:93614",
+        "OfficialStation_-부산역_5:93646",
+        "OfficialStation_-부산역_5:93710",
+        "OfficialStation_-부산역_5:93743",
+        "OfficialStation_-부산역_5:93774",
+        "OfficialStation_-부산역_5:93838",
+        "OfficialStation_-부산역_5:93870",
+        "OfficialStation_-부산역_5:93902",
+        "OfficialStation_-부산역_5:93934",
+        "OfficialStation_-부산역_5:93966",
+        "OfficialStation_-부산역_5:94022",
+        "OfficialStation_-부산역_5:94030",
+        "OfficialStation_-부산역_5:94062",
+        "OfficialStation_-부산역_5:94094",
+        "OfficialStation_-부산역_5:94132",
+        "OfficialStation_-부산역_5:94158",
+        "OfficialStation_-부산역_5:94191",
+        "OfficialStation_-부산역_5:94232",
+        "OfficialStation_-부산역_5:94264"
+      ]
+    },
+    {
+      "route": "stair_foot_to_platform_edgewalk",
+      "samples": 17,
+      "hits": 17,
+      "upward_hits": 17,
+      "height_range": [
+        -0.012709617614746094,
+        0.43504661321640015
+      ],
+      "unique_source_faces": [
+        "OfficialStation_-부산역_5:89325",
+        "OfficialStation_-부산역_5:89326",
+        "OfficialStation_-부산역_5:89766",
+        "OfficialStation_-부산역_5:90673",
+        "OfficialStation_-부산역_5:91440",
+        "OfficialStation_-부산역_5:93423",
+        "OfficialStation_Layer0_3:36586",
+        "OfficialStation_Layer0_3:36626",
+        "OfficialStation_Layer0_3:36627",
+        "OfficialStation_Layer0_3:36628",
+        "OfficialStation_Layer0_3:36629"
+      ]
+    },
+    {
+      "route": "platform_edgewalk_to_coach2",
+      "samples": 67,
+      "hits": 67,
+      "upward_hits": 67,
+      "height_range": [
+        -1.1920928955078125e-07,
+        0.01000833511352539
+      ],
+      "unique_source_faces": [
+        "OfficialStation_Layer0_3:36477",
+        "OfficialStation_Layer0_3:36479",
+        "OfficialStation_Layer0_3:36626",
+        "OfficialStation_Layer0_3:36630",
+        "OfficialStation_Layer0_3:36633",
+        "OfficialStation_Layer0_3:36696",
+        "OfficialStation_Layer0_3:36697",
+        "OfficialStation_Layer0_3:36702",
+        "OfficialStation_Layer0_3:36704",
+        "OfficialStation_Layer0_3:41981",
+        "OfficialStation_Layer0_3:42759",
+        "OfficialStation_Layer0_3:57364"
+      ]
+    },
+    {
+      "route": "lower_landing_forward_bypass",
+      "samples": 16,
+      "hits": 16,
+      "upward_hits": 16,
+      "height_range": [
+        -1.1920928955078125e-07,
+        0.3500007390975952
+      ],
+      "unique_source_faces": [
+        "OfficialStation_-부산역_5:93423",
+        "OfficialStation_-부산역_5:93478",
+        "OfficialStation_Layer0_3:36457",
+        "OfficialStation_Layer0_3:36507",
+        "OfficialStation_Layer0_3:36508",
+        "OfficialStation_Layer0_3:36551"
+      ]
+    },
+    {
+      "route": "lower_landing_to_edgewalk",
+      "samples": 25,
+      "hits": 25,
+      "upward_hits": 25,
+      "height_range": [
+        -5.960464477539063e-08,
+        0.009999990463256836
+      ],
+      "unique_source_faces": [
+        "OfficialStation_-부산역_5:91729",
+        "OfficialStation_-부산역_5:91730",
+        "OfficialStation_-부산역_5:91733",
+        "OfficialStation_Layer0_3:36508",
+        "OfficialStation_Layer0_3:36638",
+        "OfficialStation_Layer0_3:36639",
+        "OfficialStation_Layer0_3:36788",
+        "OfficialStation_Layer0_3:41981",
+        "OfficialStation_Layer0_3:42029",
+        "OfficialStation_Layer0_3:46243",
+        "OfficialStation_Layer0_3:46245",
+        "OfficialStation_Layer0_3:46246",
+        "OfficialStation_Layer0_3:46247"
+      ]
+    }
+  ],
+  "minimal_sampled_missing_floor_strips": [
+    {
+      "route": "ground_entrance_to_named_stair",
+      "unsupported_samples": 37,
+      "sampled_source_centerline_start": [
+        -11.0,
+        -35.0,
+        0
+      ],
+      "sampled_source_centerline_end": [
+        24.16278839111328,
+        -45.046512603759766,
+        0
+      ],
+      "source_aabb_for_2m_corridor_candidate": {
+        "min": [
+          -12.0,
+          -46.046512603759766,
+          -0.1
+        ],
+        "max": [
+          25.16278839111328,
+          -34.0,
+          0
+        ]
+      },
+      "classification": "INFERRED_GAMEPLAY_COMPLETION_BOUNDS_ONLY",
+      "guard": "2mwidth is designcandidate, not measuredfloorwidth; do notadd without resolvingwall/railingblockers; not sufficientforcompletepath"
+    },
+    {
+      "route": "ground_entrance_to_named_stair",
+      "unsupported_samples": 2,
+      "sampled_source_centerline_start": [
+        30.02325439453125,
+        -46.72093200683594,
+        0
+      ],
+      "sampled_source_centerline_end": [
+        31.0,
+        -47.0,
+        0
+      ],
+      "source_aabb_for_2m_corridor_candidate": {
+        "min": [
+          29.02325439453125,
+          -48.0,
+          -0.1
+        ],
+        "max": [
+          32.0,
+          -45.72093200683594,
+          0
+        ]
+      },
+      "classification": "INFERRED_GAMEPLAY_COMPLETION_BOUNDS_ONLY",
+      "guard": "2mwidth is designcandidate, not measuredfloorwidth; do notadd without resolvingwall/railingblockers; not sufficientforcompletepath"
+    },
+    {
+      "route": "named_stair_top_to_platform_stair_top",
+      "unsupported_samples": 13,
+      "sampled_source_centerline_start": [
+        36.0,
+        -34.0,
+        7
+      ],
+      "sampled_source_centerline_end": [
+        47.75463104248047,
+        -30.607532501220703,
+        7
+      ],
+      "source_aabb_for_2m_corridor_candidate": {
+        "min": [
+          35.0,
+          -35.0,
+          6.9
+        ],
+        "max": [
+          48.75463104248047,
+          -29.607532501220703,
+          7
+        ]
+      },
+      "classification": "INFERRED_GAMEPLAY_COMPLETION_BOUNDS_ONLY",
+      "guard": "2mwidth is designcandidate, not measuredfloorwidth; do notadd without resolvingwall/railingblockers; not sufficientforcompletepath"
+    }
+  ],
+  "horizontal_obstructions": [
+    {
+      "name": "ground_corridor",
+      "hits": [
+        {
+          "source_xyz": [
+            -13.39074420928955,
+            -35.902313232421875,
+            1.0
+          ],
+          "object": "OfficialStation_-부산역_4",
+          "face": 1336,
+          "material": "유리#001"
+        },
+        {
+          "source_xyz": [
+            -13.34144115447998,
+            -35.914642333984375,
+            1.0
+          ],
+          "object": "OfficialStation_-부산역_4",
+          "face": 1374,
+          "material": "Material"
+        },
+        {
+          "source_xyz": [
+            -13.31399917602539,
+            -35.921504974365234,
+            1.0
+          ],
+          "object": "OfficialStation_-부산역_4",
+          "face": 1384,
+          "material": "Material"
+        },
+        {
+          "source_xyz": [
+            25.398147583007812,
+            -45.599544525146484,
+            1.0
+          ],
+          "object": "OfficialStation_-부산역_5",
+          "face": 32773,
+          "material": "청#017"
+        },
+        {
+          "source_xyz": [
+            25.788240432739258,
+            -45.69707107543945,
+            1.0
+          ],
+          "object": "OfficialStation_-부산역_5",
+          "face": 32955,
+          "material": "청#017"
+        },
+        {
+          "source_xyz": [
+            29.534313201904297,
+            -46.63359069824219,
+            1.0
+          ],
+          "object": "OfficialStation_-부산역_5",
+          "face": 33001,
+          "material": "청#017"
+        },
+        {
+          "source_xyz": [
+            29.77812385559082,
+            -46.69454574584961,
+            1.0
+          ],
+          "object": "OfficialStation_-부산역_5",
+          "face": 33011,
+          "material": "회색조 20%"
+        }
+      ]
+    },
+    {
+      "name": "upper_corridor",
+      "hits": [
+        {
+          "source_xyz": [
+            40.32844161987305,
+            -32.75078201293945,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_5",
+          "face": 32738,
+          "material": "스트라이프#031"
+        },
+        {
+          "source_xyz": [
+            47.43587875366211,
+            -30.69952392578125,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_6",
+          "face": 33667,
+          "material": "청#017"
+        },
+        {
+          "source_xyz": [
+            47.762821197509766,
+            -30.605165481567383,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_6",
+          "face": 33631,
+          "material": "청#017"
+        },
+        {
+          "source_xyz": [
+            51.341243743896484,
+            -29.572406768798828,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_6",
+          "face": 12018,
+          "material": "유리#003"
+        },
+        {
+          "source_xyz": [
+            51.415992736816406,
+            -29.550832748413086,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_6",
+          "face": 12107,
+          "material": "청#017"
+        },
+        {
+          "source_xyz": [
+            51.48724365234375,
+            -29.5302677154541,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_6",
+          "face": 12111,
+          "material": "청#017"
+        },
+        {
+          "source_xyz": [
+            52.421241760253906,
+            -29.26070785522461,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_6",
+          "face": 52263,
+          "material": "회색조 80%"
+        },
+        {
+          "source_xyz": [
+            75.1440658569336,
+            -22.702741622924805,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_6",
+          "face": 52264,
+          "material": "회색조 80%"
+        },
+        {
+          "source_xyz": [
+            75.80155944824219,
+            -22.512983322143555,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_7",
+          "face": 20528,
+          "material": "타일P#023"
+        },
+        {
+          "source_xyz": [
+            77.46410369873047,
+            -22.033161163330078,
+            8.0
+          ],
+          "object": "OfficialStation_-부산역_7",
+          "face": 20554,
+          "material": "타일P#023"
+        }
+      ]
+    }
+  ],
+  "completion_boundary": [
+    "Groundfloorcorridor andpartof7mlanding absent; closedentrancedoor andupperglass/railings also intersectcandidatecenterline.",
+    "No claimthatfloorpatchalonecompletesroute. Further doorwayopening/landinglayout decisions need sourcecomponent boundary extraction/nativecollider evidence.",
+    "A legitimate candidate uses westentrance→named0to7stair→existingupperplatformaccess→source7to0descent→sameislandwalkway; no atgradetrackcrossing or teleport.",
+    "Plazaspawntoentrance externalfloorwasnotauditedbecausethislane selectedstationlayers, not ContextPlaza.",
+    "Do nottreat5m/7m overheadroof/parkinghitsasfloors; eachsupportsample includes upwardnormal/material/face."
+  ],
+  "evidence_files": [
+    "route-support-probes.json",
+    "platform-profiles.json",
+    "upper-access-grid.json"
+  ],
+  "mutations": {
+    "original_model": false,
+    "Assets": false,
+    "Unity_calls": 0
+  },
+  "authorized_restoration_spec": "railway-access-restoration-spec.json",
+  "restoration_state": "SPEC_READY_NOT_IMPLEMENTED_OR_NATIVE_ACCEPTED",
+  "independent_native_coach_inner_door_issue": {
+    "status": "ROOT_OBSERVED_NATIVE_BLOCK_AFTER_SUCCESSFUL_EXTERIOR_BOARDING",
+    "root_native_position_station": [
+      72.19945,
+      0.473,
+      31.308
+    ],
+    "approx_full_consist_bve_z": -48.13,
+    "approx_coach2_local_bve_z": -5.92,
+    "source_animated_file": "T2 2car.animated",
+    "source_observation": "Coach2 animated file has only externalD L/D R andLiftL/LiftR translationfunctions. Interior is T2-1_in.csv composite; no separatelyanimatedinnerdoor entry.",
+    "likely_source_region": "T2-1_in.csv rearendpartition near localz−5.84..−5.646, requires boundedtriangle extraction before staticinnerdoorrestoration. Thisis preliminaryregion, not exactdoorpolygon proof.",
+    "authorized_next_scope": "Root requested narrowinteriordoor identification afteraccessspec; noedit performedinthislane.",
+    "guard": "Do not move/hidewhole T2-1_in mesh or claim originalinnerdooranimation."
+  },
+  "implementation_approved": false,
+  "review_correction": "Fewer missingfloorprobes do not establish plausiblecirculation. Eightportals acrossunidentified barriers areNOTapproved; require cutaway/architecture review. Fullhallconnectionmaybedeferred.",
+  "spatial_route_review": {
+    "status": "PENDING_SPATIAL_ROUTE_REVIEW",
+    "image": "station-z9-route-review-annotated.png",
+    "cutaway_receipt": "cutaway-receipt.json",
+    "direct_observations": [
+      "Broadheadhouselacksfloorbetweenwestentranceandinnercirculationassemblies.",
+      "Candidateupperpath exitsnamedstairassembly edge, crossespartition/glassregions before sourceplatformstair; notdemonstratedoriginaldoorsequence.",
+      "Sourceplatformstairs/landingsform architecturallyorganizedtransversebands; selectingarbitrary shortestcutthroughband boundaries isnotacceptable."
+    ],
+    "unknown_barrier_functions": [
+      "MainStation_5face32738stripe panel atcandidateupperstairexit",
+      "MainStation_6faces33667/33631blueframe",
+      "MainStation_6face12018glass andfaces52263/52264barrier",
+      "MainStation_7faces20537/20555tile sides nearplatformstairapproach"
+    ],
+    "front_upper_door_comparison": {
+      "source_named_door_centers_xyz": [
+        [
+          14.97,
+          38.89,
+          8.05
+        ],
+        [
+          14.65,
+          37.99,
+          8.05
+        ],
+        [
+          13.76,
+          35.54,
+          8.05
+        ],
+        [
+          14.09,
+          36.44,
+          8.05
+        ]
+      ],
+      "threshold_z": 7,
+      "source_paths": "ROOT/g56/g0/g0/g2/i2/i7,i8 andi3/i7,i8",
+      "potential": "Followsrealfrontentryarchitectureinstead of cuttinganonymousbarriers",
+      "blocker": "No completeplaza0→frontdoor7approach orcontinuousupperhallfloor identified; notchosenasverifiedroute."
+    },
+    "decision": "Deferfullrailwayhallconnectionuntilsufficientarchitecturalcirculationevidenceoruserreviewedauthoreddesign. Existing8openingproposalNOTimplementationapproved.",
+    "restoration_scope_remains": "Sourcebackedstair/dooranchors andmissingfloorobservations mayguide futureauthoreddesign; noas-builtclaim."
+  }
+}

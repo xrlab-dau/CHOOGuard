@@ -1,0 +1,181 @@
+{
+  "asOf": "2026-09-19",
+  "recheckAtImplementation": true,
+  "sources": [
+    {
+      "id": "SRC-PRD",
+      "title": "PRD v11",
+      "url": "basis/PRD_v11.md",
+      "verification": "PROVIDED_DOCUMENT",
+      "scope": "91개 요구·EP00~11의 제품 기준"
+    },
+    {
+      "id": "SRC-UX",
+      "title": "Unity Native UX v2",
+      "url": "basis/UNITY_UX_v2.md",
+      "verification": "PROVIDED_DOCUMENT",
+      "scope": "uGUI+TMP, S01~12, 입력 우선순위"
+    },
+    {
+      "id": "SRC-CORE",
+      "title": "Foundation README",
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/aae4867c71c96f34f8fe8a252cddd9aa0412394f/Packages/com.xrlab.chooguard.foundation/README.md",
+      "verification": "CONNECTOR_READ",
+      "scope": "기초 코어 설명; 전체 현행 구현 범위는 별도 소스와 대조"
+    },
+    {
+      "id": "SRC-WORLD",
+      "title": "WorldContracts.cs",
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/aae4867c71c96f34f8fe8a252cddd9aa0412394f/Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/WorldContracts.cs",
+      "verification": "CONNECTOR_READ",
+      "scope": "WorldCommand, ObservedState, ICommitSink"
+    },
+    {
+      "id": "SRC-AUTH",
+      "title": "AuthoritativeShift.cs",
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/aae4867c71c96f34f8fe8a252cddd9aa0412394f/Packages/com.xrlab.chooguard.foundation/Runtime/Multiplayer/AuthoritativeShift.cs",
+      "verification": "CONNECTOR_READ_PARTIAL",
+      "scope": "1~155행; 단일 소유 스레드, 거리 제약, 물리 게시"
+    },
+    {
+      "id": "SRC-MANIFEST",
+      "title": "Unity manifest",
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/aae4867c71c96f34f8fe8a252cddd9aa0412394f/Packages/manifest.json",
+      "verification": "CONNECTOR_READ",
+      "scope": "uGUI/InputSystem/Addressables 직접 선언 미발견; 설치 여부 전역 추론 금지"
+    },
+    {
+      "id": "SRC-UNITYVER",
+      "title": "Unity version",
+      "url": "https://github.com/xrlab-dau/CHOOGuard/blob/aae4867c71c96f34f8fe8a252cddd9aa0412394f/ProjectSettings/ProjectVersion.txt",
+      "verification": "CONNECTOR_READ",
+      "scope": "6000.3.23f1; 실제 컴파일 증거 아님"
+    },
+    {
+      "id": "SRC-UUI",
+      "title": "Unity UI comparison",
+      "url": "https://docs.unity3d.com/6000.3/Documentation/Manual/UI-system-compare.html",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "native runtime framework 선택의 근거"
+    },
+    {
+      "id": "SRC-UINPUT",
+      "title": "Unity Input System UI support",
+      "url": "https://docs.unity3d.com/Packages/com.unity.inputsystem@1.11/manual/UISupport.html",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "UI/game 입력 구분; 문서 버전은 설치 버전 아님"
+    },
+    {
+      "id": "SRC-DOTNET",
+      "title": "Unity .NET profile support",
+      "url": "https://docs.unity3d.com/kr/6000.0/Manual/dotnet-profile-support.html",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "Unity 관리 코드와 외부 .NET 프로세스 구분"
+    },
+    {
+      "id": "SRC-C4",
+      "title": "C4 model diagrams",
+      "url": "https://c4model.com/diagrams",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "context/container/component와 동작 뷰; 성숙한 표기법"
+    },
+    {
+      "id": "SRC-EVENT",
+      "title": "Event Sourcing pattern",
+      "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/event-sourcing",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "원시 이벤트와 투영·복원, 적용 비용"
+    },
+    {
+      "id": "SRC-SQLITE",
+      "title": "SQLite WAL",
+      "url": "https://sqlite.org/wal.html",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "동일 호스트·단일 writer·WAL 파일 보존·내구성"
+    },
+    {
+      "id": "SRC-SQLITE-FIX",
+      "title": "SQLite 3.51.3 release",
+      "url": "https://sqlite.org/releaselog/3_51_3.html",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "2026-03-13 WAL-reset 수정; 검증된 수정판 이상 필요"
+    },
+    {
+      "id": "SRC-TAPAAL",
+      "title": "TAPAAL features",
+      "url": "https://www.tapaal.net/features/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "timed/colored/stochastic nets, 독립 검증 엔진"
+    },
+    {
+      "id": "SRC-JPS",
+      "title": "JuPedSim models",
+      "url": "https://www.jupedsim.org/stable/pedestrian_models/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "보행 모델 비교; 층간/운영 모델은 별도"
+    },
+    {
+      "id": "SRC-SUMO",
+      "title": "SUMO emergency",
+      "url": "https://sumo.dlr.de/docs/Simulation/Emergency.html",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "silent teleport 경고; 한국 현장 보정 필요"
+    },
+    {
+      "id": "SRC-FDS",
+      "title": "NIST FDS",
+      "url": "https://pages.nist.gov/fds-smv/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "화재 열·연기 기준 계산, Evac 중단 범위"
+    },
+    {
+      "id": "SRC-PHYSICS",
+      "title": "NVIDIA PhysicsNeMo",
+      "url": "https://docs.nvidia.com/physicsnemo/latest/index.html",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "신경 대체모델 훈련 프레임워크; 현장 모델 아님"
+    },
+    {
+      "id": "SRC-MAP",
+      "title": "MapAnything",
+      "url": "https://github.com/facebookresearch/map-anything",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "학습 기반 metric 복원; 독립 정합 별도"
+    },
+    {
+      "id": "SRC-FMI",
+      "title": "FMI 3.0.2",
+      "url": "https://fmi-standard.org/docs/3.0.2/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "2024-11-27 표준; state restore 등 capability별"
+    },
+    {
+      "id": "SRC-PROV",
+      "title": "W3C PROV-O",
+      "url": "https://www.w3.org/TR/prov-o/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "출처·실행·생성 결과 관계"
+    },
+    {
+      "id": "SRC-SHACL",
+      "title": "W3C SHACL",
+      "url": "https://www.w3.org/TR/shacl/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "RDF 그래프 제약 검사; ontology 자체가 런타임 아님"
+    },
+    {
+      "id": "SRC-OTEL",
+      "title": "OpenTelemetry specification",
+      "url": "https://opentelemetry.io/docs/specs/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "진단용 trace/metrics. 제품 증거 ledger와 분리"
+    },
+    {
+      "id": "SRC-OWASP",
+      "title": "OWASP LLM01:2025",
+      "url": "https://genai.owasp.org/llmrisk/llm01-prompt-injection/",
+      "verification": "WEB_PRIMARY_READ",
+      "scope": "문서·도구출력 간접지시와 권한 격리"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "user": "Remove allworldtext unlessUI. Rebuildspace/human numeric sizes realistically. NPC/operations migration askedasproposal, not scope toimplementnewambientcrowdnow.",
+    "facts": [
+      "CurrentworldOSMmetriccoords scaled.25 butcrewheight1.9 so relativehuman7.6m. Solver30x20 rendered19.5x13(.65), crowdtemplatehalved again.",
+      "WorldSet models authoredmeters already, ResponseSetfacade x/z.25 baked but verticalunrelated; furnitureoldpositions scaledworld. Need not multiplyallchairs/peopleby4.",
+      "No stationengineeringheight survey. Exact horizontalOSM source vs assumeddoors/floors/human dimensions must be distinct.",
+      "Existing FDS/JPS source and outputs remainmetres; camera/rendercoordinatescanrestore1:1 withoutchangingphysicalsolver."
+    ],
+    "proposal": {
+      "unit": 1,
+      "humanAdultDesignHeight": 1.72,
+      "crewDesignHeight": 1.78,
+      "benchSeatHeight": 0.45,
+      "doorClearHeight": 2.1,
+      "floorToFloor": 5,
+      "teamWalkingSpeed": 1.4,
+      "referenceOriginMeters": [
+        -52,
+        5.05,
+        -48
+      ],
+      "referenceHallMetres": [
+        30,
+        20,
+        4
+      ],
+      "method": "Native-metre relayout, not transformscaleparent. Source-footprintcity/landmarks/DEM scale1; furniturephysicaldimensions sane, placementsrelayout; camera/bounds/focus allupdated. No TextMeshPro 3D labels evenfacilitysigntext; symbols/geometryandHUD only."
+    }
+  },
+  "questions": {
+    "strategy": {
+      "type": "choice",
+      "instructions": "Choose coherent migration preservingbodyandfurnitureproportions.",
+      "criteria": {
+        "metre_native_relayout": "1unit1m withexplicitdifferentposition/dimensionconversion",
+        "scale_whole_parent": "Multiplyentirerootandpeoplefurnitureby4",
+        "humans_only": "Shrinkhumansandkeepmultiplecoordinates"
+      }
+    },
+    "numbers": {
+      "type": "choice",
+      "instructions": "How to qualify targetnumberswithout survey?",
+      "criteria": {
+        "source_and_design_separate": "OSMcoordinates sourced; floor/door/person targetnumbers explicitdesignassumptions",
+        "fully_measured": "CallallnumbersmeasuredBusan",
+        "jev_measures": "Jevhasmeasuredthebuilding"
+      }
+    },
+    "scope": {
+      "type": "choice",
+      "instructions": "What to implementversuspropose now?",
+      "criteria": {
+        "scale_and_no_worldtext_now": "Implementunits/textremoval; separateJWE3NPCmigrationproposal",
+        "ambient_full_now": "Also inventandimplemententireNPCsystemunrequested",
+        "proposal_only": "Skipuserrequestedscaleimplementation"
+      }
+    },
+    "risk": {
+      "type": "choice",
+      "instructions": "Critical acceptanceevidence?",
+      "criteria": {
+        "world_bounds_human_ratio_reference1to1": "Observe actualUnitybounds,humanheight,30x20hall,worldTMP0,UIintact",
+        "code_exists": "Filepresenceonly"
+      }
+    }
+  }
+}

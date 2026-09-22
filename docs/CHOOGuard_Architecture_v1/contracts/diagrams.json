@@ -1,0 +1,1217 @@
+{
+  "renderer": "Graphviz DOT SVG/PNG",
+  "mermaid": "generated equivalent source; local Mermaid parser not run",
+  "views": [
+    {
+      "id": "A01-overview",
+      "title": "전체 시스템 — 운영 실험에서 훈련 대본까지",
+      "question": "누가 어떤 경계를 통해 운영하고, 근거가 어디에서 생성되는가?",
+      "nodes": [
+        {
+          "id": "U",
+          "label": "작성 담당자 · 검수자",
+          "kind": "actor"
+        },
+        {
+          "id": "UI",
+          "label": "Unity Native\nRTS HUD · 실제 3D · 비교/대본",
+          "kind": "ui"
+        },
+        {
+          "id": "APP",
+          "label": "Application Facade\n명령 · 조회 · 권한 · 미리보기",
+          "kind": "core"
+        },
+        {
+          "id": "OPS",
+          "label": "Operations Core\n업무 · 예약 · 기관 정보 · 인계",
+          "kind": "core"
+        },
+        {
+          "id": "SIM",
+          "label": "Simulation Coordinator\n교환 시각 · 결과 검증 · 단일 소유권",
+          "kind": "core"
+        },
+        {
+          "id": "W",
+          "label": "격리 계산 워커\n기존 모델 / JPS / SUMO / FDS·ROM",
+          "kind": "worker"
+        },
+        {
+          "id": "EXP",
+          "label": "Experiment Service\n완전 checkpoint · 분기 · A/B",
+          "kind": "core"
+        },
+        {
+          "id": "AUTH",
+          "label": "Authoring + Evidence\n검토 · ScriptIR · 자격",
+          "kind": "core"
+        },
+        {
+          "id": "AI",
+          "label": "AI Adapter\n근거 기반 제안만",
+          "kind": "worker"
+        },
+        {
+          "id": "DB",
+          "label": "로컬 저장\nSQLite · 불변 blob · 원시 기록",
+          "kind": "store"
+        },
+        {
+          "id": "C",
+          "label": "SiteBundle / RuleBundle\n현장 · 모델 · 자료 · 판본",
+          "kind": "content"
+        },
+        {
+          "id": "O",
+          "label": "훈련 대본 + 실행형 데이터\n근거 · 한계 · 검토 범위",
+          "kind": "output"
+        }
+      ],
+      "edges": [
+        {
+          "source": "U",
+          "target": "UI",
+          "label": "선택·판단"
+        },
+        {
+          "source": "UI",
+          "target": "APP",
+          "label": "명령 의도 / 조회"
+        },
+        {
+          "source": "APP",
+          "target": "OPS",
+          "label": "검사 후 요청"
+        },
+        {
+          "source": "APP",
+          "target": "EXP",
+          "label": "정지·분기·비교"
+        },
+        {
+          "source": "APP",
+          "target": "AUTH",
+          "label": "저작·검토"
+        },
+        {
+          "source": "OPS",
+          "target": "SIM",
+          "label": "경계 입력"
+        },
+        {
+          "source": "SIM",
+          "target": "W",
+          "label": "job / accepted result",
+          "bidirectional": true
+        },
+        {
+          "source": "OPS",
+          "target": "DB",
+          "label": "commit 후 승인"
+        },
+        {
+          "source": "EXP",
+          "target": "DB",
+          "label": "snapshot / lineage"
+        },
+        {
+          "source": "AUTH",
+          "target": "AI",
+          "label": "허용 근거 pack"
+        },
+        {
+          "source": "AI",
+          "target": "AUTH",
+          "label": "구조화 초안"
+        },
+        {
+          "source": "AUTH",
+          "target": "O",
+          "label": "자격 있는 출력"
+        },
+        {
+          "source": "C",
+          "target": "OPS",
+          "label": "규칙·현장"
+        },
+        {
+          "source": "C",
+          "target": "W",
+          "label": "수치 입력"
+        },
+        {
+          "source": "DB",
+          "target": "AUTH",
+          "label": "기록·비교 근거"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "실선은 데이터·요청 흐름이다. AI와 워커에는 기관 승인 또는 운영 DB 직접 수정 권한이 없다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A02-deployment",
+      "title": "배포와 장애 격리 — 한 PC 우선",
+      "question": "어떤 실행 프로세스·스레드가 어느 상태를 소유하는가?",
+      "nodes": [
+        {
+          "id": "BOOT",
+          "label": "기존 Bootstrap\nCompositionRoot · 버전/권한 고정",
+          "kind": "core"
+        },
+        {
+          "id": "MAIN",
+          "label": "Unity main thread\nCanvas/TMP · WorldCamera · 입력",
+          "kind": "ui"
+        },
+        {
+          "id": "OWN",
+          "label": "Serialized run owner\nAPP / OPS / SIM · commit 순서",
+          "kind": "core"
+        },
+        {
+          "id": "BG",
+          "label": "비동기 응용 작업\n비교 · 저작 · content 검사",
+          "kind": "core"
+        },
+        {
+          "id": "STORE",
+          "label": "단일 DB writer\nSQLite + content-addressed files",
+          "kind": "store"
+        },
+        {
+          "id": "PROC",
+          "label": "Child processes\n필요한 solver / 문서변환 / AI",
+          "kind": "worker"
+        },
+        {
+          "id": "REMOTE",
+          "label": "선택적 외부 계산\n정책 허용 시에만 전송",
+          "kind": "optional"
+        },
+        {
+          "id": "HEAD",
+          "label": "Headless host (별도 run)\n같은 코어 · 독립 runId",
+          "kind": "optional"
+        }
+      ],
+      "edges": [
+        {
+          "source": "BOOT",
+          "target": "MAIN",
+          "label": "조립"
+        },
+        {
+          "source": "BOOT",
+          "target": "OWN",
+          "label": "owner 지정"
+        },
+        {
+          "source": "MAIN",
+          "target": "OWN",
+          "label": "bounded mailbox"
+        },
+        {
+          "source": "OWN",
+          "target": "MAIN",
+          "label": "읽기 전용 snapshot"
+        },
+        {
+          "source": "OWN",
+          "target": "STORE",
+          "label": "원자 commit"
+        },
+        {
+          "source": "BG",
+          "target": "STORE",
+          "label": "조회 / 직렬화 write"
+        },
+        {
+          "source": "OWN",
+          "target": "PROC",
+          "label": "private pipe + artifacts"
+        },
+        {
+          "source": "BG",
+          "target": "PROC",
+          "label": "export / model job"
+        },
+        {
+          "source": "PROC",
+          "target": "REMOTE",
+          "label": "명시적 승인 경로"
+        },
+        {
+          "source": "HEAD",
+          "target": "PROC",
+          "label": "같은 adapter 계약"
+        }
+      ],
+      "groups": [
+        [
+          "g1",
+          "Unity PC process",
+          [
+            "BOOT",
+            "MAIN",
+            "OWN",
+            "BG"
+          ]
+        ],
+        [
+          "g2",
+          "Local persistence",
+          [
+            "STORE"
+          ]
+        ],
+        [
+          "g3",
+          "격리 경계",
+          [
+            "PROC"
+          ]
+        ]
+      ],
+      "rank": "TB",
+      "note": "프로세스 격리는 장애 범위를 줄이는 설계다. 완전한 OS 보안 sandbox를 자동 제공한다는 뜻은 아니다. 같은 run에 두 host를 붙이지 않는다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A03-dependencies",
+      "title": "컴파일 경계 — 기술 세부에서 도메인으로",
+      "question": "의존성은 어느 방향으로 흐르는가?",
+      "nodes": [
+        {
+          "id": "BOOT",
+          "label": "CompositionRoot\n실제 구현은 여기서 조립",
+          "kind": "core"
+        },
+        {
+          "id": "UI",
+          "label": "UI NativePresentation",
+          "kind": "ui"
+        },
+        {
+          "id": "APP",
+          "label": "ApplicationFacade",
+          "kind": "core"
+        },
+        {
+          "id": "FEATURES",
+          "label": "응용 모듈\nOPS · CONTENT · EXPERIMENT\nAUTHOR · EVIDENCE",
+          "kind": "core"
+        },
+        {
+          "id": "SIM",
+          "label": "SimulationCoordinator",
+          "kind": "core"
+        },
+        {
+          "id": "ADAPTERS",
+          "label": "외부 구현 Adapter\nSTORE · WORKERS · AI · LEGACY",
+          "kind": "worker"
+        },
+        {
+          "id": "PORTS",
+          "label": "ApplicationPorts\n저장 · 계산 · 검색 · 출력 인터페이스",
+          "kind": "core"
+        },
+        {
+          "id": "DOMAIN",
+          "label": "DomainContracts\nID · DTO · 수량 · 규칙 AST",
+          "kind": "content"
+        }
+      ],
+      "edges": [
+        {
+          "source": "BOOT",
+          "target": "UI",
+          "label": "조립 참조"
+        },
+        {
+          "source": "BOOT",
+          "target": "ADAPTERS",
+          "label": "구현 결속"
+        },
+        {
+          "source": "BOOT",
+          "target": "SIM",
+          "label": "구현 결속"
+        },
+        {
+          "source": "UI",
+          "target": "APP",
+          "label": "참조"
+        },
+        {
+          "source": "APP",
+          "target": "FEATURES",
+          "label": "기능 계약"
+        },
+        {
+          "source": "FEATURES",
+          "target": "PORTS",
+          "label": "port 참조"
+        },
+        {
+          "source": "SIM",
+          "target": "PORTS",
+          "label": "port 참조"
+        },
+        {
+          "source": "ADAPTERS",
+          "target": "PORTS",
+          "label": "구현하는 port"
+        },
+        {
+          "source": "PORTS",
+          "target": "DOMAIN",
+          "label": "도메인 타입"
+        },
+        {
+          "source": "FEATURES",
+          "target": "DOMAIN",
+          "label": "도메인 타입"
+        },
+        {
+          "source": "SIM",
+          "target": "DOMAIN",
+          "label": "도메인 타입"
+        },
+        {
+          "source": "ADAPTERS",
+          "target": "DOMAIN",
+          "label": "도메인 타입"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "반복되는 참조를 묶은 요약도다. BOOT의 전체 직접 참조와 15개 모듈의 정확한 dependency는 contracts/architecture.json에 있다. runtime 호출의 양방향성과 다르다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A04-command",
+      "title": "명령과 내구성 — 승인 전에 무엇이 확정되는가?",
+      "question": "중복 요청·동시 예약·저장 실패에도 성공을 거짓으로 게시하지 않는가?",
+      "nodes": [
+        {
+          "id": "I",
+          "label": "CommandIntent\nrequester ≠ acting team",
+          "kind": "ui"
+        },
+        {
+          "id": "D",
+          "label": "ID / fingerprint 조회",
+          "kind": "core"
+        },
+        {
+          "id": "R",
+          "label": "기존 receipt 반환\n다른 payload면 ID_CONFLICT",
+          "kind": "output"
+        },
+        {
+          "id": "V",
+          "label": "권한 · 읽기 revision\n원자 자원 조건 검사",
+          "kind": "core"
+        },
+        {
+          "id": "C",
+          "label": "Candidate events\n아직 외부 상태 변경 없음",
+          "kind": "core"
+        },
+        {
+          "id": "TX",
+          "label": "한 SQLite transaction\nledger + receipt + holds + outbox",
+          "kind": "store"
+        },
+        {
+          "id": "REJECT",
+          "label": "도메인 거부\n이유 제공 · 상태 변경 없음",
+          "kind": "error"
+        },
+        {
+          "id": "FAIL",
+          "label": "commit 실패\n기존 상태 보존 · 승인 금지",
+          "kind": "error"
+        },
+        {
+          "id": "PUB",
+          "label": "durable commit 후\n메모리/조회 snapshot 게시",
+          "kind": "core"
+        },
+        {
+          "id": "W",
+          "label": "outbox 전송\nworker job 재전송은 멱등",
+          "kind": "worker"
+        },
+        {
+          "id": "ACK",
+          "label": "UI Receipt\n접수됨 ≠ 업무 완료",
+          "kind": "ui"
+        }
+      ],
+      "edges": [
+        {
+          "source": "I",
+          "target": "D",
+          "label": "수신"
+        },
+        {
+          "source": "D",
+          "target": "R",
+          "label": "키가 존재"
+        },
+        {
+          "source": "D",
+          "target": "V",
+          "label": "새 키"
+        },
+        {
+          "source": "V",
+          "target": "C",
+          "label": "유효"
+        },
+        {
+          "source": "V",
+          "target": "REJECT",
+          "label": "조건 미충족"
+        },
+        {
+          "source": "C",
+          "target": "TX",
+          "label": "직렬화 owner"
+        },
+        {
+          "source": "TX",
+          "target": "FAIL",
+          "label": "disk/transaction 실패"
+        },
+        {
+          "source": "TX",
+          "target": "PUB",
+          "label": "성공"
+        },
+        {
+          "source": "PUB",
+          "target": "ACK",
+          "label": "acceptedSeq"
+        },
+        {
+          "source": "TX",
+          "target": "W",
+          "label": "commit 이후"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "외부 worker 효과는 at-least-once + job/result dedup으로 처리한다. 네트워크 전체 exactly-once를 보장한다고 쓰지 않는다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A05-cosimulation",
+      "title": "다중 계산 — 일관된 경계만 게시",
+      "question": "서로 다른 시간 간격의 모델을 어떤 순서로 결합하는가?",
+      "nodes": [
+        {
+          "id": "B",
+          "label": "Committed Boundary t\ninput lock · owner epochs",
+          "kind": "store"
+        },
+        {
+          "id": "N",
+          "label": "다음 사건/교환 horizon\ncapability 협상",
+          "kind": "core"
+        },
+        {
+          "id": "MOV",
+          "label": "보행·교통 워커\n내부 timestep · 상태",
+          "kind": "worker"
+        },
+        {
+          "id": "HAZ",
+          "label": "위험장 워커\n검증된 adapter/ROM",
+          "kind": "worker"
+        },
+        {
+          "id": "R",
+          "label": "오프라인 FDS reference\n고정 조작 이력으로 대조",
+          "kind": "optional"
+        },
+        {
+          "id": "J",
+          "label": "결과 수집·검사\ntime / units / frame / inputHash",
+          "kind": "core"
+        },
+        {
+          "id": "K",
+          "label": "일관 field set commit\n새 committed boundary t+h",
+          "kind": "store"
+        },
+        {
+          "id": "UI",
+          "label": "UI 및 후속 계산\n수락된 결과만 사용",
+          "kind": "ui"
+        },
+        {
+          "id": "E",
+          "label": "실패·불일치·OOD\n이전 일관 checkpoint 복원/재실행",
+          "kind": "error"
+        }
+      ],
+      "edges": [
+        {
+          "source": "B",
+          "target": "N",
+          "label": "고정 시작 상태"
+        },
+        {
+          "source": "N",
+          "target": "MOV",
+          "label": "boundary event"
+        },
+        {
+          "source": "N",
+          "target": "HAZ",
+          "label": "boundary event"
+        },
+        {
+          "source": "MOV",
+          "target": "J",
+          "label": "결과 + restart 정보"
+        },
+        {
+          "source": "HAZ",
+          "target": "J",
+          "label": "결과 + restart 정보"
+        },
+        {
+          "source": "R",
+          "target": "HAZ",
+          "label": "검증 근거 / 범위"
+        },
+        {
+          "source": "J",
+          "target": "K",
+          "label": "필수 결과 모두 적합"
+        },
+        {
+          "source": "J",
+          "target": "E",
+          "label": "누락·불일치"
+        },
+        {
+          "source": "E",
+          "target": "B",
+          "label": "복원 또는 replay"
+        },
+        {
+          "source": "K",
+          "target": "UI",
+          "label": "게시"
+        },
+        {
+          "source": "K",
+          "target": "N",
+          "label": "다음 교환"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "FDS는 기본 batch reference다. live step·임의 rollback을 가정하지 않는다. UI 60fps와 physics timestep은 다른 시간축이다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A06-branch",
+      "title": "분기와 비교 — 원본을 보존한 재실험",
+      "question": "위치·시드뿐 아니라 실제 실행 상태 전체가 이어지는가?",
+      "nodes": [
+        {
+          "id": "A",
+          "label": "Run A\n원시 ledger 불변",
+          "kind": "core"
+        },
+        {
+          "id": "P",
+          "label": "정지 장벽\naccepted boundary까지 확정",
+          "kind": "core"
+        },
+        {
+          "id": "S",
+          "label": "CompleteCheckpoint\n업무·예약·메시지·지식·RNG·worker",
+          "kind": "store"
+        },
+        {
+          "id": "CAP",
+          "label": "복원 가능성 검사\n입력 lock · 모든 worker · 시각",
+          "kind": "core"
+        },
+        {
+          "id": "NO",
+          "label": "불완전 / 미지원\n재계산 또는 REVIEW_ONLY",
+          "kind": "error"
+        },
+        {
+          "id": "B",
+          "label": "Run B / 새 epoch\nparentSeq 고정 + PlanRevision B",
+          "kind": "core"
+        },
+        {
+          "id": "X",
+          "label": "외생 혁신 고정\n내생 결과는 각 안에서 재계산",
+          "kind": "content"
+        },
+        {
+          "id": "CMP",
+          "label": "공정 비교\n제약 · 지표 · 불확도 · 순위 안정성",
+          "kind": "core"
+        },
+        {
+          "id": "SEL",
+          "label": "작성자 선택·이유\n보편 최적 주장은 금지",
+          "kind": "output"
+        }
+      ],
+      "edges": [
+        {
+          "source": "A",
+          "target": "P",
+          "label": "분기 요청"
+        },
+        {
+          "source": "P",
+          "target": "S",
+          "label": "snapshot 수집"
+        },
+        {
+          "source": "S",
+          "target": "CAP",
+          "label": "manifest 확인"
+        },
+        {
+          "source": "CAP",
+          "target": "NO",
+          "label": "조건 미충족"
+        },
+        {
+          "source": "CAP",
+          "target": "B",
+          "label": "EXACT 또는 certified replay"
+        },
+        {
+          "source": "X",
+          "target": "A",
+          "label": "같은 외부 법칙"
+        },
+        {
+          "source": "X",
+          "target": "B",
+          "label": "같은 외부 혁신"
+        },
+        {
+          "source": "A",
+          "target": "CMP",
+          "label": "A 결과"
+        },
+        {
+          "source": "B",
+          "target": "CMP",
+          "label": "B 결과"
+        },
+        {
+          "source": "CMP",
+          "target": "SEL",
+          "label": "공통 자격 지표"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "EXACT_STATE와 bitwise 재현은 같은 개념이 아니다. 결과 동등성은 별도 numerical/semantic/statistical profile로 검사한다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A07-data",
+      "title": "데이터 관계 — 현실·가상 계획·실행·대본",
+      "question": "어떤 사실이 어떤 revision과 근거에 연결되는가?",
+      "nodes": [
+        {
+          "id": "SITE",
+          "label": "SiteBundleVersion\n실물·좌표·형상·연결",
+          "kind": "content"
+        },
+        {
+          "id": "RULE",
+          "label": "RuleBundle / ModelLock\n판본·가정·적용범위",
+          "kind": "content"
+        },
+        {
+          "id": "SC",
+          "label": "ScenarioSpec\n외생 조건·사건 법칙",
+          "kind": "content"
+        },
+        {
+          "id": "PLAN",
+          "label": "PlanRevision\n작성자 운영 규칙",
+          "kind": "content"
+        },
+        {
+          "id": "RUN",
+          "label": "Run\n고정 inputHash · parent cutoff",
+          "kind": "core"
+        },
+        {
+          "id": "EV",
+          "label": "Event / Receipt / Hold\n기록·결정·예약",
+          "kind": "store"
+        },
+        {
+          "id": "CP",
+          "label": "Checkpoint / Artifacts\n완전 상태·blob hash",
+          "kind": "store"
+        },
+        {
+          "id": "COM",
+          "label": "Comparison\n같은 조건·QoI",
+          "kind": "core"
+        },
+        {
+          "id": "SCRIPT",
+          "label": "ScriptIRRevision\n계획 + 대표 실행",
+          "kind": "output"
+        },
+        {
+          "id": "REV",
+          "label": "Evidence / Review\nsubject hash · facet · scope",
+          "kind": "content"
+        }
+      ],
+      "edges": [
+        {
+          "source": "SITE",
+          "target": "RUN",
+          "label": "pinned input"
+        },
+        {
+          "source": "RULE",
+          "target": "RUN",
+          "label": "pinned input"
+        },
+        {
+          "source": "SC",
+          "target": "RUN",
+          "label": "환경"
+        },
+        {
+          "source": "PLAN",
+          "target": "RUN",
+          "label": "운영 정책"
+        },
+        {
+          "source": "RUN",
+          "target": "EV",
+          "label": "1:N"
+        },
+        {
+          "source": "RUN",
+          "target": "CP",
+          "label": "1:N"
+        },
+        {
+          "source": "RUN",
+          "target": "COM",
+          "label": "A/B 참조"
+        },
+        {
+          "source": "PLAN",
+          "target": "SCRIPT",
+          "label": "정책 원천"
+        },
+        {
+          "source": "RUN",
+          "target": "SCRIPT",
+          "label": "실행 근거"
+        },
+        {
+          "source": "REV",
+          "target": "RULE",
+          "label": "적용 검토"
+        },
+        {
+          "source": "REV",
+          "target": "COM",
+          "label": "결과 자격"
+        },
+        {
+          "source": "REV",
+          "target": "SCRIPT",
+          "label": "사용 승인"
+        }
+      ],
+      "groups": [],
+      "rank": "LR",
+      "note": "관계 개념도다. SQL 테이블/키의 상세는 database/schema.sql에 있다. Unity instanceID나 파일명은 영속 business ID가 아니다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A08-authoring",
+      "title": "매뉴얼·AI·대본 — 제안과 승인을 분리",
+      "question": "LLM이 권한이나 실제 결과를 창작하지 않게 만드는 경계는?",
+      "nodes": [
+        {
+          "id": "SRC",
+          "label": "원문·판본·clause·hash\n기관·사건·관할",
+          "kind": "content"
+        },
+        {
+          "id": "RIR",
+          "label": "후보 RuleIR\n타입·충돌·예외 검사",
+          "kind": "core"
+        },
+        {
+          "id": "H",
+          "label": "담당자 적용성 검토\n별도 authenticated review",
+          "kind": "actor"
+        },
+        {
+          "id": "RULE",
+          "label": "검토된 RuleBundle\n명시된 범위에서만 실행",
+          "kind": "content"
+        },
+        {
+          "id": "EV",
+          "label": "실행 로그·수량 추출\n사실·수치·대기 근거",
+          "kind": "store"
+        },
+        {
+          "id": "PACK",
+          "label": "ACL EvidencePack\n필요한 판본·범위만",
+          "kind": "core"
+        },
+        {
+          "id": "AI",
+          "label": "AI 초안/제안\n명령·승인 포트 없음",
+          "kind": "worker"
+        },
+        {
+          "id": "G",
+          "label": "구조·근거·역할·수치 검사\n사용자 diff 확인",
+          "kind": "core"
+        },
+        {
+          "id": "IR",
+          "label": "선택 Plan + ScriptIR\n사람 검토 revision",
+          "kind": "output"
+        },
+        {
+          "id": "OUT",
+          "label": "JSON / Markdown / DOCX\n고객 양식 + 적용범위",
+          "kind": "output"
+        }
+      ],
+      "edges": [
+        {
+          "source": "SRC",
+          "target": "RIR",
+          "label": "추출"
+        },
+        {
+          "source": "RIR",
+          "target": "H",
+          "label": "후보"
+        },
+        {
+          "source": "H",
+          "target": "RULE",
+          "label": "범위 승인"
+        },
+        {
+          "source": "SRC",
+          "target": "PACK",
+          "label": "허용 자료"
+        },
+        {
+          "source": "RULE",
+          "target": "PACK",
+          "label": "적용 가능한 근거"
+        },
+        {
+          "source": "EV",
+          "target": "PACK",
+          "label": "사실 근거"
+        },
+        {
+          "source": "PACK",
+          "target": "AI",
+          "label": "읽기 전용 입력"
+        },
+        {
+          "source": "AI",
+          "target": "G",
+          "label": "typed proposal"
+        },
+        {
+          "source": "G",
+          "target": "IR",
+          "label": "사용자 수용"
+        },
+        {
+          "source": "H",
+          "target": "IR",
+          "label": "별도 검토"
+        },
+        {
+          "source": "IR",
+          "target": "OUT",
+          "label": "동일 중간표현 변환"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "기관 승인 필드는 AI output schema에 없다. 대본의 의미 수정은 관련 검토를 만료시키지만 원 실행 로그를 변경하지 않는다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A09-map",
+      "title": "현실 자료에서 Unity 맵까지",
+      "question": "자료의 확인 수준과 계산·표현 형상은 어떻게 함께 관리되는가?",
+      "nodes": [
+        {
+          "id": "RAW",
+          "label": "사진·도면·측정 / 무료 모델\n서로 다른 증거 등급",
+          "kind": "content"
+        },
+        {
+          "id": "IN",
+          "label": "입고·격리 검사\nbytes/hash · 파트·rig·scale",
+          "kind": "core"
+        },
+        {
+          "id": "REC",
+          "label": "선택 복원·정합\nMapAnything/COLMAP + 독립 치수",
+          "kind": "worker"
+        },
+        {
+          "id": "ID",
+          "label": "PhysicalAssetId\nframe · topology · version",
+          "kind": "core"
+        },
+        {
+          "id": "REN",
+          "label": "시각 표현\nprefab · 재질 · LOD",
+          "kind": "ui"
+        },
+        {
+          "id": "NAV",
+          "label": "이동 표현\ncollision · graph · 연결부",
+          "kind": "core"
+        },
+        {
+          "id": "CAL",
+          "label": "계산 표현\n체적 · 개구 · 물성·경계",
+          "kind": "worker"
+        },
+        {
+          "id": "SEM",
+          "label": "의미 표현\n역할·상태·source·qualification",
+          "kind": "content"
+        },
+        {
+          "id": "BUN",
+          "label": "immutable SiteBundle\ninput lock · 미확인 범위",
+          "kind": "store"
+        },
+        {
+          "id": "GAME",
+          "label": "Unity WorldCamera + HUD\n동일 ID로 상태 표시",
+          "kind": "ui"
+        }
+      ],
+      "edges": [
+        {
+          "source": "RAW",
+          "target": "IN",
+          "label": "실제 취득한 것만"
+        },
+        {
+          "source": "IN",
+          "target": "REC",
+          "label": "관측이 있는 구간"
+        },
+        {
+          "source": "IN",
+          "target": "ID",
+          "label": "기초 자산/형상"
+        },
+        {
+          "source": "REC",
+          "target": "ID",
+          "label": "검증한 정합"
+        },
+        {
+          "source": "ID",
+          "target": "REN",
+          "label": "같은 대상"
+        },
+        {
+          "source": "ID",
+          "target": "NAV",
+          "label": "같은 대상"
+        },
+        {
+          "source": "ID",
+          "target": "CAL",
+          "label": "같은 대상"
+        },
+        {
+          "source": "ID",
+          "target": "SEM",
+          "label": "같은 대상"
+        },
+        {
+          "source": "REN",
+          "target": "BUN",
+          "label": "버전 고정"
+        },
+        {
+          "source": "NAV",
+          "target": "BUN",
+          "label": "버전 고정"
+        },
+        {
+          "source": "CAL",
+          "target": "BUN",
+          "label": "버전 고정"
+        },
+        {
+          "source": "SEM",
+          "target": "BUN",
+          "label": "버전 고정"
+        },
+        {
+          "source": "BUN",
+          "target": "GAME",
+          "label": "로드·연결"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "시각 LOD·지붕 숨김은 계산 상태를 바꾸지 않는다. 무료 모델의 이름·외형으로 실제 정원·물성·업무 능력을 생성하지 않는다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    },
+    {
+      "id": "A10-delivery",
+      "title": "구현·검증 경로 — 하나의 PASS로 합치지 않는다",
+      "question": "기존 EP를 어떤 순서로 연결하고 무엇을 별도로 검증하는가?",
+      "nodes": [
+        {
+          "id": "E0",
+          "label": "EP00 / 기준선\nsource·claim·시험 조건",
+          "kind": "core"
+        },
+        {
+          "id": "E1",
+          "label": "EP01 / 계약\nID·규칙·현장 묶음",
+          "kind": "core"
+        },
+        {
+          "id": "E2",
+          "label": "EP02 / 운영 코어\n요청·자원·원자 commit",
+          "kind": "core"
+        },
+        {
+          "id": "E34",
+          "label": "EP03–04 / Native 구간\n맵·HUD·입력",
+          "kind": "ui"
+        },
+        {
+          "id": "E56",
+          "label": "EP05–06 / 실험 흐름\ncheckpoint·A/B·두 모드",
+          "kind": "core"
+        },
+        {
+          "id": "E78",
+          "label": "EP07–08 / 모델 연계\n기존/외부 비교·검증",
+          "kind": "worker"
+        },
+        {
+          "id": "E9",
+          "label": "EP09 / 대본\n근거·review·양식",
+          "kind": "output"
+        },
+        {
+          "id": "E10",
+          "label": "EP10 / 독립 검수\n제품 · 사용자 · 모델 · 기관",
+          "kind": "actor"
+        },
+        {
+          "id": "E11",
+          "label": "EP11 / 배포·확장\n반복 사용·13구역",
+          "kind": "output"
+        }
+      ],
+      "edges": [
+        {
+          "source": "E0",
+          "target": "E1",
+          "label": "입력·범위"
+        },
+        {
+          "source": "E1",
+          "target": "E2",
+          "label": "계약"
+        },
+        {
+          "source": "E1",
+          "target": "E34",
+          "label": "fixture로 병행"
+        },
+        {
+          "source": "E2",
+          "target": "E56",
+          "label": "실행 trace"
+        },
+        {
+          "source": "E34",
+          "target": "E56",
+          "label": "native 조작"
+        },
+        {
+          "source": "E1",
+          "target": "E78",
+          "label": "수량 계약"
+        },
+        {
+          "source": "E56",
+          "target": "E9",
+          "label": "운영 근거"
+        },
+        {
+          "source": "E78",
+          "target": "E10",
+          "label": "정량 lane"
+        },
+        {
+          "source": "E56",
+          "target": "E10",
+          "label": "작동/효용 lane"
+        },
+        {
+          "source": "E9",
+          "target": "E10",
+          "label": "출력/사용 lane"
+        },
+        {
+          "source": "E10",
+          "target": "E11",
+          "label": "범위별 수용"
+        }
+      ],
+      "groups": [],
+      "rank": "TB",
+      "note": "화살표는 산출물 소비 관계다. 생산 EP 전체 종료를 자동 선행으로 만들지 않는다. 문서·도구 시험은 실제 제품/현장 수용이 아니다.",
+      "status": "DESIGN_NOT_RUNTIME_EVIDENCE"
+    }
+  ]
+}

@@ -1,0 +1,633 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-21T00:00:00+09:00",
+  "status": "OFFICIAL_GUIDE_BENCHMARK_ONLY_NOT_PORTED",
+  "scope": {
+    "assignedGuideCount": 6,
+    "coverageRule": "아래 6개 공식 Player Guide의 추출 본문만 근거다. construction/enclosures/attractions/guests/tips/quickstart/controls는 이 lane에서 사용하지 않는다.",
+    "productBoundary": "JWE3 게임 규칙은 CHOOGuard 20-30분 한국어 RTS 훈련의 설계 참고일 뿐 실제 비상절차, 시설 물리, 의학 결과, 현장 보정을 입증하지 않는다."
+  },
+  "localSnapshot": {
+    "inspectedContracts": [
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+        "methods": [
+          "RequestTask",
+          "Dispatch",
+          "Observe",
+          "Update"
+        ],
+        "directlySupported": "팀별 최대 6개 FIFO 작업, 이동 접수, 현장 도착/상호작용, 물리 requestId/revision own-ACK 확인이 있다."
+      },
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+        "methods": [
+          "StartConfigured",
+          "Act",
+          "ReleaseTask",
+          "Receive",
+          "Tick"
+        ],
+        "directlySupported": "동일 50명 시민을 평시에서 사건으로 유지하고 warn/evacuate/medical만 팀 작업 뒤 worker로 보낸다. resolved는 안전 재개 판정이 아니다."
+      },
+      {
+        "path": "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+        "methods": [
+          "IssueTeamCommand",
+          "ProcessPlannedOrders",
+          "AddOperationNotice"
+        ],
+        "directlySupported": "preview·receipt·저장 receipt 일치 검증과 정지/busy 중 최대 16개 팀 이동·대기 예약이 있다."
+      }
+    ],
+    "gaps": [
+      "시설 stable ID와 operational/degraded/isolated/repair/inspection/reopen 상태가 없다.",
+      "반경별 자동 서비스, 팀 연료·보급품·작업량·비용 원장이 없다.",
+      "budget은 advance 전송 누적용이고 자원경제가 아니다.",
+      "현재 단일 참조 홀의 3개 훈련팀/50명 시민 흐름은 실제 역 운영절차를 모델링하지 않는다."
+    ]
+  },
+  "sources": [
+    {
+      "assignedURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/vehicles-guide",
+      "coverage": "fetched visible guide body; assigned lane only",
+      "title": "Vehicles Guide - Player Guides - Jurassic World Evolution 3",
+      "finalURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/vehicles-guide",
+      "sourceSHA256": "6bd441816f714817b04d66650c95592f54178486ca34019e5b873663b1adc6b8",
+      "accessDate": "2026-09-21",
+      "visibleText": "asset-library/research-public/2026-09-21/jwe-official/vehicles-guide.txt",
+      "sections": [
+        "Introduction",
+        "Controlling Vehicles",
+        "Capture Teams",
+        "Dinosaur Vehicle Danger",
+        "Send and Summon",
+        "Photography"
+      ]
+    },
+    {
+      "assignedURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/operations-guide",
+      "coverage": "fetched visible guide body; assigned lane only",
+      "title": "Operations Guide - Player Guides - Jurassic World Evolution 3",
+      "finalURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/operations-guide",
+      "sourceSHA256": "ea03d7145fa0321063dd0c95018dc7a681db08ede393c3929b9ffbf3868c8519",
+      "accessDate": "2026-09-21",
+      "visibleText": "asset-library/research-public/2026-09-21/jwe-official/operations-guide.txt",
+      "sections": [
+        "Introduction",
+        "Powering Your Park",
+        "Maintaining Your Park",
+        "Dinosaur Care",
+        "Operational Facilities"
+      ]
+    },
+    {
+      "assignedURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/park-management-guide",
+      "coverage": "fetched visible guide body; assigned lane only",
+      "title": "Park Management Guide - Player Guides - Jurassic World Evolution 3",
+      "finalURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/park-management-guide",
+      "sourceSHA256": "07309d161d2d8ae1ed1a935a9d5495019cef141b75dee5d9723993e00a529ab8",
+      "accessDate": "2026-09-21",
+      "visibleText": "asset-library/research-public/2026-09-21/jwe-official/park-management-guide.txt",
+      "sections": [
+        "Introduction",
+        "Management Tools",
+        "Park Rating",
+        "Research",
+        "Reputation",
+        "Global and Local Resources",
+        "Park Maintenance",
+        "Park Finances",
+        "Fuel and Food",
+        "Calamities and Sabotage"
+      ]
+    },
+    {
+      "assignedURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/scientists-guide",
+      "coverage": "fetched visible guide body; assigned lane only",
+      "title": "Scientists Guide - Player Guides - Jurassic World Evolution 3",
+      "finalURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/scientists-guide",
+      "sourceSHA256": "732f443a919f634217d174cb07d85ac2845c2752049d99efcbf1bf6bd421f935",
+      "accessDate": "2026-09-21",
+      "visibleText": "asset-library/research-public/2026-09-21/jwe-official/scientists-guide.txt",
+      "sections": [
+        "Introduction",
+        "Scientist Recruitment",
+        "Scientist Skills",
+        "Scientist Assignments",
+        "Scientist Traits",
+        "Scientist Unrest",
+        "Scientist Training"
+      ]
+    },
+    {
+      "assignedURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/calamities-and-sabotage-guide",
+      "coverage": "fetched visible guide body; assigned lane only",
+      "title": "Calamities & Sabotage Guide - Player Guides - Jurassic World Evolution 3",
+      "finalURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/calamities-and-sabotage-guide",
+      "sourceSHA256": "645b4573ce658b6b380db91a3ad6b2ab001d7be4e7a1f90b5707ed105200d8fe",
+      "accessDate": "2026-09-21",
+      "visibleText": "asset-library/research-public/2026-09-21/jwe-official/calamities-and-sabotage-guide.txt",
+      "sections": [
+        "Introduction",
+        "Emergency Shelters",
+        "Bad Weather",
+        "Sabotage",
+        "Dinosaur Escapes"
+      ]
+    },
+    {
+      "assignedURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/finances-guide",
+      "coverage": "fetched visible guide body; assigned lane only",
+      "title": "Finances Guide - Player Guides - Jurassic World Evolution 3",
+      "finalURL": "https://www.jurassicworldevolution.com/en-US/3/help/player-guides/finances-guide",
+      "sourceSHA256": "f9b17bd1a29e3c3aea2747bc57bfbb09c633d0ce6efc3dec337e577b244b60b4",
+      "accessDate": "2026-09-21",
+      "visibleText": "asset-library/research-public/2026-09-21/jwe-official/finances-guide.txt",
+      "sections": [
+        "Introduction",
+        "Finances",
+        "Amenities",
+        "Contracts",
+        "Bankruptcy"
+      ]
+    }
+  ],
+  "behaviorBenchmarks": [
+    {
+      "id": "vehicles.manual-and-automatic-response",
+      "source": "vehicles-guide",
+      "directSourceFacts": [
+        "지상 차량과 비행 중 헬리콥터는 직접 조작할 수 있고 차량마다 직접 조작 전용 도구가 있다.",
+        "포획팀은 조준 또는 lock-on으로 진정·각성 다트를 사용한다.",
+        "위험 개체에는 수동 플레어를 쓸 수 있고 Post에 배정된 포획팀은 범위 안 차량 위협에 자동 반응한다.",
+        "손상 차량은 운영 기지로 돌아가 수리한다."
+      ],
+      "playerActionToWorld": [
+        {
+          "playerAction": "차량을 직접 조작하고 특수 도구를 쓴다.",
+          "preconditions": [
+            "작동 차량",
+            "직접 조작 모드",
+            "유효한 대상/사거리"
+          ],
+          "actualWorldAction": "차량 이동과 도구 사용이 수동으로 발생한다.",
+          "feedback": [
+            "카메라 복귀",
+            "조준/lock-on/다트 결과"
+          ]
+        },
+        {
+          "playerAction": "Ranger Post에 포획팀을 배정한다.",
+          "preconditions": [
+            "포획팀",
+            "Post",
+            "범위 안 위협 감지"
+          ],
+          "actualWorldAction": "범위 내 위협에 자동 진정 dispatch가 수행된다.",
+          "feedback": [
+            "팀 배정 상태",
+            "자동 반응 결과"
+          ]
+        },
+        {
+          "playerAction": "Send/Summon으로 이동을 유도한다.",
+          "preconditions": [
+            "차량 탑승",
+            "대상",
+            "Gate 통과 시 유효 Gate"
+          ],
+          "actualWorldAction": "개체가 차량 주변 또는 지시 방향으로 이동하고 Gate가 자동 개폐될 수 있다.",
+          "feedback": [
+            "개체 위치와 Gate 통과"
+          ]
+        }
+      ],
+      "adaptationInference": "CHOOGuard는 manual task와 automatic coverage를 함께 표시해야 한다. 현재는 수동 명령→이동→현장 상호작용→ACK만 있고 coverage 자율업무가 없다.",
+      "nextMigration": {
+        "priority": 2,
+        "targets": [
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:RequestTask,Update — repair/inspect/resupply와 source(manual/coverage) 분리",
+          "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:Tick,Receive — 자율 작업도 accepted simulation time과 own ACK 뒤 완료",
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs:AddOperationNotice — 수동 지시/자동 dispatch/접수/완료를 구분"
+        ],
+        "acceptance": "같은 고장에서 직접 배정과 coverage 배정의 경로·대기열·ACK가 구분된다."
+      },
+      "operationalRisks": [
+        "자동 배정을 즉시 성공으로 표시하면 own-ACK 원칙과 충돌한다.",
+        "자동화가 적은 팀의 미처리 수동 업무를 가리면 workload 선택이 사라진다."
+      ],
+      "unfitTransfers": [
+        "공룡 진정·플레어·Gate 유도는 실제 역무 안전지침이 아니다.",
+        "JWE 차량 조작을 CHOOGuard 2D RTS 조작으로 복제하지 않는다."
+      ]
+    },
+    {
+      "id": "operations.service-coverage-and-resource-dependence",
+      "source": "operations-guide",
+      "directSourceFacts": [
+        "같은 전력망의 소비량은 가용 출력 이하이어야 하며 발전소·변전소·전선·보조발전기의 연결/반경 조건이 다르다.",
+        "보조발전기는 부하 비례 연료를 소비하며 수동 또는 Maintenance ATV 순찰로 보급된다.",
+        "Maintenance Post 배정 ATV는 내부 반경에서 수리·재부팅·보급·점검을 자동 수행하고 외부 반경 울타리는 수리만 커버한다.",
+        "동일 유지보수는 직접 task로도 수행한다.",
+        "Ranger/MVU/Capture 팀은 직접 task 또는 Post/Camera 기반 자동 반응을 쓰며 일부는 연료·식량·시간·돈 조건을 가진다."
+      ],
+      "playerActionToWorld": [
+        {
+          "playerAction": "전력 공급/보조전원을 배치·연결한다.",
+          "preconditions": [
+            "출력≥소비",
+            "발전소 path 연결",
+            "유효 배전 경로 또는 반경",
+            "보조전원 연료"
+          ],
+          "actualWorldAction": "시설/보안 시설에 전력이 전달되고 주전원 부족 시 보조전원이 수요를 충당한다.",
+          "feedback": [
+            "반경",
+            "시설 작동/비작동",
+            "연료 수요"
+          ]
+        },
+        {
+          "playerAction": "Maintenance Post에 ATV를 배정하거나 Add Task를 선택한다.",
+          "preconditions": [
+            "Maintenance 팀",
+            "대상 또는 유효 범위",
+            "손상/사보타주/보급/점검 수요"
+          ],
+          "actualWorldAction": "범위 서비스는 자율, 직접 task는 선택 대상으로 실행된다.",
+          "feedback": [
+            "시설 회복",
+            "작업 배정",
+            "범위 밖 미커버 수요"
+          ]
+        },
+        {
+          "playerAction": "팀을 Ranger Post 또는 Security Camera에 배정한다.",
+          "preconditions": [
+            "해당 팀",
+            "범위 안 대상/위협",
+            "치료에는 research/인력/시간/돈"
+          ],
+          "actualWorldAction": "상태 점검·보급·scan·치료·진정이 조건부로 자동 또는 직접 수행된다.",
+          "feedback": [
+            "반복 서비스",
+            "미충족 전제조건"
+          ]
+        }
+      ],
+      "adaptationInference": "전력망 복제 대신, 역 시설별 service coverage·failure 상태·팀 재고·manual/automatic dispatch를 최소 상태기계로 이식한다. 실제 설비 신뢰도는 주장하지 않는다.",
+      "nextMigration": {
+        "priority": 1,
+        "targets": [
+          "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:StartConfigured,Tick,Receive — 시설 상태전이를 session time으로 tick",
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:Job,RequestTask,Update — service 종류/대상/source/ACK 상태",
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs:IssueTeamCommand,AddOperationNotice — 시설 선택·coverage overlay·receipt",
+          "workers/physics/worker.py:session validation/serialization — 권위있는 facility 변이/ACK"
+        ],
+        "acceptance": "coverage 밖은 manual 수리만, coverage 안은 idle 팀 auto dispatch이며 ACK 전 repaired가 되지 않는다."
+      },
+      "operationalRisks": [
+        "반경을 장식으로 만들면 미커버 구역과 workload 결과가 없다.",
+        "연료가 시간 감소 장식이면 우선순위 선택이 없다."
+      ],
+      "unfitTransfers": [
+        "전력·울타리·공룡 의료 수치는 실제 철도/소방/의료 성능 근거가 아니다.",
+        "자동 치료/진정 규칙을 사람 처치 모델로 전이하지 않는다."
+      ]
+    },
+    {
+      "id": "park-management.alerts-degradation-and-control",
+      "source": "park-management-guide",
+      "directSourceFacts": [
+        "Site Map은 건물·울타리·차량·개체를 아이콘으로 보이고 주의 항목을 빨간 강조로 식별한다.",
+        "Management View는 보안·유지보수·전력·순찰·혼잡·이익 overlay를 제공한다.",
+        "시간 정지는 파악/계획에, 가속은 장기 작업에 쓰이지만 문제도 빨리 악화시킬 수 있다.",
+        "인프라는 마모되고 낮은 Maintenance Rating은 조기 고장/악천후 피해와 연결된다.",
+        "팀 연료·식량은 직접 또는 순찰 보급되고 비용이 든다."
+      ],
+      "playerActionToWorld": [
+        {
+          "playerAction": "지도와 관리 view로 주의 대상을 찾는다.",
+          "preconditions": [
+            "표시할 시설/팀/대상 상태",
+            "view 데이터"
+          ],
+          "actualWorldAction": "위치·수요·위험·coverage가 overlay/강조로 보인다.",
+          "feedback": [
+            "빨간 주의 강조",
+            "view별 상태 비교"
+          ]
+        },
+        {
+          "playerAction": "시간을 정지해 계획을 예약하거나 가속한다.",
+          "preconditions": [
+            "실행 중 시뮬레이션",
+            "가속 중에도 진행되는 위험/작업"
+          ],
+          "actualWorldAction": "정지 중 계획하고 재개 뒤 예약/시간의존 상태가 진행된다.",
+          "feedback": [
+            "계획 시간과 결과 시간",
+            "가속 위험 누적"
+          ]
+        },
+        {
+          "playerAction": "손상 시설을 수리·보급·점검한다.",
+          "preconditions": [
+            "시설 상태",
+            "유지보수팀",
+            "대상 또는 coverage",
+            "재고/비용"
+          ],
+          "actualWorldAction": "마모/고장/보급수요가 팀 작업으로 변한다.",
+          "feedback": [
+            "시설 상태",
+            "유지보수상태",
+            "팀 자원"
+          ]
+        }
+      ],
+      "adaptationInference": "현재 operation notice·정지·예약은 출발점이다. 시설 상태와 coverage·대기열·팀 재고를 overlay에 함께 표시해 계획과 actual world action을 분리한다.",
+      "nextMigration": {
+        "priority": 2,
+        "targets": [
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs:EnsureBuilt,AddOperationNotice,Render — 시설 map/overlay/alert severity",
+          "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:TogglePause,Tick — settled pause와 accepted time만 진행",
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:Update — 정지 중 automatic coverage 완료 금지"
+        ],
+        "acceptance": "정지 중 예약/overlay만 가능하고 재개 후 accepted time에 alert·이동·service 상태가 변한다."
+      },
+      "operationalRisks": [
+        "UI interpolation을 서비스 완료로 간주하면 accepted-clock 원칙을 깬다.",
+        "경고에 대상/원인이 없으면 훈련 의사결정이 불가능하다."
+      ],
+      "unfitTransfers": [
+        "Park Rating/Reputation/campaign 자원은 부산역 성과평가가 아니다.",
+        "JWE 마모율·비용은 실제 시설자산관리 값이 아니다."
+      ]
+    },
+    {
+      "id": "scientists.workload-capacity-and-unrest",
+      "source": "scientists-guide",
+      "directSourceFacts": [
+        "전문 작업은 최소 합산 skill, 최대 배정 인원(capacity)이 필요하고 초과 skill은 시간을 줄인다.",
+        "배정 인력은 작업 완료까지 다른 작업에 쓸 수 없다.",
+        "작업 후 Unrest가 누적되고 한계에서 재배정하면 효과 저하/평판 영향이 생긴다.",
+        "Rest는 Unrest와 불만을 해소하지만 휴식 중 업무는 불가하다.",
+        "traits는 시간·비용·급여·Unrest 한계에 영향을 준다."
+      ],
+      "playerActionToWorld": [
+        {
+          "playerAction": "작업을 고르고 skill/capacity 안에서 인력을 배정한다.",
+          "preconditions": [
+            "운영 가능한 Control/Staff 시설",
+            "최소 skill",
+            "available 인력",
+            "capacity",
+            "비용/시간"
+          ],
+          "actualWorldAction": "인력이 예약되고 skill/trait 조합이 시간/비용에 영향을 준다.",
+          "feedback": [
+            "시작 가능 여부",
+            "unavailable 인력",
+            "시간/비용 변화"
+          ]
+        },
+        {
+          "playerAction": "과부하 인력을 휴식시킨다.",
+          "preconditions": [
+            "Unrest/불만",
+            "Staff Centre",
+            "업무 공백 감수"
+          ],
+          "actualWorldAction": "Unrest가 초기화되지만 즉시 투입은 불가하다.",
+          "feedback": [
+            "회복 상태",
+            "일시 capacity 감소"
+          ]
+        }
+      ],
+      "adaptationInference": "실제 직무 능력 수치 대신 3개 팀의 병렬 가능 수·작업 점유·피로/교대·보급량으로 workload consequence를 모델링한다. 이는 게임 설계 가설이다.",
+      "nextMigration": {
+        "priority": 3,
+        "targets": [
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:Job,queues,RequestTask — concurrent capacity/busyUntil/workload/rest 전제",
+          "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:Tick,Render — accepted time workload 누적/회복",
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs:SetSelectedTeamDisplay,AddOperationNotice — capacity/피로/교대 결과"
+        ],
+        "acceptance": "수리 중인 팀의 비호환 두번째 작업은 대기열에 남고 다른 팀/휴식 선택의 대기시간 차이가 기록된다."
+      },
+      "operationalRisks": [
+        "피로를 실제 인력 안전·자격 판정처럼 보이면 안 된다.",
+        "capacity/범위를 무시한 자동 업무는 workload 모델을 무력화한다."
+      ],
+      "unfitTransfers": [
+        "과학자 skill/trait/급여/불만은 실제 역무·소방·의료 능력이나 노동규정이 아니다.",
+        "게임 규칙만으로 실제 resource allocation을 최적화하지 않는다."
+      ]
+    },
+    {
+      "id": "calamities.degradation-response-and-continuity",
+      "source": "calamities-and-sabotage-guide",
+      "directSourceFacts": [
+        "Emergency Shelter는 shelter coverage를 제공하고 view/heatmap이 수요를 보인다.",
+        "악천후는 중단/심한 시설 피해를 만들 수 있고 낮은 대응은 안전평가 저하와 탈출 위험으로 이어질 수 있다.",
+        "사보타주는 전력 차단·현금 절도·개체 중독을 포함하며 일부 기반시설은 Maintenance ATV reboot로 해소한다.",
+        "과로 인력과 낮은 publicity는 sabotage risk를 높이며 준비된 팀의 빠른 대응이 영향을 완화한다.",
+        "위협 개체에는 가까운 Shelter를 열고 Camera/Post의 Capture Team이 자동 또는 직접 대응한다."
+      ],
+      "playerActionToWorld": [
+        {
+          "playerAction": "Shelter coverage를 확인하고 가까운 Shelter를 연다.",
+          "preconditions": [
+            "설치/경로 연결 Shelter",
+            "위협 위치와 coverage",
+            "대피 대상"
+          ],
+          "actualWorldAction": "위협 주변 대상의 보호 상태가 변한다.",
+          "feedback": [
+            "coverage need heatmap",
+            "보호 영향"
+          ]
+        },
+        {
+          "playerAction": "고장/사보타주에 Maintenance ATV를 직접/자동 배정한다.",
+          "preconditions": [
+            "팀",
+            "영향 시설",
+            "자동이면 유효 범위"
+          ],
+          "actualWorldAction": "reboot/repair가 수행되고 늦거나 팀이 없으면 영향이 지속된다.",
+          "feedback": [
+            "failure 상태",
+            "dispatch",
+            "복구 여부"
+          ]
+        },
+        {
+          "playerAction": "위협 대응팀을 직접 지정하거나 coverage를 사용한다.",
+          "preconditions": [
+            "감지 위협",
+            "배정 팀 또는 task",
+            "보호 수단"
+          ],
+          "actualWorldAction": "수동/자동 대응과 보호 조치가 병행된다.",
+          "feedback": [
+            "위협 지속/완화",
+            "팀 작업",
+            "후속 복구"
+          ]
+        }
+      ],
+      "adaptationInference": "poor response 뒤에도 세션을 끝내지 않는 현 정책 위에 사건→시설고장/격리→수리/점검→제한 재개 후보를 연속 상태로 둔다. 실제 shelter 기준/복구절차의 근거는 아니다.",
+      "nextMigration": {
+        "priority": 1,
+        "targets": [
+          "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:Receive — 대피 완료와 resolved/reopen 분리",
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:Update — repair/reboot/inspect를 도착/상호작용/worker ACK로 완료",
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs:AddOperationNotice,SetTrainingDisplay — failure/isolation/repair/inspection/reopen 후보 구분",
+          "workers/physics/worker.py:session state — failure 원인/repair ACK 보존"
+        ],
+        "acceptance": "poor response에도 세션이 지속되고 failure가 남으면 대피완료가 재개 판정이 아니며 늦은 수리/점검이 복기에 남는다."
+      },
+      "operationalRisks": [
+        "대피 완료를 안전 재개로 표시하면 director의 현재 한계를 무너뜨린다.",
+        "무작위 사보타주는 seed/원인/state ledger 없이는 재현 불가다."
+      ],
+      "unfitTransfers": [
+        "Shelter/사보타주/공룡탈출은 실제 역 비상대피·보안사고·테러 절차가 아니다.",
+        "JWE 사건표로 실제 장애 원인/복구시간을 생성하지 않는다."
+      ]
+    },
+    {
+      "id": "finances.operation-cost-consequence",
+      "source": "finances-guide",
+      "directSourceFacts": [
+        "Finances는 시간기반 Income/Upkeep과 건설·판매 등 일회성 Proceeds/Spending을 구분한다.",
+        "재난 뒤 낮은 수익성은 지출 능력을 제한하므로 비싼 확장 전 회복이 권장된다.",
+        "계약은 보상·기한 보너스·평판 영향을 가질 수 있고 한 번에 하나만 맡으며 교체하면 기존 진척을 잃는다.",
+        "파산 때 계약·사진·철거·해고 등으로 현금/지출을 조정한다."
+      ],
+      "playerActionToWorld": [
+        {
+          "playerAction": "수입/유지비와 일회성 지출을 보고 작업을 고른다.",
+          "preconditions": [
+            "현재 현금",
+            "반복 비용",
+            "작업/시설 일회성 비용"
+          ],
+          "actualWorldAction": "가용 자금과 이후 선택지가 변한다.",
+          "feedback": [
+            "시간기반 수지",
+            "일회성 변동"
+          ]
+        },
+        {
+          "playerAction": "계약 하나를 수락하거나 교체한다.",
+          "preconditions": [
+            "Control Room",
+            "단일 active contract",
+            "조건/기한/보상 확인"
+          ],
+          "actualWorldAction": "진척이 활성 계약에 누적되고 교체하면 사라진다.",
+          "feedback": [
+            "진척/기한/보상",
+            "교체 손실"
+          ]
+        }
+      ],
+      "adaptationInference": "첫 단계에서는 돈 대신 scarce service token 또는 team supply로 동시 수리·점검·의료 요청을 모두 즉시 실행할 수 없게 한다. 이는 실제 예산/조달이 아닌 훈련 게임화다.",
+      "nextMigration": {
+        "priority": 4,
+        "targets": [
+          "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs:StartConfigured,Tick,Act — advance accumulator와 분리된 service-token ledger",
+          "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:RequestTask — token/supply 전제와 거절 사유",
+          "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs:SetTrainingDisplay,AddOperationNotice — 지출/잔여 token/보급 실패 피드백"
+        ],
+        "acceptance": "제한 token으로 동시 두 작업 중 하나를 고르면 지연 작업의 coverage/대기열/failure 결과가 남는다."
+      },
+      "operationalRisks": [
+        "경제를 먼저 넣으면 핵심 대응·복구 루프가 가려진다.",
+        "실제 비용처럼 보이는 임의 수치는 훈련 신뢰성을 해친다."
+      ],
+      "unfitTransfers": [
+        "JWE 티켓/편의시설/계약/파산은 실제 재난 예산·조달·해고 판단이 아니다.",
+        "token 값은 실제 비용/소요 추정치가 아니다."
+      ]
+    }
+  ],
+  "migrationOrder": [
+    {
+      "order": 1,
+      "title": "시설 상태와 service coverage 계약",
+      "why": "가장 작은 운영 공백인 failure/repair/inspection과 manual/automatic 업무 차이를 현재 persistent 시민·team ACK 위에 추가한다.",
+      "dependsOn": [
+        "facility stable ID",
+        "authoritative worker ACK",
+        "accepted session time"
+      ],
+      "doesNotClaim": [
+        "실제 설비 성능",
+        "실제 긴급절차",
+        "현장 보정"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "팀 작업량·재고·자율 dispatch",
+      "why": "coverage가 team capacity와 재고를 소비해야 manual 선택과 미커버 구역 결과가 생긴다.",
+      "dependsOn": [
+        "1단계 상태",
+        "MvpTeamTaskController queue"
+      ],
+      "doesNotClaim": [
+        "실제 인력 자격",
+        "실제 피로도"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "복구의 연속 세계와 제한 재개 후보",
+      "why": "poor response 후에도 세션을 지속하되 resolved를 안전 재개로 오인하지 않는다.",
+      "dependsOn": [
+        "failure/repair/inspection",
+        "unchanged NPC identity",
+        "own-ACK"
+      ],
+      "doesNotClaim": [
+        "안전 재개",
+        "임상 결과",
+        "물리장 유효시간 밖 상태"
+      ]
+    },
+    {
+      "order": 4,
+      "title": "선택 비용 service token",
+      "why": "서비스 루프 검증 뒤에만 제한된 선택 비용을 추가한다.",
+      "dependsOn": [
+        "1/2단계 증거",
+        "fictional token 라벨"
+      ],
+      "doesNotClaim": [
+        "예산",
+        "조달",
+        "실제 비용"
+      ]
+    }
+  ],
+  "verificationBoundary": {
+    "requiredFocusedChecks": [
+      "같은 seed/command ledger에서 manual/coverage source, acceptedAt/appliedAt, facility history 재현",
+      "정지 중 서비스/workload/resource 진행 없음, 재개 후 accepted simulation time만 변경",
+      "coverage 밖, team busy, supply 부족, stale/duplicate ACK, repair 전 reopen 요청 negative fixture",
+      "poor response 뒤 failure/task queue를 보존해 복기로 이어지고 안전 재개/의학 결과를 표시하지 않음"
+    ],
+    "notEstablished": [
+      "실제 부산역 운영 매뉴얼 적합성",
+      "실제 건축/전력/소방/의료 물리",
+      "FDS/JuPedSim 현장 보정/수렴/임상/압사력 검증",
+      "20-30분 전체 콘텐츠 또는 scenario generation 구현"
+    ]
+  }
+}
+

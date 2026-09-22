@@ -1,0 +1,271 @@
+{
+  "id": "CS-PROOF.03.02",
+  "epicId": "CS-PROOF",
+  "parentTaskId": "CS-PROOF.03",
+  "title": "총인시·품질·미완료·반복비용을 분석한다",
+  "goal": "중첩 합집합·초기비용·유지비·도움·검열·서식수정을 포함한다.",
+  "scopeKind": "USER_RESEARCH",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-069",
+    "REQ-080",
+    "REQ-082",
+    "REQ-089"
+  ],
+  "supportsRequirementIds": [
+    "REQ-069",
+    "REQ-080",
+    "REQ-082",
+    "REQ-089"
+  ],
+  "parentProductTestIds": [
+    "AT-069",
+    "AT-080",
+    "AT-082",
+    "AT-089"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "research/usability/analysis.py",
+      "operation": "MODIFY",
+      "createdBy": "CS-PROOF.03.01",
+      "scope": "총인시·품질·미완료·반복비용을 분석한다"
+    },
+    {
+      "path": "research/usability/report-template.md",
+      "operation": "CREATE",
+      "createdBy": "CS-PROOF.03.02",
+      "scope": "총인시·품질·미완료·반복비용을 분석한다"
+    }
+  ],
+  "testFile": "research/checks/CS-PROOF.03.02.json",
+  "testKinds": [
+    "DOCUMENT_REVIEW"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-PROOF.03.02",
+      "kind": "PlannedArtifact",
+      "producer": "CS-PROOF.03.02",
+      "contract": "총인시·품질·미완료·반복비용을 분석한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "research/usability/analysis.py",
+        "research/usability/report-template.md"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-PROOF.03.01",
+      "artifactId": "OUT-CS-PROOF.03.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "같은 기능의 다음 독립 결과; 이전 구현 후보/수정할 파일을 소비한다."
+    },
+    {
+      "producer": "CS-PROOF.01.01",
+      "artifactId": "OUT-CS-PROOF.01.01",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PROOF.02.03",
+      "artifactId": "OUT-CS-PROOF.02.03",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PLAY.07.01",
+      "artifactId": "OUT-CS-PLAY.07.01",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PROOF.02.02",
+      "artifactId": "OUT-CS-PROOF.02.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    },
+    {
+      "producer": "CS-PLAY.07.01",
+      "artifactId": "OUT-CS-PLAY.07.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    },
+    {
+      "producer": "CS-PROOF.01.02",
+      "artifactId": "OUT-CS-PROOF.01.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    }
+  ],
+  "externalInputs": [
+    {
+      "id": "EXT-CS-PROOF.03-CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "requiredAt": "qualification",
+      "condition": "ALWAYS",
+      "description": "CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "state": "UNKNOWN",
+      "effect": "모집/실제양식 확인 전 고객 효용/지원완료 주장 금지."
+    },
+    {
+      "id": "EXT-PARTICIPANTS",
+      "requiredAt": "integration",
+      "condition": "ALWAYS",
+      "description": "동의된 표본·독립 과제·전체 완료/중단 기록",
+      "state": "UNKNOWN",
+      "effect": "해당 story/phase만 보류; 다른 독립 개발은 지속"
+    }
+  ],
+  "sourceIds": [
+    "DISC-05",
+    "DISC-07",
+    "DISC-08",
+    "DISC-09",
+    "DISC-11",
+    "FREE-001"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "DISC-05",
+      "url": "https://preptoolkit.fema.gov/web/hseep-resources/design-and-development",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-07",
+      "url": "https://preptoolkit.fema.gov/web/exercise",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-08",
+      "url": "https://www.conducttr.com/ai-assistance",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-09",
+      "url": "https://www.xvrsim.com/en/platform/",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-11",
+      "url": "https://www.nist.gov/publications/credibility-consideration-digital-twins-manufacturing",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "FREE-001",
+      "url": "https://rgsdev.itch.io/free-low-poly-vehicles-pack",
+      "record": "basis/v3/reference/free-assets.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    }
+  ],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/10-observability-and-study.md",
+    "basis/v3/specs/12-evidence-and-performance.md"
+  ],
+  "parentContract": "StudyResult {conditions,participants,quality,time,censoring,assistance,limits}; 제품정확도를 선호도로 증명하지 않음.",
+  "parentSpecRef": "basis/v3/tasks/CS-PROOF.03.json",
+  "behaviorSteps": [
+    "중첩 합집합·초기비용·유지비·도움·검열·서식수정을 포함한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-PROOF.03.02-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 총인시·품질·미완료·반복비용을 분석한다의 유효 조건",
+      "when": "총인시·품질·미완료·반복비용을 분석한다를 실행한다",
+      "then": "효용과 불충분 결론·초기비용 회수 여부가 구분된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-PROOF.03.02-N",
+      "kind": "NEGATIVE",
+      "given": "선호도나 완료자만의 시간으로 전체 사용자 효용·현장 안전성을 주장하지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "선호도나 완료자만의 시간으로 전체 사용자 효용·현장 안전성을 주장하지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 research/checks/CS-PROOF.03.02.json에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10100,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/10-observability-and-study.md",
+      "sha256": "06c0643d3b25db1fb62ad9d25a90b61e5508da763efae7f3b1e70d1e242cff02"
+    },
+    {
+      "path": "basis/v3/specs/12-evidence-and-performance.md",
+      "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68"
+    }
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "id": "CS-WORLD.04.02",
+  "epicId": "CS-WORLD",
+  "parentTaskId": "CS-WORLD.04",
+  "title": "정차·도킹·문과 차량 좌표계를 연결한다",
+  "goal": "차량 local frame과 현장 frame의 변환·정차 확인·개방 상태로 통행을 결정한다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-020"
+  ],
+  "supportsRequirementIds": [
+    "REQ-020"
+  ],
+  "parentProductTestIds": [
+    "AT-020"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "Assets/ChooGuard/World/VehicleFrameBinding.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-WORLD.04.02",
+      "scope": "정차·도킹·문과 차량 좌표계를 연결한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSWORLD0402Tests.cs",
+  "testKinds": [
+    "EDIT_MODE",
+    "PLAY_MODE",
+    "PLAYER_ACCEPTANCE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-WORLD.04.02",
+      "kind": "PlannedArtifact",
+      "producer": "CS-WORLD.04.02",
+      "contract": "정차·도킹·문과 차량 좌표계를 연결한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "Assets/ChooGuard/World/VehicleFrameBinding.cs"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-WORLD.04.01",
+      "artifactId": "OUT-CS-WORLD.04.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "같은 기능의 다음 독립 결과; 이전 구현 후보/수정할 파일을 소비한다."
+    },
+    {
+      "producer": "CS-WORLD.03.02",
+      "artifactId": "OUT-CS-WORLD.03.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PACK.01.03",
+      "artifactId": "OUT-CS-PACK.01.03",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    }
+  ],
+  "externalInputs": [],
+  "sourceIds": [
+    "TECH-UNITY-LOAD"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "TECH-UNITY-LOAD",
+      "url": "https://docs.unity3d.com/6000.3/Documentation/ScriptReference/SceneManagement.SceneManager.LoadSceneAsync.html",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    }
+  ],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/01-build-and-assemblies.md",
+    "basis/v3/specs/06-native-surfaces.md",
+    "basis/v3/specs/07-content-and-rule-contract.md"
+  ],
+  "parentContract": "RegionReadiness {regionId,visual,collision,path,state}; DockLink {vehicleFrame,siteFrame,stopConfirmed,doorState}.",
+  "parentSpecRef": "basis/v3/tasks/CS-WORLD.04.json",
+  "behaviorSteps": [
+    "차량 local frame과 현장 frame의 변환·정차 확인·개방 상태로 통행을 결정한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-WORLD.04.02-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 정차·도킹·문과 차량 좌표계를 연결한다의 유효 조건",
+      "when": "정차·도킹·문과 차량 좌표계를 연결한다를 실행한다",
+      "then": "정차 연결 중 객실 개체가 같은 도킹 경계를 사용한다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-WORLD.04.02-N",
+      "kind": "NEGATIVE",
+      "given": "움직이는 차량에 고정 승강장 통로가 남거나 인물이 이전 좌표에 잔류하지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "움직이는 차량에 고정 승강장 통로가 남거나 인물이 이전 좌표에 잔류하지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSWORLD0402Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10042,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/01-build-and-assemblies.md",
+      "sha256": "cbaef6bfdbf734cd033a06e45ea7f95e5bb9f13c746a7cf0fc245abdd5e9595e"
+    },
+    {
+      "path": "basis/v3/specs/06-native-surfaces.md",
+      "sha256": "a4ab31934c3758c8a2ed61a6d3413ed596999a54b8722ccfa27d1d4304a71131"
+    },
+    {
+      "path": "basis/v3/specs/07-content-and-rule-contract.md",
+      "sha256": "308a59572e0936133d04bdac3a3264b2a74db3f8327c16ea4d7cbb0e5dcbba03"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "facts": [
+      "Root source inspection: MvpOpenWorldCamera.Apply always places orthographic camera1200units behind focus.",
+      "BootstrapURP shadowDistance50, renderScale1, MSAA1. Station camera softshadow light exists. This configuration places target geometry far outside shadow range at all zooms.",
+      "New world source uses realDEM with visualflatpads, sourcewater,9authoredWorldSet models and detailedinteriors. No Unity final render yet. Root will inspectactualviews.",
+      "Global project quality settings must stay unchanged; source implementations Astra low."
+    ],
+    "proposals": {
+      "bounded_scene_render": "Same resident interior maker: zoom-aware camera distance safely beyond visible geometry; scene-owned cloned URP runtime override with restore, suitable shadowdistance/cascades/MSAA, no modification sharedasset. Root views wide+near and logs actualactivepipeline.",
+      "shadow_distance_only": "Keepcamera1200 and set sharedURPshadowdistance1800 affectingallscenes.",
+      "leave_dark": "Leaveconfiguration because modelcountincreased."
+    }
+  },
+  "questions": {
+    "cause": {
+      "type": "choice",
+      "instructions": "Most direct rendering-depth risk?",
+      "criteria": {
+        "camera_shadow_range": "Geometry lies beyond configured shadowdistance",
+        "model_mesh_missing": "Assume allmeshesbad",
+        "credentials": "Networkcredentialissue"
+      }
+    },
+    "route": {
+      "type": "choice",
+      "instructions": "Choose bounded implementation responding to evidence.",
+      "criteria": {
+        "bounded_scene_render": "Local camera/presentation owned override and restore",
+        "shadow_distance_only": "Edit global sharedshadowrange",
+        "leave_dark": "No change"
+      }
+    },
+    "verification": {
+      "type": "choice",
+      "instructions": "Proportionate check?",
+      "criteria": {
+        "actual_views_and_restore": "Actual near/wide views and pipeline restore observation",
+        "all_physics": "RerunCFD/everytest",
+        "compiler_only": "Stop oncecodecompiles"
+      }
+    }
+  }
+}

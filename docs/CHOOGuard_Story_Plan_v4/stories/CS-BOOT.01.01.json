@@ -1,0 +1,706 @@
+{
+  "id": "CS-BOOT.01.01",
+  "epicId": "CS-BOOT",
+  "parentTaskId": "CS-BOOT.01",
+  "title": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다",
+  "goal": "정식 Unity 6 LTS/URP 새 프로젝트와 editor·backend·package lock을 기록한다. Camera/Canvas/EventSystem만으로 부팅하고 도메인 조립은 요구하지 않는다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-066"
+  ],
+  "supportsRequirementIds": [
+    "REQ-066"
+  ],
+  "parentProductTestIds": [
+    "AT-066"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "ProjectSettings/ProjectVersion.txt",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/GraphicsSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Packages/manifest.json",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Packages/packages-lock.json",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Scenes/Bootstrap.unity",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "docs/build/baseline.json",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/QualitySettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/ProjectSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/EditorBuildSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/BootstrapURP.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/BootstrapRenderer.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/BootstrapURPGlobalSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Bootstrap/BootstrapProject.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Bootstrap/BootstrapValidator.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Bootstrap/BuildBaseline.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/PlayMode/Stories/CSBOOT0101PlayModeTests.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "docs/build/baseline.schema.json",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/AudioManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/ClusterInputManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/DynamicsManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/EditorSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/InputManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/MemorySettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/MultiplayerManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/NavMeshAreas.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/Physics2DSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/PresetManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/ShaderGraphSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/TagManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/TimeManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/UnityConnectSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/VFXManager.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/VersionControlSettings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/Resources/TMP Settings.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/Resources.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/Resources/TMP Settings.asset.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Fonts.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/LineBreaking.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Shaders.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/ThirdPartyNotices.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Bootstrap.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Bootstrap/BootstrapProject.cs.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/EditMode.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/EditMode/Stories.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/PlayMode.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Bootstrap/BootstrapValidator.cs.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/Bootstrap/BuildBaseline.cs.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Scenes.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Scenes/Bootstrap.unity.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/BootstrapRenderer.asset.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/BootstrapURP.asset.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Settings/BootstrapURPGlobalSettings.asset.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "ProjectSettings/SceneTemplateSettings.json",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/PlayMode/Stories.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    },
+    {
+      "path": "Assets/ChooGuard/Tests/PlayMode/Stories/CSBOOT0101PlayModeTests.cs.meta",
+      "operation": "CREATE",
+      "createdBy": "CS-BOOT.01.01",
+      "scope": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs",
+  "testKinds": [
+    "EDIT_MODE",
+    "PLAY_MODE",
+    "PLAYER_ACCEPTANCE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-BOOT.01.01",
+      "kind": "PlannedArtifact",
+      "producer": "CS-BOOT.01.01",
+      "contract": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "ProjectSettings/ProjectVersion.txt",
+        "ProjectSettings/GraphicsSettings.asset",
+        "Packages/manifest.json",
+        "Packages/packages-lock.json",
+        "Assets/ChooGuard/Scenes/Bootstrap.unity",
+        "docs/build/baseline.json",
+        "ProjectSettings/QualitySettings.asset",
+        "ProjectSettings/ProjectSettings.asset",
+        "ProjectSettings/EditorBuildSettings.asset",
+        "Assets/ChooGuard/Settings/BootstrapURP.asset",
+        "Assets/ChooGuard/Settings/BootstrapRenderer.asset",
+        "Assets/ChooGuard/Settings/BootstrapURPGlobalSettings.asset",
+        "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef",
+        "Assets/ChooGuard/Editor/Bootstrap/BootstrapProject.cs",
+        "Assets/ChooGuard/Editor/Bootstrap/BootstrapValidator.cs",
+        "Assets/ChooGuard/Editor/Bootstrap/BuildBaseline.cs",
+        "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef",
+        "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs",
+        "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef",
+        "Assets/ChooGuard/Tests/PlayMode/Stories/CSBOOT0101PlayModeTests.cs",
+        "docs/build/baseline.schema.json",
+        "ProjectSettings/AudioManager.asset",
+        "ProjectSettings/ClusterInputManager.asset",
+        "ProjectSettings/DynamicsManager.asset",
+        "ProjectSettings/EditorSettings.asset",
+        "ProjectSettings/InputManager.asset",
+        "ProjectSettings/MemorySettings.asset",
+        "ProjectSettings/MultiplayerManager.asset",
+        "ProjectSettings/NavMeshAreas.asset",
+        "ProjectSettings/Physics2DSettings.asset",
+        "ProjectSettings/PresetManager.asset",
+        "ProjectSettings/ShaderGraphSettings.asset",
+        "ProjectSettings/TagManager.asset",
+        "ProjectSettings/TimeManager.asset",
+        "ProjectSettings/UnityConnectSettings.asset",
+        "ProjectSettings/VFXManager.asset",
+        "ProjectSettings/VersionControlSettings.asset",
+        "Assets/ChooGuard/Settings/Resources/TMP Settings.asset",
+        "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt",
+        "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt",
+        "Assets/ChooGuard.meta",
+        "Assets/ChooGuard/Settings.meta",
+        "Assets/ChooGuard/Settings/Resources.meta",
+        "Assets/ChooGuard/Settings/Resources/TMP Settings.asset.meta",
+        "Assets/ChooGuard/Settings/TMP.meta",
+        "Assets/ChooGuard/Settings/TMP/Fonts.meta",
+        "Assets/ChooGuard/Settings/TMP/Fonts/ChooGuard Bootstrap SDF.asset.meta",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking.meta",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Following Characters.txt.meta",
+        "Assets/ChooGuard/Settings/TMP/LineBreaking/Leading Characters.txt.meta",
+        "Assets/ChooGuard/Settings/TMP/Shaders.meta",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMP_SDF-Mobile.shader.meta",
+        "Assets/ChooGuard/Settings/TMP/Shaders/TMPro_Properties.cginc.meta",
+        "Assets/ChooGuard/ThirdPartyNotices.meta",
+        "Assets/ChooGuard/ThirdPartyNotices/LiberationSans-SDF-OFL.txt.meta",
+        "Assets/ChooGuard/Editor.meta",
+        "Assets/ChooGuard/Editor/Bootstrap.meta",
+        "Assets/ChooGuard/Editor/Bootstrap/BootstrapProject.cs.meta",
+        "Assets/ChooGuard/Editor/ChooGuard.Editor.asmdef.meta",
+        "Assets/ChooGuard/Tests.meta",
+        "Assets/ChooGuard/Tests/EditMode.meta",
+        "Assets/ChooGuard/Tests/EditMode/ChooGuard.EditModeTests.asmdef.meta",
+        "Assets/ChooGuard/Tests/EditMode/Stories.meta",
+        "Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs.meta",
+        "Assets/ChooGuard/Tests/PlayMode.meta",
+        "Assets/ChooGuard/Tests/PlayMode/ChooGuard.PlayModeTests.asmdef.meta",
+        "Assets/ChooGuard/Editor/Bootstrap/BootstrapValidator.cs.meta",
+        "Assets/ChooGuard/Editor/Bootstrap/BuildBaseline.cs.meta",
+        "Assets/ChooGuard/Scenes.meta",
+        "Assets/ChooGuard/Scenes/Bootstrap.unity.meta",
+        "Assets/ChooGuard/Settings/BootstrapRenderer.asset.meta",
+        "Assets/ChooGuard/Settings/BootstrapURP.asset.meta",
+        "Assets/ChooGuard/Settings/BootstrapURPGlobalSettings.asset.meta",
+        "ProjectSettings/SceneTemplateSettings.json",
+        "Assets/ChooGuard/Tests/PlayMode/Stories.meta",
+        "Assets/ChooGuard/Tests/PlayMode/Stories/CSBOOT0101PlayModeTests.cs.meta"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [],
+  "externalInputs": [
+    {
+      "id": "EXT-UNITY",
+      "requiredAt": "candidate",
+      "condition": "ALWAYS",
+      "description": "본인이 사용할 Unity Editor 실행경로·사용 가능한 라이선스·지원 OS. 설치 probe 기록 없이는 Player 실행했다고 주장하지 않는다.",
+      "state": "UNKNOWN",
+      "effect": "해당 story/phase만 보류; 다른 독립 개발은 지속"
+    }
+  ],
+  "sourceIds": [],
+  "sourceRefs": [],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/01-build-and-assemblies.md",
+    "basis/v3/specs/02-wire-and-ports.md",
+    "basis/v3/specs/12-evidence-and-performance.md"
+  ],
+  "parentContract": "BuildBaseline {editorVersion, packageLockSha256, renderPipeline, backend, os, nativePlugins, buildReceiptRef}; 모든 값은 새 실행에서 기록.",
+  "parentSpecRef": "basis/v3/tasks/CS-BOOT.01.json",
+  "behaviorSteps": [
+    "정식 Unity 6 LTS/URP 새 프로젝트와 editor·backend·package lock을 기록한다. Camera/Canvas/EventSystem만으로 부팅하고 도메인 조립은 요구하지 않는다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-BOOT.01.01-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 새 Unity 프로젝트에서 정적 PC 부팅을 재현한다의 유효 조건",
+      "when": "새 Unity 프로젝트에서 정적 PC 부팅을 재현한다를 실행한다",
+      "then": "빈 폴더에서 생성한 Player가 부팅되고 version receipt와 EventSystem 1개가 확인된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-BOOT.01.01-N",
+      "kind": "NEGATIVE",
+      "given": "로컬 전용 DLL·누락 패키지·두 EventSystem을 넣으면 원인을 남기고 baseline 수용을 거부한다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "로컬 전용 DLL·누락 패키지·두 EventSystem을 넣으면 원인을 남기고 baseline 수용을 거부한다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "W0",
+  "orderRank": 0,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/01-build-and-assemblies.md",
+      "sha256": "cbaef6bfdbf734cd033a06e45ea7f95e5bb9f13c746a7cf0fc245abdd5e9595e"
+    },
+    {
+      "path": "basis/v3/specs/02-wire-and-ports.md",
+      "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+    },
+    {
+      "path": "basis/v3/specs/12-evidence-and-performance.md",
+      "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+A [label="Run A\n원시 ledger 불변", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+P [label="정지 장벽\naccepted boundary까지 확정", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+S [label="CompleteCheckpoint\n업무·예약·메시지·지식·RNG·worker", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+CAP [label="복원 가능성 검사\n입력 lock · 모든 worker · 시각", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+NO [label="불완전 / 미지원\n재계산 또는 REVIEW_ONLY", shape=box, style="rounded,filled", fillcolor="#F8EBE8", color="#B45847", fontcolor="#18314A"];
+B [label="Run B / 새 epoch\nparentSeq 고정 + PlanRevision B", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+X [label="외생 혁신 고정\n내생 결과는 각 안에서 재계산", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+CMP [label="공정 비교\n제약 · 지표 · 불확도 · 순위 안정성", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+SEL [label="작성자 선택·이유\n보편 최적 주장은 금지", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+A -> P [label="분기 요청"];
+P -> S [label="snapshot 수집"];
+S -> CAP [label="manifest 확인"];
+CAP -> NO [label="조건 미충족"];
+CAP -> B [label="EXACT 또는 certified replay"];
+X -> A [label="같은 외부 법칙"];
+X -> B [label="같은 외부 혁신"];
+A -> CMP [label="A 결과"];
+B -> CMP [label="B 결과"];
+CMP -> SEL [label="공통 자격 지표"];
+}

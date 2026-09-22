@@ -1,0 +1,155 @@
+{
+  "id": "CS-WORLD.03",
+  "epicId": "CS-WORLD",
+  "title": "운영 객체·월드마커·층별 보기",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-WORLD.03",
+    "description": "같은 ID의 3D 표시와 운영 projection 연결",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-WORLD.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/World/WorldProjectionApplier.cs",
+    "Assets/ChooGuard/World/WorldMarkerPool.cs",
+    "Assets/ChooGuard/World/FloorVisibility.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/WORLD/World03Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-WORLD.01",
+      "artifactId": "A-CS-WORLD.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.01",
+      "artifactId": "A-CS-OPS.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "최신 run/revision의 projection만 main thread에 반영한다. 다른 branch 결과를 적용하지 않는다.",
+    "층·지붕·거리 LOD는 renderer만 바꾸고 물리/예약/지식은 바꾸지 않는다.",
+    "marker는 선택 우선으로 풀링하고 카메라 뒤/다른 층/기관 정보 범위를 처리한다."
+  ],
+  "contract": "SessionProjection: schemas/SessionProjection.schema.json의 entitiesRef/tasksRef/reasonsRef를 해석하며 run/revision/viewScope를 확인한다. 표현 계층은 domain을 직접 쓰지 않는다.",
+  "sourceIds": [
+    "TECH-UNITY-LOAD"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-WORLD.03-P",
+      "given": "run-a revision2 projection",
+      "when": "main-thread apply",
+      "then": "a/rev2만 표시",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-WORLD.03-N",
+      "given": "run-b 응답 또는 a/rev1",
+      "when": "main-thread apply",
+      "then": "STALE_OR_FOREIGN_PROJECTION",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-016"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/01-build-and-assemblies.md",
+    "specs/06-native-surfaces.md",
+    "specs/07-content-and-rule-contract.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/01-build-and-assemblies.md",
+    "specs/06-native-surfaces.md",
+    "specs/07-content-and-rule-contract.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-016"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/WORLD/World03Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSWORLD03PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-WORLD.03.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "run-a revision2 projection",
+    "operation": "main-thread apply",
+    "expectedPositive": "a/rev2만 표시",
+    "negativeInput": "run-b 응답 또는 a/rev1",
+    "expectedNegative": "STALE_OR_FOREIGN_PROJECTION",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

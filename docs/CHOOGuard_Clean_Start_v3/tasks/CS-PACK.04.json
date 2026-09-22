@@ -1,0 +1,152 @@
+{
+  "id": "CS-PACK.04",
+  "epicId": "CS-PACK",
+  "title": "실제 현장 입력·현실 관측 갱신",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PACK.04",
+    "description": "첫 현장 자료 패키지와 baseline/가상 분리 규칙",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PACK.04",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.04.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.04.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.04.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.04.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "content/sites/first-site/source-manifest.json",
+    "content/sites/first-site/observation-policy.json",
+    "Assets/ChooGuard/Content/RealityBaselineUpdater.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PACK/Pack04Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PACK.02",
+      "artifactId": "A-CS-PACK.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "허용된 공간·독립 기준 치수·기관 역할·작업시간 근거를 수집하고 관측/문헌/가정을 분리한다.",
+    "관측 시간·수신 시간·대상 revision을 검사한다. 역순 갱신은 최신값을 조용히 덮지 않는다.",
+    "가상 문 개방·훈련 사건을 실제 시설 관측으로 저장하지 않는다. 갱신한 SiteBundle은 새 revision을 만든다."
+  ],
+  "contract": "Observation {targetId,observedAt,receivedAt,value,unit,sourceHash,quality}; 현실 자료 없음은 기술 개발의 전역 blocker가 아님.",
+  "sourceIds": [
+    "MAN-KORAIL",
+    "STD-DTC",
+    "STD-SOSA"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PACK.04-P",
+      "given": "관측시각 t10 뒤 t12 실제관측",
+      "when": "reality 갱신",
+      "then": "새 revision; 과거 run 불변",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PACK.04-N",
+      "given": "가상 run의 문 이벤트",
+      "when": "reality 갱신",
+      "then": "NOT_REALITY_OBSERVATION",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-050"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "FIELD_DATA_AND_INDEPENDENT_REFERENCE",
+      "requiredFor": "NAMED_SITE_QUANTITATIVE_OR_FIELD_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "해당 주장/검수만 제한하며 기술 fixture 개발을 전역 차단하지 않는다."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-050"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PACK/Pack04Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "관측시각 t10 뒤 t12 실제관측",
+    "operation": "reality 갱신",
+    "expectedPositive": "새 revision; 과거 run 불변",
+    "negativeInput": "가상 run의 문 이벤트",
+    "expectedNegative": "NOT_REALITY_OBSERVATION",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

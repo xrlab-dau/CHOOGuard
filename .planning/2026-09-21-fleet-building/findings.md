@@ -1,0 +1,15 @@
+# Findings
+
+- ActualopenUnity6000.3.23f1/PID4832ready,currentplaypaused.
+- Agencycontroller explicitlyloops fire-1/medical-1 andhardcodesCentral119/data.agencies[0]. Thisisarchitecturelimit,notactualfleetdata.
+- CityBuildermissingheights fallback6+(OSM_ID%4)*3;window/roofrhythmprocedural. Needeliminatefalseconfidence and inspectextra towerprops.
+- Sourcefootprints/agencycatalog exist. Realbasecoordinatesnotverifiedentrances.
+- Memoryevidenceclassification: registryisnavigation/acceptance-boundaryonly; currentstateverifiedlive.
+
+- UserclarifiedfloorUI: permanentcity1F/2F/3F toolbaris questioned. Proposebuilding-contextcutawaycontrols asadaptation, includeincamerareviewpacket insteadofsilentlyimposinganotherdesign.
+- One unauthorizednestedsource child interrupted; flatroot-ownedteamrestored.
+
+- Newofficialbuildingevidence:Central119/BusanJungbuHQ sourcefootprint1022.8m2/4OSMlevels+photo3apparatusopenings;Choryang231.6m2/5OSMlevels,cropped3modules. Officialphotosincludeoneexterior+oneofficeeach; rear/roomadjacency unknown. Districtapparatus39total(update2026-06-23) with7pump7EMS etc; NOTper-centerinventory.
+- Currentcamera deterministicallyforcesorthographic/fixed55degpitch,Focusimmediatesetscenter+Zoom,followcallszoom80eachframe. OfficialWASD,QE,PgUp/PgDown,Tabnotification verified; exactmousebindings/easing/follow-stop unverified. Officialvideoinspection inresearchgraphsupports perspectiveappearance butnotinputtiming.
+
+- Root inspectedbothnew235pxofficialdepotphotos. Centralclearlyshows4-tierwhite/redfacade+3apparatusopenings;Choryangphotofacadesigntextisnotreadableenoughforidentityassertionwithoutcrosscheck. Needname/address/photoidentifiercorroborationbeforegeometricas-builtclaim.

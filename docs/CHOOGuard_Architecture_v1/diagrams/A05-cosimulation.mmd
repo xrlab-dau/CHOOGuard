@@ -1,0 +1,21 @@
+flowchart TB
+    B["Committed Boundary t<br/>input lock · owner epochs"]
+    N["다음 사건/교환 horizon<br/>capability 협상"]
+    MOV["보행·교통 워커<br/>내부 timestep · 상태"]
+    HAZ["위험장 워커<br/>검증된 adapter/ROM"]
+    R["오프라인 FDS reference<br/>고정 조작 이력으로 대조"]
+    J["결과 수집·검사<br/>time / units / frame / inputHash"]
+    K["일관 field set commit<br/>새 committed boundary t+h"]
+    UI["UI 및 후속 계산<br/>수락된 결과만 사용"]
+    E["실패·불일치·OOD<br/>이전 일관 checkpoint 복원/재실행"]
+    B -->|"고정 시작 상태"| N
+    N -->|"boundary event"| MOV
+    N -->|"boundary event"| HAZ
+    MOV -->|"결과 + restart 정보"| J
+    HAZ -->|"결과 + restart 정보"| J
+    R -->|"검증 근거 / 범위"| HAZ
+    J -->|"필수 결과 모두 적합"| K
+    J -->|"누락·불일치"| E
+    E -->|"복원 또는 replay"| B
+    K -->|"게시"| UI
+    K -->|"다음 교환"| N

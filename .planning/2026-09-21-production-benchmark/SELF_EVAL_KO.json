@@ -1,0 +1,72 @@
+{
+  "assessment": "PARTIAL_MECHANICS_CORE_GAME_UX_WAS_BELOW_REQUEST",
+  "basis": "Currentrepo + officialcachedguide sections + native receipts; not a full commercial-game hands-on comparison",
+  "mistakes": [
+    "Root counted engine wiring, stategraphs andrunlogs too heavily instead of the playerworld-selection experience.",
+    "Root exposed internalprogressiongraph and probabilisticforecasts asplayerpanels despiteuserwantinggameUI/internalarithmetic.",
+    "Root didnot enforce selectedbuildingcontext as the acceptancecondition fromthefirstUIimplementation.",
+    "Research/sourcecounts were not an adequate substitute for full interaction footage andactualuserplaychecks."
+  ],
+  "migration": [
+    {
+      "element": "Facility→team→task→target",
+      "reference": "JWE3Operations62-81,100-118",
+      "implemented": "2sourcebases,6logicalteams,8visualmembers, sharedtasks",
+      "verdict": "PARTIAL_NATIVE_PASS",
+      "evidence": ".planning/2026-09-21-fleet-building/operations-native-proof.json"
+    },
+    {
+      "element": "Automaticwork/return",
+      "reference": "JWE3Operations/Vehicles",
+      "implemented": "3jobs actual50evac andreturn;medicalonlyrequestACK+manualfinish",
+      "verdict": "PARTIAL_REFERENCE_HALL_ONLY"
+    },
+    {
+      "element": "Clickedbuilding contextualUI",
+      "reference": "JWE3facilitytaskflow + selectedbuildingUI patterns",
+      "implemented": "Latestcorrection nativePASSdefaultnocard/buildingactions/targetselection/inside-onlyfloors; no publicAI/graphpanels",
+      "verdict": "BASIC_FLOW_CORRECTED_FULL_PARITY_UNVERIFIED",
+      "evidence": ".planning/2026-09-21-production-benchmark/context-ui-native-proof.json"
+    },
+    {
+      "element": "Camera",
+      "reference": "Officialvisualdepth +usercursorzoomtarget; exactJWE mousebindingnotestablished",
+      "implemented": "Perspective,cursoranchor<1px,softfocus,followzoomretained APIpass",
+      "verdict": "PARTIAL_OS_INPUT_NOT_VERIFIED"
+    },
+    {
+      "element": "Servicecoverage/resources/maintenance",
+      "reference": "JWE3/PlanetZoo/PC2",
+      "implemented": "Availability,travel,workoccupancy andactualpost-returnreadiness timer;sourceWaitported",
+      "verdict": "PARTIAL_REAL_STOCK_COVERAGE_MISSING"
+    },
+    {
+      "element": "Construction/blueprints/UndoRedo",
+      "reference": "JWE3Construction",
+      "implemented": "Editor-authoredprefabs/metres only",
+      "verdict": "PLAYER_RUNTIME_NOT_IMPLEMENTED"
+    },
+    {
+      "element": "Objects/animations",
+      "reference": "Productionreference andOpenRCT2role-to-animationgroup mapping",
+      "implemented": "Simplemodelsets/NPCwalk,3sourcebuildingreplacements",
+      "verdict": "PROTOTYPE_NOT_PRODUCTION"
+    },
+    {
+      "element": "Jevinternalmath",
+      "reference": "Userproject-specificrequirement,notJWE featureproof",
+      "implemented": "Live Jev normal-regime value used in actual turnaround arithmetic;0.55→28.5s,29acceptedseconds→Ready;two realresponses482/780ms",
+      "verdict": "ONE_INTERNAL_EQUATION_NATIVE_PASS_NOT_CALIBRATED",
+      "evidence": ".planning/2026-09-21-production-benchmark/turnaround-native-proof.json"
+    }
+  ],
+  "notJweMigrationProof": [
+    "BusanOSM/DEM/agencycoordinates",
+    "FDS/JuPedSim/DotRecastinstallation",
+    "12/19 internalgraphand56logs",
+    "Modeldownloadortextguidecoverage"
+  ],
+  "overallAcceptance": "NOT_ACCEPTED",
+  "responsibility": "Main orchestrator owns specificationtranslation, workerbriefs and acceptancecriteria; workercompletionisnotproductapproval.",
+  "finalCurrentIncrement": "ContextualUIcorrected,publicAI/graphpanelsremoved,OpenRAWaitadapted,Jevinternalturnaroundmathverified;overallproductstillNOT_ACCEPTED"
+}

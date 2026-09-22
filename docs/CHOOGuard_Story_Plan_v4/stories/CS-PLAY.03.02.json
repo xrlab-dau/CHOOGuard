@@ -1,0 +1,161 @@
+{
+  "id": "CS-PLAY.03.02",
+  "epicId": "CS-PLAY",
+  "parentTaskId": "CS-PLAY.03",
+  "title": "RTS 카메라를 입력 컨텍스트와 연결한다",
+  "goal": "실제 WorldCamera의 pan/zoom/focus와 pixelRect 변환을 input owner 뒤에 수행한다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [],
+  "supportsRequirementIds": [
+    "REQ-008",
+    "REQ-072"
+  ],
+  "parentProductTestIds": [
+    "AT-008",
+    "AT-072"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "Assets/ChooGuard/Presentation/Camera/OperationsCamera.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-PLAY.03.02",
+      "scope": "RTS 카메라를 입력 컨텍스트와 연결한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSPLAY0302Tests.cs",
+  "testKinds": [
+    "EDIT_MODE",
+    "PLAY_MODE",
+    "PLAYER_ACCEPTANCE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-PLAY.03.02",
+      "kind": "PlannedArtifact",
+      "producer": "CS-PLAY.03.02",
+      "contract": "RTS 카메라를 입력 컨텍스트와 연결한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "Assets/ChooGuard/Presentation/Camera/OperationsCamera.cs"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-PLAY.03.01",
+      "artifactId": "OUT-CS-PLAY.03.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "같은 기능의 다음 독립 결과; 이전 구현 후보/수정할 파일을 소비한다."
+    },
+    {
+      "producer": "CS-WORLD.01.02",
+      "artifactId": "OUT-CS-WORLD.01.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    }
+  ],
+  "externalInputs": [],
+  "sourceIds": [],
+  "sourceRefs": [],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/06-native-surfaces.md",
+    "basis/v3/specs/02-wire-and-ports.md",
+    "basis/v3/specs/10-observability-and-study.md"
+  ],
+  "parentContract": "UIState {selection,camera,openPanels,textScale}; 운영 상태와 수명을 분리.",
+  "parentSpecRef": "basis/v3/tasks/CS-PLAY.03.json",
+  "behaviorSteps": [
+    "실제 WorldCamera의 pan/zoom/focus와 pixelRect 변환을 input owner 뒤에 수행한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-PLAY.03.02-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 RTS 카메라를 입력 컨텍스트와 연결한다의 유효 조건",
+      "when": "RTS 카메라를 입력 컨텍스트와 연결한다를 실행한다",
+      "then": "선택 초점·회전·줌이 UI 편집 중 차단되고 복귀 시 카메라가 보존된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-PLAY.03.02-N",
+      "kind": "NEGATIVE",
+      "given": "scene 전환 뒤 이중 카메라 제어 또는 UI wheel 중복 zoom이 발생하지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "scene 전환 뒤 이중 카메라 제어 또는 UI wheel 중복 zoom이 발생하지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSPLAY0302Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10049,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/06-native-surfaces.md",
+      "sha256": "a4ab31934c3758c8a2ed61a6d3413ed596999a54b8722ccfa27d1d4304a71131"
+    },
+    {
+      "path": "basis/v3/specs/02-wire-and-ports.md",
+      "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+    },
+    {
+      "path": "basis/v3/specs/10-observability-and-study.md",
+      "sha256": "06c0643d3b25db1fb62ad9d25a90b61e5508da763efae7f3b1e70d1e242cff02"
+    }
+  ]
+}

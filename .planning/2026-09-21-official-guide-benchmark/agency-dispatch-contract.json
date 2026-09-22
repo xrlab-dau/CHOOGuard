@@ -1,0 +1,61 @@
+{
+  "version": 1,
+  "sourceCatalog": "asset-library/space-references/busan-reconstruction/agency-catalog.json",
+  "sourceRoads": "asset-library/space-references/busan-reconstruction/osm-busan-openworld.xml",
+  "sourceWorld": "asset-library/space-references/busan-reconstruction/busan-openworld.json",
+  "heightfield": "art/world/world-layers.json",
+  "projection": "Use existingorigin35.1151,129.0417/sourceknownnodepositions,1unit1m;roadYexistingterrainplane",
+  "missionStates": [
+    "Ready",
+    "Requested",
+    "EnRoute",
+    "OnScene",
+    "Returning",
+    "Unavailable"
+  ],
+  "control": [
+    "Ingameonly;noexternalcalls",
+    "Mainlooprealagency→request→actualdirectedOSMroadpath→stationhandoff→onsiteteamavailable→return→baseready",
+    "Onefire/EMS trainingunit perconfiguredslot=designavailability,actualfleetnotknown",
+    "No coordinateguessing;unknown/nullcannotspawn/request",
+    "DirectedOSMway/nodeconnectivity,no crossstreetgeometricintersectionatbridges;respectoneway/access;outbound/returnseparate",
+    "Connectorfromrepresentativebuildingpointtoactualroad explicitlyapproximate, notactualgarageentrance",
+    "Fixedsimulatedtravelspeeddesignparameter,notmeasuredemergencyETA",
+    "AcceptedDirector.sessiondelta advancesmissions;pause/noacceptedtime meansstationary;currentlimitedphysicscoverage preserved;noNewWallClockAuthority",
+    "Keepops-1local; fire-1/medical-1 blockeduntilcorrespondingmissionOnScene;goinghomeunavailable; duplicatebusyrequestrejected",
+    "Arrivalalone notfireextinguished/patientcured. OnsceneexistingtasksemanticsactualACK remain",
+    "Knownpoliceagencylocationcanbevisiblebutunsupportedpoliceproceduremustnotfakesolve",
+    "Sourceverifiedmapanchors androotUI onlytext;vector/iconsinworld."
+  ],
+  "ownership": {
+    "maker": [
+      "newMvpAgencyDispatchController.cs",
+      "newMvpAgencyDispatchView.cs",
+      "newEditorMvpAgencyDispatchBuilder.cs",
+      "newart/world/prepare_agency_routes.py",
+      "newruntimeagencyrouteasset(s)",
+      "MvpTrainingDirector.cs minimalexternalevent/operationalclockhooks",
+      "MvpTeamTaskController.cs narrowexternalavailability guard after routeownerfreeze"
+    ],
+    "root": [
+      "actualUnityimport/bind/nativeflow",
+      "canonicaldocs/evidence/contextgraph"
+    ],
+    "frozen": [
+      "MvpStationView.cs nav/civilian source untilrootnativecheck",
+      "worker.py/FDS/JPSdata",
+      "sourceagencycatalog",
+      "originalOSM/DEM"
+    ]
+  },
+  "apiExpected": [
+    "RequestSupport(agencyId,teamId) returns bool+reason seam",
+    "RequestReturn(teamId)",
+    "GetTeamAvailability(teamId)",
+    "MissionSnapshots",
+    "SourceAgencyCount",
+    "BindExisting viaeditorbuilder",
+    "Operationeventlogconnectedtoactualdirectorhistory"
+  ],
+  "verification": "RealUnity callback+liveacceptedclock;no fullsuite/TDD,oneboundedsource/route/availability roundtrip;nofullproductionclaim"
+}

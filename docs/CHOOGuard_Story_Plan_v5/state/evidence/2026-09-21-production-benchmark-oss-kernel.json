@@ -1,0 +1,42 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "status": "CURRENT_INCREMENT_NATIVE_PASS",
+  "acceptance": "NOT_ACCEPTED",
+  "report": "docs/CHOOGuard_Story_Plan_v5/PRODUCTION_GAME_BENCHMARK.md",
+  "research": {
+    "representativeGames": 11,
+    "supportLibraries": 3,
+    "ossRepositoriesInspected": 6,
+    "sourceReadDepth": "Mixed fullcachedbodies/sections/officialextracts/video stills/pinnedsource; not fullhands-on parity"
+  },
+  "actualCodeReuse": {
+    "repo": "OpenRA/OpenRA",
+    "commit": "f3ec7f8e1593b482f85fd101652deb740c33dee6",
+    "original": "OpenRA.Mods.Common/Activities/Wait.cs",
+    "ported": "Assets/ChooGuard/App/Mvp/ThirdParty/OpenRaCountdown.cs",
+    "noticeRetained": true
+  },
+  "verified": {
+    "contextUi": ".planning/2026-09-21-production-benchmark/context-ui-native-proof.json",
+    "internalArithmetic": ".planning/2026-09-21-production-benchmark/turnaround-native-proof.json",
+    "allTeamsReady": ".planning/2026-09-21-production-benchmark/final-all-ready-native.json",
+    "coreFormula": "pNormal*15+(1-pNormal)*45",
+    "observedExample": {
+      "p": 0.55,
+      "expectedSeconds": 28.5,
+      "acceptedSeconds": 29
+    },
+    "observedLiveLatencyMs": [
+      780,
+      482
+    ],
+    "publicForecastAndGraphViews": 0
+  },
+  "displayOnlyFollowup": ".planning/2026-09-21-production-benchmark/final-korean-label-cleanup-graph.json",
+  "limits": [
+    "Trainingmean-durationprofile not measured119process",
+    "Fieldcase30x20m/50agents; wholeBusanphysicaltwinnotvalidated",
+    "Stock/coverage/citylife/runtimeconstruction/save-replay/productacceptanceincomplete",
+    "OSinputparitynotverified; nativeworldrays/buttoncallbacks/APIcamera only"
+  ]
+}

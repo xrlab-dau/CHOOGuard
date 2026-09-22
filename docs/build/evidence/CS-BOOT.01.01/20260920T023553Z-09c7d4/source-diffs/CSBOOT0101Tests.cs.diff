@@ -1,0 +1,112 @@
+--- before/Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs
++++ after/Assets/ChooGuard/Tests/EditMode/Stories/CSBOOT0101Tests.cs
+@@ -195,6 +195,109 @@
+                 System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
+                 throw;
+             }
++        }
++        private static void InvokeBuildOutcome(BuildReceipt receipt, Func<UnityEditor.Build.Reporting.BuildResult?> build, Func<string[]> files)
++        {
++            var helper = typeof(BuildBaseline).GetMethod("RecordBuildOutcome", BindingFlags.NonPublic | BindingFlags.Static);
++            Assert.That(helper, Is.Not.Null);
++            try { helper.Invoke(null, new object[] { receipt, build, files }); }
++            catch (TargetInvocationException exception) when (exception.InnerException != null)
++            {
++                System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(exception.InnerException).Throw();
++                throw;
++            }
++        }
++        [TestCase(UnityEditor.Build.Reporting.BuildResult.Failed)]
++        [TestCase(UnityEditor.Build.Reporting.BuildResult.Cancelled)]
++        public void SimulatedFailedBuildOutcome_RetainsReportedPartialFileAndThrows(UnityEditor.Build.Reporting.BuildResult result)
++        {
++            var root = BuildFixture();
++            try
++            {
++                var partial = Path.Combine(root, "partial.bin");
++                File.WriteAllText(partial, "partial output fixture");
++                var hash = BuildBaseline.HashFile(partial);
++                var receipt = new BuildReceipt();
++                TestContext.WriteLine("SIMULATED result via private seam; real scratch file; not an actual failed Unity BuildReport.");
++                var error = Assert.Throws<InvalidOperationException>(() => InvokeBuildOutcome(receipt, () => result,
++                    () => new[] { partial, Path.Combine(root, "not-produced.bin") }));
++                Assert.That(error.Message, Is.EqualTo("BuildReport=" + result));
++                Assert.That(receipt.buildStatus, Is.EqualTo("FAILED"));
++                Assert.That(receipt.runStatus, Is.EqualTo("NOT_RUN"));
++                Assert.That(receipt.reason, Does.Contain("OBSERVED_REPORTED_FILES_ONLY"));
++                Assert.That(receipt.outputs.Length, Is.EqualTo(1), "Returned failure must retain reported partial output");
++                Assert.That(receipt.outputs[0].path, Is.EqualTo(partial));
++                Assert.That(receipt.outputs[0].sha256, Is.EqualTo(hash));
++                Assert.That(BuildBaseline.HashFile(partial), Is.EqualTo(hash));
++            }
++            finally { Directory.Delete(root, true); }
++        }
++        [TestCase("null-report", "UNOBSERVED")]
++        [TestCase("build-throws", "UNOBSERVED")]
++        [TestCase("files-throws", "INCOMPLETE")]
++        [TestCase("hash-throws", "INCOMPLETE")]
++        public void SimulatedBuildObservationFailure_ReportsInventoryLimitsAndThrows(string damage, string inventory)
++        {
++            var root = BuildFixture();
++            try
++            {
++                var partial = Path.Combine(root, "partial.bin");
++                var locked = Path.Combine(root, "locked.bin");
++                File.WriteAllText(partial, "retained partial fixture");
++                File.WriteAllText(locked, "unreadable while held exclusively");
++                var receipt = new BuildReceipt();
++                var filesCalled = false;
++                Func<UnityEditor.Build.Reporting.BuildResult?> build = () =>
++                {
++                    if (damage == "build-throws") throw new IOException("simulated BuildPlayer exception");
++                    return damage == "null-report" ? (UnityEditor.Build.Reporting.BuildResult?)null : UnityEditor.Build.Reporting.BuildResult.Succeeded;
++                };
++                Func<string[]> files = () =>
++                {
++                    filesCalled = true;
++                    if (damage == "files-throws") throw new IOException("simulated GetFiles exception");
++                    return new[] { partial, locked };
++                };
++                using (var hold = new FileStream(locked, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
++                {
++                    if (damage == "hash-throws") Assert.Throws<IOException>(() => BuildBaseline.HashFile(locked));
++                    Assert.Catch(() => InvokeBuildOutcome(receipt, build, files));
++                }
++                Assert.That(receipt.buildStatus, Is.EqualTo("FAILED"));
++                Assert.That(receipt.runStatus, Is.EqualTo("NOT_RUN"));
++                Assert.That(receipt.reason, Does.Contain("Output inventory " + inventory));
++                Assert.That(receipt.reason, Does.Contain("do not prove file absence"));
++                Assert.That(filesCalled, Is.EqualTo(inventory == "INCOMPLETE"));
++                Assert.That(receipt.outputs.Length, Is.EqualTo(damage == "hash-throws" ? 1 : 0));
++                if (damage == "hash-throws")
++                {
++                    Assert.That(receipt.outputs[0].path, Is.EqualTo(partial));
++                    Assert.That(receipt.outputs[0].sha256, Is.EqualTo(BuildBaseline.HashFile(partial)));
++                }
++                Assert.That(File.Exists(partial) && File.Exists(locked), Is.True);
++            }
++            finally { Directory.Delete(root, true); }
++        }
++        [Test]
++        public void SimulatedSucceededBuildOutcome_HashesOnlyExistingReportedFiles()
++        {
++            var root = BuildFixture();
++            try
++            {
++                var output = Path.Combine(root, "output.bin");
++                File.WriteAllText(output, "success fixture");
++                File.WriteAllText(Path.Combine(root, "unreported.bin"), "must not crawl");
++                var receipt = new BuildReceipt();
++                InvokeBuildOutcome(receipt, () => UnityEditor.Build.Reporting.BuildResult.Succeeded,
++                    () => new[] { output, Path.Combine(root, "missing.bin") });
++                Assert.That(receipt.buildStatus, Is.EqualTo("SUCCEEDED"));
++                Assert.That(receipt.runStatus, Is.EqualTo("NOT_RUN"));
++                Assert.That(receipt.reason, Does.Contain("OBSERVED_REPORTED_FILES_ONLY"));
++                Assert.That(receipt.outputs.Length, Is.EqualTo(1));
++                Assert.That(receipt.outputs[0].path, Is.EqualTo(output));
++                Assert.That(receipt.outputs[0].sha256, Is.EqualTo(BuildBaseline.HashFile(output)));
++            }
++            finally { Directory.Delete(root, true); }
+         }
+         private static string BuildFixture()
+         {

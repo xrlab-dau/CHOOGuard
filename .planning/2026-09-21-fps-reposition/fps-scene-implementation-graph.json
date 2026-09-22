@@ -1,0 +1,115 @@
+{
+  "schema": "chooguard.fps-scene-draft.v2",
+  "status": "PUBLISHED_ROOT_AUTHORIZED_NATIVE_BINDINGS_PENDING",
+  "files": [
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsStationSceneBuilder.cs",
+      "target": "Assets/ChooGuard/Editor/FpsStationSceneBuilder.cs",
+      "sha256": "4351e7b0a78223f80c5b5ade1890e1fa3b070c236bda3e78a4e503ed76eb3f5e"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsAuthoredTransferBuilder.cs",
+      "target": "Assets/ChooGuard/Editor/FpsAuthoredTransferBuilder.cs",
+      "sha256": "629a8978699cb01dd4620ab0c158b6ed63ad62a60567a7d0eddb80ee01a943d7"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsSourceOpening.cs",
+      "target": "Assets/ChooGuard/Editor/FpsSourceOpening.cs",
+      "sha256": "0b40764b810bd2be6bf6a15c91f707858d3eb420461be4a0aa1351ac4a2a4763"
+    },
+    {
+      "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsSourceAssetImporter.cs",
+      "target": "Assets/ChooGuard/Editor/FpsSourceAssetImporter.cs",
+      "sha256": "4dde90f91b0abb10aaf6711d43efc6d588fa31ce52fd1941dddc981a6dcbc296"
+    }
+  ],
+  "entrypoints": {
+    "import": "FpsSourceAssetImporter.Import(sourceFbx, stableNamedMaterialManifest, Assets/ChooGuard/Art/Fps/[KTX|Metro113])",
+    "build": "FpsStationSceneBuilder.BuildFromJson(specPath)"
+  },
+  "spec": ".planning/2026-09-21-fps-reposition/scene-drafts/fps-scene-build-spec.template.json",
+  "connector": ".planning/2026-09-21-fps-reposition/scene-drafts/metro113-authored-connectors.json",
+  "implemented": [
+    "Official historical station/site clone only; new additive scene; source history preserved",
+    "Explicit model imports, source texture hash filenames, source color/emission, alpha blend/cutout and double-sided URP material remaps; no pipeline setting edits",
+    "Visible 3m floors, <=0.16m stair risers, flat landings, visible side guards from supplied waypoint paths plus exit4-to-exit6 concourse crosslink",
+    "Original floor aperture via exact world box subtraction on isolated generated clone mesh, matching render/collision geometry; records cuts; never modifies source asset",
+    "Native spawn ray/1.72m capsule/peripheral support checks implemented",
+    "1.72m player / 1.6m eye and Korean controller HUD",
+    "Receipt refs/meshes/colliders/world bounds/spawn/source opening specs",
+    "New scene light masks all layers; source scene ambient/sky/fog/reflection intensity copied; sun mapped to cloned Light; no pipeline/settings asset modifications"
+  ],
+  "root_binding_required": [
+    "Native import readback: actual mesh hierarchy names, axes/scale, materials and Korean font",
+    "KTX transform fit to actual OSM rail inside official platform; template transform0 is explicitly UNVERIFIED and rejected",
+    "Source plaza floor support to exit6 approach, source collider exact paths, potential entrance floor/metro roof cut boxes",
+    "Populate visible connector materials and verify native rendered join/headroom",
+    "Use final source-open-door KTX FBX when available; boarding alignment remains native task"
+  ],
+  "authority": "User confirmed Metro113/transfer/adjacent track only; authored connection elevations are accepted prototype values, never surveyed depths",
+  "validation": {
+    "JSON": "parsed",
+    "CSharp": "static API review only; NOT compiled",
+    "native_import": "NOT_RUN",
+    "native_collision": "NOT_RUN",
+    "continuous_walk": "NOT_RUN",
+    "assets_publication": "8 C# code files only; hashes match manifest; sourcebase targets previously absent"
+  },
+  "limitations": [
+    "No mission or runtime controller edits",
+    "Native source surface selection and openings cannot be truthfully invented without import readback",
+    "Opening helper supports triangle mesh position/normal/color/UV0; explicitly rejects UV2 source until reviewed",
+    "Import helper rejects additive source blend pending explicit mapping",
+    "No invisible bridges, teleport or regional RTS world"
+  ],
+  "importerContractReceipt": ".planning/2026-09-21-fps-reposition/fps-importer-contract-check.json",
+  "nativeCompileHistory": [
+    {
+      "status": "FAIL",
+      "diagnostic": "FirstPersonResponder.cs(47,42) CS0234 Application.isFocused resolves ChooGuard.Application namespace"
+    },
+    {
+      "status": "SCOPED_FIX_PUBLISHED_NOT_RECOMPILED",
+      "fix": "UnityEngine.Application.isFocused; scanned all8 files, only one Application usage"
+    },
+    {
+      "status": "FAIL",
+      "diagnostic": "FpsAuthoredTransferBuilder.cs(10,99) CS0664 clearance_m=2.6 double literal assigned to float"
+    },
+    {
+      "status": "SCOPED_FIX_PUBLISHED_NOT_RECOMPILED",
+      "fix": "clearance_m=2.6f; all8 files inspected for unsuffixed decimal literals"
+    }
+  ],
+  "concreteSpec": ".planning/2026-09-21-fps-reposition/fps-scene-build-spec.json",
+  "nativeBindings": {
+    "officialColliderMeshes": 44,
+    "sourceModelColliderMeshes": 1551,
+    "supportedPlazaMeshes": 7,
+    "metroNativeYaw": 204.6194429,
+    "KTXFit": "SOURCE_RAIL_PLATFORM_FIT yaw200.3248713 position88.9187956,-.73000026,76.4428219; not surveyed/OSM snapped",
+    "entranceCuts": "ROOT_APPROVED oriented3.4x14.6m exit6 groundband[-.1,.25] on ContextPlaza/유라시아 도로_0 only; overhead6.15..9.85 preserved"
+  },
+  "connectionScope": "Exit6-access +metro-concourse-to-platform only; exit4/crosslink deferred due source-building overlap",
+  "nativeBuildHistory": [
+    {
+      "status": "ROOT_FOUND_FRAME_FAILURE_FIXED_NOT_RERUN",
+      "initialFailure": "Original MvpStationView worldY=-1000; world-preserving clone left official geometry 1000m below station-local imported models; previous spawn on authored connector was not connectivity proof",
+      "fix": "Use sourceFrame.worldToLocalMatrix * source.localToWorldMatrix for official clones; light position/rotation normalized; official root |Y|<=100 and pre-save world bounds -100<=Y<=500 enforced"
+    },
+    {
+      "status": "ROOT_FOUND_IMPORTED_CANONICAL_ROOT_LOSS_FIXED_NOT_RERUN",
+      "initialFailure": "KTX asset root rotation270.0198 scale100 overwritten with placement/one, reducing train to centimetres",
+      "fix": "Compose placement rotation with original asset rotation; retain asset scale and transform asset root position; preserve hierarchy and collider paths; compare canonical measured bounds against original asset and reviewed KTX metre envelope"
+    }
+  ],
+  "canonicalRepair": {
+    "eval": ".planning/2026-09-21-fps-reposition/scene-drafts/fps-canonical-model-repair-eval.txt",
+    "status": "PUBLISHED_NOT_EXECUTED",
+    "idempotent": "Absolute authoritative asset-root composition, never multiply current scene transform",
+    "preservation": "Transforms only; same model objects/meshes/materials/colliders/openings; collider count invariant",
+    "bounds": "Canonical mesh AABB compared to original import; KTX195..205m length,2.8..3.5m width,4.5..5.6m height",
+    "authority": "Root runs Unity after exit Play; traversal evidence must be rerun"
+  },
+  "authoredConcourseRevision": ".planning/2026-09-21-fps-reposition/fps-authored-concourse-repair-graph.json"
+}

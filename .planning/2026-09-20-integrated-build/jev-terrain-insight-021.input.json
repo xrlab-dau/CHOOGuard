@@ -1,0 +1,41 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "current": "Astra world source emits correct land/sea split and district surfaces but y is flat. This misses western Choryang hills and Yongdusan relief. User rejects toy/flat map and asks whole world detailed production target.",
+    "evidence": "Root obtained4MapzenTerrarium public elevation tiles z13 x7031..7032 y3241..3242 (165KB) covering fullbbox. Official format red*256+green+blue/256-32768m. Bare-earth global dataset; not site survey. Geometry currently.25scale; station referencehall must remainunchanged.",
+    "options": {
+      "bounded_dem": "Existing world owner samples a coarse50m visual heightfield, drapesroad/park, buildingsflatbasewithskirts, treesgrounded. Existingstation/terminal/market footprint+apron flatten transition preservinginteriors. Recordrawvsadaptedheights and source. No solverchange.",
+      "arbitrary_hills": "Procedural random hills undercity with no geographic samples.",
+      "skip_relief": "Keep completely flat after current userrejection."
+    },
+    "tradeoff": "DEM drape can create road/building misalignment; sharedsampler and coordinated protectedflatpads needed; authorinputaccepted asvisualonly."
+  },
+  "questions": {
+    "terrain": {
+      "type": "choice",
+      "instructions": "Most useful evidence-backed next improvement given scope and reuse?",
+      "criteria": {
+        "bounded_dem": "Source terrain with bounded common geometry adaptation",
+        "arbitrary_hills": "Invent random visual peaks",
+        "skip_relief": "Leave flat all districts"
+      }
+    },
+    "claims": {
+      "type": "choice",
+      "instructions": "What can this terrain establish?",
+      "criteria": {
+        "source_derived_visual": "Geographic visual relief only, not survey/physicsqualification",
+        "measured_twin": "Accurate validated wholecity twin"
+      }
+    },
+    "risk": {
+      "type": "choice",
+      "instructions": "Critical integration risk to check once?",
+      "criteria": {
+        "shared_surface_alignment": "Road/building/props/hub heights must sharereference, interiorpadprotected",
+        "token_only": "Ignore geometry, countmodels",
+        "auth": "Alreadydownloadedpublictiles auth"
+      }
+    }
+  }
+}

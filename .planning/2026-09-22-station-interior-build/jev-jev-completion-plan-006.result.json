@@ -1,0 +1,62 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 699,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "next_phase": {
+          "type": "choice",
+          "choice": "close_open_defects_then_bake",
+          "confidence": 0.64,
+          "probabilities": {
+            "investigate_vertical_circulation": 0.23,
+            "bake_navmesh_and_lighting_first": 0.04,
+            "close_open_defects_then_bake": 0.72,
+            "confirm_zone_purposes": 0.01
+          }
+        },
+        "defect_priority": {
+          "type": "choice",
+          "choice": "flipped_normals",
+          "confidence": 0.48,
+          "probabilities": {
+            "proximity_pair": 0.28,
+            "flipped_normals": 0.65,
+            "uncovered_cells": 0.07
+          }
+        },
+        "lighting_approach": {
+          "type": "choice",
+          "choice": "measure_before_authoring",
+          "confidence": 0.95,
+          "probabilities": {
+            "bake_and_see": 0.03,
+            "author_lights_immediately": 0,
+            "measure_before_authoring": 0.97
+          }
+        },
+        "upper_floors": {
+          "type": "choice",
+          "choice": "measure_then_decide",
+          "confidence": 1,
+          "probabilities": {
+            "exclude_upper_floors": 0,
+            "author_stairs": 0,
+            "measure_then_decide": 1
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1576,
+        "output_tokens": 238
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

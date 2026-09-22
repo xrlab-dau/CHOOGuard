@@ -1,0 +1,26 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+SRC [label="원문·판본·clause·hash\n기관·사건·관할", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+RIR [label="후보 RuleIR\n타입·충돌·예외 검사", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+H [label="담당자 적용성 검토\n별도 authenticated review", shape=box, style="rounded,filled", fillcolor="#E8EEF5", color="#455B73", fontcolor="#18314A"];
+RULE [label="검토된 RuleBundle\n명시된 범위에서만 실행", shape=box, style="rounded,filled", fillcolor="#EEF3E8", color="#647C41", fontcolor="#18314A"];
+EV [label="실행 로그·수량 추출\n사실·수치·대기 근거", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+PACK [label="ACL EvidencePack\n필요한 판본·범위만", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+AI [label="AI 초안/제안\n명령·승인 포트 없음", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+G [label="구조·근거·역할·수치 검사\n사용자 diff 확인", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+IR [label="선택 Plan + ScriptIR\n사람 검토 revision", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+OUT [label="JSON / Markdown / DOCX\n고객 양식 + 적용범위", shape=box, style="rounded,filled", fillcolor="#E7F1EF", color="#3D7E70", fontcolor="#18314A"];
+SRC -> RIR [label="추출"];
+RIR -> H [label="후보"];
+H -> RULE [label="범위 승인"];
+SRC -> PACK [label="허용 자료"];
+RULE -> PACK [label="적용 가능한 근거"];
+EV -> PACK [label="사실 근거"];
+PACK -> AI [label="읽기 전용 입력"];
+AI -> G [label="typed proposal"];
+G -> IR [label="사용자 수용"];
+H -> IR [label="별도 검토"];
+IR -> OUT [label="동일 중간표현 변환"];
+}

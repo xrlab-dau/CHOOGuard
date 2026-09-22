@@ -1,0 +1,26 @@
+digraph G {
+graph [rankdir=TB, bgcolor="white", pad="0.3", nodesep="0.35", ranksep="0.52", splines=polyline, fontname="NanumGothic", concentrate=false];
+node [shape=box, style="rounded,filled", fontname="NanumGothic", fontsize=13, margin="0.19,0.12", penwidth=1.2];
+edge [fontname="NanumGothic", fontsize=10, color="#718397", fontcolor="#475A6E", arrowsize=0.7, penwidth=1.1];
+BOOT [label="기존 Bootstrap\nCompositionRoot · 버전/권한 고정", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+MAIN [label="Unity main thread\nCanvas/TMP · WorldCamera · 입력", shape=box, style="rounded,filled", fillcolor="#E8F4F3", color="#17766F", fontcolor="#18314A"];
+OWN [label="Serialized run owner\nAPP / OPS / SIM · commit 순서", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+BG [label="비동기 응용 작업\n비교 · 저작 · content 검사", shape=box, style="rounded,filled", fillcolor="#EFF3F8", color="#496A8C", fontcolor="#18314A"];
+STORE [label="단일 DB writer\nSQLite + content-addressed files", shape=cylinder, style="rounded,filled", fillcolor="#F4F0E6", color="#967A40", fontcolor="#18314A"];
+PROC [label="Child processes\n필요한 solver / 문서변환 / AI", shape=box, style="rounded,filled", fillcolor="#F1ECF8", color="#77549A", fontcolor="#18314A"];
+REMOTE [label="선택적 외부 계산\n정책 허용 시에만 전송", shape=box, style="rounded,filled,dashed", fillcolor="#F8F8F8", color="#8D98A2", fontcolor="#18314A"];
+HEAD [label="Headless host (별도 run)\n같은 코어 · 독립 runId", shape=box, style="rounded,filled,dashed", fillcolor="#F8F8F8", color="#8D98A2", fontcolor="#18314A"];
+subgraph cluster_g1 { label="Unity PC process"; color="#BBC9D6"; style="rounded"; margin=18; BOOT;MAIN;OWN;BG; }
+subgraph cluster_g2 { label="Local persistence"; color="#BBC9D6"; style="rounded"; margin=18; STORE; }
+subgraph cluster_g3 { label="격리 경계"; color="#BBC9D6"; style="rounded"; margin=18; PROC; }
+BOOT -> MAIN [label="조립"];
+BOOT -> OWN [label="owner 지정"];
+MAIN -> OWN [label="bounded mailbox"];
+OWN -> MAIN [label="읽기 전용 snapshot"];
+OWN -> STORE [label="원자 commit"];
+BG -> STORE [label="조회 / 직렬화 write"];
+OWN -> PROC [label="private pipe + artifacts"];
+BG -> PROC [label="export / model job"];
+PROC -> REMOTE [label="명시적 승인 경로"];
+HEAD -> PROC [label="같은 adapter 계약"];
+}

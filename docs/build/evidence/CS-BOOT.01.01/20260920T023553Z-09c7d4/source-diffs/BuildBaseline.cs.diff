@@ -1,0 +1,69 @@
+--- before/Assets/ChooGuard/Editor/Bootstrap/BuildBaseline.cs
++++ after/Assets/ChooGuard/Editor/Bootstrap/BuildBaseline.cs
+@@ -162,27 +162,52 @@
+                 Debug.Log("CG_BOOT_BUILD_NOT_RUN: " + reference.path);
+                 return;
+             }
++            BuildReport built = null;
+             try
+             {
+-                var validation = BootstrapValidator.Validate(BootstrapValidator.Capture(ProjectRoot));
+-                if (!validation.IsValid) throw new InvalidOperationException(string.Join(",", validation.Errors));
+-                var built = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { BootstrapValidator.ScenePath }, target = request.Target, locationPathName = request.Output, options = BuildOptions.Development });
+-                if (built == null) throw new InvalidOperationException("BuildPlayer returned no BuildReport");
+-                if (built.summary.result != BuildResult.Succeeded)
+-                    throw new InvalidOperationException("BuildReport=" + built.summary.result);
+-                receipt.outputs = built.GetFiles().Where(f => File.Exists(f.path)).Select(f => new FileHash { path = Path.GetFullPath(f.path), sha256 = HashFile(f.path) }).ToArray();
+-                receipt.buildStatus = "SUCCEEDED";
+-                receipt.reason = "BuildReport=" + built.summary.result + "; Player execution not performed";
+-            }
+-            catch (Exception exception)
+-            {
+-                receipt.buildStatus = "FAILED";
+-                receipt.reason = exception.ToString();
++                RecordBuildOutcome(receipt, () =>
++                {
++                    var validation = BootstrapValidator.Validate(BootstrapValidator.Capture(ProjectRoot));
++                    if (!validation.IsValid) throw new InvalidOperationException(string.Join(",", validation.Errors));
++                    built = BuildPipeline.BuildPlayer(new BuildPlayerOptions { scenes = new[] { BootstrapValidator.ScenePath }, target = request.Target, locationPathName = request.Output, options = BuildOptions.Development });
++                    return built == null ? (BuildResult?)null : built.summary.result;
++                }, () => built.GetFiles().Select(f => f.path).ToArray());
++            }
++            catch
++            {
+                 SaveReceipt(receipt);
+                 throw;
+             }
+             var saved = SaveReceipt(receipt);
+             Debug.Log("CG_BOOT_BUILD_SUCCEEDED: " + request.Output + "; receipt=" + saved.path);
+         }
++        // Private result seam: tests supply simulated outcomes, never fabricated BuildReport objects.
++        private static void RecordBuildOutcome(BuildReceipt receipt, Func<BuildResult?> build, Func<string[]> reportedFiles)
++        {
++            var observed = new System.Collections.Generic.List<FileHash>();
++            var inventory = "Output inventory UNOBSERVED; no returned BuildReport; empty outputs do not prove file absence.";
++            try
++            {
++                var result = build();
++                if (!result.HasValue) throw new InvalidOperationException("BuildPlayer returned no BuildReport");
++                inventory = "Output inventory INCOMPLETE; reported-file enumeration or hashing unfinished; outputs do not prove file absence.";
++                foreach (var path in reportedFiles())
++                    if (File.Exists(path))
++                        observed.Add(new FileHash { path = Path.GetFullPath(path), sha256 = HashFile(path) });
++                receipt.outputs = observed.ToArray();
++                inventory = "Output inventory OBSERVED_REPORTED_FILES_ONLY; existing reported files hashed, not an exhaustive directory inventory.";
++                if (result.Value != BuildResult.Succeeded)
++                    throw new InvalidOperationException("BuildReport=" + result.Value);
++                receipt.buildStatus = "SUCCEEDED";
++                receipt.reason = "BuildReport=" + result.Value + "; " + inventory + " Player execution not performed";
++            }
++            catch (Exception exception)
++            {
++                receipt.outputs = observed.ToArray();
++                receipt.buildStatus = "FAILED";
++                receipt.reason = inventory + " " + exception;
++                throw;
++            }
++        }
+     }
+ }

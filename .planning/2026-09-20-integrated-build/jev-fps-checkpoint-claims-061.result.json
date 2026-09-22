@@ -1,0 +1,51 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1188,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "claim": {
+          "type": "choice",
+          "choice": "overclaims_full_route",
+          "confidence": 0.34,
+          "probabilities": {
+            "bounded_accurate": 0.42,
+            "overclaims_full_route": 0.56,
+            "overclaims_A": 0.02
+          }
+        },
+        "escape": {
+          "type": "choice",
+          "choice": "no_abandoned_promise",
+          "confidence": 1,
+          "probabilities": {
+            "promise_not_executed": 0,
+            "no_abandoned_promise": 1
+          }
+        },
+        "nextGap": {
+          "type": "choice",
+          "choice": "real_hall_circulation",
+          "confidence": 0.78,
+          "probabilities": {
+            "render_A": 0.12,
+            "redo_passed_routes": 0.03,
+            "real_hall_circulation": 0.85
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1011,
+        "output_tokens": 149
+      },
+      "truncated": false,
+      "action": "escalate"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

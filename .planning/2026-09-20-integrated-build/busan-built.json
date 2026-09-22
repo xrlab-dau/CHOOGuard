@@ -1,0 +1,29 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "ChooGuard.Editor.MvpWorkspaceBuilder.Build(); ChooGuard.Editor.MvpStationBuilder.Build(); var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); var s=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpStationView>(); var d=w.GetComponent<ChooGuard.App.Mvp.MvpTrainingDirector>() ?? w.gameObject.AddComponent<ChooGuard.App.Mvp.MvpTrainingDirector>(); d.Station=s; d.Bind(w); UnityEditor.EditorUtility.SetDirty(d); UnityEditor.SceneManagement.EditorSceneManager.SaveScene(w.gameObject.scene); return new {scene=w.gameObject.scene.path,station=s!=null,renderTexture=w.StationTexture!=null,director=d.State};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "scene": "Assets/ChooGuard/Scenes/MvpWorkspace.unity",
+        "station": true,
+        "renderTexture": true,
+        "director": "Ready"
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

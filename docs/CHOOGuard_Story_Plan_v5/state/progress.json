@@ -1,0 +1,433 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "status": "IN_PROGRESS",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "acceptanceRef": null,
+  "currentWork": "임의 통로 연결은 실제 부산역 복원으로 인정하지 않고 사용자 교정을 반영했다. 부산시2019 개통자료·2018-405고시 치수·2021부산시설공단 실제 CAD평면도·공식 안내도와 현장 사진을 확보했다. Astra low가 실제 평면도와 사진 기반 통로 모듈을 새로 제작하고 root가 미리보기를 검토했다. 도시철도/지하상가 출구번호를 분리했다. 철도역·도시철도 양끝의 정확한 접속 위치·고저차는 미확정이며 새모델은 Unity에 미적용. 기존기술적 보행PASS는 실제연결수용이 아니다. 현재NOT_A.",
+  "areas": [
+    {
+      "areaId": "CS-BOOT",
+      "status": "PARTIAL",
+      "summary": "content-validation 실행에서 BOOT0101 55/55, BOOT0201 44/44, BOOT0202 17/17 및 Bootstrap PlayMode 1/1. 기존 순수 모듈 compiler reference·font whitelist 자동 시험 실패는 해소됐다. 당시 PACK0102 전용 재시험에서 BOOT는 재실행하지 않았다. Windows 빌드·실행 및 수동 제품 수용은 미실시/미완료로 PARTIAL 유지. 후속 operations-mailbox-retest에서 BOOT0101 55/55, BOOT0201 46/46, BOOT0202 17/17 EditMode 통과; emitted pure DLL oracle Passed. 새 Windows NOT_RUN receipt 1개는 Windows 빌드 통과 증거가 아니다. 이후 열린 Editor focused 실행에서 BOOT0201 45/47로 2 FAIL: 실제 test asmdef에 추가된 Persistence가 expected refs에서 누락됐다. expected/정상 음성 fixture/누락 반례 3곳 수정 완료, 수정 후 실행은 NOT_RUN. 기존 FAIL은 보존한다.",
+      "evidenceRefs": [
+        "docs/agent-handoffs/CS-BOOT.01.01/IMPLEMENTATION.json",
+        "docs/agent-handoffs/CS-BOOT.01.01/REVIEW.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/unity-import-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/boundary-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-revision-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/operations-mailbox-retest-2026-09-20.json"
+      ]
+    },
+    {
+      "areaId": "CS-PACK",
+      "status": "PARTIAL",
+      "summary": "BCL+Contracts 기반 strict bounded raw JSON parser와 reference skeleton schemas·semantic relations를 구현·시험했다. content-validation에서 PACK0101 14/14, PreparedAssetImportTests 7/7, PACK0102 79/80(최대 revision fixture 구성 오류 1건). 이후 PACK0102만 수정·확장하여 독립 revision 조합 5개 포함 83/83 통과; 다른 통과 suite는 재실행하지 않았다. 원본 59파일 임포트 증거 유지. 후속 two-agency 실행에서 synthetic 두 기관 fixture 및 trusted test-only projection·관계 검증을 완료했다: PACK0101 14/14, PACK0102 83/83, PACK0103 56/56, 합계 153/153. 완전한 schema backend·geometry·Scenario conditions·OperationalPlan·SourceReceipt·qualification 및 full operational·durable·현장·Windows 수용은 미완료다. fixture 통과는 전체 green run이나 제품 수용이 아니다. 후속 operations-mailbox-retest에서 PACK0101 14/14, PACK0102 83/83, PACK0103 56/56 EditMode 재통과. 후속 RuleTypes/RuleCatalog와 AssetIntakeValidator foundation 부분 구현 및 독립 EditMode 관련 시험 통과를 확인했다. catalog/validator는 완전한 업무 실행·blob resolver·durable 저장 통합이 아니다. 해당 실행 overall FAIL(mode 보존 실패)은 유지한다.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/unity-import-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/boundary-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-revision-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/two-agency-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/operations-mailbox-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-foundations-validation-2026-09-20.json"
+      ]
+    },
+    {
+      "areaId": "CS-OPS",
+      "status": "PARTIAL",
+      "summary": "메모리 내 OperationsSession·불변 RunState 구현: process-local run 독점, tick/priority/sequence 정렬, admission 입력·collections 복사, 재진입·동시 쓰기 거부, 실패 전 성공 prefix만 반영하고 실패+후속 명령 보존 및 retry, 분리된 읽기 상태, overflow/dispose 경계. operations-mailbox-retest에서 OPS 21/21 및 관련 경계 시험 통과. 해당 mailbox 실행 당시 IOperationsPort/IRunStore 구현은 범위 밖이었다. 후속 dispatcher preflight(readSet 사전검사), AuthorityPolicy/SupportRequest 및 ReservationPlanner foundation은 부분 구현됐다. 이는 실제 업무권한/readSet/reservation의 종단 통합 완료가 아니다. 후속으로 SqliteRunStore IRunStore·idempotent durable commit과 v2 outbox claim/lease/redelivery/ack가 부분 구현됐다. native host 5개 시험 및 schema 4table 일치 PASS, 변경 한정 검수 구체적 결함 0건. production materializer/decoder/transport/IOperationsPort·SessionProjection/UI 종단 조립 및 simulation result 원자 적용은 미완료다. dispatcher 불일치 ack 직접 회귀는 후속 Astra low가 보강 중이다. callback 외부 부수효과 rollback/exactly-once/at-most-once 보장은 없다. full operational·durable·현장·Windows·전체 제품 수용 미완료로 PARTIAL 유지. 독립 EditMode의 foundation 시험 통과와 overall FAIL(mode 보존 실패)을 구분하며 guard/planner를 전체 업무 완료로 승격하지 않는다.\n2026-09-21: 후속 MVP 전용 로컬 snapshot 기반 명령/receipt 저장과 재실행 복구를 구현하고 열린 Editor의7 focused assertion을 확인했다. 기존 K02 production SQLite 조립을 완료한 것은 아니다. 후속 기관 핵심 흐름: 중앙119 실제 좌표→지원요청/도로왕복/현장가용/작업ACK,참조군중50명 대피 후Recovery nativePASS. 실제기관전체절차/자원·설비운영은부분구현.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/operations-mailbox-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/operations-mailbox-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-foundations-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-agency-core-benchmark.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-production-benchmark-oss-kernel.json"
+      ]
+    },
+    {
+      "areaId": "CS-WORLD",
+      "status": "PARTIAL",
+      "summary": "공식 부산역 원본을 기준으로 활성 오픈월드를 교체·저장했다. 역사·승강장·광장·주변 건물 8개 구역을 실제 텍스처로 연결하고, 중복 건물 36개와 도로·철도 겹침을 정리했다. 새 약32m 역사 선택·지원 요청과 외부/내부 전환이 현재 Unity에서 통과했다. 재사용 훈련장비의 예약·현장사용·복귀·재출동 준비도 실제50명 대피 흐름에서 통과했다. 품질A는 미달이다: 공식 원본의 비어 있는 내부, 프레임 끊김, 장기 운영·저장재현·현장 물리 보정이 남아 있다.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-foundations-validation-2026-09-20.json",
+        "Assets/ChooGuard/World/WorldEntityAnchor.cs",
+        "Assets/ChooGuard/Editor/FixtureBuilder.cs",
+        "Assets/ChooGuard/Tests/EditMode/Stories/CSWORLD0101Tests.cs",
+        "Assets/ChooGuard/Tests/EditMode/Stories/CSWORLD0102Tests.cs",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-agency-core-benchmark.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-operations-graph-camera-building.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json"
+      ]
+    },
+    {
+      "areaId": "CS-PLAY",
+      "status": "PARTIAL",
+      "summary": "content-validation에서 PLAY0101 5/5, PLAY0102 8/8, IntegratedInput PlayMode 12/12. TMP Escape/Enter fixture 경계·EditMode disable lifecycle 및 중간 boundary-retest의 native SendMessage assertion 자동 시험 실패는 해소됐다. 당시 PACK0102 전용 재시험에서 PLAY는 재실행하지 않았다. 주입 fixture 통과는 실제 OS 키보드/IME 수용 검증이 아니므로 PARTIAL 유지. 후속 operations-mailbox-retest에서 PLAY0102 EditMode 8/8 재통과; PlayMode 재실행은 아니다. 이후 별도 independent-playmode의 Bootstrap 1/1·IntegratedInput 12/12 시험 PASS를 확인했으나 ProjectSettings.asset mode 보존 실패로 overall FAIL이다. 실제 OS 입력 수용과 구분한다. 후속 SelectionService/명령 preview controller의 열린 Editor 시험 PLAY0201 3/3·PLAY0202 8/8 PASS. 이후 native host/prefab을 작성해 BCL probe 12건 PASS, native host 시험 3건은 NOT_RUN. 재활성화의 모달 복구 결함 1건을 소스로 확인해 Astra low가 수정 중이다. prefab은 지정 import로 등록됐지만 Editor의 Presenter는 여전히 이전 plain 타입이어서 새 컴포넌트/화면/실제 backend 조립은 미확인이다.\n2026-09-21: 한국어 Noto/Lucide 기반 UI와 실제 명령 preview/receipt를 연결했다. 사용자 최우선 레퍼런스 JWE3에 맞춘 full-screen HUD/팀 실행 흐름 후속 구현과 검증 진행 중.\n2026-09-21 최신: 한국어UI51텍스트 유지/월드TMP0, 층별cutaway와실제사람축척 렌더 확인. UI앵커/메시GPU업로드 결함수정. 사용자조작성/OS입력 수용은미완료. 기관요청/추적/복귀와현장팀지시가가용상태로연결됐다. 실제UIcallback native검증이며OS키보드/마우스·20~30분게임성수용은남음.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/unity-import-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/boundary-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-revision-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/operations-mailbox-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-playmode-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-agency-core-benchmark.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-operations-graph-camera-building.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-production-benchmark-oss-kernel.json"
+      ]
+    },
+    {
+      "areaId": "CS-LAB",
+      "status": "NOT_STARTED",
+      "summary": "미착수",
+      "evidenceRefs": []
+    },
+    {
+      "areaId": "CS-MODES",
+      "status": "PARTIAL",
+      "summary": "미착수\n2026-09-21: 무작위 참조 화재/군중 실험 director와 JSONL Unity bridge 소스 추가, 최종 live 동작 검증 중. 튜토리얼은 후속 범위, 초안 생성은 MVP 제외.\n2026-09-21 최신: 미터씬에서실제워커50명 일시정지초기화확인. NPC평시·사건전환·자원운영루프는비교제안단계.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json"
+      ]
+    },
+    {
+      "areaId": "CS-SIM",
+      "status": "PARTIAL",
+      "summary": "미착수\n2026-09-21: FDS6.11.1 Rosetta 실제120초 참조 계산, JuPedSim1.4.2 CFSV3 실제 보행 및 FDS장 결합 실행 완료. workers/physics/evidence 참조. 압착 접촉력·임상·부산역 보정·독립 정확도는 미완료.\n2026-09-21 최신: 표시좌표를1m로정합했고참조30×20m/보행자1.72m 확인. 물리worker/CFD값변경없음; 새전체피난시험으로간주하지않음. DotRecast현재2층경로native와FDS원본node단면연결검증. SUMO1.27.1별도실제도로사례실행,아직Unity교통모션연동전. FDS0~120s참조범위/현장·압착·임상한계유지.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-agency-core-benchmark.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-operations-graph-camera-building.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-production-benchmark-oss-kernel.json"
+      ]
+    },
+    {
+      "areaId": "CS-SCRIPT",
+      "status": "NOT_STARTED",
+      "summary": "미착수",
+      "evidenceRefs": []
+    },
+    {
+      "areaId": "CS-PROOF",
+      "status": "NOT_STARTED",
+      "summary": "미착수",
+      "evidenceRefs": []
+    },
+    {
+      "areaId": "CS-SHIP",
+      "status": "NOT_STARTED",
+      "summary": "미착수",
+      "evidenceRefs": []
+    }
+  ],
+  "tests": [
+    {
+      "name": "Bootstrap EditMode",
+      "scope": "CS-BOOT.01.01 only; 과거 로컬 실행 재사용, 관리 전환에서 재실행 안 함",
+      "result": "PASS",
+      "summary": "51/51",
+      "evidenceRef": "docs/build/evidence/CS-BOOT.01.01/20260920T023553Z-09c7d4/editmode-final/results.xml"
+    },
+    {
+      "name": "Bootstrap PlayMode",
+      "scope": "CS-BOOT.01.01 only; 과거 로컬 실행 재사용",
+      "result": "PASS",
+      "summary": "1/1",
+      "evidenceRef": "docs/build/evidence/CS-BOOT.01.01/20260920T023553Z-09c7d4/playmode-final/results.xml"
+    },
+    {
+      "name": "Bootstrap strict baseline",
+      "scope": "CS-BOOT.01.01 only; 구조 검사이지 Windows 제품 수용 아님",
+      "result": "PASS",
+      "summary": "12/12",
+      "evidenceRef": "docs/build/evidence/CS-BOOT.01.01/20260920T023553Z-09c7d4/baseline-final-validation.json"
+    },
+    {
+      "name": "Windows x64/Mono 개발 빌드·실행",
+      "scope": "CS-BOOT.01.01 only",
+      "result": "NOT_RUN",
+      "summary": "Windows 모듈/host 부재. 자동 설치·대체 타깃 실행 없음.",
+      "evidenceRef": "docs/build/evidence/CS-BOOT.01.01/20260920T0252168282370Z-0f57d6/build-receipt.json"
+    },
+    {
+      "name": "Asset and input EditMode integration",
+      "scope": "7 whole classes; required scratch fixtures supplied",
+      "result": "FAIL",
+      "summary": "144 total / 141 pass / 3 fail / 0 skip; exit 2",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/unity-import-2026-09-20.json"
+    },
+    {
+      "name": "Asset and input PlayMode integration",
+      "scope": "2 whole classes; temporary batch focus settings restored",
+      "result": "FAIL",
+      "summary": "11 total / 9 pass / 2 fail / 0 skip; exit 2",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/unity-import-2026-09-20.json"
+    },
+    {
+      "name": "Boundary retest EditMode",
+      "scope": "7 whole classes; unity-import 이후 중간 실행, 후속 content-validation에서 입력 실패 해소",
+      "result": "FAIL",
+      "summary": "148 total / 140 pass / 8 fail / 0 skip / 0 inconclusive; exit 2; 실패 전부 CSPLAY0102 native SendMessage ShouldRunBehaviour assertion",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/boundary-retest-2026-09-20.json"
+    },
+    {
+      "name": "Boundary retest PlayMode",
+      "scope": "2 whole classes; unity-import PlayMode 실패 후속 실행; 실제 OS 입력 수용 아님",
+      "result": "PASS",
+      "summary": "12/12; Bootstrap 1/1, IntegratedInput 11/11; 0 skip / 0 inconclusive; exit 0",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/boundary-retest-2026-09-20.json"
+    },
+    {
+      "name": "Content validation EditMode",
+      "scope": "8 whole classes; boundary-retest BOOT/PLAY 자동 실패 해소, PACK0102 fixture 실패는 뒤의 좁은 실행에서 해소",
+      "result": "FAIL",
+      "summary": "230 total / 229 pass / 1 fail; exit 2; BOOT0101 55/55, BOOT0201 44/44, BOOT0202 17/17, PACK0101 14/14, PACK0102 79/80, PLAY0101 5/5, PLAY0102 8/8, PreparedAssetImport 7/7. 유일 실패는 malformed 최대 revision fixture; compiler errors 0",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-validation-2026-09-20.json"
+    },
+    {
+      "name": "Content validation PlayMode",
+      "scope": "2 whole classes; 주입 fixture 기반 입력 회귀, 실제 OS 키보드/IME·Windows·제품 수용 아님",
+      "result": "PASS",
+      "summary": "13/13; Bootstrap 1/1, IntegratedInput 12/12; exit 0; compiler errors 0",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-validation-2026-09-20.json"
+    },
+    {
+      "name": "Content revision fixture retest EditMode",
+      "scope": "CSPACK0102Tests only; 앞선 최대 revision fixture 오류 수정 후 좁은 재시험. 다른 통과 EditMode/PlayMode suite는 재실행하지 않음; 전체 246건 단일 green 실행 아님",
+      "result": "PASS",
+      "summary": "83/83; revision 독립 조합 (0,0), (max,max), (0,max), (max,0), (2,9) 5개 포함; max=9223372036854775807; failed/skip/inconclusive 0, exit 0, compiler errors 0",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-revision-retest-2026-09-20.json"
+    },
+    {
+      "name": "Synthetic two-agency validation EditMode",
+      "scope": "CSPACK0101Tests/CSPACK0102Tests/CSPACK0103Tests 단일 실행; synthetic fixture 및 trusted test-only projection·관계 검증. Bootstrap·PlayMode·무관 suite 재실행 없음; 전체 green run·생산 운영 실행·현장/Windows 수용 아님. 기존 실행 증거 기록이며 문서 갱신에서 Unity 재실행 안 함; provider UNKNOWN.",
+      "result": "PASS",
+      "summary": "153/153 leaf PASS; PACK0101 14/14, PACK0102 83/83, PACK0103 56/56; failed/skipped/inconclusive 0, compiler errors 0, exit 0; source freeze 일치 및 protected 304 files unchanged는 해당 실행 증거 기준.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/two-agency-validation-2026-09-20.json"
+    },
+    {
+      "name": "Operations mailbox initial validation",
+      "scope": "8 whole classes 검증 준비 단계에서 BLOCKED; Unity 0회, 소스/시험 실패 아님; provider UNKNOWN.",
+      "result": "NOT_RUN",
+      "summary": "Root runner 쓰기 제한과 기존 Bootstrap Windows NOT_RUN receipt 출력 경로 충돌로 Unity 미실행. 후속 operations-mailbox-retest에서 허용된 신규 receipt 1개 범위로 충돌 해소; 최초 BLOCKED 증거는 보존.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/operations-mailbox-validation-2026-09-20.json"
+    },
+    {
+      "name": "Operations mailbox retest EditMode",
+      "scope": "Unity batchmode EditMode 1회, 8 whole classes 한정. PlayMode/Windows/실제 OS 입력/현장/전체 제품 수용 미실행; 전체 suite green 아님. 기존 실행 증거 기록이며 문서 갱신에서 Unity 재실행 안 함; provider UNKNOWN.",
+      "result": "PASS",
+      "summary": "300/300 leaf Passed; OPS0101 21/21, BOOT0101 55/55, BOOT0201 46/46, BOOT0202 17/17, PACK0101 14/14, PACK0102 83/83, PACK0103 56/56, PLAY0102 EditMode 8/8. failed/skipped/inconclusive/compiler errors 0, exit 0, timeout 없음. OPS 동시 쓰기·결정적 정렬/비교 경계·처리 sequence 역전·성공 prefix/실패+후속 retry·count overflow·sequence exhaustion 및 emitted pure DLL oracle Passed. 해당 실행 evidence 기준 source freeze 8/8 일치, 기존 2210 files 변경·삭제 0, meta 166 보존, 예상 밖 신규 0. 허용된 신규 Windows NOT_RUN receipt 1개는 Windows 빌드 통과 증거가 아니다.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/operations-mailbox-retest-2026-09-20.json"
+    },
+    {
+      "name": "Independent foundations EditMode validation",
+      "scope": "좁힌 독립 foundations 14 whole classes; World0101/0102 및 fixture NOT_RUN, PreparedAssetImport 제외. 별도 PlayMode와 합산한 단일 green 실행 아님; 기존 증거만 기록, provider UNKNOWN.",
+      "result": "FAIL",
+      "summary": "시험 431/431 PASS, failed/skipped/inconclusive 0, compiler errors 0, exit 0. GraphicsSettings.asset·ShaderGraphSettings.asset mode 0644→0600 보존 실패로 overall FAIL. 두 파일 bytes/hash 동일, 행위자 UNKNOWN. 후속 World preview 수정의 compile/tests 증거 아님.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-foundations-validation-2026-09-20.json"
+    },
+    {
+      "name": "Independent PlayMode validation",
+      "scope": "CSBOOT0101PlayModeTests·IntegratedInputPlayModeTests 두 whole classes 별도 실행. EditMode/World fixture/실제 OS 입력/Windows/현장 수용 아님; Jev 검수에서 이 후속 실행은 미평가. provider UNKNOWN.",
+      "result": "FAIL",
+      "summary": "시험 13/13 PASS(Bootstrap 1/1, IntegratedInput 12/12), failed/skipped/inconclusive 0, compiler errors 0, exit 0. ProjectSettings.asset mode 0644→0600 보존 실패로 overall FAIL. bytes/hash 동일, 행위자 UNKNOWN. 과거 FAIL을 대체·삭제하지 않는다.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-playmode-validation-2026-09-20.json"
+    },
+    {
+      "name": "World preview lifecycle compile and tests",
+      "scope": "FixtureBuilder 및 CSWORLD0101/0102 후속 preview lifecycle 수정; 기존 독립 foundations와 Jev World snapshot 이후.",
+      "result": "NOT_RUN",
+      "summary": "Unity compile/EditMode tests 미실행. saved fixture 생성·SaveScene 성공·reload 동등성·실제 scene 보존 및 persistence 수용 NOT_VERIFIED.",
+      "evidenceRef": null
+    },
+    {
+      "name": "Physics runtime and initial native MVP",
+      "scope": "각각 별도 실행한 열린 Editor 저장 probe7건 및 FDS/JPS 참조 사례의 실행 성공에 한정. 통합 green run·실제 부산역 검증 아님",
+      "result": "PASS",
+      "summary": "저장 probe7 PASS; FDS120s completed; real JPS crowd72/fire24 completed; 전체 제품/부산역물리/최종HUD PASS 아님",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-physics-openworld-mvp.json"
+    },
+    {
+      "name": "Direct-command native client to solver flow",
+      "scope": "공식 Unity CLI를 통한 UI callback 및 실제 worker 연동. OS 마우스/키보드·시각 품질·전체 부산역 검증 아님",
+      "result": "PASS",
+      "summary": "일시정지 계획, 개별 집단 유도 및 대기 ACK, 전체 대피 후69/69명54초 완료. 별도 animation repair는 실제 보행 pose변화 및 interaction시간재시작 PASS.",
+      "evidenceRef": ".planning/2026-09-20-integrated-build/live-reposition-flow-guarded.json"
+    },
+    {
+      "name": "Metre scene and UI-only text native check",
+      "scope": "실제 Editor 저장 및 메시/글자/인물치수; 실측역사·상용시각수용 아님",
+      "result": "PASS",
+      "summary": "scene saved clean; root/source scale1; crew~1.78m; worldTMP0/UI51; ref30×20m; currentcompiler0",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json"
+    },
+    {
+      "name": "Metre paused worker and rendered agents",
+      "scope": "일시정지 초기화와 화면 연동만; 완주/피난안전/임상판정 아님",
+      "result": "PASS",
+      "summary": "actual worker ready,failedfalse,pausedtrue,sim0s,50명;50agent unionheight1.71985m",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json"
+    },
+    {
+      "name": "Production visual and field twin acceptance",
+      "scope": "JWE3급프로덕션품질·사용자수용·부산역현장검증",
+      "result": "NOT_RUN",
+      "summary": "기관도시출동/영속시민/현장작업/복구의부분구현과native증거존재. 전체상용품질·현장보정·압착·임상수용은미완료.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json"
+    },
+    {
+      "name": "Official guide review",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "15guidepages catalogued,14bodytexts+welcomeoverview,52HowToanchors,help/controls/2toolboxes;wholewelcomevideo notviewed",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/coverage.json"
+    },
+    {
+      "name": "Four source agency points",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "Nativepoints match sourcecatalog projection, notsurveyedentranceaccuracy",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-coordinate-native-parity.json"
+    },
+    {
+      "name": "Central119 actual city roundtrip",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "PausedUIrequest→directedroad→135ssimarrival→onsiteownACK170s→return→343sbaseReady;duplicate/busy/unavailablegates",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-native-proof.json"
+    },
+    {
+      "name": "Current 2F path query",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "NativeDetour obstacleavoidance,3stagingtargetsreachable,unsupportedfloorrejected",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/nav-query-source-validation.json"
+    },
+    {
+      "name": "Current 50-person evacuation and Recovery",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "Currentnav+actualworker50exited67simseconds;separate runfromagencytrip",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/nav-evac-native-proof.json"
+    },
+    {
+      "name": "Corrected Ready UI",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "Unavailablecrewcard showsagency;onsitebuttonsdisabled;emptyfirepanelhidden",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/ready-hud-native-proof.json"
+    },
+    {
+      "name": "SUMO installed and used",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "ProjectlocalmacOSarm64SUMO1.27.1;fullOSMnetconvert/duarouter/SUMOexit0;one169s/1330.3mreferencevehicle;UnityvehiclemotionnotSUMO-driven",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/sumo-tooling-graph.json"
+    },
+    {
+      "name": "Agency-first context",
+      "scope": "한정된 현재 로컬 증거; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "실제도시시작→현장보기2F→기관위치도시 UIcallback검증,기관이도시의주패널로표시됨",
+      "evidenceRef": ".planning/2026-09-21-official-guide-benchmark/agency-context-native-proof.json"
+    },
+    {
+      "name": "Executable operations graph",
+      "scope": "현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "12nodes19edges,3jobs,50evacuated,all3returnedReady475simsec;56provenance records",
+      "evidenceRef": ".planning/2026-09-21-fleet-building/progression-native-provenance-proof.json"
+    },
+    {
+      "name": "Camera native API seams",
+      "scope": "현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "cursoranchor<1px,focus/follow/cancel/floor/DEM;OSmouse andbackgroundqueuedinput excluded",
+      "evidenceRef": ".planning/2026-09-21-fleet-building/camera-native-proof.json"
+    },
+    {
+      "name": "Restored building height/native refs",
+      "scope": "현재 로컬 구현의 한정된 검증; 전체 제품 수용 아님",
+      "result": "PASS",
+      "summary": "3FBXs rendered;95numeric tags preserved incl200m;existingfloors/navrefs",
+      "evidenceRef": ".planning/2026-09-21-fleet-building/building-height-native-proof.json"
+    },
+    {
+      "name": "Contextual building game UI",
+      "scope": "Native world-ray andactualbuttoncallbacks; notOSinput/JWE3parity",
+      "result": "PASS",
+      "summary": "Defaultnocard,selectedbuildingrequests,targetclick,inside-onlyfloorcontrols,nopublicAI/graphUI",
+      "evidenceRef": ".planning/2026-09-21-production-benchmark/context-ui-native-proof.json"
+    },
+    {
+      "name": "OpenRA countdown and internal Jev arithmetic",
+      "scope": "Actualtwo-teamlocalreferenceoperation; notcalibratedphysicalor119timings",
+      "result": "PASS",
+      "summary": "SourceWaitported;0.55→28.5s→29accepteds;pausefreeze/unavailableuntilready;allteamsReady443s",
+      "evidenceRef": ".planning/2026-09-21-production-benchmark/turnaround-native-proof.json"
+    },
+    {
+      "name": "Official source world + operational kit targeted native",
+      "scope": "CurrentlocalUnitysource-world/picking/contextUI andone450scrowdresourceworkflow only",
+      "result": "PASS_TARGETED_NOT_PRODUCT_ACCEPTANCE",
+      "summary": "8sourcezones/36overlapsreplaced;31.15mroofselection;50evac+one-timekitlifecycle; sourceinterior andperformancegaps remain",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json"
+    }
+  ],
+  "issues": [
+    {
+      "id": "WINDOWS_ACCEPTANCE",
+      "status": "OPEN",
+      "requiredForAcceptance": true,
+      "scope": "CS-BOOT.01.01 및 적용되는 제품 수용",
+      "reason": "Windows x64/Mono 개발 빌드·실행 미실시. 가능한 독립 구현을 막지 않는다.",
+      "evidenceRefs": [
+        "docs/agent-handoffs/CS-BOOT.01.01/REVIEW.json"
+      ]
+    },
+    {
+      "id": "BOOTSTRAP_MANUAL_ACCEPTANCE",
+      "status": "OPEN",
+      "requiredForAcceptance": true,
+      "scope": "CS-BOOT.01.01",
+      "reason": "Player/수동 검사와 OFL 배포 확인 미완료. 기존 부분 로컬 증거를 전체 수용으로 승격하지 않는다.",
+      "evidenceRefs": [
+        "docs/agent-handoffs/CS-BOOT.01.01/REVIEW.json"
+      ]
+    },
+    {
+      "id": "PRODUCT_REMAINDER",
+      "status": "OPEN",
+      "requiredForAcceptance": true,
+      "scope": "11개 기능영역의 부분 구현 외 나머지 요구",
+      "reason": "부분 구현 영역을 제외한 나머지 구현·통합·현장/지정 용도 검증 미착수. 실제 입력 부재는 해당 검증만 보류한다. 6 foundation의 guard/planner/catalog/validator/anchor 구현은 전체 업무 통합 완료가 아니다. 본업무 port/store·durable commit·outbox·projection blob resolver 및 World preview 수정 후 실행 검증·saved fixture/save/reload 검증이 남아 있다. 독립 EditMode/PlayMode의 시험 PASS와 설정 mode 보존 실패(overall FAIL)를 분리하며 행위자는 UNKNOWN이다. 실제 역 검증도 미완료다. Jev 6건 escalate는 advisory 결과로 확정 버그 6건이나 신규 승인 게이트가 아니다.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-foundations-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/independent-playmode-validation-2026-09-20.json"
+      ]
+    },
+    {
+      "id": "UNITY_IMPORT_INPUT_REMAINDER",
+      "status": "OPEN",
+      "requiredForAcceptance": true,
+      "scope": "BOOT/PACK/PLAY integration",
+      "reason": "해소된 자동 시험 실패: 기존 OTF font whitelist·순수 모듈 compiler reference·EditMode router disable lifecycle·TMP Escape/Enter fixture 경계, 중간 boundary-retest의 CSPLAY0102 native SendMessage assertion 8건은 content-validation의 BOOT/PLAY 통과로 후속 확인됐다. content-validation의 PACK0102 최대 revision fixture 오류 1건은 PACK0102 전용 83/83 재시험으로 해소됐다. 과거 FAIL 기록은 보존하며 이 서로 다른 실행을 전체 단일 green 재실행으로 합산하지 않는다. 남은 NOT_RUN: Windows x64/Mono 실제 빌드·실행, 실제 OS 키보드/IME, FBX animation playback, audio listening, measured-site qualification. 주입 자동 시험·build seam simulation은 물리 입력/Player/현장 수용 증거가 아니므로 이 항목은 OPEN 유지하며 독립 개발을 막지 않는다.",
+      "evidenceRefs": [
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/unity-import-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/boundary-retest-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-validation-2026-09-20.json",
+        "docs/CHOOGuard_Story_Plan_v5/state/evidence/content-revision-retest-2026-09-20.json"
+      ]
+    }
+  ],
+  "activeDirection": "docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md",
+  "activeEvidenceGraph": ".planning/2026-09-21-fps-reposition/actual-transfer/root-evidence-graph.json",
+  "transferReport": "docs/CHOOGuard_Story_Plan_v5/BUSAN_TRANSFER_RECONSTRUCTION.md"
+}

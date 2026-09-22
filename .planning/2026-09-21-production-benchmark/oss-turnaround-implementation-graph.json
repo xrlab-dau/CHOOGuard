@@ -1,0 +1,93 @@
+{
+  "schema": "chooguard.oss-turnaround.v1",
+  "status": "PUBLISHED_SOURCE_FROZEN_NATIVE_PENDING",
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/ThirdParty/OpenRaCountdown.cs",
+      "sha256": "4f0d1531d6c11655c098bcb1b9c10772b49ef677f2d5b56fb6ea4ee6917fbd11"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/ThirdParty/NOTICE",
+      "sha256": "c758de89677204599c0f4fe0838ad7db8f8f6caaded8cf06cb2ee3475ef25010"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/ThirdParty/COPYING",
+      "sha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "sha256": "44c1abc69691cceb60fe44659067d612fb6c4635c8bb28b149353834218d06f0"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpProgressionGraph.cs",
+      "sha256": "2f9f9f140ba7b8256444ed93af2cba5d5977afd6b1a33c3193336424aa4e97ac"
+    },
+    {
+      "path": "Assets/ChooGuard/Art/Progression/response-flow.json",
+      "sha256": "b602987aaefcfddff0d45a0892d759bd497784748dd8f3b4b9624e5d8262d1f7"
+    }
+  ],
+  "upstream": {
+    "repository": "https://github.com/OpenRA/OpenRA",
+    "commit": "f3ec7f8e1593b482f85fd101652deb740c33dee6",
+    "path": "OpenRA.Mods.Common/Activities/Wait.cs",
+    "cachedSource": ".tools/game-source-research/2026-09-21/openra/Wait.cs",
+    "sourceSha256": "f768f76db7ee1c77cddc14314eaa9e8f8013f6e735194e43ac7295b114b1c9ca",
+    "license": "GPL-3.0-or-later",
+    "copyingSha256": "e79e9c8a0c85d735ff98185918ec94ed7d175efc377012787aebcf3b80f0d90b",
+    "retainedVerbatimCopying": true
+  },
+  "portMapping": [
+    {
+      "original": "Wait.remainingTicks; constructor period assignment",
+      "adaptation": "OpenRaCountdown.remainingTicks; ceil(seconds*1000) accepted-millisecond period"
+    },
+    {
+      "original": "Wait.Tick IsCanceling return true",
+      "adaptation": "same early-completion pattern, explicit Cancel() latches completion"
+    },
+    {
+      "original": "return remainingTicks-- == 0;",
+      "adaptation": "exact same expression in Tick(); constructor consumes first tick, then N accepted milliseconds consume remaining N ticks; original N+1 call semantics accounted"
+    },
+    {
+      "original": "Activity/Actor tick scheduling",
+      "adaptation": "AdvanceAcceptedSeconds from controller accepted clock only; fractional milliseconds carry; duration rounds upward <1ms; no wall time"
+    }
+  ],
+  "integration": {
+    "prepare": "Return once per logical operation; current actual start timestamp, accepted on-site duration, outbound logical-route distance and actual member count",
+    "freeze": "Basearrival resolves ExpectedSeconds/Source; reject nonfinite/out-of15..45 duration -> explicit15s baseline; preserve frozen duration on mission",
+    "states": "Returning -> Replenishing -> Ready; no route movement during Replenishing, not eligible RequestWork; Work and completion identity updated only after replenished event",
+    "clock": "Existing timers tick before movement; no arrival delta charged to newlycreated timer; timer completion mission skipped for same movementstep; reset cancels timers/kernel",
+    "graph": {
+      "nodes": 13,
+      "edges": 20,
+      "newNode": "replenishing",
+      "newEvent": "replenished"
+    },
+    "ui": "Existing context state/ready counts read Korean 보충 중; reason includes remaining acceptedseconds; no UI/forecast panel edited"
+  },
+  "validation": [
+    "Source JSON unique IDs and references verified; 13nodes20edges",
+    "COPYING SHA256 exact upstream copy verified",
+    "Kernel owner confirmed exact API and cumulative onsiteSim meaning",
+    "No Unity/native tests by worker, no TDD/new framework"
+  ],
+  "nativeProbeInstructions": [
+    "Rebind/reload updated GraphAsset after import; verify ready and13nodes20edges",
+    "Use existing contextual support/actualworker lifecycle to return a logical group. Capture returnstart kernel preparation and at basearrival State Replenishing, same OperationId, remaining approx total15..45, nonReady count, parked MemberPositions",
+    "On first arrival snapshot remaining must equal rounded-up total within1ms: no prior arrival-step debit",
+    "Pause with no outstanding accepted result; verify same accepted clock, remaining, member positions across walltime",
+    "Resume accepted advance: remain Replenishing beforeduration; afterduration assert Ready, OperationId null, LastCompletedOperationId priorop, graph trace returned then replenished and actual timestamps",
+    "Kernel absent/invalid/late: Source baseline,15seconds frozen; late response cannot alter total/remaining",
+    "Reset while replenishing: canceled timers cleared, missions Ready/default, kernel decisions reset",
+    "No public AI/graph views and existing contextual building selection preserved"
+  ],
+  "limits": [
+    "Mean operating-duration approximation is authored game balance, not calibrated human/physical/medical readiness",
+    "Wrapper rounds up duration by less than1ms; completion observed on accepted update boundary",
+    "Outbound travelMetres is actual logical convoy route progress including connector/headway span, not independently measured sum of individual vehicle distances",
+    "Native compilation and acceptance remain root-owned"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "ChooGuard.Editor.MvpWorkspaceBuilder.Build(); ChooGuard.Editor.MvpStationBuilder.Build(); var w=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>(); var s=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpStationView>(); return new {scene=w.gameObject.scene.path,sceneDirty=w.gameObject.scene.isDirty,cameraDirect=s.ViewCamera.targetTexture==null,bridge=w.GetComponent<ChooGuard.App.Mvp.MvpPhysicsBridge>()!=null,teamTasks=w.GetComponent<ChooGuard.App.Mvp.MvpTeamTaskController>()!=null,city=s.transform.Find(\"도시 공개지형\")!=null,rendererCount=s.GetComponentsInChildren<UnityEngine.Renderer>(true).Length};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "scene": "Assets/ChooGuard/Scenes/MvpWorkspace.unity",
+        "sceneDirty": false,
+        "cameraDirect": true,
+        "bridge": true,
+        "teamTasks": true,
+        "city": true,
+        "rendererCount": 214
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

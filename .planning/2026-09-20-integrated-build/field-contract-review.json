@@ -1,0 +1,35 @@
+{
+  "review": "read_only_field_contract_data_integrity",
+  "scope": [
+    ".planning/2026-09-20-integrated-build/hazard-field-contract.json",
+    ".planning/2026-09-20-integrated-build/hazard-field-physics-graph.json",
+    ".planning/2026-09-20-integrated-build/field-contract-observations.json",
+    "workers/physics/worker.py",
+    "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs",
+    "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs"
+  ],
+  "findings": [],
+  "no_findings": [
+    {
+      "dimension": "native_coordinate_and_row_identity",
+      "locations": ["workers/physics/worker.py:44-58", "workers/physics/worker.py:83-88", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs:34-43", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs:75-76"],
+      "basis": "The worker verifies native 0.5m node arrays, selects lower-index nearest nodes, and transposes x,y source data to row-major y,x. The view indexes y*width+x with the matching lower-tie rule and offsets UVs to node centres."
+    },
+    {
+      "dimension": "payload_and_source_identity",
+      "locations": ["workers/physics/worker.py:86-88", "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:163-166", "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:177-205"],
+      "basis": "Raw encoded bytes receive a SHA-256; the bridge verifies it before decode and matches source/deck hashes against handshake capabilities before ResultReceived."
+    },
+    {
+      "dimension": "invalid_field_renderer_hide",
+      "locations": ["Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs:54-61", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs:95-108", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs:146-148"],
+      "basis": "Invalid, missing, failed, or superseded frames clear values, disable the quad, and restore marker renderers."
+    },
+    {
+      "dimension": "expired_time_boundary",
+      "locations": ["workers/physics/worker.py:145-150", "workers/physics/worker.py:289-294", "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs:138-141", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs:54", "Assets/ChooGuard/App/Mvp/MvpHazardFieldView.cs:95-99"],
+      "basis": "Before advancing beyond coverage, advance() marks the session incomplete and raises. The worker emits ERROR, the bridge calls Fail(), StatusChanged fires, and the view Clear() removes the overlay and restores markers. This is a terminal incomplete/error lifecycle rather than an expired RESULT, but it does not leave a stale field displayed."
+    }
+  ],
+  "verdict": "no concrete violation found in the requested dimensions; the expired-time path is fail/incomplete lifecycle behavior with renderer clearing, not a stale-display defect"
+}

@@ -1,0 +1,42 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1315,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "cause": {
+          "type": "choice",
+          "choice": "runtime_precondition",
+          "confidence": 0.99,
+          "probabilities": {
+            "product_defect": 0,
+            "runtime_precondition": 0.99,
+            "unknown_auth": 0.01
+          }
+        },
+        "next": {
+          "type": "choice",
+          "choice": "guarded_flow",
+          "confidence": 0.99,
+          "probabilities": {
+            "guarded_flow": 1,
+            "rewrite": 0,
+            "full_suite": 0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 643,
+        "output_tokens": 91
+      },
+      "truncated": false,
+      "action": "auto"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

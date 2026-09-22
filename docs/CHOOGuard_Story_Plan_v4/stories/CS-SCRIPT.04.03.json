@@ -1,0 +1,179 @@
+{
+  "id": "CS-SCRIPT.04.03",
+  "epicId": "CS-SCRIPT",
+  "parentTaskId": "CS-SCRIPT.04",
+  "title": "외부 편집의 의미 차이를 운영안으로 조정한다",
+  "goal": "ScriptStepId와 revision으로 변경을 연결하고 불가능한 importer는 수동 조정임을 명시한다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-086"
+  ],
+  "supportsRequirementIds": [
+    "REQ-086"
+  ],
+  "parentProductTestIds": [
+    "AT-086"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "Assets/ChooGuard/Authoring/ImportReconciliation.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-SCRIPT.04.03",
+      "scope": "외부 편집의 의미 차이를 운영안으로 조정한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSSCRIPT0403Tests.cs",
+  "testKinds": [
+    "EDIT_MODE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-SCRIPT.04.03",
+      "kind": "PlannedArtifact",
+      "producer": "CS-SCRIPT.04.03",
+      "contract": "외부 편집의 의미 차이를 운영안으로 조정한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "Assets/ChooGuard/Authoring/ImportReconciliation.cs"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-SCRIPT.04.02",
+      "artifactId": "OUT-CS-SCRIPT.04.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "같은 기능의 다음 독립 결과; 이전 구현 후보/수정할 파일을 소비한다."
+    },
+    {
+      "producer": "CS-SCRIPT.03.02",
+      "artifactId": "OUT-CS-SCRIPT.03.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    }
+  ],
+  "externalInputs": [
+    {
+      "id": "EXT-CS-SCRIPT.04-CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "requiredAt": "qualification",
+      "condition": "ALWAYS",
+      "description": "CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "state": "UNKNOWN",
+      "effect": "모집/실제양식 확인 전 고객 효용/지원완료 주장 금지."
+    }
+  ],
+  "sourceIds": [
+    "DISC-05",
+    "DISC-07"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "DISC-05",
+      "url": "https://preptoolkit.fema.gov/web/hseep-resources/design-and-development",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-07",
+      "url": "https://preptoolkit.fema.gov/web/exercise",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    }
+  ],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/09-script-and-approval.md",
+    "basis/v3/specs/02-wire-and-ports.md"
+  ],
+  "parentContract": "TemplateProfile {format,revision,fields,exporter,qualification}; 결과는 임의 script를 실행하지 않는다.",
+  "parentSpecRef": "basis/v3/tasks/CS-SCRIPT.04.json",
+  "behaviorSteps": [
+    "ScriptStepId와 revision으로 변경을 연결하고 불가능한 importer는 수동 조정임을 명시한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-SCRIPT.04.03-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 외부 편집의 의미 차이를 운영안으로 조정한다의 유효 조건",
+      "when": "외부 편집의 의미 차이를 운영안으로 조정한다를 실행한다",
+      "then": "의미 수정은 재검토·재실행에 연결되고 이력이 유지된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-SCRIPT.04.03-N",
+      "kind": "NEGATIVE",
+      "given": "외부 문서 편집이 원본 실행로그나 승인된 plan을 조용히 덮지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "외부 문서 편집이 원본 실행로그나 승인된 plan을 조용히 덮지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSSCRIPT0403Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10093,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/09-script-and-approval.md",
+      "sha256": "5dea909ecdc6349d1aa4bc52cd2d4c814134bc72f992b4c8ac70ef58415a9261"
+    },
+    {
+      "path": "basis/v3/specs/02-wire-and-ports.md",
+      "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+    }
+  ]
+}

@@ -1,0 +1,181 @@
+{
+  "id": "CS-WORLD.02",
+  "epicId": "CS-WORLD",
+  "title": "첫 철도 공간과 무료 시각자산 제작",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-WORLD.02",
+    "description": "외부 도착–맞이방–승강장–객실의 입고·정합 산출물",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-WORLD.02",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.02.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.02.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.02.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.02.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Editor/AssetImportPolicy.cs",
+    "Assets/ChooGuard/World/CoordinateValidator.cs",
+    "Assets/ChooGuard/Art/first-site.asset-manifest.json",
+    "content/sites/first-site/geometry.json",
+    "Assets/ChooGuard/Scenes/FirstSite.unity"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/WORLD/World02Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-WORLD.01",
+      "artifactId": "A-CS-WORLD.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PACK.03",
+      "artifactId": "A-CS-PACK.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PACK.04",
+      "artifactId": "A-CS-PACK.04",
+      "stage": "candidate",
+      "consumerStage": "qualification",
+      "condition": "NAMED_SITE_ACCURACY"
+    }
+  ],
+  "algorithm": [
+    "무료 원본을 하나씩 격리 임포트하여 단위·축·rig·clip·문 피벗·LOD·재질·충돌을 검사한다.",
+    "핵심 공간은 실제 자료의 근거별로 제작하고 신경복원 후보는 COLMAP 대조와 독립 치수를 함께 사용한다.",
+    "관측 부족이면 합성/추정 표현과 필요한 입력을 분리한다. 독립 치수 없이 신경망 confidence를 실측 정확도로 쓰지 않는다."
+  ],
+  "contract": "GeometryReceipt {assetId,sourceHash,transform,units,parts,residuals,scope}; 실제 맵 수용에는 현장 입력이 추가로 필요.",
+  "sourceIds": [
+    "FREE-001",
+    "FREE-003",
+    "FREE-018",
+    "MAT-BIPA-BUSAN3",
+    "MAT-KTX-I",
+    "TECH-MAPANYTHING",
+    "TECH-UNITY-FBX"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-WORLD.02-P",
+      "given": "첫현장 scene와 source/geometry receipt",
+      "when": "입고/장면대조",
+      "then": "Scene·geometry·source가 같은 ID/축척",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-WORLD.02-N",
+      "given": "source 없는 3D 치수",
+      "when": "입고/장면대조",
+      "then": "UNVERIFIED_GEOMETRY",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-014",
+    "REQ-017",
+    "REQ-018"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/01-build-and-assemblies.md",
+    "specs/06-native-surfaces.md",
+    "specs/07-content-and-rule-contract.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "FIELD_DATA_AND_INDEPENDENT_REFERENCE",
+      "requiredFor": "NAMED_SITE_QUANTITATIVE_OR_FIELD_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "해당 주장/검수만 제한하며 기술 fixture 개발을 전역 차단하지 않는다."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/01-build-and-assemblies.md",
+    "specs/06-native-surfaces.md",
+    "specs/07-content-and-rule-contract.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-014",
+    "REQ-017",
+    "REQ-018"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/WORLD/World02Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSWORLD02PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-WORLD.02.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "첫현장 scene와 source/geometry receipt",
+    "operation": "입고/장면대조",
+    "expectedPositive": "Scene·geometry·source가 같은 ID/축척",
+    "negativeInput": "source 없는 3D 치수",
+    "expectedNegative": "UNVERIFIED_GEOMETRY",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

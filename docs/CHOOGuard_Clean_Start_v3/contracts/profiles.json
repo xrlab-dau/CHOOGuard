@@ -1,0 +1,70 @@
+{
+  "conditions": [
+    "ALWAYS",
+    "EXTERNAL_WORKER_USED",
+    "NAMED_SITE_ACCURACY",
+    "PEDESTRIAN_QOI",
+    "TRAFFIC_QOI",
+    "HAZARD_QOI",
+    "CLAIM_FIELD_USE",
+    "PEDESTRIAN_USED",
+    "TRAFFIC_USED",
+    "HAZARD_USED"
+  ],
+  "profiles": {
+    "fixture": [],
+    "pedestrian": [
+      "EXTERNAL_WORKER_USED",
+      "PEDESTRIAN_USED"
+    ],
+    "hazard": [
+      "EXTERNAL_WORKER_USED",
+      "HAZARD_USED"
+    ],
+    "coupled": [
+      "EXTERNAL_WORKER_USED",
+      "PEDESTRIAN_USED",
+      "HAZARD_USED"
+    ],
+    "field": [
+      "EXTERNAL_WORKER_USED",
+      "PEDESTRIAN_USED",
+      "HAZARD_USED",
+      "PEDESTRIAN_QOI",
+      "HAZARD_QOI",
+      "NAMED_SITE_ACCURACY",
+      "CLAIM_FIELD_USE"
+    ],
+    "full-research": [
+      "EXTERNAL_WORKER_USED",
+      "NAMED_SITE_ACCURACY",
+      "PEDESTRIAN_QOI",
+      "TRAFFIC_QOI",
+      "HAZARD_QOI",
+      "CLAIM_FIELD_USE",
+      "PEDESTRIAN_USED",
+      "TRAFFIC_USED",
+      "HAZARD_USED"
+    ]
+  },
+  "phases": [
+    "prepare",
+    "candidate",
+    "integration",
+    "qualification"
+  ],
+  "producerStages": [
+    "contract",
+    "candidate",
+    "integration",
+    "qualification"
+  ],
+  "semantics": {
+    "prepare": "읽기·설계; 제품 산출물 준비됨을 주장하지 않음",
+    "candidate": "고정 계약·명시적 test double로 구현. 실제 입력 자격과 분리",
+    "integration": "선택 profile의 활성 prerequisite 실제 산출물을 소비",
+    "qualification": "integration 및 활성 범위의 독립 증거·검수를 소비"
+  },
+  "unknownConditionPolicy": "ERROR_NOT_FALSE",
+  "allPhasesCompletedByDefault": false
+}

@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "storyId": "CS-BOOT.01.01",
+  "runId": "20260920T002150Z-ecbf11",
+  "scope": "Task1 canonical boundary/tests/handoff only; not Unity product verification",
+  "status": "NEEDS_RECONCILIATION",
+  "commands": [
+    {
+      "name": "plan-validate",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tools/plan.py",
+        "validate"
+      ],
+      "cwd": "${REPO_ROOT}",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests"
+      },
+      "startedUtc": "2026-09-20T00:23:18.112208+00:00",
+      "endedUtc": "2026-09-20T00:23:18.343294+00:00",
+      "exitCode": 0,
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002150Z-ecbf11/plan-validate.log",
+      "rawLog": "${SESSION_SCRATCHPAD}/boundary-evidence/plan-validate.log"
+    },
+    {
+      "name": "unittest",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "cwd": "${REPO_ROOT}",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests"
+      },
+      "startedUtc": "2026-09-20T00:23:18.343826+00:00",
+      "endedUtc": "2026-09-20T00:23:20.482931+00:00",
+      "exitCode": 1,
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002150Z-ecbf11/unittest.log",
+      "rawLog": "${SESSION_SCRATCHPAD}/boundary-evidence/unittest.log"
+    },
+    {
+      "name": "render-check",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tools/render_plan.py",
+        "--check"
+      ],
+      "cwd": "${REPO_ROOT}",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests"
+      },
+      "startedUtc": "2026-09-20T00:23:20.483478+00:00",
+      "endedUtc": "2026-09-20T00:23:20.593498+00:00",
+      "exitCode": 0,
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002150Z-ecbf11/render-check.log",
+      "rawLog": "${SESSION_SCRATCHPAD}/boundary-evidence/render-check.log"
+    },
+    {
+      "name": "available-regressions",
+      "command": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-B",
+        "-m",
+        "unittest",
+        "test_plan.CliTests.test_budget_overflow_never_truncates_to_complete",
+        "test_plan.CliTests.test_order_is_not_ready_list",
+        "test_plan.CliTests.test_prepare_can_read_but_not_authorize",
+        "test_plan.CliTests.test_unknown_story_not_a_blank_success",
+        "test_plan.ReceiptTests.test_accepted_receipt_cannot_skip_external_input",
+        "test_plan.ReceiptTests.test_active_claim_has_real_remaining_effect",
+        "test_plan.ReceiptTests.test_ambiguous_external_status_rejected",
+        "test_plan.ReceiptTests.test_empty_state_valid_no_execution",
+        "test_plan.ReceiptTests.test_external_satisfied_needs_evidence",
+        "test_plan.ReceiptTests.test_missing_or_modified_file_invalidates_receipt",
+        "test_plan.ReceiptTests.test_no_records_not_ready_to_integrate",
+        "test_plan.ReceiptTests.test_not_run_is_not_accepted",
+        "test_plan.ReceiptTests.test_plan_revision_invalidates_receipt",
+        "test_plan.ReceiptTests.test_self_review_not_independent",
+        "test_plan.ReceiptTests.test_stage_receipt_cannot_skip_own_candidate",
+        "test_plan.ReceiptTests.test_synthetic_receipt_schema_positive",
+        "test_plan.StaticPlanTests.test_all_profiles_have_acyclic_phase_graphs",
+        "test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies",
+        "test_plan.StaticPlanTests.test_complete_plan_validates",
+        "test_plan.StaticPlanTests.test_cycle_detected",
+        "test_plan.StaticPlanTests.test_duplicate_json_key_and_nonfinite_rejected",
+        "test_plan.StaticPlanTests.test_empty_steps_or_given_rejected",
+        "test_plan.StaticPlanTests.test_every_leaf_has_existing_parent_and_technical_specs",
+        "test_plan.StaticPlanTests.test_integration_horizon_is_also_closed",
+        "test_plan.StaticPlanTests.test_meta_and_case_alias_detected",
+        "test_plan.StaticPlanTests.test_missing_parent_rejected",
+        "test_plan.StaticPlanTests.test_no_calendar_fabricated",
+        "test_plan.StaticPlanTests.test_ontology_write_targets_equal_canonical_writes",
+        "test_plan.StaticPlanTests.test_parallel_does_not_mean_authorized",
+        "test_plan.StaticPlanTests.test_parent_children_cannot_disappear",
+        "test_plan.StaticPlanTests.test_path_escape_rejected",
+        "test_plan.StaticPlanTests.test_platform_regression_rejected",
+        "test_plan.StaticPlanTests.test_priority_never_overrides_dependency",
+        "test_plan.StaticPlanTests.test_requirement_support_links_preserved",
+        "test_plan.StaticPlanTests.test_scientific_input_does_not_block_fixture_coding",
+        "test_plan.StaticPlanTests.test_sequential_writers_are_not_parallel",
+        "test_plan.StaticPlanTests.test_short_horizon_closed",
+        "test_plan.StaticPlanTests.test_source_url_cannot_silently_change",
+        "test_plan.StaticPlanTests.test_third_mode_rejected",
+        "test_plan.StaticPlanTests.test_unknown_condition_is_not_false",
+        "test_plan.StaticPlanTests.test_unknown_profile_rejected",
+        "test_plan.StaticPlanTests.test_wrong_artifact_producer_rejected"
+      ],
+      "cwd": "${REPO_ROOT}",
+      "environment": {
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "PYTHONPATH": "${REPO_ROOT}/docs/CHOOGuard_Story_Plan_v4/tests"
+      },
+      "startedUtc": "2026-09-20T00:23:20.605190+00:00",
+      "endedUtc": "2026-09-20T00:23:22.757174+00:00",
+      "exitCode": 0,
+      "log": "docs/build/evidence/CS-BOOT.01.01/20260920T002150Z-ecbf11/available-regressions.log",
+      "rawLog": "${SESSION_SCRATCHPAD}/boundary-evidence/available-regressions.log"
+    }
+  ],
+  "tdd": {
+    "red": {
+      "target": "two new regression methods",
+      "executed": 2,
+      "passedMethods": 1,
+      "failedMethods": 1,
+      "failedSubtests": 3,
+      "errors": 0,
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=docs/CHOOGuard_Story_Plan_v4/tests python3 -B -m unittest test_plan.StaticPlanTests.test_bootstrap_owns_initial_assemblies test_plan.StaticPlanTests.test_ontology_write_targets_equal_canonical_writes",
+      "log": "red-modify.log",
+      "reason": "Original canonical ownership assigns CREATE to later stories, not initial story 01; actual assertion RED"
+    },
+    "green": {
+      "executed": 2,
+      "passedMethods": 2,
+      "failed": 0,
+      "errors": 0,
+      "log": "green-targeted-final.log"
+    },
+    "journey": "Initial bootstrap owns three assemblies; later stories modify without duplicate creation; ontology exactly follows canonical writes",
+    "checkpoint": "No staging/commits by task restriction; raw RED/GREEN retained",
+    "coverage": "NOT_RUN; no 80% coverage claim"
+  },
+  "fullSuite": {
+    "executed": 45,
+    "passed": 42,
+    "assertionFailures": 0,
+    "errors": 3,
+    "status": "ENVIRONMENT_ERRORS_NOT_FULL_GREEN",
+    "unavailableTests": [
+      "test_plan.StaticPlanTests.test_jsonld_is_parseable_and_story_count_matches",
+      "test_plan.StaticPlanTests.test_ontology_turtle_and_shapes_parse",
+      "test_plan.StaticPlanTests.test_schema_ontology_not_actual_execution"
+    ],
+    "reason": "ModuleNotFoundError: rdflib; no installation or retry loop"
+  },
+  "availableSubset": {
+    "executed": 42,
+    "passed": 42,
+    "excludedTests": [
+      "test_plan.StaticPlanTests.test_jsonld_is_parseable_and_story_count_matches",
+      "test_plan.StaticPlanTests.test_ontology_turtle_and_shapes_parse",
+      "test_plan.StaticPlanTests.test_schema_ontology_not_actual_execution"
+    ],
+    "meaning": "Explicit focused subset, not skipped full suite and not product PASS"
+  },
+  "planValidation": {
+    "planErrors": [],
+    "stateErrors": [],
+    "canonicalPlanDigest": "e90fdaed160f37fad1d7e7b2825635d5312f28e793e8f8f8082caf0a3cc0a072"
+  },
+  "checksums": {
+    "entries": 383,
+    "updatedExistingEntries": [
+      "IMPLEMENTATION_STORIES.md",
+      "ontology/work-graph.jsonld",
+      "plan.json",
+      "state/progress.json",
+      "stories/CS-BOOT.01.01.json",
+      "stories/CS-BOOT.01.01.md",
+      "stories/CS-BOOT.02.01.json",
+      "stories/CS-BOOT.02.01.md",
+      "stories/CS-BOOT.03.01.json",
+      "stories/CS-BOOT.03.01.md",
+      "tests/test_plan.py"
+    ],
+    "coverageUnchanged": true,
+    "mismatches": [],
+    "productEvidence": false
+  },
+  "semanticScope": {
+    "changedOntologyNodes": [
+      "urn:chooguard:work:CS-BOOT.01.01"
+    ],
+    "addedWriteTargets": 28,
+    "otherOntologyNodesUnchanged": true,
+    "canonicalDependenciesAcceptanceTestKindsStatusesUnchanged": true,
+    "toolsSchemasUnchanged": true
+  },
+  "failures": [
+    {
+      "stage": "pre-write enum validation",
+      "reason": "UPDATE is not existing CREATE/MODIFY enum",
+      "result": "No canonical write occurred; coordinator clarified natural language update maps to MODIFY; schema/tool unchanged"
+    },
+    {
+      "stage": "full unittest",
+      "reason": "rdflib missing",
+      "result": "preserved as 3 errors; no full GREEN"
+    }
+  ],
+  "notRun": [
+    "Unity root run",
+    "NUnit/EditMode/PlayMode",
+    "Windows build/run",
+    "macOS build/run",
+    "manual Game View",
+    "coverage"
+  ],
+  "remainingDecision": "TMP static-only resource references and licensed notice exact generatedWrites; PLAN remains NEEDS_RECONCILIATION",
+  "rawProbePaths": "${SESSION_SCRATCHPAD}/boundary-evidence/locations.json"
+}

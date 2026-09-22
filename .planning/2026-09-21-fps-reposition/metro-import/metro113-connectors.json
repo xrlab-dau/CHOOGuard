@@ -1,0 +1,173 @@
+{
+  "schema": "metro113-connector/v1",
+  "status": "PROPOSED_NATIVE_GEOMETRY_NOT_BUILT",
+  "root_review_required_for_authored_depth": true,
+  "frame": "sourceframe0 X East Y Up Z North metres; origin35.1151,129.0417",
+  "registration": "metro113-registration.json",
+  "levels": {
+    "surface_plaza": 0,
+    "concourse": -3.5,
+    "platform_top": -8,
+    "source_rail_y0": -9.1,
+    "status": "prototype authored absolute elevations; not surveyed underground depths"
+  },
+  "paths": [
+    {
+      "id": "exit4-access",
+      "width_m": 3,
+      "clearance_m": 2.6,
+      "waypoints": [
+        {
+          "id": "exit4-surface-approach",
+          "xyz": [
+            -209.621,
+            0,
+            -126.4743
+          ],
+          "basis": "authored plaza approach8m east of georeferenced entrance"
+        },
+        {
+          "id": "exit4-surface-threshold",
+          "xyz": [
+            -216.8938,
+            0,
+            -123.1416
+          ],
+          "basis": "OSM entrance horizontal; authored surface0"
+        },
+        {
+          "id": "exit4-concourse-landing",
+          "xyz": [
+            -211.0615,
+            -3.5,
+            -110.4143
+          ],
+          "basis": "authored stair run14m; official stair topology only"
+        },
+        {
+          "id": "exit4-concourse-join",
+          "xyz": [
+            -186.1843,
+            -3.5,
+            8.5342
+          ],
+          "basis": "authored concourse corridor, no surveyed geometry"
+        }
+      ],
+      "connection_type": "surface public plaza to separate metro concourse"
+    },
+    {
+      "id": "exit6-access",
+      "width_m": 3,
+      "clearance_m": 2.6,
+      "waypoints": [
+        {
+          "id": "exit6-surface-approach",
+          "xyz": [
+            -169.5003,
+            0,
+            -40.647
+          ],
+          "basis": "authored plaza approach8m east of georeferenced entrance"
+        },
+        {
+          "id": "exit6-surface-threshold",
+          "xyz": [
+            -176.7731,
+            0,
+            -37.3143
+          ],
+          "basis": "OSM entrance horizontal; authored surface0"
+        },
+        {
+          "id": "exit6-concourse-landing",
+          "xyz": [
+            -170.9408,
+            -3.5,
+            -24.587
+          ],
+          "basis": "authored stair run14m; official stair topology only"
+        },
+        {
+          "id": "exit6-concourse-join",
+          "xyz": [
+            -175.7696,
+            -3.5,
+            31.2615
+          ],
+          "basis": "authored concourse corridor, no surveyed geometry"
+        }
+      ],
+      "connection_type": "surface public plaza to separate metro concourse"
+    },
+    {
+      "id": "metro-concourse-to-platform",
+      "width_m": 3,
+      "clearance_m": 2.6,
+      "waypoints": [
+        {
+          "id": "metro-concourse-gates",
+          "xyz": [
+            -175.7696,
+            -3.5,
+            31.2615
+          ]
+        },
+        {
+          "id": "metro-platform-stair-top",
+          "xyz": [
+            -169.5207,
+            -3.5,
+            44.8979
+          ]
+        },
+        {
+          "id": "metro-platform-stair-bottom",
+          "xyz": [
+            -162.0221,
+            -8,
+            61.2617
+          ]
+        },
+        {
+          "id": "metro-platform-arrival",
+          "xyz": [
+            -159.106,
+            -8,
+            67.6253
+          ]
+        }
+      ],
+      "basis": "AUTHORED prototype stair/corridor; source stair props do not establish exact entrance correspondence"
+    }
+  ],
+  "plaza_handoff": {
+    "preferred": "exit6-surface-approach",
+    "point": [
+      -169.5003,
+      0,
+      -40.647
+    ],
+    "root_action": "connect existing KORAIL surface plaza walkable support to this point using its current actual surface geometry; do not create direct underground KORAIL passage"
+  },
+  "native_support_requirements": [
+    "3m wide continuous floor/stair colliders",
+    "headroom>=2.6m; cut authored concourse apertures rather than box seals",
+    "separate platform support strip localx2.8..9.5 localz-100..100 topworldY-8",
+    "root must verify every junction and ground ray; no walkability claim from this manifest"
+  ],
+  "source_stair_correspondence": {
+    "128": "stair11.csv source x+7.25 at z-65/+25; visual stair props, not numbered exit",
+    "129": "stair11-1.csv at source x±7.25 relative rails; do not claim equals public exit4/6",
+    "confidence": "insufficient exact correspondence"
+  },
+  "public_support": [
+    "official Humetro exit4/6 destinations 부산역광장",
+    "official evacuation diagram upper concourse and side platforms with stairs"
+  ],
+  "no_claims": [
+    "precise engineering layout",
+    "underground direct KORAIL passage",
+    "surveyed absolute depth"
+  ]
+}

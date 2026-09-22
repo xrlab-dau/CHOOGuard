@@ -1,0 +1,5 @@
+var sw=System.Diagnostics.Stopwatch.StartNew();string cp=".planning/2026-09-21-quality-a/world-coverage-drafts/official-source-coverage.json";
+string hash;using(var sha=System.Security.Cryptography.SHA256.Create())hash=System.BitConverter.ToString(sha.ComputeHash(System.IO.File.ReadAllBytes(".planning/2026-09-21-quality-a/official-station-registration.json"))).Replace("-","").ToLowerInvariant();
+ChooGuard.Editor.MvpSourceCoverage.Activate(cp,hash);var parsed=sw.ElapsedMilliseconds;var v=new System.Collections.Generic.List<UnityEngine.Vector3>();
+try{for(int x=-160;x<100;x+=40)for(int z=-160;z<100;z+=40){ChooGuard.Editor.MvpSourceCoverage.Active.Triangle(new UnityEngine.Vector3(x,0,z),new UnityEngine.Vector3(x+40,0,z),new UnityEngine.Vector3(x+40,0,z+40),v);ChooGuard.Editor.MvpSourceCoverage.Active.Triangle(new UnityEngine.Vector3(x,0,z),new UnityEngine.Vector3(x+40,0,z+40),new UnityEngine.Vector3(x,0,z+40),v);}return new{inputTriangles=98,outputTriangles=v.Count/3,parseMs=parsed,totalMs=sw.ElapsedMilliseconds,clipped=ChooGuard.Editor.MvpSourceCoverage.Active.clippedTriangles,registrationHash=hash};}
+finally{ChooGuard.Editor.MvpSourceCoverage.Clear();}

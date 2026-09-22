@@ -1,0 +1,21 @@
+{
+  "scope": "Procedural mesh persistence only; root controlled scene comparison supports stale rendered mesh buffers while CPU bounds were current",
+  "rootEvidence": [
+    "metre-market-bound-diagnostic.png",
+    "metre-market-fresh-buffer.png"
+  ],
+  "contract": "public static Mesh MvpMeshPersistence.Store(string assetPath, Mesh generated)",
+  "preserves": "Existing mesh object and asset GUID, index format, vertex attributes, UV0-7 values, submesh topology and indices",
+  "refresh": "Clear(false), explicit channel setters, RecalculateBounds, UploadMeshData(false), SetDirty; transient generated mesh destroyed",
+  "integratedCallSites": {
+    "MvpCityBuilder": 1,
+    "MvpWorldSurfaceBuilder": 2
+  },
+  "retained": "Manual chunking and disabled automatic static flags",
+  "checks": {
+    "Assets/ChooGuard/Editor/MvpMeshPersistence.cs": true,
+    "Assets/ChooGuard/Editor/MvpCityBuilder.cs": true,
+    "Assets/ChooGuard/Editor/MvpWorldSurfaceBuilder.cs": true
+  },
+  "limitations": "No source geometry/DEM/Blender regeneration or Unity calls; actual GPU capture validation belongs to root"
+}

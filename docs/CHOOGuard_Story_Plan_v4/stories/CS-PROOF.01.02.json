@@ -1,0 +1,210 @@
+{
+  "id": "CS-PROOF.01.02",
+  "epicId": "CS-PROOF",
+  "parentTaskId": "CS-PROOF.01",
+  "title": "허용된 최근 대본·양식과 관찰 결과를 입고한다",
+  "goal": "실제 작성자·협조·검수자 업무와 도움·대리입력·회신 지연을 구분해서 기록한다.",
+  "scopeKind": "USER_RESEARCH",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-077",
+    "REQ-078"
+  ],
+  "supportsRequirementIds": [
+    "REQ-077",
+    "REQ-078"
+  ],
+  "parentProductTestIds": [
+    "AT-077",
+    "AT-078"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "research/discovery/protocol.md",
+      "operation": "MODIFY",
+      "createdBy": "CS-PROOF.01.01",
+      "scope": "허용된 최근 대본·양식과 관찰 결과를 입고한다"
+    },
+    {
+      "path": "research/discovery/intake.schema.json",
+      "operation": "MODIFY",
+      "createdBy": "CS-PROOF.01.01",
+      "scope": "허용된 최근 대본·양식과 관찰 결과를 입고한다"
+    },
+    {
+      "path": "research/discovery/time-observation.schema.json",
+      "operation": "MODIFY",
+      "createdBy": "CS-PROOF.01.01",
+      "scope": "허용된 최근 대본·양식과 관찰 결과를 입고한다"
+    }
+  ],
+  "testFile": "research/checks/CS-PROOF.01.02.json",
+  "testKinds": [
+    "DOCUMENT_REVIEW"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-PROOF.01.02",
+      "kind": "PlannedArtifact",
+      "producer": "CS-PROOF.01.02",
+      "contract": "허용된 최근 대본·양식과 관찰 결과를 입고한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "research/discovery/protocol.md",
+        "research/discovery/intake.schema.json",
+        "research/discovery/time-observation.schema.json"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-PROOF.01.01",
+      "artifactId": "OUT-CS-PROOF.01.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "같은 기능의 다음 독립 결과; 이전 구현 후보/수정할 파일을 소비한다."
+    }
+  ],
+  "externalInputs": [
+    {
+      "id": "EXT-CS-PROOF.01-CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "requiredAt": "qualification",
+      "condition": "ALWAYS",
+      "description": "CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "state": "UNKNOWN",
+      "effect": "모집/실제양식 확인 전 고객 효용/지원완료 주장 금지."
+    },
+    {
+      "id": "EXT-CONSENTED-CASE",
+      "requiredAt": "candidate",
+      "condition": "ALWAYS",
+      "description": "동의된 작성자·최근 실제 대본/수정기록. 합성 인터뷰 금지",
+      "state": "UNKNOWN",
+      "effect": "해당 story/phase만 보류; 다른 독립 개발은 지속"
+    }
+  ],
+  "sourceIds": [
+    "DISC-01",
+    "DISC-03",
+    "DISC-05",
+    "DISC-18"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "DISC-01",
+      "url": "https://www.mois.go.kr/frt/sub/a06/b11/disasterTraining_4/screen.do",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-03",
+      "url": "https://info.korail.com/info/selectBbsNttView.do?bbsNo=199&key=911&nttNo=26342",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-05",
+      "url": "https://preptoolkit.fema.gov/web/hseep-resources/design-and-development",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-18",
+      "url": "https://info.korail.com/info/contents.do?key=969",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    }
+  ],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/10-observability-and-study.md",
+    "basis/v3/specs/12-evidence-and-performance.md"
+  ],
+  "parentContract": "StudyIntake {consent,roles,caseRefs,workflow,template,measurements,missing}; 표본 제안과 모집 완료를 분리.",
+  "parentSpecRef": "basis/v3/tasks/CS-PROOF.01.json",
+  "behaviorSteps": [
+    "실제 작성자·협조·검수자 업무와 도움·대리입력·회신 지연을 구분해서 기록한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-PROOF.01.02-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 허용된 최근 대본·양식과 관찰 결과를 입고한다의 유효 조건",
+      "when": "허용된 최근 대본·양식과 관찰 결과를 입고한다를 실행한다",
+      "then": "공백 입력과 차단되는 실증 범위가 기록된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-PROOF.01.02-N",
+      "kind": "NEGATIVE",
+      "given": "동의 없는 자료나 훈련 참가자 수를 제품 사용자 표본으로 사용하지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "동의 없는 자료나 훈련 참가자 수를 제품 사용자 표본으로 사용하지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 research/checks/CS-PROOF.01.02.json에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10095,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/10-observability-and-study.md",
+      "sha256": "06c0643d3b25db1fb62ad9d25a90b61e5508da763efae7f3b1e70d1e242cff02"
+    },
+    {
+      "path": "basis/v3/specs/12-evidence-and-performance.md",
+      "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68"
+    }
+  ]
+}

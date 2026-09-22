@@ -1,0 +1,52 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1106,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "handoff": {
+          "type": "choice",
+          "choice": "incomplete_integration",
+          "confidence": 1,
+          "probabilities": {
+            "environment_block": 0,
+            "complete": 0,
+            "incomplete_integration": 1
+          }
+        },
+        "route": {
+          "type": "choice",
+          "choice": "continue_same_maker",
+          "confidence": 0.99,
+          "probabilities": {
+            "stop_and_claim_done": 0.01,
+            "new_swarm": 0,
+            "continue_same_maker": 0.99
+          }
+        },
+        "overclaim": {
+          "type": "choice",
+          "choice": "source_ready_subset",
+          "confidence": 0.99,
+          "probabilities": {
+            "failed_everything": 0,
+            "source_ready_subset": 1,
+            "production_equivalent": 0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 771,
+        "output_tokens": 144
+      },
+      "truncated": false,
+      "action": "auto"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

@@ -1,0 +1,377 @@
+{
+  "schemaVersion": "1.0",
+  "storyId": "CS-EXEC.01.01",
+  "status": "SUPERSEDED_FLEET_CONTROL_PROPOSAL",
+  "parentStoryStatus": "IN_PROGRESS",
+  "acceptance": {
+    "incrementStatus": "NOT_RUN",
+    "nativeCases": [
+      "Eight configured stable IDs produce eight tracked mission vehicles from two source agencies; dynamic vehicle rows and snapshots agree. Add a ninth catalog record without code changes and verify load/UI; disabled allocation stays unavailable. Decorative clones do not count.",
+      "Request at least three vehicles before first arrival; inspect simultaneous independent road progression and distinct return states via actual UI callbacks and Unity snapshots",
+      "Both source agencies complete directed outbound and independent return paths to their own base; request one vehicle while another is returning",
+      "First and second fire vehicles both arrive; exactly one owns fire-1, the second remains visible standby; wrong-capability assignment and busy takeover reject",
+      "Complete onsite solver ACK with assigned vehicle provenance, release crew, return first vehicle, assign standby vehicle, and execute another onsite task",
+      "Reject duplicate vehicle request, missing route/prefab, unknown vehicle/slot, insufficient crew capacity and returning-before-release with visible Korean reasons",
+      "Paused and failed-solver states freeze travel; reset restores every configured vehicle to its own base with no stale crew owners",
+      "Building-height receipts prove both 200m source tags survived generation; station footprint and restored facade captures correspond to attributed manifest",
+      "Inspect actual rendered city and close-up vehicle/station views; one-unit/one-metre, no road/floor clipping, zero world text, readable Korean UI",
+      "City view hides station floor controls; entering station interior reveals contextual floors, and returning to city hides them again without disabling agency actions"
+    ],
+    "largerStoryGate": "Run 1200–1800 seconds continuous accepted simulation with repeated dispatch/onsite/return cycles and recovery. Save/reload must restore mission IDs, route cursor, assignment ownership and request idempotency from an atomic checkpoint associated with the same training session; no duplicated cars or lost busy state. Existing persistence is not presumed to contain fleet state. If absent, leave this gate and whole story IN_PROGRESS explicitly.",
+    "review": "JeV typed review of contract + actual diffs + source authority + native receipts. Root accepts/rejects each finding. A review score, C# parse, or graph existence cannot replace native evidence.",
+    "evidencePath": ".planning/2026-09-21-fleet-building/native-acceptance.json",
+    "noClaims": [
+      "real current fleet inventory",
+      "real staffing/capacity/availability",
+      "real ETA",
+      "surveyed facade reconstruction",
+      "whole Busan twin accuracy",
+      "unlimited onsite crew concurrency",
+      "20–30 minute recovery until actually executed"
+    ]
+  },
+  "owner": "root",
+  "planningScope": "One bounded fleet and building restoration increment; no new tickets, no code or Unity execution by planner",
+  "parentGraph": ".planning/2026-09-20-integrated-build/session-graph.json",
+  "direction": {
+    "goal": "실제 기관 위치 → 지원 요청 → 도로 출동 → 현장 대응 → 복귀가 이어지는 디지털트윈 운영 게임",
+    "constraints": [
+      "Korean UI",
+      "zero world text",
+      "one Unity unit equals one metre",
+      "no computer-use",
+      "simple NPC presentation",
+      "OSS approved",
+      "implementation workers Astra LOW",
+      "JeV typed advisory review with root decision"
+    ],
+    "largerAcceptanceRetained": "20–30 minute continuous operation and recovery; full product and geometric twin acceptance remain open",
+    "evidenceRule": "Requirements express direction. Agency location, OSM tags, authored allocation, known facade, estimated height, planned construction and as-built observation remain separate authorities."
+  },
+  "observedConstraints": [
+    {
+      "classification": "directly_supported",
+      "ref": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "finding": "Initialize creates fire-1 and medical-1 missions only; AgencyId, agency point, routes[0]/routes[1], RoutesReady length==2 and logs hardcode Central119."
+    },
+    {
+      "classification": "directly_supported",
+      "ref": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+      "finding": "Two-element request/return arrays and two rendered rows; three other agencies are location buttons only."
+    },
+    {
+      "classification": "directly_supported",
+      "refs": [
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+        "Assets/ChooGuard/App/Mvp/MvpStationView.cs"
+      ],
+      "finding": "Three onsite backend/visual slots ops-1, fire-1, medical-1. Unknown IDs currently alias medical index in TeamTaskController. Station route, target and interaction arrays have length three."
+    },
+    {
+      "classification": "directly_supported",
+      "ref": "Assets/ChooGuard/Editor/MvpCityBuilder.cs:62",
+      "finding": "Height: numeric source height, else levels*3m, else 6+(OSM numeric ID%4)*3m. Clamp 6..192m affects source heights. Feature 764492639 is additionally forced to 8m."
+    },
+    {
+      "classification": "directly_supported",
+      "ref": "asset-library/space-references/busan-reconstruction/busan-openworld.json",
+      "finding": "1150 building features; 95 explicit numeric height tags, 390 levels-only, 665 neither. IDs 987862339 and 987862340 have 200m tags currently truncated to 192m. These are source tags, not surveyed measurements."
+    },
+    {
+      "classification": "directly_supported",
+      "ref": "Assets/ChooGuard/Editor/MvpStationBuilder.cs",
+      "finding": "Fixed FireEngine119 and Ambulance119 at station exterior are untracked decorative clones, separate from mission vehicles. Main floors clip source feature 165346389 at z=68; third-floor polygon and five-metre floor intervals are authored."
+    },
+    {
+      "classification": "directly_supported",
+      "ref": "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs",
+      "finding": "Internal furnishing and hub layouts are derived; terminal/market interiors fit footprint bounding dimensions. Geometry is collider-free and distinct from reference solver hall."
+    }
+  ],
+  "increment": {
+    "fleetMinimum": "Data-driven scenario roster initially eight independent training vehicles across Central119 and Choryang119: each base has two fire and two EMS allocations with response and relief roles. Eight is fixture content, not a runtime limit. Both agencies have independent outbound and return routes. Real current inventory remains unknown unless root supplies exact published inventory evidence; scenario availability is distinct even then.",
+    "buildingMinimum": "Correct source-height truncation citywide, retain per-feature provenance, visibly upgrade Busan Station exterior from source footprint and verified facade observations, and improve the interior features supported by exact attributed plans/images. Building restoration has equal priority to fleet work; proxy/fallback repair follows facade and interior source interpretation. Unknown geometry remains authored.",
+    "notSatisfiedBy": [
+      "Four vehicle meshes sharing two mission states",
+      "All vehicles crediting the same onsite crew concurrently",
+      "Changing only UI labels or fleet counts",
+      "Attributing authored fleet sizes to real agencies",
+      "A building provenance document without visible geometry correction",
+      "A detailed facade attached to a false footprint",
+      "Compile-only or screenshots without live dispatch state proof"
+    ]
+  },
+  "fleetContract": {
+    "catalogPath": "Assets/ChooGuard/Art/AgencyDispatch/fleet-catalog.json",
+    "schema": {
+      "VehicleDefinition": [
+        "vehicleId unique stable string",
+        "agencyId source catalog foreign key",
+        "labelKo",
+        "prefabKey FireEngine119|Ambulance119",
+        "capabilities list fire_crew|medical_crew",
+        "crewSlots integer >=1",
+        "allocationEvidence training_authored",
+        "speedMetersPerSecond design value",
+        "outboundRouteId",
+        "returnRouteId",
+        "baseParkingPoint",
+        "siteParkingPoint",
+        "role response|relief with Korean label",
+        "scenarioAvailability available|reserve|unavailable and reason; distinct from real agency availability"
+      ],
+      "Route": [
+        "id unique",
+        "agencyId",
+        "direction outbound|return",
+        "available",
+        "reason",
+        "points in source metres",
+        "distanceMeters",
+        "source node/way IDs",
+        "source hashes",
+        "connector assumptions"
+      ],
+      "MissionSnapshot": [
+        "VehicleId",
+        "AgencyId",
+        "Capabilities",
+        "CrewSlots",
+        "AssignedTeamId nullable",
+        "State",
+        "ReasonCode",
+        "ReasonKo",
+        "RouteId",
+        "Corner",
+        "DistanceTravelled",
+        "RouteDistance",
+        "VehicleLocalPosition",
+        "MissionSequence"
+      ]
+    },
+    "capacityMeaning": "crewSlots is training crew-assignment capacity, initially one crew per vehicle. It gates assignments and is not firefighter headcount, water capacity, real staffing or patient throughput. No unsupported capacity should be presented as functional.",
+    "exampleVehicleIds": [
+      "training-central-fire-01",
+      "training-central-fire-02",
+      "training-central-ems-01",
+      "training-central-ems-02",
+      "training-choryang-fire-01",
+      "training-choryang-fire-02",
+      "training-choryang-ems-01",
+      "training-choryang-ems-02"
+    ],
+    "states": [
+      "Unavailable",
+      "Ready",
+      "Requested",
+      "EnRoute",
+      "OnSceneStandby",
+      "CrewAssigned",
+      "Returning"
+    ],
+    "transitions": [
+      "Ready -> Requested only for selected vehicle, ready training clock, valid paired routes and available crew capacity",
+      "Requested -> EnRoute on accepted simulation time; no wall-clock movement during pause or failed solver",
+      "EnRoute -> OnSceneStandby on actual arrival; vehicle arrival alone does not unlock any onsite team",
+      "OnSceneStandby -> CrewAssigned by explicit compatible unoccupied team-slot assignment",
+      "CrewAssigned -> OnSceneStandby by explicit release only after active onsite work, planned orders and pending commands for that slot are clear",
+      "OnSceneStandby -> Returning by explicit vehicle return request; assigned vehicle must release crew first",
+      "Returning -> Ready only on reaching its own agency base; departure and return of other vehicles proceed independently"
+    ],
+    "onsiteBridge": {
+      "decision": "Preserve three existing backend teams this increment; make them explicit onsite crew slots rather than vehicle identities.",
+      "slotMap": {
+        "ops-1": "local station operations, never owned by external vehicle",
+        "fire-1": "one fire_crew assignment",
+        "medical-1": "one medical_crew assignment"
+      },
+      "invariants": [
+        "One external team slot has at most one vehicle owner",
+        "One vehicle with crewSlots=1 cannot own two slots",
+        "Standby vehicles cannot execute or receive credit for onsite commands",
+        "Unknown slot IDs reject instead of falling through to medical",
+        "Busy assignment cannot be silently stolen",
+        "Release clears visual task targets and stale route/interaction state only after command completion",
+        "Every onsite command/event can resolve the assigned vehicle and source agency",
+        "Slot reuse by a different vehicle resets the crew visual to the declared training handoff point"
+      ],
+      "handoffBoundary": "Current onsite navigation is a second-floor reference hall. Exterior staging-to-second-floor transfer is an explicit training handoff abstraction; do not claim a continuous surveyed entrance or stair path. Keep parked standby vehicles distinct and make assignment/release visible in Korean UI.",
+      "capacityDisclosure": "현재 30×20m 기준 현장: 소방 1팀 · 의료 1팀 작업 / 추가 차량 현장 대기·교대. This is onsite fixture capacity, not fleet capacity. Dispatch and return are independent for all catalog vehicles."
+    },
+    "proposedAPI": [
+      "RequestVehicleSupport(string vehicleId) -> bool; LastReason/ReasonCode",
+      "RequestVehicleReturn(string vehicleId) -> bool",
+      "TryAssignCrew(string vehicleId, string teamId) -> bool",
+      "TryReleaseCrew(string teamId) -> bool",
+      "AssignedVehicleForTeam(string teamId) -> stable vehicle ID or null",
+      "GetTeamAvailability(string teamId) -> ops-1 or compatible active assignment only",
+      "Vehicle(string vehicleId), FocusVehicle(string vehicleId), MissionSnapshots are vehicle keyed",
+      "Station.TryTeamIndex(string teamId, out int index) rejects unknown IDs; TeamTaskController uses this lookup",
+      "Legacy RequestSupport(agencyId, teamId) may delegate to a deterministic ready compatible vehicle only for existing call compatibility; new UI must choose a vehicle explicitly",
+      "Legacy RequestReturn(teamId) resolves the assigned vehicle only; never choose an arbitrary standby vehicle"
+    ],
+    "routingAndVisuals": [
+      "Generalize art/world/prepare_agency_routes.py around its existing directed graph; loop enabled agencies rather than catalog[0]",
+      "Key routes by agency ID and direction; never require total route count two",
+      "Route failure disables only affected vehicle/agency with a Korean reason; never substitute Central119 route",
+      "Use per-vehicle parking positions and accepted-time departure spacing to avoid overlapping meshes; parking offsets/last connectors are authored and validated against scene",
+      "No arbitrary lateral road offsets or straight-line route fallback",
+      "Dynamic scrollable Korean vehicle rows show agency, ID label, capability, crew occupancy, state and actions",
+      "No generated world labels; remove fixed decorative emergency cars when rebuilding station",
+      "Retain 8m/s as explicit training assumption until a different authored speed is chosen",
+      "MvpWorkspace.ApplyAgencyContext hides global 1F/2F/3F controls in city mode and exposes them only for station interior context; no city-wide floor meaning. Fleet worker owns this UI edit. Explicit station/city context must not be inferred solely from CurrentFloor=0 if that prevents access to station cutaway."
+    ],
+    "rosterRule": "Iterate serialized catalog for initialization, snapshots and UI. Never use a literal four/eight vehicle loop or derive identity from team index. Adding or removing a valid catalog row requires no code change. Verify with an additional ninth record and a disabled record.",
+    "roleActions": "Response vehicles staff compatible empty slots. Relief vehicles can be requested ahead, wait visibly, then replace an idle assigned crew through explicit release and assignment. Crew type filters, availability and source-base travel make choices observable; role labels alone cannot claim different fire/medical physics. Shared 30x20m reference fixture currently supports one external fire crew and one medical crew, stated clearly in UI."
+  },
+  "buildingRestoration": {
+    "authorityManifest": "art/world/building-restoration-manifest.json",
+    "perFeatureFields": [
+      "sourceId",
+      "footprintSourcePath",
+      "sourceSha256",
+      "sourceTimestamp",
+      "footprintCoordinates",
+      "heightValue",
+      "heightEvidence tagged|derived_levels|authored_unknown|verified_override",
+      "heightSourceRef",
+      "facadeSourceRefs",
+      "facadeKnownFeatures",
+      "assumedDimensions",
+      "constructionState as_planned|as_built_observed|unknown",
+      "meshBoundsReceipt"
+    ],
+    "criticalHeightFix": "Preserve finite positive explicit height values in metres without the universal 192m visual cap. Levels*3 is derived, not measured. Unknown fallback belongs in an explicit authored rule. Reject invalid source values with reason rather than silently treating them as verified. Move feature-specific overrides into manifest with provenance.",
+    "firstTarget": {
+      "building": "Busan railway station",
+      "sourceIds": [
+        "165346389",
+        "165346394"
+      ],
+      "footprint": "asset-library/space-references/busan-reconstruction/busan-site-selected.json",
+      "exterior": "Assets/ChooGuard/Art/ResponseSet/BusanFacade.fbx",
+      "knownFacadeEvidence": "Root is verifying current official/source facade material; consume only root's exact attributed result. Existing authored FBX is not evidence.",
+      "geometryWork": "Preserve curved frontage and connecting-building source outline; align observed facade divisions/entrance canopy/roof silhouette only where sources support them. Keep frame spacing, glazing depth and unresolved roof heights explicitly authored.",
+      "interiorBoundary": "Do not replace the 30x20m reference physics hall or expand clipping/floor assumptions into claims of measured architecture. Existing authored third-floor and hub layouts retain derived status."
+    },
+    "measurements": [
+      "World root and asset scale inspected to confirm one-unit/one-metre",
+      "Source footprint vertices compared with regenerated footprint vertices within 0.05m after stated clipping/transform",
+      "Tagged 200m examples render 200m structural height above local base within 0.05m, with roof-detail height reported separately",
+      "Known height/derived level/unknown coverage counts recorded before and after",
+      "Side-by-side city and station camera captures at fixed transforms show actual change",
+      "Terrain datum and plinth treatment reported separately from building height",
+      "No duplicate station exterior or second instance of restored shell"
+    ],
+    "avoid": [
+      "Applying 2023 North Port planned heights to current as-built buildings",
+      "Using exact OSM footprint as proof of facade dimensions",
+      "Changing all buildings to guessed detailed facades",
+      "Inventing official vehicle bays from representative centroid points",
+      "Changing physics source geometry during visual restoration"
+    ],
+    "sourceWorkOrder": [
+      "Root attributes exact facade and interior evidence with building/date/view identity",
+      "Building worker implements visible supported station facade and interior features within preserved solver boundary",
+      "Worker repairs city source-height and proxy fallback rules, recording source versus assumption coverage"
+    ]
+  },
+  "writerOwnership": [
+    {
+      "lane": "fleet",
+      "model": "gpt-6-astra",
+      "reasoning": "low",
+      "owns": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+        "Assets/ChooGuard/App/Mvp/MvpStationView.cs",
+        "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+        "Assets/ChooGuard/Editor/MvpAgencyDispatchBuilder.cs",
+        "Assets/ChooGuard/Art/AgencyDispatch/fleet-catalog.json",
+        "Assets/ChooGuard/Art/AgencyDispatch/agency-routes.json",
+        "art/world/prepare_agency_routes.py"
+      ],
+      "deliverable": "Catalog-sized independent missions (initially eight) across two agencies, meaningful response/relief assignment, Korean vehicle UI and contextual station floors, plus bounded contract tests",
+      "cannotWrite": [
+        "scene",
+        "building builders",
+        "source agency catalog facts",
+        "shared generated assets outside AgencyDispatch"
+      ],
+      "stop": "Source/API diff and test receipt delivered; root performs Unity scene mutation"
+    },
+    {
+      "lane": "building",
+      "model": "gpt-6-astra",
+      "reasoning": "low",
+      "owns": [
+        "Assets/ChooGuard/Editor/MvpCityBuilder.cs",
+        "Assets/ChooGuard/Editor/MvpStationBuilder.cs",
+        "Assets/ChooGuard/Editor/MvpInteriorBuilder.cs",
+        "art/world/building-restoration-manifest.json"
+      ],
+      "conditionalArtOwnership": "Only after root explicitly hands over BusanFacade source/export files; do not rerun the whole response-set generator if it overwrites crew/vehicle assets",
+      "deliverable": "Attributed facade and interior improvement, source-height fix and removal of fixed untracked emergency-car clones; building work has equal priority",
+      "cannotWrite": [
+        "runtime fleet or station view",
+        "agency assets",
+        "scene",
+        "physics geometry"
+      ],
+      "stop": "Code/art delta and per-building source/assumption receipt delivered; root performs Unity rebuild"
+    },
+    {
+      "lane": "root integration",
+      "owns": [
+        "Assets/ChooGuard/Scenes/MvpWorkspace.unity or actual MvpWorkspaceBuilder.ScenePath",
+        "all scene saves and serialized mesh generation",
+        "MvpTrainingDirector integration if required",
+        "acceptance receipts",
+        "existing persistence integration",
+        "canonical status and session graph"
+      ],
+      "sequence": "Review contracts; compile; rebuild affected city/station geometry and bind fleet serially; restore navigation/agency bindings after any whole-station rebuild; then native verification"
+    }
+  ],
+  "edges": [
+    {
+      "from": "root verified source packet",
+      "to": "building",
+      "relation": "bounds exact footprint and known facade claims"
+    },
+    {
+      "from": "fleet catalog + agency routes",
+      "to": "fleet controller",
+      "relation": "stable identity and source-agency dispatch authority"
+    },
+    {
+      "from": "fleet controller",
+      "to": "onsite team slots",
+      "relation": "exclusive explicit crew assignment gates all task entrypoints"
+    },
+    {
+      "from": "fleet + building",
+      "to": "root integration",
+      "relation": "non-overlapping source ownership; serialized scene generation"
+    },
+    {
+      "from": "root native evidence",
+      "to": "JeV review",
+      "relation": "review concrete delivery and remaining acceptance gaps"
+    },
+    {
+      "from": "native acceptance + recovery gate",
+      "to": "CS-EXEC.01.01",
+      "relation": "only scoped evidence may advance status; whole story remains open until its goals hold"
+    }
+  ],
+  "memoryUse": {
+    "classification": "near_match_only",
+    "ref": "MEMORY.md:60-65",
+    "use": "Navigation to existing bounded-acceptance and Astra-low preferences; current user directions and live files control all contracts",
+    "rolloutId": "01a0be9a-76f1-7250-9ea4-8814a954ed9c"
+  },
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "supersededReason": "User rejected per-visible-vehicle/independent-object control framing. Re-audit facility/team/task operational grain. No fleet implementation was made."
+}

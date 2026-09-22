@@ -1,0 +1,2057 @@
+{
+  "@context": {
+    "cg": "urn:chooguard:v10:",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "prov": "http://www.w3.org/ns/prov#",
+    "label": "rdfs:label",
+    "comment": "rdfs:comment",
+    "domain": {
+      "@id": "rdfs:domain",
+      "@type": "@id"
+    },
+    "range": {
+      "@id": "rdfs:range",
+      "@type": "@id"
+    },
+    "subClassOf": {
+      "@id": "rdfs:subClassOf",
+      "@type": "@id"
+    },
+    "status": "cg:status",
+    "verifiedByTest": {
+      "@id": "cg:verifiedByTest",
+      "@type": "@id"
+    },
+    "implementedBy": {
+      "@id": "cg:implementedBy",
+      "@type": "@id"
+    },
+    "versionInfo": "owl:versionInfo"
+  },
+  "@graph": [
+    {
+      "@id": "cg:ontology",
+      "@type": "owl:Ontology",
+      "label": "CHOOGuard v11 설계 어휘: 업무·공간·효용·증거",
+      "status": "DESIGN_SPEC_NOT_RUNTIME_QUALIFICATION",
+      "versionInfo": "11.0.0"
+    },
+    {
+      "@id": "cg:PhysicalSite",
+      "@type": "owl:Class",
+      "label": "PhysicalSite",
+      "comment": "실제 장소. 가상 공간과 다르다.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:PhysicalAsset",
+      "@type": "owl:Class",
+      "label": "PhysicalAsset",
+      "comment": "실제 시설·차량·장비의 대응물.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:SourceDocument",
+      "@type": "owl:Class",
+      "label": "SourceDocument",
+      "comment": "출처와 판본이 있는 자료. URL 존재만으로 입고가 아니다.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:AcquisitionReceipt",
+      "@type": "owl:Class",
+      "label": "AcquisitionReceipt",
+      "comment": "원본 취득·hash·범위를 기록.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Observation",
+      "@type": "owl:Class",
+      "label": "Observation",
+      "comment": "시간·대상·단위·원시근거가 있는 현실 관측.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:SpatialWorld",
+      "@type": "owl:Class",
+      "label": "SpatialWorld",
+      "comment": "맵·연결·객체·프레임의 버전된 모델.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Zone",
+      "@type": "owl:Class",
+      "label": "Zone",
+      "comment": "공간 구역.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Portal",
+      "@type": "owl:Class",
+      "label": "Portal",
+      "comment": "구역 사이의 통과 연결.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Representation",
+      "@type": "owl:Class",
+      "label": "Representation",
+      "comment": "시각·충돌·보행·계산 표현.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Agency",
+      "@type": "owl:Class",
+      "label": "Agency",
+      "comment": "실제 기관별 주체. 기능군과 다르다."
+    },
+    {
+      "@id": "cg:Team",
+      "@type": "owl:Class",
+      "label": "Team",
+      "comment": "소속·인력·차량·장비 결속."
+    },
+    {
+      "@id": "cg:Role",
+      "@type": "owl:Class",
+      "label": "Role",
+      "comment": "임무·능력의 역할."
+    },
+    {
+      "@id": "cg:AuthorityScope",
+      "@type": "owl:Class",
+      "label": "AuthorityScope",
+      "comment": "관할과 명령/협조 권한.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Task",
+      "@type": "owl:Class",
+      "label": "Task",
+      "comment": "조건·자원·결과를 가진 업무.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Reservation",
+      "@type": "owl:Class",
+      "label": "Reservation",
+      "comment": "개별 자원의 원자적 점유.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Message",
+      "@type": "owl:Class",
+      "label": "Message",
+      "comment": "발신·수신·확인·만료를 가진 정보.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Handover",
+      "@type": "owl:Class",
+      "label": "Handover",
+      "comment": "권한·업무·대상의 검토된 인계.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ManualClause",
+      "@type": "owl:Class",
+      "label": "ManualClause",
+      "comment": "판본·절·적용범위가 있는 원문 근거.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:RuleCandidate",
+      "@type": "owl:Class",
+      "label": "RuleCandidate",
+      "comment": "미승인 규칙 후보.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ApprovedRule",
+      "@type": "owl:Class",
+      "label": "ApprovedRule",
+      "comment": "정해진 주체·범위에 대한 검토 결과가 연결된 규칙.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ScenarioSpec",
+      "@type": "owl:Class",
+      "label": "ScenarioSpec",
+      "comment": "상황·초기조건·사건생성 규격.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:OperationalPlan",
+      "@type": "owl:Class",
+      "label": "OperationalPlan",
+      "comment": "역할별 조건부 업무·공조 규칙.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:RunSession",
+      "@type": "owl:Class",
+      "label": "RunSession",
+      "comment": "하나의 실제 프로그램 실행.",
+      "subClassOf": "prov:Activity"
+    },
+    {
+      "@id": "cg:Event",
+      "@type": "owl:Class",
+      "label": "Event",
+      "comment": "실제로 처리된 사건·상태 변화.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Snapshot",
+      "@type": "owl:Class",
+      "label": "Snapshot",
+      "comment": "전체 상태와 외부 solver 복원 범위를 가진 스냅샷.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Branch",
+      "@type": "owl:Class",
+      "label": "Branch",
+      "comment": "기존 기록을 보존하는 독립 실험 분기.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ModelRun",
+      "@type": "owl:Class",
+      "label": "ModelRun",
+      "comment": "모델·가중치·입력·명령·출력이 결속된 실행.",
+      "subClassOf": "prov:Activity"
+    },
+    {
+      "@id": "cg:ModelQualification",
+      "@type": "owl:Class",
+      "label": "ModelQualification",
+      "comment": "모델의 목적·영역·오차·불확도·기간 자격.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:QoIContract",
+      "@type": "owl:Class",
+      "label": "QoIContract",
+      "comment": "사전 고정된 출력수량·단위·오차·검증 계약.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Evidence",
+      "@type": "owl:Class",
+      "label": "Evidence",
+      "comment": "원시 결과와 주장의 범위.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ReviewDecision",
+      "@type": "owl:Class",
+      "label": "ReviewDecision",
+      "comment": "사람 검토의 주체·권한·scope·대상버전.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ScriptBundle",
+      "@type": "owl:Class",
+      "label": "ScriptBundle",
+      "comment": "선택 운영안의 대본·실행형 파생물.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:Requirement",
+      "@type": "owl:Class",
+      "label": "Requirement",
+      "comment": "제품이 충족해야 할 계약.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:AcceptanceTest",
+      "@type": "owl:Class",
+      "label": "AcceptanceTest",
+      "comment": "향후 제품 인수시험 정의.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:WorkPackage",
+      "@type": "owl:Class",
+      "label": "WorkPackage",
+      "comment": "단계별 구현·인계 단위.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:represents",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Representation",
+      "range": "cg:PhysicalAsset",
+      "comment": "표현과 실물을 연결하되 실측 일치를 암묵적으로 보장하지 않음."
+    },
+    {
+      "@id": "cg:usesWorld",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScenarioSpec",
+      "range": "cg:SpatialWorld",
+      "comment": "초기 조건이 참조하는 맵 버전."
+    },
+    {
+      "@id": "cg:belongsToAgency",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Team",
+      "range": "cg:Agency",
+      "comment": "기관별 소속."
+    },
+    {
+      "@id": "cg:hasAuthority",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Role",
+      "range": "cg:AuthorityScope",
+      "comment": "소속 기관·상황별 권한."
+    },
+    {
+      "@id": "cg:requiresTask",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Task",
+      "range": "cg:Task",
+      "comment": "특정 선행 완료·인계 조건; 시간 및 예외는 별도 payload."
+    },
+    {
+      "@id": "cg:reservesFor",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Reservation",
+      "range": "cg:Task",
+      "comment": "자원 점유가 어느 업무에 필요한지."
+    },
+    {
+      "@id": "cg:justifiedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:RuleCandidate",
+      "range": "cg:ManualClause",
+      "comment": "출처 연결이며 자동 승인 아님."
+    },
+    {
+      "@id": "cg:approvedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ApprovedRule",
+      "range": "cg:ReviewDecision",
+      "comment": "권한·판본·scope가 맞는 실제 검토만 허용."
+    },
+    {
+      "@id": "cg:executesPlan",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:RunSession",
+      "range": "cg:OperationalPlan",
+      "comment": "실행 입력이 되는 운영안."
+    },
+    {
+      "@id": "cg:hasEvent",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:RunSession",
+      "range": "cg:Event",
+      "comment": "실행 사실."
+    },
+    {
+      "@id": "cg:forkedFrom",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Branch",
+      "range": "cg:Snapshot",
+      "comment": "스냅샷의 복원 가능한 범위 안에서 분기."
+    },
+    {
+      "@id": "cg:validatedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ModelQualification",
+      "range": "cg:Evidence",
+      "comment": "조건·버전·domain을 결속한 증거."
+    },
+    {
+      "@id": "cg:derivedFromPlan",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScriptBundle",
+      "range": "cg:OperationalPlan",
+      "comment": "대본 정본을 선택한 조건부 운영안에 연결."
+    },
+    {
+      "@id": "cg:citesEvidence",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScriptBundle",
+      "range": "cg:Evidence",
+      "comment": "로그의 사실과 규범 근거를 구분."
+    },
+    {
+      "@id": "cg:verifiedByTest",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Requirement",
+      "range": "cg:AcceptanceTest",
+      "comment": "요구에 연결된 계획된 인수시험. 시험이 실행되거나 통과했다는 관계가 아니다."
+    },
+    {
+      "@id": "cg:implementedBy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:Requirement",
+      "range": "cg:WorkPackage",
+      "comment": "계획된 책임 분해이며 완료나 쓰기권한 아님."
+    },
+    {
+      "@id": "cg:TargetProfile",
+      "@type": "owl:Class",
+      "label": "TargetProfile",
+      "comment": "실제 반복 작성팀 조건. 허구 인물 전기가 아니다.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:WorkflowObservation",
+      "@type": "owl:Class",
+      "label": "WorkflowObservation",
+      "comment": "기억·문서·관찰의 근거를 구분한 최근 업무 기록.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:PilotCase",
+      "@type": "owl:Class",
+      "label": "PilotCase",
+      "comment": "허용된 사례·자료·양식·검수자 결속.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:SitePackage",
+      "@type": "owl:Class",
+      "label": "SitePackage",
+      "comment": "재사용하는 공간·규칙·자원·template·자격의 버전 묶음.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:TemplateProfile",
+      "@type": "owl:Class",
+      "label": "TemplateProfile",
+      "comment": "실제 제출 형식과 의미 매핑 및 지원 한계.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:ChangeImpact",
+      "@type": "owl:Class",
+      "label": "ChangeImpact",
+      "comment": "입력 변화가 파생 결과와 자격에 미치는 검토 기록.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:StudyProtocol",
+      "@type": "owl:Class",
+      "label": "StudyProtocol",
+      "comment": "사전 동결한 비교·품질·표본·분석 계획.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:StudyRun",
+      "@type": "owl:Class",
+      "label": "StudyRun",
+      "comment": "실제로 수행된 사용자 조사. 제안 계획과 다르다.",
+      "subClassOf": "prov:Activity"
+    },
+    {
+      "@id": "cg:WorkTimeEntry",
+      "@type": "owl:Class",
+      "label": "WorkTimeEntry",
+      "comment": "실제 사용자의 활동 시간. 시뮬레이션 시간과 다르다.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:QualityReview",
+      "@type": "owl:Class",
+      "label": "QualityReview",
+      "comment": "출력물의 품질 rubric에 대한 평가.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:AdoptionEvidence",
+      "@type": "owl:Class",
+      "label": "AdoptionEvidence",
+      "comment": "관심·참여·예산·계약을 구분한 사실.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:QualificationVector",
+      "@type": "owl:Class",
+      "label": "QualificationVector",
+      "comment": "독립적인 제품·효용·정확도·기관·도입 자격.",
+      "subClassOf": "prov:Entity"
+    },
+    {
+      "@id": "cg:REQ-001",
+      "@type": "cg:Requirement",
+      "label": "작성자 중심 전체 운영 여정",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-001"
+      ]
+    },
+    {
+      "@id": "cg:REQ-002",
+      "@type": "cg:Requirement",
+      "label": "두 사용자 모드와 동일 코어",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP06",
+      "verifiedByTest": [
+        "cg:AT-002"
+      ]
+    },
+    {
+      "@id": "cg:REQ-003",
+      "@type": "cg:Requirement",
+      "label": "튜토리얼 출처·재구성 표시",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP06",
+      "verifiedByTest": [
+        "cg:AT-003"
+      ]
+    },
+    {
+      "@id": "cg:REQ-004",
+      "@type": "cg:Requirement",
+      "label": "부분순서와 유효 대안 학습",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP06",
+      "verifiedByTest": [
+        "cg:AT-004"
+      ]
+    },
+    {
+      "@id": "cg:REQ-005",
+      "@type": "cg:Requirement",
+      "label": "조건부 랜덤 초기 상태",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP06",
+      "verifiedByTest": [
+        "cg:AT-005"
+      ]
+    },
+    {
+      "@id": "cg:REQ-006",
+      "@type": "cg:Requirement",
+      "label": "불가능·범위밖 상황 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP06",
+      "verifiedByTest": [
+        "cg:AT-006"
+      ]
+    },
+    {
+      "@id": "cg:REQ-007",
+      "@type": "cg:Requirement",
+      "label": "생성기 재현·거부 기록",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP06",
+      "verifiedByTest": [
+        "cg:AT-007"
+      ]
+    },
+    {
+      "@id": "cg:REQ-008",
+      "@type": "cg:Requirement",
+      "label": "RTS 팀·차량 선택",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-008"
+      ]
+    },
+    {
+      "@id": "cg:REQ-009",
+      "@type": "cg:Requirement",
+      "label": "업무 우선 배정",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-009"
+      ]
+    },
+    {
+      "@id": "cg:REQ-010",
+      "@type": "cg:Requirement",
+      "label": "혼합기관 선택 결과 확인",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-010"
+      ]
+    },
+    {
+      "@id": "cg:REQ-011",
+      "@type": "cg:Requirement",
+      "label": "작성자 전지적 보기와 기관 정보",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-011"
+      ]
+    },
+    {
+      "@id": "cg:REQ-012",
+      "@type": "cg:Requirement",
+      "label": "취소·큐·지원요청 조작",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-012"
+      ]
+    },
+    {
+      "@id": "cg:REQ-013",
+      "@type": "cg:Requirement",
+      "label": "다축 상태·복수 원인 표시",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-013"
+      ]
+    },
+    {
+      "@id": "cg:REQ-014",
+      "@type": "cg:Requirement",
+      "label": "현실 기반 연결 맵",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-014"
+      ]
+    },
+    {
+      "@id": "cg:REQ-015",
+      "@type": "cg:Requirement",
+      "label": "기존 13구역 식별자 보존",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP11",
+      "verifiedByTest": [
+        "cg:AT-015"
+      ]
+    },
+    {
+      "@id": "cg:REQ-016",
+      "@type": "cg:Requirement",
+      "label": "층·지붕·LOD와 운영 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-016"
+      ]
+    },
+    {
+      "@id": "cg:REQ-017",
+      "@type": "cg:Requirement",
+      "label": "네 표현과 같은 객체 결속",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-017"
+      ]
+    },
+    {
+      "@id": "cg:REQ-018",
+      "@type": "cg:Requirement",
+      "label": "좌표·단위·도킹 시험",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-018"
+      ]
+    },
+    {
+      "@id": "cg:REQ-019",
+      "@type": "cg:Requirement",
+      "label": "이동 엔진 단일 권위",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP07",
+      "verifiedByTest": [
+        "cg:AT-019"
+      ]
+    },
+    {
+      "@id": "cg:REQ-020",
+      "@type": "cg:Requirement",
+      "label": "구역 미준비·로딩 실패 처리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-020"
+      ]
+    },
+    {
+      "@id": "cg:REQ-021",
+      "@type": "cg:Requirement",
+      "label": "소속 권한·공조 요청 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-021"
+      ]
+    },
+    {
+      "@id": "cg:REQ-022",
+      "@type": "cg:Requirement",
+      "label": "지휘 인계 버전·범위",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-022"
+      ]
+    },
+    {
+      "@id": "cg:REQ-023",
+      "@type": "cg:Requirement",
+      "label": "도착·등록·대기자원",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-023"
+      ]
+    },
+    {
+      "@id": "cg:REQ-024",
+      "@type": "cg:Requirement",
+      "label": "복합 자원 원자 예약",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-024"
+      ]
+    },
+    {
+      "@id": "cg:REQ-025",
+      "@type": "cg:Requirement",
+      "label": "팀 분리와 capability 재계산",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-025"
+      ]
+    },
+    {
+      "@id": "cg:REQ-026",
+      "@type": "cg:Requirement",
+      "label": "업무 완료와 재가용 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-026"
+      ]
+    },
+    {
+      "@id": "cg:REQ-027",
+      "@type": "cg:Requirement",
+      "label": "메시지 수명·중복·만료",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-027"
+      ]
+    },
+    {
+      "@id": "cg:REQ-028",
+      "@type": "cg:Requirement",
+      "label": "지식 불확실성·시점 보존",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-028"
+      ]
+    },
+    {
+      "@id": "cg:REQ-029",
+      "@type": "cg:Requirement",
+      "label": "수용·인계·종료 조건",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-029"
+      ]
+    },
+    {
+      "@id": "cg:REQ-030",
+      "@type": "cg:Requirement",
+      "label": "순환대기·외부대기 분류",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-030"
+      ]
+    },
+    {
+      "@id": "cg:REQ-031",
+      "@type": "cg:Requirement",
+      "label": "매뉴얼 출처·판본·적용범위",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-031"
+      ]
+    },
+    {
+      "@id": "cg:REQ-032",
+      "@type": "cg:Requirement",
+      "label": "원문 기반 후보 추출",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-032"
+      ]
+    },
+    {
+      "@id": "cg:REQ-033",
+      "@type": "cg:Requirement",
+      "label": "필수·재량·공학제약 구별",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-033"
+      ]
+    },
+    {
+      "@id": "cg:REQ-034",
+      "@type": "cg:Requirement",
+      "label": "규칙 개정 영향분석",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-034"
+      ]
+    },
+    {
+      "@id": "cg:REQ-035",
+      "@type": "cg:Requirement",
+      "label": "시뮬레이션 시간 통제",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-035"
+      ]
+    },
+    {
+      "@id": "cg:REQ-036",
+      "@type": "cg:Requirement",
+      "label": "완전 checkpoint/정직한 재시작",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-036"
+      ]
+    },
+    {
+      "@id": "cg:REQ-037",
+      "@type": "cg:Requirement",
+      "label": "원본 불변·분기 혈통",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-037"
+      ]
+    },
+    {
+      "@id": "cg:REQ-038",
+      "@type": "cg:Requirement",
+      "label": "공정한 A/B 외생 조건",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-038"
+      ]
+    },
+    {
+      "@id": "cg:REQ-039",
+      "@type": "cg:Requirement",
+      "label": "다목적·불확도 비교",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-039"
+      ]
+    },
+    {
+      "@id": "cg:REQ-040",
+      "@type": "cg:Requirement",
+      "label": "선정·평가 자료 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-040"
+      ]
+    },
+    {
+      "@id": "cg:REQ-041",
+      "@type": "cg:Requirement",
+      "label": "운영 모델-런타임 의미 일치",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP02",
+      "verifiedByTest": [
+        "cg:AT-041"
+      ]
+    },
+    {
+      "@id": "cg:REQ-042",
+      "@type": "cg:Requirement",
+      "label": "기준 화재 solver와 실제 입력",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP08",
+      "verifiedByTest": [
+        "cg:AT-042"
+      ]
+    },
+    {
+      "@id": "cg:REQ-043",
+      "@type": "cg:Requirement",
+      "label": "보행 현상별 검증",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP07",
+      "verifiedByTest": [
+        "cg:AT-043"
+      ]
+    },
+    {
+      "@id": "cg:REQ-044",
+      "@type": "cg:Requirement",
+      "label": "차량·교통 shortcut 탐지",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP07",
+      "verifiedByTest": [
+        "cg:AT-044"
+      ]
+    },
+    {
+      "@id": "cg:REQ-045",
+      "@type": "cg:Requirement",
+      "label": "의료 운영과 임상 범위 구분",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP07",
+      "verifiedByTest": [
+        "cg:AT-045"
+      ]
+    },
+    {
+      "@id": "cg:REQ-046",
+      "@type": "cg:Requirement",
+      "label": "SOTA 후보의 공정 선정",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP08",
+      "verifiedByTest": [
+        "cg:AT-046"
+      ]
+    },
+    {
+      "@id": "cg:REQ-047",
+      "@type": "cg:Requirement",
+      "label": "대체모델 독립·장기 검증",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP08",
+      "verifiedByTest": [
+        "cg:AT-047"
+      ]
+    },
+    {
+      "@id": "cg:REQ-048",
+      "@type": "cg:Requirement",
+      "label": "OOD 정량 승인 차단",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP08",
+      "verifiedByTest": [
+        "cg:AT-048"
+      ]
+    },
+    {
+      "@id": "cg:REQ-049",
+      "@type": "cg:Requirement",
+      "label": "다중엔진 단일 소유권·결합",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP08",
+      "verifiedByTest": [
+        "cg:AT-049"
+      ]
+    },
+    {
+      "@id": "cg:REQ-050",
+      "@type": "cg:Requirement",
+      "label": "실측·가상 관측 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-050"
+      ]
+    },
+    {
+      "@id": "cg:REQ-051",
+      "@type": "cg:Requirement",
+      "label": "로그 사실·의도·가설 구분",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-051"
+      ]
+    },
+    {
+      "@id": "cg:REQ-052",
+      "@type": "cg:Requirement",
+      "label": "인과 주장과 계산 근거",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-052"
+      ]
+    },
+    {
+      "@id": "cg:REQ-053",
+      "@type": "cg:Requirement",
+      "label": "운영안 일반화·조건부 단계",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-053"
+      ]
+    },
+    {
+      "@id": "cg:REQ-054",
+      "@type": "cg:Requirement",
+      "label": "대본·실행 데이터 동등성",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-054"
+      ]
+    },
+    {
+      "@id": "cg:REQ-055",
+      "@type": "cg:Requirement",
+      "label": "근거를 여는 역추적",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-055"
+      ]
+    },
+    {
+      "@id": "cg:REQ-056",
+      "@type": "cg:Requirement",
+      "label": "승인 분리·변경 무효화",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-056"
+      ]
+    },
+    {
+      "@id": "cg:REQ-057",
+      "@type": "cg:Requirement",
+      "label": "새 실행과 리플레이 구별",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-057"
+      ]
+    },
+    {
+      "@id": "cg:REQ-058",
+      "@type": "cg:Requirement",
+      "label": "LLM 실패시 운영 지속",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-058"
+      ]
+    },
+    {
+      "@id": "cg:REQ-059",
+      "@type": "cg:Requirement",
+      "label": "외부 문서 지시 격리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-059"
+      ]
+    },
+    {
+      "@id": "cg:REQ-060",
+      "@type": "cg:Requirement",
+      "label": "온톨로지·ID·버전 추적",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-060"
+      ]
+    },
+    {
+      "@id": "cg:REQ-061",
+      "@type": "cg:Requirement",
+      "label": "기계 친화형 최소 문맥",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-061"
+      ]
+    },
+    {
+      "@id": "cg:REQ-062",
+      "@type": "cg:Requirement",
+      "label": "자료 발견·확보·검사 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-062"
+      ]
+    },
+    {
+      "@id": "cg:REQ-063",
+      "@type": "cg:Requirement",
+      "label": "KTX·역사 원본 재검사",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-063"
+      ]
+    },
+    {
+      "@id": "cg:REQ-064",
+      "@type": "cg:Requirement",
+      "label": "무료 우선 자산·한국화·기능 검수",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP03",
+      "verifiedByTest": [
+        "cg:AT-064"
+      ]
+    },
+    {
+      "@id": "cg:REQ-065",
+      "@type": "cg:Requirement",
+      "label": "실제훈련 인원·영상 근거",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP06",
+      "verifiedByTest": [
+        "cg:AT-065"
+      ]
+    },
+    {
+      "@id": "cg:REQ-066",
+      "@type": "cg:Requirement",
+      "label": "기존코드 재사용·범위 보존",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP00",
+      "verifiedByTest": [
+        "cg:AT-066"
+      ]
+    },
+    {
+      "@id": "cg:REQ-067",
+      "@type": "cg:Requirement",
+      "label": "초기버전과 검증출시 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-067"
+      ]
+    },
+    {
+      "@id": "cg:REQ-068",
+      "@type": "cg:Requirement",
+      "label": "사전 QoI·오차·독립 검증",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP08",
+      "verifiedByTest": [
+        "cg:AT-068"
+      ]
+    },
+    {
+      "@id": "cg:REQ-069",
+      "@type": "cg:Requirement",
+      "label": "작성시간·수정량·교육평가",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-069"
+      ]
+    },
+    {
+      "@id": "cg:REQ-070",
+      "@type": "cg:Requirement",
+      "label": "정직한 성능 프로파일",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-070"
+      ]
+    },
+    {
+      "@id": "cg:REQ-071",
+      "@type": "cg:Requirement",
+      "label": "접수된 이벤트 내구성",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-071"
+      ]
+    },
+    {
+      "@id": "cg:REQ-072",
+      "@type": "cg:Requirement",
+      "label": "접근성·한국어 용어",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-072"
+      ]
+    },
+    {
+      "@id": "cg:REQ-073",
+      "@type": "cg:Requirement",
+      "label": "개인정보·배포·원본 접근",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-073"
+      ]
+    },
+    {
+      "@id": "cg:REQ-074",
+      "@type": "cg:Requirement",
+      "label": "엄격한 수용·한정 재작업",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-074"
+      ]
+    },
+    {
+      "@id": "cg:REQ-075",
+      "@type": "cg:Requirement",
+      "label": "최종 13구역·유형 확대",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP11",
+      "verifiedByTest": [
+        "cg:AT-075"
+      ]
+    },
+    {
+      "@id": "cg:REQ-076",
+      "@type": "cg:Requirement",
+      "label": "현장 적용 passport",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP11",
+      "verifiedByTest": [
+        "cg:AT-076"
+      ]
+    },
+    {
+      "@id": "cg:REQ-077",
+      "@type": "cg:Requirement",
+      "label": "실제 반복 작성팀과 업무 근거",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP00",
+      "verifiedByTest": [
+        "cg:AT-077"
+      ]
+    },
+    {
+      "@id": "cg:REQ-078",
+      "@type": "cg:Requirement",
+      "label": "고객 실증 진입 입력",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP00",
+      "verifiedByTest": [
+        "cg:AT-078"
+      ]
+    },
+    {
+      "@id": "cg:REQ-079",
+      "@type": "cg:Requirement",
+      "label": "네 시계와 사람 작업량 원장",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-079"
+      ]
+    },
+    {
+      "@id": "cg:REQ-080",
+      "@type": "cg:Requirement",
+      "label": "최초·반복 비용과 회수 가능성",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-080"
+      ]
+    },
+    {
+      "@id": "cg:REQ-081",
+      "@type": "cg:Requirement",
+      "label": "동일 코어 A/B/C 효용 비교",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-081"
+      ]
+    },
+    {
+      "@id": "cg:REQ-082",
+      "@type": "cg:Requirement",
+      "label": "품질·미완료를 보존한 효용 판정",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-082"
+      ]
+    },
+    {
+      "@id": "cg:REQ-083",
+      "@type": "cg:Requirement",
+      "label": "검수된 현장·규칙 묶음 재사용",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP01",
+      "verifiedByTest": [
+        "cg:AT-083"
+      ]
+    },
+    {
+      "@id": "cg:REQ-084",
+      "@type": "cg:Requirement",
+      "label": "변경 영향·부분 재실행의 안전성",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP05",
+      "verifiedByTest": [
+        "cg:AT-084"
+      ]
+    },
+    {
+      "@id": "cg:REQ-085",
+      "@type": "cg:Requirement",
+      "label": "다음 판단 지점으로의 정직한 진행",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-085"
+      ]
+    },
+    {
+      "@id": "cg:REQ-086",
+      "@type": "cg:Requirement",
+      "label": "실제 제출 양식과 의미 변경 회수",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP09",
+      "verifiedByTest": [
+        "cg:AT-086"
+      ]
+    },
+    {
+      "@id": "cg:REQ-087",
+      "@type": "cg:Requirement",
+      "label": "실제 배포·반출 환경에서의 작동",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP11",
+      "verifiedByTest": [
+        "cg:AT-087"
+      ]
+    },
+    {
+      "@id": "cg:REQ-088",
+      "@type": "cg:Requirement",
+      "label": "반복 사용·유지비·도입 증거 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP00",
+      "verifiedByTest": [
+        "cg:AT-088"
+      ]
+    },
+    {
+      "@id": "cg:REQ-089",
+      "@type": "cg:Requirement",
+      "label": "결과별 한계의 사용자 이해",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP04",
+      "verifiedByTest": [
+        "cg:AT-089"
+      ]
+    },
+    {
+      "@id": "cg:REQ-090",
+      "@type": "cg:Requirement",
+      "label": "개발·효용·정량·기관·도입 gate 분리",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP10",
+      "verifiedByTest": [
+        "cg:AT-090"
+      ]
+    },
+    {
+      "@id": "cg:REQ-091",
+      "@type": "cg:Requirement",
+      "label": "대체재·맞춤 구축 비용의 실제 비교",
+      "status": "NOT_VERIFIED_IN_THIS_REVISION",
+      "implementedBy": "cg:EP00",
+      "verifiedByTest": [
+        "cg:AT-091"
+      ]
+    },
+    {
+      "@id": "cg:AT-001",
+      "@type": "cg:AcceptanceTest",
+      "label": "선택 이유와 두 실행의 근거가 출력되고 로그 요약만으로 완료되지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-002",
+      "@type": "cg:AcceptanceTest",
+      "label": "의미 있는 상태·결과가 동일 허용오차 안이고 안내가 능력·물리를 변경하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-003",
+      "@type": "cg:AcceptanceTest",
+      "label": "공개자료 재구성임을 표시하고 기관·시간·장소의 미확인을 드러낸다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-004",
+      "@type": "cg:AcceptanceTest",
+      "label": "둘 다 허용하고 필수 인계 누락만 해당 기준으로 검토한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-005",
+      "@type": "cg:AcceptanceTest",
+      "label": "각 결과가 공간·자원·인과 제약과 생성분포 기록을 갖는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-006",
+      "@type": "cg:AcceptanceTest",
+      "label": "ESCALATION_REQUIRED와 UNSUPPORTED_DOMAIN을 구분하고 숨긴 실패 과제를 배포하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-007",
+      "@type": "cg:AcceptanceTest",
+      "label": "추출값·거부 사유를 보존하며 반복상한에서 조건 조정을 요구한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-008",
+      "@type": "cg:AcceptanceTest",
+      "label": "대상과 가용행동을 보여주며 구성원·승무원 중복을 숨기지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-009",
+      "@type": "cg:AcceptanceTest",
+      "label": "필요 능력·가용 후보·부족 조합·예상 대기를 설명한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-010",
+      "@type": "cg:AcceptanceTest",
+      "label": "기관별 승인/요청/거부를 미리 표시하고 일부 실패를 전체 성공으로 표시하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-011",
+      "@type": "cg:AcceptanceTest",
+      "label": "전체를 보는 작성자 때문에 기관 행위자의 지식이 자동 증가하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-012",
+      "@type": "cg:AcceptanceTest",
+      "label": "실행 조건과 자원 보상 전이를 검사하고 무단 선행조건 우회를 하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-013",
+      "@type": "cg:AcceptanceTest",
+      "label": "lifecycle과 복수 reasonCodes를 함께 표시하며 단일 대기 문구로 합치지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-014",
+      "@type": "cg:AcceptanceTest",
+      "label": "공간 근거·단순화·미확인을 표시하고 합성 fixture를 실측으로 제시하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-015",
+      "@type": "cg:AcceptanceTest",
+      "label": "13 root ID 대응과 migration을 보존하되 합성 포털을 정답으로 고정하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-016",
+      "@type": "cg:AcceptanceTest",
+      "label": "벽·경로·예약·물리 영역과 사건 결과가 변하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-017",
+      "@type": "cg:AcceptanceTest",
+      "label": "동일 식별자·단위·버전으로 연결되고 누락된 표현은 명시된다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-018",
+      "@type": "cg:AcceptanceTest",
+      "label": "축 반사·배율·피벗·독립 residual을 검사하고 임시 도킹 치수를 실측으로 쓰지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-019",
+      "@type": "cg:AcceptanceTest",
+      "label": "이동 상태 소유자가 하나이며 화면 인물과 운영 경로가 불일치하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-020",
+      "@type": "cg:AcceptanceTest",
+      "label": "바닥 없는 진입을 막고 원래 논리 상태를 유지한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-021",
+      "@type": "cg:AcceptanceTest",
+      "label": "지원요청·접수·배정 경로를 거치며 전역 사령관 권한을 창작하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-022",
+      "@type": "cg:AcceptanceTest",
+      "label": "권한 변경 시점·범위를 기록하고 후착 도착만으로 모든 권한을 바꾸지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-023",
+      "@type": "cg:AcceptanceTest",
+      "label": "도착과 가용성을 구분하며 적용 예외를 규칙에서 유지한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-024",
+      "@type": "cg:AcceptanceTest",
+      "label": "자원 중복이 없고 실패한 예약은 소유 부분만 해제한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-025",
+      "@type": "cg:AcceptanceTest",
+      "label": "능력/정원·현재 작업 조건을 재검사해 자원을 증식시키지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-026",
+      "@type": "cg:AcceptanceTest",
+      "label": "설정된 조건을 반영하고 즉시 완전 가용으로 만들지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-027",
+      "@type": "cg:AcceptanceTest",
+      "label": "송신·수신·확인·적용을 구분하고 효과는 중복 적용되지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-028",
+      "@type": "cg:AcceptanceTest",
+      "label": "UNKNOWN/CONFLICTED를 보존하고 미래 정보를 과거 판단의 근거로 주입하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-029",
+      "@type": "cg:AcceptanceTest",
+      "label": "그 누락을 표시하고 도착만으로 완전 완료 처리하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-030",
+      "@type": "cg:AcceptanceTest",
+      "label": "교착·외부대기·불충분 정보와 관련 업무/메시지를 구분해 설명한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-031",
+      "@type": "cg:AcceptanceTest",
+      "label": "정확 source locator·판본·적용성 없이는 승인 규칙으로 활성화하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-032",
+      "@type": "cg:AcceptanceTest",
+      "label": "없는 수치·역할·시간을 만들지 않고 미확인과 source evidence를 남긴다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-033",
+      "@type": "cg:AcceptanceTest",
+      "label": "공학적 불가능을 무시하지 않고 허용 재량만 권한·사유와 기록한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-034",
+      "@type": "cg:AcceptanceTest",
+      "label": "영향 결과를 stale로 표시하고 원시 과거 실행은 당시 버전으로 유지한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-035",
+      "@type": "cg:AcceptanceTest",
+      "label": "실제 sim/wall ratio를 표시하고 물리 dt를 숨겨 바꾸지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-036",
+      "@type": "cg:AcceptanceTest",
+      "label": "지원 adapter 상태를 복원하고 미지원은 재계산/새 초기화로 명시한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-037",
+      "@type": "cg:AcceptanceTest",
+      "label": "부모 hash/sequence를 기록하고 A의 로그/판단 이유를 덮지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-038",
+      "@type": "cg:AcceptanceTest",
+      "label": "외생 혁신은 결속하고 사용자 조치에 따른 내생 결과는 재계산한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-039",
+      "@type": "cg:AcceptanceTest",
+      "label": "제약위반을 먼저 분리하고 우열 불명/비지배안을 표시한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-040",
+      "@type": "cg:AcceptanceTest",
+      "label": "독립 평가 집합과 사전 종료 규칙을 사용하고 유리한 seed만 선택하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-041",
+      "@type": "cg:AcceptanceTest",
+      "label": "도달/자원/시간 guard 의미가 일치하고 timeout은 미검증으로 남는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-042",
+      "@type": "cg:AcceptanceTest",
+      "label": "수치수렴·독립 비교·적용범위를 기록하고 VFX를 물리량으로 사용하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-043",
+      "@type": "cg:AcceptanceTest",
+      "label": "사용목적별 지표와 실패 범위를 보고하고 기본값을 실측으로 쓰지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-044",
+      "@type": "cg:AcceptanceTest",
+      "label": "순간이동·숨은 우회 등을 검출/제거하고 탈선 동역학을 계산했다고 주장하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-045",
+      "@type": "cg:AcceptanceTest",
+      "label": "운영 인계는 검사하되 검증 없는 생존율·임상 처치를 생성하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-046",
+      "@type": "cg:AcceptanceTest",
+      "label": "실제 정확도·실패·복구성·비용과 반려 이유를 ADR로 남긴다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-047",
+      "@type": "cg:AcceptanceTest",
+      "label": "과도상태·경계 변경·보존량·오차 누적·OOD를 검사한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-048",
+      "@type": "cg:AcceptanceTest",
+      "label": "보류/검증 계산으로 전환하고 정상 예측으로 출력하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-049",
+      "@type": "cg:AcceptanceTest",
+      "label": "ID/시간/단위/버전과 보존량이 일치하고 동일 양 이중 갱신이 없다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-050",
+      "@type": "cg:AcceptanceTest",
+      "label": "가상 행동은 현실관측으로 기록되지 않고 실제 갱신 revision을 추적한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-051",
+      "@type": "cg:AcceptanceTest",
+      "label": "실제수행·사용자이유·가설·권고를 분리하고 기록없음을 실패로 단정하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-052",
+      "@type": "cg:AcceptanceTest",
+      "label": "근거 없는 현실 인과를 주장하지 않고 모델 내 비교와 범위를 표시한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-053",
+      "@type": "cg:AcceptanceTest",
+      "label": "조건·역할·확인·예외를 표현하고 특정 분의 행동을 항상 정답으로 고정하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-054",
+      "@type": "cg:AcceptanceTest",
+      "label": "사건·기관·선행조건·분기가 일치하고 임의 코드를 포함하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-055",
+      "@type": "cg:AcceptanceTest",
+      "label": "정확한 이벤트/쪽/규칙판본/검수 결과를 보여주며 잘못된 ref를 거부한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-056",
+      "@type": "cg:AcceptanceTest",
+      "label": "관련 승인을 stale로 만들고 시뮬레이션 승인과 현장 승인을 구분한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-057",
+      "@type": "cg:AcceptanceTest",
+      "label": "새 입력·session·결과를 만들고 버튼 replay를 새 실험으로 표시하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-058",
+      "@type": "cg:AcceptanceTest",
+      "label": "세션·저장·수동 편집은 유지되고 실패·비용을 기록한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-059",
+      "@type": "cg:AcceptanceTest",
+      "label": "자료를 권한/실행 코드/승인으로 처리하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-060",
+      "@type": "cg:AcceptanceTest",
+      "label": "안정 ID와 대상·시기·버전으로 구별하고 참조 무결성을 검사한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-061",
+      "@type": "cg:AcceptanceTest",
+      "label": "필수 입력/guard/상태가 빠지지 않고 미구현 파일을 실행 가능한 것으로 제시하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-062",
+      "@type": "cg:AcceptanceTest",
+      "label": "확인 범위·hash·대상·다음 행동을 보존하고 URL을 원본 보유로 계산하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-063",
+      "@type": "cg:AcceptanceTest",
+      "label": "과거 해시와 대조하고 다른 역 자료/실행파일/단위 오류를 탐지한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-064",
+      "@type": "cg:AcceptanceTest",
+      "label": "실제 포함물·제한·단위·참조·성능을 검사하고 이름/외형으로 능력·정원을 생성하지 않으며 유료팩을 필수 선행으로 넣지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-065",
+      "@type": "cg:AcceptanceTest",
+      "label": "운영 인원·실제 조작자·연기자를 구분하고 편집시간을 작업시간으로 쓰지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-066",
+      "@type": "cg:AcceptanceTest",
+      "label": "정확 경로·입력·겹침을 확인하고 VR/기존 이슈/타인작업을 무단 확장·중단하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-067",
+      "@type": "cg:AcceptanceTest",
+      "label": "동작 성공만으로 현장용 자격을 부여하지 않고 해당 gate만 보류한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-068",
+      "@type": "cg:AcceptanceTest",
+      "label": "실행 전 승인 계약과 독립 split 없으면 합격하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-069",
+      "@type": "cg:AcceptanceTest",
+      "label": "초기 구축·검수·출력 수정·도움까지 포함한 측정과 미완료를 분리하고 사전 계획 없이 생성속도만으로 절감·학습효과를 승인하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-070",
+      "@type": "cg:AcceptanceTest",
+      "label": "UI·렌더·물리·LLM 시간을 나누고 수치모델/인원을 몰래 줄이지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-071",
+      "@type": "cg:AcceptanceTest",
+      "label": "승인된 범위의 durable event를 복원하고 부족분은 누락으로 표시한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-072",
+      "@type": "cg:AcceptanceTest",
+      "label": "색만으로 의미를 전달하지 않고 한국어 용어와 원 의미를 연결한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-073",
+      "@type": "cg:AcceptanceTest",
+      "label": "최소수집·익명화·보관·반출 정책을 적용하고 승인 없는 결제/공유를 하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-074",
+      "@type": "cg:AcceptanceTest",
+      "label": "동일조건과 원시로그를 보존하고 무한 문서 수정으로 PASS를 만들지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-075",
+      "@type": "cg:AcceptanceTest",
+      "label": "같은 gate를 재적용하고 새 조건에 기존 정확도를 자동 상속하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-076",
+      "@type": "cg:AcceptanceTest",
+      "label": "장소·시기·범위·모델·규칙·불확도·승인주체·한계를 포함한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-077",
+      "@type": "cg:AcceptanceTest",
+      "label": "기억·문서·관찰 근거, 역할 중복, 사용 빈도·현재 도구·승인 경로의 미확인을 기록하고 가상 페르소나를 실측값으로 쓰지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-078",
+      "@type": "cg:AcceptanceTest",
+      "label": "실증만 미승인으로 두고 필수 입력·담당 역할·대체경로·막힌 주장을 반환하며 독립 코어 개발을 전역 중단하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-079",
+      "@type": "cg:AcceptanceTest",
+      "label": "동일인의 구간은 합집합으로 계산하고 회의는 실제 참여자별로 합산하며 무인계산·회신대기를 인시에 더하지 않고 누락·추정·도움을 보존한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-080",
+      "@type": "cg:AcceptanceTest",
+      "label": "첫 구축과 정상 반복 비용을 모두 보여주고 순절감이 양수가 아니거나 재사용 빈도가 없으면 회수 성공·총시간 절감을 주장하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-081",
+      "@type": "cg:AcceptanceTest",
+      "label": "비교군은 연구 조건으로만 기록하고 제품 모드는 두 개로 유지하며 조건별 차이·오염·도움·검수 가림 여부를 보존한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-082",
+      "@type": "cg:AcceptanceTest",
+      "label": "전체 시도를 분모로 제시하고 조건부 완수시간과 실패를 분리하며 사후 임계값 변경·좋은 사용자만 선택을 금지하고 근거 부족은 INCONCLUSIVE로 반환한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-083",
+      "@type": "cg:AcceptanceTest",
+      "label": "원본을 변경하지 않고 새 운영안을 만들며 참조·권한·개정·가정의 유효성을 확인하고 변경분만 입력할 수 있다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-084",
+      "@type": "cg:AcceptanceTest",
+      "label": "dirty 파생물·승인을 표시하고 영향 범위를 입증 못하면 확대 재계산하며 원본 로그를 보존하고 전체 재실행 대비 지정 결과의 동등성을 검사한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-085",
+      "@type": "cg:AcceptanceTest",
+      "label": "중간 계산과 이벤트를 생략하지 않고 미래 정보 누출·timestep 임의 확대 없이 순차 실행과 동등한 상태를 만들며 미완계산은 대기로 표시한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-086",
+      "@type": "cg:AcceptanceTest",
+      "label": "지원 형식과 수동 reconciliation 한계를 표시하고 의미변경은 운영안에 연결해 관련 승인을 무효화하며 출력후 수작업과 수정량을 기록한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-087",
+      "@type": "cg:AcceptanceTest",
+      "label": "허용된 기능을 유지하고 미지원 계산을 표시하며 승인 없는 업로드·외부 실행 없이 실패·비용·복구 기록을 남긴다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-088",
+      "@type": "cg:AcceptanceTest",
+      "label": "계약·관심·참여를 구분하고 훈련 참가자를 구매좌석으로 환산하지 않으며 반복 빈도·책임·미확인을 기록하되 학부 구현의 선행으로 구매계약을 요구하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-089",
+      "@type": "cg:AcceptanceTest",
+      "label": "가정·출처·모델범위·판본·검수상태를 표시하고 사용자가 미검증을 승인으로 오해하는지 측정하며 단일 녹색 점수로 자격을 통합하지 않는다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-090",
+      "@type": "cg:AcceptanceTest",
+      "label": "독립 개발과 제한된 효용시험은 열되 필수 미검증 QoI와 기관 승인·동기화·도입을 통과시키지 않고 NOT_APPLICABLE은 근거와 제한된 주장에만 사용한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:AT-091",
+      "@type": "cg:AcceptanceTest",
+      "label": "관측·공급자 주장·미확인을 구별하고 공개페이지에 없는 기능을 부재로 단정하지 않으며 설정 대 코어 변경·검수·지원비를 기록한다",
+      "status": "NOT_RUN"
+    },
+    {
+      "@id": "cg:EP00",
+      "@type": "cg:WorkPackage",
+      "label": "범위·사용자·평가기준",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP01",
+      "@type": "cg:WorkPackage",
+      "label": "계약·온톨로지·규칙",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP02",
+      "@type": "cg:WorkPackage",
+      "label": "운영 커널·자원·통신",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP03",
+      "@type": "cg:WorkPackage",
+      "label": "맵·자료·자산",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP04",
+      "@type": "cg:WorkPackage",
+      "label": "RTS·업무 UI",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP05",
+      "@type": "cg:WorkPackage",
+      "label": "로그·분기·비교",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP06",
+      "@type": "cg:WorkPackage",
+      "label": "튜토리얼·랜덤",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP07",
+      "@type": "cg:WorkPackage",
+      "label": "보행·교통·운영 검증",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP08",
+      "@type": "cg:WorkPackage",
+      "label": "위험장·대체모델·결합",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP09",
+      "@type": "cg:WorkPackage",
+      "label": "AI 저작·대본",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP10",
+      "@type": "cg:WorkPackage",
+      "label": "통합·사용자·검수",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:EP11",
+      "@type": "cg:WorkPackage",
+      "label": "확장·배포",
+      "status": "PLAN_NOT_IMPLEMENTATION"
+    },
+    {
+      "@id": "cg:studiesWorkflow",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:StudyProtocol",
+      "range": "cg:WorkflowObservation",
+      "comment": "실제 최근 업무를 근거로 연구 계획을 만든다."
+    },
+    {
+      "@id": "cg:executesStudy",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:StudyRun",
+      "range": "cg:StudyProtocol",
+      "comment": "실제 수행만 계획의 실행으로 기록한다."
+    },
+    {
+      "@id": "cg:recordsHumanTime",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:StudyRun",
+      "range": "cg:WorkTimeEntry",
+      "comment": "시뮬레이션 시간이 아닌 사람 활동 원장."
+    },
+    {
+      "@id": "cg:producesQualityReview",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:StudyRun",
+      "range": "cg:QualityReview",
+      "comment": "품질 기준과 검수 결과, 불일치를 보존한다."
+    },
+    {
+      "@id": "cg:usesSitePackage",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScenarioSpec",
+      "range": "cg:SitePackage",
+      "comment": "재사용하는 현장 묶음의 특정 판본."
+    },
+    {
+      "@id": "cg:exportsTemplate",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ScriptBundle",
+      "range": "cg:TemplateProfile",
+      "comment": "확인된 고객 양식으로 파생한다."
+    },
+    {
+      "@id": "cg:invalidatesQualification",
+      "@type": "owl:ObjectProperty",
+      "domain": "cg:ChangeImpact",
+      "range": "cg:ModelQualification",
+      "comment": "변경으로 효력을 잃는 결과를 표시. 원본 삭제 아님."
+    }
+  ]
+}

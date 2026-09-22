@@ -1,0 +1,239 @@
+{
+  "schemaVersion": "1.0.0",
+  "architectureId": "ARCH-CHOOGUARD-001",
+  "date": "2026-09-19",
+  "basePRD": "11.0.0",
+  "baseUX": "2",
+  "repositoryBaseline": "aae4867c71c96f34f8fe8a252cddd9aa0412394f",
+  "status": "DESIGNED_NOT_IMPLEMENTED",
+  "runtime": "UNITY_NATIVE_PC",
+  "ui": "UGUI_TMP",
+  "deployment": "LOCAL_FIRST_MODULAR_MONOLITH_WITH_ISOLATED_WORKERS",
+  "userModes": [
+    "TUTORIAL",
+    "RANDOM_OPERATIONS_LAB"
+  ],
+  "components": [
+    {
+      "id": "UI",
+      "name": "NativePresentation",
+      "execution": "Unity main thread",
+      "responsibility": "S01~12 uGUI/TMP; 카메라·선택·입력·표현",
+      "compileDependsOn": [
+        "APP"
+      ],
+      "owns": [
+        "UI selection",
+        "camera",
+        "focus",
+        "draft buffer"
+      ]
+    },
+    {
+      "id": "APP",
+      "name": "ApplicationFacade",
+      "execution": "application boundary",
+      "responsibility": "typed commands·queries, 사용자 권한·projection scope",
+      "compileDependsOn": [
+        "OPS",
+        "CONTENT",
+        "EXPERIMENT",
+        "AUTHOR",
+        "EVIDENCE"
+      ],
+      "owns": [
+        "command routing"
+      ]
+    },
+    {
+      "id": "OPS",
+      "name": "OperationsCore",
+      "execution": "one simulation owner",
+      "responsibility": "업무·기관 권한·복합예약·메시지·인계·이벤트",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "task state",
+        "resource reservations",
+        "agency knowledge",
+        "authority"
+      ]
+    },
+    {
+      "id": "CONTENT",
+      "name": "ContentAndRules",
+      "execution": "application worker",
+      "responsibility": "SiteBundle·ScenarioSpec·Plan·RuleIR 검증·수명",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "immutable content revisions"
+      ]
+    },
+    {
+      "id": "SIM",
+      "name": "SimulationCoordinator",
+      "execution": "same session owner",
+      "responsibility": "교환 경계·양 소유권·worker capability·결과 승인",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "committed simulation boundary",
+        "field ownership"
+      ]
+    },
+    {
+      "id": "EXPERIMENT",
+      "name": "ExperimentService",
+      "execution": "application worker",
+      "responsibility": "checkpoint barrier·branch·공정 비교·영향/캐시",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "branch lineage",
+        "comparison specification"
+      ]
+    },
+    {
+      "id": "AUTHOR",
+      "name": "AuthoringService",
+      "execution": "application worker",
+      "responsibility": "근거 pack·LLM 제안·ScriptIR·양식·의미 diff",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "draft revisions",
+        "export jobs"
+      ]
+    },
+    {
+      "id": "EVIDENCE",
+      "name": "QualificationRegistry",
+      "execution": "application worker",
+      "responsibility": "규칙/모델/출력별 검증·사람 승인·무효화",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "qualification records"
+      ]
+    },
+    {
+      "id": "DOMAIN",
+      "name": "DomainContracts",
+      "execution": "pure C#",
+      "responsibility": "ID·수량·메시지·규칙 AST·immutable DTO",
+      "compileDependsOn": [],
+      "owns": [
+        "type semantics"
+      ]
+    },
+    {
+      "id": "PORTS",
+      "name": "ApplicationPorts",
+      "execution": "pure C#",
+      "responsibility": "persistence·solver·retrieval·clock·export 경계",
+      "compileDependsOn": [
+        "DOMAIN"
+      ],
+      "owns": [
+        "interface definitions"
+      ]
+    },
+    {
+      "id": "STORE",
+      "name": "LocalPersistence",
+      "execution": "dedicated serialized writer",
+      "responsibility": "SQLite·blob·journal·backup·outbox",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "durable commits",
+        "artifact blobs",
+        "projections"
+      ]
+    },
+    {
+      "id": "WORKERS",
+      "name": "WorkerAdapters",
+      "execution": "isolated OS processes",
+      "responsibility": "JuPedSim/SUMO/FDS/ROM·문서·복원 어댑터",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "solver internal states",
+        "job private files"
+      ]
+    },
+    {
+      "id": "AI",
+      "name": "AIProviderAdapter",
+      "execution": "isolated process or explicit remote",
+      "responsibility": "정책 허용 provider 호출·timeout·budget·filter",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "provider interaction state"
+      ]
+    },
+    {
+      "id": "LEGACY",
+      "name": "FoundationAdapters",
+      "execution": "same owner as legacy core",
+      "responsibility": "관측/명령/commit/spatial/physical 계약 재사용",
+      "compileDependsOn": [
+        "DOMAIN",
+        "PORTS"
+      ],
+      "owns": [
+        "legacy delegated fields only"
+      ]
+    },
+    {
+      "id": "BOOT",
+      "name": "CompositionRoot",
+      "execution": "bootstrap",
+      "responsibility": "모듈 조립·필드 owner 배정·process lifecycle",
+      "compileDependsOn": [
+        "UI",
+        "APP",
+        "OPS",
+        "CONTENT",
+        "SIM",
+        "EXPERIMENT",
+        "AUTHOR",
+        "EVIDENCE",
+        "STORE",
+        "WORKERS",
+        "AI",
+        "LEGACY"
+      ],
+      "owns": [
+        "deployment composition"
+      ]
+    }
+  ],
+  "scopeNotes": [
+    "dependency arrows are compile-time, not bidirectional runtime event flow",
+    "SIM/EXPERIMENT invoke ports wired at BOOT; no dependency cycles",
+    "author-visible whole-state projection does not alter simulated agency knowledge",
+    "process isolation is for fault containment, not microservices per module"
+  ]
+}

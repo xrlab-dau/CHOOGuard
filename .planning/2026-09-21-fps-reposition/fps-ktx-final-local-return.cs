@@ -1,0 +1,11 @@
+if(!UnityEditor.EditorApplication.isPlaying)throw new System.Exception("Play required");
+var p=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Fps.FirstPersonResponder>();var c=p.GetComponent<UnityEngine.CharacterController>();
+var origin=new UnityEngine.Vector3(88.9187956f,-.73000026f,76.4428219f);var right=new UnityEngine.Vector3(.93773824f,0,-.34734274f);var forward=new UnityEngine.Vector3(.34734274f,0,.93773824f);
+System.Func<float,float,float,UnityEngine.Vector3> point=(x,y,z)=>origin+right*x+UnityEngine.Vector3.up*y+forward*z;
+p.SetExternalInputMode(true);p.Resume(false);
+var goals=new[]{point(0,1.178f,-46.5f),point(0,1.178f,-48.81f),point(-.55f,1.178f,-48.81f),point(-1.23f,.913f,-48.81f),point(-1.55f,.715f,-48.81f),point(-2.7f,.73f,-48.81f)};
+var rows=new System.Collections.Generic.List<object>();int total=0;bool all=true;
+foreach(var goal in goals){int steps=0,stuck=0;bool reached=false;var previous=p.transform.position;
+for(;steps<2000;steps++){var delta=goal-p.transform.position;var flat=new UnityEngine.Vector2(delta.x,delta.z);if(flat.magnitude<.10f){reached=UnityEngine.Mathf.Abs(p.transform.position.y-goal.y)<.35f;break;}float yaw=UnityEngine.Mathf.Atan2(delta.x,delta.z)*UnityEngine.Mathf.Rad2Deg;float turn=UnityEngine.Mathf.DeltaAngle(p.YawDegrees,yaw);bool move=UnityEngine.Mathf.Abs(turn)<10;p.StepInput(move?UnityEngine.Vector2.up:UnityEngine.Vector2.zero,new UnityEngine.Vector2(turn,0),false,false,false,.05f);total++;var now=p.transform.position;if(move&&UnityEngine.Vector2.Distance(new UnityEngine.Vector2(now.x,now.z),new UnityEngine.Vector2(previous.x,previous.z))<.002f)stuck++;else stuck=0;previous=now;if(stuck>60||now.y< -15||p.IsPaused)break;}
+var pos=p.transform.position;rows.Add(new{goal=new{x=goal.x,y=goal.y,z=goal.z},reached,steps,stuck,position=new{x=pos.x,y=pos.y,z=pos.z},grounded=c.isGrounded,flags=p.LastCollisionFlags.ToString()});if(!reached){all=false;break;}}
+p.Pause();return new{status=all?"PASS":"FAIL",scope="Native CharacterController via public StepInput .05s; local coach2 aisle-to-vestibule-to-platform return; fixture starts on platform, no whole-map connectivity or OSinput claim",acceptedSimSeconds=total*.05f,checkpoints=rows};

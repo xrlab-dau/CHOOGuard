@@ -1,0 +1,74 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "version": 1,
+  "targetSessionMinutes": [
+    20,
+    30
+  ],
+  "userScope": "Production direction approved; implement first actual persistent operations slice, not claim whole production done.",
+  "directionRef": ".planning/2026-09-20-integrated-build/production-direction-graph.json",
+  "ownership": {
+    "physics": [
+      "workers/physics/worker.py",
+      "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs",
+      "optional workers/physics/operations_lifecycle_probe.py"
+    ],
+    "client": [
+      "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+      "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+      "Assets/ChooGuard/App/Mvp/MvpStationView.cs",
+      "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs"
+    ]
+  },
+  "protocol": {
+    "keep": "protocolVersion1 legacy start semantics and all existing result fields/guards; additive lifecycle capability/fields. Legacy start begins incident immediately.",
+    "actions": {
+      "start_routine": "Start one persistent run with finite population50 and existing selected scenario; ordinary journeys use same JuPedSim engine, no normal departures in this first slice.",
+      "begin_incident": "Zero-step atomic transition preserving active ids/positions/cohorts/doses. No reset, no newrun. All cohorts initiallyheld on onset; existing warn/release/hold actions apply.",
+      "advance": "One accepted physical step in current phase. Session clock monotonic; fire fields only read incident seconds."
+    },
+    "resultFields": {
+      "lifecycleVersion": "int1",
+      "phase": "ordinary|incident|resolved|incomplete",
+      "sessionSimTime": "float seconds, same as legacy simTime",
+      "incidentOnsetSimTime": "float -1 before onset",
+      "incidentTime": "float -1 before onset then session-onset",
+      "incidentInitialDigest": "string empty before onset then immutable snapshotdigest",
+      "normalDepartedCount": "int0 in this finite routine slice",
+      "incidentEvacuatedCount": "int0 beforeincident",
+      "fieldValidUntil": "float120 forfire",
+      "agents": "existingfields + routineState(string moving|waiting|responding), destinationId(string)"
+    },
+    "initialStateDigest": "Retain original session spawn digest; don't replace it at incident onset.",
+    "capability": "CAPABILITIES declares lifecycleVersion1; no silentfallback.",
+    "CSharpAPI": {
+      "StartRoutineRun": "public void StartRoutineRun(int seed,int population,string scenario)",
+      "BeginIncident": "public bool BeginIncident() sends begin_incident through same pending/requestguard",
+      "legacy": "StartRun remains supported; same ResultReceived events"
+    }
+  },
+  "runtime": {
+    "routine": "seeded move/wait itineraries within existing referencegeometry; desired speeds1.2-1.4m/s are design values; no LLM-driven NPCticks/no realbehavior validationclaim",
+    "identity": "same run/generation/id and scene object across onset; no NPCclear/respawn",
+    "clocks": "wall only input/networktimeout/visualinterpolation. Accepted sessionSimTime delta owns citizen/teamtravel/preparation/logicaltask completion. In-flight step mayfinishafterpause request; settledpause freezes allphysicalprogress.",
+    "FDS": "incidentTime1:1; stop incomplete before anysample>120; no extrapolation/stretch/loop/recoveryclaims.",
+    "replay": "New whole-session replay resets withsame seed, compare sessionInitialDigest; incidentInitialDigest tracks exactstart snapshot separately; never claim same incidentstate merelysame seed.",
+    "click": "Replace stale .65/-13/-12 picking with MvpSpatialMetrics.Reference and inverse; boundaries30x20.",
+    "team": "Preposition existingteams in ordinary; queue/arrival/work/ownACK; use committedsimdelta fortravel/prep, displayinterpolationcannot authorizecompletion.",
+    "stages": "ordinary→incident→resolved (client Recovery). All-evacuated enters Recovery with team movement/post-response activity still available; debrief is user-opened, not forced run termination. Engine coverage exhaustion remains explicitly incomplete, not fictional safety or a gameplay failure score.",
+    "pacing": "20-30min production design. Ordinary randomonset default4-7simminutes; expose Korean 사건발생 button for author/test demand. This increment doesnotpromise full20-30min sessioncontent.",
+    "recovery": "Keep run, logs, outcomes, team resources after affected population exits. New citizen demand/reopening simulation is later; do not invent safe-reopen or clinical outcomes. Actual team return/medical-request handover can remain available on accepted simulation ticks; physical fields must not be sampled or displayed as current beyond their covered incident time."
+  },
+  "verification": {
+    "physics": "one actual routine step→zero-step onset→IDs/positions/doses unchanged; routine clock>120 doesn'texhaustfirefield; incidentstep>120 fails without extrapolation; preservelegacycase path.",
+    "client": "one compile+native ordinarypreposition→samevisualids onset→teamarrival/controlACK→crowdcase resolved/debrief. No fullsuite/CFDregen/floorregeneration."
+  },
+  "exclusions": [
+    "No Editor builders/scene writes bymakers",
+    "No floor geometry edits",
+    "No world text/computeruse/globalsettings",
+    "No clinical recovery/contactcrush/sitecalibrationclaim",
+    "No nestedagents/TDD/storyexpansion"
+  ],
+  "userFailurePolicy": "Continue operating and recover after inadequate response; review decisions at end. No forced game-over from poor response."
+}

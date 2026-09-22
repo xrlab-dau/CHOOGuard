@@ -1,0 +1,4730 @@
+{
+  "status": "PASS",
+  "operationId": "24673277b43c4a5f8588878dbcc64db1",
+  "runId": "0c83bfcfb2e242379535fd1b185eb3f3",
+  "generation": 2,
+  "initialBins": [
+    {
+      "agency": "busan-jungbu-central-119",
+      "work": "evacuation-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 0
+    },
+    {
+      "agency": "busan-jungbu-central-119",
+      "work": "medical-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 0
+    },
+    {
+      "agency": "busan-jungbu-choryang-119",
+      "work": "evacuation-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 0
+    },
+    {
+      "agency": "busan-jungbu-choryang-119",
+      "work": "medical-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 0
+    }
+  ],
+  "finalBins": [
+    {
+      "agency": "busan-jungbu-central-119",
+      "work": "evacuation-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 1
+    },
+    {
+      "agency": "busan-jungbu-central-119",
+      "work": "medical-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 0
+    },
+    {
+      "agency": "busan-jungbu-choryang-119",
+      "work": "evacuation-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 0
+    },
+    {
+      "agency": "busan-jungbu-choryang-119",
+      "work": "medical-support",
+      "capacity": 1,
+      "stock": 1,
+      "committed": 0,
+      "consumed": 0,
+      "totalConsumed": 0
+    }
+  ],
+  "sameBaseScarcity": {
+    "available": false,
+    "reason": "대피 지원 꾸러미 없음 · 복귀 후 보충을 기다리세요",
+    "last": "대피 지원 꾸러미 없음 · 복귀 후 보충을 기다리세요"
+  },
+  "actualEvacuated": 50,
+  "gateFalseBlocked": true,
+  "gateMissingBlocked": true,
+  "realTaskReadyCount": 2,
+  "logicalOperationConsumedCount": 1,
+  "pausedFrozen": true,
+  "transitionEvidence": [
+    {
+      "edge": "warn-ack-next",
+      "sim": 193,
+      "request": "5b0a5e12bbf34a66a6b13ff2423544fe",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2
+    },
+    {
+      "edge": "evac-ack",
+      "sim": 212,
+      "request": "c5bdfc6829d3404dbb12072359ef873e",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2
+    },
+    {
+      "edge": "returned",
+      "sim": 417,
+      "request": "b0905ca5f9054f26b2ec5776c14477cf",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2
+    },
+    {
+      "edge": "replenished",
+      "sim": 445,
+      "request": "2d9c5d46bb33463d995817ba122fd2ee",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2
+    }
+  ],
+  "observedTurnaroundSeconds": 28,
+  "configuredTurnaroundSeconds": 27.3000011,
+  "scope": "One actual crowd workflow; no FDS range extension, model calibration, camera retest, or A-quality acceptance claim. Gate fixture is explicit failure-path instrumentation only.",
+  "fixtureCleanup": "restored original gate and unsubscribed counter; removed transient objects; paused run",
+  "trace": [
+    {
+      "label": "initial-four-bins",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 3,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "central-reserved",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 4,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Requested",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 0,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "duplicate-request-unchanged",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 4,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Requested",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 0,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "same-base-spare-team-blocked",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 4,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Requested",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 0,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "other-base-independent-reserve",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 5,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Committed"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Requested",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 0,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Requested",
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "predeparture-cancel-refund",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Requested",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 0,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "repeated-cancel-no-credit",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 0,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Requested",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 0,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "actual-onsite",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 139,
+      "paused": false,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "WaitingIncident",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "onsite-paused",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 140,
+      "paused": true,
+      "speed": 4,
+      "phase": "ordinary",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "WaitingIncident",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "actual-crowd-incident",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 140,
+      "paused": true,
+      "speed": 4,
+      "phase": "incident",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": true,
+      "gateAttempts": 0,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "false-gate-blocks-release",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 176,
+      "paused": false,
+      "speed": 4,
+      "phase": "incident",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": true,
+      "gateAttempts": 2,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "false-gate-settled",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 177,
+      "paused": true,
+      "speed": 4,
+      "phase": "incident",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "missing-gate-accepted-time",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 192,
+      "paused": false,
+      "speed": 4,
+      "phase": "incident",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": false,
+      "gateAttempts": 3,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "missing-gate-blocks-release",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 193,
+      "paused": true,
+      "speed": 4,
+      "phase": "incident",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": false,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 6,
+      "gatePresent": false,
+      "gateAttempts": 3,
+      "controlReleases": 0,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 1,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Committed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "actual-execution-consumes-once",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 194,
+      "paused": false,
+      "speed": 4,
+      "phase": "incident",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": false,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 7,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 1,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 0,
+          "consumed": 1,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Consumed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Working",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "warn-and-evacuate-released",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 215,
+      "paused": false,
+      "speed": 4,
+      "phase": "incident",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": false,
+      "evacuated": 0,
+      "resourceReady": true,
+      "revision": 7,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 0,
+          "consumed": 1,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Consumed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "AwaitingOutcome",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1087.19568,
+          "route": 1087.19568,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -61,
+              "y": 0.18,
+              "z": -70
+            },
+            {
+              "x": -54.99999,
+              "y": 0.18,
+              "z": -69.99995
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "actual-outcome-auto-return",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 247,
+      "paused": false,
+      "speed": 4,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 7,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 0,
+          "consumed": 1,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Consumed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Returning",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 24,
+          "route": 1379.86157,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -53.13221,
+              "y": 0.18,
+              "z": -66.9285
+            },
+            {
+              "x": -53.5447731,
+              "y": 0.18,
+              "z": -64.17909
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "approaching-base",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 409,
+      "paused": false,
+      "speed": 4,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 7,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 0,
+          "consumed": 1,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Consumed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Returning",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1320,
+          "route": 1379.86157,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -488.298126,
+              "y": 6.54537,
+              "z": -886.771851
+            },
+            {
+              "x": -491.4443,
+              "y": 9.913453,
+              "z": -901.4218
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "actual-replenishing",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 418,
+      "paused": false,
+      "speed": 1,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 7,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 0,
+          "consumed": 1,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Consumed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Replenishing",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1379.86157,
+          "route": 1379.86157,
+          "remaining": 26.301,
+          "total": 27.3000011,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "replenishing-pause-settled",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 418,
+      "paused": true,
+      "speed": 1,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 7,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 0,
+          "consumed": 1,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Consumed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Replenishing",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1379.86157,
+          "route": 1379.86157,
+          "remaining": 26.301,
+          "total": 27.3000011,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "paused-countdown-and-stock-frozen",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 418,
+      "paused": true,
+      "speed": 1,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 7,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 0,
+          "committed": 0,
+          "consumed": 1,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Consumed"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Replenishing",
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "completed": null,
+          "distance": 1379.86157,
+          "route": 1379.86157,
+          "remaining": 26.301,
+          "total": 27.3000011,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "ready-restocks-exactly-one",
+      "ready": true,
+      "failed": false,
+      "inFlight": true,
+      "sim": 449,
+      "paused": false,
+      "speed": 4,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 8,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Restocked"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": "24673277b43c4a5f8588878dbcc64db1",
+          "distance": 1379.86157,
+          "route": 1379.86157,
+          "remaining": 0,
+          "total": 27.3000011,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "final-settled",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 450,
+      "paused": true,
+      "speed": 4,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 8,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Restocked"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": "24673277b43c4a5f8588878dbcc64db1",
+          "distance": 1379.86157,
+          "route": 1379.86157,
+          "remaining": 0,
+          "total": 27.3000011,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "duplicate-restock-no-credit",
+      "ready": true,
+      "failed": false,
+      "inFlight": false,
+      "sim": 450,
+      "paused": true,
+      "speed": 4,
+      "phase": "resolved",
+      "run": "0c83bfcfb2e242379535fd1b185eb3f3",
+      "generation": 2,
+      "warned": true,
+      "evacuationOrdered": true,
+      "allEvacuated": true,
+      "evacuated": 50,
+      "resourceReady": true,
+      "revision": 8,
+      "gatePresent": true,
+      "gateAttempts": 3,
+      "controlReleases": 2,
+      "stocks": [
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 1
+        },
+        {
+          "agency": "busan-jungbu-central-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "evacuation-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        },
+        {
+          "agency": "busan-jungbu-choryang-119",
+          "work": "medical-support",
+          "capacity": 1,
+          "stock": 1,
+          "committed": 0,
+          "consumed": 0,
+          "totalConsumed": 0
+        }
+      ],
+      "reservations": [
+        {
+          "op": "24673277b43c4a5f8588878dbcc64db1",
+          "agency": "busan-jungbu-central-119",
+          "team": "central119-evacuation-response",
+          "state": "Restocked"
+        },
+        {
+          "op": "3e08e30eb869436cba597fc64f96d880",
+          "agency": "busan-jungbu-choryang-119",
+          "team": "choryang119-evacuation-response",
+          "state": "Canceled"
+        }
+      ],
+      "jobs": [
+        {
+          "id": "central119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": "24673277b43c4a5f8588878dbcc64db1",
+          "distance": 1379.86157,
+          "route": 1379.86157,
+          "remaining": 0,
+          "total": 27.3000011,
+          "source": "jev_expected",
+          "positions": [
+            {
+              "x": -468.338,
+              "y": 7,
+              "z": -862.397
+            },
+            {
+              "x": -471.291,
+              "y": 7,
+              "z": -874.535
+            }
+          ]
+        },
+        {
+          "id": "central119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -474.244,
+              "y": 7,
+              "z": -886.672
+            }
+          ]
+        },
+        {
+          "id": "central119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": -461.575,
+              "y": 7,
+              "z": -876.899
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-response",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 1691.4978,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 130.744,
+              "y": 6.858,
+              "z": 525.864
+            },
+            {
+              "x": 136.143,
+              "y": 6.858,
+              "z": 523.656
+            }
+          ]
+        },
+        {
+          "id": "choryang119-evacuation-relief",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 141.543,
+              "y": 6.858,
+              "z": 521.448
+            }
+          ]
+        },
+        {
+          "id": "choryang119-medical-support",
+          "state": "Ready",
+          "op": null,
+          "completed": null,
+          "distance": 0,
+          "route": 0,
+          "remaining": 0,
+          "total": 0,
+          "source": null,
+          "positions": [
+            {
+              "x": 139.928,
+              "y": 6.858,
+              "z": 532.912
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+flowchart TB
+    I["CommandIntent<br/>requester ≠ acting team"]
+    D["ID / fingerprint 조회"]
+    R["기존 receipt 반환<br/>다른 payload면 ID_CONFLICT"]
+    V["권한 · 읽기 revision<br/>원자 자원 조건 검사"]
+    C["Candidate events<br/>아직 외부 상태 변경 없음"]
+    TX["한 SQLite transaction<br/>ledger + receipt + holds + outbox"]
+    REJECT["도메인 거부<br/>이유 제공 · 상태 변경 없음"]
+    FAIL["commit 실패<br/>기존 상태 보존 · 승인 금지"]
+    PUB["durable commit 후<br/>메모리/조회 snapshot 게시"]
+    W["outbox 전송<br/>worker job 재전송은 멱등"]
+    ACK["UI Receipt<br/>접수됨 ≠ 업무 완료"]
+    I -->|"수신"| D
+    D -->|"키가 존재"| R
+    D -->|"새 키"| V
+    V -->|"유효"| C
+    V -->|"조건 미충족"| REJECT
+    C -->|"직렬화 owner"| TX
+    TX -->|"disk/transaction 실패"| FAIL
+    TX -->|"성공"| PUB
+    PUB -->|"acceptedSeq"| ACK
+    TX -->|"commit 이후"| W

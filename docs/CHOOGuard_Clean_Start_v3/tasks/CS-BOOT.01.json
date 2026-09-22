@@ -1,0 +1,131 @@
+{
+  "id": "CS-BOOT.01",
+  "epicId": "CS-BOOT",
+  "title": "새 프로젝트·의존성 잠금",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-BOOT.01",
+    "description": "새 Unity 프로젝트, boot scene, 정확한 editor/package lock, 최초 실행 기록",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-BOOT.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-BOOT.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "ProjectSettings/ProjectVersion.txt",
+    "ProjectSettings/GraphicsSettings.asset",
+    "Packages/manifest.json",
+    "Packages/packages-lock.json",
+    "Assets/ChooGuard/Scenes/Bootstrap.unity",
+    "docs/build/baseline.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/BOOT/Boot01Tests.cs",
+  "dependsOn": [],
+  "algorithm": [
+    "Unity 6 LTS 계열의 URP 3D 프로젝트를 비어 있는 작업 폴더에 생성한다. 정확한 패치·OS·backend는 설치된 정식 조합으로 선택해 기록한다.",
+    "uGUI/TMP·Input System·Test Framework를 새로 확인/도입하고 전체 lock을 커밋한다. 한글 font asset은 공급경로만 기록하고 이 명세에 폰트 바이너리를 넣지 않는다.",
+    "Bootstrap 선행 산출물은 도메인·CompositionRoot가 없는 정적 카메라·Canvas·EventSystem의 smoke scene이다. CS-BOOT.02의 실제 CompositionRoot는 별도 installer가 나중에 조립한다. 이 단계는 존재하지 않는 후행 클래스를 요구하지 않는다."
+  ],
+  "contract": "BuildBaseline {editorVersion, packageLockSha256, renderPipeline, backend, os, nativePlugins, buildReceiptRef}; 모든 값은 새 실행에서 기록.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-BOOT.01-P",
+      "given": "빈 디렉터리, Camera/Canvas/EventSystem 각1",
+      "when": "새 native smoke 부팅",
+      "then": "composition-root 참조0; EventSystem1; 신규 version receipt",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-BOOT.01-N",
+      "given": "존재하지 않는 local DLL",
+      "when": "새 native smoke 부팅",
+      "then": "빌드 미실행/실패; 과거 receipt 재사용0",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-066"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/01-build-and-assemblies.md",
+    "specs/02-wire-and-ports.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/01-build-and-assemblies.md",
+    "specs/02-wire-and-ports.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-066"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/BOOT/Boot01Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "빈 디렉터리, Camera/Canvas/EventSystem 각1",
+    "operation": "새 native smoke 부팅",
+    "expectedPositive": "composition-root 참조0; EventSystem1; 신규 version receipt",
+    "negativeInput": "존재하지 않는 local DLL",
+    "expectedNegative": "빌드 미실행/실패; 과거 receipt 재사용0",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

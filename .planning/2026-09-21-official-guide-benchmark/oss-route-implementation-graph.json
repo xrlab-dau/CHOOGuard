@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "chooguard.oss-route-implementation.v1",
+  "status": "implementation_frozen_native_compile_bake_pending",
+  "scope": "bounded second-floor station last-mile, not agency vehicle response",
+  "packages": [
+    {
+      "name": "DotRecast.Core",
+      "version": "2026.3.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/dotrecast.core/2026.3.1/dotrecast.core.2026.3.1.nupkg",
+      "sha256": "f96b3b70f5bbb7474a74ffe7a5814f23710d562e4e45bdb7cc9fcdd95cd4a92b"
+    },
+    {
+      "name": "DotRecast.Recast",
+      "version": "2026.3.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/dotrecast.recast/2026.3.1/dotrecast.recast.2026.3.1.nupkg",
+      "sha256": "7700525d708bcc946b4326187c9abdbcd98b2ed0faa32fbe199c589a1d846ba0"
+    },
+    {
+      "name": "DotRecast.Detour",
+      "version": "2026.3.1",
+      "url": "https://api.nuget.org/v3-flatcontainer/dotrecast.detour/2026.3.1/dotrecast.detour.2026.3.1.nupkg",
+      "sha256": "92785fbfaaec216ba44e0155adfeab5bccf9d111f16919822c9935df505040e5"
+    }
+  ],
+  "dependencyCorrection": "Pinned 2026.3.1 Core has zero netstandard2.1 dependencies; Recast and Detour only Core. No Unsafe package required.",
+  "restoreApi": "NugetForUnity.PackageRestorer.Restore(false)",
+  "bakeApi": "ChooGuard.Editor.MvpTeamNavigationBuilder.Build()",
+  "queryApi": "MvpTeamNavigation.TryPlan(Vector3 start, Vector3 end, out Vector3[] corners, out string reason)",
+  "navDataPath": "Assets/ChooGuard/Settings/MvpTeamNavigation/SecondFloor-v1.bytes",
+  "sourceStaging": [
+    ".tools/oss-route/MvpTeamNavigation.cs",
+    ".tools/oss-route/MvpTeamNavigationBuilder.cs",
+    ".tools/oss-route/wire.py"
+  ],
+  "checksPerformed": [
+    "Pinned upstream API signatures inspected",
+    "Pinned nupkg nuspec and SHA256 inspected",
+    "All three netstandard2.1 DLLs now present in Assets/Packages"
+  ],
+  "nativeChecksRemaining": [
+    "Unity assembly restore and source compile",
+    "Bake actual 2F meshes and inspect blocker detour corners",
+    "All staging anchors to three task targets reachability",
+    "Unreachable and unsupported-floor visible blocked state",
+    "Accepted-clock pause and arrival interaction semantics"
+  ],
+  "limits": [
+    "No Unity calls made by route worker",
+    "No physical emergency egress or full station acceptance",
+    "No cross-floor routing or direct fallback",
+    "No changes to civilian rendering fields, layers or clips"
+  ],
+  "sourceFiles": [
+    "Assets/ChooGuard/App/Mvp/MvpTeamNavigation.cs",
+    "Assets/ChooGuard/Editor/MvpTeamNavigationBuilder.cs",
+    "Assets/ChooGuard/App/Mvp/MvpStationView.cs",
+    "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs"
+  ],
+  "sourceHashes": {
+    "Assets/ChooGuard/App/Mvp/MvpTeamNavigation.cs": "2b1b169e18c9562c4e70bf22e2ace6ba64fd0fbb7f2b823b92683ace97ff6f5d",
+    "Assets/ChooGuard/Editor/MvpTeamNavigationBuilder.cs": "380a3c8d4883afb96ed9694f38a63c72537f3e6aa5fb345dd8e5b3f49fbecd5d",
+    "Assets/ChooGuard/App/Mvp/MvpStationView.cs": "0686cf342c3792b514952938756456762ae51d9e88f96e7b03ec9145cce2b14f",
+    "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs": "2638f63e8d618caeb10e321cad298e2c0d2d727b76b7ce07f75f13e97b26b43c"
+  },
+  "assemblyHashes": {
+    "Assets/Packages/DotRecast.Detour.2026.3.1/lib/netstandard2.1/DotRecast.Detour.dll": "bac85dc17e06b5feea785fe0022a1e28c6e8b9be6815830205b3b0bb3168e71d",
+    "Assets/Packages/DotRecast.Recast.2026.3.1/lib/netstandard2.1/DotRecast.Recast.dll": "626d624eb211bc57ea766a2e64788de6327e97eb5100d5a33aedb6059553df4d",
+    "Assets/Packages/DotRecast.Core.2026.3.1/lib/netstandard2.1/DotRecast.Core.dll": "52b02664d20b36ec7142b305b87a2069d688987376bac4553f7af55567624db1"
+  },
+  "configRepair": "Explicit aggregate activePackageSource required by pinned NuGetForUnity parser; root reload API ConfigurationManager.LoadNugetConfigFile()"
+}

@@ -1,0 +1,90 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "status": "source_complete_focused_worker_verified",
+  "nodes": [
+    {
+      "id": "ownership",
+      "files": [
+        "workers/physics/worker.py",
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs",
+        "workers/physics/operations_lifecycle_probe.py"
+      ],
+      "excluded": "No Unity Editor/scene/other App writes, no CFD regeneration or full suite."
+    },
+    {
+      "id": "implementation",
+      "summary": "JuPedSim 1.4.2 seeded four-waypoint move/dwell routine, exactly 50 ordinary citizens, no routine exits; switch_agent_journey atomically retains entities at onset; original initialStateDigest retained separately from incident snapshot. Legacy start preserved."
+    },
+    {
+      "id": "api",
+      "methods": [
+        "StartRoutineRun(int seed,int population,string scenario)",
+        "bool BeginIncident()"
+      ],
+      "capability": "lifecycleVersion=1 required for routine, no silent fallback",
+      "fields": [
+        "phase",
+        "sessionSimTime",
+        "incidentOnsetSimTime",
+        "incidentTime",
+        "incidentInitialDigest",
+        "normalDepartedCount",
+        "incidentEvacuatedCount",
+        "fieldValidUntil",
+        "fieldCurrent"
+      ],
+      "agentFields": [
+        "routineState",
+        "destinationId"
+      ],
+      "guards": "Existing cohort/population/request/generation checks plus lifecycle, monotonic clock, immutable digests and atomic onset state checks."
+    },
+    {
+      "id": "field-boundary",
+      "summary": "FDS sampled only in incident at incidentTime seconds. Ordinary may exceed 120 session seconds. Incident step beyond120 rejected before iteration; ERROR declares phase=incomplete. Resolved accepts ticks with zero citizens and no field sampling; fieldCurrent=false, so neutral scalar placeholders must not display as current hazard observations."
+    },
+    {
+      "id": "probe",
+      "command": "workers/physics/.venv/bin/python workers/physics/operations_lifecycle_probe.py",
+      "result": {
+        "engine": "1.4.2",
+        "population": 50,
+        "routineMoved": true,
+        "dwellObserved": true,
+        "routineSeconds": 121.0,
+        "onsetPreserved": true,
+        "incidentBoundarySeconds": 120,
+        "beyondBoundaryRejected": true,
+        "legacyResolvedAt": 38.0,
+        "recoveryTickAccepted": true
+      },
+      "surface": "Actual subprocess JSONL worker + real installed JuPedSim + completed existing FDS reference. Syntax compile also passed."
+    },
+    {
+      "id": "limits",
+      "summary": "Root must compile/native integrate bridge with client. No whole20-30min production acceptance, empirical behavior calibration, clinical/reopening claim or longer fire coverage. Focused probe resolves legacy crowd case; fire resolved post-response branch is implemented but not separately evacuation-probed."
+    }
+  ],
+  "edges": [
+    {
+      "from": "implementation",
+      "to": "api",
+      "relation": "exposed_by"
+    },
+    {
+      "from": "field-boundary",
+      "to": "api",
+      "relation": "freshness_declared_by"
+    },
+    {
+      "from": "probe",
+      "to": "implementation",
+      "relation": "focused_live_evidence"
+    },
+    {
+      "from": "limits",
+      "to": "probe",
+      "relation": "bounds_claims"
+    }
+  ]
+}

@@ -1,0 +1,358 @@
+{
+  "schemaVersion": "1.0",
+  "generatedDate": "2026-09-21",
+  "target": {
+    "name": "Busan Station",
+    "operatorContext": "KORAIL/KTX railway station",
+    "address": "206 Jungang-daero, Dong-gu, Busan",
+    "korailStationSeq": "10279506",
+    "excluded": "Busan Metro station 113"
+  },
+  "result": {
+    "stationWideMeasuredInteriorPlanFound": false,
+    "measuredTenantProposalFound": true,
+    "criticalFinding": "The original designer/contractor portfolio exposes a dimensioned B&C Bakery Busan KTX proposal package containing a floor plan, reflected ceiling plan, elevations, zone areas, and an adjacent escalator/fire-door reference. The drawing package identifies the unit as 1F, 57.0 m2 and is dated 2021-10-25. It is proposal geometry with same-portfolio completion photos, not independent proof of the current or station-wide as-built condition.",
+    "safeUse": "Use the package as a locally scaled tenant prototype and a candidate registration anchor. Do not place it in the current station shell until the exact escalator/fire-door/storefront is independently matched in current imagery or an operator plan."
+  },
+  "evidenceClasses": {
+    "directly_supported": "Visible in an inspected original source or current operator response.",
+    "near_match_only": "Useful for search or reconstruction but stale, mirrored, proposed, or not independently tied to current as-built geometry.",
+    "insufficient": "Catalog metadata establishes that a source existed, but drawing bytes or readable geometry were not acquired."
+  },
+  "sources": [
+    {
+      "id": "S1-grid-a-bnc-proposal-2021",
+      "rank": 1,
+      "publisher": "Grid-A 4U",
+      "publisherRole": "interior designer and all-turnkey contractor",
+      "sourceUrl": "https://grida4u.com/2022/12/19/bc%EC%A0%9C%EA%B3%BC-%EB%B6%80%EC%82%B0%EC%97%AD%EC%A0%90/",
+      "exactBranch": "B&C Bakery, Busan KTX Station branch",
+      "floor": "1F according to the proposal sheets; portfolio page metadata says 2F",
+      "dates": {
+        "proposal": "2021-10-25",
+        "portfolioProjectLabel": "2022",
+        "completionPhotoExifObserved": "2022-12-21 on multiple images"
+      },
+      "evidenceClass": "near_match_only",
+      "reasonForClass": "Original measured proposal and same-portfolio completion photography are strong design evidence, but there is no independent current branch/storefront match and the portfolio floor metadata contradicts the sheets.",
+      "drawingTypes": [
+        "proposal cover",
+        "scope and zoning sheet",
+        "dimensioned floor plan",
+        "reflected ceiling plan",
+        "three interior elevations",
+        "before and completed photographs"
+      ],
+      "primaryLocalFiles": [
+        {
+          "path": "asset-library/research-public/2026-09-21/fps-research/interiors/bnc-busan-2f-2022-19.jpg",
+          "contents": "scope, areas, 1F statement, before photos, escalator/fire-door note",
+          "sha256": "c17e1237cf645b222c11c34fd075050818a6c643630a82f5d886272706f15228"
+        },
+        {
+          "path": "asset-library/research-public/2026-09-21/fps-research/interiors/bnc-busan-2f-2022-20.jpg",
+          "contents": "1F dimensioned floor plan",
+          "sha256": "ab0869941e74bcd9f8c74d0d771c1e9509663d5477e26fbfdddb0c2bd21a10fb"
+        },
+        {
+          "path": "asset-library/research-public/2026-09-21/fps-research/interiors/bnc-busan-2f-2022-21.jpg",
+          "contents": "reflected ceiling plan",
+          "sha256": "484720b60123920afbf174bcd1b9f85a6dfd9c9efbb7c500b989aee2ec38f014"
+        },
+        {
+          "path": "asset-library/research-public/2026-09-21/fps-research/interiors/bnc-busan-2f-2022-22.jpg",
+          "contents": "interior elevation 01",
+          "sha256": "3d74be8ee7c70b2e32c2ed516a9409fac2f80e874d1d9af617a2ce80e053df9c"
+        },
+        {
+          "path": "asset-library/research-public/2026-09-21/fps-research/interiors/bnc-busan-2f-2022-23.jpg",
+          "contents": "interior elevation 02",
+          "sha256": "33349e97d7e5c375441a59a7ad369ef43263e6b77a6ee9b0aba0f5b330d084a8"
+        },
+        {
+          "path": "asset-library/research-public/2026-09-21/fps-research/interiors/bnc-busan-2f-2022-24.jpg",
+          "contents": "interior elevation 03",
+          "sha256": "587e708b3337aab438df2c38032abc2a5f806befbc414c05a22ed5fc16fea7a6"
+        }
+      ],
+      "filenameCaveat": "The acquired filenames retain the initial portfolio-page 2F alias. The original sheets are the controlling evidence for this package and explicitly say 1F.",
+      "dimensionsReadable": {
+        "reportedAreaM2": 57.0,
+        "zoneAreasM2AsPrinted": {
+          "sales": 19.9,
+          "service": 22.7,
+          "factory": 14.5
+        },
+        "approximateOverallPlanChainsMm": [7490, 8127],
+        "elevationWidthsMm": [7602, 7490],
+        "elevationHeightMm": 3470,
+        "ceilingHeightsMm": [2500, 2900],
+        "caveat": "The overall values are read from visible dimension chains; preserve the raster as authority and re-transcribe every segment before CAD use."
+      },
+      "sourceSupportedTopology": {
+        "entrance": "open customer frontage at the plan bottom/front",
+        "sales": "front and right side",
+        "serviceCounter": "left/center, between customer area and production",
+        "factory": "rear enclosed production zone",
+        "rightBoundary": "adjacent escalator/stair void and a fire door noted in the scope sheet",
+        "connectivity": [
+          "frontage -> sales",
+          "sales -> service counter",
+          "service counter -> rear factory",
+          "right frontage -> escalator/fire-door landmark outside the unit"
+        ]
+      },
+      "currentBranchMatch": "No independent current B&C listing or matched current storefront anchor was found. The KORAIL Retail directory query is not exhaustive for all station tenants and cannot prove absence."
+    },
+    {
+      "id": "S2-grid-a-bnc-2f-2023",
+      "rank": 2,
+      "publisher": "Grid-A 4U",
+      "publisherRole": "interior designer and all-turnkey contractor",
+      "sourceUrl": "https://grida4u.com/2023/04/23/%eb%b9%84%ec%97%94%ec%a0%9c%ea%b3%bc-%eb%b6%80%ec%82%b0%ec%97%ad%ec%a0%90/",
+      "exactBranch": "B&C Bakery, Busan Station, fourth branch described by publisher",
+      "floor": "2F",
+      "dates": {
+        "projectLabel": "2023",
+        "imageUploadPath": "2024-09"
+      },
+      "areaM2": 90,
+      "drawingTypes": ["completed interior photographs", "undimensioned perspective renders"],
+      "evidenceClass": "near_match_only",
+      "dimensionsReadable": false,
+      "localFiles": "asset-library/research-public/2026-09-21/fps-research/interiors/bnc-busan-2f-2023-01.jpg through -10.jpg/jpeg",
+      "representativeHashes": {
+        "render01": "233c90a42cc2b0c8d3d6babcda37243a67dddfad900c07e4e85a102dc1a8ac5b",
+        "photo02": "ac8e64167aa664b1036daa4192106014acefc9c1370ec82de7739c2f78f0c5fb",
+        "render09": "3e4a5488f032ca62bba559e31ea2a838862c79309c4e7279a8941e8404120943",
+        "render10": "c60f8f273ade0fcb335aea1f6cc9632afb1196dda5c04e38a532e6a880d43bb5"
+      },
+      "usableContent": "Photos provide overlapping counter, window seating, refrigeration, ceiling-light, exit-sign, and glazing views. Renders disclose intended front glazing and counter topology. They support manual image matching but provide no survey scale or concourse placement."
+    },
+    {
+      "id": "S3-korail-retail-2026-1f-52m2",
+      "rank": 3,
+      "publisher": "KORAIL Retail",
+      "sourceUrl": "https://www.korailretail.com/form/recruitDetail.do",
+      "retrieval": {
+        "method": "POST",
+        "fields": {
+          "bsnsSeCd": "004",
+          "rcritPblancSn": "2026000086"
+        }
+      },
+      "date": "2026-05-20",
+      "floor": "1F waiting hall",
+      "tenantUse": "Korean food youth-startup unit",
+      "areaM2": 52.0,
+      "evidenceClass": "insufficient",
+      "drawingCatalog": {
+        "name": "[붙임3]대상매장 위치도.pdf",
+        "atchFileId": "00000000000002567372",
+        "fileSn": "3",
+        "status": "public download endpoint returned an HTML error instead of the PDF"
+      },
+      "usableContent": "Current official floor, program, and offered area. No geometry may be inferred until the location-map attachment is acquired."
+    },
+    {
+      "id": "S4-korail-retail-2023-2f-76.6m2",
+      "rank": 4,
+      "publisher": "KORAIL Retail",
+      "sourceUrl": "https://www.korailretail.com/board/boardList.do?boardTypeNum=161",
+      "boardNum": "100080110",
+      "notice": "[부산경남본부] 전문점(상설) ... 부산역 2층 맞이방",
+      "deadline": "2023-02-24",
+      "floor": "2F waiting hall",
+      "areaM2": 76.6,
+      "evidenceClass": "insufficient",
+      "drawingCatalog": {
+        "name": "[붙임3] 대상지 도면.pdf",
+        "legacyUploadDirectory": "upload/recru/161/202210/",
+        "legacyFilename": "202210280930458395.pdf",
+        "status": "legacy fileDown2 endpoint returned HTTP 200 with zero bytes; static-path alternatives returned 404"
+      },
+      "usableContent": "Official evidence that a target drawing existed and that the commercial unit was in the 2F waiting hall. No readable plan was acquired."
+    },
+    {
+      "id": "S5-korail-retail-current-store-directory",
+      "rank": 5,
+      "publisher": "KORAIL Retail",
+      "sourceUrl": "https://www.korailretail.com/store/selectBoardList.do",
+      "retrieval": {
+        "method": "POST",
+        "fields": {"searchCnd": "0", "searchWrd": "부산"}
+      },
+      "dateChecked": "2026-09-21",
+      "evidenceClass": "directly_supported",
+      "currentListings": [
+        {"name": "스토리웨이 부산5/6플랫폼 편의점", "floorLabel": "상행선타는곳 1층"},
+        {"name": "스토리웨이 부산1층북쪽 편의점", "floorLabel": "고속맞이방 1층"},
+        {"name": "스토리웨이 부산1층남쪽직영 편의점", "floorLabel": "고속맞이방 1층"},
+        {"name": "스토리웨이 부산2층남쪽맞이방 편의점", "floorLabel": "2층 맞이방"},
+        {"name": "스토리웨이 부산2층북쪽맞이방직영 편의점", "floorLabel": "2층 맞이방"},
+        {"name": "파스쿠찌 부산역점", "floorLabel": "맞이방 2층"},
+        {"name": "카페스토리웨이 코레일라운지 부산점", "floorLabel": "맞이방 2층"},
+        {"name": "스토리웨이 부산2층신맞이방직영 편의점", "floorLabel": "2층 신맞이방"}
+      ],
+      "usableContent": "Current operator-managed tenant identities and coarse north/south/new-waiting-room labels. The directory provides no dimensions, column grid, door positions, or exhaustive list of non-KORAIL-Retail tenants."
+    },
+    {
+      "id": "S6-slideplayer-historic-2f-plan",
+      "rank": 6,
+      "publisher": "SlidePlayer mirror; original deck appears to be KORAIL commercial material",
+      "sourceUrl": "https://slidesplayer.org/slide/11296633/",
+      "floor": "2F waiting hall and elevated passage",
+      "date": "indexed as modified about nine years before 2026",
+      "evidenceClass": "near_match_only",
+      "status": "Search-cache OCR exposed slide content, but the domain currently returns NXDOMAIN and the drawing image was not retrievable.",
+      "visibleOrIndexedContent": "Historic target-location slide names Pascucci, convenience stores, SME distribution center, Hyungji apparel, Gohyangtteurak, Yeonmi lunchboxes, Gyeongju bread, Sae Busan pharmacy, Ilseong store, Coffee Bean, Sewon bookstore, Samjin fishcake, and The Face Shop around a public-offering site.",
+      "usableContent": "Historic topology and tenant-name search seeds only. Do not use it as a current plan, metric source, or placement authority."
+    },
+    {
+      "id": "S7-youtube-2023-walkthrough",
+      "rank": 7,
+      "publisher": "PNW 4K",
+      "sourceUrl": "https://www.youtube.com/watch?v=RY2qvE0Tugk",
+      "title": "Inside Busan Station & KTX Bullet Train | Walking Tour in Busan, South Korea",
+      "uploadDate": "2023-05-01",
+      "durationSeconds": 832,
+      "evidenceClass": "near_match_only",
+      "inspectedMetadata": {
+        "outside": "00:00-00:41",
+        "stationInteriorContinuousSegment": "00:41-11:20",
+        "insideKtx": "11:20-13:52"
+      },
+      "acquisitionStatus": "yt-dlp metadata succeeded; the requested interior media segment failed with HTTP 403, so exact shop/landmark sub-timestamps and frame overlap remain unverified.",
+      "usableContent": "The 10m39s continuous interior chapter is the best dated walkthrough candidate for a frame-index pass. It is not yet geometry evidence beyond the chapter boundary."
+    },
+    {
+      "id": "S8-unofficial-facilities-guide",
+      "rank": 8,
+      "publisher": "unofficial 2025 post photograph of a station facilities guide",
+      "localPath": "asset-library/space-references/floorplan-sources/busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg",
+      "floors": ["1F", "2F", "3F"],
+      "evidenceClass": "near_match_only",
+      "usableContent": "Relative floor-level adjacency and navigation hypotheses only. Date, revision, primary provenance, dimensions, and camera rectification are unresolved."
+    }
+  ],
+  "floorCoverage": {
+    "1F": {
+      "coverage": "partial tenant-scale and current catalog/listing evidence",
+      "supported": [
+        "B&C 57.0 m2 proposal geometry, explicitly labeled 1F in original sheets",
+        "2026 KORAIL Retail 52.0 m2 waiting-hall food-unit catalog entry",
+        "current operator listings for north/south waiting-hall Storyway units and platform 5/6 unit"
+      ],
+      "unresolved": [
+        "No current independent B&C branch/storefront match",
+        "No public concourse column grid or station-wide measured plan",
+        "The 52.0 m2 official target-location PDF remains inaccessible"
+      ]
+    },
+    "2F": {
+      "coverage": "strong current tenant names, one photo/render interior, and two plan leads without current measured placement",
+      "supported": [
+        "Current Pascucci, Cafe Storyway KORAIL Lounge, and three Storyway waiting-room listings",
+        "Grid-A 90 m2 B&C project photos/renders labeled 2F and 2023",
+        "Official 76.6 m2 2F waiting-hall target-drawing catalog entry"
+      ],
+      "unresolved": [
+        "No acquired operator target plan bytes",
+        "No current north/south/new-waiting-room metric registration",
+        "Historic mirrored plan is stale and unavailable"
+      ]
+    },
+    "3F": {
+      "coverage": "weak",
+      "supported": ["unofficial three-floor guide gives relative navigation hints"],
+      "unresolved": [
+        "No current tenant directory coverage found",
+        "No measured plan, elevation, procurement plan, or dated overlapping walkthrough was acquired"
+      ]
+    }
+  },
+  "conflictsAndLimits": [
+    {
+      "issue": "B&C floor conflict",
+      "observations": "Portfolio metadata says 2F, while the original proposal cover/scope/floor-plan sheets say 1F and describe the building level as the first floor.",
+      "decision": "Label the measured package 1F proposal geometry, retain the metadata conflict, and prohibit current shell placement without an independent anchor."
+    },
+    {
+      "issue": "proposal versus as-built/current",
+      "observations": "The same portfolio contains completion photos, but the drawings are titled proposal and no independent current-source match was found.",
+      "decision": "Treat dimensions and zone connectivity as proposed design; use completion photos only to test visible implementation details."
+    },
+    {
+      "issue": "tenant directory completeness",
+      "observations": "KORAIL Retail lists its managed stores, not necessarily every station tenant.",
+      "decision": "Use listings as positive current evidence only; absence is not evidence that a private tenant is gone."
+    }
+  ],
+  "acquisitionGaps": [
+    {
+      "priority": 1,
+      "target": "KORAIL Retail 2026 1F 52.0 m2 [붙임3] target-location map",
+      "nextRoute": "Request the public attachment from KORAIL Retail web support or retry the same attachment ID from a normal browser session; record bytes and hash before interpretation."
+    },
+    {
+      "priority": 2,
+      "target": "KORAIL Retail archived 2F 76.6 m2 target drawing",
+      "nextRoute": "Use boardNum 100080110 and archived filename 202210280930458395.pdf in an operator/public-record request; legacy endpoint presently yields zero bytes."
+    },
+    {
+      "priority": 3,
+      "target": "current independent B&C 1F storefront/landmark match",
+      "nextRoute": "Capture or locate 2025-2026 concourse imagery showing the B&C fascia, the immediately adjacent escalator, and the noted right-side fire door in one sequence."
+    },
+    {
+      "priority": 4,
+      "target": "3F interior",
+      "nextRoute": "Search recent floor-specific walking tours and current leasing notices; no actionable original plan emerged in this phase."
+    }
+  ],
+  "reconstructionStrategy": {
+    "phase1LocalMeasuredPrototype": [
+      "Rectify the S1 floor-plan raster using the 7,490 mm and 8,127 mm visible outer dimension chains.",
+      "Re-transcribe all segment dimensions and reject any chain that does not close within raster-reading tolerance.",
+      "Build sales, service, and factory zones as a standalone 57.0 m2 proposal module; preserve front entrance and right escalator/fire-door adjacency as registration candidates.",
+      "Validate proposed elevations against same-portfolio completion photos before marking individual counters, doors, ceiling heights, or fixtures as implemented."
+    ],
+    "phase2CurrentRegistration": [
+      "Acquire a dated current frame sequence containing at least three persistent features in one local coordinate neighborhood: escalator landing/void edge, fire door, storefront corners, ceiling-grid intersections, floor joints, structural columns, or fixed wayfinding.",
+      "Require two-way overlap: approach frames that connect a public station landmark to the storefront and reverse/side frames that close the local path.",
+      "Match only the tenant module translation/rotation to the official shell after the landmark set agrees; never scale the wider concourse from the tenant plan.",
+      "Use current KORAIL Retail north/south/new-waiting-room labels for semantic zones only until a metric operator map is acquired."
+    ],
+    "videoFramePass": {
+      "candidate": "S7",
+      "segment": "00:41-11:20",
+      "procedure": "Once media access succeeds, extract 1 fps proxy frames, then 5 fps around every escalator, shop fascia, public map, wayfinding sign, ticketing boundary, and repeated column bay. Record exact source timestamp and frame hash for each accepted landmark.",
+      "acceptance": "At least two overlapping views per landmark and one continuous chain from an official-shell feature to a tenant frontage. Reject moving kiosks, queue barriers, stock displays, and temporary signs as registration control points."
+    },
+    "uncertaintyTiers": {
+      "A": "dimension read directly from an original drawing and internally chain-checked",
+      "B": "topology or finish supported by original drawing plus matching completion photo",
+      "C": "dated photo/video inference with overlapping views but no metric control",
+      "D": "historic/unofficial relative adjacency; navigation hypothesis only"
+    }
+  },
+  "downloadManifest": {
+    "directory": "asset-library/research-public/2026-09-21/fps-research/interiors",
+    "sha256File": "asset-library/research-public/2026-09-21/fps-research/interiors/SHA256SUMS",
+    "sourceBundles": [
+      {
+        "pattern": "bnc-busan-2f-2022-01.jpg through -24.jpg",
+        "provenance": "S1 page original WordPress media",
+        "note": "Filename floor alias is superseded by the visible 1F drawing text."
+      },
+      {
+        "pattern": "bnc-busan-2f-2023-01.jpg/jpeg through -10.jpg/jpeg",
+        "provenance": "S2 page original WordPress media"
+      }
+    ],
+    "rejectedDownloads": [
+      "Four KORAIL Retail .pdf attempts were removed because two were zero-byte legacy responses and two were HTML error pages, not source PDFs."
+    ]
+  },
+  "handoffDecision": "The only immediately actionable metric interior is S1, as a bounded 1F proposal module. The public-space and current tenant-placement problem remains an acquisition and registration task; it is not solved by the official exterior model, the unofficial facilities guide, or the historic mirrored deck."
+}

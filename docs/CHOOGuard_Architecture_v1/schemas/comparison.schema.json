@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:comparison:1.0.0",
+  "title": "comparison",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "comparisonId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "runA": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "runB": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "lockedInputsHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "innovationStreamHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "qoiContractId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "comparisonClass": {
+      "type": "string",
+      "enum": [
+        "PAIRED",
+        "COMMON_METRICS_ONLY",
+        "INCOMPARABLE"
+      ]
+    },
+    "constraintViolations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "metricId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "valueA": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "valueB": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "qualification": {
+            "type": "string",
+            "enum": [
+              "FIXTURE_ONLY",
+              "NOT_EVALUATED",
+              "WITHIN_QUALIFIED_SCOPE"
+            ]
+          },
+          "evidenceHashes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "minItems": 0,
+            "maxItems": 4096
+          }
+        },
+        "required": [
+          "metricId",
+          "unit",
+          "valueA",
+          "valueB",
+          "qualification",
+          "evidenceHashes"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "selection": {
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "UNDECIDED",
+        "TRADE_OFF"
+      ]
+    },
+    "selectionReason": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "comparisonId",
+    "runA",
+    "runB",
+    "lockedInputsHash",
+    "innovationStreamHash",
+    "qoiContractId",
+    "comparisonClass",
+    "constraintViolations",
+    "metrics",
+    "selection",
+    "selectionReason",
+    "dataClass"
+  ],
+  "additionalProperties": false
+}

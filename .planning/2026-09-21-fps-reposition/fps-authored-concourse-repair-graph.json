@@ -1,0 +1,24 @@
+{
+  "schema": "fps-authored-connector-revision/v1",
+  "status": "NATIVE_APPLIED_BIDIRECTIONAL_WALK_PASS",
+  "manifest": ".planning/2026-09-21-fps-reposition/scene-drafts/metro113-authored-connectors.json",
+  "backup": ".planning/2026-09-21-fps-reposition/scene-drafts/metro113-authored-connectors.before-concourse-minus2p8.json",
+  "publishedHelper": {
+    "draft": ".planning/2026-09-21-fps-reposition/scene-drafts/FpsAuthoredTransferBuilder.cs",
+    "target": "Assets/ChooGuard/Editor/FpsAuthoredTransferBuilder.cs",
+    "sha256": "629a8978699cb01dd4620ab0c158b6ed63ad62a60567a7d0eddb80ee01a943d7"
+  },
+  "eval": ".planning/2026-09-21-fps-reposition/scene-drafts/metro-concourse-minus2p8-repair-eval.txt",
+  "change": "Only authored concourse waypoint Y -3.5→-2.8; surface0/platform-8 unchanged. Explicit authored floor thickness.15. No source roof/FBX/Art changes.",
+  "provenance": "Root native roof restored to worldY -4.53..-3.1; previous route collided inside roof plenum",
+  "clearance": "Floor underside -2.95 vs roofmax -3.1 =>.15m vertical separation; prototype elevations, not surveyed",
+  "repairSafety": "Build both new roots in separate staging object first; old roots untouched until success. Delete/replace exactly two named authored roots, reuse material assets, retain all other collider references; save only after construction. Idempotent absolute reconstruction.",
+  "nativeExecution": "NOT_RUN",
+  "nativeTraversal": "NOT_RUN",
+  "limitations": [
+    "Platform stair must be rewalked against existing bounded source aperture; no added roof hole",
+    "Current player position may remain below raised floor until root resets to safe surface spawn"
+  ],
+  "nativeEvidence": "metro-concourse-minus2p8-repair-native.json",
+  "worldConnectionGraph": "fps-world-connection-graph.json"
+}

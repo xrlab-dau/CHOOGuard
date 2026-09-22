@@ -1,0 +1,126 @@
+{
+  "schema": "metro113-registration/v1",
+  "classification": "AUTHORED_PROVISIONAL_GEOGRAPHIC_REGISTRATION",
+  "coordinate_frame": "sourceframe0 X East Y Up Z North metres; origin35.1151,129.0417",
+  "source_origin_chainage": 14625,
+  "source_units": "metres",
+  "scale": [
+    1,
+    1,
+    1
+  ],
+  "unity_yaw_degrees": 24.619442897956112,
+  "unity_translation": [
+    -163.6514818484096,
+    -9.1,
+    69.70826513466375
+  ],
+  "formula": "world=translation+Ry(yaw)*sourceBveXYZ; do not additionally apply officialSiteRig transform",
+  "anchors": {
+    "centre": {
+      "osm_node": "1768537544",
+      "url": "https://www.openstreetmap.org/node/1768537544",
+      "lat": 35.1157262,
+      "lon": 129.0399028,
+      "sourceframe0": [
+        -163.6514818484096,
+        0,
+        69.70826513466375
+      ],
+      "source_timestamp": "2026-01-16T17:10:36Z",
+      "metro_local_horizontal": [
+        0.0,
+        0,
+        0.0
+      ]
+    },
+    "stop_position": {
+      "osm_node": "1768514188",
+      "url": "https://www.openstreetmap.org/node/1768514188",
+      "lat": 35.1155992,
+      "lon": 129.039936,
+      "sourceframe0": [
+        -160.62831848295315,
+        0,
+        55.570689804018194
+      ],
+      "source_timestamp": "2021-06-23T22:33:43Z",
+      "metro_local_horizontal": [
+        8.6379,
+        0,
+        -11.593
+      ]
+    },
+    "choryang": {
+      "osm_node": "355173846",
+      "url": "https://www.openstreetmap.org/node/355173846",
+      "lat": 35.1212017,
+      "lon": 129.0429702,
+      "sourceframe0": [
+        115.66331640750695,
+        0,
+        679.2381369735508
+      ],
+      "source_timestamp": "2026-01-16T17:10:36Z",
+      "metro_local_horizontal": [
+        -0.0,
+        0,
+        670.48
+      ]
+    },
+    "exit4": {
+      "osm_node": "8266060522",
+      "url": "https://www.openstreetmap.org/node/8266060522",
+      "lat": 35.1139938,
+      "lon": 129.0393181,
+      "sourceframe0": [
+        -216.89375952215613,
+        0,
+        -123.14162071499415
+      ],
+      "source_timestamp": "2025-12-13T16:40:07Z",
+      "metro_local_horizontal": [
+        31.9369,
+        0,
+        -197.499
+      ]
+    },
+    "exit6": {
+      "osm_node": "8266060524",
+      "url": "https://www.openstreetmap.org/node/8266060524",
+      "lat": 35.1147648,
+      "lon": 129.0397587,
+      "sourceframe0": [
+        -176.77310355682872,
+        0,
+        -37.314293313346916
+      ],
+      "source_timestamp": "2025-12-13T16:40:07Z",
+      "metro_local_horizontal": [
+        32.6557,
+        0,
+        -102.76
+      ]
+    }
+  },
+  "fit_method": "single semantic station centre anchor plus independent station-to-Choryang bearing; no two surveyed source control points available",
+  "residuals": {
+    "centre_constraint_m": 0,
+    "bearing_constraint_deg": 0,
+    "source_stop14700_vs_osm_stop_position_horizontal_m": 87.02275892526974,
+    "stop_residual_interpretation": "not comparable survey controls: source stop train nose versus OSM generic stop position; reported as unresolved offset, not registration accuracy"
+  },
+  "authored_levels": {
+    "surface_plaza": 0,
+    "concourse": -3.5,
+    "platform_top": -8,
+    "source_rail_y0": -9.1,
+    "status": "prototype authored absolute elevations; not surveyed underground depths"
+  },
+  "accuracy_limits": [
+    "station centroid interpretation is approximate",
+    "Choryang bearing is chord not station tangent; local route straight retained",
+    "OSM station/entrance data community maintained; official evacuation diagram older/different entrance count",
+    "no full line scale or rotation applied"
+  ]
+}

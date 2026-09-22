@@ -1,0 +1,85 @@
+{
+  "schema": "chooguard.operations-v2-source-review",
+  "status": "scoped_none_after_focused_fix_review",
+  "scope": "approved v2 agency click-to-work-to-target lifecycle; source review only; no Unity/native execution",
+  "reviewedHashes": {
+    ".planning/2026-09-21-fleet-building/approval-v2.json": "476191cd965daa142482382e7aa405a720b40c4f8808b592b7e859a30f506e84",
+    "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs": "13a6edadbf1d5f3344f2a280aa2eda439c0b511a79d6fd7d6aedff43b70b664a",
+    "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs": "ab782a1cee707e0cf2664574ef87acda287320b3d1e02f6765025dd85e82cf1b",
+    "Assets/ChooGuard/Editor/MvpAgencyDispatchBuilder.cs": "aa45fe1c0221564b70cc62e2149feb2b53e283b6f9ed6ad7577fcc1462e2b5fa",
+    "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs": "3000ad1721392f6b4b3c0623404dfcb177f1d2e28b586a1c94a03fe7de593198",
+    "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs": "b313ec5bab673b049f6ded5a6c54661a35d530c15001535e276597ee3750c410",
+    "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs": "530a61e90a36f7a88321d8c45c459b61783c9a898610ce8b63d5c76d5a43329d",
+    "Assets/ChooGuard/App/Mvp/MvpOpenWorldCamera.cs": "cf2ab673d9ed7a3d1dd16f82703e0eb191b191856d5cc7ffbf9840f069f9eddc"
+  },
+  "findings": [],
+  "resolvedDuringReview": [
+    {
+      "id": "OPS-V2-001",
+      "previousSeverity": "high",
+      "resolution": "Evacuation-resolved early return is gated by task.automaticReturn; medical continues through operation ACK to HandoffPending.",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:180-202",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:31-64"
+      ]
+    },
+    {
+      "id": "OPS-V2-002",
+      "previousSeverity": "medium",
+      "resolution": "Canceled operation ids now reject idempotent retry explicitly, and cancellation repacks pending departure reservations while preserving departed reservations.",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:108-147",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:225-233"
+      ]
+    }
+  ],
+  "scopedChecks": [
+    {
+      "area": "leased channels, exact operation ACK ownership, multiple logical teams, and serialized concurrent channel work",
+      "result": "no material issue in reviewed source",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:180-211",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:31-64"
+      ]
+    },
+    {
+      "area": "click capture, shared mission vehicles, and no per-vehicle command UI",
+      "result": "no material issue in reviewed source",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:241-275",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs:22-35",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs:48-54"
+      ]
+    },
+    {
+      "area": "evacuation ACK, actual outcome wait, automatic return, and medical handoff without cure claim",
+      "result": "no material issue in reviewed source",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:180-223",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:54-64"
+      ]
+    },
+    {
+      "area": "cancellation and team/departure reuse",
+      "result": "no material issue after focused fix review",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:108-147",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:225-233"
+      ]
+    },
+    {
+      "area": "explicit camera follow call",
+      "result": "no material issue in reviewed source",
+      "evidence": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:241-244",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs:29-32",
+        "Assets/ChooGuard/App/Mvp/MvpOpenWorldCamera.cs:29-40"
+      ]
+    }
+  ],
+  "validation": {
+    "jsonParse": "PASS",
+    "unityCompile": "not_run_by_bounded_review",
+    "nativeRuntime": "not_run_by_bounded_review"
+  }
+}

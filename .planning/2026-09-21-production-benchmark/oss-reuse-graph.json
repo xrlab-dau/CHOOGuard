@@ -1,0 +1,153 @@
+{
+  "schema": "chooguard.oss-reuse-audit.v1",
+  "date": "2026-09-21",
+  "scope": "Read-only source-reuse audit for the current Unity MVP. No OSS code was ported.",
+  "sourceSnapshotDirectory": ".tools/game-source-research/2026-09-21",
+  "sourceSnapshotSize": "2.4M",
+  "projectFit": {
+    "selectionAndContext": "MvpAgencyDispatchController.TrySelectWorld selects rendered logical team members before facility volumes, clears selection on empty click, and maps a station/facility/team context to one contextual panel.",
+    "taskQueues": "MvpTeamTaskController uses bounded per-channel FIFO queues (limit 6), only releases work after arrival and interaction, and retains logical-team ownership.",
+    "capacity": "ReservationPlanner already validates bounded overlapping reservations with deterministic resource lock ordering.",
+    "eventProcessing": "MvpProgressionGraph evaluates guarded JSON transitions and records idempotent evidence traces."
+  },
+  "licenseNoticeMapping": [
+    {
+      "repo": "OpenRA/OpenRA",
+      "license": "GPL-3.0-or-later",
+      "retainedSourceNotice": ".tools/game-source-research/2026-09-21/openra/COPYING",
+      "laterUseRequirement": "Local reuse is authorized for this task. Retain the upstream copyright/header and COPYING notice with copied/adapted source; determine and satisfy GPL distribution obligations before any distribution."
+    },
+    {
+      "repo": "OpenRCT2/OpenRCT2",
+      "license": "GPL-3.0",
+      "retainedSourceNotice": ".tools/game-source-research/2026-09-21/openrct2/licence.txt",
+      "laterUseRequirement": "Local reuse is authorized for this task. Retain the upstream copyright/header and licence.txt notice with copied/adapted source; determine and satisfy GPL distribution obligations before any distribution."
+    },
+    {
+      "repo": "OpenTTD/OpenTTD",
+      "license": "GPL-2.0-or-later; repository notice says third-party modules have exceptions",
+      "retainedSourceNotice": ".tools/game-source-research/2026-09-21/openttd/COPYING.md",
+      "laterUseRequirement": "Local reuse is authorized for this task. Retain the upstream copyright/header and relevant COPYING.md notice with copied/adapted source; determine and satisfy GPL distribution obligations before any distribution."
+    },
+    {
+      "repo": "BlueRaja/High-Speed-Priority-Queue-for-C-Sharp",
+      "license": "MIT",
+      "retainedSourceNotice": ".tools/game-source-research/2026-09-21/priorityqueue/LICENSE.txt",
+      "laterUseRequirement": "If any source is copied, preserve the MIT copyright and permission notice in the third-party notices file and copied source header."
+    },
+    {
+      "repo": "dotnet-state-machine/stateless",
+      "license": "MIT",
+      "retainedSourceNotice": ".tools/game-source-research/2026-09-21/stateless/LICENSE.txt",
+      "laterUseRequirement": "If any source is copied, preserve the MIT copyright and permission notice in the third-party notices file and copied source header."
+    },
+    {
+      "repo": "neuecc/UniRx",
+      "license": "MIT",
+      "retainedSourceNotice": ".tools/game-source-research/2026-09-21/unirx/LICENSE",
+      "laterUseRequirement": "If any source is copied, preserve the MIT copyright and permission notice in the third-party notices file and copied source header."
+    }
+  ],
+  "candidates": [
+    {
+      "rank": 2,
+      "repo": "BlueRaja/High-Speed-Priority-Queue-for-C-Sharp",
+      "sha": "33f4fd3fcc69a30edf9dc61021efcdb7f0f2c850",
+      "license": "MIT",
+      "paths": ["Priority Queue/StablePriorityQueue.cs", "Priority Queue/StablePriorityQueueNode.cs", "Priority Queue/FastPriorityQueueNode.cs", "Priority Queue/IFixedSizePriorityQueue.cs", "Priority Queue/IPriorityQueue.cs"],
+      "function": "StablePriorityQueue<T>.Enqueue plus insertion-index FIFO tie-break",
+      "purpose": "Smallest actual-source candidate for a future global service scheduler: choose among ready compatible logical teams by an approved incident priority while preserving FIFO for equal priority.",
+      "exactSnippetLocation": "Priority Queue/StablePriorityQueue.cs:104-141 and StablePriorityQueueNode.cs:1-9; retained at .tools/game-source-research/2026-09-21/priorityqueue/StablePriorityQueue.cs:104-141 and .tools/game-source-research/2026-09-21/priorityqueue/StablePriorityQueueNode.cs:1-9",
+      "dependencies": ["FastPriorityQueueNode.cs", "IFixedSizePriorityQueue.cs", "IPriorityQueue.cs", "System"],
+      "portEffort": "medium: import five small MIT types with their headers/notices. The stable variant avoids FastPriorityQueue's arbitrary equal-priority ordering.",
+      "contextFit": "directly_supported_for_next_gap: RequestWork currently selects only the first Ready compatible mission, and maxQueuedJobsPerTeam is data-only. A stable scheduler is appropriate once a second concurrent target request is accepted; it must schedule logical Mission objects, never rendered members.",
+      "recommendation": "Best source-port candidate, conditional on adding an explicit service priority to route data and a second target. Do not use it to replace the current player-visible FIFO task queue.",
+      "verificationTarget": "Focused EditMode tests: equal-priority ordering is deterministic; cancellation and reprioritization never duplicate/drop an operation; PlayMode: two logical teams still move/work/return as groups, never one command per rendered vehicle."
+    },
+    {
+      "rank": 3,
+      "repo": "dotnet-state-machine/stateless",
+      "sha": "588f1a1a08683b452eb7c05562d9f055693cba5d",
+      "license": "MIT",
+      "paths": ["src/Stateless/StateMachine.cs"],
+      "function": "StateMachine<TState,TTrigger>.InternalFireQueued",
+      "purpose": "Reference for FIFO, reentrancy-safe processing if operations later emit nested domain events.",
+      "exactSnippetLocation": "src/Stateless/StateMachine.cs:336-384; retained at .tools/game-source-research/2026-09-21/stateless/StateMachine.cs:336-384",
+      "dependencies": ["the rest of Stateless state representation, trigger behavior, transition, callback, and resource types"],
+      "portEffort": "medium-to-high for package adoption; low only for a newly authored, narrow queue guard after defining ownership and exception semantics.",
+      "contextFit": "near_match_only: MvpProgressionGraph already supplies guarded JSON transitions and trace idempotency. No observed nested transition/reentrancy defect justifies replacing it.",
+      "recommendation": "Do not add Stateless or copy its code now. If a reproduced reentrancy bug appears, author a tiny local FIFO guard around the exact event boundary, preserving the existing graph as authority.",
+      "verificationTarget": "A focused regression invokes a callback that requests another operation event; the outer event completes first, the inner event follows once, and trace sequence/revision stays monotonic."
+    },
+    {
+      "rank": 4,
+      "repo": "neuecc/UniRx",
+      "sha": "6baeccf6c544c155497164327cca72f28163a578",
+      "license": "MIT",
+      "paths": ["Assets/Plugins/UniRx/Scripts/Notifiers/CountNotifier.cs", "Assets/Plugins/UniRx/Scripts/Notifiers/MessageBroker.cs"],
+      "function": "CountNotifier.Increment/Decrement and MessageBroker.Publish/Receive",
+      "purpose": "Reference for notifying UI when a future explicit resource-capacity projection changes.",
+      "exactSnippetLocation": "CountNotifier.cs:23-96 and MessageBroker.cs:50-98; retained at .tools/game-source-research/2026-09-21/unirx/CountNotifier.cs:23-96 and .tools/game-source-research/2026-09-21/unirx/MessageBroker.cs:50-98",
+      "dependencies": ["UniRx Subject<T>, Disposable, IObservable<T>, ISubject<T>, synchronization helpers"],
+      "portEffort": "medium: the apparent 74-line count notifier depends on UniRx reactive primitives; importing only it does not compile.",
+      "contextFit": "near_match_only: ReservationPlanner already calculates capacity correctly. A global broker would add another state/event path while the current UI can read controller snapshots directly.",
+      "recommendation": "Do not install UniRx. If capacity becomes player-visible, expose a small project-owned immutable capacity snapshot plus an explicit Changed event from the existing authority.",
+      "verificationTarget": "EditMode: reserve/release transitions produce one snapshot revision each and never over-report capacity; PlayMode: selection panel updates only for the selected building/team context."
+    },
+    {
+      "rank": 1,
+      "repo": "OpenRA/OpenRA",
+      "sha": "f3ec7f8e1593b482f85fd101652deb740c33dee6",
+      "license": "GPL-3.0-or-later",
+      "paths": ["OpenRA.Mods.Common/Activities/Wait.cs", "OpenRA.Mods.Common/Traits/Player/PlayerResources.cs"],
+      "function": "Wait.Tick countdown/cancel completion; PlayerResources.CanGiveResources/GiveResources/TakeResources",
+      "purpose": "Immediate logical-team turnaround/replenishment source: after a returned team reaches base, hold it in Replenishing until an accepted-simulation-clock deadline, then make it Ready. PlayerResources remains a bounded-resource reference.",
+      "exactSnippetLocation": "OpenRA.Mods.Common/Activities/Wait.cs:17-54; retained at .tools/game-source-research/2026-09-21/openra/Wait.cs:17-54. Resource reference retained at PlayerResources.cs:101-165.",
+      "dependencies": ["Wait: OpenRA.Activity only for Tick/IsCanceling; portable subset is remainingTicks plus an explicit cancellation predicate. PlayerResources: OpenRA Actor/Trait framework, lobby settings, sync attributes, notifications."],
+      "portEffort": "low for the 17-line Wait behavior adapted into MvpAgencyDispatchController Mission state; no OpenRA Actor, Unity Update clock, or visual member loop should be imported.",
+      "contextFit": "directly_supported: returning missions transition to Ready immediately after Return route completion, so current service readiness has no replenishment downtime. The bounded countdown and cancellation behavior maps to an accepted simulation clock and logical Mission only.",
+      "recommendation": "Top current source-port candidate. Preserve GPL header/COPYING notice if copied/adapted. Implement a named Replenishing state with deadline based on Director.SimulatedSeconds; cancellation/reset exits it deterministically. Do not use wall-clock time or create per-vehicle readiness.",
+      "verificationTarget": "Focused EditMode or PlayMode: team completes return route -> Replenishing; paused/no accepted simulation time does not reduce remaining duration; accepted time reaching deadline makes one logical team Ready; ResetMissions clears it; no individual rendered member becomes commandable."
+    },
+    {
+      "rank": 5,
+      "repo": "OpenRCT2/OpenRCT2",
+      "sha": "8be21d4683be690cd55a372ba1606c136feaeaf1",
+      "license": "GPL-3.0",
+      "paths": ["src/openrct2/management/Finance.cpp"],
+      "function": "FinanceCheckAffordability and FinancePayment",
+      "purpose": "Actual management-game reference for checking a command before mutating a bounded account and publishing a UI update.",
+      "exactSnippetLocation": "src/openrct2/management/Finance.cpp:57-102; retained at .tools/game-source-research/2026-09-21/openrct2/Finance.cpp:57-102",
+      "dependencies": ["OpenRCT2 GameState, command flags, finance history, Intent/Context broadcast"],
+      "portEffort": "not applicable for reuse; C++ and GPL-3.0.",
+      "contextFit": "near_match_only: CHOOGuard currently has no approved money economy, and its resource authority is reservation-based. The source is not an improvement to the building-selection flow.",
+      "recommendation": "Finance is reference-only. Separately retained animation source is a GPL local-reference sample: src/openrct2/peep/PeepAnimations.cpp maps role types to supported animation groups rather than issuing movement commands.",
+      "animationSource": {"path": "src/openrct2/peep/PeepAnimations.cpp", "function": "getAnimationsByPeepType and getAnimationGroupsByPeepType", "exactSnippetLocation": "src/openrct2/peep/PeepAnimations.cpp:102-118 and 214-242; retained at .tools/game-source-research/2026-09-21/openrct2/PeepAnimations.cpp:102-118 and :214-242", "fit": "Use only as an animation-authoring reference: a logical response-role/task state selects an available work/return/replenish animation group. It does not justify per-vehicle task authority.", "dependencies": ["OpenRCT2 object manager", "PeepAnimationsObject", "C++ enum/object types"], "portEffort": "reference-only; engine-bound C++ source."},
+      "verificationTarget": "No finance test until a separately approved economy exists. For any response-role animation selection: missing clip falls back visibly, group state follows logical team state, and it does not alter task/route authority."
+    },
+    {
+      "rank": 6,
+      "repo": "OpenTTD/OpenTTD",
+      "sha": "b96f16a478d6eb7287d1a87130f84c2f01cdb319",
+      "license": "GPL-2.0-or-later",
+      "paths": ["src/command.cpp"],
+      "function": "CommandInfo master table and IsValidCommand/GetCommandFlags",
+      "purpose": "Actual tycoon-game reference for associating command metadata with a validated command identifier.",
+      "exactSnippetLocation": "src/command.cpp:70-129; retained at .tools/game-source-research/2026-09-21/openttd/command.cpp:70-129",
+      "dependencies": ["OpenTTD command traits, enum-index arrays, network command types, broad C++ engine headers"],
+      "portEffort": "not applicable for reuse; C++ and GPL-2.0-or-later.",
+      "contextFit": "contradicts_port: existing Contracts, CommandDispatcher, and MvpProgressionGraph already define/validate operation identifiers; copying a global command-table pattern would duplicate authority.",
+      "recommendation": "Reference only. Do not copy/adapt code.",
+      "verificationTarget": "None; retain the current contract/dispatcher validation surface."
+    }
+  ],
+  "rankedDecision": {
+    "top3": ["OpenRA Wait timed turnaround", "BlueRaja stable priority queue", "Stateless queued trigger guard"],
+    "selection": "OpenRA Wait is the immediate small source-port candidate for returned-team replenishment. BlueRaja remains conditional on multi-target service priority; Stateless remains reference-only until a reproduced event defect exists.",
+    "reason": "The required click-building -> contextual call/support -> target -> logical-team moves/works/returns flow is already directly represented by MvpAgencyDispatchController, MvpAgencyDispatchView, and MvpTeamTaskController. The OpenRA countdown improves current service readiness using accepted sim time and a logical team state, without turning rendered vehicles into independent command units."
+  },
+  "auditLimitations": [
+    "This is a source and static-project fit audit, not a Unity compilation, PlayMode, or product acceptance result.",
+    "Upstream HEAD SHAs were resolved with git ls-remote on 2026-09-21; use the recorded SHA, not an unpinned branch, for any later re-review."
+  ]
+}

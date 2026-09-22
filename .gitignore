@@ -1,0 +1,58 @@
+Library/
+Temp/
+Obj/
+Logs/
+UserSettings/
+.vs/
+.idea/
+artifacts/
+*.csproj
+*.sln
+.DS_Store
+.tools/
+.planning/
+Assets/.planning/
+# --- 원본 아카이브는 버전관리 제외, 영수증·해시만 추적 (2026-09-22) ---
+# GitHub 100MB 하드 한도 초과분. 파생물(FBX/PNG/추출 수치)은 별도로 추적된다.
+asset-library/source/**/*.zip
+asset-library/source/**/*.7z
+asset-library/research-public/**/*.zip
+asset-library/research-public/**/*.blend
+asset-library/research-public/**/*.blend1
+asset-library/space-references/**/*.tif
+asset-library/**/*.dmg
+!**/acquisition-receipt.json
+!**/*-receipt.json
+!**/sha256.txt
+!**/archive-index.json
+!**/manifest.json
+
+# --- 증거는 추적한다: .planning 은 제외하되 JSON/MD 만 되살린다 (2026-09-22) ---
+# v5 progress.json 의 evidenceRef 14건이 .planning 안을 가리키는 자기모순 해소
+!.planning/
+.planning/**
+!.planning/**/
+!.planning/**/*.json
+!.planning/**/*.md
+!.planning/**/*.cs
+.planning/**/*.blend
+.planning/**/*.blend1
+.planning/**/*.fbx
+.planning/**/*.zip
+.planning/**/*.7z
+.planning/**/*.png
+.planning/**/*.jpg
+.planning/**/*.JPG
+.planning/**/*.jpeg
+.planning/**/*.gif
+.planning/**/*.pdf
+.planning/**/*.hwp
+.planning/**/*.tif
+
+# --- Poly Haven CC0 에셋: 영수증+restore.py 로 완전 재현 가능하므로 바이너리 제외 (2026-09-22) ---
+# 245MB. acquisition-receipt.json 이 URL·sha256 을 전부 들고 있고 restore.py 가 되살린다.
+asset-library/models-materials/downloads/polyhaven/**/*.fbx
+asset-library/models-materials/downloads/polyhaven/**/*.jpg
+asset-library/models-materials/downloads/polyhaven/**/*.jpeg
+asset-library/models-materials/downloads/polyhaven/**/*.png
+asset-library/models-materials/downloads/polyhaven/**/*.exr

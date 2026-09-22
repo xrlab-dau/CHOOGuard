@@ -1,0 +1,20 @@
+flowchart TB
+    A["Run A<br/>원시 ledger 불변"]
+    P["정지 장벽<br/>accepted boundary까지 확정"]
+    S["CompleteCheckpoint<br/>업무·예약·메시지·지식·RNG·worker"]
+    CAP["복원 가능성 검사<br/>입력 lock · 모든 worker · 시각"]
+    NO["불완전 / 미지원<br/>재계산 또는 REVIEW_ONLY"]
+    B["Run B / 새 epoch<br/>parentSeq 고정 + PlanRevision B"]
+    X["외생 혁신 고정<br/>내생 결과는 각 안에서 재계산"]
+    CMP["공정 비교<br/>제약 · 지표 · 불확도 · 순위 안정성"]
+    SEL["작성자 선택·이유<br/>보편 최적 주장은 금지"]
+    A -->|"분기 요청"| P
+    P -->|"snapshot 수집"| S
+    S -->|"manifest 확인"| CAP
+    CAP -->|"조건 미충족"| NO
+    CAP -->|"EXACT 또는 certified replay"| B
+    X -->|"같은 외부 법칙"| A
+    X -->|"같은 외부 혁신"| B
+    A -->|"A 결과"| CMP
+    B -->|"B 결과"| CMP
+    CMP -->|"공통 자격 지표"| SEL

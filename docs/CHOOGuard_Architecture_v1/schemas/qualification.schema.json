@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:qualification:1.0.0",
+  "title": "qualification",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "qualificationId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "subjectHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "facet": {
+      "type": "string",
+      "enum": [
+        "SCHEMA",
+        "MANUAL",
+        "NUMERICAL",
+        "OBSERVATIONAL",
+        "EXERCISE_AUTHORIZATION"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "NOT_EVALUATED",
+        "REJECTED",
+        "PASSED_WITH_SCOPE",
+        "STALE",
+        "REVOKED"
+      ]
+    },
+    "scopeId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "evidenceHashes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{64}$"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "reviewerId": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "authorityEvidenceRef": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "qualificationId",
+    "subjectHash",
+    "facet",
+    "status",
+    "scopeId",
+    "evidenceHashes",
+    "reviewerId",
+    "authorityEvidenceRef",
+    "limitations",
+    "dataClass"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PASSED_WITH_SCOPE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "evidenceHashes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            },
+            "minItems": 1,
+            "maxItems": 4096
+          },
+          "reviewerId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "PASSED_WITH_SCOPE"
+          },
+          "facet": {
+            "const": "EXERCISE_AUTHORIZATION"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "authorityEvidenceRef": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:worker-capability:1.0.0",
+  "title": "worker-capability",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "workerId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "workerVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "binaryHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "protocolMajor": {
+      "const": 1
+    },
+    "executionKind": {
+      "type": "string",
+      "enum": [
+        "IN_PROCESS",
+        "STREAM_WORKER",
+        "BATCH_REFERENCE"
+      ]
+    },
+    "supports": {
+      "type": "object",
+      "properties": {
+        "stepTo": {
+          "type": "boolean"
+        },
+        "earlyReturn": {
+          "type": "boolean"
+        },
+        "snapshot": {
+          "type": "boolean"
+        },
+        "restore": {
+          "type": "boolean"
+        },
+        "cancel": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "stepTo",
+        "earlyReturn",
+        "snapshot",
+        "restore",
+        "cancel"
+      ],
+      "additionalProperties": false
+    },
+    "restartPolicy": {
+      "type": "string",
+      "enum": [
+        "EXACT_STATE",
+        "REPLAY_FROM_START",
+        "NONE"
+      ]
+    },
+    "replayClass": {
+      "type": "string",
+      "enum": [
+        "BITWISE",
+        "NUMERICAL_TOLERANCE",
+        "SEMANTIC",
+        "STATISTICAL",
+        "UNVERIFIED"
+      ]
+    },
+    "fieldOwnership": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "minItems": 1,
+      "maxItems": 4096
+    },
+    "qualifiedScopeIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "workerId",
+    "workerVersion",
+    "binaryHash",
+    "protocolMajor",
+    "executionKind",
+    "supports",
+    "restartPolicy",
+    "replayClass",
+    "fieldOwnership",
+    "qualifiedScopeIds",
+    "dataClass"
+  ],
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "restartPolicy": {
+            "const": "EXACT_STATE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "supports": {
+            "properties": {
+              "snapshot": {
+                "const": true
+              },
+              "restore": {
+                "const": true
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

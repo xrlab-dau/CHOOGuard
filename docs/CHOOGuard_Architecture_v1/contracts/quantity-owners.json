@@ -1,0 +1,55 @@
+{
+  "ownershipMode": "PER_RUN_PER_FIELD_EXCLUSIVE",
+  "fields": [
+    {
+      "pattern": "task.*",
+      "owner": "OPS"
+    },
+    {
+      "pattern": "resource.reservations",
+      "owner": "OPS"
+    },
+    {
+      "pattern": "agency.knowledge",
+      "owner": "OPS"
+    },
+    {
+      "pattern": "authority.*",
+      "owner": "OPS"
+    },
+    {
+      "pattern": "facility.logical_state",
+      "owner": "OPS"
+    },
+    {
+      "pattern": "pedestrian.pose",
+      "owner": "SELECTED_PEDESTRIAN_ADAPTER"
+    },
+    {
+      "pattern": "road_vehicle.pose",
+      "owner": "SELECTED_TRAFFIC_ADAPTER"
+    },
+    {
+      "pattern": "train.pose",
+      "owner": "SELECTED_RAIL_ADAPTER"
+    },
+    {
+      "pattern": "hazard.field",
+      "owner": "SELECTED_HAZARD_ADAPTER"
+    },
+    {
+      "pattern": "simulation.committed_boundary",
+      "owner": "SIM"
+    },
+    {
+      "pattern": "ui.*",
+      "owner": "UI"
+    },
+    {
+      "pattern": "qualification.*",
+      "owner": "EVIDENCE"
+    }
+  ],
+  "handoff": "atomic ownerEpoch change at common boundary; old producer fenced; no dual writes",
+  "rendererMayWriteDomainState": false
+}

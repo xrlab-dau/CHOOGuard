@@ -1,0 +1,94 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "status": "IN_PROGRESS",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "directionRef": "docs/CHOOGuard_Story_Plan_v5/MVP_DIRECTION.md",
+  "implementationModels": [
+    {
+      "task": "mvp_backend",
+      "model": "gpt-6-astra",
+      "effort": "low"
+    },
+    {
+      "task": "mvp_unity_ui",
+      "model": "gpt-6-astra",
+      "effort": "low"
+    },
+    {
+      "task": "busan_world",
+      "model": "gpt-6-astra",
+      "effort": "low"
+    }
+  ],
+  "editor": {
+    "pid": 4832,
+    "project": "/Users/um-yunsang/CHOOGuard",
+    "version": "6000.3.23f1",
+    "cliVersion": "1.0.0-beta.8",
+    "officialMcpHandshakeAndRead": "PASS",
+    "originalSceneSavedAs": "Assets/ChooGuard/Scenes/SessionBackup-20260920-144137.unity",
+    "originalRootsPreservedOnInitialAdditiveBuild": [
+      -6810,
+      -6818
+    ],
+    "scene": "Assets/ChooGuard/Scenes/MvpWorkspace.unity",
+    "backendProbe": "7 focused assertions PASS in live Editor; isolated synthetic MVP persistence",
+    "stationKoreanBuild": "Built/saved and rendered before final HUD/engine-client changes",
+    "finalJweStylePass": "SOURCE_IN_PROGRESS, root runtime verification pending"
+  },
+  "physics": {
+    "fdsReceipt": "workers/physics/cases/reference-hall/receipt.json",
+    "jpsResults": "workers/physics/evidence/reproduction-summary.json",
+    "worker": "workers/physics/worker.py",
+    "fdsVersion": "6.11.1",
+    "jpsVersion": "1.4.2",
+    "execution": "Real FDS120s six-slice batch; real CFSV3 with pinned original pyFDS-Evac field sampling/smoke-speed/dose modules",
+    "cases": [
+      {
+        "scenario": "crowd_medical",
+        "population": 72,
+        "seed": 7,
+        "simTimeExit": 48
+      },
+      {
+        "scenario": "fire_smoke",
+        "population": 24,
+        "seed": 7,
+        "simTimeExit": 55
+      }
+    ],
+    "limits": [
+      "Reference30x20x4m hall, not calibrated Busan geometry",
+      "No mesh/time convergence or independent site validation",
+      "Density-velocity variance diagnostic is not contact crush force",
+      "Medical assistance request is not clinical outcome",
+      "No radiant injury/HCN/irritant effects or two-way fire-boundary response"
+    ]
+  },
+  "sources": {
+    "city": "asset-library/space-references/busan-reconstruction/busan-openworld.json",
+    "features": 3845,
+    "freeAssetDownload": "asset-library/models-materials/downloads/kenney_train-kit-current-receipt.json",
+    "publicManuals": "asset-library/research-public/2026-09-21/source-map.json"
+  },
+  "jev": {
+    "mode": "LIVE",
+    "model": "typesafe-ai/jev",
+    "endpoint": "https://ai-gateway.vercel.sh/typesafe",
+    "authority": 0,
+    "rootDecision": "Continue implementation; runtime evidence does not establish complete calibrated twin",
+    "evidenceDirectory": ".planning/2026-09-20-integrated-build",
+    "runtimeEffortAutoChange": false
+  },
+  "notInMvp": [
+    "scenario draft/document generator",
+    "staff/student tutorial mode"
+  ],
+  "pending": [
+    "final live client-engine flow",
+    "JWE3-like direct-team interaction and visual acceptance",
+    "source-grounded Busan physical parameters/validation",
+    "contact-pressure/medical quantitative model coverage",
+    "Windows player qualification"
+  ]
+}

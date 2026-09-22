@@ -1,0 +1,158 @@
+{
+  "id": "CS-SCRIPT.01",
+  "epicId": "CS-SCRIPT",
+  "title": "허용 근거 조회와 규칙/설명 후보",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SCRIPT.01",
+    "description": "권한제한 retrieval 및 근거가 결속된 AI 응답",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SCRIPT.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SCRIPT.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Authoring/EvidenceQuery.cs",
+    "Assets/ChooGuard/Authoring/AssistantGateway.cs",
+    "workers/authoring/retrieve.py",
+    "workers/authoring/contracts.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SCRIPT/Script01Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PACK.02",
+      "artifactId": "A-CS-PACK.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.06",
+      "artifactId": "A-CS-OPS.06",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "기관·사건·판본·권한으로 문맥을 좁히고 실제 source locator를 연결한다.",
+    "AI는 규칙/설명/수정안 후보만 반환한다. 승인·DB쓰기·shell·운영명령 권한은 부여하지 않는다.",
+    "문서/메모의 지시문을 데이터로 다루고 비용·timeout·반출 policy를 검사한다. 실패시 수동편집은 계속한다."
+  ],
+  "contract": "AssistantProposal {type,claims,evidenceRefs,missing,patchDraft}; 결정적 상태 계산은 코어 담당.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SCRIPT.01-P",
+      "given": "허용된 clause/run 근거",
+      "when": "AI proposal",
+      "then": "기록·가설·제안 분리",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SCRIPT.01-N",
+      "given": "원문에서 shell 지시",
+      "when": "AI proposal",
+      "then": "UNTRUSTED_INSTRUCTION",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-032",
+    "REQ-052",
+    "REQ-058",
+    "REQ-059"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/09-script-and-approval.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/09-script-and-approval.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-032",
+    "REQ-052",
+    "REQ-058",
+    "REQ-059"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SCRIPT/Script01Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSSCRIPT01PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-SCRIPT.01.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "허용된 clause/run 근거",
+    "operation": "AI proposal",
+    "expectedPositive": "기록·가설·제안 분리",
+    "negativeInput": "원문에서 shell 지시",
+    "expectedNegative": "UNTRUSTED_INSTRUCTION",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

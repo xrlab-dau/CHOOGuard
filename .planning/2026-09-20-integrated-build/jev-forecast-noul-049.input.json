@@ -1,0 +1,159 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "scope": "Actual accepted local training snapshot. Forecastfutureevents; probability is model estimate, not certified real-world accuracy. 8m/s authored motion; sharedgroup automaticworkflow. Keepcurrentdecisions.",
+    "snapshot": {
+      "schemaVersion": 1,
+      "snapshotId": "587d8df0fa49439c98337676f00ae74d",
+      "stateHash": "eed98628d53c9411cd2a10b136894c3d3bf1940809177aa339f13ddbf03a24c5",
+      "decisionKey": "ab90a8b8a4d023273fbac6d9718e3e2988278b3de25590590555b9a1de043706",
+      "runId": "55b467ff24c14830bc4206aaf7f6aba6",
+      "generation": 1,
+      "simTime": 0.0,
+      "graphHash": "212de2f60d3989b0e8c46d8214c9e960c8edc113d6591d8cbd1e07991101823c",
+      "phase": "ordinary",
+      "selectedOperationId": "2178fce19ba74f459446417847a95228",
+      "physics": {
+        "total": 50,
+        "evacuated": 0,
+        "density": 0.8753522038459778,
+        "pressureIndicator": 0.0,
+        "visibility": 30.0,
+        "temperature": 20.0,
+        "maxFedToxic": 0.0,
+        "extinction": 0.0,
+        "sootDensity": 0.0,
+        "maxFedConvectiveHeat": 0.0,
+        "incidentTime": -1.0,
+        "fieldValidUntil": 0.0,
+        "fieldCurrent": false,
+        "fireRequired": false,
+        "warned": false,
+        "evacuationOrdered": false,
+        "medicalAssistanceRequested": false
+      },
+      "cohorts": [
+        {
+          "id": 0,
+          "total": 13,
+          "active": 13,
+          "evacuated": 0,
+          "released": 0,
+          "isReleased": false,
+          "final": false,
+          "maxFedToxic": 0.0,
+          "maxFedConvectiveHeat": 0.0,
+          "meanFinalFedToxic": 0.0,
+          "meanFinalFedConvectiveHeat": 0.0,
+          "finalExitTime": 0.0
+        },
+        {
+          "id": 1,
+          "total": 22,
+          "active": 22,
+          "evacuated": 0,
+          "released": 0,
+          "isReleased": false,
+          "final": false,
+          "maxFedToxic": 0.0,
+          "maxFedConvectiveHeat": 0.0,
+          "meanFinalFedToxic": 0.0,
+          "meanFinalFedConvectiveHeat": 0.0,
+          "finalExitTime": 0.0
+        },
+        {
+          "id": 2,
+          "total": 15,
+          "active": 15,
+          "evacuated": 0,
+          "released": 0,
+          "isReleased": false,
+          "final": false,
+          "maxFedToxic": 0.0,
+          "maxFedConvectiveHeat": 0.0,
+          "meanFinalFedToxic": 0.0,
+          "meanFinalFedConvectiveHeat": 0.0,
+          "finalExitTime": 0.0
+        }
+      ],
+      "releaseRevision": 0,
+      "lastControlRequestId": "",
+      "cohortScheme": "spawn-z-thirds-v1",
+      "releasePolicyHistoryDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "missions": [
+        {
+          "teamId": "central119-evacuation-relief",
+          "operationId": "",
+          "workType": "",
+          "state": "Ready",
+          "stage": "",
+          "distanceTravelled": 0.0,
+          "routeDistance": 0.0,
+          "memberCount": 1
+        },
+        {
+          "teamId": "central119-evacuation-response",
+          "operationId": "16f302d4d0ce449d87412f1b8541f849",
+          "workType": "evacuation-support",
+          "state": "Requested",
+          "stage": "travel",
+          "distanceTravelled": 0.0,
+          "routeDistance": 1087.1956787109375,
+          "memberCount": 2
+        },
+        {
+          "teamId": "central119-medical-support",
+          "operationId": "2178fce19ba74f459446417847a95228",
+          "workType": "medical-support",
+          "state": "Requested",
+          "stage": "travel",
+          "distanceTravelled": 0.0,
+          "routeDistance": 1081.8258056640625,
+          "memberCount": 1
+        },
+        {
+          "teamId": "choryang119-evacuation-relief",
+          "operationId": "",
+          "workType": "",
+          "state": "Ready",
+          "stage": "",
+          "distanceTravelled": 0.0,
+          "routeDistance": 0.0,
+          "memberCount": 1
+        },
+        {
+          "teamId": "choryang119-evacuation-response",
+          "operationId": "",
+          "workType": "",
+          "state": "Ready",
+          "stage": "",
+          "distanceTravelled": 0.0,
+          "routeDistance": 0.0,
+          "memberCount": 2
+        },
+        {
+          "teamId": "choryang119-medical-support",
+          "operationId": "",
+          "workType": "",
+          "state": "Ready",
+          "stage": "",
+          "distanceTravelled": 0.0,
+          "routeDistance": 0.0,
+          "memberCount": 1
+        }
+      ],
+      "decisionSummary": "현재 승인된 기관 업무와 시민 계산 상태를 기준으로 전망",
+      "calculationCurrent": true
+    }
+  },
+  "questions": {
+    "arrival120": {
+      "type": "noul",
+      "instructions": "Probability at least one currently Requested/EnRoute logical support group reaches the target within the next120 accepted simulationseconds? RouteDistance minus distanceTravelled is remaining authored path inmetres;8m/s plus departureheadway.",
+      "criteria": {
+        "true": "Atleastoneassignedtravellinggroup arriveswithin120simulationseconds",
+        "false": "Noassignedtravellinggroup arriveswithin120simulationseconds"
+      }
+    }
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "status": "IN_PROGRESS",
+  "acceptance": "NOT_ACCEPTED",
+  "provider": "UNKNOWN",
+  "unity": "6000.3.23f1",
+  "scratch": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525",
+  "runs": [
+    {
+      "mode": "EditMode",
+      "exit": 2,
+      "timeout": false,
+      "started": "2026-09-20T16:24:45.692707",
+      "commands": [
+        "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity",
+        "-batchmode",
+        "-projectPath",
+        "/Users/um-yunsang/CHOOGuard",
+        "-runTests",
+        "-testPlatform",
+        "EditMode",
+        "-testFilter",
+        "ChooGuard.Tests.EditMode.Stories.CSBOOT0101Tests;ChooGuard.Tests.EditMode.Stories.CSBOOT0201Tests;ChooGuard.Tests.EditMode.Stories.CSBOOT0202Tests;ChooGuard.Tests.EditMode.Stories.CSPACK0101Tests;ChooGuard.Tests.EditMode.Stories.CSPACK0102Tests;ChooGuard.Tests.EditMode.Stories.CSPLAY0101Tests;ChooGuard.Tests.EditMode.Stories.CSPLAY0102Tests;ChooGuard.Tests.EditMode.Stories.PreparedAssetImportTests",
+        "-testResults",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/editmode.xml",
+        "-logFile",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/editmode.log",
+        "-cgFixtureRoot",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/fixtures",
+        "-cgBuildLinkFixture",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/links"
+      ],
+      "compile": "PASS",
+      "compilerErrors": [],
+      "xml": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/editmode.xml",
+      "leafCounts": {
+        "total": 230,
+        "Passed": 229,
+        "Failed": 1
+      },
+      "classes": {
+        "ChooGuard.Tests.EditMode.Stories.CSBOOT0101Tests": {
+          "total": 55,
+          "Passed": 55
+        },
+        "ChooGuard.Tests.EditMode.Stories.CSBOOT0201Tests": {
+          "total": 44,
+          "Passed": 44
+        },
+        "ChooGuard.Tests.EditMode.Stories.CSBOOT0202Tests": {
+          "total": 17,
+          "Passed": 17
+        },
+        "ChooGuard.Tests.EditMode.Stories.CSPACK0101Tests": {
+          "total": 14,
+          "Passed": 14
+        },
+        "ChooGuard.Tests.EditMode.Stories.CSPACK0102Tests": {
+          "total": 80,
+          "Passed": 79,
+          "Failed": 1
+        },
+        "ChooGuard.Tests.EditMode.Stories.CSPLAY0101Tests": {
+          "total": 5,
+          "Passed": 5
+        },
+        "ChooGuard.Tests.EditMode.Stories.CSPLAY0102Tests": {
+          "total": 8,
+          "Passed": 8
+        },
+        "ChooGuard.Tests.EditMode.Stories.PreparedAssetImportTests": {
+          "total": 7,
+          "Passed": 7
+        }
+      },
+      "failures": [
+        {
+          "name": "ChooGuard.Tests.EditMode.Stories.CSPACK0102Tests.RevisionInclusiveBoundsAndIndependentScenarioRevisionAreValid(\"9223372036854775807\")",
+          "result": "Failed",
+          "message": "  Expected: True\n  But was:  False\n",
+          "diagnosis": "Test fixture construction at CSPACK0102Tests.cs:133 chains prefix replacements: after inserting 9223372036854775807 for nested revision 2, replacement of revision 9 also matches that inserted prefix, producing nested site revision 9223372036854775807223372036854775807 (outside Int64). Independently reproduced from current ScenarioJson; no source repair or Unity retry performed.",
+          "stack": "at ChooGuard.Tests.EditMode.Stories.CSPACK0102Tests.RevisionInclusiveBoundsAndIndependentScenarioRevisionAreValid (System.String token) [0x0004e] in /Users/um-yunsang/CHOOGuard/Assets/ChooGuard/Tests/EditMode/Stories/CSPACK0102Tests.cs:134\n"
+        }
+      ],
+      "xmlResult": "Failed(Child)"
+    },
+    {
+      "mode": "PlayMode",
+      "exit": 0,
+      "timeout": false,
+      "started": "2026-09-20T16:25:03.313851",
+      "commands": [
+        "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/MacOS/Unity",
+        "-batchmode",
+        "-projectPath",
+        "/Users/um-yunsang/CHOOGuard",
+        "-runTests",
+        "-testPlatform",
+        "PlayMode",
+        "-testFilter",
+        "ChooGuard.Tests.PlayMode.Stories.CSBOOT0101PlayModeTests;ChooGuard.Tests.PlayMode.Stories.IntegratedInputPlayModeTests",
+        "-testResults",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/playmode.xml",
+        "-logFile",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/playmode.log",
+        "-cgFixtureRoot",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/fixtures",
+        "-cgBuildLinkFixture",
+        "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/links"
+      ],
+      "compile": "PASS",
+      "compilerErrors": [],
+      "xml": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/playmode.xml",
+      "leafCounts": {
+        "total": 13,
+        "Passed": 13
+      },
+      "classes": {
+        "ChooGuard.Tests.PlayMode.Stories.CSBOOT0101PlayModeTests": {
+          "total": 1,
+          "Passed": 1
+        },
+        "ChooGuard.Tests.PlayMode.Stories.IntegratedInputPlayModeTests": {
+          "total": 12,
+          "Passed": 12
+        }
+      },
+      "failures": [],
+      "xmlResult": "Passed"
+    }
+  ],
+  "sourcehashes": {
+    "manifest": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/source-hashes.json",
+    "manifestSha256": "ef55e12400ed5cac48b45e8dc2703ed8cf6acfc3b4c93e8c01a8b2de24562c17",
+    "count": 35
+  },
+  "preservation": {
+    "changed": [],
+    "removed": [],
+    "added": [],
+    "beforeFiles": 387,
+    "afterFiles": 387,
+    "existingMetaGuidsPreserved": true
+  },
+  "manifests": {
+    "before": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/manifest-before.json",
+    "after": "/private/tmp/claude-501/-Users-um-yunsang-CHOOGuard/6b3eea63-2426-429e-825b-36b51c3d9b46/scratchpad/content-validation/20260920-162445-473525/manifest-after.json"
+  },
+  "newTestGeneratedReceipts": [
+    "docs/build/evidence/CS-BOOT.01.01/20260920T0724595166430Z-2b6adb/build-receipt.json"
+  ],
+  "productBuildAcceptance": "NOT_ACCEPTED",
+  "notRun": [
+    "Windows",
+    "realOSkeyboardIME",
+    "audio",
+    "animation",
+    "fieldqualification"
+  ]
+}

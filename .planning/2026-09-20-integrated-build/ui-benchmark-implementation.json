@@ -1,0 +1,75 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "selection": "P1_P2_together",
+  "status": "source-complete-root-compile-and-visual-check-required",
+  "nodes": [
+    {
+      "id": "compact-context",
+      "implementation": "310x194 selected team card, real selected position/state, next task queue including paused placement orders; primary move/hold/release <=3; all other existing commands retained in drawer",
+      "evidence": "MvpWorkspace.ApplyCompactLayout; MvpTeamTaskController.Update"
+    },
+    {
+      "id": "notification-rail",
+      "implementation": "three latest meaningful notices; session-scoped keys dedupe; accepted ordinary/incident/resolved/incomplete result phases, stored command receipt, task dispatch/arrival/ownACK; click selects related team and focuses relevant location only",
+      "evidence": "AddOperationNotice/FocusNotice; Director.Receive; TaskController.Observe"
+    },
+    {
+      "id": "context-actions",
+      "implementation": "ordinary release disabled with Korean reason; incident/recovery release enabled; no extra confirmation modal; recovery supported results only",
+      "evidence": "SetContextPhase; existing receipt/control guards unchanged"
+    },
+    {
+      "id": "world-preservation",
+      "implementation": "old persistent action/mission panels hidden; command drawer/details closed by default; notice slots empty unless actual event; selected line/ring reused; no world text/ETA invention",
+      "evidence": "layoutVersion10; ApplyCompactLayout"
+    },
+    {
+      "id": "limits",
+      "implementation": "No claim of full 20-30 minute production completeness; root owns compile/play/screenshot acceptance. User inadequate-response policy remains persistent Recovery, not game-over."
+    }
+  ],
+  "edges": [
+    {
+      "from": "notification-rail",
+      "to": "compact-context",
+      "relation": "focus/selection only; no command dispatch"
+    },
+    {
+      "from": "compact-context",
+      "to": "context-actions",
+      "relation": "real task queue and phase"
+    },
+    {
+      "from": "context-actions",
+      "to": "world-preservation",
+      "relation": "compact default; optional drawer preserves operations"
+    }
+  ],
+  "preserved": [
+    "StartCrowdSession",
+    "BeginIncident",
+    "State/Phase",
+    "CrowdVisualInstanceId",
+    "per-order control ACK",
+    "accepted-clock progression",
+    "all legacy UI commands"
+  ],
+  "verification": [
+    "static source inspection",
+    "No Unity invocation in client lane",
+    "Root must compile then capture ordinary/incident/recovery and open drawer, check notice click does not change team command revision"
+  ],
+  "nativeFeedbackRepair": {
+    "scope": [
+      "MvpWorkspace.cs",
+      "MvpTrainingDirector.cs"
+    ],
+    "fixes": [
+      "Act(debrief) and button share Director-owned toggle; Workspace.SetDebriefDisplay synchronizes visible panel",
+      "Full real history in clamped vertical ScrollRect, opens at recent records; wheel/drag reaches earlier dispatch/arrival/ACK; button closes without ending run",
+      "Drawer labels ASCII + and - replace unsupported triangle glyphs"
+    ],
+    "layoutVersion": 11,
+    "verification": "Static wiring reviewed; root compile and screenshot evidence required"
+  }
+}

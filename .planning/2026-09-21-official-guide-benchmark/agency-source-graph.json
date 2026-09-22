@@ -1,0 +1,128 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-09-21",
+  "catalogPath": "asset-library/space-references/busan-reconstruction/agency-catalog.json",
+  "objective": "Trace real public response institutions for gameplay bases and medical handoff in the Busan Station–Nampo–North Port corridor",
+  "result": {
+    "candidateCount": 4,
+    "coordinateReadyCount": 4,
+    "officialIdentityAddressCount": 4,
+    "status": "bounded_complete",
+    "nextUsableData": "Use the four catalog WGS84 representative building points as map anchors, then snap only each in-game road arrival point to the existing road graph; none of the points is a verified vehicle or ambulance entrance."
+  },
+  "nodes": [
+    {
+      "id": "agency-central-119",
+      "type": "institution",
+      "ref": "busan-jungbu-central-119",
+      "status": "usable_coordinate"
+    },
+    {
+      "id": "agency-yeongju-police",
+      "type": "institution",
+      "ref": "busan-jungbu-yeongju-police",
+      "status": "usable_coordinate"
+    },
+    {
+      "id": "agency-choryang-119",
+      "type": "institution",
+      "ref": "busan-jungbu-choryang-119",
+      "status": "usable_coordinate_exact_address_geometry"
+    },
+    {
+      "id": "agency-maryknoll",
+      "type": "institution",
+      "ref": "busan-maryknoll-emergency",
+      "status": "usable_coordinate_named_hospital_geometry"
+    },
+    {
+      "id": "official-central-119",
+      "type": "official_source",
+      "url": "https://119.busan.go.kr/jungbu/119jbintro01",
+      "accessed": "2026-09-21",
+      "proves": ["name", "address", "public coverage area"]
+    },
+    {
+      "id": "official-choryang-119",
+      "type": "official_source",
+      "url": "https://119.busan.go.kr/jungbu/119jbintro05",
+      "accessed": "2026-09-21",
+      "pageLastUpdated": "2026-06-23",
+      "proves": ["name", "address", "public coverage area"]
+    },
+    {
+      "id": "official-police-posts",
+      "type": "official_source",
+      "url": "https://www.bspolice.go.kr/jungbu/view.do?no=149",
+      "accessed": "2026-09-21",
+      "proves": ["영주파출소 name", "street and lot address"]
+    },
+    {
+      "id": "official-egen-maryknoll",
+      "type": "official_source",
+      "url": "https://www.e-gen.or.kr/egen/holiday_medical.do?addrhosp=&addrroad=&checkToday=Y&colnum=&currentPageNum=3&day=&displaysize=50&dongCode=&emergencyViewYn=Y&emogdesc=&emogdstr=1215&emogemdv=&gugunCode=110&holiday=&hospitalY=Y&lat=&loca=12&lon=&pharmacyY=&searchType=general&sidoCode=26&trtPrtCod=",
+      "accessed": "2026-09-21",
+      "proves": ["legal facility name", "regional emergency medical institution classification", "general-hospital classification", "address", "emergency-room operation in displayed schedule"]
+    },
+    {
+      "id": "osm-way-825455699",
+      "type": "public_map_entity",
+      "url": "https://www.openstreetmap.org/way/825455699",
+      "entityTimestamp": "2025-02-05T02:58:57Z",
+      "proves": ["named fire-station building polygon", "중앙대로 110 address tags", "coordinate geometry"]
+    },
+    {
+      "id": "osm-way-825455453",
+      "type": "public_map_entity",
+      "url": "https://www.openstreetmap.org/way/825455453",
+      "entityTimestamp": "2025-02-19T11:30:09Z",
+      "proves": ["named police building polygon", "동영로 77 address tags", "coordinate geometry"]
+    },
+    {
+      "id": "osm-way-825456385",
+      "type": "public_map_entity",
+      "url": "https://www.openstreetmap.org/way/825456385",
+      "entityTimestamp": "2026-09-04T03:10:25Z",
+      "proves": ["building polygon", "exact 중앙대로260번길 7 address tags", "coordinate geometry"]
+    },
+    {
+      "id": "osm-way-759425307",
+      "type": "public_map_entity",
+      "url": "https://www.openstreetmap.org/way/759425307",
+      "entityTimestamp": "2025-11-25T08:36:16Z",
+      "proves": ["named 메리놀병원 polygon", "hospital tags", "coordinate geometry"]
+    }
+  ],
+  "edges": [
+    {"from": "official-central-119", "to": "agency-central-119", "relation": "verifies_identity_address"},
+    {"from": "osm-way-825455699", "to": "agency-central-119", "relation": "supplies_crosschecked_geometry"},
+    {"from": "official-police-posts", "to": "agency-yeongju-police", "relation": "verifies_identity_address"},
+    {"from": "osm-way-825455453", "to": "agency-yeongju-police", "relation": "supplies_crosschecked_geometry"},
+    {"from": "official-choryang-119", "to": "agency-choryang-119", "relation": "verifies_identity_address"},
+    {"from": "osm-way-825456385", "to": "agency-choryang-119", "relation": "supplies_exact_address_geometry"},
+    {"from": "official-egen-maryknoll", "to": "agency-maryknoll", "relation": "verifies_identity_address_role"},
+    {"from": "osm-way-759425307", "to": "agency-maryknoll", "relation": "supplies_named_hospital_geometry"}
+  ],
+  "knownVsAssumptions": {
+    "known": [
+      "All four identities and addresses are published by the responsible public agency, national emergency-medical service, or institution itself",
+      "All four coordinates derive from OSM building or institution polygons cross-checked against official identity/address evidence",
+      "Three polygons have an exact name or exact address-tag match; the Maryknoll polygon is named and hospital-tagged but lacks its own street-address tags",
+      "The stored coordinates are representative building points, not entrances"
+    ],
+    "assumptions": [
+      "A gameplay road-graph snap near a representative building point can serve as an arrival marker after visual review",
+      "An institution appearing here does not imply it would answer any specific real incident"
+    ],
+    "explicitlyUnavailable": [
+      "No live fleet, staffing, capacity, availability, dispatch decision, or response-time data was collected"
+    ]
+  },
+  "implementationRecipe": [
+    "Load agency-catalog.json as EPSG:4326 point metadata.",
+    "Convert non-null coordinates through the same Busan local-origin transform already used by busan-openworld.json.",
+    "Place a non-navigable institution marker at the building representative point and compute a separate road-arrival waypoint by snapping to the existing drivable graph.",
+    "Keep each building representative point distinct from its gameplay road-arrival waypoint; none is a verified apparatus-bay or ambulance entrance.",
+    "Keep routing, dispatch selection, arrival, and return entirely simulated; expose no real calling or live-capacity behavior."
+  ]
+}

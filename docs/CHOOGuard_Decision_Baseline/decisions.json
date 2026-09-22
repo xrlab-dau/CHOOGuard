@@ -1,0 +1,460 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "DEC-CHOOGUARD-20260919",
+  "basisPRDVersion": "10.0.0",
+  "decisionStatus": "DESIGN_DIRECTION_FIXED_PRODUCT_NOT_VALIDATED",
+  "product": "REALITY_BASED_RAIL_EMERGENCY_OPERATIONS_LAB",
+  "user": "EXERCISE_SCENARIO_AUTHOR",
+  "platform": "UNITY_PC",
+  "priority": "P0-0",
+  "coreLoop": [
+    "SETUP",
+    "OPERATE_A",
+    "INSPECT",
+    "BRANCH_B",
+    "COMPARE",
+    "SELECT",
+    "REVIEW",
+    "EXPORT_SCRIPT",
+    "REEXECUTE"
+  ],
+  "userModes": [
+    "TUTORIAL",
+    "RANDOM_OPERATIONS_LAB"
+  ],
+  "samePhysicsAndOperationsCore": true,
+  "productAcceptance": "NOT_EVALUATED",
+  "unityRunThisTurn": "NOT_RUN",
+  "physicsRunThisTurn": "NOT_RUN",
+  "newAssetAcquisitionThisTurn": false,
+  "githubModifiedThisTurn": false,
+  "repoFilesModifiedThisTurn": false,
+  "additionalUserNeeds": [
+    {
+      "id": "UR-23",
+      "statement": "무료 에셋을 우선하고 유료 대형 팩을 필수 선행으로 두지 않는다. 물리·현장 정확도 요구를 낮추지 않는다.",
+      "basis": "MOST_RECENT_USER_REQUEST"
+    }
+  ],
+  "firstImplementation": {
+    "phase": "R0",
+    "purpose": "OPERATIONAL_VERTICAL_SLICE_NOT_FIELD_ACCEPTANCE",
+    "minimumAgencies": 2,
+    "interactionUnit": "TEAM_OR_CREW_BOUND_VEHICLE",
+    "proof": "one inter-agency dependency plus a resource/information conflict, saved A/B branches, explanatory evidence and script export"
+  },
+  "firstQuantitativePhysicsScope": "FIRE_SMOKE_AND_MOVEMENT_IN_ONE_REFERENCE_RAIL_SLICE",
+  "plannedScaleProfile": {
+    "status": "DEVELOPMENT_TEST_HYPOTHESIS_NOT_OPERATIONAL_STAFFING",
+    "functionalGroups": 6,
+    "teams": 16,
+    "responsePersonnel": 64,
+    "civilians": 120,
+    "roadVehicles": 10,
+    "trainFormations": 1,
+    "humanAuthors": 1
+  },
+  "freeFirstSelection": {
+    "vehicles": [
+      "FREE-001"
+    ],
+    "characters": [
+      "FREE-010",
+      "FREE-011"
+    ],
+    "fallbackCharacterBase": [
+      "FREE-012"
+    ],
+    "animations": [
+      "FREE-015",
+      "FREE-017"
+    ],
+    "background": [
+      "FREE-005",
+      "FREE-006",
+      "FREE-007",
+      "FREE-008"
+    ],
+    "railFixture": [
+      "FREE-003"
+    ],
+    "equipment": [
+      "FREE-018",
+      "FREE-019",
+      "FREE-020",
+      "FREE-021"
+    ],
+    "ui": [
+      "FREE-023",
+      "FREE-024"
+    ],
+    "materials": [
+      "FREE-025"
+    ],
+    "selectionMeaning": "FIRST_INTAKE_ORDER_NOT_RAW_ACQUIRED_OR_UNITY_APPROVED",
+    "paidMandatoryPackCount": 0
+  },
+  "decisions": [
+    {
+      "id": "D01",
+      "title": "제품 정의",
+      "decision": "운영 시뮬레이션이 본체이고 대본은 선택한 운영안의 결과물이다.",
+      "userNeedIds": [
+        "UR-01",
+        "UR-02",
+        "UR-12"
+      ],
+      "epicIds": [
+        "EP00",
+        "EP09",
+        "EP10"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D02",
+      "title": "최종사용자",
+      "decision": "주 사용자는 시나리오 작성 담당자다. 기관의 실제 명령 권한과 작성자의 분석·편집 권한을 분리한다.",
+      "userNeedIds": [
+        "UR-02",
+        "UR-03",
+        "UR-14"
+      ],
+      "epicIds": [
+        "EP00",
+        "EP02",
+        "EP04"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D03",
+      "title": "상호작용",
+      "decision": "Unity PC 조감형 RTS + 업무 중심 배정을 채택한다. 기본 선택 단위는 팀/승무 인력이 결속된 차량이다.",
+      "userNeedIds": [
+        "UR-03",
+        "UR-08"
+      ],
+      "epicIds": [
+        "EP02",
+        "EP04"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D04",
+      "title": "두 모드",
+      "decision": "TUTORIAL과 RANDOM_OPERATIONS_LAB을 제공하고 동일 운영·물리 코어를 사용한다.",
+      "userNeedIds": [
+        "UR-05",
+        "UR-06"
+      ],
+      "epicIds": [
+        "EP06",
+        "EP07",
+        "EP08"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D05",
+      "title": "교육 근거",
+      "decision": "첫 튜토리얼은 공개 철도 합동훈련을 근거로 재구성한다. 원 대본·해당 현장 재현을 확보하지 않았으면 그 한계를 표시한다.",
+      "userNeedIds": [
+        "UR-04",
+        "UR-05",
+        "UR-21"
+      ],
+      "epicIds": [
+        "EP01",
+        "EP06"
+      ],
+      "sourceIds": [
+        "SRC-TRAINING"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D06",
+      "title": "랜덤 조건",
+      "decision": "원인·권한·공간·자원·지원 요구·solver 영역을 만족하는 조건부 상황 그래프만 생성한다.",
+      "userNeedIds": [
+        "UR-06",
+        "UR-14"
+      ],
+      "epicIds": [
+        "EP02",
+        "EP06"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D07",
+      "title": "운영 상태",
+      "decision": "업무 생명주기, 권한, 정보, 자원, 이동, 안전, 증거를 독립 축으로 둔다. v10의 22개 원인을 연계한다.",
+      "userNeedIds": [
+        "UR-03",
+        "UR-07"
+      ],
+      "epicIds": [
+        "EP01",
+        "EP02",
+        "EP04"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D08",
+      "title": "매뉴얼 실행",
+      "decision": "판본·적용기관·조건·예외·검수 기록이 연결된 실행 규칙을 사용한다. 원문 추출이 기관 승인인 것은 아니다.",
+      "userNeedIds": [
+        "UR-04",
+        "UR-12"
+      ],
+      "epicIds": [
+        "EP01",
+        "EP06",
+        "EP10"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D09",
+      "title": "맵 범위",
+      "decision": "첫 연속 운영 구간에서 시작해 기존 13구역으로 확장한다. 핵심 공간의 치수·위상은 근거 기반으로 제작하고 가정을 표시한다.",
+      "userNeedIds": [
+        "UR-08",
+        "UR-09",
+        "UR-10",
+        "UR-19"
+      ],
+      "epicIds": [
+        "EP03",
+        "EP10",
+        "EP11"
+      ],
+      "sourceIds": [
+        "SRC-MAPANYTHING",
+        "SRC-COLMAP"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D10",
+      "title": "아트·무료 기본",
+      "decision": "실제 공간 비례를 보존한 세미리얼리스틱 아트를 선택한다. 무료 에셋은 역할별 기본 팩으로 축소하고 도메인 물성을 분리한다.",
+      "userNeedIds": [
+        "UR-09",
+        "UR-16",
+        "UR-20",
+        "UR-23"
+      ],
+      "epicIds": [
+        "EP03",
+        "EP04"
+      ],
+      "sourceIds": [
+        "SRC-ASSET-RGS",
+        "SRC-ASSET-MEN",
+        "SRC-ASSET-WOMEN",
+        "SRC-ASSET-EXT",
+        "SRC-ASSET-TRAIN",
+        "SRC-ASSET-UI"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D11",
+      "title": "운영 커널",
+      "decision": "기존 운영 코드 우선 재사용. C# 이산사건·자원 예약을 코어로 하고 TAPAAL은 추상 워크플로 검증에 연결한다.",
+      "userNeedIds": [
+        "UR-07",
+        "UR-10",
+        "UR-11"
+      ],
+      "epicIds": [
+        "EP01",
+        "EP02"
+      ],
+      "sourceIds": [
+        "SRC-TAPAAL"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D12",
+      "title": "보행·교통",
+      "decision": "JuPedSim 및 SUMO 어댑터를 사용사례별로 시험한다. 실제 통과 모델은 독립 관측으로 선정하고 위치 소유권은 한 곳에 둔다.",
+      "userNeedIds": [
+        "UR-10",
+        "UR-11",
+        "UR-12"
+      ],
+      "epicIds": [
+        "EP07"
+      ],
+      "sourceIds": [
+        "SRC-JUPEDSIM",
+        "SRC-SUMO"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D13",
+      "title": "열·연기·가속",
+      "decision": "FDS를 기준으로 하고 ROM/PhysicsNeMo 기반 대체모델은 과도응답·보존량·유효범위 검증 후 가속에 사용한다.",
+      "userNeedIds": [
+        "UR-10",
+        "UR-11",
+        "UR-12"
+      ],
+      "epicIds": [
+        "EP08"
+      ],
+      "sourceIds": [
+        "SRC-FDS",
+        "SRC-FDS-MANUALS",
+        "SRC-PHYSICSNEMO"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D14",
+      "title": "시간·결합",
+      "decision": "solver·운영 사건·관측·렌더 시간을 구분한다. restart 불가 시 검증 checkpoint/재실행 경로 없이 정확 분기를 주장하지 않는다.",
+      "userNeedIds": [
+        "UR-10",
+        "UR-13",
+        "UR-14"
+      ],
+      "epicIds": [
+        "EP02",
+        "EP05",
+        "EP07",
+        "EP08"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D15",
+      "title": "운영안 비교",
+      "decision": "제약 충족을 먼저 확인하고 공조·시간·자원·불확도를 비교한다. 통제한 외생 입력과 독립 검증 조건을 보존한다.",
+      "userNeedIds": [
+        "UR-12",
+        "UR-13",
+        "UR-14"
+      ],
+      "epicIds": [
+        "EP05",
+        "EP10"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D16",
+      "title": "AI·대본",
+      "decision": "사실·주장·권고·추측을 분리한다. 허용 schema에서 근거 있는 대본과 실행 데이터를 만들고 사람 검토를 거친다.",
+      "userNeedIds": [
+        "UR-01",
+        "UR-12",
+        "UR-13"
+      ],
+      "epicIds": [
+        "EP09",
+        "EP10"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D17",
+      "title": "AI-native 문서",
+      "decision": "기존 EP00~EP11/REQ/AT/UR 식별자를 유지하고 원문·출력·검증 상태를 필요한 범위에서 읽는다. 새 스케줄러를 만들지 않는다.",
+      "userNeedIds": [
+        "UR-15",
+        "UR-16",
+        "UR-22"
+      ],
+      "epicIds": [
+        "EP00",
+        "EP01"
+      ],
+      "sourceIds": [
+        "SRC-PROV",
+        "SRC-JSONLD"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D18",
+      "title": "정밀도와 출시",
+      "decision": "작은 기능 검증→통합 운영판→지정 용도 검증→확장 순서. 동기화 전 시뮬레이션을 완성된 디지털 트윈으로 표시하지 않는다.",
+      "userNeedIds": [
+        "UR-10",
+        "UR-11",
+        "UR-12",
+        "UR-17",
+        "UR-19"
+      ],
+      "epicIds": [
+        "EP00",
+        "EP10",
+        "EP11"
+      ],
+      "sourceIds": [
+        "SRC-DTC"
+      ],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D19",
+      "title": "제외·권한",
+      "decision": "VR/XR·FPS·자유 건설·경제·전투·실제 설비 제어는 제외한다. 현재 결정서가 원격 코드 쓰기나 실행 승인이 되지 않는다.",
+      "userNeedIds": [
+        "UR-18",
+        "UR-22"
+      ],
+      "epicIds": [
+        "EP00"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    },
+    {
+      "id": "D20",
+      "title": "첫 증명",
+      "decision": "두 기관의 협조 업무에서 A안의 자원·정보 대기 문제를 B안으로 수정하고 근거 있는 비교와 대본 출력을 끝까지 구현한다.",
+      "userNeedIds": [
+        "UR-01",
+        "UR-02",
+        "UR-13",
+        "UR-14",
+        "UR-19"
+      ],
+      "epicIds": [
+        "EP02",
+        "EP03",
+        "EP04",
+        "EP05",
+        "EP06",
+        "EP09",
+        "EP10"
+      ],
+      "sourceIds": [],
+      "status": "DESIGN_SELECTED"
+    }
+  ],
+  "notAScheduler": true,
+  "notInstitutionalApproval": true,
+  "pastTestCountsAreNotProductEvidence": true,
+  "precedence": "Use these scoped product selections with the unchanged v10 detailed requirements/tests. Do not infer repository migration."
+}

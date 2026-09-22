@@ -1,0 +1,89 @@
+{
+  "status": "FROZEN_STAGED_CENTRAL_ROOF_INCREMENT",
+  "scope": "One source-supported exterior roof readability improvement; not A production or whole-city acceptance",
+  "sourceAuthority": {
+    "graph": ".planning/2026-09-21-fleet-building/building-source-graph.json",
+    "sha256": "40c1121cc81ef88abfb4d904fb783ed3d6ad7446e2ef6bb10f67bd092a433243",
+    "photo": "asset-library/research-public/2026-09-21/building-restoration/central119-exterior-front.JPG",
+    "photoSha256": "f235b540a42608c2bbedb60cbd0ac3777c47da750c6bd790754792dd53376488",
+    "classification": "directly_supported: low parapet and rooftop equipment presence; existing community OSM footprint"
+  },
+  "sourceMatched": [
+    "Original concave footprint and four tagged tiers retained",
+    "Low perimeter roof parapet and roof/body material separation",
+    "Rooftop equipment presence; abstract massing only",
+    "Three open apparatus recesses and revised front facade retained"
+  ],
+  "inferred": [
+    "All parapet widths/heights/coping profiles",
+    "Roof colour from low-resolution photo approximation",
+    "Two equipment masses: count, position, size and type not recoverable from photo; no surveyed claim",
+    "Unseen roof perimeter completion"
+  ],
+  "files": {
+    "fbx": ".planning/2026-09-21-quality-a/world-drafts/Central119Restored.fbx",
+    "blend": ".planning/2026-09-21-quality-a/world-drafts/central-roof-quality.blend",
+    "script": ".planning/2026-09-21-quality-a/world-drafts/improve_central_roof.py",
+    "verification": ".planning/2026-09-21-quality-a/world-drafts/roof-verification.json"
+  },
+  "previews": {
+    "before": ".planning/2026-09-21-quality-a/world-drafts/central-roof-before.png",
+    "after": ".planning/2026-09-21-quality-a/world-drafts/central-roof-after.png",
+    "surface": "Matched Blender camera, lighting and framing; directly viewed both. Native application pending."
+  },
+  "verification": {
+    "surface": "Blender source and FBX roundtrip only; native verification pending",
+    "meshCount": 112,
+    "boundsMetres": {
+      "min": [
+        -485.2432556152344,
+        -898.0130004882812,
+        0.0
+      ],
+      "max": [
+        -428.5299987792969,
+        -854.0118408203125,
+        18.479999542236328
+      ]
+    },
+    "unchangedBoundsToleranceMetres": 0.2,
+    "roundtripErrorMetres": 6.103515625e-05,
+    "bayRecesses": 3,
+    "fbxSha256": "793499d5b9c077b0e2ae74957f418a7b96a9146101688afe87f3f83f854ac2ef",
+    "sourceBlendSha256": "70379230fa488f7694a5f185107c883b14759333af1b572bbebe316f9f101988",
+    "scriptSha256": "ddab9c439c5be92ceb9c6f3927853124cb8c11cbb49f7174a7683d8799c02d6c"
+  },
+  "nativeApply": {
+    "publishSingleFile": {
+      "from": ".planning/2026-09-21-quality-a/world-drafts/Central119Restored.fbx",
+      "to": "Assets/ChooGuard/Art/RestoredFacilities/Central119Restored.fbx"
+    },
+    "API": [
+      "MvpEvidenceBuildingBuilder.ConfigureImports()",
+      "MvpEvidenceBuildingBuilder.ApplyExisting(existingStationTransform)"
+    ],
+    "note": "No city rebuild needed. Existing ApplyExisting refreshes the two depot instances and unchanged station facade while preserving references. Existing Central expected metre bounds and material key binder remain compatible. Preserve FBX meta; save only after native view/reference checks.",
+    "nativeChecks": [
+      "Central facade and rooftop under city camera",
+      "No roof clipping or equipment outside footprint",
+      "Three apparatus recesses and source-metre bounds",
+      "Preserved station floors/nav/camera/teams references"
+    ]
+  },
+  "constraints": {
+    "UnityCalls": 0,
+    "AssetsWrites": 0,
+    "worldText": 0,
+    "URPQualityGraphicsEdits": 0,
+    "staticBatchChanges": 0,
+    "otherModelsChanged": false,
+    "coordinateUnits": "1 unit = 1 metre; original source east/north and native yaw correction preserved"
+  },
+  "remainingQualityGap": [
+    "Generic city facades remain coarse",
+    "Station platform/roof architectural details unchanged",
+    "Source photo resolution limits facade and equipment fidelity",
+    "No measured or as-built interiors"
+  ],
+  "rootReview": "Matched before/after previews directly inspected. Roof surface separation/parapet improves visible readability; exact equipment/hiddendimensions remaininferred. ApprovedpublishsingleFBX preservingmeta; notA."
+}

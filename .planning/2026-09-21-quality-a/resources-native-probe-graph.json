@@ -1,0 +1,47 @@
+{
+  "schema": "chooguard.resources-native-probe.v1",
+  "status": "AUTHORED_NOT_EXECUTED",
+  "script": {
+    "path": ".planning/2026-09-21-quality-a/resources-native-probe.py",
+    "sha256": "55e9255ceff9ba772efd7b384cc1b5844b8ed29e985f227b411d8cf1770aa17b",
+    "command": "python3 .planning/2026-09-21-quality-a/resources-native-probe.py",
+    "output": ".planning/2026-09-21-quality-a/resources-native-proof.json"
+  },
+  "prerequisites": [
+    "Root Unity compile/import success and MvpFacilityResourcesBinder.BindExisting completed in Edit mode",
+    "Root enters Play mode; existing crowd physics, progression, turnaround, resources components bound",
+    "No concurrent player commands/native probes; script controls one actual crowd session and leaves it paused",
+    "Jev service optional for this resource probe; existing valid baseline/live15..45second turnaround both accepted"
+  ],
+  "surface": "One real crowd scenario via official unity command eval; no production changes, reflection, mission/physics/clock/stock/ACK forgery, camera tests, or Unity calls by author",
+  "checks": [
+    "4 distinct1/0/0 bins and invariant throughout",
+    "Duplicate accepted request preserves operation/resource revision; same-base spare team cannot bypass kit scarcity; other base independently reserves",
+    "Valid predeparture cancel refunds once; repeated cancel/canceled request ID cannot create stock",
+    "False and then missing public execution gate prevent TaskReady and physics control; committed resource remains unconsumed",
+    "Restore exact original gate; actual warn+evacuate work and own graph ACKs consume logical kit onlyonce, separate medical kit unchanged",
+    "Public early-restock requests rejected during requested/executing/returning/positive countdown states",
+    "Actual all50 crowd evacuation drives return; parked Replenishing and stock/countdown unchanged under settled pause",
+    "Accepted-time countdown completion restores one slot; duplicate completion changes neither revision nor stock; returned/replenished graphtimestamps match15..45second frozen timing"
+  ],
+  "fixture": {
+    "purpose": "Explicit fail-closed execution-gate instrumentation, not a simulated success path",
+    "objects": [
+      "ResourceGateProbe",
+      "ResourceGateCleanup"
+    ],
+    "mechanism": "Non-rendered transient RectTransform/Button objects retain original gate/cleanup closures; localPosition counts gate attempts/TaskReady only. No station/vehicle/agent transforms touched.",
+    "cleanup": "finally restores original Func, unsubscribes event counter, destroys objects, pauses run and restores runInBackground"
+  },
+  "failureHandling": "Every milestone and failure-state snapshot is retained; timeout/exception is FAIL with nonzero script exit. Cleanup failure also FAIL. No implicit rerun to hide failed evidence.",
+  "validation": {
+    "pythonSyntax": "PASS py_compile",
+    "nativeRun": "NOT_RUN; root only"
+  },
+  "limitations": [
+    "One crowd workload and two distinct resource types; medical kit scarcity separation checked, but this probe does not duplicate the full medical handoff lifecycle.",
+    "No FDS120s cutoff extension or full-site/clinical calibration claim.",
+    "Transient gatefalse/missing are disclosed fault injection through public delegate, not proof of a naturally occurring outage.",
+    "Passing the probe does not establish A-quality or complete product acceptance."
+  ]
+}

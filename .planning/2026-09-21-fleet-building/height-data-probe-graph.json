@@ -1,0 +1,133 @@
+{
+  "schemaVersion": "2.0",
+  "task": "height-data-probe",
+  "status": "complete_actual_raster_acquired_candidates_require_review",
+  "nodes": [
+    {
+      "id": "roi",
+      "type": "scope",
+      "bboxWgs84": [
+        129.02,
+        35.09,
+        129.065,
+        35.127
+      ]
+    },
+    {
+      "id": "source",
+      "type": "primary_source",
+      "url": "https://essd.copernicus.org/articles/17/6647/2025/",
+      "license": "CC BY-NC 4.0"
+    },
+    {
+      "id": "acquisition",
+      "type": "verified_server_and_integrity",
+      "path": "asset-library/space-references/busan-reconstruction/building-height-source/gba-acquisition-receipt.json",
+      "evidence": "Exact member HTTP 206/Content-Range and byte counts; raw deflate and ZIP CRC verified; no whole archive download"
+    },
+    {
+      "id": "raster",
+      "type": "actual_raster_read",
+      "path": "asset-library/space-references/busan-reconstruction/building-height-source/busan-roi-gba-height.tif",
+      "metadataPath": "asset-library/space-references/busan-reconstruction/building-height-source/raster-metadata.json",
+      "crs": "EPSG:32652",
+      "resolutionM": [
+        3,
+        3
+      ],
+      "nodata": -1
+    },
+    {
+      "id": "lookup",
+      "type": "candidate_data",
+      "path": "asset-library/space-references/busan-reconstruction/building-height-source/unknown-building-height-estimates.json",
+      "unknownFootprints": 665,
+      "reviewableEstimates": 650,
+      "unresolved": 15,
+      "knownEvidencePreserved": {
+        "heightTagged": 95,
+        "levelsOnly": 390
+      },
+      "candidateOnly": true,
+      "sourceInputSha256": "2823972475d21f2872087f52b62a6e7b52ef0289018edf838cc5fe20de493f04",
+      "sourceXmlSha256": "156897dcccedbf979f5e818f3c7549d7ad36ec3e31b179d9d3861048f0760c64"
+    },
+    {
+      "id": "consistency",
+      "type": "source_disagreement",
+      "path": "asset-library/space-references/busan-reconstruction/building-height-source/osm-tag-consistency.json",
+      "numericOsmTags": 95,
+      "aggregations": {
+        "median": {
+          "pairs": 95,
+          "meanSignedDifferenceM": -47.28534171706752,
+          "medianAbsoluteDifferenceM": 37.108558654785156,
+          "meanAbsoluteDifferenceM": 47.29085367353339
+        },
+        "p90": {
+          "pairs": 95,
+          "meanSignedDifferenceM": -40.22615977337486,
+          "medianAbsoluteDifferenceM": 31.275094985961914,
+          "meanAbsoluteDifferenceM": 40.340896631542
+        },
+        "max": {
+          "pairs": 95,
+          "meanSignedDifferenceM": -36.72869327946713,
+          "medianAbsoluteDifferenceM": 29.183269500732422,
+          "meanAbsoluteDifferenceM": 37.02999967273913
+        }
+      },
+      "interpretation": "Not ground-truth accuracy; major underprediction relative to OSM tags; no automatic use"
+    },
+    {
+      "id": "manifest",
+      "type": "artifact",
+      "path": "asset-library/space-references/busan-reconstruction/building-height-source/manifest.json"
+    },
+    {
+      "id": "repro",
+      "type": "artifact",
+      "paths": [
+        "art/world/acquire_busan_gba_height.py",
+        "art/world/prepare_busan_gba_height_stats.py"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "roi",
+      "to": "source",
+      "relation": "index_intersection"
+    },
+    {
+      "from": "source",
+      "to": "acquisition",
+      "relation": "verified_exact_member"
+    },
+    {
+      "from": "acquisition",
+      "to": "raster",
+      "relation": "CRC_verified_then_clipped"
+    },
+    {
+      "from": "raster",
+      "to": "lookup",
+      "relation": "unknown_footprint_statistics_only"
+    },
+    {
+      "from": "raster",
+      "to": "consistency",
+      "relation": "compare_preserved_95_numeric_tags"
+    }
+  ],
+  "validation": {
+    "actualRasterRead": true,
+    "strictHttpRanges": true,
+    "zipCrc": "65f7fe37",
+    "unknownLookupCount": 665,
+    "reviewableCandidates": 650,
+    "knownHeight95AndLevels390Unchanged": true,
+    "runtimeApplied": false
+  },
+  "stopReason": "Authorized exact-member acquisition complete; root review must select or reject aggregation before any application."
+}

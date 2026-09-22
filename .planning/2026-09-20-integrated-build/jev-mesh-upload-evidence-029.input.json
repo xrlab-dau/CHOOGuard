@@ -1,0 +1,40 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "directEvidence": [
+      "Actual hubCPUvertices AND bounds measure133.27x40.42m, rootScale1, orthographic projection predicts largehall. Actual renderedoldhallwas~33x10m.",
+      "Rootadded temporary133x40m geometricbound outline. It renderedcorrectlarge size while existinghallremainedsmall.",
+      "Root rebuilt runtime Mesh from sameCPU vertices/triangles/normals/UV, RecalculateBounds+UploadMeshData(false): hallnowfillsbound exactly withoutcoordinatechanges.",
+      "Builder reuse paths use EditorUtility.CopySerialized(generated,existingMesh). Existingasset GPUbuffersstale despiteCPUdataupdated. Earlierstaticbatchdisable mitigatedcityfacadedisagreement; rootkeepsmanualchunks."
+    ],
+    "proposal": "Two existing Astra owners useone sharedEditor mesh-store utility: explicitlyclear/setvertices+indices/normals/UV/submeshes onexistingasset, UploadMeshData(false), SetDirty preservingGUID. City/Surface ownerownsutility+itscalls; interiorownerupdatesStation/Interiorcalls. Thenoneactualbuild/capture; no art/DEM/physicsregeneration."
+  },
+  "questions": {
+    "cause": {
+      "type": "choice",
+      "instructions": "Most supported cause now?",
+      "criteria": {
+        "stale_mesh_gpu_upload": "Data/render buffer mismatch proven bysameverticesfreshmesh",
+        "wrong_user_scale": "Useraskedwrongratio",
+        "camera_only": "Onlycamera matrixwrong"
+      }
+    },
+    "repair": {
+      "type": "choice",
+      "instructions": "Best next fix?",
+      "criteria": {
+        "explicit_mesh_data_store": "Sharedexplicitassetupdate andGPUupload; keepGUIDs",
+        "change_all_numbers": "Altercorrectcoordinates",
+        "ignore": "CPUboundpasssufficient"
+      }
+    },
+    "claim": {
+      "type": "choice",
+      "instructions": "What is currentlyverified?",
+      "criteria": {
+        "same_data_render_fix_only": "Controlledfreshbuffercorrectedonehub; sharedfixintegrationpending",
+        "all_production_done": "Allqualityaccepted"
+      }
+    }
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "id": "CS-OPS.07",
+  "epicId": "CS-OPS",
+  "title": "사람 작업량·도움·계산 대기 계측",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-OPS.07",
+    "description": "사람 작업량·도움·계산 대기 계측",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-OPS.07",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.07.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.07.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.07.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-OPS.07.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Application/ActivityRecorder.cs",
+    "Assets/ChooGuard/Persistence/ActivityStore.cs",
+    "Assets/ChooGuard/Contracts/ActivityTypes.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/OPS/CSOPS07Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-OPS.02",
+      "artifactId": "A-CS-OPS.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "동의한 가명 참가자에 대해 작업 시작·전환·종료를 기록한다. 전역 키로거나 문장 원문 수집은 하지 않는다.",
+    "동일 참가자의 중첩 구간은 합집합으로 계산하고 기관 회신 대기·무인 계산은 별도 열에 둔다. 강제종료의 열린 구간은 검열된 구간으로 남긴다.",
+    "UI의 입력·복기·출력 수정과 개발자 도움을 빠짐없이 같은 caseId에 결속하고 CSV/JSON으로 내보낸다. 동의 철회·보존정책을 적용한다."
+  ],
+  "contract": "ActivityInterval {participantCode, activityId, category, startMonotonicUs, endMonotonicUs, observedWallAt, consentRef, assistance, completeness}; 가상시각을 사람 시간으로 집계하지 않음.",
+  "sourceIds": [],
+  "acceptance": [
+    {
+      "id": "TEST-CS-OPS.07-P",
+      "given": "한 사람 [0,10),[5,15)분; 다른사람[0,10)",
+      "when": "작업량 집계",
+      "then": "합25인분; 같은사람15분",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-OPS.07-N",
+      "given": "종료 없는 interval",
+      "when": "작업량 집계",
+      "then": "CENSORED; 완료자 평균에서 숨김0",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-079"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/02-wire-and-ports.md",
+    "specs/03-durable-operations.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/02-wire-and-ports.md",
+    "specs/03-durable-operations.md",
+    "specs/10-observability-and-study.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-079"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/OPS/CSOPS07Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "한 사람 [0,10),[5,15)분; 다른사람[0,10)",
+    "operation": "작업량 집계",
+    "expectedPositive": "합25인분; 같은사람15분",
+    "negativeInput": "종료 없는 interval",
+    "expectedNegative": "CENSORED; 완료자 평균에서 숨김0",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

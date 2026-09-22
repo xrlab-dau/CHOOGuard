@@ -1,0 +1,50 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1194,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "roofDecision": {
+          "type": "choice",
+          "choice": "raise_authored_level",
+          "confidence": 1,
+          "probabilities": {
+            "raise_authored_level": 1,
+            "cut_long_roof": 0,
+            "claim_pass_anyway": 0
+          }
+        },
+        "claim": {
+          "type": "choice",
+          "choice": "new_change_requires_check",
+          "confidence": 1,
+          "probabilities": {
+            "new_change_requires_check": 1,
+            "fully_passed": 0
+          }
+        },
+        "doorPose": {
+          "type": "choice",
+          "choice": "authored_static_pose",
+          "confidence": 1,
+          "probabilities": {
+            "certified_door": 0,
+            "authored_static_pose": 1
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 909,
+        "output_tokens": 131
+      },
+      "truncated": false,
+      "action": "auto"
+    }
+  ],
+  "stage": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

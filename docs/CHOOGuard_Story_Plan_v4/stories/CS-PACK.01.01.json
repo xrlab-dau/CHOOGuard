@@ -1,0 +1,165 @@
+{
+  "id": "CS-PACK.01.01",
+  "epicId": "CS-PACK",
+  "parentTaskId": "CS-PACK.01",
+  "title": "새 객체 ID·SI단위·시간 타입을 정의한다",
+  "goal": "표시명과 stable ID를 분리하고 simulation microseconds·sequence·UTC 관측시각을 다른 값으로 보관한다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-015",
+    "REQ-060"
+  ],
+  "supportsRequirementIds": [
+    "REQ-015",
+    "REQ-060"
+  ],
+  "parentProductTestIds": [
+    "AT-015",
+    "AT-060"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "Assets/ChooGuard/Contracts/ContentTypes.cs",
+      "operation": "CREATE",
+      "createdBy": "CS-PACK.01.01",
+      "scope": "새 객체 ID·SI단위·시간 타입을 정의한다"
+    }
+  ],
+  "testFile": "Assets/ChooGuard/Tests/EditMode/Stories/CSPACK0101Tests.cs",
+  "testKinds": [
+    "EDIT_MODE"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-PACK.01.01",
+      "kind": "PlannedArtifact",
+      "producer": "CS-PACK.01.01",
+      "contract": "새 객체 ID·SI단위·시간 타입을 정의한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "Assets/ChooGuard/Contracts/ContentTypes.cs"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-BOOT.02.01",
+      "artifactId": "OUT-CS-BOOT.02.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    }
+  ],
+  "externalInputs": [],
+  "sourceIds": [
+    "STD-JSONLD",
+    "STD-PROV"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "STD-JSONLD",
+      "url": "https://www.w3.org/TR/json-ld11/",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "STD-PROV",
+      "url": "https://www.w3.org/TR/prov-o/",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    }
+  ],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/07-content-and-rule-contract.md",
+    "basis/v3/specs/02-wire-and-ports.md"
+  ],
+  "parentContract": "SiteBundle {id,revision,frames,regions,portals,entities,sourceRefs,qualification}; ScenarioSpec와 OperationalPlan은 별도 revision.",
+  "parentSpecRef": "basis/v3/tasks/CS-PACK.01.json",
+  "behaviorSteps": [
+    "표시명과 stable ID를 분리하고 simulation microseconds·sequence·UTC 관측시각을 다른 값으로 보관한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-PACK.01.01-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 새 객체 ID·SI단위·시간 타입을 정의한다의 유효 조건",
+      "when": "새 객체 ID·SI단위·시간 타입을 정의한다를 실행한다",
+      "then": "같은 한국어 이름의 서로 다른 기관을 별도 ID로 저장하고 단위·시간 종류가 보존된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-PACK.01.01-N",
+      "kind": "NEGATIVE",
+      "given": "ID 공백·NaN·음수 tick·서로 다른 시간 축의 암묵 변환을 거부한다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "ID 공백·NaN·음수 tick·서로 다른 시간 축의 암묵 변환을 거부한다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 Assets/ChooGuard/Tests/EditMode/Stories/CSPACK0101Tests.cs에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "W0",
+  "orderRank": 3,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/07-content-and-rule-contract.md",
+      "sha256": "308a59572e0936133d04bdac3a3264b2a74db3f8327c16ea4d7cbb0e5dcbba03"
+    },
+    {
+      "path": "basis/v3/specs/02-wire-and-ports.md",
+      "sha256": "15be279eb974ad4d439fb414b1642e214bae6e9c8e0f5a4c41f9e6262ea4c3f0"
+    }
+  ]
+}

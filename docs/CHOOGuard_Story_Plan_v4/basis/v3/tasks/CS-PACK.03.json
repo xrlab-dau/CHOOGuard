@@ -1,0 +1,145 @@
+{
+  "id": "CS-PACK.03",
+  "epicId": "CS-PACK",
+  "title": "무료 원본 입고와 파일 신뢰경계",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-PACK.03",
+    "description": "원본 manifest·비용·형식·hash·입고 상태",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PACK.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PACK.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Content/AssetIntakeValidator.cs",
+    "sources/assets/catalog.json",
+    "sources/assets/receipts.schema.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/PACK/Pack03Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "무료판별 파일 목록을 확인하고 원본은 격리 경로에서 hash·크기·압축경로·실행코드 유무를 검사한다.",
+    "페이지 확인과 원본 취득·Unity 임포트·현장 수용을 다른 필드로 둔다.",
+    "표현용 기하에서 정원·물성·능력을 추론하지 않는다. 실제 무료 다운로드 상태는 새 환경에서 재확인한다."
+  ],
+  "contract": "AssetReceipt {id,sourceUrl,tier,rawHash,formats,rigClips,parts,importStatus,limits}; 실제 바이너리가 없으면 rawHash=null.",
+  "sourceIds": [
+    "FREE-001",
+    "FREE-010",
+    "FREE-011",
+    "FREE-018",
+    "MAT-BIPA-BUSAN3",
+    "MAT-KTX-I"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PACK.03-P",
+      "given": "무료 archive의 서로 다른 파일2개",
+      "when": "입고 검사",
+      "then": "raw bytes·해시·tier 분리",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PACK.03-N",
+      "given": "../escape.cs 또는 A.fbx/a.fbx",
+      "when": "입고 검사",
+      "then": "UNSAFE_ARCHIVE",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-062",
+    "REQ-063",
+    "REQ-064"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/07-content-and-rule-contract.md",
+    "specs/02-wire-and-ports.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-062",
+    "REQ-063",
+    "REQ-064"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/PACK/Pack03Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "무료 archive의 서로 다른 파일2개",
+    "operation": "입고 검사",
+    "expectedPositive": "raw bytes·해시·tier 분리",
+    "negativeInput": "../escape.cs 또는 A.fbx/a.fbx",
+    "expectedNegative": "UNSAFE_ARCHIVE",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

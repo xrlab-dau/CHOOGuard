@@ -1,0 +1,50 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 1142,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "placement_method": {
+          "type": "choice",
+          "choice": "bfs_coverage_then_greedy_cover",
+          "confidence": 1,
+          "probabilities": {
+            "bfs_coverage_then_greedy_cover": 1,
+            "copy_mvp_zone_coordinates": 0,
+            "single_central_extinguisher": 0,
+            "even_grid_spacing": 0
+          }
+        },
+        "candidate_positions": {
+          "type": "choice",
+          "choice": "wall_adjacent_reachable_cells",
+          "confidence": 0.86,
+          "probabilities": {
+            "wall_adjacent_reachable_cells": 0.93,
+            "any_walkable_cell": 0.07
+          }
+        },
+        "east_room_handling": {
+          "type": "choice",
+          "choice": "own_extinguisher_required",
+          "confidence": 0.97,
+          "probabilities": {
+            "covered_if_within_20m": 0.02,
+            "own_extinguisher_required": 0.98
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1400,
+        "output_tokens": 172
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

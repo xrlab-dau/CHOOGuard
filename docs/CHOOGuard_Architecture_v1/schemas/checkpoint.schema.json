@@ -1,0 +1,170 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:architecture:checkpoint:1.0.0",
+  "title": "checkpoint",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0.0"
+    },
+    "checkpointId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "runId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "simulationTicks": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]{0,18})$"
+    },
+    "clockProfileId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "inputHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "domainStateHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "eventQueueHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reservationHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "messageHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "knowledgeHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "rngHash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "requiredWorkerIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "workers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "workerId": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+          },
+          "stateHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "inputHash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "atTicks": {
+            "type": "string",
+            "pattern": "^(0|[1-9][0-9]{0,18})$"
+          },
+          "restartPolicy": {
+            "type": "string",
+            "enum": [
+              "EXACT_STATE",
+              "REPLAY_FROM_START"
+            ]
+          },
+          "replayRecipeHash": {
+            "oneOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "workerId",
+          "stateHash",
+          "inputHash",
+          "atTicks",
+          "restartPolicy",
+          "replayRecipeHash"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0,
+      "maxItems": 4096
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "PREPARING",
+        "COMPLETE",
+        "INCOMPLETE"
+      ]
+    },
+    "branchCapability": {
+      "type": "string",
+      "enum": [
+        "EXACT_STATE",
+        "REPLAY_FROM_START",
+        "REVIEW_ONLY"
+      ]
+    },
+    "replayToleranceProfileId": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9._:-]{0,127}$"
+    },
+    "dataClass": {
+      "type": "string",
+      "enum": [
+        "SYNTHETIC_FIXTURE",
+        "PROJECT_DATA"
+      ]
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "checkpointId",
+    "runId",
+    "sequence",
+    "simulationTicks",
+    "clockProfileId",
+    "inputHash",
+    "domainStateHash",
+    "eventQueueHash",
+    "reservationHash",
+    "messageHash",
+    "knowledgeHash",
+    "rngHash",
+    "requiredWorkerIds",
+    "workers",
+    "status",
+    "branchCapability",
+    "replayToleranceProfileId",
+    "dataClass"
+  ],
+  "additionalProperties": false
+}

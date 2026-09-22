@@ -1,0 +1,51 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 729,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "zone_method": {
+          "type": "choice",
+          "choice": "derive_from_source_signals",
+          "confidence": 0.92,
+          "probabilities": {
+            "reuse_mvp_zone_coordinates": 0,
+            "author_new_layout_by_judgement": 0,
+            "derive_from_source_signals": 0.94,
+            "defer_until_public_plan_obtained": 0.06
+          }
+        },
+        "spawn_fix": {
+          "type": "choice",
+          "choice": "build_connector_stairs",
+          "confidence": 0.26,
+          "probabilities": {
+            "spawn_inside_concourse": 0.48,
+            "build_connector_stairs": 0.5,
+            "leave_unreachable": 0.02
+          }
+        },
+        "mvp_zone_reuse": {
+          "type": "choice",
+          "choice": "not_usable_as_placement",
+          "confidence": 1,
+          "probabilities": {
+            "fully_usable": 0,
+            "not_usable_as_placement": 1
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1351,
+        "output_tokens": 168
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

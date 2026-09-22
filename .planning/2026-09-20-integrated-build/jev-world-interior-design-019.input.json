@@ -1,0 +1,82 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "user": "Full visual upgrade Busan station-Nampo-NorthPort world and detailed interiors. JWE3 visual/environment reference. Korean only. No computer use. Astra low builds, root accepts. Physics authority unchanged.",
+    "evidence": [
+      "Current OSM1150buildings2536roads134rails6platform. City uniform grey boxes, black dot windows, flat featureless land. Existing hero station/train/vehicles are stylized not production quality.",
+      "Maker deterministic discovery:19water ways15open;12coastlines+3streams incorrectly roof-filled. MUST repair topology, suppress known culverts.",
+      "Actual geography is dense Korean port city: station/rail, Choryang lowrise streets, Jungang mixed offices, Nampo retail, NorthPort waterfront. Not dinosaur forest island.",
+      "Interior public1f2f3f facility guide available, no engineering plans. Author readable furnishings/interior hierarchy within documented topology; no surveyed/fire-system precision claim.",
+      "Desktop16GB mac URP: avoid thousands individual lights and huge perwindow drawcalls. Two disjoint Astra-low lanes exterior surface vs station/interior assets."
+    ],
+    "candidates": {
+      "art": [
+        "warm_limestone_coastal: neutral warm plaster/concrete, teal glass, muted brick, clean asphalt, leafy accents",
+        "cool_monochrome: current grey/blue all districts",
+        "saturated_toy: bright blocks and exaggerated figures"
+      ],
+      "lighting": [
+        "clear_coastal_afternoon: readable sun+soft shadow+cool ambient, restrained tonemapping",
+        "night_neon: moody but darker emergencies",
+        "flat_ambient: no composition shadows"
+      ],
+      "density": [
+        "district_batched: 6building archetypes, roadclass furniture budget, 3hero landmarks, dense pockets",
+        "unbounded_detail: perbuilding fully bespoke meshes",
+        "sparse_silhouette: keep empty plotboxes"
+      ],
+      "interior": [
+        "zoned_public_concourse: open sightlines, structural rhythm, circulation, facilities clusters and signs; layers/roof hide",
+        "room_maze: many invented enclosed rooms",
+        "bare_floor_labels: current labels only"
+      ]
+    }
+  },
+  "questions": {
+    "palette": {
+      "type": "choice",
+      "instructions": "Choose most useful Busan operations-game art direction, consider clarity and grounded district variety.",
+      "criteria": {
+        "warm_limestone_coastal": "Warm neutral city with restrained material color variation",
+        "cool_monochrome": "Uniform cool industrial",
+        "saturated_toy": "Bright toy park"
+      }
+    },
+    "lighting": {
+      "type": "choice",
+      "instructions": "Choose base lighting for spatial legibility.",
+      "criteria": {
+        "clear_coastal_afternoon": "Daylight depth with soft shadows",
+        "night_neon": "Nighttime cinematic",
+        "flat_ambient": "Flat ambient"
+      }
+    },
+    "density": {
+      "type": "choice",
+      "instructions": "Choose feasible broad map-detail allocation on16GB hardware.",
+      "criteria": {
+        "district_batched": "Archetypes+batches and bounded hero pockets",
+        "unbounded_detail": "Unique all objects",
+        "sparse_silhouette": "Remain sparse"
+      }
+    },
+    "interior": {
+      "type": "choice",
+      "instructions": "Choose detailed interior treatment consistent with public floor guide.",
+      "criteria": {
+        "zoned_public_concourse": "Readable structural/facility hierarchy",
+        "room_maze": "Invent many isolated rooms",
+        "bare_floor_labels": "Only labels"
+      }
+    },
+    "priority": {
+      "type": "choice",
+      "instructions": "Which next step gives strongest real progress before cosmetic polish?",
+      "criteria": {
+        "topology_material_structure": "Fix shoreline, ground/road/building hierarchy and public interior circulation",
+        "postfx_only": "Only improve postprocessing",
+        "mass_asset_download": "Download as many unrelated models as possible"
+      }
+    }
+  }
+}

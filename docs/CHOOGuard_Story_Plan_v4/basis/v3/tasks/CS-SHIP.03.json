@@ -1,0 +1,166 @@
+{
+  "id": "CS-SHIP.03",
+  "epicId": "CS-SHIP",
+  "title": "새 현장·기관·사건 확장과 운영 인계",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SHIP.03",
+    "description": "데이터 중심 확장과 책임·반복비용 기록",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SHIP.03",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.03.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.03.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.03.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SHIP.03.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "content/releases/site-registry.json",
+    "packaging/operations-handbook.md",
+    "research/adoption/maintenance-ledger.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SHIP/Ship03Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-SHIP.02",
+      "artifactId": "A-CS-SHIP.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-MODES.03",
+      "artifactId": "A-CS-MODES.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PROOF.04",
+      "artifactId": "A-CS-PROOF.04",
+      "stage": "candidate",
+      "consumerStage": "qualification",
+      "condition": "CLAIM_FIELD_USE"
+    }
+  ],
+  "algorithm": [
+    "새 지역/구역/기관 ID를 등록한다. 특정 과거 구역 수나 ID 대응을 강제하지 않는다.",
+    "새 현장의 geometry·rules·model scope를 별도로 검토하고 기존 정확도를 자동 복사하지 않는다.",
+    "설정/콘텐츠 변경과 코어코드 변경 비용, 유지보수 책임·관심/파일럿/구매를 구분해 남긴다."
+  ],
+  "contract": "SiteRegistry+ReleaseScope; 물리·기관 수용은 그 범위의 별도 근거로 결속한다.",
+  "sourceIds": [
+    "DISC-02",
+    "DISC-04",
+    "DISC-07",
+    "DISC-08",
+    "DISC-09",
+    "DISC-10"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SHIP.03-P",
+      "given": "새 site/rule scope",
+      "when": "확장등록",
+      "then": "새 qualification 필요",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SHIP.03-N",
+      "given": "옛 현장 승인 복사",
+      "when": "확장등록",
+      "then": "SCOPE_MISMATCH",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-075",
+    "REQ-088",
+    "REQ-091"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/11-release-and-backup.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/11-release-and-backup.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-075",
+    "REQ-088",
+    "REQ-091"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SHIP/Ship03Tests.cs",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "새 site/rule scope",
+    "operation": "확장등록",
+    "expectedPositive": "새 qualification 필요",
+    "negativeInput": "옛 현장 승인 복사",
+    "expectedNegative": "SCOPE_MISMATCH",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

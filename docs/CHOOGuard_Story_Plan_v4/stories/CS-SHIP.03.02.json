@@ -1,0 +1,243 @@
+{
+  "id": "CS-SHIP.03.02",
+  "epicId": "CS-SHIP",
+  "parentTaskId": "CS-SHIP.03",
+  "title": "유지비·데이터 책임·사용 한계를 인계한다",
+  "goal": "설정/콘텐츠와 코어 변경 비용·업데이트 책임·관심/파일럿/구매를 구분한다.",
+  "scopeKind": "IMPLEMENTATION",
+  "splitKind": "SMALL_EXECUTABLE_STORY",
+  "sizingRule": "관찰 가능한 산출물 하나와 독립 반례를 한 리뷰 단위로 완료; 별도 API/외부승인이 함께 커지면 재분할",
+  "implementationStatus": "NOT_STARTED",
+  "acceptanceStatus": "NOT_RUN",
+  "assignee": null,
+  "requirementIds": [
+    "REQ-075",
+    "REQ-088",
+    "REQ-091"
+  ],
+  "supportsRequirementIds": [
+    "REQ-075",
+    "REQ-088",
+    "REQ-091"
+  ],
+  "parentProductTestIds": [
+    "AT-075",
+    "AT-088",
+    "AT-091"
+  ],
+  "invariants": [
+    "UNITY_NATIVE_PC",
+    "EXACTLY_TWO_PRODUCT_MODES",
+    "GREENFIELD_NO_LEGACY",
+    "NO_FAKE_ACCEPTANCE"
+  ],
+  "writes": [
+    {
+      "path": "packaging/operations-handbook.md",
+      "operation": "CREATE",
+      "createdBy": "CS-SHIP.03.02",
+      "scope": "유지비·데이터 책임·사용 한계를 인계한다"
+    },
+    {
+      "path": "research/adoption/maintenance-ledger.json",
+      "operation": "CREATE",
+      "createdBy": "CS-SHIP.03.02",
+      "scope": "유지비·데이터 책임·사용 한계를 인계한다"
+    }
+  ],
+  "testFile": "research/checks/CS-SHIP.03.02.json",
+  "testKinds": [
+    "DOCUMENT_REVIEW"
+  ],
+  "outputs": [
+    {
+      "id": "OUT-CS-SHIP.03.02",
+      "kind": "PlannedArtifact",
+      "producer": "CS-SHIP.03.02",
+      "contract": "유지비·데이터 책임·사용 한계를 인계한다",
+      "candidateMeaning": "이 스토리 범위의 코드/자료와 테스트 결과 후보",
+      "integrationMeaning": "선택 profile의 실제 의존물과 통합된 결과; 부모 전체 완료가 아님",
+      "status": "NOT_PRODUCED",
+      "paths": [
+        "packaging/operations-handbook.md",
+        "research/adoption/maintenance-ledger.json"
+      ],
+      "productEvidence": []
+    }
+  ],
+  "requires": [
+    {
+      "producer": "CS-SHIP.03.01",
+      "artifactId": "OUT-CS-SHIP.03.01",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "같은 기능의 다음 독립 결과; 이전 구현 후보/수정할 파일을 소비한다."
+    },
+    {
+      "producer": "CS-SHIP.02.02",
+      "artifactId": "OUT-CS-SHIP.02.02",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PACK.01.03",
+      "artifactId": "OUT-CS-PACK.01.03",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-MODES.03.03",
+      "artifactId": "OUT-CS-MODES.03.03",
+      "producerStage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-PROOF.04.02",
+      "artifactId": "OUT-CS-PROOF.04.02",
+      "producerStage": "candidate",
+      "consumerStage": "qualification",
+      "condition": "CLAIM_FIELD_USE",
+      "why": "부모 명세의 실제 통합/자격 조건 보존; 필요한 export leaf로 좁힘"
+    },
+    {
+      "producer": "CS-SHIP.02.02",
+      "artifactId": "OUT-CS-SHIP.02.02",
+      "producerStage": "candidate",
+      "consumerStage": "candidate",
+      "condition": "ALWAYS",
+      "why": "필요한 구체 산출물만 소비한다."
+    }
+  ],
+  "externalInputs": [],
+  "sourceIds": [
+    "DISC-02",
+    "DISC-04",
+    "DISC-07",
+    "DISC-08",
+    "DISC-09",
+    "DISC-10"
+  ],
+  "sourceRefs": [
+    {
+      "sourceId": "DISC-02",
+      "url": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=117612",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-04",
+      "url": "https://www.srail.or.kr/cms/article/view.do?pageId=KR0502000000&postNo=1361",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-07",
+      "url": "https://preptoolkit.fema.gov/web/exercise",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-08",
+      "url": "https://www.conducttr.com/ai-assistance",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-09",
+      "url": "https://www.xvrsim.com/en/platform/",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    },
+    {
+      "sourceId": "DISC-10",
+      "url": "https://www.dcc.edu/workforce-development/maritime/virtual-reality-training.aspx",
+      "record": "basis/v3/reference/sources.json",
+      "currentStatus": "INHERITED_REFERENCE_NOT_RECHECKED"
+    }
+  ],
+  "specRefs": [
+    "GLOBAL_CONTRACT.md",
+    "basis/v3/specs/11-release-and-backup.md",
+    "basis/v3/specs/12-evidence-and-performance.md"
+  ],
+  "parentContract": "SiteRegistry+ReleaseScope; 물리·기관 수용은 그 범위의 별도 근거로 결속한다.",
+  "parentSpecRef": "basis/v3/tasks/CS-SHIP.03.json",
+  "behaviorSteps": [
+    "설정/콘텐츠와 코어 변경 비용·업데이트 책임·관심/파일럿/구매를 구분한다.",
+    "경계에서 전달받은 식별자·버전과 해당 specRefs의 실패/취소 의미를 확인한다.",
+    "공개 API/출력 형식 변경은 계약 소유 스토리에 반영하고 소비자 회귀를 함께 실행한다."
+  ],
+  "acceptance": [
+    {
+      "id": "AC-CS-SHIP.03.02-P",
+      "kind": "POSITIVE",
+      "given": "고정한 입력/환경과 유지비·데이터 책임·사용 한계를 인계한다의 유효 조건",
+      "when": "유지비·데이터 책임·사용 한계를 인계한다를 실행한다",
+      "then": "실제 사용범위·유지비·복구·미지원 현상 설명이 인계된다.",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "AC-CS-SHIP.03.02-N",
+      "kind": "NEGATIVE",
+      "given": "학부 개발 전체를 구매계약 확보로 막거나 유지보수 비용을 무료 에셋에 숨기지 않는다.",
+      "when": "명시한 반례를 주입하고 동일 경계를 실행한다",
+      "then": "학부 개발 전체를 구매계약 확보로 막거나 유지보수 비용을 무료 에셋에 숨기지 않는다.",
+      "status": "NOT_RUN"
+    }
+  ],
+  "workSteps": [
+    {
+      "id": "read",
+      "action": "지정 specRefs와 입력 artifact의 revision·SHA-256·실제 수용 범위를 읽는다."
+    },
+    {
+      "id": "red",
+      "action": "acceptance 반례와 정상 fixture를 research/checks/CS-SHIP.03.02.json에 먼저 작성하고 예상 assertion 실패를 기록한다."
+    },
+    {
+      "id": "implement",
+      "action": "writes의 정확 경로만 수정해 goal의 동작과 오류 의미를 구현한다. 자동 .meta는 같은 claim으로 취급한다."
+    },
+    {
+      "id": "green",
+      "action": "해당 testKinds와 영향받은 부모 제품 시험을 실제 환경에서 실행하고 raw output·실패·미실행을 남긴다."
+    },
+    {
+      "id": "review",
+      "action": "서로 다른 리뷰 실행이 계약·경계·제품 의도를 대조한다. 독립 검수자가 없으면 SELF_REVIEW_ONLY로 남긴다."
+    },
+    {
+      "id": "handoff",
+      "action": "patch digest·테스트 로그·산출물 hash·미지원 범위를 execution receipt로 반환한다. merge/원격 쓰기는 별도 사용자 권한이다."
+    }
+  ],
+  "stopRules": [
+    "해당 단계의 실제 입력이 없으면 영향받는 단계만 HOLD한다; prepare/다른 독립 작업을 전역 차단하지 않는다.",
+    "동일 결함이 재검수에서 두 번 반복되면 같은 시도를 무한 반복하지 않고 API/스토리 분할 원인을 기록한다. 의도적 TDD red는 이에 포함하지 않는다.",
+    "다른 활성 claim·지원되지 않는 Unity/worker·검증되지 않은 현장 가정을 발견하면 성공을 선언하지 않는다."
+  ],
+  "lane": "ENGINEERING",
+  "window": "LATER",
+  "orderRank": 10108,
+  "requiredReads": [
+    {
+      "path": "GLOBAL_CONTRACT.md",
+      "sha256": "d8c57b44413f8c58a43b2fb7a76de0692e58e41a733170e118e33c4217d93ede"
+    },
+    {
+      "path": "basis/v3/specs/11-release-and-backup.md",
+      "sha256": "911fdc4c4415c54c3ff18b1c101a7c4abff36b55bf2cb4b6de53aade1ac12c3b"
+    },
+    {
+      "path": "basis/v3/specs/12-evidence-and-performance.md",
+      "sha256": "da198cccc65e53789936436019c7650e29ad8693c17c5416f729ad80e1449e68"
+    }
+  ]
+}

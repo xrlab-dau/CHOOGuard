@@ -1,0 +1,22 @@
+flowchart TB
+    SRC["원문·판본·clause·hash<br/>기관·사건·관할"]
+    RIR["후보 RuleIR<br/>타입·충돌·예외 검사"]
+    H["담당자 적용성 검토<br/>별도 authenticated review"]
+    RULE["검토된 RuleBundle<br/>명시된 범위에서만 실행"]
+    EV["실행 로그·수량 추출<br/>사실·수치·대기 근거"]
+    PACK["ACL EvidencePack<br/>필요한 판본·범위만"]
+    AI["AI 초안/제안<br/>명령·승인 포트 없음"]
+    G["구조·근거·역할·수치 검사<br/>사용자 diff 확인"]
+    IR["선택 Plan + ScriptIR<br/>사람 검토 revision"]
+    OUT["JSON / Markdown / DOCX<br/>고객 양식 + 적용범위"]
+    SRC -->|"추출"| RIR
+    RIR -->|"후보"| H
+    H -->|"범위 승인"| RULE
+    SRC -->|"허용 자료"| PACK
+    RULE -->|"적용 가능한 근거"| PACK
+    EV -->|"사실 근거"| PACK
+    PACK -->|"읽기 전용 입력"| AI
+    AI -->|"typed proposal"| G
+    G -->|"사용자 수용"| IR
+    H -->|"별도 검토"| IR
+    IR -->|"동일 중간표현 변환"| OUT

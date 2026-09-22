@@ -1,0 +1,71 @@
+{
+  "schema": "chooguard.compact-context-ui.v1",
+  "status": "PUBLISHED_NATIVE_LAYOUT_PASS",
+  "file": {
+    "draft": ".planning/2026-09-21-quality-a/compact-context-ui-drafts/MvpAgencyDispatchView.cs",
+    "target": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+    "baseSha256": "dbcea477fd7d2086abf6cd9f99c92628fc3cfa8aafaa23491431ca0fcc1bffc9",
+    "sha256": "9fe401d6867a28594bf4d9314a8f3e2cece03810ea93f8902d4b766c65c49f0c",
+    "publishedSha256": "9fe401d6867a28594bf4d9314a8f3e2cece03810ea93f8902d4b766c65c49f0c"
+  },
+  "patch": {
+    "path": ".planning/2026-09-21-quality-a/compact-context-ui-drafts/compact-context-ui.patch",
+    "sha256": "294e99c6a6ac7caebfebce2481adb4706361cce015599b0e1072f55102b60d32"
+  },
+  "evidence": {
+    "screenshot": "Assets/.planning/2026-09-21-quality-a/context-after-repaint-native.png",
+    "screenshotSha256": "cf8b91a8bb5f9939920b2946d0d49659791bbec63c2c74d4e770d3f552f8c116",
+    "observation": "At1920x1080 card is650px tall (542 authored*1.2). Stock ends near244px but buttons329px; guidance near390px but rows581px. Hidden source/internal controls and fixed118px text box reserve space."
+  },
+  "geometry": {
+    "method": "Header52; stock height=ceil(TMP.GetPreferredValues(text,296,0).y)+4;8gap; onlyvisible source/action rows30+8; actualwrapped guidanceheight+4 then8gap; onlyvisible inside/cancelrow30+8; actual3teamrows30+8; final4 yields12belowlastbutton",
+    "typography": "Existing Korean12pt stock/hint,19pttitle unchanged; no font shrinking or auto-size. Wrapped text measured at actual296width, overflowellipsis disabled on these fitted labels. Both availabilityreason lines retained.",
+    "normalBaseEstimate": "Five stocklines ~75-90 authored + onehint ~15-20 => roughly410-430height (vs542); exact native TMP font metrics determine actual height",
+    "longReasons": "Card expands only by actual wrapped reason height; station source/inside rows cost38each whenvisible; no hard cap that could clip or overlap either disabled reason",
+    "team": "Existing278authored teamcard retained; resources origin/height explicitly restored when switchingfrombuilding"
+  },
+  "otherOwnerFinding": {
+    "object": "WorkspaceCanvas/IconRail",
+    "source": "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs:216",
+    "definition": "Box(root,\"IconRail\",14,98,44,318,...); Box helper addscyan Outline for IconRail at389",
+    "correlation": "At1.2scale predicts x16.8 y117.6 width52.8 height381.6, matching screenshot left stripx~17..70/y118..500",
+    "action": "Root explicitly authorized this single Workspace visibility fix; staged only"
+  },
+  "verification": [
+    "Screenshot inspected via view_image",
+    "Only owned UI staged outside Assets, no controller/logic changes",
+    "Existing independent CanRequestWork and both Korean unavailable reason paths retained",
+    "Native TMP layout/render verification pending root after publication",
+    "Workspace draft differs by only IconRail insertion; current Assets unchanged while rootPlay",
+    "Root confirmed safe Edit; both baseline and draft hashes matched before any publication; copied only two approved C# files preserving metas. No Unity calls."
+  ],
+  "publishInstructions": [
+    "After root safe Edit state, verify current targetbase hash then applypatch/copydraft preservingmeta",
+    "Root compile and inspect selectedCentral available case, bothkitunavailablecase, station case and teamtoggle; both reasons mustfitactualrect beforeteamrows",
+    "No native calls by worker",
+    "Verify additionalFile baseSha256 then publish Workspace draft or additionalPatch; this is only orphan IconRail visibility change"
+  ],
+  "additionalFile": {
+    "draft": ".planning/2026-09-21-quality-a/compact-context-ui-drafts/MvpWorkspace.cs",
+    "target": "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+    "baseSha256": "252079dea48a12424b64534110d81eef472fab1411ff1271db840d0f2794e997",
+    "sha256": "8f437cdd6db8cf11b2c60a7a467729acabcbb3a7b6fd87e77028099312a99407",
+    "scope": "Root-authorized single IconRail ID insertion into ApplyAgencyContext hiddenlegacy list",
+    "publishedSha256": "8f437cdd6db8cf11b2c60a7a467729acabcbb3a7b6fd87e77028099312a99407"
+  },
+  "additionalPatch": {
+    "path": ".planning/2026-09-21-quality-a/compact-context-ui-drafts/hide-orphan-icon-rail.patch",
+    "sha256": "3153e309199b69166a7d5e2283df0472412b7a31051fa712c2f3a6a20384d15f"
+  },
+  "nativeEvidence": {
+    "path": ".planning/2026-09-21-quality-a/compact-ui-native-proof.json",
+    "actualHeights": {
+      "agency": 337,
+      "bothUnavailable": 406,
+      "station": 482,
+      "team": 278
+    },
+    "freshVisual": "Assets/.planning/2026-09-21-quality-a/compact-context-unavailable-native.png",
+    "rootReview": "Bothwrappedreasonsvisible,emptyrailgone,compactcard. Sourcecamera/nativereceiptdistinguished; noOSinputorAclaim."
+  }
+}

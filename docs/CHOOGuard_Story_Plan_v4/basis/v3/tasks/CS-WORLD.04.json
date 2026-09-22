@@ -1,0 +1,155 @@
+{
+  "id": "CS-WORLD.04",
+  "epicId": "CS-WORLD",
+  "title": "구역 준비·로딩·차량 프레임 연결",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-WORLD.04",
+    "description": "상태를 잃지 않는 구역 및 정차 차량 연결 계약",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-WORLD.04",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.04.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.04.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.04.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-WORLD.04.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/World/RegionLoader.cs",
+    "Assets/ChooGuard/World/RegionReadiness.cs",
+    "Assets/ChooGuard/World/VehicleFrameBinding.cs"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/WORLD/World04Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-WORLD.03",
+      "artifactId": "A-CS-WORLD.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-PACK.01",
+      "artifactId": "A-CS-PACK.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    }
+  ],
+  "algorithm": [
+    "작은 구간은 통째로 로드하며 확장시 additive loading을 적용한다. logical lifetime은 Scene과 분리한다.",
+    "진입은 collision·경로·필수 state가 준비된 경우에만 허용한다. 로딩 실패는 해당 구간만 표시한다.",
+    "정차·도킹·문 상태를 연결하며 객실 local frame과 현장 frame의 변환을 검증한다. 운행 범위는 별도 capability로 선언한다."
+  ],
+  "contract": "RegionReadiness {regionId,visual,collision,path,state}; DockLink {vehicleFrame,siteFrame,stopConfirmed,doorState}.",
+  "sourceIds": [
+    "TECH-UNITY-LOAD"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-WORLD.04-P",
+      "given": "logical ready, visual loading",
+      "when": "카메라 전환",
+      "then": "sim 이동결과 불변",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-WORLD.04-N",
+      "given": "required computational geometry 없음",
+      "when": "카메라 전환",
+      "then": "RUN_LOAD_BLOCKED; 현장지연 수치로 대체0",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-020"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/01-build-and-assemblies.md",
+    "specs/06-native-surfaces.md",
+    "specs/07-content-and-rule-contract.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [],
+  "implementationSpecRefs": [
+    "specs/01-build-and-assemblies.md",
+    "specs/06-native-surfaces.md",
+    "specs/07-content-and-rule-contract.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-020"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/WORLD/World04Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAY_MODE",
+      "path": "Assets/ChooGuard/Tests/PlayMode/CSWORLD04PlayTests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "PLAYER_ACCEPTANCE",
+      "path": "qualification/player/CS-WORLD.04.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "logical ready, visual loading",
+    "operation": "카메라 전환",
+    "expectedPositive": "sim 이동결과 불변",
+    "negativeInput": "required computational geometry 없음",
+    "expectedNegative": "RUN_LOAD_BLOCKED; 현장지연 수치로 대체0",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

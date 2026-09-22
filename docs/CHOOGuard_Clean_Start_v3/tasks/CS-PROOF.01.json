@@ -1,0 +1,140 @@
+{
+  "id": "CS-PROOF.01",
+  "epicId": "CS-PROOF",
+  "title": "실제 작성팀·자료·시간 가설 조사",
+  "scope": "USER_RESEARCH",
+  "artifact": {
+    "id": "A-CS-PROOF.01",
+    "description": "허용된 최근 과업과 파일럿 입력·검수자·총인시 관측",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-PROOF.01",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.01.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.01.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.01.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-PROOF.01.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "research/discovery/protocol.md",
+    "research/discovery/intake.schema.json",
+    "research/discovery/time-observation.schema.json"
+  ],
+  "verificationFile": "research/proof/01-evaluation-protocol.md",
+  "dependsOn": [],
+  "algorithm": [
+    "반복 작성자·기관 협조자·검수자·자료담당을 구분하고 최근 대본/수정/양식을 허용범위에서 관찰한다.",
+    "교육·대리입력·기관회신·무인계산·사람 작업량을 분리한다. 동일인 중첩시간은 합집합이다.",
+    "자료/인터뷰 미확보는 해당 고객 실증만 제한한다. 합성 코어 구현을 막는 전역 선행이 아니다."
+  ],
+  "contract": "StudyIntake {consent,roles,caseRefs,workflow,template,measurements,missing}; 표본 제안과 모집 완료를 분리.",
+  "sourceIds": [
+    "DISC-01",
+    "DISC-03",
+    "DISC-05",
+    "DISC-18"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-PROOF.01-P",
+      "given": "동의된 실제 과제",
+      "when": "최근 업무관찰",
+      "then": "가명/누락/도움 표시",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-PROOF.01-N",
+      "given": "가상의 인터뷰 답",
+      "when": "최근 업무관찰",
+      "then": "NOT_OBSERVED",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-077",
+    "REQ-078"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "CUSTOMER_WORKFLOW_OR_TEMPLATE",
+      "requiredFor": "CUSTOMER_EFFICACY_OR_FORMAT_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "모집/실제양식 확인 전 고객 효용/지원완료 주장 금지."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/10-observability-and-study.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-077",
+    "REQ-078"
+  ],
+  "testTargets": [
+    {
+      "kind": "DOCUMENT_REVIEW",
+      "path": "research/proof/01-evaluation-protocol.md",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "동의된 실제 과제",
+    "operation": "최근 업무관찰",
+    "expectedPositive": "가명/누락/도움 표시",
+    "negativeInput": "가상의 인터뷰 답",
+    "expectedNegative": "NOT_OBSERVED",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

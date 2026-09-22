@@ -1,0 +1,73 @@
+{
+  "receiptKind": "reconstructed_from_observed_first_call_stdout",
+  "provenance": "Original function response in this session reported LIVE exit0 elapsed1336ms with these answers and usage. Subsequent input preparation SyntaxError left jev-next unchanged; duplicate exclusive-output-path attempt failed locally and retained prior answers. Failed attempt is preserved separately; it is not counted as another model inference.",
+  "exit_code": 0,
+  "elapsed_ms": 1336,
+  "mode": "LIVE",
+  "result": [
+    {
+      "model": "typesafe-ai/jev",
+      "answers": {
+        "first": {
+          "type": "choice",
+          "choice": "route",
+          "confidence": 0.67,
+          "probabilities": {
+            "route": 0.78,
+            "placement": 0.01,
+            "service": 0.21
+          }
+        },
+        "next_ops": {
+          "type": "choice",
+          "choice": "facility_service",
+          "confidence": 1,
+          "probabilities": {
+            "finance": 0,
+            "facility_service": 1,
+            "direct_vehicle": 0
+          }
+        },
+        "building_method": {
+          "type": "choice",
+          "choice": "modular_validated",
+          "confidence": 1,
+          "probabilities": {
+            "free_deform": 0,
+            "modular_validated": 1,
+            "visual_only": 0
+          }
+        },
+        "evidence": {
+          "type": "choice",
+          "choice": "site_solver_validation",
+          "confidence": 0.75,
+          "probabilities": {
+            "site_solver_validation": 0.83,
+            "official_game_guide": 0.13,
+            "user_intent": 0.04
+          }
+        },
+        "welcome_coverage": {
+          "type": "choice",
+          "choice": "text_only_video_pending",
+          "confidence": 1,
+          "probabilities": {
+            "fully_viewed": 0,
+            "text_only_video_pending": 1,
+            "ignore_entire_catalog": 0
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1693,
+        "output_tokens": 220
+      },
+      "truncated": false,
+      "action": "review"
+    }
+  ],
+  "authority": 0,
+  "retry": 0,
+  "fallback": 0
+}

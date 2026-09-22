@@ -1,0 +1,121 @@
+{
+  "schemaVersion": "11.0.0",
+  "axisStates": {
+    "PIPELINE": "NOT_EVALUATED",
+    "OPERATIONAL": "NOT_EVALUATED",
+    "MANUAL": "NOT_EVALUATED",
+    "MODEL_QOI": "NOT_EVALUATED",
+    "USER_VALUE": "NOT_EVALUATED",
+    "EXERCISE_USE": "NOT_EVALUATED",
+    "TWIN_SYNC": "NOT_EVALUATED",
+    "ADOPTION": "NOT_EVALUATED"
+  },
+  "independentAxes": true,
+  "singleOverallScoreAllowed": false,
+  "automaticApprovalAllowed": false,
+  "documentTestsCountAsProductEvidence": false,
+  "developmentRequiresPaidContract": false,
+  "studyRequiresAllPhysics": false,
+  "profiles": [
+    {
+      "id": "FIXTURE_DEVELOPMENT",
+      "requiredAxes": [
+        "PIPELINE"
+      ],
+      "limitations": [
+        "SYNTHETIC_SCOPE",
+        "NO_FIELD_PREDICTION"
+      ]
+    },
+    {
+      "id": "AUTHORING_ALPHA",
+      "requiredAxes": [
+        "PIPELINE",
+        "OPERATIONAL"
+      ],
+      "additionalRequirements": [
+        "visible qualification and assumptions",
+        "reference spatial scope",
+        "both user modes",
+        "script roundtrip within declared formats"
+      ]
+    },
+    {
+      "id": "WORKFLOW_STUDY",
+      "requiredAxes": [
+        "PIPELINE",
+        "OPERATIONAL"
+      ],
+      "additionalRequirements": [
+        "eligible pilot intake",
+        "frozen study and quality protocol",
+        "customer template",
+        "consent and source access"
+      ],
+      "doesNotRequire": [
+        "all surrogate models",
+        "live sensors",
+        "purchase contract"
+      ],
+      "doesNotProve": [
+        "MODEL_QOI",
+        "EXERCISE_USE",
+        "TWIN_SYNC",
+        "ADOPTION"
+      ]
+    },
+    {
+      "id": "NAMED_EXERCISE_USE",
+      "requiredAxes": [
+        "PIPELINE",
+        "OPERATIONAL",
+        "MANUAL",
+        "EXERCISE_USE"
+      ],
+      "conditionalAxes": [
+        {
+          "axis": "MODEL_QOI",
+          "when": "quantitative output influences decision",
+          "conditionCannotBeDisabledToAvoidMissingEvidence": true
+        }
+      ],
+      "limitations": [
+        "only named site,event,version and use"
+      ]
+    },
+    {
+      "id": "TWIN_QUALIFIED",
+      "requiredAxes": [
+        "PIPELINE",
+        "OPERATIONAL",
+        "MANUAL",
+        "MODEL_QOI",
+        "EXERCISE_USE",
+        "TWIN_SYNC"
+      ],
+      "additionalRequirements": [
+        "real counterpart",
+        "new observation change receipt",
+        "freshness and revalidation contract"
+      ]
+    },
+    {
+      "id": "INSTITUTIONAL_ADOPTION",
+      "requiredAxes": [
+        "USER_VALUE",
+        "ADOPTION"
+      ],
+      "additionalRequirements": [
+        "applicable named-use evidence",
+        "cost frequency and deployment review"
+      ]
+    }
+  ],
+  "notApplicablePolicy": "REQUIRES_SCOPED_JUSTIFICATION; CANNOT_EXEMPT_REQUIRED_PHENOMENON",
+  "testsRequiredBeforeClaim": [
+    "version binding",
+    "raw evidence",
+    "review authority",
+    "unresolved limits"
+  ]
+}

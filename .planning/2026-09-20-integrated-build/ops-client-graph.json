@@ -1,0 +1,125 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "status": "implemented-awaiting-root-native-compile-and-focused-flow",
+  "ownership": [
+    "MvpTrainingDirector.cs",
+    "MvpTeamTaskController.cs",
+    "MvpStationView.cs",
+    "MvpWorkspace.cs"
+  ],
+  "nodes": [
+    {
+      "id": "ordinary",
+      "facts": [
+        "StartRoutineRun(seed,50,scenario)",
+        "seeded onset 240..420 accepted session seconds",
+        "team preposition before incident"
+      ]
+    },
+    {
+      "id": "onset",
+      "facts": [
+        "BeginIncident uses existing bridge guard",
+        "no crowd clear or new run at onset",
+        "same id dictionary retains scene instances"
+      ]
+    },
+    {
+      "id": "clocks",
+      "facts": [
+        "accepted result session delta authorizes team travel and preparation",
+        "wall time only request pacing and visual animation/interpolation",
+        "in-flight response after pause commits final delta; settled pause sends no steps"
+      ]
+    },
+    {
+      "id": "recovery",
+      "facts": [
+        "resolved keeps run alive and enables team reposition and requests",
+        "debrief user toggled, recent event timeline",
+        "fieldCurrent false suppresses visibility as current; dose shown as record",
+        "incomplete freezes coverage without safe-reopen or clinical claim"
+      ]
+    },
+    {
+      "id": "picking",
+      "facts": [
+        "MvpSpatialMetrics.Reference maps crowd clicks",
+        "inverse origin + 30x20 bounds for right click"
+      ]
+    },
+    {
+      "id": "receipt",
+      "facts": [
+        "existing queue, command validation, per-order requestId + lastControlRequestId and releaseRevision retained"
+      ]
+    },
+    {
+      "id": "scope",
+      "facts": [
+        "first coherent slice only; no full 20-30 minute content acceptance",
+        "no Unity/scene/builder/floor/physics writes by client lane"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "from": "ordinary",
+      "to": "onset",
+      "relation": "same persistent run and IDs"
+    },
+    {
+      "from": "clocks",
+      "to": "receipt",
+      "relation": "arrival and preparation gate controls"
+    },
+    {
+      "from": "onset",
+      "to": "recovery",
+      "relation": "accepted result phase"
+    },
+    {
+      "from": "picking",
+      "to": "receipt",
+      "relation": "metric selection targets existing task flow"
+    }
+  ],
+  "api": {
+    "director": [
+      "StartCrowdSession(int selectedSeed=271828)",
+      "StartExercise()",
+      "ReplaySameSeed()",
+      "BeginIncident():bool",
+      "Phase:string",
+      "State:string",
+      "Events:IReadOnlyList<string>",
+      "Act(incident|debrief|warn|cohort_release|cohort_hold|medical)"
+    ],
+    "station": [
+      "AdvanceAcceptedTime(float delta)",
+      "ResetAcceptedClock()",
+      "CrowdVisualCount:int",
+      "CrowdVisualInstanceId(int id):int"
+    ],
+    "bridgeDependencies": [
+      "StartRoutineRun(int,int,string)",
+      "BeginIncident():bool",
+      "lifecycleVersion,phase,sessionSimTime,incidentTime,fieldCurrent"
+    ]
+  },
+  "minimalVerificationSeam": [
+    "Compile once after physics bridge DTO merge",
+    "StartCrowdSession; wait ordinary ready; capture IDs + CrowdVisualInstanceId",
+    "Preposition a team during ordinary and accept steps",
+    "BeginIncident; compare IDs and scene instance IDs, same run/generation",
+    "Issue warn or release via Act; verify arrival -> preparation -> own request ACK",
+    "Crowd exits -> State Recovery, advance more ticks/reposition, toggle debrief",
+    "Slow/pending worker must not advance team positions/work; settled pause freezes logical progress"
+  ],
+  "verificationPerformed": [
+    "Read exact lifecycle JSON/time contract",
+    "Static search confirmed no .65/-13/-12 crowd picking remains",
+    "Static inspection: no wall delta writes team positions or work deadline completion",
+    "No runtime/compile claim; root owns native focused check"
+  ]
+}

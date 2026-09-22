@@ -1,0 +1,378 @@
+{
+  "schema": "fps-metro-import-graph/v1",
+  "status": "fps-subsection-exported-registration-and-connectors-proposed",
+  "archive": {
+    "path": "asset-library/source/rail-community/busan-metro-line1/부산 도시철도 1호선.zip",
+    "sha256": "aef5806f64327bea5060520d30ab25dadeb2e05bbd4c70e637056c554b052e29",
+    "entries": 3282,
+    "safe_extraction": "validated traversal/absolute/symlink; no plugin execution"
+  },
+  "source_route": "/Users/um-yunsang/CHOOGuard/asset-library/source/rail-community/busan-metro-line1/extracted/부산 도시철도 1호선/Railway/Route/부산도시철도 1호선/부산도시철도 1호선.csv",
+  "nodes": [
+    {
+      "id": "metro113",
+      "label": "부산역 / Humetro line1 station113",
+      "station_chainage_m": 14525,
+      "stop_chainage_m": 14700,
+      "local_origin_chainage_m": 14625,
+      "subsection_m": [
+        14500,
+        14750
+      ],
+      "placement_count": 220,
+      "unique_geometry_sources": 50,
+      "missing_geometry_references": 0,
+      "authority": "community simulator archive geometry, not survey",
+      "geometry_manifest": "metro-import/placements.json",
+      "geometry_status": "exported .blend and embedded-texture FBX"
+    },
+    {
+      "id": "korail-plaza",
+      "authority": "separate aboveground KORAIL/site model"
+    },
+    {
+      "id": "exit4",
+      "authority": "Humetro exit4 destination 부산역광장"
+    },
+    {
+      "id": "exit6",
+      "authority": "Humetro exit6 destination 부산역광장"
+    },
+    {
+      "id": "metro-concourse",
+      "geometry_status": "not confirmed present in BVE platform subsection; native authored geometry required"
+    },
+    {
+      "id": "metro-platforms",
+      "geometry_status": "source platforms roofs walls track stair props exported; collider/traversal not supplied"
+    }
+  ],
+  "edges": [
+    {
+      "from": "korail-plaza",
+      "to": "exit4",
+      "kind": "public pedestrian proposed connection",
+      "evidence": "official exit destination table; exact physical geometry unsurveyed"
+    },
+    {
+      "from": "korail-plaza",
+      "to": "exit6",
+      "kind": "public pedestrian proposed connection",
+      "evidence": "official exit destination table; exact physical geometry unsurveyed"
+    },
+    {
+      "from": "exit4",
+      "to": "metro-concourse",
+      "kind": "stairs per evacuation diagram"
+    },
+    {
+      "from": "exit6",
+      "to": "metro-concourse",
+      "kind": "stairs per evacuation diagram"
+    },
+    {
+      "from": "metro-concourse",
+      "to": "metro-platforms",
+      "kind": "gates + stairs/escalators/elevators per evacuation diagram; authored traversal/colliders needed"
+    }
+  ],
+  "registration": {
+    "schema": "metro113-registration/v1",
+    "classification": "AUTHORED_PROVISIONAL_GEOGRAPHIC_REGISTRATION",
+    "coordinate_frame": "sourceframe0 X East Y Up Z North metres; origin35.1151,129.0417",
+    "source_origin_chainage": 14625,
+    "source_units": "metres",
+    "scale": [
+      1,
+      1,
+      1
+    ],
+    "unity_yaw_degrees": 24.619442897956112,
+    "unity_translation": [
+      -163.6514818484096,
+      -9.1,
+      69.70826513466375
+    ],
+    "formula": "world=translation+Ry(yaw)*sourceBveXYZ; do not additionally apply officialSiteRig transform",
+    "anchors": {
+      "centre": {
+        "osm_node": "1768537544",
+        "url": "https://www.openstreetmap.org/node/1768537544",
+        "lat": 35.1157262,
+        "lon": 129.0399028,
+        "sourceframe0": [
+          -163.6514818484096,
+          0,
+          69.70826513466375
+        ],
+        "source_timestamp": "2026-01-16T17:10:36Z",
+        "metro_local_horizontal": [
+          0.0,
+          0,
+          0.0
+        ]
+      },
+      "stop_position": {
+        "osm_node": "1768514188",
+        "url": "https://www.openstreetmap.org/node/1768514188",
+        "lat": 35.1155992,
+        "lon": 129.039936,
+        "sourceframe0": [
+          -160.62831848295315,
+          0,
+          55.570689804018194
+        ],
+        "source_timestamp": "2021-06-23T22:33:43Z",
+        "metro_local_horizontal": [
+          8.6379,
+          0,
+          -11.593
+        ]
+      },
+      "choryang": {
+        "osm_node": "355173846",
+        "url": "https://www.openstreetmap.org/node/355173846",
+        "lat": 35.1212017,
+        "lon": 129.0429702,
+        "sourceframe0": [
+          115.66331640750695,
+          0,
+          679.2381369735508
+        ],
+        "source_timestamp": "2026-01-16T17:10:36Z",
+        "metro_local_horizontal": [
+          -0.0,
+          0,
+          670.48
+        ]
+      },
+      "exit4": {
+        "osm_node": "8266060522",
+        "url": "https://www.openstreetmap.org/node/8266060522",
+        "lat": 35.1139938,
+        "lon": 129.0393181,
+        "sourceframe0": [
+          -216.89375952215613,
+          0,
+          -123.14162071499415
+        ],
+        "source_timestamp": "2025-12-13T16:40:07Z",
+        "metro_local_horizontal": [
+          31.9369,
+          0,
+          -197.499
+        ]
+      },
+      "exit6": {
+        "osm_node": "8266060524",
+        "url": "https://www.openstreetmap.org/node/8266060524",
+        "lat": 35.1147648,
+        "lon": 129.0397587,
+        "sourceframe0": [
+          -176.77310355682872,
+          0,
+          -37.314293313346916
+        ],
+        "source_timestamp": "2025-12-13T16:40:07Z",
+        "metro_local_horizontal": [
+          32.6557,
+          0,
+          -102.76
+        ]
+      }
+    },
+    "fit_method": "single semantic station centre anchor plus independent station-to-Choryang bearing; no two surveyed source control points available",
+    "residuals": {
+      "centre_constraint_m": 0,
+      "bearing_constraint_deg": 0,
+      "stop_residual_interpretation": "NOT a survey residual or registration error: BVE14700 train-front stop vsOSM genericstop_position; BVEplatformcentre14625 is75m behind trainfront. Coordinates preserved; controls semantically different.",
+      "non_equivalent_semantic_anchor_separation_m": 87.02275892526974
+    },
+    "authored_levels": {
+      "surface_plaza": 0,
+      "concourse": -3.5,
+      "platform_top": -8,
+      "source_rail_y0": -9.1,
+      "status": "prototype authored absolute elevations; not surveyed underground depths"
+    },
+    "accuracy_limits": [
+      "station centroid interpretation is approximate",
+      "Choryang bearing is chord not station tangent; local route straight retained",
+      "OSM station/entrance data community maintained; official evacuation diagram older/different entrance count",
+      "no full line scale or rotation applied"
+    ]
+  },
+  "sources": [
+    {
+      "url": "https://www2.humetro.busan.kr/homepage/default/stationinfo/page/list01.do?menu_no=1001010201&S_LINE=1&S_STATION=113",
+      "supports": [
+        "station113",
+        "west of railway station",
+        "중앙대로 지하200"
+      ],
+      "local": "metro-import/humetro113.html"
+    },
+    {
+      "url": "https://www2.humetro.busan.kr/homepage/default/stationinfo/page/list02.do?menu_no=1001010202&S_LINE=1&S_STATION=113",
+      "supports": [
+        "exits4/6 lead 부산역광장"
+      ],
+      "local": "metro-import/humetro113-area.html"
+    },
+    {
+      "url": "https://www2.humetro.busan.kr/servlet/DownloadServlet?file_name=113.gif&file_name_origin=113.gif&upload_dir=stationmap",
+      "supports": [
+        "two side platforms",
+        "upper concourse",
+        "stairs escalators elevators",
+        "exits1–7"
+      ],
+      "local": "metro-import/humetro113.gif",
+      "limitation": "schematic no metric scale or vertical datum"
+    },
+    {
+      "url": "https://api.openstreetmap.org/api/0.6/map?bbox=129.035,35.110,129.045,35.125",
+      "local": "metro-import/osm-local-map.xml",
+      "supports": [
+        "Busan113 georeferenced station centre",
+        "Choryang bearing",
+        "exit4 and6 georeferenced points"
+      ],
+      "authority": "OSM community mapping, not engineering survey",
+      "attribution": "OpenStreetMap contributors / ODbL"
+    }
+  ],
+  "validation": {
+    "unity_import": false,
+    "player_traversal": false,
+    "product_acceptance": false,
+    "blender_fbx_reimport": true
+  },
+  "exports": [
+    {
+      "path": ".planning/2026-09-21-fps-reposition/metro-import/Busan113SourceSection.blend",
+      "bytes": 11418997,
+      "sha256": "698a2d8e2949fb8981dfaaf1833e4d7224b2ac7b1818328e6d47b8e440601173"
+    },
+    {
+      "path": ".planning/2026-09-21-fps-reposition/metro-import/Busan113SourceSection.fbx",
+      "bytes": 40896748,
+      "sha256": "a26b5785d85c8bc1b5f486ee175c2a796405eef62fe170f2472086f04c1acffc"
+    }
+  ],
+  "mesh_receipt": {
+    "placements": 220,
+    "unique_sources": 50,
+    "neutral_texture_fallbacks": [
+      {
+        "source": "/Users/um-yunsang/CHOOGuard/asset-library/source/rail-community/busan-metro-line1/extracted/부산 도시철도 1호선/Railway/Object/BUSAN1/Roof tai L.csv",
+        "missing_texture": "/Users/um-yunsang/CHOOGuard/asset-library/source/rail-community/busan-metro-line1/extracted/부산 도시철도 1호선/Railway/Object/Concrete.bmp",
+        "derived": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-21-fps-reposition/metro-import/Roof_tai_L_neutral.csv",
+        "treatment": "all roof textures omitted; neutral material, not inferred replacement"
+      }
+    ],
+    "origin_chainage_m": 14625,
+    "source_axes": "BVE metres X right Y up Z chainage",
+    "blender_axes": "X right Y chainage Z up",
+    "status": "static geometry only; no collision navigation geographic registration"
+  },
+  "source_vehicle": {
+    "candidate": "Train/부산 도시철도 1호선/104(New)/Car/TC.animated",
+    "static_objects": 37,
+    "observed_parts": [
+      "seat",
+      "poles",
+      "LCD",
+      "car body",
+      "doors",
+      "bogies"
+    ],
+    "status": "identified but not exported",
+    "gap": "mixed CSV operators inside B3D need shared parser extension; no executable train plugin run"
+  },
+  "limitations": [
+    "Source era not validated currentstation",
+    "Registration is centre+heading semantic placement, not survey accuracy;87.02m separation between non-equivalent trainfront/genericstop anchors; not a survey residual",
+    "Prototype heights authored; no surveyed absolute underground depth",
+    "Native collider/connector/player acceptance remains root responsibility"
+  ],
+  "fbx_reimport": {
+    "meshes": 1521,
+    "materials": 80,
+    "images": 130,
+    "texture_nodes": 118
+  },
+  "visual_gaps": [
+    "FPS export excludes PeopleL2/PeopleR2 freeobj16/19",
+    "FPS export excludes closed texture-shell train objects freeobj2/3/4/21",
+    "No complete upper concourse or exit geometry reconstruction; native connector manifest authored pending root integration"
+  ],
+  "fps_exports": [
+    {
+      "path": ".planning/2026-09-21-fps-reposition/metro-import/Busan113FPSSection.blend",
+      "bytes": 8550832,
+      "sha256": "e3c6325a9f435920cc97204b6aec499dca7b5b5fe634b300e3c0e24752056510"
+    },
+    {
+      "path": ".planning/2026-09-21-fps-reposition/metro-import/Busan113FPSSection.fbx",
+      "bytes": 31854108,
+      "sha256": "669c21ddff62c335cef475e3aab8b8c09bd7847c9aaafd108d864d2d0f814b53"
+    }
+  ],
+  "fps_export_receipt": {
+    "placements": 198,
+    "omitted_keys": [
+      "freeobj:16",
+      "freeobj:19",
+      "freeobj:2",
+      "freeobj:3",
+      "freeobj:4",
+      "freeobj:21"
+    ],
+    "unique_sources": 44,
+    "neutral_texture_fallbacks": [
+      {
+        "source": "/Users/um-yunsang/CHOOGuard/asset-library/source/rail-community/busan-metro-line1/extracted/부산 도시철도 1호선/Railway/Object/BUSAN1/Roof tai L.csv",
+        "missing_texture": "/Users/um-yunsang/CHOOGuard/asset-library/source/rail-community/busan-metro-line1/extracted/부산 도시철도 1호선/Railway/Object/Concrete.bmp",
+        "derived": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-21-fps-reposition/metro-import/Roof_tai_L_repaired.csv",
+        "treatment": "explicit local alias to same-directory Concrete.bmp; paired Roof tai R.csv references this file with identical geometry/material/UV, no source changed",
+        "replacement": "/Users/um-yunsang/CHOOGuard/asset-library/source/rail-community/busan-metro-line1/extracted/부산 도시철도 1호선/Railway/Object/BUSAN1/Concrete.bmp",
+        "sha256": "0f1ba00f5020f85d0165fe74c07947ea7c3b30b2a6226eb01a3d37bc7d7cfc0f"
+      }
+    ],
+    "origin_chainage_m": 14625,
+    "source_axes": "BVE metres X right Y up Z chainage",
+    "blender_axes": "X right Y chainage Z up",
+    "status": "static geometry only; no collision navigation geographic registration"
+  },
+  "fps_fbx_reimport": {
+    "meshes": 1107,
+    "materials": 61,
+    "images": 105,
+    "texture_nodes": 96
+  },
+  "registration_manifest": "metro-import/metro113-registration.json",
+  "connector_manifest": "metro-import/metro113-connectors.json",
+  "material_manifest": "metro-import/fps-enclosure/fps-material-manifest.corrected.normalized.json",
+  "material_correction": {
+    "status": "EXACT_CORRECTION_READY_NO_ENCLOSURE_ADDED",
+    "cause": "Blender copied BMP pixel alpha save conversion produces wrong PNG alpha; isolated2texture reproduction confirms source key counts correct before save",
+    "not_cause": [
+      "black transparency key omission: source declares blue0,0,255",
+      "Unity importer:Assets14texturehashesmatchalreadybadexports",
+      "proven missingsourcewall geometry:Formwall meshes exist and were madefullytransparent"
+    ],
+    "correction_manifest": "fps-material-manifest.corrected.normalized.json",
+    "scope": "14materialPNGalpha/RGB deterministic source8bit conversion; noFBX orsource changes",
+    "verification": [
+      "PNG reload exactbyteequality",
+      "RGBpreserved",
+      "sourceexpectedzeroalpha equals correctedzeroalpha14/14",
+      "Assetsoriginalbadexporthashes14/14"
+    ],
+    "recommendation": "Shared exporter should create a newRGBA image with explicit alpha buffer or deterministic8bitRGBA conversion, not save modified copy ofBMP; hash+alphahistogram gate before normalizedmanifest",
+    "ktx": "Current normalizedKTXmanifest0keyedtextures; no directinstanceofkeyfailure. Shared BMPcopy+tint path structurallyshared, so audit separately ifused",
+    "supplemental_geometry": "deferred until correctednativeview; existing wallplanes cannot be assessed whilefullytransparent",
+    "evidence_dir": "metro-import/fps-enclosure"
+  }
+}

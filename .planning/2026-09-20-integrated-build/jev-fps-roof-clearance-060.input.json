@@ -1,0 +1,39 @@
+{
+  "model": "typesafe-ai/jev",
+  "state": {
+    "evidence": [
+      "Native KTXopaque-texel depthfix240+render-only supports preserves1670colliders; before railsseenthroughfloor,aftercontinuousfloor/seats withfractionalglass unchanged.",
+      "Recovered ORIGINAL MetroRoofCL/CR geometrynativeY−4.53..−3.1. Originalauthoredconcoursefloor−3.5 conflictswithrealroofplenum; actualcapsulewalknowblocked(-173.7385,-3.475,21.7898). PreviouswalkPASS wasbeforemissingroofrecovery, notcurrentfullpass.",
+      "ProposalraiseAUTHOREDconcourse to−2.8, .15slabbottom−2.95 leaves.15m above sourcerooftop−3.1. Surface0/platform−8 remain; sourceexistingroof preserved apartfromprevious explicitlyauthored3.5m stairaperture. Noasbuiltlevelclaim.",
+      "SourceKTXinnerglassdoor276facesidentified across3blocks, exactjambs/thresholdretained. Authoredstatic+.88mXpose canclearboardingpath; no sourceanimation orphysicalpocketvalidationclaim."
+    ],
+    "rootAction": "Astra rebuild twoauthoredconnectors atroof-clearingheight; exactinnerdoor-onlystaticpatch; nativewalkrecheck after geometrychanges."
+  },
+  "questions": {
+    "roofDecision": {
+      "type": "choice",
+      "instructions": "Choose grounded response to new source roof conflict",
+      "criteria": {
+        "raise_authored_level": "Adjust labelled authoredlevel aboveexistingroof and verifyactualcapsule; preservesoriginalstationroof",
+        "cut_long_roof": "Cut50mroof just to retain inventedlevel",
+        "claim_pass_anyway": "Usepre-roofwalkPASSascurrent"
+      }
+    },
+    "claim": {
+      "type": "choice",
+      "instructions": "Current traversal status",
+      "criteria": {
+        "new_change_requires_check": "CurrentMetro routeblocked pendingauthoredlevelrepair; historicalPASS retained",
+        "fully_passed": "CurrentallroutesPASS"
+      }
+    },
+    "doorPose": {
+      "type": "choice",
+      "instructions": "Proper authority of276face+.88pose",
+      "criteria": {
+        "authored_static_pose": "Preciseleaffromsource, authoredstaticopenstate; noasbuiltkinematicsclaim",
+        "certified_door": "Validatedrealdooroperation"
+      }
+    }
+  }
+}

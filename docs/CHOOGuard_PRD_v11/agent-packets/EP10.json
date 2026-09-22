@@ -1,0 +1,212 @@
+{
+  "schemaVersion": "11.0.0",
+  "epicId": "EP10",
+  "title": "통합·사용자·검수",
+  "authority": "PRODUCT_DECOMPOSITION_NOT_REPOSITORY_WRITE_GRANT",
+  "read": [
+    "START_HERE.md",
+    "PRD.md §01",
+    "PRD.md §16",
+    "PRD.md §18",
+    "PRD.md §19",
+    "PRD.md §20",
+    "contracts/requirements.json: REQ-001, REQ-040, REQ-067, REQ-069, REQ-070, REQ-074, REQ-080, REQ-081, REQ-082, REQ-090"
+  ],
+  "requirementIds": [
+    "REQ-001",
+    "REQ-040",
+    "REQ-067",
+    "REQ-069",
+    "REQ-070",
+    "REQ-074",
+    "REQ-080",
+    "REQ-081",
+    "REQ-082",
+    "REQ-090"
+  ],
+  "testIds": [
+    "AT-001",
+    "AT-040",
+    "AT-067",
+    "AT-069",
+    "AT-070",
+    "AT-074",
+    "AT-080",
+    "AT-081",
+    "AT-082",
+    "AT-090"
+  ],
+  "sourceIds": [
+    "DISC-05",
+    "DISC-07",
+    "DISC-08",
+    "DISC-09",
+    "DISC-11",
+    "FREE-001",
+    "REPO-222"
+  ],
+  "candidateInputs": [
+    {
+      "producer": "EP04",
+      "producerPhase": "candidate",
+      "consumerPhase": "candidate",
+      "artifactGroup": [
+        "operations-ui"
+      ]
+    },
+    {
+      "producer": "EP05",
+      "producerPhase": "candidate",
+      "consumerPhase": "candidate",
+      "artifactGroup": [
+        "event-store",
+        "snapshot-branch-receipts",
+        "comparison-report"
+      ]
+    },
+    {
+      "producer": "EP06",
+      "producerPhase": "candidate",
+      "consumerPhase": "candidate",
+      "artifactGroup": [
+        "tutorial-pack",
+        "random-generator"
+      ]
+    },
+    {
+      "producer": "EP09",
+      "producerPhase": "candidate",
+      "consumerPhase": "candidate",
+      "artifactGroup": [
+        "script-bundle",
+        "grounding-report"
+      ]
+    }
+  ],
+  "outputs": [
+    "e2e-evidence",
+    "usability-results",
+    "field-review",
+    "qualification-vector.json",
+    "effort-cost-report.json"
+  ],
+  "outputStatus": "PLANNED_NOT_VERIFIED_THIS_REVISION",
+  "prepare": "현재 기준과 배정 작업·lane만 읽고 필요한 입력/출처·쓰기 경계를 확인한다. 불필요한 매뉴얼 전체를 문맥에 넣지 않는다.",
+  "candidate": "필수 산출물의 생산 단계·실제 ref/hash/접근을 확인한 뒤 한정 구현·실행한다. fixture/mocked input을 명시하고 공통 코어를 재사용한다.",
+  "accept": "선택 lane의 실제 원시결과·버전·실패·미실행·검수권한·허용범위를 제출한다. 문서 검사를 제품 완료로 승격하지 않는다.",
+  "stopConditions": [
+    "unresolved write/claim conflict",
+    "required input unavailable for selected phase",
+    "source or domain qualification missing for claimed use",
+    "repeated failure exceeds bounded retry budget"
+  ],
+  "fixtureLane": "합성 입력으로 schema/adapter/UI를 개발할 수 있으나 실물·기관·정량 검증 자격으로 승격할 수 없다.",
+  "implementationPaths": "RESOLVE_FROM_CURRENT_REPOSITORY_WORK_ORDER_BEFORE_WRITE",
+  "notRun": [
+    "Unity product",
+    "physics domain tests",
+    "institutional approval"
+  ],
+  "readScope": "Read the assigned task and chosen lane only. Not a new scheduler or source checkout.",
+  "critiqueIds": [
+    "C01",
+    "C02",
+    "C03",
+    "C06",
+    "C07",
+    "C09",
+    "C11",
+    "C12"
+  ],
+  "lanes": {
+    "fixture": {
+      "inputPolicy": "Common candidate inputs may be explicitly labeled fixture contracts. No real-site or user value claim.",
+      "qualifiesOnly": [
+        "PIPELINE"
+      ],
+      "doesNotRequire": [
+        "customer interview completed",
+        "all physical domain reports",
+        "live synchronization",
+        "purchase contract"
+      ]
+    },
+    "authoring_alpha": {
+      "additionalInputs": [],
+      "requiredProfile": "AUTHORING_ALPHA",
+      "requiresAllPhysics": false
+    },
+    "user_study": {
+      "additionalInputs": [
+        {
+          "producer": "EP00",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "evaluation-plan.json",
+            "pilot-intake.json"
+          ]
+        },
+        {
+          "producer": "EP09",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "template-profile.json",
+            "export-receipt.json"
+          ]
+        }
+      ],
+      "requiredProfile": "WORKFLOW_STUDY",
+      "requiresAllPhysics": false
+    },
+    "quantitative_named_use": {
+      "additionalInputs": [
+        {
+          "producer": "EP01",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "rule-registry"
+          ]
+        },
+        {
+          "producer": "EP07",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "domain-validation-report"
+          ]
+        },
+        {
+          "producer": "EP08",
+          "producerPhase": "candidate",
+          "consumerPhase": "candidate",
+          "artifactGroup": [
+            "qoi-validation-report",
+            "coupling-report"
+          ]
+        }
+      ],
+      "requiredProfile": "NAMED_EXERCISE_USE",
+      "requiresIndependentDomainEvidence": true,
+      "conditional": "Only selected supported use-case quantities; excluded claims remain unavailable"
+    }
+  },
+  "returnFields": [
+    "epicId",
+    "lane",
+    "phase",
+    "branchAndCommit",
+    "changedPaths",
+    "inputRefsAndHashes",
+    "outputRefsAndHashes",
+    "testsRun",
+    "rawResults",
+    "notRun",
+    "failures",
+    "qualificationScope",
+    "nextConsumer",
+    "claimRelease"
+  ]
+}

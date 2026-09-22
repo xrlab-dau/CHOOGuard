@@ -1,0 +1,182 @@
+{
+  "schemaVersion": "chooguard.controls-visual-benchmark.v1",
+  "generatedAt": "2026-09-21T00:00:00+09:00",
+  "status": "BENCHMARK_ONLY_NOT_PORTED",
+  "scope": "Observable selection, camera, contextual UI, readability, object feedback, and only directly observed animation evidence. No editor or global-agency-list benchmark.",
+  "constraints": {
+    "primarySourceCount": 8,
+    "durableFrameCount": 2,
+    "downloadBudget": "within 20MB; reused existing 1,591,579-byte JWE3 worst-quality video receipt",
+    "runtimeActions": "No Unity, computer-use, or game execution in this lane",
+    "claimsExcluded": [
+      "exact input causality or timing unless a source explicitly documents it",
+      "universal projection/FOV/easing/follow behavior",
+      "NPC animation quality when no animation is visible in the cited source",
+      "product acceptance or physical/emergency-response validity"
+    ]
+  },
+  "localEvidence": {
+    "jwe3Video": {
+      "officialPageUrl": "https://www.jurassicworldevolution.com/en-US/3/gallery/video/feature-focus-building-your-parks",
+      "videoUrl": "https://www.youtube.com/watch?v=biTAmzkPYd4",
+      "videoSha256": "d0ced883f5522ee41b3c86499d2b36cb734e80ebc746ae439809672360d1c38f",
+      "durationSeconds": 102.957279,
+      "receipt": "asset-library/research-public/2026-09-21/camera-reference/receipt.json",
+      "observations": [
+        {"timestampSeconds": 54, "frame": "asset-library/research-public/2026-09-21/camera-reference/jwe3-building-feature-focus-54s-gameplay-ui.jpg", "sha256": "4d3a922e6ff93004e19653498e5d85a64d8b9bed00991ffef07cf849cb898b58", "verified": "oblique world view with gameplay UI and near-building visual focus"},
+        {"timestampSeconds": 66, "frame": "asset-library/research-public/2026-09-21/camera-reference/jwe3-building-feature-focus-66s-gameplay-ui.jpg", "sha256": "7112cadbf73c2e569a566af816557c6200c71d0aeb46577b78833fd251dbbfcb", "verified": "oblique world view with left-side build menu and visible facility context"}
+      ],
+      "boundary": "These frames support perspective depth, oblique presentation, and persistent gameplay UI. They do not support exact camera controls, selection causality, easing, or follow/cancel timing."
+    },
+    "currentChooguard": {
+      "files": [
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs:285-311",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs:20-40",
+        "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs:22-40,117-125"
+      ],
+      "verifiedObservations": [
+        "World left-click can select a visible team or a facility pick volume; a pending support request can then resolve against a clicked target.",
+        "The panel exposes support buttons, team rows, follow, cancel, and return controls, but the panel is a single agency dispatch surface rather than a compact building-owned action card.",
+        "Generic team task requests still map actions to fixed locations (concourse or exit), so the clicked facility is not yet the primary task context for ordinary team actions."
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "jwe3-building-feature-focus",
+      "title": "Jurassic World Evolution 3: Building Your Parks | Feature Focus",
+      "url": "https://www.jurassicworldevolution.com/en-US/3/gallery/video/feature-focus-building-your-parks",
+      "secondaryUrl": "https://www.youtube.com/watch?v=biTAmzkPYd4",
+      "evidence": "Official published video; local frames at 00:54 and 01:06 show gameplay UI over an oblique park view.",
+      "classification": "verified_local_frame",
+      "sourceHash": "d0ced883f5522ee41b3c86499d2b36cb734e80ebc746ae439809672360d1c38f"
+    },
+    {
+      "id": "aoe4-console-site-menu",
+      "title": "Age of Empires IV Now Available on Xbox Consoles",
+      "url": "https://www.ageofempires.com/news/age-of-empires-iv-now-on-xbox-consoles/",
+      "evidence": "Officially describes a Site Menu System: selecting a resource supplies appropriate building options and assigns a villager to finish the action.",
+      "classification": "verified_source_claim",
+      "sourceHash": "not_downloaded"
+    },
+    {
+      "id": "aoe4-shortcuts",
+      "title": "Age of Empires IV Shortcuts Revealed",
+      "url": "https://www.ageofempires.com/news/aoeiv-shortcuts-revealed/",
+      "evidence": "Official shortcut table documents camera centering, camera rotation, building-type cycling, and building selection groups.",
+      "classification": "verified_source_claim",
+      "sourceHash": "not_downloaded"
+    },
+    {
+      "id": "aoe4-garrison-ui",
+      "title": "Age of Empires IV Season Four Update 6.0.878",
+      "url": "https://www.ageofempires.com/news/ageiv_seasonfour_update_60878/",
+      "evidence": "Official update notes state that selecting a garrisoned building shows both building information and garrisoned units in the building panel.",
+      "classification": "verified_source_claim",
+      "sourceHash": "not_downloaded"
+    },
+    {
+      "id": "cities2-work-in-motion",
+      "title": "Cities: Skylines II: Work in motion - A Word from CO",
+      "url": "https://www.paradoxinteractive.com/games/cities-skylines-ii/news/work-in-motion",
+      "evidence": "Official development diary describes an improved storage-building UI and an economy panel that exposes resource surplus/deficit and production chains.",
+      "classification": "verified_source_claim",
+      "sourceHash": "not_downloaded"
+    },
+    {
+      "id": "cities2-camera-tools",
+      "title": "Shiny New Camera Tools | Developer Insights Ep 13",
+      "url": "https://www.youtube.com/watch?v=3QMEnnpViSE",
+      "evidence": "Official Cities: Skylines channel presents camera tools and modes; it is evidence that camera tooling exists, not evidence of emergency-task selection behavior.",
+      "classification": "verified_source_claim_with_scope_limit",
+      "sourceHash": "not_downloaded"
+    },
+    {
+      "id": "openrct2-main-interface",
+      "title": "OpenRCT2 Main interface",
+      "url": "https://docs.openrct2.io/en/latest/playing/main_interface/",
+      "evidence": "Official project manual documents a persistent viewport, top toolbar, bottom toolbar, park window, zoom/rotate/view controls, and build/management groups.",
+      "classification": "verified_source_claim",
+      "sourceHash": "not_downloaded"
+    },
+    {
+      "id": "openrct2-options",
+      "title": "OpenRCT2 Options: Controls and Interface",
+      "url": "https://docs.openrct2.io/en/latest/setup/options.html",
+      "evidence": "Official manual documents edge scrolling, right-drag panning inversion, zoom-to-cursor, shortcut assignment, toolbar visibility, and higher-FPS interpolation as configurable interface behaviors.",
+      "classification": "verified_source_claim",
+      "sourceHash": "not_downloaded"
+    }
+  ],
+  "dimensionMatrix": [
+    {
+      "dimension": "building_selection_anchor",
+      "referenceEvidence": "Age IV's Site Menu makes the selected world resource the source of relevant build options; Age IV's garrison update keeps building information visible with selected building context.",
+      "jwe3Evidence": "JWE3 frames show an oblique park and persistent gameplay UI, but do not prove click-to-panel causality.",
+      "chooguardGap": "Facility picking exists, but MvpTeamTaskController still defaults generic actions to fixed concourse/exit locations.",
+      "classification": "verified_current_gap_plus_inferred_adaptation"
+    },
+    {
+      "dimension": "contextual_action_density",
+      "referenceEvidence": "OpenRCT2 groups persistent view/build/management controls; Age IV documents building information and building-specific controls in the selected context.",
+      "jwe3Evidence": "At 01:06 a build menu remains legible alongside the world view; exact button semantics are not established by the frame.",
+      "chooguardGap": "MvpAgencyDispatchView has support, follow, cancel, and return controls, but one tall agency panel carries multiple levels of agency/team state.",
+      "classification": "verified_source_claim_and_verified_local_observation"
+    },
+    {
+      "dimension": "camera_and_readability",
+      "referenceEvidence": "JWE3 frames visibly preserve depth and an oblique near-world read; OpenRCT2 explicitly documents zoom, rotate, edge-scroll, and zoom-to-cursor options.",
+      "jwe3Evidence": "00:54 and 01:06 only support visual presentation, not exact camera motion.",
+      "chooguardGap": "Current city interaction must preserve the normal camera and make the selected building readable without routing the user to a global list/editor.",
+      "classification": "verified_visual_observation_plus_inferred_adaptation"
+    },
+    {
+      "dimension": "feedback_and_state",
+      "referenceEvidence": "Cities II's official diary describes storage UI plus resource-chain information; Age IV's garrison note adds building info and occupants to the selected building panel.",
+      "jwe3Evidence": "No state-transition timing is proven by the two still frames.",
+      "chooguardGap": "CHOOGuard has status text and mission states, but selection-to-action feedback should be attached to the selected facility and retain the city view.",
+      "classification": "verified_source_claim_plus_inferred_adaptation"
+    },
+    {
+      "dimension": "npc_or_team_animation",
+      "referenceEvidence": "None of these UI manuals or stills establish a universal NPC animation rule. OpenRCT2's manual documents higher-FPS interpolation as an option, which is a rendering claim only.",
+      "jwe3Evidence": "A still frame cannot prove animal/team animation.",
+      "chooguardGap": "Do not claim animation quality from this benchmark; verify only after a runtime observation of a selected response team moving and arriving.",
+      "classification": "input_unknown"
+    }
+  ],
+  "actionableCorrections": [
+    {
+      "priority": 1,
+      "title": "Make the clicked facility the sole context anchor for support actions",
+      "change": "On facility pick, keep the normal city camera, show a compact facility card at the clicked building, and bind support buttons to that facility's targetId. Preserve the existing agency/team panel as a secondary detail state opened from the card.",
+      "seam": "MvpAgencyDispatchController.TrySelectWorld/SelectAgency; MvpAgencyDispatchView.Update/RequestSupport; MvpTeamTaskController.RequestTask",
+      "acceptance": "Click a rendered facility in the city view; the card names that facility, shows only compatible support actions, and a request records that facility target without opening a global agency list or editor.",
+      "basis": "Age IV selected-context building information and site-menu behavior; Cities II building-specific UI claim.",
+      "status": "PROPOSED_NOT_PORTED"
+    },
+    {
+      "priority": 2,
+      "title": "Separate selection feedback from agency roster density",
+      "change": "Use a short building-owned header (name, availability, current incident/support state) with 2-3 primary buttons; move team rows, follow, cancel, and return into a deliberate secondary expansion after the user chooses a support action.",
+      "seam": "MvpAgencyDispatchView panel construction and Update layout",
+      "acceptance": "The selected building and the next available action remain readable over the city view at the existing camera scale; no action depends on scanning a long agency/team list.",
+      "basis": "OpenRCT2 persistent viewport/tool grouping and Age IV selected building panel.",
+      "status": "PROPOSED_NOT_PORTED"
+    },
+    {
+      "priority": 3,
+      "title": "Add a verified visual state loop before making animation claims",
+      "change": "Instrument and capture three runtime states for the same facility: selected/available, request accepted/team en route, and on-site/complete. Keep camera focus and target highlight visible in each receipt; treat team motion as unknown until observed.",
+      "seam": "MvpAgencyDispatchController mission states; MvpAgencyDispatchView; Station target/highlight rendering; existing evidence receipt workflow",
+      "acceptance": "A fresh local receipt links each state to a frame and event log entry; no claim about easing, follow, or NPC animation is made without the corresponding observation.",
+      "basis": "JWE3 frames establish a useful visual baseline only; source manuals establish state/UI concepts, not CHOOGuard runtime behavior.",
+      "status": "PROPOSED_NOT_PORTED"
+    }
+  ],
+  "decision": {
+    "recommendedOrder": [1, 2, 3],
+    "rationale": "The strongest cross-source signal is selected-world context plus a small contextual action surface. Camera and animation details remain evidence-limited, so the first implementation increment should improve target/action binding and readable feedback before visual polish.",
+    "notAcceptance": "This graph is a source-grounded interaction benchmark and does not establish product acceptance, emergency procedure validity, or runtime animation quality."
+  }
+}

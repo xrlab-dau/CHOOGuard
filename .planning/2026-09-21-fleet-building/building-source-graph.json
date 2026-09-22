@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "1.0",
+  "researchDate": "2026-09-21",
+  "purpose": "Source-constrained exterior and operational-interior reference for restoring two real fire facilities and improving Busan railway station without inventing as-built interiors",
+  "scopeBoundary": {
+    "facilityCount": 3,
+    "newPrimaryPagesUsed": 8,
+    "maxPrimaryPages": 10,
+    "newDownloadBytes": 158354,
+    "maxDownloadBytes": 31457280,
+    "excluded": [
+      "Busan metro station 113",
+      "accounts, paid sources, access-control bypass, map-tile scraping, and unsupported APIs",
+      "Unity or application edits",
+      "as-built room geometry inferred from generic fire-station practice",
+      "station-specific fleet counts not explicitly published"
+    ],
+    "evidenceRule": "Source facts constrain geometry and functions; they do not become requirements or acceptance evidence by themselves. OSM is community geometry, not a survey. Photo observations remain view-limited."
+  },
+  "photoReceipt": "asset-library/research-public/2026-09-21/building-restoration/photo-receipts.json",
+  "facilities": [
+    {
+      "id": "busan-jungbu-central-119",
+      "label": "중앙119안전센터 / 부산 중부소방서",
+      "officialAddress": "부산광역시 중구 중앙대로 110(중앙동4가)",
+      "sourcePages": [
+        "https://119.busan.go.kr/jungbu/119jbintro01",
+        "https://119.busan.go.kr/jungbu/119jbinfo04",
+        "https://www.openstreetmap.org/way/825455699"
+      ],
+      "geometry": {
+        "osmWay": 825455699,
+        "osmTimestamp": "2025-02-05T02:58:57Z",
+        "localSource": "asset-library/space-references/busan-reconstruction/busan-openworld.json",
+        "localCoordinateOriginWgs84": [35.1151, 129.0417],
+        "localFootprintMeters": [[-428.654,-870.823],[-471.525,-855.194],[-480.385,-891.606],[-463.621,-897.896],[-456.054,-872.916],[-430.265,-883.391],[-428.654,-870.823]],
+        "calculatedFromLocalPolygon": {
+          "areaSquareMetersApprox": 1022.8,
+          "perimeterMetersApprox": 167.6,
+          "axisAlignedExtentMeters": [51.7, 42.7]
+        },
+        "levels": {
+          "value": 4,
+          "evidence": "OSM building:levels=4; official exterior photo is visually compatible with a ground apparatus tier plus upper horizontal facade tiers",
+          "confidence": "medium_cross_source",
+          "doNotInfer": "No measured floor-to-floor height or total height is published"
+        },
+        "roof": {
+          "observed": "flat or very low-slope roof behind a parapet; rooftop equipment and a striped mast are visible",
+          "tagged": false
+        }
+      },
+      "photos": [
+        "asset-library/research-public/2026-09-21/building-restoration/central119-exterior-front.JPG",
+        "asset-library/research-public/2026-09-21/building-restoration/central119-secondary-view.jpg"
+      ],
+      "observedFacadeAndApproach": [
+        "Front facade faces a paved apparatus apron and a road directly beyond it.",
+        "Three large ground-level apparatus openings are visually distinct; this is an opening count, not a vehicle-capacity or assigned-fleet count.",
+        "White/silver rectilinear cladding, red frame accents, long upper window bands, and fire-service signage are directly visible.",
+        "Photo is front-oblique/aerial and does not prove the rear or both side elevations."
+      ],
+      "interiorTopology": {
+        "directlyObserved": ["one open-plan operations/office room", "workstation clusters", "central meeting table", "perimeter windows", "wall information boards"],
+        "notLocated": ["floor number", "room dimensions", "connection to apparatus floor", "stairs, lift, dormitory, kitchen, lockers, decontamination, storage"],
+        "builderUse": "May create one generic operations room as reference-derived function with inferred location; must label all adjacency, dimensions, and unseen support rooms INFERRED_GAMEPLAY."
+      }
+    },
+    {
+      "id": "busan-jungbu-choryang-119",
+      "label": "초량119안전센터",
+      "officialAddress": "부산광역시 동구 중앙대로260번길 7(초량동)",
+      "sourcePages": [
+        "https://119.busan.go.kr/jungbu/119jbintro05",
+        "https://www.openstreetmap.org/way/825456385"
+      ],
+      "geometry": {
+        "osmWay": 825456385,
+        "osmTimestamp": "2026-09-04T03:10:25Z",
+        "identityBasis": "OSM polygon has the exact official city, district, street, house number, subdistrict and postcode but no facility name",
+        "localSource": "asset-library/space-references/busan-reconstruction/busan-openworld.json",
+        "localCoordinateOriginWgs84": [35.1151, 129.0417],
+        "localFootprintMeters": [[126.017,531.876],[123.887,527.2],[126.227,522.525],[142.426,515.901],[147.589,518.718],[152.652,529.839],[148.345,531.798],[144.557,523.46],[126.017,531.876]],
+        "calculatedFromLocalPolygon": {
+          "areaSquareMetersApprox": 231.6,
+          "perimeterMetersApprox": 80.2,
+          "axisAlignedExtentMeters": [28.8, 16.0]
+        },
+        "levels": {
+          "value": 5,
+          "evidence": "OSM building:levels=5; official exterior crop shows multiple occupied tiers but does not show the entire top edge clearly",
+          "confidence": "medium_address_matched_osm",
+          "doNotInfer": "No measured floor-to-floor height or total height is published"
+        },
+        "roof": {
+          "observed": "not visible in the official crop",
+          "tagged": false
+        }
+      },
+      "photos": [
+        "asset-library/research-public/2026-09-21/building-restoration/choryang119-exterior-front.jpg",
+        "asset-library/research-public/2026-09-21/building-restoration/choryang119-secondary-view.jpg"
+      ],
+      "observedFacadeAndApproach": [
+        "At least three apparatus-frontage modules/openings are visible on the street facade; the leftmost is partly cropped.",
+        "Ground tier uses brown brick/stone facing; upper tiers use light rectangular panels with punched windows and several wall-mounted air-conditioning units.",
+        "A narrow glazed vertical strip is visible near the right side, but its circulation function is not established.",
+        "The image does not establish rear access, side-yard width, roof form, or a complete bay count."
+      ],
+      "interiorTopology": {
+        "directlyObserved": ["one open-plan operations/office room", "shared desk rows", "desktop displays", "windows along one wall", "wall information boards"],
+        "notLocated": ["floor number", "room dimensions", "connection to apparatus floor", "stairs, lift, dormitory, kitchen, lockers, decontamination, storage"],
+        "builderUse": "May create one generic operations room as reference-derived function with inferred location; must label all adjacency, dimensions, and unseen support rooms INFERRED_GAMEPLAY."
+      }
+    },
+    {
+      "id": "busan-railway-station",
+      "label": "부산 철도역 (KTX/SRT)",
+      "explicitExclusion": "도시철도 부산역 113",
+      "officialAddress": "부산광역시 동구 중앙대로 206",
+      "sourcePages": [
+        "https://www.korail.com/ticket/train/stationGuide/station/view?stationSeq=10279506",
+        "https://www.korail.com/com/userStation.do?mode=view&stationSeq=10279506&floor=",
+        "https://www.openstreetmap.org/way/165346389"
+      ],
+      "geometry": {
+        "osmWay": 165346389,
+        "osmTimestamp": "2025-08-12T15:28:18Z",
+        "localSource": "asset-library/space-references/busan-reconstruction/osm-busan-geometry.json",
+        "tags": {"building":"train_station","building:levels":"3","layer":"2"},
+        "calculatedFromOsmPolygon": {
+          "areaSquareMetersApprox": 37635.7,
+          "perimeterMetersApprox": 1074.9,
+          "axisAlignedEastWestExtentMetersApprox": 253.7,
+          "axisAlignedNorthSouthExtentMetersApprox": 352.4,
+          "calculation": "equirectangular local approximation at latitude 35.1"
+        },
+        "criticalInterpretation": "The polygon spans the elongated station/platform-roof complex. Do not treat its full area as the western public headhouse floor plate or extrude it as one uniform three-storey block.",
+        "levels": {
+          "value": 3,
+          "evidence": "OSM building:levels=3 plus the photographed on-site convenience map explicitly labels 1F, 2F and 3F",
+          "confidence": "medium_cross_source",
+          "doNotInfer": "No measured floor heights, structural grid, or complete platform geometry"
+        },
+        "roof": {
+          "observed": "broad shallow curved/cantilevered roof with a dark edge and repeated inclined supports over the glazed western facade",
+          "tagged": false
+        }
+      },
+      "photos": [
+        "asset-library/space-references/source-downloads/rail-station.jpg",
+        "asset-library/space-references/source-downloads/rail-parking.jpg",
+        "asset-library/space-references/source-downloads/rail-floor-15055271.jpg",
+        "asset-library/space-references/source-downloads/rail-floor-15055301.jpg",
+        "asset-library/space-references/source-downloads/rail-floor-15055316.jpg",
+        "asset-library/space-references/floorplan-sources/busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg"
+      ],
+      "observedFacadeAndApproach": [
+        "Official Korail photo provides a near-frontal western facade view with a broad plaza, multiple stair runs, central entrance canopy, extensive curtain wall, and glazed vertical circulation structures near facade edges.",
+        "Official parking/context image distinguishes the western station-front side from track-side 선상A, 선상B and 북항 parking zones.",
+        "No bounded official side or rear elevation photo was found; the front photo and OSM footprint are insufficient to recreate hidden elevations exactly."
+      ],
+      "interiorTopology": {
+        "source": "asset-library/space-references/floorplan-sources/busan-rail-1f-2f-3f-facilities-guide-unofficial.jpg",
+        "sourceClass": "photograph of a station convenience-facility board from an unofficial post; the board itself appears on-site but date, scale and rights are unknown",
+        "directlyVisibleRelations": [
+          "1F is a public floor with a specialty-restaurant zone, toilets, elevators/escalators and baggage/retail uses.",
+          "2F is the main concourse: ticket windows and railway police are on the front/curved side; a central information area and multiple signed track-access directions are shown; toilets, elevators and escalators repeat across the concourse.",
+          "3F is a smaller partial floor centered on a specialty-restaurant zone with toilets and elevator/escalator access.",
+          "Vertical circulation appears in several clusters rather than one central core."
+        ],
+        "officialFacilityApiConstraint": "Korail floor API records and the three retained 1F/2F/3F images prove floor-labelled public amenities, but those images are shop photos, not plans.",
+        "builderUse": "Use only floor membership, broad public-function zones, track-access directionality, and repeated vertical-circulation hubs. Keep wall lengths, room shapes, structural elements, service rooms, platform detail and emergency routes INFERRED_GAMEPLAY. Never derive dimensions from pixels."
+      }
+    }
+  ],
+  "apparatusRoleEvidence": {
+    "source": "https://119.busan.go.kr/jungbu/119jbinfo04",
+    "sourceUpdated": "2026-06-23",
+    "scope": "중부소방서 aggregate across headquarters, five safety centers and one rescue unit; not station assignment",
+    "publishedTotalVehicles": 39,
+    "roleTypesRelevantToBuilder": [
+      {"role":"pump","publishedType":"펌프차","aggregateCount":7},
+      {"role":"ems","publishedType":"구급차","aggregateCount":7},
+      {"role":"water_tanker","publishedType":"탱크차","aggregateCount":3},
+      {"role":"articulated_aerial","publishedType":"굴절사다리차","aggregateCount":1},
+      {"role":"aerial_ladder","publishedType":"고가사다리차","aggregateCount":1},
+      {"role":"heavy_rescue","publishedType":"구조공작차","aggregateCount":1},
+      {"role":"multipurpose_rescue","publishedType":"다목적구조차","aggregateCount":2},
+      {"role":"command","publishedType":"지휘차","aggregateCount":2},
+      {"role":"chemical","publishedType":"화학차","aggregateCount":1},
+      {"role":"safety_support","publishedType":"생활안전차","aggregateCount":1}
+    ],
+    "implementationBoundary": "These published types justify a scalable role taxonomy. They do not justify assigning any count or specific vehicle to 중앙119 or 초량119. Low-resolution exterior photos show parked vehicles but do not reliably classify or inventory them."
+  },
+  "acquisitionLimits": [
+    "Only one public official exterior angle per depot was available on the designated Busan Fire pages; secondary images are interior operations rooms, not side elevations.",
+    "No official measured plans, floor heights, bay dimensions, rear elevations, or room adjacency diagrams were found for either fire facility.",
+    "Korail station page currently may return a service-guidance shell; retained official files are hashed and their original URLs recorded.",
+    "The station convenience board is useful for topology only and is not an official downloadable floor plan.",
+    "All calculated areas and extents are pipeline measurements from OSM polygons and must remain approximate reference geometry.",
+    "No claim in this graph constitutes digital-twin, as-built, current-fleet, or product acceptance."
+  ]
+}

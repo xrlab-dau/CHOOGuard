@@ -1,0 +1,84 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "status": "source_complete_focused_probe_pass",
+  "nodes": [
+    {
+      "id": "contract",
+      "source": ".planning/2026-09-20-integrated-build/hazard-field-contract.json",
+      "format": "61x41 native nodes at0.5m; float32 LE row-major yx; nested hazardField; capability source/deck hashes + native_nodes_nearest_v1"
+    },
+    {
+      "id": "worker",
+      "files": [
+        "workers/physics/worker.py"
+      ],
+      "implementation": "Local NativeNodeSampler uses actual mesh arrays for all six quantities and existing actual nonuniform nearest timestamps. Original pinned modules and FDS outputs unchanged. Frame bytes are transposed native data; cached by actual frame index, requested incidentTime refreshed. Ordinary/resolved payload null. Fire inputDigest includes samplerVersion; crowd digest structure unchanged."
+    },
+    {
+      "id": "bridge",
+      "files": [
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs"
+      ],
+      "implementation": "Public MvpHazardFieldFrame and TryDecodeHazardField(frame,out float[],out string). Validate fixed geometry/units/encoding/finite nonnegative values/bounds/SHA before delivery. Instance additionally validates capabilities source/deck hashes and current result incident time. Missing current fire field rejected."
+    },
+    {
+      "id": "probe",
+      "files": [
+        "workers/physics/hazard_field_probe.py"
+      ],
+      "receipt": ".planning/2026-09-20-integrated-build/hazard-field-probe-receipt.json",
+      "status": "PASS",
+      "scope": "Actual source arrays, all four golden times,54 points/frame (50 actual seeded initial citizen positions +4 reference probes), exact raw float parity,6 negative cases, actual worker capability/ordinary/onset wireframe. Live line25686bytes<65536."
+    },
+    {
+      "id": "numerical-migration",
+      "summary": "Native coordinates change18/54 sampled points at30/60/120. Max absolute extinction difference0.1076928824,0.0278277993,0.0402305126 1/m respectively. Previous fire dose/outcome receipts remain legacy; these are point differences, not new dose validation."
+    },
+    {
+      "id": "root-validation",
+      "remaining": [
+        "Unity C# compile",
+        "C# decoder malformed payload runtime negatives",
+        "Native field renderer position/time/data integration"
+      ],
+      "limits": "No 3D smoke use or claim; .s3d display codes excluded. No clinical/site calibration,CFD regeneration,Editor or scene edit. Crowd flow not rerun."
+    },
+    {
+      "id": "unity-optional-dto-fix",
+      "cause": "Root actual Unity JsonUtility.FromJson materializes hazardField:null and omitted hazardField as a nonnull wholly-default MvpHazardFieldFrame, causing inactive ordinary response rejection.",
+      "fix": "Bridge public static NormalizeOptionalHazardField runs before active/inactive field validation; normalizes only fieldCurrent=false and every DTO field exactly default (all strings null, all numbers zero). Populated inactive DTO remains rejected. Active default/malformed DTO remains rejected by existing checks.",
+      "verification": "Source-only narrow fix per root direction; no Unity call or test suite. Root native negative probe can call NormalizeOptionalHazardField directly.",
+      "files": [
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs"
+      ],
+      "status": "frozen_for_root_native_recheck"
+    }
+  ],
+  "edges": [
+    {
+      "from": "contract",
+      "to": "worker",
+      "relation": "implemented"
+    },
+    {
+      "from": "contract",
+      "to": "bridge",
+      "relation": "implemented"
+    },
+    {
+      "from": "probe",
+      "to": "worker",
+      "relation": "focused_runtime_evidence"
+    },
+    {
+      "from": "numerical-migration",
+      "to": "root-validation",
+      "relation": "prevents_reusing_old_fire_outcomes"
+    },
+    {
+      "from": "unity-optional-dto-fix",
+      "to": "bridge",
+      "relation": "adapts_verified_Unity_deserialization_semantics"
+    }
+  ]
+}

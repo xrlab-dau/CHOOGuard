@@ -1,0 +1,216 @@
+{
+  "schema": "chooguard.operations-v2-implementation",
+  "status": "implementation_frozen_pending_root_native",
+  "files": [
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs",
+      "sha256": "13a6edadbf1d5f3344f2a280aa2eda439c0b511a79d6fd7d6aedff43b70b664a"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchView.cs",
+      "sha256": "ab782a1cee707e0cf2664574ef87acda287320b3d1e02f6765025dd85e82cf1b"
+    },
+    {
+      "path": "Assets/ChooGuard/Editor/MvpAgencyDispatchBuilder.cs",
+      "sha256": "aa45fe1c0221564b70cc62e2149feb2b53e283b6f9ed6ad7577fcc1462e2b5fa"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpTeamTaskController.cs",
+      "sha256": "3000ad1721392f6b4b3c0623404dfcb177f1d2e28b586a1c94a03fe7de593198"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpWorkspace.cs",
+      "sha256": "b313ec5bab673b049f6ded5a6c54661a35d530c15001535e276597ee3750c410"
+    },
+    {
+      "path": "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+      "sha256": "530a61e90a36f7a88321d8c45c459b61783c9a898610ce8b63d5c76d5a43329d"
+    },
+    {
+      "path": "art/world/prepare_agency_routes.py",
+      "sha256": "7f13d906d6f1e029cfc604326ce4ebe7a8e40a00c877f20386c851b9b428a277"
+    },
+    {
+      "path": "Assets/ChooGuard/Art/AgencyDispatch/agency-routes.json",
+      "sha256": "6db093871ebc11fc57bfab9998a28d529146dfe4727a1a7629705b318a42f3d5"
+    },
+    {
+      "path": "Assets/ChooGuard/Art/AgencyDispatch/agency-catalog.json",
+      "sha256": "10f692dcd7e297f39934b1c1bf8a6312e76b302ff1e18d51ed6e4e38d5d18a09"
+    }
+  ],
+  "catalog": {
+    "sourceHashes": {
+      "asset-library/space-references/busan-reconstruction/agency-catalog.json": "10f692dcd7e297f39934b1c1bf8a6312e76b302ff1e18d51ed6e4e38d5d18a09",
+      "asset-library/space-references/busan-reconstruction/osm-busan-openworld.xml": "156897dcccedbf979f5e818f3c7549d7ad36ec3e31b179d9d3861048f0760c64",
+      "asset-library/space-references/busan-reconstruction/busan-openworld.json": "2823972475d21f2872087f52b62a6e7b52ef0289018edf838cc5fe20de493f04",
+      "art/world/world-layers.json": "a59dea1362bff558d6fb295de92609667cec3f10aab828f5c7596344a0ebb625",
+      "art/world/building-depot-placement-receipt.json": "2e761953e3e210be7f28dae13a1953ef168cdf88d3a5164319bc18926d743172"
+    },
+    "logicalTeams": [
+      {
+        "id": "central119-evacuation-response",
+        "agencyId": "busan-jungbu-central-119",
+        "label": "대피 대응팀",
+        "memberCount": 2,
+        "visual": "fire",
+        "workTypes": [
+          "evacuation-support"
+        ]
+      },
+      {
+        "id": "central119-evacuation-relief",
+        "agencyId": "busan-jungbu-central-119",
+        "label": "대피 지원팀",
+        "memberCount": 1,
+        "visual": "fire",
+        "workTypes": [
+          "evacuation-support"
+        ]
+      },
+      {
+        "id": "central119-medical-support",
+        "agencyId": "busan-jungbu-central-119",
+        "label": "의료 지원팀",
+        "memberCount": 1,
+        "visual": "ambulance",
+        "workTypes": [
+          "medical-support"
+        ]
+      },
+      {
+        "id": "choryang119-evacuation-response",
+        "agencyId": "busan-jungbu-choryang-119",
+        "label": "대피 대응팀",
+        "memberCount": 2,
+        "visual": "fire",
+        "workTypes": [
+          "evacuation-support"
+        ]
+      },
+      {
+        "id": "choryang119-evacuation-relief",
+        "agencyId": "busan-jungbu-choryang-119",
+        "label": "대피 지원팀",
+        "memberCount": 1,
+        "visual": "fire",
+        "workTypes": [
+          "evacuation-support"
+        ]
+      },
+      {
+        "id": "choryang119-medical-support",
+        "agencyId": "busan-jungbu-choryang-119",
+        "label": "의료 지원팀",
+        "memberCount": 1,
+        "visual": "ambulance",
+        "workTypes": [
+          "medical-support"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "id": "evacuation-support",
+        "label": "대피 지원",
+        "channel": "fire-1",
+        "automaticReturn": true,
+        "actions": [
+          "warn",
+          "evacuate"
+        ]
+      },
+      {
+        "id": "medical-support",
+        "label": "의료 지원",
+        "channel": "medical-1",
+        "automaticReturn": false,
+        "actions": [
+          "medical"
+        ]
+      }
+    ],
+    "targetIds": [
+      "busan-station-reference"
+    ],
+    "renderedMembers": 8,
+    "depotGroundingReady": true
+  },
+  "routes": [
+    {
+      "id": "busan-jungbu-central-119:outbound",
+      "available": true,
+      "distanceMeters": 1044.607,
+      "roadDistanceMeters": 1000.133,
+      "connectorMeters": 42.937
+    },
+    {
+      "id": "busan-jungbu-central-119:return",
+      "available": true,
+      "distanceMeters": 1337.273,
+      "roadDistanceMeters": 1292.25,
+      "connectorMeters": 42.937
+    },
+    {
+      "id": "busan-jungbu-choryang-119:outbound",
+      "available": true,
+      "distanceMeters": 1638.505,
+      "roadDistanceMeters": 1581.177,
+      "connectorMeters": 55.578
+    },
+    {
+      "id": "busan-jungbu-choryang-119:return",
+      "available": true,
+      "distanceMeters": 915.476,
+      "roadDistanceMeters": 859.498,
+      "connectorMeters": 55.578
+    }
+  ],
+  "api": {
+    "initialize": "MvpAgencyDispatchBuilder.EditorBindExisting(); Controller.Initialize()",
+    "request": "RequestWork(agencyId,workType,targetId,requestId=null,reinforcement=false) bool + LastReason/LastOperationId",
+    "mouse": "SelectAgency(id) no focus; BeginTargetSelection(agencyId,workType,reinforcement=false); TrySelectWorld(Ray) returns consumed; CancelTargetSelection; ProcessWorldInput consumes old pointer handlers",
+    "teamSelection": "SelectOperationalTeam(logicalTeamId) no focus; SelectedOperationalTeamId; MissionSnapshots",
+    "tracking": "FocusVehicle(logicalTeamId) calls BeginFollow once; Station.Navigation.EndFollow",
+    "withdrawal": "CancelOperation(teamId) before departure only; RequestReturn(teamId) rejects active work/outcome; ConfirmMedicalHandoffAndReturn(teamId) only HandoffPending",
+    "proof": "MissionSnapshots member positions/count/state/stage/operation/lastCompletedOperation/channel; TeamTasks.IsOperationActionComplete(operationId,action); Director.Events",
+    "automation": "accepted Director.Receive → movement; own TaskController.Observe → phase update → ObserveAcceptedResult. Channels fire-1/medical-1 automatically leased to exact operation/agency/logical team."
+  },
+  "nativeProbeInstructions": [
+    "Native corrected building receipt already ingested. Root compile and MvpAgencyDispatchBuilder.EditorBindExisting(); runtime artifact version2 has actual model bounds + garage/apron/street connectors.",
+    "StartCrowdSession(271828); settle pause and request Central evacuation-support, Central medical-support, Choryang evacuation-support at target busan-station-reference with distinct request IDs. Snapshot should show3 independent jobs/4 active members, total6 teams/8 members.",
+    "Repeat same request ID: same LastOperationId/no extra job; wrong target/team/agency rejected; explicit reinforcement chooses available evacuation-relief.",
+    "Verify pending invalid world click consumed without cohort or right-click command; cancellation consumes right press/release; selecting facility/vehicle does not focus.",
+    "Cancel a Requested team before departure; same request ID must reject as canceled, new ID may start new work without abandoned departure delay. Queued departures are repacked preserving already-departed headway.",
+    "Resume accepted clock; observe shared progress+18m member headway and departure scheduling; first-on-site team leases fire channel; other fire group waits or returns if outcome already resolved.",
+    "BeginIncident when ready or allow configured onset. Observe own warn ACK then evacuate ACK; await actual allEvacuated; automatic return releases lease and ends Ready with LastCompletedOperationId.",
+    "Medical own medical ACK must enter HandoffPending without patient cure/transfer claim, remain pending until ConfirmMedicalHandoffAndReturn; active work withdrawal rejected.",
+    "Reset clears all jobs/leases/ACKs/pending target and restores parking; actual transforms frozen once pause settled."
+  ],
+  "limits": [
+    "Six operational teams and eight visual members are authored initial training allocations, not real fleet counts or a runtime cap",
+    "Published regional fleet counts are not per-center assignments",
+    "8 m/s travel,18m member headway,8s group departure headway are design assumptions",
+    "Representative building/station road connectors and parking offsets are authored, not verified garage entrances",
+    "Only ground-level public motor roads; bridge/tunnel/nonzero layer/conditional restrictions excluded",
+    "OSM turn restrictions are not modeled; training geometry, not legal navigation",
+    "Each group owns one shared road progress and task; members have no independent task brains",
+    "One supported target: station building selection maps to the30x20m reference hall. Multiple facility-owned teams may hold independent road jobs; shared onsite fire/medical channels are exclusive leases.",
+    "One active job per group; duplicate same target does not build a pointless busy-team backlog. Internal queue is not a general reorder/deep queue UI.",
+    "Garage parking and bay→apron→street connectors use inferred/source-authored placement receipt, including nonsurveyed elevation transition. Four member slots include a second depth row; not observed capacity.",
+    "Known police/hospital institutions are location-only future capabilities. Medical support operates from response facilities; no hospital dispatch fallback.",
+    "Medical ACK is a request receipt only. Evacuation resolution never cancels waiting medical support; recovery can still produce medical ACK/HandoffPending. Explicit user termination does not prove clinical handoff/recovery.",
+    "No Unity/runtime acceptance claim by this lane; root owns native proof."
+  ],
+  "validation": {
+    "pythonSyntax": "PASS",
+    "ownedDiffWhitespace": "PASS",
+    "unityCompile": "PENDING root",
+    "nativeOperations": "PENDING root",
+    "sourceCatalogRoutes": "PASS six IDs/eight members, four distinct parking starts per base, independent directed outbound/return endpoints, receipt grounding true"
+  },
+  "reviewFixes": {
+    "medicalRecovery": "Resolved early-return gated by task.automaticReturn; medical continues to request ACK and honest pending state",
+    "cancellation": "Canceled operation IDs retained; same-key retry rejects current canceled status; duplicate aliases preserved; pending departures repacked after cancellation without phantom reservation"
+  }
+}

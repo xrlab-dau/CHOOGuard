@@ -1,0 +1,38 @@
+{
+  "success": true,
+  "command": "command eval",
+  "data": {
+    "command": "eval",
+    "parameters": {
+      "code": "var s=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpStationView>();s.SetFloor(0);return new {teams=s.Teams.Length,skins=s.Teams.Select(t=>t.GetComponentsInChildren<UnityEngine.SkinnedMeshRenderer>(true).Select(r=>UnityEditor.AssetDatabase.GetAssetPath(r.sharedMesh)).Distinct().ToArray()).ToArray(),errorShaders=s.GetComponentsInChildren<UnityEngine.Renderer>(true).SelectMany(r=>r.sharedMaterials).Where(m=>m==null||m.shader.name==\"Hidden/InternalErrorShader\").Count()};"
+    },
+    "result": {
+      "output": null,
+      "diagnostics": [],
+      "success": true,
+      "result": {
+        "teams": 3,
+        "skins": [
+          [
+            "Assets/ChooGuard/Art/ResponseSet/CrewOperations.fbx"
+          ],
+          [
+            "Assets/ChooGuard/Art/ResponseSet/CrewFire.fbx"
+          ],
+          [
+            "Assets/ChooGuard/Art/ResponseSet/CrewMedical.fbx"
+          ]
+        ],
+        "errorShaders": 0
+      }
+    },
+    "target": {
+      "host": "127.0.0.1",
+      "port": 7800,
+      "projectPath": "/Users/um-yunsang/CHOOGuard"
+    },
+    "success": true
+  },
+  "errors": [],
+  "warnings": []
+}

@@ -1,0 +1,200 @@
+{
+  "id": "CS-SIM.05",
+  "epicId": "CS-SIM",
+  "title": "공동시간·불확도·가속·정직한 복구",
+  "scope": "IMPLEMENTATION",
+  "artifact": {
+    "id": "A-CS-SIM.05",
+    "description": "선택한 worker들이 같은 경계에서 작동하는 결합과 model qualification",
+    "status": "NOT_PRODUCED",
+    "ownerTask": "CS-SIM.05",
+    "producesStages": [
+      "contract",
+      "candidate",
+      "integration",
+      "qualification"
+    ],
+    "outputs": [
+      {
+        "stage": "contract",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.05.contract"
+      },
+      {
+        "stage": "candidate",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.05.candidate"
+      },
+      {
+        "stage": "integration",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.05.integration"
+      },
+      {
+        "stage": "qualification",
+        "status": "NOT_PRODUCED",
+        "id": "A-CS-SIM.05.qualification"
+      }
+    ]
+  },
+  "plannedFiles": [
+    "Assets/ChooGuard/Simulation/CosimulationCoordinator.cs",
+    "Assets/ChooGuard/Simulation/QuantityOwnership.cs",
+    "Assets/ChooGuard/Simulation/ModelQualification.cs",
+    "workers/hazard/surrogate_runner.py",
+    "benchmarks/coupling/protocol.json"
+  ],
+  "verificationFile": "Assets/ChooGuard/Tests/EditMode/SIM/Sim05Tests.cs",
+  "dependsOn": [
+    {
+      "taskId": "CS-SIM.01",
+      "artifactId": "A-CS-SIM.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-OPS.05",
+      "artifactId": "A-CS-OPS.05",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-LAB.01",
+      "artifactId": "A-CS-LAB.01",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "ALWAYS"
+    },
+    {
+      "taskId": "CS-SIM.02",
+      "artifactId": "A-CS-SIM.02",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "PEDESTRIAN_USED"
+    },
+    {
+      "taskId": "CS-SIM.03",
+      "artifactId": "A-CS-SIM.03",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "TRAFFIC_USED"
+    },
+    {
+      "taskId": "CS-SIM.04",
+      "artifactId": "A-CS-SIM.04",
+      "stage": "candidate",
+      "consumerStage": "integration",
+      "condition": "HAZARD_USED"
+    }
+  ],
+  "algorithm": [
+    "run에서 사용하는 worker만 참여시켜 시간·단위·좌표·수량별 writer와 불연속 사건 동기화를 검사한다.",
+    "required worker 결과가 실패하면 경계를 commit하지 않는다. 복원이 안 되면 공통 유효 checkpoint/시작 상태부터 재계산한다.",
+    "선택적 ROM/PhysicsNeMo 후보는 기준·관측·독립 형상에서 장기 roll-out·보존량·OOD를 검사한다. 가속모델이 없다는 이유로 필수 reference 경로를 삭제하지 않는다.",
+    "훈련/비교에 쓰는 QoI가 요구하는 현상만 설치하되, 중요한 물리를 제외하고 정확도 주장을 유지하지 않는다.",
+    "UI 배속과 독립인 정수 microsecond tick으로 교환 경계를 만든다. 각 참여 solver의 안정 step과 valid interval을 유지하며 fresh barrier를 모두 통과한 경계만 원자 게시한다.",
+    "문 변경 후 이전 inputDigest의 solver 결과는 거부한다. 실패시 모든 영향 worker를 마지막 공통 cut에 복원하거나 재실행하며 일부 전진 상태를 current로 쓰지 않는다."
+  ],
+  "contract": "CommittedBoundary {tick,sequence,inputs,fieldOwners,resultHashes,capabilities}; 독립 reference/모델 결과는 runtime schema와 별도로 qualification.",
+  "sourceIds": [
+    "STD-FMI",
+    "TECH-MAPANYTHING",
+    "TECH-PHYSICSNEMO"
+  ],
+  "acceptance": [
+    {
+      "id": "TEST-CS-SIM.05-P",
+      "given": "두 worker 동일 경계 ready",
+      "when": "co-sim publish",
+      "then": "single committed boundary",
+      "status": "NOT_RUN"
+    },
+    {
+      "id": "TEST-CS-SIM.05-N",
+      "given": "worker1전진,worker2실패",
+      "when": "co-sim publish",
+      "then": "NO_PARTIAL_PUBLISH; 공통cut 복원",
+      "status": "NOT_RUN"
+    }
+  ],
+  "status": "SPECIFIED_NOT_IMPLEMENTED",
+  "assignee": null,
+  "blockingUnknowns": [],
+  "requirementIds": [
+    "REQ-035",
+    "REQ-046",
+    "REQ-047",
+    "REQ-048",
+    "REQ-049"
+  ],
+  "contextPaths": [
+    "PRODUCT_BASELINE.md",
+    "CONTRACTS.md",
+    "specs/05-worker-and-cosimulation.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "unitDevelopmentRule": "prepare에서 고정 계약을 읽고 candidate에서 명시적 test double로 구현한다. integration은 선택 profile의 활성 실제 산출물을 요구한다. qualification은 주장 범위별 독립 증거를 요구한다.",
+  "plannedCodeStatus": "이 경로와 심볼은 구현 대상이며 현재 생성·컴파일된 제품 코드가 아니다.",
+  "acceptanceState": "NOT_RUN",
+  "externalInputs": [
+    {
+      "type": "FIELD_DATA_AND_INDEPENDENT_REFERENCE",
+      "requiredFor": "NAMED_SITE_QUANTITATIVE_OR_FIELD_CLAIM",
+      "status": "NOT_VERIFIED_IN_NEW_BASELINE",
+      "effect": "해당 주장/검수만 제한하며 기술 fixture 개발을 전역 차단하지 않는다."
+    }
+  ],
+  "implementationSpecRefs": [
+    "specs/05-worker-and-cosimulation.md",
+    "specs/04-checkpoint-and-comparison.md",
+    "specs/12-evidence-and-performance.md"
+  ],
+  "supportsRequirementIds": [
+    "REQ-035",
+    "REQ-046",
+    "REQ-047",
+    "REQ-048",
+    "REQ-049"
+  ],
+  "testTargets": [
+    {
+      "kind": "EDIT_MODE",
+      "path": "Assets/ChooGuard/Tests/EditMode/SIM/Sim05Tests.cs",
+      "state": "NOT_RUN"
+    },
+    {
+      "kind": "WORKER_INTEGRATION",
+      "path": "benchmarks/tests/CS-SIM.05.json",
+      "state": "NOT_RUN"
+    }
+  ],
+  "oracle": {
+    "fixtureNature": "SYNTHETIC_SPECIFICATION_NOT_FIELD_DATA",
+    "positiveInput": "두 worker 동일 경계 ready",
+    "operation": "co-sim publish",
+    "expectedPositive": "single committed boundary",
+    "negativeInput": "worker1전진,worker2실패",
+    "expectedNegative": "NO_PARTIAL_PUBLISH; 공통cut 복원",
+    "status": "NOT_RUN"
+  },
+  "definitionOfDone": {
+    "implementation": [
+      "exact created paths and new commit",
+      "all active candidate inputs identified",
+      "new tests execute with raw logs; no skipped-as-pass"
+    ],
+    "integration": [
+      "selected-profile dependencies consumed as real artifacts",
+      "contract + error/timeout/cancel + persistent state tests",
+      "required native Player or worker tests in testTargets"
+    ],
+    "qualification": [
+      "scope-specific inputs and independent evidence",
+      "unexecuted tests remain NOT_RUN",
+      "no inferred agency approval"
+    ]
+  }
+}

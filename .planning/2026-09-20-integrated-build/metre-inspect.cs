@@ -1,0 +1,6 @@
+var s=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpStationView>();
+var crew=new System.Collections.Generic.List<object>();
+foreach(var t in s.Teams){ var skins=t.GetComponentsInChildren<UnityEngine.SkinnedMeshRenderer>(true);if(skins.Length==0)continue;var b=skins[0].bounds;foreach(var skin in skins)b.Encapsulate(skin.bounds);crew.Add(new{name=t.name,height=b.size.y,width=b.size.x,minY=b.min.y-s.transform.position.y}); }
+var a=ChooGuard.App.Mvp.MvpStationView.ReferenceLocal(0,0);var b0=ChooGuard.App.Mvp.MvpStationView.ReferenceLocal(30,20);
+var ui=UnityEngine.Object.FindFirstObjectByType<ChooGuard.App.Mvp.MvpWorkspace>();
+return new{worldText=s.GetComponentsInChildren<TMPro.TMP_Text>(true).Length,uiText=ui.GetComponentsInChildren<TMPro.TMP_Text>(true).Length,sourceScale=ChooGuard.Editor.MvpWorldSurfaceBuilder.Read().sourceScale,crew=crew.ToArray(),referenceWidth=b0.x-a.x,referenceDepth=b0.z-a.z,origin=new[]{a.x,a.y,a.z},worldRootScale=s.transform.lossyScale.ToString(),saved=!s.gameObject.scene.isDirty};
