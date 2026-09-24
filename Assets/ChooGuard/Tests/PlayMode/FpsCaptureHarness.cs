@@ -3,6 +3,7 @@ using System.IO;
 using ChooGuard.App.Fps;
 using ChooGuard.App.Fps.Tutorial;
 using ChooGuard.App.Fps.Work;
+using ChooGuard.App.Fps.World;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -254,6 +255,73 @@ namespace ChooGuard.Tests.PlayMode
             yield return Shot("점검표-물러나서");
 
             Debug.Log("[캡처] 완료 · "+shot+" 장 · "+outDir);
+        }
+
+        // 승객이 실제로 걸어서 도착하는가. 단언만으로 "움직였다" 고 하지 않는다 —
+        // 오늘 렌더러가 켜져 있는데 화면에 없던 일이 있었다. 이동 중 프레임을 남긴다.
+        [UnityTest]
+        public IEnumerator 승객이_걸어서_도착한다()
+        {
+            if(UnityEngine.Application.isBatchMode)
+                Assert.Ignore("렌더링이 필요한 캡처 하네스다. 에디터로 실행하라.");
+
+            outDir=System.Environment.GetEnvironmentVariable("CHOO_CAPTURE_DIR");
+            if(string.IsNullOrEmpty(outDir))outDir=Path.Combine(Path.GetTempPath(),"choo-captures");
+            Directory.CreateDirectory(outDir);
+            shot=100;   // 튜토리얼 하네스와 파일 이름이 겹치지 않게 번호를 띄운다
+
+            SceneManager.LoadScene("FpsStation");
+            yield return null;yield return null;
+
+            responder=Object.FindFirstObjectByType<FirstPersonResponder>();
+            Assert.IsNotNull(responder,"플레이어가 없다");
+            var navigation=Object.FindFirstObjectByType<StationNavigation>();
+            Assert.IsNotNull(navigation,"길찾기 컴포넌트가 없다 — navmesh 를 굽지 않았다");
+            Assert.IsNotNull(navigation.NavData,"navmesh 데이터가 배선되지 않았다");
+            var passenger=Object.FindFirstObjectByType<PassengerAgent>();
+            Assert.IsNotNull(passenger,"승객이 배치되지 않았다");
+
+            responder.SetExternalInputMode(true);
+            Assert.IsTrue(responder.Resume(false),"재개하지 못했다");
+            yield return null;
+
+            // Start 가 목적지를 받아 출발시켰는지. 조용히 서 있으면 그것도 실패다.
+            Assert.AreEqual(PassengerStatus.MOVING,passenger.Status,
+                            "출발하지 못했다 · 이유=" + passenger.LastReason);
+            Debug.Log("[계측] 승객 출발 " + passenger.transform.position.ToString("F2")
+                      + " -> " + passenger.Destination.ToString("F2")
+                      + " · 꺾임 " + passenger.CornerCount + "개");
+
+            var origin=passenger.transform.position;
+            yield return Aim(passenger.transform.position+Vector3.up*.2f);
+            yield return Shot("승객-출발");
+
+            float waited=0f;bool captured=false;
+            while(passenger.Status==PassengerStatus.MOVING&&waited<90f)
+            {
+                waited+=Time.deltaTime;
+                if(!captured&&passenger.TravelledMetres>=6f)
+                {
+                    captured=true;
+                    yield return Aim(passenger.transform.position+Vector3.up*.2f);
+                    yield return Shot("승객-이동중");
+                }
+                yield return null;
+            }
+            yield return Aim(passenger.transform.position+Vector3.up*.2f);
+            yield return Shot("승객-"+passenger.Status);
+
+            Debug.Log("[계측] 승객 상태 " + passenger.Status + " · 이동 "
+                      + passenger.TravelledMetres.ToString("F1") + "m · 직선 "
+                      + Vector3.Distance(origin,passenger.transform.position).ToString("F1")
+                      + "m · 경과 " + waited.ToString("F1") + "초 · 이유=" + passenger.LastReason);
+
+            Assert.AreEqual(PassengerStatus.ARRIVED,passenger.Status,
+                            "도착하지 못했다 · 이동 " + passenger.TravelledMetres.ToString("F1")
+                            + "m · 이유=" + passenger.LastReason);
+            Assert.Greater(passenger.TravelledMetres,5f,"거의 움직이지 않았다");
+            Assert.Greater(Vector3.Distance(origin,passenger.transform.position),5f,
+                           "제자리에서 맴돌았다 — 이동 거리는 쌓였는데 위치가 그대로다");
         }
 
         // ── 보조 ────────────────────────────────────────────────────────
