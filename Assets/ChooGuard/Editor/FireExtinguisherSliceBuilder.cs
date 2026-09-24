@@ -246,6 +246,12 @@ namespace ChooGuard.EditorTools
                 if(p.TutorialTarget)tutorialTarget=inspectable;
             }
 
+            // 플레이어를 첫 점검 대상 앞에 세운다. 이걸 하지 않으면 소화기 12개는 좌표로 배치되는데
+            // 플레이어만 제자리에 남아, 2026-09-25 실측에서 시작 지점이 첫 설비에서 44.41m 떨어져
+            // 있었다. 시작 시야에는 빈 하늘만 있었고(15m 이내 렌더러 2,322개 중 5개) 그 방향으로
+            // 직진하면 11m 만에 벽이었다. 단말은 아래에서 플레이어 기준으로 놓이므로 순서가 중요하다.
+            PlacePlayerBefore(responder.transform,tutorialTarget,inspectables);
+
             // 세션·단말은 어느 유닛에도 속하지 않는 자체 루트에 둔다.
             var host=new GameObject(RootName);
             Undo.RegisterCreatedObjectUndo(host,"튜토리얼 세션 호스트");
@@ -379,6 +385,12 @@ namespace ChooGuard.EditorTools
             Undo.RegisterCreatedObjectUndo(anchor,"점검표 부착 지점 생성");
             anchor.transform.SetParent(root.transform,false);
             anchor.transform.localPosition=new Vector3(0,.26f,faceZ);
+            // 앞면이 바깥을 보게 돌려 둔다. Quad 는 한쪽 면만 그리고 보이는 면이 -Z 쪽이므로,
+            // 회전 없이 붙이면 보이는 면이 본체 안쪽을 향해 화면에서 완전히 사라진다.
+            // 2026-09-25 실측: 렌더러가 켜져 있고 isVisible 이 True 인데도 부착 전후 프레임의
+            // 상단 픽셀이 0 개 달랐다 — "렌더러가 있다" 와 "그려진다" 는 같은 말이 아니다.
+            // 방향을 앵커에 고정해 두면 AttachTag 는 계속 localRotation=identity 로 붙이면 된다.
+            anchor.transform.localRotation=Quaternion.Euler(0,180,0);
             inspectable.TagAnchor=anchor.transform;
 
             inspectable.Bind(tracker);
@@ -388,6 +400,109 @@ namespace ChooGuard.EditorTools
         // 점검표 원본. 비활성 템플릿으로 두고 부착할 때마다 복제한다.
         // 이전에는 InspectionTagPrefab 이 비어 있어 세션이 빈 GameObject 를 만들었고,
         // 렌더러가 없어 7단계를 끝내도 플레이어 눈에는 아무 변화가 없었다(2026-09-24 확인).
+        // 첫 점검 대상이 보이는 자리에 플레이어를 세운다.
+        //
+        // 자리를 계산 하나로 정하지 않고 여러 방향·거리를 실제로 재는 이유는, 소화기가 벽이나
+        // 벽감에 붙어 있어 앞뒤 공간이 제각각이기 때문이다. 실측(2026-09-25): BSN-CONC-FE-010 은
+        // 정면 2.0~2.5m 에서 역사 구조물이 시야를 막고 1.2~1.6m 에서는 몸이 낀다.
+        //
+        // 세 가지를 모두 만족해야 그 자리를 쓴다 — 바닥이 있을 것, 몸이 낄 곳이 아닐 것,
+        // 눈에서 판독면까지 시선이 막히지 않을 것. 지정된 대상 앞에 자리가 없으면 자리가 있는
+        // 다른 유닛 앞으로 물러서되, 어느 유닛이고 왜 그랬는지 크게 남긴다.
+        // 못 찾은 것을 조용히 아무 데나 놓으면 벽 속에서 시작하게 된다.
+        private static void PlacePlayerBefore(Transform player,FacilityInspectable preferred,
+                                              List<FacilityInspectable> all)
+        {
+            if(player==null){Debug.LogWarning("[슬라이스] 플레이어가 없어 시작 지점을 옮기지 않습니다.");return;}
+            Physics.SyncTransforms();
+
+            var order=new List<FacilityInspectable>();
+            if(preferred!=null)order.Add(preferred);
+            if(all!=null)foreach(var f in all)if(f!=null&&f!=preferred)order.Add(f);
+            if(order.Count==0){Debug.LogWarning("[슬라이스] 점검 대상이 없어 시작 지점을 옮기지 않습니다.");return;}
+
+            var report=new System.Text.StringBuilder();
+            foreach(var target in order)
+            {
+                if(TryStandingSpot(target,report,out var feet,out var detail))
+                {
+                    player.position=feet;
+                    var look=target.transform.position-feet;look.y=0;
+                    if(look.sqrMagnitude>.0001f)player.rotation=Quaternion.LookRotation(look.normalized,Vector3.up);
+                    if(target==preferred)
+                        Debug.Log("[슬라이스] 시작 지점 · "+feet.ToString("F2")+" · "+target.SerialNumber+" "+detail);
+                    else
+                        Debug.LogWarning("[슬라이스] 지정 대상 "+(preferred==null?"없음":preferred.SerialNumber)
+                                         +" 앞에 설 자리가 없어 "+target.SerialNumber+" 앞에서 시작합니다 · "
+                                         +feet.ToString("F2")+" "+detail
+                                         +"\n지정 대상의 배치를 확인하세요. 시도 내역:"+report);
+                    return;
+                }
+            }
+            Debug.LogError("[슬라이스] 어느 설비 앞에도 설 자리를 찾지 못해 시작 지점을 그대로 둡니다."
+                           +" 시도 내역:"+report);
+        }
+
+        // 한 설비 앞에서 설 수 있는 자리를 찾는다. 정면을 우선하되 막히면 좌우로 틀고 반대편까지 본다.
+        private static bool TryStandingSpot(FacilityInspectable target,System.Text.StringBuilder report,
+                                            out Vector3 feet,out string detail)
+        {
+            feet=Vector3.zero;detail="";
+            if(target==null)return false;
+            var plate=target.Point("serial")?.Surface;
+            if(plate==null){report.Append("\n  "+target.SerialNumber+" · 판독면 없음");return false;}
+            var front=target.transform.forward;front.y=0;
+            if(front.sqrMagnitude<.0001f){report.Append("\n  "+target.SerialNumber+" · 정면을 알 수 없음");return false;}
+            front.Normalize();
+
+            const float radius=.28f,height=1.72f,eye=1.60f;
+            foreach(var yaw in new[]{0f,25f,-25f,50f,-50f,180f})
+            foreach(var distance in new[]{2.2f,1.8f,1.4f,1.1f,.9f})
+            {
+                var facing=Quaternion.Euler(0,yaw,0)*front;
+                var spot=target.transform.position+facing*distance;
+                var label="\n  "+target.SerialNumber+" · "+yaw.ToString("F0")+"° "+distance.ToString("F1")+"m · ";
+
+                if(!Physics.Raycast(spot+Vector3.up*2.5f,Vector3.down,out var floor,8f,~0,QueryTriggerInteraction.Ignore))
+                {report.Append(label+"바닥 없음");continue;}
+                var candidate=floor.point;
+                if(Physics.CheckCapsule(candidate+Vector3.up*(radius+.05f),candidate+Vector3.up*(height-radius),
+                                        radius,~0,QueryTriggerInteraction.Ignore))
+                {report.Append(label+"몸이 낀다");continue;}
+                var eyePoint=candidate+Vector3.up*eye;
+                var toPlate=plate.bounds.center-eyePoint;
+                if(Physics.Raycast(eyePoint,toPlate.normalized,out var blocker,toPlate.magnitude+.05f,~0,
+                                   QueryTriggerInteraction.Ignore)&&blocker.collider!=plate)
+                {report.Append(label+"시야 가림 "+blocker.collider.name);continue;}
+
+                feet=candidate;
+                detail=yaw.ToString("F0")+"° "+distance.ToString("F1")+"m · 바닥 "+floor.collider.name;
+                return true;
+            }
+            return false;
+        }
+
+        // 점검표 전용 재질. 예전에는 소화기 본체의 종이 라벨 재질을 그대로 썼는데, 쿼드의 UV 가
+        // 2k 텍스처 전체를 끌어와 24px 짜리 흑백 체커 무늬로 보였다(2026-09-25 프레임 확인).
+        // 붙였다는 것이 읽혀야 하므로 텍스처 없는 밝은 종이색 한 장을 따로 둔다.
+        private const string TagMaterialPath=MaterialDir+"/tutorial_inspection_tag.mat";
+        private static Material TagMaterial()
+        {
+            var existing=AssetDatabase.LoadAssetAtPath<Material>(TagMaterialPath);
+            if(existing!=null)return existing;
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null){Debug.LogError("[슬라이스] URP/Lit 셰이더를 찾지 못해 점검표 재질을 만들지 못했습니다.");return null;}
+            if(!AssetDatabase.IsValidFolder(MaterialDir))
+                AssetDatabase.CreateFolder("Assets/ChooGuard/Art/FireSafety","Materials");
+            var material=new Material(shader){name="tutorial_inspection_tag"};
+            material.SetColor("_BaseColor",new Color(.95f,.94f,.88f));   // 표백하지 않은 종이
+            material.SetFloat("_Metallic",0f);
+            material.SetFloat("_Smoothness",.12f);
+            AssetDatabase.CreateAsset(material,TagMaterialPath);
+            Debug.Log("[슬라이스] 점검표 재질 생성 · "+TagMaterialPath);
+            return material;
+        }
+
         private static GameObject BuildTagTemplate(GameObject host)
         {
             var template=GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -400,12 +515,7 @@ namespace ChooGuard.EditorTools
             var collider=template.GetComponent<Collider>();
             if(collider!=null)Undo.DestroyObjectImmediate(collider);
             var renderer=template.GetComponent<MeshRenderer>();
-            if(renderer!=null)
-            {
-                var paper=AssetDatabase.LoadAssetAtPath<Material>(MaterialDir+"/korean_fire_extinguisher_01_paper.mat");
-                if(paper!=null)renderer.sharedMaterial=paper;
-                else Debug.LogWarning("[슬라이스] 점검표 머티리얼을 찾지 못해 기본 머티리얼을 씁니다.");
-            }
+            if(renderer!=null)renderer.sharedMaterial=TagMaterial();
             template.SetActive(false);
             return template;
         }
