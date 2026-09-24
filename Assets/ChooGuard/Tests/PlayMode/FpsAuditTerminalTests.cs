@@ -62,6 +62,8 @@ namespace ChooGuard.Tests.PlayMode
             session=sessionObject.AddComponent<TutorialSession>();
             session.Responder=responder;session.GazeTracker=tracker;session.Target=facility;
             session.AuditTerminal=terminal;session.ProcedureAsset=procedure;
+            // 이월은 FpsCarryoverTests 가 다룬다. 여기서 실제 저장 경로를 건드리지 않는다.
+            session.WriteCarryover=false;session.ApplyCarryoverOnStart=false;
 
             // 응답자는 IsPaused=true 로 시작하고 FpsInteractable.CanInteract 가 그것을 가장 먼저 막는다.
             // 재개하지 않으면 게이트 델리게이트까지 도달하지 못해 모든 거부 사유가 기본 문구로 덮인다.

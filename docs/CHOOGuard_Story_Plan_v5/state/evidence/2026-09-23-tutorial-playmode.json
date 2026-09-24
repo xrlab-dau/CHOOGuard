@@ -1,0 +1,57 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-23T06:05:00+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "정비 튜토리얼 계층(G9)의 기존 구현이 PlayMode 시험을 통과하는지에 한정한 실행 영수증이다. 기술자 NPC 인계 주기와 지속 상태 이월은 시험 대상 자체가 없으므로 이 통과가 G9 PASS를 뜻하지 않는다. 사람 플레이 검수·성능·시각 품질도 포함하지 않는다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-FPS-1",
+  "designRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+  "run": {
+    "commit": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+    "unityVersion": "6000.3.23f1 (09d2ecc7fb28) revision 643820",
+    "mode": "batchmode -runTests -testPlatform PlayMode",
+    "assemblyNames": "ChooGuard.PlayModeTests",
+    "exitCode": 0,
+    "totals": { "total": 32, "passed": 32, "failed": 0, "skipped": 0, "inconclusive": 0 },
+    "durationSeconds": 1.0197415
+  },
+  "checkpoints": [
+    {
+      "name": "Procedure gating and commit",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-23-tutorial-playmode/playmode-results.xml",
+      "summary": "FpsProcedureTests 7/7. 단계 선행조건·사실 판독·효과 적용 후 재판정 커밋 경로가 통과했다."
+    },
+    {
+      "name": "Audit terminal enumeration",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-23-tutorial-playmode/playmode-results.xml",
+      "summary": "FpsAuditTerminalTests 8/8. 미충족 항목 열거, 오판정 검출, 역할 경계 위반 집계가 통과했다."
+    },
+    {
+      "name": "Prompt pipeline",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-23-tutorial-playmode/playmode-results.xml",
+      "summary": "FpsPromptPipelineTests 4/4."
+    },
+    {
+      "name": "Same-assembly regression",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-23-tutorial-playmode/playmode-results.xml",
+      "summary": "IntegratedInputPlayModeTests 12/12, CSBOOT0101PlayModeTests 1/1. 같은 어셈블리의 기존 시험이 함께 통과해 회귀가 없다."
+    },
+    {
+      "name": "Technician handoff cycle",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+      "summary": "IssueRepairOrder()가 불리언 플래그 한 줄이라 수신·이동·수행·결과 주기가 없다. 시험도 없다."
+    },
+    {
+      "name": "Durable state carryover",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+      "summary": "App/Fps에 저장·이월 코드가 없고 Restart()가 전부 초기화한다. layer_coupling=state_carryover 요건 미충족."
+    }
+  ]
+}

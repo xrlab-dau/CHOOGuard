@@ -49,6 +49,21 @@ namespace ChooGuard.App.Fps.Work
         {
             "none","record-serial","record-verdict","issue-repair-order","attach-tag","close-inspection",
         };
+        // v2 추가분 — 기술자 인계. 요청·도착·완료·확인을 따로 읽어야 "요청이 곧 완료"가 되지 않는다.
+        // 판본을 올리지 않은 자료가 이 어휘를 쓰면 거부한다. 판본이 장식이 되면 검사할 이유가 없다.
+        private static readonly HashSet<string> FactsAddedInV2=new HashSet<string>
+        {
+            "technician-received","technician-onsite","technician-completed",
+            "replacement-witnessed","service-completed",
+        };
+        private static readonly HashSet<string> EffectsAddedInV2=new HashSet<string>{"witness-replacement"};
+        // 읽을 수 있는 자료 판본. 알 수 없는 판본을 조용히 받아들이지 않는다.
+        // v1 자료는 계속 그대로 읽는다 — 기존 시험과 배포된 자료가 깨지지 않아야 한다.
+        private const int LatestVersion=2;
+        private static bool FactAllowed(string fact,int version)
+            =>AllowedFacts.Contains(fact)||(version>=2&&FactsAddedInV2.Contains(fact));
+        private static bool EffectAllowed(string effect,int version)
+            =>AllowedEffects.Contains(effect)||(version>=2&&EffectsAddedInV2.Contains(effect));
 
         public bool Ready { get; private set; }
         public string DefinitionHash { get; private set; }
@@ -74,7 +89,7 @@ namespace ChooGuard.App.Fps.Work
                 if(bytes.Length>131072)throw new InvalidOperationException("절차 자료 크기 초과");
                 using(var sha=SHA256.Create())DefinitionHash=BitConverter.ToString(sha.ComputeHash(bytes)).Replace("-","").ToLowerInvariant();
                 var definition=JsonUtility.FromJson<Definition>(asset.text);
-                if(definition==null||definition.version!=1||string.IsNullOrEmpty(definition.id)||definition.steps==null
+                if(definition==null||definition.version<1||definition.version>LatestVersion||string.IsNullOrEmpty(definition.id)||definition.steps==null
                    ||definition.steps.Length<1||definition.steps.Length>64)throw new InvalidOperationException("절차 구조 오류");
                 ValidateId(definition.id);
                 Id=definition.id;Title=definition.title??definition.id;Basis=definition.basis??"";
@@ -86,15 +101,15 @@ namespace ChooGuard.App.Fps.Work
                     if(byId.ContainsKey(source.id))throw new InvalidOperationException("중복 단계 식별자 · "+source.id);
                     if(string.IsNullOrWhiteSpace(source.label))throw new InvalidOperationException("이름 없는 단계 · "+source.id);
                     if(string.IsNullOrWhiteSpace(source.basis))throw new InvalidOperationException("근거 조항 없는 단계 · "+source.id);
-                    if(!AllowedEffects.Contains(source.effect??"none"))throw new InvalidOperationException("허용되지 않은 효과 · "+source.effect);
+                    if(!EffectAllowed(source.effect??"none",definition.version))throw new InvalidOperationException("이 판본에서 허용되지 않은 효과 · "+source.effect+" (version "+definition.version+")");
                     var requires=source.requires??new string[0];
                     if(requires.Length>8)throw new InvalidOperationException("선행 단계 수 초과 · "+source.id);
                     // 선행 단계는 배열에서 앞에 나와야 한다. 이 규칙만으로 순환이 구조적으로 불가능해진다.
                     foreach(var required in requires)
                         if(!byId.ContainsKey(required))throw new InvalidOperationException("앞서 정의되지 않은 선행 단계 · "+source.id+" → "+required);
                     var expressions=new List<RuleExpression>();
-                    AddFacts(expressions,source.allFacts,false);
-                    AddFacts(expressions,source.notFacts,true);
+                    AddFacts(expressions,source.allFacts,false,definition.version);
+                    AddFacts(expressions,source.notFacts,true,definition.version);
                     guards[source.id]=RuleExpression.All(expressions);
                     var step=new Step
                     {
@@ -120,13 +135,13 @@ namespace ChooGuard.App.Fps.Work
             if(string.IsNullOrWhiteSpace(id)||id.Length>96)throw new InvalidOperationException("단계 식별 정보 오류");
             new StableId(id);
         }
-        private static void AddFacts(List<RuleExpression> expressions,string[] facts,bool negate)
+        private static void AddFacts(List<RuleExpression> expressions,string[] facts,bool negate,int version)
         {
             if(facts==null)return;
             if(facts.Length>24)throw new InvalidOperationException("조건 수 초과");
             foreach(var fact in facts)
             {
-                if(!AllowedFacts.Contains(fact))throw new InvalidOperationException("허용되지 않은 점검 조건 · "+fact);
+                if(!FactAllowed(fact,version))throw new InvalidOperationException("이 판본에서 허용되지 않은 점검 조건 · "+fact+" (version "+version+")");
                 var expression=RuleExpression.Fact(new StableId(fact));
                 expressions.Add(negate?RuleExpression.Not(expression):expression);
             }

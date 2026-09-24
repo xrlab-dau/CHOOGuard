@@ -65,6 +65,8 @@ namespace ChooGuard.Tests.PlayMode
             session=sessionObject.AddComponent<TutorialSession>();
             session.Responder=responder;session.GazeTracker=tracker;session.Target=facility;
             session.ProcedureAsset=procedure;session.PendingVerdict=InspectionVerdict.UNFIT;
+            // 시험이 실제 persistentDataPath 에 이월 기록을 남기지 않게 한다. 이월은 FpsCarryoverTests 가 다룬다.
+            session.WriteCarryover=false;session.ApplyCarryoverOnStart=false;
         }
 
         private FacilityInspectable.InspectionPoint MakePoint(string id,string label,Vector3 localOffset,float dwell)
