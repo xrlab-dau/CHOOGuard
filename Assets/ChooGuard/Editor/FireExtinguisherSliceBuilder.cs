@@ -250,7 +250,35 @@ namespace ChooGuard.EditorTools
             // 플레이어만 제자리에 남아, 2026-09-25 실측에서 시작 지점이 첫 설비에서 44.41m 떨어져
             // 있었다. 시작 시야에는 빈 하늘만 있었고(15m 이내 렌더러 2,322개 중 5개) 그 방향으로
             // 직진하면 11m 만에 벽이었다. 단말은 아래에서 플레이어 기준으로 놓이므로 순서가 중요하다.
+            // 플레이어 자신의 콜라이더를 잠시 끄고 잰다. 끄지 않으면 레이캐스트와 캡슐 검사가
+            // 플레이어를 바닥·장애물로 여긴다 — 실제로 재생성할 때마다 자기 자신 위로 올라서
+            // 시작 높이가 y=7.00 에서 8.55 로 뛰었다(2026-09-25). 재생성이 멱등하지 않으면
+            // 생성기를 두 번 누른 사람과 한 번 누른 사람이 다른 씬을 갖게 된다.
+            var selfColliders=responder.GetComponentsInChildren<Collider>(true);
+            var wasEnabled=new bool[selfColliders.Length];
+            for(int i=0;i<selfColliders.Length;i++){wasEnabled[i]=selfColliders[i].enabled;selfColliders[i].enabled=false;}
+            try
+            {
             PlacePlayerBefore(responder.transform,tutorialTarget,inspectables);
+
+            // 배치한 유닛마다 설 자리가 있는지 확인한다. 좌표는 NFTC 101 보행거리로 산정한 것이라
+            // 법정 배치 요건은 만족하지만 실제 구조물과 부딪히는지는 검토된 적이 없다. 점검할 수
+            // 없는 자리에 놓인 소화기는 배치 요건만 만족하고 튜토리얼에서는 죽은 유닛이다.
+            var unreachable=new List<string>();
+            var audit=new System.Text.StringBuilder();
+            foreach(var f in inspectables)
+                if(f!=null&&!TryStandingSpot(f,audit,out _,out _))unreachable.Add(f.SerialNumber);
+            if(unreachable.Count>0)
+                Debug.LogWarning("[슬라이스] 설 자리가 없는 유닛 "+unreachable.Count+"/"+inspectables.Count
+                                 +"개 · "+string.Join(", ",unreachable)
+                                 +"\n좌표가 구조물과 부딪힙니다. 시도 내역:"+audit);
+            else Debug.Log("[슬라이스] 유닛 "+inspectables.Count+"개 모두 설 자리 확인");
+            }
+            finally
+            {
+                for(int i=0;i<selfColliders.Length;i++)
+                    if(selfColliders[i]!=null)selfColliders[i].enabled=wasEnabled[i];
+            }
 
             // 세션·단말은 어느 유닛에도 속하지 않는 자체 루트에 둔다.
             var host=new GameObject(RootName);
@@ -286,6 +314,7 @@ namespace ChooGuard.EditorTools
                 dispatchObject.transform.SetParent(host.transform,false);
                 var dispatch=dispatchObject.AddComponent<TechnicianDispatch>();
                 dispatch.Target=inspectable;
+                BuildTechnicianPresence(dispatchObject,dispatch,inspectable);
                 session.Units.Add(new TutorialSession.UnitBinding{Facility=inspectable,Dispatch=dispatch});
                 if(inspectable==tutorialTarget)session.Dispatch=dispatch;
             }
@@ -482,6 +511,106 @@ namespace ChooGuard.EditorTools
             return false;
         }
 
+        // 기술자에게 몸을 준다. 상태 기계만 있던 인계는 59 초 동안 화면에 아무 변화가 없었다.
+        //
+        // 임시 대역이다 — 캡슐 하나가 출발 지점에서 작업 지점으로 걸어와 머물고, 플레이어가
+        // 결과를 확인하면 떠난다. 애니메이션도 얼굴도 없다. 이걸로 "도착이 보인다" 는 참이 되지만
+        // 실제 인물 표현을 대신하지는 않는다.
+        //
+        // 콜라이더는 지운다. 작업 지점은 플레이어가 서는 자리 바로 옆이라, 몸이 남아 있으면
+        // 플레이어를 밀거나 설비 조준을 가로챈다.
+        private static void BuildTechnicianPresence(GameObject host,TechnicianDispatch dispatch,
+                                                    FacilityInspectable target)
+        {
+            if(host==null||dispatch==null||target==null)return;
+
+            var body=GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            body.name="기술자 형상 · "+target.SerialNumber;
+            Undo.RegisterCreatedObjectUndo(body,"기술자 형상 생성");
+            body.transform.SetParent(host.transform,false);
+            body.transform.localScale=new Vector3(.36f,.85f,.36f);   // 캡슐 기본 높이 2 → 약 1.7m
+            var bodyCollider=body.GetComponent<Collider>();
+            if(bodyCollider!=null)Undo.DestroyObjectImmediate(bodyCollider);
+            var renderer=body.GetComponent<MeshRenderer>();
+            if(renderer!=null)renderer.sharedMaterial=TechnicianMaterial();
+
+            // 작업 지점은 설비 정면 옆. 판독면 바로 앞에 세우면 플레이어의 조준을 가린다.
+            var facing=target.transform.forward;facing.y=0;
+            if(facing.sqrMagnitude<.0001f)facing=Vector3.forward;
+            facing.Normalize();
+            var right=Vector3.Cross(Vector3.up,facing);
+            // 좌우 어느 쪽에 세울지 고정하지 않는다. 고정했더니 벽에 반쯤 박혀 파란 덩어리로만
+            // 보였다(2026-09-25 프레임 확인). 바닥이 있고 몸이 끼지 않는 쪽을 고른다.
+            float side=.55f;
+            if(!ClearForBody(target.transform.position+facing*.9f+right*.55f))
+            {
+                if(ClearForBody(target.transform.position+facing*.9f-right*.55f))side=-.55f;
+                else side=0f;   // 양쪽 다 막히면 설비 정면. 가리더라도 보이지 않는 것보다 낫다.
+            }
+            var workPoint=target.transform.position+facing*.9f+right*side;
+            var entryPoint=target.transform.position+facing*7f+right*side;
+
+            var work=new GameObject("기술자 작업 지점");
+            Undo.RegisterCreatedObjectUndo(work,"기술자 작업 지점 생성");
+            work.transform.SetParent(host.transform,false);
+            work.transform.position=SnapToFloor(workPoint,target.transform.position.y);
+
+            var entry=new GameObject("기술자 진입 지점");
+            Undo.RegisterCreatedObjectUndo(entry,"기술자 진입 지점 생성");
+            entry.transform.SetParent(host.transform,false);
+            // 진입 지점에 바닥이 없으면(밖이거나 허공이면) 작업 지점에서 그냥 나타난다.
+            // 허공에서 걸어오는 것보다 낫다.
+            entry.transform.position=SnapToFloor(entryPoint,work.transform.position.y);
+
+            var presence=Undo.AddComponent<TechnicianPresence>(host);
+            presence.Dispatch=dispatch;
+            presence.Body=body.transform;
+            presence.WorkSpot=work.transform;
+            presence.Entry=entry.transform;
+            body.transform.position=work.transform.position;
+            body.SetActive(false);   // 요구 전에는 보이지 않는다
+        }
+
+        // 사람 하나가 설 만한 자리인가. 바닥이 있고 몸이 끼지 않아야 한다.
+        private static bool ClearForBody(Vector3 point)
+        {
+            const float radius=.3f,height=1.7f;
+            if(!Physics.Raycast(new Vector3(point.x,point.y+2.5f,point.z),Vector3.down,out var floor,8f,~0,
+                                QueryTriggerInteraction.Ignore))return false;
+            return !Physics.CheckCapsule(floor.point+Vector3.up*(radius+.05f),
+                                         floor.point+Vector3.up*(height-radius),
+                                         radius,~0,QueryTriggerInteraction.Ignore);
+        }
+
+        // 발밑을 찾는다. 캡슐 중심이 바닥 위 절반 높이에 오도록 올린다.
+        private static Vector3 SnapToFloor(Vector3 point,float fallbackY)
+        {
+            const float halfHeight=.85f;
+            if(Physics.Raycast(new Vector3(point.x,point.y+2.5f,point.z),Vector3.down,out var floor,8f,~0,
+                               QueryTriggerInteraction.Ignore))
+                return floor.point+Vector3.up*halfHeight;
+            return new Vector3(point.x,fallbackY,point.z);
+        }
+
+        // 기술자 대역 재질. 소화기 재질을 빌려 쓰면 점검표 때처럼 엉뚱한 텍스처가 딸려 온다.
+        private const string TechnicianMaterialPath=MaterialDir+"/tutorial_technician.mat";
+        private static Material TechnicianMaterial()
+        {
+            var existing=AssetDatabase.LoadAssetAtPath<Material>(TechnicianMaterialPath);
+            if(existing!=null)return existing;
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null){Debug.LogError("[슬라이스] URP/Lit 셰이더를 찾지 못해 기술자 재질을 만들지 못했습니다.");return null;}
+            if(!AssetDatabase.IsValidFolder(MaterialDir))
+                AssetDatabase.CreateFolder("Assets/ChooGuard/Art/FireSafety","Materials");
+            var material=new Material(shader){name="tutorial_technician"};
+            material.SetColor("_BaseColor",new Color(.16f,.30f,.46f));   // 작업복 남색
+            material.SetFloat("_Metallic",0f);
+            material.SetFloat("_Smoothness",.2f);
+            AssetDatabase.CreateAsset(material,TechnicianMaterialPath);
+            Debug.Log("[슬라이스] 기술자 재질 생성 · "+TechnicianMaterialPath);
+            return material;
+        }
+
         // 점검표 전용 재질. 예전에는 소화기 본체의 종이 라벨 재질을 그대로 썼는데, 쿼드의 UV 가
         // 2k 텍스처 전체를 끌어와 24px 짜리 흑백 체커 무늬로 보였다(2026-09-25 프레임 확인).
         // 붙였다는 것이 읽혀야 하므로 텍스처 없는 밝은 종이색 한 장을 따로 둔다.
@@ -510,10 +639,16 @@ namespace ChooGuard.EditorTools
             Undo.RegisterCreatedObjectUndo(template,"점검표 원본 생성");
             template.transform.SetParent(host.transform,false);
             template.transform.localScale=new Vector3(.09f,.13f,1f);   // 세로로 긴 작은 카드
-            // 콜라이더를 지운다 — 레이캐스트가 가장 가까운 솔리드를 고르므로, 점검표가 붙은 뒤
-            // 본체나 판독면을 가려 조준이 바뀌면 안 된다.
+            // 콜라이더를 남긴다. 예전에는 판독면을 가릴까 봐 지웠는데, 그 결과 붙은 점검표를 보려고
+            // 고개를 숙이면 레이캐스트가 설비를 놓쳐 상호작용이 통째로 끊겼다(2026-09-25 실측:
+            // CurrentTargetCollider 없음, 안내 빈 문자열). 점검표는 부착 지점에 붙는 설비의 일부이므로
+            // 그것을 볼 때도 설비를 겨눈 것이어야 한다 — RefreshInteraction 이 부모 사슬에서
+            // FacilityInspectable 을 찾으므로 콜라이더만 있으면 성립한다.
+            //
+            // 가림 걱정은 높이로 푼다. 점검표는 로컬 y=.26 이고 고유번호·제원표는 .55, 지시압력계는 .88 이라
+            // 세로로 겹치지 않는다. 겹치게 옮길 일이 생기면 이 주석을 먼저 고칠 것.
             var collider=template.GetComponent<Collider>();
-            if(collider!=null)Undo.DestroyObjectImmediate(collider);
+            if(collider!=null)collider.isTrigger=false;   // 레이캐스트가 QueryTriggerInteraction.Ignore 다
             var renderer=template.GetComponent<MeshRenderer>();
             if(renderer!=null)renderer.sharedMaterial=TagMaterial();
             template.SetActive(false);

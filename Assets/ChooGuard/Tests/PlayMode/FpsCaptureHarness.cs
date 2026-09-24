@@ -166,14 +166,40 @@ namespace ChooGuard.Tests.PlayMode
                 Assert.IsTrue(dispatch.Requested,"요구가 발행되지 않았다");
                 yield return Shot("인계-요청직후");
 
-                // 기다리는 동안 무엇이 보이는가. 이 구간이 몸 없는 기술자의 실제 체감이다.
+                // 기다리는 동안 무엇이 보이는가. 예전에는 59초 내내 아무 변화가 없었다.
+                var presence=Object.FindFirstObjectByType<TechnicianPresence>();
+                bool sawTravelling=false;
                 float waited=0f;
-                while(dispatch.Stage!=HandoffStage.COMPLETED&&waited<90f){waited+=Time.deltaTime;yield return null;}
+                while(dispatch.Stage!=HandoffStage.COMPLETED&&waited<90f)
+                {
+                    waited+=Time.deltaTime;
+                    if(dispatch.Stage==HandoffStage.TRAVELLING&&!sawTravelling)
+                    {
+                        sawTravelling=true;
+                        yield return Shot("인계-이동중");
+                    }
+                    if(dispatch.Stage==HandoffStage.WORKING&&sawTravelling)
+                    {
+                        sawTravelling=false;
+                        yield return Shot("인계-작업중");
+                    }
+                    yield return null;
+                }
                 Assert.AreEqual(HandoffStage.COMPLETED,dispatch.Stage,
                                 "기술자가 "+waited.ToString("0")+"초 안에 끝내지 못했다");
                 yield return Shot("인계-완료");
 
+                // 기술자가 보이는가. 상태 기계가 도는 것과 화면에 사람이 있는 것은 다르다.
+                foreach(var p in Object.FindObjectsByType<TechnicianPresence>(FindObjectsSortMode.None))
+                    if(p.Dispatch==dispatch)presence=p;
+                Assert.IsNotNull(presence,"기술자 표현이 배선되지 않았다");
+                Assert.IsTrue(presence.Visible,"인계가 끝났는데 기술자가 화면에 없다 — 입회할 상대가 없다");
+                Debug.Log("[계측] 기술자 형상 "+presence.Body.position.ToString("F2")
+                          +" · 눈에서 "+Vector3.Distance(responder.PlayerCamera.transform.position,
+                                                          presence.Body.position).ToString("F2")+"m");
+
                 yield return Interact("교체 확인");
+                Assert.IsFalse(presence.Visible,"확인했는데 기술자가 그대로 서 있다");
             }
 
             // ── 6. 점검표 — 이 하네스의 핵심. 보이는가 ───────────────────
@@ -182,7 +208,7 @@ namespace ChooGuard.Tests.PlayMode
             var plateSpot=facility.Point("serial").Surface.bounds.center;
             yield return Aim(tagSpot);
             // 점검표 자리는 본체 아래쪽(로컬 y=.26)이다. 거기를 보면 상호작용 대상이 잡히는지 남긴다 —
-            // 실제로 여기를 조준한 채 E 를 누르면 아무 일도 일어나지 않았다(2026-09-25).
+            // 예전에는 여기를 조준한 채 E 를 누르면 아무 일도 일어나지 않았다(2026-09-25).
             Debug.Log("[계측] 점검표 자리 조준 시 닿는 것 "
                       +(responder.CurrentTargetCollider==null?"없음":responder.CurrentTargetCollider.name)
                       +" · 안내 \""+responder.CurrentPrompt+"\"");
@@ -191,6 +217,10 @@ namespace ChooGuard.Tests.PlayMode
             yield return Aim(plateSpot);   // 조작은 판독면을 보고 한다
             yield return Interact("점검표 부착");
             yield return Aim(tagSpot);
+            // 붙은 점검표를 보는 동안에도 설비를 겨눈 상태여야 한다. 그렇지 않으면 확인하려고
+            // 고개를 숙이는 순간 상호작용이 끊긴다.
+            Assert.IsNotNull(responder.CurrentTargetCollider,
+                             "점검표를 보는 동안 조준 대상이 사라진다 · 안내=\""+responder.CurrentPrompt+"\"");
             Assert.IsNotNull(facility.AttachedTag,"점검표가 붙지 않았다");
             var tagRenderer=facility.AttachedTag.GetComponentInChildren<Renderer>();
             Assert.IsNotNull(tagRenderer,"점검표에 렌더러가 없다 — 보이지 않는다");
