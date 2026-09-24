@@ -35,13 +35,19 @@ G9는 2026-09-23 사용자 지시("튜토리얼은 정비 시뮬레이션 게임
 
 **PASS:** Native single-player play physically connects recognition, reporting/communication, NPC cooperation, passenger guidance, site control and handoff. The accepted release mission set includes at least one disaster and one terror-related staff response with source-matched duties. Normal, route-blocked and delayed/missed-communication variants remain playable and correctable. Completion follows world/NPC state, not button sequence or waiting. No separate debrief/quiz is required.
 
-현재: NOT_VERIFIED; plan only
+현재: NOT_VERIFIED; 설계 정본은 [MISSION_DESIGN.md](MISSION_DESIGN.md)(2026-09-24 채택). 첫 미션은 역사 화재·대피(Jev 055, 0.93/conf 0.89), 실행 그래프·완료 판정 규율·금지 조건이 확정됐고 G1이 요구하는 재난 1종·테러 1종·변형 3종과의 대응표도 있다.
+
+**평가할 대상은 생겼으나 본편 코드가 0 이다.** 2026-09-24 실측: 신고·무전·전달, 승객 NPC, 직원 NPC 협업, 접근 통제, 오디오 모두 없음. 서 있는 것은 1인칭 이동·시선·상호작용 기반(`FirstPersonResponder`, `FpsInteractable`, `FirstPersonInteractionHud`)뿐이다. 설계 문서가 생긴 것과 플레이가 되는 것은 다르다.
 
 ## G2 FPS reference application and role fit
 
 **PASS:** A source-to-runtime comparison maps movement/look responsiveness, interaction reach/visibility, spatial objectives, audiovisual acknowledgement and tension from the selected FPS references to station-staff play. Independent native review confirms actual embodied choices and readable consequences. No score for copied combat, resource building or shooter art alone.
 
-현재: NOT_VERIFIED; references are user intent, not yet independently benchmarked
+현재: NOT_VERIFIED; 대조표 정본은 [BENCHMARK_FPS_MATRIX.md](BENCHMARK_FPS_MATRIX.md)(2026-09-24 작성). G2가 요구하는 5축(이동·시선 반응성 / 상호작용 사거리·가시성 / 공간 목표 / 시청각 확인 / 긴장)에 레퍼런스 원리와 런타임 요소를 대응시켰다.
+
+집계: 구현 8 · 부분 2 · 미구현 9. **축 1·2는 서 있고 축 3·4·5는 거의 비어 있으며**, 빈 항목 대부분이 승객 NPC와 오디오에 걸려 있다. 전투 메커닉은 하나도 가져오지 않았고, RTS 전제 항목(건물 선택·관리 오버레이·도시 자원망)은 '가져오지 않음'으로 명시했다.
+
+**대조표가 생긴 것이 PASS가 아니다.** G2는 *"Independent native review confirms actual embodied choices and readable consequences"* 도 요구하는데, 독립 검토도 그 검토가 확인할 플레이도 없다.
 
 참조 자료: 1인칭 감각은 [FPS_RESEARCH_PROPOSAL.md](FPS_RESEARCH_PROPOSAL.md), 운영 루프와 자원 경쟁은 [PRODUCTION_GAME_BENCHMARK.md](PRODUCTION_GAME_BENCHMARK.md). 후자는 RTS 전제로 쓰였으므로 단일 1인칭 행위자에 맞는 항목만 인정한다.
 
