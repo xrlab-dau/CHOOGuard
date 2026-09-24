@@ -28,7 +28,7 @@ namespace ChooGuard.EditorTools
         // Build(placements) 가 시작할 때 접두사에 걸리는 기존 유닛을 전부 지우므로
         // 한 번 누르면 12개가 1개로 줄었다(2026-09-24 실제 발생, 씬 복원함).
         [MenuItem("ChooGuard/수직 슬라이스/소화기 월간점검 배치 (역사 12개)")]
-        public static void BuildMenu(){BindMaterials();Build(PlacementsV3,true);}
+        public static void BuildMenu(){BindMaterials();Build(PlacementsV4,true);}
 
         // 단일 배치는 개발용으로만 남긴다. 누르면 역사 배치가 이것 하나로 대체된다.
         [MenuItem("ChooGuard/수직 슬라이스/개발용 · 플레이어 앞 1개만 배치")]
@@ -130,7 +130,45 @@ namespace ChooGuard.EditorTools
             public bool TutorialTarget;   // 절차 세션이 물릴 대상. 정확히 하나여야 한다.
         }
 
-        // 역사 2층 대합실 12개. 좌표 출처는
+        // 역사 2층 대합실 12개 — v4. 좌표 출처는
+        // .planning/2026-09-25-placement-resolve/extinguisher-placement-v4.json
+        // (schema chooguard.extinguisher-placement.v3, StationWalkableSolver 산출).
+        //
+        // v3 와 무엇이 다른가: v3 은 격자와 보행거리로만 풀었고 실제 콜라이더를 보지 않았다.
+        // 그 결과 12개 중 3개(FE-001·-002·-008)가 사람이 설 수 없는 자리에 놓였고 그중 하나는
+        // 아래 8m 까지 바닥이 없는 건물 밖이었다. v4 는 씬 콜라이더를 0.5m 격자로 훑어 바닥과
+        // 사람 여유를 확인하고, 플레이어 시작점에서 걸어 닿는 영역만 남긴 뒤, 벽면 후보 중
+        // 설 자리와 판독면 시야가 확보되고 그 자리까지 걸어갈 수 있는 56개에서 골랐다.
+        //
+        // 산출 당시 수치 — 걸어 닿는 곳 3,137칸 · 커버 100%(못 덮은 칸 0) · 유닛 간 최소 간격 6.40m ·
+        // 12개 모두 개방도 149 이상. v3 의 2.00m 근접 경고가 이것으로 해소된다.
+        //
+        // 주장하지 않는 것 — 법정 적합. NFTC 101 의 보행거리 항목(소형 20m)만 계산에 썼고
+        // 구획 면적·소화 능력단위 산정은 하지 않았다. 개수 12개는 v3 과 같게 유지했다:
+        // 보행거리만으로는 5개면 덮이지만, 내가 계산하지 않은 요건을 내 판단으로 완화하지 않는다.
+        // 고유번호와 월드 상태(부식·기한)는 여전히 작성한 값이며 실측이 아니다.
+        private static readonly Placement[] PlacementsV4=
+        {
+            Unit( 0,29.57f,7.00f,-40.82f,  0,-1, false,false,false),
+            Unit( 1, 8.57f,7.00f,-33.04f,  0,-1, false,false,false),
+            Unit( 2,51.14f,7.00f,-63.65f,  1, 0, false,false,false),
+            Unit( 3,13.07f,7.00f,-50.10f,  0, 1, false,false,false),
+            Unit( 4,34.95f,7.00f,-57.65f,  1, 0, false,false,false),
+            Unit( 5,59.38f,7.00f,-53.15f, -1, 0, false,false,false),
+            Unit( 6, 1.07f,7.00f,-45.60f,  0, 1, false,false,false),
+            Unit( 7,40.07f,7.00f,-45.44f,  0,-1, false,false,false),
+            Unit( 8,23.57f,7.00f,-53.94f,  0, 1, false,false,false),
+            // 튜토리얼 대상. 솔버가 잰 개방도(6m 안 보행 칸) 264 로 12개 중 가장 트인 자리다.
+            // 기하학적으로 유효해도 어두운 벽감에 묻히면 첫 화면에서 실루엣만 보인다 —
+            // 실제로 그런 자리가 뽑혀 프레임으로 확인하고 지표를 넣었다.
+            // 부식 상태로 둬서 부적합 판정과 기술자 인계를 한 회차에 겪게 한다.
+            Unit( 9,19.07f,7.00f,-37.66f,  0,-1, true, true, false),
+            Unit(10,41.57f,7.00f,-60.61f,  0, 1, false,false,false),
+            Unit(11, 7.07f,7.00f,-47.82f,  0, 1, false,false,false),
+        };
+
+        // 역사 2층 대합실 12개 — v3. 실제 콜라이더를 보지 않고 산정해 3개가 설 수 없는 자리에
+        // 놓였다. v4 로 대체했고 비교를 위해 남긴다. 좌표 출처는
         // .planning/2026-09-22-station-interior-build/extinguisher-placement-v3.json
         // (schema chooguard.extinguisher-placement.v2, computedAt 2026-09-22).
         // 산정 근거는 NFTC 101 — 보행거리 20m 이내(소형), 33제곱미터 이상 구획 거실마다, 바닥 1.5m 이하.
