@@ -260,7 +260,13 @@ namespace ChooGuard.EditorTools
             var session=sessionObject.AddComponent<TutorialSession>();
             session.Responder=responder;session.GazeTracker=tracker;session.Target=tutorialTarget;
             session.ProcedureAsset=procedure;session.ChecklistVisible=true;
-            session.PendingVerdict=tutorialTarget!=null&&tutorialTarget.Corroded?InspectionVerdict.UNFIT:InspectionVerdict.FIT;
+            // 판정을 미리 넣지 않는다. 월드 상태를 보고 정답을 꽂아 두면 플레이어가 고를 것이 없어지고
+            // 오판정 검출이 영원히 0 이 된다(2026-09-24 확인). NOT_RECORDED 가 '아직 안 고름'이다.
+            session.PendingVerdict=InspectionVerdict.NOT_RECORDED;
+
+            // 판정 선택(1·2)과 현장 수리 시도(F). 응답자에 키를 더하지 않고 여기서 받는다.
+            var input=sessionObject.AddComponent<TutorialInput>();
+            input.Session=session;input.Responder=responder;
 
             // 기술자 인계는 설비마다 하나다 — 기술자는 특정 소화기로 간다.
             // 붙이지 않으면 Dispatch 가 null 이라 요구 발행이 플래그로만 남는다.
@@ -284,6 +290,7 @@ namespace ChooGuard.EditorTools
             if(font==null)Debug.LogWarning("[슬라이스] 한국어 폰트 미확인 — 기존 HUD 표시를 점검하세요.");
 
             session.AuditTerminal=BuildAuditTerminal(host,playerT,fwd,font);
+            session.InspectionTagPrefab=BuildTagTemplate(host);
 
             EditorSceneManager.MarkSceneDirty(scene);
             if(saveScene)EditorSceneManager.SaveScene(scene);
@@ -365,8 +372,42 @@ namespace ChooGuard.EditorTools
                 Point(root,"gauge","지시압력계",bounds,new Vector3(0,.88f,faceZ*.7f),new Vector3(width*.4f,height*.12f,.04f),.6f),
             };
             inspectable.Points=points.ToArray();
+
+            // 점검표 부착 지점. 판독면과 같은 +Z 쪽이되 판들 아래에 둬서 고유번호·제원표를 가리지 않는다.
+            // 치수를 아는 것은 생성기이므로 여기서 잡는다 — 세션이 런타임에 계산하면 계층이 뒤집힌다.
+            var anchor=new GameObject("점검표 부착 지점");
+            Undo.RegisterCreatedObjectUndo(anchor,"점검표 부착 지점 생성");
+            anchor.transform.SetParent(root.transform,false);
+            anchor.transform.localPosition=new Vector3(0,.26f,faceZ);
+            inspectable.TagAnchor=anchor.transform;
+
             inspectable.Bind(tracker);
             return root;
+        }
+
+        // 점검표 원본. 비활성 템플릿으로 두고 부착할 때마다 복제한다.
+        // 이전에는 InspectionTagPrefab 이 비어 있어 세션이 빈 GameObject 를 만들었고,
+        // 렌더러가 없어 7단계를 끝내도 플레이어 눈에는 아무 변화가 없었다(2026-09-24 확인).
+        private static GameObject BuildTagTemplate(GameObject host)
+        {
+            var template=GameObject.CreatePrimitive(PrimitiveType.Quad);
+            template.name="점검표 원본";
+            Undo.RegisterCreatedObjectUndo(template,"점검표 원본 생성");
+            template.transform.SetParent(host.transform,false);
+            template.transform.localScale=new Vector3(.09f,.13f,1f);   // 세로로 긴 작은 카드
+            // 콜라이더를 지운다 — 레이캐스트가 가장 가까운 솔리드를 고르므로, 점검표가 붙은 뒤
+            // 본체나 판독면을 가려 조준이 바뀌면 안 된다.
+            var collider=template.GetComponent<Collider>();
+            if(collider!=null)Undo.DestroyObjectImmediate(collider);
+            var renderer=template.GetComponent<MeshRenderer>();
+            if(renderer!=null)
+            {
+                var paper=AssetDatabase.LoadAssetAtPath<Material>(MaterialDir+"/korean_fire_extinguisher_01_paper.mat");
+                if(paper!=null)renderer.sharedMaterial=paper;
+                else Debug.LogWarning("[슬라이스] 점검표 머티리얼을 찾지 못해 기본 머티리얼을 씁니다.");
+            }
+            template.SetActive(false);
+            return template;
         }
 
         // 판정 단말. 소화기 옆이 아니라 **몇 걸음 떨어진 곳**에 둔다 — 감사는 작업 자리에서 하는 것이 아니고,
