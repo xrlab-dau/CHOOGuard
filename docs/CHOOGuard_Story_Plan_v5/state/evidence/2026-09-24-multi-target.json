@@ -1,0 +1,96 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-24T10:30:00+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "TutorialSession 을 단일 대상에서 유닛별 상태 구조로 리팩터링하고 씬의 소화기 12개 전부를 점검 가능하게 만든 작업에 한정한다. 기술자 NPC 의 몸(이동·애니메이션)과 사람 플레이 검수는 여전히 없고, 이월이 연결할 본편 계층도 없다. G9 PASS 가 아니다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-FPS-1",
+  "designRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+  "planRef": ".planning/2026-09-23-technician-handoff/task_plan.md",
+  "designBasis": ".planning/2026-09-22-station-interior-build/jev-jev-inject-structure-005.result.json — session_and_terminal=one_each_hoisted(0.87), inspectable_scope=all_twelve_with_per_unit_state(0.65)",
+  "run": {
+    "commit": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+    "workingTree": "uncommitted",
+    "unityVersion": "6000.3.23f1 (09d2ecc7fb28) revision 643820",
+    "mode": "batchmode -runTests -testPlatform PlayMode",
+    "assemblyNames": "ChooGuard.PlayModeTests",
+    "exitCode": 0,
+    "totals": { "total": 61, "passed": 61, "failed": 0, "skipped": 0, "inconclusive": 0 }
+  },
+  "sceneAfterBuild": {
+    "FacilityInspectable": 12,
+    "TechnicianDispatch": 12,
+    "TutorialSession": 1,
+    "AuditTerminal": 1,
+    "TutorialSessionUnits": 12
+  },
+  "changedFiles": [
+    "Assets/ChooGuard/App/Fps/Tutorial/TutorialSession.cs (전면 리팩터링)",
+    "Assets/ChooGuard/Tests/PlayMode/FpsMultiTargetTests.cs (신규)",
+    "Assets/ChooGuard/Editor/FireExtinguisherSliceBuilder.cs",
+    "Assets/ChooGuard/Scenes/FpsStation.unity"
+  ],
+  "checkpoints": [
+    {
+      "name": "Recorded judgments now hold in code and scene",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Scenes/FpsStation.unity",
+      "summary": "세션 1 · 단말 1(one_each_hoisted)이면서 설비 12개 전부가 유닛별 상태를 갖는다(all_twelve_with_per_unit_state). 이전 구현은 후자에서 확률 0.34 였던 one_tutorial_target_rest_props 쪽이었다."
+    },
+    {
+      "name": "Per-unit progress preserved across switching",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsMultiTargetTests.cs",
+      "summary": "A 를 요구까지 진행 → B 로 전환 → A 복귀 시 A 의 다음 단계가 그대로다. 유닛마다 자기 ProcedureRunner 를 갖는다."
+    },
+    {
+      "name": "Waiting is playable across units",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsMultiTargetTests.cs",
+      "summary": "A 의 기술자를 기다리는 동안 B 로 걸어가 끝까지 점검할 수 있고, 그 사이 A 의 인계 단계는 유지된다. 이전에는 단일 유닛 안에서 조건부 단계를 건너뛰는 것으로만 증명됐다."
+    },
+    {
+      "name": "Session drives all handoffs, not just active",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsMultiTargetTests.cs",
+      "summary": "[UnityTest] 로 프레임 구동해 TutorialSession.Update() 가 비활성 유닛의 인계도 진행시키는지 검증한다. ECC 지적 전에는 Tick 을 직접 불러 Update 를 지워도 통과하는 동어반복이었다."
+    },
+    {
+      "name": "Interaction wiring verified",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsMultiTargetTests.cs",
+      "summary": "TryInteract 로 Bind() 가 꽂은 클로저를 실제 발화시켜, 상호작용한 유닛만 활성화·진행되는지 확인한다. ECC 지적 전에는 이 경로를 타는 시험이 하나도 없었다."
+    },
+    {
+      "name": "ECC C# review applied",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-23-technician-handoff/findings.md",
+      "summary": "HIGH 4건(OnDestroy 구독 미해제, Target/Dispatch 쓰기 의미론 소실, AuditFindings 내부 리스트 노출, 동어반복 시험)과 MEDIUM 1건(클로저 미검증) 반영. Block 권고였다."
+    },
+    {
+      "name": "Technician NPC embodiment",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+      "summary": "상태 기계만 있고 이동하는 NPC·애니메이션이 없다. 변화 없음."
+    },
+    {
+      "name": "Carryover into live layer",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-24-carryover.json",
+      "summary": "본편(비상) 계층이 없어 이월의 받는 쪽이 검증되지 않았다. 변화 없음."
+    },
+    {
+      "name": "Proximity ambiguity unresolved",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": ".planning/2026-09-23-technician-handoff/findings.md",
+      "summary": "생성기가 BSN-CONC-FE-004 ↔ -006 의 간격 2.00m 를 경고한다. 상호작용 상한 3m 안이라 조준이 모호할 수 있으나 원본 좌표라 옮기지 않았다. 플레이 확인 대상."
+    },
+    {
+      "name": "Human play review",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+      "summary": "12개 배치와 유닛 전환이 1인칭으로 실제 어떻게 느껴지는지는 사람이 플레이해야 안다."
+    }
+  ]
+}

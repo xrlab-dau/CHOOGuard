@@ -24,8 +24,20 @@ namespace ChooGuard.EditorTools
         // 제거 훑기가 RootName 과 이 접두사를 둘 다 본다.
         private const string UnitPrefix="소화기 · ";
 
-        [MenuItem("ChooGuard/수직 슬라이스/소화기 월간점검 배치")]
-        public static void BuildMenu(){BindMaterials();Build(true);}
+        // 기본 메뉴는 역사 전체 12개를 배치한다. 예전에는 이 메뉴가 단일 배치를 불렀고,
+        // Build(placements) 가 시작할 때 접두사에 걸리는 기존 유닛을 전부 지우므로
+        // 한 번 누르면 12개가 1개로 줄었다(2026-09-24 실제 발생, 씬 복원함).
+        [MenuItem("ChooGuard/수직 슬라이스/소화기 월간점검 배치 (역사 12개)")]
+        public static void BuildMenu(){BindMaterials();Build(PlacementsV3,true);}
+
+        // 단일 배치는 개발용으로만 남긴다. 누르면 역사 배치가 이것 하나로 대체된다.
+        [MenuItem("ChooGuard/수직 슬라이스/개발용 · 플레이어 앞 1개만 배치")]
+        public static void BuildSingleMenu()
+        {
+            if(!EditorUtility.DisplayDialog("소화기 단일 배치",
+                "역사에 배치된 소화기를 모두 제거하고 플레이어 앞에 1개만 둡니다. 계속할까요?","배치","취소"))return;
+            BindMaterials();Build(true);
+        }
 
         [MenuItem("ChooGuard/수직 슬라이스/소화기 머티리얼 결속")]
         public static void BindMaterialsMenu(){BindMaterials();}
@@ -118,6 +130,48 @@ namespace ChooGuard.EditorTools
             public bool TutorialTarget;   // 절차 세션이 물릴 대상. 정확히 하나여야 한다.
         }
 
+        // 역사 2층 대합실 12개. 좌표 출처는
+        // .planning/2026-09-22-station-interior-build/extinguisher-placement-v3.json
+        // (schema chooguard.extinguisher-placement.v2, computedAt 2026-09-22).
+        // 산정 근거는 NFTC 101 — 보행거리 20m 이내(소형), 33제곱미터 이상 구획 거실마다, 바닥 1.5m 이하.
+        // 방법은 벽으로만 막은 구획 분해 + 벽·단차를 막은 BFS 보행거리 + 그리디 커버(jev-poi-placement-004).
+        // 그 실행의 uncoveredAfterSolve 는 8셀이며, 법정 구획 5개(404·106·785·225·45㎡)를 덮는다.
+        //
+        // 주의 — 여기서 데이터와 다르게 처리하는 것 두 가지를 기록한다.
+        // ① 자료의 mountY 는 바닥+1.2m 인데 이 생성기는 BuildUnit 에서 바닥+1.10m 로 세운다.
+        //    둘 다 NFTC 101 의 1.5m 이하 안이라 규정 위반은 아니지만 자료와 10cm 다르다.
+        // ② 고유번호는 자료에 없다. 아래 값은 작성한 것이지 출처가 있는 것이 아니다.
+        //    월드 상태(부식·기한)도 마찬가지로 튜토리얼 시나리오 조건이며 실측이 아니다.
+        private static readonly Placement[] PlacementsV3=
+        {
+            Unit( 0,-10f,6.70f,-73f,  1,0, false,false,false),
+            Unit( 1, -6f,7.00f,-39f, -1,0, false,false,false),
+            Unit( 2, 14f,7.00f,-49f,  0,-1,false,false,false),
+            Unit( 3, 48f,7.02f,-47f,  0,-1,false,false,false),
+            Unit( 4, 60f,6.70f,-65f,  0,-1,false,false,false),
+            Unit( 5, 48f,7.00f,-49f,  0, 1,false,false,false),
+            Unit( 6, -8f,6.70f,-53f,  1,0, false,false,false),
+            Unit( 7,-16f,6.70f,-89f,  1,0, false,false,false),
+            Unit( 8, 16f,7.00f,-37f,  0, 1,false,false,false),
+            // 플레이어 시작 지점(26, 7.05, -47)에서 약 6.3m, 같은 층이라 튜토리얼 대상으로 둔다.
+            Unit( 9, 24f,7.00f,-53f,  0,-1,true, true, false),
+            Unit(10, 40f,7.00f,-59f,  0,-1,false,false,false),
+            Unit(11, 44f,7.20f,-35f,  0, 1,false,false,false),
+        };
+
+        // wallNormalDir 은 벽에서 실내 쪽을 가리킨다. 판독면(로컬 +Z)이 그쪽을 봐야 플레이어에게 보인다.
+        private static Placement Unit(int index,float x,float y,float z,int nx,int nz,
+                                      bool tutorialTarget,bool corroded,bool expiryPassed)
+            =>new Placement
+            {
+                Position=new Vector3(x,y,z),
+                Rotation=Quaternion.LookRotation(new Vector3(nx,0,nz),Vector3.up),
+                Serial="BSN-CONC-FE-"+(index+1).ToString("000"),
+                Corroded=corroded,
+                ExpiryPassed=expiryPassed,
+                TutorialTarget=tutorialTarget,
+            };
+
         // 기존 단일 배치 경로. 플레이어 정면 1.2m 에 하나를 두던 동작을 그대로 보존한다.
         public static GameObject Build(bool saveScene)
         {
@@ -131,7 +185,9 @@ namespace ChooGuard.EditorTools
             {
                 Position=new Vector3(stand.x,player.position.y,stand.z),
                 Rotation=Quaternion.LookRotation(-forward,Vector3.up),
-                Serial="BSN-CONC-FE-003",
+                // 역사 배치(BSN-CONC-FE-001~012)와 겹치면 안 된다. 유닛 이름이 곧 이월 기록의
+                // facilityId 라서, 같은 이름이면 서로 다른 소화기가 한 기록을 공유하게 된다.
+                Serial="DEV-FE-001",
                 Corroded=true,          // 정답은 '부적합'이다(제23조②1)
                 ExpiryPassed=false,     // 기한만 보고 통과시키면 틀린다
                 TutorialTarget=true,
@@ -150,6 +206,13 @@ namespace ChooGuard.EditorTools
             int targets=0;
             foreach(var p in placements)if(p.TutorialTarget)targets++;
             if(targets!=1){Debug.LogError("[슬라이스] 튜토리얼 대상은 정확히 1개여야 합니다 · 현재 "+targets);return null;}
+
+            // 고유번호가 곧 유닛 이름이고(root.name=UnitPrefix+Serial), 유닛 이름이 곧 이월 기록의
+            // facilityId 다. 겹치면 보고 제목도 이월 기록도 서로 섞인다 — 배치 전에 막는다.
+            var seenSerials=new HashSet<string>();
+            foreach(var p in placements)
+                if(!seenSerials.Add(p.Serial??""))
+                {Debug.LogError("[슬라이스] 고유번호가 겹칩니다 · "+p.Serial);return null;}
 
             // 근접 경고. RefreshInteraction 은 3m 상한 안에서 가장 가까운 콜라이더만 고르므로
             // 두 유닛이 그 안에 들어오면 어느 것을 겨눈 것인지 모호해진다(Jev 005 assert_and_report 0.95).
@@ -173,11 +236,13 @@ namespace ChooGuard.EditorTools
             tracker.Responder=responder;
 
             var roots=new List<GameObject>();
+            var inspectables=new List<FacilityInspectable>();
             FacilityInspectable tutorialTarget=null;
             foreach(var p in placements)
             {
                 var built=BuildUnit(p,model,tracker,out var inspectable);
                 roots.Add(built);
+                inspectables.Add(inspectable);
                 if(p.TutorialTarget)tutorialTarget=inspectable;
             }
 
@@ -196,6 +261,22 @@ namespace ChooGuard.EditorTools
             session.Responder=responder;session.GazeTracker=tracker;session.Target=tutorialTarget;
             session.ProcedureAsset=procedure;session.ChecklistVisible=true;
             session.PendingVerdict=tutorialTarget!=null&&tutorialTarget.Corroded?InspectionVerdict.UNFIT:InspectionVerdict.FIT;
+
+            // 기술자 인계는 설비마다 하나다 — 기술자는 특정 소화기로 간다.
+            // 붙이지 않으면 Dispatch 가 null 이라 요구 발행이 플래그로만 남는다.
+            // 인계 오브젝트는 유닛 루트가 아니라 호스트 아래 둔다. 유닛을 지워도 세션이 살아남는
+            // one_each_hoisted 규율과 같은 이유로, 인계도 유닛 수명에 묶지 않는다.
+            session.Units=new List<TutorialSession.UnitBinding>();
+            foreach(var inspectable in inspectables)
+            {
+                var dispatchObject=new GameObject("기술자 인계 · "+inspectable.SerialNumber);
+                Undo.RegisterCreatedObjectUndo(dispatchObject,"기술자 인계 생성");
+                dispatchObject.transform.SetParent(host.transform,false);
+                var dispatch=dispatchObject.AddComponent<TechnicianDispatch>();
+                dispatch.Target=inspectable;
+                session.Units.Add(new TutorialSession.UnitBinding{Facility=inspectable,Dispatch=dispatch});
+                if(inspectable==tutorialTarget)session.Dispatch=dispatch;
+            }
 
             // 점검표 HUD 를 붙이지 않는다. 조사 결론(2026-09-22): 단계 라벨·거부 사유·완료 피드백은
             // FirstPersonInteractionHud 의 중앙 프롬프트로 이미 흐르므로 별도 패널은 중복이다.

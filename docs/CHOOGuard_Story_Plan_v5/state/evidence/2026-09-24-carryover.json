@@ -1,0 +1,90 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-24T08:10:00+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "정비 튜토리얼(G9)의 지속 상태 이월 구현과 그 PlayMode 시험, 그리고 소화기 12개 좌표를 씬 생성기에 주입한 작업에 한정한다. 이월이 연결하는 '본편'은 아직 존재하지 않으므로, 검증된 것은 튜토리얼 회차 사이의 이월이다. 기술자 NPC의 몸·다중 대상·사람 플레이 검수는 여전히 없다. G9 PASS가 아니다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-FPS-1",
+  "designRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+  "planRef": ".planning/2026-09-23-technician-handoff/task_plan.md",
+  "run": {
+    "commit": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+    "workingTree": "uncommitted",
+    "unityVersion": "6000.3.23f1 (09d2ecc7fb28) revision 643820",
+    "mode": "batchmode -runTests -testPlatform PlayMode",
+    "assemblyNames": "ChooGuard.PlayModeTests",
+    "exitCode": 0,
+    "totals": { "total": 53, "passed": 53, "failed": 0, "skipped": 0, "inconclusive": 0 }
+  },
+  "changedFiles": [
+    "Assets/ChooGuard/App/Fps/Work/TutorialCarryoverStore.cs (신규)",
+    "Assets/ChooGuard/Tests/PlayMode/FpsCarryoverTests.cs (신규)",
+    "Assets/ChooGuard/App/Fps/Tutorial/TutorialSession.cs",
+    "Assets/ChooGuard/Editor/FireExtinguisherSliceBuilder.cs",
+    "Assets/ChooGuard/Scenes/FpsStation.unity",
+    "Assets/ChooGuard/Tests/PlayMode/{FpsProcedureTests,FpsAuditTerminalTests,FpsTechnicianHandoffTests}.cs"
+  ],
+  "checkpoints": [
+    {
+      "name": "Tutorial outcome persists",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsCarryoverTests.cs",
+      "summary": "점검을 닫는 순간에만 기록한다. 닫기 전에는 파일이 생기지 않아 되감기·재시행의 중간 상태가 새지 않는다."
+    },
+    {
+      "name": "Carryover becomes next run initial condition",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsCarryoverTests.cs",
+      "summary": "이전 회차에서 교체된 설비는 다음 회차 시작 시 결함이 없다. Start() 경로를 [UnityTest] 로 검증했다."
+    },
+    {
+      "name": "Skipping does not block",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsCarryoverTests.cs",
+      "summary": "기록이 없으면 그대로 시작한다. layer_coupling=state_carryover 의 '건너뛰면 막히는 게 아니라 조건이 달라진다'를 만족한다."
+    },
+    {
+      "name": "Failure modes are visible",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/App/Fps/Work/TutorialCarryoverStore.cs",
+      "summary": "읽기는 던지지 않고 경고만 남긴다. 쓰기는 .writing 임시 파일 후 교체하며 임시 파일이 남지 않는다. 기록 실패는 감사 결과에 열거된다(ECC 지적 반영)."
+    },
+    {
+      "name": "12 placements reproducible from code",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-22-station-interior-build/extinguisher-placement-v3.json",
+      "summary": "PlacementsV3 배열을 생성기에 주입해 씬의 소화기 12개가 코드로 재현된다. 이전에는 재현 경로가 없어 메뉴 한 번에 11개가 사라졌다."
+    },
+    {
+      "name": "Identifier collision blocked",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Editor/FireExtinguisherSliceBuilder.cs",
+      "summary": "ECC 가 역사 배치와 개발용 배치가 같은 고유번호(BSN-CONC-FE-003)를 만드는 것을 발견했다. 유닛 이름이 곧 이월 facilityId 라 서로 다른 설비가 한 기록을 공유할 수 있었다. 개발용을 DEV- 로 분리하고 생성기에 중복 검사를 추가했다."
+    },
+    {
+      "name": "ECC C# review applied",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-23-technician-handoff/findings.md",
+      "summary": "HIGH 2건(기록 실패 은폐, 고유번호 충돌)과 MEDIUM 1건(LogAssert 과대 무시) 반영. ApplyCarryover↔ResetInspection 왕복과 static OverridePath 누출은 결함 없음으로 확인받았다."
+    },
+    {
+      "name": "Carryover into live layer",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+      "summary": "본편(비상) 계층이 아직 없어 '튜토리얼 결과가 본편 초기 조건이 된다'의 본편 쪽 절반은 검증되지 않았다. 검증된 것은 튜토리얼 회차 사이의 이월이다."
+    },
+    {
+      "name": "Technician NPC embodiment",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+      "summary": "상태 기계만 있고 이동하는 NPC·애니메이션이 없다. 변화 없음."
+    },
+    {
+      "name": "Multi-target inspection",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": ".planning/2026-09-23-technician-handoff/findings.md",
+      "summary": "소화기 12개가 배치됐으나 TutorialSession.Target 이 단수라 세션·인계가 1개에만 걸린다. 대기 중 다른 소화기 점검은 시험 안에서만 성립한다."
+    }
+  ]
+}

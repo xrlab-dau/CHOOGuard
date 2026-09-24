@@ -1,0 +1,78 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-23T07:40:00+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "정비 튜토리얼(G9)의 기술자 인계 주기 구현과 그 PlayMode 시험에 한정한다. 수신·이동·수행·결과가 관찰 가능해졌으나, 기술자 NPC의 실제 이동·애니메이션 표현은 만들지 않았다(상태 기계와 월드 상태 변화만 구현). 지속 상태 이월은 여전히 미구현이며 사람 플레이 검수도 없다. 따라서 G9 PASS가 아니다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-FPS-1",
+  "designRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+  "planRef": ".planning/2026-09-23-technician-handoff/task_plan.md",
+  "run": {
+    "commit": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+    "workingTree": "uncommitted",
+    "unityVersion": "6000.3.23f1 (09d2ecc7fb28) revision 643820",
+    "mode": "batchmode -runTests -testPlatform PlayMode",
+    "assemblyNames": "ChooGuard.PlayModeTests",
+    "exitCode": 0,
+    "totals": { "total": 45, "passed": 45, "failed": 0, "skipped": 0, "inconclusive": 0 }
+  },
+  "changedFiles": [
+    "Assets/ChooGuard/App/Fps/Work/TechnicianDispatch.cs (신규)",
+    "Assets/ChooGuard/App/Fps/Work/FacilityInspectable.cs",
+    "Assets/ChooGuard/App/Fps/Work/ProcedureRunner.cs",
+    "Assets/ChooGuard/App/Fps/Tutorial/TutorialSession.cs",
+    "Assets/ChooGuard/Art/Procedures/fire-extinguisher-monthly.json (v1 → v2)",
+    "Assets/ChooGuard/Tests/PlayMode/FpsTechnicianHandoffTests.cs (신규)"
+  ],
+  "checkpoints": [
+    {
+      "name": "Handoff cycle observable",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsTechnicianHandoffTests.cs",
+      "summary": "RECEIVED→TRAVELLING→WORKING→COMPLETED 4단계가 각각 관찰된다. 요구 발행 직후에도 설비는 결함 상태이며, 한 번의 Tick 이 여러 단계를 건너뛰지 않는다."
+    },
+    {
+      "name": "Player can act while waiting",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsTechnicianHandoffTests.cs",
+      "summary": "witness-replacement 를 conditional 로 두어 기술자 대기 중 점검표 부착 등 다른 단계가 진행된다. 확정된 역할 경계의 '기다리는 동안 다른 일을 함'이 성립한다."
+    },
+    {
+      "name": "Role boundary preserved",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Art/Procedures/fire-extinguisher-monthly.json",
+      "summary": "플레이어는 요구 발행과 결과 확인만 한다. 분해·교체·충전은 TechnicianDispatch 가 수행하며 플레이어 입력 경로가 없다."
+    },
+    {
+      "name": "Shipped procedure asset loads",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsTechnicianHandoffTests.cs",
+      "summary": "배포된 절차 자료를 디스크에서 직접 읽어 로드하는 시험을 추가했다. 기존 시험이 전부 자체 축약본만 써서 실제 자료의 판본 오류를 놓치던 공백을 메웠다."
+    },
+    {
+      "name": "ECC C# review applied",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-23-technician-handoff/task_plan.md",
+      "summary": "HIGH 1건(Tick 시간 이월이 Enter 의 초기화로 소실) 수정, MEDIUM 1건(판본이 어휘를 제한하지 않음) 수정. 각각을 겨냥한 시험 2건을 추가했다."
+    },
+    {
+      "name": "No regression",
+      "result": "PASS",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-23-tutorial-playmode.json",
+      "summary": "같은 어셈블리의 기존 32건이 모두 통과. 직전 실행(32/32)과 비교해 회귀 없음."
+    },
+    {
+      "name": "Technician NPC embodiment",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+      "summary": "상태 기계와 월드 상태 변화만 있고, 실제로 이동하는 NPC 캐릭터·애니메이션·현장 표현이 없다. 1인칭으로 '도착하는 것이 보이는가'는 미검증."
+    },
+    {
+      "name": "Durable state carryover",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+      "summary": "App/Fps 에 저장·이월 코드가 여전히 없다. layer_coupling=state_carryover 요건 미충족."
+    }
+  ]
+}

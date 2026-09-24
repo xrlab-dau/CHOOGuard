@@ -34,6 +34,9 @@ namespace ChooGuard.App.Fps.Work
         public string RecordedSerial { get; private set; }="";
         public bool RepairOrderIssued { get; private set; }
         public Transform AttachedTag { get; private set; }
+        // 교체 결과. 기술자가 수행한 사실이지 플레이어가 기재한 판정이 아니다.
+        public bool ServiceCompleted { get; private set; }
+        public string ReplacedFromSerial { get; private set; }="";
         // 제23조②1 — 기한 도달 이전이라도 부식·결함이면 폐기다. 기한만 보고 통과시키면 틀린다.
         public bool ShouldBeUnfit=>Corroded||MechanicallyDefective||PressureOutOfRange||ExpiryPassed;
 
@@ -66,9 +69,42 @@ namespace ChooGuard.App.Fps.Work
             if(tag==null)return null;
             tag.transform.SetParent(transform,false);AttachedTag=tag.transform;return AttachedTag;
         }
+        // 폐기·교체가 실제로 일어났다(제23조②1). 결함이 남아 있으면 교체라고 부를 수 없으므로 함께 해소한다.
+        // 판정과 점검표는 건드리지 않는다 — 그것은 플레이어가 기재한 이번 회차의 기록이고,
+        // 교체된 설비는 다음 회차에 새로 점검받아야 한다.
+        public void ApplyReplacement(string replacementSerial)
+        {
+            if(ServiceCompleted)return;
+            // 재시행은 같은 씬 조건에서 다시 도는 것이므로 교체 전 상태를 되돌릴 수 있어야 한다.
+            preReplacement=new WorldDefects(Corroded,MechanicallyDefective,PressureOutOfRange,ExpiryPassed);
+            ReplacedFromSerial=SerialNumber??"";
+            SerialNumber=string.IsNullOrEmpty(replacementSerial)?ReplacedFromSerial:replacementSerial;
+            Corroded=false;MechanicallyDefective=false;PressureOutOfRange=false;ExpiryPassed=false;
+            ServiceCompleted=true;
+        }
+
+        private readonly struct WorldDefects
+        {
+            public readonly bool Corroded,Mechanical,Pressure,Expiry;
+            public WorldDefects(bool corroded,bool mechanical,bool pressure,bool expiry)
+            { Corroded=corroded;Mechanical=mechanical;Pressure=pressure;Expiry=expiry; }
+        }
+        private WorldDefects? preReplacement;
+
         public void ResetInspection()
         {
             Verdict=InspectionVerdict.NOT_RECORDED;RecordedSerial="";RepairOrderIssued=false;
+            if(ServiceCompleted)
+            {
+                SerialNumber=ReplacedFromSerial;
+                if(preReplacement.HasValue)
+                {
+                    var before=preReplacement.Value;
+                    Corroded=before.Corroded;MechanicallyDefective=before.Mechanical;
+                    PressureOutOfRange=before.Pressure;ExpiryPassed=before.Expiry;
+                }
+            }
+            preReplacement=null;ServiceCompleted=false;ReplacedFromSerial="";
             if(AttachedTag!=null){var go=AttachedTag.gameObject;AttachedTag=null;if(UnityEngine.Application.isPlaying)Destroy(go);else DestroyImmediate(go);}
         }
 
