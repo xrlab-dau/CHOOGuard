@@ -1,0 +1,101 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-24T14:20:00+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "튜토리얼이 시험만 통과하고 실제 플레이에서는 작동하지 않던 네 가지를 고친 작업에 한정한다. 판정 선택·점검표 표시·현장 수리 시도 입력·Bootstrap 진입이다. 오디오와 기술자 NPC 의 몸은 여전히 없고, 사람이 실제로 플레이한 검수도 없다. G9 PASS 가 아니다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-FPS-1",
+  "designRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+  "run": {
+    "branch": "feature/tutorial-playable (feature/tutorial-maintenance-layer 위에 쌓음)",
+    "workingTree": "uncommitted",
+    "unityVersion": "6000.3.23f1",
+    "mode": "batchmode -runTests -testPlatform PlayMode",
+    "assemblyNames": "ChooGuard.PlayModeTests",
+    "exitCode": 0,
+    "totals": { "total": 75, "passed": 75, "failed": 0, "skipped": 0, "inconclusive": 0 }
+  },
+  "problemsFound": [
+    "생성기가 월드 상태를 보고 정답을 PendingVerdict 에 미리 넣어, 플레이어가 고를 것이 없고 MisjudgementCount 가 영원히 0 이었다.",
+    "InspectionTagPrefab 이 null 이라 세션이 렌더러 없는 빈 GameObject 를 만들었고 점검표가 보이지 않았다.",
+    "TryFieldRepair() 호출처가 저장소 전체에 0 건이라 역할 경계 위반을 시도할 수단이 없었다.",
+    "LoadScene 호출이 0 건이라 빌드 실행 시 Bootstrap 에 머물렀다."
+  ],
+  "changedFiles": [
+    "Assets/ChooGuard/App/Fps/Tutorial/TutorialInput.cs (신규)",
+    "Assets/ChooGuard/App/Fps/SceneEntryPoint.cs (신규)",
+    "Assets/ChooGuard/Editor/BootstrapEntryBuilder.cs (신규)",
+    "Assets/ChooGuard/Tests/PlayMode/FpsPlayableTests.cs (신규)",
+    "Assets/ChooGuard/App/Fps/Tutorial/TutorialSession.cs",
+    "Assets/ChooGuard/App/Fps/Work/ProcedureRunner.cs",
+    "Assets/ChooGuard/App/Fps/Work/FacilityInspectable.cs",
+    "Assets/ChooGuard/Editor/FireExtinguisherSliceBuilder.cs",
+    "Assets/ChooGuard/Art/Procedures/fire-extinguisher-monthly.json (v2 → v3)",
+    "Assets/ChooGuard/Tests/PlayMode/FpsMultiTargetTests.cs",
+    "Assets/ChooGuard/Scenes/FpsStation.unity",
+    "Assets/ChooGuard/Scenes/Bootstrap.unity"
+  ],
+  "checkpoints": [
+    {
+      "name": "Player chooses the verdict",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsPlayableTests.cs",
+      "summary": "절차 v3 의 record-verdict 가 verdict-selected 를 요구한다. 고르지 않으면 막히고, 적합으로 잘못 고르면 오판정이 집계된다 — 고치기 전에는 이 시험을 쓸 수조차 없었다."
+    },
+    {
+      "name": "Verdict is per unit",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsMultiTargetTests.cs",
+      "summary": "PendingVerdict 를 UnitState 로 옮겼다. ECC 가 A 에서 고른 판정이 B 로 새어, 아무것도 고르지 않은 B 에 기재되는 것을 발견했다."
+    },
+    {
+      "name": "Rewind restores what the step left",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsPlayableTests.cs",
+      "summary": "'되감기로 돌아가세요' 안내가 거짓이었다 — 되감아도 Verdict 가 남아 다시 고를 수 없었고 재기재 시 오판정이 중복 집계됐다. RevertEffect 로 월드 상태와 집계를 함께 되돌린다. 기술자가 출발한 뒤에는 되감기를 거부한다."
+    },
+    {
+      "name": "Inspection tag is visible and harmless",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Editor/FireExtinguisherSliceBuilder.cs",
+      "summary": "생성기가 비활성 템플릿을 만들고 유닛마다 부착 지점을 둔다. 콜라이더를 지워 판독면 조준을 가리지 않는다."
+    },
+    {
+      "name": "Role boundary can be attempted and refused",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/App/Fps/Tutorial/TutorialInput.cs",
+      "summary": "F 키로 현장 수리를 시도할 수 있고 거부되며 RoleBoundaryViolations 가 오른다. 이전에는 시도할 수단 자체가 없었다."
+    },
+    {
+      "name": "Keyboard path is exercised",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Tests/PlayMode/FpsPlayableTests.cs",
+      "summary": "키 읽기와 매핑을 HandleKeys 로 분리해 시험한다. 공개 메서드만 시험하면 일시정지 게이트를 지나지 않아 실제 경로가 검증되지 않는다 — 실제로 이 시험을 넣자 게이트에 걸려 실패했고 그것이 경로가 살아났다는 증거였다."
+    },
+    {
+      "name": "Bootstrap reaches the tutorial",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Scenes/Bootstrap.unity",
+      "summary": "SceneEntryPoint 가 Enter 로 FpsStation 을 연다. 즉시 전환(첫 화면이 두 프레임 만에 사라짐)과 아무 입력 수용(씬의 Canvas·EventSystem 을 쓰는 쪽을 파괴)을 차례로 겪고 좁혔다."
+    },
+    {
+      "name": "No regression",
+      "result": "PASS",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-24-multi-target.json",
+      "summary": "75/75. 작업 중 부트 시험과 입력 라우터 시험이 각각 한 번씩 깨졌고 둘 다 내 설계 오류를 드러냈다 — 최종 실행에서 모두 통과."
+    },
+    {
+      "name": "Human play review",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+      "summary": "이 작업이 '사람이 켜면 작동하게' 하는 것이었지만, 사람이 실제로 켜서 끝까지 해본 기록은 여전히 없다."
+    },
+    {
+      "name": "Audio and technician embodiment",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/BENCHMARK_FPS_MATRIX.md",
+      "summary": "AudioSource 0 건, 기술자는 상태 기계만. 요구 발행 후 약 1 분간 문자열 외에 볼 것이 없다. 변화 없음."
+    }
+  ]
+}

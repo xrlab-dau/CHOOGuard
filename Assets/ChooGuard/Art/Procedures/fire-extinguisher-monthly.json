@@ -1,6 +1,6 @@
 {
   "id": "fire-extinguisher-monthly",
-  "version": 2,
+  "version": 3,
   "title": "소화기 월간 상태점검",
   "basis": "「소방안전관리 시행세칙」 제17조⑤ · 제22조3 · 제23조②1 · 제23조②3",
   "sourceNote": "별지 제7호서식의 실제 항목은 HWP 표 추출에서 미확보 상태이므로 서식 항목 수치를 넣지 않았다. 여기의 단계는 본문 조문에서만 유도했다. v2에서 추가한 witness-replacement 단계는 조문에 직접 대응하는 근거가 없는 설계 선택이며, 해당 단계의 basis 필드에 그렇게 적었다.",
@@ -54,11 +54,11 @@
       "label": "적합·부적합 판정 기재",
       "basis": "제23조②1 — 제원표 기한과 부식·결함을 함께 본 뒤에 판정한다",
       "requires": ["check-body"],
-      "allFacts": ["serial-recorded"],
+      "allFacts": ["serial-recorded", "verdict-selected"],
       "notFacts": [],
       "effect": "record-verdict",
       "observe": "판정이 기록되고, 월드 상태와 판정이 일치하는지 대조 가능",
-      "failReason": "고유번호를 기재하기 전에는 판정을 기록할 수 없습니다"
+      "failReason": "적합(1)·부적합(2) 중 하나를 고른 뒤 기재하세요"
     },
     {
       "id": "issue-repair-order",

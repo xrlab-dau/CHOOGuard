@@ -35,13 +35,19 @@ G9는 2026-09-23 사용자 지시("튜토리얼은 정비 시뮬레이션 게임
 
 **PASS:** Native single-player play physically connects recognition, reporting/communication, NPC cooperation, passenger guidance, site control and handoff. The accepted release mission set includes at least one disaster and one terror-related staff response with source-matched duties. Normal, route-blocked and delayed/missed-communication variants remain playable and correctable. Completion follows world/NPC state, not button sequence or waiting. No separate debrief/quiz is required.
 
-현재: NOT_VERIFIED; plan only
+현재: NOT_VERIFIED; 설계 정본은 [MISSION_DESIGN.md](MISSION_DESIGN.md)(2026-09-24 채택). 첫 미션은 역사 화재·대피(Jev 055, 0.93/conf 0.89), 실행 그래프·완료 판정 규율·금지 조건이 확정됐고 G1이 요구하는 재난 1종·테러 1종·변형 3종과의 대응표도 있다.
+
+**평가할 대상은 생겼으나 본편 코드가 0 이다.** 2026-09-24 실측: 신고·무전·전달, 승객 NPC, 직원 NPC 협업, 접근 통제, 오디오 모두 없음. 서 있는 것은 1인칭 이동·시선·상호작용 기반(`FirstPersonResponder`, `FpsInteractable`, `FirstPersonInteractionHud`)뿐이다. 설계 문서가 생긴 것과 플레이가 되는 것은 다르다.
 
 ## G2 FPS reference application and role fit
 
 **PASS:** A source-to-runtime comparison maps movement/look responsiveness, interaction reach/visibility, spatial objectives, audiovisual acknowledgement and tension from the selected FPS references to station-staff play. Independent native review confirms actual embodied choices and readable consequences. No score for copied combat, resource building or shooter art alone.
 
-현재: NOT_VERIFIED; references are user intent, not yet independently benchmarked
+현재: NOT_VERIFIED; 대조표 정본은 [BENCHMARK_FPS_MATRIX.md](BENCHMARK_FPS_MATRIX.md)(2026-09-24 작성). G2가 요구하는 5축(이동·시선 반응성 / 상호작용 사거리·가시성 / 공간 목표 / 시청각 확인 / 긴장)에 레퍼런스 원리와 런타임 요소를 대응시켰다.
+
+집계: 구현 8 · 부분 2 · 미구현 9. **축 1·2는 서 있고 축 3·4·5는 거의 비어 있으며**, 빈 항목 대부분이 승객 NPC와 오디오에 걸려 있다. 전투 메커닉은 하나도 가져오지 않았고, RTS 전제 항목(건물 선택·관리 오버레이·도시 자원망)은 '가져오지 않음'으로 명시했다.
+
+**대조표가 생긴 것이 PASS가 아니다.** G2는 *"Independent native review confirms actual embodied choices and readable consequences"* 도 요구하는데, 독립 검토도 그 검토가 확인할 플레이도 없다.
 
 참조 자료: 1인칭 감각은 [FPS_RESEARCH_PROPOSAL.md](FPS_RESEARCH_PROPOSAL.md), 운영 루프와 자원 경쟁은 [PRODUCTION_GAME_BENCHMARK.md](PRODUCTION_GAME_BENCHMARK.md). 후자는 RTS 전제로 쓰였으므로 단일 1인칭 행위자에 맞는 항목만 인정한다.
 
@@ -93,7 +99,17 @@ G9는 2026-09-23 사용자 지시("튜토리얼은 정비 시뮬레이션 게임
 
 2026-09-24 추가: 다중 대상화로 소화기 12개 전부가 유닛별 상태를 갖게 되어 기록된 Jev 판정(`one_each_hoisted` 0.87, `all_twelve_with_per_unit_state` 0.65)이 코드와 씬 양쪽에서 성립한다. PlayMode **61/61**(영수증 [`2026-09-24-multi-target.json`](state/evidence/2026-09-24-multi-target.json)). "기다리는 동안 다른 소화기를 점검한다"가 단일 유닛 안의 조건부 단계가 아니라 실제 유닛 전환으로 성립한다.
 
-**PASS가 아닌 이유 네 가지.** ① 기술자에게 몸이 없어(이동하는 NPC·애니메이션 없음) 1인칭으로 도착이 관찰되지 않는다. ② 이월이 연결할 본편(비상) 계층이 없어 "본편 초기 조건이 된다"의 절반이 미검증이다. ③ 생성기가 경고하는 유닛 간 2.00m 간격(BSN-CONC-FE-004 ↔ -006)이 상호작용 상한 3m 안이라 조준 모호 가능성이 남아 있고 확인되지 않았다. ④ 사람 플레이 검수와 프레임 캡처가 없다.
+2026-09-24 추가: 시험만 통과하고 실제 플레이에서는 작동하지 않던 네 가지를 고쳤다 — 판정이 미리 채워져 플레이어가 고를 것이 없던 문제, 점검표가 보이지 않던 문제, 역할 경계를 어길 수단이 없던 문제, 빌드하면 튜토리얼에 도달하지 못하던 문제. PlayMode **75/75**(영수증 [`2026-09-24-playable.json`](state/evidence/2026-09-24-playable.json)). 이로써 "역할 경계를 존중한다"와 "완료가 별도 퀴즈 없이 읽힌다"가 코드 경로뿐 아니라 **플레이어가 실제로 도달할 수 있는 경로**에서 성립한다. 다만 61/61 시점에 이 네 가지가 모두 깨져 있었는데 시험이 하나도 잡지 못했다는 사실 자체가, 이 축을 자동 시험만으로 PASS 판정할 수 없다는 근거다.
+
+2026-09-25 정정: 2026-09-24 항목에서 "점검표가 보이지 않던 문제" 를 고쳤다고 적었으나 **사실이 아니었다.** 렌더러를 붙였을 뿐 화면에는 그려지지 않았고(부착 전/후 프레임의 상단 픽셀 차이 0 개), 근거로 쓴 단언은 두 경우 모두 통과하는 것이었다. 방향(Quad 의 보이는 면)과 재질을 고쳐 실제로 그려지는 것을 픽셀 차이 **578 개**로 확인했다. 영수증 [`2026-09-25-play-verification.json`](state/evidence/2026-09-25-play-verification.json).
+
+같은 실행에서 **시작 지점 문제**도 드러나 함께 고쳤다 — 생성기가 소화기 12 개는 배치하면서 플레이어만 두고 가, 시작 시야에 빈 하늘만 있었다(15m 이내 렌더러 2,322 개 중 5 개). 지금은 지정 대상 앞 1.40m 에서 그것을 보고 시작한다. (이 문제를 처음 보고할 때 거리를 44.41m 라고 적었으나 하네스가 `Units[0]` 을 기준으로 잰 것이고, 지정 대상까지는 6.32m 였다.)
+
+**그 3 건 처리 (2026-09-25).** 점검표 확인 시 상호작용이 끊기던 것은 콜라이더를 되살려 고쳤다. 기술자 인계는 `TechnicianPresence` 대역을 넣어 이동·작업·입회 대기가 화면에 보인다 — 다만 애니메이션 없는 캡슐이므로 **이것으로 관찰 가능성을 통과로 보지 않는다.** 설비 3 개(`FE-001`·`-002`·`-008`)에 설 자리가 없는 것은 **고치지 않았다** — 좌표를 옮기면 NFTC 101 산정 근거가 깨지고 구획 커버를 검증할 방법이 없다. 생성기가 매번 검증해 경고한다. PlayMode 75 통과 · 0 실패 · 1 건너뜀.
+
+**미해결.** 설비가 벽감에 끼어 정면 접근이 막힌다(좌표를 보행거리로만 산정하고 구조물 간섭을 검토한 적이 없다), 점검표를 보려고 고개를 숙이면 상호작용이 끊긴다, 기술자 인계 59 초 동안 화면에 아무 변화가 없다. 셋 다 자동 시험 75 개가 잡지 못했다. 이 축의 판정을 자동 시험으로 올릴 수 없다는 근거가 한 번 더 쌓였다.
+
+**PASS가 아닌 이유 다섯 가지.** ① 기술자에게 몸이 없어(이동하는 NPC·애니메이션 없음) 1인칭으로 도착이 관찰되지 않는다. ② 이월이 연결할 본편(비상) 계층이 없어 "본편 초기 조건이 된다"의 절반이 미검증이다. ③ 생성기가 경고하는 유닛 간 2.00m 간격(BSN-CONC-FE-004 ↔ -006)이 상호작용 상한 3m 안이라 조준 모호 가능성이 남아 있고 확인되지 않았다. ④ 사람 플레이 검수와 프레임 캡처가 없다 — 2026-09-24 작업이 바로 "사람이 켜면 작동하게" 하는 것이었으므로 이 공백이 그 성과 자체를 미검증으로 묶는다. ⑤ 저장소에 `AudioSource`가 0건이라 요청·도착·완료 어느 것도 소리로 알려지지 않는다.
 
 확정 사항 (2026-09-23):
 - 역할 경계 — 플레이어는 육안 점검(압력계·봉인·거치대), 이상 발견 시 위치 지정 보고, 사용 공간 확보·통행 통제, 교체 후 재점검·기록. 기술자 NPC는 도착 후 분해·교체·충전을 수행하고 플레이어는 요청·입회·결과 확인. (`role_boundary_risk = staff_checks_only`, 확신 1.0)
@@ -130,6 +146,6 @@ G9는 2026-09-23 사용자 지시("튜토리얼은 정비 시뮬레이션 게임
 | G1 · G2 · G3 · G5 · G6 · G7 · G8 · G9 | NOT_VERIFIED |
 | G4 | FAIL_GAP |
 
-G9는 2026-09-23 기술자 인계 구현으로 NOT_EVALUATED에서 NOT_VERIFIED로 옮겼다. 설계 문서와 실행 영수증이 생겨 평가할 대상은 존재하나, 아직 통과 요건을 채우지 못한 상태다.
+G9는 2026-09-23 기술자 인계 구현으로 NOT_EVALUATED에서 NOT_VERIFIED로 옮겼다. 설계 문서와 실행 영수증이 생겨 평가할 대상은 존재하나, 아직 통과 요건을 채우지 못한 상태다. 2026-09-24 플레이 가능성 작업(75/75) 후에도 NOT_VERIFIED를 유지한다 — 사람이 실제로 켜서 끝까지 해본 기록이 없는 한 판정을 올리지 않는다.
 
 이전 기준(A-fixed-1)의 PARTIAL·PARTIAL PASS 판정은 평가 대상이 달라졌으므로 이 표로 옮겨 적지 않는다.

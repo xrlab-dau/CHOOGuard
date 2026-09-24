@@ -1,0 +1,92 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-25T06:20:00+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "소화기 12개 배치를 실제 씬 콜라이더 기준으로 다시 푼 작업. 2026-09-25-remaining-three.json 이 FAIL 로 남기고 '고치지 않기로 판단' 했던 항목을, 좌표를 임의로 옮기는 대신 산정을 다시 하는 방식으로 해소했다. G9 PASS 가 아니다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-FPS-1",
+  "designRef": "docs/CHOOGuard_Story_Plan_v5/TUTORIAL_MAINTENANCE_DESIGN.md",
+  "followsFrom": "docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-25-remaining-three.json",
+  "dataRef": ".planning/2026-09-25-placement-resolve/extinguisher-placement-v4.json",
+  "run": {
+    "branch": "feature/tutorial-playable",
+    "totals": { "total": 76, "passed": 75, "failed": 0, "skipped": 1 },
+    "skippedNote": "FpsCaptureHarness — 렌더링이 필요해 배치모드에서 의도적으로 건너뛴다."
+  },
+  "method": {
+    "tool": "Assets/ChooGuard/Editor/StationWalkableSolver.cs",
+    "note": "씬을 고치지 않는다. 읽고 계산해 JSON 과 붙여넣을 코드만 낸다 — 배치를 바꾸는 것은 사람이 검토한 뒤에 할 일이다.",
+    "steps": [
+      "씬 콜라이더를 0.5m 격자로 훑어 바닥을 찾고 사람 크기 캡슐이 들어가는지 확인",
+      "플레이어 시작점에서 BFS — 단차 상한 0.35m. 걸어 닿는 영역만 남긴다",
+      "수평 광선으로 벽면을 직접 찾는다. 법선이 서 있는 면만 벽으로 본다",
+      "후보마다 설 자리·판독면 시야·그 자리까지 걸어갈 수 있는지를 검사",
+      "보행거리 20m 그리디 커버 + 유닛 간 최소 간격 3.2m 강제",
+      "개방도(6m 안 보행 칸)로 튜토리얼 대상 선정"
+    ]
+  },
+  "result": {
+    "before": { "unitsWithoutStandingRoom": 3, "minGapMetres": 2.00, "coverage": "미검증", "basis": "격자·보행거리" },
+    "after": { "unitsWithoutStandingRoom": 0, "minGapMetres": 6.40, "coverage": "100% (못 덮은 칸 0/3137)", "basis": "실제 씬 콜라이더" },
+    "wallCandidatesValidated": 56,
+    "rejectedForUnreachableStand": 89,
+    "tutorialTargetOpenness": 264
+  },
+  "checkpoints": [
+    {
+      "name": "Every unit has standing room",
+      "result": "PASS",
+      "evidenceRef": "생성기 로그 · 배치 검증",
+      "summary": "12개 모두 설 자리 확인. 이전에는 BSN-CONC-FE-001·-002·-008 세 개가 실패했고 그중 하나는 아래 8m 까지 바닥이 없는 건물 밖이었다."
+    },
+    {
+      "name": "Proximity warning resolved",
+      "result": "PASS",
+      "evidenceRef": "생성기 로그",
+      "summary": "유닛 간 최소 간격 2.00m → 6.40m. 상호작용 상한 3m 을 넘겨 조준 모호가 사라진다. 커버 선택과 간격 채우기 양쪽에 3.2m 하한을 강제했다."
+    },
+    {
+      "name": "Walking-distance coverage",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-25-placement-resolve/extinguisher-placement-v4.json",
+      "summary": "걸어 닿는 3,137칸 전부가 보행거리 20m 안에 들어온다. 못 덮은 칸 0."
+    },
+    {
+      "name": "Tutorial target is legible at spawn",
+      "result": "PASS",
+      "evidenceRef": "03-재개직후-HUD.png",
+      "summary": "개방도 264 로 12개 중 가장 트인 자리. 시작 화면에 소화기가 밝은 기둥에 붙어 선명하게 보인다. 직전 후보는 모든 기하 검사를 통과하고도 어두운 벽감에 묻혀 실루엣만 보였다 — 프레임을 보지 않았으면 통과였다."
+    },
+    {
+      "name": "No regression",
+      "result": "PASS",
+      "evidenceRef": "PlayMode 76 건",
+      "summary": "75 통과 · 0 실패 · 1 건너뜀."
+    },
+    {
+      "name": "Legal compliance",
+      "result": "NOT_CLAIMED",
+      "evidenceRef": "코드 주석 · JSON limits 필드",
+      "summary": "NFTC 101 의 보행거리 항목(소형 20m)만 계산에 썼다. 구획 면적·소화 능력단위 산정은 하지 않았다. 개수 12개는 v3 과 같게 유지했다 — 보행거리만으로는 5개면 덮이지만, 내가 계산하지 않은 요건을 내 판단으로 완화하지 않는다. 고유번호와 월드 상태는 여전히 작성한 값이며 실측이 아니다."
+    },
+    {
+      "name": "Human walked all twelve",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+      "summary": "튜토리얼 대상 한 개만 프레임으로 확인했다. 나머지 11개를 사람이 걸어가 점검해 본 적은 없다."
+    }
+  ],
+  "myErrorsWhileBuildingTheTool": [
+    "콜라이더 경계를 전부 합쳐 격자가 899×908(81만 칸)로 터졌다 — 역사 외부 모델까지 들어왔다.",
+    "벽 검사 광선을 벽 안쪽에서 쐈다. Unity 는 콜라이더 내부에서 시작한 레이를 통과시킨다 — 벽에 접한 표본 146개가 전부 허공으로 잡혔다.",
+    "대합실이 개방적이라 2.2m 탐색으로는 382개 표본 중 4개만 벽에 닿았다.",
+    "건물 맨 위에서 아래로 쏴 지붕을 바닥으로 알았다. 산출 y 가 전부 13~16m 였는데(바닥은 7.0m) 커버 100%·간격 5.82m 로 결과는 멀쩡해 보였다 — 수치만 봤으면 소화기를 지붕에 올렸다.",
+    "서는 자리를 바닥·몸 낌으로만 검사하고 걸어 닿는지는 보지 않았다. 유닛 둘의 개방도가 0 이었고 후보 89개가 같은 문제였다."
+  ],
+  "limits": [
+    "격자 0.5m, 단차 상한 0.35m, 사람 반지름 0.3m 가 결과를 좌우한다. 값을 바꾸면 답이 바뀐다.",
+    "표본 간격 1.5m 라 그 사이의 벽면은 후보에 오르지 않는다.",
+    "시작점 ±70m 밖은 보지 않는다."
+  ]
+}

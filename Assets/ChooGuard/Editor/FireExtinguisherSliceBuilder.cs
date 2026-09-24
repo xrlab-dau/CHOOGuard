@@ -28,7 +28,7 @@ namespace ChooGuard.EditorTools
         // Build(placements) 가 시작할 때 접두사에 걸리는 기존 유닛을 전부 지우므로
         // 한 번 누르면 12개가 1개로 줄었다(2026-09-24 실제 발생, 씬 복원함).
         [MenuItem("ChooGuard/수직 슬라이스/소화기 월간점검 배치 (역사 12개)")]
-        public static void BuildMenu(){BindMaterials();Build(PlacementsV3,true);}
+        public static void BuildMenu(){BindMaterials();Build(PlacementsV4,true);}
 
         // 단일 배치는 개발용으로만 남긴다. 누르면 역사 배치가 이것 하나로 대체된다.
         [MenuItem("ChooGuard/수직 슬라이스/개발용 · 플레이어 앞 1개만 배치")]
@@ -130,7 +130,45 @@ namespace ChooGuard.EditorTools
             public bool TutorialTarget;   // 절차 세션이 물릴 대상. 정확히 하나여야 한다.
         }
 
-        // 역사 2층 대합실 12개. 좌표 출처는
+        // 역사 2층 대합실 12개 — v4. 좌표 출처는
+        // .planning/2026-09-25-placement-resolve/extinguisher-placement-v4.json
+        // (schema chooguard.extinguisher-placement.v3, StationWalkableSolver 산출).
+        //
+        // v3 와 무엇이 다른가: v3 은 격자와 보행거리로만 풀었고 실제 콜라이더를 보지 않았다.
+        // 그 결과 12개 중 3개(FE-001·-002·-008)가 사람이 설 수 없는 자리에 놓였고 그중 하나는
+        // 아래 8m 까지 바닥이 없는 건물 밖이었다. v4 는 씬 콜라이더를 0.5m 격자로 훑어 바닥과
+        // 사람 여유를 확인하고, 플레이어 시작점에서 걸어 닿는 영역만 남긴 뒤, 벽면 후보 중
+        // 설 자리와 판독면 시야가 확보되고 그 자리까지 걸어갈 수 있는 56개에서 골랐다.
+        //
+        // 산출 당시 수치 — 걸어 닿는 곳 3,137칸 · 커버 100%(못 덮은 칸 0) · 유닛 간 최소 간격 6.40m ·
+        // 12개 모두 개방도 149 이상. v3 의 2.00m 근접 경고가 이것으로 해소된다.
+        //
+        // 주장하지 않는 것 — 법정 적합. NFTC 101 의 보행거리 항목(소형 20m)만 계산에 썼고
+        // 구획 면적·소화 능력단위 산정은 하지 않았다. 개수 12개는 v3 과 같게 유지했다:
+        // 보행거리만으로는 5개면 덮이지만, 내가 계산하지 않은 요건을 내 판단으로 완화하지 않는다.
+        // 고유번호와 월드 상태(부식·기한)는 여전히 작성한 값이며 실측이 아니다.
+        private static readonly Placement[] PlacementsV4=
+        {
+            Unit( 0,29.57f,7.00f,-40.82f,  0,-1, false,false,false),
+            Unit( 1, 8.57f,7.00f,-33.04f,  0,-1, false,false,false),
+            Unit( 2,51.14f,7.00f,-63.65f,  1, 0, false,false,false),
+            Unit( 3,13.07f,7.00f,-50.10f,  0, 1, false,false,false),
+            Unit( 4,34.95f,7.00f,-57.65f,  1, 0, false,false,false),
+            Unit( 5,59.38f,7.00f,-53.15f, -1, 0, false,false,false),
+            Unit( 6, 1.07f,7.00f,-45.60f,  0, 1, false,false,false),
+            Unit( 7,40.07f,7.00f,-45.44f,  0,-1, false,false,false),
+            Unit( 8,23.57f,7.00f,-53.94f,  0, 1, false,false,false),
+            // 튜토리얼 대상. 솔버가 잰 개방도(6m 안 보행 칸) 264 로 12개 중 가장 트인 자리다.
+            // 기하학적으로 유효해도 어두운 벽감에 묻히면 첫 화면에서 실루엣만 보인다 —
+            // 실제로 그런 자리가 뽑혀 프레임으로 확인하고 지표를 넣었다.
+            // 부식 상태로 둬서 부적합 판정과 기술자 인계를 한 회차에 겪게 한다.
+            Unit( 9,19.07f,7.00f,-37.66f,  0,-1, true, true, false),
+            Unit(10,41.57f,7.00f,-60.61f,  0, 1, false,false,false),
+            Unit(11, 7.07f,7.00f,-47.82f,  0, 1, false,false,false),
+        };
+
+        // 역사 2층 대합실 12개 — v3. 실제 콜라이더를 보지 않고 산정해 3개가 설 수 없는 자리에
+        // 놓였다. v4 로 대체했고 비교를 위해 남긴다. 좌표 출처는
         // .planning/2026-09-22-station-interior-build/extinguisher-placement-v3.json
         // (schema chooguard.extinguisher-placement.v2, computedAt 2026-09-22).
         // 산정 근거는 NFTC 101 — 보행거리 20m 이내(소형), 33제곱미터 이상 구획 거실마다, 바닥 1.5m 이하.
@@ -246,6 +284,40 @@ namespace ChooGuard.EditorTools
                 if(p.TutorialTarget)tutorialTarget=inspectable;
             }
 
+            // 플레이어를 첫 점검 대상 앞에 세운다. 이걸 하지 않으면 소화기 12개는 좌표로 배치되는데
+            // 플레이어만 제자리에 남아, 2026-09-25 실측에서 시작 지점이 첫 설비에서 44.41m 떨어져
+            // 있었다. 시작 시야에는 빈 하늘만 있었고(15m 이내 렌더러 2,322개 중 5개) 그 방향으로
+            // 직진하면 11m 만에 벽이었다. 단말은 아래에서 플레이어 기준으로 놓이므로 순서가 중요하다.
+            // 플레이어 자신의 콜라이더를 잠시 끄고 잰다. 끄지 않으면 레이캐스트와 캡슐 검사가
+            // 플레이어를 바닥·장애물로 여긴다 — 실제로 재생성할 때마다 자기 자신 위로 올라서
+            // 시작 높이가 y=7.00 에서 8.55 로 뛰었다(2026-09-25). 재생성이 멱등하지 않으면
+            // 생성기를 두 번 누른 사람과 한 번 누른 사람이 다른 씬을 갖게 된다.
+            var selfColliders=responder.GetComponentsInChildren<Collider>(true);
+            var wasEnabled=new bool[selfColliders.Length];
+            for(int i=0;i<selfColliders.Length;i++){wasEnabled[i]=selfColliders[i].enabled;selfColliders[i].enabled=false;}
+            try
+            {
+            PlacePlayerBefore(responder.transform,tutorialTarget,inspectables);
+
+            // 배치한 유닛마다 설 자리가 있는지 확인한다. 좌표는 NFTC 101 보행거리로 산정한 것이라
+            // 법정 배치 요건은 만족하지만 실제 구조물과 부딪히는지는 검토된 적이 없다. 점검할 수
+            // 없는 자리에 놓인 소화기는 배치 요건만 만족하고 튜토리얼에서는 죽은 유닛이다.
+            var unreachable=new List<string>();
+            var audit=new System.Text.StringBuilder();
+            foreach(var f in inspectables)
+                if(f!=null&&!TryStandingSpot(f,audit,out _,out _))unreachable.Add(f.SerialNumber);
+            if(unreachable.Count>0)
+                Debug.LogWarning("[슬라이스] 설 자리가 없는 유닛 "+unreachable.Count+"/"+inspectables.Count
+                                 +"개 · "+string.Join(", ",unreachable)
+                                 +"\n좌표가 구조물과 부딪힙니다. 시도 내역:"+audit);
+            else Debug.Log("[슬라이스] 유닛 "+inspectables.Count+"개 모두 설 자리 확인");
+            }
+            finally
+            {
+                for(int i=0;i<selfColliders.Length;i++)
+                    if(selfColliders[i]!=null)selfColliders[i].enabled=wasEnabled[i];
+            }
+
             // 세션·단말은 어느 유닛에도 속하지 않는 자체 루트에 둔다.
             var host=new GameObject(RootName);
             Undo.RegisterCreatedObjectUndo(host,"튜토리얼 세션 호스트");
@@ -260,7 +332,13 @@ namespace ChooGuard.EditorTools
             var session=sessionObject.AddComponent<TutorialSession>();
             session.Responder=responder;session.GazeTracker=tracker;session.Target=tutorialTarget;
             session.ProcedureAsset=procedure;session.ChecklistVisible=true;
-            session.PendingVerdict=tutorialTarget!=null&&tutorialTarget.Corroded?InspectionVerdict.UNFIT:InspectionVerdict.FIT;
+            // 판정을 미리 넣지 않는다. 월드 상태를 보고 정답을 꽂아 두면 플레이어가 고를 것이 없어지고
+            // 오판정 검출이 영원히 0 이 된다(2026-09-24 확인). NOT_RECORDED 가 '아직 안 고름'이다.
+            session.PendingVerdict=InspectionVerdict.NOT_RECORDED;
+
+            // 판정 선택(1·2)과 현장 수리 시도(F). 응답자에 키를 더하지 않고 여기서 받는다.
+            var input=sessionObject.AddComponent<TutorialInput>();
+            input.Session=session;input.Responder=responder;
 
             // 기술자 인계는 설비마다 하나다 — 기술자는 특정 소화기로 간다.
             // 붙이지 않으면 Dispatch 가 null 이라 요구 발행이 플래그로만 남는다.
@@ -274,6 +352,7 @@ namespace ChooGuard.EditorTools
                 dispatchObject.transform.SetParent(host.transform,false);
                 var dispatch=dispatchObject.AddComponent<TechnicianDispatch>();
                 dispatch.Target=inspectable;
+                BuildTechnicianPresence(dispatchObject,dispatch,inspectable);
                 session.Units.Add(new TutorialSession.UnitBinding{Facility=inspectable,Dispatch=dispatch});
                 if(inspectable==tutorialTarget)session.Dispatch=dispatch;
             }
@@ -284,6 +363,7 @@ namespace ChooGuard.EditorTools
             if(font==null)Debug.LogWarning("[슬라이스] 한국어 폰트 미확인 — 기존 HUD 표시를 점검하세요.");
 
             session.AuditTerminal=BuildAuditTerminal(host,playerT,fwd,font);
+            session.InspectionTagPrefab=BuildTagTemplate(host);
 
             EditorSceneManager.MarkSceneDirty(scene);
             if(saveScene)EditorSceneManager.SaveScene(scene);
@@ -365,8 +445,252 @@ namespace ChooGuard.EditorTools
                 Point(root,"gauge","지시압력계",bounds,new Vector3(0,.88f,faceZ*.7f),new Vector3(width*.4f,height*.12f,.04f),.6f),
             };
             inspectable.Points=points.ToArray();
+
+            // 점검표 부착 지점. 판독면과 같은 +Z 쪽이되 판들 아래에 둬서 고유번호·제원표를 가리지 않는다.
+            // 치수를 아는 것은 생성기이므로 여기서 잡는다 — 세션이 런타임에 계산하면 계층이 뒤집힌다.
+            var anchor=new GameObject("점검표 부착 지점");
+            Undo.RegisterCreatedObjectUndo(anchor,"점검표 부착 지점 생성");
+            anchor.transform.SetParent(root.transform,false);
+            anchor.transform.localPosition=new Vector3(0,.26f,faceZ);
+            // 앞면이 바깥을 보게 돌려 둔다. Quad 는 한쪽 면만 그리고 보이는 면이 -Z 쪽이므로,
+            // 회전 없이 붙이면 보이는 면이 본체 안쪽을 향해 화면에서 완전히 사라진다.
+            // 2026-09-25 실측: 렌더러가 켜져 있고 isVisible 이 True 인데도 부착 전후 프레임의
+            // 상단 픽셀이 0 개 달랐다 — "렌더러가 있다" 와 "그려진다" 는 같은 말이 아니다.
+            // 방향을 앵커에 고정해 두면 AttachTag 는 계속 localRotation=identity 로 붙이면 된다.
+            anchor.transform.localRotation=Quaternion.Euler(0,180,0);
+            inspectable.TagAnchor=anchor.transform;
+
             inspectable.Bind(tracker);
             return root;
+        }
+
+        // 점검표 원본. 비활성 템플릿으로 두고 부착할 때마다 복제한다.
+        // 이전에는 InspectionTagPrefab 이 비어 있어 세션이 빈 GameObject 를 만들었고,
+        // 렌더러가 없어 7단계를 끝내도 플레이어 눈에는 아무 변화가 없었다(2026-09-24 확인).
+        // 첫 점검 대상이 보이는 자리에 플레이어를 세운다.
+        //
+        // 자리를 계산 하나로 정하지 않고 여러 방향·거리를 실제로 재는 이유는, 소화기가 벽이나
+        // 벽감에 붙어 있어 앞뒤 공간이 제각각이기 때문이다. 실측(2026-09-25): BSN-CONC-FE-010 은
+        // 정면 2.0~2.5m 에서 역사 구조물이 시야를 막고 1.2~1.6m 에서는 몸이 낀다.
+        //
+        // 세 가지를 모두 만족해야 그 자리를 쓴다 — 바닥이 있을 것, 몸이 낄 곳이 아닐 것,
+        // 눈에서 판독면까지 시선이 막히지 않을 것. 지정된 대상 앞에 자리가 없으면 자리가 있는
+        // 다른 유닛 앞으로 물러서되, 어느 유닛이고 왜 그랬는지 크게 남긴다.
+        // 못 찾은 것을 조용히 아무 데나 놓으면 벽 속에서 시작하게 된다.
+        private static void PlacePlayerBefore(Transform player,FacilityInspectable preferred,
+                                              List<FacilityInspectable> all)
+        {
+            if(player==null){Debug.LogWarning("[슬라이스] 플레이어가 없어 시작 지점을 옮기지 않습니다.");return;}
+            Physics.SyncTransforms();
+
+            var order=new List<FacilityInspectable>();
+            if(preferred!=null)order.Add(preferred);
+            if(all!=null)foreach(var f in all)if(f!=null&&f!=preferred)order.Add(f);
+            if(order.Count==0){Debug.LogWarning("[슬라이스] 점검 대상이 없어 시작 지점을 옮기지 않습니다.");return;}
+
+            var report=new System.Text.StringBuilder();
+            foreach(var target in order)
+            {
+                if(TryStandingSpot(target,report,out var feet,out var detail))
+                {
+                    player.position=feet;
+                    var look=target.transform.position-feet;look.y=0;
+                    if(look.sqrMagnitude>.0001f)player.rotation=Quaternion.LookRotation(look.normalized,Vector3.up);
+                    if(target==preferred)
+                        Debug.Log("[슬라이스] 시작 지점 · "+feet.ToString("F2")+" · "+target.SerialNumber+" "+detail);
+                    else
+                        Debug.LogWarning("[슬라이스] 지정 대상 "+(preferred==null?"없음":preferred.SerialNumber)
+                                         +" 앞에 설 자리가 없어 "+target.SerialNumber+" 앞에서 시작합니다 · "
+                                         +feet.ToString("F2")+" "+detail
+                                         +"\n지정 대상의 배치를 확인하세요. 시도 내역:"+report);
+                    return;
+                }
+            }
+            Debug.LogError("[슬라이스] 어느 설비 앞에도 설 자리를 찾지 못해 시작 지점을 그대로 둡니다."
+                           +" 시도 내역:"+report);
+        }
+
+        // 한 설비 앞에서 설 수 있는 자리를 찾는다. 정면을 우선하되 막히면 좌우로 틀고 반대편까지 본다.
+        private static bool TryStandingSpot(FacilityInspectable target,System.Text.StringBuilder report,
+                                            out Vector3 feet,out string detail)
+        {
+            feet=Vector3.zero;detail="";
+            if(target==null)return false;
+            var plate=target.Point("serial")?.Surface;
+            if(plate==null){report.Append("\n  "+target.SerialNumber+" · 판독면 없음");return false;}
+            var front=target.transform.forward;front.y=0;
+            if(front.sqrMagnitude<.0001f){report.Append("\n  "+target.SerialNumber+" · 정면을 알 수 없음");return false;}
+            front.Normalize();
+
+            const float radius=.28f,height=1.72f,eye=1.60f;
+            foreach(var yaw in new[]{0f,25f,-25f,50f,-50f,180f})
+            foreach(var distance in new[]{2.2f,1.8f,1.4f,1.1f,.9f})
+            {
+                var facing=Quaternion.Euler(0,yaw,0)*front;
+                var spot=target.transform.position+facing*distance;
+                var label="\n  "+target.SerialNumber+" · "+yaw.ToString("F0")+"° "+distance.ToString("F1")+"m · ";
+
+                if(!Physics.Raycast(spot+Vector3.up*2.5f,Vector3.down,out var floor,8f,~0,QueryTriggerInteraction.Ignore))
+                {report.Append(label+"바닥 없음");continue;}
+                var candidate=floor.point;
+                if(Physics.CheckCapsule(candidate+Vector3.up*(radius+.05f),candidate+Vector3.up*(height-radius),
+                                        radius,~0,QueryTriggerInteraction.Ignore))
+                {report.Append(label+"몸이 낀다");continue;}
+                var eyePoint=candidate+Vector3.up*eye;
+                var toPlate=plate.bounds.center-eyePoint;
+                if(Physics.Raycast(eyePoint,toPlate.normalized,out var blocker,toPlate.magnitude+.05f,~0,
+                                   QueryTriggerInteraction.Ignore)&&blocker.collider!=plate)
+                {report.Append(label+"시야 가림 "+blocker.collider.name);continue;}
+
+                feet=candidate;
+                detail=yaw.ToString("F0")+"° "+distance.ToString("F1")+"m · 바닥 "+floor.collider.name;
+                return true;
+            }
+            return false;
+        }
+
+        // 기술자에게 몸을 준다. 상태 기계만 있던 인계는 59 초 동안 화면에 아무 변화가 없었다.
+        //
+        // 임시 대역이다 — 캡슐 하나가 출발 지점에서 작업 지점으로 걸어와 머물고, 플레이어가
+        // 결과를 확인하면 떠난다. 애니메이션도 얼굴도 없다. 이걸로 "도착이 보인다" 는 참이 되지만
+        // 실제 인물 표현을 대신하지는 않는다.
+        //
+        // 콜라이더는 지운다. 작업 지점은 플레이어가 서는 자리 바로 옆이라, 몸이 남아 있으면
+        // 플레이어를 밀거나 설비 조준을 가로챈다.
+        private static void BuildTechnicianPresence(GameObject host,TechnicianDispatch dispatch,
+                                                    FacilityInspectable target)
+        {
+            if(host==null||dispatch==null||target==null)return;
+
+            var body=GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            body.name="기술자 형상 · "+target.SerialNumber;
+            Undo.RegisterCreatedObjectUndo(body,"기술자 형상 생성");
+            body.transform.SetParent(host.transform,false);
+            body.transform.localScale=new Vector3(.36f,.85f,.36f);   // 캡슐 기본 높이 2 → 약 1.7m
+            var bodyCollider=body.GetComponent<Collider>();
+            if(bodyCollider!=null)Undo.DestroyObjectImmediate(bodyCollider);
+            var renderer=body.GetComponent<MeshRenderer>();
+            if(renderer!=null)renderer.sharedMaterial=TechnicianMaterial();
+
+            // 작업 지점은 설비 정면 옆. 판독면 바로 앞에 세우면 플레이어의 조준을 가린다.
+            var facing=target.transform.forward;facing.y=0;
+            if(facing.sqrMagnitude<.0001f)facing=Vector3.forward;
+            facing.Normalize();
+            var right=Vector3.Cross(Vector3.up,facing);
+            // 좌우 어느 쪽에 세울지 고정하지 않는다. 고정했더니 벽에 반쯤 박혀 파란 덩어리로만
+            // 보였다(2026-09-25 프레임 확인). 바닥이 있고 몸이 끼지 않는 쪽을 고른다.
+            float side=.55f;
+            if(!ClearForBody(target.transform.position+facing*.9f+right*.55f))
+            {
+                if(ClearForBody(target.transform.position+facing*.9f-right*.55f))side=-.55f;
+                else side=0f;   // 양쪽 다 막히면 설비 정면. 가리더라도 보이지 않는 것보다 낫다.
+            }
+            var workPoint=target.transform.position+facing*.9f+right*side;
+            var entryPoint=target.transform.position+facing*7f+right*side;
+
+            var work=new GameObject("기술자 작업 지점");
+            Undo.RegisterCreatedObjectUndo(work,"기술자 작업 지점 생성");
+            work.transform.SetParent(host.transform,false);
+            work.transform.position=SnapToFloor(workPoint,target.transform.position.y);
+
+            var entry=new GameObject("기술자 진입 지점");
+            Undo.RegisterCreatedObjectUndo(entry,"기술자 진입 지점 생성");
+            entry.transform.SetParent(host.transform,false);
+            // 진입 지점에 바닥이 없으면(밖이거나 허공이면) 작업 지점에서 그냥 나타난다.
+            // 허공에서 걸어오는 것보다 낫다.
+            entry.transform.position=SnapToFloor(entryPoint,work.transform.position.y);
+
+            var presence=Undo.AddComponent<TechnicianPresence>(host);
+            presence.Dispatch=dispatch;
+            presence.Body=body.transform;
+            presence.WorkSpot=work.transform;
+            presence.Entry=entry.transform;
+            body.transform.position=work.transform.position;
+            body.SetActive(false);   // 요구 전에는 보이지 않는다
+        }
+
+        // 사람 하나가 설 만한 자리인가. 바닥이 있고 몸이 끼지 않아야 한다.
+        private static bool ClearForBody(Vector3 point)
+        {
+            const float radius=.3f,height=1.7f;
+            if(!Physics.Raycast(new Vector3(point.x,point.y+2.5f,point.z),Vector3.down,out var floor,8f,~0,
+                                QueryTriggerInteraction.Ignore))return false;
+            return !Physics.CheckCapsule(floor.point+Vector3.up*(radius+.05f),
+                                         floor.point+Vector3.up*(height-radius),
+                                         radius,~0,QueryTriggerInteraction.Ignore);
+        }
+
+        // 발밑을 찾는다. 캡슐 중심이 바닥 위 절반 높이에 오도록 올린다.
+        private static Vector3 SnapToFloor(Vector3 point,float fallbackY)
+        {
+            const float halfHeight=.85f;
+            if(Physics.Raycast(new Vector3(point.x,point.y+2.5f,point.z),Vector3.down,out var floor,8f,~0,
+                               QueryTriggerInteraction.Ignore))
+                return floor.point+Vector3.up*halfHeight;
+            return new Vector3(point.x,fallbackY,point.z);
+        }
+
+        // 기술자 대역 재질. 소화기 재질을 빌려 쓰면 점검표 때처럼 엉뚱한 텍스처가 딸려 온다.
+        private const string TechnicianMaterialPath=MaterialDir+"/tutorial_technician.mat";
+        private static Material TechnicianMaterial()
+        {
+            var existing=AssetDatabase.LoadAssetAtPath<Material>(TechnicianMaterialPath);
+            if(existing!=null)return existing;
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null){Debug.LogError("[슬라이스] URP/Lit 셰이더를 찾지 못해 기술자 재질을 만들지 못했습니다.");return null;}
+            if(!AssetDatabase.IsValidFolder(MaterialDir))
+                AssetDatabase.CreateFolder("Assets/ChooGuard/Art/FireSafety","Materials");
+            var material=new Material(shader){name="tutorial_technician"};
+            material.SetColor("_BaseColor",new Color(.16f,.30f,.46f));   // 작업복 남색
+            material.SetFloat("_Metallic",0f);
+            material.SetFloat("_Smoothness",.2f);
+            AssetDatabase.CreateAsset(material,TechnicianMaterialPath);
+            Debug.Log("[슬라이스] 기술자 재질 생성 · "+TechnicianMaterialPath);
+            return material;
+        }
+
+        // 점검표 전용 재질. 예전에는 소화기 본체의 종이 라벨 재질을 그대로 썼는데, 쿼드의 UV 가
+        // 2k 텍스처 전체를 끌어와 24px 짜리 흑백 체커 무늬로 보였다(2026-09-25 프레임 확인).
+        // 붙였다는 것이 읽혀야 하므로 텍스처 없는 밝은 종이색 한 장을 따로 둔다.
+        private const string TagMaterialPath=MaterialDir+"/tutorial_inspection_tag.mat";
+        private static Material TagMaterial()
+        {
+            var existing=AssetDatabase.LoadAssetAtPath<Material>(TagMaterialPath);
+            if(existing!=null)return existing;
+            var shader=Shader.Find("Universal Render Pipeline/Lit");
+            if(shader==null){Debug.LogError("[슬라이스] URP/Lit 셰이더를 찾지 못해 점검표 재질을 만들지 못했습니다.");return null;}
+            if(!AssetDatabase.IsValidFolder(MaterialDir))
+                AssetDatabase.CreateFolder("Assets/ChooGuard/Art/FireSafety","Materials");
+            var material=new Material(shader){name="tutorial_inspection_tag"};
+            material.SetColor("_BaseColor",new Color(.95f,.94f,.88f));   // 표백하지 않은 종이
+            material.SetFloat("_Metallic",0f);
+            material.SetFloat("_Smoothness",.12f);
+            AssetDatabase.CreateAsset(material,TagMaterialPath);
+            Debug.Log("[슬라이스] 점검표 재질 생성 · "+TagMaterialPath);
+            return material;
+        }
+
+        private static GameObject BuildTagTemplate(GameObject host)
+        {
+            var template=GameObject.CreatePrimitive(PrimitiveType.Quad);
+            template.name="점검표 원본";
+            Undo.RegisterCreatedObjectUndo(template,"점검표 원본 생성");
+            template.transform.SetParent(host.transform,false);
+            template.transform.localScale=new Vector3(.09f,.13f,1f);   // 세로로 긴 작은 카드
+            // 콜라이더를 남긴다. 예전에는 판독면을 가릴까 봐 지웠는데, 그 결과 붙은 점검표를 보려고
+            // 고개를 숙이면 레이캐스트가 설비를 놓쳐 상호작용이 통째로 끊겼다(2026-09-25 실측:
+            // CurrentTargetCollider 없음, 안내 빈 문자열). 점검표는 부착 지점에 붙는 설비의 일부이므로
+            // 그것을 볼 때도 설비를 겨눈 것이어야 한다 — RefreshInteraction 이 부모 사슬에서
+            // FacilityInspectable 을 찾으므로 콜라이더만 있으면 성립한다.
+            //
+            // 가림 걱정은 높이로 푼다. 점검표는 로컬 y=.26 이고 고유번호·제원표는 .55, 지시압력계는 .88 이라
+            // 세로로 겹치지 않는다. 겹치게 옮길 일이 생기면 이 주석을 먼저 고칠 것.
+            var collider=template.GetComponent<Collider>();
+            if(collider!=null)collider.isTrigger=false;   // 레이캐스트가 QueryTriggerInteraction.Ignore 다
+            var renderer=template.GetComponent<MeshRenderer>();
+            if(renderer!=null)renderer.sharedMaterial=TagMaterial();
+            template.SetActive(false);
+            return template;
         }
 
         // 판정 단말. 소화기 옆이 아니라 **몇 걸음 떨어진 곳**에 둔다 — 감사는 작업 자리에서 하는 것이 아니고,

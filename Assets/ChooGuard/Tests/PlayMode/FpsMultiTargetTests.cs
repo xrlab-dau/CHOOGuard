@@ -30,10 +30,10 @@ namespace ChooGuard.Tests.PlayMode
         private TechnicianDispatch dispatchA,dispatchB;
 
         private const string ProcedureJson=@"{
-  ""id"": ""multi-test"", ""version"": 2, ""title"": ""다중 대상 시험용"", ""basis"": ""시험"",
+  ""id"": ""multi-test"", ""version"": 3, ""title"": ""다중 대상 시험용"", ""basis"": ""시험"",
   ""steps"": [
     { ""id"":""record-verdict"", ""label"":""판정 기재"", ""basis"":""시험"", ""requires"":[],
-      ""allFacts"":[], ""effect"":""record-verdict"", ""failReason"":""판정을 기재하세요"" },
+      ""allFacts"":[""verdict-selected""], ""effect"":""record-verdict"", ""failReason"":""판정을 먼저 고르세요"" },
     { ""id"":""issue-repair-order"", ""label"":""요구 인계"", ""basis"":""시험"", ""requires"":[""record-verdict""],
       ""allFacts"":[""verdict-unfit""], ""conditional"":true, ""effect"":""issue-repair-order"", ""failReason"":""필요 없습니다"" },
     { ""id"":""attach-tag"", ""label"":""점검표 부착"", ""basis"":""시험"", ""requires"":[""record-verdict""],
@@ -87,7 +87,12 @@ namespace ChooGuard.Tests.PlayMode
             return d;
         }
 
+        // seed 는 유닛마다 심을 초기 판정이다. NOT_RECORDED 로 주면 각 유닛이 '아직 안 고름'으로 시작해
+        // v3 게이트가 실제로 걸린다 — 유출 시험이 그 조건을 쓴다.
         private TutorialSession MakeSession(FacilityInspectable startTarget)
+            =>MakeSession(startTarget,InspectionVerdict.UNFIT);
+
+        private TutorialSession MakeSession(FacilityInspectable startTarget,InspectionVerdict seed)
         {
             sessionObject=new GameObject("세션");
             sessionObject.SetActive(false);
@@ -100,7 +105,7 @@ namespace ChooGuard.Tests.PlayMode
             };
             session.Target=startTarget;
             session.ProcedureAsset=procedure;
-            session.PendingVerdict=InspectionVerdict.UNFIT;
+            session.PendingVerdict=seed;
             session.DriveHandoffWithFrameTime=false;
             session.WriteCarryover=false;session.ApplyCarryoverOnStart=false;
             sessionObject.SetActive(true);
@@ -228,6 +233,39 @@ namespace ChooGuard.Tests.PlayMode
             Assert.AreEqual("판정 기재",B.Prompt,"활성이 아닌 유닛이 자기 단계를 안내하지 않습니다");
             // A 는 부적합으로 기재했으므로 조건부 단계인 요구 인계가 살아난다. 점검표는 그다음이다.
             Assert.AreEqual("요구 인계",A.Prompt,"활성 유닛의 안내가 갱신되지 않았습니다");
+        }
+
+        // ECC 지적 — PendingVerdict 가 세션 전역이라 A 에서 고른 값이 B 로 샜다.
+        // B 에서 아무것도 고르지 않았는데 게이트가 열리고 A 의 판정이 그대로 기재되던 결함이다.
+        [Test]
+        public void 한_유닛의_판정_선택이_다른_유닛으로_새지_않는다()
+        {
+            MakeSession(A,InspectionVerdict.NOT_RECORDED);        // 둘 다 '아직 안 고름'
+
+            Assert.IsTrue(session.SelectVerdict(InspectionVerdict.FIT),"A 판정 선택이 거부됐습니다");
+            Assert.IsTrue(session.Advance(),"A 기재가 막혔습니다 · "+session.LastReason);
+            Assert.AreEqual(InspectionVerdict.FIT,A.Verdict);
+
+            session.Activate(B);
+
+            Assert.IsFalse(session.VerdictSelected,"A 에서 고른 판정이 B 로 샜습니다");
+            Assert.IsFalse(session.Advance(),"B 에서 고르지 않았는데 기재가 진행됐습니다");
+            Assert.AreEqual(InspectionVerdict.NOT_RECORDED,B.Verdict,"B 에 A 의 판정이 기재됐습니다");
+        }
+
+        [Test]
+        public void 유닛마다_고른_판정이_따로_보존된다()
+        {
+            MakeSession(A,InspectionVerdict.NOT_RECORDED);
+
+            session.SelectVerdict(InspectionVerdict.FIT);          // A: 적합
+            session.Activate(B);
+            session.SelectVerdict(InspectionVerdict.UNFIT);        // B: 부적합
+
+            session.Activate(A);
+            Assert.AreEqual(InspectionVerdict.FIT,session.PendingVerdict,"A 의 선택이 B 것으로 덮였습니다");
+            session.Activate(B);
+            Assert.AreEqual(InspectionVerdict.UNFIT,session.PendingVerdict,"B 의 선택이 사라졌습니다");
         }
 
         [Test]

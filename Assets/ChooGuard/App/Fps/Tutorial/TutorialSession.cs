@@ -39,8 +39,10 @@ namespace ChooGuard.App.Fps.Tutorial
         public GameObject InspectionTagPrefab;
         [Header("모드")]
         public bool ChecklistVisible=true;
+        // 기본값이 NOT_RECORDED 인 것이 중요하다. 정답을 미리 넣어 두면 플레이어가 고를 것이 없어지고
+        // 오판정 검출(MisjudgementCount)이 영원히 0 이 된다 — 설계의 핵심 장치가 죽는다.
         [Header("판정 입력 (플레이어가 고른다)")]
-        public InspectionVerdict PendingVerdict=InspectionVerdict.FIT;
+        [SerializeField] private InspectionVerdict pendingVerdict=InspectionVerdict.NOT_RECORDED;
         // 인계 진행을 프레임 시간으로 밀어준다. 실패 조건이 아니라 경과일 뿐이다.
         // 시험은 이 값을 false 로 두고 Dispatch.Tick 을 직접 먹여 결정론을 지킨다.
         [Header("인계 진행")]
@@ -60,6 +62,9 @@ namespace ChooGuard.App.Fps.Tutorial
             public bool Finished;
             public int RoleBoundaryViolations;
             public int MisjudgementCount;
+            // 판정은 유닛마다 새로 고른다. 세션에 하나만 두면 A 에서 고른 값이 B 로 새어,
+            // B 에서 아무것도 고르지 않았는데 게이트가 열린다(ECC 2026-09-24).
+            public InspectionVerdict PendingVerdict=InspectionVerdict.NOT_RECORDED;
             public readonly List<string> Findings=new List<string>();
             // 구독을 해제하려면 참조를 들고 있어야 한다. 익명 람다로 += 만 하면 OnDestroy 에서 뗄 수 없고,
             // 설비가 세션보다 오래 살면 죽은 세션의 핸들러가 계속 발화한다(생성기가 둘의 수명을 분리한다).
@@ -109,6 +114,19 @@ namespace ChooGuard.App.Fps.Tutorial
         public FacilityInspectable ActiveFacility=>Current?.Facility;
         public int UnitCount=>units.Count;
 
+        // 활성 유닛의 판정 선택. 유닛이 구성되기 전에는 직렬화 값이 초기값으로 쓰인다.
+        public InspectionVerdict PendingVerdict
+        {
+            get{var current=Current;return current!=null?current.PendingVerdict:pendingVerdict;}
+            set
+            {
+                pendingVerdict=value;
+                var current=Current;
+                if(current!=null)current.PendingVerdict=value;
+            }
+        }
+        public bool VerdictSelected=>PendingVerdict!=InspectionVerdict.NOT_RECORDED;
+
         // 감사 결과는 전체 유닛을 모은다 — 단말 하나가 역사 전체를 보고해야 한다.
         // 유닛이 하나면 그 유닛의 지적만 나오므로 기존 동작과 같다.
         //
@@ -139,9 +157,9 @@ namespace ChooGuard.App.Fps.Tutorial
             if(Units!=null)
                 foreach(var binding in Units)
                     if(binding!=null&&binding.Facility!=null)
-                        units.Add(new UnitState{Facility=binding.Facility,Dispatch=binding.Dispatch});
+                        units.Add(new UnitState{Facility=binding.Facility,Dispatch=binding.Dispatch,PendingVerdict=pendingVerdict});
             if(units.Count==0&&Target!=null)
-                units.Add(new UnitState{Facility=Target,Dispatch=Dispatch});
+                units.Add(new UnitState{Facility=Target,Dispatch=Dispatch,PendingVerdict=pendingVerdict});
             if(units.Count==0)return;
 
             // Target 이 목록 안에 있으면 거기서 시작한다 — 생성기가 튜토리얼 대상을 지정한 의도를 지킨다.
@@ -231,6 +249,25 @@ namespace ChooGuard.App.Fps.Tutorial
             foreach(var u in units)u.Dispatch?.Tick(Time.deltaTime);
         }
 
+        // 판정 선택. 기재가 아니라 '무엇으로 기재할지 고르는 것'이다 — 실제 기재는 절차 단계가 한다.
+        // 이미 기재한 뒤에는 바꿀 수 없다. 되돌리려면 되감기를 쓴다.
+        public bool SelectVerdict(InspectionVerdict verdict)
+        {
+            if(verdict==InspectionVerdict.NOT_RECORDED)return false;
+            var facility=Current?.Facility;
+            if(facility!=null&&facility.Verdict!=InspectionVerdict.NOT_RECORDED)
+            {
+                LastReason="이미 기재한 판정은 바꿀 수 없습니다 · 되감기로 돌아가세요";
+                Responder?.ShowFeedback(LastReason);
+                return false;
+            }
+            PendingVerdict=verdict;
+            LastReason="판정 선택 · "+(verdict==InspectionVerdict.FIT?"적합":"부적합");
+            Responder?.ShowFeedback(LastReason);
+            RefreshPrompt();
+            return true;
+        }
+
         // 플레이어의 결과 확인. 확인은 플레이어의 행동이므로 세션이 사유를 소유한다.
         public bool WitnessRepairResult()
         {
@@ -290,6 +327,9 @@ namespace ChooGuard.App.Fps.Tutorial
             facts["technician-completed"]=dispatch!=null&&dispatch.Completed?RuleTruth.TRUE:RuleTruth.UNKNOWN;
             facts["replacement-witnessed"]=dispatch!=null&&dispatch.ResultWitnessed?RuleTruth.TRUE:RuleTruth.UNKNOWN;
             facts["service-completed"]=facility.ServiceCompleted?RuleTruth.TRUE:RuleTruth.UNKNOWN;
+            // ⑦ 플레이어가 판정을 골랐는가. 고르지 않은 것과 적합으로 고른 것은 다르다 —
+            // 이 사실이 없으면 절차가 정답을 미리 들고 시작하게 된다.
+            facts["verdict-selected"]=VerdictSelected?RuleTruth.TRUE:RuleTruth.UNKNOWN;
             return ProcedureRunner.FactsFrom(facts);
         }
         private void Set(string key,bool observed)=>facts[key]=observed?RuleTruth.TRUE:RuleTruth.UNKNOWN;
@@ -443,13 +483,49 @@ namespace ChooGuard.App.Fps.Tutorial
             return false;
         }
 
+        // 되감기는 스텝 플래그만 푸는 것이 아니라 그 단계가 월드에 남긴 것도 되돌린다.
+        // 플래그만 풀면 "되감기로 돌아가세요"라는 안내가 거짓이 된다 — 판정이 그대로 남아
+        // 다시 고를 수 없고, 재기재하면 오판정만 중복 집계된다(ECC 2026-09-24).
         public bool Rewind(string stepId)
         {
             var unit=Current;
             if(unit?.Runner==null)return false;
-            bool rewound=unit.Runner.Rewind(stepId);
-            if(rewound){unit.Finished=false;unit.Findings.Clear();RefreshPrompt();}
-            return rewound;
+            // 기술자가 이미 출발했으면 되감지 않는다. 보낸 사람을 없던 일로 만들 수는 없다 —
+            // 되돌릴 수 없는 것을 되돌린 척하는 것이 가장 나쁘다.
+            if(unit.Dispatch!=null&&unit.Dispatch.Requested)
+            {
+                LastReason="기술자가 이미 출발해 되감을 수 없습니다 · "+unit.Dispatch.StageLabel;
+                Responder?.ShowFeedback(LastReason);
+                return false;
+            }
+            var wasDone=new HashSet<string>();
+            foreach(var step in unit.Runner.Steps)if(step.Done)wasDone.Add(step.Id);
+            if(!unit.Runner.Rewind(stepId))return false;
+            foreach(var step in unit.Runner.Steps)
+                if(!step.Done&&wasDone.Contains(step.Id))RevertEffect(unit,step);
+            unit.Finished=false;unit.Findings.Clear();RefreshPrompt();
+            return true;
+        }
+
+        // ApplyEffect 의 반대. 되돌릴 월드 상태가 없는 단계는 아무것도 하지 않는다.
+        private void RevertEffect(UnitState unit,ProcedureRunner.Step step)
+        {
+            var facility=unit.Facility;
+            if(facility==null)return;
+            switch(step.Effect)
+            {
+                case "record-serial":facility.ClearRecordedSerial();break;
+                case "record-verdict":
+                    // 집계도 함께 되돌린다. 되감고 다시 기재할 때마다 같은 실수가 쌓이면 안 된다.
+                    if(facility.ShouldBeUnfit&&facility.Verdict==InspectionVerdict.FIT&&unit.MisjudgementCount>0)
+                        unit.MisjudgementCount--;
+                    facility.ClearVerdict();
+                    unit.PendingVerdict=InspectionVerdict.NOT_RECORDED;
+                    break;
+                case "attach-tag":facility.RemoveTag();break;
+                // issue-repair-order·witness-replacement 는 위에서 막는다.
+                // close-inspection 은 월드에 남긴 것이 없다.
+            }
         }
 
         // 재시행은 전부 되돌린다. 한 유닛만 되돌리면 '같은 조건에서 다시 돈다'가 성립하지 않는다.

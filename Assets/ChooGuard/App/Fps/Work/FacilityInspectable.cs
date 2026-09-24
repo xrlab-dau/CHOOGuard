@@ -63,11 +63,21 @@ namespace ChooGuard.App.Fps.Work
         public void RecordSerial(){RecordedSerial=SerialNumber??"";}
         public void RecordVerdict(InspectionVerdict verdict){Verdict=verdict;}
         public void IssueRepairOrder(){RepairOrderIssued=true;}
+        // 점검표가 붙을 자리. 생성기가 설비 형상을 알고 있으므로 거기서 잡아 꽂는다 —
+        // 세션이 런타임에 치수를 계산하면 '설비는 규칙을 모른다'의 반대쪽이 깨진다.
+        // 비워 두면 기존대로 루트에 붙는다(보이지 않을 수 있다).
+        [Header("점검표")]
+        public Transform TagAnchor;
+
         // 부착이 곧 완료 증거다 — 다음 회차에 낡은 채로 읽힌다(제23조②3).
         public Transform AttachTag(GameObject tag)
         {
             if(tag==null)return null;
-            tag.transform.SetParent(transform,false);AttachedTag=tag.transform;return AttachedTag;
+            tag.transform.SetParent(TagAnchor!=null?TagAnchor:transform,false);
+            tag.transform.localPosition=Vector3.zero;
+            tag.transform.localRotation=Quaternion.identity;
+            tag.SetActive(true);                 // 원본이 비활성 템플릿이어도 사본은 보여야 한다
+            AttachedTag=tag.transform;return AttachedTag;
         }
         // 폐기·교체가 실제로 일어났다(제23조②1). 결함이 남아 있으면 교체라고 부를 수 없으므로 함께 해소한다.
         // 판정과 점검표는 건드리지 않는다 — 그것은 플레이어가 기재한 이번 회차의 기록이고,
@@ -90,6 +100,17 @@ namespace ChooGuard.App.Fps.Work
             { Corroded=corroded;Mechanical=mechanical;Pressure=pressure;Expiry=expiry; }
         }
         private WorldDefects? preReplacement;
+
+        // 되감기용 부분 되돌리기. ResetInspection 은 전부 지우므로 한 단계만 무를 때 쓸 수 없다.
+        // 월드 상태(부식·교체 여부)는 건드리지 않는다 — 되감는 것은 플레이어의 기재이지 설비가 아니다.
+        public void ClearVerdict(){Verdict=InspectionVerdict.NOT_RECORDED;}
+        public void ClearRecordedSerial(){RecordedSerial="";}
+        public void RemoveTag()
+        {
+            if(AttachedTag==null)return;
+            var go=AttachedTag.gameObject;AttachedTag=null;
+            if(UnityEngine.Application.isPlaying)Destroy(go);else DestroyImmediate(go);
+        }
 
         public void ResetInspection()
         {

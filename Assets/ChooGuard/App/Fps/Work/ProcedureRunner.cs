@@ -57,11 +57,16 @@ namespace ChooGuard.App.Fps.Work
             "replacement-witnessed","service-completed",
         };
         private static readonly HashSet<string> EffectsAddedInV2=new HashSet<string>{"witness-replacement"};
+        // v3 추가분 — 플레이어가 적합·부적합을 실제로 골랐는가. 고르지 않았으면 판정 기재를 막는다.
+        // 이것이 없으면 생성기가 정답을 미리 넣어 둔 채 E 만 누르면 되는 상태가 된다.
+        private static readonly HashSet<string> FactsAddedInV3=new HashSet<string>{"verdict-selected"};
         // 읽을 수 있는 자료 판본. 알 수 없는 판본을 조용히 받아들이지 않는다.
-        // v1 자료는 계속 그대로 읽는다 — 기존 시험과 배포된 자료가 깨지지 않아야 한다.
-        private const int LatestVersion=2;
+        // v1·v2 자료는 계속 그대로 읽는다 — 기존 시험과 배포된 자료가 깨지지 않아야 한다.
+        private const int LatestVersion=3;
         private static bool FactAllowed(string fact,int version)
-            =>AllowedFacts.Contains(fact)||(version>=2&&FactsAddedInV2.Contains(fact));
+            =>AllowedFacts.Contains(fact)
+              ||(version>=2&&FactsAddedInV2.Contains(fact))
+              ||(version>=3&&FactsAddedInV3.Contains(fact));
         private static bool EffectAllowed(string effect,int version)
             =>AllowedEffects.Contains(effect)||(version>=2&&EffectsAddedInV2.Contains(effect));
 

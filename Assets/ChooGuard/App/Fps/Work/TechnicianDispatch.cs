@@ -33,6 +33,18 @@ namespace ChooGuard.App.Fps.Work
         // 플레이어가 결과를 확인했는가. 확인은 플레이어의 행동이지 기술자의 결과가 아니다.
         public bool ResultWitnessed { get; private set; }
 
+        // 현재 단계의 진행도 0~1. 표현 계층이 읽으려고 공개한다 — 상태 기계는 이 값을 보지 않는다.
+        // 소요가 0 인 단계(시험이 쓰는 설정)는 1 로 본다. 남은 시간을 초로 내보이지 않는 것은
+        // 시간 초과 실패 조건이 없기 때문이다 — 카운트다운을 보여주면 없는 규칙을 암시하게 된다.
+        public float StageProgress01
+        {
+            get
+            {
+                var need=RequiredSeconds(Stage);
+                return need<=0f?1f:Mathf.Clamp01(SecondsInStage/need);
+            }
+        }
+
         public bool Requested=>Stage!=HandoffStage.NONE;
         public bool Completed=>Stage==HandoffStage.COMPLETED;
         // 도착 이후를 '현장'으로 본다 — 입회가 가능한 구간이다.

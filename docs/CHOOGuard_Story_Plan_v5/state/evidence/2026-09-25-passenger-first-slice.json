@@ -1,0 +1,85 @@
+{
+  "storyId": "CS-EXEC.01.01",
+  "updatedUtc": "2026-09-25T08:40:00+00:00",
+  "status": "SCOPED_INCREMENT_VERIFIED",
+  "acceptanceStatus": "NOT_ACCEPTED",
+  "scope": "본편(비상대응) 계층의 첫 조각. MISSION_DESIGN 8절 1순위인 '승객 NPC와 유도' 중 앞부분 — 승객이 실제로 걸어 목적지에 도달하고, 실패하면 이유를 구분해 말한다. 유도·못 들음·동행 대기는 다음 조각이다. G1 PASS 가 아니다.",
+  "rubric": "docs/CHOOGuard_Story_Plan_v5/QUALITY_A_RUBRIC.md",
+  "rubricVersion": "A-FPS-1",
+  "designRef": "docs/CHOOGuard_Story_Plan_v5/MISSION_DESIGN.md",
+  "run": {
+    "branch": "feature/tutorial-playable",
+    "totals": { "total": 77, "passed": 75, "failed": 0, "skipped": 2 },
+    "skippedNote": "캡처 하네스 2건 — 렌더링이 필요해 배치모드에서 의도적으로 건너뛴다."
+  },
+  "decision": {
+    "what": "DotRecast 는 재사용하고 베이크·질의는 FPS 쪽에 새로 뒀다.",
+    "why": [
+      "길찾기를 직접 구현하지 않는다 — DotRecast 는 이미 이 저장소의 의존성이다.",
+      "MvpTeamNavigation 은 y≈5.05 층을 하드코딩하고 ChooGuard.App.Mvp 네임스페이스라 FPS 가 RTS 계층에 의존하게 된다. 튜토리얼이 비상 계층을 참조하지 않는 것과 같은 규율이다.",
+      "MvpTeamNavigationBuilder 는 MvpStationView.FloorRoots[1] 과 메시 이름·높이 대역에 묶여 있고 바닥 메시가 정확히 2개가 아니면 던진다. FpsStation 에 맞지 않는다."
+    ]
+  },
+  "checkpoints": [
+    {
+      "name": "Passenger actually walks and arrives",
+      "result": "PASS",
+      "evidenceRef": "101-승객-출발.png, 102-승객-이동중.png, 103-승객-ARRIVED.png",
+      "summary": "이동 25.1m(직선 23.4m) · 20.0초 · 상태 ARRIVED. 단언만으로 판정하지 않고 이동 중 프레임을 남겼다 — 갈색 캡슐이 대합실을 가로질러 걷는 것이 화면에 잡힌다. 제자리 맴돎을 막으려고 '이동 거리'와 '출발점으로부터의 직선 거리'를 따로 단언한다."
+    },
+    {
+      "name": "Failure is distinguishable",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/App/Fps/World/StationNavigation.cs",
+      "summary": "경로 실패를 6종으로 구분한다 — navigation_not_baked, start_outside_walkable_surface, target_outside_walkable_surface, no_path_between_points, straight_path_failed, partial_path_target_unreachable(polys=N). 승객 상태는 MOVING/ARRIVED/NO_PATH/STUCK 넷이다. '안 움직인다' 와 '갈 수 없다' 가 구분된다."
+    },
+    {
+      "name": "Placement is measured, not assumed",
+      "result": "PASS",
+      "evidenceRef": "Assets/ChooGuard/Editor/PassengerBuilder.cs",
+      "summary": "출발지·목적지를 계산으로 확정하지 않고 후보마다 실제로 TryPlan 을 물어본 뒤 쓴다. 한 쌍도 못 찾으면 만들지 않고 사유를 나열하며 실패한다. 오늘 하루에 네 번, 좌표를 계산으로 고정했다가 실제 구조물과 부딪힌 뒤 세운 규율이다."
+    },
+    {
+      "name": "Navmesh connectivity",
+      "result": "PASS",
+      "evidenceRef": ".planning/2026-09-25-passenger-npc/findings.md",
+      "summary": "첫 베이크는 폴리곤 6,328개(785㎡ 에 0.12㎡ 당 하나)로 잘게 조각나 시작 지점이 폴리곤 1개짜리 섬이었고 모든 목적지가 실패했다. 천장을 대역에서 빼고 격자를 거칠게(cs 0.2→0.3, ch 0.05→0.2, climb 0.35→0.5, 최소영역 2→8) 바꿔 2,572개로 줄이자 경로가 나왔다."
+    },
+    {
+      "name": "Reason strings carry evidence",
+      "result": "PASS",
+      "evidenceRef": "생성기 로그",
+      "summary": "partial_path_target_unreachable 만 봤으면 '목적지가 나쁘다' 로 잘못 짚었을 것이다. 사유에 폴리곤 수를 실어 polys=1 을 보고서야 시작 폴리곤이 고립됐음을 알았다. 이유 문자열은 분류가 아니라 증거를 담아야 한다."
+    },
+    {
+      "name": "No regression",
+      "result": "PASS",
+      "evidenceRef": "PlayMode 77 건",
+      "summary": "75 통과 · 0 실패 · 2 건너뜀."
+    },
+    {
+      "name": "Guidance (유도)",
+      "result": "NOT_IMPLEMENTED",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/MISSION_DESIGN.md",
+      "summary": "플레이어가 가리켜 보내는 것, 못 들음, 동행 대기는 이 조각에 없다. MISSION_DESIGN 8절 1순위의 나머지 절반이다."
+    },
+    {
+      "name": "STUCK observed in practice",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "Assets/ChooGuard/App/Fps/World/PassengerAgent.cs",
+      "summary": "승객에게 콜라이더를 일부러 주지 않았다(이 조각의 목적은 '걷는가' 이지 밀치기가 아니다). 그래서 STUCK 은 코드 경로만 있고 실제로 발생시켜 본 적이 없다."
+    },
+    {
+      "name": "Unreadable meshes",
+      "result": "KNOWN_GAP",
+      "evidenceRef": "생성기 경고",
+      "summary": "isReadable=false 인 메시 12개가 navmesh 에서 빠졌다. 그 구조물은 승객에게 장애물이 되지 않는다. 조용히 넘기지 않고 경고로 남겼다 — 임포트 설정의 Read/Write 를 켜야 반영된다."
+    },
+    {
+      "name": "Passenger has a body",
+      "result": "NOT_VERIFIED",
+      "evidenceRef": "102-승객-이동중.png",
+      "summary": "캡슐이다. 애니메이션도 얼굴도 없고 한 명뿐이며 군중도 서로 피하기도 없다. 기술자 대역과 같은 한계다."
+    }
+  ]
+}
