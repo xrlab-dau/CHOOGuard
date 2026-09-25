@@ -60,10 +60,14 @@ namespace ChooGuard.Editor.Bootstrap
                 throw new BuildFailedException("Native absolute UBA output paths are required.");
             var root = Path.GetFullPath(rootValue).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             var project = BuildBaseline.ProjectRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            // UBA owns one target directory directly below the checkout's .build/last directory.
+            var isCloudTargetDirectory = string.Equals(Path.GetDirectoryName(root), Path.Combine(project, ".build", "last"),
+                StringComparison.OrdinalIgnoreCase);
             output = Path.GetFullPath(options.locationPathName);
-            if (string.Equals(root, project, StringComparison.OrdinalIgnoreCase) || IsWithin(root, project) || IsWithin(project, root) ||
+            if (string.Equals(root, project, StringComparison.OrdinalIgnoreCase) ||
+                (IsWithin(root, project) && !isCloudTargetDirectory) || IsWithin(project, root) ||
                 !IsWithin(output, root) || !output.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-                throw new BuildFailedException("UBA output must be an .exe beneath its output directory, outside the source checkout.");
+                throw new BuildFailedException("UBA output must be an .exe beneath its output directory, either outside the source checkout or in .build/last/<target>.");
             for (var directory = new DirectoryInfo(Path.GetDirectoryName(output)); directory != null; directory = directory.Parent)
                 if (directory.Exists && (directory.Attributes & FileAttributes.ReparsePoint) != 0)
                     throw new BuildFailedException("UBA output directory chain contains a symbolic link.");

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "date": "2026-09-25",
-  "status": "SOURCE_PUBLISHED_CLOUD_STORAGE_VERIFIED_BUILD_BLOCKED",
+  "status": "BUILD_1_FAILED_PREPARATION_FOLLOWUP_AUTHORIZED",
   "source": {
     "repository": "https://github.com/xrlab-dau/CHOOGuard",
     "visibility": "PUBLIC",
@@ -14,11 +14,11 @@
     "organizationId": "14569795805800",
     "projectId": "9f037959-7808-49f6-b13f-46eb8c76ed31",
     "name": "CHOOGuard Gameplay",
-    "buildProjectDisabled": true,
+    "buildProjectDisabled": false,
     "unityVersionConfirmed": "6000.3.23f1",
     "windowsImageConfirmed": "windows11_24h2",
     "machineTypeConfirmed": "win_micro_v1",
-    "machineFreeTierEligibleField": false,
+    "initialMachineFreeTierEligibleField": false,
     "projectBuildTimeoutMinutes": 45,
     "legacyBillingRecord": {
       "label": "Teams Basic",
@@ -27,17 +27,19 @@
     },
     "currentApiEffectiveMetadata": {},
     "currentApiConcurrency": {"limit": 2, "maxAllowable": 2},
-    "freeTierLimitReached": true,
+    "initialFreeTierLimitReachedField": true,
     "organizationEntitlements": [],
     "quotaExhaustionEstablished": false,
     "serviceActivationBlockEstablished": false,
-    "buildEligibility": "UNDETERMINED_UNTIL_SOURCE_CONNECTION_AND_MANUAL_BUILD_REQUEST"
+    "dashboardPlanObserved": "Free tier: 2 concurrency, 200 Windows Micro minutes, 25 GB Standard Storage, 100 GB Standard Egress",
+    "buildEligibility": "MANUAL_BUILD_ACCEPTED_HTTP_202"
   },
   "connection": {
-    "status": "BLOCKED",
-    "publicHttpsResult": "HTTP 400: Git ls-remote failure",
+    "status": "CONNECTED",
+    "connectionId": "1535f53a-8828-43dd-bd4f-f398cbc57ade",
+    "initialPublicHttpsResult": "HTTP 400: Git ls-remote failure",
     "anonymousLocalGitTransport": "PASS",
-    "currentApiCheckUrl": {
+    "initialCurrentApiCheckUrl": {
       "status": 200,
       "isAccessible": false,
       "normalizedUrl": "git@github.com:xrlab-dau/CHOOGuard.git",
@@ -52,35 +54,73 @@
     "credentialFreeProviderCheck": "OAuth connection is missing its provider configuration",
     "deployKeyResult": "HTTP 422: Deploy keys are disabled for this repository",
     "deployKeyInstalled": false,
-    "disabledTargetCreationResult": "HTTP 422: Cannot create a build target without a connection"
+    "initialDisabledTargetCreationResult": "HTTP 422: Cannot create a build target without a connection",
+    "authenticatedTargetCreationResult": "HTTP 201",
+    "dashboardConfirmation": "Your project’s source control settings have been successfully configured."
   },
   "budget": {
     "approvedUsd": 10,
-    "buildsStarted": 0,
-    "buildExecutionSpendUsd": 0,
+    "buildsStarted": 1,
+    "additionalManualBuildsApprovedAfterFailure": 1,
+    "buildOneBillableTimeSeconds": 189.509,
+    "buildExecutionSpendUsd": null,
+    "spendStatus": "NOT_YET_RECONCILED",
     "autoBuild": false,
     "newPaymentMethodOrFixedSubscriptionAuthorized": false
   },
-  "pendingUserAction": {
-    "kind": "GITHUB_PUBLIC_READ_ONLY_SOURCE_AUTHORIZATION",
-    "dashboard": "https://cloud.unity.com/",
-    "project": "CHOOGuard Gameplay",
-    "steps": [
-      "Create a GitHub fine-grained PAT with Repository access = Public repositories, no added repository/account permissions, and a bounded expiry.",
-      "Unity Build settings > Source control > GitHub: enter the token directly there, Authorize, select xrlab-dau/CHOOGuard, Save.",
-      "Keep auto-build disabled; do not paste credentials into chat or commit them.",
-      "If the dashboard requires service activation, use only an available free option; stop if a new payment method or subscription commitment is required."
-    ],
-    "documentation": "https://docs.unity.com/en-us/build-automation/get-started-with-build-automation/connect-your-version-control-system",
+  "sourceAuthorization": {
+    "status": "COMPLETED_IN_ASIDE",
+    "method": "GitHub fine-grained PAT through the authenticated browser UI",
+    "name": "CHOOGuard-Cloud-PublicRead-20260925",
+    "repositoryAccess": "Public repositories (read-only)",
+    "additionalAccountOrRepositoryPermissions": [],
+    "expiresOn": "2026-10-02",
+    "verification": "GitHub's requested one-time email code, read from the matching current Gmail message and entered without printing it",
+    "credentialValueIncludedInChatOrRepository": false,
     "existingBroadGithubTokenTransferred": false,
-    "repositorySecurityPolicyChanged": false
+    "repositorySecurityPolicyChanged": false,
+    "organizationDeveloperDataSharingChanged": false,
+    "newPaymentMethodOrSubscriptionCreated": false
+  },
+  "remoteBuild": {
+    "targetId": "chooguard-windows-gameplay",
+    "targetGuid": "7187a7b9-cbb1-4866-b5c6-d16620762c45",
+    "buildNumber": 1,
+    "created": "2026-09-25T12:18:20.480Z",
+    "requestedRevision": "5777808cc6df2f553132bb1b8f4ad25403b56b8a",
+    "cleanBuild": true,
+    "machineType": "win_micro_v1",
+    "sourceType": "oauth",
+    "remoteCacheStrategy": "none",
+    "autoBuild": false,
+    "scheduleEnabled": false,
+    "environment": {
+      "CG_CLOUD_BUILD": "win-x64",
+      "CG_GAMEPLAY_SCENE": "Assets/ChooGuard/Scenes/FpsStation.unity"
+    },
+    "initialDashboardState": "Sent to Builder",
+    "result": "failure",
+    "finished": "2026-09-25T12:31:19.713Z",
+    "lastBuiltRevision": "5777808cc6df2f553132bb1b8f4ad25403b56b8a",
+    "totalTimeInSeconds": 779.233,
+    "billableTimeInSeconds": 189.509,
+    "workspaceSizeBytes": 5414043648,
+    "sourceCheckout": "PASS",
+    "failedStage": "Prebuild Python interpreter requirements",
+    "failure": "Default interpreter failed the combined native Windows x64 / Python >=3.11 guard; actual interpreter identity was not emitted in build #1.",
+    "log": "cloud-build-1.log",
+    "screenshot": {"file": "cloud-build-1.png", "capturedState": "Building", "terminalStateEvidence": "API and full log"},
+    "observerWallTimeLimitMinutes": 45,
+    "automaticRetry": false
   },
   "hookReview": {
     "corrections": [
       "Capture InvalidDataException as a managed dependency validation failure.",
       "Reuse the empty batch-startup scene rule and restore an empty scene after entry generation.",
       "Interpret Unity 6000.3 buildStartedAt ticks as UTC instead of converting an Unspecified DateTime.",
-      "Verify the already tracked DotRecast DLLs without installing a redundant NuGet CLI/.NET SDK."
+      "Verify the already tracked DotRecast DLLs without installing a redundant NuGet CLI/.NET SDK.",
+      "Select a compatible native Python or bootstrap the existing hash-pinned official embedded distribution on the remote Windows builder only.",
+      "Accept the actual narrowly bounded checkout/.build/last/<target> UBA output tree while preserving containment and reparse checks."
     ],
     "readOnlyManagedDependencySmoke": {
       "status": "PASS",
@@ -91,8 +131,8 @@
       "unityExecuted": false
     },
     "unityCorrectionsExecution": "NOT_RUN",
-    "firstRemoteRunMustCheck": [
-      "UBA output path is outside checkout and has no junctions.",
+    "nextRemoteRunMustCheck": [
+      "UBA output path matches the allowed external or .build/last/<target> tree and has no junctions.",
       "UBA discovers hooks in ChooGuard.Editor and preserves their state between export callbacks.",
       "DEVOPS_ENV fixture arguments reach the test and build Editor processes.",
       "Scene overrides resolve to the exact Assets paths.",

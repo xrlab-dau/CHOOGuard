@@ -98,7 +98,9 @@ Scene List:
 
 첫 scene은 Pre-Export가 `BuildBaseline.CreateGameplayEntry`로 생성한다. `GameplayBootstrap`의 실제 FPS 진입점, seed/atomic-transition JSON, Korean font를 포함하고 두 번째 실제 모델 scene을 additive load한다. 기존 `FpsStation.unity`를 저장하거나 수정하지 않는다. 단순 Bootstrap/lab 빌드로 대체하지 않는다. 실제 build 옵션의 scene 목록/순서, Development, Windows x64, Mono가 다르면 실패한다. UBA가 export를 담당하므로 `-executeMethod BuildBaseline.Build`를 추가하여 두 번 빌드하지 않는다.
 
-REST API에서는 `platform="standalonewindows64"`, `settings.unityVersion="6000_3_23f1"`, `settings.operatingSystemSelected="windows"`를 쓴다. Script hooks, `playerExporter`, test flags는 모두 **`settings.advanced.unity`** 아래에 있다. `playerExporter.export=true`, `playerExporter.buildOptions=["Development"]`, `playerExporter.sceneList`는 위 순서다. `editorUserBuildSettings.standaloneBuildSubtarget="Player"`, `assetBundles.buildBundles=false`, `addressables.buildAddressables=false`, `preBuildScriptFailsBuild=true`로 둔다. 네 test flag는 `runUnitTests`, `runEditModeTests`, `runPlayModeTests`, `failedUnitTestFailsBuild`이며 모두 `true`다. target 환경변수는 별도 `PUT /orgs/{orgid}/projects/{projectid}/buildtargets/{buildtargetid}/envvars`의 `{"envvars":{...}}`로 설정한다. 비활성 준비 target은 `enabled=false`, `settings.autoBuild=false`로 보존한다. `settings.architecture`는 Player가 아니라 **Editor** architecture이므로 대상 x64 지정 대신 쓰지 않는다.
+현행 REST base URL은 `https://build-automation.services.api.unity.com/v2`다. `platform="standalonewindows64"`, `settings.unityVersion="6000_3_23f1"`, `settings.operatingSystemSelected="windows"`를 쓴다. Script hooks, `playerExporter`, test flags는 모두 **`settings.advanced.unity`** 아래에 있다. `playerExporter.export=true`, `playerExporter.buildOptions=["Development"]`, `playerExporter.sceneList`는 위 순서다. `editorUserBuildSettings.standaloneBuildSubtarget="Player"`, `assetBundles.buildBundles=false`, `addressables.buildAddressables=false`, `preBuildScriptFailsBuild=true`로 둔다. 네 test flag는 `runUnitTests`, `runEditModeTests`, `runPlayModeTests`, `failedUnitTestFailsBuild`이며 모두 `true`다.
+
+target 환경변수는 별도 `PUT /orgs/{orgid}/projects/{projectid}/buildtargets/{buildtargetid}/envvars`에 **평면 문자열 map** `{"CG_CLOUD_BUILD":"win-x64","CG_GAMEPLAY_SCENE":"Assets/ChooGuard/Scenes/FpsStation.unity"}`을 보낸다. v2는 `{"envvars":{...}}` wrapper를 422로 거부했으며 평면 map은 200으로 저장됐다. GitHub PAT 연결의 target SCM type은 `oauth`다. timeout은 프로젝트 최상위 `buildTimeoutMinutes=45`다. 비활성 준비 target은 `enabled=false`, `settings.autoBuild=false`로 두고 환경변수와 연결을 확인한 뒤 수동 빌드 시에만 활성화한다. `settings.architecture`는 Player가 아니라 **Editor** architecture이므로 대상 x64 지정 대신 쓰지 않는다.
 
 Advanced Settings → Environment variables:
 
@@ -106,9 +108,9 @@ Advanced Settings → Environment variables:
 | --- | --- |
 | `CG_CLOUD_BUILD` | `win-x64` |
 | `CG_GAMEPLAY_SCENE` | `Assets/ChooGuard/Scenes/FpsStation.unity` |
-| `CG_CLOUD_PYTHON` | 선택: native Windows x64 Python **3.11 이상** `python.exe`의 절대 경로. 미설정 시 `python` 사용. Cygwin Python 불가 |
+| `CG_CLOUD_PYTHON` | 선택: native Windows x64 Python **3.11 이상** `python.exe`의 절대 경로. 명시한 interpreter가 부적합하면 실패하며 대체하지 않음 |
 
-필요한 Python이 없는 image에서는 명시적으로 실패하며 SDK/Editor를 자동 설치하지 않는다. UBA 문서는 Python이 있다고 명시하지만 3.11 이상인지는 선택 image에서 확인해야 한다. 별도 .NET SDK/NuGet CLI 설치는 필요 없다. 기존 경계 회귀 테스트에는 **실제 Windows symbolic-link 생성 권한**(Developer Mode 또는 `SeCreateSymbolicLinkPrivilege`)이 필요하다. 권한이 없으면 prebuild가 실패한다. 가짜 파일/테스트 제외로 통과시키지 않는다.
+미설정 시 `py -3`과 PATH의 `python`/`python3`를 검사한다. 적합한 interpreter가 없으면 **원격 Windows UBA에서만** `cloud-bootstrap-python.ps1`이 기존 runtime lock의 공식 Python embeddable ZIP을 SHA-256 검증 후 임시 경로에 푼다. 기존 content-addressed `.package-cache`를 재사용하여 runtime 조립 때 같은 ZIP을 다시 다운로드하지 않는다. pip/venv/새 SDK 설치는 없으며 embedded `._pth`를 변경하지 않고 준비 스크립트가 자기 worker import 경로만 추가한다. Python 3.11 이상은 `hashlib.file_digest` 때문에 필요하다. 별도 .NET SDK/NuGet CLI 설치는 필요 없다. 실제 Windows symbolic-link 생성 권한(Developer Mode 또는 `SeCreateSymbolicLinkPrivilege`)이 없으면 prebuild가 실패한다. 가짜 파일/테스트 제외로 통과시키지 않는다.
 
 UBA 내장 `IS_BUILDER=true`, `BUILDER_OS=WINDOWS`, `PROJECT_DIRECTORY`, `OUTPUT_DIRECTORY`, `DEVOPS_ENV`를 사용한다. Bash는 Cygwin에서 실행하므로 native Python에 넘기는 경로를 `cygpath -wa`로 변환한다. helper는 `DEVOPS_ENV`에 `CG_CLOUD_OUTPUT_DIRECTORY`, `CG_RUNTIME_PACKAGE`, `CG_TEST_SQLITE_BINARY`, `CG_TEST_SQLITE_SHA256`, `CG_TEST_SQLITE_SOURCE_ID`, `UNITY_EXTRA_PARAMS`를 쓴다. 마지막 변수에는 기존 값을 보존하면서 실제 외부 scratch의 `-cgFixtureRoot` 및 `-cgBuildLinkFixture`가 추가된다. Dashboard에서 이 두 인수를 중복 지정하지 않는다. 원격 test command에도 전달됐는지는 첫 UBA 실행 로그로 확인해야 하며 누락되면 테스트가 실패해야 한다.
 
@@ -120,9 +122,11 @@ Pre-Build Script는 Unity의 최초 script compilation **이전**에 다음을 �
 2. 이미 Git에 추적된 DotRecast 2026.3.1 세 DLL을 `workers/nuget-managed.lock.json`의 netstandard2.1 경로/SHA-256 및 `Assets/NuGet.config`/`Assets/packages.config` 선언과 대조한다. `BootstrapValidator`도 같은 선언/버전/경로/해시를 확인한다. 추가 DLL, 다른 framework DLL, 누락/변조/선언 drift는 실패한다. `Assets/Packages` 전체를 허용하지 않으며 managed package 복원이나 CLI 다운로드를 수행하지 않는다.
 3. 기존 `package_runtime.py --platform win-x64`, `package_broker.py --platform win-x64`의 동일 구현을 호출하여 `workers/runtime/`를 새로 조립한다. 기존 lockfile SHA-256/SHA3-256/npm SHA-512 검증과 라이선스 보존은 그대로다. 기존 package를 덮어쓰지 않는다.
 
-Pre-Export는 기존 Bootstrap 검증과 전체 runtime hash 검증을 재사용한다. Post-Export는 해당 Player의 실제 성공 BuildReport를 요구하며 기존 `CopyRuntimePackage`로 `*_Data/StreamingAssets/ChooGuardRuntime`를 채운다. 복사 후 해시를 확인하고 전체 runtime을 receipt inventory에 포함한다. `chooguard-build-receipt.json`을 Player 옆에 추가하며 원본 receipt는 기존 `docs/build/evidence/CS-BOOT.01.01/<runId>/` 형식이다. 원격 출력 경로는 checkout과 겹치면 안 된다. Unity가 Post-Export 전 실패한 경우 UBA 실패 로그/test report가 근거이며 hook receipt의 존재를 보장하지 않는다. **receipt의 Player `runStatus`는 `NOT_RUN`으로 유지한다.**
+Pre-Export는 기존 Bootstrap 검증과 전체 runtime hash 검증을 재사용한다. Post-Export는 해당 Player의 실제 성공 BuildReport를 요구하며 기존 `CopyRuntimePackage`로 `*_Data/StreamingAssets/ChooGuardRuntime`를 채운다. 복사 후 해시를 확인하고 전체 runtime을 receipt inventory에 포함한다. `chooguard-build-receipt.json`을 Player 옆에 추가하며 원본 receipt는 기존 `docs/build/evidence/CS-BOOT.01.01/<runId>/` 형식이다. 원격 출력 root는 checkout 외부 또는 UBA가 실제 사용하는 **`<checkout>/.build/last/<target>` 바로 한 단계 target 디렉터리**만 허용한다. `.exe`는 그 root의 하위여야 하며 project root/Assets/임의 소스 폴더, reparse 경로와 기존 출력 덮어쓰기는 계속 거부한다. 로컬 명시 빌드의 checkout 비중첩 규칙은 변경하지 않는다. Unity가 Post-Export 전 실패한 경우 UBA 실패 로그/test report가 근거이며 hook receipt의 존재를 보장하지 않는다. **receipt의 Player `runStatus`는 `NOT_RUN`으로 유지한다.**
 
 게시 source closure에는 gameplay C#/asmdef/meta 및 참조 scene/asset 외에도 다음이 필요하다:
+
+- `workers/cloud-prebuild.sh`, `workers/cloud-bootstrap-python.ps1`, `workers/cloud_prepare.py`와 `CloudBuildHooks.cs`.
 
 - `Assets/NuGet.config`, `Assets/packages.config`, 기존 추적 중인 `Assets/Packages/`의 세 DotRecast package와 meta, `Packages/manifest.json`, `Packages/packages-lock.json`, `workers/nuget-managed.lock.json`.
 - 두 runtime lockfile, `workers/package_broker.py`, `workers/physics/package_runtime.py`, `worker.py`, `upstream-lock.json`, `requirements-core.txt`.
@@ -144,7 +148,7 @@ UBA의 Test summary뿐 아니라 NUnit 결과의 passed/failed/skipped와 로그
 - [UBA environment variables](https://docs.unity.com/en-us/build-automation/reference/available-environment-variables), [installed software](https://docs.unity.com/en-us/build-automation/reference/installed-software)
 - [UBA Scenes override](https://docs.unity.com/en-us/build-automation/advanced-build-configuration/specify-the-scene-to-be-built), [unit test settings](https://docs.unity.com/en-us/build-automation/reference/unit-tests)
 - [BuildPlayerProcessor](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.BuildPlayerProcessor.html), [BuildReport.GetLatestReport](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.Reporting.BuildReport.GetLatestReport.html)
-- [현재 UBA OpenAPI schema](https://build-api.cloud.unity3d.com/api/v1/api.json), [Development build API 설정](https://support.unity.com/hc/en-us/articles/46849099987220-Toggling-the-Development-Build-Setting-via-Unity-Build-Automation-API)
+- [UBA v2 OpenAPI schema](https://docs.unity.com/en-us/oas-build-automation-client/2.0.0), [Development build API 설정](https://support.unity.com/hc/en-us/articles/46849099987220-Toggling-the-Development-Build-Setting-via-Unity-Build-Automation-API)
 
 ## 오프라인 FDS 재계산
 

@@ -12,11 +12,12 @@
     "cloudTransition": {
       "reason": "사용자 요청: 로컬 저장공간 부족으로 Unity Cloud에서 진행",
       "localBuilds": "STOPPED",
-      "cloudExecution": "BLOCKED_SOURCE_AUTHORIZATION",
+      "cloudExecution": "BUILD_1_FAILED_PREPARATION_FOLLOWUP_AUTHORIZED",
       "organizationId": "e5fdf2ec-c1ea-4c98-0000-0d404b80e268",
       "projectId": "9f037959-7808-49f6-b13f-46eb8c76ed31",
       "projectName": "CHOOGuard Gameplay",
-      "projectLinked": false,
+      "localEditorProjectLinked": false,
+      "sourceConnected": true,
       "sourceRemote": "https://github.com/xrlab-dau/CHOOGuard",
       "sourceRemoteVisibility": "PUBLIC",
       "sourceUploadApproval": "APPROVED_PUBLIC_SEPARATE_BRANCH",
@@ -25,12 +26,17 @@
       "cloudEvidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/fps-gameplay-20260925/cloud-handoff.json",
       "policyBackup": "PPO 가중치·학습 지표·monitor·provenance·config 5개 파일 2,391,758 bytes Cloud 업로드 후 다시 내려받아 SHA-256 모두 일치; 원본 유지",
       "spendingApprovalUSD": 10,
-      "spendToDateUSD": 0,
+      "spendToDateUSD": null,
+      "spendReconciled": false,
       "newSubscriptionOrPaymentRegistrationApproved": false,
-      "cloudBuildEnabled": false,
+      "cloudBuildEnabled": true,
+      "buildNumber": 1,
+      "buildRevision": "5777808cc6df2f553132bb1b8f4ad25403b56b8a",
+      "additionalManualBuildsApproved": 1,
+      "buildOneBillableTimeSeconds": 189.509,
+      "sourceAuthorization": "Aside에서 GitHub 이메일 인증 후 공개 읽기 전용·추가 권한 없음·2026-10-02 만료 PAT를 Unity에 직접 등록하고 저장소 연결 완료",
       "blockers": [
-        "Unity의 공개 GitHub HTTPS→SSH 재작성으로 Git ls-remote 실패. 저장소 Deploy Key는 금지되어 있으므로 GitHub 공개 읽기 전용 PAT를 Unity Source control에 직접 연결해야 함",
-        "현행 API 동시성은 2. 구형 billing의 buildingDisabled/freeTierLimitReached만으로 서비스 미활성화나 무료분 소진을 단정하지 않음; 실제 빌드 접수 가능 여부는 소스 연결 후 확인"
+        "Cloud 빌드 #1은 정확한 커밋 checkout 후 기본 Python의 native Windows x64/3.11+ 조건에서 실패. 준비 코드와 실제 UBA 출력 경로 규칙을 수정했으며 승인된 추가 수동 빌드 1회로 검증 예정. Unity compilation/tests/Windows Player 실행은 미확인"
       ],
       "ownedScratchRemovedKiB": 2261824,
       "preserved": "모델링 작업·원본 프로젝트·학습 가중치·최신 runtime package·검증 XML/화면 증거"

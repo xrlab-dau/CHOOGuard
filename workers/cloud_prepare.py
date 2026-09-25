@@ -7,14 +7,42 @@ import json
 import os
 import pathlib
 import platform
+import struct
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
 
+HERE = pathlib.Path(__file__).resolve().parent
+# The official embeddable distribution's ._pth intentionally omits the script directory.
+# Add only this checkout's worker modules; packaging needs no pip, venv or site packages.
+sys.path.insert(0, str(HERE))
+
 from package_broker import add_broker
 from physics.package_runtime import build, digest
 
-HERE = pathlib.Path(__file__).resolve().parent
+
+def require_python() -> None:
+    identity = {
+        'executable': sys.executable,
+        'version': sys.version,
+        'platform': sys.platform,
+        'system': platform.system(),
+        'machine': platform.machine(),
+        'pointerBits': struct.calcsize('P') * 8,
+    }
+    if sys.platform != 'win32' or identity['system'] != 'Windows' or identity['machine'].lower() not in ('amd64', 'x86_64') or identity['pointerBits'] != 64 or sys.version_info < (3, 11):
+        raise RuntimeError('Use a native Windows x64 Python 3.11+ packaging interpreter; actual=' + json.dumps(identity))
+    # HTTPS downloads and package_runtime.digest require these stdlib capabilities.
+    try:
+        import hashlib
+        import ssl
+
+        if not callable(getattr(hashlib, 'file_digest', None)):
+            raise ImportError('hashlib.file_digest is unavailable')
+        ssl.create_default_context()
+    except (ImportError, OSError) as error:
+        raise RuntimeError('Packaging interpreter lacks required stdlib capabilities; actual=' + json.dumps(identity)) from error
+    print('CG_CLOUD_PYTHON_READY: ' + json.dumps(identity), flush=True)
 
 
 def verify_managed(project: pathlib.Path) -> None:
@@ -60,8 +88,7 @@ def test_fixtures(scratch: pathlib.Path) -> tuple[pathlib.Path, pathlib.Path]:
 def prepare(args: argparse.Namespace) -> None:
     if os.environ.get('CG_CLOUD_BUILD') != 'win-x64' or os.environ.get('IS_BUILDER', '').lower() != 'true' or os.environ.get('BUILDER_OS') != 'WINDOWS':
         raise RuntimeError('Explicit Windows UBA configuration required')
-    if platform.system() != 'Windows' or platform.machine().lower() not in ('amd64', 'x86_64') or sys.version_info < (3, 11):
-        raise RuntimeError('Use a native Windows x64 Python 3.11+ packaging interpreter, not Cygwin Python')
+    require_python()
     project = args.project_root.resolve(strict=True)
     if project != HERE.parent:
         raise ValueError('UBA project root must be the checkout containing this script')
@@ -101,6 +128,9 @@ def prepare(args: argparse.Namespace) -> None:
 
 
 if __name__ == '__main__':
+    if sys.argv[1:] == ['--check-python']:
+        require_python()
+        raise SystemExit(0)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--project-root', type=pathlib.Path, required=True)
     parser.add_argument('--output-directory', type=pathlib.Path, required=True)
