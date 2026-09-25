@@ -21,11 +21,15 @@ Unity 진입 메뉴는 `CHOOGuard/Gameplay/독립 FPS 진입 장면 열기`다. 
 
 **Cloud 전환:** 로컬 빌드/추가 학습을 중지하고 검증 XML·화면을 보존한 뒤 소유한 임시 프로젝트 약 2.16GiB를 삭제했다. 사용자는 기존 **공개** `xrlab-dau/CHOOGuard` 저장소의 별도 작업 브랜치 게시와 Cloud Build **총 US$10 이내 사용**을 승인했다. 새 결제수단 등록이나 별도 구독 약정은 미승인이다. 기존 SDK 로그인으로 `CHOOGuard Gameplay` 프로젝트를 생성했으며 모델링용 Cold Storage 프로젝트는 변경하지 않았다. 원격 실행은 아직 없다.
 
-Cloud Build API의 실제 effective plan은 `Teams Basic`, `buildingDisabled=true`, 동시 빌드 0이다. `freeTierLimitReached=true`도 관측했으나 이것만으로 무료분을 이미 소진했다고 단정하지 않는다. 프로젝트는 명시적으로 비활성화했고 유료 실행은 0이다. Cloud의 HTTPS Git 연결 검증은 `Git ls-remote failure`, GitHub의 read-only deploy key 등록은 저장소 정책으로 거부됐다. 로컬 익명 Git 접근은 정상이다. 별도 연결 resource가 없다는 이유로 disabled target 생성도 422로 거부됐다. 보안 정책을 완화하거나 개인 GitHub 토큰을 Cloud에 넘기지 않는다.
+Cloud의 GitHub HTTPS 연결은 현행 v2 진단에서도 SSH URL로 재작성된 뒤 `Git ls-remote failure`가 된다. 공개 대조 저장소 `octocat/Hello-World`도 같고 로컬 익명 Git 접근은 정상이다. GitHub read-only Deploy Key 등록은 저장소 정책으로 거부됐으며 연결 resource가 없어 disabled target 생성도 422다. **확인된 차단은 소스 인증이다.** 구형 billing에는 `Teams Basic`, `buildingDisabled=true`, 동시성 0이 있으나 현행 `/concurrency-limit`은 **2/2**다. `effective={}`나 `freeTierLimitReached=true`만으로 서비스 미활성화 또는 무료분 소진을 단정하지 않는다. 실제 빌드 접수 가능 여부는 소스 연결 후 확인한다. 프로젝트는 명시적으로 비활성화했고 시작한 빌드는 0건이다.
 
 원격 Windows hook과 정확한 Dashboard 설정은 [worker README](../../../../workers/physics/README.md#unity-build-automation--windows-x64)에 있다. SDK/패키지 재생성은 cloud worker에서만 수행하고 `workers/runtime`, node_modules, venv, crash dump를 소스에 게시하지 않는다. 현재 브랜치/원래 index는 유지하며 별도 index로 gameplay 변경만 게시한다. 전체 테스트 실행에는 기존 assembly-layout의 정적 의존성 기대와 현재 assembly 경계의 차이도 해결해야 하며 선택한 78개 결과로 이 문제를 가리지 않는다.
 
 공개 게시: `cloud/fps-gameplay-20260925`, 구현 commit [`06581714`](https://github.com/xrlab-dau/CHOOGuard/commit/06581714e80beae2cd7627c5f6653d7f6824f130). 원래 모델링 checkout/index는 바꾸지 않았다. PPO 가중치·학습 지표·monitor·provenance·config 5개 파일(2,391,758 bytes)은 별도 Gameplay Cloud 프로젝트에 업로드하고 다시 내려받아 모든 SHA-256을 대조했다. 원본 학습 파일도 보존했다. [Cloud handoff 증거](../../state/evidence/fps-gameplay-20260925/cloud-handoff.json)는 이 저장 검증과 **아직 실행하지 못한 Cloud build**를 구분한다.
+
+남은 사용자 인증 작업: GitHub **fine-grained PAT → Public repositories(읽기 전용)**, 추가 저장소/계정 권한 없이 생성한 토큰을 `CHOOGuard Gameplay → Build settings → Source control → GitHub`에 **직접** 입력하고 Authorize → `xrlab-dau/CHOOGuard` → Save. 토큰을 대화/파일에 남기거나 개인용 광범위 토큰을 재사용하지 않는다. Auto-build는 끈다. 서비스 활성화 화면이 나오면 무료 선택지만 사용하고 새 결제/구독 약정은 진행하지 않는다. [Unity의 공식 PAT 연결 절차](https://docs.unity.com/en-us/build-automation/get-started-with-build-automation/connect-your-version-control-system)를 따른다.
+
+Cloud hook 검토 후 `InvalidDataException` 누락, batch Untitled의 additive 생성, Unity 6000.3 UTC ticks 변환, 이미 추적된 DLL의 불필요한 NuGet CLI 설치를 수정했다. 읽기 전용 `cloud_prepare.verify_managed`는 실제 세 DLL에서 exit 0이었다(다운로드/패키징/Unity 실행 없음). Unity 관련 수정은 미실행이며 기존 native 시험 결과를 재사용하지 않는다. 원격 준비 설정은 Windows Micro `win_micro_v1`, timeout 45분, cache/auto-build/boost disk 없음이다. 이 설정과 예산 알림은 **과금 hard cap이 아니며** 총 US$10 승인 범위 안에서 수동 실행한다.
 
 아래 작업 brief와 수용 기준의 범위는 유지한다. 구현 전 코드 관찰·검증 예시는 이 체크포인트와 구별하며, 부분 시험 성공으로 AC01~AC25 전체를 수용하지 않는다.
 

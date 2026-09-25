@@ -87,8 +87,9 @@ python3 workers/package_broker.py --platform osx-arm64
 | Post-Build Script | 비움 |
 | Advanced Settings → Scenes → Scene List | 아래 두 항목을 **순서대로**, `Assets/` 기준 상대 경로로 지정 |
 | Addressables / Asset bundles | 이 target에서는 끔. Post-Export는 가장 최근 **Player** BuildReport를 검증 |
-| Caching | Library만. 첫 실행/잔존 runtime 발생 시 clean build, workspace cache 사용 안 함 |
+| Caching | 끔 (`remoteCacheStrategy="none"`). 잔존 runtime 없는 clean checkout 사용 |
 | Auto-build / schedule | 꺼둠. 서비스 활성화/과금 조건을 승인한 뒤에만 수동 build 시작 |
+| Machine / timeout | `win_micro_v1` (Windows Micro, 8 CPU / 16 GB), 프로젝트 timeout 45분. Boost disk 사용 안 함 |
 
 Scene List:
 
@@ -106,32 +107,30 @@ Advanced Settings → Environment variables:
 | `CG_CLOUD_BUILD` | `win-x64` |
 | `CG_GAMEPLAY_SCENE` | `Assets/ChooGuard/Scenes/FpsStation.unity` |
 | `CG_CLOUD_PYTHON` | 선택: native Windows x64 Python **3.11 이상** `python.exe`의 절대 경로. 미설정 시 `python` 사용. Cygwin Python 불가 |
-| `CG_CLOUD_DOTNET` | 선택: **.NET 8 SDK + runtime**이 있는 native `dotnet.exe` 절대 경로. 미설정 시 PATH, 이후 `%ProgramFiles%/dotnet/dotnet.exe` 확인 |
 
-Python/.NET SDK가 없는 image에서는 명시적으로 실패하며 SDK/Editor를 자동 설치하지 않는다. UBA 문서는 Python/Visual Studio가 있다고 명시하지만 Python 버전이나 .NET 8 SDK 존재까지 보증하지 않으므로 선택 image에서 확인해야 한다. 기존 경계 회귀 테스트에는 **실제 Windows symbolic-link 생성 권한**(Developer Mode 또는 `SeCreateSymbolicLinkPrivilege`)이 필요하다. 권한이 없으면 prebuild가 실패한다. 가짜 파일/테스트 제외로 통과시키지 않는다.
+필요한 Python이 없는 image에서는 명시적으로 실패하며 SDK/Editor를 자동 설치하지 않는다. UBA 문서는 Python이 있다고 명시하지만 3.11 이상인지는 선택 image에서 확인해야 한다. 별도 .NET SDK/NuGet CLI 설치는 필요 없다. 기존 경계 회귀 테스트에는 **실제 Windows symbolic-link 생성 권한**(Developer Mode 또는 `SeCreateSymbolicLinkPrivilege`)이 필요하다. 권한이 없으면 prebuild가 실패한다. 가짜 파일/테스트 제외로 통과시키지 않는다.
 
 UBA 내장 `IS_BUILDER=true`, `BUILDER_OS=WINDOWS`, `PROJECT_DIRECTORY`, `OUTPUT_DIRECTORY`, `DEVOPS_ENV`를 사용한다. Bash는 Cygwin에서 실행하므로 native Python에 넘기는 경로를 `cygpath -wa`로 변환한다. helper는 `DEVOPS_ENV`에 `CG_CLOUD_OUTPUT_DIRECTORY`, `CG_RUNTIME_PACKAGE`, `CG_TEST_SQLITE_BINARY`, `CG_TEST_SQLITE_SHA256`, `CG_TEST_SQLITE_SOURCE_ID`, `UNITY_EXTRA_PARAMS`를 쓴다. 마지막 변수에는 기존 값을 보존하면서 실제 외부 scratch의 `-cgFixtureRoot` 및 `-cgBuildLinkFixture`가 추가된다. Dashboard에서 이 두 인수를 중복 지정하지 않는다. 원격 test command에도 전달됐는지는 첫 UBA 실행 로그로 확인해야 하며 누락되면 테스트가 실패해야 한다.
 
-### Clean checkout 복원과 검증
+### Clean checkout 검증과 runtime 조립
 
 Pre-Build Script는 Unity의 최초 script compilation **이전**에 다음을 수행한다.
 
 1. 외부 scratch에 실제 root/parent/leaf/dangling symlink fixture를 생성한다.
-2. `NuGetForUnity.Cli` **4.5.0 / net8.0**을 scratch tool-path에 설치하고 `restore <project>`를 실행한다. Editor 내 자동 restore는 첫 컴파일보다 늦을 수 있으므로 그것에 의존하지 않는다. `Assets/NuGet.config`/`Assets/packages.config`의 DotRecast 2026.3.1 선언을 사용한다.
-3. `workers/nuget-managed.lock.json`의 정확한 netstandard2.1 DLL SHA-256과 복원 inventory를 검사한다. 핀은 기존 복원된 세 DLL의 관측된 bytes다. `BootstrapValidator`도 선언/버전/경로/해시를 확인하고 그 세 파일만 허용한다. 추가 DLL, 다른 framework DLL, 누락/변조/선언 drift는 실패한다. 모든 managed DLL 또는 `Assets/Packages` 전체를 허용하는 예외가 아니다.
-4. 기존 `package_runtime.py --platform win-x64`, `package_broker.py --platform win-x64`의 동일 구현을 호출하여 `workers/runtime/`를 새로 조립한다. 기존 lockfile SHA-256/SHA3-256/npm SHA-512 검증과 라이선스 보존은 그대로다. 기존 package를 덮어쓰지 않는다.
+2. 이미 Git에 추적된 DotRecast 2026.3.1 세 DLL을 `workers/nuget-managed.lock.json`의 netstandard2.1 경로/SHA-256 및 `Assets/NuGet.config`/`Assets/packages.config` 선언과 대조한다. `BootstrapValidator`도 같은 선언/버전/경로/해시를 확인한다. 추가 DLL, 다른 framework DLL, 누락/변조/선언 drift는 실패한다. `Assets/Packages` 전체를 허용하지 않으며 managed package 복원이나 CLI 다운로드를 수행하지 않는다.
+3. 기존 `package_runtime.py --platform win-x64`, `package_broker.py --platform win-x64`의 동일 구현을 호출하여 `workers/runtime/`를 새로 조립한다. 기존 lockfile SHA-256/SHA3-256/npm SHA-512 검증과 라이선스 보존은 그대로다. 기존 package를 덮어쓰지 않는다.
 
 Pre-Export는 기존 Bootstrap 검증과 전체 runtime hash 검증을 재사용한다. Post-Export는 해당 Player의 실제 성공 BuildReport를 요구하며 기존 `CopyRuntimePackage`로 `*_Data/StreamingAssets/ChooGuardRuntime`를 채운다. 복사 후 해시를 확인하고 전체 runtime을 receipt inventory에 포함한다. `chooguard-build-receipt.json`을 Player 옆에 추가하며 원본 receipt는 기존 `docs/build/evidence/CS-BOOT.01.01/<runId>/` 형식이다. 원격 출력 경로는 checkout과 겹치면 안 된다. Unity가 Post-Export 전 실패한 경우 UBA 실패 로그/test report가 근거이며 hook receipt의 존재를 보장하지 않는다. **receipt의 Player `runStatus`는 `NOT_RUN`으로 유지한다.**
 
 게시 source closure에는 gameplay C#/asmdef/meta 및 참조 scene/asset 외에도 다음이 필요하다:
 
-- `Assets/NuGet.config`, `Assets/packages.config`, `Packages/manifest.json`, `Packages/packages-lock.json`, `workers/nuget-managed.lock.json`.
+- `Assets/NuGet.config`, `Assets/packages.config`, 기존 추적 중인 `Assets/Packages/`의 세 DotRecast package와 meta, `Packages/manifest.json`, `Packages/packages-lock.json`, `workers/nuget-managed.lock.json`.
 - 두 runtime lockfile, `workers/package_broker.py`, `workers/physics/package_runtime.py`, `worker.py`, `upstream-lock.json`, `requirements-core.txt`.
 - `workers/physics/cases/reference-hall/`의 receipt와 해시가 가리키는 원시 FDS 출력/덱.
 - `workers/prediction/`의 다섯 gameplay `.mjs` 모듈 및 `package.json`, `package-lock.json`.
 - `docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/npc-decision.schema.json`, `future-step.schema.json`, `docs/build/baseline.schema.json`.
 
-`workers/runtime/`, `.package-cache/`, NuGet 복원 `Assets/Packages/`, venv, node_modules, credentials, raw Unity/Hub 로그는 게시하지 않는다. runtime/provenance/license는 **빌드 artifact**에 포함되며 저장소에 올리는 binary package가 아니다.
+`workers/runtime/`, `.package-cache/`, venv, node_modules, credentials, raw Unity/Hub 로그는 게시하지 않는다. 기존 추적된 DotRecast DLL은 위 managed lock으로 제한한다. 새로 조립한 native runtime/provenance/license는 저장소 대신 **빌드 artifact**에 포함한다.
 
 ### 원격 테스트와 남은 수용 한계
 
@@ -145,7 +144,6 @@ UBA의 Test summary뿐 아니라 NUnit 결과의 passed/failed/skipped와 로그
 - [UBA environment variables](https://docs.unity.com/en-us/build-automation/reference/available-environment-variables), [installed software](https://docs.unity.com/en-us/build-automation/reference/installed-software)
 - [UBA Scenes override](https://docs.unity.com/en-us/build-automation/advanced-build-configuration/specify-the-scene-to-be-built), [unit test settings](https://docs.unity.com/en-us/build-automation/reference/unit-tests)
 - [BuildPlayerProcessor](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.BuildPlayerProcessor.html), [BuildReport.GetLatestReport](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/Build.Reporting.BuildReport.GetLatestReport.html)
-- [NuGetForUnity 4.5.0 clean-checkout/CLI restore](https://github.com/GlitchEnzo/NuGetForUnity/blob/v4.5.0/README.md#restoring-packages-after-a-fresh-checkout)
 - [현재 UBA OpenAPI schema](https://build-api.cloud.unity3d.com/api/v1/api.json), [Development build API 설정](https://support.unity.com/hc/en-us/articles/46849099987220-Toggling-the-Development-Build-Setting-via-Unity-Build-Automation-API)
 
 ## 오프라인 FDS 재계산

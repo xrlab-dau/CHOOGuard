@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Explicit UBA preparation: restore managed dependencies, runtime packages and test fixtures."""
+"""Explicit UBA preparation: verify tracked managed dependencies, package runtimes and create test fixtures."""
 from __future__ import annotations
 
 import argparse
@@ -7,8 +7,6 @@ import json
 import os
 import pathlib
 import platform
-import shutil
-import subprocess
 import sys
 import tempfile
 import xml.etree.ElementTree as ET
@@ -19,7 +17,7 @@ from physics.package_runtime import build, digest
 HERE = pathlib.Path(__file__).resolve().parent
 
 
-def restore_managed(project: pathlib.Path, scratch: pathlib.Path) -> None:
+def verify_managed(project: pathlib.Path) -> None:
     lock = json.loads((HERE / 'nuget-managed.lock.json').read_text(encoding='utf-8'))
     packages = ET.parse(project / 'Assets/packages.config').getroot().findall('package')
     identities = [(row['id'], row['version'], row['targetFramework']) for row in lock['packages']]
@@ -28,20 +26,6 @@ def restore_managed(project: pathlib.Path, scratch: pathlib.Path) -> None:
     repositories = [row.get('value') for row in config.findall('config/add') if row.get('key') == 'repositoryPath']
     if lock['schemaVersion'] != 1 or sorted(actual) != sorted(identities) or repositories != [lock['repositoryPath']] or repositories != ['./Packages']:
         raise ValueError('NuGet configuration differs from reviewed managed dependency lock')
-    dotnet = os.environ.get('CG_CLOUD_DOTNET') or shutil.which('dotnet')
-    if not dotnet:
-        candidate = pathlib.Path(os.environ.get('ProgramFiles', 'C:/Program Files')) / 'dotnet/dotnet.exe'
-        dotnet = str(candidate) if candidate.is_file() else None
-    if not dotnet:
-        raise RuntimeError('The Windows builder requires a .NET 8 SDK/runtime; set CG_CLOUD_DOTNET to its native dotnet.exe path. No automatic SDK installation.')
-    tools = scratch / 'nuget-tools'
-    tool_env = dict(os.environ)
-    tool_env['DOTNET_ROOT'] = str(pathlib.Path(dotnet).resolve(strict=True).parent)
-    tool_env['DOTNET_ROOT_X64'] = tool_env['DOTNET_ROOT']
-    subprocess.run([dotnet, 'tool', 'install', 'NuGetForUnity.Cli', '--version', lock['cliVersion'],
-                    '--framework', 'net8.0', '--tool-path', str(tools), '--configfile', str(project / 'Assets/NuGet.config')],
-                   check=True, cwd=project, env=tool_env)
-    subprocess.run([str(tools / 'nugetforunity.exe'), 'restore', str(project)], check=True, cwd=project, env=tool_env)
     expected = set()
     for row in lock['packages']:
         path = project / 'Assets/Packages' / f'{row["id"]}.{row["version"]}' / 'lib' / row['targetFramework'] / f'{row["id"]}.dll'
@@ -51,7 +35,7 @@ def restore_managed(project: pathlib.Path, scratch: pathlib.Path) -> None:
     # An unrelated or alternative-framework binary must not silently become a Player dependency.
     actual_binaries = {path for path in (project / 'Assets/Packages').rglob('*') if path.suffix.lower() in ('.dll', '.so', '.dylib', '.bundle')}
     if actual_binaries != expected:
-        raise ValueError('Restored NuGet package binary inventory differs from the reviewed lock')
+        raise ValueError('Tracked NuGet package binary inventory differs from the reviewed lock')
 
 
 def test_fixtures(scratch: pathlib.Path) -> tuple[pathlib.Path, pathlib.Path]:
@@ -91,7 +75,7 @@ def prepare(args: argparse.Namespace) -> None:
     # Retained outside the checkout until UBA tears down the worker; the Unity test processes need these links.
     scratch = pathlib.Path(tempfile.mkdtemp(prefix='chooguard-uba-'))
     fixtures, links = test_fixtures(scratch)
-    restore_managed(project, scratch)
+    verify_managed(project)
     print(json.dumps(build(argparse.Namespace(platform='win-x64', output=runtime, compile_sqlite=False))))
     print(json.dumps(add_broker('win-x64', runtime)))
     manifest = json.loads((runtime / 'runtime-manifest.json').read_text(encoding='utf-8'))

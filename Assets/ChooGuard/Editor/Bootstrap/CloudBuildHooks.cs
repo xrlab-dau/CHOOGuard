@@ -87,9 +87,10 @@ namespace ChooGuard.Editor.Bootstrap
                 BuildBaseline.RecordBuildOutcome(receipt, () =>
                 {
                     if (report == null) return null;
+                    // Unity 6000.3 reports UTC ticks with DateTimeKind.Unspecified.
                     if (report.summary.platform != BuildTarget.StandaloneWindows64 ||
                         !string.Equals(Path.GetFullPath(report.summary.outputPath), output, StringComparison.OrdinalIgnoreCase) ||
-                        report.summary.buildStartedAt.ToUniversalTime() < preparedAt)
+                        DateTime.SpecifyKind(report.summary.buildStartedAt, DateTimeKind.Utc) < preparedAt)
                         throw new InvalidOperationException("Latest BuildReport is not this prepared Windows Player export.");
                     var exported = Path.GetFullPath(exportPath).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                     if (!string.Equals(exported, output, StringComparison.OrdinalIgnoreCase) && !IsWithin(output, exported))

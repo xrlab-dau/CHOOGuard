@@ -12,7 +12,7 @@
     "cloudTransition": {
       "reason": "사용자 요청: 로컬 저장공간 부족으로 Unity Cloud에서 진행",
       "localBuilds": "STOPPED",
-      "cloudExecution": "BLOCKED_SERVICE_ACTIVATION",
+      "cloudExecution": "BLOCKED_SOURCE_AUTHORIZATION",
       "organizationId": "e5fdf2ec-c1ea-4c98-0000-0d404b80e268",
       "projectId": "9f037959-7808-49f6-b13f-46eb8c76ed31",
       "projectName": "CHOOGuard Gameplay",
@@ -29,8 +29,8 @@
       "newSubscriptionOrPaymentRegistrationApproved": false,
       "cloudBuildEnabled": false,
       "blockers": [
-        "Cloud Build effective plan: Teams Basic, buildingDisabled=true, concurrentBuilds=0, freeTierLimitReached=true; 서비스 활성화 필요",
-        "Cloud Git HTTPS 검증은 Git ls-remote failure. 로컬 익명 Git 접근 정상; GitHub deploy key 등록은 저장소 정책으로 거부됨"
+        "Unity의 공개 GitHub HTTPS→SSH 재작성으로 Git ls-remote 실패. 저장소 Deploy Key는 금지되어 있으므로 GitHub 공개 읽기 전용 PAT를 Unity Source control에 직접 연결해야 함",
+        "현행 API 동시성은 2. 구형 billing의 buildingDisabled/freeTierLimitReached만으로 서비스 미활성화나 무료분 소진을 단정하지 않음; 실제 빌드 접수 가능 여부는 소스 연결 후 확인"
       ],
       "ownedScratchRemovedKiB": 2261824,
       "preserved": "모델링 작업·원본 프로젝트·학습 가중치·최신 runtime package·검증 XML/화면 증거"

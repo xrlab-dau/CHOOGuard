@@ -6,7 +6,7 @@
     "repository": "https://github.com/xrlab-dau/CHOOGuard",
     "visibility": "PUBLIC",
     "branch": "cloud/fps-gameplay-20260925",
-    "commit": "06581714e80beae2cd7627c5f6653d7f6824f130",
+    "implementationCommit": "06581714e80beae2cd7627c5f6653d7f6824f130",
     "publicationUsedIsolatedIndex": true,
     "activeModelingCheckoutAndOriginalIndexChanged": false
   },
@@ -17,17 +17,39 @@
     "buildProjectDisabled": true,
     "unityVersionConfirmed": "6000.3.23f1",
     "windowsImageConfirmed": "windows11_24h2",
-    "effectivePlan": "Teams Basic",
-    "buildingDisabled": true,
-    "concurrentBuilds": 0,
+    "machineTypeConfirmed": "win_micro_v1",
+    "machineFreeTierEligibleField": false,
+    "projectBuildTimeoutMinutes": 45,
+    "legacyBillingRecord": {
+      "label": "Teams Basic",
+      "buildingDisabled": true,
+      "concurrentBuilds": 0
+    },
+    "currentApiEffectiveMetadata": {},
+    "currentApiConcurrency": {"limit": 2, "maxAllowable": 2},
     "freeTierLimitReached": true,
     "organizationEntitlements": [],
-    "quotaExhaustionEstablished": false
+    "quotaExhaustionEstablished": false,
+    "serviceActivationBlockEstablished": false,
+    "buildEligibility": "UNDETERMINED_UNTIL_SOURCE_CONNECTION_AND_MANUAL_BUILD_REQUEST"
   },
   "connection": {
     "status": "BLOCKED",
     "publicHttpsResult": "HTTP 400: Git ls-remote failure",
     "anonymousLocalGitTransport": "PASS",
+    "currentApiCheckUrl": {
+      "status": 200,
+      "isAccessible": false,
+      "normalizedUrl": "git@github.com:xrlab-dau/CHOOGuard.git",
+      "error": "Git ls-remote failure"
+    },
+    "publicControlRepository": {
+      "input": "https://github.com/octocat/Hello-World.git",
+      "normalizedUrl": "git@github.com:octocat/Hello-World.git",
+      "isAccessible": false,
+      "error": "Git ls-remote failure"
+    },
+    "credentialFreeProviderCheck": "OAuth connection is missing its provider configuration",
     "deployKeyResult": "HTTP 422: Deploy keys are disabled for this repository",
     "deployKeyInstalled": false,
     "disabledTargetCreationResult": "HTTP 422: Cannot create a build target without a connection"
@@ -38,6 +60,44 @@
     "buildExecutionSpendUsd": 0,
     "autoBuild": false,
     "newPaymentMethodOrFixedSubscriptionAuthorized": false
+  },
+  "pendingUserAction": {
+    "kind": "GITHUB_PUBLIC_READ_ONLY_SOURCE_AUTHORIZATION",
+    "dashboard": "https://cloud.unity.com/",
+    "project": "CHOOGuard Gameplay",
+    "steps": [
+      "Create a GitHub fine-grained PAT with Repository access = Public repositories, no added repository/account permissions, and a bounded expiry.",
+      "Unity Build settings > Source control > GitHub: enter the token directly there, Authorize, select xrlab-dau/CHOOGuard, Save.",
+      "Keep auto-build disabled; do not paste credentials into chat or commit them.",
+      "If the dashboard requires service activation, use only an available free option; stop if a new payment method or subscription commitment is required."
+    ],
+    "documentation": "https://docs.unity.com/en-us/build-automation/get-started-with-build-automation/connect-your-version-control-system",
+    "existingBroadGithubTokenTransferred": false,
+    "repositorySecurityPolicyChanged": false
+  },
+  "hookReview": {
+    "corrections": [
+      "Capture InvalidDataException as a managed dependency validation failure.",
+      "Reuse the empty batch-startup scene rule and restore an empty scene after entry generation.",
+      "Interpret Unity 6000.3 buildStartedAt ticks as UTC instead of converting an Unspecified DateTime.",
+      "Verify the already tracked DotRecast DLLs without installing a redundant NuGet CLI/.NET SDK."
+    ],
+    "readOnlyManagedDependencySmoke": {
+      "status": "PASS",
+      "exit": 0,
+      "trackedDlls": 3,
+      "downloads": 0,
+      "runtimePackaging": false,
+      "unityExecuted": false
+    },
+    "unityCorrectionsExecution": "NOT_RUN",
+    "firstRemoteRunMustCheck": [
+      "UBA output path is outside checkout and has no junctions.",
+      "UBA discovers hooks in ChooGuard.Editor and preserves their state between export callbacks.",
+      "DEVOPS_ENV fixture arguments reach the test and build Editor processes.",
+      "Scene overrides resolve to the exact Assets paths.",
+      "Windows Python version, symlink privileges, and long-path behavior are supported."
+    ]
   },
   "policyStorage": {
     "projectId": "9f037959-7808-49f6-b13f-46eb8c76ed31",

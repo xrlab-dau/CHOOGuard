@@ -223,12 +223,14 @@ namespace ChooGuard.Editor.Bootstrap
                 throw new IOException("Generated entry folder already exists: " + folder);
             var entry = folder + "/ChooGuardGameplay.unity";
             var previous = SceneManager.GetActiveScene();
+            var emptyBatchStartup = UnityEngine.Application.isBatchMode && SceneManager.sceneCount == 1 &&
+                string.IsNullOrEmpty(previous.path) && !previous.isDirty && previous.rootCount == 0;
             var generated = default(Scene);
             try
             {
                 Directory.CreateDirectory(Path.Combine(ProjectRoot, folder));
                 AssetDatabase.Refresh();
-                generated = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+                generated = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, emptyBatchStartup ? NewSceneMode.Single : NewSceneMode.Additive);
                 SceneManager.SetActiveScene(generated);
                 var root = new GameObject("ChooGuard Gameplay Runtime");
                 var bootstrap = root.AddComponent<GameplayBootstrap>();
@@ -244,8 +246,15 @@ namespace ChooGuard.Editor.Bootstrap
             }
             finally
             {
-                if (previous.IsValid()) SceneManager.SetActiveScene(previous);
-                if (generated.IsValid()) EditorSceneManager.CloseScene(generated, true);
+                if (emptyBatchStartup)
+                {
+                    if (generated.IsValid()) EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                }
+                else
+                {
+                    if (previous.IsValid() && previous.isLoaded) SceneManager.SetActiveScene(previous);
+                    if (generated.IsValid()) EditorSceneManager.CloseScene(generated, true);
+                }
             }
         }
         private static BuildReport BuildGameplayPlayer(BuildRequest request)

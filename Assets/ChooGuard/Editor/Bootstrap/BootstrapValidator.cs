@@ -81,7 +81,7 @@ namespace ChooGuard.Editor.Bootstrap
                         throw new InvalidDataException("Managed dependency hash mismatch or duplicate: " + relative);
                 }
             }
-            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException ||
+            catch (Exception exception) when (exception is IOException || exception is InvalidDataException || exception is UnauthorizedAccessException ||
                 exception is InvalidOperationException || exception is ArgumentException || exception is System.Xml.XmlException)
             {
                 verified.Clear();
