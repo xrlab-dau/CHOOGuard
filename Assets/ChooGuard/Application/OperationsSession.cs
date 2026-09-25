@@ -158,6 +158,29 @@ namespace ChooGuard.Application
             }
         }
 
+        /// <summary>Individual world effects share this run's exclusive writer and clock without fake agency commands.</summary>
+        public void ExecuteWorld(SimTick tick, Action write, bool restoreClock = false)
+        {
+            if (write == null) throw new ArgumentNullException(nameof(write));
+            RunState candidate;
+            long sequence;
+            lock (gate)
+            {
+                if (disposed) throw new ObjectDisposedException(nameof(OperationsSession));
+                if (writerActive || pending.Count != 0) throw new InvalidOperationException("다른 세계 쓰기 또는 기관 명령 처리가 진행 중입니다.");
+                if (!restoreClock && tick.Microseconds < state.SimTick.Microseconds) throw new InvalidOperationException("세계 시각은 단조 증가해야 합니다.");
+                sequence = checked(lastIssuedSequence + 1);
+                candidate = (restoreClock ? new RunState(RunId) : state).Advance(tick, 0, new Sequence(sequence));
+                writerActive = true;
+            }
+            try
+            {
+                write();
+                lock (gate) { state = candidate; lastIssuedSequence = sequence; }
+            }
+            finally { lock (gate) writerActive = false; }
+        }
+
         public RunState Snapshot()
         {
             lock (gate) return state.Copy();

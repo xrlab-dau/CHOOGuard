@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "storyId": "CS-EXEC.01.01",
+  "date": "2026-09-25",
+  "status": "IN_PROGRESS_NOT_ACCEPTED",
+  "interruption": "User requested Unity Cloud continuation because local storage is insufficient; no further local builds or training are scheduled.",
+  "native": {
+    "editor": "6000.3.23f1",
+    "host": "macOS arm64 Apple M1",
+    "editMode": {
+      "passed": 77,
+      "total": 78,
+      "scope": "Selected gameplay/related regressions, not all 567 EditMode cases. Subsequent Cloud hook and managed-dependency changes have not been executed.",
+      "failed": [
+        "GameplayNavigationTests.Portal_RequiresContinuousBakedGeometry_PreservesHeightAndAccessibility: portal_unreachable_or_partial_path"
+      ],
+      "report": "editmode-final.xml"
+    },
+    "playMode": {
+      "passed": 39,
+      "total": 39,
+      "report": "playmode-population.xml"
+    },
+    "surface": "Actual Unity runtime buttons, physics, paired tutorial rewind, 300-actor main world, SQLite save/resume and rendered captures. Not an OS mouse/keyboard or Windows Player acceptance.",
+    "load": "100/300/500 NPCs plus human, 100 cosmetic bodies, 5s warmup and 15s intended measurement at Editor batch 640x480; provider unavailable. Raw metrics in PlayMode report. Not representative target GPU performance or live-provider throughput."
+  },
+  "broker": {
+    "testsPassed": 25,
+    "actualCSharpToPackagedNode": {
+      "exit": 0,
+      "registeredActors": 301,
+      "npc": "unavailable",
+      "rootFuture": "unavailable",
+      "counterfactual": "unavailable",
+      "reason": "provider_error",
+      "paidCalls": 0,
+      "shutdownExit": 0
+    }
+  },
+  "learning": {
+    "testsPassed": 6,
+    "trainedSteps": 4096,
+    "trainingSeconds": 33.715628,
+    "artifacts": "workers/learning/.artifacts/ppo-final-4096",
+    "comparison": "workers/learning/.artifacts/comparison-final-4096/comparison.json",
+    "liveJevComparison": "NOT_RUN"
+  },
+  "windows": {
+    "runtimePackage": "workers/runtime/win-x64",
+    "monoModule": "Installed 6000.3.23f1 windows-mono; build not started before cloud instruction",
+    "build": "NOT_RUN",
+    "execution": "NOT_RUN"
+  },
+  "blockers": [
+    "TYPESAFE_API_KEY absent",
+    "CHOOGUARD_DIALOGUE_KEY/ENDPOINT/MODEL absent",
+    "Cloud Windows 11 24H2 / Unity 6000.3.23f1 catalog available, but service activation and repository connection block execution",
+    "Real surveyed model/SOP acceptance not performed",
+    "One continuous-portal navigation regression remains",
+    "Full-suite legacy assembly-layout expectations do not match current dependencies; excluded from the selected local 78-case run",
+    "Cloud integration hooks require first remote compilation and execution"
+  ],
+  "proofs": [
+    {
+      "file": "editmode.xml",
+      "bytes": 81202,
+      "sha256": "6dd0eb32935e9f3770f4ee83e5529cf0528b8b7b101656fceecdcae0a7330ba5"
+    },
+    {
+      "file": "editmode-final.xml",
+      "bytes": 73784,
+      "sha256": "39e50bac473aa7dc7c221ca2aa383fead24c799a6a5f9619b8323755206ff4b7"
+    },
+    {
+      "file": "playmode.xml",
+      "bytes": 52055,
+      "sha256": "d07fa5880f3e564ab132c68f1500f8c415ee1de954ddbedc059e4b216fbfeae4"
+    },
+    {
+      "file": "playmode-final.xml",
+      "bytes": 42181,
+      "sha256": "9bebc7028eee66a1e9ea2c0a1db9bc39c4e20fceda96c962b6ab79155142e31e"
+    },
+    {
+      "file": "playmode-population.xml",
+      "bytes": 45257,
+      "sha256": "da52c4f879f39615fafd71016931f3d8907e69c211aee876189f84809fdebce4"
+    },
+    {
+      "file": "entry.png",
+      "bytes": 127765,
+      "sha256": "e9e38a9e774060b609704f25ebe17012858cc5ef4d2e7057d4f4d2c7a61490b1"
+    },
+    {
+      "file": "main-300.png",
+      "bytes": 199734,
+      "sha256": "0dfc57a1ed90d50edbc6822060aace3ca5cd3700614a2c2ea431f8eb1e283e89"
+    },
+    {
+      "file": "main-300-playing.png",
+      "bytes": 344846,
+      "sha256": "55f23da7c9168d551ffdc7d4a1e6286a9f7f21d05ff596c28183749bd37adab2"
+    },
+    {
+      "file": "tutorial-rewind.png",
+      "bytes": 181828,
+      "sha256": "97aedf634aeb8d1db877c39f7fc0132b2db2872787b5dfe0279d0a68008d36f1"
+    }
+  ]
+}

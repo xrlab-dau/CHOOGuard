@@ -73,7 +73,7 @@ namespace ChooGuard.Contracts
         public string ToRfc3339() => Value.UtcDateTime.ToString("O", System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    public enum SiUnit { Metre, SquareMetre, CubicMetre, Second, Kilogram, MetresPerSecond, Kelvin, Pascal }
+    public enum SiUnit { Metre, SquareMetre, CubicMetre, Second, Kilogram, MetresPerSecond, Kelvin, Pascal, NewtonMetre, Radian, Dimensionless }
 
     /// <summary>SI 단위와 유한 수치를 함께 보관한다. 음수 허용 여부는 해당 물리량의 도메인 규칙이다.</summary>
     public readonly struct SiValue

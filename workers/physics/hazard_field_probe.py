@@ -2,6 +2,8 @@
 """Actual reference-field migration probe; no CFD rerun or synthetic field inputs."""
 import base64,copy,hashlib,json,pathlib,subprocess,sys
 import numpy as np
+from runtime_package import configure_environment, launch_worker
+configure_environment()
 import worker
 
 def decode(frame,source,deck):
@@ -39,7 +41,7 @@ def main():
     try:fire.frame(120.05)
     except ValueError:negatives.append('field-boundary')
     else:raise AssertionError('field boundary accepted')
-    p=subprocess.Popen([sys.executable,str(worker.HERE/'worker.py')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
+    p=launch_worker(stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
     def exchange(r):
         p.stdin.write(json.dumps(r)+'\n');p.stdin.flush();line=p.stdout.readline();assert len(line.encode())<65536;return json.loads(line),len(line.encode())
     try:

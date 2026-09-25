@@ -57,7 +57,7 @@ namespace ChooGuard.Tests.PlayMode.Stories
             inputRoot = new GameObject("입력 통합 시험", typeof(EventSystem), typeof(InputSystemUIInputModule));
             eventSystem = inputRoot.GetComponent<EventSystem>();
             router = inputRoot.AddComponent<InputContextRouter>();
-            source = InputActionAsset.FromJson(File.ReadAllText(Path.Combine(Application.dataPath,
+            source = InputActionAsset.FromJson(File.ReadAllText(Path.Combine(UnityEngine.Application.dataPath,
                 "ChooGuard/Presentation/Input/Operations.inputactions")));
             source.devices = new InputDevice[] { mouse, keyboard };
             router.Configure(eventSystem, inputRoot.GetComponent<InputSystemUIInputModule>(), source);

@@ -4,6 +4,34 @@
   "acceptanceStatus": "NOT_ACCEPTED",
   "acceptanceRef": null,
   "currentWork": "임의 통로 연결은 실제 부산역 복원으로 인정하지 않고 사용자 교정을 반영했다. 부산시2019 개통자료·2018-405고시 치수·2021부산시설공단 실제 CAD평면도·공식 안내도와 현장 사진을 확보했다. Astra low가 실제 평면도와 사진 기반 통로 모듈을 새로 제작하고 root가 미리보기를 검토했다. 도시철도/지하상가 출구번호를 분리했다. 철도역·도시철도 양끝의 정확한 접속 위치·고저차는 미확정이며 새모델은 Unity에 미적용. 기존기술적 보행PASS는 실제연결수용이 아니다. 현재NOT_A.",
+  "gameplayImplementation": {
+    "status": "IN_PROGRESS_CLOUD_MIGRATION",
+    "acceptanceStatus": "NOT_ACCEPTED",
+    "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/fps-gameplay-20260925/implementation-checkpoint.json",
+    "summary": "FPS 공통 실행기·정밀 조작·네 직무 튜토리얼·개인 지식·JEV broker/future·별도 PPO 학습 및 플랫폼 패키지 구현. 격리 Unity PlayMode 39/39, EditMode 77/78: 연속 층간 경로 회귀 1건 미해결. 실제 C#→Node 연결 및 SQLite 재개 검증. 100/300/500인 Editor batch 실행과 PPO 4096 step 완료. 실제 JEV/생성 대화와 Windows 실행은 NOT_RUN. 전체 수용 아님.",
+    "cloudTransition": {
+      "reason": "사용자 요청: 로컬 저장공간 부족으로 Unity Cloud에서 진행",
+      "localBuilds": "STOPPED",
+      "cloudExecution": "BLOCKED_SERVICE_ACTIVATION",
+      "organizationId": "e5fdf2ec-c1ea-4c98-0000-0d404b80e268",
+      "projectId": "9f037959-7808-49f6-b13f-46eb8c76ed31",
+      "projectName": "CHOOGuard Gameplay",
+      "projectLinked": false,
+      "sourceRemote": "https://github.com/xrlab-dau/CHOOGuard",
+      "sourceRemoteVisibility": "PUBLIC",
+      "sourceUploadApproval": "APPROVED_PUBLIC_SEPARATE_BRANCH",
+      "spendingApprovalUSD": 10,
+      "spendToDateUSD": 0,
+      "newSubscriptionOrPaymentRegistrationApproved": false,
+      "cloudBuildEnabled": false,
+      "blockers": [
+        "Cloud Build effective plan: Teams Basic, buildingDisabled=true, concurrentBuilds=0, freeTierLimitReached=true; 서비스 활성화 필요",
+        "Cloud Git HTTPS 검증은 Git ls-remote failure. 로컬 익명 Git 접근 정상; GitHub deploy key 등록은 저장소 정책으로 거부됨"
+      ],
+      "ownedScratchRemovedKiB": 2261824,
+      "preserved": "모델링 작업·원본 프로젝트·학습 가중치·최신 runtime package·검증 XML/화면 증거"
+    }
+  },
   "areas": [
     {
       "areaId": "CS-BOOT",

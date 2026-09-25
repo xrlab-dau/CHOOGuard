@@ -11,14 +11,13 @@ namespace ChooGuard.App.Fps.Work
     // 구조 검증, 화이트리스트, guards[id]=RuleExpression.All(...) 컴파일, Revision CAS 커밋,
     // '대응 경로 없음'을 완료가 아니라 unavailable 로 거부하는 처리.
     // 바꾼 것 둘 — MonoBehaviour 결합 제거, 어휘를 RTS 대피·의료에서 정비·점검으로 교체.
-    public sealed class ProcedureRunner
+    public sealed partial class ProcedureRunner
     {
         [Serializable] private sealed class StepDefinition
         {
             public string id,label,basis,effect,observe,failReason;
             public string[] requires,allFacts,notFacts;
-            // 조건부 단계. 가드가 TRUE 가 아니면 막지 않고 건너뛴다.
-            // (적합 판정에서는 '폐기·교체 요구 인계'가 발생하지 않는 것이 정상이다.)
+            // 확인된 FALSE만 비해당이다. 미관측·상충 조건은 판정 보류로 남긴다.
             public bool conditional;
         }
         [Serializable] private sealed class Definition
@@ -67,6 +66,7 @@ namespace ChooGuard.App.Fps.Work
         public bool Load(TextAsset asset)
         {
             steps.Clear();guards.Clear();byId.Clear();Ready=false;Completed=false;Revision++;
+            gameplayDefinitions.Clear();gameplayStates.Clear();gameplayById.Clear();
             try
             {
                 if(asset==null)throw new InvalidOperationException("절차 자료 없음");
@@ -162,11 +162,10 @@ namespace ChooGuard.App.Fps.Work
 
         // 지금 수행 가능한 첫 단계. 없으면 이유를 담아 거부한다 — 거부는 완료가 아니다.
         //
-        // 조건부 단계는 가드가 TRUE 가 아니면 **막지 않고 건너뛴다.** 필수 단계는 막는다.
-        // 이 구분이 데이터(conditional)에 있어야 하는 이유: 어느 단계가 분기인지는 규정이 정하고
-        // 러너는 그것을 읽을 뿐이다. 코드에 단계 이름을 박으면 절차를 추가할 때마다 러너를 고쳐야 한다.
+        // 조건부 단계도 UNKNOWN/CONFLICTED면 막는다. 확인된 FALSE만 건너뛴다.
         public Decision Next(RuleFacts facts)
         {
+            if(gameplayDefinitions.Count>0)return GameplayNext(facts);
             if(!Ready)return new Decision{Allowed=false,Reason=StatusReason,Guard=RuleTruth.UNKNOWN,Facts=facts,Revision=Revision};
             foreach(var step in steps)
             {
@@ -174,7 +173,7 @@ namespace ChooGuard.App.Fps.Work
                 if(!RequirementsMet(step))continue;
                 var truth=GuardTruth(step,facts);
                 if(truth==RuleTruth.TRUE)return new Decision{Step=step,Guard=truth,Allowed=true,Reason=step.Label,Facts=facts,Revision=Revision};
-                if(step.Conditional)continue;                       // 해당 없음 — 다음 단계를 본다
+                if(step.Conditional&&truth==RuleTruth.FALSE)continue;
                 return new Decision
                 {
                     Step=step,Guard=truth,Allowed=false,Facts=facts,Revision=Revision,
@@ -186,6 +185,7 @@ namespace ChooGuard.App.Fps.Work
 
         public bool Commit(Decision decision)
         {
+            if(gameplayDefinitions.Count>0)return false;
             if(!Ready||decision==null||!decision.Allowed||decision.Step==null)return false;
             if(decision.Revision!=Revision)return false;                 // CAS — 사이에 상태가 바뀌면 거부
             if(decision.Step.Done||!RequirementsMet(decision.Step))return false;
@@ -194,11 +194,12 @@ namespace ChooGuard.App.Fps.Work
             return true;
         }
 
-        // 아직 해야 할 일이 남았는가. 조건부 단계는 **지금 해당하는 경우에만** 센다.
+        // 조건을 모르거나 관측이 상충하면 미완료다.
         private bool Applies(Step step,RuleFacts facts)
-            =>!step.Conditional||GuardTruth(step,facts)==RuleTruth.TRUE;
+            =>!step.Conditional||GuardTruth(step,facts)!=RuleTruth.FALSE;
         public bool IsComplete(RuleFacts facts)
         {
+            if(gameplayDefinitions.Count>0){EvaluateGameplay(facts);return Completed;}
             foreach(var step in steps)if(!step.Done&&Applies(step,facts))return false;
             return true;
         }
@@ -207,17 +208,25 @@ namespace ChooGuard.App.Fps.Work
         public List<Step> Unmet(RuleFacts facts)
         {
             var unmet=new List<Step>();
+            if(gameplayDefinitions.Count>0)
+            {
+                EvaluateGameplay(facts);
+                foreach(var state in gameplayStates)if(!state.Step.Done&&!state.NotApplicable)unmet.Add(state.Step);
+                return unmet;
+            }
             foreach(var step in steps)if(!step.Done&&Applies(step,facts))unmet.Add(step);
             return unmet;
         }
         public void ResetRun()
         {
+            if(gameplayDefinitions.Count>0)throw new InvalidOperationException("실제 튜토리얼 checkpoint를 복원해야 합니다.");
             foreach(var step in steps)step.Done=false;
             Completed=false;Revision++;
         }
         // 단계 되감기 — 튜토리얼 전용 동작이지만 데이터 조작이라 러너에 둔다. 비상 세션은 호출하지 않는다.
         public bool Rewind(string stepId)
         {
+            if(gameplayDefinitions.Count>0)return false;
             var step=Find(stepId);if(step==null||!step.Done)return false;
             step.Done=false;
             // 되감은 단계를 선행으로 삼는 뒤 단계도 함께 풀린다. 한 번만 훑으면 되도록 배열 순서를 쓴다

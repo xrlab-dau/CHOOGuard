@@ -1,0 +1,55 @@
+{
+  "version":1,"id":"practice-world-v1","label":"합성 조작 실습실 · 실제 역사 형상/철도 작업 인증 아님","syntheticPractice":true,
+  "rulesetId":"synthetic-practice-v1","rulesetRevision":1,"zoneId":"practice-zone","humanPosition":[0,0,0],
+  "population":{"origin":[-16,0,9],"columns":20,"spacing":1.8,"namedActors":[
+    {"id":"practice-maintainer","templateIndex":1,"position":[2,0,0]},
+    {"id":"practice-colleague","templateIndex":4,"position":[12,0,0]},
+    {"id":"practice-passenger","templateIndex":0,"position":[10,0,1]}
+  ]},
+  "parameters":[
+    {"id":"practice-contact-only","source":"합성 무하중 지그/색 잔류/물 운반 조작 문법 v1. 실제 토크, 화학 소독, 철도 격리/승인 수치는 미확보."},
+    {"id":"practice-causal-qualitative","source":"명시적 합성 원인 플래그 기반 사고 계열 원자 규칙. 확률/온도/발생 시간/피해량을 주장하지 않음."},
+    {"id":"practice-security-qualitative","source":"소유 미상과 위험 확정은 별개. 보고/접근 표시만 전이하며 내용물·범죄 의도를 생성하지 않음."},
+    {"id":"practice-natural-qualitative","source":"명시적 합성 외부 유입과 열린 경계 원인 기반. 실제 수문학·침수 속도·구조 내력 모델 아님."}
+  ],
+  "actorTemplates":[
+    {"role":"Citizen","persona":"개별 이동 일정이 있는 실습 방문자","goal":"KeepSchedule","targetId":"practice-destination","completionFact":"arrived","drives":{"KeepSchedule":0.7,"SeekSafety":0.5}},
+    {"role":"Maintenance","persona":"미확인 정비 조건은 보류하고 무하중 지그 상태를 확인하는 실습 정비사","goal":"InspectEquipment","targetId":"practice-old-part","completionFact":"practice.verified","drives":{"InspectEquipment":0.8,"SeekSafety":0.5}},
+    {"role":"Cleaning","persona":"개인 물품을 보존하고 실제 접촉 잔류를 정리하는 실습 청소 담당","goal":"RestoreCleanliness","targetId":"practice-surface","completionFact":"dirty","drives":{"RestoreCleanliness":0.8,"SeekSafety":0.4}},
+    {"role":"PassengerService","persona":"동의와 도착을 구분해 방문자를 돕는 실습 서비스 담당","goal":"AssistPerson","targetId":"practice-route","completionFact":"reported","drives":{"AssistPerson":0.8,"KeepSchedule":0.4}},
+    {"role":"StationStaff","persona":"관측·현장 기록과 실제 시설 안전 상태를 구분하는 실습 역무 담당","goal":"MaintainAccess","targetId":"practice-destination","completionFact":"reported","drives":{"MaintainAccess":0.8,"SeekSafety":0.6}}
+  ],
+  "entities":[
+    {"id":"practice-zone","label":"합성 실습 구역","kind":"Zone","position":[7.5,0,3],"zoneId":"practice-zone","definitionId":"practice-zone","facts":{"practice.fixture":true,"smoke":false,"hazard":false,"water.present":false,"slip.attention":false,"security.review.required":false,"access.marked":false,"cordoned":false}},
+    {"id":"practice-destination","label":"합성 목적 지점","kind":"Exit","position":[12,0,5],"zoneId":"practice-zone","definitionId":"practice-destination","facts":{"blocked":false,"safe":true,"practice.fixture":true}},
+    {"id":"practice-route","label":"동의 후 안내할 경로 표지","kind":"Sign","position":[10,0.4,3],"zoneId":"practice-zone","definitionId":"practice-route","facts":{"blocked":false,"practice.fixture":true}},
+    {"id":"practice-socket","label":"무하중 부품 소켓","kind":"Socket","position":[0,1,3],"zoneId":"practice-zone","definitionId":"practice-socket","facts":{"practice.fixture":true,"isolated":true,"occupied":true,"accepts:practice-panel":true,"occupant:practice-old-part":true}},
+    {"id":"practice-old-part","label":"기존 무하중 지그 부품","kind":"Part","position":[0,1,3],"zoneId":"practice-zone","parentId":"practice-socket","definitionId":"practice-panel","facts":{"practice.fixture":true,"portable":true,"hazardous":false,"installed":true,"required.fastener:main":true,"fastened:main":true,"practice.verified":false},"measurements":{"sample:probe":{"value":1,"unit":"Dimensionless"}}},
+    {"id":"practice-new-part","label":"호환 교체 연습 부품","kind":"Part","position":[0.8,1,3],"zoneId":"practice-zone","definitionId":"practice-panel","facts":{"practice.fixture":true,"portable":true,"hazardous":false,"installed":false,"required.fastener:main":true,"fastened:main":false,"practice.verified":false},"measurements":{"sample:probe":{"value":1,"unit":"Dimensionless"}}},
+    {"id":"practice-driver","label":"연습 드라이버 · 토크 인증 안 됨","kind":"Tool","position":[1.3,1,3],"zoneId":"practice-zone","definitionId":"practice-driver","facts":{"portable":true,"hazardous":false,"installed":false,"tool.fastening":true,"practice.fixture":true}},
+    {"id":"practice-meter","label":"무차원 표준 샘플 연습 측정기","kind":"Tool","position":[1.8,1,3],"zoneId":"practice-zone","definitionId":"practice-meter","facts":{"portable":true,"hazardous":false,"installed":false,"tool.measurement":true,"calibration.valid":true,"practice.fixture":true}},
+    {"id":"practice-tray","label":"부품 받침 트레이","kind":"Container","position":[2.4,0.95,3],"zoneId":"practice-zone","definitionId":"practice-tray","facts":{"access.permitted":true,"practice.fixture":true}},
+    {"id":"practice-work-order","label":"연습 작업표 · 실제 차종 격리/토크 자료 미확보","kind":"Sign","position":[0,1,2],"zoneId":"practice-zone","definitionId":"practice-work-order","facts":{"practice.fixture":true}},
+    {"id":"practice-access-panel","label":"무하중 관절 접근 덮개","kind":"Equipment","position":[-1.4,1.2,3],"zoneId":"practice-zone","definitionId":"practice-hinge","facts":{"practice.fixture":true,"access.permitted":true,"isolated":true,"open":false}},
+    {"id":"practice-surface","label":"색 잔류 두 접촉 구역 · 건조/소독 별도","kind":"Surface","position":[5,1,3],"zoneId":"practice-zone","definitionId":"practice-surface","facts":{"practice.fixture":true,"safe.material.known":true,"dirty":true,"wet":false,"dryness.confirmed":false,"cordoned":false},"measurements":{"soil:left":{"value":1,"unit":"Dimensionless"},"soil:right":{"value":1,"unit":"Dimensionless"}}},
+    {"id":"practice-cleaning-tool","label":"실습용 물걸레","kind":"Tool","position":[5.8,1,3],"zoneId":"practice-zone","definitionId":"practice-cloth","facts":{"portable":true,"hazardous":false,"installed":false,"tool.cleaning":true,"contaminated":false,"practice.fixture":true},"measurements":{"supply":{"value":0.001,"unit":"CubicMetre"},"consumption.per-work":{"value":0.00001,"unit":"CubicMetre"}}},
+    {"id":"practice-cart","label":"실습 카트","kind":"Container","position":[6.4,0.5,3],"zoneId":"practice-zone","definitionId":"practice-cart","facts":{"practice.fixture":true}},
+    {"id":"practice-sign","label":"접근 안내 연습 표지","kind":"Sign","position":[4.4,0.4,3],"zoneId":"practice-zone","definitionId":"practice-sign","facts":{"portable":true,"hazardous":false,"installed":false,"practice.fixture":true}},
+    {"id":"practice-lost-item","label":"소유 미상 가방 · 폐기 금지","kind":"PersonalItem","position":[5,1,4],"zoneId":"practice-zone","definitionId":"practice-bag","facts":{"portable":true,"hazardous":false,"installed":false,"owner.known":false,"waste.permitted":false,"reported":false}},
+    {"id":"practice-waste","label":"허용된 합성 종이 폐기물","kind":"Consumable","position":[5.5,1,4],"zoneId":"practice-zone","definitionId":"practice-paper","facts":{"portable":true,"hazardous":false,"installed":false,"waste.permitted":true,"practice.fixture":true}},
+    {"id":"practice-bin","label":"허용 폐기물 수거함","kind":"Container","position":[6,0.4,4],"zoneId":"practice-zone","definitionId":"practice-bin","facts":{"capacity.available":true,"practice.fixture":true}},
+    {"id":"practice-laundry-bin","label":"사용 도구 회수함","kind":"Container","position":[6.8,0.4,4],"zoneId":"practice-zone","definitionId":"practice-laundry","facts":{"capacity.available":true,"practice.fixture":true}},
+    {"id":"practice-supply","label":"연습용 보충수","kind":"Consumable","position":[5,1,2],"zoneId":"practice-zone","definitionId":"practice-water","facts":{"portable":true,"hazardous":false,"installed":false,"practice.fixture":true},"measurements":{"supply":{"value":0.001,"unit":"CubicMetre"}}},
+    {"id":"practice-dispenser","label":"연습 보충 용기","kind":"Container","position":[5.6,1,2],"zoneId":"practice-zone","definitionId":"practice-dispenser","facts":{"accepts:practice-water":true,"practice.fixture":true},"measurements":{"supply":{"value":0,"unit":"CubicMetre"},"capacity":{"value":0.001,"unit":"CubicMetre"}}},
+    {"id":"practice-radio","label":"도움 요청/관측 보고 연습 단말","kind":"Equipment","position":[10,1,3],"zoneId":"practice-zone","definitionId":"practice-radio","facts":{"practice.fixture":true}},
+    {"id":"practice-service-supply","label":"수락 후 전달하는 연습 비품","kind":"Consumable","position":[10.7,1,3],"zoneId":"practice-zone","definitionId":"practice-service-supply","facts":{"portable":true,"hazardous":false,"installed":false,"practice.fixture":true}},
+    {"id":"practice-return-bin","label":"서비스 비품 회수함","kind":"Container","position":[11.5,1,3],"zoneId":"practice-zone","definitionId":"practice-return-bin","facts":{"capacity.available":true,"practice.fixture":true}},
+    {"id":"practice-facility","label":"현장 관측 대상 · 안전 승인 상태 미확인","kind":"Equipment","position":[15,1,3],"zoneId":"practice-zone","definitionId":"practice-facility","facts":{"practice.fixture":true,"reported":false}},
+    {"id":"practice-tag","label":"점검기록 표찰 · 안전 승인 아님","kind":"Part","position":[15.8,1,3],"zoneId":"practice-zone","definitionId":"inspection.tag","facts":{"portable":true,"hazardous":false,"installed":false,"inspection.tag":true,"practice.fixture":true}},
+    {"id":"practice-tag-socket","label":"기록 표찰 부착점","kind":"Socket","position":[15,1.2,2.7],"zoneId":"practice-zone","parentId":"practice-facility","definitionId":"inspection.tag.mount","facts":{"accepts:inspection.tag":true,"inspection.tag.mount":true,"occupied":false,"isolated":true,"practice.fixture":true}},
+    {"id":"practice-terminal","label":"현장 재관찰 단말","kind":"Equipment","position":[16.5,1,3],"zoneId":"practice-zone","definitionId":"practice-terminal","facts":{"practice.fixture":true}},
+    {"id":"practice-cordon-zone","label":"접근 안내 실습 지점","kind":"Zone","position":[15,0,5],"zoneId":"practice-zone","definitionId":"practice-cordon-zone","facts":{"cordoned":false,"practice.fixture":true}},
+    {"id":"practice-cause-panel","label":"합성 유입 경계 · 실제 관절을 열면 선언된 유입 원인이 연결됨","kind":"Equipment","position":[-5,1,3],"zoneId":"practice-zone","definitionId":"practice-hinge","facts":{"practice.fixture":true,"cause.smoke.emitting":false,"isolated":true,"access.permitted":true,"cause.leak.active":false,"cause.external.water":true,"open":false}},
+    {"id":"practice-suspicious-item","label":"의심물 연습 표식 · 열기/집기 미허용","kind":"SuspiciousItem","position":[-5,0.3,5],"zoneId":"practice-zone","definitionId":"practice-suspicious","facts":{"reported":false,"hazard.assessed":false}}
+  ]
+}

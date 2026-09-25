@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using TMPro;
 using ChooGuard.Presentation.Input;
 using UnityEditor;
@@ -23,6 +24,7 @@ namespace ChooGuard.Editor.Bootstrap
         public string EditorVersion, ProjectVersion, PackageLockSha256;
         public string[] MissingRequiredPackages = Array.Empty<string>();
         public string[] LocalPluginPaths = Array.Empty<string>();
+        public string[] ManagedDependencyErrors = Array.Empty<string>();
         public int EventSystemCount, CameraCount, CanvasCount;
         public bool HasInputSystemModule, HasLegacyInputModule, InputActionsValid, TmpResourcesValid, UrpReferencesValid;
     }
@@ -38,21 +40,73 @@ namespace ChooGuard.Editor.Bootstrap
     {
         public const string ScenePath = "Assets/ChooGuard/Scenes/Bootstrap.unity";
         public static readonly string[] RequiredPackages = { "com.unity.render-pipelines.universal", "com.unity.ugui", "com.unity.textmeshpro", "com.unity.inputsystem", "com.unity.test-framework" };
+        [Serializable] private sealed class ManagedPackagePin
+        {
+            public string id, version, targetFramework, sha256;
+        }
+        [Serializable] private sealed class ManagedPackageLock
+        {
+            public int schemaVersion;
+            public string repositoryPath;
+            public ManagedPackagePin[] packages;
+        }
+        private static HashSet<string> VerifiedManagedPackages(string root, out string[] errors)
+        {
+            var verified = new HashSet<string>(StringComparer.Ordinal);
+            var failures = new List<string>();
+            try
+            {
+                var pins = JsonUtility.FromJson<ManagedPackageLock>(File.ReadAllText(Path.Combine(root, "workers/nuget-managed.lock.json")));
+                if (pins == null || pins.schemaVersion != 1 || pins.repositoryPath != "./Packages" ||
+                    pins.packages == null || pins.packages.Length == 0)
+                    throw new InvalidDataException("Invalid managed dependency lock");
+                var declared = XElement.Load(Path.Combine(root, "Assets/packages.config")).Elements("package").ToArray();
+                var config = XElement.Load(Path.Combine(root, "Assets/NuGet.config"));
+                if (config.Element("config")?.Elements("add").SingleOrDefault(x => (string)x.Attribute("key") == "repositoryPath")?.Attribute("value")?.Value != pins.repositoryPath ||
+                    declared.Length != pins.packages.Length)
+                    throw new InvalidDataException("NuGet configuration differs from reviewed lock");
+                foreach (var pin in pins.packages)
+                {
+                    if (new[] { pin.id, pin.version, pin.targetFramework }.Any(value => string.IsNullOrEmpty(value) ||
+                        value == "." || value == ".." || value.IndexOfAny(new[] { '/', '\\', ':' }) >= 0) ||
+                        declared.Count(x => (string)x.Attribute("id") == pin.id && (string)x.Attribute("version") == pin.version &&
+                            (string)x.Attribute("targetFramework") == pin.targetFramework) != 1)
+                        throw new InvalidDataException("Managed dependency not declared exactly once");
+                    var relative = "Assets/Packages/" + pin.id + "." + pin.version + "/lib/" + pin.targetFramework + "/" + pin.id + ".dll";
+                    var path = Path.Combine(root, relative);
+                    for (var file = new FileInfo(path); file != null && file.FullName != root; file = file.Directory == null ? null : new FileInfo(file.Directory.FullName))
+                        if ((File.GetAttributes(file.FullName) & FileAttributes.ReparsePoint) != 0)
+                            throw new InvalidDataException("Managed dependency symlink forbidden: " + relative);
+                    if (BuildBaseline.HashFile(path) != pin.sha256 || !verified.Add(relative))
+                        throw new InvalidDataException("Managed dependency hash mismatch or duplicate: " + relative);
+                }
+            }
+            catch (Exception exception) when (exception is IOException || exception is UnauthorizedAccessException ||
+                exception is InvalidOperationException || exception is ArgumentException || exception is System.Xml.XmlException)
+            {
+                verified.Clear();
+                failures.Add(exception.Message);
+            }
+            errors = failures.ToArray();
+            return verified;
+        }
         public static BootstrapSnapshot Capture(string projectRoot)
         {
             var root = Path.GetFullPath(projectRoot);
-            var snapshot = new BootstrapSnapshot { EditorVersion = Application.unityVersion };
+            var snapshot = new BootstrapSnapshot { EditorVersion = UnityEngine.Application.unityVersion };
             var version = Path.Combine(root, "ProjectSettings/ProjectVersion.txt");
             if (File.Exists(version)) snapshot.ProjectVersion = File.ReadLines(version).Single(x => x.StartsWith("m_EditorVersion: ", StringComparison.Ordinal)).Substring(17).Trim();
             var packageLock = Path.Combine(root, "Packages/packages-lock.json");
             if (File.Exists(packageLock)) snapshot.PackageLockSha256 = BuildBaseline.HashFile(packageLock);
             var assets = Path.Combine(root, "Assets");
+            var managed = VerifiedManagedPackages(root, out snapshot.ManagedDependencyErrors);
             var extensions = new[] { ".dll", ".so", ".dylib", ".bundle" };
             if (Directory.Exists(assets)) snapshot.LocalPluginPaths = Directory.EnumerateFileSystemEntries(assets, "*", SearchOption.AllDirectories)
                 .Where(p => extensions.Contains(Path.GetExtension(p).ToLowerInvariant()))
-                .Select(p => p.Substring(root.Length + 1).Replace('\\', '/')).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+                .Select(p => p.Substring(root.Length + 1).Replace('\\', '/')).Where(p => !managed.Contains(p))
+                .OrderBy(p => p, StringComparer.Ordinal).ToArray();
             // PackageInfo and AssetDatabase belong to the open Editor project, never a foreign fixture directory.
-            if (root != Path.GetFullPath(Path.Combine(Application.dataPath, "..")))
+            if (root != Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath, "..")))
             {
                 snapshot.MissingRequiredPackages = RequiredPackages.ToArray();
                 return snapshot;
@@ -99,7 +153,7 @@ namespace ChooGuard.Editor.Bootstrap
             if (source == null || AssetDatabase.GetAssetPath(source) != BootstrapProject.OperationsActionsPath ||
                 serialized.FindProperty("inputModule").objectReferenceValue != module ||
                 serialized.FindProperty("eventSystem").objectReferenceValue != module.GetComponent<EventSystem>()) return false;
-            if (Application.isPlaying && router.RuntimeActions != null)
+            if (UnityEngine.Application.isPlaying && router.RuntimeActions != null)
             {
                 var runtime = router.RuntimeActions;
                 var cancel = runtime.FindAction("UI/Cancel");
@@ -141,6 +195,7 @@ namespace ChooGuard.Editor.Bootstrap
             if (string.IsNullOrEmpty(snapshot.PackageLockSha256)) errors.Add("PACKAGE_LOCK_MISSING");
             if (snapshot.MissingRequiredPackages.Length != 0) errors.Add("REQUIRED_PACKAGE_MISSING");
             if (snapshot.LocalPluginPaths.Length != 0) errors.Add("LOCAL_PLUGIN_UNDECLARED");
+            if (snapshot.ManagedDependencyErrors.Length != 0) errors.Add("MANAGED_DEPENDENCY_INVALID");
             if (snapshot.EventSystemCount != 1) errors.Add("EVENT_SYSTEM_COUNT");
             if (snapshot.CameraCount != 1 || snapshot.CanvasCount != 1) errors.Add("CAMERA_CANVAS_MISSING");
             if (!snapshot.HasInputSystemModule || snapshot.HasLegacyInputModule) errors.Add("INPUT_MODULE_INVALID");

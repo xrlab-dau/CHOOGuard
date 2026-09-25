@@ -7,3 +7,8 @@ CREATE TABLE cg_outbox(run_id TEXT NOT NULL REFERENCES cg_run(run_id), job_id TE
 -- No data backfill or destructive down migration: v1 rows remain ready via a LEFT JOIN.
 CREATE TABLE cg_delivery(run_id TEXT NOT NULL, job_id TEXT NOT NULL, generation INTEGER NOT NULL CHECK(generation>=0), attempt_id TEXT NOT NULL, owner_id TEXT NOT NULL, lease_until INTEGER NOT NULL, acknowledged INTEGER NOT NULL CHECK(acknowledged IN(0,1)), PRIMARY KEY(run_id,job_id), FOREIGN KEY(run_id,job_id) REFERENCES cg_outbox(run_id,job_id));
 PRAGMA user_version=2;
+-- Optional additive gameplay journal tables share this v2 database/provider; agency commits are unchanged.
+-- Created and exact-schema-validated by GameplayJournal, not an alternate SQLite implementation.
+CREATE TABLE cg_gameplay_entry(run_id TEXT NOT NULL,generation INTEGER NOT NULL CHECK(generation>=0),sequence INTEGER NOT NULL CHECK(sequence>=0),kind TEXT NOT NULL,actor_id TEXT NOT NULL,json TEXT NOT NULL,PRIMARY KEY(run_id,generation,sequence));
+CREATE TABLE cg_gameplay_checkpoint(run_id TEXT NOT NULL,generation INTEGER NOT NULL CHECK(generation>=0),sequence INTEGER NOT NULL CHECK(sequence>=0),json TEXT NOT NULL,PRIMARY KEY(run_id,generation,sequence));
+CREATE TABLE cg_gameplay_budget(run_id TEXT PRIMARY KEY,entries INTEGER NOT NULL CHECK(entries>=0),bytes INTEGER NOT NULL CHECK(bytes>=0));

@@ -1,0 +1,800 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:design:future-step:1",
+  "title": "Proposed dynamically grounded future-step inference — not an implemented endpoint",
+  "description": "Canonical shape for POST /future/step. A single JEV Choice evaluates runtime-constructed causal/agent transition candidates; this is not a preauthored scenario selector, a complete forecast response, or world-write authority. NPC_SCENARIO.md section7 owns snapshot/perspective isolation, cause/binding validation, horizon/read-set checks, idempotency and real-commit semantics. The upstream adapter is separate.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/result"
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$(?![\\s\\S])"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$(?![\\s\\S])"
+    },
+    "perspective": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "actorId",
+        "knowledgeRevision"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "world",
+            "actor"
+          ]
+        },
+        "actorId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "knowledgeRevision": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+              "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "actor"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "actorId": {
+                "$ref": "#/$defs/id"
+              },
+              "knowledgeRevision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+                "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "actorId": {
+                "type": "null"
+              },
+              "knowledgeRevision": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factId",
+        "subjectId",
+        "predicate",
+        "truth",
+        "value",
+        "origin",
+        "sourceId",
+        "observedTickUs"
+      ],
+      "properties": {
+        "factId": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectId": {
+          "$ref": "#/$defs/id"
+        },
+        "predicate": {
+          "$ref": "#/$defs/id"
+        },
+        "truth": {
+          "enum": [
+            "TRUE",
+            "FALSE",
+            "UNKNOWN",
+            "CONFLICTED"
+          ]
+        },
+        "value": {
+          "oneOf": [
+            {
+              "type": "string",
+              "maxLength": 2048
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "origin": {
+          "enum": [
+            "actual",
+            "hypothetical",
+            "reported",
+            "inferred"
+          ]
+        },
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "observedTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "truth": {
+                "enum": [
+                  "UNKNOWN",
+                  "CONFLICTED"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "description": "Effect candidates require causal facts. The sole no-effect alternative is world-owned env-hold/hold/none with empty causes and exactly source/target bindings. Semantic validation requires both bindings to name the same read-set anchor; selecting it changes no world state.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "transitionId",
+        "actorId",
+        "bindings",
+        "parameterSetId",
+        "causeFactIds",
+        "summary"
+      ],
+      "properties": {
+        "candidateId": {
+          "$ref": "#/$defs/id"
+        },
+        "transitionId": {
+          "$ref": "#/$defs/id"
+        },
+        "actorId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "slot",
+              "entityId"
+            ],
+            "properties": {
+              "slot": {
+                "$ref": "#/$defs/id"
+              },
+              "entityId": {
+                "$ref": "#/$defs/id"
+              }
+            }
+          },
+          "minItems": 0,
+          "maxItems": 16
+        },
+        "parameterSetId": {
+          "$ref": "#/$defs/id"
+        },
+        "causeFactIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 16,
+          "uniqueItems": true
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1536
+        }
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "candidateId": {
+              "const": "env-hold"
+            },
+            "transitionId": {
+              "const": "hold"
+            },
+            "actorId": {
+              "type": "null"
+            },
+            "parameterSetId": {
+              "const": "none"
+            },
+            "causeFactIds": {
+              "maxItems": 0
+            },
+            "bindings": {
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "properties": {
+                  "slot": {
+                    "enum": ["source", "target"]
+                  }
+                }
+              },
+              "contains": {
+                "properties": {
+                  "slot": {
+                    "const": "source"
+                  }
+                }
+              },
+              "minContains": 1,
+              "maxContains": 1
+            }
+          }
+        },
+        {
+          "properties": {
+            "candidateId": {
+              "not": {
+                "const": "env-hold"
+              }
+            },
+            "transitionId": {
+              "not": {
+                "const": "hold"
+              }
+            },
+            "causeFactIds": {
+              "minItems": 1
+            }
+          }
+        }
+      ]
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "runId",
+        "generation",
+        "requestId",
+        "forecastId",
+        "branchId",
+        "stepSeq",
+        "kind",
+        "mode",
+        "purpose",
+        "basisSnapshotId",
+        "basisTickUs",
+        "stepTickUs",
+        "horizonEndTickUs",
+        "expiresAtTickUs",
+        "depth",
+        "deadlineMs",
+        "rulesetId",
+        "rulesetRevision",
+        "perspective",
+        "stateFacts",
+        "candidates",
+        "readSet"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "runId": {
+          "$ref": "#/$defs/id"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "requestId": {
+          "$ref": "#/$defs/id"
+        },
+        "forecastId": {
+          "$ref": "#/$defs/id"
+        },
+        "branchId": {
+          "$ref": "#/$defs/id"
+        },
+        "stepSeq": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        },
+        "kind": {
+          "const": "future_step_request"
+        },
+        "mode": {
+          "enum": [
+            "TUTORIAL",
+            "RANDOM_OPERATIONS_LAB"
+          ]
+        },
+        "purpose": {
+          "enum": [
+            "next_environment",
+            "counterfactual"
+          ]
+        },
+        "basisSnapshotId": {
+          "$ref": "#/$defs/id"
+        },
+        "basisTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        },
+        "stepTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        },
+        "horizonEndTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        },
+        "expiresAtTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        },
+        "depth": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000
+        },
+        "rulesetId": {
+          "$ref": "#/$defs/id"
+        },
+        "rulesetRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        },
+        "perspective": {
+          "$ref": "#/$defs/perspective"
+        },
+        "stateFacts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/fact"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidate"
+          },
+          "minItems": 2,
+          "maxItems": 32
+        },
+        "readSet": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "entityId",
+              "revision"
+            ],
+            "properties": {
+              "entityId": {
+                "$ref": "#/$defs/id"
+              },
+              "revision": {
+                "type": "string",
+                "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+                "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+              }
+            }
+          },
+          "minItems": 1,
+          "maxItems": 64
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "purpose": {
+                "const": "next_environment"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "depth": {
+                "const": 0
+              },
+              "perspective": {
+                "properties": {
+                  "kind": {
+                    "const": "world"
+                  }
+                }
+              },
+              "stateFacts": {
+                "items": {
+                  "properties": {
+                    "origin": {
+                      "const": "actual"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "perspective": {
+                "properties": {
+                  "kind": {
+                    "const": "world"
+                  }
+                }
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "candidates": {
+                "items": {
+                  "properties": {
+                    "actorId": {
+                      "type": "null"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "candidates": {
+                "items": {
+                  "properties": {
+                    "actorId": {
+                      "$ref": "#/$defs/id"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "runId",
+        "generation",
+        "requestId",
+        "forecastId",
+        "branchId",
+        "stepSeq",
+        "kind",
+        "requestSha256",
+        "status",
+        "provider",
+        "model",
+        "selectedCandidateId",
+        "probabilities",
+        "confidence",
+        "upstreamLatencyMs",
+        "usage",
+        "reasonCode"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "runId": {
+          "$ref": "#/$defs/id"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "requestId": {
+          "$ref": "#/$defs/id"
+        },
+        "forecastId": {
+          "$ref": "#/$defs/id"
+        },
+        "branchId": {
+          "$ref": "#/$defs/id"
+        },
+        "stepSeq": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative signed Int64 decimal; semantic maximum 9223372036854775807."
+        },
+        "kind": {
+          "const": "future_step_result"
+        },
+        "requestSha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "unavailable"
+          ]
+        },
+        "provider": {
+          "const": "typesafe-direct"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selectedCandidateId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "probabilities": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "candidateId",
+                  "probability"
+                ],
+                "properties": {
+                  "candidateId": {
+                    "$ref": "#/$defs/id"
+                  },
+                  "probability": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  }
+                }
+              },
+              "minItems": 2,
+              "maxItems": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstreamLatencyMs": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 9007199254740991
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "inputTokens",
+                "outputTokens"
+              ],
+              "properties": {
+                "inputTokens": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                },
+                "outputTokens": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 9007199254740991
+                }
+              }
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasonCode": {
+          "enum": [
+            "selected",
+            "timeout",
+            "rate_limited",
+            "provider_error",
+            "invalid_provider_result",
+            "cancelled",
+            "queue_full",
+            "budget_exhausted",
+            "request_expired"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ok"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "model": {
+                "type": "string",
+                "minLength": 1
+              },
+              "selectedCandidateId": {
+                "$ref": "#/$defs/id"
+              },
+              "probabilities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "candidateId",
+                    "probability"
+                  ],
+                  "properties": {
+                    "candidateId": {
+                      "$ref": "#/$defs/id"
+                    },
+                    "probability": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  }
+                },
+                "minItems": 2,
+                "maxItems": 32
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "reasonCode": {
+                "const": "selected"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "selectedCandidateId": {
+                "type": "null"
+              },
+              "probabilities": {
+                "type": "null"
+              },
+              "confidence": {
+                "type": "null"
+              },
+              "reasonCode": {
+                "enum": [
+                  "timeout",
+                  "rate_limited",
+                  "provider_error",
+                  "invalid_provider_result",
+                  "cancelled",
+                  "queue_full",
+                  "budget_exhausted",
+                  "request_expired"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

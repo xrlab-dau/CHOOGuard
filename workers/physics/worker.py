@@ -3,12 +3,12 @@
 No timer success, no field extrapolation, no clinical or whole-station claim.
 """
 from __future__ import annotations
-import base64, contextlib, hashlib, importlib, importlib.util, json, math, pathlib, sys, types
+import base64, contextlib, hashlib, importlib, importlib.util, json, math, os, pathlib, sys, types
 
 HERE=pathlib.Path(__file__).resolve().parent
 ROOT=HERE.parent.parent
-CASE=HERE/'cases/reference-hall'
-UPSTREAM=ROOT/'.tools/physics/pyfds-evac/pyfds_evac/core'
+CASE=pathlib.Path(os.environ['CG_PHYSICS_CASE']) if 'CG_PHYSICS_CASE' in os.environ else HERE/'cases/reference-hall'
+UPSTREAM=pathlib.Path(os.environ['CG_PHYSICS_UPSTREAM']) if 'CG_PHYSICS_UPSTREAM' in os.environ else HERE/'upstream'
 MAX_LINE=1024*1024
 MAX_INLINE=64*1024
 VERSION='chooguard-reference-worker-3-native-fields'
@@ -19,6 +19,9 @@ UNITS={'position':'m','simTime':'s','temperature':'degC','extinction':'1/m','soo
 GEOMETRY={'width':30,'depth':20,'height':4,'bottleneck':[24,25,9,11],'exit':[29,10],'spawn':[2,10,4,16],'fireBlock':[14,16,4,6],'frame':'reference-hall-meters: x=FDS-x,z=FDS-y,height=FDS-z'}
 IMPORT_ERROR=None
 try:
+    for stream in (sys.stdin,sys.stdout,sys.stderr):
+        if hasattr(stream,'reconfigure'): stream.reconfigure(encoding='utf-8')
+    if not UPSTREAM.is_dir(): raise RuntimeError('PHYSICS_PACKAGE_MISSING: pinned upstream modules are not packaged')
     lock=json.loads((HERE/'upstream-lock.json').read_text())
     for filename,expected in lock['modules'].items():
         if hashlib.sha256((UPSTREAM/filename).read_bytes()).hexdigest()!=expected: raise RuntimeError('Upstream source hash mismatch: '+filename)
@@ -27,6 +30,7 @@ try:
         import numpy as np
         from shapely.geometry import Polygon
         import fdsreader
+        fdsreader.settings.ENABLE_CACHING=False  # Packaged reference inputs remain read-only; never unpickle a local cache.
         # Namespace load uses original, pinned files without executing optional GUI/scenario imports.
         package=types.ModuleType('_chooguard_pyfds'); package.__path__=[str(UPSTREAM)]
         sys.modules[package.__name__]=package

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Observed paired policy run. Same initial state; no claim staged is superior."""
 import json,pathlib,subprocess,sys,time,math
+from runtime_package import launch_worker
 HERE=pathlib.Path(__file__).resolve().parent
 OUT=HERE/'evidence';OUT.mkdir(exist_ok=True)
 SEED=20260921;POPULATION=96
@@ -8,7 +9,7 @@ SEED=20260921;POPULATION=96
 def run(policy):
     started=time.monotonic();name='paired-'+policy;records=[];requests=[];counter=0
     with (OUT/(name+'.stderr.log')).open('w') as stderr:
-        process=subprocess.Popen([sys.executable,str(HERE/'worker.py')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=stderr,text=True,bufsize=1)
+        process=launch_worker(stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=stderr,text=True,bufsize=1)
         def send(action=None,step=0,release=None,cohort=-1):
             nonlocal counter
             counter+=1

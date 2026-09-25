@@ -66,6 +66,31 @@ namespace ChooGuard.App.Fps.Work
             if(tag==null)return null;
             tag.transform.SetParent(transform,false);AttachedTag=tag.transform;return AttachedTag;
         }
+        public sealed class InspectionSnapshot
+        {
+            internal bool Corroded,MechanicallyDefective,PressureOutOfRange,ExpiryPassed,RepairOrderIssued;
+            internal InspectionVerdict Verdict;
+            internal string RecordedSerial;
+            internal Transform Tag;
+        }
+        public InspectionSnapshot CaptureInspection()=>new InspectionSnapshot
+        {
+            Corroded=Corroded,MechanicallyDefective=MechanicallyDefective,PressureOutOfRange=PressureOutOfRange,
+            ExpiryPassed=ExpiryPassed,Verdict=Verdict,RecordedSerial=RecordedSerial,RepairOrderIssued=RepairOrderIssued,Tag=AttachedTag,
+        };
+        public void RestoreInspection(InspectionSnapshot snapshot)
+        {
+            if(snapshot==null)throw new ArgumentNullException(nameof(snapshot));
+            if(AttachedTag!=null&&AttachedTag!=snapshot.Tag)
+            {
+                var discarded=AttachedTag.gameObject;discarded.SetActive(false);
+                if(UnityEngine.Application.isPlaying)Destroy(discarded);else DestroyImmediate(discarded);
+            }
+            Corroded=snapshot.Corroded;MechanicallyDefective=snapshot.MechanicallyDefective;
+            PressureOutOfRange=snapshot.PressureOutOfRange;ExpiryPassed=snapshot.ExpiryPassed;
+            Verdict=snapshot.Verdict;RecordedSerial=snapshot.RecordedSerial;RepairOrderIssued=snapshot.RepairOrderIssued;
+            AttachedTag=snapshot.Tag;if(AttachedTag!=null)AttachedTag.gameObject.SetActive(true);
+        }
         public void ResetInspection()
         {
             Verdict=InspectionVerdict.NOT_RECORDED;RecordedSerial="";RepairOrderIssued=false;

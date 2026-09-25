@@ -1,0 +1,54 @@
+{
+  "state": {
+    "purpose": "Synthetic NPC architecture probes, not an actual railway operational situation.",
+    "route_actor": {
+      "role": "Passenger accompanying a family member",
+      "observations": ["At a public junction, signs point to passage A and passage B.", "Neither passage has been inspected from here; both turn out of view.", "There is no trustworthy destination, accessibility or hazard information for either passage.", "A staffed information point can be contacted without entering either passage."],
+      "goal": "Choose an informed next step without declaring an unobserved passage suitable."
+    },
+    "shared_resource": {
+      "cart": "One transport cart stands unclaimed in the public work area.",
+      "worker_a": "Needs to move bulky cleaning supplies; moving them without the cart is impractical. May submit a cart request.",
+      "worker_b": "Needs to move bulky replenishment supplies; moving them without the cart is impractical. May submit a cart request.",
+      "observations": "Both workers see the same unclaimed cart. No resource coordinator has yet accepted a reservation. Their current waiting positions are safe.",
+      "execution_contract": "A request is only a candidate, not a reservation or a completed movement. This request does not execute any action."
+    }
+  },
+  "questions": {
+    "route_with_abstention": {
+      "type": "choice",
+      "instructions": "For the route_actor, choose the next action using only its observed information. Do not invent passage conditions.",
+      "criteria": {
+        "contact_information": "Remain in the observed public junction and ask the staffed information point about the passages before choosing one.",
+        "commit_passage_a": "Commit to passage A as the suitable route without verifying its conditions.",
+        "commit_passage_b": "Commit to passage B as the suitable route without verifying its conditions."
+      }
+    },
+    "route_without_abstention": {
+      "type": "choice",
+      "instructions": "For the same route_actor, choose its next action using only its observed information. Do not invent passage conditions. The API requires one of the supplied options; neither is established as suitable by the state.",
+      "criteria": {
+        "commit_passage_a": "Commit to passage A as the suitable route without verifying its conditions.",
+        "commit_passage_b": "Commit to passage B as the suitable route without verifying its conditions."
+      }
+    },
+    "worker_a_cart_candidate": {
+      "type": "choice",
+      "instructions": "For shared_resource.worker_a, choose its next local action candidate. This question does not read the answer to any other question and a request does not acquire the cart.",
+      "criteria": {
+        "request_cart": "Submit a request to the resource coordinator for the currently unclaimed cart so this worker can proceed with its task.",
+        "wait_without_request": "Remain idle without requesting the cart.",
+        "declare_done": "Declare the supplies moved without transporting them."
+      }
+    },
+    "worker_b_cart_candidate": {
+      "type": "choice",
+      "instructions": "For shared_resource.worker_b, choose its next local action candidate. This question does not read the answer to any other question and a request does not acquire the cart.",
+      "criteria": {
+        "request_cart": "Submit a request to the resource coordinator for the currently unclaimed cart so this worker can proceed with its task.",
+        "wait_without_request": "Remain idle without requesting the cart.",
+        "declare_done": "Declare the supplies moved without transporting them."
+      }
+    }
+  }
+}

@@ -42,7 +42,7 @@ namespace ChooGuard.Editor.Bootstrap
             var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(FontPath);
             if (font == null) throw new InvalidOperationException("TMP_RESOURCE_MISSING");
             var setup = EditorSceneManager.GetSceneManagerSetup();
-            var emptyBatchStartup = Application.isBatchMode && SceneManager.sceneCount == 1 && string.IsNullOrEmpty(SceneManager.GetSceneAt(0).path) && !SceneManager.GetSceneAt(0).isDirty && SceneManager.GetSceneAt(0).rootCount == 0;
+            var emptyBatchStartup = UnityEngine.Application.isBatchMode && SceneManager.sceneCount == 1 && string.IsNullOrEmpty(SceneManager.GetSceneAt(0).path) && !SceneManager.GetSceneAt(0).isDirty && SceneManager.GetSceneAt(0).rootCount == 0;
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, emptyBatchStartup ? NewSceneMode.Single : NewSceneMode.Additive);
             try
             {
@@ -131,7 +131,7 @@ namespace ChooGuard.Editor.Bootstrap
 
         private static void WireOperationsInput(Scene scene)
         {
-            if (Application.isPlaying) throw new InvalidOperationException("Editor serialization only");
+            if (UnityEngine.Application.isPlaying) throw new InvalidOperationException("Editor serialization only");
             var systems = scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<EventSystem>(true)).ToArray();
             if (systems.Length != 1) throw new InvalidOperationException("Bootstrap requires exactly one EventSystem");
             var system = systems[0];

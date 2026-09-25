@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Focused live JSONL lifecycle reproduction, no fixture physics."""
 import json,pathlib,subprocess,sys
+from runtime_package import launch_worker
 root=pathlib.Path(__file__).resolve().parent
-p=subprocess.Popen([str(root/'.venv/bin/python'),str(root/'worker.py')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
+p=launch_worker(stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True)
 def exchange(value):
  p.stdin.write(json.dumps(value)+'\n');p.stdin.flush();return json.loads(p.stdout.readline())
 def command(action,seconds=0,**extra):

@@ -28,6 +28,7 @@ namespace ChooGuard.App.Fps.Work
     {
         [Header("결선 (세션이 꽂는다. 비어 있으면 안전하게 거부한다)")]
         public Func<string> GateReason;
+        public Func<string> BeforeOpen;
         public Func<AuditReport> ReportSource;
 
         [Header("표시")]
@@ -61,11 +62,16 @@ namespace ChooGuard.App.Fps.Work
         {
             if(!CanInteract(responder,out feedback))return false;
             if(IsOpen){SuccessMessage="감사 단말을 닫았습니다";Close();}
-            else{Open(responder);SuccessMessage=LastReport.Clean?"지적 사항 없음":"지적 "+LastReport.Count+"건";}
+            else
+            {
+                var reason=BeforeOpen?.Invoke();
+                if(!string.IsNullOrEmpty(reason)){feedback=reason;return false;}
+                Open(responder);SuccessMessage=LastReport.Clean?"지적 사항 없음":"지적 "+LastReport.Count+"건";
+            }
             return base.TryInteract(responder,out feedback);
         }
 
-        public void Open(FirstPersonResponder responder)
+        private void Open(FirstPersonResponder responder)
         {
             LastReport=ReportSource!=null?ReportSource():AuditReport.Empty;
             reader=responder;IsOpen=true;

@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ChooGuard.Persistence;
 using UnityEngine;
 namespace ChooGuard.App.Mvp
 {
@@ -51,6 +52,7 @@ namespace ChooGuard.App.Mvp
         public MvpPhysicsResult LastResult { get; private set; }
         public string Diagnostic { get; private set; }
         private Process process;
+        private IDisposable processJob;
         private readonly ConcurrentQueue<string> inbox=new ConcurrentQueue<string>();
         private int queued,readerEpoch;
         private bool capabilities,pendingStart,routineStart;
@@ -78,13 +80,16 @@ namespace ChooGuard.App.Mvp
             DisposeProcess();
             try
             {
-                string root=Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,".."));
-                string interpreter=Path.Combine(root,"workers/physics/.venv/bin/python"),worker=Path.Combine(root,"workers/physics/worker.py");
-                if(!File.Exists(interpreter) || !File.Exists(worker)) throw new FileNotFoundException("국소 계산 워커가 설치되지 않았습니다.");
-                var start=new ProcessStartInfo { FileName=interpreter,Arguments="\""+worker+"\"",WorkingDirectory=root,UseShellExecute=false,RedirectStandardInput=true,RedirectStandardOutput=true,RedirectStandardError=true,CreateNoWindow=true,StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8 };
-                process=new Process { StartInfo=start,EnableRaisingEvents=true }; process.Start();
-                int epoch=++readerEpoch; var owned=process;
-                Task.Run(()=>ReadLines(owned.StandardOutput,epoch,true)); Task.Run(()=>ReadLines(owned.StandardError,epoch,false));
+                RuntimePackage.ConfigureRoot(UnityEngine.Application.isEditor
+                    ? Path.GetFullPath(Path.Combine(UnityEngine.Application.dataPath,"../workers/runtime"))
+                    : Path.Combine(UnityEngine.Application.streamingAssetsPath,"ChooGuardRuntime"));
+                var start=RuntimePackage.LoadConfigured().PhysicsStartInfo();
+                process=new Process { StartInfo=start,EnableRaisingEvents=true };
+                if(!process.Start()) throw new InvalidOperationException("WORKER_START_FAILED");
+                processJob=WorkerProcessLifetime.Attach(process);
+                int epoch=++readerEpoch;
+                var output=process.StandardOutput; var errors=process.StandardError;
+                Task.Run(()=>ReadLines(output,epoch,true)); Task.Run(()=>ReadLines(errors,epoch,false));
                 Send(new Request { kind="HELLO" }); StatusChanged?.Invoke("전문 계산 엔진 연결 중");
             }
             catch(Exception error) { Fail(error.Message); }
@@ -94,19 +99,29 @@ namespace ChooGuard.App.Mvp
             try
             {
                 var builder=new StringBuilder(1024);
-                while(epoch==readerEpoch)
+                while(epoch==Volatile.Read(ref readerEpoch))
                 {
-                    int c=reader.Read(); if(c<0) { if(protocol && epoch==readerEpoch) readerFailure="계산 워커 연결이 종료되었습니다."; return; }
+                    int c=reader.Read();
+                    if(epoch!=Volatile.Read(ref readerEpoch)) return;
+                    if(c<0) { if(protocol) ReaderFailed(epoch,"계산 워커 연결이 종료되었습니다."); return; }
                     if(c=='\n')
                     {
                         string line=builder.ToString(); builder.Clear();
-                        if(protocol) { if(Interlocked.Increment(ref queued)>16) { readerFailure="계산 수신 대기열 한도를 초과했습니다."; return; } inbox.Enqueue(line); }
-                        else stderrTail=line.Length>2048?line.Substring(line.Length-2048):line;
+                        lock(inbox)
+                        {
+                            if(epoch!=Volatile.Read(ref readerEpoch)) return;
+                            if(protocol) { if(Interlocked.Increment(ref queued)>16) { readerFailure="계산 수신 대기열 한도를 초과했습니다."; return; } inbox.Enqueue(line); }
+                            else stderrTail=line.Length>2048?line.Substring(line.Length-2048):line;
+                        }
                     }
-                    else { if(builder.Length>=1024*1024) { readerFailure="계산 메시지 크기 한도를 초과했습니다."; return; } builder.Append((char)c); }
+                    else { if(builder.Length>=1024*1024) { ReaderFailed(epoch,"계산 메시지 크기 한도를 초과했습니다."); return; } builder.Append((char)c); }
                 }
             }
-            catch(Exception error) { if(epoch==readerEpoch) readerFailure=error.Message; }
+            catch(Exception error) { ReaderFailed(epoch,error.Message); }
+        }
+        private void ReaderFailed(int epoch,string message)
+        {
+            lock(inbox) { if(epoch==Volatile.Read(ref readerEpoch)) readerFailure=message; }
         }
         private void SendStart() { pendingStart=false; if(routineStart && lifecycleVersion!=1) { Fail("평시 운영 계약을 지원하지 않는 계산 엔진입니다."); return; } SendAction(routineStart?"start_routine":"start",0); }
         public bool SendAction(string action,float seconds) => SendControl(new MvpControlOrder { Action=action },seconds);
@@ -219,19 +234,36 @@ namespace ChooGuard.App.Mvp
             return true;
         }
         private static bool Finite(float value)=>!float.IsNaN(value)&&!float.IsInfinity(value);
-        private void Fail(string text) { Failed=true; Ready=false; InFlight=false; Diagnostic=text; UnityEngine.Debug.LogWarning("계산 워커 진단: "+text,this); StatusChanged?.Invoke("계산 불가 · 엔진 진단을 확인하고 새 실험을 시작하세요."); }
+        private void Fail(string text) { Failed=true; Ready=false; InFlight=false; Diagnostic=text; DisposeProcess(); UnityEngine.Debug.LogWarning("계산 워커 진단: "+text,this); StatusChanged?.Invoke("계산 불가 · 엔진 진단을 확인하고 새 실험을 시작하세요."); }
         public void Cancel()
         {
-            if(process!=null && !process.HasExited && !string.IsNullOrEmpty(run))
-                try { process.StandardInput.WriteLine(JsonUtility.ToJson(new Request { kind="CANCEL",runId=run,generation=generation })); process.StandardInput.Flush(); } catch(IOException) { }
+            if(process!=null && !string.IsNullOrEmpty(run))
+                try { if(!process.HasExited) { process.StandardInput.WriteLine(JsonUtility.ToJson(new Request { kind="CANCEL",runId=run,generation=generation })); process.StandardInput.Flush(); } } catch(IOException) { } catch(InvalidOperationException) { }
             pendingStart=false; InFlight=false; Ready=false;
         }
         private void DisposeProcess()
         {
-            Interlocked.Increment(ref readerEpoch); capabilities=false; readerFailure=null;
-            while(inbox.TryDequeue(out _)) {} queued=0;
-            if(process!=null) { try { if(!process.HasExited) process.Kill(); } catch(InvalidOperationException) {} process.Dispose(); process=null; }
+            lock(inbox) { Interlocked.Increment(ref readerEpoch); readerFailure=null; }
+            capabilities=false;
+            var owned=process; process=null;
+            if(owned!=null)
+            {
+                try
+                {
+                    if(!owned.HasExited)
+                    {
+                        try { owned.StandardInput.Close(); } catch(IOException) { } // EOF is the worker's graceful shutdown contract.
+                        if(!owned.WaitForExit(250)) { owned.Kill(); if(!owned.WaitForExit(1500)) UnityEngine.Debug.LogError("WORKER_SHUTDOWN_TIMEOUT",this); }
+                    }
+                }
+                catch(Exception error) when(error is InvalidOperationException || error is IOException || error is System.ComponentModel.Win32Exception)
+                { UnityEngine.Debug.LogWarning("WORKER_SHUTDOWN_FAILED: "+error.Message,this); }
+                finally { owned.Dispose(); }
+            }
+            processJob?.Dispose(); processJob=null; // Windows closes the owned job and terminates any remaining descendants.
+            lock(inbox) { while(inbox.TryDequeue(out _)) {} queued=0; }
         }
+        private void OnApplicationQuit() { DisposeProcess(); }
         private void OnDisable() { Cancel(); DisposeProcess(); }
         private void OnDestroy() { DisposeProcess(); }
     }

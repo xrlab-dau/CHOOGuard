@@ -1,0 +1,1279 @@
+{
+  "artifactKind": "design-only-synthetic-contract-examples",
+  "notLiveEvidence": true,
+  "rawRequestEncoding": "rawRequestUtf8 is the exact no-BOM UTF-8 body hashed for the success result; whitespace changes require a new hash.",
+  "rawRequestUtf8": "{\"schemaVersion\":1,\"kind\":\"decision_request\",\"runId\":\"design-run-1\",\"generation\":2,\"requestId\":\"decision-17\",\"actorId\":\"staff-7\",\"decisionSeq\":\"17\",\"mode\":\"RANDOM_OPERATIONS_LAB\",\"basisTickUs\":\"1000000\",\"expiresAtTickUs\":\"5000000\",\"observationRevision\":\"9\",\"deadlineMs\":2000,\"actor\":{\"roleId\":\"station-staff\",\"profileRevision\":\"3\",\"persona\":\"현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.\",\"currentActionId\":\"action-assist-3\",\"goals\":[\"담당자가 도착해 인수할 때까지 현재 지원 유지\"]},\"observations\":[{\"factId\":\"fact-ack\",\"subjectId\":\"staff-8\",\"predicate\":\"handoff-acknowledged\",\"truth\":\"TRUE\",\"value\":true,\"sourceKind\":\"report\",\"sourceId\":\"radio-42\",\"observedTickUs\":\"900000\",\"validUntilTickUs\":null},{\"factId\":\"fact-onsite\",\"subjectId\":\"staff-8\",\"predicate\":\"handoff-recipient-onsite\",\"truth\":\"FALSE\",\"value\":false,\"sourceKind\":\"direct\",\"sourceId\":\"sight-29\",\"observedTickUs\":\"1000000\",\"validUntilTickUs\":\"5000000\"}],\"memories\":[{\"memoryId\":\"memory-4\",\"eventRefs\":[\"event-promise-4\"],\"summary\":\"현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.\",\"beliefStatus\":\"observed\",\"rememberedTickUs\":\"800000\"}],\"candidates\":[{\"candidateId\":\"candidate-continue\",\"actionId\":\"continue-current-task\",\"targetIds\":[\"citizen-4\"],\"summary\":\"현재 지원을 유지하며 인수 담당자의 도착을 기다린다.\"},{\"candidateId\":\"candidate-ask\",\"actionId\":\"request-information\",\"targetIds\":[\"staff-8\"],\"summary\":\"현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다.\"}],\"readSet\":[{\"entityId\":\"staff-7\",\"revision\":\"3\"},{\"entityId\":\"citizen-4\",\"revision\":\"11\"},{\"entityId\":\"handoff-4\",\"revision\":\"2\"}]}",
+  "shapeCases": [
+    {
+      "id": "shape-request",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "basisTickUs": "1000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": "9",
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "TRUE",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "FALSE",
+            "value": false,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-continue",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-ask",
+            "actionId": "request-information",
+            "targetIds": [
+              "staff-8"
+            ],
+            "summary": "현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "shape-success",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_result",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "requestSha256": "db4ae0baf3017c1b1642dba0994d855b6983d0b3fe42de5df764f60eeac02856",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-continue",
+        "probabilities": [
+          {
+            "candidateId": "candidate-continue",
+            "probability": 0.75
+          },
+          {
+            "candidateId": "candidate-ask",
+            "probability": 0.25
+          }
+        ],
+        "confidence": 0.5,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 600,
+          "outputTokens": 80
+        },
+        "reasonCode": "selected"
+      }
+    },
+    {
+      "id": "shape-unavailable",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_result",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "requestSha256": "db4ae0baf3017c1b1642dba0994d855b6983d0b3fe42de5df764f60eeac02856",
+        "status": "unavailable",
+        "provider": "typesafe-direct",
+        "model": null,
+        "selectedCandidateId": null,
+        "probabilities": null,
+        "confidence": null,
+        "upstreamLatencyMs": null,
+        "usage": null,
+        "reasonCode": "request_expired"
+      }
+    },
+    {
+      "id": "shape-unknown-observation",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "basisTickUs": "1000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": "9",
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "TRUE",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "UNKNOWN",
+            "value": null,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-continue",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-ask",
+            "actionId": "request-information",
+            "targetIds": [
+              "staff-8"
+            ],
+            "summary": "현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-world-write",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_result",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "requestSha256": "db4ae0baf3017c1b1642dba0994d855b6983d0b3fe42de5df764f60eeac02856",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-continue",
+        "probabilities": [
+          {
+            "candidateId": "candidate-continue",
+            "probability": 0.75
+          },
+          {
+            "candidateId": "candidate-ask",
+            "probability": 0.25
+          }
+        ],
+        "confidence": 0.5,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 600,
+          "outputTokens": 80
+        },
+        "reasonCode": "selected",
+        "worldPatch": {
+          "complete": true
+        }
+      }
+    },
+    {
+      "id": "reject-missing-actor",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "decisionSeq": "17",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "basisTickUs": "1000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": "9",
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "TRUE",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "FALSE",
+            "value": false,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-continue",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-ask",
+            "actionId": "request-information",
+            "targetIds": [
+              "staff-8"
+            ],
+            "summary": "현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-probability-over-one",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_result",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "requestSha256": "db4ae0baf3017c1b1642dba0994d855b6983d0b3fe42de5df764f60eeac02856",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-continue",
+        "probabilities": [
+          {
+            "candidateId": "candidate-continue",
+            "probability": 1.1
+          },
+          {
+            "candidateId": "candidate-ask",
+            "probability": 0.25
+          }
+        ],
+        "confidence": 0.5,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 600,
+          "outputTokens": 80
+        },
+        "reasonCode": "selected"
+      }
+    },
+    {
+      "id": "reject-unavailable-fabricated-choice",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_result",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "requestSha256": "db4ae0baf3017c1b1642dba0994d855b6983d0b3fe42de5df764f60eeac02856",
+        "status": "unavailable",
+        "provider": "typesafe-direct",
+        "model": null,
+        "selectedCandidateId": "candidate-continue",
+        "probabilities": null,
+        "confidence": null,
+        "upstreamLatencyMs": null,
+        "usage": null,
+        "reasonCode": "queue_full"
+      }
+    },
+    {
+      "id": "reject-unknown-with-asserted-value",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "basisTickUs": "1000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": "9",
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "UNKNOWN",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "FALSE",
+            "value": false,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-continue",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-ask",
+            "actionId": "request-information",
+            "targetIds": [
+              "staff-8"
+            ],
+            "summary": "현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-numeric-long-revision",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "basisTickUs": "1000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": 9,
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "TRUE",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "FALSE",
+            "value": false,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-continue",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-ask",
+            "actionId": "request-information",
+            "targetIds": [
+              "staff-8"
+            ],
+            "summary": "현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-leading-zero-tick",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "basisTickUs": "01000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": "9",
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "TRUE",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "FALSE",
+            "value": false,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-continue",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-ask",
+            "actionId": "request-information",
+            "targetIds": [
+              "staff-8"
+            ],
+            "summary": "현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-candidate-overflow",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "basisTickUs": "1000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": "9",
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "TRUE",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "FALSE",
+            "value": false,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-0",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-1",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-2",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-3",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-4",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-5",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-6",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-7",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-8",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-9",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-10",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-11",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-12",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-13",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-14",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-15",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-16",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-17",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-18",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-19",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-20",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-21",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-22",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-23",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-24",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-25",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-26",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-27",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-28",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-29",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-30",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-31",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-32",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-error-presented-as-success",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_result",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "requestSha256": "db4ae0baf3017c1b1642dba0994d855b6983d0b3fe42de5df764f60eeac02856",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-continue",
+        "probabilities": [
+          {
+            "candidateId": "candidate-continue",
+            "probability": 0.75
+          },
+          {
+            "candidateId": "candidate-ask",
+            "probability": 0.25
+          }
+        ],
+        "confidence": 0.5,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 600,
+          "outputTokens": 80
+        },
+        "reasonCode": "timeout"
+      }
+    },
+    {
+      "id": "reject-unknown-product-mode",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "kind": "decision_request",
+        "runId": "design-run-1",
+        "generation": 2,
+        "requestId": "decision-17",
+        "actorId": "staff-7",
+        "decisionSeq": "17",
+        "mode": "MULTIPLAYER",
+        "basisTickUs": "1000000",
+        "expiresAtTickUs": "5000000",
+        "observationRevision": "9",
+        "deadlineMs": 2000,
+        "actor": {
+          "roleId": "station-staff",
+          "profileRevision": "3",
+          "persona": "현재 지원 중인 시민에게 책임 있는 인계를 약속한 직원.",
+          "currentActionId": "action-assist-3",
+          "goals": [
+            "담당자가 도착해 인수할 때까지 현재 지원 유지"
+          ]
+        },
+        "observations": [
+          {
+            "factId": "fact-ack",
+            "subjectId": "staff-8",
+            "predicate": "handoff-acknowledged",
+            "truth": "TRUE",
+            "value": true,
+            "sourceKind": "report",
+            "sourceId": "radio-42",
+            "observedTickUs": "900000",
+            "validUntilTickUs": null
+          },
+          {
+            "factId": "fact-onsite",
+            "subjectId": "staff-8",
+            "predicate": "handoff-recipient-onsite",
+            "truth": "FALSE",
+            "value": false,
+            "sourceKind": "direct",
+            "sourceId": "sight-29",
+            "observedTickUs": "1000000",
+            "validUntilTickUs": "5000000"
+          }
+        ],
+        "memories": [
+          {
+            "memoryId": "memory-4",
+            "eventRefs": [
+              "event-promise-4"
+            ],
+            "summary": "현재 시민의 지원을 실제 인계 시점까지 맡겠다고 약속함.",
+            "beliefStatus": "observed",
+            "rememberedTickUs": "800000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-continue",
+            "actionId": "continue-current-task",
+            "targetIds": [
+              "citizen-4"
+            ],
+            "summary": "현재 지원을 유지하며 인수 담당자의 도착을 기다린다."
+          },
+          {
+            "candidateId": "candidate-ask",
+            "actionId": "request-information",
+            "targetIds": [
+              "staff-8"
+            ],
+            "summary": "현재 책임을 유지한 채 인수 담당자의 도착 상태를 문의한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "staff-7",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-4",
+            "revision": "11"
+          },
+          {
+            "entityId": "handoff-4",
+            "revision": "2"
+          }
+        ]
+      }
+    }
+  ],
+  "semanticScenarios": [
+    {
+      "id": "SEM-01",
+      "given": "Same generation-scoped request key with retained identity hash receives different body bytes",
+      "expected": "409; do not invoke JEV again"
+    },
+    {
+      "id": "SEM-02",
+      "given": "Active generation=3 but response generation=2",
+      "expected": "No new action or memory-completed fact; known late usage accounted once against the original request"
+    },
+    {
+      "id": "SEM-03",
+      "given": "Selected candidate ID is absent from request",
+      "expected": "invalid_provider_result; no action"
+    },
+    {
+      "id": "SEM-04",
+      "given": "Schema-valid probabilities sum to 0.7",
+      "expected": "Reject; never silently normalize"
+    },
+    {
+      "id": "SEM-05",
+      "given": "Cart reservation revision changes before commit",
+      "expected": "BLOCKED/conflict; no second owner"
+    },
+    {
+      "id": "SEM-06",
+      "given": "Acknowledgement true but recipient-onsite false",
+      "expected": "No handoff completion; old owner retains responsibility"
+    },
+    {
+      "id": "SEM-07",
+      "given": "Decimal string exceeds signed Int64 maximum",
+      "expected": "422; reject before C# conversion"
+    },
+    {
+      "id": "SEM-08",
+      "given": "Actor role changes while provider request is in flight",
+      "expected": "Invalidate seq/readSet and reject late action"
+    },
+    {
+      "id": "SEM-09",
+      "given": "Client sends duplicate decoded JSON keys or isolated surrogate",
+      "expected": "400 lexical error before schema validation"
+    },
+    {
+      "id": "SEM-10",
+      "given": "Render actor culled while support action is active",
+      "expected": "Keep identity, task, reservation and memory"
+    },
+    {
+      "id": "SEM-11",
+      "given": "Unknown path A/B and information-request alternative available",
+      "expected": "Do not treat confidence as permission; information-seeking remains executable"
+    },
+    {
+      "id": "SEM-12",
+      "given": "Pause/rewind occurred before delayed provider result",
+      "expected": "Cancel/invalidate old request; restore must not merge old results"
+    },
+    {
+      "id": "SEM-13",
+      "given": "Duplicate decisionSeq after completion and result/identity cache eviction, with high-water mark retained",
+      "expected": "410 request_expired; no new JEV invocation or charge caused by replay"
+    },
+    {
+      "id": "SEM-14",
+      "given": "Tutorial restores an intentId from a discarded branch under a new generation",
+      "expected": "Old-generation requests rejected; new-generation actor intent does not reuse or conflict with the old receipt"
+    },
+    {
+      "id": "SEM-15",
+      "given": "Listener knows a private fact that the speaking NPC has never observed or received",
+      "expected": "Fact excluded from speaker prompt; speaker-known shareable facts may be delivered as new reported observations"
+    },
+    {
+      "id": "SEM-16",
+      "given": "Correlated unavailable result has null model/choice/probabilities and arrives after deadline",
+      "expected": "Failure branch records reason and known usage, closes only its own pending request, and creates no action"
+    }
+  ],
+  "semanticScenarioExecution": "NOT_RUN: requires implemented provider/consumer/domain; the design validator validates shapes only."
+}

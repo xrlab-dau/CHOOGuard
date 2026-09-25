@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "rulesetId": "synthetic-practice-v1",
+  "rulesetRevision": 1,
+  "label": "합성 인과 실험 규칙 · 실제 철도 화재/침수/보안 예측 검증 아님",
+  "transitions": [
+    {"id":"accident-smoke-source","parameterSetId":"practice-causal-qualitative","label":"신고된 연기 원인이 구역에 연기 영향을 줌","sourceKind":"Equipment","targetKind":"Zone","relation":"ContainingZone","sourceConditions":{"cause.smoke.emitting":true,"isolated":false},"targetConditions":{"smoke":false},"effects":{"smoke":true,"hazard":true}},
+    {"id":"accident-smoke-access","parameterSetId":"practice-causal-qualitative","label":"연기가 있는 구역의 통행 상태를 제한함","sourceKind":"Zone","targetKind":"Exit","relation":"SameZone","sourceConditions":{"smoke":true},"targetConditions":{"blocked":false},"effects":{"blocked":true}},
+    {"id":"accident-spill","parameterSetId":"practice-causal-qualitative","label":"선언된 누출원이 합성 표면을 젖게 함","sourceKind":"Equipment","targetKind":"Surface","relation":"SameZone","sourceConditions":{"cause.leak.active":true},"targetConditions":{"wet":false},"effects":{"wet":true,"dryness.confirmed":false}},
+    {"id":"accident-wet-access","parameterSetId":"practice-causal-qualitative","label":"미표시 젖은 실습 구역의 주의 필요 상태","sourceKind":"Surface","targetKind":"Zone","relation":"ContainingZone","sourceConditions":{"wet":true,"cordoned":false},"targetConditions":{"slip.attention":false},"effects":{"slip.attention":true}},
+    {"id":"security-unattended-review","parameterSetId":"practice-security-qualitative","label":"신고된 소유 미상 물품의 담당 확인 필요","sourceKind":"PersonalItem","targetKind":"Zone","relation":"ContainingZone","sourceConditions":{"owner.known":false,"reported":true},"targetConditions":{"security.review.required":false},"effects":{"security.review.required":true}},
+    {"id":"security-suspicion-access","parameterSetId":"practice-security-qualitative","label":"신고된 의심물에 대한 접근 검토 필요","sourceKind":"SuspiciousItem","targetKind":"Zone","relation":"ContainingZone","sourceConditions":{"reported":true,"hazard.assessed":false},"targetConditions":{"security.review.required":false},"effects":{"security.review.required":true}},
+    {"id":"security-cordon-marked","parameterSetId":"practice-security-qualitative","label":"실제 설치된 표지의 접근 안내 상태","sourceKind":"Zone","targetKind":"Zone","relation":"Self","sourceConditions":{"cordoned":true,"security.review.required":true},"targetConditions":{"access.marked":false},"effects":{"access.marked":true}},
+    {"id":"natural-water-entry","parameterSetId":"practice-natural-qualitative","label":"저작된 유입 원인이 실제 열린 경계로 실습 구역에 영향을 줌","sourceKind":"Equipment","targetKind":"Zone","relation":"ContainingZone","sourceConditions":{"cause.external.water":true,"open":true},"targetConditions":{"water.present":false},"effects":{"water.present":true,"hazard":true}},
+    {"id":"natural-water-route","parameterSetId":"practice-natural-qualitative","label":"침수 표시가 있는 구역의 통행 경로 제한","sourceKind":"Zone","targetKind":"Exit","relation":"SameZone","sourceConditions":{"water.present":true},"targetConditions":{"blocked":false},"effects":{"blocked":true}},
+    {"id":"natural-water-surface","parameterSetId":"practice-natural-qualitative","label":"저작된 구역 유입수가 실습 표면에 도달함","sourceKind":"Zone","targetKind":"Surface","relation":"SameZone","sourceConditions":{"water.present":true},"targetConditions":{"wet":false},"effects":{"wet":true,"dryness.confirmed":false}},
+    {"id":"practice-dryness-record","parameterSetId":"practice-contact-only","label":"독립적으로 확인된 건조 증거를 표면 상태에 반영","sourceKind":"Surface","targetKind":"Surface","relation":"Self","sourceConditions":{"dryness.confirmed":true,"dirty":false},"targetConditions":{"wet":true},"effects":{"wet":false}}
+  ]
+}

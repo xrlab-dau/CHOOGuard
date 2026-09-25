@@ -73,6 +73,10 @@ namespace ChooGuard.Persistence
             db = provider ?? throw new ArgumentNullException(nameof(provider));
             this.materializer = materializer ?? throw new ArgumentNullException(nameof(materializer));
             this.clock = clock ?? new WallClock();
+            InitializeSchema(db);
+        }
+        internal static void InitializeSchema(SqliteProvider db)
+        {
             lock (db.Gate)
             {
                 db.VerifySettings();
@@ -104,7 +108,7 @@ namespace ChooGuard.Persistence
                         throw new InvalidOperationException("SCHEMA_MISMATCH");
                     db.Execute("COMMIT"); owned = false;
                 }
-                finally { if (owned) db.Execute("ROLLBACK"); }
+                finally { if (owned) db.RollbackIfActive(); }
             }
         }
         public Task<CommitReceipt> CommitAsync(CommitBatch batch, CancellationToken cancellation)
@@ -150,7 +154,7 @@ namespace ChooGuard.Persistence
                     // No cancellation check after commit: durable acceptance cannot be undone.
                     return Task.FromResult(receipt);
                 }
-                finally { if (owned) db.Execute("ROLLBACK"); }
+                finally { if (owned) db.RollbackIfActive(); }
             }
         }
         public Task<OutboxDelivery> ClaimAsync(StableId runId, StableId ownerId, TimeSpan lease, CancellationToken cancellation)
@@ -182,7 +186,7 @@ namespace ChooGuard.Persistence
                     db.Execute("COMMIT"); owned = false;
                     return Task.FromResult(delivery);
                 }
-                finally { if (owned) db.Execute("ROLLBACK"); }
+                finally { if (owned) db.RollbackIfActive(); }
             }
         }
         public Task<bool> AcknowledgeAsync(OutboxDeliveryAck acknowledgement, CancellationToken cancellation)
@@ -203,7 +207,7 @@ namespace ChooGuard.Persistence
                     db.Execute("COMMIT"); owned = false;
                     return Task.FromResult(changed);
                 }
-                finally { if (owned) db.Execute("ROLLBACK"); }
+                finally { if (owned) db.RollbackIfActive(); }
             }
         }
         public Task<ReceiptLookup> ReadReceiptAsync(ReceiptKey key, CancellationToken cancellation)

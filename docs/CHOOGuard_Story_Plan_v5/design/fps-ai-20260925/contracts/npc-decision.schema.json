@@ -1,0 +1,618 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:chooguard:design:npc-decision:1",
+  "title": "Proposed NPC decision request/result — not an implemented endpoint",
+  "description": "Canonical shape for POST /npc/decision. No action execution authority. Parsing limits, identity matching, read-set freshness, candidate membership, probability consistency and permissions require semantic validation described in NPC_SCENARIO.md. Upstream JEV wire is a separate adapter.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/request"
+    },
+    {
+      "$ref": "#/$defs/result"
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$(?![\\s\\S])"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$(?![\\s\\S])"
+    },
+    "entityRevision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "entityId",
+        "revision"
+      ],
+      "properties": {
+        "entityId": {
+          "$ref": "#/$defs/id"
+        },
+        "revision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        }
+      }
+    },
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "roleId",
+        "profileRevision",
+        "persona",
+        "currentActionId",
+        "goals"
+      ],
+      "properties": {
+        "roleId": {
+          "$ref": "#/$defs/id"
+        },
+        "profileRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        },
+        "persona": {
+          "type": "string",
+          "maxLength": 1024
+        },
+        "currentActionId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "goals": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 256
+          },
+          "minItems": 1,
+          "maxItems": 8
+        }
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "factId",
+        "subjectId",
+        "predicate",
+        "truth",
+        "value",
+        "sourceKind",
+        "sourceId",
+        "observedTickUs",
+        "validUntilTickUs"
+      ],
+      "properties": {
+        "factId": {
+          "$ref": "#/$defs/id"
+        },
+        "subjectId": {
+          "$ref": "#/$defs/id"
+        },
+        "predicate": {
+          "$ref": "#/$defs/id"
+        },
+        "truth": {
+          "enum": [
+            "TRUE",
+            "FALSE",
+            "UNKNOWN",
+            "CONFLICTED"
+          ]
+        },
+        "value": {
+          "type": [
+            "string",
+            "number",
+            "boolean",
+            "null"
+          ],
+          "maxLength": 512
+        },
+        "sourceKind": {
+          "enum": [
+            "direct",
+            "report",
+            "inference",
+            "memory"
+          ]
+        },
+        "sourceId": {
+          "$ref": "#/$defs/id"
+        },
+        "observedTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        },
+        "validUntilTickUs": {
+          "anyOf": [
+            {
+              "type": "string",
+              "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+              "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "truth": {
+                "enum": [
+                  "UNKNOWN",
+                  "CONFLICTED"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "value": {
+                "type": "null"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "memory": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "memoryId",
+        "eventRefs",
+        "summary",
+        "beliefStatus",
+        "rememberedTickUs"
+      ],
+      "properties": {
+        "memoryId": {
+          "$ref": "#/$defs/id"
+        },
+        "eventRefs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 1,
+          "maxItems": 8
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        },
+        "beliefStatus": {
+          "enum": [
+            "observed",
+            "reported",
+            "inferred",
+            "disputed"
+          ]
+        },
+        "rememberedTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        }
+      }
+    },
+    "candidate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "actionId",
+        "targetIds",
+        "summary"
+      ],
+      "properties": {
+        "candidateId": {
+          "$ref": "#/$defs/id"
+        },
+        "actionId": {
+          "$ref": "#/$defs/id"
+        },
+        "targetIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/id"
+          },
+          "minItems": 0,
+          "maxItems": 4,
+          "uniqueItems": true
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 512
+        }
+      }
+    },
+    "probability": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateId",
+        "probability"
+      ],
+      "properties": {
+        "candidateId": {
+          "$ref": "#/$defs/id"
+        },
+        "probability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inputTokens",
+        "outputTokens"
+      ],
+      "properties": {
+        "inputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        },
+        "outputTokens": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991
+        }
+      }
+    },
+    "request": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "runId",
+        "generation",
+        "requestId",
+        "actorId",
+        "decisionSeq",
+        "kind",
+        "mode",
+        "basisTickUs",
+        "expiresAtTickUs",
+        "observationRevision",
+        "deadlineMs",
+        "actor",
+        "observations",
+        "memories",
+        "candidates",
+        "readSet"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "runId": {
+          "$ref": "#/$defs/id"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "requestId": {
+          "$ref": "#/$defs/id"
+        },
+        "actorId": {
+          "$ref": "#/$defs/id"
+        },
+        "decisionSeq": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        },
+        "kind": {
+          "const": "decision_request"
+        },
+        "mode": {
+          "enum": [
+            "TUTORIAL",
+            "RANDOM_OPERATIONS_LAB"
+          ]
+        },
+        "basisTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        },
+        "expiresAtTickUs": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        },
+        "observationRevision": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        },
+        "deadlineMs": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 5000
+        },
+        "actor": {
+          "$ref": "#/$defs/actor"
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/observation"
+          },
+          "minItems": 0,
+          "maxItems": 64
+        },
+        "memories": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/memory"
+          },
+          "minItems": 0,
+          "maxItems": 16
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/candidate"
+          },
+          "minItems": 2,
+          "maxItems": 32
+        },
+        "readSet": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entityRevision"
+          },
+          "minItems": 1,
+          "maxItems": 64
+        }
+      }
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "runId",
+        "generation",
+        "requestId",
+        "actorId",
+        "decisionSeq",
+        "kind",
+        "requestSha256",
+        "status",
+        "provider",
+        "model",
+        "selectedCandidateId",
+        "probabilities",
+        "confidence",
+        "upstreamLatencyMs",
+        "usage",
+        "reasonCode"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 1
+        },
+        "runId": {
+          "$ref": "#/$defs/id"
+        },
+        "generation": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2147483647
+        },
+        "requestId": {
+          "$ref": "#/$defs/id"
+        },
+        "actorId": {
+          "$ref": "#/$defs/id"
+        },
+        "decisionSeq": {
+          "type": "string",
+          "pattern": "^(0|[1-9][0-9]{0,18})$(?![\\s\\S])",
+          "description": "Canonical nonnegative Int64 decimal string; semantic validator also requires <=9223372036854775807."
+        },
+        "kind": {
+          "const": "decision_result"
+        },
+        "requestSha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "status": {
+          "enum": [
+            "ok",
+            "unavailable"
+          ]
+        },
+        "provider": {
+          "const": "typesafe-direct"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "selectedCandidateId": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/id"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "probabilities": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/probability"
+              },
+              "minItems": 2,
+              "maxItems": 32
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "confidence": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "upstreamLatencyMs": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 60000
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/usage"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasonCode": {
+          "enum": [
+            "selected",
+            "timeout",
+            "rate_limited",
+            "provider_error",
+            "invalid_provider_result",
+            "cancelled",
+            "queue_full",
+            "budget_exhausted",
+            "request_expired"
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "ok"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "model": {
+                "type": "string"
+              },
+              "selectedCandidateId": {
+                "$ref": "#/$defs/id"
+              },
+              "probabilities": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/probability"
+                },
+                "minItems": 2,
+                "maxItems": 32
+              },
+              "confidence": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "upstreamLatencyMs": {
+                "type": "number"
+              },
+              "usage": {
+                "$ref": "#/$defs/usage"
+              },
+              "reasonCode": {
+                "const": "selected"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "selectedCandidateId": {
+                "type": "null"
+              },
+              "probabilities": {
+                "type": "null"
+              },
+              "confidence": {
+                "type": "null"
+              },
+              "reasonCode": {
+                "enum": [
+                  "timeout",
+                  "rate_limited",
+                  "provider_error",
+                  "invalid_provider_result",
+                  "cancelled",
+                  "queue_full",
+                  "budget_exhausted",
+                  "request_expired"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

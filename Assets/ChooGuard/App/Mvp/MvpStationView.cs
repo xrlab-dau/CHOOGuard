@@ -32,13 +32,12 @@ namespace ChooGuard.App.Mvp
             string reason=routeReasons[index];
             switch(reason)
             {
-                case "unsupported_floor_v1_no_cross_floor_link":return "지원하지 않는 층 · 층간 이동 경로 없음";
                 case "navigation_not_baked":return "보행 경로 자료 없음";
                 case "endpoint_outside_walkable_surface":return "출발점 또는 목표점이 보행 영역 밖에 있음";
                 case "endpoint_projection_too_far":return "출발점 또는 목표점에서 보행 경로가 너무 멂";
                 case "unreachable_or_partial_path":return "목표까지 연결된 보행 경로 없음";
                 case "incomplete_corner_path":return "목표까지의 보행 경로가 불완전함";
-                case "ready_second_floor_v1":return "2층 보행 경로 준비됨";
+                case "ready":return "보행 경로 준비됨";
                 case null:case "":case "route_not_requested":return "보행 경로 요청 전";
                 default:return reason.StartsWith("navigation_error:")?"보행 경로 계산 오류":"보행 경로 상태 확인 필요";
             }

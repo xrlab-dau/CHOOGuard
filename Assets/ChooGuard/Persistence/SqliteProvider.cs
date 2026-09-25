@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ChooGuard.Persistence
 {
-    /// <summary>Exact-file native loading. Currently macOS only; other ABIs fail closed.
+    /// <summary>Exact-file native loading for macOS and Windows x64; other ABIs fail closed.
     /// The caller supplies deployment-pinned source ID and SHA-256, never a discovered auto-approval.
     /// A successful probe is not Player qualification or a power-loss durability certification.</summary>
     public sealed class SqliteProvider : IDisposable
@@ -22,6 +22,7 @@ namespace ChooGuard.Persistence
         private readonly ColumnText columnText;
         private readonly ColumnCount columnCount;
         private readonly ErrorMessage errorMessage;
+        private readonly GetAutocommit getAutocommit;
         public string SourceId { get; }
         public string BinarySha256 { get; }
         public int VersionNumber { get; }
@@ -40,11 +41,15 @@ namespace ChooGuard.Persistence
             using (var input = File.OpenRead(nativePath)) using (var hash = SHA256.Create())
                 BinarySha256 = Hex(hash.ComputeHash(input));
             if (!StringComparer.Ordinal.Equals(BinarySha256, expectedSha256)) throw new InvalidOperationException("SQLITE_BINARY_HASH_MISMATCH");
-            if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) throw new PlatformNotSupportedException("SQLite ABI is not implemented for this host.");
+            var windows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+            if (windows ? RuntimeInformation.ProcessArchitecture != Architecture.X64 : !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                throw new PlatformNotSupportedException("SQLite ABI requires macOS or Windows x64.");
             try
             {
-                library = dlopen(nativePath, 2); // RTLD_NOW; no global search-name fallback.
-                if (library == IntPtr.Zero) throw new InvalidOperationException("SQLITE_NATIVE_LOAD_FAILED");
+                library = windows
+                    ? LoadLibraryExW(nativePath, IntPtr.Zero, 0x00000100 | 0x00000800) // DLL directory + System32 only.
+                    : dlopen(nativePath, 2); // RTLD_NOW; no search-name fallback.
+                if (library == IntPtr.Zero) throw new InvalidOperationException("SQLITE_NATIVE_LOAD_FAILED: " + Marshal.GetLastWin32Error());
                 VersionNumber = Load<Version>("sqlite3_libversion_number")();
                 SourceId = Text(Load<Source>("sqlite3_sourceid")());
                 if (SourceId != expectedSourceId) throw new InvalidOperationException("SQLITE_SOURCE_ID_MISMATCH");
@@ -55,6 +60,7 @@ namespace ChooGuard.Persistence
                 finalize = Load<FinalizeStatement>("sqlite3_finalize"); bindText = Load<BindText>("sqlite3_bind_text");
                 columnText = Load<ColumnText>("sqlite3_column_text"); columnCount = Load<ColumnCount>("sqlite3_column_count");
                 errorMessage = Load<ErrorMessage>("sqlite3_errmsg");
+                getAutocommit = Load<GetAutocommit>("sqlite3_get_autocommit");
                 Check(open(Utf8(DatabasePath), out database, 2 | 4 | 0x10000, IntPtr.Zero)); // RW, CREATE, FULLMUTEX, no URI.
                 Execute("PRAGMA busy_timeout=3000");
                 if (!string.Equals(Scalar("PRAGMA journal_mode=WAL"), "wal", StringComparison.OrdinalIgnoreCase))
@@ -74,6 +80,14 @@ namespace ChooGuard.Persistence
             }
         }
         internal void Execute(string sql, params string[] arguments) { Query(sql, arguments); }
+        internal void RollbackIfActive()
+        {
+            lock (Gate)
+            {
+                // SQLITE_FULL/IOERR can already have rolled back the transaction. Preserve that error.
+                if (database != IntPtr.Zero && getAutocommit(database) == 0) Execute("ROLLBACK");
+            }
+        }
         internal string Scalar(string sql, params string[] arguments)
         {
             var rows = Query(sql, arguments);
@@ -114,7 +128,7 @@ namespace ChooGuard.Persistence
         }
         private T Load<T>(string name) where T : class
         {
-            var address = dlsym(library, name);
+            var address = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? GetProcAddress(library, name) : dlsym(library, name);
             if (address == IntPtr.Zero) throw new EntryPointNotFoundException(name);
             return Marshal.GetDelegateForFunctionPointer(address, typeof(T)) as T;
         }
@@ -133,12 +147,19 @@ namespace ChooGuard.Persistence
             lock (Gate)
             {
                 if (database != IntPtr.Zero) { close(database); database = IntPtr.Zero; }
-                if (library != IntPtr.Zero) { dlclose(library); library = IntPtr.Zero; }
+                if (library != IntPtr.Zero)
+                {
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) FreeLibrary(library); else dlclose(library);
+                    library = IntPtr.Zero;
+                }
             }
         }
         [DllImport("/usr/lib/libSystem.B.dylib")] private static extern IntPtr dlopen(string path, int flags);
         [DllImport("/usr/lib/libSystem.B.dylib")] private static extern IntPtr dlsym(IntPtr handle, string name);
         [DllImport("/usr/lib/libSystem.B.dylib")] private static extern int dlclose(IntPtr handle);
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)] private static extern IntPtr LoadLibraryExW(string path, IntPtr file, uint flags);
+        [DllImport("kernel32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)] private static extern IntPtr GetProcAddress(IntPtr handle, string name);
+        [DllImport("kernel32.dll")] [return: MarshalAs(UnmanagedType.Bool)] private static extern bool FreeLibrary(IntPtr handle);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int Version();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr Source();
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int Open(byte[] path, out IntPtr db, int flags, IntPtr vfs);
@@ -150,5 +171,6 @@ namespace ChooGuard.Persistence
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr ColumnText(IntPtr statement, int column);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int ColumnCount(IntPtr statement);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate IntPtr ErrorMessage(IntPtr db);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int GetAutocommit(IntPtr db);
     }
 }

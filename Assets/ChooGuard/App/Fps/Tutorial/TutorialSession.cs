@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ChooGuard.Contracts;
 using ChooGuard.App.Fps.Work;
@@ -35,6 +36,16 @@ namespace ChooGuard.App.Fps.Tutorial
 
         private readonly List<string> findings=new List<string>();
         private readonly Dictionary<string,RuleTruth> facts=new Dictionary<string,RuleTruth>();
+        private sealed class Checkpoint
+        {
+            internal FacilityInspectable.InspectionSnapshot Target;
+            internal FpsGazeTracker.GazeSnapshot Gaze;
+            internal readonly List<string> Done=new List<string>();
+            internal int Misjudgements,RoleViolations;
+        }
+        private readonly Dictionary<string,Checkpoint> checkpoints=new Dictionary<string,Checkpoint>();
+        private FacilityInspectable boundTarget;
+        private Action<FirstPersonResponder> interactionHandler;
 
         private void Awake()
         {
@@ -65,21 +76,22 @@ namespace ChooGuard.App.Fps.Tutorial
         public void Bind()
         {
             if(bound||Target==null)return;
-            Target.GateReason=()=>{var decision=Peek();return decision.Allowed?null:decision.Reason;};
-            Target.InteractionPerformed+=_=>Advance();
-            // 판정 단말도 같은 규율로 꽂는다 — 단말은 이 타입을 모르고 델리게이트 두 개만 받는다.
-            // 절차 진행 중에도 단말은 월드에 있고 거부만 한다. 감사는 사후 열거다.
+            Target.GateReason=()=>{var decision=Peek();return decision.Allowed&&decision.Step?.Effect=="close-inspection"?"역무실 단말에서 재확인하세요":decision.Allowed?null:decision.Reason;};
+            boundTarget=Target;interactionHandler=_=>Advance();
+            boundTarget.InteractionPerformed+=interactionHandler;
+            // 단말은 세션 타입을 모르며 실제 현장 재확인 명령과 읽기 전용 보고를 분리한다.
             if(AuditTerminal!=null)
             {
-                AuditTerminal.GateReason=()=>Finished?null:"점검이 끝나지 않았습니다 · "+(Peek().Step?.Label??"진행 중");
+                AuditTerminal.GateReason=()=>{if(Finished)return null;var decision=Peek();return decision.Allowed&&decision.Step?.Effect=="close-inspection"?null:"점검이 끝나지 않았습니다 · "+(decision.Step?.Label??"진행 중");};
+                AuditTerminal.BeforeOpen=()=>{if(Finished){Audit();return null;}return Advance(true)?null:LastReason;};
                 AuditTerminal.ReportSource=()=>new AuditReport(findings,Target!=null?Target.name:"점검 대상");
             }
             bound=true;
         }
         private void OnDestroy()
         {
-            if(Target!=null)Target.GateReason=null;
-            if(AuditTerminal!=null){AuditTerminal.GateReason=null;AuditTerminal.ReportSource=null;}
+            if(boundTarget!=null){boundTarget.GateReason=null;boundTarget.InteractionPerformed-=interactionHandler;}
+            if(AuditTerminal!=null){AuditTerminal.GateReason=null;AuditTerminal.BeforeOpen=null;AuditTerminal.ReportSource=null;}
         }
 
         // 월드 상태를 사실로 환산한다. 여기가 world_evidence 규율이 사는 곳이다 —
@@ -96,8 +108,8 @@ namespace ChooGuard.App.Fps.Tutorial
             // ③ 고유번호가 실제로 기재됐는가
             facts["serial-recorded"]=string.IsNullOrEmpty(Target.RecordedSerial)?RuleTruth.UNKNOWN:RuleTruth.TRUE;
             facts["verdict-recorded"]=Target.Verdict==InspectionVerdict.NOT_RECORDED?RuleTruth.UNKNOWN:RuleTruth.TRUE;
-            facts["verdict-fit"]=Target.Verdict==InspectionVerdict.FIT?RuleTruth.TRUE:RuleTruth.UNKNOWN;
-            facts["verdict-unfit"]=Target.Verdict==InspectionVerdict.UNFIT?RuleTruth.TRUE:RuleTruth.UNKNOWN;
+            facts["verdict-fit"]=Target.Verdict==InspectionVerdict.NOT_RECORDED?RuleTruth.UNKNOWN:Target.Verdict==InspectionVerdict.FIT?RuleTruth.TRUE:RuleTruth.FALSE;
+            facts["verdict-unfit"]=Target.Verdict==InspectionVerdict.NOT_RECORDED?RuleTruth.UNKNOWN:Target.Verdict==InspectionVerdict.UNFIT?RuleTruth.TRUE:RuleTruth.FALSE;
             // 월드의 진짜 상태. 플레이어 판정과 대조해 오판정을 잡는다.
             facts["corroded"]=Target.Corroded?RuleTruth.TRUE:RuleTruth.FALSE;
             facts["mechanically-defective"]=Target.MechanicallyDefective?RuleTruth.TRUE:RuleTruth.FALSE;
@@ -113,17 +125,23 @@ namespace ChooGuard.App.Fps.Tutorial
         public ProcedureRunner.Decision Peek(){EnsureLoaded();return Runner.Next(Observe());}
 
         // 다음 단계를 한 번 시도한다. E 상호작용과 시험이 같은 경로를 쓴다.
-        public bool Advance()
+        public bool Advance()=>Advance(false);
+        private bool Advance(bool atTerminal)
         {
             if(Finished)return false;
             var decision=Peek();
             LastReason=decision.Reason;
             if(!decision.Allowed){RefreshPrompt();return false;}
+            if((decision.Step.Effect=="close-inspection")!=atTerminal)
+            {LastReason=atTerminal?"현장 점검을 먼저 완료하세요":"역무실 단말에서 재확인하세요";RefreshPrompt();return false;}
+            var checkpoint=new Checkpoint{Target=Target.CaptureInspection(),Gaze=GazeTracker?.Capture(),Misjudgements=MisjudgementCount,RoleViolations=RoleBoundaryViolations};
+            foreach(var step in Runner.Steps)if(step.Done)checkpoint.Done.Add(step.Id);
             ApplyEffect(decision.Step);
             // 효과가 월드를 바꿨으니 사실을 다시 읽고 같은 단계로 커밋을 다시 판정한다.
             var confirm=Runner.Next(Observe());
             bool committed=confirm.Allowed&&confirm.Step==decision.Step&&Runner.Commit(confirm);
             if(!committed){LastReason="월드 상태가 단계 요건을 충족하지 못해 완료로 기록하지 않았습니다 · "+decision.Step.Label;RefreshPrompt();return false;}
+            checkpoints[decision.Step.Id]=checkpoint;
             LastReason=decision.Step.Label+" 완료";
             // 피드백은 기존 TryInteract 가 이 핸들러 다음에 SuccessMessage 를 읽으므로
             // '방금 끝낸 단계'를 여기서 넣는다. RefreshPrompt 는 다음 단계만 다룬다.
@@ -151,7 +169,7 @@ namespace ChooGuard.App.Fps.Tutorial
         }
 
         // 감사관 단말. 월드를 다시 읽어 미충족을 '위치 · 항목'으로 열거한다. 즉시 야단치지 않는다.
-        public void Audit()
+        private void Audit()
         {
             findings.Clear();
             string place=Target!=null?Target.name:"대상 미지정";
@@ -180,13 +198,18 @@ namespace ChooGuard.App.Fps.Tutorial
 
         public bool Rewind(string stepId)
         {
-            bool rewound=Runner.Rewind(stepId);
-            if(rewound){Finished=false;findings.Clear();RefreshPrompt();}
-            return rewound;
+            if(!checkpoints.TryGetValue(stepId,out var checkpoint)||!Runner.Rewind(stepId))return false;
+            Target.RestoreInspection(checkpoint.Target);if(checkpoint.Gaze!=null)GazeTracker?.Restore(checkpoint.Gaze);
+            foreach(var step in Runner.Steps)step.Done=checkpoint.Done.Contains(step.Id);
+            MisjudgementCount=checkpoint.Misjudgements;RoleBoundaryViolations=checkpoint.RoleViolations;
+            var discarded=new List<string>();foreach(var key in checkpoints.Keys)if(!checkpoint.Done.Contains(key))discarded.Add(key);
+            foreach(var key in discarded)checkpoints.Remove(key);
+            Finished=false;findings.Clear();RefreshPrompt();return true;
         }
         public void Restart(bool hideChecklist)
         {
             Runner.ResetRun();Target?.ResetInspection();GazeTracker?.Reset();
+            checkpoints.Clear();
             findings.Clear();Finished=false;RoleBoundaryViolations=0;MisjudgementCount=0;
             ChecklistVisible=!hideChecklist;LastReason="";RefreshPrompt();
         }

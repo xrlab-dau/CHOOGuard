@@ -1,0 +1,2480 @@
+{
+  "schemaVersion": 1,
+  "description": "Synthetic contract examples only. No live JEV forecast, NPC autonomy, physical prediction or gameplay result is claimed.",
+  "notLiveEvidence": true,
+  "rawRequestUtf8": "{\"schemaVersion\":1,\"runId\":\"run-design-future\",\"generation\":2,\"requestId\":\"request-forecast-7\",\"forecastId\":\"forecast-7\",\"branchId\":\"branch-route-a\",\"stepSeq\":\"1\",\"kind\":\"future_step_request\",\"mode\":\"RANDOM_OPERATIONS_LAB\",\"purpose\":\"counterfactual\",\"basisSnapshotId\":\"snapshot-100\",\"basisTickUs\":\"1000000\",\"stepTickUs\":\"2000000\",\"horizonEndTickUs\":\"31000000\",\"expiresAtTickUs\":\"5000000\",\"depth\":1,\"deadlineMs\":2000,\"rulesetId\":\"causal-rules\",\"rulesetRevision\":\"1\",\"perspective\":{\"kind\":\"actor\",\"actorId\":\"citizen-7\",\"knowledgeRevision\":\"12\"},\"stateFacts\":[{\"factId\":\"fact-route-blocked\",\"subjectId\":\"portal-a\",\"predicate\":\"traversal-blocked\",\"truth\":\"TRUE\",\"value\":true,\"origin\":\"hypothetical\",\"sourceId\":\"branch-step-0\",\"observedTickUs\":\"2000000\"},{\"factId\":\"fact-companion-request\",\"subjectId\":\"citizen-8\",\"predicate\":\"requested-company\",\"truth\":\"TRUE\",\"value\":true,\"origin\":\"reported\",\"sourceId\":\"utterance-8\",\"observedTickUs\":\"1000000\"}],\"candidates\":[{\"candidateId\":\"candidate-ask-staff\",\"transitionId\":\"request-route-information\",\"actorId\":\"citizen-7\",\"bindings\":[{\"slot\":\"recipient\",\"entityId\":\"staff-2\"},{\"slot\":\"blocked-route\",\"entityId\":\"portal-a\"}],\"parameterSetId\":\"audible-nearby-request\",\"causeFactIds\":[\"fact-route-blocked\"],\"summary\":\"동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다.\"},{\"candidateId\":\"candidate-check-companion\",\"transitionId\":\"check-companion-needs\",\"actorId\":\"citizen-7\",\"bindings\":[{\"slot\":\"companion\",\"entityId\":\"citizen-8\"}],\"parameterSetId\":\"consent-preserving-check\",\"causeFactIds\":[\"fact-companion-request\"],\"summary\":\"혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다.\"}],\"readSet\":[{\"entityId\":\"citizen-7\",\"revision\":\"12\"},{\"entityId\":\"portal-a\",\"revision\":\"3\"},{\"entityId\":\"citizen-8\",\"revision\":\"9\"}]}",
+  "shapeCases": [
+    {
+      "id": "shape-request",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "shape-world-next",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-world-9",
+        "forecastId": "forecast-world-9",
+        "branchId": "root",
+        "stepSeq": "0",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "next_environment",
+        "basisSnapshotId": "snapshot-weather-9",
+        "basisTickUs": "1000000",
+        "stepTickUs": "1000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 0,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "world",
+          "actorId": null,
+          "knowledgeRevision": null
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-weather-regime",
+            "subjectId": "station-exterior",
+            "predicate": "gameplay-weather-regime",
+            "truth": "TRUE",
+            "value": "unstable-rain",
+            "origin": "actual",
+            "sourceId": "weather-driver-state-9",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-rain-increase",
+            "transitionId": "gameplay-rain-increase",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-small-step",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "현재 게임용 날씨 driver가 지원하는 범위 안에서 다음 강수 상태를 한 단계 진행한다. 실제 기상 예측값은 아니다."
+          },
+          {
+            "candidateId": "candidate-rain-hold",
+            "transitionId": "gameplay-rain-persist",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-persistence",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "같은 현재 원인 조건에서 강수 상태의 지속을 다음 환경 전이 후보로 평가한다."
+          },
+          {
+            "candidateId": "env-hold",
+            "transitionId": "hold",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "source",
+                "entityId": "station-exterior"
+              },
+              {
+                "slot": "target",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "none",
+            "causeFactIds": [],
+            "summary": "새로운 효과를 확정하지 않는다. 원인을 발명하지 않으며 두 binding은 같은 read-set 기준 entity를 가리킨다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "station-exterior",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "shape-success",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_result",
+        "requestSha256": "58d7ca986b00b31e95b79fd7a875ac40e414ac6d7f5e8f0f7292c23b381e77e7",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-ask-staff",
+        "probabilities": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "probability": 0.7
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "probability": 0.3
+          }
+        ],
+        "confidence": 0.4,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 1500,
+          "outputTokens": 90
+        },
+        "reasonCode": "selected"
+      }
+    },
+    {
+      "id": "shape-unavailable",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_result",
+        "requestSha256": "58d7ca986b00b31e95b79fd7a875ac40e414ac6d7f5e8f0f7292c23b381e77e7",
+        "status": "unavailable",
+        "provider": "typesafe-direct",
+        "model": null,
+        "selectedCandidateId": null,
+        "probabilities": null,
+        "confidence": null,
+        "upstreamLatencyMs": null,
+        "usage": null,
+        "reasonCode": "request_expired"
+      }
+    },
+    {
+      "id": "shape-unknown-actor-fact",
+      "valid": true,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "UNKNOWN",
+            "value": null,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-world-patch",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_result",
+        "requestSha256": "58d7ca986b00b31e95b79fd7a875ac40e414ac6d7f5e8f0f7292c23b381e77e7",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-ask-staff",
+        "probabilities": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "probability": 0.7
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "probability": 0.3
+          }
+        ],
+        "confidence": 0.4,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 1500,
+          "outputTokens": 90
+        },
+        "reasonCode": "selected",
+        "worldPatch": {
+          "complete": true
+        }
+      }
+    },
+    {
+      "id": "reject-static-whole-scenario-field",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ],
+        "scenarioId": "fixed-ending-7"
+      }
+    },
+    {
+      "id": "reject-actor-without-owner",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": null,
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-world-with-actor-identity",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-world-9",
+        "forecastId": "forecast-world-9",
+        "branchId": "root",
+        "stepSeq": "0",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "next_environment",
+        "basisSnapshotId": "snapshot-weather-9",
+        "basisTickUs": "1000000",
+        "stepTickUs": "1000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 0,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "world",
+          "actorId": "citizen-7",
+          "knowledgeRevision": null
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-weather-regime",
+            "subjectId": "station-exterior",
+            "predicate": "gameplay-weather-regime",
+            "truth": "TRUE",
+            "value": "unstable-rain",
+            "origin": "actual",
+            "sourceId": "weather-driver-state-9",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-rain-increase",
+            "transitionId": "gameplay-rain-increase",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-small-step",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "현재 게임용 날씨 driver가 지원하는 범위 안에서 다음 강수 상태를 한 단계 진행한다. 실제 기상 예측값은 아니다."
+          },
+          {
+            "candidateId": "candidate-rain-hold",
+            "transitionId": "gameplay-rain-persist",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-persistence",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "같은 현재 원인 조건에서 강수 상태의 지속을 다음 환경 전이 후보로 평가한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "station-exterior",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-live-environment-actor-perspective",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-world-9",
+        "forecastId": "forecast-world-9",
+        "branchId": "root",
+        "stepSeq": "0",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "next_environment",
+        "basisSnapshotId": "snapshot-weather-9",
+        "basisTickUs": "1000000",
+        "stepTickUs": "1000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 0,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-weather-regime",
+            "subjectId": "station-exterior",
+            "predicate": "gameplay-weather-regime",
+            "truth": "TRUE",
+            "value": "unstable-rain",
+            "origin": "actual",
+            "sourceId": "weather-driver-state-9",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-rain-increase",
+            "transitionId": "gameplay-rain-increase",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-small-step",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "현재 게임용 날씨 driver가 지원하는 범위 안에서 다음 강수 상태를 한 단계 진행한다. 실제 기상 예측값은 아니다."
+          },
+          {
+            "candidateId": "candidate-rain-hold",
+            "transitionId": "gameplay-rain-persist",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-persistence",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "같은 현재 원인 조건에서 강수 상태의 지속을 다음 환경 전이 후보로 평가한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "station-exterior",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-live-environment-speculative-depth",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-world-9",
+        "forecastId": "forecast-world-9",
+        "branchId": "root",
+        "stepSeq": "0",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "next_environment",
+        "basisSnapshotId": "snapshot-weather-9",
+        "basisTickUs": "1000000",
+        "stepTickUs": "1000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "world",
+          "actorId": null,
+          "knowledgeRevision": null
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-weather-regime",
+            "subjectId": "station-exterior",
+            "predicate": "gameplay-weather-regime",
+            "truth": "TRUE",
+            "value": "unstable-rain",
+            "origin": "actual",
+            "sourceId": "weather-driver-state-9",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-rain-increase",
+            "transitionId": "gameplay-rain-increase",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-small-step",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "현재 게임용 날씨 driver가 지원하는 범위 안에서 다음 강수 상태를 한 단계 진행한다. 실제 기상 예측값은 아니다."
+          },
+          {
+            "candidateId": "candidate-rain-hold",
+            "transitionId": "gameplay-rain-persist",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-persistence",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "같은 현재 원인 조건에서 강수 상태의 지속을 다음 환경 전이 후보로 평가한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "station-exterior",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-live-environment-hypothetical-cause",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-world-9",
+        "forecastId": "forecast-world-9",
+        "branchId": "root",
+        "stepSeq": "0",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "next_environment",
+        "basisSnapshotId": "snapshot-weather-9",
+        "basisTickUs": "1000000",
+        "stepTickUs": "1000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 0,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "world",
+          "actorId": null,
+          "knowledgeRevision": null
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-weather-regime",
+            "subjectId": "station-exterior",
+            "predicate": "gameplay-weather-regime",
+            "truth": "TRUE",
+            "value": "unstable-rain",
+            "origin": "hypothetical",
+            "sourceId": "weather-driver-state-9",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-rain-increase",
+            "transitionId": "gameplay-rain-increase",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-small-step",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "현재 게임용 날씨 driver가 지원하는 범위 안에서 다음 강수 상태를 한 단계 진행한다. 실제 기상 예측값은 아니다."
+          },
+          {
+            "candidateId": "candidate-rain-hold",
+            "transitionId": "gameplay-rain-persist",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-persistence",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "같은 현재 원인 조건에서 강수 상태의 지속을 다음 환경 전이 후보로 평가한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "station-exterior",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-world-counterfactual-actor-choice",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-world-9",
+        "forecastId": "forecast-world-9",
+        "branchId": "root",
+        "stepSeq": "0",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-weather-9",
+        "basisTickUs": "1000000",
+        "stepTickUs": "1000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 0,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "world",
+          "actorId": null,
+          "knowledgeRevision": null
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-weather-regime",
+            "subjectId": "station-exterior",
+            "predicate": "gameplay-weather-regime",
+            "truth": "TRUE",
+            "value": "unstable-rain",
+            "origin": "actual",
+            "sourceId": "weather-driver-state-9",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-rain-increase",
+            "transitionId": "gameplay-rain-increase",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-small-step",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "현재 게임용 날씨 driver가 지원하는 범위 안에서 다음 강수 상태를 한 단계 진행한다. 실제 기상 예측값은 아니다."
+          },
+          {
+            "candidateId": "candidate-rain-hold",
+            "transitionId": "gameplay-rain-persist",
+            "actorId": null,
+            "bindings": [
+              {
+                "slot": "zone",
+                "entityId": "station-exterior"
+              }
+            ],
+            "parameterSetId": "supported-weather-persistence",
+            "causeFactIds": [
+              "fact-weather-regime"
+            ],
+            "summary": "같은 현재 원인 조건에서 강수 상태의 지속을 다음 환경 전이 후보로 평가한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "station-exterior",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-numeric-tick",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": 2000000,
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-unknown-fact-asserted-value",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "UNKNOWN",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-unavailable-choice",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_result",
+        "requestSha256": "58d7ca986b00b31e95b79fd7a875ac40e414ac6d7f5e8f0f7292c23b381e77e7",
+        "status": "unavailable",
+        "provider": "typesafe-direct",
+        "model": null,
+        "selectedCandidateId": "candidate-ask-staff",
+        "probabilities": null,
+        "confidence": null,
+        "upstreamLatencyMs": null,
+        "usage": null,
+        "reasonCode": "request_expired"
+      }
+    },
+    {
+      "id": "reject-probability-over-one",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_result",
+        "requestSha256": "58d7ca986b00b31e95b79fd7a875ac40e414ac6d7f5e8f0f7292c23b381e77e7",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-ask-staff",
+        "probabilities": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "probability": 1.2
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "probability": 0.3
+          }
+        ],
+        "confidence": 0.4,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 1500,
+          "outputTokens": 90
+        },
+        "reasonCode": "selected"
+      }
+    },
+    {
+      "id": "reject-missing-snapshot",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-negative-sequence",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "-1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-trailing-newline-identity",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a\n",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "transitionId": "check-companion-needs",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "companion",
+                "entityId": "citizen-8"
+              }
+            ],
+            "parameterSetId": "consent-preserving-check",
+            "causeFactIds": [
+              "fact-companion-request"
+            ],
+            "summary": "혼자 떠나지 않고 동행자가 원하는 지원과 이동 가능 상태를 확인한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-candidate-overflow",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_request",
+        "mode": "RANDOM_OPERATIONS_LAB",
+        "purpose": "counterfactual",
+        "basisSnapshotId": "snapshot-100",
+        "basisTickUs": "1000000",
+        "stepTickUs": "2000000",
+        "horizonEndTickUs": "31000000",
+        "expiresAtTickUs": "5000000",
+        "depth": 1,
+        "deadlineMs": 2000,
+        "rulesetId": "causal-rules",
+        "rulesetRevision": "1",
+        "perspective": {
+          "kind": "actor",
+          "actorId": "citizen-7",
+          "knowledgeRevision": "12"
+        },
+        "stateFacts": [
+          {
+            "factId": "fact-route-blocked",
+            "subjectId": "portal-a",
+            "predicate": "traversal-blocked",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "hypothetical",
+            "sourceId": "branch-step-0",
+            "observedTickUs": "2000000"
+          },
+          {
+            "factId": "fact-companion-request",
+            "subjectId": "citizen-8",
+            "predicate": "requested-company",
+            "truth": "TRUE",
+            "value": true,
+            "origin": "reported",
+            "sourceId": "utterance-8",
+            "observedTickUs": "1000000"
+          }
+        ],
+        "candidates": [
+          {
+            "candidateId": "candidate-0",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-1",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-2",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-3",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-4",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-5",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-6",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-7",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-8",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-9",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-10",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-11",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-12",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-13",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-14",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-15",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-16",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-17",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-18",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-19",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-20",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-21",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-22",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-23",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-24",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-25",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-26",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-27",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-28",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-29",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-30",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-31",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          },
+          {
+            "candidateId": "candidate-32",
+            "transitionId": "request-route-information",
+            "actorId": "citizen-7",
+            "bindings": [
+              {
+                "slot": "recipient",
+                "entityId": "staff-2"
+              },
+              {
+                "slot": "blocked-route",
+                "entityId": "portal-a"
+              }
+            ],
+            "parameterSetId": "audible-nearby-request",
+            "causeFactIds": [
+              "fact-route-blocked"
+            ],
+            "summary": "동행 책임을 유지하며 실제로 가까이 있는 직원에게 다른 통로 정보를 요청한다."
+          }
+        ],
+        "readSet": [
+          {
+            "entityId": "citizen-7",
+            "revision": "12"
+          },
+          {
+            "entityId": "portal-a",
+            "revision": "3"
+          },
+          {
+            "entityId": "citizen-8",
+            "revision": "9"
+          }
+        ]
+      }
+    },
+    {
+      "id": "reject-failure-as-success",
+      "valid": false,
+      "payload": {
+        "schemaVersion": 1,
+        "runId": "run-design-future",
+        "generation": 2,
+        "requestId": "request-forecast-7",
+        "forecastId": "forecast-7",
+        "branchId": "branch-route-a",
+        "stepSeq": "1",
+        "kind": "future_step_result",
+        "requestSha256": "58d7ca986b00b31e95b79fd7a875ac40e414ac6d7f5e8f0f7292c23b381e77e7",
+        "status": "ok",
+        "provider": "typesafe-direct",
+        "model": "jev-1.13.0",
+        "selectedCandidateId": "candidate-ask-staff",
+        "probabilities": [
+          {
+            "candidateId": "candidate-ask-staff",
+            "probability": 0.7
+          },
+          {
+            "candidateId": "candidate-check-companion",
+            "probability": 0.3
+          }
+        ],
+        "confidence": 0.4,
+        "upstreamLatencyMs": 600,
+        "usage": {
+          "inputTokens": 1500,
+          "outputTokens": 90
+        },
+        "reasonCode": "timeout"
+      }
+    }
+  ],
+  "semanticScenarios": [
+    {
+      "id": "FSEM-01",
+      "given": "Player blocks the previously forecast route before the result is applied",
+      "expected": "Invalidate affected branch/read set; impossible old route is not enacted; recompose from current state"
+    },
+    {
+      "id": "FSEM-02",
+      "given": "Hypothetical branch consumes a tool or finishes a handoff",
+      "expected": "Only branch state changes; no live memory, reservation, inventory, receipt or decisionSeq mutation"
+    },
+    {
+      "id": "FSEM-03",
+      "given": "Actor-perspective request includes facts only another actor or world predictor knows",
+      "expected": "Reject/filter before dispatch; hypothetical actor observes its own branch-local evidence only"
+    },
+    {
+      "id": "FSEM-04",
+      "given": "Cause fact ID or parameterSetId is absent from the bound snapshot/rules registry",
+      "expected": "Reject before inference/application; no fabricated cause, numeric parameter or effect"
+    },
+    {
+      "id": "FSEM-05",
+      "given": "Schema-valid next_environment request refers to a real but no longer current cause",
+      "expected": "Live writer revalidates cause, timing, rules and read set; no future-to-present promotion"
+    },
+    {
+      "id": "FSEM-06",
+      "given": "Same forecast/branch/step key repeats after cache eviction or forecast closure",
+      "expected": "Coalesce or return retained result; expired identity returns 410, never reinfer or reset the closed forecast"
+    },
+    {
+      "id": "FSEM-07",
+      "given": "Snapshot times are individually valid decimal strings but stepTickUs precedes basisTickUs or exceeds horizon",
+      "expected": "Reject ordering/horizon violation; strings alone are not sufficient validation"
+    },
+    {
+      "id": "FSEM-08",
+      "given": "A 19-digit tick exceeds signed Int64 maximum",
+      "expected": "Reject before C# conversion; no overflow or rounding"
+    },
+    {
+      "id": "FSEM-09",
+      "given": "Probabilities have duplicate IDs, sum 0.7, or choose an absent/nonmaximal candidate",
+      "expected": "Reject invalid provider result; no silent normalization or candidate substitution"
+    },
+    {
+      "id": "FSEM-10",
+      "given": "No player command is issued while NPC needs, commitments and observable opportunities exist",
+      "expected": "Agent selects a grounded goal and acts; observes results and revises blocked plans without central scene commands"
+    },
+    {
+      "id": "FSEM-11",
+      "given": "Future expansion saturates the shared queue while live NPCs need decisions",
+      "expected": "One global budget with bounded admission and fair service; no duplicated endpoint quota or runaway branch calls"
+    },
+    {
+      "id": "FSEM-12",
+      "given": "Recorded model outcomes are replayed versus new online calls with the same seed",
+      "expected": "Recorded semantic transition sequence is reproducible within supported engine scope; fresh API answers are not assumed identical"
+    },
+    {
+      "id": "FSEM-13",
+      "given": "Forecast imagines a player intervention or NPC choice that was never actually made",
+      "expected": "Do not generate player input or force real NPC plan; only eligible immediate environmental intent may reach live gate"
+    },
+    {
+      "id": "FSEM-14",
+      "given": "No grounded model candidate exists, or causal/physics coupling is unsupported",
+      "expected": "Report blocked/incomplete/truncated scope; no invented candidates, static script fallback or false forecast completion"
+    },
+    {
+      "id": "FSEM-15",
+      "given": "Unchanged failed plan repeatedly proposes the same unavailable resource",
+      "expected": "Suppress unchanged repeated inference; keep explicit blocked state or seek actual new information/alternatives"
+    },
+    {
+      "id": "FSEM-16",
+      "given": "EnvironmentTransitionIntent key repeats with the same or different effect fingerprint",
+      "expected": "Same fingerprint reuses one commit result; different fingerprint conflicts; no duplicated environmental effect"
+    },
+    {
+      "id": "FSEM-17",
+      "given": "Two independent JEV questions produce incompatible possible futures",
+      "expected": "Preserve conditional alternatives or requery sequentially; do not commit contradictions or multiply values into an asserted real-world joint probability"
+    },
+    {
+      "id": "FSEM-18",
+      "given": "Late unavailable response arrives for an expired branch after a newer request starts",
+      "expected": "Account trusted known usage once; close only the matching old request; leave live/new branch state unchanged"
+    },
+    {
+      "id": "FSEM-19",
+      "given": "A world candidate set includes env-hold/hold/none with no causes and source/target bound to the same read-set entity",
+      "expected": "Admit this no-effect alternative without inventing a causal fact; selecting it preserves the exact world state. Reject a missing anchor, different bindings, actor ownership, alternate hold identity/parameters, or any other transition with empty causes."
+    },
+    {
+      "id": "FSEM-20",
+      "given": "Multiple branches repeat candidate IDs, have different hypothetical entity revisions, or offer more than 32 choices in aggregate",
+      "expected": "Forecast registration deduplicates the root entity union and uses actual basis revisions, bounded to 64 entities. Each individual future step still requires 2..32 unique candidates; branch choices and hypothetical revisions are never mistaken for one root choice."
+    }
+  ],
+  "semanticScenarioExecution": "NOT_RUN: requires implemented dynamic candidate builder, broker, isolated rollout, autonomous agents and causal kernel; artifact validation checks shapes only."
+}

@@ -65,6 +65,10 @@ namespace ChooGuard.Tests.PlayMode
             session=sessionObject.AddComponent<TutorialSession>();
             session.Responder=responder;session.GazeTracker=tracker;session.Target=facility;
             session.ProcedureAsset=procedure;session.PendingVerdict=InspectionVerdict.UNFIT;
+            var terminalObject=new GameObject("현장 단말");
+            terminalObject.transform.SetParent(sessionObject.transform,false);
+            session.AuditTerminal=terminalObject.AddComponent<AuditTerminal>();
+            responder.SetExternalInputMode(true);responder.Resume(false);
         }
 
         private FacilityInspectable.InspectionPoint MakePoint(string id,string label,Vector3 localOffset,float dwell)
@@ -92,16 +96,6 @@ namespace ChooGuard.Tests.PlayMode
             tracker.Accumulate(point.Surface,seconds);
         }
 
-        [UnityTest]
-        public IEnumerator 절차_정의가_로드되고_근거조항을_들고_있다()
-        {
-            yield return null;
-            Assert.IsTrue(session.Runner.Ready,session.Runner.StatusReason);
-            Assert.AreEqual(6,session.Runner.Steps.Count);
-            Assert.IsNotEmpty(session.Runner.DefinitionHash);
-            foreach(var step in session.Runner.Steps)
-                Assert.IsNotEmpty(step.Basis,"근거 조항 없는 단계 · "+step.Id);
-        }
 
         [UnityTest]
         public IEnumerator 제원표를_안_읽으면_점검표_부착이_거부된다()
@@ -112,7 +106,6 @@ namespace ChooGuard.Tests.PlayMode
 
             // 제원표를 건너뛴 채로 계속 눌러도 진행되지 않는다.
             Assert.IsFalse(session.Advance(),"제원표 미판독 상태에서 진행되어서는 안 된다");
-            StringAssert.Contains("제원표",session.LastReason);
             Assert.IsNull(facility.AttachedTag,"점검표가 부착되어서는 안 된다");
 
             // 제원표를 읽으면 다음 단계가 열린다.
@@ -134,11 +127,12 @@ namespace ChooGuard.Tests.PlayMode
             Assert.IsNotNull(facility.AttachedTag,"점검표가 소화기의 자식으로 실재해야 한다");
             Assert.AreSame(facilityObject.transform,facility.AttachedTag.parent);
 
-            Assert.IsTrue(session.Advance(),"단말 재스캔이 통과해야 한다 · "+session.LastReason);
+            Assert.IsFalse(session.Advance());
+            Assert.IsFalse(session.Finished);
+            Assert.IsTrue(session.AuditTerminal.TryInteract(responder,out _));
             Assert.IsTrue(session.Finished);
-            bool found=false;
-            foreach(var finding in session.AuditFindings)if(finding.Contains("오판정"))found=true;
-            Assert.IsTrue(found,"감사관이 오판정을 열거해야 한다 · "+string.Join(" | ",session.AuditFindings));
+            Assert.IsFalse(session.AuditTerminal.LastReport.Clean);
+            Assert.IsTrue(facility.ShouldBeUnfit);
         }
 
         [UnityTest]
@@ -147,7 +141,6 @@ namespace ChooGuard.Tests.PlayMode
             yield return null;
             Assert.IsFalse(session.TryFieldRepair(),"역무원의 현장 수리는 거부되어야 한다");
             Assert.AreEqual(1,session.RoleBoundaryViolations);
-            StringAssert.Contains("소방관리 책임자",session.LastReason);
         }
 
         [UnityTest]

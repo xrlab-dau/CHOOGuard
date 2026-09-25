@@ -35,6 +35,21 @@ namespace ChooGuard.App.Fps.Work
         }
         public float DwellOf(Collider collider)=>collider!=null&&dwell.TryGetValue(collider,out var total)?total:0;
         public bool Dwelled(Collider collider,float requiredSeconds)=>DwellOf(collider)>=requiredSeconds;
+        public sealed class GazeSnapshot
+        {
+            internal readonly Dictionary<Collider,float> Dwell;
+            internal readonly Collider Current;
+            internal readonly float CurrentSeconds;
+            internal GazeSnapshot(Dictionary<Collider,float> dwell,Collider current,float seconds)
+            {Dwell=new Dictionary<Collider,float>(dwell);Current=current;CurrentSeconds=seconds;}
+        }
+        public GazeSnapshot Capture()=>new GazeSnapshot(dwell,CurrentCollider,CurrentDwellSeconds);
+        public void Restore(GazeSnapshot snapshot)
+        {
+            if(snapshot==null)throw new System.ArgumentNullException(nameof(snapshot));
+            dwell.Clear();foreach(var pair in snapshot.Dwell)if(pair.Key!=null)dwell.Add(pair.Key,pair.Value);
+            CurrentCollider=snapshot.Current;CurrentDwellSeconds=CurrentCollider==null?0:snapshot.CurrentSeconds;
+        }
         public void Reset(){dwell.Clear();CurrentCollider=null;CurrentDwellSeconds=0;}
     }
 }

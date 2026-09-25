@@ -1,0 +1,792 @@
+{
+  "artifactKind": "v5-design-annex-not-execution-ledger",
+  "version": 1,
+  "activeStoryId": "CS-EXEC.01.01",
+  "implementationStatus": "IN_PROGRESS_CLOUD_MIGRATION",
+  "implementationCheckpointRef": "../../state/evidence/fps-gameplay-20260925/implementation-checkpoint.json",
+  "acceptanceNote": "요구사항과 수용 기준의 범위는 변경하지 않는다. 부분 native/broker/학습 증거는 체크포인트를 참조하며, 전체 제품 수용·live 제공자·Windows 실행 완료를 뜻하지 않는다.",
+  "requirements": [
+    {
+      "id": "R01",
+      "text": "한 명의 인간이 native FPS 이동·관찰·직접 조작·협업을 수행",
+      "origin": "user"
+    },
+    {
+      "id": "R02",
+      "text": "정비·청소·승무서비스·역무 직무 전환과 역할별 권한",
+      "origin": "user"
+    },
+    {
+      "id": "R03",
+      "text": "부품·공구·체결·측정·오염·소모품의 세밀한 직접 작업",
+      "origin": "user"
+    },
+    {
+      "id": "R04",
+      "text": "튜토리얼/본게임 분리 및 공통 조작 재사용",
+      "origin": "user"
+    },
+    {
+      "id": "R05",
+      "text": "수백 명의 개별 생활·관계·약속을 가진 동료/시민",
+      "origin": "user"
+    },
+    {
+      "id": "R06",
+      "text": "JEV를 NPC 판단층으로 실제 연결, 판단과 실행 구분",
+      "origin": "user"
+    },
+    {
+      "id": "R07",
+      "text": "별도 생성 대화 모델과 한국어 대화",
+      "origin": "user"
+    },
+    {
+      "id": "R08",
+      "text": "외부 기억·관계가 실제 다음 행동에 반영",
+      "origin": "user"
+    },
+    {
+      "id": "R09",
+      "text": "별도 정책 학습 연구와 holdout 비교",
+      "origin": "user"
+    },
+    {
+      "id": "R10",
+      "text": "사고·테러·자연재해의 인과적 본게임 사건",
+      "origin": "user"
+    },
+    {
+      "id": "R11",
+      "text": "과학 모델 공간/시간/단위 및 미검증 한계 표시",
+      "origin": "engineering-safety"
+    },
+    {
+      "id": "R12",
+      "text": "관련 OSS의 구체 적용과 기존 도구 재사용",
+      "origin": "user"
+    },
+    {
+      "id": "R13",
+      "text": "병행 모델링 경계·관측 geometry provenance 유지",
+      "origin": "user"
+    },
+    {
+      "id": "R14",
+      "text": "기존 native PC/uGUI/TMP/Input System·Windows x64/Mono 수용 유지",
+      "origin": "existing-v5"
+    },
+    {
+      "id": "R15",
+      "text": "권한·관측·원자적 자원·실제 완료와 비밀정보 경계",
+      "origin": "engineering-safety"
+    },
+    {
+      "id": "R16",
+      "text": "근거 판본·공백·사용자/JEV/설계 선택을 구별",
+      "origin": "user"
+    },
+    {
+      "id": "R17",
+      "text": "플레이어 개입과 자율 NPC가 바꾼 현재 상태에서 JEV가 grounded 원자 전이를 추론하고 미래를 실시간 재합성; 완성 사건 대본 목록 선택으로 대체하지 않음",
+      "origin": "user"
+    },
+    {
+      "id": "R18",
+      "text": "NPC가 개인 욕구·관측·기억·목표·계획으로 플레이어 cue 없이 먼저 행동하고 결과에 따라 재계획·협상·협력하는 자율 AI 에이전트",
+      "origin": "user"
+    }
+  ],
+  "acceptance": [
+    {
+      "id": "AC01",
+      "priority": "REQUIRED",
+      "given": "human/NPC/agency intents share a run; role is explicit",
+      "trigger": "submit action and change role during processing",
+      "expected": "one semantic writer; intent acceptance differs from completion; old authority invalidated",
+      "forbidden": "fake citizen agency IDs or two independent writers",
+      "method": "EditMode authority/read-set regression + actual Player action",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC02",
+      "priority": "REQUIRED",
+      "given": "two actors request one cart; duplicate intent arrives",
+      "trigger": "reserve/use/cancel/re-submit",
+      "expected": "one owner, one consumption; partial work retained; responsibility moves only after actual handoff",
+      "forbidden": "double ownership or ACK-as-handoff",
+      "method": "domain race/duplicate regression + visible two-actor scene",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC03",
+      "priority": "REQUIRED",
+      "given": "tool/part/socket/fasteners and obstructed approach",
+      "trigger": "grab, carry, align, install, fasten, inspect, cancel",
+      "expected": "collision-respecting manipulation and separate installation/fastening/verification states",
+      "forbidden": "camera parenting through wall or animation-only completion",
+      "method": "native mouse/keyboard manipulation + physics debugger + state trace",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC04",
+      "priority": "REQUIRED",
+      "given": "two floors, dynamic door, narrow portal, player among NPCs",
+      "trigger": "route/traverse/close door and change movement profile at boundary",
+      "expected": "complete accessible routes or explicit blocked state; single movement owner; persistent actor IDs",
+      "forbidden": "teleport through missing portal or competing pose writers",
+      "method": "actual Player traversal with route/pose trace",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC05",
+      "priority": "REQUIRED",
+      "given": "maintenance work with validated or missing device criteria",
+      "trigger": "identify, prepare tools, inspect/change part, verify and hand off",
+      "expected": "actual part/tool/custody changes; missing values remain unresolved, qualified sign-off distinct",
+      "forbidden": "fabricated torque or learned control counted as official approval",
+      "method": "maintenance role native walkthrough and source-revision review",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC06",
+      "priority": "REQUIRED",
+      "given": "cleaning area with dirt, wet surface, consumables and personal property",
+      "trigger": "clean and replenish, then verify",
+      "expected": "only contacted regions change; stock reflects actual use; owned property preserved/handed off",
+      "forbidden": "texture disappearance alone certifies disinfection or deletes possessions",
+      "method": "cleaning role native walkthrough + before/after surface and inventory state",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC07",
+      "priority": "REQUIRED",
+      "given": "train-service actor with stock and a passenger support request",
+      "trigger": "deliver item, communicate, escort, hand off at destination",
+      "expected": "real inventory transfer and agreed support; receiver physically accepts responsibility",
+      "forbidden": "free spawned item, forced consent, maintenance authority granted to service role",
+      "method": "train-service native scenario with passenger/receiver states",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC08",
+      "priority": "REQUIRED",
+      "given": "station staff with uncertain report and another agency boundary",
+      "trigger": "inspect/report/guide/control access/request qualified support",
+      "expected": "known vs unknown facts preserved; visible staff arrival/action/handoff",
+      "forbidden": "staff performs unsupported repair/disposal or global instant completion",
+      "method": "station-role native scenario + typed event evidence",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC09",
+      "priority": "REQUIRED",
+      "given": "tutorial partial work and separate active main-game world",
+      "trigger": "rewind tutorial, then start main game",
+      "expected": "isolated snapshot incl consumables/objects/observations restored; old decisions invalidated; same intentId in new generation does not reuse old receipt; no tutorial damage carried into main game",
+      "forbidden": "Done-flag-only rewind or undo of live main world",
+      "method": "two-mode actual scenario + checkpoint/generation regression",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC10",
+      "priority": "REQUIRED",
+      "given": "NPCs have different observations and shared interaction history",
+      "trigger": "new cue, memory retrieval and render LOD change",
+      "expected": "only permitted knowledge sent; relationship/commitment affect next action; identity survives culling",
+      "forbidden": "omniscient prompt or memory lost with GameObject",
+      "method": "native NPC interaction + redacted request/state comparison",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC11",
+      "priority": "REQUIRED",
+      "given": "valid candidate set plus stale, unknown-choice and provider-failure variants",
+      "trigger": "send real direct JEV request and deliver bounded fault cases",
+      "expected": "contract-valid provenance; invalid/stale results never execute; ongoing valid action independent of network",
+      "forbidden": "fallback disguised as JEV or probability as permission",
+      "method": "schema/consumer integration + authorized live JEV smoke + latency/429/timeout injection",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC12",
+      "priority": "REQUIRED",
+      "given": "Korean NPC conversation around observed facts and a pending handoff",
+      "trigger": "generate dialogue and process explicit request/consent",
+      "expected": "natural dialogue from separate model; critical facts from checked slots; real action state unchanged by prose",
+      "forbidden": "free-form statement certifies safety/completion or discloses other actors private context",
+      "method": "authorized dialogue model evaluation + actual subtitle/conversation surface",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC13",
+      "priority": "REQUIRED",
+      "given": "initial worlds across accidents, threats and natural disasters with versioned atomic transition rules, known causal prerequisites and existing NPC goals",
+      "trigger": "ground candidates from current state, infer the next transition through JEV, execute with the shared kernel, then remove a required causal precondition",
+      "expected": "only currently valid effects commit; removing a required cause excludes its dependent transition; existing actor identities and world state persist across dynamically composed incident developments",
+      "forbidden": "whole-incident-ID or fixed-ending selection as live synthesis, generated code/physics numbers, incident population reset or absent cause ignored",
+      "method": "native main-game causal traces for all three families + controlled recorded-inference precondition regression; optional Scenic initial-condition/holdout import is not a live-loop prerequisite",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC14",
+      "priority": "REQUIRED",
+      "given": "FDS case bounds and crowd solver capability are explicit",
+      "trigger": "request out-of-domain/time or unsupported mechanism",
+      "expected": "model-incomplete; past values labelled historical; exit is not clinical safety",
+      "forbidden": "last-value extrapolation, fabricated CFD response or injury threshold",
+      "method": "existing worker boundary regressions + Player invalid-scope display",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC15",
+      "priority": "REQUIRED",
+      "given": "isolated learner uses the same dynamic executor/TransitionKernel and actor-visible observation; fixed background policies exist only in research baselines",
+      "trigger": "train a policy, freeze it, evaluate held-out initial layouts/seeds/roles/interventions/dynamic transitions",
+      "expected": "actual policy artifact with provenance and measured comparison to rule/JEV; termination vs truncation distinct; recorded-inference replay separated from fresh-call evaluation",
+      "forbidden": "JEV self-score as only reward, Python shadow-world result sold as game performance or fixed research policies silently replacing live autonomous agents",
+      "method": "Gymnasium/SB3 run + held-out evaluation through shared dynamic executor and accepted action trace",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC16",
+      "priority": "REQUIRED",
+      "given": "clean Windows x64 target without developer repo/venv",
+      "trigger": "build Mono Player, launch services, save and restart",
+      "expected": "native DB loads; packaged worker/dependencies start; crash/disk-full paths distinguish incomplete from success",
+      "forbidden": "copy macOS venv, silently disable persistence or use Editor-only pass",
+      "method": "Windows native build/launch/storage/failure evidence",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC17",
+      "priority": "REQUIRED",
+      "given": "recorded target hardware; 100/300/500 individual actors; NPC and forecast requests share configured account and session budgets",
+      "trigger": "run ordinary life, simultaneous cues, close-up manipulation and competing future branches",
+      "expected": "identity/goal/task invariants; CPU/GPU/GC/p50/p95/p99/queue/live-and-forecast-service-age/cost recorded against proposed targets",
+      "forbidden": "claim all-actor two-second JEV response, 60Hz AI, separate per-endpoint copies of one budget or use averages alone",
+      "method": "Player Profiler capture and bounded authorized combined NPC/future load run",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC18",
+      "priority": "REQUIRED",
+      "given": "NPC and future-step proxy boundaries accept input and share a private upstream credential",
+      "trigger": "cross-session/unauthorized/oversized/prompt-injected input",
+      "expected": "authorized scoped requests only; secrets/PII excluded from assets/logs/checkpoints; no arbitrary tool execution",
+      "forbidden": "packaged shared API key or loopback-as-auth assumption",
+      "method": "targeted boundary security checks + redacted artifact review",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC19",
+      "priority": "REQUIRED",
+      "given": "official/archive/visual/authored/unknown sources and content revisions",
+      "trigger": "author and import a procedure, atomic TransitionDefinition, InitialWorldSeed or geometry binding",
+      "expected": "references resolve and confidence class remains explicit; unknown numeric criteria block only their own official judgement",
+      "forbidden": "silent replacement of unknown railway values or geometry with defaults",
+      "method": "authoring importer smoke + specialist/source review",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC20",
+      "priority": "REQUIRED",
+      "given": "stored semantic state, physical-support metadata, model outcome records, candidate bindings and versioned rules",
+      "trigger": "checkpoint, process interruption, restore, recorded-inference playback and separately labelled fresh-call resimulation",
+      "expected": "atomic logical effects and explicit restoration capability; old requests invalidated; recorded outcomes drive semantic replay without remote calls; forecasts never overwrite the resumed live world",
+      "forbidden": "same-seed exact PhysX/JEV determinism promise, fresh model calls presented as replay or audit write failure reported as durable success",
+      "method": "persistence crash/restore regression + native resumed run and replay provenance comparison",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC21",
+      "priority": "REQUIRED",
+      "given": "one repeatable initial world with a cart blocking the only accessible doorway, a passenger destination goal and atomic movement/environment operators; controlled inference records are bound to each request's actual candidate set",
+      "trigger": "compare no intervention with the player physically clearing the cart, then blocking the doorway again after a forecast; rebuild grounded candidates and infer each next step from the updated state",
+      "expected": "blocked state excludes doorway traversal; clearing the cart changes reachability, candidate bindings and conditional downstream route/occupancy states; reblocking invalidates dependent futures; actual NPC decisions and revalidated environment effects produce causal live-world differences",
+      "forbidden": "whole-story library or fixed future ending, dialogue/random-seed-only variation, replaying the same candidate list after relevant state change or forecast choices directly moving real actors",
+      "method": "paired native FPS interventions + per-step world/observation/candidate/JEV-selection/kernel/commit trace; recorded-inference fixture proves deterministic causal expectations, authorized fresh JEV run proves the live integration without requiring identical remote answers",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC22",
+      "priority": "REQUIRED",
+      "given": "player remains idle; NPC A has a destination and remembered support commitment, NPC B knows an alternative accessible route, and a newly blocked portal is visible only to A; controlled valid decision records specify the exercised choices",
+      "trigger": "advance simulation without player commands, let A discover the block and initiate an information/support request, then let B observe and respond within its knowledge and consent",
+      "expected": "A initiates goal-directed action unprompted, retains the goal/commitment across blockage and render culling, revises the blocked plan, obtains information through actual communication and cooperates via real movement/reservation/handoff; B does not know A's new observation before receiving it",
+      "forbidden": "every action requires player cue, blocked plan silently deletes/completes its goal, omniscient shared prompt, dialogue-only cooperation or unchanging blocked state causing repeated remote replanning",
+      "method": "native idle-player autonomous scene + goal/plan revision, per-actor knowledge, communication and execution trace; controlled inference regression and separately authorized live integration",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC23",
+      "priority": "REQUIRED",
+      "given": "live snapshot with known memory, inventory, reservations, receipts and actor decision/action sequences; an isolated branch hypothetically uses a tool and predicts player/NPC actions",
+      "trigger": "advance the branch, change a relevant live door/resource revision or run generation, deliver the old response and attempt to propose its next effect",
+      "expected": "branch execution leaves every live ledger and actor sequence unchanged; changed basis invalidates the branch and late result; only an immediate environmental effect revalidated against current live state may reach the writer; real player/NPC choices remain undecided by the forecast",
+      "forbidden": "forecast memory/consumption/reservation/receipt leakage, stale branch commit, forecast as forced ending or automatic enactment of hypothetical player/NPC actions",
+      "method": "isolated/live state differential regression + native intervention with pending branch and old-generation response; unsupported solver branching remains explicitly incomplete",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC24",
+      "priority": "REQUIRED",
+      "given": "recorded initial semantic state, interventions, observations, candidate bindings, exact model outcome/provenance and rule versions; physical playback capability is declared",
+      "trigger": "replay twice using recorded inference with zero remote calls, then run a separately labelled fresh-call experiment from the same initial seed",
+      "expected": "recorded inputs and outcomes produce the same ordered semantic transitions and resulting semantic state under the same rules; changed/missing replay basis is rejected or marked incomplete; fresh-call outputs are recorded separately whether equal or different",
+      "forbidden": "seed plus fresh API calls claimed as deterministic replay, bitwise remote/PhysX guarantee, forcing a fresh answer to match the recording or incomplete solver state fabricated",
+      "method": "recorded-inference semantic trace/state comparison and zero-dispatch observation + separately authorized fresh-call provenance capture; native playback shows the declared restoration scope",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    },
+    {
+      "id": "AC25",
+      "priority": "REQUIRED",
+      "given": "NPC/live and forecast queues share total experimental caps of 12 dispatch/sec, 12 in-flight and 128 pending plus actual account/cost limits; admitted-load service bounds and branch/horizon/step caps are configured",
+      "trigger": "saturate future branches while live agents request service, repeat an unchanged blocked-plan cue, then inject 429/timeout/cancellation and exhaust cost allowance",
+      "expected": "combined counters remain within caps; with a healthy provider and admitted load, foreground/live requests receive dispatch within the configured service bound despite future bursts, not merely repeated deadline exits; overload/fault requests expire explicitly; unchanged blocked plans do not redispatch; branch/replan work stays bounded; exhausted budgets stop new dispatch and unavailable/stale states are visible while valid local actions continue",
+      "forbidden": "duplicated per-endpoint allowance, unbounded branch/replan/retry loop, hidden fallback presented as JEV success, invented forecasts or stopped remote inference reported as normal operation",
+      "method": "deterministic scheduler/fault-clock trace for combined limits and service ordering + bounded authorized mixed-load run and native degraded-state observation; automatic HTTP retries remain zero",
+      "executionStatus": "NOT_RUN_IMPLEMENTATION_REQUIRED"
+    }
+  ],
+  "packages": [
+    {
+      "id": "P01",
+      "title": "공통 world/actor/action·transition/goal/future 계약",
+      "dependsOn": [],
+      "requirementIds": [
+        "R02",
+        "R04",
+        "R12",
+        "R13",
+        "R15",
+        "R16",
+        "R17",
+        "R18"
+      ],
+      "acceptanceIds": [
+        "AC01",
+        "AC19",
+        "AC21",
+        "AC22",
+        "AC23",
+        "AC24"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/Contracts/OperationMessages.cs",
+        "Assets/ChooGuard/Contracts/RuleTypes.cs",
+        "Assets/ChooGuard/Application/OperationsSession.cs",
+        "content/schemas/scenario.schema.json",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/npc-decision.schema.json",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/future-step.schema.json"
+      ],
+      "implementationSurfaces": [
+        "Assets/ChooGuard/Contracts/",
+        "Assets/ChooGuard/Domain/",
+        "content/schemas/",
+        "TransitionDefinition atomic operators and constraints, InitialWorldSeed initial state, GoalPlan and isolated FutureBranch contracts"
+      ],
+      "status": "IMPLEMENTED_LOCAL_CONTRACT_VERIFIED"
+    },
+    {
+      "id": "P02",
+      "title": "단일 실행기·예약·인계·기록",
+      "dependsOn": [
+        "P01"
+      ],
+      "requirementIds": [
+        "R02",
+        "R03",
+        "R08",
+        "R15",
+        "R17"
+      ],
+      "acceptanceIds": [
+        "AC01",
+        "AC02",
+        "AC20",
+        "AC23",
+        "AC24"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/Application/CommandDispatcher.cs",
+        "Assets/ChooGuard/Persistence/SqliteRunStore.cs",
+        "Assets/ChooGuard/App/Fps/Tutorial/TutorialSession.cs"
+      ],
+      "implementationSurfaces": [
+        "Assets/ChooGuard/Application/",
+        "Assets/ChooGuard/Domain/",
+        "Assets/ChooGuard/Persistence/",
+        "separate live/forecast write targets and recorded-inference semantic replay"
+      ],
+      "status": "IMPLEMENTED_LOCAL_EXECUTOR_VERIFIED"
+    },
+    {
+      "id": "P03",
+      "title": "데스크톱 정밀 조작·도구/부품",
+      "dependsOn": [
+        "P02"
+      ],
+      "requirementIds": [
+        "R01",
+        "R03",
+        "R12",
+        "R13",
+        "R14"
+      ],
+      "acceptanceIds": [
+        "AC03"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/App/Fps/FirstPersonResponder.cs",
+        "Assets/ChooGuard/App/Fps/IFpsInteraction.cs",
+        "Assets/ChooGuard/App/Fps/FpsInteractable.cs"
+      ],
+      "implementationSurfaces": [
+        "Assets/ChooGuard/App/Fps/",
+        "separately owned gameplay prefab overlays"
+      ],
+      "status": "IN_PROGRESS_PARTIAL_NATIVE_EVIDENCE"
+    },
+    {
+      "id": "P04",
+      "title": "DotRecast 다층 이동·개별 인물 표현",
+      "dependsOn": [
+        "P01"
+      ],
+      "requirementIds": [
+        "R05",
+        "R11",
+        "R12",
+        "R13"
+      ],
+      "acceptanceIds": [
+        "AC04"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/App/Mvp/MvpTeamNavigation.cs",
+        "Assets/ChooGuard/App/Mvp/MvpStationView.cs",
+        "Assets/ChooGuard/Editor/MvpTeamNavigationBuilder.cs",
+        "Assets/packages.config"
+      ],
+      "implementationSurfaces": [
+        "navigation adapter and bake components",
+        "actor presentation/locomotion components"
+      ],
+      "status": "BLOCKED_CONTINUOUS_PORTAL_REGRESSION"
+    },
+    {
+      "id": "P05",
+      "title": "네 직무 튜토리얼과 격리 복원",
+      "dependsOn": [
+        "P03",
+        "P08"
+      ],
+      "requirementIds": [
+        "R02",
+        "R03",
+        "R04",
+        "R16"
+      ],
+      "acceptanceIds": [
+        "AC05",
+        "AC06",
+        "AC07",
+        "AC08",
+        "AC09",
+        "AC19"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/App/Fps/Work/ProcedureRunner.cs",
+        "Assets/ChooGuard/App/Fps/Tutorial/TutorialSession.cs",
+        "Assets/ChooGuard/Art/Procedures/fire-extinguisher-monthly.json"
+      ],
+      "implementationSurfaces": [
+        "procedure definitions/authoring importer",
+        "tutorial bindings and isolated snapshots"
+      ],
+      "status": "IN_PROGRESS_PARTIAL_NATIVE_EVIDENCE"
+    },
+    {
+      "id": "P06",
+      "title": "NPC 욕구·목표·계획·개인 관측·기억",
+      "dependsOn": [
+        "P02",
+        "P04"
+      ],
+      "requirementIds": [
+        "R05",
+        "R08",
+        "R15",
+        "R18"
+      ],
+      "acceptanceIds": [
+        "AC10",
+        "AC20",
+        "AC22",
+        "AC24"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/App/Mvp/MvpStationView.cs",
+        "Assets/ChooGuard/Persistence/SqliteRunStore.cs"
+      ],
+      "implementationSurfaces": [
+        "NPC drives/goals/GoalPlan, identity, partial observation and memory state",
+        "owner-scoped memory/goal/plan projections in existing persistence"
+      ],
+      "status": "IN_PROGRESS_PARTIAL_NATIVE_EVIDENCE"
+    },
+    {
+      "id": "P07",
+      "title": "NPC·future-step 공통 JEV broker·부하 제어",
+      "dependsOn": [
+        "P01"
+      ],
+      "requirementIds": [
+        "R05",
+        "R06",
+        "R12",
+        "R15",
+        "R17",
+        "R18"
+      ],
+      "acceptanceIds": [
+        "AC11",
+        "AC18",
+        "AC23",
+        "AC24",
+        "AC25"
+      ],
+      "existingReadPaths": [
+        "workers/prediction/jev-proxy.mjs",
+        "Assets/ChooGuard/App/Mvp/MvpJevOperationalKernel.cs",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/npc-decision.schema.json",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/npc-decision.examples.json",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/future-step.schema.json",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/future-step.examples.json"
+      ],
+      "implementationSurfaces": [
+        "shared provider/broker boundary for POST /npc/decision and POST /future/step",
+        "Unity NPC/future clients with separate scope identities and one bounded scheduler",
+        "combined 12 dispatch/sec, 12 in-flight, pending128 experimental caps, actual account/cost quota and live-agent service guarantees",
+        "recorded inference provenance, unavailable/stale responses and no automatic HTTP retries"
+      ],
+      "status": "BLOCKED_LIVE_PROVIDER_CONFIGURATION"
+    },
+    {
+      "id": "P08",
+      "title": "자율 NPC agent loop·한국어 대화·협업",
+      "dependsOn": [
+        "P03",
+        "P06",
+        "P07"
+      ],
+      "requirementIds": [
+        "R05",
+        "R06",
+        "R07",
+        "R08",
+        "R15",
+        "R18"
+      ],
+      "acceptanceIds": [
+        "AC02",
+        "AC10",
+        "AC11",
+        "AC12",
+        "AC22",
+        "AC25"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/App/Fps/FirstPersonInteractionHud.cs",
+        "Assets/ChooGuard/App/Mvp/MvpAgencyDispatchController.cs"
+      ],
+      "implementationSurfaces": [
+        "NpcAgentRuntime self-initiated drives/goals/plan/action/result/replan loop using common executor",
+        "partial-knowledge NPC negotiation/cooperation and consent/reservation/handoff",
+        "separate dialogue provider and native subtitles; prose never commits action effects"
+      ],
+      "status": "BLOCKED_LIVE_PROVIDER_CONFIGURATION"
+    },
+    {
+      "id": "P09",
+      "title": "JEV live FutureComposer·공통 인과·FPS 본게임",
+      "dependsOn": [
+        "P08"
+      ],
+      "requirementIds": [
+        "R01",
+        "R04",
+        "R05",
+        "R06",
+        "R08",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R16",
+        "R17",
+        "R18"
+      ],
+      "acceptanceIds": [
+        "AC13",
+        "AC14",
+        "AC19",
+        "AC21",
+        "AC23",
+        "AC24",
+        "AC25"
+      ],
+      "existingReadPaths": [
+        "content/schemas/scenario.schema.json",
+        "workers/physics/worker.py",
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs",
+        "Assets/ChooGuard/App/Mvp/MvpTrainingDirector.cs",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/DESIGN.md",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/NPC_SCENARIO.md",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/future-step.schema.json",
+        "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/future-step.examples.json"
+      ],
+      "implementationSurfaces": [
+        "AffordanceBuilder and live FutureComposer: current state/interventions/autonomous goals -> grounded atomic candidates -> JEV -> updated state -> fresh candidates",
+        "common TransitionKernel for actual and isolated hypothetical paths; revalidated immediate environmental proposals only",
+        "immutable forecast snapshot/read-set, branch invalidation and zero real memory/reservation/receipt/actor-sequence mutation",
+        "FPS player intervention -> autonomous NPC replanning -> dynamic future recomposition -> actual-world causal effects",
+        "optional offline Scenic initial-condition/constraint/holdout adapter, not a live future source or prerequisite",
+        "hazard capability/profile boundaries, recorded-inference semantic replay and shared bounded scheduling"
+      ],
+      "status": "BLOCKED_LIVE_PROVIDER_CONFIGURATION"
+    },
+    {
+      "id": "P10",
+      "title": "동일 동적 실행기 기반 별도 정책학습",
+      "dependsOn": [
+        "P08",
+        "P09"
+      ],
+      "requirementIds": [
+        "R08",
+        "R09",
+        "R12",
+        "R15",
+        "R17",
+        "R18"
+      ],
+      "acceptanceIds": [
+        "AC15",
+        "AC24"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/Application/OperationsSession.cs",
+        "workers/physics/requirements-core.txt"
+      ],
+      "implementationSurfaces": [
+        "isolated Gymnasium/SB3 training environment with fixed policies only in research baselines",
+        "training-only adapter over the same dynamic executor/TransitionKernel and actor-visible candidates",
+        "held-out interventions/dynamic transitions, policy artifacts and distinct recorded-replay/fresh-call evaluations"
+      ],
+      "status": "PPO_HOLDOUT_COMPLETE_JEV_COMPARISON_BLOCKED"
+    },
+    {
+      "id": "P11",
+      "title": "Windows 저장·worker·의존성 패키징",
+      "dependsOn": [
+        "P01"
+      ],
+      "requirementIds": [
+        "R11",
+        "R12",
+        "R14",
+        "R15"
+      ],
+      "acceptanceIds": [
+        "AC16",
+        "AC18",
+        "AC20"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/Persistence/SqliteProvider.cs",
+        "Assets/ChooGuard/App/Mvp/MvpPhysicsBridge.cs",
+        "workers/physics/requirements-core.txt"
+      ],
+      "implementationSurfaces": [
+        "SQLite platform ABI loader",
+        "worker launcher/package manifests",
+        "Windows development build packaging"
+      ],
+      "status": "BLOCKED_WINDOWS_CLOUD_BUILD_AND_RUN"
+    },
+    {
+      "id": "P12",
+      "title": "전체 플레이·수백 NPC·장애 검증",
+      "dependsOn": [
+        "P05",
+        "P08",
+        "P09",
+        "P10",
+        "P11"
+      ],
+      "requirementIds": [
+        "R01",
+        "R02",
+        "R03",
+        "R04",
+        "R05",
+        "R06",
+        "R07",
+        "R08",
+        "R09",
+        "R10",
+        "R11",
+        "R12",
+        "R13",
+        "R14",
+        "R15",
+        "R16",
+        "R17",
+        "R18"
+      ],
+      "acceptanceIds": [
+        "AC01",
+        "AC02",
+        "AC03",
+        "AC04",
+        "AC05",
+        "AC06",
+        "AC07",
+        "AC08",
+        "AC09",
+        "AC10",
+        "AC11",
+        "AC12",
+        "AC13",
+        "AC14",
+        "AC15",
+        "AC16",
+        "AC17",
+        "AC18",
+        "AC19",
+        "AC20",
+        "AC21",
+        "AC22",
+        "AC23",
+        "AC24",
+        "AC25"
+      ],
+      "existingReadPaths": [
+        "Assets/ChooGuard/Tests/PlayMode/FpsProcedureTests.cs",
+        "Assets/ChooGuard/Tests/PlayMode/FpsPromptPipelineTests.cs",
+        "Assets/ChooGuard/Tests/PlayMode/FpsAuditTerminalTests.cs"
+      ],
+      "implementationSurfaces": [
+        "native central loop: player intervention -> autonomous agents -> JEV future recomposition -> actual-world state, not static scene counts",
+        "all prior four-role/tutorial/main-world/dialogue/memory/learning/Windows requirements and all AC01-AC25",
+        "only affected integration tests and profiling scenes with combined NPC/future load and degraded behavior",
+        "evidence records in existing v5 workflow"
+      ],
+      "status": "IN_PROGRESS_PARTIAL_NATIVE_EVIDENCE"
+    }
+  ],
+  "parallelismRule": "dependsOn expresses prerequisites for integrated completion, not approval gates. After P01, P02/P04/P07/P11 may proceed in parallel with separate ownership. P05 authoring may start after P03, but shared-NPC integrated completion needs P08. P09 depends directly only on P08, which transitively supplies P02/P04/P06/P07; P08/P09 are not independent parallel work. P05/P09 may proceed after P08 with separate ownership. acceptanceIds link contributing evidence; a whole criterion is not passed by every contributing package independently. P12 validates all requirements and AC01-AC25 end-to-end. Parent owns shared contracts; no concurrent shared-file edits without one integration owner.",
+  "authorization": "No installation, paid API load, Unity/model edits, commit or release authorized by this artifact."
+}

@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Bounded execution evidence, not a calibrated validation suite."""
 import json,pathlib,subprocess,sys,time
+from runtime_package import launch_worker
 HERE=pathlib.Path(__file__).resolve().parent
 EVIDENCE=HERE/'evidence'
 def execute(name,scenario,population,delay):
     started=time.monotonic();requests=[];results=[]
     with (EVIDENCE/(name+'.stderr.log')).open('w') as err:
-        p=subprocess.Popen([sys.executable,str(HERE/'worker.py')],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=err,text=True,bufsize=1)
+        p=launch_worker(stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=err,text=True,bufsize=1)
         def send(req):
             requests.append(req);p.stdin.write(json.dumps(req)+'\n');p.stdin.flush();line=p.stdout.readline()
             if not line: raise RuntimeError('Worker EOF')

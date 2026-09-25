@@ -211,7 +211,7 @@ namespace ChooGuard.Tests.EditMode.Stories
             }
         }
         private static string[] BuildArgs(string root, string output, string target = "StandaloneOSX") =>
-            new[] { "-cgBuildTarget", target, "-cgBuildRoot", root, "-cgBuildOutput", output };
+            new[] { "-cgBuildTarget", target, "-cgBuildRoot", root, "-cgBuildOutput", output, "-cgGameplayScene", "Assets/ChooGuard/Scenes/MvpWorkspace.unity" };
         private static object InvokeBuild(string method, string[] args)
         {
             var helper = typeof(BuildBaseline).GetMethod(method, BindingFlags.NonPublic | BindingFlags.Static);
@@ -352,6 +352,9 @@ namespace ChooGuard.Tests.EditMode.Stories
         [TestCase("-cgBuildTarget", "missing")]
         [TestCase("-cgBuildTarget", "duplicate")]
         [TestCase("-cgBuildTarget", "no-value")]
+        [TestCase("-cgGameplayScene", "missing")]
+        [TestCase("-cgGameplayScene", "duplicate")]
+        [TestCase("-cgGameplayScene", "no-value")]
         public void BuildArguments_RejectMissingDuplicateOrValuelessOption(string option, string damage)
         {
             var root = BuildFixture();
@@ -445,6 +448,7 @@ namespace ChooGuard.Tests.EditMode.Stories
             finally { Directory.Delete(root, true); }
         }
         [Test]
+        [UnityEngine.TestTools.UnityPlatform(RuntimePlatform.OSXEditor)]
         public void WindowsBuild_OnMacRecordsNotRunBeforeValidatorWithoutOutputOrTargetFallback()
         {
             Assert.That(global::UnityEngine.Application.platform, Is.EqualTo(RuntimePlatform.OSXEditor), "This local no-Windows-host oracle requires the observed Mac host");
@@ -504,6 +508,48 @@ namespace ChooGuard.Tests.EditMode.Stories
                 Assert.That(snapshot.LocalPluginPaths, Is.EqualTo(new[] { "Assets/Plugins/LocalOnly.dll" }));
                 Assert.That(BootstrapValidator.Validate(snapshot).Errors, Does.Contain("LOCAL_PLUGIN_UNDECLARED"));
                 Assert.That(snapshot.CameraCount, Is.Zero);
+            }
+            finally { Directory.Delete(root, true); }
+        }
+        [TestCase("intact")]
+        [TestCase("tampered")]
+        [TestCase("undeclared")]
+        [TestCase("version-drift")]
+        public void ManagedPackages_RequireDeclaredPathsAndExactBytes(string change)
+        {
+            var root = BuildFixture();
+            try
+            {
+                Directory.CreateDirectory(Path.Combine(root, "Assets"));
+                Directory.CreateDirectory(Path.Combine(root, "workers"));
+                foreach (var relative in new[] { "Assets/NuGet.config", "Assets/packages.config", "workers/nuget-managed.lock.json" })
+                    File.Copy(Path.Combine(ProjectRoot, relative), Path.Combine(root, relative));
+                foreach (var name in new[] { "Core", "Detour", "Recast" })
+                {
+                    var relative = "Assets/Packages/DotRecast." + name + ".2026.3.1/lib/netstandard2.1/DotRecast." + name + ".dll";
+                    Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(root, relative)));
+                    File.Copy(Path.Combine(ProjectRoot, relative), Path.Combine(root, relative));
+                }
+                var core = Path.Combine(root, "Assets/Packages/DotRecast.Core.2026.3.1/lib/netstandard2.1/DotRecast.Core.dll");
+                if (change == "tampered") File.WriteAllBytes(core, new byte[] { 0 });
+                if (change == "undeclared") File.Copy(core, Path.Combine(root, "Assets/Packages/Unreviewed.dll"));
+                if (change == "version-drift")
+                {
+                    var config = Path.Combine(root, "Assets/packages.config");
+                    File.WriteAllText(config, File.ReadAllText(config).Replace("2026.3.1", "2026.3.2"));
+                }
+                var snapshot = BootstrapValidator.Capture(root);
+                if (change == "intact")
+                {
+                    Assert.That(snapshot.ManagedDependencyErrors, Is.Empty);
+                    Assert.That(snapshot.LocalPluginPaths, Is.Empty);
+                }
+                else
+                {
+                    Assert.That(BootstrapValidator.Validate(snapshot).Errors, Does.Contain("LOCAL_PLUGIN_UNDECLARED"));
+                    if (change != "undeclared")
+                        Assert.That(BootstrapValidator.Validate(snapshot).Errors, Does.Contain("MANAGED_DEPENDENCY_INVALID"));
+                }
             }
             finally { Directory.Delete(root, true); }
         }

@@ -1,0 +1,60 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 582,
+  "mode": "LIVE",
+  "model_requested": "jev-1.13.0",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "route_with_abstention": {
+          "type": "choice",
+          "choice": "contact_information",
+          "confidence": 1,
+          "probabilities": {
+            "commit_passage_b": 0,
+            "commit_passage_a": 0,
+            "contact_information": 1
+          }
+        },
+        "route_without_abstention": {
+          "type": "choice",
+          "choice": "commit_passage_a",
+          "confidence": 0,
+          "probabilities": {
+            "commit_passage_b": 0.5,
+            "commit_passage_a": 0.5
+          }
+        },
+        "worker_a_cart_candidate": {
+          "type": "choice",
+          "choice": "request_cart",
+          "confidence": 0.99,
+          "probabilities": {
+            "declare_done": 0,
+            "wait_without_request": 0.01,
+            "request_cart": 0.99
+          }
+        },
+        "worker_b_cart_candidate": {
+          "type": "choice",
+          "choice": "request_cart",
+          "confidence": 0.96,
+          "probabilities": {
+            "declare_done": 0,
+            "wait_without_request": 0.02,
+            "request_cart": 0.98
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1043,
+        "output_tokens": 179
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

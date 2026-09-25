@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "algorithm_seed": 731,
+  "scope": "Synthetic authored open-floor high-level residue-removal skill; not PhysX/FDS, disinfection or railway approval",
+  "host_command": [
+    "/Applications/Unity/Unity-6000.3.23f1/Unity.app/Contents/Resources/Scripting/MonoBleedingEdge/bin/mono",
+    "{root}/workers/learning/.build/LearningHost.exe",
+    "{root}/Assets/ChooGuard/Art/Gameplay/practice-seed.json",
+    "{root}/Assets/ChooGuard/Art/Gameplay/atomic-transitions.json",
+    "{root}/workers/learning/.artifacts/journals"
+  ],
+  "provenance_files": [
+    "Assets/ChooGuard/Art/Gameplay/practice-seed.json",
+    "Assets/ChooGuard/Art/Gameplay/atomic-transitions.json",
+    "workers/learning/.build/build-receipt.json",
+    "workers/learning/requirements.macos-arm64.lock",
+    "workers/learning/environment.py",
+    "workers/learning/cli.py"
+  ],
+  "ppo": {
+    "n_steps": 128,
+    "batch_size": 64,
+    "n_epochs": 6,
+    "learning_rate": 0.0003,
+    "gamma": 0.97,
+    "gae_lambda": 0.95,
+    "ent_coef": 0.01,
+    "policy_kwargs": {"net_arch": {"pi": [64, 64], "vf": [64, 64]}}
+  },
+  "train_episodes": [
+    {"id":"train-11", "seed":11, "placement":"west-near", "intervention":"none", "rule_combination":[], "max_steps":48, "max_seconds":120},
+    {"id":"train-29", "seed":29, "placement":"east-near", "intervention":"tool-relocated", "rule_combination":["accident-wet-access"], "max_steps":48, "max_seconds":120},
+    {"id":"train-43", "seed":43, "placement":"west-near", "intervention":"tool-relocated", "rule_combination":["accident-wet-access"], "max_steps":48, "max_seconds":120},
+    {"id":"train-67", "seed":67, "placement":"east-near", "intervention":"none", "rule_combination":[], "max_steps":48, "max_seconds":120}
+  ],
+  "holdout_episodes": [
+    {"id":"holdout-101", "seed":101, "placement":"north-far", "intervention":"leak-and-relocated", "rule_combination":["accident-wet-access","accident-spill"], "max_steps":48, "max_seconds":120},
+    {"id":"holdout-137", "seed":137, "placement":"south-far", "intervention":"low-supply-and-reported-item", "rule_combination":["security-unattended-review","accident-wet-access"], "max_steps":48, "max_seconds":120},
+    {"id":"holdout-173", "seed":173, "placement":"north-far", "intervention":"low-supply-and-reported-item", "rule_combination":["security-unattended-review","accident-wet-access"], "max_steps":48, "max_seconds":120},
+    {"id":"holdout-211", "seed":211, "placement":"south-far", "intervention":"leak-and-relocated", "rule_combination":["accident-wet-access","accident-spill"], "max_steps":48, "max_seconds":120}
+  ]
+}
