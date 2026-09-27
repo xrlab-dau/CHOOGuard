@@ -33,3 +33,28 @@
 ### Next
 `task_plan.md` §F 의 네 가지가 정해져야 B·C 를 시작할 수 있다.
 A 묶음(graphify 분리 · 도구 분리 · 문서 정리)은 선행 없이 지금 가능하다.
+
+## 2026-09-28 (이어서) — 설계 문서 정독
+
+### 한 일
+- `DESIGN.md` 전문, `EXECUTION_PLAN.md` §0·P01~P08, **`INTERACTION_TUTORIAL.md` 전문** 읽음.
+- `task_plan.md` §D 를 **이식 지점 표**로 다시 씀 — D0(위치)·D1(그대로 살림)·D2(고쳐서 살림)·
+  D3(버림)·D4(되감기 추가 요구).
+- 공통 런타임의 끝점 오차 검사 확인 — `DetourNavigationSurface` 가 보정 후 수평·수직 오차를
+  따로 재측정하고 초과 시 `endpoint_outside_walkable_surface` 로 거부한다.
+  허용치도 내 것보다 엄격하다(수평 0.3/수직 0.5 대 내 1/2, 도착 반경 0.04~0.2 대 0.6).
+  경로가 끝났는데 미도달이면 `Block("arrival_not_observed")` 로 막는다.
+  → **PR #240 댓글에 적은 "없으면 추가하겠다" 는 불필요하다. 이미 있고 더 엄격하다.**
+
+### 이식 지점 요약
+| | |
+|---|---|
+| 그대로 | 판정 명시 선택 · 오판 기록 · 적합이어도 태그 부착 · 부착점 · 근거 공백 표시 · 진입 |
+| 고쳐서 | 태그 custody 이전 · `conditional` 의 UNKNOWN 보류 · Input System action map · 단말 확인 분리 |
+| 버림 | nav/승객 일체 · 인계 시간 완료 · 기술자 Lerp · 이월 JSON |
+
+### 아직 막혀 있는 것
+`task_plan.md` §F 의 네 가지(특히 **cloud 브랜치 머지 순서**). 그것이 정해져야 B·C 착수 가능.
+
+### Next
+PM 답변 대기. 답이 오면 §D 표대로 착수한다.

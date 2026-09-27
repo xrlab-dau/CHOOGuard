@@ -60,17 +60,60 @@ A3 에서 반드시 고칠 서술: `MISSION_DESIGN.md` 8절이 "본편 행동 �
 
 ---
 
-## D. 살리는 것 (리뷰가 가치 있다고 명시)
+## D. 살리는 것 — 이식 지점 (2026-09-28 설계 문서 확인 후)
 
-- 판정의 **명시적 선택**과 유닛별 분리 (절차 v3 의 `verdict-selected`)
-- 점검표 **방향·재질·조준** (Quad 보이는 면 `-Z`, 전용 재질, 콜라이더 복원)
-- 실제 **입력·진입 경로** (`TutorialInput` 1·2·F, `SceneEntryPoint`)
-- 씬 콜라이더 기반 **배치 검증 결과** (도구로서, A2)
-- 절차 콘텐츠와 **현실/공식 규정의 한계 표시**
+`INTERACTION_TUTORIAL.md` 를 읽고 **어디에 어떻게 얹는지**를 확정했다. 추측으로 만들지 않는다.
 
-이것들은 C2 이후 **공통 training 경계에 얹어** 좁은 PR 로 낸다. #238 runtime 의존관계를 명시한다.
+### D0. 전제 — 내 튜토리얼의 실제 위치
 
----
+내가 만든 소화기 점검은 **§5.4 역무 체인의 1~4단계**다. 그 체인은 7단계이고, 역무는 **네 직무 중
+하나**다(정비·청소·승무서비스·역무). 없는 것은 5~7단계(안내 요청·통로 확보·출발역→승무→도착역
+인계 연결)와 나머지 세 직무다.
+
+`EXECUTION_PLAN` P05 는 **"한 직무 완성으로 네 직무 완료를 선언하지 않는다"** 고 못박는다.
+
+### D1. 그대로 살릴 것 — 설계가 같은 것을 요구한다
+
+| 내 구현 | 설계 근거 | 비고 |
+|---|---|---|
+| 판정을 **플레이어가 명시적으로 선택** (절차 v3 `verdict-selected`) | §5.4-2 "판정을 직접 기재한다" | 그대로 |
+| **오판을 기록하되 월드는 안 바뀜** (`MisjudgementCount`, `ShouldBeUnfit` 유지) | §5.4-2 "부식이 있는데 적합으로 기록하는 실수는 기록될 수 있으며, world truth의 부식을 지우지 않는다" · §2-3 | 그대로 |
+| **적합이어도 점검표를 붙인다** | §5.4-3 "적합/부적합 어느 판정을 기록했든 실물 점검표를 붙인다" | 그대로 |
+| 점검표 **부착점**(`TagAnchor`)과 방향·재질·콜라이더 | §5.4-3 "올바른 설비의 부착점" · §9 interaction anchor | 그대로 |
+| 절차 **근거 공백 표시**(별지 제7호 서식 공백) | §1 표 "출처 공백 유지" | 그대로 |
+| `SceneEntryPoint` 진입 | — | 충돌 없음 |
+| `StationWalkableSolver` | §9 공간 provenance | **A2 로 분리**, 오프라인 도구 |
+
+### D2. 고쳐서 살릴 것
+
+| 내 구현 | 무엇이 틀렸나 | 이식 방법 |
+|---|---|---|
+| `attach-tag` 가 효과로 **즉시 부착** | §5.4-3 **"태그를 손에 들거나 다른 설비에 붙인 것은 완료가 아니다"** — 가져와서(custody) 붙이는 체인이 필요 | §2 행동 생애 `REQUESTED→RESERVED→APPROACHING→EXECUTING→VERIFYING→COMPLETED` 에 얹고, 태그를 실제 물체로 custody 이전 |
+| 절차 `conditional` 이 guard 미충족 시 **건너뜀** | §4 **"적용 FALSE만 근거 있는 비해당이며 UNKNOWN/CONFLICTED는 판정 보류"** — 내 v3 은 UNKNOWN 도 건너뛴다 | `ProcedureRunner` 확장. 러너 교체가 아니라 판정 보류 상태 추가 |
+| `TutorialInput` 이 `Keyboard.current` **직접 읽기** | §8 "하드코딩 입력은 **Input System action map 으로 이행**하며 이동/작업/단말 모드를 **배타적으로** 소비" | action map 으로 이행. §8 표의 키 배치 제안을 따름 |
+| `close-inspection` 이 `Audit()` 를 직접 호출 | §4 "콘텐츠의 '단말 재스캔' 설명과 실제 단말 완료 행위를 맞추되, **단말 열기 자체를 전체 검사 합격으로 만들지 않는다**" | 단말에서의 실제 확인 행위와 절차 완료를 분리 |
+| 다중 대상(`UnitBinding`) | 방향은 맞음 — §4 "대상 instance binding 은 절차 정의와 분리" | P05-1 "single Target → definition/instance 다중 binding" 에 합류 |
+
+### D3. 버릴 것 — 이미 있거나 설계 위반
+
+| | 이유 |
+|---|---|
+| `StationNavigation`·`StationNavigationBaker`·`PassengerAgent`·`PassengerBuilder`·`Concourse-v1.bytes` | 공통 런타임의 부분집합. §10 "Unity NavMesh 와 이중 소유 금지" |
+| `TechnicianDispatch` 의 시간 기반 완료 | §4.1 `ActionExecutor` 금지 "애니메이션/타이머 종료 = 작업 성공" · 불변조건 3·4 |
+| `TechnicianPresence` 의 타이머 Lerp | 표현이 수행 증거를 대체하지 못함 |
+| `TutorialCarryoverStore` 별도 JSON | §7 저장 경계·run generation 과 충돌 |
+
+### D4. C2(되감기)에 추가된 요구
+
+설계 §7 이 내 `Rewind()` 를 **이름으로 지목**한다 —
+"태그·기록·소모품·물리 상태를 복원하는 기능이라고 표시하면 안 된다".
+
+되감기 지점은 **안정된 작업 경계의 snapshot** 이고 저장할 것은:
+도구 custody · 부품/체결 · 오염/잔량 · pose/속도 · 관측 · 절차 · 예약 ·
+실습 NPC 의 욕구/목표/계획·약속·기억 · 난수 상태.
+
+그리고 **run generation 을 증가**시켜 늦게 도착한 NPC/미래 응답과 가상 branch 를 버린다.
+`(runId, generation, actorId, intentId)` 키와 저장 인덱스에 generation 을 포함한다.
 
 ## E. 순서
 
