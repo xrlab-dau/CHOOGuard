@@ -94,14 +94,32 @@ A3 에서 반드시 고칠 서술: `MISSION_DESIGN.md` 8절이 "본편 행동 �
 | `close-inspection` 이 `Audit()` 를 직접 호출 | §4 "콘텐츠의 '단말 재스캔' 설명과 실제 단말 완료 행위를 맞추되, **단말 열기 자체를 전체 검사 합격으로 만들지 않는다**" | 단말에서의 실제 확인 행위와 절차 완료를 분리 |
 | 다중 대상(`UnitBinding`) | 방향은 맞음 — §4 "대상 instance binding 은 절차 정의와 분리" | P05-1 "single Target → definition/instance 다중 binding" 에 합류 |
 
-### D3. 버릴 것 — 이미 있거나 설계 위반
+### D3. 버릴 것 — 부분집합이거나 설계가 금지하는 형태다
 
-| | 이유 |
+`NPC_SCENARIO.md` 를 읽고 근거를 정확히 고쳤다. "이미 있다" 보다 **"설계가 금지한다"** 가 맞는
+항목이 있다.
+
+| 버릴 것 | 근거 |
 |---|---|
-| `StationNavigation`·`StationNavigationBaker`·`PassengerAgent`·`PassengerBuilder`·`Concourse-v1.bytes` | 공통 런타임의 부분집합. §10 "Unity NavMesh 와 이중 소유 금지" |
-| `TechnicianDispatch` 의 시간 기반 완료 | §4.1 `ActionExecutor` 금지 "애니메이션/타이머 종료 = 작업 성공" · 불변조건 3·4 |
+| `StationNavigation`·`StationNavigationBaker`·`Concourse-v1.bytes` | 공통 런타임의 단층 부분집합. §8 "기존 DotRecast route 데이터를 유지·확장" · INTERACTION_TUTORIAL §10 "Unity NavMesh 와 이중 소유 금지" |
+| `PassengerAgent`·`PassengerBuilder` | **설계가 금지하는 형태**다. §1.1 "플레이어가 말을 걸거나 사건 director 가 호출해야만 움직이는 구조가 아니다" · "대사/플레이어 버튼을 기다리는 **반응형 인형으로 축소하지 않는다**". 내 승객은 `StartDestination` 을 받아 한 번 걷고 끝난다 |
+| `PassengerAgent.STUCK` | §5 "같은 실패를 매 프레임 JEV 에 재질문하지 않는다" · §6 "목표/약속을 자동 완료·삭제하지 않고 **plan revision·막힌 이유·재개 조건**을 남긴다". 내 `STUCK` 은 그냥 멈춘다 |
+| `TechnicianDispatch` 의 4단계 | §5 협업 지원은 **6단계** `REQUESTED → ACKNOWLEDGED → ACCEPTED → EN_ROUTE → ONSITE → HANDOFF_ACCEPTED`. 내 것에는 **수락(ACCEPTED)도 책임 이전(HANDOFF_ACCEPTED)도 없다** |
+| `TechnicianDispatch` 의 시간 기반 완료 | §10 실패표 — "무전은 수신했지만 담당자가 도착하지 않음 → 기존 담당자 책임 유지 / **금지: ACK 를 인계 완료로 표시**". 내 구현이 그 금지 항목이다 |
 | `TechnicianPresence` 의 타이머 Lerp | 표현이 수행 증거를 대체하지 못함 |
-| `TutorialCarryoverStore` 별도 JSON | §7 저장 경계·run generation 과 충돌 |
+| `TutorialCarryoverStore` 별도 JSON | INTERACTION_TUTORIAL §7 저장 경계·run generation 과 충돌 |
+
+### D3.1 승객 NPC 를 다시 만들 때의 실제 범위
+
+내가 "캡슐을 걷게 하는 일" 로 본 것은 설계에서 **P06(욕구·목표·기억) + P07(JEV broker·예산) +
+P08(agent loop·대화·협업)** 이다. 이동은 P04 의 한 조각일 뿐이다.
+
+규모가 내 예상과 다르다.
+
+- **300명 동시 재판단은 dispatch 에만 최소 25초.** 상한이 초당 12회이고 `/future/step` 과 **합산**이다.
+- "모든 시민이 2초 안에 재판단" 은 **불가능**하다. 2초는 admission 된 foreground 단일 판단 목표다.
+- 즉시 반응은 **local rule** 로 처리하고 provenance 를 `local_rule` 로 구별해 기록한다.
+- 비용은 최대 지속 부하 가정에서 **$3.63/시간**(JEV 입력만, 대화·worker·네트워크 제외).
 
 ### D4. C2(되감기)에 추가된 요구
 
@@ -138,6 +156,11 @@ A3 ─┘
    닫으면 번호·연결 이슈(#239·#241·#242·#243)를 다시 걸어야 한다.
 3. **소화기 배치 v4 를 누가 적용하는가.** 좌표는 검증됐지만 씬 반영은 모델링 소유다.
 4. **`.claude/` 를 커밋할지 무시할지** — 며칠째 미정.
+5. **원격 추론 호출이 내 작업 범위에 들어오는가.**
+   설계는 `/npc/decision` 과 `/future/step` 이 **실제 과금**되는 JEV 호출임을 전제한다
+   (최대 지속 부하 $3.63/시간, 공유 계정·비용 한도를 실행 전 구성해야 함).
+   `DESIGN.md` §7 은 **"이 문서는 과금 호출·부하 실험을 승인하지 않는다"** 고 못박는다.
+   내가 P07/P08 에 손댄다면 이 경계를 먼저 정해야 한다.
 
 ## 규율 (어기지 않는다)
 
