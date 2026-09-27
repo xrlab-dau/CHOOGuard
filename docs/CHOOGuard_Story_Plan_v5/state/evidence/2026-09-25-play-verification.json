@@ -117,5 +117,38 @@
       "stillTrue": "시작 시야가 대상이 아닌 빈 하늘을 향했고 15m 이내 렌더러가 2,322개 중 5개였다는 것은 사실이다.",
       "harnessBugsOfTheSameShape": "같은 실수를 이 하네스에서 세 번 했다 — 대상 선택, 거리 측정, 그리고 인계 조회(Units[0].Dispatch 를 봐서 '요구가 발행되지 않았다'로 실패). 전부 Units[0] 을 대상으로 착각한 것이다."
     }
-  ]
+  ],
+  "formatRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/FORMAT.md",
+  "recurrenceSignal": [
+    "거리·좌표를 쟀는데 '무엇을' 쟀는지 확인하지 않았다 — Units[0] 과 session.Target 을 혼동했다.",
+    "수치가 맞아 보여서 눈으로 확인하지 않았다.",
+    "하네스 버그와 제품 결함을 같은 목록에 섞고 있다."
+  ],
+  "selfAssessment": {
+    "accuracy": {
+      "score": 3,
+      "note": "점검표 미렌더링은 픽셀로 정확히 잡았으나 거리 측정 대상을 잘못 골라 44.41m 를 오보고했다."
+    },
+    "completeness": {
+      "score": 4,
+      "note": "PASS·FAIL·NOT_VERIFIED 를 나누고 하네스 버그를 따로 집계했다."
+    },
+    "clarity": {
+      "score": 4,
+      "note": "supersedes 로 전날 판정을 명시적으로 뒤집었다."
+    },
+    "actionability": {
+      "score": 4,
+      "note": "FAIL 항목이 그대로 다음 작업이 됐다."
+    },
+    "concision": {
+      "score": 3,
+      "note": "method·fix·corrections 가 겹치는 부분이 있다."
+    },
+    "overall": 3.6,
+    "topGaps": [
+      "측정 대상을 고르는 단계에 검증이 없었다",
+      "정정이 사후에 붙었다 — 보고 전에 잡았어야 한다"
+    ]
+  }
 }

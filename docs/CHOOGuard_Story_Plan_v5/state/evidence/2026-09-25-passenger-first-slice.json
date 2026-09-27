@@ -95,5 +95,39 @@
     "consequence": "StationNavigation·StationNavigationBaker·PassengerAgent·PassengerBuilder 는 이미 있는 것의 단층 부분집합이다. 폐기하고 공통 런타임으로 이식한다.",
     "alsoWrong": "PR #240 리뷰가 재현한 결함 — TryPlan 이 SnapExtent 안에서 끝점을 보정하며 원래 목표와의 오차를 검사하지 않고, PassengerAgent 가 Destination 이 아니라 마지막 corner 거리로 완료를 판정한다. 요청점과 1.417m 차이로 ARRIVED 가 된다. 이 영수증의 '이동 25.1m · ARRIVED' 도 같은 구멍을 지났다.",
     "lessonToCarry": "끝점 보정을 허용하면 보정량을 반드시 재고 허용 오차를 명시한다. 이식할 때 ActorNavigationBinding 에 같은 검사가 있는지 확인하고 없으면 추가한다."
+  },
+  "formatRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/FORMAT.md",
+  "recurrenceSignal": [
+    "기존 코드를 '없다' 고 판단한 근거가 develop 한 브랜치뿐이다 — 미머지 브랜치를 보지 않았다.",
+    "끝점·좌표를 보정해 놓고 보정량을 재지 않았다.",
+    "'기존 것을 쓸 수 없다' 는 관찰에서 '새로 만들어야 한다' 는 결론으로 바로 갔다.",
+    "도착·완료를 요청한 목표가 아니라 계산된 중간값으로 판정하고 있다."
+  ],
+  "selfAssessment": {
+    "accuracy": {
+      "score": 2,
+      "note": "도착 판정이 틀렸고(요청점과 1.417m) 기존 코드 부재 판단도 틀렸다. 둘 다 리뷰가 잡았다."
+    },
+    "completeness": {
+      "score": 3,
+      "note": "상태 4종과 실패 사유 6종을 나눴으나 국소회피·자율 목표·재계획이 없다."
+    },
+    "clarity": {
+      "score": 4,
+      "note": "하지 않은 것을 목록으로 남겼다."
+    },
+    "actionability": {
+      "score": 2,
+      "note": "폐기 대상이라 이 영수증에서 이어지는 작업이 없다."
+    },
+    "concision": {
+      "score": 4,
+      "note": "짧다."
+    },
+    "overall": 3.0,
+    "topGaps": [
+      "미머지 브랜치 확인이 착수 절차에 없었다 — 2점",
+      "도착 판정의 기준점을 검증하지 않았다 — 2점"
+    ]
   }
 }

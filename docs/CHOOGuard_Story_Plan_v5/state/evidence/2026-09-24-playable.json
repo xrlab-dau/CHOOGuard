@@ -14,7 +14,13 @@
     "mode": "batchmode -runTests -testPlatform PlayMode",
     "assemblyNames": "ChooGuard.PlayModeTests",
     "exitCode": 0,
-    "totals": { "total": 75, "passed": 75, "failed": 0, "skipped": 0, "inconclusive": 0 }
+    "totals": {
+      "total": 75,
+      "passed": 75,
+      "failed": 0,
+      "skipped": 0,
+      "inconclusive": 0
+    }
   },
   "problemsFound": [
     "생성기가 월드 상태를 보고 정답을 PendingVerdict 에 미리 넣어, 플레이어가 고를 것이 없고 MisjudgementCount 가 영원히 0 이었다.",
@@ -97,5 +103,38 @@
       "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/BENCHMARK_FPS_MATRIX.md",
       "summary": "AudioSource 0 건, 기술자는 상태 기계만. 요구 발행 후 약 1 분간 문자열 외에 볼 것이 없다. 변화 없음."
     }
-  ]
+  ],
+  "formatRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/FORMAT.md",
+  "recurrenceSignal": [
+    "증거가 '컴포넌트가 존재한다' 로만 이루어져 있다 — AttachedTag != null 과 Renderer.enabled 는 그려지지 않는 쿼드도 통과시킨다.",
+    "'시험이 N개 통과했다' 가 PASS 의 유일한 근거다.",
+    "화면을 한 번도 띄우지 않고 '플레이 가능' 을 판정하고 있다."
+  ],
+  "selfAssessment": {
+    "accuracy": {
+      "score": 2,
+      "note": "점검표 항목을 PASS 로 적었으나 사실이 아니었다(2026-09-25 정정). 근거가 단언뿐이었다."
+    },
+    "completeness": {
+      "score": 3,
+      "note": "네 가지를 고쳤지만 사람 검수·오디오·기술자 표현이 비어 있었고 그것은 적었다."
+    },
+    "clarity": {
+      "score": 4,
+      "note": "문제-원인-조치를 항목별로 분리했다."
+    },
+    "actionability": {
+      "score": 4,
+      "note": "남은 항목을 NOT_VERIFIED 로 명시해 다음 작업이 정해졌다."
+    },
+    "concision": {
+      "score": 4,
+      "note": "체크포인트 단위로 짧게 유지했다."
+    },
+    "overall": 3.4,
+    "topGaps": [
+      "PASS 의 근거가 관측이 아니라 단언이었다 — 2점",
+      "화면을 띄우지 않고 플레이 가능성을 판정했다"
+    ]
+  }
 }
