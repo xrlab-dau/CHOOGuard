@@ -98,7 +98,7 @@ KTX 재난 상황은 승무원·기관사·역무원의 서로 다른 역할을 
 같은 시기 `cloud/fps-gameplay-20260925` 브랜치에 공통 런타임의 구현과 검증이 있었고 나는 그것을
 확인하지 않았다. 그 브랜치에는 `GameplayNavigation`(층·포털·접근성) · `ActorNavigationBinding` ·
 `GameplayNavigationBaker` · `RoleTrainingProgram` 과 설계 문서 13종
-([design/fps-ai-20260925](design/fps-ai-20260925/DESIGN.md))이 있다.
+([design/fps-ai-20260925](https://github.com/xrlab-dau/CHOOGuard/blob/5a5d8150cb64f2d5d59f629f6631cadb9f4ff9c9/docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/DESIGN.md) — `cloud/fps-gameplay-20260925` 브랜치)이 있다.
 
 그래서 **아래 표와 8절의 작업 순서는 틀린 전제 위에 서 있다.** 지우지 않고 남기되, 무엇이
 틀렸는지 여기에 적는다. 미머지 브랜치를 확인하지 않은 것이 원인이다.
@@ -122,7 +122,7 @@ KTX 재난 상황은 승무원·기관사·역무원의 서로 다른 역할을 
 
 **이 절은 폐기한다 (2026-09-28).** 아래 순서는 "본편 코드 0" 을 전제로 내가 독자적으로 정한
 것이고, 공통 런타임의 실행 순서와 충돌한다. 실제 순서는
-[EXECUTION_PLAN.md](design/fps-ai-20260925/EXECUTION_PLAN.md) 의 `P01 → P02/P04/P07/P11 → P03 → P06
+[EXECUTION_PLAN.md](https://github.com/xrlab-dau/CHOOGuard/blob/5a5d8150cb64f2d5d59f629f6631cadb9f4ff9c9/docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/EXECUTION_PLAN.md) 의 `P01 → P02/P04/P07/P11 → P03 → P06
 → P08 → P05/P09` 를 따른다.
 
 특히 **P05(네 직무 튜토리얼)의 선행은 P03+P08** 이고, 그 문서는 **"튜토리얼 전용 NPC 실행기를
