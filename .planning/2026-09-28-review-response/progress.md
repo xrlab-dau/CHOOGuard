@@ -74,3 +74,25 @@ PM 답변 대기. 답이 오면 §D 표대로 착수한다.
 
 ### Next
 PM 답변 대기. 결정 항목이 4개에서 **5개**가 됐다.
+
+## 2026-09-28 (이어서) — OSS_INTEGRATION 정독
+
+### 한 일
+- `OSS_INTEGRATION.md` 전문(채택 매트릭스·이동·GOAP 보류·JEV 경계·Scenic·학습·Windows 배포·
+  cutover·권리) 읽음.
+- `task_plan.md` §D3 에 **§13 cutover 금지 조항** 추가, §D3.1 에 **국소회피 누락** 추가.
+- **§C3.1 신설** — `SqliteProvider` 의 문서 모순을 코드로 해소.
+- `findings.md` §11 에 상세 기록.
+
+### 핵심
+`SqliteProvider` 서술이 문서마다 달라 **실제 코드를 두 브랜치에서 확인**했다.
+`develop` 은 macOS 전용, cloud 브랜치는 macOS/Windows x64. **둘 다 맞고 브랜치가 다르다.**
+내 근거는 당시엔 맞았고 지금 낡았다. 규율로 남긴다 — **플랫폼 지원은 문서가 아니라 대상
+브랜치의 코드로 확인한다.**
+
+### 설계 문서 진행
+`DESIGN` · `EXECUTION_PLAN`(§0·P01~P08) · `INTERACTION_TUTORIAL` · `NPC_SCENARIO` ·
+`OSS_INTEGRATION` **5편 완료**. 남은 것은 `VALIDATION.md`(111줄).
+
+### Next
+PM 답변 대기. 결정 5개.

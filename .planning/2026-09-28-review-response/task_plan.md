@@ -55,10 +55,32 @@ A3 에서 반드시 고칠 서술: `MISSION_DESIGN.md` 8절이 "본편 행동 �
 |---|---|---|
 | C1 | 시간 경과가 실제 교체를 대신한다 | `TechnicianDispatch` 를 P02 공통 executor 의 `REQUESTED→RESERVED→APPROACHING→EXECUTING→VERIFYING→COMPLETED` 에 얹고, **실제 완료 증거가 있을 때만** `ApplyReplacement`. 상태 기계 자체는 유지 가능 |
 | C2 | 되감기가 새 부작용을 되돌리지 않는다 | `TutorialSession.Rewind` 를 `RoleTrainingProgram` 의 격리 snapshot 복원으로 이행. 대상·소모품·태그·관측·NPC 목표/계획·작업·generation 포함 |
-| C3 | 저장/이월의 상태 소유권 | 별도 JSON 폐기. 공통 의미 상태·run/generation·격리 저장으로. **`SqliteProvider` 는 Windows x64 지원됨** — 내 "macOS 전용" 근거는 낡았다 |
+| C3 | 저장/이월의 상태 소유권 | 별도 JSON 폐기. 공통 의미 상태·run/generation·격리 저장으로. **이관 전에 `SqliteProvider` 를 코드로 확인한다**(아래 C3.1) |
 | C4 | 씬 전체 재생성 | `FireExtinguisherSliceBuilder` 가 `FpsStation` 을 다시 쓰지 않게 한다. gameplay overlay/prefab 로 분리하고 대상 자산을 특정 |
 
 ---
+
+### C3.1 `SqliteProvider` — 문서 두 개가 어긋났고, 코드가 답이었다
+
+| 출처 | 서술 |
+|---|---|
+| `OSS_INTEGRATION.md` §10 (2026-09-25) | "현재 SqliteProvider 는 ... **macOS 이외에서 명시적으로 실패**한다" |
+| PR #238 리뷰 (2026-09-25) | "현재 `SqliteProvider` 는 **macOS/Windows x64 로딩을 지원**하도록 바뀌었다" |
+
+**둘 다 맞다. 브랜치가 다르다.**
+
+```
+develop            : "Currently macOS only; other ABIs fail closed."
+                     if (!IsOSPlatform(OSX)) throw PlatformNotSupportedException
+cloud/fps-gameplay : "Exact-file native loading for macOS and Windows x64"
+                     windows ? ProcessArchitecture != X64 : !IsOSPlatform(OSX) -> throw
+```
+
+내가 별도 JSON 이월의 근거로 삼은 "macOS 전용" 은 **당시 `develop` 기준으로는 맞았고 지금은 낡았다.**
+`OSS_INTEGRATION` 은 설계 착수 시점을 기록한 문서이고 `EXECUTION_PLAN §0` 이 우선한다고 스스로 밝힌다.
+
+**규율:** 플랫폼 지원·설치 여부는 **문서가 아니라 대상 브랜치의 코드로 확인한다.**
+문서는 언제 기준인지 밝히고 있어도 내가 그 시점을 놓치면 같은 실수를 반복한다.
 
 ## D. 살리는 것 — 이식 지점 (2026-09-28 설계 문서 확인 후)
 
@@ -101,7 +123,7 @@ A3 에서 반드시 고칠 서술: `MISSION_DESIGN.md` 8절이 "본편 행동 �
 
 | 버릴 것 | 근거 |
 |---|---|
-| `StationNavigation`·`StationNavigationBaker`·`Concourse-v1.bytes` | 공통 런타임의 단층 부분집합. §8 "기존 DotRecast route 데이터를 유지·확장" · INTERACTION_TUTORIAL §10 "Unity NavMesh 와 이중 소유 금지" |
+| `StationNavigation`·`StationNavigationBaker`·`Concourse-v1.bytes` | 공통 런타임의 단층 부분집합. NPC_SCENARIO §8 "기존 DotRecast route 데이터를 유지·확장" · INTERACTION_TUTORIAL §10 "Unity NavMesh 와 이중 소유 금지" · **OSS_INTEGRATION §13 "DotRecast 를 유지하는 동안 병렬 기본 경로를 추가하지 않는다. 교체 시 caller·베이크·경로 오류 의미까지 한 번에 이관"** — 내 것은 두 번째 DotRecast 베이크·질의 체계다 |
 | `PassengerAgent`·`PassengerBuilder` | **설계가 금지하는 형태**다. §1.1 "플레이어가 말을 걸거나 사건 director 가 호출해야만 움직이는 구조가 아니다" · "대사/플레이어 버튼을 기다리는 **반응형 인형으로 축소하지 않는다**". 내 승객은 `StartDestination` 을 받아 한 번 걷고 끝난다 |
 | `PassengerAgent.STUCK` | §5 "같은 실패를 매 프레임 JEV 에 재질문하지 않는다" · §6 "목표/약속을 자동 완료·삭제하지 않고 **plan revision·막힌 이유·재개 조건**을 남긴다". 내 `STUCK` 은 그냥 멈춘다 |
 | `TechnicianDispatch` 의 4단계 | §5 협업 지원은 **6단계** `REQUESTED → ACKNOWLEDGED → ACCEPTED → EN_ROUTE → ONSITE → HANDOFF_ACCEPTED`. 내 것에는 **수락(ACCEPTED)도 책임 이전(HANDOFF_ACCEPTED)도 없다** |
@@ -120,6 +142,9 @@ P08(agent loop·대화·협업)** 이다. 이동은 P04 의 한 조각일 뿐이
 - "모든 시민이 2초 안에 재판단" 은 **불가능**하다. 2초는 admission 된 foreground 단일 판단 목표다.
 - 즉시 반응은 **local rule** 로 처리하고 provenance 를 `local_rule` 로 구별해 기록한다.
 - 비용은 최대 지속 부하 가정에서 **$3.63/시간**(JEV 입력만, 대화·worker·네트워크 제외).
+- **국소회피가 빠져 있다.** OSS_INTEGRATION §5.2 는 `DotRecast.Detour.Crowd`(같은 2026.3.1 계열)를
+  도입 후보로 두고 경로 추종과 국소회피를 같은 계열로 구성하라고 한다. 내 `PassengerAgent` 에는
+  회피가 없다. 승객 한 명이라 드러나지 않았을 뿐이다.
 
 ### D4. C2(되감기)에 추가된 요구
 

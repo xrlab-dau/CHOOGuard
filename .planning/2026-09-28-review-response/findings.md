@@ -154,3 +154,46 @@ PPO 4096 step, 100/300/500명 부하(p95 3.30/9.12/21.64ms), Unity Cloud 빌드 
 `DESIGN.md` §7 이 **"이 문서는 과금 호출·부하 실험을 승인하지 않는다"** 고 못박는다.
 내가 P07/P08 에 손댄다면 **원격 추론 호출의 승인 경계**를 먼저 정해야 한다.
 `task_plan.md` §F 에 5번으로 추가했다.
+
+---
+
+## 11. `OSS_INTEGRATION.md` 를 읽고 (2026-09-28)
+
+### 내 nav 체계가 cutover 조항에 걸린다
+
+§13 — "DotRecast 를 유지하는 동안 **병렬 기본 경로를 추가하지 않는다.** 교체 시 caller·베이크·
+경로 오류 의미까지 **한 번에 이관**한다."
+
+내 것은 NavMeshAgent 는 아니지만 **두 번째 DotRecast 베이크·질의 체계**다. §5.1 이 같은 상황을
+"이미 있는 경로를 버리고 함께 설치하는 것은 **최소 변경이 아니다**" 로 적었다.
+
+### 국소회피가 빠져 있다
+
+§5.2 는 `DotRecast.Detour.Crowd`(같은 2026.3.1 계열)를 도입 후보로 두고 경로 추종과 국소회피를
+같은 계열로 구성하라고 한다. 내 `PassengerAgent` 에는 회피가 없다. **승객이 한 명이라 드러나지
+않았을 뿐이다.**
+
+### 문서 두 개가 어긋났고, 코드가 답이었다
+
+`SqliteProvider` 에 대해 `OSS_INTEGRATION` §10 은 "macOS 이외에서 명시적으로 실패", PR 리뷰는
+"macOS/Windows x64 지원" 이라고 했다. **둘 다 맞다 — 브랜치가 다르다.**
+
+| 브랜치 | 코드 |
+|---|---|
+| `develop` | `"Currently macOS only; other ABIs fail closed."` · `if (!IsOSPlatform(OSX)) throw` |
+| `cloud/fps-gameplay-20260925` | `"Exact-file native loading for macOS and Windows x64"` · `windows ? ProcessArchitecture != X64 : !IsOSPlatform(OSX) -> throw` |
+
+내가 별도 JSON 이월의 근거로 삼은 "macOS 전용" 은 **당시 `develop` 기준으로는 맞았다.**
+지금 기준으로 낡았을 뿐이다. `OSS_INTEGRATION` 은 설계 착수 시점의 기록이고
+`EXECUTION_PLAN §0` 이 우선한다고 스스로 밝히고 있다.
+
+**규율:** 플랫폼 지원·설치 여부는 문서가 아니라 **대상 브랜치의 코드**로 확인한다.
+
+### 알아둘 것
+
+- GOAP·XRI·ML-Agents·Scenic·PettingZoo 는 **모두 미설치**이며 각각 참고 전용·보류·선택적 연구다.
+  NPC 작업에서 외부 planner 를 끌어올 이유가 없다.
+- Player 배포 제외: 학습용 Torch, Scenic 저작 도구, FDS solver, trainer.
+- 라이선스: DotRecast **zlib**(원저자·변경 표시 유지), JuPedSim **LGPL-3.0-or-later**.
+- 과학 worker 의 현재 범위는 30×20×4m 단층·최대 200명·FDS 0~120s 다.
+  **부산역 다층·수백 NPC 를 검증한 모델이 아니다.**
