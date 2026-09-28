@@ -1,0 +1,73 @@
+{
+ "schema": "chooguard.round-verification.v1",
+ "round": "natural fix (2026-09-26)",
+ "userMessages": [
+  "OfficialStation_-부산역_5 주위 + 선로상층부_0 맞이방 연결 벽 부자연",
+  "Box_Majibang_3F_EdgeBand 공중? 벽 없음? 제대로 확인",
+  "외부 Kit_Canopy/Kit_Slab/Kit_Glass/Kit_RoomWall 실제 존재? 부자연"
+ ],
+ "decision": "exterior: 역 인접 구역만 근거로 재구축 (ask, 01:35)",
+ "finalAudit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after60",
+ "sceneSaved": [
+  "04:00 (after54 + rebuilt fit; backup backups/FpsStation.disk-before-natural-fix-20260926.unity)",
+  "05:05 (after60)"
+ ],
+ "changes": {
+  "exterior": {
+   "removed": [
+    "실내 트윈 마감/동측 확장 (ribbon deck, 3F wing slab, meshes + folder + registry)",
+    "동측 출구: 22 exterior elements (dark canopies, rails, elevator lobby 2F/3F, 3F wing roof, exit-10 landing)"
+   ],
+   "built": [
+    "east-exits.json 4 door/reveal elements",
+    "sky-plaza.json (deck 7.03 paving + asphalt apron Y0 from V 118)",
+    "sky-plaza-fit.json 66 el.: 30 concrete piers, lawn/planting traced from satellite, glass guards, exit-9 wood-tone slat canopy on leaning white posts, exit-10 white-frame glass-roof walkway to V~190, closed NE bridge mouth"
+   ],
+   "sourceOverride": "openings/MainNatural.json: Layer0_4 stub above the deck (0.37 m2)"
+  },
+  "edgeBand": {
+   "bands1and2": "attached to 3F slab edges (sections) - unchanged",
+   "band3": "floated mid-hall -> removed from plan (N1), replaced by hall-junction.json closed band box + central bulkhead to the roof + clerestory glazing (RY2 287/322 s); SourceOverrides openings/HallJunction.json (step wall 19.45-21.59)"
+  },
+  "junction": {
+   "serviceShells": "plan N2/N3: 2F 역무실/수유방 + 3F 화장실 duplicate builder shells removed (kit rooms exist); 3F 승강기 shells kept",
+   "signs": "hall-junction.json WallSigns 역무실/수유방/화장실 restore the builder signs lost with the shells",
+   "blackSoffit": "lighting: down-facing faces far from lights; HJ-source-soffit-finish (sloped Canopy vertexY) + box-hall B-SEAM-void-soffit in KitDerived gypsumLit (emission lift)"
+  },
+  "mainShell5": {
+   "seam.json": "regenerated; make_seam.py bug fixed (fit root excluded) after a 0.6 m collider gap appeared in after50",
+   "seam-main-fix.json": "gypsum cladding on the dark MainShell_5 bulkhead face Y 10.47-12.05",
+   "seam-fit.json": "square columns stainlessSatin, round columns gypsumLit (white per 9yw), LED screen floor-mounted on a closed black base (was blue board on legs; a wall-mount attempt floated)"
+  },
+  "kit": [
+   "Column top/lean, steelWhite/concrete, base 0 = no ring",
+   "Canopy glassRoof, sloped vertexY",
+   "lawn/sand/paving/asphalt CC0 finishes",
+   "stainlessSatin, gypsumLit",
+   "DisplayBoard stand base"
+  ]
+ },
+ "checks": {
+  "diffs": "every build diff limited to its allowed roots (after50..after60)",
+  "walks": "12/12 COMPLETE on after60 (new route-2f-exit9/exit10-to-sky-plaza-gate; retired port-deck and exit10-landing routes in main-work/retired-walks)",
+  "voidscanWide": "after60: 2F reach 20212.5 m2, 1 fall cell = known south-gate ramp window artefact (-17.875, 58.875); 3F 0; 1F 0",
+  "floatSweep": "after60: 5463 components >= 2 m2 in built roots -> 0 unsupported; 0 dark unlit down-facing surfaces; 0 door/glass voids; 1 wall-less edge = false positive (2F floor meets the U- escalator side cladding at Y 7.2, section diag/sections/s-uminus-slot.png)",
+  "kitRegression": "19 frozen specs identical after kit changes (265 elements, 367776 triangles); 1F-enh-stainless-cabinet 82 tris unchanged"
+ },
+ "stillInference": [
+  "plaza pier grid and ground level Y0",
+  "lawn boundary detail, NE gate hardware",
+  "exit-10 walkway post pitch",
+  "band glazing split a 39.9/57.7",
+  "navy sign style",
+  "seam LED screen content (left dark: no licensed content)"
+ ],
+ "lanes": {
+  "SkyPlaza": "specs/full/sky-plaza-report.json",
+  "HallJunction": ".planning/2026-09-28-natural-fix/halljunction-work/report.json",
+  "SeamMain": ".planning/2026-09-28-natural-fix/seam-main-report.json",
+  "KitExtend8": ".planning/2026-09-28-natural-fix/kitextend-work/report.json",
+  "FloatSweep": ".planning/2026-09-28-natural-fix/floatsweep/float-sweep.json"
+ },
+ "summaryImage": ".planning/2026-09-28-natural-fix/main-work/summary-before-after.jpg"
+}

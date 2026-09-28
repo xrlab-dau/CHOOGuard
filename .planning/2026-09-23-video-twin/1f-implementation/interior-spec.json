@@ -1,0 +1,1012 @@
+{
+ "schema": "chooguard.1f-interior-spec.v1",
+ "root": "1층 · 원본 정합/1층 실내 · 근거 표기",
+ "floorY": 0,
+ "storefronts": "kit",
+ "basis": {
+  "footprints": "Naver 1F vector polygons, rigid 2D fit to the original shell (class b): residual median 0.387, p95 3.028, max 5.071 model units. Rear corridor units #9-#16 and the corridor fronts of #6/#7 follow the provisional kmCzb3KOQ3M corridor observation (tier b, see corrections).",
+  "identities": "2026-08 official 1F board; newer 2026-05 photos / 2026-09 video where stated.",
+  "heightsAndDoors": "Shop height 3.6 and door width 1.8 are visual estimates from the plan, not survey data.",
+  "boundary": "1f-boundary-refresh/live-boundary.json; protected owners unchanged; no floor, slab or ceiling duplication; built only inside the measured 1F enclosure."
+ },
+ "corrections": [
+  {
+   "unit": 4,
+   "field": "polygon",
+   "what": "Inner (+V) end moved from the Naver fit (V -26.98..-27.49) to the observed ARTBOX terminal pier; pier span split out as an opaque edge, remaining inner edge keeps the plan door.",
+   "evidence": "entry-frontage-fit/result.json artbox_terminal_pier (class a, 28/44 inliers, RMS .014, unique check median .061); independent 2020/2022 views place the face within .11-.36 (1f-evidence-acquisition/central-crossval/observations.json). Not yet construction-approved."
+  },
+  {
+   "unit": 3,
+   "field": "kind",
+   "what": "Kind hoarding -> retail (open glazed frontage with the May 2026 fascia); footprint unchanged.",
+   "evidence": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json requiredParentGeometryStateChange (May 18 2026 published photo; renovation 2026-03-03..04-02)."
+  },
+  {
+   "unit": 1,
+   "field": "name",
+   "what": "Identity 모집중 (2026-08 board) -> 짐캐리 부산역점 (2026-09 storefront); footprint unchanged.",
+   "evidence": "eluhiZ_eirE (2026-09-08) and MT_QRO_Ks4k (2026-09-11) show the 짐캐리 storefront at the U+ end; provisional registration places its front inside the #1 footprint (1f-evidence-acquisition/uplus-service-end/observations.json, registration rejected: identity only, not position)."
+  },
+  {
+   "unit": 14,
+   "field": "shared-wall",
+   "what": "U+ front corner snapped onto the #15 shared wall line to remove a sliver overlap between the two polygons (applied only when they overlap after the rear-corridor shifts).",
+   "evidence": "Geometric consistency only (Naver digitisation artefact); no new position evidence."
+  },
+  {
+   "unit": 9,
+   "field": "shift-v",
+   "dv": -7.73,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted -7.73 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 10,
+   "field": "shift-v",
+   "dv": -7.79,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted -7.79 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 11,
+   "field": "shift-v",
+   "dv": -7.36,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted -7.36 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 12,
+   "field": "shift-v",
+   "dv": -7.23,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted -7.23 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 13,
+   "field": "shift-v",
+   "dv": -6.9,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted -6.90 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 14,
+   "field": "shift-v",
+   "dv": -6.65,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted -6.65 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 15,
+   "field": "shift-v",
+   "dv": -3.72,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted -3.72 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 16,
+   "field": "shift-v",
+   "dv": 1.17,
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json (new-rear-row-frontage-line V=0.1087U-23.600, per-unit frontage points; provisional scale envelope x0.94-1.06; registration rejected -> tier b)",
+   "what": "Whole unit shifted +1.17 in V so its corridor frontage meets the observed rear-corridor frontage."
+  },
+  {
+   "unit": 6,
+   "field": "corridor-face",
+   "line": [
+    0.1096,
+    -29.101
+   ],
+   "what": "Corridor-facing front edge moved onto the observed line V = 0.1096U -29.101; plaza-side walls unchanged.",
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json new-rear-corridor-opposite-side (provisional placement, tier b)"
+  },
+  {
+   "unit": 7,
+   "field": "corridor-face",
+   "line": [
+    0.1234,
+    -28.468
+   ],
+   "what": "Corridor-facing front edge moved onto the observed line V = 0.1234U -28.468; plaza-side walls unchanged.",
+   "evidence": "1f-evidence-acquisition/rear-row-walk/observations.json unit-07 corridor frontage plane (provisional placement, tier b)"
+  },
+  {
+   "unit": 9,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 10,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 11,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 12,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 13,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 14,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 15,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 16,
+   "field": "height",
+   "height": 4.78,
+   "zone": "rear corridor #9-#16",
+   "what": "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json rear corridor #9-#16: known-ceiling gauge 4.78; pedestrians 5.37; kmCz only"
+  },
+  {
+   "unit": 5,
+   "field": "height",
+   "height": 4.8,
+   "zone": "U- lobby / front row #5-#8",
+   "what": "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json U- lobby / front row #5-#8: U- lobby 4.81 (4.65-4.95), same level as the corridor; #5-#8 front unmeasured"
+  },
+  {
+   "unit": 6,
+   "field": "height",
+   "height": 4.8,
+   "zone": "U- lobby / front row #5-#8",
+   "what": "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json U- lobby / front row #5-#8: U- lobby 4.81 (4.65-4.95), same level as the corridor; #5-#8 front unmeasured"
+  },
+  {
+   "unit": 7,
+   "field": "height",
+   "height": 4.8,
+   "zone": "U- lobby / front row #5-#8",
+   "what": "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json U- lobby / front row #5-#8: U- lobby 4.81 (4.65-4.95), same level as the corridor; #5-#8 front unmeasured"
+  },
+  {
+   "unit": 8,
+   "field": "height",
+   "height": 4.8,
+   "zone": "U- lobby / front row #5-#8",
+   "what": "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json U- lobby / front row #5-#8: U- lobby 4.81 (4.65-4.95), same level as the corridor; #5-#8 front unmeasured"
+  },
+  {
+   "unit": 3,
+   "field": "height",
+   "height": 4.98,
+   "zone": "central lobby",
+   "what": "Shop height 3.6 (visual estimate) -> 4.98 = measured central lobby ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json central lobby: March absolute 4.98; 2020/2023/2024 walks within 0.20"
+  },
+  {
+   "unit": 4,
+   "field": "height",
+   "height": 4.98,
+   "zone": "central lobby",
+   "what": "Shop height 3.6 (visual estimate) -> 4.98 = measured central lobby ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json central lobby: March absolute 4.98; 2020/2023/2024 walks within 0.20"
+  },
+  {
+   "unit": 1,
+   "field": "height",
+   "height": 4.4,
+   "zone": "U+ hall / locker corridor",
+   "what": "Shop height 3.6 (visual estimate) -> 4.4 = measured U+ hall / locker corridor ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json U+ hall / locker corridor: U+ hall 4.41 (4.26-4.53), locker corridor 4.51; eluhiZ only"
+  },
+  {
+   "unit": 2,
+   "field": "height",
+   "height": 4.4,
+   "zone": "U+ hall / locker corridor",
+   "what": "Shop height 3.6 (visual estimate) -> 4.4 = measured U+ hall / locker corridor ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+   "evidence": ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json U+ hall / locker corridor: U+ hall 4.41 (4.26-4.53), locker corridor 4.51; eluhiZ only"
+  },
+  {
+   "unit": 16,
+   "field": "east-edge",
+   "edge": 2,
+   "points": [
+    [
+     5.1,
+     -18.75
+    ],
+    [
+     4.97,
+     -15.14
+    ],
+    [
+     4.95,
+     -12.731
+    ]
+   ],
+   "frontEdges": [
+    1,
+    2
+   ],
+   "what": "East edge moved from U ~6.0 onto the observed glazed east frontage at U ~5.0; north of the office corner (4.97, -15.14) it is the shared office wall; the glazed east side becomes a front (edge 2).",
+   "evidence": ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json unit16.eastGlass a/b/c and office.corner/door2: March 3TLdCQCjeXE registered frames 000072/000079, ray x class-a floor / office-frontage plane, two-frame agreement <= 0.02 u (measure_1f_rays.py)"
+  },
+  {
+   "unit": 8,
+   "field": "fronts",
+   "frontEdges": [
+    4,
+    5
+   ],
+   "doorEdge": 5,
+   "what": "Fronts moved from the unobserved track-side edge 6 to the hall-facing edges 4-5 (door and fascia on 5).",
+   "evidence": ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/overlays/unit-08.jpg (SY0 313-326 s, class b identity/topology; registration rejected)"
+  }
+ ],
+ "units": [
+  {
+   "boardNo": 1,
+   "mid": "5309",
+   "name": "짐캐리 부산역점",
+   "kind": "retail",
+   "polygon": [
+    [
+     45.313,
+     -31.856
+    ],
+    [
+     46.222,
+     -36.597
+    ],
+    [
+     62.346,
+     -32.587
+    ],
+    [
+     60.346,
+     -25.709
+    ],
+    [
+     53.453,
+     -27.367
+    ],
+    [
+     48.47,
+     -27.708
+    ]
+   ],
+   "frontEdges": [
+    3,
+    4
+   ],
+   "doorEdge": 3,
+   "doorWidth": 1.8,
+   "height": 4.4,
+   "fasciaTex": null,
+   "fasciaStatus": "Identity from 2026-09 storefront video; fascia appearance not extracted.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates.",
+   "evidenceTier": "b",
+   "corrections": [
+    "Identity 모집중 (2026-08 board) -> 짐캐리 부산역점 (2026-09 storefront); footprint unchanged.",
+    "Shop height 3.6 (visual estimate) -> 4.4 = measured U+ hall / locker corridor ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 2,
+   "mid": "4917",
+   "name": "편의점",
+   "kind": "retail",
+   "polygon": [
+    [
+     28.475,
+     -31.797
+    ],
+    [
+     29.597,
+     -39.601
+    ],
+    [
+     38.409,
+     -38.123
+    ],
+    [
+     37.989,
+     -35.954
+    ],
+    [
+     33.207,
+     -31.444
+    ]
+   ],
+   "frontEdges": [
+    3,
+    4
+   ],
+   "doorEdge": 3,
+   "doorWidth": 1.8,
+   "height": 4.4,
+   "fasciaTex": null,
+   "fasciaStatus": "Tenant lettering from board, fascia appearance unverified",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates.",
+   "evidenceTier": "b",
+   "corrections": [
+    "Shop height 3.6 (visual estimate) -> 4.4 = measured U+ hall / locker corridor ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 3,
+   "mid": "4918",
+   "name": "비엔씨도넛",
+   "kind": "retail",
+   "polygon": [
+    [
+     14.147,
+     -26.375
+    ],
+    [
+     15.203,
+     -41.304
+    ],
+    [
+     22.098,
+     -40.542
+    ],
+    [
+     21.614,
+     -33.675
+    ],
+    [
+     21.579,
+     -33.568
+    ],
+    [
+     20.479,
+     -33.649
+    ],
+    [
+     20.361,
+     -33.482
+    ],
+    [
+     22.092,
+     -33.273
+    ],
+    [
+     22.015,
+     -32.202
+    ],
+    [
+     21.688,
+     -32.21
+    ],
+    [
+     21.275,
+     -25.854
+    ]
+   ],
+   "frontEdges": [
+    0,
+    1,
+    6,
+    10
+   ],
+   "doorEdge": 10,
+   "doorWidth": 1.8,
+   "height": 4.98,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/bnc-donuts-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published open glazed frontage and fascia; March hoarding superseded.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-00.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred. Open glazed entrance is visible; March hoarding is historical, not latest observed state.",
+   "signEdges": [
+    0,
+    1,
+    6
+   ],
+   "facadeDirectionEvidence": "3TLdCQCjeXE 82–100s: ARTBOX glazing at plaza and central entry; B&C central-entry hoarding. Edge choice uses the unapproved indoor-map reference, not a measured position. Temporal correction: B&C hoarding above is the March historical observation, superseded by May 18, 2026 published open-store photo-00; edge assignments are unchanged.",
+   "evidenceTier": "b",
+   "corrections": [
+    "Kind hoarding -> retail (open glazed frontage with the May 2026 fascia); footprint unchanged.",
+    "Shop height 3.6 (visual estimate) -> 4.98 = measured central lobby ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 4,
+   "mid": "4916",
+   "name": "ARTBOX",
+   "kind": "retail",
+   "polygon": [
+    [
+     -2.319,
+     -22.591
+    ],
+    [
+     -1.439,
+     -34.939
+    ],
+    [
+     -0.576,
+     -34.955
+    ],
+    [
+     -0.658,
+     -35.146
+    ],
+    [
+     -1.42,
+     -35.205
+    ],
+    [
+     -0.919,
+     -42.228
+    ],
+    [
+     6.464,
+     -41.912
+    ],
+    [
+     5.525,
+     -22.581
+    ],
+    [
+     4.389,
+     -22.591
+    ]
+   ],
+   "frontEdges": [
+    1,
+    5,
+    6,
+    8
+   ],
+   "doorEdge": 8,
+   "doorWidth": 1.8,
+   "height": 4.98,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/artbox-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-01.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "signEdges": [
+    6,
+    1,
+    5
+   ],
+   "doorEdges": [
+    6
+   ],
+   "facadeDirectionEvidence": "3TLdCQCjeXE 82–100s: ARTBOX glazing at plaza and central entry; B&C central-entry hoarding. Edge choice uses the unapproved indoor-map reference, not a measured position. Temporal correction: B&C hoarding above is the March historical observation, superseded by May 18, 2026 published open-store photo-00; edge assignments are unchanged.",
+   "evidenceTier": "a+b",
+   "corrections": [
+    "Inner (+V) end moved from the Naver fit (V -26.98..-27.49) to the observed ARTBOX terminal pier; pier span split out as an opaque edge, remaining inner edge keeps the plan door.",
+    "Shop height 3.6 (visual estimate) -> 4.98 = measured central lobby ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 5,
+   "mid": "3336",
+   "name": "환공어묵",
+   "kind": "counter",
+   "polygon": [
+    [
+     -12.341,
+     -42.278
+    ],
+    [
+     -8.132,
+     -42.362
+    ],
+    [
+     -8.167,
+     -35.493
+    ],
+    [
+     -8.053,
+     -35.412
+    ],
+    [
+     -8.052,
+     -34.39
+    ],
+    [
+     -10.831,
+     -34.57
+    ]
+   ],
+   "frontEdges": [
+    4
+   ],
+   "doorEdge": 4,
+   "doorWidth": 1.8,
+   "height": 4.8,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ground/hwanggong-2025.png",
+   "fasciaStatus": "2025 historical visual reference; current tenant confirmed by 2026 board",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates.",
+   "evidenceTier": "b",
+   "corrections": [
+    "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 6,
+   "mid": "4915",
+   "name": "버거앤타코",
+   "kind": "restaurant",
+   "polygon": [
+    [
+     -44.436,
+     -33.971
+    ],
+    [
+     -43.812,
+     -39.895
+    ],
+    [
+     -29.869,
+     -41.565
+    ],
+    [
+     -28.761,
+     -32.253
+    ]
+   ],
+   "frontEdges": [
+    3
+   ],
+   "doorEdge": 3,
+   "doorWidth": 1.8,
+   "height": 4.8,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/bt-burger-taco-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-05.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Corridor-facing front edge moved onto the observed line V = 0.1096U -29.101; plaza-side walls unchanged.",
+    "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 7,
+   "mid": "4914",
+   "name": "편의점",
+   "kind": "retail",
+   "polygon": [
+    [
+     -56.497,
+     -37.84
+    ],
+    [
+     -43.812,
+     -39.895
+    ],
+    [
+     -44.436,
+     -33.951
+    ],
+    [
+     -55.321,
+     -35.295
+    ]
+   ],
+   "frontEdges": [
+    2
+   ],
+   "doorEdge": 2,
+   "doorWidth": 1.8,
+   "height": 4.8,
+   "fasciaTex": null,
+   "fasciaStatus": "Tenant lettering from board, fascia appearance unverified",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Corridor-facing front edge moved onto the observed line V = 0.1234U -28.468; plaza-side walls unchanged.",
+    "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 8,
+   "mid": "4912",
+   "name": "양산국밥",
+   "kind": "restaurant",
+   "polygon": [
+    [
+     -82.672,
+     -19.643
+    ],
+    [
+     -82.126,
+     -27.464
+    ],
+    [
+     -73.202,
+     -26.854
+    ],
+    [
+     -72.658,
+     -34.286
+    ],
+    [
+     -72.06,
+     -34.404
+    ],
+    [
+     -69.59,
+     -25.199
+    ],
+    [
+     -70.044,
+     -18.746
+    ]
+   ],
+   "frontEdges": [
+    4,
+    5
+   ],
+   "doorEdge": 5,
+   "doorWidth": 1.8,
+   "height": 4.8,
+   "fasciaTex": null,
+   "fasciaStatus": "Tenant lettering from board, fascia appearance unverified",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates.",
+   "evidenceTier": "b",
+   "corrections": [
+    "Shop height 3.6 (visual estimate) -> 4.8 = measured U- lobby / front row #5-#8 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+    "Fronts moved from the unobserved track-side edge 6 to the hall-facing edges 4-5 (door and fascia on 5)."
+   ]
+  },
+  {
+   "boardNo": 9,
+   "mid": "10061928",
+   "name": "복순도가",
+   "kind": "retail",
+   "polygon": [
+    [
+     -49.16,
+     -24.059
+    ],
+    [
+     -48.814,
+     -28.566
+    ],
+    [
+     -38.063,
+     -27.802
+    ],
+    [
+     -38.863,
+     -16.841
+    ],
+    [
+     -42.619,
+     -17.108
+    ],
+    [
+     -42.174,
+     -23.558
+    ]
+   ],
+   "frontEdges": [
+    1
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/boksoondoga-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-12.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted -7.73 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 10,
+   "mid": "10061929",
+   "name": "아트센트",
+   "kind": "restaurant",
+   "polygon": [
+    [
+     -38.863,
+     -16.901
+    ],
+    [
+     -38.063,
+     -27.862
+    ],
+    [
+     -32.161,
+     -27.416
+    ],
+    [
+     -32.962,
+     -16.455
+    ]
+   ],
+   "frontEdges": [
+    1
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/artcent-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights. Oblique low-resolution original; raised-letter shadows remain.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-10.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted -7.79 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 11,
+   "mid": "10061927",
+   "name": "포레일",
+   "kind": "restaurant",
+   "polygon": [
+    [
+     -32.961,
+     -16.025
+    ],
+    [
+     -32.161,
+     -26.986
+    ],
+    [
+     -28.155,
+     -26.731
+    ],
+    [
+     -28.898,
+     -15.789
+    ]
+   ],
+   "frontEdges": [
+    1
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/pho-rail-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-09.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted -7.36 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 12,
+   "mid": "10061931",
+   "name": "비앤씨박스앤컵",
+   "kind": "counter",
+   "polygon": [
+    [
+     -28.897,
+     -15.659
+    ],
+    [
+     -28.155,
+     -26.601
+    ],
+    [
+     -23.94,
+     -26.283
+    ],
+    [
+     -24.74,
+     -15.323
+    ]
+   ],
+   "frontEdges": [
+    1
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/box-cup-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-08.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted -7.23 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 13,
+   "mid": "10061932",
+   "name": "채선당 행복가마솥밥",
+   "kind": "restaurant",
+   "polygon": [
+    [
+     -24.74,
+     -14.992
+    ],
+    [
+     -23.94,
+     -25.953
+    ],
+    [
+     -17.654,
+     -25.496
+    ],
+    [
+     -18.455,
+     -14.535
+    ]
+   ],
+   "frontEdges": [
+    1
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/chaeseondang-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-07.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted -6.90 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 14,
+   "mid": "10061930",
+   "name": "개미집",
+   "kind": "restaurant",
+   "polygon": [
+    [
+     -18.454,
+     -14.285
+    ],
+    [
+     -17.654,
+     -25.246
+    ],
+    [
+     -11.886,
+     -24.823
+    ],
+    [
+     -12.687,
+     -13.863
+    ]
+   ],
+   "frontEdges": [
+    1
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/gaemijip-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-06.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted -6.65 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 15,
+   "mid": "10061933",
+   "name": "새벽집국밥국수",
+   "kind": "restaurant",
+   "polygon": [
+    [
+     -12.686,
+     -10.932
+    ],
+    [
+     -11.713,
+     -24.88
+    ],
+    [
+     -5.62,
+     -24.428
+    ],
+    [
+     -6.593,
+     -10.481
+    ]
+   ],
+   "frontEdges": [
+    1
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/saebyeokjip-2026-05-sign.png",
+   "fasciaStatus": "May 18, 2026 published current visual; sign-only rectified reference, aspect estimated, reference-only rights.",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates. Current fascia: https://m.blog.naver.com/djagytt/224289573890, May 18, 2026 publication, may2026-1f-photo-03.jpg; capture date not independently verified. Exact source quadrilateral, homography, aspect caveat and rights: Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json. Sign appearance only; no placement or fixture geometry inferred.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted -3.72 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia."
+   ]
+  },
+  {
+   "boardNo": 16,
+   "mid": "10061935",
+   "name": "파리바게트",
+   "kind": "counter",
+   "polygon": [
+    [
+     -6.593,
+     -5.591
+    ],
+    [
+     -5.62,
+     -19.538
+    ],
+    [
+     5.1,
+     -18.75
+    ],
+    [
+     4.97,
+     -15.14
+    ],
+    [
+     4.95,
+     -12.731
+    ],
+    [
+     -0.005,
+     -13.123
+    ],
+    [
+     -0.575,
+     -5.18
+    ]
+   ],
+   "frontEdges": [
+    1,
+    2
+   ],
+   "doorEdge": 1,
+   "doorWidth": 1.8,
+   "height": 4.78,
+   "fasciaTex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ground/paris-baguette-2025.png",
+   "fasciaStatus": "2025 historical visual reference; current tenant confirmed by 2026 board",
+   "evidence": "hi_yoonss_IMG_8821.JPG board identities + Naver floor1 polygon topology; rigid fitted reference placement, not surveyed; door width and shop height are visual estimates.",
+   "evidenceTier": "b (provisional video)",
+   "corrections": [
+    "Whole unit shifted +1.17 in V so its corridor frontage meets the observed rear-corridor frontage.",
+    "Shop height 3.6 (visual estimate) -> 4.78 = measured rear corridor #9-#16 ceiling; shops close to the ceiling with a bulkhead above the fascia.",
+    "East edge moved from U ~6.0 onto the observed glazed east frontage at U ~5.0; north of the office corner (4.97, -15.14) it is the shared office wall; the glazed east side becomes a front (edge 2)."
+   ]
+  }
+ ]
+}

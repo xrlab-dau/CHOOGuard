@@ -1,0 +1,216 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "goal": "복원된 원본 부산역 Unity 맵에서, 외부가 이미 달성한 디지털 트윈 수준과 같은 수준으로 실내(2층 맞이방)를 구축한다.",
+    "exterior_measured": {
+      "source": "공식 부산역 3D 모델 SKP -> FBX 8분할 (MainShell/ContextPlaza/ContextNeighbours/SiteTrees/SiteTrains/ExitRoofs/PlatformsParking/Layer0PlatformsDetails)",
+      "rendered_features_confirmed_by_screenshot": [
+        "파사드에 한글 '부산역' + 영문 'Busan Station' 실사인 렌더",
+        "다크 유리 커튼월 + 수평 장대 캐노피",
+        "승강장 철골 트러스 유리 캐노피",
+        "주변 맥락: 초량 트윈타워, 고층 오피스, 도로 차선·횡단보도, 가로수, 버스정류장",
+        "점자블록·주차구획·선로·KTX 차량"
+      ],
+      "meshRendererCounts": {
+        "역사": 22,
+        "주변공간": 23,
+        "Metro113": 1107,
+        "KTX": 698,
+        "RecoveredRoofCentre": 384
+      },
+      "verdict": "외부는 저작 없이 기확보 지오메트리만으로 트윈 수준 달성"
+    },
+    "interior_measured": {
+      "probe_method": "원본 콜라이더 레이캐스트 2m 격자 + FBX 삼각형 직접 판독",
+      "walkable_interior_total_m2": 11408,
+      "levels_m2": {
+        "y7": 4348,
+        "y23": 2280,
+        "y17": 996,
+        "y26": 564
+      },
+      "component_B_2F_concourse": {
+        "identity": "2층 맞이방",
+        "floorY": 7,
+        "ceilingY_median": 11,
+        "clearHeight_median_m": 4,
+        "floor_triangle_area_m2": 1717,
+        "uv_extent": {
+          "u": [
+            -55.6,
+            -16.2
+          ],
+          "v": [
+            6.4,
+            85.7
+          ],
+          "longAxisDeg": 16.2
+        },
+        "world_extent": {
+          "x": [
+            -2,
+            62
+          ],
+          "z": [
+            -67,
+            -27
+          ]
+        },
+        "triangles_in_volume": 57686,
+        "wall_triangles": 21517,
+        "existing_surfaces": [
+          "우드루버 천장",
+          "회색 벽판",
+          "백색 클래딩 기둥",
+          "무늬 없는 백색 바닥"
+        ],
+        "missing_entirely": [
+          "점포",
+          "사인/유도표지",
+          "행선안내 전광판",
+          "매표창구",
+          "타는곳 게이트",
+          "대기의자",
+          "발권기/ATM",
+          "조명기구",
+          "물품보관함",
+          "승객",
+          "바닥 패턴 재질"
+        ]
+      },
+      "component_A": {
+        "identity": "선상통로(승강장 상부)",
+        "areaM2": 1932,
+        "world_extent": {
+          "x": [
+            34,
+            130
+          ],
+          "z": [
+            43,
+            85
+          ]
+        }
+      }
+    },
+    "authoritative_content_sources_already_held": {
+      "korail_lease_register": {
+        "records_2F": 121,
+        "breakdown": {
+          "전문점": 48,
+          "편의점": 4,
+          "자판기": 69
+        },
+        "total_aprv_area_m2": 2675.9,
+        "position_field_values": {
+          "맞이방": 103,
+          "선상통로": 7,
+          "고속맞이방": 6,
+          "상행선타는곳": 3
+        },
+        "largest_examples_m2": {
+          "서브웨이": 247,
+          "파스쿠찌": 181.3,
+          "올리브영": 149.4,
+          "소반한식": 136.4,
+          "스토리오브라망": 128,
+          "북직영편의점": 113.1,
+          "하와이안파라다이스커피": 98.4,
+          "카카오프렌즈": 87.4,
+          "크리스피크림도넛": 83.4,
+          "비엔씨제과": 76.6,
+          "환공어묵": 72
+        }
+      },
+      "official_2F_floor_guide_image": "부산역 2층 안내도 1장. 전 브랜드의 변(邊)별 배치 위상을 담고 있으나 축척·좌표 없음. 매표소·종합안내·1층/3층 에스컬레이터·EV·WC·역무실·철도경찰·수유방 위치 포함",
+      "interior_photos": {
+        "curated_reference": 106,
+        "video_keyframes": 206,
+        "raw_photos": 68
+      },
+      "naver_indoor_geojson": "1층/지하1층 점포 폴리곤 209개(좌표 있음, 상호명 없음). 2층 데이터 없음",
+      "building_ledger": {
+        "연면적_m2": 62520.53,
+        "건축면적_m2": 36903.83
+      }
+    },
+    "prior_failure_postmortem": {
+      "what_was_done": "원본 외피를 참조하지 않고 합성 바닥 슬래브 240개와 프리미티브 집기를 새 좌표계에 생성",
+      "measured_symptoms": [
+        "벤치 bounds 20.1x16.4x23.4 m, 발권기 48.6 m 높이 - 척도 붕괴",
+        "플레이어 스폰이 실제 슬래브 범위 밖 허공",
+        "합성 슬래브를 v -54..14.4 구간에 배치했으나 원본 실내는 v 6.4..85.7 구간 - 좌표계 자체가 빗나감",
+        "씬 파일 721,037줄 증가"
+      ],
+      "root_cause": "배치 좌표를 계측이 아니라 가정에서 만들었다"
+    },
+    "search_result_existing_interior_model": "Sketchfab / 3D Warehouse / GitHub 검색에서 부산역 실내 3D 모델 완성본 0건. 외부 모델만 존재.",
+    "constraints": [
+      "저작권·라이선스 제약 없음",
+      "원본 외피 지오메트리는 수정 금지 - 오직 덧붙인다",
+      "모든 배치 좌표는 계측된 원본 벽/바닥/천장 삼각형에서 파생되어야 한다",
+      "사용자는 유니티 에디터 화면으로 진행을 직접 확인한다"
+    ]
+  },
+  "questions": {
+    "anchor_authority": {
+      "type": "choice",
+      "instructions": "실내 요소의 배치 좌표를 무엇으로부터 유도해야 재발 없이 척도·위치가 맞는가. 직전 실패의 근본원인을 제거하는 선택지를 고르라.",
+      "criteria": {
+        "measured_shell_only": "계측된 원본 벽/바닥/기둥 삼각형만을 앵커로 쓰고, 안내도는 쓰지 않는다",
+        "floorplan_homography_only": "안내도 이미지를 호모그래피로 외피에 정합시켜 그 좌표를 그대로 쓴다",
+        "shell_anchor_plus_plan_topology": "좌표는 전적으로 계측된 외피 벽선에서 얻고, 안내도는 '어느 벽 구간에 어느 상호가 오는가'라는 위상 배정에만 쓴다",
+        "photogrammetry_reconstruction": "실내 사진 206+68장으로 포토그래메트리 복원해 메시를 만든다"
+      }
+    },
+    "parity_driver": {
+      "type": "choice",
+      "instructions": "외부는 실사급인데 실내가 그렇지 않다. 같은 체감 수준에 도달시키는 단일 최대 기여 요인은 무엇인가. 현재 실내가 이미 가진 것(천장·벽판·기둥)과 없는 것을 근거로 판단하라.",
+      "criteria": {
+        "brand_signage_texture": "실제 상호 간판·유도사인·전광판 텍스처",
+        "pbr_material_realism": "바닥 화강석·테라조 등 PBR 재질 정확도",
+        "lighting_and_exposure": "실내 조명기구와 노출 보정",
+        "prop_density_human_scale": "집기 밀도와 인체 척도 기준물(의자·사람·손잡이)"
+      }
+    },
+    "storefront_method": {
+      "type": "choice",
+      "instructions": "48개 전문점의 점포 전면을 어떤 방식으로 만들 때 계측 정합성과 실사감을 동시에 얻는가.",
+      "criteria": {
+        "extrude_on_measured_wall_runs": "계측된 벽선 위에 인가면적만큼 구획을 잡고 전면을 압출 생성한 뒤 실제 간판 텍스처를 입힌다",
+        "import_thirdparty_storefronts": "외부 상점 3D 모델을 받아 배치한다",
+        "photo_billboard_planes": "사진 텍스처 평면 빌보드로 전면을 대체한다"
+      }
+    },
+    "first_unit": {
+      "type": "choice",
+      "instructions": "사용자가 에디터 화면에서 '이제 디지털 트윈이다' 라고 판단할 수 있는 최초 단위는 무엇인가. 1,717제곱미터 맞이방 전체를 한 번에 하는 것과 비교하라.",
+      "criteria": {
+        "whole_concourse_at_once": "맞이방 1,717제곱미터 전체를 한 번에 마감",
+        "one_wall_run_vertical_slice": "한 벽 구간(예: 매표소+행선안내 전광판+게이트)을 실사 수준으로 완결",
+        "materials_and_lighting_first": "집기 없이 바닥·천장·조명만 먼저 전체 적용"
+      }
+    },
+    "verification_metric": {
+      "type": "choice",
+      "instructions": "실내가 외부와 같은 수준에 도달했음을 어떻게 판정해야 자기기만이 없는가.",
+      "criteria": {
+        "side_by_side_photo_match": "동일 구도 실사 사진과 렌더를 나란히 놓고 대조",
+        "numeric_dtf_score": "재질·조명·사인·척도 항목별 가중 점수",
+        "both_photo_and_numeric": "동일 구도 대조를 1차 관문으로 두고 수치 점수를 2차로 병행"
+      }
+    },
+    "current_interior_level": {
+      "type": "score",
+      "instructions": "현재 실내(우드루버 천장·회색 벽판·클래딩 기둥·무늬 없는 백색 바닥, 집기/사인/조명 전무)가 외부가 달성한 디지털 트윈 수준 대비 어느 단계인가.",
+      "criteria": [
+        "형상조차 없음",
+        "빈 외피만 존재",
+        "구조는 맞고 마감 없음",
+        "마감 일부",
+        "집기까지 갖춤",
+        "외부와 동급 트윈"
+      ]
+    }
+  }
+}

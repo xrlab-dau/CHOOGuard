@@ -1,0 +1,98 @@
+{
+ "version": 3,
+ "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after40",
+ "items": [
+  {
+   "item": "south gate opening and reveal",
+   "status": "built (tier b; source override applied by Main)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/platform-side-report.json",
+    ".planning/2026-09-26-full-twin/progress/PlatformSide3.md",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg",
+    "[INFERENCE] opening jamb span remains provisional until registered footage provides exact edges."
+   ],
+   "elementIds": [
+    "south-gate-reveal"
+   ]
+  },
+  {
+   "item": "0.2 m box-to-strip threshold",
+   "status": "v3 requested; pending Main build and post-build scan of residual after40 cell (-17.875,58.875)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/platform-side-report.json",
+    ".planning/2026-09-27-openings-extension/plan.md",
+    ".planning/2026-09-27-openings-extension/voidscan-after38/voidscan2.json",
+    "[INFERENCE] v3 expands the box-side landing by 0.25 m and the run to 0.9 m (slope 0.22) to bridge after40 cell (-17.875,58.875) beside the south jamb.",
+    ".planning/2026-09-27-openings-extension/voidscan-after40/voidscan2.json"
+   ],
+   "elementIds": [
+    "south-gate-step-ramp"
+   ]
+  },
+  {
+   "item": "south strip stair/escalator fall edges",
+   "status": "v2 built by Main; after40 leaves one south-jamb cell, v3 ramp extension requested",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/voidscan-after38/voidscan2.json",
+    ".planning/2026-09-27-openings-extension/voidscan-after40/voidscan2.json",
+    "[INFERENCE] after38 10 cells; v2 guards/Ramp closed nine, leaving cell centre (-17.875,58.875) at jamb over surface Y=6.1."
+   ],
+   "elementIds": [
+    "south-well-v51-west-guard",
+    "south-well-v51-mid-guard",
+    "south-well-v51-east-guard",
+    "south-well-v91-guard",
+    "south-gate-step-ramp"
+   ],
+   "needsPostBuildVoidScan": true
+  },
+  {
+   "item": "south-strip public lighting",
+   "status": "built in v2; visible in Main after40 registered render",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/main-work/renders/southgate-strip-inside.png",
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/seen-7-8-after40.png",
+    "[INFERENCE] new 21-point real-light grid illuminates the south strip; exact historic fixture layout remains unavailable."
+   ],
+   "elementIds": [
+    "south-strip-public-lighting"
+   ]
+  },
+  {
+   "item": "far-side black panel",
+   "status": "reported source material defect; no speculative cladding",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/southgate-work/renders/southgate-black-face.png",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after40/world-geometry.json",
+    "Assets/ChooGuard/Art/OfficialBusanStation/Materials/source-6df65da90f8211785446.mat",
+    "[INFERENCE] a flat opaque black source face is visible at the far side of the south-strip sightline; MainShell renderer _부산역_6 has this zero-albedo/no-texture source material."
+   ],
+   "sourceObject": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_6",
+   "sourceMaterial": "source-6df65da90f8211785446.mat (_BaseColor 0,0,0; _BaseMap null)",
+   "decision": "Preserve as source defect pending authoritative surface identity/repair; no evidence supports covering it with invented Room/WallCladding."
+  },
+  {
+   "item": "gate equipment / leaves (fare-gate vs open passage)",
+   "status": "still-c / registration NO-MATCH",
+   "sourcesTried": [
+    "official 2F board: locates Tracks access but does not depict its leaves or fare-gate line",
+    ".planning/2026-09-26-full-twin/progress/PlatformSide3.md: source wall material audit only establishes that no source door leaf is embedded at this site",
+    ".planning/2026-09-26-full-twin/reg-requests/SouthGate-1.done.json: RegTech8 rejected all six 142-152 s frames (6-13 inliers, threshold 20); candidate Tracks/glass/automatic-door imagery could not be tied to the SSW source wall; anchor LOO max 1.041 m and RMS 184.94 px fail",
+    "asset-library/research-public/2026-09-27/SouthGate/receipts.json: two additional candidate videos screened but not localized; adjacent Naver storefront photo only",
+    ".planning/2026-09-27-openings-extension/resume/SouthGate.md: no Naver/Kakao indoor panorama located"
+   ],
+   "decision": "No DoorSet or Gate is fabricated; no measured center, width, or head height is available."
+  },
+  {
+   "item": "southbound Tracks wayfinding",
+   "status": "verified retained (existing builder sign)",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg"
+   ],
+   "elementIds": [
+    "majibang-plan secondFloorExtras.signs entry at (u=4.5,v=57.4)"
+   ]
+  }
+ ]
+}

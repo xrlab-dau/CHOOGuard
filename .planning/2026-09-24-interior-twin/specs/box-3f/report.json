@@ -1,0 +1,1311 @@
+{
+ "schema": "chooguard.interior-spec-report.v1",
+ "lane": "box-3f",
+ "plan": ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json",
+ "liveGeometry": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json",
+ "liveGeometryUtc": "2026-09-24T23:58:42.2583190Z",
+ "specs": {
+  "bridge.json": {
+   "zone": "2F bridge",
+   "root": "실내 트윈 마감/2F 연결",
+   "elements": 3
+  },
+  "box-hall.json": {
+   "zone": "2F box",
+   "root": "실내 트윈 마감/2F 박스",
+   "elements": 16
+  },
+  "3f.json": {
+   "zone": "3F",
+   "root": "실내 트윈 마감/3F",
+   "elements": 10
+  },
+  "box-storefronts.json": {
+   "zone": "2F box storefronts",
+   "root": "실내 트윈 마감/2F 박스 점포",
+   "elements": 14
+  },
+  "3f-storefronts.json": {
+   "zone": "3F storefronts",
+   "root": "실내 트윈 마감/3F 점포",
+   "elements": 3
+  }
+ },
+ "elementsPerType": {
+  "bridge.json": {
+   "SuspendedCeiling": {
+    "b": 1
+   },
+   "WallCladding": {
+    "b": 2
+   }
+  },
+  "box-hall.json": {
+   "SuspendedCeiling": {
+    "b": 7
+   },
+   "WallCladding": {
+    "b": 6
+   },
+   "Fixture": {
+    "b": 1
+   },
+   "HangingSign": {
+    "b": 1
+   },
+   "ElevatorFront": {
+    "b": 1
+   }
+  },
+  "3f.json": {
+   "SuspendedCeiling": {
+    "b": 1
+   },
+   "Storefront": {
+    "b": 1
+   },
+   "WallSign": {
+    "b": 1
+   },
+   "ElevatorFront": {
+    "b": 2
+   },
+   "FloorFinish": {
+    "b": 5
+   }
+  },
+  "box-storefronts.json": {
+   "Storefront": {
+    "b": 14
+   }
+  },
+  "3f-storefronts.json": {
+   "Storefront": {
+    "b": 3
+   }
+  }
+ },
+ "omitted": [
+  {
+   "id": "BR-SEAM-hazard-stripe",
+   "type": "WallCladding",
+   "zone": "2F bridge",
+   "tier": "c",
+   "reason": "The hazard-stripe soffit and the blue \"타는 곳 →\" hanging sign come from ry-contact / ry-330-832 tile r3c4 (RY2 ~540 s); in that walk they precede the 비엔씨 bakery (~554-568 s) and the actual entry into the box (~582 s, tile r4c1, no stripe visible), so they belong to a main-building void edge, not the box seam. No position at the seam."
+  },
+  {
+   "id": "BR-SEAM-tanungot-sign",
+   "type": "HangingSign",
+   "zone": "2F bridge",
+   "tier": "c",
+   "reason": "same misattributed frame as the hazard stripe; no seam position"
+  },
+  {
+   "id": "BR-SEAM-columns",
+   "type": "Column",
+   "zone": "2F bridge",
+   "tier": "c",
+   "reason": "panel-clad square columns seen in the 2010 photo / RY2 ~582 s have no source-mesh or registered position (y-9 slice of the original shell shows no column in u -15..18, v 12.5..16.6)"
+  },
+  {
+   "id": "B-ELEV2F-corner",
+   "type": "ElevatorFront",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "not placeable: the 3F corner elevator footprint (station u -16.1..-13.6, v 80.4..93.2) projected to 2F overlaps the 2F 화장실 unit (u -17.5..-11, v 80..89); plan conflict for Main"
+  },
+  {
+   "id": "B-FLOOR-guide-lines",
+   "type": "FloorFinish",
+   "zone": "2F box",
+   "tier": "c",
+   "reason": "orange line escalator foot -> north gates (ov-315) and yellow tactile paths are observed but unmeasured; the only registered frame (sfmcmp ry2-2 000315 camera) reprojects the tree columns 30-60 px off, so a floor projection would be a guess"
+  },
+  {
+   "id": "B-WAY-toilet-by-starlight-sand",
+   "type": "HangingSign",
+   "zone": "2F box",
+   "tier": "c",
+   "reason": "\"↑ 화장실\" sign beside 부산별빛샌드 (best_pb_han_017): depth ambiguous (band plane a 16 vs shop front a 13.6)"
+  },
+  {
+   "id": "B-WAY-lockers-arrow",
+   "type": "HangingSign",
+   "zone": "2F box",
+   "tier": "c",
+   "reason": "\"물품보관함 →\" (mongmonge77_002) position unmeasured"
+  },
+  {
+   "id": "B-WAY-tanungot-tickets-many",
+   "type": "HangingSign",
+   "zone": "2F box",
+   "tier": "c",
+   "reason": "\"many blue 타는 곳 → / Tickets hanging signs\" (G-B16) without positions"
+  },
+  {
+   "id": "C-BOX-STRIPCOLS",
+   "type": "Column",
+   "zone": "2F box",
+   "tier": "c",
+   "reason": "round strip-edge columns (e5v 0:07-0:11) outside the registered SfM models"
+  },
+  {
+   "id": "B-FLOOR-hall-polished",
+   "type": "FloorFinish",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "not emitted: the hall floor (Majibang_2F_Floor) material change is better done on the builder floor than as a 6,000 m2 overlay; kit option: FloorFinish finish floorGranite/polished over box cells minus units"
+  },
+  {
+   "id": "BL-04 exits 9/10",
+   "type": "Storefront",
+   "zone": "2F exits/links",
+   "tier": "c",
+   "reason": "source east wall is solid at 2F (box a 18-56, b 60.7-61.8, y 7-12.5: plain spandrel bands, no leaf/frame geometry); only \"beside 크리스피크림도넛 / CAFFE PASCUCCI\" topology -> leaf spans unknown (evidence says c until scanned)"
+  },
+  {
+   "id": "BL-05 roof deck / trusses",
+   "type": "SuspendedCeiling",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "not expressible: builder hallStructure geometry (truss section/colour, deck underside material, skylight strips); needs a builder change, a kit ceiling under the trusses would hide them"
+  },
+  {
+   "id": "BL-09 tree-column lanterns / clamps",
+   "type": "Column",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "builder-owned trunks/lanterns; a kit Column would duplicate the trunk; CCTV/speaker clamps have no kit type"
+  },
+  {
+   "id": "BL-12 info desk fin / lettering",
+   "type": "Storefront",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "builder SecondFloorExtras.info fix (remove fin, single-sided text); not a kit element"
+  },
+  {
+   "id": "BL-14 escalator balustrade / stickers",
+   "type": "Escalator",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "owned by FPSWorld/맞이방 · 에스컬레이터; a kit Escalator would duplicate it (Main decision to swap)"
+  },
+  {
+   "id": "BL-27 bench dividers / logo",
+   "type": "Bench",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "builder seating block (plan secondFloorExtras.seating); swapping to kit Bench needs the block removed first"
+  },
+  {
+   "id": "BL-26 west LED band / escalator departure boards",
+   "type": "WallSign",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "screen images not in the project (only the 5 existing wallPanels textures); count/positions photo-only"
+  },
+  {
+   "id": "BL-35 CCTV / speakers on hosts",
+   "type": "WallSign",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "no device type in the kit (a WallSign board would misrepresent a camera/speaker)"
+  },
+  {
+   "id": "BL-11 box shop interiors",
+   "type": "ShopInterior",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "blocked on the tenant epoch decision (CX-04) and the builder ShopFixtures already fill the units; out of this lane's storefront scope"
+  },
+  {
+   "id": "3F-SLAT-corridor-run",
+   "type": "SuspendedCeiling",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "slats continue some metres along the band corridor past the food-court corner (Y5v 105-108 s, RY2 234-236 s) but the run length is not measurable from these frames"
+  },
+  {
+   "id": "3F-SLAT-eggbox",
+   "type": "SuspendedCeiling",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "wood-slat soffit beside the eggbox (2026-07) location is an inference in G-3F01"
+  },
+  {
+   "id": "3F-BALUSTRADE",
+   "type": "WallCladding",
+   "zone": "3F",
+   "tier": "b",
+   "reason": "not expressible: the balustrade (glass + tube rails) is builder geometry from thirdFloor.rails and the kit has no balustrade type; a ribbed slab-edge cladding would z-fight / cover the plan edgeBands ad panels (same plane, y 9.9-12.55). Needs a builder material/profile change"
+  },
+  {
+   "id": "3F-TOILETS-entrances",
+   "type": "ServiceDoor",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "no reviewed frame shows the toilet entrances (G-3F22); a ServiceDoor would be wrong for a public entrance"
+  },
+  {
+   "id": "3F-U-계단",
+   "type": "Stair",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "CX-16 / BL-33: not on the 2026-04 board, never seen"
+  },
+  {
+   "id": "C-3F-FCLAYOUT",
+   "type": "ShopInterior",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "RY2 sparse/1 unregistered (BL-18)"
+  },
+  {
+   "id": "C-3F-BANDCOLS",
+   "type": "Column",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "RY2 sparse/3 unregistered"
+  },
+  {
+   "id": "3F-projecting-signs",
+   "type": "HangingSign",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "blue projecting signs at the 부산옥 east end / corner elevator (G-3F20): text unreadable, position approximate"
+  },
+  {
+   "id": "3F-shopbox-upper-cladding",
+   "type": "WallCladding",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "grey ribbed upper cladding above the wing shopfronts (G-3F07): top height unmeasured"
+  },
+  {
+   "id": "BL-10 eggbox neon double arch",
+   "type": "Storefront",
+   "zone": "3F",
+   "tier": "b",
+   "reason": "no arch/neon type; the arch position (b 14-16) is used as the open entrance of SF-3F-에그박스"
+  },
+  {
+   "id": "BL-24 two-tier band signs / lit letters behind glass",
+   "type": "WallSign",
+   "zone": "3F",
+   "tier": "c",
+   "reason": "second tier and the behind-glass letters are photo-only (kgnwrite_009); the plan frontSigns row stays builder-owned"
+  },
+  {
+   "id": "BL-07 / BL-17 / BL-20 / BL-30",
+   "type": "Gate",
+   "zone": "2F exits/links",
+   "tier": "b",
+   "reason": "north gate line, platform stair heads, 1F-2F core and Gate 7 are outside this lane (2F exits/links)"
+  },
+  {
+   "id": "SF-2F-화장실",
+   "type": "Storefront",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "kind service keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-2F-화장실",
+   "type": "Storefront",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "kind service keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-2F-역무실",
+   "type": "Storefront",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "kind service keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-2F-수유방",
+   "type": "Storefront",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "kind service keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-2F-자동발매기",
+   "type": "Storefront",
+   "zone": "2F box",
+   "tier": "b",
+   "reason": "kind machines keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-3F-승강기",
+   "type": "Storefront",
+   "zone": "3F",
+   "tier": "b",
+   "reason": "kind service keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-3F-화장실",
+   "type": "Storefront",
+   "zone": "3F",
+   "tier": "b",
+   "reason": "kind service keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-3F-승강기",
+   "type": "Storefront",
+   "zone": "3F",
+   "tier": "b",
+   "reason": "kind service keeps its builder geometry (Main storefront contract)"
+  },
+  {
+   "id": "SF-3F-푸드코트  FOOD COURT",
+   "type": "Storefront",
+   "zone": "3F",
+   "tier": "b",
+   "reason": "kind foodcourt keeps its builder geometry (Main storefront contract)"
+  }
+ ],
+ "mainChanges": [
+  {
+   "what": "plan edit (REQUIRED with box-hall.json)",
+   "file": ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json (and majibang-plan.json)",
+   "change": "thirdFloor.ceiling2F.poly -> [[-13.3,-17.8],[16.0,-17.8],[16.0,39.4],[19.2,39.4],[19.2,60.67],[-13.3,60.67]] (box frame; y stays 11.25). Removes the flat LowCeiling panels/LEDs/spot lights over the band a 19.2-65 x b 44.3-60.67, which the kit B-UNDERBAND-* ceilings replace at the same height (else z-fighting at 11.25)."
+  },
+  {
+   "what": "plan switch (already planned by Main)",
+   "change": "plan \"storefronts\": \"kit\" before building box-storefronts.json / 3f-storefronts.json (ThirdFloor units go through Shop() too), else the builder fronts duplicate the kit fronts."
+  },
+  {
+   "what": "plan edit (recommended)",
+   "change": "drop thirdFloor.frontSigns id \"wing_eggbox\" (box 6.69, 12.0, y 15.1-15.7): it sits 1 cm behind the kit 에그박스 fascia (15.05-15.65) and only its top 5 cm would show. Or keep it and set that fascia text to \"커피 & 토스트  eggbox\"."
+  },
+  {
+   "what": "builder code (recommended)",
+   "file": "AgentScripts/MajibangBuilder.cs ThirdFloor(): Sign(\"출입문  Entrance\", ...)",
+   "change": "remove/skip the eastDoor board (box a 13.4-16.6, b 60.37, y 14.85-15.35); 3F-EXIT11-header is mounted in front of it and hides it. Same for ServiceRoom \"승강기\" boards of the two 3F elevators, hidden behind the kit portals (portalHeight 3.05 covers them)."
+  },
+  {
+   "what": "2f-main spec (other lane)",
+   "file": ".planning/2026-09-24-interior-twin/specs/2f-main.json",
+   "change": "2F-main-low-ceiling-0 extends 0.0 m2 north of the original main-building north wall (v = 9.20 + .0722 (u - 18.48), u 18.5-58.5) up to v 12.5, i.e. into the floorless void strip; visible from the box hall through the open box west wall. Clip it to the wall line."
+  },
+  {
+   "what": "plan geometry (reconcile)",
+   "change": "StoryWay (box a 23-29.5, b 44.6-49.6) stands 0.15-0.62 m in front of CAFFE PASCUCCI's front (v 85, u 16-22.84); RY2 110 s shows PASCUCCI north of StoryWay, not behind it. The kit PASCUCCI front keeps the plan edge, puts a 1.6 m door in the exposed span (u 23.2-24.8) and a .1 fascia."
+  },
+  {
+   "what": "not placeable",
+   "change": "B-ELEV2F corner elevator: the 3F corner shaft (station u -16.1..-13.6, v 80.4..93.2) projected to 2F overlaps the 2F 화장실 unit (u -17.5..-11, v 80..89)."
+  },
+  {
+   "what": "optional shell cut (not recommended yet)",
+   "change": "exit 11 is built as a closed inner door bank on the solid east wall. A real opening would cut OfficialStation_-부산역_선로상층부_0 through box a 12.5-17.5, b 60.67-61.8 (station u 5.10-10.09, v 94.66-95.32 inner face), y 12.2-14.45; the outdoor deck beyond is not modelled (tier c)."
+  },
+  {
+   "what": "obstacle notice",
+   "change": "B-ELEV2F-wing adds a 4 x 4 m shaft (box a 2.75-6.75, b 21.5-25.5, y 7-11.25, colliders) under the 3F wing elevator; the remaining plan LowCeiling spot light at its footprint (if any) ends up inside the shaft."
+  },
+  {
+   "what": "bridge coverage",
+   "change": "strip area not under the source roof: 0.0 m2 (ceiling still emitted; the wing-slab/west-wall step is closed by BR-WING-edge-closure)."
+  }
+ ],
+ "openQuestions": [
+  "3F lobby slat ceiling height 15.4 is photo-relative (Y5v 88 s, 1.42 x door-leaf height -> 3.0-3.4 m above 12.2); measure from a registered 3F frame to firm it up. The slat run along the band corridor beyond the lobby width is omitted (unmeasured).",
+  "Bridge ceiling at 12.05 follows the only positional evidence (source roof top 12.10); the real bridge soffit may be lower (2010 photo shows a tiled ceiling with troffers). A registered RY2 ~582 s frame would settle it.",
+  "Coffer tray size (box a 31.4-53.0, b 45.2-47.0) is fitted to the plan corridor (band edge b 44.3 to shopfronts b 48.0-50.2); the footage corridor looks wider than the plan (board registration residual <= 12.6 m).",
+  "Floor guide lines (ov-315 orange line escalator -> gates, yellow tactile paths) need a verified registered camera; the sfmcmp ry2-2 000315 pose reprojects the tree columns 30-60 px off.",
+  "Tenant epoch (CX-13 비빔가 vs 시래마을, CX-14 food-court stalls): 3f-storefronts uses the plan identities (2024+).",
+  "Hall floor material (G-B12 polished speckled granite): builder floor material change vs a 6,000 m2 FloorFinish overlay - Main decision (not emitted)."
+ ],
+ "evidenceIssues": [
+  {
+   "item": "BR-SEAM hazard stripe + \"타는 곳 →\" sign (G-BR01, BL-15)",
+   "finding": "ry-330-832.jpg tiles are ~14 s apart: the hazard-stripe/타는 곳 tile (r3c4, ~540 s) precedes the bakery display (r3c5) and the 비엔씨 front (r3c6), and the actual entry from the low ceiling into the box hall is r4c1 (~582 s, no stripe). The stripe marks a main-building ceiling edge (likely the 1F-2F escalator void near 비엔씨/환공어묵, M-ESC-1F2F), not the box seam. Seam stripe/sign/columns omitted as tier c."
+  },
+  {
+   "item": "BR-SEAM extent \"u -12..52\"",
+   "finding": "Source mesh: the original main-building north wall runs v = 9.20 + .0722 (u - 18.48) from u 18.5 to 58.3 (solid, y 7-19.5) and the plan has no 2F cells at u 17-50, v 13-17 (void). The walkable seam is only the bridge u -14.5..16.5; u 17-50 is a floorless void strip under the single-sided source roof (y 12.10)."
+  },
+  {
+   "item": "G-3F26 \"navy 타는 곳 banners on the wing-end balustrade\"",
+   "finding": "hCyroXn0Jhg 905-910 s shows the two navy 타는 곳 boards hung on tree column E seen from the 3F wing; they already exist as wallPanels sign_Tanungot_EL/ER. No new element."
+  }
+ ],
+ "lights": {
+  "bridge.json": 0,
+  "box-hall.json": 11,
+  "3f.json": 3,
+  "box-storefronts.json": 0,
+  "3f-storefronts.json": 0
+ },
+ "checks": {
+  "liveOverlap": {
+   "method": "element volumes (boxgeo.volumes) vs active renderer triangles clipped to each volume slab; floor slabs ignored; replaced builder geometry (plan LowCeiling in the band, builder shop fronts) allowed; unit shells / walls the element is mounted on reported as attachments",
+   "conflicts": [],
+   "elementsChecked": 46,
+   "elementsWithConflicts": 0,
+   "attachments": {
+    "3F-LOBBY-slat-ceiling": [
+     "Box_Majibang_FoodCourtFront_Frame",
+     "Box_Majibang_FoodCourtFront_Glass",
+     "Box_Majibang_FoodCourt_Walls"
+    ],
+    "3F-ELEV-wing": [
+     "Box_Majibang_ServiceWalls",
+     "Box_SignBoards_Sign_RailBlue"
+    ],
+    "3F-ELEV-corner": [
+     "Box_Majibang_ServiceWalls",
+     "Box_SignBoards_Sign_RailBlue"
+    ],
+    "3F-FLOOR-corridor-0": [
+     "Box_Majibang_3F_RailMetal",
+     "Box_Majibang_FoodCourtFront_Frame",
+     "OfficialStation_-부산역_선로상층부_0"
+    ],
+    "SF-3F-부산옥": [
+     "Box_Majibang_ShopCeiling",
+     "Box_Majibang_ShopCeiling_ShadowCaster"
+    ],
+    "SF-3F-에그박스": [
+     "Box_Majibang_ShopCeiling",
+     "Box_Majibang_ShopCeiling_ShadowCaster"
+    ],
+    "SF-3F-비빔가": [
+     "Box_Majibang_ShopCeiling",
+     "Box_Majibang_ShopCeiling_ShadowCaster"
+    ]
+   }
+  },
+  "crossOverlap": {
+   "designed": [
+    {
+     "a": "BR-SEAM-ceiling-0",
+     "aPart": "plane",
+     "b": "BR-SEAM-soffit-edge",
+     "bPart": "cladding",
+     "area": 0.5792,
+     "y": [
+      12.03,
+      12.04
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "BR-SEAM-ceiling-0",
+     "aPart": "plane",
+     "b": "BR-WING-edge-closure",
+     "bPart": "cladding",
+     "area": 0.1749,
+     "y": [
+      12.03,
+      12.04
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-ceiling-corridor-0",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-edge-bulkhead-0",
+     "bPart": "cladding",
+     "area": 0.2896,
+     "y": [
+      11.23,
+      11.24
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-ceiling-corridor-0",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-edge-bulkhead-0",
+     "bPart": "cladding",
+     "area": 0.014,
+     "y": [
+      11.23,
+      11.24
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-ceiling-corridor-0",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-edge-bulkhead-0",
+     "bPart": "cladding",
+     "area": 0.266,
+     "y": [
+      11.23,
+      11.24
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-ceiling-corridor-0",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-edge-bulkhead-1",
+     "bPart": "cladding",
+     "area": 0.3256,
+     "y": [
+      11.23,
+      11.24
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-coffer-tray",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-coffer-step",
+     "bPart": "cladding",
+     "area": 0.1294,
+     "y": [
+      11.53,
+      11.54
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-coffer-tray",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-coffer-step",
+     "bPart": "cladding",
+     "area": 0.0106,
+     "y": [
+      11.53,
+      11.54
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-coffer-tray",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-coffer-step",
+     "bPart": "cladding",
+     "area": 0.1294,
+     "y": [
+      11.53,
+      11.54
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    },
+    {
+     "a": "B-UNDERBAND-coffer-tray",
+     "aPart": "plane",
+     "b": "B-UNDERBAND-coffer-step",
+     "bPart": "cladding",
+     "area": 0.0106,
+     "y": [
+      11.53,
+      11.54
+     ],
+     "class": "designed",
+     "why": "edge contact (ceiling plane meets the top/bottom of a closure face; < 3.5 cm overlap in y)"
+    }
+   ],
+   "conflicts": []
+  },
+  "walkZones": {
+   "lowVolumesInWalkZones": [
+    {
+     "id": "B-AED-ESC",
+     "part": "device",
+     "zone": "2F band corridor",
+     "area": 0.104,
+     "expected": "wall-mounted device, projects <= .2 m"
+    },
+    {
+     "id": "B-WAY-toilet-under-wing-band",
+     "part": "sign",
+     "zone": "2F under-wing corridor",
+     "area": 0.034,
+     "expected": "hanging sign, clear height >= 2.1 m"
+    },
+    {
+     "id": "B-ELEV2F-wing",
+     "part": "portal",
+     "zone": "2F under-wing corridor",
+     "area": 0.619,
+     "expected": "elevator portal on its shaft/service-room front"
+    },
+    {
+     "id": "B-ELEV2F-wing-shaft",
+     "part": "cladding",
+     "zone": "2F under-wing corridor",
+     "area": 0.079,
+     "expected": "shaft enclosure / wall face"
+    },
+    {
+     "id": "B-ELEV2F-wing-shaft",
+     "part": "cladding",
+     "zone": "2F under-wing corridor",
+     "area": 0.079,
+     "expected": "shaft enclosure / wall face"
+    },
+    {
+     "id": "B-ELEV2F-wing-shaft",
+     "part": "cladding",
+     "zone": "2F under-wing corridor",
+     "area": 0.079,
+     "expected": "shaft enclosure / wall face"
+    },
+    {
+     "id": "B-ELEV2F-wing-front",
+     "part": "cladding",
+     "zone": "2F under-wing corridor",
+     "area": 0.014,
+     "expected": "shaft enclosure / wall face"
+    },
+    {
+     "id": "B-ELEV2F-wing-front",
+     "part": "cladding",
+     "zone": "2F under-wing corridor",
+     "area": 0.014,
+     "expected": "shaft enclosure / wall face"
+    },
+    {
+     "id": "3F-EXIT11-doorset",
+     "part": "front",
+     "zone": "3F corridors",
+     "area": 0.532,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "3F-ELEV-wing",
+     "part": "portal",
+     "zone": "3F corridors",
+     "area": 0.164,
+     "expected": "elevator portal on its shaft/service-room front"
+    },
+    {
+     "id": "3F-ELEV-corner",
+     "part": "portal",
+     "zone": "3F corridors",
+     "area": 0.119,
+     "expected": "elevator portal on its shaft/service-room front"
+    },
+    {
+     "id": "SF-2F-크리스피크림도넛",
+     "part": "front",
+     "zone": "2F band corridor",
+     "area": 0.274,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-카카오프렌즈",
+     "part": "front",
+     "zone": "2F band corridor",
+     "area": 0.274,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-떡공방명제",
+     "part": "front",
+     "zone": "2F band corridor",
+     "area": 0.274,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-CAFFE_PASCUCCI",
+     "part": "front",
+     "zone": "2F band corridor",
+     "area": 0.354,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-편의점_StoryWay",
+     "part": "front",
+     "zone": "2F band corridor",
+     "area": 0.194,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-국제시장단팥빵",
+     "part": "front",
+     "zone": "2F band corridor",
+     "area": 0.194,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-하와이안파라다이스",
+     "part": "front",
+     "zone": "2F band corridor",
+     "area": 0.194,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-부산별빛샌드",
+     "part": "front",
+     "zone": "2F under-wing corridor",
+     "area": 0.314,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-올리브영",
+     "part": "front",
+     "zone": "2F under-wing corridor",
+     "area": 0.334,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-2F-위니비니",
+     "part": "front",
+     "zone": "2F under-wing corridor",
+     "area": 0.254,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-3F-부산옥",
+     "part": "front",
+     "zone": "3F corridors",
+     "area": 0.394,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-3F-에그박스",
+     "part": "front",
+     "zone": "3F corridors",
+     "area": 0.714,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    },
+    {
+     "id": "SF-3F-비빔가",
+     "part": "front",
+     "zone": "3F corridors",
+     "area": 0.774,
+     "expected": "shopfront on its own unit line (door/glass line)"
+    }
+   ],
+   "unexpected": [],
+   "doorClearance": [
+    {
+     "id": "3F-EXIT11-doorset",
+     "doorAt": 1.6,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "3F-EXIT11-doorset",
+     "doorAt": 3.4,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-크리스피크림도넛",
+     "doorAt": 3.5,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-카카오프렌즈",
+     "doorAt": 3.5,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-떡공방명제",
+     "doorAt": 3.5,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-CAFFE_PASCUCCI",
+     "doorAt": 7.95,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-편의점_StoryWay",
+     "doorAt": 2.5,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-국제시장단팥빵",
+     "doorAt": 2.5,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-하와이안파라다이스",
+     "doorAt": 2.5,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-새부산약국",
+     "doorAt": 1.6,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-아메리칸트레일러",
+     "doorAt": 2.4,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-부산기장특산물",
+     "doorAt": 2.25,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-국제시장도나스",
+     "doorAt": 3.5,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-부산별빛샌드",
+     "doorAt": 4.0,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-올리브영",
+     "doorAt": 4.25,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-2F-위니비니",
+     "doorAt": 3.25,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-3F-부산옥",
+     "doorAt": 5.0,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-3F-에그박스",
+     "doorAt": 14.0,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    },
+    {
+     "id": "SF-3F-비빔가",
+     "doorAt": 9.75,
+     "clear": true,
+     "existing": [],
+     "mine": []
+    }
+   ],
+   "doorsBlocked": []
+  },
+  "zoneFootprint": {
+   "checked": 46,
+   "outside": [],
+   "exceptions": [
+    {
+     "id": "B-SEAM-void-soffit-0",
+     "zone": "2F box",
+     "footprint": 246.199,
+     "outside": 236.819,
+     "inside": true,
+     "exception": "soffit over the floorless void strip between the main north wall and the box west wall (no plan cells by design)"
+    }
+   ]
+  },
+  "storefrontExposure": {
+   "SF-2F-크리스피크림도넛": {
+    "length": 7,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      6.83
+     ]
+    ]
+   },
+   "SF-2F-카카오프렌즈": {
+    "length": 7,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      6.83
+     ]
+    ]
+   },
+   "SF-2F-떡공방명제": {
+    "length": 7,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      6.83
+     ]
+    ]
+   },
+   "SF-2F-CAFFE_PASCUCCI": {
+    "length": 9,
+    "blockedSamples": [
+     [
+      0.45,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      0.7,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      0.95,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      1.2,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      1.45,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "맞이방 · 원본 정합/Box frame/편의점 StoryWay fixture/fit/GONDOLA1(Clone)/Geom3D.067",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      1.7,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "맞이방 · 원본 정합/Box frame/편의점 StoryWay fixture/fit/GONDOLA1(Clone)/Geom3D.067",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      1.95,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "맞이방 · 원본 정합/Box frame/편의점 StoryWay fixture/fit/GONDOLA1(Clone)/Geom3D.067",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      2.2,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "맞이방 · 원본 정합/Box frame/편의점 StoryWay fixture/fit/GONDOLA1(Clone)/Geom3D.067",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      2.45,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      2.7,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      2.95,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      3.2,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      3.45,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      3.7,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      3.95,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      4.2,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      4.45,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      4.7,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      4.95,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      5.2,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      5.45,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      5.7,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      5.95,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      6.2,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      6.45,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      6.7,
+      [
+       "맞이방 · 원본 정합/Box frame/Box_Shop_편의점_StoryWay_Walls",
+       "plan unit footprint"
+      ]
+     ],
+     [
+      6.95,
+      [
+       "plan unit footprint"
+      ]
+     ]
+    ],
+    "spans": [
+     [
+      0.08,
+      0.33
+     ],
+     [
+      7.08,
+      8.82
+     ]
+    ]
+   },
+   "SF-2F-편의점_StoryWay": {
+    "length": 5.0,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      4.83
+     ]
+    ]
+   },
+   "SF-2F-국제시장단팥빵": {
+    "length": 5.0,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      4.83
+     ]
+    ]
+   },
+   "SF-2F-하와이안파라다이스": {
+    "length": 5.0,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      4.83
+     ]
+    ]
+   },
+   "SF-2F-새부산약국": {
+    "length": 3.2,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      3.08
+     ]
+    ]
+   },
+   "SF-2F-아메리칸트레일러": {
+    "length": 4.8,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      4.58
+     ]
+    ]
+   },
+   "SF-2F-부산기장특산물": {
+    "length": 4.5,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      4.33
+     ]
+    ]
+   },
+   "SF-2F-국제시장도나스": {
+    "length": 7,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      6.83
+     ]
+    ]
+   },
+   "SF-2F-부산별빛샌드": {
+    "length": 8.0,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      7.83
+     ]
+    ]
+   },
+   "SF-2F-올리브영": {
+    "length": 8.5,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      8.32
+     ]
+    ]
+   },
+   "SF-2F-위니비니": {
+    "length": 6.5,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      6.33
+     ]
+    ]
+   },
+   "SF-3F-부산옥": {
+    "length": 10.0,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      9.82
+     ]
+    ]
+   },
+   "SF-3F-에그박스": {
+    "length": 18.0,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      17.82
+     ]
+    ]
+   },
+   "SF-3F-비빔가": {
+    "length": 19.5,
+    "blockedSamples": [],
+    "spans": [
+     [
+      0.08,
+      19.32
+     ]
+    ]
+   }
+  }
+ }
+}

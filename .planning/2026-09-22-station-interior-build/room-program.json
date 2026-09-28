@@ -1,0 +1,464 @@
+{
+  "schema": "chooguard.busan-station.room-program.v1",
+  "compiledAt": "2026-09-22",
+  "sources": [
+    {
+      "id": "korail-official",
+      "path": "asset-library/research-public/2026-09-22/busan-station-interior/floorplans/korail_busan_station_page.txt",
+      "whatItProves": "KORAIL 공식 웹페이지의 부산역 층별 시설안내(지하2층~지상4층) 및 지상 1~3층 입점 상업 테넌트 44개소와 맞이방/5번출구 고정 안내시설 6개소 목록"
+    },
+    {
+      "id": "floorplans-research",
+      "path": ".planning/2026-09-22-station-interior-build/research/floorplans.json",
+      "whatItProves": "부산역사 층별안내도(1F/2F/3F 보드) 및 전 매장 약도(적층 도식), 2층 북측 과선교 게이트라인(GATE1~GATE10), 매표소·라운지·화장실 등 고정 코어 위상 관계"
+    },
+    {
+      "id": "namuwiki-busan-station",
+      "path": "asset-library/research-public/2026-09-22/busan-station-interior/floorplans/namuwiki_busanstation.txt",
+      "whatItProves": "5면 12선 복합식 승강장 구조와 10개 승강장 게이트의 대응 관계, 1층 상가화 및 역사 2004/2010년 증·개축 연혁"
+    },
+    {
+      "id": "datagokr-station-facilities",
+      "path": "asset-library/research-public/2026-09-22/busan-station-interior/models/korail_station_facilities_utf8.csv",
+      "whatItProves": "한국철도공사 역사 내외부 시설현황 공공데이터 공식 수치 (부산역 엘리베이터 13기, 에스컬레이터 24기)"
+    }
+  ],
+  "levels": [
+    {
+      "level": "B2",
+      "koreanName": "지하 2층",
+      "functions": [
+        "도시철도 1호선 부산역 연결통로",
+        "지하철 연계 집산시설"
+      ],
+      "tenants": [],
+      "tenantCount": 0,
+      "fixedFacilities": [
+        {
+          "name": "도시철도 연결통로",
+          "note": "부산 지하철 1호선 연결 지하 통로",
+          "source": "floorplans.json (humetro)"
+        }
+      ]
+    },
+    {
+      "level": "B1",
+      "koreanName": "지하 1층",
+      "functions": [
+        "도시철도 환승통로",
+        "지하보도",
+        "출입시설"
+      ],
+      "tenants": [],
+      "tenantCount": 0,
+      "fixedFacilities": [
+        {
+          "name": "지하 환승통로",
+          "note": "역 광장 및 도시철도 1호선 환승 지하보도",
+          "source": "floorplans.json (humetro)"
+        }
+      ]
+    },
+    {
+      "level": "1F",
+      "koreanName": "지상 1층",
+      "functions": [
+        "1층 맞이방",
+        "식음료 및 상업시설",
+        "수화물 배송/보관",
+        "화장실",
+        "역사 전면 출입구(1~6번)"
+      ],
+      "tenants": [
+        {
+          "name": "스토리웨이(1층 맞이방)",
+          "category": "편의",
+          "source": "korail-official"
+        },
+        {
+          "name": "짐캐리",
+          "category": "기타",
+          "source": "korail-official"
+        },
+        {
+          "name": "비엔씨 박스앤컵",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "채선당 행복 가마솥밥",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "낙지볶음 개미집",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "비엔씨도넛",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "탐앤탐스",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "스시보노",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "간사이 우동",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "김밥천국",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "서브웨이",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "환공어묵",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "디자인스킨",
+          "category": "판매",
+          "source": "korail-official"
+        },
+        {
+          "name": "아메리칸트레일러",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "파리바게뜨",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "양산국밥",
+          "category": "식음",
+          "source": "korail-official"
+        }
+      ],
+      "tenantCount": 16,
+      "fixedFacilities": [
+        {
+          "name": "물품보관함",
+          "note": "5번 출구 부근",
+          "source": "korail-official"
+        },
+        {
+          "name": "전동휠체어 자동 충전소",
+          "note": "5번 출구 부근",
+          "source": "korail-official"
+        },
+        {
+          "name": "화장실",
+          "note": "1층 남/여 화장실",
+          "source": "floorplans.json"
+        },
+        {
+          "name": "1층 외부 출입구",
+          "note": "광장 및 택시 승강장 연결 출입구",
+          "source": "floorplans.json"
+        }
+      ]
+    },
+    {
+      "level": "2F",
+      "koreanName": "지상 2층",
+      "functions": [
+        "중앙 맞이방(대합실)",
+        "열차 승강장 탑승구(GATE 1~10)",
+        "매표소 및 고객서비스",
+        "식음/판매 상업시설",
+        "코레일 라운지",
+        "역무/철도경찰 치안센터"
+      ],
+      "tenants": [
+        {
+          "name": "자갈치 명품 건어물",
+          "category": "판매",
+          "source": "korail-official"
+        },
+        {
+          "name": "판판쇼핑",
+          "category": "판매",
+          "source": "korail-official"
+        },
+        {
+          "name": "나베아",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "비엔씨",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "스토리웨이",
+          "category": "편의",
+          "source": "korail-official"
+        },
+        {
+          "name": "할리스커피",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "카카오프렌즈",
+          "category": "판매",
+          "source": "korail-official"
+        },
+        {
+          "name": "스토리웨이",
+          "category": "편의",
+          "source": "korail-official"
+        },
+        {
+          "name": "카페스토리웨이",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "반월당닭강정",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "복순도가",
+          "category": "판매",
+          "source": "korail-official"
+        },
+        {
+          "name": "크리스피크림도넛",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "시래마을",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "국제시장도나스",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "새부산약국",
+          "category": "의약",
+          "source": "korail-official"
+        },
+        {
+          "name": "부산국제시장단팥빵 (태성당)",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "올리브영",
+          "category": "판매",
+          "source": "korail-official"
+        },
+        {
+          "name": "면앤면",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "파스쿠치",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "부산오뎅",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "떡공방형제",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "스토리웨이(2층 맞이방)",
+          "category": "편의",
+          "source": "korail-official"
+        },
+        {
+          "name": "남천할매떡볶이",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "다인 경주빵",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "위니바니",
+          "category": "판매",
+          "source": "korail-official"
+        }
+      ],
+      "tenantCount": 25,
+      "fixedFacilities": [
+        {
+          "name": "수유방",
+          "note": "역사내 맞이방",
+          "source": "korail-official"
+        },
+        {
+          "name": "유실물 센터",
+          "note": "역사내 맞이방",
+          "source": "korail-official"
+        },
+        {
+          "name": "종합관광안내소",
+          "note": "역사내 맞이방",
+          "source": "korail-official"
+        },
+        {
+          "name": "전동휠체어 자동 충전소",
+          "note": "역사내 맞이방",
+          "source": "korail-official"
+        },
+        {
+          "name": "매표창구 및 자동발매기",
+          "note": "승차권 발매 구역",
+          "source": "floorplans.json"
+        },
+        {
+          "name": "코레일 멤버십 라운지",
+          "note": "맞이방 내 우수고객 대기공간",
+          "source": "floorplans.json"
+        },
+        {
+          "name": "철도특별사법경찰대",
+          "note": "치안 센터",
+          "source": "floorplans.json"
+        },
+        {
+          "name": "역무실 및 회의실",
+          "note": "역 운영 관리 사무공간",
+          "source": "floorplans.json"
+        },
+        {
+          "name": "화장실 (3개소)",
+          "note": "2층 맞이방 내 W.C",
+          "source": "floorplans.json"
+        }
+      ]
+    },
+    {
+      "level": "3F",
+      "koreanName": "지상 3층",
+      "functions": [
+        "전문식당가",
+        "맞이방 상부 오픈 메자닌",
+        "화장실 및 서비스시설"
+      ],
+      "tenants": [
+        {
+          "name": "롯데리아",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "푸드코트",
+          "category": "식음",
+          "source": "korail-official"
+        },
+        {
+          "name": "부산옥",
+          "category": "식음",
+          "source": "korail-official"
+        }
+      ],
+      "tenantCount": 3,
+      "fixedFacilities": [
+        {
+          "name": "화장실",
+          "note": "3층 식당가 W.C",
+          "source": "floorplans.json"
+        },
+        {
+          "name": "엘리베이터/에스컬레이터 승강장",
+          "note": "2F-3F 수직동선 도착부",
+          "source": "floorplans.json"
+        }
+      ]
+    },
+    {
+      "level": "4F",
+      "koreanName": "지상 4층",
+      "functions": [
+        "코레일 부산경남본부 업무시설",
+        "사무실 및 대회의실",
+        "보안 구역"
+      ],
+      "tenants": [],
+      "tenantCount": 0,
+      "fixedFacilities": [
+        {
+          "name": "코레일 부산경남본부",
+          "note": "철도공사 사옥 및 업무 지원시설 (일반인 출입제한)",
+          "source": "korail-official / floorplans.json"
+        }
+      ]
+    }
+  ],
+  "gates": {
+    "observed": [
+      "GATE1",
+      "GATE2",
+      "GATE3",
+      "GATE4",
+      "GATE5",
+      "GATE6",
+      "GATE7",
+      "GATE8",
+      "GATE9",
+      "GATE10"
+    ],
+    "perLevel": {
+      "1F": [],
+      "2F": [
+        "GATE1",
+        "GATE2",
+        "GATE3",
+        "GATE4",
+        "GATE5",
+        "GATE6",
+        "GATE7",
+        "GATE8",
+        "GATE9",
+        "GATE10"
+      ],
+      "3F": []
+    },
+    "source": "층별안내도 적층 도식"
+  },
+  "verticalCirculation": {
+    "elevators": 13,
+    "escalators": 24,
+    "source": "data.go.kr 15090379 (2024-12-31)"
+  },
+  "unknowns": [
+    "승강장 탑승 게이트(GATE1~GATE10)는 적층 약도 및 floorplans.json 상 2층 대합실 북측 과선교 게이트라인에 집중 배치되어 있으며, 1층에 별도 승강장 직통 출입구(과거 1번 승강장 바로타 흔적)가 현재 일반 여객용 게이트로 운용되는지 여부는 상세 도면 없이 불확실함.",
+    "수집된 모든 안내도 래스터(1F/2F/3F 보드 및 전 매장 약도)에 축척(스케일바)과 방위표가 없으므로, 테넌트 구획 및 실별 면적은 위상적 상대 위치만 확정되며 절대 치수는 철도설계기준(KR A-02031) 및 FBX 외피에 맞춰 역산해야 함.",
+    "KORAIL 공식 웹페이지의 층 필터에는 지하2층~지상4층이 존재하나, 실제 상업 매장은 1~3층에만 등재되어 있어 4층 코레일 본부 사무공간 및 지하 1~2층 도시철도 연결구역의 내부 세부 실 구획은 공공 안내도에서 생략됨."
+  ]
+}

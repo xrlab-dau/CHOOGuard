@@ -1,0 +1,49 @@
+{
+ "zone": "floor fix",
+ "root": "실내 트윈 마감/바닥 보정 2",
+ "basis": {
+  "method": "Main: voidscan2-after25/27 fall-7-0 (1 u) = square floor opening around a vertical pipe at the U- facade corner; the 2F floor meets the pipe (render voidscan2-after25/views/fall-7-0.png)",
+  "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after27"
+ },
+ "elements": [
+  {
+   "id": "floorfix-7-pipe-uminus",
+   "type": "Slab",
+   "tier": "b",
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -80.6,
+      -37.6
+     ],
+     [
+      -79.4,
+      -37.6
+     ],
+     [
+      -79.4,
+      -36.4
+     ],
+     [
+      -80.6,
+      -36.4
+     ]
+    ],
+    "y": 6.995
+   },
+   "params": {
+    "depth": 0.3,
+    "finish": "polished",
+    "edgeFinish": "plaster",
+    "soffit": "plaster",
+    "collider": true
+   },
+   "evidence": [
+    ".planning/2026-09-26-full-twin/voidscan2-after27/voidscan2.json fall-7-0 (surface 5.0 = pipe/structure below; cells ring the pipe)",
+    ".planning/2026-09-26-full-twin/voidscan2-after25/views/fall-7-0.png"
+   ],
+   "basis": "gap between the 1 u cell floor and a vertical pipe; the real floor meets the pipe (same rule as specs/full/infill.json)"
+  }
+ ]
+}

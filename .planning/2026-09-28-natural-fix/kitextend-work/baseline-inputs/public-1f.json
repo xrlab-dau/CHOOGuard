@@ -1,0 +1,1092 @@
+{
+ "zone": "1F public",
+ "root": "실내 트윈 마감/1F 공용",
+ "basis": {
+  "revision": "public-1f v4 (2026-09-25): new KTX특송 / 환공어묵 / Storyway evidence reviewed; unresolved frontage, core, signage, staff-stair and B1 conflicts remain tier c in public-1f-report.json and are intentionally not added as unsupported geometry",
+  "frame": "station UVY (root)",
+  "existence": "Naver indoor 1F vectors registered to station UV (tier b) + live units / shell / ceilings (geometry-after19)",
+  "positions": "registered Naver block edges and car boxes; rear-row closures follow live unit backs (Naver rear row distorted +7.3 u); toilet / room outlines clipped to the live shell faces; wall tops = live ceiling above",
+  "appearance": "kit library: gypsum closures to the 2F slab underside (6.7), plaster BOH rooms and stair cores, kit ToiletRoom / ElevatorFront / LockerBank / ServiceDoor",
+  "generator": ".planning/2026-09-24-interior-twin/specs/full/make_public_1f.py"
+ },
+ "elements": [
+  {
+   "type": "WallCladding",
+   "id": "1Fp-boh-uminus-5479",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      -83.88,
+      -9.38
+     ],
+     [
+      -59.9,
+      -7.72
+     ],
+     [
+      -59.66,
+      -10.51
+     ],
+     [
+      -43.64,
+      -9.42
+     ],
+     [
+      -42.6,
+      -17.1
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 6.7
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "skirting": 0.1,
+    "cap": 0.04,
+    "faceToward": [
+     -70.0,
+     -20.0
+    ]
+   },
+   "note": "U- hall north side: Naver 5479 (type 10, BOH) south edge incl. its recess at U -59.8, then along the Naver #9 (10061928) west edge line to the live #9 back north-west corner. Closes the rear strip (V > -5) and the stair pocket between 5479 and 10061926 from the U- hall."
+  },
+  {
+   "type": "WallCladding",
+   "id": "1Fp-boh-office",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      5.0,
+      -12.7
+     ],
+     [
+      21.7,
+      -12.8
+     ],
+     [
+      21.1,
+      -5.0
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 6.7
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "skirting": 0.1,
+    "cap": 0.04,
+    "faceToward": [
+     15.0,
+     -20.0
+    ]
+   },
+   "note": "Naver 10061937 (type 10, office block behind #16): south edge from the live #16 east step corner and east edge up to the 1F hall ceiling edge (V -5). Naver residual here 1.2 u; the south edge follows the live #16 step (V -12.7)."
+  },
+  {
+   "type": "WallCladding",
+   "id": "1Fp-boh-uplus-strip",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      21.1,
+      -5.0
+     ],
+     [
+      68.8,
+      -5.0
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 6.7
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "skirting": 0.1,
+    "cap": 0.04,
+    "faceToward": [
+     40.0,
+     -20.0
+    ]
+   },
+   "note": "U+ hall north side: the live 1F hall ceiling ends at V -5 (Kit_CeilingGrid / bulkhead 4.4-4.7); Naver back-of-house blocks 10061924 / 5308 / 3331 / 3332 lie behind it (south edges -4.5 .. 0.3). Wall to the 2F slab underside, from the office corner to the live U+ shell face (U 68.62 at V -5)."
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "1Fp-wc-uminus-male",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -83.69,
+      -12.56
+     ],
+     [
+      -91.54,
+      -13.15
+     ],
+     [
+      -92.01,
+      -6.55
+     ],
+     [
+      -84.13,
+      -5.99
+     ]
+    ],
+    "y": 0.0,
+    "y1": 2.7
+   },
+   "params": {
+    "kind": "male",
+    "wallTop": 4.8,
+    "entry": {
+     "edge": 3,
+     "at": 5.02,
+     "width": 1.2
+    }
+   },
+   "note": "Naver 4152 (09 toilet) + POI Men's Restroom; clipped to the live U- shell face. Entry on the hall-facing part of the east edge (V -9.4..-12.6; the rest abuts 5479 BOH), centred there [INFERENCE: door position not observed]."
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "1Fp-wc-uminus-female",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -83.13,
+      -19.56
+     ],
+     [
+      -91.03,
+      -20.12
+     ],
+     [
+      -91.54,
+      -13.15
+     ],
+     [
+      -83.69,
+      -12.56
+     ]
+    ],
+    "y": 0.0,
+    "y1": 2.7
+   },
+   "params": {
+    "kind": "female",
+    "wallTop": 4.8,
+    "entry": {
+     "edge": 3,
+     "at": 3.45,
+     "width": 1.2
+    }
+   },
+   "note": "Naver 4911 (09 toilet) + POI 여자화장실; clipped to the live U- shell face. Entry on the east (hall) edge near its middle (V ~-15.8) [INFERENCE: door position not observed]."
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "1Fp-wc-uplus-female",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      58.49,
+      -10.44
+     ],
+     [
+      63.96,
+      -13.2
+     ],
+     [
+      62.41,
+      -17.91
+     ],
+     [
+      56.3,
+      -14.75
+     ]
+    ],
+    "y": 0.0,
+    "y1": 2.7
+   },
+   "params": {
+    "kind": "female",
+    "wallTop": 4.4,
+    "entry": {
+     "edge": 3,
+     "at": 2.42,
+     "width": 1.2
+    }
+   },
+   "note": "Naver 5563 (09 toilet) + POI Women's Restroom; clipped to the live U+ facade face. Entry centred on the hall-facing (U-) edge [INFERENCE: door position not observed; footage lists the U+ toilets unobserved]."
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "1Fp-wc-uplus-male",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      60.4,
+      -6.67
+     ],
+     [
+      65.3,
+      -9.15
+     ],
+     [
+      63.96,
+      -13.2
+     ],
+     [
+      58.49,
+      -10.44
+     ]
+    ],
+    "y": 0.0,
+    "y1": 2.7
+   },
+   "params": {
+    "kind": "male",
+    "wallTop": 4.4,
+    "entry": {
+     "edge": 3,
+     "at": 2.12,
+     "width": 1.2
+    }
+   },
+   "note": "Naver 5311 (09 toilet) + POI 남자화장실; clipped to the live U+ facade face. Entry centred on the hall-facing (U-) edge [INFERENCE]."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-boh-uplus-5564",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      56.3,
+      -14.75
+     ],
+     [
+      62.41,
+      -17.91
+     ],
+     [
+      62.1,
+      -18.83
+     ],
+     [
+      61.09,
+      -20.85
+     ],
+     [
+      54.78,
+      -17.67
+     ]
+    ],
+    "y": 0.0,
+    "y1": 5.0
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false
+   },
+   "note": "Naver 5564 (type 10, back-of-house) between the women's toilet and the facade; closed room."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-boh-core-e-4919",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      24.29,
+      -25.68
+     ],
+     [
+      24.76,
+      -32.13
+     ],
+     [
+      22.0,
+      -32.29
+     ],
+     [
+      21.57,
+      -25.9
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.4
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false
+   },
+   "note": "Naver 4919 (type 10, same class as the BOH blocks) beside the notch stair, west side; west edge = live #3 east wall (+.3)."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-boh-core-e-4924",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      28.26,
+      -25.41
+     ],
+     [
+      30.73,
+      -25.26
+     ],
+     [
+      31.19,
+      -31.29
+     ],
+     [
+      28.7,
+      -31.48
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.4
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false
+   },
+   "note": "Naver 4924 (type 10) between the notch stair and the elevator shafts; its south edge is the live #2 north (glazed, non-door) front line, kept .3 clear of the storefront."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-elev-core-e-shaft",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      31.5,
+      -25.7
+     ],
+     [
+      33.9,
+      -25.62
+     ],
+     [
+      34.12,
+      -30.8
+     ],
+     [
+      31.72,
+      -30.8
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.4
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false
+   },
+   "note": "Elevator shaft / car box enclosure behind the landing doors. U+ notch elevators (2 cars, Naver 453003 car boxes, doors facing U+)."
+  },
+  {
+   "type": "ElevatorFront",
+   "id": "1Fp-elev-core-e",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/uplus-service-end/observations.json"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      33.9,
+      -25.62
+     ],
+     [
+      34.12,
+      -30.8
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "cars": 2,
+    "pitch": 2.6,
+    "doorWidth": 1.1,
+    "doorHeight": 2.1,
+    "portalHeight": 2.9,
+    "faceToward": [
+     40.0,
+     -28.0
+    ],
+    "floorLabel": "1",
+    "label": "엘리베이터",
+    "labelSub": "Elevator"
+   },
+   "note": "U+ notch elevators (2 cars, Naver 453003 car boxes, doors facing U+). Landing-door centres from the Naver car-box door ticks; ceiling above 4.40."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-elev-core-w-shaft",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -13.8,
+      -29.3
+     ],
+     [
+      -11.21,
+      -29.3
+     ],
+     [
+      -10.84,
+      -34.4
+     ],
+     [
+      -13.7,
+      -34.4
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.8
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false
+   },
+   "note": "Elevator shaft / car box enclosure behind the landing doors. U- notch elevators (2 cars, Naver 453003 car boxes, doors facing U-)."
+  },
+  {
+   "type": "ElevatorFront",
+   "id": "1Fp-elev-core-w",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      -13.7,
+      -34.46
+     ],
+     [
+      -13.8,
+      -29.24
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "cars": 2,
+    "pitch": 2.65,
+    "doorWidth": 1.1,
+    "doorHeight": 2.1,
+    "portalHeight": 2.9,
+    "faceToward": [
+     -20.0,
+     -32.0
+    ],
+    "floorLabel": "1",
+    "label": "엘리베이터",
+    "labelSub": "Elevator"
+   },
+   "note": "U- notch elevators (2 cars, Naver 453003 car boxes, doors facing U-). Landing-door centres from the Naver car-box door ticks; ceiling above 4.80."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-boh-core-w-5482",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -2.17,
+      -27.54
+     ],
+     [
+      -1.71,
+      -33.99
+     ],
+     [
+      -3.77,
+      -34.1
+     ],
+     [
+      -4.16,
+      -28.63
+     ],
+     [
+      -4.26,
+      -27.7
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.98
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false
+   },
+   "note": "Naver 5482 (type 10) between the notch stair and ARTBOX #4; east edge = live #4 west wall (+.2)."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-elev-uminus-shaft",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -88.1,
+      -20.63
+     ],
+     [
+      -88.08,
+      -23.1
+     ],
+     [
+      -90.81,
+      -23.1
+     ],
+     [
+      -90.9,
+      -21.93
+     ],
+     [
+      -90.9,
+      -20.6
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.8
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false
+   },
+   "note": "Elevator shaft / car box enclosure behind the landing doors. U- end elevator (1 car, Naver 453003 car box, door facing U+)."
+  },
+  {
+   "type": "ElevatorFront",
+   "id": "1Fp-elev-uminus",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      -88.1,
+      -20.73
+     ],
+     [
+      -88.08,
+      -22.77
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "cars": 1,
+    "pitch": 2.6,
+    "doorWidth": 1.1,
+    "doorHeight": 2.1,
+    "portalHeight": 2.9,
+    "faceToward": [
+     -80.0,
+     -22.0
+    ],
+    "floorLabel": "1",
+    "label": "엘리베이터",
+    "labelSub": "Elevator"
+   },
+   "note": "U- end elevator (1 car, Naver 453003 car box, door facing U+). Landing-door centres from the Naver car-box door ticks; ceiling above 4.80."
+  },
+  {
+   "type": "LockerBank",
+   "id": "1Fp-lockers",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-report.json"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      27.8,
+      -18.13
+     ],
+     [
+      31.4,
+      -18.13
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "faceToward": [
+     29.6,
+     -25.0
+    ],
+    "label": "물품보관함 Lockers",
+    "kiosk": 4
+   },
+   "note": "Backed onto the escalator side cladding, centred on the Naver POI; length (8 columns, 3.6 m) [INFERENCE]."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-stair-core-e",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      27.42,
+      -25.47
+     ],
+     [
+      28.34,
+      -31.9
+     ],
+     [
+      24.76,
+      -32.13
+     ],
+     [
+      24.29,
+      -25.68
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.4
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false,
+    "openings": [
+     {
+      "edge": 3,
+      "at": 2.01,
+      "width": 1.1,
+      "height": 2.2,
+      "kind": "door"
+     }
+    ]
+   },
+   "note": "U+ notch stair (POI 1F 계단 (26.2,-30)) under the solid 2F slab: closed stair core between Naver 4919 / 4924."
+  },
+  {
+   "type": "ServiceDoor",
+   "id": "1Fp-stair-core-e-door",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      24.29,
+      -25.68
+     ],
+     [
+      27.42,
+      -25.47
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "t": 0.641,
+    "width": 1.0,
+    "height": 2.1,
+    "plate": "",
+    "faceToward": [
+     26.3,
+     -22.0
+    ]
+   },
+   "note": "Door on the only public-facing edge (other edges: shell / BOH blocks / units) [INFERENCE: leaf position centred there; no door photo]."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-stair-core-w",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -8.31,
+      -28.01
+     ],
+     [
+      -4.26,
+      -27.7
+     ],
+     [
+      -4.16,
+      -28.63
+     ],
+     [
+      -3.77,
+      -34.1
+     ],
+     [
+      -7.82,
+      -34.41
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.98
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false,
+    "openings": [
+     {
+      "edge": 0,
+      "at": 2.02,
+      "width": 1.1,
+      "height": 2.2,
+      "kind": "door"
+     }
+    ]
+   },
+   "note": "U- notch stair (POI 1F Stairs (-6.1,-32.4)) under the solid 2F slab: closed stair core between Naver 5483 (unbuilt) and 5482."
+  },
+  {
+   "type": "ServiceDoor",
+   "id": "1Fp-stair-core-w-door",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      -8.31,
+      -28.01
+     ],
+     [
+      -4.26,
+      -27.7
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "t": 0.497,
+    "width": 1.0,
+    "height": 2.1,
+    "plate": "",
+    "faceToward": [
+     -6.3,
+     -24.0
+    ]
+   },
+   "note": "Door on the only public-facing edge (other edges: shell / BOH blocks / units) [INFERENCE: leaf position centred there; no door photo]."
+  },
+  {
+   "type": "Room",
+   "id": "1Fp-stair-core-uminus",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -85.37,
+      -26.54
+     ],
+     [
+      -90.54,
+      -26.89
+     ],
+     [
+      -90.76,
+      -23.82
+     ],
+     [
+      -85.59,
+      -23.47
+     ]
+    ],
+    "y": 0.0,
+    "y1": 4.8
+   },
+   "params": {
+    "wallFinish": "plaster",
+    "ceiling": "none",
+    "floor": "none",
+    "interior": "none",
+    "light": false,
+    "openings": [
+     {
+      "edge": 3,
+      "at": 1.53,
+      "width": 1.1,
+      "height": 2.2,
+      "kind": "door"
+     }
+    ]
+   },
+   "note": "U- end stair (POI 1F 계단 (-88.8,-25.8)) under the solid 2F slab: closed stair core, south of the U- elevator."
+  },
+  {
+   "type": "ServiceDoor",
+   "id": "1Fp-stair-core-uminus-door",
+   "zone": "1F public",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+    ".planning/2026-09-24-interior-twin/specs/full/public1f/registration-check.json",
+    "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+    ".planning/2026-09-26-full-twin/public1f-work/liveplan-geometry-after18.npz",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after19"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      -85.59,
+      -23.47
+     ],
+     [
+      -85.37,
+      -26.54
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "t": 0.497,
+    "width": 1.0,
+    "height": 2.1,
+    "plate": "",
+    "faceToward": [
+     -80.0,
+     -25.0
+    ]
+   },
+   "note": "Door on the only public-facing edge (other edges: shell / BOH blocks / units) [INFERENCE: leaf position centred there; no door photo]."
+  }
+ ]
+}

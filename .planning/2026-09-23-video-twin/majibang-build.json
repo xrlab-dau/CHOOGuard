@@ -1,0 +1,1429 @@
+{
+  "schema": "chooguard.majibang-build.v2",
+  "root": "맞이방 · 원본 정합",
+  "plan": ".planning/2026-09-23-video-twin/majibang-plan.json",
+  "floor2F": {
+    "topY": 7.0,
+    "cells": 14541,
+    "regions": {
+      "main": 8257,
+      "box": 6168,
+      "bridge": 116
+    }
+  },
+  "thirdFloor": true,
+  "meshBatches": 111,
+  "props": 253,
+  "downlights": 95,
+  "regions": [
+    {
+      "region": "부산옥",
+      "kind": "restaurant",
+      "frame": "box",
+      "u": [
+        -2.35,
+        6.75
+      ],
+      "v": [
+        26.5,
+        36.5
+      ],
+      "floorY": 12.2,
+      "evidence": "SfM shopfront a 6.75, frontage features b 26-37; board 3F #3; lease 86.7 m2 -> 9.1 m deep"
+    },
+    {
+      "region": "승강기",
+      "kind": "service",
+      "frame": "box",
+      "u": [
+        2.75,
+        6.75
+      ],
+      "v": [
+        21.5,
+        25.5
+      ],
+      "floorY": 12.2,
+      "evidence": "board 3F: elevator between 부산옥 and 에그박스"
+    },
+    {
+      "region": "에그박스",
+      "kind": "bakery",
+      "frame": "box",
+      "u": [
+        -6.05,
+        6.75
+      ],
+      "v": [
+        1.0,
+        19.0
+      ],
+      "floorY": 12.2,
+      "evidence": "board 3F #4; SfM arch features at b 14-16; lease 230.6 m2 over 18 m -> 12.8 m deep"
+    },
+    {
+      "region": "승강기",
+      "kind": "service",
+      "frame": "box",
+      "u": [
+        -9.7,
+        -7.2
+      ],
+      "v": [
+        48.0,
+        60.42
+      ],
+      "floorY": 12.2,
+      "evidence": "board 3F: elevator at the corner"
+    },
+    {
+      "region": "비빔가",
+      "kind": "restaurant",
+      "frame": "box",
+      "u": [
+        -7.0,
+        12.5
+      ],
+      "v": [
+        48.0,
+        60.42
+      ],
+      "floorY": 12.2,
+      "evidence": "board 3F #2 south of the entrance; corridor b 44.3-48"
+    },
+    {
+      "region": "푸드코트 seating",
+      "tables": 15,
+      "keptClear": 5
+    },
+    {
+      "region": "푸드코트  FOOD COURT",
+      "kind": "foodcourt",
+      "frame": "box",
+      "u": [
+        17.5,
+        56.5
+      ],
+      "v": [
+        48.0,
+        60.42
+      ],
+      "floorY": 12.2,
+      "evidence": "board 3F #1 north of the entrance; SfM band edge b 44.3, corridor to b 48"
+    },
+    {
+      "region": "3F 식당가 L",
+      "frame": "box",
+      "basis": [
+        "SfM re-anchor (jev-sfm-reanchor-016 apply 0.96): COLMAP RY2qvE0Tugk models 0 (ascent 177-215 s) and 2 (descent 310-330 s); scale from the 2F plane and 3F eye height, heading = box axis 4.13 deg, translation fitted to the original raised-roof west edge and north wall (hall-measurement.json)",
+        "Wing: shopfront plane measured at a 6.75 (343 SfM points), corridor walked at a 9-17, balustrade at a 16; 부산옥 frontage features at b 26-37 (matches the board/Naver along-wing position). Band: slab-edge fascia measured 1.2 m east of the down lane, b 44.3; east wall b 60.67. South wall a -13.3, west wall b -17.8.",
+        "Lease areas (food court 787, 비빔가 428.2, 부산옥 86.7, eggbox 230.6 m2) now exceed the measured band depth (12.7 m units): kept as evidence of order, not size."
+      ],
+      "eastDoor": {
+        "u": [
+          12.5,
+          17.5
+        ],
+        "evidence": "board 3F 출입문 between 푸드코트 and 비빔가 (box a)"
+      }
+    },
+    {
+      "region": "3F band slab-edge fascia (east, facing the void)",
+      "panels": [
+        {
+          "tex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ads/ad_Singisul.png",
+          "s": [
+            10.3,
+            16.3
+          ],
+          "y": [
+            10.15,
+            12.3
+          ]
+        },
+        {
+          "tex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ads/ad_HWASEUNG.png",
+          "s": [
+            18.1,
+            24.1
+          ],
+          "y": [
+            10.15,
+            12.3
+          ]
+        },
+        {
+          "tex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ads/ad_TKG.png",
+          "s": [
+            25.9,
+            31.9
+          ],
+          "y": [
+            10.15,
+            12.3
+          ]
+        },
+        {
+          "tex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ads/ad_PanStar.png",
+          "s": [
+            33.7,
+            39.7
+          ],
+          "y": [
+            10.15,
+            12.3
+          ]
+        }
+      ],
+      "evidence": "SfM band-edge face 10.2-12.5 m (ry2-2 line 0); photos kgnwrite_009 (2026-05, frontal), best_pb_han_016/023 (2025-09): order north->south PanStar, TKG, HWASEUNG, 신기술, with 신기술 ending where the StoryWay fascia begins; frontal widths equal (3.25:1), gaps 0.3 of a panel. Along-band positions photo-relative, anchored to StoryWay (a 23-29.5)."
+    },
+    {
+      "region": "3F wing slab-edge fascia (south, facing the void)",
+      "panels": [
+        {
+          "tex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ads/ad_WFMT.png",
+          "s": [
+            29.1,
+            34.9
+          ],
+          "y": [
+            10.15,
+            12.3
+          ]
+        },
+        {
+          "tex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ads/ad_Cushion.png",
+          "s": [
+            21.7,
+            27.5
+          ],
+          "y": [
+            10.15,
+            12.3
+          ]
+        },
+        {
+          "tex": "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/Ads/board_Arrival.png",
+          "s": [
+            47.1,
+            51.4
+          ],
+          "y": [
+            10.4,
+            11.9
+          ]
+        }
+      ],
+      "evidence": "photos best_pb_han_017 (facing south: WFMT left=east, 쿠션은 과학이야 right=west, both under the eggbox front; 부산별빛샌드 below WFMT) and _022 (열차도착안내 under 부산옥). Pair centred under the eggbox (b 1-19, SfM arch features b 14-16)."
+    },
+    {
+      "region": "크리스피크림도넛",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        40.0,
+        47.0
+      ],
+      "v": [
+        85.0,
+        95.98
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); Kakao POI by exit 10; RY2 1:39"
+    },
+    {
+      "region": "카카오프렌즈",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        33.0,
+        40.0
+      ],
+      "v": [
+        85.0,
+        95.47
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "떡공방명제",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        26.0,
+        33.0
+      ],
+      "v": [
+        85.0,
+        94.97
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "CAFFE PASCUCCI",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        16.0,
+        25.0
+      ],
+      "v": [
+        85.0,
+        94.25
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); Naver pin (17,92); RY2 1:55, 2:49"
+    },
+    {
+      "region": "편의점 StoryWay",
+      "kind": "shop",
+      "frame": "box",
+      "u": [
+        23.0,
+        29.5
+      ],
+      "v": [
+        44.6,
+        49.6
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); board #11 directly in front of 10 파스쿠찌; shopfront faces +u (north) toward the shop strip: RY2qvE0Tugk 110 s walking south past CAFFE PASCUCCI sees the StoryWay glass front head-on, escalator foot beside it (photo 228112lee: 편의점 CVS / 식당가 3F sign at the escalator foot); SfM re-anchor (jev-sfm-reanchor-016 apply 0.96): COLMAP RY2qvE0Tugk models 0 (ascent 177-215 s) and 2 (descent 310-330 s); scale from the 2F plane and 3F eye height, heading = box axis 4.13 deg, translation fitted to the original raised-roof west edge and north wall (hall-measurement.json): the escalator pair occupies b 40-43.7, so StoryWay sits east of the down lane under the band edge, front at the escalator foot (a 29.4)"
+    },
+    {
+      "region": "국제시장단팥빵",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        56.0,
+        62.0
+      ],
+      "v": [
+        82.5,
+        87.5
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "하와이안파라다이스",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        56.0,
+        62.0
+      ],
+      "v": [
+        87.5,
+        92.5
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "새부산약국",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        56.0,
+        61.5
+      ],
+      "v": [
+        58.0,
+        61.2
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "아메리칸트레일러",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        55.5,
+        60.8
+      ],
+      "v": [
+        44.0,
+        48.8
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "부산기장특산물",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        55.0,
+        60.5
+      ],
+      "v": [
+        39.5,
+        44.0
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "국제시장도나스",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        46.0,
+        53.0
+      ],
+      "v": [
+        20.4,
+        25.4
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "부산별빛샌드",
+      "kind": "shop",
+      "frame": "box",
+      "u": [
+        7.2,
+        13.6
+      ],
+      "v": [
+        8.7,
+        16.7
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); moved under the WFMT panel per photo best_pb_han_017 (sign centred under the west half of WFMT)"
+    },
+    {
+      "region": "올리브영",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        4.0,
+        11.0
+      ],
+      "v": [
+        18.0,
+        26.5
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); Naver OLIVE YOUNG 2F"
+    },
+    {
+      "region": "위니비니",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -9.0,
+        -2.0
+      ],
+      "v": [
+        60.5,
+        67.0
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "화장실",
+      "kind": "service",
+      "frame": "station",
+      "u": [
+        -17.5,
+        -11.0
+      ],
+      "v": [
+        80.0,
+        89.0
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "화장실",
+      "kind": "service",
+      "frame": "station",
+      "u": [
+        -16.0,
+        -10.0
+      ],
+      "v": [
+        67.5,
+        72.0
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "매표창구",
+      "kind": "tickets",
+      "frame": "station",
+      "u": [
+        -26.6,
+        -6.0
+      ],
+      "v": [
+        -3.31,
+        2.69
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); board 매표창구 bar; counters face the concourse | reconcile-2f 2026-09-25: front (-v face) onto measured ticket-window wall plane; west end extended to observed wall extent; east end unobserved (kept) (tier b)"
+    },
+    {
+      "region": "자동발매기",
+      "kind": "machines",
+      "frame": "station",
+      "u": [
+        -3.9,
+        -2.9
+      ],
+      "v": [
+        8.5,
+        15.5
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 kgnwrite_004): 자동발매기 drawn inside the 역무실 column below 수유방 and above the 매표창구 bar; machines stand on the column front line u-3 (역무실/수유방 +u face) facing the concourse"
+    },
+    {
+      "region": "비엔씨",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        21.0,
+        27.0
+      ],
+      "v": [
+        -13.0,
+        -5.5
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "환공어묵",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        14.5,
+        20.5
+      ],
+      "v": [
+        -14.0,
+        -6.5
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "팔공티",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -25.1,
+        -18.1
+      ],
+      "v": [
+        -22.95,
+        -15.95
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m) | reconcile-2f 2026-09-25: shared corridor face: +V corridor face measured at V -22.95 (W-L1/W-L2 + column corridor faces) -> v0 clamped; U shifted to clear COL-L-CLOCK east face (-25.1) (tier b)"
+    },
+    {
+      "region": "남천할매떡볶이",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -40.0,
+        -33.0
+      ],
+      "v": [
+        -3.31,
+        3.69
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m) | reconcile-2f 2026-09-25: neighbour constraint: board 2F bar 매표창구 | 26 | 철도경찰서 shares one concourse front line -> v0 = measured ticket-wall V; old box straddled the measured HC hall camera path (V -5.3..-6.2) (tier c)"
+    },
+    {
+      "region": "철도경찰서",
+      "kind": "service",
+      "frame": "station",
+      "u": [
+        -55.0,
+        -44.0
+      ],
+      "v": [
+        -3.31,
+        4.19
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m) | reconcile-2f 2026-09-25: neighbour constraint: board 2F bar 매표창구 | 26 | 철도경찰서 shares one concourse front line -> v0 = measured ticket-wall V; old box straddled the measured HC hall camera path (V -5.3..-6.2); face +u -> -v: 철도경찰대 부산센터 glazed front faces the HC camera approaching from -V (HC 584-589 s) (tier c)"
+    },
+    {
+      "region": "편의점",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        38.0,
+        51.0
+      ],
+      "v": [
+        -41.2,
+        -33.7
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "백미당",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        31.0,
+        38.0
+      ],
+      "v": [
+        -45.0,
+        -37.5
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m)"
+    },
+    {
+      "region": "코레일라운지 편의점",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        -40.27,
+        -30.0
+      ],
+      "v": [
+        -35.82,
+        -28.32
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); west edge trimmed to clear the original facade column at u-40/v-45 | reconcile-2f 2026-09-25: lounge: KORAIL LOUNGE fascia band / dark wall panel west edge (HC 204, 210) to corner column COL-R-LOUNGE; front = W-R3; depth kept (tier b)"
+    },
+    {
+      "region": "편의점",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        -45.87,
+        -40.27
+      ],
+      "v": [
+        -36.04,
+        -28.54
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m) | reconcile-2f 2026-09-25: StoryWay 편의점: glazing west edge (HC 216) to lounge boundary; front = W-R4; depth kept (tier b)"
+    },
+    {
+      "region": "소반한식",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -54.31,
+        -48.83
+      ],
+      "v": [
+        -36.04,
+        -28.54
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); Naver Soban (-56,-35); east edge trimmed to clear the original facade column at u-48/v-44 | reconcile-2f 2026-09-25: 2023 tenant 나베아 PORK CUTLET in the #29 slot: glazing edges (HC 216, 226, 232); front = W-R4; depth kept (tier b)"
+    },
+    {
+      "region": "비엔씨제과",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -65.76,
+        -54.31
+      ],
+      "v": [
+        -36.04,
+        -28.54
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m) | reconcile-2f 2026-09-25: 비엔씨제과: shared partition with #29 (east) and SUBWAY partition (HC 246/247, west); front = W-R4 (plane measured to U -55.4, extended); depth kept (tier b)"
+    },
+    {
+      "region": "SUBWAY",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -73.76,
+        -65.76
+      ],
+      "v": [
+        -36.04,
+        -28.54
+      ],
+      "floorY": 7.0,
+      "evidence": "board 2F (2026-04 photo kgnwrite_004), affine-registered to the original shell (residual <=12.6 m); Naver SUBWAY (-77,-30) | reconcile-2f 2026-09-25: SUBWAY: east edge = BNC|SUBWAY partition (HC 246/247); width and depth kept from plan; front on the W-R4 row line (extrapolated) (tier c)"
+    },
+    {
+      "region": "꽃들",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        14.99,
+        22.25
+      ],
+      "v": [
+        -32.11,
+        -28.41
+      ],
+      "floorY": 7.0,
+      "evidence": "#19 board 2F (2026-04 kgnwrite_004): vestibule order +u->-u = elevators | 19-21 | entrance | 22-24 | elevators; 19/24 above the door line, 20-23 below it. Placed in the original vestibule structure: elevator shafts u-7/-3 and u24-25, door-line piers u6.5-7.5 and u14.5-15.5 at v-44..-50, west wall u-1, east wall u23.5-24, open front at v-60 | reconcile-2f 2026-09-25: open +v front onto the scale-corrected RY aperture corners (U = corner span, front V = mean corner V); shallow depth kept (tier a-failed)"
+    },
+    {
+      "region": "다인명가",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        15.9,
+        23.1
+      ],
+      "v": [
+        -54.8,
+        -50.0
+      ],
+      "floorY": 7.0,
+      "evidence": "#20 board 2F (2026-04 kgnwrite_004): vestibule order +u->-u = elevators | 19-21 | entrance | 22-24 | elevators; 19/24 above the door line, 20-23 below it. Placed in the original vestibule structure: elevator shafts u-7/-3 and u24-25, door-line piers u6.5-7.5 and u14.5-15.5 at v-44..-50, west wall u-1, east wall u23.5-24, open front at v-60"
+    },
+    {
+      "region": "호두나니&부산오뎅",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        15.9,
+        23.1
+      ],
+      "v": [
+        -59.6,
+        -55.2
+      ],
+      "floorY": 7.0,
+      "evidence": "#21 board 2F (2026-04 kgnwrite_004): vestibule order +u->-u = elevators | 19-21 | entrance | 22-24 | elevators; 19/24 above the door line, 20-23 below it. Placed in the original vestibule structure: elevator shafts u-7/-3 and u24-25, door-line piers u6.5-7.5 and u14.5-15.5 at v-44..-50, west wall u-1, east wall u23.5-24, open front at v-60"
+    },
+    {
+      "region": "복순도가",
+      "kind": "shop",
+      "frame": "station",
+      "u": [
+        -0.87,
+        4.76
+      ],
+      "v": [
+        -30.63,
+        -27.93
+      ],
+      "floorY": 7.0,
+      "evidence": "#24 board 2F (2026-04 kgnwrite_004): vestibule order +u->-u = elevators | 19-21 | entrance | 22-24 | elevators; 19/24 above the door line, 20-23 below it. Placed in the original vestibule structure: elevator shafts u-7/-3 and u24-25, door-line piers u6.5-7.5 and u14.5-15.5 at v-44..-50, west wall u-1, east wall u23.5-24, open front at v-60 | reconcile-2f 2026-09-25: open +v front onto the scale-corrected RY aperture corners (U = corner span, front V = mean corner V); shallow depth kept (tier a-failed)"
+    },
+    {
+      "region": "청도할매김밥",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -0.4,
+        6.2
+      ],
+      "v": [
+        -54.8,
+        -50.0
+      ],
+      "floorY": 7.0,
+      "evidence": "#23 board 2F (2026-04 kgnwrite_004): vestibule order +u->-u = elevators | 19-21 | entrance | 22-24 | elevators; 19/24 above the door line, 20-23 below it. Placed in the original vestibule structure: elevator shafts u-7/-3 and u24-25, door-line piers u6.5-7.5 and u14.5-15.5 at v-44..-50, west wall u-1, east wall u23.5-24, open front at v-60"
+    },
+    {
+      "region": "반월당닭강정",
+      "kind": "restaurant",
+      "frame": "station",
+      "u": [
+        -0.4,
+        6.2
+      ],
+      "v": [
+        -59.6,
+        -55.2
+      ],
+      "floorY": 7.0,
+      "evidence": "#22 board 2F (2026-04 kgnwrite_004): vestibule order +u->-u = elevators | 19-21 | entrance | 22-24 | elevators; 19/24 above the door line, 20-23 below it. Placed in the original vestibule structure: elevator shafts u-7/-3 and u24-25, door-line piers u6.5-7.5 and u14.5-15.5 at v-44..-50, west wall u-1, east wall u23.5-24, open front at v-60"
+    },
+    {
+      "region": "KORAIL 철도이용안내",
+      "frame": "box",
+      "centre": [
+        45.2,
+        1.35
+      ],
+      "desk": "customer-side",
+      "evidence": "SfM tree column B (box 45.2,1.35) carries the desk (frames 315/330 show the round desk around the column); design from photo tom2410_008 (2026-07): black body, white counter band, dark canopy ring with KORAIL 부산역, blue 철도이용안내 sign; diameter ~6 m from frame 315 (120 px at ~30 m)"
+    },
+    {
+      "region": "대합실 좌석",
+      "benches": 132,
+      "seating": {
+        "frame": "box",
+        "a": [
+          29.0,
+          56.0
+        ],
+        "b": [
+          12.0,
+          38.0
+        ],
+        "pitchA": 1.7,
+        "len": 2.0,
+        "gap": 0.9,
+        "avoid": [
+          [
+            45.2,
+            20.8,
+            3.0
+          ]
+        ],
+        "evidence": "Block edges from SfM floor hits in frames 303/305/309 (near edge a 28-31, east edge b 37-41; far edge beyond a 55); bench design from photo unna.kr-58_005 (KORAIL wooden slab on steel box legs); rows from photos korail0918_004 / RY2 303 s. Row pitch and far edge INFERRED.",
+        "decalText": false
+      },
+      "evidence": "Block edges from SfM floor hits in frames 303/305/309 (near edge a 28-31, east edge b 37-41; far edge beyond a 55); bench design from photo unna.kr-58_005 (KORAIL wooden slab on steel box legs); rows from photos korail0918_004 / RY2 303 s. Row pitch and far edge INFERRED."
+    },
+    {
+      "region": "Tree column E",
+      "a": 20.9,
+      "b": 1.35,
+      "evidence": "SfM ry2-0 cluster (17.11,36.59) station; reprojects onto the column behind the wing railing in frame 85"
+    },
+    {
+      "region": "Tree column D",
+      "a": 20.9,
+      "b": 20.8,
+      "evidence": "SfM ry2-0 cluster (16.98,55.62); frame 27 column with lantern"
+    },
+    {
+      "region": "Tree column B",
+      "a": 45.2,
+      "b": 1.35,
+      "evidence": "SfM clusters (42.37,37.32)/(44.42,37.9); KORAIL desk column in frames 315/45"
+    },
+    {
+      "region": "Tree column A",
+      "a": 45.2,
+      "b": 20.8,
+      "evidence": "SfM clusters (40.11,57.14)/(41.49,57.5) with the two 타는 곳 signs; frames 295-330"
+    },
+    {
+      "region": "Lattice hall roof",
+      "members": 2080,
+      "frame": "box",
+      "basis": [
+        "SfM re-anchor (jev-sfm-reanchor-016 apply 0.96): COLMAP RY2qvE0Tugk models 0 (ascent 177-215 s) and 2 (descent 310-330 s); scale from the 2F plane and 3F eye height, heading = box axis 4.13 deg, translation fitted to the original raised-roof west edge and north wall (hall-measurement.json)",
+        "Tree columns measured (SfM clusters + multi-view triangulation, reprojection-checked in 8 frames) at box (21.5,20.9),(20.3,1.9),(44.9,20.8),(45.6,0.8); regularised to the grid a {20.9,45.2} x b {1.35,20.8} (spacing 24.3 x 19.45).",
+        "Raised deck extents and heights are the original model roof underside (RoofUnder raycast), truss top chords hang 0.15 m below it.",
+        "INFERRED: truss module = quarter of the column grid (6.075 x 4.86), Warren with verticals, depth 2.4 m; branch tips at the diagonal quarter nodes; branch point 16.0 m (photo RY2 285 s: branches rise ~25-30 deg from the column top); lantern 2.3 m x 3.6 m octagon on each column top (frames 27, 285, 312, 322)."
+      ],
+      "appearance": "white (BL-05/CX-19)"
+    },
+    {
+      "region": "Slab-edge column C",
+      "a": 48.2,
+      "b": 44.4,
+      "evidence": "SfM ry2-2 cluster (41.9,81.0) station = box (48.2,44.4) under the 3F band slab edge; RY2 110 s shows the white round column between the shop corridor and the hall"
+    },
+    {
+      "region": "screen_North_L",
+      "frame": "station",
+      "u": 68.43,
+      "v": 55.55,
+      "y": [
+        13.62,
+        17.5
+      ],
+      "evidence": "SfM ry2-2 bearings (frames 295/315/330, lane-constrained registration, residual <5 px) intersected with the original north wall: screens on the original upper wall (u 68.8-.075(v-53), y 12-16 probe), boards over the original gate door sets (door line u 65.3-.065(v-57.8)); content: RY2qvE0Tugk @322 s"
+    },
+    {
+      "region": "screen_North_M",
+      "frame": "station",
+      "u": 67.73,
+      "v": 64.9,
+      "y": [
+        13.22,
+        17.5
+      ],
+      "evidence": "SfM ry2-2 bearings (frames 295/315/330, lane-constrained registration, residual <5 px) intersected with the original north wall: screens on the original upper wall (u 68.8-.075(v-53), y 12-16 probe), boards over the original gate door sets (door line u 65.3-.065(v-57.8)); content: RY2qvE0Tugk @322 s"
+    },
+    {
+      "region": "screen_North_R",
+      "frame": "station",
+      "u": 67.04,
+      "v": 74.0,
+      "y": [
+        13.56,
+        17.5
+      ],
+      "evidence": "SfM ry2-2 bearings (frames 295/315/330, lane-constrained registration, residual <5 px) intersected with the original north wall: screens on the original upper wall (u 68.8-.075(v-53), y 12-16 probe), boards over the original gate door sets (door line u 65.3-.065(v-57.8)); content: RY2qvE0Tugk @322 s"
+    },
+    {
+      "region": "board_Departures_0",
+      "frame": "station",
+      "u": 64.72,
+      "v": 62.85,
+      "y": [
+        10.45,
+        11.79
+      ],
+      "evidence": "SfM ry2-2 bearings (frames 295/315/330, lane-constrained registration, residual <5 px) intersected with the original north wall: screens on the original upper wall (u 68.8-.075(v-53), y 12-16 probe), boards over the original gate door sets (door line u 65.3-.065(v-57.8)); board face: photo hapyme1_001 (2026-09)"
+    },
+    {
+      "region": "sign_Gate_0",
+      "frame": "station",
+      "u": 64.77,
+      "v": 62.85,
+      "y": [
+        9.52,
+        9.93
+      ],
+      "evidence": "photo hapyme1_001: 나오는 곳 | 타는 곳 strip directly under the DEPARTURES board, above the gate doors"
+    },
+    {
+      "region": "board_Departures_1",
+      "frame": "station",
+      "u": 64.36,
+      "v": 68.4,
+      "y": [
+        10.45,
+        11.79
+      ],
+      "evidence": "SfM ry2-2 bearings (frames 295/315/330, lane-constrained registration, residual <5 px) intersected with the original north wall: screens on the original upper wall (u 68.8-.075(v-53), y 12-16 probe), boards over the original gate door sets (door line u 65.3-.065(v-57.8)); board face: photo hapyme1_001 (2026-09)"
+    },
+    {
+      "region": "sign_Gate_1",
+      "frame": "station",
+      "u": 64.41,
+      "v": 68.4,
+      "y": [
+        9.52,
+        9.93
+      ],
+      "evidence": "photo hapyme1_001: 나오는 곳 | 타는 곳 strip directly under the DEPARTURES board, above the gate doors"
+    },
+    {
+      "region": "plat_1",
+      "frame": "station",
+      "u": 76.2,
+      "v": 19.8,
+      "y": [
+        10.1,
+        10.7
+      ],
+      "evidence": "original platform stair wells (tread material 25x, north concourse; 2F ends measured) ordered west->east by v; namuwiki: 5 faces, platforms 1,3,4,5,6,8,9,10,11 (no 2 and 7); photos: 3·4 gate with glass wall to trees (spuoo01_060), 8·9 and 10·11 gates beside Hawaiian Paradise Coffee in the north-east (spuoo01_038/039)"
+    },
+    {
+      "region": "plat_34",
+      "frame": "station",
+      "u": 86.5,
+      "v": 41.65,
+      "y": [
+        10.1,
+        10.7
+      ],
+      "evidence": "original platform stair wells (tread material 25x, north concourse; 2F ends measured) ordered west->east by v; namuwiki: 5 faces, platforms 1,3,4,5,6,8,9,10,11 (no 2 and 7); photos: 3·4 gate with glass wall to trees (spuoo01_060), 8·9 and 10·11 gates beside Hawaiian Paradise Coffee in the north-east (spuoo01_038/039); sign face photo spuoo01_060"
+    },
+    {
+      "region": "plat_56",
+      "frame": "station",
+      "u": 95.1,
+      "v": 58.8,
+      "y": [
+        10.1,
+        10.7
+      ],
+      "evidence": "original platform stair wells (tread material 25x, north concourse; 2F ends measured) ordered west->east by v; namuwiki: 5 faces, platforms 1,3,4,5,6,8,9,10,11 (no 2 and 7); photos: 3·4 gate with glass wall to trees (spuoo01_060), 8·9 and 10·11 gates beside Hawaiian Paradise Coffee in the north-east (spuoo01_038/039)"
+    },
+    {
+      "region": "plat_89",
+      "frame": "station",
+      "u": 106.2,
+      "v": 81.7,
+      "y": [
+        10.1,
+        10.7
+      ],
+      "evidence": "original platform stair wells (tread material 25x, north concourse; 2F ends measured) ordered west->east by v; namuwiki: 5 faces, platforms 1,3,4,5,6,8,9,10,11 (no 2 and 7); photos: 3·4 gate with glass wall to trees (spuoo01_060), 8·9 and 10·11 gates beside Hawaiian Paradise Coffee in the north-east (spuoo01_038/039)"
+    },
+    {
+      "region": "plat_1011",
+      "frame": "station",
+      "u": 114.7,
+      "v": 99.3,
+      "y": [
+        10.1,
+        10.7
+      ],
+      "evidence": "original platform stair wells (tread material 25x, north concourse; 2F ends measured) ordered west->east by v; namuwiki: 5 faces, platforms 1,3,4,5,6,8,9,10,11 (no 2 and 7); photos: 3·4 gate with glass wall to trees (spuoo01_060), 8·9 and 10·11 gates beside Hawaiian Paradise Coffee in the north-east (spuoo01_038/039)"
+    },
+    {
+      "region": "plat_1011b",
+      "frame": "station",
+      "u": 76.9,
+      "v": 96.15,
+      "y": [
+        10.1,
+        10.7
+      ],
+      "evidence": "original platform stair wells (tread material 25x, north concourse; 2F ends measured) ordered west->east by v; namuwiki: 5 faces, platforms 1,3,4,5,6,8,9,10,11 (no 2 and 7); photos: 3·4 gate with glass wall to trees (spuoo01_060), 8·9 and 10·11 gates beside Hawaiian Paradise Coffee in the north-east (spuoo01_038/039)"
+    },
+    {
+      "region": "screen_West_1",
+      "frame": "box",
+      "u": 42.1,
+      "v": 0.15,
+      "y": [
+        10.01,
+        11.48
+      ],
+      "evidence": "RY2qvE0Tugk @322 s (ry2-2 frame 315) bearings intersected with the raised-roof west edge plane (box b 0)"
+    },
+    {
+      "region": "screen_West_2",
+      "frame": "box",
+      "u": 49.5,
+      "v": 0.15,
+      "y": [
+        9.73,
+        11.42
+      ],
+      "evidence": "RY2qvE0Tugk @322 s (ry2-2 frame 315) bearings intersected with the raised-roof west edge plane (box b 0)"
+    },
+    {
+      "region": "board_West_green",
+      "frame": "box",
+      "u": 55.53,
+      "v": 0.15,
+      "y": [
+        9.49,
+        11.39
+      ],
+      "evidence": "RY2qvE0Tugk @322 s (ry2-2 frame 315) bearings intersected with the raised-roof west edge plane (box b 0)"
+    },
+    {
+      "region": "screen_NW_3",
+      "frame": "station",
+      "u": 61.4,
+      "v": 35.61,
+      "y": [
+        9.08,
+        11.31
+      ],
+      "evidence": "RY2qvE0Tugk @322 s bearings intersected with the original north wall west segment (u 61.6, v 34-52)"
+    },
+    {
+      "region": "screen_NW_4",
+      "frame": "station",
+      "u": 61.4,
+      "v": 45.7,
+      "y": [
+        9.36,
+        11.44
+      ],
+      "evidence": "RY2qvE0Tugk @322 s bearings intersected with the original north wall west segment (u 61.6, v 34-52)"
+    },
+    {
+      "region": "sign_Tanungot_AL",
+      "frame": "box",
+      "u": 44.55,
+      "v": 19.05,
+      "y": [
+        9.7,
+        11.3
+      ],
+      "evidence": "two navy 타는 곳 signs hung on the tree column (RY2 frames 295-330 at column A; hCyroXn0Jhg 909-913 s at the wing-end column E); face from photo tom2410_008 (2026-07); height 9.7-11.3 from the SfM sign cluster at A (8.1-13.5 m)"
+    },
+    {
+      "region": "sign_Tanungot_AR",
+      "frame": "box",
+      "u": 44.55,
+      "v": 22.55,
+      "y": [
+        9.7,
+        11.3
+      ],
+      "evidence": "two navy 타는 곳 signs hung on the tree column (RY2 frames 295-330 at column A; hCyroXn0Jhg 909-913 s at the wing-end column E); face from photo tom2410_008 (2026-07); height 9.7-11.3 from the SfM sign cluster at A (8.1-13.5 m)"
+    },
+    {
+      "region": "sign_Tanungot_EL",
+      "frame": "box",
+      "u": 20.25,
+      "v": -0.4,
+      "y": [
+        9.7,
+        11.3
+      ],
+      "evidence": "two navy 타는 곳 signs hung on the tree column (RY2 frames 295-330 at column A; hCyroXn0Jhg 909-913 s at the wing-end column E); face from photo tom2410_008 (2026-07); height 9.7-11.3 from the SfM sign cluster at A (8.1-13.5 m)"
+    },
+    {
+      "region": "sign_Tanungot_ER",
+      "frame": "box",
+      "u": 20.25,
+      "v": 3.1,
+      "y": [
+        9.7,
+        11.3
+      ],
+      "evidence": "two navy 타는 곳 signs hung on the tree column (RY2 frames 295-330 at column A; hCyroXn0Jhg 909-913 s at the wing-end column E); face from photo tom2410_008 (2026-07); height 9.7-11.3 from the SfM sign cluster at A (8.1-13.5 m)"
+    },
+    {
+      "region": "sign_Tickets_1F",
+      "frame": "box",
+      "u": 34.0,
+      "v": 42.7,
+      "y": [
+        9.5,
+        10.03
+      ],
+      "evidence": "RY2qvE0Tugk @322 s: \"← 표시는 곳 / 승차권자동발매기 | 1F 123 456\" hanging sign facing the escalator; b from ry2-2 bearings (42.7), a from a 2.5 m clear hanging height (INFERRED)"
+    },
+    {
+      "region": "sign_FoodCourt_Tickets",
+      "frame": "box",
+      "u": 34.1,
+      "v": 42.7,
+      "y": [
+        9.5,
+        10.03
+      ],
+      "evidence": "photos 228112lee_025 (2026-07), mongmonge77_002 (2026-06), drhanji_000: north face of the escalator-foot sign; its south face is the 1F/표시는 곳 face seen in RY2 322 s (both arrows point west)"
+    },
+    {
+      "region": "sign_StoryWay_CVS_3F",
+      "frame": "box",
+      "u": 26.2,
+      "v": 44.52,
+      "y": [
+        8.2,
+        10.8
+      ],
+      "evidence": "photo doodue_001 (2025-08): 편의점 CVS / 식당가 3F panel on the StoryWay face beside the escalator"
+    },
+    {
+      "region": "Original north door bank opened",
+      "target": "OfficialStation_-부산역_선로상층부_0",
+      "originalAsset": "Assets/ChooGuard/Art/OfficialBusanStation/OfficialBusanStation_PlatformsParking.fbx",
+      "generatedAsset": "Assets/ChooGuard/Art/StationInterior/Majibang/OfficialStation_-부산역_선로상층부_0_MajibangDoors.asset",
+      "openings": [
+        {
+          "name": "북측 출입문 1",
+          "u": [
+            63.6,
+            69.0
+          ],
+          "v": [
+            61.5,
+            63.3
+          ],
+          "y": [
+            7.02,
+            9.2
+          ]
+        },
+        {
+          "name": "북측 출입문 2",
+          "u": [
+            63.6,
+            69.0
+          ],
+          "v": [
+            65.3,
+            67.0
+          ],
+          "y": [
+            7.02,
+            9.2
+          ]
+        },
+        {
+          "name": "북측 출입문 3",
+          "u": [
+            63.6,
+            69.0
+          ],
+          "v": [
+            69.0,
+            70.6
+          ],
+          "y": [
+            7.02,
+            9.2
+          ]
+        },
+        {
+          "u": [
+            55.29,
+            56.49
+          ],
+          "v": [
+            25.6,
+            26.52
+          ],
+          "y": [
+            7.02,
+            9.5
+          ],
+          "set": "north-west entrance"
+        },
+        {
+          "u": [
+            55.73,
+            56.93
+          ],
+          "v": [
+            26.52,
+            27.44
+          ],
+          "y": [
+            7.02,
+            9.5
+          ],
+          "set": "north-west entrance"
+        },
+        {
+          "u": [
+            56.18,
+            57.38
+          ],
+          "v": [
+            27.44,
+            28.36
+          ],
+          "y": [
+            7.02,
+            9.5
+          ],
+          "set": "north-west entrance"
+        },
+        {
+          "u": [
+            56.63,
+            57.83
+          ],
+          "v": [
+            28.36,
+            29.28
+          ],
+          "y": [
+            7.02,
+            9.5
+          ],
+          "set": "north-west entrance"
+        },
+        {
+          "u": [
+            57.07,
+            58.27
+          ],
+          "v": [
+            29.28,
+            30.2
+          ],
+          "y": [
+            7.02,
+            9.5
+          ],
+          "set": "north-west entrance"
+        }
+      ],
+      "basis": "Original door-leaf material runs (a280) at y8.0 directly under the three original door signs at y9.35 (v61.1-63.7, 64.9-67.5, 68.6-71.2); fixed glass (cc88) between them is kept. Opening = door leaf only, y7.02-9.2, through the door line u63.6-69.0. | North-west entrance: door-leaf material a280 at y 7.6-9.3 on the diagonal door line u = 55.13 + .485(v-24.5), v 25.45-30.4 (5 cm scan); board 2F 출입문 북서 and the 2023 walk (RY2qvE0Tugk 36-43 s: outdoor stair then straight into the hall facing the round desk)"
+    },
+    {
+      "region": "Original front vestibule inner doors opened",
+      "target": "OfficialStation_-부산역_0",
+      "originalAsset": "Assets/ChooGuard/Art/OfficialBusanStation/OfficialBusanStation_MainShell.fbx",
+      "generatedAsset": "Assets/ChooGuard/Art/StationInterior/Majibang/OfficialStation_-부산역_0_MajibangDoors.asset",
+      "openings": [
+        {
+          "u": [
+            6.35,
+            9.25
+          ],
+          "v": [
+            -31.4,
+            -30.2
+          ],
+          "y": [
+            7.02,
+            9.5
+          ]
+        },
+        {
+          "u": [
+            10.0,
+            12.9
+          ],
+          "v": [
+            -31.4,
+            -30.2
+          ],
+          "y": [
+            7.02,
+            9.5
+          ]
+        }
+      ],
+      "basis": "Original door-leaf material a280 on the vestibule inner door line v-30.7..-30.85 (5 cm ray scan at y7.6/8.6/9.3): leaf sets u6.35-9.25 and u10.0-12.9 between 563a frames u5.1-6.3, 9.3-9.95, 13.0-14.2; transom 563a above y9.5. Board 2F shows the entrance on this axis between tenants 19-21 and 22-24."
+    }
+  ],
+  "storefronts": "kit",
+  "hallAppearance": "white",
+  "slabOpenings": [
+    {
+      "id": "gate2-atrium",
+      "polygon": [
+        [
+          -30.0,
+          -28.44
+        ],
+        [
+          -16.4,
+          -28.44
+        ],
+        [
+          -16.4,
+          -44.2
+        ],
+        [
+          -30.0,
+          -43.7
+        ],
+        [
+          -30.0,
+          -35.82
+        ]
+      ],
+      "area": 210.936,
+      "guardedEdges": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "evidence": [
+        ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json voids.atriumGuard: teal glass guard along V -28.44, U -30.0..-16.4 between stainless columns COL-R-VOID-MID/E; void runs plaza-ward down to 1F",
+        ".planning/2026-09-24-interior-twin/evidence-2f.json CX-10 (main 2F enclosure) / generated Majibang_2F_Floor covers the void",
+        "1F: gap between units #6 (U <= -28.8) and #5 (U >= -12.3) on the plaza side = GATE2 entrance hall (2026-08 board order); 1F facade from the live 1F enclosure (V -44.0..-44.75 at U -30..-16.4)"
+      ]
+    },
+    {
+      "id": "OPEN-2F-ESC-CORE",
+      "polygon": [
+        [
+          28.049,
+          -17.693
+        ],
+        [
+          32.528,
+          -17.222
+        ],
+        [
+          32.49,
+          -16.863
+        ],
+        [
+          34.189,
+          -16.684
+        ],
+        [
+          33.849,
+          -13.452
+        ],
+        [
+          32.15,
+          -13.631
+        ],
+        [
+          32.113,
+          -13.272
+        ],
+        [
+          27.634,
+          -13.743
+        ]
+      ],
+      "area": 23.438,
+      "guardedEdges": [],
+      "evidence": [
+        ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+        ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/lower-landing-floor.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/right-approach-wall.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/central-rail-side-plane.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/right-ramp-side-plane.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/ceiling-void-edge.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/local-ascent/level-frame.json",
+        ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+        ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg",
+        ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+        ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#M-ESC-1F2F",
+        ".planning/2026-09-24-interior-twin/evidence-2f.json#CX-09,BL-20"
+      ]
+    },
+    {
+      "id": "OPEN-2F-ESC-UMINUS",
+      "polygon": [
+        [
+          -55.6,
+          -16.82
+        ],
+        [
+          -45.27,
+          -16.099
+        ],
+        [
+          -43.424,
+          -15.971
+        ],
+        [
+          -43.64,
+          -12.867
+        ],
+        [
+          -45.486,
+          -12.996
+        ],
+        [
+          -45.538,
+          -12.25
+        ],
+        [
+          -55.6,
+          -12.25
+        ]
+      ],
+      "area": 48.725,
+      "guardedEdges": [
+        0,
+        4,
+        5,
+        6
+      ],
+      "evidence": [
+        ".planning/2026-09-24-interior-twin/specs/full/public1f/naver-1f-uv.json",
+        "asset-library/research-public/2026-09-26/Public1F/naver-poi/naver-1f-poi.json",
+        "asset-library/research-public/2026-09-26/Services23F/naver-indoor-harvest/overlays/ov-2f-west.png",
+        ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json",
+        ".planning/2026-09-23-video-twin/1f-evidence-acquisition/rear-row-walk/observations.json",
+        ".planning/2026-09-23-video-twin/1f-evidence-acquisition/footage-hunt/candidates.json",
+        "asset-library/research-public/2026-09-26/Public1F/frames/mJrJ8-sheet-1030-1070.jpg",
+        ".planning/2026-09-26-full-twin/reg-requests/Public1F-1.done.json",
+        ".planning/2026-09-24-interior-twin/specs/full/public-1f-escalator.json (1Fp-esc-uminus)"
+      ]
+    }
+  ],
+  "source": "original-model probes and the official board registered to the original shell; no video registration"
+}

@@ -1,0 +1,46 @@
+{
+ "state": {
+  "task": "Decide how to reconcile the Busan KTX station twin 2F with new layout evidence. Station frame: +u north, +v east. The main building spans v -50..12; the over-track box spans v 15..100, u -21..69.",
+  "facts": {
+   "C1_board": "Official on-site directory board, photographed 2026-04 (KORAIL; top of the board = east). It shows the 2F as one continuous concourse. The east edge has shops 7 크리스피크림, 8 카카오프렌즈, 9 떡공방 and 10 파스쿠찌, plus exits 9 and 10 leading to the covered deck to the North Port park. The round 종합안내소 is in the middle-west, with the void and 3F above it. 역무실, 매표창구 and 철도경찰서 are on the south side. The west side is the curved plaza-facade shop band (shops 17-31) with the plaza entrance. The 3F is an L: the food-court band over the east-edge shops, and a south wing.",
+   "C2_kakao": "Kakao map POIs (north-up screenshot, 20 m scale bar). 부산역관광안내소 is about 50 m east of the plaza-side shops (복순도가, 환공어묵), next to the rail lines. 크리스피크림/exit 10, 파스쿠찌/exit 9, 이디야 and 소미담 are 40-55 m further east. 부산옥 is about 35 m south-east of the info desk.",
+   "C3_naver": "Naver pins: tourist information center at (36,32); east-edge shops at v 91-94, inside the over-track box; plaza-side shops (SUBWAY, 소반한식, B&C bakery) at v -29..-35, inside the main building.",
+   "C4_current_twin": "The current twin, built from the 2022-video registration, places the circular info desk at (-41,-10), KAKAO FRIENDS at (-74,14.5) and exit 9 at (-68.8,23), all inside the main building and 70-90 m from the map positions. The over-track box interior is empty.",
+   "C5_route_order": "2022-video route order: platform stairs, covered glazed deck over the tracks, exit 9, low-ceiling arcade with KAKAO FRIENDS, high lattice hall (3F balconies, escalator pair to 3F, green boards on a fascia), circular info desk, low arcade (B&C, Storyway), escalator down to 1F, plaza exits. This matches the board read east to west.",
+   "C6_registration_basis": "The registration comes from an SfM relative trajectory. Scale was set from an assumed 7 m 2F-1F rise, and the anchor from the 220 s 1F plaza exit. The filmed hall extents were then fitted inside the main-building shell. The original main-building interior has no partitions and a flat 23 m ceiling, so it could not refute that placement.",
+   "C7_box": "The box shell has its 2F at 7.0. Its west wall is open at 2F toward the main building (y 7-12, u -12..52). A low-roof L (south wing plus east band) and a raised 23-26 m roof over u 2..56, v 42..84 (the void) match the board 3F L.",
+   "C8_heights": "The registered hall roof members are about 11 m above the 2F floor. The box raised-roof underside is about 17 m above the box 2F. The original main-building interior ceiling is a flat slab 16 m above 2F.",
+   "C9_view": "At 98 s the 2022 video shows dense hillside housing through a high clerestory. Such hills exist both west (초량) and south-east (영도) of the station, so this does not decide the question."
+  },
+  "note": "All values were computed or read by tools before this call."
+ },
+ "questions": {
+  "filmed_hall_location": {
+   "type": "choice",
+   "instructions": "Where is the 2022-filmed high hall (info desk, 3F balconies, escalator pair) actually located?",
+   "criteria": {
+    "over_track_box": "In the over-track box, under the void",
+    "main_building": "In the main building, as currently registered",
+    "undetermined": "The evidence cannot decide"
+   }
+  },
+  "strategy": {
+   "type": "choice",
+   "instructions": "What should be done next?",
+   "criteria": {
+    "D1_keep_and_build_box": "Keep the current twin as is and build the box from the board, without duplicating tenants",
+    "D2_reregister_now": "Move the filmed hall and its fixtures into the box now, using the board and maps as absolute constraints, and rebuild the main-building 2F from the board",
+    "D3_test_then_move": "Build the box shell interior (floor, 3F L, void, connections) from the board first; then fit the filmed SfM geometry into the box shell and move the filmed hall only if residuals confirm it"
+   }
+  },
+  "absolute_reference": {
+   "type": "choice",
+   "instructions": "Which source should set the absolute plan positions of 2F/3F elements?",
+   "criteria": {
+    "official_board_topology_plus_naver_kakao_positions": "Board for topology, Naver and Kakao agreeing POIs for positions, original shell for walls",
+    "video_registration": "The existing video registration",
+    "board_only": "The board alone"
+   }
+  }
+ }
+}

@@ -1,0 +1,23 @@
+{
+  "zone": "hall-junction-slope-test",
+  "root": "실내 트윈 마감/홀 접합부 기울기 테스트",
+  "basis": {
+    "purpose": "Validate the measured planar soffit overlay from geometry-after56 without changing a station scene.",
+    "source": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after56/world-geometry.json FPSWorld/공식 자료 부산역 역사/PlatformsParking/OfficialStation_-부산역_선로상층부_0 faces 923817 and 923816"
+  },
+  "elements": [
+    {
+      "type": "Canopy", "id": "hj-slope-overlay-test", "zone": "hall-junction-slope-test", "tier": "b",
+      "evidence": ["HallJunction-1 kit request: measured downward-facing source soffit plane"], "frame": "root",
+      "geometry": {
+        "polygon": [[-5.162643,14.225865],[54.394602,18.531206],[63.551411,37.438863],[-6.474760,32.376711]],
+        "y": 17.043741,
+        "vertexY": [17.043741,17.043739,17.358529,17.358532]
+      },
+      "params": {"finish": "plaster", "colour": "gypsumLit", "topFinish": "gypsumLit", "thickness": 0.05, "fascia": 0, "collider": false}
+    }
+  ],
+  "views": [
+    {"name": "soffit-from-below", "eye": [27,22.6,10], "target": [27,25.6,17.2], "fov": 60, "width": 1600, "height": 900}
+  ]
+}

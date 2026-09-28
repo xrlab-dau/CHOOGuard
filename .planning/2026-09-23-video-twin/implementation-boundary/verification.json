@@ -1,0 +1,43 @@
+{
+  "result": "Implementation boundary inventory verified; not a completion claim for the digital twin.",
+  "unityExecution": {
+    "geometryExport": "passed, 2201 meshes, zero read errors",
+    "groundContinuity": "passed,11946 samples,zero saturated queries",
+    "currentSceneCapture": "visually inspected",
+    "referenceFitoutActive": false,
+    "experimentalPhotoSurfaceActive": false,
+    "newGeometryDuringBoundaryAudit": false,
+    "sceneSavedDuringAudit": false
+  },
+  "boundaryEvidence": {
+    "floorPolygon": "floor-surfaces.geojson",
+    "wallAndColliderSections": "structural-sections.json",
+    "protectedSourceObstacles": "existing-obstacles-inside-added-floor.json",
+    "workRules": "work-scope.json",
+    "linkedFrom": "../first-floor-plan.json:basis.implementationBoundaryAudit"
+  },
+  "accuracy": "Actual current scene mesh edges, rounded to0.00001 model units in section export. Rounding precision is not measured real-world accuracy.",
+  "unresolved": "Per-tenant current partitions, complete ceiling limits, first-floor connector landings and fixture positions still need component-level registration; no empty-region or inactive-layout substitution.",
+  "selfEvaluation": {
+    "accuracy": {
+      "score": 5,
+      "evidence": "Actual live meshes/colliders; discovered entry floor belongs to ContextPlaza, not station root."
+    },
+    "completeness": {
+      "score": 4,
+      "evidence": "Whole-world ownership, first/second-floor sections and first-floor clearance covered; missing real-world component limits remain explicitly unresolved."
+    },
+    "clarity": {
+      "score": 5,
+      "evidence": "Existing, floor-only, inactive reference and experimental geometry are separate categories."
+    },
+    "actionability": {
+      "score": 5,
+      "evidence": "Exact polygons, source-owner paths, obstacle coordinates and component-addition gates linked to the active plan."
+    },
+    "conciseness": {
+      "score": 4,
+      "evidence": "User-facing results point to two maps; detailed geometry retained in machine-readable artifacts."
+    }
+  }
+}

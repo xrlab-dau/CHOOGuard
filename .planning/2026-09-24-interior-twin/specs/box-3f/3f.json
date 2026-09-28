@@ -1,0 +1,812 @@
+{
+ "zone": "3F",
+ "root": "실내 트윈 마감/3F",
+ "basis": {
+  "frames": "root = station UVY; box = majibang-plan boxFrame (origin -3, 33.25; 4.13 deg), y absolute",
+  "plan": ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json",
+  "tiers": "all emitted elements tier b (plan topology / original source mesh / photo-relative on tier-b hosts); tier c items listed in report.json omitted[]",
+  "epoch": "geometry 2023-05 SfM / 2026-04 board; identities per plan (CX-20)",
+  "heights": "3F floor 12.2; lobby slat ceiling 15.4 = 3.2 m photo-relative (Y5v 88 s: 1.42 x door-leaf height, range 3.0-3.4)"
+ },
+ "elements": [
+  {
+   "type": "SuspendedCeiling",
+   "id": "3F-LOBBY-slat-ceiling",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-08 / 3F-EXIT11 / G-3F01 / G-3F19 / G-3F20",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.eastDoor a 12.5-17.5 (east wall b 60.67)",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.units 비빔가 (a -7..12.5) / 푸드코트 (a 17.5..56.5), corridor b 44.3-48",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/Y5vOVkP02NA_00060-00089.jpg 84-89 s (slat ceiling, 11 나가는 곳 door bank; ceiling 1.42x door-leaf height)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/Y5vOVkP02NA_00090-00119.jpg 105-108 s",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00210-00239.jpg 231-236 s"
+   ],
+   "frame": "box",
+   "geometry": {
+    "polygon": [
+     [
+      12.5,
+      44.3
+     ],
+     [
+      17.5,
+      44.3
+     ],
+     [
+      17.5,
+      48.0
+     ],
+     [
+      17.5,
+      60.67
+     ],
+     [
+      12.5,
+      60.67
+     ],
+     [
+      12.5,
+      48.0
+     ],
+     [
+      12.5,
+      47.7
+     ]
+    ],
+    "holes": [],
+    "y": 15.4
+   },
+   "params": {
+    "module": "1200x300",
+    "finish": "wood",
+    "grid": true,
+    "gridOrigin": [
+     12.5,
+     44.3
+    ],
+    "gridAngle": 0,
+    "fixtures": {
+     "layout": "downlight",
+     "pitch": [
+      2.4,
+      1.2
+     ],
+     "size": [
+      0.16
+     ],
+     "lights": {
+      "pitch": [
+       4.8,
+       4.8
+      ],
+      "kind": "spot",
+      "spotAngle": 100,
+      "intensity": 2.5,
+      "range": 6,
+      "kelvin": 3500,
+      "drop": 0.08,
+      "shadows": "none",
+      "mode": "mixed"
+     }
+    },
+    "bulkhead": 0.3,
+    "bulkheadEdges": [
+     0,
+     1,
+     6
+    ],
+    "trim": true
+   },
+   "note": "extent limited to the lobby width a 12.5-17.5 across the corridor; the run along the corridor past the food-court corner is unmeasured (tier c, omitted)"
+  },
+  {
+   "type": "Storefront",
+   "id": "3F-EXIT11-doorset",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-08 / 3F-EXIT11 / G-3F01 / G-3F19 / G-3F20",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.eastDoor a 12.5-17.5 (east wall b 60.67)",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.units 비빔가 (a -7..12.5) / 푸드코트 (a 17.5..56.5), corridor b 44.3-48",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/Y5vOVkP02NA_00060-00089.jpg 84-89 s (slat ceiling, 11 나가는 곳 door bank; ceiling 1.42x door-leaf height)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/Y5vOVkP02NA_00090-00119.jpg 105-108 s",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00210-00239.jpg 231-236 s"
+   ],
+   "frame": "box",
+   "geometry": {
+    "edge": [
+     [
+      12.5,
+      60.6
+     ],
+     [
+      17.5,
+      60.6
+     ]
+    ],
+    "y": 12.2
+   },
+   "params": {
+    "faceToward": [
+     15.0,
+     50.0
+    ],
+    "height": 2.75,
+    "transom": 2.25,
+    "mullionPitch": 1.25,
+    "mullionWidth": 0.05,
+    "mullionDepth": 0.1,
+    "bulkhead": 0.1,
+    "frame": "stainless",
+    "doors": [
+     {
+      "at": 1.6,
+      "width": 1.8,
+      "type": "swing",
+      "leaves": 2,
+      "open": 0
+     },
+     {
+      "at": 3.4,
+      "width": 1.8,
+      "type": "swing",
+      "leaves": 2,
+      "open": 0
+     }
+    ]
+   },
+   "note": "inner bank of the exit-11 airlock on the inner face of the solid east wall (no shell cut)"
+  },
+  {
+   "type": "WallSign",
+   "id": "3F-EXIT11-header",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-08 / 3F-EXIT11 / G-3F01 / G-3F19 / G-3F20",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.eastDoor a 12.5-17.5 (east wall b 60.67)",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.units 비빔가 (a -7..12.5) / 푸드코트 (a 17.5..56.5), corridor b 44.3-48",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/Y5vOVkP02NA_00060-00089.jpg 84-89 s (slat ceiling, 11 나가는 곳 door bank; ceiling 1.42x door-leaf height)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/Y5vOVkP02NA_00090-00119.jpg 105-108 s",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00210-00239.jpg 231-236 s"
+   ],
+   "frame": "box",
+   "geometry": {
+    "point": [
+     15.0,
+     60.37
+    ],
+    "y": 15.1
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 4.6,
+    "height": 0.5,
+    "depth": 0.06,
+    "standoff": 0.01,
+    "style": "yellow",
+    "items": [
+     {
+      "badge": "11",
+      "text": "나가는 곳",
+      "sub": "Exit"
+     }
+    ]
+   },
+   "note": "yellow \"11 나가는 곳\" header; mounted over the builder \"출입문 Entrance\" board (b 60.37) and hides it"
+  },
+  {
+   "type": "ElevatorFront",
+   "id": "3F-ELEV-wing",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-22 / 3F-U-승강기@-2_55 / 3F-U-승강기@-16_80 / G-3F21",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.units 승강기 x2",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00210-00239.jpg 219-221 s",
+    ".planning/2026-09-23-video-twin/sinmajibang/key/k305.jpg"
+   ],
+   "frame": "box",
+   "geometry": {
+    "edge": [
+     [
+      6.75,
+      21.5
+     ],
+     [
+      6.75,
+      25.5
+     ]
+    ],
+    "y": 12.2
+   },
+   "params": {
+    "faceToward": [
+     12.0,
+     23.5
+    ],
+    "cars": 1,
+    "pitch": 3.3,
+    "doorWidth": 1.1,
+    "doorHeight": 2.1,
+    "portalHeight": 3.05,
+    "surround": "granite",
+    "jamb": "stainless",
+    "floorLabel": "3",
+    "label": "엘리베이터",
+    "labelSub": "Elevator",
+    "car": {
+     "id": "맞이방 날개 승강기",
+     "floors": [
+      "2",
+      "3"
+     ],
+     "width": 2.0,
+     "depth": 1.75,
+     "height": 2.4,
+     "evidence": "Same hoistway on 2F and 3F: identical box-frame edge [6.75,21.5]-[6.75,25.5] (box-hall.json B-ELEV2F-wing, 3f.json 3F-ELEV-wing) and reconciled plan unit 승강기 box a 2.75-6.75, b 21.5-25.5. Car size NOT measured: estimate for the 1.1 m centre-opening door (24-person class car 2.0 x 1.75 m, height 2.4 m); legal minimum 1.1 x 1.4 m, 15-person basis (교통약자의 이동편의 증진법 시행규칙 [별표 1] 2.바.2), 2024-01-19)."
+    }
+   }
+  },
+  {
+   "type": "ElevatorFront",
+   "id": "3F-ELEV-corner",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-22 / 3F-U-승강기@-2_55 / 3F-U-승강기@-16_80 / G-3F21",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.units 승강기 x2",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00210-00239.jpg 219-221 s",
+    ".planning/2026-09-23-video-twin/sinmajibang/key/k305.jpg"
+   ],
+   "frame": "box",
+   "geometry": {
+    "edge": [
+     [
+      -9.7,
+      48.0
+     ],
+     [
+      -7.2,
+      48.0
+     ]
+    ],
+    "y": 12.2
+   },
+   "params": {
+    "faceToward": [
+     -8.45,
+     44.0
+    ],
+    "cars": 1,
+    "pitch": 2.4,
+    "doorWidth": 1.1,
+    "doorHeight": 2.1,
+    "portalHeight": 3.05,
+    "surround": "stainless",
+    "jamb": "stainless",
+    "floorLabel": "3",
+    "label": "엘리베이터",
+    "labelSub": "Elevator"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "3F-FLOOR-corridor-0",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-16 / 3F-SLAB / G-3F10",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.slabs Majibang_3F_L (y 12.2) and units",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (dark polished granite, black band along the shopfronts)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      58.641,
+      82.116
+     ],
+     [
+      12.96,
+      78.818
+     ],
+     [
+      12.974,
+      78.618
+     ],
+     [
+      11.578,
+      78.517
+     ],
+     [
+      11.902,
+      74.029
+     ],
+     [
+      13.298,
+      74.13
+     ],
+     [
+      13.313,
+      73.93
+     ],
+     [
+      10.121,
+      73.7
+     ],
+     [
+      14.24,
+      16.649
+     ],
+     [
+      -14.984,
+      14.538
+     ],
+     [
+      -20.635,
+      92.805
+     ],
+     [
+      57.462,
+      98.444
+     ]
+    ],
+    "holes": [
+     [
+      [
+       56.991,
+       98.161
+      ],
+      [
+       56.98,
+       98.168
+      ],
+      [
+       50.996,
+       97.736
+      ],
+      [
+       50.988,
+       97.73
+      ],
+      [
+       51.881,
+       85.338
+      ],
+      [
+       51.887,
+       85.329
+      ],
+      [
+       57.876,
+       85.761
+      ],
+      [
+       57.885,
+       85.767
+      ]
+     ],
+     [
+      [
+       49.901,
+       85.125
+      ],
+      [
+       11.003,
+       82.316
+      ],
+      [
+       11.024,
+       82.017
+      ],
+      [
+       49.923,
+       84.825
+      ]
+     ],
+     [
+      [
+       49.011,
+       97.585
+      ],
+      [
+       49.001,
+       97.592
+      ],
+      [
+       10.1,
+       94.783
+      ],
+      [
+       10.093,
+       94.773
+      ],
+      [
+       10.988,
+       82.382
+      ],
+      [
+       10.998,
+       82.376
+      ],
+      [
+       49.9,
+       85.185
+      ],
+      [
+       49.906,
+       85.195
+      ]
+     ],
+     [
+      [
+       6.016,
+       81.956
+      ],
+      [
+       -13.434,
+       80.551
+      ],
+      [
+       -13.412,
+       80.252
+      ],
+      [
+       6.037,
+       81.657
+      ]
+     ],
+     [
+      [
+       5.126,
+       94.416
+      ],
+      [
+       5.115,
+       94.423
+      ],
+      [
+       -14.339,
+       93.017
+      ],
+      [
+       -14.343,
+       93.008
+      ],
+      [
+       -13.447,
+       80.615
+      ],
+      [
+       -13.438,
+       80.611
+      ],
+      [
+       6.017,
+       82.018
+      ],
+      [
+       6.021,
+       82.026
+      ]
+     ],
+     [
+      [
+       2.434,
+       52.692
+      ],
+      [
+       3.73,
+       34.739
+      ],
+      [
+       4.029,
+       34.76
+      ],
+      [
+       2.733,
+       52.713
+      ]
+     ],
+     [
+      [
+       2.374,
+       52.689
+      ],
+      [
+       2.363,
+       52.697
+      ],
+      [
+       -10.403,
+       51.775
+      ],
+      [
+       -10.411,
+       51.77
+      ],
+      [
+       -9.116,
+       33.811
+      ],
+      [
+       -9.111,
+       33.803
+      ],
+      [
+       3.661,
+       34.724
+      ],
+      [
+       3.669,
+       34.729
+      ]
+     ],
+     [
+      [
+       1.906,
+       59.173
+      ],
+      [
+       1.895,
+       59.18
+      ],
+      [
+       -2.101,
+       58.888
+      ],
+      [
+       -1.812,
+       54.885
+      ],
+      [
+       2.192,
+       55.174
+      ]
+     ],
+     [
+      [
+       1.174,
+       70.146
+      ],
+      [
+       1.894,
+       60.172
+      ],
+      [
+       2.193,
+       60.194
+      ],
+      [
+       1.473,
+       70.168
+      ]
+     ],
+     [
+      [
+       1.113,
+       70.144
+      ],
+      [
+       1.103,
+       70.151
+      ],
+      [
+       -7.98,
+       69.493
+      ],
+      [
+       -7.259,
+       59.504
+      ],
+      [
+       1.832,
+       60.161
+      ]
+     ],
+     [
+      [
+       -13.637,
+       80.597
+      ],
+      [
+       -13.628,
+       80.608
+      ],
+      [
+       -14.524,
+       93.0
+      ],
+      [
+       -14.533,
+       93.005
+      ],
+      [
+       -20.522,
+       92.571
+      ],
+      [
+       -20.527,
+       92.562
+      ],
+      [
+       -19.631,
+       80.169
+      ],
+      [
+       -19.622,
+       80.165
+      ]
+     ]
+    ],
+    "y": 12.2
+   },
+   "params": {
+    "finish": "polished",
+    "lift": 0.003,
+    "uvOrigin": [
+     -3.0,
+     33.25
+    ],
+    "rotation": 4.13
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "3F-FLOOR-inlay-0",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-16 / 3F-SLAB / G-3F10",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.slabs Majibang_3F_L (y 12.2) and units",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (dark polished granite, black band along the shopfronts)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      11.024,
+      82.017
+     ],
+     [
+      11.003,
+      82.316
+     ],
+     [
+      49.901,
+      85.125
+     ],
+     [
+      49.923,
+      84.825
+     ]
+    ],
+    "holes": [],
+    "y": 12.2
+   },
+   "params": {
+    "finish": "dark",
+    "lift": 0.003
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "3F-FLOOR-inlay-1",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-16 / 3F-SLAB / G-3F10",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.slabs Majibang_3F_L (y 12.2) and units",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (dark polished granite, black band along the shopfronts)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      -13.412,
+      80.252
+     ],
+     [
+      -13.434,
+      80.551
+     ],
+     [
+      6.016,
+      81.956
+     ],
+     [
+      6.037,
+      81.657
+     ]
+    ],
+    "holes": [],
+    "y": 12.2
+   },
+   "params": {
+    "finish": "dark",
+    "lift": 0.003
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "3F-FLOOR-inlay-2",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-16 / 3F-SLAB / G-3F10",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.slabs Majibang_3F_L (y 12.2) and units",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (dark polished granite, black band along the shopfronts)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      4.029,
+      34.76
+     ],
+     [
+      3.73,
+      34.739
+     ],
+     [
+      2.434,
+      52.692
+     ],
+     [
+      2.733,
+      52.713
+     ]
+    ],
+    "holes": [],
+    "y": 12.2
+   },
+   "params": {
+    "finish": "dark",
+    "lift": 0.003
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "3F-FLOOR-inlay-3",
+   "zone": "3F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-16 / 3F-SLAB / G-3F10",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json thirdFloor.slabs Majibang_3F_L (y 12.2) and units",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (dark polished granite, black band along the shopfronts)"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      2.193,
+      60.194
+     ],
+     [
+      1.894,
+      60.172
+     ],
+     [
+      1.174,
+      70.146
+     ],
+     [
+      1.473,
+      70.168
+     ]
+    ],
+    "holes": [],
+    "y": 12.2
+   },
+   "params": {
+    "finish": "dark",
+    "lift": 0.003
+   }
+  }
+ ]
+}

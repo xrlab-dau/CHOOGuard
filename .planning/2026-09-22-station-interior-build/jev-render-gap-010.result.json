@@ -1,0 +1,69 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 549,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "dominant_gap": {
+          "type": "choice",
+          "choice": "material_and_texture",
+          "confidence": 0.56,
+          "probabilities": {
+            "material_and_texture": 0.64,
+            "furniture_and_props": 0.13,
+            "geometry_accuracy": 0,
+            "signage_and_graphics": 0.08,
+            "lighting": 0.15
+          }
+        },
+        "second_gap": {
+          "type": "choice",
+          "choice": "lighting",
+          "confidence": 0.2,
+          "probabilities": {
+            "material_and_texture": 0.27,
+            "furniture_and_props": 0.12,
+            "geometry_accuracy": 0.04,
+            "signage_and_graphics": 0.21,
+            "lighting": 0.36
+          }
+        },
+        "sign_text_source": {
+          "type": "choice",
+          "choice": "bake_from_api_names",
+          "confidence": 0.96,
+          "probabilities": {
+            "generic_colored_bands": 0.01,
+            "bake_from_api_names": 0.97,
+            "scrape_brand_logos": 0.02
+          }
+        },
+        "parallel_split": {
+          "type": "choice",
+          "choice": "four_lanes",
+          "confidence": 0.96,
+          "probabilities": {
+            "two_lanes": 0.01,
+            "four_lanes": 0.97,
+            "serial": 0.02
+          }
+        },
+        "people_needed": {
+          "type": "noul",
+          "noul": 0.19
+        }
+      },
+      "usage": {
+        "input_tokens": 1842,
+        "output_tokens": 247
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

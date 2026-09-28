@@ -1,0 +1,95 @@
+{
+  "status": "REBASED_WITH_IDENTICAL_CONTENT_TREE",
+  "branch": "work/fps-local-integration-20260925",
+  "baseCommit": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+  "previousGameplayHead": "5a5d8150cb64f2d5d59f629f6631cadb9f4ff9c9",
+  "rebasedGameplayHead": "79cb1682a2adf4647e51425aa674f1953fb309dd",
+  "contentTreeBefore": "1dc6952cb95f2da4e3e6e2de8a9b8a90fb60e93a",
+  "contentTreeAfter": "1dc6952cb95f2da4e3e6e2de8a9b8a90fb60e93a",
+  "targetIsAncestor": true,
+  "patchEquivalence": "1:  06581714 = 1:  0a3d034e feat(gameplay): publish FPS implementation and Cloud Build checkpoint\n2:  86fa33b5 = 2:  7ace35be docs(cloud): record verified policy backup and service blockers\n3:  5777808c = 3:  aa37c3a3 fix(cloud): harden export preparation and clarify source authorization\n4:  5a5d8150 = 4:  79cb1682 fix(cloud): prepare native Python and accept bounded UBA output\n",
+  "jev": {
+    "batchId": "jdgb-158d914dc5757812",
+    "input": {
+      "event": "Fresh next-stage orchestration: integrate the PR review outcome and rebase gameplay work before resuming local Unity development",
+      "outcome": "Both PR238/240 were reviewed at pinned heads; new native JEV selected request_changes_and_split for both. GitHub now has CHANGES_REQUESTED reviews 5319118047 and 5319118033. No PR was merged or closed; no rules bypassed.",
+      "observedBase": {
+        "fetchedDevelop": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+        "sharedHead": "8118ad52da43afcca9130ca8ce24ed3b64c804f8",
+        "bothBaseTrees": "9e466ad2a4b43fc67a1c52abe8c8d870ab24e162",
+        "publishedGameplayHead": "5a5d8150cb64f2d5d59f629f6631cadb9f4ff9c9",
+        "ownCommitsAfterSharedBase": 4,
+        "diskAvailableGiB": 46
+      },
+      "constraints": [
+        "Shared original checkout has extensive other-session modelling changes; preserve its HEAD, branch, index and all scene/assets. Do not stash or switch it.",
+        "Do not rewrite/force-push the already-published gameplay branch.",
+        "No Unity Cloud; retain running original Editor.",
+        "Only root integrates. Do not delegate a single already-investigated slice."
+      ],
+      "proposed": "Create a new local work/fps-local-integration-20260925 branch in an owned temporary worktree from the published gameplay head. Rebase only the four own gameplay commits with --onto fetched develop 8118ad52 (avoids replaying five commits already squashed into the identical develop base tree). Confirm content tree unchanged by history relocation. Then checkpoint only our already-verified navigation fix/config/evidence/docs, preserving unrelated progress.json fields. Return to the unchanged live local Editor for further work. No force push or new broad source/scene changes."
+    },
+    "questions": {
+      "strategy": {
+        "type": "choice",
+        "instructions": "Recommend the safe orchestration for the requested rebase given the observed identical base trees and shared dirty Editor checkout. Do not violate constraints.",
+        "criteria": {
+          "isolated_rebase": "Root creates a separate local integration branch/worktree, replays only own four commits onto fetched develop, verifies tree identity and checkpoints owned changes. Shared checkout/index/published branch untouched.",
+          "inplace_rebase": "Stash/switch/rebase the shared active branch in the modelling workspace.",
+          "defer_rebase": "Do not perform the requested rebase despite available safe isolated path; wait for authors even though no PRs are being merged."
+        }
+      }
+    },
+    "answers": {
+      "postReviewRebase": {
+        "strategy": {
+          "type": "choice",
+          "choice": "isolated_rebase",
+          "confidence": 1,
+          "probabilities": {
+            "inplace_rebase": 0,
+            "isolated_rebase": 1,
+            "defer_rebase": 0
+          }
+        }
+      }
+    },
+    "provenance": {
+      "id": "jdgb-158d914dc5757812",
+      "intent": "Fresh JEV safe rebase orchestration after PR review",
+      "total": 1,
+      "done": 1,
+      "failed": 0,
+      "cost": 0.000040908,
+      "running": false,
+      "model": "typesafe/jev-1.13.0",
+      "elapsedS": 117.6
+    }
+  },
+  "sharedCheckout": {
+    "before": {
+      "head": "8118ad52da43afcca9130ca8ce24ed3b64c804f8",
+      "branch": "feature/fps-audit-terminal-and-station-interior-audit",
+      "indexSha256": "699bc977551a4e743d51d53e714fe83b41c6d3f74af01a2dd796c5064fc37e9a",
+      "sceneSha256": "9d9b09cc59049e598a8eaff41497618f96cb66e5fe4f4ba95b3e0bb8934ea50c",
+      "publishedGameplayRef": "5a5d8150cb64f2d5d59f629f6631cadb9f4ff9c9"
+    },
+    "after": {
+      "head": "8118ad52da43afcca9130ca8ce24ed3b64c804f8",
+      "branch": "feature/fps-audit-terminal-and-station-interior-audit",
+      "indexSha256": "699bc977551a4e743d51d53e714fe83b41c6d3f74af01a2dd796c5064fc37e9a",
+      "sceneSha256": "2d12c2eac51d97548cd331fc5ebb7720b65ee6886e3bca5911a5f94a130a9de2",
+      "publishedGameplayRef": "5a5d8150cb64f2d5d59f629f6631cadb9f4ff9c9"
+    },
+    "headBranchIndexAndPublishedRefUnchanged": true,
+    "sceneChangedDuringIntegrationWindow": true,
+    "sceneWasWrittenByThisWork": false,
+    "sceneChangeHandling": "Observed a separate change to the original scene during integration; retained it without reset/restore. Original and isolated scene files have different inodes. Live scene remains FpsStation, 18 roots, isDirty=false. Do not claim scene-byte equality.",
+    "originalSceneInode": 181150121,
+    "isolatedSceneInode": 181341905
+  },
+  "mergedPullRequests": [],
+  "reviewEvidence": "team-pr-review.json",
+  "cloudCalls": 0,
+  "publishedBranchForcePushed": false
+}

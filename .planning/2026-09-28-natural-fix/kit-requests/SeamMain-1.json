@@ -1,0 +1,28 @@
+{
+  "lane": "SeamMain",
+  "id": "SeamMain-1",
+  "request": "Add a `stainlessSatin` kit material key for low-light, readable brushed stainless without changing the existing `stainless` material.",
+  "params": {
+    "type": "Column",
+    "field": "params.cladding",
+    "value": "stainlessSatin",
+    "sourceTexture": "Assets/ChooGuard/Art/StationInterior/Materials/Lane/column_stainless_brushed.mat"
+  },
+  "semantics": "Retain the brushed map and a satin metal response, but use a lighter albedo and lower metallic response than the existing stainless key so broad column faces do not read charcoal without reflection probes. Existing stainless behavior remains unchanged.",
+  "testCase": {
+    "zone": "seam-main-fix-test",
+    "root": "실내 트윈 마감/본관 접합부 테스트",
+    "element": {
+      "type": "Column",
+      "id": "seam-satin-test-column",
+      "zone": "seam-test",
+      "tier": "b",
+      "evidence": ["KitExtend8 kit request: low-light stainless appearance test"],
+      "frame": "root",
+      "geometry": {"point": [58.3, 9.5], "y0": 7.0, "y1": 10.47},
+      "params": {"shape": "rect", "size": [1.0, 1.0], "cladding": "stainlessSatin"}
+    },
+    "checks": ["KitValidate accepts the new material key with 0 errors", "KitPreview shows a light brushed-satin column against a white 600-grid ceiling; no charcoal faces"]
+  },
+  "consumer": ".planning/2026-09-24-interior-twin/specs/full/make_seam.py registered_fittings(): seam-col-a1 and seam-col-s2"
+}

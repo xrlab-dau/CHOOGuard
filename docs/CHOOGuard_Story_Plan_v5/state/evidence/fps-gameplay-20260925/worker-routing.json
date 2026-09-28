@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "scope": "CHOOGuard coding worker orchestration, not in-game NPC provider configuration",
+  "userPolicy": {
+    "defaultWorker": "openai-codex/gpt-6-luna",
+    "effortAndModelRouting": "The orchestrator requests a fresh JEV recommendation before every orchestration decision.",
+    "recommendationReuseAllowed": false,
+    "events": ["worker spawn", "reassignment", "task retry", "next-stage dispatch", "model or reasoning-effort change"],
+    "onJudgeFailure": "Hold delegation; no implicit model/effort choice or chat fallback.",
+    "workerAutoThinkingReplacesOrchestratorRecommendation": false,
+    "unityExecution": "LOCAL_ONLY_NO_UNITY_CLOUD"
+  },
+  "configuration": ".omp/config.yml",
+  "nativeJudge": {
+    "id": "jdgb-158d8347ce3577f8",
+    "intent": "JEV recommendations for gameplay worker routing",
+    "total": 2,
+    "done": 2,
+    "failed": 0,
+    "cost": 5.090400000000001e-05,
+    "running": false,
+    "model": "typesafe/jev-1.13.0",
+    "elapsedSAtStatusRead": 236.3,
+    "completionNotificationWallSeconds": 0.3
+  },
+  "states": {
+    "allocationResearch": "Read-only scout: trace CHOOGuard NpcAgentRuntime and related C# gameplay simulation/UI allocation hot paths after a measured 500-actor Editor GC p95 of 4.19 MB/frame. Return source-grounded hotspots and a safe measurement plan; no edits, builds, tests or Unity commands. Cross-file performance and lifecycle analysis. User prefers openai-codex/gpt-6-luna; model escalation only if task-specific complexity needs it.",
+    "inputResearch": "Read-only scout: trace CHOOGuard DetailedInteractionController, FirstPersonResponder and existing physical manipulation tests. Identify real consumer-visible input/lifecycle defects and a safe actual-input acceptance path preserving the clean open FpsStation scene and another modeling session. No edits, builds, tests or Unity commands. User prefers openai-codex/gpt-6-luna; model escalation only if task-specific complexity needs it."
+  },
+  "questions": {
+    "model": {
+      "type": "choice",
+      "instructions": "Recommend a worker model; honor the user-preferred Luna default unless it is materially inadequate for this task.",
+      "criteria": {
+        "luna": "Use openai-codex/gpt-6-luna for source investigation the preferred worker can reasonably handle.",
+        "astra": "Escalate to openai-codex/gpt-6-astra only when complexity makes Luna materially inadequate."
+      }
+    },
+    "effort": {
+      "type": "choice",
+      "instructions": "Recommend the lowest sufficient supported reasoning effort for accurate, evidence-backed read-only analysis.",
+      "criteria": {
+        "low": "Simple local fact extraction.",
+        "medium": "Moderate cross-file tracing.",
+        "high": "Substantial cross-file lifecycle, correctness or performance reasoning.",
+        "xhigh": "Unusually difficult intertwined reasoning above high.",
+        "max": "Exceptional complexity; maximum effort is necessary, not the default."
+      }
+    }
+  },
+  "recommendations": {
+    "inputResearch": {
+      "model": {
+        "type": "choice",
+        "choice": "luna",
+        "confidence": 0.91,
+        "probabilities": {
+          "astra": 0.04,
+          "luna": 0.96
+        }
+      },
+      "effort": {
+        "type": "choice",
+        "choice": "high",
+        "confidence": 0.8,
+        "probabilities": {
+          "low": 0,
+          "max": 0.02,
+          "medium": 0.11,
+          "xhigh": 0.03,
+          "high": 0.84
+        }
+      }
+    },
+    "allocationResearch": {
+      "model": {
+        "type": "choice",
+        "choice": "luna",
+        "confidence": 0.79,
+        "probabilities": {
+          "astra": 0.1,
+          "luna": 0.9
+        }
+      },
+      "effort": {
+        "type": "choice",
+        "choice": "high",
+        "confidence": 0.92,
+        "probabilities": {
+          "xhigh": 0.03,
+          "max": 0.02,
+          "high": 0.94,
+          "medium": 0.01,
+          "low": 0
+        }
+      }
+    }
+  },
+  "dispatch": {
+    "CrowdAllocationResearch": {
+      "agent": "scout",
+      "selector": "openai-codex/gpt-6-luna:high"
+    },
+    "DesktopInputResearch": {
+      "agent": "scout",
+      "selector": "openai-codex/gpt-6-luna:high"
+    }
+  },
+  "dispatchAccepted": true,
+  "finalWorkerMetadata": {
+    "CrowdAllocationResearch": {"model": "openai-codex/gpt-6-luna", "thinkingLevel": "high", "resolvedModelIsFallback": false, "modelSelectedAt": "2026-09-25T13:56:23.865Z", "status": "completed"},
+    "DesktopInputResearch": {"model": "openai-codex/gpt-6-luna", "thinkingLevel": "high", "resolvedModelIsFallback": false, "modelSelectedAt": "2026-09-25T13:56:23.826Z", "status": "completed"}
+  },
+  "batchEffortOverrideRemovedAfterCompletion": true,
+  "nextOrchestrationRequiresNewRecommendation": true,
+  "unityCloudCallsAfterShutdown": 0,
+  "subsequentOrchestration": [
+    {
+      "event": "Next local navigation integration stage",
+      "batchId": "jdgb-158d877944357802",
+      "model": "typesafe/jev-1.13.0",
+      "costUsd": 0.000027216,
+      "recommendation": {"choice": "navigationInline", "confidence": 0.97, "probabilities": {"allocationWorkers": 0.02, "navigationInline": 0.97, "waitForProviders": 0.01}},
+      "actual": "Root implemented the already-investigated baker fix inline and verified actual production queries plus 10 focused Editor tests.",
+      "evidence": "navigation-local-resume.json"
+    },
+    {
+      "event": "New user priority: two independent read-only teammate PR reviews",
+      "batchId": "jdgb-158d8d4b0f757806",
+      "model": "typesafe/jev-1.13.0",
+      "costUsd": 0.000047502,
+      "recommendation": {"workerModel": "openai-codex/gpt-6-luna", "modelProbability": 0.99, "thinkingLevel": "high", "effortProbability": 0.87},
+      "actualWorkers": [
+        {"name": "MaintenancePRReview", "model": "openai-codex/gpt-6-luna", "thinkingLevel": "high", "resolvedModelIsFallback": false, "modelSelectedAt": "2026-09-25T14:39:04.510Z", "status": "completed"},
+        {"name": "PlayablePRReview", "model": "openai-codex/gpt-6-luna", "thinkingLevel": "high", "resolvedModelIsFallback": false, "modelSelectedAt": "2026-09-25T14:39:04.457Z", "status": "completed"}
+      ],
+      "batchEffortOverrideRemovedAfterCompletion": true,
+      "nextOrchestrationRequiresNewRecommendation": true
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "zone": "kit-displayboard-base-test",
+  "root": "실내 트윈 마감/Kit display board base test",
+  "basis": {
+    "purpose": "Isolated regression and visual proof for floor DisplayBoard stand modes.",
+    "visualLimit": "Preview-only coordinates; not a station placement."
+  },
+  "scaffold": [
+    {"name": "test-ground", "finish": "concrete", "polygon": [[-5,-5],[11,-5],[11,5],[-5,5]], "top": 7.0, "depth": 0.25}
+  ],
+  "elements": [
+    {
+      "type": "DisplayBoard", "id": "display-base-screen", "zone": "kit-displayboard-base-test", "tier": "b",
+      "evidence": ["Main KitExtend8 request: floor screen cabinet"], "frame": "root",
+      "geometry": {"point": [0,0], "y": 7.0},
+      "params": {"mount": "floor", "kind": "screen", "heading": [0,-1], "width": 4.18, "height": 2.76, "depth": 0.15, "housing": "dark", "material": "Kit_Screen", "stand": "base", "standHeight": 0.24, "baseWidth": 4.24, "baseDepth": 0.3}
+    },
+    {
+      "type": "DisplayBoard", "id": "display-legs-default", "zone": "kit-displayboard-base-test", "tier": "b",
+      "evidence": ["Default floor stand remains legs"], "frame": "root",
+      "geometry": {"point": [5,0], "y": 7.0},
+      "params": {"mount": "floor", "kind": "screen", "heading": [0,-1], "width": 4.18, "height": 2.76, "depth": 0.15, "housing": "dark", "material": "Kit_Screen", "standHeight": 0.24}
+    }
+  ],
+  "views": [
+    {"name": "floor-stand-comparison", "eye": [2.5,-7.0,9.2], "target": [2.5,0,8.5], "fov": 60, "width": 1600, "height": 900}
+  ]
+}

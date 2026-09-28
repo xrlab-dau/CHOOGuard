@@ -1,0 +1,416 @@
+{
+ "schema": "chooguard.reconcile-2f.checks.v1",
+ "after": {
+  "noUnitOverlaps": {
+   "overlaps": [],
+   "pass": true
+  },
+  "insideMainCells": {
+   "rule": ">=95% of the unit footprint on generated 2F main cells (v<=12.5)",
+   "failing": {
+    "자동발매기": 0.571,
+    "물품보관함": 0.0,
+    "꽃들": 0.347,
+    "다인명가": 0.0,
+    "호두나니&부산오뎅": 0.0,
+    "복순도가": 0.751,
+    "청도할매김밥": 0.0,
+    "반월당닭강정": 0.0
+   },
+   "pass": false
+  },
+  "corridorClearWidth": {
+   "rule": "plan clear width between units >= measured face-to-face width (+V -22.95 vs W-R1..W-R4) along U -64.6..-6.5",
+   "worstMarginU": 0.0,
+   "violations": [],
+   "violationSamples": 0,
+   "pass": true
+  },
+  "rowFrontsOnMeasuredFaces": {
+   "rule": "|front V - measured face V| <= 0.05 where the face plane was fitted",
+   "offsets": {
+    "코레일라운지 편의점": 0.0,
+    "편의점": 0.0,
+    "소반한식": 0.0,
+    "비엔씨제과": 0.0
+   },
+   "pass": true
+  },
+  "nothingIn_atriumVoid": {
+   "zone": [
+    [
+     -30.0,
+     -16.4
+    ],
+    [
+     -49.5,
+     -28.44
+    ]
+   ],
+   "units": [],
+   "pass": true
+  },
+  "nothingIn_doubleHeightHall": {
+   "zone": [
+    [
+     -62,
+     -44
+    ],
+    [
+     -24,
+     -4
+    ]
+   ],
+   "units": [],
+   "pass": true
+  },
+  "noColumnInsideUnit": {
+   "hits": [],
+   "pass": true
+  },
+  "noCameraPathThroughUnit": {
+   "rule": "recorded walking paths never pass >0.3 u inside a unit",
+   "hits": [],
+   "pass": true
+  },
+  "escalatorKeepClear2F": {
+   "zone": [
+    [
+     [
+      28.005,
+      -17.748
+     ],
+     [
+      27.579,
+      -13.698
+     ],
+     [
+      33.806,
+      -13.044
+     ],
+     [
+      34.232,
+      -17.093
+     ]
+    ],
+    [
+     [
+      34.2,
+      -16.7
+     ],
+     [
+      34.2,
+      -13.2
+     ],
+     [
+      36.7,
+      -13.2
+     ],
+     [
+      36.7,
+      -16.7
+     ]
+    ]
+   ],
+   "source": "EscalatorCoreSpec final: .planning/2026-09-24-interior-twin/specs/escalator-core/report.json forMain.keepClear2F",
+   "clearanceU": {
+    "비엔씨": 0.91,
+    "환공어묵": 7.08,
+    "꽃들": 12.12
+   },
+   "pass": true
+  },
+  "soffitDepth": {
+   "rule": "lounge depth reaches the observed lounge soffit",
+   "pass": true
+  },
+  "mainShellWallsInsideUnits_Y8.5": {
+   "rule": "MainShell section at Y 8.5 (geometry-after3) length inside each unit, inset 0.1 u (report; source shell is not ground truth)",
+   "lengthsU": {
+    "꽃들": 3.08
+   }
+  }
+ },
+ "before": {
+  "noUnitOverlaps": {
+   "overlaps": [],
+   "pass": true
+  },
+  "insideMainCells": {
+   "rule": ">=95% of the unit footprint on generated 2F main cells (v<=12.5)",
+   "failing": {
+    "자동발매기": 0.571,
+    "물품보관함": 0.0,
+    "꽃들": 0.0,
+    "다인명가": 0.0,
+    "호두나니&부산오뎅": 0.0,
+    "복순도가": 0.0,
+    "청도할매김밥": 0.0,
+    "반월당닭강정": 0.0
+   },
+   "pass": false
+  },
+  "corridorClearWidth": {
+   "rule": "plan clear width between units >= measured face-to-face width (+V -22.95 vs W-R1..W-R4) along U -64.6..-6.5",
+   "worstMarginU": -2.05,
+   "violations": [
+    {
+     "U": -25.75,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -25.5,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -25.25,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -25.0,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -24.75,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -24.5,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -24.25,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -24.0,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -23.75,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -23.5,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -23.25,
+     "clear": 3.44,
+     "measured": 5.49
+    },
+    {
+     "U": -23.0,
+     "clear": 3.44,
+     "measured": 5.49
+    }
+   ],
+   "violationSamples": 27,
+   "pass": false
+  },
+  "rowFrontsOnMeasuredFaces": {
+   "rule": "|front V - measured face V| <= 0.05 where the face plane was fitted",
+   "offsets": {
+    "코레일라운지 편의점": -9.38,
+    "편의점": -9.16,
+    "소반한식": -8.16,
+    "비엔씨제과": -6.16
+   },
+   "pass": false
+  },
+  "nothingIn_atriumVoid": {
+   "zone": [
+    [
+     -30.0,
+     -16.4
+    ],
+    [
+     -49.5,
+     -28.44
+    ]
+   ],
+   "units": [],
+   "pass": true
+  },
+  "nothingIn_doubleHeightHall": {
+   "zone": [
+    [
+     -62,
+     -44
+    ],
+    [
+     -24,
+     -4
+    ]
+   ],
+   "units": [
+    "철도경찰서"
+   ],
+   "pass": false
+  },
+  "noColumnInsideUnit": {
+   "hits": [
+    [
+     "팔공티",
+     "COL-L-CLOCK"
+    ]
+   ],
+   "pass": false
+  },
+  "noCameraPathThroughUnit": {
+   "rule": "recorded walking paths never pass >0.3 u inside a unit",
+   "hits": [
+    {
+     "path": "HC 240-345 hall path (digitised)",
+     "unit": "남천할매떡볶이",
+     "samples": 89
+    },
+    {
+     "path": "HC 240-345 hall path (digitised)",
+     "unit": "철도경찰서",
+     "samples": 142
+    }
+   ],
+   "pass": false
+  },
+  "escalatorKeepClear2F": {
+   "zone": [
+    [
+     [
+      28.005,
+      -17.748
+     ],
+     [
+      27.579,
+      -13.698
+     ],
+     [
+      33.806,
+      -13.044
+     ],
+     [
+      34.232,
+      -17.093
+     ]
+    ],
+    [
+     [
+      34.2,
+      -16.7
+     ],
+     [
+      34.2,
+      -13.2
+     ],
+     [
+      36.7,
+      -13.2
+     ],
+     [
+      36.7,
+      -16.7
+     ]
+    ]
+   ],
+   "source": "EscalatorCoreSpec final: .planning/2026-09-24-interior-twin/specs/escalator-core/report.json forMain.keepClear2F",
+   "clearanceU": {
+    "비엔씨": 0.91,
+    "환공어묵": 7.08
+   },
+   "pass": true
+  },
+  "soffitDepth": {
+   "rule": "lounge depth reaches the observed lounge soffit",
+   "pass": false
+  },
+  "mainShellWallsInsideUnits_Y8.5": {
+   "rule": "MainShell section at Y 8.5 (geometry-after3) length inside each unit, inset 0.1 u (report; source shell is not ground truth)",
+   "lengthsU": {}
+  }
+ },
+ "verdict": {
+  "noUnitOverlaps": "pass",
+  "insideMainCells": "FAIL",
+  "corridorClearWidth": "pass",
+  "rowFrontsOnMeasuredFaces": "pass",
+  "nothingIn_atriumVoid": "pass",
+  "nothingIn_doubleHeightHall": "pass",
+  "noColumnInsideUnit": "pass",
+  "noCameraPathThroughUnit": "pass",
+  "escalatorKeepClear2F": "pass",
+  "soffitDepth": "pass",
+  "mainShellWallsInsideUnits_Y8.5": "n/a"
+ },
+ "explicitUnresolved": [
+  "insideMainCells: 자동발매기/물품보관함 (unmoved, pre-existing) and 다인명가/호두나니&부산오뎅/청도할매김밥/반월당닭강정 (pre-existing, v -59.6..-50; CX-03 blocked; proposal in changes.json) fail as before",
+  "insideMainCells: 꽃들 (0 -> 0.35) and 복순도가 (0 -> 0.75) improve but the source-derived cell grid has no floor over the vestibule wings behind the corrected apertures (cells stop at V≈-29/-30 there); the builder floor must be extended under their shallow footprints or the rear trimmed at build time",
+  "꽃들 overlaps the source MainShell east vestibule wing wall (U≈20.1, V≤-28.7): source shell contradicts the observed open front (RY 543-548 s); not hidden",
+  "SUBWAY front V and west edge extrapolated (tier c)"
+ ],
+ "hallPathSamples": 852,
+ "hcCameraSamples": 127,
+ "mainShellSection": {
+  "y": 8.5,
+  "segments": 9328,
+  "sources": [
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_0",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0000.bin",
+    "sha256": "f971ca1940ff0ecf7c9b8e8a54c8ff27cda0c32a5446c6ab9cd1993fffb4dd9f"
+   },
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_1",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0001.bin",
+    "sha256": "a3f9afaaf69f4a1e266778429508b0be40deb10193a9e733e95f2d8438768474"
+   },
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_2",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0002.bin",
+    "sha256": "a8ef9e2439a3c63fc2484162b91007c382b439d5aa60efd8d6aded00ab3ab475"
+   },
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_3",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0003.bin",
+    "sha256": "7bf4e76cd3fb4fe19905f7aac1d396d63d0a2ceb7e83b3a5fddf6cecaeb0410f"
+   },
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_4",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0004.bin",
+    "sha256": "2bbfefda987854d656bf33c22e51842b94a68881484f8fc492b80159417d8967"
+   },
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_5",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0005.bin",
+    "sha256": "640a4464268e66c34d7fe0120eb9fd00275f6a5a2c357e51d6d1890a299d3366"
+   },
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_6",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0006.bin",
+    "sha256": "62c9547861fc9f19b38598b9af60be727e754708cc209f43d98c36301880dd78"
+   },
+   {
+    "renderer": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_7",
+    "manifest": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after3/world-geometry.json",
+    "bin": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after5/mesh-0007.bin",
+    "sha256": "bd091601b11df23239f3cbf65aec2d522de83cff2ae74ec8e3da7fbf1014a1dc"
+   }
+  ]
+ }
+}

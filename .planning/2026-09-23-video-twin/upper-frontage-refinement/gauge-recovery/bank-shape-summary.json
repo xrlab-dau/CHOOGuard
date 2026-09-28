@@ -1,0 +1,234 @@
+{
+  "schema": "chooguard.fixed-bank-source-shape-conclusion.v1",
+  "status": "targeted_shape_diagnosis_completed_no_accepted_source_gauge",
+  "coordinateSystem": "Photographic 3D remains fixed isolated SfM units; source UVY16.2. Ratios are scale-free. Source-width-normalized comparisons below are not absolute registrations or surveyed metres.",
+  "conclusion": {
+    "finding": "Corrected native complete fixed-bank landmarks remain inconsistent with the inherited original inner-opening corner set. No single excluded corner explains the cross-bank residual. Follow-up inspection identifies this original assembly as Gate7 from its actual modeled lettering and neighboring AED/kiosk geometry, but does not equate an inner opening with a complete glazed bank.",
+    "confidenceBoundary": "Conditional on isolated/resected camera geometry and source corner-role correspondence. Fixed-camera2px sensitivity excludes the inherited source top-gap ratio but omits camera-model bias. Broad all-eight-MainShell enumeration and both facing assignments provide no accepted alternative among39 geometric representatives. These are rigid-registration incompatibilities, not a certified physical dimensional defect or authority to alter protected source geometry."
+  },
+  "followUpEvidence": "bank-identity-exhaustion-summary.json",
+  "dimensions": {
+    "source": {
+      "rightBankWidth": 3.0874368248319555,
+      "leftBankWidth": 3.0874503928111965,
+      "bankHeight": 2.6999970000014804,
+      "centralGap": 0.6800127385823361
+    },
+    "photoSfm": {
+      "rightWidthTop": 0.3001578636773273,
+      "rightWidthBottom": 0.2952072593710917,
+      "rightMeanHeight": 0.27603890943355025,
+      "leftWidthTop": 0.29800371498864164,
+      "usableLeftInnerHeight": 0.2868728035925821,
+      "centralGapTopEuclidean": 0.1005825653782882,
+      "centralGapBottomEuclidean": 0.09448223998827565
+    },
+    "scaleFree": {
+      "leftWidthOverRightWidth": {
+        "photo": 0.9928232808486358,
+        "source": 1.0000043945771235,
+        "fixedCameraTwoPixel95Interval": [
+          0.8980238111589238,
+          0.9926761043671756,
+          1.1499824129218523
+        ]
+      },
+      "innerLeftHeightOverRightMeanHeight": {
+        "photo": 1.0392477067137518,
+        "source": 0.9999999999994513,
+        "fixedCameraTwoPixel95Interval": [
+          0.9567248198131516,
+          1.0367396749351059,
+          1.1445031334852152
+        ]
+      },
+      "projectedTopGapOverRightWidth": {
+        "photo": 0.32959329806701687,
+        "source": 0.2202515474740144,
+        "fixedCameraTwoPixel95Interval": [
+          0.2905407430177025,
+          0.3257201236273468,
+          0.3862840399841194
+        ]
+      },
+      "projectedBottomGapOverRightWidth": {
+        "photo": 0.3015436643715219,
+        "source": 0.22025283976655183,
+        "fixedCameraTwoPixel95Interval": [
+          0.22712199353974413,
+          0.2934678355838196,
+          0.38057174473190997
+        ]
+      }
+    },
+    "sourceWidthNormalizedOnly": {
+      "photoTopGap": 1.017598485669923,
+      "photoBottomGap": 0.9309970136754044,
+      "sourceGap": 0.6800127385823361,
+      "topGapExcessPercent": 49.64403285561605,
+      "bottomGapExcessPercent": 36.90795755057281
+    },
+    "angleDiagnostics": {
+      "rightTopLeftDegrees": 89.83776444255953,
+      "rightSideParallelismDegrees": 11.886920743275654,
+      "leftTopLeftDegrees": 99.48543967127021,
+      "leftSideParallelismDegrees": 33.108303586615705,
+      "topEdgeAngleDegrees": 9.485838918274938,
+      "sourceTopLeftDegrees": 90,
+      "sourceParallelismDegrees": 0,
+      "interpretation": "Nonrectangular residuals, particularly left-side angles, diagnose unreliable low-parallax depth/corner data; do not treat them as real gate deformation."
+    }
+  },
+  "cornerDiagnosis": {
+    "clearUnreliableCorner": "lBL: 4.9267px triangulation RMS; introduces false left-bottom width0.382395 versus top0.298004 and side-parallelism33.11deg. Exclude this corner from dimension acceptance.",
+    "correctedBadEarlierPicks": [
+      "rTR in HC101 originally934px; consistent native track is913.984px. Earlier measurement mixed jamb boundaries.",
+      "Raw optical-flow rTR in HC102\u2013104 and lTL in later views alias another stile after the real outer corner exits view. Forward-backward closure alone did not detect this.",
+      "Raw lTR tracking followed a reflection. Six independent native junction picks replace it; triangulation RMS0.9415px, maximum ray angle3.6388deg, heldout-view residuals0.9066\u20131.6964px."
+    ],
+    "usableCornerTriangulation": {
+      "rTL": {
+        "viewCount": 5,
+        "maximumRayAngleDegrees": 5.997140258601174,
+        "rmsPixels": 0.5844548819454344
+      },
+      "rTR": {
+        "viewCount": 3,
+        "maximumRayAngleDegrees": 6.813964519061182,
+        "rmsPixels": 0.997013522231562
+      },
+      "rBL": {
+        "viewCount": 2,
+        "maximumRayAngleDegrees": 2.3398037210578138,
+        "rmsPixels": 0.8558699585183966
+      },
+      "rBR": {
+        "viewCount": 2,
+        "maximumRayAngleDegrees": 3.4236397295693677,
+        "rmsPixels": 0.8970241085870847
+      },
+      "lTL": {
+        "viewCount": 2,
+        "maximumRayAngleDegrees": 2.3178270602871422,
+        "rmsPixels": 1.101980623505365
+      },
+      "lTR": {
+        "viewCount": 6,
+        "maximumRayAngleDegrees": 3.6388006308942056,
+        "rmsPixels": 0.9414553610273314
+      },
+      "lBL": {
+        "viewCount": 2,
+        "maximumRayAngleDegrees": 2.091021418423946,
+        "rmsPixels": 4.926739412105597
+      },
+      "lBR": {
+        "viewCount": 2,
+        "maximumRayAngleDegrees": 1.8934286027125597,
+        "rmsPixels": 0.01885595587831938
+      }
+    },
+    "singleCornerDeletionDoesNotFixSourceFit": {
+      "bothBanksRmsPixels": 15.14972981374801,
+      "excludingBadLBLRmsPixels": 16.081187037855408,
+      "bestAnySingleCornerDeletionRmsPixels": 11.956459210085317
+    }
+  },
+  "leaveBankOut": {
+    "rightOnly": {
+      "fitPixels": {
+        "count": 12,
+        "rms": 6.492838633548176,
+        "median": 2.3243241657010776,
+        "max": 15.151540229600913
+      },
+      "heldOutPixels": {
+        "count": 12,
+        "rms": 32.20455212977573,
+        "median": 31.628943810068236,
+        "max": 46.62015779712953
+      },
+      "independentFloorSourceY": 6.707561833583103,
+      "independentPlumbDegrees": 0.8131876784392643
+    },
+    "leftOnly": {
+      "fitPixels": {
+        "count": 12,
+        "rms": 6.021232671713711,
+        "median": 1.758525744375294,
+        "max": 18.203063087897956
+      },
+      "heldOutPixels": {
+        "count": 12,
+        "rms": 33.64693643188073,
+        "median": 32.097970116038496,
+        "max": 48.33599025239038
+      },
+      "independentFloorSourceY": 7.343199855931177,
+      "independentPlumbDegrees": 2.449409822660857
+    },
+    "both": {
+      "fitPixels": {
+        "count": 24,
+        "rms": 15.14972981374801,
+        "median": 8.10722591738128,
+        "max": 27.237411501865434
+      },
+      "heldOutPixels": {
+        "count": 0
+      },
+      "independentFloorSourceY": 7.299620954440337,
+      "independentPlumbDegrees": 0.5372780397278436
+    }
+  },
+  "actualRuns": [
+    {
+      "command": ".tools/video-reconstruction/bin/python .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/relocalize_gate.py --frames 96,98,100,102,104 --prefix extra-",
+      "exitCode": 0,
+      "output": "Accepted100/102/104 with46/55/61 inliers, RMS0.4838/0.6785/0.6773px.96/98 rejected for inadequate support."
+    },
+    {
+      "command": "/opt/homebrew/bin/python3 .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/diagnose_bank_shape.py",
+      "exitCode": 0,
+      "output": "Eight native corners triangulated,48 fixed-camera2px perturbations, reciprocal leave-bank-out fits and all8 leave-corner-out fits computed; source gauge remains rejected."
+    }
+  ],
+  "nativeFrames": {
+    "files": "bank-shape-native-001.jpg through007.jpg",
+    "mapping": "HC98 through104 at1920x1080",
+    "command": "ffmpeg -hide_banner -loglevel error -threads 2 -ss 498.5 -i asset-library/research-public/2026-09-23/busan-sinmajibang/videos/hCyroXn0Jhg.f617.mp4 -t 3.6 -vf fps=2 -q:v 2 -threads 2 .planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-%03d.jpg"
+  },
+  "evidenceFiles": [
+    "bank-shape-diagnosis.json",
+    "bank-shape-normalized-comparison.png",
+    "native-left-inner-junction-accepted.jpg",
+    "native-fixed-corner-inspection.jpg",
+    "manual-floor-junction-review.png",
+    "bank-shape-raw-tracker-rejected.json"
+  ],
+  "integration": {
+    "shopEnvelopesRecomputed": false,
+    "reason": "No leave-bank-out source gauge passes. Prior conditional shop envelope/report retained.",
+    "componentWarped": false,
+    "protectedSourceModified": false,
+    "sceneOrCameraModified": false,
+    "projectValidationRun": false,
+    "threads": 2
+  },
+  "sourcePathsHashes": {
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/diagnose_bank_shape.py": "24820cc8b1f33eed8969c3fcedb973258358050b3d528ab32bf817d8aa6df8e5",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/relocalize_gate.py": "a021269f1ecc669a4d8f9dcbc0696999514929272e505a19a664c71e492cfc91",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-diagnosis.json": "28f8cccff538390abea564e0952ee32ad67d99898c6b86bbc9c9405d3d7835d4",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/fixed-bank-controls.json": "606e2a992e470d62ffe2c75d00ba53a0fd8fa8155742306191c4d03cebfd40fc",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/extra-gate-relocalization.json": "abbe0c16cf8bd1405be2042b318ee30459aac423a7e21f989b52503c17af644c",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate-relocalization.json": "7dfb0368aced545e66163e09fb3c04b77434acad2d380e37abe3f6c578875627",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-001.jpg": "6e9fd9a838d6a2fe12b7c4e527c4c50ac14af90fe44f76ce6c8595d1c42d48bd",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-002.jpg": "410039e03f4be3353ba45298f0d1998939006cd070348158d20c53fb4a5158ab",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-003.jpg": "1bf31856dbd6afbc0f7f835b3ea8eac8cc11ebd3a0217cfb379342dedc574df9",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-004.jpg": "2edf26c84649fceaf143c9271e410b19de1b5f72f57d62a4c9f6c7445968a86e",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-005.jpg": "e6cd36ddc934898fd1e944d8a2009f906d8c99e489c8e7c30b24f5c5d017f0f6",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-006.jpg": "9e4711dc4705ee1458a19e92d05e77545ff2712ad6a5d963923e7f7936d44eda",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/bank-shape-native-007.jpg": "2d49929f7308f583fcffa99eefac7aac4f267b13148bd0f36ac53517303c6691",
+    ".planning/2026-09-23-video-twin/main-metric-registration/source-mesh.json": "a3e69f21bda23c5919ebb8542e6294218d7457a153dadda2e36188c0b4fece6c"
+  }
+}

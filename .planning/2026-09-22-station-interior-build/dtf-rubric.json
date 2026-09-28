@@ -1,0 +1,101 @@
+{
+ "schema": "chooguard.dtf-rubric.v1",
+ "authoredAt": "2026-09-22",
+ "purpose": "부산역 역사 실내 Unity 씬이 '디지털 트윈 수준'인지 판정하는 정량 채점표. 용도는 소방 대응 FPS 훈련 맵.",
+ "decidedBy": {
+  "tool": "Jev (TypeSafe System One) jev-1.13.0",
+  "inputs": [
+   ".planning/2026-09-22-station-interior-build/jev-render-gap-010.input.json",
+   ".planning/2026-09-22-station-interior-build/jev-rubric-011.input.json"
+  ],
+  "note": "가중치는 Jev score 인덱스(0~6 = 0~30%, 5%p 간격)를 5배한 값. P·N 은 잔여 21.8%p 를 안전축 우선으로 분배(N 11.8 / P 10.0)."
+ },
+ "weights": {
+  "M_material": 23.5,
+  "S_signage": 20.0,
+  "L_photometric": 17.9,
+  "G_geometry": 16.8,
+  "N_navigation": 11.8,
+  "P_program": 10.0
+ },
+ "passBar": 82,
+ "gateRule": {
+  "kind": "min_per_axis",
+  "minAxisScore": 40,
+  "statement": "어느 축이라도 40점 미만이면 가중합과 무관하게 불합격. 약한 고리를 허용하지 않는다."
+ },
+ "referenceRequired": {
+  "value": true,
+  "noul": 0.82,
+  "statement": "실사 레퍼런스 없이는 M·L 축을 채점할 수 없다. 레퍼런스 미확보 시 해당 축은 0점 처리하고 UNSCORED 로 표기한다."
+ },
+ "axes": {
+  "M_material": {
+   "name": "재질 충실도",
+   "formula": "100 · (0.50·texturedAreaRatio + 0.30·(1 − paletteDistance) + 0.20·distinctMaterialRatio)",
+   "terms": {
+    "texturedAreaRatio": "BaseMap 텍스처가 결속된 머티리얼이 덮는 가시 표면적 / 전체 가시 표면적",
+    "paletteDistance": "렌더 캡처와 실사 레퍼런스의 HSV 32bin×3채널 히스토그램 Bhattacharyya 거리 (0~1)",
+    "distinctMaterialRatio": "min(1, 씬에서 실제로 쓰인 서로 다른 머티리얼 수 / 24). 역사 실내는 최소 24종 마감이 관측된다"
+   }
+  },
+  "S_signage": {
+   "name": "사인 충실도",
+   "formula": "100 · (0.40·tenantSignTextRatio + 0.35·min(1, wayfindingPer1000m2 / 6) + 0.25·criticalSignCoverage)",
+   "terms": {
+    "tenantSignTextRatio": "상호 글자가 실제로 렌더되는 점포 간판 수 / 전체 점포 수",
+    "wayfindingPer1000m2": "천장·벽 유도사인 개수 ÷ (실내 바닥면적/1000). 한국 철도역사 관측 기준 1,000m2당 약 6매",
+    "criticalSignCoverage": "행선안내 전광판·타는곳 번호표지·매표소·화장실·비상구 5종 중 존재하는 종수 / 5"
+   }
+  },
+  "L_photometric": {
+   "name": "광학 충실도",
+   "formula": "100 · (0.45·(1 − luminanceDistance) + 0.35·emissiveFixtureCoverage + 0.20·lightingRealismFlags)",
+   "terms": {
+    "luminanceDistance": "렌더 캡처와 실사 레퍼런스의 Y 채널 64bin 히스토그램 Bhattacharyya 거리",
+    "emissiveFixtureCoverage": "min(1, 이미시브 조명기구 수 / 조도 역산 필요기구수)",
+    "lightingRealismFlags": "[이미시브 기구 존재, 앰비언트 3색 설정, 그림자 켜진 광원 존재, 천장 코브/간접조명 존재] 4개 중 충족 비율"
+   }
+  },
+  "G_geometry": {
+   "name": "기하 정합",
+   "formula": "100 · (0.50·IoU_plan + 0.30·unitRecall + 0.20·(1 − min(1, MAPE_area)))",
+   "terms": {
+    "IoU_plan": "공식 역 안내판 실축척 평면을 모델 uv 로 등록한 뒤, 점포·실 폴리곤 합집합과 우리 배치 합집합의 IoU",
+    "unitRecall": "공식 범례에 있는 실·점포 중 씬에 대응물이 있는 비율",
+    "MAPE_area": "대응된 실·점포의 면적 평균절대백분율오차"
+   }
+  },
+  "N_navigation": {
+   "name": "보행 충실도",
+   "formula": "100 · (0.40·meanLevelCoverage + 0.40·pathCompleteRatio + 0.20·egressCompliance)",
+   "terms": {
+    "meanLevelCoverage": "층별 NavMesh 표본 적중률 평균",
+    "pathCompleteRatio": "정의된 검증 경로 중 PathComplete 비율",
+    "egressCompliance": "보행거리 기준(건축법 시행령 피난거리) 충족 구획 비율"
+   }
+  },
+  "P_program": {
+   "name": "프로그램 완전성",
+   "formula": "100 · (matchedElements / requiredElements)",
+   "required": [
+    "매표창구", "역무실", "철도경찰서", "종합안내", "수유방", "물품보관함",
+    "화장실", "에스컬레이터", "엘리베이터", "계단", "타는곳 게이트",
+    "임대매장 2F", "임대매장 1F", "임대매장 3F", "코레일라운지", "행선안내 전광판",
+    "자동발권기", "대합실 의자", "소화기", "비상구"
+   ]
+  }
+ },
+ "scoringInputs": {
+  "sceneExport": ".planning/2026-09-22-station-interior-build/dtf-scene-export.json",
+  "navWalk": ".planning/2026-09-22-station-interior-build/navwalk-test.json",
+  "referenceManifest": ".planning/2026-09-22-station-interior-build/generated/reference/manifest.json",
+  "paletteBaseline": ".planning/2026-09-22-station-interior-build/generated/reference/palette-baseline.json",
+  "officialPlan": ".planning/2026-09-22-station-interior-build/official-floorplan-digitized.json",
+  "renderCaptures": ".planning/2026-09-22-station-interior-build/captures/"
+ },
+ "honesty": {
+  "unscoredPolicy": "입력 산출물이 없으면 해당 축은 0점이 아니라 UNSCORED 로 표기하고 총점 계산에서 제외하지 않는다 — 0점으로 계산하되 리포트에 UNSCORED 를 명시한다. 없는 것을 있다고 추정하지 않는다.",
+  "noSelfGrading": "채점은 씬에서 기계적으로 추출한 수치로만 한다. 주관적 인상 점수를 넣지 않는다."
+ }
+}

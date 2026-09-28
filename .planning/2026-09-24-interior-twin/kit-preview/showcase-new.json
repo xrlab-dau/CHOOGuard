@@ -1,0 +1,1346 @@
+{
+ "schema": "chooguard.interior-kit-showcase.v1",
+ "note": "Preview-only bay for Balustrade, DisplayBoard, Counter, DoorSet, Fixture (not station evidence).",
+ "scaffold": [
+  {
+   "name": "Floor",
+   "finish": "granite",
+   "polygon": [
+    [
+     372,
+     372
+    ],
+    [
+     428,
+     372
+    ],
+    [
+     428,
+     420
+    ],
+    [
+     372,
+     420
+    ]
+   ],
+   "top": 50.0,
+   "depth": 0.4
+  },
+  {
+   "name": "ShellW",
+   "finish": "gypsum",
+   "box": [
+    400,
+    416.9,
+    54.5,
+    56,
+    0.6,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellE",
+   "finish": "gypsum",
+   "box": [
+    400,
+    375.1,
+    54.5,
+    56,
+    0.6,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellN",
+   "finish": "gypsum",
+   "box": [
+    424.9,
+    396,
+    54.5,
+    0.6,
+    48,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellS",
+   "finish": "gypsum",
+   "box": [
+    375.1,
+    396,
+    54.5,
+    0.6,
+    48,
+    9.4
+   ]
+  }
+ ],
+ "elements": [
+  {
+   "type": "FloorFinish",
+   "id": "floor",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      376,
+      376
+     ],
+     [
+      424,
+      376
+     ],
+     [
+      424,
+      416
+     ],
+     [
+      376,
+      416
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "finish": "polished"
+   }
+  },
+  {
+   "type": "SuspendedCeiling",
+   "id": "ceiling",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      376,
+      376
+     ],
+     [
+      424,
+      376
+     ],
+     [
+      424,
+      416
+     ],
+     [
+      376,
+      416
+     ]
+    ],
+    "y": 54.2
+   },
+   "params": {
+    "module": "600x600",
+    "fixtures": {
+     "layout": "grid",
+     "pitch": [
+      2.4,
+      2.4
+     ],
+     "lights": {
+      "pitch": [
+       6,
+       6
+      ],
+      "intensity": 1.6,
+      "range": 9
+     }
+    }
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-west",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      376,
+      416
+     ],
+     [
+      424,
+      416
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "faceToward": [
+     400,
+     400
+    ],
+    "finish": "stone"
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-east",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      376,
+      384
+     ],
+     [
+      410,
+      384
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "faceToward": [
+     400,
+     400
+    ],
+    "finish": "gypsum",
+    "panelWidth": 2.4,
+    "panelHeight": 0
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-east2",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      418,
+      384
+     ],
+     [
+      424,
+      384
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "faceToward": [
+     400,
+     400
+    ],
+    "finish": "gypsum",
+    "panelWidth": 2.4,
+    "panelHeight": 0
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-door-head",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      410,
+      384
+     ],
+     [
+      418,
+      384
+     ]
+    ],
+    "y0": 53.1,
+    "y1": 54.2
+   },
+   "params": {
+    "faceToward": [
+     400,
+     400
+    ],
+    "finish": "gypsum",
+    "panelWidth": 2.4,
+    "panelHeight": 0,
+    "skirting": 0
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "bal-glass",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      379,
+      388
+     ],
+     [
+      387,
+      388
+     ],
+     [
+      389,
+      390
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     384,
+     392
+    ],
+    "panel": "glass",
+    "rail": "round",
+    "handrail": {
+     "height": 0.9,
+     "offset": 0.07
+    }
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "bal-bars",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      379,
+      392
+     ],
+     [
+      387,
+      392
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     384,
+     396
+    ],
+    "panel": "bars",
+    "rail": "flat"
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "bal-solid",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      379,
+      396
+     ],
+     [
+      387,
+      396
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     384,
+     400
+    ],
+    "panel": "solid",
+    "rail": "flat",
+    "panelFinish": "stone"
+   }
+  },
+  {
+   "type": "Balustrade",
+   "id": "bal-teal",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      391,
+      388
+     ],
+     [
+      397,
+      388
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     394,
+     392
+    ],
+    "glass": "teal",
+    "postPitch": 0,
+    "rail": "round"
+   }
+  },
+  {
+   "type": "DisplayBoard",
+   "id": "board-dep",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     396,
+     400
+    ],
+    "y": 52.2
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "kind": "departure",
+    "width": 2.8,
+    "height": 0.75,
+    "ceilingY": 54.2,
+    "rows": [
+     {
+      "time": "09:30",
+      "train": "KTX 012",
+      "dest": "서울 Seoul",
+      "track": "7",
+      "status": "정상"
+     },
+     {
+      "time": "09:45",
+      "train": "SRT 354",
+      "dest": "수서 Suseo",
+      "track": "9",
+      "status": "정상"
+     },
+     {
+      "time": "10:02",
+      "train": "무궁화 1206",
+      "dest": "동대구 Dongdaegu",
+      "track": "3",
+      "status": "지연 5분"
+     },
+     {
+      "time": "10:15",
+      "train": "KTX 016",
+      "dest": "행신 Haengsin",
+      "track": "8",
+      "status": "정상"
+     }
+    ]
+   }
+  },
+  {
+   "type": "DisplayBoard",
+   "id": "board-screen",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     396,
+     406
+    ],
+    "y": 52.4
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "kind": "screen",
+    "width": 1.8,
+    "height": 0.5,
+    "ceilingY": 54.2,
+    "texture": "Assets/ChooGuard/Art/StationInterior/Textures/Signs/board_departures.png"
+   }
+  },
+  {
+   "type": "DisplayBoard",
+   "id": "board-arr-wall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     404,
+     415.93
+    ],
+    "y": 51.8
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "kind": "arrival",
+    "mount": "wall",
+    "width": 2.2,
+    "height": 0.6,
+    "rows": [
+     {
+      "time": "09:52",
+      "train": "KTX 015",
+      "dest": "서울 Seoul",
+      "track": "5",
+      "status": "도착"
+     }
+    ]
+   }
+  },
+  {
+   "type": "DisplayBoard",
+   "id": "board-led",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     409,
+     415.93
+    ],
+    "y": 53.0
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "kind": "ledband",
+    "mount": "wall",
+    "width": 3.2,
+    "height": 0.28,
+    "title": "열차가 곧 도착합니다  Train arriving"
+   }
+  },
+  {
+   "type": "DisplayBoard",
+   "id": "board-clock",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     396,
+     403
+    ],
+    "y": 53.2
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "kind": "clock",
+    "ceilingY": 54.2,
+    "text": "09:41"
+   }
+  },
+  {
+   "type": "DisplayBoard",
+   "id": "board-timetable",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     399,
+     395
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "kind": "timetable",
+    "mount": "floor",
+    "width": 1.0,
+    "height": 1.2,
+    "standHeight": 0.6,
+    "rows": [
+     {
+      "time": "06:00",
+      "train": "KTX",
+      "dest": "서울",
+      "track": "7"
+     },
+     {
+      "time": "06:30",
+      "train": "SRT",
+      "dest": "수서",
+      "track": "9"
+     }
+    ]
+   }
+  },
+  {
+   "type": "Counter",
+   "id": "counter",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      404,
+      404
+     ],
+     [
+      410,
+      404
+     ],
+     [
+      412,
+      406
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     407,
+     400
+    ],
+    "screens": [
+     {
+      "at": 1.2,
+      "label": "1"
+     },
+     {
+      "at": 3.0,
+      "label": "2"
+     },
+     {
+      "at": 4.8,
+      "label": "3"
+     }
+    ],
+    "backPanel": {
+     "height": 2.6,
+     "finish": "wood",
+     "text": "매표소  Ticket Office"
+    },
+    "label": "승차권  Tickets"
+   }
+  },
+  {
+   "type": "DoorSet",
+   "id": "doors",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      410,
+      384
+     ],
+     [
+      418,
+      384
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     414,
+     380
+    ],
+    "count": 2,
+    "pitch": 3.6,
+    "doorWidth": 1.8,
+    "open": 0.45,
+    "vestibule": 2.4,
+    "number": "7",
+    "sign": "출구  Exit"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-clock",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     380,
+     415.93
+    ],
+    "y": 52.6
+   },
+   "params": {
+    "kind": "clock",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-aed",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     381.6,
+     415.93
+    ],
+    "y": 51.5
+   },
+   "params": {
+    "kind": "aed",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-ext-wall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     383,
+     415.93
+    ],
+    "y": 51.0
+   },
+   "params": {
+    "kind": "extinguisher",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-hydrant",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     384.4,
+     415.93
+    ],
+    "y": 51.0
+   },
+   "params": {
+    "kind": "hydrant",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-frame",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     386.6,
+     415.93
+    ],
+    "y": 51.7
+   },
+   "params": {
+    "kind": "frame",
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 1.4,
+    "height": 0.8,
+    "texture": "Assets/ChooGuard/Art/StationInterior/Textures/Ads/ad_02_visit_busan_beach.png"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-speaker-wall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     388.6,
+     415.93
+    ],
+    "y": 53.3
+   },
+   "params": {
+    "kind": "speaker",
+    "mount": "wall",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-cctv-wall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     389.4,
+     415.93
+    ],
+    "y": 53.5
+   },
+   "params": {
+    "kind": "cctv",
+    "mount": "wall",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-totem",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     391,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "totem",
+    "heading": [
+     0,
+     -1
+    ],
+    "text": "안내  Information"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-standee",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     392.5,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "standee",
+    "heading": [
+     0,
+     -1
+    ],
+    "texture": "Assets/ChooGuard/Art/StationInterior/Textures/Ads/ad_05_ktx_cheongryong.png"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-planter",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     394,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "planter",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-bin",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     395.5,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "bin",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-atm",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     397.1,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "atm",
+    "heading": [
+     0,
+     -1
+    ],
+    "text": "BNK ATM"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-kiosk",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     398.6,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "kiosk",
+    "heading": [
+     0,
+     -1
+    ],
+    "text": "무인민원발급기"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-charger",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     399.9,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "charger",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-ext-floor",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     401,
+     414.6
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "kind": "extinguisher",
+    "mount": "floor",
+    "heading": [
+     0,
+     -1
+    ]
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-clock-ceiling",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     391,
+     406
+    ],
+    "y": 54.2
+   },
+   "params": {
+    "kind": "clock",
+    "mount": "ceiling",
+    "heading": [
+     -1,
+     0
+    ],
+    "width": 0.6
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-cctv",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     388.6,
+     406
+    ],
+    "y": 54.2
+   },
+   "params": {
+    "kind": "cctv"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-speaker",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     389.8,
+     407.2
+    ],
+    "y": 54.2
+   },
+   "params": {
+    "kind": "speaker"
+   }
+  },
+  {
+   "type": "Column",
+   "id": "col-tree",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     384,
+     404
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "shape": "round",
+    "diameter": 0.9,
+    "cladding": "white"
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-cctv-col-a",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     384.45,
+     404
+    ],
+    "y": 53.3
+   },
+   "params": {
+    "kind": "cctv",
+    "mount": "column",
+    "heading": [
+     1,
+     0
+    ],
+    "column": {
+     "center": [
+      384,
+      404
+     ],
+     "radius": 0.45
+    }
+   }
+  },
+  {
+   "type": "Fixture",
+   "id": "fx-cctv-col-b",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     384,
+     403.55
+    ],
+    "y": 53.3
+   },
+   "params": {
+    "kind": "cctv",
+    "mount": "column",
+    "heading": [
+     0,
+     -1
+    ],
+    "column": {
+     "center": [
+      384,
+      404
+     ],
+     "radius": 0.45
+    }
+   }
+  }
+ ],
+ "views": [
+  {
+   "name": "balustrades",
+   "eye": [
+    393.5,
+    394.5,
+    51.7
+   ],
+   "target": [
+    384,
+    390.5,
+    50.5
+   ],
+   "fov": 64
+  },
+  {
+   "name": "boards",
+   "eye": [
+    386.5,
+    401.5,
+    51.7
+   ],
+   "target": [
+    397,
+    401.5,
+    52.4
+   ],
+   "fov": 64
+  },
+  {
+   "name": "boards-wall",
+   "eye": [
+    406,
+    408.5,
+    51.7
+   ],
+   "target": [
+    406.5,
+    416,
+    52.2
+   ],
+   "fov": 66
+  },
+  {
+   "name": "counter",
+   "eye": [
+    405.8,
+    398.3,
+    51.8
+   ],
+   "target": [
+    408,
+    405,
+    51.1
+   ],
+   "fov": 64
+  },
+  {
+   "name": "doors",
+   "eye": [
+    414,
+    391.5,
+    51.7
+   ],
+   "target": [
+    414,
+    384,
+    51.6
+   ],
+   "fov": 66
+  },
+  {
+   "name": "fixtures-wall",
+   "eye": [
+    384.6,
+    410.8,
+    51.6
+   ],
+   "target": [
+    384.6,
+    416,
+    51.6
+   ],
+   "fov": 66
+  },
+  {
+   "name": "fixtures-floor",
+   "eye": [
+    396,
+    409.8,
+    51.6
+   ],
+   "target": [
+    396,
+    415,
+    50.9
+   ],
+   "fov": 66
+  },
+  {
+   "name": "column-cctv",
+   "eye": [
+    386.6,
+    401.6,
+    52.3
+   ],
+   "target": [
+    384,
+    404,
+    53.2
+   ],
+   "fov": 50
+  },
+  {
+   "name": "fixtures-ceiling",
+   "eye": [
+    391.5,
+    403.5,
+    51.6
+   ],
+   "target": [
+    390,
+    406.5,
+    53.6
+   ],
+   "fov": 64
+  }
+ ]
+}

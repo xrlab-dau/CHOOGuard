@@ -1,0 +1,653 @@
+{
+ "schema": "chooguard.regtech.anchor.v1",
+ "work": ".planning/2026-09-26-full-twin/regtech/pub1f-hcy",
+ "controls": ".planning/2026-09-26-full-twin/regtech/controls/pub1f.json",
+ "frame": "uvy",
+ "gate_thresholds": {
+  "heldout_rms_m": 0.3,
+  "heldout_rms_px": 8.0,
+  "min_heldout": 3,
+  "loo_max_m": 0.6,
+  "heldout_forward_rms_deg": 6.0
+ },
+ "components": {
+  "0": {
+   "component": 0,
+   "registered_images": 120,
+   "status": "FAIL",
+   "gate": {
+    "pass": false,
+    "reasons": [
+     "held-out-image reprojection RMS 238.69px > 8.0",
+     "LOO max 3D 40.929 > 0.6",
+     "LOO reprojection RMS 238.68px > 8.0"
+    ]
+   },
+   "fit": {
+    "controls": 24,
+    "obs": 3,
+    "rms_px": 137.82652284336723,
+    "max_px": 238.69157337061137,
+    "points_3d": 18,
+    "rms_m": 4.686719850861465,
+    "max_m": 17.28894246797686,
+    "forward_rms_deg": null,
+    "forward_max_deg": null
+   },
+   "heldout": {
+    "controls": 8,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 0,
+    "rms_m": null,
+    "max_m": null,
+    "forward_rms_deg": null,
+    "forward_max_deg": null
+   },
+   "heldout_images": {
+    "images": [
+     "h/t00574000.jpg",
+     "h/t00574556.jpg",
+     "h/t00574889.jpg",
+     "h/t00575222.jpg",
+     "h/t00575556.jpg",
+     "h/t00575778.jpg",
+     "h/t00576222.jpg",
+     "h/t00576556.jpg",
+     "h/t00576778.jpg",
+     "h/t00577000.jpg",
+     "h/t00577333.jpg",
+     "h/t00577889.jpg",
+     "h/t00578000.jpg",
+     "h/t00578556.jpg",
+     "h/t00578667.jpg"
+    ],
+    "obs": 1,
+    "rms_px": 238.69157337061137
+   },
+   "loo": {
+    "count": 24,
+    "rms_m": 11.63875518688929,
+    "max_m": 40.929005610394114,
+    "rms_px": 238.677221262121,
+    "max_px": 238.677221262121,
+    "items": {
+     "part-subway-bnc-floor": {
+      "err_m": 18.58663938205048,
+      "rms_px": null
+     },
+     "nw-corner-floor": {
+      "err_m": null,
+      "rms_px": 238.677221262121
+     },
+     "toilet-face-0": {
+      "err_m": null,
+      "rms_px": null
+     },
+     "toilet-face-1": {
+      "err_m": null,
+      "rms_px": null
+     },
+     "toilet-face-2": {
+      "err_m": 17.764696809152518,
+      "rms_px": null
+     },
+     "toilet-face-3": {
+      "err_m": null,
+      "rms_px": null
+     },
+     "toilet-face-4": {
+      "err_m": null,
+      "rms_px": null
+     },
+     "north-wall-w-1": {
+      "err_m": 40.929005610394114,
+      "rms_px": null
+     },
+     "north-wall-w-5": {
+      "err_m": null,
+      "rms_px": null
+     },
+     "floor-1": {
+      "err_m": 0.01913511925264988,
+      "rms_px": null
+     },
+     "floor-2": {
+      "err_m": 0.0050781178912355784,
+      "rms_px": null
+     },
+     "floor-3": {
+      "err_m": 0.08619528172221358,
+      "rms_px": null
+     },
+     "floor-4": {
+      "err_m": 0.048281310973753655,
+      "rms_px": null
+     },
+     "floor-6": {
+      "err_m": 0.0036295233775671676,
+      "rms_px": null
+     },
+     "floor-7": {
+      "err_m": 0.011943176294322733,
+      "rms_px": null
+     },
+     "floor-8": {
+      "err_m": 0.01909653670234146,
+      "rms_px": null
+     },
+     "floor-10": {
+      "err_m": 0.017027723228681957,
+      "rms_px": null
+     },
+     "floor-11": {
+      "err_m": 0.03739901253399047,
+      "rms_px": null
+     },
+     "door-head-whiteroom": {
+      "err_m": 2.181594416711084,
+      "rms_px": null
+     },
+     "cam:h/t00586667.jpg": {
+      "err_m": 4.423922608503228,
+      "rms_px": null
+     },
+     "cam:h/t00570111.jpg": {
+      "err_m": 1.8700684660763447,
+      "rms_px": null
+     },
+     "cam:h/t00576778.jpg": {
+      "err_m": 1.763959714391079,
+      "rms_px": null
+     },
+     "cam:h/t00560000.jpg": {
+      "err_m": 4.661485329909336,
+      "rms_px": null
+     },
+     "cam:h/t00599000.jpg": {
+      "err_m": 7.027027982824975,
+      "rms_px": null
+     }
+    }
+   },
+   "sim3_sfm_to_enu": {
+    "scale": 2.620555823238954,
+    "rotation": [
+     [
+      -0.4826462966725662,
+      0.06727339951165645,
+      -0.8732278293929951
+     ],
+     [
+      0.8756101118814867,
+      0.015479967440748865,
+      -0.48277044501390454
+     ],
+     [
+      -0.018960070652481342,
+      -0.9976144848217563,
+      -0.06637661783093862
+     ]
+    ],
+    "translation": [
+     -32.10833468017843,
+     -52.08826687344318,
+     8.424972275114492
+    ],
+    "formula": "ENU = scale*R*X_sfm + t; Unity=(E,Up,N); UVY via README"
+   },
+   "solver": {
+    "init_inliers": 6,
+    "cost": 27.041377096427105,
+    "nfev": 17,
+    "status": 2
+   },
+   "controls": {
+    "part-subway-bnc-floor": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": true,
+     "note": "SUBWAY/비엔씨제과 partition pilaster at floor; builder Shop_SUBWAY/Shop_비엔씨제과 walls (Naver-derived) [INFERENCE]",
+     "obs": [
+      {
+       "image": "h/t00570111.jpg",
+       "px": [
+        478.0,
+        512.0
+       ],
+       "proj": [
+        479.1032273706351,
+        515.4620280729496
+       ],
+       "err_px": 3.633558725163179,
+       "heldout_image": false
+      },
+      {
+       "image": "h/t00572222.jpg",
+       "px": [
+        842.0,
+        600.0
+       ],
+       "proj": [
+        841.3402348198563,
+        598.9295047689992
+       ],
+       "err_px": 1.2574776866909074,
+       "heldout_image": false
+      }
+     ],
+     "triangulated": [
+      -65.65264580512243,
+      -28.470209314366812,
+      7.034922873523068
+     ],
+     "err_m": 0.13272253031821832,
+     "err_components": [
+      0.1073541948775727,
+      0.06979068563318691,
+      0.034922873523068
+     ],
+     "tri_angle_deg": 11.186378303095411,
+     "tri_views": 2,
+     "tri_rms_px": 1.9767024333179044
+    },
+    "nw-corner-floor": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": true,
+     "note": "corner toilet-block east face x north rooms front at floor; builder 2F 편의 toilet tile wall U -79.8 / rooms front V -6.35..-6.2 (Naver toilet rooms east edge ~U -81) [INFERENCE]",
+     "obs": [
+      {
+       "image": "h/t00575222.jpg",
+       "px": [
+        515.0,
+        396.0
+       ],
+       "proj": [
+        276.31396586401627,
+        397.626132397427
+       ],
+       "err_px": 238.69157337061137,
+       "heldout_image": true
+      }
+     ]
+    },
+    "toilet-face-0": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on toilet-block east face (U known)",
+     "obs": []
+    },
+    "toilet-face-1": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on toilet-block east face (U known)",
+     "obs": []
+    },
+    "toilet-face-2": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on toilet-block east face (U known)",
+     "obs": [],
+     "triangulated": [
+      -62.51105753202314,
+      -24.441741164110116,
+      8.442954946452046
+     ],
+     "err_m": 17.28894246797686,
+     "err_components": [
+      17.28894246797686
+     ],
+     "tri_angle_deg": 89.99999999999581,
+     "tri_views": 2,
+     "tri_rms_px": null
+    },
+    "toilet-face-3": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on toilet-block east face (U known)",
+     "obs": []
+    },
+    "toilet-face-4": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on toilet-block east face (U known)",
+     "obs": []
+    },
+    "toilet-face-5": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM point on toilet-block east face (U known)",
+     "obs": []
+    },
+    "north-wall-w-0": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM point on north rooms front, west part U -80..-70 (V known)",
+     "obs": []
+    },
+    "north-wall-w-1": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on north rooms front, west part U -80..-70 (V known)",
+     "obs": [],
+     "triangulated": [
+      -73.34011796644228,
+      -6.497598294442113,
+      7.9273826696117675
+     ],
+     "err_m": 0.19759829444211352,
+     "err_components": [
+      -0.19759829444211352
+     ],
+     "tri_angle_deg": 4.629478973693869,
+     "tri_views": 3,
+     "tri_rms_px": 0.0473806375950691
+    },
+    "north-wall-w-2": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM point on north rooms front, west part U -80..-70 (V known)",
+     "obs": []
+    },
+    "north-wall-w-3": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM point on north rooms front, west part U -80..-70 (V known)",
+     "obs": []
+    },
+    "north-wall-w-4": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM point on north rooms front, west part U -80..-70 (V known)",
+     "obs": []
+    },
+    "north-wall-w-5": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM point on north rooms front, west part U -80..-70 (V known)",
+     "obs": []
+    },
+    "floor-0": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": []
+    },
+    "floor-1": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -35.19272398954961,
+      1.7802209175381787,
+      6.988074893323751
+     ],
+     "err_m": 0.011925106676248909,
+     "err_components": [
+      -0.011925106676248909
+     ],
+     "tri_angle_deg": 3.3519345358863006,
+     "tri_views": 8,
+     "tri_rms_px": 0.2519667155257941
+    },
+    "floor-2": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -50.47141737562713,
+      -27.540722423345095,
+      6.997072538821133
+     ],
+     "err_m": 0.002927461178867219,
+     "err_components": [
+      -0.002927461178867219
+     ],
+     "tri_angle_deg": 9.181240846891415,
+     "tri_views": 4,
+     "tri_rms_px": 0.3463992187101275
+    },
+    "floor-3": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -74.26064422441866,
+      -27.966074249706693,
+      6.942687657895707
+     ],
+     "err_m": 0.057312342104292924,
+     "err_components": [
+      -0.057312342104292924
+     ],
+     "tri_angle_deg": 3.1495989257711834,
+     "tri_views": 7,
+     "tri_rms_px": 1.526396105825504
+    },
+    "floor-4": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -55.09416606766826,
+      -2.8356698602688475,
+      7.03782594171214
+     ],
+     "err_m": 0.03782594171214004,
+     "err_components": [
+      0.03782594171214004
+     ],
+     "tri_angle_deg": 3.429423886568143,
+     "tri_views": 5,
+     "tri_rms_px": 0.6045735577580971
+    },
+    "floor-5": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": []
+    },
+    "floor-6": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -62.271035839971766,
+      -29.134521324928752,
+      7.002755321685367
+     ],
+     "err_m": 0.0027553216853668516,
+     "err_components": [
+      0.0027553216853668516
+     ],
+     "tri_angle_deg": 33.56832917148484,
+     "tri_views": 8,
+     "tri_rms_px": 0.4729848852317616
+    },
+    "floor-7": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -44.866741130399745,
+      -0.40068014626742254,
+      7.009439499471995
+     ],
+     "err_m": 0.00943949947199485,
+     "err_components": [
+      0.00943949947199485
+     ],
+     "tri_angle_deg": 19.351401706263477,
+     "tri_views": 8,
+     "tri_rms_px": 0.476910299444942
+    },
+    "floor-8": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -64.23533764111812,
+      -4.108813413069392,
+      6.989012646389016
+     ],
+     "err_m": 0.01098735361098413,
+     "err_components": [
+      -0.01098735361098413
+     ],
+     "tri_angle_deg": 5.027554923994078,
+     "tri_views": 4,
+     "tri_rms_px": 0.4908806712254253
+    },
+    "floor-9": {
+     "kind": "landmark",
+     "role": "heldout",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": []
+    },
+    "floor-10": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -59.08539762161646,
+      -10.64830797084058,
+      6.985387362480231
+     ],
+     "err_m": 0.014612637519769045,
+     "err_components": [
+      -0.014612637519769045
+     ],
+     "tri_angle_deg": 5.016325171538196,
+     "tri_views": 5,
+     "tri_rms_px": 0.6499104363509077
+    },
+    "floor-11": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "SfM floor-plane point (2F floor Y 7.0)",
+     "obs": [],
+     "triangulated": [
+      -38.5800756085388,
+      -4.587058847648731,
+      6.973694033473548
+     ],
+     "err_m": 0.026305966526451563,
+     "err_components": [
+      -0.026305966526451563
+     ],
+     "tri_angle_deg": 4.711944566716524,
+     "tri_views": 8,
+     "tri_rms_px": 0.32984146369246325
+    },
+    "door-head-whiteroom": {
+     "kind": "landmark",
+     "role": "fit",
+     "full": false,
+     "note": "head of a single-leaf door on the north rooms front (east of police): assumed standard 2.05 m leaf -> Y 9.05 [INFERENCE: vertical scale]",
+     "obs": [],
+     "triangulated": [
+      -53.61753344325201,
+      -2.071618882909295,
+      9.09825185845492
+     ],
+     "err_m": 0.04825185845492008,
+     "err_components": [
+      0.04825185845492008
+     ],
+     "tri_angle_deg": 2.6141132362338673,
+     "tri_views": 3,
+     "tri_rms_px": 1.7955521144013755
+    },
+    "cam:h/t00586667.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 4.4123158847552695,
+     "center_uvy": [
+      -62.10515997386025,
+      -10.842677983285835,
+      8.523938035468385
+     ],
+     "note": "init only (sigma 50): manual plane alignment"
+    },
+    "cam:h/t00570111.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 1.8690278379327803,
+     "center_uvy": [
+      -58.81410082597042,
+      -25.17176175922934,
+      8.399269067325903
+     ],
+     "note": "init only (sigma 50): manual plane alignment"
+    },
+    "cam:h/t00576778.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 1.7631728871559038,
+     "center_uvy": [
+      -64.37701983800028,
+      -21.69083310842677,
+      8.485915583032714
+     ],
+     "note": "init only (sigma 50): manual plane alignment"
+    },
+    "cam:h/t00560000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 4.647287013959917,
+     "center_uvy": [
+      -47.36048166994528,
+      -22.404895360331047,
+      8.264330371201337
+     ],
+     "note": "init only (sigma 50): manual plane alignment"
+    },
+    "cam:h/t00599000.jpg": {
+     "kind": "camera",
+     "role": "fit",
+     "err_m": 6.98110392759403,
+     "center_uvy": [
+      -50.007296149081526,
+      -4.337119170336029,
+      8.470835887198906
+     ],
+     "note": "init only (sigma 50): manual plane alignment"
+    }
+   }
+  }
+ }
+}

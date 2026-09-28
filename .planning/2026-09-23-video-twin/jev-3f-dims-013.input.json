@@ -1,0 +1,44 @@
+{
+ "state": {
+  "task": "Fix the 3F L plan dimensions inside the original over-track box (신맞이방). Station frame: +u north, +v east. Box inner walls: south wall u about -18 (inner face u=-0.0696v-14.05), east wall v=0.0722u+94.29 (about 93-99), west face v about 15-20, north door line u about 66. 3F floor level 12.2.",
+  "facts": {
+   "O1_roof": "Original roof underside: low 16-19 m over the east band (v 88-96, all u) and over the south band (u -21..-2, all v). Raised 23-26 m over u 2..56, v 42..88 (the void).",
+   "O2_partition": "The original model has one 3F-height partition line at u about -6, running v 15..33, present at 14.5 m only.",
+   "O3_windows": "The original east wall carries a continuous glass band at 3F height (food-court windows facing the North Port park).",
+   "B1_board": "Official 3F board (2026-04, schematic). The band along the east holds 1 푸드코트 (north part) and 2 비빔가 (south part) with an entrance door between them. A 전문식당가 corridor runs along the band void side. The escalator arrives in the corridor near the corner. The wing runs from the corner west along the south side: elevator, toilets, 3 부산옥, elevator, 4 에그박스. A narrow grey strip lies south of the wing, and the large grey void lies north-west of the L.",
+   "B2_board_scaled": "Scaled to the box extents (unreliable, schematic): food court u 14..53, entrance door u 11.5, 비빔가 u -12..9, wing u -6..2, grey strip u -18..-6.",
+   "L1_leases": "Leases: food court 787 m2, 비빔가 428.2 m2, 부산옥 86.7 m2, eggbox 230.6 m2.",
+   "P1_photos": "Photos and 2023 video: food-court seating runs along the east window wall; the corridor has the lattice roof overhead; from the escalator top you face the wing, with 부산옥 then eggbox on the left and the railing on the right."
+  },
+  "note": "Values computed by tools."
+ },
+ "questions": {
+  "band_slab": {
+   "type": "choice",
+   "instructions": "East band 3F slab extent (void edge to east wall)?",
+   "criteria": {
+    "v82_to_wall": "Slab edge at v 82: corridor v 82-86 under the raised roof, units v 86-wall (about 10 m deep, low roof)",
+    "v88_to_wall": "Slab edge at v 88: corridor and units squeezed under the low roof only (about 8 m total)",
+    "v70_to_wall": "Slab edge at v 70, as the board proportions suggest (about 26 m deep)"
+   }
+  },
+  "wing_slab": {
+   "type": "choice",
+   "instructions": "South wing 3F slab extent?",
+   "criteria": {
+    "u_minus18_to_2_backstrip": "Slab from the south wall (u -18) to the void edge (u 2): units u -11..-2 about 9 m deep (fits the lease areas), corridor u -2..2 under the raised-roof edge, back-of-house strip u -18..-11 (the board grey strip)",
+    "u_minus6_to_2_only": "Slab only u -6..2 (the board-scaled wing, units about 4 m deep); leave u -18..-6 without a slab",
+    "u_minus18_to_2_units_full_depth": "Units fill u -18..-2 (16 m deep); corridor u -2..2"
+   }
+  },
+  "food_court_extent": {
+   "type": "choice",
+   "instructions": "Food-court and 비빔가 unit extents along the band?",
+   "criteria": {
+    "fc_u14_53_bibim_u_minus12_9": "As board-scaled: food court u 14..53, entrance u 9..14, 비빔가 u -12..9, corner services south of it",
+    "fc_to_north_end": "Food court from u 14 to the north end of the band (u about 60)",
+    "equal_split": "Split the band evenly"
+   }
+  }
+ }
+}

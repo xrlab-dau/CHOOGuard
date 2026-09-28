@@ -1,0 +1,36 @@
+{
+  "sourceCommit": "7b87264bccc6a4bbed276d2827d84543ffadf59a",
+  "method": "Scene-free local Unity 6000.3.23f1: actual Detour query and copied PR endpoint/arrival calculations. Not a full PR assembly, scene or OS-input run.",
+  "code": "\nvar vertices=new System.Collections.Generic.List<float>(); var triangles=new System.Collections.Generic.List<int>();\nvar xs=new[]{0f,6f,14f,20f}; var ys=new[]{0f,0f,3f,3f};\nfor(var i=0;i<xs.Length;i++){vertices.AddRange(new[]{xs[i],ys[i],0f,xs[i],ys[i],4f});if(i==xs.Length-1)continue;var v=i*2;triangles.AddRange(new[]{v,v+1,v+3,v,v+3,v+2});}\nvar bytes=ChooGuard.App.Fps.Runtime.GameplayNavigationBaker.BakeTriangles(vertices,triangles,out var hash);\nDotRecast.Detour.DtMeshData data;using(var reader=new System.IO.BinaryReader(new System.IO.MemoryStream(bytes)))data=new DotRecast.Detour.Io.DtMeshDataReader().Read(reader,6);\nvar mesh=new DotRecast.Detour.DtNavMesh();if(!mesh.Init(data,6,0).Succeeded())throw new System.Exception(\"mesh_init_failed\");\nvar query=new DotRecast.Detour.DtNavMeshQuery(mesh);var filter=new DotRecast.Detour.DtQueryDefaultFilter();\nvar requested=new DotRecast.Core.Numerics.RcVec3f(16f,4.5f,2f);var extent=new DotRecast.Core.Numerics.RcVec3f(1f,2f,1f);\nvar a=query.FindNearestPoly(new DotRecast.Core.Numerics.RcVec3f(4f,.05f,2f),extent,filter,out var startRef,out var startPoint,out _);\nvar b=query.FindNearestPoly(requested,extent,filter,out var endRef,out var endPoint,out _);\nvar polys=new long[256];var path=query.FindPath(startRef,endRef,startPoint,endPoint,filter,polys,out var polyCount,256);\nvar straight=new DotRecast.Detour.DtStraightPath[256];var status=query.FindStraightPath(startPoint,endPoint,polys,polyCount,straight,out var cornerCount,256,0);\nif(!a.Succeeded()||!b.Succeeded()||startRef==0||endRef==0||!path.Succeeded()||polyCount==0||polys[polyCount-1]!=endRef||!status.Succeeded()||cornerCount==0)throw new System.Exception(\"unexpected_query_failure\");\nvar last=straight[cornerCount-1].pos;var arrivedPose=last;\nvar flat=new UnityEngine.Vector3(last.X-arrivedPose.X,0f,last.Z-arrivedPose.Z);\nvar error=new UnityEngine.Vector3(requested.X-arrivedPose.X,requested.Y-arrivedPose.Y,requested.Z-arrivedPose.Z).magnitude;\nreturn new{reviewedCommit=\"7b87264bccc6a4bbed276d2827d84543ffadf59a\",requested,snappedEndpoint=endPoint,lastCorner=last,polyCount,cornerCount,queryAcceptedByPrChecks=true,arrivedByPrHorizontalCornerCheck=flat.magnitude<=.6f,requestedDestinationErrorMetres=error,requestedDestinationReachedWithinArrivalRadius=error<=.6f,geometryHash=hash,scope=\"Actual Detour query and PR endpoint/arrival calculations on synthetic geometry, not a full PR scene or OS-input run\"};",
+  "execution": {
+    "output": null,
+    "diagnostics": [],
+    "success": true,
+    "result": {
+      "reviewedCommit": "7b87264bccc6a4bbed276d2827d84543ffadf59a",
+      "requested": {
+        "X": 16,
+        "Y": 4.5,
+        "Z": 2
+      },
+      "snappedEndpoint": {
+        "X": 16,
+        "Y": 3.08281231,
+        "Z": 2
+      },
+      "lastCorner": {
+        "X": 16,
+        "Y": 3.08281231,
+        "Z": 2
+      },
+      "polyCount": 2,
+      "cornerCount": 2,
+      "queryAcceptedByPrChecks": true,
+      "arrivedByPrHorizontalCornerCheck": true,
+      "requestedDestinationErrorMetres": 1.41718769,
+      "requestedDestinationReachedWithinArrivalRadius": false,
+      "geometryHash": "dcc88b9302c280e5c02267d065cb8bd4984504e56d6b138566ed3564dd514809",
+      "scope": "Actual Detour query and PR endpoint/arrival calculations on synthetic geometry, not a full PR scene or OS-input run"
+    }
+  }
+}

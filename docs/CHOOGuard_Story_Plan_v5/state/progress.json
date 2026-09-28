@@ -4,6 +4,77 @@
   "acceptanceStatus": "NOT_ACCEPTED",
   "acceptanceRef": null,
   "currentWork": "임의 통로 연결은 실제 부산역 복원으로 인정하지 않고 사용자 교정을 반영했다. 부산시2019 개통자료·2018-405고시 치수·2021부산시설공단 실제 CAD평면도·공식 안내도와 현장 사진을 확보했다. Astra low가 실제 평면도와 사진 기반 통로 모듈을 새로 제작하고 root가 미리보기를 검토했다. 도시철도/지하상가 출구번호를 분리했다. 철도역·도시철도 양끝의 정확한 접속 위치·고저차는 미확정이며 새모델은 Unity에 미적용. 기존기술적 보행PASS는 실제연결수용이 아니다. 현재NOT_A.",
+  "gameplayImplementation": {
+    "status": "IN_PROGRESS_LOCAL_EDITOR",
+    "acceptanceStatus": "NOT_ACCEPTED",
+    "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/fps-gameplay-20260925/implementation-checkpoint.json",
+    "summary": "FPS 공통 실행기·정밀 조작·네 직무 튜토리얼·개인 지식·JEV broker/future·별도 PPO 학습 및 플랫폼 패키지 구현. 격리 Unity PlayMode 39/39, 과거 EditMode 77/78은 보존. 후속 로컬 Editor에서 연속 층간 경로 sampling 결함을 수정하고 실제 완전 경로 및 별도 navigation 10/10 통과를 확인했다. Crowd/실제 이동 종단 수용은 남음. 실제 C#→Node 연결 및 SQLite 재개, 100/300/500인 Editor batch, PPO 4096 step 완료. 실제 JEV/생성 대화와 Windows 실행은 NOT_RUN. 전체 수용 아님.",
+    "workerOrchestration": {
+      "defaultModel": "openai-codex/gpt-6-luna",
+      "recommendationPolicy": "오케스트레이터가 워커 생성·재위임·작업 재시도·다음 단계 배치·모델/추론 수준 변경마다 JEV에 새 추천을 먼저 요청. 이전 추천 재사용 및 워커 auto-thinking으로 대체 금지. JEV 실패 시 위임 보류.",
+      "configuration": ".omp/config.yml",
+      "firstBatchVerified": "typesafe/jev-1.13.0 추천에 따라 두 읽기 전용 워커를 Luna/high로 실행. 실행 메타데이터의 모델·추론 수준·fallback=false 확인. 배치용 high override 해제.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/fps-gameplay-20260925/worker-routing.json"
+    },
+    "localEditor": {
+      "unityVersion": "6000.3.23f1",
+      "pid": 99219,
+      "diskAvailableGiBAtResume": 47,
+      "gameplaySourceExecution": "LIVE_EDITOR_BAKE_AND_DETOUR_QUERY_EXECUTED",
+      "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+      "sceneDirtyAfterDiagnostic": false,
+      "sceneRoots": 18,
+      "navigationDiagnostic": "연속 경사로 partial path를 실제 재현 후 cell size 20cm→8cm 수정으로 target polygon까지 도달 확인. 15cm 단차·40° 경사·ledge filter 유지. 별도 GameplayNavigationTests 10/10 통과; 과거 77/78 및 전체 P04 수용과 구별.",
+      "navigationEvidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/fps-gameplay-20260925/navigation-local-resume.json"
+    },
+    "localIntegration": {
+      "branch": "work/fps-local-integration-20260925",
+      "baseCommit": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+      "rebasedGameplayHead": "79cb1682a2adf4647e51425aa674f1953fb309dd",
+      "rebaseContentTreeUnchanged": true,
+      "originalBranchAndIndexUnchanged": true,
+      "originalSceneConcurrentChangeRetained": true,
+      "mergedPullRequests": [],
+      "reviewOutcome": "PR238/240 모두 새 JEV 판정과 독립 리뷰에 따라 CHANGES_REQUESTED 게시. 유용한 부분의 분리·공통 실행 경계 이행을 요청했고 PR은 닫지 않음.",
+      "evidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/fps-gameplay-20260925/rebase-integration.json"
+    },
+    "cloudTransition": {
+      "reason": "과거 저장공간 부족으로 Cloud를 시도했으나 최신 사용자 지시는 Unity Cloud 금지·로컬 Editor 재개",
+      "localBuilds": "LOCAL_EDITOR_RESUMED_PLAYER_BUILD_NOT_RUN",
+      "cloudExecution": "STOPPED_BY_USER_AFTER_TWO_FAILED_BUILDS",
+      "organizationId": "e5fdf2ec-c1ea-4c98-0000-0d404b80e268",
+      "projectId": "9f037959-7808-49f6-b13f-46eb8c76ed31",
+      "projectName": "CHOOGuard Gameplay",
+      "localEditorProjectLinked": false,
+      "sourceConnected": true,
+      "sourceRemote": "https://github.com/xrlab-dau/CHOOGuard",
+      "sourceRemoteVisibility": "PUBLIC",
+      "sourceUploadApproval": "APPROVED_PUBLIC_SEPARATE_BRANCH",
+      "sourceBranch": "cloud/fps-gameplay-20260925",
+      "sourceImplementationCommit": "06581714e80beae2cd7627c5f6653d7f6824f130",
+      "cloudEvidenceRef": "docs/CHOOGuard_Story_Plan_v5/state/evidence/fps-gameplay-20260925/cloud-handoff.json",
+      "policyBackup": "PPO 가중치·학습 지표·monitor·provenance·config 5개 파일 2,391,758 bytes Cloud 업로드 후 다시 내려받아 SHA-256 모두 일치; 원본 유지",
+      "spendingApprovalUSD": 10,
+      "spendToDateUSD": null,
+      "spendReconciled": false,
+      "newSubscriptionOrPaymentRegistrationApproved": false,
+      "cloudBuildEnabled": false,
+      "buildProjectDisabled": true,
+      "buildNumber": 2,
+      "buildRevision": "5a5d8150cb64f2d5d59f629f6631cadb9f4ff9c9",
+      "additionalManualBuildsApproved": 0,
+      "furtherCloudAuthorizationRevoked": true,
+      "buildOneBillableTimeSeconds": 189.509,
+      "buildTwoBillableTimeSeconds": 187.957,
+      "totalApiBillableTimeSeconds": 377.466,
+      "sourceAuthorization": "Aside에서 GitHub 이메일 인증 후 공개 읽기 전용·추가 권한 없음·2026-10-02 만료 PAT를 Unity에 직접 등록하고 저장소 연결 완료",
+      "blockers": [
+        "Cloud #1 Python 복합 guard 실패. #2는 native Python 3.14.6/Windows AMD64 선택·symlink fixture 생성·DLL hash 검증을 지나 runtime ZIP TLS 인증서 체인 오류로 실패. 두 번 모두 Unity compilation/tests/Windows Player 이전 종료. Cloud 추가 사용 금지; 최종 USD 비용은 정산 미확인."
+      ],
+      "ownedScratchRemovedKiB": 2261824,
+      "preserved": "모델링 작업·원본 프로젝트·학습 가중치·최신 runtime package·검증 XML/화면 증거"
+    }
+  },
   "areas": [
     {
       "areaId": "CS-BOOT",

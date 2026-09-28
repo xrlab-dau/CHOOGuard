@@ -1,0 +1,351 @@
+{
+ "schema": "chooguard.station-interior-build.v2",
+ "builtAt": "2026-09-22",
+ "headline": "이전 세션이 '부산역 실내'로 부르던 1,887㎡는 승강장 위 과선교 데크였다. 진짜 역사 본관(9,301㎡ 외피)은 층 슬래브조차 없는 빈 껍데기였고, 이번에 1F/2F/3F 슬래브·기둥격자·실구획·집기·조명을 실제로 세웠다.",
+ "correctedPriorClaims": [
+  {
+   "claim": "largestContinuousInteriorComponent 1,820㎡ = 2층 대합실",
+   "correction": "과선교 데크(y=7.00, x -8.8..74.8, z -70..-26.8, 1,382㎡ 상향면 실측). 역사 본관 내부가 아니다.",
+   "evidence": "ShellProjMask y6.5~7.2 up 연결성분 · HeightHistogram(deck box) up 1,547㎡ @y=7.00"
+  },
+  {
+   "claim": "OSM way/165346394 (80.6×31.5 @compass108°) 이 역사 head-house",
+   "correction": "모델 본관 장축은 컴퍼스 16.2°이며 OSM 승강장 20.4°와 평행하다. 108° 블록은 과선교다.",
+   "evidence": "외피 폴리곤 서측변 (-18.5,83.5)→(-64.75,-76) 방위 16.2°"
+  },
+  {
+   "claim": "MetricStandards 파생 3F FL 13.9m",
+   "correction": "실측 FL 12.00 (상향면 1,086㎡). 13.9는 가정 층고에서 나온 파생값이라 기각.",
+   "evidence": "HeightHistogram(envelope) up 봉우리 12.00"
+  },
+  {
+   "claim": "ShellProjMask/ShellFootprint 초기 산출 마스크",
+   "correction": "Unity 텍스처 원점이 하단이라 PNG 가 z축 반전 저장되고 있었다. 수정 후 전 산출물 재생성.",
+   "evidence": "수정 전후 연결성분 z 범위가 거울상"
+  }
+ ],
+ "measuredEnvelope": {
+  "footprintSqm": 9301,
+  "lengthM": 172.1,
+  "widthM": 69.6,
+  "bearingCompassDeg": 16.2,
+  "polygonSource": "MainShell y22~33 수평면 투영 → cv2 approxPolyDP eps=1.25m, 15정점"
+ },
+ "measuredLevels": [
+  {
+   "id": "1F",
+   "floorY": 0.0,
+   "ceilingY": 4.75,
+   "basis": "up 407㎡ @0.00 · down 728㎡ @4.75"
+  },
+  {
+   "id": "2F",
+   "floorY": 7.0,
+   "ceilingY": 11.0,
+   "basis": "up 985+731㎡ @7.00/6.75 · down 1,296㎡ @6.50(슬래브 하단) · down 857㎡ @11.00. 과선교 데크와 동일 레벨"
+  },
+  {
+   "id": "3F",
+   "floorY": 12.0,
+   "ceilingY": 16.5,
+   "basis": "up 1,086+743㎡ @12.00/12.25. 천장 16.50 은 가정"
+  }
+ ],
+ "builtInEditor": {
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "structureRoot": "부산역 역사 내부",
+  "fitoutRoot": "부산역 역사 내부 · 마감",
+  "slabRects": {
+   "1F": 100,
+   "2F": 117,
+   "3F": 118
+  },
+  "slabAreaSqm": {
+   "1F": 8936,
+   "2F": 8183,
+   "3F": 8589
+  },
+  "columns": "9.0×9.0m 격자, 0.9m 각, 장축 16.2° 정렬",
+  "structureRenderers": 650,
+  "fitoutBoxes": 544,
+  "interiorLights": 168,
+  "excluded": "원본에 이미 바닥이 있는 +7 블록(x -58..-22, z +7..+39.5)·+12 슬래브는 새 슬래브에서 제외해 면 중복 없음"
+ },
+ "programBasis": {
+  "tenants": 44,
+  "source": "KORAIL 공식 역 상세정보 층별 시설안내",
+  "fixedFacilities": "매표창구·자동발매기·역무실·유실물센터·수유방·철도특별사법경찰대·회의실·종합관광안내소·코레일라운지·물품보관함·전동휠체어충전소·화장실 6개소",
+  "verticalCirculation": "공식 통계 승강기 13 / 에스컬레이터 24 (data.go.kr 15090379). 현재 코어 3개소(ES 12대분·EV 3대) 배치, 잔여 미배치"
+ },
+ "dimensionBasis": "metric-standards.json 71항목(quoted 58) — 개찰 0.8m, 매표창구 1.8m/구·깊이 3.5m, ES 유효 2.4m(마감 3.4m)·층당 15.0m·30°, EV 2.4×2.3m, 통로 3.0m",
+ "orientationProof": "과선교 데크 서단 x=-8.8 과 z=-48 동측벽 x=-7.6 이 접합 → 동측면 = 승강장 게이트면. Jev jev-orientation-009 의 east_platform 0.56 을 실측이 대체",
+ "notYetBuilt": [
+  "계단(실물 단너비/단높이)",
+  "화장실 내부 기구",
+  "상점 내부 집기·간판 텍스트",
+  "천장 마감·조명기구 형상",
+  "승강기 13 / 에스컬레이터 24 전수 배치",
+  "방화구획·제연경계(제연 1,000㎡·방화 1,000/3,000㎡ 기준 미적용)",
+  "지하1·2층 도시철도 연결통로",
+  "4층 코레일 부산경남본부",
+  "NavMesh 재베이크"
+ ],
+ "honestLimits": [
+  "층별안내도 래스터에 축척·방위·치수가 전혀 없다. 실 배치는 위상만 실제이고 각 실의 절대 치수·정확한 u좌표는 설계값이다.",
+  "Jev orientation_confidence_sufficient=0.22 로 실 배치 확정에 반대했고, 동측면만 실측으로 확정했다. 남북 방향 좌우 배치는 미확정 추정이다.",
+  "3F 천장고 4.5m 는 가정. 4F 레벨은 미측정.",
+  "국토지리정보원 실내공간정보(철도역사 약 90개소)와 국가철도공단 부산역 준공도면 DWG 가 진짜 실측 기하의 유일한 경로이며 정보공개청구가 필요하다."
+ ],
+ "assetReuseRule": {
+  "rule": ".agents/rules/asset-reuse-first.md — 바퀴부터 만들지 않는다. 이미 있는 것을 먼저 찾고, 없는 것만 만든다.",
+  "howItChangedTheWork": [
+   {
+    "before": "수직동선을 tris=12 원시 큐브로 만들었다",
+    "after": "FindInclines 로 법선 기울기 23~63° 경사면을 기하 검출 → 원본 부산역 모델에 30° 에스컬레이터·계단이 실재함을 확인"
+   },
+   {
+    "before": "추출한 원본 프리팹을 0.889배 균일 축소해 배치",
+    "after": "축소는 단높이·유효폭을 왜곡하므로 폐기. AnalyzeSourceProfile 로 규격(경사 30.0°, 재질 50종)만 계측해 파라메트릭 생성기로 마이그레이션"
+   },
+   {
+    "before": "슬래브가 수직동선을 관통",
+    "after": "수직동선 16기 진행경로를 2F/3F 슬래브 마스크에서 공제 — 2F 8,183→7,644㎡, 3F 8,589→8,091㎡"
+   }
+  ],
+  "verticalCirculationGenerated": {
+   "escalators": 12,
+   "stairs": 4,
+   "totalTriangles": 18912,
+   "escalatorSpec": "경사 30.0°(원본 실측) · 유효폭 2.4m · 마감폭 3.40m · 7.00m 상승에 평면 14.52m · 단 going 0.40m, rise 층고분할",
+   "stairSpec": "챌면 0.175m(교통약자법 0.18 이하) · 디딤판 0.30m(0.28 이상) · 유효폭 3.0m · 높이 3m 이내마다 계단참 1.2m(건축법 방화구조규칙 제15조)",
+   "materialsInherited": [
+    "금속#002",
+    "금속_원형#001",
+    "타일#025(계단)",
+    "스트라이프#023"
+   ]
+  },
+  "extractedSourcePrefabs": [
+   "원본에스컬레이터_상승7p87(20,261tris)",
+   "원본에스컬레이터_상승5p51(9,712)",
+   "원본계단_상승10p85(24,473)",
+   "원본매점_F02(5,444)",
+   "원본집기_F06(1,448)",
+   "원본집기_F08(1,386)",
+   "원본집기_F11(1,008)"
+  ],
+  "stillPrimitiveBoxes": "매표창구·개찰기·자동발매기·벤치·사인·상점 파사드는 아직 tris=12 원시 큐브다. OSS 헌트 4레인(objaverse/sketchfab/materials-signage/unity-kits) 결과로 교체 예정."
+ },
+ "ossAssetMigration": {
+  "rule": ".agents/rules/asset-reuse-first.md",
+  "lanesDelivered": [
+   "unity-kits(26건 1.6GB)",
+   "materials-signage(81건 1.05GB)"
+  ],
+  "lanesRunning": [
+   "objaverse"
+  ],
+  "materialsApplied": {
+   "source": "ambientCG CC0 12세트 (Granite005A·Terrazzo018·Tiles074·Concrete048·Metal050A/032/046A·Facade001·PaintedPlaster017·OfficeCeiling003·TactilePaving002·WoodFloor064)",
+   "binding": "URP Lit — _BaseMap/_BumpMap(NormalGL, importer NormalMap 전환)/_OcclusionMap/_Metallic/_Smoothness",
+   "uvFix": "원시 Cube 는 면당 UV 0~1 이라 20m 벽에 텍스처가 한 장 늘어난다. 오브젝트 월드 치수로 박스 메시를 재생성하고 UV 를 미터 단위로 찍었다(텍스처 반복주기 1F 1.2m / 2F 0.9m / 3F 0.6m / 기둥 1.4m / 벽 2.5m)",
+   "ceilings": "실측 천장고 1F 4.75 / 2F 11.00 / 3F 16.50 에 OfficeCeiling003(emission 포함) 시스템 천장 부착"
+  },
+  "bugsFixed": [
+   "WorldUvBox 삼각형 감김 역전 → 바닥이 백페이스 컬링돼 갈색 뒷면만 보였다",
+   "AssetDatabase.Refresh() 가 서브에셋 메시를 재임포트해 씬 참조를 끊었다 → Refresh 제거",
+   "mesh==null 인 오브젝트를 continue 로 건너뛰어 한 번 깨지면 복구 불가였다 → 가드 완화",
+   "재질 규칙 키가 '바닥 슬래브 2F' 였으나 실제 오브젝트명은 '슬래브 2F ...' 라 전부 미매칭"
+  ],
+  "kitsImported": [
+   "KayKit City Builder Bits(bench/dumpster/firehydrant 등)",
+   "KayKit Furniture Bits",
+   "KayKit Restaurant Bits — 전부 CC0, FBX 476개"
+  ],
+  "nextFromKits": [
+   "bench.fbx 로 대기 벤치 28개 교체",
+   "restaurant chair/table 로 3F 전문식당가 좌석",
+   "ProBuilder Stairs·Chisel 로 계단 정밀화",
+   "VRC-Escalators+TexturePanner 를 URP Shader Graph 로 이식해 에스컬레이터 실제 구동"
+  ],
+  "sketchfabLane": {
+   "acquired": 2220,
+   "bytes": "7.0GB",
+   "sources": {
+    "3D Warehouse glTF-Binary": 1336,
+    "Poly Pizza": 673,
+    "OpenGameArt": 207,
+    "Kenney": 4
+   },
+   "breakthrough": "3D Warehouse 의 glb 바이너리는 인증 없이 공개된다 — download-warehouse.sketchup.com/warehouse/v1.0/content/public/<binaryId>. .skp/.usdz 는 401 이지만 glb 는 200. 이 경로로 1,336건 직다운.",
+   "integrity": "GLB 2,075개 전수 파싱 검증, 손상 0 (절단 26건 중 20건 재다운 복구, 6건 제외)"
+  },
+  "fixtureReplacement": {
+   "pipeline": "GLB → Blender 4.5.9 헤드리스 변환(FBX, 텍스처 임베드, axis_up=Y) → Unity 임포트 → 배치 후 실측하여 축별 실치수 정합",
+   "replaced": 55,
+   "models": {
+    "자동발매기": "Automatic ticket vending machine (ATVM) 224tris → 0.58×1.85×1.01m",
+    "대기 벤치": "Modern Bench 140tris → 1.71×0.45×0.78m",
+    "매표창구": "Counter Straight 464tris → 1.74×1.15×1.02m",
+    "종합관광안내소": "Counter Straight → 6.36×1.15×2.53m",
+    "물품보관함": "Smart Locker Luggage 2,763tris → 5.40×2.00×1.85m",
+    "ATM": "ATVM → 0.63×1.70×0.85m"
+   },
+   "factualCorrection": "개찰기 10기 삭제. KTX 역사에는 자동개집표기가 없다 — 층별안내도의 GATE 는 승강장 탑승구 번호이지 개찰구가 아니다.",
+   "bugsFixed": [
+    "비균일→균일 전환 시 형상 소멸",
+    "클램프가 높이까지 축소",
+    "부모 위치를 반복 실행마다 누적 하강",
+    "층 스냅을 모델 배치 후에 해서 1m 어긋남"
+   ]
+  },
+  "objaverseLane": {
+   "acquired": 207,
+   "bytes": "640.7MB",
+   "licenses": {
+    "CC-BY-4.0": 186,
+    "CC-BY-NC-SA-4.0": 10,
+    "CC-BY-SA-4.0": 6,
+    "CC-BY-NC-4.0": 5
+   },
+   "index": "allenai/objaverse object-paths(798,759 uid) + LVIS 1,156 카테고리 + Sketchfab 메타 586MB + Cap3D 캡션 1,604,291행 → text_index.jsonl.gz 캐시",
+   "verification": "디스크 207/207, 삼각형 전수 계수(trimesh), 190/207 원본 썸네일 대조, 17건 glTF 노드/재질명으로 구조 검증, 13건 근거와 함께 기각",
+   "keyFinds": [
+    "Korail Coffee Machine·Korail Pokari Sweat 자판기(실제 한국철도 브랜드)",
+    "Korean Digital Kiosk",
+    "Animated Ticket Gate(플랩 애니메이션 가능)",
+    "KONE TravelMaster 110 에스컬레이터",
+    "KS/ISO 녹색 피난유도등"
+   ],
+   "provenGap": "Objaverse 1.0 에 열차 행선안내(departure board) 실물이 없다. Cap3D 29건 중 2건만 1.0 내부이고 둘 다 학생 전시대(기각). display/notice/digital signage 로 확대해 162건 검사했으나 전부 게시판류. LED 사이니지 5건을 대체물로 취득."
+  },
+  "placedFromObjaverse": {
+   "total": 164,
+   "breakdown": {
+    "코레일 자판기·커피머신": 16,
+    "디지털 안내 키오스크": 3,
+    "안내 스테이션": 2,
+    "음수대": 6,
+    "휴지통": 22,
+    "피난유도등": 115
+   },
+   "note": "피난유도등 115기는 1F/2F/3F 천장 아래 0.35m, 10m 간격 3열. 방화·피난 작업의 선행 배치다.",
+   "dropped": "화분(FlowerPot) — 모델 축이 눕는다"
+  }
+ },
+ "sceneTotals": {
+  "구조체": "메시 1,225 / 14,700 삼각형",
+  "마감": "메시 535 / 21,099 삼각형 / 조명 168",
+  "수직동선": "메시 16 / 18,912 삼각형",
+  "재사용 자산": "메시 186 / 15,023 삼각형",
+  "합계": "메시 1,962 / 69,734 삼각형"
+ },
+ "verticalCirculationComplete": {
+  "roster": {
+   "escalators": 24,
+   "stairs": 6,
+   "elevators": 13,
+   "officialCounts": "data.go.kr 15090379(2024-12-31): 부산역 엘리베이터 13 / 에스컬레이터 24",
+   "match": "에스컬레이터 24/24, 승강기 13/13",
+   "addedForTravelDistance": "3F 최원거리 61m(법정 50m 초과) 해소를 위해 피난계단 3 신설"
+  },
+  "officialTarget": "data.go.kr 15090379(2024-12-31) 부산역 엘리베이터 13 / 에스컬레이터 24",
+  "built": {
+   "escalator": 24,
+   "elevator": 13,
+   "stair": 6
+  },
+  "stairAddedReason": "3F 최원거리 61m(법정 50m 초과) 해소를 위해 피난계단 3 신설 → 39m"
+ },
+ "fireCompartmentation": {
+  "basis": {
+   "방화구획": "건축법 제14조 — 10층 이하 바닥면적 1,000㎡ 이내마다 구획(스프링클러 미가정 보수값)",
+   "제연구획": "국가철도공단 KR A-03090 방재설계 — 제연구획 1,000㎡",
+   "보행거리": "건축법 시행령 제34조 — 주요구조부 내화구조 시 직통계단까지 50m",
+   "measurement": "1m 격자 4-이웃 BFS. 목적지는 해당 층에 접하는 모든 수직동선"
+  },
+  "levels": {
+   "1F": {
+    "floorAreaSqm": 8936,
+    "compartments": 9,
+    "meanCompartmentSqm": 992.9,
+    "shutterSegments": 16,
+    "verticalCoresOnLevel": 24,
+    "travelDistanceMaxM": 35,
+    "travelDistanceP95M": 23,
+    "unreachableCells": 0,
+    "limitM": 50,
+    "compliant": true
+   },
+   "2F": {
+    "floorAreaSqm": 7088,
+    "compartments": 8,
+    "meanCompartmentSqm": 886.0,
+    "shutterSegments": 14,
+    "verticalCoresOnLevel": 12,
+    "travelDistanceMaxM": 39,
+    "travelDistanceP95M": 28,
+    "unreachableCells": 0,
+    "limitM": 50,
+    "compliant": true
+   },
+   "3F": {
+    "floorAreaSqm": 7617,
+    "compartments": 8,
+    "meanCompartmentSqm": 952.1,
+    "shutterSegments": 14,
+    "verticalCoresOnLevel": 9,
+    "travelDistanceMaxM": 39,
+    "travelDistanceP95M": 25,
+    "unreachableCells": 0,
+    "limitM": 50,
+    "compliant": true,
+    "remediation": "피난계단 3 신설(3F 최원거리 지점)"
+   }
+  },
+  "shutterSegments": 44,
+  "verdict": "1F 9구획(평균 993㎡) / 2F 8구획(886㎡) / 3F 8구획(952㎡) — 전 층 1,000㎡ 이하. 보행거리 35/39/39m 로 법정 50m 준수"
+ },
+ "navVerification": {
+  "navMesh": {
+   "vertices": 80809,
+   "triangles": 36367,
+   "areaSqm": 172036.6
+  },
+  "agent": {
+   "radius": 0.3,
+   "height": 1.8,
+   "slope": 45,
+   "climb": 0.28
+  },
+  "levelCoverage": {
+   "1F": 0.99,
+   "2F": 0.99,
+   "3F": 1.0
+  },
+  "paths": {
+   "1F→2F": {
+    "status": "PathComplete",
+    "lengthM": 137.58
+   },
+   "2F→3F": {
+    "status": "PathComplete",
+    "lengthM": 65.1
+   },
+   "1F→3F": {
+    "status": "PathComplete",
+    "lengthM": 68.47
+   },
+   "1F 동측→1F 서측": {
+    "status": "PathComplete",
+    "lengthM": 72.41
+   },
+   "도로 스폰→2F 대합실": {
+    "status": "PathComplete",
+    "lengthM": 130.53
+   }
+  },
+  "rampReason": "레거시 NavMesh 는 에이전트 반경만큼 보행면을 침식한다. 에스컬레이터 디딤판 진행길이 0.404m 가 반경 0.30m(직경 0.60m)에 완전히 잠식돼 1F→2F 가 PathPartial 로 끊겼다. 계단면 위에 투명 경사판 30개를 덮어 해결. 승강기는 경사로 대체 불가라 OffMeshLink 22개로 연결.",
+  "result": "5개 경로 전부 PathComplete. 도로 스폰(-169.5, 0.145, -40.6) → 2F 대합실 130.5m 완주."
+ }
+}

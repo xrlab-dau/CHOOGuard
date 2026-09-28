@@ -1,0 +1,2600 @@
+{
+ "zone": "1F-2F core",
+ "root": "실내 트윈 마감/수직 동선",
+ "basis": {
+  "positions": "class-a registered 1F dense cloud (scene_dense.ply via registration.json), robust plan/section fits in make_escalator_core.py",
+  "upperLanding": "derived: lower working point + rise 7.0 / tan 30 along the measured heading (tier b)",
+  "kitContract": "Escalator foot = newel front on the bank centre; flights at (k-(count-1)/2)*spacing along (-dv,du)",
+  "units": "station UVY source-model units; y absolute (1F floor 0, 2F floor top 7.0)"
+ },
+ "elements": [
+  {
+   "type": "Escalator",
+   "id": "ESC-CORE-1F2F",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/lower-landing-floor.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-approach-wall.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/central-rail-side-plane.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-ramp-side-plane.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ceiling-void-edge.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/local-ascent/level-frame.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#M-ESC-1F2F",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#M-ESC-1F2F,CX-09,BL-20,G-X04",
+    ".planning/2026-09-23-video-twin/compare/board1f-2026.png",
+    ".planning/2026-09-23-video-twin/sinmajibang/board2f-plan.png"
+   ],
+   "geometry": {
+    "foot": [
+     18.563,
+     -16.693
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "heading": [
+     0.99452,
+     0.10453
+    ],
+    "rise": 7.0,
+    "angle": 30.0,
+    "width": 1.0,
+    "flatSteps": 2,
+    "runout": 0.9,
+    "truss": 1.0,
+    "count": 2,
+    "spacing": 1.65,
+    "directions": [
+     "down",
+     "up"
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "GUARD-2F-WELL-RIGHT-floor",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#C-MAIN-GLASSGUARD,M-ESC-1F2F",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#C-MAIN-GLASSGUARD,G-X04",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      27.579,
+      -13.698
+     ],
+     [
+      32.157,
+      -13.217
+     ],
+     [
+      32.198,
+      -13.606
+     ]
+    ],
+    "y0": 7.0,
+    "y1": 8.1
+   },
+   "params": {
+    "finish": "glass",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0.04,
+    "collider": true,
+    "faceToward": [
+     34.782,
+     -9.975
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "GUARD-2F-WELL-RIGHT-well",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#C-MAIN-GLASSGUARD,M-ESC-1F2F",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#C-MAIN-GLASSGUARD,G-X04",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      27.579,
+      -13.698
+     ],
+     [
+      32.157,
+      -13.217
+     ],
+     [
+      32.198,
+      -13.606
+     ]
+    ],
+    "y0": 7.0,
+    "y1": 8.1
+   },
+   "params": {
+    "finish": "glass",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0.04,
+    "collider": false,
+    "faceToward": [
+     30.081,
+     -15.482
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "GUARD-2F-WELL-LOWER-floor",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#C-MAIN-GLASSGUARD,M-ESC-1F2F",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#C-MAIN-GLASSGUARD,G-X04",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      28.005,
+      -17.748
+     ],
+     [
+      27.579,
+      -13.698
+     ]
+    ],
+    "y0": 7.0,
+    "y1": 8.1
+   },
+   "params": {
+    "finish": "glass",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0.04,
+    "collider": true,
+    "faceToward": [
+     24.858,
+     -16.031
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "GUARD-2F-WELL-LOWER-well",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#C-MAIN-GLASSGUARD,M-ESC-1F2F",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#C-MAIN-GLASSGUARD,G-X04",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      28.005,
+      -17.748
+     ],
+     [
+      27.579,
+      -13.698
+     ]
+    ],
+    "y0": 7.0,
+    "y1": 8.1
+   },
+   "params": {
+    "finish": "glass",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0.04,
+    "collider": false,
+    "faceToward": [
+     30.081,
+     -15.482
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "GUARD-2F-WELL-LEFT-floor",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#C-MAIN-GLASSGUARD,M-ESC-1F2F",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#C-MAIN-GLASSGUARD,G-X04",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      32.542,
+      -16.878
+     ],
+     [
+      32.583,
+      -17.267
+     ],
+     [
+      28.005,
+      -17.748
+     ]
+    ],
+    "y0": 7.0,
+    "y1": 8.1
+   },
+   "params": {
+    "finish": "glass",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0.04,
+    "collider": true,
+    "faceToward": [
+     35.825,
+     -19.892
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "GUARD-2F-WELL-LEFT-well",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json#C-MAIN-GLASSGUARD,M-ESC-1F2F",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#C-MAIN-GLASSGUARD,G-X04",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      32.542,
+      -16.878
+     ],
+     [
+      32.583,
+      -17.267
+     ],
+     [
+      28.005,
+      -17.748
+     ]
+    ],
+    "y0": 7.0,
+    "y1": 8.1
+   },
+   "params": {
+    "finish": "glass",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0.04,
+    "collider": false,
+    "faceToward": [
+     30.081,
+     -15.482
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "WALL-WELL-RIGHT-SS",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-ramp-side-plane.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X04 (white vertical-panel well cladding)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      19.609,
+      -14.586
+     ],
+     [
+      21.35,
+      -14.403
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 6.7
+   },
+   "params": {
+    "finish": "stainless",
+    "panelWidth": 0.6,
+    "panelHeight": 0,
+    "joint": 0.008,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0,
+    "faceToward": [
+     30.081,
+     -15.482
+    ],
+    "collider": true
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "WALL-WELL-RIGHT-A",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-ramp-side-plane.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X04 (white vertical-panel well cladding)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      21.35,
+      -14.403
+     ],
+     [
+      27.634,
+      -13.743
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 6.7
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0.6,
+    "panelHeight": 0,
+    "joint": 0.008,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0,
+    "faceToward": [
+     30.081,
+     -15.482
+    ],
+    "collider": true
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "WALL-WELL-RIGHT-B",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-ramp-side-plane.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X04 (white vertical-panel well cladding)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      27.634,
+      -13.743
+     ],
+     [
+      32.113,
+      -13.272
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 7.0
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0.6,
+    "panelHeight": 0,
+    "joint": 0.008,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0,
+    "faceToward": [
+     30.081,
+     -15.482
+    ],
+    "collider": true
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "WALL-WELL-RIGHT-C",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-ramp-side-plane.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X04 (white vertical-panel well cladding)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      32.113,
+      -13.272
+     ],
+     [
+      33.811,
+      -13.093
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 6.7
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0.6,
+    "panelHeight": 0,
+    "joint": 0.008,
+    "standoff": 0.03,
+    "skirting": 0.12,
+    "cap": 0,
+    "faceToward": [
+     30.081,
+     -15.482
+    ],
+    "collider": true
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "FASCIA-2F-WELL-EDGE-L",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json",
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/slab-openings.json"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      32.49,
+      -16.863
+     ],
+     [
+      32.528,
+      -17.222
+     ],
+     [
+      28.049,
+      -17.693
+     ],
+     [
+      27.634,
+      -13.743
+     ]
+    ],
+    "y0": 6.7,
+    "y1": 7.0
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.01,
+    "skirting": 0,
+    "cap": 0,
+    "faceToward": [
+     30.081,
+     -15.482
+    ],
+    "collider": false
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "FASCIA-2F-WELL-EDGE-R",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/reconcile-2f/majibang-plan.reconciled.json",
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/slab-openings.json"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      32.113,
+      -13.272
+     ],
+     [
+      32.15,
+      -13.631
+     ]
+    ],
+    "y0": 6.7,
+    "y1": 7.0
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.01,
+    "skirting": 0,
+    "cap": 0,
+    "faceToward": [
+     30.081,
+     -15.482
+    ],
+    "collider": false
+   }
+  },
+  {
+   "type": "Gate",
+   "id": "GATE-ESC-1F-DOWN",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      17.674,
+      -18.444
+     ],
+     [
+      17.495,
+      -16.745
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "faceToward": [
+     13.607,
+     -18.013
+    ],
+    "lanes": 1,
+    "pitch": 1.568,
+    "cabinetWidth": 0.14,
+    "cabinetLength": 1.41,
+    "height": 0.92,
+    "mode": "exit",
+    "flaps": "open"
+   }
+  },
+  {
+   "type": "Gate",
+   "id": "GATE-ESC-1F-UP",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      17.512,
+      -16.724
+     ],
+     [
+      17.347,
+      -15.161
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "faceToward": [
+     13.451,
+     -16.36
+    ],
+    "lanes": 1,
+    "pitch": 1.431,
+    "cabinetWidth": 0.14,
+    "cabinetLength": 1.441,
+    "height": 0.92,
+    "mode": "entry",
+    "flaps": "open"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-LANES",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      17.067,
+      -18.508
+     ],
+     [
+      18.731,
+      -18.333
+     ],
+     [
+      18.386,
+      -15.052
+     ],
+     [
+      16.722,
+      -15.227
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.003,
+    "rotation": 6.0,
+    "finish": "#2E3136"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-PAD-DOWN",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.909,
+      -18.011
+     ],
+     [
+      16.538,
+      -17.945
+     ],
+     [
+      16.44,
+      -17.013
+     ],
+     [
+      15.811,
+      -17.079
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.0045,
+    "rotation": 6.0,
+    "finish": "tactileDot"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-PAD-UP",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.887,
+      -16.576
+     ],
+     [
+      16.355,
+      -16.527
+     ],
+     [
+      16.263,
+      -15.644
+     ],
+     [
+      15.794,
+      -15.694
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.0045,
+    "rotation": 6.0,
+    "finish": "tactileDot"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-NOENTRY-RING",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.859,
+      -17.563
+     ],
+     [
+      15.852,
+      -17.533
+     ],
+     [
+      15.84,
+      -17.504
+     ],
+     [
+      15.823,
+      -17.478
+     ],
+     [
+      15.8,
+      -17.456
+     ],
+     [
+      15.774,
+      -17.439
+     ],
+     [
+      15.745,
+      -17.427
+     ],
+     [
+      15.714,
+      -17.421
+     ],
+     [
+      15.683,
+      -17.421
+     ],
+     [
+      15.652,
+      -17.427
+     ],
+     [
+      15.623,
+      -17.44
+     ],
+     [
+      15.597,
+      -17.457
+     ],
+     [
+      15.575,
+      -17.48
+     ],
+     [
+      15.558,
+      -17.506
+     ],
+     [
+      15.546,
+      -17.535
+     ],
+     [
+      15.54,
+      -17.566
+     ],
+     [
+      15.54,
+      -17.597
+     ],
+     [
+      15.547,
+      -17.628
+     ],
+     [
+      15.559,
+      -17.657
+     ],
+     [
+      15.577,
+      -17.683
+     ],
+     [
+      15.599,
+      -17.705
+     ],
+     [
+      15.625,
+      -17.722
+     ],
+     [
+      15.654,
+      -17.734
+     ],
+     [
+      15.685,
+      -17.74
+     ],
+     [
+      15.716,
+      -17.739
+     ],
+     [
+      15.747,
+      -17.733
+     ],
+     [
+      15.776,
+      -17.721
+     ],
+     [
+      15.802,
+      -17.703
+     ],
+     [
+      15.824,
+      -17.681
+     ],
+     [
+      15.841,
+      -17.655
+     ],
+     [
+      15.853,
+      -17.626
+     ],
+     [
+      15.859,
+      -17.595
+     ]
+    ],
+    "y": 0.0,
+    "holes": [
+     [
+      [
+       15.824,
+       -17.567
+      ],
+      [
+       15.819,
+       -17.543
+      ],
+      [
+       15.809,
+       -17.521
+      ],
+      [
+       15.795,
+       -17.5
+      ],
+      [
+       15.778,
+       -17.483
+      ],
+      [
+       15.758,
+       -17.47
+      ],
+      [
+       15.735,
+       -17.461
+      ],
+      [
+       15.711,
+       -17.456
+      ],
+      [
+       15.686,
+       -17.456
+      ],
+      [
+       15.663,
+       -17.461
+      ],
+      [
+       15.64,
+       -17.471
+      ],
+      [
+       15.62,
+       -17.484
+      ],
+      [
+       15.603,
+       -17.502
+      ],
+      [
+       15.589,
+       -17.522
+      ],
+      [
+       15.58,
+       -17.545
+      ],
+      [
+       15.575,
+       -17.569
+      ],
+      [
+       15.575,
+       -17.593
+      ],
+      [
+       15.58,
+       -17.617
+      ],
+      [
+       15.59,
+       -17.64
+      ],
+      [
+       15.604,
+       -17.66
+      ],
+      [
+       15.621,
+       -17.677
+      ],
+      [
+       15.641,
+       -17.691
+      ],
+      [
+       15.664,
+       -17.7
+      ],
+      [
+       15.688,
+       -17.704
+      ],
+      [
+       15.713,
+       -17.704
+      ],
+      [
+       15.737,
+       -17.699
+      ],
+      [
+       15.759,
+       -17.69
+      ],
+      [
+       15.779,
+       -17.676
+      ],
+      [
+       15.797,
+       -17.659
+      ],
+      [
+       15.81,
+       -17.638
+      ],
+      [
+       15.819,
+       -17.616
+      ],
+      [
+       15.824,
+       -17.592
+      ]
+     ]
+    ]
+   },
+   "params": {
+    "lift": 0.004,
+    "rotation": 6.0,
+    "finish": "#C8262B"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-NOENTRY-FILL",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.824,
+      -17.567
+     ],
+     [
+      15.819,
+      -17.543
+     ],
+     [
+      15.809,
+      -17.521
+     ],
+     [
+      15.795,
+      -17.5
+     ],
+     [
+      15.778,
+      -17.483
+     ],
+     [
+      15.758,
+      -17.47
+     ],
+     [
+      15.735,
+      -17.461
+     ],
+     [
+      15.711,
+      -17.456
+     ],
+     [
+      15.686,
+      -17.456
+     ],
+     [
+      15.663,
+      -17.461
+     ],
+     [
+      15.64,
+      -17.471
+     ],
+     [
+      15.62,
+      -17.484
+     ],
+     [
+      15.603,
+      -17.502
+     ],
+     [
+      15.589,
+      -17.522
+     ],
+     [
+      15.58,
+      -17.545
+     ],
+     [
+      15.575,
+      -17.569
+     ],
+     [
+      15.575,
+      -17.593
+     ],
+     [
+      15.58,
+      -17.617
+     ],
+     [
+      15.59,
+      -17.64
+     ],
+     [
+      15.604,
+      -17.66
+     ],
+     [
+      15.621,
+      -17.677
+     ],
+     [
+      15.641,
+      -17.691
+     ],
+     [
+      15.664,
+      -17.7
+     ],
+     [
+      15.688,
+      -17.704
+     ],
+     [
+      15.713,
+      -17.704
+     ],
+     [
+      15.737,
+      -17.699
+     ],
+     [
+      15.759,
+      -17.69
+     ],
+     [
+      15.779,
+      -17.676
+     ],
+     [
+      15.797,
+      -17.659
+     ],
+     [
+      15.81,
+      -17.638
+     ],
+     [
+      15.819,
+      -17.616
+     ],
+     [
+      15.824,
+      -17.592
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.004,
+    "rotation": 6.0,
+    "finish": "#F2F2EE"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-NOENTRY-ARROW",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.633,
+      -17.605
+     ],
+     [
+      15.708,
+      -17.597
+     ],
+     [
+      15.711,
+      -17.627
+     ],
+     [
+      15.774,
+      -17.572
+     ],
+     [
+      15.701,
+      -17.532
+     ],
+     [
+      15.704,
+      -17.562
+     ],
+     [
+      15.629,
+      -17.57
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.005,
+    "rotation": 6.0,
+    "finish": "#26282B"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-NOENTRY-SLASH",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.647,
+      -17.666
+     ],
+     [
+      15.773,
+      -17.511
+     ],
+     [
+      15.752,
+      -17.494
+     ],
+     [
+      15.626,
+      -17.649
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.006,
+    "rotation": 6.0,
+    "finish": "#C8262B"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-ENTRY-RING",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.76,
+      -16.125
+     ],
+     [
+      15.753,
+      -16.092
+     ],
+     [
+      15.74,
+      -16.061
+     ],
+     [
+      15.722,
+      -16.034
+     ],
+     [
+      15.698,
+      -16.01
+     ],
+     [
+      15.67,
+      -15.992
+     ],
+     [
+      15.639,
+      -15.979
+     ],
+     [
+      15.607,
+      -15.973
+     ],
+     [
+      15.573,
+      -15.973
+     ],
+     [
+      15.541,
+      -15.98
+     ],
+     [
+      15.51,
+      -15.993
+     ],
+     [
+      15.482,
+      -16.012
+     ],
+     [
+      15.459,
+      -16.035
+     ],
+     [
+      15.441,
+      -16.063
+     ],
+     [
+      15.428,
+      -16.094
+     ],
+     [
+      15.422,
+      -16.127
+     ],
+     [
+      15.422,
+      -16.16
+     ],
+     [
+      15.429,
+      -16.193
+     ],
+     [
+      15.442,
+      -16.223
+     ],
+     [
+      15.46,
+      -16.251
+     ],
+     [
+      15.484,
+      -16.274
+     ],
+     [
+      15.512,
+      -16.293
+     ],
+     [
+      15.543,
+      -16.305
+     ],
+     [
+      15.576,
+      -16.312
+     ],
+     [
+      15.609,
+      -16.311
+     ],
+     [
+      15.642,
+      -16.305
+     ],
+     [
+      15.672,
+      -16.292
+     ],
+     [
+      15.7,
+      -16.273
+     ],
+     [
+      15.723,
+      -16.249
+     ],
+     [
+      15.742,
+      -16.221
+     ],
+     [
+      15.754,
+      -16.191
+     ],
+     [
+      15.76,
+      -16.158
+     ]
+    ],
+    "y": 0.0,
+    "holes": [
+     [
+      [
+       15.723,
+       -16.128
+      ],
+      [
+       15.718,
+       -16.103
+      ],
+      [
+       15.708,
+       -16.079
+      ],
+      [
+       15.693,
+       -16.058
+      ],
+      [
+       15.675,
+       -16.039
+      ],
+      [
+       15.653,
+       -16.025
+      ],
+      [
+       15.629,
+       -16.015
+      ],
+      [
+       15.603,
+       -16.01
+      ],
+      [
+       15.577,
+       -16.01
+      ],
+      [
+       15.552,
+       -16.016
+      ],
+      [
+       15.528,
+       -16.026
+      ],
+      [
+       15.506,
+       -16.04
+      ],
+      [
+       15.488,
+       -16.059
+      ],
+      [
+       15.474,
+       -16.081
+      ],
+      [
+       15.464,
+       -16.105
+      ],
+      [
+       15.459,
+       -16.13
+      ],
+      [
+       15.459,
+       -16.156
+      ],
+      [
+       15.464,
+       -16.182
+      ],
+      [
+       15.475,
+       -16.206
+      ],
+      [
+       15.489,
+       -16.227
+      ],
+      [
+       15.508,
+       -16.245
+      ],
+      [
+       15.529,
+       -16.26
+      ],
+      [
+       15.553,
+       -16.269
+      ],
+      [
+       15.579,
+       -16.274
+      ],
+      [
+       15.605,
+       -16.274
+      ],
+      [
+       15.63,
+       -16.269
+      ],
+      [
+       15.654,
+       -16.259
+      ],
+      [
+       15.676,
+       -16.244
+      ],
+      [
+       15.694,
+       -16.226
+      ],
+      [
+       15.708,
+       -16.204
+      ],
+      [
+       15.718,
+       -16.18
+      ],
+      [
+       15.723,
+       -16.154
+      ]
+     ]
+    ]
+   },
+   "params": {
+    "lift": 0.004,
+    "rotation": 6.0,
+    "finish": "#2C4FB8"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-ENTRY-FILL",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.723,
+      -16.128
+     ],
+     [
+      15.718,
+      -16.103
+     ],
+     [
+      15.708,
+      -16.079
+     ],
+     [
+      15.693,
+      -16.058
+     ],
+     [
+      15.675,
+      -16.039
+     ],
+     [
+      15.653,
+      -16.025
+     ],
+     [
+      15.629,
+      -16.015
+     ],
+     [
+      15.603,
+      -16.01
+     ],
+     [
+      15.577,
+      -16.01
+     ],
+     [
+      15.552,
+      -16.016
+     ],
+     [
+      15.528,
+      -16.026
+     ],
+     [
+      15.506,
+      -16.04
+     ],
+     [
+      15.488,
+      -16.059
+     ],
+     [
+      15.474,
+      -16.081
+     ],
+     [
+      15.464,
+      -16.105
+     ],
+     [
+      15.459,
+      -16.13
+     ],
+     [
+      15.459,
+      -16.156
+     ],
+     [
+      15.464,
+      -16.182
+     ],
+     [
+      15.475,
+      -16.206
+     ],
+     [
+      15.489,
+      -16.227
+     ],
+     [
+      15.508,
+      -16.245
+     ],
+     [
+      15.529,
+      -16.26
+     ],
+     [
+      15.553,
+      -16.269
+     ],
+     [
+      15.579,
+      -16.274
+     ],
+     [
+      15.605,
+      -16.274
+     ],
+     [
+      15.63,
+      -16.269
+     ],
+     [
+      15.654,
+      -16.259
+     ],
+     [
+      15.676,
+      -16.244
+     ],
+     [
+      15.694,
+      -16.226
+     ],
+     [
+      15.708,
+      -16.204
+     ],
+     [
+      15.718,
+      -16.18
+     ],
+     [
+      15.723,
+      -16.154
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.004,
+    "rotation": 6.0,
+    "finish": "#EEF1F4"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-1F-ENTRY-ARROW",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      15.521,
+      -16.168
+     ],
+     [
+      15.6,
+      -16.16
+     ],
+     [
+      15.603,
+      -16.192
+     ],
+     [
+      15.67,
+      -16.134
+     ],
+     [
+      15.592,
+      -16.092
+     ],
+     [
+      15.596,
+      -16.123
+     ],
+     [
+      15.517,
+      -16.131
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "lift": 0.005,
+    "rotation": 6.0,
+    "finish": "#58B947"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-2F-PAD-UP",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      36.13,
+      -14.476
+     ],
+     [
+      36.679,
+      -14.418
+     ],
+     [
+      36.584,
+      -13.511
+     ],
+     [
+      36.035,
+      -13.568
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "lift": 0.0045,
+    "rotation": 6.0,
+    "finish": "tactileDot"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-2F-PAD-DOWN",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      36.303,
+      -16.117
+     ],
+     [
+      36.852,
+      -16.059
+     ],
+     [
+      36.756,
+      -15.152
+     ],
+     [
+      36.207,
+      -15.209
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "lift": 0.0045,
+    "rotation": 6.0,
+    "finish": "tactileDot"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-2F-NOENTRY-RING",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      37.017,
+      -13.924
+     ],
+     [
+      37.01,
+      -13.893
+     ],
+     [
+      36.998,
+      -13.864
+     ],
+     [
+      36.98,
+      -13.838
+     ],
+     [
+      36.958,
+      -13.816
+     ],
+     [
+      36.932,
+      -13.799
+     ],
+     [
+      36.903,
+      -13.787
+     ],
+     [
+      36.872,
+      -13.781
+     ],
+     [
+      36.841,
+      -13.781
+     ],
+     [
+      36.81,
+      -13.788
+     ],
+     [
+      36.781,
+      -13.8
+     ],
+     [
+      36.755,
+      -13.817
+     ],
+     [
+      36.733,
+      -13.84
+     ],
+     [
+      36.716,
+      -13.866
+     ],
+     [
+      36.704,
+      -13.895
+     ],
+     [
+      36.698,
+      -13.926
+     ],
+     [
+      36.698,
+      -13.957
+     ],
+     [
+      36.705,
+      -13.988
+     ],
+     [
+      36.717,
+      -14.017
+     ],
+     [
+      36.734,
+      -14.043
+     ],
+     [
+      36.757,
+      -14.065
+     ],
+     [
+      36.783,
+      -14.082
+     ],
+     [
+      36.812,
+      -14.094
+     ],
+     [
+      36.843,
+      -14.1
+     ],
+     [
+      36.874,
+      -14.1
+     ],
+     [
+      36.905,
+      -14.093
+     ],
+     [
+      36.934,
+      -14.081
+     ],
+     [
+      36.96,
+      -14.063
+     ],
+     [
+      36.982,
+      -14.041
+     ],
+     [
+      36.999,
+      -14.015
+     ],
+     [
+      37.011,
+      -13.986
+     ],
+     [
+      37.017,
+      -13.955
+     ]
+    ],
+    "y": 7.0,
+    "holes": [
+     [
+      [
+       36.982,
+       -13.927
+      ],
+      [
+       36.977,
+       -13.903
+      ],
+      [
+       36.967,
+       -13.881
+      ],
+      [
+       36.953,
+       -13.861
+      ],
+      [
+       36.936,
+       -13.843
+      ],
+      [
+       36.916,
+       -13.83
+      ],
+      [
+       36.893,
+       -13.821
+      ],
+      [
+       36.869,
+       -13.816
+      ],
+      [
+       36.844,
+       -13.816
+      ],
+      [
+       36.82,
+       -13.821
+      ],
+      [
+       36.798,
+       -13.831
+      ],
+      [
+       36.778,
+       -13.845
+      ],
+      [
+       36.76,
+       -13.862
+      ],
+      [
+       36.747,
+       -13.882
+      ],
+      [
+       36.738,
+       -13.905
+      ],
+      [
+       36.733,
+       -13.929
+      ],
+      [
+       36.733,
+       -13.954
+      ],
+      [
+       36.738,
+       -13.977
+      ],
+      [
+       36.748,
+       -14.0
+      ],
+      [
+       36.762,
+       -14.02
+      ],
+      [
+       36.779,
+       -14.037
+      ],
+      [
+       36.799,
+       -14.051
+      ],
+      [
+       36.822,
+       -14.06
+      ],
+      [
+       36.846,
+       -14.065
+      ],
+      [
+       36.871,
+       -14.065
+      ],
+      [
+       36.894,
+       -14.06
+      ],
+      [
+       36.917,
+       -14.05
+      ],
+      [
+       36.937,
+       -14.036
+      ],
+      [
+       36.954,
+       -14.019
+      ],
+      [
+       36.968,
+       -13.999
+      ],
+      [
+       36.977,
+       -13.976
+      ],
+      [
+       36.982,
+       -13.952
+      ]
+     ]
+    ]
+   },
+   "params": {
+    "lift": 0.004,
+    "rotation": 6.0,
+    "finish": "#C8262B"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-2F-NOENTRY-FILL",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      36.982,
+      -13.927
+     ],
+     [
+      36.977,
+      -13.903
+     ],
+     [
+      36.967,
+      -13.881
+     ],
+     [
+      36.953,
+      -13.861
+     ],
+     [
+      36.936,
+      -13.843
+     ],
+     [
+      36.916,
+      -13.83
+     ],
+     [
+      36.893,
+      -13.821
+     ],
+     [
+      36.869,
+      -13.816
+     ],
+     [
+      36.844,
+      -13.816
+     ],
+     [
+      36.82,
+      -13.821
+     ],
+     [
+      36.798,
+      -13.831
+     ],
+     [
+      36.778,
+      -13.845
+     ],
+     [
+      36.76,
+      -13.862
+     ],
+     [
+      36.747,
+      -13.882
+     ],
+     [
+      36.738,
+      -13.905
+     ],
+     [
+      36.733,
+      -13.929
+     ],
+     [
+      36.733,
+      -13.954
+     ],
+     [
+      36.738,
+      -13.977
+     ],
+     [
+      36.748,
+      -14.0
+     ],
+     [
+      36.762,
+      -14.02
+     ],
+     [
+      36.779,
+      -14.037
+     ],
+     [
+      36.799,
+      -14.051
+     ],
+     [
+      36.822,
+      -14.06
+     ],
+     [
+      36.846,
+      -14.065
+     ],
+     [
+      36.871,
+      -14.065
+     ],
+     [
+      36.894,
+      -14.06
+     ],
+     [
+      36.917,
+      -14.05
+     ],
+     [
+      36.937,
+      -14.036
+     ],
+     [
+      36.954,
+      -14.019
+     ],
+     [
+      36.968,
+      -13.999
+     ],
+     [
+      36.977,
+      -13.976
+     ],
+     [
+      36.982,
+      -13.952
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "lift": 0.004,
+    "rotation": 6.0,
+    "finish": "#F2F2EE"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-2F-NOENTRY-ARROW",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      36.928,
+      -13.951
+     ],
+     [
+      36.853,
+      -13.959
+     ],
+     [
+      36.856,
+      -13.988
+     ],
+     [
+      36.783,
+      -13.948
+     ],
+     [
+      36.846,
+      -13.894
+     ],
+     [
+      36.849,
+      -13.924
+     ],
+     [
+      36.924,
+      -13.916
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "lift": 0.005,
+    "rotation": 6.0,
+    "finish": "#26282B"
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "FLOOR-ESC-2F-NOENTRY-SLASH",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000253.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-floor-000247.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing-search.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json#G-X05"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      36.805,
+      -14.027
+     ],
+     [
+      36.931,
+      -13.872
+     ],
+     [
+      36.91,
+      -13.854
+     ],
+     [
+      36.784,
+      -14.009
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "lift": 0.006,
+    "rotation": 6.0,
+    "finish": "#C8262B"
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "STAINLESS-1F-RETURN-RIGHT",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      19.532,
+      -13.865
+     ],
+     [
+      19.634,
+      -14.585
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 2.31
+   },
+   "params": {
+    "finish": "stainless",
+    "panelWidth": 0.6,
+    "panelHeight": 0,
+    "joint": 0.006,
+    "standoff": 0.01,
+    "skirting": 0.1,
+    "cap": 0,
+    "faceToward": [
+     13.456,
+     -16.4
+    ],
+    "collider": true
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "STAINLESS-1F-FACE-LEFT",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      19.836,
+      -19.689
+     ],
+     [
+      20.127,
+      -21.564
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 2.31
+   },
+   "params": {
+    "finish": "stainless",
+    "panelWidth": 0.6,
+    "panelHeight": 0,
+    "joint": 0.006,
+    "standoff": 0.01,
+    "skirting": 0.1,
+    "cap": 0,
+    "faceToward": [
+     13.456,
+     -16.4
+    ],
+    "collider": true
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "WALL-1F-APPROACH-RIGHT-END",
+   "zone": "1F-2F core",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/scene_dense.ply",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000121.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000123.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/native-images/000133.jpg",
+    ".planning/2026-09-23-video-twin/metric-registration/registered-cameras.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/core-contact-sheet.jpg",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ascent-continuity-128-142.jpg"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      17.993,
+      -14.012
+     ],
+     [
+      19.532,
+      -13.865
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 2.31
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0.6,
+    "panelHeight": 0,
+    "joint": 0.006,
+    "standoff": 0.01,
+    "skirting": 0.1,
+    "cap": 0,
+    "faceToward": [
+     17.434,
+     -15.982
+    ],
+    "collider": true
+   }
+  }
+ ]
+}

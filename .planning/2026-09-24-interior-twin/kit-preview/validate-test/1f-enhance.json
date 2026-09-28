@@ -1,0 +1,1232 @@
+{
+ "zone": "1F",
+ "root": "실내 트윈 마감/1F 보강",
+ "basis": {
+  "positions": ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json (registered March 2026 camera rays; see measure_1f_rays.py) and the evidence-inventory fitted planes",
+  "heights": "registered Y + .056 (March local floor -> scene floor datum Y 0)",
+  "rule": "Only elements anchored within ~1 u to registered frames, fitted planes or unit edges are built; everything else is reported in 1f-report.json as tier c."
+ },
+ "elements": [
+  {
+   "type": "WallCladding",
+   "id": "1F-enh-office-frontage",
+   "zone": "1F",
+   "tier": "a-failed",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json wl-office-public-frontage (class a, held-out FAILED: p95 .39) + wl-office-lower-wall-panels",
+    ".planning/2026-09-23-video-twin/office-frontage-fit/office-public-frontage.json",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/central-crossval/observations.json wl-office-public-frontage S20 plane (2020-11) within .10 u",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json office.corner / office.end / door and window jambs (frames 000072, 000079, 2-view spread <= .1)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000085.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      4.975,
+      -15.216
+     ],
+     [
+      11.6,
+      -14.702
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 2.31
+   },
+   "params": {
+    "finish": "panel",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0.006,
+    "standoff": 0.01,
+    "skirting": 0.1,
+    "cap": 0,
+    "faceToward": [
+     12.0,
+     -18.0
+    ],
+    "collider": true,
+    "openings": [
+     [
+      0.35,
+      2.087,
+      2.026
+     ],
+     [
+      5.561,
+      6.431,
+      2.04
+     ]
+    ]
+   },
+   "note": "White laminate panel wall of the office (union-office candidate) from the corner at #16 to the stainless cabinet; plane position a-failed, extent and openings from registered rays. The wood-framed window (U 8.819-10.249, Y 1.61-2.16) is observed but not built: the kit has no window type."
+  },
+  {
+   "type": "ServiceDoor",
+   "id": "1F-enh-office-door-single",
+   "zone": "1F",
+   "tier": "a-failed",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json office.door1.* (frames 000072 and 000079 agree within .08)",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json wl-office-public-frontage (red service doors)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      11.387,
+      -14.718
+     ],
+     [
+      10.519,
+      -14.786
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "t": 0.5,
+    "width": 0.868,
+    "height": 2.04,
+    "leaves": 1,
+    "colour": "#7B3524",
+    "frame": "#5B2C20",
+    "plate": "",
+    "faceToward": [
+     12.0,
+     -18.0
+    ]
+   },
+   "note": "Red-brown flush door(s); name plates are unreadable at 960x540, so no plate text is invented."
+  },
+  {
+   "type": "ServiceDoor",
+   "id": "1F-enh-office-door-double",
+   "zone": "1F",
+   "tier": "a-failed",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json office.door2.* (frames 000072 and 000079 agree within .08)",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json wl-office-public-frontage (red service doors)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      7.056,
+      -15.055
+     ],
+     [
+      5.324,
+      -15.189
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "t": 0.5,
+    "width": 1.732,
+    "height": 2.026,
+    "leaves": 2,
+    "colour": "#7B3524",
+    "frame": "#5B2C20",
+    "plate": "",
+    "faceToward": [
+     12.0,
+     -18.0
+    ]
+   },
+   "note": "Red-brown flush door(s); name plates are unreadable at 960x540, so no plate text is invented."
+  },
+  {
+   "type": "WallCladding",
+   "id": "1F-enh-approach-right-wall",
+   "zone": "1F",
+   "tier": "a",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json wl-right-approach-wall (class a: held-out median .006, p95 .019; U 13.98-18.24)",
+    ".planning/2026-09-23-video-twin/office-frontage-fit/right-approach-wall.json",
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/escalator-core.json WALL-1F-APPROACH-RIGHT-END continues the same line from U 17.993",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000085.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000106.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      13.02,
+      -14.496
+     ],
+     [
+      17.993,
+      -14.012
+     ]
+    ],
+    "y0": 0.0,
+    "y1": 2.31
+   },
+   "params": {
+    "finish": "panel",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0.006,
+    "standoff": 0.01,
+    "skirting": 0.1,
+    "cap": 0,
+    "faceToward": [
+     12.0,
+     -18.0
+    ],
+    "collider": true
+   },
+   "note": "Rebuilds the deleted observed patch right-approach-wall as a kit wall on its class-a plane; the first .96 u (U 13.02-13.98, to the stainless cabinet) extends the same plane [INFERENCE: panels continue, seen in 000079/85]."
+  },
+  {
+   "type": "Column",
+   "id": "1F-enh-stainless-cabinet",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json box.frontEast / box.frontWest / box.backWest (floor rays 000079, 000085; spread .11-.33)",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/central-crossval/observations.json new-corridor-end-stainless-box-face (S20/S22, rectangular column family)",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json st-rectangular-columns-topology",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000085.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     12.295,
+     -14.798
+    ],
+    "y0": 0.0,
+    "y1": 2.31
+   },
+   "params": {
+    "shape": "rect",
+    "size": [
+     1.42,
+     0.4
+    ],
+    "angle": 4.44,
+    "cladding": "stainless",
+    "panelHeight": 0,
+    "base": 0.06,
+    "cap": 0
+   },
+   "note": "Stainless panel-clad cabinet standing proud (.4) of the office/approach wall line up to the low ceiling."
+  },
+  {
+   "type": "Column",
+   "id": "1F-enh-header-column",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json column.swCorner / seCorner (floor, 000072), column.westFaceEnd (000076 + 000079 agree within .1), column.sign.centre (2-view triangulation, residual .002)",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json st-rectangular-columns-topology, st-stainless-piers-pixel (V079 plumb marks)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000076.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     12.781,
+     -21.413
+    ],
+    "y0": 0.0,
+    "y1": 4.98
+   },
+   "params": {
+    "shape": "rect",
+    "size": [
+     1.462,
+     1.415
+    ],
+    "angle": 0,
+    "cladding": "stainless",
+    "panelHeight": 1.2,
+    "base": 0.1,
+    "cap": 0.06
+   },
+   "note": "Stainless rectangular pier at the U+ end of the entry header, rising past the header into the lobby ceiling (000066: stainless up to the lobby ceiling beside the white fascia)."
+  },
+  {
+   "type": "WallCladding",
+   "id": "1F-enh-header-band-west",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json cl-entry-high-fascia (U 5.39-11.96, V -22.72..-21.76, Y 2.58-5.16)",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json header.band.bottom/top, header sign triangulations (header face V -21.85..-22.11)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      5.53,
+      -22.05
+     ],
+     [
+      12.05,
+      -22.05
+     ]
+    ],
+    "y0": 2.31,
+    "y1": 2.89
+   },
+   "params": {
+    "finish": "stainless",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0.006,
+    "standoff": 0.03,
+    "skirting": 0,
+    "cap": 0,
+    "faceToward": [
+     8.790000000000001,
+     -26.0
+    ],
+    "collider": false
+   },
+   "note": "Stainless header band between the ARTBOX pier and the header column; frames 000066/000072/000076"
+  },
+  {
+   "type": "WallCladding",
+   "id": "1F-enh-header-fascia-west",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json cl-entry-high-fascia (U 5.39-11.96, V -22.72..-21.76, Y 2.58-5.16)",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json header.band.bottom/top, header sign triangulations (header face V -21.85..-22.11)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000057.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      5.53,
+      -22.05
+     ],
+     [
+      12.05,
+      -22.05
+     ]
+    ],
+    "y0": 2.89,
+    "y1": 4.98
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0,
+    "cap": 0,
+    "faceToward": [
+     8.790000000000001,
+     -26.0
+    ],
+    "collider": false
+   },
+   "note": "White station fascia from the band top up to the lobby ceiling between the ARTBOX pier and the header column; frames 000066/000072/000076"
+  },
+  {
+   "type": "WallCladding",
+   "id": "1F-enh-header-band-east",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json cl-entry-high-fascia (U 5.39-11.96, V -22.72..-21.76, Y 2.58-5.16)",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json header.band.bottom/top, header sign triangulations (header face V -21.85..-22.11)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      13.512,
+      -22.12
+     ],
+     [
+      20.127,
+      -21.564
+     ]
+    ],
+    "y0": 2.31,
+    "y1": 2.89
+   },
+   "params": {
+    "finish": "stainless",
+    "panelWidth": 1.2,
+    "panelHeight": 0,
+    "joint": 0.006,
+    "standoff": 0.03,
+    "skirting": 0,
+    "cap": 0,
+    "faceToward": [
+     16.819499999999998,
+     -26.0
+    ],
+    "collider": false
+   },
+   "note": "Stainless header band from the header column to the core left stainless face (escalator-core STAINLESS-1F-FACE-LEFT); band seen behind the column in 000072 (underside [14.827, -22.066])"
+  },
+  {
+   "type": "WallCladding",
+   "id": "1F-enh-header-fascia-east",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json cl-entry-high-fascia (U 5.39-11.96, V -22.72..-21.76, Y 2.58-5.16)",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json header.band.bottom/top, header sign triangulations (header face V -21.85..-22.11)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000057.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      13.512,
+      -22.12
+     ],
+     [
+      20.127,
+      -21.564
+     ]
+    ],
+    "y0": 2.89,
+    "y1": 4.98
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0.03,
+    "skirting": 0,
+    "cap": 0,
+    "faceToward": [
+     16.819499999999998,
+     -26.0
+    ],
+    "collider": false
+   },
+   "note": "White station fascia from the band top up to the lobby ceiling from the header column to the core left stainless face (escalator-core STAINLESS-1F-FACE-LEFT); band seen behind the column in 000072 (underside [14.827, -22.066])"
+  },
+  {
+   "type": "WallCladding",
+   "id": "1F-enh-rear-mouth-closure",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json unit 16 front corner (5.10,-18.75)",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json st-artbox-terminal-pier (class a, (5.53,-22.6))",
+    ".planning/2026-09-24-interior-twin/measure-1f-ceilings/observations.json central approach 2.31 / central lobby 4.98"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polyline": [
+     [
+      5.1,
+      -18.75
+     ],
+     [
+      5.53,
+      -22.05
+     ]
+    ],
+    "y0": 2.31,
+    "y1": 4.98
+   },
+   "params": {
+    "finish": "gypsum",
+    "panelWidth": 0,
+    "panelHeight": 0,
+    "joint": 0,
+    "standoff": 0,
+    "skirting": 0,
+    "cap": 0,
+    "faceToward": [
+     2.0,
+     -20.5
+    ],
+    "collider": false
+   },
+   "note": "[INFERENCE] topological closure where the measured 2.31 approach ceiling meets the 4.98 ceiling west of it (the face itself is not in any registered frame); without it the void above the low ceiling shows."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-sign-header-elevatorEast",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json header.elevatorEast.a/b (000066 ray on the header face; 000072 agrees within .06)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000076.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     11.419,
+     -22.08
+    ],
+    "y": 2.561
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 1.142,
+    "height": 0.233,
+    "depth": 0.04,
+    "style": "navy",
+    "items": [
+     {
+      "text": "엘리베이터",
+      "sub": "Elevator",
+      "arrow": "downleft"
+     }
+    ]
+   },
+   "note": "Navy sign on the stainless header band, facing the lobby."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-sign-header-tickets",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json header.tickets.a/b (000066 ray on the header face; 000072 agrees within .06)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000076.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     8.84,
+     -22.08
+    ],
+    "y": 2.57
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 1.963,
+    "height": 0.246,
+    "depth": 0.04,
+    "style": "navy",
+    "items": [
+     {
+      "text": "2층 표사는 곳 · 승차권자동발매기",
+      "sub": "Tickets"
+     }
+    ]
+   },
+   "note": "Navy sign on the stainless header band, facing the lobby."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-sign-header-elevatorWest",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json header.elevatorWest.a/b (000066 ray on the header face; 000072 agrees within .06)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000076.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     6.246,
+     -22.08
+    ],
+    "y": 2.596
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 1.286,
+    "height": 0.282,
+    "depth": 0.04,
+    "style": "navy",
+    "items": [
+     {
+      "text": "엘리베이터",
+      "sub": "Elevator",
+      "arrow": "downright"
+     }
+    ]
+   },
+   "note": "Navy sign on the stainless header band, facing the lobby."
+  },
+  {
+   "type": "HangingSign",
+   "id": "1F-enh-sign-hanging-platforms",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json hanging.platforms.* (3-view triangulation 000057/000061/000066, ray residual <= .02)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000057.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     9.437,
+     -28.659
+    ],
+    "y": 2.601
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 2.442,
+    "height": 0.364,
+    "depth": 0.12,
+    "style": "navy",
+    "items": [
+     {
+      "text": "타는 곳",
+      "sub": "Platforms",
+      "arrow": "up"
+     }
+    ],
+    "doubleSided": false,
+    "ceilingY": 4.98
+   },
+   "note": "Large navy \"↑ 타는 곳 Platforms\" sign (KTX/SRT/ITX pictograms) hung from the lobby ceiling, seen from the GATE3/4 side only: the back face is not observed, so the sign is single-sided."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-sign-approach-wall",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json sign.approach.* (rays on the class-a right-approach-wall plane, 000079 and 000085 agree within .11)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000085.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000106.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     15.16,
+     -14.321
+    ],
+    "y": 1.406
+   },
+   "params": {
+    "heading": [
+     0.0974,
+     -0.9952
+    ],
+    "width": 2.414,
+    "height": 0.885,
+    "depth": 0.04,
+    "style": "navy",
+    "items": [
+     {
+      "text": "타는 곳",
+      "sub": "Platforms",
+      "arrow": "left"
+     },
+     {
+      "text": "표사는 곳 · 승차권자동발매기",
+      "sub": "Tickets",
+      "arrow": "left"
+     }
+    ]
+   },
+   "note": "Navy wall sign pointing to the escalator (platforms and ticket office on 2F)."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-board-escalator-rules",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json board.yellow.* (rays on the class-a right-approach-wall plane, 000106)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000085.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000106.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000121.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     17.331,
+     -14.111
+    ],
+    "y": 1.646
+   },
+   "params": {
+    "heading": [
+     0.0974,
+     -0.9952
+    ],
+    "width": 1.798,
+    "height": 1.235,
+    "depth": 0.04,
+    "style": "yellow",
+    "items": [
+     "에스컬레이터 안전수칙",
+     "손잡이를 잡고 두 줄로 타세요",
+     "걷거나 뛰지 마세요",
+     "안전선 안에 타세요",
+     "기대지 마세요"
+    ]
+   },
+   "note": "Yellow escalator-rules board; text read from 000106/000121."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-sign-column-west",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json column.sign.* (2-view triangulation 000076/000079, residual .002)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000076.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     12.05,
+     -21.326
+    ],
+    "y": 1.691
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "width": 1.033,
+    "height": 0.42,
+    "depth": 0.04,
+    "style": "navy",
+    "items": [
+     {
+      "text": "타는 곳",
+      "sub": "Platforms"
+     },
+     {
+      "text": "승차권자동발매기 · 표사는 곳",
+      "sub": "Tickets",
+      "arrow": "up"
+     }
+    ]
+   },
+   "note": "Navy sign on the U- face of the header column, facing the approach."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-sign-column-directory",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json column.directory.* (rays on the column V- face, 000072)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     12.845,
+     -22.12
+    ],
+    "y": 1.417
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 0.827,
+    "height": 1.043,
+    "depth": 0.04,
+    "style": "navy",
+    "items": [
+     {
+      "text": "회의실",
+      "sub": "Meeting Room"
+     },
+     {
+      "text": "201호 · 202호",
+      "sub": "2F",
+      "arrow": "right"
+     },
+     {
+      "text": "512-513호 · 530-531호 · 532-533호",
+      "sub": "5F",
+      "arrow": "right"
+     }
+    ]
+   },
+   "note": "Meeting-room directory on the lobby face of the header column."
+  },
+  {
+   "type": "WallSign",
+   "id": "1F-enh-sign-column-aed",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json column.aedSign (000072; 000079 ray on the same face gives U 12.33, Y 1.43)",
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json AED 12-0017748 \"1층 노조지부사무실 앞(E/S 8,28호기)\"",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-aed-union-office",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     12.268,
+     -22.12
+    ],
+    "y": 1.491
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 0.24,
+    "height": 0.3,
+    "depth": 0.04,
+    "style": "green",
+    "items": [
+     {
+      "text": "자동심장충격기",
+      "sub": "AED",
+      "arrow": "down"
+     }
+    ]
+   },
+   "note": "Green AED location sign (arrow down). The AED cabinet itself is not visible in any registered frame, so only the sign is built; the cabinet stays tier c."
+  },
+  {
+   "type": "Fixture",
+   "id": "1F-enh-standee-no-scooter",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json standee.approach (floor ray 000079)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000085.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     13.308,
+     -15.038
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "kind": "standee",
+    "mount": "floor",
+    "heading": [
+     0,
+     -1
+    ],
+    "width": 0.55,
+    "height": 1.3,
+    "text": "전동킥보드·자전거 이용 금지"
+   },
+   "note": "Prohibition standee in front of the right approach wall; [INFERENCE] text paraphrased from its pictograms."
+  },
+  {
+   "type": "Fixture",
+   "id": "1F-enh-extinguisher-office-corner",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json office.extinguisher (floor ray 000072)",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-fire-extinguishers-1f",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     5.242,
+     -15.691
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "kind": "extinguisher",
+    "mount": "floor",
+    "heading": [
+     1,
+     0
+    ],
+    "signPlate": false
+   },
+   "note": "Red extinguisher on the floor at the office / #16 corner."
+  },
+  {
+   "type": "Fixture",
+   "id": "1F-enh-cctv-approach-a",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json ceiling.cctv.a (000079 ray on the low-ceiling plane)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     10.371,
+     -20.993
+    ],
+    "y": 2.31
+   },
+   "params": {
+    "kind": "cctv",
+    "mount": "ceiling"
+   },
+   "note": "CCTV camera under the approach ceiling just inside the header."
+  },
+  {
+   "type": "Fixture",
+   "id": "1F-enh-cctv-approach-b",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json ceiling.cctv.b (000079 ray on the low-ceiling plane)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000079.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "point": [
+     10.015,
+     -21.329
+    ],
+    "y": 2.31
+   },
+   "params": {
+    "kind": "cctv",
+    "mount": "ceiling"
+   },
+   "note": "CCTV camera under the approach ceiling just inside the header."
+  },
+  {
+   "type": "FloorFinish",
+   "id": "1F-enh-floor-header-band",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands (dark floor bands, visual only)",
+    ".planning/2026-09-24-interior-twin/specs/enhance/1f-measurements.json floor rays 000072 (x 100/400/700/900: V -22.07..-22.14 to -22.76..-22.83) and 000066",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000072.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000121.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      5.53,
+      -22.1
+     ],
+     [
+      16.6,
+      -22.07
+     ],
+     [
+      16.6,
+      -22.8
+     ],
+     [
+      5.53,
+      -22.82
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "finish": "#34363D",
+    "lift": 0.003
+   },
+   "note": "Dark stone band along the lobby side of the entry header (observed U 5.5-16.6; it continues toward the core in 000121, not measured there)."
+  },
+  {
+   "type": "FloorFinish",
+   "id": "1F-enh-floor-guide-platforms",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands (dark floor bands, visual only)",
+    "floor rays 000057/000061/000066 (make_1f_enhance centre line; grazing-angle scatter +-.3 u)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000057.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000070.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      8.677,
+      -22.885
+     ],
+     [
+      8.33,
+      -24.61
+     ],
+     [
+      8.38,
+      -27.993
+     ],
+     [
+      8.63,
+      -32.49
+     ],
+     [
+      8.27,
+      -32.51
+     ],
+     [
+      8.02,
+      -28.007
+     ],
+     [
+      7.97,
+      -24.59
+     ],
+     [
+      8.323,
+      -22.815
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "finish": "#2B2F7C",
+    "lift": 0.003
+   },
+   "note": "Navy floor guide band (white edge lines, pictograms) from the entrance toward the header; observed to V -32.5."
+  },
+  {
+   "type": "FloorFinish",
+   "id": "1F-enh-floor-guide-dash-0",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands (dark floor bands, visual only)",
+    "floor rays 000057/000061/000066 (narrow navy dash line, U 9.2-9.7)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000057.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      9.346,
+      -25.697
+     ],
+     [
+      9.445,
+      -27.897
+     ],
+     [
+      9.326,
+      -27.903
+     ],
+     [
+      9.227,
+      -25.703
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "finish": "#2B2F7C",
+    "lift": 0.003
+   },
+   "note": "Narrow navy dashed guide line beside the main band."
+  },
+  {
+   "type": "FloorFinish",
+   "id": "1F-enh-floor-guide-dash-1",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands (dark floor bands, visual only)",
+    "floor rays 000057/000061/000066 (narrow navy dash line, U 9.2-9.7)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000057.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      9.499,
+      -29.097
+     ],
+     [
+      9.571,
+      -30.697
+     ],
+     [
+      9.452,
+      -30.703
+     ],
+     [
+      9.38,
+      -29.103
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "finish": "#2B2F7C",
+    "lift": 0.003
+   },
+   "note": "Narrow navy dashed guide line beside the main band."
+  },
+  {
+   "type": "FloorFinish",
+   "id": "1F-enh-floor-guide-dash-2",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands (dark floor bands, visual only)",
+    "floor rays 000057/000061/000066 (narrow navy dash line, U 9.2-9.7)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000057.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000061.jpg",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      9.63,
+      -31.997
+     ],
+     [
+      9.666,
+      -32.797
+     ],
+     [
+      9.546,
+      -32.803
+     ],
+     [
+      9.51,
+      -32.003
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "finish": "#2B2F7C",
+    "lift": 0.003
+   },
+   "note": "Narrow navy dashed guide line beside the main band."
+  },
+  {
+   "type": "FloorFinish",
+   "id": "1F-enh-floor-guide-cross-0",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands (dark floor bands, visual only)",
+    "floor rays 000066 (thin navy line V -25.2..-25.4)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      9.87,
+      -25.17
+     ],
+     [
+      11.52,
+      -25.187
+     ],
+     [
+      11.52,
+      -25.246
+     ],
+     [
+      9.87,
+      -25.23
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "finish": "#2B2F7C",
+    "lift": 0.003
+   },
+   "note": "Thin navy cross line toward #3 (observed pieces only)."
+  },
+  {
+   "type": "FloorFinish",
+   "id": "1F-enh-floor-guide-cross-1",
+   "zone": "1F",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/evidence-inventory.json fx-tactile-floor-bands (dark floor bands, visual only)",
+    "floor rays 000066 (thin navy line V -25.2..-25.4)",
+    ".planning/2026-09-23-video-twin/1f-2026-sfm/images/000066.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      13.92,
+      -25.211
+     ],
+     [
+      14.49,
+      -25.216
+     ],
+     [
+      14.49,
+      -25.276
+     ],
+     [
+      13.92,
+      -25.27
+     ]
+    ],
+    "y": 0.0
+   },
+   "params": {
+    "finish": "#2B2F7C",
+    "lift": 0.003
+   },
+   "note": "Thin navy cross line toward #3 (observed pieces only)."
+  }
+ ]
+}

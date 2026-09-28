@@ -1,0 +1,5648 @@
+{
+ "schema": "chooguard.source-intrusion-decisions.v2",
+ "precedence": "video > SfM > on-site floor guide (topology only; metric fit RMS 7.9-8.1m rejected) > original model > inferred/standard",
+ "rules": {
+  "F1": "platform-layer poke <=0.2m through a reconstructed floor -> cut (physically impossible)",
+  "F2": "occlusion test: registered frames see static SfM points >1.5m beyond the mass at its pixels -> cut",
+  "F3": "occlusion test: SfM surface within 1m at the mass -> keep",
+  "F4": "30deg incline >=5m2 or rises >=8m above floor (column, shaft, core) -> keep",
+  "F5": "unobserved low mass inside a guide-derived public zone of the reconstruction -> cut (guide over original)",
+  "F6": "unobserved mass in a purely inferred band (1F u-62..55 v>-6.4 behind the rear shop row; 2F u-30..30 v>4 arcade track fringe) -> keep; reconstruction yields",
+  "envelope": "on the 1F facade line -> keep"
+ },
+ "scans": {
+  "surface-cap": "first hit 0.03-3.1m above reconstructed floor, 0.5m grid",
+  "body-occupancy": "capsule r0.2 at 0.5-1.8m above floor, original layers only, envelope cells (floor ends within 1m) excluded"
+ },
+ "occlusion": {
+  "views": 252,
+  "models": "SfM model4 (exact known transform, 90-188s) and model5 (camera-centre similarity, 198-224s)",
+  "pixelRadius": 12,
+  "throughMargin": 1.5,
+  "surfaceTolerance": 1.0
+ },
+ "clusters": [
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    60.0,
+    70.0
+   ],
+   "v": [
+    -34.0,
+    -18.5
+   ],
+   "area": 115.25,
+   "top": 2.15,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    63.0,
+    70.5
+   ],
+   "v": [
+    -17.5,
+    -4.5
+   ],
+   "area": 42.5,
+   "top": 3.08,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -28.0,
+    -20.5
+   ],
+   "v": [
+    5.5,
+    8.5
+   ],
+   "area": 24.0,
+   "top": 1.7,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    -67.5,
+    -61.5
+   ],
+   "v": [
+    7.0,
+    10.0
+   ],
+   "area": 20.0,
+   "top": 3.06,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    69.5,
+    74.0
+   ],
+   "v": [
+    -3.5,
+    3.0
+   ],
+   "area": 10.75,
+   "top": 0.58,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    -19.5,
+    -13.0
+   ],
+   "v": [
+    9.5,
+    10.5
+   ],
+   "area": 7.75,
+   "top": 3.1,
+   "vote": null,
+   "rule": "R2 vertical-circulation core (30deg incline >=5m2)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    22.0,
+    27.5
+   ],
+   "v": [
+    -34.5,
+    -33.5
+   ],
+   "area": 6.25,
+   "top": 2.79,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 15,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    10.5,
+    20.0
+   ],
+   "v": [
+    -31.0,
+    -30.0
+   ],
+   "area": 6.0,
+   "top": 3.0,
+   "vote": {
+    "through": 0,
+    "surface": 40,
+    "views": 52,
+    "verdict": "confirmed-by-video"
+   },
+   "rule": "F3 video confirms surface",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    -7.5,
+    -4.5
+   ],
+   "v": [
+    -36.5,
+    -35.5
+   ],
+   "area": 4.75,
+   "top": 2.79,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 10,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -8.0,
+    -8.0
+   ],
+   "v": [
+    -41.5,
+    -36.0
+   ],
+   "area": 3.0,
+   "top": 1.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 11,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -0.5,
+    3.0
+   ],
+   "v": [
+    -31.5,
+    -31.0
+   ],
+   "area": 2.75,
+   "top": 2.8,
+   "vote": {
+    "through": 3,
+    "surface": 226,
+    "views": 54,
+    "verdict": "confirmed-by-video"
+   },
+   "rule": "F3 video confirms surface",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    22.5,
+    22.5
+   ],
+   "v": [
+    -37.5,
+    -33.5
+   ],
+   "area": 2.25,
+   "top": 1.3,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 25,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -51.5,
+    -50.5
+   ],
+   "v": [
+    8.0,
+    10.5
+   ],
+   "area": 2.0,
+   "top": 0.9,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    71.5,
+    71.5
+   ],
+   "v": [
+    -8.0,
+    -4.5
+   ],
+   "area": 2.0,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    72.0,
+    72.0
+   ],
+   "v": [
+    -15.0,
+    -11.5
+   ],
+   "area": 2.0,
+   "top": 0.96,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -2.0,
+    -2.0
+   ],
+   "v": [
+    -43.5,
+    -40.5
+   ],
+   "area": 1.75,
+   "top": 1.3,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 30,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    72.5,
+    72.5
+   ],
+   "v": [
+    -22.0,
+    -19.0
+   ],
+   "area": 1.75,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    75.5,
+    75.5
+   ],
+   "v": [
+    -12.0,
+    -9.0
+   ],
+   "area": 1.75,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    76.0,
+    76.0
+   ],
+   "v": [
+    -19.0,
+    -16.0
+   ],
+   "area": 1.75,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -2.5,
+    -2.5
+   ],
+   "v": [
+    -38.0,
+    -35.5
+   ],
+   "area": 1.5,
+   "top": 0.1,
+   "vote": {
+    "through": 12,
+    "surface": 0,
+    "views": 42,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    73.0,
+    73.5
+   ],
+   "v": [
+    -5.5,
+    -4.5
+   ],
+   "area": 1.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    76.5,
+    76.5
+   ],
+   "v": [
+    -25.0,
+    -23.0
+   ],
+   "area": 1.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    -24.0,
+    -22.5
+   ],
+   "v": [
+    -44.0,
+    -44.0
+   ],
+   "area": 1.0,
+   "top": 2.79,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    -21.5,
+    -20.0
+   ],
+   "v": [
+    -44.0,
+    -44.0
+   ],
+   "area": 1.0,
+   "top": 2.79,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    73.5,
+    74.0
+   ],
+   "v": [
+    -14.5,
+    -14.0
+   ],
+   "area": 1.0,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    74.5,
+    75.0
+   ],
+   "v": [
+    -24.0,
+    -23.5
+   ],
+   "area": 1.0,
+   "top": 0.15,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    72.5,
+    73.0
+   ],
+   "v": [
+    -2.5,
+    -1.0
+   ],
+   "area": 1.0,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    73.0,
+    73.0
+   ],
+   "v": [
+    -27.5,
+    -26.0
+   ],
+   "area": 1.0,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    76.5,
+    77.0
+   ],
+   "v": [
+    -2.5,
+    -1.0
+   ],
+   "area": 1.0,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    28.0,
+    28.0
+   ],
+   "v": [
+    -36.0,
+    -35.0
+   ],
+   "area": 0.75,
+   "top": 0.46,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 3,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    28.5,
+    28.5
+   ],
+   "v": [
+    -39.5,
+    -38.5
+   ],
+   "area": 0.75,
+   "top": 0.46,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 24,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -46.0,
+    -46.0
+   ],
+   "v": [
+    10.0,
+    11.0
+   ],
+   "area": 0.75,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    23.0,
+    23.0
+   ],
+   "v": [
+    -41.5,
+    -40.5
+   ],
+   "area": 0.75,
+   "top": 0.1,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 18,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    75.0,
+    75.5
+   ],
+   "v": [
+    3.0,
+    4.0
+   ],
+   "area": 0.75,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    -18.5,
+    -18.0
+   ],
+   "v": [
+    6.0,
+    6.0
+   ],
+   "area": 0.5,
+   "top": 2.08,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    44.5,
+    45.0
+   ],
+   "v": [
+    -39.0,
+    -39.0
+   ],
+   "area": 0.5,
+   "top": 2.79,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -45.5,
+    -45.5
+   ],
+   "v": [
+    4.5,
+    5.0
+   ],
+   "area": 0.5,
+   "top": 1.2,
+   "vote": {
+    "through": 55,
+    "surface": 0,
+    "views": 15,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    18.0,
+    18.0
+   ],
+   "v": [
+    -36.0,
+    -35.5
+   ],
+   "area": 0.5,
+   "top": 2.4,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 21,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    28.0,
+    28.0
+   ],
+   "v": [
+    -34.5,
+    -34.0
+   ],
+   "area": 0.5,
+   "top": 1.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    -58.5,
+    -58.5
+   ],
+   "v": [
+    11.0,
+    11.0
+   ],
+   "area": 0.25,
+   "top": 1.24,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    27.0,
+    27.0
+   ],
+   "v": [
+    -41.0,
+    -41.0
+   ],
+   "area": 0.25,
+   "top": 1.53,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    39.5,
+    39.5
+   ],
+   "v": [
+    -40.0,
+    -40.0
+   ],
+   "area": 0.25,
+   "top": 2.79,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    41.0,
+    41.0
+   ],
+   "v": [
+    -40.0,
+    -40.0
+   ],
+   "area": 0.25,
+   "top": 2.79,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    42.0,
+    42.0
+   ],
+   "v": [
+    -39.5,
+    -39.5
+   ],
+   "area": 0.25,
+   "top": 2.79,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    43.5,
+    43.5
+   ],
+   "v": [
+    -39.5,
+    -39.5
+   ],
+   "area": 0.25,
+   "top": 2.79,
+   "vote": null,
+   "rule": "envelope: on 1F facade line (<0.8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 1,
+   "u": [
+    76.0,
+    76.0
+   ],
+   "v": [
+    0.0,
+    0.0
+   ],
+   "area": 0.25,
+   "top": 0.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    -72.5,
+    -72.5
+   ],
+   "v": [
+    9.5,
+    9.5
+   ],
+   "area": 0.25,
+   "top": 0.2,
+   "vote": {
+    "through": 3,
+    "surface": 0,
+    "views": 2,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    2.5,
+    2.5
+   ],
+   "v": [
+    -42.5,
+    -42.5
+   ],
+   "area": 0.25,
+   "top": 2.4,
+   "vote": {
+    "through": 11,
+    "surface": 0,
+    "views": 15,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    28.5,
+    28.5
+   ],
+   "v": [
+    -38.0,
+    -38.0
+   ],
+   "area": 0.25,
+   "top": 1.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 2,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    60.0,
+    60.0
+   ],
+   "v": [
+    -24.0,
+    -24.0
+   ],
+   "area": 0.25,
+   "top": 1.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    61.0,
+    61.0
+   ],
+   "v": [
+    -27.5,
+    -27.5
+   ],
+   "area": 0.25,
+   "top": 1.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    62.0,
+    62.0
+   ],
+   "v": [
+    -31.0,
+    -31.0
+   ],
+   "area": 0.25,
+   "top": 1.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    62.5,
+    62.5
+   ],
+   "v": [
+    -32.5,
+    -32.5
+   ],
+   "area": 0.25,
+   "top": 1.95,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    63.5,
+    63.5
+   ],
+   "v": [
+    -15.5,
+    -15.5
+   ],
+   "area": 0.25,
+   "top": 3.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    64.0,
+    64.0
+   ],
+   "v": [
+    -14.5,
+    -14.5
+   ],
+   "area": 0.25,
+   "top": 3.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    64.5,
+    64.5
+   ],
+   "v": [
+    -13.5,
+    -13.5
+   ],
+   "area": 0.25,
+   "top": 3.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    65.0,
+    65.0
+   ],
+   "v": [
+    -12.5,
+    -12.5
+   ],
+   "area": 0.25,
+   "top": 3.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    66.5,
+    66.5
+   ],
+   "v": [
+    -9.5,
+    -9.5
+   ],
+   "area": 0.25,
+   "top": 3.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    72.0,
+    72.0
+   ],
+   "v": [
+    -10.5,
+    -10.5
+   ],
+   "area": 0.25,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    72.0,
+    72.0
+   ],
+   "v": [
+    -3.5,
+    -3.5
+   ],
+   "area": 0.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    72.5,
+    72.5
+   ],
+   "v": [
+    -17.5,
+    -17.5
+   ],
+   "area": 0.25,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    73.0,
+    73.0
+   ],
+   "v": [
+    -24.5,
+    -24.5
+   ],
+   "area": 0.25,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    73.5,
+    73.5
+   ],
+   "v": [
+    0.0,
+    0.0
+   ],
+   "area": 0.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    74.0,
+    74.0
+   ],
+   "v": [
+    1.0,
+    1.0
+   ],
+   "area": 0.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    74.5,
+    74.5
+   ],
+   "v": [
+    2.0,
+    2.0
+   ],
+   "area": 0.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    75.0,
+    75.0
+   ],
+   "v": [
+    -6.0,
+    -6.0
+   ],
+   "area": 0.25,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    75.5,
+    75.5
+   ],
+   "v": [
+    -13.0,
+    -13.0
+   ],
+   "area": 0.25,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    75.5,
+    75.5
+   ],
+   "v": [
+    -4.5,
+    -4.5
+   ],
+   "area": 0.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    76.0,
+    76.0
+   ],
+   "v": [
+    -20.0,
+    -20.0
+   ],
+   "area": 0.25,
+   "top": 1.2,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "surface-cap",
+   "floor": 2,
+   "u": [
+    76.0,
+    76.0
+   ],
+   "v": [
+    -3.5,
+    -3.5
+   ],
+   "area": 0.25,
+   "top": 0.05,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F1 platform-layer poke <=0.2m",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -65.0,
+    -50.0
+   ],
+   "v": [
+    7.0,
+    12.0
+   ],
+   "area": 21.0,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -8.0,
+    -0.5
+   ],
+   "v": [
+    -42.5,
+    -35.0
+   ],
+   "area": 9.25,
+   "top": 18.87,
+   "vote": {
+    "through": 22,
+    "surface": 8,
+    "views": 59,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    20.5,
+    28.0
+   ],
+   "v": [
+    -34.5,
+    -31.0
+   ],
+   "area": 6.5,
+   "top": 20.73,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 25,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    25.0,
+    29.0
+   ],
+   "v": [
+    -40.0,
+    -33.0
+   ],
+   "area": 6.25,
+   "top": 4.18,
+   "vote": {
+    "through": 7,
+    "surface": 0,
+    "views": 38,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    67.5,
+    73.0
+   ],
+   "v": [
+    -7.5,
+    4.0
+   ],
+   "area": 6.0,
+   "top": 16.07,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    71.5,
+    75.0
+   ],
+   "v": [
+    -6.5,
+    2.5
+   ],
+   "area": 5.0,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -8.0,
+    -7.5
+   ],
+   "v": [
+    -43.5,
+    -35.5
+   ],
+   "area": 4.5,
+   "top": 1.79,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 5,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    69.0,
+    72.0
+   ],
+   "v": [
+    -4.0,
+    2.0
+   ],
+   "area": 4.5,
+   "top": 3.6,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    59.5,
+    63.5
+   ],
+   "v": [
+    -23.5,
+    -16.0
+   ],
+   "area": 4.25,
+   "top": 16.86,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    14.5,
+    18.0
+   ],
+   "v": [
+    -35.0,
+    -31.0
+   ],
+   "area": 4.0,
+   "top": 3.25,
+   "vote": {
+    "through": 0,
+    "surface": 13,
+    "views": 43,
+    "verdict": "confirmed-by-video"
+   },
+   "rule": "F3 video confirms surface",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    62.5,
+    69.0
+   ],
+   "v": [
+    -18.0,
+    -17.5
+   ],
+   "area": 3.75,
+   "top": 3.19,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -63.0,
+    -58.0
+   ],
+   "v": [
+    3.0,
+    3.5
+   ],
+   "area": 3.5,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -56.0,
+    -51.0
+   ],
+   "v": [
+    3.5,
+    4.0
+   ],
+   "area": 3.5,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -48.0,
+    -43.5
+   ],
+   "v": [
+    6.5,
+    8.5
+   ],
+   "area": 3.5,
+   "top": 4.08,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -14.5,
+    -9.5
+   ],
+   "v": [
+    6.5,
+    7.0
+   ],
+   "area": 3.5,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 9,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -7.5,
+    -2.0
+   ],
+   "v": [
+    7.5,
+    8.0
+   ],
+   "area": 3.5,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 7,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -29.0,
+    -23.5
+   ],
+   "v": [
+    5.5,
+    6.5
+   ],
+   "area": 3.5,
+   "top": 4.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    2.0,
+    4.5
+   ],
+   "v": [
+    -38.5,
+    -34.5
+   ],
+   "area": 3.5,
+   "top": 3.25,
+   "vote": {
+    "through": 240,
+    "surface": 64,
+    "views": 49,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -76.5,
+    -71.5
+   ],
+   "v": [
+    2.0,
+    2.5
+   ],
+   "area": 3.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -70.0,
+    -65.0
+   ],
+   "v": [
+    2.5,
+    3.0
+   ],
+   "area": 3.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -36.0,
+    -30.0
+   ],
+   "v": [
+    5.0,
+    5.0
+   ],
+   "area": 3.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -48.0,
+    -43.5
+   ],
+   "v": [
+    10.5,
+    11.5
+   ],
+   "area": 3.0,
+   "top": 4.08,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -46.0,
+    -45.5
+   ],
+   "v": [
+    5.5,
+    9.5
+   ],
+   "area": 3.0,
+   "top": 5.1,
+   "vote": {
+    "through": 18,
+    "surface": 0,
+    "views": 11,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -21.5,
+    -16.5
+   ],
+   "v": [
+    6.0,
+    6.5
+   ],
+   "area": 3.0,
+   "top": 4.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 5,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    22.5,
+    23.0
+   ],
+   "v": [
+    -40.5,
+    -35.5
+   ],
+   "area": 3.0,
+   "top": 12.97,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 27,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -48.0,
+    -43.0
+   ],
+   "v": [
+    4.0,
+    4.5
+   ],
+   "area": 2.75,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -28.5,
+    -23.5
+   ],
+   "v": [
+    5.5,
+    5.5
+   ],
+   "area": 2.75,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -42.0,
+    -37.0
+   ],
+   "v": [
+    4.5,
+    4.5
+   ],
+   "area": 2.75,
+   "top": 16.0,
+   "vote": {
+    "through": 268,
+    "surface": 9,
+    "views": 15,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -35.0,
+    -30.0
+   ],
+   "v": [
+    5.0,
+    5.0
+   ],
+   "area": 2.75,
+   "top": 16.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 6,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -83.0,
+    -78.5
+   ],
+   "v": [
+    1.5,
+    1.5
+   ],
+   "area": 2.5,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -41.0,
+    -37.0
+   ],
+   "v": [
+    4.5,
+    4.5
+   ],
+   "area": 2.25,
+   "top": 4.18,
+   "vote": {
+    "through": 6,
+    "surface": 0,
+    "views": 2,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -21.5,
+    -19.0
+   ],
+   "v": [
+    6.0,
+    6.0
+   ],
+   "area": 1.5,
+   "top": 4.08,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    70.0,
+    70.0
+   ],
+   "v": [
+    -29.0,
+    -26.5
+   ],
+   "area": 1.5,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -1.0,
+    -1.0
+   ],
+   "v": [
+    -33.0,
+    -30.5
+   ],
+   "area": 1.5,
+   "top": 16.95,
+   "vote": {
+    "through": 12,
+    "surface": 202,
+    "views": 36,
+    "verdict": "confirmed-by-video"
+   },
+   "rule": "F3 video confirms surface",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    2.5,
+    2.5
+   ],
+   "v": [
+    -42.0,
+    -39.5
+   ],
+   "area": 1.5,
+   "top": 23.13,
+   "vote": {
+    "through": 68,
+    "surface": 59,
+    "views": 36,
+    "verdict": "confirmed-by-video"
+   },
+   "rule": "F3 video confirms surface",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    18.0,
+    18.0
+   ],
+   "v": [
+    -39.0,
+    -36.5
+   ],
+   "area": 1.5,
+   "top": 23.03,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 31,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    28.0,
+    28.5
+   ],
+   "v": [
+    -37.5,
+    -35.0
+   ],
+   "area": 1.5,
+   "top": 22.97,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 1,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    60.0,
+    61.0
+   ],
+   "v": [
+    -27.0,
+    -24.5
+   ],
+   "area": 1.5,
+   "top": 22.92,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    61.0,
+    62.0
+   ],
+   "v": [
+    -30.5,
+    -28.0
+   ],
+   "area": 1.5,
+   "top": 23.69,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    65.0,
+    66.0
+   ],
+   "v": [
+    -12.0,
+    -10.0
+   ],
+   "area": 1.5,
+   "top": 16.86,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    72.0,
+    72.0
+   ],
+   "v": [
+    -13.5,
+    -11.0
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    72.0,
+    72.0
+   ],
+   "v": [
+    -10.0,
+    -7.5
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    72.5,
+    72.5
+   ],
+   "v": [
+    -20.5,
+    -18.0
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    72.5,
+    72.5
+   ],
+   "v": [
+    -17.0,
+    -14.5
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    73.0,
+    73.0
+   ],
+   "v": [
+    -24.0,
+    -21.5
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    75.0,
+    75.0
+   ],
+   "v": [
+    -9.0,
+    -6.5
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    75.0,
+    76.0
+   ],
+   "v": [
+    -5.5,
+    -3.0
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    75.5,
+    75.5
+   ],
+   "v": [
+    -16.0,
+    -13.5
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    76.0,
+    76.0
+   ],
+   "v": [
+    -23.0,
+    -20.5
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    76.0,
+    76.0
+   ],
+   "v": [
+    -19.5,
+    -17.0
+   ],
+   "area": 1.5,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -0.5,
+    1.5
+   ],
+   "v": [
+    8.0,
+    8.0
+   ],
+   "area": 1.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    23.0,
+    25.0
+   ],
+   "v": [
+    -34.5,
+    -34.5
+   ],
+   "area": 1.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 10,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    75.5,
+    75.5
+   ],
+   "v": [
+    -12.5,
+    -10.5
+   ],
+   "area": 1.25,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -4.5,
+    -4.0
+   ],
+   "v": [
+    -36.5,
+    -35.5
+   ],
+   "area": 1.0,
+   "top": 3.79,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 3,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    73.0,
+    73.5
+   ],
+   "v": [
+    -5.0,
+    -4.5
+   ],
+   "area": 1.0,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    73.5,
+    74.0
+   ],
+   "v": [
+    -14.5,
+    -14.0
+   ],
+   "area": 1.0,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    74.5,
+    75.0
+   ],
+   "v": [
+    -24.0,
+    -23.5
+   ],
+   "area": 1.0,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -45.5,
+    -44.0
+   ],
+   "v": [
+    4.0,
+    4.0
+   ],
+   "area": 1.0,
+   "top": 16.0,
+   "vote": {
+    "through": 131,
+    "surface": 0,
+    "views": 18,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -8.0,
+    -8.0
+   ],
+   "v": [
+    -43.5,
+    -42.0
+   ],
+   "area": 1.0,
+   "top": 23.41,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 10,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    28.5,
+    29.0
+   ],
+   "v": [
+    -40.0,
+    -38.5
+   ],
+   "area": 1.0,
+   "top": 23.36,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 1,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    73.0,
+    73.0
+   ],
+   "v": [
+    -26.5,
+    -25.0
+   ],
+   "area": 1.0,
+   "top": -1.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -17.5,
+    -16.5
+   ],
+   "v": [
+    6.0,
+    6.0
+   ],
+   "area": 0.75,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    20.5,
+    21.5
+   ],
+   "v": [
+    -33.5,
+    -33.5
+   ],
+   "area": 0.75,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 13,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    60.5,
+    60.5
+   ],
+   "v": [
+    -26.5,
+    -25.5
+   ],
+   "area": 0.75,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -50.0,
+    -50.0
+   ],
+   "v": [
+    6.0,
+    6.5
+   ],
+   "area": 0.5,
+   "top": 4.08,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    61.5,
+    61.5
+   ],
+   "v": [
+    -30.0,
+    -29.5
+   ],
+   "area": 0.5,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    62.5,
+    62.5
+   ],
+   "v": [
+    -33.0,
+    -32.5
+   ],
+   "area": 0.5,
+   "top": 2.38,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -75.0,
+    -74.5
+   ],
+   "v": [
+    11.5,
+    11.5
+   ],
+   "area": 0.5,
+   "top": 6.65,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -28.5,
+    -28.5
+   ],
+   "v": [
+    7.5,
+    8.0
+   ],
+   "area": 0.5,
+   "top": 4.0,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -14.5,
+    -14.0
+   ],
+   "v": [
+    6.5,
+    6.5
+   ],
+   "area": 0.5,
+   "top": 10.93,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 8,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    18.5,
+    18.5
+   ],
+   "v": [
+    -41.0,
+    -40.5
+   ],
+   "area": 0.5,
+   "top": 3.25,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 14,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    62.0,
+    62.5
+   ],
+   "v": [
+    -32.0,
+    -31.5
+   ],
+   "area": 0.5,
+   "top": 23.82,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    64.0,
+    64.5
+   ],
+   "v": [
+    -14.0,
+    -14.0
+   ],
+   "area": 0.5,
+   "top": 19.64,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    64.5,
+    65.0
+   ],
+   "v": [
+    -13.0,
+    -13.0
+   ],
+   "area": 0.5,
+   "top": 19.62,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    66.5,
+    67.0
+   ],
+   "v": [
+    -9.0,
+    -8.5
+   ],
+   "area": 0.5,
+   "top": 9.93,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -49.0,
+    -49.0
+   ],
+   "v": [
+    4.0,
+    4.0
+   ],
+   "area": 0.25,
+   "top": 3.98,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    -42.0,
+    -42.0
+   ],
+   "v": [
+    4.5,
+    4.5
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    22.0,
+    22.0
+   ],
+   "v": [
+    -35.0,
+    -35.0
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 10,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    59.5,
+    59.5
+   ],
+   "v": [
+    -23.5,
+    -23.5
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    60.5,
+    60.5
+   ],
+   "v": [
+    -21.5,
+    -21.5
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    61.5,
+    61.5
+   ],
+   "v": [
+    -19.5,
+    -19.5
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    63.5,
+    63.5
+   ],
+   "v": [
+    -15.5,
+    -15.5
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    64.5,
+    64.5
+   ],
+   "v": [
+    -13.0,
+    -13.0
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    64.5,
+    64.5
+   ],
+   "v": [
+    -9.5,
+    -9.5
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    65.5,
+    65.5
+   ],
+   "v": [
+    -7.0,
+    -7.0
+   ],
+   "area": 0.25,
+   "top": 3.78,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    67.0,
+    67.0
+   ],
+   "v": [
+    -6.0,
+    -6.0
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    68.5,
+    68.5
+   ],
+   "v": [
+    -5.0,
+    -5.0
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    70.0,
+    70.0
+   ],
+   "v": [
+    -6.0,
+    -6.0
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    71.5,
+    71.5
+   ],
+   "v": [
+    -3.0,
+    -3.0
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 1,
+   "u": [
+    72.5,
+    72.5
+   ],
+   "v": [
+    -1.0,
+    -1.0
+   ],
+   "area": 0.25,
+   "top": 4.18,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -52.0,
+    -52.0
+   ],
+   "v": [
+    8.0,
+    8.0
+   ],
+   "area": 0.25,
+   "top": 5.1,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    -29.5,
+    -29.5
+   ],
+   "v": [
+    8.5,
+    8.5
+   ],
+   "area": 0.25,
+   "top": 5.1,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F6 unobserved, outside guide-derived public zones",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    13.0,
+    13.0
+   ],
+   "v": [
+    -30.0,
+    -30.0
+   ],
+   "area": 0.25,
+   "top": 3.6,
+   "vote": {
+    "through": 6,
+    "surface": 0,
+    "views": 32,
+    "verdict": "contradicted-by-video"
+   },
+   "rule": "F2 video sees through it",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    14.0,
+    14.0
+   ],
+   "v": [
+    -30.0,
+    -30.0
+   ],
+   "area": 0.25,
+   "top": 3.6,
+   "vote": {
+    "through": 0,
+    "surface": 16,
+    "views": 31,
+    "verdict": "confirmed-by-video"
+   },
+   "rule": "F3 video confirms surface",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    20.0,
+    20.0
+   ],
+   "v": [
+    -29.0,
+    -29.0
+   ],
+   "area": 0.25,
+   "top": 3.6,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 5,
+    "verdict": "unobserved"
+   },
+   "rule": "F5 unobserved low mass inside guide-derived public zone",
+   "action": "cut"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    62.5,
+    62.5
+   ],
+   "v": [
+    -33.0,
+    -33.0
+   ],
+   "area": 0.25,
+   "top": 23.87,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  },
+  {
+   "pass": "body-occupancy",
+   "floor": 2,
+   "u": [
+    64.0,
+    64.0
+   ],
+   "v": [
+    -15.0,
+    -15.0
+   ],
+   "area": 0.25,
+   "top": 16.07,
+   "vote": {
+    "through": 0,
+    "surface": 0,
+    "views": 0,
+    "verdict": "unobserved"
+   },
+   "rule": "F4 core/column (30deg incline or rises >=8m)",
+   "action": "keep"
+  }
+ ],
+ "cuts": [
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 59.75,
+   "u1": 60.75,
+   "v0": -25.25,
+   "v1": -21.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 60.75,
+   "u1": 61.75,
+   "v0": -29.25,
+   "v1": -19.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 61.75,
+   "u1": 62.75,
+   "v0": -32.25,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 62.75,
+   "u1": 63.75,
+   "v0": -34.25,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 63.75,
+   "u1": 64.75,
+   "v0": -33.75,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 64.75,
+   "u1": 65.75,
+   "v0": -33.25,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 65.75,
+   "u1": 66.75,
+   "v0": -32.75,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 66.75,
+   "u1": 67.75,
+   "v0": -32.25,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 67.75,
+   "u1": 68.75,
+   "v0": -30.75,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 68.75,
+   "u1": 69.75,
+   "v0": -30.75,
+   "v1": -18.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 0,
+   "name": "intrusion c0 F5",
+   "u0": 69.75,
+   "u1": 70.25,
+   "v0": -30.75,
+   "v1": -29.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 62.75,
+   "u1": 63.75,
+   "v0": -17.75,
+   "v1": -15.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 63.75,
+   "u1": 64.75,
+   "v0": -17.75,
+   "v1": -13.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 64.75,
+   "u1": 65.75,
+   "v0": -17.75,
+   "v1": -7.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 65.75,
+   "u1": 66.75,
+   "v0": -17.75,
+   "v1": -5.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 66.75,
+   "u1": 67.75,
+   "v0": -17.75,
+   "v1": -6.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 67.75,
+   "u1": 68.75,
+   "v0": -17.75,
+   "v1": -5.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 68.75,
+   "u1": 69.75,
+   "v0": -17.75,
+   "v1": -4.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 1,
+   "name": "intrusion c1 F5",
+   "u0": 69.75,
+   "u1": 70.75,
+   "v0": -5.75,
+   "v1": -4.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 3,
+   "name": "intrusion c3 F5",
+   "u0": -67.75,
+   "u1": -66.75,
+   "v0": 6.75,
+   "v1": 10.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 3,
+   "name": "intrusion c3 F5",
+   "u0": -66.75,
+   "u1": -65.75,
+   "v0": 6.75,
+   "v1": 10.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 3,
+   "name": "intrusion c3 F5",
+   "u0": -65.75,
+   "u1": -64.75,
+   "v0": 6.75,
+   "v1": 10.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 3,
+   "name": "intrusion c3 F5",
+   "u0": -64.75,
+   "u1": -63.75,
+   "v0": 6.75,
+   "v1": 10.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 3,
+   "name": "intrusion c3 F5",
+   "u0": -63.75,
+   "u1": -62.75,
+   "v0": 7.25,
+   "v1": 10.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 3,
+   "name": "intrusion c3 F5",
+   "u0": -62.75,
+   "u1": -61.75,
+   "v0": 7.25,
+   "v1": 10.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 3,
+   "name": "intrusion c3 F5",
+   "u0": -61.75,
+   "u1": -61.25,
+   "v0": 7.25,
+   "v1": 10.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 4,
+   "name": "intrusion c4 F5",
+   "u0": 69.25,
+   "u1": 70.25,
+   "v0": -3.75,
+   "v1": -2.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 4,
+   "name": "intrusion c4 F5",
+   "u0": 70.25,
+   "u1": 71.25,
+   "v0": -3.75,
+   "v1": -0.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 4,
+   "name": "intrusion c4 F5",
+   "u0": 71.25,
+   "u1": 72.25,
+   "v0": -2.75,
+   "v1": 0.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 4,
+   "name": "intrusion c4 F5",
+   "u0": 72.25,
+   "u1": 73.25,
+   "v0": -0.75,
+   "v1": 3.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 4,
+   "name": "intrusion c4 F5",
+   "u0": 73.25,
+   "u1": 74.25,
+   "v0": 1.25,
+   "v1": 3.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 6,
+   "name": "intrusion c6 F5",
+   "u0": 21.75,
+   "u1": 22.75,
+   "v0": -34.75,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 6,
+   "name": "intrusion c6 F5",
+   "u0": 22.75,
+   "u1": 23.75,
+   "v0": -34.25,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 6,
+   "name": "intrusion c6 F5",
+   "u0": 23.75,
+   "u1": 24.75,
+   "v0": -34.25,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 6,
+   "name": "intrusion c6 F5",
+   "u0": 24.75,
+   "u1": 25.75,
+   "v0": -34.25,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 6,
+   "name": "intrusion c6 F5",
+   "u0": 25.75,
+   "u1": 26.75,
+   "v0": -34.25,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 6,
+   "name": "intrusion c6 F5",
+   "u0": 26.75,
+   "u1": 27.75,
+   "v0": -34.25,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 8,
+   "name": "intrusion c8 F5",
+   "u0": -7.75,
+   "u1": -6.75,
+   "v0": -36.75,
+   "v1": -35.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 8,
+   "name": "intrusion c8 F5",
+   "u0": -6.75,
+   "u1": -5.75,
+   "v0": -36.75,
+   "v1": -35.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 8,
+   "name": "intrusion c8 F5",
+   "u0": -5.75,
+   "u1": -4.75,
+   "v0": -36.75,
+   "v1": -35.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 8,
+   "name": "intrusion c8 F5",
+   "u0": -4.75,
+   "u1": -4.25,
+   "v0": -36.25,
+   "v1": -35.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 9,
+   "name": "intrusion c9 F5",
+   "u0": -8.25,
+   "u1": -7.75,
+   "v0": -41.75,
+   "v1": -35.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 11,
+   "name": "intrusion c11 F5",
+   "u0": 22.25,
+   "u1": 22.75,
+   "v0": -37.75,
+   "v1": -33.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 12,
+   "name": "intrusion c12 F5",
+   "u0": -51.75,
+   "u1": -50.75,
+   "v0": 7.75,
+   "v1": 8.25,
+   "y0": 7.02,
+   "y1": 16.797
+  },
+  {
+   "cluster": 12,
+   "name": "intrusion c12 F5",
+   "u0": -50.75,
+   "u1": -50.25,
+   "v0": 7.75,
+   "v1": 10.75,
+   "y0": 7.02,
+   "y1": 16.723
+  },
+  {
+   "cluster": 13,
+   "name": "intrusion c13 F1",
+   "u0": 71.25,
+   "u1": 71.75,
+   "v0": -8.25,
+   "v1": -4.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 14,
+   "name": "intrusion c14 F5",
+   "u0": 71.75,
+   "u1": 72.25,
+   "v0": -15.25,
+   "v1": -11.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 15,
+   "name": "intrusion c15 F5",
+   "u0": -2.25,
+   "u1": -1.75,
+   "v0": -43.75,
+   "v1": -40.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 16,
+   "name": "intrusion c16 F1",
+   "u0": 72.25,
+   "u1": 72.75,
+   "v0": -22.25,
+   "v1": -18.75,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 17,
+   "name": "intrusion c17 F1",
+   "u0": 75.25,
+   "u1": 75.75,
+   "v0": -12.25,
+   "v1": -8.75,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 18,
+   "name": "intrusion c18 F1",
+   "u0": 75.75,
+   "u1": 76.25,
+   "v0": -19.25,
+   "v1": -15.75,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 19,
+   "name": "intrusion c19 F1",
+   "u0": -2.75,
+   "u1": -2.25,
+   "v0": -38.25,
+   "v1": -35.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 20,
+   "name": "intrusion c20 F1",
+   "u0": 72.75,
+   "u1": 73.75,
+   "v0": -5.75,
+   "v1": -4.25,
+   "y0": 0.035,
+   "y1": 0.265
+  },
+  {
+   "cluster": 21,
+   "name": "intrusion c21 F1",
+   "u0": 76.25,
+   "u1": 76.75,
+   "v0": -25.25,
+   "v1": -22.75,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 24,
+   "name": "intrusion c24 F1",
+   "u0": 73.25,
+   "u1": 74.25,
+   "v0": -14.75,
+   "v1": -13.75,
+   "y0": 0.035,
+   "y1": 0.265
+  },
+  {
+   "cluster": 25,
+   "name": "intrusion c25 F1",
+   "u0": 74.25,
+   "u1": 75.25,
+   "v0": -24.25,
+   "v1": -23.25,
+   "y0": 0.035,
+   "y1": 0.315
+  },
+  {
+   "cluster": 26,
+   "name": "intrusion c26 F1",
+   "u0": 72.25,
+   "u1": 73.25,
+   "v0": -2.75,
+   "v1": -0.75,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 27,
+   "name": "intrusion c27 F1",
+   "u0": 72.75,
+   "u1": 73.25,
+   "v0": -27.75,
+   "v1": -25.75,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 28,
+   "name": "intrusion c28 F5",
+   "u0": 76.25,
+   "u1": 77.25,
+   "v0": -2.75,
+   "v1": -0.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 29,
+   "name": "intrusion c29 F5",
+   "u0": 27.75,
+   "u1": 28.25,
+   "v0": -36.25,
+   "v1": -34.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 30,
+   "name": "intrusion c30 F5",
+   "u0": 28.25,
+   "u1": 28.75,
+   "v0": -39.75,
+   "v1": -38.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 31,
+   "name": "intrusion c31 F5",
+   "u0": -46.25,
+   "u1": -45.75,
+   "v0": 9.75,
+   "v1": 11.25,
+   "y0": 7.02,
+   "y1": 16.433
+  },
+  {
+   "cluster": 32,
+   "name": "intrusion c32 F1",
+   "u0": 22.75,
+   "u1": 23.25,
+   "v0": -41.75,
+   "v1": -40.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 33,
+   "name": "intrusion c33 F5",
+   "u0": 74.75,
+   "u1": 75.75,
+   "v0": 2.75,
+   "v1": 4.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 36,
+   "name": "intrusion c36 F2",
+   "u0": -45.75,
+   "u1": -45.25,
+   "v0": 4.25,
+   "v1": 5.25,
+   "y0": 7.02,
+   "y1": 16.547
+  },
+  {
+   "cluster": 37,
+   "name": "intrusion c37 F5",
+   "u0": 17.75,
+   "u1": 18.25,
+   "v0": -36.25,
+   "v1": -35.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 38,
+   "name": "intrusion c38 F5",
+   "u0": 27.75,
+   "u1": 28.25,
+   "v0": -34.75,
+   "v1": -33.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 45,
+   "name": "intrusion c45 F5",
+   "u0": 75.75,
+   "u1": 76.25,
+   "v0": -0.25,
+   "v1": 0.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 46,
+   "name": "intrusion c46 F1",
+   "u0": -72.75,
+   "u1": -72.25,
+   "v0": 9.25,
+   "v1": 9.75,
+   "y0": 7.02,
+   "y1": 7.35
+  },
+  {
+   "cluster": 47,
+   "name": "intrusion c47 F2",
+   "u0": 2.25,
+   "u1": 2.75,
+   "v0": -42.75,
+   "v1": -42.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 48,
+   "name": "intrusion c48 F5",
+   "u0": 28.25,
+   "u1": 28.75,
+   "v0": -38.25,
+   "v1": -37.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 49,
+   "name": "intrusion c49 F5",
+   "u0": 59.75,
+   "u1": 60.25,
+   "v0": -24.25,
+   "v1": -23.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 50,
+   "name": "intrusion c50 F5",
+   "u0": 60.75,
+   "u1": 61.25,
+   "v0": -27.75,
+   "v1": -27.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 51,
+   "name": "intrusion c51 F5",
+   "u0": 61.75,
+   "u1": 62.25,
+   "v0": -31.25,
+   "v1": -30.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 52,
+   "name": "intrusion c52 F5",
+   "u0": 62.25,
+   "u1": 62.75,
+   "v0": -32.75,
+   "v1": -32.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 53,
+   "name": "intrusion c53 F5",
+   "u0": 63.25,
+   "u1": 63.75,
+   "v0": -15.75,
+   "v1": -15.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 54,
+   "name": "intrusion c54 F5",
+   "u0": 63.75,
+   "u1": 64.25,
+   "v0": -14.75,
+   "v1": -14.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 55,
+   "name": "intrusion c55 F5",
+   "u0": 64.25,
+   "u1": 64.75,
+   "v0": -13.75,
+   "v1": -13.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 56,
+   "name": "intrusion c56 F5",
+   "u0": 64.75,
+   "u1": 65.25,
+   "v0": -12.75,
+   "v1": -12.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 57,
+   "name": "intrusion c57 F5",
+   "u0": 66.25,
+   "u1": 66.75,
+   "v0": -9.75,
+   "v1": -9.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 58,
+   "name": "intrusion c58 F5",
+   "u0": 71.75,
+   "u1": 72.25,
+   "v0": -10.75,
+   "v1": -10.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 59,
+   "name": "intrusion c59 F1",
+   "u0": 71.75,
+   "u1": 72.25,
+   "v0": -3.75,
+   "v1": -3.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 60,
+   "name": "intrusion c60 F5",
+   "u0": 72.25,
+   "u1": 72.75,
+   "v0": -17.75,
+   "v1": -17.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 61,
+   "name": "intrusion c61 F5",
+   "u0": 72.75,
+   "u1": 73.25,
+   "v0": -24.75,
+   "v1": -24.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 62,
+   "name": "intrusion c62 F1",
+   "u0": 73.25,
+   "u1": 73.75,
+   "v0": -0.25,
+   "v1": 0.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 63,
+   "name": "intrusion c63 F1",
+   "u0": 73.75,
+   "u1": 74.25,
+   "v0": 0.75,
+   "v1": 1.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 64,
+   "name": "intrusion c64 F1",
+   "u0": 74.25,
+   "u1": 74.75,
+   "v0": 1.75,
+   "v1": 2.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 65,
+   "name": "intrusion c65 F5",
+   "u0": 74.75,
+   "u1": 75.25,
+   "v0": -6.25,
+   "v1": -5.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 66,
+   "name": "intrusion c66 F5",
+   "u0": 75.25,
+   "u1": 75.75,
+   "v0": -13.25,
+   "v1": -12.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 67,
+   "name": "intrusion c67 F1",
+   "u0": 75.25,
+   "u1": 75.75,
+   "v0": -4.75,
+   "v1": -4.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 68,
+   "name": "intrusion c68 F5",
+   "u0": 75.75,
+   "u1": 76.25,
+   "v0": -20.25,
+   "v1": -19.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 69,
+   "name": "intrusion c69 F1",
+   "u0": 75.75,
+   "u1": 76.25,
+   "v0": -3.75,
+   "v1": -3.25,
+   "y0": 7.02,
+   "y1": 7.25
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -8.25,
+   "u1": -7.25,
+   "v0": -36.75,
+   "v1": -35.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -7.25,
+   "u1": -6.25,
+   "v0": -36.75,
+   "v1": -36.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -6.25,
+   "u1": -5.25,
+   "v0": -36.75,
+   "v1": -36.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -5.25,
+   "u1": -4.25,
+   "v0": -36.75,
+   "v1": -36.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -4.25,
+   "u1": -3.25,
+   "v0": -36.75,
+   "v1": -35.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -3.25,
+   "u1": -2.25,
+   "v0": -38.25,
+   "v1": -34.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -2.25,
+   "u1": -1.25,
+   "v0": -42.75,
+   "v1": -34.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 71,
+   "name": "intrusion c71 F2",
+   "u0": -1.25,
+   "u1": -0.25,
+   "v0": -35.25,
+   "v1": -34.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 73,
+   "name": "intrusion c73 F2",
+   "u0": 24.75,
+   "u1": 25.75,
+   "v0": -33.25,
+   "v1": -32.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 73,
+   "name": "intrusion c73 F2",
+   "u0": 25.75,
+   "u1": 26.75,
+   "v0": -33.25,
+   "v1": -32.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 73,
+   "name": "intrusion c73 F2",
+   "u0": 26.75,
+   "u1": 27.75,
+   "v0": -33.25,
+   "v1": -32.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 73,
+   "name": "intrusion c73 F2",
+   "u0": 27.75,
+   "u1": 28.75,
+   "v0": -40.25,
+   "v1": -32.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 73,
+   "name": "intrusion c73 F2",
+   "u0": 28.75,
+   "u1": 29.25,
+   "v0": -40.25,
+   "v1": -39.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 75,
+   "name": "intrusion c75 F5",
+   "u0": 71.25,
+   "u1": 72.25,
+   "v0": -6.75,
+   "v1": -3.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 75,
+   "name": "intrusion c75 F5",
+   "u0": 72.25,
+   "u1": 73.25,
+   "v0": -3.25,
+   "v1": -1.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 75,
+   "name": "intrusion c75 F5",
+   "u0": 73.25,
+   "u1": 74.25,
+   "v0": -1.25,
+   "v1": 1.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 75,
+   "name": "intrusion c75 F5",
+   "u0": 74.25,
+   "u1": 75.25,
+   "v0": 0.75,
+   "v1": 2.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 76,
+   "name": "intrusion c76 F5",
+   "u0": -8.25,
+   "u1": -7.25,
+   "v0": -43.75,
+   "v1": -35.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 77,
+   "name": "intrusion c77 F5",
+   "u0": 68.75,
+   "u1": 69.75,
+   "v0": -4.25,
+   "v1": -2.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 77,
+   "name": "intrusion c77 F5",
+   "u0": 69.75,
+   "u1": 70.75,
+   "v0": -4.25,
+   "v1": -0.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 77,
+   "name": "intrusion c77 F5",
+   "u0": 70.75,
+   "u1": 71.75,
+   "v0": -4.25,
+   "v1": 1.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 77,
+   "name": "intrusion c77 F5",
+   "u0": 71.75,
+   "u1": 72.25,
+   "v0": 0.75,
+   "v1": 2.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 80,
+   "name": "intrusion c80 F5",
+   "u0": 62.25,
+   "u1": 63.25,
+   "v0": -18.25,
+   "v1": -17.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 80,
+   "name": "intrusion c80 F5",
+   "u0": 63.25,
+   "u1": 64.25,
+   "v0": -18.25,
+   "v1": -17.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 80,
+   "name": "intrusion c80 F5",
+   "u0": 64.25,
+   "u1": 65.25,
+   "v0": -18.25,
+   "v1": -17.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 80,
+   "name": "intrusion c80 F5",
+   "u0": 65.25,
+   "u1": 66.25,
+   "v0": -18.25,
+   "v1": -17.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 80,
+   "name": "intrusion c80 F5",
+   "u0": 66.25,
+   "u1": 67.25,
+   "v0": -18.25,
+   "v1": -17.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 80,
+   "name": "intrusion c80 F5",
+   "u0": 67.25,
+   "u1": 68.25,
+   "v0": -18.25,
+   "v1": -17.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 80,
+   "name": "intrusion c80 F5",
+   "u0": 68.25,
+   "u1": 69.25,
+   "v0": -18.25,
+   "v1": -17.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 87,
+   "name": "intrusion c87 F2",
+   "u0": 1.75,
+   "u1": 2.75,
+   "v0": -38.75,
+   "v1": -34.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 87,
+   "name": "intrusion c87 F2",
+   "u0": 2.75,
+   "u1": 3.75,
+   "v0": -34.75,
+   "v1": -34.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 87,
+   "name": "intrusion c87 F2",
+   "u0": 3.75,
+   "u1": 4.75,
+   "v0": -34.75,
+   "v1": -34.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 88,
+   "name": "intrusion c88 F5",
+   "u0": -76.75,
+   "u1": -75.75,
+   "v0": 1.75,
+   "v1": 2.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 88,
+   "name": "intrusion c88 F5",
+   "u0": -75.75,
+   "u1": -74.75,
+   "v0": 1.75,
+   "v1": 2.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 88,
+   "name": "intrusion c88 F5",
+   "u0": -74.75,
+   "u1": -73.75,
+   "v0": 1.75,
+   "v1": 2.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 88,
+   "name": "intrusion c88 F5",
+   "u0": -73.75,
+   "u1": -72.75,
+   "v0": 1.75,
+   "v1": 2.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 88,
+   "name": "intrusion c88 F5",
+   "u0": -72.75,
+   "u1": -71.75,
+   "v0": 1.75,
+   "v1": 2.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 88,
+   "name": "intrusion c88 F5",
+   "u0": -71.75,
+   "u1": -71.25,
+   "v0": 1.75,
+   "v1": 2.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 89,
+   "name": "intrusion c89 F5",
+   "u0": -70.25,
+   "u1": -69.25,
+   "v0": 2.25,
+   "v1": 2.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 89,
+   "name": "intrusion c89 F5",
+   "u0": -69.25,
+   "u1": -68.25,
+   "v0": 2.25,
+   "v1": 2.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 89,
+   "name": "intrusion c89 F5",
+   "u0": -68.25,
+   "u1": -67.25,
+   "v0": 2.25,
+   "v1": 3.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 89,
+   "name": "intrusion c89 F5",
+   "u0": -67.25,
+   "u1": -66.25,
+   "v0": 2.25,
+   "v1": 3.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 89,
+   "name": "intrusion c89 F5",
+   "u0": -66.25,
+   "u1": -65.25,
+   "v0": 2.25,
+   "v1": 2.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 89,
+   "name": "intrusion c89 F5",
+   "u0": -65.25,
+   "u1": -64.75,
+   "v0": 2.25,
+   "v1": 2.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 92,
+   "name": "intrusion c92 F2",
+   "u0": -46.25,
+   "u1": -45.25,
+   "v0": 5.25,
+   "v1": 9.75,
+   "y0": 7.02,
+   "y1": 16.493
+  },
+  {
+   "cluster": 97,
+   "name": "intrusion c97 F2",
+   "u0": -42.25,
+   "u1": -41.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 7.02,
+   "y1": 16.338
+  },
+  {
+   "cluster": 97,
+   "name": "intrusion c97 F2",
+   "u0": -41.25,
+   "u1": -40.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 7.02,
+   "y1": 16.281
+  },
+  {
+   "cluster": 97,
+   "name": "intrusion c97 F2",
+   "u0": -40.25,
+   "u1": -39.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 7.02,
+   "y1": 16.223
+  },
+  {
+   "cluster": 97,
+   "name": "intrusion c97 F2",
+   "u0": -39.25,
+   "u1": -38.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 7.02,
+   "y1": 16.166
+  },
+  {
+   "cluster": 97,
+   "name": "intrusion c97 F2",
+   "u0": -38.25,
+   "u1": -37.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 7.02,
+   "y1": 16.108
+  },
+  {
+   "cluster": 97,
+   "name": "intrusion c97 F2",
+   "u0": -37.25,
+   "u1": -36.75,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 7.02,
+   "y1": 16.065
+  },
+  {
+   "cluster": 99,
+   "name": "intrusion c99 F5",
+   "u0": -83.25,
+   "u1": -82.25,
+   "v0": 1.25,
+   "v1": 1.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 99,
+   "name": "intrusion c99 F5",
+   "u0": -82.25,
+   "u1": -81.25,
+   "v0": 1.25,
+   "v1": 1.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 99,
+   "name": "intrusion c99 F5",
+   "u0": -81.25,
+   "u1": -80.25,
+   "v0": 1.25,
+   "v1": 1.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 99,
+   "name": "intrusion c99 F5",
+   "u0": -80.25,
+   "u1": -79.25,
+   "v0": 1.25,
+   "v1": 1.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 99,
+   "name": "intrusion c99 F5",
+   "u0": -79.25,
+   "u1": -78.25,
+   "v0": 1.25,
+   "v1": 1.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 100,
+   "name": "intrusion c100 F2",
+   "u0": -41.25,
+   "u1": -40.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 100,
+   "name": "intrusion c100 F2",
+   "u0": -40.25,
+   "u1": -39.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 100,
+   "name": "intrusion c100 F2",
+   "u0": -39.25,
+   "u1": -38.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 100,
+   "name": "intrusion c100 F2",
+   "u0": -38.25,
+   "u1": -37.25,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 100,
+   "name": "intrusion c100 F2",
+   "u0": -37.25,
+   "u1": -36.75,
+   "v0": 4.25,
+   "v1": 4.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 102,
+   "name": "intrusion c102 F5",
+   "u0": 69.75,
+   "u1": 70.25,
+   "v0": -29.25,
+   "v1": -26.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 110,
+   "name": "intrusion c110 F5",
+   "u0": 71.75,
+   "u1": 72.25,
+   "v0": -13.75,
+   "v1": -10.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 111,
+   "name": "intrusion c111 F5",
+   "u0": 71.75,
+   "u1": 72.25,
+   "v0": -10.25,
+   "v1": -7.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 112,
+   "name": "intrusion c112 F5",
+   "u0": 72.25,
+   "u1": 72.75,
+   "v0": -20.75,
+   "v1": -17.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 113,
+   "name": "intrusion c113 F5",
+   "u0": 72.25,
+   "u1": 72.75,
+   "v0": -17.25,
+   "v1": -14.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 114,
+   "name": "intrusion c114 F5",
+   "u0": 72.75,
+   "u1": 73.25,
+   "v0": -24.25,
+   "v1": -21.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 115,
+   "name": "intrusion c115 F5",
+   "u0": 74.75,
+   "u1": 75.25,
+   "v0": -9.25,
+   "v1": -6.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 116,
+   "name": "intrusion c116 F5",
+   "u0": 74.75,
+   "u1": 75.75,
+   "v0": -5.75,
+   "v1": -3.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 116,
+   "name": "intrusion c116 F5",
+   "u0": 75.75,
+   "u1": 76.25,
+   "v0": -3.75,
+   "v1": -2.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 117,
+   "name": "intrusion c117 F5",
+   "u0": 75.25,
+   "u1": 75.75,
+   "v0": -16.25,
+   "v1": -13.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 118,
+   "name": "intrusion c118 F5",
+   "u0": 75.75,
+   "u1": 76.25,
+   "v0": -23.25,
+   "v1": -20.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 119,
+   "name": "intrusion c119 F5",
+   "u0": 75.75,
+   "u1": 76.25,
+   "v0": -19.75,
+   "v1": -16.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 121,
+   "name": "intrusion c121 F5",
+   "u0": 22.75,
+   "u1": 23.75,
+   "v0": -34.75,
+   "v1": -34.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 121,
+   "name": "intrusion c121 F5",
+   "u0": 23.75,
+   "u1": 24.75,
+   "v0": -34.75,
+   "v1": -34.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 121,
+   "name": "intrusion c121 F5",
+   "u0": 24.75,
+   "u1": 25.25,
+   "v0": -34.75,
+   "v1": -34.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 122,
+   "name": "intrusion c122 F5",
+   "u0": 75.25,
+   "u1": 75.75,
+   "v0": -12.75,
+   "v1": -10.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 123,
+   "name": "intrusion c123 F5",
+   "u0": -4.75,
+   "u1": -3.75,
+   "v0": -36.75,
+   "v1": -35.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 124,
+   "name": "intrusion c124 F5",
+   "u0": 72.75,
+   "u1": 73.75,
+   "v0": -5.25,
+   "v1": -4.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 125,
+   "name": "intrusion c125 F5",
+   "u0": 73.25,
+   "u1": 74.25,
+   "v0": -14.75,
+   "v1": -13.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 126,
+   "name": "intrusion c126 F5",
+   "u0": 74.25,
+   "u1": 75.25,
+   "v0": -24.25,
+   "v1": -23.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 127,
+   "name": "intrusion c127 F2",
+   "u0": -45.75,
+   "u1": -44.75,
+   "v0": 3.75,
+   "v1": 4.25,
+   "y0": 7.02,
+   "y1": 16.552
+  },
+  {
+   "cluster": 127,
+   "name": "intrusion c127 F2",
+   "u0": -44.75,
+   "u1": -43.75,
+   "v0": 3.75,
+   "v1": 4.25,
+   "y0": 7.02,
+   "y1": 16.494
+  },
+  {
+   "cluster": 130,
+   "name": "intrusion c130 F5",
+   "u0": 72.75,
+   "u1": 73.25,
+   "v0": -26.75,
+   "v1": -24.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 132,
+   "name": "intrusion c132 F5",
+   "u0": 20.25,
+   "u1": 21.25,
+   "v0": -33.75,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 132,
+   "name": "intrusion c132 F5",
+   "u0": 21.25,
+   "u1": 21.75,
+   "v0": -33.75,
+   "v1": -33.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 133,
+   "name": "intrusion c133 F5",
+   "u0": 60.25,
+   "u1": 60.75,
+   "v0": -26.75,
+   "v1": -25.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 135,
+   "name": "intrusion c135 F5",
+   "u0": 61.25,
+   "u1": 61.75,
+   "v0": -30.25,
+   "v1": -29.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 136,
+   "name": "intrusion c136 F5",
+   "u0": 62.25,
+   "u1": 62.75,
+   "v0": -33.25,
+   "v1": -32.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 137,
+   "name": "intrusion c137 F5",
+   "u0": -75.25,
+   "u1": -74.25,
+   "v0": 11.25,
+   "v1": 11.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 140,
+   "name": "intrusion c140 F5",
+   "u0": 18.25,
+   "u1": 18.75,
+   "v0": -41.25,
+   "v1": -40.25,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 147,
+   "name": "intrusion c147 F5",
+   "u0": 21.75,
+   "u1": 22.25,
+   "v0": -35.25,
+   "v1": -34.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 148,
+   "name": "intrusion c148 F5",
+   "u0": 59.25,
+   "u1": 59.75,
+   "v0": -23.75,
+   "v1": -23.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 149,
+   "name": "intrusion c149 F5",
+   "u0": 60.25,
+   "u1": 60.75,
+   "v0": -21.75,
+   "v1": -21.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 150,
+   "name": "intrusion c150 F5",
+   "u0": 61.25,
+   "u1": 61.75,
+   "v0": -19.75,
+   "v1": -19.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 151,
+   "name": "intrusion c151 F5",
+   "u0": 63.25,
+   "u1": 63.75,
+   "v0": -15.75,
+   "v1": -15.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 152,
+   "name": "intrusion c152 F5",
+   "u0": 64.25,
+   "u1": 64.75,
+   "v0": -13.25,
+   "v1": -12.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 153,
+   "name": "intrusion c153 F5",
+   "u0": 64.25,
+   "u1": 64.75,
+   "v0": -9.75,
+   "v1": -9.25,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 154,
+   "name": "intrusion c154 F5",
+   "u0": 65.25,
+   "u1": 65.75,
+   "v0": -7.25,
+   "v1": -6.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 155,
+   "name": "intrusion c155 F5",
+   "u0": 66.75,
+   "u1": 67.25,
+   "v0": -6.25,
+   "v1": -5.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 156,
+   "name": "intrusion c156 F5",
+   "u0": 68.25,
+   "u1": 68.75,
+   "v0": -5.25,
+   "v1": -4.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 157,
+   "name": "intrusion c157 F5",
+   "u0": 69.75,
+   "u1": 70.25,
+   "v0": -6.25,
+   "v1": -5.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 158,
+   "name": "intrusion c158 F5",
+   "u0": 71.25,
+   "u1": 71.75,
+   "v0": -3.25,
+   "v1": -2.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 159,
+   "name": "intrusion c159 F5",
+   "u0": 72.25,
+   "u1": 72.75,
+   "v0": -1.25,
+   "v1": -0.75,
+   "y0": 0.035,
+   "y1": 4.15
+  },
+  {
+   "cluster": 160,
+   "name": "intrusion c160 F5",
+   "u0": -52.25,
+   "u1": -51.75,
+   "v0": 7.75,
+   "v1": 8.25,
+   "y0": 7.02,
+   "y1": 16.84
+  },
+  {
+   "cluster": 162,
+   "name": "intrusion c162 F2",
+   "u0": 12.75,
+   "u1": 13.25,
+   "v0": -30.25,
+   "v1": -29.75,
+   "y0": 7.02,
+   "y1": 11.2
+  },
+  {
+   "cluster": 164,
+   "name": "intrusion c164 F5",
+   "u0": 19.75,
+   "u1": 20.25,
+   "v0": -29.25,
+   "v1": -28.75,
+   "y0": 7.02,
+   "y1": 11.2
+  }
+ ],
+ "cutHeight": "F1: poke height+0.15 (<=0.6m); F2/F5: full interior height (1F 4.2, 2F 11.25, high hall roof-0.8)"
+}

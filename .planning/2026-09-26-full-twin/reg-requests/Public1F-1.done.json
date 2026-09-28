@@ -1,0 +1,403 @@
+{
+ "request": "Public1F-1",
+ "answered_by": "RegTech6",
+ "answered": "2026-09-25T20:05+09:00",
+ "verdict": "NO-GO for the polygon as drawn. The north 1.5 m of the footprint (V -9.8 to about -11.3, U -53 to -43.5) is seen as walkable floor: the videographer walks along V -9.4 to -9.8 (597.9-598.3 s just inside the edge) and a pedestrian stands at U -48.4, V -10.2 (588.9 s). The southern part (V -11.5 to -17) is never in view in 560-600 s, so this clip neither shows nor rules out an opening there. What the clip does show (anchor ctl-hash): a line of stainless-clad columns at V -11.4 to -12.4 (U -59.5, -52.5 and -44.8, about 7-7.7 m apart; 2 of them inside the footprint) and a waist-high stone ledge with a stainless rail whose west face runs along U -55.6 from V -12.2 to -14.0. Relative to the north wall, the columns are 4.9 m south of it; Naver's 2F stairs/escalator block starts 4.7 m south of Naver's rooms front. [INFERENCE] The ledge and columns may be the guard of an opening south of V ~-11.8 and east of U ~-55.6; this is not confirmed. If Main cuts an opening, move its north edge to V <= -11.8 (the column line) and do not cut north of it.",
+ "numbers": {
+  "footprint": [
+   -53.5,
+   -43.4,
+   -17.0,
+   -9.8
+  ],
+  "floor_y": 7.0,
+  "cells_0p5m_in_view": {
+   "total": 280,
+   "in_view_by_any_frame": 84,
+   "rows_in_view": "V -9.8..-13.0 only (U-ends to -13.0 near the columns, mid-U to about -11.5); V -13..-17 never in view (occlusion by the columns/ledge not removed, so actual seen floor is less)",
+   "frames_viewing": "582.2-590.3 s (up to 48 cells, NNE-facing) and 591.6-596.4 s (up to 36 cells, E-facing)"
+  },
+  "sfm_points_in_footprint": {
+   "total": 99,
+   "within_0.15_of_Y7": 5,
+   "below_Y6.5": 0,
+   "above_Y7.5": 87,
+   "note": "points above floor are the two columns (clusters around U -52.5 V -11.7 and U -44.8 V -11.4, Y 7.7-10.7); floor-level points sit at the column bases, plus open floor points at (-52.09,-9.98,6.99) and (-44.87,-10.44,6.95); glossy floor, so few points"
+  },
+  "floor_observations_inside": [
+   {
+    "what": "pedestrian feet (588.9 s, px 150,505)",
+    "uvy": [
+     -48.36,
+     -10.17,
+     7.0
+    ]
+   },
+   {
+    "what": "videographer path 597.9-598.3 s",
+    "uvy_min_v": -9.82
+   }
+  ],
+  "north_wall_police": {
+   "police_brown_front_floor_ends": {
+    "east": [
+     -52.83,
+     -6.64
+    ],
+    "west": [
+     -58.33,
+     -7.21
+    ],
+    "west_alt_view": [
+     -57.85,
+     -6.98
+    ]
+   },
+   "white_room_door_foot": [
+    -48.04,
+    -6.73
+   ],
+   "note": "The builder's police box (U -55..-44, front V -3.31) is about 3.5 m north of what the SfM shows, and it extends further east than the brown frontage (5.1 m wide) [the office may also include the rooms east of it]"
+  },
+  "columns_and_ledge": {
+   "column_west": {
+    "floor_corners": [
+     [
+      -58.55,
+      -11.75
+     ],
+     [
+      -59.92,
+      -12.36
+     ],
+     [
+      -58.91,
+      -12.55
+     ],
+     [
+      -60.07,
+      -12.44
+     ]
+    ],
+    "note": "floor picks 581.7/583.3 s"
+   },
+   "column_mid": [
+    -52.5,
+    -11.7
+   ],
+   "column_east": {
+    "sfm_cluster": [
+     -44.8,
+     -11.4
+    ],
+    "floor_pick_593": [
+     -45.15,
+     -11.28
+    ]
+   },
+   "stone_ledge_west_face_U": -55.6,
+   "stone_ledge_V_span_seen": [
+    -14.0,
+    -12.2
+   ]
+  },
+  "path_note": "The videographer walks west along the south shops (V about -26.4 to -27, 560-572 s), turns right at U about -62.8, V -23 (575-578 s), crosses north (580-590 s) to V about -9.5, then walks east along V -9.4 to -9.8, about 2.8 m south of the north wall (591-600 s)."
+ },
+ "atrium": {
+  "upper_west_wall_U": {
+   "value": -78.9,
+   "sigma_internal": 0.3,
+   "sigma_absolute": 1.0,
+   "at_V": -12,
+   "span_V": [
+    -18.5,
+    -7.9
+   ],
+   "span_Y": [
+    10.7,
+    15.1
+   ],
+   "lower_toilet_face_U": -79.3,
+   "note": "Vertical plane fit to SfM points above Y 10.6 (23 inliers; tb-shops anchor gives -78.96). The upper wall rises about 0.4 m east of the toilet-block face (7.7-10.2) and parallel to it (within 3 deg), so the double-height space reaches the toilet front, not U -62. Its absolute U depends on the toilet-face control; the SUBWAY partition predicted from the other controls agrees to 0.4 m (tb-shops)."
+  },
+  "points_above_Y10.47_over_U-80..-62_V-21..-6": {
+   "count": 286,
+   "of": 649,
+   "Y_p5_p50_p95": [
+    10.7,
+    12.89,
+    15.62
+   ],
+   "max_Y": 16.79,
+   "where": "on the upper west wall (U -80..-78 bin: 73 points) and on the upper north wall (median V -7.3, spread along U -79..-45), plus scattered points between; the live ceiling at 10.47 over U -80..-62 contradicts the frames: 575.2 s shows a two-storey wall with windows directly above the toilet entrances"
+  },
+  "upper_north_wall_V": {
+   "median": -7.28,
+   "p5_p95": [
+    -8.1,
+    -6.64
+   ]
+  }
+ },
+ "cameras_572_590": [
+  {
+   "t": 572.222,
+   "image": "h/t00572222.jpg",
+   "center_uvy": [
+    -60.62,
+    -26.44,
+    8.35
+   ],
+   "heading_uv": [
+    -0.988,
+    -0.152
+   ]
+  },
+  {
+   "t": 573.333,
+   "image": "h/t00573333.jpg",
+   "center_uvy": [
+    -61.52,
+    -25.76,
+    8.36
+   ],
+   "heading_uv": [
+    -0.99,
+    0.137
+   ]
+  },
+  {
+   "t": 574.556,
+   "image": "h/t00574556.jpg",
+   "center_uvy": [
+    -62.18,
+    -24.69,
+    8.45
+   ],
+   "heading_uv": [
+    -0.871,
+    0.491
+   ]
+  },
+  {
+   "t": 575.556,
+   "image": "h/t00575556.jpg",
+   "center_uvy": [
+    -62.64,
+    -23.78,
+    8.43
+   ],
+   "heading_uv": [
+    -0.744,
+    0.668
+   ]
+  },
+  {
+   "t": 576.556,
+   "image": "h/t00576556.jpg",
+   "center_uvy": [
+    -62.82,
+    -22.74,
+    8.44
+   ],
+   "heading_uv": [
+    -0.519,
+    0.855
+   ]
+  },
+  {
+   "t": 577.889,
+   "image": "h/t00577889.jpg",
+   "center_uvy": [
+    -62.69,
+    -21.27,
+    8.43
+   ],
+   "heading_uv": [
+    -0.203,
+    0.979
+   ]
+  },
+  {
+   "t": 579.222,
+   "image": "h/t00579222.jpg",
+   "center_uvy": [
+    -62.31,
+    -19.9,
+    8.4
+   ],
+   "heading_uv": [
+    0.057,
+    0.998
+   ]
+  },
+  {
+   "t": 580.333,
+   "image": "h/t00580333.jpg",
+   "center_uvy": [
+    -61.89,
+    -18.76,
+    8.38
+   ],
+   "heading_uv": [
+    0.103,
+    0.995
+   ]
+  },
+  {
+   "t": 581.444,
+   "image": "h/t00581444.jpg",
+   "center_uvy": [
+    -61.5,
+    -17.64,
+    8.38
+   ],
+   "heading_uv": [
+    0.163,
+    0.987
+   ]
+  },
+  {
+   "t": 582.889,
+   "image": "h/t00582889.jpg",
+   "center_uvy": [
+    -60.71,
+    -16.29,
+    8.4
+   ],
+   "heading_uv": [
+    0.471,
+    0.881
+   ]
+  },
+  {
+   "t": 584.111,
+   "image": "h/t00584111.jpg",
+   "center_uvy": [
+    -59.84,
+    -15.21,
+    8.38
+   ],
+   "heading_uv": [
+    0.524,
+    0.85
+   ]
+  },
+  {
+   "t": 585.222,
+   "image": "h/t00585222.jpg",
+   "center_uvy": [
+    -59.07,
+    -14.21,
+    8.38
+   ],
+   "heading_uv": [
+    0.487,
+    0.872
+   ]
+  },
+  {
+   "t": 586.222,
+   "image": "h/t00586222.jpg",
+   "center_uvy": [
+    -58.43,
+    -13.36,
+    8.44
+   ],
+   "heading_uv": [
+    0.462,
+    0.886
+   ]
+  },
+  {
+   "t": 587.222,
+   "image": "h/t00587222.jpg",
+   "center_uvy": [
+    -57.78,
+    -12.49,
+    8.46
+   ],
+   "heading_uv": [
+    0.552,
+    0.834
+   ]
+  },
+  {
+   "t": 588.222,
+   "image": "h/t00588222.jpg",
+   "center_uvy": [
+    -57.04,
+    -11.72,
+    8.46
+   ],
+   "heading_uv": [
+    0.726,
+    0.688
+   ]
+  },
+  {
+   "t": 589.333,
+   "image": "h/t00589333.jpg",
+   "center_uvy": [
+    -56.09,
+    -10.98,
+    8.43
+   ],
+   "heading_uv": [
+    0.8,
+    0.598
+   ]
+  }
+ ],
+ "registration": {
+  "work": "regtech/pub1f-hcy",
+  "sfm": "120/120 frames 560-599.9 s, one component, 0.99 px, 8284 points",
+  "controls": "regtech/controls/pub1f.json. No protected source geometry is visible in this area, so the controls are builder/Naver-derived kit: toilet-block east face U -79.8 (Naver toilet rooms edge about U -81), north rooms front V -6.3 (west part; builder -6.35 to -6.2, Naver about -5.8), SUBWAY/비엔씨제과 partition floor (-65.76,-28.54), SfM floor-plane points Y 7.0, and one door head at Y 9.05 (standard 2.05 m leaf, vertical scale) [INFERENCE]. The camera init entries have sigma 50 and exist only to seed the solver.",
+  "scale_checks": "Metres per SfM unit: 2.51 from the anchor, about 2.6 from the door height, and eye height 1.4 m. Shop partition to north wall is 22.4 m, which matches the builder rooms front (22.3 m) but not the builder police front (25.2 m).",
+  "anchor_ctl-hash": {
+   "status": "FAIL",
+   "reasons": [
+    "held-out 3D RMS 0.369 > 0.3",
+    "LOO max 3D 0.755 > 0.6",
+    "LOO reprojection RMS 20.08px > 8.0"
+   ],
+   "fit_rms_m": 0.26190978730129666,
+   "heldout_n": 8,
+   "heldout_rms_m": 0.36919299126813543,
+   "heldout_max_m": 0.6764441321983412,
+   "loo_max_m": 0.7548555190229826,
+   "scale": 2.508523659975341
+  },
+  "anchor_tb-shops": {
+   "status": "FAIL",
+   "heldout_block": "560-573.5 s (shop leg): SUBWAY partition predicted from the toilet face, north wall, floor and door (22 m extrapolation)",
+   "partition_pred": [
+    -66.16,
+    -28.94,
+    7.16
+   ],
+   "partition_ctrl": [
+    -65.76,
+    -28.54,
+    7.0
+   ],
+   "err_m": 0.59,
+   "heldout_image_rms_px": 58.68495833502026,
+   "reasons": [
+    "held-out reprojection RMS 58.68px > 8.0",
+    "held-out-image reprojection RMS 58.68px > 8.0",
+    "LOO max 3D 1.681 > 0.6",
+    "LOO reprojection RMS 21.62px > 8.0"
+   ]
+  },
+  "gate_verdict": "FAIL at the strict 0.30 m gate: held-out 0.37 m, LOO max 0.76 m, time block 0.59 m. The controls themselves are only good to 0.5-1 m (Naver/builder). Positions are consistent to 0.6-0.8 m between the two anchors (police V -6.6 vs -7.3). The NO-GO rests on the north strip (1.5 m wide): the pedestrian is 0.37 m inside the edge and the path 0-0.4 m, so the absolute margin is marginal. The relative facts are robust at this accuracy: seen floor reaches 4.5 m south of the north wall, and the columns/ledge start about 4.9 m south of it."
+ },
+ "files": {
+  "footprint_check": "regtech-work/pub1f/footprint-ctl-hash.json, footprint-tb-shops.json, fp-all.json (560-600 s)",
+  "overlays": "regtech-work/pub1f/proj/h__t00583333.jpg, h__t00588889.jpg, h__t00593333.jpg (footprint 1 m grid at Y 7)",
+  "cameras": "regtech/pub1f-hcy/anchor/ctl-hash/c0/cameras.json (unity_pose per frame)",
+  "points": "regtech/pub1f-hcy/anchor/ctl-hash/c0/points.npz",
+  "picks": "regtech-work/pub1f/picks.json, picks-bench.json -> tri-ctl-hash.json, tri-tb-shops.json, tri-bench.json",
+  "anchor": "regtech/pub1f-hcy/anchor/{ctl-hash,tb-shops}/anchor.json"
+ }
+}

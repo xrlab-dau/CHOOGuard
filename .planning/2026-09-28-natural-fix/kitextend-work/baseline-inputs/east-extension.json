@@ -1,0 +1,253 @@
+{
+ "zone": "east extension",
+ "root": "실내 트윈 마감/동측 확장",
+ "basis": {
+  "method": "make_east_exits.py; Naver indoor wing/elevator + OSM bridge centerline + registered public photos",
+  "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after44",
+  "frame": "station UVY, model units",
+  "validation_bounds": [
+   -100.0,
+   -52.0,
+   190.0,
+   280.0
+  ],
+  "inference": "OSM alignment shift (-4.0,-4.5), 8 m total bridge slab with 7.7 m rail-center clear corridor, 3 m exit10 guard-closed landing, canopy limits, 3 m elevator lobby pad, shaft dimensions/materials"
+ },
+ "elements": [
+  {
+   "type": "Slab",
+   "id": "exit9-wing-and-port-deck-2f",
+   "zone": "east extension",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    "OSM way 987862341, bridge=yes/highway=footway/layer=1/surface=concrete; source receipt: asset-library/research-public/2026-09-26/PlatformSide/receipts.json",
+    "OSM way 165346389 station wing outline; Naver indoor zorder 301000 and 302000 elevator POIs at station UV (1.29,120.46)",
+    "https://www.busanpa.com/board/view.do?boardId=BBS_0000031&dataSid=20383&menuCd=DOM_000000105002001000&paging=ok&startPage=265 (2017-12-27): elevated 570 m station-to-terminal connection; stage-2 deck width up to 26 m",
+    "https://m.blog.naver.com/ssh19938/223027519848 (2023-02-25): confirms 2F sky plaza/sky bridge to G7, public parking, waterside park and terminal; images show open deck/guardrails",
+    "[INFERENCE] OSM-to-source/Naver offset (-4.0 U,-4.5 V), 8.0 m nominal slab width with rail centerlines 3.85 m off-center (7.7 m clear), y=7.0 level continuity and guard appearance"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      4.0,
+      93.862
+     ],
+     [
+      2.094,
+      93.725
+     ],
+     [
+      0.189,
+      118.9
+     ],
+     [
+      -0.2,
+      118.9
+     ],
+     [
+      -0.2,
+      121.9
+     ],
+     [
+      -0.038,
+      121.9
+     ],
+     [
+      -0.5,
+      128.0
+     ],
+     [
+      0.306,
+      128.0
+     ],
+     [
+      -3.798,
+      191.247
+     ],
+     [
+      100.482,
+      197.554
+     ],
+     [
+      115.232,
+      200.794
+     ],
+     [
+      122.276,
+      207.406
+     ],
+     [
+      117.496,
+      266.002
+     ],
+     [
+      178.175,
+      270.613
+     ],
+     [
+      178.781,
+      262.636
+     ],
+     [
+      126.123,
+      258.635
+     ],
+     [
+      130.563,
+      204.212
+     ],
+     [
+      119.101,
+      193.454
+     ],
+     [
+      101.589,
+      189.606
+     ],
+     [
+      4.705,
+      183.747
+     ],
+     [
+      8.323,
+      128.0
+     ],
+     [
+      9.0,
+      128.0
+     ],
+     [
+      10.75,
+      100.0
+     ],
+     [
+      12.0,
+      100.0
+     ],
+     [
+      12.0,
+      94.44
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "depth": 0.3,
+    "finish": "concrete",
+    "edgeFinish": "plaster",
+    "soffit": "plaster",
+    "collider": true
+   }
+  },
+  {
+   "type": "Slab",
+   "id": "exit9-wing-3f",
+   "zone": "east extension",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    "Naver indoor zorder 302000 tile shows same east elevator wing on 3F; floor Y=12.2 is the registered station datum",
+    "OSM way 165346389 station wing outline; exact OSM alignment correction (-4,-4.5) is [INFERENCE]"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      12.0,
+      94.44
+     ],
+     [
+      4.0,
+      93.862
+     ],
+     [
+      2.094,
+      93.725
+     ],
+     [
+      0.189,
+      118.9
+     ],
+     [
+      -0.2,
+      118.9
+     ],
+     [
+      -0.2,
+      121.9
+     ],
+     [
+      -0.038,
+      121.9
+     ],
+     [
+      -0.5,
+      128.0
+     ],
+     [
+      9.0,
+      128.0
+     ],
+     [
+      10.75,
+      100.0
+     ],
+     [
+      12.0,
+      100.0
+     ]
+    ],
+    "y": 12.2
+   },
+   "params": {
+    "depth": 0.3,
+    "finish": "polished",
+    "edgeFinish": "plaster",
+    "soffit": "plaster",
+    "collider": true
+   }
+  },
+  {
+   "type": "Slab",
+   "id": "exit10-guarded-landing-2f",
+   "zone": "east extension",
+   "tier": "b",
+   "frame": "root",
+   "evidence": [
+    "PlatformSide official 2F station board and registered station UV frame; source wall face v=97.97+.0722*(u-62), measured at y=7.0",
+    "https://m.blog.naver.com/simplyssol/223307683182 (2023-12-30): exit 10 door bank between HOLLYS and Krispy Kreme, #10 sign, covered passage",
+    "https://www.youtube.com/watch?v=T6004DOXk2w (2022-09-27), local frame f-T6004/t137.jpg: #10 door bank and port promenade sign",
+    "[INFERENCE] U=48..55 is aligned from board/POI registration; clear width and leaf schedule are not registered",
+    "[INFERENCE] 3.0 m landing depth; onward exterior path not registered"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      48.0,
+      96.959
+     ],
+     [
+      55.0,
+      97.465
+     ],
+     [
+      54.784,
+      100.457
+     ],
+     [
+      47.784,
+      99.951
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "depth": 0.3,
+    "finish": "concrete",
+    "edgeFinish": "plaster",
+    "soffit": "plaster",
+    "collider": true
+   }
+  }
+ ]
+}

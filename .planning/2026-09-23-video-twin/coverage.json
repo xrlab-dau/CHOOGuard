@@ -1,0 +1,168 @@
+{
+  "schema": "chooguard.video-twin-coverage.v2",
+  "updated": "2026-09-23",
+  "liveScene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "sceneSaved": true,
+  "wholeStationReconstructionComplete": false,
+  "surveyed": false,
+  "registration": "640-frame COLMAP (models 3/4/5 merged). Relative geometry from video; 7m floor spacing, 1.6m eye height and 220s anchor are user-authorized assumptions. Not a survey.",
+  "verifiedRoutes": {
+    "2F entry -> hall -> arcade -> shared escalator -> 1F -> exits 3/4": {
+      "status": "COMPLETE",
+      "legs": "22/22",
+      "arrivalError3DM": 0.16,
+      "walkedM": 131.1,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "reverse of the above": {
+      "status": "COMPLETE",
+      "legs": "22/22",
+      "arrivalError3DM": 0.147,
+      "walkedM": 131.1,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "platform stair -> footbridge -> exit 9 -> hall": {
+      "status": "COMPLETE",
+      "legs": "7/7",
+      "arrivalError3DM": 0.142,
+      "walkedM": 65.3,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "1F exits 3/4 -> plaza (collision-aware, Eurasia building kept) -> metro entrance 6": {
+      "status": "COMPLETE",
+      "legs": "22/22",
+      "arrivalError3DM": 0.165,
+      "walkedM": 204.7,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "metro entrance 6 -> metro platform": {
+      "status": "COMPLETE",
+      "legs": "5/5",
+      "arrivalError3DM": 0.163,
+      "walkedM": 112.7,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "bridge branch -> new door -> source overtrack concourse": {
+      "status": "COMPLETE",
+      "legs": "5/5",
+      "arrivalError3DM": 0.137,
+      "walkedM": 43.5,
+      "movement": "FirstPersonResponder.StepInput",
+      "note": "was BLOCKED by source parapet+facade before the door cut"
+    },
+    "source overtrack concourse -> bridge branch": {
+      "status": "COMPLETE",
+      "legs": "5/5",
+      "arrivalError3DM": 0.133,
+      "walkedM": 43.6,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "hall -> restaurant level via generated up escalator": {
+      "status": "COMPLETE",
+      "legs": "4/4",
+      "arrivalError3DM": 0.16,
+      "walkedM": 29.9,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "restaurant level -> hall via generated down escalator": {
+      "status": "COMPLETE",
+      "legs": "4/4",
+      "arrivalError3DM": 0.124,
+      "walkedM": 32.0,
+      "movement": "FirstPersonResponder.StepInput"
+    },
+    "1F exit 5 -> plaza": {
+      "status": "COMPLETE",
+      "legs": "3/3",
+      "arrivalError3DM": 0.182,
+      "walkedM": 7.4,
+      "movement": "FirstPersonResponder.StepInput",
+      "note": "was blocked by original facade before door cut"
+    },
+    "1F exit 2 -> plaza": {
+      "status": "COMPLETE",
+      "legs": "3/3",
+      "arrivalError3DM": 0.123,
+      "walkedM": 7.4,
+      "movement": "FirstPersonResponder.StepInput",
+      "note": "was blocked by original facade before door cut"
+    },
+    "1F exit 1": {
+      "status": "BLOCKED",
+      "legs": "0/4",
+      "arrivalError3DM": 4.37,
+      "walkedM": 3.4,
+      "movement": "FirstPersonResponder.StepInput",
+      "note": "UNRESOLVED: approach sits on a raised original-model slab (y0.47) above the 0.28m step offset"
+    }
+  },
+  "escalatorRideVerified": {
+    "upLaneStandingNoInput": "+1.07m rise, -1.85m along -v in ~4s",
+    "downLaneStandingNoInput": "-1.07m, +1.86m in ~4s",
+    "speed": "0.5 m/s along 30deg incline (EscalatorRide default)"
+  },
+  "renderComparisons": {
+    "sheets": [
+      "compare-final-1.png",
+      "compare-final-2.png",
+      "compare-final-3.png",
+      "compare-final-4.png",
+      "compare-final-mezzanine.png",
+      "compare-final-props-2f.png",
+      "compare-final-props-1f.png",
+      "compare-final-escalator.png",
+      "compare-renderer-modes.png"
+    ],
+    "method": "Reference frame beside actual SceneView render at the registered SfM pose (inferred metric scale). Visual comparison only; no fidelity score claimed.",
+    "matchesTopology": [
+      "94/98/112s high hall, info desk, LOTTERIA balcony, boards and escalator pair",
+      "138/166s low arcade, exit sign, gift shop",
+      "200/208/216/220s PB landing, Design Skin/B&C aisle, exits 3/4"
+    ],
+    "knownVisualGaps": [
+      "50-70s platform hall/footbridge: sparse roof steel and open deck vs dense glazed roof and enclosed hall in video",
+      "No crowds/tenant merchandise density; glossy floor reflections weaker than video",
+      "174s pose sits between the escalator pair (lateral registration error ~1.5m)"
+    ]
+  },
+  "fixesFromThisVerification": [
+    "Source bridge branch dead-end: oriented 4x4.3m door cut through source parapet+facade, steel portal frame",
+    "1F exits 5/2/1: door apertures cut through original facade (exits 5/2 now reach plaza)",
+    "2F track-side \"Platforms\" bays closed: 5 were blocked by source walls, 2 dropped 2.8m onto the 1F ceiling (player trap)",
+    "Departure boards moved from v-13.5 to SfM-backed v-32.7; mezzanine plate and escalator removed from the filmed 90->98s view",
+    "Restaurant escalator: squashed reused source mesh (52m->13m non-uniform scale) replaced by the project standard VerticalCirculationGenerator pair + WireEscalatorMotion ride",
+    "WireEscalatorMotion ran every escalator backwards (enumNames are value-ordered [Down,Up]); now selects by name",
+    "Prop fitting in both floor builders: authored X270/Y180 rotations were discarded or scale applied in rotated axes; 406 props now match target boxes exactly (was up to 85% height error)",
+    "LedDisplay target axes corrected (was 4.5m deep perpendicular to the wall)",
+    "Renderer Forward+ -> Deferred (+SMAA): same image, removes URP ZBinningJob Editor preview exceptions (4-70 per lighting pass under Forward+, 0 under Deferred)",
+    "Unity CLI helper: run_script timeouts now forwarded via --timeout"
+  ],
+  "unresolved": [
+    {
+      "issue": "Original MainShell interior masses intrude into reconstructed floors",
+      "evidence": "1F: _0 in 162 1m cells (u-7..70, v-41..-11; incl. 0.47m slab u61..69), _5 in 50 cells along v-10..10; 2F: _6 parapet u-46..-21 v6..11 (26 cells), _0/_3 at front arcade band, Layer0 detail pokes 0.15m at u-72.3 v9.6",
+      "impact": "visual blocks; exit 1 unreachable",
+      "next": "decide per element: keep as real structure (and fit reconstruction around it) or cut/remove; needs owner decision on original-model authority"
+    },
+    {
+      "issue": "Freestanding kiosk asset (KoreanDigitalKiosk) has no textures",
+      "impact": "blank grey column"
+    },
+    {
+      "issue": "Departure boards 1.75m inside SfM median depth",
+      "reason": "held inside inferred front wall v-33"
+    },
+    {
+      "issue": "Restaurant-level geometry beyond the filmed edge",
+      "inferred": "left strip width 2m, front wing extent, escalator run/rise and lane width 1.15m"
+    },
+    {
+      "issue": "Direct underground link interior, complete 2022 tenant roster, back-of-house",
+      "reason": "not filmed"
+    },
+    {
+      "issue": "Metric scale and absolute registration",
+      "reason": "7m floor spacing assumption; no survey"
+    }
+  ]
+}

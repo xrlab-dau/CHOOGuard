@@ -1,0 +1,32 @@
+{
+  "schema": "chooguard.interior-kit-validate.v1",
+  "spec": "/Users/um-yunsang/CHOOGuard/.planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-invalid-test.json",
+  "validatedUtc": "2026-09-25T19:35:02.5439890Z",
+  "zone": "hall-junction-slope-invalid-test",
+  "folder": "Assets/ChooGuard/Art/StationInterior/Kit/hall-junction-slope-invalid-test",
+  "root": "실내 트윈 마감/홀 접합부 기울기 오류 테스트",
+  "folderOwner": null,
+  "folderConflict": null,
+  "elements": [
+    {
+      "id": "hj-vertex-count-mismatch",
+      "type": "Canopy",
+      "tier": "b",
+      "ok": false,
+      "built": false,
+      "error": "InvalidOperationException: hj-vertex-count-mismatch: geometry.vertexY count must match geometry.polygon.",
+      "triangles": 0
+    },
+    {
+      "id": "hj-non-planar-heights",
+      "type": "Canopy",
+      "tier": "b",
+      "ok": false,
+      "built": false,
+      "error": "InvalidOperationException: hj-non-planar-heights: geometry.vertexY is non-planar at polygon vertex 3 (tolerance 0.0001 m).",
+      "triangles": 0
+    }
+  ],
+  "errors": 2,
+  "note": "Dry build under a temporary HideAndDontSave root (in-memory meshes/materials); no scene, asset or receipt writes."
+}

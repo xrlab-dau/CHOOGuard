@@ -1,0 +1,79 @@
+{
+ "schema": "chooguard.video-registration.v2",
+ "status": "MEASURED_FROM_ORIGINAL_ANCHORS",
+ "source": "RY2qvE0Tugk.f614.mp4 (2023-05 walk)",
+ "models": {
+  "ry2-0": {
+   "frames": "177-215 s (escalator ascent, 3F wing)",
+   "scale_m_per_unit": 1.7,
+   "up": "2F floor plane RANSAC (incline 29 deg)",
+   "heading": "ascent axis = box axis 4.13 deg",
+   "anchor": "up-lane incline top at station (13.03,75.3)"
+  },
+  "ry2-2": {
+   "frames": "310-330 s (escalator descent)",
+   "scale_m_per_unit": 0.82,
+   "up": "2F floor plane (incline 30.3 deg)",
+   "heading_deg": 2.048383703498221,
+   "anchor_station": [
+    11.88834877360478,
+    77.44
+   ],
+   "fit": "lane v fixed at 77.44 (down lane), u and heading fitted on 6 column bearings (residual <5 px)"
+  }
+ },
+ "boxFrame": {
+  "origin": [
+   -3.0,
+   33.25
+  ],
+  "rotDeg": 4.13,
+  "eastB": 60.67,
+  "evidence": "original box east wall v=.0722u+94.29 and raised-roof edges v=33.25/86.5+.0722(u+3): the box runs 4.13 deg off the station axis"
+ },
+ "treeColumns": [
+  {
+   "id": "E",
+   "a": 20.9,
+   "b": 1.35,
+   "evidence": "SfM ry2-0 cluster (17.11,36.59) station; reprojects onto the column behind the wing railing in frame 85"
+  },
+  {
+   "id": "D",
+   "a": 20.9,
+   "b": 20.8,
+   "evidence": "SfM ry2-0 cluster (16.98,55.62); frame 27 column with lantern"
+  },
+  {
+   "id": "B",
+   "a": 45.2,
+   "b": 1.35,
+   "evidence": "SfM clusters (42.37,37.32)/(44.42,37.9); KORAIL desk column in frames 315/45"
+  },
+  {
+   "id": "A",
+   "a": 45.2,
+   "b": 20.8,
+   "evidence": "SfM clusters (40.11,57.14)/(41.49,57.5) with the two 타는 곳 signs; frames 295-330"
+  }
+ ],
+ "measured": {
+  "wingShopfront_a": 6.75,
+  "wingBalustrade_a": 16.0,
+  "bandSlabEdge_b": 44.3,
+  "bandEdgeColumnC_station": [
+   41.88,
+   81.01
+  ],
+  "escalatorTop_a": 19.2,
+  "lanes_b": [
+   40.8,
+   42.9
+  ]
+ },
+ "jev": [
+  "jev-twin-order-015",
+  "jev-sfm-reanchor-016"
+ ],
+ "supersedes": "board-scaled 3F L (jev-3f-dims-013/014) and escalator placement"
+}

@@ -1,0 +1,3184 @@
+{
+ "schema": "chooguard.1f-evidence-inventory.v1",
+ "meta": {
+  "generated": "2026-09-24",
+  "author": "read-only explore subagent; parent writes verbatim",
+  "frame": "station UVY: U=x*sin16.2+z*cos16.2, V=x*cos16.2-z*sin16.2, Y up; source-model units, not certified metres; 1F datum Y=0 (Ground_Floor -0.18..0); 2F slab underside 6.7, top 7.0",
+  "planeEquation": "dot(normalUVY,[U,V,Y])+offset=0",
+  "classes": {
+   "a": "observed in video and metrically registered in station UVY with fit/held-out numbers",
+   "b": "identity/topology only (board, Naver vector, tender plan, photo, pixel-only video marks, registry text); any position is fitted/estimated with stated residual",
+   "c": "no evidence found"
+  },
+  "epochs": {
+   "E2022": "2022-01 upload video (superseded floor-one-build, 7 m rise assumed)",
+   "E2023": "2023-05 RY2qvE0Tugk / HC-450 walks (principally 2F)",
+   "E2025": "2025-02 Zimcarry map/photos; 2025-05-22 shoobong blog; tender plans 2025-05-12 / 2025-08-21",
+   "E2026-01": "KORAIL tender plan 2026-01-30",
+   "E2026-03": "3TLdCQCjeXE video (uploaded 2026-03-17); tiffany_suya photos (published 2026-03-18)",
+   "E2026-05": "djagytt photos (published 2026-05-18; capture date unverified)",
+   "E2026-08": "official 1F board photo hi_yoonss_IMG_8821",
+   "E2026-09": "eluhiZ_eirE Zimcarry route video; e-gen AED registry CHKDAY 2026-09-04",
+   "undated": "korail.com 1F facility page (retrieved 2026-09-24; superseded tenants present)"
+  },
+  "registrations": [
+   {
+    "id": "reg-1f-video",
+    "files": [
+     ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+     ".planning/2026-09-23-video-twin/1f-2026-sfm/result.json"
+    ],
+    "epoch": "E2026-03",
+    "sfmModel": "sparse/2: 137 registered images, 13658 points, mean reprojection 0.553 px",
+    "scale": 4.12574,
+    "portalCorners": 8,
+    "portalCornerPixelRMS": 4.1,
+    "portalCornerPixelMax": 6.7,
+    "heldOutPlumbAngleDeg": {
+     "000061": 0.65,
+     "000106": 0.422,
+     "000133": 0.455
+    },
+    "heldOutFloorMedianY": {
+     "61_tape": -0.0068,
+     "106_left_floor": -0.0934,
+     "106_right_floor": -0.0869
+    },
+    "cameraPathBoundsUVY": [
+     [
+      4.921,
+      -57.308,
+      1.181
+     ],
+     [
+      19.498,
+      -15.548,
+      1.644
+     ]
+    ],
+    "cameraPathSource": ".planning/2026-09-23-video-twin/implementation-boundary/work-scope.json",
+    "limits": "no independent survey scale; manual portal corners; plumb up to 0.65 deg held-out; single video covers central entry/core only"
+   },
+   {
+    "id": "reg-naver-1f-plan",
+    "files": [
+     ".planning/2026-09-23-video-twin/first-floor-plan.json",
+     ".planning/2026-09-23-video-twin/first-floor-registration.json"
+    ],
+    "type": "rigid 2D fit, no scale",
+    "translationUV": [
+     2.4305,
+     -4.197
+    ],
+    "rotationDeg": -0.6458,
+    "residualMetres": {
+     "median": 0.387,
+     "p80": 1.445,
+     "p95": 3.028,
+     "max": 5.071
+    },
+    "acceptance": {
+     "fitoutActive": false,
+     "state": "unapproved reference fitout; exact missing-floor fill retained",
+     "blockingEvidence": [
+      "metric control points linking video reconstruction to source mesh",
+      "independent 1F shop partition / ceiling / vertical-core survey"
+     ]
+    },
+    "limits": "some map boundaries are internal service faces; fitted alignment is not surveyed accuracy"
+   },
+   {
+    "id": "reg-main-building",
+    "files": [
+     ".planning/2026-09-23-video-twin/main-metric-registration/evidence-summary.json",
+     ".planning/2026-09-23-video-twin/main-metric-registration/observed-location-evidence.json"
+    ],
+    "epoch": "E2023",
+    "scale": 8.60462,
+    "fitPixelRMS": 3.865,
+    "heldOutFramePixelRMS": 4.338,
+    "heldOutFeaturePixelRMS": 5.165,
+    "planeMedianAbs": 0.0218,
+    "globalPlumbDisagreementDeg": 3.385,
+    "crossVideoHeldOutRMS": 0.422,
+    "crossVideoHeldOutMax": 0.826,
+    "limits": "vestibule-local only; global SfM rigidity NOT established; principally 2F"
+   }
+  ]
+ },
+ "components": [
+  {
+   "id": "unit-01",
+   "name": "모집중 (vacant)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 1,
+   "mid": "5309",
+   "kind": "vacant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "asset-library/research-public/2026-09-24/busan-1f/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      45.313,
+      -31.856
+     ],
+     [
+      46.222,
+      -36.597
+     ],
+     [
+      62.346,
+      -32.587
+     ],
+     [
+      60.346,
+      -25.709
+     ],
+     [
+      53.453,
+      -27.367
+     ],
+     [
+      48.47,
+      -27.708
+     ]
+    ],
+    "frontEdges": [
+     3,
+     4
+    ],
+    "doorEdge": 3
+   },
+   "quality": "reg-naver-1f-plan residual; door 1.8 / height 3.6 are visual estimates",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "none"
+   },
+   "flags": {
+    "fitoutActive": false,
+    "fasciaStatus": "Tenant lettering from board, fascia appearance unverified"
+   },
+   "notes": "Board draws KTX특송 grey label at its board-top-left corner; see X06."
+  },
+  {
+   "id": "unit-02",
+   "name": "편의점 (CVS left of central entrances)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 2,
+   "mid": "4917",
+   "kind": "retail",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "asset-library/research-public/2026-09-24/metric-controls/controls.json",
+    "asset-library/research-public/2026-09-24/metric-controls/model-comparison.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      28.475,
+      -31.797
+     ],
+     [
+      29.597,
+      -39.601
+     ],
+     [
+      38.409,
+      -38.123
+     ],
+     [
+      37.989,
+      -35.954
+     ],
+     [
+      33.207,
+      -31.444
+     ]
+    ],
+    "frontEdges": [
+     3,
+     4
+    ],
+    "doorEdge": 3
+   },
+   "quality": {
+    "polygonArea": 56.173,
+    "tenderNominalAreaM2": 68.9,
+    "ratioOfficialOverModel": 1.227,
+    "correspondence": "INFERENCE from adjacency (KR-1F-CONVENIENCE-LEFT)"
+   },
+   "epoch": {
+    "identity": "E2026-08",
+    "area": "E2025 + E2026-01",
+    "fascia": "none"
+   },
+   "flags": {
+    "fitoutActive": false,
+    "fasciaStatus": "Tenant lettering from board, fascia appearance unverified"
+   }
+  },
+  {
+   "id": "unit-03",
+   "name": "비엔씨도넛 (B&C Donuts)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 3,
+   "mid": "4918",
+   "kind": "hoarding (pending correction to retail)",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json",
+    ".planning/2026-09-23-video-twin/metric-registration/structural-observations.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      14.147,
+      -26.375
+     ],
+     [
+      15.203,
+      -41.304
+     ],
+     [
+      22.098,
+      -40.542
+     ],
+     [
+      21.614,
+      -33.675
+     ],
+     [
+      21.579,
+      -33.568
+     ],
+     [
+      20.479,
+      -33.649
+     ],
+     [
+      20.361,
+      -33.482
+     ],
+     [
+      22.092,
+      -33.273
+     ],
+     [
+      22.015,
+      -32.202
+     ],
+     [
+      21.688,
+      -32.21
+     ],
+     [
+      21.275,
+      -25.854
+     ]
+    ],
+    "frontEdges": [
+     0,
+     1,
+     6,
+     10
+    ],
+    "doorEdge": 10,
+    "signEdges": [
+     0,
+     1,
+     6
+    ]
+   },
+   "quality": "reg-naver-1f-plan residual; partition right edge seen pixel-only (V061-1 held-out plumb line), not registered",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-00 (open glazed)",
+    "superseded": "E2026-03 hoarding (photo-14; video 82-100 s), renovation 2026-03-03..04-02"
+   },
+   "flags": {
+    "fitoutActive": false,
+    "kindCorrectionPending": "hoarding->retail per receipts.json instruction"
+   }
+  },
+  {
+   "id": "unit-04",
+   "name": "ARTBOX (아트박스)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 4,
+   "mid": "4916",
+   "kind": "retail",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -1.97,
+      -27.491
+     ],
+     [
+      -1.439,
+      -34.939
+     ],
+     [
+      -0.576,
+      -34.955
+     ],
+     [
+      -0.658,
+      -35.146
+     ],
+     [
+      -1.42,
+      -35.205
+     ],
+     [
+      -0.919,
+      -42.228
+     ],
+     [
+      6.464,
+      -41.912
+     ],
+     [
+      5.408,
+      -26.982
+     ]
+    ],
+    "frontEdges": [
+     1,
+     5,
+     6,
+     7
+    ],
+    "doorEdge": 7,
+    "doorEdges": [
+     6
+    ],
+    "signEdges": [
+     6,
+     1,
+     5
+    ]
+   },
+   "quality": "polygon is class b; its inner end is contradicted by class-a st-artbox-terminal-pier (X01)",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-01",
+    "observed": "E2026-03 video 82-100 s glazing"
+   },
+   "flags": {
+    "fitoutActive": false
+   },
+   "notes": "DESIGNSKIN (2023/2025) is the superseded tenant at this position."
+  },
+  {
+   "id": "unit-05",
+   "name": "환공어묵 (1F instance)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 5,
+   "mid": "3336",
+   "kind": "counter",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "asset-library/research-public/2026-09-24/metric-controls/controls.json",
+    "asset-library/research-public/2026-09-24/metric-controls/model-comparison.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -12.341,
+      -42.278
+     ],
+     [
+      -8.132,
+      -42.362
+     ],
+     [
+      -8.167,
+      -35.493
+     ],
+     [
+      -8.053,
+      -35.412
+     ],
+     [
+      -8.052,
+      -34.39
+     ],
+     [
+      -10.831,
+      -34.57
+     ]
+    ],
+    "frontEdges": [
+     4
+    ],
+    "doorEdge": 4
+   },
+   "quality": {
+    "polygonArea": 26.999,
+    "tenderNominalAreaM2": 38.0,
+    "ratioOfficialOverModel": 1.407
+   },
+   "epoch": {
+    "identity": "E2026-08",
+    "presence": "E2026-05 photo-04 (glazed front, cylindrical column, elevator opening, tactile route)",
+    "area": "E2026-01",
+    "fascia": "E2025 historical"
+   },
+   "flags": {
+    "fitoutActive": false,
+    "fasciaStatus": "2025 historical visual reference; current tenant confirmed by 2026 board"
+   },
+   "notes": "Separate 2F instance: see nf-hwangong-2f (X04)."
+  },
+  {
+   "id": "unit-06",
+   "name": "버거앤타코 (BT Burger & Taco)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 6,
+   "mid": "4915",
+   "kind": "restaurant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "asset-library/research-public/2026-09-24/metric-controls/controls.json",
+    "asset-library/research-public/2026-09-24/metric-controls/model-comparison.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -44.436,
+      -31.284
+     ],
+     [
+      -43.812,
+      -39.895
+     ],
+     [
+      -29.869,
+      -41.565
+     ],
+     [
+      -28.761,
+      -30.161
+     ]
+    ],
+    "frontEdges": [
+     3
+    ],
+    "doorEdge": 3
+   },
+   "quality": {
+    "polygonArea": 148.267,
+    "tenderNominalAreaM2": 190.0,
+    "tenderLengthPair": [
+     19.0,
+     10.0
+    ],
+    "ratioOfficialOverModel": 1.281
+   },
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-05",
+    "photos": "E2026-03 photos 17/18",
+    "area": "E2025 (2025-05-12)"
+   },
+   "flags": {
+    "fitoutActive": false
+   },
+   "notes": "김밥천국 (2025) superseded."
+  },
+  {
+   "id": "unit-07",
+   "name": "편의점 (CVS right)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 7,
+   "mid": "4914",
+   "kind": "retail",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "asset-library/research-public/2026-09-24/metric-controls/controls.json",
+    "asset-library/research-public/2026-09-24/metric-controls/model-comparison.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -56.497,
+      -37.84
+     ],
+     [
+      -43.812,
+      -39.895
+     ],
+     [
+      -44.436,
+      -31.284
+     ],
+     [
+      -55.321,
+      -32.072
+     ]
+    ],
+    "frontEdges": [
+     2
+    ],
+    "doorEdge": 2
+   },
+   "quality": {
+    "polygonArea": 84.903,
+    "tenderNominalAreaM2": 78.09,
+    "historicalAreaM2": 91.0,
+    "ratioOfficialOverModel": 0.92
+   },
+   "epoch": {
+    "identity": "E2026-08",
+    "area": "E2026-01 (78.09) / E2025 (91.0)",
+    "fascia": "none"
+   },
+   "flags": {
+    "fitoutActive": false,
+    "fasciaStatus": "Tenant lettering from board, fascia appearance unverified"
+   },
+   "notes": "2026 tender plan adds 맛있는부산 on the outer tip (controls.json)."
+  },
+  {
+   "id": "unit-08",
+   "name": "양산국밥",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 8,
+   "mid": "4912",
+   "kind": "restaurant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json",
+    "asset-library/research-public/2026-09-23/busan-1f-east/receipts.json",
+    ".planning/2026-09-23-video-twin/collection-report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -82.672,
+      -19.643
+     ],
+     [
+      -82.126,
+      -27.464
+     ],
+     [
+      -73.202,
+      -26.854
+     ],
+     [
+      -72.658,
+      -34.286
+     ],
+     [
+      -72.06,
+      -34.404
+     ],
+     [
+      -69.59,
+      -25.199
+     ],
+     [
+      -70.044,
+      -18.746
+     ]
+    ],
+    "frontEdges": [
+     6
+    ],
+    "doorEdge": 6
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "presence": "E2026-05 photo-13 (Exit 1 corner; lettering behind glass, not extracted); blogs 2023-11..2025-12",
+    "fascia": "none"
+   },
+   "flags": {
+    "fitoutActive": false,
+    "fasciaStatus": "Tenant lettering from board, fascia appearance unverified"
+   },
+   "notes": "Board shows 3 extra door openings on its facade."
+  },
+  {
+   "id": "unit-09",
+   "name": "복순도가 (1F instance)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 9,
+   "mid": "10061928",
+   "kind": "retail",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -49.16,
+      -16.329
+     ],
+     [
+      -48.814,
+      -20.836
+     ],
+     [
+      -38.063,
+      -20.072
+     ],
+     [
+      -38.863,
+      -9.111
+     ],
+     [
+      -42.619,
+      -9.378
+     ],
+     [
+      -42.174,
+      -15.828
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-12",
+    "photos": "E2026-03 photo-22; E2026-05 photos 10/12 (open cross-passage beside frontage, under departure board)",
+    "historical": "E2025 zimcarry photo _018"
+   },
+   "flags": {
+    "fitoutActive": false
+   },
+   "notes": "Board rear escalator icon adjacent. 2F instance exists (X02)."
+  },
+  {
+   "id": "unit-10",
+   "name": "아트센트 (ARTCENT)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 10,
+   "mid": "10061929",
+   "kind": "restaurant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -38.863,
+      -9.111
+     ],
+     [
+      -38.063,
+      -20.072
+     ],
+     [
+      -32.161,
+      -19.626
+     ],
+     [
+      -32.962,
+      -8.665
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-10 (oblique, low resolution)",
+    "photos": "E2026-03 photo-16"
+   },
+   "flags": {
+    "fitoutActive": false
+   },
+   "notes": "스시보노 (2025) superseded."
+  },
+  {
+   "id": "unit-11",
+   "name": "포레일 (PHO-RAIL)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 11,
+   "mid": "10061927",
+   "kind": "restaurant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -32.961,
+      -8.665
+     ],
+     [
+      -32.161,
+      -19.626
+     ],
+     [
+      -28.155,
+      -19.371
+     ],
+     [
+      -28.898,
+      -8.429
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-09",
+    "photos": "E2026-03 photo-19 (reflection of BURGER & TACO supports opposing frontage)"
+   },
+   "flags": {
+    "fitoutActive": false
+   }
+  },
+  {
+   "id": "unit-12",
+   "name": "비앤씨박스앤컵 (B&C BOX & CUP)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 12,
+   "mid": "10061931",
+   "kind": "counter",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -28.897,
+      -8.429
+     ],
+     [
+      -28.155,
+      -19.371
+     ],
+     [
+      -23.94,
+      -19.053
+     ],
+     [
+      -24.74,
+      -8.093
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-08",
+    "photos": "E2026-03 photo-15"
+   },
+   "flags": {
+    "fitoutActive": false
+   }
+  },
+  {
+   "id": "unit-13",
+   "name": "채선당 행복가마솥밥",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 13,
+   "mid": "10061932",
+   "kind": "restaurant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -24.74,
+      -8.092
+     ],
+     [
+      -23.94,
+      -19.053
+     ],
+     [
+      -17.654,
+      -18.596
+     ],
+     [
+      -18.455,
+      -7.635
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-07",
+    "photos": "E2026-03 photo-10"
+   },
+   "flags": {
+    "fitoutActive": false
+   }
+  },
+  {
+   "id": "unit-14",
+   "name": "개미집",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 14,
+   "mid": "10061930",
+   "kind": "restaurant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -18.454,
+      -7.635
+     ],
+     [
+      -17.654,
+      -18.596
+     ],
+     [
+      -11.886,
+      -18.173
+     ],
+     [
+      -12.687,
+      -7.213
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-06 (with 새벽집, intervening pier, continuous black floor strip)",
+    "photos": "E2026-03 photo-12"
+   },
+   "flags": {
+    "fitoutActive": false
+   }
+  },
+  {
+   "id": "unit-15",
+   "name": "새벽집국밥국수",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 15,
+   "mid": "10061933",
+   "kind": "restaurant",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -12.686,
+      -7.212
+     ],
+     [
+      -11.713,
+      -21.16
+     ],
+     [
+      -5.62,
+      -20.708
+     ],
+     [
+      -6.593,
+      -6.761
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "fascia": "E2026-05 photo-03",
+    "photos": "E2026-03 photo-11; E2026-05 photo-06"
+   },
+   "flags": {
+    "fitoutActive": false
+   }
+  },
+  {
+   "id": "unit-16",
+   "name": "파리바게트 (Paris Baguette)",
+   "category": "tenant-unit",
+   "floor": "1F",
+   "boardNo": 16,
+   "mid": "10061935",
+   "kind": "counter",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "polygonUV",
+    "basis": "reg-naver-1f-plan",
+    "polygonUV": [
+     [
+      -6.593,
+      -6.761
+     ],
+     [
+      -5.62,
+      -20.708
+     ],
+     [
+      6.242,
+      -19.834
+     ],
+     [
+      5.82,
+      -13.901
+     ],
+     [
+      -0.005,
+      -14.293
+     ],
+     [
+      -0.575,
+      -6.35
+     ]
+    ],
+    "frontEdges": [
+     1
+    ],
+    "doorEdge": 1
+   },
+   "quality": "reg-naver-1f-plan residual",
+   "epoch": {
+    "identity": "E2026-08",
+    "presence": "E2026-05 photo-02 (oblique; not extracted)",
+    "photos": "E2026-03 photo-13",
+    "fascia": "E2025 historical"
+   },
+   "flags": {
+    "fitoutActive": false,
+    "fasciaStatus": "2025 historical visual reference; current tenant confirmed by 2026 board"
+   },
+   "notes": "East edge (U 5.8-6.2) lies about 0.3 west of the observed office frontage (U>=6.19 at V -15.2); adjacent, no overlap."
+  },
+  {
+   "id": "svc-zimcarry",
+   "name": "짐캐리 (Zimcarry)",
+   "category": "service-room",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/official-facilities.json"
+   ],
+   "position": null,
+   "quality": "topology only: left of KTX특송, faces the 1F elevator door (eluhiZ_eirE 34.5-37.5 s, 48-51 s)",
+   "epoch": {
+    "observed": "E2026-09 video; E2025-02 map"
+   },
+   "flags": {},
+   "notes": "Not a numbered board unit; conflicts with #1 모집중 (X06)."
+  },
+  {
+   "id": "svc-ktx-express",
+   "name": "KTX특송",
+   "category": "service-room",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json"
+   ],
+   "position": null,
+   "quality": "board grey counter at unit-01 corner near Exit 5; AED registry says '1층 5번출구 KTX특송 사무실 옆'",
+   "epoch": {
+    "identity": "E2026-08 board; E2026-09 video 33 s"
+   },
+   "flags": {}
+  },
+  {
+   "id": "svc-tmo",
+   "name": "TMO",
+   "category": "service-room",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/collection-report.json",
+    "asset-library/research-public/2026-09-24/busan-1f/report.json"
+   ],
+   "position": null,
+   "quality": "2025 floor guide (shoobong _000) shows W.C, TMO, KTX특송, EV positions; no registration",
+   "epoch": {
+    "identity": "E2025"
+   },
+   "flags": {}
+  },
+  {
+   "id": "svc-toilets",
+   "name": "화장실 x2 recesses",
+   "category": "service-room",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    ".planning/2026-09-23-video-twin/collection-report.json"
+   ],
+   "position": null,
+   "quality": "board: recess on the board-left diagonal wall next to GATE6, and recess at board-top-right behind #8 near the rear escalator; no photo of the east-end toilets found",
+   "epoch": {
+    "identity": "E2026-08"
+   },
+   "flags": {}
+  },
+  {
+   "id": "svc-union-office",
+   "name": "노조지부사무실 (1F)",
+   "category": "service-room",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json"
+   ],
+   "position": {
+    "type": "latlon",
+    "of": "AED in front of it",
+    "lat": 35.114988454936,
+    "lon": 129.041684869581,
+    "registeredToUVY": false
+   },
+   "quality": "registry text '1층 노조지부사무실 앞(E/S 8,28호기)앞'; lat/lon precision unknown",
+   "epoch": {
+    "registry": "E2026-09 (CHKDAY 20260904)"
+   },
+   "flags": {},
+   "notes": "[INFERENCE] may be the office behind wl-office-public-frontage next to the observed escalator core."
+  },
+  {
+   "id": "tenant-historic-1f",
+   "name": "superseded 1F tenants",
+   "category": "tenant-historic",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/official-facilities.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    "asset-library/research-public/2026-09-24/metric-controls/controls.json"
+   ],
+   "position": null,
+   "quality": "김밥천국->#6, 스시보노->#10, 디자인스킨->#4, 간사이우동, 탐앤탐스, 스토리웨이(1층 맞이방), 다인명가 temporary stall 2025-09-05..12-03",
+   "epoch": {
+    "identity": "undated / E2025"
+   },
+   "flags": {
+    "current": false
+   }
+  },
+  {
+   "id": "nf-boksoondoga-2f",
+   "name": "복순도가 (2F instance)",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "a (2F, provisional)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/main-metric-registration/observed-location-evidence.json",
+    ".planning/2026-09-23-video-twin/main-metric-registration/evidence-summary.json",
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json"
+   ],
+   "position": {
+    "type": "apertureCornerRangeUVY",
+    "min": [
+     1.002,
+     -27.899,
+     7.655
+    ],
+    "max": [
+     4.814,
+     -27.264,
+     9.356
+    ],
+    "centreUV": [
+     3.004,
+     -27.608
+    ],
+    "apertureWidth": 3.666
+   },
+   "quality": {
+    "cornerReprojFitPx": "0.84-4.87",
+    "cornerReprojHeldOutPx": "1.49-6.57",
+    "crossVideoHeldOutRMS": 0.422,
+    "displacementFromSupplied2FBounds": 18.99
+   },
+   "epoch": {
+    "observed": "E2023 RY2 frames 385-393"
+   },
+   "flags": {
+    "status": "PROVISIONAL observed location range; inventory only, no geometry proposal",
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "nf-kkotdeul",
+   "name": "꽃들",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "a (2F, provisional)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/main-metric-registration/observed-location-evidence.json",
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": {
+    "type": "apertureCornerRangeUVY",
+    "min": [
+     11.282,
+     -27.027,
+     6.907
+    ],
+    "max": [
+     16.211,
+     -26.751,
+     8.699
+    ],
+    "centreUV": [
+     13.843,
+     -26.945
+    ],
+    "apertureWidth": 4.739
+   },
+   "quality": {
+    "displacementFromSupplied2FBounds": 19.37
+   },
+   "epoch": {
+    "observed": "E2023 RY2 frames 421-429; fascia E2025 shoobong _044 (2F section)"
+   },
+   "flags": {
+    "usableFor1F": false
+   },
+   "notes": "Not on the 2026-08 1F board."
+  },
+  {
+   "id": "nf-bnc-island",
+   "name": "비엔씨 (부산명품빵집 island)",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json",
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json"
+   ],
+   "position": null,
+   "quality": "shoobong _039; AED '2층 맞이방 B&C 앞'",
+   "epoch": {
+    "fascia": "E2025"
+   },
+   "flags": {
+    "usableFor1F": false
+   },
+   "notes": "Distinct from 1F #3 비엔씨도넛 and #12 비앤씨박스앤컵."
+  },
+  {
+   "id": "nf-bnc-jegwa",
+   "name": "비엔씨제과",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json",
+    ".planning/2026-09-23-video-twin/main-fascia-recovery/source-receipts.json"
+   ],
+   "position": null,
+   "quality": "shoobong _041 (2F section)",
+   "epoch": {
+    "fascia": "E2025"
+   },
+   "flags": {
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "nf-namcheon",
+   "name": "남천할매떡볶이",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json"
+   ],
+   "position": null,
+   "quality": "shoobong _032",
+   "epoch": {
+    "fascia": "E2025"
+   },
+   "flags": {
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "nf-subway",
+   "name": "서브웨이 (SUBWAY)",
+   "category": "tenant-not-1F",
+   "floor": "2F (conflict)",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/official-facilities.json"
+   ],
+   "position": null,
+   "quality": "shoobong _031 (2F section) vs korail.com 지상 1층 (undated)",
+   "epoch": {
+    "fascia": "E2025",
+    "official": "undated"
+   },
+   "flags": {
+    "usableFor1F": false
+   },
+   "notes": "Absent from the 2026-08 1F board (X05)."
+  },
+  {
+   "id": "nf-soban",
+   "name": "소반한식",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json"
+   ],
+   "position": null,
+   "quality": "shoobong _029",
+   "epoch": {
+    "fascia": "E2025"
+   },
+   "flags": {
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "nf-baekmidang",
+   "name": "백미당",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json"
+   ],
+   "position": null,
+   "quality": "shoobong _028",
+   "epoch": {
+    "fascia": "E2025"
+   },
+   "flags": {
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "nf-palgongtea",
+   "name": "팔공티",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json",
+    ".planning/2026-09-23-video-twin/main-fascia-recovery/source-receipts.json"
+   ],
+   "position": null,
+   "quality": "kjeongy0 blog 2026-03-18 ('부산역사점')",
+   "epoch": {
+    "fascia": "E2026-03"
+   },
+   "flags": {
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "nf-hwangong-2f",
+   "name": "환공어묵 (2F instance)",
+   "category": "tenant-not-1F",
+   "floor": "2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": null,
+   "quality": "shoobong _040 (2F section)",
+   "epoch": {
+    "fascia": "E2025"
+   },
+   "flags": {
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "nf-american-trailer",
+   "name": "아메리칸트레일러",
+   "category": "tenant-not-1F",
+   "floor": "2F (conflict)",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/official-facilities.json"
+   ],
+   "position": null,
+   "quality": "HallRecovered fascia floor 2F vs korail.com 지상 1층 (undated)",
+   "epoch": {
+    "fascia": "E2025",
+    "official": "undated"
+   },
+   "flags": {
+    "usableFor1F": false
+   }
+  },
+  {
+   "id": "st-artbox-terminal-pier",
+   "name": "ARTBOX terminal pier (dark opaque face at interior end of ARTBOX glazing)",
+   "category": "structure-pier",
+   "floor": "1F",
+   "evidenceClass": "a",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/result.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/observations.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/pier-existing-collider-check.json"
+   ],
+   "position": {
+    "type": "planeAndOutlineUVY",
+    "planeUVY": [
+     0.009905,
+     -0.9996,
+     -0.026476,
+     -22.627433
+    ],
+    "outlineUVY": [
+     [
+      5.538,
+      -22.708,
+      4.784
+     ],
+     [
+      4.542,
+      -22.724,
+      4.988
+     ],
+     [
+      4.389,
+      -22.591,
+      -0.071
+     ],
+     [
+      5.525,
+      -22.581,
+      -0.045
+     ]
+    ],
+    "outlineFrame": "000066.jpg"
+   },
+   "quality": {
+    "observations": 44,
+    "inliers": 28,
+    "inlierRMS": 0.01438,
+    "uniqueCheckPoints": 5,
+    "uniqueCheckMedianAbs": 0.061,
+    "edgeFitPixelRMS": 3.004,
+    "edgeMaxNonplanarity": 0.0826,
+    "triangulationAnglesDeg": [
+     5.1,
+     6.88
+    ],
+    "existingColliderHits": 0
+   },
+   "epoch": {
+    "observed": "E2026-03",
+    "corroboration": "E2026-05 ARTBOX photo (dark framing, not metric)"
+   },
+   "flags": {
+    "status": "fitted_observed_surface",
+    "constructionApproved": false,
+    "scope": "Opaque observed face only, no hidden depth or shop enclosure",
+    "uncertainty": "Two manually marked views; independent support and third-view edges still required."
+   }
+  },
+  {
+   "id": "en-gate-3-4-portals",
+   "name": "GATE3/GATE4 central plaza portals (source-mesh corners)",
+   "category": "entrance",
+   "floor": "1F",
+   "evidenceClass": "a (existing source geometry used as registration control)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/metric-registration/entrance-controls.json",
+    ".planning/2026-09-23-video-twin/entrance-source-control-hits.json",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json"
+   ],
+   "position": {
+    "type": "cornersUVY",
+    "g4": [
+     [
+      13.506,
+      -42.36,
+      2.9
+     ],
+     [
+      10.813,
+      -42.552,
+      2.9
+     ],
+     [
+      13.466,
+      -42.363,
+      0
+     ],
+     [
+      10.853,
+      -42.549,
+      0
+     ]
+    ],
+    "g3": [
+     [
+      10.183,
+      -42.597,
+      2.9
+     ],
+     [
+      7.49,
+      -42.789,
+      2.9
+     ],
+     [
+      10.143,
+      -42.6,
+      0
+     ],
+     [
+      7.53,
+      -42.786,
+      0
+     ]
+    ]
+   },
+   "quality": {
+    "portalCornerPixelRMS": 4.1
+   },
+   "epoch": {
+    "geometry": "source model",
+    "observed": "E2026-03 (multi-leaf glazed exits)"
+   },
+   "flags": {
+    "basis": "Existing original source mesh portal3/4 corners, not an independent survey",
+    "constructionNeeded": false
+   }
+  },
+  {
+   "id": "st-right-core-metal-return",
+   "name": "right core metal return (column cladding)",
+   "category": "structure-column",
+   "floor": "1F",
+   "evidenceClass": "a (held-out FAILED)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-core-metal-return.json"
+   ],
+   "position": {
+    "type": "plane",
+    "normalUVY": [
+     -0.826,
+     0.0851,
+     -0.5573
+    ],
+    "offset": 19.5188,
+    "boundsUVY": [
+     [
+      20.664,
+      -14.358,
+      1.797
+     ],
+     [
+      20.944,
+      -13.903,
+      2.169
+     ]
+    ]
+   },
+   "quality": {
+    "inliers": 75,
+    "selected": 293,
+    "fitRMS": 0.0248,
+    "heldOutPoints": 185,
+    "heldOutMedian": 0.254,
+    "heldOutP95": 0.466,
+    "withinTol": 0.097,
+    "plumbSensitivity": 0.343
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "decision": "Held-out support does not pass; retain observations without construction delta."
+   },
+   "notes": "[INFERENCE] normal is about 34 deg from horizontal, implausible for vertical cladding."
+  },
+  {
+   "id": "st-left-core-column-face",
+   "name": "left core column face",
+   "category": "structure-column",
+   "floor": "1F",
+   "evidenceClass": "b (pixel-only; insufficient plane support)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/observations.json"
+   ],
+   "position": {
+    "type": "searchROI",
+    "roiUVY": [
+     [
+      20,
+      -20.2,
+      0.1
+     ],
+     [
+      22.6,
+      -18.5,
+      3
+     ]
+    ]
+   },
+   "quality": {
+    "fitPointCount": 2,
+    "heldOutPointCount": 3
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "insufficient-plane-support",
+    "decision": "Dense reconstruction does not establish this surface. No filled-in plane or volume."
+   }
+  },
+  {
+   "id": "st-stainless-piers-pixel",
+   "name": "stainless-clad structural piers / wall returns (plumb marks)",
+   "category": "structure-column",
+   "floor": "1F",
+   "evidenceClass": "b (pixel-only)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/metric-registration/structural-observations.json"
+   ],
+   "position": null,
+   "quality": "V061-2, V079-2, V079-3, V106-2, V106-3, V133-2, V133-3 used only as plumb lines",
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {}
+  },
+  {
+   "id": "st-cylindrical-column-hwangong",
+   "name": "cylindrical column beside 환공어묵 / elevator opening",
+   "category": "structure-column",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": null,
+   "quality": "May photo-04 spatial topology; no dimensions",
+   "epoch": {
+    "observed": "E2026-05"
+   },
+   "flags": {}
+  },
+  {
+   "id": "st-rectangular-columns-topology",
+   "name": "rectangular stainless panel-clad columns (core approach; Zimcarry/KTX row)",
+   "category": "structure-column",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": null,
+   "quality": "3TLdCQCjeXE 104/118 s; eluhiZ_eirE 33 s; 'No absolute column positions, diameters, clearances or spacing can be recovered'",
+   "epoch": {
+    "observed": "E2026-03 / E2026-09"
+   },
+   "flags": {}
+  },
+  {
+   "id": "st-2022-inferred-columns",
+   "name": "2022-video inferred entry columns",
+   "category": "structure-column",
+   "floor": "1F",
+   "evidenceClass": "b (superseded)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/floor-one-build.json",
+    ".planning/2026-09-23-video-twin/ground-landmark-probe.json"
+   ],
+   "position": {
+    "type": "pointsUV",
+    "leftColumnUV": [
+     2.4,
+     -41.4
+    ],
+    "rightColumnUV": [
+     8.4,
+     -37.9
+    ]
+   },
+   "quality": "SFM_RELATIVE_LANDMARKS_INFERRED_7M_SCALE; not surveyed",
+   "epoch": {
+    "observed": "E2022"
+   },
+   "flags": {
+    "status": "BUILDER_EXECUTED_NOT_SCENE_VALIDATED"
+   }
+  },
+  {
+   "id": "cl-low-suspended-ceiling",
+   "name": "low suspended ceiling (escalator approach / office zone)",
+   "category": "ceiling",
+   "floor": "1F",
+   "evidenceClass": "a",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/report.json",
+    ".planning/2026-09-23-video-twin/office-frontage-fit/low-suspended-ceiling.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/unity-surface.json",
+    ".planning/2026-09-23-video-twin/ceiling-integration/expanded-native-collision.json"
+   ],
+   "position": {
+    "type": "plane",
+    "officeFit": {
+     "normalUVY": [
+      0.000653,
+      -0.000979,
+      -0.999999
+     ],
+     "offset": 2.23124,
+     "boundsUVY": [
+      [
+       6.431,
+       -20.84,
+       2.202
+      ],
+      [
+       19.297,
+       -13.962,
+       2.309
+      ]
+     ]
+    },
+    "coreFit": {
+     "normalUVY": [
+      -0.000404,
+      -0.00017,
+      -1.0
+     ],
+     "offset": 2.2602,
+     "boundsUVY": [
+      [
+       14.005,
+       -19.201,
+       2.206
+      ],
+      [
+       19.297,
+       -14.143,
+       2.306
+      ]
+     ]
+    }
+   },
+   "quality": {
+    "officeFit": {
+     "inliers": 28958,
+     "selected": 30982,
+     "fitRMS": 0.01847,
+     "fitP95": 0.0377,
+     "heldOutPoints": 7753,
+     "heldOutMedian": 0.01081,
+     "heldOutP95": 0.0368,
+     "withinTol": 0.984
+    },
+    "coreFit": {
+     "inliers": 19361,
+     "selected": 20163,
+     "fitRMS": 0.01755,
+     "heldOutPoints": 8800,
+     "heldOutMedian": 0.0118,
+     "heldOutP95": 0.0423,
+     "withinTol": 0.97,
+     "plumbSensitivity": 0.311
+    },
+    "liveSupportedArea": 31.546,
+    "measuredSupportArea": 37.587,
+    "collisionCeilingY": 2.256
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "observed-surface-only",
+    "role": "missing-finish-not-slab",
+    "approvalLevel": "measurement candidate, not live-scene authorization",
+    "decision": "Bounded visible surface is supported; solid thickness/endpoints are not established.",
+    "sceneState": "live: FPSWorld/1층 · 관측 마감/low-suspended-ceiling (planar collider)"
+   }
+  },
+  {
+   "id": "cl-higher-lobby-ceiling",
+   "name": "higher central lobby ceiling (inside GATE3/4)",
+   "category": "ceiling",
+   "floor": "1F",
+   "evidenceClass": "a",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/higher-lobby-ceiling.json",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/unity-surface.json",
+    ".planning/2026-09-23-video-twin/ceiling-integration/expanded-native-collision.json"
+   ],
+   "position": {
+    "type": "plane",
+    "normalUVY": [
+     -0.009087,
+     -0.013749,
+     -0.999864
+    ],
+    "offset": 4.70159,
+    "boundsUVY": [
+     [
+      5.538,
+      -29.651,
+      4.865
+     ],
+     [
+      12.179,
+      -23.45,
+      5.071
+     ]
+    ]
+   },
+   "quality": {
+    "inliers": 10286,
+    "selected": 11586,
+    "fitRMS": 0.0263,
+    "fitP95": 0.0516,
+    "heldOutPoints": 4364,
+    "heldOutMedian": 0.0224,
+    "heldOutP95": 0.091,
+    "withinTol": 0.868,
+    "plumbSensitivity": 0.188,
+    "liveSupportedArea": 24.466,
+    "collisionCeilingY": 4.974,
+    "gapTo2FSlab": "1.73 to underside 6.7"
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "observed-surface-only",
+    "approvalLevel": "measurement candidate, not live-scene authorization",
+    "decision": "Bounded visible surface is supported; solid thickness/endpoints are not established.",
+    "sceneState": "live: FPSWorld/1층 · 관측 마감/higher-lobby-ceiling (planar collider)"
+   }
+  },
+  {
+   "id": "cl-ceiling-void-edge",
+   "name": "ceiling void edge above escalator",
+   "category": "ceiling",
+   "floor": "1F",
+   "evidenceClass": "a (view consistency FAILED)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/ceiling-void-edge.json"
+   ],
+   "position": {
+    "type": "line",
+    "firstViewLine": "U = -0.09942*V + 18.5651",
+    "supportedUVY": [
+     [
+      20.349,
+      -17.939,
+      2.255
+     ],
+     [
+      20.028,
+      -14.714,
+      2.255
+     ]
+    ]
+   },
+   "quality": {
+    "heldOutRmsU": 0.283,
+    "heldOutResidualU": [
+     -0.208,
+     -0.341
+    ]
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "view-consistency-failed-no-opening-polygon",
+    "reason": "Do not cut the Y6.7 slab from this line."
+   }
+  },
+  {
+   "id": "cl-entry-high-fascia",
+   "name": "white station fascia above stainless entry header",
+   "category": "ceiling-soffit",
+   "floor": "1F",
+   "evidenceClass": "a (unresolved; no geometry)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/result.json"
+   ],
+   "position": {
+    "type": "edgeTriangulationRange",
+    "U": [
+     5.39,
+     11.96
+    ],
+    "V": [
+     -22.72,
+     -21.76
+    ],
+    "Y": [
+     2.58,
+     5.16
+    ]
+   },
+   "quality": {
+    "observations": 2,
+    "edgeFitPixelRMS": 3.008,
+    "maxNonplanarity": 0.21
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "unresolved",
+    "reason": "Too few stable observed points; no geometry emitted"
+   },
+   "notes": "Sits between the lobby (V<-23.45, Y≈4.97) and the low ceiling zone (V>-20.84, Y≈2.23) - topologically consistent."
+  },
+  {
+   "id": "cl-ceiling-grid-topology",
+   "name": "1F suspended pale-grey panel grid (luminous squares, round lamps/vents)",
+   "category": "ceiling",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": null,
+   "quality": "3TLdCQCjeXE 96/118 s; module size unknown",
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {}
+  },
+  {
+   "id": "cl-2022-inferred-heights",
+   "name": "2022 inferred ceiling heights",
+   "category": "ceiling",
+   "floor": "1F",
+   "evidenceClass": "b (superseded)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/floor-one-build.json"
+   ],
+   "position": {
+    "generalCeilingY": 4.2,
+    "lowerSoffitUndersideY": 3.8,
+    "landingCeilingY": 3.8
+   },
+   "quality": "INFERRED; 7 m rise assumed",
+   "epoch": {
+    "observed": "E2022"
+   },
+   "flags": {
+    "superseded": true
+   }
+  },
+  {
+   "id": "wl-right-approach-wall",
+   "name": "right approach wall (visible finish)",
+   "category": "wall",
+   "floor": "1F",
+   "evidenceClass": "a",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/report.json",
+    ".planning/2026-09-23-video-twin/office-frontage-fit/right-approach-wall.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/unity-surface.json",
+    ".planning/2026-09-23-video-twin/ceiling-integration/wall-motion.json"
+   ],
+   "position": {
+    "type": "plane",
+    "officeFit": {
+     "normalUVY": [
+      0.097435,
+      -0.995175,
+      -0.01151
+     ],
+     "offset": -15.68307,
+     "boundsUVY": [
+      [
+       13.979,
+       -14.465,
+       0.174
+      ],
+      [
+       18.238,
+       -13.954,
+       2.274
+      ]
+     ]
+    },
+    "coreFit": {
+     "normalUVY": [
+      0.097557,
+      -0.9952,
+      -0.007688
+     ],
+     "offset": -15.68848,
+     "boundsUVY": [
+      [
+       14.771,
+       -14.376,
+       0.289
+      ],
+      [
+       18.198,
+       -13.972,
+       2.068
+      ]
+     ]
+    }
+   },
+   "quality": {
+    "officeFit": {
+     "inliers": 19584,
+     "selected": 20985,
+     "fitRMS": 0.01255,
+     "fitP95": 0.03,
+     "heldOutPoints": 7863,
+     "heldOutMedian": 0.0058,
+     "heldOutP95": 0.0191,
+     "withinTol": 0.997
+    },
+    "coreFit": {
+     "inliers": 18048,
+     "selected": 18093,
+     "fitRMS": 0.01077,
+     "heldOutPoints": 17832,
+     "heldOutMedian": 0.0083,
+     "heldOutP95": 0.1546,
+     "withinTol": 0.846,
+     "plumbSensitivity": 0.329
+    },
+    "liveSupportedArea": 7.282,
+    "collisionStopSeparation": 0.308
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "observed-surface-only",
+    "approvalLevel": "measurement candidate, not live-scene authorization",
+    "decision": "Bounded visible surface is supported; solid thickness/endpoints are not established.",
+    "sceneState": "live: FPSWorld/1층 · 관측 마감/right-approach-wall (planar collider)"
+   }
+  },
+  {
+   "id": "wl-office-public-frontage",
+   "name": "office public frontage (red service doors, rear window, blue notice)",
+   "category": "service-room-wall",
+   "floor": "1F",
+   "evidenceClass": "a (held-out FAILED)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/office-public-frontage.json",
+    ".planning/2026-09-23-video-twin/metric-registration/structural-observations.json"
+   ],
+   "position": {
+    "type": "plane",
+    "normalUVY": [
+     0.077414,
+     -0.996675,
+     -0.025398
+    ],
+    "offset": -15.52534,
+    "boundsUVY": [
+     [
+      6.193,
+      -15.191,
+      0.02
+     ],
+     [
+      11.521,
+      -14.641,
+      2.288
+     ]
+    ]
+   },
+   "quality": {
+    "inliers": 6842,
+    "selected": 16062,
+    "fitRMS": 0.0275,
+    "fitP95": 0.0471,
+    "heldOutPoints": 5924,
+    "heldOutMedian": 0.0494,
+    "heldOutP95": 0.3863,
+    "withinTol": 0.504,
+    "plumbSensitivity": 0.314
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "observed-surface-only",
+    "proposedDelta": null,
+    "decision": "Held-out support does not pass; retain observations without construction delta."
+   }
+  },
+  {
+   "id": "wl-office-lower-wall-panels",
+   "name": "office lower wall panels",
+   "category": "service-room-wall",
+   "floor": "1F",
+   "evidenceClass": "a (held-out FAILED)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/report.json",
+    ".planning/2026-09-23-video-twin/office-frontage-fit/office-lower-wall-panels.json"
+   ],
+   "position": {
+    "type": "plane",
+    "normalUVY": [
+     0.091797,
+     -0.995744,
+     0.008152
+    ],
+    "offset": -15.72137,
+    "boundsUVY": [
+     [
+      7.202,
+      -15.092,
+      0.295
+     ],
+     [
+      10.244,
+      -14.791,
+      1.445
+     ]
+    ]
+   },
+   "quality": {
+    "inliers": 726,
+    "selected": 1128,
+    "fitRMS": 0.022,
+    "fitP95": 0.043,
+    "heldOutPoints": 477,
+    "heldOutMedian": 0.0354,
+    "heldOutP95": 6.151,
+    "withinTol": 0.593
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "proposedDelta": null,
+    "decision": "Held-out support does not pass; retain observations without construction delta."
+   }
+  },
+  {
+   "id": "wl-bnc-partition-edge",
+   "name": "B&C full-height partition/hoarding edge",
+   "category": "shop-partition",
+   "floor": "1F",
+   "evidenceClass": "b (pixel-only)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/metric-registration/structural-observations.json"
+   ],
+   "position": null,
+   "quality": "V061-1, V106-1 held-out plumb lines only",
+   "epoch": {
+    "observed": "E2026-03 (hoarding state, superseded by E2026-05 open store)"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fl-ground-floor",
+   "name": "1F floor datum / lower landing support",
+   "category": "floor",
+   "floor": "1F",
+   "evidenceClass": "a (landing patch)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/implementation-boundary/work-scope.json",
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json"
+   ],
+   "position": {
+    "groundFloorBoundsUV": [
+     -89.992,
+     -35.575,
+     77.327,
+     12.99
+    ],
+    "groundFloorY": [
+     -0.18,
+     0.0
+    ],
+    "area": 5734.26
+   },
+   "quality": "Y=0 matches plaza/platform datum, not independently surveyed; measured lower landing Y≈-0.097",
+   "epoch": {
+    "observed": "E2026-03 landing"
+   },
+   "flags": {
+    "sceneState": "live Ground_Floor; empty area is not construction authorization"
+   }
+  },
+  {
+   "id": "vc-lower-landing-floor",
+   "name": "escalator lower landing approach floor",
+   "category": "vertical-circulation",
+   "floor": "1F",
+   "evidenceClass": "a",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/lower-landing-floor.json"
+   ],
+   "position": {
+    "type": "plane",
+    "normalUVY": [
+     -0.002028,
+     0.003573,
+     -0.999992
+    ],
+    "offset": -0.002658,
+    "boundsUVY": [
+     [
+      15.471,
+      -17.905,
+      -0.116
+     ],
+     [
+      16.055,
+      -16.802,
+      -0.084
+     ]
+    ]
+   },
+   "quality": {
+    "inliers": 1111,
+    "selected": 1111,
+    "fitRMS": 0.00376,
+    "fitP95": 0.00728,
+    "heldOutPoints": 2840,
+    "heldOutMedian": 0.00342,
+    "heldOutP95": 0.01059,
+    "withinTol": 0.999,
+    "plumbSensitivity": 0.294
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "decision": "Reuse existing support; no duplicate surface.",
+    "caveat": "observed approach support ahead of the comb plate; does not locate exact moving-flight transition"
+   }
+  },
+  {
+   "id": "vc-central-rail-side-plane",
+   "name": "escalator central balustrade side plane",
+   "category": "vertical-circulation",
+   "floor": "1F",
+   "evidenceClass": "a (held-out FAILED)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/central-rail-side-plane.json"
+   ],
+   "position": {
+    "type": "plane",
+    "normalUVY": [
+     0.021358,
+     -0.991385,
+     0.129229
+    ],
+    "offset": -17.01597,
+    "boundsUVY": [
+     [
+      20.464,
+      -16.648,
+      0.435
+     ],
+     [
+      24.066,
+      -16.287,
+      2.688
+     ]
+    ]
+   },
+   "quality": {
+    "inliers": 387,
+    "selected": 761,
+    "fitRMS": 0.0217,
+    "heldOutPoints": 404,
+    "heldOutMedian": 0.4136,
+    "heldOutP95": 0.5421,
+    "withinTol": 0.0
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "decision": "Held-out support does not pass; retain observations without construction delta."
+   }
+  },
+  {
+   "id": "vc-right-ramp-side-plane",
+   "name": "escalator right balustrade side plane",
+   "category": "vertical-circulation",
+   "floor": "1F",
+   "evidenceClass": "a (held-out FAILED)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/right-ramp-side-plane.json"
+   ],
+   "position": {
+    "type": "plane",
+    "normalUVY": [
+     0.186978,
+     -0.98181,
+     -0.032978
+    ],
+    "offset": -18.52091,
+    "boundsUVY": [
+     [
+      22.667,
+      -14.586,
+      0.54
+     ],
+     [
+      24.5,
+      -14.209,
+      1.537
+     ]
+    ]
+   },
+   "quality": {
+    "inliers": 23,
+    "selected": 24,
+    "fitRMS": 0.0207,
+    "heldOutPoints": 24,
+    "heldOutMedian": 0.0948,
+    "heldOutP95": 0.1225,
+    "withinTol": 0.042
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "decision": "Held-out support does not pass; retain observations without construction delta."
+   }
+  },
+  {
+   "id": "vc-rising-tread-envelope",
+   "name": "observed rising tread envelope",
+   "category": "vertical-circulation",
+   "floor": "1F",
+   "evidenceClass": "b (pixel-only; insufficient)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/observations.json"
+   ],
+   "position": {
+    "type": "searchROI",
+    "roiUVY": [
+     [
+      20.7,
+      -16.3,
+      0.35
+     ],
+     [
+      26,
+      -14.6,
+      4.8
+     ]
+    ]
+   },
+   "quality": {
+    "fitPointCount": 0,
+    "heldOutPointCount": 4
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "insufficient-plane-support",
+    "exclusion": "No stationary staircase is identifiable in these paired escalator frames"
+   }
+  },
+  {
+   "id": "vc-upper-landing",
+   "name": "escalator upper landing",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "b (visually observed; registration rejected)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json"
+   ],
+   "position": null,
+   "quality": "visible 161-166 s (frames 247/253/259 masks); verticesUVY null, planeUVY null",
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "visually-observed-but-world-registration-rejected",
+    "unresolved": "Upper landing world position/height and connection to source Y7 slab remain unmeasured"
+   }
+  },
+  {
+   "id": "vc-upper-extension-gate",
+   "name": "extended SfM through ascent",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "rejected",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/extension-quality-gate.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/extension-receipt.json"
+   ],
+   "position": null,
+   "quality": {
+    "registeredImages": 262,
+    "meanReprojPx": 0.546,
+    "ascentDisplacementUVY": [
+     -2.163,
+     -2.409,
+     4.705
+    ],
+    "rejectedUpperPlaneTiltDeg": 26.57,
+    "newCamerasAccepted": 0
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "REJECTED-upper-extension",
+    "contradiction": "Core ascent must run +U; recovered ascent runs -U"
+   }
+  },
+  {
+   "id": "vc-local-ascent-diagnostic",
+   "name": "independent local ascent reconstruction",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "b (local frame; not UVY-registered)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/local-ascent/level-frame.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/local-ascent/constraint-summary.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/local-ascent/reconstruction-receipt.json"
+   ],
+   "position": null,
+   "quality": {
+    "model0": "243 images 139.5-179.8 s, reprojection 0.704 px",
+    "cameraInclinationDeg": 30.26,
+    "inclineFitRmsLocal": 0.0793,
+    "inclineHeldOutRmsLocal": 0.0778,
+    "upperFloorRmsLocal": 0.0127,
+    "upperFloorHeldOutMedianLocal": 0.0126,
+    "upperFloorHeldOutP95Local": 0.0391,
+    "upperFloorWithinTol": 0.953,
+    "angleToPlumbDeg": 0.225,
+    "model1HeldOutPositionP95": 1.592
+   },
+   "epoch": {
+    "observed": "E2026-03"
+   },
+   "flags": {
+    "status": "diagnostic-not-approved",
+    "acceptedForConstruction": false,
+    "sourceConstructionApproved": false
+   },
+   "notes": "Scale and UVY yaw/translation unresolved; this folder was being modified during the audit."
+  },
+  {
+   "id": "vc-escalator-core-topology",
+   "name": "paired escalator 1F->2F (observed core)",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json",
+    ".planning/2026-09-23-video-twin/implementation-boundary/work-scope.json"
+   ],
+   "position": null,
+   "quality": "[INFERENCE] failed rail planes at U 20.5-24.5, V -16.6..-14.2 plus lower landing at U 15.5-16.1 put the flight foot near U≈20.5, ascending +U; a 30.26 deg camera incline and 7.0 rise give a top near U≈32.5 (inference only). The existing 2F slab is present at samples (18,-16) and (30,-16).",
+   "epoch": {
+    "observed": "E2026-03; lockers beside the paired flight E2026-03 photo-05"
+   },
+   "flags": {
+    "constructionApproved": false
+   }
+  },
+  {
+   "id": "vc-escalator-rear-9",
+   "name": "rear escalator at #9 복순도가 end",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": null,
+   "quality": "board icon only; May photo-12 shows open cross-passage under departure board",
+   "epoch": {
+    "identity": "E2026-08"
+   },
+   "flags": {}
+  },
+  {
+   "id": "vc-core-A",
+   "name": "elevator x2 + stair core between #2 and #3",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    ".planning/2026-09-23-video-twin/first-floor-plan.json"
+   ],
+   "position": {
+    "type": "inferredGapU",
+    "U": [
+     22.1,
+     28.5
+    ],
+    "basis": "[INFERENCE] gap between Naver polygons #3 and #2"
+   },
+   "quality": "topology only",
+   "epoch": {
+    "identity": "E2026-08"
+   },
+   "flags": {}
+  },
+  {
+   "id": "vc-core-B",
+   "name": "elevator x2 + stair core between #4 and #5",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    "asset-library/research-public/2026-09-24/metric-controls/controls.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": {
+    "type": "inferredGapU",
+    "U": [
+     -8.1,
+     -2.0
+    ],
+    "basis": "[INFERENCE] gap between Naver polygons #5 and #4"
+   },
+   "quality": "topology only; tender KR-1F-38 '환공어묵 beside the right-hand central entrance/lift core'; May photo-04 elevator opening",
+   "epoch": {
+    "identity": "E2026-08; E2026-05; E2026-01"
+   },
+   "flags": {}
+  },
+  {
+   "id": "vc-elevator-arrival-zimcarry",
+   "name": "1F elevator door facing Zimcarry/KTX특송",
+   "category": "vertical-circulation",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": null,
+   "quality": "eluhiZ_eirE 46.5-49.5 s; which core is unknown",
+   "epoch": {
+    "observed": "E2026-09"
+   },
+   "flags": {}
+  },
+  {
+   "id": "vc-2022-inferred-escalator",
+   "name": "2022 inferred escalator pair and opening",
+   "category": "vertical-circulation",
+   "floor": "1F->2F",
+   "evidenceClass": "b (superseded)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/floor-one-build.json"
+   ],
+   "position": {
+    "floorOpeningUV": [
+     3.4,
+     10.3,
+     -33.5,
+     -19.5
+    ],
+    "upperLandingV": -21.086,
+    "lowerLandingV": -32.586,
+    "run": 11.5,
+    "slopeDeg": 31.33
+   },
+   "quality": "relative SfM with 7 m rise assumed",
+   "epoch": {
+    "observed": "E2022"
+   },
+   "flags": {
+    "superseded": true
+   }
+  },
+  {
+   "id": "vc-existing-2f-3f-escalators",
+   "name": "FPSWorld/맞이방 · 에스컬레이터 (existing)",
+   "category": "vertical-circulation",
+   "floor": "2F->3F",
+   "evidenceClass": "n/a (scene geometry)",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/implementation-boundary/work-scope.json"
+   ],
+   "position": {
+    "boundsUVY": [
+     [
+      11.803,
+      74.233,
+      5.946
+     ],
+     [
+      23.45,
+      79.166,
+      13.25
+     ]
+    ]
+   },
+   "quality": "not a Y=0 connector",
+   "epoch": {},
+   "flags": {
+    "action": "Do not count these as a verified Y=0 first-floor connector or recreate them."
+   }
+  },
+  {
+   "id": "en-gates-1-2-5-6",
+   "name": "GATE1, GATE2, GATE5, GATE6 and extra facade doors",
+   "category": "entrance",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    ".planning/2026-09-23-video-twin/first-floor-plan.json"
+   ],
+   "position": {
+    "type": "inferredGapU",
+    "GATE5": [
+     38.4,
+     45.3
+    ],
+    "GATE2": [
+     -28.8,
+     -12.3
+    ],
+    "GATE1": [
+     -69.6,
+     -56.5
+    ],
+    "basis": "[INFERENCE] gaps between Naver front-row polygons per board order"
+   },
+   "quality": "GATE6 at the board-left diagonal wall end next to the toilets; 3 extra openings on #8 facade",
+   "epoch": {
+    "identity": "E2026-08 board; E2025-02 Zimcarry map"
+   },
+   "flags": {}
+  },
+  {
+   "id": "en-exit1-yangsan",
+   "name": "Exit 1 corner at 양산국밥",
+   "category": "entrance",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": null,
+   "quality": "May photo-13",
+   "epoch": {
+    "observed": "E2026-05"
+   },
+   "flags": {}
+  },
+  {
+   "id": "en-metro-link-colonnade",
+   "name": "metro underground-link colonnade (exterior, plaza level)",
+   "category": "entrance-exterior",
+   "floor": "1F exterior",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json"
+   ],
+   "position": null,
+   "quality": "2019/2020 videos only",
+   "epoch": {
+    "observed": "2019-07 / 2020-04"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fx-lockers",
+   "name": "물품보관함 (coin lockers, board #17)",
+   "category": "fixture",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/official-facilities.json"
+   ],
+   "position": null,
+   "quality": "board: free-standing bank in the open board-left concourse below the rear-wall notch; March photo-05 beside the paired escalator flight; korail.com '5번 출구 부근'",
+   "epoch": {
+    "identity": "E2026-08; E2026-03; undated"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fx-wheelchair-charger",
+   "name": "전동휠체어 자동 충전소",
+   "category": "fixture",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/official-facilities.json",
+    "asset-library/research-public/2026-09-24/official-first-floor/receipts.json"
+   ],
+   "position": null,
+   "quality": "'5번 출구 부근'",
+   "epoch": {
+    "identity": "undated"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fx-aed-union-office",
+   "name": "AED 12-0017748 (1층 노조지부사무실 앞, E/S 8,28)",
+   "category": "fire-life-safety",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json"
+   ],
+   "position": {
+    "type": "latlon",
+    "lat": 35.114988454936,
+    "lon": 129.041684869581,
+    "registeredToUVY": false
+   },
+   "quality": "registry coordinates; precision unknown",
+   "epoch": {
+    "registry": "E2026-09 (CHKDAY 20260904; updated 2024-09-20)"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fx-aed-ktx-express",
+   "name": "AED 12-0017727 (1층 5번출구 KTX특송 사무실 옆)",
+   "category": "fire-life-safety",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json"
+   ],
+   "position": {
+    "type": "latlon",
+    "lat": 35.115022639398,
+    "lon": 129.041795395891,
+    "registeredToUVY": false
+   },
+   "quality": "registry coordinates; precision unknown",
+   "epoch": {
+    "registry": "E2026-09"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fx-fire-extinguishers-1f",
+   "name": "1F extinguishers / hydrants / alarms / exit signs",
+   "category": "fire-life-safety",
+   "floor": "1F",
+   "evidenceClass": "c",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/evidence-integration.json",
+    ".planning/2026-09-23-video-twin/implementation-boundary/group-extents.json"
+   ],
+   "position": null,
+   "quality": "scene group '소화기 점검 장비' (12 objects) lies at Y 7.47-8.63 (2F); 'No new 1F evacuation equipment positions invented'",
+   "epoch": {},
+   "flags": {}
+  },
+  {
+   "id": "fx-ticket-machines-1f",
+   "name": "ticket machines on 1F",
+   "category": "fixture",
+   "floor": "1F",
+   "evidenceClass": "c",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "position": null,
+   "quality": "자동발매기 evidence is 2F only; 1F signs point to 2F ticket vending",
+   "epoch": {},
+   "flags": {}
+  },
+  {
+   "id": "fx-info-desk-1f",
+   "name": "information desk on 1F",
+   "category": "fixture",
+   "floor": "1F",
+   "evidenceClass": "c",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/jev-reconcile-012.input.json"
+   ],
+   "position": null,
+   "quality": "round 종합안내소 is on 2F",
+   "epoch": {},
+   "flags": {}
+  },
+  {
+   "id": "fx-benches-atm-1f",
+   "name": "benches / ATMs on 1F",
+   "category": "fixture",
+   "floor": "1F",
+   "evidenceClass": "c",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/collection-report.json"
+   ],
+   "position": null,
+   "quality": "no 1F bench or ATM location extracted",
+   "epoch": {},
+   "flags": {}
+  },
+  {
+   "id": "fx-directional-signage",
+   "name": "directional signs to 2F trains / ticket vending; departure board over cross-passage",
+   "category": "signage",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": null,
+   "quality": "3TLdCQCjeXE 96/104/118 s; May photo-12",
+   "epoch": {
+    "observed": "E2026-03; E2026-05"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fx-tactile-floor-bands",
+   "name": "tactile strips, escalator warning pads, dark floor bands, speckled stone floor",
+   "category": "floor-finish",
+   "floor": "1F",
+   "evidenceClass": "b",
+   "evidenceFiles": [
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ],
+   "position": null,
+   "quality": "visual only; tile size unknown",
+   "epoch": {
+    "observed": "E2026-03; E2026-05; E2026-09"
+   },
+   "flags": {}
+  },
+  {
+   "id": "fx-staged-kits",
+   "name": "staged shelf/bakery/dining kits",
+   "category": "fixture",
+   "floor": "1F",
+   "evidenceClass": "c",
+   "evidenceFiles": [
+    ".planning/2026-09-23-video-twin/evidence-integration.json"
+   ],
+   "position": null,
+   "quality": "instantiated:false; no independently registered 1F placement",
+   "epoch": {},
+   "flags": {
+    "instantiated": false
+   }
+  }
+ ],
+ "contradictions": [
+  {
+   "id": "X01",
+   "subject": "ARTBOX inner end: Naver polygon vs observed pier",
+   "sources": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/result.json"
+   ],
+   "discrepancy": "Naver-fit corner (5.408,-26.982) vs observed pier outline V -22.58..-22.72 at U 4.39-5.54: dV = +4.27..+4.40. This exceeds the Naver fit p95 3.028 but is below its max 5.071.",
+   "implication": "[INFERENCE] the corridor between the pier and the Naver PB front (V≈-19.9 at U 5) would be only ~2.7; the Naver front-row/rear-row positions are not reliable to ~4 m here."
+  },
+  {
+   "id": "X02",
+   "subject": "복순도가 floor",
+   "sources": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json",
+    ".planning/2026-09-23-video-twin/main-metric-registration/observed-location-evidence.json",
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json"
+   ],
+   "discrepancy": "1F unit #9 (2026-08 board; March photo-22; May photos 10/12) vs a 2F storefront (2023 RY2; Y 7.66-9.36; fascia build floor 2F)",
+   "implication": "[INFERENCE] different epochs or two outlets; the 2F observation is not 1F evidence."
+  },
+  {
+   "id": "X03",
+   "subject": "2F 복순도가/꽃들: registered vs supplied 2F bounds",
+   "sources": [
+    ".planning/2026-09-23-video-twin/main-metric-registration/evidence-summary.json",
+    ".planning/2026-09-23-video-twin/main-metric-registration/observed-location-evidence.json"
+   ],
+   "discrepancy": "observed centres (3.004,-27.608) / (13.843,-26.945) vs supplied V -49.3..-46.6 / -49.3..-45.6: 18.99 / 19.37 horizontal",
+   "implication": "[INFERENCE] the observed 2F frontages lie vertically above the 1F lobby/ARTBOX area (U 1-16, V≈-27); relevant only to the 2F slab and 1F ceiling interface."
+  },
+  {
+   "id": "X04",
+   "subject": "환공어묵 floor",
+   "sources": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json"
+   ],
+   "discrepancy": "1F unit #5 (board, May photo-04, 2026-01 tender) and a 2F fascia (shoobong _040, 2025)"
+  },
+  {
+   "id": "X05",
+   "subject": "서브웨이 / 아메리칸트레일러 floor",
+   "sources": [
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/official-facilities.json",
+    ".planning/2026-09-23-video-twin/fascia-recovery-build.json"
+   ],
+   "discrepancy": "korail.com lists them under 지상 1층 (undated, superseded tenants) vs 2F photos/fascias (2025); the 2026-08 1F board lists neither"
+  },
+  {
+   "id": "X06",
+   "subject": "board #1 모집중 vs service-end tenants",
+   "sources": [
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ],
+   "discrepancy": "Sept-2026 video shows Zimcarry adjacent to KTX특송 at the service end; the board shows #1 vacant"
+  },
+  {
+   "id": "X07",
+   "subject": "tender nominal areas vs Naver polygons",
+   "sources": [
+    "asset-library/research-public/2026-09-24/metric-controls/model-comparison.json"
+   ],
+   "discrepancy": "#2 68.9/56.17=1.227; #5 38.0/27.00=1.407; #6 190.0/148.27=1.281; #7 78.09/84.90=0.920",
+   "implication": "no single global scale"
+  },
+  {
+   "id": "X08",
+   "subject": "unit-03 kind",
+   "sources": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json"
+   ],
+   "discrepancy": "kind=hoarding (March 2026) vs May 2026 open glazed retail; correction pending"
+  },
+  {
+   "id": "X09",
+   "subject": "2022 floor-one-build vs 2026 measurements",
+   "sources": [
+    ".planning/2026-09-23-video-twin/floor-one-build.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/entrance-source-control-hits.json"
+   ],
+   "discrepancy": "escalator opening U 3.4-10.3, V -33.5..-19.5 running along V vs observed rails at U 20.5-24.5, V -16.6..-14.2 with +U ascent (>=10 offset in U, ~90 deg orientation). Ceilings 4.2/3.8 vs measured 2.23-2.26 and 4.87-5.07. PB front V -45.9 vs Naver PB V -20.71..-6.35 and facade portals at V -42.4..-42.8."
+  },
+  {
+   "id": "X10",
+   "subject": "low-suspended-ceiling height between fits",
+   "sources": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json"
+   ],
+   "discrepancy": "offset 2.2312 vs 2.2602 (dY≈0.029)"
+  },
+  {
+   "id": "X11",
+   "subject": "right-approach-wall held-out between fits",
+   "sources": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json"
+   ],
+   "discrepancy": "held-out P95 0.019 (0.997 within) vs 0.155 (0.846 within); planes agree (offset d0.005, normal d≈0.22 deg)"
+  },
+  {
+   "id": "X12",
+   "subject": "upper ascent direction",
+   "sources": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/extension-quality-gate.json"
+   ],
+   "discrepancy": "recovered displacement (-2.16,-2.41,+4.71) runs -U; the core requires +U. Rejected despite 0.546 px reprojection."
+  },
+  {
+   "id": "X13",
+   "subject": "plumb consistency",
+   "sources": [
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+    ".planning/2026-09-23-video-twin/main-metric-registration/evidence-summary.json"
+   ],
+   "discrepancy": "1F video held-out plumb <=0.65 deg vs main-building global disagreement 3.385 deg"
+  },
+  {
+   "id": "X14",
+   "subject": "higher-lobby ceiling tilt",
+   "sources": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json"
+   ],
+   "discrepancy": "normal (-0.0091,-0.0137,-0.99986) is about 0.94 deg from level; Y spans 4.87-5.07 across the patch; plumb sensitivity 0.188",
+   "implication": "[INFERENCE] more likely a registration residual than a physical slope"
+  },
+  {
+   "id": "X15",
+   "subject": "approval status vs scene state",
+   "sources": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ceiling-integration/expanded-import.json",
+    ".planning/2026-09-23-video-twin/1f-boundary-refresh/ground-continuity.json"
+   ],
+   "discrepancy": "fit reports say 'measurement candidate, not live-scene authorization', yet FPSWorld/1층 · 관측 마감/{low-suspended-ceiling,higher-lobby-ceiling,right-approach-wall} are active with planar colliders"
+  },
+  {
+   "id": "X16",
+   "subject": "missing-fascia claims superseded",
+   "sources": [
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/GroundCurrent/receipts.json"
+   ],
+   "discrepancy": "'No current 아트센트 / 버거앤타코 fascia' is superseded by May-2026 photo-10 / photo-05"
+  },
+  {
+   "id": "X17",
+   "subject": "lower landing vs floor datum",
+   "sources": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json"
+   ],
+   "discrepancy": "measured Y≈-0.097 vs Ground_Floor top 0.0",
+   "implication": "[INFERENCE] a registration bias (frame-106 held-out floor medians -0.087..-0.093), not a floor step"
+  }
+ ],
+ "gaps": [
+  {
+   "id": "G01",
+   "gap": "Class-a coverage is limited to the March-2026 central corridor (camera path U 4.9..19.5, V -57.3..-15.5). The rear row #9-#16 (U -49..6), west front row #5-#8 (U -83..-8) and east units #1-#2 (U 28..62) have no registered geometry.",
+   "files": [
+    ".planning/2026-09-23-video-twin/implementation-boundary/work-scope.json",
+    ".planning/2026-09-23-video-twin/metric-registration/registration.json"
+   ]
+  },
+  {
+   "id": "G02",
+   "gap": "No observed shop partition, rear wall, depth or door width for any unit; the 1.8 door and 3.6 height are visual estimates.",
+   "files": [
+    ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    ".planning/2026-09-23-video-twin/main-metric-registration/shop-aperture-controls.json"
+   ]
+  },
+  {
+   "id": "G03",
+   "gap": "Vertical circulation: no registered escalator flight, balustrade or upper landing; the 2F slab opening is unmeasured; the escalator at #9 and both elevator/stair cores have no metric evidence; no stationary stair was identified.",
+   "files": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/upper-landing.json",
+    ".planning/2026-09-23-video-twin/ground-core-fit/observations.json"
+   ]
+  },
+  {
+   "id": "G04",
+   "gap": "No registered column positions or grid (right-core-metal-return fails; left-core-column-face insufficient).",
+   "files": [
+    ".planning/2026-09-23-video-twin/ground-core-fit/report.json",
+    "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json"
+   ]
+  },
+  {
+   "id": "G05",
+   "gap": "Registered ceiling is only 31.55 + 24.47 model-units² against a 5734 added floor; no ceiling heights exist for the rear row, west or east.",
+   "files": [
+    ".planning/2026-09-23-video-twin/1f-2026-mvs/unity-surface.json"
+   ]
+  },
+  {
+   "id": "G06",
+   "gap": "No 1F extinguisher, hydrant, alarm or exit-sign positions; only 2 AED registry entries with unregistered lat/lon.",
+   "files": [
+    ".planning/2026-09-23-video-twin/evidence-integration.json",
+    "asset-library/research-public/2026-09-24/safety-equipment/evidence/web/aed-registry/egen_busan_station_aed_records_extracted.json"
+   ]
+  },
+  {
+   "id": "G07",
+   "gap": "No 1F ticket machine, info desk, bench or ATM evidence.",
+   "files": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json",
+    ".planning/2026-09-23-video-twin/collection-report.json"
+   ]
+  },
+  {
+   "id": "G08",
+   "gap": "Entrances other than GATE3/4 are unregistered; door leaves and widths are unknown; entry_high_fascia is unresolved.",
+   "files": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/result.json"
+   ]
+  },
+  {
+   "id": "G09",
+   "gap": "No metric evidence later than March 2026: the May photos are uncalibrated, the August board is schematic and the September video is short and edited.",
+   "files": [
+    "asset-library/research-public/2026-09-24/metric-controls/current-geometry/report.json"
+   ]
+  },
+  {
+   "id": "G10",
+   "gap": "Coordinates are source-model units with no survey scale; tender areas are 'not precisely measured'; no current as-built drawing exists (the 2009 construction PDF is historical).",
+   "files": [
+    "asset-library/research-public/2026-09-24/metric-controls/controls.json",
+    ".planning/2026-09-23-video-twin/evidence-integration.json"
+   ]
+  },
+  {
+   "id": "G11",
+   "gap": "Toilets, lockers, TMO, Zimcarry, KTX특송 and the wheelchair charger are topology only.",
+   "files": [
+    "asset-library/research-public/2026-09-24/busan-1f/report.json"
+   ]
+  },
+  {
+   "id": "G12",
+   "gap": "Failing observed surfaces need independent third-view support (office-public-frontage, office-lower-wall-panels, metal return, rails, left column). The ARTBOX pier needs third-view edges before constructionApproved.",
+   "files": [
+    ".planning/2026-09-23-video-twin/office-frontage-fit/report.json",
+    ".planning/2026-09-23-video-twin/entry-frontage-fit/result.json"
+   ]
+  },
+  {
+   "id": "G13",
+   "gap": "The 2F-registered 복순도가/꽃들 storefronts must be excluded from 1F.",
+   "files": [
+    ".planning/2026-09-23-video-twin/main-metric-registration/evidence-summary.json"
+   ]
+  }
+ ]
+}

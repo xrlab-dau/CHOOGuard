@@ -1,0 +1,357 @@
+{
+ "schema": "chooguard.1f-underlay-fit.v1",
+ "underlay": "asset-library/research-public/2026-09-24/metric-controls/korail-1f-underlay-readable.png",
+ "method": "Can the KORAIL 1F tender underlay place the public / back-of-house boundary of the 1F within ~1 u? (-> 1f-underlay-fit.json)\n\nUnderlay: asset-library/research-public/2026-09-24/metric-controls/korail-1f-underlay-readable.png (960x572, <= 2025, the\nsame raster under the 2025-05 / 2025-08 / 2026-01 tender location plans). Drawing axes: x -> U-, y -> plaza (V-).\nControls (drawing px picked on zoomed crops <-> source-shell section at Y 1.0 of geometry-after11): the two plaza-side\nentry alcoves beside cores A/B (4 corners each) and the two corners of the U- end wall. Affine least squares (the raster\nis anisotropic: ~.174 u/px along x, ~.150 u/px along y).\nHold-outs: the track-side shell wall along the drawing's top line, the GATE3/4 doors vs the class-a portals, the observed\nrear-row frontage (tier b), and the class-a registered central escalator bank (escalator-core.json).",
+ "affine_uv_from_px": [
+  [
+   -0.174346,
+   -0.013912
+  ],
+  [
+   0.013078,
+   -0.150199
+  ],
+  [
+   71.802797,
+   18.75908
+  ]
+ ],
+ "controls": [
+  {
+   "label": "core A alcove, inner end, U+ wall",
+   "px": [
+    271.5,
+    322
+   ],
+   "uv": [
+    27.85,
+    -33.23
+   ],
+   "residual": [
+    0.83,
+    -0.15
+   ]
+  },
+  {
+   "label": "core A alcove, inner end, U- wall",
+   "px": [
+    313.5,
+    322
+   ],
+   "uv": [
+    21.75,
+    -33.59
+   ],
+   "residual": [
+    -0.39,
+    -0.38
+   ]
+  },
+  {
+   "label": "core A alcove, facade, U+ wall",
+   "px": [
+    271.5,
+    368
+   ],
+   "uv": [
+    28.86,
+    -40.88
+   ],
+   "residual": [
+    0.42,
+    0.59
+   ]
+  },
+  {
+   "label": "core A alcove, facade, U- wall",
+   "px": [
+    313.5,
+    368
+   ],
+   "uv": [
+    22.3,
+    -41.28
+   ],
+   "residual": [
+    -0.34,
+    0.4
+   ]
+  },
+  {
+   "label": "core B alcove, inner end, U+ wall",
+   "px": [
+    446.0,
+    322
+   ],
+   "uv": [
+    -1.92,
+    -35.28
+   ],
+   "residual": [
+    0.18,
+    -0.53
+   ]
+  },
+  {
+   "label": "core B alcove, inner end, U- wall",
+   "px": [
+    487.0,
+    322
+   ],
+   "uv": [
+    -8.0,
+    -35.79
+   ],
+   "residual": [
+    -0.89,
+    -0.59
+   ]
+  },
+  {
+   "label": "core B alcove, facade, U+ wall",
+   "px": [
+    446.0,
+    368
+   ],
+   "uv": [
+    -1.37,
+    -42.97
+   ],
+   "residual": [
+    0.23,
+    0.25
+   ]
+  },
+  {
+   "label": "core B alcove, facade, U- wall",
+   "px": [
+    487.0,
+    368
+   ],
+   "uv": [
+    -7.92,
+    -43.5
+   ],
+   "residual": [
+    -0.37,
+    0.21
+   ]
+  },
+  {
+   "label": "U- end wall / track-side wall corner",
+   "px": [
+    946.0,
+    31
+   ],
+   "uv": [
+    -92.6,
+    0.7
+   ],
+   "residual": [
+    -0.12,
+    0.24
+   ]
+  },
+  {
+   "label": "U- end wall / plaza facade corner",
+   "px": [
+    946.0,
+    252
+   ],
+   "uv": [
+    -90.3,
+    -32.2
+   ],
+   "residual": [
+    0.47,
+    -0.05
+   ]
+  }
+ ],
+ "controlRms": 0.62,
+ "holdouts": [
+  {
+   "feature": "drawing top line x 60 vs source track-side wall",
+   "predicted": [
+    61.73,
+    13.42
+   ],
+   "dV": 1.49
+  },
+  {
+   "feature": "drawing top line x 200 vs source track-side wall",
+   "predicted": [
+    37.33,
+    11.47
+   ],
+   "dV": 0.92
+  },
+  {
+   "feature": "drawing top line x 400 vs source track-side wall",
+   "predicted": [
+    2.46,
+    8.69
+   ],
+   "dV": 0.66
+  },
+  {
+   "feature": "drawing top line x 600 vs source track-side wall",
+   "predicted": [
+    -32.41,
+    5.91
+   ],
+   "dV": 0.9
+  },
+  {
+   "feature": "drawing top line x 800 vs source track-side wall",
+   "predicted": [
+    -67.28,
+    3.12
+   ],
+   "dV": 0.64
+  },
+  {
+   "feature": "drawing top line x 930 vs source track-side wall",
+   "predicted": [
+    -89.95,
+    1.32
+   ],
+   "dV": 0.47
+  },
+  {
+   "feature": "GATE3/4 door at x 368 vs class-a portal centre U 12.16, V -42.6",
+   "predicted": [
+    12.44,
+    -41.48
+   ],
+   "dU": 0.28,
+   "dV": 1.12
+  },
+  {
+   "feature": "GATE3/4 door at x 392 vs class-a portal centre U 8.84, V -42.6",
+   "predicted": [
+    8.26,
+    -41.82
+   ],
+   "dU": -0.58,
+   "dV": 0.78
+  },
+  {
+   "feature": "rear-row front line x 450 vs observed rear frontage V = .1087U - 23.6 (tier b)",
+   "predicted": [
+    -3.37,
+    -25.2
+   ],
+   "dV": -1.23
+  },
+  {
+   "feature": "rear-row front line x 550 vs observed rear frontage V = .1087U - 23.6 (tier b)",
+   "predicted": [
+    -20.8,
+    -26.59
+   ],
+   "dV": -0.73
+  },
+  {
+   "feature": "rear-row front line x 650 vs observed rear frontage V = .1087U - 23.6 (tier b)",
+   "predicted": [
+    -38.24,
+    -27.98
+   ],
+   "dV": -0.23
+  },
+  {
+   "feature": "rear-row front line x 750 vs observed rear frontage V = .1087U - 23.6 (tier b)",
+   "predicted": [
+    -55.67,
+    -29.37
+   ],
+   "dV": 0.28
+  },
+  {
+   "feature": "drawn escalator centre line x 312 vs class-a escalator bank centre line",
+   "predicted": [
+    20.41,
+    -20.05
+   ],
+   "registered": [
+    18.56,
+    -16.69
+   ],
+   "dU": 1.85,
+   "dV": -3.36
+  },
+  {
+   "feature": "drawn escalator centre line x 230 vs class-a escalator bank centre line",
+   "predicted": [
+    34.7,
+    -18.91
+   ],
+   "registered": [
+    30.99,
+    -15.39
+   ],
+   "dU": 3.71,
+   "dV": -3.52
+  }
+ ],
+ "features": {
+  "rear wall (전기실 / outer strip), centre": [
+   18.44,
+   0.59
+  ],
+  "rear wall, U- half": [
+   -31.6,
+   -3.41
+  ],
+  "rear-row back line (전기실 front), centre": [
+   18.96,
+   -5.42
+  ],
+  "rear-row back line, U- half": [
+   -31.08,
+   -9.41
+  ],
+  "역무공간 bottom-west corner": [
+   -42.09,
+   -28.14
+  ],
+  "역무공간 bottom-east corner": [
+   -57.43,
+   -29.36
+  ],
+  "U- hall back wall (doors at x 783 / 865), U+ end": [
+   -58.74,
+   -14.34
+  ],
+  "U- hall back wall, U- end": [
+   -82.27,
+   -16.22
+  ],
+  "U- toilet block, NW": [
+   -82.54,
+   -13.22
+  ],
+  "U- toilet block, SW": [
+   -81.53,
+   -24.78
+  ],
+  "방재센터 / 대공상담실 front wall, U+ end": [
+   66.25,
+   -8.15
+  ],
+  "방재센터 / 대공상담실 front wall, U- end": [
+   19.52,
+   -11.88
+  ],
+  "군인 맞이방 front (escalator side)": [
+   31.49,
+   -22.27
+  ]
+ },
+ "conflictsWith2026": [
+  "역무공간 (staff space) is drawn over U -42..-58, V -28..-14: the 2026 board / Naver unit #9 복순도가 occupies U -49..-38, V -28.6..-16.8 there (tender 2026-01 overlays 복순도가 onto the 역무공간 label) -> superseded partitions.",
+  "the drawn central block (U 0..20 behind the lobby) is open with columns; the registered 2026 office frontage (V -15.1, red service doors) and #16 east glazing stand there.",
+  "the drawn central escalator lies 3-4 u V- of the class-a registered bank although its U extent matches."
+ ]
+}

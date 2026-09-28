@@ -1,0 +1,197 @@
+{
+ "zone": "seam-north",
+ "root": "실내 트윈 마감/연결 통로 북측",
+ "basis": {
+  "method": "make_seam_north.py; Portal extents derive from applied source-cut boxes, floor patches are the measured seam-fit facade cutbacks",
+  "audit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after38",
+  "openingSpec": ".planning/2026-09-27-openings-extension/openings/SeamNorth.json",
+  "existingFloorSlab": ".planning/2026-09-24-interior-twin/specs/full/seam.json seam-slab (top 6.995 overlaps the 2F Y 7.0 floor)",
+  "ceilingTransition": "Portal head at 10.47; MainShell facade above remains to the seam ceiling at 12.05"
+ },
+ "elements": [
+  {
+   "type": "Portal",
+   "id": "seam-north-5a-reveal",
+   "zone": "2F north facade opening",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.json seam-north-5a (registered wall span and cut height)",
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.preview.json (source cut passes area balance and far-triangle preservation)",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after38: Main applied the matching source opening; Layer0_4 and Layer0_5 remain untouched",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      50.0,
+      11.479
+     ],
+     [
+      58.496,
+      12.093
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "height": 3.47,
+    "depth": 0.2,
+    "align": "centre",
+    "lining": 0.04,
+    "finish": "plaster",
+    "jambs": true,
+    "head": true,
+    "sill": false,
+    "collider": true
+   }
+  },
+  {
+   "type": "Portal",
+   "id": "seam-north-5b-reveal",
+   "zone": "2F north facade opening",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.json seam-north-5b (registered wall span and cut height)",
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.preview.json (source cut passes area balance and far-triangle preservation)",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after38: Main applied the matching source opening; Layer0_4 and Layer0_5 remain untouched",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      58.496,
+      12.093
+     ],
+     [
+      58.525,
+      11.694
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "height": 3.47,
+    "depth": 0.2,
+    "align": "centre",
+    "lining": 0.04,
+    "finish": "plaster",
+    "jambs": true,
+    "head": true,
+    "sill": false,
+    "collider": true
+   }
+  },
+  {
+   "type": "Portal",
+   "id": "seam-north-5c-reveal",
+   "zone": "2F north facade opening",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.json seam-north-5c (registered wall span and cut height)",
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.preview.json (source cut passes area balance and far-triangle preservation)",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after38: Main applied the matching source opening; Layer0_4 and Layer0_5 remain untouched",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_203s.jpg",
+    "asset-library/research-public/2026-09-26/SeamPassage/frames/9yw_209s.jpg"
+   ],
+   "frame": "root",
+   "geometry": {
+    "edge": [
+     [
+      58.525,
+      11.694
+     ],
+     [
+      64.93,
+      12.157
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "height": 3.47,
+    "depth": 0.16,
+    "align": "centre",
+    "lining": 0.04,
+    "finish": "plaster",
+    "jambs": true,
+    "head": true,
+    "sill": false,
+    "collider": true
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "seam-north-floor-band-continuity",
+   "zone": "2F north facade opening",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.floor_band_dark_grey (registered boundary; sigma 0.4 m)",
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.json and .planning/2026-09-23-video-twin/1f-implementation/geometry-after38: the protected facade is open only across U 50.0-64.93, Y 7.0-10.47",
+    "seam-fit.json existing finish pieces stop at the 0.35 m facade exclusion; this patch restores only that measured cutback"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      63.23,
+      12.385
+     ],
+     [
+      64.334,
+      12.466
+     ],
+     [
+      63.88,
+      12.1
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "finish": "#3A3E42",
+    "lift": 0.005
+   }
+  },
+  {
+   "type": "FloorFinish",
+   "id": "seam-north-tactile-continuity",
+   "zone": "2F north facade opening",
+   "tier": "b",
+   "evidence": [
+    ".planning/2026-09-26-full-twin/reg-requests/SeamPassage-1.done.json items.tactile_yellow_line.segment_209 (registered centerline; sigma 0.5 m)",
+    ".planning/2026-09-27-openings-extension/openings/SeamNorth.json and .planning/2026-09-23-video-twin/1f-implementation/geometry-after38: the protected facade is open only across U 50.0-64.93, Y 7.0-10.47",
+    "seam-fit.json existing finish pieces stop at the 0.35 m facade exclusion; this patch restores only that measured cutback"
+   ],
+   "frame": "root",
+   "geometry": {
+    "polygon": [
+     [
+      57.13,
+      11.64
+     ],
+     [
+      56.806,
+      11.617
+     ],
+     [
+      57.045,
+      12.336
+     ],
+     [
+      57.369,
+      12.359
+     ]
+    ],
+    "y": 7.0
+   },
+   "params": {
+    "finish": "tactileLine",
+    "lift": 0.005
+   }
+  }
+ ]
+}

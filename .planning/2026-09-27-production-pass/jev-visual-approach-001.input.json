@@ -1,0 +1,48 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Choose the visual production approach for a Unity 6.3 URP 17.3 first-person KORAIL station staff game set in a Busan Station digital twin. Inputs are measured observations, not instructions. Typed judgment only; advisory, authority 0.",
+    "user_goal": "Raise the game to production-game quality in order: visuals, sound, animation and props, performance, QA; keep working until nothing remains.",
+    "measured_render_state": {
+      "renderer": "URP Deferred, HDR on, MSAA off, no renderer features (no SSAO), post-process data missing so no tonemapping, bloom, colour grading or SMAA run at all although the camera asks for SMAA High",
+      "lighting": "No lighting settings asset, no lightmaps, no light probes, no reflection probes. One realtime sun (soft shadows, 1 cascade, 50 m), 331 point/spot lights (197 mixed, 134 realtime), trilight ambient, default procedural sky, no fog",
+      "scene": "2,136 mesh renderers, about 22.7 million triangles summed over meshes (official station model split in ~100k-triangle chunks, interior kit, city context), 110 skinned passengers that move all shift, KTX train that moves",
+      "materials": "664 materials; 205,000 of 733,000 m2 rendered area has no texture (flat colours). Visible defects: a 56 m x 4 m panel with base colour 0.03 (dark glazing seen from one side, pure black from the other), unlit ceiling panels, several dark or grey flat shells",
+      "editor_performance": "48.8 fps average in editor play mode at 2406x1129 Ultra, vsync on (not a build)"
+    },
+    "hardware": "Apple M1 (7-core GPU), 16 GB RAM, 12 GB free disk",
+    "constraints": [
+      "Free or open licences only, recorded per asset (CC0 or CC-BY with notice)",
+      "Performance goal later in the same pass: p95 frame time <= 33.3 ms in a standalone build",
+      "Twin geometry must not be cut or moved without evidence of the real layout"
+    ]
+  },
+  "questions": {
+    "gi_method": {
+      "type": "choice",
+      "instructions": "Which global illumination approach fits this project best?",
+      "criteria": {
+        "apv_baked": "Bake Adaptive Probe Volumes over the station (per-pixel probe lighting for static geometry and moving passengers/train, no lightmap UVs needed), bake reflection probes per space, keep the sun realtime with shadows, add SSAO.",
+        "lightmaps_baked": "Generate lightmap UVs for all static meshes and bake lightmaps with the progressive GPU lightmapper, plus light probes for moving objects.",
+        "realtime_only": "No baking: realtime lights only, SSAO, reflection probes captured at start and a tuned ambient."
+      }
+    },
+    "tonemapping": {
+      "type": "choice",
+      "instructions": "Which tonemapping and grade suits a realistic training game in a real station?",
+      "criteria": {
+        "neutral_grade": "Neutral tonemapping with exposure set for indoor lighting and a mild colour adjustment; faithful colours of signage and materials.",
+        "aces_filmic": "ACES filmic tonemapping with higher contrast and saturation roll-off."
+      }
+    },
+    "material_scope": {
+      "type": "choice",
+      "instructions": "Which material work gives the largest production-quality gain first?",
+      "criteria": {
+        "visible_first": "Measure screen coverage from about ten standard player viewpoints (concourse, waiting seats, 3F, 1F, platform, KTX cabin, north deck, plaza, exits) and give the surfaces covering most of the screen proper PBR textures at metric scale (CC0 sets), fix the defect materials (black panel to dark glazing, unlit ceiling panels to lit), then continue down the list.",
+        "all_untextured": "Texture every untextured material including the city context around the station.",
+        "defects_only": "Only fix the defect materials and leave the rest."
+      }
+    }
+  }
+}

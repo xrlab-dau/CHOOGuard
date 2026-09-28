@@ -1,0 +1,151 @@
+{
+  "schema": "chooguard.video-floor-one-build.v1",
+  "status": "BUILDER_EXECUTED_NOT_SCENE_VALIDATED",
+  "root": "영상복원 · 1층",
+  "basis": "Video174/200/208/216/220 plus source MainShell sections and supplemental older floor-guide topology; not surveyed completion.",
+  "epoch": "Upload 2022-01-01, capture date unconfirmed; keep visible 2022-era tenant identities",
+  "coordinateSystem": {
+    "longAxisDegrees": 16.2,
+    "worldX": "u*sin(16.2deg)+v*cos(16.2deg)",
+    "worldZ": "u*cos(16.2deg)-v*sin(16.2deg)",
+    "floor1Y": 0,
+    "floor2Y": 7,
+    "status": "INFERRED_ABSOLUTE_REGISTRATION_FROM_SFM",
+    "basis": "640-frame COLMAP reconstruction. Models 3/4/5 merged using overlapping camera poses. Relative route is measured from video; 7m floor separation, 1.6m camera height and world anchoring at 220s (u=20,v=-42) are explicit assumptions authorized by user."
+  },
+  "sharedCore": {
+    "ownership": "VideoFloorOne builds both escalators, their well lining/guards and first-floor ceiling opening. VideoFloorTwo excludes this opening from floor slab, mezzanine and fixtures.",
+    "floorOpeningUV": [
+      3.4,
+      10.3,
+      -33.5,
+      -19.5
+    ],
+    "descendingCentreU": 5.2,
+    "oppositeCentreU": 8.3,
+    "upperLandingV": -21.0863638,
+    "lowerLandingV": -32.5860699,
+    "upperFloorY": 7,
+    "lowerFloorY": 0,
+    "runM": 11.4997061,
+    "inclineBasis": "Least-squares SfM175..199: y=0.60871121*v+19.83550597. Relative slope from recovered trajectory; floor7m metric scaling inferred. End landings remain inside original shared opening.",
+    "visibleClearWidthEachM": 1.15,
+    "physicalWalkSurface": "Continuous slope collider over visible stepped tread, <=45deg, linked to both landing floors; no invisible teleport and no filled 2F opening.",
+    "topPortal": "u5.2,v-19.0 facing descent toward -v. Low-ceiling retail zone, not open high hall.",
+    "sourceVideo": [
+      166,
+      174,
+      198,
+      200
+    ]
+  },
+  "regions": [
+    {
+      "id": "envelope",
+      "evidenceStatus": "INFERRED_SOURCE_SECTION_ENVELOPE",
+      "basis": "Curved source facade samples; end caps, rear boundary and floor coverage interpolated. Local PB/Design Skin wings override facade registration, not original facade assets."
+    },
+    {
+      "id": "filmed_core",
+      "evidenceStatus": "VIDEO_TOPOLOGY_SFM_RELATIVE_INFERRED_SCALE",
+      "basis": "Frames174/200; exact common floor opening, two physical slopes. Relative incline fitted to175..199; seven-metre scale is assumed."
+    },
+    {
+      "id": "filmed_landing",
+      "evidenceStatus": "SFM_RELATIVE_LANDMARKS_INFERRED_7M_SCALE",
+      "basis": "ground-landmark-probe.json: PB/shutter front nearv-45.9, left stainless column near(2.4,-41.4), right column near(8.4,-37.9). Seven-metre scale and shop depth remain inferred."
+    },
+    {
+      "id": "filmed_glass_aisle",
+      "evidenceStatus": "VIDEO_OBSERVED_TOPOLOGY_INFERRED_DIMENSIONS",
+      "basis": "Frames208/216: Design Skin left and B&C Doughnut right when travelling +u; aisle v[-44,-40] remains open. Store depths inferred."
+    },
+    {
+      "id": "filmed_exits",
+      "evidenceStatus": "VIDEO_OBSERVED_TYPE_INFERRED_LEAF_DIMENSIONS",
+      "basis": "Frame220: multi-leaf glazed KTX exits3/4, KORAIL bands, yellow overhead signs and blue Metro Line1 banner. Two doors are posed open for the route; not fare gates."
+    },
+    {
+      "id": "inferred_retail",
+      "evidenceStatus": "SUPPLEMENTAL_TOPOLOGY_INFERRED_GEOMETRY_AND_EPOCH",
+      "basis": "Long public strip with front and rear retail; names derive from older floor guide, not a verified complete2022 tenant roster. No interior-photo backdrops."
+    },
+    {
+      "id": "inferred_services",
+      "evidenceStatus": "SUPPLEMENTAL_TOPOLOGY_INFERRED_GEOMETRY_AND_EPOCH",
+      "basis": "End WCs, luggage lockers, TMO, Zimcarry and public service rooms. Locations and dimensions inferred; not surveyed and not video-visible."
+    }
+  ],
+  "dimensions": {
+    "generalCeilingY": 4.2,
+    "lowerSoffitUndersideY": 3.8,
+    "landingCeilingY": 3.8,
+    "parisGlazedBayU": [
+      4.7,
+      8.5
+    ],
+    "parisShutterBayU": [
+      3,
+      4.7
+    ],
+    "parisBackVInferred": -51.4,
+    "leftColumnUV": [
+      2.4,
+      -41.4
+    ],
+    "rightColumnUV": [
+      8.4,
+      -37.9
+    ],
+    "dimensionStatus": "INFERRED unless sharedCore states relative SfM fit; even seven-metre rise uses inferred metric scale",
+    "publicEnvelopeURange": [
+      -84,
+      76
+    ],
+    "filmedClearAisleV": [
+      -44,
+      -40
+    ],
+    "parisFrontV": -45.9,
+    "designSkinBoundsUV": [
+      10,
+      21.45,
+      -49,
+      -44
+    ],
+    "bncBoundsUV": [
+      10,
+      21.45,
+      -40,
+      -32
+    ],
+    "exitPortalU": 22,
+    "escalatorTreadsEach": 40,
+    "escalatorClearWidthEach": 1.15,
+    "escalatorRise": 7.0,
+    "escalatorRun": 11.4997063,
+    "escalatorSlopeDegrees": 31.3293438
+  },
+  "refinementBasis": {
+    "observedMismatch": "Main scene-video200/game-video200-initial versus video200/208/216: full-width PB glazing, repeated whole bakery assembly and oversized dark ceiling rings.",
+    "response": "ground-landmark-probe.json supersedes the coarsev-41.3 PB depth: glazed bayu[4.7,8.5] atv-45.9, shutteru[3,4.7] beside it; near columns remain atv-41.4/-37.9. Walking turn stays nearv-40. Low3.8m panels extend to the recessed frontage; unseen shopbackv-51.4 is inferred.",
+    "landmarkEvidence": "SfM5 low-error static frame200 points transformed5-to4-to-world; seven-metre scale still inferred. Rounded placement, not surveyed centimetre accuracy.",
+    "acquiredBakerySubtree": "BakeryDisplay.fbx/Node_3 (one of two display assemblies)",
+    "acquiredPlant": "WorldSet/Planter.fbx: soil, planter wall and three leaf-crown meshes; replaces bare FlowerPot.",
+    "verification": "Source refinement only. Main rerun and camera comparison pending; dimensions remain inferred."
+  },
+  "created": {
+    "batchedMeshes": 86,
+    "acquiredModelInstances": 284,
+    "localFixtureLights": 74,
+    "assetGuidPolicy": "Existing mesh assets cleared and populated through Mesh setters with explicit GPU upload; no DeleteAsset"
+  },
+  "integration": [
+    "Main must remove obsolete synthetic roots and ensure source floors/ceilings do not fill the exact shared opening.",
+    "Main owns original source collision and facade integration. PB/Design Skin contract geometry extends beyond sampled facade; source is deliberately untouched.",
+    "Main must visually verify storefront fitting, transparent sorting, lighting and route clearance in Editor; no validation was run by the builder author.",
+    "The .7m route clearance goal applies to concourse; authored escalator tread clear width is contract1.15m, so controller radius must be below .575m.",
+    "Older supplementary tenant labels and WC/service interiors are inference, not verified2022 tenant or fixture inventory.",
+    "Restroom basins reuse acquired sink models; private sanitary fixtures behind closed cubicles are outside observed public reconstruction."
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "lane": "Signage",
+  "priority": "after SouthGate-1",
+  "images": [
+    "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2024-06-21_daytour_88-223486414067_011.jpg",
+    "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-23/busan-sinmajibang/plans/kakaomap_busanstation_poi_level1_x965500_y454520.png",
+    "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_001.jpg",
+    "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_002.jpg",
+    "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_003.jpg",
+    "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-23/busan-1f-east/photos/2025-05-22_shoobong_good-223874440893_008.jpg"
+  ],
+  "question": "Can daytour_011.jpg be localized to station UVY, and can the north-up Kakao exit/POI screenshot be georegistered to the existing Naver-to-UV transform using Hwangong Fish Cake POI (129.041697,35.1153107) and any other well-identified shared landmarks? Use `regtech/seam-9yw/anchor/src-hash` only if its strict anchor gate passes.",
+  "desiredMeasurements": [
+    "Camera pose/residual/gate status for daytour_011.jpg; identify if its 2 badge is at an exit-2 door bank",
+    "UV location and uncertainty for Kakao exit marker 2, aligned from pixel coordinates to registered Naver POI/world coordinates",
+    "Station UVY center, facing direction, width/height for the yellow `2 나가는 곳 / Exit` sign if camera registration succeeds",
+    "Door-bank identity and nearby landmarks to resolve the existing #2/#5 conflict",
+    "For any blog image with a visible badge: exit number, image-local badge pixels and station-UVY sign position if defensible"
+  ],
+  "constraints": [
+    "A failed anchor must not be treated as valid metric position evidence.",
+    "Kakao map registration must report the scale/rotation/translation and held-out residual or other explicit uncertainty; do not infer precise placement from a single unverified anchor.",
+    "Return a `.done.json` answer with exact source image paths; report failure if no defensible registration.",
+    "No Unity Cloud use."
+  ]
+}

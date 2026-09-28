@@ -1,0 +1,115 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "finding": "공식 부산역 모델은 외부·승강장·선상통로 데크까지 실사급으로 구축돼 있으나, 폐쇄된 2층 맞이방은 바닥판조차 없다. 4방향 레이 폐합 판정으로 지붕(y=23) 아래 바닥 없는 공동 7,152제곱미터를 측정했다.",
+    "measured_void": {
+      "areaM2": 7152,
+      "x": [
+        -59,
+        33
+      ],
+      "z": [
+        -87,
+        79
+      ],
+      "u": [
+        -91.7,
+        77.4
+      ],
+      "v": [
+        -47.6,
+        12.4
+      ],
+      "roofY": 23,
+      "proposedFloorY": 7,
+      "clearHeightM": 16,
+      "longAxisDeg": 16.2
+    },
+    "corroboration": "KORAIL 임대원장 2층 맞이방 인가면적 합 2,675.9제곱미터. 공동 7,152 대비 37퍼센트로 역사 대합실 임대점유율 통상치와 부합한다.",
+    "reference_video": {
+      "id": "6vxUvCQ5_rY",
+      "title": "SRT 부산역에서 부산 1호선 환승",
+      "durationSec": 608,
+      "fps": 60,
+      "res": "1920x1080",
+      "frames_extracted": 304,
+      "observed_hall": [
+        "백색 스페이스프레임 트러스 지붕 약 15~16미터",
+        "원형 백색 기둥",
+        "고측창 유리",
+        "양측 점포열 황색·주황 간판",
+        "녹색 LED 행선안내 전광판",
+        "광택 대형 화강석 바닥 강반사",
+        "청색 바닥 인레이",
+        "다수 승객"
+      ],
+      "observed_deck": [
+        "원형 회색 기둥 지름 약 1.2미터",
+        "노출 철골 데크 천장 약 6미터",
+        "청색 매달림 유도사인",
+        "황색 점자블록",
+        "유리 자동문"
+      ]
+    },
+    "model_already_has": [
+      "선상통로 데크 2,656제곱미터 천장고 6미터 - 철골트러스·유리자동문·청색 한글 유도사인·에스컬레이터·점자블록 전부 구축됨",
+      "승강장 캐노피 천장고 16~19미터",
+      "2층 진입차로"
+    ],
+    "existing_2F_floor_material_unknown": true,
+    "constraints": [
+      "원본 지오메트리 수정 금지, 덧붙이기만",
+      "모든 좌표는 계측값에서 파생",
+      "사용자가 유니티 에디터로 실시간 확인",
+      "저작권 무관"
+    ]
+  },
+  "questions": {
+    "floor_plate_scope": {
+      "type": "choice",
+      "instructions": "측정된 공동 7,152제곱미터 전부에 2층 바닥판을 깔아야 하는가, 아니면 일부만인가. 임대원장 정합과 영상의 대합실 규모를 근거로 판단하라.",
+      "criteria": {
+        "full_void": "공동 전체 7,152제곱미터에 바닥판",
+        "central_two_thirds": "중앙 약 3분의 2만 깔고 나머지는 보이드로 1층과 연결",
+        "narrow_spine_only": "폭 20미터 내외 통로만"
+      }
+    },
+    "roof_structure": {
+      "type": "choice",
+      "instructions": "층고 16미터 대합실의 천장을 어떻게 만들 때 영상과 같아지는가.",
+      "criteria": {
+        "space_frame_truss": "영상대로 백색 스페이스프레임 입체트러스를 실제 부재로 생성",
+        "flat_soffit_panel": "평천장 패널에 조명만",
+        "truss_texture_plane": "트러스 사진 텍스처 평면"
+      }
+    },
+    "build_sequence_first": {
+      "type": "choice",
+      "instructions": "사용자가 에디터에서 즉시 변화를 체감하고 이후 작업의 앵커가 되는 최초 작업은 무엇인가.",
+      "criteria": {
+        "floor_slab_with_material": "광택 화강석 바닥판 먼저",
+        "columns_grid": "기둥 격자 먼저",
+        "storefront_rows": "점포열 먼저",
+        "truss_roof": "트러스 지붕 먼저"
+      }
+    },
+    "column_grid": {
+      "type": "choice",
+      "instructions": "영상의 원형 백색 기둥 배치를 어떤 근거로 정할 것인가.",
+      "criteria": {
+        "derive_from_existing_shell_columns": "외피에 이미 있는 기둥·벽 위치에서 격자를 역산",
+        "regular_18m_grid": "규칙적 18미터 격자",
+        "copy_deck_column_spacing": "선상통로 데크의 실제 기둥 간격을 계측해 그대로 적용"
+      }
+    },
+    "route_reproduction": {
+      "type": "choice",
+      "instructions": "영상과 같은 게임 내 보행을 어떻게 재현해야 검증 가치가 있는가.",
+      "criteria": {
+        "scripted_waypoint_walk": "영상 구간에 대응하는 웨이포인트를 계측 좌표로 놓고 캐릭터컨트롤러로 실제 물리 보행",
+        "teleport_camera_flythrough": "카메라만 순간이동",
+        "manual_only": "사용자가 직접 조작"
+      }
+    }
+  }
+}

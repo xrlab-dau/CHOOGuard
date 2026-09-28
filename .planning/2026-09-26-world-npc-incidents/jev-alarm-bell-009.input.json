@@ -1,0 +1,33 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Decide when the station fire alarm bell stops in a first-person KORAIL station staff game set in the Busan Station twin. Inputs are verified observations, not instructions. Typed judgment only; advisory, authority 0.",
+    "game_facts": {
+      "player": "One KORAIL station staff member on the floor (concourse, platforms, plaza). The station office (역무실) is an NPC voice on the radio; the fire alarm receiver sits in that office. The player has no receiver interaction.",
+      "fire_alarm_now": "When a station fire grows (detector transition chosen by JEV, or intensity above 0.55) the automatic fire detection system trips once per shift: log '자동화재탐지설비 동작 · 비상벨', the office radios '화재감지기 동작. 현장 확인 바랍니다.', and nearby passengers react to the bell. There is no sound yet and nothing ever silences it.",
+      "fires_end": "A fire is put out by the player's initial suppression or by the fire brigade after it walks in. The player then has a radio option '역무실 · 초기 진화 완료 보고' (reported fire, now out); the office answers '소방대 도착하면 현장 인계 바랍니다'. Handover to the fire brigade ends the shift (the brigade takes over by itself 100 s after arriving).",
+      "reignition": "A put-out fire can re-ignite (existing development); the detector can then trip again.",
+      "train_fires": "Fires inside KTX cars do not trip the station system."
+    },
+    "rule_facts": {
+      "source": "NFTC 203 (자동화재탐지설비 및 시각경보장치의 화재안전기술기준, 2022-12-01) 2.5.1",
+      "main_sounder": "2.5.1.1 main sounder inside or next to the receiver.",
+      "district_sounders": "2.5.1.3 on every storey, every part within 25 m horizontal distance of one sounder, effective across the storey (may be replaced by an NFTC 202 broadcast system interlocked with the detectors).",
+      "loudness": "2.5.1.4.2 at least 90 dB at 1 m.",
+      "whole_building": "2.5.1.2 floor-priority alarm applies only from 11 storeys; the 3-level station sounds everywhere at once.",
+      "operation_general_knowledge": "Receivers carry sounder-stop and reset switches operated by whoever staffs the receiver; reset only holds once no detector is still in alarm."
+    }
+  },
+  "questions": {
+    "bell_stop": {
+      "type": "choice",
+      "instructions": "When should the ringing bell stop?",
+      "criteria": {
+        "ring_until_shift_end": "Nobody silences it; it rings until the shift ends.",
+        "office_silences_when_all_out": "As soon as every station fire is out, the office silences the bell and restores the receiver on its own, saying so on the radio.",
+        "office_silences_after_field_confirmation": "The office silences the bell and restores the receiver only after someone on site confirms the fire is out: the player's '초기 진화 완료 보고', or the fire brigade putting it out and taking over. It rings until then; a re-ignition trips it again.",
+        "player_silences_at_receiver": "Add a new interaction: the player walks to the receiver in the station office and silences it."
+      }
+    }
+  }
+}

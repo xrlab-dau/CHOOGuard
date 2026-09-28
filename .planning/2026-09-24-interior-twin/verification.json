@@ -1,0 +1,119 @@
+{
+  "schema": "chooguard.interior-twin-verification.v1",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity (unsaved in the Editor). Snapshots: backups/FpsStation.before-2f-rebuild.unity (pre-rebuild, still contains the roots the user later deleted), backups/FpsStation.after-interior-twin.unity (final live state, save-as-copy)",
+  "builds": {
+    "majibang root (2F/3F builder)": {
+      "plan": ".planning/2026-09-23-video-twin/majibang-plan.json = reconcile-2f/majibang-plan.reconciled.json + slabOpenings [gate2-atrium, OPEN-2F-ESC-CORE] + hallAppearance white + storefronts kit + thirdFloor.ceiling2F clipped + frontSign wing_eggbox dropped",
+      "backups": [
+        ".planning/2026-09-24-interior-twin/backups/majibang-plan.before-reconcile.json",
+        ".planning/2026-09-24-interior-twin/backups/majibang-plan.before-kit-storefronts.json"
+      ],
+      "reproducibility": "majibang-repro.json (default path reproduces the prior live root; 13 signboard nudges restored)"
+    },
+    "1층 · 원본 정합/1층 실내 · 근거 표기": "interior-spec.json: unit heights = measured zone ceilings (4.40-4.98); rear-corridor fascia band 2.4-2.9; storefronts kit",
+    "실내 트윈 마감/1F": "specs/1f-detail.json: 6 ceiling polygons over 4 measured zones (net 3,372 u², Y 4.40/4.78/4.80/4.98, 42 sparse lights), 24 storefronts, 24 bulkheads. No kit ceiling where the pre-build scene already has a ceiling-level surface at the zone height (U- end MainShell soffit 4.79: 72.5 u² hidden duplicate removed); facade edge straightened (0.1-0.2 u shadow gap, never through the glass).",
+    "실내 트윈 마감/2F 본관": "specs/2f-main.json (one-polygon ceiling Y10.47, Gate 7 hall Y10.58, 17 storefronts on reconciled units)",
+    "실내 트윈 마감/2F 박스": "specs/box-3f/box-hall.json (16 elements)",
+    "실내 트윈 마감/2F 연결": "specs/box-3f/bridge.json (3 elements)",
+    "실내 트윈 마감/3F": "specs/box-3f/3f.json (10 elements)",
+    "실내 트윈 마감/2F 박스 점포": "specs/box-3f/box-storefronts.json (14 storefronts)",
+    "실내 트윈 마감/3F 점포": "specs/box-3f/3f-storefronts.json (3 storefronts)",
+    "실내 트윈 마감/수직 동선": "specs/escalator-core/escalator-core.json (1F↔2F escalator pair, gates, tactile/decals, well walls, 2F guards; 34 elements)"
+  },
+  "ownershipDiff": {
+    "audits": [
+      "1f-implementation/geometry-after6",
+      "1f-implementation/geometry-after7"
+    ],
+    "changedOutsideAllowedRoots": 0,
+    "allowedRoots": [
+      "맞이방 · 원본 정합",
+      "실내 트윈 마감/*",
+      "1층 · 원본 정합/1층 실내 · 근거 표기"
+    ],
+    "protected": "FPSWorld source shell/context/KTX/metro, Ground_Floor, observed finishes, 2F→3F escalators: unchanged"
+  },
+  "playModeWalks": {
+    "controller": "FirstPersonResponder.StepInput via AgentScripts/RouteWalk.cs (real CharacterController collision)",
+    "route-central-to-uminus-v2 (1F)": "COMPLETE 9/9, 94.4 travelled",
+    "route-1f-up-escalator-to-2f (1F→escalator→2F)": "COMPLETE 6/6, 34.0 travelled, arrives at Y 7.025",
+    "route-2f-corridor-west (2F main)": "COMPLETE 4/4, 84.3 travelled",
+    "route-2f-main-to-box-hall (2F main→bridge→box)": "COMPLETE 4/4, 48.2 travelled",
+    "1F reachability (capsule grid)": "all 10 targets reachable (ground-continuity-after7)",
+    "final run (after user deletions)": "route-central-to-uminus-v2 9/9, route-into-unit10 3/3, route-1f-up-escalator-to-2f 6/6, route-2f-corridor-west 4/4, route-2f-main-to-box-hall 4/4: all COMPLETE",
+    "note": "Colliders unchanged after9->after11, so the final walk results stand."
+  },
+  "renders": {
+    "zones": "captures-final/zones-final.jpg",
+    "escalator vs registered frame 000121": "captures-after/check-escalator.jpg",
+    "atrium + hall": "captures-after/check-atrium-hall.jpg",
+    "fascia fix": "captures-final/fascia-fix.jpg",
+    "1F final": "captures-final/zones-1f-final.jpg, captures-final/zones-1f-lit.jpg",
+    "approach after user deletions": "captures-final/march-000121-now.png"
+  },
+  "inventory": {
+    "before": "zones.json",
+    "after": "zones-after.json"
+  },
+  "tiers": {
+    "a": "2F main ceiling heights (3.47 / 3.58), 1F escalator approach floor & 1F observed patches",
+    "a-failed": "2F 복순도가/꽃들 open fronts (aperture corners, held-out 5.6 px)",
+    "b": "all other built positions (Naver/board fits, provisional video placements, derived escalator geometry, reconciled 2F units)",
+    "c (not built)": "1F toilets, #9-end escalator, staff stair, 1F core elevator doors, U+ end double-height void, 2F double-height hall ceiling, vestibule tenant relocation"
+  },
+  "correction": "The provisional rear-corridor ceiling 2.58 (rear-row-walk) was the fascia/sign level; replaced by measure-1f-ceilings zone heights (relative, ranges stated; lane strict gate c).",
+  "finalAudit": {
+    "audit": "1f-implementation/geometry-after11",
+    "buildChangesOutsideAllowedRoots": 0,
+    "userEditorDeletions": {
+      "evidence": "Unity Undo history: Select Metro113RecoveredRoofCentre ... Delete Game Objects; Select 튜토리얼 · 소화기 월간점검 ... Delete Game Objects",
+      "removedRoots": [
+        "FPSWorld/Metro113Source (1107 renderers)",
+        "FPSWorld/Metro113RecoveredRoofCentre (384)",
+        "FPSWorld/1층 · 관측 마감 (3 observed finish patches)",
+        "FPSWorld/1층 · 2026 영상 정합 표면 (inactive)",
+        "튜토리얼 · 소화기 월간점검 (tutorial root)"
+      ],
+      "action": "left as the user left them (not restored); recoverable with Editor Undo or backups/FpsStation.before-2f-rebuild.unity"
+    },
+    "postFinalChanges": [
+      {
+        "what": "U- end soffit duplicate removed from 1F-ceiling-U- (make_1f_detail.covered)",
+        "diff": "after10pre->after10: renderers changed only 실내 트윈 마감/1F (4); colliders unchanged; after9->after10pre no change"
+      },
+      {
+        "what": "ceiling outline straightened along the facade (make_1f_detail region)",
+        "diff": "after10->after11: renderers changed only 실내 트윈 마감/1F (4); colliders unchanged",
+        "render": "captures-final/facade-edge-check.jpg"
+      }
+    ]
+  },
+  "boundary": {
+    "figure": "boundary-after/1f-boundary-after.png",
+    "data": "boundary-after/overhead.json",
+    "method": "Overhead = first renderer surface above head height (Y > 2.0) on a 0.5 u grid inside the measured 1F enclosure, computed identically for the pre-build refresh audit and the final audit. Renderer-based on purpose: the kit ceilings are visual-only (no colliders), so the collider clearance audit (ground-continuity) cannot see them.",
+    "enclosure": 7378.2,
+    "overhead": {
+      "before": {
+        "observed": 55.2,
+        "shell": 399.5,
+        "slab": 6826.0,
+        "upper": 1.5,
+        "other": 0.2,
+        "open": 95.8
+      },
+      "after": {
+        "kit1f": 3383.8,
+        "units": 1276.2,
+        "core": 34.5,
+        "shell": 96.8,
+        "slab": 2300.8,
+        "upper": 3.5,
+        "other": 0.2,
+        "open": 282.5
+      }
+    },
+    "intentionallyOpen": "GATE2 atrium, U+ glazed strip, escalator well (double height / level change); track-side strip V > -5 (not observed in any registered walk)",
+    "notBuilt": "1층 화장실 · #9 끝 에스컬레이터 · 직원 계단 · 코어 엘리베이터 문 · U+ 끝 복층 보이드 · 보관함/AED/자판기 (위치 근거 없음, 도면에 표시 안 함)"
+  }
+}

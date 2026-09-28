@@ -1,0 +1,1167 @@
+{
+ "schema": "chooguard.interior-lane-report.v1",
+ "lane": "escalator-core",
+ "zone": "1F-2F core",
+ "root": "실내 트윈 마감/수직 동선",
+ "specFiles": [
+  "escalator-core.json",
+  "slab-openings.json"
+ ],
+ "generator": "make_escalator_core.py",
+ "elementsPerType": {
+  "Escalator": {
+   "b": 1
+  },
+  "WallCladding": {
+   "b": 15
+  },
+  "Gate": {
+   "b": 2
+  },
+  "FloorFinish": {
+   "b": 16
+  }
+ },
+ "elementNotes": {
+  "ESC-CORE-1F2F": "1F↔2F central escalator pair: flight 0 (−V, rider-left when ascending) down, flight 1 (+V) up; board 1F icon beside #16, 2F icon below #15/#16. Foot, lanes, heading and incline start are fits on the class-a registered 1F dense cloud (no held-out split); the upper landing is the 30°/7.0-rise extrapolation (upper-landing registration was rejected) -> tier b.",
+  "GUARD-2F-WELL-RIGHT-floor": "2F teal glass guard around the escalator well (right side + return onto the up flight cladding); floor-side face of a two-face guard, collider only on the floor-side face. Stands 5 cm back from the cut edge; position derived from the opening (tier b), existence and glass/teal look observed (3TL 247-259, C-MAIN-GLASSGUARD).",
+  "GUARD-2F-WELL-RIGHT-well": "2F teal glass guard around the escalator well (right side + return onto the up flight cladding); well-side face of a two-face guard, collider only on the floor-side face. Stands 5 cm back from the cut edge; position derived from the opening (tier b), existence and glass/teal look observed (3TL 247-259, C-MAIN-GLASSGUARD).",
+  "GUARD-2F-WELL-LOWER-floor": "2F teal glass guard around the escalator well (lower end, across the well); floor-side face of a two-face guard, collider only on the floor-side face. Stands 5 cm back from the cut edge; position derived from the opening (tier b), existence and glass/teal look observed (3TL 247-259, C-MAIN-GLASSGUARD).",
+  "GUARD-2F-WELL-LOWER-well": "2F teal glass guard around the escalator well (lower end, across the well); well-side face of a two-face guard, collider only on the floor-side face. Stands 5 cm back from the cut edge; position derived from the opening (tier b), existence and glass/teal look observed (3TL 247-259, C-MAIN-GLASSGUARD).",
+  "GUARD-2F-WELL-LEFT-floor": "2F teal glass guard around the escalator well (left side + return onto the down flight cladding); floor-side face of a two-face guard, collider only on the floor-side face. Stands 5 cm back from the cut edge; position derived from the opening (tier b), existence and glass/teal look observed (3TL 247-259, C-MAIN-GLASSGUARD).",
+  "GUARD-2F-WELL-LEFT-well": "2F teal glass guard around the escalator well (left side + return onto the down flight cladding); well-side face of a two-face guard, collider only on the floor-side face. Stands 5 cm back from the cut edge; position derived from the opening (tier b), existence and glass/teal look observed (3TL 247-259, C-MAIN-GLASSGUARD).",
+  "WALL-WELL-RIGHT-SS": "Right escalator-well wall, stainless panels at the foot of the well (dense luminance ~50-90 up to the transition; 3TL 129-131 s reflective metal). Line = robust fit of the dense wall points beside the up flight (U 19.75-21.3, yaw 6.2°, rms 0.03), continued along the ascent (3TL 129-139 s); starts at the observed stainless return (U 19.6). Tier b (fit without held-out; extent by topology).",
+  "WALL-WELL-RIGHT-A": "Right escalator-well wall, white vertical panels under the closed slab. Line = robust fit of the dense wall points beside the up flight (U 19.75-21.3, yaw 6.2°, rms 0.03), continued along the ascent (3TL 129-139 s); starts at the observed stainless return (U 19.6). Tier b (fit without held-out; extent by topology).",
+  "WALL-WELL-RIGHT-B": "Right escalator-well wall, white vertical panels along the open well; covers the cut slab edge. Line = robust fit of the dense wall points beside the up flight (U 19.75-21.3, yaw 6.2°, rms 0.03), continued along the ascent (3TL 129-139 s); starts at the observed stainless return (U 19.6). Tier b (fit without held-out; extent by topology).",
+  "WALL-WELL-RIGHT-C": "Right escalator-well wall, white vertical panels beside the upper truss pit. Line = robust fit of the dense wall points beside the up flight (U 19.75-21.3, yaw 6.2°, rms 0.03), continued along the ascent (3TL 129-139 s); starts at the observed stainless return (U 19.6). Tier b (fit without held-out; extent by topology).",
+  "FASCIA-2F-WELL-EDGE-L": "Fascia on the cut 2F slab edge (left return, left side and lower end), y 6.7-7.0, facing into the well; follows OPEN-2F-ESC-CORE (tier b).",
+  "FASCIA-2F-WELL-EDGE-R": "Fascia on the cut 2F slab edge (right return beside the up flight), y 6.7-7.0, facing into the well; follows OPEN-2F-ESC-CORE (tier b).",
+  "GATE-ESC-1F-DOWN": "exit-only flap gate of the down flight (red cross toward the approach, green toward the escalator). Cabinet lines are robust fits of the dense cabinet points (fronts aligned at x≈-0.72 before the newels, heights q95 0.92); the middle line is split into two 0.14-wide cabinets as in 000121/000123. The left line in reality is a slim cabinet followed by a glass notice panel; the kit models it as one cabinet.",
+  "GATE-ESC-1F-UP": "entry-only flap gate of the up flight (green arrow + reader toward the approach). Cabinet lines are robust fits of the dense cabinet points (fronts aligned at x≈-0.72 before the newels, heights q95 0.92); the middle line is split into two 0.14-wide cabinets as in 000121/000123. The left line in reality is a slim cabinet followed by a glass notice panel; the kit models it as one cabinet.",
+  "FLOOR-ESC-1F-LANES": "Dark granite lane floor from the gate front line to the newels (000121/000123; front edge ray-cast on y 0).",
+  "FLOOR-ESC-1F-PAD-DOWN": "Yellow tactile warning pad in front of the gate (ray-cast of the annotated pad corners in 000121/000123).",
+  "FLOOR-ESC-1F-PAD-UP": "Yellow tactile warning pad in front of the gate (ray-cast of the annotated pad corners in 000121/000123).",
+  "FLOOR-ESC-1F-NOENTRY-RING": "Red no-entry floor roundel before the down (exit-only) lane, 000121/000123: ring",
+  "FLOOR-ESC-1F-NOENTRY-FILL": "Red no-entry floor roundel before the down (exit-only) lane, 000121/000123: fill",
+  "FLOOR-ESC-1F-NOENTRY-ARROW": "Red no-entry floor roundel before the down (exit-only) lane, 000121/000123: arrow glyph",
+  "FLOOR-ESC-1F-NOENTRY-SLASH": "Red no-entry floor roundel before the down (exit-only) lane, 000121/000123: prohibition bar",
+  "FLOOR-ESC-1F-ENTRY-RING": "Blue ring / green arrow floor roundel before the up (entry) lane, 000121: ring",
+  "FLOOR-ESC-1F-ENTRY-FILL": "Blue ring / green arrow floor roundel before the up (entry) lane, 000121: fill",
+  "FLOOR-ESC-1F-ENTRY-ARROW": "Blue ring / green arrow floor roundel before the up (entry) lane, 000121: arrow glyph",
+  "FLOOR-ESC-2F-PAD-UP": "Yellow tactile warning pad beyond the 2F upper plates, 1F offset mirrored (up head observed in 3TL 253).",
+  "FLOOR-ESC-2F-PAD-DOWN": "Yellow tactile warning pad beyond the 2F upper plates, 1F offset mirrored (up head observed in 3TL 253).",
+  "FLOOR-ESC-2F-NOENTRY-RING": "Red no-entry roundel at the head of the up flight (3TL 253), 1F offset mirrored: ring",
+  "FLOOR-ESC-2F-NOENTRY-FILL": "Red no-entry roundel at the head of the up flight (3TL 253), 1F offset mirrored: fill",
+  "FLOOR-ESC-2F-NOENTRY-ARROW": "Red no-entry roundel at the head of the up flight (3TL 253), 1F offset mirrored: arrow glyph",
+  "FLOOR-ESC-2F-NOENTRY-SLASH": "Red no-entry roundel at the head of the up flight (3TL 253), 1F offset mirrored: prohibition bar",
+  "STAINLESS-1F-RETURN-RIGHT": "Stainless return closing the right well block toward the approach (dense fit at U≈19.5, 000121 x 734-797); y 0 to the live 1F ceiling 2.31. Tier b (dense fit, no held-out).",
+  "STAINLESS-1F-FACE-LEFT": "Stainless-clad end face of the block left of the down flight, carries the blue escalator-safety sign (000121 x 275-360); y 0 to the live 1F ceiling 2.31. Tier b (dense fit, no held-out).",
+  "WALL-1F-APPROACH-RIGHT-END": "White approach-wall remainder between the live observed patch end and the stainless return (same fitted plane); y 0 to the live 1F ceiling 2.31. Tier b (dense fit, no held-out)."
+ },
+ "footResolution": {
+  "question": "Main 2026-09-25: comb plate at U~16 would put riders through the live 2.25 ceiling (ends U 19.3-19.5).",
+  "answer": "The foot is NOT at U~16. The class-a lower-landing patch (U 15.47-16.06) is approach floor in front of the flap gates. Measured order along the up lane: gate cabinets U 16.63-18.42, end of the reconstructed granite floor / newel fronts at U 18.477 (up) and 18.649 (down), plates + 2 flat steps at y 0 to the lower working point U 20.18, incline after that. The live 1F ceiling (2.25) ends before the incline, so the clear height there stays 2.25 over flat steps; the a-failed void edge lies -0.39..-0.04 u before the working point, i.e. the 1F ceiling ends exactly where the steps start rising. The ceiling patch extent is consistent; nothing to change there.",
+  "workingPointEvidenceU": {
+   "treadFreeFitCrossingU": 19.827,
+   "tread30CrossingU": 20.017,
+   "handrail30CrossingPlus1U": 20.059,
+   "treadAsDeckPlus025U": 20.45
+  }
+ },
+ "omitted": [
+  {
+   "item": "#9-end 1F↔2F escalator (vc-escalator-rear-9)",
+   "tier": "c",
+   "reason": "Seen only in SY0 308-312 s (2024-08) between 복순도가 #9 and 양산국밥 #8; that registration was rejected (sy0-walk/registration.json). Topology leaves a ~20 u window (U -69.6..-49.2) on the rear corridor with no heading, side, width or 2F arrival; the 1F board icon only confirms existence. No derivable foot -> omitted.",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json#vc-escalator-rear-9",
+    ".planning/2026-09-23-video-twin/compare/board1f-2026.png",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json"
+   ],
+   "needs": "a registered view of its foot or head (e.g. HC/RY 2F footage of the arrival) or an accepted rear-corridor registration"
+  },
+  {
+   "item": "staff stair (직원식당) between #15 and #14",
+   "tier": "c",
+   "reason": "SY0 206-218 s and tiV8 207-217 s agree on the topology, but both registrations were rejected, and the placed 1F units #15 새벽집 / #14 개미집 share one snapped wall (interior-spec correction \"U+ front corner snapped onto the #15 shared wall line\"), so there is no slot: any Stair would cut through a placed unit. Run direction, switchback vs straight, width and the level it serves are unobserved.",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/sy0-walk/observations.json#new-staff-stair-core-15-14",
+    ".planning/2026-09-23-video-twin/1f-evidence-acquisition/footage-hunt/candidates.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/interior-spec.json#units 14,15"
+   ],
+   "needs": "a unit-polygon correction opening a ~1.2-1.5 u slot at the #15/#14 wall (U≈-12.7..-11.7 at the corridor front V≈-24.9) plus a registered view"
+  },
+  {
+   "item": "left escalator-well wall (−V side of the down flight, 1F ceiling to slab)",
+   "tier": "c",
+   "reason": "Not visible in any registered view: the 1F ceiling (y 2.3) continues to U≈22-23 at V < -18.2 and hides it; the ascent views look right. The 2F guard on that side is built."
+  },
+  {
+   "item": "well-head bulkhead from M-ESC-1F2F soffitBelow2FFloorU 1.38",
+   "tier": "c",
+   "reason": "Local-gauge only, soffit clusters ambiguous (A -1.0 / 4.0), and a 1.38-deep soffit at either cluster would sit < 2.1 above the derived step line, so it is not over the flights; not built. The opening uses the live 0.3 slab."
+  },
+  {
+   "item": "gate posts / flap gates at the 2F head (G-X05)",
+   "tier": "c",
+   "reason": "Seen in 3TL 247-253 (stainless posts either side of the up exit lane) but only in the unregistered ascent model; spacing and offset from the plates unmeasured."
+  },
+  {
+   "item": "green footprint decals on the dark 1F lane floor; 2F entry-arrow roundel at the down-flight head",
+   "tier": "c",
+   "reason": "Footprints: many small decals, appearance-only, not worth kit polygons. 2F down-head roundel: not in any frame (the 1F pattern suggests it)."
+  },
+  {
+   "item": "information post with sign inside the up lane (dense U≈17.8, V≈-15.9; 000121/000123)",
+   "tier": "c",
+   "reason": "No kit type for a stanchion sign; it would also sit in the walking line of the up lane."
+  },
+  {
+   "item": "side face of the block left of the down flight (V≈-19.4 from U≈20) and the glass notice railing along the down lane",
+   "tier": "c",
+   "reason": "Only sparse dense points (U 21-21.75); the railing is folded into the left gate cabinet."
+  }
+ ],
+ "forMain": {
+  "slabOpening": "slab-openings.json OPEN-2F-ESC-CORE: cut Majibang_2F_Floor (remove plan.removeCells, rebuild plan.infillPolygonsUV as granite slab 6.7-7.0, or boolean-cut the mesh by polygonUV) BEFORE or together with the KitBuild; guards and fascias assume the cut.",
+  "buildOrder": "KitBuild escalator-core.json 실내 트윈 마감/수직 동선 (parent 실내 트윈 마감 exists).",
+  "keepClear2F": {
+   "opening+guards": [
+    [
+     28.005,
+     -17.748
+    ],
+    [
+     27.579,
+     -13.698
+    ],
+    [
+     33.806,
+     -13.044
+    ],
+    [
+     34.232,
+     -17.093
+    ]
+   ],
+   "exitRunoff2.5": [
+    [
+     34.189,
+     -16.684
+    ],
+    [
+     36.675,
+     -16.423
+    ],
+    [
+     36.335,
+     -13.191
+    ],
+    [
+     33.849,
+     -13.452
+    ]
+   ],
+   "note": "Reconcile2FLayout: keep units out of these; 비엔씨 (U 21-27, V -13..-5.5) clears the opening by 0.98 and the guard by 0.91 at its +U/−V corner."
+  },
+  "keepClear1F": {
+   "approachAndGates": [
+    [
+     16.247,
+     -18.57
+    ],
+    [
+     18.733,
+     -18.309
+    ],
+    [
+     18.393,
+     -15.077
+    ],
+    [
+     15.907,
+     -15.338
+    ]
+   ]
+  },
+  "zFight": "Kit plates are lifted +0.012 (InteriorKit); the lower truss end reaches y -1.0 inside Ground_Floor (hidden)."
+ },
+ "openQuestions": [
+  "2F head surroundings: 3TL 000247-000259 (161-166 s) show a bakery-type frontage ahead-left (−V) of the upper landing and restrooms straight ahead; the reconciled plan has no unit there and keeps 비엔씨 (B&C) behind-right of the head at U 21-27. The 2F lane should check the identity/position of the head-side bakery (3xn 126-128 s also reads B&C at the 2F head).",
+  "Heading 6.0° is the mean of four fits (approachWall 5.46, rightWellWall 6.19, gateMiddle 6.43, treadLine 5.73); ±0.5° moves the upper landing ±0.13 u laterally. The lower working point estimates span U 19.83-20.45; the upper landing inherits that ±0.3 u along the heading.",
+  "Rise 7.0 (1F datum 0 -> 2F slab top 7.0) is taken from the brief; the upper landing itself was never registered (upper-landing.json).",
+  "Local-ascent M-ESC-1F2F opening width 2.1 / guard lines ±1.0 match the up flight lane (rider camera w≈0.2; right well wall w 1.16; divider w≈-0.8), not the whole well."
+ ],
+ "elementIds": [
+  "ESC-CORE-1F2F",
+  "GUARD-2F-WELL-RIGHT-floor",
+  "GUARD-2F-WELL-RIGHT-well",
+  "GUARD-2F-WELL-LOWER-floor",
+  "GUARD-2F-WELL-LOWER-well",
+  "GUARD-2F-WELL-LEFT-floor",
+  "GUARD-2F-WELL-LEFT-well",
+  "WALL-WELL-RIGHT-SS",
+  "WALL-WELL-RIGHT-A",
+  "WALL-WELL-RIGHT-B",
+  "WALL-WELL-RIGHT-C",
+  "FASCIA-2F-WELL-EDGE-L",
+  "FASCIA-2F-WELL-EDGE-R",
+  "GATE-ESC-1F-DOWN",
+  "GATE-ESC-1F-UP",
+  "FLOOR-ESC-1F-LANES",
+  "FLOOR-ESC-1F-PAD-DOWN",
+  "FLOOR-ESC-1F-PAD-UP",
+  "FLOOR-ESC-1F-NOENTRY-RING",
+  "FLOOR-ESC-1F-NOENTRY-FILL",
+  "FLOOR-ESC-1F-NOENTRY-ARROW",
+  "FLOOR-ESC-1F-NOENTRY-SLASH",
+  "FLOOR-ESC-1F-ENTRY-RING",
+  "FLOOR-ESC-1F-ENTRY-FILL",
+  "FLOOR-ESC-1F-ENTRY-ARROW",
+  "FLOOR-ESC-2F-PAD-UP",
+  "FLOOR-ESC-2F-PAD-DOWN",
+  "FLOOR-ESC-2F-NOENTRY-RING",
+  "FLOOR-ESC-2F-NOENTRY-FILL",
+  "FLOOR-ESC-2F-NOENTRY-ARROW",
+  "FLOOR-ESC-2F-NOENTRY-SLASH",
+  "STAINLESS-1F-RETURN-RIGHT",
+  "STAINLESS-1F-FACE-LEFT",
+  "WALL-1F-APPROACH-RIGHT-END"
+ ],
+ "measurements": {
+  "frame": {
+   "originUV": [
+    17.434,
+    -15.982
+   ],
+   "headingUV": [
+    0.995,
+    0.105
+   ],
+   "lateralUV(-dv,du)": [
+    -0.105,
+    0.995
+   ],
+   "yawDeg": 6.0,
+   "yawSources": {
+    "approachWall": 5.46,
+    "rightWellWall": 6.19,
+    "gateMiddle": 6.43,
+    "treadLine": 5.73
+   }
+  },
+  "fits": {
+   "approachWall": {
+    "label": "right approach wall (live class-a patch plane)",
+    "points": 45710,
+    "inliers": 37575,
+    "V=a+bU": [
+     -15.7318,
+     0.09556
+    ],
+    "yawDeg": 5.46,
+    "rms": 0.006
+   },
+   "rightWellWall": {
+    "label": "right well wall beside the up flight",
+    "points": 1976,
+    "inliers": 1433,
+    "V=a+bU": [
+     -16.7127,
+     0.10839
+    ],
+    "yawDeg": 6.19,
+    "rms": 0.03
+   },
+   "gateMiddle": {
+    "label": "flap-gate cabinet line (middle)",
+    "points": 6344,
+    "inliers": 6272,
+    "V=a+bU": [
+     -18.7067,
+     0.11263
+    ],
+    "yawDeg": 6.43,
+    "rms": 0.086
+   },
+   "treadLine": {
+    "label": "rising step/skirt line of the up flight (plan trace)",
+    "points": 713,
+    "inliers": 593,
+    "V=a+bU": [
+     -18.3441,
+     0.1003
+    ],
+    "yawDeg": 5.73,
+    "rms": 0.067
+   }
+  },
+  "gates": {
+   "right": {
+    "uRange": [
+     16.634,
+     17.875
+    ],
+    "centreUV": [
+     17.255,
+     -15.241
+    ],
+    "heightQ05_95": [
+     0.36,
+     0.92
+    ],
+    "w": 0.756
+   },
+   "middle": {
+    "uRange": [
+     16.805,
+     18.42
+    ],
+    "centreUV": [
+     17.613,
+     -16.723
+    ],
+    "heightQ05_95": [
+     0.33,
+     0.92
+    ],
+    "w": -0.756
+   },
+   "left": {
+    "uRange": [
+     16.946,
+     18.152
+    ],
+    "centreUV": [
+     17.549,
+     -18.387
+    ],
+    "heightQ05_95": [
+     0.33,
+     0.88
+    ],
+    "w": -2.404
+   }
+  },
+  "gateCabinetLinesUV": {
+   "right": {
+    "cabinetLineUV": [
+     [
+      16.634,
+      -15.346
+     ],
+     [
+      17.875,
+      -15.136
+     ]
+    ],
+    "heightQ05_95": [
+     0.36,
+     0.92
+    ],
+    "w": 0.756
+   },
+   "middle": {
+    "cabinetLineUV": [
+     [
+      16.805,
+      -16.814
+     ],
+     [
+      18.42,
+      -16.632
+     ]
+    ],
+    "heightQ05_95": [
+     0.33,
+     0.92
+    ],
+    "w": -0.756
+   },
+   "left": {
+    "cabinetLineUV": [
+     [
+      16.946,
+      -18.368
+     ],
+     [
+      18.152,
+      -18.405
+     ]
+    ],
+    "heightQ05_95": [
+     0.33,
+     0.88
+    ],
+    "w": -2.404
+   }
+  },
+  "gatesBuilt": {
+   "GATE-ESC-1F-DOWN": {
+    "x": [
+     -0.723,
+     0.687
+    ],
+    "cabinetsW": [
+     -2.404,
+     -0.836
+    ],
+    "laneClear": 1.428
+   },
+   "GATE-ESC-1F-UP": {
+    "x": [
+     -0.721,
+     0.72
+    ],
+    "cabinetsW": [
+     -0.676,
+     0.756
+    ],
+    "laneClear": 1.291
+   }
+  },
+  "stainless": {
+   "returnFit": {
+    "U=a+bV": [
+     17.5648,
+     -0.1419
+    ],
+    "points": 6748,
+    "inliers": 6207,
+    "rms": 0.085,
+    "luminanceMedian": 100.0
+   },
+   "leftFaceFit": {
+    "U=a+bV": [
+     16.7824,
+     -0.1551
+    ],
+    "points": 5448,
+    "inliers": 4964,
+    "rms": 0.096,
+    "V": [
+     -21.564,
+     -19.689
+    ]
+   },
+   "rightWellWallStainlessEndU": 21.35,
+   "luminanceBinsU": [
+    [
+     19.6,
+     85.3,
+     1511
+    ],
+    [
+     19.85,
+     55.5,
+     392
+    ],
+    [
+     20.1,
+     59.8,
+     144
+    ],
+    [
+     20.35,
+     76.7,
+     55
+    ],
+    [
+     20.6,
+     43.3,
+     131
+    ],
+    [
+     20.85,
+     57.7,
+     479
+    ],
+    [
+     21.1,
+     115.0,
+     158
+    ],
+    [
+     21.35,
+     167.5,
+     60
+    ],
+    [
+     21.6,
+     190.5,
+     134
+    ],
+    [
+     21.85,
+     124.0,
+     46
+    ],
+    [
+     22.1,
+     144.0,
+     49
+    ],
+    [
+     22.35,
+     92.8,
+     14
+    ],
+    [
+     22.6,
+     114.3,
+     19
+    ],
+    [
+     22.85,
+     172.3,
+     20
+    ],
+    [
+     23.1,
+     152.3,
+     23
+    ],
+    [
+     23.6,
+     88.7,
+     5
+    ],
+    [
+     23.85,
+     110.0,
+     2
+    ]
+   ],
+   "approachWallLiveEndU": 17.993
+  },
+  "floorDecalAnnotations": {
+   "padDown": {
+    "000121": [
+     [
+      345,
+      443
+     ],
+     [
+      445,
+      443
+     ],
+     [
+      445,
+      463
+     ],
+     [
+      345,
+      463
+     ]
+    ],
+    "000123": [
+     [
+      268,
+      461
+     ],
+     [
+      392,
+      461
+     ],
+     [
+      392,
+      484
+     ],
+     [
+      268,
+      484
+     ]
+    ]
+   },
+   "padUp": {
+    "000121": [
+     [
+      519,
+      464
+     ],
+     [
+      652,
+      475
+     ],
+     [
+      650,
+      496
+     ],
+     [
+      517,
+      484
+     ]
+    ],
+    "000123": [
+     [
+      478,
+      483
+     ],
+     [
+      624,
+      494
+     ],
+     [
+      622,
+      519
+     ],
+     [
+      475,
+      508
+     ]
+    ]
+   },
+   "roundelNoEntry": {
+    "000121": [
+     [
+      320,
+      475
+     ],
+     [
+      375,
+      475
+     ],
+     [
+      347,
+      464
+     ],
+     [
+      347,
+      486
+     ]
+    ],
+    "000123": [
+     [
+      250,
+      501
+     ],
+     [
+      316,
+      501
+     ],
+     [
+      282,
+      489
+     ],
+     [
+      282,
+      514
+     ]
+    ]
+   },
+   "roundelEntry": {
+    "000121": [
+     [
+      535,
+      511
+     ],
+     [
+      601,
+      511
+     ],
+     [
+      568,
+      497
+     ],
+     [
+      568,
+      526
+     ]
+    ]
+   },
+   "laneFloorFront": {
+    "000121": [
+     [
+      370,
+      421
+     ],
+     [
+      430,
+      425
+     ],
+     [
+      500,
+      436
+     ],
+     [
+      560,
+      444
+     ],
+     [
+      620,
+      448
+     ],
+     [
+      690,
+      452
+     ]
+    ],
+    "000123": [
+     [
+      350,
+      420
+     ],
+     [
+      440,
+      440
+     ],
+     [
+      560,
+      452
+     ],
+     [
+      650,
+      462
+     ]
+    ]
+   }
+  },
+  "laneFloorFrontX": -0.629,
+  "laneSpacing": 1.58,
+  "spacingUsed": 1.65,
+  "risingTread": {
+   "points": 713,
+   "angleDegFreeFit": 28.17,
+   "rmsY": 0.105
+  },
+  "workingPointEstimatesU": {
+   "treadFreeFitCrossingU": 19.827,
+   "tread30CrossingU": 20.017,
+   "handrail30CrossingPlus1U": 20.059,
+   "treadAsDeckPlus025U": 20.45
+  },
+  "foot": {
+   "x_floorEnd_q98": 1.049,
+   "x_middleGateEnd": 0.903,
+   "x_foot": 1.049
+  },
+  "kit": {
+   "run": 12.1244,
+   "t": 0.40415,
+   "x0_footToIncline": 1.7083,
+   "bankLength": 15.5409
+  }
+ },
+ "derived": {
+  "footUV_bankCentre": [
+   18.563,
+   -16.693
+  ],
+  "footUV_upFlight": [
+   18.477,
+   -15.872
+  ],
+  "footUV_downFlight": [
+   18.649,
+   -17.513
+  ],
+  "lowerWorkingPointUV_upFlight": [
+   20.176,
+   -15.694
+  ],
+  "lowerWorkingPointU": 20.176,
+  "upperWorkingPointUV_upFlight": [
+   32.234,
+   -14.426
+  ],
+  "upperPlateEndUV_bankCentre": [
+   34.019,
+   -15.068
+  ],
+  "upperLandingPlates": {
+   "x": [
+    13.833,
+    15.541
+   ],
+   "y": 7.0,
+   "cornersUV": [
+    [
+     32.49,
+     -16.863
+    ],
+    [
+     34.189,
+     -16.684
+    ],
+    [
+     33.849,
+     -13.452
+    ],
+    [
+     32.15,
+     -13.631
+    ]
+   ]
+  },
+  "bankFootprintUV_1F_to_2F": [
+   [
+    18.733,
+    -18.309
+   ],
+   [
+    34.189,
+    -16.684
+   ],
+   [
+    33.849,
+    -13.452
+   ],
+   [
+    18.393,
+    -15.077
+   ]
+  ],
+  "openingLowerEdgeU_onUpCentre": 27.755,
+  "wellWidth": 3.972
+ },
+ "checks": [
+  {
+   "check": "escalator bank volume (truss bottom .. handrail+0.15, both flights, y > 0.01) vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "expected": {
+    "맞이방 · 원본 정합/Majibang_2F_Floor": 52
+   },
+   "note": "Majibang_2F_Floor hits are the slab the opening removes; Ground_Floor contact is at y 0 (excluded by y > 0.01)."
+  },
+  {
+   "check": "part of the bank that crosses the slab band (y 6.7-7.0) lies inside the opening",
+   "result": "pass",
+   "crossingStartsAtX_afterWorkingPoint": 9.613,
+   "openingLowerEdgeX_afterWorkingPoint": 7.621,
+   "crossingAreaOutsideOpening(rounding)": 0.00037
+  },
+  {
+   "check": "live 1F ceilings over the bank keep >= 2.1 clear above the step nosing line",
+   "result": "pass",
+   "rows": {},
+   "lowerWorkingPointU": 20.176
+  },
+  {
+   "check": "lower truss pit below the 1F floor (kit side cladding to y-1.0 under the flat end) vs live geometry",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": {
+    "1층 · 원본 정합/Ground_Floor": 2
+   },
+   "note": "Ground_Floor (y -0.18..0) is the floor the lower truss end sits in; hidden below the walking surface."
+  },
+  {
+   "check": "GUARD-2F-WELL-RIGHT-floor vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "GUARD-2F-WELL-RIGHT-well vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "GUARD-2F-WELL-LOWER-floor vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "GUARD-2F-WELL-LOWER-well vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "GUARD-2F-WELL-LEFT-floor vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "GUARD-2F-WELL-LEFT-well vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "WALL-WELL-RIGHT-SS vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "WALL-WELL-RIGHT-A vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "WALL-WELL-RIGHT-B vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": {
+    "맞이방 · 원본 정합/Majibang_2F_Floor": 23
+   }
+  },
+  {
+   "check": "WALL-WELL-RIGHT-C vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "FASCIA-2F-WELL-EDGE-L vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": {
+    "맞이방 · 원본 정합/Majibang_2F_Floor": 33
+   }
+  },
+  {
+   "check": "FASCIA-2F-WELL-EDGE-R vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": {
+    "맞이방 · 원본 정합/Majibang_2F_Floor": 10
+   }
+  },
+  {
+   "check": "STAINLESS-1F-RETURN-RIGHT vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "STAINLESS-1F-FACE-LEFT vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "WALL-1F-APPROACH-RIGHT-END vs live renderers",
+   "result": "pass",
+   "unexpected": {},
+   "attachments": null
+  },
+  {
+   "check": "live 2F geometry (y 6.6-9.0) with triangle centroids inside the opening",
+   "result": "pass",
+   "unexpected": {}
+  },
+  {
+   "check": "reconciled 2F plan units vs opening, guards and 2.5 u exit runoff",
+   "result": "pass",
+   "units": [
+    {
+     "unit": "비엔씨",
+     "uv": [
+      [
+       21,
+       27
+      ],
+      [
+       -13,
+       -5.5
+      ]
+     ],
+     "face": "-v",
+     "overlapWithOpening": 0.0,
+     "clearToOpening": 0.977,
+     "clearToGuard": 0.907,
+     "overlapWithRunoff": 0.0
+    },
+    {
+     "unit": "환공어묵",
+     "uv": [
+      [
+       14.5,
+       20.5
+      ],
+      [
+       -14,
+       -6.5
+      ]
+     ],
+     "face": "-v",
+     "overlapWithOpening": 0.0,
+     "clearToOpening": 7.134,
+     "clearToGuard": 7.079,
+     "overlapWithRunoff": 0.0
+    }
+   ]
+  },
+  {
+   "check": "2F exit runoff (2.5 u beyond the upper plates, bank width, y 7.01-9.2) free of live geometry",
+   "result": "pass",
+   "unexpected": {}
+  },
+  {
+   "check": "1F approach (2.5 u before the newels, bank width, y 0.01-2.1) free of live geometry",
+   "result": "pass",
+   "unexpected": {},
+   "note": "Gates and floor decals are this spec's own elements (checked separately below)."
+  },
+  {
+   "check": "opening inside existing 2F floor cells",
+   "result": "pass",
+   "areaWithoutCells": 0.0
+  },
+  {
+   "check": "class-a lower-landing patch stays approach floor (not covered by the bank)",
+   "result": "pass",
+   "distanceToNewels": 2.573
+  },
+  {
+   "check": "independent observations vs derived layout (a-failed planes, rider camera, 1F ceiling void edge)",
+   "result": "pass",
+   "rows": {
+    "centralRailPlane(a-failed)_w": [
+     -1.089,
+     -0.936
+    ],
+    "downFlightRightGlass_w (kit glass at +/-(w/2+.12))": -1.03,
+    "centralRailWithin0.2": true,
+    "rightRampPlane(a-failed)_w": [
+     0.874,
+     1.001
+    ],
+    "upFlightRightTrussSide_w": 0.8,
+    "rightRampWithin0.25": true,
+    "riderCamera_w (up flight; |w-0| < 0.5 = on its step band)": {
+     "000139.jpg": 0.152,
+     "000142.jpg": 0.162,
+     "000144.jpg": 0.216
+    },
+    "cameraOnUpFlight": true,
+    "gateLaneCentres_w": {
+     "right": 0.756,
+     "middle": -0.756,
+     "left": -2.404
+    },
+    "rightWellWall_w": 1.161,
+    "ceilingVoidEdge(a-failed)_x_minus_lowerWorkingPoint": [
+     -0.063,
+     -0.045,
+     -0.265,
+     -0.389
+    ],
+    "voidEdgeAtInclineStart(-0.6..0.3)": true
+   }
+  },
+  {
+   "check": "WallCladding faces (well faces into the well, guard floor faces away, 1F end faces toward the approach)",
+   "result": "pass",
+   "bad": [],
+   "segments": 21
+  },
+  {
+   "check": "flap-gate cabinets clear of live geometry, >= 0.05 before the newels, lane clear width >= 1.2",
+   "result": "pass",
+   "unexpected": {},
+   "gates": {
+    "GATE-ESC-1F-DOWN": {
+     "x": [
+      -0.723,
+      0.687
+     ],
+     "cabinetsW": [
+      -2.404,
+      -0.836
+     ],
+     "laneClear": 1.428
+    },
+    "GATE-ESC-1F-UP": {
+     "x": [
+      -0.721,
+      0.72
+     ],
+     "cabinetsW": [
+      -0.676,
+      0.756
+     ],
+     "laneClear": 1.291
+    }
+   }
+  },
+  {
+   "check": "no coplanar FloorFinish overlaps (same y and lift)",
+   "result": "pass",
+   "overlaps": []
+  },
+  {
+   "check": "floor decals: 1F on Ground_Floor and off the bank; 2F on plan cells, outside the opening, clear of live items",
+   "result": "pass",
+   "bad": {},
+   "decals": {
+    "FLOOR-ESC-1F-PAD-DOWN": {
+     "xw": [
+      -1.729,
+      -1.096,
+      -1.859,
+      -0.921
+     ],
+     "frameSpread": 0.0614907415055419
+    },
+    "FLOOR-ESC-1F-PAD-UP": {
+     "xw": [
+      -1.601,
+      -1.129,
+      -0.429,
+      0.458
+     ],
+     "frameSpread": 0.011751262968847431
+    },
+    "FLOOR-ESC-2F-PAD-UP": {
+     "centreUV": [
+      36.357,
+      -13.993
+     ],
+     "xw": [
+      19.028,
+      0.0
+     ],
+     "size": [
+      0.552,
+      0.912
+     ]
+    },
+    "FLOOR-ESC-2F-PAD-DOWN": {
+     "centreUV": [
+      36.53,
+      -15.634
+     ],
+     "xw": [
+      19.028,
+      -1.65
+     ],
+     "size": [
+      0.552,
+      0.912
+     ]
+    }
+   },
+   "roundels": {
+    "roundelNoEntry": {
+     "centreXW": [
+      -1.892,
+      -1.408
+     ],
+     "radius": 0.16,
+     "frameSpread": 0.01208722510012561
+    },
+    "roundelEntry": {
+     "centreXW": [
+      -1.849,
+      0.033
+     ],
+     "radius": 0.17,
+     "frameSpread": null
+    }
+   }
+  },
+  {
+   "check": "every element cites evidence and every cited file exists",
+   "result": "pass",
+   "missing": []
+  }
+ ]
+}

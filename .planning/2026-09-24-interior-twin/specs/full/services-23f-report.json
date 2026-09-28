@@ -1,0 +1,330 @@
+{
+ "generator": ".planning/2026-09-24-interior-twin/specs/full/make_services_23f.py",
+ "items": [
+  {
+   "item": "2F W.C south end (남자)",
+   "status": "built",
+   "tier": "b",
+   "element": "WC-2F-S-M",
+   "sources": [
+    "Naver indoor 2F raster + POI 남자화장실 (ICP west)",
+    "official 2F guide W.C (right edge = south)"
+   ],
+   "inference": "entry spacing along the wall (footage shows the adjacent doorways, not their metric positions)"
+  },
+  {
+   "item": "2F W.C south end (여자)",
+   "status": "built",
+   "tier": "b",
+   "element": "WC-2F-S-F",
+   "sources": [
+    "Naver indoor 2F raster + POI 여자화장실 (ICP west)",
+    "official 2F guide W.C (right edge = south)"
+   ],
+   "inference": "entry spacing along the wall (footage shows the adjacent doorways, not their metric positions)"
+  },
+  {
+   "item": "2F W.C north-west end (여자)",
+   "status": "built",
+   "tier": "b",
+   "element": "WC-2F-N-F",
+   "sources": [
+    "Naver indoor 2F raster + POI 여자화장실 (ICP east)",
+    "Naver route corridor stub = entry",
+    "official 2F guide W.C bottom-left"
+   ],
+   "planEdit": "remove builder unit \"화장실   \" (u 48..56, v -19..-11.5): empty ServiceRoom shell 5-8 u off the Naver toilets"
+  },
+  {
+   "item": "2F W.C north-west end (남자)",
+   "status": "built",
+   "tier": "b",
+   "element": "WC-2F-N-M",
+   "sources": [
+    "Naver indoor 2F raster (paired room, unnamed POI)",
+    "Naver route corridor stub = entry"
+   ],
+   "inference": "male/female assignment of the unnamed room"
+  },
+  {
+   "item": "2F 회의실 (201호)",
+   "status": "built",
+   "tier": "b",
+   "element": "RM-2F-S-201",
+   "sources": [
+    "Naver POI 201호 (category 회의실명칭) + raster room",
+    "official 2F guide 회의실 (south end)"
+   ],
+   "inference": "door position, props"
+  },
+  {
+   "item": "2F 202호 / south-end back-of-house rooms",
+   "status": "built",
+   "tier": "b",
+   "element": [
+    "RM-2F-S-202",
+    "RM-2F-S-r34",
+    "RM-2F-S-r32",
+    "RM-2F-S-back0",
+    "RM-2F-S-back1",
+    "RM-2F-S-back2"
+   ],
+   "sources": [
+    "Naver indoor 2F raster rooms (ICP west .19 u)"
+   ],
+   "inference": "use (office/staff/storage), door positions"
+  },
+  {
+   "item": "2F north-west back-of-house rooms",
+   "status": "built",
+   "tier": "b",
+   "element": [
+    "RM-2F-N-r16",
+    "RM-2F-N-r56"
+   ],
+   "sources": [
+    "Naver indoor 2F raster rooms (ICP east .37 u)",
+    "live floor edge (colprobe)"
+   ],
+   "inference": "use, door positions",
+   "note": "r56 reaches the facade over SeamPassage5 wedge slab; Naver r26 is built by SeamPassage5"
+  },
+  {
+   "item": "2F W.C box (남/여)",
+   "status": "built",
+   "tier": "b",
+   "element": [
+    "WC-2F-B1-M",
+    "WC-2F-B1-F"
+   ],
+   "sources": [
+    "builder unit 화장실 (board 2F 2026-04)",
+    "official 2F guide W.C beside the box EV",
+    "Naver POI 공용화장실 (-20.2,85.0)"
+   ],
+   "inference": "vestibule + M/F split inside the builder shell"
+  },
+  {
+   "item": "2F W.C box (second shell)",
+   "status": "built",
+   "tier": "b",
+   "element": "WC-2F-B2-A",
+   "sources": [
+    "builder unit 화장실 u[-16,-10] v[67.5,72] (board 2F)"
+   ],
+   "inference": "accessible single toilet"
+  },
+  {
+   "item": "2F 역무실·유실물",
+   "status": "built",
+   "tier": "b",
+   "element": "RM-2F-B-역무실",
+   "sources": [
+    "builder unit 역무실 (board 2F)",
+    "official 2F guide"
+   ],
+   "inference": "office props"
+  },
+  {
+   "item": "2F 수유방",
+   "status": "built",
+   "tier": "b",
+   "element": "RM-2F-B-수유방",
+   "sources": [
+    "builder unit 수유방 (board 2F)",
+    "official 2F guide"
+   ],
+   "inference": "generic room props (no nursing furniture kit)"
+  },
+  {
+   "item": "2F 철도경찰 (guide) interior",
+   "status": "built",
+   "tier": "b",
+   "element": [
+    "RM-2F-S-철도경찰",
+    "SL-2F-S-철도경찰-lid"
+   ],
+   "sources": [
+    "builder unit 철도경찰서",
+    "footage hCyroXn0Jhg 580/587 s (철도경찰대 부산센터 front)",
+    "Naver facility f56 (4 u west)"
+   ],
+   "inference": "office props"
+  },
+  {
+   "item": "2F double-height hall ceiling (G-M02 / BL-29)",
+   "status": "built",
+   "tier": "b",
+   "element": [
+    "WC-ATR-S",
+    "WC-ATR-E",
+    "WC-ATR-N1",
+    "WC-ATR-J1",
+    "WC-ATR-N2",
+    "WC-ATR-J2",
+    "WC-ATR-N3",
+    "WC-ATR-J3",
+    "WC-ATR-N4",
+    "WC-ATR-W",
+    "LT-ATR"
+   ],
+   "sources": [
+    "footage hCyroXn0Jhg 574-589 s (atrium: cream upper walls, window bands, lights)",
+    "live ceiling hole + MainShell 23.0"
+   ],
+   "note": "the atrium is multi-storey; its top is taken as the MainShell roof underside (23.0) the live scene already has",
+   "stillC": [
+    "upper-floor window bands (no metric placement along the walls from a single unregistered walk)"
+   ],
+   "v5": "west part U -78.9..-62 opened (RegTech6 wall U -78.9 +-1; 2f-main.json low ceiling cut via make_2f_specs.py)"
+  },
+  {
+   "item": "2F ATM",
+   "status": "built",
+   "tier": "b",
+   "element": "ATM-2F",
+   "sources": [
+    "Naver POI 현금인출기 (registered lon/lat)",
+    "official 2F guide ATM"
+   ],
+   "inference": "heading"
+  },
+  {
+   "item": "2F 매표창구 ceiling (Main request)",
+   "status": "built",
+   "tier": "b",
+   "element": "CL-2F-매표창구",
+   "sources": [
+    "builder unit 매표창구",
+    "live ceiling hole (colprobe after27)",
+    "2f-main.json low ceiling params"
+   ]
+  },
+  {
+   "item": "3F W.C (여자)",
+   "status": "built",
+   "tier": "b",
+   "element": "WC-3F-F",
+   "sources": [
+    "builder thirdFloor unit 화장실",
+    "Naver 3F POI 여자화장실 + raster toilet pair"
+   ],
+   "inference": "layout (kit auto)"
+  },
+  {
+   "item": "3F W.C (second Naver toilet room, presumably 남자)",
+   "status": "still-c",
+   "sources": [
+    "Naver 3F raster (two toilet rooms, one named 여자화장실); its wing offsets 1-8 m from live units",
+    "builder thirdFloor units (only one 화장실 shell)",
+    "RY2 3F RegTech6 fl-hash, 172-334 s: the 553 cameras remain at a 8.1-44.1; toilet shell is a -12.6..-9.7",
+    "2020 8eYGke7JQRc frames 001-040 show end wall/elevator/recess but do not enter either toilet",
+    "RegTech8 Evidence3F-1: 8eY_001 (326/991, 3.53 px), _010 (43/422, 2.69 px), _040 (68/552, 3.47 px) all fail the anchor with sigma null; _005/_015/_020 <20 inliers, _030 spatial outlier",
+    "hCyroXn0Jhg / e5v / Y5v contact sheets: no 3F toilet-wing interior"
+   ],
+   "reason": "No accepted registered view of the second room; do not place a second ToiletRoom by extrapolating the unregistered Naver wing."
+  },
+  {
+   "item": "3F food-court interior (BL-18 / G-3F02)",
+   "status": "built (partial)",
+   "tier": "b",
+   "element": [
+    "RM-3F-FC-짬뽕",
+    "CT-3F-FC-짬뽕",
+    "DB-3F-FC-menu0",
+    "DB-3F-FC-menu1",
+    "DB-3F-FC-menu2",
+    "DB-3F-FC-menu3",
+    "DB-3F-FC-menu4",
+    "CT-3F-FC-빈티지38",
+    "FX-3F-FC-fridge"
+   ],
+   "sources": [
+    "RY2 3F RegTech6 fl-hash (gate FAIL, sigma ~1.5 m / 5 deg): points + poses 231-306 s",
+    "RY2 frames 241/246 (빈티지38 counter), 261/265/271/275 (stall row, menu boards, fridges)",
+    "2019 QgOs2sothUw qgo_019-027 (portal appearance); RegTech8 qgo localization failed support/residual criteria"
+   ],
+   "planEdit": "FC-1: 푸드코트 unit \"stalls\": [] (drops the corridor-side stall backs/counters/displays/signs, which the registered camera walks through at a 42-43, 283-287 s) and a builder keep-clear for the seating grid: skip tables (and chairs) whose footprint meets [[37.2, 44.6, 56.8, 60.4], [22.3, 27.3, 54.2, 55.6]] (box frame) - the kitchen and the 빈티지38 counter",
+   "stillC": [
+    "further stalls along the east wall a 46-56: seen at 261 s beyond 40 m range, no point support",
+    "빈티지38 striped portal and column lantern frames: appearance visible in qgo footage; no accepted registration",
+    "front opening at a ~43 on the corridor side: camera crosses b 48 at 283-287 s; builder gap coordinates are hard-coded"
+   ],
+   "note": "seating stays the builder grid [INFERENCE] minus the keep-clear boxes"
+  },
+  {
+   "item": "3F food-court refrigerator/freezer display",
+   "status": "built",
+   "tier": "b",
+   "element": "FX-3F-FC-fridge",
+   "sources": [
+    "RY2 fl-hash points support footprint a44.3-45.8, b55.4-57.5",
+    "RY2 frame 275 shows Pepsi fridge facing -a",
+    "KitExtend7 standalone Fixture kind cooler contract; point geometry at [45.05,56.45], width 2.1, depth 1.5",
+    "Main-replanned route-3f-centre-to-foodcourt on geometry-after40; A* keep-out includes fridge footprint + 0.6 m, route clears by 1.4 m (8 waypoints)"
+   ],
+   "inference": "2.0 m height (standard standing refrigerator; not metrically recovered)"
+  },
+  {
+   "item": "3F food-court further stalls (east wall)",
+   "status": "still-c",
+   "sources": [
+    "RY2 frame 261: stall row visible beyond 40 m",
+    "RY2 fl-hash points: no support across a 46-56 target",
+    "2023 jE0L25cvz2E, DHY5PQ0ctZY, Y3bY4av87LU contact sheets; no registered metric support",
+    "Naver m101079 2022 food-court photo series; appearance only",
+    "RegTech8 Evidence3F-1 NO-GO: no finite metric sigma or held-out-valid poses for the requested area"
+   ],
+   "reason": "No triangulated points/accepted registered camera observations in the requested range; avoid extrapolating stall locations."
+  },
+  {
+   "item": "3F 빈티지38 striped portal and column lantern frames",
+   "status": "still-c",
+   "sources": [
+    "RY2 frames 241/246: portal seen from inside but orientation unresolved",
+    "2019 QgOs2sothUw frames qgo_019-027 (portal), qgo_080-125 (columns and framed lights)",
+    "RegTech8 localized qgo_019 (32/582, RMS 2.83 px), qgo_023 (21/559, 1.51 px), qgo_027 (33/474, 4.70 px; absurd candidate); qgo_082/086/090 each <20 inliers",
+    "RY2 fl-hash anchor FAIL; no accepted held-out residual or metric placement"
+   ],
+   "reason": "Photos establish appearance, but registration failed; no trustworthy portal edge or column/frame coordinates."
+  },
+  {
+   "item": "3F corridor-side food-court opening at a~43",
+   "status": "still-c",
+   "sources": [
+    "RY2 fl-hash camera crosses b~48 at a~42-43 in frames 283-287, but the anchor gate FAILs",
+    "builder FoodCourt has hard-coded corridor gaps only around a 21.5-24.5 and 49.5-52.5",
+    "RegTech8 Evidence3F-1 NO-GO: no held-out-valid poses or finite metric sigma"
+   ],
+   "reason": "The observed crossing is approximate, not accepted registered evidence of an opening. Do not edit builder-owned FoodCourt gap logic without stronger registration."
+  },
+  {
+   "item": "2F 스토리웨이 편의점 (north-west, Main request)",
+   "status": "built",
+   "tier": "b",
+   "element": [
+    "RM-2F-SW-shell",
+    "SF-2F-SW",
+    "SHOP-2F-SW"
+   ],
+   "spec": "services-2f-storyway.json",
+   "sources": [
+    "Naver 2F raster facility + POI 스토리웨이 (ICP east)",
+    "zimcarry blog 2F store map + photo (2025-02)",
+    "official 2F guide 편의점 beside the bottom-left W.C"
+   ],
+   "inference": "front edge, U+ edge moved to the live facade, interior layout"
+  }
+ ],
+ "requestsForMain": [
+  "Atrium west extension (v5, Main GO): make_2f_specs.py now cuts U -78.9..-62, V -21.95..-6.4 from 2F-main-low-ceiling-0 (RegTech6 wall U -78.9). Regenerating 2f-main.json also (a) closes the two ceiling holes left by plan edit S1 (the removed north 화장실 shells u[52,61] v[-4.5,4.5] and u[48,56] v[-19,-11.5] show the roof at 23.0 in after28) and (b) renumbers 15 Storefront ids (index over the plan units; content identical). Diff: .planning/2026-09-26-full-twin/services23f-work/atrium-west/diff.json.",
+  "Resolved in Main geometry-after40: route-3f-centre-to-foodcourt now seeds the 3F public walk set, so door_check can evaluate WC-3F-F connectivity; door_check on after40 with services-3f v4 returned done with no flagged entries.",
+  "Public1F5 proposes a 2F slabOpening U -59.7..-45.4 V -10.9..-17 (1F->2F escalators) inside the atrium; footage 575-583 s shows a continuous atrium floor - verify before cutting (no conflict with this lane's elements, all above 10.47 there).",
+  "Evidence3F v4: Main re-planned route-3f-centre-to-foodcourt around the built fridge from geometry-after40 (8 waypoints, +0.6 m keep-out, 1.4 m clearance)."
+ ],
+ "notes": [
+  "Official 2F guide shows 3 W.C labels (south end, north-west end, box beside EV); all three are built (+ the second box shell).",
+  "voidscan2-after25 seen-12-4 (3F V 92-99, U -14.6..57.4): the food-court/box east window wall looks out to the rail yard = exterior.",
+  "voidscan2-after25 seen-0-2 (67.7,-5.7): gap at the NE floor edge, closed by RM-2F-N-r56 reaching the facade (v3) + seam wedge slab."
+ ]
+}

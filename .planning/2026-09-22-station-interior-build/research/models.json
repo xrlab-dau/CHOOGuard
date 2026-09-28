@@ -1,0 +1,173 @@
+{
+ "lane": "models",
+ "searchedAt": "2026-09-22",
+ "queriesRun": [
+  "Overpass API: nwr[railway=station] bbox(34.95,128.95,35.25,129.15) -> located Busan Station node 1768537544 @35.1157262,129.0399028",
+  "Overpass API: indoor|level|building:part|building|room|highway=elevator|entrance|railway=platform|public_transport in bbox(35.1120,129.0355,35.1195,129.0445)",
+  "Overpass API: way(id:165346389,165346394,1305717763,1554396381,165346388,165346390,165346391,165346392,165346393,165346395,1127821991,1305526800,1305526804,1305724034);out geom tags",
+  "Sketchfab v3 search API: 'busan station', '부산역', 'busan train station', 'korea train station interior', 'ktx station', 'busan', 'korea station', 'railway station interior&downloadable=true'",
+  "3D Warehouse v1.0 entities API: '부산역', 'Busan Station', '부산역사', 'Busan KTX', 'Korail', 'KTX', '한국 역', 'railway station korea', '부산', '경부선', '역 station', 'Busan'",
+  "GitHub search API: busan+station, korail+station, bve+경부선, openbve+korea, bve+korail, 부산역, busan+station+3d",
+  "data.go.kr dataset search: 준공도면 (paginated p1-p4), 부산역사, 국가철도공단 부산, 한국철도공사 역사, 실내공간정보, BIM",
+  "vworld.kr catalog search: 3차원, 실내공간정보, 건물; dataset detail DAT_0000000000000125 (LoD4) / 203 (LoD3) / 204 (LoD1)",
+  "xdworld.vworld.kr/XDServer3d requestLayerNode probe (Layer=facility_build) with and without APIKey",
+  "namu.wiki openBVE/애드온 scrape -> URL-position mapping of 경부고속선 / 경부선 / KET 경부선 route rows to their distribution links",
+  "haesangang-0317.tistory.com/55 (부산 도시철도 1호선 공개배포) + redwingspace.com/bve/data + blog.naver.com/imys712/220384492968",
+  "CGTrader / TurboSquid / Free3D keyword 'busan' (all bot-blocked: 202/403/403)",
+  "map.ngii.go.kr 국토정보플랫폼 probe for 실내공간정보",
+  "derived: rotating-calipers minimum-area rectangles of all 14 OSM polygons in a local ENU metre frame about node 1768537544, to resolve the FBX-vs-OSM georeference conflict flagged by FloorPlanHunt"
+ ],
+ "findings": [
+  {
+   "title": "OpenStreetMap — Busan Station full tag+geometry extract (Overpass), incl. indoor-mapping census",
+   "url": "https://overpass-api.de/api/interpreter",
+   "kind": "dataset",
+   "whatItShows": "348 features in the station bbox. HARD COUNT: indoor=* features = 2, and BOTH are amenity=luggage_locker NODES (indoor=yes). Ways/relations carrying indoor=* = 0. indoor in {room,corridor,wall,area,level} = 0. room=* = 0. level=* = 11, all POI nodes (shops/cafes), zero level-tagged geometry. Positive geometry that DOES exist: building=train_station way 165346389 (63 pts, building:levels=3, 352.4m N-S x 253.4m E-W = whole complex incl. train shed), building=train_station way 165346394 (29 pts, amenity=public_building, 45.3m x 84.2m = 역사 proper), building:part ways 1305717763 (44 pts, 139.8x87.1m) and 1554396381, 6 railway=platform ways, 2 railway=train_station_entrance nodes, 2 highway=elevator, 3 building=roof (canopies).",
+   "usefulFor": "DEFINITIVE NEGATIVE on OSM indoor mapping: there is no indoor room/wall/corridor polygon for Busan Station anywhere in OSM, so no OSM-derived interior can be imported. The POSITIVE value is the exported GeoJSON footprint: georeferenced outer shell + platform + canopy polygons to georeference/validate the existing OfficialBusanStation_MainShell.fbx and to place platform-access gates on the correct side.",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/models/overpass_busanstation_indoor.json (+ overpass_station_search.json, overpass_busanstation_footprint_geom.json, busanstation_osm_footprint.geojson)",
+   "sha256": "5e07556716e43e309f38a81322e479d43dc8aada203e33c9c85d63acf8e54282",
+   "bytes": 120812,
+   "license": "ODbL 1.0 — OpenStreetMap contributors",
+   "confidence": "verified"
+  },
+  {
+   "title": "Rotation-corrected true footprints of every OSM polygon, in metres (derived) — resolves the FBX/OSM georeference conflict",
+   "url": "derived from https://overpass-api.de/api/interpreter output",
+   "kind": "dataset",
+   "whatItShows": "Minimum-area enclosing rectangles computed by rotating calipers in a local ENU frame. Two near-orthogonal orientation families: 역사 head-house at bearing 162.0 deg CCW-from-East (compass 108.0) and platforms/train shed at 69.6 deg (compass 20.4). The ACUTE angle between them is 87.6 deg, not 90 - the head-house is 2.4 deg off square to the tracks, worth 3.38 m of drift over its 80.6 m run, so rotation must be measured, never derived as platforms+90. Key rectangles: way/165346394 (역사 head-house) 80.6 x 31.5 m = 2537 m2 @162.0 deg; way/165346389 (whole complex) 372.4 x 180.5 m @160.8 deg; way/1305717763 132.6 x 57.6 m @69.8 deg; five platforms 389-461 m long, refs 1 / 3;4 / 5;6 / 8;9 / 10;11. The previously circulated 352x253 and 45x84 figures were lat-lon AXIS-ALIGNED bounding boxes of a building rotated ~19 deg off north, so they were never footprints and were not comparable to the Unity AABB of 98x63.",
+   "usefulFor": "Makes the georeference decidable. The 역사 head-house footprint is 2537 m2; the reported 2F 대합실 usable area of 1820-1992 m2 is 72-79% of that, a normal concourse net-to-gross, which independently corroborates that way/165346394 is the block the existing FBX interior volume belongs to. Fit the FBX to that 80.6 x 31.5 m rectangle at bearing 162.0 deg about 35.1157262,129.0399028 rather than by comparing extents. Bearings are CCW-from-East mod 180; compass = (90-bearing) mod 180. The platform family at 69.6 deg (compass 20.4) fixes which facade the platform-access gates must pierce, and the recovered platform refs (5 platforms) match namuwiki's 5면 12선.",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/models/osm_footprint_obb_metres.json",
+   "sha256": "8bf6da42b807daf33205df4ecda44a00edf9a26c616850e058ac66f7d49866be",
+   "bytes": 6986,
+   "license": "ODbL 1.0 — derived from OpenStreetMap contributors",
+   "confidence": "verified"
+  },
+  {
+   "title": "한국철도공사_역사내외부 시설현황 (KORAIL station interior/exterior facility census, 2024-12-31)",
+   "url": "https://www.data.go.kr/data/15090379/fileData.do",
+   "kind": "dataset",
+   "whatItShows": "CSV, 288 KORAIL stations, CP949. Row '부산' gives HARD COUNTS for Busan Station: 엘리베이터 13, 에스컬레이터 24, 휠체어리프트 0, 장애인경사로 0, 장애인화장실 1, 일반화장실 1, 모유수유실 0, 종합안내소 0, 환승주차장 688면. Columns: 역명,엘리베이터,에스컬레이터,휠체어리프트,장애인경사로,장애인화장실,일반화장실,모유수유실,종합안내소,환승주차장(면수).",
+   "usefulFor": "Directly fixes the vertical-circulation budget for the interior build: exactly 13 elevator shafts and 24 escalator runs must be placed across the station, 1 accessible WC + 1 general WC block. Turns 'how many escalators?' from invention into a sourced constraint. NOTE the 모유수유실=0 / 종합안내소=0 entries contradict on-site signage lists, so treat the zero-valued columns as 'not recorded in this dataset', not as proven absence.",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/models/korail_station_facilities_utf8.csv (raw CP949: korail_station_facilities.csv)",
+   "sha256": "11231a5e3801a2ec3c895eee77748eed6cb2b4aba64a617ebf4cfd8e84ad658e",
+   "bytes": 8076,
+   "license": "KOGL Type 1 (공공누리 제1유형) — 한국철도공사; free use incl. commercial, attribution required",
+   "confidence": "verified"
+  },
+  {
+   "title": "OpenBVE '부산 도시철도 1호선' route package (해산강제작소) — DOWNLOADED AND INSPECTED, NEGATIVE",
+   "url": "https://haesangang-0317.tistory.com/55  (file: https://drive.google.com/file/d/1_AA20Su-NtUXcGMEpYstImpe58e2RiYt/view)",
+   "kind": "model",
+   "whatItShows": "544,549,043-byte ZIP pulled anonymously from the author's public Google Drive link (no login). 3,282 entries, CP949 filenames: 1,133 .csv objects, 1,002 .bmp, 387 .png, 256 .wav, 158 .animated, 97 .b3d, 86 .jpg; 2,486 files under Railway/Object/BUSAN1/. I decoded and searched it: ZERO filenames contain '부산역', the route file contains ZERO .Sta directives, and '부산역' appears exactly once in 부산도시철도 1호선.csv as a ';' comment marking chainage. The objects placed at that marker are generic modular trackbed parts only (Busan1\\\\Ballast*.csv, DarkSlab*.csv, RoadL/RoadR.csv, Formwall*.csv, Null.csv) reused identically at every station on the line.",
+   "usefulFor": "NOTHING for this build — and that is the point of downloading it. It proves the most-cited Korean BVE '부산역' lead contains no bespoke Busan Station geometry at all, only generic reused tunnel/trackbed modules, and it models the UNDERGROUND Line-1 subway station rather than the above-ground KTX 역사 that CHOOGuard needs. Do not spend a human on this file. The remaining BVE leads (경부고속선/경부선 on Naver Cafe) are a different codebase and remain unverified, but this result lowers the prior on them substantially.",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/models/bve_busan_metro_line1.zip",
+   "sha256": "aef5806f64327bea5060520d30ab25dadeb2e05bbd4c70e637056c554b052e29",
+   "bytes": 544549043,
+   "license": "Korean hobbyist add-on; post states no redistribution/commercial use without author permission. Recorded as metadata per instruction; not a filter for this research phase.",
+   "confidence": "verified"
+  },
+  {
+   "title": "V-World 3차원 시설물 (LoD4 / LoD3 / LoD1) + XDServer3d tile endpoint",
+   "url": "https://www.vworld.kr/dtmk/dtmk_ntads_s002.do?dsId=DAT_0000000000000125&svcCde=DT  |  endpoint: https://xdworld.vworld.kr/XDServer3d/requestLayerNode?APIKey=<key>&Layer=facility_build&Request=getNode&Level=<L>&IDX=<x>&IDY=<y>",
+   "kind": "model",
+   "whatItShows": "V-World's national 3D facility dataset. LoD4 metadata: 데이터 종류 '3D Model', 데이터 포맷 '3ds, jpg', built by 5-direction aerial photogrammetry. Portal 유형 is '지도조회' (map-view) — there is NO bulk download button; access is via the XDWorld 3D tile server, which I probed live: it responds (ERROR_DB_GENERAL for a bogus key, ERROR_SERVICE_PARAMETER_NG without one), so the endpoint is real and only an API key is missing. CRITICAL CAVEAT: Korean 「3차원 국토공간정보 구축작업 규정」 별첨5 defines LoD4 as realistic photo-texture on the EXTERIOR shell — it is NOT CityGML LoD4 and contains NO interior geometry. LoD3 is 대구광역시 only; LoD1 is nationwide extruded footprints (shp).",
+   "usefulFor": "Exterior-only. Worth exactly one thing: cross-checking the existing FBX shell's massing/height against the national dataset. Do NOT expect interior partitions from V-World. The API key is free but requires a V-World account (Korean real-name/social login), so it is login-walled.",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "공공누리 / V-World terms; API key required (free registration)",
+   "confidence": "verified"
+  },
+  {
+   "title": "한국철도공사 편의시설정보 / 임대매장정보 Open APIs (tenant + amenity inventory per station)",
+   "url": "https://www.data.go.kr/data/15125774/openapi.do (편의시설정보)  |  https://www.data.go.kr/data/15125773/openapi.do (임대매장정보)",
+   "kind": "dataset",
+   "whatItShows": "Two live KORAIL open APIs: per-station convenience-facility records and per-station rental/tenant store records. Confirmed present on data.go.kr; both are 오픈API requiring a data.go.kr service key (활용신청), which requires account login.",
+   "usefulFor": "임대매장정보 is the best available substitute for a tenant plan: it should enumerate the actual shops occupying the 대합실 retail bays (편의점/베이커리/올리브영/카페 etc.) so the retail partitions are populated from the real tenant roster rather than guessed. Highest-value login-walled item in this lane after the drawings.",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "KOGL Type 1 — 한국철도공사; requires data.go.kr key",
+   "confidence": "verified"
+  },
+  {
+   "title": "openBVE 경부고속선 (서울역/수서역–부산역, 양평, 2024-06-02) and 경부선 (서울역–부산역, dger, 2024-12-14)",
+   "url": "https://cafe.naver.com/skyrailway/142099 (경부고속선) | https://cafe.naver.com/skyrailway/107981 (경부선) | index: https://namu.wiki/w/openBVE/애드온",
+   "kind": "model",
+   "whatItShows": "The two actively-maintained Korean BVE routes that terminate AT Busan Station. Distribution is inside Naver Cafe 'Metro Phics' (skyrailway, clubId 22319550). I fetched both post URLs anonymously: HTTP 200 but the body is the cafe login shell with g_sUserId=\"\" — the attachment is behind Naver login + cafe membership. Mapped from the namu.wiki table by byte-offset correlation (the 링크 anchors are JS-rendered, so I matched URL positions against the route-name positions).",
+   "usefulFor": "BVE routes model the trackside world: platforms, canopies, platform furniture, station-building facade as seen from the track, and (for terminus stations) often the platform-level concourse. They do NOT model 2F 대합실 interiors. Realistic value = platform-level geometry and platform-access gate positions, not the 대합실 subdivision. Needs a human with a Naver account.",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "Korean hobbyist add-on, author-restricted redistribution; Naver Cafe membership required",
+   "confidence": "verified"
+  },
+  {
+   "title": "Sketchfab CC-BY photogrammetry of OTHER Korean stations (no Busan Station exists)",
+   "url": "https://sketchfab.com/3d-models/none-0facf1e8f3784d449b394eae22ca6efc (Culture Seoul Station284, 1,755,589 tris) | .../none-76451b7658f44efda394f232f8416643 (Station284 Main Hall, 439,101) | .../none-ea0ae25d02a64f9d8d2874c5a14b062a (Station284 Gwibinsil, 374,776) | .../none-18656d492c8d41ebae2cec380fb6e639 (반곡역 Bangok Station, 385,944) | .../none-e1ac9ac9003b4039b79bb85732911f71 (철암역, 1,099,999)",
+   "kind": "model",
+   "whatItShows": "Searched Sketchfab's v3 API across 8 query variants. ZERO results for Busan Station in any language. What does exist is CC-BY downloadable photogrammetry of other Korean station interiors — notably 문화역서울284 (the 1925 old Seoul Station) including an interior Main Hall scan.",
+   "usefulFor": "Low geometric value: 문화역서울284 is a 1925 Renaissance masonry hall, architecturally unrelated to Busan Station's 2004 steel-and-glass concourse. Usable only as a scale/lighting sanity reference. Sketchfab download requires an account, so login-walled.",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "CC Attribution (all five); Sketchfab account required to download",
+   "confidence": "verified"
+  }
+ ],
+ "deadEnds": [
+  {
+   "source": "OpenStreetMap indoor mapping (indoor=*, IndoorOSM/SIT scheme)",
+   "why": "HARD NUMBER: 2 indoor=* features in the whole station bbox, both of them amenity=luggage_locker point nodes. Zero indoor ways/relations, zero room=*, zero level-tagged geometry. Busan Station is completely unmapped indoors. No further Overpass work will yield interior geometry."
+  },
+  {
+   "source": "data.go.kr 국가철도공단 역사 준공도면 (as-built station drawings)",
+   "why": "Real and downloadable — but only for 상봉, 한국철도공사 망포, 매교, 매탄권선, 수원시청, 청명영통역사. I paginated the '준공도면' search to page 4 (exhausted). 부산역 is NOT published. Proven absence."
+  },
+  {
+   "source": "Sketchfab",
+   "why": "8 API query variants ('busan station', '부산역', 'busan train station', 'ktx station', 'busan', 'korea station', 'korea train station interior', 'railway station interior'): zero Busan Station models. '부산역' returns 0 results outright."
+  },
+  {
+   "source": "Google 3D Warehouse (SketchUp)",
+   "why": "12 query variants incl. 부산역/부산역사/Busan Station/Korail/KTX/경부선. Korean rail modellers have uploaded 서울역, 수원역, 평택역, 오송역(구역사), 함백역 — but no 부산역. Confirmed absence."
+  },
+  {
+   "source": "GitHub",
+   "why": "7 query variants (busan station 3d, korail station, bve 경부선, openbve korea, bve korail, 부산역). total_count 0 for every 3D/BVE-related query; the only 'busan station' hits are transit ridership data-analysis repos with no geometry."
+  },
+  {
+   "source": "CGTrader / TurboSquid / Free3D",
+   "why": "All three bot-blocked anonymous requests (HTTP 202 empty, 403, 403). Not searchable via curl. Given Sketchfab and 3D Warehouse both returned nothing, a purpose-built commercial Busan Station model is very unlikely; deprioritised rather than confirmed absent."
+  },
+  {
+   "source": "국토정보플랫폼 (map.ngii.go.kr) 실내공간정보",
+   "why": "No 실내공간정보 / indoor-spatial-information product surfaced on NGII's platform (lxIndoorList.do is 404; main page contains zero '실내' mentions). Korea has no public national indoor dataset covering Busan Station."
+  },
+  {
+   "source": "data.go.kr 철도 BIM 라이브러리",
+   "why": "Searched 'BIM' across 100 results: only 서울주택도시공사 한옥 BIM and LH 토목 BIM 지침. No 국가철도공단/KORAIL railway BIM object library published. No off-the-shelf BIM gates/escalators/platform furniture to reuse."
+  },
+  {
+   "source": "한국철도공사_광역 역사 안내도 정보 (JPG station guide maps, data.go.kr 15125561)",
+   "why": "Attempted anonymous download; the endpoint returns dataset metadata JSON with atachFileYn=N — no file is served without login, and the dataset is 광역(commuter) stations, which likely excludes the KTX 부산역 anyway."
+  },
+  {
+   "source": "Minecraft / Roblox recreations of 부산역",
+   "why": "Web search returned only LLM-synthesised speculation citing Roblox docs pages and generic 3D-scanning vendor sites — no actual world save, map, or exportable build was located. No concrete artifact exists that I could verify."
+  },
+  {
+   "source": "redwingspace.com BVE data site",
+   "why": "Only 호남선 SRT (published) and 강릉선 KTX (announced). No 경부선/부산역 data. Confirmed by fetching the index."
+  },
+  {
+   "source": "openBVE 부산 도시철도 1호선 package (downloaded, 544 MB, sha256 aef5806f…)",
+   "why": "Inspected in full: 0 filenames matching 부산역, 0 .Sta directives, 부산역 present only as a ';' chainage comment, and only generic ballast/slab/road/formwall modules placed there. Contains no Busan Station geometry, and is the subway station, not the KTX 역사."
+  }
+ ],
+ "bestThreeForGeometry": [
+  "1. 한국철도공사_역사내외부 시설현황 CSV (ON DISK, KOGL-1, no login) — the only source in this lane that hands you hard interior numbers for Busan specifically: 13 elevators, 24 escalators, 1 accessible WC, 1 general WC. This converts the single most expensive guess in the interior build (how much vertical circulation to place, and therefore where the floor plates must be pierced) into a sourced constraint.",
+  "2. osm_footprint_obb_metres.json + busanstation_osm_footprint.geojson (ON DISK, ODbL, no login) — rotation-corrected true footprints plus the georeferenced polygons they came from. Gives the 역사 head-house as 80.6 x 31.5 m = 2537 m2 at bearing 162.0 deg (corroborated by the 1820-1992 m2 2F concourse sitting at 72-79% net-to-gross), the orthogonal platform family at 69.6 deg that fixes which facade the gates pierce, and platform refs 1/3;4/5;6/8;9/10;11. Converts the FBX georeference from a judgement call into a fit.",
+  "3. 한국철도공사_임대매장정보 Open API (https://www.data.go.kr/data/15125773/openapi.do, login-walled, free key) — the real tenant roster per station. It is the only identified source that can populate the 대합실 retail bays (편의점/베이커리/카페/올리브영 etc.) from the actual occupancy list rather than invention, and it pairs with 편의시설정보 (15125774) for the amenity rooms. Worth a human spending five minutes on a data.go.kr 활용신청."
+ ]
+}

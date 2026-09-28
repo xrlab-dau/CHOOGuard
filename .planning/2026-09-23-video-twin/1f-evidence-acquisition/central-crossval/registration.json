@@ -1,0 +1,2404 @@
+{
+  "schema": "chooguard.1f-lane-registration.v1",
+  "lane": "central-crossval",
+  "thresholds": "thresholds.json (fixed before any held-out result)",
+  "selectionChange": "Class-a-plane registration checks: v1 selection (plane-box foot + 0.5 u slab) was replaced by v2 nearest-surface assignment after v1 results showed adjacent perpendicular surfaces (wall tops counted as ceiling, ceiling edges as wall) inside the slab. Thresholds in thresholds.json were NOT changed; v1 numbers are kept inside each row (checks-*.json v1FootSlabSelection). The v2 selection still includes unmodelled structures (e.g. the sign band / bulkhead at U 12-14, V -16..-15, Y~1.85 counted against the low ceiling) and far sparse points with ~0.3 u depth noise, which dominate the p95 failures.",
+  "summary": {
+    "S20": {
+      "finalAttempt": "v3-march-anchored-ba",
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up; cross-video S20<->S22 (non-anchor points triangulated in both)"
+    },
+    "S22": {
+      "finalAttempt": "v3-march-anchored-ba",
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up; cross-video S20<->S22 (non-anchor points triangulated in both)"
+    },
+    "S23": {
+      "finalAttempt": "v2-heldout-sim3",
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up"
+    }
+  },
+  "registrations": [
+    {
+      "segment": "S20",
+      "model": 0,
+      "tag": null,
+      "attempt": "v1-global-sim3",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/3xCw2mYi2AQ.mp4",
+          "epoch": "2020-11 (upload 2020-11-14)",
+          "secondsRange": [
+            83.0,
+            123.33333333333334
+          ],
+          "extractedRange": [
+            83.0,
+            158.0
+          ],
+          "resolution": "1920x1080 source (60 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 122,
+        "points3D": 12702,
+        "meanReprojPx": 0.7062411407658108
+      },
+      "transformToUVY": {
+        "method": "v1-global-sim3 :: ",
+        "scale": 3.315937795225387,
+        "rotation": [
+          [
+            -0.9650075558911335,
+            0.029884983718576934,
+            0.2605135405716204
+          ],
+          [
+            0.25932415326785196,
+            -0.03852806660557167,
+            0.9650215394567876
+          ],
+          [
+            -0.03887673603753884,
+            -0.9988105304970393,
+            -0.029429977290010043
+          ]
+        ],
+        "translation": [
+          10.526824662120752,
+          -31.451382739790702,
+          1.4653213623075685
+        ],
+        "formula": "UVY = linear @ New_SfM + offset; linear = scale * rotation, rotation is orthogonal with det -1 (UVY is a reflected ENU frame)"
+      },
+      "controls": [],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 7,
+          "median": 26.6608722293541,
+          "p95": 37.68493472311631,
+          "threshold": "median<=6.0 px, max<=12.0 px @1280",
+          "pass": false,
+          "gating": true,
+          "max": 40.10994152262553,
+          "corners": [
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_tl",
+              "errorPx": 20.71,
+              "depthU": 8.56
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_tr",
+              "errorPx": 21.74,
+              "depthU": 8.82
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_br",
+              "errorPx": 20.5,
+              "depthU": 8.64
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_tl",
+              "errorPx": 26.66,
+              "depthU": 8.88
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_tr",
+              "errorPx": 27.56,
+              "depthU": 9.15
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_bl",
+              "errorPx": 32.03,
+              "depthU": 8.71
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_br",
+              "errorPx": 40.11,
+              "depthU": 8.96
+            }
+          ]
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 723,
+          "median": 0.11830825849858373,
+          "p95": 0.45699121729242215,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "medianSigned": 0.05545291548848397
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 120,
+          "median": 0.1498247368792205,
+          "p95": 0.4699169756421744,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "medianSigned": -0.01932299425751194
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 181,
+          "median": 0.050479059719165775,
+          "p95": 0.15412027503814052,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "medianSigned": -0.040582473765630844
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 746,
+          "median": 0.028489745921907783,
+          "p95": 0.20056346347477305,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "medianSigned": -0.0136312576289912
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 601,
+          "median": 0.024913121325072396,
+          "p95": 0.1950512652456844,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "medianSigned": -0.012449223255128317
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 40,
+          "median": 1.3892452639267212,
+          "p95": 2.1836002531649332,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 1342,
+          "median": 0.0058453658500593475,
+          "p95": 0.26688348735599954,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": true,
+          "gating": false,
+          "tiltDeg": 0.17270249516458738
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 121,
+          "median": 0.3610352078861309,
+          "p95": 0.40574876769755175,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.4422813229820766
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up",
+      "diagnostics": {
+        "cameraStepUMedian": 0.3610352078861309,
+        "cameraStepUMax": 0.4422813229820766,
+        "cameraYRange": [
+          1.073515625108444,
+          1.5888314900095162
+        ],
+        "cameraBoundsUVY": [
+          [
+            8.32344228122799,
+            -52.440730455158295,
+            1.073515625108444
+          ],
+          [
+            19.81287870482659,
+            -15.688564564849628,
+            1.5888314900095162
+          ]
+        ],
+        "pnpVsSim3CentreUMedian": 0.16321770978519767,
+        "pnpVsSim3CentreUP90": 0.34631155749857384,
+        "pnpVsSim3DegMedian": 0.573627556952494
+      },
+      "intrinsics": null,
+      "limits": [
+        "2020-11 epoch: #4 tenant DESIGN SKIN, #3 not the B&C of 2026; architecture compared only.",
+        "Exterior approach (83-94 s) has no cross-epoch correspondences (outdoor lighting); portal frames are constrained only through the anchored interior and facade anchors.",
+        "Escalator ascent (123-158 s) is a separate SfM model; its chained registration was rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Sim3 on every PnP-verified cross-epoch 3D pair. Showed a smooth 0.25 u PnP-vs-Sim3 camera trend along the corridor (segment drift vs March) and fitted pairs lying on the tested surfaces; superseded."
+    },
+    {
+      "segment": "S20",
+      "model": 0,
+      "tag": "heldout",
+      "attempt": "v2-heldout-sim3",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/3xCw2mYi2AQ.mp4",
+          "epoch": "2020-11 (upload 2020-11-14)",
+          "secondsRange": [
+            83.0,
+            123.33333333333334
+          ],
+          "extractedRange": [
+            83.0,
+            158.0
+          ],
+          "resolution": "1920x1080 source (60 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 122,
+        "points3D": 12702,
+        "meanReprojPx": 0.7062411407658108
+      },
+      "transformToUVY": {
+        "method": "v2-heldout-sim3 :: cross-epoch SIFT->March point index (Lowe 0.8 between distinct points) -> per-image PnP RANSAC 4 px -> 3D-3D pairs -> Sim3 RANSAC (0.25 u) -> Huber(3 px) refinement on reprojection in both epochs",
+        "scale": 3.3409926989902186,
+        "rotation": [
+          [
+            -0.96447138577606,
+            0.023636435594613057,
+            0.26312784902322406
+          ],
+          [
+            0.26215444819456696,
+            -0.037694054323775913,
+            0.9642894812038751
+          ],
+          [
+            -0.03271072165221794,
+            -0.9990097482912857,
+            -0.03015844007857802
+          ]
+        ],
+        "translation": [
+          10.476579977286573,
+          -31.52928849555966,
+          1.4716748302418359
+        ],
+        "formula": "UVY = scale * rotation @ New_SfM + translation; rotation orthogonal with det -1 (UVY is a reflected ENU frame)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-points (cross-epoch SIFT, PnP-verified), evaluated surfaces excluded",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 310,
+          "residuals": {
+            "pairs3DMedianU": 0.11748174368501736,
+            "pairs3DP95U": 0.21566893556649924,
+            "newImagePxMedian@1280": 1.9274001692343377,
+            "marchImagePxMedian@960": 1.9669775836306265
+          }
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 7,
+          "median": 16.50658060696597,
+          "p95": 22.931375554588254,
+          "threshold": "median<=6.0 px, max<=12.0 px @1280",
+          "pass": false,
+          "gating": true,
+          "max": 24.28414620416008,
+          "corners": [
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_tl",
+              "errorPx": 19.64,
+              "depthU": 8.78
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_tr",
+              "errorPx": 13.23,
+              "depthU": 9.04
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_br",
+              "errorPx": 9.99,
+              "depthU": 8.85
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_tl",
+              "errorPx": 16.51,
+              "depthU": 9.1
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_tr",
+              "errorPx": 11.22,
+              "depthU": 9.35
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_bl",
+              "errorPx": 19.77,
+              "depthU": 8.91
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_br",
+              "errorPx": 24.28,
+              "depthU": 9.16
+            }
+          ]
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 626,
+          "median": 0.09443319555176277,
+          "p95": 0.4609566239120837,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.2507987220447284,
+          "medianSigned": -0.008365815481006234
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 81,
+          "median": 0.05293473531575099,
+          "p95": 0.39524238448834503,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.4691358024691358,
+          "medianSigned": -0.03440414774213352
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 182,
+          "median": 0.08883813982109601,
+          "p95": 0.20605257298070193,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.14835164835164835,
+          "medianSigned": -0.0876023422791552
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 709,
+          "median": 0.05908393745442986,
+          "p95": 0.16759859213172312,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.385049365303244,
+          "medianSigned": -0.050226070443013526
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 608,
+          "median": 0.05696959291574277,
+          "p95": 0.16380898579482298,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.4161184210526316,
+          "medianSigned": -0.04765940498060939
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 40,
+          "median": 1.352399331320715,
+          "p95": 2.1564823157187387,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 1294,
+          "median": 0.006650681363427391,
+          "p95": 0.27000117461651973,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": true,
+          "gating": false,
+          "tiltDeg": 0.4029402393621707
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 121,
+          "median": 0.3637631548344465,
+          "p95": 0.408814565958905,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.44562315768122784
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up",
+      "diagnostics": {
+        "cameraStepUMedian": 0.3637631548344465,
+        "cameraStepUMax": 0.44562315768122784,
+        "cameraYRange": [
+          1.0335173530657475,
+          1.597615018661331
+        ],
+        "cameraBoundsUVY": [
+          [
+            8.25810014313417,
+            -52.678501219685984,
+            1.0335173530657475
+          ],
+          [
+            19.875460091037283,
+            -15.672343352295528,
+            1.597615018661331
+          ]
+        ],
+        "pnpVsSim3CentreUMedian": 0.1740485264843989,
+        "pnpVsSim3CentreUP90": 0.30633984031099193
+      },
+      "intrinsics": null,
+      "limits": [
+        "2020-11 epoch: #4 tenant DESIGN SKIN, #3 not the B&C of 2026; architecture compared only.",
+        "Exterior approach (83-94 s) has no cross-epoch correspondences (outdoor lighting); portal frames are constrained only through the anchored interior and facade anchors.",
+        "Escalator ascent (123-158 s) is a separate SfM model; its chained registration was rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Sim3 with March points within 0.3 u of every evaluated surface (controls, targets, portals) excluded from the fit. Rigid model cannot absorb segment drift."
+    },
+    {
+      "segment": "S20",
+      "model": 0,
+      "tag": "anchored",
+      "attempt": "v3-march-anchored-ba",
+      "final": true,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/3xCw2mYi2AQ.mp4",
+          "epoch": "2020-11 (upload 2020-11-14)",
+          "secondsRange": [
+            83.0,
+            123.33333333333334
+          ],
+          "extractedRange": [
+            83.0,
+            158.0
+          ],
+          "resolution": "1920x1080 source (60 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 122,
+        "points3D": 12702,
+        "meanReprojPx": 0.7062411407658108
+      },
+      "transformToUVY": {
+        "method": "v3-march-anchored-ba :: March-anchored bundle adjustment (non-rigid localisation into the March SfM frame); Registration v3: localise a segment into the March SfM frame by March-anchored bundle adjustment.",
+        "scale": 4.125740578356775,
+        "rotation": [
+          [
+            -0.7512011905780982,
+            -0.0843846650281719,
+            0.6546571618657595
+          ],
+          [
+            0.6575839544332651,
+            -0.18172699310582693,
+            0.7311351741289871
+          ],
+          [
+            -0.05727228078187039,
+            -0.9797216585769644,
+            -0.19200353530402675
+          ]
+        ],
+        "translation": [
+          10.840192063920199,
+          -29.299978065479472,
+          1.3917950975055238
+        ],
+        "formula": "UVY = MARCH_A @ X + MARCH_B where X is the anchored model (already in March SfM coordinates); segment->March was the v2 Sim3 followed by anchored BA (non-rigid)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-point anchors held constant in bundle adjustment",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 299,
+          "residuals": {
+            "anchorReprojMedianPx@1280": 0.7404320144859053,
+            "anchorReprojP95Px@1280": 2.713017685937056
+          },
+          "excludedNearEvaluatedSurfaces": 252,
+          "anchorUVYBounds": [
+            [
+              5.098826390016514,
+              -42.90103975866286,
+              -0.07023620408675946
+            ],
+            [
+              17.884351232365614,
+              -14.64852406603112,
+              5.164155396499325
+            ]
+          ]
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 7,
+          "median": 6.532069752707611,
+          "p95": 13.134129104421104,
+          "threshold": "median<=6.0 px, max<=12.0 px @1280",
+          "pass": false,
+          "gating": true,
+          "max": 15.366851753902564,
+          "corners": [
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_tl",
+              "errorPx": 6.53,
+              "depthU": 9.21
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_tr",
+              "errorPx": 4.04,
+              "depthU": 9.43
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g4_br",
+              "errorPx": 4.25,
+              "depthU": 9.2
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_tl",
+              "errorPx": 2.56,
+              "depthU": 9.49
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_tr",
+              "errorPx": 7.32,
+              "depthU": 9.71
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_bl",
+              "errorPx": 7.92,
+              "depthU": 9.26
+            },
+            {
+              "frame": "000004.jpg",
+              "corner": "g3_br",
+              "errorPx": 15.37,
+              "depthU": 9.48
+            }
+          ]
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 582,
+          "median": 0.06675954349527968,
+          "p95": 0.45156484613316195,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.4518900343642612,
+          "medianSigned": 0.014143766455315676
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 69,
+          "median": 0.024548232698888395,
+          "p95": 0.38962913263818333,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.6811594202898551,
+          "medianSigned": -0.018839350988219206
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 182,
+          "median": 0.037669910789400074,
+          "p95": 0.12422472963595649,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": true,
+          "gating": true,
+          "withinTol005": 0.5989010989010989,
+          "medianSigned": 0.003035190121541742
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 716,
+          "median": 0.015809083866948015,
+          "p95": 0.1701583015910697,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.8337988826815642,
+          "medianSigned": 0.012469764079938273
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 571,
+          "median": 0.016968130335952125,
+          "p95": 0.16891778720745698,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.8388791593695272,
+          "medianSigned": 0.014734731811532953
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 41,
+          "median": 0.37584856667018757,
+          "p95": 3.8605220596323555,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 1280,
+          "median": 0.02285498638187633,
+          "p95": 0.2685848798050538,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": true,
+          "gating": false,
+          "tiltDeg": 0.20807226066371262
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 121,
+          "median": 0.3667053074227323,
+          "p95": 0.41023438995667777,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.4463409160887785
+        },
+        {
+          "name": "cross-video S20<->S22 (non-anchor points triangulated in both)",
+          "type": "cross-video",
+          "n": 775,
+          "median": 0.4024265251224759,
+          "p95": 3.6508036865295797,
+          "threshold": "median<=0.1 u, p95<=0.3 u",
+          "pass": false,
+          "gating": true
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up; cross-video S20<->S22 (non-anchor points triangulated in both)",
+      "diagnostics": {
+        "cameraStepUMedian": 0.3667053074227002,
+        "cameraStepUMax": 0.4463409160887817,
+        "cameraYRange": [
+          1.0681238849099652,
+          1.59520536736182
+        ],
+        "cameraBoundsUVY": [
+          [
+            8.23588903529214,
+            -53.09257446987844,
+            1.0681238849099652
+          ],
+          [
+            19.67516086222176,
+            -15.604394823395621,
+            1.59520536736182
+          ]
+        ]
+      },
+      "intrinsics": {
+        "before": [
+          972.6512606480958,
+          640.0,
+          360.0,
+          0.009753841907142406
+        ],
+        "after": [
+          1001.4962573601042,
+          637.5562263017343,
+          340.2949647319405,
+          0.028401035037064246
+        ],
+        "principalPointRefined": true
+      },
+      "limits": [
+        "2020-11 epoch: #4 tenant DESIGN SKIN, #3 not the B&C of 2026; architecture compared only.",
+        "Exterior approach (83-94 s) has no cross-epoch correspondences (outdoor lighting); portal frames are constrained only through the anchored interior and facade anchors.",
+        "Escalator ascent (123-158 s) is a separate SfM model; its chained registration was rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Non-rigid localisation: segment points matched to non-surface March sparse points held constant; all segment poses, remaining points and intrinsics (incl. principal point) re-estimated with a Cauchy loss. Evaluated surfaces and portals remain held out. S20 principal point moved cy 360 -> 340.3 px (this removed the 1.35 deg pitch-plumb bias of v1/v2)."
+    },
+    {
+      "segment": "S20",
+      "model": 1,
+      "tag": "heldout",
+      "attempt": "escalator-ride-direct-sim3",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/3xCw2mYi2AQ.mp4",
+          "epoch": "2020-11 (upload 2020-11-14)",
+          "secondsRange": [
+            123.33333333333334,
+            157.66666666666669
+          ],
+          "extractedRange": [
+            83.0,
+            158.0
+          ],
+          "resolution": "1920x1080 source (60 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 104,
+        "points3D": 3669,
+        "meanReprojPx": 1.0687538597134636
+      },
+      "transformToUVY": {
+        "method": "escalator-ride-direct-sim3 :: cross-epoch SIFT->March point index (Lowe 0.8 between distinct points) -> per-image PnP RANSAC 4 px -> 3D-3D pairs -> Sim3 RANSAC (0.25 u) -> Huber(3 px) refinement on reprojection in both epochs",
+        "scale": 0.9623565339946335,
+        "rotation": [
+          [
+            -0.8319322218826858,
+            0.04725551441076555,
+            -0.5528613701020464
+          ],
+          [
+            -0.5548748018026478,
+            -0.07381855532329402,
+            0.8286523850291233
+          ],
+          [
+            0.0016530329127311426,
+            -0.9961514630053782,
+            -0.0876329289390337
+          ]
+        ],
+        "translation": [
+          11.451107081398474,
+          -38.567518324129,
+          2.345534193134242
+        ],
+        "formula": "UVY = scale * rotation @ New_SfM + translation; rotation orthogonal with det -1 (UVY is a reflected ENU frame)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-points (cross-epoch SIFT, PnP-verified), evaluated surfaces excluded",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 12,
+          "residuals": {
+            "pairs3DMedianU": 0.015486656206216871,
+            "pairs3DP95U": 0.07583403618731932,
+            "newImagePxMedian@1280": 0.9335480675783465,
+            "marchImagePxMedian@960": 0.9428266320755436
+          }
+        }
+      ],
+      "heldOut": [],
+      "status": "rejected",
+      "reason": "no gating check could be evaluated",
+      "diagnostics": {
+        "cameraStepUMedian": 0.11638540942706765,
+        "cameraStepUMax": 0.39815638374880424,
+        "cameraYRange": [
+          1.7767536000679938,
+          2.7790074298001755
+        ],
+        "cameraBoundsUVY": [
+          [
+            9.404792837040855,
+            -43.86444198569689,
+            1.7767536000679938
+          ],
+          [
+            12.998837229942659,
+            -32.89935359592477,
+            2.7790074298001755
+          ]
+        ],
+        "pnpVsSim3CentreUMedian": 1.0388937196995438,
+        "pnpVsSim3CentreUP90": 1.3337697851626622
+      },
+      "intrinsics": null,
+      "limits": [
+        "2020-11 epoch: #4 tenant DESIGN SKIN, #3 not the B&C of 2026; architecture compared only.",
+        "Exterior approach (83-94 s) has no cross-epoch correspondences (outdoor lighting); portal frames are constrained only through the anchored interior and facade anchors.",
+        "Escalator ascent (123-158 s) is a separate SfM model; its chained registration was rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Direct cross-epoch registration of the escalator-ride sub-model: only 12 (S20) / 4 (S22) PnP-verified 3D pairs from 4-5 frames; no held-out check can be evaluated -> rejected."
+    },
+    {
+      "segment": "S20",
+      "model": 1,
+      "tag": "chained",
+      "attempt": "escalator-ride-chained",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/3xCw2mYi2AQ.mp4",
+          "epoch": "2020-11 (upload 2020-11-14)",
+          "secondsRange": [
+            123.33333333333334,
+            157.66666666666669
+          ],
+          "extractedRange": [
+            83.0,
+            158.0
+          ],
+          "resolution": "1920x1080 source (60 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 104,
+        "points3D": 3669,
+        "meanReprojPx": 1.0687538597134636
+      },
+      "transformToUVY": {
+        "method": "escalator-ride-chained :: shared-image keypoint identity -> 3D-3D pairs -> Sim3 RANSAC onto the registered parent model (chained registration)",
+        "scale": 0.7256009515594146,
+        "rotation": [
+          [
+            -0.4388205906813335,
+            0.5276021330849768,
+            0.7273736855002854
+          ],
+          [
+            0.8978305270416914,
+            0.2903793760973005,
+            0.3310289453346656
+          ],
+          [
+            0.03656273931372706,
+            -0.7983206167333554,
+            0.6011217505566997
+          ]
+        ],
+        "translation": [
+          23.683160144473817,
+          -15.669230243360946,
+          3.5648414642948723
+        ],
+        "formula": "UVY = linear @ child_SfM + offset (chained through parent)"
+      },
+      "controls": [
+        {
+          "type": "shared-image keypoint identity with parent model",
+          "id": "chained-to-m0-anchored",
+          "count": 13,
+          "residuals": {
+            "pairMedianU": 0.02769448241847308,
+            "pairP95U": 0.06659922109607025
+          }
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": null,
+          "pass": null,
+          "gating": true,
+          "reason": "no manual marks for this segment"
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 31,
+          "median": 46.382809715893124,
+          "p95": 50.89874028282594,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": null,
+          "gating": false
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 103,
+          "median": 0.08775267880955759,
+          "p95": 0.13062605877843958,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": false,
+          "gating": true,
+          "max": 0.3002033453426909
+        },
+        {
+          "name": "shared-image camera centres, child vs parent (not used by the point fit)",
+          "type": "cross-video",
+          "n": 1,
+          "median": 0.9154983331488966,
+          "p95": 0.9154983331488966,
+          "threshold": "median<=0.10 u (cross-video rule)",
+          "pass": false,
+          "gating": true
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): vertical vanishing direction vs registered up; camera travel continuity; shared-image camera centres, child vs parent (not used by the point fit)",
+      "diagnostics": null,
+      "intrinsics": null,
+      "limits": [
+        "2020-11 epoch: #4 tenant DESIGN SKIN, #3 not the B&C of 2026; architecture compared only.",
+        "Exterior approach (83-94 s) has no cross-epoch correspondences (outdoor lighting); portal frames are constrained only through the anchored interior and facade anchors.",
+        "Escalator ascent (123-158 s) is a separate SfM model; its chained registration was rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Escalator-ride sub-model chained onto the anchored corridor model through shared images. Rejected: shared camera centres disagree by 0.30 u (S22) / 0.92 u (S20, single shared frame); plumb 4.5 deg / 46 deg."
+    },
+    {
+      "segment": "S22",
+      "model": 1,
+      "tag": "heldout",
+      "attempt": "v2-heldout-sim3",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/tInHpWVey8c.f617.mp4",
+          "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+          "secondsRange": [
+            216.0,
+            250.0
+          ],
+          "extractedRange": [
+            216.0,
+            285.0
+          ],
+          "resolution": "1920x1080 local copy (59.94 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 102,
+        "points3D": 8330,
+        "meanReprojPx": 0.6766532550697935
+      },
+      "transformToUVY": {
+        "method": "v2-heldout-sim3 :: cross-epoch SIFT->March point index (Lowe 0.8 between distinct points) -> per-image PnP RANSAC 4 px -> 3D-3D pairs -> Sim3 RANSAC (0.25 u) -> Huber(3 px) refinement on reprojection in both epochs",
+        "scale": 2.746022133853994,
+        "rotation": [
+          [
+            0.35772918258170555,
+            -0.15075678038379686,
+            -0.92157594646222
+          ],
+          [
+            -0.9333879071117073,
+            -0.02752035727486224,
+            -0.3578123038592873
+          ],
+          [
+            -0.028580531608975366,
+            -0.9881877468901219,
+            0.15055939063762444
+          ]
+        ],
+        "translation": [
+          9.662526880108054,
+          -27.111569159659094,
+          1.328701131150002
+        ],
+        "formula": "UVY = scale * rotation @ New_SfM + translation; rotation orthogonal with det -1 (UVY is a reflected ENU frame)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-points (cross-epoch SIFT, PnP-verified), evaluated surfaces excluded",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 274,
+          "residuals": {
+            "pairs3DMedianU": 0.08816467047323792,
+            "pairs3DP95U": 0.23896361106303043,
+            "newImagePxMedian@1280": 1.1878214933686966,
+            "marchImagePxMedian@960": 1.4408382877617032
+          }
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 5,
+          "median": 62.39892613336751,
+          "p95": 96.24286250393227,
+          "threshold": "median<=6.0 px, max<=12.0 px @1280",
+          "pass": false,
+          "gating": true,
+          "max": 104.28284031694803,
+          "corners": [
+            {
+              "frame": "000001.jpg",
+              "corner": "g4_bl",
+              "errorPx": 104.28,
+              "depthU": 4.88
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g4_br",
+              "errorPx": 57.61,
+              "depthU": 4.61
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g3_tl",
+              "errorPx": 62.4,
+              "depthU": 4.82
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g3_bl",
+              "errorPx": 64.08,
+              "depthU": 4.53
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g3_br",
+              "errorPx": 30.26,
+              "depthU": 4.26
+            }
+          ]
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 241,
+          "median": 0.13935602079124454,
+          "p95": 0.4467198304021893,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.2033195020746888,
+          "medianSigned": 0.009771880699166235
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 72,
+          "median": 0.14588284909043692,
+          "p95": 0.36439278098725025,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.125,
+          "medianSigned": -0.1294496412195565
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 128,
+          "median": 0.11111723517352612,
+          "p95": 0.24197877938941872,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.1484375,
+          "medianSigned": -0.10803356177587808
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 496,
+          "median": 0.16131942234946095,
+          "p95": 0.3946035185093155,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.05040322580645161,
+          "medianSigned": 0.16131942234946095
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 335,
+          "median": 0.15459251395520468,
+          "p95": 0.4033231539311416,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.05373134328358209,
+          "medianSigned": 0.15459251395520468
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 33,
+          "median": 0.8260689975090191,
+          "p95": 3.646249696705007,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 453,
+          "median": 0.05743645828482924,
+          "p95": 0.2647700007428333,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": false,
+          "gating": false,
+          "tiltDeg": 0.8151974730186088
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 101,
+          "median": 0.3871760589231938,
+          "p95": 0.47253452085473463,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.5299117990668222
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up",
+      "diagnostics": {
+        "cameraStepUMedian": 0.3871760589232048,
+        "cameraStepUMax": 0.9287737163790379,
+        "cameraYRange": [
+          1.2112195926785954,
+          1.593339472926707
+        ],
+        "cameraBoundsUVY": [
+          [
+            7.55893276394042,
+            -47.2730959097155,
+            1.2112195926785954
+          ],
+          [
+            17.064514194582596,
+            -15.817543916787772,
+            1.593339472926707
+          ]
+        ],
+        "pnpVsSim3CentreUMedian": 0.21754072487569542,
+        "pnpVsSim3CentreUP90": 0.5032268985405468
+      },
+      "intrinsics": null,
+      "limits": [
+        "2022-12 night walk, crowded; exterior portal frame (216 s) is 3.5 u from the portals and unanchored (night vs day appearance).",
+        "#4-side bakery with PARIS BAGUETTE signage beyond the pier (tenant era differs); architecture compared only.",
+        "Escalator ride (243-285 s) separate model; chained registration rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Sim3 with March points within 0.3 u of every evaluated surface (controls, targets, portals) excluded from the fit. Rigid model cannot absorb segment drift."
+    },
+    {
+      "segment": "S22",
+      "model": 1,
+      "tag": "anchored",
+      "attempt": "v3-march-anchored-ba",
+      "final": true,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/tInHpWVey8c.f617.mp4",
+          "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+          "secondsRange": [
+            216.0,
+            250.0
+          ],
+          "extractedRange": [
+            216.0,
+            285.0
+          ],
+          "resolution": "1920x1080 local copy (59.94 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 102,
+        "points3D": 8330,
+        "meanReprojPx": 0.6766532550697935
+      },
+      "transformToUVY": {
+        "method": "v3-march-anchored-ba :: March-anchored bundle adjustment (non-rigid localisation into the March SfM frame); Registration v3: localise a segment into the March SfM frame by March-anchored bundle adjustment.",
+        "scale": 4.125740578356775,
+        "rotation": [
+          [
+            -0.7512011905780982,
+            -0.0843846650281719,
+            0.6546571618657595
+          ],
+          [
+            0.6575839544332651,
+            -0.18172699310582693,
+            0.7311351741289871
+          ],
+          [
+            -0.05727228078187039,
+            -0.9797216585769644,
+            -0.19200353530402675
+          ]
+        ],
+        "translation": [
+          10.840192063920199,
+          -29.299978065479472,
+          1.3917950975055238
+        ],
+        "formula": "UVY = MARCH_A @ X + MARCH_B where X is the anchored model (already in March SfM coordinates); segment->March was the v2 Sim3 followed by anchored BA (non-rigid)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-point anchors held constant in bundle adjustment",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 281,
+          "residuals": {
+            "anchorReprojMedianPx@1280": 0.889396790516412,
+            "anchorReprojP95Px@1280": 3.011503505138713
+          },
+          "excludedNearEvaluatedSurfaces": 306,
+          "anchorUVYBounds": [
+            [
+              6.0665508141496405,
+              -29.667224908310825,
+              -0.02762253233796841
+            ],
+            [
+              20.218628420763235,
+              -14.426767212851356,
+              4.96297287275217
+            ]
+          ]
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 5,
+          "median": 52.40336358419063,
+          "p95": 92.05649217695657,
+          "threshold": "median<=6.0 px, max<=12.0 px @1280",
+          "pass": false,
+          "gating": true,
+          "max": 100.38105400593581,
+          "corners": [
+            {
+              "frame": "000001.jpg",
+              "corner": "g4_bl",
+              "errorPx": 100.38,
+              "depthU": 4.97
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g4_br",
+              "errorPx": 52.4,
+              "depthU": 4.66
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g3_tl",
+              "errorPx": 52.33,
+              "depthU": 4.87
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g3_bl",
+              "errorPx": 58.76,
+              "depthU": 4.58
+            },
+            {
+              "frame": "000001.jpg",
+              "corner": "g3_br",
+              "errorPx": 36.18,
+              "depthU": 4.28
+            }
+          ]
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 221,
+          "median": 0.045007421861194885,
+          "p95": 0.4568513201868307,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.5113122171945701,
+          "medianSigned": -0.0023563658040641755
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 65,
+          "median": 0.02408628250551148,
+          "p95": 0.16057491654172337,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.8,
+          "medianSigned": -0.02178063853071821
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 129,
+          "median": 0.06308245192645678,
+          "p95": 0.22903450955585966,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.4186046511627907,
+          "medianSigned": -0.04999114222606327
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 510,
+          "median": 0.06002031687663756,
+          "p95": 0.2610433180427515,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.42745098039215684,
+          "medianSigned": 0.00733468330693654
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 377,
+          "median": 0.08063399604597521,
+          "p95": 0.26741083829521406,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.33421750663129973,
+          "medianSigned": 0.021642107448615278
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 33,
+          "median": 0.6823474418650304,
+          "p95": 1.7803335693582205,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 463,
+          "median": 0.041061902200830724,
+          "p95": 0.2600997841445953,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": false,
+          "gating": false,
+          "tiltDeg": 0.6355531763309046
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 101,
+          "median": 0.39203151987525414,
+          "p95": 0.46825379811760737,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.5356553891693284
+        },
+        {
+          "name": "cross-video S20<->S22 (non-anchor points triangulated in both)",
+          "type": "cross-video",
+          "n": 775,
+          "median": 0.4024265251224759,
+          "p95": 3.6508036865295797,
+          "threshold": "median<=0.1 u, p95<=0.3 u",
+          "pass": false,
+          "gating": true
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): GATE3/4 portal corners (MainShell source mesh); cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up; cross-video S20<->S22 (non-anchor points triangulated in both)",
+      "diagnostics": {
+        "cameraStepUMedian": 0.3920315198752563,
+        "cameraStepUMax": 0.9000193462979393,
+        "cameraYRange": [
+          1.1693174451924122,
+          1.3560417994749832
+        ],
+        "cameraBoundsUVY": [
+          [
+            7.575671635728484,
+            -47.313157328018725,
+            1.1693174451924122
+          ],
+          [
+            17.04546146956901,
+            -15.639249070669102,
+            1.3560417994749832
+          ]
+        ]
+      },
+      "intrinsics": {
+        "before": [
+          767.5967421417195,
+          640.0,
+          360.0,
+          -0.028317499687153788
+        ],
+        "after": [
+          775.876906085692,
+          631.1676332813792,
+          360.51628155155026,
+          -0.02463371153834262
+        ],
+        "principalPointRefined": true
+      },
+      "limits": [
+        "2022-12 night walk, crowded; exterior portal frame (216 s) is 3.5 u from the portals and unanchored (night vs day appearance).",
+        "#4-side bakery with PARIS BAGUETTE signage beyond the pier (tenant era differs); architecture compared only.",
+        "Escalator ride (243-285 s) separate model; chained registration rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Non-rigid localisation: segment points matched to non-surface March sparse points held constant; all segment poses, remaining points and intrinsics (incl. principal point) re-estimated with a Cauchy loss. Evaluated surfaces and portals remain held out. S20 principal point moved cy 360 -> 340.3 px (this removed the 1.35 deg pitch-plumb bias of v1/v2)."
+    },
+    {
+      "segment": "S22",
+      "model": 2,
+      "tag": "heldout",
+      "attempt": "escalator-ride-direct-sim3",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/tInHpWVey8c.f617.mp4",
+          "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+          "secondsRange": [
+            243.33333333333334,
+            284.6666666666667
+          ],
+          "extractedRange": [
+            216.0,
+            285.0
+          ],
+          "resolution": "1920x1080 local copy (59.94 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 122,
+        "points3D": 7038,
+        "meanReprojPx": 0.9631157915505625
+      },
+      "transformToUVY": {
+        "method": "escalator-ride-direct-sim3 :: cross-epoch SIFT->March point index (Lowe 0.8 between distinct points) -> per-image PnP RANSAC 4 px -> 3D-3D pairs -> Sim3 RANSAC (0.25 u) -> Huber(3 px) refinement on reprojection in both epochs",
+        "scale": 1.9340085534079525,
+        "rotation": [
+          [
+            -0.03159569238755661,
+            0.483388735415193,
+            0.8748354374945333
+          ],
+          [
+            0.9929600765920295,
+            0.11514970414304053,
+            -0.02776386014445511
+          ],
+          [
+            0.11415777904681537,
+            -0.8677994446353782,
+            0.48362395037221606
+          ]
+        ],
+        "translation": [
+          24.447001216707243,
+          -14.294088823440884,
+          5.1601302796577855
+        ],
+        "formula": "UVY = scale * rotation @ New_SfM + translation; rotation orthogonal with det -1 (UVY is a reflected ENU frame)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-points (cross-epoch SIFT, PnP-verified), evaluated surfaces excluded",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 4,
+          "residuals": {
+            "pairs3DMedianU": 0.13224082420325434,
+            "pairs3DP95U": 0.4049239693613741,
+            "newImagePxMedian@1280": 3.0082784374241136,
+            "marchImagePxMedian@960": 1.0177005923033247
+          }
+        }
+      ],
+      "heldOut": [],
+      "status": "rejected",
+      "reason": "no gating check could be evaluated",
+      "diagnostics": {
+        "cameraStepUMedian": 0.21161630874323056,
+        "cameraStepUMax": 0.8269283602850617,
+        "cameraYRange": [
+          0.44940625458413397,
+          12.66101234900245
+        ],
+        "cameraBoundsUVY": [
+          [
+            13.627410159510207,
+            -17.012654901641866,
+            0.44940625458413397
+          ],
+          [
+            34.77781908546552,
+            -13.837284758990497,
+            12.66101234900245
+          ]
+        ],
+        "pnpVsSim3CentreUMedian": 0.49671282571950964,
+        "pnpVsSim3CentreUP90": 0.5767974622412008
+      },
+      "intrinsics": null,
+      "limits": [
+        "2022-12 night walk, crowded; exterior portal frame (216 s) is 3.5 u from the portals and unanchored (night vs day appearance).",
+        "#4-side bakery with PARIS BAGUETTE signage beyond the pier (tenant era differs); architecture compared only.",
+        "Escalator ride (243-285 s) separate model; chained registration rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Direct cross-epoch registration of the escalator-ride sub-model: only 12 (S20) / 4 (S22) PnP-verified 3D pairs from 4-5 frames; no held-out check can be evaluated -> rejected."
+    },
+    {
+      "segment": "S22",
+      "model": 2,
+      "tag": "chained",
+      "attempt": "escalator-ride-chained",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/tInHpWVey8c.f617.mp4",
+          "epoch": "2022-12 (filmed 2022-12-17 per triage; upload 2022-12-25)",
+          "secondsRange": [
+            243.33333333333334,
+            284.6666666666667
+          ],
+          "extractedRange": [
+            216.0,
+            285.0
+          ],
+          "resolution": "1920x1080 local copy (59.94 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 122,
+        "points3D": 7038,
+        "meanReprojPx": 0.9631157915505625
+      },
+      "transformToUVY": {
+        "method": "escalator-ride-chained :: shared-image keypoint identity -> 3D-3D pairs -> Sim3 RANSAC onto the registered parent model (chained registration)",
+        "scale": 2.0298647302524775,
+        "rotation": [
+          [
+            -0.018671545075078844,
+            0.47027420230327177,
+            0.8823228139703353
+          ],
+          [
+            0.9939003916719273,
+            0.10466280896729337,
+            -0.03475209135383837
+          ],
+          [
+            0.10868939616585852,
+            -0.8762921151460271,
+            0.4693599302177418
+          ]
+        ],
+        "translation": [
+          24.858170751365826,
+          -14.077162022628077,
+          5.280770264350201
+        ],
+        "formula": "UVY = linear @ child_SfM + offset (chained through parent)"
+      },
+      "controls": [
+        {
+          "type": "shared-image keypoint identity with parent model",
+          "id": "chained-to-m1-anchored",
+          "count": 464,
+          "residuals": {
+            "pairMedianU": 0.041670695962957874,
+            "pairP95U": 0.08773135390451599
+          }
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": null,
+          "pass": null,
+          "gating": true,
+          "reason": "no manual marks for this segment"
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 27,
+          "median": 0.03594541641684934,
+          "p95": 0.11817055566280615,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": true,
+          "gating": true,
+          "withinTol005": 0.7037037037037037,
+          "medianSigned": -0.021501752071985347
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 21,
+          "median": 0.04076879318784643,
+          "p95": 0.09388156724965713,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": true,
+          "gating": true,
+          "withinTol005": 0.7142857142857143,
+          "medianSigned": -0.03884288402010849
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 38,
+          "median": 0.19542038504357695,
+          "p95": 0.3181033916076757,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.02631578947368421,
+          "medianSigned": 0.19542038504357695
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 38,
+          "median": 0.1940742122255541,
+          "p95": 0.3165364110344454,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.02631578947368421,
+          "medianSigned": 0.1940742122255541
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 25,
+          "median": 4.5364242123762475,
+          "p95": 16.6910554021141,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 38,
+          "median": 0.03649890341077411,
+          "p95": 0.2757982332998435,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": false,
+          "gating": false,
+          "tiltDeg": 85.51841428839698
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 121,
+          "median": 0.22195152085788245,
+          "p95": 0.29980615312784914,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.5781366356448634
+        },
+        {
+          "name": "shared-image camera centres, child vs parent (not used by the point fit)",
+          "type": "cross-video",
+          "n": 18,
+          "median": 0.3018335550052063,
+          "p95": 0.4996676515199212,
+          "threshold": "median<=0.10 u (cross-video rule)",
+          "pass": false,
+          "gating": true
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up; shared-image camera centres, child vs parent (not used by the point fit)",
+      "diagnostics": null,
+      "intrinsics": null,
+      "limits": [
+        "2022-12 night walk, crowded; exterior portal frame (216 s) is 3.5 u from the portals and unanchored (night vs day appearance).",
+        "#4-side bakery with PARIS BAGUETTE signage beyond the pier (tenant era differs); architecture compared only.",
+        "Escalator ride (243-285 s) separate model; chained registration rejected.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Escalator-ride sub-model chained onto the anchored corridor model through shared images. Rejected: shared camera centres disagree by 0.30 u (S22) / 0.92 u (S20, single shared frame); plumb 4.5 deg / 46 deg."
+    },
+    {
+      "segment": "S23",
+      "model": 1,
+      "tag": "heldout",
+      "attempt": "v2-heldout-sim3",
+      "final": true,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/3xn-ieDXlMc.mp4",
+          "epoch": "2023-10 (upload 2023-10-31)",
+          "secondsRange": [
+            154.0,
+            183.33333333333334
+          ],
+          "extractedRange": [
+            154.0,
+            188.0
+          ],
+          "resolution": "1920x1080 local copy of 4K source (59.94 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 89,
+        "points3D": 7722,
+        "meanReprojPx": 0.5802135117539987
+      },
+      "transformToUVY": {
+        "method": "v2-heldout-sim3 :: cross-epoch SIFT->March point index (Lowe 0.8 between distinct points) -> per-image PnP RANSAC 4 px -> 3D-3D pairs -> Sim3 RANSAC (0.25 u) -> Huber(3 px) refinement on reprojection in both epochs",
+        "scale": 2.1350969499616608,
+        "rotation": [
+          [
+            0.6383514187125449,
+            -0.37009777052039383,
+            -0.6749334089252919
+          ],
+          [
+            -0.7567975599685033,
+            -0.14161490542365518,
+            -0.6381243388145988
+          ],
+          [
+            -0.14058776423786304,
+            -0.9181355340131885,
+            0.3704891654676502
+          ]
+        ],
+        "translation": [
+          15.343328572884456,
+          -23.049017214437974,
+          1.5970653137340418
+        ],
+        "formula": "UVY = scale * rotation @ New_SfM + translation; rotation orthogonal with det -1 (UVY is a reflected ENU frame)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-points (cross-epoch SIFT, PnP-verified), evaluated surfaces excluded",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 41,
+          "residuals": {
+            "pairs3DMedianU": 0.019416635152433102,
+            "pairs3DP95U": 0.048206987474090086,
+            "newImagePxMedian@1280": 2.3102501207459114,
+            "marchImagePxMedian@960": 1.6420047601423247
+          }
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": null,
+          "pass": null,
+          "gating": true,
+          "reason": "no manual marks for this segment"
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 282,
+          "median": 0.16416595836632486,
+          "p95": 0.45771436698403156,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.21631205673758866,
+          "medianSigned": 0.15873093107982883
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 61,
+          "median": 0.045179870184687054,
+          "p95": 0.2032252010127018,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.5573770491803278,
+          "medianSigned": -0.028731398416852905
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 39,
+          "median": 0.19051648075361438,
+          "p95": 0.3995820666293403,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.05128205128205128,
+          "medianSigned": -0.16924459398851255
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 552,
+          "median": 0.2623541904448521,
+          "p95": 0.44584109430270863,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.07971014492753623,
+          "medianSigned": 0.2623541904448521
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 447,
+          "median": 0.27328910328107625,
+          "p95": 0.4577058343435102,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.006711409395973154,
+          "medianSigned": 0.27328910328107625
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 30,
+          "median": 1.1577538003332757,
+          "p95": 1.5764555589946805,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 344,
+          "median": 0.12801488354896884,
+          "p95": 0.2894119346333546,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": false,
+          "gating": false,
+          "tiltDeg": 0.612462473966333
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 88,
+          "median": 0.36133879705071936,
+          "p95": 0.4311546918439269,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.45225913626925085
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up",
+      "diagnostics": {
+        "cameraStepUMedian": 0.36133879705072447,
+        "cameraStepUMax": 0.45225913626925085,
+        "cameraYRange": [
+          1.3399640201087746,
+          2.683330489552885
+        ],
+        "cameraBoundsUVY": [
+          [
+            11.453593238853312,
+            -37.76648711740323,
+            1.3399640201087746
+          ],
+          [
+            22.540944105557823,
+            -16.59293054016893,
+            2.683330489552885
+          ]
+        ],
+        "pnpVsSim3CentreUMedian": 3.6156201048467924,
+        "pnpVsSim3CentreUP90": 10.30595306188818
+      },
+      "intrinsics": null,
+      "limits": [
+        "2023-10 DJI Action 4 (HFOV ~94 deg) outbound walk, opposite viewing direction to the March walk; only frames at the escalator foot localise.",
+        "Watermark (top-right) masked.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "Sim3 with March points within 0.3 u of every evaluated surface (controls, targets, portals) excluded from the fit. Rigid model cannot absorb segment drift."
+    },
+    {
+      "segment": "S23",
+      "model": 1,
+      "tag": "heldout-relaxed",
+      "attempt": "v2-heldout-sim3-relaxed-localisation",
+      "final": false,
+      "sources": [
+        {
+          "video": "asset-library/research-public/2026-09-24/busan-1f/media/3xn-ieDXlMc.mp4",
+          "epoch": "2023-10 (upload 2023-10-31)",
+          "secondsRange": [
+            154.0,
+            183.33333333333334
+          ],
+          "extractedRange": [
+            154.0,
+            188.0
+          ],
+          "resolution": "1920x1080 local copy of 4K source (59.94 fps VP9) processed at 1280x720",
+          "samplingFps": 3.0
+        }
+      ],
+      "sfm": {
+        "registeredImages": 89,
+        "points3D": 7722,
+        "meanReprojPx": 0.5802135117539987
+      },
+      "transformToUVY": {
+        "method": "v2-heldout-sim3-relaxed-localisation :: cross-epoch SIFT->March point index (Lowe 0.85 between distinct points) -> per-image PnP RANSAC 8.0 px, >= 10 inliers -> 3D-3D pairs -> Sim3 RANSAC (0.25 u) -> Huber(3 px) refinement on reprojection in both epochs",
+        "scale": 2.137826361817145,
+        "rotation": [
+          [
+            0.6561781265759846,
+            -0.3623279319969875,
+            -0.6619280443507571
+          ],
+          [
+            -0.7425926962202865,
+            -0.15415294508737198,
+            -0.6517614264753439
+          ],
+          [
+            -0.13411321233762416,
+            -0.9192145229573324,
+            0.3702138666511658
+          ]
+        ],
+        "translation": [
+          15.53061341866718,
+          -23.010292521734563,
+          1.6446236099907237
+        ],
+        "formula": "UVY = scale * rotation @ New_SfM + translation; rotation orthogonal with det -1 (UVY is a reflected ENU frame)"
+      },
+      "controls": [
+        {
+          "type": "march-sparse-points (cross-epoch SIFT, PnP-verified), evaluated surfaces excluded",
+          "id": "1f-2026-sfm/sparse/2",
+          "count": 49,
+          "residuals": {
+            "pairs3DMedianU": 0.018285736553332925,
+            "pairs3DP95U": 0.045315675821932785,
+            "newImagePxMedian@1280": 1.7242299003363575,
+            "marchImagePxMedian@960": 1.6069935590034128
+          }
+        }
+      ],
+      "heldOut": [
+        {
+          "name": "GATE3/4 portal corners (MainShell source mesh)",
+          "type": "source-control",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": null,
+          "pass": null,
+          "gating": true,
+          "reason": "no manual marks for this segment"
+        },
+        {
+          "name": "cl-low-suspended-ceiling/officeFit",
+          "type": "class-a-plane",
+          "n": 290,
+          "median": 0.17655571930755554,
+          "p95": 0.46002539192759334,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.14482758620689656,
+          "medianSigned": 0.16667260079324087
+        },
+        {
+          "name": "cl-low-suspended-ceiling/coreFit",
+          "type": "class-a-plane",
+          "n": 60,
+          "median": 0.06878870717682428,
+          "p95": 0.19481576850588894,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.3333333333333333,
+          "medianSigned": -0.055146216950450855
+        },
+        {
+          "name": "cl-higher-lobby-ceiling",
+          "type": "class-a-plane",
+          "n": 36,
+          "median": 0.24888489400391212,
+          "p95": 0.4773201487705703,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.027777777777777776,
+          "medianSigned": -0.19682625654917807
+        },
+        {
+          "name": "wl-right-approach-wall/officeFit",
+          "type": "class-a-plane",
+          "n": 571,
+          "median": 0.18347384641497833,
+          "p95": 0.4154184843336761,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.16987740805604204,
+          "medianSigned": 0.18347384641497833
+        },
+        {
+          "name": "wl-right-approach-wall/coreFit",
+          "type": "class-a-plane",
+          "n": 466,
+          "median": 0.19477772251344216,
+          "p95": 0.42735765541594084,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": false,
+          "gating": true,
+          "withinTol005": 0.05150214592274678,
+          "medianSigned": 0.19477772251344216
+        },
+        {
+          "name": "vc-lower-landing-floor",
+          "type": "class-a-plane",
+          "n": 0,
+          "median": null,
+          "p95": null,
+          "threshold": "median|d|<=0.05 u, p95<=0.15 u, n>=20",
+          "pass": null,
+          "gating": true,
+          "reason": "too few independent points in the supported box"
+        },
+        {
+          "name": "vertical vanishing direction vs registered up",
+          "type": "plumb",
+          "n": 30,
+          "median": 1.3048095858304434,
+          "p95": 1.6788160682519624,
+          "threshold": "median<=0.5 deg, p95<=1.0 deg",
+          "pass": false,
+          "gating": true
+        },
+        {
+          "name": "corridor floor vs generated Ground_Floor Y=0 (diagnostic only)",
+          "type": "floor-diagnostic",
+          "n": 300,
+          "median": 0.1348858339246961,
+          "p95": 0.2831704134856893,
+          "threshold": "|median Y|<=0.1, tilt<=0.5 deg (non-gating)",
+          "pass": false,
+          "gating": false,
+          "tiltDeg": 0.6182732517423569
+        },
+        {
+          "name": "camera travel continuity",
+          "type": "travel-continuity",
+          "n": 88,
+          "median": 0.36180071630761035,
+          "p95": 0.43170586059881333,
+          "threshold": "max step<=1.0 u and <= 3.0x median per 1/3 s",
+          "pass": true,
+          "gating": true,
+          "max": 0.45283728399613155
+        }
+      ],
+      "status": "rejected",
+      "reason": "failed pre-registered gate(s): cl-low-suspended-ceiling/officeFit; cl-low-suspended-ceiling/coreFit; cl-higher-lobby-ceiling; wl-right-approach-wall/officeFit; wl-right-approach-wall/coreFit; vertical vanishing direction vs registered up",
+      "diagnostics": {
+        "cameraStepUMedian": 0.36180071630761546,
+        "cameraStepUMax": 0.45283728399613155,
+        "cameraYRange": [
+          1.3772564543918435,
+          2.736915550637291
+        ],
+        "cameraBoundsUVY": [
+          [
+            11.809874511409545,
+            -37.81635463903537,
+            1.3772564543918435
+          ],
+          [
+            22.583292489557373,
+            -16.39000681883255,
+            2.736915550637291
+          ]
+        ],
+        "pnpVsSim3CentreUMedian": 3.218264383600162,
+        "pnpVsSim3CentreUP90": 9.447732605051995
+      },
+      "intrinsics": null,
+      "limits": [
+        "2023-10 DJI Action 4 (HFOV ~94 deg) outbound walk, opposite viewing direction to the March walk; only frames at the escalator foot localise.",
+        "Watermark (top-right) masked.",
+        "Source-model units inherited from the March registration (metric-registration/registration.json); not surveyed metres.",
+        "Sparse SIFT points only (no dense MVS for the new epochs: disk/CPU budget); far points with 2-5 deg triangulation carry ~0.1-0.3 u depth noise.",
+        "Registration controls are March SfM points; any March SfM distortion propagates into anchored new-epoch poses (evaluated surfaces are excluded from anchoring, so they stay held out)."
+      ],
+      "attemptNote": "S23 localisation relaxed (Lowe 0.85, PnP 8 px, >=10 inliers) to gain correspondences: still only 10 frames (159.7-163 s, escalator foot) localise; the reverse-direction walk shares almost no view overlap with the inbound March walk."
+    }
+  ]
+}

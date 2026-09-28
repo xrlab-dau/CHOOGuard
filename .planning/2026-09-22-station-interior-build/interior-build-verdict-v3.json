@@ -1,0 +1,192 @@
+{
+ "schema": "chooguard.station-interior-build.v3",
+ "verdictAt": "2026-09-22",
+ "headline": "부산역 역사 내부를 지상 1~4층 + 지하도상가 B1 로 구축했다. 점포는 추정 균일박스를 버리고 한국철도공사 승인면적(API)과 역 안내도 띠 순서를 실벽선에 태워 배치했다. 에스컬레이터 26기는 디딤판이 흐르고 탑승자를 실어 나른다. 행선안내 전광판은 실제 시간표 32편을 표출한다. B1 은 보행면 19,287m2 까지 실재하나 지상 연결은 주변 지형 NavMesh 단절로 미해결.",
+ "resolvedBottlenecks": {
+  "1_점포절대위치": {
+   "before": "승인면적 188건은 있었으나 x/z 좌표가 없어 균일 박스로 깔았다",
+   "after": "안내도(hi_shoobong 1·2층) 에서 띠 구성과 순서를 판독 -> 공식 모델 슬래브를 0.5m 간격으로 샘플한 실제 외주 벽선에 내접 -> 승인면적에서 폭 역산",
+   "placed": 44,
+   "byLevel": {
+    "1F": 16,
+    "2F": 24,
+    "3F": 4
+   },
+   "byStrip": {
+    "plaza": 21,
+    "track": 9,
+    "westEnd": 7,
+    "eastEnd": 7
+   },
+   "totalAreaM2": 5039.2,
+   "assumption": "장벽/단부 귀속은 게이트 번호가 실린 띠를 선로측으로 두는 규칙. 안내도는 축척 도면이 아니라 손그림이므로 위상만 차용했다."
+  },
+  "2_에스컬레이터구동": {
+   "shader": "Assets/ChooGuard/Art/StationInterior/Shaders/EscalatorStep.shader (URP 17 수기 ShaderLab, 4패스, SRP Batcher 단일 CBUFFER). URP 17 의 OUTPUT_SH4 시그니처 변경으로 최초 컴파일 실패 -> SampleSHVertex 직접 호출로 수정, 컴파일 통과",
+   "transport": "Assets/ChooGuard/Presentation/Circulation/EscalatorRide.cs (VRChat SDK 비의존, CharacterController/Rigidbody 양쪽 이송, 0.5m/s = 교통약자법 시행규칙 별표1 30m/min)",
+   "wired": {
+    "materialAssigned": 26,
+    "rideVolumes": 26,
+    "runtimeInstances": 52
+   },
+   "verified": "디딤판 마젠타(셰이더 오류) -> 수정 후 금속 디딤판 정상 렌더 확인(captures/esc-fixed.png). 플레이 모드에서 EscalatorRide 52개 인스턴스 활성 확인"
+  },
+  "3_B1지하도상가": {
+   "source": "네이버 실내 벡터타일(무인증 공개) 58타일 5,590피처 디코드 -> 지하도상가 18,382m2 · 점포 121 · 벽선 434m",
+   "built": {
+    "바닥": 15,
+    "점포": 117,
+    "벽": 84,
+    "조명": 332
+   },
+   "fit": "원 방위 25.9° -> 모델 승강장 주축 20.1° 로 -5.8° 회전 정합",
+   "openIssue": "지상과의 보행 연결 미해결. 원인은 아케이드가 아니라 주변 지형이다 — 큰 섬 위 지상 1,013개 지점 전수 조회에서 '역사 1층에서 도달 가능한 지상점'이 0개였다. 즉 아케이드가 지나는 도로 구간의 NavMesh 자체가 역사 네트워크와 분리돼 있다. 레거시 OffMeshLink 4개를 생성·베이크했으나 편집·플레이 양쪽에서 경로에 쓰이지 않았다(AI Navigation 패키지 미설치로 NavMeshLink 불가). 해결하려면 (a)주변 지형 보행면을 역사와 잇고 (b)도로 메시에 계단실 개구부를 뚫어야 한다 — 이번 범위에서 미시행.",
+   "navMesh": {
+    "areaM2": 19287,
+    "triangles": 1874,
+    "largestComponentPct": 54,
+    "note": "실측 지하도상가 18,382m2 대비 NavMesh 19,287m2 — 보행면은 실재한다. 최대 연결성분 1,013/1,874 삼각형(54%). 나머지는 벡터타일 벽선 84개가 만든 소구획."
+   }
+  },
+  "4_행선안내판": {
+   "data": "train.asamaru.net 시간표 3종에서 2026-09-22 부산역 출발 05:00~09:42 연속 32편 수집(열차종류·번호·시각·행선지). 지어낸 열차 없음",
+   "rows": 32,
+   "inferred": "타는곳은 실측 아님 — 코레일이 출발 15분 전에만 확정 표출. 공개 운용규칙(일반 1~4, KTX·SRT 상행 5~9) 기준 대표 배정",
+   "built": "2048x1024 텍스처 베이크(한글 고딕) -> URP Unlit 양면 쿼드 + 금속 케이스 + 행거. 1F 2매 · 2F 3매",
+   "verified": "쿼드 법선 반전 수정 후 격리 렌더로 표 전체 판독 확인(captures/board-solo2.png)"
+  },
+  "5_잔여연면적": {
+   "선상주차장": "공식 모델에 이미 실재 — 상향면 실측 봉우리 y=6.75(6,388m2) · 13.50(2,451m2). 신규 구축 불필요했다",
+   "4층": "KORAIL 층별안내의 지상4층(부산경남본부 업무시설)을 신규 저작. FL 17.00, 천장 21.50, 고층 매스 하부(장축 u>=-20)에 한정 155구획 4,478m2. 원본 모델에 바닥 실측면이 없어 3F 층고 5.0m 연장 가정 — 실측 아님"
+  }
+ },
+ "levels": [
+  {
+   "id": "1F",
+   "floorY": 0.0,
+   "ceilingY": 4.75,
+   "rects": 100,
+   "measured": true
+  },
+  {
+   "id": "2F",
+   "floorY": 7.0,
+   "ceilingY": 11.0,
+   "rects": 240,
+   "measured": true
+  },
+  {
+   "id": "3F",
+   "floorY": 12.0,
+   "ceilingY": 16.5,
+   "rects": 230,
+   "measured": false
+  },
+  {
+   "id": "4F",
+   "floorY": 17.0,
+   "ceilingY": 21.5,
+   "rects": 155,
+   "measured": false
+  }
+ ],
+ "verticalCirculation": {
+  "escalator": 26,
+  "stair": 8,
+  "elevator": 14
+ },
+ "fitoutBoxes": {
+  "2F 임대매장(실면적)": 120,
+  "B1 지하도상가 점포": 117,
+  "B1 지하도상가 벽": 84,
+  "1F 임대매장(실면적)": 80,
+  "2F 역무·보안": 45,
+  "2F 대합실": 28,
+  "2F 화장실": 27,
+  "2F 승강장 게이트": 23,
+  "2F 매표소": 22,
+  "3F 임대매장(실면적)": 20,
+  "1F 화장실": 18,
+  "1F 방화구획": 16,
+  "2F 고객서비스": 15,
+  "B1 지하도상가 바닥": 15,
+  "2F 방화구획": 14,
+  "3F 방화구획": 14,
+  "1F 출입구": 12,
+  "3F 화장실": 9,
+  "외피 폐합": 6,
+  "1F 편의": 2
+ },
+ "totalBoxes": 687,
+ "lights": 500,
+ "navigation": {
+  "levels": {
+   "1F": 0.99,
+   "2F": 1.0,
+   "3F": 1.0,
+   "4F": 0.98
+  },
+  "paths": {
+   "1F→2F": "PathComplete",
+   "2F→3F": "PathComplete",
+   "1F→3F": "PathComplete",
+   "1F 동측→1F 서측": "PathComplete",
+   "도로 스폰→2F 대합실": "PathComplete"
+  },
+  "navMesh": {
+   "vertices": 88529,
+   "triangles": 39899,
+   "areaSqm": 198613.3
+  },
+  "playModeNote": "플레이 모드에서는 NavMeshObstacle 카빙으로 일부 경로가 PathPartial 로 바뀐다. 편집 모드 베이크 기준으로는 5경로 전부 PathComplete."
+ },
+ "evidenceChain": {
+  "법적제원": "건축HUB 건축물대장 총괄표제부 — 연면적 62,520.53m2, 건축면적 36,903.83m2, 주용도 운수시설 (초량동 1187)",
+  "점포": "한국철도공사_임대매장정보 API(15125773, 개발계정 승인) 전국 4,548건 -> 부산역 188건, 승인면적 합 6,081.3m2",
+  "수직동선정원": "data.go.kr 15090379 — EV 13 / ES 24",
+  "외피·층고": "공식 3D 모델 직접 실측 — 윤곽 9,301m2, FL 0.00/7.00/12.00, 천장 4.75/11.00",
+  "실배치위상": "부산역 1·2·3층 안내도 실사진(GATE 1~10 포함)",
+  "지하": "네이버 실내 벡터타일 MVT 디코드",
+  "치수기준": "KR A-02031 · 교통약자법 · 건축법 71항목(원문인용 58)"
+ },
+ "notObtained": {
+  "역사본관 실측 평면도": "국가철도공단 준공도면 data.go.kr 미수록(5개역뿐), 카카오 실내지도 웹 부재 3차 확인, 네이버 실내는 역사 본관 미포함, OSM indoor 실질 0, 건축물대장 층별개요는 본동 미조회, 2004년 설계시공일괄이라 설계공모 자체가 없음",
+  "남은경로": "정보공개청구 2건(국가철도공단 준공도면 DWG, 국토지리정보원 실내공간정보 철도역사 90개소) — 사용자 명의 법적 신청이라 미제출"
+ },
+ "captures": [
+  "board-close.png",
+  "board-close2.png",
+  "board-eye.png",
+  "board-iso.json",
+  "board-iso.png",
+  "board-slice.json",
+  "board-slice.png",
+  "board-solo.png",
+  "board-solo2.png",
+  "eye-1f.png",
+  "eye-2f-hall.png",
+  "eye-2f-shops.png",
+  "eye-2f.png",
+  "eye-3f-food.png",
+  "eye-3f.png",
+  "eye-4f.png",
+  "final-1f.png",
+  "final-2f.json",
+  "final-2f.png",
+  "final-3f.png",
+  "final-4f.png",
+  "final-section.json",
+  "final-section.png",
+  "hero-1f.png",
+  "hero-2f-rev.png",
+  "hero-2f.png",
+  "plan-2f-only.png",
+  "plan-2f.png",
+  "plan-cut-y10.json",
+  "plan-cut-y10.png",
+  "plan-full-y10.json",
+  "plan-full-y10.png",
+  "plan-full-y6.json",
+  "plan-full-y6.png"
+ ]
+}

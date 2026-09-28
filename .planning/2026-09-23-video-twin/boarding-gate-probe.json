@@ -1,0 +1,54 @@
+{
+  "status": "ORIGINAL_MODEL_GEOMETRY_PROBE",
+  "guideTopology": "2F official floor guide shows track-side \"타는 곳 Tracks\" arrows (topology only; guide metric fit RMS 7.9-8.1m rejected)",
+  "edgeScan": "u-62..76 at 1m, original surfaces 0.5-20m beyond the 2F track edge",
+  "deckStretch": {
+    "u": [
+      -46,
+      -29
+    ],
+    "deckY": 7.0,
+    "minDepthM": 8.0,
+    "depthMostly": 20.0
+  },
+  "floodFill": {
+    "grid": "1m, capsule r0.3 h1.72, stepwise capsule casts",
+    "regionM2": 1119,
+    "extentUV": {
+      "u": [
+        -80,
+        -30
+      ],
+      "v": [
+        12,
+        64
+      ]
+    },
+    "reachesBridgeDoorConcourse": true
+  },
+  "blockingWall": "original OfficialStation_-부산역_6/_7 at v11.5-12.4, y7.45-8.5 across u-45..-31",
+  "gate": {
+    "u": [
+      -40,
+      -36
+    ],
+    "reason": "centre of the 20m-deep stretch; 4m clear like the bridge branch door (inferred width)"
+  },
+  "walks": {
+    "hallToConcourse": {
+      "status": "COMPLETE",
+      "completedLegs": 11,
+      "totalLegs": 11,
+      "targetDistance3D": 0.132367179,
+      "travelledMetres": 55.68453
+    },
+    "concourseToHall": {
+      "status": "COMPLETE",
+      "completedLegs": 11,
+      "totalLegs": 11,
+      "targetDistance3D": 0.173915163,
+      "travelledMetres": 55.6928444
+    }
+  },
+  "reverseFix": "Earlier reverse walk blocked at v~4.9 by an unobserved original 2F wall strip (cluster u-42..-37, v4.5, top 16m). Rule F5 cut now spans full interior height instead of body height, removing the strip above the player capsule; both directions COMPLETE."
+}

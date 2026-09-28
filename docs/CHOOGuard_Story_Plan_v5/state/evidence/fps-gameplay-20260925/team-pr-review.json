@@ -1,0 +1,214 @@
+{
+  "status": "DECIDED_REQUEST_CHANGES_AND_SPLIT",
+  "userPolicy": {
+    "userRequest": "Review teammate PRs against requested product direction; jointly with JEV decide merge, reject, or ask for narrower PRs; then rebase before further development.",
+    "currentContract": "FPS with common WorldSession action/receipt/reservation authority; real ACK vs arrival vs work/handoff; autonomous registered NPCs; shared multi-floor geometry/door-aware navigation and single pose owner; four-role training isolated from main world with full snapshots. Existing gameplay implementation is publicly available on cloud/fps-gameplay-20260925; Unity Cloud is forbidden despite that historical branch name.",
+    "fairness": "These PRs were authored before the September25 common-runtime implementation. Their original intent and evidence are useful; being older or using legitimate state machines is not itself a bug. Do not discard useful changes just because they require migration.",
+    "mergeGates": "Both pinned heads have no GitHub status checks and no reviews. Effective develop rules require one approval/code-owner review, last-push approval, resolved threads, Policy, security and repository hygiene check, and linear history. Do not bypass protections or manufacture a check.",
+    "workspaceConstraint": "Shared local model scene/assets have substantial uncommitted changes. No wholesale scene overwrite, checkout, stash or index mutation. Root retains integration ownership."
+  },
+  "routing": {
+    "batchId": "jdgb-158d8d4b0f757806",
+    "input": {
+      "event": "Fresh orchestration decision: dispatch two independent read-only PR review slices",
+      "userPolicy": "Default coding workers openai-codex/gpt-6-luna. Obtain a NEW native JEV recommendation before every orchestration. No Unity Cloud. Preserve shared modelling files, original branch and index. User delegates merge/reject/split judgment jointly to orchestrator and JEV.",
+      "slices": [
+        {
+          "pr": 238,
+          "head": "b9da533297d3d232060883b53d1f8117d9f814eb",
+          "base": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+          "scope": "Review tutorial session, maintenance handoff, JSON carryover, per-unit state, procedure, scene builder, tests and contract compatibility; separately flag huge unrelated generated Graphify commit. Read-only, no tests/edits/merge."
+        },
+        {
+          "pr": 240,
+          "head": "7b87264bccc6a4bbed276d2827d84543ffadf59a",
+          "base": "b9da533297d3d232060883b53d1f8117d9f814eb",
+          "scope": "Review only stacked delta: user input/rewind/entry, technician presentation, PassengerAgent/StationNavigation/baker, placement and evidence. Compare against current common gameplay executor, nav/pose ownership and isolated training. Read-only, no tests/edits/merge."
+        }
+      ],
+      "facts": [
+        "Both PRs have zero GitHub check results and zero reviews; authored local test evidence is not fresh integration proof.",
+        "PR238 has 712 changed files and 1171653 additions, mostly unrelated generated graph data.",
+        "PR240 has 67 changed files and includes newer navigation/passenger commits beyond its original PR description.",
+        "Root already read the PR bodies, commits, PassengerAgent, StationNavigation and TechnicianDispatch. Timed handoff mutates facility; passenger writes its own Transform. These need contract review, not an automatic rejection from names.",
+        "Two substantial review slices can run concurrently because neither edits files; root owns final architecture judgment, reproduction, comments, merge and rebase."
+      ],
+      "choiceContext": "Choose one shared worker model/effort for this bounded review batch. Luna is the mandated default; escalate only with a substantial need."
+    },
+    "questions": {
+      "workerModel": {
+        "type": "choice",
+        "instructions": "Recommend the model for this new two-reviewer batch; honor the default and scope. This is NOT a merge approval.",
+        "criteria": {
+          "luna": "openai-codex/gpt-6-luna: required default, suitable for code review with exact pinned sources.",
+          "astra": "openai-codex/gpt-6-astra: only if the two bounded read-only reviews require escalation beyond Luna."
+        }
+      },
+      "effort": {
+        "type": "choice",
+        "instructions": "Recommend explicit reasoning effort for the reviewers for this batch only; do not inherit earlier high recommendations.",
+        "criteria": {
+          "low": "Simple mechanical review only.",
+          "medium": "Moderate review with limited cross-file state.",
+          "high": "Substantial cross-file architecture and behavioral review.",
+          "xhigh": "Very difficult cross-subsystem review needing exceptional reasoning.",
+          "max": "Maximum reasoning necessary despite bounded read-only scope."
+        }
+      }
+    },
+    "answers": {
+      "prReviewDispatch": {
+        "workerModel": {
+          "type": "choice",
+          "choice": "luna",
+          "confidence": 0.99,
+          "probabilities": {
+            "astra": 0.01,
+            "luna": 0.99
+          }
+        },
+        "effort": {
+          "type": "choice",
+          "choice": "high",
+          "confidence": 0.83,
+          "probabilities": {
+            "max": 0.03,
+            "low": 0,
+            "high": 0.87,
+            "xhigh": 0.09,
+            "medium": 0.01
+          }
+        }
+      }
+    },
+    "provenance": {
+      "id": "jdgb-158d8d4b0f757806",
+      "intent": "Fresh JEV routing for team PR review",
+      "total": 1,
+      "done": 1,
+      "failed": 0,
+      "cost": 4.750200000000001e-05,
+      "running": false,
+      "model": "typesafe/jev-1.13.0",
+      "elapsedS": 24
+    },
+    "actualWorkers": [
+      {
+        "name": "MaintenancePRReview",
+        "model": "openai-codex/gpt-6-luna",
+        "thinkingLevel": "high",
+        "resolvedModelIsFallback": false,
+        "completed": true
+      },
+      {
+        "name": "PlayablePRReview",
+        "model": "openai-codex/gpt-6-luna",
+        "thinkingLevel": "high",
+        "resolvedModelIsFallback": false,
+        "completed": true
+      }
+    ],
+    "temporaryEffortOverrideRemoved": true
+  },
+  "disposition": {
+    "batchId": "jdgb-158d8fb948b5780e",
+    "inputs": {
+      "pr238": {
+        "common": {
+          "userRequest": "Review teammate PRs against requested product direction; jointly with JEV decide merge, reject, or ask for narrower PRs; then rebase before further development.",
+          "currentContract": "FPS with common WorldSession action/receipt/reservation authority; real ACK vs arrival vs work/handoff; autonomous registered NPCs; shared multi-floor geometry/door-aware navigation and single pose owner; four-role training isolated from main world with full snapshots. Existing gameplay implementation is publicly available on cloud/fps-gameplay-20260925; Unity Cloud is forbidden despite that historical branch name.",
+          "fairness": "These PRs were authored before the September25 common-runtime implementation. Their original intent and evidence are useful; being older or using legitimate state machines is not itself a bug. Do not discard useful changes just because they require migration.",
+          "mergeGates": "Both pinned heads have no GitHub status checks and no reviews. Effective develop rules require one approval/code-owner review, last-push approval, resolved threads, Policy, security and repository hygiene check, and linear history. Do not bypass protections or manufacture a check.",
+          "workspaceConstraint": "Shared local model scene/assets have substantial uncommitted changes. No wholesale scene overwrite, checkout, stash or index mutation. Root retains integration ownership."
+        },
+        "head": "b9da533297d3d232060883b53d1f8117d9f814eb",
+        "base": "d61997d0d4f5aefacaf396974d809d7958cf9ac9",
+        "positive": "Multi-unit binding/state, inspection workflow, explicit role boundary and honest NOT_VERIFIED evidence. Functional commit d89f99fb is separable from generated graph commit b9da5332.",
+        "sourceEvidence": [
+          "TechnicianDispatch.Tick advances RECEIVED/TRAVELLING/WORKING by 4/35/20 elapsed seconds; Complete directly calls Target.ApplyReplacement without a technician actor, physical arrival/work evidence, custody or common executor result. This remains true in child PR240; its added Lerp body does not authorize real work.",
+          "At this parent revision TutorialSession.Rewind only clears procedure flags/findings, leaving requested dispatch/timer alive. Child PR240 already adds a guard refusing rewind after dispatch request and inverse effects before that; do not report the parent-only defect as still unchanged in child.",
+          "TutorialCarryoverStore is a separate JSON store and ApplyCarryover writes facility state directly. Current SqliteProvider now supports macOS/Windows-x64 native loading; Windows Player qualification remains unverified. Migrate semantic persistence/isolation rather than extend two independent state authorities.",
+          "712 files/+1171653 lines, including separate 683-file generated Graphify commit that the author explicitly offers to split; functional review should not import unrelated cache churn."
+        ],
+        "independentReviewer": "Luna/high: request changes; concrete timed-completion and parent rewind findings. No new test/build run claimed.",
+        "candidateDisposition": "Request changes and focused resubmission; preserve multi-binding/procedure ideas, adapt action/rewind/persistence to common runtime, split generated artifacts. No safe self-contained commit ready for merge as-is."
+      },
+      "pr240": {
+        "common": {
+          "userRequest": "Review teammate PRs against requested product direction; jointly with JEV decide merge, reject, or ask for narrower PRs; then rebase before further development.",
+          "currentContract": "FPS with common WorldSession action/receipt/reservation authority; real ACK vs arrival vs work/handoff; autonomous registered NPCs; shared multi-floor geometry/door-aware navigation and single pose owner; four-role training isolated from main world with full snapshots. Existing gameplay implementation is publicly available on cloud/fps-gameplay-20260925; Unity Cloud is forbidden despite that historical branch name.",
+          "fairness": "These PRs were authored before the September25 common-runtime implementation. Their original intent and evidence are useful; being older or using legitimate state machines is not itself a bug. Do not discard useful changes just because they require migration.",
+          "mergeGates": "Both pinned heads have no GitHub status checks and no reviews. Effective develop rules require one approval/code-owner review, last-push approval, resolved threads, Policy, security and repository hygiene check, and linear history. Do not bypass protections or manufacture a check.",
+          "workspaceConstraint": "Shared local model scene/assets have substantial uncommitted changes. No wholesale scene overwrite, checkout, stash or index mutation. Root retains integration ownership."
+        },
+        "head": "7b87264bccc6a4bbed276d2827d84543ffadf59a",
+        "base": "b9da533297d3d232060883b53d1f8117d9f814eb",
+        "positive": "Actual tag orientation/material/collider fixes, explicit verdict choice/per-unit state, rewind fixes, bootstrap entry, measured collider-based placement, frame evidence for tag and a single-concourse passenger walk. Later commits improve upon the stale initial PR description; credit those fixes.",
+        "sourceEvidence": [
+          "StationNavigation.TryPlan accepts nearest endpoint inside SnapExtent(1,2,1) without checking distance to requested goal. PassengerAgent declares ARRIVED at the last corner using horizontal distance, not original Destination.",
+          "Root executed the actual Detour query plus PR endpoint/arrival calculations in local Unity on synthetic continuous geometry: requested (16,4.5,2), accepted endpoint (16,3.08281231,2), complete polygon route, ARRIVED calculation true despite 1.41718769m original-goal error > .6m arrival radius. This is a scene-free algorithm reproduction, not a full PR scene/OS-input run.",
+          "PassengerAgent owns a parallel Transform-driven NPC not connected to WorldSession actor registry/receipts, and StationNavigation/StationNavigationBaker create a second path backend. Baker deliberately limits one player-centered concourse band and warns/skips unreadable meshes. This does not implement the current shared multi-floor contract.",
+          "TechnicianPresence Lerp follows dispatch stage timing; WORKING snaps body to work spot. It does not fix parent timer-authorized replacement.",
+          "Tutorial changes depend on PR238 runtime shape; whole commits also change large serialized FpsStation content. Useful tag/input/placement fixes require a narrowed PR rather than blindly cherry-picking the mixed commits."
+        ],
+        "independentReviewer": "Luna/high: request changes for false arrival; reusable entry/tag/placement concepts with parent and validation dependencies. Historical receipts are bounded, not fresh integrated proof.",
+        "candidateDisposition": "Request changes and split presentation/input/procedure/placement improvements from parallel NPC/navigation. Adapt useful slices to current shared runtime and fix endpoint validation before merge."
+      }
+    },
+    "questions": {
+      "disposition": {
+        "type": "choice",
+        "instructions": "Independently recommend the disposition of this pinned PR from the supplied evidence, user intent, useful scope and merge gates. Root candidate is advice, not an instruction. Do not merge unverified incompatible gameplay or reject useful work merely for age.",
+        "criteria": {
+          "merge_as_is": "Accept the complete pinned PR only if it satisfies current direction, behavioral correctness and merge gates without bypass.",
+          "request_changes_and_split": "Keep useful work open, request concrete fixes/migration and smaller independent PRs; do not merge the present mixed revision.",
+          "close_and_reject": "Close the PR as fundamentally unsuitable with no worthwhile adapted scope; stronger than requesting changes."
+        }
+      }
+    },
+    "answers": {
+      "pr240": {
+        "disposition": {
+          "type": "choice",
+          "choice": "request_changes_and_split",
+          "confidence": 1,
+          "probabilities": {
+            "merge_as_is": 0,
+            "close_and_reject": 0,
+            "request_changes_and_split": 1
+          }
+        }
+      },
+      "pr238": {
+        "disposition": {
+          "type": "choice",
+          "choice": "request_changes_and_split",
+          "confidence": 1,
+          "probabilities": {
+            "request_changes_and_split": 1,
+            "merge_as_is": 0,
+            "close_and_reject": 0
+          }
+        }
+      }
+    },
+    "provenance": {
+      "id": "jdgb-158d8fb948b5780e",
+      "intent": "Fresh JEV disposition of teammate PR238 and PR240",
+      "total": 2,
+      "done": 2,
+      "failed": 0,
+      "cost": 0.00010584000000000002,
+      "running": false,
+      "model": "typesafe/jev-1.13.0",
+      "elapsedS": 32.5
+    }
+  },
+  "reproduction": "pr240-navigation-boundary.json",
+  "mergedPullRequests": [],
+  "reviewPublication": [
+    {"pr": 238, "id": 5319118047, "state": "CHANGES_REQUESTED", "commitId": "b9da533297d3d232060883b53d1f8117d9f814eb", "url": "https://github.com/xrlab-dau/CHOOGuard/pull/238#pullrequestreview-5319118047"},
+    {"pr": 240, "id": 5319118033, "state": "CHANGES_REQUESTED", "commitId": "7b87264bccc6a4bbed276d2827d84543ffadf59a", "url": "https://github.com/xrlab-dau/CHOOGuard/pull/240#pullrequestreview-5319118033"}
+  ],
+  "provenanceNote": "Native batch elapsedS is age when status was read, not inference latency. No Cloud calls."
+}

@@ -1,0 +1,163 @@
+{
+  "schema": "chooguard.observed-surface.v1",
+  "rootName": "1층 · 관측 마감",
+  "assetDirectory": "Assets/ChooGuard/Art/StationInterior/GroundPhotogrammetry",
+  "parts": [
+    {
+      "buffer": ".planning/2026-09-23-video-twin/1f-2026-mvs/unity-buffers/interior-0.bin",
+      "texture": "Assets/ChooGuard/Art/StationInterior/GroundPhotogrammetry/ObservedCeiling-low-suspended-ceiling.png",
+      "name": "low-suspended-ceiling",
+      "vertices": 32,
+      "triangles": 30,
+      "fit": ".planning/2026-09-23-video-twin/office-frontage-fit/low-suspended-ceiling.json",
+      "supportedAreaModelUnitsSquared": 31.546139038485048,
+      "measuredSupportAreaModelUnitsSquared": 37.587398464154724,
+      "visibilityInsetModelUnits": 0.015,
+      "planarCollider": true,
+      "planeUnity": [
+        -0.0007579385160009204,
+        -0.9999993074331208,
+        0.00090036797170446,
+        2.231239447176143
+      ],
+      "textureProjection": {
+        "dimensions": [
+          1251,
+          511
+        ],
+        "coveredInteriorTexels": 517454,
+        "unobservedInteriorTexels": 0,
+        "sources": [
+          {
+            "frame": "000085.jpg",
+            "role": "fit",
+            "observedSurfaceTexels": 373225,
+            "selectedTexels": 278863
+          },
+          {
+            "frame": "000106.jpg",
+            "role": "fit",
+            "observedSurfaceTexels": 238591,
+            "selectedTexels": 238591
+          }
+        ]
+      },
+      "worldBounds": [
+        [
+          -15.150476455688477,
+          2.2516918182373047,
+          12.67353630065918
+        ],
+        [
+          -9.159342765808105,
+          2.261411666870117,
+          22.974668502807617
+        ]
+      ]
+    },
+    {
+      "buffer": ".planning/2026-09-23-video-twin/1f-2026-mvs/unity-buffers/interior-1.bin",
+      "texture": "Assets/ChooGuard/Art/StationInterior/GroundPhotogrammetry/ObservedCeiling-higher-lobby-ceiling.png",
+      "name": "higher-lobby-ceiling",
+      "vertices": 24,
+      "triangles": 22,
+      "fit": ".planning/2026-09-23-video-twin/ground-core-fit/higher-lobby-ceiling.json",
+      "supportedAreaModelUnitsSquared": 24.46594639166148,
+      "measuredSupportAreaModelUnitsSquared": 24.806807993895585,
+      "visibilityInsetModelUnits": 0.015,
+      "planarCollider": true,
+      "planeUnity": [
+        -0.015737997913209734,
+        -0.9998641918453188,
+        -0.004890121388177933,
+        4.701589197824153
+      ],
+      "textureProjection": {
+        "dimensions": [
+          713,
+          667
+        ],
+        "coveredInteriorTexels": 401690,
+        "unobservedInteriorTexels": 0,
+        "sources": [
+          {
+            "frame": "000054.jpg",
+            "role": "fit",
+            "observedSurfaceTexels": 401690,
+            "selectedTexels": 401690
+          }
+        ]
+      },
+      "worldBounds": [
+        [
+          -25.169898986816406,
+          4.9238505363464355,
+          12.663324356079102
+        ],
+        [
+          -19.65313720703125,
+          5.017089366912842,
+          19.16566276550293
+        ]
+      ]
+    },
+    {
+      "buffer": ".planning/2026-09-23-video-twin/1f-2026-mvs/unity-buffers/interior-2.bin",
+      "texture": "Assets/ChooGuard/Art/StationInterior/GroundPhotogrammetry/ObservedWall-right-approach-wall.png",
+      "name": "right-approach-wall",
+      "vertices": 24,
+      "triangles": 22,
+      "fit": ".planning/2026-09-23-video-twin/office-frontage-fit/right-approach-wall.json",
+      "supportedAreaModelUnitsSquared": 7.282014500015185,
+      "measuredSupportAreaModelUnitsSquared": 7.450920410126038,
+      "visibilityInsetModelUnits": 0.015,
+      "planarCollider": true,
+      "planeUnity": [
+        -0.9284769318647422,
+        -0.011509591819003111,
+        0.371211686630681,
+        -15.683074723196256
+      ],
+      "textureProjection": {
+        "dimensions": [
+          501,
+          245
+        ],
+        "coveredInteriorTexels": 119817,
+        "unobservedInteriorTexels": 0,
+        "sources": [
+          {
+            "frame": "000085.jpg",
+            "role": "fit",
+            "observedSurfaceTexels": 119817,
+            "selectedTexels": 119817
+          }
+        ]
+      },
+      "worldBounds": [
+        [
+          -9.864612579345703,
+          0.27265408635139465,
+          17.631845474243164
+        ],
+        [
+          -8.394378662109375,
+          2.1835086345672607,
+          21.279312133789062
+        ]
+      ]
+    }
+  ],
+  "bufferFormat": "SGM1,u32 vertexCount,u32 indexCount,float32 xyz,float32 uv,int32 triangle indices; little endian",
+  "coordinateFrame": "Unity world, ENU[x,z,y]; original model untouched",
+  "sourceVideo": "https://www.youtube.com/watch?v=3TLdCQCjeXE",
+  "temporalState": "Interior ceiling/wall surfaces observed March2026; no shop hoarding",
+  "registration": ".planning/2026-09-23-video-twin/metric-registration/registration.json",
+  "cropMode": "Measured support intersected with union of lens-corrected verified static-surface masks and inset0.015 model units; no inferred exterior perimeter",
+  "colorProcessing": "Lens-aware real source pixels, highest projected-area view selected per texel; no blending, invented interior texels or duplicated coplanar surfaces",
+  "floorDatumCorrection": false,
+  "rawMeshColliders": false,
+  "collision": "Only explicitly checked planar ceiling/wall patches; no hidden thickness",
+  "limits": "Local finish patches, not full structural extent. Dense reconstruction holes are retopologized only within measured planar support with complete observed texture coverage.",
+  "rights": "Public-video-derived internal reference; redistribution rights not established"
+}

@@ -1,0 +1,72 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 671,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "floor_plate_scope": {
+          "type": "choice",
+          "choice": "central_two_thirds",
+          "confidence": 0.82,
+          "probabilities": {
+            "full_void": 0.04,
+            "narrow_spine_only": 0.08,
+            "central_two_thirds": 0.88
+          }
+        },
+        "roof_structure": {
+          "type": "choice",
+          "choice": "space_frame_truss",
+          "confidence": 0.95,
+          "probabilities": {
+            "space_frame_truss": 0.97,
+            "flat_soffit_panel": 0,
+            "truss_texture_plane": 0.03
+          }
+        },
+        "build_sequence_first": {
+          "type": "choice",
+          "choice": "floor_slab_with_material",
+          "confidence": 0.96,
+          "probabilities": {
+            "floor_slab_with_material": 0.97,
+            "truss_roof": 0.01,
+            "storefront_rows": 0,
+            "columns_grid": 0.02
+          }
+        },
+        "column_grid": {
+          "type": "choice",
+          "choice": "derive_from_existing_shell_columns",
+          "confidence": 0.26,
+          "probabilities": {
+            "regular_18m_grid": 0.06,
+            "derive_from_existing_shell_columns": 0.5,
+            "copy_deck_column_spacing": 0.44
+          }
+        },
+        "route_reproduction": {
+          "type": "choice",
+          "choice": "scripted_waypoint_walk",
+          "confidence": 0.95,
+          "probabilities": {
+            "manual_only": 0.03,
+            "teleport_camera_flythrough": 0,
+            "scripted_waypoint_walk": 0.97
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1742,
+        "output_tokens": 273
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

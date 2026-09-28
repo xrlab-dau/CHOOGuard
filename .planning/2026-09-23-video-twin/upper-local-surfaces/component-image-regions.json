@@ -1,0 +1,28 @@
+{
+  "schema": "chooguard.relative-component-image-regions.v1",
+  "dataset": "RY2-330",
+  "pixelFrame": "Original distorted 960x540 extracted source images, top-left origin",
+  "meaning": "Manual identification polygons for visible public-facing surfaces only. Not room footprints, physical dimensions, tenancy rear boundaries, or world-placement controls. Cabinets, flowers and displays remain dated observed contents.",
+  "components": {
+    "boksoondoga-public-aperture": {
+      "000389.jpg": [[185, 0], [552, 208], [557, 438], [193, 539]],
+      "000393.jpg": [[66, 0], [727, 131], [767, 445], [315, 539], [67, 539]]
+    },
+    "kkotdeul-public-aperture": {
+      "000429.jpg": [[44, 31], [604, 242], [619, 467], [12, 539]],
+      "000433.jpg": [[0, 0], [815, 159], [828, 452], [507, 539], [0, 539]]
+    }
+  },
+  "manualOcclusionRectangles960": {
+    "boksoondoga-public-aperture": {
+      "000389.jpg": [[474, 289, 555, 427]],
+      "000393.jpg": [[614, 278, 778, 457]]
+    },
+    "kkotdeul-public-aperture": {
+      "000429.jpg": [[564, 273, 628, 473]],
+      "000433.jpg": [[677, 263, 835, 530]]
+    }
+  },
+  "manualOcclusionMeaning": "Source-image-inspected human/occluded counter regions. Conservative triangle projection bounding-box overlap subtracts these rays from the component union, including missed bottle-counter staff. Hidden background is not filled; some valid surfaces behind people are deliberately withheld.",
+  "selectionRule": "Observed-texture triangle centroid must project into a named original-image polygon AND be the first intersected surface from that calibrated camera. Union across two views, then subtract conservative manual human/occlusion ray regions. No depth extrapolation, solidification, hole filling or hidden rear faces."
+}

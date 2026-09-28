@@ -1,0 +1,27 @@
+{
+  "schema": "chooguard.measure-thresholds.v1",
+  "fixedUtc": "2026-09-25T00:00:00Z",
+  "note": "Written before any ceiling/column/void/wall result was computed. Never relaxed afterwards. Units: source-model units (u) after applying the stated gauge.",
+  "planeFit": {
+    "floorInlierU": 0.05,
+    "ceilingInlierU": 0.08,
+    "wallInlierU": 0.08,
+    "minInliers": 25,
+    "ceilingNormalMaxDegFromLocalUp": 6.0,
+    "wallNormalMaxDegFromHorizontal": 6.0
+  },
+  "heldOut": {
+    "randomPointHoldoutFraction": 0.3,
+    "randomPointHoldoutMedianAbsResidualMaxU": 0.05,
+    "frameDisjointEvenOddPlaneOffsetMaxU": 0.10,
+    "frameDisjointMinPointsPerSplit": 12
+  },
+  "gauge": {
+    "independentGaugeAgreementMaxFraction": 0.10,
+    "crossSourceHeightAgreementMaxU": 0.15
+  },
+  "registration": {
+    "tierAHeldOutReprojectionRmsMaxPx": 5.0,
+    "tierAHeldOutPositionMaxU": 0.5
+  }
+}

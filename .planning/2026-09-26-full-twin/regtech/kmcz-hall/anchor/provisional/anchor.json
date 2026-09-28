@@ -1,0 +1,1518 @@
+{
+ "schema": "chooguard.regtech.meshfit.v1",
+ "work": ".planning/2026-09-26-full-twin/regtech/kmcz-hall",
+ "init": ".planning/2026-09-26-full-twin/regtech/kmcz-hall/init-provisional.json",
+ "controls": null,
+ "heldout_times": "1300.7~1340",
+ "gate_thresholds": {
+  "heldout_point_median_m": 0.1,
+  "heldout_within": 0.5,
+  "heldout_rms_m": 0.3,
+  "heldout_rms_px": 8.0,
+  "heldout_deg": 6.0
+ },
+ "components": {
+  "0": {
+   "component": 0,
+   "method": "meshfit",
+   "registered_images": 272,
+   "status": "FAIL",
+   "gate": {
+    "pass": false,
+    "reasons": [
+     "held-out point-to-mesh median 0.159 > 0.1",
+     "held-out points near the mesh 0.37 < 0.5"
+    ]
+   },
+   "fit": {
+    "controls": 0,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 0,
+    "rms_m": null,
+    "max_m": null,
+    "forward_rms_deg": null,
+    "forward_max_deg": null
+   },
+   "heldout": {
+    "controls": 0,
+    "obs": 0,
+    "rms_px": null,
+    "max_px": null,
+    "points_3d": 0,
+    "rms_m": null,
+    "max_m": null,
+    "forward_rms_deg": null,
+    "forward_max_deg": null
+   },
+   "mesh": {
+    "fit_points": {
+     "n": 9910,
+     "median_m": 0.08208433721267655,
+     "p90_m": 0.27319451483357166,
+     "within_2dmax": 0.6591321897073663
+    },
+    "heldout_points": {
+     "n": 5402,
+     "median_m": 0.15894069219407267,
+     "p90_m": 0.32895708084312447,
+     "within_2dmax": 0.36949278045168454,
+     "before": {
+      "median_m": 0.15405952386437283,
+      "within_2dmax": 0.3598667160310996
+     }
+    }
+   },
+   "constraint": {
+    "normal_info_fractions": [
+     0.1499,
+     0.3985,
+     0.4517
+    ],
+    "weakest_direction_uvy": [
+     0.997,
+     0.076,
+     -0.001
+    ],
+    "note": "fraction of correspondence normals along each principal direction; < 0.02 = translation along it is not constrained by the mesh (needs controls)"
+   },
+   "change_from_init": {
+    "translation_uvy": [
+     -0.075,
+     0.0,
+     -0.03
+    ],
+    "rotation_deg": 1.4932987219238172,
+    "scale_ratio": 1.0211400679245588
+   },
+   "geometry": {
+    "dir": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after27",
+    "include": ".",
+    "exclude": "KTXSource|Car\\d|Coupler",
+    "renderers": [
+     {
+      "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_0",
+      "triangles": 21712
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_1",
+      "triangles": 7869
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_2",
+      "triangles": 20682
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_3",
+      "triangles": 15569
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_4",
+      "triangles": 8227
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_5",
+      "triangles": 549
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 역사/Layer0PlatformsDetails/OfficialStation_Layer0_2",
+      "triangles": 41
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextPlaza/OfficialStation_-유라시아 도로_0",
+      "triangles": 385
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextPlaza/OfficialStation_-유라시아 도로_1",
+      "triangles": 319
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextNeighbours/OfficialStation_-유라시아 건물_1",
+      "triangles": 10669
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextNeighbours/OfficialStation_-유라시아 건물_2",
+      "triangles": 49157
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextNeighbours/OfficialStation_-유라시아 건물_3",
+      "triangles": 18842
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextNeighbours/OfficialStation_-유라시아 건물_4",
+      "triangles": 55
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextNeighbours/OfficialStation_-유라시아 건물_5",
+      "triangles": 1153
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/ContextNeighbours/OfficialStation_-유라시아 건물_6",
+      "triangles": 682
+     },
+     {
+      "path": "FPSWorld/공식 자료 부산역 주변 공간/SiteTrees",
+      "triangles": 1957
+     },
+     {
+      "path": "1층 · 원본 정합/Ground_Floor",
+      "triangles": 16
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_ShopCeiling",
+      "triangles": 212
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_ShopCeiling/Ground_ShopCeiling_ShadowCaster",
+      "triangles": 212
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4916_Walls",
+      "triangles": 20
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_3336_Walls",
+      "triangles": 20
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4915_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4914_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_4912_Walls",
+      "triangles": 16
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061928_Walls",
+      "triangles": 20
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061929_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061927_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061931_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061932_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061930_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061933_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "1층 · 원본 정합/1층 실내 · 근거 표기/Ground_Unit_10061935_Walls",
+      "triangles": 16
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Ceiling_Kit_Ceiling600",
+      "triangles": 715
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_CeilingGrid",
+      "triangles": 9592
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Light_조명기구_발광",
+      "triangles": 542
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Bulkhead",
+      "triangles": 318
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Frame_Canopy_Dark",
+      "triangles": 3900
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Glass",
+      "triangles": 576
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Trim_Kit_Hairline",
+      "triangles": 3344
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Fascia_Kit_Paint_1E2226",
+      "triangles": 204
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Light_조명기구_downlight",
+      "triangles": 1720
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Clad_wall_painted_gypsum_fine",
+      "triangles": 1240
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Joint",
+      "triangles": 248
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_artbox-2026-05-sign",
+      "triangles": 8
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_hwanggong-2025",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_bt-burger-taco-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_boksoondoga-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_artcent-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_pho-rail-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_box-cup-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_chaeseondang-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_gaemijip-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_saebyeokjip-2026-05-sign",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F/Kit_Lightbox_Kit_Tex_paris-baguette-2025",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관/Kit_Frame_Canopy_Dark",
+      "triangles": 1116
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관/Kit_Glass",
+      "triangles": 152
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관/Kit_Trim_Kit_Hairline",
+      "triangles": 1272
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Clad_기둥_마감",
+      "triangles": 240
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Joint",
+      "triangles": 220
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Trim_trim_stainless_hairline",
+      "triangles": 64
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Door_Kit_Paint_7B3524",
+      "triangles": 24
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Door_Kit_Paint_5B2C20",
+      "triangles": 88
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Trim_Kit_Hairline",
+      "triangles": 196
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Column_Kit_Stainless",
+      "triangles": 170
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Clad_Kit_Stainless",
+      "triangles": 60
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Clad_wall_painted_gypsum_fine",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_SignCase_sign_case_panel",
+      "triangles": 68
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Sign_Kit_SignNavy",
+      "triangles": 10
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Glyph_Kit_Glyph",
+      "triangles": 14
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Sign_Kit_SignGreen",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Fixture_Tube_White",
+      "triangles": 108
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Fixture_Kit_Paint_C8102E",
+      "triangles": 52
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Floor_Kit_Paint_34363D",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F 보강/Kit_Floor_Kit_Paint_2B2F7C",
+      "triangles": 12
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE counter 2/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 1.2,1.3 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 1.2,1.3 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 1.2,1.3 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 3.4,1.3 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 3.4,1.3 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 3.4,1.3 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 5.6,1.3 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 5.6,1.3 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 5.6,1.3 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 7.8,1.3 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 7.8,1.3 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 7.8,1.3 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 1.2,3.4 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 1.2,3.4 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 1.2,3.4 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 3.4,3.4 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 3.4,3.4 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/2FM-KORAIL-LOUNGE 3.4,3.4 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Column_wall_granite_drypanel",
+      "triangles": 152
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Joint",
+      "triangles": 234
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Trim_trim_stainless_hairline",
+      "triangles": 84
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Column_Kit_Stainless",
+      "triangles": 360
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Screen",
+      "triangles": 30
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Trim_Kit_Hairline",
+      "triangles": 434
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Clad_Kit_Paint_E6E5E0",
+      "triangles": 8
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Clad_Kit_Paint_7E8B97",
+      "triangles": 180
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Door_Kit_Paint_CDBE9E",
+      "triangles": 12
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Door_Kit_Paint_8A8F94",
+      "triangles": 28
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Plate_Kit_Paint_1B2A4A",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Fixture_Tube_White",
+      "triangles": 36
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Sign_Kit_SignNavy",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Glyph_Kit_ScreenBlue",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Fixture_Kit_Paint_C8102E",
+      "triangles": 12
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Glyph_Kit_EmitRed",
+      "triangles": 14
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Lightbox_Kit_Paint_A9C2D8",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Frame_Kit_Stainless",
+      "triangles": 244
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Glass_Kit_GlassClear",
+      "triangles": 32
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_SignCase_sign_case_panel",
+      "triangles": 28
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Glyph_Kit_Glyph",
+      "triangles": 36
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Fixture_Kit_Paint_009A44",
+      "triangles": 14
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Glass",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Glyph_Kit_EmitGreen",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Sign_Kit_SignGreen",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Fixture_Kit_Paint_DDE3EA",
+      "triangles": 22
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_CounterTop_Kit_Paint_1C1C1C",
+      "triangles": 24
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_CounterBody_Kit_Paint_141414",
+      "triangles": 24
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Floor_floor_station_polished",
+      "triangles": 351
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_ShopWall_벽_내장",
+      "triangles": 76
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Floor_Canopy_Dark",
+      "triangles": 218
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Floor_floor_tactile_linear_yellow",
+      "triangles": 18
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Floor_floor_tactile_yellow",
+      "triangles": 20
+     },
+     {
+      "path": "실내 트윈 마감/2F 본관 보강/Kit_Floor_Kit_Paint_2E3133",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/바닥 보정/Kit_Slab_floor_station_polished",
+      "triangles": 116
+     },
+     {
+      "path": "실내 트윈 마감/바닥 보정/Kit_Slab_벽_내장",
+      "triangles": 400
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/SHOP-2F-main-편의점--43_-32 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/SHOP-2F-main-복순도가 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Floor_floor_granite_tile",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_ShopWall_wall_b1_shop_panel",
+      "triangles": 40
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Joint",
+      "triangles": 128
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_ShopWall_벽_내장",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Shelf_Tube_White",
+      "triangles": 480
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Product_Kit_ProductRed",
+      "triangles": 872
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Product_Kit_ProductBlue",
+      "triangles": 1048
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Product_Kit_ProductYellow",
+      "triangles": 960
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Product_Kit_ProductGreen",
+      "triangles": 960
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Product_Kit_ProductWhite",
+      "triangles": 872
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Frame_Stainless_Hairline",
+      "triangles": 288
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Light_Kit_Backlight",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_Glass",
+      "triangles": 8
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 2F 본관/Kit_ShopWall_Tube_White",
+      "triangles": 44
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-04 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-05 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-05 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-05 loafTable 3/fit/table_medium(Clone)",
+      "triangles": 168
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 counter 2/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 4 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 4 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 4 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 5 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 5 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 5 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 6 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 6 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 6 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 7 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 7 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 7 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 8 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 8 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-06 tableSet 8 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-07 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-08 dining 4/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-08 dining 5/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-08 dining 6/fit/dining(Clone)",
+      "triangles": 238
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-09 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-09 cabinet 2/fit/cabinet_medium_decorated(Clone)",
+      "triangles": 1018
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-09 cabinet 3/fit/cabinet_medium_decorated(Clone)",
+      "triangles": 1018
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-10 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-10 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-10 dining 3/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-10 dining 4/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-10 dining 5/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-10 dining 6/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 3 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 3 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 3 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 4 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 4 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 4 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 5 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 5 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 5 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 6 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 6 chair L/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-11 tableSet 6 chair R/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-12 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-12 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-12 loafTable 4/fit/table_medium(Clone)",
+      "triangles": 168
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-13 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-13 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-13 dining 3/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-13 dining 4/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-13 dining 5/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-13 dining 6/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-14 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-14 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-14 dining 3/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-14 dining 4/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-14 dining 5/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-14 dining 6/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-15 counter 0/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-15 counter 1/fit/kitchencounter_straight_decorated(Clone)",
+      "triangles": 894
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-15 dining 3/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-15 dining 4/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-15 dining 5/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-15 dining 6/fit/dining(Clone)",
+      "triangles": 1140
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-16 loafTable 5/fit/table_medium(Clone)",
+      "triangles": 168
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-16 loafTable 6/fit/table_medium(Clone)",
+      "triangles": 168
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-16 loafTable 7/fit/table_medium(Clone)",
+      "triangles": 168
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/SHOP-1F-16 loafTable 8/fit/table_medium(Clone)",
+      "triangles": 168
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Floor_floor_granite_tile",
+      "triangles": 41
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_벽_내장",
+      "triangles": 52
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Joint",
+      "triangles": 662
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopCeiling_Kit_GridWhite",
+      "triangles": 41
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_CeilingGrid",
+      "triangles": 3000
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Light_조명기구_downlight",
+      "triangles": 1500
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Shelf_Tube_White",
+      "triangles": 1222
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Product_Kit_ProductGreen",
+      "triangles": 2360
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Product_Kit_ProductYellow",
+      "triangles": 2480
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Product_Kit_ProductWhite",
+      "triangles": 2488
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Product_Kit_ProductRed",
+      "triangles": 2344
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Product_Kit_ProductBlue",
+      "triangles": 2408
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_wall_b1_shop_panel",
+      "triangles": 110
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Frame_Stainless_Hairline",
+      "triangles": 312
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Light_Kit_Backlight",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Glass",
+      "triangles": 8
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Screen",
+      "triangles": 252
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Glyph_Kit_Glyph",
+      "triangles": 420
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Product_Kit_Bread",
+      "triangles": 5244
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_Tube_White",
+      "triangles": 108
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_Kit_Paint_D9D4CC",
+      "triangles": 40
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_Trim_Kit_Hairline",
+      "triangles": 60
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_wall_ceramic_tile",
+      "triangles": 4
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_Kit_Paint_B3262E",
+      "triangles": 120
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_wall_wood_slat_panel",
+      "triangles": 260
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_Kit_Paint_D9CBB0",
+      "triangles": 8
+     },
+     {
+      "path": "실내 트윈 마감/점포 내부 1F/Kit_ShopWall_Kit_Paint_E08A3C",
+      "triangles": 40
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/RM-2F-S-back0 chair 5/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/RM-2F-S-철도경찰 chair 0/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/RM-2F-S-철도경찰 chair 1/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/RM-2F-S-철도경찰 chair 2/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/RM-2F-S-철도경찰 chair 3/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/RM-2F-S-철도경찰 chair 4/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/RM-2F-S-철도경찰 chair 5/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Joint",
+      "triangles": 552
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Trim_Kit_Hairline",
+      "triangles": 498
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_RoomWall_벽_내장",
+      "triangles": 148
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Floor_Kit_Vinyl",
+      "triangles": 9
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Furniture_Counter_Wood",
+      "triangles": 84
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Furniture_Kit_Paint_6E7478",
+      "triangles": 252
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Furniture_Kit_Paint_AEB4B8",
+      "triangles": 194
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Screen",
+      "triangles": 84
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Door_Kit_Paint_7E868C",
+      "triangles": 24
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Door_Kit_Paint_565D63",
+      "triangles": 114
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Plate_Kit_Paint_1B2A4A",
+      "triangles": 6
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Shelf_Tube_White",
+      "triangles": 756
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Product_Kit_Carton",
+      "triangles": 3496
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Slab_PBR_Concrete048_2K",
+      "triangles": 3
+     },
+     {
+      "path": "실내 트윈 마감/2F 편의/Kit_Slab_벽_내장",
+      "triangles": 11
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Clad_wall_painted_gypsum_fine",
+      "triangles": 366
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Joint",
+      "triangles": 396
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Trim_trim_stainless_hairline",
+      "triangles": 82
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Trim_Kit_Hairline",
+      "triangles": 38
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_RoomWall_벽_내장",
+      "triangles": 106
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Clad_PBR_Granite005A_2K",
+      "triangles": 366
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Frame_Kit_Stainless",
+      "triangles": 120
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Door_Kit_Hairline",
+      "triangles": 40
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Glyph_Kit_EmitAmber",
+      "triangles": 12
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Light_Kit_Backlight",
+      "triangles": 56
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Screen",
+      "triangles": 24
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_SignCase_sign_case_panel",
+      "triangles": 12
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Sign_Kit_SignNavy",
+      "triangles": 2
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Door_Kit_Paint_7E868C",
+      "triangles": 8
+     },
+     {
+      "path": "실내 트윈 마감/1F 공용/Kit_Door_Kit_Paint_565D63",
+      "triangles": 44
+     },
+     {
+      "path": "맞이방 · 원본 정합/매표창구 window 0/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 36
+     },
+     {
+      "path": "맞이방 · 원본 정합/팔공티 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/팔공티 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/팔공티 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/팔공티 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/소반한식 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/소반한식 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/소반한식 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/소반한식 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/소반한식 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "맞이방 · 원본 정합/소반한식 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/소반한식 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/비엔씨제과 chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY table/fit/table_round_A(Clone)",
+      "triangles": 312
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/SUBWAY chair/fit/chair_A(Clone)",
+      "triangles": 428
+     },
+     {
+      "path": "맞이방 · 원본 정합/OpenFront_boksoondoga/OpenFront_boksoondoga_Shop_복순도가_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/청도할매김밥 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/청도할매김밥 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/청도할매김밥 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/청도할매김밥 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/반월당닭강정 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/반월당닭강정 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/반월당닭강정 fixture/fit/TicketCounter(Clone)/Environment_Counter_Straight",
+      "triangles": 464
+     },
+     {
+      "path": "맞이방 · 원본 정합/반월당닭강정 display/fit/crate_buns(Clone)",
+      "triangles": 2772
+     },
+     {
+      "path": "맞이방 · 원본 정합/Majibang_2F_Floor",
+      "triangles": 1058
+     },
+     {
+      "path": "맞이방 · 원본 정합/Majibang_OpeningGuard_Glass_GreenClear",
+      "triangles": 16
+     },
+     {
+      "path": "맞이방 · 원본 정합/Majibang_OpeningGuard_Frame",
+      "triangles": 1116
+     },
+     {
+      "path": "맞이방 · 원본 정합/Majibang_ServiceWalls",
+      "triangles": 20
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_팔공티_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_남천할매떡볶이_Walls",
+      "triangles": 8
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_편의점_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_코레일라운지_편의점_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_소반한식_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_비엔씨제과_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_SUBWAY_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_청도할매김밥_Walls",
+      "triangles": 12
+     },
+     {
+      "path": "맞이방 · 원본 정합/Shop_반월당닭강정_Walls",
+      "triangles": 12
+     }
+    ],
+    "spacing": 0.08
+   },
+   "sim3_sfm_to_enu": {
+    "scale": 7.823330146885673,
+    "rotation": [
+     [
+      0.5261437485390874,
+      -0.147708401821096,
+      -0.8374693928166541
+     ],
+     [
+      0.850223963871443,
+      0.0715817924509432,
+      0.5215316464494185
+     ],
+     [
+      -0.017087045735549422,
+      -0.9864371622262452,
+      0.16324753550073434
+     ]
+    ],
+    "translation": [
+     -37.326297442773786,
+     -19.76267983104964,
+     1.087770603844981
+    ],
+    "formula": "ENU = scale*R*X_sfm + t; Unity=(E,Up,N)"
+   },
+   "controls": {}
+  }
+ }
+}

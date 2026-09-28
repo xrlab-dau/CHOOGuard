@@ -1,0 +1,833 @@
+{
+ "schema": "chooguard.interior-kit-showcase.v1",
+ "note": "Preview-only bay for Room, ToiletRoom, Window, Canopy, Slab (not station evidence).",
+ "scaffold": [
+  {
+   "name": "Floor",
+   "finish": "granite",
+   "polygon": [
+    [
+     372,
+     372
+    ],
+    [
+     428,
+     372
+    ],
+    [
+     428,
+     420
+    ],
+    [
+     372,
+     420
+    ]
+   ],
+   "top": 50.0,
+   "depth": 0.4
+  },
+  {
+   "name": "ShellW",
+   "finish": "gypsum",
+   "box": [
+    400,
+    416.9,
+    54.5,
+    56,
+    0.6,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellE",
+   "finish": "gypsum",
+   "box": [
+    400,
+    375.1,
+    54.5,
+    56,
+    0.6,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellN",
+   "finish": "gypsum",
+   "box": [
+    424.9,
+    396,
+    54.5,
+    0.6,
+    48,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellS",
+   "finish": "gypsum",
+   "box": [
+    375.1,
+    396,
+    54.5,
+    0.6,
+    48,
+    9.4
+   ]
+  }
+ ],
+ "elements": [
+  {
+   "type": "Room",
+   "id": "room-office",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      377,
+      379
+     ],
+     [
+      387,
+      379
+     ],
+     [
+      387,
+      386.5
+     ],
+     [
+      377,
+      386.5
+     ]
+    ],
+    "y": 50.0,
+    "y1": 52.8
+   },
+   "params": {
+    "wallTop": 53.2,
+    "openings": [
+     {
+      "edge": 0,
+      "at": 2.5,
+      "width": 1.0,
+      "kind": "door"
+     },
+     {
+      "edge": 0,
+      "at": 6.5,
+      "width": 3.0,
+      "kind": "window",
+      "sill": 0.9,
+      "height": 1.2
+     }
+    ],
+    "interior": "office",
+    "outerFinish": "gypsum"
+   }
+  },
+  {
+   "type": "ServiceDoor",
+   "id": "room-office-door",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      379,
+      379
+     ],
+     [
+      380,
+      379
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     379.5,
+     376
+    ]
+   }
+  },
+  {
+   "type": "Window",
+   "id": "room-office-window",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      382,
+      379
+     ],
+     [
+      385,
+      379
+     ]
+    ],
+    "y": 50.9
+   },
+   "params": {
+    "faceToward": [
+     383.5,
+     383
+    ],
+    "inset": 0.06,
+    "height": 1.2,
+    "mullionPitch": 1.0,
+    "frame": "white",
+    "glass": "clear"
+   }
+  },
+  {
+   "type": "Room",
+   "id": "room-storage",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      390,
+      379
+     ],
+     [
+      396,
+      379
+     ],
+     [
+      396,
+      385
+     ],
+     [
+      390,
+      385
+     ]
+    ],
+    "y": 50.0,
+    "y1": 52.6
+   },
+   "params": {
+    "openings": [
+     {
+      "edge": 0,
+      "at": 1.5,
+      "width": 1.0,
+      "kind": "door"
+     }
+    ],
+    "interior": "storage",
+    "ceiling": "plaster",
+    "floor": "concrete"
+   }
+  },
+  {
+   "type": "Room",
+   "id": "room-staff",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      399,
+      379
+     ],
+     [
+      407,
+      379
+     ],
+     [
+      407,
+      386
+     ],
+     [
+      399,
+      386
+     ]
+    ],
+    "y": 50.0,
+    "y1": 52.7
+   },
+   "params": {
+    "openings": [
+     {
+      "edge": 0,
+      "at": 4,
+      "width": 1.6,
+      "kind": "open"
+     }
+    ],
+    "interior": "staff",
+    "floor": "vinyl",
+    "slab": 0.25
+   }
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "wc-male",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      377,
+      390
+     ],
+     [
+      389,
+      390
+     ],
+     [
+      389,
+      398
+     ],
+     [
+      377,
+      398
+     ]
+    ],
+    "y": 50.0,
+    "y1": 52.7
+   },
+   "params": {
+    "kind": "male",
+    "entry": {
+     "edge": 0,
+     "at": 2,
+     "width": 1.4
+    }
+   }
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "wc-female",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      391,
+      390
+     ],
+     [
+      400,
+      390
+     ],
+     [
+      400,
+      398
+     ],
+     [
+      391,
+      398
+     ]
+    ],
+    "y": 50.0,
+    "y1": 52.7
+   },
+   "params": {
+    "kind": "female",
+    "entry": {
+     "edge": 0,
+     "at": 7,
+     "width": 1.4
+    },
+    "openings": [
+     {
+      "edge": 3,
+      "at": 3,
+      "width": 2.0,
+      "kind": "window",
+      "sill": 1.8,
+      "height": 0.6
+     }
+    ]
+   }
+  },
+  {
+   "type": "Window",
+   "id": "wc-female-window",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      391,
+      396
+     ],
+     [
+      391,
+      394
+     ]
+    ],
+    "y": 51.8
+   },
+   "params": {
+    "faceToward": [
+     395,
+     395
+    ],
+    "inset": 0.06,
+    "height": 0.6,
+    "glass": "frosted",
+    "frame": "stainless",
+    "sill": false
+   }
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "wc-accessible",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      402,
+      390
+     ],
+     [
+      404.4,
+      390
+     ],
+     [
+      404.4,
+      392.6
+     ],
+     [
+      402,
+      392.6
+     ]
+    ],
+    "y": 50.0,
+    "y1": 52.7
+   },
+   "params": {
+    "kind": "accessible",
+    "entry": {
+     "edge": 0,
+     "at": 1.4,
+     "width": 1.0
+    }
+   }
+  },
+  {
+   "type": "ToiletRoom",
+   "id": "wc-unisex",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      406,
+      390
+     ],
+     [
+      411,
+      390
+     ],
+     [
+      411,
+      394.5
+     ],
+     [
+      406,
+      394.5
+     ]
+    ],
+    "y": 50.0,
+    "y1": 52.7
+   },
+   "params": {
+    "kind": "unisex",
+    "entry": {
+     "edge": 0,
+     "at": 1.2,
+     "width": 1.0
+    },
+    "stalls": 2,
+    "basins": 1
+   }
+  },
+  {
+   "type": "Canopy",
+   "id": "canopy-slat",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      378,
+      403
+     ],
+     [
+      390,
+      403
+     ],
+     [
+      390,
+      412
+     ],
+     [
+      378,
+      412
+     ]
+    ],
+    "holes": [
+     [
+      [
+       383,
+       406.5
+      ],
+      [
+       385,
+       406.5
+      ],
+      [
+       385,
+       408.5
+      ],
+      [
+       383,
+       408.5
+      ]
+     ]
+    ],
+    "y": 53
+   },
+   "params": {
+    "finish": "metalSlat",
+    "lights": {
+     "pitch": 3,
+     "realPitch": 6
+    }
+   }
+  },
+  {
+   "type": "Canopy",
+   "id": "canopy-alu",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      392,
+      403
+     ],
+     [
+      402,
+      403
+     ],
+     [
+      402,
+      412
+     ],
+     [
+      392,
+      412
+     ]
+    ],
+    "y": 53.5
+   },
+   "params": {
+    "finish": "aluminium",
+    "fascia": 0.6,
+    "lights": {
+     "kind": "linear",
+     "pitch": 2.4,
+     "realPitch": 0
+    }
+   }
+  },
+  {
+   "type": "Canopy",
+   "id": "canopy-plaster",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      404,
+      403
+     ],
+     [
+      412,
+      403
+     ],
+     [
+      412,
+      412
+     ],
+     [
+      408,
+      412
+     ],
+     [
+      408,
+      407
+     ],
+     [
+      404,
+      407
+     ]
+    ],
+    "y": 53
+   },
+   "params": {
+    "finish": "plaster",
+    "fascia": 0,
+    "lights": {
+     "pitch": 2.5
+    }
+   }
+  },
+  {
+   "type": "Slab",
+   "id": "deck-slab",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      414,
+      403
+     ],
+     [
+      422,
+      403
+     ],
+     [
+      422,
+      412
+     ],
+     [
+      414,
+      412
+     ]
+    ],
+    "holes": [
+     [
+      [
+       417,
+       406
+      ],
+      [
+       419,
+       406
+      ],
+      [
+       419,
+       408
+      ],
+      [
+       417,
+       408
+      ]
+     ]
+    ],
+    "y": 51.2
+   },
+   "params": {
+    "depth": 0.3,
+    "finish": "floorGranite"
+   }
+  }
+ ],
+ "views": [
+  {
+   "name": "rooms",
+   "eye": [
+    392,
+    376.2,
+    51.7
+   ],
+   "target": [
+    390,
+    383,
+    51.3
+   ],
+   "fov": 84
+  },
+  {
+   "name": "office",
+   "eye": [
+    386.3,
+    385.9,
+    51.9
+   ],
+   "target": [
+    379,
+    380.5,
+    50.7
+   ],
+   "fov": 76
+  },
+  {
+   "name": "storage",
+   "eye": [
+    395.5,
+    384.4,
+    51.8
+   ],
+   "target": [
+    390.8,
+    380,
+    50.8
+   ],
+   "fov": 76
+  },
+  {
+   "name": "staff",
+   "eye": [
+    406.4,
+    385.4,
+    51.8
+   ],
+   "target": [
+    400,
+    380,
+    50.7
+   ],
+   "fov": 76
+  },
+  {
+   "name": "toilets",
+   "eye": [
+    397.5,
+    387.0,
+    51.6
+   ],
+   "target": [
+    401.5,
+    390,
+    51.3
+   ],
+   "fov": 72
+  },
+  {
+   "name": "wc-male",
+   "eye": [
+    379,
+    390.6,
+    51.7
+   ],
+   "target": [
+    386,
+    396.5,
+    50.8
+   ],
+   "fov": 80
+  },
+  {
+   "name": "wc-female",
+   "eye": [
+    398.2,
+    390.6,
+    51.7
+   ],
+   "target": [
+    392.5,
+    396.5,
+    50.8
+   ],
+   "fov": 80
+  },
+  {
+   "name": "wc-accessible",
+   "eye": [
+    402.3,
+    390.35,
+    51.8
+   ],
+   "target": [
+    404,
+    392.4,
+    50.5
+   ],
+   "fov": 84
+  },
+  {
+   "name": "canopies",
+   "eye": [
+    386,
+    400.2,
+    51.6
+   ],
+   "target": [
+    396,
+    408,
+    53.4
+   ],
+   "fov": 78
+  },
+  {
+   "name": "slab",
+   "eye": [
+    412.8,
+    401,
+    52.6
+   ],
+   "target": [
+    418,
+    408,
+    51
+   ],
+   "fov": 66
+  },
+  {
+   "name": "overview",
+   "eye": [
+    398,
+    368,
+    62
+   ],
+   "target": [
+    395,
+    395,
+    50
+   ],
+   "fov": 58
+  }
+ ]
+}

@@ -1,0 +1,408 @@
+{
+ "lane": "imagery",
+ "searchedAt": "2026-09-22",
+ "queriesRun": [
+  "부산역 대합실 내부 사진 2층 맞이방",
+  "부산역 실내지도 네이버 실내뷰 대합실 indoor view",
+  "Busan Station interior walk tour 4K KTX concourse youtube",
+  "부산역 대합실 유튜브 걷기 투어 4K 내부 둘러보기",
+  "네이버 지도 실내지도 제공 역 목록 부산역 서울역 실내뷰 지원",
+  "부산역 대합실 리모델링 증축 공사 코레일 보도자료 맞이방 개선",
+  "부산역 매표소 승강장 개찰구 에스컬레이터 대합실 사진 내부",
+  "Wikimedia Commons API list=search srnamespace=6: 'Busan Station interior', '부산역 대합실', 'Busan station concourse', 'Busan station waiting room', 'Busan station ticket'",
+  "Google GeoPhotoService.SingleImageSearch 12-point interior grid, r=20m, imagery types 1e1/1e2/1e3/1e4/1e8/1e6/1e10",
+  "Google photometa/v1 for panos wKjqWFcrMTBad9zh8_Itgw and jtAQJfAdxWn-bGymBrVBGw",
+  "Kakao search.map.kakao.com/mapsearch/map.daum?q=부산역 (indoor_info extraction)",
+  "yt-dlp metadata probe: RY2qvE0Tugk, jt439UQb-fA, so3ATwuCm14, JKADm2glsFA, 4khnXDHnvbk"
+ ],
+ "indoorStreetViewVerdict": {
+  "google": "NO. No indoor Street View and no indoor photosphere exists inside 부산역. 12/12 interior grid points (r=20 m, all 7 imagery types) returned 'Search returned no images.'; r=25 m at the concourse centroid also empty. Nearest imagery of any type is the user photosphere wKjqWFcrMTBad9zh8_Itgw, measured 74 m away in the forecourt. Outdoor coverage exists (jtAQJfAdxWn-bGymBrVBGw)",
+  "naver": "UNCONFIRMED, probably absent. Not provable here: allSearch is captcha-walled, instantSearch 404s, place summary returns a null stub, the headless browser was killed on map.naver.com, and my panorama nearby endpoint failed a Seoul Station control so it proves nothing. Documentary evidence points to absence: Naver's coverage release lists 인천국제공항/서울역/고속터미널 but not 부산역, and 실내뷰 panoramas cover only 일부 건축물",
+  "kakao": "INDOOR VECTOR MAP YES, PANORAMA NO. Kakao+KORAIL shipped 기차역 실내지도 for 54 stations incl. 부산역 on 2025-05-02; Kakao's search JSON gives indoor_info zoneid=181917, floor=2 for the 대합실 level. storeview_id=0, so there is no indoor panorama at this POI. Web surface confirmed dead by the floorplan lane: 192 captured requests on map.kakao.com returned no indoor tiles, and /inside/*, /indoor/*, /api/inside/* all serve the generic shell — the indoor map is app-only",
+  "netEffect": "No metrically-consistent indoor panorama source is available for 부산역. The interior must be driven by the official 2F 안내도 floor-guide board (scaled to the confirmed shell bounds) with the video keyframes and head-on storefront stills supplying bay widths, ceiling structure and fixture positions"
+ },
+ "assetRoot": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery",
+ "downloadSummary": {
+  "photos": 66,
+  "keyframes": 207,
+  "videos": 4,
+  "contactSheets": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/sheets (labA/labB/labC/kf_tour — labelled montages used to identify every file)"
+ },
+ "findings": [
+  {
+   "title": "Google Street View outdoor panorama at 부산역 forecourt (pano jtAQJfAdxWn-bGymBrVBGw)",
+   "url": "https://www.google.com/maps/@35.1157,129.0422,3a,75y/data=!3m6!1e1!3m4!1sjtAQJfAdxWn-bGymBrVBGw!2e0",
+   "kind": "photo",
+   "whatItShows": "Official Street View road-level panorama in front of the station; 8 tiles at zoom 2 (512px, 4x2 grid) downloaded from streetviewpixels-pa.googleapis.com",
+   "usefulFor": "Locking the exterior entrance line, facade bay rhythm and door positions that the interior 2F concourse must align to; anchors the official shell FBX against real-world imagery",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/gsv_jtAQJfAdxWn-bGymBrVBGw_z2_x*_y*.jpg",
+   "sha256": "e3e8c18b1b5894002447f9d5f172304a650e8c31d50ef5949d16a793c1ce7e99",
+   "bytes": 257388,
+   "license": "Google Maps/Street View imagery © Google (uncleared); panorama tiles fetched from public tile endpoint as geometric reference only",
+   "confidence": "verified"
+  },
+  {
+   "title": "Google user photosphere near 부산역 (pano wKjqWFcrMTBad9zh8_Itgw, 2017-12) — FORECOURT, not interior",
+   "url": "https://www.google.com/maps/@35.11581798,129.04185463,3a,75y/data=!3m6!1e1!3m4!1swKjqWFcrMTBad9zh8_Itgw!2e0",
+   "kind": "photo",
+   "whatItShows": "User-contributed 360 photosphere (imagery type 1e2 / IMAGE_ALLEYCAT) at 35.11581798,129.04185463 — measured 74 m NNE of the concourse centroid, i.e. in 부산역광장 forecourt. 8 tiles downloaded",
+   "usefulFor": "Full 360 of the main entrance approach: entrance door count/spacing and facade glazing; explicitly NOT interior evidence",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/gsv_wKjqWFcrMTBad9zh8_Itgw_z2_x*_y*.jpg",
+   "sha256": "93f83bacb75fb8ce8b718f634c65ed9e070e67473cf0348c6a3b9bcd6ae87874",
+   "bytes": 266772,
+   "license": "Google Maps/Street View imagery © Google (uncleared); panorama tiles fetched from public tile endpoint as geometric reference only",
+   "confidence": "verified"
+  },
+  {
+   "title": "NEGATIVE RESULT: no Google indoor Street View / photosphere anywhere inside 부산역",
+   "url": "https://maps.googleapis.com/maps/api/js/GeoPhotoService.SingleImageSearch",
+   "kind": "dataset",
+   "whatItShows": "12-point grid probe (lat 35.1148/35.1151/35.1154 x lon 129.0409/0413/0417/0421) at radius 20 m with ALL 7 imagery types (!1e1 outdoor SV, !1e2 photosphere, !1e3, !1e4, !1e8, !1e6, !1e10 indoor/business-view) returned 'Search returned no images.' for 12/12 points. Radius-25 m all-type probe at concourse centroid 35.11520,129.04155 also empty. Nearest imagery of any type is 74 m away in the forecourt",
+   "usefulFor": "Proves indoor Street View cannot be used as the metric backbone; the interior must instead be driven by the 2F floor-guide plan plus video keyframes",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "N/A (API probe result)",
+   "confidence": "verified"
+  },
+  {
+   "title": "Timestamp index into RY2qvE0Tugk keyframes: interior features -> exact frames (built by visual inspection of labelled montages)",
+   "url": "https://www.youtube.com/watch?v=RY2qvE0Tugk",
+   "kind": "video",
+   "whatItShows": "Frame-by-frame index of the 832 s walking tour. Frame tNNN = NNN*5 seconds. 00:60-01:30 [t012-t018] 2F 대합실 entered from the plaza end: full-span space-frame roof, departure-board wall, polished floor | 01:45-02:00 [t021-t024] Retail line: & COFFEE, KAKAO FRIENDS, CAFFE PASCUCCI storefronts head-on | 03:00-03:15 [t060,t063] ESCALATOR bank in the concourse - balustrades and moving handrails clearly visible | 03:30 [t066] Waiting-seat blocks with a 1F wayfinding sign overhead | 06:00 [t072] 자동발매기 ticket-vending machine bank (blue kiosks) | 07:00-07:30 [t084,t087,t090] 매표소 STAFFED TICKET COUNTERS with queues - counter run, window bays, overhead signage | 07:45-08:00 [t093,t096] Second ESCALATOR with glass balustrade rising out of the concourse | 08:15 [t099] KORAIL LOUNGE entrance portal | 08:30 [t102] Freestanding CAFE DE CRAFT kiosk against a clad structural column | 08:45-09:30 [t105-t114] Concourse cross-corridors and gate approaches | 10:15 [t123] Waiting hall, dense seating, full ceiling visible | 10:30-11:15 [t126-t135] 승강장 연결부: platform-access gates, glazed lift enclosure, escalators down to platform, platform truss roof",
+   "usefulFor": "Directly fills the circulation gap the floorplan lane proved: the 층별안내도 boards record far fewer lifts/escalators than KORAIL's facility census, so escalator and gate positions must come from this footage. Also supplies the 매표소 counter run and the 승강장 연결부 that the boards omit",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/keyframes/RY2qvE0Tugk_t*.jpg",
+   "sha256": null,
+   "bytes": null,
+   "license": "Standard YouTube licence, uncleared; frames retained locally as geometric reference only",
+   "confidence": "verified",
+   "featureIndex": [
+    {
+     "time": "00:60-01:30",
+     "frames": "t012-t018",
+     "shows": "2F 대합실 entered from the plaza end: full-span space-frame roof, departure-board wall, polished floor",
+     "constrains": "concourse width + ceiling structure at the entrance end"
+    },
+    {
+     "time": "01:45-02:00",
+     "frames": "t021-t024",
+     "shows": "Retail line: & COFFEE, KAKAO FRIENDS, CAFFE PASCUCCI storefronts head-on",
+     "constrains": "storefront bay widths and fascia heights on the 2F retail edge"
+    },
+    {
+     "time": "03:00-03:15",
+     "frames": "t060,t063",
+     "shows": "ESCALATOR bank in the concourse - balustrades and moving handrails clearly visible",
+     "constrains": "vertical circulation the 층별안내도 boards omit"
+    },
+    {
+     "time": "03:30",
+     "frames": "t066",
+     "shows": "Waiting-seat blocks with a 1F wayfinding sign overhead",
+     "constrains": "seating block extent + sign mounting height"
+    },
+    {
+     "time": "06:00",
+     "frames": "t072",
+     "shows": "자동발매기 ticket-vending machine bank (blue kiosks)",
+     "constrains": "ticket machine run length and position"
+    },
+    {
+     "time": "07:00-07:30",
+     "frames": "t084,t087,t090",
+     "shows": "매표소 STAFFED TICKET COUNTERS with queues - counter run, window bays, overhead signage",
+     "constrains": "ticket counter length, the brief asks for 매표소 explicitly"
+    },
+    {
+     "time": "07:45-08:00",
+     "frames": "t093,t096",
+     "shows": "Second ESCALATOR with glass balustrade rising out of the concourse",
+     "constrains": "second vertical-circulation node"
+    },
+    {
+     "time": "08:15",
+     "frames": "t099",
+     "shows": "KORAIL LOUNGE entrance portal",
+     "constrains": "room entrance position for the lounge"
+    },
+    {
+     "time": "08:30",
+     "frames": "t102",
+     "shows": "Freestanding CAFE DE CRAFT kiosk against a clad structural column",
+     "constrains": "column cladding profile + kiosk footprint; a countable column"
+    },
+    {
+     "time": "08:45-09:30",
+     "frames": "t105-t114",
+     "shows": "Concourse cross-corridors and gate approaches",
+     "constrains": "circulation widths between retail and gates"
+    },
+    {
+     "time": "10:15",
+     "frames": "t123",
+     "shows": "Waiting hall, dense seating, full ceiling visible",
+     "constrains": "clear height corroboration"
+    },
+    {
+     "time": "10:30-11:15",
+     "frames": "t126-t135",
+     "shows": "승강장 연결부: platform-access gates, glazed lift enclosure, escalators down to platform, platform truss roof",
+     "constrains": "platform access gates + lift enclosure positions, the 승강장 연결부 the brief asks for"
+    }
+   ]
+  },
+  {
+   "title": "부산역 2F 편의시설 안내도 (official in-station floor guide board, photographed) [587,746]",
+   "url": "https://m.blog.naver.com/firetree_v2/223107906614",
+   "kind": "floorplan",
+   "whatItShows": "Official 부산역 2F floor-guide board: plan view of the 대합실/맞이방 level with an isometric concourse strip and a numbered tenant legend (~32 entries) plus WC/EV/escalator pictograms. NOTE: the floorplan lane holds the same three boards at ~1930x1260, which supersede this copy; Naver caps these at ?type=w2000 (?type=orig returns a ~100px thumbnail), so 587x746 is the best obtainable from this source",
+   "usefulFor": "THE primary interior subdivision source for the target floor — gives retail bay sequence along both concourse edges, core positions (toilets, lifts, escalators), and the waiting-hall void outline. Retain as an INDEPENDENT-SOURCE cross-check on the floorplan lane higher-res boards (different photographer/date, so it validates that the board content matches)",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/busanstation_floorguide_2F.jpg",
+   "sha256": "ea8dff6b5c1aeb98bc947d3b03a91dd9fdc01bc4e215d0b74cba67a02c5051c0",
+   "bytes": 608222,
+   "license": "All rights reserved (personal Naver blog, uncleared); collected as visual reference only per user instruction that licensing is not a research-phase filter",
+   "confidence": "verified"
+  },
+  {
+   "title": "부산역 1F 편의시설 안내도 (official in-station floor guide board, photographed) [1063,748]",
+   "url": "https://m.blog.naver.com/firetree_v2/223107906614",
+   "kind": "floorplan",
+   "whatItShows": "Official 부산역 1F floor-guide board with numbered tenant legend 1-18 (김밥천국/편의점/양산국밥/스시보노/파리바게트/짐캐리 baggage deposit/물품보관함) and WC+EV markers",
+   "usefulFor": "Ground-floor room subdivision, baggage deposit and coin-locker room positions, and the vertical-core footprint that must line up under the 2F plan",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/busanstation_floorguide_1F.jpg",
+   "sha256": "e914a4839533b2f4ec442e75cfc337226e97141f49323b46b0c6e8befff3d0d7",
+   "bytes": 903107,
+   "license": "All rights reserved (personal Naver blog, uncleared); collected as visual reference only per user instruction that licensing is not a research-phase filter",
+   "confidence": "verified"
+  },
+  {
+   "title": "부산역 3F 편의시설 안내도 (official in-station floor guide board, photographed) [1147,658]",
+   "url": "https://m.blog.naver.com/firetree_v2/223107906614",
+   "kind": "floorplan",
+   "whatItShows": "Official 부산역 3F floor-guide board (전문식당가) with legend 1-4 (푸드코트, 고래맛술/KOREAN RESTAURANT, 부산옥, 롯데리아) and lift markers",
+   "usefulFor": "Third-floor restaurant mezzanine extent — constrains how much of the 2F ceiling void is open vs built over",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/busanstation_floorguide_3F.jpg",
+   "sha256": "ad919ec8ec486361622ba374f35ee158678e9904410f250fbda07a6edeccc82d",
+   "bytes": 653259,
+   "license": "All rights reserved (personal Naver blog, uncleared); collected as visual reference only per user instruction that licensing is not a research-phase filter",
+   "confidence": "verified"
+  },
+  {
+   "title": "부산역 legend 편의시설 안내도 (official in-station floor guide board, photographed) [592,284]",
+   "url": "https://m.blog.naver.com/firetree_v2/223107906614",
+   "kind": "floorplan",
+   "whatItShows": "Shared category legend/key for the floor-guide boards: PHARMACY 약국, BEAUTY & FASHION, BOOK STORE 서점, BAGGAGE DEPOSIT 짐보관소, BAKERY & FASTFOOD, FLOWER 꽃집, FOOD COURT, CAFE, SNACK, RESTAURANT 식당, CVS 편의점, MAKKOLLI 막걸리",
+   "usefulFor": "Decodes the colour/number coding on all three floor plans so each numbered block can be typed as a room/tenant class",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/busanstation_floorguide_legend.jpg",
+   "sha256": "f5ae1c2547491554a8367e89f828386bed70132065a73767680eac2547713d80",
+   "bytes": 234069,
+   "license": "All rights reserved (personal Naver blog, uncleared); collected as visual reference only per user instruction that licensing is not a research-phase filter",
+   "confidence": "verified"
+  },
+  {
+   "title": "YouTube: Inside Busan Station & KTX Bullet Train | Walking Tour (PNW 4K) [832s, 640x360 downloaded (1080p/720p/360p-progressive all HTTP-403 rate-limited at CDN; 4K source exists)]",
+   "url": "https://www.youtube.com/watch?v=RY2qvE0Tugk",
+   "kind": "video",
+   "whatItShows": "Continuous walk: exterior plaza -> 2F 대합실 -> retail strips -> 매표소/departure boards -> platform. Useful interior span ~00:60-11:20. Concourse wide shots with the exposed steel space-frame roof at ~02:35, 03:05, 04:05, 05:05, 05:35; ticket machines + departure board wall ~07:35; platform access/gates ~10:35-11:05; after ~11:35 it is inside the train (not useful) | 166 keyframes extracted to /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/keyframes",
+   "usefulFor": "Single best continuous traversal: recovers concourse LENGTH, storefront ORDER along both sides, column bay rhythm, and where stairs/escalators/gates sit relative to the retail line",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/video/RY2qvE0Tugk.mp4",
+   "sha256": "53fab44c08b4a694662f251fe286b35f4bce3b339cc2b8d2be5c1d784df55f09",
+   "bytes": 72398312,
+   "license": "Standard YouTube licence, uncleared for redistribution; retained locally as geometric reference only",
+   "confidence": "verified"
+  },
+  {
+   "title": "YouTube: 🇰🇷부산역 대합실(맞이방) Busan Station Waiting Room (서준이의 철도세상) [31s, 1920x1080 downloaded (listed up to 3840x2160)]",
+   "url": "https://www.youtube.com/watch?v=jt439UQb-fA",
+   "kind": "video",
+   "whatItShows": "Static/slow pan of the 2F 대합실 waiting hall: seating blocks, departure board, space-frame ceiling and its bay spacing, upper-level edge. 15 keyframes at 2 s spacing | 15 keyframes extracted to /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/keyframes",
+   "usefulFor": "Highest-resolution look at ceiling truss geometry and waiting-seat block layout — best single source for ceiling type and clear height",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/video/jt439UQb-fA.mp4",
+   "sha256": "a9d424a70060d62fcd7cf41b30ae8dbefef3e53e4ed6779162e0a4f6c24266b5",
+   "bytes": 18128914,
+   "license": "Standard YouTube licence, uncleared for redistribution; retained locally as geometric reference only",
+   "confidence": "verified"
+  },
+  {
+   "title": "YouTube: 부산역 대합실 모습 [23s, 1280x720 downloaded]",
+   "url": "https://www.youtube.com/watch?v=so3ATwuCm14",
+   "kind": "video",
+   "whatItShows": "Handheld sweep of the 대합실 concourse floor and seating; 12 keyframes at 2 s spacing | 12 keyframes extracted to /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/keyframes",
+   "usefulFor": "Cross-check on seating-block positions and floor finish transitions",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/video/so3ATwuCm14.mp4",
+   "sha256": "b5deeb9ebbf38fd55c515166ed90952ca9474aef3e0c2e8b9980075af5836f0d",
+   "bytes": 3387620,
+   "license": "Standard YouTube licence, uncleared for redistribution; retained locally as geometric reference only",
+   "confidence": "verified"
+  },
+  {
+   "title": "YouTube: #부산역 대합실 풍경! [58s, 1080x1920 (vertical) downloaded]",
+   "url": "https://www.youtube.com/watch?v=JKADm2glsFA",
+   "kind": "video",
+   "whatItShows": "Vertical pan across the concourse showing full floor-to-ceiling height in one frame; 14 keyframes at 4 s spacing | 14 keyframes extracted to /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/keyframes",
+   "usefulFor": "Vertical framing captures the whole section (floor -> truss) so it constrains the ~4 m clear height and mezzanine edge better than landscape shots",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/video/JKADm2glsFA.mp4",
+   "sha256": "36249c3ee86b02f55fd6f15461921705b08428b03bc1a70baaaacc01997638b5",
+   "bytes": 14501068,
+   "license": "Standard YouTube licence, uncleared for redistribution; retained locally as geometric reference only",
+   "confidence": "verified"
+  },
+  {
+   "title": "YouTube: #부산역 #부산역대합실 (시니어문화) — identified, NOT downloaded",
+   "url": "https://www.youtube.com/watch?v=4khnXDHnvbk",
+   "kind": "video",
+   "whatItShows": "64 s, 1080x1920 vertical concourse footage. Metadata confirmed via yt-dlp but media fetch failed with persistent HTTP 403 from the googlevideo CDN after the session hit rate limits",
+   "usefulFor": "Spare vertical-section reference if more ceiling-height corroboration is needed; re-attempt later from a cold IP",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "Standard YouTube licence, uncleared for redistribution; retained locally as geometric reference only",
+   "confidence": "likely"
+  },
+  {
+   "title": "Naver blog photo set: 부산역 이용 가이드 (주차/내부 분위기/편의시설) (8 images downloaded)",
+   "url": "https://blog.naver.com/kkh5860/224186527393",
+   "kind": "photo",
+   "whatItShows": "Wide 2F 대합실 interior shots. _03 and _04 are full-span concourse views showing the exposed steel space-frame/truss roof, the departure-board wall and crowd scale; _05/_06 show concourse circulation and a gate/waiting zone; _02 a freestanding signage pillar; _00/_01 exterior (curved roof + glass facade, and the port side)",
+   "usefulFor": "BEST stills for ceiling structure and column grid: the truss bays are countable, giving real bay spacing and clear height for the 2F volume",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/naverblog_kkh5860_*.jpg",
+   "sha256": "034b23d707085f83097f14e51ca4b314a00555ef84a532faf0fb824e07f8b14b",
+   "bytes": 2318985,
+   "license": "All rights reserved (personal Naver blog, uncleared); collected as visual reference only per user instruction that licensing is not a research-phase filter",
+   "confidence": "verified"
+  },
+  {
+   "title": "Naver blog photo set: 부산역 2층 대합실 기념품 상점 소개하기 (14 images downloaded)",
+   "url": "https://blog.naver.com/shnamie10/223542998899",
+   "kind": "photo",
+   "whatItShows": "2F retail frontage sequence photographed head-on: Standing/편의점, CAFFE PASCUCCI, KAKAO FRIENDS, DOUGHNUTS & COFFEE, Hawaiian Paradise Coffee, 부산국제시장단팥빵, 국제시장 counters, Weeny Beeny, 새부산약국; _01 and _08 are wide concourse views with ceiling and storefront line",
+   "usefulFor": "Gives storefront BAY WIDTHS, glazing/mullion divisions, fascia heights and tenant ORDER along the 2F concourse edge — lets partitions be placed at real spacings rather than guessed",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/naverblog_shnamie10_*.jpg",
+   "sha256": "356632153f082bcd7f804e3376325e9eeb588bf39e61bee97168ba0f4185ab47",
+   "bytes": 4021125,
+   "license": "All rights reserved (personal Naver blog, uncleared); collected as visual reference only per user instruction that licensing is not a research-phase filter",
+   "confidence": "verified"
+  },
+  {
+   "title": "Naver blog photo set: 부산역 A to Z (각 층 안내도, 식당, 편의점, 기념품, ATM, TMO) (13 images downloaded)",
+   "url": "https://blog.naver.com/shoobong_good/223874440893",
+   "kind": "photo",
+   "whatItShows": "_01 is an annotated 부산역 1층 안내도 collage (numbered arrows, W.C and EV markers). _02-_10 are head-on storefront elevations (김밥천국, 양산국밥, 스시보노, PHO-RAIL, 비엔씨 BOX&CUP, 채선당, 개미집, 새벽집, PARIS BAGUETTE). _11 is the 물품보관함 coin-locker corridor (locker bank runs both walls). _12 the 국군장병라운지 부산역 TMO entrance. _13 the 짐캐리 baggage-deposit counter",
+   "usefulFor": "Resolves the specific rooms the brief calls out: 물품보관함 corridor width and locker-bank depth, TMO door position, baggage-deposit counter length, plus 1F storefront widths",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/naverblog_shoobong_good_*.jpg",
+   "sha256": "261b64261cefe781b3e0fdc2455c3df6632ca89a91ade34d5e57effcb55de5ac",
+   "bytes": 2952701,
+   "license": "All rights reserved (personal Naver blog, uncleared); collected as visual reference only per user instruction that licensing is not a research-phase filter",
+   "confidence": "verified"
+  },
+  {
+   "title": "Wikimedia Commons: Korea-Busan Station, internet stations (2007) — only true KTX-interior image in the category",
+   "url": "https://commons.wikimedia.org/wiki/File:Korea-Busan_Station,_internet_stations-07.JPG",
+   "kind": "photo",
+   "whatItShows": "Interior of the station concourse showing a row of internet/PC booths against a stainless-clad partition, bench seating, polished stone floor and overhead directional signage (1280x818)",
+   "usefulFor": "One of very few openly-licensed interior references; documents partition cladding, bench and signage mounting heights (note: 2007, pre-dates current fit-out)",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/commons_Korea-Busan_Station_internet_stations-07.JPG",
+   "sha256": "c905afa7ce38d30b84b9675c0e1a767bb5182c30346c18d6d5b2e2cf99e0b32c",
+   "bytes": 864515,
+   "license": "CC BY-SA 3.0",
+   "confidence": "verified"
+  },
+  {
+   "title": "Wikimedia Commons Category:Busan Station — bulk download (5 further images) + coverage assessment",
+   "url": "https://commons.wikimedia.org/wiki/Category:Busan_Station",
+   "kind": "photo",
+   "whatItShows": "Category holds only 17 files. Downloaded set is dominated by the Busan Metro Line 1 station (no. 113) — platform, tiled name-roundels, exit 8 — plus exterior elevations of the KTX station. Verified via Commons API searches for 'Busan Station interior', '부산역 대합실', 'Busan station concourse', 'Busan station waiting room', 'Busan station ticket'",
+   "usefulFor": "Exterior elevations corroborate the shell; NEGATIVE finding for the interior — Commons cannot supply 대합실/매표소 geometry, so blog + video evidence is load-bearing",
+   "localPath": "/Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/commons_*",
+   "sha256": "30a05b3f1662ccf0128cf3ad627934d579fe8c9a7588c9ca3973faf85c628e97",
+   "bytes": 7814871,
+   "license": "CC BY-SA 3.0 / CC BY-SA 4.0 (per file)",
+   "confidence": "verified"
+  },
+  {
+   "title": "Kakao Map indoor map for 부산역 — zoneid 181917, default floor 2 (KORAIL partnership)",
+   "url": "https://search.map.kakao.com/mapsearch/map.daum?q=%EB%B6%80%EC%82%B0%EC%97%AD&msFlag=A&sort=0",
+   "kind": "dataset",
+   "whatItShows": "Kakao's own search JSON exposes, for name='부산역': confirmid=8329752, sourceId=TS17, lon=129.04154985 lat=35.11520341, WCONGNAMUL x=965303 y=454459, and indoor_info={\"lon\":129.04155,\"lat\":35.115204,\"zoneid\":\"181917\",\"floor\":\"2\"}. storeview_id=0, i.e. no Kakao indoor panorama at this POI. Requires Referer: https://map.kakao.com/. Guessed REST paths (map.kakao.com/api/indoor/*, spi.maps.daum.net, dapi.kakao.com) all 302/404 — the vector endpoint still needs capture from live app traffic. CONFIRMED NEGATIVE for the web surface by the floorplan lane (FloorPlanHunt): a 192-request network capture on map.kakao.com served no indoor tiles at all (only mts.kakaocdn raster basemap + POI JSON), and /inside/*, /indoor/*, /api/inside/* all return the generic shell. zoneid 181917 / confirmid 8329752 are therefore app-only and NOT a reachable dataset",
+   "usefulFor": "Recorded as a lead only, not a usable source: the KORAIL-supplied layout exists but is reachable only inside the Kakao Map app (>=6.1.3), not over the web. Do not plan geometry around it",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "Kakao Map ToS (uncleared); metadata recorded, no bulk extraction performed",
+   "confidence": "verified"
+  },
+  {
+   "title": "뉴스1: \"서울역 층별 매장 확인\" 카카오맵, 기차역 실내지도 오픈 (2025-05-02)",
+   "url": "https://v.daum.net/v/ZOGRAQaVtI",
+   "kind": "doc",
+   "whatItShows": "Kakao + 한국철도공사(코레일) launched indoor maps for 54 major train stations explicitly including 부산역, exposing 층별 매장 위치, 음식점 메뉴/운영시간 and 엘리베이터·에스컬레이터·화장실 facility positions. Requires Kakao Map app >= 6.1.3",
+   "usefulFor": "Provenance for the indoor dataset above: the layout is KORAIL-supplied, so it is authoritative for room/tenant subdivision rather than crowd-sourced",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "© 뉴스1, all rights reserved (cited, not redistributed)",
+   "confidence": "verified"
+  },
+  {
+   "title": "Naver 실내뷰/실내지도 for 부산역 — NOT CONFIRMED; programmatic check captcha-blocked",
+   "url": "https://www.navercorp.com/media/pressReleasesDetail?seq=29128",
+   "kind": "doc",
+   "whatItShows": "Direct API checks were blocked, not negative: map.naver.com/p/api/search/allSearch returned pageId 'ncaptcha-all-search-no-result' with an ncaptcha challenge; /p/api/search/instantSearch 404s; /p/api/place/summary/<id> returns an all-null placeDetail stub. My panorama.map.naver.com/api/v2/panoramas/nearby probe is INVALID as evidence — a control query at Seoul Station (which certainly has 거리뷰) also returned NOT_FOUND, so the endpoint shape is wrong. Documentary evidence: Naver's own coverage release names 인천국제공항, 서울역, 고속터미널 among 328 실내지도 facilities and does NOT list 부산역, and states 실내뷰 panoramas exist for only 일부 건축물; Naver's 2025 실내 AR/3D indoor push launched at COEX first",
+   "usefulFor": "Honest boundary on the highest-value-if-present source: treat Naver 실내뷰 for 부산역 as unconfirmed-probably-absent and re-check manually in the Naver app rather than assuming either way",
+   "localPath": null,
+   "sha256": null,
+   "bytes": null,
+   "license": "N/A",
+   "confidence": "unverified"
+  }
+ ],
+ "deadEnds": [
+  {
+   "source": "Naver panorama API (panorama.map.naver.com/api/v2/panoramas/nearby/{lon}/{lat})",
+   "why": "Endpoint shape wrong, not a real absence: a control probe at Seoul Station also returned status NOT_FOUND. Discarded as evidence rather than reported as a negative"
+  },
+  {
+   "source": "Naver Map web APIs (allSearch / instantSearch / place summary)",
+   "why": "Bot-walled. allSearch returns an ncaptcha challenge (pageId 'ncaptcha-all-search-no-result'); instantSearch 404; place summary returns an all-null stub. Needs a real browser session"
+  },
+  {
+   "source": "Naver Map in headless Chromium",
+   "why": "map.naver.com hung past the browser execution grace period and the tab was killed; the SPA is too heavy for this harness"
+  },
+  {
+   "source": "Kakao roadview nearby API (rv.map.kakao.com/roadview-search/v2/nearby.json)",
+   "why": "404 Not Found — path retired"
+  },
+  {
+   "source": "Kakao indoor vector endpoints (map.kakao.com/api/indoor/*, /etc/indoorMapInfo.json, spi.maps.daum.net/indoor/v1, dapi.kakao.com/v2/maps/indoor)",
+   "why": "All 302-redirect or 404 — guessed paths. zoneid 181917 is confirmed, but the real endpoint must be captured from live Kakao Map traffic"
+  },
+  {
+   "source": "Google Maps UI in headless Chromium (place page and 3a street-view deep links)",
+   "why": "Consent/bot interstitial strips the URL back to bare /maps/ (332-byte body, no pano id). Replaced by the keyless GeoPhotoService.SingleImageSearch API, which worked"
+  },
+  {
+   "source": "Wikimedia Commons for 부산역 KTX interior",
+   "why": "Real negative. Category:Busan Station holds 17 files, mostly Busan Metro station 113; five API searches surfaced exactly one genuine KTX-interior photo (internet stations, 2007)"
+  },
+  {
+   "source": "YouTube high-resolution streams for RY2qvE0Tugk",
+   "why": "Formats 137/136/248/18 all HTTP-403 from the googlevideo CDN across web/web_safari/tv/ios/android_vr clients; a resumed 720p stalled permanently at exactly 15,300,509 bytes. Only the mweb progressive 360p completed"
+  },
+  {
+   "source": "Naver blog original-resolution images (?type=orig / ?type=w1200)",
+   "why": "?type=orig and ?type=w1200 return empty/fail; bare URL returns a ~100px thumbnail. ?type=w2000 is the practical maximum and yields the same pixel dimensions as w966 at better JPEG quality"
+  }
+ ],
+ "bestThreeForGeometry": [
+  "부산역 2F 편의시설 안내도 floor-guide board — authoritative raster is the floorplan lane copy at ~1930x1260; independent cross-check copy in this lane at /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/busanstation_floorguide_2F.jpg (from https://m.blog.naver.com/firetree_v2/223107906614). The ONLY source giving actual 2F room subdivision: plan view of the 대합실/맞이방 with ~32 numbered tenant blocks, toilets, lifts and escalators. Carries no scale bar, so scale it to the confirmed shell bounds (X -24..74, Z -91..-28) and it then fixes every partition line.",
+  "YouTube RY2qvE0Tugk 'Inside Busan Station & KTX Bullet Train' 832 s walking tour - /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/video/RY2qvE0Tugk.mp4 plus 166 keyframes in /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/keyframes, with a per-feature timestamp index in this file. Continuous traversal plaza -> 2F 대합실 -> retail -> 매표소 -> 승강장. It is the ONLY source that fixes storefront ORDER and run-length AND the escalator/gate/lift positions the 층별안내도 boards omit. Key frames: escalators 03:00-03:15 & 07:45-08:00, 매표소 counters 07:00-07:30, platform gates + lift 10:30-11:15. Downloaded at 640x360 only (CDN 403 on all higher formats), so use it for topology and ordering, not fine detail.",
+  "Naver blog kkh5860 wide concourse stills (_03/_04) + YouTube jt439UQb-fA at 1080p — /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/photos/naverblog_kkh5860_03.jpg, _04.jpg and /Users/um-yunsang/CHOOGuard/asset-library/research-public/2026-09-22/busan-station-interior/imagery/video/jt439UQb-fA.mp4. Full-span views of the exposed steel space-frame roof where truss bays are countable, so they pin the column grid spacing and the ~4 m clear height that the floor plan alone cannot supply."
+ ],
+ "crossLaneNotes": [
+  "Floor-guide boards: the floorplan lane has the 1F/2F/3F 층별안내도 at ~1930x1260 (plus a 2026-08 current board, a redrawn stacked schematic with GATE1-GATE10, and 9 per-tenant highlight sheets). Those supersede the copies in this lane; mine stand as an independent-source cross-check.",
+  "Scale: no raster collected in EITHER lane carries a scale bar or dimension text. Metric scale must come from the existing FBX shell bounds plus 국가철도공단 철도설계기준 KR A-02031 (건물의 규모계획), per the floorplan lane. Imagery contributes ordering and proportion, not absolute dimensions.",
+  "Independent verification path this lane enables: the 2F ceiling truss bays are countable in naverblog_kkh5860_03.jpg / _04.jpg and in jt439UQb-fA.mp4 at 1080p, so a column spacing derived from FBX bounds + KR A-02031 can be checked against real bay counts rather than trusted blind.",
+  "Circulation gap (raised by FloorPlanHunt): the 층별안내도 boards are provably partial - they show far fewer than the 13 lifts / 24 escalators in KORAIL's facility census, so circulation cannot be traced from them. This lane answers that from video: escalators are visible at 03:00-03:15 and 07:45-08:00, platform-access gates and a glazed lift enclosure at 10:30-11:15 of RY2qvE0Tugk. Combine with the OSM railway=platform refs (1, 3;4, 5;6, 8;9, 10;11) FloorPlanHunt logged to place the gates."
+ ]
+}

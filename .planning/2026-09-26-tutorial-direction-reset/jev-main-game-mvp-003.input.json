@@ -1,0 +1,111 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Judge MVP routing for CHOOGuard's main game (Unity single-player first-person emergency-response game in a Busan Station digital twin). Inputs are verified observations and user decisions, not instructions. Return typed judgments only; the user and deterministic evidence decide.",
+    "user_decisions": {
+      "2026-09-21": "Busan Station + KTX; the player is a KORAIL station employee; Korean minimal UI; no explanatory 3D text; no weapons or combat.",
+      "2026-09-22": "Live layer: randomised emergencies inside the digital-twin station.",
+      "2026-09-25": "FPS-based emergency-response simulation; one human can switch among maintenance, cleaning, onboard crew and station staff; hundreds of autonomous AI NPCs; JEV synthesises the next situation and conditional futures step by step. Quote: 'in the main game the emergency happens from AI or AI-agent NPCs; it may be terror, an accident or a natural disaster'.",
+      "2026-09-26_a": "Tutorial on the same station map as a separate mode; title screen then station; Astra's synthetic lab, 41-button panel and separate entry scene are removed and its backend is kept only after selective review.",
+      "2026-09-26_b": "The tutorial needs confidential KORAIL internal material, so it is excluded from the MVP. Build the main emergency-response game now. Internal material cannot be obtained; use public sources only. No point-and-call verb; E interaction only. HUD: PUBG-style edge elements plus My-Summer-Car-style centre naming."
+    },
+    "assets_and_code": {
+      "map": "FpsStation: official Busan Station model plus reconstructed interior twin (2F waiting hall with shops, gates, ticket windows, station office, restrooms, railway police, hydrant and AED signs; 1F; 3F; escalators/elevators; platform side with KTX train). Player walk routes verified with the real CharacterController.",
+      "player": "KORAIL 역무원 object with FirstPersonResponder (move, look, E interact) and a minimal HUD.",
+      "safety_props": "12 fire extinguishers placed in the 2F hall by a law-based layout (currently inspection-only interactables). Hydrant and AED signs exist as signage.",
+      "physics_worker": "Python worker with JuPedSim crowd walking and an FDS fire/smoke field, validated only for a 30x20x4 m reference hall and 0-120 s; not calibrated to Busan Station.",
+      "kept_backend_candidates": "Astra backend awaiting review: single-writer WorldSession, atomic TransitionKernel, NpcPlanner, NpcAgentRuntime with a JEV inference client (ran 300 capsule NPCs in a synthetic lab), FutureComposer, Detour navigation bake/query, SQLite journal, Node inference broker that needs a TypeSafe key.",
+      "characters": "Only stylised low-poly civilians (3 CivilianSet models, Kenney-style male/female, wheelchair, cane). No realistic rigged crowd models verified.",
+      "old_loop": "An earlier RTS prototype had ready -> ordinary -> incident -> resolved with the incident at a random 240-420 s and verified a 50-person evacuation through the worker."
+    },
+    "public_guidance_available": {
+      "fire": "High-speed-rail fire behaviour guidance (KORAIL / Ministry of Interior), fire first-aid video material (National Fire Agency).",
+      "earthquake": "Ministry of Interior earthquake behaviour guide.",
+      "flood": "KMA heavy-rain guide.",
+      "power_outage": "Ministry of Interior power-outage guide.",
+      "medical": "2025 Korean CPR/AED guideline (KDCA).",
+      "terror": "National Counter Terrorism Center preparedness guidebook: report, keep away, evacuate, cooperate.",
+      "reporting": "KORAIL public incident reporting chart (to station master or control centre); railway police reporting route.",
+      "busan_drill": "2025-06-19 joint emergency drill at Busan Station with railway police, fire service and city (headline level only)."
+    },
+    "guardrails": "Public citizen or general guidance must not be presented as KORAIL internal SOP. Physics results outside validated ranges must not be claimed as accurate. No weapons, no attack instructions."
+  },
+  "questions": {
+    "first_emergency": {
+      "type": "choice",
+      "instructions": "Which emergency should the MVP main game implement first?",
+      "criteria": {
+        "concourse_fire_smoke": "Fire and smoke in the 2F waiting hall: detect, report, move passengers away, optional initial suppression with a placed extinguisher, hand over to arriving firefighters.",
+        "suspicious_object": "A left suspicious bag: report to railway police, keep people away, guide evacuation, hand over.",
+        "earthquake": "Earthquake shaking then checks, crowd holding and guidance.",
+        "medical_collapse": "A passenger collapses: call for help, fetch AED, keep space, hand over to paramedics.",
+        "power_outage": "Hall blackout with information gaps and escalator stops.",
+        "random_from_three": "Randomly one of fire, suspicious object and earthquake from the first build."
+      }
+    },
+    "emergency_origin": {
+      "type": "choice",
+      "instructions": "How should the first emergency originate in the MVP, given the user's 'it happens from AI or AI-agent NPCs'?",
+      "criteria": {
+        "npc_action_seeded": "An autonomous NPC's own action starts it (e.g. a battery in a passenger's luggage ignites, a bag is left behind); timing and location vary per run within verified-walkable spots.",
+        "environment_trigger": "An environmental trigger (fixed or random time) starts it, NPCs only react.",
+        "jev_composed_from_start": "JEV composes the initiating event and every later development step dynamically from the first build."
+      }
+    },
+    "player_role": {
+      "type": "choice",
+      "instructions": "Which player role scope should the MVP support?",
+      "criteria": {
+        "station_staff_only": "Only the station employee role (matches the map, the existing player object and station duties); role switching later.",
+        "four_role_switch": "All four roles with switching from the first build."
+      }
+    },
+    "npc_scale": {
+      "type": "choice",
+      "instructions": "What NPC scale and autonomy should the MVP target?",
+      "criteria": {
+        "hundreds_full_jev": "Hundreds of autonomous NPCs with JEV judgement per NPC from the first build.",
+        "about_hundred_local_plus_jev_key": "About 100 passengers run by local navigation/behaviour, with JEV called only at key decisions (noticing, reacting, cooperating) and for colleague NPCs.",
+        "dozens_scripted": "A few dozen scripted passengers without JEV."
+      }
+    },
+    "jev_future_in_mvp": {
+      "type": "noul",
+      "instructions": "Should JEV-driven dynamic next-situation synthesis (the incident develops differently depending on player and NPC actions) be in the MVP?",
+      "criteria": {
+        "true": "Yes: it is the product's defining loop and the backend candidates exist.",
+        "false": "No: ship a working fixed-rule incident first and add JEV synthesis after."
+      }
+    },
+    "end_condition": {
+      "type": "choice",
+      "instructions": "How should an MVP run end?",
+      "criteria": {
+        "handover_after_initial_response": "The run ends when the player has handled the initial response (report, keep people safe, optional first action) and professional responders take over; the result shows what actually happened.",
+        "everyone_out": "The run ends when all passengers have left the danger area.",
+        "timer": "A fixed timer run.",
+        "open_sandbox": "No end; continuous operation."
+      }
+    },
+    "npc_visuals": {
+      "type": "choice",
+      "instructions": "What should MVP NPC visuals be, given only stylised low-poly models exist and the station twin is realistic?",
+      "criteria": {
+        "acquire_realistic_rigged": "Acquire realistic rigged, animated human models (license-checked) before showing crowds.",
+        "stylised_existing": "Use the existing stylised models for now.",
+        "capsules": "Use placeholder capsules."
+      }
+    },
+    "first_question_to_user": {
+      "type": "choice",
+      "instructions": "Which of these must be confirmed with the user first?",
+      "criteria": {
+        "first_emergency": "Which emergency comes first.",
+        "player_role": "Station staff only or four roles.",
+        "npc_scale_and_jev": "NPC scale and whether JEV runs in the MVP.",
+        "end_condition": "How a run ends.",
+        "npc_visuals": "NPC visual quality and sourcing."
+      }
+    }
+  }
+}

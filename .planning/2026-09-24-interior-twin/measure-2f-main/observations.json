@@ -1,0 +1,2243 @@
+{
+ "schema": "chooguard.1f-registered-observation.v1",
+ "lane": "measure-2f-main",
+ "author": "MeasureMain2F",
+ "createdUtc": "2026-09-24T16:12:26Z",
+ "frame": "station UVY source-model units (not surveyed metres); heights relative to the fitted 2F walking floor (Y = 7.0 + h if the slab top is 7.0)",
+ "thresholds": "thresholds.json (fixed before results)",
+ "tierRules": {
+  "a": "registered scale chain + random-point and even/odd frame-disjoint held-out pass + independent gauge within 10%",
+  "a-failed": "registered but a held-out gate fails",
+  "b": "relative/chain position without positional held-out, or local-frame only",
+  "c": "bracketed only"
+ },
+ "summary": {
+  "lowCeilingHeightU": 3.47,
+  "lowCeilingSpreadU": [
+   3.41,
+   3.58
+  ],
+  "crossSource": {
+   "HC-2023": [
+    3.41,
+    3.5
+   ],
+   "HC-gate7-hall": 3.58,
+   "RY-2023": [
+    3.44,
+    3.56
+   ],
+   "ascent-2026-03": [
+    3.42,
+    3.53
+   ]
+  },
+  "soffitsU": {
+   "lounge": 2.89,
+   "storyway": 2.87,
+   "gate7Vestibule": 2.72,
+   "cafeBulkhead": 2.97
+  },
+  "doubleHallCeilingU": [
+   9.0,
+   10.7
+  ],
+  "corridorClearWidthU": 5.5,
+  "corridorFaceLinesV": {
+   "left(+V)": -22.95,
+   "right(-V)": [
+    -28.15,
+    -28.54
+   ]
+  },
+  "ticketWallV": -3.31
+ },
+ "components": [
+  {
+   "componentId": "M-LOWCEIL/gate7-hall",
+   "feature": "suspended ceiling plane, HC segment gate7-hall",
+   "segment": "HC-450 isolated 121-247 dense (ulsba)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.579,
+    "heightAboveGlobalCorridorFloorU": 3.569,
+    "yIfFloor7": 10.579,
+    "extentU": [
+     -29.7,
+     107.9
+    ],
+    "tiltDeg": 0.44
+   },
+   "fit": {
+    "points": 7262,
+    "inliers": 4675,
+    "inlierRMSU": 0.0279,
+    "floorPlanePoints": 3001,
+    "floorInliers": 2696,
+    "floorRMSU": 0.0156
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0186,
+    "randomPointsWithinThrFraction": 0.913,
+    "evenFramesZU": 3.563,
+    "oddFramesZU": 3.555,
+    "evenOddDiffU": 0.008,
+    "evenN": 56,
+    "oddN": 55,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-HC-UL-CHAIN (scale); height datum = walking floor",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ],
+   "notes": "Height relative to the fitted 2F walking floor; absolute Y assumes the 2F floor top at 7.0. Scale from registered chain (vestibule Sim3 -> hc0 gate frames -> isolated HC 121-247), cross-checked by camera height and pedestrian heights."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, HC segment corr-A",
+   "segment": "HC-450 isolated 121-247 dense (ulsba)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.428,
+    "heightAboveGlobalCorridorFloorU": 3.504,
+    "yIfFloor7": 10.428,
+    "extentU": [
+     -270.7,
+     -133.1
+    ],
+    "tiltDeg": 0.19
+   },
+   "fit": {
+    "points": 23716,
+    "inliers": 15760,
+    "inlierRMSU": 0.0281,
+    "floorPlanePoints": 255,
+    "floorInliers": 86,
+    "floorRMSU": 0.0248
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0176,
+    "randomPointsWithinThrFraction": 0.952,
+    "evenFramesZU": 3.518,
+    "oddFramesZU": 3.516,
+    "evenOddDiffU": 0.001,
+    "evenN": 154,
+    "oddN": 178,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-HC-UL-CHAIN (scale); height datum = walking floor",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ],
+   "notes": "Height relative to the fitted 2F walking floor; absolute Y assumes the 2F floor top at 7.0. Scale from registered chain (vestibule Sim3 -> hc0 gate frames -> isolated HC 121-247), cross-checked by camera height and pedestrian heights."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, HC segment corr-B",
+   "segment": "HC-450 isolated 121-247 dense (ulsba)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.432,
+    "heightAboveGlobalCorridorFloorU": 3.486,
+    "yIfFloor7": 10.432,
+    "extentU": [
+     -408.4,
+     -270.9
+    ],
+    "tiltDeg": 0.12
+   },
+   "fit": {
+    "points": 25933,
+    "inliers": 17227,
+    "inlierRMSU": 0.0294,
+    "floorPlanePoints": 464,
+    "floorInliers": 316,
+    "floorRMSU": 0.0229
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0202,
+    "randomPointsWithinThrFraction": 0.955,
+    "evenFramesZU": 3.491,
+    "oddFramesZU": 3.483,
+    "evenOddDiffU": 0.009,
+    "evenN": 197,
+    "oddN": 207,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-HC-UL-CHAIN (scale); height datum = walking floor",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ],
+   "notes": "Height relative to the fitted 2F walking floor; absolute Y assumes the 2F floor top at 7.0. Scale from registered chain (vestibule Sim3 -> hc0 gate frames -> isolated HC 121-247), cross-checked by camera height and pedestrian heights."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, HC segment corr-C",
+   "segment": "HC-450 isolated 121-247 dense (ulsba)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.411,
+    "heightAboveGlobalCorridorFloorU": 3.483,
+    "yIfFloor7": 10.411,
+    "extentU": [
+     -546.2,
+     -408.6
+    ],
+    "tiltDeg": 0.17
+   },
+   "fit": {
+    "points": 16833,
+    "inliers": 10259,
+    "inlierRMSU": 0.0311,
+    "floorPlanePoints": 435,
+    "floorInliers": 233,
+    "floorRMSU": 0.025
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0238,
+    "randomPointsWithinThrFraction": 0.879,
+    "evenFramesZU": 3.486,
+    "oddFramesZU": 3.491,
+    "evenOddDiffU": 0.005,
+    "evenN": 111,
+    "oddN": 110,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-HC-UL-CHAIN (scale); height datum = walking floor",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ],
+   "notes": "Height relative to the fitted 2F walking floor; absolute Y assumes the 2F floor top at 7.0. Scale from registered chain (vestibule Sim3 -> hc0 gate frames -> isolated HC 121-247), cross-checked by camera height and pedestrian heights."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, HC segment corr-D",
+   "segment": "HC-450 isolated 121-247 dense (ulsba)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.457,
+    "heightAboveGlobalCorridorFloorU": 3.466,
+    "yIfFloor7": 10.457,
+    "extentU": [
+     -683.9,
+     -546.3
+    ],
+    "tiltDeg": 0.46
+   },
+   "fit": {
+    "points": 9326,
+    "inliers": 5848,
+    "inlierRMSU": 0.0298,
+    "floorPlanePoints": 144,
+    "floorInliers": 73,
+    "floorRMSU": 0.0279
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.022,
+    "randomPointsWithinThrFraction": 0.89,
+    "evenFramesZU": 3.464,
+    "oddFramesZU": 3.469,
+    "evenOddDiffU": 0.004,
+    "evenN": 61,
+    "oddN": 55,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-HC-UL-CHAIN (scale); height datum = walking floor",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ],
+   "notes": "Height relative to the fitted 2F walking floor; absolute Y assumes the 2F floor top at 7.0. Scale from registered chain (vestibule Sim3 -> hc0 gate frames -> isolated HC 121-247), cross-checked by camera height and pedestrian heights."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, HC segment corr-E",
+   "segment": "HC-450 isolated 121-247 dense (ulsba)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.501,
+    "heightAboveGlobalCorridorFloorU": 3.494,
+    "yIfFloor7": 10.501,
+    "extentU": [
+     -867.5,
+     -684.1
+    ],
+    "tiltDeg": 0.33
+   },
+   "fit": {
+    "points": 27139,
+    "inliers": 16695,
+    "inlierRMSU": 0.0313,
+    "floorPlanePoints": 305,
+    "floorInliers": 117,
+    "floorRMSU": 0.0232
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0229,
+    "randomPointsWithinThrFraction": 0.889,
+    "evenFramesZU": 3.503,
+    "oddFramesZU": 3.454,
+    "evenOddDiffU": 0.049,
+    "evenN": 197,
+    "oddN": 202,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-HC-UL-CHAIN (scale); height datum = walking floor",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ],
+   "notes": "Height relative to the fitted 2F walking floor; absolute Y assumes the 2F floor top at 7.0. Scale from registered chain (vestibule Sim3 -> hc0 gate frames -> isolated HC 121-247), cross-checked by camera height and pedestrian heights."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, RY segment (cross-video check)",
+   "segment": "RY2-330 ry-shops dense (frames 342-439)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.436,
+    "yIfFloor7": 10.436,
+    "extentU": [
+     -23.3,
+     -17.2
+    ],
+    "tiltDeg": 1.49
+   },
+   "fit": {
+    "points": 5851,
+    "inliers": 4038,
+    "inlierRMSU": 0.029
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0209,
+    "evenFramesZU": 3.545,
+    "oddFramesZU": 3.575,
+    "evenOddDiffU": 0.03,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-RY-CHAIN",
+   "frames": [
+    "000342.jpg",
+    "000350.jpg",
+    "000358.jpg",
+    "000366.jpg",
+    "000374.jpg",
+    "000382.jpg",
+    "000390.jpg",
+    "000398.jpg",
+    "000406.jpg",
+    "000414.jpg",
+    "000422.jpg",
+    "000430.jpg",
+    "000438.jpg"
+   ],
+   "notes": "RY scale inherits ryToHc (7 architectural controls, leave-family-out scale spread ~±5%)."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, RY segment (cross-video check)",
+   "segment": "RY2-330 ry-shops dense (frames 342-439)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.538,
+    "yIfFloor7": 10.538,
+    "extentU": [
+     -17.2,
+     -11.2
+    ],
+    "tiltDeg": 0.4
+   },
+   "fit": {
+    "points": 23812,
+    "inliers": 16215,
+    "inlierRMSU": 0.0289
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0191,
+    "evenFramesZU": 3.543,
+    "oddFramesZU": 3.54,
+    "evenOddDiffU": 0.003,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-RY-CHAIN",
+   "frames": [
+    "000342.jpg",
+    "000350.jpg",
+    "000358.jpg",
+    "000366.jpg",
+    "000374.jpg",
+    "000382.jpg",
+    "000390.jpg",
+    "000398.jpg",
+    "000406.jpg",
+    "000414.jpg",
+    "000422.jpg",
+    "000430.jpg",
+    "000438.jpg"
+   ],
+   "notes": "RY scale inherits ryToHc (7 architectural controls, leave-family-out scale spread ~±5%)."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, RY segment (cross-video check)",
+   "segment": "RY2-330 ry-shops dense (frames 342-439)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.506,
+    "yIfFloor7": 10.506,
+    "extentU": [
+     -11.2,
+     -5.1
+    ],
+    "tiltDeg": 0.88
+   },
+   "fit": {
+    "points": 12068,
+    "inliers": 8005,
+    "inlierRMSU": 0.0325
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0237,
+    "evenFramesZU": 3.521,
+    "oddFramesZU": 3.509,
+    "evenOddDiffU": 0.011,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-RY-CHAIN",
+   "frames": [
+    "000342.jpg",
+    "000350.jpg",
+    "000358.jpg",
+    "000366.jpg",
+    "000374.jpg",
+    "000382.jpg",
+    "000390.jpg",
+    "000398.jpg",
+    "000406.jpg",
+    "000414.jpg",
+    "000422.jpg",
+    "000430.jpg",
+    "000438.jpg"
+   ],
+   "notes": "RY scale inherits ryToHc (7 architectural controls, leave-family-out scale spread ~±5%)."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, RY segment (cross-video check)",
+   "segment": "RY2-330 ry-shops dense (frames 342-439)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.517,
+    "yIfFloor7": 10.517,
+    "extentU": [
+     -5.1,
+     0.9
+    ],
+    "tiltDeg": 0.75
+   },
+   "fit": {
+    "points": 24893,
+    "inliers": 16752,
+    "inlierRMSU": 0.0262
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0175,
+    "evenFramesZU": 3.522,
+    "oddFramesZU": 3.524,
+    "evenOddDiffU": 0.002,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-RY-CHAIN",
+   "frames": [
+    "000342.jpg",
+    "000350.jpg",
+    "000358.jpg",
+    "000366.jpg",
+    "000374.jpg",
+    "000382.jpg",
+    "000390.jpg",
+    "000398.jpg",
+    "000406.jpg",
+    "000414.jpg",
+    "000422.jpg",
+    "000430.jpg",
+    "000438.jpg"
+   ],
+   "notes": "RY scale inherits ryToHc (7 architectural controls, leave-family-out scale spread ~±5%)."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, RY segment (cross-video check)",
+   "segment": "RY2-330 ry-shops dense (frames 342-439)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.477,
+    "yIfFloor7": 10.477,
+    "extentU": [
+     0.9,
+     6.9
+    ],
+    "tiltDeg": 0.35
+   },
+   "fit": {
+    "points": 18520,
+    "inliers": 11093,
+    "inlierRMSU": 0.0299
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0208,
+    "evenFramesZU": 3.508,
+    "oddFramesZU": 3.428,
+    "evenOddDiffU": 0.08,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-RY-CHAIN",
+   "frames": [
+    "000342.jpg",
+    "000350.jpg",
+    "000358.jpg",
+    "000366.jpg",
+    "000374.jpg",
+    "000382.jpg",
+    "000390.jpg",
+    "000398.jpg",
+    "000406.jpg",
+    "000414.jpg",
+    "000422.jpg",
+    "000430.jpg",
+    "000438.jpg"
+   ],
+   "notes": "RY scale inherits ryToHc (7 architectural controls, leave-family-out scale spread ~±5%)."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, RY segment (cross-video check)",
+   "segment": "RY2-330 ry-shops dense (frames 342-439)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.555,
+    "yIfFloor7": 10.555,
+    "extentU": [
+     6.9,
+     13.0
+    ],
+    "tiltDeg": 0.38
+   },
+   "fit": {
+    "points": 4043,
+    "inliers": 1794,
+    "inlierRMSU": 0.0358
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0348,
+    "evenFramesZU": 3.566,
+    "oddFramesZU": 3.565,
+    "evenOddDiffU": 0.002,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-RY-CHAIN",
+   "frames": [
+    "000342.jpg",
+    "000350.jpg",
+    "000358.jpg",
+    "000366.jpg",
+    "000374.jpg",
+    "000382.jpg",
+    "000390.jpg",
+    "000398.jpg",
+    "000406.jpg",
+    "000414.jpg",
+    "000422.jpg",
+    "000430.jpg",
+    "000438.jpg"
+   ],
+   "notes": "RY scale inherits ryToHc (7 architectural controls, leave-family-out scale spread ~±5%)."
+  },
+  {
+   "componentId": "M-LOWCEIL",
+   "feature": "suspended ceiling plane, RY segment (cross-video check)",
+   "segment": "RY2-330 ry-shops dense (frames 342-439)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal plane",
+    "heightAboveWalkingFloorU": 3.541,
+    "yIfFloor7": 10.541,
+    "extentU": [
+     13.0,
+     19.0
+    ],
+    "tiltDeg": 1.34
+   },
+   "fit": {
+    "points": 12795,
+    "inliers": 8060,
+    "inlierRMSU": 0.0283
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0207,
+    "evenFramesZU": 3.545,
+    "oddFramesZU": 3.55,
+    "evenOddDiffU": 0.005,
+    "passes": true
+   },
+   "evidenceClass": "a",
+   "registration": "REG-RY-CHAIN",
+   "frames": [
+    "000342.jpg",
+    "000350.jpg",
+    "000358.jpg",
+    "000366.jpg",
+    "000374.jpg",
+    "000382.jpg",
+    "000390.jpg",
+    "000398.jpg",
+    "000406.jpg",
+    "000414.jpg",
+    "000422.jpg",
+    "000430.jpg",
+    "000438.jpg"
+   ],
+   "notes": "RY scale inherits ryToHc (7 architectural controls, leave-family-out scale spread ~±5%)."
+  },
+  {
+   "componentId": "M-LOWCEIL/escalator-landing",
+   "feature": "suspended ceiling plane over the 1F↔2F escalator upper landing concourse (B&C side)",
+   "segment": "local-ascent model 0 ABH box A6.5-9 B-3-1 (ABH units)",
+   "epoch": "2026-03",
+   "geometryUVY": {
+    "type": "horizontal plane (local ABH frame, no UVY)",
+    "heightAboveWalkingFloorU": 3.498,
+    "yIfFloor7": 10.498,
+    "tiltDeg": 3.66
+   },
+   "fit": {
+    "points": 135,
+    "inliers": 46,
+    "inlierRMSU": 0.0424
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0556,
+    "evenFramesZU": 3.492,
+    "oddFramesZU": 3.395,
+    "evenOddDiffU": 0.098,
+    "passes": false
+   },
+   "evidenceClass": "a-failed",
+   "registration": "REG-ASC-PEOPLE (relative, pedestrian-height gauge)",
+   "frames": [
+    "000262.jpg",
+    "000272.jpg",
+    "000282.jpg",
+    "000292.jpg",
+    "000302.jpg",
+    "000312.jpg",
+    "000322.jpg",
+    "000332.jpg",
+    "000342.jpg",
+    "000352.jpg",
+    "000362.jpg",
+    "000372.jpg"
+   ],
+   "notes": "Independent video + independent gauge (pedestrian heights, 60 detections). Not placed in UVY."
+  },
+  {
+   "componentId": "M-LOWCEIL/escalator-landing",
+   "feature": "suspended ceiling plane over the 1F↔2F escalator upper landing concourse (B&C side)",
+   "segment": "local-ascent model 0 ABH box A8-11 B-6--2 (ABH units)",
+   "epoch": "2026-03",
+   "geometryUVY": {
+    "type": "horizontal plane (local ABH frame, no UVY)",
+    "heightAboveWalkingFloorU": 3.53,
+    "yIfFloor7": 10.53,
+    "tiltDeg": 1.19
+   },
+   "fit": {
+    "points": 780,
+    "inliers": 451,
+    "inlierRMSU": 0.0348
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0355,
+    "evenFramesZU": 3.563,
+    "oddFramesZU": 3.564,
+    "evenOddDiffU": 0.001,
+    "passes": true
+   },
+   "evidenceClass": "b",
+   "registration": "REG-ASC-PEOPLE (relative, pedestrian-height gauge)",
+   "frames": [
+    "000262.jpg",
+    "000272.jpg",
+    "000282.jpg",
+    "000292.jpg",
+    "000302.jpg",
+    "000312.jpg",
+    "000322.jpg",
+    "000332.jpg",
+    "000342.jpg",
+    "000352.jpg",
+    "000362.jpg",
+    "000372.jpg"
+   ],
+   "notes": "Independent video + independent gauge (pedestrian heights, 60 detections). Not placed in UVY."
+  },
+  {
+   "componentId": "M-LOWCEIL/escalator-landing",
+   "feature": "suspended ceiling plane over the 1F↔2F escalator upper landing concourse (B&C side)",
+   "segment": "local-ascent model 0 ABH box A8-12 B-9--5 (ABH units)",
+   "epoch": "2026-03",
+   "geometryUVY": {
+    "type": "horizontal plane (local ABH frame, no UVY)",
+    "heightAboveWalkingFloorU": 3.417,
+    "yIfFloor7": 10.417,
+    "tiltDeg": 0.55
+   },
+   "fit": {
+    "points": 1605,
+    "inliers": 904,
+    "inlierRMSU": 0.0364
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.036,
+    "evenFramesZU": 3.491,
+    "oddFramesZU": 3.491,
+    "evenOddDiffU": 0.0,
+    "passes": true
+   },
+   "evidenceClass": "b",
+   "registration": "REG-ASC-PEOPLE (relative, pedestrian-height gauge)",
+   "frames": [
+    "000262.jpg",
+    "000272.jpg",
+    "000282.jpg",
+    "000292.jpg",
+    "000302.jpg",
+    "000312.jpg",
+    "000322.jpg",
+    "000332.jpg",
+    "000342.jpg",
+    "000352.jpg",
+    "000362.jpg",
+    "000372.jpg"
+   ],
+   "notes": "Independent video + independent gauge (pedestrian heights, 60 detections). Not placed in UVY."
+  },
+  {
+   "componentId": "SOFFIT-GATE7-VESTIBULE",
+   "feature": "vestibule soffit / inner glass-bank head between Gate 7 door banks",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal patch",
+    "heightAboveWalkingFloorU": 2.72,
+    "yIfFloor7": 9.72,
+    "boundsUV": [
+     [
+      1.1,
+      -29.5
+     ],
+     [
+      15.3,
+      -26.4
+     ]
+    ]
+   },
+   "fit": {
+    "method": "dense horizontal-normal cluster median"
+   },
+   "heldOut": {
+    "method": "none (cluster statistic only)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000121.jpg",
+    "000131.jpg",
+    "000141.jpg",
+    "000151.jpg",
+    "000161.jpg",
+    "000171.jpg",
+    "000181.jpg",
+    "000191.jpg",
+    "000201.jpg",
+    "000211.jpg",
+    "000221.jpg",
+    "000231.jpg",
+    "000241.jpg"
+   ],
+   "notes": "matches source Gate 7 bank top Y 9.7 (2.70 above 7.0) within 0.05 u; identity of the inner automatic bank unresolved in source"
+  },
+  {
+   "componentId": "SOFFIT-KORAIL-LOUNGE",
+   "feature": "KORAIL LOUNGE interior ceiling (lower than corridor)",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal patch",
+    "heightAboveWalkingFloorU": 2.89,
+    "yIfFloor7": 9.89,
+    "boundsUV": [
+     [
+      -33.3,
+      -35.1
+     ],
+     [
+      -32.3,
+      -30.8
+     ]
+    ]
+   },
+   "fit": {
+    "method": "dense horizontal-normal cluster median"
+   },
+   "heldOut": {
+    "method": "none (cluster statistic only)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000121.jpg",
+    "000131.jpg",
+    "000141.jpg",
+    "000151.jpg",
+    "000161.jpg",
+    "000171.jpg",
+    "000181.jpg",
+    "000191.jpg",
+    "000201.jpg",
+    "000211.jpg",
+    "000221.jpg",
+    "000231.jpg",
+    "000241.jpg"
+   ],
+   "notes": "seen through lounge front; step down 0.6 u from corridor ceiling"
+  },
+  {
+   "componentId": "SOFFIT-STORYWAY",
+   "feature": "StoryWay shop interior ceiling",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal patch",
+    "heightAboveWalkingFloorU": 2.87,
+    "yIfFloor7": 9.87,
+    "boundsUV": [
+     [
+      -37.9,
+      -33.1
+     ],
+     [
+      -36.1,
+      -30.6
+     ]
+    ]
+   },
+   "fit": {
+    "method": "dense horizontal-normal cluster median"
+   },
+   "heldOut": {
+    "method": "none (cluster statistic only)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000121.jpg",
+    "000131.jpg",
+    "000141.jpg",
+    "000151.jpg",
+    "000161.jpg",
+    "000171.jpg",
+    "000181.jpg",
+    "000191.jpg",
+    "000201.jpg",
+    "000211.jpg",
+    "000221.jpg",
+    "000231.jpg",
+    "000241.jpg"
+   ],
+   "notes": "seen through shop glazing"
+  },
+  {
+   "componentId": "C-MAIN-CLOCK",
+   "feature": "hanging digital clock / sign underside",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal patch",
+    "heightAboveWalkingFloorU": 2.89,
+    "yIfFloor7": 9.89,
+    "boundsUV": [
+     [
+      -25.9,
+      -24.2
+     ],
+     [
+      -24.6,
+      -23.0
+     ]
+    ]
+   },
+   "fit": {
+    "method": "dense horizontal-normal cluster median"
+   },
+   "heldOut": {
+    "method": "none (cluster statistic only)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000121.jpg",
+    "000131.jpg",
+    "000141.jpg",
+    "000151.jpg",
+    "000161.jpg",
+    "000171.jpg",
+    "000181.jpg",
+    "000191.jpg",
+    "000201.jpg",
+    "000211.jpg",
+    "000221.jpg",
+    "000231.jpg",
+    "000241.jpg"
+   ],
+   "notes": "hangs from the 3.47 ceiling next to stainless column COL-L-CLOCK"
+  },
+  {
+   "componentId": "SOFFIT-CAFE-BULKHEAD",
+   "feature": "bulkhead / sign band over Cafe de Craft front",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal patch",
+    "heightAboveWalkingFloorU": 2.97,
+    "yIfFloor7": 9.97,
+    "boundsUV": [
+     [
+      -14.7,
+      -22.8
+     ],
+     [
+      -10.3,
+      -22.8
+     ]
+    ]
+   },
+   "fit": {
+    "method": "dense horizontal-normal cluster median"
+   },
+   "heldOut": {
+    "method": "none (cluster statistic only)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000121.jpg",
+    "000131.jpg",
+    "000141.jpg",
+    "000151.jpg",
+    "000161.jpg",
+    "000171.jpg",
+    "000181.jpg",
+    "000191.jpg",
+    "000201.jpg",
+    "000211.jpg",
+    "000221.jpg",
+    "000231.jpg",
+    "000241.jpg"
+   ],
+   "notes": "lower horizontal band at the left frontage line"
+  },
+  {
+   "componentId": "M-DOUBLEHALL",
+   "feature": "double-height hall with fluorescent strip band and clerestory (HC 574-601 s)",
+   "segment": "hc0 sparse windows 265-305 + HC 240-345 local re-reconstruction",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "volume (approximate)",
+    "ceilingHeightAboveFloorU": [
+     9.0,
+     10.7
+    ],
+    "ceilingEnvelopeP99U": {
+     "265-285": [
+      10.16,
+      9.67
+     ],
+     "285-305": [
+      10.01,
+      12.34
+     ]
+    },
+    "fluorescentBandHeightU": [
+     4.0,
+     5.0
+    ],
+    "lowerOfficeFrontTopU": 3.0,
+    "extentUV_fromCameraEnvelope": [
+     [
+      -62,
+      -24
+     ],
+     [
+      -44,
+      -4
+     ]
+    ],
+    "note": "extent = where HC walks under the tall space (frames 250-305) in the chained frame; hall edges beyond the path unmeasured"
+   },
+   "fit": {
+    "method": "sparse upper-envelope percentiles (no plane: high ceiling not reconstructed by dense MVS)"
+   },
+   "heldOut": {
+    "passes": false,
+    "reason": "no plane fit; chain vs camera-height gauges disagree by up to 23% in window 285-305"
+   },
+   "evidenceClass": "c",
+   "registration": "REG-HALL-LINK (8-frame link, weak)",
+   "frames": [
+    "000250.jpg",
+    "000255.jpg",
+    "000260.jpg",
+    "000265.jpg",
+    "000270.jpg",
+    "000275.jpg",
+    "000280.jpg",
+    "000285.jpg",
+    "000290.jpg",
+    "000295.jpg",
+    "000300.jpg",
+    "000305.jpg"
+   ],
+   "notes": "Existence and location firm (between the food-shop corridor west end and 남천할매떡볶이/철도경찰대); height only bracketed ~9-10.7 u."
+  },
+  {
+   "componentId": "M-LOWCEIL/ticket-area",
+   "feature": "low ceiling over the 매표창구 approach",
+   "segment": "HC 240-345 dense (step 2)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "horizontal band",
+    "heightAboveWalkingFloorU": 3.45,
+    "extentU": [
+     -28,
+     -12
+    ]
+   },
+   "fit": {
+    "method": "dense horizontal-normal histogram mode (+1.8 above camera, camera 1.6-1.65 above floor)"
+   },
+   "heldOut": {
+    "passes": false,
+    "reason": "mode only"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HALL-LINK",
+   "frames": [
+    "000320.jpg",
+    "000322.jpg",
+    "000324.jpg",
+    "000326.jpg",
+    "000328.jpg",
+    "000330.jpg",
+    "000332.jpg",
+    "000334.jpg",
+    "000336.jpg",
+    "000338.jpg",
+    "000340.jpg",
+    "000342.jpg",
+    "000344.jpg"
+   ]
+  },
+  {
+   "componentId": "M-TICKETWALL",
+   "feature": "매표창구 ticket-window wall plane (faces -V toward concourse)",
+   "segment": "HC 240-345 dense (step 2)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "vertical plane",
+    "V": -3.31,
+    "normalUV": [
+     -0.025,
+     -0.999
+    ],
+    "U": [
+     -26.6,
+     -13.1
+    ],
+    "heightRangeU": [
+     0.71,
+     2.85
+    ],
+    "yawOffGridDeg": -1.46
+   },
+   "fit": {
+    "points": 14009,
+    "inliers": 6736,
+    "inlierRMSU": 0.0268
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0199,
+    "positionalHeldOut": null
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HALL-LINK",
+   "frames": [
+    "000320.jpg",
+    "000322.jpg",
+    "000324.jpg",
+    "000326.jpg",
+    "000328.jpg",
+    "000330.jpg",
+    "000332.jpg",
+    "000334.jpg",
+    "000336.jpg",
+    "000338.jpg",
+    "000340.jpg",
+    "000342.jpg",
+    "000344.jpg"
+   ],
+   "notes": "Board footprint u -26..-6, face at v -1.5; measured face V -3.3 (1.8 u plaza-side), U -26.6..-13.1 observed (east end beyond view)."
+  },
+  {
+   "componentId": "M-HC-CORRIDOR-SURFACES",
+   "feature": "corridor wall/frontage plane W-R1 enamel/painting wall (right, -V)",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "vertical plane",
+    "V": -28.15,
+    "U": [
+     -12.8,
+     -6.5
+    ],
+    "heightRangeU": [
+     0.33,
+     3.26
+    ],
+    "normalYawDeg": 89.5
+   },
+   "fit": {
+    "points": 19876,
+    "inliers": 10106,
+    "inlierRMSU": 0.0368,
+    "tiltFromVerticalDeg": 0.55
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0333,
+    "positionalHeldOut": null
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment (-3.52 deg)",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ]
+  },
+  {
+   "componentId": "M-HC-CORRIDOR-SURFACES",
+   "feature": "corridor wall/frontage plane W-R2 void guard line + column faces (right, -V)",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "vertical plane",
+    "V": -28.44,
+    "U": [
+     -27.5,
+     -16.7
+    ],
+    "heightRangeU": [
+     0.37,
+     3.0
+    ],
+    "normalYawDeg": 90.4
+   },
+   "fit": {
+    "points": 22636,
+    "inliers": 8352,
+    "inlierRMSU": 0.0304,
+    "tiltFromVerticalDeg": 0.2
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0261,
+    "positionalHeldOut": null
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment (-3.52 deg)",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ]
+  },
+  {
+   "componentId": "M-HC-CORRIDOR-SURFACES",
+   "feature": "corridor wall/frontage plane W-R3 KORAIL LOUNGE front (right, -V)",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "vertical plane",
+    "V": -28.32,
+    "U": [
+     -35.8,
+     -30.7
+    ],
+    "heightRangeU": [
+     0.38,
+     3.13
+    ],
+    "normalYawDeg": 88.7
+   },
+   "fit": {
+    "points": 35954,
+    "inliers": 14329,
+    "inlierRMSU": 0.036,
+    "tiltFromVerticalDeg": 3.36
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0368,
+    "positionalHeldOut": null
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment (-3.52 deg)",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ]
+  },
+  {
+   "componentId": "M-HC-CORRIDOR-SURFACES",
+   "feature": "corridor wall/frontage plane W-R4 shop row StoryWay..SUBWAY fronts (right, -V)",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "vertical plane",
+    "V": -28.54,
+    "U": [
+     -55.4,
+     -38.3
+    ],
+    "heightRangeU": [
+     0.33,
+     2.86
+    ],
+    "normalYawDeg": 90.6
+   },
+   "fit": {
+    "points": 91261,
+    "inliers": 41636,
+    "inlierRMSU": 0.0356,
+    "tiltFromVerticalDeg": 1.91
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0313,
+    "positionalHeldOut": null
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment (-3.52 deg)",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ]
+  },
+  {
+   "componentId": "M-HC-CORRIDOR-SURFACES",
+   "feature": "corridor wall/frontage plane W-L1 Cafe de Craft front (left, +V)",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "vertical plane",
+    "V": -22.93,
+    "U": [
+     -18.3,
+     -9.3
+    ],
+    "heightRangeU": [
+     0.33,
+     3.24
+    ],
+    "normalYawDeg": 91.0
+   },
+   "fit": {
+    "points": 29087,
+    "inliers": 14292,
+    "inlierRMSU": 0.0214,
+    "tiltFromVerticalDeg": 0.31
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0136,
+    "positionalHeldOut": null
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment (-3.52 deg)",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ]
+  },
+  {
+   "componentId": "M-HC-CORRIDOR-SURFACES",
+   "feature": "corridor wall/frontage plane W-L2 left column line west (left, +V)",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "vertical plane",
+    "V": -22.97,
+    "U": [
+     -64.6,
+     -40.6
+    ],
+    "heightRangeU": [
+     0.33,
+     3.2
+    ],
+    "normalYawDeg": 90.5
+   },
+   "fit": {
+    "points": 10439,
+    "inliers": 4707,
+    "inlierRMSU": 0.0379,
+    "tiltFromVerticalDeg": 1.23
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0393,
+    "positionalHeldOut": null
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment (-3.52 deg)",
+   "frames": [
+    "000121.jpg",
+    "000127.jpg",
+    "000133.jpg",
+    "000139.jpg",
+    "000145.jpg",
+    "000151.jpg",
+    "000157.jpg",
+    "000163.jpg",
+    "000169.jpg",
+    "000175.jpg",
+    "000181.jpg",
+    "000187.jpg",
+    "000193.jpg",
+    "000199.jpg",
+    "000205.jpg",
+    "000211.jpg",
+    "000217.jpg",
+    "000223.jpg",
+    "000229.jpg",
+    "000235.jpg",
+    "000241.jpg",
+    "000247.jpg"
+   ]
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-L-CAFE-STONE",
+   "feature": "stone-clad column, Cafe de Craft (fish logo)",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -18.0,
+      -23.0
+     ],
+     [
+      -15.9,
+      -21.6
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "east face HC U -15.9; west face RY U -18.0; corridor face V -22.75..-23.0; depth >=1.4 (rear unseen)"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-L-CLOCK",
+   "feature": "stainless casing with hanging clock",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -26.2,
+      -22.9
+     ],
+     [
+      -25.1,
+      -21.1
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "east face U -25.1 (HC); corridor face V -22.9 from U -26.2; west face unseen"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-L-HEALTH",
+   "feature": "stainless casing with 무료 건강증진센터 panel",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -32.5,
+      -23.0
+     ],
+     [
+      -31.9,
+      -21.4
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "east face U -31.9; width along U not resolved"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-L-W1",
+   "feature": "stainless column (left, west corridor)",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -45.1,
+      -23.1
+     ],
+     [
+      -44.8,
+      -22.8
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "corridor face only"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-L-W2",
+   "feature": "stainless column (left, west corridor)",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -57.2,
+      -23.1
+     ],
+     [
+      -55.5,
+      -22.8
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "corridor face only"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-L-W3",
+   "feature": "stainless column (left, west end)",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -64.0,
+      -23.2
+     ],
+     [
+      -63.3,
+      -23.1
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "corridor face only"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-R-VOID-E",
+   "feature": "stainless column at east end of void guard",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -18.7,
+      -29.7
+     ],
+     [
+      -16.4,
+      -28.4
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "corridor face V -28.4 (2.3 wide), east face U -17.0 from V -28.4 to -29.7"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-R-VOID-MID",
+   "feature": "stainless column mid void guard",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -26.0,
+      -30.0
+     ],
+     [
+      -24.6,
+      -28.4
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "corridor face V -28.4, east face U -24.6"
+  },
+  {
+   "componentId": "C-MAIN-COLUMNS",
+   "columnId": "COL-R-LOUNGE",
+   "feature": "column at KORAIL LOUNGE corner (코레일라운지 banner)",
+   "segment": "HC-450 isolated 121-247 dense (+RY ry-shops for west faces)",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "column footprint (observed faces)",
+    "boundsUV": [
+     [
+      -30.0,
+      -29.3
+     ],
+     [
+      -29.4,
+      -28.7
+     ]
+    ],
+    "y": [
+     7.0,
+     10.47
+    ],
+    "fullHeight": true
+   },
+   "fit": {
+    "method": "full-height vertical dense clusters (>=2.25 u vertical coverage, 0.1 u cells)"
+   },
+   "heldOut": {
+    "positionalHeldOut": null,
+    "imageCheck": "boxes reprojected onto HC 146-246 native frames (overlay-columns-*.jpg)"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000146.jpg",
+    "000156.jpg",
+    "000166.jpg",
+    "000176.jpg",
+    "000186.jpg",
+    "000196.jpg",
+    "000206.jpg",
+    "000216.jpg",
+    "000226.jpg",
+    "000236.jpg",
+    "000246.jpg"
+   ],
+   "notes": "east face U -30.0"
+  },
+  {
+   "componentId": "C-MAIN-GLASSGUARD",
+   "feature": "teal glass guard = near edge of plaza-side atrium void over 1F",
+   "segment": "HC-450 isolated 121-247 dense",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "edge line",
+    "V": -28.44,
+    "U": [
+     -30.0,
+     -16.4
+    ],
+    "guardHeightU": "~1.1 (glass, not reconstructed; frames only)",
+    "voidSide": "-V (plaza) toward curtain wall; source plaza facade here at V -49.5..-51",
+    "farEdge": "unmeasured"
+   },
+   "fit": {
+    "points": 22636,
+    "inliers": 8352,
+    "inlierRMSU": 0.0304
+   },
+   "heldOut": {
+    "randomPoints30pctMedianAbsU": 0.0261
+   },
+   "evidenceClass": "b",
+   "registration": "REG-HC-UL-CHAIN + grid alignment",
+   "frames": [
+    "000161.jpg",
+    "000167.jpg",
+    "000173.jpg",
+    "000179.jpg",
+    "000185.jpg",
+    "000191.jpg",
+    "000197.jpg",
+    "000203.jpg"
+   ],
+   "notes": "Guard line is the plane through the corridor faces of COL-R-VOID-E / COL-R-VOID-MID and guard frames; void continues plaza-ward behind the lounge (RY 339/343). Not the escalator core of CX-09."
+  },
+  {
+   "componentId": "M-ESC-1F2F",
+   "feature": "1F↔2F escalator opening in the 2F slab (2026-03 ascent)",
+   "segment": "local-ascent model 0 ABH (u via pedestrian gauge 1.806 u/unit)",
+   "epoch": "2026-03",
+   "geometryUVY": {
+    "type": "opening (local ABH frame, u)",
+    "inclinationDeg": 29.8,
+    "landingEdgeA_U": 9.0,
+    "cameraReachesWalkingHeightAtA_U": 9.3,
+    "openingWidthU": 2.1,
+    "guardLinesB_U": [
+     -1.0,
+     1.0
+    ],
+    "wellWallsB_U": [
+     -1.1,
+     1.1
+    ],
+    "soffitBelow2FFloorU": 1.38,
+    "openingLowerEdgeA_U": ">=2.9 [INFERENCE: 2.3 u headroom]; observed soffit clusters at A -1.0 and 4.0 ambiguous",
+    "ceilingAboveLandingU": 3.52,
+    "uvyPlacement": "unmeasured (lower landing only: 1F registration a-failed (15.8,-17.3))"
+   },
+   "fit": {
+    "cameraPathFrames": 243
+   },
+   "heldOut": {
+    "passes": false,
+    "reason": "no UVY registration of model 0"
+   },
+   "evidenceClass": "b",
+   "registration": "REG-ASC-PEOPLE",
+   "frames": [
+    "000130.jpg",
+    "000140.jpg",
+    "000150.jpg",
+    "000160.jpg",
+    "000170.jpg",
+    "000180.jpg",
+    "000190.jpg",
+    "000200.jpg",
+    "000210.jpg",
+    "000220.jpg",
+    "000230.jpg",
+    "000240.jpg",
+    "000250.jpg",
+    "000260.jpg",
+    "000270.jpg",
+    "000280.jpg",
+    "000290.jpg",
+    "000300.jpg"
+   ]
+  },
+  {
+   "componentId": "M-BOKSOONDOGA-APERTURE",
+   "feature": "open frontage corners re-triangulated with RY2 sparse/2 cameras, mapped through the corrected chain",
+   "segment": "RY2-330 sparse/2",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "aperture corners",
+    "cornersUVY": {
+     "top_left": [
+      -0.87,
+      -28.25,
+      9.32
+     ],
+     "top_right": [
+      4.76,
+      -27.84,
+      9.18
+     ],
+     "bottom_right": [
+      4.34,
+      -27.71,
+      7.04
+     ]
+    },
+    "cornerHeightsAboveFloorU": {
+     "top_left": 2.33,
+     "top_right": 2.17,
+     "bottom_right": 0.03
+    }
+   },
+   "fit": {
+    "fitResidualPx": {
+     "top_left": [
+      2.1,
+      3.1
+     ],
+     "top_right": [
+      0.8,
+      1.1
+     ],
+     "bottom_right": [
+      1.5,
+      2.0
+     ]
+    }
+   },
+   "heldOut": {
+    "frame": "000385.jpg",
+    "residualPx": [
+     6.6,
+     1.5,
+     5.3
+    ],
+    "rmsPx": 4.93
+   },
+   "evidenceClass": "a-failed",
+   "registration": "REG-RY-CHAIN + grid alignment",
+   "frames": [
+    "000389.jpg",
+    "000393.jpg",
+    "000385.jpg"
+   ],
+   "notes": "Supersedes the hc0-compressed polygon (heights 1.46-1.83): scale corrected x1.495; aperture top 2.2-2.45 u; U range now coincides with the board U range (-0.4..6.2 / 15.9..22.2) but at V -28 (corridor) not -46..-49."
+  },
+  {
+   "componentId": "M-KKOTDEUL-APERTURE",
+   "feature": "open frontage corners re-triangulated with RY2 sparse/2 cameras, mapped through the corrected chain",
+   "segment": "RY2-330 sparse/2",
+   "epoch": "2023-05",
+   "geometryUVY": {
+    "type": "aperture corners",
+    "cornersUVY": {
+     "top_left": [
+      14.99,
+      -28.26,
+      9.34
+     ],
+     "top_right": [
+      22.25,
+      -28.62,
+      9.51
+     ],
+     "bottom_right": [
+      21.14,
+      -28.36,
+      6.98
+     ]
+    },
+    "cornerHeightsAboveFloorU": {
+     "top_left": 2.3,
+     "top_right": 2.45,
+     "bottom_right": -0.08
+    }
+   },
+   "fit": {
+    "fitResidualPx": {
+     "top_left": [
+      1.9,
+      2.9
+     ],
+     "top_right": [
+      1.0,
+      1.3
+     ],
+     "bottom_right": [
+      3.0,
+      3.6
+     ]
+    }
+   },
+   "heldOut": {
+    "frame": "000421.jpg",
+    "residualPx": [
+     2.8,
+     5.8,
+     8.4
+    ],
+    "rmsPx": 6.07
+   },
+   "evidenceClass": "a-failed",
+   "registration": "REG-RY-CHAIN + grid alignment",
+   "frames": [
+    "000425.jpg",
+    "000429.jpg",
+    "000421.jpg"
+   ],
+   "notes": "Supersedes the hc0-compressed polygon (heights 1.46-1.83): scale corrected x1.495; aperture top 2.2-2.45 u; U range now coincides with the board U range (-0.4..6.2 / 15.9..22.2) but at V -28 (corridor) not -46..-49."
+  }
+ ],
+ "unmeasured": [
+  "double-height hall ceiling plane (only bracketed 9.0-10.7 u; dense MVS did not reconstruct it) and its exact plan edges",
+  "clerestory slot heights",
+  "column west faces/depths except the Cafe de Craft stone column",
+  "escalator core UVY placement and slab-opening lower edge (CX-09 stays open)",
+  "plaza-side far edge of the atrium void (only near-edge guard line)",
+  "corridor ceiling north/south edges inside shop tenancies",
+  "ceiling tile module / light layout",
+  "Gate 7 hall ceiling beyond V≈0 (HC view limit)",
+  "ticket-wall east end (U > -13) and LED-board heights"
+ ]
+}

@@ -1,0 +1,81 @@
+{
+  "exit_code": 0,
+  "elapsed_ms": 310,
+  "mode": "LIVE",
+  "model_requested": "jev-latest",
+  "result": [
+    {
+      "model": "jev-1.13.0",
+      "answers": {
+        "train_timeline": {
+          "type": "choice",
+          "choice": "arrival_first",
+          "confidence": 0.46,
+          "probabilities": {
+            "arrival_first": 0.64,
+            "static_boarding_only": 0.01,
+            "boarding_first_then_arrival": 0.35
+          }
+        },
+        "single_escalator_direction": {
+          "type": "choice",
+          "choice": "all_up_way_out",
+          "confidence": 0.57,
+          "probabilities": {
+            "all_up_way_out": 0.72,
+            "north_up_south_down": 0.24,
+            "all_down": 0.04
+          }
+        },
+        "population_target": {
+          "type": "choice",
+          "choice": "about_110_plus_train",
+          "confidence": 0.26,
+          "probabilities": {
+            "about_180_total": 0.04,
+            "about_100_total": 0.46,
+            "about_110_plus_train": 0.5
+          }
+        },
+        "first_new_transitions": {
+          "type": "choice",
+          "choice": "medical_fall_door",
+          "confidence": 0.97,
+          "probabilities": {
+            "track_trespass": 0,
+            "power_outage": 0.02,
+            "medical_fall_door": 0.98
+          }
+        },
+        "composer_cadence": {
+          "type": "choice",
+          "choice": "every_10_to_16s_12_candidates",
+          "confidence": 0.97,
+          "probabilities": {
+            "every_10_to_16s_12_candidates": 0.98,
+            "every_5s_many": 0,
+            "every_45s": 0.02
+          }
+        },
+        "calm_pressure": {
+          "type": "choice",
+          "choice": "drop_nothing_after_3",
+          "confidence": 0.79,
+          "probabilities": {
+            "keep_nothing_forever": 0.11,
+            "drop_nothing_after_3": 0.86,
+            "random_fallback": 0.03
+          }
+        }
+      },
+      "usage": {
+        "input_tokens": 1834,
+        "output_tokens": 339
+      }
+    }
+  ],
+  "error": null,
+  "retry": 0,
+  "fallback": 0,
+  "authority": 0
+}

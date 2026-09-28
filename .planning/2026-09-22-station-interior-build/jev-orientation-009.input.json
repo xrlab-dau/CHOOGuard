@@ -1,0 +1,76 @@
+{
+  "state": {
+    "task": "축척·방위 표시가 없는 부산역 층별안내도를 실측된 공식 3D 모델 좌표계에 올릴 때, 안내도의 어느 가장자리가 월드의 어느 면인지 정한다",
+    "worldFacts": {
+      "coordinateSystem": "Unity 월드 미터. +X 동, +Z 북. 공식 모델 원본 축척.",
+      "buildingFootprintPolygon": "서측 가장자리는 완만한 볼록 곡선(x -64.8 ~ -33.3), 동측 가장자리는 직선(x -23.3 ~ +24.8). 장축 길이 150m, 폭 49~71m, 면적 8,535㎡",
+      "longAxisBearingDegrees": 166.9,
+      "osmCrossCheckBearingDegrees": 162.0,
+      "plazaAndRoadSide": "서쪽. 도로 스폰 좌표 x=-169",
+      "platformAndTrackSide": "동쪽. 선로·승강장은 x>0",
+      "overbridgeDeck": "공식 모델에 실재하는 과선교 데크. y=7.00, x -9 ~ 62, z -68 ~ -28. 건물 동측면에 접속하며 접속 위치는 건물 중심(z=-19.6)보다 남쪽인 z=-48 부근",
+      "measuredFloorLevels": "y=0.00 지반, y=4.75 1층 천장 하향면 653㎡, y=6.75 2층 바닥 상향면 677㎡, y=12.00 3층 바닥 201㎡, y=23.0 지붕 1362㎡"
+    },
+    "guideBoardFacts": {
+      "topEdge": "GATE9·GATE10 이 위쪽을 향한 화살표로 표시되고 '타는곳' 글자가 붙어 있다. 상점 열(크리스피크림·카카오프렌즈·파스쿠치)이 늘어선다",
+      "rightEdge": "매표창구, 역무실·유실물, 수유방, 철도경찰서, 회의실, W.C 가 굵은 회색 띠를 따라 배치",
+      "bottomEdge": "완만한 곡선이며 GATE7 이 아래쪽 화살표로 표시. 코레일라운지·편의점·소반한식·서브웨이 열, 그리고 '부산 유라시아 플랫폼' 표기",
+      "leftEdge": "계단, 약국, 특산품, 도나스 등 상점 열과 '기차 타는길' 좌향 화살표 2개, W.C",
+      "centre": "종합안내, ATM, 1층 에스컬레이터, 3층 에스컬레이터",
+      "criticalNote": "래스터에 축척·방위표·치수가 전혀 없다. 위상만 신뢰할 수 있다"
+    },
+    "officialProgram": {
+      "source": "KORAIL 공식 역 안내",
+      "1F": "1층 맞이방, 상업 16개, 물품보관함(5번 출구 부근)",
+      "2F": "2층 맞이방, 상업 25개, 매표창구, 수유방, 유실물센터, 종합관광안내소, 코레일 라운지, 철도경찰",
+      "3F": "전문식당가 3개",
+      "4F": "코레일 부산경남본부 업무시설"
+    }
+  },
+  "questions": {
+    "top_edge_face": {
+      "type": "choice",
+      "instructions": "안내도 위쪽 가장자리(GATE9·GATE10·'타는곳')가 월드의 어느 방위 면에 대응하는가",
+      "criteria": {
+        "east_platform": "동측 직선면(승강장·과선교 쪽)",
+        "west_plaza": "서측 곡면(광장·도로 쪽)",
+        "north_end": "북측 끝단",
+        "south_end": "남측 끝단"
+      }
+    },
+    "bottom_edge_is_curved_facade": {
+      "type": "noul",
+      "instructions": "안내도 아래쪽 가장자리가 곡선으로 그려졌고 월드 서측면도 곡선이다. 이 둘이 같은 면인가",
+      "criteria": {
+        "true": "안내도 아래 = 월드 서측 곡면",
+        "false": "다른 면이다"
+      }
+    },
+    "left_edge_direction": {
+      "type": "choice",
+      "instructions": "안내도 왼쪽 가장자리가 월드의 어느 방향인가. 과선교 데크가 건물 중심보다 남쪽(z=-48)에 붙는다는 사실을 고려한다",
+      "criteria": {
+        "north": "북(+Z)",
+        "south": "남(-Z)"
+      }
+    },
+    "build_order": {
+      "type": "choice",
+      "instructions": "지금 에디터에서 먼저 지을 것을 하나 고른다",
+      "criteria": {
+        "slabs_and_envelope": "층 슬래브·외피 벽·기둥 격자 등 방위와 무관한 구조체",
+        "rooms_first": "실 구획부터",
+        "fixtures_first": "집기·사인부터",
+        "vertical_cores_first": "계단·에스컬레이터·승강기 코어부터"
+      }
+    },
+    "orientation_confidence_sufficient": {
+      "type": "noul",
+      "instructions": "지금 증거만으로 실 배치를 확정해도 되는가, 아니면 방위 무관 구조체만 먼저 짓고 실 배치는 추가 증거를 기다려야 하는가",
+      "criteria": {
+        "true": "지금 실 배치까지 확정해도 된다",
+        "false": "구조체 먼저, 실 배치는 증거 보강 후"
+      }
+    }
+  }
+}

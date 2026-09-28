@@ -1,0 +1,259 @@
+{
+  "status": "PASS",
+  "verifiedAtUtc": "2026-09-25T07:34:39.735940+00:00",
+  "scope": "corrected dynamic-future/autonomous-NPC design artifacts only; no gameplay, live API, physics or learning execution",
+  "python": "3.14.5",
+  "jsonschema": "4.26.0",
+  "contracts": [
+    {
+      "contract": "npc-decision",
+      "schemaStatus": "PASS",
+      "shapeCases": [
+        {
+          "id": "shape-request",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "shape-success",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "shape-unavailable",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "shape-unknown-observation",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "reject-unknown-world-write",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-missing-actor",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-probability-over-one",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-unavailable-fabricated-choice",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-unknown-with-asserted-value",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-numeric-long-revision",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-leading-zero-tick",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-candidate-overflow",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-error-presented-as-success",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-unknown-product-mode",
+          "expectedValid": false,
+          "observedValid": false
+        }
+      ],
+      "semanticScenariosNotRun": 16,
+      "rawRequestHash": "MATCH"
+    },
+    {
+      "contract": "future-step",
+      "schemaStatus": "PASS",
+      "shapeCases": [
+        {
+          "id": "shape-request",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "shape-world-next",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "shape-success",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "shape-unavailable",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "shape-unknown-actor-fact",
+          "expectedValid": true,
+          "observedValid": true
+        },
+        {
+          "id": "reject-world-patch",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-static-whole-scenario-field",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-actor-without-owner",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-world-with-actor-identity",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-live-environment-actor-perspective",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-live-environment-speculative-depth",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-live-environment-hypothetical-cause",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-world-counterfactual-actor-choice",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-numeric-tick",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-unknown-fact-asserted-value",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-unavailable-choice",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-probability-over-one",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-missing-snapshot",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-negative-sequence",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-trailing-newline-identity",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-candidate-overflow",
+          "expectedValid": false,
+          "observedValid": false
+        },
+        {
+          "id": "reject-failure-as-success",
+          "expectedValid": false,
+          "observedValid": false
+        }
+      ],
+      "semanticScenariosNotRun": 18,
+      "rawRequestHash": "MATCH"
+    }
+  ],
+  "shapeCasesPassed": 36,
+  "semanticScenariosNotRun": 34,
+  "requirements": 18,
+  "acceptanceCriteria": 25,
+  "workPackages": 12,
+  "dependencyEdges": 20,
+  "dependencyWaves": [
+    [
+      "P01"
+    ],
+    [
+      "P02",
+      "P04",
+      "P07",
+      "P11"
+    ],
+    [
+      "P03",
+      "P06"
+    ],
+    [
+      "P08"
+    ],
+    [
+      "P05",
+      "P09"
+    ],
+    [
+      "P10"
+    ],
+    [
+      "P12"
+    ]
+  ],
+  "existingReadPathsVerified": 34,
+  "localMarkdownLinksVerified": 96,
+  "headingAnchorsVerified": 1,
+  "externalSchemaReferences": 0,
+  "credentialFindings": [],
+  "inputSha256": {
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/DESIGN.md": "0418c1629dda454f77d52d2d74912e632aa591518949e7e72cef447299e2aa54",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/OSS_INTEGRATION.md": "6d252a3e7b67c7a76faa8ea9d442be3dd8f61921238850b2ed8ce9e7e5cbd4a2",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/INTERACTION_TUTORIAL.md": "b5ee4e4571b78397dd820a898c7202e66e18f336d2b0cf2aa01dd2f1f7e6678b",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/NPC_SCENARIO.md": "1072a7d70a79f8e17b1e02ae630e1aae6b438c7b08ac7c3a3ce40b9bac4a28bb",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/EXECUTION_PLAN.md": "821ac0ac6a19a6d827e248170ac4d33339e63cd8df4111cf3578053e853c1247",
+    "docs/CHOOGuard_Story_Plan_v5/FPS_RESEARCH_PROPOSAL.md": "3a65a5bcdeaa44f2017ba650a5fe3b04e340502486178ae3e132350fb2b6ef2a",
+    "docs/CHOOGuard_FPS_Prior_Research_20260925/RESEARCH.md": "0a3c3ec3cbcd941f70ea9ad130494aee1296b54b9540779d5607b1ce09ca31e5",
+    "docs/CHOOGuard_FPS_Prior_Research_20260925/DECISIONS_AND_DEVELOPMENT_STRUCTURE.md": "6bc20c410b14a15f913ae37f33f2fdf60c26a7fcbf925d64f83d6dfac57030b4",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/work-packages.json": "00d147dfdf8319e9aecff0de9f334aae71eb5a50513371c13dfbbf3de73b1aa8",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/npc-decision.schema.json": "7cf2902b52103f935094898bd50d79cf8f911d6e2da8cd19b80b751f292d3601",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/npc-decision.examples.json": "aeb897c39ff2a2c03f4c895a7c327e8da4fe921a87d7e608129fdd8ab8b8ddcd",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/future-step.schema.json": "5b3d069f09f5b0dc8b3731ff80e30af2880b18486fc42640f3e3b47c9d1d12ba",
+    "docs/CHOOGuard_Story_Plan_v5/design/fps-ai-20260925/contracts/future-step.examples.json": "f34415f592fca5852ae6671b15e5d763cf961060c9dcdbeb23c95afd3f9205b0"
+  }
+}

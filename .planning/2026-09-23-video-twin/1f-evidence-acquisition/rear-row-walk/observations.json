@@ -1,0 +1,789 @@
+{
+ "schema": "chooguard.1f-registered-observation.v1",
+ "lane": "rear-row-walk",
+ "registration": "rejected -> no component is class a; positions use sfm/provisional.json (b-class placement)",
+ "components": [
+  {
+   "componentId": "new-rear-row-frontage-line",
+   "feature": "rear restaurant-row frontage (#9..#16 positions): nearest left-side surface layer (mullions/fascia/piers) along the rear corridor, fitted as one vertical plane",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     0.10809,
+     -0.99414,
+     0.00051
+    ],
+    "offset": -23.4627,
+    "lineAtY1": "V = 0.1087*U + -23.600",
+    "boundsUVY": [
+     [
+      -47.168,
+      -28.745,
+      0.2
+     ],
+     [
+      -3.333,
+      -24.008,
+      2.4
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 3760,
+    "inlierRMS": 0.0283,
+    "triangulationAngleDeg": 7.02,
+    "reprojPx": 0.714
+   },
+   "heldOut": {
+    "method": "random 30% of selected layer points (not in fit), distance to plane; frontage steps between units inflate p95",
+    "n": 2372,
+    "median": 0.0339,
+    "p95": 4.3002,
+    "withinTolerance": 0.621
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000064.jpg",
+    "000074.jpg",
+    "000084.jpg",
+    "000094.jpg",
+    "000104.jpg",
+    "000114.jpg",
+    "000124.jpg",
+    "000134.jpg",
+    "000144.jpg",
+    "000154.jpg",
+    "000164.jpg",
+    "000174.jpg",
+    "000184.jpg"
+   ],
+   "notes": "Registration rejected -> not class a. Per-unit signed offsets vs Naver-fit polygons (observed - Naver) at each unit's front-edge mid-U (provisional placement): unit-09 dV=-7.73 (obs V -28.18 vs Naver -20.45, n=1070); unit-10 dV=-7.79 (obs V -27.64 vs Naver -19.85, n=233); unit-11 dV=-7.36 (obs V -26.86 vs Naver -19.50, n=388); unit-12 dV=-7.23 (obs V -26.45 vs Naver -19.21, n=532); unit-13 dV=-6.90 (obs V -25.72 vs Naver -18.82, n=1971); unit-14 dV=-6.65 (obs V -25.03 vs Naver -18.38, n=2487); unit-15 dV=-3.72 (obs V -24.66 vs Naver -20.93, n=545); unit-16 dV=+1.17 (obs V -19.10 vs Naver -20.27, n=651). Signed U offsets: unit boundaries (piers/partitions) were not resolved as geometry, so dU is not measured. Plane offset envelope over the placement envelope: -24.22..-22.98."
+  },
+  {
+   "componentId": "unit-09",
+   "feature": "frontage position at the 복순도가 slot (2026 board); 2021 occupant: 소담 한그릇 (1304-1308 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -43.44,
+      -28.18,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -48.814,
+      -20.836
+     ],
+     [
+      -38.063,
+      -20.072
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 1070,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = -7.73 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only."
+  },
+  {
+   "componentId": "unit-10",
+   "feature": "frontage position at the 아트센트 slot (2026 board); 2021 occupant: SUSHI BONO 스시보노 (1300 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -35.11,
+      -27.64,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -38.063,
+      -20.072
+     ],
+     [
+      -32.161,
+      -19.626
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 233,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = -7.79 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only."
+  },
+  {
+   "componentId": "unit-11",
+   "feature": "frontage position at the 포레일 slot (2026 board); 2021 occupant: 간사이우동 (1296 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -30.16,
+      -26.86,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -32.161,
+      -19.626
+     ],
+     [
+      -28.155,
+      -19.371
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 388,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = -7.36 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only."
+  },
+  {
+   "componentId": "unit-12",
+   "feature": "frontage position at the 비앤씨박스앤컵 slot (2026 board); 2021 occupant: unread shop (1290-1292 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -26.05,
+      -26.45,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -28.155,
+      -19.371
+     ],
+     [
+      -23.94,
+      -19.053
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 532,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = -7.23 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only."
+  },
+  {
+   "componentId": "unit-13",
+   "feature": "frontage position at the 채선당 행복가마솥밥 slot (2026 board); 2021 occupant: 채선당 행복가마솥밥 (1288 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -20.8,
+      -25.72,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -23.94,
+      -19.053
+     ],
+     [
+      -17.654,
+      -18.596
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 1971,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = -6.90 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only."
+  },
+  {
+   "componentId": "unit-14",
+   "feature": "frontage position at the 개미집 slot (2026 board); 2021 occupant: 개미집 (1284 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -14.77,
+      -25.03,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -17.654,
+      -18.596
+     ],
+     [
+      -11.886,
+      -18.173
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 2487,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = -6.65 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only."
+  },
+  {
+   "componentId": "unit-15",
+   "feature": "frontage position at the 새벽집국밥국수 slot (2026 board); 2021 occupant: smoothie/coffee kiosk + SMOOTHIE KING (1272-1276 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -8.67,
+      -24.66,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -11.713,
+      -21.16
+     ],
+     [
+      -5.62,
+      -20.708
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 545,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = -3.72 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only. CAVEAT: the corridor turns at U~0..5, so the nearest left layer in this U range is the corner/side of the unit, not its V- frontage."
+  },
+  {
+   "componentId": "unit-16",
+   "feature": "frontage position at the 파리바게트 slot (2026 board); 2021 occupant: PARIS BAGUETTE (1268 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      0.31,
+      -19.1,
+      1.0
+     ]
+    ],
+    "naverFrontEdgeUV": [
+     [
+      -5.62,
+      -20.708
+     ],
+     [
+      6.242,
+      -19.834
+     ]
+    ]
+   },
+   "fit": {
+    "views": 125,
+    "points": 651,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none (derived from the frontage-line layer)",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [],
+   "notes": "signed offset vs Naver: dV = +1.17 u (observed V - Naver V), dU not observed. Tenant sequence U+->U- seen on the walker's left: PARIS BAGUETTE, smoothie kiosk, SMOOTHIE KING, 직원식당 door sign, 개미집, 채선당, (unread), 간사이우동, SUSHI BONO, 소담; mapping to board slots is by order only. CAVEAT: the corridor turns at U~0..5, so the nearest left layer in this U range is the corner/side of the unit, not its V- frontage."
+  },
+  {
+   "componentId": "new-rear-corridor-opposite-side",
+   "feature": "what faces the rear row: glazed shopfront backs / stainless-clad piers of the front-row block (#4..#7 positions) along the corridor's V- side",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     0.10855,
+     -0.99018,
+     -0.08809
+    ],
+    "offset": -28.7271,
+    "lineAtY1": "V = 0.1096*U + -29.101",
+    "boundsUVY": [
+     [
+      -46.268,
+      -34.141,
+      0.201
+     ],
+     [
+      0.567,
+      -29.131,
+      2.388
+     ]
+    ]
+   },
+   "fit": {
+    "views": 124,
+    "points": 346,
+    "inlierRMS": 0.0284,
+    "triangulationAngleDeg": 4.7,
+    "reprojPx": 0.833
+   },
+   "heldOut": {
+    "method": "random 30% held-out layer points",
+    "n": 294,
+    "median": 0.055,
+    "p95": 0.4908,
+    "withinTolerance": 0.473
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000043.jpg",
+    "000059.jpg",
+    "000071.jpg",
+    "000090.jpg",
+    "000101.jpg",
+    "000111.jpg",
+    "000121.jpg",
+    "000131.jpg",
+    "000142.jpg",
+    "000152.jpg",
+    "000162.jpg",
+    "000173.jpg",
+    "000183.jpg"
+   ],
+   "notes": "Corridor width (frontage minus opposite, V at Y=1): U-45: 5.54 u; U-35: 5.53 u; U-25: 5.52 u; U-15: 5.51 u; U-5: 5.51 u (provisional scale 6.98; x0.94..1.06 over the envelope). The opposite line runs ~2.5-3 u V- of the Naver #6/#7 corridor-side edges (V ~ -31); i.e. under this placement the whole corridor sits 3-8 u V- of the gap between the Naver rows."
+  },
+  {
+   "componentId": "new-rear-corridor-ceiling",
+   "feature": "rear corridor flat suspended ceiling (downlights; decorative panel near the departure board)",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     0,
+     0,
+     -1
+    ],
+    "offset": 2.58,
+    "Yp10": 2.469,
+    "Yp90": 2.689,
+    "boundsU": [
+     -48,
+     -5
+    ]
+   },
+   "fit": {
+    "views": null,
+    "points": 1760,
+    "inlierRMS": 0.097,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000120.jpg",
+    "000160.jpg"
+   ],
+   "notes": "Height above the provisional floor datum; spread p10-p90 = 2.47..2.69 (lights/panels at several depths). Scale envelope applies (x0.94..1.06). Compare cl-low-suspended-ceiling Y 2.23 at the central core."
+  },
+  {
+   "componentId": "unit-07",
+   "feature": "#7 convenience store (2021: StoryWay) glazed frontage facing the corridor/exit lobby (walker's right before GATE1)",
+   "geometryUVY": {
+    "type": "plane",
+    "normalUVY": [
+     -0.12148,
+     0.98471,
+     -0.12486
+    ],
+    "offset": 28.1578,
+    "lineAtY1": "V = 0.1234*U + -28.468",
+    "boundsUVY": [
+     [
+      -59.137,
+      -35.903,
+      0.2
+     ],
+     [
+      -44.836,
+      -33.965,
+      2.392
+     ]
+    ]
+   },
+   "fit": {
+    "views": 134,
+    "points": 230,
+    "inlierRMS": 0.0336,
+    "triangulationAngleDeg": 4.1,
+    "reprojPx": 0.9
+   },
+   "heldOut": {
+    "method": "random 30% held-out points",
+    "n": 325,
+    "median": 0.1152,
+    "p95": 1.3859,
+    "withinTolerance": 0.305
+   },
+   "evidenceClass": "a-failed",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000064.jpg",
+    "000083.jpg",
+    "000096.jpg",
+    "000108.jpg",
+    "000119.jpg",
+    "000130.jpg",
+    "000146.jpg",
+    "000158.jpg",
+    "000169.jpg",
+    "000180.jpg",
+    "000191.jpg",
+    "000208.jpg",
+    "000219.jpg"
+   ],
+   "notes": "Naver #7 corridor-side edge [-44.436,-31.284]->[-55.321,-32.072] (V ~ -31.7); observed plane at V ~ -34.64 (U -50): signed dV ~ -2.95."
+  },
+  {
+   "componentId": "en-gates-1-2-5-6",
+   "feature": "GATE1 (sign \"1 나가는 곳 Exit 1\"): inner automatic sliding doors (windbreak vestibule) + outer glass doors; walker exits to the plaza-side canopy with white V-columns",
+   "geometryUVY": {
+    "type": "corners",
+    "mainShellDoorSetUVY": [
+     [
+      -69.58,
+      -37.49,
+      0
+     ],
+     [
+      -64.38,
+      -38.18,
+      0
+     ],
+     [
+      -69.58,
+      -37.49,
+      2.7
+     ],
+     [
+      -64.38,
+      -38.18,
+      2.7
+     ]
+    ]
+   },
+   "fit": {
+    "views": 30,
+    "points": null,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "MainShell edge chamfer frames 226-258",
+    "n": 403041,
+    "median": 4.15,
+    "p95": null,
+    "withinTolerance": 0.263
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000229.jpg",
+    "000241.jpg",
+    "000250.jpg",
+    "000253.jpg",
+    "000258.jpg"
+   ],
+   "notes": "Identity confirmed by the exit sign; geometry is the preserved MainShell door set (source control) and was USED to place the far end (camera 000258 in the opening). The inner vestibule is not in MainShell. GATE2 direction sign \"나가는 곳 2 ->\" seen at 1272 s (cross passage to the right)."
+  },
+  {
+   "componentId": "vc-escalator-core-topology",
+   "feature": "central 2F->1F down escalator ridden 1234-1245 s; landing with \"에스컬레이터 -> / 표사는 곳 / 타는 곳 2F\" sign",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      16.56,
+      -17.57,
+      1.51
+     ]
+    ]
+   },
+   "fit": {
+    "views": 1,
+    "points": null,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000021.jpg",
+    "000025.jpg"
+   ],
+   "notes": "Point = provisional camera at the first connected frame (1244.7 s), just off the escalator; lands inside the March lower-landing area (U 15.5-20, V -17..-15) without being pinned there (U is a weak consistency cue). The ride itself (sparse/1) is not connected."
+  },
+  {
+   "componentId": "new-designskin-corner-pier-2021",
+   "feature": "dark-grey clad corner pier of the 2021 DESIGN SKIN unit (#4 slot) with stainless hydrant cabinet",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      2.34,
+      -30.07,
+      null
+     ]
+    ]
+   },
+   "fit": {
+    "views": 4,
+    "points": null,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "LSD line triangulation residual (4 frames)",
+    "n": 4,
+    "median": 0.02,
+    "p95": 0.05,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000052.jpg",
+    "000055.jpg",
+    "000058.jpg",
+    "000061.jpg"
+   ],
+   "notes": "U+ vertical edge; ~8 u from the 2026 class-a st-artbox-terminal-pier (5.53,-22.64) under the provisional placement -> not the same element (fit-out change) or placement error; see overlays/pier-classa2026-vs-2021-000061.jpg."
+  },
+  {
+   "componentId": "svc-toilets",
+   "feature": "hanging blue sign \"↑ 표사는 곳 / 타는 곳 / 화장실 Toilet\" over the rear corridor pointing U- (toward the exit lobby / #9 end)",
+   "geometryUVY": {
+    "type": "points",
+    "points": [
+     [
+      -31.46,
+      -30.56,
+      null
+     ]
+    ]
+   },
+   "fit": {
+    "views": 6,
+    "points": null,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000157.jpg",
+    "000160.jpg",
+    "000163.jpg"
+   ],
+   "notes": "Point = provisional camera position when the sign is overhead-ahead (1292 s). The toilets themselves are NOT seen in either video."
+  },
+  {
+   "componentId": "vc-escalator-rear-9",
+   "feature": "escalator 2F->1F at the U- end (mJrJ8 1050-1056 s) arriving ~12 s walk from GATE1; hall with stainless columns, service wall with ticket machines and \"N카드\" ad (same ad seen by kmCzb at 1312-1314 s)",
+   "geometryUVY": {
+    "type": "points",
+    "points": []
+   },
+   "fit": {
+    "views": 0,
+    "points": 0,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "mJrJ8 localization into the lane model",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "mJrJ8ugxlqA 2020-12",
+   "frames": [
+    "mJrJ8ugxlqA@1050",
+    "@1056",
+    "@1059",
+    "@1063"
+   ],
+   "notes": "Pixel-only: the escalator frames did not localize (<=6 inliers). Position unknown."
+  },
+  {
+   "componentId": "new-rear-corridor-columns",
+   "feature": "stainless-clad square columns/piers on the corridor's V- side and a round silver column above the GATE1 vestibule",
+   "geometryUVY": {
+    "type": "points",
+    "points": []
+   },
+   "fit": {
+    "views": 0,
+    "points": 0,
+    "inlierRMS": null,
+    "triangulationAngleDeg": null,
+    "reprojPx": null
+   },
+   "heldOut": {
+    "method": "none",
+    "n": 0,
+    "median": null,
+    "p95": null,
+    "withinTolerance": null
+   },
+   "evidenceClass": "b-pixel",
+   "epoch": "kmCzb3KOQ3M uploaded 2021-01-27 (Christmas-tree/mask cues: filmed ~Dec 2020-Jan 2021)",
+   "frames": [
+    "000109.jpg",
+    "000223.jpg",
+    "000241.jpg"
+   ],
+   "notes": "Observed in imagery; not segmented into individual column geometries (reflective cladding gives few SfM points)."
+  }
+ ],
+ "unobserved": [
+  "toilets (only a direction sign)",
+  "escalator at the #9 end (pixel-only in mJrJ8)",
+  "unit partition lines / boundary piers as geometry",
+  "rear-row unit depths and rear walls",
+  "#8 frontage geometry (white-panel wall left of GATE1 not segmented)",
+  "GATE2 (only its direction sign)",
+  "core B / elevators",
+  "coin lockers #17"
+ ]
+}

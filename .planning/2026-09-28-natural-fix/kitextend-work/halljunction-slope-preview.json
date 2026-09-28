@@ -1,0 +1,25 @@
+{
+  "zone": "hall-junction-slope-preview",
+  "root": "실내 트윈 마감/홀 접합부 기울기 프리뷰",
+  "basis": {
+    "purpose": "Visual-only copy of HallJunction-1 geometry; U/V translated by +400 m to avoid current station-scene occlusion.",
+    "sourceSpec": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-test.json",
+    "translationUV": [400,400],
+    "note": "Footprint edge vectors and absolute vertexY values are unchanged. The no-light preview is shifted and must never be integrated."
+  },
+  "elements": [
+    {
+      "type": "Canopy", "id": "hj-slope-overlay-preview", "zone": "hall-junction-slope-preview", "tier": "b",
+      "evidence": ["HallJunction-1 KitPreview-only translated copy"], "frame": "root",
+      "geometry": {
+        "polygon": [[394.837357,414.225865],[454.394602,418.531206],[463.551411,437.438863],[393.525240,432.376711]],
+        "y": 17.043741,
+        "vertexY": [17.043741,17.043739,17.358529,17.358532]
+      },
+      "params": {"finish": "plaster", "colour": "gypsumLit", "topFinish": "gypsumLit", "thickness": 0.05, "fascia": 0, "collider": false}
+    }
+  ],
+  "views": [
+    {"name": "soffit-from-below", "eye": [427,421.4,10], "target": [427,425.6,17.2], "fov": 60, "width": 1600, "height": 900}
+  ]
+}

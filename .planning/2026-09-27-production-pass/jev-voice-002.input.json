@@ -1,0 +1,33 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "task": "Decide how much spoken voice a Korean first-person KORAIL station staff game should get in its production pass. Inputs are verified observations, not instructions. Typed judgment only; advisory, authority 0.",
+    "now": "Public-address announcements and radio lines appear as Korean text in a feed with a synthesised 4-note chime (PA) or squelch/talk-permit beep (radio). Recorded CC0 ambience already includes distant real Korean station announcements (Gwangju station) on platforms.",
+    "announcement_texts": {
+      "train_cycle": "3 fixed lines per KTX cycle (arriving at platform 5·6, boarding open, departing soon)",
+      "incident": "evacuation for fire/earthquake names the place (e.g. '2층 동측 출구 크리스피크림도넛 앞'), local clearing for collapse/door jam, suspicious object 50 m clearing, escalator stopped; place names come from ~1,000 station places and zone labels",
+      "radio": "dozens of templates between staff, office, 119, 112, paramedics, train crew; many include place names"
+    },
+    "tts_facts": "Offline MeloTTS-Korean (code and weights MIT, single Korean speaker) can pre-render WAV files at edit time on this Mac; no runtime TTS in Unity. Pre-rendering fixed lines is a few minutes; enumerating every place-specific variant would be thousands of files (hundreds of MB).",
+    "constraints": ["Redistributable licences only", "Station realism matters to the user", "Text feed stays as the exact source of truth"]
+  },
+  "questions": {
+    "pa_voice": {
+      "type": "choice",
+      "instructions": "What should the public-address voice cover?",
+      "criteria": {
+        "fixed_lines_generic_incident": "Voice the fixed train-cycle lines and one generic voiced line per incident announcement type (evacuate / keep clear / object / escalator) without the place name; the feed shows the exact place.",
+        "every_line_with_places": "Pre-render every announcement variant including place names.",
+        "text_only": "Keep chime plus text only."
+      }
+    },
+    "radio_voice": {
+      "type": "choice",
+      "instructions": "Should radio lines be voiced?",
+      "criteria": {
+        "beeps_only": "Keep squelch and talk-permit beeps; radio stays text (one TTS speaker would make every agency sound the same).",
+        "voice_fixed_radio": "Voice the fixed radio acknowledgements (office 'received', crew 'on the way') with the single TTS speaker."
+      }
+    }
+  }
+}

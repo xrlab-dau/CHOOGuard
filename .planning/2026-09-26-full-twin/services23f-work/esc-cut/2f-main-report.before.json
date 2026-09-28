@@ -1,0 +1,748 @@
+{
+ "schema": "chooguard.interior-enhance-report.v1",
+ "lane": "EnhanceMain2F",
+ "zone": "2F main",
+ "root": "실내 트윈 마감/2F 본관 보강",
+ "spec": ".planning/2026-09-24-interior-twin/specs/enhance/2f-main-enhance.json",
+ "generator": ".planning/2026-09-24-interior-twin/specs/enhance/make_2f_main_enhance.py",
+ "overlay": ".planning/2026-09-24-interior-twin/specs/enhance/2f-main-overlay.png",
+ "check": {
+  "command": "/opt/homebrew/bin/python3 .planning/2026-09-24-interior-twin/specs/enhance/check_spec.py .planning/2026-09-24-interior-twin/specs/enhance/2f-main-enhance.json --json .planning/2026-09-24-interior-twin/specs/enhance/2f-main-check.json",
+  "expectedWarnings": [
+   "2FM-G7-AED touches the source AED blob it mounts on",
+   "2FM-KORAIL-LOUNGE touches the lounge storefront trims (front edge)",
+   "FloorFinish base samples inside unit holes / the vestibule floor seam"
+  ]
+ },
+ "buildOrder": [
+  "apply plan edits E1, E2 (spec \"replaces\"), optionally E3/E4; rebuild 맞이방 · 원본 정합",
+  "re-run specs/make_2f_specs.py and KitBuild 2f-main.json -> 실내 트윈 마감/2F 본관 (the new low-ceiling edge covers COL-L-W1/W2; the 팔공티 front is trimmed at COL-L-CAFE-STONE)",
+  "KitBuild 2f-main-enhance.json -> 실내 트윈 마감/2F 본관 보강"
+ ],
+ "alsoChanged": {
+  "file": ".planning/2026-09-24-interior-twin/specs/make_2f_specs.py -> specs/2f-main.json",
+  "changes": [
+   "reads the live majibang-plan.json (so plan edit E3 propagates)",
+   "double-height hole south edge V -24 -> -21.95 (low ceiling covers the measured left column line)",
+   "팔공티 storefront starts at V -21.55 (north of COL-L-CAFE-STONE)",
+   "코레일라운지 편의점 front: KORAIL LOUNGE BUSAN dark fascia, open over W-R3 U -35.8..-30.7",
+   "편의점 (U -45.87..-40.27) fascia text StoryWay 편의점 (HC 206)"
+  ],
+  "rebuild": "KitBuild 2f-main.json -> 실내 트윈 마감/2F 본관 (before or with 2F 본관 보강)"
+ },
+ "planEditsDetected": {
+  "E1-lounge-fixtures-off": true,
+  "E2-lockers-builder-removed": true,
+  "E3-namcheon-face-minus-v": true,
+  "E4-atrium-guard-west-edge-off": true
+ },
+ "requestedPlanEdits": [
+  {
+   "id": "E1",
+   "applied": true,
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "edit": "secondFloorUnits \"코레일라운지 편의점\": add \"fixtures\": \"unresolved\" (drops the builder convenience gondolas; the kit ShopInterior cafe 2FM-KORAIL-LOUNGE furnishes the lounge). Optional rename to \"코레일라운지\".",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc146-196.jpg frames 186/196",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00530-00559.jpg"
+   ],
+   "unlocks": [
+    "2FM-KORAIL-LOUNGE"
+   ],
+   "replaces": [
+    "맞이방 · 원본 정합/코레일라운지 편의점 fixture 0-2 (GONDOLA1 clones, U -39.1..-31.2, V -34.7..-33.9)"
+   ]
+  },
+  {
+   "id": "E2",
+   "applied": true,
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "edit": "secondFloorUnits \"물품보관함\" (kind machines, 6 TicketVendingMachine props = wrong asset): remove the unit (the kit LockerBank 2FM-LOCKERS takes the same back line V 8.6, U -40.82..-34.18).",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg",
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-19 / G-M21"
+   ],
+   "unlocks": [
+    "2FM-LOCKERS"
+   ],
+   "replaces": [
+    "맞이방 · 원본 정합/물품보관함 0-5 (TicketVendingMachine clones, U -40.82..-34.18, V 7.95..8.55) and the unit sign \"물품보관함\" in the SignBoards batch"
+   ]
+  },
+  {
+   "id": "E3",
+   "applied": true,
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "edit": "secondFloorUnits \"남천할매떡볶이\": face \"+u\" -> \"-v\" (glazed front on V -3.31 toward the hall path, HC 596-601 s); then re-run specs/make_2f_specs.py (reads the live plan) and rebuild 실내 트윈 마감/2F 본관.",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00590-00619.jpg (HC 596-601 s)"
+   ],
+   "unlocks": [
+    "2F-main-front-06-남천할매떡볶이 on the -v face"
+   ]
+  },
+  {
+   "id": "E4",
+   "applied": true,
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "edit": "slabOpenings \"gate2-atrium\" guard.edges [0, 1, 3] -> [0, 1]: edge 3 (U -30.0) guard glass sits .06 inside the lounge unit; the lounge east wall already closes the void there.",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json slabOpenings / secondFloorUnits 코레일라운지 편의점 (u -40.27..-30.0)"
+   ],
+   "unlocks": []
+  },
+  {
+   "id": "N1",
+   "applied": null,
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "edit": "no change requested; note: HC 590-619 s order (남천 -> 철도경찰대 -> ticket windows) contradicts the board-derived 철도경찰서 unit at U -55..-44 (reconcile tier c). Keep until a hall-link registration pass.",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00590-00619.jpg",
+    ".planning/2026-09-24-interior-twin/reconcile-2f/changes.json"
+   ],
+   "unlocks": []
+  }
+ ],
+ "summary": {
+  "elements": 49,
+  "built": 35,
+  "tierC": 14,
+  "builtByType": {
+   "Column": 6,
+   "DisplayBoard": 5,
+   "WallCladding": 2,
+   "ServiceDoor": 1,
+   "Fixture": 8,
+   "DoorSet": 3,
+   "SuspendedCeiling": 1,
+   "WallSign": 3,
+   "Counter": 2,
+   "ShopInterior": 1,
+   "LockerBank": 1,
+   "FloorFinish": 2
+  },
+  "trianglesEstimate": 18880,
+  "lightsEstimate": 1,
+  "perElementTriangles": {
+   "2FM-COL-L-CAFE-STONE": 260,
+   "2FM-COL-L-CLOCK": 260,
+   "2FM-COL-L-HEALTH": 260,
+   "2FM-COL-L-W1": 260,
+   "2FM-COL-L-W2": 260,
+   "2FM-COL-L-W3": 260,
+   "2FM-CLOCK": 60,
+   "2FM-TICKET-WALL": 288,
+   "2FM-TICKET-LED-0": 60,
+   "2FM-TICKET-LED-1": 60,
+   "2FM-TICKET-LED-2": 60,
+   "2FM-TICKET-LED-3": 60,
+   "2FM-ENAMEL-WALL": 480,
+   "2FM-ENAMEL-DOOR": 114,
+   "2FM-ENAMEL-FIRE-CABINET": 90,
+   "2FM-ENAMEL-PAINTING-0": 90,
+   "2FM-ENAMEL-PAINTING-1": 90,
+   "2FM-G7-OUTER-L": 420,
+   "2FM-G7-OUTER-R": 420,
+   "2FM-G7-INNER": 420,
+   "2FM-G7-VESTIBULE-SOFFIT": 120,
+   "2FM-G7-PIER-SIGN-0": 40,
+   "2FM-G7-PIER-SIGN-1": 40,
+   "2FM-G7-AED": 90,
+   "2FM-HEALTH-PANEL": 40,
+   "2FM-HEALTH-KIOSK": 90,
+   "2FM-LOUNGE-BANNER": 90,
+   "2FM-LOUNGE-COFFEE": 90,
+   "2FM-COL-W3-CCTV": 90,
+   "2FM-BNC-BAR-0": 60,
+   "2FM-BNC-BAR-1": 60,
+   "2FM-KORAIL-LOUNGE": 12000,
+   "2FM-LOCKERS": 600,
+   "2FM-FLOOR-0": 1146,
+   "2FM-G7-MAT": 52
+  }
+ },
+ "emptyFloor": {
+  "baseline": {
+   "emptyShare6": 0.265,
+   "blobs": [
+    {
+     "area": 2123.0,
+     "centre": [
+      -26.6,
+      -10.6
+     ],
+     "maxDistance": 18.8
+    }
+   ]
+  },
+  "assessment": "The main blob centred (-26.6,-10.6) lies between the two observed HC paths (corridor V -25, hall path V -6). Footage (HC 514-517 s, HC 602-619 s left side) shows it as open concourse with a few stainless columns and standees whose positions are not measured, so it stays open circulation space; this round adds the measured column line, clock and props on its south edge, the ticket wall and guide line on its north edge, and the floor finish over it."
+ },
+ "backlog": [
+  {
+   "id": "G-M01",
+   "status": "unchanged-already-built",
+   "elements": [
+    "2F 본관: 2F-main-low-ceiling-0, 2F-main-gate7-hall-ceiling-0"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json"
+   ],
+   "positionBasis": "measured heights 10.47 / 10.58",
+   "notes": "make_2f_specs.py: double-height hole now starts at V -21.95 so the low ceiling covers the measured left column line (columns full height to 10.47)"
+  },
+  {
+   "id": "G-M02",
+   "status": "still-c",
+   "elements": [
+    "2FM-DOUBLEHALL-CEILING (c)"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json M-DOUBLEHALL"
+   ],
+   "positionBasis": "none",
+   "notes": "height only bracketed 9.0-10.7 (measurement-lane tier c); the source roof (Y 23) and the source upper walls with window bands remain; extent kept open"
+  },
+  {
+   "id": "G-M03",
+   "status": "unchanged-already-built",
+   "elements": [
+    "2F 본관 ceiling fixtures (grid LED panels, emissive)"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json"
+   ],
+   "positionBasis": "ceiling layout library",
+   "notes": "no real lights added (ceiling self-lit); vestibule soffit adds downlights"
+  },
+  {
+   "id": "G-M04",
+   "status": "built-new",
+   "elements": [
+    "2FM-COL-L-CAFE-STONE",
+    "2FM-COL-L-CLOCK",
+    "2FM-COL-L-HEALTH",
+    "2FM-COL-L-W1",
+    "2FM-COL-L-W2",
+    "2FM-COL-L-W3"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json",
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc146-196.jpg",
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc206-246.jpg"
+   ],
+   "positionBasis": "measured C-MAIN-COLUMNS footprints (class b); unseen faces [INFERENCE 1.1 casing]",
+   "notes": "COL-R-VOID-E / COL-R-VOID-MID / COL-R-LOUNGE still c: their observed faces lie in the atrium void (1F continuation would cross the 1F front-row walk route, unobserved) or in the built lounge corner"
+  },
+  {
+   "id": "G-M05",
+   "status": "built-new",
+   "elements": [
+    "2FM-ENAMEL-WALL",
+    "2FM-ENAMEL-PAINTING-0",
+    "2FM-ENAMEL-PAINTING-1"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json W-R1",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00500-00529.jpg",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/local-controls.json"
+   ],
+   "positionBasis": "measured wall plane V -28.15; paintings [INFERENCE positions]",
+   "notes": ""
+  },
+  {
+   "id": "G-M06",
+   "status": "unchanged-already-built",
+   "elements": [
+    "2F 본관 ceilings"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json"
+   ],
+   "positionBasis": "kit ceiling closes the hall; the double-height hall upper walls with window bands are the source shell and match the footage clerestory (HC 574-601 s)",
+   "notes": ""
+  },
+  {
+   "id": "G-M07",
+   "status": "unchanged-already-built",
+   "elements": [
+    "majibang-plan slabOpenings gate2-atrium guard (teal glass)"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json slabOpenings gate2-atrium"
+   ],
+   "positionBasis": "measured guard line V -28.44",
+   "notes": "plan edit E4 requested: its west edge (U -30.0) runs inside the lounge unit"
+  },
+  {
+   "id": "G-M08",
+   "status": "unchanged-already-built",
+   "elements": [
+    "OpenFront_boksoondoga + 2F-main-front-19-복순도가"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/reconcile-2f/changes.json"
+   ],
+   "positionBasis": "aperture corners (a-failed)",
+   "notes": ""
+  },
+  {
+   "id": "G-M09",
+   "status": "unchanged-already-built",
+   "elements": [
+    "OpenFront_kkotdeul + 2F-main-front-16-꽃들"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/reconcile-2f/changes.json"
+   ],
+   "positionBasis": "aperture corners (a-failed)",
+   "notes": ""
+  },
+  {
+   "id": "G-M10",
+   "status": "fixed",
+   "elements": [
+    "2F 본관: 2F-main-front-11 (KORAIL LOUNGE BUSAN fascia, open front U -35.8..-30.7)",
+    "2FM-KORAIL-LOUNGE",
+    "2FM-LOUNGE-BANNER",
+    "2FM-LOUNGE-COFFEE"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc146-196.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00530-00559.jpg",
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json W-R3 / SOFFIT-KORAIL-LOUNGE"
+   ],
+   "positionBasis": "built unit + measured front and soffit",
+   "notes": ""
+  },
+  {
+   "id": "G-M11",
+   "status": "still-c",
+   "elements": [],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/reconcile-2f/changes.json unresolved"
+   ],
+   "positionBasis": "none",
+   "notes": "Cafe de Craft is absent from the 2026 board; 팔공티 vs the Cafe bay (U -18.3..-9.3) unresolved; the stone column is built as COL-L-CAFE-STONE"
+  },
+  {
+   "id": "G-M12",
+   "status": "unchanged-already-built",
+   "elements": [
+    "2F-main-front-12 (now \"StoryWay 편의점\"), 2F-main-front-15-SUBWAY"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc206-246.jpg"
+   ],
+   "positionBasis": "built units",
+   "notes": "capsule machines / extinguisher stands still c (2FM-STORYWAY-CAPSULES)"
+  },
+  {
+   "id": "G-M13",
+   "status": "built-new",
+   "elements": [
+    "2FM-BNC-BAR-0",
+    "2FM-BNC-BAR-1"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc206-246.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00560-00589.jpg"
+   ],
+   "positionBasis": "measured front line W-R4",
+   "notes": "fronts already built (photo fascias); 냉모밀/우동 banners c (2023 tenant)"
+  },
+  {
+   "id": "G-M14",
+   "status": "fixed",
+   "elements": [
+    "2F-main-front-06-남천할매떡볶이"
+   ],
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00590-00619.jpg (HC 596-601 s: glazed front parallel to the hall path)"
+   ],
+   "positionBasis": "built unit",
+   "notes": "front must face -v (the hall path), not +u; make_2f_specs.py now reads the live plan so E3 propagates on re-run"
+  },
+  {
+   "id": "G-M15",
+   "status": "unchanged-already-built",
+   "elements": [
+    "2F-main-front-01-비엔씨, 2F-main-front-02-환공어묵 (photo fascias)"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json"
+   ],
+   "positionBasis": "built units",
+   "notes": ""
+  },
+  {
+   "id": "G-M16",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-ENAMEL-DOOR"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/architectural-controls.json",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/local-controls.json",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/precise-door-crops.jpg",
+    ".planning/2026-09-23-video-twin/main-metric-registration/registration.json",
+    ".planning/2026-09-24-interior-twin/measure-2f-main/registration.json"
+   ],
+   "positionBasis": "chain-corrected door picks on the measured wall",
+   "notes": "철도경찰대 glass doors (position conflict) and double-hall office doors (walls unmeasured) still c"
+  },
+  {
+   "id": "G-M17",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-LOUNGE-BANNER",
+    "2FM-LOUNGE-COFFEE",
+    "2FM-HEALTH-PANEL"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc146-196.jpg"
+   ],
+   "positionBasis": "anchored to measured columns / front",
+   "notes": "hanging blue/green wayfinding signs still c (not triangulated): 2FM-WAYFINDING-*"
+  },
+  {
+   "id": "G-M18",
+   "status": "built-new",
+   "elements": [
+    "2FM-CLOCK"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json C-MAIN-CLOCK",
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc146-196.jpg"
+   ],
+   "positionBasis": "measured underside patch",
+   "notes": ""
+  },
+  {
+   "id": "G-M19",
+   "status": "built-new",
+   "elements": [
+    "2FM-TICKET-WALL",
+    "2FM-TICKET-LED-0",
+    "2FM-TICKET-LED-1",
+    "2FM-TICKET-LED-2",
+    "2FM-TICKET-LED-3"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json M-TICKETWALL",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00590-00619.jpg"
+   ],
+   "positionBasis": "measured wall plane + built counters",
+   "notes": "pink mural wrap panels (extent unmeasured) and the timetable totem still c"
+  },
+  {
+   "id": "G-M20",
+   "status": "unchanged-already-built",
+   "elements": [
+    "맞이방 · 원본 정합/자동발매기 0-3 (builder props + sign)",
+    "2FM-HEALTH-KIOSK"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json",
+    ".planning/2026-09-23-video-twin/compare/ry-330-832.jpg"
+   ],
+   "positionBasis": "built unit",
+   "notes": "the blue kiosk near the lounge is modelled at COL-L-HEALTH (identity [INFERENCE])"
+  },
+  {
+   "id": "G-M21",
+   "status": "fixed",
+   "elements": [
+    "2FM-LOCKERS"
+   ],
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg",
+    ".planning/2026-09-23-video-twin/majibang-plan.json"
+   ],
+   "positionBasis": "board topology on the built unit",
+   "notes": ""
+  },
+  {
+   "id": "G-M22",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-BNC-BAR-0",
+    "2FM-BNC-BAR-1",
+    "2FM-KORAIL-LOUNGE"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc206-246.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00530-00559.jpg"
+   ],
+   "positionBasis": "measured front / built unit",
+   "notes": "lounge seating via ShopInterior cafe (built-new); Cafe de Craft armchairs c (tenant gone)"
+  },
+  {
+   "id": "G-M23",
+   "status": "built-new",
+   "elements": [
+    "2FM-FLOOR-0",
+    "2FM-G7-MAT"
+   ],
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00530-00559.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00500-00529.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00590-00619.jpg"
+   ],
+   "positionBasis": "built floor topology",
+   "notes": "polished granite, dark bands on unit fronts and edges, two footage-evidenced guide lines, dot pads"
+  },
+  {
+   "id": "G-M24",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-G7-AED",
+    "2FM-HEALTH-KIOSK"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate7-source-photo-neighbor-comparison.png"
+   ],
+   "positionBasis": "source AED blob",
+   "notes": "tactile-map kiosk (blob not separable), extinguishers (gameplay FE-*), AC unit: still c"
+  },
+  {
+   "id": "G-X01",
+   "status": "still-c",
+   "elements": [],
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00470-00499.jpg"
+   ],
+   "positionBasis": "source piers exact",
+   "notes": "retexture of the source deck piers needs a source-material pass (a kit Column would intersect the source pier); outside the enclosure"
+  },
+  {
+   "id": "G-X02",
+   "status": "built-new",
+   "elements": [
+    "2FM-G7-OUTER-L",
+    "2FM-G7-OUTER-R",
+    "2FM-G7-INNER",
+    "2FM-G7-VESTIBULE-SOFFIT",
+    "2FM-G7-PIER-SIGN-0",
+    "2FM-G7-PIER-SIGN-1"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/original-gate7-identity-proof.json",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate7-source-photo-neighbor-comparison.png",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00500-00529.jpg"
+   ],
+   "positionBasis": "source openings (exact) + measured soffit; inner line [INFERENCE +-0.6]",
+   "notes": ""
+  },
+  {
+   "id": "G-X03",
+   "status": "still-c",
+   "elements": [
+    "2FM-NUMBERED-EXITS (c)"
+   ],
+   "evidence": [],
+   "positionBasis": "none",
+   "notes": "exit 2/5 door banks unidentified in the source"
+  },
+  {
+   "id": "G-X04",
+   "status": "unchanged-already-built (other lane)",
+   "elements": [
+    "실내 트윈 마감/수직 동선 (escalator-core, Enhance1F)"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/escalator-core.json"
+   ],
+   "positionBasis": "escalator-core spec",
+   "notes": ""
+  },
+  {
+   "id": "G-X05",
+   "status": "other lane",
+   "elements": [
+    "escalator-core GATE-ESC-1F-*"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/escalator-core/escalator-core.json"
+   ],
+   "positionBasis": "escalator-core spec",
+   "notes": "2F head gate posts belong to the escalator-core lane (Enhance1F)"
+  },
+  {
+   "id": "G-X06",
+   "status": "still-c",
+   "elements": [],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/reconcile-2f/changes.json unresolved (CX-03)"
+   ],
+   "positionBasis": "none",
+   "notes": "deck kiosks: vestibule unregistered past HC ~108; board units 20-23 compete for the same place"
+  },
+  {
+   "id": "BL-02",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-ENAMEL-WALL"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json"
+   ],
+   "positionBasis": "measured plane",
+   "notes": "other service/corridor walls: no further measured planes"
+  },
+  {
+   "id": "BL-12",
+   "status": "other lane",
+   "elements": [],
+   "evidence": [],
+   "positionBasis": "box (EnhanceBox2F)",
+   "notes": "KORAIL info desk is in the box hall"
+  },
+  {
+   "id": "BL-13",
+   "status": "built-new",
+   "elements": [
+    "2FM-TICKET-WALL",
+    "2FM-TICKET-LED-0",
+    "2FM-TICKET-LED-1",
+    "2FM-TICKET-LED-2",
+    "2FM-TICKET-LED-3"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00590-00619.jpg"
+   ],
+   "positionBasis": "measured plane",
+   "notes": "totem / murals c; TVM row unchanged (builder props)"
+  },
+  {
+   "id": "BL-16",
+   "status": "built-new",
+   "elements": [
+    "2FM-FLOOR-0",
+    "2FM-G7-MAT"
+   ],
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00530-00559.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00590-00619.jpg"
+   ],
+   "positionBasis": "built floor topology",
+   "notes": "finish keyword and border match EnhanceBox2F (polished, dark .3); orange gate lines are box-hall only"
+  },
+  {
+   "id": "BL-19",
+   "status": "fixed (partial)",
+   "elements": [
+    "2F-main-front-11 KORAIL LOUNGE fascia",
+    "2FM-KORAIL-LOUNGE",
+    "2FM-LOCKERS"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc146-196.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg"
+   ],
+   "positionBasis": "built units",
+   "notes": "lounge interior built-new; lockers fixed"
+  },
+  {
+   "id": "BL-28",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-LOUNGE-BANNER",
+    "2FM-LOUNGE-COFFEE"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc146-196.jpg"
+   ],
+   "positionBasis": "measured hosts",
+   "notes": "hanging wayfinding and numbered exit signs c"
+  },
+  {
+   "id": "BL-29",
+   "status": "still-c",
+   "elements": [
+    "2FM-DOUBLEHALL-CEILING (c)"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json"
+   ],
+   "positionBasis": "none",
+   "notes": "see G-M02"
+  },
+  {
+   "id": "BL-30",
+   "status": "built-new",
+   "elements": [
+    "2FM-G7-OUTER-L",
+    "2FM-G7-OUTER-R",
+    "2FM-G7-INNER",
+    "2FM-G7-AED"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/original-gate7-identity-proof.json",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate7-source-photo-neighbor-comparison.png"
+   ],
+   "positionBasis": "source + measured soffit",
+   "notes": "deck canopy piers c (G-X01); tactile-map kiosk c"
+  },
+  {
+   "id": "BL-31",
+   "status": "unchanged-already-built",
+   "elements": [
+    "2F 본관 storefronts (17)"
+   ],
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json"
+   ],
+   "positionBasis": "built units",
+   "notes": "StoryWay text and KORAIL LOUNGE fascia corrected; 남천 face awaits E3"
+  },
+  {
+   "id": "BL-32",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-BNC-BAR-0",
+    "2FM-BNC-BAR-1",
+    "2FM-KORAIL-LOUNGE"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc206-246.jpg"
+   ],
+   "positionBasis": "measured front / built unit",
+   "notes": "see G-M22"
+  },
+  {
+   "id": "BL-34",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-COL-L-CAFE-STONE",
+    "2FM-COL-L-CLOCK",
+    "2FM-COL-L-HEALTH",
+    "2FM-COL-L-W1",
+    "2FM-COL-L-W2",
+    "2FM-COL-L-W3",
+    "2FM-CLOCK",
+    "2FM-ENAMEL-DOOR"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/observations.json",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/architectural-controls.json"
+   ],
+   "positionBasis": "measured columns/clock; chain-corrected door",
+   "notes": "strip-edge/3F/box items belong to other lanes"
+  },
+  {
+   "id": "BL-35",
+   "status": "built-new (partial)",
+   "elements": [
+    "2FM-COL-W3-CCTV",
+    "2FM-G7-AED"
+   ],
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/measure-2f-main/overlay-columns-hc206-246.jpg",
+    ".planning/2026-09-23-video-twin/upper-frontage-refinement/gauge-recovery/gate7-source-photo-neighbor-comparison.png"
+   ],
+   "positionBasis": "measured column / source blob",
+   "notes": "ceiling domes and extinguisher stands c"
+  }
+ ]
+}

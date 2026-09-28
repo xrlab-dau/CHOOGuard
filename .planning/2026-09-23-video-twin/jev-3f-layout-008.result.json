@@ -1,0 +1,62 @@
+{
+ "model": "typesafe/jev-1.13.0",
+ "answers": {
+  "food_court_location": {
+   "type": "choice",
+   "choice": "over_track_structure",
+   "confidence": 0.65,
+   "probabilities": {
+    "south_wing_main_hall": 0.01,
+    "west_wing_main_hall": 0.03,
+    "east_wing_main_hall": 0.23,
+    "over_track_structure": 0.73
+   }
+  },
+  "naver_pin_use": {
+   "type": "choice",
+   "choice": "relative_order_only",
+   "confidence": 0.71,
+   "probabilities": {
+    "relative_order_only": 0.81,
+    "trust_absolute": 0.19,
+    "discard": 0
+   }
+  },
+  "plan_shape": {
+   "type": "choice",
+   "choice": "U_east_south_west",
+   "confidence": 0.95,
+   "probabilities": {
+    "L_west_south": 0.01,
+    "keep_current": 0,
+    "L_east_south": 0.02,
+    "U_east_south_west": 0.97
+   }
+  },
+  "east_wing_geometry_source": {
+   "type": "choice",
+   "choice": "original_band_slab_and_walls",
+   "confidence": 1,
+   "probabilities": {
+    "video_ceiling_edge": 0,
+    "original_band_slab_and_walls": 1,
+    "guide_proportions": 0
+   }
+  },
+  "tenant_epoch": {
+   "type": "choice",
+   "choice": "epoch_2022_labelled",
+   "confidence": 1,
+   "probabilities": {
+    "epoch_2022_labelled": 1,
+    "guide_2025": 0,
+    "unlabelled_generic": 0
+   }
+  },
+  "evidence_sufficient_to_build": {
+   "type": "bool",
+   "bool": 0.29
+  }
+ },
+ "authority": 0
+}

@@ -1,0 +1,691 @@
+{
+ "schema": "chooguard.reconcile-2f.changes.v1",
+ "frame": "station UVY source-model units",
+ "moved": [
+  {
+   "index": 18,
+   "name": "매표창구",
+   "old": {
+    "u": [
+     -26,
+     -6
+    ],
+    "v": [
+     -1.5,
+     4.5
+    ],
+    "face": "-v"
+   },
+   "new": {
+    "u": [
+     -26.6,
+     -6
+    ],
+    "v": [
+     -3.31,
+     2.69
+    ],
+    "face": "-v"
+   },
+   "delta": {
+    "du0": -0.6,
+    "du1": 0,
+    "dv0": -1.81,
+    "dv1": -1.81,
+    "centreShift": 1.83,
+    "widthChange": 0.6,
+    "depthChange": 0.0
+   },
+   "rule": "front (-v face) onto measured ticket-window wall plane; west end extended to observed wall extent; east end unobserved (kept)",
+   "tier": "b",
+   "evidence": [
+    "measure-2f-main/observations.json M-TICKETWALL (V -3.31, U -26.6..-13.1, REG-HALL-LINK weak)",
+    "evidence-2f.json CX-07, BL-13"
+   ],
+   "notes": "",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 24,
+   "name": "팔공티",
+   "old": {
+    "u": [
+     -26,
+     -19
+    ],
+    "v": [
+     -25,
+     -18
+    ],
+    "face": "+u"
+   },
+   "new": {
+    "u": [
+     -25.1,
+     -18.1
+    ],
+    "v": [
+     -22.95,
+     -15.95
+    ],
+    "face": "+u"
+   },
+   "delta": {
+    "du0": 0.9,
+    "du1": 0.9,
+    "dv0": 2.05,
+    "dv1": 2.05,
+    "centreShift": 2.24,
+    "widthChange": 0.0,
+    "depthChange": 0.0
+   },
+   "rule": "shared corridor face: +V corridor face measured at V -22.95 (W-L1/W-L2 + column corridor faces) -> v0 clamped; U shifted to clear COL-L-CLOCK east face (-25.1)",
+   "tier": "b",
+   "evidence": [
+    "measure-2f-main/observations.json M-HC-CORRIDOR-SURFACES W-L1/W-L2",
+    "measure-2f-main/observations.json C-MAIN-COLUMNS COL-L-CLOCK"
+   ],
+   "notes": "2026 tenant; not present in 2023 HC footage, so identity/footprint remain board-derived",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 25,
+   "name": "남천할매떡볶이",
+   "old": {
+    "u": [
+     -40,
+     -33
+    ],
+    "v": [
+     -8,
+     -1
+    ],
+    "face": "+u"
+   },
+   "new": {
+    "u": [
+     -40,
+     -33
+    ],
+    "v": [
+     -3.31,
+     3.69
+    ],
+    "face": "+u"
+   },
+   "delta": {
+    "du0": 0,
+    "du1": 0,
+    "dv0": 4.69,
+    "dv1": 4.69,
+    "centreShift": 4.69,
+    "widthChange": 0,
+    "depthChange": 0.0
+   },
+   "rule": "neighbour constraint: board 2F bar 매표창구 | 26 | 철도경찰서 shares one concourse front line -> v0 = measured ticket-wall V; old box straddled the measured HC hall camera path (V -5.3..-6.2)",
+   "tier": "c",
+   "evidence": [
+    "measure-2f-main/observations.json M-TICKETWALL",
+    "measure-2f-main/observations.json M-DOUBLEHALL (hall path frames 250-345)",
+    "measure-2f-main/overlay-plan-uvy.png orange HC 240-345 path (digitised)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00560-00589.jpg"
+   ],
+   "notes": "U kept (board order); exact tenancy widths/depths unmeasured",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 26,
+   "name": "철도경찰서",
+   "old": {
+    "u": [
+     -55,
+     -44
+    ],
+    "v": [
+     -9,
+     -1.5
+    ],
+    "face": "+u"
+   },
+   "new": {
+    "u": [
+     -55,
+     -44
+    ],
+    "v": [
+     -3.31,
+     4.19
+    ],
+    "face": "-v"
+   },
+   "delta": {
+    "du0": 0,
+    "du1": 0,
+    "dv0": 5.69,
+    "dv1": 5.69,
+    "centreShift": 5.69,
+    "widthChange": 0,
+    "depthChange": 0.0
+   },
+   "rule": "neighbour constraint: board 2F bar 매표창구 | 26 | 철도경찰서 shares one concourse front line -> v0 = measured ticket-wall V; old box straddled the measured HC hall camera path (V -5.3..-6.2); face +u -> -v: 철도경찰대 부산센터 glazed front faces the HC camera approaching from -V (HC 584-589 s)",
+   "tier": "c",
+   "evidence": [
+    "measure-2f-main/observations.json M-TICKETWALL",
+    "measure-2f-main/observations.json M-DOUBLEHALL (hall path frames 250-345)",
+    "measure-2f-main/overlay-plan-uvy.png orange HC 240-345 path (digitised)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/hCyroXn0Jhg_00560-00589.jpg"
+   ],
+   "notes": "U kept (board order); exact tenancy widths/depths unmeasured",
+   "changedFields": [
+    "u",
+    "v",
+    "face",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 30,
+   "name": "코레일라운지 편의점",
+   "old": {
+    "u": [
+     -39.0,
+     -34
+    ],
+    "v": [
+     -45.2,
+     -37.7
+    ],
+    "face": "+v"
+   },
+   "new": {
+    "u": [
+     -40.27,
+     -30.0
+    ],
+    "v": [
+     -35.82,
+     -28.32
+    ],
+    "face": "+v"
+   },
+   "delta": {
+    "du0": -1.27,
+    "du1": 4.0,
+    "dv0": 9.38,
+    "dv1": 9.38,
+    "centreShift": 9.48,
+    "widthChange": 5.27,
+    "depthChange": 0.0
+   },
+   "rule": "lounge: KORAIL LOUNGE fascia band / dark wall panel west edge (HC 204, 210) to corner column COL-R-LOUNGE; front = W-R3; depth kept",
+   "tier": "b",
+   "evidence": [
+    "measure-2f-main/observations.json M-HC-CORRIDOR-SURFACES W-R3/W-R4",
+    "reconcile-2f/boundary-rays.json",
+    "reconcile-2f/hc-proj-*.jpg"
+   ],
+   "notes": "",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 31,
+   "name": "편의점",
+   "old": {
+    "u": [
+     -47.5,
+     -40.5
+    ],
+    "v": [
+     -45.2,
+     -37.7
+    ],
+    "face": "+v"
+   },
+   "new": {
+    "u": [
+     -45.87,
+     -40.27
+    ],
+    "v": [
+     -36.04,
+     -28.54
+    ],
+    "face": "+v"
+   },
+   "delta": {
+    "du0": 1.63,
+    "du1": 0.23,
+    "dv0": 9.16,
+    "dv1": 9.16,
+    "centreShift": 9.21,
+    "widthChange": -1.4,
+    "depthChange": 0.0
+   },
+   "rule": "StoryWay 편의점: glazing west edge (HC 216) to lounge boundary; front = W-R4; depth kept",
+   "tier": "b",
+   "evidence": [
+    "measure-2f-main/observations.json M-HC-CORRIDOR-SURFACES W-R3/W-R4",
+    "reconcile-2f/boundary-rays.json",
+    "reconcile-2f/hc-proj-*.jpg"
+   ],
+   "notes": "",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 32,
+   "name": "소반한식",
+   "old": {
+    "u": [
+     -55,
+     -49.0
+    ],
+    "v": [
+     -44.2,
+     -36.7
+    ],
+    "face": "+v"
+   },
+   "new": {
+    "u": [
+     -54.31,
+     -48.83
+    ],
+    "v": [
+     -36.04,
+     -28.54
+    ],
+    "face": "+v"
+   },
+   "delta": {
+    "du0": 0.69,
+    "du1": 0.17,
+    "dv0": 8.16,
+    "dv1": 8.16,
+    "centreShift": 8.17,
+    "widthChange": -0.52,
+    "depthChange": 0.0
+   },
+   "rule": "2023 tenant 나베아 PORK CUTLET in the #29 slot: glazing edges (HC 216, 226, 232); front = W-R4; depth kept",
+   "tier": "b",
+   "evidence": [
+    "measure-2f-main/observations.json M-HC-CORRIDOR-SURFACES W-R3/W-R4",
+    "reconcile-2f/boundary-rays.json",
+    "reconcile-2f/hc-proj-*.jpg"
+   ],
+   "notes": "",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 33,
+   "name": "비엔씨제과",
+   "old": {
+    "u": [
+     -63,
+     -55
+    ],
+    "v": [
+     -42.2,
+     -34.7
+    ],
+    "face": "+v"
+   },
+   "new": {
+    "u": [
+     -65.76,
+     -54.31
+    ],
+    "v": [
+     -36.04,
+     -28.54
+    ],
+    "face": "+v"
+   },
+   "delta": {
+    "du0": -2.76,
+    "du1": 0.69,
+    "dv0": 6.16,
+    "dv1": 6.16,
+    "centreShift": 6.25,
+    "widthChange": 3.45,
+    "depthChange": 0.0
+   },
+   "rule": "비엔씨제과: shared partition with #29 (east) and SUBWAY partition (HC 246/247, west); front = W-R4 (plane measured to U -55.4, extended); depth kept",
+   "tier": "b",
+   "evidence": [
+    "measure-2f-main/observations.json M-HC-CORRIDOR-SURFACES W-R3/W-R4",
+    "reconcile-2f/boundary-rays.json",
+    "reconcile-2f/hc-proj-*.jpg"
+   ],
+   "notes": "",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 34,
+   "name": "SUBWAY",
+   "old": {
+    "u": [
+     -71,
+     -63
+    ],
+    "v": [
+     -41.0,
+     -33.5
+    ],
+    "face": "+v"
+   },
+   "new": {
+    "u": [
+     -73.76,
+     -65.76
+    ],
+    "v": [
+     -36.04,
+     -28.54
+    ],
+    "face": "+v"
+   },
+   "delta": {
+    "du0": -2.76,
+    "du1": -2.76,
+    "dv0": 4.96,
+    "dv1": 4.96,
+    "centreShift": 5.68,
+    "widthChange": 0.0,
+    "depthChange": 0.0
+   },
+   "rule": "SUBWAY: east edge = BNC|SUBWAY partition (HC 246/247); width and depth kept from plan; front on the W-R4 row line (extrapolated)",
+   "tier": "c",
+   "evidence": [
+    "measure-2f-main/observations.json M-HC-CORRIDOR-SURFACES W-R4",
+    "reconcile-2f/boundary-rays.json"
+   ],
+   "notes": "fascia-height rays (HC 246/247) put the SUBWAY sign at U -68.0, V -25.9: the west-end front may sit ~2.6 u +V of the row line (unresolved)",
+   "changedFields": [
+    "u",
+    "v",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 35,
+   "name": "꽃들",
+   "old": {
+    "u": [
+     15.9,
+     22.2
+    ],
+    "v": [
+     -49.3,
+     -45.6
+    ],
+    "face": "+v"
+   },
+   "new": {
+    "u": [
+     14.99,
+     22.25
+    ],
+    "v": [
+     -32.11,
+     -28.41
+    ],
+    "face": "+v"
+   },
+   "delta": {
+    "du0": -0.91,
+    "du1": 0.05,
+    "dv0": 17.19,
+    "dv1": 17.19,
+    "centreShift": 17.2,
+    "widthChange": 0.96,
+    "depthChange": 0.0
+   },
+   "rule": "open +v front onto the scale-corrected RY aperture corners (U = corner span, front V = mean corner V); shallow depth kept",
+   "tier": "a-failed",
+   "evidence": [
+    "measure-2f-main/observations.json M-KKOTDEUL-APERTURE",
+    "evidence-2f.json CX-01/CX-02, BL-03",
+    "measure-2f-main/registration.json FINDING-HC0-SCALE-JUMP"
+   ],
+   "notes": "",
+   "changedFields": [
+    "u",
+    "v",
+    "frontageCorrection.legacyFootprint (added)",
+    "evidence (appended)"
+   ]
+  },
+  {
+   "index": 38,
+   "name": "복순도가",
+   "old": {
+    "u": [
+     -0.4,
+     6.2
+    ],
+    "v": [
+     -49.3,
+     -46.6
+    ],
+    "face": "+v"
+   },
+   "new": {
+    "u": [
+     -0.87,
+     4.76
+    ],
+    "v": [
+     -30.63,
+     -27.93
+    ],
+    "face": "+v"
+   },
+   "delta": {
+    "du0": -0.47,
+    "du1": -1.44,
+    "dv0": 18.67,
+    "dv1": 18.67,
+    "centreShift": 18.69,
+    "widthChange": -0.97,
+    "depthChange": 0.0
+   },
+   "rule": "open +v front onto the scale-corrected RY aperture corners (U = corner span, front V = mean corner V); shallow depth kept",
+   "tier": "a-failed",
+   "evidence": [
+    "measure-2f-main/observations.json M-BOKSOONDOGA-APERTURE",
+    "evidence-2f.json CX-01/CX-02, BL-03",
+    "measure-2f-main/registration.json FINDING-HC0-SCALE-JUMP"
+   ],
+   "notes": "",
+   "changedFields": [
+    "u",
+    "v",
+    "frontageCorrection.legacyFootprint (added)",
+    "evidence (appended)"
+   ]
+  }
+ ],
+ "unresolved": [
+  {
+   "units": [
+    "다인명가",
+    "호두나니&부산오뎅",
+    "청도할매김밥",
+    "반월당닭강정"
+   ],
+   "status": "unchanged; outside the 2F cell grid (v -59.6..-50.0) as before",
+   "reason": "Board: 20-23 below the Gate 7 door line, in the columns under 19/24. The source MainShell section at Y 8.5 shows two wing enclosures open toward the corridor (west U -1..5 / -2..2.5, V -46..-30; east U 14.3..20.1, V -45.6..-30) that would hold 20/21 and 22/23, but the vestibule is not registered past HC frame ~108 (hc0 frames 112-120 diverge) and 2023 tenants there differ (경주빵 호두과자 kiosks, HC 504-509 s). CX-03 keeps them blocked.",
+   "proposalIfAccepted": {
+    "청도할매김밥": {
+     "u": [
+      -0.87,
+      4.76
+     ],
+     "v": [
+      -35.43,
+      -30.63
+     ]
+    },
+    "반월당닭강정": {
+     "u": [
+      -1.6,
+      2.5
+     ],
+     "v": [
+      -40.23,
+      -35.83
+     ]
+    },
+    "다인명가": {
+     "u": [
+      14.99,
+      20.0
+     ],
+     "v": [
+      -36.91,
+      -32.11
+     ]
+    },
+    "호두나니&부산오뎅": {
+     "u": [
+      14.99,
+      20.0
+     ],
+     "v": [
+      -41.71,
+      -37.31
+     ]
+    },
+    "tier": "c",
+    "basis": "board column order under 19/24 + source wing interiors; widths trimmed to wing walls"
+   }
+  },
+  {
+   "units": [
+    "편의점 (#17)",
+    "백미당 (#18)"
+   ],
+   "status": "unchanged",
+   "reason": "Not in HC or the measured RY segment (U -23..19). RY2 553-565 s shows a teal void guard and lit shopfronts east of 꽃들 along the same corridor, i.e. #17/#18 probably front V≈-28 like #19, but that RY stretch is not registered. EscalatorCoreSpec (2026-03 ascent, local frame only): at the 2F top (heading +U, landing ≈ U 34-36, V -15) a bakery is ahead-left (+U/-V) and restrooms straight ahead. Restrooms ahead matches plan 화장실 (#23, U 48-56, V -19..-11.5). The bakery ahead-left is most likely the #17/#18 frontage (2026-08 legend: #18 백미당 -> 영주당 부산과자집, a bakery), which would put their fronts much closer to the landing than the plan (V -33.7/-37.5). Not moved: the ascent model has no UVY registration. EscalatorCoreSpec: 3TL frames 247-259 show the bakery front only a few units off the walking line (qualitative, no distance). Needs a registered 2F HC/RY view of that frontage."
+  },
+  {
+   "units": [
+    "비엔씨 (#15)",
+    "환공어묵 (#16)"
+   ],
+   "status": "unchanged",
+   "reason": "island shops in the Gate 7 hall; not observed by the measured chain. Clear of the final EscalatorCoreSpec 2F keep-clear quad and exit run-off (clearances in checks.json)."
+  },
+  {
+   "units": [
+    "자동발매기",
+    "물품보관함",
+    "화장실 x2 (east)"
+   ],
+   "status": "unchanged",
+   "reason": "not observed"
+  },
+  {
+   "units": [
+    "SUBWAY west edge/front"
+   ],
+   "status": "partially resolved",
+   "reason": "west edge = plan width; front V extrapolated (sign rays suggest V≈-25.9)"
+  },
+  {
+   "units": [
+    "2023 +V corridor tenants (Cafe de Craft, RAIL MART, glass shops U -50..-40)"
+   ],
+   "status": "not created",
+   "reason": "observed 2023 tenants that are absent from the 2026 board; never invent units. 팔공티 (#25, 2026) identity vs the Cafe de Craft bay (U -18.3..-9.3) is unresolved."
+  },
+  {
+   "units": [
+    "StoryWay soffit label"
+   ],
+   "status": "reassigned in evidence only",
+   "reason": "SOFFIT-STORYWAY (U -37.9..-36.1) falls inside the lounge bay per fascia-band/glazing edges (lounge -40.4..-30.0); treated as lounge interior ceiling."
+  }
+ ],
+ "untouched": [
+  {
+   "index": 19,
+   "name": "자동발매기"
+  },
+  {
+   "index": 20,
+   "name": "비엔씨"
+  },
+  {
+   "index": 21,
+   "name": "환공어묵"
+  },
+  {
+   "index": 22,
+   "name": "화장실"
+  },
+  {
+   "index": 23,
+   "name": "화장실"
+  },
+  {
+   "index": 27,
+   "name": "물품보관함"
+  },
+  {
+   "index": 28,
+   "name": "편의점"
+  },
+  {
+   "index": 29,
+   "name": "백미당"
+  },
+  {
+   "index": 36,
+   "name": "다인명가"
+  },
+  {
+   "index": 37,
+   "name": "호두나니&부산오뎅"
+  },
+  {
+   "index": 39,
+   "name": "청도할매김밥"
+  },
+  {
+   "index": 40,
+   "name": "반월당닭강정"
+  }
+ ],
+ "extras": "secondFloorExtras/wallPanels: no main-building (root, v<=13) entry is observed by the HC chain -> unchanged. Note: sign \"↑ 타는 곳\" (U -32.7, V -12.9) top at Y 10.5 is 0.03 above the measured 10.47 low ceiling."
+}

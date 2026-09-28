@@ -1,0 +1,22 @@
+{
+  "schema":"chooguard.independent-ascent-controls.v1",
+  "pixelFrame":"local-ascent/images original distorted1280x720",
+  "coordinateSystem":"independent local SfM; these image observations do not assign a source-model origin or scale",
+  "plumbLines":[
+    {"frame":97,"role":"fit","features":[{"id":"white-panel-right-seam","pixels":[[1232,5],[1263,706]]},{"id":"white-panel-middle-seam","pixels":[[568,117],[575,625]]}]},
+    {"frame":163,"role":"fit","features":[{"id":"ribbed-enclosure-front-seam","pixels":[[473,488],[474,716]]},{"id":"ribbed-enclosure-far-seam","pixels":[[824,418],[819,710]]},{"id":"advertising-column-left-edge","pixels":[[944,341],[944,650]]}]},
+    {"frame":199,"role":"fit","features":[{"id":"white-panel-mid-seam","pixels":[[511,20],[512,701]]},{"id":"white-panel-far-seam","pixels":[[748,132],[748,562]]},{"id":"upper-ad-frame-left","pixels":[[816,215],[821,504]]}]},
+    {"frame":235,"role":"held-out","features":[{"id":"upper-ad-frame-right","pixels":[[405,346],[405,574]]},{"id":"elevator-left-jamb","pixels":[[880,159],[882,311]]},{"id":"glass-bay-right-mullion","pixels":[[1045,118],[1040,302]]}]},
+    {"frame":271,"role":"fit","features":[{"id":"near-left-metal-pier-edge","pixels":[[258,118],[260,268]]},{"id":"left-exit-post","pixels":[[746,386],[744,519]]},{"id":"mens-door-right-jamb","pixels":[[958,287],[961,387]]}]},
+    {"frame":289,"role":"held-out","features":[{"id":"mens-door-right-jamb","pixels":[[817,310],[819,421]]},{"id":"dark-wall-right-edge","pixels":[[662,281],[663,424]]},{"id":"womens-door-right-jamb","pixels":[[1004,319],[1001,410]]}]},
+    {"frame":307,"role":"fit","features":[{"id":"near-column-left-edge","pixels":[[459,191],[459,348]]},{"id":"near-column-right-edge","pixels":[[614,211],[615,385]]}]},
+    {"frame":331,"role":"held-out","features":[{"id":"bakery-fixed-mullion","pixels":[[606,222],[605,551]]},{"id":"bakery-outer-left-jamb","pixels":[[176,198],[178,578]]}]}
+  ],
+  "floorMasks":[
+    {"frame":271,"role":"diagnostic","id":"upper-landing-metal-plate-check-not-assumed-level","polygon":[[758,541],[965,552],[976,635],[724,630]]},
+    {"frame":289,"role":"fit","id":"upper-hall-walking-floor","polygon":[[651,464],[919,449],[918,537],[655,599]]},
+    {"frame":307,"role":"fit","id":"upper-hall-tile-floor","polygon":[[710,580],[1040,530],[1090,700],[675,700]]},
+    {"frame":331,"role":"held-out","id":"bakery-front-tile-floor","polygon":[[600,620],[918,619],[1219,699],[600,710]]}
+  ],
+  "constraints":["Vertical edges are orientation controls, not matches between similar-looking objects.","Floor level constrains gravity, not its source-modelY value.","No Y7 elevation or assumed escalator slope or width is imposed."]
+}

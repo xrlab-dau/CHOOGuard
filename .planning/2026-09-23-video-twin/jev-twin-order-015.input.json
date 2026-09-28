@@ -1,0 +1,63 @@
+{
+ "state": {
+  "task": "Continue the Busan Station interior twin to full digital-twin level. Choose the order of the remaining work.",
+  "project": "CHOOGuard: first-person emergency-response training in a Busan Station digital twin (fire extinguisher inspection tutorial; random emergencies with evacuation). Player walks with a CharacterController.",
+  "built": "Original official shell (MainShell, PlatformsParking) untouched except CSG door openings. 2F 맞이방 floor, 47 board-registered 2F units, 3F L (food court, 비빔가, 부산옥, 에그박스), escalator pair 2F-3F, 2F low ceiling with downlights. 11 walk routes complete.",
+  "gaps": {
+   "G1_hall_roof": "2010 over-track hall: original roof is a flat dark plane. 12+ photos and 2 videos show white tubular space trusses, skylight strips, round white columns with branching tops, and large hanging cylindrical lanterns. Defines the look of the largest space. No truss geometry in the original; no downloadable model found (Sketchfab search: none for Busan; one CC-BY space-frame model needs login we do not have).",
+   "G2_frontage_band": "3F balustrade face over the hall: ad panels (TKG, HWASEUNG, WFMT, 신기술), glass balustrade, 3F shop signs behind glass. 10+ photos. Currently a plain glass band.",
+   "G3_gates_vertical": "Platform gates (나오는 곳/타는 곳 glass doors, DEPARTURES boards above) and the stairs/escalators down to platforms 3·4, 5·6, 8·9, 10·11. Original model has 10 platform stair wells (tread material) at u 60-130. 6 photos. Not built: gates, boards, numbered signs. This is the evacuation route to the tracks.",
+   "G4_hall_furniture": "Round KORAIL info desk (black base, white counter, canopy ring), waiting benches (rows), 타는 곳 hanging signs, LED screens, cylindrical LED screen. Present only as rough placeholders (wrong bench design, desk as dark cylinder).",
+   "G5_shopfronts": "Shopfronts are open boxes with side glazing and text signs; video shows full glass fronts, dark fascia band with brand logos, bright interiors. Brand logos can be cropped from 94 photos and 4 videos.",
+   "G6_main_building": "2004 main building interior (architect photos: tall atrium with stone-clad columns, skylight, seat rows, gates). Only shell + board units present.",
+   "G7_platforms": "Track level platforms under the concourse (architect photo: round columns, canopy). Present in the original shell; not audited."
+  },
+  "constraints": "Every placement must derive from measurement of the original model, the official boards, or photos/videos. Reuse assets before authoring. One Unity editor is shared, so builds are sequential."
+ },
+ "questions": {
+  "first": {
+   "type": "choice",
+   "instructions": "Which gap should be closed first?",
+   "criteria": {
+    "G1_hall_roof": "hall roof structure, columns, lanterns",
+    "G2_frontage_band": "3F balustrade ad band",
+    "G3_gates_vertical": "platform gates, boards, stairs to platforms",
+    "G4_hall_furniture": "info desk, benches, hanging signs, screens",
+    "G5_shopfronts": "glass shopfronts and brand fascia",
+    "G6_main_building": "2004 main building interior",
+    "G7_platforms": "track-level platforms"
+   }
+  },
+  "second": {
+   "type": "choice",
+   "instructions": "Which gap should be closed second, assuming the first is done?",
+   "criteria": {
+    "G1_hall_roof": "hall roof structure",
+    "G2_frontage_band": "3F ad band",
+    "G3_gates_vertical": "gates and vertical access",
+    "G4_hall_furniture": "hall furniture",
+    "G5_shopfronts": "shopfronts",
+    "G6_main_building": "main building",
+    "G7_platforms": "platforms"
+   }
+  },
+  "roof_method": {
+   "type": "choice",
+   "instructions": "How should the hall roof structure be produced?",
+   "criteria": {
+    "photo_measured_procedural": "Procedural space frame whose module, depth and column grid are measured from photos against known dimensions (floor 7.0 m, 3F 12.2 m, original roof underside heights)",
+    "generic_asset": "Download a generic space-frame asset and scale it",
+    "leave_flat": "Leave the original flat roof"
+   }
+  },
+  "sign_method": {
+   "type": "choice",
+   "instructions": "How should brand fascia and ad panels be textured?",
+   "criteria": {
+    "photo_crops": "Perspective-rectified crops from the collected photos and video frames",
+    "rendered_text": "Text rendered in a font with brand colours",
+    "both": "Photo crops where a frontal view exists, rendered text otherwise"
+   }
+  }
+ }
+}

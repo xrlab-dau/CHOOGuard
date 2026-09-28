@@ -1,0 +1,1582 @@
+{
+ "schema": "chooguard.interior-kit-showcase.v1",
+ "note": "Preview-only bay far from the station (U/V ~400, Y 50). Scaffold = preview context, not kit elements.",
+ "scaffold": [
+  {
+   "name": "Floor",
+   "finish": "granite",
+   "polygon": [
+    [
+     372,
+     372
+    ],
+    [
+     428,
+     372
+    ],
+    [
+     428,
+     420
+    ],
+    [
+     372,
+     420
+    ]
+   ],
+   "top": 50.0,
+   "depth": 0.4
+  },
+  {
+   "name": "ShellW",
+   "finish": "gypsum",
+   "box": [
+    400,
+    416.9,
+    54.5,
+    56,
+    0.6,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellE",
+   "finish": "gypsum",
+   "box": [
+    400,
+    375.1,
+    54.5,
+    56,
+    0.6,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellN",
+   "finish": "gypsum",
+   "box": [
+    424.9,
+    396,
+    54.5,
+    0.6,
+    48,
+    9.4
+   ]
+  },
+  {
+   "name": "ShellS",
+   "finish": "gypsum",
+   "box": [
+    375.1,
+    396,
+    54.5,
+    0.6,
+    48,
+    9.4
+   ]
+  },
+  {
+   "name": "Mezzanine",
+   "finish": "polished",
+   "top": 55.5,
+   "depth": 0.5,
+   "runs": [
+    [
+     414.9,
+     424,
+     384,
+     385
+    ],
+    [
+     414.9,
+     424,
+     385,
+     386
+    ],
+    [
+     414.9,
+     424,
+     386,
+     387
+    ],
+    [
+     414.9,
+     424,
+     387,
+     388
+    ],
+    [
+     414.9,
+     424,
+     388,
+     389
+    ],
+    [
+     414.9,
+     424,
+     389,
+     390
+    ],
+    [
+     414.9,
+     424,
+     390,
+     391
+    ],
+    [
+     414.9,
+     424,
+     391,
+     392
+    ],
+    [
+     414.9,
+     424,
+     392,
+     393
+    ],
+    [
+     414.9,
+     424,
+     393,
+     394
+    ],
+    [
+     414.9,
+     424,
+     394,
+     395
+    ],
+    [
+     414.9,
+     424,
+     395,
+     396
+    ],
+    [
+     414.9,
+     424,
+     396,
+     397
+    ],
+    [
+     414.9,
+     424,
+     397,
+     398
+    ]
+   ],
+   "openings": [
+    {
+     "id": "test-opening",
+     "polygon": [
+      [
+       417.5,
+       389.2
+      ],
+      [
+       421.8,
+       388.4
+      ],
+      [
+       422.6,
+       393.1
+      ],
+      [
+       418.2,
+       394.3
+      ]
+     ],
+     "guard": {
+      "height": 1.1,
+      "open": [
+       3
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "elements": [
+  {
+   "type": "FloorFinish",
+   "id": "floor-hall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      376,
+      384
+     ],
+     [
+      424,
+      384
+     ],
+     [
+      424,
+      416
+     ],
+     [
+      376,
+      416
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "finish": "polished",
+    "border": {
+     "width": 0.45,
+     "finish": "floorGranite"
+    },
+    "strips": [
+     {
+      "from": [
+       377,
+       399.3
+      ],
+      "to": [
+       402.4,
+       399.3
+      ],
+      "width": 0.3,
+      "kind": "line"
+     }
+    ],
+    "pads": [
+     {
+      "center": [
+       403,
+       399.3
+      ],
+      "size": [
+       0.6,
+       0.6
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "type": "SuspendedCeiling",
+   "id": "ceil-hall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      376,
+      384
+     ],
+     [
+      404,
+      384
+     ],
+     [
+      404,
+      416
+     ],
+     [
+      376,
+      416
+     ]
+    ],
+    "holes": [
+     [
+      [
+       391.45,
+       399.45
+      ],
+      [
+       392.55,
+       399.45
+      ],
+      [
+       392.55,
+       400.55
+      ],
+      [
+       391.45,
+       400.55
+      ]
+     ]
+    ],
+    "y": 54.2
+   },
+   "params": {
+    "module": "600x600",
+    "fixtures": {
+     "layout": "grid",
+     "pitch": [
+      2.4,
+      2.4
+     ],
+     "lights": {
+      "pitch": [
+       6,
+       6
+      ],
+      "intensity": 1.6,
+      "range": 9,
+      "kelvin": 4200
+     }
+    },
+    "bulkhead": 4.6
+   }
+  },
+  {
+   "type": "SuspendedCeiling",
+   "id": "ceil-paid",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      404,
+      398
+     ],
+     [
+      424,
+      398
+     ],
+     [
+      424,
+      416
+     ],
+     [
+      404,
+      416
+     ]
+    ],
+    "y": 54.6
+   },
+   "params": {
+    "module": "1200x300",
+    "fixtures": {
+     "layout": "linear",
+     "pitch": [
+      2.4,
+      2.4
+     ],
+     "lights": {
+      "pitch": [
+       6,
+       6
+      ],
+      "intensity": 1.6,
+      "range": 9,
+      "kelvin": 4200
+     }
+    },
+    "bulkhead": 4.2
+   }
+  },
+  {
+   "type": "Column",
+   "id": "col-round-steel",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     392,
+     400
+    ],
+    "y0": 50.0,
+    "y1": 58.8
+   },
+   "params": {
+    "shape": "round",
+    "diameter": 0.9,
+    "cladding": "stainless"
+   }
+  },
+  {
+   "type": "Column",
+   "id": "col-round-granite",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     384,
+     392
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "shape": "round",
+    "diameter": 1.0,
+    "cladding": "granite"
+   }
+  },
+  {
+   "type": "Column",
+   "id": "col-rect-panel",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     384,
+     408
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "shape": "rect",
+    "size": [
+     0.8,
+     0.8
+    ],
+    "cladding": "panel"
+   }
+  },
+  {
+   "type": "Column",
+   "id": "col-rect-steel",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     400,
+     408
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "shape": "rect",
+    "size": [
+     1.0,
+     0.6
+    ],
+    "cladding": "stainless"
+   }
+  },
+  {
+   "type": "Column",
+   "id": "col-rect-granite",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     412,
+     407
+    ],
+    "y0": 50.0,
+    "y1": 54.6
+   },
+   "params": {
+    "shape": "rect",
+    "size": [
+     0.9,
+     0.9
+    ],
+    "cladding": "granite",
+    "panelWidth": 0.45
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-west-hall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      376,
+      416
+     ],
+     [
+      404,
+      416
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "faceToward": [
+     390,
+     400
+    ],
+    "finish": "stone",
+    "openings": [
+     [
+      4.0,
+      9.2,
+      52.9
+     ],
+     [
+      19.94,
+      21.26,
+      52.2
+     ]
+    ]
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-west-paid",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      404,
+      416
+     ],
+     [
+      424,
+      416
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 54.6
+   },
+   "params": {
+    "faceToward": [
+     414,
+     400
+    ],
+    "finish": "granite",
+    "panelWidth": 0.9,
+    "panelHeight": 0.9
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-end-paid",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      424,
+      416
+     ],
+     [
+      424,
+      398
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 54.6
+   },
+   "params": {
+    "faceToward": [
+     414,
+     407
+    ],
+    "finish": "hairline",
+    "panelWidth": 1.2,
+    "panelHeight": 0
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-end-hall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      376,
+      384
+     ],
+     [
+      376,
+      416
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 54.2
+   },
+   "params": {
+    "faceToward": [
+     390,
+     400
+    ],
+    "finish": "wood",
+    "panelWidth": 0.6,
+    "panelHeight": 0
+   }
+  },
+  {
+   "type": "WallCladding",
+   "id": "wall-void",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polyline": [
+     [
+      403,
+      384
+     ],
+     [
+      424,
+      384
+     ],
+     [
+      424,
+      398
+     ]
+    ],
+    "y0": 50.0,
+    "y1": 58.8
+   },
+   "params": {
+    "faceToward": [
+     414,
+     391
+    ],
+    "finish": "gypsum",
+    "panelWidth": 2.4,
+    "panelHeight": 0,
+    "joint": 0.012
+   }
+  },
+  {
+   "type": "Storefront",
+   "id": "sf-cafe",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      377,
+      384
+     ],
+     [
+      386,
+      384
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     381,
+     400
+    ],
+    "height": 3.2,
+    "transom": 2.6,
+    "doors": [
+     {
+      "at": 4.5,
+      "width": 1.8,
+      "type": "sliding",
+      "open": 0.55
+     }
+    ],
+    "fascia": {
+     "height": 0.8,
+     "depth": 0.35,
+     "material": "Assets/ChooGuard/Art/StationInterior/Majibang/Panel_fascia_CAFFE_PASCUCCI.mat"
+    }
+   }
+  },
+  {
+   "type": "Storefront",
+   "id": "sf-cvs",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      386.3,
+      384
+     ],
+     [
+      394.5,
+      384
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     390,
+     400
+    ],
+    "height": 3.2,
+    "transom": 2.6,
+    "frame": "white",
+    "doors": [
+     {
+      "at": 2.0,
+      "width": 1.6,
+      "type": "swing",
+      "open": 0.6
+     }
+    ],
+    "fascia": {
+     "height": 0.8,
+     "depth": 0.35,
+     "text": "스토리웨이 편의점",
+     "board": "#0B6E4F"
+    }
+   }
+  },
+  {
+   "type": "Storefront",
+   "id": "sf-bakery",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      394.8,
+      384
+     ],
+     [
+      402.8,
+      384
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     399,
+     400
+    ],
+    "height": 3.2,
+    "transom": 0,
+    "frame": "black",
+    "bulkhead": 0.45,
+    "doors": [
+     {
+      "at": 4.0,
+      "width": 2.4,
+      "type": "open"
+     }
+    ],
+    "fascia": {
+     "height": 0.8,
+     "depth": 0.35,
+     "material": "Assets/ChooGuard/Art/StationInterior/Majibang/Panel_paris-baguette-2025.mat"
+    }
+   }
+  },
+  {
+   "type": "ServiceDoor",
+   "id": "door-staff",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      396,
+      416
+     ],
+     [
+      397.2,
+      416
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     396.6,
+     400
+    ],
+    "width": 1.0
+   }
+  },
+  {
+   "type": "HangingSign",
+   "id": "sign-platforms",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     392,
+     395
+    ],
+    "y": 52.35
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "width": 3.4,
+    "height": 0.45,
+    "ceilingY": 54.2,
+    "items": [
+     {
+      "text": "타는 곳",
+      "sub": "Platforms",
+      "arrow": "upright",
+      "badge": "3"
+     },
+     {
+      "text": "나가는 곳",
+      "sub": "Exit",
+      "arrow": "left"
+     }
+    ]
+   }
+  },
+  {
+   "type": "HangingSign",
+   "id": "sign-exit",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     386,
+     404
+    ],
+    "y": 52.45
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "width": 1.7,
+    "height": 0.42,
+    "style": "yellow",
+    "ceilingY": 54.2,
+    "items": [
+     {
+      "text": "출구",
+      "sub": "Exit",
+      "arrow": "up",
+      "badge": "1"
+     }
+    ]
+   }
+  },
+  {
+   "type": "WallSign",
+   "id": "sign-toilets",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     383.6,
+     408
+    ],
+    "y": 51.8
+   },
+   "params": {
+    "heading": [
+     -1,
+     0
+    ],
+    "width": 0.7,
+    "height": 0.5,
+    "items": [
+     {
+      "text": "화장실",
+      "sub": "Toilets",
+      "arrow": "right"
+     }
+    ]
+   }
+  },
+  {
+   "type": "WallSign",
+   "id": "sign-tracks-photo",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     388,
+     416
+    ],
+    "y": 52.4
+   },
+   "params": {
+    "faceToward": [
+     388,
+     400
+    ],
+    "width": 1.6,
+    "height": 0.4,
+    "texture": "Assets/ChooGuard/Art/StationInterior/Textures/Signs/guide_tracks_up.png"
+   }
+  },
+  {
+   "type": "ShopInterior",
+   "id": "shop-cafe",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      377,
+      384
+     ],
+     [
+      386,
+      384
+     ],
+     [
+      386,
+      376.2
+     ],
+     [
+      377,
+      376.2
+     ]
+    ],
+    "y": 50.0,
+    "y1": 53.2
+   },
+   "params": {
+    "kind": "cafe"
+   }
+  },
+  {
+   "type": "ShopInterior",
+   "id": "shop-cvs",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      386.3,
+      384
+     ],
+     [
+      394.5,
+      384
+     ],
+     [
+      394.5,
+      376.2
+     ],
+     [
+      386.3,
+      376.2
+     ]
+    ],
+    "y": 50.0,
+    "y1": 53.2
+   },
+   "params": {
+    "kind": "convenience"
+   }
+  },
+  {
+   "type": "ShopInterior",
+   "id": "shop-bakery",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "polygon": [
+     [
+      394.8,
+      384
+     ],
+     [
+      402.8,
+      384
+     ],
+     [
+      402.8,
+      376.2
+     ],
+     [
+      394.8,
+      376.2
+     ]
+    ],
+    "y": 50.0,
+    "y1": 53.2
+   },
+   "params": {
+    "kind": "bakery"
+   }
+  },
+  {
+   "type": "Escalator",
+   "id": "esc-pair",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "foot": [
+     403.27,
+     391
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     1,
+     0
+    ],
+    "rise": 5.5,
+    "angle": 30,
+    "width": 1.0,
+    "count": 2,
+    "directions": [
+     "down",
+     "up"
+    ]
+   }
+  },
+  {
+   "type": "Stair",
+   "id": "stair-mezz",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "foot": [
+     404.3,
+     386.2
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     1,
+     0
+    ],
+    "rise": 5.5,
+    "width": 1.8,
+    "sides": [
+     "balustrade",
+     "rail"
+    ]
+   }
+  },
+  {
+   "type": "ElevatorFront",
+   "id": "lift-hall",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      380,
+      416
+     ],
+     [
+      385.2,
+      416
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     382.6,
+     400
+    ],
+    "cars": 2,
+    "pitch": 2.6,
+    "floorLabel": "1",
+    "labelHeight": 3.25
+   }
+  },
+  {
+   "type": "Gate",
+   "id": "gate-line",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      408,
+      399.5
+     ],
+     [
+      408,
+      407.5
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     404,
+     403
+    ],
+    "wide": [
+     3
+    ],
+    "flaps": "closed",
+    "fences": [
+     [
+      [
+       408,
+       398.2
+      ],
+      [
+       408,
+       399.5
+      ]
+     ],
+     [
+      [
+       408,
+       407.5
+      ],
+      [
+       408,
+       415.9
+      ]
+     ]
+    ]
+   }
+  },
+  {
+   "type": "LockerBank",
+   "id": "lockers",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "edge": [
+     [
+      376.05,
+      402
+     ],
+     [
+      376.05,
+      407
+     ]
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "faceToward": [
+     390,
+     404.5
+    ],
+    "kiosk": 5
+   }
+  },
+  {
+   "type": "VendingMachine",
+   "id": "vend-drink",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     386.6,
+     415.5
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "kind": "drink"
+   }
+  },
+  {
+   "type": "VendingMachine",
+   "id": "vend-snack",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     387.6,
+     415.5
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "kind": "snack"
+   }
+  },
+  {
+   "type": "VendingMachine",
+   "id": "vend-coffee",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     388.6,
+     415.5
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "kind": "coffee"
+   }
+  },
+  {
+   "type": "VendingMachine",
+   "id": "vend-ticket-1",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     390.2,
+     415.5
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "kind": "ticket"
+   }
+  },
+  {
+   "type": "VendingMachine",
+   "id": "vend-ticket-2",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     391.1,
+     415.5
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "kind": "ticket"
+   }
+  },
+  {
+   "type": "Bench",
+   "id": "bench-a",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     381,
+     395.7
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     0,
+     -1
+    ],
+    "length": 2.4
+   }
+  },
+  {
+   "type": "Bench",
+   "id": "bench-b",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     381,
+     396.3
+    ],
+    "y": 50.0
+   },
+   "params": {
+    "heading": [
+     0,
+     1
+    ],
+    "length": 2.4
+   }
+  },
+  {
+   "type": "Lighting",
+   "id": "light-gate",
+   "zone": "kit-preview",
+   "tier": "preview",
+   "evidence": [
+    "kit showcase (no station position)"
+   ],
+   "geometry": {
+    "point": [
+     414,
+     403
+    ],
+    "y": 54.2
+   },
+   "params": {
+    "kind": "spot",
+    "spotAngle": 100,
+    "intensity": 3,
+    "range": 8
+   }
+  }
+ ],
+ "views": [
+  {
+   "name": "hall",
+   "eye": [
+    377.2,
+    414.5,
+    51.65
+   ],
+   "target": [
+    396,
+    388,
+    52.4
+   ],
+   "fov": 62
+  },
+  {
+   "name": "storefronts",
+   "eye": [
+    391,
+    395,
+    51.6
+   ],
+   "target": [
+    385,
+    384,
+    51.9
+   ],
+   "fov": 64
+  },
+  {
+   "name": "shop",
+   "eye": [
+    393.9,
+    383.4,
+    51.6
+   ],
+   "target": [
+    388,
+    377.5,
+    50.9
+   ],
+   "fov": 70
+  },
+  {
+   "name": "escalator",
+   "eye": [
+    399.5,
+    396.5,
+    51.9
+   ],
+   "target": [
+    410,
+    390,
+    52.6
+   ],
+   "fov": 66
+  },
+  {
+   "name": "gate",
+   "eye": [
+    403.2,
+    401.2,
+    51.7
+   ],
+   "target": [
+    410,
+    405,
+    50.7
+   ],
+   "fov": 64
+  },
+  {
+   "name": "lobby",
+   "eye": [
+    392.5,
+    404.5,
+    51.65
+   ],
+   "target": [
+    383.5,
+    415,
+    51.4
+   ],
+   "fov": 70
+  },
+  {
+   "name": "ceiling",
+   "eye": [
+    381,
+    402,
+    51.3
+   ],
+   "target": [
+    395,
+    401,
+    54.4
+   ],
+   "fov": 62
+  },
+  {
+   "name": "signs",
+   "eye": [
+    379.5,
+    399,
+    51.7
+   ],
+   "target": [
+    392,
+    399,
+    52.5
+   ],
+   "fov": 58
+  },
+  {
+   "name": "opening",
+   "eye": [
+    415.6,
+    397.2,
+    57.3
+   ],
+   "target": [
+    420.2,
+    390.8,
+    55.2
+   ],
+   "fov": 64
+  },
+  {
+   "name": "opening-below",
+   "eye": [
+    409.5,
+    395.5,
+    51.7
+   ],
+   "target": [
+    419.5,
+    391,
+    55.4
+   ],
+   "fov": 64
+  },
+  {
+   "name": "elevator",
+   "eye": [
+    382.6,
+    410.8,
+    51.6
+   ],
+   "target": [
+    382.6,
+    416,
+    51.55
+   ],
+   "fov": 62
+  }
+ ]
+}

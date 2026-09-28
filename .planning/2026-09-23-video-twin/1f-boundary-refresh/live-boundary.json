@@ -1,0 +1,138 @@
+{
+  "schema": "chooguard.1f-live-boundary.v2",
+  "utc": "2026-09-24T12:01:17.5346450Z",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "sceneDirty": true,
+  "basis": "Fresh read-only AuditWorldGeometry.Main + GroundContinuity on the live Editor scene; station UVY source-model units.",
+  "deltaSincePreviousAudit": {
+    "previousUtc": "2026-09-24T08:11:22.7526430Z",
+    "addedActive": [
+      "FPSWorld/1층 · 관측 마감/low-suspended-ceiling (Y2.25, 31.5 u²)",
+      "FPSWorld/1층 · 관측 마감/higher-lobby-ceiling (Y~5.0, 24.5 u²)",
+      "FPSWorld/1층 · 관측 마감/right-approach-wall (U14–18,V-14.2, Y0.27–2.18)"
+    ],
+    "removedInactive": [
+      "FPSWorld/1층 · 2026 영상 정합 표면/촬영 구간 0 renderer"
+    ],
+    "peerLiveSceneWrites": "none (RefineUpperFrontages, FitGroundCore, RepairTexturePipeline confirmed read-only lanes)"
+  },
+  "enclosure": {
+    "definition": "Region flood-filled from U0,V-10 bounded by active mesh sections; closed identically at Y0.5/1.5/3.0",
+    "areaModelUnitsSquared": 7446.3,
+    "boundsUV": [
+      -93.0,
+      -45.0,
+      77.5,
+      13.0
+    ],
+    "perimeterOwner": "FPSWorld/공식 자료 부산역 역사/MainShell (protected)"
+  },
+  "implemented": {
+    "floorSupport1mCells": {
+      "FPSWorld/공식 자료 부산역 주변 공간/ContextPlaza": 1605,
+      "FPSWorld/공식 자료 부산역 역사/Layer0PlatformsDetails": 100,
+      "FPSWorld/공식 자료 부산역 역사/MainShell": 12,
+      "1층 · 원본 정합/Ground_Floor": 5731,
+      "null": 5
+    },
+    "overhead1mCells": {
+      "FPSWorld/공식 자료 부산역 주변 공간/ContextPlaza": 1,
+      "source MainShell soffit/ceiling": 486,
+      "bare 2F slab underside Y6.7 (Majibang_2F_Floor)": 6824,
+      "none": 83,
+      "observed 1F ceiling finish patch": 59
+    },
+    "interiorElementsAtY1.5": [
+      {
+        "owner": "FPSWorld/공식 자료 부산역 역사/MainShell",
+        "boundsUV": [
+          -81.25,
+          -37.5,
+          -70.75,
+          -33.5
+        ]
+      },
+      {
+        "owner": "FPSWorld/공식 자료 부산역 역사/MainShell",
+        "boundsUV": [
+          -8.75,
+          -36.75,
+          -7.0,
+          -35.0
+        ]
+      },
+      {
+        "owner": "FPSWorld/공식 자료 부산역 역사/MainShell",
+        "boundsUV": [
+          -6.0,
+          -36.0,
+          -4.25,
+          -34.75
+        ]
+      },
+      {
+        "owner": "FPSWorld/공식 자료 부산역 역사/MainShell",
+        "boundsUV": [
+          -1.75,
+          -35.75,
+          0.0,
+          -34.5
+        ]
+      },
+      {
+        "owner": "FPSWorld/공식 자료 부산역 역사/MainShell",
+        "boundsUV": [
+          19.75,
+          -34.25,
+          21.75,
+          -32.75
+        ]
+      },
+      {
+        "owner": "FPSWorld/공식 자료 부산역 역사/MainShell",
+        "boundsUV": [
+          24.25,
+          -33.75,
+          25.75,
+          -32.5
+        ]
+      },
+      {
+        "owner": "FPSWorld/공식 자료 부산역 역사/MainShell",
+        "boundsUV": [
+          26.75,
+          -34.0,
+          28.5,
+          -32.25
+        ]
+      },
+      {
+        "owner": "FPSWorld/1층 · 관측 마감/right-approach-wall",
+        "boundsUV": [
+          13.5,
+          -15.0,
+          18.75,
+          -13.5
+        ]
+      }
+    ],
+    "observedFinishPatches": 3
+  },
+  "notImplemented": {
+    "tenantPartitionsAndShopfronts": "0 active; 16-unit reference layout (55 renderers/17 colliders) inactive and unapproved",
+    "firstFloorCeilingFinish": "91.6% of enclosure shows the bare 2F slab underside at Y6.7; only 2 observed patches (≈56 u²) exist",
+    "structuralColumnsInsideHall": "none active except 7 MainShell elements along the south edge",
+    "verticalCirculation1Fto2F": "none inside enclosure; 2F slab is continuous over the 1F (no void); existing escalators are 2F→3F at V74–79",
+    "fixturesAndSignage": "none at Y0–6.7 inside enclosure (all fixtures/signs are 2F, Y≥7)"
+  },
+  "figures": [
+    "panel-floor.png",
+    "panel-ceiling.png",
+    "user-sceneview-now.png (Assets/.planning/...)"
+  ],
+  "limits": [
+    "Model units are not certified survey metres.",
+    "Cells are 1 m discrete samples; enclosure raster 0.25 m.",
+    "Empty volume is a statement about the scene, not proof that the real station is empty there."
+  ]
+}

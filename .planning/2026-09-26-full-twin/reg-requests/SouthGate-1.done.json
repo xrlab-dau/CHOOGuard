@@ -1,0 +1,52 @@
+{
+  "request": "SouthGate-1",
+  "answered_by": "RegTech8",
+  "answered": "2026-09-25",
+  "status": "declined",
+  "summary": "NO-MATCH / NO-GO for metric position or aperture measurement. The clip contains a visible `타는 곳 / Tracks` sign, glass panels with a blue stripe and an escalator/platform transition around 148-152 s, but those frames could not be tied to the specific south-end source wall/opening. Against the nearest existing 2F anchor, all selected PnP results have fewer than 20 inliers and wildly wrong UVY centers. The anchor itself is strict-gate FAIL. Do not use the provisional V52-60 box as a measured width/center; no station-frame sigma is available.",
+  "target": {
+    "requested_source_wall_line": "u = -13.63 - .0722*v",
+    "requested_provisional_v_range": [52, 60],
+    "requested_floor_y": 7.0,
+    "measurement": "No defensible UV center, clear width, or head height from this footage; sigma_m=null.",
+    "gate_identity": "The video visibly contains Tracks wayfinding and a glass-partition/automatic-door area, followed by an escalator. Registration did not establish that this is the south-end opening rather than another platform/exit bank, so gate/threshold type for the requested opening remains unresolved."
+  },
+  "registration": {
+    "reference_work": ".planning/2026-09-26-full-twin/regtech/seam-9yw",
+    "reference_anchor": ".planning/2026-09-26-full-twin/regtech/seam-9yw/anchor/src-hash",
+    "anchor_status": "FAIL",
+    "anchor_gate_reasons": [
+      "LOO max 3D 1.041 m > 0.6 m",
+      "LOO reprojection RMS 184.94 px > 8 px"
+    ],
+    "anchor_fit": {"controls":21,"obs":7,"rms_px":14.440,"rms_m":0.321,"max_m":0.983},
+    "anchor_heldout": {"controls":6,"obs":0,"rms_m":0.018,"max_m":0.035,"rms_px":null},
+    "anchor_loo": {"count":21,"rms_m":0.424,"max_m":1.041,"rms_px":184.942,"max_px":260.731},
+    "camera_span_uvy": {"u":[3.677,58.810],"v":[12.321,53.136],"y":[8.422,8.795]},
+    "inlier_threshold": 20,
+    "sigma_m": null,
+    "reason": "No held-out-valid transform for a new camera; failed anchor and sparse/rejected PnP cannot support metric UVY or dimensions."
+  },
+  "tested_frames": [
+    {"image":".planning/2026-09-26-full-twin/regtech-work/southgate/images/zk/t00142000.jpg","time_s":142,"inliers":11,"correspondences":362,"rms_px":3.492,"candidate_center_uvy":[41.382,19.681,8.191],"result":"rejected: 11 inliers < 20"},
+    {"image":".planning/2026-09-26-full-twin/regtech-work/southgate/images/zk/t00144000.jpg","time_s":144,"inliers":7,"correspondences":531,"rms_px":1.854,"candidate_center_uvy":[60.512,24.757,10.475],"result":"rejected: 7 inliers < 20"},
+    {"image":".planning/2026-09-26-full-twin/regtech-work/southgate/images/zk/t00146000.jpg","time_s":146,"inliers":10,"correspondences":454,"rms_px":2.621,"candidate_center_uvy":[71.638,11.059,8.318],"result":"rejected: 10 inliers < 20"},
+    {"image":".planning/2026-09-26-full-twin/regtech-work/southgate/images/zk/t00148000.jpg","time_s":148,"inliers":13,"correspondences":328,"rms_px":1.421,"candidate_center_uvy":[60.667,8.129,9.035],"result":"rejected: 13 inliers < 20"},
+    {"image":".planning/2026-09-26-full-twin/regtech-work/southgate/images/zk/t00150000.jpg","time_s":150,"inliers":8,"correspondences":334,"rms_px":3.078,"candidate_center_uvy":[41.019,23.650,8.839],"result":"rejected: 8 inliers < 20"},
+    {"image":".planning/2026-09-26-full-twin/regtech-work/southgate/images/zk/t00152000.jpg","time_s":152,"inliers":6,"correspondences":201,"rms_px":1.951,"candidate_center_uvy":[72.558,-1.619,10.351],"result":"rejected: 6 inliers < 20"}
+  ],
+  "other_sources_tried": [
+    {"url":"https://www.youtube.com/watch?v=zkOH0nK4nIY","time_range":"0-200 s; localized 142,144,146,148,150,152 s","result":"Tracks sign/glass/escalator visible, but no defensible localization to source south gate."},
+    {"url":"https://www.youtube.com/watch?v=5yNbXS7B6lA","time_range":"120-210 s; contact sheet plus sample frames 140,150,160,170 s screened","result":"Frames show station concourse/interior/train/shop areas, without a unique south-gate tie; not localized."},
+    {"url":"https://www.youtube.com/watch?v=3kh6aXJ9DGc","time_range":"0-120 s; contact sheets screened","result":"Mixed platform/graphics footage; no uniquely identified south-end gate view; not localized."},
+    {"url":"https://m.blog.naver.com/leeev_/224300854146","result":"Available photo verifies nearby Weeny Beeny storefront only, not the gate or its dimensions."},
+    {"source":"Official 2F wayfinding plan: `asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_004.jpg`","result":"Places Tracks access at the south end topologically; provides no jamb/width/head measurement."}
+  ],
+  "files": {
+    "request": ".planning/2026-09-26-full-twin/reg-requests/SouthGate-1.json",
+    "receipts": "asset-library/research-public/2026-09-27/SouthGate/receipts.json",
+    "localized_poses": ".planning/2026-09-26-full-twin/regtech-work/southgate/localized-tracks.json",
+    "extracted_primary_frames": ".planning/2026-09-26-full-twin/regtech-work/southgate/images/zk/",
+    "extracted_secondary_frames": ".planning/2026-09-26-full-twin/regtech-work/southgate/images/srt/"
+  }
+}

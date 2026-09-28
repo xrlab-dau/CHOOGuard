@@ -1,0 +1,838 @@
+{
+ "schema": "chooguard.enhance-report.v1",
+ "lane": "Enhance3F",
+ "zone": "3F",
+ "root": "실내 트윈 마감/3F 보강",
+ "spec": ".planning/2026-09-24-interior-twin/specs/enhance/3f-enhance.json",
+ "generator": ".planning/2026-09-24-interior-twin/specs/enhance/make_3f_enhance.py",
+ "measurements": ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json",
+ "measureScript": ".planning/2026-09-24-interior-twin/specs/enhance/3f_measure.py",
+ "overlay": ".planning/2026-09-24-interior-twin/specs/enhance/3f-overlay.png",
+ "liveGeometry": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11",
+ "elements": 16,
+ "elementsPerType": {
+  "Balustrade": 3,
+  "Column": 1,
+  "Fixture": 1,
+  "WallSign": 7,
+  "WallCladding": 3,
+  "HangingSign": 1
+ },
+ "estimate": {
+  "triangles": 11913,
+  "lights": 0,
+  "note": "type-level estimate (kit-spec budget table + panel counts); the KitBuild receipt 3f-enhance.receipt.json is authoritative"
+ },
+ "budget": {
+  "triangles": 120000,
+  "lights": 60
+ },
+ "replaces": [
+  "맞이방 · 원본 정합/Box frame/Box_Majibang_3F_RailGlass",
+  "맞이방 · 원본 정합/Box frame/Box_Majibang_3F_RailMetal",
+  "맞이방 · 원본 정합/Box frame/Box_SignBoards_Sign_fc_"
+ ],
+ "builderPlanEdits": [
+  {
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "field": "thirdFloor.rails",
+   "change": "remove all 6 rails (or stop rendering them: RailGlass/RailMetal); the slab-edge line stays in thirdFloor.slabs",
+   "replaces": [
+    "맞이방 · 원본 정합/Box frame/Box_Majibang_3F_RailGlass",
+    "맞이방 · 원본 정합/Box frame/Box_Majibang_3F_RailMetal"
+   ],
+   "reason": "kit 3F-BAL-wing / 3F-BAL-band-south / 3F-BAL-band-north rebuild the guard on the same lines (inset .15 onto the slab, split at column C, stubs at the escalator heads left to the escalator balustrades) with glass, stainless posts, top rail, handrail and colliders (G-3F09, BL-23)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json G-3F09",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00270-00299.jpg"
+   ]
+  },
+  {
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "field": "thirdFloor.frontSigns",
+   "change": "remove ids ",
+   "replaces": [
+    "맞이방 · 원본 정합/Box frame/Box_SignBoards_Sign_fc_"
+   ],
+   "reason": "kit 3F-SIGN-U-* / 3F-SIGN-L-* rebuild them as the two tiers of kgnwrite_009 (G-3F24); the builder row mixes both tiers at one height",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg"
+   ]
+  },
+  {
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "field": "thirdFloor.units",
+   "change": "remove unit \"계단\" (a 58.5-64.5)",
+   "replaces": [],
+   "reason": "tier c: not on the 2026-04 board, never seen (CX-16, BL-33, G-3F23)",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/plans/2026-05-20_kgnwrite-224291656711_005.jpg"
+   ]
+  },
+  {
+   "file": ".planning/2026-09-23-video-twin/majibang-plan.json",
+   "field": "thirdFloor.units 푸드코트 stalls (recommended)",
+   "change": "drop the 5 stall signs and stall backs",
+   "replaces": [],
+   "reason": "Box_SignBoards_Shop_FoodCourt_Stall0-4 (b 48.75) sit behind the stall backs (b 48.54-48.66) and cannot be seen; their stall list mixes epochs (CX-14). Not required by this spec.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json CX-14"
+   ]
+  }
+ ],
+ "requestsToEnhanceBox2F": [
+  {
+   "element": "SF-3F-부산옥 (3f-storefronts.json)",
+   "change": "params.fascia.board \"#8E9398\" (grey ribbed band), ink \"#FFFFFF\", signAt 7.5 (logo at b 34.05 from edge start b 26.5), signWidth 2.2",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json bearings.logo_on_a6.9 (RY2 211-212 s)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000093.jpg"
+   ],
+   "status": "applied by EnhanceBox2F (make_box_3f.py -> 3f-storefronts.json regenerated; 3f.json unchanged)"
+  }
+ ],
+ "signReadings": [
+  {
+   "id": "3F-SIGN-U-jagalchi",
+   "photoX": [
+    36,
+    85
+   ],
+   "a": 52.09,
+   "width": 1.84,
+   "cameraDistance": 22.6
+  },
+  {
+   "id": "3F-SIGN-U-bukchang",
+   "photoX": [
+    192,
+    250
+   ],
+   "a": 46.06,
+   "width": 2.18,
+   "cameraDistance": 22.6
+  },
+  {
+   "id": "3F-SIGN-U-ediya",
+   "photoX": [
+    397,
+    482
+   ],
+   "a": 37.85,
+   "width": 3.19,
+   "cameraDistance": 22.6
+  },
+  {
+   "id": "3F-SIGN-U-vintage",
+   "photoX": [
+    605,
+    656
+   ],
+   "a": 30.68,
+   "width": 1.92,
+   "cameraDistance": 22.6
+  },
+  {
+   "id": "3F-SIGN-L-gimbap",
+   "photoX": [
+    -25,
+    56
+   ],
+   "a": 54.04,
+   "width": 3.09,
+   "cameraDistance": 22.6
+  },
+  {
+   "id": "3F-SIGN-L-foodcourt",
+   "photoX": [
+    174,
+    268
+   ],
+   "a": 46.21,
+   "width": 3.58,
+   "cameraDistance": 22.6
+  },
+  {
+   "id": "3F-SIGN-L-coffee",
+   "photoX": [
+    607,
+    652
+   ],
+   "a": 30.63,
+   "width": 1.72,
+   "cameraDistance": 22.6
+  }
+ ],
+ "gaps": [
+  {
+   "id": "G-3F01",
+   "element": "slatted wood corridor ceiling (exit-11 lobby / band corridor)",
+   "status": "unchanged-already-built",
+   "elements": [
+    "3F-LOBBY-slat-ceiling (3f.json)"
+   ],
+   "reason": "Lobby slat ceiling (a 12.5-17.5) is live (Box_Kit_Ceiling_wall_wood_slat_panel y 15.4). The run along the band corridor and the eggbox-side soffit stay c: RY2 209 s shows a slatted soffit with downlights under the ribbed overhang between 부산옥 and the eggbox (elevator recess), but its depth and the corridor run are unmeasured, and the BL-18 block that would measure the corridor run fails registration.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/3f.json",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/sign-209.png"
+   ]
+  },
+  {
+   "id": "G-3F02",
+   "element": "food-court black exposed ceiling",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Food-court black exposed ceiling: builder Box_Majibang_FoodCourt_Ceiling (flat, y 16.8) is the only ceiling. Interior layout unregistered (see BL-18).",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json"
+   ]
+  },
+  {
+   "id": "G-3F03",
+   "element": "food-court lighting",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Builder string bulbs (Box_Majibang_FoodCourt_Bulbs 16.3-16.8) exist; fixture positions unregistered (BL-18).",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json"
+   ]
+  },
+  {
+   "id": "G-3F04",
+   "element": "wing and band shop-box soffit downlights and neon",
+   "status": "unchanged-already-built",
+   "elements": [
+    "SF-3F-* fascia downlights (3f-storefronts.json)"
+   ],
+   "reason": "Soffit downlights come with the kit storefront fascias (Box_Kit_Light_조명기구_downlight in 3F 점포). Eggbox yellow neon and blue neon letters: still c (no neon type; arch position unresolved, see G-3F12).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/3f-storefronts.json"
+   ]
+  },
+  {
+   "id": "G-3F05",
+   "element": "food-court interior columns",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Food-court columns: unregistered (BL-18).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F06",
+   "element": "white round columns along the 3F band balustrade",
+   "status": "built-new",
+   "elements": [
+    "3F-COL-C",
+    "3F-FIX-extinguisher-C"
+   ],
+   "reason": "Column C (2F-measured) continued to the roof truss; the other 1-2 railing columns seen at RY2 279-299 s stay c (block B registration fails).",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/hall-measurement.json",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F07",
+   "element": "shop-box upper cladding and roof parapet",
+   "status": "built-new",
+   "elements": [
+    "3F-BOXTOP-eggbox",
+    "3F-BOXTOP-busanok",
+    "3F-BOXTOP-elevator"
+   ],
+   "reason": "Ribbed grey upper band on the three wing boxes up to 16.49 (band 1.44 m above the glazing head, 5 drift-corrected rays). Canted soffit profile and the box-top grille/catwalk stay c.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F08",
+   "element": "3F slab-edge face (band and wing, seen from 2F)",
+   "status": "handed-off",
+   "elements": [],
+   "reason": "Slab-edge ribbed cladding (y 9.9-12.55, 2F side) is built by EnhanceBox2F in 2F 박스 보강 (agreed split); underside downlights belong to the 2F box ceiling lane.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json"
+   ]
+  },
+  {
+   "id": "G-3F09",
+   "element": "glass balustrade over the void (closest type; it is a balustrade)",
+   "status": "built-new",
+   "elements": [
+    "3F-BAL-wing",
+    "3F-BAL-band-south",
+    "3F-BAL-band-north"
+   ],
+   "reason": "Kit Balustrade (clear glass, stainless posts, round top rail + handrail) on thirdFloor.rails; replaces the builder rails. The \"blue panels clipping through the wing balustrade\" are gone in geometry-after11 (no Box_SignBoards_Sign_RailBlue quad within 1 m of the 3F rail lines above 12.2).",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json"
+   ]
+  },
+  {
+   "id": "G-3F10",
+   "element": "corridor and food-court floors",
+   "status": "unchanged-already-built",
+   "elements": [
+    "3F-FLOOR-corridor-0",
+    "3F-FLOOR-inlay-*"
+   ],
+   "reason": "Dark polished corridor floor and inlay strips live (3f.json). Food-court floor finish still c (BL-18).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/3f.json"
+   ]
+  },
+  {
+   "id": "G-3F11",
+   "element": "부산옥 frontage",
+   "status": "unchanged-already-built",
+   "elements": [
+    "SF-3F-부산옥 (3f-storefronts.json)"
+   ],
+   "reason": "Frontage built by EnhanceBox2F. New measurements: the calligraphic logo sits at b 34.05 on the fascia (RY2 211-212 s) -> fascia edit requested from EnhanceBox2F. The three oval signs triangulate at b 36.7-38.4 (a 6.4 plane), beyond the plan unit end b 36.5 -> still c (unit extent conflict for Main). Frosted band / dish decals: no decal texture, c.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F12",
+   "element": "eggbox yellow double-arch portal and frontage",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Eggbox double-arch: registered bearings at 205 s make the arch appear on a face perpendicular to the corridor (its rays cross the front plane a 6.75 over b 5.2..16.3, far wider than a 2 m arch; floor contact near a 3.2-5.5, b -0.8..5.5), which contradicts the plan front (a 6.75, b 1-19) and the builder note \"arch features b 14-16\". No arch/neon kit type either.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F13",
+   "element": "비빔家 frontage",
+   "status": "unchanged-already-built",
+   "elements": [
+    "SF-3F-비빔가 (3f-storefronts.json)"
+   ],
+   "reason": "Frontage built by EnhanceBox2F. Finding: chain A (RY2 4 fps models registered through ry2-0) has the walker at the 시래마을/비빔가 glass at b 49.9-51.4 (227-231 s), about 3 m behind the plan front b 48 [INFERENCE: ~1 m chain error]. Graphics/menu posters: no texture, c.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F14",
+   "element": "푸드코트 frontage on the band corridor",
+   "status": "built-new",
+   "elements": [
+    "3F-SIGN-L-gimbap",
+    "3F-SIGN-L-foodcourt",
+    "3F-SIGN-L-coffee"
+   ],
+   "reason": "Glowing 2026-05 letters behind the food-court glass added (photo-relative). Front glazing/fascia stay builder (kind foodcourt). CCTV, extinguisher and menu standees at the entrance: no position, c.",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg"
+   ]
+  },
+  {
+   "id": "G-3F15",
+   "element": "food-court counters, kiosks and menu boards",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Counters/kiosks/menu towers: RY2 sparse/1 now re-checked, still unregistered (BL-18).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F16",
+   "element": "drink fridges, freezer and water purifiers",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Fridges/purifiers: seen RY2 270-277 s, unregistered (BL-18).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F17",
+   "element": "food-court and restaurant seating (tables and chairs)",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Seating: builder generic tables/chairs remain; measured layout unavailable (BL-18).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F18",
+   "element": "food-court east window wall (glazing)",
+   "status": "still-c",
+   "elements": [],
+   "reason": "East window wall = source east wall b 60.67 (position known), but a glazing overlay on the solid wall inside an unregistered food court reads as a dark mirror; needs a shell cut decision (Main) and BL-18.",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json"
+   ]
+  },
+  {
+   "id": "G-3F19",
+   "element": "3F exit 11 door set (a public exit, not a service door)",
+   "status": "unchanged-already-built",
+   "elements": [
+    "3F-EXIT11-doorset",
+    "3F-EXIT11-header (3f.json)"
+   ],
+   "reason": "Door bank and 11 나가는 곳 header live. Outdoor deck: out of scope/unregistered.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/3f.json"
+   ]
+  },
+  {
+   "id": "G-3F20",
+   "element": "exit 11 sign and blue directional signs",
+   "status": "built-new",
+   "elements": [
+    "3F-SIGN-EL-blade"
+   ],
+   "reason": "Blue 엘리베이터 blade sign triangulated (RY2 209-210 s). Other blue projecting signs (corner elevator, wing red-arrow sign) stay c: unreadable / unregistered frames.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  },
+  {
+   "id": "G-3F21",
+   "element": "3F elevators (corner and wing)",
+   "status": "unchanged-already-built",
+   "elements": [
+    "3F-ELEV-wing",
+    "3F-ELEV-corner (3f.json)"
+   ],
+   "reason": "Kit elevator fronts live. Finding: RY2 209 s shows the wing elevator set back in a recess under the ribbed overhang with a wood-slat soffit (plan puts its front flush at a 6.75); recess depth unmeasured -> report only.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/box-3f/3f.json"
+   ]
+  },
+  {
+   "id": "G-3F22",
+   "element": "toilet entrances (화장실 x2)",
+   "status": "still-c",
+   "elements": [],
+   "reason": "Toilet entrances never seen in a reviewed frame (RY2 221 s shows only a blue sign beside the corner elevator, unreadable).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json"
+   ]
+  },
+  {
+   "id": "G-3F23",
+   "element": "3F stair (계단)",
+   "status": "still-c",
+   "elements": [],
+   "reason": "The 계단 unit (a 58.5-64.5) is still built by the builder (Box_Majibang_ServiceWalls reaches a 64.5): tier c per CX-16 / BL-33 -> removal requested from Main.",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json"
+   ]
+  },
+  {
+   "id": "G-3F24",
+   "element": "3F band front signs seen from the 2F hall",
+   "status": "built-new",
+   "elements": [
+    "3F-SIGN-U-bukchang",
+    "3F-SIGN-U-vintage",
+    "3F-SIGN-L-coffee",
+    "3F-SIGN-U-ediya",
+    "3F-SIGN-L-foodcourt",
+    "3F-SIGN-U-jagalchi",
+    "3F-SIGN-L-gimbap"
+   ],
+   "reason": "Two tiers from kgnwrite_009: fascia row 자갈치뚝배기 / 북창동순두부 / EDIYA COFFEE / 빈티지38 CAFE and lit letters 김밥 국밥 / 푸드코트 / COFFEE, parallax-corrected against the registered ad panels; replaces the builder frontSigns fc_*.",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg"
+   ]
+  },
+  {
+   "id": "G-3F25",
+   "element": "wing signs seen from the 2F hall (eggbox, 부산옥)",
+   "status": "still-c",
+   "elements": [],
+   "reason": "부산옥 sign seen from the hall = the kit fascia text of SF-3F-부산옥 (built). Eggbox 커피&토스트 letters / logo box (best_pb_han_017): the photo is an unregistered close-range view; the 9.25 m depth behind the WFMT panel doubles the parallax (factor ~2 +- .5), so the along-wing position is +-2-4 m, and the eggbox face orientation is unresolved (G-3F12).",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/compare/g-bph017.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-bph022.jpg"
+   ]
+  },
+  {
+   "id": "G-3F26",
+   "element": "large navy 타는 곳 banners on the wing-end balustrade",
+   "status": "unchanged-already-built",
+   "elements": [
+    "wallPanels sign_Tanungot_EL / _ER (majibang-plan.json)"
+   ],
+   "reason": "The navy 타는 곳 banners hang on tree column E (live Box_Majibang_WallPanel_sign_Tanungot_Platforms).",
+   "evidence": [
+    ".planning/2026-09-23-video-twin/majibang-plan.json",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json"
+   ]
+  }
+ ],
+ "buildList": [
+  {
+   "id": "BL-08",
+   "status": "unchanged-already-built",
+   "reason": "Lobby slat ceiling, exit-11 door bank and header are live (3f.json); the corridor slat run stays c (G-3F01)."
+  },
+  {
+   "id": "BL-10",
+   "status": "partly built-new",
+   "reason": "Ribbed upper bands of the wing boxes (G-3F07) built; 부산옥 fascia edit requested (G-3F11); eggbox arch/neon still c (G-3F12)."
+  },
+  {
+   "id": "BL-18",
+   "status": "still-c",
+   "reason": "Re-checked: RY2 2 fps sparse/1 (231.5-277 s, 92 images) and the 4 fps models 0/2 + 2 fps model 3 form one consistent block (overlap residual 0.0011 / 0.0368 model units, camera-plane std 0.0185). Anchored by continuity at both model breaks, it fails the gate: the balustrade walk (283-306 s) lands at b 41.8, 2.5 m inside the void beyond the measured band edge b 44.3, and the camera heading jumps 16 deg across the 0.25 s break at 231 s. Both runs break at 231.0|231.25 s and 309|310 s, so the food-court block has no rigid anchor."
+  },
+  {
+   "id": "BL-23",
+   "status": "built-new",
+   "reason": "Balustrade built (3F-BAL-*); slab-edge cladding handed to EnhanceBox2F (agreed)."
+  },
+  {
+   "id": "BL-24",
+   "status": "built-new",
+   "reason": "Two-tier band signs built; wing signs still c (G-3F25); 타는 곳 banners already built (G-3F26)."
+  },
+  {
+   "id": "BL-25",
+   "status": "partly built-new",
+   "reason": "비빔家 frontage = SF-3F-비빔가 (EnhanceBox2F, unchanged; front-depth finding for Main); 푸드코트 corridor frontage stays builder, lit letters added (G-3F14)."
+  },
+  {
+   "id": "BL-33",
+   "status": "still-c (removal requested)",
+   "reason": "The 계단 unit is still built by the builder; removal requested (plan edit)."
+  }
+ ],
+ "findings": [
+  {
+   "id": "F-3F-01",
+   "for": "Main",
+   "subject": "비빔가 front depth",
+   "finding": "Chain A (ry2-0 -> 4 fps model 3 -> model 4, 3F camera plane levelled) places the walker at the 시래마을 glass at b 49.9-51.4 (RY2 227-231 s), vs plan front b 48. [INFERENCE] the band units west of the lobby may start ~3 m deeper; verify before moving SF-3F-비빔가.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/A-frames.jpg (4 fps frames 221-231 s with chain-A positions)"
+   ]
+  },
+  {
+   "id": "F-3F-02",
+   "for": "Main",
+   "subject": "부산옥 unit extent",
+   "finding": "The 칼국수 and 비빔밥 oval signs hanging inside the glass triangulate at b 36.7-38.4 (RY2 213-215 s), past the plan unit end b 36.5: the unit likely runs to b ~39.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/busanok-frames.jpg (RY2 209-215 s)"
+   ]
+  },
+  {
+   "id": "F-3F-03",
+   "for": "Main",
+   "subject": "wing elevator recess",
+   "finding": "RY2 209 s: between 부산옥 and the eggbox the ribbed band overhangs a recess with a wood-slat soffit and downlights, the 엘리베이터 blade sign at its 부산옥 corner; the plan puts the elevator front flush at a 6.75.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/sign-209.png"
+   ]
+  },
+  {
+   "id": "F-3F-04",
+   "for": "Main",
+   "subject": "eggbox orientation",
+   "finding": "Bearings at 205 s put the double arch on a face perpendicular to the wing corridor, not on the a 6.75 front at b 14-16 (see G-3F12).",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/arch-crop.png"
+   ]
+  },
+  {
+   "id": "F-3F-05",
+   "for": "Main",
+   "subject": "CX-17 food court at the void edge",
+   "finding": "RY2 276-278 s shows food-court tables right at the band balustrade (existence confirmed); the extent is not measurable because the block fails registration (BL-18).",
+   "evidence": [
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00270-00299.jpg"
+   ]
+  },
+  {
+   "id": "F-3F-06",
+   "for": "Main",
+   "subject": "ry2-0 tilt",
+   "finding": "The ry2-0 registration recovered from the four rendered poses has residuals .32-.51 m and a 3.6 deg tilt; heights from it were drift-corrected on the 부산옥 glazing head.",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json"
+   ]
+  }
+ ],
+ "bl18Illustration": ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/B2-plan.png (food-court block after the two-point continuity anchor: the 283-306 s balustrade walk crosses the measured band edge into the void)",
+ "elementBasis": [
+  {
+   "id": "3F-BAL-wing",
+   "type": "Balustrade",
+   "tier": "b",
+   "basis": "thirdFloor.rails inset 0.15 m onto the slab (the kit shoe needs floor under it); split at column C; the stubs at the escalator heads are left to the escalator balustrades; replaces the builder rails. side \"left\" = walker side for every segment (box frame); postPitch 1.5 = glass panel width read in ry_205 / RY2 290-299 s (appearance)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-23 / G-3F09",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.rails (wing edge a 16, band edge b 44.3, escalator landing gap b 40.0-43.7)",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.wingBalustrade_a 16.0 / bandSlabEdge_b 44.3",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00270-00299.jpg 288-299 s (clear glass, stainless posts, round top rail + second rail)",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (wing balustrade, 2023-05)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2024-04-21_drhanji-223422173031_001.jpg"
+   ]
+  },
+  {
+   "id": "3F-BAL-band-south",
+   "type": "Balustrade",
+   "tier": "b",
+   "basis": "thirdFloor.rails inset 0.15 m onto the slab (the kit shoe needs floor under it); split at column C; the stubs at the escalator heads are left to the escalator balustrades; replaces the builder rails. side \"left\" = walker side for every segment (box frame); postPitch 1.5 = glass panel width read in ry_205 / RY2 290-299 s (appearance)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-23 / G-3F09",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.rails (wing edge a 16, band edge b 44.3, escalator landing gap b 40.0-43.7)",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.wingBalustrade_a 16.0 / bandSlabEdge_b 44.3",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00270-00299.jpg 288-299 s (clear glass, stainless posts, round top rail + second rail)",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (wing balustrade, 2023-05)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2024-04-21_drhanji-223422173031_001.jpg"
+   ]
+  },
+  {
+   "id": "3F-BAL-band-north",
+   "type": "Balustrade",
+   "tier": "b",
+   "basis": "thirdFloor.rails inset 0.15 m onto the slab (the kit shoe needs floor under it); split at column C; the stubs at the escalator heads are left to the escalator balustrades; replaces the builder rails. side \"left\" = walker side for every segment (box frame); postPitch 1.5 = glass panel width read in ry_205 / RY2 290-299 s (appearance)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-23 / G-3F09",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.rails (wing edge a 16, band edge b 44.3, escalator landing gap b 40.0-43.7)",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.wingBalustrade_a 16.0 / bandSlabEdge_b 44.3",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00270-00299.jpg 288-299 s (clear glass, stainless posts, round top rail + second rail)",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg (wing balustrade, 2023-05)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2024-04-21_drhanji-223422173031_001.jpg"
+   ]
+  },
+  {
+   "id": "3F-COL-C",
+   "type": "Column",
+   "tier": "b",
+   "basis": "[INFERENCE] structural continuation of the measured 2F edge column C to the roof truss; along-band a from the 2F measurement (photo-relative a 47.2 +- 1 agrees); moved 0.40 m inland (b 44.4 -> 44.80) so the white cladding stands on the 3F slab at the railing with the balustrade butting into it, as in RY2 282-284 s",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json G-3F06",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.bandEdgeColumnC_station [41.88, 81.01] (2F column, box a 48.2, b 44.4, r .45)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00270-00299.jpg 280-284 s (white round column at the band railing, red extinguisher at its base)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg (column rising from the band railing to the roof at photo x 127-152 = a 47.6-46.8 against the TKG panel)",
+    ".planning/2026-09-23-video-twin/1f-implementation/geometry-after11/world-geometry.json (Box_Hall_EdgeColumn 7.0-12.2 below; Box_Hall_SecondaryTruss_Chords 23.07 above)"
+   ]
+  },
+  {
+   "id": "3F-FIX-extinguisher-C",
+   "type": "Fixture",
+   "tier": "b",
+   "basis": "[INFERENCE] corridor side of the column base (RY2 282-284 s); photo-relative",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json G-3F06",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.bandEdgeColumnC_station [41.88, 81.01] (2F column, box a 48.2, b 44.4, r .45)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/contact-sheets/RY2qvE0Tugk_00270-00299.jpg 280-284 s (white round column at the band railing, red extinguisher at its base)"
+   ]
+  },
+  {
+   "id": "3F-SIGN-U-jagalchi",
+   "type": "WallSign",
+   "tier": "b",
+   "basis": "photo-relative (kgnwrite_009 against the registered ad panels, parallax-corrected for 3.75 m behind the ad plane; +-1 m along the band); height: centred on the builder fascia board 15.15-15.85 (photo row 240-250 px)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-24 / G-3F24 / CX-14 (2026-05 identities)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-kgn009.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/kgn009-signs.jpg (3x crop, letters read)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands panels TKG a 45.1-51.1 / HWASEUNG 37.3-43.3 / 신기술 29.5-35.5 (reference scale)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 푸드코트 (a 17.5-56.5, front b 48)"
+   ]
+  },
+  {
+   "id": "3F-SIGN-U-bukchang",
+   "type": "WallSign",
+   "tier": "b",
+   "basis": "photo-relative (kgnwrite_009 against the registered ad panels, parallax-corrected for 3.75 m behind the ad plane; +-1 m along the band); height: centred on the builder fascia board 15.15-15.85 (photo row 240-250 px)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-24 / G-3F24 / CX-14 (2026-05 identities)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-kgn009.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/kgn009-signs.jpg (3x crop, letters read)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands panels TKG a 45.1-51.1 / HWASEUNG 37.3-43.3 / 신기술 29.5-35.5 (reference scale)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 푸드코트 (a 17.5-56.5, front b 48)"
+   ]
+  },
+  {
+   "id": "3F-SIGN-U-ediya",
+   "type": "WallSign",
+   "tier": "b",
+   "basis": "photo-relative (kgnwrite_009 against the registered ad panels, parallax-corrected for 3.75 m behind the ad plane; +-1 m along the band); height: centred on the builder fascia board 15.15-15.85 (photo row 240-250 px)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-24 / G-3F24 / CX-14 (2026-05 identities)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-kgn009.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/kgn009-signs.jpg (3x crop, letters read)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands panels TKG a 45.1-51.1 / HWASEUNG 37.3-43.3 / 신기술 29.5-35.5 (reference scale)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 푸드코트 (a 17.5-56.5, front b 48)"
+   ]
+  },
+  {
+   "id": "3F-SIGN-U-vintage",
+   "type": "WallSign",
+   "tier": "b",
+   "basis": "photo-relative (kgnwrite_009 against the registered ad panels, parallax-corrected for 3.75 m behind the ad plane; +-1 m along the band); height: centred on the builder fascia board 15.15-15.85 (photo row 240-250 px)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-24 / G-3F24 / CX-14 (2026-05 identities)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-kgn009.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/kgn009-signs.jpg (3x crop, letters read)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands panels TKG a 45.1-51.1 / HWASEUNG 37.3-43.3 / 신기술 29.5-35.5 (reference scale)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 푸드코트 (a 17.5-56.5, front b 48)"
+   ]
+  },
+  {
+   "id": "3F-SIGN-L-gimbap",
+   "type": "WallSign",
+   "tier": "b",
+   "basis": "photo-relative (kgnwrite_009 against the registered ad panels, parallax-corrected for 4.13 m behind the ad plane; +-1 m along the band); height: photo row 257-275 px = ~2.1 m above the floor, just over the balustrade line seen from the hall (+-.3); 김 is cut by the photo edge: left end extrapolated [INFERENCE]; lit letters behind the food-court glass (b 48.00)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-24 / G-3F24 / CX-14 (2026-05 identities)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-kgn009.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/kgn009-signs.jpg (3x crop, letters read)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands panels TKG a 45.1-51.1 / HWASEUNG 37.3-43.3 / 신기술 29.5-35.5 (reference scale)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 푸드코트 (a 17.5-56.5, front b 48)"
+   ]
+  },
+  {
+   "id": "3F-SIGN-L-foodcourt",
+   "type": "WallSign",
+   "tier": "b",
+   "basis": "photo-relative (kgnwrite_009 against the registered ad panels, parallax-corrected for 4.13 m behind the ad plane; +-1 m along the band); height: photo row 257-275 px = ~2.1 m above the floor, just over the balustrade line seen from the hall (+-.3); lit letters behind the food-court glass (b 48.00)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-24 / G-3F24 / CX-14 (2026-05 identities)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-kgn009.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/kgn009-signs.jpg (3x crop, letters read)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands panels TKG a 45.1-51.1 / HWASEUNG 37.3-43.3 / 신기술 29.5-35.5 (reference scale)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 푸드코트 (a 17.5-56.5, front b 48)"
+   ]
+  },
+  {
+   "id": "3F-SIGN-L-coffee",
+   "type": "WallSign",
+   "tier": "b",
+   "basis": "photo-relative (kgnwrite_009 against the registered ad panels, parallax-corrected for 4.13 m behind the ad plane; +-1 m along the band); height: photo row 257-275 px = ~2.1 m above the floor, just over the balustrade line seen from the hall (+-.3); lit letters behind the food-court glass (b 48.00)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json BL-24 / G-3F24 / CX-14 (2026-05 identities)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-05-20_kgnwrite-224291656711_009.jpg",
+    ".planning/2026-09-23-video-twin/compare/g-kgn009.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/kgn009-signs.jpg (3x crop, letters read)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.edgeBands panels TKG a 45.1-51.1 / HWASEUNG 37.3-43.3 / 신기술 29.5-35.5 (reference scale)",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 푸드코트 (a 17.5-56.5, front b 48)"
+   ]
+  },
+  {
+   "id": "3F-BOXTOP-busanok",
+   "type": "WallCladding",
+   "tier": "b",
+   "basis": "horizontal-ribbed grey upper band from the unit top 15.65 to the measured box top 16.49 (drift-corrected bearings); ends and back follow the plan unit rectangle [INFERENCE: box continuity]; side \"right\" = outward for this loop order",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json G-3F07 / BL-10",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json bearings.boxTop_corrected (RY2 210 s, 5 rays on the front plane a 6.75)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000091.jpg",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-07-19_228112lee-224350653630_026.jpg",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.wingShopfront_a 6.75",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 에그박스 / 승강기 / 부산옥"
+   ]
+  },
+  {
+   "id": "3F-BOXTOP-elevator",
+   "type": "WallCladding",
+   "tier": "b",
+   "basis": "horizontal-ribbed grey upper band from the unit top 15.65 to the measured box top 16.49 (drift-corrected bearings); ends and back follow the plan unit rectangle [INFERENCE: box continuity]; side \"right\" = outward for this loop order",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json G-3F07 / BL-10",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json bearings.boxTop_corrected (RY2 210 s, 5 rays on the front plane a 6.75)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000091.jpg",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-07-19_228112lee-224350653630_026.jpg",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.wingShopfront_a 6.75",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 에그박스 / 승강기 / 부산옥"
+   ]
+  },
+  {
+   "id": "3F-BOXTOP-eggbox",
+   "type": "WallCladding",
+   "tier": "b",
+   "basis": "horizontal-ribbed grey upper band from the unit top 15.65 to the measured box top 16.49 (drift-corrected bearings); ends and back follow the plan unit rectangle [INFERENCE: box continuity]; side \"right\" = outward for this loop order",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json G-3F07 / BL-10",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json bearings.boxTop_corrected (RY2 210 s, 5 rays on the front plane a 6.75)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000091.jpg",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/photos/2026-07-19_228112lee-224350653630_026.jpg",
+    ".planning/2026-09-23-video-twin/hall-measurement.json measured.wingShopfront_a 6.75",
+    ".planning/2026-09-23-video-twin/majibang-plan.json thirdFloor.units 에그박스 / 승강기 / 부산옥"
+   ]
+  },
+  {
+   "id": "3F-SIGN-EL-blade",
+   "type": "HangingSign",
+   "tier": "b",
+   "basis": "blade sign projecting from the 부산옥 corner toward the corridor (a 7.56-8.80); its wall bracket is not modelled (kept clear of the fascia so it does not touch)",
+   "evidence": [
+    ".planning/2026-09-24-interior-twin/evidence-2f.json G-3F20",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/measurements.json bearings.bladeSign_triangulated / bladeSign_ends_on_b (RY2 209-210 s)",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000089.jpg",
+    "asset-library/research-public/2026-09-23/busan-sinmajibang/sfm/RY2qvE0Tugk/images/000091.jpg",
+    ".planning/2026-09-24-interior-twin/specs/enhance/3f-work/sign-209.png",
+    ".planning/2026-09-23-video-twin/compare/ry_205.jpg"
+   ]
+  }
+ ],
+ "openCirculation": "3F empty-floor share is 1.7 % (metrics-before.json): the wing and band corridors are open circulation in every frame (ry_205, RY2 210-236 s, 290-299 s); nothing is placed in them except the balustrade, the column and its extinguisher on the edge.",
+ "rendersRequested": [
+  {
+   "name": "3f-band-balustrade",
+   "note": "band corridor at box (40, 46.5), eye 13.8, looking -a along the balustrade (column C, handrail, lower sign tier through the glass)"
+  },
+  {
+   "name": "3f-wing-boxes",
+   "note": "wing corridor at box (12, 38), eye 13.8, looking -b (box-top bands, blade sign)"
+  },
+  {
+   "name": "2f-hall-to-band",
+   "note": "2F hall at box (40, 28), eye 8.6, looking +b up at the band (two sign tiers above the ad band; compare kgnwrite_009)"
+  },
+  {
+   "name": "2f-hall-to-wing",
+   "note": "2F hall at box (30, 10), eye 8.6, looking -a at the wing (box-top bands above the balustrade; compare best_pb_han_017)"
+  }
+ ],
+ "check": {
+  "errors": 0,
+  "warnings": 1,
+  "replaces": [
+   "맞이방 · 원본 정합/Box frame/Box_Majibang_3F_RailGlass",
+   "맞이방 · 원본 정합/Box frame/Box_Majibang_3F_RailMetal",
+   "맞이방 · 원본 정합/Box frame/Box_SignBoards_Sign_fc_"
+  ],
+  "issues": [
+   {
+    "id": "3F-BAL-wing",
+    "type": "Balustrade",
+    "severity": "warning",
+    "check": "collision",
+    "detail": "balustrade y12.32-13.30 touches OfficialStation_-부산역_선로상층부_0 x4"
+   }
+  ]
+ },
+ "checkCommand": "/opt/homebrew/bin/python3 .planning/2026-09-24-interior-twin/specs/enhance/check_spec.py .planning/2026-09-24-interior-twin/specs/enhance/3f-enhance.json"
+}

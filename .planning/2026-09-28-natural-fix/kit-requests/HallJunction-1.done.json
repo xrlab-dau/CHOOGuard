@@ -1,0 +1,47 @@
+{
+  "schema": "chooguard.kitextend8.request-done.v1",
+  "request": ".planning/2026-09-28-natural-fix/kit-requests/HallJunction-1.json",
+  "id": "HallJunction-1",
+  "status": "implemented-and-validated",
+  "source": {
+    "geometryAudit": ".planning/2026-09-23-video-twin/1f-implementation/geometry-after56/world-geometry.json",
+    "mesh": "FPSWorld/공식 자료 부산역 역사/PlatformsParking/OfficialStation_-부산역_선로상층부_0",
+    "faces": [923817, 923816],
+    "polygonUV": [[-5.162643,14.225865],[54.394602,18.531206],[63.551411,37.438863],[-6.474760,32.376711]],
+    "vertexY": [17.043741,17.043739,17.358529,17.358532],
+    "heightPlanarityToleranceM": 0.0001
+  },
+  "consumerParameters": {
+    "geometry": {"y": 17.043741, "vertexY": [17.043741,17.043739,17.358529,17.358532]},
+    "params": {"finish": "plaster", "colour": "gypsumLit", "topFinish": "gypsumLit", "thickness": 0.05, "fascia": 0, "collider": false}
+  },
+  "implementation": {
+    "file": "AgentScripts/MajibangBuilder.cs",
+    "feature": "Canopy geometry.vertexY defines a planar underside, with top vertices offset vertically by thickness and closed edge faces following the plane; identical triangulation preserves shared polygon edges and supplied heights.",
+    "invalidInputs": "Mismatched counts, non-numeric/non-finite values, collinear polygons, and non-planar elevations are rejected rather than flattened.",
+    "scope": "Pitched vertexY is currently accepted for plaster canopies with fascia=0 (the requested measured source soffit). Horizontal behavior when vertexY is omitted remains unchanged.",
+    "collider": "collider=false skips KCol entirely; collider=true adds the top surface collider.",
+    "lowLightMaterial": {"key": "gypsumLit", "source": "Lane + wall_painted_gypsum_fine.mat", "albedo": [0.9,0.9,0.89], "emission": [0.3,0.3,0.29], "smoothness": 0.1, "metallic": 0, "use": "colour=gypsumLit and topFinish=gypsumLit for downward-facing upper plaster without baked GI"}
+  },
+  "test": {
+    "spec": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-test.json",
+    "report": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-test.validate.json",
+    "validErrors": 0,
+    "colliderFalseTriangles": 12,
+    "colliderOnComparison": {"spec": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-collider-test.json", "errors": 0, "triangles": 14, "difference": "two extra top-surface collider triangles"},
+    "rejectionCases": {"spec": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-invalid-test.json", "errors": 2, "results": ["vertex count mismatch rejected", "non-planar fourth height rejected at 0.0001 m tolerance"]},
+    "kitPreview": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-source-lit-soffit-from-below.png",
+    "isolatedKitPreview": ".planning/2026-09-28-natural-fix/kitextend-work/halljunction-slope-nolight-soffit-from-below.png",
+    "previewNote": "The isolated preview shifts UV by +400 m to avoid current-scene occlusion; same edge vectors and absolute vertexY. gypsumLit on both colour and topFinish produced a continuous moderate-gray underside without auxiliary lights or white-hot emission."
+  },
+  "frozenSpecComparison": {
+    "reportsBeforeAndAfter": 19,
+    "changedReports": [],
+    "elementsBeforeAndAfter": 265,
+    "trianglesBeforeAndAfter": 367776,
+    "errorsBeforeAndAfter": 0
+  },
+  "documentation": ".planning/2026-09-24-interior-twin/kit-spec.md",
+  "sceneChanges": false,
+  "externalAssetReceipts": []
+}

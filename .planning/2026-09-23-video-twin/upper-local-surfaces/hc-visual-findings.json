@@ -1,0 +1,14 @@
+{
+  "schema": "chooguard.relative-surface-visual-review.v1",
+  "reviewedComparisons": ["comparison-camera-000140.jpg", "comparison-camera-000153.jpg", "comparison-camera-000225.jpg"],
+  "cameraAlignment": "Rendered with original calibrated poses/intrinsics in unchanged relative SfM coordinates. Scene elements align visually with the matched source view; no world registration applied.",
+  "findings": [
+    {"frame": "000140", "finding": "Only the later corridor core is reconstructed in this approach view. The bottle aperture at the right edge is largely missing, and the flower aperture is not observed in this HC interval.", "opaqueCoverageFraction": 0.22328896604938273, "acceptance": "Not accepted as a complete bottle/flower surface source."},
+    {"frame": "000153", "finding": "Service/fire-cabinet wall, cafe opening and ceiling are represented, but floor gaps, faceting and reflective-panel artifacts remain.", "acceptance": "Partial relative visual evidence only; not finished geometry or collision."},
+    {"frame": "000225", "finding": "Later food-shop facades and visible interiors are reconstructed; glossy floor and metallic ceiling produce substantial faceting/texture discontinuities.", "acceptance": "Dated observed surfaces only; no inferred rear partitions."}
+  ],
+  "observedFaceCountWarning": "422198 assigned-texture faces out of447062 does not measure component completeness. Camera140 raster coverage is only22.3percent, despite94.4percent global observed faces.",
+  "supplementalSourceOutcome": "RY2-330 model2 independently reconstructed in ry-shops/ and both observed aperture components rendered/measured. See result.json and component-coverage.json. No unvalidated RY-to-HC/world transform applied.",
+  "liveSceneWrites": false,
+  "physicalScaleEstablished": false
+}

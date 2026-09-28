@@ -1,0 +1,53 @@
+{
+  "schema": "chooguard.station-evidence-integration.v1",
+  "floor1": {
+    "footprintPlan": ".planning/2026-09-23-video-twin/first-floor-plan.json",
+    "sourceFloorTriangles": ".planning/2026-09-23-video-twin/1f-source-floor-triangles.json",
+    "frontages": "asset-library/research-public/2026-09-24/busan-1f/recovered-frontages.json",
+    "relativeSfm": ".planning/2026-09-23-video-twin/1f-2026-sfm/result.json",
+    "observations": ".planning/2026-09-23-video-twin/1f-2026-sfm/observations.json",
+    "registeredCameras": 137,
+    "sparsePoints": 13658,
+    "metricScaleEstablished": false,
+    "sourceModelRegistrationEstablished": false,
+    "fitoutAccepted": false
+  },
+  "mainBuilding": {
+    "HC450": "asset-library/research-public/2026-09-24/main-building-sfm/HC-450/result.json",
+    "HC450SourceDate": "2023-05-22",
+    "HC450RegisteredCameras": 420,
+    "HC450MetricScaleEstablished": false,
+    "RY2330": "asset-library/research-public/2026-09-24/main-building-sfm/RY2-330/result.json",
+    "RY2330SourceDate": "2023-05-01",
+    "RY2330DisconnectedModels": 9,
+    "floorWarning": "These retail/ticketing references are principally 2F. Do not reinterpret them as verified 1F placement.",
+    "fasciaManifests": [
+      "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/MainRecovered/receipts.json",
+      "Assets/ChooGuard/Art/StationInterior/Majibang/Textures/HallRecovered/receipts.json"
+    ],
+    "fasciaVerification": ".planning/2026-09-23-video-twin/fascia-verification.json"
+  },
+  "officialConstructionSource": {
+    "url": "https://www.kr.or.kr/boardCnts/fileDown.do?fileSeq=e2f22fd454f14c5c82c56475135f25f6",
+    "file": "asset-library/research-public/2026-09-24/railway-construction/busan-station-construction.pdf",
+    "date": "2009-05 document heading",
+    "use": "Historical elevated-concourse plan/section comparison, pages12–15. Not a dimensioned present-day 1F plan."
+  },
+  "stagedFixtures": {
+    "assets": {
+      "shelf": "Assets/ChooGuard/Art/StationInterior/Kits/Ground/shelf/shelf.fbx",
+      "bakery": "Assets/ChooGuard/Art/StationInterior/Kits/Ground/bakery/bakery.fbx",
+      "dining": "Assets/ChooGuard/Art/StationInterior/Kits/Ground/dining/dining.fbx"
+    },
+    "basis": "Reused downloadable candidate geometry matched by visible fixture category, not manufacturer identity. Dimensions and fixture placement are visual estimates, not surveyed furniture inventory.",
+    "inspection": ".planning/2026-09-23-video-twin/ground-prop-inspection/report.json",
+    "conversion": ".planning/2026-09-23-video-twin/ground-prop-inspection/converted.json",
+    "instantiated": false,
+    "reason": "No independently registered 1F placement; source assets retained rather than invented furniture counts."
+  },
+  "limits": [
+    "No surveyed digital-twin accuracy established.",
+    "No new 1F evacuation equipment positions invented.",
+    "Recovered photo-derived textures are local reference derivatives; redistribution rights remain uncleared."
+  ]
+}

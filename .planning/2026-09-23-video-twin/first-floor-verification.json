@@ -1,0 +1,165 @@
+{
+  "schema": "chooguard.first-floor-verification.v1",
+  "scene": "Assets/ChooGuard/Scenes/FpsStation.unity",
+  "method": "Unity Play mode, actual FirstPersonResponder.StepInput and CharacterController",
+  "routes": {
+    "internalLongAisle": {
+      "status": "COMPLETE",
+      "completedLegs": 4,
+      "totalLegs": 4,
+      "position": [
+        -9.673339,
+        0.0249998942,
+        59.89707
+      ],
+      "target": [
+        -9.623122,
+        0.0,
+        60.06992
+      ],
+      "targetDistance3D": 0.181722462,
+      "heightError": 0.0249998942,
+      "grounded": true,
+      "travelledMetres": 119.832436,
+      "stalledSteps": 0,
+      "collisionFlags": "Below",
+      "movementSource": "FirstPersonResponder.StepInput",
+      "videoPoseRegistrationVerified": false
+    },
+    "centralCrossing": {
+      "status": "COMPLETE",
+      "completedLegs": 3,
+      "totalLegs": 3,
+      "position": [
+        5.21895027,
+        0.0250000134,
+        7.855887
+      ],
+      "target": [
+        5.39180136,
+        0.0,
+        7.80566931
+      ],
+      "targetDistance3D": 0.181725919,
+      "heightError": 0.0250000134,
+      "grounded": true,
+      "travelledMetres": 41.8951874,
+      "stalledSteps": 0,
+      "collisionFlags": "Below",
+      "movementSource": "FirstPersonResponder.StepInput",
+      "videoPoseRegistrationVerified": false
+    }
+  },
+  "sourceBoundaryProbe": {
+    "result": {
+      "status": "BLOCKED",
+      "completedLegs": 3,
+      "totalLegs": 4,
+      "position": [
+        -8.535673,
+        0.280470043,
+        65.3499756
+      ],
+      "target": [
+        -6.83321142,
+        0.0,
+        69.67286
+      ],
+      "targetDistance3D": 4.654499,
+      "heightError": 0.280470043,
+      "grounded": true,
+      "travelledMetres": 126.83902,
+      "stalledSteps": 90,
+      "collisionFlags": "7",
+      "movementSource": "FirstPersonResponder.StepInput",
+      "videoPoseRegistrationVerified": false
+    },
+    "interpretation": "Straight-line target u65/v-26 lies beyond the preserved north glazed source shell at this section; no source wall deleted to force a pass. This is not an approved public circulation route.",
+    "collisions": [
+      {
+        "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_4",
+        "point": [
+          -8.388656,
+          1.80482852,
+          65.5828247
+        ],
+        "normal": [
+          -0.5007743,
+          -0.359859377,
+          -0.787227035
+        ],
+        "distance": 0.004895923,
+        "triangle": 61204
+      },
+      {
+        "path": "FPSWorld/공식 자료 부산역 역사/MainShell/OfficialStation_-부산역_0",
+        "point": [
+          -8.361221,
+          0.5999374,
+          65.642395
+        ],
+        "normal": [
+          0.5367303,
+          -0.001836631,
+          0.843751848
+        ],
+        "distance": 0.0513013937,
+        "triangle": 45571
+      }
+    ]
+  },
+  "floorSupport": {
+    "topTriangles": 45,
+    "supportedCentres": 45
+  },
+  "runtimeFont": {
+    "shader": "ChooGuard/Station/WorldText",
+    "shaderErrors": false,
+    "atlasBindingCheckedInPlayMode": true,
+    "fasciaOffsetCorrectionMetres": 0.06,
+    "correctedSigns": [
+      "소반한식",
+      "떡공방명제",
+      "반월당닭강정",
+      "남천할매떡볶이",
+      "복순도가",
+      "크리스피크림도넛",
+      "아메리칸트레일러",
+      "새부산약국",
+      "다인명가",
+      "부산별빛샌드",
+      "호두나니&부산오뎅",
+      "국제시장단팥빵",
+      "에그박스",
+      "올리브영",
+      "꽃들",
+      "편의점",
+      "비엔씨",
+      "환공어묵",
+      "편의점",
+      "코레일라운지 편의점",
+      "청도할매김밥",
+      "위니비니",
+      "부산옥",
+      "비엔씨제과",
+      "SUBWAY",
+      "팔공티",
+      "부산기장특산물",
+      "국제시장도나스",
+      "백미당"
+    ],
+    "visual": "world-text-play-mode-fixed.png"
+  },
+  "activeReferenceFitout": false,
+  "captures": [
+    "1f-ground-accepted-corridor.png",
+    "1f-play-mode-floor.png",
+    "1f-preserved-obstruction.png",
+    "world-text-play-mode-fixed.png"
+  ],
+  "limits": [
+    "Route checks establish movement over restored model floor, not real-station route accuracy.",
+    "Shop preview and new 1F vertical circulation remain unapproved.",
+    "Camera poses are inspection views, not metrically matched video poses."
+  ]
+}

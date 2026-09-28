@@ -1,0 +1,107 @@
+{
+  "model": "jev-latest",
+  "state": {
+    "turnGoal": "부산역 2층 대합실 실내를 디지털 트윈 수준으로 실제 구축하고 열린 Unity 에디터 씬에 보이게 한다",
+    "measuredFacts": {
+      "shellMeshes": 8,
+      "shellTriangles": 666537,
+      "interiorFloorY": 7,
+      "interiorClearHeightMetres": 4,
+      "concourseAreaSquareMetres": 1887,
+      "zoneBreakdownSquareMetres": {
+        "대합실": 883,
+        "콩코스": 355,
+        "동측실": 217,
+        "변대": 160
+      },
+      "groundLevelEnclosedSquareMetres": 7950,
+      "level2EnclosedSquareMetres": 2712,
+      "visualCheck": "씬뷰 1280x720 캡처 결과 실내는 바닥 슬래브·천장 루버·외벽·기둥 2개·소화기 1개·단말 1개뿐. 매표소·상점·개찰구·의자·계단·에스컬레이터·사인 전무",
+      "existingFixtureMarkers": "실내 시설물 후보 루트에 F03~F16 빈 마커 9개(렌더러 없음)"
+    },
+    "inFlightSubagents": [
+      {
+        "name": "FloorPlanHunt",
+        "lane": "도면·실내공간정보 공개데이터",
+        "model": "task",
+        "status": "running"
+      },
+      {
+        "name": "ModelHunt",
+        "lane": "기존 3D/BIM/OSM indoor 모델",
+        "model": "task",
+        "status": "running"
+      },
+      {
+        "name": "ImageryHunt",
+        "lane": "사진·영상·실내 스트리트뷰",
+        "model": "task",
+        "status": "running"
+      }
+    ],
+    "candidateNextDispatch": [
+      {
+        "id": "geometry_builder",
+        "work": "열린 에디터에서 실내 벽·매표소·상점·개찰구·수직동선 지오메트리를 실제 생성",
+        "needsLiveEditor": true
+      },
+      {
+        "id": "level_probe",
+        "work": "1층/2층 각 층의 바닥·천장 격자 프로브를 돌려 층별 평면 마스크 PNG와 JSON을 산출",
+        "needsLiveEditor": true
+      },
+      {
+        "id": "plan_georeference",
+        "work": "취득한 래스터 도면을 모델 좌표계에 축척·회전·원점 정합",
+        "needsLiveEditor": false
+      },
+      {
+        "id": "fixture_kit_author",
+        "work": "의자·개찰구·매표카운터·상점 파사드 프리팹 키트를 코드로 생성",
+        "needsLiveEditor": true
+      }
+    ],
+    "constraint": "열린 Unity 에디터 인스턴스는 단 하나이며 메인 모델이 점유 중이다. 동시 편집은 도메인 리로드 충돌을 일으킨 전례가 있다(2026-09-22 14:26 시험 시간초과).",
+    "riskNote": "씬은 커밋된 실제 산출물이며 파괴적 편집은 되돌리기 비용이 크다"
+  },
+  "questions": {
+    "reasoning_effort": {
+      "type": "choice",
+      "instructions": "이 턴에 메인 모델이 써야 할 추론 강도를 정한다. 코드는 짜지 말고 깊이만 정한다.",
+      "criteria": {
+        "low": "오타·단일 파일 기계적 수정 수준",
+        "high": "다중 모듈·기하 설계·좌표 정합이 얽힌 작업",
+        "max": "라이브 DB·배포·되돌릴 수 없는 파괴적 변경"
+      }
+    },
+    "live_editor_contention": {
+      "type": "noul",
+      "instructions": "라이브 에디터를 필요로 하는 작업을 서브에이전트에게 병렬 발주해도 되는가",
+      "criteria": {
+        "true": "병렬 발주해도 안전하다",
+        "false": "라이브 에디터 작업은 메인이 직렬로 점유해야 한다"
+      }
+    },
+    "next_dispatch": {
+      "type": "choice",
+      "instructions": "지금 추가로 발주할 가치가 가장 큰 작업 하나를 고른다. 이미 돌고 있는 3개 조사 레인과 중복이면 none을 고른다.",
+      "criteria": {
+        "geometry_builder": "실내 지오메트리 생성 발주",
+        "level_probe": "층별 격자 프로브 발주",
+        "plan_georeference": "도면 좌표 정합 발주",
+        "fixture_kit_author": "집기 프리팹 키트 발주",
+        "none": "추가 발주 없음, 조사 결과 대기"
+      }
+    },
+    "blocking_bottleneck": {
+      "type": "choice",
+      "instructions": "실내 완성을 막는 진짜 병목 하나를 고른다",
+      "criteria": {
+        "no_dimensioned_plan": "치수 있는 실제 평면도가 없다",
+        "no_level_segmentation": "1층/2층 경계와 바닥 범위가 확정되지 않았다",
+        "no_fixture_geometry": "집기·설비 형상 자산이 없다",
+        "editor_throughput": "에디터 편집 처리량·리로드 충돌"
+      }
+    }
+  }
+}

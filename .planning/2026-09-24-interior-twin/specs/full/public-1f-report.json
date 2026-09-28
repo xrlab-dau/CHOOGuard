@@ -1,0 +1,252 @@
+{
+ "lane": "Public1F (spawn 5, 2026-09-25 18:20-19:40)",
+ "specs": {
+  "public-1f.json": {
+   "root": "실내 트윈 마감/1F 공용",
+   "zone": "1F public",
+   "elements": 24,
+   "triangles": 21756,
+   "checkSpec": "0 errors, 12 existing warnings (1F public spec alone on geometry-after37; warnings at U+ toilets/BOH/stair-wall contacts, unchanged)",
+   "kitValidate": "0 errors (revalidated against MajibangBuilder.KitValidate after v4 generation; public-1f.validate.json)",
+   "built": "v4 (24 elements): generator refresh, new conflict evidence documented; unresolved conflicts remain tier c, no unsupported geometry added; Main build status remains pending"
+  },
+  "public-1f-escalator.json": {
+   "root": "실내 트윈 마감/1F 공용 에스컬레이터",
+   "zone": "1F public escalator",
+   "elements": 1,
+   "triangles": 3680,
+   "checkSpec": "0/0 alone on geometry-after30 (with replaces)",
+   "kitValidate": "0 errors",
+   "dependsOn": "plan edit public1f/slab-opening-uminus-esc.json + holes in the 1F SuspendedCeiling and the 2F 본관 보강 FloorFinish; HOLD until reg-requests/Public1F-1.done.json",
+   "status": "GO (RegTech6 + Main 2026-09-25 20:10): trimmed well; ready to build with the plan edit"
+  },
+  "1f-detail.json": {
+   "path": ".planning/2026-09-24-interior-twin/specs/1f-detail.json",
+   "change": "make_1f_detail.py keep_open += OPEN-2F-ESC-UMINUS; only diff: 1F-ceiling-U--0 area 1773.4 -> 1724.6 (hole = well, 48.73 u2); script reproduced the previous file byte-identically before the change",
+   "checkSpec": "0 errors / 20 warnings on after30 (same as before the change)",
+   "kitValidate": "0 errors"
+  }
+ },
+ "generator": ".planning/2026-09-24-interior-twin/specs/full/make_public_1f.py",
+ "tools": [
+  ".planning/2026-09-24-interior-twin/specs/full/public1f/closure_check.py (flood re-check with the spec walls as barriers + walk crossings)",
+  ".planning/2026-09-24-interior-twin/specs/full/public1f/liveplan.py (now saves the barrier mask)",
+  ".planning/2026-09-24-interior-twin/specs/full/public1f/liveq.py (defaults to the newest audit, --audit DIR)"
+ ],
+ "overlay": ".planning/2026-09-24-interior-twin/specs/full/public-1f-overlay.png",
+ "closureCheck": {
+  "v1_after18": "strip V>-5 reach 1889.5 -> 0 u2",
+  "v3_after25": "strip reach 0 (live after v2) -> 0; further public reach lost 85.8 u2 = the closed stair cores; no walk crossings",
+  "plots": [
+   ".planning/2026-09-26-full-twin/public1f-work/closure-v1.png",
+   ".planning/2026-09-26-full-twin/public1f-work/closure-v2.png",
+   ".planning/2026-09-26-full-twin/public1f-work/closure-v3.png"
+  ]
+ },
+ "receipts": "asset-library/research-public/2026-09-27/Conflicts1F/receipts.json",
+ "doorCheck": "geometry-after37 + public-1f.json: done; no entry failures reported",
+ "renders": [
+  {
+   "path": ".planning/2026-09-26-full-twin/public1f-work/renders/seen-0-0-after25.png",
+   "pose": "voidscan2-after25/poses/seen-0-0.pose.json",
+   "result": "U+ facade corner south of 5564: facade glazing, 5564 wall, floor present; no open void visible"
+  },
+  {
+   "path": ".planning/2026-09-26-full-twin/public1f-work/renders/seen-0-1-after25.png",
+   "pose": "voidscan2-after25/poses/seen-0-1.pose.json",
+   "result": "inside the built U+ women's toilet (stalls, tiles, ceiling); no void visible"
+  },
+  {
+   "path": ".planning/2026-09-26-full-twin/public1f-work/renders/seen-0-2-after25.png",
+   "pose": "voidscan2-after25/poses/seen-0-2.pose.json",
+   "result": "camera pressed against the U+ men's toilet / strip wall at the facade wedge; walls only, uninformative"
+  },
+  {
+   "path": ".planning/2026-09-27-openings-extension/conflicts1f-work/renders/p04-v4.png",
+   "pose": ".planning/2026-09-27-openings-extension/conflicts1f-work/poses/p04-d.pose.json",
+   "result": "Current geometry-after37 1F hall render at unit #5 context; existing dark shop wall/frontage and public floor visible, no new geometry added"
+  },
+  {
+   "path": ".planning/2026-09-27-openings-extension/conflicts1f-work/renders/e46-v4.png",
+   "pose": ".planning/2026-09-27-openings-extension/conflicts1f-work/poses/e46-a.pose.json",
+   "result": "Current geometry-after37 KTX/Zimcarry hall view; opaque model mass where the Naver KTX vector conflicts with the #1 door-bearing frontage, supporting hold rather than blocking geometry"
+  }
+ ],
+ "items": [
+  {
+   "item": "back-of-house closure of the track-side strip V > -5",
+   "status": "built",
+   "elements": [
+    "1Fp-boh-uminus-5479",
+    "1Fp-boh-office",
+    "1Fp-boh-uplus-strip",
+    "(v1 1Fp-boh-uminus-toilet, replaced in v2 by the U- toilet walls)"
+   ],
+   "evidence": "Naver 5479 south edge (U- hall), Naver #9 west edge line to the live #9 back corner, Naver 10061937 office south/east edges from the live #16 step, V -5 = live 1F hall ceiling edge (Naver 10061937 / 5308 south edges at -4.8 / -4.5) to the U+ shell (68.62)",
+   "result": "strip reach 1889.5 u2 -> 0 (after18 flood; confirmed live after25)"
+  },
+  {
+   "item": "toilets U- end (men 4152, women 4911)",
+   "status": "built",
+   "elements": [
+    "1Fp-wc-uminus-male",
+    "1Fp-wc-uminus-female"
+   ],
+   "evidence": "Naver 09 blocks + POIs Men's Restroom (-88.1,-9.7), 여자화장실 (-87.9,-15.9); outlines clipped to the fitted live U- shell face",
+   "inference": "entry positions (hall-facing east edges, centred) — no door imagery (SY0 309-311 s only a hanging pictogram at 360p)"
+  },
+  {
+   "item": "toilets U+ end (women 5563, men 5311) + 5564",
+   "status": "built",
+   "elements": [
+    "1Fp-wc-uplus-female",
+    "1Fp-wc-uplus-male",
+    "1Fp-boh-uplus-5564"
+   ],
+   "evidence": "Naver 09 blocks + POIs Women's Restroom (60.7,-13.8), 남자화장실 (62.8,-10.4); 5564 type 10; clipped to the fitted U+ facade face",
+   "inference": "entries centred on the hall-facing edges; the U+ toilets are unobserved in footage (uplus-service-end unobserved list)"
+  },
+  {
+   "item": "elevators: U+ notch (2 cars), U- notch (2 cars), U- end (1 car)",
+   "status": "built",
+   "elements": [
+    "1Fp-elev-core-e",
+    "1Fp-elev-core-e-shaft",
+    "1Fp-elev-core-w",
+    "1Fp-elev-core-w-shaft",
+    "1Fp-elev-uminus",
+    "1Fp-elev-uminus-shaft"
+   ],
+   "evidence": "Naver 453003 car boxes with door ticks (doors U+ / U- / U+), POIs 1F Elevator; P2 footage (uplus-service-end vc-elevator-arrival-zimcarry, exit heading U+)"
+  },
+  {
+   "item": "notch core blocks 4919 / 4924 / 5482",
+   "status": "built",
+   "elements": [
+    "1Fp-boh-core-e-4919",
+    "1Fp-boh-core-e-4924",
+    "1Fp-boh-core-w-5482"
+   ],
+   "evidence": "Naver type 10 blocks (same class as the BOH blocks); edges kept .15-.3 clear of the live #3 / #2 / #4 walls"
+  },
+  {
+   "item": "stairs under the solid 2F slab (U+ notch, U- notch, U- end)",
+   "status": "built (v3, pending build)",
+   "elements": [
+    "1Fp-stair-core-e (+ -door)",
+    "1Fp-stair-core-w (+ -door)",
+    "1Fp-stair-core-uminus (+ -door)"
+   ],
+   "evidence": "Naver 453001 stair outlines + chevrons, POIs 1F 계단 / Stairs; live shell closes the south ends (OfficialStation_0); Main 2026-09-25: close as stair cores",
+   "inference": "door leaf on the only public-facing edge, centred; no sign (none evidenced)"
+  },
+  {
+   "item": "coin lockers (물품보관함)",
+   "status": "built",
+   "elements": [
+    "1Fp-lockers"
+   ],
+   "evidence": "Naver POI 1F 물품보관함 (29.6,-18.7) .6 u south of the central escalator cladding (V -18.07); SY0 60-72 s / 9ywc 351-360 s topology: lockers beside the escalator next to the 짐캐리 approach",
+   "inference": "bank length 8 columns (3.6 m)"
+  },
+  {
+   "item": "U- 1F->2F escalator pair + stair beside #9 (public)",
+   "status": "ready to build (spec + plan edit + 1F ceiling hole validated)",
+   "elements": [
+    "public-1f-escalator.json: 1Fp-esc-uminus (2 flights up/down)"
+   ],
+   "planEdit": ".planning/2026-09-24-interior-twin/specs/full/public1f/slab-opening-uminus-esc.json (guard edges [0,4,5,6] granite 1.1 = ledge + rail; open [1,2,3] = pit under the landing plates)",
+   "evidence": "Naver 1F 453002 escalator outlines + 453001 stair outline/treads, POIs 1F Escalator (-51.4,-16.7) / 계단 (-52.1,-12.4); Naver 2F POIs 2F Escalator x2 / 2F Stairs at the same place, DN/UP labels at the U+ end (rise toward U+); walks SY0 308-312 s, mJrJ8 1050-1056 s (2F->1F), rear-row walk 92-94 s; mJrJ8ugxlqA (2020-12) 1030-1070 s: ride down a glass-guarded 2F well to the U- hall (asset-library/research-public/2026-09-26/Public1F/frames/mJrJ8-sheet-1030-1070.jpg); Naver 2F picker icons at (-49.0,-15.4) (-49.3,-13.3) (-49.7,-11.1) (-49.2,-19.4)",
+   "conflict": "RESOLVED by RegTech6 (Public1F-1.done.json): the drawn polygon was NO-GO (2F floor seen to V -11.3, pedestrian at (-48.4,-10.2) 588.9 s), but a column line at V -11.4..-11.7 (U -59.5/-52.5/-44.8) and a waist-high stone ledge + stainless rail (west face U -55.6, V -12.2..-14.0) support a guarded opening south of it. Well trimmed: north V -12.25, west U -55.6, south = Naver escalator outline -.1, east = upper working point + truss pit. Area 48.73 u2.",
+   "inference": "flight directions from the 2F raster labels; stair split into 2 flights with one landing",
+   "dropped": "Naver stair north of the pair (V -9.8..-13.9): contradicted at 2F (seen floor + columns), not built (tier c)"
+  },
+  {
+   "item": "KTX특송",
+   "status": "still-c",
+   "sourcesTried": [
+    "Naver 5562 (type 02) U 53.4..62.2, V -27.5..-23.2 + POI KTX Express Busan (57.3,-25.1)",
+    "uplus-service-end P2 svc-ktx-express frontage U ~51, V -30.7..-21.6 facing U- (a-failed registration)",
+    "AED registry '1층 5번출구 KTX특송 사무실 옆' (P2 (50.3,-19.7))",
+    "X06: Zimcarry/KTX occupy the #1 corner",
+    "Dalkimcoffee Naver blog, https://m.blog.naver.com/dalkimcoffee/223559892009, photos 0/1/6/7 (full-height glazed office and hall context; no registered pose or identifiable #1 door edge)",
+    "eluhiZ_eirE local walkthrough 33/36/46.5 s (relative Zimcarry/KTX/Storyway context; not registered to the unit frontage)"
+   ],
+   "reason": "The Naver 5562 polygon still intersects the unit #1 door-bearing frontage, while the P2 frontage registration is failed and the new photos do not establish a station-registered position. Do not build a blocking box or move the #1 door without a registered frontage/plan decision; refer the conflict to Main."
+  },
+  {
+   "item": "짐캐리",
+   "status": "built by others",
+   "reason": "live unit #1 (짐캐리 부산역점) + registered svc-zimcarry frontage; the Naver 5308 track-side label is contradicted by the footage and lies behind the closure"
+  },
+  {
+   "item": "Naver 5483 (type 10) in front of #5 환공어묵",
+   "status": "still-c (open conflict)",
+   "sourcesTried": [
+    "Naver 5483 block U -11.3..-7.8, V -34.6..-28.0",
+    "Naver 453005 frontage lines along #5's east edge (U -8.0, V -42.8..-34.4)",
+    "1f-detail Storefront 1F-05 (2026-05 photo 04)",
+    "Roomofjo_h Naver blog, https://m.blog.naver.com/roomofjo_h/224381048298, photos 4-7 (photo 5 confirms an open public-facing glazed entrance and counter; photo 4 shows exits 3/4, but no registration ties it to a precise unit edge)",
+    "local 1F hall walk footage and live units #5 / #4 topology"
+   ],
+   "reason": "New photos support a public shop entrance, and Naver 453005 frontage supports an east-side approach, but the images do not register the pictured doorway to the conflicting 5483 vector or prove the builder doorEdge assignment. Keep the existing photo-based storefront; do not add 5483 across it."
+  },
+  {
+   "item": "#2 편의점 north glazing (edge 4) facing the 4924 core",
+   "status": "still-c (open conflict)",
+   "sourcesTried": [
+    "Naver 4917/4924 vectors and existing 1F storefront plan",
+    "Storyway blog https://blog.naver.com/stasis7/224186315210 (page identifies 1F Storyway; no usable registered north-face photograph)",
+    "Busan Station 1F overview https://blog.naver.com/djagytt/224289573890 (store list/topology; no north-face registration)",
+    "eluhiZ_eirE local walkthrough 33/36/46.5 s (hall orientation; north glazing itself not resolved)"
+   ],
+   "reason": "Naver 4917/4924 places the core flush with the builder's north glazing edge (edge 4, no door). The available Storyway/blog and walk evidence does not resolve whether that face is glazed, opaque, or an intervening passage. No geometry change."
+  },
+  {
+   "item": "B1 metro link entrance",
+   "status": "still-c",
+   "sourcesTried": [
+    "Naver B1 layer (158 features): ground polygon only at U -45..275, V -204..-115 (under the plaza)",
+    "Naver 1F POIs (70): no B1 stair/escalator inside the station 1F",
+    "Naver 1F/ B1 registered vector inventory in public1f/naver-1f-uv.json",
+    "Existing Busan Station hall walks reviewed for a visible internal B1 opening; none located"
+   ],
+   "reason": "No evidence of a B1 connection inside the 1F interior; the metro/underground link vectors are under the plaza, outside this lane's 1F interior scope."
+  },
+  {
+   "item": "track-side stairs / elevators behind the closure (U -45..-40 V -3..5; U 33-37 V -5..0; U -91..-85 V -2..0; U -61 V 8.7; U 70-73 V 5-12)",
+   "status": "closed (inside the enclosed back-of-house strip)",
+   "reason": "Naver draws them in gaps between BOH blocks; no public-walk evidence; enclosed by the closure walls (no void reachable or visible)"
+  },
+  {
+   "item": "staff stair core between #15 and #14 (직원식당 sign)",
+   "status": "still-c",
+   "sourcesTried": [
+    "SY0 206-218 s and tiV8 207-217 s (topology, no registered position)",
+    "live units #14/#15 footprints and shared wall (no gap for a stair)",
+    "Local walkthrough frames: 직원식당 sign visible, but no stair entrance can be placed without a location registration"
+   ],
+   "reason": "Footage confirms staff-area signage/topology only; the live units share a wall and no registered evidence locates a separate stair. Do not cut or add a stair opening."
+  },
+  {
+   "item": "toilet hanging signs",
+   "status": "still-c",
+   "sourcesTried": [
+    "SY0 309-311 s, 360p pictogram (unreadable and unregistered)",
+    "Existing U+ service-end frames (no observable hanging-sign installation or coordinate registration)"
+   ],
+   "reason": "The toilet-room entry pictograms are already represented, but the separate hanging signs' number, wording, orientation, and positions are not evidenced. No additional signage built."
+  },
+  {
+   "item": "voidscan2 seen-0-* (after37 current scene; 1F fall cells 0)",
+   "status": "checked",
+   "result": "Existing local conflict renders e33-a/e46-a plus current public-1f checks; no new 1F void claim made. Main reports current voidscan-after37 separately."
+  }
+ ],
+ "requestsForMain": [
+  "Apply OPEN-2F-ESC-UMINUS (public1f/slab-opening-uminus-esc.json) to majibang-plan.json slabOpenings; build 1f-detail.json (1F ceiling hole) + public-1f-escalator.json together; Services23F5 cuts the 2F 본관 보강 floor finish / atrium ceiling (polygon sent).",
+  "Guard finish \"granite\" assumes the builder guard accepts a material keyword; fall back to glass if not.",
+  "Decide KTX특송 vs the #1 north front/door",
+  "Open conflicts recorded: 5483 vs #5 door, #2 north glazing vs 4924"
+ ]
+}
