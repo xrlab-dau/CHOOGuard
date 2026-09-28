@@ -1,0 +1,361 @@
+name: Unity
+
+# Licensed lane on GitHub-hosted Apple-silicon runners: the suites and SqliteProvider assume a macOS editor
+# host, and the only player target is StandaloneOSX. One Student-plan seat allows two concurrent
+# activations and the maintainer's Mac holds one, so every licensed job shares one repository-wide queue
+# and is never cancelled mid-run (a killed editor cannot return its activation).
+
+on:
+  pull_request:
+    branches: [develop, main]
+  push:
+    branches: [develop, main]
+    tags: ["v*"]
+  schedule:
+    - cron: "0 18 * * *" # 03:00 KST: nightly tests and player build of develop
+  workflow_dispatch:
+    inputs:
+      build:
+        description: Also build the macOS player
+        type: boolean
+        default: true
+
+permissions: {}
+
+jobs:
+  gate:
+    name: Unity lane gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      tests: ${{ steps.decide.outputs.tests }}
+      build: ${{ steps.decide.outputs.build }}
+      reason: ${{ steps.decide.outputs.reason }}
+    steps:
+      - id: decide
+        name: Decide what runs
+        env:
+          ENABLED: ${{ vars.UNITY_CI_ENABLED }}
+          HAS_SERIAL: ${{ secrets.UNITY_SERIAL != '' }}
+          HAS_EMAIL: ${{ secrets.UNITY_EMAIL != '' }}
+          HAS_PASSWORD: ${{ secrets.UNITY_PASSWORD != '' }}
+          EVENT: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          REPO: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+          BUILD_INPUT: ${{ inputs.build }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          unity_paths='^(Assets|Packages|ProjectSettings)/'
+          tests=false build=false reason=""
+          if [[ $ENABLED != true ]]; then
+            reason="repository variable UNITY_CI_ENABLED is not 'true'"
+          elif [[ $HAS_SERIAL != true || $HAS_EMAIL != true || $HAS_PASSWORD != true ]]; then
+            reason="licence secrets UNITY_SERIAL, UNITY_EMAIL and UNITY_PASSWORD are not all set"
+          elif [[ $EVENT == pull_request && $PR_REPO != "$REPO" ]]; then
+            reason="pull requests from forks receive no licence secrets"
+          elif [[ $EVENT == pull_request ]]; then
+            files=$(gh api --paginate "repos/$REPO/pulls/$PR_NUMBER/files?per_page=100" --jq '.[].filename')
+            # The files API stops at 3000 entries; a change that large is treated as touching Unity.
+            if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 3000 )); then
+              tests=true
+            else
+              reason="the pull request does not touch Assets, Packages or ProjectSettings"
+            fi
+          elif [[ $EVENT == push && $REF == refs/tags/v* ]]; then
+            tests=true build=true
+          elif [[ $EVENT == push ]]; then
+            if [[ $BEFORE =~ ^0+$ ]]; then
+              tests=true build=true
+            else
+              files=$(gh api "repos/$REPO/compare/$BEFORE...$AFTER" --jq '.files[].filename')
+              if grep -qE "$unity_paths" <<<"$files" || (( $(wc -l <<<"$files") >= 300 )); then
+                tests=true build=true
+              else
+                reason="the push does not touch Assets, Packages or ProjectSettings"
+              fi
+            fi
+          elif [[ $EVENT == workflow_dispatch ]]; then
+            tests=true build=$BUILD_INPUT
+          else
+            tests=true build=true
+          fi
+          {
+            echo "tests=$tests"
+            echo "build=$build"
+            echo "reason=$reason"
+          } >> "$GITHUB_OUTPUT"
+          echo "tests=$tests build=$build ${reason:+(skip: $reason)}"
+
+  tests:
+    name: EditMode + PlayMode (macOS)
+    needs: gate
+    if: needs.gate.outputs.tests == 'true'
+    runs-on: macos-26
+    timeout-minutes: 240
+    concurrency:
+      group: unity-licence
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: |
+            .github
+            Assets
+            Packages
+            ProjectSettings
+          persist-credentials: false
+
+      - id: unity
+        uses: $/.github/actions/setup-unity
+
+      - id: library
+        name: Restore the Library import cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-macos-arm64-${{ steps.unity.outputs.version }}-${{ hashFiles('Packages/packages-lock.json') }}-${{ github.sha }}
+          restore-keys: |
+            library-macos-arm64-${{ steps.unity.outputs.version }}-${{ hashFiles('Packages/packages-lock.json') }}-
+            library-macos-arm64-${{ steps.unity.outputs.version }}-
+
+      - id: activate
+        name: Activate the licence
+        timeout-minutes: 10
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: .github/scripts/unity_ci.sh activate
+
+      - id: editmode
+        name: EditMode tests
+        timeout-minutes: 100
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+        run: .github/scripts/unity_ci.sh test EditMode
+
+      - id: playmode
+        name: PlayMode tests
+        if: always() && steps.activate.outcome == 'success'
+        timeout-minutes: 60
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+        run: .github/scripts/unity_ci.sh test PlayMode
+
+      - name: Return the licence
+        if: always() && steps.activate.outcome != 'skipped'
+        timeout-minutes: 10
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: .github/scripts/unity_ci.sh return
+
+      - name: Verdict
+        if: always() && steps.activate.outcome == 'success'
+        env:
+          EDIT_EXIT: ${{ steps.editmode.outputs.exit_code }}
+          PLAY_EXIT: ${{ steps.playmode.outputs.exit_code }}
+        run: |
+          python3 .github/scripts/unity_results.py \
+            "EditMode:$RUNNER_TEMP/unity/EditMode-results.xml:$EDIT_EXIT" \
+            "PlayMode:$RUNNER_TEMP/unity/PlayMode-results.xml:$PLAY_EXIT"
+
+      - name: Remove credentials from logs
+        if: always()
+        env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: .github/scripts/unity_ci.sh scrub
+
+      - name: Upload results and logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: unity-tests-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/unity
+          retention-days: 14
+          if-no-files-found: ignore
+
+      # Only develop saves: pull requests restore develop's import and can never overwrite it.
+      - name: Save the Library import cache
+        if: >-
+          always() && github.event_name == 'push' && github.ref == 'refs/heads/develop' &&
+          (steps.editmode.outputs.exit_code == '0' || steps.editmode.outputs.exit_code == '2')
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: Library
+          key: library-macos-arm64-${{ steps.unity.outputs.version }}-${{ hashFiles('Packages/packages-lock.json') }}-${{ github.sha }}
+
+  build:
+    name: macOS player
+    needs: [gate, tests]
+    if: needs.gate.outputs.build == 'true' && needs.tests.result == 'success'
+    runs-on: macos-26
+    timeout-minutes: 240
+    concurrency:
+      group: unity-licence
+      cancel-in-progress: false
+      queue: max
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          sparse-checkout: |
+            .github
+            Assets
+            Packages
+            ProjectSettings
+          persist-credentials: false
+
+      - id: unity
+        uses: $/.github/actions/setup-unity
+
+      - id: activate
+        name: Activate the licence
+        timeout-minutes: 10
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: .github/scripts/unity_ci.sh activate
+
+      # Fresh import on purpose: release players never depend on a restored Library.
+      - id: player
+        name: Build (ChooGuard.Editor.PlayerBuild.BuildMac)
+        timeout-minutes: 180
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+        run: .github/scripts/unity_ci.sh build
+
+      - name: Return the licence
+        if: always() && steps.activate.outcome != 'skipped'
+        timeout-minutes: 10
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: .github/scripts/unity_ci.sh return
+
+      - name: Package
+        id: package
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [[ $REF_TYPE == tag ]]; then label=$REF_NAME; else label=$(git rev-parse --short=12 HEAD); fi
+          dist="$RUNNER_TEMP/dist"
+          mkdir -p "$dist"
+          ditto -c -k --sequesterRsrc --keepParent Builds/macOS/CHOOGuard.app "$dist/CHOOGuard-macOS-arm64-$label.zip"
+          (cd "$dist" && shasum -a 256 ./*.zip > SHA256SUMS.txt && cat SHA256SUMS.txt)
+          echo "dist=$dist" >> "$GITHUB_OUTPUT"
+
+      - name: Upload the player
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: player-macos-arm64
+          path: ${{ steps.package.outputs.dist }}
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Remove credentials from logs
+        if: always()
+        env:
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        run: .github/scripts/unity_ci.sh scrub
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: unity-build-logs-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/unity
+          retention-days: 14
+          if-no-files-found: ignore
+
+  release:
+    name: Draft release
+    needs: build
+    if: github.ref_type == 'tag' && needs.build.result == 'success'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: step-security/harden-runner@e14015d583714f6e62063499dc959a02595150a1 # v2.21.1
+        with:
+          egress-policy: audit
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          sparse-checkout: .github
+          persist-credentials: false
+
+      - name: Releases come from main
+        run: |
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main || {
+            echo "::error::tag $GITHUB_REF_NAME is not on main; tag the merge commit of a develop -> main release PR"
+            exit 1
+          }
+
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: player-macos-arm64
+          path: dist
+
+      - name: Build provenance
+        uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-path: dist/*.zip
+
+      - name: Create the draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" dist/* --draft --verify-tag --generate-notes --title "CHOOGuard $TAG"
+
+  result:
+    # Becomes a required status check after the first green licensed run; passes as not-applicable when the
+    # lane is off or the change does not touch Unity, and states why in the job summary.
+    name: Unity tests
+    needs: [gate, tests]
+    if: always()
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Combine results
+        env:
+          GATE: ${{ needs.gate.result }}
+          TESTS: ${{ needs.tests.result }}
+          REASON: ${{ needs.gate.outputs.reason }}
+        run: |
+          if [[ $TESTS == success ]]; then
+            echo "Unity tests passed"
+          elif [[ $GATE == success && $TESTS == skipped ]]; then
+            echo "::notice title=Unity tests not run::$REASON"
+            echo "### Unity tests not run: $REASON" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::error title=Unity tests::gate=$GATE tests=$TESTS"
+            exit 1
+          fi

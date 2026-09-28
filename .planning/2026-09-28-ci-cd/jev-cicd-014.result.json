@@ -1,0 +1,112 @@
+{
+ "via": "omp eval judge() -> modelRoles.judge typesafe/jev-latest",
+ "ranUtc": "2026-09-28T04:33:38Z",
+ "elapsed_ms": 265,
+ "authority": 0,
+ "answers": {
+  "unity_activation": {
+   "type": "choice",
+   "choice": "explicit_variable_and_secrets",
+   "confidence": 0.69,
+   "probabilities": {
+    "self_hosted_mac_runner": 0.02,
+    "auto_on_secrets": 0.21,
+    "explicit_variable_and_secrets": 0.76,
+    "unity_build_automation": 0.01
+   }
+  },
+  "unity_pr_scope": {
+   "type": "choice",
+   "choice": "tests_on_pr_builds_on_branch",
+   "confidence": 0.69,
+   "probabilities": {
+    "everything_every_pr": 0.11,
+    "tests_on_pr_builds_on_branch": 0.8,
+    "editmode_pr_rest_nightly": 0.09
+   }
+  },
+  "library_cache": {
+   "type": "choice",
+   "choice": "one_test_cache_builds_uncached",
+   "confidence": 0.73,
+   "probabilities": {
+    "per_mode_and_target": 0.17,
+    "no_cache": 0.01,
+    "one_test_cache_builds_uncached": 0.82
+   }
+  },
+  "build_targets": {
+   "type": "choice",
+   "choice": "macos_only",
+   "confidence": 0.26,
+   "probabilities": {
+    "macos_only": 0.5,
+    "windows_and_macos": 0.33,
+    "windows_macos_linux": 0.17
+   }
+  },
+  "required_checks": {
+   "type": "choice",
+   "choice": "policy_and_tools",
+   "confidence": 0.34,
+   "probabilities": {
+    "policy_and_tools": 0.56,
+    "policy_only": 0.39,
+    "policy_tools_unity": 0.05
+   }
+  },
+  "release_strategy": {
+   "type": "choice",
+   "choice": "tag_on_main_draft_release_with_provenance",
+   "confidence": 0.96,
+   "probabilities": {
+    "no_release_yet": 0.03,
+    "tag_on_main_draft_release_with_provenance": 0.97,
+    "release_please": 0
+   }
+  },
+  "security_suite": {
+   "type": "choice",
+   "choice": "full_benchmark_suite",
+   "confidence": 0.97,
+   "probabilities": {
+    "minimal": 0,
+    "gate_only": 0.02,
+    "full_benchmark_suite": 0.98
+   }
+  },
+  "checkout_strategy": {
+   "type": "choice",
+   "choice": "blobless_sparse",
+   "confidence": 0.39,
+   "probabilities": {
+    "full_shallow": 0.32,
+    "full_history": 0.09,
+    "blobless_sparse": 0.59
+   }
+  },
+  "graphify_in_ci": {
+   "type": "choice",
+   "choice": "freshness_warning",
+   "confidence": 0.87,
+   "probabilities": {
+    "bot_regenerates": 0.03,
+    "blocking": 0.06,
+    "freshness_warning": 0.91
+   }
+  },
+  "pr_title_policy": {
+   "type": "choice",
+   "choice": "none",
+   "confidence": 0.82,
+   "probabilities": {
+    "conventional_commits_korean_ok": 0.09,
+    "none": 0.91
+   }
+  },
+  "pr_triage_labels": {
+   "type": "bool",
+   "bool": 0.61
+  }
+ }
+}

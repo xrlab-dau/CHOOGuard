@@ -1,0 +1,52 @@
+name: Set up Unity (macOS)
+description: >
+  Installs the exact editor pinned in ProjectSettings/ProjectVersion.txt on a GitHub-hosted Apple-silicon
+  macOS runner, after verifying that Apple's Developer ID chain signs the installer for Unity's team.
+  The macOS lane exists because the suites and the persistence layer assume a macOS editor host.
+outputs:
+  editor:
+    description: Path to the Unity executable
+    value: ${{ steps.install.outputs.editor }}
+  version:
+    description: Editor version from ProjectVersion.txt
+    value: ${{ steps.version.outputs.version }}
+runs:
+  using: composite
+  steps:
+    - id: version
+      name: Read the pinned editor version
+      shell: bash
+      run: |
+        line=$(grep '^m_EditorVersionWithRevision:' ProjectSettings/ProjectVersion.txt)
+        version=$(sed -E 's/^m_EditorVersionWithRevision: ([^ ]+) \(([0-9a-f]+)\)$/\1/' <<<"$line")
+        changeset=$(sed -E 's/^m_EditorVersionWithRevision: ([^ ]+) \(([0-9a-f]+)\)$/\2/' <<<"$line")
+        [[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+[abfp][0-9]+$ && $changeset =~ ^[0-9a-f]{12}$ ]] || { echo "::error::cannot parse '$line'"; exit 1; }
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "changeset=$changeset" >> "$GITHUB_OUTPUT"
+        echo "Unity $version ($changeset)"
+
+    - id: install
+      name: Install and verify the editor
+      shell: bash
+      env:
+        VERSION: ${{ steps.version.outputs.version }}
+        CHANGESET: ${{ steps.version.outputs.changeset }}
+        # Developer ID Installer identity observed on this editor's installer (xar signature, 2026-09-28).
+        UNITY_SIGNER: "Developer ID Installer: Unity Technologies SF (9QW8UQUTAA)"
+      run: |
+        df -h / | tail -1
+        pkg="$RUNNER_TEMP/Unity-$VERSION.pkg"
+        curl --fail --silent --show-error --location --retry 4 --retry-all-errors \
+          -o "$pkg" "https://download.unity3d.com/download_unity/$CHANGESET/MacEditorInstallerArm64/Unity-$VERSION.pkg"
+        signature=$(pkgutil --check-signature "$pkg")
+        grep -q 'Status: signed by a developer certificate issued by Apple' <<<"$signature" || { echo "$signature"; echo "::error::installer is not Developer ID signed"; exit 1; }
+        grep -qF "1. $UNITY_SIGNER" <<<"$signature" || { echo "$signature"; echo "::error::installer is not signed by $UNITY_SIGNER"; exit 1; }
+        sudo installer -pkg "$pkg" -target / >/dev/null
+        rm -f "$pkg"
+        editor=$(find /Applications/Unity -maxdepth 6 -path '*/Unity.app/Contents/MacOS/Unity' -type f | head -1)
+        [[ -x $editor ]] || { echo "::error::Unity executable not found after install"; exit 1; }
+        # Serial licences are written here; the runner user must own it.
+        sudo mkdir -p "/Library/Application Support/Unity"
+        sudo chown -R "$(id -un)" "/Library/Application Support/Unity"
+        echo "editor=$editor" >> "$GITHUB_OUTPUT"
+        df -h / | tail -1

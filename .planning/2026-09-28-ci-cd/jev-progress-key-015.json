@@ -1,0 +1,24 @@
+{
+ "via": "omp eval judge() -> typesafe/jev-latest",
+ "ranUtc": "2026-09-28T04:36:36Z",
+ "authority": 0,
+ "state": {
+  "task": "Judge how a plan validator and its state file should treat one extra key. Inputs are verified observations. Return typed judgments only.",
+  "validator": "docs/CHOOGuard_Story_Plan_v5/tools/active_plan.py requires exactly 8 top-level keys in state/progress.json. Fix already chosen (JEV 013, 0.98): also allow three documented optional reference keys (activeDirection, activeEvidenceGraph, transferReport) whose paths must exist.",
+  "extra_key": "gameplayImplementation = {status: IN_PROGRESS_LOCAL_EDITOR, acceptanceStatus: NOT_ACCEPTED, evidenceRef: docs/.../state/evidence/fps-gameplay-20260925/implementation-checkpoint.json, summary: 'FPS common executor, precise controls, four-role tutorials, personal knowledge, JEV broker/future, separate PPO training and platform packages implemented; isolated Unity PlayMode 39/39 ...'}. It entered develop with PR #247 from an earlier agent session's uncommitted edits.",
+  "reality_on_develop": "The 2026-09-26 user-confirmed direction reset removed that gameplay runtime (Gameplay presentation layer, role-training curriculum, App/Fps/Runtime, workers/prediction/gameplay-*) from the working tree and preserved it only on branches (cloud/fps-gameplay-20260925, backup/astra-worktree-20260926). develop's game runtime is App/Fps/Emergency. The evidence file still exists in docs.",
+  "git_history": "The key's content stays recoverable from git history and the preserved branches either way."
+ },
+ "answers": {
+  "gameplay_implementation_key": {
+   "type": "choice",
+   "choice": "remove_stale_key",
+   "confidence": 0.4,
+   "probabilities": {
+    "move_to_history_ref": 0.06,
+    "remove_stale_key": 0.6,
+    "allow_as_documented_object": 0.34
+   }
+  }
+ }
+}
