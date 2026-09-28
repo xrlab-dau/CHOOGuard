@@ -73,15 +73,18 @@ gh variable set UNITY_CI_ENABLED --body true -R xrlab-dau/CHOOGuard
 
 ### 무엇이 언제 도는가
 
-| 이벤트 | 에디터 시험 | 플레이어 빌드 + 스모크 |
-|---|---|---|
-| 같은 저장소 PR, Unity 경로 변경 | Windows, macOS | — |
-| develop·main push(Unity 경로 변경), `v*` 태그, 야간 | Windows, macOS, Linux | ✅ 세 OS |
-| 수동 실행 | 선택한 OS 또는 전부 | `build` 입력 |
-| 포크 PR, Unity 경로 무변경 | 사유를 남기고 건너뜀 | — |
+| 이벤트 | 에디터 시험 | Bootstrap 실제 빌드 | 플레이어 빌드 + 스모크 |
+|---|---|---|---|
+| 같은 저장소 PR, Unity 경로 변경 | Windows, macOS | — | — |
+| develop·main push(Unity 경로 변경), `v*` 태그 | Windows, macOS, Linux | — | ✅ 세 OS |
+| 야간 | Windows, macOS, Linux | ✅ macOS, Windows | ✅ 세 OS |
+| 수동 실행 | 선택한 OS 또는 전부 | `bootstrap` 입력 | `build` 입력 |
+| 포크 PR, Unity 경로 무변경 | 사유를 남기고 건너뜀 | — | — |
 
 - Unity 경로: `Assets`·`Packages`·`ProjectSettings`에 더해, EditMode 시험이 저장소 루트에서 읽는 `content/`(픽스처), `docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/`(어셈블리 계약), `docs/build/`(빌드 영수증·기준 스키마)다. 게이트의 `unity_paths`와 시험 잡의 희소 체크아웃이 같은 목록을 쓴다. 첫 Linux 실행(run 36394165119)에서 체크아웃에 이 셋이 빠져 EditMode 102건이 파일 없음으로 실패했다. 시험이 루트의 다른 파일을 읽게 되면 두 곳에 함께 추가한다.
 - 시험: EditMode(`-nographics`)와 PlayMode(Metal, Direct3D/WARP, 가상 디스플레이의 OpenGL)를 한 번의 활성화 안에서 돌린다. 판정은 `unity_results.py`가 결과 XML과 에디터 종료 코드를 함께 보고 내린다. 결과 파일 없음(컴파일 오류·크래시), 0건 실행, 실패, 종료 코드와 결과의 불일치는 실패다. Inconclusive는 경고다.
+- 빌드 경계 시험: `CSBOOT0101`의 38건(Windows 37건. Windows 호스트용 NOT_RUN 오라클은 macOS·Linux에서만 돈다)은 모든 EditMode 실행에서 돈다. `unity_ci.sh`가 에디터 시작 전에 프로젝트 밖 스크래치(`-cgFixtureRoot`)와 실제 심볼릭 링크 넷(`-cgBuildLinkFixture`: `target/`을 가리키는 root·parent·leaf 링크와 끊긴 링크)을 만든다. 모의 시험이라 빌드는 하지 않고 몇 초면 끝난다. 그래서 EditMode 건너뜀은 2건(열린 Untitled 씬이 필요한 시험)이고, Windows는 3건이다. 이 수가 크게 늘면 인자가 에디터에 닿지 않은 것이다.
+- Bootstrap 실제 빌드: CS-BOOT.01.01의 `ChooGuard.Editor.Bootstrap.BuildBaseline.Build`를 시험 잡이 같은 활성화 안에서 실행한다. 검증기 통과, Bootstrap 씬 Development 플레이어, 출력 해시가 든 영수증까지가 한 번이다. BuildBaseline은 macOS 호스트에서 StandaloneOSX, Windows 호스트에서 StandaloneWindows64만 빌드하고 Linux 대상은 없다. 영수증은 결과 산출물의 `bootstrap-build-receipt.json`이며 저장소에 커밋하지 않는다. Library 캐시를 저장하는 develop push에서는 돌지 않아 캐시에 빌드 부산물이 섞이지 않는다.
 - 빌드: macOS 러너 한 대가 Windows·Linux Mono 빌드 모듈을 함께 설치하고, 활성화 한 번과 임포트 한 번으로 세 플레이어를 만든다. 진입점은 메뉴와 같은 `ChooGuard.Editor.PlayerBuild.BuildAll`이다. 이 메서드는 실패해도 0으로 끝나므로 대상별 `CG_PLAYER_BUILD target=… result=Succeeded` 표식과 출력물로 판정한다. 산출물은 `player-macos`·`player-windows`·`player-linux`(zip, 30일)다.
 - 스모크: 각 OS 러너가 자기 플레이어를 `-batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5`로 실행한다. 역사를 불러오고, 새 비상 세션의 군중이 생기고, 플레이한 뒤 타이틀로 돌아와 보고서를 쓰는 전 과정이다. `soak_verdict.py`가 판정한다. 보고서 없음(크래시·멈춤), 근무 누락, 예외, 군중이 생기지 않은 세션은 실패이고, 로그 오류는 경고다. 플레이어는 Unity 라이선스가 필요 없어 세 OS가 동시에 돈다.
 - Library 캐시: Windows·macOS 시험 잡만 복원한다. 저장은 develop push에서만 한다(PR은 develop 캐시를 읽기만 한다). Linux와 빌드는 10 GB 캐시 한도를 지키려고 캐시 없이 새로 임포트한다.
@@ -138,5 +141,4 @@ uvx zizmor@1.30.1 --offline .
 - Windows에서는 에디터가 끝난 뒤에도 Unity 보조 프로세스가 `return.log`를 잠시 잡고 있을 수 있다. 반납 단계는 10초까지 다시 지워 보고, 그래도 잠겨 있으면 알림(`::notice`)만 남긴다. 반납은 이미 끝났고, 러너가 잡과 함께 임시 폴더를 지운다.
 - 스모크는 헤드리스(`-nographics`)라 시작·씬 로드·세션·종료를 확인하지만 화면 렌더링까지는 보지 않는다. 렌더링은 PlayMode 시험(그래픽 장치 사용)이 맡는다.
 - Linux 플레이어는 디스플레이가 없으면 창 백엔드가 null이라 첫 프레임에서 segfault한다(Unity 버그. 실제 사용자는 X11·Wayland가 있어 해당하지 않는다). 그래서 Linux 스모크는 PlayMode 시험처럼 Xvfb 안에서 돈다. 같은 플레이어를 헤드리스와 Xvfb로 나란히 돌려 확인했다(run 36420682952: 헤드리스 exit 139, Xvfb exit 0·오류 0·예외 0).
-- `CSBOOT0101`의 경계 재시험(`-cgFixtureRoot` 등 33건, 실제 Bootstrap 빌드 포함)은 아직 CI에서 돌리지 않는다. 세 OS 레인이 녹색이 된 뒤 야간 잡으로 붙인다.
 - OpenSSF Scorecard 기준선은 5.6(2026-09-28, `3c05e778`)이다. Pinned-Dependencies 9점의 감점 2건은 당시 쓰던 `uses: $/...` 참조였고, `./` 로컬 action으로 바꾸면서 없어진다. 나머지 감점(저장소 생성 90일 미만, LICENSE 없음, 승인 없는 머지, `Assets/Packages`의 DotRecast DLL 등 바이너리)은 CI 밖의 결정이다.

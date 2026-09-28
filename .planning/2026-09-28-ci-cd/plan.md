@@ -118,3 +118,9 @@
 - 빌드: 2시간 10분(13:04-15:14 UTC). 반납·포장 성공.
 - 스모크(세 OS 모두 exit 0): 1근무, 오류 0, 예외 0, 군중 148명. 최대 프레임은 Windows 399 ms, macOS 412 ms, Linux 297 ms이고 각각 히치 1회다. Linux는 Xvfb 안에서 `window backend: x11`.
 - 남은 일(문서 "알려진 제약"): `CSBOOT0101` 경계 재시험 야간 잡, Scorecard의 CI 밖 감점.
+
+## CSBOOT0101 경계 재시험 + Bootstrap 실제 빌드 (2026-09-29)
+
+- 확인: 경계 시험은 38건이다(`-cgFixtureRoot` 34건, `-cgBuildLinkFixture` 4건. Windows는 NOT_RUN 오라클이 빠져 37건). 2026-09-20 증거(`boundary-retest-2026-09-20.json`)에서 CSBOOT0101 55건이 통과했고, 그 도구는 임시 scratchpad에 있어 저장소에 없다. 같은 증거의 한계에 "No new player build executed; build seam tests are simulations"가 있다. 문서의 "33건, 실제 Bootstrap 빌드 포함"은 틀렸다(시험은 모의이고, 실제 빌드는 `BuildBaseline.Build` 별도 경로다).
+- 결정: 경계 시험은 모의라 비용이 거의 없으니 야간만이 아니라 모든 EditMode 실행에 붙인다(`unity_ci.sh`가 스크래치와 실제 링크 넷을 Python `os.symlink`로 만든다. Git Bash `ln -s`는 Windows에서 복사한다). 실제 빌드(`BuildBaseline.Build`: 검증기, Bootstrap 씬 Development 플레이어, 출력 해시 영수증)는 야간과 수동 `bootstrap` 입력에서 macOS·Windows 시험 잡이 같은 활성화 안에서 한다. BuildBaseline에는 Linux 대상이 없다. develop push에서는 돌지 않게 해 Library 캐시에 빌드 부산물이 섞이지 않는다.
+- 로컬 확인(가짜 에디터, bash 3.2): 에디터가 두 인자를 받는다. 링크 셋은 `target/`, 끊긴 링크 하나. bootstrap 성공 경로(CRLF 표식, 영수증 복사, exit 0), 실패 경로(exit 1, 오류 주석), Linux 호스트 거부.
