@@ -12,7 +12,7 @@ on:
     branches: [develop, main]
     tags: ["v*"]
   schedule:
-    - cron: "0 18 * * *" # 03:00 KST: nightly tests on every OS and players of develop
+    - cron: "0 18 * * *" # 03:00 KST: nightly tests on every OS, the Bootstrap build and players of develop
   workflow_dispatch:
     inputs:
       os:
@@ -24,6 +24,10 @@ on:
         description: Also build and smoke-run the players
         type: boolean
         default: true
+      bootstrap:
+        description: Also run CS-BOOT.01.01's real Bootstrap build on macOS and Windows (nightly does)
+        type: boolean
+        default: false
 
 permissions: {}
 
@@ -199,6 +203,16 @@ jobs:
           UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
           UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
         run: .github/scripts/unity_ci.sh test PlayMode
+
+      # CS-BOOT.01.01's real build (BuildBaseline: validator, Development player of the Bootstrap scene, receipt with
+      # output hashes) inside the same activation. BuildBaseline builds macOS and Windows targets, each on its own host.
+      - name: Bootstrap build (BuildBaseline)
+        if: steps.activate.outcome == 'success' && matrix.os != 'linux' && (github.event_name == 'schedule' || inputs.bootstrap)
+        timeout-minutes: 60
+        env:
+          UNITY_EDITOR: ${{ steps.unity.outputs.editor }}
+          UNITY_PROJECT: ${{ github.workspace }}/${{ env.PROJECT }}
+        run: .github/scripts/unity_ci.sh bootstrap
 
       - name: Return the licence
         if: always() && steps.activate.outcome != 'skipped'

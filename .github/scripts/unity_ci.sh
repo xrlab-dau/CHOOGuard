@@ -3,8 +3,11 @@
 #
 #   unity_ci.sh activate            serial activation (UNITY_SERIAL, UNITY_EMAIL, UNITY_PASSWORD)
 #   unity_ci.sh test EditMode|PlayMode
+#                                   EditMode also gets CSBOOT0101's boundary fixture (-cgFixtureRoot, -cgBuildLinkFixture)
 #   unity_ci.sh build               ChooGuard.Editor.PlayerBuild.BuildAll: macOS, Windows and Linux players, the same
 #                                   entry points as the editor's ChooGuard/Build menu
+#   unity_ci.sh bootstrap           CS-BOOT.01.01's real build: BuildBaseline.Build of the Bootstrap scene with a receipt
+#                                   (macOS host -> StandaloneOSX, Windows host -> StandaloneWindows64)
 #   unity_ci.sh return              give the activation back to the seat (run with if: always())
 #   unity_ci.sh scrub               remove credentials from logs before they are uploaded
 #
@@ -13,7 +16,7 @@
 # uploaded and every uploadable log is scrubbed first.
 set -euo pipefail
 
-usage() { echo "usage: $0 activate | test EditMode|PlayMode | build | return | scrub" >&2; exit 64; }
+usage() { echo "usage: $0 activate | test EditMode|PlayMode | build | bootstrap | return | scrub" >&2; exit 64; }
 [[ $# -ge 1 ]] || usage
 : "${RUNNER_TEMP:?}"
 logs="${UNITY_LOGS:-$RUNNER_TEMP/unity}"           # uploaded as an artifact after `scrub`
@@ -67,6 +70,26 @@ test)
   runner=()
   if [[ $platform == EditMode ]]; then
     args+=(-nographics)
+    # CSBOOT0101's 38 build-boundary tests need a fresh scratch directory outside the project and real symbolic links
+    # made before the editor starts; without -cgFixtureRoot and -cgBuildLinkFixture NUnit ignores them. In links/,
+    # root-link, parent-link and leaf-link point at target/ and dangling-link at nothing. Python makes native links on
+    # every OS (Git Bash's ln -s copies on Windows).
+    fixture="$RUNNER_TEMP/cg-boundary"
+    rm -rf "$fixture"
+    mkdir -p "$fixture/scratch" "$fixture/links/target"
+    "$py" - "$fixture/links" <<'PY'
+import os, sys
+links = sys.argv[1]
+for name, target in (("root-link", "target"), ("parent-link", "target"), ("leaf-link", "target"), ("dangling-link", "absent")):
+    os.symlink(os.path.join(links, target), os.path.join(links, name), target_is_directory=True)
+PY
+    scratch="$fixture/scratch" links="$fixture/links"
+    # The tests compare paths built from these values with the normalised paths BuildBaseline records, so Windows gets
+    # native separators: RUNNER_TEMP is D:\a\_temp and the mixed D:\a\_temp/cg-boundary/... failed 4 tests (run 36446374412).
+    case "${RUNNER_OS:-$(uname -s)}" in
+      Windows|MINGW*|MSYS*) scratch=$(cygpath -w "$scratch") links=$(cygpath -w "$links") ;;
+    esac
+    args+=(-cgFixtureRoot "$scratch" -cgBuildLinkFixture "$links")
   elif [[ ${RUNNER_OS:-} == Linux ]]; then
     runner=(xvfb-run -a -s "-screen 0 1920x1080x24")
   fi
@@ -94,6 +117,29 @@ build)
     echo "::error title=Unity build::player build failed for ${failed[*]:-the editor} (editor exit $status); see the unity-build-logs artifact"
     exit 1
   fi
+  ;;
+bootstrap)
+  case "${RUNNER_OS:-$(uname -s)}" in
+    macOS|Darwin) target=StandaloneOSX output=CHOOGuard-Bootstrap.app ;;
+    Windows|MINGW*|MSYS*) target=StandaloneWindows64 output=CHOOGuard-Bootstrap.exe ;;
+    *) echo "::error title=Bootstrap build::BuildBaseline has no target for this host"; exit 1 ;;
+  esac
+  root="$RUNNER_TEMP/cg-bootstrap"
+  rm -rf "$root"
+  mkdir -p "$root"
+  status=0
+  editor -quit -batchmode -projectPath "$project" -executeMethod ChooGuard.Editor.Bootstrap.BuildBaseline.Build \
+    -cgBuildTarget "$target" -cgBuildRoot "$root" -cgBuildOutput "$root/$output" -logFile "$logs/bootstrap-build.log" || status=$?
+  # Printed only after the receipt is saved: "CG_BOOT_BUILD_SUCCEEDED: <output>; receipt=<project-relative path>".
+  marker=$(grep -m1 'CG_BOOT_BUILD_SUCCEEDED: ' "$logs/bootstrap-build.log" | tr -d '\r' || true)
+  receipt=${marker##*receipt=}
+  if [[ $status -ne 0 || -z $marker || ! -e $root/$output || ! -s $project/$receipt ]]; then
+    grep -E 'CG_BOOT_|error CS[0-9]+|Exception' "$logs/bootstrap-build.log" | head -20 || true
+    echo "::error title=Bootstrap build::BuildBaseline did not build $target (editor exit $status); see bootstrap-build.log in the results artifact"
+    exit 1
+  fi
+  cp "$project/$receipt" "$logs/bootstrap-build-receipt.json"
+  echo "$marker"
   ;;
 return)
   : "${UNITY_EMAIL:?}" "${UNITY_PASSWORD:?}"
