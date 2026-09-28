@@ -1,0 +1,37 @@
+version: 2
+updates:
+  # Workflow actions are pinned to commit SHAs; Dependabot moves the SHA and the version comment together.
+  - package-ecosystem: github-actions
+    directory: /
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7 # new releases wait a week: compromised versions are usually pulled within days
+    labels: ["dependencies", "area: ci"]
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Hash-locked CI requirements (uv pip compile); workers/physics/requirements-core.txt is mirrored by hand.
+  - package-ecosystem: pip
+    directory: /.github/requirements
+    target-branch: develop
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7 # new releases wait a week: compromised versions are usually pulled within days
+    labels: ["dependencies", "area: ci"]
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      python:
+        patterns: ["*"]

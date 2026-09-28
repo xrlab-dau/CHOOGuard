@@ -1,0 +1,30 @@
+name: 버그
+description: 게임·도구·CI가 기대와 다르게 동작함
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: 무엇이 일어났나요
+      description: 실제 동작과 기대한 동작
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 재현 방법
+      placeholder: |
+        1. FpsStation 씬 열기
+        2. ...
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: 환경
+      description: 브랜치/커밋, OS, Unity 버전, CI 실행 링크 등
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 로그·스크린샷
+      description: 비밀값(키·토큰·계정)은 지우고 붙여 주세요

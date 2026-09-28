@@ -6,7 +6,7 @@
 
 상태 **IN_PROGRESS** / 수용 **NOT_ACCEPTED**
 
-대표 게임 11종과 지원 라이브러리 3개를 비교하고 OSS 6개 저장소의 실제 소스를 검토했다. 선택한 건물에서만 지원 요청을 제공하는 UI를 현재 Unity에서 검증했고, 공개 그래프·AI 예측 패널을 제거했다. OpenRA Wait의 실제 코드를 이식해 복귀→재출동 준비→가용 상태를 연결했다. Jev 값 0.55가 내부 식에서 28.5초로 계산되고 실제 승인 시간 29초 뒤 가용 상태로 전환됐으며, 두 팀 모두 443초에 복귀·준비를 완료했다. 시간 계수는 훈련용 가정이고 전체 프로덕션·실측 디지털 트윈 수용은 NOT_ACCEPTED다. 실제 재고·서비스 범위·도시 생활·런타임 건설·저장과 재현·장기 플레이 검수가 남아 있다.
+임의 통로 연결은 실제 부산역 복원으로 인정하지 않고 사용자 교정을 반영했다. 부산시2019 개통자료·2018-405고시 치수·2021부산시설공단 실제 CAD평면도·공식 안내도와 현장 사진을 확보했다. Astra low가 실제 평면도와 사진 기반 통로 모듈을 새로 제작하고 root가 미리보기를 검토했다. 도시철도/지하상가 출구번호를 분리했다. 철도역·도시철도 양끝의 정확한 접속 위치·고저차는 미확정이며 새모델은 Unity에 미적용. 기존기술적 보행PASS는 실제연결수용이 아니다. 현재NOT_A.
 
 이 도구의 PASS는 관리 구조·참조 정합만 뜻하며 제품 실행·완료·기관 수용 검증이 아니다.
 
@@ -61,9 +61,7 @@ BCL+Contracts 기반 strict bounded raw JSON parser와 reference skeleton schema
 
 ### 철도 운영 공간 · PARTIAL
 
-WorldEntityAnchor/FixtureBuilder foundation 부분 구현. 독립 foundations 실행에서 CSWORLD0101/0102는 dirty Untitled/fixture 제약으로 NOT_RUN이며 431건 통과에 포함되지 않는다. 후속 FixtureBuilder 및 CSWORLD0101/0102 시험 소스의 preview lifecycle 3파일 수정은 존재하나 Unity compile/tests NOT_RUN, saved fixture 생성·SaveScene 성공·reload 동등성 NOT_VERIFIED다. dirty unsaved scene 전제 부재 시 Ignore되는 회귀는 수용 증거가 아니다. Jev World 검수는 preview 수정 전 snapshot으로 수정 후 검증이 아니다. 최신 열린 Editor discovery에서 World0101 14건·0102 7건을 확인했으나 실행은 0건이다. 선행 focused TestRunner 실행의 씬 객체 identity 변경으로 추가 scene 교체 시험을 보류했다. 실제 공개 도면 기반 실제 역·현장 검증 및 제품 수용 미완료.
-2026-09-21: 후속 부산역 공개 안내도와 OSM footprint/platform으로 3층 시각 공간을 실제 생성·저장했다. 확장 도시3845features를 취득했고 도시builder/오픈월드카메라 소스를 추가했다. 최종 도시 화면 검증은 진행 중이며 시각 형상은 게임용 조정이다.
-2026-09-21 최신: 1m 도시·공개 DEM, 부산역3층/주요2거점 내부, Blender17종 및 문자형상 제거를 실제 Editor에 저장. 출처/설계 치수 구분, 현장 실측/전체 디지털트윈 수용 아님. 후속4개기관 실제지도위치와미터도시연결,3층바닥두께/패턴/기능구역 native확인. 실제외관·내부전체복원목표로상향했으며현재추정geometry는미검증. 북항2023계획CAD묶음확보는as-built완료가아님.
+공식 부산역 원본을 기준으로 활성 오픈월드를 교체·저장했다. 역사·승강장·광장·주변 건물 8개 구역을 실제 텍스처로 연결하고, 중복 건물 36개와 도로·철도 겹침을 정리했다. 새 약32m 역사 선택·지원 요청과 외부/내부 전환이 현재 Unity에서 통과했다. 재사용 훈련장비의 예약·현장사용·복귀·재출동 준비도 실제50명 대피 흐름에서 통과했다. 품질A는 미달이다: 공식 원본의 비어 있는 내부, 프레임 끊김, 장기 운영·저장재현·현장 물리 보정이 남아 있다.
 
 원문 ID: `CS-WORLD.01.01`, `CS-WORLD.01.02`, `CS-WORLD.02.01`, `CS-WORLD.02.02`, `CS-WORLD.02.03`, `CS-WORLD.03.01`, `CS-WORLD.03.02`, `CS-WORLD.04.01`, `CS-WORLD.04.02`
 
@@ -76,6 +74,7 @@ WorldEntityAnchor/FixtureBuilder foundation 부분 구현. 독립 foundations �
 - 증거: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-world-metre-npc-proposal.json)
 - 증거: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-agency-core-benchmark.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-agency-core-benchmark.json)
 - 증거: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-operations-graph-camera-building.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-operations-graph-camera-building.json)
+- 증거: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json)
 
 ### native RTS 작업공간 · PARTIAL
 
@@ -276,6 +275,9 @@ content-validation에서 PLAY0101 5/5, PLAY0102 8/8, IntegratedInput PlayMode 12
 - **OpenRA countdown and internal Jev arithmetic — PASS**: SourceWaitported;0.55→28.5s→29accepteds;pausefreeze/unavailableuntilready;allteamsReady443s
   - 범위: Actualtwo-teamlocalreferenceoperation; notcalibratedphysicalor119timings
   - 결과: [.planning/2026-09-21-production-benchmark/turnaround-native-proof.json](../../.planning/2026-09-21-production-benchmark/turnaround-native-proof.json)
+- **Official source world + operational kit targeted native — PASS**: 8sourcezones/36overlapsreplaced;31.15mroofselection;50evac+one-timekitlifecycle; sourceinterior andperformancegaps remain
+  - 범위: CurrentlocalUnitysource-world/picking/contextUI andone450scrowdresourceworkflow only; 제품 수용 아님(대상 한정 PASS)
+  - 결과: [docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json](../../docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-21-official-source-world.json)
 
 ## 실패·보류·미착수
 
