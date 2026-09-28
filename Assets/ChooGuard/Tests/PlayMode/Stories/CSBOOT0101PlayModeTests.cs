@@ -19,7 +19,7 @@ namespace ChooGuard.Tests.PlayMode.Stories
     public sealed class CSBOOT0101PlayModeTests
     {
         [UnityTest]
-        public IEnumerator BootstrapScene_RendersStaticMarkerAndUsesInputSystem()
+        public IEnumerator BootstrapScene_TitleUsesInputSystemUi()
         {
             yield return SceneManager.LoadSceneAsync("Bootstrap", LoadSceneMode.Single);
             yield return null;
@@ -61,27 +61,6 @@ namespace ChooGuard.Tests.PlayMode.Stories
                 Assert.That(reference.action.bindings.Count, Is.GreaterThan(0));
                 Assert.That(reference.action.actionMap.asset, Is.EqualTo(module.actionsAsset));
             }
-            var markers = Object.FindObjectsByType<TextMeshProUGUI>(FindObjectsSortMode.None);
-            Assert.That(markers.Length, Is.EqualTo(1));
-            var marker = markers[0];
-            Assert.That(marker.text, Is.EqualTo("CHOOGuard bootstrap"));
-            Assert.That(marker.isActiveAndEnabled, Is.True);
-            Assert.That(marker.font, Is.Not.Null);
-            Assert.That(marker.font, Is.EqualTo(TMP_Settings.defaultFontAsset));
-            Assert.That(marker.font.name, Is.EqualTo("ChooGuard Bootstrap SDF"));
-            Assert.That(marker.font.atlasPopulationMode, Is.EqualTo(AtlasPopulationMode.Static));
-            Assert.That(marker.fontSharedMaterial, Is.EqualTo(marker.font.material));
-            Assert.That(marker.font.atlasTexture, Is.Not.Null);
-            Assert.That(marker.fontSharedMaterial.mainTexture, Is.EqualTo(marker.font.atlasTexture));
-            Assert.That(marker.fontSharedMaterial.shader, Is.Not.Null);
-            Assert.That(marker.fontSharedMaterial.shader.name, Is.EqualTo("TextMeshPro/Mobile/Distance Field"));
-            Assert.That(marker.fontSharedMaterial.shader.isSupported, Is.True);
-            foreach (var character in marker.text.Distinct()) Assert.That(marker.font.HasCharacter(character, false, false), Is.True);
-            marker.ForceMeshUpdate();
-            Assert.That(marker.textInfo.characterCount, Is.EqualTo(marker.text.Length));
-            Assert.That(marker.textInfo.characterInfo.Take(marker.textInfo.characterCount).Count(x => x.isVisible), Is.EqualTo(marker.text.Count(x => !char.IsWhiteSpace(x))));
-            Assert.That(marker.textInfo.meshInfo.Sum(x => x.vertexCount), Is.GreaterThan(0));
-            Assert.That(marker.canvasRenderer.GetMesh().vertexCount, Is.GreaterThan(0));
             LogAssert.NoUnexpectedReceived();
         }
     }

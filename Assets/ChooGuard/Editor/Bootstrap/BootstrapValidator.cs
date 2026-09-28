@@ -48,9 +48,14 @@ namespace ChooGuard.Editor.Bootstrap
             if (File.Exists(packageLock)) snapshot.PackageLockSha256 = BuildBaseline.HashFile(packageLock);
             var assets = Path.Combine(root, "Assets");
             var extensions = new[] { ".dll", ".so", ".dylib", ".bundle" };
+            // NuGetForUnity 가 Assets/packages.config 에 선언한 패키지(id·version)는 Assets/Packages/<id>.<version>/ 아래에 풀린다.
+            // 그 안의 DLL 은 선언된 것이다(DotRecast). 선언 없이 Assets 에 놓인 DLL 만 LOCAL_PLUGIN_UNDECLARED 다.
+            var declared = DeclaredNuGetFolders(root);
             if (Directory.Exists(assets)) snapshot.LocalPluginPaths = Directory.EnumerateFileSystemEntries(assets, "*", SearchOption.AllDirectories)
                 .Where(p => extensions.Contains(Path.GetExtension(p).ToLowerInvariant()))
-                .Select(p => p.Substring(root.Length + 1).Replace('\\', '/')).OrderBy(p => p, StringComparer.Ordinal).ToArray();
+                .Select(p => p.Substring(root.Length + 1).Replace('\\', '/'))
+                .Where(p => !declared.Any(folder => p.StartsWith(folder, StringComparison.Ordinal)))
+                .OrderBy(p => p, StringComparer.Ordinal).ToArray();
             // PackageInfo and AssetDatabase belong to the open Editor project, never a foreign fixture directory.
             if (root != Path.GetFullPath(Path.Combine(Application.dataPath, "..")))
             {
@@ -67,6 +72,15 @@ namespace ChooGuard.Editor.Bootstrap
             return snapshot;
         }
 
+        private static string[] DeclaredNuGetFolders(string root)
+        {
+            var config = Path.Combine(root, "Assets/packages.config");
+            if (!File.Exists(config)) return Array.Empty<string>();
+            return System.Xml.Linq.XDocument.Load(config).Root.Elements("package")
+                .Select(p => "Assets/Packages/" + (string)p.Attribute("id") + "." + (string)p.Attribute("version") + "/")
+                .ToArray();
+        }
+
         public static void ObserveScene(Scene scene, BootstrapSnapshot snapshot)
         {
             T[] Find<T>() where T : Component => scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<T>(true)).ToArray();
@@ -78,14 +92,12 @@ namespace ChooGuard.Editor.Bootstrap
             snapshot.HasInputSystemModule = modules.Length == 1 && modules[0].enabled && systems.Length == 1 && modules[0].gameObject == systems[0].gameObject && systems[0].isActiveAndEnabled;
             snapshot.HasLegacyInputModule = Find<StandaloneInputModule>().Length != 0;
             snapshot.InputActionsValid = modules.Length == 1 && HasPersistentActions(modules[0]);
-            var markers = Find<TextMeshProUGUI>();
-            var font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(BootstrapProject.FontPath);
-            snapshot.TmpResourcesValid = markers.Length == 1 && font != null && markers[0].font == font &&
-                markers[0].fontSharedMaterial == font.material && font.atlasTexture != null &&
-                font.atlasPopulationMode == AtlasPopulationMode.Static && markers[0].text == "CHOOGuard bootstrap" &&
-                TMP_Settings.defaultFontAsset == font && font.material.shader != null &&
-                font.material.shader.name == "TextMeshPro/Mobile/Distance Field" &&
-                markers[0].text.All(c => font.HasCharacter(c));
+            // Bootstrap 은 이제 타이틀 화면이다(2026-09-26 방향 재정렬). 글자는 실행 중 TitleScreen 이 만들므로
+            // 씬에 고정 표식 대신 타이틀의 한국어 글꼴 연결이 온전한지를 본다.
+            var titles = Find<ChooGuard.App.Fps.Shell.TitleScreen>();
+            var titleFont = titles.Length == 1 ? titles[0].KoreanFont : null;
+            snapshot.TmpResourcesValid = titleFont != null && titleFont.atlasTexture != null && titleFont.material != null &&
+                titleFont.material.shader != null && titleFont.material.shader.isSupported;
         }
 
         public static bool HasPersistentActions(InputSystemUIInputModule module)

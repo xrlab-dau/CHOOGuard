@@ -17,8 +17,7 @@ namespace ChooGuard.App.Fps.Work
         {
             public string id,label,basis,effect,observe,failReason;
             public string[] requires,allFacts,notFacts;
-            // 조건부 단계. 가드가 TRUE 가 아니면 막지 않고 건너뛴다.
-            // (적합 판정에서는 '폐기·교체 요구 인계'가 발생하지 않는 것이 정상이다.)
+            // 확인된 FALSE만 비해당이다. 미관측·상충 조건은 판정 보류로 남긴다.
             public bool conditional;
         }
         [Serializable] private sealed class Definition
@@ -162,9 +161,7 @@ namespace ChooGuard.App.Fps.Work
 
         // 지금 수행 가능한 첫 단계. 없으면 이유를 담아 거부한다 — 거부는 완료가 아니다.
         //
-        // 조건부 단계는 가드가 TRUE 가 아니면 **막지 않고 건너뛴다.** 필수 단계는 막는다.
-        // 이 구분이 데이터(conditional)에 있어야 하는 이유: 어느 단계가 분기인지는 규정이 정하고
-        // 러너는 그것을 읽을 뿐이다. 코드에 단계 이름을 박으면 절차를 추가할 때마다 러너를 고쳐야 한다.
+        // 조건부 단계도 UNKNOWN/CONFLICTED면 막는다. 확인된 FALSE만 건너뛴다.
         public Decision Next(RuleFacts facts)
         {
             if(!Ready)return new Decision{Allowed=false,Reason=StatusReason,Guard=RuleTruth.UNKNOWN,Facts=facts,Revision=Revision};
@@ -174,7 +171,7 @@ namespace ChooGuard.App.Fps.Work
                 if(!RequirementsMet(step))continue;
                 var truth=GuardTruth(step,facts);
                 if(truth==RuleTruth.TRUE)return new Decision{Step=step,Guard=truth,Allowed=true,Reason=step.Label,Facts=facts,Revision=Revision};
-                if(step.Conditional)continue;                       // 해당 없음 — 다음 단계를 본다
+                if(step.Conditional&&truth==RuleTruth.FALSE)continue;
                 return new Decision
                 {
                     Step=step,Guard=truth,Allowed=false,Facts=facts,Revision=Revision,
@@ -194,9 +191,9 @@ namespace ChooGuard.App.Fps.Work
             return true;
         }
 
-        // 아직 해야 할 일이 남았는가. 조건부 단계는 **지금 해당하는 경우에만** 센다.
+        // 조건을 모르거나 관측이 상충하면 미완료다.
         private bool Applies(Step step,RuleFacts facts)
-            =>!step.Conditional||GuardTruth(step,facts)==RuleTruth.TRUE;
+            =>!step.Conditional||GuardTruth(step,facts)!=RuleTruth.FALSE;
         public bool IsComplete(RuleFacts facts)
         {
             foreach(var step in steps)if(!step.Done&&Applies(step,facts))return false;
