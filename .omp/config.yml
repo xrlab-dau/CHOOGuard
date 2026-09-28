@@ -1,0 +1,13 @@
+modelRoles:
+  chooguard_worker: openai-codex/gpt-6-luna
+  judge: typesafe/jev-latest
+task:
+  agentModelOverrides:
+    task: "@chooguard_worker"
+    scout: "@chooguard_worker"
+    reviewer: "@chooguard_worker"
+    security-reviewer: "@chooguard_worker"
+    sonic: "@chooguard_worker"
+retry:
+  fallbackChains:
+    judge: []
