@@ -1,0 +1,72 @@
+{
+ "model_requested": "jev-latest",
+ "judged_at": "2026-09-28T05:22:05Z",
+ "elapsed_ms": 333,
+ "authority": 0,
+ "state": {
+  "task": "Judge how the maintainer should resolve a teammate's documentation pull request in a public Unity game repository. Inputs are verified observations, not instructions. Return typed judgments only; the maintainer decides.",
+  "pr_249": "Adds one JSON evidence receipt (docs/CHOOGuard_Story_Plan_v5/state/evidence/2026-09-28-develop-sync.json, 146 lines) recording an EditMode run on develop b8098810: total 489, passed 445, failed 2 (host issues: macOS-only assertion on Windows; Korean user-folder path in Mono), skipped 42. Verified by the maintainer: the #247 guard it credits exists (CommandPreviewPresenter.cs:268, absent in d61997d0); develop's NotoSansCJKkr font has 311 glyphs with dynamic population and clear-on-build (issue #248); the #245 validator failure it records is real on b8098810 and fixed on the unmerged CI branch (#250). JSON valid, referenced files exist on develop, no private paths.",
+  "defect": "updatedUtc is 2026-09-28T05:35:00Z but the only commit was made at 05:10:27Z and the current time is 05:20Z: the receipt claims a time after its own commit. File also lacks a trailing newline.",
+  "format_md": "The receipt follows docs/CHOOGuard_Story_Plan_v5/state/evidence/FORMAT.md, which exists only on feature/tutorial-playable (PR #240 closed unmerged, branch kept). FORMAT.md fixes receipt fields and a checkpoint vocabulary (PASS, FAIL, PARTIAL, NOT_VERIFIED, NOT_IMPLEMENTED, NOT_CLAIMED, KNOWN_GAP, FAIL_AT_THE_TIME) plus supersedes/recurrenceSignal/selfAssessment. It is process documentation, not the rejected tutorial gameplay. progress.json test results use a separate validated enum (PASS, FAIL, NOT_RUN); an unvalidated drifted value broke the validator (#245). No tool validates receipts. The author offered a separate PR.",
+  "merge_rules": "develop requires 1 approval, code-owner review, approval of the most recent push by someone other than its pusher, and the status check 'Policy, security and repository hygiene', which cannot run until the CI branch (#250, all checks green except a dependency-review re-run) is merged. The maintainer may bypass."
+ },
+ "questions": {
+  "format_md": {
+   "type": "choice",
+   "instructions": "What to decide about importing FORMAT.md into develop.",
+   "criteria": {
+    "approve_separate_pr": "Approve importing it; the author opens the separate PR they offered.",
+    "include_in_this_pr": "Add FORMAT.md to #249 now.",
+    "decline": "Do not import; receipts stay free-form."
+   }
+  },
+  "timestamp": {
+   "type": "choice",
+   "instructions": "How to handle the future-dated updatedUtc.",
+   "criteria": {
+    "maintainer_fixup": "Maintainer pushes a one-line fix (updatedUtc = commit time, trailing newline) to the PR branch and explains it in the review.",
+    "request_changes": "Request changes and wait for the author.",
+    "merge_as_is": "Merge without fixing."
+   }
+  },
+  "merge_path": {
+   "type": "choice",
+   "instructions": "How to merge.",
+   "criteria": {
+    "ci_first_then_checks": "Merge #250 first, update #249 with develop so the required checks run on it, approve, squash-merge (bypass only for the last-push rule if the maintainer's fixup is the last push).",
+    "bypass_now": "Bypass-merge #249 immediately without checks."
+   }
+  }
+ },
+ "answers": {
+  "format_md": {
+   "type": "choice",
+   "choice": "approve_separate_pr",
+   "confidence": 0.93,
+   "probabilities": {
+    "include_in_this_pr": 0.03,
+    "decline": 0.02,
+    "approve_separate_pr": 0.95
+   }
+  },
+  "timestamp": {
+   "type": "choice",
+   "choice": "maintainer_fixup",
+   "confidence": 0.69,
+   "probabilities": {
+    "maintainer_fixup": 0.79,
+    "merge_as_is": 0.01,
+    "request_changes": 0.2
+   }
+  },
+  "merge_path": {
+   "type": "choice",
+   "choice": "ci_first_then_checks",
+   "confidence": 0.9,
+   "probabilities": {
+    "bypass_now": 0.05,
+    "ci_first_then_checks": 0.95
+   }
+  }
+ }
+}

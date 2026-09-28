@@ -96,7 +96,7 @@ Unity는 로그 첫머리에 `-serial`·`-password`를 포함한 명령줄 전�
 - 워크플로 기본 권한은 `permissions: {}`이고 잡마다 필요한 권한만 준다. 쓰기 권한은 라벨러(`pull-requests`), 보안 결과 업로드(`security-events`), 릴리스(`contents`, `id-token`, `attestations`)뿐이다.
 - `pull_request_target`은 쓰지 않는다. 공개 저장소는 2026-11-02부터 기본 차단된다. 체크아웃은 모두 `persist-credentials: false`다.
 - 리눅스 잡은 `harden-runner`(audit)로 외부 통신을 기록한다.
-- 저장소 설정: 비밀 스캔과 푸시 보호, 비공개 취약점 신고(`.github/SECURITY.md`), Dependabot 보안 업데이트.
+- 저장소 보안 설정은 조직의 코드 보안 구성 **"CHOOGuard public repository"**(이 저장소에만 연결)에 있다. 의존성 그래프, Dependabot 알림·보안 업데이트, 비밀 스캔과 푸시 보호, 비공개 취약점 신고(`.github/SECURITY.md`)를 켠다. CodeQL은 고급 워크플로(`security.yml`)로 돌기 때문에 **기본 설정은 꺼 둔다**. 조직의 "GitHub recommended" 구성은 CodeQL 기본 설정을 켜서 고급 워크플로의 결과 업로드를 막으므로 연결하지 않는다.
 
 ## 로컬에서 같은 검사 돌리기
 

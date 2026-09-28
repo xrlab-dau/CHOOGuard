@@ -42,3 +42,15 @@
 - `PlayerBuild.Build`는 실패해도 종료코드 0 → CI는 `CG_PLAYER_BUILD result=Succeeded` 표식과 `.app` 존재를 단정.
 - 보안 설정: 비밀 스캔·푸시 보호·비공개 취약점 신고·Dependabot 보안 업데이트 모두 꺼짐, CodeQL 기본 설정 미구성.
 - Unity 6000.3.23f1 (09d2ecc7fb28) arm64 에디터 pkg 5.1 GB, 설치 9.4 GB.
+
+## 적용 (2026-09-28)
+
+- PR #250 CI 1차: Docs tool suites 실패 — v5 검증기가 참조 파일(Assets 소스·`.planning` 증거)의 존재를 확인하고 진입점 시험이 `prompts/`를 읽는데, 희소 체크아웃에 없었다 → docs 잡은 전체 체크아웃. Dependency review 실패 — 저장소 의존성 그래프가 꺼져 있었다.
+- 의존성 그래프: 저장소 단위 REST 토글이 없다. 조직 "GitHub recommended" 구성은 CodeQL 기본 설정을 켜서 고급 워크플로와 충돌한다 → 이 저장소에만 연결한 조직 코드 보안 구성 "CHOOGuard public repository"(id 279373)를 만들었다(`admin:org` 권한은 사용자가 제공한 토큰으로 두 호출만, 저장하지 않음). 비밀 스캔·푸시 보호·Dependabot 보안 업데이트·비공개 취약점 신고도 켰다. CodeQL 기본 설정은 `not-configured` 유지.
+- PR #250 CI 2차: 전 잡 통과(Unity 레인은 비밀값 대기로 사유 기록 후 건너뜀).
+
+## PR #249 (Adrianaline, develop 동기화 영수증)
+
+- 검증: JSON 유효, 참조 파일 develop에 존재, 사설 경로 없음. `CommandPreviewPresenter.cs:268`의 `targetsText.isActiveAndEnabled` 가드는 #247에서 추가됨(d61997d0에 없음). develop의 NotoSansCJKkr 폰트는 글리프 311개, 동적 채움 + clear-on-build(#248과 일치). #245 실패 기록은 b8098810 기준 사실이고 #250이 고친다.
+- 결함: `updatedUtc` 05:35:00Z가 유일한 커밋(05:10:27Z)보다 늦다.
+- JEV `jev-pr249-017`: FORMAT.md는 작성자의 별도 PR로 가져오기 승인(0.95), 타임스탬프는 관리자 수정 커밋(0.79), #250 머지 → #249 브랜치 갱신 → 필수 체크 → 승인 → 스쿼시 머지(0.95).
