@@ -105,7 +105,11 @@ return)
   else
     echo "Unity licence returned"
   fi
-  rm -rf "$private"
+  # Windows: a Unity helper process can keep return.log open for a moment after the editor exits, and deleting it then
+  # fails with "Device or resource busy" (run 36396147103). The licence is already returned and RUNNER_TEMP goes with
+  # the job, so a directory that stays locked only earns a notice.
+  for _ in {1..10}; do rm -rf "$private" 2>/dev/null && break; sleep 1; done
+  [[ ! -e $private ]] || echo "::notice title=Unity licence::$private is still held open by a Unity process; the runner deletes it with the job"
   ;;
 scrub)
   "$py" - "$logs" <<'PY'

@@ -55,7 +55,7 @@ blob 없이 전체 이력만 받은 체크아웃에서 돈다. 파일 내용은 
 
 ### 켜기 (학생 플랜)
 
-학생 플랜은 **라이선스 키(시리얼)** 방식이다. 키는 id.unity.com → My Seats의 "Unity Student" 구독(조직 `dbstkd5865`, 2027-09-28 만료)에 있다. `UNITY_EMAIL`과 `UNITY_SERIAL`은 등록돼 있다. 남은 것은 Unity 계정 비밀번호 하나다(2단계 인증은 꺼져 있어야 CLI 활성화가 된다).
+학생 플랜은 **라이선스 키(시리얼)** 방식이다. 키는 id.unity.com → My Seats의 "Unity Student" 구독(조직 `dbstkd5865`, 2027-09-28 만료)에 있다. CLI 활성화는 Unity 이메일과 **Unity 비밀번호**가 필요하고, 2단계 인증은 꺼져 있어야 한다. 이 계정은 구글 로그인이라 Unity 비밀번호가 따로 없었다. 그래서 2026-09-28에 Unity Dashboard → Account → Security → **Change Password**(재설정 메일)로 무작위 30자 비밀번호를 만들어 `UNITY_PASSWORD`에만 넣었다. 아무도 이 비밀번호를 모르고, 구글 로그인은 그대로 된다. 다시 만들 때도 같은 방법을 쓴다. 재설정하면 모든 기기의 Unity Editor·Hub가 로그아웃되므로 다시 로그인해야 한다.
 
 ```sh
 gh secret set UNITY_PASSWORD -R xrlab-dau/CHOOGuard
@@ -75,11 +75,12 @@ gh variable set UNITY_CI_ENABLED --body true -R xrlab-dau/CHOOGuard
 
 | 이벤트 | 에디터 시험 | 플레이어 빌드 + 스모크 |
 |---|---|---|
-| 같은 저장소 PR, `Assets`·`Packages`·`ProjectSettings` 변경 | Windows, macOS | — |
+| 같은 저장소 PR, Unity 경로 변경 | Windows, macOS | — |
 | develop·main push(Unity 경로 변경), `v*` 태그, 야간 | Windows, macOS, Linux | ✅ 세 OS |
 | 수동 실행 | 선택한 OS 또는 전부 | `build` 입력 |
 | 포크 PR, Unity 경로 무변경 | 사유를 남기고 건너뜀 | — |
 
+- Unity 경로: `Assets`·`Packages`·`ProjectSettings`에 더해, EditMode 시험이 저장소 루트에서 읽는 `content/`(픽스처), `docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/`(어셈블리 계약), `docs/build/`(빌드 영수증·기준 스키마)다. 게이트의 `unity_paths`와 시험 잡의 희소 체크아웃이 같은 목록을 쓴다. 첫 Linux 실행(run 36394165119)에서 체크아웃에 이 셋이 빠져 EditMode 102건이 파일 없음으로 실패했다. 시험이 루트의 다른 파일을 읽게 되면 두 곳에 함께 추가한다.
 - 시험: EditMode(`-nographics`)와 PlayMode(Metal, Direct3D/WARP, 가상 디스플레이의 OpenGL)를 한 번의 활성화 안에서 돌린다. 판정은 `unity_results.py`가 결과 XML과 에디터 종료 코드를 함께 보고 내린다. 결과 파일 없음(컴파일 오류·크래시), 0건 실행, 실패, 종료 코드와 결과의 불일치는 실패다. Inconclusive는 경고다.
 - 빌드: macOS 러너 한 대가 Windows·Linux Mono 빌드 모듈을 함께 설치하고, 활성화 한 번과 임포트 한 번으로 세 플레이어를 만든다. 진입점은 메뉴와 같은 `ChooGuard.Editor.PlayerBuild.BuildAll`이다. 이 메서드는 실패해도 0으로 끝나므로 대상별 `CG_PLAYER_BUILD target=… result=Succeeded` 표식과 출력물로 판정한다. 산출물은 `player-macos`·`player-windows`·`player-linux`(zip, 30일)다.
 - 스모크: 각 OS 러너가 자기 플레이어를 `-batchmode -nographics -soak -soak-shifts 1 -soak-minutes 0.5`로 실행한다. 역사를 불러오고, 새 비상 세션의 군중이 생기고, 플레이한 뒤 타이틀로 돌아와 보고서를 쓰는 전 과정이다. `soak_verdict.py`가 판정한다. 보고서 없음(크래시·멈춤), 근무 누락, 예외, 군중이 생기지 않은 세션은 실패이고, 로그 오류는 경고다. 플레이어는 Unity 라이선스가 필요 없어 세 OS가 동시에 돈다.
@@ -108,7 +109,7 @@ Unity는 로그 첫머리에 `-serial`·`-password`를 포함한 명령줄 전�
 
 ## 공급망·권한
 
-- 모든 action은 커밋 SHA로 고정한다(태그는 주석). 같은 저장소 action은 실행 중인 커밋을 가리키는 `uses: $/...`로 쓴다. 내려받는 도구(actionlint, gitleaks)는 SHA-256을 확인한다. 파이썬 의존성은 해시로 잠근다. Dependabot이 매주 올리되 공개 7일 뒤의 버전만 받는다.
+- 모든 action은 커밋 SHA로 고정한다(태그는 주석). 같은 저장소 action은 `.github`만 받은 체크아웃에서 `./.github/actions/...`로 쓴다. GitHub의 self-repository 문법(`uses: $/...`)은 action을 쓰려고 저장소 전체 압축본(에셋 약 4 GB)을 내려받는다. 첫 실행에서 모든 러너가 이 다운로드의 100초 제한에 걸려 실패했다(run 36393274297). 그래서 zizmor의 `self-repository` 검사는 `.github/zizmor.yml`에서 끈다. 내려받는 도구(actionlint, gitleaks)는 SHA-256을 확인한다. 파이썬 의존성은 해시로 잠근다. Dependabot이 매주 올리되 공개 7일 뒤의 버전만 받는다.
 - 워크플로 기본 권한은 `permissions: {}`이고 잡마다 필요한 권한만 준다. 쓰기 권한은 라벨러(`pull-requests`), 보안 결과 업로드(`security-events`), 릴리스(`contents`, `id-token`, `attestations`)뿐이다.
 - `pull_request_target`은 쓰지 않는다. 공개 저장소는 2026-11-02부터 기본 차단된다. 체크아웃은 모두 `persist-credentials: false`다.
 - 리눅스 잡은 `harden-runner`(audit)로 외부 통신을 기록한다.
@@ -130,10 +131,12 @@ uvx zizmor@1.30.1 --offline .
 
 ## 알려진 제약
 
-- actionlint 1.7.12(최신)는 `queue`(2026-05)와 `$/`(2026-07)를 모른다. 이 두 메시지만 무시한다. 새 actionlint가 나오면 무시 목록을 지운다.
+- actionlint 1.7.12(최신)는 `queue`(2026-05)를 모른다. 이 메시지만 무시한다. 새 actionlint가 나오면 무시 목록을 지운다.
 - 표준 러너의 보장 디스크는 14 GB다(에디터 설치 8.1–9.5 GB). 설치 단계가 여유 공간을 기록하고, macOS는 45 GB 미만이면 쓰지 않는 Xcode를 지운다. Windows는 여유가 가장 큰 드라이브에, Linux는 `/mnt` 임시 디스크에 설치한다.
-- 첫 Unity 실행과 모든 빌드는 3.9 GB 에셋을 새로 임포트하므로 수십 분 걸린다. 라이선스가 한 자리라 PR의 Windows·macOS 시험은 차례로 돈다.
+- 시험 잡 하나는 13–25분이다. 대부분이 에디터 설치(Linux 6분, macOS 12분, Windows 19분)다. 첫 임포트(에셋 10,964개, FBX 1,159·텍스처 1,672 포함)는 EditMode 단계 안에서 4–5분 걸린다(Linux 241초, Windows 286초, macOS 308초, run 36394165119). 라이선스가 한 자리라 시험 잡은 한 번에 하나씩 돈다. 세 OS를 모두 돌리면 약 1시간이다.
 - Linux 에디터 압축본은 코드 서명이 없어 Unity 매니페스트의 MD5로만 무결성을 확인한다.
+- Windows에서는 에디터가 끝난 뒤에도 Unity 보조 프로세스가 `return.log`를 잠시 잡고 있을 수 있다. 반납 단계는 10초까지 다시 지워 보고, 그래도 잠겨 있으면 알림(`::notice`)만 남긴다. 반납은 이미 끝났고, 러너가 잡과 함께 임시 폴더를 지운다.
 - 스모크는 헤드리스(`-nographics`)라 시작·씬 로드·세션·종료를 확인하지만 화면 렌더링까지는 보지 않는다. 렌더링은 PlayMode 시험(그래픽 장치 사용)이 맡는다.
+- Linux 플레이어는 디스플레이가 없으면 창 백엔드가 null이라 첫 프레임에서 segfault한다(Unity 버그. 실제 사용자는 X11·Wayland가 있어 해당하지 않는다). 그래서 Linux 스모크는 PlayMode 시험처럼 Xvfb 안에서 돈다. 같은 플레이어를 헤드리스와 Xvfb로 나란히 돌려 확인했다(run 36420682952: 헤드리스 exit 139, Xvfb exit 0·오류 0·예외 0).
 - `CSBOOT0101`의 경계 재시험(`-cgFixtureRoot` 등 33건, 실제 Bootstrap 빌드 포함)은 아직 CI에서 돌리지 않는다. 세 OS 레인이 녹색이 된 뒤 야간 잡으로 붙인다.
-- OpenSSF Scorecard 기준선은 5.6(2026-09-28, `3c05e778`)이다. Pinned-Dependencies 9점의 감점 2건은 `uses: $/.github/actions/setup-unity`다. Scorecard v2.4.4(2026-07-23)가 GitHub의 self-repository 문법(2026-07-30)을 몰라 해시 없는 외부 action으로 오판한 것이다. GitHub는 `$/`를 고정 참조로 취급하므로 점수 때문에 `./`로 되돌리지 않는다. 나머지 감점(저장소 생성 90일 미만, LICENSE 없음, 승인 없는 머지, `Assets/Packages`의 DotRecast DLL 등 바이너리)은 CI 밖의 결정이다.
+- OpenSSF Scorecard 기준선은 5.6(2026-09-28, `3c05e778`)이다. Pinned-Dependencies 9점의 감점 2건은 당시 쓰던 `uses: $/...` 참조였고, `./` 로컬 action으로 바꾸면서 없어진다. 나머지 감점(저장소 생성 90일 미만, LICENSE 없음, 승인 없는 머지, `Assets/Packages`의 DotRecast DLL 등 바이너리)은 CI 밖의 결정이다.

@@ -65,11 +65,8 @@ jobs:
             "https://github.com/rhysd/actionlint/releases/download/v$VERSION/actionlint_${VERSION}_linux_amd64.tar.gz"
           echo "$SHA256  $archive" | sha256sum --check --strict
           tar -xzf "$archive" -C "$RUNNER_TEMP" actionlint
-          # actionlint 1.7.12 (2026-03) predates two newer GitHub syntaxes used here: the concurrency `queue`
-          # key (2026-05) and self-repository `uses: $/...` references (2026-07). Only those two are ignored.
-          "$RUNNER_TEMP/actionlint" -color \
-            -ignore 'unexpected key "queue" for "concurrency" section' \
-            -ignore 'specifying action "\$/[^"]+" in invalid format because ref is missing'
+          # actionlint 1.7.12 (2026-03) predates the concurrency `queue` key (GitHub, 2026-05); only that is ignored.
+          "$RUNNER_TEMP/actionlint" -color -ignore 'unexpected key "queue" for "concurrency" section'
 
       - name: Audit workflows (zizmor)
         uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4

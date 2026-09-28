@@ -3,6 +3,7 @@
 
 Usage: unity_results.py MODE:RESULTS_XML:EDITOR_EXIT_CODE [...]
 e.g.   unity_results.py EditMode:$RUNNER_TEMP/unity/EditMode-results.xml:0 PlayMode:...:2
+       (RESULTS_XML may contain colons, such as the drive letter of a Windows RUNNER_TEMP)
 
 `-runTests` exits 0 when every test passed and 2 when some failed, but a compile error or editor crash
 leaves no results file at all, so the verdict needs both the XML and the exit code. A mode fails when its
@@ -91,14 +92,20 @@ def render(results: list[ModeResult]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def parse_spec(spec: str) -> tuple[str, str, str]:
+    # Split at the first and last colon: on Windows RUNNER_TEMP is a drive path such as D:\a\_temp.
+    mode, rest = spec.split(":", 1)
+    xml_path, exit_code = rest.rsplit(":", 1)
+    return mode, xml_path, exit_code
+
+
 def main(argv: list[str]) -> int:
     if not argv:
         print(__doc__, file=sys.stderr)
         return 64
     results = []
     for spec in argv:
-        mode, xml_path, exit_code = spec.split(":", 2)
-        results.append(evaluate(mode, xml_path, exit_code))
+        results.append(evaluate(*parse_spec(spec)))
     for r in results:
         for name, message in r.failures[:MAX_FAILURES_LISTED]:
             print(f"::error title={escape(r.mode + ' ' + name, True)}::{escape(message)}")

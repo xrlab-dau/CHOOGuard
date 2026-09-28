@@ -79,3 +79,42 @@
 - 코드: `SqliteProvider` Windows/Linux 로더, `MvpPhysicsBridge` venv 경로, `CSBOOT0101` Windows 호스트 건너뜀, `CSBOOT0201` `GetName()` 대신 `FullName`(한글 경로), `PlayerBuild` Windows·Linux·`BuildAll`. 정적 배칭은 Standalone 그룹 공통이라 변경 없음.
 - 로컬 검증(macOS 에디터): 컴파일 오류 0. 고정 SQLite 3.53.4로 CSOPS0201 3건·CSOPS0203 10건 첫 실행 통과, CSBOOT0201 통과, CSBOOT0101 Windows 빌드 시험은 기존대로 -cgFixtureRoot 없이 건너뜀.
 - `.gitattributes`: 재정규화 결과 기존 파일 변경 0(CRLF 14건과 연구 자료 1,450건은 바이트 보존 트리).
+
+## 첫 세 OS 실행 (run 36393274297) — self-repository 참조 철회
+
+- `UNITY_PASSWORD`: 계정이 구글 로그인이라 Unity 비밀번호가 없었다. 사용자 승인 후 Security → Change Password 재설정 메일(Aside Gmail)로 페이지 안에서 생성한 무작위 30자 비밀번호를 설정하고, 성공 확인 뒤에만 gh로 전달했다(출력·파일 없음). 재설정 링크는 사용 후 오류 페이지로 바뀌었다. 모든 에디터 로그아웃은 사용자가 승인했다.
+- 결과: macOS 잡이 `Set up job`에서 실패했다. `uses: $/.github/actions/setup-unity`는 러너가 codeload에서 저장소 전체 tar.gz를 받게 하는데, 에셋 약 4 GB라 100초 제한을 세 번 넘겼다. Linux도 같은 단계에서 멈췄다. 활성화 전이라 실행을 취소했다(반납할 활성화 없음).
+- 조치: 테스트 잡은 루트에 `.github`만 체크아웃하고 프로젝트는 별도 디렉터리(`project`, Windows는 `경로 검사/CHOOGuard`)에 받는다. 로컬 action은 `./.github/actions/...`로 쓴다. zizmor `self-repository` 검사는 이유를 적어 끄고, actionlint `$/` 무시 규칙은 삭제했다.
+
+## 첫 Linux 시험 (run 36394165119) - 시험 입력 누락
+
+- 설치 -> 시리얼 활성화 -> EditMode -> PlayMode -> 반납까지 모두 실행됨. PlayMode 45/45 통과. EditMode 489건: 347 통과, 102 실패, 40 건너뜀.
+- 실패 102건은 두 원인뿐이다. 희소 체크아웃에 `content/`가 없어 55건(`content/fixtures/two-agency.json`), `docs/CHOOGuard_Story_Plan_v4/basis/v3/contracts/`가 없어 47건(`assembly-layout.json`)이 실패했다. local-action 변경 전부터 있던 누락이고, 레인이 처음 실제로 돌면서 드러났다.
+- 수정: 시험 잡 체크아웃과 게이트 `unity_paths`에 `content`, `docs/build`(영수증·기준 스키마), 계약 디렉터리를 같은 목록으로 추가했다. 로컬 cone 희소 체크아웃으로 세 경로가 있는지 확인했다(디스크 219개 파일).
+- 같은 실행의 Windows 잡(비ASCII·공백 경로 첫 실행)은 취소하지 않고 끝까지 돌려 Windows 고유 문제를 먼저 본다.
+
+## 수정 실행 (run 36396147103, `075e9931`) - 시험 입력 수정 확인, Windows 스크립트 결함 2건
+
+- macOS·Linux: EditMode·PlayMode 전부 통과(잡 성공). 시험 입력 누락 수정이 확인됐다.
+- Windows: EditMode 449 통과·0 실패·40 건너뜀, PlayMode 45/45 통과. 그런데 잡은 실패했다. 원인은 시험이 아니라 스크립트 두 곳이다.
+  1. 판정: `unity_results.py`가 `MODE:PATH:EXIT`를 모든 콜론에서 나눠, Windows의 `D:\a\_temp` 드라이브 문자에서 경로가 잘렸다. 그래서 "no results file (editor exit unknown)"이 나왔다. 첫 실행(36394165119)의 Windows 판정도 같은 오류였는데, 실제 실패 102건에 가려 있었다. 첫 콜론과 마지막 콜론에서 나누게 고치고(`parse_spec`), 실제 CI 문자열로 회귀 시험을 넣었다. 이 실행의 Windows 결과 파일을 새 판정에 넣으면 통과한다.
+  2. 반납: "Unity licence returned" 뒤 `rm -rf "$private"`가 "Device or resource busy"로 실패했다(Unity 보조 프로세스가 return.log를 잡고 있음). 첫 실행에서는 성공했으니 경쟁 상태다. 10초까지 다시 지워 보고, 그래도 안 되면 알림만 남긴다. bash 3.2에서 정상·잠김 두 경로를 흉내 내 확인했다.
+- 모든 OS의 에셋 임포트가 실제로 일어났다(10,964개, 4-5분). LFS가 없어 러너가 실제 바이너리를 받는다. 문서의 "수십 분" 추정을 측정값으로 바꿨다.
+- 다음: `os=windows build=true`로 Windows 수정 확인과 첫 플레이어 빌드·세 OS 스모크를 한 번에 본다.
+
+## Windows 시험 + 첫 빌드·스모크 (run 36406455457, `5efe9b93`)
+
+- Windows 시험 잡 성공: 판정 경로 수정과 반납 정리가 실제 러너에서 확인됐다("Unity licence returned", 알림 없음).
+- 빌드 성공: 에디터+모듈 설치 4분, 빌드 1시간 53분(냉 임포트와 세 플레이어의 셰이더 컴파일), zip 455-470 MB.
+- 스모크: macOS·Windows 통과. Linux는 첫 프레임에서 segfault(exit 139). 로그에 "Selected window backend: (null)"가 찍혔다. 디스플레이가 없으면 Unity Linux 플레이어의 창 백엔드가 초기화되지 않는 버그다(Unity 포럼 보고, Xvfb 우회).
+- 확인: 같은 `player-linux` 산출물로 임시 워크플로(`diag/linux-smoke`, run 36420682952)에서 헤드리스와 Xvfb를 나란히 돌렸다. 헤드리스는 exit 139로 재현됐고, Xvfb는 backend x11, exit 0, `CG_SOAK errors=0 exceptions=0`로 통과했다. 우분투 24.04 이미지에 `xvfb-run`이 기본으로 있다. 임시 브랜치와 실행은 지웠다.
+- 수정: Linux 스모크를 `xvfb-run` 안에서 실행한다. 게임 코드는 바꾸지 않는다(실제 Linux 사용자는 X11·Wayland가 있다).
+- 포장: `ditto -c -k`가 확장 속성(com.apple.provenance)이 있는 파일마다 `._` AppleDouble 파일을 Windows·Linux zip에 넣는다. 로컬 왕복으로 확인하고 `--norsrc --noextattr --noqtn --noacl`로 뺐다(`d14b1fee`). 실행 비트와 심볼릭 링크는 유지된다.
+- 다음: 모든 수정을 담아 `os=all build=true`로 한 번에 녹색을 확인한다.
+
+## 최종: 세 OS 전 과정 녹색 (run 36420972690, `d51e5d35`)
+
+- 시험(Windows·macOS·Linux 모두): EditMode 449/489 통과·0 실패·40 건너뜀(의도된 경계 재시험 등), PlayMode 45/45.
+- 빌드: 2시간 10분(13:04-15:14 UTC). 반납·포장 성공.
+- 스모크(세 OS 모두 exit 0): 1근무, 오류 0, 예외 0, 군중 148명. 최대 프레임은 Windows 399 ms, macOS 412 ms, Linux 297 ms이고 각각 히치 1회다. Linux는 Xvfb 안에서 `window backend: x11`.
+- 남은 일(문서 "알려진 제약"): `CSBOOT0101` 경계 재시험 야간 잡, Scorecard의 CI 밖 감점.
